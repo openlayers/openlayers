@@ -1,8 +1,6 @@
 /**
  * @module ol/control/ZoomSlider
  */
-// FIXME should possibly show tooltip when dragging?
-
 import {inherits} from '../index.js';
 import ViewHint from '../ViewHint.js';
 import Control from '../control/Control.js';
@@ -14,6 +12,18 @@ import EventType from '../events/EventType.js';
 import {clamp} from '../math.js';
 import PointerEventType from '../pointer/EventType.js';
 import PointerEventHandler from '../pointer/PointerEventHandler.js';
+
+
+/**
+ * The enum for available directions.
+ *
+ * @enum {number}
+ */
+const Direction = {
+  VERTICAL: 0,
+  HORIZONTAL: 1
+};
+
 
 /**
  * @classdesc
@@ -42,12 +52,12 @@ const ZoomSlider = function(opt_options) {
 
   /**
    * The direction of the slider. Will be determined from actual display of the
-   * container and defaults to ol.control.ZoomSlider.Direction_.VERTICAL.
+   * container and defaults to Direction.VERTICAL.
    *
-   * @type {ol.control.ZoomSlider.Direction_}
+   * @type {Direction}
    * @private
    */
-  this.direction_ = ZoomSlider.Direction_.VERTICAL;
+  this.direction_ = Direction.VERTICAL;
 
   /**
    * @type {boolean}
@@ -146,18 +156,6 @@ ZoomSlider.prototype.disposeInternal = function() {
 
 
 /**
- * The enum for available directions.
- *
- * @enum {number}
- * @private
- */
-ZoomSlider.Direction_ = {
-  VERTICAL: 0,
-  HORIZONTAL: 1
-};
-
-
-/**
  * @inheritDoc
  */
 ZoomSlider.prototype.setMap = function(map) {
@@ -192,10 +190,10 @@ ZoomSlider.prototype.initSlider_ = function() {
   this.thumbSize_ = [thumbWidth, thumbHeight];
 
   if (containerSize.width > containerSize.height) {
-    this.direction_ = ZoomSlider.Direction_.HORIZONTAL;
+    this.direction_ = Direction.HORIZONTAL;
     this.widthLimit_ = containerSize.width - thumbWidth;
   } else {
-    this.direction_ = ZoomSlider.Direction_.VERTICAL;
+    this.direction_ = Direction.VERTICAL;
     this.heightLimit_ = containerSize.height - thumbHeight;
   }
   this.sliderInitialized_ = true;
@@ -313,7 +311,7 @@ ZoomSlider.prototype.setThumbPosition_ = function(res) {
   const position = this.getPositionForResolution_(res);
   const thumb = this.element.firstElementChild;
 
-  if (this.direction_ == ZoomSlider.Direction_.HORIZONTAL) {
+  if (this.direction_ == Direction.HORIZONTAL) {
     thumb.style.left = this.widthLimit_ * position + 'px';
   } else {
     thumb.style.top = this.heightLimit_ * position + 'px';
@@ -333,7 +331,7 @@ ZoomSlider.prototype.setThumbPosition_ = function(res) {
  */
 ZoomSlider.prototype.getRelativePosition_ = function(x, y) {
   let amount;
-  if (this.direction_ === ZoomSlider.Direction_.HORIZONTAL) {
+  if (this.direction_ === Direction.HORIZONTAL) {
     amount = x / this.widthLimit_;
   } else {
     amount = y / this.heightLimit_;
@@ -369,4 +367,5 @@ ZoomSlider.prototype.getPositionForResolution_ = function(res) {
   const fn = this.getMap().getView().getValueForResolutionFunction();
   return 1 - fn(res);
 };
+
 export default ZoomSlider;

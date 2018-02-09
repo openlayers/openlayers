@@ -8,6 +8,30 @@ import {replaceNode} from '../dom.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 
+
+/**
+ * @return {string} Change type.
+ */
+const getChangeType = (function() {
+  let changeType;
+  return function() {
+    if (!changeType) {
+      const body = document.body;
+      if (body.webkitRequestFullscreen) {
+        changeType = 'webkitfullscreenchange';
+      } else if (body.mozRequestFullScreen) {
+        changeType = 'mozfullscreenchange';
+      } else if (body.msRequestFullscreen) {
+        changeType = 'MSFullscreenChange';
+      } else if (body.requestFullscreen) {
+        changeType = 'fullscreenchange';
+      }
+    }
+    return changeType;
+  };
+})();
+
+
 /**
  * @classdesc
  * Provides a button that when clicked fills up the full screen with the map.
@@ -162,7 +186,7 @@ FullScreen.prototype.setMap = function(map) {
   Control.prototype.setMap.call(this, map);
   if (map) {
     this.listenerKeys.push(listen(document,
-      FullScreen.getChangeType_(),
+      getChangeType(),
       this.handleFullScreenChange_, this)
     );
   }
@@ -236,26 +260,4 @@ FullScreen.exitFullScreen = function() {
   }
 };
 
-/**
- * @return {string} Change type.
- * @private
- */
-FullScreen.getChangeType_ = (function() {
-  let changeType;
-  return function() {
-    if (!changeType) {
-      const body = document.body;
-      if (body.webkitRequestFullscreen) {
-        changeType = 'webkitfullscreenchange';
-      } else if (body.mozRequestFullScreen) {
-        changeType = 'mozfullscreenchange';
-      } else if (body.msRequestFullscreen) {
-        changeType = 'MSFullscreenChange';
-      } else if (body.requestFullscreen) {
-        changeType = 'fullscreenchange';
-      }
-    }
-    return changeType;
-  };
-})();
 export default FullScreen;

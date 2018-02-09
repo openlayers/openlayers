@@ -11,6 +11,20 @@ import {listen} from '../events.js';
 import {getPointResolution, METERS_PER_UNIT} from '../proj.js';
 import Units from '../proj/Units.js';
 
+
+/**
+ * @type {string}
+ */
+const UNITS = 'units';
+
+
+/**
+ * @const
+ * @type {Array.<number>}
+ */
+const LEADING_DIGITS = [1, 2, 5];
+
+
 /**
  * @classdesc
  * A control displaying rough y-axis distances, calculated for the center of the
@@ -86,7 +100,7 @@ const ScaleLine = function(opt_options) {
   });
 
   listen(
-    this, BaseObject.getChangeEventType(ScaleLine.Property_.UNITS),
+    this, BaseObject.getChangeEventType(UNITS),
     this.handleUnitsChanged_, this);
 
   this.setUnits(/** @type {ol.control.ScaleLineUnits} */ (options.units) ||
@@ -98,13 +112,6 @@ inherits(ScaleLine, Control);
 
 
 /**
- * @const
- * @type {Array.<number>}
- */
-ScaleLine.LEADING_DIGITS = [1, 2, 5];
-
-
-/**
  * Return the units to use in the scale line.
  * @return {ol.control.ScaleLineUnits|undefined} The units to use in the scale
  *     line.
@@ -113,7 +120,7 @@ ScaleLine.LEADING_DIGITS = [1, 2, 5];
  */
 ScaleLine.prototype.getUnits = function() {
   return (
-    /** @type {ol.control.ScaleLineUnits|undefined} */ this.get(ScaleLine.Property_.UNITS)
+    /** @type {ol.control.ScaleLineUnits|undefined} */ this.get(UNITS)
   );
 };
 
@@ -150,7 +157,7 @@ ScaleLine.prototype.handleUnitsChanged_ = function() {
  * @api
  */
 ScaleLine.prototype.setUnits = function(units) {
-  this.set(ScaleLine.Property_.UNITS, units);
+  this.set(UNITS, units);
 };
 
 
@@ -244,7 +251,7 @@ ScaleLine.prototype.updateElement_ = function() {
     Math.log(this.minWidth_ * pointResolution) / Math.log(10));
   let count, width;
   while (true) {
-    count = ScaleLine.LEADING_DIGITS[((i % 3) + 3) % 3] *
+    count = LEADING_DIGITS[((i % 3) + 3) % 3] *
         Math.pow(10, Math.floor(i / 3));
     width = Math.round(count / pointResolution);
     if (isNaN(width)) {
@@ -275,12 +282,4 @@ ScaleLine.prototype.updateElement_ = function() {
 
 };
 
-
-/**
- * @enum {string}
- * @private
- */
-ScaleLine.Property_ = {
-  UNITS: 'units'
-};
 export default ScaleLine;
