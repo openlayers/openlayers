@@ -18,7 +18,7 @@ import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
 import _ol_render_replay_ from '../../render/replay.js';
 import RendererType from '../Type.js';
 import CanvasTileLayerRenderer from '../canvas/TileLayer.js';
-import _ol_renderer_vector_ from '../vector.js';
+import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import _ol_transform_ from '../../transform.js';
 
 /**
@@ -192,14 +192,14 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(
     replayState.dirty = false;
     const replayGroup = new CanvasReplayGroup(0, sharedExtent, resolution,
       pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
-    const squaredTolerance = _ol_renderer_vector_.getSquaredTolerance(
+    const squaredTolerance = getSquaredRenderTolerance(
       resolution, pixelRatio);
 
     /**
      * @param {ol.Feature|ol.render.Feature} feature Feature.
      * @this {ol.renderer.canvas.VectorTileLayer}
      */
-    const renderFeature = function(feature) {
+    const render = function(feature) {
       let styles;
       let styleFunction = feature.getStyleFunction();
       if (styleFunction) {
@@ -234,7 +234,7 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(
         feature.getGeometry().transform(tileProjection, projection);
       }
       if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
-        renderFeature.call(this, feature);
+        render.call(this, feature);
       }
     }
     replayGroup.finish();
@@ -466,12 +466,12 @@ CanvasVectorTileLayerRenderer.prototype.renderFeature = function(feature, square
   let loading = false;
   if (Array.isArray(styles)) {
     for (let i = 0, ii = styles.length; i < ii; ++i) {
-      loading = _ol_renderer_vector_.renderFeature(
+      loading = renderFeature(
         replayGroup, feature, styles[i], squaredTolerance,
         this.handleStyleImageChange_, this) || loading;
     }
   } else {
-    loading = _ol_renderer_vector_.renderFeature(
+    loading = renderFeature(
       replayGroup, feature, styles, squaredTolerance,
       this.handleStyleImageChange_, this);
   }
