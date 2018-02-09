@@ -426,15 +426,14 @@ describe('ol.View', function() {
       view.animate({
         zoom: 4,
         duration: 25
-      });
-      expect(view.getAnimating()).to.eql(true);
-
-      setTimeout(function() {
+      }, function(complete) {
+        expect(complete).to.be(true);
         expect(view.getCenter()).to.eql([0, 0]);
         expect(view.getZoom()).to.eql(4);
         expect(view.getAnimating()).to.eql(false);
         done();
-      }, 50);
+      });
+      expect(view.getAnimating()).to.eql(true);
     });
 
     it('allows duration to be zero', function(done) {
@@ -446,14 +445,13 @@ describe('ol.View', function() {
       view.animate({
         zoom: 4,
         duration: 0
-      });
-
-      setTimeout(function() {
+      }, function(complete) {
+        expect(complete).to.be(true);
         expect(view.getCenter()).to.eql([0, 0]);
         expect(view.getZoom()).to.eql(4);
         expect(view.getAnimating()).to.eql(false);
         done();
-      }, 10);
+      });
     });
 
     it('immediately completes for no-op animations', function() {
@@ -495,18 +493,17 @@ describe('ol.View', function() {
       const zoom = 3;
       const rotation = 0.4;
 
-      view.animate({
-        zoom: 1
-      }, {
-        center: [2, 3]
-      }, {
-        rotation: 4
-      }, {
-        zoom: zoom,
-        center: center,
-        rotation: rotation,
-        duration: 25
-      });
+      view.animate(
+        {zoom: 1},
+        {center: [2, 3]},
+        {rotation: 4},
+        {
+          zoom: zoom,
+          center: center,
+          rotation: rotation,
+          duration: 25
+        }
+      );
       expect(view.getAnimating()).to.eql(false);
       expect(view.getCenter()).to.eql(center);
       expect(view.getZoom()).to.eql(zoom);
@@ -559,7 +556,8 @@ describe('ol.View', function() {
       view.animate({
         rotation: Math.PI / 180 * 359,
         duration: 0
-      }, function() {
+      }, function(complete) {
+        expect(complete).to.be(true);
         expect(view.getRotation()).to.roughlyEqual(Math.PI / 180 * -1, 1e-12);
         done();
       });
@@ -574,7 +572,8 @@ describe('ol.View', function() {
       view.animate({
         rotation: Math.PI / 180 * -181,
         duration: 0
-      }, function() {
+      }, function(complete) {
+        expect(complete).to.be(true);
         expect(view.getRotation()).to.roughlyEqual(Math.PI / 180 * 179, 1e-12);
         done();
       });
@@ -593,6 +592,32 @@ describe('ol.View', function() {
         expect(complete).to.be(true);
         done();
       });
+    });
+
+    it('allows the callback to trigger another animation', function(done) {
+      const view = new View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      function firstCallback(complete) {
+        expect(complete).to.be(true);
+
+        view.animate({
+          zoom: 2,
+          duration: 10
+        }, secondCallback);
+      }
+
+      function secondCallback(complete) {
+        expect(complete).to.be(true);
+        done();
+      }
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      }, firstCallback);
     });
 
     it('calls callback with false when animation is interrupted', function(done) {
