@@ -179,27 +179,27 @@ export function toRadians(angleInDegrees) {
  * @param {Array.<number>} numbers Sample.
  * @return {Array.<number>} Modes.
  */
-ol.math.mode = function(numbers) {
-  var i, ii;
-  var modeFreq = 0;
-  var occurences = {};
+export function mode(numbers) {
+  let i, ii;
+  let modeFreq = 0;
+  const occurences = {};
 
   for (i = 0, ii = numbers.length; i < ii; ++i) {
-    var num = numbers[i];
+    const num = numbers[i];
     occurences[num] = occurences[num] ? occurences[num] + 1 : 1;
     if (occurences[num] > modeFreq) {
       modeFreq = occurences[num];
     }
   }
 
-  var modes = [];
+  const modes = [];
   for (i in occurences) {
     if (occurences[i] === modeFreq) {
       modes.push(parseFloat(i));
     }
   }
   return modes;
-};
+}
 
 
 /**

@@ -77,9 +77,9 @@ export const LITTLE_ENDIAN = (
    */
   function() {
     if ('ArrayBuffer' in window) {
-      var buffer = new window.ArrayBuffer(4);
-      var data = new window.Uint32Array(buffer);
-      var view = new window.Uint8Array(buffer);
+      const buffer = new window.ArrayBuffer(4);
+      const data = new window.Uint32Array(buffer);
+      const view = new window.Uint8Array(buffer);
 
       data[0] = 0x12345678;
       return view[0] === 0x78;

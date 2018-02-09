@@ -1,32 +1,28 @@
-goog.provide('ol.coverage.geotiff');
-
-goog.require('ol');
-
-
-if (ol.ENABLE_COVERAGE) {
-
-  /**
-   * @private
-   * @type {GeoTIFF}
-   */
-  ol.coverage.geotiff.cache_ = null;
+/**
+ * @module ol/coverage/geotiff
+ */
 
 
-  /**
-   * Store the GeoTIFF function.
-   * @param {GeoTIFF} geotiff The GeoTIFF function.
-   */
-  ol.coverage.geotiff.set = function(geotiff) {
-    ol.coverage.geotiff.cache_ = geotiff;
-  };
+/**
+ * @private
+ * @type {GeoTIFF}
+ */
+let cache = null;
 
 
-  /**
-   * Get the GeoTIFF lib.
-   * @return {GeoTIFF} The GeoTIFF function set above or available globally.
-   */
-  ol.coverage.geotiff.get = function() {
-    return ol.coverage.geotiff.cache_ || window['GeoTIFF'];
-  };
+/**
+ * Store the GeoTIFF function.
+ * @param {GeoTIFF} geotiff The GeoTIFF function.
+ */
+export function set(geotiff) {
+  cache = geotiff;
+}
 
+
+/**
+ * Get the GeoTIFF lib.
+ * @return {GeoTIFF} The GeoTIFF function set above or available globally.
+ */
+export function get() {
+  return cache || window['GeoTIFF'];
 }

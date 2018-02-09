@@ -10,13 +10,13 @@ import {assign} from './obj.js';
 import {register, registerMultiple} from './plugins.js';
 import CanvasImageLayerRenderer from './renderer/canvas/ImageLayer.js';
 import CanvasMapRenderer from './renderer/canvas/Map.js';
-import CanvasRasterLayerRenderer from './renderer/canvas/RasterLayer.js';
+//import CanvasRasterLayerRenderer from './renderer/canvas/RasterLayer.js';
 import CanvasTileLayerRenderer from './renderer/canvas/TileLayer.js';
 import CanvasVectorLayerRenderer from './renderer/canvas/VectorLayer.js';
 import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js';
 import WebGLImageLayerRenderer from './renderer/webgl/ImageLayer.js';
 import WebGLMapRenderer from './renderer/webgl/Map.js';
-import WebGLRasterLayerRenderer from './renderer/canvas/RasterLayer.js';
+//import WebGLRasterLayerRenderer from './renderer/canvas/RasterLayer.js';
 import WebGLTileLayerRenderer from './renderer/webgl/TileLayer.js';
 import WebGLVectorLayerRenderer from './renderer/webgl/VectorLayer.js';
 
@@ -24,7 +24,7 @@ import WebGLVectorLayerRenderer from './renderer/webgl/VectorLayer.js';
 register(PluginType.MAP_RENDERER, CanvasMapRenderer);
 registerMultiple(PluginType.LAYER_RENDERER, [
   CanvasImageLayerRenderer,
-  CanvasRasterLayerRenderer,
+  //CanvasRasterLayerRenderer,
   CanvasTileLayerRenderer,
   CanvasVectorLayerRenderer,
   CanvasVectorTileLayerRenderer
@@ -34,7 +34,7 @@ registerMultiple(PluginType.LAYER_RENDERER, [
 register(PluginType.MAP_RENDERER, WebGLMapRenderer);
 registerMultiple(PluginType.LAYER_RENDERER, [
   WebGLImageLayerRenderer,
-  WebGLRasterLayerRenderer,
+  //WebGLRasterLayerRenderer,
   WebGLTileLayerRenderer,
   WebGLVectorLayerRenderer
 ]);
