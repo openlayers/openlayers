@@ -162,7 +162,8 @@ VectorTileSource.prototype.getTilePixelRatio = function(pixelRatio) {
  * @inheritDoc
  */
 VectorTileSource.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
-  const tileSize = toSize(this.getTileGridForProjection(projection).getTileSize(z));
+  const tileGrid = this.getTileGridForProjection(projection);
+  const tileSize = toSize(tileGrid.getTileSize(z), this.tmpSize);
   return [Math.round(tileSize[0] * pixelRatio), Math.round(tileSize[1] * pixelRatio)];
 };
 export default VectorTileSource;
