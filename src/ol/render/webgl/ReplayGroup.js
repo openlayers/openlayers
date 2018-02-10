@@ -14,6 +14,25 @@ import WebGLPolygonReplay from '../webgl/PolygonReplay.js';
 import WebGLTextReplay from '../webgl/TextReplay.js';
 
 /**
+ * @type {Array.<number>}
+ */
+const HIT_DETECTION_SIZE = [1, 1];
+
+/**
+ * @type {Object.<ol.render.ReplayType,
+ *                function(new: ol.render.webgl.Replay, number,
+ *                ol.Extent)>}
+ */
+const BATCH_CONSTRUCTORS = {
+  'Circle': WebGLCircleReplay,
+  'Image': WebGLImageReplay,
+  'LineString': WebGLLineStringReplay,
+  'Polygon': WebGLPolygonReplay,
+  'Text': WebGLTextReplay
+};
+
+
+/**
  * @constructor
  * @extends {ol.render.ReplayGroup}
  * @param {number} tolerance Tolerance.
@@ -115,7 +134,7 @@ WebGLReplayGroup.prototype.getReplay = function(zIndex, replayType) {
     /**
      * @type {Function}
      */
-    const Constructor = WebGLReplayGroup.BATCH_CONSTRUCTORS_[replayType];
+    const Constructor = BATCH_CONSTRUCTORS[replayType];
     replay = new Constructor(this.tolerance_, this.maxExtent_);
     replays[replayType] = replay;
   }
@@ -246,12 +265,12 @@ WebGLReplayGroup.prototype.forEachFeatureAtCoordinate = function(
   }
 
   return this.replayHitDetection_(context,
-    coordinate, resolution, rotation, WebGLReplayGroup.HIT_DETECTION_SIZE_,
+    coordinate, resolution, rotation, HIT_DETECTION_SIZE,
     pixelRatio, opacity, skippedFeaturesHash,
     /**
-       * @param {ol.Feature|ol.render.Feature} feature Feature.
-       * @return {?} Callback result.
-       */
+     * @param {ol.Feature|ol.render.Feature} feature Feature.
+     * @return {?} Callback result.
+     */
     function(feature) {
       const imageData = new Uint8Array(4);
       gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
@@ -287,12 +306,12 @@ WebGLReplayGroup.prototype.hasFeatureAtCoordinate = function(
     gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
 
   const hasFeature = this.replayHitDetection_(context,
-    coordinate, resolution, rotation, WebGLReplayGroup.HIT_DETECTION_SIZE_,
+    coordinate, resolution, rotation, HIT_DETECTION_SIZE,
     pixelRatio, opacity, skippedFeaturesHash,
     /**
-       * @param {ol.Feature|ol.render.Feature} feature Feature.
-       * @return {boolean} Is there a feature?
-       */
+     * @param {ol.Feature|ol.render.Feature} feature Feature.
+     * @return {boolean} Is there a feature?
+     */
     function(feature) {
       const imageData = new Uint8Array(4);
       gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
@@ -302,25 +321,4 @@ WebGLReplayGroup.prototype.hasFeatureAtCoordinate = function(
   return hasFeature !== undefined;
 };
 
-/**
- * @const
- * @private
- * @type {Array.<number>}
- */
-WebGLReplayGroup.HIT_DETECTION_SIZE_ = [1, 1];
-
-/**
- * @const
- * @private
- * @type {Object.<ol.render.ReplayType,
- *                function(new: ol.render.webgl.Replay, number,
- *                ol.Extent)>}
- */
-WebGLReplayGroup.BATCH_CONSTRUCTORS_ = {
-  'Circle': WebGLCircleReplay,
-  'Image': WebGLImageReplay,
-  'LineString': WebGLLineStringReplay,
-  'Polygon': WebGLPolygonReplay,
-  'Text': WebGLTextReplay
-};
 export default WebGLReplayGroup;

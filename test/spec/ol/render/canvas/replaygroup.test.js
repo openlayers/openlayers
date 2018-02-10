@@ -1,4 +1,4 @@
-import CanvasReplayGroup from '../../../../../src/ol/render/canvas/ReplayGroup.js';
+import {getCircleArray} from '../../../../../src/ol/render/canvas/ReplayGroup.js';
 
 
 describe('ol.render.canvas.ReplayGroup', function() {
@@ -8,7 +8,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       const radius = 10;
       const minRadiusSq = Math.pow(radius - Math.SQRT2, 2);
       const maxRadiusSq = Math.pow(radius + Math.SQRT2, 2);
-      const circleArray = CanvasReplayGroup.getCircleArray_(radius);
+      const circleArray = getCircleArray(radius);
       const size = radius * 2 + 1;
       expect(circleArray.length).to.be(size);
 

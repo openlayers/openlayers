@@ -24,7 +24,6 @@ const MapRenderer = function(container, map) {
 
   Disposable.call(this);
 
-
   /**
    * @private
    * @type {ol.PluggableMap}
@@ -81,11 +80,10 @@ MapRenderer.prototype.removeLayerRenderers = function() {
 /**
  * @param {ol.PluggableMap} map Map.
  * @param {olx.FrameState} frameState Frame state.
- * @private
  */
-MapRenderer.expireIconCache_ = function(map, frameState) {
+function expireIconCache(map, frameState) {
   iconImageCache.expire();
-};
+}
 
 
 /**
@@ -314,9 +312,7 @@ MapRenderer.prototype.removeUnusedLayerRenderers_ = function(map, frameState) {
  * @protected
  */
 MapRenderer.prototype.scheduleExpireIconCache = function(frameState) {
-  frameState.postRenderFunctions.push(
-    /** @type {ol.PostRenderFunction} */ (MapRenderer.expireIconCache_)
-  );
+  frameState.postRenderFunctions.push(/** @type {ol.PostRenderFunction} */ (expireIconCache));
 };
 
 

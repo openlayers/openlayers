@@ -16,6 +16,23 @@ import Locations from '../webgl/linestringreplay/defaultshader/Locations.js';
 import _ol_webgl_ from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
+
+/**
+ * @enum {number}
+ */
+const Instruction = {
+  ROUND: 2,
+  BEGIN_LINE: 3,
+  END_LINE: 5,
+  BEGIN_LINE_CAP: 7,
+  END_LINE_CAP: 11,
+  BEVEL_FIRST: 13,
+  BEVEL_SECOND: 17,
+  MITER_BOTTOM: 19,
+  MITER_TOP: 23
+};
+
+
 /**
  * @constructor
  * @extends {ol.render.webgl.Replay}
@@ -85,7 +102,7 @@ WebGLLineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, off
   let numVertices = this.vertices.length;
   let numIndices = this.indices.length;
   //To save a vertex, the direction of a point is a product of the sign (1 or -1), a prime from
-  //ol.render.webgl.LineStringReplay.Instruction_, and a rounding factor (1 or 2). If the product is even,
+  //Instruction, and a rounding factor (1 or 2). If the product is even,
   //we round it. If it is odd, we don't.
   const lineJoin = this.state_.lineJoin === 'bevel' ? 0 :
     this.state_.lineJoin === 'miter' ? 1 : 2;
@@ -121,10 +138,10 @@ WebGLLineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, off
 
         if (lineCap) {
           numVertices = this.addVertices_([0, 0], p1, p2,
-            lastSign * WebGLLineStringReplay.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
+            lastSign * Instruction.BEGIN_LINE_CAP * lineCap, numVertices);
 
           numVertices = this.addVertices_([0, 0], p1, p2,
-            -lastSign * WebGLLineStringReplay.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
+            -lastSign * Instruction.BEGIN_LINE_CAP * lineCap, numVertices);
 
           this.indices[numIndices++] = n + 2;
           this.indices[numIndices++] = n;
@@ -137,10 +154,10 @@ WebGLLineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, off
         }
 
         numVertices = this.addVertices_([0, 0], p1, p2,
-          lastSign * WebGLLineStringReplay.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
+          lastSign * Instruction.BEGIN_LINE * (lineCap || 1), numVertices);
 
         numVertices = this.addVertices_([0, 0], p1, p2,
-          -lastSign * WebGLLineStringReplay.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
+          -lastSign * Instruction.BEGIN_LINE * (lineCap || 1), numVertices);
 
         lastIndex = numVertices / 7 - 1;
 
@@ -156,10 +173,10 @@ WebGLLineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, off
         p0 = p0 || [0, 0];
 
         numVertices = this.addVertices_(p0, p1, [0, 0],
-          lastSign * WebGLLineStringReplay.Instruction_.END_LINE * (lineCap || 1), numVertices);
+          lastSign * Instruction.END_LINE * (lineCap || 1), numVertices);
 
         numVertices = this.addVertices_(p0, p1, [0, 0],
-          -lastSign * WebGLLineStringReplay.Instruction_.END_LINE * (lineCap || 1), numVertices);
+          -lastSign * Instruction.END_LINE * (lineCap || 1), numVertices);
 
         this.indices[numIndices++] = n;
         this.indices[numIndices++] = lastIndex - 1;
@@ -171,10 +188,10 @@ WebGLLineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, off
 
         if (lineCap) {
           numVertices = this.addVertices_(p0, p1, [0, 0],
-            lastSign * WebGLLineStringReplay.Instruction_.END_LINE_CAP * lineCap, numVertices);
+            lastSign * Instruction.END_LINE_CAP * lineCap, numVertices);
 
           numVertices = this.addVertices_(p0, p1, [0, 0],
-            -lastSign * WebGLLineStringReplay.Instruction_.END_LINE_CAP * lineCap, numVertices);
+            -lastSign * Instruction.END_LINE_CAP * lineCap, numVertices);
 
           this.indices[numIndices++] = n + 2;
           this.indices[numIndices++] = n;
@@ -197,13 +214,13 @@ WebGLLineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, off
       ? -1 : 1;
 
     numVertices = this.addVertices_(p0, p1, p2,
-      sign * WebGLLineStringReplay.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
+      sign * Instruction.BEVEL_FIRST * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-      sign * WebGLLineStringReplay.Instruction_.BEVEL_SECOND * (lineJoin || 1), numVertices);
+      sign * Instruction.BEVEL_SECOND * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-      -sign * WebGLLineStringReplay.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
+      -sign * Instruction.MITER_BOTTOM * (lineJoin || 1), numVertices);
 
     if (i > offset) {
       this.indices[numIndices++] = n;
@@ -225,7 +242,7 @@ WebGLLineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, off
     //Add miter
     if (lineJoin) {
       numVertices = this.addVertices_(p0, p1, p2,
-        sign * WebGLLineStringReplay.Instruction_.MITER_TOP * lineJoin, numVertices);
+        sign * Instruction.MITER_TOP * lineJoin, numVertices);
 
       this.indices[numIndices++] = n + 1;
       this.indices[numIndices++] = n + 3;
@@ -239,10 +256,10 @@ WebGLLineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, off
       ? 1 : -1;
 
     numVertices = this.addVertices_(p0, p1, p2,
-      sign * WebGLLineStringReplay.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
+      sign * Instruction.BEVEL_FIRST * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-      -sign * WebGLLineStringReplay.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
+      -sign * Instruction.MITER_BOTTOM * (lineJoin || 1), numVertices);
 
     this.indices[numIndices++] = n;
     this.indices[numIndices++] = lastIndex - 1;
@@ -664,19 +681,4 @@ WebGLLineStringReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeS
   }
 };
 
-/**
- * @enum {number}
- * @private
- */
-WebGLLineStringReplay.Instruction_ = {
-  ROUND: 2,
-  BEGIN_LINE: 3,
-  END_LINE: 5,
-  BEGIN_LINE_CAP: 7,
-  END_LINE_CAP: 11,
-  BEVEL_FIRST: 13,
-  BEVEL_SECOND: 17,
-  MITER_BOTTOM: 19,
-  MITER_TOP: 23
-};
 export default WebGLLineStringReplay;

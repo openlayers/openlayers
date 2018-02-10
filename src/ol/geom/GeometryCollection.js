@@ -36,16 +36,15 @@ inherits(GeometryCollection, Geometry);
 
 /**
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
- * @private
  * @return {Array.<ol.geom.Geometry>} Cloned geometries.
  */
-GeometryCollection.cloneGeometries_ = function(geometries) {
+function cloneGeometries(geometries) {
   const clonedGeometries = [];
   for (let i = 0, ii = geometries.length; i < ii; ++i) {
     clonedGeometries.push(geometries[i].clone());
   }
   return clonedGeometries;
-};
+}
 
 
 /**
@@ -140,7 +139,7 @@ GeometryCollection.prototype.computeExtent = function(extent) {
  * @api
  */
 GeometryCollection.prototype.getGeometries = function() {
-  return GeometryCollection.cloneGeometries_(this.geometries_);
+  return cloneGeometries(this.geometries_);
 };
 
 
@@ -262,8 +261,7 @@ GeometryCollection.prototype.scale = function(sx, opt_sy, opt_anchor) {
  * @api
  */
 GeometryCollection.prototype.setGeometries = function(geometries) {
-  this.setGeometriesArray(
-    GeometryCollection.cloneGeometries_(geometries));
+  this.setGeometriesArray(cloneGeometries(geometries));
 };
 
 

@@ -17,6 +17,22 @@ import CanvasTextReplay from '../canvas/TextReplay.js';
 import _ol_render_replay_ from '../replay.js';
 import _ol_transform_ from '../../transform.js';
 
+
+/**
+ * @type {Object.<ol.render.ReplayType,
+ *                function(new: ol.render.canvas.Replay, number, ol.Extent,
+ *                number, number, boolean, Array.<ol.DeclutterGroup>)>}
+ */
+const BATCH_CONSTRUCTORS = {
+  'Circle': CanvasPolygonReplay,
+  'Default': CanvasReplay,
+  'Image': CanvasImageReplay,
+  'LineString': CanvasLineStringReplay,
+  'Polygon': CanvasPolygonReplay,
+  'Text': CanvasTextReplay
+};
+
+
 /**
  * @constructor
  * @extends {ol.render.ReplayGroup}
@@ -109,9 +125,8 @@ inherits(CanvasReplayGroup, ReplayGroup);
  * This cache is used for storing calculated pixel circles for increasing performance.
  * It is a static property to allow each Replaygroup to access it.
  * @type {Object.<number, Array.<Array.<(boolean|undefined)>>>}
- * @private
  */
-CanvasReplayGroup.circleArrayCache_ = {
+const circleArrayCache = {
   0: [[true]]
 };
 
@@ -122,9 +137,8 @@ CanvasReplayGroup.circleArrayCache_ = {
  * @param {Array.<Array.<(boolean|undefined)>>} array The array that will be altered.
  * @param {number} x X coordinate.
  * @param {number} y Y coordinate.
- * @private
  */
-CanvasReplayGroup.fillCircleArrayRowToMiddle_ = function(array, x, y) {
+function fillCircleArrayRowToMiddle(array, x, y) {
   let i;
   const radius = Math.floor(array.length / 2);
   if (x >= radius) {
@@ -136,7 +150,7 @@ CanvasReplayGroup.fillCircleArrayRowToMiddle_ = function(array, x, y) {
       array[i][y] = true;
     }
   }
-};
+}
 
 
 /**
@@ -146,11 +160,10 @@ CanvasReplayGroup.fillCircleArrayRowToMiddle_ = function(array, x, y) {
  * A cache is used to increase performance.
  * @param {number} radius Radius.
  * @returns {Array.<Array.<(boolean|undefined)>>} An array with marked circle points.
- * @private
  */
-CanvasReplayGroup.getCircleArray_ = function(radius) {
-  if (CanvasReplayGroup.circleArrayCache_[radius] !== undefined) {
-    return CanvasReplayGroup.circleArrayCache_[radius];
+export function getCircleArray(radius) {
+  if (circleArrayCache[radius] !== undefined) {
+    return circleArrayCache[radius];
   }
 
   const arraySize = radius * 2 + 1;
@@ -164,14 +177,14 @@ CanvasReplayGroup.getCircleArray_ = function(radius) {
   let error = 0;
 
   while (x >= y) {
-    CanvasReplayGroup.fillCircleArrayRowToMiddle_(arr, radius + x, radius + y);
-    CanvasReplayGroup.fillCircleArrayRowToMiddle_(arr, radius + y, radius + x);
-    CanvasReplayGroup.fillCircleArrayRowToMiddle_(arr, radius - y, radius + x);
-    CanvasReplayGroup.fillCircleArrayRowToMiddle_(arr, radius - x, radius + y);
-    CanvasReplayGroup.fillCircleArrayRowToMiddle_(arr, radius - x, radius - y);
-    CanvasReplayGroup.fillCircleArrayRowToMiddle_(arr, radius - y, radius - x);
-    CanvasReplayGroup.fillCircleArrayRowToMiddle_(arr, radius + y, radius - x);
-    CanvasReplayGroup.fillCircleArrayRowToMiddle_(arr, radius + x, radius - y);
+    fillCircleArrayRowToMiddle(arr, radius + x, radius + y);
+    fillCircleArrayRowToMiddle(arr, radius + y, radius + x);
+    fillCircleArrayRowToMiddle(arr, radius - y, radius + x);
+    fillCircleArrayRowToMiddle(arr, radius - x, radius + y);
+    fillCircleArrayRowToMiddle(arr, radius - x, radius - y);
+    fillCircleArrayRowToMiddle(arr, radius - y, radius - x);
+    fillCircleArrayRowToMiddle(arr, radius + y, radius - x);
+    fillCircleArrayRowToMiddle(arr, radius + x, radius - y);
 
     y++;
     error += 1 + 2 * y;
@@ -181,9 +194,9 @@ CanvasReplayGroup.getCircleArray_ = function(radius) {
     }
   }
 
-  CanvasReplayGroup.circleArrayCache_[radius] = arr;
+  circleArrayCache[radius] = arr;
   return arr;
-};
+}
 
 
 /**
@@ -312,7 +325,7 @@ CanvasReplayGroup.prototype.forEachFeatureAtCoordinate = function(
     buffer(hitExtent, resolution * (this.renderBuffer_ + hitTolerance), hitExtent);
   }
 
-  const mask = CanvasReplayGroup.getCircleArray_(hitTolerance);
+  const mask = getCircleArray(hitTolerance);
   let declutteredFeatures;
   if (this.declutterTree_) {
     declutteredFeatures = this.declutterTree_.all().map(function(entry) {
@@ -412,7 +425,7 @@ CanvasReplayGroup.prototype.getReplay = function(zIndex, replayType) {
   }
   let replay = replays[replayType];
   if (replay === undefined) {
-    const Constructor = CanvasReplayGroup.BATCH_CONSTRUCTORS_[replayType];
+    const Constructor = BATCH_CONSTRUCTORS[replayType];
     replay = new Constructor(this.tolerance_, this.maxExtent_,
       this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
     replays[replayType] = replay;
@@ -487,20 +500,4 @@ CanvasReplayGroup.prototype.replay = function(context,
   context.restore();
 };
 
-
-/**
- * @const
- * @private
- * @type {Object.<ol.render.ReplayType,
- *                function(new: ol.render.canvas.Replay, number, ol.Extent,
- *                number, number, boolean, Array.<ol.DeclutterGroup>)>}
- */
-CanvasReplayGroup.BATCH_CONSTRUCTORS_ = {
-  'Circle': CanvasPolygonReplay,
-  'Default': CanvasReplay,
-  'Image': CanvasImageReplay,
-  'LineString': CanvasLineStringReplay,
-  'Polygon': CanvasPolygonReplay,
-  'Text': CanvasTextReplay
-};
 export default CanvasReplayGroup;
