@@ -19,6 +19,17 @@ import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
   makeReplacer, makeSimpleNodeFactory, OBJECT_PROPERTY_NODE_FACTORY, parseNode,
   pushParseAndPop, pushSerializeAndPop, setAttributeNS} from '../xml.js';
 
+
+/**
+ * @const
+ * @type {string}
+ * @private
+ */
+const schemaLocation = GMLBase.GMLNS +
+    ' http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
+    '1.0.0/gmlsf.xsd';
+
+
 /**
  * @classdesc
  * Feature format for reading and writing data in the GML format
@@ -67,7 +78,7 @@ const GML3 = function(opt_options) {
    * @inheritDoc
    */
   this.schemaLocation = options.schemaLocation ?
-    options.schemaLocation : GML3.schemaLocation_;
+    options.schemaLocation : schemaLocation;
 
   /**
    * @private
@@ -79,16 +90,6 @@ const GML3 = function(opt_options) {
 };
 
 inherits(GML3, GMLBase);
-
-
-/**
- * @const
- * @type {string}
- * @private
- */
-GML3.schemaLocation_ = GMLBase.GMLNS +
-    ' http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
-    '1.0.0/gmlsf.xsd';
 
 
 /**
@@ -672,18 +673,6 @@ GML3.prototype.writePoint_ = function(node, geometry, objectStack) {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-GML3.ENVELOPE_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
-    'lowerCorner': makeChildAppender(XSD.writeStringTextNode),
-    'upperCorner': makeChildAppender(XSD.writeStringTextNode)
-  }
-};
-
-
-/**
  * @param {Node} node Node.
  * @param {ol.Extent} extent Extent.
  * @param {Array.<*>} objectStack Node stack.
@@ -697,7 +686,7 @@ GML3.prototype.writeEnvelope = function(node, extent, objectStack) {
   const keys = ['lowerCorner', 'upperCorner'];
   const values = [extent[0] + ' ' + extent[1], extent[2] + ' ' + extent[3]];
   pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
-    ({node: node}), GML3.ENVELOPE_SERIALIZERS_,
+    ({node: node}), this.ENVELOPE_SERIALIZERS_,
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack, keys, this);
@@ -758,7 +747,7 @@ GML3.prototype.writeSurfaceOrPolygon_ = function(node, geometry, objectStack) {
     const rings = geometry.getLinearRings();
     pushSerializeAndPop(
       {node: node, hasZ: hasZ, srsName: srsName},
-      GML3.RING_SERIALIZERS_,
+      this.RING_SERIALIZERS_,
       this.RING_NODE_FACTORY_,
       rings, objectStack, undefined, this);
   } else if (node.nodeName === 'Surface') {
@@ -812,7 +801,7 @@ GML3.prototype.writeMultiSurfaceOrPolygon_ = function(node, geometry, objectStac
   }
   const polygons = geometry.getPolygons();
   pushSerializeAndPop({node: node, hasZ: hasZ, srsName: srsName, surface: surface},
-    GML3.SURFACEORPOLYGONMEMBER_SERIALIZERS_,
+    this.SURFACEORPOLYGONMEMBER_SERIALIZERS_,
     this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, polygons,
     objectStack, undefined, this);
 };
@@ -834,7 +823,7 @@ GML3.prototype.writeMultiPoint_ = function(node, geometry,
   }
   const points = geometry.getPoints();
   pushSerializeAndPop({node: node, hasZ: hasZ, srsName: srsName},
-    GML3.POINTMEMBER_SERIALIZERS_,
+    this.POINTMEMBER_SERIALIZERS_,
     makeSimpleNodeFactory('pointMember'), points,
     objectStack, undefined, this);
 };
@@ -856,7 +845,7 @@ GML3.prototype.writeMultiCurveOrLineString_ = function(node, geometry, objectSta
   }
   const lines = geometry.getLineStrings();
   pushSerializeAndPop({node: node, hasZ: hasZ, srsName: srsName, curve: curve},
-    GML3.LINESTRINGORCURVEMEMBER_SERIALIZERS_,
+    this.LINESTRINGORCURVEMEMBER_SERIALIZERS_,
     this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, lines,
     objectStack, undefined, this);
 };
@@ -967,7 +956,7 @@ GML3.prototype.writeGeometryElement = function(node, geometry, objectStack) {
     value = transformWithOptions(/** @type {ol.geom.Geometry} */ (geometry), true, context);
   }
   pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
-    (item), GML3.GEOMETRY_SERIALIZERS_,
+    (item), this.GEOMETRY_SERIALIZERS_,
     this.GEOMETRY_NODE_FACTORY_, [value],
     objectStack, undefined, this);
 };
@@ -1046,96 +1035,10 @@ GML3.prototype.writeFeatureMembers_ = function(node, features, objectStack) {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-GML3.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
-    'surfaceMember': makeChildAppender(
-      GML3.prototype.writeSurfaceOrPolygonMember_),
-    'polygonMember': makeChildAppender(
-      GML3.prototype.writeSurfaceOrPolygonMember_)
-  }
-};
-
-
-/**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-GML3.POINTMEMBER_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
-    'pointMember': makeChildAppender(
-      GML3.prototype.writePointMember_)
-  }
-};
-
-
-/**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-GML3.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
-    'lineStringMember': makeChildAppender(
-      GML3.prototype.writeLineStringOrCurveMember_),
-    'curveMember': makeChildAppender(
-      GML3.prototype.writeLineStringOrCurveMember_)
-  }
-};
-
-
-/**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-GML3.RING_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
-    'exterior': makeChildAppender(GML3.prototype.writeRing_),
-    'interior': makeChildAppender(GML3.prototype.writeRing_)
-  }
-};
-
-
-/**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-GML3.GEOMETRY_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
-    'Curve': makeChildAppender(
-      GML3.prototype.writeCurveOrLineString_),
-    'MultiCurve': makeChildAppender(
-      GML3.prototype.writeMultiCurveOrLineString_),
-    'Point': makeChildAppender(GML3.prototype.writePoint_),
-    'MultiPoint': makeChildAppender(
-      GML3.prototype.writeMultiPoint_),
-    'LineString': makeChildAppender(
-      GML3.prototype.writeCurveOrLineString_),
-    'MultiLineString': makeChildAppender(
-      GML3.prototype.writeMultiCurveOrLineString_),
-    'LinearRing': makeChildAppender(
-      GML3.prototype.writeLinearRing_),
-    'Polygon': makeChildAppender(
-      GML3.prototype.writeSurfaceOrPolygon_),
-    'MultiPolygon': makeChildAppender(
-      GML3.prototype.writeMultiSurfaceOrPolygon_),
-    'Surface': makeChildAppender(
-      GML3.prototype.writeSurfaceOrPolygon_),
-    'MultiSurface': makeChildAppender(
-      GML3.prototype.writeMultiSurfaceOrPolygon_),
-    'Envelope': makeChildAppender(
-      GML3.prototype.writeEnvelope)
-  }
-};
-
-
-/**
  * @const
  * @type {Object.<string, string>}
- * @private
  */
-GML3.MULTIGEOMETRY_TO_MEMBER_NODENAME_ = {
+const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
   'MultiLineString': 'lineStringMember',
   'MultiCurve': 'curveMember',
   'MultiPolygon': 'polygonMember',
@@ -1154,7 +1057,7 @@ GML3.MULTIGEOMETRY_TO_MEMBER_NODENAME_ = {
 GML3.prototype.MULTIGEOMETRY_MEMBER_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
   const parentNode = objectStack[objectStack.length - 1].node;
   return createElementNS('http://www.opengis.net/gml',
-    GML3.MULTIGEOMETRY_TO_MEMBER_NODENAME_[parentNode.nodeName]);
+    MULTIGEOMETRY_TO_MEMBER_NODENAME[parentNode.nodeName]);
 };
 
 
@@ -1258,4 +1161,103 @@ GML3.prototype.writeFeaturesNode = function(features, opt_options) {
   this.writeFeatureMembers_(node, features, [context]);
   return node;
 };
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @private
+ */
+GML3.prototype.RING_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'exterior': makeChildAppender(GML3.prototype.writeRing_),
+    'interior': makeChildAppender(GML3.prototype.writeRing_)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @private
+ */
+GML3.prototype.ENVELOPE_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'lowerCorner': makeChildAppender(XSD.writeStringTextNode),
+    'upperCorner': makeChildAppender(XSD.writeStringTextNode)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @private
+ */
+GML3.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'surfaceMember': makeChildAppender(
+      GML3.prototype.writeSurfaceOrPolygonMember_),
+    'polygonMember': makeChildAppender(
+      GML3.prototype.writeSurfaceOrPolygonMember_)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @private
+ */
+GML3.prototype.POINTMEMBER_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'pointMember': makeChildAppender(
+      GML3.prototype.writePointMember_)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @private
+ */
+GML3.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'lineStringMember': makeChildAppender(
+      GML3.prototype.writeLineStringOrCurveMember_),
+    'curveMember': makeChildAppender(
+      GML3.prototype.writeLineStringOrCurveMember_)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @private
+ */
+GML3.prototype.GEOMETRY_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'Curve': makeChildAppender(
+      GML3.prototype.writeCurveOrLineString_),
+    'MultiCurve': makeChildAppender(
+      GML3.prototype.writeMultiCurveOrLineString_),
+    'Point': makeChildAppender(GML3.prototype.writePoint_),
+    'MultiPoint': makeChildAppender(
+      GML3.prototype.writeMultiPoint_),
+    'LineString': makeChildAppender(
+      GML3.prototype.writeCurveOrLineString_),
+    'MultiLineString': makeChildAppender(
+      GML3.prototype.writeMultiCurveOrLineString_),
+    'LinearRing': makeChildAppender(
+      GML3.prototype.writeLinearRing_),
+    'Polygon': makeChildAppender(
+      GML3.prototype.writeSurfaceOrPolygon_),
+    'MultiPolygon': makeChildAppender(
+      GML3.prototype.writeMultiSurfaceOrPolygon_),
+    'Surface': makeChildAppender(
+      GML3.prototype.writeSurfaceOrPolygon_),
+    'MultiSurface': makeChildAppender(
+      GML3.prototype.writeMultiSurfaceOrPolygon_),
+    'Envelope': makeChildAppender(
+      GML3.prototype.writeEnvelope)
+  }
+};
+
+
 export default GML3;

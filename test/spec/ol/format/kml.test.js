@@ -1,7 +1,7 @@
 import Feature from '../../../../src/ol/Feature.js';
 import {find} from '../../../../src/ol/array.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
-import KML from '../../../../src/ol/format/KML.js';
+import KML, {getDefaultStyle, getDefaultStyleArray, getDefaultFillStyle, getDefaultImageStyle, getDefaultStrokeStyle, getDefaultTextStyle, readFlatCoordinates} from '../../../../src/ol/format/KML.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import LinearRing from '../../../../src/ol/geom/LinearRing.js';
@@ -39,7 +39,7 @@ describe('ol.format.KML', function() {
     });
 
     it('set constant variables', function() {
-      expect(KML.DEFAULT_STYLE_ARRAY_).to.be.an(Array);
+      expect(getDefaultStyleArray()).to.be.an(Array);
     });
 
     describe('#readFeatures', function() {
@@ -74,7 +74,7 @@ describe('ol.format.KML', function() {
     });
 
     it('set constant variables', function() {
-      expect(KML.DEFAULT_STYLE_ARRAY_).to.be.an(Array);
+      expect(getDefaultStyleArray()).to.be.an(Array);
     });
 
     describe('#readProjection', function() {
@@ -1720,11 +1720,11 @@ describe('ol.format.KML', function() {
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
           expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
           expect(style.getFill().getColor()).to.eql([255, 255, 255, 1]);
-          expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
+          expect(style.getImage()).to.be(getDefaultImageStyle());
           // FIXME check image style
-          expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
           expect(style.getStroke().getColor()).to.eql([255, 255, 255, 1]);
           expect(style.getStroke().getWidth()).to.be(1);
         });
@@ -1753,8 +1753,8 @@ describe('ol.format.KML', function() {
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
           expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
-          expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
           const imageStyle = style.getImage();
           expect(imageStyle).to.be.an(Icon);
           expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://foo.png').href);
@@ -1763,7 +1763,7 @@ describe('ol.format.KML', function() {
           expect(imageStyle.getRotation()).to.eql(0);
           expect(imageStyle.getSize()).to.be(null);
           expect(imageStyle.getScale()).to.be(1);
-          expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
+          expect(style.getText()).to.be(getDefaultTextStyle());
           expect(style.getZIndex()).to.be(undefined);
         });
 
@@ -1833,8 +1833,8 @@ describe('ol.format.KML', function() {
             expect(styleArray).to.have.length(1);
             const style = styleArray[0];
             expect(style).to.be.an(Style);
-            expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
-            expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
+            expect(style.getFill()).to.be(getDefaultFillStyle());
+            expect(style.getStroke()).to.be(getDefaultStrokeStyle());
             const imageStyle = style.getImage();
             expect(imageStyle).to.be.an(Icon);
             expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://foo.png').href);
@@ -1867,7 +1867,7 @@ describe('ol.format.KML', function() {
             expect(imageStyle.getRotation()).to.eql(0);
             expect(imageStyle.getSize()).to.be(null);
             expect(imageStyle.getScale()).to.be(1);
-            expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
+            expect(style.getText()).to.be(getDefaultTextStyle());
             expect(style.getZIndex()).to.be(undefined);
           });
         });
@@ -1904,8 +1904,8 @@ describe('ol.format.KML', function() {
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
           expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
-          expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
           const imageStyle = style.getImage();
           imageStyle.iconImage_.size_ = [144, 192];
           expect(imageStyle.getSize()).to.eql([48, 48]);
@@ -1913,7 +1913,7 @@ describe('ol.format.KML', function() {
           expect(imageStyle.getOrigin()).to.eql([24, 108]);
           expect(imageStyle.getRotation()).to.eql(0);
           expect(imageStyle.getScale()).to.eql(3.0);
-          expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
+          expect(style.getText()).to.be(getDefaultTextStyle());
           expect(style.getZIndex()).to.be(undefined);
         });
 
@@ -1940,9 +1940,9 @@ describe('ol.format.KML', function() {
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
           expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
-          expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
-          expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getImage()).to.be(getDefaultImageStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
           const textStyle = style.getText();
           expect(textStyle).to.be.an(Text);
           expect(textStyle.getScale()).to.be(0.25);
@@ -1975,13 +1975,13 @@ describe('ol.format.KML', function() {
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
           expect(style).to.be.an(Style);
-          expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
-          expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
+          expect(style.getFill()).to.be(getDefaultFillStyle());
+          expect(style.getImage()).to.be(getDefaultImageStyle());
           const strokeStyle = style.getStroke();
           expect(strokeStyle).to.be.an(Stroke);
           expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(strokeStyle.getWidth()).to.be(9);
-          expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
+          expect(style.getText()).to.be(getDefaultTextStyle());
           expect(style.getZIndex()).to.be(undefined);
         });
 
@@ -2010,9 +2010,9 @@ describe('ol.format.KML', function() {
           const fillStyle = style.getFill();
           expect(fillStyle).to.be.an(Fill);
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
-          expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
-          expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
+          expect(style.getImage()).to.be(getDefaultImageStyle());
+          expect(style.getStroke()).to.be(getDefaultStrokeStyle());
+          expect(style.getText()).to.be(getDefaultTextStyle());
           expect(style.getZIndex()).to.be(undefined);
         });
 
@@ -2047,12 +2047,12 @@ describe('ol.format.KML', function() {
           const fillStyle = style.getFill();
           expect(fillStyle).to.be.an(Fill);
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
+          expect(style.getImage()).to.be(getDefaultImageStyle());
           const strokeStyle = style.getStroke();
           expect(strokeStyle).to.be.an(Stroke);
           expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(strokeStyle.getWidth()).to.be(9);
-          expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
+          expect(style.getText()).to.be(getDefaultTextStyle());
           expect(style.getZIndex()).to.be(undefined);
         });
 
@@ -2084,12 +2084,12 @@ describe('ol.format.KML', function() {
           const style = styleArray[0];
           expect(style).to.be.an(Style);
           expect(style.getFill()).to.be(null);
-          expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
+          expect(style.getImage()).to.be(getDefaultImageStyle());
           const strokeStyle = style.getStroke();
           expect(strokeStyle).to.be.an(Stroke);
           expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(strokeStyle.getWidth()).to.be(9);
-          expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
+          expect(style.getText()).to.be(getDefaultTextStyle());
           expect(style.getZIndex()).to.be(undefined);
         });
 
@@ -2123,9 +2123,9 @@ describe('ol.format.KML', function() {
           const fillStyle = style.getFill();
           expect(fillStyle).to.be.an(Fill);
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
+          expect(style.getImage()).to.be(getDefaultImageStyle());
           expect(style.getStroke()).to.be(null);
-          expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
+          expect(style.getText()).to.be(getDefaultTextStyle());
           expect(style.getZIndex()).to.be(undefined);
         });
 
@@ -2159,9 +2159,9 @@ describe('ol.format.KML', function() {
             const style = styleArray[0];
             expect(style).to.be.an(Style);
             expect(style.getFill()).to.be(null);
-            expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
+            expect(style.getImage()).to.be(getDefaultImageStyle());
             expect(style.getStroke()).to.be(null);
-            expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
+            expect(style.getText()).to.be(getDefaultTextStyle());
             expect(style.getZIndex()).to.be(undefined);
           });
 
@@ -2547,7 +2547,7 @@ describe('ol.format.KML', function() {
           expect(styleArray).to.have.length(1);
           const s = styleArray[0];
           expect(s).to.be.an(Style);
-          expect(s).to.be(KML.DEFAULT_STYLE_);
+          expect(s).to.be(getDefaultStyle());
 
         });
 
@@ -2656,7 +2656,7 @@ describe('ol.format.KML', function() {
           expect(styleArray).to.have.length(1);
           const s = styleArray[0];
           expect(s).to.be.an(Style);
-          expect(s).to.be(KML.DEFAULT_STYLE_);
+          expect(s).to.be(getDefaultStyle());
         });
 
         it('can use Styles in StyleMaps before they are defined', function() {
@@ -3018,7 +3018,7 @@ describe('ol.format.KML', function() {
         it('should ignore invalid coordinates', function() {
           const doc = new DOMParser().parseFromString('<coordinates>INVALID</coordinates>', 'application/xml');
           const node = doc.firstChild;
-          expect(KML.readFlatCoordinates_(node)).to.be(undefined);
+          expect(readFlatCoordinates(node)).to.be(undefined);
         });
 
         it('should ignore Points with invalid coordinates', function() {

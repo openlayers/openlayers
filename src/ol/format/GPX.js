@@ -413,7 +413,7 @@ function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
  * @param {Array.<number>=} ends Ends.
  * @return {ol.geom.GeometryLayout} Layout.
  */
-GPX.applyLayoutOptions_ = function(layoutOptions, flatCoordinates, ends) {
+function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
   let layout = GeometryLayout.XY;
   let stride = 2;
   if (layoutOptions.hasZ && layoutOptions.hasM) {
@@ -446,7 +446,7 @@ GPX.applyLayoutOptions_ = function(layoutOptions, flatCoordinates, ends) {
     }
   }
   return layout;
-};
+}
 
 
 /**
@@ -541,7 +541,7 @@ function readRte(node, objectStack) {
   delete values['flatCoordinates'];
   const layoutOptions = /** @type {ol.LayoutOptions} */ (values['layoutOptions']);
   delete values['layoutOptions'];
-  const layout = GPX.applyLayoutOptions_(layoutOptions, flatCoordinates);
+  const layout = applyLayoutOptions(layoutOptions, flatCoordinates);
   const geometry = new LineString(null);
   geometry.setFlatCoordinates(layout, flatCoordinates);
   transformWithOptions(geometry, false, options);
@@ -573,7 +573,7 @@ function readTrk(node, objectStack) {
   delete values['ends'];
   const layoutOptions = /** @type {ol.LayoutOptions} */ (values['layoutOptions']);
   delete values['layoutOptions'];
-  const layout = GPX.applyLayoutOptions_(layoutOptions, flatCoordinates, ends);
+  const layout = applyLayoutOptions(layoutOptions, flatCoordinates, ends);
   const geometry = new MultiLineString(null);
   geometry.setFlatCoordinates(layout, flatCoordinates, ends);
   transformWithOptions(geometry, false, options);
@@ -596,7 +596,7 @@ function readWpt(node, objectStack) {
   }
   const layoutOptions = /** @type {ol.LayoutOptions} */ ({});
   const coordinates = appendCoordinate([], layoutOptions, node, values);
-  const layout = GPX.applyLayoutOptions_(layoutOptions, coordinates);
+  const layout = applyLayoutOptions(layoutOptions, coordinates);
   const geometry = new Point(coordinates, layout);
   transformWithOptions(geometry, false, options);
   const feature = new Feature(geometry);

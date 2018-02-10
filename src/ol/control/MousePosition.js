@@ -9,6 +9,18 @@ import BaseObject from '../Object.js';
 import Control from '../control/Control.js';
 import {getTransformFromProjections, identityTransform, get as getProjection} from '../proj.js';
 
+
+/**
+ * @type {string}
+ */
+const PROJECTION = 'projection';
+
+/**
+ * @type {string}
+ */
+const COORDINATE_FORMAT = 'coordinateFormat';
+
+
 /**
  * @classdesc
  * A control to show the 2D coordinates of the mouse cursor. By default, these
@@ -39,7 +51,7 @@ const MousePosition = function(opt_options) {
   });
 
   listen(this,
-    BaseObject.getChangeEventType(MousePosition.Property_.PROJECTION),
+    BaseObject.getChangeEventType(PROJECTION),
     this.handleProjectionChanged_, this);
 
   if (options.coordinateFormat) {
@@ -122,7 +134,7 @@ MousePosition.prototype.handleProjectionChanged_ = function() {
  */
 MousePosition.prototype.getCoordinateFormat = function() {
   return (
-    /** @type {ol.CoordinateFormatType|undefined} */ this.get(MousePosition.Property_.COORDINATE_FORMAT)
+    /** @type {ol.CoordinateFormatType|undefined} */ this.get(COORDINATE_FORMAT)
   );
 };
 
@@ -136,7 +148,7 @@ MousePosition.prototype.getCoordinateFormat = function() {
  */
 MousePosition.prototype.getProjection = function() {
   return (
-    /** @type {ol.proj.Projection|undefined} */ this.get(MousePosition.Property_.PROJECTION)
+    /** @type {ol.proj.Projection|undefined} */ this.get(PROJECTION)
   );
 };
 
@@ -188,7 +200,7 @@ MousePosition.prototype.setMap = function(map) {
  * @api
  */
 MousePosition.prototype.setCoordinateFormat = function(format) {
-  this.set(MousePosition.Property_.COORDINATE_FORMAT, format);
+  this.set(COORDINATE_FORMAT, format);
 };
 
 
@@ -200,7 +212,7 @@ MousePosition.prototype.setCoordinateFormat = function(format) {
  * @api
  */
 MousePosition.prototype.setProjection = function(projection) {
-  this.set(MousePosition.Property_.PROJECTION, getProjection(projection));
+  this.set(PROJECTION, getProjection(projection));
 };
 
 
@@ -239,12 +251,4 @@ MousePosition.prototype.updateHTML_ = function(pixel) {
 };
 
 
-/**
- * @enum {string}
- * @private
- */
-MousePosition.Property_ = {
-  PROJECTION: 'projection',
-  COORDINATE_FORMAT: 'coordinateFormat'
-};
 export default MousePosition;

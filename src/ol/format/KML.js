@@ -33,6 +33,200 @@ import {createElementNS, getAllTextContent, isDocument, isNode, makeArrayExtende
   OBJECT_PROPERTY_NODE_FACTORY, parse, parseNode, pushParseAndPop,
   pushSerializeAndPop, setAttributeNS} from '../xml.js';
 
+
+/**
+ * @type {ol.Color}
+ */
+let DEFAULT_COLOR;
+
+/**
+ * @type {ol.style.Fill}
+ */
+let DEFAULT_FILL_STYLE = null;
+
+/**
+ * Get the default fill style (or null if not yet set).
+ * @return {ol.style.Fill} The default fill style.
+ */
+export function getDefaultFillStyle() {
+  return DEFAULT_FILL_STYLE;
+}
+
+/**
+ * @type {ol.Size}
+ */
+let DEFAULT_IMAGE_STYLE_ANCHOR;
+
+/**
+ * @type {ol.style.IconAnchorUnits}
+ */
+let DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
+
+/**
+ * @type {ol.style.IconAnchorUnits}
+ */
+let DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
+
+/**
+ * @type {ol.Size}
+ */
+let DEFAULT_IMAGE_STYLE_SIZE;
+
+/**
+ * @type {string}
+ */
+let DEFAULT_IMAGE_STYLE_SRC;
+
+/**
+ * @type {number}
+ */
+let DEFAULT_IMAGE_SCALE_MULTIPLIER;
+
+/**
+ * @type {ol.style.Image}
+ */
+let DEFAULT_IMAGE_STYLE = null;
+
+/**
+ * Get the default image style (or null if not yet set).
+ * @return {ol.style.Image} The default image style.
+ */
+export function getDefaultImageStyle() {
+  return DEFAULT_IMAGE_STYLE;
+}
+
+/**
+ * @type {string}
+ */
+let DEFAULT_NO_IMAGE_STYLE;
+
+/**
+ * @type {ol.style.Stroke}
+ */
+let DEFAULT_STROKE_STYLE = null;
+
+/**
+ * Get the default stroke style (or null if not yet set).
+ * @return {ol.style.Stroke} The default stroke style.
+ */
+export function getDefaultStrokeStyle() {
+  return DEFAULT_STROKE_STYLE;
+}
+
+/**
+ * @type {ol.style.Stroke}
+ */
+let DEFAULT_TEXT_STROKE_STYLE;
+
+/**
+ * @type {ol.style.Text}
+ */
+let DEFAULT_TEXT_STYLE = null;
+
+/**
+ * Get the default text style (or null if not yet set).
+ * @return {ol.style.Text} The default text style.
+ */
+export function getDefaultTextStyle() {
+  return DEFAULT_TEXT_STYLE;
+}
+
+/**
+ * @type {ol.style.Style}
+ */
+let DEFAULT_STYLE = null;
+
+/**
+ * Get the default style (or null if not yet set).
+ * @return {ol.style.Style} The default style.
+ */
+export function getDefaultStyle() {
+  return DEFAULT_STYLE;
+}
+
+/**
+ * @type {Array.<ol.style.Style>}
+ */
+let DEFAULT_STYLE_ARRAY = null;
+
+/**
+ * Get the default style array (or null if not yet set).
+ * @return {Array.<ol.style.Style>} The default style.
+ */
+export function getDefaultStyleArray() {
+  return DEFAULT_STYLE_ARRAY;
+}
+
+
+function createStyleDefaults() {
+
+  DEFAULT_COLOR = [255, 255, 255, 1];
+
+  DEFAULT_FILL_STYLE = new Fill({
+    color: DEFAULT_COLOR
+  });
+
+  DEFAULT_IMAGE_STYLE_ANCHOR = [20, 2]; // FIXME maybe [8, 32] ?
+
+  DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS = IconAnchorUnits.PIXELS;
+
+  DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS = IconAnchorUnits.PIXELS;
+
+  DEFAULT_IMAGE_STYLE_SIZE = [64, 64];
+
+  DEFAULT_IMAGE_STYLE_SRC =
+      'https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
+
+  DEFAULT_IMAGE_SCALE_MULTIPLIER = 0.5;
+
+  DEFAULT_IMAGE_STYLE = new Icon({
+    anchor: DEFAULT_IMAGE_STYLE_ANCHOR,
+    anchorOrigin: IconOrigin.BOTTOM_LEFT,
+    anchorXUnits: DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS,
+    anchorYUnits: DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS,
+    crossOrigin: 'anonymous',
+    rotation: 0,
+    scale: DEFAULT_IMAGE_SCALE_MULTIPLIER,
+    size: DEFAULT_IMAGE_STYLE_SIZE,
+    src: DEFAULT_IMAGE_STYLE_SRC
+  });
+
+  DEFAULT_NO_IMAGE_STYLE = 'NO_IMAGE';
+
+  DEFAULT_STROKE_STYLE = new Stroke({
+    color: DEFAULT_COLOR,
+    width: 1
+  });
+
+  DEFAULT_TEXT_STROKE_STYLE = new Stroke({
+    color: [51, 51, 51, 1],
+    width: 2
+  });
+
+  DEFAULT_TEXT_STYLE = new Text({
+    font: 'bold 16px Helvetica',
+    fill: DEFAULT_FILL_STYLE,
+    stroke: DEFAULT_TEXT_STROKE_STYLE,
+    scale: 0.8
+  });
+
+  DEFAULT_STYLE = new Style({
+    fill: DEFAULT_FILL_STYLE,
+    image: DEFAULT_IMAGE_STYLE,
+    text: DEFAULT_TEXT_STYLE,
+    stroke: DEFAULT_STROKE_STYLE,
+    zIndex: 0
+  });
+
+  /**
+   * @const
+   * @type {Array.<ol.style.Style>}
+   * @private
+   */
+  DEFAULT_STYLE_ARRAY = [DEFAULT_STYLE];
+
+}
+
 /**
  * @classdesc
  * Feature format for reading and writing data in the KML format.
@@ -51,8 +245,8 @@ const KML = function(opt_options) {
 
   XMLFeature.call(this);
 
-  if (!KML.DEFAULT_STYLE_ARRAY_) {
-    KML.createStyleDefaults_();
+  if (!DEFAULT_STYLE_ARRAY) {
+    createStyleDefaults();
   }
 
   /**
@@ -65,7 +259,7 @@ const KML = function(opt_options) {
    * @type {Array.<ol.style.Style>}
    */
   this.defaultStyle_ = options.defaultStyle ?
-    options.defaultStyle : KML.DEFAULT_STYLE_ARRAY_;
+    options.defaultStyle : DEFAULT_STYLE_ARRAY;
 
   /**
    * @private
@@ -102,9 +296,8 @@ inherits(KML, XMLFeature);
 /**
  * @const
  * @type {Array.<string>}
- * @private
  */
-KML.GX_NAMESPACE_URIS_ = [
+const GX_NAMESPACE_URIS = [
   'http://www.google.com/kml/ext/2.2'
 ];
 
@@ -112,9 +305,8 @@ KML.GX_NAMESPACE_URIS_ = [
 /**
  * @const
  * @type {Array.<string>}
- * @private
  */
-KML.NAMESPACE_URIS_ = [
+const NAMESPACE_URIS = [
   null,
   'http://earth.google.com/kml/2.0',
   'http://earth.google.com/kml/2.1',
@@ -126,162 +318,15 @@ KML.NAMESPACE_URIS_ = [
 /**
  * @const
  * @type {string}
- * @private
  */
-KML.SCHEMA_LOCATION_ = 'http://www.opengis.net/kml/2.2 ' +
+const SCHEMA_LOCATION = 'http://www.opengis.net/kml/2.2 ' +
     'https://developers.google.com/kml/schema/kml22gx.xsd';
 
 
 /**
- * @return {Array.<ol.style.Style>} Default style.
- * @private
- */
-KML.createStyleDefaults_ = function() {
-  /**
-   * @const
-   * @type {ol.Color}
-   * @private
-   */
-  KML.DEFAULT_COLOR_ = [255, 255, 255, 1];
-
-  /**
-   * @const
-   * @type {ol.style.Fill}
-   * @private
-   */
-  KML.DEFAULT_FILL_STYLE_ = new Fill({
-    color: KML.DEFAULT_COLOR_
-  });
-
-  /**
-   * @const
-   * @type {ol.Size}
-   * @private
-   */
-  KML.DEFAULT_IMAGE_STYLE_ANCHOR_ = [20, 2]; // FIXME maybe [8, 32] ?
-
-  /**
-   * @const
-   * @type {ol.style.IconAnchorUnits}
-   * @private
-   */
-  KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_ = IconAnchorUnits.PIXELS;
-
-  /**
-   * @const
-   * @type {ol.style.IconAnchorUnits}
-   * @private
-   */
-  KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_ = IconAnchorUnits.PIXELS;
-
-  /**
-   * @const
-   * @type {ol.Size}
-   * @private
-   */
-  KML.DEFAULT_IMAGE_STYLE_SIZE_ = [64, 64];
-
-  /**
-   * @const
-   * @type {string}
-   * @private
-   */
-  KML.DEFAULT_IMAGE_STYLE_SRC_ =
-      'https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
-
-  /**
-   * @const
-   * @type {number}
-   * @private
-   */
-  KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_ = 0.5;
-
-  /**
-   * @const
-   * @type {ol.style.Image}
-   * @private
-   */
-  KML.DEFAULT_IMAGE_STYLE_ = new Icon({
-    anchor: KML.DEFAULT_IMAGE_STYLE_ANCHOR_,
-    anchorOrigin: IconOrigin.BOTTOM_LEFT,
-    anchorXUnits: KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_,
-    anchorYUnits: KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_,
-    crossOrigin: 'anonymous',
-    rotation: 0,
-    scale: KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_,
-    size: KML.DEFAULT_IMAGE_STYLE_SIZE_,
-    src: KML.DEFAULT_IMAGE_STYLE_SRC_
-  });
-
-  /**
-   * @const
-   * @type {string}
-   * @private
-   */
-  KML.DEFAULT_NO_IMAGE_STYLE_ = 'NO_IMAGE';
-
-  /**
-   * @const
-   * @type {ol.style.Stroke}
-   * @private
-   */
-  KML.DEFAULT_STROKE_STYLE_ = new Stroke({
-    color: KML.DEFAULT_COLOR_,
-    width: 1
-  });
-
-  /**
-   * @const
-   * @type {ol.style.Stroke}
-   * @private
-   */
-  KML.DEFAULT_TEXT_STROKE_STYLE_ = new Stroke({
-    color: [51, 51, 51, 1],
-    width: 2
-  });
-
-  /**
-   * @const
-   * @type {ol.style.Text}
-   * @private
-   */
-  KML.DEFAULT_TEXT_STYLE_ = new Text({
-    font: 'bold 16px Helvetica',
-    fill: KML.DEFAULT_FILL_STYLE_,
-    stroke: KML.DEFAULT_TEXT_STROKE_STYLE_,
-    scale: 0.8
-  });
-
-  /**
-   * @const
-   * @type {ol.style.Style}
-   * @private
-   */
-  KML.DEFAULT_STYLE_ = new Style({
-    fill: KML.DEFAULT_FILL_STYLE_,
-    image: KML.DEFAULT_IMAGE_STYLE_,
-    text: KML.DEFAULT_TEXT_STYLE_,
-    stroke: KML.DEFAULT_STROKE_STYLE_,
-    zIndex: 0
-  });
-
-  /**
-   * @const
-   * @type {Array.<ol.style.Style>}
-   * @private
-   */
-  KML.DEFAULT_STYLE_ARRAY_ = [KML.DEFAULT_STYLE_];
-
-  return KML.DEFAULT_STYLE_ARRAY_;
-};
-
-
-/**
- * @const
  * @type {Object.<string, ol.style.IconAnchorUnits>}
- * @private
  */
-KML.ICON_ANCHOR_UNITS_MAP_ = {
+const ICON_ANCHOR_UNITS_MAP = {
   'fraction': IconAnchorUnits.FRACTION,
   'pixels': IconAnchorUnits.PIXELS,
   'insetPixels': IconAnchorUnits.PIXELS
@@ -292,16 +337,15 @@ KML.ICON_ANCHOR_UNITS_MAP_ = {
  * @param {ol.style.Style|undefined} foundStyle Style.
  * @param {string} name Name.
  * @return {ol.style.Style} style Style.
- * @private
  */
-KML.createNameStyleFunction_ = function(foundStyle, name) {
+function createNameStyleFunction(foundStyle, name) {
   let textStyle = null;
   const textOffset = [0, 0];
   let textAlign = 'start';
   if (foundStyle.getImage()) {
     let imageSize = foundStyle.getImage().getImageSize();
     if (imageSize === null) {
-      imageSize = KML.DEFAULT_IMAGE_STYLE_SIZE_;
+      imageSize = DEFAULT_IMAGE_STYLE_SIZE;
     }
     if (imageSize.length == 2) {
       const imageScale = foundStyle.getImage().getScale();
@@ -317,12 +361,12 @@ KML.createNameStyleFunction_ = function(foundStyle, name) {
     // Note that kml does not support many text options that OpenLayers does (rotation, textBaseline).
     const foundText = foundStyle.getText();
     textStyle = foundText.clone();
-    textStyle.setFont(foundText.getFont() || KML.DEFAULT_TEXT_STYLE_.getFont());
-    textStyle.setScale(foundText.getScale() || KML.DEFAULT_TEXT_STYLE_.getScale());
-    textStyle.setFill(foundText.getFill() || KML.DEFAULT_TEXT_STYLE_.getFill());
-    textStyle.setStroke(foundText.getStroke() || KML.DEFAULT_TEXT_STROKE_STYLE_);
+    textStyle.setFont(foundText.getFont() || DEFAULT_TEXT_STYLE.getFont());
+    textStyle.setScale(foundText.getScale() || DEFAULT_TEXT_STYLE.getScale());
+    textStyle.setFill(foundText.getFill() || DEFAULT_TEXT_STYLE.getFill());
+    textStyle.setStroke(foundText.getStroke() || DEFAULT_TEXT_STROKE_STYLE);
   } else {
-    textStyle = KML.DEFAULT_TEXT_STYLE_.clone();
+    textStyle = DEFAULT_TEXT_STYLE.clone();
   }
   textStyle.setText(name);
   textStyle.setOffsetX(textOffset[0]);
@@ -333,7 +377,7 @@ KML.createNameStyleFunction_ = function(foundStyle, name) {
     text: textStyle
   });
   return nameStyle;
-};
+}
 
 
 /**
@@ -345,9 +389,8 @@ KML.createNameStyleFunction_ = function(foundStyle, name) {
  * @param {boolean|undefined} showPointNames true to show names for point
  *          placemarks.
  * @return {ol.FeatureStyleFunction} Feature style function.
- * @private
  */
-KML.createFeatureStyleFunction_ = function(style, styleUrl,
+function createFeatureStyleFunction(style, styleUrl,
   defaultStyle, sharedStyles, showPointNames) {
 
   return (
@@ -375,31 +418,31 @@ KML.createFeatureStyleFunction_ = function(style, styleUrl,
 
       if (style) {
         if (drawName) {
-          nameStyle = KML.createNameStyleFunction_(style[0],
+          nameStyle = createNameStyleFunction(style[0],
             name);
           return style.concat(nameStyle);
         }
         return style;
       }
       if (styleUrl) {
-        const foundStyle = KML.findStyle_(styleUrl, defaultStyle,
+        const foundStyle = findStyle(styleUrl, defaultStyle,
           sharedStyles);
         if (drawName) {
-          nameStyle = KML.createNameStyleFunction_(foundStyle[0],
+          nameStyle = createNameStyleFunction(foundStyle[0],
             name);
           return foundStyle.concat(nameStyle);
         }
         return foundStyle;
       }
       if (drawName) {
-        nameStyle = KML.createNameStyleFunction_(defaultStyle[0],
+        nameStyle = createNameStyleFunction(defaultStyle[0],
           name);
         return defaultStyle.concat(nameStyle);
       }
       return defaultStyle;
     }
   );
-};
+}
 
 
 /**
@@ -408,9 +451,8 @@ KML.createFeatureStyleFunction_ = function(style, styleUrl,
  * @param {Object.<string, (Array.<ol.style.Style>|string)>} sharedStyles
  * Shared styles.
  * @return {Array.<ol.style.Style>} Style.
- * @private
  */
-KML.findStyle_ = function(styleValue, defaultStyle, sharedStyles) {
+function findStyle(styleValue, defaultStyle, sharedStyles) {
   if (Array.isArray(styleValue)) {
     return styleValue;
   } else if (typeof styleValue === 'string') {
@@ -420,20 +462,19 @@ KML.findStyle_ = function(styleValue, defaultStyle, sharedStyles) {
     if (!(styleValue in sharedStyles) && ('#' + styleValue in sharedStyles)) {
       styleValue = '#' + styleValue;
     }
-    return KML.findStyle_(
+    return findStyle(
       sharedStyles[styleValue], defaultStyle, sharedStyles);
   } else {
     return defaultStyle;
   }
-};
+}
 
 
 /**
  * @param {Node} node Node.
- * @private
  * @return {ol.Color|undefined} Color.
  */
-KML.readColor_ = function(node) {
+function readColor(node) {
   const s = getAllTextContent(node, false);
   // The KML specification states that colors should not include a leading `#`
   // but we tolerate them.
@@ -450,15 +491,14 @@ KML.readColor_ = function(node) {
   } else {
     return undefined;
   }
-};
+}
 
 
 /**
  * @param {Node} node Node.
- * @private
  * @return {Array.<number>|undefined} Flat coordinates.
  */
-KML.readFlatCoordinates_ = function(node) {
+export function readFlatCoordinates(node) {
   let s = getAllTextContent(node, false);
   const flatCoordinates = [];
   // The KML specification states that coordinate tuples should not include
@@ -477,15 +517,14 @@ KML.readFlatCoordinates_ = function(node) {
     return undefined;
   }
   return flatCoordinates;
-};
+}
 
 
 /**
  * @param {Node} node Node.
- * @private
  * @return {string} URI.
  */
-KML.readURI_ = function(node) {
+function readURI(node) {
   const s = getAllTextContent(node, false).trim();
   let baseURI = node.baseURI;
   if (!baseURI || baseURI == 'about:blank') {
@@ -497,15 +536,14 @@ KML.readURI_ = function(node) {
   } else {
     return s;
   }
-};
+}
 
 
 /**
  * @param {Node} node Node.
- * @private
  * @return {ol.KMLVec2_} Vec2.
  */
-KML.readVec2_ = function(node) {
+function readVec2(node) {
   const xunits = node.getAttribute('xunits');
   const yunits = node.getAttribute('yunits');
   let origin;
@@ -524,40 +562,62 @@ KML.readVec2_ = function(node) {
   }
   return {
     x: parseFloat(node.getAttribute('x')),
-    xunits: KML.ICON_ANCHOR_UNITS_MAP_[xunits],
+    xunits: ICON_ANCHOR_UNITS_MAP[xunits],
     y: parseFloat(node.getAttribute('y')),
-    yunits: KML.ICON_ANCHOR_UNITS_MAP_[yunits],
+    yunits: ICON_ANCHOR_UNITS_MAP[yunits],
     origin: origin
   };
-};
+}
 
 
 /**
  * @param {Node} node Node.
- * @private
  * @return {number|undefined} Scale.
  */
-KML.readScale_ = function(node) {
+function readScale(node) {
   return XSD.readDecimal(node);
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const STYLE_MAP_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Pair': pairDataParser
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Array.<ol.style.Style>|string|undefined} StyleMap.
  */
-KML.readStyleMapValue_ = function(node, objectStack) {
+function readStyleMapValue(node, objectStack) {
   return pushParseAndPop(undefined,
-    KML.STYLE_MAP_PARSERS_, node, objectStack);
-};
+    STYLE_MAP_PARSERS, node, objectStack);
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const ICON_STYLE_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Icon': makeObjectPropertySetter(readIcon),
+    'heading': makeObjectPropertySetter(XSD.readDecimal),
+    'hotSpot': makeObjectPropertySetter(readVec2),
+    'scale': makeObjectPropertySetter(readScale)
+  });
+
+
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.IconStyleParser_ = function(node, objectStack) {
+function iconStyleParser(node, objectStack) {
   // FIXME refreshMode
   // FIXME refreshInterval
   // FIXME viewRefreshTime
@@ -565,7 +625,7 @@ KML.IconStyleParser_ = function(node, objectStack) {
   // FIXME viewFormat
   // FIXME httpQuery
   const object = pushParseAndPop(
-    {}, KML.ICON_STYLE_PARSERS_, node, objectStack);
+    {}, ICON_STYLE_PARSERS, node, objectStack);
   if (!object) {
     return;
   }
@@ -578,7 +638,7 @@ KML.IconStyleParser_ = function(node, objectStack) {
   if (href) {
     src = href;
   } else if (drawIcon) {
-    src = KML.DEFAULT_IMAGE_STYLE_SRC_;
+    src = DEFAULT_IMAGE_STYLE_SRC;
   }
   let anchor, anchorXUnits, anchorYUnits;
   let anchorOrigin = IconOrigin.BOTTOM_LEFT;
@@ -589,10 +649,10 @@ KML.IconStyleParser_ = function(node, objectStack) {
     anchorXUnits = hotSpot.xunits;
     anchorYUnits = hotSpot.yunits;
     anchorOrigin = hotSpot.origin;
-  } else if (src === KML.DEFAULT_IMAGE_STYLE_SRC_) {
-    anchor = KML.DEFAULT_IMAGE_STYLE_ANCHOR_;
-    anchorXUnits = KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_;
-    anchorYUnits = KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_;
+  } else if (src === DEFAULT_IMAGE_STYLE_SRC) {
+    anchor = DEFAULT_IMAGE_STYLE_ANCHOR;
+    anchorXUnits = DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
+    anchorYUnits = DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
   } else if (/^http:\/\/maps\.(?:google|gstatic)\.com\//.test(src)) {
     anchor = [0.5, 0];
     anchorXUnits = IconAnchorUnits.FRACTION;
@@ -628,10 +688,10 @@ KML.IconStyleParser_ = function(node, objectStack) {
       (object['scale']);
 
   if (drawIcon) {
-    if (src == KML.DEFAULT_IMAGE_STYLE_SRC_) {
-      size = KML.DEFAULT_IMAGE_STYLE_SIZE_;
+    if (src == DEFAULT_IMAGE_STYLE_SRC) {
+      size = DEFAULT_IMAGE_STYLE_SIZE;
       if (scale === undefined) {
-        scale = KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_;
+        scale = DEFAULT_IMAGE_SCALE_MULTIPLIER;
       }
     }
 
@@ -651,20 +711,30 @@ KML.IconStyleParser_ = function(node, objectStack) {
     styleObject['imageStyle'] = imageStyle;
   } else {
     // handle the case when we explicitly want to draw no icon.
-    styleObject['imageStyle'] = KML.DEFAULT_NO_IMAGE_STYLE_;
+    styleObject['imageStyle'] = DEFAULT_NO_IMAGE_STYLE;
   }
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const LABEL_STYLE_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'color': makeObjectPropertySetter(readColor),
+    'scale': makeObjectPropertySetter(readScale)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.LabelStyleParser_ = function(node, objectStack) {
+function labelStyleParser(node, objectStack) {
   // FIXME colorMode
   const object = pushParseAndPop(
-    {}, KML.LABEL_STYLE_PARSERS_, node, objectStack);
+    {}, LABEL_STYLE_PARSERS, node, objectStack);
   if (!object) {
     return;
   }
@@ -672,57 +742,78 @@ KML.LabelStyleParser_ = function(node, objectStack) {
   const textStyle = new Text({
     fill: new Fill({
       color: /** @type {ol.Color} */
-          ('color' in object ? object['color'] : KML.DEFAULT_COLOR_)
+          ('color' in object ? object['color'] : DEFAULT_COLOR)
     }),
     scale: /** @type {number|undefined} */
         (object['scale'])
   });
   styleObject['textStyle'] = textStyle;
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const LINE_STYLE_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'color': makeObjectPropertySetter(readColor),
+    'width': makeObjectPropertySetter(XSD.readDecimal)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.LineStyleParser_ = function(node, objectStack) {
+function lineStyleParser(node, objectStack) {
   // FIXME colorMode
   // FIXME gx:outerColor
   // FIXME gx:outerWidth
   // FIXME gx:physicalWidth
   // FIXME gx:labelVisibility
   const object = pushParseAndPop(
-    {}, KML.LINE_STYLE_PARSERS_, node, objectStack);
+    {}, LINE_STYLE_PARSERS, node, objectStack);
   if (!object) {
     return;
   }
   const styleObject = objectStack[objectStack.length - 1];
   const strokeStyle = new Stroke({
     color: /** @type {ol.Color} */
-        ('color' in object ? object['color'] : KML.DEFAULT_COLOR_),
+        ('color' in object ? object['color'] : DEFAULT_COLOR),
     width: /** @type {number} */ ('width' in object ? object['width'] : 1)
   });
   styleObject['strokeStyle'] = strokeStyle;
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const POLY_STYLE_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'color': makeObjectPropertySetter(readColor),
+    'fill': makeObjectPropertySetter(XSD.readBoolean),
+    'outline': makeObjectPropertySetter(XSD.readBoolean)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.PolyStyleParser_ = function(node, objectStack) {
+function polyStyleParser(node, objectStack) {
   // FIXME colorMode
   const object = pushParseAndPop(
-    {}, KML.POLY_STYLE_PARSERS_, node, objectStack);
+    {}, POLY_STYLE_PARSERS, node, objectStack);
   if (!object) {
     return;
   }
   const styleObject = objectStack[objectStack.length - 1];
   const fillStyle = new Fill({
     color: /** @type {ol.Color} */
-        ('color' in object ? object['color'] : KML.DEFAULT_COLOR_)
+        ('color' in object ? object['color'] : DEFAULT_COLOR)
   });
   styleObject['fillStyle'] = fillStyle;
   const fill = /** @type {boolean|undefined} */ (object['fill']);
@@ -734,27 +825,35 @@ KML.PolyStyleParser_ = function(node, objectStack) {
   if (outline !== undefined) {
     styleObject['outline'] = outline;
   }
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const FLAT_LINEAR_RING_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'coordinates': makeReplacer(readFlatCoordinates)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Array.<number>} LinearRing flat coordinates.
  */
-KML.readFlatLinearRing_ = function(node, objectStack) {
+function readFlatLinearRing(node, objectStack) {
   return pushParseAndPop(null,
-    KML.FLAT_LINEAR_RING_PARSERS_, node, objectStack);
-};
+    FLAT_LINEAR_RING_PARSERS, node, objectStack);
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.gxCoordParser_ = function(node, objectStack) {
+function gxCoordParser(node, objectStack) {
   const gxTrackObject = /** @type {ol.KMLGxTrackObject_} */
       (objectStack[objectStack.length - 1]);
   const flatCoordinates = gxTrackObject.flatCoordinates;
@@ -770,39 +869,60 @@ KML.gxCoordParser_ = function(node, objectStack) {
   } else {
     flatCoordinates.push(0, 0, 0, 0);
   }
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const GX_MULTITRACK_GEOMETRY_PARSERS = makeStructureNS(
+  GX_NAMESPACE_URIS, {
+    'Track': makeArrayPusher(readGxTrack)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {ol.geom.MultiLineString|undefined} MultiLineString.
  */
-KML.readGxMultiTrack_ = function(node, objectStack) {
+function readGxMultiTrack(node, objectStack) {
   const lineStrings = pushParseAndPop([],
-    KML.GX_MULTITRACK_GEOMETRY_PARSERS_, node, objectStack);
+    GX_MULTITRACK_GEOMETRY_PARSERS, node, objectStack);
   if (!lineStrings) {
     return undefined;
   }
   const multiLineString = new MultiLineString(null);
   multiLineString.setLineStrings(lineStrings);
   return multiLineString;
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const GX_TRACK_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'when': whenParser
+  }, makeStructureNS(
+    GX_NAMESPACE_URIS, {
+      'coord': gxCoordParser
+    }));
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {ol.geom.LineString|undefined} LineString.
  */
-KML.readGxTrack_ = function(node, objectStack) {
+function readGxTrack(node, objectStack) {
   const gxTrackObject = pushParseAndPop(
     /** @type {ol.KMLGxTrackObject_} */ ({
       flatCoordinates: [],
       whens: []
-    }), KML.GX_TRACK_PARSERS_, node, objectStack);
+    }), GX_TRACK_PARSERS, node, objectStack);
   if (!gxTrackObject) {
     return undefined;
   }
@@ -816,50 +936,85 @@ KML.readGxTrack_ = function(node, objectStack) {
   const lineString = new LineString(null);
   lineString.setFlatCoordinates(GeometryLayout.XYZM, flatCoordinates);
   return lineString;
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const ICON_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'href': makeObjectPropertySetter(readURI)
+  }, makeStructureNS(
+    GX_NAMESPACE_URIS, {
+      'x': makeObjectPropertySetter(XSD.readDecimal),
+      'y': makeObjectPropertySetter(XSD.readDecimal),
+      'w': makeObjectPropertySetter(XSD.readDecimal),
+      'h': makeObjectPropertySetter(XSD.readDecimal)
+    }));
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object} Icon object.
  */
-KML.readIcon_ = function(node, objectStack) {
+function readIcon(node, objectStack) {
   const iconObject = pushParseAndPop(
-    {}, KML.ICON_PARSERS_, node, objectStack);
+    {}, ICON_PARSERS, node, objectStack);
   if (iconObject) {
     return iconObject;
   } else {
     return null;
   }
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const GEOMETRY_FLAT_COORDINATES_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'coordinates': makeReplacer(readFlatCoordinates)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Array.<number>} Flat coordinates.
  */
-KML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
+function readFlatCoordinatesFromNode(node, objectStack) {
   return pushParseAndPop(null,
-    KML.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack);
-};
+    GEOMETRY_FLAT_COORDINATES_PARSERS, node, objectStack);
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const EXTRUDE_AND_ALTITUDE_MODE_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'extrude': makeObjectPropertySetter(XSD.readBoolean),
+    'tessellate': makeObjectPropertySetter(XSD.readBoolean),
+    'altitudeMode': makeObjectPropertySetter(XSD.readString)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {ol.geom.LineString|undefined} LineString.
  */
-KML.readLineString_ = function(node, objectStack) {
+function readLineString(node, objectStack) {
   const properties = pushParseAndPop({},
-    KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
+    EXTRUDE_AND_ALTITUDE_MODE_PARSERS, node,
     objectStack);
   const flatCoordinates =
-      KML.readFlatCoordinatesFromNode_(node, objectStack);
+      readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
     const lineString = new LineString(null);
     lineString.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
@@ -868,21 +1023,20 @@ KML.readLineString_ = function(node, objectStack) {
   } else {
     return undefined;
   }
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {ol.geom.Polygon|undefined} Polygon.
  */
-KML.readLinearRing_ = function(node, objectStack) {
+function readLinearRing(node, objectStack) {
   const properties = pushParseAndPop({},
-    KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
+    EXTRUDE_AND_ALTITUDE_MODE_PARSERS, node,
     objectStack);
   const flatCoordinates =
-      KML.readFlatCoordinatesFromNode_(node, objectStack);
+      readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
     const polygon = new Polygon(null);
     polygon.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates,
@@ -892,18 +1046,31 @@ KML.readLinearRing_ = function(node, objectStack) {
   } else {
     return undefined;
   }
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const MULTI_GEOMETRY_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'LineString': makeArrayPusher(readLineString),
+    'LinearRing': makeArrayPusher(readLinearRing),
+    'MultiGeometry': makeArrayPusher(readMultiGeometry),
+    'Point': makeArrayPusher(readPoint),
+    'Polygon': makeArrayPusher(readPolygon)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {ol.geom.Geometry} Geometry.
  */
-KML.readMultiGeometry_ = function(node, objectStack) {
+function readMultiGeometry(node, objectStack) {
   const geometries = pushParseAndPop([],
-    KML.MULTI_GEOMETRY_PARSERS_, node, objectStack);
+    MULTI_GEOMETRY_PARSERS, node, objectStack);
   if (!geometries) {
     return null;
   }
@@ -935,15 +1102,15 @@ KML.readMultiGeometry_ = function(node, objectStack) {
       }
       multiGeometry = new MultiPoint(null);
       multiGeometry.setFlatCoordinates(layout, flatCoordinates);
-      KML.setCommonGeometryProperties_(multiGeometry, geometries);
+      setCommonGeometryProperties(multiGeometry, geometries);
     } else if (type == GeometryType.LINE_STRING) {
       multiGeometry = new MultiLineString(null);
       multiGeometry.setLineStrings(geometries);
-      KML.setCommonGeometryProperties_(multiGeometry, geometries);
+      setCommonGeometryProperties(multiGeometry, geometries);
     } else if (type == GeometryType.POLYGON) {
       multiGeometry = new MultiPolygon(null);
       multiGeometry.setPolygons(geometries);
-      KML.setCommonGeometryProperties_(multiGeometry, geometries);
+      setCommonGeometryProperties(multiGeometry, geometries);
     } else if (type == GeometryType.GEOMETRY_COLLECTION) {
       multiGeometry = new GeometryCollection(geometries);
     } else {
@@ -953,21 +1120,20 @@ KML.readMultiGeometry_ = function(node, objectStack) {
     multiGeometry = new GeometryCollection(geometries);
   }
   return /** @type {ol.geom.Geometry} */ (multiGeometry);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {ol.geom.Point|undefined} Point.
  */
-KML.readPoint_ = function(node, objectStack) {
+function readPoint(node, objectStack) {
   const properties = pushParseAndPop({},
-    KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
+    EXTRUDE_AND_ALTITUDE_MODE_PARSERS, node,
     objectStack);
   const flatCoordinates =
-      KML.readFlatCoordinatesFromNode_(node, objectStack);
+      readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
     const point = new Point(null);
     point.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
@@ -976,21 +1142,31 @@ KML.readPoint_ = function(node, objectStack) {
   } else {
     return undefined;
   }
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const FLAT_LINEAR_RINGS_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'innerBoundaryIs': innerBoundaryIsParser,
+    'outerBoundaryIs': outerBoundaryIsParser
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {ol.geom.Polygon|undefined} Polygon.
  */
-KML.readPolygon_ = function(node, objectStack) {
+function readPolygon(node, objectStack) {
   const properties = pushParseAndPop(/** @type {Object<string,*>} */ ({}),
-    KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
+    EXTRUDE_AND_ALTITUDE_MODE_PARSERS, node,
     objectStack);
   const flatLinearRings = pushParseAndPop([null],
-    KML.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack);
+    FLAT_LINEAR_RINGS_PARSERS, node, objectStack);
   if (flatLinearRings && flatLinearRings[0]) {
     const polygon = new Polygon(null);
     const flatCoordinates = flatLinearRings[0];
@@ -1007,40 +1183,52 @@ KML.readPolygon_ = function(node, objectStack) {
   } else {
     return undefined;
   }
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const STYLE_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'IconStyle': iconStyleParser,
+    'LabelStyle': labelStyleParser,
+    'LineStyle': lineStyleParser,
+    'PolyStyle': polyStyleParser
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Array.<ol.style.Style>} Style.
  */
-KML.readStyle_ = function(node, objectStack) {
+function readStyle(node, objectStack) {
   const styleObject = pushParseAndPop(
-    {}, KML.STYLE_PARSERS_, node, objectStack);
+    {}, STYLE_PARSERS, node, objectStack);
   if (!styleObject) {
     return null;
   }
   let fillStyle = /** @type {ol.style.Fill} */
       ('fillStyle' in styleObject ?
-        styleObject['fillStyle'] : KML.DEFAULT_FILL_STYLE_);
+        styleObject['fillStyle'] : DEFAULT_FILL_STYLE);
   const fill = /** @type {boolean|undefined} */ (styleObject['fill']);
   if (fill !== undefined && !fill) {
     fillStyle = null;
   }
   let imageStyle = /** @type {ol.style.Image} */
       ('imageStyle' in styleObject ?
-        styleObject['imageStyle'] : KML.DEFAULT_IMAGE_STYLE_);
-  if (imageStyle == KML.DEFAULT_NO_IMAGE_STYLE_) {
+        styleObject['imageStyle'] : DEFAULT_IMAGE_STYLE);
+  if (imageStyle == DEFAULT_NO_IMAGE_STYLE) {
     imageStyle = undefined;
   }
   const textStyle = /** @type {ol.style.Text} */
       ('textStyle' in styleObject ?
-        styleObject['textStyle'] : KML.DEFAULT_TEXT_STYLE_);
+        styleObject['textStyle'] : DEFAULT_TEXT_STYLE);
   let strokeStyle = /** @type {ol.style.Stroke} */
       ('strokeStyle' in styleObject ?
-        styleObject['strokeStyle'] : KML.DEFAULT_STROKE_STYLE_);
+        styleObject['strokeStyle'] : DEFAULT_STROKE_STYLE);
   const outline = /** @type {boolean|undefined} */
       (styleObject['outline']);
   if (outline !== undefined && !outline) {
@@ -1053,7 +1241,7 @@ KML.readStyle_ = function(node, objectStack) {
     text: textStyle,
     zIndex: undefined // FIXME
   })];
-};
+}
 
 
 /**
@@ -1062,9 +1250,8 @@ KML.readStyle_ = function(node, objectStack) {
  * @param {ol.geom.MultiPoint|ol.geom.MultiLineString|ol.geom.MultiPolygon}
  *     multiGeometry A multi-geometry.
  * @param {Array.<ol.geom.Geometry>} geometries List of geometries.
- * @private
  */
-KML.setCommonGeometryProperties_ = function(multiGeometry,
+function setCommonGeometryProperties(multiGeometry,
   geometries) {
   const ii = geometries.length;
   const extrudes = new Array(geometries.length);
@@ -1090,17 +1277,27 @@ KML.setCommonGeometryProperties_ = function(multiGeometry,
   if (hasAltitudeMode) {
     multiGeometry.set('altitudeMode', altitudeModes);
   }
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const DATA_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'displayName': makeObjectPropertySetter(XSD.readString),
+    'value': makeObjectPropertySetter(XSD.readString)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.DataParser_ = function(node, objectStack) {
+function dataParser(node, objectStack) {
   const name = node.getAttribute('name');
-  parseNode(KML.DATA_PARSERS_, node, objectStack);
+  parseNode(DATA_PARSERS, node, objectStack);
   const featureObject = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   if (name !== null) {
     featureObject[name] = featureObject.value;
@@ -1108,35 +1305,66 @@ KML.DataParser_ = function(node, objectStack) {
     featureObject[featureObject.displayName] = featureObject.value;
   }
   delete featureObject['value'];
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const EXTENDED_DATA_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Data': dataParser,
+    'SchemaData': schemaDataParser
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.ExtendedDataParser_ = function(node, objectStack) {
-  parseNode(KML.EXTENDED_DATA_PARSERS_, node, objectStack);
-};
+function extendedDataParser(node, objectStack) {
+  parseNode(EXTENDED_DATA_PARSERS, node, objectStack);
+}
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const REGION_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'LatLonAltBox': latLonAltBoxParser,
+    'Lod': lodParser
+  });
+
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.RegionParser_ = function(node, objectStack) {
-  parseNode(KML.REGION_PARSERS_, node, objectStack);
-};
+function regionParser(node, objectStack) {
+  parseNode(REGION_PARSERS, node, objectStack);
+}
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const PAIR_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Style': makeObjectPropertySetter(readStyle),
+    'key': makeObjectPropertySetter(XSD.readString),
+    'styleUrl': makeObjectPropertySetter(readURI)
+  });
+
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.PairDataParser_ = function(node, objectStack) {
+function pairDataParser(node, objectStack) {
   const pairObject = pushParseAndPop(
-    {}, KML.PAIR_PARSERS_, node, objectStack);
+    {}, PAIR_PARSERS, node, objectStack);
   if (!pairObject) {
     return;
   }
@@ -1154,16 +1382,15 @@ KML.PairDataParser_ = function(node, objectStack) {
       objectStack[objectStack.length - 1] = Style;
     }
   }
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.PlacemarkStyleMapParser_ = function(node, objectStack) {
-  const styleMapValue = KML.readStyleMapValue_(node, objectStack);
+function placemarkStyleMapParser(node, objectStack) {
+  const styleMapValue = readStyleMapValue(node, objectStack);
   if (!styleMapValue) {
     return;
   }
@@ -1175,25 +1402,33 @@ KML.PlacemarkStyleMapParser_ = function(node, objectStack) {
   } else {
     assert(false, 38); // `styleMapValue` has an unknown type
   }
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const SCHEMA_DATA_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'SimpleData': simpleDataParser
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.SchemaDataParser_ = function(node, objectStack) {
-  parseNode(KML.SCHEMA_DATA_PARSERS_, node, objectStack);
-};
+function schemaDataParser(node, objectStack) {
+  parseNode(SCHEMA_DATA_PARSERS, node, objectStack);
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.SimpleDataParser_ = function(node, objectStack) {
+function simpleDataParser(node, objectStack) {
   const name = node.getAttribute('name');
   if (name !== null) {
     const data = XSD.readString(node);
@@ -1201,16 +1436,31 @@ KML.SimpleDataParser_ = function(node, objectStack) {
         /** @type {Object} */ (objectStack[objectStack.length - 1]);
     featureObject[name] = data;
   }
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const LAT_LON_ALT_BOX_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'altitudeMode': makeObjectPropertySetter(XSD.readString),
+    'minAltitude': makeObjectPropertySetter(XSD.readDecimal),
+    'maxAltitude': makeObjectPropertySetter(XSD.readDecimal),
+    'north': makeObjectPropertySetter(XSD.readDecimal),
+    'south': makeObjectPropertySetter(XSD.readDecimal),
+    'east': makeObjectPropertySetter(XSD.readDecimal),
+    'west': makeObjectPropertySetter(XSD.readDecimal)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.LatLonAltBoxParser_ = function(node, objectStack) {
-  const object = pushParseAndPop({}, KML.LAT_LON_ALT_BOX_PARSERS_, node, objectStack);
+function latLonAltBoxParser(node, objectStack) {
+  const object = pushParseAndPop({}, LAT_LON_ALT_BOX_PARSERS, node, objectStack);
   if (!object) {
     return;
   }
@@ -1225,146 +1475,15 @@ KML.LatLonAltBoxParser_ = function(node, objectStack) {
   regionObject['altitudeMode'] = object['altitudeMode'];
   regionObject['minAltitude'] = parseFloat(object['minAltitude']);
   regionObject['maxAltitude'] = parseFloat(object['maxAltitude']);
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- */
-KML.LodParser_ = function(node, objectStack) {
-  const object = pushParseAndPop({}, KML.LOD_PARSERS_, node, objectStack);
-  if (!object) {
-    return;
-  }
-  const lodObject = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  lodObject['minLodPixels'] = parseFloat(object['minLodPixels']);
-  lodObject['maxLodPixels'] = parseFloat(object['maxLodPixels']);
-  lodObject['minFadeExtent'] = parseFloat(object['minFadeExtent']);
-  lodObject['maxFadeExtent'] = parseFloat(object['maxFadeExtent']);
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- */
-KML.innerBoundaryIsParser_ = function(node, objectStack) {
-  /** @type {Array.<number>|undefined} */
-  const flatLinearRing = pushParseAndPop(undefined,
-    KML.INNER_BOUNDARY_IS_PARSERS_, node, objectStack);
-  if (flatLinearRing) {
-    const flatLinearRings = /** @type {Array.<Array.<number>>} */
-        (objectStack[objectStack.length - 1]);
-    flatLinearRings.push(flatLinearRing);
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- */
-KML.outerBoundaryIsParser_ = function(node, objectStack) {
-  /** @type {Array.<number>|undefined} */
-  const flatLinearRing = pushParseAndPop(undefined,
-    KML.OUTER_BOUNDARY_IS_PARSERS_, node, objectStack);
-  if (flatLinearRing) {
-    const flatLinearRings = /** @type {Array.<Array.<number>>} */
-        (objectStack[objectStack.length - 1]);
-    flatLinearRings[0] = flatLinearRing;
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- */
-KML.LinkParser_ = function(node, objectStack) {
-  parseNode(KML.LINK_PARSERS_, node, objectStack);
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- */
-KML.whenParser_ = function(node, objectStack) {
-  const gxTrackObject = /** @type {ol.KMLGxTrackObject_} */
-      (objectStack[objectStack.length - 1]);
-  const whens = gxTrackObject.whens;
-  const s = getAllTextContent(node, false);
-  const when = Date.parse(s);
-  whens.push(isNaN(when) ? 0 : when);
-};
+}
 
 
 /**
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
  */
-KML.DATA_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'displayName': makeObjectPropertySetter(XSD.readString),
-    'value': makeObjectPropertySetter(XSD.readString)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.EXTENDED_DATA_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'Data': KML.DataParser_,
-    'SchemaData': KML.SchemaDataParser_
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.REGION_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'LatLonAltBox': KML.LatLonAltBoxParser_,
-    'Lod': KML.LodParser_
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.LAT_LON_ALT_BOX_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'altitudeMode': makeObjectPropertySetter(XSD.readString),
-    'minAltitude': makeObjectPropertySetter(XSD.readDecimal),
-    'maxAltitude': makeObjectPropertySetter(XSD.readDecimal),
-    'north': makeObjectPropertySetter(XSD.readDecimal),
-    'south': makeObjectPropertySetter(XSD.readDecimal),
-    'east': makeObjectPropertySetter(XSD.readDecimal),
-    'west': makeObjectPropertySetter(XSD.readDecimal)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.LOD_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
+const LOD_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
     'minLodPixels': makeObjectPropertySetter(XSD.readDecimal),
     'maxLodPixels': makeObjectPropertySetter(XSD.readDecimal),
     'minFadeExtent': makeObjectPropertySetter(XSD.readDecimal),
@@ -1373,168 +1492,83 @@ KML.LOD_PARSERS_ = makeStructureNS(
 
 
 /**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ */
+function lodParser(node, objectStack) {
+  const object = pushParseAndPop({}, LOD_PARSERS, node, objectStack);
+  if (!object) {
+    return;
+  }
+  const lodObject = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  lodObject['minLodPixels'] = parseFloat(object['minLodPixels']);
+  lodObject['maxLodPixels'] = parseFloat(object['maxLodPixels']);
+  lodObject['minFadeExtent'] = parseFloat(object['minFadeExtent']);
+  lodObject['maxFadeExtent'] = parseFloat(object['maxFadeExtent']);
+}
+
+
+/**
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
  */
-KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'extrude': makeObjectPropertySetter(XSD.readBoolean),
-    'tessellate': makeObjectPropertySetter(XSD.readBoolean),
-    'altitudeMode': makeObjectPropertySetter(XSD.readString)
+const INNER_BOUNDARY_IS_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'LinearRing': makeReplacer(readFlatLinearRing)
   });
 
 
 /**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ */
+function innerBoundaryIsParser(node, objectStack) {
+  /** @type {Array.<number>|undefined} */
+  const flatLinearRing = pushParseAndPop(undefined,
+    INNER_BOUNDARY_IS_PARSERS, node, objectStack);
+  if (flatLinearRing) {
+    const flatLinearRings = /** @type {Array.<Array.<number>>} */
+        (objectStack[objectStack.length - 1]);
+    flatLinearRings.push(flatLinearRing);
+  }
+}
+
+
+/**
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
  */
-KML.FLAT_LINEAR_RING_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'coordinates': makeReplacer(KML.readFlatCoordinates_)
+const OUTER_BOUNDARY_IS_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'LinearRing': makeReplacer(readFlatLinearRing)
   });
 
 
 /**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
  */
-KML.FLAT_LINEAR_RINGS_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'innerBoundaryIs': KML.innerBoundaryIsParser_,
-    'outerBoundaryIs': KML.outerBoundaryIsParser_
-  });
+function outerBoundaryIsParser(node, objectStack) {
+  /** @type {Array.<number>|undefined} */
+  const flatLinearRing = pushParseAndPop(undefined,
+    OUTER_BOUNDARY_IS_PARSERS, node, objectStack);
+  if (flatLinearRing) {
+    const flatLinearRings = /** @type {Array.<Array.<number>>} */
+        (objectStack[objectStack.length - 1]);
+    flatLinearRings[0] = flatLinearRing;
+  }
+}
 
 
 /**
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
  */
-KML.GX_TRACK_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'when': KML.whenParser_
-  }, makeStructureNS(
-    KML.GX_NAMESPACE_URIS_, {
-      'coord': KML.gxCoordParser_
-    }));
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'coordinates': makeReplacer(KML.readFlatCoordinates_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.ICON_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'href': makeObjectPropertySetter(KML.readURI_)
-  }, makeStructureNS(
-    KML.GX_NAMESPACE_URIS_, {
-      'x': makeObjectPropertySetter(XSD.readDecimal),
-      'y': makeObjectPropertySetter(XSD.readDecimal),
-      'w': makeObjectPropertySetter(XSD.readDecimal),
-      'h': makeObjectPropertySetter(XSD.readDecimal)
-    }));
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.ICON_STYLE_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'Icon': makeObjectPropertySetter(KML.readIcon_),
-    'heading': makeObjectPropertySetter(XSD.readDecimal),
-    'hotSpot': makeObjectPropertySetter(KML.readVec2_),
-    'scale': makeObjectPropertySetter(KML.readScale_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.INNER_BOUNDARY_IS_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'LinearRing': makeReplacer(KML.readFlatLinearRing_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.LABEL_STYLE_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'color': makeObjectPropertySetter(KML.readColor_),
-    'scale': makeObjectPropertySetter(KML.readScale_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.LINE_STYLE_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'color': makeObjectPropertySetter(KML.readColor_),
-    'width': makeObjectPropertySetter(XSD.readDecimal)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.MULTI_GEOMETRY_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'LineString': makeArrayPusher(KML.readLineString_),
-    'LinearRing': makeArrayPusher(KML.readLinearRing_),
-    'MultiGeometry': makeArrayPusher(KML.readMultiGeometry_),
-    'Point': makeArrayPusher(KML.readPoint_),
-    'Polygon': makeArrayPusher(KML.readPolygon_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.GX_MULTITRACK_GEOMETRY_PARSERS_ = makeStructureNS(
-  KML.GX_NAMESPACE_URIS_, {
-    'Track': makeArrayPusher(KML.readGxTrack_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.NETWORK_LINK_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'ExtendedData': KML.ExtendedDataParser_,
-    'Region': KML.RegionParser_,
-    'Link': KML.LinkParser_,
+const NETWORK_LINK_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'ExtendedData': extendedDataParser,
+    'Region': regionParser,
+    'Link': linkParser,
     'address': makeObjectPropertySetter(XSD.readString),
     'description': makeObjectPropertySetter(XSD.readString),
     'name': makeObjectPropertySetter(XSD.readString),
@@ -1547,123 +1581,71 @@ KML.NETWORK_LINK_PARSERS_ = makeStructureNS(
 /**
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
  */
-KML.LINK_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'href': makeObjectPropertySetter(KML.readURI_)
+const LINK_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'href': makeObjectPropertySetter(readURI)
   });
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ */
+function linkParser(node, objectStack) {
+  parseNode(LINK_PARSERS, node, objectStack);
+}
+
+
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ */
+function whenParser(node, objectStack) {
+  const gxTrackObject = /** @type {ol.KMLGxTrackObject_} */
+      (objectStack[objectStack.length - 1]);
+  const whens = gxTrackObject.whens;
+  const s = getAllTextContent(node, false);
+  const when = Date.parse(s);
+  whens.push(isNaN(when) ? 0 : when);
+}
 
 
 /**
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
  */
-KML.OUTER_BOUNDARY_IS_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'LinearRing': makeReplacer(KML.readFlatLinearRing_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.PAIR_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'Style': makeObjectPropertySetter(KML.readStyle_),
-    'key': makeObjectPropertySetter(XSD.readString),
-    'styleUrl': makeObjectPropertySetter(KML.readURI_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.PLACEMARK_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'ExtendedData': KML.ExtendedDataParser_,
-    'Region': KML.RegionParser_,
+const PLACEMARK_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'ExtendedData': extendedDataParser,
+    'Region': regionParser,
     'MultiGeometry': makeObjectPropertySetter(
-      KML.readMultiGeometry_, 'geometry'),
+      readMultiGeometry, 'geometry'),
     'LineString': makeObjectPropertySetter(
-      KML.readLineString_, 'geometry'),
+      readLineString, 'geometry'),
     'LinearRing': makeObjectPropertySetter(
-      KML.readLinearRing_, 'geometry'),
+      readLinearRing, 'geometry'),
     'Point': makeObjectPropertySetter(
-      KML.readPoint_, 'geometry'),
+      readPoint, 'geometry'),
     'Polygon': makeObjectPropertySetter(
-      KML.readPolygon_, 'geometry'),
-    'Style': makeObjectPropertySetter(KML.readStyle_),
-    'StyleMap': KML.PlacemarkStyleMapParser_,
+      readPolygon, 'geometry'),
+    'Style': makeObjectPropertySetter(readStyle),
+    'StyleMap': placemarkStyleMapParser,
     'address': makeObjectPropertySetter(XSD.readString),
     'description': makeObjectPropertySetter(XSD.readString),
     'name': makeObjectPropertySetter(XSD.readString),
     'open': makeObjectPropertySetter(XSD.readBoolean),
     'phoneNumber': makeObjectPropertySetter(XSD.readString),
-    'styleUrl': makeObjectPropertySetter(KML.readURI_),
+    'styleUrl': makeObjectPropertySetter(readURI),
     'visibility': makeObjectPropertySetter(XSD.readBoolean)
   }, makeStructureNS(
-    KML.GX_NAMESPACE_URIS_, {
+    GX_NAMESPACE_URIS, {
       'MultiTrack': makeObjectPropertySetter(
-        KML.readGxMultiTrack_, 'geometry'),
+        readGxMultiTrack, 'geometry'),
       'Track': makeObjectPropertySetter(
-        KML.readGxTrack_, 'geometry')
+        readGxTrack, 'geometry')
     }
   ));
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.POLY_STYLE_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'color': makeObjectPropertySetter(KML.readColor_),
-    'fill': makeObjectPropertySetter(XSD.readBoolean),
-    'outline': makeObjectPropertySetter(XSD.readBoolean)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.SCHEMA_DATA_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'SimpleData': KML.SimpleDataParser_
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.STYLE_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'IconStyle': KML.IconStyleParser_,
-    'LabelStyle': KML.LabelStyleParser_,
-    'LineStyle': KML.LineStyleParser_,
-    'PolyStyle': KML.PolyStyleParser_
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-KML.STYLE_MAP_PARSERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'Pair': KML.PairDataParser_
-  });
 
 
 /**
@@ -1675,7 +1657,7 @@ KML.STYLE_MAP_PARSERS_ = makeStructureNS(
 KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
   // FIXME use scope somehow
   const parsersNS = makeStructureNS(
-    KML.NAMESPACE_URIS_, {
+    NAMESPACE_URIS, {
       'Document': makeArrayExtender(this.readDocumentOrFolder_, this),
       'Folder': makeArrayExtender(this.readDocumentOrFolder_, this),
       'Placemark': makeArrayPusher(this.readPlacemark_, this),
@@ -1700,7 +1682,7 @@ KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
  */
 KML.prototype.readPlacemark_ = function(node, objectStack) {
   const object = pushParseAndPop({'geometry': null},
-    KML.PLACEMARK_PARSERS_, node, objectStack);
+    PLACEMARK_PARSERS, node, objectStack);
   if (!object) {
     return undefined;
   }
@@ -1721,7 +1703,7 @@ KML.prototype.readPlacemark_ = function(node, objectStack) {
   if (this.extractStyles_) {
     const style = object['Style'];
     const styleUrl = object['styleUrl'];
-    const styleFunction = KML.createFeatureStyleFunction_(
+    const styleFunction = createFeatureStyleFunction(
       style, styleUrl, this.defaultStyle_, this.sharedStyles_,
       this.showPointNames_);
     feature.setStyle(styleFunction);
@@ -1744,7 +1726,7 @@ KML.prototype.readPlacemark_ = function(node, objectStack) {
 KML.prototype.readSharedStyle_ = function(node, objectStack) {
   const id = node.getAttribute('id');
   if (id !== null) {
-    const style = KML.readStyle_(node, objectStack);
+    const style = readStyle(node, objectStack);
     if (style) {
       let styleUri;
       let baseURI = node.baseURI;
@@ -1773,7 +1755,7 @@ KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
   if (id === null) {
     return;
   }
-  const styleMapValue = KML.readStyleMapValue_(node, objectStack);
+  const styleMapValue = readStyleMapValue(node, objectStack);
   if (!styleMapValue) {
     return;
   }
@@ -1810,7 +1792,7 @@ KML.prototype.readFeature;
  * @inheritDoc
  */
 KML.prototype.readFeatureFromNode = function(node, opt_options) {
-  if (!includes(KML.NAMESPACE_URIS_, node.namespaceURI)) {
+  if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
     return null;
   }
   const feature = this.readPlacemark_(
@@ -1841,7 +1823,7 @@ KML.prototype.readFeatures;
  * @inheritDoc
  */
 KML.prototype.readFeaturesFromNode = function(node, opt_options) {
-  if (!includes(KML.NAMESPACE_URIS_, node.namespaceURI)) {
+  if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
     return [];
   }
   let features;
@@ -1924,14 +1906,14 @@ KML.prototype.readNameFromDocument = function(doc) {
 KML.prototype.readNameFromNode = function(node) {
   let n;
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
-    if (includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
+    if (includes(NAMESPACE_URIS, n.namespaceURI) &&
         n.localName == 'name') {
       return XSD.readString(n);
     }
   }
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
     const localName = n.localName;
-    if (includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
+    if (includes(NAMESPACE_URIS, n.namespaceURI) &&
         (localName == 'Document' ||
          localName == 'Folder' ||
          localName == 'Placemark' ||
@@ -1991,16 +1973,16 @@ KML.prototype.readNetworkLinksFromDocument = function(doc) {
 KML.prototype.readNetworkLinksFromNode = function(node) {
   const networkLinks = [];
   for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-    if (includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
+    if (includes(NAMESPACE_URIS, n.namespaceURI) &&
         n.localName == 'NetworkLink') {
-      const obj = pushParseAndPop({}, KML.NETWORK_LINK_PARSERS_,
+      const obj = pushParseAndPop({}, NETWORK_LINK_PARSERS,
         n, []);
       networkLinks.push(obj);
     }
   }
   for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
     const localName = n.localName;
-    if (includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
+    if (includes(NAMESPACE_URIS, n.namespaceURI) &&
         (localName == 'Document' ||
          localName == 'Folder' ||
          localName == 'kml')) {
@@ -2057,16 +2039,16 @@ KML.prototype.readRegionFromDocument = function(doc) {
 KML.prototype.readRegionFromNode = function(node) {
   const regions = [];
   for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-    if (includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
+    if (includes(NAMESPACE_URIS, n.namespaceURI) &&
         n.localName == 'Region') {
-      const obj = pushParseAndPop({}, KML.REGION_PARSERS_,
+      const obj = pushParseAndPop({}, REGION_PARSERS,
         n, []);
       regions.push(obj);
     }
   }
   for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
     const localName = n.localName;
-    if (includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
+    if (includes(NAMESPACE_URIS, n.namespaceURI) &&
         (localName == 'Document' ||
          localName == 'Folder' ||
          localName == 'kml')) {
@@ -2091,9 +2073,8 @@ KML.prototype.readProjection;
 /**
  * @param {Node} node Node to append a TextNode with the color to.
  * @param {ol.Color|string} color Color.
- * @private
  */
-KML.writeColorTextNode_ = function(node, color) {
+function writeColorTextNode(node, color) {
   const rgba = asArray(color);
   const opacity = (rgba.length == 4) ? rgba[3] : 1;
   const abgr = [opacity * 255, rgba[2], rgba[1], rgba[0]];
@@ -2103,16 +2084,15 @@ KML.writeColorTextNode_ = function(node, color) {
     abgr[i] = (hex.length == 1) ? '0' + hex : hex;
   }
   XSD.writeStringTextNode(node, abgr.join(''));
-};
+}
 
 
 /**
  * @param {Node} node Node to append a TextNode with the coordinates to.
  * @param {Array.<number>} coordinates Coordinates.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.writeCoordinatesTextNode_ = function(node, coordinates, objectStack) {
+function writeCoordinatesTextNode(node, coordinates, objectStack) {
   const context = objectStack[objectStack.length - 1];
 
   const layout = context['layout'];
@@ -2145,54 +2125,87 @@ KML.writeCoordinatesTextNode_ = function(node, coordinates, objectStack) {
     }
   }
   XSD.writeStringTextNode(node, text);
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+const EXTENDEDDATA_NODE_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Data': makeChildAppender(writeDataNode),
+    'value': makeChildAppender(writeDataNodeValue),
+    'displayName': makeChildAppender(writeDataNodeName)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {{name: *, value: *}} pair Name value pair.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.writeDataNode_ = function(node, pair, objectStack) {
+function writeDataNode(node, pair, objectStack) {
   node.setAttribute('name', pair.name);
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
   const value = pair.value;
 
   if (typeof value == 'object') {
     if (value !== null && value.displayName) {
-      pushSerializeAndPop(context, KML.EXTENDEDDATA_NODE_SERIALIZERS_,
+      pushSerializeAndPop(context, EXTENDEDDATA_NODE_SERIALIZERS,
         OBJECT_PROPERTY_NODE_FACTORY, [value.displayName], objectStack, ['displayName']);
     }
 
     if (value !== null && value.value) {
-      pushSerializeAndPop(context, KML.EXTENDEDDATA_NODE_SERIALIZERS_,
+      pushSerializeAndPop(context, EXTENDEDDATA_NODE_SERIALIZERS,
         OBJECT_PROPERTY_NODE_FACTORY, [value.value], objectStack, ['value']);
     }
   } else {
-    pushSerializeAndPop(context, KML.EXTENDEDDATA_NODE_SERIALIZERS_,
+    pushSerializeAndPop(context, EXTENDEDDATA_NODE_SERIALIZERS,
       OBJECT_PROPERTY_NODE_FACTORY, [value], objectStack, ['value']);
   }
-};
+}
 
 
 /**
  * @param {Node} node Node to append a TextNode with the name to.
  * @param {string} name DisplayName.
- * @private
  */
-KML.writeDataNodeName_ = function(node, name) {
+function writeDataNodeName(node, name) {
   XSD.writeCDATASection(node, name);
-};
+}
 
 
 /**
  * @param {Node} node Node to append a CDATA Section with the value to.
  * @param {string} value Value.
- * @private
  */
-KML.writeDataNodeValue_ = function(node, value) {
+function writeDataNodeValue(node, value) {
   XSD.writeStringTextNode(node, value);
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+const DOCUMENT_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Placemark': makeChildAppender(writePlacemark)
+  });
+
+
+/**
+ * @const
+ * @param {*} value Value.
+ * @param {Array.<*>} objectStack Object stack.
+ * @param {string=} opt_nodeName Node name.
+ * @return {Node|undefined} Node.
+ */
+const DOCUMENT_NODE_FACTORY = function(value, objectStack,
+  opt_nodeName) {
+  const parentNode = objectStack[objectStack.length - 1].node;
+  return createElementNS(parentNode.namespaceURI, 'Placemark');
 };
 
 
@@ -2201,32 +2214,80 @@ KML.writeDataNodeValue_ = function(node, value) {
  * @param {Array.<ol.Feature>} features Features.
  * @param {Array.<*>} objectStack Object stack.
  * @this {ol.format.KML}
- * @private
  */
-KML.writeDocument_ = function(node, features, objectStack) {
+function writeDocument(node, features, objectStack) {
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
-  pushSerializeAndPop(context, KML.DOCUMENT_SERIALIZERS_,
-    KML.DOCUMENT_NODE_FACTORY_, features, objectStack, undefined,
+  pushSerializeAndPop(context, DOCUMENT_SERIALIZERS,
+    DOCUMENT_NODE_FACTORY, features, objectStack, undefined,
     this);
-};
+}
+
+
+/**
+ * A factory for creating Data nodes.
+ * @const
+ * @type {function(*, Array.<*>): (Node|undefined)}
+ */
+const DATA_NODE_FACTORY = makeSimpleNodeFactory('Data');
 
 
 /**
  * @param {Node} node Node.
  * @param {{names: Array<string>, values: (Array<*>)}} namesAndValues Names and values.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.writeExtendedData_ = function(node, namesAndValues, objectStack) {
+function writeExtendedData(node, namesAndValues, objectStack) {
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
   const names = namesAndValues.names;
   const values = namesAndValues.values;
   const length = names.length;
 
   for (let i = 0; i < length; i++) {
-    pushSerializeAndPop(context, KML.EXTENDEDDATA_NODE_SERIALIZERS_,
-      KML.DATA_NODE_FACTORY_, [{name: names[i], value: values[i]}], objectStack);
+    pushSerializeAndPop(context, EXTENDEDDATA_NODE_SERIALIZERS,
+      DATA_NODE_FACTORY, [{name: names[i], value: values[i]}], objectStack);
   }
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ */
+const ICON_SEQUENCE = makeStructureNS(
+  NAMESPACE_URIS, [
+    'href'
+  ],
+  makeStructureNS(GX_NAMESPACE_URIS, [
+    'x', 'y', 'w', 'h'
+  ]));
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+const ICON_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'href': makeChildAppender(XSD.writeStringTextNode)
+  }, makeStructureNS(
+    GX_NAMESPACE_URIS, {
+      'x': makeChildAppender(XSD.writeDecimalTextNode),
+      'y': makeChildAppender(XSD.writeDecimalTextNode),
+      'w': makeChildAppender(XSD.writeDecimalTextNode),
+      'h': makeChildAppender(XSD.writeDecimalTextNode)
+    }));
+
+
+/**
+ * @const
+ * @param {*} value Value.
+ * @param {Array.<*>} objectStack Object stack.
+ * @param {string=} opt_nodeName Node name.
+ * @return {Node|undefined} Node.
+ */
+const GX_NODE_FACTORY = function(value, objectStack, opt_nodeName) {
+  return createElementNS(GX_NAMESPACE_URIS[0],
+    'gx:' + opt_nodeName);
 };
 
 
@@ -2234,31 +2295,52 @@ KML.writeExtendedData_ = function(node, namesAndValues, objectStack) {
  * @param {Node} node Node.
  * @param {Object} icon Icon object.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.writeIcon_ = function(node, icon, objectStack) {
+function writeIcon(node, icon, objectStack) {
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
   const parentNode = objectStack[objectStack.length - 1].node;
-  let orderedKeys = KML.ICON_SEQUENCE_[parentNode.namespaceURI];
+  let orderedKeys = ICON_SEQUENCE[parentNode.namespaceURI];
   let values = makeSequence(icon, orderedKeys);
   pushSerializeAndPop(context,
-    KML.ICON_SERIALIZERS_, OBJECT_PROPERTY_NODE_FACTORY,
+    ICON_SERIALIZERS, OBJECT_PROPERTY_NODE_FACTORY,
     values, objectStack, orderedKeys);
   orderedKeys =
-      KML.ICON_SEQUENCE_[KML.GX_NAMESPACE_URIS_[0]];
+      ICON_SEQUENCE[GX_NAMESPACE_URIS[0]];
   values = makeSequence(icon, orderedKeys);
-  pushSerializeAndPop(context, KML.ICON_SERIALIZERS_,
-    KML.GX_NODE_FACTORY_, values, objectStack, orderedKeys);
-};
+  pushSerializeAndPop(context, ICON_SERIALIZERS,
+    GX_NODE_FACTORY, values, objectStack, orderedKeys);
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ */
+const ICON_STYLE_SEQUENCE = makeStructureNS(
+  NAMESPACE_URIS, [
+    'scale', 'heading', 'Icon', 'hotSpot'
+  ]);
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+const ICON_STYLE_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Icon': makeChildAppender(writeIcon),
+    'heading': makeChildAppender(XSD.writeDecimalTextNode),
+    'hotSpot': makeChildAppender(writeVec2),
+    'scale': makeChildAppender(writeScaleTextNode)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {ol.style.Icon} style Icon style.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.writeIconStyle_ = function(node, style, objectStack) {
+function writeIconStyle(node, style, objectStack) {
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
   const properties = {};
   const src = style.getSrc();
@@ -2303,20 +2385,40 @@ KML.writeIconStyle_ = function(node, style, objectStack) {
   }
 
   const parentNode = objectStack[objectStack.length - 1].node;
-  const orderedKeys = KML.ICON_STYLE_SEQUENCE_[parentNode.namespaceURI];
+  const orderedKeys = ICON_STYLE_SEQUENCE[parentNode.namespaceURI];
   const values = makeSequence(properties, orderedKeys);
-  pushSerializeAndPop(context, KML.ICON_STYLE_SERIALIZERS_,
+  pushSerializeAndPop(context, ICON_STYLE_SERIALIZERS,
     OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ */
+const LABEL_STYLE_SEQUENCE = makeStructureNS(
+  NAMESPACE_URIS, [
+    'color', 'scale'
+  ]);
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+const LABEL_STYLE_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'color': makeChildAppender(writeColorTextNode),
+    'scale': makeChildAppender(writeScaleTextNode)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {ol.style.Text} style style.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.writeLabelStyle_ = function(node, style, objectStack) {
+function writeLabelStyle(node, style, objectStack) {
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
   const properties = {};
   const fill = style.getFill();
@@ -2329,40 +2431,140 @@ KML.writeLabelStyle_ = function(node, style, objectStack) {
   }
   const parentNode = objectStack[objectStack.length - 1].node;
   const orderedKeys =
-      KML.LABEL_STYLE_SEQUENCE_[parentNode.namespaceURI];
+      LABEL_STYLE_SEQUENCE[parentNode.namespaceURI];
   const values = makeSequence(properties, orderedKeys);
-  pushSerializeAndPop(context, KML.LABEL_STYLE_SERIALIZERS_,
+  pushSerializeAndPop(context, LABEL_STYLE_SERIALIZERS,
     OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ */
+const LINE_STYLE_SEQUENCE = makeStructureNS(
+  NAMESPACE_URIS, [
+    'color', 'width'
+  ]);
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+const LINE_STYLE_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'color': makeChildAppender(writeColorTextNode),
+    'width': makeChildAppender(XSD.writeDecimalTextNode)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {ol.style.Stroke} style style.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.writeLineStyle_ = function(node, style, objectStack) {
+function writeLineStyle(node, style, objectStack) {
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
   const properties = {
     'color': style.getColor(),
     'width': style.getWidth()
   };
   const parentNode = objectStack[objectStack.length - 1].node;
-  const orderedKeys = KML.LINE_STYLE_SEQUENCE_[parentNode.namespaceURI];
+  const orderedKeys = LINE_STYLE_SEQUENCE[parentNode.namespaceURI];
   const values = makeSequence(properties, orderedKeys);
-  pushSerializeAndPop(context, KML.LINE_STYLE_SERIALIZERS_,
+  pushSerializeAndPop(context, LINE_STYLE_SERIALIZERS,
     OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, string>}
+ */
+const GEOMETRY_TYPE_TO_NODENAME = {
+  'Point': 'Point',
+  'LineString': 'LineString',
+  'LinearRing': 'LinearRing',
+  'Polygon': 'Polygon',
+  'MultiPoint': 'MultiGeometry',
+  'MultiLineString': 'MultiGeometry',
+  'MultiPolygon': 'MultiGeometry',
+  'GeometryCollection': 'MultiGeometry'
 };
+
+
+/**
+ * @const
+ * @param {*} value Value.
+ * @param {Array.<*>} objectStack Object stack.
+ * @param {string=} opt_nodeName Node name.
+ * @return {Node|undefined} Node.
+ */
+const GEOMETRY_NODE_FACTORY = function(value, objectStack,
+  opt_nodeName) {
+  if (value) {
+    const parentNode = objectStack[objectStack.length - 1].node;
+    return createElementNS(parentNode.namespaceURI,
+      GEOMETRY_TYPE_TO_NODENAME[/** @type {ol.geom.Geometry} */ (value).getType()]);
+  }
+};
+
+
+/**
+ * A factory for creating Point nodes.
+ * @const
+ * @type {function(*, Array.<*>, string=): (Node|undefined)}
+ */
+const POINT_NODE_FACTORY = makeSimpleNodeFactory('Point');
+
+
+/**
+ * A factory for creating LineString nodes.
+ * @const
+ * @type {function(*, Array.<*>, string=): (Node|undefined)}
+ */
+const LINE_STRING_NODE_FACTORY = makeSimpleNodeFactory('LineString');
+
+
+/**
+ * A factory for creating LinearRing nodes.
+ * @const
+ * @type {function(*, Array.<*>, string=): (Node|undefined)}
+ */
+const LINEAR_RING_NODE_FACTORY = makeSimpleNodeFactory('LinearRing');
+
+
+/**
+ * A factory for creating Polygon nodes.
+ * @const
+ * @type {function(*, Array.<*>, string=): (Node|undefined)}
+ */
+const POLYGON_NODE_FACTORY = makeSimpleNodeFactory('Polygon');
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+const MULTI_GEOMETRY_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'LineString': makeChildAppender(
+      writePrimitiveGeometry),
+    'Point': makeChildAppender(
+      writePrimitiveGeometry),
+    'Polygon': makeChildAppender(writePolygon),
+    'GeometryCollection': makeChildAppender(
+      writeMultiGeometry)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.writeMultiGeometry_ = function(node, geometry, objectStack) {
+function writeMultiGeometry(node, geometry, objectStack) {
   /** @type {ol.XmlNodeStackItem} */
   const context = {node: node};
   const type = geometry.getType();
@@ -2372,39 +2574,99 @@ KML.writeMultiGeometry_ = function(node, geometry, objectStack) {
   let factory;
   if (type == GeometryType.GEOMETRY_COLLECTION) {
     geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
-    factory = KML.GEOMETRY_NODE_FACTORY_;
+    factory = GEOMETRY_NODE_FACTORY;
   } else if (type == GeometryType.MULTI_POINT) {
     geometries = /** @type {ol.geom.MultiPoint} */ (geometry).getPoints();
-    factory = KML.POINT_NODE_FACTORY_;
+    factory = POINT_NODE_FACTORY;
   } else if (type == GeometryType.MULTI_LINE_STRING) {
     geometries =
         (/** @type {ol.geom.MultiLineString} */ (geometry)).getLineStrings();
-    factory = KML.LINE_STRING_NODE_FACTORY_;
+    factory = LINE_STRING_NODE_FACTORY;
   } else if (type == GeometryType.MULTI_POLYGON) {
     geometries =
         (/** @type {ol.geom.MultiPolygon} */ (geometry)).getPolygons();
-    factory = KML.POLYGON_NODE_FACTORY_;
+    factory = POLYGON_NODE_FACTORY;
   } else {
     assert(false, 39); // Unknown geometry type
   }
   pushSerializeAndPop(context,
-    KML.MULTI_GEOMETRY_SERIALIZERS_, factory,
+    MULTI_GEOMETRY_SERIALIZERS, factory,
     geometries, objectStack);
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+const BOUNDARY_IS_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'LinearRing': makeChildAppender(
+      writePrimitiveGeometry)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {ol.geom.LinearRing} linearRing Linear ring.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.writeBoundaryIs_ = function(node, linearRing, objectStack) {
+function writeBoundaryIs(node, linearRing, objectStack) {
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
   pushSerializeAndPop(context,
-    KML.BOUNDARY_IS_SERIALIZERS_,
-    KML.LINEAR_RING_NODE_FACTORY_, [linearRing], objectStack);
-};
+    BOUNDARY_IS_SERIALIZERS,
+    LINEAR_RING_NODE_FACTORY, [linearRing], objectStack);
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+const PLACEMARK_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'ExtendedData': makeChildAppender(
+      writeExtendedData),
+    'MultiGeometry': makeChildAppender(
+      writeMultiGeometry),
+    'LineString': makeChildAppender(
+      writePrimitiveGeometry),
+    'LinearRing': makeChildAppender(
+      writePrimitiveGeometry),
+    'Point': makeChildAppender(
+      writePrimitiveGeometry),
+    'Polygon': makeChildAppender(writePolygon),
+    'Style': makeChildAppender(writeStyle),
+    'address': makeChildAppender(XSD.writeStringTextNode),
+    'description': makeChildAppender(
+      XSD.writeStringTextNode),
+    'name': makeChildAppender(XSD.writeStringTextNode),
+    'open': makeChildAppender(XSD.writeBooleanTextNode),
+    'phoneNumber': makeChildAppender(
+      XSD.writeStringTextNode),
+    'styleUrl': makeChildAppender(XSD.writeStringTextNode),
+    'visibility': makeChildAppender(
+      XSD.writeBooleanTextNode)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ */
+const PLACEMARK_SEQUENCE = makeStructureNS(
+  NAMESPACE_URIS, [
+    'name', 'open', 'visibility', 'address', 'phoneNumber', 'description',
+    'styleUrl', 'Style'
+  ]);
+
+
+/**
+ * A factory for creating ExtendedData nodes.
+ * @const
+ * @type {function(*, Array.<*>): (Node|undefined)}
+ */
+const EXTENDEDDATA_NODE_FACTORY = makeSimpleNodeFactory('ExtendedData');
 
 
 /**
@@ -2414,9 +2676,8 @@ KML.writeBoundaryIs_ = function(node, linearRing, objectStack) {
  * @param {ol.Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
  * @this {ol.format.KML}
- * @private
  */
-KML.writePlacemark_ = function(node, feature, objectStack) {
+function writePlacemark(node, feature, objectStack) {
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
 
   // set id
@@ -2438,8 +2699,8 @@ KML.writePlacemark_ = function(node, feature, objectStack) {
   if (keys.length > 0) {
     const sequence = makeSequence(properties, keys);
     const namesAndValues = {names: keys, values: sequence};
-    pushSerializeAndPop(context, KML.PLACEMARK_SERIALIZERS_,
-      KML.EXTENDEDDATA_NODE_FACTORY_, [namesAndValues], objectStack);
+    pushSerializeAndPop(context, PLACEMARK_SERIALIZERS,
+      EXTENDEDDATA_NODE_FACTORY, [namesAndValues], objectStack);
   }
 
   const styleFunction = feature.getStyleFunction();
@@ -2459,9 +2720,9 @@ KML.writePlacemark_ = function(node, feature, objectStack) {
     }
   }
   const parentNode = objectStack[objectStack.length - 1].node;
-  const orderedKeys = KML.PLACEMARK_SEQUENCE_[parentNode.namespaceURI];
+  const orderedKeys = PLACEMARK_SEQUENCE[parentNode.namespaceURI];
   const values = makeSequence(properties, orderedKeys);
-  pushSerializeAndPop(context, KML.PLACEMARK_SERIALIZERS_,
+  pushSerializeAndPop(context, PLACEMARK_SERIALIZERS,
     OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
 
   // serialize geometry
@@ -2470,18 +2731,41 @@ KML.writePlacemark_ = function(node, feature, objectStack) {
   if (geometry) {
     geometry = transformWithOptions(geometry, true, options);
   }
-  pushSerializeAndPop(context, KML.PLACEMARK_SERIALIZERS_,
-    KML.GEOMETRY_NODE_FACTORY_, [geometry], objectStack);
-};
+  pushSerializeAndPop(context, PLACEMARK_SERIALIZERS,
+    GEOMETRY_NODE_FACTORY, [geometry], objectStack);
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ */
+const PRIMITIVE_GEOMETRY_SEQUENCE = makeStructureNS(
+  NAMESPACE_URIS, [
+    'extrude', 'tessellate', 'altitudeMode', 'coordinates'
+  ]);
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+const PRIMITIVE_GEOMETRY_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'extrude': makeChildAppender(XSD.writeBooleanTextNode),
+    'tessellate': makeChildAppender(XSD.writeBooleanTextNode),
+    'altitudeMode': makeChildAppender(XSD.writeStringTextNode),
+    'coordinates': makeChildAppender(
+      writeCoordinatesTextNode)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {ol.geom.SimpleGeometry} geometry Geometry.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.writePrimitiveGeometry_ = function(node, geometry, objectStack) {
+function writePrimitiveGeometry(node, geometry, objectStack) {
   const flatCoordinates = geometry.getFlatCoordinates();
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
   context['layout'] = geometry.getLayout();
@@ -2492,68 +2776,134 @@ KML.writePrimitiveGeometry_ = function(node, geometry, objectStack) {
   properties.coordinates = flatCoordinates;
 
   const parentNode = objectStack[objectStack.length - 1].node;
-  const orderedKeys = KML.PRIMITIVE_GEOMETRY_SEQUENCE_[parentNode.namespaceURI];
+  const orderedKeys = PRIMITIVE_GEOMETRY_SEQUENCE[parentNode.namespaceURI];
   const values = makeSequence(properties, orderedKeys);
-  pushSerializeAndPop(context, KML.PRIMITIVE_GEOMETRY_SERIALIZERS_,
+  pushSerializeAndPop(context, PRIMITIVE_GEOMETRY_SERIALIZERS,
     OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+const POLYGON_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'outerBoundaryIs': makeChildAppender(
+      writeBoundaryIs),
+    'innerBoundaryIs': makeChildAppender(
+      writeBoundaryIs)
+  });
+
+
+/**
+ * A factory for creating innerBoundaryIs nodes.
+ * @const
+ * @type {function(*, Array.<*>, string=): (Node|undefined)}
+ */
+const INNER_BOUNDARY_NODE_FACTORY = makeSimpleNodeFactory('innerBoundaryIs');
+
+
+/**
+ * A factory for creating outerBoundaryIs nodes.
+ * @const
+ * @type {function(*, Array.<*>, string=): (Node|undefined)}
+ */
+const OUTER_BOUNDARY_NODE_FACTORY = makeSimpleNodeFactory('outerBoundaryIs');
 
 
 /**
  * @param {Node} node Node.
  * @param {ol.geom.Polygon} polygon Polygon.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.writePolygon_ = function(node, polygon, objectStack) {
+function writePolygon(node, polygon, objectStack) {
   const linearRings = polygon.getLinearRings();
   const outerRing = linearRings.shift();
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
   // inner rings
   pushSerializeAndPop(context,
-    KML.POLYGON_SERIALIZERS_,
-    KML.INNER_BOUNDARY_NODE_FACTORY_,
+    POLYGON_SERIALIZERS,
+    INNER_BOUNDARY_NODE_FACTORY,
     linearRings, objectStack);
   // outer ring
   pushSerializeAndPop(context,
-    KML.POLYGON_SERIALIZERS_,
-    KML.OUTER_BOUNDARY_NODE_FACTORY_,
+    POLYGON_SERIALIZERS,
+    OUTER_BOUNDARY_NODE_FACTORY,
     [outerRing], objectStack);
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+const POLY_STYLE_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'color': makeChildAppender(writeColorTextNode)
+  });
+
+
+/**
+ * A factory for creating coordinates nodes.
+ * @const
+ * @type {function(*, Array.<*>, string=): (Node|undefined)}
+ */
+const COLOR_NODE_FACTORY = makeSimpleNodeFactory('color');
 
 
 /**
  * @param {Node} node Node.
  * @param {ol.style.Fill} style Style.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.writePolyStyle_ = function(node, style, objectStack) {
+function writePolyStyle(node, style, objectStack) {
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
-  pushSerializeAndPop(context, KML.POLY_STYLE_SERIALIZERS_,
-    KML.COLOR_NODE_FACTORY_, [style.getColor()], objectStack);
-};
+  pushSerializeAndPop(context, POLY_STYLE_SERIALIZERS,
+    COLOR_NODE_FACTORY, [style.getColor()], objectStack);
+}
 
 
 /**
  * @param {Node} node Node to append a TextNode with the scale to.
  * @param {number|undefined} scale Scale.
- * @private
  */
-KML.writeScaleTextNode_ = function(node, scale) {
+function writeScaleTextNode(node, scale) {
   // the Math is to remove any excess decimals created by float arithmetic
   XSD.writeDecimalTextNode(node,
     Math.round(scale * 1e6) / 1e6);
-};
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ */
+const STYLE_SEQUENCE = makeStructureNS(
+  NAMESPACE_URIS, [
+    'IconStyle', 'LabelStyle', 'LineStyle', 'PolyStyle'
+  ]);
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+const STYLE_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'IconStyle': makeChildAppender(writeIconStyle),
+    'LabelStyle': makeChildAppender(writeLabelStyle),
+    'LineStyle': makeChildAppender(writeLineStyle),
+    'PolyStyle': makeChildAppender(writePolyStyle)
+  });
 
 
 /**
  * @param {Node} node Node.
  * @param {ol.style.Style} style Style.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-KML.writeStyle_ = function(node, style, objectStack) {
+function writeStyle(node, style, objectStack) {
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
   const properties = {};
   const fillStyle = style.getFill();
@@ -2573,33 +2923,31 @@ KML.writeStyle_ = function(node, style, objectStack) {
     properties['PolyStyle'] = fillStyle;
   }
   const parentNode = objectStack[objectStack.length - 1].node;
-  const orderedKeys = KML.STYLE_SEQUENCE_[parentNode.namespaceURI];
+  const orderedKeys = STYLE_SEQUENCE[parentNode.namespaceURI];
   const values = makeSequence(properties, orderedKeys);
-  pushSerializeAndPop(context, KML.STYLE_SERIALIZERS_,
+  pushSerializeAndPop(context, STYLE_SERIALIZERS,
     OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
-};
+}
 
 
 /**
  * @param {Node} node Node to append a TextNode with the Vec2 to.
  * @param {ol.KMLVec2_} vec2 Vec2.
- * @private
  */
-KML.writeVec2_ = function(node, vec2) {
+function writeVec2(node, vec2) {
   node.setAttribute('x', vec2.x);
   node.setAttribute('y', vec2.y);
   node.setAttribute('xunits', vec2.xunits);
   node.setAttribute('yunits', vec2.yunits);
-};
+}
 
 
 /**
  * @const
  * @type {Object.<string, Array.<string>>}
- * @private
  */
-KML.KML_SEQUENCE_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, [
+const KML_SEQUENCE = makeStructureNS(
+  NAMESPACE_URIS, [
     'Document', 'Placemark'
   ]);
 
@@ -2607,440 +2955,12 @@ KML.KML_SEQUENCE_ = makeStructureNS(
 /**
  * @const
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
  */
-KML.KML_SERIALIZERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'Document': makeChildAppender(KML.writeDocument_),
-    'Placemark': makeChildAppender(KML.writePlacemark_)
+const KML_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Document': makeChildAppender(writeDocument),
+    'Placemark': makeChildAppender(writePlacemark)
   });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-KML.DOCUMENT_SERIALIZERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'Placemark': makeChildAppender(KML.writePlacemark_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-KML.EXTENDEDDATA_NODE_SERIALIZERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'Data': makeChildAppender(KML.writeDataNode_),
-    'value': makeChildAppender(KML.writeDataNodeValue_),
-    'displayName': makeChildAppender(KML.writeDataNodeName_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, string>}
- * @private
- */
-KML.GEOMETRY_TYPE_TO_NODENAME_ = {
-  'Point': 'Point',
-  'LineString': 'LineString',
-  'LinearRing': 'LinearRing',
-  'Polygon': 'Polygon',
-  'MultiPoint': 'MultiGeometry',
-  'MultiLineString': 'MultiGeometry',
-  'MultiPolygon': 'MultiGeometry',
-  'GeometryCollection': 'MultiGeometry'
-};
-
-/**
- * @const
- * @type {Object.<string, Array.<string>>}
- * @private
- */
-KML.ICON_SEQUENCE_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, [
-    'href'
-  ],
-  makeStructureNS(KML.GX_NAMESPACE_URIS_, [
-    'x', 'y', 'w', 'h'
-  ]));
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-KML.ICON_SERIALIZERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'href': makeChildAppender(XSD.writeStringTextNode)
-  }, makeStructureNS(
-    KML.GX_NAMESPACE_URIS_, {
-      'x': makeChildAppender(XSD.writeDecimalTextNode),
-      'y': makeChildAppender(XSD.writeDecimalTextNode),
-      'w': makeChildAppender(XSD.writeDecimalTextNode),
-      'h': makeChildAppender(XSD.writeDecimalTextNode)
-    }));
-
-
-/**
- * @const
- * @type {Object.<string, Array.<string>>}
- * @private
- */
-KML.ICON_STYLE_SEQUENCE_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, [
-    'scale', 'heading', 'Icon', 'hotSpot'
-  ]);
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-KML.ICON_STYLE_SERIALIZERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'Icon': makeChildAppender(KML.writeIcon_),
-    'heading': makeChildAppender(XSD.writeDecimalTextNode),
-    'hotSpot': makeChildAppender(KML.writeVec2_),
-    'scale': makeChildAppender(KML.writeScaleTextNode_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Array.<string>>}
- * @private
- */
-KML.LABEL_STYLE_SEQUENCE_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, [
-    'color', 'scale'
-  ]);
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-KML.LABEL_STYLE_SERIALIZERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'color': makeChildAppender(KML.writeColorTextNode_),
-    'scale': makeChildAppender(KML.writeScaleTextNode_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Array.<string>>}
- * @private
- */
-KML.LINE_STYLE_SEQUENCE_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, [
-    'color', 'width'
-  ]);
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-KML.LINE_STYLE_SERIALIZERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'color': makeChildAppender(KML.writeColorTextNode_),
-    'width': makeChildAppender(XSD.writeDecimalTextNode)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-KML.BOUNDARY_IS_SERIALIZERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'LinearRing': makeChildAppender(
-      KML.writePrimitiveGeometry_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-KML.MULTI_GEOMETRY_SERIALIZERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'LineString': makeChildAppender(
-      KML.writePrimitiveGeometry_),
-    'Point': makeChildAppender(
-      KML.writePrimitiveGeometry_),
-    'Polygon': makeChildAppender(KML.writePolygon_),
-    'GeometryCollection': makeChildAppender(
-      KML.writeMultiGeometry_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Array.<string>>}
- * @private
- */
-KML.PLACEMARK_SEQUENCE_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, [
-    'name', 'open', 'visibility', 'address', 'phoneNumber', 'description',
-    'styleUrl', 'Style'
-  ]);
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-KML.PLACEMARK_SERIALIZERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'ExtendedData': makeChildAppender(
-      KML.writeExtendedData_),
-    'MultiGeometry': makeChildAppender(
-      KML.writeMultiGeometry_),
-    'LineString': makeChildAppender(
-      KML.writePrimitiveGeometry_),
-    'LinearRing': makeChildAppender(
-      KML.writePrimitiveGeometry_),
-    'Point': makeChildAppender(
-      KML.writePrimitiveGeometry_),
-    'Polygon': makeChildAppender(KML.writePolygon_),
-    'Style': makeChildAppender(KML.writeStyle_),
-    'address': makeChildAppender(XSD.writeStringTextNode),
-    'description': makeChildAppender(
-      XSD.writeStringTextNode),
-    'name': makeChildAppender(XSD.writeStringTextNode),
-    'open': makeChildAppender(XSD.writeBooleanTextNode),
-    'phoneNumber': makeChildAppender(
-      XSD.writeStringTextNode),
-    'styleUrl': makeChildAppender(XSD.writeStringTextNode),
-    'visibility': makeChildAppender(
-      XSD.writeBooleanTextNode)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Array.<string>>}
- * @private
- */
-KML.PRIMITIVE_GEOMETRY_SEQUENCE_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, [
-    'extrude', 'tessellate', 'altitudeMode', 'coordinates'
-  ]);
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-KML.PRIMITIVE_GEOMETRY_SERIALIZERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'extrude': makeChildAppender(XSD.writeBooleanTextNode),
-    'tessellate': makeChildAppender(XSD.writeBooleanTextNode),
-    'altitudeMode': makeChildAppender(XSD.writeStringTextNode),
-    'coordinates': makeChildAppender(
-      KML.writeCoordinatesTextNode_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-KML.POLYGON_SERIALIZERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'outerBoundaryIs': makeChildAppender(
-      KML.writeBoundaryIs_),
-    'innerBoundaryIs': makeChildAppender(
-      KML.writeBoundaryIs_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-KML.POLY_STYLE_SERIALIZERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'color': makeChildAppender(KML.writeColorTextNode_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Array.<string>>}
- * @private
- */
-KML.STYLE_SEQUENCE_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, [
-    'IconStyle', 'LabelStyle', 'LineStyle', 'PolyStyle'
-  ]);
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-KML.STYLE_SERIALIZERS_ = makeStructureNS(
-  KML.NAMESPACE_URIS_, {
-    'IconStyle': makeChildAppender(KML.writeIconStyle_),
-    'LabelStyle': makeChildAppender(KML.writeLabelStyle_),
-    'LineStyle': makeChildAppender(KML.writeLineStyle_),
-    'PolyStyle': makeChildAppender(KML.writePolyStyle_)
-  });
-
-
-/**
- * @const
- * @param {*} value Value.
- * @param {Array.<*>} objectStack Object stack.
- * @param {string=} opt_nodeName Node name.
- * @return {Node|undefined} Node.
- * @private
- */
-KML.GX_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
-  return createElementNS(KML.GX_NAMESPACE_URIS_[0],
-    'gx:' + opt_nodeName);
-};
-
-
-/**
- * @const
- * @param {*} value Value.
- * @param {Array.<*>} objectStack Object stack.
- * @param {string=} opt_nodeName Node name.
- * @return {Node|undefined} Node.
- * @private
- */
-KML.DOCUMENT_NODE_FACTORY_ = function(value, objectStack,
-  opt_nodeName) {
-  const parentNode = objectStack[objectStack.length - 1].node;
-  return createElementNS(parentNode.namespaceURI, 'Placemark');
-};
-
-
-/**
- * @const
- * @param {*} value Value.
- * @param {Array.<*>} objectStack Object stack.
- * @param {string=} opt_nodeName Node name.
- * @return {Node|undefined} Node.
- * @private
- */
-KML.GEOMETRY_NODE_FACTORY_ = function(value, objectStack,
-  opt_nodeName) {
-  if (value) {
-    const parentNode = objectStack[objectStack.length - 1].node;
-    return createElementNS(parentNode.namespaceURI,
-      KML.GEOMETRY_TYPE_TO_NODENAME_[/** @type {ol.geom.Geometry} */ (value).getType()]);
-  }
-};
-
-
-/**
- * A factory for creating coordinates nodes.
- * @const
- * @type {function(*, Array.<*>, string=): (Node|undefined)}
- * @private
- */
-KML.COLOR_NODE_FACTORY_ = makeSimpleNodeFactory('color');
-
-
-/**
- * A factory for creating Data nodes.
- * @const
- * @type {function(*, Array.<*>): (Node|undefined)}
- * @private
- */
-KML.DATA_NODE_FACTORY_ =
-    makeSimpleNodeFactory('Data');
-
-
-/**
- * A factory for creating ExtendedData nodes.
- * @const
- * @type {function(*, Array.<*>): (Node|undefined)}
- * @private
- */
-KML.EXTENDEDDATA_NODE_FACTORY_ =
-    makeSimpleNodeFactory('ExtendedData');
-
-
-/**
- * A factory for creating innerBoundaryIs nodes.
- * @const
- * @type {function(*, Array.<*>, string=): (Node|undefined)}
- * @private
- */
-KML.INNER_BOUNDARY_NODE_FACTORY_ =
-    makeSimpleNodeFactory('innerBoundaryIs');
-
-
-/**
- * A factory for creating Point nodes.
- * @const
- * @type {function(*, Array.<*>, string=): (Node|undefined)}
- * @private
- */
-KML.POINT_NODE_FACTORY_ =
-    makeSimpleNodeFactory('Point');
-
-
-/**
- * A factory for creating LineString nodes.
- * @const
- * @type {function(*, Array.<*>, string=): (Node|undefined)}
- * @private
- */
-KML.LINE_STRING_NODE_FACTORY_ =
-    makeSimpleNodeFactory('LineString');
-
-
-/**
- * A factory for creating LinearRing nodes.
- * @const
- * @type {function(*, Array.<*>, string=): (Node|undefined)}
- * @private
- */
-KML.LINEAR_RING_NODE_FACTORY_ =
-    makeSimpleNodeFactory('LinearRing');
-
-
-/**
- * A factory for creating Polygon nodes.
- * @const
- * @type {function(*, Array.<*>, string=): (Node|undefined)}
- * @private
- */
-KML.POLYGON_NODE_FACTORY_ =
-    makeSimpleNodeFactory('Polygon');
-
-
-/**
- * A factory for creating outerBoundaryIs nodes.
- * @const
- * @type {function(*, Array.<*>, string=): (Node|undefined)}
- * @private
- */
-KML.OUTER_BOUNDARY_NODE_FACTORY_ =
-    makeSimpleNodeFactory('outerBoundaryIs');
 
 
 /**
@@ -3068,14 +2988,14 @@ KML.prototype.writeFeatures;
  */
 KML.prototype.writeFeaturesNode = function(features, opt_options) {
   opt_options = this.adaptOptions(opt_options);
-  const kml = createElementNS(KML.NAMESPACE_URIS_[4], 'kml');
+  const kml = createElementNS(NAMESPACE_URIS[4], 'kml');
   const xmlnsUri = 'http://www.w3.org/2000/xmlns/';
   const xmlSchemaInstanceUri = 'http://www.w3.org/2001/XMLSchema-instance';
   setAttributeNS(kml, xmlnsUri, 'xmlns:gx',
-    KML.GX_NAMESPACE_URIS_[0]);
+    GX_NAMESPACE_URIS[0]);
   setAttributeNS(kml, xmlnsUri, 'xmlns:xsi', xmlSchemaInstanceUri);
   setAttributeNS(kml, xmlSchemaInstanceUri, 'xsi:schemaLocation',
-    KML.SCHEMA_LOCATION_);
+    SCHEMA_LOCATION);
 
   const /** @type {ol.XmlNodeStackItem} */ context = {node: kml};
   const properties = {};
@@ -3084,9 +3004,9 @@ KML.prototype.writeFeaturesNode = function(features, opt_options) {
   } else if (features.length == 1) {
     properties['Placemark'] = features[0];
   }
-  const orderedKeys = KML.KML_SEQUENCE_[kml.namespaceURI];
+  const orderedKeys = KML_SEQUENCE[kml.namespaceURI];
   const values = makeSequence(properties, orderedKeys);
-  pushSerializeAndPop(context, KML.KML_SERIALIZERS_,
+  pushSerializeAndPop(context, KML_SERIALIZERS,
     OBJECT_PROPERTY_NODE_FACTORY, values, [opt_options], orderedKeys,
     this);
   return kml;
