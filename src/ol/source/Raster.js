@@ -8,7 +8,7 @@ import {createCanvasContext2D} from '../dom.js';
 import {listen} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import {Processor} from 'pixelworks';
+import {Processor} from 'pixelworks/lib/index';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import ImageLayer from '../layer/Image.js';
 import TileLayer from '../layer/Tile.js';

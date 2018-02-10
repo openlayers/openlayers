@@ -6,7 +6,7 @@
 */
 
 /**
- * @module ol/Sphere
+ * @module ol/sphere
  */
 import {toRadians, toDegrees} from './math.js';
 import GeometryType from './geom/GeometryType.js';

@@ -1,4 +1,5 @@
 /**
- * @type {string} Default WMS version.
+ * Default WMS version.
+ * @type {string}
  */
 export const DEFAULT_WMS_VERSION = '1.3.0';

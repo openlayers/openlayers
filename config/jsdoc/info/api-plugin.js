@@ -8,7 +8,7 @@ exports.defineTags = function(dictionary) {
 
   dictionary.defineTag('api', {
     onTagged: function(doclet, tag) {
-      doclet.api = tag.text || 'experimental';
+      doclet.api = true;
     }
   });
 

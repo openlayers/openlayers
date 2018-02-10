@@ -9,7 +9,8 @@ const _ol_renderer_vector_ = {};
 
 
 /**
- * @type {number} Tolerance for geometry simplification in device pixels.
+ * Tolerance for geometry simplification in device pixels.
+ * @type {number}
  */
 const SIMPLIFY_TOLERANCE = 0.5;
 

@@ -12,7 +12,8 @@ import {clamp} from '../math.js';
 
 
 /**
- * @type {number} Maximum mouse wheel delta.
+ * Maximum mouse wheel delta.
+ * @type {number}
  */
 const MAX_DELTA = 1;
 

@@ -30,12 +30,12 @@ exports.publish = function(data, opts) {
         {define: {isObject: true}},
         function() {
           if (this.kind == 'class') {
-            if (!('extends' in this) || typeof this.api == 'string') {
+            if (!('extends' in this) || typeof this.api == 'boolean') {
               classes[this.longname] = this;
               return true;
             }
           }
-          return (typeof this.api == 'string' ||
+          return (typeof this.api == 'boolean' ||
               this.meta && (/[\\\/]externs$/).test(this.meta.path));
         }
       ],
@@ -53,7 +53,7 @@ exports.publish = function(data, opts) {
   docs.filter(function(doc) {
     var include = true;
     var constructor = doc.memberof;
-    if (constructor && constructor.substr(-1) === '_') {
+    if (constructor && constructor.substr(-1) === '_' && constructor.indexOf('module:') === -1) {
       assert.strictEqual(doc.inherited, true,
           'Unexpected export on private class: ' + doc.longname);
       include = false;
@@ -92,7 +92,6 @@ exports.publish = function(data, opts) {
         name: doc.longname,
         kind: doc.kind,
         description: doc.classdesc || doc.description,
-        stability: doc.api,
         path: path.join(doc.meta.path, doc.meta.filename)
       };
       if (doc.augments) {

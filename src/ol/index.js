@@ -1,14 +1,15 @@
 /**
- * @module ol/index
+ * @module ol
  */
 
 import webgl from './webgl.js';
 
 
 /**
+ * Include debuggable shader sources.  Default is `true`. This should be set to
+ * `false` for production builds.
  * TODO: move to a separate ol-webgl package
- * @type {boolean} Include debuggable shader sources.  Default is `true`.
- *     This should be set to `false` for production builds.
+ * @type {boolean}
  */
 export const DEBUG_WEBGL = true;
 
@@ -60,7 +61,8 @@ export {HAS_WEBGL, WEBGL_MAX_TEXTURE_SIZE, WEBGL_EXTENSIONS};
 
 
 /**
- * @type {string} OpenLayers version.
+ * OpenLayers version.
+ * @type {string}
  */
 export const VERSION = 'v4.6.4';
 

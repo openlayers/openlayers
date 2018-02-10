@@ -23,7 +23,8 @@ import ContextEventType from '../../webgl/ContextEventType.js';
 
 
 /**
- * @type {number} Texture cache high water mark.
+ * Texture cache high water mark.
+ * @type {number}
  */
 const WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
 
