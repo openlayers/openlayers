@@ -10,7 +10,8 @@
   "homepage": "https://openlayers.org/",
   "scripts": {
     "lint": "eslint tasks test src/ol examples transforms",
-    "pretest": "npm run lint && npm run typecheck",
+    "pretest": "npm run lint",
+    "posttest": "npm run typecheck",
     "test": "npm run karma -- --single-run",
     "karma": "karma start test/karma.config.js",
     "serve-examples": "mkdir -p build/examples && webpack --config examples/webpack/config.js --watch & serve build/examples",
