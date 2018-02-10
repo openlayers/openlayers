@@ -1,5 +1,6 @@
 import ImageWMS from '../../../../src/ol/source/ImageWMS.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
+import {getWidth, getHeight} from '../../../../src/ol/extent.js';
 
 
 describe('ol.source.ImageWMS', function() {
@@ -30,15 +31,24 @@ describe('ol.source.ImageWMS', function() {
   describe('#getImage', function() {
 
     it('returns the expected image URL', function() {
-      options.ratio = 1.5;
-      const source = new ImageWMS(options);
-      const image = source.getImage([10, 20, 30.1, 39.9], resolution, pixelRatio, projection);
-      const uri = new URL(image.src_);
-      const queryData = uri.searchParams;
-      const extent = queryData.get('BBOX').split(',').map(Number);
-      const extentAspectRatio = (extent[3] - extent[1]) / (extent[2] - extent[0]);
-      const imageAspectRatio = Number(queryData.get('WIDTH') / Number(queryData.get('HEIGHT')));
-      expect(extentAspectRatio).to.roughlyEqual(imageAspectRatio, 1e-12);
+      [1, 1.5].forEach(function(ratio) {
+        options.ratio = ratio;
+        const source = new ImageWMS(options);
+        const viewExtent = [10, 20, 30.1, 39.9];
+        const viewWidth = getWidth(viewExtent);
+        const viewHeight = getHeight(viewExtent);
+        const image = source.getImage(viewExtent, resolution, pixelRatio, projection);
+        const uri = new URL(image.src_);
+        const queryData = uri.searchParams;
+        const imageWidth = Number(queryData.get('WIDTH'));
+        const imageHeight = Number(queryData.get('HEIGHT'));
+        const bbox = queryData.get('BBOX').split(',').map(Number);
+        const bboxAspectRatio = (bbox[3] - bbox[1]) / (bbox[2] - bbox[0]);
+        const imageAspectRatio = imageWidth / imageHeight;
+        expect (imageWidth).to.be(Math.ceil(viewWidth / resolution * ratio));
+        expect (imageHeight).to.be(Math.ceil(viewHeight / resolution * ratio));
+        expect(bboxAspectRatio).to.roughlyEqual(imageAspectRatio, 1e-12);
+      });
     });
 
     it('uses correct WIDTH and HEIGHT for HiDPI devices', function() {
