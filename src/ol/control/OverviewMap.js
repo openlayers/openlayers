@@ -12,7 +12,7 @@ import Overlay from '../Overlay.js';
 import OverlayPositioning from '../OverlayPositioning.js';
 import ViewProperty from '../ViewProperty.js';
 import Control from '../control/Control.js';
-import {rotateCoordinate, add as addCoordinate} from '../coordinate.js';
+import {rotate as rotateCoordinate, add as addCoordinate} from '../coordinate.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {replaceNode} from '../dom.js';
 import {listen, listenOnce, unlisten} from '../events.js';
