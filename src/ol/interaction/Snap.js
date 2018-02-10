@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../index.js';
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
-import _ol_coordinate_ from '../coordinate.js';
+import {distance as coordinateDistance, squaredDistance as squaredCoordinateDistance, closestOnCircle, closestOnSegment, squaredDistanceToSegment} from '../coordinate.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {boundingExtent, createEmpty} from '../extent.js';
@@ -371,8 +371,8 @@ Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
     if (this.vertex_ && !this.edge_) {
       pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
       pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
-      squaredDist1 = _ol_coordinate_.squaredDistance(pixel, pixel1);
-      squaredDist2 = _ol_coordinate_.squaredDistance(pixel, pixel2);
+      squaredDist1 = squaredCoordinateDistance(pixel, pixel1);
+      squaredDist2 = squaredCoordinateDistance(pixel, pixel2);
       dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
       snappedToVertex = dist <= this.pixelTolerance_;
       if (snappedToVertex) {
@@ -383,20 +383,20 @@ Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
       }
     } else if (this.edge_) {
       if (isCircle) {
-        vertex = _ol_coordinate_.closestOnCircle(pixelCoordinate,
+        vertex = closestOnCircle(pixelCoordinate,
           /** @type {ol.geom.Circle} */ (segments[0].feature.getGeometry()));
       } else {
-        vertex = (_ol_coordinate_.closestOnSegment(pixelCoordinate,
+        vertex = (closestOnSegment(pixelCoordinate,
           closestSegment));
       }
       vertexPixel = map.getPixelFromCoordinate(vertex);
-      if (_ol_coordinate_.distance(pixel, vertexPixel) <= this.pixelTolerance_) {
+      if (coordinateDistance(pixel, vertexPixel) <= this.pixelTolerance_) {
         snapped = true;
         if (this.vertex_ && !isCircle) {
           pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
           pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
-          squaredDist1 = _ol_coordinate_.squaredDistance(vertexPixel, pixel1);
-          squaredDist2 = _ol_coordinate_.squaredDistance(vertexPixel, pixel2);
+          squaredDist1 = squaredCoordinateDistance(vertexPixel, pixel1);
+          squaredDist2 = squaredCoordinateDistance(vertexPixel, pixel2);
           dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
           snappedToVertex = dist <= this.pixelTolerance_;
           if (snappedToVertex) {
@@ -622,9 +622,9 @@ Snap.handleUpEvent_ = function(evt) {
  * @this {ol.interaction.Snap}
  */
 Snap.sortByDistance = function(a, b) {
-  return _ol_coordinate_.squaredDistanceToSegment(
+  return squaredDistanceToSegment(
     this.pixelCoordinate_, a.segment) -
-      _ol_coordinate_.squaredDistanceToSegment(
+      squaredDistanceToSegment(
         this.pixelCoordinate_, b.segment);
 };
 export default Snap;

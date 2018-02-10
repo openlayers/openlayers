@@ -5,7 +5,7 @@
 import {getUid, inherits} from '../index.js';
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
-import _ol_coordinate_ from '../coordinate.js';
+import {scale as scaleCoordinate, add as addCoordinate} from '../coordinate.js';
 import EventType from '../events/EventType.js';
 import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
 import Point from '../geom/Point.js';
@@ -184,12 +184,12 @@ Cluster.prototype.createCluster = function(features) {
   for (let i = features.length - 1; i >= 0; --i) {
     const geometry = this.geometryFunction(features[i]);
     if (geometry) {
-      _ol_coordinate_.add(centroid, geometry.getCoordinates());
+      addCoordinate(centroid, geometry.getCoordinates());
     } else {
       features.splice(i, 1);
     }
   }
-  _ol_coordinate_.scale(centroid, 1 / features.length);
+  scaleCoordinate(centroid, 1 / features.length);
 
   const cluster = new Feature(new Point(centroid));
   cluster.set('features', features);

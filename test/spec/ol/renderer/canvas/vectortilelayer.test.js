@@ -18,7 +18,7 @@ import CanvasVectorTileLayerRenderer from '../../../../../src/ol/renderer/canvas
 import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
 import Style from '../../../../../src/ol/style/Style.js';
 import Text from '../../../../../src/ol/style/Text.js';
-import _ol_tilegrid_ from '../../../../../src/ol/tilegrid.js';
+import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 
 
 describe('ol.renderer.canvas.VectorTileLayer', function() {
@@ -70,7 +70,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       source = new VectorTileSource({
         format: new MVT(),
         tileClass: TileClass,
-        tileGrid: _ol_tilegrid_.createXYZ()
+        tileGrid: createXYZ()
       });
       source.getTile = function() {
         const tile = VectorTileSource.prototype.getTile.apply(source, arguments);
@@ -241,7 +241,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     it('re-renders when layer changed', function() {
       const layer = new VectorTileLayer({
         source: new VectorTileSource({
-          tileGrid: _ol_tilegrid_.createXYZ(),
+          tileGrid: createXYZ(),
           transition: 0
         })
       });
@@ -311,7 +311,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       layer = new VectorTileLayer({
         source: new VectorTileSource({
           tileClass: TileClass,
-          tileGrid: _ol_tilegrid_.createXYZ()
+          tileGrid: createXYZ()
         })
       });
       renderer = new CanvasVectorTileLayerRenderer(layer);

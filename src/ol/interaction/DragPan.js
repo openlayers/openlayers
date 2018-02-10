@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import ViewHint from '../ViewHint.js';
-import _ol_coordinate_ from '../coordinate.js';
+import {scale as scaleCoordinate, rotate as rotateCoordinate, add as addCoordinate} from '../coordinate.js';
 import {easeOut} from '../easing.js';
 import {noModifierKeys} from '../events/condition.js';
 import {FALSE} from '../functions.js';
@@ -81,9 +81,9 @@ DragPan.handleDragEvent_ = function(mapBrowserEvent) {
       const view = map.getView();
       const viewState = view.getState();
       let center = [deltaX, deltaY];
-      _ol_coordinate_.scale(center, viewState.resolution);
-      _ol_coordinate_.rotate(center, viewState.rotation);
-      _ol_coordinate_.add(center, viewState.center);
+      scaleCoordinate(center, viewState.resolution);
+      rotateCoordinate(center, viewState.rotation);
+      addCoordinate(center, viewState.center);
       center = view.constrainCenter(center);
       view.setCenter(center);
     }

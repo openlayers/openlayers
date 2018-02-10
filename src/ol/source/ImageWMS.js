@@ -11,7 +11,7 @@ import EventType from '../events/EventType.js';
 import {containsExtent, getCenter, getForViewAndSize, getHeight, getWidth} from '../extent.js';
 import {assign} from '../obj.js';
 import {get as getProjection, transform} from '../proj.js';
-import _ol_reproj_ from '../reproj.js';
+import {calculateSourceResolution} from '../reproj.js';
 import ImageSource from '../source/Image.js';
 import WMSServerType from '../source/WMSServerType.js';
 import {compareVersions} from '../string.js';
@@ -141,7 +141,7 @@ ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, proje
   const sourceProjectionObj = this.getProjection();
 
   if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
-    resolution = _ol_reproj_.calculateSourceResolution(sourceProjectionObj, projectionObj, coordinate, resolution);
+    resolution = calculateSourceResolution(sourceProjectionObj, projectionObj, coordinate, resolution);
     coordinate = transform(coordinate, projectionObj, sourceProjectionObj);
   }
 

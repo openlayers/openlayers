@@ -11,7 +11,7 @@ import CanvasLineStringReplay from '../../../../../src/ol/render/canvas/LineStri
 import CanvasPolygonReplay from '../../../../../src/ol/render/canvas/PolygonReplay.js';
 import CanvasReplay from '../../../../../src/ol/render/canvas/Replay.js';
 import CanvasReplayGroup from '../../../../../src/ol/render/canvas/ReplayGroup.js';
-import _ol_renderer_vector_ from '../../../../../src/ol/renderer/vector.js';
+import {renderFeature} from '../../../../../src/ol/renderer/vector.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../src/ol/style/Style.js';
@@ -88,7 +88,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('omits lineTo for repeated coordinates', function() {
-      _ol_renderer_vector_.renderFeature(replay, feature0, fill0, 1);
+      renderFeature(replay, feature0, fill0, 1);
       replay.replay(context, transform, 0, {});
       expect(lineToCount).to.be(4);
       lineToCount = 0;
@@ -98,16 +98,16 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('does not omit moveTo for repeated coordinates', function() {
-      _ol_renderer_vector_.renderFeature(replay, feature0, fill0, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature1, fill1, 1);
+      renderFeature(replay, feature0, fill0, 1);
+      renderFeature(replay, feature1, fill1, 1);
       replay.replay(context, transform, 0, {});
       expect(moveToCount).to.be(2);
     });
 
     it('batches fill and stroke instructions for same style', function() {
-      _ol_renderer_vector_.renderFeature(replay, feature1, style1, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature2, style1, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature3, style1, 1);
+      renderFeature(replay, feature1, style1, 1);
+      renderFeature(replay, feature2, style1, 1);
+      renderFeature(replay, feature3, style1, 1);
       replay.replay(context, transform, 0, {});
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
@@ -115,9 +115,9 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('batches fill and stroke instructions for different styles', function() {
-      _ol_renderer_vector_.renderFeature(replay, feature1, style1, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature2, style1, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature3, style2, 1);
+      renderFeature(replay, feature1, style1, 1);
+      renderFeature(replay, feature2, style1, 1);
+      renderFeature(replay, feature3, style2, 1);
       replay.replay(context, transform, 0, {});
       expect(fillCount).to.be(2);
       expect(strokeCount).to.be(2);
@@ -125,9 +125,9 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('batches fill and stroke instructions for changing styles', function() {
-      _ol_renderer_vector_.renderFeature(replay, feature1, style1, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature2, style2, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature3, style1, 1);
+      renderFeature(replay, feature1, style1, 1);
+      renderFeature(replay, feature2, style2, 1);
+      renderFeature(replay, feature3, style1, 1);
       replay.replay(context, transform, 0, {});
       expect(fillCount).to.be(3);
       expect(strokeCount).to.be(3);
@@ -135,9 +135,9 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('batches fill and stroke instructions for skipped feature at the beginning', function() {
-      _ol_renderer_vector_.renderFeature(replay, feature1, style1, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature2, style2, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature3, style2, 1);
+      renderFeature(replay, feature1, style1, 1);
+      renderFeature(replay, feature2, style2, 1);
+      renderFeature(replay, feature3, style2, 1);
       const skippedUids = {};
       skippedUids[getUid(feature1)] = true;
       replay.replay(context, transform, 0, skippedUids);
@@ -147,9 +147,9 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('batches fill and stroke instructions for skipped feature at the end', function() {
-      _ol_renderer_vector_.renderFeature(replay, feature1, style1, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature2, style1, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature3, style2, 1);
+      renderFeature(replay, feature1, style1, 1);
+      renderFeature(replay, feature2, style1, 1);
+      renderFeature(replay, feature3, style2, 1);
       const skippedUids = {};
       skippedUids[getUid(feature3)] = true;
       replay.replay(context, transform, 0, skippedUids);
@@ -159,9 +159,9 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('batches fill and stroke instructions for skipped features', function() {
-      _ol_renderer_vector_.renderFeature(replay, feature1, style1, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature2, style1, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature3, style2, 1);
+      renderFeature(replay, feature1, style1, 1);
+      renderFeature(replay, feature2, style1, 1);
+      renderFeature(replay, feature3, style2, 1);
       const skippedUids = {};
       skippedUids[getUid(feature1)] = true;
       skippedUids[getUid(feature2)] = true;
@@ -173,9 +173,9 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
     it('does not batch when overlaps is set to true', function() {
       replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 1, true);
-      _ol_renderer_vector_.renderFeature(replay, feature1, style1, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature2, style1, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature3, style1, 1);
+      renderFeature(replay, feature1, style1, 1);
+      renderFeature(replay, feature2, style1, 1);
+      renderFeature(replay, feature3, style1, 1);
       replay.replay(context, transform, 0, {});
       expect(fillCount).to.be(3);
       expect(strokeCount).to.be(3);
@@ -201,8 +201,8 @@ describe('ol.render.canvas.ReplayGroup', function() {
         }
       });
 
-      _ol_renderer_vector_.renderFeature(replay, feature1, style2, 1);
-      _ol_renderer_vector_.renderFeature(replay, feature2, style2, 1);
+      renderFeature(replay, feature1, style2, 1);
+      renderFeature(replay, feature2, style2, 1);
       replay.replay(context, transform, 0, {});
 
       expect(lineDashCount).to.be(1);
@@ -242,13 +242,13 @@ describe('ol.render.canvas.ReplayGroup', function() {
       const geometrycollection = new Feature(new GeometryCollection(
         [point.getGeometry(), linestring.getGeometry(), polygon.getGeometry()]));
       replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 1, true);
-      _ol_renderer_vector_.renderFeature(replay, point, style, 1);
-      _ol_renderer_vector_.renderFeature(replay, multipoint, style, 1);
-      _ol_renderer_vector_.renderFeature(replay, linestring, style, 1);
-      _ol_renderer_vector_.renderFeature(replay, multilinestring, style, 1);
-      _ol_renderer_vector_.renderFeature(replay, polygon, style, 1);
-      _ol_renderer_vector_.renderFeature(replay, multipolygon, style, 1);
-      _ol_renderer_vector_.renderFeature(replay, geometrycollection, style, 1);
+      renderFeature(replay, point, style, 1);
+      renderFeature(replay, multipoint, style, 1);
+      renderFeature(replay, linestring, style, 1);
+      renderFeature(replay, multilinestring, style, 1);
+      renderFeature(replay, polygon, style, 1);
+      renderFeature(replay, multipolygon, style, 1);
+      renderFeature(replay, geometrycollection, style, 1);
       _ol_transform_.scale(transform, 0.1, 0.1);
       replay.replay(context, transform, 0, {});
       expect(calls.length).to.be(9);

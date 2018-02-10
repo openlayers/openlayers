@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import Overlay from '../src/ol/Overlay.js';
 import View from '../src/ol/View.js';
-import _ol_coordinate_ from '../src/ol/coordinate.js';
+import {toStringHDMS} from '../src/ol/coordinate.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat, toLonLat} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -47,7 +47,7 @@ map.addOverlay(popup);
 map.on('click', function(evt) {
   const element = popup.getElement();
   const coordinate = evt.coordinate;
-  const hdms = _ol_coordinate_.toStringHDMS(toLonLat(coordinate));
+  const hdms = toStringHDMS(toLonLat(coordinate));
 
   $(element).popover('destroy');
   popup.setPosition(coordinate);

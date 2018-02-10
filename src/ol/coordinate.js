@@ -3,7 +3,6 @@
  */
 import {modulo} from './math.js';
 import {padNumber} from './string.js';
-const _ol_coordinate_ = {};
 
 
 /**
@@ -21,11 +20,11 @@ const _ol_coordinate_ = {};
  * @return {ol.Coordinate} The input coordinate adjusted by the given delta.
  * @api
  */
-_ol_coordinate_.add = function(coordinate, delta) {
+export function add(coordinate, delta) {
   coordinate[0] += delta[0];
   coordinate[1] += delta[1];
   return coordinate;
-};
+}
 
 
 /**
@@ -35,7 +34,7 @@ _ol_coordinate_.add = function(coordinate, delta) {
  * @param {ol.geom.Circle} circle The circle.
  * @return {ol.Coordinate} Closest point on the circumference
  */
-_ol_coordinate_.closestOnCircle = function(coordinate, circle) {
+export function closestOnCircle(coordinate, circle) {
   const r = circle.getRadius();
   const center = circle.getCenter();
   const x0 = center[0];
@@ -54,7 +53,7 @@ _ol_coordinate_.closestOnCircle = function(coordinate, circle) {
   const y = y0 + r * dy / d;
 
   return [x, y];
-};
+}
 
 
 /**
@@ -68,7 +67,7 @@ _ol_coordinate_.closestOnCircle = function(coordinate, circle) {
  * @return {ol.Coordinate} The foot of the perpendicular of the coordinate to
  *     the segment.
  */
-_ol_coordinate_.closestOnSegment = function(coordinate, segment) {
+export function closestOnSegment(coordinate, segment) {
   const x0 = coordinate[0];
   const y0 = coordinate[1];
   const start = segment[0];
@@ -93,7 +92,7 @@ _ol_coordinate_.closestOnSegment = function(coordinate, segment) {
     y = y1 + along * dy;
   }
   return [x, y];
-};
+}
 
 
 /**
@@ -119,17 +118,17 @@ _ol_coordinate_.closestOnSegment = function(coordinate, segment) {
  * @return {ol.CoordinateFormatType} Coordinate format.
  * @api
  */
-_ol_coordinate_.createStringXY = function(opt_fractionDigits) {
+export function createStringXY(opt_fractionDigits) {
   return (
     /**
      * @param {ol.Coordinate|undefined} coordinate Coordinate.
      * @return {string} String XY.
      */
     function(coordinate) {
-      return _ol_coordinate_.toStringXY(coordinate, opt_fractionDigits);
+      return toStringXY(coordinate, opt_fractionDigits);
     }
   );
-};
+}
 
 
 /**
@@ -139,7 +138,7 @@ _ol_coordinate_.createStringXY = function(opt_fractionDigits) {
  *    after the decimal point. Default is `0`.
  * @return {string} String.
  */
-_ol_coordinate_.degreesToStringHDMS = function(hemispheres, degrees, opt_fractionDigits) {
+export function degreesToStringHDMS(hemispheres, degrees, opt_fractionDigits) {
   const normalizedDegrees = modulo(degrees + 180, 360) - 180;
   const x = Math.abs(3600 * normalizedDegrees);
   const dflPrecision = opt_fractionDigits || 0;
@@ -163,7 +162,7 @@ _ol_coordinate_.degreesToStringHDMS = function(hemispheres, degrees, opt_fractio
   return deg + '\u00b0 ' + padNumber(min, 2) + '\u2032 ' +
     padNumber(sec, 2, dflPrecision) + '\u2033' +
     (normalizedDegrees == 0 ? '' : ' ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0));
-};
+}
 
 
 /**
@@ -193,7 +192,7 @@ _ol_coordinate_.degreesToStringHDMS = function(hemispheres, degrees, opt_fractio
  * @return {string} Formatted coordinate.
  * @api
  */
-_ol_coordinate_.format = function(coordinate, template, opt_fractionDigits) {
+export function format(coordinate, template, opt_fractionDigits) {
   if (coordinate) {
     return template
       .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
@@ -201,15 +200,15 @@ _ol_coordinate_.format = function(coordinate, template, opt_fractionDigits) {
   } else {
     return '';
   }
-};
+}
 
 
 /**
  * @param {ol.Coordinate} coordinate1 First coordinate.
  * @param {ol.Coordinate} coordinate2 Second coordinate.
- * @return {boolean} Whether the passed coordinates are equal.
+ * @return {boolean} The two coordinates are equal.
  */
-_ol_coordinate_.equals = function(coordinate1, coordinate2) {
+export function equals(coordinate1, coordinate2) {
   let equals = true;
   for (let i = coordinate1.length - 1; i >= 0; --i) {
     if (coordinate1[i] != coordinate2[i]) {
@@ -218,7 +217,7 @@ _ol_coordinate_.equals = function(coordinate1, coordinate2) {
     }
   }
   return equals;
-};
+}
 
 
 /**
@@ -237,7 +236,7 @@ _ol_coordinate_.equals = function(coordinate1, coordinate2) {
  * @return {ol.Coordinate} Coordinate.
  * @api
  */
-_ol_coordinate_.rotate = function(coordinate, angle) {
+export function rotate(coordinate, angle) {
   const cosAngle = Math.cos(angle);
   const sinAngle = Math.sin(angle);
   const x = coordinate[0] * cosAngle - coordinate[1] * sinAngle;
@@ -245,7 +244,7 @@ _ol_coordinate_.rotate = function(coordinate, angle) {
   coordinate[0] = x;
   coordinate[1] = y;
   return coordinate;
-};
+}
 
 
 /**
@@ -263,26 +262,11 @@ _ol_coordinate_.rotate = function(coordinate, angle) {
  * @param {number} scale Scale factor.
  * @return {ol.Coordinate} Coordinate.
  */
-_ol_coordinate_.scale = function(coordinate, scale) {
+export function scale(coordinate, scale) {
   coordinate[0] *= scale;
   coordinate[1] *= scale;
   return coordinate;
-};
-
-
-/**
- * Subtract `delta` to `coordinate`. `coordinate` is modified in place and
- * returned by the function.
- *
- * @param {ol.Coordinate} coordinate Coordinate.
- * @param {ol.Coordinate} delta Delta.
- * @return {ol.Coordinate} Coordinate.
- */
-_ol_coordinate_.sub = function(coordinate, delta) {
-  coordinate[0] -= delta[0];
-  coordinate[1] -= delta[1];
-  return coordinate;
-};
+}
 
 
 /**
@@ -290,11 +274,11 @@ _ol_coordinate_.sub = function(coordinate, delta) {
  * @param {ol.Coordinate} coord2 Second coordinate.
  * @return {number} Squared distance between coord1 and coord2.
  */
-_ol_coordinate_.squaredDistance = function(coord1, coord2) {
+export function squaredDistance(coord1, coord2) {
   const dx = coord1[0] - coord2[0];
   const dy = coord1[1] - coord2[1];
   return dx * dx + dy * dy;
-};
+}
 
 
 /**
@@ -302,9 +286,9 @@ _ol_coordinate_.squaredDistance = function(coord1, coord2) {
  * @param {ol.Coordinate} coord2 Second coordinate.
  * @return {number} Distance between coord1 and coord2.
  */
-_ol_coordinate_.distance = function(coord1, coord2) {
-  return Math.sqrt(_ol_coordinate_.squaredDistance(coord1, coord2));
-};
+export function distance(coord1, coord2) {
+  return Math.sqrt(squaredDistance(coord1, coord2));
+}
 
 
 /**
@@ -314,10 +298,10 @@ _ol_coordinate_.distance = function(coord1, coord2) {
  * @param {Array.<ol.Coordinate>} segment Line segment (2 coordinates).
  * @return {number} Squared distance from the point to the line segment.
  */
-_ol_coordinate_.squaredDistanceToSegment = function(coordinate, segment) {
-  return _ol_coordinate_.squaredDistance(coordinate,
-    _ol_coordinate_.closestOnSegment(coordinate, segment));
-};
+export function squaredDistanceToSegment(coordinate, segment) {
+  return squaredDistance(coordinate,
+    closestOnSegment(coordinate, segment));
+}
 
 
 /**
@@ -342,14 +326,14 @@ _ol_coordinate_.squaredDistanceToSegment = function(coordinate, segment) {
  * @return {string} Hemisphere, degrees, minutes and seconds.
  * @api
  */
-_ol_coordinate_.toStringHDMS = function(coordinate, opt_fractionDigits) {
+export function toStringHDMS(coordinate, opt_fractionDigits) {
   if (coordinate) {
-    return _ol_coordinate_.degreesToStringHDMS('NS', coordinate[1], opt_fractionDigits) + ' ' +
-        _ol_coordinate_.degreesToStringHDMS('EW', coordinate[0], opt_fractionDigits);
+    return degreesToStringHDMS('NS', coordinate[1], opt_fractionDigits) + ' ' +
+        degreesToStringHDMS('EW', coordinate[0], opt_fractionDigits);
   } else {
     return '';
   }
-};
+}
 
 
 /**
@@ -373,7 +357,6 @@ _ol_coordinate_.toStringHDMS = function(coordinate, opt_fractionDigits) {
  * @return {string} XY.
  * @api
  */
-_ol_coordinate_.toStringXY = function(coordinate, opt_fractionDigits) {
-  return _ol_coordinate_.format(coordinate, '{x}, {y}', opt_fractionDigits);
-};
-export default _ol_coordinate_;
+export function toStringXY(coordinate, opt_fractionDigits) {
+  return format(coordinate, '{x}, {y}', opt_fractionDigits);
+}

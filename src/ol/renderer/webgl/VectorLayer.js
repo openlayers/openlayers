@@ -7,7 +7,7 @@ import ViewHint from '../../ViewHint.js';
 import {buffer, containsExtent, createEmpty} from '../../extent.js';
 import WebGLReplayGroup from '../../render/webgl/ReplayGroup.js';
 import RendererType from '../Type.js';
-import _ol_renderer_vector_ from '../vector.js';
+import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import WebGLLayerRenderer from '../webgl/Layer.js';
 import _ol_transform_ from '../../transform.js';
 
@@ -235,7 +235,7 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
   let vectorLayerRenderOrder = vectorLayer.getRenderOrder();
 
   if (vectorLayerRenderOrder === undefined) {
-    vectorLayerRenderOrder = _ol_renderer_vector_.defaultOrder;
+    vectorLayerRenderOrder = defaultRenderOrder;
   }
 
   const extent = buffer(frameStateExtent,
@@ -257,14 +257,14 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
   this.dirty_ = false;
 
   const replayGroup = new WebGLReplayGroup(
-    _ol_renderer_vector_.getTolerance(resolution, pixelRatio),
+    getRenderTolerance(resolution, pixelRatio),
     extent, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
    * @param {ol.Feature} feature Feature.
    * @this {ol.renderer.webgl.VectorLayer}
    */
-  const renderFeature = function(feature) {
+  const render = function(feature) {
     let styles;
     let styleFunction = feature.getStyleFunction();
     if (styleFunction) {
@@ -292,9 +292,9 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
         features.push(feature);
       }, this);
     features.sort(vectorLayerRenderOrder);
-    features.forEach(renderFeature.bind(this));
+    features.forEach(render.bind(this));
   } else {
-    vectorSource.forEachFeatureInExtent(extent, renderFeature, this);
+    vectorSource.forEachFeatureInExtent(extent, render, this);
   }
   replayGroup.finish(context);
 
@@ -324,15 +324,15 @@ WebGLVectorLayerRenderer.prototype.renderFeature = function(feature, resolution,
   let loading = false;
   if (Array.isArray(styles)) {
     for (let i = styles.length - 1, ii = 0; i >= ii; --i) {
-      loading = _ol_renderer_vector_.renderFeature(
+      loading = renderFeature(
         replayGroup, feature, styles[i],
-        _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
+        getSquaredRenderTolerance(resolution, pixelRatio),
         this.handleStyleImageChange_, this) || loading;
     }
   } else {
-    loading = _ol_renderer_vector_.renderFeature(
+    loading = renderFeature(
       replayGroup, feature, styles,
-      _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
+      getSquaredRenderTolerance(resolution, pixelRatio),
       this.handleStyleImageChange_, this) || loading;
   }
   return loading;

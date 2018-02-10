@@ -9,7 +9,7 @@ import Projection from '../../../../src/ol/proj/Projection.js';
 import ReprojTile from '../../../../src/ol/reproj/Tile.js';
 import TileImage from '../../../../src/ol/source/TileImage.js';
 import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
-import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
+import {createXYZ, createForProjection} from '../../../../src/ol/tilegrid.js';
 
 
 describe('ol.source.TileImage', function() {
@@ -19,7 +19,7 @@ describe('ol.source.TileImage', function() {
       cacheSize: opt_cacheSize,
       projection: proj,
       tileGrid: opt_tileGrid ||
-          _ol_tilegrid_.createForProjection(proj, undefined, [2, 2]),
+          createForProjection(proj, undefined, [2, 2]),
       tileUrlFunction: createFromTemplate('data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=')
     });
   }
@@ -36,7 +36,7 @@ describe('ol.source.TileImage', function() {
   describe('#setTileGridForProjection', function() {
     it('uses the tilegrid for given projection', function() {
       const source = createSource();
-      const tileGrid = _ol_tilegrid_.createForProjection('EPSG:4326', 3, [10, 20]);
+      const tileGrid = createForProjection('EPSG:4326', 3, [10, 20]);
       source.setTileGridForProjection('EPSG:4326', tileGrid);
       const retrieved = source.getTileGridForProjection(getProjection('EPSG:4326'));
       expect(retrieved).to.be(tileGrid);
@@ -141,7 +141,7 @@ describe('ol.source.TileImage', function() {
     });
 
     it('can handle source projection without extent and units', function(done) {
-      const source = createSource('4326_noextentnounits', _ol_tilegrid_.createXYZ({
+      const source = createSource('4326_noextentnounits', createXYZ({
         extent: [-180, -90, 180, 90],
         tileSize: [2, 2]
       }));
@@ -160,7 +160,7 @@ describe('ol.source.TileImage', function() {
       const proj = getProjection('4326_noextentnounits');
       const source = createSource();
       source.setTileGridForProjection(proj,
-        _ol_tilegrid_.createXYZ({
+        createXYZ({
           extent: WORLD_EXTENT,
           tileSize: [2, 2]
         }));

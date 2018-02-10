@@ -10,7 +10,7 @@ import XYZ from '../src/ol/source/XYZ.js';
 import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
-import _ol_tilegrid_ from '../src/ol/tilegrid.js';
+import {createXYZ} from '../src/ol/tilegrid.js';
 
 
 const serviceUrl = 'https://sampleserver3.arcgisonline.com/ArcGIS/rest/services/' +
@@ -82,7 +82,7 @@ const vectorSource = new VectorSource({
       }
     }});
   },
-  strategy: tileStrategy(_ol_tilegrid_.createXYZ({
+  strategy: tileStrategy(createXYZ({
     tileSize: 512
   }))
 });

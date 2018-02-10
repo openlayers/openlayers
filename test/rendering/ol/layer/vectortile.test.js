@@ -12,7 +12,7 @@ import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Style from '../../../../src/ol/style/Style.js';
 import Text from '../../../../src/ol/style/Text.js';
-import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
+import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 
 describe('ol.rendering.layer.VectorTile', function() {
@@ -71,7 +71,7 @@ describe('ol.rendering.layer.VectorTile', function() {
     beforeEach(function() {
       source = new VectorTileSource({
         format: new MVT(),
-        tileGrid: _ol_tilegrid_.createXYZ(),
+        tileGrid: createXYZ(),
         url: 'rendering/ol/data/tiles/mvt/{z}-{x}-{y}.vector.pbf',
         transition: 0
       });

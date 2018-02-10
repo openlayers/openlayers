@@ -14,7 +14,7 @@ import _ol_render_canvas_ from '../../render/canvas.js';
 import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
 import RendererType from '../Type.js';
 import CanvasLayerRenderer from '../canvas/Layer.js';
-import _ol_renderer_vector_ from '../vector.js';
+import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 
 /**
  * @constructor
@@ -321,7 +321,7 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
   let vectorLayerRenderOrder = vectorLayer.getRenderOrder();
 
   if (vectorLayerRenderOrder === undefined) {
-    vectorLayerRenderOrder = _ol_renderer_vector_.defaultOrder;
+    vectorLayerRenderOrder = defaultRenderOrder;
   }
 
   const extent = buffer(frameStateExtent,
@@ -355,14 +355,14 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
   this.dirty_ = false;
 
   const replayGroup = new CanvasReplayGroup(
-    _ol_renderer_vector_.getTolerance(resolution, pixelRatio), extent, resolution,
+    getRenderTolerance(resolution, pixelRatio), extent, resolution,
     pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
    * @param {ol.Feature} feature Feature.
    * @this {ol.renderer.canvas.VectorLayer}
    */
-  const renderFeature = function(feature) {
+  const render = function(feature) {
     let styles;
     let styleFunction = feature.getStyleFunction();
     if (styleFunction) {
@@ -391,10 +391,10 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
       }, this);
     features.sort(vectorLayerRenderOrder);
     for (let i = 0, ii = features.length; i < ii; ++i) {
-      renderFeature(features[i]);
+      render(features[i]);
     }
   } else {
-    vectorSource.forEachFeatureInExtent(extent, renderFeature, this);
+    vectorSource.forEachFeatureInExtent(extent, render, this);
   }
   replayGroup.finish();
 
@@ -425,15 +425,15 @@ CanvasVectorLayerRenderer.prototype.renderFeature = function(feature, resolution
   let loading = false;
   if (Array.isArray(styles)) {
     for (let i = 0, ii = styles.length; i < ii; ++i) {
-      loading = _ol_renderer_vector_.renderFeature(
+      loading = renderFeature(
         replayGroup, feature, styles[i],
-        _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
+        getSquaredRenderTolerance(resolution, pixelRatio),
         this.handleStyleImageChange_, this) || loading;
     }
   } else {
-    loading = _ol_renderer_vector_.renderFeature(
+    loading = renderFeature(
       replayGroup, feature, styles,
-      _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
+      getSquaredRenderTolerance(resolution, pixelRatio),
       this.handleStyleImageChange_, this);
   }
   return loading;

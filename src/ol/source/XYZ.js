@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import TileImage from '../source/TileImage.js';
-import _ol_tilegrid_ from '../tilegrid.js';
+import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 /**
  * @classdesc
@@ -33,8 +33,8 @@ const XYZ = function(opt_options) {
     options.projection : 'EPSG:3857';
 
   const tileGrid = options.tileGrid !== undefined ? options.tileGrid :
-    _ol_tilegrid_.createXYZ({
-      extent: _ol_tilegrid_.extentFromProjection(projection),
+    createXYZ({
+      extent: extentFromProjection(projection),
       maxZoom: options.maxZoom,
       minZoom: options.minZoom,
       tileSize: options.tileSize

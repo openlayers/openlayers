@@ -5,7 +5,6 @@ import {getUid} from '../index.js';
 import ImageState from '../ImageState.js';
 import GeometryType from '../geom/GeometryType.js';
 import ReplayType from '../render/ReplayType.js';
-const _ol_renderer_vector_ = {};
 
 
 /**
@@ -16,13 +15,31 @@ const SIMPLIFY_TOLERANCE = 0.5;
 
 
 /**
+ * @const
+ * @type {Object.<ol.geom.GeometryType,
+ *                function(ol.render.ReplayGroup, ol.geom.Geometry,
+ *                         ol.style.Style, Object)>}
+ */
+const GEOMETRY_RENDERERS = {
+  'Point': renderPointGeometry,
+  'LineString': renderLineStringGeometry,
+  'Polygon': renderPolygonGeometry,
+  'MultiPoint': renderMultiPointGeometry,
+  'MultiLineString': renderMultiLineStringGeometry,
+  'MultiPolygon': renderMultiPolygonGeometry,
+  'GeometryCollection': renderGeometryCollectionGeometry,
+  'Circle': renderCircleGeometry
+};
+
+
+/**
  * @param {ol.Feature|ol.render.Feature} feature1 Feature 1.
  * @param {ol.Feature|ol.render.Feature} feature2 Feature 2.
  * @return {number} Order.
  */
-_ol_renderer_vector_.defaultOrder = function(feature1, feature2) {
+export function defaultOrder(feature1, feature2) {
   return getUid(feature1) - getUid(feature2);
-};
+}
 
 
 /**
@@ -30,10 +47,10 @@ _ol_renderer_vector_.defaultOrder = function(feature1, feature2) {
  * @param {number} pixelRatio Pixel ratio.
  * @return {number} Squared pixel tolerance.
  */
-_ol_renderer_vector_.getSquaredTolerance = function(resolution, pixelRatio) {
-  const tolerance = _ol_renderer_vector_.getTolerance(resolution, pixelRatio);
+export function getSquaredTolerance(resolution, pixelRatio) {
+  const tolerance = getTolerance(resolution, pixelRatio);
   return tolerance * tolerance;
-};
+}
 
 
 /**
@@ -41,9 +58,9 @@ _ol_renderer_vector_.getSquaredTolerance = function(resolution, pixelRatio) {
  * @param {number} pixelRatio Pixel ratio.
  * @return {number} Pixel tolerance.
  */
-_ol_renderer_vector_.getTolerance = function(resolution, pixelRatio) {
+export function getTolerance(resolution, pixelRatio) {
   return SIMPLIFY_TOLERANCE * resolution / pixelRatio;
-};
+}
 
 
 /**
@@ -51,9 +68,8 @@ _ol_renderer_vector_.getTolerance = function(resolution, pixelRatio) {
  * @param {ol.geom.Circle} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature} feature Feature.
- * @private
  */
-_ol_renderer_vector_.renderCircleGeometry_ = function(replayGroup, geometry, style, feature) {
+function renderCircleGeometry(replayGroup, geometry, style, feature) {
   const fillStyle = style.getFill();
   const strokeStyle = style.getStroke();
   if (fillStyle || strokeStyle) {
@@ -67,7 +83,7 @@ _ol_renderer_vector_.renderCircleGeometry_ = function(replayGroup, geometry, sty
     textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
-};
+}
 
 
 /**
@@ -80,8 +96,7 @@ _ol_renderer_vector_.renderCircleGeometry_ = function(replayGroup, geometry, sty
  * @return {boolean} `true` if style is loading.
  * @template T
  */
-_ol_renderer_vector_.renderFeature = function(
-  replayGroup, feature, style, squaredTolerance, listener, thisArg) {
+export function renderFeature(replayGroup, feature, style, squaredTolerance, listener, thisArg) {
   let loading = false;
   const imageStyle = style.getImage();
   if (imageStyle) {
@@ -97,11 +112,10 @@ _ol_renderer_vector_.renderFeature = function(
       loading = true;
     }
   }
-  _ol_renderer_vector_.renderFeature_(replayGroup, feature, style,
-    squaredTolerance);
+  renderFeatureInternal(replayGroup, feature, style, squaredTolerance);
 
   return loading;
-};
+}
 
 
 /**
@@ -109,10 +123,8 @@ _ol_renderer_vector_.renderFeature = function(
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
- * @private
  */
-_ol_renderer_vector_.renderFeature_ = function(
-  replayGroup, feature, style, squaredTolerance) {
+function renderFeatureInternal(replayGroup, feature, style, squaredTolerance) {
   const geometry = style.getGeometryFunction()(feature);
   if (!geometry) {
     return;
@@ -120,13 +132,12 @@ _ol_renderer_vector_.renderFeature_ = function(
   const simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
   const renderer = style.getRenderer();
   if (renderer) {
-    _ol_renderer_vector_.renderGeometry_(replayGroup, simplifiedGeometry, style, feature);
+    renderGeometry(replayGroup, simplifiedGeometry, style, feature);
   } else {
-    const geometryRenderer =
-        _ol_renderer_vector_.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
+    const geometryRenderer = GEOMETRY_RENDERERS[simplifiedGeometry.getType()];
     geometryRenderer(replayGroup, simplifiedGeometry, style, feature);
   }
-};
+}
 
 
 /**
@@ -134,19 +145,18 @@ _ol_renderer_vector_.renderFeature_ = function(
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
- * @private
  */
-_ol_renderer_vector_.renderGeometry_ = function(replayGroup, geometry, style, feature) {
+function renderGeometry(replayGroup, geometry, style, feature) {
   if (geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
     const geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
     for (let i = 0, ii = geometries.length; i < ii; ++i) {
-      _ol_renderer_vector_.renderGeometry_(replayGroup, geometries[i], style, feature);
+      renderGeometry(replayGroup, geometries[i], style, feature);
     }
     return;
   }
   const replay = replayGroup.getReplay(style.getZIndex(), ReplayType.DEFAULT);
   replay.drawCustom(/** @type {ol.geom.SimpleGeometry} */ (geometry), feature, style.getRenderer());
-};
+}
 
 
 /**
@@ -154,17 +164,16 @@ _ol_renderer_vector_.renderGeometry_ = function(replayGroup, geometry, style, fe
  * @param {ol.geom.GeometryCollection} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature} feature Feature.
- * @private
  */
-_ol_renderer_vector_.renderGeometryCollectionGeometry_ = function(replayGroup, geometry, style, feature) {
+function renderGeometryCollectionGeometry(replayGroup, geometry, style, feature) {
   const geometries = geometry.getGeometriesArray();
   let i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     const geometryRenderer =
-        _ol_renderer_vector_.GEOMETRY_RENDERERS_[geometries[i].getType()];
+        GEOMETRY_RENDERERS[geometries[i].getType()];
     geometryRenderer(replayGroup, geometries[i], style, feature);
   }
-};
+}
 
 
 /**
@@ -172,9 +181,8 @@ _ol_renderer_vector_.renderGeometryCollectionGeometry_ = function(replayGroup, g
  * @param {ol.geom.LineString|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
- * @private
  */
-_ol_renderer_vector_.renderLineStringGeometry_ = function(replayGroup, geometry, style, feature) {
+function renderLineStringGeometry(replayGroup, geometry, style, feature) {
   const strokeStyle = style.getStroke();
   if (strokeStyle) {
     const lineStringReplay = replayGroup.getReplay(style.getZIndex(), ReplayType.LINE_STRING);
@@ -187,7 +195,7 @@ _ol_renderer_vector_.renderLineStringGeometry_ = function(replayGroup, geometry,
     textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
-};
+}
 
 
 /**
@@ -195,9 +203,8 @@ _ol_renderer_vector_.renderLineStringGeometry_ = function(replayGroup, geometry,
  * @param {ol.geom.MultiLineString|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
- * @private
  */
-_ol_renderer_vector_.renderMultiLineStringGeometry_ = function(replayGroup, geometry, style, feature) {
+function renderMultiLineStringGeometry(replayGroup, geometry, style, feature) {
   const strokeStyle = style.getStroke();
   if (strokeStyle) {
     const lineStringReplay = replayGroup.getReplay(style.getZIndex(), ReplayType.LINE_STRING);
@@ -210,7 +217,7 @@ _ol_renderer_vector_.renderMultiLineStringGeometry_ = function(replayGroup, geom
     textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
-};
+}
 
 
 /**
@@ -218,9 +225,8 @@ _ol_renderer_vector_.renderMultiLineStringGeometry_ = function(replayGroup, geom
  * @param {ol.geom.MultiPolygon} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature} feature Feature.
- * @private
  */
-_ol_renderer_vector_.renderMultiPolygonGeometry_ = function(replayGroup, geometry, style, feature) {
+function renderMultiPolygonGeometry(replayGroup, geometry, style, feature) {
   const fillStyle = style.getFill();
   const strokeStyle = style.getStroke();
   if (strokeStyle || fillStyle) {
@@ -234,7 +240,7 @@ _ol_renderer_vector_.renderMultiPolygonGeometry_ = function(replayGroup, geometr
     textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
-};
+}
 
 
 /**
@@ -242,9 +248,8 @@ _ol_renderer_vector_.renderMultiPolygonGeometry_ = function(replayGroup, geometr
  * @param {ol.geom.Point|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
- * @private
  */
-_ol_renderer_vector_.renderPointGeometry_ = function(replayGroup, geometry, style, feature) {
+function renderPointGeometry(replayGroup, geometry, style, feature) {
   const imageStyle = style.getImage();
   if (imageStyle) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
@@ -260,7 +265,7 @@ _ol_renderer_vector_.renderPointGeometry_ = function(replayGroup, geometry, styl
     textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));
     textReplay.drawText(geometry, feature);
   }
-};
+}
 
 
 /**
@@ -268,9 +273,8 @@ _ol_renderer_vector_.renderPointGeometry_ = function(replayGroup, geometry, styl
  * @param {ol.geom.MultiPoint|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
- * @private
  */
-_ol_renderer_vector_.renderMultiPointGeometry_ = function(replayGroup, geometry, style, feature) {
+function renderMultiPointGeometry(replayGroup, geometry, style, feature) {
   const imageStyle = style.getImage();
   if (imageStyle) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
@@ -286,7 +290,7 @@ _ol_renderer_vector_.renderMultiPointGeometry_ = function(replayGroup, geometry,
     textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));
     textReplay.drawText(geometry, feature);
   }
-};
+}
 
 
 /**
@@ -294,9 +298,8 @@ _ol_renderer_vector_.renderMultiPointGeometry_ = function(replayGroup, geometry,
  * @param {ol.geom.Polygon|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
- * @private
  */
-_ol_renderer_vector_.renderPolygonGeometry_ = function(replayGroup, geometry, style, feature) {
+function renderPolygonGeometry(replayGroup, geometry, style, feature) {
   const fillStyle = style.getFill();
   const strokeStyle = style.getStroke();
   if (fillStyle || strokeStyle) {
@@ -310,24 +313,4 @@ _ol_renderer_vector_.renderPolygonGeometry_ = function(replayGroup, geometry, st
     textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
-};
-
-
-/**
- * @const
- * @private
- * @type {Object.<ol.geom.GeometryType,
- *                function(ol.render.ReplayGroup, ol.geom.Geometry,
- *                         ol.style.Style, Object)>}
- */
-_ol_renderer_vector_.GEOMETRY_RENDERERS_ = {
-  'Point': _ol_renderer_vector_.renderPointGeometry_,
-  'LineString': _ol_renderer_vector_.renderLineStringGeometry_,
-  'Polygon': _ol_renderer_vector_.renderPolygonGeometry_,
-  'MultiPoint': _ol_renderer_vector_.renderMultiPointGeometry_,
-  'MultiLineString': _ol_renderer_vector_.renderMultiLineStringGeometry_,
-  'MultiPolygon': _ol_renderer_vector_.renderMultiPolygonGeometry_,
-  'GeometryCollection': _ol_renderer_vector_.renderGeometryCollectionGeometry_,
-  'Circle': _ol_renderer_vector_.renderCircleGeometry_
-};
-export default _ol_renderer_vector_;
+}

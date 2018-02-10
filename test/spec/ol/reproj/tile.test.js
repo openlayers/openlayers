@@ -3,7 +3,7 @@ import {listen} from '../../../../src/ol/events.js';
 import {addCommon, clearAllProjections, get as getProjection} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
 import ReprojTile from '../../../../src/ol/reproj/Tile.js';
-import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
+import {createForProjection} from '../../../../src/ol/tilegrid.js';
 
 
 describe('ol.reproj.Tile', function() {
@@ -28,8 +28,8 @@ describe('ol.reproj.Tile', function() {
     const proj4326 = getProjection('EPSG:4326');
     const proj3857 = getProjection('EPSG:3857');
     return new ReprojTile(
-      proj3857, _ol_tilegrid_.createForProjection(proj3857), proj4326,
-      _ol_tilegrid_.createForProjection(proj4326, 3, opt_tileSize),
+      proj3857, createForProjection(proj3857), proj4326,
+      createForProjection(proj4326, 3, opt_tileSize),
       [3, 2, -2], null, pixelRatio, 0, function(z, x, y, pixelRatio) {
         return new ImageTile([z, x, y], 0, // IDLE
           'data:image/gif;base64,' +
@@ -55,8 +55,8 @@ describe('ol.reproj.Tile', function() {
     const proj4326 = getProjection('EPSG:4326');
     const proj3857 = getProjection('EPSG:3857');
     const tile = new ReprojTile(
-      proj3857, _ol_tilegrid_.createForProjection(proj3857),
-      proj4326, _ol_tilegrid_.createForProjection(proj4326),
+      proj3857, createForProjection(proj3857),
+      proj4326, createForProjection(proj4326),
       [0, -1, 0], null, 1, 0, function() {
         expect().fail('No tiles should be required');
       });
@@ -67,8 +67,8 @@ describe('ol.reproj.Tile', function() {
     const proj4326 = getProjection('EPSG:4326');
     const proj27700 = getProjection('EPSG:27700');
     const tile = new ReprojTile(
-      proj27700, _ol_tilegrid_.createForProjection(proj27700),
-      proj4326, _ol_tilegrid_.createForProjection(proj4326),
+      proj27700, createForProjection(proj27700),
+      proj4326, createForProjection(proj4326),
       [3, 2, -2], null, 1, 0, function() {
         expect().fail('No tiles should be required');
       });

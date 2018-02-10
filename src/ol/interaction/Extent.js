@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
-import _ol_coordinate_ from '../coordinate.js';
+import {squaredDistanceToSegment, closestOnSegment, distance as coordinateDistance, squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
 import Event from '../events/Event.js';
 import {boundingExtent, getArea} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -316,8 +316,8 @@ ExtentInteraction.getSegments_ = function(extent) {
 ExtentInteraction.prototype.snapToVertex_ = function(pixel, map) {
   const pixelCoordinate = map.getCoordinateFromPixel(pixel);
   const sortByDistance = function(a, b) {
-    return _ol_coordinate_.squaredDistanceToSegment(pixelCoordinate, a) -
-        _ol_coordinate_.squaredDistanceToSegment(pixelCoordinate, b);
+    return squaredDistanceToSegment(pixelCoordinate, a) -
+        squaredDistanceToSegment(pixelCoordinate, b);
   };
   const extent = this.getExtent();
   if (extent) {
@@ -326,17 +326,17 @@ ExtentInteraction.prototype.snapToVertex_ = function(pixel, map) {
     segments.sort(sortByDistance);
     const closestSegment = segments[0];
 
-    let vertex = (_ol_coordinate_.closestOnSegment(pixelCoordinate,
+    let vertex = (closestOnSegment(pixelCoordinate,
       closestSegment));
     const vertexPixel = map.getPixelFromCoordinate(vertex);
 
     //if the distance is within tolerance, snap to the segment
-    if (_ol_coordinate_.distance(pixel, vertexPixel) <= this.pixelTolerance_) {
+    if (coordinateDistance(pixel, vertexPixel) <= this.pixelTolerance_) {
       //test if we should further snap to a vertex
       const pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
       const pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
-      const squaredDist1 = _ol_coordinate_.squaredDistance(vertexPixel, pixel1);
-      const squaredDist2 = _ol_coordinate_.squaredDistance(vertexPixel, pixel2);
+      const squaredDist1 = squaredCoordinateDistance(vertexPixel, pixel1);
+      const squaredDist2 = squaredCoordinateDistance(vertexPixel, pixel2);
       const dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
       this.snappedToVertex_ = dist <= this.pixelTolerance_;
       if (this.snappedToVertex_) {

@@ -4,7 +4,7 @@ import View from '../../../../src/ol/View.js';
 import Attribution from '../../../../src/ol/control/Attribution.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
 import TileSource from '../../../../src/ol/source/Tile.js';
-import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
+import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 describe('ol.control.Attribution', function() {
 
@@ -23,21 +23,21 @@ describe('ol.control.Attribution', function() {
         new TileLayer({
           source: new TileSource({
             projection: 'EPSG:3857',
-            tileGrid: _ol_tilegrid_.createXYZ(),
+            tileGrid: createXYZ(),
             attributions: 'foo'
           })
         }),
         new TileLayer({
           source: new TileSource({
             projection: 'EPSG:3857',
-            tileGrid: _ol_tilegrid_.createXYZ(),
+            tileGrid: createXYZ(),
             attributions: 'bar'
           })
         }),
         new TileLayer({
           source: new TileSource({
             projection: 'EPSG:3857',
-            tileGrid: _ol_tilegrid_.createXYZ(),
+            tileGrid: createXYZ(),
             attributions: 'foo'
           })
         })

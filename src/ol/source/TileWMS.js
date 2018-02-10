@@ -9,7 +9,7 @@ import {buffer, createEmpty} from '../extent.js';
 import {assign} from '../obj.js';
 import {modulo} from '../math.js';
 import {get as getProjection, transform, transformExtent} from '../proj.js';
-import _ol_reproj_ from '../reproj.js';
+import {calculateSourceResolution} from '../reproj.js';
 import {toSize, buffer as bufferSize, scale as scaleSize} from '../size.js';
 import TileImage from '../source/TileImage.js';
 import WMSServerType from '../source/WMSServerType.js';
@@ -135,7 +135,7 @@ TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projec
   }
 
   if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
-    tileResolution = _ol_reproj_.calculateSourceResolution(sourceProjectionObj, projectionObj, coordinate, tileResolution);
+    tileResolution = calculateSourceResolution(sourceProjectionObj, projectionObj, coordinate, tileResolution);
     tileExtent = transformExtent(tileExtent, projectionObj, sourceProjectionObj);
     coordinate = transform(coordinate, projectionObj, sourceProjectionObj);
   }

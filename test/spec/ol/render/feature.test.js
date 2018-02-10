@@ -6,8 +6,6 @@ import RenderFeature from '../../../../src/ol/render/Feature.js';
 
 
 describe('ol.render.Feature', function() {
-
-  let renderFeature;
   const type = 'Point';
   const flatCoordinates = [0, 0];
   const ends = null;
@@ -15,41 +13,46 @@ describe('ol.render.Feature', function() {
 
   describe('Constructor', function() {
     it('creates an instance', function() {
-      renderFeature =
-          new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
-      expect(renderFeature).to.be.a(RenderFeature);
+      const feature = new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
+      expect(feature).to.be.a(RenderFeature);
     });
   });
 
   describe('#get()', function() {
     it('returns a single property', function() {
-      expect(renderFeature.get('foo')).to.be('bar');
+      const feature = new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
+      expect(feature.get('foo')).to.be('bar');
     });
   });
 
   describe('#getEnds()', function() {
     it('returns the ends it was created with', function() {
-      expect(renderFeature.getEnds()).to.equal(ends);
+      const feature = new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
+      expect(feature.getEnds()).to.equal(ends);
     });
   });
 
   describe('#getExtent()', function() {
     it('returns the correct extent for a point', function() {
-      expect(renderFeature.getExtent()).to.eql([0, 0, 0, 0]);
+      const feature = new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
+      expect(feature.getExtent()).to.eql([0, 0, 0, 0]);
     });
+
     it('caches the extent', function() {
-      expect(renderFeature.getExtent()).to.equal(renderFeature.extent_);
+      const feature = new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
+      expect(feature.getExtent()).to.equal(feature.extent_);
     });
+
     it('returns the correct extent for a linestring', function() {
-      const feature =
-          new RenderFeature('LineString', [-1, -2, 2, 1], null, {});
+      const feature = new RenderFeature('LineString', [-1, -2, 2, 1], null, {});
       expect(feature.getExtent()).to.eql([-1, -2, 2, 1]);
     });
   });
 
   describe('#getFlatCoordinates()', function() {
     it('returns the flat coordinates it was created with', function() {
-      expect(renderFeature.getFlatCoordinates()).to.equal(flatCoordinates);
+      const feature = new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
+      expect(feature.getFlatCoordinates()).to.equal(flatCoordinates);
     });
   });
 
@@ -100,43 +103,50 @@ describe('ol.render.Feature', function() {
 
   describe('#getGeometry()', function() {
     it('returns itself as geometry', function() {
-      expect(renderFeature.getGeometry()).to.equal(renderFeature);
+      const feature = new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
+      expect(feature.getGeometry()).to.equal(feature);
     });
   });
 
   describe('#getId()', function() {
     it('returns the feature id', function() {
-      expect(renderFeature.getId()).to.be('foo');
+      const feature = new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
+      expect(feature.getId()).to.be('foo');
     });
   });
 
   describe('#getProperties()', function() {
     it('returns the properties it was created with', function() {
-      expect(renderFeature.getProperties()).to.equal(properties);
+      const feature = new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
+      expect(feature.getProperties()).to.equal(properties);
     });
   });
 
   describe('#getSimplifiedGeometry()', function() {
     it('returns itself as simplified geometry', function() {
-      expect(renderFeature.getSimplifiedGeometry()).to.equal(renderFeature);
+      const feature = new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
+      expect(feature.getSimplifiedGeometry()).to.equal(feature);
     });
   });
 
   describe('#getStride()', function() {
     it('returns 2', function() {
-      expect(renderFeature.getStride()).to.be(2);
+      const feature = new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
+      expect(feature.getStride()).to.be(2);
     });
   });
 
   describe('#getStyleFunction()', function() {
     it('returns undefined', function() {
-      expect(renderFeature.getStyleFunction()).to.be(undefined);
+      const feature = new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
+      expect(feature.getStyleFunction()).to.be(undefined);
     });
   });
 
   describe('#getType()', function() {
     it('returns the type it was created with', function() {
-      expect(renderFeature.getType()).to.equal(type);
+      const feature = new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
+      expect(feature.getType()).to.equal(type);
     });
   });
 

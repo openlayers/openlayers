@@ -5,7 +5,6 @@ import {createCanvasContext2D} from './dom.js';
 import {containsCoordinate, createEmpty, extend, getHeight, getTopLeft, getWidth} from './extent.js';
 import {solveLinearSystem} from './math.js';
 import {getPointResolution, transform} from './proj.js';
-const _ol_reproj_ = {};
 
 
 /**
@@ -20,7 +19,7 @@ const _ol_reproj_ = {};
  * @param {number} targetResolution Target resolution.
  * @return {number} The best resolution to use. Can be +-Infinity, NaN or 0.
  */
-_ol_reproj_.calculateSourceResolution = function(sourceProj, targetProj,
+export function calculateSourceResolution(sourceProj, targetProj,
   targetCenter, targetResolution) {
 
   const sourceCenter = transform(targetCenter, targetProj, sourceProj);
@@ -51,7 +50,7 @@ _ol_reproj_.calculateSourceResolution = function(sourceProj, targetProj,
   }
 
   return sourceResolution;
-};
+}
 
 
 /**
@@ -63,14 +62,13 @@ _ol_reproj_.calculateSourceResolution = function(sourceProj, targetProj,
  * @param {number} x X coordinate of the point (in pixels).
  * @param {number} y Y coordinate of the point (in pixels).
  * @return {ol.Coordinate} New point 1 px farther from the centroid.
- * @private
  */
-_ol_reproj_.enlargeClipPoint_ = function(centroidX, centroidY, x, y) {
+function enlargeClipPoint(centroidX, centroidY, x, y) {
   const dX = x - centroidX;
   const dY = y - centroidY;
   const distance = Math.sqrt(dX * dX + dY * dY);
   return [Math.round(x + dX / distance), Math.round(y + dY / distance)];
-};
+}
 
 
 /**
@@ -91,7 +89,7 @@ _ol_reproj_.enlargeClipPoint_ = function(centroidX, centroidY, x, y) {
  * @param {boolean=} opt_renderEdges Render reprojection edges.
  * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
-_ol_reproj_.render = function(width, height, pixelRatio,
+export function render(width, height, pixelRatio,
   sourceResolution, sourceExtent, targetResolution, targetExtent,
   triangulation, sources, gutter, opt_renderEdges) {
 
@@ -193,9 +191,9 @@ _ol_reproj_.render = function(width, height, pixelRatio,
     context.beginPath();
     const centroidX = (u0 + u1 + u2) / 3;
     const centroidY = (v0 + v1 + v2) / 3;
-    const p0 = _ol_reproj_.enlargeClipPoint_(centroidX, centroidY, u0, v0);
-    const p1 = _ol_reproj_.enlargeClipPoint_(centroidX, centroidY, u1, v1);
-    const p2 = _ol_reproj_.enlargeClipPoint_(centroidX, centroidY, u2, v2);
+    const p0 = enlargeClipPoint(centroidX, centroidY, u0, v0);
+    const p1 = enlargeClipPoint(centroidX, centroidY, u1, v1);
+    const p2 = enlargeClipPoint(centroidX, centroidY, u2, v2);
 
     context.moveTo(p1[0], p1[1]);
     context.lineTo(p0[0], p0[1]);
@@ -241,5 +239,4 @@ _ol_reproj_.render = function(width, height, pixelRatio,
     context.restore();
   }
   return context.canvas;
-};
-export default _ol_reproj_;
+}
