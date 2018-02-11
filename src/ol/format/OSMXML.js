@@ -37,11 +37,49 @@ inherits(OSMXML, XMLFeature);
 
 
 /**
+ * @const
+ * @type {Array.<string>}
+ */
+const NAMESPACE_URIS = [null];
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const WAY_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'nd': readNd,
+    'tag': readTag
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'node': readNode,
+    'way': readWay
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const NODE_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'tag': readTag
+  });
+
+
+/**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-OSMXML.readNode_ = function(node, objectStack) {
+function readNode(node, objectStack) {
   const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   const state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const id = node.getAttribute('id');
@@ -54,7 +92,7 @@ OSMXML.readNode_ = function(node, objectStack) {
 
   const values = pushParseAndPop({
     tags: {}
-  }, OSMXML.NODE_PARSERS_, node, objectStack);
+  }, NODE_PARSERS, node, objectStack);
   if (!isEmpty(values.tags)) {
     const geometry = new Point(coordinates);
     transformWithOptions(geometry, false, options);
@@ -63,91 +101,43 @@ OSMXML.readNode_ = function(node, objectStack) {
     feature.setProperties(values.tags);
     state.features.push(feature);
   }
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-OSMXML.readWay_ = function(node, objectStack) {
+function readWay(node, objectStack) {
   const id = node.getAttribute('id');
   const values = pushParseAndPop({
     id: id,
     ndrefs: [],
     tags: {}
-  }, OSMXML.WAY_PARSERS_, node, objectStack);
+  }, WAY_PARSERS, node, objectStack);
   const state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   state.ways.push(values);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-OSMXML.readNd_ = function(node, objectStack) {
+function readNd(node, objectStack) {
   const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   values.ndrefs.push(node.getAttribute('ref'));
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-OSMXML.readTag_ = function(node, objectStack) {
+function readTag(node, objectStack) {
   const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   values.tags[node.getAttribute('k')] = node.getAttribute('v');
-};
-
-
-/**
- * @const
- * @private
- * @type {Array.<string>}
- */
-OSMXML.NAMESPACE_URIS_ = [
-  null
-];
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OSMXML.WAY_PARSERS_ = makeStructureNS(
-  OSMXML.NAMESPACE_URIS_, {
-    'nd': OSMXML.readNd_,
-    'tag': OSMXML.readTag_
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OSMXML.PARSERS_ = makeStructureNS(
-  OSMXML.NAMESPACE_URIS_, {
-    'node': OSMXML.readNode_,
-    'way': OSMXML.readWay_
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OSMXML.NODE_PARSERS_ = makeStructureNS(
-  OSMXML.NAMESPACE_URIS_, {
-    'tag': OSMXML.readTag_
-  });
+}
 
 
 /**
@@ -172,7 +162,7 @@ OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
       nodes: {},
       ways: [],
       features: []
-    }, OSMXML.PARSERS_, node, [options]);
+    }, PARSERS, node, [options]);
     // parse nodes in ways
     for (let j = 0; j < state.ways.length; j++) {
       const values = /** @type {Object} */ (state.ways[j]);
