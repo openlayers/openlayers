@@ -51,17 +51,15 @@ inherits(WMSGetFeatureInfo, XMLFeature);
 /**
  * @const
  * @type {string}
- * @private
  */
-WMSGetFeatureInfo.featureIdentifier_ = '_feature';
+const featureIdentifier = '_feature';
 
 
 /**
  * @const
  * @type {string}
- * @private
  */
-WMSGetFeatureInfo.layerIdentifier_ = '_layer';
+const layerIdentifier = '_layer';
 
 
 /**
@@ -102,7 +100,7 @@ WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
       }
       const context = objectStack[0];
 
-      const toRemove = WMSGetFeatureInfo.layerIdentifier_;
+      const toRemove = layerIdentifier;
       const layerName = layer.localName.replace(toRemove, '');
 
       if (this.layers_ && !includes(this.layers_, layerName)) {
@@ -110,7 +108,7 @@ WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
       }
 
       const featureType = layerName +
-          WMSGetFeatureInfo.featureIdentifier_;
+          featureIdentifier;
 
       context['featureType'] = featureType;
       context['featureNS'] = this.featureNS_;
