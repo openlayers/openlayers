@@ -73,14 +73,13 @@ const Feature = function(opt_geometryOrProperties) {
   /**
    * User provided style.
    * @private
-   * @type {ol.style.Style|Array.<ol.style.Style>|
-   *     ol.FeatureStyleFunction}
+   * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
    */
   this.style_ = null;
 
   /**
    * @private
-   * @type {ol.FeatureStyleFunction|undefined}
+   * @type {ol.StyleFunction|undefined}
    */
   this.styleFunction_ = undefined;
 
@@ -172,8 +171,7 @@ Feature.prototype.getGeometryName = function() {
 /**
  * Get the feature's style. Will return what was provided to the
  * {@link ol.Feature#setStyle} method.
- * @return {ol.style.Style|Array.<ol.style.Style>|
- *     ol.FeatureStyleFunction|ol.StyleFunction} The feature style.
+ * @return {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction} The feature style.
  * @api
  */
 Feature.prototype.getStyle = function() {
@@ -183,7 +181,7 @@ Feature.prototype.getStyle = function() {
 
 /**
  * Get the feature's style function.
- * @return {ol.FeatureStyleFunction|undefined} Return a function
+ * @return {ol.StyleFunction|undefined} Return a function
  * representing the current style of this feature.
  * @api
  */
@@ -233,8 +231,7 @@ Feature.prototype.setGeometry = function(geometry) {
  * Set the style for the feature.  This can be a single style object, an array
  * of styles, or a function that takes a resolution and returns an array of
  * styles. If it is `null` the feature has no style (a `null` style).
- * @param {ol.style.Style|Array.<ol.style.Style>|
- *     ol.FeatureStyleFunction|ol.StyleFunction} style Style for this feature.
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction} style Style for this feature.
  * @api
  * @fires ol.events.Event#event:change
  */
@@ -284,21 +281,13 @@ Feature.prototype.setGeometryName = function(name) {
  * Convert the provided object into a feature style function.  Functions passed
  * through unchanged.  Arrays of ol.style.Style or single style objects wrapped
  * in a new feature style function.
- * @param {ol.FeatureStyleFunction|!Array.<ol.style.Style>|!ol.style.Style} obj
+ * @param {ol.StyleFunction|!Array.<ol.style.Style>|!ol.style.Style} obj
  *     A feature style function, a single style, or an array of styles.
- * @return {ol.FeatureStyleFunction} A style function.
+ * @return {ol.StyleFunction} A style function.
  */
 Feature.createStyleFunction = function(obj) {
-  let styleFunction;
-
   if (typeof obj === 'function') {
-    if (obj.length == 2) {
-      styleFunction = function(resolution) {
-        return /** @type {ol.StyleFunction} */ (obj)(this, resolution);
-      };
-    } else {
-      styleFunction = obj;
-    }
+    return obj;
   } else {
     /**
      * @type {Array.<ol.style.Style>}
@@ -311,10 +300,9 @@ Feature.createStyleFunction = function(obj) {
         41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
       styles = [obj];
     }
-    styleFunction = function() {
+    return function() {
       return styles;
     };
   }
-  return styleFunction;
 };
 export default Feature;

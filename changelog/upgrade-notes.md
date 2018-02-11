@@ -2,6 +2,26 @@
 
 ### Next release
 
+#### Removal of ol.FeatureStyleFunction
+
+The signature of the vector style function passed to the feature has changed. The function now always takes the `feature` and the `resolution` as aguments, the `feature` is no longer bound to `this`.
+
+Old code:
+```js
+feature.setStyle(function(resolution) {
+  var text = this.get('name');
+  ...
+});
+```
+
+New code:
+```js
+feature.setStyle(function(feature, resolution) {
+  var text = feature.get('name');
+  ...
+});
+```
+
 #### Changed behavior of the `Draw` interaction
 
 For better drawing experience, two changes were made to the behavior of the Draw interaction:

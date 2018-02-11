@@ -266,7 +266,7 @@ describe('ol.Feature', function() {
 
   describe('#getStyleFunction()', function() {
 
-    const styleFunction = function(resolution) {
+    const styleFunction = function(feature, resolution) {
       return null;
     };
 
@@ -320,19 +320,9 @@ describe('ol.Feature', function() {
 
     it('accepts a style function', function() {
       const feature = new Feature();
-      function featureStyleFunction(resolution) {
-        return styleFunction(this, resolution);
-      }
-      feature.setStyle(featureStyleFunction);
-      expect(feature.getStyleFunction()).to.be(featureStyleFunction);
-      expect(feature.getStyleFunction()(42)).to.be(42);
-    });
-
-    it('accepts a layer style function', function() {
-      const feature = new Feature();
       feature.setStyle(styleFunction);
-      expect(feature.getStyleFunction()).to.not.be(styleFunction);
-      expect(feature.getStyleFunction()(42)).to.be(42);
+      expect(feature.getStyleFunction()).to.be(styleFunction);
+      expect(feature.getStyleFunction()(feature, 42)).to.be(42);
     });
 
     it('accepts null', function() {
@@ -357,7 +347,7 @@ describe('ol.Feature', function() {
 
     const style = new Style();
 
-    const styleFunction = function(resolution) {
+    const styleFunction = function(feature, resolution) {
       return null;
     };
 
@@ -461,7 +451,7 @@ describe('ol.Feature.createStyleFunction()', function() {
   });
 
   it('passes through a function', function() {
-    const original = function() {
+    const original = function(feature, resolution) {
       return [style];
     };
     const styleFunction = Feature.createStyleFunction(original);

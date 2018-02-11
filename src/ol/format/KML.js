@@ -388,31 +388,31 @@ function createNameStyleFunction(foundStyle, name) {
  *          styles.
  * @param {boolean|undefined} showPointNames true to show names for point
  *          placemarks.
- * @return {ol.FeatureStyleFunction} Feature style function.
+ * @return {ol.StyleFunction} Feature style function.
  */
 function createFeatureStyleFunction(style, styleUrl,
   defaultStyle, sharedStyles, showPointNames) {
 
   return (
     /**
-         * @param {number} resolution Resolution.
-         * @return {Array.<ol.style.Style>} Style.
-         * @this {ol.Feature}
-         */
-    function(resolution) {
+     * @param {ol.Feature} feature feature.
+     * @param {number} resolution Resolution.
+     * @return {Array.<ol.style.Style>} Style.
+     */
+    function(feature, resolution) {
       let drawName = showPointNames;
       /** @type {ol.style.Style|undefined} */
       let nameStyle;
       let name = '';
       if (drawName) {
-        if (this.getGeometry()) {
-          drawName = (this.getGeometry().getType() ===
-                        GeometryType.POINT);
+        const geometry = feature.getGeometry();
+        if (geometry) {
+          drawName = geometry.getType() === GeometryType.POINT;
         }
       }
 
       if (drawName) {
-        name = /** @type {string} */ (this.get('name'));
+        name = /** @type {string} */ (feature.get('name'));
         drawName = drawName && name;
       }
 
@@ -2707,7 +2707,7 @@ function writePlacemark(node, feature, objectStack) {
   if (styleFunction) {
     // FIXME the styles returned by the style function are supposed to be
     // resolution-independent here
-    const styles = styleFunction.call(feature, 0);
+    const styles = styleFunction(feature, 0);
     if (styles) {
       const style = Array.isArray(styles) ? styles[0] : styles;
       if (this.writeStyles_) {

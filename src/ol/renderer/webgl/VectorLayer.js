@@ -266,14 +266,9 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
    */
   const render = function(feature) {
     let styles;
-    let styleFunction = feature.getStyleFunction();
+    const styleFunction = feature.getStyleFunction() || vectorLayer.getStyleFunction();
     if (styleFunction) {
-      styles = styleFunction.call(feature, resolution);
-    } else {
-      styleFunction = vectorLayer.getStyleFunction();
-      if (styleFunction) {
-        styles = styleFunction(feature, resolution);
-      }
+      styles = styleFunction(feature, resolution);
     }
     if (styles) {
       const dirty = this.renderFeature(
@@ -286,8 +281,8 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
     const features = [];
     vectorSource.forEachFeatureInExtent(extent,
       /**
-         * @param {ol.Feature} feature Feature.
-         */
+       * @param {ol.Feature} feature Feature.
+       */
       function(feature) {
         features.push(feature);
       }, this);
