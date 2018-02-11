@@ -314,9 +314,8 @@ WebGLContext.prototype.useProgram = function(program) {
  * @param {number=} opt_wrapS wrapS.
  * @param {number=} opt_wrapT wrapT.
  * @return {WebGLTexture} The texture.
- * @private
  */
-WebGLContext.createTexture_ = function(gl, opt_wrapS, opt_wrapT) {
+function createTextureInternal(gl, opt_wrapS, opt_wrapT) {
   const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -332,7 +331,7 @@ WebGLContext.createTexture_ = function(gl, opt_wrapS, opt_wrapT) {
   }
 
   return texture;
-};
+}
 
 
 /**
@@ -343,15 +342,15 @@ WebGLContext.createTexture_ = function(gl, opt_wrapS, opt_wrapT) {
  * @param {number=} opt_wrapT wrapT.
  * @return {WebGLTexture} The texture.
  */
-WebGLContext.createEmptyTexture = function(
+export function createEmptyTexture(
   gl, width, height, opt_wrapS, opt_wrapT) {
-  const texture = WebGLContext.createTexture_(gl, opt_wrapS, opt_wrapT);
+  const texture = createTextureInternal(gl, opt_wrapS, opt_wrapT);
   gl.texImage2D(
     gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE,
     null);
 
   return texture;
-};
+}
 
 
 /**
@@ -361,11 +360,12 @@ WebGLContext.createEmptyTexture = function(
  * @param {number=} opt_wrapT wrapT.
  * @return {WebGLTexture} The texture.
  */
-WebGLContext.createTexture = function(gl, image, opt_wrapS, opt_wrapT) {
-  const texture = WebGLContext.createTexture_(gl, opt_wrapS, opt_wrapT);
+export function createTexture(gl, image, opt_wrapS, opt_wrapT) {
+  const texture = createTextureInternal(gl, opt_wrapS, opt_wrapT);
   gl.texImage2D(
     gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
 
   return texture;
-};
+}
+
 export default WebGLContext;

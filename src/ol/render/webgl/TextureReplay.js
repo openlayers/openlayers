@@ -8,7 +8,7 @@ import {fragment, vertex} from '../webgl/texturereplay/defaultshader.js';
 import Locations from '../webgl/texturereplay/defaultshader/Locations.js';
 import WebGLReplay from '../webgl/Replay.js';
 import _ol_webgl_ from '../../webgl.js';
-import WebGLContext from '../../webgl/Context.js';
+import {createTexture} from '../../webgl/Context.js';
 
 /**
  * @constructor
@@ -257,7 +257,7 @@ WebGLTextureReplay.prototype.createTextures = function(textures, images, texture
     if (uid in texturePerImage) {
       texture = texturePerImage[uid];
     } else {
-      texture = WebGLContext.createTexture(
+      texture = createTexture(
         gl, image, _ol_webgl_.CLAMP_TO_EDGE, _ol_webgl_.CLAMP_TO_EDGE);
       texturePerImage[uid] = texture;
     }
