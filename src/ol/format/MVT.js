@@ -83,81 +83,94 @@ inherits(MVT, FeatureFormat);
 
 
 /**
- * Reader callbacks for parsing the PBF.
- * @type {Object.<string, function(number, Object, ol.ext.PBF)>}
+ * Reader callback for parsing layers.
+ * @param {number} tag The tag.
+ * @param {Object} layers The layers object.
+ * @param {ol.ext.PBF} pbf The PBF.
  */
-MVT.pbfReaders_ = {
-  layers: function(tag, layers, pbf) {
-    if (tag === 3) {
-      const layer = {
-        keys: [],
-        values: [],
-        features: []
-      };
-      const end = pbf.readVarint() + pbf.pos;
-      pbf.readFields(MVT.pbfReaders_.layer, layer, end);
-      layer.length = layer.features.length;
-      if (layer.length) {
-        layers[layer.name] = layer;
-      }
-    }
-  },
-  layer: function(tag, layer, pbf) {
-    if (tag === 15) {
-      layer.version = pbf.readVarint();
-    } else if (tag === 1) {
-      layer.name = pbf.readString();
-    } else if (tag === 5) {
-      layer.extent = pbf.readVarint();
-    } else if (tag === 2) {
-      layer.features.push(pbf.pos);
-    } else if (tag === 3) {
-      layer.keys.push(pbf.readString());
-    } else if (tag === 4) {
-      let value = null;
-      const end = pbf.readVarint() + pbf.pos;
-      while (pbf.pos < end) {
-        tag = pbf.readVarint() >> 3;
-        value = tag === 1 ? pbf.readString() :
-          tag === 2 ? pbf.readFloat() :
-            tag === 3 ? pbf.readDouble() :
-              tag === 4 ? pbf.readVarint64() :
-                tag === 5 ? pbf.readVarint() :
-                  tag === 6 ? pbf.readSVarint() :
-                    tag === 7 ? pbf.readBoolean() : null;
-      }
-      layer.values.push(value);
-    }
-  },
-  feature: function(tag, feature, pbf) {
-    if (tag == 1) {
-      feature.id = pbf.readVarint();
-    } else if (tag == 2) {
-      const end = pbf.readVarint() + pbf.pos;
-      while (pbf.pos < end) {
-        const key = feature.layer.keys[pbf.readVarint()];
-        const value = feature.layer.values[pbf.readVarint()];
-        feature.properties[key] = value;
-      }
-    } else if (tag == 3) {
-      feature.type = pbf.readVarint();
-    } else if (tag == 4) {
-      feature.geometry = pbf.pos;
+function layersPBFReader(tag, layers, pbf) {
+  if (tag === 3) {
+    const layer = {
+      keys: [],
+      values: [],
+      features: []
+    };
+    const end = pbf.readVarint() + pbf.pos;
+    pbf.readFields(layerPBFReader, layer, end);
+    layer.length = layer.features.length;
+    if (layer.length) {
+      layers[layer.name] = layer;
     }
   }
-};
+}
+
+/**
+ * Reader callback for parsing layer.
+ * @param {number} tag The tag.
+ * @param {Object} layer The layer object.
+ * @param {ol.ext.PBF} pbf The PBF.
+ */
+function layerPBFReader(tag, layer, pbf) {
+  if (tag === 15) {
+    layer.version = pbf.readVarint();
+  } else if (tag === 1) {
+    layer.name = pbf.readString();
+  } else if (tag === 5) {
+    layer.extent = pbf.readVarint();
+  } else if (tag === 2) {
+    layer.features.push(pbf.pos);
+  } else if (tag === 3) {
+    layer.keys.push(pbf.readString());
+  } else if (tag === 4) {
+    let value = null;
+    const end = pbf.readVarint() + pbf.pos;
+    while (pbf.pos < end) {
+      tag = pbf.readVarint() >> 3;
+      value = tag === 1 ? pbf.readString() :
+        tag === 2 ? pbf.readFloat() :
+          tag === 3 ? pbf.readDouble() :
+            tag === 4 ? pbf.readVarint64() :
+              tag === 5 ? pbf.readVarint() :
+                tag === 6 ? pbf.readSVarint() :
+                  tag === 7 ? pbf.readBoolean() : null;
+    }
+    layer.values.push(value);
+  }
+}
+
+/**
+ * Reader callback for parsing feature.
+ * @param {number} tag The tag.
+ * @param {Object} feature The feature object.
+ * @param {ol.ext.PBF} pbf The PBF.
+ */
+function featurePBFReader(tag, feature, pbf) {
+  if (tag == 1) {
+    feature.id = pbf.readVarint();
+  } else if (tag == 2) {
+    const end = pbf.readVarint() + pbf.pos;
+    while (pbf.pos < end) {
+      const key = feature.layer.keys[pbf.readVarint()];
+      const value = feature.layer.values[pbf.readVarint()];
+      feature.properties[key] = value;
+    }
+  } else if (tag == 3) {
+    feature.type = pbf.readVarint();
+  } else if (tag == 4) {
+    feature.geometry = pbf.pos;
+  }
+}
 
 
 /**
  * Read a raw feature from the pbf offset stored at index `i` in the raw layer.
  * @suppress {missingProperties}
- * @private
  * @param {ol.ext.PBF} pbf PBF.
  * @param {Object} layer Raw layer.
  * @param {number} i Index of the feature in the raw layer's `features` array.
  * @return {Object} Raw feature.
  */
-MVT.readRawFeature_ = function(pbf, layer, i) {
+function readRawFeature(pbf, layer, i) {
   pbf.pos = layer.features[i];
   const end = pbf.readVarint() + pbf.pos;
 
@@ -166,22 +179,22 @@ MVT.readRawFeature_ = function(pbf, layer, i) {
     type: 0,
     properties: {}
   };
-  pbf.readFields(MVT.pbfReaders_.feature, feature, end);
+  pbf.readFields(featurePBFReader, feature, end);
   return feature;
-};
+}
 
 
 /**
  * Read the raw geometry from the pbf offset stored in a raw feature's geometry
  * proeprty.
  * @suppress {missingProperties}
- * @private
  * @param {ol.ext.PBF} pbf PBF.
  * @param {Object} feature Raw feature.
  * @param {Array.<number>} flatCoordinates Array to store flat coordinates in.
  * @param {Array.<number>} ends Array to store ends in.
+ * @private
  */
-MVT.readRawGeometry_ = function(pbf, feature, flatCoordinates, ends) {
+MVT.prototype.readRawGeometry_ = function(pbf, feature, flatCoordinates, ends) {
   pbf.pos = feature.geometry;
 
   const end = pbf.readVarint() + pbf.pos;
@@ -239,13 +252,12 @@ MVT.readRawGeometry_ = function(pbf, feature, flatCoordinates, ends) {
 
 /**
  * @suppress {missingProperties}
- * @private
  * @param {number} type The raw feature's geometry type
  * @param {number} numEnds Number of ends of the flat coordinates of the
  * geometry.
  * @return {ol.geom.GeometryType} The geometry type.
  */
-MVT.getGeometryType_ = function(type, numEnds) {
+function getGeometryType(type, numEnds) {
   /** @type {ol.geom.GeometryType} */
   let geometryType;
   if (type === 1) {
@@ -261,7 +273,7 @@ MVT.getGeometryType_ = function(type, numEnds) {
     // outer rings of polygons.
   }
   return geometryType;
-};
+}
 
 /**
  * @private
@@ -283,9 +295,9 @@ MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
 
   const flatCoordinates = [];
   let ends = [];
-  MVT.readRawGeometry_(pbf, rawFeature, flatCoordinates, ends);
+  this.readRawGeometry_(pbf, rawFeature, flatCoordinates, ends);
 
-  const geometryType = MVT.getGeometryType_(type, ends.length);
+  const geometryType = getGeometryType(type, ends.length);
 
   if (this.featureClass_ === RenderFeature) {
     feature = new this.featureClass_(geometryType, flatCoordinates, ends, values, id);
@@ -357,7 +369,7 @@ MVT.prototype.readFeatures = function(source, opt_options) {
   const layers = this.layers_;
 
   const pbf = new PBF(/** @type {ArrayBuffer} */ (source));
-  const pbfLayers = pbf.readFields(MVT.pbfReaders_.layers, {});
+  const pbfLayers = pbf.readFields(layersPBFReader, {});
   /** @type {Array.<ol.Feature|ol.render.Feature>} */
   const features = [];
   let pbfLayer;
@@ -368,7 +380,7 @@ MVT.prototype.readFeatures = function(source, opt_options) {
     pbfLayer = pbfLayers[name];
 
     for (let i = 0, ii = pbfLayer.length; i < ii; ++i) {
-      const rawFeature = MVT.readRawFeature_(pbf, pbfLayer, i);
+      const rawFeature = readRawFeature(pbf, pbfLayer, i);
       features.push(this.createFeature_(pbf, rawFeature));
     }
     this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
