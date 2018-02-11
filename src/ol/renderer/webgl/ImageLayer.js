@@ -12,7 +12,7 @@ import RendererType from '../Type.js';
 import WebGLLayerRenderer from '../webgl/Layer.js';
 import _ol_transform_ from '../../transform.js';
 import _ol_webgl_ from '../../webgl.js';
-import WebGLContext from '../../webgl/Context.js';
+import {createTexture} from '../../webgl/Context.js';
 
 /**
  * @constructor
@@ -88,7 +88,7 @@ WebGLImageLayerRenderer.prototype.createTexture_ = function(image) {
   const imageElement = image.getImage();
   const gl = this.mapRenderer.getGL();
 
-  return WebGLContext.createTexture(
+  return createTexture(
     gl, imageElement, _ol_webgl_.CLAMP_TO_EDGE, _ol_webgl_.CLAMP_TO_EDGE);
 };
 
