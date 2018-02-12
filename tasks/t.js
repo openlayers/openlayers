@@ -158,7 +158,7 @@ function format(data) {
 
     // add the @typedef
     source += `\n/**\n${comment} */\n`;
-    source += `export var ${name};\n\n`;
+    source += `export let ${name};\n\n`;
 
     const params = data[name].params;
     if (!params.length) {
