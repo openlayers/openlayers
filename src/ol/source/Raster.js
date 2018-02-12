@@ -327,6 +327,14 @@ RasterSource.prototype.onWorkerComplete_ = function(frameState, err, output, dat
 
 
 /**
+ * A reusable canvas context.
+ * @type {CanvasRenderingContext2D}
+ * @private
+ */
+let sharedContext = null;
+
+
+/**
  * Get image data from a renderer.
  * @param {ol.renderer.canvas.Layer} renderer Layer renderer.
  * @param {olx.FrameState} frameState The frame state.
@@ -339,27 +347,19 @@ function getImageData(renderer, frameState, layerState) {
   }
   const width = frameState.size[0];
   const height = frameState.size[1];
-  if (!RasterSource.context_) {
-    RasterSource.context_ = createCanvasContext2D(width, height);
+  if (!sharedContext) {
+    sharedContext = createCanvasContext2D(width, height);
   } else {
-    const canvas = RasterSource.context_.canvas;
+    const canvas = sharedContext.canvas;
     if (canvas.width !== width || canvas.height !== height) {
-      RasterSource.context_ = createCanvasContext2D(width, height);
+      sharedContext = createCanvasContext2D(width, height);
     } else {
-      RasterSource.context_.clearRect(0, 0, width, height);
+      sharedContext.clearRect(0, 0, width, height);
     }
   }
-  renderer.composeFrame(frameState, layerState, RasterSource.context_);
-  return RasterSource.context_.getImageData(0, 0, width, height);
+  renderer.composeFrame(frameState, layerState, sharedContext);
+  return sharedContext.getImageData(0, 0, width, height);
 }
-
-
-/**
- * A reusable canvas context.
- * @type {CanvasRenderingContext2D}
- * @private
- */
-RasterSource.context_ = null;
 
 
 /**
