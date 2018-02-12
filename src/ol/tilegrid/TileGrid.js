@@ -155,7 +155,7 @@ const TileGrid = function(options) {
  * @private
  * @type {ol.TileCoord}
  */
-TileGrid.tmpTileCoord_ = [0, 0, 0];
+const tmpTileCoord = [0, 0, 0];
 
 
 /**
@@ -325,7 +325,7 @@ TileGrid.prototype.getTileRangeExtent = function(z, tileRange, opt_extent) {
  * @return {ol.TileRange} Tile range.
  */
 TileGrid.prototype.getTileRangeForExtentAndZ = function(extent, z, opt_tileRange) {
-  const tileCoord = TileGrid.tmpTileCoord_;
+  const tileCoord = tmpTileCoord;
   this.getTileCoordForXYAndZ_(extent[0], extent[1], z, false, tileCoord);
   const minX = tileCoord[1];
   const minY = tileCoord[2];
