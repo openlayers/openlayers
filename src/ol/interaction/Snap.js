@@ -42,9 +42,9 @@ import RBush from '../structs/RBush.js';
 const Snap = function(opt_options) {
 
   PointerInteraction.call(this, {
-    handleEvent: Snap.handleEvent_,
+    handleEvent: handleEvent,
     handleDownEvent: TRUE,
-    handleUpEvent: Snap.handleUpEvent_
+    handleUpEvent: handleUpEvent
   });
 
   const options = opt_options ? opt_options : {};
@@ -586,32 +586,30 @@ Snap.prototype.writePolygonGeometry_ = function(feature, geometry) {
  * @param {ol.MapBrowserEvent} evt A move event.
  * @return {boolean} Pass the event to other interactions.
  * @this {ol.interaction.Snap}
- * @private
  */
-Snap.handleEvent_ = function(evt) {
+export function handleEvent(evt) {
   const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
   if (result.snapped) {
     evt.coordinate = result.vertex.slice(0, 2);
     evt.pixel = result.vertexPixel;
   }
   return PointerInteraction.handleEvent.call(this, evt);
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} evt Event.
  * @return {boolean} Stop drag sequence?
  * @this {ol.interaction.Snap}
- * @private
  */
-Snap.handleUpEvent_ = function(evt) {
+function handleUpEvent(evt) {
   const featuresToUpdate = getValues(this.pendingFeatures_);
   if (featuresToUpdate.length) {
     featuresToUpdate.forEach(this.updateFeature_.bind(this));
     this.pendingFeatures_ = {};
   }
   return false;
-};
+}
 
 
 /**
@@ -627,4 +625,5 @@ Snap.sortByDistance = function(a, b) {
       squaredDistanceToSegment(
         this.pixelCoordinate_, b.segment);
 };
+
 export default Snap;
