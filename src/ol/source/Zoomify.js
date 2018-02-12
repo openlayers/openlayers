@@ -13,6 +13,72 @@ import {toSize} from '../size.js';
 import TileImage from '../source/TileImage.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 
+
+/**
+ * @enum {string}
+ */
+const TierSizeCalculation = {
+  DEFAULT: 'default',
+  TRUNCATED: 'truncated'
+};
+
+
+/**
+ * @constructor
+ * @extends {ol.ImageTile}
+ * @param {ol.tilegrid.TileGrid} tileGrid TileGrid that the tile belongs to.
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.TileState} state State.
+ * @param {string} src Image source URI.
+ * @param {?string} crossOrigin Cross origin.
+ * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
+ * @param {olx.TileOptions=} opt_options Tile options.
+ */
+export const CustomTile = function(
+  tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
+
+  ImageTile.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
+
+  /**
+   * @private
+   * @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement}
+   */
+  this.zoomifyImage_ = null;
+
+  /**
+   * @private
+   * @type {ol.Size}
+   */
+  this.tileSize_ = toSize(tileGrid.getTileSize(tileCoord[0]));
+};
+inherits(CustomTile, ImageTile);
+
+
+/**
+ * @inheritDoc
+ */
+CustomTile.prototype.getImage = function() {
+  if (this.zoomifyImage_) {
+    return this.zoomifyImage_;
+  }
+  const image = ImageTile.prototype.getImage.call(this);
+  if (this.state == TileState.LOADED) {
+    const tileSize = this.tileSize_;
+    if (image.width == tileSize[0] && image.height == tileSize[1]) {
+      this.zoomifyImage_ = image;
+      return image;
+    } else {
+      const context = createCanvasContext2D(tileSize[0], tileSize[1]);
+      context.drawImage(image, 0, 0);
+      this.zoomifyImage_ = context.canvas;
+      return context.canvas;
+    }
+  } else {
+    return image;
+  }
+};
+
+
 /**
  * @classdesc
  * Layer source for tile data in Zoomify format (both Zoomify and Internet
@@ -30,7 +96,7 @@ const Zoomify = function(opt_options) {
   const size = options.size;
   const tierSizeCalculation = options.tierSizeCalculation !== undefined ?
     options.tierSizeCalculation :
-    Zoomify.TierSizeCalculation_.DEFAULT;
+    TierSizeCalculation.DEFAULT;
 
   const imageWidth = size[0];
   const imageHeight = size[1];
@@ -40,7 +106,7 @@ const Zoomify = function(opt_options) {
   let tileSizeForTierSizeCalculation = tileSize;
 
   switch (tierSizeCalculation) {
-    case Zoomify.TierSizeCalculation_.DEFAULT:
+    case TierSizeCalculation.DEFAULT:
       while (imageWidth > tileSizeForTierSizeCalculation || imageHeight > tileSizeForTierSizeCalculation) {
         tierSizeInTiles.push([
           Math.ceil(imageWidth / tileSizeForTierSizeCalculation),
@@ -49,7 +115,7 @@ const Zoomify = function(opt_options) {
         tileSizeForTierSizeCalculation += tileSizeForTierSizeCalculation;
       }
       break;
-    case Zoomify.TierSizeCalculation_.TRUNCATED:
+    case TierSizeCalculation.TRUNCATED:
       let width = imageWidth;
       let height = imageHeight;
       while (width > tileSizeForTierSizeCalculation || height > tileSizeForTierSizeCalculation) {
@@ -134,7 +200,7 @@ const Zoomify = function(opt_options) {
 
   const tileUrlFunction = createFromTileUrlFunctions(urls.map(createFromTemplate));
 
-  const ZoomifyTileClass = Zoomify.Tile_.bind(null, tileGrid);
+  const ZoomifyTileClass = CustomTile.bind(null, tileGrid);
 
   TileImage.call(this, {
     attributions: options.attributions,
@@ -152,68 +218,5 @@ const Zoomify = function(opt_options) {
 
 inherits(Zoomify, TileImage);
 
-/**
- * @constructor
- * @extends {ol.ImageTile}
- * @param {ol.tilegrid.TileGrid} tileGrid TileGrid that the tile belongs to.
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.TileState} state State.
- * @param {string} src Image source URI.
- * @param {?string} crossOrigin Cross origin.
- * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
- * @param {olx.TileOptions=} opt_options Tile options.
- * @private
- */
-Zoomify.Tile_ = function(
-  tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
-  ImageTile.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
-
-  /**
-   * @private
-   * @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement}
-   */
-  this.zoomifyImage_ = null;
-
-  /**
-   * @private
-   * @type {ol.Size}
-   */
-  this.tileSize_ = toSize(tileGrid.getTileSize(tileCoord[0]));
-};
-inherits(Zoomify.Tile_, ImageTile);
-
-
-/**
- * @inheritDoc
- */
-Zoomify.Tile_.prototype.getImage = function() {
-  if (this.zoomifyImage_) {
-    return this.zoomifyImage_;
-  }
-  const image = ImageTile.prototype.getImage.call(this);
-  if (this.state == TileState.LOADED) {
-    const tileSize = this.tileSize_;
-    if (image.width == tileSize[0] && image.height == tileSize[1]) {
-      this.zoomifyImage_ = image;
-      return image;
-    } else {
-      const context = createCanvasContext2D(tileSize[0], tileSize[1]);
-      context.drawImage(image, 0, 0);
-      this.zoomifyImage_ = context.canvas;
-      return context.canvas;
-    }
-  } else {
-    return image;
-  }
-};
-
-/**
- * @enum {string}
- * @private
- */
-Zoomify.TierSizeCalculation_ = {
-  DEFAULT: 'default',
-  TRUNCATED: 'truncated'
-};
 export default Zoomify;
