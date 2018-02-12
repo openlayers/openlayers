@@ -8,6 +8,7 @@ import XSD from '../format/XSD.js';
 import {makeArrayPusher, makeObjectPropertyPusher, makeObjectPropertySetter,
   makeStructureNS, pushParseAndPop} from '../xml.js';
 
+
 /**
  * @classdesc
  * Format for reading WMS capabilities data
@@ -27,6 +28,242 @@ const WMSCapabilities = function() {
 };
 
 inherits(WMSCapabilities, XML);
+
+
+/**
+ * @const
+ * @type {Array.<string>}
+ */
+const NAMESPACE_URIS = [
+  null,
+  'http://www.opengis.net/wms'
+];
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Service': makeObjectPropertySetter(readService),
+    'Capability': makeObjectPropertySetter(readCapability)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const CAPABILITY_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Request': makeObjectPropertySetter(readRequest),
+    'Exception': makeObjectPropertySetter(readException),
+    'Layer': makeObjectPropertySetter(readCapabilityLayer)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const SERVICE_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Name': makeObjectPropertySetter(XSD.readString),
+    'Title': makeObjectPropertySetter(XSD.readString),
+    'Abstract': makeObjectPropertySetter(XSD.readString),
+    'KeywordList': makeObjectPropertySetter(readKeywordList),
+    'OnlineResource': makeObjectPropertySetter(XLink.readHref),
+    'ContactInformation': makeObjectPropertySetter(readContactInformation),
+    'Fees': makeObjectPropertySetter(XSD.readString),
+    'AccessConstraints': makeObjectPropertySetter(XSD.readString),
+    'LayerLimit': makeObjectPropertySetter(XSD.readNonNegativeInteger),
+    'MaxWidth': makeObjectPropertySetter(XSD.readNonNegativeInteger),
+    'MaxHeight': makeObjectPropertySetter(XSD.readNonNegativeInteger)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const CONTACT_INFORMATION_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'ContactPersonPrimary': makeObjectPropertySetter(readContactPersonPrimary),
+    'ContactPosition': makeObjectPropertySetter(XSD.readString),
+    'ContactAddress': makeObjectPropertySetter(readContactAddress),
+    'ContactVoiceTelephone': makeObjectPropertySetter(XSD.readString),
+    'ContactFacsimileTelephone': makeObjectPropertySetter(XSD.readString),
+    'ContactElectronicMailAddress': makeObjectPropertySetter(XSD.readString)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const CONTACT_PERSON_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'ContactPerson': makeObjectPropertySetter(XSD.readString),
+    'ContactOrganization': makeObjectPropertySetter(XSD.readString)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const CONTACT_ADDRESS_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'AddressType': makeObjectPropertySetter(XSD.readString),
+    'Address': makeObjectPropertySetter(XSD.readString),
+    'City': makeObjectPropertySetter(XSD.readString),
+    'StateOrProvince': makeObjectPropertySetter(XSD.readString),
+    'PostCode': makeObjectPropertySetter(XSD.readString),
+    'Country': makeObjectPropertySetter(XSD.readString)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const EXCEPTION_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Format': makeArrayPusher(XSD.readString)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const LAYER_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Name': makeObjectPropertySetter(XSD.readString),
+    'Title': makeObjectPropertySetter(XSD.readString),
+    'Abstract': makeObjectPropertySetter(XSD.readString),
+    'KeywordList': makeObjectPropertySetter(readKeywordList),
+    'CRS': makeObjectPropertyPusher(XSD.readString),
+    'EX_GeographicBoundingBox': makeObjectPropertySetter(readEXGeographicBoundingBox),
+    'BoundingBox': makeObjectPropertyPusher(readBoundingBox),
+    'Dimension': makeObjectPropertyPusher(readDimension),
+    'Attribution': makeObjectPropertySetter(readAttribution),
+    'AuthorityURL': makeObjectPropertyPusher(readAuthorityURL),
+    'Identifier': makeObjectPropertyPusher(XSD.readString),
+    'MetadataURL': makeObjectPropertyPusher(readMetadataURL),
+    'DataURL': makeObjectPropertyPusher(readFormatOnlineresource),
+    'FeatureListURL': makeObjectPropertyPusher(readFormatOnlineresource),
+    'Style': makeObjectPropertyPusher(readStyle),
+    'MinScaleDenominator': makeObjectPropertySetter(XSD.readDecimal),
+    'MaxScaleDenominator': makeObjectPropertySetter(XSD.readDecimal),
+    'Layer': makeObjectPropertyPusher(readLayer)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const ATTRIBUTION_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Title': makeObjectPropertySetter(XSD.readString),
+    'OnlineResource': makeObjectPropertySetter(XLink.readHref),
+    'LogoURL': makeObjectPropertySetter(readSizedFormatOnlineresource)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS =
+    makeStructureNS(NAMESPACE_URIS, {
+      'westBoundLongitude': makeObjectPropertySetter(XSD.readDecimal),
+      'eastBoundLongitude': makeObjectPropertySetter(XSD.readDecimal),
+      'southBoundLatitude': makeObjectPropertySetter(XSD.readDecimal),
+      'northBoundLatitude': makeObjectPropertySetter(XSD.readDecimal)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const REQUEST_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'GetCapabilities': makeObjectPropertySetter(readOperationType),
+    'GetMap': makeObjectPropertySetter(readOperationType),
+    'GetFeatureInfo': makeObjectPropertySetter(readOperationType)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const OPERATIONTYPE_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Format': makeObjectPropertyPusher(XSD.readString),
+    'DCPType': makeObjectPropertyPusher(readDCPType)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const DCPTYPE_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'HTTP': makeObjectPropertySetter(readHTTP)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const HTTP_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Get': makeObjectPropertySetter(readFormatOnlineresource),
+    'Post': makeObjectPropertySetter(readFormatOnlineresource)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const STYLE_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Name': makeObjectPropertySetter(XSD.readString),
+    'Title': makeObjectPropertySetter(XSD.readString),
+    'Abstract': makeObjectPropertySetter(XSD.readString),
+    'LegendURL': makeObjectPropertyPusher(readSizedFormatOnlineresource),
+    'StyleSheetURL': makeObjectPropertySetter(readFormatOnlineresource),
+    'StyleURL': makeObjectPropertySetter(readFormatOnlineresource)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const FORMAT_ONLINERESOURCE_PARSERS =
+    makeStructureNS(NAMESPACE_URIS, {
+      'Format': makeObjectPropertySetter(XSD.readString),
+      'OnlineResource': makeObjectPropertySetter(XLink.readHref)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const KEYWORDLIST_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Keyword': makeArrayPusher(XSD.readString)
+  });
 
 
 /**
@@ -60,30 +297,28 @@ WMSCapabilities.prototype.readFromNode = function(node) {
   this.version = node.getAttribute('version').trim();
   const wmsCapabilityObject = pushParseAndPop({
     'version': this.version
-  }, WMSCapabilities.PARSERS_, node, []);
+  }, PARSERS, node, []);
   return wmsCapabilityObject ? wmsCapabilityObject : null;
 };
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Attribution object.
  */
-WMSCapabilities.readAttribution_ = function(node, objectStack) {
+function readAttribution(node, objectStack) {
   return pushParseAndPop(
-    {}, WMSCapabilities.ATTRIBUTION_PARSERS_, node, objectStack);
-};
+    {}, ATTRIBUTION_PARSERS, node, objectStack);
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object} Bounding box object.
  */
-WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
+function readBoundingBox(node, objectStack) {
   const extent = [
     XSD.readDecimalString(node.getAttribute('minx')),
     XSD.readDecimalString(node.getAttribute('miny')),
@@ -101,19 +336,18 @@ WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
     'extent': extent,
     'res': resolutions
   };
-};
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.Extent|undefined} Bounding box object.
  */
-WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectStack) {
+function readEXGeographicBoundingBox(node, objectStack) {
   const geographicBoundingBox = pushParseAndPop(
     {},
-    WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_,
+    EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS,
     node, objectStack);
   if (!geographicBoundingBox) {
     return undefined;
@@ -134,108 +368,100 @@ WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectStack) {
     westBoundLongitude, southBoundLatitude,
     eastBoundLongitude, northBoundLatitude
   ];
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} Capability object.
  */
-WMSCapabilities.readCapability_ = function(node, objectStack) {
+function readCapability(node, objectStack) {
   return pushParseAndPop(
-    {}, WMSCapabilities.CAPABILITY_PARSERS_, node, objectStack);
-};
+    {}, CAPABILITY_PARSERS, node, objectStack);
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} Service object.
  */
-WMSCapabilities.readService_ = function(node, objectStack) {
+function readService(node, objectStack) {
   return pushParseAndPop(
-    {}, WMSCapabilities.SERVICE_PARSERS_, node, objectStack);
-};
+    {}, SERVICE_PARSERS, node, objectStack);
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} Contact information object.
  */
-WMSCapabilities.readContactInformation_ = function(node, objectStack) {
+function readContactInformation(node, objectStack) {
   return pushParseAndPop(
-    {}, WMSCapabilities.CONTACT_INFORMATION_PARSERS_,
+    {}, CONTACT_INFORMATION_PARSERS,
     node, objectStack);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} Contact person object.
  */
-WMSCapabilities.readContactPersonPrimary_ = function(node, objectStack) {
+function readContactPersonPrimary(node, objectStack) {
   return pushParseAndPop(
-    {}, WMSCapabilities.CONTACT_PERSON_PARSERS_,
+    {}, CONTACT_PERSON_PARSERS,
     node, objectStack);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} Contact address object.
  */
-WMSCapabilities.readContactAddress_ = function(node, objectStack) {
+function readContactAddress(node, objectStack) {
   return pushParseAndPop(
-    {}, WMSCapabilities.CONTACT_ADDRESS_PARSERS_,
+    {}, CONTACT_ADDRESS_PARSERS,
     node, objectStack);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Array.<string>|undefined} Format array.
  */
-WMSCapabilities.readException_ = function(node, objectStack) {
+function readException(node, objectStack) {
   return pushParseAndPop(
-    [], WMSCapabilities.EXCEPTION_PARSERS_, node, objectStack);
-};
+    [], EXCEPTION_PARSERS, node, objectStack);
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} Layer object.
  */
-WMSCapabilities.readCapabilityLayer_ = function(node, objectStack) {
+function readCapabilityLayer(node, objectStack) {
   return pushParseAndPop(
-    {}, WMSCapabilities.LAYER_PARSERS_, node, objectStack);
-};
+    {}, LAYER_PARSERS, node, objectStack);
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Layer object.
  */
-WMSCapabilities.readLayer_ = function(node, objectStack) {
+function readLayer(node, objectStack) {
   const parentLayerObject = /**  @type {Object.<string,*>} */
         (objectStack[objectStack.length - 1]);
 
   const layerObject = pushParseAndPop(
-    {}, WMSCapabilities.LAYER_PARSERS_, node, objectStack);
+    {}, LAYER_PARSERS, node, objectStack);
 
   if (!layerObject) {
     return undefined;
@@ -300,16 +526,15 @@ WMSCapabilities.readLayer_ = function(node, objectStack) {
   });
 
   return layerObject;
-};
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object} Dimension object.
  */
-WMSCapabilities.readDimension_ = function(node, objectStack) {
+function readDimension(node, objectStack) {
   const dimensionObject = {
     'name': node.getAttribute('name'),
     'units': node.getAttribute('units'),
@@ -323,79 +548,73 @@ WMSCapabilities.readDimension_ = function(node, objectStack) {
     'values': XSD.readString(node)
   };
   return dimensionObject;
-};
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Online resource object.
  */
-WMSCapabilities.readFormatOnlineresource_ = function(node, objectStack) {
+function readFormatOnlineresource(node, objectStack) {
   return pushParseAndPop(
-    {}, WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_,
+    {}, FORMAT_ONLINERESOURCE_PARSERS,
     node, objectStack);
-};
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Request object.
  */
-WMSCapabilities.readRequest_ = function(node, objectStack) {
+function readRequest(node, objectStack) {
   return pushParseAndPop(
-    {}, WMSCapabilities.REQUEST_PARSERS_, node, objectStack);
-};
+    {}, REQUEST_PARSERS, node, objectStack);
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} DCP type object.
  */
-WMSCapabilities.readDCPType_ = function(node, objectStack) {
+function readDCPType(node, objectStack) {
   return pushParseAndPop(
-    {}, WMSCapabilities.DCPTYPE_PARSERS_, node, objectStack);
-};
+    {}, DCPTYPE_PARSERS, node, objectStack);
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} HTTP object.
  */
-WMSCapabilities.readHTTP_ = function(node, objectStack) {
+function readHTTP(node, objectStack) {
   return pushParseAndPop(
-    {}, WMSCapabilities.HTTP_PARSERS_, node, objectStack);
-};
+    {}, HTTP_PARSERS, node, objectStack);
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Operation type object.
  */
-WMSCapabilities.readOperationType_ = function(node, objectStack) {
+function readOperationType(node, objectStack) {
   return pushParseAndPop(
-    {}, WMSCapabilities.OPERATIONTYPE_PARSERS_, node, objectStack);
-};
+    {}, OPERATIONTYPE_PARSERS, node, objectStack);
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Online resource object.
  */
-WMSCapabilities.readSizedFormatOnlineresource_ = function(node, objectStack) {
+function readSizedFormatOnlineresource(node, objectStack) {
   const formatOnlineresource =
-        WMSCapabilities.readFormatOnlineresource_(node, objectStack);
+        readFormatOnlineresource(node, objectStack);
   if (formatOnlineresource) {
     const size = [
       XSD.readNonNegativeIntegerString(node.getAttribute('width')),
@@ -405,368 +624,61 @@ WMSCapabilities.readSizedFormatOnlineresource_ = function(node, objectStack) {
     return formatOnlineresource;
   }
   return undefined;
-};
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Authority URL object.
  */
-WMSCapabilities.readAuthorityURL_ = function(node, objectStack) {
+function readAuthorityURL(node, objectStack) {
   const authorityObject =
-        WMSCapabilities.readFormatOnlineresource_(node, objectStack);
+        readFormatOnlineresource(node, objectStack);
   if (authorityObject) {
     authorityObject['name'] = node.getAttribute('name');
     return authorityObject;
   }
   return undefined;
-};
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Metadata URL object.
  */
-WMSCapabilities.readMetadataURL_ = function(node, objectStack) {
+function readMetadataURL(node, objectStack) {
   const metadataObject =
-        WMSCapabilities.readFormatOnlineresource_(node, objectStack);
+        readFormatOnlineresource(node, objectStack);
   if (metadataObject) {
     metadataObject['type'] = node.getAttribute('type');
     return metadataObject;
   }
   return undefined;
-};
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Style object.
  */
-WMSCapabilities.readStyle_ = function(node, objectStack) {
+function readStyle(node, objectStack) {
   return pushParseAndPop(
-    {}, WMSCapabilities.STYLE_PARSERS_, node, objectStack);
-};
+    {}, STYLE_PARSERS, node, objectStack);
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Array.<string>|undefined} Keyword list.
  */
-WMSCapabilities.readKeywordList_ = function(node, objectStack) {
+function readKeywordList(node, objectStack) {
   return pushParseAndPop(
-    [], WMSCapabilities.KEYWORDLIST_PARSERS_, node, objectStack);
-};
+    [], KEYWORDLIST_PARSERS, node, objectStack);
+}
 
 
-/**
- * @const
- * @private
- * @type {Array.<string>}
- */
-WMSCapabilities.NAMESPACE_URIS_ = [
-  null,
-  'http://www.opengis.net/wms'
-];
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'Service': makeObjectPropertySetter(
-      WMSCapabilities.readService_),
-    'Capability': makeObjectPropertySetter(
-      WMSCapabilities.readCapability_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.CAPABILITY_PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'Request': makeObjectPropertySetter(
-      WMSCapabilities.readRequest_),
-    'Exception': makeObjectPropertySetter(
-      WMSCapabilities.readException_),
-    'Layer': makeObjectPropertySetter(
-      WMSCapabilities.readCapabilityLayer_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.SERVICE_PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'Name': makeObjectPropertySetter(XSD.readString),
-    'Title': makeObjectPropertySetter(XSD.readString),
-    'Abstract': makeObjectPropertySetter(XSD.readString),
-    'KeywordList': makeObjectPropertySetter(
-      WMSCapabilities.readKeywordList_),
-    'OnlineResource': makeObjectPropertySetter(
-      XLink.readHref),
-    'ContactInformation': makeObjectPropertySetter(
-      WMSCapabilities.readContactInformation_),
-    'Fees': makeObjectPropertySetter(XSD.readString),
-    'AccessConstraints': makeObjectPropertySetter(
-      XSD.readString),
-    'LayerLimit': makeObjectPropertySetter(
-      XSD.readNonNegativeInteger),
-    'MaxWidth': makeObjectPropertySetter(
-      XSD.readNonNegativeInteger),
-    'MaxHeight': makeObjectPropertySetter(
-      XSD.readNonNegativeInteger)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'ContactPersonPrimary': makeObjectPropertySetter(
-      WMSCapabilities.readContactPersonPrimary_),
-    'ContactPosition': makeObjectPropertySetter(
-      XSD.readString),
-    'ContactAddress': makeObjectPropertySetter(
-      WMSCapabilities.readContactAddress_),
-    'ContactVoiceTelephone': makeObjectPropertySetter(
-      XSD.readString),
-    'ContactFacsimileTelephone': makeObjectPropertySetter(
-      XSD.readString),
-    'ContactElectronicMailAddress': makeObjectPropertySetter(
-      XSD.readString)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.CONTACT_PERSON_PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'ContactPerson': makeObjectPropertySetter(
-      XSD.readString),
-    'ContactOrganization': makeObjectPropertySetter(
-      XSD.readString)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'AddressType': makeObjectPropertySetter(XSD.readString),
-    'Address': makeObjectPropertySetter(XSD.readString),
-    'City': makeObjectPropertySetter(XSD.readString),
-    'StateOrProvince': makeObjectPropertySetter(
-      XSD.readString),
-    'PostCode': makeObjectPropertySetter(XSD.readString),
-    'Country': makeObjectPropertySetter(XSD.readString)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.EXCEPTION_PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'Format': makeArrayPusher(XSD.readString)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.LAYER_PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'Name': makeObjectPropertySetter(XSD.readString),
-    'Title': makeObjectPropertySetter(XSD.readString),
-    'Abstract': makeObjectPropertySetter(XSD.readString),
-    'KeywordList': makeObjectPropertySetter(
-      WMSCapabilities.readKeywordList_),
-    'CRS': makeObjectPropertyPusher(XSD.readString),
-    'EX_GeographicBoundingBox': makeObjectPropertySetter(
-      WMSCapabilities.readEXGeographicBoundingBox_),
-    'BoundingBox': makeObjectPropertyPusher(
-      WMSCapabilities.readBoundingBox_),
-    'Dimension': makeObjectPropertyPusher(
-      WMSCapabilities.readDimension_),
-    'Attribution': makeObjectPropertySetter(
-      WMSCapabilities.readAttribution_),
-    'AuthorityURL': makeObjectPropertyPusher(
-      WMSCapabilities.readAuthorityURL_),
-    'Identifier': makeObjectPropertyPusher(XSD.readString),
-    'MetadataURL': makeObjectPropertyPusher(
-      WMSCapabilities.readMetadataURL_),
-    'DataURL': makeObjectPropertyPusher(
-      WMSCapabilities.readFormatOnlineresource_),
-    'FeatureListURL': makeObjectPropertyPusher(
-      WMSCapabilities.readFormatOnlineresource_),
-    'Style': makeObjectPropertyPusher(
-      WMSCapabilities.readStyle_),
-    'MinScaleDenominator': makeObjectPropertySetter(
-      XSD.readDecimal),
-    'MaxScaleDenominator': makeObjectPropertySetter(
-      XSD.readDecimal),
-    'Layer': makeObjectPropertyPusher(
-      WMSCapabilities.readLayer_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.ATTRIBUTION_PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'Title': makeObjectPropertySetter(XSD.readString),
-    'OnlineResource': makeObjectPropertySetter(
-      XLink.readHref),
-    'LogoURL': makeObjectPropertySetter(
-      WMSCapabilities.readSizedFormatOnlineresource_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ =
-    makeStructureNS(WMSCapabilities.NAMESPACE_URIS_, {
-      'westBoundLongitude': makeObjectPropertySetter(
-        XSD.readDecimal),
-      'eastBoundLongitude': makeObjectPropertySetter(
-        XSD.readDecimal),
-      'southBoundLatitude': makeObjectPropertySetter(
-        XSD.readDecimal),
-      'northBoundLatitude': makeObjectPropertySetter(
-        XSD.readDecimal)
-    });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.REQUEST_PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'GetCapabilities': makeObjectPropertySetter(
-      WMSCapabilities.readOperationType_),
-    'GetMap': makeObjectPropertySetter(
-      WMSCapabilities.readOperationType_),
-    'GetFeatureInfo': makeObjectPropertySetter(
-      WMSCapabilities.readOperationType_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.OPERATIONTYPE_PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'Format': makeObjectPropertyPusher(XSD.readString),
-    'DCPType': makeObjectPropertyPusher(
-      WMSCapabilities.readDCPType_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.DCPTYPE_PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'HTTP': makeObjectPropertySetter(
-      WMSCapabilities.readHTTP_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.HTTP_PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'Get': makeObjectPropertySetter(
-      WMSCapabilities.readFormatOnlineresource_),
-    'Post': makeObjectPropertySetter(
-      WMSCapabilities.readFormatOnlineresource_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.STYLE_PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'Name': makeObjectPropertySetter(XSD.readString),
-    'Title': makeObjectPropertySetter(XSD.readString),
-    'Abstract': makeObjectPropertySetter(XSD.readString),
-    'LegendURL': makeObjectPropertyPusher(
-      WMSCapabilities.readSizedFormatOnlineresource_),
-    'StyleSheetURL': makeObjectPropertySetter(
-      WMSCapabilities.readFormatOnlineresource_),
-    'StyleURL': makeObjectPropertySetter(
-      WMSCapabilities.readFormatOnlineresource_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ =
-    makeStructureNS(WMSCapabilities.NAMESPACE_URIS_, {
-      'Format': makeObjectPropertySetter(XSD.readString),
-      'OnlineResource': makeObjectPropertySetter(
-        XLink.readHref)
-    });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMSCapabilities.KEYWORDLIST_PARSERS_ = makeStructureNS(
-  WMSCapabilities.NAMESPACE_URIS_, {
-    'Keyword': makeArrayPusher(XSD.readString)
-  });
 export default WMSCapabilities;

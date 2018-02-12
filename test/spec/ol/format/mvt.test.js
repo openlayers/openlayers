@@ -103,13 +103,11 @@ describe('ol.format.MVT', function() {
           name: 'layer1'
         }
       };
-      const readRawGeometry_ = MVT.readRawGeometry_;
-      MVT.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
+      format.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
         flatCoordinates.push(0, 0);
         ends.push(2);
       };
       const feature = format.createFeature_({}, rawFeature);
-      MVT.readRawGeometry_ = readRawGeometry_;
       const geometry = feature.getGeometry();
       expect(geometry).to.be.a(Point);
       expect(feature.get('myGeom')).to.equal(geometry);
@@ -127,14 +125,12 @@ describe('ol.format.MVT', function() {
           name: 'layer1'
         }
       };
-      const readRawGeometry_ = MVT.readRawGeometry_;
-      MVT.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
+      format.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
         flatCoordinates.push(0, 0, 3, 0, 3, 3, 3, 0, 0, 0);
         flatCoordinates.push(1, 1, 1, 2, 2, 2, 2, 1, 1, 1);
         ends.push(10, 20);
       };
       const feature = format.createFeature_({}, rawFeature);
-      MVT.readRawGeometry_ = readRawGeometry_;
       const geometry = feature.getGeometry();
       expect(geometry).to.be.a(Polygon);
     });
@@ -150,14 +146,12 @@ describe('ol.format.MVT', function() {
           name: 'layer1'
         }
       };
-      const readRawGeometry_ = MVT.readRawGeometry_;
-      MVT.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
+      format.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
         flatCoordinates.push(0, 0, 1, 0, 1, 1, 1, 0, 0, 0);
         flatCoordinates.push(1, 1, 2, 1, 2, 2, 2, 1, 1, 1);
         ends.push(10, 20);
       };
       const feature = format.createFeature_({}, rawFeature);
-      MVT.readRawGeometry_ = readRawGeometry_;
       const geometry = feature.getGeometry();
       expect(geometry).to.be.a(MultiPolygon);
     });
@@ -173,10 +167,9 @@ describe('ol.format.MVT', function() {
           name: 'layer1'
         }
       };
-      const readRawGeometry_ = MVT.readRawGeometry_;
       let createdFlatCoordinates;
       let createdEnds;
-      MVT.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
+      format.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
         flatCoordinates.push(0, 0, 1, 0, 1, 1, 1, 0, 0, 0);
         flatCoordinates.push(1, 1, 2, 1, 2, 2, 2, 1, 1, 1);
         createdFlatCoordinates = flatCoordinates;
@@ -184,7 +177,6 @@ describe('ol.format.MVT', function() {
         createdEnds = ends;
       };
       const feature = format.createFeature_({}, rawFeature);
-      MVT.readRawGeometry_ = readRawGeometry_;
       expect(feature).to.be.a(RenderFeature);
       expect(feature.getType()).to.be('Polygon');
       expect(feature.getFlatCoordinates()).to.equal(createdFlatCoordinates);

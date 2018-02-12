@@ -19,6 +19,187 @@ inherits(OWS, XML);
 
 
 /**
+ * @const
+ * @type {Array.<string>}
+ */
+const NAMESPACE_URIS = [null, 'http://www.opengis.net/ows/1.1'];
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'ServiceIdentification': makeObjectPropertySetter(
+      readServiceIdentification),
+    'ServiceProvider': makeObjectPropertySetter(
+      readServiceProvider),
+    'OperationsMetadata': makeObjectPropertySetter(
+      readOperationsMetadata)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const ADDRESS_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'DeliveryPoint': makeObjectPropertySetter(
+      XSD.readString),
+    'City': makeObjectPropertySetter(XSD.readString),
+    'AdministrativeArea': makeObjectPropertySetter(
+      XSD.readString),
+    'PostalCode': makeObjectPropertySetter(XSD.readString),
+    'Country': makeObjectPropertySetter(XSD.readString),
+    'ElectronicMailAddress': makeObjectPropertySetter(
+      XSD.readString)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const ALLOWED_VALUES_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Value': makeObjectPropertyPusher(readValue)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const CONSTRAINT_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'AllowedValues': makeObjectPropertySetter(
+      readAllowedValues)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const CONTACT_INFO_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Phone': makeObjectPropertySetter(readPhone),
+    'Address': makeObjectPropertySetter(readAddress)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const DCP_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'HTTP': makeObjectPropertySetter(readHttp)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const HTTP_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Get': makeObjectPropertyPusher(readGet),
+    'Post': undefined // TODO
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const OPERATION_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'DCP': makeObjectPropertySetter(readDcp)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const OPERATIONS_METADATA_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Operation': readOperation
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const PHONE_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Voice': makeObjectPropertySetter(XSD.readString),
+    'Facsimile': makeObjectPropertySetter(XSD.readString)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const REQUEST_METHOD_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Constraint': makeObjectPropertyPusher(
+      readConstraint)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const SERVICE_CONTACT_PARSERS =
+    makeStructureNS(
+      NAMESPACE_URIS, {
+        'IndividualName': makeObjectPropertySetter(
+          XSD.readString),
+        'PositionName': makeObjectPropertySetter(XSD.readString),
+        'ContactInfo': makeObjectPropertySetter(
+          readContactInfo)
+      });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const SERVICE_IDENTIFICATION_PARSERS =
+    makeStructureNS(
+      NAMESPACE_URIS, {
+        'Abstract': makeObjectPropertySetter(XSD.readString),
+        'AccessConstraints': makeObjectPropertySetter(XSD.readString),
+        'Fees': makeObjectPropertySetter(XSD.readString),
+        'Title': makeObjectPropertySetter(XSD.readString),
+        'ServiceTypeVersion': makeObjectPropertySetter(
+          XSD.readString),
+        'ServiceType': makeObjectPropertySetter(XSD.readString)
+      });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const SERVICE_PROVIDER_PARSERS =
+    makeStructureNS(
+      NAMESPACE_URIS, {
+        'ProviderName': makeObjectPropertySetter(XSD.readString),
+        'ProviderSite': makeObjectPropertySetter(XLink.readHref),
+        'ServiceContact': makeObjectPropertySetter(
+          readServiceContact)
+      });
+
+
+/**
  * @inheritDoc
  */
 OWS.prototype.readFromDocument = function(doc) {
@@ -36,7 +217,7 @@ OWS.prototype.readFromDocument = function(doc) {
  */
 OWS.prototype.readFromNode = function(node) {
   const owsObject = pushParseAndPop({},
-    OWS.PARSERS_, node, []);
+    PARSERS, node, []);
   return owsObject ? owsObject : null;
 };
 
@@ -44,387 +225,176 @@ OWS.prototype.readFromNode = function(node) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} The address.
  */
-OWS.readAddress_ = function(node, objectStack) {
+function readAddress(node, objectStack) {
   return pushParseAndPop({},
-    OWS.ADDRESS_PARSERS_, node, objectStack);
-};
+    ADDRESS_PARSERS, node, objectStack);
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} The values.
  */
-OWS.readAllowedValues_ = function(node, objectStack) {
+function readAllowedValues(node, objectStack) {
   return pushParseAndPop({},
-    OWS.ALLOWED_VALUES_PARSERS_, node, objectStack);
-};
+    ALLOWED_VALUES_PARSERS, node, objectStack);
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} The constraint.
  */
-OWS.readConstraint_ = function(node, objectStack) {
+function readConstraint(node, objectStack) {
   const name = node.getAttribute('name');
   if (!name) {
     return undefined;
   }
   return pushParseAndPop({'name': name},
-    OWS.CONSTRAINT_PARSERS_, node,
+    CONSTRAINT_PARSERS, node,
     objectStack);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} The contact info.
  */
-OWS.readContactInfo_ = function(node, objectStack) {
+function readContactInfo(node, objectStack) {
   return pushParseAndPop({},
-    OWS.CONTACT_INFO_PARSERS_, node, objectStack);
-};
+    CONTACT_INFO_PARSERS, node, objectStack);
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} The DCP.
  */
-OWS.readDcp_ = function(node, objectStack) {
+function readDcp(node, objectStack) {
   return pushParseAndPop({},
-    OWS.DCP_PARSERS_, node, objectStack);
-};
+    DCP_PARSERS, node, objectStack);
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} The GET object.
  */
-OWS.readGet_ = function(node, objectStack) {
+function readGet(node, objectStack) {
   const href = XLink.readHref(node);
   if (!href) {
     return undefined;
   }
   return pushParseAndPop({'href': href},
-    OWS.REQUEST_METHOD_PARSERS_, node, objectStack);
-};
+    REQUEST_METHOD_PARSERS, node, objectStack);
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} The HTTP object.
  */
-OWS.readHttp_ = function(node, objectStack) {
-  return pushParseAndPop({}, OWS.HTTP_PARSERS_,
+function readHttp(node, objectStack) {
+  return pushParseAndPop({}, HTTP_PARSERS,
     node, objectStack);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} The operation.
  */
-OWS.readOperation_ = function(node, objectStack) {
+function readOperation(node, objectStack) {
   const name = node.getAttribute('name');
   const value = pushParseAndPop({},
-    OWS.OPERATION_PARSERS_, node, objectStack);
+    OPERATION_PARSERS, node, objectStack);
   if (!value) {
     return undefined;
   }
   const object = /** @type {Object} */
       (objectStack[objectStack.length - 1]);
   object[name] = value;
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} The operations metadata.
  */
-OWS.readOperationsMetadata_ = function(node,
+function readOperationsMetadata(node,
   objectStack) {
   return pushParseAndPop({},
-    OWS.OPERATIONS_METADATA_PARSERS_, node,
+    OPERATIONS_METADATA_PARSERS, node,
     objectStack);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} The phone.
  */
-OWS.readPhone_ = function(node, objectStack) {
+function readPhone(node, objectStack) {
   return pushParseAndPop({},
-    OWS.PHONE_PARSERS_, node, objectStack);
-};
+    PHONE_PARSERS, node, objectStack);
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} The service identification.
  */
-OWS.readServiceIdentification_ = function(node,
+function readServiceIdentification(node,
   objectStack) {
   return pushParseAndPop(
-    {}, OWS.SERVICE_IDENTIFICATION_PARSERS_, node,
+    {}, SERVICE_IDENTIFICATION_PARSERS, node,
     objectStack);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} The service contact.
  */
-OWS.readServiceContact_ = function(node, objectStack) {
+function readServiceContact(node, objectStack) {
   return pushParseAndPop(
-    {}, OWS.SERVICE_CONTACT_PARSERS_, node,
+    {}, SERVICE_CONTACT_PARSERS, node,
     objectStack);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {Object|undefined} The service provider.
  */
-OWS.readServiceProvider_ = function(node, objectStack) {
+function readServiceProvider(node, objectStack) {
   return pushParseAndPop(
-    {}, OWS.SERVICE_PROVIDER_PARSERS_, node,
+    {}, SERVICE_PROVIDER_PARSERS, node,
     objectStack);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {string|undefined} The value.
  */
-OWS.readValue_ = function(node, objectStack) {
+function readValue(node, objectStack) {
   return XSD.readString(node);
-};
+}
 
 
-/**
- * @const
- * @type {Array.<string>}
- * @private
- */
-OWS.NAMESPACE_URIS_ = [
-  null,
-  'http://www.opengis.net/ows/1.1'
-];
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OWS.PARSERS_ = makeStructureNS(
-  OWS.NAMESPACE_URIS_, {
-    'ServiceIdentification': makeObjectPropertySetter(
-      OWS.readServiceIdentification_),
-    'ServiceProvider': makeObjectPropertySetter(
-      OWS.readServiceProvider_),
-    'OperationsMetadata': makeObjectPropertySetter(
-      OWS.readOperationsMetadata_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OWS.ADDRESS_PARSERS_ = makeStructureNS(
-  OWS.NAMESPACE_URIS_, {
-    'DeliveryPoint': makeObjectPropertySetter(
-      XSD.readString),
-    'City': makeObjectPropertySetter(XSD.readString),
-    'AdministrativeArea': makeObjectPropertySetter(
-      XSD.readString),
-    'PostalCode': makeObjectPropertySetter(XSD.readString),
-    'Country': makeObjectPropertySetter(XSD.readString),
-    'ElectronicMailAddress': makeObjectPropertySetter(
-      XSD.readString)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OWS.ALLOWED_VALUES_PARSERS_ = makeStructureNS(
-  OWS.NAMESPACE_URIS_, {
-    'Value': makeObjectPropertyPusher(OWS.readValue_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OWS.CONSTRAINT_PARSERS_ = makeStructureNS(
-  OWS.NAMESPACE_URIS_, {
-    'AllowedValues': makeObjectPropertySetter(
-      OWS.readAllowedValues_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OWS.CONTACT_INFO_PARSERS_ = makeStructureNS(
-  OWS.NAMESPACE_URIS_, {
-    'Phone': makeObjectPropertySetter(OWS.readPhone_),
-    'Address': makeObjectPropertySetter(OWS.readAddress_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OWS.DCP_PARSERS_ = makeStructureNS(
-  OWS.NAMESPACE_URIS_, {
-    'HTTP': makeObjectPropertySetter(OWS.readHttp_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OWS.HTTP_PARSERS_ = makeStructureNS(
-  OWS.NAMESPACE_URIS_, {
-    'Get': makeObjectPropertyPusher(OWS.readGet_),
-    'Post': undefined // TODO
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OWS.OPERATION_PARSERS_ = makeStructureNS(
-  OWS.NAMESPACE_URIS_, {
-    'DCP': makeObjectPropertySetter(OWS.readDcp_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OWS.OPERATIONS_METADATA_PARSERS_ = makeStructureNS(
-  OWS.NAMESPACE_URIS_, {
-    'Operation': OWS.readOperation_
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OWS.PHONE_PARSERS_ = makeStructureNS(
-  OWS.NAMESPACE_URIS_, {
-    'Voice': makeObjectPropertySetter(XSD.readString),
-    'Facsimile': makeObjectPropertySetter(XSD.readString)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OWS.REQUEST_METHOD_PARSERS_ = makeStructureNS(
-  OWS.NAMESPACE_URIS_, {
-    'Constraint': makeObjectPropertyPusher(
-      OWS.readConstraint_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OWS.SERVICE_CONTACT_PARSERS_ =
-    makeStructureNS(
-      OWS.NAMESPACE_URIS_, {
-        'IndividualName': makeObjectPropertySetter(
-          XSD.readString),
-        'PositionName': makeObjectPropertySetter(XSD.readString),
-        'ContactInfo': makeObjectPropertySetter(
-          OWS.readContactInfo_)
-      });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OWS.SERVICE_IDENTIFICATION_PARSERS_ =
-    makeStructureNS(
-      OWS.NAMESPACE_URIS_, {
-        'Abstract': makeObjectPropertySetter(XSD.readString),
-        'AccessConstraints': makeObjectPropertySetter(XSD.readString),
-        'Fees': makeObjectPropertySetter(XSD.readString),
-        'Title': makeObjectPropertySetter(XSD.readString),
-        'ServiceTypeVersion': makeObjectPropertySetter(
-          XSD.readString),
-        'ServiceType': makeObjectPropertySetter(XSD.readString)
-      });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-OWS.SERVICE_PROVIDER_PARSERS_ =
-    makeStructureNS(
-      OWS.NAMESPACE_URIS_, {
-        'ProviderName': makeObjectPropertySetter(XSD.readString),
-        'ProviderSite': makeObjectPropertySetter(XLink.readHref),
-        'ServiceContact': makeObjectPropertySetter(
-          OWS.readServiceContact_)
-      });
 export default OWS;

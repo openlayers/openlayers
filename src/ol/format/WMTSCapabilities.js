@@ -32,6 +32,168 @@ inherits(WMTSCapabilities, XML);
 
 
 /**
+ * @const
+ * @type {Array.<string>}
+ */
+const NAMESPACE_URIS = [
+  null,
+  'http://www.opengis.net/wmts/1.0'
+];
+
+
+/**
+ * @const
+ * @type {Array.<string>}
+ */
+const OWS_NAMESPACE_URIS = [
+  null,
+  'http://www.opengis.net/ows/1.1'
+];
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Contents': makeObjectPropertySetter(readContents)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const CONTENTS_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Layer': makeObjectPropertyPusher(readLayer),
+    'TileMatrixSet': makeObjectPropertyPusher(readTileMatrixSet)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const LAYER_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Style': makeObjectPropertyPusher(readStyle),
+    'Format': makeObjectPropertyPusher(XSD.readString),
+    'TileMatrixSetLink': makeObjectPropertyPusher(readTileMatrixSetLink),
+    'Dimension': makeObjectPropertyPusher(readDimensions),
+    'ResourceURL': makeObjectPropertyPusher(readResourceUrl)
+  }, makeStructureNS(OWS_NAMESPACE_URIS, {
+    'Title': makeObjectPropertySetter(XSD.readString),
+    'Abstract': makeObjectPropertySetter(XSD.readString),
+    'WGS84BoundingBox': makeObjectPropertySetter(readWgs84BoundingBox),
+    'Identifier': makeObjectPropertySetter(XSD.readString)
+  }));
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const STYLE_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'LegendURL': makeObjectPropertyPusher(readLegendUrl)
+  }, makeStructureNS(OWS_NAMESPACE_URIS, {
+    'Title': makeObjectPropertySetter(XSD.readString),
+    'Identifier': makeObjectPropertySetter(XSD.readString)
+  }));
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const TMS_LINKS_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'TileMatrixSet': makeObjectPropertySetter(XSD.readString),
+    'TileMatrixSetLimits': makeObjectPropertySetter(readTileMatrixLimitsList)
+  });
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const TMS_LIMITS_LIST_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'TileMatrixLimits': makeArrayPusher(readTileMatrixLimits)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const TMS_LIMITS_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'TileMatrix': makeObjectPropertySetter(XSD.readString),
+    'MinTileRow': makeObjectPropertySetter(XSD.readNonNegativeInteger),
+    'MaxTileRow': makeObjectPropertySetter(XSD.readNonNegativeInteger),
+    'MinTileCol': makeObjectPropertySetter(XSD.readNonNegativeInteger),
+    'MaxTileCol': makeObjectPropertySetter(XSD.readNonNegativeInteger)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const DIMENSION_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Default': makeObjectPropertySetter(XSD.readString),
+    'Value': makeObjectPropertyPusher(XSD.readString)
+  }, makeStructureNS(OWS_NAMESPACE_URIS, {
+    'Identifier': makeObjectPropertySetter(XSD.readString)
+  }));
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const WGS84_BBOX_READERS = makeStructureNS(
+  OWS_NAMESPACE_URIS, {
+    'LowerCorner': makeArrayPusher(readCoordinates),
+    'UpperCorner': makeArrayPusher(readCoordinates)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const TMS_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'WellKnownScaleSet': makeObjectPropertySetter(XSD.readString),
+    'TileMatrix': makeObjectPropertyPusher(readTileMatrix)
+  }, makeStructureNS(OWS_NAMESPACE_URIS, {
+    'SupportedCRS': makeObjectPropertySetter(XSD.readString),
+    'Identifier': makeObjectPropertySetter(XSD.readString)
+  }));
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+const TM_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'TopLeftCorner': makeObjectPropertySetter(readCoordinates),
+    'ScaleDenominator': makeObjectPropertySetter(XSD.readDecimal),
+    'TileWidth': makeObjectPropertySetter(XSD.readNonNegativeInteger),
+    'TileHeight': makeObjectPropertySetter(XSD.readNonNegativeInteger),
+    'MatrixWidth': makeObjectPropertySetter(XSD.readNonNegativeInteger),
+    'MatrixHeight': makeObjectPropertySetter(XSD.readNonNegativeInteger)
+  }, makeStructureNS(OWS_NAMESPACE_URIS, {
+    'Identifier': makeObjectPropertySetter(XSD.readString)
+  }));
+
+
+/**
  * Read a WMTS capabilities document.
  *
  * @function
@@ -66,56 +228,52 @@ WMTSCapabilities.prototype.readFromNode = function(node) {
   }
   WMTSCapabilityObject['version'] = version;
   WMTSCapabilityObject = pushParseAndPop(WMTSCapabilityObject,
-    WMTSCapabilities.PARSERS_, node, []);
+    PARSERS, node, []);
   return WMTSCapabilityObject ? WMTSCapabilityObject : null;
 };
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Attribution object.
  */
-WMTSCapabilities.readContents_ = function(node, objectStack) {
+function readContents(node, objectStack) {
   return pushParseAndPop({},
-    WMTSCapabilities.CONTENTS_PARSERS_, node, objectStack);
-};
+    CONTENTS_PARSERS, node, objectStack);
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Layers object.
  */
-WMTSCapabilities.readLayer_ = function(node, objectStack) {
+function readLayer(node, objectStack) {
   return pushParseAndPop({},
-    WMTSCapabilities.LAYER_PARSERS_, node, objectStack);
-};
+    LAYER_PARSERS, node, objectStack);
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Tile Matrix Set object.
  */
-WMTSCapabilities.readTileMatrixSet_ = function(node, objectStack) {
+function readTileMatrixSet(node, objectStack) {
   return pushParseAndPop({},
-    WMTSCapabilities.TMS_PARSERS_, node, objectStack);
-};
+    TMS_PARSERS, node, objectStack);
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Style object.
  */
-WMTSCapabilities.readStyle_ = function(node, objectStack) {
+function readStyle(node, objectStack) {
   const style = pushParseAndPop({},
-    WMTSCapabilities.STYLE_PARSERS_, node, objectStack);
+    STYLE_PARSERS, node, objectStack);
   if (!style) {
     return undefined;
   }
@@ -123,41 +281,38 @@ WMTSCapabilities.readStyle_ = function(node, objectStack) {
   style['isDefault'] = isDefault;
   return style;
 
-};
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Tile Matrix Set Link object.
  */
-WMTSCapabilities.readTileMatrixSetLink_ = function(node,
+function readTileMatrixSetLink(node,
   objectStack) {
   return pushParseAndPop({},
-    WMTSCapabilities.TMS_LINKS_PARSERS_, node, objectStack);
-};
+    TMS_LINKS_PARSERS, node, objectStack);
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Dimension object.
  */
-WMTSCapabilities.readDimensions_ = function(node, objectStack) {
+function readDimensions(node, objectStack) {
   return pushParseAndPop({},
-    WMTSCapabilities.DIMENSION_PARSERS_, node, objectStack);
-};
+    DIMENSION_PARSERS, node, objectStack);
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Resource URL object.
  */
-WMTSCapabilities.readResourceUrl_ = function(node, objectStack) {
+function readResourceUrl(node, objectStack) {
   const format = node.getAttribute('format');
   const template = node.getAttribute('template');
   const resourceType = node.getAttribute('resourceType');
@@ -172,46 +327,43 @@ WMTSCapabilities.readResourceUrl_ = function(node, objectStack) {
     resource['resourceType'] = resourceType;
   }
   return resource;
-};
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} WGS84 BBox object.
  */
-WMTSCapabilities.readWgs84BoundingBox_ = function(node, objectStack) {
+function readWgs84BoundingBox(node, objectStack) {
   const coordinates = pushParseAndPop([],
-    WMTSCapabilities.WGS84_BBOX_READERS_, node, objectStack);
+    WGS84_BBOX_READERS, node, objectStack);
   if (coordinates.length != 2) {
     return undefined;
   }
   return boundingExtent(coordinates);
-};
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Legend object.
  */
-WMTSCapabilities.readLegendUrl_ = function(node, objectStack) {
+function readLegendUrl(node, objectStack) {
   const legend = {};
   legend['format'] = node.getAttribute('format');
   legend['href'] = XLink.readHref(node);
   return legend;
-};
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Coordinates object.
  */
-WMTSCapabilities.readCoordinates_ = function(node, objectStack) {
+function readCoordinates(node, objectStack) {
   const coordinates = XSD.readString(node).split(' ');
   if (!coordinates || coordinates.length != 2) {
     return undefined;
@@ -222,257 +374,42 @@ WMTSCapabilities.readCoordinates_ = function(node, objectStack) {
     return undefined;
   }
   return [x, y];
-};
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} TileMatrix object.
  */
-WMTSCapabilities.readTileMatrix_ = function(node, objectStack) {
+function readTileMatrix(node, objectStack) {
   return pushParseAndPop({},
-    WMTSCapabilities.TM_PARSERS_, node, objectStack);
-};
+    TM_PARSERS, node, objectStack);
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} TileMatrixSetLimits Object.
  */
-WMTSCapabilities.readTileMatrixLimitsList_ = function(node,
+function readTileMatrixLimitsList(node,
   objectStack) {
   return pushParseAndPop([],
-    WMTSCapabilities.TMS_LIMITS_LIST_PARSERS_, node,
+    TMS_LIMITS_LIST_PARSERS, node,
     objectStack);
-};
+}
 
 
 /**
- * @private
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} TileMatrixLimits Array.
  */
-WMTSCapabilities.readTileMatrixLimits_ = function(node, objectStack) {
+function readTileMatrixLimits(node, objectStack) {
   return pushParseAndPop({},
-    WMTSCapabilities.TMS_LIMITS_PARSERS_, node, objectStack);
-};
+    TMS_LIMITS_PARSERS, node, objectStack);
+}
 
 
-/**
- * @const
- * @private
- * @type {Array.<string>}
- */
-WMTSCapabilities.NAMESPACE_URIS_ = [
-  null,
-  'http://www.opengis.net/wmts/1.0'
-];
-
-
-/**
- * @const
- * @private
- * @type {Array.<string>}
- */
-WMTSCapabilities.OWS_NAMESPACE_URIS_ = [
-  null,
-  'http://www.opengis.net/ows/1.1'
-];
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMTSCapabilities.PARSERS_ = makeStructureNS(
-  WMTSCapabilities.NAMESPACE_URIS_, {
-    'Contents': makeObjectPropertySetter(
-      WMTSCapabilities.readContents_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMTSCapabilities.CONTENTS_PARSERS_ = makeStructureNS(
-  WMTSCapabilities.NAMESPACE_URIS_, {
-    'Layer': makeObjectPropertyPusher(
-      WMTSCapabilities.readLayer_),
-    'TileMatrixSet': makeObjectPropertyPusher(
-      WMTSCapabilities.readTileMatrixSet_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMTSCapabilities.LAYER_PARSERS_ = makeStructureNS(
-  WMTSCapabilities.NAMESPACE_URIS_, {
-    'Style': makeObjectPropertyPusher(
-      WMTSCapabilities.readStyle_),
-    'Format': makeObjectPropertyPusher(
-      XSD.readString),
-    'TileMatrixSetLink': makeObjectPropertyPusher(
-      WMTSCapabilities.readTileMatrixSetLink_),
-    'Dimension': makeObjectPropertyPusher(
-      WMTSCapabilities.readDimensions_),
-    'ResourceURL': makeObjectPropertyPusher(
-      WMTSCapabilities.readResourceUrl_)
-  }, makeStructureNS(WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-    'Title': makeObjectPropertySetter(
-      XSD.readString),
-    'Abstract': makeObjectPropertySetter(
-      XSD.readString),
-    'WGS84BoundingBox': makeObjectPropertySetter(
-      WMTSCapabilities.readWgs84BoundingBox_),
-    'Identifier': makeObjectPropertySetter(
-      XSD.readString)
-  }));
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMTSCapabilities.STYLE_PARSERS_ = makeStructureNS(
-  WMTSCapabilities.NAMESPACE_URIS_, {
-    'LegendURL': makeObjectPropertyPusher(
-      WMTSCapabilities.readLegendUrl_)
-  }, makeStructureNS(WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-    'Title': makeObjectPropertySetter(
-      XSD.readString),
-    'Identifier': makeObjectPropertySetter(
-      XSD.readString)
-  }));
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMTSCapabilities.TMS_LINKS_PARSERS_ = makeStructureNS(
-  WMTSCapabilities.NAMESPACE_URIS_, {
-    'TileMatrixSet': makeObjectPropertySetter(
-      XSD.readString),
-    'TileMatrixSetLimits': makeObjectPropertySetter(
-      WMTSCapabilities.readTileMatrixLimitsList_)
-  });
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMTSCapabilities.TMS_LIMITS_LIST_PARSERS_ = makeStructureNS(
-  WMTSCapabilities.NAMESPACE_URIS_, {
-    'TileMatrixLimits': makeArrayPusher(
-      WMTSCapabilities.readTileMatrixLimits_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMTSCapabilities.TMS_LIMITS_PARSERS_ = makeStructureNS(
-  WMTSCapabilities.NAMESPACE_URIS_, {
-    'TileMatrix': makeObjectPropertySetter(
-      XSD.readString),
-    'MinTileRow': makeObjectPropertySetter(
-      XSD.readNonNegativeInteger),
-    'MaxTileRow': makeObjectPropertySetter(
-      XSD.readNonNegativeInteger),
-    'MinTileCol': makeObjectPropertySetter(
-      XSD.readNonNegativeInteger),
-    'MaxTileCol': makeObjectPropertySetter(
-      XSD.readNonNegativeInteger)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMTSCapabilities.DIMENSION_PARSERS_ = makeStructureNS(
-  WMTSCapabilities.NAMESPACE_URIS_, {
-    'Default': makeObjectPropertySetter(
-      XSD.readString),
-    'Value': makeObjectPropertyPusher(
-      XSD.readString)
-  }, makeStructureNS(WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-    'Identifier': makeObjectPropertySetter(
-      XSD.readString)
-  }));
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMTSCapabilities.WGS84_BBOX_READERS_ = makeStructureNS(
-  WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-    'LowerCorner': makeArrayPusher(
-      WMTSCapabilities.readCoordinates_),
-    'UpperCorner': makeArrayPusher(
-      WMTSCapabilities.readCoordinates_)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMTSCapabilities.TMS_PARSERS_ = makeStructureNS(
-  WMTSCapabilities.NAMESPACE_URIS_, {
-    'WellKnownScaleSet': makeObjectPropertySetter(
-      XSD.readString),
-    'TileMatrix': makeObjectPropertyPusher(
-      WMTSCapabilities.readTileMatrix_)
-  }, makeStructureNS(WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-    'SupportedCRS': makeObjectPropertySetter(
-      XSD.readString),
-    'Identifier': makeObjectPropertySetter(
-      XSD.readString)
-  }));
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-WMTSCapabilities.TM_PARSERS_ = makeStructureNS(
-  WMTSCapabilities.NAMESPACE_URIS_, {
-    'TopLeftCorner': makeObjectPropertySetter(
-      WMTSCapabilities.readCoordinates_),
-    'ScaleDenominator': makeObjectPropertySetter(
-      XSD.readDecimal),
-    'TileWidth': makeObjectPropertySetter(
-      XSD.readNonNegativeInteger),
-    'TileHeight': makeObjectPropertySetter(
-      XSD.readNonNegativeInteger),
-    'MatrixWidth': makeObjectPropertySetter(
-      XSD.readNonNegativeInteger),
-    'MatrixHeight': makeObjectPropertySetter(
-      XSD.readNonNegativeInteger)
-  }, makeStructureNS(WMTSCapabilities.OWS_NAMESPACE_URIS_, {
-    'Identifier': makeObjectPropertySetter(
-      XSD.readString)
-  }));
 export default WMTSCapabilities;
