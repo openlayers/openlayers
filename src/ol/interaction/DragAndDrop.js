@@ -11,6 +11,20 @@ import EventType from '../events/EventType.js';
 import Interaction from '../interaction/Interaction.js';
 import {get as getProjection} from '../proj.js';
 
+
+/**
+ * @enum {string}
+ */
+const DragAndDropEventType = {
+  /**
+   * Triggered when features are added
+   * @event ol.interaction.DragAndDrop.Event#addfeatures
+   * @api
+   */
+  ADD_FEATURES: 'addfeatures'
+};
+
+
 /**
  * @classdesc
  * Handles input of vector data by drag and drop.
@@ -69,9 +83,8 @@ inherits(DragAndDrop, Interaction);
 /**
  * @param {Event} event Event.
  * @this {ol.interaction.DragAndDrop}
- * @private
  */
-DragAndDrop.handleDrop_ = function(event) {
+function handleDrop(event) {
   const files = event.dataTransfer.files;
   let i, ii, file;
   for (i = 0, ii = files.length; i < ii; ++i) {
@@ -81,18 +94,17 @@ DragAndDrop.handleDrop_ = function(event) {
       this.handleResult_.bind(this, file));
     reader.readAsText(file);
   }
-};
+}
 
 
 /**
  * @param {Event} event Event.
- * @private
  */
-DragAndDrop.handleStop_ = function(event) {
+function handleStop(event) {
   event.stopPropagation();
   event.preventDefault();
   event.dataTransfer.dropEffect = 'copy';
-};
+}
 
 
 /**
@@ -135,7 +147,7 @@ DragAndDrop.prototype.handleResult_ = function(file, event) {
   }
   this.dispatchEvent(
     new DragAndDrop.Event(
-      DragAndDrop.EventType_.ADD_FEATURES, file,
+      DragAndDropEventType.ADD_FEATURES, file,
       features, projection));
 };
 
@@ -160,13 +172,13 @@ DragAndDrop.prototype.registerListeners_ = function() {
     const dropArea = this.target ? this.target : map.getViewport();
     this.dropListenKeys_ = [
       listen(dropArea, EventType.DROP,
-        DragAndDrop.handleDrop_, this),
+        handleDrop, this),
       listen(dropArea, EventType.DRAGENTER,
-        DragAndDrop.handleStop_, this),
+        handleStop, this),
       listen(dropArea, EventType.DRAGOVER,
-        DragAndDrop.handleStop_, this),
+        handleStop, this),
       listen(dropArea, EventType.DROP,
-        DragAndDrop.handleStop_, this)
+        handleStop, this)
     ];
   }
 };
@@ -225,20 +237,6 @@ DragAndDrop.prototype.unregisterListeners_ = function() {
 
 
 /**
- * @enum {string}
- * @private
- */
-DragAndDrop.EventType_ = {
-  /**
-   * Triggered when features are added
-   * @event ol.interaction.DragAndDrop.Event#addfeatures
-   * @api
-   */
-  ADD_FEATURES: 'addfeatures'
-};
-
-
-/**
  * @classdesc
  * Events emitted by {@link ol.interaction.DragAndDrop} instances are instances
  * of this type.
@@ -246,7 +244,7 @@ DragAndDrop.EventType_ = {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.interaction.DragAndDropEvent}
- * @param {ol.interaction.DragAndDrop.EventType_} type Type.
+ * @param {ol.interaction.DragAndDropEventType} type Type.
  * @param {File} file File.
  * @param {Array.<ol.Feature>=} opt_features Features.
  * @param {ol.proj.Projection=} opt_projection Projection.
