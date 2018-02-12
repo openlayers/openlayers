@@ -290,17 +290,6 @@ ol.FeatureLoader;
 
 
 /**
- * A function that returns an array of {@link ol.style.Style styles} given a
- * resolution. The `this` keyword inside the function references the
- * {@link ol.Feature} to be styled.
- *
- * @typedef {function(this: ol.Feature, number):
- *     (ol.style.Style|Array.<ol.style.Style>)}
- */
-ol.FeatureStyleFunction;
-
-
-/**
  * {@link ol.source.Vector} sources use a function of this type to get the url
  * to load features from.
  *

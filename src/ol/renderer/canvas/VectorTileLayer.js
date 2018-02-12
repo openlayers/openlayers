@@ -201,18 +201,12 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(
      */
     const render = function(feature) {
       let styles;
-      let styleFunction = feature.getStyleFunction();
+      const styleFunction = feature.getStyleFunction() || layer.getStyleFunction();
       if (styleFunction) {
-        styles = styleFunction.call(/** @type {ol.Feature} */ (feature), resolution);
-      } else {
-        styleFunction = layer.getStyleFunction();
-        if (styleFunction) {
-          styles = styleFunction(feature, resolution);
-        }
+        styles = styleFunction(feature, resolution);
       }
       if (styles) {
-        const dirty = this.renderFeature(feature, squaredTolerance, styles,
-          replayGroup);
+        const dirty = this.renderFeature(feature, squaredTolerance, styles, replayGroup);
         this.dirty_ = this.dirty_ || dirty;
         replayState.dirty = replayState.dirty || dirty;
       }

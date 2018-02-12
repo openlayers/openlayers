@@ -57,7 +57,7 @@ describe('ol.format.KML', function() {
         expect(f).to.be.an(Feature);
         const styleFunction = f.getStyleFunction();
         expect(styleFunction).not.to.be(undefined);
-        const styleArray = styleFunction.call(f, 0);
+        const styleArray = styleFunction(f, 0);
         expect(styleArray).to.be.an(Array);
         expect(styleArray).to.have.length(1);
         const style = styleArray[0];
@@ -1715,7 +1715,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
@@ -1748,7 +1748,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
@@ -1828,7 +1828,7 @@ describe('ol.format.KML', function() {
             expect(f.getId()).to.be.within(1, 5);
             const styleFunction = f.getStyleFunction();
             expect(styleFunction).not.to.be(undefined);
-            const styleArray = styleFunction.call(f, 0);
+            const styleArray = styleFunction(f, 0);
             expect(styleArray).to.be.an(Array);
             expect(styleArray).to.have.length(1);
             const style = styleArray[0];
@@ -1899,7 +1899,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
@@ -1935,7 +1935,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
@@ -1970,7 +1970,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
@@ -2002,7 +2002,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
@@ -2039,7 +2039,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
@@ -2078,7 +2078,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
@@ -2115,7 +2115,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
@@ -2153,7 +2153,7 @@ describe('ol.format.KML', function() {
             expect(f).to.be.an(Feature);
             const styleFunction = f.getStyleFunction();
             expect(styleFunction).not.to.be(undefined);
-            const styleArray = styleFunction.call(f, 0);
+            const styleArray = styleFunction(f, 0);
             expect(styleArray).to.be.an(Array);
             expect(styleArray).to.have.length(1);
             const style = styleArray[0];
@@ -2206,7 +2206,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(2);
           const style = styleArray[1];
@@ -2255,7 +2255,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(2);
           const style = styleArray[1];
@@ -2509,7 +2509,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const s = styleArray[0];
@@ -2542,7 +2542,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const s = styleArray[0];
@@ -2583,7 +2583,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const s = styleArray[0];
@@ -2617,7 +2617,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const s = styleArray[0];
@@ -2651,7 +2651,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const s = styleArray[0];
@@ -2685,7 +2685,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const s = styleArray[0];
@@ -2718,7 +2718,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
@@ -2750,7 +2750,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(Feature);
           const styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
-          const styleArray = styleFunction.call(f, 0);
+          const styleArray = styleFunction(f, 0);
           expect(styleArray).to.be.an(Array);
           expect(styleArray).to.have.length(1);
           const style = styleArray[0];
@@ -2783,13 +2783,13 @@ describe('ol.format.KML', function() {
           expect(f1).to.be.an(Feature);
           const styleFunction1 = f1.getStyleFunction();
           expect(styleFunction1).not.to.be(undefined);
-          const styleArray1 = styleFunction1.call(f1, 0);
+          const styleArray1 = styleFunction1(f1, 0);
           expect(styleArray1).to.be.an(Array);
           const f2 = fs[1];
           expect(f2).to.be.an(Feature);
           const styleFunction2 = f2.getStyleFunction();
           expect(styleFunction2).not.to.be(undefined);
-          const styleArray2 = styleFunction2.call(f2, 0);
+          const styleArray2 = styleFunction2(f2, 0);
           expect(styleArray2).to.be.an(Array);
           expect(styleArray1).to.be(styleArray2);
         });
@@ -3204,7 +3204,7 @@ describe('ol.format.KML', function() {
         const f = features[0];
         const styleFunction = f.getStyleFunction();
         expect(styleFunction).not.to.be(undefined);
-        const styleArray = styleFunction.call(f, 0);
+        const styleArray = styleFunction(f, 0);
         expect(styleArray).to.be.an(Array);
         const style = styleArray[0];
         expect(style).to.be.an(Style);
