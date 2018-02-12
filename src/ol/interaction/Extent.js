@@ -82,10 +82,10 @@ const ExtentInteraction = function(opt_options) {
 
   /* Inherit ol.interaction.Pointer */
   PointerInteraction.call(this, {
-    handleDownEvent: ExtentInteraction.handleDownEvent_,
-    handleDragEvent: ExtentInteraction.handleDragEvent_,
-    handleEvent: ExtentInteraction.handleEvent_,
-    handleUpEvent: ExtentInteraction.handleUpEvent_
+    handleDownEvent: handleDownEvent,
+    handleDragEvent: handleDragEvent,
+    handleEvent: handleEvent,
+    handleUpEvent: handleUpEvent
   });
 
   /**
@@ -98,7 +98,7 @@ const ExtentInteraction = function(opt_options) {
       useSpatialIndex: false,
       wrapX: !!opt_options.wrapX
     }),
-    style: opt_options.boxStyle ? opt_options.boxStyle : ExtentInteraction.getDefaultExtentStyleFunction_(),
+    style: opt_options.boxStyle ? opt_options.boxStyle : getDefaultExtentStyleFunction(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
@@ -113,7 +113,7 @@ const ExtentInteraction = function(opt_options) {
       useSpatialIndex: false,
       wrapX: !!opt_options.wrapX
     }),
-    style: opt_options.pointerStyle ? opt_options.pointerStyle : ExtentInteraction.getDefaultPointerStyleFunction_(),
+    style: opt_options.pointerStyle ? opt_options.pointerStyle : getDefaultPointerStyleFunction(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
@@ -129,9 +129,8 @@ inherits(ExtentInteraction, PointerInteraction);
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
  * @return {boolean} Propagate event?
  * @this {ol.interaction.Extent}
- * @private
  */
-ExtentInteraction.handleEvent_ = function(mapBrowserEvent) {
+function handleEvent(mapBrowserEvent) {
   if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
     return true;
   }
@@ -143,15 +142,14 @@ ExtentInteraction.handleEvent_ = function(mapBrowserEvent) {
   PointerInteraction.handleEvent.call(this, mapBrowserEvent);
   //return false to stop propagation
   return false;
-};
+}
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Event handled?
  * @this {ol.interaction.Extent}
- * @private
  */
-ExtentInteraction.handleDownEvent_ = function(mapBrowserEvent) {
+function handleDownEvent(mapBrowserEvent) {
   const pixel = mapBrowserEvent.pixel;
   const map = mapBrowserEvent.map;
 
@@ -183,15 +181,15 @@ ExtentInteraction.handleDownEvent_ = function(mapBrowserEvent) {
 
     //snap to point
     if (x !== null && y !== null) {
-      this.pointerHandler_ = ExtentInteraction.getPointHandler_(getOpposingPoint(vertex));
+      this.pointerHandler_ = getPointHandler(getOpposingPoint(vertex));
     //snap to edge
     } else if (x !== null) {
-      this.pointerHandler_ = ExtentInteraction.getEdgeHandler_(
+      this.pointerHandler_ = getEdgeHandler(
         getOpposingPoint([x, extent[1]]),
         getOpposingPoint([x, extent[3]])
       );
     } else if (y !== null) {
-      this.pointerHandler_ = ExtentInteraction.getEdgeHandler_(
+      this.pointerHandler_ = getEdgeHandler(
         getOpposingPoint([extent[0], y]),
         getOpposingPoint([extent[2], y])
       );
@@ -200,33 +198,31 @@ ExtentInteraction.handleDownEvent_ = function(mapBrowserEvent) {
   } else {
     vertex = map.getCoordinateFromPixel(pixel);
     this.setExtent([vertex[0], vertex[1], vertex[0], vertex[1]]);
-    this.pointerHandler_ = ExtentInteraction.getPointHandler_(vertex);
+    this.pointerHandler_ = getPointHandler(vertex);
   }
   return true; //event handled; start downup sequence
-};
+}
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Event handled?
  * @this {ol.interaction.Extent}
- * @private
  */
-ExtentInteraction.handleDragEvent_ = function(mapBrowserEvent) {
+function handleDragEvent(mapBrowserEvent) {
   if (this.pointerHandler_) {
     const pixelCoordinate = mapBrowserEvent.coordinate;
     this.setExtent(this.pointerHandler_(pixelCoordinate));
     this.createOrUpdatePointerFeature_(pixelCoordinate);
   }
   return true;
-};
+}
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
  * @this {ol.interaction.Extent}
- * @private
  */
-ExtentInteraction.handleUpEvent_ = function(mapBrowserEvent) {
+function handleUpEvent(mapBrowserEvent) {
   this.pointerHandler_ = null;
   //If bbox is zero area, set to null;
   const extent = this.getExtent();
@@ -234,52 +230,48 @@ ExtentInteraction.handleUpEvent_ = function(mapBrowserEvent) {
     this.setExtent(null);
   }
   return false; //Stop handling downup sequence
-};
+}
 
 /**
  * Returns the default style for the drawn bbox
  *
  * @return {ol.StyleFunction} Default Extent style
- * @private
  */
-ExtentInteraction.getDefaultExtentStyleFunction_ = function() {
+function getDefaultExtentStyleFunction() {
   const style = Style.createDefaultEditing();
   return function(feature, resolution) {
     return style[GeometryType.POLYGON];
   };
-};
+}
 
 /**
  * Returns the default style for the pointer
  *
  * @return {ol.StyleFunction} Default pointer style
- * @private
  */
-ExtentInteraction.getDefaultPointerStyleFunction_ = function() {
+function getDefaultPointerStyleFunction() {
   const style = Style.createDefaultEditing();
   return function(feature, resolution) {
     return style[GeometryType.POINT];
   };
-};
+}
 
 /**
  * @param {ol.Coordinate} fixedPoint corner that will be unchanged in the new extent
  * @returns {function (ol.Coordinate): ol.Extent} event handler
- * @private
  */
-ExtentInteraction.getPointHandler_ = function(fixedPoint) {
+function getPointHandler(fixedPoint) {
   return function(point) {
     return boundingExtent([fixedPoint, point]);
   };
-};
+}
 
 /**
  * @param {ol.Coordinate} fixedP1 first corner that will be unchanged in the new extent
  * @param {ol.Coordinate} fixedP2 second corner that will be unchanged in the new extent
  * @returns {function (ol.Coordinate): ol.Extent|null} event handler
- * @private
  */
-ExtentInteraction.getEdgeHandler_ = function(fixedP1, fixedP2) {
+function getEdgeHandler(fixedP1, fixedP2) {
   if (fixedP1[0] == fixedP2[0]) {
     return function(point) {
       return boundingExtent([fixedP1, [point[0], fixedP2[1]]]);
@@ -291,21 +283,20 @@ ExtentInteraction.getEdgeHandler_ = function(fixedP1, fixedP2) {
   } else {
     return null;
   }
-};
+}
 
 /**
  * @param {ol.Extent} extent extent
  * @returns {Array<Array<ol.Coordinate>>} extent line segments
- * @private
  */
-ExtentInteraction.getSegments_ = function(extent) {
+function getSegments(extent) {
   return [
     [[extent[0], extent[1]], [extent[0], extent[3]]],
     [[extent[0], extent[3]], [extent[2], extent[3]]],
     [[extent[2], extent[3]], [extent[2], extent[1]]],
     [[extent[2], extent[1]], [extent[0], extent[1]]]
   ];
-};
+}
 
 /**
  * @param {ol.Pixel} pixel cursor location
@@ -322,7 +313,7 @@ ExtentInteraction.prototype.snapToVertex_ = function(pixel, map) {
   const extent = this.getExtent();
   if (extent) {
     //convert extents to line segments and find the segment closest to pixelCoordinate
-    const segments = ExtentInteraction.getSegments_(extent);
+    const segments = getSegments(extent);
     segments.sort(sortByDistance);
     const closestSegment = segments[0];
 
