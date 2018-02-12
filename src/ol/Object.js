@@ -76,10 +76,9 @@ inherits(BaseObject, Observable);
 
 
 /**
- * @private
  * @type {Object.<string, string>}
  */
-BaseObject.changeEventTypeCache_ = {};
+const changeEventTypeCache = {};
 
 
 /**
@@ -87,9 +86,9 @@ BaseObject.changeEventTypeCache_ = {};
  * @return {string} Change name.
  */
 BaseObject.getChangeEventType = function(key) {
-  return BaseObject.changeEventTypeCache_.hasOwnProperty(key) ?
-    BaseObject.changeEventTypeCache_[key] :
-    (BaseObject.changeEventTypeCache_[key] = 'change:' + key);
+  return changeEventTypeCache.hasOwnProperty(key) ?
+    changeEventTypeCache[key] :
+    (changeEventTypeCache[key] = 'change:' + key);
 };
 
 
