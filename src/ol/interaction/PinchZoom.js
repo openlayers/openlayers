@@ -20,9 +20,9 @@ import PointerInteraction from '../interaction/Pointer.js';
 const PinchZoom = function(opt_options) {
 
   PointerInteraction.call(this, {
-    handleDownEvent: PinchZoom.handleDownEvent_,
-    handleDragEvent: PinchZoom.handleDragEvent_,
-    handleUpEvent: PinchZoom.handleUpEvent_
+    handleDownEvent: handleDownEvent,
+    handleDragEvent: handleDragEvent,
+    handleUpEvent: handleUpEvent
   });
 
   const options = opt_options ? opt_options : {};
@@ -65,9 +65,8 @@ inherits(PinchZoom, PointerInteraction);
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {ol.interaction.PinchZoom}
- * @private
  */
-PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
+function handleDragEvent(mapBrowserEvent) {
   let scaleDelta = 1.0;
 
   const touch0 = this.targetPointers[0];
@@ -112,16 +111,15 @@ PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
   // scale, bypass the resolution constraint
   map.render();
   Interaction.zoomWithoutConstraints(view, newResolution, this.anchor_);
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
  * @this {ol.interaction.PinchZoom}
- * @private
  */
-PinchZoom.handleUpEvent_ = function(mapBrowserEvent) {
+function handleUpEvent(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     const map = mapBrowserEvent.map;
     const view = map.getView();
@@ -141,16 +139,15 @@ PinchZoom.handleUpEvent_ = function(mapBrowserEvent) {
   } else {
     return true;
   }
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
  * @this {ol.interaction.PinchZoom}
- * @private
  */
-PinchZoom.handleDownEvent_ = function(mapBrowserEvent) {
+function handleDownEvent(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {
     const map = mapBrowserEvent.map;
     this.anchor_ = null;
@@ -163,7 +160,7 @@ PinchZoom.handleDownEvent_ = function(mapBrowserEvent) {
   } else {
     return false;
   }
-};
+}
 
 
 /**
