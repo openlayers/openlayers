@@ -4,6 +4,16 @@
 import Fill from '../style/Fill.js';
 import TextPlacement from '../style/TextPlacement.js';
 
+
+/**
+ * The default fill color to use if no fill was set at construction time; a
+ * blackish `#333`.
+ *
+ * @const {string}
+ */
+const DEFAULT_FILL_COLOR = '#333';
+
+
 /**
  * @classdesc
  * Set text style for vector features.
@@ -63,7 +73,7 @@ const Text = function(opt_options) {
    * @type {ol.style.Fill}
    */
   this.fill_ = options.fill !== undefined ? options.fill :
-    new Fill({color: Text.DEFAULT_FILL_COLOR_});
+    new Fill({color: DEFAULT_FILL_COLOR});
 
   /**
    * @private
@@ -119,16 +129,6 @@ const Text = function(opt_options) {
    */
   this.padding_ = options.padding === undefined ? null : options.padding;
 };
-
-
-/**
- * The default fill color to use if no fill was set at construction time; a
- * blackish `#333`.
- *
- * @const {string}
- * @private
- */
-Text.DEFAULT_FILL_COLOR_ = '#333';
 
 
 /**
