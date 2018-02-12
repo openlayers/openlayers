@@ -1,5 +1,5 @@
 import Map from '../../../src/ol/Map.js';
-import View from '../../../src/ol/View.js';
+import View, {createCenterConstraint, createResolutionConstraint, createRotationConstraint} from '../../../src/ol/View.js';
 import ViewHint from '../../../src/ol/ViewHint.js';
 import * as _ol_extent_ from '../../../src/ol/extent.js';
 import Circle from '../../../src/ol/geom/Circle.js';
@@ -32,7 +32,7 @@ describe('ol.View', function() {
       describe('with no options', function() {
         it('gives a correct center constraint function', function() {
           const options = {};
-          const fn = View.createCenterConstraint_(options);
+          const fn = createCenterConstraint(options);
           expect(fn([0, 0])).to.eql([0, 0]);
           expect(fn(undefined)).to.eql(undefined);
           expect(fn([42, -100])).to.eql([42, -100]);
@@ -44,7 +44,7 @@ describe('ol.View', function() {
           const options = {
             extent: [0, 0, 1, 1]
           };
-          const fn = View.createCenterConstraint_(options);
+          const fn = createCenterConstraint(options);
           expect(fn([0, 0])).to.eql([0, 0]);
           expect(fn([-10, 0])).to.eql([0, 0]);
           expect(fn([100, 100])).to.eql([1, 1]);
@@ -58,7 +58,7 @@ describe('ol.View', function() {
       describe('with no options', function() {
         it('gives a correct resolution constraint function', function() {
           const options = {};
-          const fn = View.createResolutionConstraint_(options).constraint;
+          const fn = createResolutionConstraint(options).constraint;
           expect(fn(156543.03392804097, 0, 0))
             .to.roughlyEqual(156543.03392804097, 1e-9);
           expect(fn(78271.51696402048, 0, 0))
@@ -74,7 +74,7 @@ describe('ol.View', function() {
               maxZoom: 3,
               zoomFactor: 3
             };
-            const info = View.createResolutionConstraint_(options);
+            const info = createResolutionConstraint(options);
             const maxResolution = info.maxResolution;
             expect(maxResolution).to.eql(81);
             const minResolution = info.minResolution;
@@ -94,7 +94,7 @@ describe('ol.View', function() {
           const options = {
             resolutions: [97, 76, 65, 54, 0.45]
           };
-          const info = View.createResolutionConstraint_(options);
+          const info = createResolutionConstraint(options);
           const maxResolution = info.maxResolution;
           expect(maxResolution).to.eql(97);
           const minResolution = info.minResolution;
@@ -112,7 +112,7 @@ describe('ol.View', function() {
 
         const defaultMaxRes = 156543.03392804097;
         function getConstraint(options) {
-          return View.createResolutionConstraint_(options).constraint;
+          return createResolutionConstraint(options).constraint;
         }
 
         it('works with only maxZoom', function() {
@@ -179,7 +179,7 @@ describe('ol.View', function() {
 
         const defaultMaxRes = 156543.03392804097;
         function getConstraint(options) {
-          return View.createResolutionConstraint_(options).constraint;
+          return createResolutionConstraint(options).constraint;
         }
 
         it('works with only maxResolution', function() {
@@ -248,7 +248,7 @@ describe('ol.View', function() {
 
         const defaultMaxRes = 156543.03392804097;
         function getConstraint(options) {
-          return View.createResolutionConstraint_(options).constraint;
+          return createResolutionConstraint(options).constraint;
         }
 
         it('respects maxResolution over minZoom', function() {
@@ -292,7 +292,7 @@ describe('ol.View', function() {
     describe('create rotation constraint', function() {
       it('gives a correct rotation constraint function', function() {
         const options = {};
-        const fn = View.createRotationConstraint_(options);
+        const fn = createRotationConstraint(options);
         expect(fn(0.01, 0)).to.eql(0);
         expect(fn(0.15, 0)).to.eql(0.15);
       });
