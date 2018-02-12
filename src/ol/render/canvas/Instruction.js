@@ -5,7 +5,7 @@
 /**
  * @enum {number}
  */
-export default {
+const Instruction = {
   BEGIN_GEOMETRY: 0,
   BEGIN_PATH: 1,
   CIRCLE: 2,
@@ -20,3 +20,30 @@ export default {
   SET_STROKE_STYLE: 11,
   STROKE: 12
 };
+
+
+/**
+ * @type {Array.<Instruction>}
+ */
+export const fillInstruction = [Instruction.FILL];
+
+
+/**
+ * @type {Array.<Instruction>}
+ */
+export const strokeInstruction = [Instruction.STROKE];
+
+
+/**
+ * @type {Array.<Instruction>}
+ */
+export const beginPathInstruction = [Instruction.BEGIN_PATH];
+
+
+/**
+ * @type {Array.<Instruction>}
+ */
+export const closePathInstruction = [Instruction.CLOSE_PATH];
+
+
+export default Instruction;

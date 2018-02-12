@@ -5,8 +5,11 @@ import {inherits} from '../../index.js';
 import {asString} from '../../color.js';
 import _ol_geom_flat_simplify_ from '../../geom/flat/simplify.js';
 import _ol_render_canvas_ from '../canvas.js';
-import CanvasInstruction from '../canvas/Instruction.js';
+import CanvasInstruction, {
+  fillInstruction, strokeInstruction, beginPathInstruction, closePathInstruction
+} from '../canvas/Instruction.js';
 import CanvasReplay from '../canvas/Replay.js';
+
 
 /**
  * @constructor
@@ -41,7 +44,6 @@ CanvasPolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCoordinates, 
   const fill = state.fillStyle !== undefined;
   const stroke = state.strokeStyle != undefined;
   const numEnds = ends.length;
-  const beginPathInstruction = [CanvasInstruction.BEGIN_PATH];
   this.instructions.push(beginPathInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction);
   for (let i = 0; i < numEnds; ++i) {
@@ -55,19 +57,16 @@ CanvasPolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCoordinates, 
     if (stroke) {
       // Performance optimization: only call closePath() when we have a stroke.
       // Otherwise the ring is closed already (see appendFlatCoordinates above).
-      const closePathInstruction = [CanvasInstruction.CLOSE_PATH];
       this.instructions.push(closePathInstruction);
       this.hitDetectionInstructions.push(closePathInstruction);
     }
     offset = end;
   }
-  const fillInstruction = [CanvasInstruction.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
   if (fill) {
     this.instructions.push(fillInstruction);
   }
   if (stroke) {
-    const strokeInstruction = [CanvasInstruction.STROKE];
     this.instructions.push(strokeInstruction);
     this.hitDetectionInstructions.push(strokeInstruction);
   }
@@ -104,17 +103,14 @@ CanvasPolygonReplay.prototype.drawCircle = function(circleGeometry, feature) {
   const myBegin = this.coordinates.length;
   this.appendFlatCoordinates(
     flatCoordinates, 0, flatCoordinates.length, stride, false, false);
-  const beginPathInstruction = [CanvasInstruction.BEGIN_PATH];
   const circleInstruction = [CanvasInstruction.CIRCLE, myBegin];
   this.instructions.push(beginPathInstruction, circleInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
-  const fillInstruction = [CanvasInstruction.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
   if (state.fillStyle !== undefined) {
     this.instructions.push(fillInstruction);
   }
   if (state.strokeStyle !== undefined) {
-    const strokeInstruction = [CanvasInstruction.STROKE];
     this.instructions.push(strokeInstruction);
     this.hitDetectionInstructions.push(strokeInstruction);
   }
