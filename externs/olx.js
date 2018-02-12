@@ -1826,6 +1826,108 @@ olx.layer.BaseOptions.prototype.maxResolution;
 
 
 /**
+ * @typedef {{extent: (ol.Extent|undefined),
+ *     minResolution: (number|undefined),
+ *     maxResolution: (number|undefined),
+ *     opacity: (number|undefined),
+ *     source: (ol.source.Coverage|undefined),
+ *     style: (ol.CoverageStyle|undefined),
+ *     updateWhileAnimating: (boolean|undefined),
+ *     updateWhileInteracting: (boolean|undefined),
+ *     visible: (boolean|undefined),
+ *     zIndex: (number|undefined)}}
+ */
+olx.layer.CoverageOptions;
+
+
+/**
+ * The bounding extent for layer rendering.  The layer will not be rendered
+ * outside of this extent.
+ * @type {ol.Extent|undefined}
+ * @api
+ */
+olx.layer.CoverageOptions.prototype.extent;
+
+
+/**
+ * The minimum resolution (inclusive) at which this layer will be visible.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.CoverageOptions.prototype.minResolution;
+
+
+/**
+ * The maximum resolution (exclusive) below which this layer will be visible.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.CoverageOptions.prototype.maxResolution;
+
+
+/**
+ * Opacity. 0-1. Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.CoverageOptions.prototype.opacity;
+
+
+/**
+ * Source.
+ * @type {ol.source.Coverage}
+ * @api
+ */
+olx.layer.CoverageOptions.prototype.source;
+
+
+/**
+ * Layer style. See {@link ol.style} for default style which will be used if
+ * this is not defined.
+ * @type {ol.CoverageStyle|undefined}
+ * @api
+ */
+olx.layer.CoverageOptions.prototype.style;
+
+
+/**
+ * When set to `true`, feature batches will be recreated during animations.
+ * This means that no vectors will be shown clipped, but the setting will have a
+ * performance impact for large amounts of vector data. When set to `false`,
+ * batches will be recreated when no animation is active.  Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.layer.CoverageOptions.prototype.updateWhileAnimating;
+
+
+/**
+ * When set to `true`, feature batches will be recreated during interactions.
+ * See also `updateWhileAnimating`. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.layer.CoverageOptions.prototype.updateWhileInteracting;
+
+
+/**
+ * Visibility. Default is `true` (visible).
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.layer.CoverageOptions.prototype.visible;
+
+
+/**
+ * The z-index for layer rendering.  At rendering time, the layers will be
+ * ordered, first by Z-index and then by position. The default Z-index is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.CoverageOptions.prototype.zIndex;
+
+
+/**
  * @typedef {{opacity: (number|undefined),
  *     source: (ol.source.Source|undefined),
  *     visible: (boolean|undefined),
@@ -2169,11 +2271,11 @@ olx.layer.ImageOptions.prototype.zIndex;
 
 /**
  * @typedef {{coverageDrawFunction: (ol.CoverageDrawFunctionType|undefined),
+ *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
  *     source: (ol.source.Coverage|undefined),
- *     map: (ol.PluggableMap|undefined),
  *     style: (ol.CoverageStyle|undefined),
  *     visible: (boolean|undefined),
  *     zIndex: (number|undefined)}}
@@ -2190,17 +2292,6 @@ olx.layer.RasterOptions;
  * @api
  */
 olx.layer.RasterOptions.coverageDrawFunction;
-
-
-/**
- * Sets the layer as overlay on a map. The map will not manage this layer in its
- * layers collection, and the layer will be rendered on top. This is useful for
- * temporary layers. The standard way to add a layer to a map and have it
- * managed by the map is to use {@link ol.Map#addLayer}.
- * @type {ol.PluggableMap|undefined}
- * @api
- */
-olx.layer.RasterOptions.prototype.map;
 
 
 /**
