@@ -305,9 +305,8 @@ Style.createFunction = function(obj) {
 
 /**
  * @type {Array.<ol.style.Style>}
- * @private
  */
-Style.default_ = null;
+let defaultStyles = null;
 
 
 /**
@@ -321,7 +320,7 @@ Style.defaultFunction = function(feature, resolution) {
   // browsers that do not support Canvas. (ol.style.Circle does
   // canvas.getContext('2d') at construction time, which will cause an.error
   // in such browsers.)
-  if (!Style.default_) {
+  if (!defaultStyles) {
     const fill = new Fill({
       color: 'rgba(255,255,255,0.4)'
     });
@@ -329,7 +328,7 @@ Style.defaultFunction = function(feature, resolution) {
       color: '#3399CC',
       width: 1.25
     });
-    Style.default_ = [
+    defaultStyles = [
       new Style({
         image: new CircleStyle({
           fill: fill,
@@ -341,7 +340,7 @@ Style.defaultFunction = function(feature, resolution) {
       })
     ];
   }
-  return Style.default_;
+  return defaultStyles;
 };
 
 

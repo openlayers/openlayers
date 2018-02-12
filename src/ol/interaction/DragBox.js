@@ -8,6 +8,34 @@ import {always, mouseOnly, mouseActionButton} from '../events/condition.js';
 import PointerInteraction from '../interaction/Pointer.js';
 import RenderBox from '../render/Box.js';
 
+
+/**
+ * @enum {string}
+ */
+const DragBoxEventType = {
+  /**
+   * Triggered upon drag box start.
+   * @event ol.interaction.DragBox.Event#boxstart
+   * @api
+   */
+  BOXSTART: 'boxstart',
+
+  /**
+   * Triggered on drag when box is active.
+   * @event ol.interaction.DragBox.Event#boxdrag
+   * @api
+   */
+  BOXDRAG: 'boxdrag',
+
+  /**
+   * Triggered upon drag box end.
+   * @event ol.interaction.DragBox.Event#boxend
+   * @api
+   */
+  BOXEND: 'boxend'
+};
+
+
 /**
  * @classdesc
  * Allows the user to draw a vector box by clicking and dragging on the map,
@@ -28,9 +56,9 @@ import RenderBox from '../render/Box.js';
 const DragBox = function(opt_options) {
 
   PointerInteraction.call(this, {
-    handleDownEvent: DragBox.handleDownEvent_,
-    handleDragEvent: DragBox.handleDragEvent_,
-    handleUpEvent: DragBox.handleUpEvent_
+    handleDownEvent: handleDownEvent,
+    handleDragEvent: handleDragEvent,
+    handleUpEvent: handleUpEvent
   });
 
   const options = opt_options ? opt_options : {};
@@ -90,18 +118,17 @@ DragBox.defaultBoxEndCondition = function(mapBrowserEvent, startPixel, endPixel)
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {ol.interaction.DragBox}
- * @private
  */
-DragBox.handleDragEvent_ = function(mapBrowserEvent) {
+function handleDragEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
     return;
   }
 
   this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
-  this.dispatchEvent(new DragBox.Event(DragBox.EventType_.BOXDRAG,
+  this.dispatchEvent(new DragBox.Event(DragBoxEventType.BOXDRAG,
     mapBrowserEvent.coordinate, mapBrowserEvent));
-};
+}
 
 
 /**
@@ -127,9 +154,8 @@ DragBox.prototype.onBoxEnd = nullFunction;
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
  * @this {ol.interaction.DragBox}
- * @private
  */
-DragBox.handleUpEvent_ = function(mapBrowserEvent) {
+function handleUpEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
     return true;
   }
@@ -139,20 +165,19 @@ DragBox.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.boxEndCondition_(mapBrowserEvent,
     this.startPixel_, mapBrowserEvent.pixel)) {
     this.onBoxEnd(mapBrowserEvent);
-    this.dispatchEvent(new DragBox.Event(DragBox.EventType_.BOXEND,
+    this.dispatchEvent(new DragBox.Event(DragBoxEventType.BOXEND,
       mapBrowserEvent.coordinate, mapBrowserEvent));
   }
   return false;
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
  * @this {ol.interaction.DragBox}
- * @private
  */
-DragBox.handleDownEvent_ = function(mapBrowserEvent) {
+function handleDownEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
     return false;
   }
@@ -162,41 +187,13 @@ DragBox.handleDownEvent_ = function(mapBrowserEvent) {
     this.startPixel_ = mapBrowserEvent.pixel;
     this.box_.setMap(mapBrowserEvent.map);
     this.box_.setPixels(this.startPixel_, this.startPixel_);
-    this.dispatchEvent(new DragBox.Event(DragBox.EventType_.BOXSTART,
+    this.dispatchEvent(new DragBox.Event(DragBoxEventType.BOXSTART,
       mapBrowserEvent.coordinate, mapBrowserEvent));
     return true;
   } else {
     return false;
   }
-};
-
-
-/**
- * @enum {string}
- * @private
- */
-DragBox.EventType_ = {
-  /**
-   * Triggered upon drag box start.
-   * @event ol.interaction.DragBox.Event#boxstart
-   * @api
-   */
-  BOXSTART: 'boxstart',
-
-  /**
-   * Triggered on drag when box is active.
-   * @event ol.interaction.DragBox.Event#boxdrag
-   * @api
-   */
-  BOXDRAG: 'boxdrag',
-
-  /**
-   * Triggered upon drag box end.
-   * @event ol.interaction.DragBox.Event#boxend
-   * @api
-   */
-  BOXEND: 'boxend'
-};
+}
 
 
 /**

@@ -24,10 +24,10 @@ import TranslateEventType from '../interaction/TranslateEventType.js';
  */
 const Translate = function(opt_options) {
   PointerInteraction.call(this, {
-    handleDownEvent: Translate.handleDownEvent_,
-    handleDragEvent: Translate.handleDragEvent_,
-    handleMoveEvent: Translate.handleMoveEvent_,
-    handleUpEvent: Translate.handleUpEvent_
+    handleDownEvent: handleDownEvent,
+    handleDragEvent: handleDragEvent,
+    handleMoveEvent: handleMoveEvent,
+    handleUpEvent: handleUpEvent
   });
 
   const options = opt_options ? opt_options : {};
@@ -92,13 +92,12 @@ inherits(Translate, PointerInteraction);
  * @param {ol.MapBrowserPointerEvent} event Event.
  * @return {boolean} Start drag sequence?
  * @this {ol.interaction.Translate}
- * @private
  */
-Translate.handleDownEvent_ = function(event) {
+function handleDownEvent(event) {
   this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
   if (!this.lastCoordinate_ && this.lastFeature_) {
     this.lastCoordinate_ = event.coordinate;
-    Translate.handleMoveEvent_.call(this, event);
+    handleMoveEvent.call(this, event);
 
     const features = this.features_ || new Collection([this.lastFeature_]);
 
@@ -109,19 +108,18 @@ Translate.handleDownEvent_ = function(event) {
     return true;
   }
   return false;
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} event Event.
  * @return {boolean} Stop drag sequence?
  * @this {ol.interaction.Translate}
- * @private
  */
-Translate.handleUpEvent_ = function(event) {
+function handleUpEvent(event) {
   if (this.lastCoordinate_) {
     this.lastCoordinate_ = null;
-    Translate.handleMoveEvent_.call(this, event);
+    handleMoveEvent.call(this, event);
 
     const features = this.features_ || new Collection([this.lastFeature_]);
 
@@ -132,15 +130,14 @@ Translate.handleUpEvent_ = function(event) {
     return true;
   }
   return false;
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} event Event.
  * @this {ol.interaction.Translate}
- * @private
  */
-Translate.handleDragEvent_ = function(event) {
+function handleDragEvent(event) {
   if (this.lastCoordinate_) {
     const newCoordinate = event.coordinate;
     const deltaX = newCoordinate[0] - this.lastCoordinate_[0];
@@ -160,15 +157,14 @@ Translate.handleDragEvent_ = function(event) {
         TranslateEventType.TRANSLATING, features,
         newCoordinate));
   }
-};
+}
 
 
 /**
  * @param {ol.MapBrowserEvent} event Event.
  * @this {ol.interaction.Translate}
- * @private
  */
-Translate.handleMoveEvent_ = function(event) {
+function handleMoveEvent(event) {
   const elem = event.map.getViewport();
 
   // Change the cursor to grab/grabbing if hovering any of the features managed
@@ -179,7 +175,7 @@ Translate.handleMoveEvent_ = function(event) {
   } else {
     elem.classList.remove('ol-grab', 'ol-grabbing');
   }
-};
+}
 
 
 /**
@@ -292,5 +288,7 @@ Translate.Event = function(type, features, coordinate) {
    */
   this.coordinate = coordinate;
 };
+
 inherits(Translate.Event, Event);
+
 export default Translate;

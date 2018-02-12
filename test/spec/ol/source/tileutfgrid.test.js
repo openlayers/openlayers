@@ -1,6 +1,6 @@
 import {get as getProjection, transformExtent, fromLonLat} from '../../../../src/ol/proj.js';
 import TileSource from '../../../../src/ol/source/Tile.js';
-import UTFGrid from '../../../../src/ol/source/TileUTFGrid.js';
+import UTFGrid, {CustomTile} from '../../../../src/ol/source/TileUTFGrid.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 
@@ -228,7 +228,7 @@ describe('ol.source.TileUTFGrid', function() {
         const urlTileCoord =
             this.getTileCoordForTileUrlFunction(tileCoord, projection);
         const tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
-        const tile = new UTFGrid.Tile_(
+        const tile = new CustomTile(
           tileCoord,
           tileUrl !== undefined ? 0 : 4, // IDLE : EMPTY
           tileUrl !== undefined ? tileUrl : '',

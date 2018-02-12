@@ -138,7 +138,7 @@ View.prototype.applyOptions_ = function(options) {
   properties[ViewProperty.CENTER] = options.center !== undefined ?
     options.center : null;
 
-  const resolutionConstraintInfo = View.createResolutionConstraint_(
+  const resolutionConstraintInfo = createResolutionConstraint(
     options);
 
   /**
@@ -171,9 +171,9 @@ View.prototype.applyOptions_ = function(options) {
    */
   this.minZoom_ = resolutionConstraintInfo.minZoom;
 
-  const centerConstraint = View.createCenterConstraint_(options);
+  const centerConstraint = createCenterConstraint(options);
   const resolutionConstraint = resolutionConstraintInfo.constraint;
-  const rotationConstraint = View.createRotationConstraint_(options);
+  const rotationConstraint = createRotationConstraint(options);
 
   /**
    * @private
@@ -1088,25 +1088,23 @@ View.prototype.setZoom = function(zoom) {
 
 /**
  * @param {olx.ViewOptions} options View options.
- * @private
  * @return {ol.CenterConstraintType} The constraint.
  */
-View.createCenterConstraint_ = function(options) {
+export function createCenterConstraint(options) {
   if (options.extent !== undefined) {
     return CenterConstraint.createExtent(options.extent);
   } else {
     return CenterConstraint.none;
   }
-};
+}
 
 
 /**
- * @private
  * @param {olx.ViewOptions} options View options.
  * @return {{constraint: ol.ResolutionConstraintType, maxResolution: number,
  *     minResolution: number, zoomFactor: number}} The constraint.
  */
-View.createResolutionConstraint_ = function(options) {
+export function createResolutionConstraint(options) {
   let resolutionConstraint;
   let maxResolution;
   let minResolution;
@@ -1180,15 +1178,14 @@ View.createResolutionConstraint_ = function(options) {
   }
   return {constraint: resolutionConstraint, maxResolution: maxResolution,
     minResolution: minResolution, minZoom: minZoom, zoomFactor: zoomFactor};
-};
+}
 
 
 /**
- * @private
  * @param {olx.ViewOptions} options View options.
  * @return {ol.RotationConstraintType} Rotation constraint.
  */
-View.createRotationConstraint_ = function(options) {
+export function createRotationConstraint(options) {
   const enableRotation = options.enableRotation !== undefined ?
     options.enableRotation : true;
   if (enableRotation) {
@@ -1205,7 +1202,7 @@ View.createRotationConstraint_ = function(options) {
   } else {
     return RotationConstraint.disable;
   }
-};
+}
 
 
 /**

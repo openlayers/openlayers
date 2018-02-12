@@ -11,6 +11,36 @@ import {equivalent} from '../proj.js';
 import ReprojImage from '../reproj/Image.js';
 import Source from '../source/Source.js';
 
+
+/**
+ * @enum {string}
+ */
+const ImageSourceEventType = {
+
+  /**
+   * Triggered when an image starts loading.
+   * @event ol.source.Image.Event#imageloadstart
+   * @api
+   */
+  IMAGELOADSTART: 'imageloadstart',
+
+  /**
+   * Triggered when an image finishes loading.
+   * @event ol.source.Image.Event#imageloadend
+   * @api
+   */
+  IMAGELOADEND: 'imageloadend',
+
+  /**
+   * Triggered if image loading results in an error.
+   * @event ol.source.Image.Event#imageloaderror
+   * @api
+   */
+  IMAGELOADERROR: 'imageloaderror'
+
+};
+
+
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -144,17 +174,17 @@ ImageSource.prototype.handleImageChange = function(event) {
   switch (image.getState()) {
     case ImageState.LOADING:
       this.dispatchEvent(
-        new ImageSource.Event(ImageSource.EventType_.IMAGELOADSTART,
+        new ImageSource.Event(ImageSourceEventType.IMAGELOADSTART,
           image));
       break;
     case ImageState.LOADED:
       this.dispatchEvent(
-        new ImageSource.Event(ImageSource.EventType_.IMAGELOADEND,
+        new ImageSource.Event(ImageSourceEventType.IMAGELOADEND,
           image));
       break;
     case ImageState.ERROR:
       this.dispatchEvent(
-        new ImageSource.Event(ImageSource.EventType_.IMAGELOADERROR,
+        new ImageSource.Event(ImageSourceEventType.IMAGELOADERROR,
           image));
       break;
     default:
@@ -200,32 +230,4 @@ ImageSource.Event = function(type, image) {
 inherits(ImageSource.Event, Event);
 
 
-/**
- * @enum {string}
- * @private
- */
-ImageSource.EventType_ = {
-
-  /**
-   * Triggered when an image starts loading.
-   * @event ol.source.Image.Event#imageloadstart
-   * @api
-   */
-  IMAGELOADSTART: 'imageloadstart',
-
-  /**
-   * Triggered when an image finishes loading.
-   * @event ol.source.Image.Event#imageloadend
-   * @api
-   */
-  IMAGELOADEND: 'imageloadend',
-
-  /**
-   * Triggered if image loading results in an error.
-   * @event ol.source.Image.Event#imageloaderror
-   * @api
-   */
-  IMAGELOADERROR: 'imageloaderror'
-
-};
 export default ImageSource;

@@ -4,7 +4,7 @@ import View from '../../../../src/ol/View.js';
 import Event from '../../../../src/ol/events/Event.js';
 import {DEVICE_PIXEL_RATIO, FIREFOX, SAFARI} from '../../../../src/ol/has.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
-import MouseWheelZoom from '../../../../src/ol/interaction/MouseWheelZoom.js';
+import MouseWheelZoom, {Mode} from '../../../../src/ol/interaction/MouseWheelZoom.js';
 
 
 describe('ol.interaction.MouseWheelZoom', function() {
@@ -65,7 +65,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
     if (FIREFOX) {
       it('works on Firefox in DOM_DELTA_PIXEL mode (trackpad)', function(done) {
         map.once('postrender', function() {
-          expect(interaction.mode_).to.be(MouseWheelZoom.Mode_.TRACKPAD);
+          expect(interaction.mode_).to.be(Mode.TRACKPAD);
           done();
         });
         const event = new MapBrowserEvent('wheel', map, {
@@ -83,7 +83,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
     if (!FIREFOX) {
       it('works in DOM_DELTA_PIXEL mode (trackpad)', function(done) {
         map.once('postrender', function() {
-          expect(interaction.mode_).to.be(MouseWheelZoom.Mode_.TRACKPAD);
+          expect(interaction.mode_).to.be(Mode.TRACKPAD);
           done();
         });
         const event = new MapBrowserEvent('wheel', map, {

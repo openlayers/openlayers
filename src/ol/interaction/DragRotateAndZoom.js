@@ -28,9 +28,9 @@ const DragRotateAndZoom = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
   PointerInteraction.call(this, {
-    handleDownEvent: DragRotateAndZoom.handleDownEvent_,
-    handleDragEvent: DragRotateAndZoom.handleDragEvent_,
-    handleUpEvent: DragRotateAndZoom.handleUpEvent_
+    handleDownEvent: handleDownEvent,
+    handleDragEvent: handleDragEvent,
+    handleUpEvent: handleUpEvent
   });
 
   /**
@@ -71,9 +71,8 @@ inherits(DragRotateAndZoom, PointerInteraction);
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {ol.interaction.DragRotateAndZoom}
- * @private
  */
-DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
+function handleDragEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
     return;
   }
@@ -100,16 +99,15 @@ DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
     this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;
   }
   this.lastMagnitude_ = magnitude;
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
  * @this {ol.interaction.DragRotateAndZoom}
- * @private
  */
-DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
+function handleUpEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
     return true;
   }
@@ -123,16 +121,15 @@ DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
     undefined, this.duration_, direction);
   this.lastScaleDelta_ = 0;
   return false;
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
  * @this {ol.interaction.DragRotateAndZoom}
- * @private
  */
-DragRotateAndZoom.handleDownEvent_ = function(mapBrowserEvent) {
+function handleDownEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
     return false;
   }
@@ -145,5 +142,6 @@ DragRotateAndZoom.handleDownEvent_ = function(mapBrowserEvent) {
   } else {
     return false;
   }
-};
+}
+
 export default DragRotateAndZoom;

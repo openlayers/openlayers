@@ -21,9 +21,9 @@ import RotationConstraint from '../RotationConstraint.js';
 const PinchRotate = function(opt_options) {
 
   PointerInteraction.call(this, {
-    handleDownEvent: PinchRotate.handleDownEvent_,
-    handleDragEvent: PinchRotate.handleDragEvent_,
-    handleUpEvent: PinchRotate.handleUpEvent_
+    handleDownEvent: handleDownEvent,
+    handleDragEvent: handleDragEvent,
+    handleUpEvent: handleUpEvent
   });
 
   const options = opt_options || {};
@@ -72,9 +72,8 @@ inherits(PinchRotate, PointerInteraction);
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {ol.interaction.PinchRotate}
- * @private
  */
-PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
+function handleDragEvent(mapBrowserEvent) {
   let rotationDelta = 0.0;
 
   const touch0 = this.targetPointers[0];
@@ -118,16 +117,15 @@ PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
     Interaction.rotateWithoutConstraints(view,
       rotation + rotationDelta, this.anchor_);
   }
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
  * @this {ol.interaction.PinchRotate}
- * @private
  */
-PinchRotate.handleUpEvent_ = function(mapBrowserEvent) {
+function handleUpEvent(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     const map = mapBrowserEvent.map;
     const view = map.getView();
@@ -141,16 +139,15 @@ PinchRotate.handleUpEvent_ = function(mapBrowserEvent) {
   } else {
     return true;
   }
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
  * @this {ol.interaction.PinchRotate}
- * @private
  */
-PinchRotate.handleDownEvent_ = function(mapBrowserEvent) {
+function handleDownEvent(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {
     const map = mapBrowserEvent.map;
     this.anchor_ = null;
@@ -164,11 +161,12 @@ PinchRotate.handleDownEvent_ = function(mapBrowserEvent) {
   } else {
     return false;
   }
-};
+}
 
 
 /**
  * @inheritDoc
  */
 PinchRotate.prototype.shouldStopEvent = FALSE;
+
 export default PinchRotate;

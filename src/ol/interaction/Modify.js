@@ -46,10 +46,10 @@ import Style from '../style/Style.js';
 const Modify = function(options) {
 
   PointerInteraction.call(this, {
-    handleDownEvent: Modify.handleDownEvent_,
-    handleDragEvent: Modify.handleDragEvent_,
+    handleDownEvent: handleDownEvent,
+    handleDragEvent: handleDragEvent,
     handleEvent: Modify.handleEvent,
-    handleUpEvent: Modify.handleUpEvent_
+    handleUpEvent: handleUpEvent
   });
 
   /**
@@ -592,20 +592,18 @@ Modify.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
  * @param {ol.ModifySegmentDataType} a The first segment data.
  * @param {ol.ModifySegmentDataType} b The second segment data.
  * @return {number} The difference in indexes.
- * @private
  */
-Modify.compareIndexes_ = function(a, b) {
+function compareIndexes(a, b) {
   return a.index - b.index;
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} evt Event.
  * @return {boolean} Start drag sequence?
  * @this {ol.interaction.Modify}
- * @private
  */
-Modify.handleDownEvent_ = function(evt) {
+function handleDownEvent(evt) {
   if (!this.condition_(evt)) {
     return false;
   }
@@ -621,7 +619,7 @@ Modify.handleDownEvent_ = function(evt) {
     const vertexExtent = boundingExtent([vertex]);
     const segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
     const componentSegments = {};
-    segmentDataMatches.sort(Modify.compareIndexes_);
+    segmentDataMatches.sort(compareIndexes);
     for (let i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
       const segmentDataMatch = segmentDataMatches[i];
       const segment = segmentDataMatch.segment;
@@ -636,7 +634,7 @@ Modify.handleDownEvent_ = function(evt) {
       if (segmentDataMatch.geometry.getType() === GeometryType.CIRCLE &&
       segmentDataMatch.index === Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
 
-        const closestVertex = Modify.closestOnSegmentData_(pixelCoordinate, segmentDataMatch);
+        const closestVertex = closestOnSegmentData(pixelCoordinate, segmentDataMatch);
         if (coordinatesEqual(closestVertex, vertex) && !componentSegments[uid][0]) {
           this.dragSegments_.push([segmentDataMatch, 0]);
           componentSegments[uid][0] = segmentDataMatch;
@@ -673,15 +671,14 @@ Modify.handleDownEvent_ = function(evt) {
     }
   }
   return !!this.vertexFeature_;
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} evt Event.
  * @this {ol.interaction.Modify}
- * @private
  */
-Modify.handleDragEvent_ = function(evt) {
+function handleDragEvent(evt) {
   this.ignoreNextSingleClick_ = false;
   this.willModifyFeatures_(evt);
 
@@ -750,16 +747,15 @@ Modify.handleDragEvent_ = function(evt) {
     }
   }
   this.createOrUpdateVertexFeature_(vertex);
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} evt Event.
  * @return {boolean} Stop drag sequence?
  * @this {ol.interaction.Modify}
- * @private
  */
-Modify.handleUpEvent_ = function(evt) {
+function handleUpEvent(evt) {
   let segmentData;
   let geometry;
   for (let i = this.dragSegments_.length - 1; i >= 0; --i) {
@@ -785,7 +781,7 @@ Modify.handleUpEvent_ = function(evt) {
     this.modified_ = false;
   }
   return false;
-};
+}
 
 
 /**
@@ -844,8 +840,8 @@ Modify.prototype.handlePointerMove_ = function(evt) {
 Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
   const pixelCoordinate = map.getCoordinateFromPixel(pixel);
   const sortByDistance = function(a, b) {
-    return Modify.pointDistanceToSegmentDataSquared_(pixelCoordinate, a) -
-        Modify.pointDistanceToSegmentDataSquared_(pixelCoordinate, b);
+    return pointDistanceToSegmentDataSquared(pixelCoordinate, a) -
+        pointDistanceToSegmentDataSquared(pixelCoordinate, b);
   };
 
   const box = buffer(createOrUpdateFromCoordinate(pixelCoordinate),
@@ -857,7 +853,7 @@ Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
     nodes.sort(sortByDistance);
     const node = nodes[0];
     const closestSegment = node.segment;
-    let vertex = Modify.closestOnSegmentData_(pixelCoordinate, node);
+    let vertex = closestOnSegmentData(pixelCoordinate, node);
     const vertexPixel = map.getPixelFromCoordinate(vertex);
     let dist = coordinateDistance(pixel, vertexPixel);
     if (dist <= this.pixelTolerance_) {
@@ -915,7 +911,7 @@ Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
  *        segment we are calculating the distance to.
  * @return {number} The square of the distance between a point and a line segment.
  */
-Modify.pointDistanceToSegmentDataSquared_ = function(pointCoordinates, segmentData) {
+function pointDistanceToSegmentDataSquared(pointCoordinates, segmentData) {
   const geometry = segmentData.geometry;
 
   if (geometry.getType() === GeometryType.CIRCLE) {
@@ -930,7 +926,7 @@ Modify.pointDistanceToSegmentDataSquared_ = function(pointCoordinates, segmentDa
     }
   }
   return squaredDistanceToSegment(pointCoordinates, segmentData.segment);
-};
+}
 
 /**
  * Returns the point closest to a given line segment.
@@ -941,7 +937,7 @@ Modify.pointDistanceToSegmentDataSquared_ = function(pointCoordinates, segmentDa
  *        segment which should contain the closest point.
  * @return {ol.Coordinate} The point closest to the specified line segment.
  */
-Modify.closestOnSegmentData_ = function(pointCoordinates, segmentData) {
+function closestOnSegmentData(pointCoordinates, segmentData) {
   const geometry = segmentData.geometry;
 
   if (geometry.getType() === GeometryType.CIRCLE &&
@@ -949,7 +945,7 @@ Modify.closestOnSegmentData_ = function(pointCoordinates, segmentData) {
     return geometry.getClosestPoint(pointCoordinates);
   }
   return closestOnSegment(pointCoordinates, segmentData.segment);
-};
+}
 
 
 /**

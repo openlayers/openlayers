@@ -29,6 +29,20 @@ import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import Style from '../style/Style.js';
 
+
+/**
+ * Draw mode.  This collapses multi-part geometry types with their single-part
+ * cousins.
+ * @enum {string}
+ */
+const Mode = {
+  POINT: 'Point',
+  LINE_STRING: 'LineString',
+  POLYGON: 'Polygon',
+  CIRCLE: 'Circle'
+};
+
+
 /**
  * @classdesc
  * Interaction for drawing feature geometries.
@@ -42,9 +56,9 @@ import Style from '../style/Style.js';
 const Draw = function(options) {
 
   PointerInteraction.call(this, {
-    handleDownEvent: Draw.handleDownEvent_,
-    handleEvent: Draw.handleEvent,
-    handleUpEvent: Draw.handleUpEvent_
+    handleDownEvent: handleDownEvent,
+    handleEvent: handleEvent,
+    handleUpEvent: handleUpEvent
   });
 
   /**
@@ -107,10 +121,10 @@ const Draw = function(options) {
 
   /**
    * Drawing mode (derived from geometry type.
-   * @type {ol.interaction.Draw.Mode_}
+   * @type {ol.interaction.Mode}
    * @private
    */
-  this.mode_ = Draw.getMode_(this.type_);
+  this.mode_ = getMode(this.type_);
 
   /**
    * Stop click, singleclick, and doubleclick events from firing during drawing.
@@ -129,7 +143,7 @@ const Draw = function(options) {
    */
   this.minPoints_ = options.minPoints ?
     options.minPoints :
-    (this.mode_ === Draw.Mode_.POLYGON ? 3 : 2);
+    (this.mode_ === Mode.POLYGON ? 3 : 2);
 
   /**
    * The number of points that can be drawn before a polygon ring or line string
@@ -166,11 +180,11 @@ const Draw = function(options) {
     } else {
       let Constructor;
       const mode = this.mode_;
-      if (mode === Draw.Mode_.POINT) {
+      if (mode === Mode.POINT) {
         Constructor = Point;
-      } else if (mode === Draw.Mode_.LINE_STRING) {
+      } else if (mode === Mode.LINE_STRING) {
         Constructor = LineString;
-      } else if (mode === Draw.Mode_.POLYGON) {
+      } else if (mode === Mode.POLYGON) {
         Constructor = Polygon;
       }
       /**
@@ -182,7 +196,7 @@ const Draw = function(options) {
       geometryFunction = function(coordinates, opt_geometry) {
         let geometry = opt_geometry;
         if (geometry) {
-          if (mode === Draw.Mode_.POLYGON) {
+          if (mode === Mode.POLYGON) {
             if (coordinates[0].length) {
               // Add a closing coordinate to match the first
               geometry.setCoordinates([coordinates[0].concat([coordinates[0][0]])]);
@@ -342,12 +356,12 @@ Draw.prototype.setMap = function(map) {
  * @this {ol.interaction.Draw}
  * @api
  */
-Draw.handleEvent = function(event) {
+export function handleEvent(event) {
   if (event.originalEvent.type === EventType.CONTEXTMENU) {
     // Avoid context menu for long taps when drawing on mobile
     event.preventDefault();
   }
-  this.freehand_ = this.mode_ !== Draw.Mode_.POINT && this.freehandCondition_(event);
+  this.freehand_ = this.mode_ !== Mode.POINT && this.freehandCondition_(event);
   let move = event.type === MapBrowserEventType.POINTERMOVE;
   let pass = true;
   if (this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
@@ -385,16 +399,15 @@ Draw.handleEvent = function(event) {
   }
 
   return PointerInteraction.handleEvent.call(this, event) && pass;
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} event Event.
  * @return {boolean} Start drag sequence?
  * @this {ol.interaction.Draw}
- * @private
  */
-Draw.handleDownEvent_ = function(event) {
+function handleDownEvent(event) {
   this.shouldHandle_ = !this.freehand_;
 
   if (this.freehand_) {
@@ -414,16 +427,15 @@ Draw.handleDownEvent_ = function(event) {
   } else {
     return false;
   }
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} event Event.
  * @return {boolean} Stop drag sequence?
  * @this {ol.interaction.Draw}
- * @private
  */
-Draw.handleUpEvent_ = function(event) {
+function handleUpEvent(event) {
   let pass = true;
 
   if (this.downTimeout_) {
@@ -433,12 +445,12 @@ Draw.handleUpEvent_ = function(event) {
 
   this.handlePointerMove_(event);
 
-  const circleMode = this.mode_ === Draw.Mode_.CIRCLE;
+  const circleMode = this.mode_ === Mode.CIRCLE;
 
   if (this.shouldHandle_) {
     if (!this.finishCoordinate_) {
       this.startDrawing_(event);
-      if (this.mode_ === Draw.Mode_.POINT) {
+      if (this.mode_ === Mode.POINT) {
         this.finishDrawing();
       }
     } else if (this.freehand_ || circleMode) {
@@ -459,7 +471,7 @@ Draw.handleUpEvent_ = function(event) {
     event.stopPropagation();
   }
   return pass;
-};
+}
 
 
 /**
@@ -505,9 +517,9 @@ Draw.prototype.atFinish_ = function(event) {
   if (this.sketchFeature_) {
     let potentiallyDone = false;
     let potentiallyFinishCoordinates = [this.finishCoordinate_];
-    if (this.mode_ === Draw.Mode_.LINE_STRING) {
+    if (this.mode_ === Mode.LINE_STRING) {
       potentiallyDone = this.sketchCoords_.length > this.minPoints_;
-    } else if (this.mode_ === Draw.Mode_.POLYGON) {
+    } else if (this.mode_ === Mode.POLYGON) {
       potentiallyDone = this.sketchCoords_[0].length >
           this.minPoints_;
       potentiallyFinishCoordinates = [this.sketchCoords_[0][0],
@@ -558,9 +570,9 @@ Draw.prototype.createOrUpdateSketchPoint_ = function(event) {
 Draw.prototype.startDrawing_ = function(event) {
   const start = event.coordinate;
   this.finishCoordinate_ = start;
-  if (this.mode_ === Draw.Mode_.POINT) {
+  if (this.mode_ === Mode.POINT) {
     this.sketchCoords_ = start.slice();
-  } else if (this.mode_ === Draw.Mode_.POLYGON) {
+  } else if (this.mode_ === Mode.POLYGON) {
     this.sketchCoords_ = [[start.slice(), start.slice()]];
     this.sketchLineCoords_ = this.sketchCoords_[0];
   } else {
@@ -590,9 +602,9 @@ Draw.prototype.modifyDrawing_ = function(event) {
   let coordinate = event.coordinate;
   const geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   let coordinates, last;
-  if (this.mode_ === Draw.Mode_.POINT) {
+  if (this.mode_ === Mode.POINT) {
     last = this.sketchCoords_;
-  } else if (this.mode_ === Draw.Mode_.POLYGON) {
+  } else if (this.mode_ === Mode.POLYGON) {
     coordinates = this.sketchCoords_[0];
     last = coordinates[coordinates.length - 1];
     if (this.atFinish_(event)) {
@@ -612,7 +624,7 @@ Draw.prototype.modifyDrawing_ = function(event) {
   }
   let sketchLineGeom;
   if (geometry instanceof Polygon &&
-      this.mode_ !== Draw.Mode_.POLYGON) {
+      this.mode_ !== Mode.POLYGON) {
     if (!this.sketchLine_) {
       this.sketchLine_ = new Feature(new LineString(null));
     }
@@ -638,7 +650,7 @@ Draw.prototype.addToDrawing_ = function(event) {
   const geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   let done;
   let coordinates;
-  if (this.mode_ === Draw.Mode_.LINE_STRING) {
+  if (this.mode_ === Mode.LINE_STRING) {
     this.finishCoordinate_ = coordinate.slice();
     coordinates = this.sketchCoords_;
     if (coordinates.length >= this.maxPoints_) {
@@ -650,7 +662,7 @@ Draw.prototype.addToDrawing_ = function(event) {
     }
     coordinates.push(coordinate.slice());
     this.geometryFunction_(coordinates, geometry);
-  } else if (this.mode_ === Draw.Mode_.POLYGON) {
+  } else if (this.mode_ === Mode.POLYGON) {
     coordinates = this.sketchCoords_[0];
     if (coordinates.length >= this.maxPoints_) {
       if (this.freehand_) {
@@ -682,14 +694,14 @@ Draw.prototype.removeLastPoint = function() {
   }
   const geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   let coordinates, sketchLineGeom;
-  if (this.mode_ === Draw.Mode_.LINE_STRING) {
+  if (this.mode_ === Mode.LINE_STRING) {
     coordinates = this.sketchCoords_;
     coordinates.splice(-2, 1);
     this.geometryFunction_(coordinates, geometry);
     if (coordinates.length >= 2) {
       this.finishCoordinate_ = coordinates[coordinates.length - 2].slice();
     }
-  } else if (this.mode_ === Draw.Mode_.POLYGON) {
+  } else if (this.mode_ === Mode.POLYGON) {
     coordinates = this.sketchCoords_[0];
     coordinates.splice(-2, 1);
     sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());
@@ -718,11 +730,11 @@ Draw.prototype.finishDrawing = function() {
   }
   let coordinates = this.sketchCoords_;
   const geometry = /** @type {ol.geom.SimpleGeometry} */ (sketchFeature.getGeometry());
-  if (this.mode_ === Draw.Mode_.LINE_STRING) {
+  if (this.mode_ === Mode.LINE_STRING) {
     // remove the redundant last point
     coordinates.pop();
     this.geometryFunction_(coordinates, geometry);
-  } else if (this.mode_ === Draw.Mode_.POLYGON) {
+  } else if (this.mode_ === Mode.POLYGON) {
     // remove the redundant last point in ring
     coordinates[0].pop();
     this.geometryFunction_(coordinates, geometry);
@@ -899,39 +911,25 @@ Draw.createBox = function() {
  * Get the drawing mode.  The mode for mult-part geometries is the same as for
  * their single-part cousins.
  * @param {ol.geom.GeometryType} type Geometry type.
- * @return {ol.interaction.Draw.Mode_} Drawing mode.
- * @private
+ * @return {ol.interaction.Mode} Drawing mode.
  */
-Draw.getMode_ = function(type) {
+function getMode(type) {
   let mode;
   if (type === GeometryType.POINT ||
       type === GeometryType.MULTI_POINT) {
-    mode = Draw.Mode_.POINT;
+    mode = Mode.POINT;
   } else if (type === GeometryType.LINE_STRING ||
       type === GeometryType.MULTI_LINE_STRING) {
-    mode = Draw.Mode_.LINE_STRING;
+    mode = Mode.LINE_STRING;
   } else if (type === GeometryType.POLYGON ||
       type === GeometryType.MULTI_POLYGON) {
-    mode = Draw.Mode_.POLYGON;
+    mode = Mode.POLYGON;
   } else if (type === GeometryType.CIRCLE) {
-    mode = Draw.Mode_.CIRCLE;
+    mode = Mode.CIRCLE;
   }
-  return /** @type {!ol.interaction.Draw.Mode_} */ (mode);
-};
+  return /** @type {!ol.interaction.Mode} */ (mode);
+}
 
-
-/**
- * Draw mode.  This collapses multi-part geometry types with their single-part
- * cousins.
- * @enum {string}
- * @private
- */
-Draw.Mode_ = {
-  POINT: 'Point',
-  LINE_STRING: 'LineString',
-  POLYGON: 'Polygon',
-  CIRCLE: 'Circle'
-};
 
 /**
  * @classdesc

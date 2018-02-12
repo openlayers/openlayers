@@ -27,9 +27,9 @@ const DragRotate = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
   PointerInteraction.call(this, {
-    handleDownEvent: DragRotate.handleDownEvent_,
-    handleDragEvent: DragRotate.handleDragEvent_,
-    handleUpEvent: DragRotate.handleUpEvent_
+    handleDownEvent: handleDownEvent,
+    handleDragEvent: handleDragEvent,
+    handleUpEvent: handleUpEvent
   });
 
   /**
@@ -57,9 +57,8 @@ inherits(DragRotate, PointerInteraction);
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {ol.interaction.DragRotate}
- * @private
  */
-DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
+function handleDragEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
     return;
   }
@@ -80,16 +79,15 @@ DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
       view, rotation - delta);
   }
   this.lastAngle_ = theta;
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
  * @this {ol.interaction.DragRotate}
- * @private
  */
-DragRotate.handleUpEvent_ = function(mapBrowserEvent) {
+function handleUpEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
     return true;
   }
@@ -101,16 +99,15 @@ DragRotate.handleUpEvent_ = function(mapBrowserEvent) {
   Interaction.rotate(view, rotation,
     undefined, this.duration_);
   return false;
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
  * @this {ol.interaction.DragRotate}
- * @private
  */
-DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
+function handleDownEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
     return false;
   }
@@ -123,7 +120,7 @@ DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
   } else {
     return false;
   }
-};
+}
 
 
 /**

@@ -21,9 +21,9 @@ import PointerInteraction from '../interaction/Pointer.js';
 const DragPan = function(opt_options) {
 
   PointerInteraction.call(this, {
-    handleDownEvent: DragPan.handleDownEvent_,
-    handleDragEvent: DragPan.handleDragEvent_,
-    handleUpEvent: DragPan.handleUpEvent_
+    handleDownEvent: handleDownEvent,
+    handleDragEvent: handleDragEvent,
+    handleUpEvent: handleUpEvent
   });
 
   const options = opt_options ? opt_options : {};
@@ -64,9 +64,8 @@ inherits(DragPan, PointerInteraction);
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {ol.interaction.DragPan}
- * @private
  */
-DragPan.handleDragEvent_ = function(mapBrowserEvent) {
+function handleDragEvent(mapBrowserEvent) {
   const targetPointers = this.targetPointers;
   const centroid =
       PointerInteraction.centroid(targetPointers);
@@ -94,16 +93,15 @@ DragPan.handleDragEvent_ = function(mapBrowserEvent) {
   }
   this.lastCentroid = centroid;
   this.lastPointersCount_ = targetPointers.length;
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
  * @this {ol.interaction.DragPan}
- * @private
  */
-DragPan.handleUpEvent_ = function(mapBrowserEvent) {
+function handleUpEvent(mapBrowserEvent) {
   const map = mapBrowserEvent.map;
   const view = map.getView();
   if (this.targetPointers.length === 0) {
@@ -133,16 +131,15 @@ DragPan.handleUpEvent_ = function(mapBrowserEvent) {
     this.lastCentroid = null;
     return true;
   }
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
  * @this {ol.interaction.DragPan}
- * @private
  */
-DragPan.handleDownEvent_ = function(mapBrowserEvent) {
+function handleDownEvent(mapBrowserEvent) {
   if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
     const map = mapBrowserEvent.map;
     const view = map.getView();
@@ -164,7 +161,7 @@ DragPan.handleDownEvent_ = function(mapBrowserEvent) {
   } else {
     return false;
   }
-};
+}
 
 
 /**

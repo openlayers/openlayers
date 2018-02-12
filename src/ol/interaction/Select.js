@@ -15,6 +15,20 @@ import {clear} from '../obj.js';
 import VectorSource from '../source/Vector.js';
 import Style from '../style/Style.js';
 
+
+/**
+ * @enum {string}
+ */
+const SelectEventType = {
+  /**
+   * Triggered when feature(s) has been (de)selected.
+   * @event ol.interaction.Select.Event#select
+   * @api
+   */
+  SELECT: 'select'
+};
+
+
 /**
  * @classdesc
  * Interaction for selecting vector features. By default, selected features are
@@ -276,7 +290,7 @@ Select.handleEvent = function(mapBrowserEvent) {
   }
   if (selected.length > 0 || deselected.length > 0) {
     this.dispatchEvent(
-      new Select.Event(Select.EventType_.SELECT,
+      new Select.Event(SelectEventType.SELECT,
         selected, deselected, mapBrowserEvent));
   }
   return pointerMove(mapBrowserEvent);
@@ -373,7 +387,7 @@ Select.prototype.removeFeatureLayerAssociation_ = function(feature) {
  * Events emitted by {@link ol.interaction.Select} instances are instances of
  * this type.
  *
- * @param {ol.interaction.Select.EventType_} type The event type.
+ * @param {ol.interaction.SelectEventType} type The event type.
  * @param {Array.<ol.Feature>} selected Selected features.
  * @param {Array.<ol.Feature>} deselected Deselected features.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Associated
@@ -406,19 +420,8 @@ Select.Event = function(type, selected, deselected, mapBrowserEvent) {
    */
   this.mapBrowserEvent = mapBrowserEvent;
 };
+
 inherits(Select.Event, Event);
 
 
-/**
- * @enum {string}
- * @private
- */
-Select.EventType_ = {
-  /**
-   * Triggered when feature(s) has been (de)selected.
-   * @event ol.interaction.Select.Event#select
-   * @api
-   */
-  SELECT: 'select'
-};
 export default Select;
