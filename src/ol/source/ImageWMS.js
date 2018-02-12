@@ -114,9 +114,8 @@ inherits(ImageWMS, ImageSource);
 /**
  * @const
  * @type {ol.Size}
- * @private
  */
-ImageWMS.GETFEATUREINFO_IMAGE_SIZE_ = [101, 101];
+const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
 
 
 /**
@@ -146,7 +145,7 @@ ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, proje
   }
 
   const extent = getForViewAndSize(coordinate, resolution, 0,
-    ImageWMS.GETFEATUREINFO_IMAGE_SIZE_);
+    GETFEATUREINFO_IMAGE_SIZE);
 
   const baseParams = {
     'SERVICE': 'WMS',
@@ -164,7 +163,7 @@ ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, proje
   baseParams[this.v13_ ? 'J' : 'Y'] = y;
 
   return this.getRequestUrl_(
-    extent, ImageWMS.GETFEATUREINFO_IMAGE_SIZE_,
+    extent, GETFEATUREINFO_IMAGE_SIZE,
     1, sourceProjectionObj || projectionObj, baseParams);
 };
 
