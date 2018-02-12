@@ -1,7 +1,7 @@
 /**
  * @module ol/colorlike
  */
-import {asString} from './color.js';
+import {toString} from './color.js';
 
 
 /**
@@ -13,7 +13,7 @@ export function asColorLike(color) {
   if (isColorLike(color)) {
     return /** @type {string|CanvasPattern|CanvasGradient} */ (color);
   } else {
-    return asString(/** @type {ol.Color} */ (color));
+    return toString(/** @type {ol.Color} */ (color));
   }
 }
 
