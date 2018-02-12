@@ -19,6 +19,15 @@ const MAX_DELTA = 1;
 
 
 /**
+ * @enum {string}
+ */
+export const Mode = {
+  TRACKPAD: 'trackpad',
+  WHEEL: 'wheel'
+};
+
+
+/**
  * @classdesc
  * Allows the user to zoom the map by scrolling the mouse wheel.
  *
@@ -91,7 +100,7 @@ const MouseWheelZoom = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.interaction.MouseWheelZoom.Mode_|undefined}
+   * @type {ol.interaction.Mode|undefined}
    */
   this.mode_ = undefined;
 
@@ -183,11 +192,11 @@ MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
 
   if (!this.mode_ || now - this.startTime_ > this.trackpadEventGap_) {
     this.mode_ = Math.abs(delta) < 4 ?
-      MouseWheelZoom.Mode_.TRACKPAD :
-      MouseWheelZoom.Mode_.WHEEL;
+      Mode.TRACKPAD :
+      Mode.WHEEL;
   }
 
-  if (this.mode_ === MouseWheelZoom.Mode_.TRACKPAD) {
+  if (this.mode_ === Mode.TRACKPAD) {
     const view = map.getView();
     if (this.trackpadTimeoutId_) {
       clearTimeout(this.trackpadTimeoutId_);
@@ -296,12 +305,4 @@ MouseWheelZoom.prototype.setMouseAnchor = function(useAnchor) {
 };
 
 
-/**
- * @enum {string}
- * @private
- */
-MouseWheelZoom.Mode_ = {
-  TRACKPAD: 'trackpad',
-  WHEEL: 'wheel'
-};
 export default MouseWheelZoom;
