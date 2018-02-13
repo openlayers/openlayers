@@ -17,7 +17,7 @@ import {deflateMultiCoordinatesArray} from '../geom/flat/deflate.js';
 import {inflateMultiCoordinatesArray} from '../geom/flat/inflate.js';
 import {getInteriorPointsOfMultiArray} from '../geom/flat/interiorpoint.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
-import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
+import {linearRingsAreOriented, orientLinearRingsArray} from '../geom/flat/orient.js';
 import {quantizeMultiArray} from '../geom/flat/simplify.js';
 
 /**
@@ -183,7 +183,7 @@ MultiPolygon.prototype.getCoordinates = function(opt_right) {
   let flatCoordinates;
   if (opt_right !== undefined) {
     flatCoordinates = this.getOrientedFlatCoordinates().slice();
-    _ol_geom_flat_orient_.orientLinearRingss(
+    orientLinearRingsArray(
       flatCoordinates, 0, this.endss_, this.stride, opt_right);
   } else {
     flatCoordinates = this.flatCoordinates;
@@ -238,13 +238,13 @@ MultiPolygon.prototype.getInteriorPoints = function() {
 MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
   if (this.orientedRevision_ != this.getRevision()) {
     const flatCoordinates = this.flatCoordinates;
-    if (_ol_geom_flat_orient_.linearRingssAreOriented(
+    if (linearRingsAreOriented(
       flatCoordinates, 0, this.endss_, this.stride)) {
       this.orientedFlatCoordinates_ = flatCoordinates;
     } else {
       this.orientedFlatCoordinates_ = flatCoordinates.slice();
       this.orientedFlatCoordinates_.length =
-          _ol_geom_flat_orient_.orientLinearRingss(
+          orientLinearRingsArray(
             this.orientedFlatCoordinates_, 0, this.endss_, this.stride);
     }
     this.orientedRevision_ = this.getRevision();

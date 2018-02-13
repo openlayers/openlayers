@@ -17,7 +17,7 @@ import {deflateCoordinatesArray} from '../geom/flat/deflate.js';
 import {inflateCoordinatesArray} from '../geom/flat/inflate.js';
 import {getInteriorPointOfArray} from '../geom/flat/interiorpoint.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
-import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
+import {linearRingIsOriented, orientLinearRings} from '../geom/flat/orient.js';
 import {quantizeArray} from '../geom/flat/simplify.js';
 import {modulo} from '../math.js';
 
@@ -173,7 +173,7 @@ Polygon.prototype.getCoordinates = function(opt_right) {
   let flatCoordinates;
   if (opt_right !== undefined) {
     flatCoordinates = this.getOrientedFlatCoordinates().slice();
-    _ol_geom_flat_orient_.orientLinearRings(
+    orientLinearRings(
       flatCoordinates, 0, this.ends_, this.stride, opt_right);
   } else {
     flatCoordinates = this.flatCoordinates;
@@ -279,13 +279,13 @@ Polygon.prototype.getLinearRings = function() {
 Polygon.prototype.getOrientedFlatCoordinates = function() {
   if (this.orientedRevision_ != this.getRevision()) {
     const flatCoordinates = this.flatCoordinates;
-    if (_ol_geom_flat_orient_.linearRingsAreOriented(
+    if (linearRingIsOriented(
       flatCoordinates, 0, this.ends_, this.stride)) {
       this.orientedFlatCoordinates_ = flatCoordinates;
     } else {
       this.orientedFlatCoordinates_ = flatCoordinates.slice();
       this.orientedFlatCoordinates_.length =
-          _ol_geom_flat_orient_.orientLinearRings(
+          orientLinearRings(
             this.orientedFlatCoordinates_, 0, this.ends_, this.stride);
     }
     this.orientedRevision_ = this.getRevision();

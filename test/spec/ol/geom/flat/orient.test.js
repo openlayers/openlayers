@@ -1,4 +1,5 @@
-import _ol_geom_flat_orient_ from '../../../../../src/ol/geom/flat/orient.js';
+import {linearRingIsClockwise, linearRingIsOriented,
+  linearRingsAreOriented, orientLinearRings, orientLinearRingsArray} from '../../../../../src/ol/geom/flat/orient.js';
 
 
 describe('ol.geom.flat.orient', function() {
@@ -7,14 +8,14 @@ describe('ol.geom.flat.orient', function() {
 
     it('identifies clockwise rings', function() {
       const flatCoordinates = [0, 1, 1, 4, 4, 3, 3, 0];
-      const isClockwise = _ol_geom_flat_orient_.linearRingIsClockwise(
+      const isClockwise = linearRingIsClockwise(
         flatCoordinates, 0, flatCoordinates.length, 2);
       expect(isClockwise).to.be(true);
     });
 
     it('identifies anti-clockwise rings', function() {
       const flatCoordinates = [2, 2, 3, 2, 3, 3, 2, 3];
-      const isClockwise = _ol_geom_flat_orient_.linearRingIsClockwise(
+      const isClockwise = linearRingIsClockwise(
         flatCoordinates, 0, flatCoordinates.length, 2);
       expect(isClockwise).to.be(false);
     });
@@ -22,7 +23,7 @@ describe('ol.geom.flat.orient', function() {
   });
 
   describe('ol.geom.flat.orient.linearRingsAreOriented()', function() {
-    const oriented = _ol_geom_flat_orient_.linearRingsAreOriented;
+    const oriented = linearRingIsOriented;
 
     const rightCoords = [
       -180, -90, 180, -90, 180, 90, -180, 90, -180, -90,
@@ -49,7 +50,7 @@ describe('ol.geom.flat.orient', function() {
   });
 
   describe('ol.geom.flat.orient.linearRingssAreOriented()', function() {
-    const oriented = _ol_geom_flat_orient_.linearRingssAreOriented;
+    const oriented = linearRingsAreOriented;
 
     const rightCoords = [
       -180, -90, 180, -90, 180, 90, -180, 90, -180, -90,
@@ -80,7 +81,7 @@ describe('ol.geom.flat.orient', function() {
   });
 
   describe('ol.geom.flat.orient.orientLinearRings()', function() {
-    const orient = _ol_geom_flat_orient_.orientLinearRings;
+    const orient = orientLinearRings;
 
     const rightCoords = [
       -180, -90, 180, -90, 180, 90, -180, 90, -180, -90,
@@ -117,7 +118,7 @@ describe('ol.geom.flat.orient', function() {
   });
 
   describe('ol.geom.flat.orient.orientLinearRingss()', function() {
-    const orient = _ol_geom_flat_orient_.orientLinearRingss;
+    const orient = orientLinearRingsArray;
 
     const rightCoords = [
       -180, -90, 180, -90, 180, 90, -180, 90, -180, -90,

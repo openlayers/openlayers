@@ -16,7 +16,7 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
+import {linearRingIsClockwise} from '../geom/flat/orient.js';
 import Projection from '../proj/Projection.js';
 import Units from '../proj/Units.js';
 import RenderFeature from '../render/Feature.js';
@@ -309,7 +309,7 @@ MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
       let prevEndIndex = 0;
       for (let i = 0, ii = ends.length; i < ii; ++i) {
         const end = ends[i];
-        if (!_ol_geom_flat_orient_.linearRingIsClockwise(flatCoordinates, offset, end, 2)) {
+        if (!linearRingIsClockwise(flatCoordinates, offset, end, 2)) {
           endss.push(ends.slice(prevEndIndex, i));
           prevEndIndex = i;
         }

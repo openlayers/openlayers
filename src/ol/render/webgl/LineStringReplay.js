@@ -5,7 +5,7 @@ import {getUid, inherits} from '../../index.js';
 import {equals} from '../../array.js';
 import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
-import _ol_geom_flat_orient_ from '../../geom/flat/orient.js';
+import {linearRingIsClockwise} from '../../geom/flat/orient.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import {lineStringIsClosed} from '../../geom/flat/topology.js';
 import {isEmpty} from '../../obj.js';
@@ -252,7 +252,7 @@ WebGLLineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, off
 
   if (closed) {
     n = n || numVertices / 7;
-    sign = _ol_geom_flat_orient_.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
+    sign = linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
       ? 1 : -1;
 
     numVertices = this.addVertices_(p0, p1, p2,
