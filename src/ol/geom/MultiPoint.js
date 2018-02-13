@@ -9,7 +9,7 @@ import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
-import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
+import {inflateCoordinates} from '../geom/flat/inflate.js';
 import {squaredDistance as squaredDx} from '../math.js';
 
 /**
@@ -89,7 +89,7 @@ MultiPoint.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDis
  * @api
  */
 MultiPoint.prototype.getCoordinates = function() {
-  return _ol_geom_flat_inflate_.coordinates(
+  return inflateCoordinates(
     this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 

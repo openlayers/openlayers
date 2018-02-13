@@ -8,7 +8,7 @@ import {buffer, clone, coordinateRelationship, createEmpty, createOrUpdate,
   createOrUpdateEmpty, extend, extendCoordinate, intersects} from '../../extent.js';
 import Relationship from '../../extent/Relationship.js';
 import GeometryType from '../../geom/GeometryType.js';
-import _ol_geom_flat_inflate_ from '../../geom/flat/inflate.js';
+import {inflateCoordinates, inflateCoordinatesArray, inflateMultiCoordinatesArray} from '../../geom/flat/inflate.js';
 import _ol_geom_flat_length_ from '../../geom/flat/length.js';
 import _ol_geom_flat_textpath_ from '../../geom/flat/textpath.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
@@ -410,7 +410,7 @@ CanvasReplay.prototype.drawCustom = function(geometry, feature, renderer) {
       replayEndss.push(myEnds);
     }
     this.instructions.push([CanvasInstruction.CUSTOM,
-      replayBegin, replayEndss, geometry, renderer, _ol_geom_flat_inflate_.coordinatesss]);
+      replayBegin, replayEndss, geometry, renderer, inflateMultiCoordinatesArray]);
   } else if (type == GeometryType.POLYGON || type == GeometryType.MULTI_LINE_STRING) {
     replayEnds = [];
     flatCoordinates = (type == GeometryType.POLYGON) ?
@@ -420,13 +420,13 @@ CanvasReplay.prototype.drawCustom = function(geometry, feature, renderer) {
       /** @type {ol.geom.Polygon|ol.geom.MultiLineString} */ (geometry).getEnds(),
       stride, replayEnds);
     this.instructions.push([CanvasInstruction.CUSTOM,
-      replayBegin, replayEnds, geometry, renderer, _ol_geom_flat_inflate_.coordinatess]);
+      replayBegin, replayEnds, geometry, renderer, inflateCoordinatesArray]);
   } else if (type == GeometryType.LINE_STRING || type == GeometryType.MULTI_POINT) {
     flatCoordinates = geometry.getFlatCoordinates();
     replayEnd = this.appendFlatCoordinates(
       flatCoordinates, 0, flatCoordinates.length, stride, false, false);
     this.instructions.push([CanvasInstruction.CUSTOM,
-      replayBegin, replayEnd, geometry, renderer, _ol_geom_flat_inflate_.coordinates]);
+      replayBegin, replayEnd, geometry, renderer, inflateCoordinates]);
   } else if (type == GeometryType.POINT) {
     flatCoordinates = geometry.getFlatCoordinates();
     this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);

@@ -9,7 +9,7 @@ import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {linearRing as linearRingArea} from '../geom/flat/area.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
-import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
+import {inflateCoordinates} from '../geom/flat/inflate.js';
 import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
 
 /**
@@ -94,7 +94,7 @@ LinearRing.prototype.getArea = function() {
  * @api
  */
 LinearRing.prototype.getCoordinates = function() {
-  return _ol_geom_flat_inflate_.coordinates(
+  return inflateCoordinates(
     this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 

@@ -9,7 +9,7 @@ import GeometryType from '../geom/GeometryType.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
-import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
+import {inflateCoordinates} from '../geom/flat/inflate.js';
 import _ol_geom_flat_interpolate_ from '../geom/flat/interpolate.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
 import _ol_geom_flat_length_ from '../geom/flat/length.js';
@@ -155,7 +155,7 @@ LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
  * @api
  */
 LineString.prototype.getCoordinates = function() {
-  return _ol_geom_flat_inflate_.coordinates(
+  return inflateCoordinates(
     this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
