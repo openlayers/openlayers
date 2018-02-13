@@ -6,7 +6,7 @@ import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
-import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
+import {deflateCoordinate} from '../geom/flat/deflate.js';
 
 /**
  * @classdesc
@@ -192,7 +192,7 @@ Circle.prototype.setCenterAndRadius = function(center, radius, opt_layout) {
     }
     /** @type {Array.<number>} */
     const flatCoordinates = this.flatCoordinates;
-    let offset = _ol_geom_flat_deflate_.coordinate(
+    let offset = deflateCoordinate(
       flatCoordinates, 0, center, this.stride);
     flatCoordinates[offset++] = flatCoordinates[0] + radius;
     for (let i = 1, ii = this.stride; i < ii; ++i) {

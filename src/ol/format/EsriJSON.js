@@ -16,7 +16,7 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
+import {deflateCoordinates} from '../geom/flat/deflate.js';
 import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
 import {assign, isEmpty} from '../obj.js';
 import {get as getProjection} from '../proj.js';
@@ -132,7 +132,7 @@ function convertRings(rings, layout) {
   let i, ii;
   for (i = 0, ii = rings.length; i < ii; ++i) {
     flatRing.length = 0;
-    _ol_geom_flat_deflate_.coordinates(flatRing, 0, rings[i], layout.length);
+    deflateCoordinates(flatRing, 0, rings[i], layout.length);
     // is this ring an outer ring? is it clockwise?
     const clockwise = _ol_geom_flat_orient_.linearRingIsClockwise(flatRing, 0,
       flatRing.length, layout.length);

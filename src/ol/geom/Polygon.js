@@ -13,7 +13,7 @@ import {offset as sphereOffset} from '../sphere.js';
 import {linearRings as linearRingsArea} from '../geom/flat/area.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import {linearRingsContainsXY} from '../geom/flat/contains.js';
-import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
+import {deflateCoordinatesArray} from '../geom/flat/deflate.js';
 import {inflateCoordinatesArray} from '../geom/flat/inflate.js';
 import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
@@ -345,7 +345,7 @@ Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
-    const ends = _ol_geom_flat_deflate_.coordinatess(
+    const ends = deflateCoordinatesArray(
       this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
     this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
     this.changed();

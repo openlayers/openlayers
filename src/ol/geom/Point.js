@@ -6,7 +6,7 @@ import {createOrUpdateFromCoordinate, containsXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
-import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
+import {deflateCoordinate} from '../geom/flat/deflate.js';
 import {squaredDistance as squaredDx} from '../math.js';
 
 /**
@@ -108,7 +108,7 @@ Point.prototype.setCoordinates = function(coordinates, opt_layout) {
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
-    this.flatCoordinates.length = _ol_geom_flat_deflate_.coordinate(
+    this.flatCoordinates.length = deflateCoordinate(
       this.flatCoordinates, 0, coordinates, this.stride);
     this.changed();
   }

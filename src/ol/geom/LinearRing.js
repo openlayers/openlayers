@@ -8,7 +8,7 @@ import GeometryType from '../geom/GeometryType.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {linearRing as linearRingArea} from '../geom/flat/area.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
-import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
+import {deflateCoordinates} from '../geom/flat/deflate.js';
 import {inflateCoordinates} from '../geom/flat/inflate.js';
 import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
 
@@ -144,7 +144,7 @@ LinearRing.prototype.setCoordinates = function(coordinates, opt_layout) {
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
-    this.flatCoordinates.length = _ol_geom_flat_deflate_.coordinates(
+    this.flatCoordinates.length = deflateCoordinates(
       this.flatCoordinates, 0, coordinates, this.stride);
     this.changed();
   }

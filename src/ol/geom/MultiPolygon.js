@@ -13,7 +13,7 @@ import {linearRingss as linearRingssArea} from '../geom/flat/area.js';
 import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import {linearRingssContainsXY} from '../geom/flat/contains.js';
-import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
+import {deflateMultiCoordinatesArray} from '../geom/flat/deflate.js';
 import {inflateMultiCoordinatesArray} from '../geom/flat/inflate.js';
 import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
@@ -364,7 +364,7 @@ MultiPolygon.prototype.setCoordinates = function(coordinates, opt_layout) {
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
-    const endss = _ol_geom_flat_deflate_.coordinatesss(
+    const endss = deflateMultiCoordinatesArray(
       this.flatCoordinates, 0, coordinates, this.stride, this.endss_);
     if (endss.length === 0) {
       this.flatCoordinates.length = 0;
