@@ -12,7 +12,7 @@ import {assignClosestArrayPoint, arrayMaxSquaredDelta} from '../geom/flat/closes
 import {deflateCoordinatesArray} from '../geom/flat/deflate.js';
 import {inflateCoordinatesArray} from '../geom/flat/inflate.js';
 import {interpolatePoint, lineStringsCoordinateAtM} from '../geom/flat/interpolate.js';
-import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
+import {intersectsLineStringArray} from '../geom/flat/intersectsextent.js';
 import {douglasPeuckerArray} from '../geom/flat/simplify.js';
 
 /**
@@ -247,7 +247,7 @@ MultiLineString.prototype.getType = function() {
  * @api
  */
 MultiLineString.prototype.intersectsExtent = function(extent) {
-  return _ol_geom_flat_intersectsextent_.lineStrings(
+  return intersectsLineStringArray(
     this.flatCoordinates, 0, this.ends_, this.stride, extent);
 };
 

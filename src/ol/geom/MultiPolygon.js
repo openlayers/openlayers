@@ -16,7 +16,7 @@ import {linearRingssContainsXY} from '../geom/flat/contains.js';
 import {deflateMultiCoordinatesArray} from '../geom/flat/deflate.js';
 import {inflateMultiCoordinatesArray} from '../geom/flat/inflate.js';
 import {getInteriorPointsOfMultiArray} from '../geom/flat/interiorpoint.js';
-import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
+import {intersectsLinearRingMultiArray} from '../geom/flat/intersectsextent.js';
 import {linearRingsAreOriented, orientLinearRingsArray} from '../geom/flat/orient.js';
 import {quantizeMultiArray} from '../geom/flat/simplify.js';
 
@@ -344,7 +344,7 @@ MultiPolygon.prototype.getType = function() {
  * @api
  */
 MultiPolygon.prototype.intersectsExtent = function(extent) {
-  return _ol_geom_flat_intersectsextent_.linearRingss(
+  return intersectsLinearRingMultiArray(
     this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, extent);
 };
 

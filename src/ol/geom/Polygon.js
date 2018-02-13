@@ -16,7 +16,7 @@ import {linearRingsContainsXY} from '../geom/flat/contains.js';
 import {deflateCoordinatesArray} from '../geom/flat/deflate.js';
 import {inflateCoordinatesArray} from '../geom/flat/inflate.js';
 import {getInteriorPointOfArray} from '../geom/flat/interiorpoint.js';
-import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
+import {intersectsLinearRingArray} from '../geom/flat/intersectsextent.js';
 import {linearRingIsOriented, orientLinearRings} from '../geom/flat/orient.js';
 import {quantizeArray} from '../geom/flat/simplify.js';
 import {modulo} from '../math.js';
@@ -325,7 +325,7 @@ Polygon.prototype.getType = function() {
  * @api
  */
 Polygon.prototype.intersectsExtent = function(extent) {
-  return _ol_geom_flat_intersectsextent_.linearRings(
+  return intersectsLinearRingArray(
     this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, extent);
 };
 

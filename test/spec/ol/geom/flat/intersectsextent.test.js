@@ -1,4 +1,4 @@
-import _ol_geom_flat_intersectsextent_ from '../../../../../src/ol/geom/flat/intersectsextent.js';
+import {intersectsLinearRing, intersectsLineString} from '../../../../../src/ol/geom/flat/intersectsextent.js';
 
 
 describe('ol.geom.flat.intersectsextent', function() {
@@ -11,7 +11,7 @@ describe('ol.geom.flat.intersectsextent', function() {
     describe('linestring envelope does not intersect the extent', function() {
       it('returns false', function() {
         const extent = [3, 3, 4, 4];
-        const r = _ol_geom_flat_intersectsextent_.lineString(
+        const r = intersectsLineString(
           flatCoordinates, 0, flatCoordinates.length, 2, extent);
         expect(r).to.be(false);
       });
@@ -19,7 +19,7 @@ describe('ol.geom.flat.intersectsextent', function() {
     describe('linestring envelope within the extent', function() {
       it('returns true', function() {
         const extent = [-1, -1, 3, 3];
-        const r = _ol_geom_flat_intersectsextent_.lineString(
+        const r = intersectsLineString(
           flatCoordinates, 0, flatCoordinates.length, 2, extent);
         expect(r).to.be(true);
       });
@@ -28,7 +28,7 @@ describe('ol.geom.flat.intersectsextent', function() {
       function() {
         it('returns true', function() {
           const extent = [-0.1, 0.1, 2.1, 0.1];
-          const r = _ol_geom_flat_intersectsextent_.lineString(
+          const r = intersectsLineString(
             flatCoordinates, 0, flatCoordinates.length, 2, extent);
           expect(r).to.be(true);
         });
@@ -36,7 +36,7 @@ describe('ol.geom.flat.intersectsextent', function() {
     describe('a segment intersects the extent', function() {
       it('returns true', function() {
         const extent = [-0.5, -0.5, 0.5, 0.5];
-        const r = _ol_geom_flat_intersectsextent_.lineString(
+        const r = intersectsLineString(
           flatCoordinates, 0, flatCoordinates.length, 2, extent);
         expect(r).to.be(true);
       });
@@ -44,13 +44,13 @@ describe('ol.geom.flat.intersectsextent', function() {
     describe('no segments intersect the extent', function() {
       it('returns false', function() {
         const extent = [0.5, 1.5, 1, 1.75];
-        const r = _ol_geom_flat_intersectsextent_.lineString(
+        const r = intersectsLineString(
           flatCoordinates, 0, flatCoordinates.length, 2, extent);
         expect(r).to.be(false);
       });
       it('returns false', function() {
         const extent = [1, 0.25, 1.5, 0.5];
-        const r = _ol_geom_flat_intersectsextent_.lineString(
+        const r = intersectsLineString(
           flatCoordinates, 0, flatCoordinates.length, 2, extent);
         expect(r).to.be(false);
       });
@@ -65,7 +65,7 @@ describe('ol.geom.flat.intersectsextent', function() {
     describe('boundary intersects the extent', function() {
       it('returns true', function() {
         const extent = [1.5, 0.0, 2.5, 1.0];
-        const r = _ol_geom_flat_intersectsextent_.linearRing(
+        const r = intersectsLinearRing(
           flatCoordinates, 0, flatCoordinates.length, 2, extent);
         expect(r).to.be(true);
       });
@@ -75,7 +75,7 @@ describe('ol.geom.flat.intersectsextent', function() {
     function() {
       it('returns false', function() {
         const extent = [2.0, 0.5, 3, 1.5];
-        const r = _ol_geom_flat_intersectsextent_.linearRing(
+        const r = intersectsLinearRing(
           flatCoordinates, 0, flatCoordinates.length, 2, extent);
         expect(r).to.be(false);
       });
@@ -83,7 +83,7 @@ describe('ol.geom.flat.intersectsextent', function() {
     describe('ring contains the extent', function() {
       it('returns true', function() {
         const extent = [0.75, -0.25, 1.25, 0.25];
-        const r = _ol_geom_flat_intersectsextent_.linearRing(
+        const r = intersectsLinearRing(
           flatCoordinates, 0, flatCoordinates.length, 2, extent);
         expect(r).to.be(true);
       });

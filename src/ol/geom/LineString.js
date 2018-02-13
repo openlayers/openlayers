@@ -11,7 +11,7 @@ import {assignClosestPoint, maxSquaredDelta} from '../geom/flat/closest.js';
 import {deflateCoordinates} from '../geom/flat/deflate.js';
 import {inflateCoordinates} from '../geom/flat/inflate.js';
 import {interpolatePoint, lineStringCoordinateAtM} from '../geom/flat/interpolate.js';
-import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
+import {intersectsLineString} from '../geom/flat/intersectsextent.js';
 import {lineStringLength} from '../geom/flat/length.js';
 import {forEach as forEachSegment} from '../geom/flat/segments.js';
 import {douglasPeucker} from '../geom/flat/simplify.js';
@@ -229,7 +229,7 @@ LineString.prototype.getType = function() {
  * @api
  */
 LineString.prototype.intersectsExtent = function(extent) {
-  return _ol_geom_flat_intersectsextent_.lineString(
+  return intersectsLineString(
     this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
     extent);
 };
