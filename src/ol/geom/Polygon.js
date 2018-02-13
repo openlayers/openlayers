@@ -18,7 +18,7 @@ import {inflateCoordinatesArray} from '../geom/flat/inflate.js';
 import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
 import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
-import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
+import {quantizeArray} from '../geom/flat/simplify.js';
 import {modulo} from '../math.js';
 
 /**
@@ -300,7 +300,7 @@ Polygon.prototype.getOrientedFlatCoordinates = function() {
 Polygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   const simplifiedFlatCoordinates = [];
   const simplifiedEnds = [];
-  simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.quantizes(
+  simplifiedFlatCoordinates.length = quantizeArray(
     this.flatCoordinates, 0, this.ends_, this.stride,
     Math.sqrt(squaredTolerance),
     simplifiedFlatCoordinates, 0, simplifiedEnds);

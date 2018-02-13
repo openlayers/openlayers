@@ -3,7 +3,7 @@
  */
 import {inherits} from '../../index.js';
 import {asString} from '../../color.js';
-import _ol_geom_flat_simplify_ from '../../geom/flat/simplify.js';
+import {snap} from '../../geom/flat/simplify.js';
 import _ol_render_canvas_ from '../canvas.js';
 import CanvasInstruction from '../canvas/Instruction.js';
 import CanvasReplay from '../canvas/Replay.js';
@@ -199,7 +199,7 @@ CanvasPolygonReplay.prototype.finish = function() {
   if (tolerance !== 0) {
     const coordinates = this.coordinates;
     for (let i = 0, ii = coordinates.length; i < ii; ++i) {
-      coordinates[i] = _ol_geom_flat_simplify_.snap(coordinates[i], tolerance);
+      coordinates[i] = snap(coordinates[i], tolerance);
     }
   }
 };

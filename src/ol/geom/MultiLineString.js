@@ -13,7 +13,7 @@ import {deflateCoordinatesArray} from '../geom/flat/deflate.js';
 import {inflateCoordinatesArray} from '../geom/flat/inflate.js';
 import _ol_geom_flat_interpolate_ from '../geom/flat/interpolate.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
-import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
+import {douglasPeuckerArray} from '../geom/flat/simplify.js';
 
 /**
  * @classdesc
@@ -223,7 +223,7 @@ MultiLineString.prototype.getFlatMidpoints = function() {
 MultiLineString.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   const simplifiedFlatCoordinates = [];
   const simplifiedEnds = [];
-  simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.douglasPeuckers(
+  simplifiedFlatCoordinates.length = douglasPeuckerArray(
     this.flatCoordinates, 0, this.ends_, this.stride, squaredTolerance,
     simplifiedFlatCoordinates, 0, simplifiedEnds);
   const simplifiedMultiLineString = new MultiLineString(null);

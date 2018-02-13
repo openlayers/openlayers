@@ -14,7 +14,7 @@ import _ol_geom_flat_interpolate_ from '../geom/flat/interpolate.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
 import {lineStringLength} from '../geom/flat/length.js';
 import {forEach as forEachSegment} from '../geom/flat/segments.js';
-import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
+import {douglasPeucker} from '../geom/flat/simplify.js';
 
 /**
  * @classdesc
@@ -205,7 +205,7 @@ LineString.prototype.getFlatMidpoint = function() {
  */
 LineString.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   const simplifiedFlatCoordinates = [];
-  simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.douglasPeucker(
+  simplifiedFlatCoordinates.length = douglasPeucker(
     this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
     squaredTolerance, simplifiedFlatCoordinates, 0);
   const simplifiedLineString = new LineString(null);

@@ -10,7 +10,7 @@ import {linearRing as linearRingArea} from '../geom/flat/area.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import {deflateCoordinates} from '../geom/flat/deflate.js';
 import {inflateCoordinates} from '../geom/flat/inflate.js';
-import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
+import {douglasPeucker} from '../geom/flat/simplify.js';
 
 /**
  * @classdesc
@@ -104,7 +104,7 @@ LinearRing.prototype.getCoordinates = function() {
  */
 LinearRing.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   const simplifiedFlatCoordinates = [];
-  simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.douglasPeucker(
+  simplifiedFlatCoordinates.length = douglasPeucker(
     this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
     squaredTolerance, simplifiedFlatCoordinates, 0);
   const simplifiedLinearRing = new LinearRing(null);
