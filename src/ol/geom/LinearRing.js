@@ -7,7 +7,7 @@ import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {linearRing as linearRingArea} from '../geom/flat/area.js';
-import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
+import {assignClosestPoint, maxSquaredDelta} from '../geom/flat/closest.js';
 import {deflateCoordinates} from '../geom/flat/deflate.js';
 import {inflateCoordinates} from '../geom/flat/inflate.js';
 import {douglasPeucker} from '../geom/flat/simplify.js';
@@ -67,11 +67,11 @@ LinearRing.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDis
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(_ol_geom_flat_closest_.getMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(maxSquaredDelta(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return _ol_geom_flat_closest_.getClosestPoint(
+  return assignClosestPoint(
     this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
     this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };

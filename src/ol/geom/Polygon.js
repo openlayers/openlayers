@@ -11,7 +11,7 @@ import Point from '../geom/Point.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {offset as sphereOffset} from '../sphere.js';
 import {linearRings as linearRingsArea} from '../geom/flat/area.js';
-import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
+import {assignClosestArrayPoint, arrayMaxSquaredDelta} from '../geom/flat/closest.js';
 import {linearRingsContainsXY} from '../geom/flat/contains.js';
 import {deflateCoordinatesArray} from '../geom/flat/deflate.js';
 import {inflateCoordinatesArray} from '../geom/flat/inflate.js';
@@ -127,11 +127,11 @@ Polygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistan
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(_ol_geom_flat_closest_.getsMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(arrayMaxSquaredDelta(
       this.flatCoordinates, 0, this.ends_, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return _ol_geom_flat_closest_.getsClosestPoint(
+  return assignClosestArrayPoint(
     this.flatCoordinates, 0, this.ends_, this.stride,
     this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };

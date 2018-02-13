@@ -11,7 +11,7 @@ import Polygon from '../geom/Polygon.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {linearRingss as linearRingssArea} from '../geom/flat/area.js';
 import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
-import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
+import {assignClosestMultiArrayPoint, multiArrayMaxSquaredDelta} from '../geom/flat/closest.js';
 import {linearRingssContainsXY} from '../geom/flat/contains.js';
 import {deflateMultiCoordinatesArray} from '../geom/flat/deflate.js';
 import {inflateMultiCoordinatesArray} from '../geom/flat/inflate.js';
@@ -137,11 +137,11 @@ MultiPolygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredD
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(_ol_geom_flat_closest_.getssMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(multiArrayMaxSquaredDelta(
       this.flatCoordinates, 0, this.endss_, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return _ol_geom_flat_closest_.getssClosestPoint(
+  return assignClosestMultiArrayPoint(
     this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
     this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };
