@@ -7,7 +7,7 @@ import {createOrUpdateFromCoordinate, createOrUpdateFromFlatCoordinates, getCent
 import GeometryType from '../geom/GeometryType.js';
 import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
 import {getInteriorPointOfArray, getInteriorPointsOfMultiArray} from '../geom/flat/interiorpoint.js';
-import _ol_geom_flat_interpolate_ from '../geom/flat/interpolate.js';
+import {interpolatePoint} from '../geom/flat/interpolate.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
 import _ol_transform_ from '../transform.js';
 
@@ -151,7 +151,7 @@ RenderFeature.prototype.getFlatInteriorPoints = function() {
  */
 RenderFeature.prototype.getFlatMidpoint = function() {
   if (!this.flatMidpoints_) {
-    this.flatMidpoints_ = _ol_geom_flat_interpolate_.lineString(
+    this.flatMidpoints_ = interpolatePoint(
       this.flatCoordinates_, 0, this.flatCoordinates_.length, 2, 0.5);
   }
   return this.flatMidpoints_;
@@ -169,7 +169,7 @@ RenderFeature.prototype.getFlatMidpoints = function() {
     const ends = this.ends_;
     for (let i = 0, ii = ends.length; i < ii; ++i) {
       const end = ends[i];
-      const midpoint = _ol_geom_flat_interpolate_.lineString(
+      const midpoint = interpolatePoint(
         flatCoordinates, offset, end, 2, 0.5);
       extend(this.flatMidpoints_, midpoint);
       offset = end;

@@ -3,7 +3,6 @@
  */
 import {binarySearch} from '../../array.js';
 import {lerp} from '../../math.js';
-const _ol_geom_flat_interpolate_ = {};
 
 
 /**
@@ -15,7 +14,7 @@ const _ol_geom_flat_interpolate_ = {};
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Destination.
  */
-_ol_geom_flat_interpolate_.lineString = function(flatCoordinates, offset, end, stride, fraction, opt_dest) {
+export function interpolatePoint(flatCoordinates, offset, end, stride, fraction, opt_dest) {
   let pointX = NaN;
   let pointY = NaN;
   const n = (end - offset) / stride;
@@ -62,7 +61,7 @@ _ol_geom_flat_interpolate_.lineString = function(flatCoordinates, offset, end, s
   } else {
     return [pointX, pointY];
   }
-};
+}
 
 
 /**
@@ -74,7 +73,7 @@ _ol_geom_flat_interpolate_.lineString = function(flatCoordinates, offset, end, s
  * @param {boolean} extrapolate Extrapolate.
  * @return {ol.Coordinate} Coordinate.
  */
-_ol_geom_flat_interpolate_.lineStringCoordinateAtM = function(flatCoordinates, offset, end, stride, m, extrapolate) {
+export function lineStringCoordinateAtM(flatCoordinates, offset, end, stride, m, extrapolate) {
   if (end == offset) {
     return null;
   }
@@ -123,7 +122,7 @@ _ol_geom_flat_interpolate_.lineStringCoordinateAtM = function(flatCoordinates, o
   }
   coordinate.push(m);
   return coordinate;
-};
+}
 
 
 /**
@@ -136,10 +135,10 @@ _ol_geom_flat_interpolate_.lineStringCoordinateAtM = function(flatCoordinates, o
  * @param {boolean} interpolate Interpolate.
  * @return {ol.Coordinate} Coordinate.
  */
-_ol_geom_flat_interpolate_.lineStringsCoordinateAtM = function(
+export function lineStringsCoordinateAtM(
   flatCoordinates, offset, ends, stride, m, extrapolate, interpolate) {
   if (interpolate) {
-    return _ol_geom_flat_interpolate_.lineStringCoordinateAtM(
+    return lineStringCoordinateAtM(
       flatCoordinates, offset, ends[ends.length - 1], stride, m, extrapolate);
   }
   let coordinate;
@@ -169,11 +168,10 @@ _ol_geom_flat_interpolate_.lineStringsCoordinateAtM = function(
     if (m < flatCoordinates[offset + stride - 1]) {
       return null;
     } else if (m <= flatCoordinates[end - 1]) {
-      return _ol_geom_flat_interpolate_.lineStringCoordinateAtM(
+      return lineStringCoordinateAtM(
         flatCoordinates, offset, end, stride, m, false);
     }
     offset = end;
   }
   return null;
-};
-export default _ol_geom_flat_interpolate_;
+}

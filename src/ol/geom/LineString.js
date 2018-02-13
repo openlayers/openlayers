@@ -10,7 +10,7 @@ import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {assignClosestPoint, maxSquaredDelta} from '../geom/flat/closest.js';
 import {deflateCoordinates} from '../geom/flat/deflate.js';
 import {inflateCoordinates} from '../geom/flat/inflate.js';
-import _ol_geom_flat_interpolate_ from '../geom/flat/interpolate.js';
+import {interpolatePoint, lineStringCoordinateAtM} from '../geom/flat/interpolate.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
 import {lineStringLength} from '../geom/flat/length.js';
 import {forEach as forEachSegment} from '../geom/flat/segments.js';
@@ -143,7 +143,7 @@ LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
     return null;
   }
   const extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
-  return _ol_geom_flat_interpolate_.lineStringCoordinateAtM(this.flatCoordinates, 0,
+  return lineStringCoordinateAtM(this.flatCoordinates, 0,
     this.flatCoordinates.length, this.stride, m, extrapolate);
 };
 
@@ -171,7 +171,7 @@ LineString.prototype.getCoordinates = function() {
  * @api
  */
 LineString.prototype.getCoordinateAt = function(fraction, opt_dest) {
-  return _ol_geom_flat_interpolate_.lineString(
+  return interpolatePoint(
     this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
     fraction, opt_dest);
 };

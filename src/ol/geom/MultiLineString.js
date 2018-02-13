@@ -11,7 +11,7 @@ import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {assignClosestArrayPoint, arrayMaxSquaredDelta} from '../geom/flat/closest.js';
 import {deflateCoordinatesArray} from '../geom/flat/deflate.js';
 import {inflateCoordinatesArray} from '../geom/flat/inflate.js';
-import _ol_geom_flat_interpolate_ from '../geom/flat/interpolate.js';
+import {interpolatePoint, lineStringsCoordinateAtM} from '../geom/flat/interpolate.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
 import {douglasPeuckerArray} from '../geom/flat/simplify.js';
 
@@ -132,7 +132,7 @@ MultiLineString.prototype.getCoordinateAtM = function(m, opt_extrapolate, opt_in
   }
   const extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
   const interpolate = opt_interpolate !== undefined ? opt_interpolate : false;
-  return _ol_geom_flat_interpolate_.lineStringsCoordinateAtM(this.flatCoordinates, 0,
+  return lineStringsCoordinateAtM(this.flatCoordinates, 0,
     this.ends_, this.stride, m, extrapolate, interpolate);
 };
 
@@ -208,7 +208,7 @@ MultiLineString.prototype.getFlatMidpoints = function() {
   const stride = this.stride;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
-    const midpoint = _ol_geom_flat_interpolate_.lineString(
+    const midpoint = interpolatePoint(
       flatCoordinates, offset, end, stride, 0.5);
     extend(midpoints, midpoint);
     offset = end;
