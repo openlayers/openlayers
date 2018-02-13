@@ -4,7 +4,7 @@ import {linearRingIsClockwise, linearRingIsOriented,
 
 describe('ol.geom.flat.orient', function() {
 
-  describe('ol.geom.flat.orient.linearRingIsClockwise()', function() {
+  describe('ol.geom.flat.orient.linearRingIsClockwise', function() {
 
     it('identifies clockwise rings', function() {
       const flatCoordinates = [0, 1, 1, 4, 4, 3, 3, 0];
@@ -22,7 +22,7 @@ describe('ol.geom.flat.orient', function() {
 
   });
 
-  describe('ol.geom.flat.orient.linearRingsAreOriented()', function() {
+  describe('ol.geom.flat.orient.linearRingIsOriented', function() {
     const oriented = linearRingIsOriented;
 
     const rightCoords = [
@@ -49,7 +49,7 @@ describe('ol.geom.flat.orient', function() {
 
   });
 
-  describe('ol.geom.flat.orient.linearRingssAreOriented()', function() {
+  describe('ol.geom.flat.orient.linearRingsAreOriented', function() {
     const oriented = linearRingsAreOriented;
 
     const rightCoords = [
@@ -80,7 +80,7 @@ describe('ol.geom.flat.orient', function() {
 
   });
 
-  describe('ol.geom.flat.orient.orientLinearRings()', function() {
+  describe('ol.geom.flat.orient.orientLinearRings', function() {
     const orient = orientLinearRings;
 
     const rightCoords = [
@@ -117,7 +117,7 @@ describe('ol.geom.flat.orient', function() {
 
   });
 
-  describe('ol.geom.flat.orient.orientLinearRingss()', function() {
+  describe('ol.geom.flat.orient.orientLinearRingsArray', function() {
     const orient = orientLinearRingsArray;
 
     const rightCoords = [

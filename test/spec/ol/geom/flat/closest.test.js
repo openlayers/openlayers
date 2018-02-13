@@ -7,7 +7,7 @@ describe('ol.geom.flat.closest', function() {
 
     const flatCoordinates = [0, 0, 1, 0, 3, 0, 5, 0, 6, 0, 8, 0, 11, 0];
 
-    describe('ol.geom.flat.closest.getMaxSquaredDelta', function() {
+    describe('ol.geom.flat.closest.maxSquaredDelta', function() {
 
       it('returns the expected value in simple cases', function() {
         expect(maxSquaredDelta(
@@ -16,7 +16,7 @@ describe('ol.geom.flat.closest', function() {
 
     });
 
-    describe('ol.geom.flat.closest.getClosestPoint', function() {
+    describe('ol.geom.flat.closest.assignClosestPoint', function() {
 
       it('returns the expected value', function() {
         const maxDelta = Math.sqrt(maxSquaredDelta(
@@ -75,7 +75,7 @@ describe('ol.geom.flat.closest', function() {
       847.16, 458.44, 851.38, 462.79, 853.97, 471.15, 866.36, 480.77
     ];
 
-    describe('ol.geom.closet.maSquaredDelta', function() {
+    describe('ol.geom.closest.maxSquaredDelta', function() {
 
       it('returns the expected value', function() {
         expect(maxSquaredDelta(
@@ -85,7 +85,7 @@ describe('ol.geom.flat.closest', function() {
 
     });
 
-    describe('ol.geom.flat.closest.getClosestPoint', function() {
+    describe('ol.geom.flat.closest.assignClosestPoint', function() {
 
       it('returns the expected value', function() {
         const maxDelta = Math.sqrt(maxSquaredDelta(
@@ -118,7 +118,7 @@ describe('ol.geom.flat.closest', function() {
     const flatCoordinates = [0, 0, 10, -10, 2, 2, 30, -20];
     const stride = 4;
 
-    describe('ol.geom.flat.closest.getClosestPoint', function() {
+    describe('ol.geom.flat.closest.assignClosestPoint', function() {
 
       it('interpolates M coordinates', function() {
         const maxDelta = Math.sqrt(maxSquaredDelta(

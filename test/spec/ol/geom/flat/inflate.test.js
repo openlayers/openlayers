@@ -3,7 +3,7 @@ import {inflateCoordinates, inflateCoordinatesArray} from '../../../../../src/ol
 
 describe('ol.geom.flat.inflate', function() {
 
-  describe('ol.geom.flat.inflate.coordinates', function() {
+  describe('ol.geom.flat.inflate.inflateCoordinates', function() {
 
     it('inflates coordinates', function() {
       const coordinates = inflateCoordinates([1, 2, 3, 4], 0, 4, 2);
@@ -12,7 +12,7 @@ describe('ol.geom.flat.inflate', function() {
 
   });
 
-  describe('ol.geom.flat.inflate.coordinatess', function() {
+  describe('ol.geom.flat.inflate.inflateCoordinatesArray', function() {
 
     it('inflates arrays of coordinates', function() {
       const coordinatess = inflateCoordinatesArray(

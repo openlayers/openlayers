@@ -3,7 +3,7 @@ import {lineStringLength, linearRingLength} from '../../../../../src/ol/geom/fla
 
 describe('ol.geom.flat.length', function() {
 
-  describe('ol.geom.flat.length.lineString', function() {
+  describe('ol.geom.flat.length.lineStringLength', function() {
 
     describe('stride = 2', function() {
       const flatCoords = [0, 0, 1, 0, 1, 1, 0, 1];
@@ -66,7 +66,7 @@ describe('ol.geom.flat.length', function() {
     });
   });
 
-  describe('ol.geom.flat.length.linearRing', function() {
+  describe('ol.geom.flat.length.linearRingLength', function() {
 
     it('calculates the total length of a simple linearRing', function() {
       const flatCoords = [0, 0, 1, 0, 1, 1, 0, 1];

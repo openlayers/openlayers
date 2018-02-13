@@ -1,7 +1,7 @@
 import {drawTextOnPath} from '../../../../../src/ol/geom/flat/textpath.js';
 import {lineStringLength} from '../../../../../src/ol/geom/flat/length.js';
 
-describe('textpath', function() {
+describe('ol.geom.flat.drawTextOnPath', function() {
 
   const horizontal = [0, 0, 100, 0];
   const vertical = [0, 0, 0, 100];

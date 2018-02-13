@@ -3,7 +3,7 @@ import {intersectsLinearRing, intersectsLineString} from '../../../../../src/ol/
 
 describe('ol.geom.flat.intersectsextent', function() {
 
-  describe('ol.geom.flat.intersectsextent.lineString', function() {
+  describe('ol.geom.flat.intersectsextent.intersectsLineString', function() {
     let flatCoordinates;
     beforeEach(function() {
       flatCoordinates = [0, 0, 1, 1, 2, 2];
@@ -57,7 +57,7 @@ describe('ol.geom.flat.intersectsextent', function() {
     });
   });
 
-  describe('ol.geom.flat.intersectsextent.linearRing', function() {
+  describe('ol.geom.flat.intersectsextent.intersectsLinearRing', function() {
     let flatCoordinates;
     beforeEach(function() {
       flatCoordinates = [0, 0, 1, 1, 2, 0, 1, -1, 0, 0];

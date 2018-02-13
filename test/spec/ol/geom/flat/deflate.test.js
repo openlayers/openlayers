@@ -3,7 +3,7 @@ import {deflateCoordinates, deflateCoordinatesArray} from '../../../../../src/ol
 
 describe('ol.geom.flat.deflate', function() {
 
-  describe('ol.geom.flat.deflate.coordinates', function() {
+  describe('ol.geom.flat.deflate.deflateCoordinates', function() {
 
     let flatCoordinates;
     beforeEach(function() {
@@ -19,7 +19,7 @@ describe('ol.geom.flat.deflate', function() {
 
   });
 
-  describe('ol.geom.flat.deflate.coordinatess', function() {
+  describe('ol.geom.flat.deflate.deflateCoordinatesArray', function() {
 
     let flatCoordinates;
     beforeEach(function() {

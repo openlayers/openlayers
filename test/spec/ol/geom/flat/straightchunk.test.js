@@ -3,7 +3,7 @@ import {matchingChunk} from '../../../../../src/ol/geom/flat/straightchunk.js';
 
 describe('ol.geom.flat.straightchunk', function() {
 
-  describe('ol.geom.flat.straightchunk.lineString', function() {
+  describe('ol.geom.flat.straightchunk.matchingChunk', function() {
 
     describe('single segment with stride == 3', function() {
       const flatCoords = [0, 0, 42, 1, 1, 42];

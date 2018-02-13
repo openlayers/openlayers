@@ -3,7 +3,7 @@ import {interpolatePoint} from '../../../../../src/ol/geom/flat/interpolate.js';
 
 describe('ol.geom.flat.interpolate', function() {
 
-  describe('ol.geom.flat.interpolate.lineString', function() {
+  describe('ol.geom.flat.interpolate.interpolatePoint', function() {
 
     it('returns the expected value for single points', function() {
       const flatCoordinates = [0, 1];
