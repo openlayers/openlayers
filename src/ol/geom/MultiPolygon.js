@@ -15,7 +15,7 @@ import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import {linearRingssContainsXY} from '../geom/flat/contains.js';
 import {deflateMultiCoordinatesArray} from '../geom/flat/deflate.js';
 import {inflateMultiCoordinatesArray} from '../geom/flat/inflate.js';
-import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
+import {getInteriorPointsOfMultiArray} from '../geom/flat/interiorpoint.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
 import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
 import {quantizeMultiArray} from '../geom/flat/simplify.js';
@@ -209,7 +209,7 @@ MultiPolygon.prototype.getFlatInteriorPoints = function() {
   if (this.flatInteriorPointsRevision_ != this.getRevision()) {
     const flatCenters = linearRingssCenter(
       this.flatCoordinates, 0, this.endss_, this.stride);
-    this.flatInteriorPoints_ = _ol_geom_flat_interiorpoint_.linearRingss(
+    this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
       flatCenters);
     this.flatInteriorPointsRevision_ = this.getRevision();

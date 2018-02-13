@@ -15,7 +15,7 @@ import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import {linearRingsContainsXY} from '../geom/flat/contains.js';
 import {deflateCoordinatesArray} from '../geom/flat/deflate.js';
 import {inflateCoordinatesArray} from '../geom/flat/inflate.js';
-import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
+import {getInteriorPointOfArray} from '../geom/flat/interiorpoint.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
 import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
 import {quantizeArray} from '../geom/flat/simplify.js';
@@ -198,7 +198,7 @@ Polygon.prototype.getEnds = function() {
 Polygon.prototype.getFlatInteriorPoint = function() {
   if (this.flatInteriorPointRevision_ != this.getRevision()) {
     const flatCenter = getCenter(this.getExtent());
-    this.flatInteriorPoint_ = _ol_geom_flat_interiorpoint_.linearRings(
+    this.flatInteriorPoint_ = getInteriorPointOfArray(
       this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride,
       flatCenter, 0);
     this.flatInteriorPointRevision_ = this.getRevision();

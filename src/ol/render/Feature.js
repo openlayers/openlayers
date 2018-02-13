@@ -6,7 +6,7 @@ import {extend} from '../array.js';
 import {createOrUpdateFromCoordinate, createOrUpdateFromFlatCoordinates, getCenter, getHeight} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
-import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
+import {getInteriorPointOfArray, getInteriorPointsOfMultiArray} from '../geom/flat/interiorpoint.js';
 import _ol_geom_flat_interpolate_ from '../geom/flat/interpolate.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
 import _ol_transform_ from '../transform.js';
@@ -125,7 +125,7 @@ RenderFeature.prototype.getExtent = function() {
 RenderFeature.prototype.getFlatInteriorPoint = function() {
   if (!this.flatInteriorPoints_) {
     const flatCenter = getCenter(this.getExtent());
-    this.flatInteriorPoints_ = _ol_geom_flat_interiorpoint_.linearRings(
+    this.flatInteriorPoints_ = getInteriorPointOfArray(
       this.flatCoordinates_, 0, this.ends_, 2, flatCenter, 0);
   }
   return this.flatInteriorPoints_;
@@ -139,7 +139,7 @@ RenderFeature.prototype.getFlatInteriorPoints = function() {
   if (!this.flatInteriorPoints_) {
     const flatCenters = linearRingssCenter(
       this.flatCoordinates_, 0, this.ends_, 2);
-    this.flatInteriorPoints_ = _ol_geom_flat_interiorpoint_.linearRingss(
+    this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
       this.flatCoordinates_, 0, this.ends_, 2, flatCenters);
   }
   return this.flatInteriorPoints_;
