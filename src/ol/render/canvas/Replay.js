@@ -10,7 +10,7 @@ import Relationship from '../../extent/Relationship.js';
 import GeometryType from '../../geom/GeometryType.js';
 import {inflateCoordinates, inflateCoordinatesArray, inflateMultiCoordinatesArray} from '../../geom/flat/inflate.js';
 import {lineStringLength} from '../../geom/flat/length.js';
-import _ol_geom_flat_textpath_ from '../../geom/flat/textpath.js';
+import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
 import {isEmpty} from '../../obj.js';
@@ -715,7 +715,7 @@ CanvasReplay.prototype.replay_ = function(
         if (overflow || textLength <= pathLength) {
           const textAlign = /** @type {ol.render.canvas.TextReplay} */ (this).textStates[textKey].textAlign;
           const startM = (pathLength - textLength) * _ol_render_replay_.TEXT_ALIGN[textAlign];
-          const parts = _ol_geom_flat_textpath_.lineString(
+          const parts = drawTextOnPath(
             pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
           if (parts) {
             let c, cc, chars, label, part;

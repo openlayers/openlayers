@@ -2,7 +2,6 @@
  * @module ol/geom/flat/textpath
  */
 import {lerp} from '../../math.js';
-const _ol_geom_flat_textpath_ = {};
 
 
 /**
@@ -18,7 +17,7 @@ const _ol_geom_flat_textpath_ = {};
  * @return {Array.<Array.<*>>} The result array of null if `maxAngle` was
  * exceeded. Entries of the array are x, y, anchorX, angle, chunk.
  */
-_ol_geom_flat_textpath_.lineString = function(
+export function drawTextOnPath(
   flatCoordinates, offset, end, stride, text, measure, startM, maxAngle) {
   const result = [];
 
@@ -90,5 +89,4 @@ _ol_geom_flat_textpath_.lineString = function(
     startM += charLength;
   }
   return result;
-};
-export default _ol_geom_flat_textpath_;
+}

@@ -1,4 +1,4 @@
-import _ol_geom_flat_textpath_ from '../../../../../src/ol/geom/flat/textpath.js';
+import {drawTextOnPath} from '../../../../../src/ol/geom/flat/textpath.js';
 import {lineStringLength} from '../../../../../src/ol/geom/flat/length.js';
 
 describe('textpath', function() {
@@ -16,27 +16,27 @@ describe('textpath', function() {
 
   it('center-aligns text on a horizontal line', function() {
     const startM = 50 - 15;
-    const instructions = _ol_geom_flat_textpath_.lineString(
+    const instructions = drawTextOnPath(
       horizontal, 0, horizontal.length, 2, 'foo', measure, startM, Infinity);
     expect(instructions).to.eql([[40, 0, 5, 0, 'foo']]);
   });
 
   it('left-aligns text on a horizontal line', function() {
-    const instructions = _ol_geom_flat_textpath_.lineString(
+    const instructions = drawTextOnPath(
       horizontal, 0, horizontal.length, 2, 'foo', measure, 0, Infinity);
     expect(instructions).to.eql([[5, 0, 5, 0, 'foo']]);
   });
 
   it('right-aligns text on a horizontal line', function() {
     const startM = 100 - 30;
-    const instructions = _ol_geom_flat_textpath_.lineString(
+    const instructions = drawTextOnPath(
       horizontal, 0, horizontal.length, 2, 'foo', measure, startM, Infinity);
     expect(instructions).to.eql([[75, 0, 5, 0, 'foo']]);
   });
 
   it('draws text on a vertical line', function() {
     const startM = 50 - 15;
-    const instructions = _ol_geom_flat_textpath_.lineString(
+    const instructions = drawTextOnPath(
       vertical, 0, vertical.length, 2, 'foo', measure, startM, Infinity);
     const a = 90 * Math.PI / 180;
     expect(instructions).to.eql([[0, 40, 5, a, 'foo']]);
@@ -44,7 +44,7 @@ describe('textpath', function() {
 
   it('draws text on a diagonal line', function() {
     const startM = Math.sqrt(2) * 50 - 15;
-    const instructions = _ol_geom_flat_textpath_.lineString(
+    const instructions = drawTextOnPath(
       diagonal, 0, diagonal.length, 2, 'foo', measure, startM, Infinity);
     expect(instructions[0][3]).to.be(45 * Math.PI / 180);
     expect(instructions.length).to.be(1);
@@ -52,7 +52,7 @@ describe('textpath', function() {
 
   it('draws reverse text on a diagonal line', function() {
     const startM = Math.sqrt(2) * 50 - 15;
-    const instructions = _ol_geom_flat_textpath_.lineString(
+    const instructions = drawTextOnPath(
       reverse, 0, reverse.length, 2, 'foo', measure, startM, Infinity);
     expect(instructions[0][3]).to.be(-45 * Math.PI / 180);
     expect(instructions.length).to.be(1);
@@ -60,7 +60,7 @@ describe('textpath', function() {
 
   it('renders long text with extrapolation', function() {
     const startM = 50 - 75;
-    const instructions = _ol_geom_flat_textpath_.lineString(
+    const instructions = drawTextOnPath(
       horizontal, 0, horizontal.length, 2, 'foo-foo-foo-foo', measure, startM, Infinity);
     expect(instructions[0]).to.eql([-20, 0, 5, 0, 'foo-foo-foo-foo']);
     expect(instructions.length).to.be(1);
@@ -69,7 +69,7 @@ describe('textpath', function() {
   it('renders angled text', function() {
     const length = lineStringLength(angled, 0, angled.length, 2);
     const startM = length / 2 - 15;
-    const instructions = _ol_geom_flat_textpath_.lineString(
+    const instructions = drawTextOnPath(
       angled, 0, angled.length, 2, 'foo', measure, startM, Infinity);
     expect(instructions[0][3]).to.eql(45 * Math.PI / 180);
     expect(instructions[0][4]).to.be('fo');
@@ -80,7 +80,7 @@ describe('textpath', function() {
   it('respects maxAngle', function() {
     const length = lineStringLength(angled, 0, angled.length, 2);
     const startM = length / 2 - 15;
-    const instructions = _ol_geom_flat_textpath_.lineString(
+    const instructions = drawTextOnPath(
       angled, 0, angled.length, 2, 'foo', measure, startM, Math.PI / 4);
     expect(instructions).to.be(null);
   });
@@ -88,7 +88,7 @@ describe('textpath', function() {
   it('uses the smallest angle for maxAngleDelta', function() {
     const length = lineStringLength(reverseangled, 0, reverseangled.length, 2);
     const startM = length / 2 - 15;
-    const instructions = _ol_geom_flat_textpath_.lineString(
+    const instructions = drawTextOnPath(
       reverseangled, 0, reverseangled.length, 2, 'foo', measure, startM, Math.PI);
     expect(instructions).to.not.be(undefined);
   });
@@ -96,7 +96,7 @@ describe('textpath', function() {
   it('respects the offset option', function() {
     const length = lineStringLength(angled, 2, angled.length, 2);
     const startM = length / 2 - 15;
-    const instructions = _ol_geom_flat_textpath_.lineString(
+    const instructions = drawTextOnPath(
       angled, 2, angled.length, 2, 'foo', measure, startM, Infinity);
     expect(instructions[0][3]).to.be(-45 * Math.PI / 180);
     expect(instructions.length).to.be(1);
@@ -105,7 +105,7 @@ describe('textpath', function() {
   it('respects the end option', function() {
     const length = lineStringLength(angled, 0, 4, 2);
     const startM = length / 2 - 15;
-    const instructions = _ol_geom_flat_textpath_.lineString(
+    const instructions = drawTextOnPath(
       angled, 0, 4, 2, 'foo', measure, startM, Infinity);
     expect(instructions[0][3]).to.be(45 * Math.PI / 180);
     expect(instructions.length).to.be(1);
