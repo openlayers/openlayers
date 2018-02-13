@@ -8,7 +8,7 @@ import GeometryType from '../geom/GeometryType.js';
 import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
 import {getInteriorPointOfArray, getInteriorPointsOfMultiArray} from '../geom/flat/interiorpoint.js';
 import {interpolatePoint} from '../geom/flat/interpolate.js';
-import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
+import {transform2D} from '../geom/flat/transform.js';
 import _ol_transform_ from '../transform.js';
 
 /**
@@ -272,7 +272,7 @@ RenderFeature.prototype.transform = function(source, destination) {
     projectedExtent[0], projectedExtent[3],
     scale, -scale, 0,
     0, 0);
-  _ol_geom_flat_transform_.transform2D(this.flatCoordinates_, 0, this.flatCoordinates_.length, 2,
+  transform2D(this.flatCoordinates_, 0, this.flatCoordinates_.length, 2,
     transform, this.flatCoordinates_);
 };
 export default RenderFeature;

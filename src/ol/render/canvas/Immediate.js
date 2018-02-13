@@ -11,7 +11,7 @@ import {asColorLike} from '../../colorlike.js';
 import {intersects} from '../../extent.js';
 import GeometryType from '../../geom/GeometryType.js';
 import SimpleGeometry from '../../geom/SimpleGeometry.js';
-import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
+import {transform2D} from '../../geom/flat/transform.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
 import VectorContext from '../VectorContext.js';
 import _ol_render_canvas_ from '../canvas.js';
@@ -252,7 +252,7 @@ CanvasImmediateRenderer.prototype.drawImages_ = function(flatCoordinates, offset
   if (!this.image_) {
     return;
   }
-  const pixelCoordinates = _ol_geom_flat_transform_.transform2D(
+  const pixelCoordinates = transform2D(
     flatCoordinates, offset, end, 2, this.transform_,
     this.pixelCoordinates_);
   const context = this.context_;
@@ -313,7 +313,7 @@ CanvasImmediateRenderer.prototype.drawText_ = function(flatCoordinates, offset, 
     this.setContextStrokeState_(this.textStrokeState_);
   }
   this.setContextTextState_(this.textState_);
-  const pixelCoordinates = _ol_geom_flat_transform_.transform2D(
+  const pixelCoordinates = transform2D(
     flatCoordinates, offset, end, stride, this.transform_,
     this.pixelCoordinates_);
   const context = this.context_;
@@ -356,7 +356,7 @@ CanvasImmediateRenderer.prototype.drawText_ = function(flatCoordinates, offset, 
  */
 CanvasImmediateRenderer.prototype.moveToLineTo_ = function(flatCoordinates, offset, end, stride, close) {
   const context = this.context_;
-  const pixelCoordinates = _ol_geom_flat_transform_.transform2D(
+  const pixelCoordinates = transform2D(
     flatCoordinates, offset, end, stride, this.transform_,
     this.pixelCoordinates_);
   context.moveTo(pixelCoordinates[0], pixelCoordinates[1]);

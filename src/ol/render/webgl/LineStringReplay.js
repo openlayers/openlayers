@@ -6,7 +6,7 @@ import {equals} from '../../array.js';
 import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
 import {linearRingIsClockwise} from '../../geom/flat/orient.js';
-import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
+import {translate} from '../../geom/flat/transform.js';
 import {lineStringIsClosed} from '../../geom/flat/topology.js';
 import {isEmpty} from '../../obj.js';
 import _ol_render_webgl_ from '../webgl.js';
@@ -322,7 +322,7 @@ WebGLLineStringReplay.prototype.drawLineString = function(lineStringGeometry, fe
   let flatCoordinates = lineStringGeometry.getFlatCoordinates();
   const stride = lineStringGeometry.getStride();
   if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
-    flatCoordinates = _ol_geom_flat_transform_.translate(flatCoordinates, 0, flatCoordinates.length,
+    flatCoordinates = translate(flatCoordinates, 0, flatCoordinates.length,
       stride, -this.origin[0], -this.origin[1]);
     if (this.state_.changed) {
       this.styleIndices_.push(this.indices.length);
@@ -349,7 +349,7 @@ WebGLLineStringReplay.prototype.drawMultiLineString = function(multiLineStringGe
   if (ends.length > 1) {
     for (i = 1, ii = ends.length; i < ii; ++i) {
       if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
-        const lineString = _ol_geom_flat_transform_.translate(flatCoordinates, ends[i - 1], ends[i],
+        const lineString = translate(flatCoordinates, ends[i - 1], ends[i],
           stride, -this.origin[0], -this.origin[1]);
         this.drawCoordinates_(
           lineString, 0, lineString.length, stride);

@@ -6,7 +6,7 @@ import {equals} from '../../array.js';
 import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
 import {isEmpty} from '../../obj.js';
-import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
+import {translate} from '../../geom/flat/transform.js';
 import {fragment, vertex} from '../webgl/circlereplay/defaultshader.js';
 import Locations from '../webgl/circlereplay/defaultshader/Locations.js';
 import WebGLReplay from '../webgl/Replay.js';
@@ -134,7 +134,7 @@ WebGLCircleReplay.prototype.drawCircle = function(circleGeometry, feature) {
 
     this.radius_ = radius;
     let flatCoordinates = circleGeometry.getFlatCoordinates();
-    flatCoordinates = _ol_geom_flat_transform_.translate(flatCoordinates, 0, 2,
+    flatCoordinates = translate(flatCoordinates, 0, 2,
       stride, -this.origin[0], -this.origin[1]);
     this.drawCoordinates_(flatCoordinates, 0, 2, stride);
   } else {

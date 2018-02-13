@@ -8,7 +8,7 @@ import {intersects} from '../../extent.js';
 import {isEmpty} from '../../obj.js';
 import {linearRingContainsXY} from '../../geom/flat/contains.js';
 import {linearRingIsClockwise} from '../../geom/flat/orient.js';
-import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
+import {translate} from '../../geom/flat/transform.js';
 import {fragment, vertex} from '../webgl/polygonreplay/defaultshader.js';
 import Locations from '../webgl/polygonreplay/defaultshader/Locations.js';
 import WebGLLineStringReplay from '../webgl/LineStringReplay.js';
@@ -761,14 +761,14 @@ WebGLPolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, f
   for (i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
     if (ends.length > 0) {
-      const outerRing = _ol_geom_flat_transform_.translate(flatCoordinates, start, ends[0],
+      const outerRing = translate(flatCoordinates, start, ends[0],
         stride, -this.origin[0], -this.origin[1]);
       if (outerRing.length) {
         const holes = [];
         let holeFlatCoords;
         for (j = 1, jj = ends.length; j < jj; ++j) {
           if (ends[j] !== ends[j - 1]) {
-            holeFlatCoords = _ol_geom_flat_transform_.translate(flatCoordinates, ends[j - 1],
+            holeFlatCoords = translate(flatCoordinates, ends[j - 1],
               ends[j], stride, -this.origin[0], -this.origin[1]);
             holes.push(holeFlatCoords);
           }
@@ -801,14 +801,14 @@ WebGLPolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
   const stride = polygonGeometry.getStride();
   if (ends.length > 0) {
     const flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
-    const outerRing = _ol_geom_flat_transform_.translate(flatCoordinates, 0, ends[0],
+    const outerRing = translate(flatCoordinates, 0, ends[0],
       stride, -this.origin[0], -this.origin[1]);
     if (outerRing.length) {
       const holes = [];
       let i, ii, holeFlatCoords;
       for (i = 1, ii = ends.length; i < ii; ++i) {
         if (ends[i] !== ends[i - 1]) {
-          holeFlatCoords = _ol_geom_flat_transform_.translate(flatCoordinates, ends[i - 1],
+          holeFlatCoords = translate(flatCoordinates, ends[i - 1],
             ends[i], stride, -this.origin[0], -this.origin[1]);
           holes.push(holeFlatCoords);
         }

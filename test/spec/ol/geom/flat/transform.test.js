@@ -1,6 +1,6 @@
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import SimpleGeometry from '../../../../../src/ol/geom/SimpleGeometry.js';
-import _ol_geom_flat_transform_ from '../../../../../src/ol/geom/flat/transform.js';
+import {rotate, translate} from '../../../../../src/ol/geom/flat/transform.js';
 
 
 describe('ol.geom.flat.transform', function() {
@@ -75,7 +75,7 @@ describe('ol.geom.flat.transform', function() {
       const flatCoordinates = multiPolygon.getFlatCoordinates();
       const deltaX = 1;
       const deltaY = 2;
-      _ol_geom_flat_transform_.translate(flatCoordinates, 0,
+      translate(flatCoordinates, 0,
         flatCoordinates.length, multiPolygon.getStride(),
         deltaX, deltaY, flatCoordinates);
       expect(flatCoordinates).to.eql([
@@ -92,7 +92,7 @@ describe('ol.geom.flat.transform', function() {
       const flatCoordinates = multiPolygon.getFlatCoordinates();
       const angle = Math.PI / 2;
       const anchor = [0, 1];
-      _ol_geom_flat_transform_.rotate(flatCoordinates, 0,
+      rotate(flatCoordinates, 0,
         flatCoordinates.length, multiPolygon.getStride(),
         angle, anchor, flatCoordinates);
       expect(flatCoordinates[0]).to.roughlyEqual(1, 1e-9);

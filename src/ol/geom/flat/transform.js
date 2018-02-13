@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/flat/transform
  */
-const _ol_geom_flat_transform_ = {};
 
 
 /**
@@ -13,7 +12,7 @@ const _ol_geom_flat_transform_ = {};
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */
-_ol_geom_flat_transform_.transform2D = function(flatCoordinates, offset, end, stride, transform, opt_dest) {
+export function transform2D(flatCoordinates, offset, end, stride, transform, opt_dest) {
   const dest = opt_dest ? opt_dest : [];
   let i = 0;
   for (let j = offset; j < end; j += stride) {
@@ -26,7 +25,7 @@ _ol_geom_flat_transform_.transform2D = function(flatCoordinates, offset, end, st
     dest.length = i;
   }
   return dest;
-};
+}
 
 
 /**
@@ -39,7 +38,7 @@ _ol_geom_flat_transform_.transform2D = function(flatCoordinates, offset, end, st
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */
-_ol_geom_flat_transform_.rotate = function(flatCoordinates, offset, end, stride, angle, anchor, opt_dest) {
+export function rotate(flatCoordinates, offset, end, stride, angle, anchor, opt_dest) {
   const dest = opt_dest ? opt_dest : [];
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
@@ -59,7 +58,7 @@ _ol_geom_flat_transform_.rotate = function(flatCoordinates, offset, end, stride,
     dest.length = i;
   }
   return dest;
-};
+}
 
 
 /**
@@ -74,7 +73,7 @@ _ol_geom_flat_transform_.rotate = function(flatCoordinates, offset, end, stride,
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */
-_ol_geom_flat_transform_.scale = function(flatCoordinates, offset, end, stride, sx, sy, anchor, opt_dest) {
+export function scale(flatCoordinates, offset, end, stride, sx, sy, anchor, opt_dest) {
   const dest = opt_dest ? opt_dest : [];
   const anchorX = anchor[0];
   const anchorY = anchor[1];
@@ -92,7 +91,7 @@ _ol_geom_flat_transform_.scale = function(flatCoordinates, offset, end, stride, 
     dest.length = i;
   }
   return dest;
-};
+}
 
 
 /**
@@ -105,7 +104,7 @@ _ol_geom_flat_transform_.scale = function(flatCoordinates, offset, end, stride, 
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */
-_ol_geom_flat_transform_.translate = function(flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest) {
+export function translate(flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest) {
   const dest = opt_dest ? opt_dest : [];
   let i = 0;
   for (let j = offset; j < end; j += stride) {
@@ -119,5 +118,4 @@ _ol_geom_flat_transform_.translate = function(flatCoordinates, offset, end, stri
     dest.length = i;
   }
   return dest;
-};
-export default _ol_geom_flat_transform_;
+}

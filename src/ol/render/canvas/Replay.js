@@ -11,7 +11,7 @@ import GeometryType from '../../geom/GeometryType.js';
 import {inflateCoordinates, inflateCoordinatesArray, inflateMultiCoordinatesArray} from '../../geom/flat/inflate.js';
 import {lineStringLength} from '../../geom/flat/length.js';
 import {drawTextOnPath} from '../../geom/flat/textpath.js';
-import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
+import {transform2D} from '../../geom/flat/transform.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
 import {isEmpty} from '../../obj.js';
 import VectorContext from '../VectorContext.js';
@@ -549,7 +549,7 @@ CanvasReplay.prototype.replay_ = function(
     if (!this.pixelCoordinates_) {
       this.pixelCoordinates_ = [];
     }
-    pixelCoordinates = _ol_geom_flat_transform_.transform2D(
+    pixelCoordinates = transform2D(
       this.coordinates, 0, this.coordinates.length, 2,
       transform, this.pixelCoordinates_);
     _ol_transform_.setFromArray(this.renderedTransform_, transform);
