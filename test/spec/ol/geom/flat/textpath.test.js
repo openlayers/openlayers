@@ -1,5 +1,5 @@
 import _ol_geom_flat_textpath_ from '../../../../../src/ol/geom/flat/textpath.js';
-import _ol_geom_flat_length_ from '../../../../../src/ol/geom/flat/length.js';
+import {lineStringLength} from '../../../../../src/ol/geom/flat/length.js';
 
 describe('textpath', function() {
 
@@ -67,7 +67,7 @@ describe('textpath', function() {
   });
 
   it('renders angled text', function() {
-    const length = _ol_geom_flat_length_.lineString(angled, 0, angled.length, 2);
+    const length = lineStringLength(angled, 0, angled.length, 2);
     const startM = length / 2 - 15;
     const instructions = _ol_geom_flat_textpath_.lineString(
       angled, 0, angled.length, 2, 'foo', measure, startM, Infinity);
@@ -78,7 +78,7 @@ describe('textpath', function() {
   });
 
   it('respects maxAngle', function() {
-    const length = _ol_geom_flat_length_.lineString(angled, 0, angled.length, 2);
+    const length = lineStringLength(angled, 0, angled.length, 2);
     const startM = length / 2 - 15;
     const instructions = _ol_geom_flat_textpath_.lineString(
       angled, 0, angled.length, 2, 'foo', measure, startM, Math.PI / 4);
@@ -86,7 +86,7 @@ describe('textpath', function() {
   });
 
   it('uses the smallest angle for maxAngleDelta', function() {
-    const length = _ol_geom_flat_length_.lineString(reverseangled, 0, reverseangled.length, 2);
+    const length = lineStringLength(reverseangled, 0, reverseangled.length, 2);
     const startM = length / 2 - 15;
     const instructions = _ol_geom_flat_textpath_.lineString(
       reverseangled, 0, reverseangled.length, 2, 'foo', measure, startM, Math.PI);
@@ -94,7 +94,7 @@ describe('textpath', function() {
   });
 
   it('respects the offset option', function() {
-    const length = _ol_geom_flat_length_.lineString(angled, 2, angled.length, 2);
+    const length = lineStringLength(angled, 2, angled.length, 2);
     const startM = length / 2 - 15;
     const instructions = _ol_geom_flat_textpath_.lineString(
       angled, 2, angled.length, 2, 'foo', measure, startM, Infinity);
@@ -103,7 +103,7 @@ describe('textpath', function() {
   });
 
   it('respects the end option', function() {
-    const length = _ol_geom_flat_length_.lineString(angled, 0, 4, 2);
+    const length = lineStringLength(angled, 0, 4, 2);
     const startM = length / 2 - 15;
     const instructions = _ol_geom_flat_textpath_.lineString(
       angled, 0, 4, 2, 'foo', measure, startM, Infinity);

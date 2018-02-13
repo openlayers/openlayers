@@ -12,7 +12,7 @@ import {deflateCoordinates} from '../geom/flat/deflate.js';
 import {inflateCoordinates} from '../geom/flat/inflate.js';
 import _ol_geom_flat_interpolate_ from '../geom/flat/interpolate.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
-import _ol_geom_flat_length_ from '../geom/flat/length.js';
+import {lineStringLength} from '../geom/flat/length.js';
 import {forEach as forEachSegment} from '../geom/flat/segments.js';
 import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
 
@@ -183,7 +183,7 @@ LineString.prototype.getCoordinateAt = function(fraction, opt_dest) {
  * @api
  */
 LineString.prototype.getLength = function() {
-  return _ol_geom_flat_length_.lineString(
+  return lineStringLength(
     this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
