@@ -77,11 +77,10 @@ function handleDragEvent(mapBrowserEvent) {
       const deltaY = centroid[1] - this.lastCentroid[1];
       const map = mapBrowserEvent.map;
       const view = map.getView();
-      const viewState = view.getState();
       let center = [deltaX, deltaY];
-      scaleCoordinate(center, viewState.resolution);
-      rotateCoordinate(center, viewState.rotation);
-      addCoordinate(center, viewState.center);
+      scaleCoordinate(center, view.getResolution());
+      rotateCoordinate(center, view.getRotation());
+      addCoordinate(center, view.getCenter());
       center = view.constrainCenter(center);
       view.setCenter(center);
     }
