@@ -39,22 +39,19 @@ const CanvasVectorLayerRenderer = function(vectorLayer) {
   this.dirty_ = false;
 
   /**
-   * @private
    * @type {number}
    */
-  this.renderedRevision_ = -1;
+  this.renderedRevision = -1;
 
   /**
-   * @private
    * @type {number}
    */
-  this.renderedResolution_ = NaN;
+  this.renderedResolution = NaN;
 
   /**
-   * @private
    * @type {module:ol/extent~Extent}
    */
-  this.renderedExtent_ = createEmpty();
+  this.renderedExtent = createEmpty();
 
   /**
    * @private
@@ -63,10 +60,9 @@ const CanvasVectorLayerRenderer = function(vectorLayer) {
   this.renderedRenderOrder_ = null;
 
   /**
-   * @private
    * @type {ol.render.canvas.ReplayGroup}
    */
-  this.replayGroup_ = null;
+  this.replayGroup = null;
 
   /**
    * A new replay group had to be created by `prepareFrame()`
@@ -142,7 +138,7 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
   if (clipped) {
     this.clip(context, frameState,  /** @type {module:ol/extent~Extent} */ (clipExtent));
   }
-  const replayGroup = this.replayGroup_;
+  const replayGroup = this.replayGroup;
   if (replayGroup && !replayGroup.isEmpty()) {
     if (this.declutterTree_) {
       this.declutterTree_.clear();
@@ -247,7 +243,7 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
  * @inheritDoc
  */
 CanvasVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
-  if (!this.replayGroup_) {
+  if (!this.replayGroup) {
     return undefined;
   } else {
     const resolution = frameState.viewState.resolution;
@@ -255,7 +251,7 @@ CanvasVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordi
     const layer = /** @type {ol.layer.Vector} */ (this.getLayer());
     /** @type {!Object.<string, boolean>} */
     const features = {};
-    const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
+    const result = this.replayGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
       /**
        * @param {ol.Feature|ol.render.Feature} feature Feature.
        * @return {?} Callback result.
@@ -277,7 +273,7 @@ CanvasVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordi
  */
 CanvasVectorLayerRenderer.prototype.handleFontsChanged_ = function(event) {
   const layer = this.getLayer();
-  if (layer.getVisible() && this.replayGroup_) {
+  if (layer.getVisible() && this.replayGroup) {
     layer.changed();
   }
 };
@@ -341,15 +337,15 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
   }
 
   if (!this.dirty_ &&
-      this.renderedResolution_ == resolution &&
-      this.renderedRevision_ == vectorLayerRevision &&
+      this.renderedResolution == resolution &&
+      this.renderedRevision == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
-      containsExtent(this.renderedExtent_, extent)) {
+      containsExtent(this.renderedExtent, extent)) {
     this.replayGroupChanged = false;
     return true;
   }
 
-  this.replayGroup_ = null;
+  this.replayGroup = null;
 
   this.dirty_ = false;
 
@@ -392,11 +388,11 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
   }
   replayGroup.finish();
 
-  this.renderedResolution_ = resolution;
-  this.renderedRevision_ = vectorLayerRevision;
+  this.renderedResolution = resolution;
+  this.renderedRevision = vectorLayerRevision;
   this.renderedRenderOrder_ = vectorLayerRenderOrder;
-  this.renderedExtent_ = extent;
-  this.replayGroup_ = replayGroup;
+  this.renderedExtent = extent;
+  this.replayGroup = replayGroup;
 
   this.replayGroupChanged = true;
   return true;
