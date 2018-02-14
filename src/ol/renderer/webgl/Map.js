@@ -12,7 +12,7 @@ import Layer from '../../layer/Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import WebGLImmediateRenderer from '../../render/webgl/Immediate.js';
-import MapRenderer from '../Map.js';
+import MapRenderer, {sortByZIndex} from '../Map.js';
 import RendererType from '../Type.js';
 import SourceState from '../../source/State.js';
 import LRUCache from '../../structs/LRUCache.js';
@@ -444,7 +444,7 @@ WebGLMapRenderer.prototype.renderFrame = function(frameState) {
   /** @type {Array.<ol.LayerState>} */
   const layerStatesToDraw = [];
   const layerStatesArray = frameState.layerStatesArray;
-  stableSort(layerStatesArray, MapRenderer.sortByZIndex);
+  stableSort(layerStatesArray, sortByZIndex);
 
   const viewResolution = frameState.viewState.resolution;
   let i, ii, layerRenderer, layerState;

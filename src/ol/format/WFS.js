@@ -16,6 +16,53 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
   makeObjectPropertySetter, makeSimpleNodeFactory, parse, parseNode,
   pushParseAndPop, pushSerializeAndPop, setAttributeNS} from '../xml.js';
 
+
+/**
+ * @type {string}
+ */
+const FEATURE_PREFIX = 'feature';
+
+
+/**
+ * @type {string}
+ */
+const XMLNS = 'http://www.w3.org/2000/xmlns/';
+
+
+/**
+ * @type {string}
+ */
+const OGCNS = 'http://www.opengis.net/ogc';
+
+
+/**
+ * @type {string}
+ */
+const WFSNS = 'http://www.opengis.net/wfs';
+
+
+/**
+ * @type {string}
+ */
+const FESNS = 'http://www.opengis.net/fes';
+
+
+/**
+ * @type {Object.<string, string>}
+ */
+const SCHEMA_LOCATIONS = {
+  '1.1.0': 'http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd',
+  '1.0.0': 'http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd'
+};
+
+
+/**
+ * @const
+ * @type {string}
+ */
+const DEFAULT_VERSION = '1.1.0';
+
+
 /**
  * @classdesc
  * Feature format for reading and writing data in the WFS format.
@@ -56,67 +103,12 @@ const WFS = function(opt_options) {
    * @type {string}
    */
   this.schemaLocation_ = options.schemaLocation ?
-    options.schemaLocation :
-    WFS.SCHEMA_LOCATIONS[WFS.DEFAULT_VERSION];
+    options.schemaLocation : SCHEMA_LOCATIONS[DEFAULT_VERSION];
 
   XMLFeature.call(this);
 };
 
 inherits(WFS, XMLFeature);
-
-
-/**
- * @const
- * @type {string}
- */
-WFS.FEATURE_PREFIX = 'feature';
-
-
-/**
- * @const
- * @type {string}
- */
-WFS.XMLNS = 'http://www.w3.org/2000/xmlns/';
-
-
-/**
- * @const
- * @type {string}
- */
-WFS.OGCNS = 'http://www.opengis.net/ogc';
-
-
-/**
- * @const
- * @type {string}
- */
-WFS.WFSNS = 'http://www.opengis.net/wfs';
-
-
-/**
- * @const
- * @type {string}
- */
-WFS.FESNS = 'http://www.opengis.net/fes';
-
-
-/**
- * @const
- * @type {Object.<string, string>}
- */
-WFS.SCHEMA_LOCATIONS = {
-  '1.1.0': 'http://www.opengis.net/wfs ' +
-      'http://schemas.opengis.net/wfs/1.1.0/wfs.xsd',
-  '1.0.0': 'http://www.opengis.net/wfs ' +
-      'http://schemas.opengis.net/wfs/1.0.0/wfs.xsd'
-};
-
-
-/**
- * @const
- * @type {string}
- */
-WFS.DEFAULT_VERSION = '1.1.0';
 
 
 /**
@@ -405,8 +397,8 @@ function writeFeature(node, feature, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeOgcFidFilter(node, fid, objectStack) {
-  const filter = createElementNS(WFS.OGCNS, 'Filter');
-  const child = createElementNS(WFS.OGCNS, 'FeatureId');
+  const filter = createElementNS(OGCNS, 'Filter');
+  const child = createElementNS(OGCNS, 'FeatureId');
   filter.appendChild(child);
   child.setAttribute('fid', fid);
   node.appendChild(filter);
@@ -419,8 +411,7 @@ function writeOgcFidFilter(node, fid, objectStack) {
  * @returns {string} The value of the typeName property.
  */
 function getTypeName(featurePrefix, featureType) {
-  featurePrefix = featurePrefix ? featurePrefix :
-    WFS.FEATURE_PREFIX;
+  featurePrefix = featurePrefix ? featurePrefix : FEATURE_PREFIX;
   const prefix = featurePrefix + ':';
   // The featureType already contains the prefix.
   if (featureType.indexOf(prefix) === 0) {
@@ -444,8 +435,7 @@ function writeDelete(node, feature, objectStack) {
   const featureNS = context['featureNS'];
   const typeName = getTypeName(featurePrefix, featureType);
   node.setAttribute('typeName', typeName);
-  setAttributeNS(node, WFS.XMLNS, 'xmlns:' + featurePrefix,
-    featureNS);
+  setAttributeNS(node, XMLNS, 'xmlns:' + featurePrefix, featureNS);
   const fid = feature.getId();
   if (fid !== undefined) {
     writeOgcFidFilter(node, fid, objectStack);
@@ -481,8 +471,7 @@ function writeUpdate(node, feature, objectStack) {
   const typeName = getTypeName(featurePrefix, featureType);
   const geometryName = feature.getGeometryName();
   node.setAttribute('typeName', typeName);
-  setAttributeNS(node, WFS.XMLNS, 'xmlns:' + featurePrefix,
-    featureNS);
+  setAttributeNS(node, XMLNS, 'xmlns:' + featurePrefix, featureNS);
   const fid = feature.getId();
   if (fid !== undefined) {
     const keys = feature.getKeys();
@@ -514,13 +503,13 @@ function writeUpdate(node, feature, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeProperty(node, pair, objectStack) {
-  const name = createElementNS(WFS.WFSNS, 'Name');
+  const name = createElementNS(WFSNS, 'Name');
   const context = objectStack[objectStack.length - 1];
   const gmlVersion = context['gmlVersion'];
   node.appendChild(name);
   XSD.writeStringTextNode(name, pair.name);
   if (pair.value !== undefined && pair.value !== null) {
-    const value = createElementNS(WFS.WFSNS, 'Value');
+    const value = createElementNS(WFSNS, 'Value');
     node.appendChild(value);
     if (pair.value instanceof Geometry) {
       if (gmlVersion === 2) {
@@ -608,8 +597,7 @@ function writeQuery(node, featureType, objectStack) {
     node.setAttribute('srsName', srsName);
   }
   if (featureNS) {
-    setAttributeNS(node, WFS.XMLNS, 'xmlns:' + featurePrefix,
-      featureNS);
+    setAttributeNS(node, XMLNS, 'xmlns:' + featurePrefix, featureNS);
   }
   const item = /** @type {ol.XmlNodeStackItem} */ (assign({}, context));
   item.node = node;
@@ -619,7 +607,7 @@ function writeQuery(node, featureType, objectStack) {
     objectStack);
   const filter = context['filter'];
   if (filter) {
-    const child = createElementNS(WFS.OGCNS, 'Filter');
+    const child = createElementNS(OGCNS, 'Filter');
     node.appendChild(child);
     writeFilterCondition(child, filter, objectStack);
   }
@@ -704,7 +692,7 @@ function writeWithinFilter(node, filter, objectStack) {
  */
 function writeDuringFilter(node, filter, objectStack) {
 
-  const valueReference = createElementNS(WFS.FESNS, 'ValueReference');
+  const valueReference = createElementNS(FESNS, 'ValueReference');
   XSD.writeStringTextNode(valueReference, filter.propertyName);
   node.appendChild(valueReference);
 
@@ -789,11 +777,11 @@ function writeIsNullFilter(node, filter, objectStack) {
 function writeIsBetweenFilter(node, filter, objectStack) {
   writeOgcPropertyName(node, filter.propertyName);
 
-  const lowerBoundary = createElementNS(WFS.OGCNS, 'LowerBoundary');
+  const lowerBoundary = createElementNS(OGCNS, 'LowerBoundary');
   node.appendChild(lowerBoundary);
   writeOgcLiteral(lowerBoundary, '' + filter.lowerBoundary);
 
-  const upperBoundary = createElementNS(WFS.OGCNS, 'UpperBoundary');
+  const upperBoundary = createElementNS(OGCNS, 'UpperBoundary');
   node.appendChild(upperBoundary);
   writeOgcLiteral(upperBoundary, '' + filter.upperBoundary);
 }
@@ -822,7 +810,7 @@ function writeIsLikeFilter(node, filter, objectStack) {
  * @param {string} value Value.
  */
 function writeOgcExpression(tagName, node, value) {
-  const property = createElementNS(WFS.OGCNS, tagName);
+  const property = createElementNS(OGCNS, tagName);
   XSD.writeStringTextNode(property, value);
   node.appendChild(property);
 }
@@ -867,11 +855,11 @@ function writeTimeInstant(node, time) {
  * @return {Node} Result.
  * @api
  */
-WFS.writeFilter = function(filter) {
-  const child = createElementNS(WFS.OGCNS, 'Filter');
+export function writeFilter(filter) {
+  const child = createElementNS(OGCNS, 'Filter');
   writeFilterCondition(child, filter, []);
   return child;
-};
+}
 
 
 /**
@@ -898,7 +886,7 @@ function writeGetFeature(node, featureTypes, objectStack) {
  * @api
  */
 WFS.prototype.writeGetFeature = function(options) {
-  const node = createElementNS(WFS.WFSNS, 'GetFeature');
+  const node = createElementNS(WFSNS, 'GetFeature');
   node.setAttribute('service', 'WFS');
   node.setAttribute('version', '1.1.0');
   let filter;
@@ -964,12 +952,10 @@ WFS.prototype.writeGetFeature = function(options) {
  * @return {Node} Result.
  * @api
  */
-WFS.prototype.writeTransaction = function(inserts, updates, deletes,
-  options) {
+WFS.prototype.writeTransaction = function(inserts, updates, deletes, options) {
   const objectStack = [];
-  const node = createElementNS(WFS.WFSNS, 'Transaction');
-  const version = options.version ?
-    options.version : WFS.DEFAULT_VERSION;
+  const node = createElementNS(WFSNS, 'Transaction');
+  const version = options.version ? options.version : DEFAULT_VERSION;
   const gmlVersion = version === '1.0.0' ? 2 : 3;
   node.setAttribute('service', 'WFS');
   node.setAttribute('version', version);
@@ -982,10 +968,10 @@ WFS.prototype.writeTransaction = function(inserts, updates, deletes,
       node.setAttribute('handle', options.handle);
     }
   }
-  const schemaLocation = WFS.SCHEMA_LOCATIONS[version];
+  const schemaLocation = SCHEMA_LOCATIONS[version];
   setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
     'xsi:schemaLocation', schemaLocation);
-  const featurePrefix = options.featurePrefix ? options.featurePrefix : WFS.FEATURE_PREFIX;
+  const featurePrefix = options.featurePrefix ? options.featurePrefix : FEATURE_PREFIX;
   if (inserts) {
     obj = {node: node, 'featureNS': options.featureNS,
       'featureType': options.featureType, 'featurePrefix': featurePrefix,

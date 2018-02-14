@@ -8,12 +8,12 @@ import {inherits} from '../../index.js';
 import {stableSort} from '../../array.js';
 import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';
-import Layer from '../../layer/Layer.js';
+import {visibleAtResolution} from '../../layer/Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
-import MapRenderer from '../Map.js';
+import MapRenderer, {sortByZIndex} from '../Map.js';
 import RendererType from '../Type.js';
 import SourceState from '../../source/State.js';
 
@@ -166,7 +166,7 @@ CanvasMapRenderer.prototype.renderFrame = function(frameState) {
   this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, frameState);
 
   const layerStatesArray = frameState.layerStatesArray;
-  stableSort(layerStatesArray, MapRenderer.sortByZIndex);
+  stableSort(layerStatesArray, sortByZIndex);
 
   if (rotation) {
     context.save();
@@ -179,7 +179,7 @@ CanvasMapRenderer.prototype.renderFrame = function(frameState) {
     layerState = layerStatesArray[i];
     layer = layerState.layer;
     layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
-    if (!Layer.visibleAtResolution(layerState, viewResolution) ||
+    if (!visibleAtResolution(layerState, viewResolution) ||
         layerState.sourceState != SourceState.READY) {
       continue;
     }
@@ -223,8 +223,7 @@ CanvasMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, ca
   for (i = numLayers - 1; i >= 0; --i) {
     const layerState = layerStates[i];
     const layer = layerState.layer;
-    if (Layer.visibleAtResolution(layerState, viewResolution) &&
-        layerFilter.call(thisArg2, layer)) {
+    if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
       const layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
       result = layerRenderer.forEachLayerAtCoordinate(
         coordinate, frameState, callback, thisArg);

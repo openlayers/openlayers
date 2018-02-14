@@ -81,10 +81,10 @@ inherits(Layer, BaseLayer);
  * @param {number} resolution Resolution.
  * @return {boolean} The layer is visible at the given resolution.
  */
-Layer.visibleAtResolution = function(layerState, resolution) {
+export function visibleAtResolution(layerState, resolution) {
   return layerState.visible && resolution >= layerState.minResolution &&
       resolution < layerState.maxResolution;
-};
+}
 
 
 /**
