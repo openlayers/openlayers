@@ -7,6 +7,7 @@
  * @enum {string}
  */
 export default {
+  COVERAGE: 'COVERAGE',
   IMAGE: 'IMAGE',
   RASTER: 'RASTER',
   TILE: 'TILE',
