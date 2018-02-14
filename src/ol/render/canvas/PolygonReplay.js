@@ -4,7 +4,7 @@
 import {inherits} from '../../index.js';
 import {asString} from '../../color.js';
 import {snap} from '../../geom/flat/simplify.js';
-import _ol_render_canvas_ from '../canvas.js';
+import {defaultFillStyle} from '../canvas.js';
 import CanvasInstruction, {
   fillInstruction, strokeInstruction, beginPathInstruction, closePathInstruction
 } from '../canvas/Instruction.js';
@@ -89,7 +89,7 @@ CanvasPolygonReplay.prototype.drawCircle = function(circleGeometry, feature) {
   // always fill the circle for hit detection
   this.hitDetectionInstructions.push([
     CanvasInstruction.SET_FILL_STYLE,
-    asString(_ol_render_canvas_.defaultFillStyle)
+    asString(defaultFillStyle)
   ]);
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([
@@ -128,7 +128,7 @@ CanvasPolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
   // always fill the polygon for hit detection
   this.hitDetectionInstructions.push([
     CanvasInstruction.SET_FILL_STYLE,
-    asString(_ol_render_canvas_.defaultFillStyle)]
+    asString(defaultFillStyle)]
   );
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([
@@ -160,7 +160,7 @@ CanvasPolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, 
   // always fill the multi-polygon for hit detection
   this.hitDetectionInstructions.push([
     CanvasInstruction.SET_FILL_STYLE,
-    asString(_ol_render_canvas_.defaultFillStyle)
+    asString(defaultFillStyle)
   ]);
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([

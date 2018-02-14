@@ -6,7 +6,7 @@ import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../../exte
 import {TRUE} from '../../functions.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
-import _ol_render_canvas_ from '../../render/canvas.js';
+import {rotateAtOffset} from '../../render/canvas.js';
 import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
 import LayerRenderer from '../Layer.js';
 import _ol_transform_ from '../../transform.js';
@@ -60,14 +60,14 @@ CanvasLayerRenderer.prototype.clip = function(context, frameState, extent) {
   _ol_transform_.apply(frameState.coordinateToPixelTransform, bottomLeft);
 
   context.save();
-  _ol_render_canvas_.rotateAtOffset(context, -rotation, width / 2, height / 2);
+  rotateAtOffset(context, -rotation, width / 2, height / 2);
   context.beginPath();
   context.moveTo(topLeft[0] * pixelRatio, topLeft[1] * pixelRatio);
   context.lineTo(topRight[0] * pixelRatio, topRight[1] * pixelRatio);
   context.lineTo(bottomRight[0] * pixelRatio, bottomRight[1] * pixelRatio);
   context.lineTo(bottomLeft[0] * pixelRatio, bottomLeft[1] * pixelRatio);
   context.clip();
-  _ol_render_canvas_.rotateAtOffset(context, rotation, width / 2, height / 2);
+  rotateAtOffset(context, rotation, width / 2, height / 2);
 };
 
 
@@ -84,7 +84,7 @@ CanvasLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, fr
     const width = frameState.size[0] * frameState.pixelRatio;
     const height = frameState.size[1] * frameState.pixelRatio;
     const rotation = frameState.viewState.rotation;
-    _ol_render_canvas_.rotateAtOffset(context, -rotation, width / 2, height / 2);
+    rotateAtOffset(context, -rotation, width / 2, height / 2);
     const transform = opt_transform !== undefined ?
       opt_transform : this.getTransform(frameState, 0);
     const render = new CanvasImmediateRenderer(
@@ -93,7 +93,7 @@ CanvasLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, fr
     const composeEvent = new RenderEvent(type, render, frameState,
       context, null);
     layer.dispatchEvent(composeEvent);
-    _ol_render_canvas_.rotateAtOffset(context, rotation, width / 2, height / 2);
+    rotateAtOffset(context, rotation, width / 2, height / 2);
   }
 };
 

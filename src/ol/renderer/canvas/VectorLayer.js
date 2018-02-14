@@ -10,7 +10,7 @@ import EventType from '../../events/EventType.js';
 import rbush from 'rbush';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
 import RenderEventType from '../../render/EventType.js';
-import _ol_render_canvas_ from '../../render/canvas.js';
+import {labelCache, rotateAtOffset} from '../../render/canvas.js';
 import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
 import RendererType from '../Type.js';
 import CanvasLayerRenderer from '../canvas/Layer.js';
@@ -79,7 +79,7 @@ const CanvasVectorLayerRenderer = function(vectorLayer) {
    */
   this.context = createCanvasContext2D();
 
-  listen(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
+  listen(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
 
 };
 
@@ -112,7 +112,7 @@ CanvasVectorLayerRenderer['create'] = function(mapRenderer, layer) {
  * @inheritDoc
  */
 CanvasVectorLayerRenderer.prototype.disposeInternal = function() {
-  unlisten(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
+  unlisten(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
   CanvasLayerRenderer.prototype.disposeInternal.call(this);
 };
 
@@ -184,7 +184,7 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
 
     const width = frameState.size[0] * pixelRatio;
     const height = frameState.size[1] * pixelRatio;
-    _ol_render_canvas_.rotateAtOffset(replayContext, -rotation,
+    rotateAtOffset(replayContext, -rotation,
       width / 2, height / 2);
     replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
     if (vectorSource.getWrapX() && projection.canWrapX() &&
@@ -212,7 +212,7 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
       // restore original transform for render and compose events
       transform = this.getTransform(frameState, 0);
     }
-    _ol_render_canvas_.rotateAtOffset(replayContext, rotation,
+    rotateAtOffset(replayContext, rotation,
       width / 2, height / 2);
 
     if (replayContext != context) {

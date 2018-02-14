@@ -11,7 +11,7 @@ import {createCanvasContext2D} from '../../dom.js';
 import {visibleAtResolution} from '../../layer/Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
-import _ol_render_canvas_ from '../../render/canvas.js';
+import {rotateAtOffset} from '../../render/canvas.js';
 import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
 import MapRenderer, {sortByZIndex} from '../Map.js';
 import RendererType from '../Type.js';
@@ -170,7 +170,7 @@ CanvasMapRenderer.prototype.renderFrame = function(frameState) {
 
   if (rotation) {
     context.save();
-    _ol_render_canvas_.rotateAtOffset(context, rotation, width / 2, height / 2);
+    rotateAtOffset(context, rotation, width / 2, height / 2);
   }
 
   const viewResolution = frameState.viewState.resolution;

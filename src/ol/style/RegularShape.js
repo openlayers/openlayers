@@ -6,7 +6,7 @@ import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
 import {CANVAS_LINE_DASH} from '../has.js';
 import ImageState from '../ImageState.js';
-import _ol_render_canvas_ from '../render/canvas.js';
+import {defaultStrokeStyle, defaultFillStyle, defaultLineCap, defaultLineWidth, defaultLineJoin, defaultMiterLimit} from '../render/canvas.js';
 import ImageStyle from '../style/Image.js';
 
 /**
@@ -325,12 +325,12 @@ RegularShape.prototype.render_ = function(atlasManager) {
   if (this.stroke_) {
     strokeStyle = this.stroke_.getColor();
     if (strokeStyle === null) {
-      strokeStyle = _ol_render_canvas_.defaultStrokeStyle;
+      strokeStyle = defaultStrokeStyle;
     }
     strokeStyle = asColorLike(strokeStyle);
     strokeWidth = this.stroke_.getWidth();
     if (strokeWidth === undefined) {
-      strokeWidth = _ol_render_canvas_.defaultLineWidth;
+      strokeWidth = defaultLineWidth;
     }
     lineDash = this.stroke_.getLineDash();
     lineDashOffset = this.stroke_.getLineDashOffset();
@@ -340,15 +340,15 @@ RegularShape.prototype.render_ = function(atlasManager) {
     }
     lineJoin = this.stroke_.getLineJoin();
     if (lineJoin === undefined) {
-      lineJoin = _ol_render_canvas_.defaultLineJoin;
+      lineJoin = defaultLineJoin;
     }
     lineCap = this.stroke_.getLineCap();
     if (lineCap === undefined) {
-      lineCap = _ol_render_canvas_.defaultLineCap;
+      lineCap = defaultLineCap;
     }
     miterLimit = this.stroke_.getMiterLimit();
     if (miterLimit === undefined) {
-      miterLimit = _ol_render_canvas_.defaultMiterLimit;
+      miterLimit = defaultMiterLimit;
     }
   }
 
@@ -455,7 +455,7 @@ RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
   if (this.fill_) {
     let color = this.fill_.getColor();
     if (color === null) {
-      color = _ol_render_canvas_.defaultFillStyle;
+      color = defaultFillStyle;
     }
     context.fillStyle = asColorLike(color);
     context.fill();
@@ -532,7 +532,7 @@ RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions, context
     }
   }
 
-  context.fillStyle = _ol_render_canvas_.defaultFillStyle;
+  context.fillStyle = defaultFillStyle;
   context.fill();
   if (this.stroke_) {
     context.strokeStyle = renderOptions.strokeStyle;

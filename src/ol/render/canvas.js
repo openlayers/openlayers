@@ -6,125 +6,123 @@ import {createCanvasContext2D} from '../dom.js';
 import {clear} from '../obj.js';
 import LRUCache from '../structs/LRUCache.js';
 import _ol_transform_ from '../transform.js';
-const _ol_render_canvas_ = {};
 
 
 /**
  * @const
  * @type {string}
  */
-_ol_render_canvas_.defaultFont = '10px sans-serif';
+export const defaultFont = '10px sans-serif';
 
 
 /**
  * @const
  * @type {ol.Color}
  */
-_ol_render_canvas_.defaultFillStyle = [0, 0, 0, 1];
+export const defaultFillStyle = [0, 0, 0, 1];
 
 
 /**
  * @const
  * @type {string}
  */
-_ol_render_canvas_.defaultLineCap = 'round';
+export const defaultLineCap = 'round';
 
 
 /**
  * @const
  * @type {Array.<number>}
  */
-_ol_render_canvas_.defaultLineDash = [];
+export const defaultLineDash = [];
 
 
 /**
  * @const
  * @type {number}
  */
-_ol_render_canvas_.defaultLineDashOffset = 0;
+export const defaultLineDashOffset = 0;
 
 
 /**
  * @const
  * @type {string}
  */
-_ol_render_canvas_.defaultLineJoin = 'round';
+export const defaultLineJoin = 'round';
 
 
 /**
  * @const
  * @type {number}
  */
-_ol_render_canvas_.defaultMiterLimit = 10;
+export const defaultMiterLimit = 10;
 
 
 /**
  * @const
  * @type {ol.Color}
  */
-_ol_render_canvas_.defaultStrokeStyle = [0, 0, 0, 1];
+export const defaultStrokeStyle = [0, 0, 0, 1];
 
 
 /**
  * @const
  * @type {string}
  */
-_ol_render_canvas_.defaultTextAlign = 'center';
+export const defaultTextAlign = 'center';
 
 
 /**
  * @const
  * @type {string}
  */
-_ol_render_canvas_.defaultTextBaseline = 'middle';
+export const defaultTextBaseline = 'middle';
 
 
 /**
  * @const
  * @type {Array.<number>}
  */
-_ol_render_canvas_.defaultPadding = [0, 0, 0, 0];
+export const defaultPadding = [0, 0, 0, 0];
 
 
 /**
  * @const
  * @type {number}
  */
-_ol_render_canvas_.defaultLineWidth = 1;
+export const defaultLineWidth = 1;
 
 
 /**
  * @type {ol.structs.LRUCache.<HTMLCanvasElement>}
  */
-_ol_render_canvas_.labelCache = new LRUCache();
+export const labelCache = new LRUCache();
 
 
 /**
  * @type {!Object.<string, number>}
  */
-_ol_render_canvas_.checkedFonts_ = {};
+export const checkedFonts = {};
 
 
 /**
  * @type {CanvasRenderingContext2D}
  */
-_ol_render_canvas_.measureContext_ = null;
+let measureContext = null;
 
 
 /**
  * @type {!Object.<string, number>}
  */
-_ol_render_canvas_.textHeights_ = {};
+export const textHeights = {};
 
 
 /**
  * Clears the label cache when a font becomes available.
  * @param {string} fontSpec CSS font spec.
  */
-_ol_render_canvas_.checkFont = (function() {
+export const checkFont = (function() {
   const retries = 60;
-  const checked = _ol_render_canvas_.checkedFonts_;
-  const labelCache = _ol_render_canvas_.labelCache;
+  const checked = checkedFonts;
   const size = '32px ';
   const referenceFonts = ['monospace', 'serif'];
   const len = referenceFonts.length;
@@ -132,7 +130,7 @@ _ol_render_canvas_.checkFont = (function() {
   let interval, referenceWidth;
 
   function isAvailable(font) {
-    const context = _ol_render_canvas_.getMeasureContext();
+    const context = getMeasureContext();
     let available = true;
     for (let i = 0; i < len; ++i) {
       const referenceFont = referenceFonts[i];
@@ -155,9 +153,9 @@ _ol_render_canvas_.checkFont = (function() {
       if (checked[font] < retries) {
         if (isAvailable(font)) {
           checked[font] = retries;
-          clear(_ol_render_canvas_.textHeights_);
+          clear(textHeights);
           // Make sure that loaded fonts are picked up by Safari
-          _ol_render_canvas_.measureContext_ = null;
+          measureContext = null;
           labelCache.clear();
         } else {
           ++checked[font];
@@ -195,22 +193,21 @@ _ol_render_canvas_.checkFont = (function() {
 /**
  * @return {CanvasRenderingContext2D} Measure context.
  */
-_ol_render_canvas_.getMeasureContext = function() {
-  let context = _ol_render_canvas_.measureContext_;
-  if (!context) {
-    context = _ol_render_canvas_.measureContext_ = createCanvasContext2D(1, 1);
+function getMeasureContext() {
+  if (!measureContext) {
+    measureContext = createCanvasContext2D(1, 1);
   }
-  return context;
-};
+  return measureContext;
+}
 
 
 /**
  * @param {string} font Font to use for measuring.
  * @return {ol.Size} Measurement.
  */
-_ol_render_canvas_.measureTextHeight = (function() {
+export const measureTextHeight = (function() {
   let span;
-  const heights = _ol_render_canvas_.textHeights_;
+  const heights = textHeights;
   return function(font) {
     let height = heights[font];
     if (height == undefined) {
@@ -236,13 +233,13 @@ _ol_render_canvas_.measureTextHeight = (function() {
  * @param {string} text Text.
  * @return {number} Width.
  */
-_ol_render_canvas_.measureTextWidth = function(font, text) {
-  const measureContext = _ol_render_canvas_.getMeasureContext();
+export function measureTextWidth(font, text) {
+  const measureContext = getMeasureContext();
   if (font != measureContext.font) {
     measureContext.font = font;
   }
   return measureContext.measureText(text).width;
-};
+}
 
 
 /**
@@ -251,16 +248,16 @@ _ol_render_canvas_.measureTextWidth = function(font, text) {
  * @param {number} offsetX X offset.
  * @param {number} offsetY Y offset.
  */
-_ol_render_canvas_.rotateAtOffset = function(context, rotation, offsetX, offsetY) {
+export function rotateAtOffset(context, rotation, offsetX, offsetY) {
   if (rotation !== 0) {
     context.translate(offsetX, offsetY);
     context.rotate(rotation);
     context.translate(-offsetX, -offsetY);
   }
-};
+}
 
 
-_ol_render_canvas_.resetTransform_ = _ol_transform_.create();
+export const resetTransform = _ol_transform_.create();
 
 
 /**
@@ -276,7 +273,7 @@ _ol_render_canvas_.resetTransform_ = _ol_transform_.create();
  * @param {number} y Y.
  * @param {number} scale Scale.
  */
-_ol_render_canvas_.drawImage = function(context,
+export function drawImage(context,
   transform, opacity, image, originX, originY, w, h, x, y, scale) {
   let alpha;
   if (opacity != 1) {
@@ -293,7 +290,6 @@ _ol_render_canvas_.drawImage = function(context,
     context.globalAlpha = alpha;
   }
   if (transform) {
-    context.setTransform.apply(context, _ol_render_canvas_.resetTransform_);
+    context.setTransform.apply(context, resetTransform);
   }
-};
-export default _ol_render_canvas_;
+}

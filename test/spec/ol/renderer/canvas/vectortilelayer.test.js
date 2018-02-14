@@ -12,7 +12,7 @@ import Point from '../../../../../src/ol/geom/Point.js';
 import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection, fromLonLat} from '../../../../../src/ol/proj.js';
 import Projection from '../../../../../src/ol/proj/Projection.js';
-import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
+import {checkedFonts} from '../../../../../src/ol/render/canvas.js';
 import RenderFeature from '../../../../../src/ol/render/Feature.js';
 import CanvasVectorTileLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
 import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
@@ -154,7 +154,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('does not re-render for unavailable fonts', function(done) {
       map.renderSync();
-      clear(_ol_render_canvas_.checkedFonts_);
+      clear(checkedFonts);
       layerStyle[0].getText().setFont('12px "Unavailable font",sans-serif');
       layer.changed();
       const revision = layer.getRevision();
@@ -166,7 +166,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('does not re-render for available fonts', function(done) {
       map.renderSync();
-      clear(_ol_render_canvas_.checkedFonts_);
+      clear(checkedFonts);
       layerStyle[0].getText().setFont('12px sans-serif');
       layer.changed();
       const revision = layer.getRevision();
@@ -178,7 +178,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('re-renders for fonts that become available', function(done) {
       map.renderSync();
-      clear(_ol_render_canvas_.checkedFonts_);
+      clear(checkedFonts);
       head.appendChild(font);
       layerStyle[0].getText().setFont('12px "Dancing Script",sans-serif');
       layer.changed();
