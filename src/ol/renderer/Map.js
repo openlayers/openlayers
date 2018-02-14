@@ -7,7 +7,7 @@ import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getWidth} from '../extent.js';
 import {TRUE} from '../functions.js';
-import Layer from '../layer/Layer.js';
+import {visibleAtResolution} from '../layer/Layer.js';
 import {getLayerRendererPlugins} from '../plugins.js';
 import {iconImageCache} from '../style.js';
 import _ol_transform_ from '../transform.js';
@@ -139,8 +139,7 @@ MapRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameSta
   for (i = numLayers - 1; i >= 0; --i) {
     const layerState = layerStates[i];
     const layer = layerState.layer;
-    if (Layer.visibleAtResolution(layerState, viewResolution) &&
-        layerFilter.call(thisArg2, layer)) {
+    if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
       const layerRenderer = this.getLayerRenderer(layer);
       if (layer.getSource()) {
         result = layerRenderer.forEachFeatureAtCoordinate(

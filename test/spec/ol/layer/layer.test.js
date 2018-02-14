@@ -1,6 +1,6 @@
 import {getUid} from '../../../../src/ol/index.js';
 import Map from '../../../../src/ol/Map.js';
-import Layer from '../../../../src/ol/layer/Layer.js';
+import Layer, {visibleAtResolution} from '../../../../src/ol/layer/Layer.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import RenderEvent from '../../../../src/ol/render/Event.js';
 import Source from '../../../../src/ol/source/Source.js';
@@ -117,7 +117,7 @@ describe('ol.layer.Layer', function() {
       layer.setMinResolution(3);
       layer.setMaxResolution(5);
       const layerState = layer.getLayerState();
-      expect(Layer.visibleAtResolution(layerState, 4)).to.be(false);
+      expect(visibleAtResolution(layerState, 4)).to.be(false);
     });
 
     it('returns false if resolution lower than minResolution', function() {
@@ -125,7 +125,7 @@ describe('ol.layer.Layer', function() {
       layer.setMinResolution(3);
       layer.setMaxResolution(5);
       const layerState = layer.getLayerState();
-      expect(Layer.visibleAtResolution(layerState, 2)).to.be(false);
+      expect(visibleAtResolution(layerState, 2)).to.be(false);
     });
 
     it('returns false if resolution greater than maxResolution', function() {
@@ -133,7 +133,7 @@ describe('ol.layer.Layer', function() {
       layer.setMinResolution(3);
       layer.setMaxResolution(5);
       const layerState = layer.getLayerState();
-      expect(Layer.visibleAtResolution(layerState, 6)).to.be(false);
+      expect(visibleAtResolution(layerState, 6)).to.be(false);
     });
 
     it('returns true otherwise', function() {
@@ -141,7 +141,7 @@ describe('ol.layer.Layer', function() {
       layer.setMinResolution(3);
       layer.setMaxResolution(5);
       const layerState = layer.getLayerState();
-      expect(Layer.visibleAtResolution(layerState, 4)).to.be(true);
+      expect(visibleAtResolution(layerState, 4)).to.be(true);
     });
 
   });
