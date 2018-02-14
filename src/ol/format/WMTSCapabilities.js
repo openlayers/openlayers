@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {boundingExtent} from '../extent.js';
 import OWS from '../format/OWS.js';
-import XLink from '../format/XLink.js';
+import {readHref} from '../format/XLink.js';
 import XML from '../format/XML.js';
 import XSD from '../format/XSD.js';
 import {pushParseAndPop, makeStructureNS,
@@ -344,7 +344,7 @@ function readWgs84BoundingBox(node, objectStack) {
 function readLegendUrl(node, objectStack) {
   const legend = {};
   legend['format'] = node.getAttribute('format');
-  legend['href'] = XLink.readHref(node);
+  legend['href'] = readHref(node);
   return legend;
 }
 

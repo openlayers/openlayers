@@ -2,7 +2,7 @@
  * @module ol/format/OWS
  */
 import {inherits} from '../index.js';
-import XLink from '../format/XLink.js';
+import {readHref} from '../format/XLink.js';
 import XML from '../format/XML.js';
 import XSD from '../format/XSD.js';
 import {makeObjectPropertyPusher, makeObjectPropertySetter, makeStructureNS, pushParseAndPop} from '../xml.js';
@@ -193,7 +193,7 @@ const SERVICE_PROVIDER_PARSERS =
     makeStructureNS(
       NAMESPACE_URIS, {
         'ProviderName': makeObjectPropertySetter(XSD.readString),
-        'ProviderSite': makeObjectPropertySetter(XLink.readHref),
+        'ProviderSite': makeObjectPropertySetter(readHref),
         'ServiceContact': makeObjectPropertySetter(
           readServiceContact)
       });
@@ -288,7 +288,7 @@ function readDcp(node, objectStack) {
  * @return {Object|undefined} The GET object.
  */
 function readGet(node, objectStack) {
-  const href = XLink.readHref(node);
+  const href = readHref(node);
   if (!href) {
     return undefined;
   }

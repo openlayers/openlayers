@@ -2,7 +2,7 @@
  * @module ol/format/WMSCapabilities
  */
 import {inherits} from '../index.js';
-import XLink from '../format/XLink.js';
+import {readHref} from '../format/XLink.js';
 import XML from '../format/XML.js';
 import XSD from '../format/XSD.js';
 import {makeArrayPusher, makeObjectPropertyPusher, makeObjectPropertySetter,
@@ -73,7 +73,7 @@ const SERVICE_PARSERS = makeStructureNS(
     'Title': makeObjectPropertySetter(XSD.readString),
     'Abstract': makeObjectPropertySetter(XSD.readString),
     'KeywordList': makeObjectPropertySetter(readKeywordList),
-    'OnlineResource': makeObjectPropertySetter(XLink.readHref),
+    'OnlineResource': makeObjectPropertySetter(readHref),
     'ContactInformation': makeObjectPropertySetter(readContactInformation),
     'Fees': makeObjectPropertySetter(XSD.readString),
     'AccessConstraints': makeObjectPropertySetter(XSD.readString),
@@ -168,7 +168,7 @@ const LAYER_PARSERS = makeStructureNS(
 const ATTRIBUTION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Title': makeObjectPropertySetter(XSD.readString),
-    'OnlineResource': makeObjectPropertySetter(XLink.readHref),
+    'OnlineResource': makeObjectPropertySetter(readHref),
     'LogoURL': makeObjectPropertySetter(readSizedFormatOnlineresource)
   });
 
@@ -252,7 +252,7 @@ const STYLE_PARSERS = makeStructureNS(
 const FORMAT_ONLINERESOURCE_PARSERS =
     makeStructureNS(NAMESPACE_URIS, {
       'Format': makeObjectPropertySetter(XSD.readString),
-      'OnlineResource': makeObjectPropertySetter(XLink.readHref)
+      'OnlineResource': makeObjectPropertySetter(readHref)
     });
 
 
