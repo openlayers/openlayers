@@ -237,8 +237,7 @@ Feature.prototype.setGeometry = function(geometry) {
  */
 Feature.prototype.setStyle = function(style) {
   this.style_ = style;
-  this.styleFunction_ = !style ?
-    undefined : Feature.createStyleFunction(style);
+  this.styleFunction_ = !style ? undefined : createStyleFunction(style);
   this.changed();
 };
 
@@ -285,7 +284,7 @@ Feature.prototype.setGeometryName = function(name) {
  *     A feature style function, a single style, or an array of styles.
  * @return {ol.StyleFunction} A style function.
  */
-Feature.createStyleFunction = function(obj) {
+export function createStyleFunction(obj) {
   if (typeof obj === 'function') {
     return obj;
   } else {
@@ -304,5 +303,5 @@ Feature.createStyleFunction = function(obj) {
       return styles;
     };
   }
-};
+}
 export default Feature;
