@@ -1,6 +1,6 @@
 import Feature from '../../../../src/ol/Feature.js';
 import GML2 from '../../../../src/ol/format/GML2.js';
-import WFS from '../../../../src/ol/format/WFS.js';
+import WFS, {writeFilter} from '../../../../src/ol/format/WFS.js';
 import {
   and as andFilter,
   bbox as bboxFilter,
@@ -1314,7 +1314,7 @@ describe('ol.format.WFS', function() {
           '    </PropertyIsEqualTo>' +
           '  </And>' +
           '</Filter>';
-      const serialized = WFS.writeFilter(
+      const serialized = writeFilter(
         andFilter(
           likeFilter('name', 'Mississippi*'),
           equalToFilter('waterway', 'riverbank')

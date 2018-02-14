@@ -855,11 +855,11 @@ function writeTimeInstant(node, time) {
  * @return {Node} Result.
  * @api
  */
-WFS.writeFilter = function(filter) {
+export function writeFilter(filter) {
   const child = createElementNS(OGCNS, 'Filter');
   writeFilterCondition(child, filter, []);
   return child;
-};
+}
 
 
 /**
