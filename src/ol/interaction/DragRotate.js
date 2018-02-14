@@ -2,7 +2,7 @@
  * @module ol/interaction/DragRotate
  */
 import {inherits} from '../index.js';
-import RotationConstraint from '../RotationConstraint.js';
+import {disable} from '../rotationconstraint.js';
 import ViewHint from '../ViewHint.js';
 import {altShiftKeysOnly, mouseOnly, mouseActionButton} from '../events/condition.js';
 import {FALSE} from '../functions.js';
@@ -65,7 +65,7 @@ function handleDragEvent(mapBrowserEvent) {
 
   const map = mapBrowserEvent.map;
   const view = map.getView();
-  if (view.getConstraints().rotation === RotationConstraint.disable) {
+  if (view.getConstraints().rotation === disable) {
     return;
   }
   const size = map.getSize();

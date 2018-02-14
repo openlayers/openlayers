@@ -6,7 +6,7 @@ import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
 import Interaction from '../interaction/Interaction.js';
 import PointerInteraction from '../interaction/Pointer.js';
-import RotationConstraint from '../RotationConstraint.js';
+import {disable} from '../rotationconstraint.js';
 
 /**
  * @classdesc
@@ -97,7 +97,7 @@ function handleDragEvent(mapBrowserEvent) {
 
   const map = mapBrowserEvent.map;
   const view = map.getView();
-  if (view.getConstraints().rotation === RotationConstraint.disable) {
+  if (view.getConstraints().rotation === disable) {
     return;
   }
 

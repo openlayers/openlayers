@@ -2,7 +2,7 @@
  * @module ol/interaction/DragRotateAndZoom
  */
 import {inherits} from '../index.js';
-import RotationConstraint from '../RotationConstraint.js';
+import {disable} from '../rotationconstraint.js';
 import ViewHint from '../ViewHint.js';
 import {shiftKeyOnly, mouseOnly} from '../events/condition.js';
 import Interaction from '../interaction/Interaction.js';
@@ -85,7 +85,7 @@ function handleDragEvent(mapBrowserEvent) {
   const theta = Math.atan2(deltaY, deltaX);
   const magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
   const view = map.getView();
-  if (view.getConstraints().rotation !== RotationConstraint.disable && this.lastAngle_ !== undefined) {
+  if (view.getConstraints().rotation !== disable && this.lastAngle_ !== undefined) {
     const angleDelta = theta - this.lastAngle_;
     Interaction.rotateWithoutConstraints(
       view, view.getRotation() - angleDelta);
