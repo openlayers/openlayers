@@ -6,7 +6,7 @@ import LayerType from '../LayerType.js';
 import {assert} from '../asserts.js';
 import TileProperty from '../layer/TileProperty.js';
 import VectorLayer from '../layer/Vector.js';
-import _ol_layer_VectorTileRenderType_ from '../layer/VectorTileRenderType.js';
+import VectorTileRenderType from '../layer/VectorTileRenderType.js';
 import {assign} from '../obj.js';
 
 /**
@@ -24,14 +24,14 @@ import {assign} from '../obj.js';
 const VectorTileLayer = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
-  let renderMode = options.renderMode || _ol_layer_VectorTileRenderType_.HYBRID;
+  let renderMode = options.renderMode || VectorTileRenderType.HYBRID;
   assert(renderMode == undefined ||
-      renderMode == _ol_layer_VectorTileRenderType_.IMAGE ||
-      renderMode == _ol_layer_VectorTileRenderType_.HYBRID ||
-      renderMode == _ol_layer_VectorTileRenderType_.VECTOR,
+      renderMode == VectorTileRenderType.IMAGE ||
+      renderMode == VectorTileRenderType.HYBRID ||
+      renderMode == VectorTileRenderType.VECTOR,
   28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
-  if (options.declutter && renderMode == _ol_layer_VectorTileRenderType_.IMAGE) {
-    renderMode = _ol_layer_VectorTileRenderType_.HYBRID;
+  if (options.declutter && renderMode == VectorTileRenderType.IMAGE) {
+    renderMode = VectorTileRenderType.HYBRID;
   }
   options.renderMode = renderMode;
 
