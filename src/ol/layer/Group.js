@@ -98,10 +98,9 @@ LayerGroup.prototype.handleLayersChanged_ = function(event) {
 
   const layers = this.getLayers();
   this.layersListenerKeys_.push(
-    listen(layers, CollectionEventType.ADD,
-      this.handleLayersAdd_, this),
-    listen(layers, CollectionEventType.REMOVE,
-      this.handleLayersRemove_, this));
+    listen(layers, CollectionEventType.ADD, this.handleLayersAdd_, this),
+    listen(layers, CollectionEventType.REMOVE, this.handleLayersRemove_, this)
+  );
 
   for (const id in this.listenerKeys_) {
     this.listenerKeys_[id].forEach(unlistenByKey);
@@ -112,10 +111,8 @@ LayerGroup.prototype.handleLayersChanged_ = function(event) {
   for (let i = 0, ii = layersArray.length; i < ii; i++) {
     const layer = layersArray[i];
     this.listenerKeys_[getUid(layer).toString()] = [
-      listen(layer, ObjectEventType.PROPERTYCHANGE,
-        this.handleLayerChange_, this),
-      listen(layer, EventType.CHANGE,
-        this.handleLayerChange_, this)
+      listen(layer, ObjectEventType.PROPERTYCHANGE, this.handleLayerChange_, this),
+      listen(layer, EventType.CHANGE, this.handleLayerChange_, this)
     ];
   }
 
@@ -131,10 +128,8 @@ LayerGroup.prototype.handleLayersAdd_ = function(collectionEvent) {
   const layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
   const key = getUid(layer).toString();
   this.listenerKeys_[key] = [
-    listen(layer, ObjectEventType.PROPERTYCHANGE,
-      this.handleLayerChange_, this),
-    listen(layer, EventType.CHANGE,
-      this.handleLayerChange_, this)
+    listen(layer, ObjectEventType.PROPERTYCHANGE, this.handleLayerChange_, this),
+    listen(layer, EventType.CHANGE, this.handleLayerChange_, this)
   ];
   this.changed();
 };
