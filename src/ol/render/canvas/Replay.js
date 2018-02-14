@@ -8,10 +8,10 @@ import {buffer, clone, coordinateRelationship, createEmpty, createOrUpdate,
   createOrUpdateEmpty, extend, extendCoordinate, intersects} from '../../extent.js';
 import Relationship from '../../extent/Relationship.js';
 import GeometryType from '../../geom/GeometryType.js';
-import _ol_geom_flat_inflate_ from '../../geom/flat/inflate.js';
-import _ol_geom_flat_length_ from '../../geom/flat/length.js';
-import _ol_geom_flat_textpath_ from '../../geom/flat/textpath.js';
-import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
+import {inflateCoordinates, inflateCoordinatesArray, inflateMultiCoordinatesArray} from '../../geom/flat/inflate.js';
+import {lineStringLength} from '../../geom/flat/length.js';
+import {drawTextOnPath} from '../../geom/flat/textpath.js';
+import {transform2D} from '../../geom/flat/transform.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
 import {isEmpty} from '../../obj.js';
 import VectorContext from '../VectorContext.js';
@@ -410,7 +410,7 @@ CanvasReplay.prototype.drawCustom = function(geometry, feature, renderer) {
       replayEndss.push(myEnds);
     }
     this.instructions.push([CanvasInstruction.CUSTOM,
-      replayBegin, replayEndss, geometry, renderer, _ol_geom_flat_inflate_.coordinatesss]);
+      replayBegin, replayEndss, geometry, renderer, inflateMultiCoordinatesArray]);
   } else if (type == GeometryType.POLYGON || type == GeometryType.MULTI_LINE_STRING) {
     replayEnds = [];
     flatCoordinates = (type == GeometryType.POLYGON) ?
@@ -420,13 +420,13 @@ CanvasReplay.prototype.drawCustom = function(geometry, feature, renderer) {
       /** @type {ol.geom.Polygon|ol.geom.MultiLineString} */ (geometry).getEnds(),
       stride, replayEnds);
     this.instructions.push([CanvasInstruction.CUSTOM,
-      replayBegin, replayEnds, geometry, renderer, _ol_geom_flat_inflate_.coordinatess]);
+      replayBegin, replayEnds, geometry, renderer, inflateCoordinatesArray]);
   } else if (type == GeometryType.LINE_STRING || type == GeometryType.MULTI_POINT) {
     flatCoordinates = geometry.getFlatCoordinates();
     replayEnd = this.appendFlatCoordinates(
       flatCoordinates, 0, flatCoordinates.length, stride, false, false);
     this.instructions.push([CanvasInstruction.CUSTOM,
-      replayBegin, replayEnd, geometry, renderer, _ol_geom_flat_inflate_.coordinates]);
+      replayBegin, replayEnd, geometry, renderer, inflateCoordinates]);
   } else if (type == GeometryType.POINT) {
     flatCoordinates = geometry.getFlatCoordinates();
     this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);
@@ -549,7 +549,7 @@ CanvasReplay.prototype.replay_ = function(
     if (!this.pixelCoordinates_) {
       this.pixelCoordinates_ = [];
     }
-    pixelCoordinates = _ol_geom_flat_transform_.transform2D(
+    pixelCoordinates = transform2D(
       this.coordinates, 0, this.coordinates.length, 2,
       transform, this.pixelCoordinates_);
     _ol_transform_.setFromArray(this.renderedTransform_, transform);
@@ -710,12 +710,12 @@ CanvasReplay.prototype.replay_ = function(
         const textKey = /** @type {string} */ (instruction[13]);
         const textScale = /** @type {number} */ (instruction[14]);
 
-        const pathLength = _ol_geom_flat_length_.lineString(pixelCoordinates, begin, end, 2);
+        const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
         const textLength = measure(text);
         if (overflow || textLength <= pathLength) {
           const textAlign = /** @type {ol.render.canvas.TextReplay} */ (this).textStates[textKey].textAlign;
           const startM = (pathLength - textLength) * _ol_render_replay_.TEXT_ALIGN[textAlign];
-          const parts = _ol_geom_flat_textpath_.lineString(
+          const parts = drawTextOnPath(
             pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
           if (parts) {
             let c, cc, chars, label, part;

@@ -6,9 +6,9 @@ import {extend} from '../array.js';
 import {createOrUpdateFromCoordinate, createOrUpdateFromFlatCoordinates, getCenter, getHeight} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
-import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
-import _ol_geom_flat_interpolate_ from '../geom/flat/interpolate.js';
-import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
+import {getInteriorPointOfArray, getInteriorPointsOfMultiArray} from '../geom/flat/interiorpoint.js';
+import {interpolatePoint} from '../geom/flat/interpolate.js';
+import {transform2D} from '../geom/flat/transform.js';
 import _ol_transform_ from '../transform.js';
 
 /**
@@ -125,7 +125,7 @@ RenderFeature.prototype.getExtent = function() {
 RenderFeature.prototype.getFlatInteriorPoint = function() {
   if (!this.flatInteriorPoints_) {
     const flatCenter = getCenter(this.getExtent());
-    this.flatInteriorPoints_ = _ol_geom_flat_interiorpoint_.linearRings(
+    this.flatInteriorPoints_ = getInteriorPointOfArray(
       this.flatCoordinates_, 0, this.ends_, 2, flatCenter, 0);
   }
   return this.flatInteriorPoints_;
@@ -139,7 +139,7 @@ RenderFeature.prototype.getFlatInteriorPoints = function() {
   if (!this.flatInteriorPoints_) {
     const flatCenters = linearRingssCenter(
       this.flatCoordinates_, 0, this.ends_, 2);
-    this.flatInteriorPoints_ = _ol_geom_flat_interiorpoint_.linearRingss(
+    this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
       this.flatCoordinates_, 0, this.ends_, 2, flatCenters);
   }
   return this.flatInteriorPoints_;
@@ -151,7 +151,7 @@ RenderFeature.prototype.getFlatInteriorPoints = function() {
  */
 RenderFeature.prototype.getFlatMidpoint = function() {
   if (!this.flatMidpoints_) {
-    this.flatMidpoints_ = _ol_geom_flat_interpolate_.lineString(
+    this.flatMidpoints_ = interpolatePoint(
       this.flatCoordinates_, 0, this.flatCoordinates_.length, 2, 0.5);
   }
   return this.flatMidpoints_;
@@ -169,7 +169,7 @@ RenderFeature.prototype.getFlatMidpoints = function() {
     const ends = this.ends_;
     for (let i = 0, ii = ends.length; i < ii; ++i) {
       const end = ends[i];
-      const midpoint = _ol_geom_flat_interpolate_.lineString(
+      const midpoint = interpolatePoint(
         flatCoordinates, offset, end, 2, 0.5);
       extend(this.flatMidpoints_, midpoint);
       offset = end;
@@ -272,7 +272,7 @@ RenderFeature.prototype.transform = function(source, destination) {
     projectedExtent[0], projectedExtent[3],
     scale, -scale, 0,
     0, 0);
-  _ol_geom_flat_transform_.transform2D(this.flatCoordinates_, 0, this.flatCoordinates_.length, 2,
+  transform2D(this.flatCoordinates_, 0, this.flatCoordinates_.length, 2,
     transform, this.flatCoordinates_);
 };
 export default RenderFeature;

@@ -6,7 +6,7 @@ import {FALSE} from '../functions.js';
 import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
 import Geometry from '../geom/Geometry.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
-import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
+import {rotate, scale, translate, transform2D} from '../geom/flat/transform.js';
 import {clear} from '../obj.js';
 
 /**
@@ -267,7 +267,7 @@ SimpleGeometry.prototype.rotate = function(angle, anchor) {
   const flatCoordinates = this.getFlatCoordinates();
   if (flatCoordinates) {
     const stride = this.getStride();
-    _ol_geom_flat_transform_.rotate(
+    rotate(
       flatCoordinates, 0, flatCoordinates.length,
       stride, angle, anchor, flatCoordinates);
     this.changed();
@@ -291,7 +291,7 @@ SimpleGeometry.prototype.scale = function(sx, opt_sy, opt_anchor) {
   const flatCoordinates = this.getFlatCoordinates();
   if (flatCoordinates) {
     const stride = this.getStride();
-    _ol_geom_flat_transform_.scale(
+    scale(
       flatCoordinates, 0, flatCoordinates.length,
       stride, sx, sy, anchor, flatCoordinates);
     this.changed();
@@ -307,7 +307,7 @@ SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
   const flatCoordinates = this.getFlatCoordinates();
   if (flatCoordinates) {
     const stride = this.getStride();
-    _ol_geom_flat_transform_.translate(
+    translate(
       flatCoordinates, 0, flatCoordinates.length, stride,
       deltaX, deltaY, flatCoordinates);
     this.changed();
@@ -327,7 +327,7 @@ SimpleGeometry.transform2D = function(simpleGeometry, transform, opt_dest) {
     return null;
   } else {
     const stride = simpleGeometry.getStride();
-    return _ol_geom_flat_transform_.transform2D(
+    return transform2D(
       flatCoordinates, 0, flatCoordinates.length, stride,
       transform, opt_dest);
   }

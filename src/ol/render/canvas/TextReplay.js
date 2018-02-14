@@ -5,7 +5,7 @@ import {getUid, inherits} from '../../index.js';
 import {asColorLike} from '../../colorlike.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {intersects} from '../../extent.js';
-import _ol_geom_flat_straightchunk_ from '../../geom/flat/straightchunk.js';
+import {matchingChunk} from '../../geom/flat/straightchunk.js';
 import GeometryType from '../../geom/GeometryType.js';
 import {CANVAS_LINE_DASH, SAFARI} from '../../has.js';
 import _ol_render_canvas_ from '../canvas.js';
@@ -202,7 +202,7 @@ CanvasTextReplay.prototype.drawText = function(geometry, feature) {
     let flatEnd;
     for (let o = 0, oo = ends.length; o < oo; ++o) {
       if (textAlign == undefined) {
-        const range = _ol_geom_flat_straightchunk_.lineString(
+        const range = matchingChunk(
           textState.maxAngle, flatCoordinates, flatOffset, ends[o], stride);
         flatOffset = range[0];
         flatEnd = range[1];

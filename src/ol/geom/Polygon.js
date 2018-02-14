@@ -11,14 +11,14 @@ import Point from '../geom/Point.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {offset as sphereOffset} from '../sphere.js';
 import {linearRings as linearRingsArea} from '../geom/flat/area.js';
-import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
+import {assignClosestArrayPoint, arrayMaxSquaredDelta} from '../geom/flat/closest.js';
 import {linearRingsContainsXY} from '../geom/flat/contains.js';
-import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
-import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
-import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
-import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
-import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
-import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
+import {deflateCoordinatesArray} from '../geom/flat/deflate.js';
+import {inflateCoordinatesArray} from '../geom/flat/inflate.js';
+import {getInteriorPointOfArray} from '../geom/flat/interiorpoint.js';
+import {intersectsLinearRingArray} from '../geom/flat/intersectsextent.js';
+import {linearRingIsOriented, orientLinearRings} from '../geom/flat/orient.js';
+import {quantizeArray} from '../geom/flat/simplify.js';
 import {modulo} from '../math.js';
 
 /**
@@ -127,11 +127,11 @@ Polygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistan
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(_ol_geom_flat_closest_.getsMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(arrayMaxSquaredDelta(
       this.flatCoordinates, 0, this.ends_, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return _ol_geom_flat_closest_.getsClosestPoint(
+  return assignClosestArrayPoint(
     this.flatCoordinates, 0, this.ends_, this.stride,
     this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };
@@ -173,13 +173,13 @@ Polygon.prototype.getCoordinates = function(opt_right) {
   let flatCoordinates;
   if (opt_right !== undefined) {
     flatCoordinates = this.getOrientedFlatCoordinates().slice();
-    _ol_geom_flat_orient_.orientLinearRings(
+    orientLinearRings(
       flatCoordinates, 0, this.ends_, this.stride, opt_right);
   } else {
     flatCoordinates = this.flatCoordinates;
   }
 
-  return _ol_geom_flat_inflate_.coordinatess(
+  return inflateCoordinatesArray(
     flatCoordinates, 0, this.ends_, this.stride);
 };
 
@@ -198,7 +198,7 @@ Polygon.prototype.getEnds = function() {
 Polygon.prototype.getFlatInteriorPoint = function() {
   if (this.flatInteriorPointRevision_ != this.getRevision()) {
     const flatCenter = getCenter(this.getExtent());
-    this.flatInteriorPoint_ = _ol_geom_flat_interiorpoint_.linearRings(
+    this.flatInteriorPoint_ = getInteriorPointOfArray(
       this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride,
       flatCenter, 0);
     this.flatInteriorPointRevision_ = this.getRevision();
@@ -279,13 +279,13 @@ Polygon.prototype.getLinearRings = function() {
 Polygon.prototype.getOrientedFlatCoordinates = function() {
   if (this.orientedRevision_ != this.getRevision()) {
     const flatCoordinates = this.flatCoordinates;
-    if (_ol_geom_flat_orient_.linearRingsAreOriented(
+    if (linearRingIsOriented(
       flatCoordinates, 0, this.ends_, this.stride)) {
       this.orientedFlatCoordinates_ = flatCoordinates;
     } else {
       this.orientedFlatCoordinates_ = flatCoordinates.slice();
       this.orientedFlatCoordinates_.length =
-          _ol_geom_flat_orient_.orientLinearRings(
+          orientLinearRings(
             this.orientedFlatCoordinates_, 0, this.ends_, this.stride);
     }
     this.orientedRevision_ = this.getRevision();
@@ -300,7 +300,7 @@ Polygon.prototype.getOrientedFlatCoordinates = function() {
 Polygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   const simplifiedFlatCoordinates = [];
   const simplifiedEnds = [];
-  simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.quantizes(
+  simplifiedFlatCoordinates.length = quantizeArray(
     this.flatCoordinates, 0, this.ends_, this.stride,
     Math.sqrt(squaredTolerance),
     simplifiedFlatCoordinates, 0, simplifiedEnds);
@@ -325,7 +325,7 @@ Polygon.prototype.getType = function() {
  * @api
  */
 Polygon.prototype.intersectsExtent = function(extent) {
-  return _ol_geom_flat_intersectsextent_.linearRings(
+  return intersectsLinearRingArray(
     this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, extent);
 };
 
@@ -345,7 +345,7 @@ Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
-    const ends = _ol_geom_flat_deflate_.coordinatess(
+    const ends = deflateCoordinatesArray(
       this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
     this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
     this.changed();

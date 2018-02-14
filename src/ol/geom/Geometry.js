@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import BaseObject from '../Object.js';
 import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
 import {FALSE} from '../functions.js';
-import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
+import {transform2D} from '../geom/flat/transform.js';
 import {get as getProjection, getTransform} from '../proj.js';
 import Units from '../proj/Units.js';
 import _ol_transform_ from '../transform.js';
@@ -265,7 +265,7 @@ Geometry.prototype.transform = function(source, destination) {
         projectedExtent[0], projectedExtent[3],
         scale, -scale, 0,
         0, 0);
-      _ol_geom_flat_transform_.transform2D(inCoordinates, 0, inCoordinates.length, stride,
+      transform2D(inCoordinates, 0, inCoordinates.length, stride,
         tmpTransform, outCoordinates);
       return getTransform(source, destination)(inCoordinates, outCoordinates, stride);
     } :

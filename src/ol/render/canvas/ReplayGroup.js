@@ -5,7 +5,7 @@ import {inherits} from '../../index.js';
 import {numberSafeCompareFunction} from '../../array.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
-import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
+import {transform2D} from '../../geom/flat/transform.js';
 import {isEmpty} from '../../obj.js';
 import ReplayGroup from '../ReplayGroup.js';
 import ReplayType from '../ReplayType.js';
@@ -407,7 +407,7 @@ CanvasReplayGroup.prototype.getClipCoords = function(transform) {
   const maxX = maxExtent[2];
   const maxY = maxExtent[3];
   const flatClipCoords = [minX, minY, minX, maxY, maxX, maxY, maxX, minY];
-  _ol_geom_flat_transform_.transform2D(
+  transform2D(
     flatClipCoords, 0, 8, 2, transform, flatClipCoords);
   return flatClipCoords;
 };

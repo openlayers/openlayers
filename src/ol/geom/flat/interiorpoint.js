@@ -3,7 +3,6 @@
  */
 import {numberSafeCompareFunction} from '../../array.js';
 import {linearRingsContainsXY} from '../flat/contains.js';
-const _ol_geom_flat_interiorpoint_ = {};
 
 
 /**
@@ -19,7 +18,7 @@ const _ol_geom_flat_interiorpoint_ = {};
  * @return {Array.<number>} Destination point as XYM coordinate, where M is the
  * length of the horizontal intersection that the point belongs to.
  */
-_ol_geom_flat_interiorpoint_.linearRings = function(flatCoordinates, offset,
+export function getInteriorPointOfArray(flatCoordinates, offset,
   ends, stride, flatCenters, flatCentersOffset, opt_dest) {
   let i, ii, x, x1, x2, y1, y2;
   const y = flatCenters[flatCentersOffset + 1];
@@ -70,7 +69,7 @@ _ol_geom_flat_interiorpoint_.linearRings = function(flatCoordinates, offset,
   } else {
     return [pointX, y, maxSegmentLength];
   }
-};
+}
 
 
 /**
@@ -82,14 +81,13 @@ _ol_geom_flat_interiorpoint_.linearRings = function(flatCoordinates, offset,
  * @return {Array.<number>} Interior points as XYM coordinates, where M is the
  * length of the horizontal intersection that the point belongs to.
  */
-_ol_geom_flat_interiorpoint_.linearRingss = function(flatCoordinates, offset, endss, stride, flatCenters) {
+export function getInteriorPointsOfMultiArray(flatCoordinates, offset, endss, stride, flatCenters) {
   let interiorPoints = [];
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
-    interiorPoints = _ol_geom_flat_interiorpoint_.linearRings(flatCoordinates,
+    interiorPoints = getInteriorPointOfArray(flatCoordinates,
       offset, ends, stride, flatCenters, 2 * i, interiorPoints);
     offset = ends[ends.length - 1];
   }
   return interiorPoints;
-};
-export default _ol_geom_flat_interiorpoint_;
+}

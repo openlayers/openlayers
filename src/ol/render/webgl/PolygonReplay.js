@@ -7,8 +7,8 @@ import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
 import {isEmpty} from '../../obj.js';
 import {linearRingContainsXY} from '../../geom/flat/contains.js';
-import _ol_geom_flat_orient_ from '../../geom/flat/orient.js';
-import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
+import {linearRingIsClockwise} from '../../geom/flat/orient.js';
+import {translate} from '../../geom/flat/transform.js';
 import {fragment, vertex} from '../webgl/polygonreplay/defaultshader.js';
 import Locations from '../webgl/polygonreplay/defaultshader/Locations.js';
 import WebGLLineStringReplay from '../webgl/LineStringReplay.js';
@@ -140,7 +140,7 @@ WebGLPolygonReplay.prototype.drawCoordinates_ = function(
  */
 WebGLPolygonReplay.prototype.processFlatCoordinates_ = function(
   flatCoordinates, stride, list, rtree, clockwise) {
-  const isClockwise = _ol_geom_flat_orient_.linearRingIsClockwise(flatCoordinates,
+  const isClockwise = linearRingIsClockwise(flatCoordinates,
     0, flatCoordinates.length, stride);
   let i, ii;
   let n = this.vertices.length / 2;
@@ -404,7 +404,7 @@ WebGLPolygonReplay.prototype.clipEars_ = function(list, rtree, simple, ccw) {
           variableCriterion) {
         //The diagonal is completely inside the polygon
         if (simple || p0.reflex === false || p2.reflex === false ||
-            _ol_geom_flat_orient_.linearRingIsClockwise([s0.p0.x, s0.p0.y, p0.x,
+            linearRingIsClockwise([s0.p0.x, s0.p0.y, p0.x,
               p0.y, p1.x, p1.y, p2.x, p2.y, s3.p1.x, s3.p1.y], 0, 10, 2) === !ccw) {
           //The diagonal is persumably valid, we have an ear
           this.indices[numIndices++] = p0.i;
@@ -533,7 +533,7 @@ WebGLPolygonReplay.prototype.isClockwise_ = function(list) {
     flatCoordinates[i++] = seg.p0.y;
     seg = list.nextItem();
   } while (seg !== start);
-  return _ol_geom_flat_orient_.linearRingIsClockwise(flatCoordinates, 0, length, 2);
+  return linearRingIsClockwise(flatCoordinates, 0, length, 2);
 };
 
 
@@ -761,14 +761,14 @@ WebGLPolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, f
   for (i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
     if (ends.length > 0) {
-      const outerRing = _ol_geom_flat_transform_.translate(flatCoordinates, start, ends[0],
+      const outerRing = translate(flatCoordinates, start, ends[0],
         stride, -this.origin[0], -this.origin[1]);
       if (outerRing.length) {
         const holes = [];
         let holeFlatCoords;
         for (j = 1, jj = ends.length; j < jj; ++j) {
           if (ends[j] !== ends[j - 1]) {
-            holeFlatCoords = _ol_geom_flat_transform_.translate(flatCoordinates, ends[j - 1],
+            holeFlatCoords = translate(flatCoordinates, ends[j - 1],
               ends[j], stride, -this.origin[0], -this.origin[1]);
             holes.push(holeFlatCoords);
           }
@@ -801,14 +801,14 @@ WebGLPolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
   const stride = polygonGeometry.getStride();
   if (ends.length > 0) {
     const flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
-    const outerRing = _ol_geom_flat_transform_.translate(flatCoordinates, 0, ends[0],
+    const outerRing = translate(flatCoordinates, 0, ends[0],
       stride, -this.origin[0], -this.origin[1]);
     if (outerRing.length) {
       const holes = [];
       let i, ii, holeFlatCoords;
       for (i = 1, ii = ends.length; i < ii; ++i) {
         if (ends[i] !== ends[i - 1]) {
-          holeFlatCoords = _ol_geom_flat_transform_.translate(flatCoordinates, ends[i - 1],
+          holeFlatCoords = translate(flatCoordinates, ends[i - 1],
             ends[i], stride, -this.origin[0], -this.origin[1]);
           holes.push(holeFlatCoords);
         }

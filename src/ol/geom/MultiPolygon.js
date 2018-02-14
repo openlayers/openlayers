@@ -11,14 +11,14 @@ import Polygon from '../geom/Polygon.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {linearRingss as linearRingssArea} from '../geom/flat/area.js';
 import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
-import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
+import {assignClosestMultiArrayPoint, multiArrayMaxSquaredDelta} from '../geom/flat/closest.js';
 import {linearRingssContainsXY} from '../geom/flat/contains.js';
-import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
-import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
-import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
-import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
-import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
-import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
+import {deflateMultiCoordinatesArray} from '../geom/flat/deflate.js';
+import {inflateMultiCoordinatesArray} from '../geom/flat/inflate.js';
+import {getInteriorPointsOfMultiArray} from '../geom/flat/interiorpoint.js';
+import {intersectsLinearRingMultiArray} from '../geom/flat/intersectsextent.js';
+import {linearRingsAreOriented, orientLinearRingsArray} from '../geom/flat/orient.js';
+import {quantizeMultiArray} from '../geom/flat/simplify.js';
 
 /**
  * @classdesc
@@ -137,11 +137,11 @@ MultiPolygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredD
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(_ol_geom_flat_closest_.getssMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(multiArrayMaxSquaredDelta(
       this.flatCoordinates, 0, this.endss_, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return _ol_geom_flat_closest_.getssClosestPoint(
+  return assignClosestMultiArrayPoint(
     this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
     this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };
@@ -183,13 +183,13 @@ MultiPolygon.prototype.getCoordinates = function(opt_right) {
   let flatCoordinates;
   if (opt_right !== undefined) {
     flatCoordinates = this.getOrientedFlatCoordinates().slice();
-    _ol_geom_flat_orient_.orientLinearRingss(
+    orientLinearRingsArray(
       flatCoordinates, 0, this.endss_, this.stride, opt_right);
   } else {
     flatCoordinates = this.flatCoordinates;
   }
 
-  return _ol_geom_flat_inflate_.coordinatesss(
+  return inflateMultiCoordinatesArray(
     flatCoordinates, 0, this.endss_, this.stride);
 };
 
@@ -209,7 +209,7 @@ MultiPolygon.prototype.getFlatInteriorPoints = function() {
   if (this.flatInteriorPointsRevision_ != this.getRevision()) {
     const flatCenters = linearRingssCenter(
       this.flatCoordinates, 0, this.endss_, this.stride);
-    this.flatInteriorPoints_ = _ol_geom_flat_interiorpoint_.linearRingss(
+    this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
       flatCenters);
     this.flatInteriorPointsRevision_ = this.getRevision();
@@ -238,13 +238,13 @@ MultiPolygon.prototype.getInteriorPoints = function() {
 MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
   if (this.orientedRevision_ != this.getRevision()) {
     const flatCoordinates = this.flatCoordinates;
-    if (_ol_geom_flat_orient_.linearRingssAreOriented(
+    if (linearRingsAreOriented(
       flatCoordinates, 0, this.endss_, this.stride)) {
       this.orientedFlatCoordinates_ = flatCoordinates;
     } else {
       this.orientedFlatCoordinates_ = flatCoordinates.slice();
       this.orientedFlatCoordinates_.length =
-          _ol_geom_flat_orient_.orientLinearRingss(
+          orientLinearRingsArray(
             this.orientedFlatCoordinates_, 0, this.endss_, this.stride);
     }
     this.orientedRevision_ = this.getRevision();
@@ -259,7 +259,7 @@ MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
 MultiPolygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   const simplifiedFlatCoordinates = [];
   const simplifiedEndss = [];
-  simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.quantizess(
+  simplifiedFlatCoordinates.length = quantizeMultiArray(
     this.flatCoordinates, 0, this.endss_, this.stride,
     Math.sqrt(squaredTolerance),
     simplifiedFlatCoordinates, 0, simplifiedEndss);
@@ -344,7 +344,7 @@ MultiPolygon.prototype.getType = function() {
  * @api
  */
 MultiPolygon.prototype.intersectsExtent = function(extent) {
-  return _ol_geom_flat_intersectsextent_.linearRingss(
+  return intersectsLinearRingMultiArray(
     this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, extent);
 };
 
@@ -364,7 +364,7 @@ MultiPolygon.prototype.setCoordinates = function(coordinates, opt_layout) {
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
-    const endss = _ol_geom_flat_deflate_.coordinatesss(
+    const endss = deflateMultiCoordinatesArray(
       this.flatCoordinates, 0, coordinates, this.stride, this.endss_);
     if (endss.length === 0) {
       this.flatCoordinates.length = 0;

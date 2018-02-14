@@ -1,21 +1,21 @@
-import _ol_geom_flat_interpolate_ from '../../../../../src/ol/geom/flat/interpolate.js';
+import {interpolatePoint} from '../../../../../src/ol/geom/flat/interpolate.js';
 
 
 describe('ol.geom.flat.interpolate', function() {
 
-  describe('ol.geom.flat.interpolate.lineString', function() {
+  describe('ol.geom.flat.interpolate.interpolatePoint', function() {
 
     it('returns the expected value for single points', function() {
       const flatCoordinates = [0, 1];
       const point =
-          _ol_geom_flat_interpolate_.lineString(flatCoordinates, 0, 2, 2, 0.5);
+          interpolatePoint(flatCoordinates, 0, 2, 2, 0.5);
       expect(point).to.eql([0, 1]);
     });
 
     it('returns the expected value for simple line segments', function() {
       const flatCoordinates = [0, 1, 2, 3];
       const point =
-          _ol_geom_flat_interpolate_.lineString(flatCoordinates, 0, 4, 2, 0.5);
+          interpolatePoint(flatCoordinates, 0, 4, 2, 0.5);
       expect(point).to.eql([1, 2]);
     });
 
@@ -23,14 +23,14 @@ describe('ol.geom.flat.interpolate', function() {
         'coordinate',
     function() {
       const flatCoordinates = [0, 1, 2, 3, 4, 5];
-      const point = _ol_geom_flat_interpolate_.lineString(
+      const point = interpolatePoint(
         flatCoordinates, 0, 6, 2, 0.5);
       expect(point).to.eql([2, 3]);
     });
 
     xit('also when vertices are repeated', function() {
       const flatCoordinates = [0, 1, 2, 3, 2, 3, 4, 5];
-      const point = _ol_geom_flat_interpolate_.lineString(
+      const point = interpolatePoint(
         flatCoordinates, 0, 6, 2, 0.5);
       expect(point).to.eql([2, 3]);
     });
@@ -39,14 +39,14 @@ describe('ol.geom.flat.interpolate', function() {
         'two existing coordinates',
     function() {
       const flatCoordinates = [0, 1, 2, 3, 4, 5, 6, 7];
-      const point = _ol_geom_flat_interpolate_.lineString(
+      const point = interpolatePoint(
         flatCoordinates, 0, 8, 2, 0.5);
       expect(point).to.eql([3, 4]);
     });
 
     xit('also when vertices are repeated', function() {
       const flatCoordinates = [0, 1, 2, 3, 2, 3, 4, 5, 6, 7];
-      const point = _ol_geom_flat_interpolate_.lineString(
+      const point = interpolatePoint(
         flatCoordinates, 0, 8, 2, 0.5);
       expect(point).to.eql([3, 4]);
     });
@@ -54,7 +54,7 @@ describe('ol.geom.flat.interpolate', function() {
     it('returns the expected value when the coordinates are not evenly spaced',
       function() {
         const flatCoordinates = [0, 1, 2, 3, 6, 7];
-        const point = _ol_geom_flat_interpolate_.lineString(
+        const point = interpolatePoint(
           flatCoordinates, 0, 6, 2, 0.5);
         expect(point).to.eql([3, 4]);
       });
@@ -62,7 +62,7 @@ describe('ol.geom.flat.interpolate', function() {
     xit('also when vertices are repeated',
       function() {
         const flatCoordinates = [0, 1, 2, 3, 2, 3, 6, 7];
-        const point = _ol_geom_flat_interpolate_.lineString(
+        const point = interpolatePoint(
           flatCoordinates, 0, 6, 2, 0.5);
         expect(point).to.eql([3, 4]);
       });
@@ -70,7 +70,7 @@ describe('ol.geom.flat.interpolate', function() {
     it('returns the expected value when using opt_dest',
       function() {
         const flatCoordinates = [0, 1, 2, 3, 6, 7];
-        const point = _ol_geom_flat_interpolate_.lineString(
+        const point = interpolatePoint(
           flatCoordinates, 0, 6, 2, 0.5, [0, 0]);
         expect(point).to.eql([3, 4]);
       });

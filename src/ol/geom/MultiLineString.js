@@ -8,12 +8,12 @@ import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
-import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
-import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
-import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
-import _ol_geom_flat_interpolate_ from '../geom/flat/interpolate.js';
-import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
-import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
+import {assignClosestArrayPoint, arrayMaxSquaredDelta} from '../geom/flat/closest.js';
+import {deflateCoordinatesArray} from '../geom/flat/deflate.js';
+import {inflateCoordinatesArray} from '../geom/flat/inflate.js';
+import {interpolatePoint, lineStringsCoordinateAtM} from '../geom/flat/interpolate.js';
+import {intersectsLineStringArray} from '../geom/flat/intersectsextent.js';
+import {douglasPeuckerArray} from '../geom/flat/simplify.js';
 
 /**
  * @classdesc
@@ -92,11 +92,11 @@ MultiLineString.prototype.closestPointXY = function(x, y, closestPoint, minSquar
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(_ol_geom_flat_closest_.getsMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(arrayMaxSquaredDelta(
       this.flatCoordinates, 0, this.ends_, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return _ol_geom_flat_closest_.getsClosestPoint(
+  return assignClosestArrayPoint(
     this.flatCoordinates, 0, this.ends_, this.stride,
     this.maxDelta_, false, x, y, closestPoint, minSquaredDistance);
 };
@@ -132,7 +132,7 @@ MultiLineString.prototype.getCoordinateAtM = function(m, opt_extrapolate, opt_in
   }
   const extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
   const interpolate = opt_interpolate !== undefined ? opt_interpolate : false;
-  return _ol_geom_flat_interpolate_.lineStringsCoordinateAtM(this.flatCoordinates, 0,
+  return lineStringsCoordinateAtM(this.flatCoordinates, 0,
     this.ends_, this.stride, m, extrapolate, interpolate);
 };
 
@@ -144,7 +144,7 @@ MultiLineString.prototype.getCoordinateAtM = function(m, opt_extrapolate, opt_in
  * @api
  */
 MultiLineString.prototype.getCoordinates = function() {
-  return _ol_geom_flat_inflate_.coordinatess(
+  return inflateCoordinatesArray(
     this.flatCoordinates, 0, this.ends_, this.stride);
 };
 
@@ -208,7 +208,7 @@ MultiLineString.prototype.getFlatMidpoints = function() {
   const stride = this.stride;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
-    const midpoint = _ol_geom_flat_interpolate_.lineString(
+    const midpoint = interpolatePoint(
       flatCoordinates, offset, end, stride, 0.5);
     extend(midpoints, midpoint);
     offset = end;
@@ -223,7 +223,7 @@ MultiLineString.prototype.getFlatMidpoints = function() {
 MultiLineString.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   const simplifiedFlatCoordinates = [];
   const simplifiedEnds = [];
-  simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.douglasPeuckers(
+  simplifiedFlatCoordinates.length = douglasPeuckerArray(
     this.flatCoordinates, 0, this.ends_, this.stride, squaredTolerance,
     simplifiedFlatCoordinates, 0, simplifiedEnds);
   const simplifiedMultiLineString = new MultiLineString(null);
@@ -247,7 +247,7 @@ MultiLineString.prototype.getType = function() {
  * @api
  */
 MultiLineString.prototype.intersectsExtent = function(extent) {
-  return _ol_geom_flat_intersectsextent_.lineStrings(
+  return intersectsLineStringArray(
     this.flatCoordinates, 0, this.ends_, this.stride, extent);
 };
 
@@ -267,7 +267,7 @@ MultiLineString.prototype.setCoordinates = function(coordinates, opt_layout) {
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
-    const ends = _ol_geom_flat_deflate_.coordinatess(
+    const ends = deflateCoordinatesArray(
       this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
     this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
     this.changed();
