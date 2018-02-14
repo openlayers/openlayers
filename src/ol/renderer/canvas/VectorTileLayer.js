@@ -21,6 +21,27 @@ import CanvasTileLayerRenderer from '../canvas/TileLayer.js';
 import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import _ol_transform_ from '../../transform.js';
 
+
+/**
+ * @type {!Object.<string, Array.<ol.render.ReplayType>>}
+ */
+const IMAGE_REPLAYS = {
+  'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
+    ReplayType.LINE_STRING, ReplayType.IMAGE, ReplayType.TEXT],
+  'hybrid': [ReplayType.POLYGON, ReplayType.LINE_STRING]
+};
+
+
+/**
+ * @type {!Object.<string, Array.<ol.render.ReplayType>>}
+ */
+const VECTOR_REPLAYS = {
+  'image': [ReplayType.DEFAULT],
+  'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT],
+  'vector': _ol_render_replay_.ORDER
+};
+
+
 /**
  * @constructor
  * @extends {ol.renderer.canvas.TileLayer}
@@ -90,28 +111,6 @@ CanvasVectorTileLayerRenderer['handles'] = function(type, layer) {
  */
 CanvasVectorTileLayerRenderer['create'] = function(mapRenderer, layer) {
   return new CanvasVectorTileLayerRenderer(/** @type {ol.layer.VectorTile} */ (layer));
-};
-
-
-/**
- * @const
- * @type {!Object.<string, Array.<ol.render.ReplayType>>}
- */
-CanvasVectorTileLayerRenderer.IMAGE_REPLAYS = {
-  'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
-    ReplayType.LINE_STRING, ReplayType.IMAGE, ReplayType.TEXT],
-  'hybrid': [ReplayType.POLYGON, ReplayType.LINE_STRING]
-};
-
-
-/**
- * @const
- * @type {!Object.<string, Array.<ol.render.ReplayType>>}
- */
-CanvasVectorTileLayerRenderer.VECTOR_REPLAYS = {
-  'image': [ReplayType.DEFAULT],
-  'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT],
-  'vector': _ol_render_replay_.ORDER
 };
 
 
@@ -367,7 +366,7 @@ CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameSta
   const declutterReplays = layer.getDeclutter() ? {} : null;
   const source = /** @type {ol.source.VectorTile} */ (layer.getSource());
   const renderMode = layer.getRenderMode();
-  const replayTypes = CanvasVectorTileLayerRenderer.VECTOR_REPLAYS[renderMode];
+  const replayTypes = VECTOR_REPLAYS[renderMode];
   const pixelRatio = frameState.pixelRatio;
   const rotation = frameState.viewState.rotation;
   const size = frameState.size;
@@ -484,7 +483,7 @@ CanvasVectorTileLayerRenderer.prototype.renderTileImage_ = function(
   const layer = this.getLayer();
   const replayState = tile.getReplayState(layer);
   const revision = layer.getRevision();
-  const replays = CanvasVectorTileLayerRenderer.IMAGE_REPLAYS[layer.getRenderMode()];
+  const replays = IMAGE_REPLAYS[layer.getRenderMode()];
   if (replays && replayState.renderedTileRevision !== revision) {
     replayState.renderedTileRevision = revision;
     const tileCoord = tile.wrappedTileCoord;
