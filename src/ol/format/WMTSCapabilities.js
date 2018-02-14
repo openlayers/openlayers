@@ -227,8 +227,7 @@ WMTSCapabilities.prototype.readFromNode = function(node) {
     return null;
   }
   WMTSCapabilityObject['version'] = version;
-  WMTSCapabilityObject = pushParseAndPop(WMTSCapabilityObject,
-    PARSERS, node, []);
+  WMTSCapabilityObject = pushParseAndPop(WMTSCapabilityObject, PARSERS, node, []);
   return WMTSCapabilityObject ? WMTSCapabilityObject : null;
 };
 
@@ -239,8 +238,7 @@ WMTSCapabilities.prototype.readFromNode = function(node) {
  * @return {Object|undefined} Attribution object.
  */
 function readContents(node, objectStack) {
-  return pushParseAndPop({},
-    CONTENTS_PARSERS, node, objectStack);
+  return pushParseAndPop({}, CONTENTS_PARSERS, node, objectStack);
 }
 
 
@@ -250,8 +248,7 @@ function readContents(node, objectStack) {
  * @return {Object|undefined} Layers object.
  */
 function readLayer(node, objectStack) {
-  return pushParseAndPop({},
-    LAYER_PARSERS, node, objectStack);
+  return pushParseAndPop({}, LAYER_PARSERS, node, objectStack);
 }
 
 
@@ -261,8 +258,7 @@ function readLayer(node, objectStack) {
  * @return {Object|undefined} Tile Matrix Set object.
  */
 function readTileMatrixSet(node, objectStack) {
-  return pushParseAndPop({},
-    TMS_PARSERS, node, objectStack);
+  return pushParseAndPop({}, TMS_PARSERS, node, objectStack);
 }
 
 
@@ -272,8 +268,7 @@ function readTileMatrixSet(node, objectStack) {
  * @return {Object|undefined} Style object.
  */
 function readStyle(node, objectStack) {
-  const style = pushParseAndPop({},
-    STYLE_PARSERS, node, objectStack);
+  const style = pushParseAndPop({}, STYLE_PARSERS, node, objectStack);
   if (!style) {
     return undefined;
   }
@@ -289,10 +284,8 @@ function readStyle(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Tile Matrix Set Link object.
  */
-function readTileMatrixSetLink(node,
-  objectStack) {
-  return pushParseAndPop({},
-    TMS_LINKS_PARSERS, node, objectStack);
+function readTileMatrixSetLink(node, objectStack) {
+  return pushParseAndPop({}, TMS_LINKS_PARSERS, node, objectStack);
 }
 
 
@@ -302,8 +295,7 @@ function readTileMatrixSetLink(node,
  * @return {Object|undefined} Dimension object.
  */
 function readDimensions(node, objectStack) {
-  return pushParseAndPop({},
-    DIMENSION_PARSERS, node, objectStack);
+  return pushParseAndPop({}, DIMENSION_PARSERS, node, objectStack);
 }
 
 
@@ -336,8 +328,7 @@ function readResourceUrl(node, objectStack) {
  * @return {Object|undefined} WGS84 BBox object.
  */
 function readWgs84BoundingBox(node, objectStack) {
-  const coordinates = pushParseAndPop([],
-    WGS84_BBOX_READERS, node, objectStack);
+  const coordinates = pushParseAndPop([], WGS84_BBOX_READERS, node, objectStack);
   if (coordinates.length != 2) {
     return undefined;
   }
@@ -383,8 +374,7 @@ function readCoordinates(node, objectStack) {
  * @return {Object|undefined} TileMatrix object.
  */
 function readTileMatrix(node, objectStack) {
-  return pushParseAndPop({},
-    TM_PARSERS, node, objectStack);
+  return pushParseAndPop({}, TM_PARSERS, node, objectStack);
 }
 
 
@@ -393,11 +383,8 @@ function readTileMatrix(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} TileMatrixSetLimits Object.
  */
-function readTileMatrixLimitsList(node,
-  objectStack) {
-  return pushParseAndPop([],
-    TMS_LIMITS_LIST_PARSERS, node,
-    objectStack);
+function readTileMatrixLimitsList(node, objectStack) {
+  return pushParseAndPop([], TMS_LIMITS_LIST_PARSERS, node, objectStack);
 }
 
 
@@ -407,8 +394,7 @@ function readTileMatrixLimitsList(node,
  * @return {Object|undefined} TileMatrixLimits Array.
  */
 function readTileMatrixLimits(node, objectStack) {
-  return pushParseAndPop({},
-    TMS_LIMITS_PARSERS, node, objectStack);
+  return pushParseAndPop({}, TMS_LIMITS_PARSERS, node, objectStack);
 }
 
 

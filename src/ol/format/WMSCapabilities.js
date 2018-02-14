@@ -308,8 +308,7 @@ WMSCapabilities.prototype.readFromNode = function(node) {
  * @return {Object|undefined} Attribution object.
  */
 function readAttribution(node, objectStack) {
-  return pushParseAndPop(
-    {}, ATTRIBUTION_PARSERS, node, objectStack);
+  return pushParseAndPop({}, ATTRIBUTION_PARSERS, node, objectStack);
 }
 
 
@@ -377,8 +376,7 @@ function readEXGeographicBoundingBox(node, objectStack) {
  * @return {Object|undefined} Capability object.
  */
 function readCapability(node, objectStack) {
-  return pushParseAndPop(
-    {}, CAPABILITY_PARSERS, node, objectStack);
+  return pushParseAndPop({}, CAPABILITY_PARSERS, node, objectStack);
 }
 
 
@@ -388,8 +386,7 @@ function readCapability(node, objectStack) {
  * @return {Object|undefined} Service object.
  */
 function readService(node, objectStack) {
-  return pushParseAndPop(
-    {}, SERVICE_PARSERS, node, objectStack);
+  return pushParseAndPop({}, SERVICE_PARSERS, node, objectStack);
 }
 
 
@@ -399,9 +396,7 @@ function readService(node, objectStack) {
  * @return {Object|undefined} Contact information object.
  */
 function readContactInformation(node, objectStack) {
-  return pushParseAndPop(
-    {}, CONTACT_INFORMATION_PARSERS,
-    node, objectStack);
+  return pushParseAndPop({}, CONTACT_INFORMATION_PARSERS, node, objectStack);
 }
 
 
@@ -411,9 +406,7 @@ function readContactInformation(node, objectStack) {
  * @return {Object|undefined} Contact person object.
  */
 function readContactPersonPrimary(node, objectStack) {
-  return pushParseAndPop(
-    {}, CONTACT_PERSON_PARSERS,
-    node, objectStack);
+  return pushParseAndPop({}, CONTACT_PERSON_PARSERS, node, objectStack);
 }
 
 
@@ -423,9 +416,7 @@ function readContactPersonPrimary(node, objectStack) {
  * @return {Object|undefined} Contact address object.
  */
 function readContactAddress(node, objectStack) {
-  return pushParseAndPop(
-    {}, CONTACT_ADDRESS_PARSERS,
-    node, objectStack);
+  return pushParseAndPop({}, CONTACT_ADDRESS_PARSERS, node, objectStack);
 }
 
 
@@ -435,8 +426,7 @@ function readContactAddress(node, objectStack) {
  * @return {Array.<string>|undefined} Format array.
  */
 function readException(node, objectStack) {
-  return pushParseAndPop(
-    [], EXCEPTION_PARSERS, node, objectStack);
+  return pushParseAndPop([], EXCEPTION_PARSERS, node, objectStack);
 }
 
 
@@ -446,8 +436,7 @@ function readException(node, objectStack) {
  * @return {Object|undefined} Layer object.
  */
 function readCapabilityLayer(node, objectStack) {
-  return pushParseAndPop(
-    {}, LAYER_PARSERS, node, objectStack);
+  return pushParseAndPop({}, LAYER_PARSERS, node, objectStack);
 }
 
 
@@ -460,14 +449,12 @@ function readLayer(node, objectStack) {
   const parentLayerObject = /**  @type {Object.<string,*>} */
         (objectStack[objectStack.length - 1]);
 
-  const layerObject = pushParseAndPop(
-    {}, LAYER_PARSERS, node, objectStack);
+  const layerObject = pushParseAndPop({}, LAYER_PARSERS, node, objectStack);
 
   if (!layerObject) {
     return undefined;
   }
-  let queryable =
-        XSD.readBooleanString(node.getAttribute('queryable'));
+  let queryable = XSD.readBooleanString(node.getAttribute('queryable'));
   if (queryable === undefined) {
     queryable = parentLayerObject['queryable'];
   }
@@ -486,22 +473,19 @@ function readLayer(node, objectStack) {
   }
   layerObject['opaque'] = opaque !== undefined ? opaque : false;
 
-  let noSubsets =
-        XSD.readBooleanString(node.getAttribute('noSubsets'));
+  let noSubsets = XSD.readBooleanString(node.getAttribute('noSubsets'));
   if (noSubsets === undefined) {
     noSubsets = parentLayerObject['noSubsets'];
   }
   layerObject['noSubsets'] = noSubsets !== undefined ? noSubsets : false;
 
-  let fixedWidth =
-        XSD.readDecimalString(node.getAttribute('fixedWidth'));
+  let fixedWidth = XSD.readDecimalString(node.getAttribute('fixedWidth'));
   if (!fixedWidth) {
     fixedWidth = parentLayerObject['fixedWidth'];
   }
   layerObject['fixedWidth'] = fixedWidth;
 
-  let fixedHeight =
-        XSD.readDecimalString(node.getAttribute('fixedHeight'));
+  let fixedHeight = XSD.readDecimalString(node.getAttribute('fixedHeight'));
   if (!fixedHeight) {
     fixedHeight = parentLayerObject['fixedHeight'];
   }
@@ -540,10 +524,8 @@ function readDimension(node, objectStack) {
     'units': node.getAttribute('units'),
     'unitSymbol': node.getAttribute('unitSymbol'),
     'default': node.getAttribute('default'),
-    'multipleValues': XSD.readBooleanString(
-      node.getAttribute('multipleValues')),
-    'nearestValue': XSD.readBooleanString(
-      node.getAttribute('nearestValue')),
+    'multipleValues': XSD.readBooleanString(node.getAttribute('multipleValues')),
+    'nearestValue': XSD.readBooleanString(node.getAttribute('nearestValue')),
     'current': XSD.readBooleanString(node.getAttribute('current')),
     'values': XSD.readString(node)
   };
@@ -557,9 +539,7 @@ function readDimension(node, objectStack) {
  * @return {Object|undefined} Online resource object.
  */
 function readFormatOnlineresource(node, objectStack) {
-  return pushParseAndPop(
-    {}, FORMAT_ONLINERESOURCE_PARSERS,
-    node, objectStack);
+  return pushParseAndPop({}, FORMAT_ONLINERESOURCE_PARSERS, node, objectStack);
 }
 
 
@@ -569,8 +549,7 @@ function readFormatOnlineresource(node, objectStack) {
  * @return {Object|undefined} Request object.
  */
 function readRequest(node, objectStack) {
-  return pushParseAndPop(
-    {}, REQUEST_PARSERS, node, objectStack);
+  return pushParseAndPop({}, REQUEST_PARSERS, node, objectStack);
 }
 
 
@@ -580,8 +559,7 @@ function readRequest(node, objectStack) {
  * @return {Object|undefined} DCP type object.
  */
 function readDCPType(node, objectStack) {
-  return pushParseAndPop(
-    {}, DCPTYPE_PARSERS, node, objectStack);
+  return pushParseAndPop({}, DCPTYPE_PARSERS, node, objectStack);
 }
 
 
@@ -591,8 +569,7 @@ function readDCPType(node, objectStack) {
  * @return {Object|undefined} HTTP object.
  */
 function readHTTP(node, objectStack) {
-  return pushParseAndPop(
-    {}, HTTP_PARSERS, node, objectStack);
+  return pushParseAndPop({}, HTTP_PARSERS, node, objectStack);
 }
 
 
@@ -602,8 +579,7 @@ function readHTTP(node, objectStack) {
  * @return {Object|undefined} Operation type object.
  */
 function readOperationType(node, objectStack) {
-  return pushParseAndPop(
-    {}, OPERATIONTYPE_PARSERS, node, objectStack);
+  return pushParseAndPop({}, OPERATIONTYPE_PARSERS, node, objectStack);
 }
 
 
@@ -613,8 +589,7 @@ function readOperationType(node, objectStack) {
  * @return {Object|undefined} Online resource object.
  */
 function readSizedFormatOnlineresource(node, objectStack) {
-  const formatOnlineresource =
-        readFormatOnlineresource(node, objectStack);
+  const formatOnlineresource = readFormatOnlineresource(node, objectStack);
   if (formatOnlineresource) {
     const size = [
       XSD.readNonNegativeIntegerString(node.getAttribute('width')),
@@ -633,8 +608,7 @@ function readSizedFormatOnlineresource(node, objectStack) {
  * @return {Object|undefined} Authority URL object.
  */
 function readAuthorityURL(node, objectStack) {
-  const authorityObject =
-        readFormatOnlineresource(node, objectStack);
+  const authorityObject = readFormatOnlineresource(node, objectStack);
   if (authorityObject) {
     authorityObject['name'] = node.getAttribute('name');
     return authorityObject;
@@ -649,8 +623,7 @@ function readAuthorityURL(node, objectStack) {
  * @return {Object|undefined} Metadata URL object.
  */
 function readMetadataURL(node, objectStack) {
-  const metadataObject =
-        readFormatOnlineresource(node, objectStack);
+  const metadataObject = readFormatOnlineresource(node, objectStack);
   if (metadataObject) {
     metadataObject['type'] = node.getAttribute('type');
     return metadataObject;
@@ -665,8 +638,7 @@ function readMetadataURL(node, objectStack) {
  * @return {Object|undefined} Style object.
  */
 function readStyle(node, objectStack) {
-  return pushParseAndPop(
-    {}, STYLE_PARSERS, node, objectStack);
+  return pushParseAndPop({}, STYLE_PARSERS, node, objectStack);
 }
 
 
@@ -676,8 +648,7 @@ function readStyle(node, objectStack) {
  * @return {Array.<string>|undefined} Keyword list.
  */
 function readKeywordList(node, objectStack) {
-  return pushParseAndPop(
-    [], KEYWORDLIST_PARSERS, node, objectStack);
+  return pushParseAndPop([], KEYWORDLIST_PARSERS, node, objectStack);
 }
 
 
