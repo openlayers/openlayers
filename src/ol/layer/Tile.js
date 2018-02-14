@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import LayerType from '../LayerType.js';
 import Layer from '../layer/Layer.js';
-import _ol_layer_TileProperty_ from '../layer/TileProperty.js';
+import TileProperty from '../layer/TileProperty.js';
 import {assign} from '../obj.js';
 
 /**
@@ -53,9 +53,7 @@ inherits(TileLayer, Layer);
  * @api
  */
 TileLayer.prototype.getPreload = function() {
-  return (
-  /** @type {number} */ this.get(_ol_layer_TileProperty_.PRELOAD)
-  );
+  return (/** @type {number} */ this.get(TileProperty.PRELOAD));
 };
 
 
@@ -75,7 +73,7 @@ TileLayer.prototype.getSource;
  * @api
  */
 TileLayer.prototype.setPreload = function(preload) {
-  this.set(_ol_layer_TileProperty_.PRELOAD, preload);
+  this.set(TileProperty.PRELOAD, preload);
 };
 
 
@@ -86,9 +84,7 @@ TileLayer.prototype.setPreload = function(preload) {
  * @api
  */
 TileLayer.prototype.getUseInterimTilesOnError = function() {
-  return (
-  /** @type {boolean} */ this.get(_ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR)
-  );
+  return (/** @type {boolean} */ this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR));
 };
 
 
@@ -99,7 +95,6 @@ TileLayer.prototype.getUseInterimTilesOnError = function() {
  * @api
  */
 TileLayer.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
-  this.set(
-    _ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+  this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
 };
 export default TileLayer;
