@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import LayerType from '../LayerType.js';
 import Layer from '../layer/Layer.js';
-import _ol_layer_VectorRenderType_ from '../layer/VectorRenderType.js';
+import VectorRenderType from '../layer/VectorRenderType.js';
 import {assign} from '../obj.js';
 import Style from '../style/Style.js';
 
@@ -90,7 +90,7 @@ const VectorLayer = function(opt_options) {
    * @private
    * @type {ol.layer.VectorTileRenderType|string}
    */
-  this.renderMode_ = options.renderMode || _ol_layer_VectorRenderType_.VECTOR;
+  this.renderMode_ = options.renderMode || VectorRenderType.VECTOR;
 
   /**
    * The layer type.
