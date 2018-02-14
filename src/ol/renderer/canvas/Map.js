@@ -13,7 +13,7 @@ import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
-import MapRenderer from '../Map.js';
+import MapRenderer, {sortByZIndex} from '../Map.js';
 import RendererType from '../Type.js';
 import SourceState from '../../source/State.js';
 
@@ -166,7 +166,7 @@ CanvasMapRenderer.prototype.renderFrame = function(frameState) {
   this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, frameState);
 
   const layerStatesArray = frameState.layerStatesArray;
-  stableSort(layerStatesArray, MapRenderer.sortByZIndex);
+  stableSort(layerStatesArray, sortByZIndex);
 
   if (rotation) {
     context.save();

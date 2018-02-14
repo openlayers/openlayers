@@ -336,7 +336,7 @@ MapRenderer.prototype.scheduleRemoveUnusedLayerRenderers = function(frameState) 
  * @param {ol.LayerState} state2 Second layer state.
  * @return {number} The zIndex difference.
  */
-MapRenderer.sortByZIndex = function(state1, state2) {
+export function sortByZIndex(state1, state2) {
   return state1.zIndex - state2.zIndex;
-};
+}
 export default MapRenderer;
