@@ -13,7 +13,7 @@ import {assign} from '../../obj.js';
 import {getLayerRendererPlugins} from '../../plugins.js';
 import RendererType from '../Type.js';
 import IntermediateCanvasRenderer from '../canvas/IntermediateCanvas.js';
-import _ol_transform_ from '../../transform.js';
+import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
 /**
  * @constructor
@@ -35,7 +35,7 @@ const CanvasImageLayerRenderer = function(imageLayer) {
    * @private
    * @type {ol.Transform}
    */
-  this.imageTransform_ = _ol_transform_.create();
+  this.imageTransform_ = createTransform();
 
   /**
    * @type {!Array.<string>}
@@ -175,13 +175,13 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
     const imagePixelRatio = image.getPixelRatio();
     const scale = pixelRatio * imageResolution /
         (viewResolution * imagePixelRatio);
-    const transform = _ol_transform_.compose(this.imageTransform_,
+    const transform = composeTransform(this.imageTransform_,
       pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
       scale, scale,
       0,
       imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
       imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
-    _ol_transform_.compose(this.coordinateToCanvasPixelTransform,
+    composeTransform(this.coordinateToCanvasPixelTransform,
       pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
       pixelRatio / viewResolution, -pixelRatio / viewResolution,
       0,

@@ -2,7 +2,7 @@ import {equals} from '../../../src/ol/array.js';
 import {DEVICE_PIXEL_RATIO} from '../../../src/ol/has.js';
 import {toContext} from '../../../src/ol/render.js';
 import CanvasImmediateRenderer from '../../../src/ol/render/canvas/Immediate.js';
-import _ol_transform_ from '../../../src/ol/transform.js';
+import {scale as scaleTransform, create as createTransform} from '../../../src/ol/transform.js';
 
 
 describe('ol.render', function() {
@@ -27,7 +27,7 @@ describe('ol.render', function() {
         [0, 0, size[0] * pixelRatio, size[1] * pixelRatio]);
       expect(canvas.style.width).to.be(size[0] + 'px');
       expect(canvas.style.height).to.be(size[1] + 'px');
-      const transform = _ol_transform_.scale(_ol_transform_.create(),
+      const transform = scaleTransform(createTransform(),
         pixelRatio, pixelRatio);
       expect(equals(render.transform_, transform)).to.be.ok();
     });

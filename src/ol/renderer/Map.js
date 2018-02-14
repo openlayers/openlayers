@@ -10,7 +10,7 @@ import {TRUE} from '../functions.js';
 import {visibleAtResolution} from '../layer/Layer.js';
 import {getLayerRendererPlugins} from '../plugins.js';
 import {iconImageCache} from '../style.js';
-import _ol_transform_ from '../transform.js';
+import {compose as composeTransform, invert as invertTransform, setFromArray as transformSetFromArray} from '../transform.js';
 
 /**
  * @constructor
@@ -56,14 +56,14 @@ MapRenderer.prototype.calculateMatrices2D = function(frameState) {
   const coordinateToPixelTransform = frameState.coordinateToPixelTransform;
   const pixelToCoordinateTransform = frameState.pixelToCoordinateTransform;
 
-  _ol_transform_.compose(coordinateToPixelTransform,
+  composeTransform(coordinateToPixelTransform,
     frameState.size[0] / 2, frameState.size[1] / 2,
     1 / viewState.resolution, -1 / viewState.resolution,
     -viewState.rotation,
     -viewState.center[0], -viewState.center[1]);
 
-  _ol_transform_.invert(
-    _ol_transform_.setFromArray(pixelToCoordinateTransform, coordinateToPixelTransform));
+  invertTransform(
+    transformSetFromArray(pixelToCoordinateTransform, coordinateToPixelTransform));
 };
 
 

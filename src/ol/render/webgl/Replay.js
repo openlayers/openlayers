@@ -4,7 +4,13 @@
 import {inherits} from '../../index.js';
 import {getCenter} from '../../extent.js';
 import VectorContext from '../VectorContext.js';
-import _ol_transform_ from '../../transform.js';
+import {
+  create as createTransform,
+  reset as resetTransform,
+  rotate as rotateTransform,
+  scale as scaleTransform,
+  translate as translateTransform
+} from '../../transform.js';
 import {create, fromTransform} from '../../vec/mat4.js';
 import _ol_webgl_ from '../../webgl.js';
 
@@ -46,19 +52,19 @@ const WebGLReplay = function(tolerance, maxExtent) {
    * @private
    * @type {ol.Transform}
    */
-  this.projectionMatrix_ = _ol_transform_.create();
+  this.projectionMatrix_ = createTransform();
 
   /**
    * @private
    * @type {ol.Transform}
    */
-  this.offsetRotateMatrix_ = _ol_transform_.create();
+  this.offsetRotateMatrix_ = createTransform();
 
   /**
    * @private
    * @type {ol.Transform}
    */
-  this.offsetScaleMatrix_ = _ol_transform_.create();
+  this.offsetScaleMatrix_ = createTransform();
 
   /**
    * @private
@@ -294,17 +300,17 @@ WebGLReplay.prototype.replay = function(context,
   const locations = this.setUpProgram(gl, context, size, pixelRatio);
 
   // set the "uniform" values
-  const projectionMatrix = _ol_transform_.reset(this.projectionMatrix_);
-  _ol_transform_.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
-  _ol_transform_.rotate(projectionMatrix, -rotation);
-  _ol_transform_.translate(projectionMatrix, -(center[0] - this.origin[0]), -(center[1] - this.origin[1]));
+  const projectionMatrix = resetTransform(this.projectionMatrix_);
+  scaleTransform(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
+  rotateTransform(projectionMatrix, -rotation);
+  translateTransform(projectionMatrix, -(center[0] - this.origin[0]), -(center[1] - this.origin[1]));
 
-  const offsetScaleMatrix = _ol_transform_.reset(this.offsetScaleMatrix_);
-  _ol_transform_.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
+  const offsetScaleMatrix = resetTransform(this.offsetScaleMatrix_);
+  scaleTransform(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
 
-  const offsetRotateMatrix = _ol_transform_.reset(this.offsetRotateMatrix_);
+  const offsetRotateMatrix = resetTransform(this.offsetRotateMatrix_);
   if (rotation !== 0) {
-    _ol_transform_.rotate(offsetRotateMatrix, -rotation);
+    rotateTransform(offsetRotateMatrix, -rotation);
   }
 
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false,

@@ -8,7 +8,7 @@ import {FALSE} from '../functions.js';
 import {transform2D} from '../geom/flat/transform.js';
 import {get as getProjection, getTransform} from '../proj.js';
 import Units from '../proj/Units.js';
-import _ol_transform_ from '../transform.js';
+import {create as createTransform, compose as composeTransform} from '../transform.js';
 
 /**
  * @classdesc
@@ -62,7 +62,7 @@ const Geometry = function() {
    * @private
    * @type {ol.Transform}
    */
-  this.tmpTransform_ = _ol_transform_.create();
+  this.tmpTransform_ = createTransform();
 
 };
 
@@ -261,7 +261,7 @@ Geometry.prototype.transform = function(source, destination) {
       const pixelExtent = source.getExtent();
       const projectedExtent = source.getWorldExtent();
       const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
-      _ol_transform_.compose(tmpTransform,
+      composeTransform(tmpTransform,
         projectedExtent[0], projectedExtent[3],
         scale, -scale, 0,
         0, 0);

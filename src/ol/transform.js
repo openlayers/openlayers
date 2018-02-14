@@ -2,7 +2,6 @@
  * @module ol/transform
  */
 import {assert} from './asserts.js';
-const _ol_transform_ = {};
 
 
 /**
@@ -22,16 +21,16 @@ const _ol_transform_ = {};
  * @private
  * @type {ol.Transform}
  */
-_ol_transform_.tmp_ = new Array(6);
+const tmp_ = new Array(6);
 
 
 /**
  * Create an identity transform.
  * @return {!ol.Transform} Identity transform.
  */
-_ol_transform_.create = function() {
+export function create() {
   return [1, 0, 0, 1, 0, 0];
-};
+}
 
 
 /**
@@ -39,9 +38,9 @@ _ol_transform_.create = function() {
  * @param {!ol.Transform} transform Transform.
  * @return {!ol.Transform} Transform.
  */
-_ol_transform_.reset = function(transform) {
-  return _ol_transform_.set(transform, 1, 0, 0, 1, 0, 0);
-};
+export function reset(transform) {
+  return set(transform, 1, 0, 0, 1, 0, 0);
+}
 
 
 /**
@@ -51,7 +50,7 @@ _ol_transform_.reset = function(transform) {
  * @param {!ol.Transform} transform2 Transform parameters of matrix 2.
  * @return {!ol.Transform} transform1 multiplied with transform2.
  */
-_ol_transform_.multiply = function(transform1, transform2) {
+export function multiply(transform1, transform2) {
   const a1 = transform1[0];
   const b1 = transform1[1];
   const c1 = transform1[2];
@@ -73,7 +72,7 @@ _ol_transform_.multiply = function(transform1, transform2) {
   transform1[5] = b1 * e2 + d1 * f2 + f1;
 
   return transform1;
-};
+}
 
 /**
  * Set the transform components a-f on a given transform.
@@ -86,7 +85,7 @@ _ol_transform_.multiply = function(transform1, transform2) {
  * @param {number} f The f component of the transform.
  * @return {!ol.Transform} Matrix with transform applied.
  */
-_ol_transform_.set = function(transform, a, b, c, d, e, f) {
+export function set(transform, a, b, c, d, e, f) {
   transform[0] = a;
   transform[1] = b;
   transform[2] = c;
@@ -94,7 +93,7 @@ _ol_transform_.set = function(transform, a, b, c, d, e, f) {
   transform[4] = e;
   transform[5] = f;
   return transform;
-};
+}
 
 
 /**
@@ -103,7 +102,7 @@ _ol_transform_.set = function(transform, a, b, c, d, e, f) {
  * @param {!ol.Transform} transform2 Matrix to set transform from.
  * @return {!ol.Transform} transform1 with transform from transform2 applied.
  */
-_ol_transform_.setFromArray = function(transform1, transform2) {
+export function setFromArray(transform1, transform2) {
   transform1[0] = transform2[0];
   transform1[1] = transform2[1];
   transform1[2] = transform2[2];
@@ -111,7 +110,7 @@ _ol_transform_.setFromArray = function(transform1, transform2) {
   transform1[4] = transform2[4];
   transform1[5] = transform2[5];
   return transform1;
-};
+}
 
 
 /**
@@ -123,13 +122,13 @@ _ol_transform_.setFromArray = function(transform1, transform2) {
  * @return {ol.Coordinate|ol.Pixel} return coordinate so that operations can be
  *     chained together.
  */
-_ol_transform_.apply = function(transform, coordinate) {
+export function apply(transform, coordinate) {
   const x = coordinate[0];
   const y = coordinate[1];
   coordinate[0] = transform[0] * x + transform[2] * y + transform[4];
   coordinate[1] = transform[1] * x + transform[3] * y + transform[5];
   return coordinate;
-};
+}
 
 
 /**
@@ -138,12 +137,11 @@ _ol_transform_.apply = function(transform, coordinate) {
  * @param {number} angle Angle in radians.
  * @return {!ol.Transform} The rotated transform.
  */
-_ol_transform_.rotate = function(transform, angle) {
+export function rotate(transform, angle) {
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
-  return _ol_transform_.multiply(transform,
-    _ol_transform_.set(_ol_transform_.tmp_, cos, sin, -sin, cos, 0, 0));
-};
+  return multiply(transform, set(tmp_, cos, sin, -sin, cos, 0, 0));
+}
 
 
 /**
@@ -153,10 +151,9 @@ _ol_transform_.rotate = function(transform, angle) {
  * @param {number} y Scale factor y.
  * @return {!ol.Transform} The scaled transform.
  */
-_ol_transform_.scale = function(transform, x, y) {
-  return _ol_transform_.multiply(transform,
-    _ol_transform_.set(_ol_transform_.tmp_, x, 0, 0, y, 0, 0));
-};
+export function scale(transform, x, y) {
+  return multiply(transform, set(tmp_, x, 0, 0, y, 0, 0));
+}
 
 
 /**
@@ -166,10 +163,9 @@ _ol_transform_.scale = function(transform, x, y) {
  * @param {number} dy Translation y.
  * @return {!ol.Transform} The translated transform.
  */
-_ol_transform_.translate = function(transform, dx, dy) {
-  return _ol_transform_.multiply(transform,
-    _ol_transform_.set(_ol_transform_.tmp_, 1, 0, 0, 1, dx, dy));
-};
+export function translate(transform, dx, dy) {
+  return multiply(transform, set(tmp_, 1, 0, 0, 1, dx, dy));
+}
 
 
 /**
@@ -185,7 +181,7 @@ _ol_transform_.translate = function(transform, dx, dy) {
  * @param {number} dy2 Final translation y.
  * @return {!ol.Transform} The composite transform.
  */
-_ol_transform_.compose = function(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
+export function compose(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
   const sin = Math.sin(angle);
   const cos = Math.cos(angle);
   transform[0] = sx * cos;
@@ -195,7 +191,7 @@ _ol_transform_.compose = function(transform, dx1, dy1, sx, sy, angle, dx2, dy2) 
   transform[4] = dx2 * sx * cos - dy2 * sx * sin + dx1;
   transform[5] = dx2 * sy * sin + dy2 * sy * cos + dy1;
   return transform;
-};
+}
 
 
 /**
@@ -203,8 +199,8 @@ _ol_transform_.compose = function(transform, dx1, dy1, sx, sy, angle, dx2, dy2) 
  * @param {!ol.Transform} transform Transform.
  * @return {!ol.Transform} Inverse of the transform.
  */
-_ol_transform_.invert = function(transform) {
-  const det = _ol_transform_.determinant(transform);
+export function invert(transform) {
+  const det = determinant(transform);
   assert(det !== 0, 32); // Transformation matrix cannot be inverted
 
   const a = transform[0];
@@ -222,7 +218,7 @@ _ol_transform_.invert = function(transform) {
   transform[5] = -(a * f - b * e) / det;
 
   return transform;
-};
+}
 
 
 /**
@@ -230,7 +226,6 @@ _ol_transform_.invert = function(transform) {
  * @param {!ol.Transform} mat Matrix.
  * @return {number} Determinant.
  */
-_ol_transform_.determinant = function(mat) {
+export function determinant(mat) {
   return mat[0] * mat[3] - mat[1] * mat[2];
-};
-export default _ol_transform_;
+}

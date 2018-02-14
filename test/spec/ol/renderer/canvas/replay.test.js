@@ -15,7 +15,7 @@ import {renderFeature} from '../../../../../src/ol/renderer/vector.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../src/ol/style/Style.js';
-import _ol_transform_ from '../../../../../src/ol/transform.js';
+import {create as createTransform, scale as scaleTransform} from '../../../../../src/ol/transform.js';
 
 describe('ol.render.canvas.ReplayGroup', function() {
 
@@ -27,7 +27,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
     let fill0, fill1, style1, style2;
 
     beforeEach(function() {
-      transform = _ol_transform_.create();
+      transform = createTransform();
       replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 1, false);
       feature0 = new Feature(new Polygon(
         [[[-90, 0], [-45, 45], [0, 0], [1, 1], [0, -45], [-90, 0]]]));
@@ -92,7 +92,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       replay.replay(context, transform, 0, {});
       expect(lineToCount).to.be(4);
       lineToCount = 0;
-      _ol_transform_.scale(transform, 0.25, 0.25);
+      scaleTransform(transform, 0.25, 0.25);
       replay.replay(context, transform, 0, {});
       expect(lineToCount).to.be(3);
     });
@@ -249,7 +249,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       renderFeature(replay, polygon, style, 1);
       renderFeature(replay, multipolygon, style, 1);
       renderFeature(replay, geometrycollection, style, 1);
-      _ol_transform_.scale(transform, 0.1, 0.1);
+      scaleTransform(transform, 0.1, 0.1);
       replay.replay(context, transform, 0, {});
       expect(calls.length).to.be(9);
       expect(calls[0].geometry).to.be(point.getGeometry());

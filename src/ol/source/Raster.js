@@ -19,7 +19,7 @@ import ImageSource from '../source/Image.js';
 import RasterOperationType from '../source/RasterOperationType.js';
 import SourceState from '../source/State.js';
 import TileSource from '../source/Tile.js';
-import _ol_transform_ from '../transform.js';
+import {create as createTransform} from '../transform.js';
 
 
 /**
@@ -128,14 +128,14 @@ const RasterSource = function(options) {
    */
   this.frameState_ = {
     animate: false,
-    coordinateToPixelTransform: _ol_transform_.create(),
+    coordinateToPixelTransform: createTransform(),
     extent: null,
     focus: null,
     index: 0,
     layerStates: layerStates,
     layerStatesArray: layerStatesArray,
     pixelRatio: 1,
-    pixelToCoordinateTransform: _ol_transform_.create(),
+    pixelToCoordinateTransform: createTransform(),
     postRenderFunctions: [],
     size: [0, 0],
     skippedFeatureUids: {},

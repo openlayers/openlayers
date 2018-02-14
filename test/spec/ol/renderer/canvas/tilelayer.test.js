@@ -6,7 +6,7 @@ import MapRenderer from '../../../../../src/ol/renderer/Map.js';
 import CanvasTileLayerRenderer from '../../../../../src/ol/renderer/canvas/TileLayer.js';
 import TileWMS from '../../../../../src/ol/source/TileWMS.js';
 import XYZ from '../../../../../src/ol/source/XYZ.js';
-import _ol_transform_ from '../../../../../src/ol/transform.js';
+import {create as createTransform} from '../../../../../src/ol/transform.js';
 
 
 describe('ol.renderer.canvas.TileLayer', function() {
@@ -89,13 +89,13 @@ describe('ol.renderer.canvas.TileLayer', function() {
         extent: [0, 0, 20, 10],
         size: [20, 10],
         pixelRatio: 2,
-        coordinateToPixelTransform: _ol_transform_.create(),
-        pixelToCoordinateTransform: _ol_transform_.create(),
+        coordinateToPixelTransform: createTransform(),
+        pixelToCoordinateTransform: createTransform(),
         usedTiles: {},
         wantedTiles: {}
       };
       renderer.getImageTransform = function() {
-        return _ol_transform_.create();
+        return createTransform();
       };
       MapRenderer.prototype.calculateMatrices2D(frameState);
       const layerState = layer.getLayerState();

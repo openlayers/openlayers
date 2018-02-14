@@ -10,7 +10,7 @@ import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, createEmpty, equals, getIntersection, isEmpty} from '../../extent.js';
 import RendererType from '../Type.js';
 import IntermediateCanvasRenderer from '../canvas/IntermediateCanvas.js';
-import _ol_transform_ from '../../transform.js';
+import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
 /**
  * @constructor
@@ -68,7 +68,7 @@ const CanvasTileLayerRenderer = function(tileLayer) {
    * @private
    * @type {ol.Transform}
    */
-  this.imageTransform_ = _ol_transform_.create();
+  this.imageTransform_ = createTransform();
 
   /**
    * @protected
@@ -275,13 +275,13 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
   }
 
   const scale = this.renderedResolution / viewResolution;
-  const transform = _ol_transform_.compose(this.imageTransform_,
+  const transform = composeTransform(this.imageTransform_,
     pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
     scale, scale,
     0,
     (this.renderedExtent_[0] - viewCenter[0]) / this.renderedResolution * pixelRatio,
     (viewCenter[1] - this.renderedExtent_[3]) / this.renderedResolution * pixelRatio);
-  _ol_transform_.compose(this.coordinateToCanvasPixelTransform,
+  composeTransform(this.coordinateToCanvasPixelTransform,
     pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
     pixelRatio / viewResolution, -pixelRatio / viewResolution,
     0,

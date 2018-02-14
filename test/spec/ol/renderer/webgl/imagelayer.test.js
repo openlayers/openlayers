@@ -1,4 +1,4 @@
-import _ol_transform_ from '../../../../../src/ol/transform.js';
+import {apply as applyTransform} from '../../../../../src/ol/transform.js';
 import Map from '../../../../../src/ol/Map.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
 import ImageSource from '../../../../../src/ol/source/Image.js';
@@ -52,23 +52,23 @@ describe('ol.renderer.webgl.ImageLayer', function() {
         pixelRatio, viewCenter, viewResolution, viewRotation, imageExtent);
       const matrix = renderer.getProjectionMatrix();
 
-      let output = _ol_transform_.apply(matrix, [-1, -1]);
+      let output = applyTransform(matrix, [-1, -1]);
       expect(output[0]).to.eql(-6);
       expect(output[1]).to.eql(-6);
 
-      output = _ol_transform_.apply(matrix, [1, -1]);
+      output = applyTransform(matrix, [1, -1]);
       expect(output[0]).to.eql(2);
       expect(output[1]).to.eql(-6);
 
-      output = _ol_transform_.apply(matrix, [-1, 1]);
+      output = applyTransform(matrix, [-1, 1]);
       expect(output[0]).to.eql(-6);
       expect(output[1]).to.eql(6);
 
-      output = _ol_transform_.apply(matrix, [1, 1]);
+      output = applyTransform(matrix, [1, 1]);
       expect(output[0]).to.eql(2);
       expect(output[1]).to.eql(6);
 
-      output = _ol_transform_.apply(matrix, [0, 0]);
+      output = applyTransform(matrix, [0, 0]);
       expect(output[0]).to.eql(-2);
       expect(output[1]).to.eql(0);
     });

@@ -10,7 +10,16 @@ import {getIntersection, isEmpty} from '../../extent.js';
 import {TRUE} from '../../functions.js';
 import RendererType from '../Type.js';
 import WebGLLayerRenderer from '../webgl/Layer.js';
-import _ol_transform_ from '../../transform.js';
+import {
+  create as createTransform,
+  rotate as rotateTransform,
+  translate as translateTransform,
+  scale as scaleTransform,
+  reset as resetTransform,
+  apply as applyTransform,
+  invert as invertTransform,
+  multiply as multiplyTransform
+} from '../../transform.js';
 import _ol_webgl_ from '../../webgl.js';
 import {createTexture} from '../../webgl/Context.js';
 
@@ -183,9 +192,9 @@ WebGLImageLayerRenderer.prototype.prepareFrame = function(frameState, layerState
 
     // Translate and scale to flip the Y coord.
     const texCoordMatrix = this.texCoordMatrix;
-    _ol_transform_.reset(texCoordMatrix);
-    _ol_transform_.scale(texCoordMatrix, 1, -1);
-    _ol_transform_.translate(texCoordMatrix, 0, -1);
+    resetTransform(texCoordMatrix);
+    scaleTransform(texCoordMatrix, 1, -1);
+    translateTransform(texCoordMatrix, 0, -1);
 
     this.image_ = image;
     this.texture = texture;
@@ -212,18 +221,18 @@ WebGLImageLayerRenderer.prototype.updateProjectionMatrix_ = function(canvasWidth
   const canvasExtentHeight = canvasHeight * viewResolution;
 
   const projectionMatrix = this.projectionMatrix;
-  _ol_transform_.reset(projectionMatrix);
-  _ol_transform_.scale(projectionMatrix,
+  resetTransform(projectionMatrix);
+  scaleTransform(projectionMatrix,
     pixelRatio * 2 / canvasExtentWidth,
     pixelRatio * 2 / canvasExtentHeight);
-  _ol_transform_.rotate(projectionMatrix, -viewRotation);
-  _ol_transform_.translate(projectionMatrix,
+  rotateTransform(projectionMatrix, -viewRotation);
+  translateTransform(projectionMatrix,
     imageExtent[0] - viewCenter[0],
     imageExtent[1] - viewCenter[1]);
-  _ol_transform_.scale(projectionMatrix,
+  scaleTransform(projectionMatrix,
     (imageExtent[2] - imageExtent[0]) / 2,
     (imageExtent[3] - imageExtent[1]) / 2);
-  _ol_transform_.translate(projectionMatrix, 1, 1);
+  translateTransform(projectionMatrix, 1, 1);
 
 };
 
@@ -248,7 +257,7 @@ WebGLImageLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameSta
   if (this.getLayer().getSource().forEachFeatureAtCoordinate !== nullFunction) {
     // for ImageCanvas sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
-    const coordinate = _ol_transform_.apply(
+    const coordinate = applyTransform(
       frameState.pixelToCoordinateTransform, pixel.slice());
     const hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, this);
 
@@ -266,7 +275,7 @@ WebGLImageLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameSta
         frameState.size, imageSize);
     }
 
-    const pixelOnFrameBuffer = _ol_transform_.apply(
+    const pixelOnFrameBuffer = applyTransform(
       this.hitTransformationMatrix_, pixel.slice());
 
     if (pixelOnFrameBuffer[0] < 0 || pixelOnFrameBuffer[0] > imageSize[0] ||
@@ -304,25 +313,25 @@ WebGLImageLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameSta
 WebGLImageLayerRenderer.prototype.getHitTransformationMatrix_ = function(mapSize, imageSize) {
   // the first matrix takes a map pixel, flips the y-axis and scales to
   // a range between -1 ... 1
-  const mapCoordTransform = _ol_transform_.create();
-  _ol_transform_.translate(mapCoordTransform, -1, -1);
-  _ol_transform_.scale(mapCoordTransform, 2 / mapSize[0], 2 / mapSize[1]);
-  _ol_transform_.translate(mapCoordTransform, 0, mapSize[1]);
-  _ol_transform_.scale(mapCoordTransform, 1, -1);
+  const mapCoordTransform = createTransform();
+  translateTransform(mapCoordTransform, -1, -1);
+  scaleTransform(mapCoordTransform, 2 / mapSize[0], 2 / mapSize[1]);
+  translateTransform(mapCoordTransform, 0, mapSize[1]);
+  scaleTransform(mapCoordTransform, 1, -1);
 
   // the second matrix is the inverse of the projection matrix used in the
   // shader for drawing
-  const projectionMatrixInv = _ol_transform_.invert(this.projectionMatrix.slice());
+  const projectionMatrixInv = invertTransform(this.projectionMatrix.slice());
 
   // the third matrix scales to the image dimensions and flips the y-axis again
-  const transform = _ol_transform_.create();
-  _ol_transform_.translate(transform, 0, imageSize[1]);
-  _ol_transform_.scale(transform, 1, -1);
-  _ol_transform_.scale(transform, imageSize[0] / 2, imageSize[1] / 2);
-  _ol_transform_.translate(transform, 1, 1);
+  const transform = createTransform();
+  translateTransform(transform, 0, imageSize[1]);
+  scaleTransform(transform, 1, -1);
+  scaleTransform(transform, imageSize[0] / 2, imageSize[1] / 2);
+  translateTransform(transform, 1, 1);
 
-  _ol_transform_.multiply(transform, projectionMatrixInv);
-  _ol_transform_.multiply(transform, mapCoordTransform);
+  multiplyTransform(transform, projectionMatrixInv);
+  multiplyTransform(transform, mapCoordTransform);
 
   return transform;
 };

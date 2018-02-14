@@ -3,7 +3,7 @@
  */
 // FIXME offset panning
 
-import _ol_transform_ from '../../transform.js';
+import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
 import {inherits} from '../../index.js';
 import {stableSort} from '../../array.js';
 import {CLASS_UNSELECTABLE} from '../../css.js';
@@ -56,7 +56,7 @@ const CanvasMapRenderer = function(container, map) {
    * @private
    * @type {ol.Transform}
    */
-  this.transform_ = _ol_transform_.create();
+  this.transform_ = createTransform();
 
 };
 
@@ -123,7 +123,7 @@ CanvasMapRenderer.prototype.getTransform = function(frameState) {
   const angle = -viewState.rotation;
   const dx2 = -viewState.center[0];
   const dy2 = -viewState.center[1];
-  return _ol_transform_.compose(this.transform_, dx1, dy1, sx, sy, angle, dx2, dy2);
+  return composeTransform(this.transform_, dx1, dy1, sx, sy, angle, dx2, dy2);
 };
 
 
@@ -216,7 +216,7 @@ CanvasMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, ca
   const layerStates = frameState.layerStatesArray;
   const numLayers = layerStates.length;
 
-  const coordinate = _ol_transform_.apply(
+  const coordinate = applyTransform(
     frameState.pixelToCoordinateTransform, pixel.slice());
 
   let i;

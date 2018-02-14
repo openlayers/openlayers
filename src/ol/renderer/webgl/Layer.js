@@ -8,7 +8,7 @@ import WebGLImmediateRenderer from '../../render/webgl/Immediate.js';
 import LayerRenderer from '../Layer.js';
 import {fragment, vertex} from '../webgl/defaultmapshader.js';
 import Locations from '../webgl/defaultmapshader/Locations.js';
-import _ol_transform_ from '../../transform.js';
+import {create as createTransform} from '../../transform.js';
 import {create, fromTransform} from '../../vec/mat4.js';
 import _ol_webgl_ from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
@@ -64,13 +64,13 @@ const WebGLLayerRenderer = function(mapRenderer, layer) {
    * @protected
    * @type {ol.Transform}
    */
-  this.texCoordMatrix = _ol_transform_.create();
+  this.texCoordMatrix = createTransform();
 
   /**
    * @protected
    * @type {ol.Transform}
    */
-  this.projectionMatrix = _ol_transform_.create();
+  this.projectionMatrix = createTransform();
 
   /**
    * @type {Array.<number>}

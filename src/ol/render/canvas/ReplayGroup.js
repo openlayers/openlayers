@@ -15,7 +15,7 @@ import CanvasLineStringReplay from '../canvas/LineStringReplay.js';
 import CanvasPolygonReplay from '../canvas/PolygonReplay.js';
 import CanvasTextReplay from '../canvas/TextReplay.js';
 import _ol_render_replay_ from '../replay.js';
-import _ol_transform_ from '../../transform.js';
+import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
 
 /**
@@ -115,7 +115,7 @@ const CanvasReplayGroup = function(
    * @private
    * @type {ol.Transform}
    */
-  this.hitDetectionTransform_ = _ol_transform_.create();
+  this.hitDetectionTransform_ = createTransform();
 };
 
 inherits(CanvasReplayGroup, ReplayGroup);
@@ -301,7 +301,7 @@ CanvasReplayGroup.prototype.forEachFeatureAtCoordinate = function(
 
   hitTolerance = Math.round(hitTolerance);
   const contextSize = hitTolerance * 2 + 1;
-  const transform = _ol_transform_.compose(this.hitDetectionTransform_,
+  const transform = composeTransform(this.hitDetectionTransform_,
     hitTolerance + 0.5, hitTolerance + 0.5,
     1 / resolution, -1 / resolution,
     -rotation,

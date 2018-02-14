@@ -15,7 +15,7 @@ import {transform2D} from '../../geom/flat/transform.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
 import VectorContext from '../VectorContext.js';
 import {defaultTextAlign, defaultFillStyle, defaultLineCap, defaultLineDash, defaultLineDashOffset, defaultLineJoin, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline, defaultFont} from '../canvas.js';
-import _ol_transform_ from '../../transform.js';
+import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
 /**
  * @classdesc
@@ -234,7 +234,7 @@ const CanvasImmediateRenderer = function(context, pixelRatio, extent, transform,
    * @private
    * @type {ol.Transform}
    */
-  this.tmpLocalTransform_ = _ol_transform_.create();
+  this.tmpLocalTransform_ = createTransform();
 
 };
 
@@ -275,7 +275,7 @@ CanvasImmediateRenderer.prototype.drawImages_ = function(flatCoordinates, offset
     if (rotation !== 0 || this.imageScale_ != 1) {
       const centerX = x + this.imageAnchorX_;
       const centerY = y + this.imageAnchorY_;
-      _ol_transform_.compose(localTransform,
+      composeTransform(localTransform,
         centerX, centerY,
         this.imageScale_, this.imageScale_,
         rotation,
@@ -325,7 +325,7 @@ CanvasImmediateRenderer.prototype.drawText_ = function(flatCoordinates, offset, 
     const x = pixelCoordinates[offset] + this.textOffsetX_;
     const y = pixelCoordinates[offset + 1] + this.textOffsetY_;
     if (rotation !== 0 || this.textScale_ != 1) {
-      const localTransform = _ol_transform_.compose(this.tmpLocalTransform_,
+      const localTransform = composeTransform(this.tmpLocalTransform_,
         x, y,
         this.textScale_, this.textScale_,
         rotation,

@@ -19,7 +19,13 @@ import _ol_render_replay_ from '../../render/replay.js';
 import RendererType from '../Type.js';
 import CanvasTileLayerRenderer from '../canvas/TileLayer.js';
 import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
-import _ol_transform_ from '../../transform.js';
+import {
+  create as createTransform,
+  compose as composeTransform,
+  reset as resetTransform,
+  scale as scaleTransform,
+  translate as translateTransform
+} from '../../transform.js';
 
 
 /**
@@ -79,7 +85,7 @@ const CanvasVectorTileLayerRenderer = function(layer) {
    * @private
    * @type {ol.Transform}
    */
-  this.tmpTransform_ = _ol_transform_.create();
+  this.tmpTransform_ = createTransform();
 
   // Use lower resolution for pure vector rendering. Closest resolution otherwise.
   this.zDirection = layer.getRenderMode() == VectorTileRenderType.VECTOR ? 1 : 0;
@@ -327,7 +333,7 @@ CanvasVectorTileLayerRenderer.prototype.getReplayTransform_ = function(tile, fra
   const size = frameState.size;
   const offsetX = Math.round(pixelRatio * size[0] / 2);
   const offsetY = Math.round(pixelRatio * size[1] / 2);
-  return _ol_transform_.compose(this.tmpTransform_,
+  return composeTransform(this.tmpTransform_,
     offsetX, offsetY,
     tileResolution / renderResolution, tileResolution / renderResolution,
     viewState.rotation,
@@ -502,9 +508,9 @@ CanvasVectorTileLayerRenderer.prototype.renderTileImage_ = function(
         continue;
       }
       const pixelScale = pixelRatio / resolution;
-      const transform = _ol_transform_.reset(this.tmpTransform_);
-      _ol_transform_.scale(transform, pixelScale, -pixelScale);
-      _ol_transform_.translate(transform, -tileExtent[0], -tileExtent[3]);
+      const transform = resetTransform(this.tmpTransform_);
+      scaleTransform(transform, pixelScale, -pixelScale);
+      translateTransform(transform, -tileExtent[0], -tileExtent[3]);
       const replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
       replayGroup.replay(context, transform, 0, {}, replays);
     }
