@@ -67,7 +67,7 @@ inherits(Interaction, BaseObject);
  * @api
  */
 Interaction.prototype.getActive = function() {
-  return (/** @type {boolean} */ this.get(InteractionProperty.ACTIVE));
+  return /** @type {boolean} */ (this.get(InteractionProperty.ACTIVE));
 };
 
 

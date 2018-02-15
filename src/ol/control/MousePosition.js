@@ -133,9 +133,7 @@ MousePosition.prototype.handleProjectionChanged_ = function() {
  * @api
  */
 MousePosition.prototype.getCoordinateFormat = function() {
-  return (
-    /** @type {ol.CoordinateFormatType|undefined} */ this.get(COORDINATE_FORMAT)
-  );
+  return /** @type {ol.CoordinateFormatType|undefined} */ (this.get(COORDINATE_FORMAT));
 };
 
 
@@ -147,9 +145,7 @@ MousePosition.prototype.getCoordinateFormat = function() {
  * @api
  */
 MousePosition.prototype.getProjection = function() {
-  return (
-    /** @type {ol.proj.Projection|undefined} */ this.get(PROJECTION)
-  );
+  return /** @type {ol.proj.Projection|undefined} */ (this.get(PROJECTION));
 };
 
 

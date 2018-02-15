@@ -190,7 +190,7 @@ Heatmap.prototype.createCircle_ = function() {
  * @observable
  */
 Heatmap.prototype.getBlur = function() {
-  return (/** @type {number} */ this.get(Property.BLUR));
+  return /** @type {number} */ (this.get(Property.BLUR));
 };
 
 
@@ -201,7 +201,7 @@ Heatmap.prototype.getBlur = function() {
  * @observable
  */
 Heatmap.prototype.getGradient = function() {
-  return (/** @type {Array.<string>} */ this.get(Property.GRADIENT));
+  return /** @type {Array.<string>} */ (this.get(Property.GRADIENT));
 };
 
 
@@ -212,7 +212,7 @@ Heatmap.prototype.getGradient = function() {
  * @observable
  */
 Heatmap.prototype.getRadius = function() {
-  return (/** @type {number} */ this.get(Property.RADIUS));
+  return /** @type {number} */ (this.get(Property.RADIUS));
 };
 
 

@@ -119,9 +119,7 @@ inherits(ScaleLine, Control);
  * @api
  */
 ScaleLine.prototype.getUnits = function() {
-  return (
-    /** @type {ol.control.ScaleLineUnits|undefined} */ this.get(UNITS)
-  );
+  return /** @type {ol.control.ScaleLineUnits|undefined} */ (this.get(UNITS));
 };
 
 

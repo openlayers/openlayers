@@ -197,9 +197,7 @@ Geolocation.prototype.positionError_ = function(error) {
  * @api
  */
 Geolocation.prototype.getAccuracy = function() {
-  return (
-    /** @type {number|undefined} */ this.get(GeolocationProperty.ACCURACY)
-  );
+  return /** @type {number|undefined} */ (this.get(GeolocationProperty.ACCURACY));
 };
 
 
@@ -210,9 +208,7 @@ Geolocation.prototype.getAccuracy = function() {
  * @api
  */
 Geolocation.prototype.getAccuracyGeometry = function() {
-  return (
-    /** @type {?ol.geom.Polygon} */ this.get(GeolocationProperty.ACCURACY_GEOMETRY) || null
-  );
+  return /** @type {?ol.geom.Polygon} */ (this.get(GeolocationProperty.ACCURACY_GEOMETRY) || null);
 };
 
 
@@ -224,9 +220,7 @@ Geolocation.prototype.getAccuracyGeometry = function() {
  * @api
  */
 Geolocation.prototype.getAltitude = function() {
-  return (
-    /** @type {number|undefined} */ this.get(GeolocationProperty.ALTITUDE)
-  );
+  return /** @type {number|undefined} */ (this.get(GeolocationProperty.ALTITUDE));
 };
 
 
@@ -238,9 +232,7 @@ Geolocation.prototype.getAltitude = function() {
  * @api
  */
 Geolocation.prototype.getAltitudeAccuracy = function() {
-  return (
-    /** @type {number|undefined} */ this.get(GeolocationProperty.ALTITUDE_ACCURACY)
-  );
+  return /** @type {number|undefined} */ (this.get(GeolocationProperty.ALTITUDE_ACCURACY));
 };
 
 
@@ -253,9 +245,7 @@ Geolocation.prototype.getAltitudeAccuracy = function() {
  * @api
  */
 Geolocation.prototype.getHeading = function() {
-  return (
-    /** @type {number|undefined} */ this.get(GeolocationProperty.HEADING)
-  );
+  return /** @type {number|undefined} */ (this.get(GeolocationProperty.HEADING));
 };
 
 
@@ -267,9 +257,7 @@ Geolocation.prototype.getHeading = function() {
  * @api
  */
 Geolocation.prototype.getPosition = function() {
-  return (
-    /** @type {ol.Coordinate|undefined} */ this.get(GeolocationProperty.POSITION)
-  );
+  return /** @type {ol.Coordinate|undefined} */ (this.get(GeolocationProperty.POSITION));
 };
 
 
@@ -281,9 +269,7 @@ Geolocation.prototype.getPosition = function() {
  * @api
  */
 Geolocation.prototype.getProjection = function() {
-  return (
-    /** @type {ol.proj.Projection|undefined} */ this.get(GeolocationProperty.PROJECTION)
-  );
+  return /** @type {ol.proj.Projection|undefined} */ (this.get(GeolocationProperty.PROJECTION));
 };
 
 
@@ -295,9 +281,7 @@ Geolocation.prototype.getProjection = function() {
  * @api
  */
 Geolocation.prototype.getSpeed = function() {
-  return (
-    /** @type {number|undefined} */ this.get(GeolocationProperty.SPEED)
-  );
+  return /** @type {number|undefined} */ (this.get(GeolocationProperty.SPEED));
 };
 
 
@@ -308,9 +292,7 @@ Geolocation.prototype.getSpeed = function() {
  * @api
  */
 Geolocation.prototype.getTracking = function() {
-  return (
-    /** @type {boolean} */ this.get(GeolocationProperty.TRACKING)
-  );
+  return /** @type {boolean} */ (this.get(GeolocationProperty.TRACKING));
 };
 
 
@@ -324,9 +306,7 @@ Geolocation.prototype.getTracking = function() {
  * @api
  */
 Geolocation.prototype.getTrackingOptions = function() {
-  return (
-    /** @type {GeolocationPositionOptions|undefined} */ this.get(GeolocationProperty.TRACKING_OPTIONS)
-  );
+  return /** @type {GeolocationPositionOptions|undefined} */ (this.get(GeolocationProperty.TRACKING_OPTIONS));
 };
 
 

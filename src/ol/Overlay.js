@@ -171,7 +171,7 @@ inherits(Overlay, BaseObject);
  * @api
  */
 Overlay.prototype.getElement = function() {
-  return (/** @type {Element|undefined} */ this.get(Property.ELEMENT));
+  return /** @type {Element|undefined} */ (this.get(Property.ELEMENT));
 };
 
 
@@ -192,7 +192,7 @@ Overlay.prototype.getId = function() {
  * @api
  */
 Overlay.prototype.getMap = function() {
-  return (/** @type {ol.PluggableMap|undefined} */ this.get(Property.MAP));
+  return /** @type {ol.PluggableMap|undefined} */ (this.get(Property.MAP));
 };
 
 
@@ -203,7 +203,7 @@ Overlay.prototype.getMap = function() {
  * @api
  */
 Overlay.prototype.getOffset = function() {
-  return (/** @type {Array.<number>} */ this.get(Property.OFFSET));
+  return /** @type {Array.<number>} */ (this.get(Property.OFFSET));
 };
 
 
@@ -215,7 +215,7 @@ Overlay.prototype.getOffset = function() {
  * @api
  */
 Overlay.prototype.getPosition = function() {
-  return (/** @type {ol.Coordinate|undefined} */ this.get(Property.POSITION));
+  return /** @type {ol.Coordinate|undefined} */ (this.get(Property.POSITION));
 };
 
 
@@ -227,7 +227,7 @@ Overlay.prototype.getPosition = function() {
  * @api
  */
 Overlay.prototype.getPositioning = function() {
-  return (/** @type {ol.OverlayPositioning} */ this.get(Property.POSITIONING));
+  return /** @type {ol.OverlayPositioning} */ (this.get(Property.POSITIONING));
 };
 
 

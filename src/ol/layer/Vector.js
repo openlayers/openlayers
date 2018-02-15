@@ -133,7 +133,7 @@ VectorLayer.prototype.getRenderBuffer = function() {
  *     order.
  */
 VectorLayer.prototype.getRenderOrder = function() {
-  return (/** @type {ol.RenderOrderFunction|null|undefined} */ this.get(Property.RENDER_ORDER));
+  return /** @type {ol.RenderOrderFunction|null|undefined} */ (this.get(Property.RENDER_ORDER));
 };
 
 

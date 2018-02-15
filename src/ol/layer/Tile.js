@@ -53,7 +53,7 @@ inherits(TileLayer, Layer);
  * @api
  */
 TileLayer.prototype.getPreload = function() {
-  return (/** @type {number} */ this.get(TileProperty.PRELOAD));
+  return /** @type {number} */ (this.get(TileProperty.PRELOAD));
 };
 
 
@@ -84,7 +84,7 @@ TileLayer.prototype.setPreload = function(preload) {
  * @api
  */
 TileLayer.prototype.getUseInterimTilesOnError = function() {
-  return (/** @type {boolean} */ this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR));
+  return /** @type {boolean} */ (this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR));
 };
 
 

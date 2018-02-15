@@ -157,7 +157,7 @@ LayerGroup.prototype.handleLayersRemove_ = function(collectionEvent) {
  * @api
  */
 LayerGroup.prototype.getLayers = function() {
-  return (/** @type {!ol.Collection.<ol.layer.Base>} */ this.get(Property.LAYERS));
+  return /** @type {!ol.Collection.<ol.layer.Base>} */ (this.get(Property.LAYERS));
 };
 
 

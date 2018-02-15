@@ -64,7 +64,7 @@ inherits(VectorTileLayer, VectorLayer);
  * @api
  */
 VectorTileLayer.prototype.getPreload = function() {
-  return (/** @type {number} */ this.get(TileProperty.PRELOAD));
+  return /** @type {number} */ (this.get(TileProperty.PRELOAD));
 };
 
 
@@ -75,7 +75,7 @@ VectorTileLayer.prototype.getPreload = function() {
  * @api
  */
 VectorTileLayer.prototype.getUseInterimTilesOnError = function() {
-  return (/** @type {boolean} */ this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR));
+  return /** @type {boolean} */ (this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR));
 };
 
 
