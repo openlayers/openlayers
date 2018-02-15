@@ -8,7 +8,7 @@ import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {equals} from '../../array.js';
 import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
-import _ol_layer_VectorRenderType_ from '../../layer/VectorRenderType.js';
+import VectorRenderType from '../../layer/VectorRenderType.js';
 import {assign} from '../../obj.js';
 import {getLayerRendererPlugins} from '../../plugins.js';
 import RendererType from '../Type.js';
@@ -62,7 +62,7 @@ inherits(CanvasImageLayerRenderer, IntermediateCanvasRenderer);
 CanvasImageLayerRenderer['handles'] = function(type, layer) {
   return type === RendererType.CANVAS && (layer.getType() === LayerType.IMAGE ||
       layer.getType() === LayerType.VECTOR &&
-      /** @type {ol.layer.Vector} */ (layer).getRenderMode() === _ol_layer_VectorRenderType_.IMAGE);
+      /** @type {ol.layer.Vector} */ (layer).getRenderMode() === VectorRenderType.IMAGE);
 };
 
 

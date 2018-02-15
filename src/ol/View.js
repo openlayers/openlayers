@@ -571,9 +571,7 @@ View.prototype.constrainRotation = function(rotation, opt_delta) {
  * @api
  */
 View.prototype.getCenter = function() {
-  return (
-    /** @type {ol.Coordinate|undefined} */ this.get(ViewProperty.CENTER)
-  );
+  return /** @type {ol.Coordinate|undefined} */ (this.get(ViewProperty.CENTER));
 };
 
 
@@ -700,9 +698,7 @@ View.prototype.getProjection = function() {
  * @api
  */
 View.prototype.getResolution = function() {
-  return (
-    /** @type {number|undefined} */ this.get(ViewProperty.RESOLUTION)
-  );
+  return /** @type {number|undefined} */ (this.get(ViewProperty.RESOLUTION));
 };
 
 
@@ -763,9 +759,7 @@ View.prototype.getResolutionForValueFunction = function(opt_power) {
  * @api
  */
 View.prototype.getRotation = function() {
-  return (
-    /** @type {number} */ this.get(ViewProperty.ROTATION)
-  );
+  return /** @type {number} */ (this.get(ViewProperty.ROTATION));
 };
 
 

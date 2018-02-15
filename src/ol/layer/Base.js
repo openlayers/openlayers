@@ -114,9 +114,7 @@ BaseLayer.prototype.getLayerStatesArray = function(opt_states) {};
  * @api
  */
 BaseLayer.prototype.getExtent = function() {
-  return (
-  /** @type {ol.Extent|undefined} */ this.get(LayerProperty.EXTENT)
-  );
+  return /** @type {ol.Extent|undefined} */ (this.get(LayerProperty.EXTENT));
 };
 
 
@@ -127,9 +125,7 @@ BaseLayer.prototype.getExtent = function() {
  * @api
  */
 BaseLayer.prototype.getMaxResolution = function() {
-  return (
-  /** @type {number} */ this.get(LayerProperty.MAX_RESOLUTION)
-  );
+  return /** @type {number} */ (this.get(LayerProperty.MAX_RESOLUTION));
 };
 
 
@@ -140,9 +136,7 @@ BaseLayer.prototype.getMaxResolution = function() {
  * @api
  */
 BaseLayer.prototype.getMinResolution = function() {
-  return (
-  /** @type {number} */ this.get(LayerProperty.MIN_RESOLUTION)
-  );
+  return /** @type {number} */ (this.get(LayerProperty.MIN_RESOLUTION));
 };
 
 
@@ -153,9 +147,7 @@ BaseLayer.prototype.getMinResolution = function() {
  * @api
  */
 BaseLayer.prototype.getOpacity = function() {
-  return (
-  /** @type {number} */ this.get(LayerProperty.OPACITY)
-  );
+  return /** @type {number} */ (this.get(LayerProperty.OPACITY));
 };
 
 
@@ -173,9 +165,7 @@ BaseLayer.prototype.getSourceState = function() {};
  * @api
  */
 BaseLayer.prototype.getVisible = function() {
-  return (
-  /** @type {boolean} */ this.get(LayerProperty.VISIBLE)
-  );
+  return /** @type {boolean} */ (this.get(LayerProperty.VISIBLE));
 };
 
 
@@ -187,9 +177,7 @@ BaseLayer.prototype.getVisible = function() {
  * @api
  */
 BaseLayer.prototype.getZIndex = function() {
-  return (
-  /** @type {number} */ this.get(LayerProperty.Z_INDEX)
-  );
+  return /** @type {number} */ (this.get(LayerProperty.Z_INDEX));
 };
 
 

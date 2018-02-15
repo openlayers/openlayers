@@ -9,7 +9,7 @@ import {listen, unlisten} from '../../events.js';
 import EventType from '../../events/EventType.js';
 import rbush from 'rbush';
 import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from '../../extent.js';
-import _ol_layer_VectorTileRenderType_ from '../../layer/VectorTileRenderType.js';
+import VectorTileRenderType from '../../layer/VectorTileRenderType.js';
 import {equivalent as equivalentProjection} from '../../proj.js';
 import Units from '../../proj/Units.js';
 import ReplayType from '../../render/ReplayType.js';
@@ -82,8 +82,7 @@ const CanvasVectorTileLayerRenderer = function(layer) {
   this.tmpTransform_ = _ol_transform_.create();
 
   // Use lower resolution for pure vector rendering. Closest resolution otherwise.
-  this.zDirection =
-      layer.getRenderMode() == _ol_layer_VectorTileRenderType_.VECTOR ? 1 : 0;
+  this.zDirection = layer.getRenderMode() == VectorTileRenderType.VECTOR ? 1 : 0;
 
   listen(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
 
@@ -132,10 +131,10 @@ CanvasVectorTileLayerRenderer.prototype.prepareFrame = function(frameState, laye
   if (this.renderedLayerRevision_ != layerRevision) {
     this.renderedTiles.length = 0;
     const renderMode = layer.getRenderMode();
-    if (!this.context && renderMode != _ol_layer_VectorTileRenderType_.VECTOR) {
+    if (!this.context && renderMode != VectorTileRenderType.VECTOR) {
       this.context = createCanvasContext2D();
     }
-    if (this.context && renderMode == _ol_layer_VectorTileRenderType_.VECTOR) {
+    if (this.context && renderMode == VectorTileRenderType.VECTOR) {
       this.context = null;
     }
   }
@@ -398,7 +397,7 @@ CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameSta
         continue;
       }
       const replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
-      if (renderMode != _ol_layer_VectorTileRenderType_.VECTOR && !replayGroup.hasReplays(replayTypes)) {
+      if (renderMode != VectorTileRenderType.VECTOR && !replayGroup.hasReplays(replayTypes)) {
         continue;
       }
       if (!transform) {

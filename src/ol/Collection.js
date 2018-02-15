@@ -145,7 +145,7 @@ Collection.prototype.item = function(index) {
  * @api
  */
 Collection.prototype.getLength = function() {
-  return (/** @type {number} */ this.get(Property.LENGTH));
+  return /** @type {number} */ (this.get(Property.LENGTH));
 };
 
 

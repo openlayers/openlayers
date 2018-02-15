@@ -664,9 +664,7 @@ PluggableMap.prototype.getEventPixel = function(event) {
  * @api
  */
 PluggableMap.prototype.getTarget = function() {
-  return (
-    /** @type {Element|string|undefined} */ this.get(MapProperty.TARGET)
-  );
+  return /** @type {Element|string|undefined} */ (this.get(MapProperty.TARGET));
 };
 
 
@@ -762,9 +760,7 @@ PluggableMap.prototype.getInteractions = function() {
  * @api
  */
 PluggableMap.prototype.getLayerGroup = function() {
-  return (
-    /** @type {ol.layer.Group} */ this.get(MapProperty.LAYERGROUP)
-  );
+  return /** @type {ol.layer.Group} */ (this.get(MapProperty.LAYERGROUP));
 };
 
 
@@ -813,9 +809,7 @@ PluggableMap.prototype.getRenderer = function() {
  * @api
  */
 PluggableMap.prototype.getSize = function() {
-  return (
-    /** @type {ol.Size|undefined} */ this.get(MapProperty.SIZE)
-  );
+  return /** @type {ol.Size|undefined} */ (this.get(MapProperty.SIZE));
 };
 
 
@@ -827,9 +821,7 @@ PluggableMap.prototype.getSize = function() {
  * @api
  */
 PluggableMap.prototype.getView = function() {
-  return (
-    /** @type {ol.View} */ this.get(MapProperty.VIEW)
-  );
+  return /** @type {ol.View} */ (this.get(MapProperty.VIEW));
 };
 
 

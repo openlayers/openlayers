@@ -178,16 +178,14 @@ Layer.prototype.setMap = function(map) {
     this.mapRenderKey_ = null;
   }
   if (map) {
-    this.mapPrecomposeKey_ = listen(
-      map, RenderEventType.PRECOMPOSE, function(evt) {
-        const layerState = this.getLayerState();
-        layerState.managed = false;
-        layerState.zIndex = Infinity;
-        evt.frameState.layerStatesArray.push(layerState);
-        evt.frameState.layerStates[getUid(this)] = layerState;
-      }, this);
-    this.mapRenderKey_ = listen(
-      this, EventType.CHANGE, map.render, map);
+    this.mapPrecomposeKey_ = listen(map, RenderEventType.PRECOMPOSE, function(evt) {
+      const layerState = this.getLayerState();
+      layerState.managed = false;
+      layerState.zIndex = Infinity;
+      evt.frameState.layerStatesArray.push(layerState);
+      evt.frameState.layerStates[getUid(this)] = layerState;
+    }, this);
+    this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
     this.changed();
   }
 };

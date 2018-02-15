@@ -796,9 +796,7 @@ WKT.prototype.readGeometry;
 WKT.prototype.readGeometryFromText = function(text, opt_options) {
   const geometry = this.parse_(text);
   if (geometry) {
-    return (
-      /** @type {ol.geom.Geometry} */ transformWithOptions(geometry, false, opt_options)
-    );
+    return /** @type {ol.geom.Geometry} */ (transformWithOptions(geometry, false, opt_options));
   } else {
     return null;
   }

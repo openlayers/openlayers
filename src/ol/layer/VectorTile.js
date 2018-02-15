@@ -4,9 +4,9 @@
 import {inherits} from '../index.js';
 import LayerType from '../LayerType.js';
 import {assert} from '../asserts.js';
-import _ol_layer_TileProperty_ from '../layer/TileProperty.js';
+import TileProperty from '../layer/TileProperty.js';
 import VectorLayer from '../layer/Vector.js';
-import _ol_layer_VectorTileRenderType_ from '../layer/VectorTileRenderType.js';
+import VectorTileRenderType from '../layer/VectorTileRenderType.js';
 import {assign} from '../obj.js';
 
 /**
@@ -24,14 +24,14 @@ import {assign} from '../obj.js';
 const VectorTileLayer = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
-  let renderMode = options.renderMode || _ol_layer_VectorTileRenderType_.HYBRID;
+  let renderMode = options.renderMode || VectorTileRenderType.HYBRID;
   assert(renderMode == undefined ||
-      renderMode == _ol_layer_VectorTileRenderType_.IMAGE ||
-      renderMode == _ol_layer_VectorTileRenderType_.HYBRID ||
-      renderMode == _ol_layer_VectorTileRenderType_.VECTOR,
+      renderMode == VectorTileRenderType.IMAGE ||
+      renderMode == VectorTileRenderType.HYBRID ||
+      renderMode == VectorTileRenderType.VECTOR,
   28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
-  if (options.declutter && renderMode == _ol_layer_VectorTileRenderType_.IMAGE) {
-    renderMode = _ol_layer_VectorTileRenderType_.HYBRID;
+  if (options.declutter && renderMode == VectorTileRenderType.IMAGE) {
+    renderMode = VectorTileRenderType.HYBRID;
   }
   options.renderMode = renderMode;
 
@@ -64,9 +64,7 @@ inherits(VectorTileLayer, VectorLayer);
  * @api
  */
 VectorTileLayer.prototype.getPreload = function() {
-  return (
-  /** @type {number} */ this.get(_ol_layer_TileProperty_.PRELOAD)
-  );
+  return /** @type {number} */ (this.get(TileProperty.PRELOAD));
 };
 
 
@@ -77,9 +75,7 @@ VectorTileLayer.prototype.getPreload = function() {
  * @api
  */
 VectorTileLayer.prototype.getUseInterimTilesOnError = function() {
-  return (
-  /** @type {boolean} */ this.get(_ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR)
-  );
+  return /** @type {boolean} */ (this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR));
 };
 
 
@@ -90,7 +86,7 @@ VectorTileLayer.prototype.getUseInterimTilesOnError = function() {
  * @api
  */
 VectorTileLayer.prototype.setPreload = function(preload) {
-  this.set(_ol_layer_TileProperty_.PRELOAD, preload);
+  this.set(TileProperty.PRELOAD, preload);
 };
 
 
@@ -101,8 +97,7 @@ VectorTileLayer.prototype.setPreload = function(preload) {
  * @api
  */
 VectorTileLayer.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
-  this.set(
-    _ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+  this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
 };
 
 

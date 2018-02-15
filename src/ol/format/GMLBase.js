@@ -199,12 +199,9 @@ GMLBase.prototype.readGeometryElement = function(node, objectStack) {
   context['srsName'] = node.firstElementChild.getAttribute('srsName');
   context['srsDimension'] = node.firstElementChild.getAttribute('srsDimension');
   /** @type {ol.geom.Geometry} */
-  const geometry = pushParseAndPop(null,
-    this.GEOMETRY_PARSERS_, node, objectStack, this);
+  const geometry = pushParseAndPop(null, this.GEOMETRY_PARSERS_, node, objectStack, this);
   if (geometry) {
-    return (
-      /** @type {ol.geom.Geometry} */ transformWithOptions(geometry, false, context)
-    );
+    return /** @type {ol.geom.Geometry} */ (transformWithOptions(geometry, false, context));
   } else {
     return undefined;
   }
