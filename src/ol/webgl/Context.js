@@ -272,7 +272,7 @@ WebGLContext.prototype.initHitDetectionFramebuffer_ = function() {
   const framebuffer = gl.createFramebuffer();
   gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
 
-  const texture = WebGLContext.createEmptyTexture(gl, 1, 1);
+  const texture = createEmptyTexture(gl, 1, 1);
   const renderbuffer = gl.createRenderbuffer();
   gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
   gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 1, 1);
@@ -342,13 +342,9 @@ function createTextureInternal(gl, opt_wrapS, opt_wrapT) {
  * @param {number=} opt_wrapT wrapT.
  * @return {WebGLTexture} The texture.
  */
-export function createEmptyTexture(
-  gl, width, height, opt_wrapS, opt_wrapT) {
+export function createEmptyTexture(gl, width, height, opt_wrapS, opt_wrapT) {
   const texture = createTextureInternal(gl, opt_wrapS, opt_wrapT);
-  gl.texImage2D(
-    gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-    null);
-
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
   return texture;
 }
 
@@ -362,9 +358,7 @@ export function createEmptyTexture(
  */
 export function createTexture(gl, image, opt_wrapS, opt_wrapT) {
   const texture = createTextureInternal(gl, opt_wrapS, opt_wrapT);
-  gl.texImage2D(
-    gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
   return texture;
 }
 
