@@ -1,14 +1,14 @@
-import ResolutionConstraint from '../../../src/ol/ResolutionConstraint.js';
+import {createSnapToResolutions, createSnapToPower} from '../../../src/ol/resolutionconstraint.js';
 
 
-describe('ol.ResolutionConstraint', function() {
+describe('ol.resolutionconstraint', function() {
 
   describe('SnapToResolution', function() {
 
     let resolutionConstraint;
 
     beforeEach(function() {
-      resolutionConstraint = ResolutionConstraint.createSnapToResolutions(
+      resolutionConstraint = createSnapToResolutions(
         [1000, 500, 250, 100]);
     });
 
@@ -46,7 +46,7 @@ describe('ol.ResolutionConstraint', function() {
 
     beforeEach(function() {
       resolutionConstraint =
-          ResolutionConstraint.createSnapToResolutions(
+          createSnapToResolutions(
             [1000, 500, 250, 100]);
     });
 
@@ -96,7 +96,7 @@ describe('ol.ResolutionConstraint', function() {
 
     beforeEach(function() {
       resolutionConstraint =
-          ResolutionConstraint.createSnapToPower(2, 1024, 10);
+          createSnapToPower(2, 1024, 10);
     });
 
     describe('delta 0', function() {
@@ -154,7 +154,7 @@ describe('ol.ResolutionConstraint', function() {
 
     beforeEach(function() {
       resolutionConstraint =
-          ResolutionConstraint.createSnapToPower(2, 1024, 10);
+          createSnapToPower(2, 1024, 10);
     });
 
     describe('delta 0, direction 0', function() {

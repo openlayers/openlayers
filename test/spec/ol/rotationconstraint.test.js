@@ -1,12 +1,12 @@
-import RotationConstraint from '../../../src/ol/RotationConstraint.js';
+import {createSnapToZero} from '../../../src/ol/rotationconstraint.js';
 
 
-describe('ol.RotationConstraint', function() {
+describe('ol.rotationconstraint', function() {
 
   describe('SnapToZero', function() {
 
     it('returns expected rotation value', function() {
-      const rotationConstraint = RotationConstraint.createSnapToZero(0.3);
+      const rotationConstraint = createSnapToZero(0.3);
 
       expect(rotationConstraint(0.1, 0)).to.eql(0);
       expect(rotationConstraint(0.2, 0)).to.eql(0);

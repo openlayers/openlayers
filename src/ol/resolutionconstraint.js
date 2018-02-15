@@ -1,16 +1,14 @@
 /**
- * @module ol/ResolutionConstraint
+ * @module ol/resolutionconstraint
  */
 import {linearFindNearest} from './array.js';
 import {clamp} from './math.js';
-const ResolutionConstraint = {};
-
 
 /**
  * @param {Array.<number>} resolutions Resolutions.
  * @return {ol.ResolutionConstraintType} Zoom function.
  */
-ResolutionConstraint.createSnapToResolutions = function(resolutions) {
+export function createSnapToResolutions(resolutions) {
   return (
     /**
      * @param {number|undefined} resolution Resolution.
@@ -34,7 +32,7 @@ ResolutionConstraint.createSnapToResolutions = function(resolutions) {
       }
     }
   );
-};
+}
 
 
 /**
@@ -43,7 +41,7 @@ ResolutionConstraint.createSnapToResolutions = function(resolutions) {
  * @param {number=} opt_maxLevel Maximum level.
  * @return {ol.ResolutionConstraintType} Zoom function.
  */
-ResolutionConstraint.createSnapToPower = function(power, maxResolution, opt_maxLevel) {
+export function createSnapToPower(power, maxResolution, opt_maxLevel) {
   return (
     /**
      * @param {number|undefined} resolution Resolution.
@@ -65,5 +63,4 @@ ResolutionConstraint.createSnapToPower = function(power, maxResolution, opt_maxL
         return undefined;
       }
     });
-};
-export default ResolutionConstraint;
+}

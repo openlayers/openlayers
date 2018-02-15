@@ -3,10 +3,10 @@
  */
 import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 import {inherits, getUid, nullFunction} from './index.js';
-import CenterConstraint from './CenterConstraint.js';
+import {createExtent, none as centerNone} from './centerconstraint.js';
 import BaseObject from './Object.js';
-import ResolutionConstraint from './ResolutionConstraint.js';
-import RotationConstraint from './RotationConstraint.js';
+import {createSnapToResolutions, createSnapToPower} from './resolutionconstraint.js';
+import {createSnapToZero, createSnapToN, none as rotationNone, disable} from './rotationconstraint.js';
 import ViewHint from './ViewHint.js';
 import ViewProperty from './ViewProperty.js';
 import {linearFindNearest} from './array.js';
@@ -1092,9 +1092,9 @@ View.prototype.setZoom = function(zoom) {
  */
 export function createCenterConstraint(options) {
   if (options.extent !== undefined) {
-    return CenterConstraint.createExtent(options.extent);
+    return createExtent(options.extent);
   } else {
-    return CenterConstraint.none;
+    return centerNone;
   }
 }
 
@@ -1128,7 +1128,7 @@ export function createResolutionConstraint(options) {
     maxResolution = resolutions[minZoom];
     minResolution = resolutions[maxZoom] !== undefined ?
       resolutions[maxZoom] : resolutions[resolutions.length - 1];
-    resolutionConstraint = ResolutionConstraint.createSnapToResolutions(
+    resolutionConstraint = createSnapToResolutions(
       resolutions);
   } else {
     // calculate the default min and max resolution
@@ -1173,7 +1173,7 @@ export function createResolutionConstraint(options) {
       Math.log(maxResolution / minResolution) / Math.log(zoomFactor));
     minResolution = maxResolution / Math.pow(zoomFactor, maxZoom - minZoom);
 
-    resolutionConstraint = ResolutionConstraint.createSnapToPower(
+    resolutionConstraint = createSnapToPower(
       zoomFactor, maxResolution, maxZoom - minZoom);
   }
   return {constraint: resolutionConstraint, maxResolution: maxResolution,
@@ -1191,16 +1191,16 @@ export function createRotationConstraint(options) {
   if (enableRotation) {
     const constrainRotation = options.constrainRotation;
     if (constrainRotation === undefined || constrainRotation === true) {
-      return RotationConstraint.createSnapToZero();
+      return createSnapToZero();
     } else if (constrainRotation === false) {
-      return RotationConstraint.none;
+      return rotationNone;
     } else if (typeof constrainRotation === 'number') {
-      return RotationConstraint.createSnapToN(constrainRotation);
+      return createSnapToN(constrainRotation);
     } else {
-      return RotationConstraint.none;
+      return rotationNone;
     }
   } else {
-    return RotationConstraint.disable;
+    return disable;
   }
 }
 
