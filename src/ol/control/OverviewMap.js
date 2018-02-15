@@ -13,7 +13,7 @@ import OverlayPositioning from '../OverlayPositioning.js';
 import ViewProperty from '../ViewProperty.js';
 import Control from '../control/Control.js';
 import {rotate as rotateCoordinate, add as addCoordinate} from '../coordinate.js';
-import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
+import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_COLLAPSED} from '../css.js';
 import {replaceNode} from '../dom.js';
 import {listen, listenOnce, unlisten} from '../events.js';
 import EventType from '../events/EventType.js';
@@ -150,7 +150,7 @@ const OverviewMap = function(opt_options) {
   this.ovmap_.addOverlay(this.boxOverlay_);
 
   const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL +
-      (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
+      (this.collapsed_ && this.collapsible_ ? ' ' + CLASS_COLLAPSED : '') +
       (this.collapsible_ ? '' : ' ol-uncollapsible');
   const element = document.createElement('div');
   element.className = cssClasses;
@@ -491,7 +491,7 @@ OverviewMap.prototype.handleClick_ = function(event) {
  * @private
  */
 OverviewMap.prototype.handleToggle_ = function() {
-  this.element.classList.toggle('ol-collapsed');
+  this.element.classList.toggle(CLASS_COLLAPSED);
   if (this.collapsed_) {
     replaceNode(this.collapseLabel_, this.label_);
   } else {
