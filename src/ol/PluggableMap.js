@@ -76,6 +76,8 @@ export let MapOptions;
  *     Note that layers are rendered in the order supplied, so if you want, for
  *     example, a vector layer to appear on top of a tile layer, it must come
  *     after the tile layer.
+ * @param {number|undefined} options.maxTilesLoading Maximum number tiles to load
+ *     simultaneously.  Default is `16`.
  * @param {boolean|undefined} options.loadTilesWhileAnimating When set to true,
  *     tiles will be loaded during animations. This may improve the user
  *     experience, but can also make animations stutter on devices with slow
@@ -114,6 +116,12 @@ const PluggableMap = function(options) {
   BaseObject.call(this);
 
   const optionsInternal = createOptionsInternal(options);
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.maxTilesLoading_ = options.maxTilesLoading !== undefined ? options.maxTilesLoading : 16;
 
   /**
    * @type {boolean}
@@ -945,7 +953,7 @@ PluggableMap.prototype.handlePostRender = function() {
   //   loading tiles that will quickly disappear from view.
   const tileQueue = this.tileQueue_;
   if (!tileQueue.isEmpty()) {
-    let maxTotalLoading = 16;
+    let maxTotalLoading = this.maxTilesLoading_;
     let maxNewLoads = maxTotalLoading;
     if (frameState) {
       const hints = frameState.viewHints;

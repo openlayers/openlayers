@@ -3649,6 +3649,7 @@ olx.layer.TileOptions.prototype.zIndex;
  *     map: (ol.PluggableMap|undefined),
  *     declutter: (boolean|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
+ *     maxTilesLoading: (number|undefined),
  *     updateWhileAnimating: (boolean|undefined),
  *     updateWhileInteracting: (boolean|undefined),
  *     visible: (boolean|undefined),
@@ -3762,6 +3763,12 @@ olx.layer.VectorOptions.prototype.declutter;
  */
 olx.layer.VectorOptions.prototype.style;
 
+
+/**
+ * Maximum number tiles to load simultaneously.  Default is `16`.
+ * @type {number|undefined}
+ */
+olx.layer.VectorOptions.prototype.maxTilesLoading;
 
 /**
  * When set to `true`, feature batches will be recreated during animations.
