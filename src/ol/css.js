@@ -49,6 +49,16 @@ export const CLASS_CONTROL = 'ol-control';
 
 
 /**
+ * The CSS class that we'll give the DOM elements that are collapsed, i.e.
+ * to those elements which usually can be expanded.
+ *
+ * @const
+ * @type {string}
+ */
+export const CLASS_COLLAPSED = 'ol-collapsed';
+
+
+/**
  * Get the list of font families from a font spec.  Note that this doesn't work
  * for font families that have commas in them.
  * @param {string} The CSS font property.
