@@ -9,7 +9,7 @@ import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
 import {getInteriorPointOfArray, getInteriorPointsOfMultiArray} from '../geom/flat/interiorpoint.js';
 import {interpolatePoint} from '../geom/flat/interpolate.js';
 import {transform2D} from '../geom/flat/transform.js';
-import _ol_transform_ from '../transform.js';
+import {create as createTransform, compose as composeTransform} from '../transform.js';
 
 /**
  * Lightweight, read-only, {@link ol.Feature} and {@link ol.geom.Geometry} like
@@ -78,7 +78,7 @@ const RenderFeature = function(type, flatCoordinates, ends, properties, id) {
    * @private
    * @type {ol.Transform}
    */
-  this.tmpTransform_ = _ol_transform_.create();
+  this.tmpTransform_ = createTransform();
 };
 
 
@@ -268,7 +268,7 @@ RenderFeature.prototype.transform = function(source, destination) {
   const projectedExtent = source.getWorldExtent();
   const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
   const transform = this.tmpTransform_;
-  _ol_transform_.compose(transform,
+  composeTransform(transform,
     projectedExtent[0], projectedExtent[3],
     scale, -scale, 0,
     0, 0);

@@ -18,7 +18,12 @@ import VectorContext from '../VectorContext.js';
 import {drawImage, resetTransform, defaultPadding, defaultFillStyle, defaultStrokeStyle, defaultMiterLimit, defaultLineWidth, defaultLineJoin, defaultLineDashOffset, defaultLineDash, defaultLineCap} from '../canvas.js';
 import CanvasInstruction from '../canvas/Instruction.js';
 import _ol_render_replay_ from '../replay.js';
-import _ol_transform_ from '../../transform.js';
+import {
+  create as createTransform,
+  compose as composeTransform,
+  apply as applyTransform,
+  setFromArray as transformSetFromArray
+} from '../../transform.js';
 
 /**
  * @constructor
@@ -129,7 +134,7 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
    * @private
    * @type {!ol.Transform}
    */
-  this.renderedTransform_ = _ol_transform_.create();
+  this.renderedTransform_ = createTransform();
 
   /**
    * @protected
@@ -159,13 +164,13 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
    * @private
    * @type {!ol.Transform}
    */
-  this.tmpLocalTransform_ = _ol_transform_.create();
+  this.tmpLocalTransform_ = createTransform();
 
   /**
    * @private
    * @type {!ol.Transform}
    */
-  this.resetTransform = _ol_transform_.create();
+  this.resetTransform = createTransform();
 };
 
 inherits(CanvasReplay, VectorContext);
@@ -256,14 +261,14 @@ CanvasReplay.prototype.replayImage_ = function(context, x, y, image,
   if (rotation !== 0) {
     const centerX = x + anchorX;
     const centerY = y + anchorY;
-    transform = _ol_transform_.compose(localTransform,
+    transform = composeTransform(localTransform,
       centerX, centerY, 1, 1, rotation, -centerX, -centerY);
 
     createOrUpdateEmpty(box);
-    extendCoordinate(box, _ol_transform_.apply(localTransform, p1));
-    extendCoordinate(box, _ol_transform_.apply(localTransform, p2));
-    extendCoordinate(box, _ol_transform_.apply(localTransform, p3));
-    extendCoordinate(box, _ol_transform_.apply(localTransform, p4));
+    extendCoordinate(box, applyTransform(localTransform, p1));
+    extendCoordinate(box, applyTransform(localTransform, p2));
+    extendCoordinate(box, applyTransform(localTransform, p3));
+    extendCoordinate(box, applyTransform(localTransform, p4));
   } else {
     createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, box);
   }
@@ -457,7 +462,7 @@ CanvasReplay.prototype.beginGeometry = function(geometry, feature) {
  */
 CanvasReplay.prototype.fill_ = function(context) {
   if (this.fillOrigin_) {
-    const origin = _ol_transform_.apply(this.renderedTransform_, this.fillOrigin_.slice());
+    const origin = applyTransform(this.renderedTransform_, this.fillOrigin_.slice());
     context.translate(origin[0], origin[1]);
     context.rotate(this.viewRotation_);
   }
@@ -551,7 +556,7 @@ CanvasReplay.prototype.replay_ = function(
     pixelCoordinates = transform2D(
       this.coordinates, 0, this.coordinates.length, 2,
       transform, this.pixelCoordinates_);
-    _ol_transform_.setFromArray(this.renderedTransform_, transform);
+    transformSetFromArray(this.renderedTransform_, transform);
   }
   const skipFeatures = !isEmpty(skippedFeaturesHash);
   let i = 0; // instruction index

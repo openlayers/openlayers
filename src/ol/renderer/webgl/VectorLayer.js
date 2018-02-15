@@ -9,7 +9,7 @@ import WebGLReplayGroup from '../../render/webgl/ReplayGroup.js';
 import RendererType from '../Type.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import WebGLLayerRenderer from '../webgl/Layer.js';
-import _ol_transform_ from '../../transform.js';
+import {apply as applyTransform} from '../../transform.js';
 
 /**
  * @constructor
@@ -186,7 +186,7 @@ WebGLVectorLayerRenderer.prototype.hasFeatureAtCoordinate = function(coordinate,
  * @inheritDoc
  */
 WebGLVectorLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
-  const coordinate = _ol_transform_.apply(
+  const coordinate = applyTransform(
     frameState.pixelToCoordinateTransform, pixel.slice());
   const hasFeature = this.hasFeatureAtCoordinate(coordinate, frameState);
 

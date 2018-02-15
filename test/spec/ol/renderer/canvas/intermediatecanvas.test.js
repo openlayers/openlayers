@@ -1,4 +1,4 @@
-import _ol_transform_ from '../../../../../src/ol/transform.js';
+import {create as createTransform} from '../../../../../src/ol/transform.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
 import MapRenderer from '../../../../../src/ol/renderer/Map.js';
 import IntermediateCanvasRenderer from '../../../../../src/ol/renderer/canvas/IntermediateCanvas.js';
@@ -27,11 +27,11 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
         },
         size: [10, 10],
         pixelRatio: 1,
-        coordinateToPixelTransform: _ol_transform_.create(),
-        pixelToCoordinateTransform: _ol_transform_.create()
+        coordinateToPixelTransform: createTransform(),
+        pixelToCoordinateTransform: createTransform()
       };
       renderer.getImageTransform = function() {
-        return _ol_transform_.create();
+        return createTransform();
       };
       MapRenderer.prototype.calculateMatrices2D(frameState);
       layerState = layer.getLayerState();

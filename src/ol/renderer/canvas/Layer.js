@@ -9,7 +9,7 @@ import RenderEventType from '../../render/EventType.js';
 import {rotateAtOffset} from '../../render/canvas.js';
 import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
 import LayerRenderer from '../Layer.js';
-import _ol_transform_ from '../../transform.js';
+import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
 
 /**
  * @constructor
@@ -31,7 +31,7 @@ const CanvasLayerRenderer = function(layer) {
    * @private
    * @type {ol.Transform}
    */
-  this.transform_ = _ol_transform_.create();
+  this.transform_ = createTransform();
 
 };
 
@@ -54,10 +54,10 @@ CanvasLayerRenderer.prototype.clip = function(context, frameState, extent) {
   const bottomRight = getBottomRight(/** @type {ol.Extent} */ (extent));
   const bottomLeft = getBottomLeft(/** @type {ol.Extent} */ (extent));
 
-  _ol_transform_.apply(frameState.coordinateToPixelTransform, topLeft);
-  _ol_transform_.apply(frameState.coordinateToPixelTransform, topRight);
-  _ol_transform_.apply(frameState.coordinateToPixelTransform, bottomRight);
-  _ol_transform_.apply(frameState.coordinateToPixelTransform, bottomLeft);
+  applyTransform(frameState.coordinateToPixelTransform, topLeft);
+  applyTransform(frameState.coordinateToPixelTransform, topRight);
+  applyTransform(frameState.coordinateToPixelTransform, bottomRight);
+  applyTransform(frameState.coordinateToPixelTransform, bottomLeft);
 
   context.save();
   rotateAtOffset(context, -rotation, width / 2, height / 2);
@@ -168,7 +168,7 @@ CanvasLayerRenderer.prototype.getTransform = function(frameState, offsetX) {
   const angle = -viewState.rotation;
   const dx2 = -viewState.center[0] + offsetX;
   const dy2 = -viewState.center[1];
-  return _ol_transform_.compose(this.transform_, dx1, dy1, sx, sy, angle, dx2, dy2);
+  return composeTransform(this.transform_, dx1, dy1, sx, sy, angle, dx2, dy2);
 };
 
 

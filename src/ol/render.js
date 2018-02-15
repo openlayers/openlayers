@@ -2,7 +2,7 @@
  * @module ol/render
  */
 import {DEVICE_PIXEL_RATIO} from './has.js';
-import _ol_transform_ from './transform.js';
+import {create as createTransform, scale as scaleTransform} from './transform.js';
 import CanvasImmediateRenderer from './render/canvas/Immediate.js';
 
 
@@ -38,6 +38,6 @@ export function toContext(context, opt_options) {
     canvas.style.height = size[1] + 'px';
   }
   const extent = [0, 0, canvas.width, canvas.height];
-  const transform = _ol_transform_.scale(_ol_transform_.create(), pixelRatio, pixelRatio);
+  const transform = scaleTransform(createTransform(), pixelRatio, pixelRatio);
   return new CanvasImmediateRenderer(context, pixelRatio, extent, transform, 0);
 }

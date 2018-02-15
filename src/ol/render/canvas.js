@@ -5,7 +5,7 @@ import {getFontFamilies} from '../css.js';
 import {createCanvasContext2D} from '../dom.js';
 import {clear} from '../obj.js';
 import LRUCache from '../structs/LRUCache.js';
-import _ol_transform_ from '../transform.js';
+import {create as createTransform} from '../transform.js';
 
 
 /**
@@ -257,7 +257,7 @@ export function rotateAtOffset(context, rotation, offsetX, offsetY) {
 }
 
 
-export const resetTransform = _ol_transform_.create();
+export const resetTransform = createTransform();
 
 
 /**

@@ -28,7 +28,7 @@ import {getMapRendererPlugins} from './plugins.js';
 import RendererType from './renderer/Type.js';
 import {hasArea} from './size.js';
 import PriorityQueue from './structs/PriorityQueue.js';
-import _ol_transform_ from './transform.js';
+import {create as createTransform, apply as applyTransform} from './transform.js';
 
 
 /**
@@ -164,13 +164,13 @@ const PluggableMap = function(options) {
    * @private
    * @type {ol.Transform}
    */
-  this.coordinateToPixelTransform_ = _ol_transform_.create();
+  this.coordinateToPixelTransform_ = createTransform();
 
   /**
    * @private
    * @type {ol.Transform}
    */
-  this.pixelToCoordinateTransform_ = _ol_transform_.create();
+  this.pixelToCoordinateTransform_ = createTransform();
 
   /**
    * @private
@@ -707,7 +707,7 @@ PluggableMap.prototype.getCoordinateFromPixel = function(pixel) {
   if (!frameState) {
     return null;
   } else {
-    return _ol_transform_.apply(frameState.pixelToCoordinateTransform, pixel.slice());
+    return applyTransform(frameState.pixelToCoordinateTransform, pixel.slice());
   }
 };
 
@@ -795,7 +795,7 @@ PluggableMap.prototype.getPixelFromCoordinate = function(coordinate) {
   if (!frameState) {
     return null;
   } else {
-    return _ol_transform_.apply(frameState.coordinateToPixelTransform,
+    return applyTransform(frameState.coordinateToPixelTransform,
       coordinate.slice(0, 2));
   }
 };

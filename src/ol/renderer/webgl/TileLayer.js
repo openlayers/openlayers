@@ -16,7 +16,13 @@ import WebGLLayerRenderer from '../webgl/Layer.js';
 import {fragment, vertex} from '../webgl/tilelayershader.js';
 import Locations from '../webgl/tilelayershader/Locations.js';
 import {toSize} from '../../size.js';
-import _ol_transform_ from '../../transform.js';
+import {
+  reset as resetTransform,
+  rotate as rotateTransform,
+  scale as scaleTransform,
+  translate as translateTransform,
+  apply as applyTransform
+} from '../../transform.js';
 import _ol_webgl_ from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
@@ -355,21 +361,21 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
   this.scheduleExpireCache(frameState, tileSource);
 
   const texCoordMatrix = this.texCoordMatrix;
-  _ol_transform_.reset(texCoordMatrix);
-  _ol_transform_.translate(texCoordMatrix,
+  resetTransform(texCoordMatrix);
+  translateTransform(texCoordMatrix,
     (Math.round(center[0] / tileResolution) * tileResolution - framebufferExtent[0]) /
           (framebufferExtent[2] - framebufferExtent[0]),
     (Math.round(center[1] / tileResolution) * tileResolution - framebufferExtent[1]) /
           (framebufferExtent[3] - framebufferExtent[1]));
   if (viewState.rotation !== 0) {
-    _ol_transform_.rotate(texCoordMatrix, viewState.rotation);
+    rotateTransform(texCoordMatrix, viewState.rotation);
   }
-  _ol_transform_.scale(texCoordMatrix,
+  scaleTransform(texCoordMatrix,
     frameState.size[0] * viewState.resolution /
           (framebufferExtent[2] - framebufferExtent[0]),
     frameState.size[1] * viewState.resolution /
           (framebufferExtent[3] - framebufferExtent[1]));
-  _ol_transform_.translate(texCoordMatrix, -0.5, -0.5);
+  translateTransform(texCoordMatrix, -0.5, -0.5);
 
   return true;
 };
@@ -387,7 +393,7 @@ WebGLTileLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameStat
     pixel[0] / frameState.size[0],
     (frameState.size[1] - pixel[1]) / frameState.size[1]];
 
-  const pixelOnFrameBufferScaled = _ol_transform_.apply(
+  const pixelOnFrameBufferScaled = applyTransform(
     this.texCoordMatrix, pixelOnMapScaled.slice());
   const pixelOnFrameBuffer = [
     pixelOnFrameBufferScaled[0] * this.framebufferDimension,

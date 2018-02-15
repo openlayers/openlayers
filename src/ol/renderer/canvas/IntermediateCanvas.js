@@ -6,7 +6,7 @@ import {scale as scaleCoordinate} from '../../coordinate.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, intersects} from '../../extent.js';
 import CanvasLayerRenderer from '../canvas/Layer.js';
-import _ol_transform_ from '../../transform.js';
+import {create as createTransform, apply as applyTransform} from '../../transform.js';
 
 /**
  * @constructor
@@ -22,7 +22,7 @@ const IntermediateCanvasRenderer = function(layer) {
    * @protected
    * @type {ol.Transform}
    */
-  this.coordinateToCanvasPixelTransform = _ol_transform_.create();
+  this.coordinateToCanvasPixelTransform = createTransform();
 
   /**
    * @private
@@ -128,7 +128,7 @@ IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = function(coordin
     // so that for example also transparent polygons are detected
     return CanvasLayerRenderer.prototype.forEachLayerAtCoordinate.apply(this, arguments);
   } else {
-    const pixel = _ol_transform_.apply(this.coordinateToCanvasPixelTransform, coordinate.slice());
+    const pixel = applyTransform(this.coordinateToCanvasPixelTransform, coordinate.slice());
     scaleCoordinate(pixel, frameState.viewState.resolution / this.renderedResolution);
 
     if (!this.hitCanvasContext_) {
