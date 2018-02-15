@@ -13,7 +13,7 @@ import _ol_layer_VectorTileRenderType_ from '../../layer/VectorTileRenderType.js
 import {equivalent as equivalentProjection} from '../../proj.js';
 import Units from '../../proj/Units.js';
 import ReplayType from '../../render/ReplayType.js';
-import _ol_render_canvas_ from '../../render/canvas.js';
+import {labelCache, rotateAtOffset} from '../../render/canvas.js';
 import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
 import _ol_render_replay_ from '../../render/replay.js';
 import RendererType from '../Type.js';
@@ -85,7 +85,7 @@ const CanvasVectorTileLayerRenderer = function(layer) {
   this.zDirection =
       layer.getRenderMode() == _ol_layer_VectorTileRenderType_.VECTOR ? 1 : 0;
 
-  listen(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
+  listen(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
 
 };
 
@@ -118,7 +118,7 @@ CanvasVectorTileLayerRenderer['create'] = function(mapRenderer, layer) {
  * @inheritDoc
  */
 CanvasVectorTileLayerRenderer.prototype.disposeInternal = function() {
-  unlisten(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
+  unlisten(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
   CanvasTileLayerRenderer.prototype.disposeInternal.call(this);
 };
 
@@ -374,7 +374,7 @@ CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameSta
   if (rotation) {
     offsetX = Math.round(pixelRatio * size[0] / 2);
     offsetY = Math.round(pixelRatio * size[1] / 2);
-    _ol_render_canvas_.rotateAtOffset(context, -rotation, offsetX, offsetY);
+    rotateAtOffset(context, -rotation, offsetX, offsetY);
   }
   if (declutterReplays) {
     this.declutterTree_.clear();
@@ -437,7 +437,7 @@ CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameSta
     CanvasReplayGroup.replayDeclutter(declutterReplays, context, rotation);
   }
   if (rotation) {
-    _ol_render_canvas_.rotateAtOffset(context, rotation,
+    rotateAtOffset(context, rotation,
       /** @type {number} */ (offsetX), /** @type {number} */ (offsetY));
   }
   CanvasTileLayerRenderer.prototype.postCompose.apply(this, arguments);

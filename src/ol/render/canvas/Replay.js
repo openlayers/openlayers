@@ -15,7 +15,7 @@ import {transform2D} from '../../geom/flat/transform.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
 import {isEmpty} from '../../obj.js';
 import VectorContext from '../VectorContext.js';
-import _ol_render_canvas_ from '../canvas.js';
+import {drawImage, resetTransform, defaultPadding, defaultFillStyle, defaultStrokeStyle, defaultMiterLimit, defaultLineWidth, defaultLineJoin, defaultLineDashOffset, defaultLineDash, defaultLineCap} from '../canvas.js';
 import CanvasInstruction from '../canvas/Instruction.js';
 import _ol_render_replay_ from '../replay.js';
 import _ol_transform_ from '../../transform.js';
@@ -165,7 +165,7 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
    * @private
    * @type {!ol.Transform}
    */
-  this.resetTransform_ = _ol_transform_.create();
+  this.resetTransform = _ol_transform_.create();
 };
 
 inherits(CanvasReplay, VectorContext);
@@ -296,7 +296,7 @@ CanvasReplay.prototype.replayImage_ = function(context, x, y, image,
         /** @type {Array.<*>} */ (fillInstruction),
         /** @type {Array.<*>} */ (strokeInstruction));
     }
-    _ol_render_canvas_.drawImage(context, transform, opacity, image, originX, originY, w, h, x, y, scale);
+    drawImage(context, transform, opacity, image, originX, originY, w, h, x, y, scale);
   }
 };
 
@@ -463,7 +463,7 @@ CanvasReplay.prototype.fill_ = function(context) {
   }
   context.fill();
   if (this.fillOrigin_) {
-    context.setTransform.apply(context, _ol_render_canvas_.resetTransform_);
+    context.setTransform.apply(context, resetTransform);
   }
 };
 
@@ -504,7 +504,6 @@ CanvasReplay.prototype.renderDeclutter_ = function(declutterGroup, feature) {
       };
       if (!this.declutterTree.collides(box)) {
         this.declutterTree.insert(box);
-        const drawImage = _ol_render_canvas_.drawImage;
         for (let j = 5, jj = declutterGroup.length; j < jj; ++j) {
           const declutterData = /** @type {Array} */ (declutterGroup[j]);
           if (declutterData) {
@@ -676,7 +675,7 @@ CanvasReplay.prototype.replay_ = function(
           backgroundFill = /** @type {boolean} */ (instruction[17]);
           backgroundStroke = /** @type {boolean} */ (instruction[18]);
         } else {
-          padding = _ol_render_canvas_.defaultPadding;
+          padding = defaultPadding;
           backgroundFill = backgroundStroke = false;
         }
 
@@ -730,7 +729,7 @@ CanvasReplay.prototype.replay_ = function(
                   /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
                   anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
                   /** @type {number} */ (part[3]), textScale, false, label.width,
-                  _ol_render_canvas_.defaultPadding, null, null);
+                  defaultPadding, null, null);
               }
             }
             if (fillKey) {
@@ -744,7 +743,7 @@ CanvasReplay.prototype.replay_ = function(
                   /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
                   anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
                   /** @type {number} */ (part[3]), textScale, false, label.width,
-                  _ol_render_canvas_.defaultPadding, null, null);
+                  defaultPadding, null, null);
               }
             }
           }
@@ -915,32 +914,32 @@ CanvasReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   if (fillStyle) {
     const fillStyleColor = fillStyle.getColor();
     state.fillStyle = asColorLike(fillStyleColor ?
-      fillStyleColor : _ol_render_canvas_.defaultFillStyle);
+      fillStyleColor : defaultFillStyle);
   } else {
     state.fillStyle = undefined;
   }
   if (strokeStyle) {
     const strokeStyleColor = strokeStyle.getColor();
     state.strokeStyle = asColorLike(strokeStyleColor ?
-      strokeStyleColor : _ol_render_canvas_.defaultStrokeStyle);
+      strokeStyleColor : defaultStrokeStyle);
     const strokeStyleLineCap = strokeStyle.getLineCap();
     state.lineCap = strokeStyleLineCap !== undefined ?
-      strokeStyleLineCap : _ol_render_canvas_.defaultLineCap;
+      strokeStyleLineCap : defaultLineCap;
     const strokeStyleLineDash = strokeStyle.getLineDash();
     state.lineDash = strokeStyleLineDash ?
-      strokeStyleLineDash.slice() : _ol_render_canvas_.defaultLineDash;
+      strokeStyleLineDash.slice() : defaultLineDash;
     const strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
     state.lineDashOffset = strokeStyleLineDashOffset ?
-      strokeStyleLineDashOffset : _ol_render_canvas_.defaultLineDashOffset;
+      strokeStyleLineDashOffset : defaultLineDashOffset;
     const strokeStyleLineJoin = strokeStyle.getLineJoin();
     state.lineJoin = strokeStyleLineJoin !== undefined ?
-      strokeStyleLineJoin : _ol_render_canvas_.defaultLineJoin;
+      strokeStyleLineJoin : defaultLineJoin;
     const strokeStyleWidth = strokeStyle.getWidth();
     state.lineWidth = strokeStyleWidth !== undefined ?
-      strokeStyleWidth : _ol_render_canvas_.defaultLineWidth;
+      strokeStyleWidth : defaultLineWidth;
     const strokeStyleMiterLimit = strokeStyle.getMiterLimit();
     state.miterLimit = strokeStyleMiterLimit !== undefined ?
-      strokeStyleMiterLimit : _ol_render_canvas_.defaultMiterLimit;
+      strokeStyleMiterLimit : defaultMiterLimit;
 
     if (state.lineWidth > this.maxLineWidth) {
       this.maxLineWidth = state.lineWidth;

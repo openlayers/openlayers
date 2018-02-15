@@ -14,7 +14,7 @@ import SimpleGeometry from '../../geom/SimpleGeometry.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
 import VectorContext from '../VectorContext.js';
-import _ol_render_canvas_ from '../canvas.js';
+import {defaultTextAlign, defaultFillStyle, defaultLineCap, defaultLineDash, defaultLineDashOffset, defaultLineJoin, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline, defaultFont} from '../canvas.js';
 import _ol_transform_ from '../../transform.js';
 
 /**
@@ -784,7 +784,7 @@ CanvasImmediateRenderer.prototype.setContextTextState_ = function(textState) {
   const context = this.context_;
   const contextTextState = this.contextTextState_;
   const textAlign = textState.textAlign ?
-    textState.textAlign : _ol_render_canvas_.defaultTextAlign;
+    textState.textAlign : defaultTextAlign;
   if (!contextTextState) {
     context.font = textState.font;
     context.textAlign = textAlign;
@@ -824,7 +824,7 @@ CanvasImmediateRenderer.prototype.setFillStrokeStyle = function(fillStyle, strok
     const fillStyleColor = fillStyle.getColor();
     this.fillState_ = {
       fillStyle: asColorLike(fillStyleColor ?
-        fillStyleColor : _ol_render_canvas_.defaultFillStyle)
+        fillStyleColor : defaultFillStyle)
     };
   }
   if (!strokeStyle) {
@@ -839,19 +839,19 @@ CanvasImmediateRenderer.prototype.setFillStrokeStyle = function(fillStyle, strok
     const strokeStyleMiterLimit = strokeStyle.getMiterLimit();
     this.strokeState_ = {
       lineCap: strokeStyleLineCap !== undefined ?
-        strokeStyleLineCap : _ol_render_canvas_.defaultLineCap,
+        strokeStyleLineCap : defaultLineCap,
       lineDash: strokeStyleLineDash ?
-        strokeStyleLineDash : _ol_render_canvas_.defaultLineDash,
+        strokeStyleLineDash : defaultLineDash,
       lineDashOffset: strokeStyleLineDashOffset ?
-        strokeStyleLineDashOffset : _ol_render_canvas_.defaultLineDashOffset,
+        strokeStyleLineDashOffset : defaultLineDashOffset,
       lineJoin: strokeStyleLineJoin !== undefined ?
-        strokeStyleLineJoin : _ol_render_canvas_.defaultLineJoin,
+        strokeStyleLineJoin : defaultLineJoin,
       lineWidth: this.pixelRatio_ * (strokeStyleWidth !== undefined ?
-        strokeStyleWidth : _ol_render_canvas_.defaultLineWidth),
+        strokeStyleWidth : defaultLineWidth),
       miterLimit: strokeStyleMiterLimit !== undefined ?
-        strokeStyleMiterLimit : _ol_render_canvas_.defaultMiterLimit,
+        strokeStyleMiterLimit : defaultMiterLimit,
       strokeStyle: asColorLike(strokeStyleColor ?
-        strokeStyleColor : _ol_render_canvas_.defaultStrokeStyle)
+        strokeStyleColor : defaultStrokeStyle)
     };
   }
 };
@@ -907,7 +907,7 @@ CanvasImmediateRenderer.prototype.setTextStyle = function(textStyle) {
       const textFillStyleColor = textFillStyle.getColor();
       this.textFillState_ = {
         fillStyle: asColorLike(textFillStyleColor ?
-          textFillStyleColor : _ol_render_canvas_.defaultFillStyle)
+          textFillStyleColor : defaultFillStyle)
       };
     }
     const textStrokeStyle = textStyle.getStroke();
@@ -923,19 +923,19 @@ CanvasImmediateRenderer.prototype.setTextStyle = function(textStyle) {
       const textStrokeStyleMiterLimit = textStrokeStyle.getMiterLimit();
       this.textStrokeState_ = {
         lineCap: textStrokeStyleLineCap !== undefined ?
-          textStrokeStyleLineCap : _ol_render_canvas_.defaultLineCap,
+          textStrokeStyleLineCap : defaultLineCap,
         lineDash: textStrokeStyleLineDash ?
-          textStrokeStyleLineDash : _ol_render_canvas_.defaultLineDash,
+          textStrokeStyleLineDash : defaultLineDash,
         lineDashOffset: textStrokeStyleLineDashOffset ?
-          textStrokeStyleLineDashOffset : _ol_render_canvas_.defaultLineDashOffset,
+          textStrokeStyleLineDashOffset : defaultLineDashOffset,
         lineJoin: textStrokeStyleLineJoin !== undefined ?
-          textStrokeStyleLineJoin : _ol_render_canvas_.defaultLineJoin,
+          textStrokeStyleLineJoin : defaultLineJoin,
         lineWidth: textStrokeStyleWidth !== undefined ?
-          textStrokeStyleWidth : _ol_render_canvas_.defaultLineWidth,
+          textStrokeStyleWidth : defaultLineWidth,
         miterLimit: textStrokeStyleMiterLimit !== undefined ?
-          textStrokeStyleMiterLimit : _ol_render_canvas_.defaultMiterLimit,
+          textStrokeStyleMiterLimit : defaultMiterLimit,
         strokeStyle: asColorLike(textStrokeStyleColor ?
-          textStrokeStyleColor : _ol_render_canvas_.defaultStrokeStyle)
+          textStrokeStyleColor : defaultStrokeStyle)
       };
     }
     const textFont = textStyle.getFont();
@@ -949,11 +949,11 @@ CanvasImmediateRenderer.prototype.setTextStyle = function(textStyle) {
     const textTextBaseline = textStyle.getTextBaseline();
     this.textState_ = {
       font: textFont !== undefined ?
-        textFont : _ol_render_canvas_.defaultFont,
+        textFont : defaultFont,
       textAlign: textTextAlign !== undefined ?
-        textTextAlign : _ol_render_canvas_.defaultTextAlign,
+        textTextAlign : defaultTextAlign,
       textBaseline: textTextBaseline !== undefined ?
-        textTextBaseline : _ol_render_canvas_.defaultTextBaseline
+        textTextBaseline : defaultTextBaseline
     };
     this.text_ = textText !== undefined ? textText : '';
     this.textOffsetX_ =
