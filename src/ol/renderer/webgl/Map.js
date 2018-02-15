@@ -8,7 +8,7 @@ import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {listen} from '../../events.js';
 import {WEBGL} from '../../has.js';
-import Layer from '../../layer/Layer.js';
+import {visibleAtResolution} from '../../layer/Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import WebGLImmediateRenderer from '../../render/webgl/Immediate.js';
@@ -450,7 +450,7 @@ WebGLMapRenderer.prototype.renderFrame = function(frameState) {
   let i, ii, layerRenderer, layerState;
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerState = layerStatesArray[i];
-    if (Layer.visibleAtResolution(layerState, viewResolution) &&
+    if (visibleAtResolution(layerState, viewResolution) &&
         layerState.sourceState == SourceState.READY) {
       layerRenderer = /** @type {ol.renderer.webgl.Layer} */ (this.getLayerRenderer(layerState.layer));
       if (layerRenderer.prepareFrame(frameState, layerState, context)) {
@@ -525,7 +525,7 @@ WebGLMapRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, fra
   for (i = numLayers - 1; i >= 0; --i) {
     const layerState = layerStates[i];
     const layer = layerState.layer;
-    if (Layer.visibleAtResolution(layerState, viewState.resolution) &&
+    if (visibleAtResolution(layerState, viewState.resolution) &&
         layerFilter.call(thisArg2, layer)) {
       const layerRenderer = this.getLayerRenderer(layer);
       result = layerRenderer.forEachFeatureAtCoordinate(
@@ -557,7 +557,7 @@ WebGLMapRenderer.prototype.hasFeatureAtCoordinate = function(coordinate, frameSt
   for (i = numLayers - 1; i >= 0; --i) {
     const layerState = layerStates[i];
     const layer = layerState.layer;
-    if (Layer.visibleAtResolution(layerState, viewState.resolution) &&
+    if (visibleAtResolution(layerState, viewState.resolution) &&
         layerFilter.call(thisArg, layer)) {
       const layerRenderer = this.getLayerRenderer(layer);
       hasFeature =
@@ -589,7 +589,7 @@ WebGLMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, cal
   for (i = numLayers - 1; i >= 0; --i) {
     const layerState = layerStates[i];
     const layer = layerState.layer;
-    if (Layer.visibleAtResolution(layerState, viewState.resolution) &&
+    if (visibleAtResolution(layerState, viewState.resolution) &&
         layerFilter.call(thisArg, layer)) {
       const layerRenderer = /** @type {ol.renderer.webgl.Layer} */ (this.getLayerRenderer(layer));
       result = layerRenderer.forEachLayerAtPixel(
