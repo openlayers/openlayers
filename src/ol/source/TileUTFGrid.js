@@ -13,7 +13,7 @@ import {jsonp as requestJSONP} from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import SourceState from '../source/State.js';
 import TileSource from '../source/Tile.js';
-import _ol_tilecoord_ from '../tilecoord.js';
+import {getKeyZXY} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 
@@ -447,7 +447,7 @@ UTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
  * @inheritDoc
  */
 UTFGrid.prototype.getTile = function(z, x, y, pixelRatio, projection) {
-  const tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
+  const tileCoordKey = getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
   } else {
@@ -472,7 +472,7 @@ UTFGrid.prototype.getTile = function(z, x, y, pixelRatio, projection) {
  * @inheritDoc
  */
 UTFGrid.prototype.useTile = function(z, x, y) {
-  const tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
+  const tileCoordKey = getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     this.tileCache.get(tileCoordKey);
   }

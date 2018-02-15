@@ -7,7 +7,7 @@ import TileState from '../TileState.js';
 import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
 import TileSource from '../source/Tile.js';
-import _ol_tilecoord_ from '../tilecoord.js';
+import {getKeyZXY} from '../tilecoord.js';
 
 
 /**
@@ -106,7 +106,7 @@ inherits(TileDebug, TileSource);
  * @inheritDoc
  */
 TileDebug.prototype.getTile = function(z, x, y) {
-  const tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
+  const tileCoordKey = getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.source.LabeledTile} */ (this.tileCache.get(tileCoordKey));
   } else {

@@ -1,7 +1,6 @@
 /**
  * @module ol/tilecoord
  */
-const _ol_tilecoord_ = {};
 
 
 /**
@@ -11,7 +10,7 @@ const _ol_tilecoord_ = {};
  * @param {ol.TileCoord=} opt_tileCoord Tile coordinate.
  * @return {ol.TileCoord} Tile coordinate.
  */
-_ol_tilecoord_.createOrUpdate = function(z, x, y, opt_tileCoord) {
+export function createOrUpdate(z, x, y, opt_tileCoord) {
   if (opt_tileCoord !== undefined) {
     opt_tileCoord[0] = z;
     opt_tileCoord[1] = x;
@@ -20,7 +19,7 @@ _ol_tilecoord_.createOrUpdate = function(z, x, y, opt_tileCoord) {
   } else {
     return [z, x, y];
   }
-};
+}
 
 
 /**
@@ -29,9 +28,9 @@ _ol_tilecoord_.createOrUpdate = function(z, x, y, opt_tileCoord) {
  * @param {number} y Y.
  * @return {string} Key.
  */
-_ol_tilecoord_.getKeyZXY = function(z, x, y) {
+export function getKeyZXY(z, x, y) {
   return z + '/' + x + '/' + y;
-};
+}
 
 
 /**
@@ -39,9 +38,9 @@ _ol_tilecoord_.getKeyZXY = function(z, x, y) {
  * @param {ol.TileCoord} tileCoord The tile coord.
  * @return {string} Key.
  */
-_ol_tilecoord_.getKey = function(tileCoord) {
-  return _ol_tilecoord_.getKeyZXY(tileCoord[0], tileCoord[1], tileCoord[2]);
-};
+export function getKey(tileCoord) {
+  return getKeyZXY(tileCoord[0], tileCoord[1], tileCoord[2]);
+}
 
 
 /**
@@ -49,25 +48,25 @@ _ol_tilecoord_.getKey = function(tileCoord) {
  * @param {string} key The tile coord key.
  * @return {ol.TileCoord} The tile coord.
  */
-_ol_tilecoord_.fromKey = function(key) {
+export function fromKey(key) {
   return key.split('/').map(Number);
-};
+}
 
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coord.
  * @return {number} Hash.
  */
-_ol_tilecoord_.hash = function(tileCoord) {
+export function hash(tileCoord) {
   return (tileCoord[1] << tileCoord[0]) + tileCoord[2];
-};
+}
 
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coord.
  * @return {string} Quad key.
  */
-_ol_tilecoord_.quadKey = function(tileCoord) {
+export function quadKey(tileCoord) {
   const z = tileCoord[0];
   const digits = new Array(z);
   let mask = 1 << (z - 1);
@@ -85,7 +84,7 @@ _ol_tilecoord_.quadKey = function(tileCoord) {
     mask >>= 1;
   }
   return digits.join('');
-};
+}
 
 
 /**
@@ -93,7 +92,7 @@ _ol_tilecoord_.quadKey = function(tileCoord) {
  * @param {!ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @return {boolean} Tile coordinate is within extent and zoom level range.
  */
-_ol_tilecoord_.withinExtentAndZ = function(tileCoord, tileGrid) {
+export function withinExtentAndZ(tileCoord, tileGrid) {
   const z = tileCoord[0];
   const x = tileCoord[1];
   const y = tileCoord[2];
@@ -113,5 +112,4 @@ _ol_tilecoord_.withinExtentAndZ = function(tileCoord, tileGrid) {
   } else {
     return tileRange.containsXY(x, y);
   }
-};
-export default _ol_tilecoord_;
+}

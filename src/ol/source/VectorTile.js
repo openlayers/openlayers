@@ -7,7 +7,7 @@ import VectorImageTile, {defaultLoadFunction} from '../VectorImageTile.js';
 import VectorTile from '../VectorTile.js';
 import {toSize} from '../size.js';
 import UrlTile from '../source/UrlTile.js';
-import _ol_tilecoord_ from '../tilecoord.js';
+import {getKeyZXY} from '../tilecoord.js';
 import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.js';
 
 /**
@@ -110,7 +110,7 @@ VectorTileSource.prototype.clear = function() {
  * @inheritDoc
  */
 VectorTileSource.prototype.getTile = function(z, x, y, pixelRatio, projection) {
-  const tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
+  const tileCoordKey = getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
   } else {

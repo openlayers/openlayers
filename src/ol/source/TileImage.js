@@ -11,7 +11,7 @@ import EventType from '../events/EventType.js';
 import {equivalent, get as getProjection} from '../proj.js';
 import ReprojTile from '../reproj/Tile.js';
 import UrlTile from '../source/UrlTile.js';
-import _ol_tilecoord_ from '../tilecoord.js';
+import {getKey, getKeyZXY} from '../tilecoord.js';
 import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
 
 /**
@@ -242,7 +242,7 @@ TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection) {
     const cache = this.getTileCacheForProjection(projection);
     const tileCoord = [z, x, y];
     let tile;
-    const tileCoordKey = _ol_tilecoord_.getKey(tileCoord);
+    const tileCoordKey = getKey(tileCoord);
     if (cache.containsKey(tileCoordKey)) {
       tile = /** @type {!ol.Tile} */ (cache.get(tileCoordKey));
     }
@@ -289,7 +289,7 @@ TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection) {
  */
 TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, projection) {
   let tile = null;
-  const tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
+  const tileCoordKey = getKeyZXY(z, x, y);
   const key = this.getKey();
   if (!this.tileCache.containsKey(tileCoordKey)) {
     tile = this.createTile_(z, x, y, pixelRatio, projection, key);

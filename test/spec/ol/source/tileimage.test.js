@@ -8,7 +8,7 @@ import {WORLD_EXTENT} from '../../../../src/ol/proj/epsg3857.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import ReprojTile from '../../../../src/ol/reproj/Tile.js';
 import TileImage from '../../../../src/ol/source/TileImage.js';
-import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
+import {getKeyZXY} from '../../../../src/ol/tilecoord.js';
 import {createXYZ, createForProjection} from '../../../../src/ol/tilegrid.js';
 
 
@@ -51,7 +51,7 @@ describe('ol.source.TileImage', function() {
       expect(source.getKey()).to.be('');
       source.getTileInternal(0, 0, -1, 1, getProjection('EPSG:3857'));
       expect(source.tileCache.getCount()).to.be(1);
-      tile = source.tileCache.get(_ol_tilecoord_.getKeyZXY(0, 0, -1));
+      tile = source.tileCache.get(getKeyZXY(0, 0, -1));
     });
 
     it('gets the tile from the cache', function() {

@@ -8,7 +8,7 @@ import Event from '../events/Event.js';
 import {equivalent} from '../proj.js';
 import {toSize, scale as scaleSize} from '../size.js';
 import Source from '../source/Source.js';
-import _ol_tilecoord_ from '../tilecoord.js';
+import {getKeyZXY, withinExtentAndZ} from '../tilecoord.js';
 import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.js';
 
 /**
@@ -120,7 +120,7 @@ TileSource.prototype.forEachLoadedTile = function(projection, z, tileRange, call
   let tile, tileCoordKey, loaded;
   for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-      tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
+      tileCoordKey = getKeyZXY(z, x, y);
       loaded = false;
       if (tileCache.containsKey(tileCoordKey)) {
         tile = /** @type {!ol.Tile} */ (tileCache.get(tileCoordKey));
@@ -283,7 +283,7 @@ TileSource.prototype.getTileCoordForTileUrlFunction = function(tileCoord, opt_pr
   if (this.getWrapX() && projection.isGlobal()) {
     tileCoord = wrapX(tileGrid, tileCoord, projection);
   }
-  return _ol_tilecoord_.withinExtentAndZ(tileCoord, tileGrid) ? tileCoord : null;
+  return withinExtentAndZ(tileCoord, tileGrid) ? tileCoord : null;
 };
 
 

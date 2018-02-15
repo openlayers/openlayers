@@ -7,7 +7,7 @@ import {modulo} from '../math.js';
 import {assign} from '../obj.js';
 import {toSize, scale as scaleSize} from '../size.js';
 import TileImage from '../source/TileImage.js';
-import _ol_tilecoord_ from '../tilecoord.js';
+import {hash as tileCoordHash} from '../tilecoord.js';
 import {appendParams} from '../uri.js';
 
 /**
@@ -118,7 +118,7 @@ TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExte
   if (urls.length == 1) {
     url = urls[0];
   } else {
-    const index = modulo(_ol_tilecoord_.hash(tileCoord), urls.length);
+    const index = modulo(tileCoordHash(tileCoord), urls.length);
     url = urls[index];
   }
 

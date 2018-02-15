@@ -1,5 +1,4 @@
 import {expandUrl, createFromTemplate, createFromTemplates, createFromTileUrlFunctions} from '../../../src/ol/tileurlfunction.js';
-import _ol_tilecoord_ from '../../../src/ol/tilecoord.js';
 import {createXYZ} from '../../../src/ol/tilegrid.js';
 import TileGrid from '../../../src/ol/tilegrid/TileGrid.js';
 
@@ -78,32 +77,12 @@ describe('ol.TileUrlFunction', function() {
     const tileGrid = createXYZ();
     it('creates expected URL', function() {
       const templates = [
-        'http://tile-1/{z}/{x}/{y}',
-        'http://tile-2/{z}/{x}/{y}',
-        'http://tile-3/{z}/{x}/{y}'
+        'http://tile-1/{z}/{x}/{y}'
       ];
       const tileUrlFunction = createFromTemplates(templates, tileGrid);
       const tileCoord = [3, 2, -2];
 
-      /* eslint-disable openlayers-internal/no-missing-requires */
-      sinon.stub(_ol_tilecoord_, 'hash').callsFake(function() {
-        return 3;
-      });
       expect(tileUrlFunction(tileCoord)).to.eql('http://tile-1/3/2/1');
-      _ol_tilecoord_.hash.restore();
-
-      sinon.stub(_ol_tilecoord_, 'hash').callsFake(function() {
-        return 2;
-      });
-      expect(tileUrlFunction(tileCoord)).to.eql('http://tile-3/3/2/1');
-      _ol_tilecoord_.hash.restore();
-
-      sinon.stub(_ol_tilecoord_, 'hash').callsFake(function() {
-        return 1;
-      });
-      expect(tileUrlFunction(tileCoord)).to.eql('http://tile-2/3/2/1');
-      _ol_tilecoord_.hash.restore();
-      /* eslint-enable */
     });
   });
 

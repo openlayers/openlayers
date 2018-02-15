@@ -5,7 +5,7 @@ import Layer from '../../../../src/ol/layer/Layer.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
 import LayerRenderer from '../../../../src/ol/renderer/Layer.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
-import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
+import {fromKey} from '../../../../src/ol/tilecoord.js';
 
 
 describe('ol.renderer.Layer', function() {
@@ -129,13 +129,13 @@ describe('ol.renderer.Layer', function() {
     it('accesses tiles from current zoom level last', function(done) {
       // expect most recent tile in the cache to be from zoom level 0
       const key = source.tileCache.peekFirstKey();
-      const tileCoord = _ol_tilecoord_.fromKey(key);
+      const tileCoord = fromKey(key);
       expect(tileCoord[0]).to.be(0);
 
       map.once('moveend', function() {
         // expect most recent tile in the cache to be from zoom level 4
         const key = source.tileCache.peekFirstKey();
-        const tileCoord = _ol_tilecoord_.fromKey(key);
+        const tileCoord = fromKey(key);
         expect(tileCoord[0]).to.be(4);
         done();
       });

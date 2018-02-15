@@ -13,7 +13,7 @@ import {calculateSourceResolution} from '../reproj.js';
 import {toSize, buffer as bufferSize, scale as scaleSize} from '../size.js';
 import TileImage from '../source/TileImage.js';
 import WMSServerType from '../source/WMSServerType.js';
-import _ol_tilecoord_ from '../tilecoord.js';
+import {hash as tileCoordHash} from '../tilecoord.js';
 import {compareVersions} from '../string.js';
 import {appendParams} from '../uri.js';
 
@@ -247,7 +247,7 @@ TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
   if (urls.length == 1) {
     url = urls[0];
   } else {
-    const index = modulo(_ol_tilecoord_.hash(tileCoord), urls.length);
+    const index = modulo(tileCoordHash(tileCoord), urls.length);
     url = urls[index];
   }
   return appendParams(url, params);
