@@ -10,7 +10,8 @@ import {translate} from '../../geom/flat/transform.js';
 import {fragment, vertex} from '../webgl/circlereplay/defaultshader.js';
 import Locations from '../webgl/circlereplay/defaultshader/Locations.js';
 import WebGLReplay from '../webgl/Replay.js';
-import _ol_render_webgl_ from '../webgl.js';
+import {DEFAULT_LINEDASH, DEFAULT_LINEDASHOFFSET, DEFAULT_STROKESTYLE,
+  DEFAULT_FILLSTYLE, DEFAULT_LINEWIDTH} from '../webgl.js';
 import {FLOAT} from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
@@ -377,22 +378,22 @@ WebGLCircleReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle
   if (strokeStyle) {
     const strokeStyleLineDash = strokeStyle.getLineDash();
     this.state_.lineDash = strokeStyleLineDash ?
-      strokeStyleLineDash : _ol_render_webgl_.defaultLineDash;
+      strokeStyleLineDash : DEFAULT_LINEDASH;
     const strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
     this.state_.lineDashOffset = strokeStyleLineDashOffset ?
-      strokeStyleLineDashOffset : _ol_render_webgl_.defaultLineDashOffset;
+      strokeStyleLineDashOffset : DEFAULT_LINEDASHOFFSET;
     strokeStyleColor = strokeStyle.getColor();
     if (!(strokeStyleColor instanceof CanvasGradient) &&
         !(strokeStyleColor instanceof CanvasPattern)) {
       strokeStyleColor = asArray(strokeStyleColor).map(function(c, i) {
         return i != 3 ? c / 255 : c;
-      }) || _ol_render_webgl_.defaultStrokeStyle;
+      }) || DEFAULT_STROKESTYLE;
     } else {
-      strokeStyleColor = _ol_render_webgl_.defaultStrokeStyle;
+      strokeStyleColor = DEFAULT_STROKESTYLE;
     }
     strokeStyleWidth = strokeStyle.getWidth();
     strokeStyleWidth = strokeStyleWidth !== undefined ?
-      strokeStyleWidth : _ol_render_webgl_.defaultLineWidth;
+      strokeStyleWidth : DEFAULT_LINEWIDTH;
   } else {
     strokeStyleColor = [0, 0, 0, 0];
     strokeStyleWidth = 0;
@@ -402,9 +403,9 @@ WebGLCircleReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle
       !(fillStyleColor instanceof CanvasPattern)) {
     fillStyleColor = asArray(fillStyleColor).map(function(c, i) {
       return i != 3 ? c / 255 : c;
-    }) || _ol_render_webgl_.defaultFillStyle;
+    }) || DEFAULT_FILLSTYLE;
   } else {
-    fillStyleColor = _ol_render_webgl_.defaultFillStyle;
+    fillStyleColor = DEFAULT_FILLSTYLE;
   }
   if (!this.state_.strokeColor || !equals(this.state_.strokeColor, strokeStyleColor) ||
       !this.state_.fillColor || !equals(this.state_.fillColor, fillStyleColor) ||
