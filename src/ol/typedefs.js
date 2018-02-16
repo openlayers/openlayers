@@ -460,7 +460,7 @@ ol.PreRenderFunction;
 /**
  * A projection as {@link ol.proj.Projection}, SRS identifier string or
  * undefined.
- * @typedef {ol.proj.Projection|string|undefined} ol.ProjectionLike
+ * @typedef {ol.proj.Projection|string|undefined}
  */
 ol.ProjectionLike;
 
@@ -685,7 +685,7 @@ ol.StyleImageOptions;
 /**
  * An array of three numbers representing the location of a tile in a tile
  * grid. The order is `z`, `x`, and `y`. `z` is the zoom level.
- * @typedef {Array.<number>} ol.TileCoord
+ * @typedef {Array.<number>}
  */
 ol.TileCoord;
 
