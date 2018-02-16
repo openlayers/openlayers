@@ -352,6 +352,7 @@ CoverageSource.prototype.getStyledBand = function() {
       binary: false,
       extent: aligned.properties.extent,
       matrix: styledMatrix,
+      origin: aligned.properties.origin,
       stride: aligned.properties.stride,
       resolution: aligned.properties.resolution,
       type: MatrixType.UINT8
@@ -363,6 +364,7 @@ CoverageSource.prototype.getStyledBand = function() {
       binary: false,
       extent: band.getExtent(),
       matrix: styledMatrix,
+      origin: band.getOrigin(),
       stride: band.getStride(),
       resolution: band.getResolution(),
       type: MatrixType.UINT8

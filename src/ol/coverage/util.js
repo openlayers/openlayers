@@ -58,6 +58,7 @@ export function alignRasterBands(bands, type) {
       properties: {
         extent: bands[i].getExtent(),
         nodata: bands[i].getNullValue(),
+        origin: bands[i].getOrigin(),
         resolution: bands[i].getResolution(),
         stride: bands[i].getStride(),
         type: type || CoverageType.RECTANGULAR

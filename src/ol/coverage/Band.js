@@ -35,6 +35,12 @@ const Band = function(options) {
    */
   this.extent_ = options.extent;
 
+  /**
+   * @type {ol.Coordinate}
+   * @private
+   */
+  this.origin_ = options.origin || [this.extent_[0] + options.resolution[0] / 2,
+    this.extent_[1] + options.resolution[1] / 2];
 
   /**
    * @type {boolean}
@@ -103,6 +109,16 @@ Band.prototype.getStride = function() {
  */
 Band.prototype.getExtent = function() {
   return this.extent_;
+};
+
+
+/**
+ * Returns the lower-left cell's center.
+ * @return {ol.Coordinate} Origin.
+ * @api
+ */
+Band.prototype.getOrigin = function() {
+  return this.origin_;
 };
 
 

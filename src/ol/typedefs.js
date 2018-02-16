@@ -144,6 +144,7 @@ ol.CircleRenderOptions;
  *             extent: ol.Extent,
  *             nodata: (number|undefined),
  *             matrix: (ArrayBuffer|Array.<number>),
+ *             origin: (ol.Coordinate|undefined),
  *             resolution: ol.Size,
  *             stride: number,
  *             type: ol.coverage.MatrixType}}
@@ -171,6 +172,7 @@ ol.CoverageDrawFunctionType;
  * Convenience type for passing around common coverage properties internally.
  * @typedef {{extent: ol.Extent,
  *            nodata: (number|null),
+ *            origin: ol.Coordinate,
  *            resolution: ol.Size,
  *            stride: number,
  *            type: ol.coverage.CoverageType}}
