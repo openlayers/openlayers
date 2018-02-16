@@ -268,6 +268,16 @@ LRUCache.prototype.set = function(key, value) {
 
 
 /**
+ * Set a maximum number of entries for the cache.
+ * @param {number} size Cache size.
+ * @api
+ */
+LRUCache.prototype.setSize = function(size) {
+  this.highWaterMark = size;
+};
+
+
+/**
  * Prune the cache.
  */
 LRUCache.prototype.prune = function() {

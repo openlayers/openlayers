@@ -280,4 +280,14 @@ describe('ol.structs.LRUCache', function() {
     });
   });
 
+  describe('setting the cache size', function() {
+    it('sets the cache size', function() {
+      lruCache.setSize(2);
+      expect(lruCache.highWaterMark).to.be(2);
+      fillLRUCache(lruCache);
+      lruCache.prune();
+      expect(lruCache.getKeys().length).to.be(2);
+    });
+  });
+
 });
