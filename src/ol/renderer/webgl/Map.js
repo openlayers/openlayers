@@ -17,7 +17,10 @@ import RendererType from '../Type.js';
 import SourceState from '../../source/State.js';
 import LRUCache from '../../structs/LRUCache.js';
 import PriorityQueue from '../../structs/PriorityQueue.js';
-import _ol_webgl_ from '../../webgl.js';
+import {BLEND, CLAMP_TO_EDGE, COLOR_BUFFER_BIT, CULL_FACE, DEPTH_TEST, FRAMEBUFFER,
+  getContext, LINEAR, ONE, ONE_MINUS_SRC_ALPHA, RGBA, SCISSOR_TEST, SRC_ALPHA,
+  STENCIL_TEST, TEXTURE0, TEXTURE_2D, TEXTURE_MAG_FILTER, TEXTURE_MIN_FILTER,
+  TEXTURE_WRAP_S, TEXTURE_WRAP_T, UNSIGNED_BYTE} from '../../webgl.js';
 import WebGLContext from '../../webgl/Context.js';
 import ContextEventType from '../../webgl/ContextEventType.js';
 
@@ -79,7 +82,7 @@ const WebGLMapRenderer = function(container, map) {
    * @private
    * @type {WebGLRenderingContext}
    */
-  this.gl_ = _ol_webgl_.getContext(this.canvas_, {
+  this.gl_ = getContext(this.canvas_, {
     antialias: true,
     depth: true,
     failIfMajorPerformanceCaveat: true,
@@ -152,7 +155,7 @@ const WebGLMapRenderer = function(container, map) {
           const tileSize = /** @type {ol.Size} */ (element[3]);
           const tileGutter = /** @type {number} */ (element[4]);
           this.bindTileTexture(
-            tile, tileSize, tileGutter, _ol_webgl_.LINEAR, _ol_webgl_.LINEAR);
+            tile, tileSize, tileGutter, LINEAR, LINEAR);
         }
         return false;
       }.bind(this);
@@ -203,20 +206,20 @@ WebGLMapRenderer.prototype.bindTileTexture = function(tile, tileSize, tileGutter
   const tileKey = tile.getKey();
   if (this.textureCache_.containsKey(tileKey)) {
     const textureCacheEntry = this.textureCache_.get(tileKey);
-    gl.bindTexture(_ol_webgl_.TEXTURE_2D, textureCacheEntry.texture);
+    gl.bindTexture(TEXTURE_2D, textureCacheEntry.texture);
     if (textureCacheEntry.magFilter != magFilter) {
       gl.texParameteri(
-        _ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_MAG_FILTER, magFilter);
+        TEXTURE_2D, TEXTURE_MAG_FILTER, magFilter);
       textureCacheEntry.magFilter = magFilter;
     }
     if (textureCacheEntry.minFilter != minFilter) {
       gl.texParameteri(
-        _ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_MIN_FILTER, minFilter);
+        TEXTURE_2D, TEXTURE_MIN_FILTER, minFilter);
       textureCacheEntry.minFilter = minFilter;
     }
   } else {
     const texture = gl.createTexture();
-    gl.bindTexture(_ol_webgl_.TEXTURE_2D, texture);
+    gl.bindTexture(TEXTURE_2D, texture);
     if (tileGutter > 0) {
       const clipTileCanvas = this.clipTileContext_.canvas;
       const clipTileContext = this.clipTileContext_;
@@ -231,22 +234,22 @@ WebGLMapRenderer.prototype.bindTileTexture = function(tile, tileSize, tileGutter
       }
       clipTileContext.drawImage(tile.getImage(), tileGutter, tileGutter,
         tileSize[0], tileSize[1], 0, 0, tileSize[0], tileSize[1]);
-      gl.texImage2D(_ol_webgl_.TEXTURE_2D, 0,
-        _ol_webgl_.RGBA, _ol_webgl_.RGBA,
-        _ol_webgl_.UNSIGNED_BYTE, clipTileCanvas);
+      gl.texImage2D(TEXTURE_2D, 0,
+        RGBA, RGBA,
+        UNSIGNED_BYTE, clipTileCanvas);
     } else {
-      gl.texImage2D(_ol_webgl_.TEXTURE_2D, 0,
-        _ol_webgl_.RGBA, _ol_webgl_.RGBA,
-        _ol_webgl_.UNSIGNED_BYTE, tile.getImage());
+      gl.texImage2D(TEXTURE_2D, 0,
+        RGBA, RGBA,
+        UNSIGNED_BYTE, tile.getImage());
     }
     gl.texParameteri(
-      _ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_MAG_FILTER, magFilter);
+      TEXTURE_2D, TEXTURE_MAG_FILTER, magFilter);
     gl.texParameteri(
-      _ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_MIN_FILTER, minFilter);
-    gl.texParameteri(_ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_WRAP_S,
-      _ol_webgl_.CLAMP_TO_EDGE);
-    gl.texParameteri(_ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_WRAP_T,
-      _ol_webgl_.CLAMP_TO_EDGE);
+      TEXTURE_2D, TEXTURE_MIN_FILTER, minFilter);
+    gl.texParameteri(TEXTURE_2D, TEXTURE_WRAP_S,
+      CLAMP_TO_EDGE);
+    gl.texParameteri(TEXTURE_2D, TEXTURE_WRAP_T,
+      CLAMP_TO_EDGE);
     this.textureCache_.set(tileKey, {
       texture: texture,
       magFilter: magFilter,
@@ -394,14 +397,14 @@ WebGLMapRenderer.prototype.handleWebGLContextRestored = function() {
  */
 WebGLMapRenderer.prototype.initializeGL_ = function() {
   const gl = this.gl_;
-  gl.activeTexture(_ol_webgl_.TEXTURE0);
+  gl.activeTexture(TEXTURE0);
   gl.blendFuncSeparate(
-    _ol_webgl_.SRC_ALPHA, _ol_webgl_.ONE_MINUS_SRC_ALPHA,
-    _ol_webgl_.ONE, _ol_webgl_.ONE_MINUS_SRC_ALPHA);
-  gl.disable(_ol_webgl_.CULL_FACE);
-  gl.disable(_ol_webgl_.DEPTH_TEST);
-  gl.disable(_ol_webgl_.SCISSOR_TEST);
-  gl.disable(_ol_webgl_.STENCIL_TEST);
+    SRC_ALPHA, ONE_MINUS_SRC_ALPHA,
+    ONE, ONE_MINUS_SRC_ALPHA);
+  gl.disable(CULL_FACE);
+  gl.disable(DEPTH_TEST);
+  gl.disable(SCISSOR_TEST);
+  gl.disable(STENCIL_TEST);
 };
 
 
@@ -466,11 +469,11 @@ WebGLMapRenderer.prototype.renderFrame = function(frameState) {
     this.canvas_.height = height;
   }
 
-  gl.bindFramebuffer(_ol_webgl_.FRAMEBUFFER, null);
+  gl.bindFramebuffer(FRAMEBUFFER, null);
 
   gl.clearColor(0, 0, 0, 0);
-  gl.clear(_ol_webgl_.COLOR_BUFFER_BIT);
-  gl.enable(_ol_webgl_.BLEND);
+  gl.clear(COLOR_BUFFER_BIT);
+  gl.enable(BLEND);
   gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
 
   for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {

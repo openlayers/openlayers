@@ -7,7 +7,7 @@ import {isEmpty} from '../../obj.js';
 import {fragment, vertex} from '../webgl/texturereplay/defaultshader.js';
 import Locations from '../webgl/texturereplay/defaultshader/Locations.js';
 import WebGLReplay from '../webgl/Replay.js';
-import _ol_webgl_ from '../../webgl.js';
+import {CLAMP_TO_EDGE, FLOAT, TEXTURE_2D} from '../../webgl.js';
 import {createTexture} from '../../webgl/Context.js';
 
 /**
@@ -258,7 +258,7 @@ WebGLTextureReplay.prototype.createTextures = function(textures, images, texture
       texture = texturePerImage[uid];
     } else {
       texture = createTexture(
-        gl, image, _ol_webgl_.CLAMP_TO_EDGE, _ol_webgl_.CLAMP_TO_EDGE);
+        gl, image, CLAMP_TO_EDGE, CLAMP_TO_EDGE);
       texturePerImage[uid] = texture;
     }
     textures[i] = texture;
@@ -287,23 +287,23 @@ WebGLTextureReplay.prototype.setUpProgram = function(gl, context, size, pixelRat
 
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_position);
-  gl.vertexAttribPointer(locations.a_position, 2, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_position, 2, FLOAT,
     false, 32, 0);
 
   gl.enableVertexAttribArray(locations.a_offsets);
-  gl.vertexAttribPointer(locations.a_offsets, 2, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_offsets, 2, FLOAT,
     false, 32, 8);
 
   gl.enableVertexAttribArray(locations.a_texCoord);
-  gl.vertexAttribPointer(locations.a_texCoord, 2, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_texCoord, 2, FLOAT,
     false, 32, 16);
 
   gl.enableVertexAttribArray(locations.a_opacity);
-  gl.vertexAttribPointer(locations.a_opacity, 1, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_opacity, 1, FLOAT,
     false, 32, 24);
 
   gl.enableVertexAttribArray(locations.a_rotateWithView);
-  gl.vertexAttribPointer(locations.a_rotateWithView, 1, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_rotateWithView, 1, FLOAT,
     false, 32, 28);
 
   return locations;
@@ -334,7 +334,7 @@ WebGLTextureReplay.prototype.drawReplay = function(gl, context, skippedFeaturesH
   } else {
     let i, ii, start;
     for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {
-      gl.bindTexture(_ol_webgl_.TEXTURE_2D, textures[i]);
+      gl.bindTexture(TEXTURE_2D, textures[i]);
       const end = groupIndices[i];
       this.drawElements(gl, context, start, end);
       start = end;
@@ -375,7 +375,7 @@ WebGLTextureReplay.prototype.drawReplaySkipping = function(gl, context, skippedF
 
   let i, ii;
   for (i = 0, ii = textures.length; i < ii; ++i) {
-    gl.bindTexture(_ol_webgl_.TEXTURE_2D, textures[i]);
+    gl.bindTexture(TEXTURE_2D, textures[i]);
     const groupStart = (i > 0) ? groupIndices[i - 1] : 0;
     const groupEnd = groupIndices[i];
 
@@ -422,7 +422,7 @@ WebGLTextureReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, conte
   let featureIndex = this.startIndices.length - 1;
   const hitDetectionTextures = this.getHitDetectionTextures();
   for (i = hitDetectionTextures.length - 1; i >= 0; --i) {
-    gl.bindTexture(_ol_webgl_.TEXTURE_2D, hitDetectionTextures[i]);
+    gl.bindTexture(TEXTURE_2D, hitDetectionTextures[i]);
     groupStart = (i > 0) ? this.hitDetectionGroupIndices[i - 1] : 0;
     end = this.hitDetectionGroupIndices[i];
 

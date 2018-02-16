@@ -6,7 +6,7 @@ import Disposable from '../Disposable.js';
 import {includes} from '../array.js';
 import {listen, unlistenAll} from '../events.js';
 import {clear} from '../obj.js';
-import _ol_webgl_ from '../webgl.js';
+import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TEXTURE_2D, TEXTURE_WRAP_S, TEXTURE_WRAP_T} from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
 
 /**
@@ -112,9 +112,9 @@ WebGLContext.prototype.bindBuffer = function(target, buf) {
     const buffer = gl.createBuffer();
     gl.bindBuffer(target, buffer);
     let /** @type {ArrayBufferView} */ arrayBuffer;
-    if (target == _ol_webgl_.ARRAY_BUFFER) {
+    if (target == ARRAY_BUFFER) {
       arrayBuffer = new Float32Array(arr);
-    } else if (target == _ol_webgl_.ELEMENT_ARRAY_BUFFER) {
+    } else if (target == ELEMENT_ARRAY_BUFFER) {
       arrayBuffer = this.hasOESElementIndexUint ?
         new Uint32Array(arr) : new Uint16Array(arr);
     }
@@ -323,11 +323,11 @@ function createTextureInternal(gl, opt_wrapS, opt_wrapT) {
 
   if (opt_wrapS !== undefined) {
     gl.texParameteri(
-      _ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_WRAP_S, opt_wrapS);
+      TEXTURE_2D, TEXTURE_WRAP_S, opt_wrapS);
   }
   if (opt_wrapT !== undefined) {
     gl.texParameteri(
-      _ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_WRAP_T, opt_wrapT);
+      TEXTURE_2D, TEXTURE_WRAP_T, opt_wrapT);
   }
 
   return texture;
