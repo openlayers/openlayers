@@ -38,12 +38,14 @@ function _getOptimalResolution(resolutions) {
 /**
  * Convenience function for aligning input raster bands.
  * @param {Array.<ol.coverage.Band>} bands Bands.
+ * @param {ol.coverage.CoverageType} type Type.
  * @return {{matrices: Array.<ol.CoverageData>,
              properties: ol.CoverageProperties}} Aligned matrices with common properties.
  */
-export function alignRasterBands(bands) {
+export function alignRasterBands(bands, type) {
   const rasters = [];
   let i, ii;
+  // TODO: Implement handling custom patterns.
   const resolution = _getOptimalResolution(bands.map(function(curr) {
     return curr.getResolution();
   }));
@@ -58,7 +60,7 @@ export function alignRasterBands(bands) {
         nodata: bands[i].getNullValue(),
         resolution: bands[i].getResolution(),
         stride: bands[i].getStride(),
-        type: CoverageType.RECTANGULAR
+        type: type || CoverageType.RECTANGULAR
       }};
     raster = resampleCoverage(raster.matrix, raster.properties, resolution);
 

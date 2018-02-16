@@ -184,6 +184,7 @@ ol.CoverageProperties;
  *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.ProjectionLike,
  *            state: (ol.source.State|undefined),
+ *            type: (ol.CoverageType|undefined),
  *            wcsParams: (olx.WCSParams|undefined),
  *            wrapX: (boolean|undefined)}}
  */

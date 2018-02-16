@@ -43,6 +43,12 @@ const CoverageSource = function(options) {
 
   /**
    * @private
+   * @type {ol.coverage.CoverageType|null}
+   */
+  this.type_ = options.type;
+
+  /**
+   * @private
    * @type {ol.CoverageStyle|null}
    */
   this.style_ = null;
@@ -175,6 +181,14 @@ CoverageSource.prototype.setCoverageDrawFunction = function(coverageDrawFunc) {
 
 
 /**
+ * @param {ol.coverage.CoverageType|null|undefined} type Coverage type.
+ */
+CoverageSource.prototype.setType = function(type) {
+  this.type_ = type;
+};
+
+
+/**
  * @param {ol.coverage.Band} band Coverage band.
  * @private
  */
@@ -221,6 +235,14 @@ CoverageSource.prototype.getExtent = function() {
     extend(extent, bands[i].getExtent());
   }
   return extent;
+};
+
+
+/**
+ * @return {ol.coverage.CoverageType|null|undefined} Coverage type.
+ */
+CoverageSource.prototype.getType = function() {
+  return this.type_;
 };
 
 
@@ -292,7 +314,7 @@ CoverageSource.prototype.getImageInternal = function(extent, resolution, pixelRa
       this.image_.updateResolution(extent);
       return this.image_;
     } else {
-      const styledBand = this.getStyledBand_();
+      const styledBand = this.getStyledBand();
       if (styledBand) {
         this.image_ = new CoverageImage(styledBand.getExtent(), pixelRatio,
           this.getAttributions(), styledBand, this.coverageDrawFunction_);
@@ -308,10 +330,9 @@ CoverageSource.prototype.getImageInternal = function(extent, resolution, pixelRa
 
 /**
  * Returns the color values of the styled band(s) in an interleaved array.
- * @private
  * @return {?ol.coverage.Band} A new band with styled interleaved data.
  */
-CoverageSource.prototype.getStyledBand_ = function() {
+CoverageSource.prototype.getStyledBand = function() {
   let styledMatrix;
   const bandIndex = this.style_.getBandIndex();
   if (Array.isArray(bandIndex)) {
@@ -325,7 +346,7 @@ CoverageSource.prototype.getStyledBand_ = function() {
         nulls.push(bands[bandIndex[i]].getNullValue());
       }
     }
-    const aligned = alignRasterBands(toAlign);
+    const aligned = alignRasterBands(toAlign, this.getType());
     styledMatrix = this.style_.apply(aligned.matrices, nulls);
     return new Band({
       binary: false,
