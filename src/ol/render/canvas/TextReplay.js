@@ -201,8 +201,7 @@ CanvasTextReplay.prototype.drawText = function(geometry, feature) {
     let flatEnd;
     for (let o = 0, oo = ends.length; o < oo; ++o) {
       if (textAlign == undefined) {
-        const range = matchingChunk(
-          textState.maxAngle, flatCoordinates, flatOffset, ends[o], stride);
+        const range = matchingChunk(textState.maxAngle, flatCoordinates, flatOffset, ends[o], stride);
         flatOffset = range[0];
         flatEnd = range[1];
       } else {

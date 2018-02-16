@@ -55,8 +55,7 @@ DoubleClickZoom.handleEvent = function(mapBrowserEvent) {
     const anchor = mapBrowserEvent.coordinate;
     const delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
     const view = map.getView();
-    Interaction.zoomByDelta(
-      view, delta, anchor, this.duration_);
+    Interaction.zoomByDelta(view, delta, anchor, this.duration_);
     mapBrowserEvent.preventDefault();
     stopEvent = true;
   }

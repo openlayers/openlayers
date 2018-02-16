@@ -377,8 +377,7 @@ Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
       snappedToVertex = dist <= this.pixelTolerance_;
       if (snappedToVertex) {
         snapped = true;
-        vertex = squaredDist1 > squaredDist2 ?
-          closestSegment[1] : closestSegment[0];
+        vertex = squaredDist1 > squaredDist2 ? closestSegment[1] : closestSegment[0];
         vertexPixel = map.getPixelFromCoordinate(vertex);
       }
     } else if (this.edge_) {
@@ -386,8 +385,7 @@ Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
         vertex = closestOnCircle(pixelCoordinate,
           /** @type {ol.geom.Circle} */ (segments[0].feature.getGeometry()));
       } else {
-        vertex = (closestOnSegment(pixelCoordinate,
-          closestSegment));
+        vertex = closestOnSegment(pixelCoordinate, closestSegment);
       }
       vertexPixel = map.getPixelFromCoordinate(vertex);
       if (coordinateDistance(pixel, vertexPixel) <= this.pixelTolerance_) {
@@ -400,8 +398,7 @@ Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
           dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
           snappedToVertex = dist <= this.pixelTolerance_;
           if (snappedToVertex) {
-            vertex = squaredDist1 > squaredDist2 ?
-              closestSegment[1] : closestSegment[0];
+            vertex = squaredDist1 > squaredDist2 ? closestSegment[1] : closestSegment[0];
             vertexPixel = map.getPixelFromCoordinate(vertex);
           }
         }

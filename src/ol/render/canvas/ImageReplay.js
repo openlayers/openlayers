@@ -119,8 +119,7 @@ inherits(CanvasImageReplay, CanvasReplay);
  * @return {number} My end.
  */
 CanvasImageReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
-  return this.appendFlatCoordinates(
-    flatCoordinates, offset, end, stride, false, false);
+  return this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false, false);
 };
 
 
@@ -135,8 +134,7 @@ CanvasImageReplay.prototype.drawPoint = function(pointGeometry, feature) {
   const flatCoordinates = pointGeometry.getFlatCoordinates();
   const stride = pointGeometry.getStride();
   const myBegin = this.coordinates.length;
-  const myEnd = this.drawCoordinates_(
-    flatCoordinates, 0, flatCoordinates.length, stride);
+  const myEnd = this.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
   this.instructions.push([
     CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.image_,
     // Remaining arguments to DRAW_IMAGE are in alphabetical order
@@ -145,8 +143,7 @@ CanvasImageReplay.prototype.drawPoint = function(pointGeometry, feature) {
     this.scale_ * this.pixelRatio, this.snapToPixel_, this.width_
   ]);
   this.hitDetectionInstructions.push([
-    CanvasInstruction.DRAW_IMAGE, myBegin, myEnd,
-    this.hitDetectionImage_,
+    CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.hitDetectionImage_,
     // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.declutterGroup_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
@@ -177,8 +174,7 @@ CanvasImageReplay.prototype.drawMultiPoint = function(multiPointGeometry, featur
     this.scale_ * this.pixelRatio, this.snapToPixel_, this.width_
   ]);
   this.hitDetectionInstructions.push([
-    CanvasInstruction.DRAW_IMAGE, myBegin, myEnd,
-    this.hitDetectionImage_,
+    CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.hitDetectionImage_,
     // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.declutterGroup_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,

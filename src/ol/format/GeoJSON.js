@@ -385,14 +385,12 @@ GeoJSON.prototype.readFeaturesFromObject = function(object, opt_options) {
   /** @type {Array.<ol.Feature>} */
   let features = null;
   if (geoJSONObject.type === 'FeatureCollection') {
-    const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */
-        (object);
+    const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (object);
     features = [];
     const geoJSONFeatures = geoJSONFeatureCollection.features;
     let i, ii;
     for (i = 0, ii = geoJSONFeatures.length; i < ii; ++i) {
-      features.push(this.readFeatureFromObject(geoJSONFeatures[i],
-        opt_options));
+      features.push(this.readFeatureFromObject(geoJSONFeatures[i], opt_options));
     }
   } else {
     features = [this.readFeatureFromObject(object, opt_options)];

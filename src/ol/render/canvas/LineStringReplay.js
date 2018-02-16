@@ -91,8 +91,7 @@ CanvasLineStringReplay.prototype.drawMultiLineString = function(multiLineStringG
   const stride = multiLineStringGeometry.getStride();
   let offset = 0;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
-    offset = this.drawFlatCoordinates_(
-      flatCoordinates, offset, ends[i], stride);
+    offset = this.drawFlatCoordinates_(flatCoordinates, offset, ends[i], stride);
   }
   this.hitDetectionInstructions.push(strokeInstruction);
   this.endGeometry(multiLineStringGeometry, feature);
