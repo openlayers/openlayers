@@ -10,7 +10,8 @@ import {fragment, vertex} from '../webgl/defaultmapshader.js';
 import Locations from '../webgl/defaultmapshader/Locations.js';
 import {create as createTransform} from '../../transform.js';
 import {create, fromTransform} from '../../vec/mat4.js';
-import _ol_webgl_ from '../../webgl.js';
+import {ARRAY_BUFFER, FRAMEBUFFER, FLOAT, TEXTURE_2D,
+  TRIANGLE_STRIP, COLOR_ATTACHMENT0} from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 import {createEmptyTexture} from '../../webgl/Context.js';
 
@@ -120,16 +121,16 @@ WebGLLayerRenderer.prototype.bindFramebuffer = function(frameState, framebufferD
       gl, framebufferDimension, framebufferDimension);
 
     const framebuffer = gl.createFramebuffer();
-    gl.bindFramebuffer(_ol_webgl_.FRAMEBUFFER, framebuffer);
-    gl.framebufferTexture2D(_ol_webgl_.FRAMEBUFFER,
-      _ol_webgl_.COLOR_ATTACHMENT0, _ol_webgl_.TEXTURE_2D, texture, 0);
+    gl.bindFramebuffer(FRAMEBUFFER, framebuffer);
+    gl.framebufferTexture2D(FRAMEBUFFER,
+      COLOR_ATTACHMENT0, TEXTURE_2D, texture, 0);
 
     this.texture = texture;
     this.framebuffer = framebuffer;
     this.framebufferDimension = framebufferDimension;
 
   } else {
-    gl.bindFramebuffer(_ol_webgl_.FRAMEBUFFER, this.framebuffer);
+    gl.bindFramebuffer(FRAMEBUFFER, this.framebuffer);
   }
 
 };
@@ -144,7 +145,7 @@ WebGLLayerRenderer.prototype.composeFrame = function(frameState, layerState, con
 
   this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, context, frameState);
 
-  context.bindBuffer(_ol_webgl_.ARRAY_BUFFER, this.arrayBuffer_);
+  context.bindBuffer(ARRAY_BUFFER, this.arrayBuffer_);
 
   const gl = context.getGL();
 
@@ -161,10 +162,10 @@ WebGLLayerRenderer.prototype.composeFrame = function(frameState, layerState, con
   if (context.useProgram(program)) {
     gl.enableVertexAttribArray(locations.a_position);
     gl.vertexAttribPointer(
-      locations.a_position, 2, _ol_webgl_.FLOAT, false, 16, 0);
+      locations.a_position, 2, FLOAT, false, 16, 0);
     gl.enableVertexAttribArray(locations.a_texCoord);
     gl.vertexAttribPointer(
-      locations.a_texCoord, 2, _ol_webgl_.FLOAT, false, 16, 8);
+      locations.a_texCoord, 2, FLOAT, false, 16, 8);
     gl.uniform1i(locations.u_texture, 0);
   }
 
@@ -173,8 +174,8 @@ WebGLLayerRenderer.prototype.composeFrame = function(frameState, layerState, con
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
     fromTransform(this.tmpMat4_, this.getProjectionMatrix()));
   gl.uniform1f(locations.u_opacity, layerState.opacity);
-  gl.bindTexture(_ol_webgl_.TEXTURE_2D, this.getTexture());
-  gl.drawArrays(_ol_webgl_.TRIANGLE_STRIP, 0, 4);
+  gl.bindTexture(TEXTURE_2D, this.getTexture());
+  gl.drawArrays(TRIANGLE_STRIP, 0, 4);
 
   this.dispatchComposeEvent_(RenderEventType.POSTCOMPOSE, context, frameState);
 };

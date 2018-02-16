@@ -13,7 +13,7 @@ import _ol_render_webgl_ from '../webgl.js';
 import WebGLReplay from '../webgl/Replay.js';
 import {fragment, vertex} from '../webgl/linestringreplay/defaultshader.js';
 import Locations from '../webgl/linestringreplay/defaultshader/Locations.js';
-import _ol_webgl_ from '../../webgl.js';
+import {FLOAT} from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
 
@@ -471,19 +471,19 @@ WebGLLineStringReplay.prototype.setUpProgram = function(gl, context, size, pixel
 
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_lastPos);
-  gl.vertexAttribPointer(locations.a_lastPos, 2, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_lastPos, 2, FLOAT,
     false, 28, 0);
 
   gl.enableVertexAttribArray(locations.a_position);
-  gl.vertexAttribPointer(locations.a_position, 2, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_position, 2, FLOAT,
     false, 28, 8);
 
   gl.enableVertexAttribArray(locations.a_nextPos);
-  gl.vertexAttribPointer(locations.a_nextPos, 2, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_nextPos, 2, FLOAT,
     false, 28, 16);
 
   gl.enableVertexAttribArray(locations.a_direction);
-  gl.vertexAttribPointer(locations.a_direction, 1, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_direction, 1, FLOAT,
     false, 28, 24);
 
   // Enable renderer specific uniforms.

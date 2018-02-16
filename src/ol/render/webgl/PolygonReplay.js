@@ -17,7 +17,7 @@ import _ol_render_webgl_ from '../webgl.js';
 import Stroke from '../../style/Stroke.js';
 import LinkedList from '../../structs/LinkedList.js';
 import RBush from '../../structs/RBush.js';
-import _ol_webgl_ from '../../webgl.js';
+import {FLOAT} from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
@@ -888,7 +888,7 @@ WebGLPolygonReplay.prototype.setUpProgram = function(gl, context, size, pixelRat
 
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_position);
-  gl.vertexAttribPointer(locations.a_position, 2, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_position, 2, FLOAT,
     false, 8, 0);
 
   return locations;

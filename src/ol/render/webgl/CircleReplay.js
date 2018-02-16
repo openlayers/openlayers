@@ -11,7 +11,7 @@ import {fragment, vertex} from '../webgl/circlereplay/defaultshader.js';
 import Locations from '../webgl/circlereplay/defaultshader/Locations.js';
 import WebGLReplay from '../webgl/Replay.js';
 import _ol_render_webgl_ from '../webgl.js';
-import _ol_webgl_ from '../../webgl.js';
+import {FLOAT} from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
@@ -211,15 +211,15 @@ WebGLCircleReplay.prototype.setUpProgram = function(gl, context, size, pixelRati
 
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_position);
-  gl.vertexAttribPointer(locations.a_position, 2, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_position, 2, FLOAT,
     false, 16, 0);
 
   gl.enableVertexAttribArray(locations.a_instruction);
-  gl.vertexAttribPointer(locations.a_instruction, 1, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_instruction, 1, FLOAT,
     false, 16, 8);
 
   gl.enableVertexAttribArray(locations.a_radius);
-  gl.vertexAttribPointer(locations.a_radius, 1, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_radius, 1, FLOAT,
     false, 16, 12);
 
   // Enable renderer specific uniforms.

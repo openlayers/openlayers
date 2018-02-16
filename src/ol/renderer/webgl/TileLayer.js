@@ -23,7 +23,7 @@ import {
   translate as translateTransform,
   apply as applyTransform
 } from '../../transform.js';
-import _ol_webgl_ from '../../webgl.js';
+import {COLOR_BUFFER_BIT, BLEND, ARRAY_BUFFER, FLOAT, LINEAR, TRIANGLE_STRIP} from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
@@ -223,8 +223,8 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
     gl.viewport(0, 0, framebufferDimension, framebufferDimension);
 
     gl.clearColor(0, 0, 0, 0);
-    gl.clear(_ol_webgl_.COLOR_BUFFER_BIT);
-    gl.disable(_ol_webgl_.BLEND);
+    gl.clear(COLOR_BUFFER_BIT);
+    gl.disable(BLEND);
 
     const program = context.getProgram(this.fragmentShader_, this.vertexShader_);
     context.useProgram(program);
@@ -232,13 +232,13 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
       this.locations_ = new Locations(gl, program);
     }
 
-    context.bindBuffer(_ol_webgl_.ARRAY_BUFFER, this.renderArrayBuffer_);
+    context.bindBuffer(ARRAY_BUFFER, this.renderArrayBuffer_);
     gl.enableVertexAttribArray(this.locations_.a_position);
     gl.vertexAttribPointer(
-      this.locations_.a_position, 2, _ol_webgl_.FLOAT, false, 16, 0);
+      this.locations_.a_position, 2, FLOAT, false, 16, 0);
     gl.enableVertexAttribArray(this.locations_.a_texCoord);
     gl.vertexAttribPointer(
-      this.locations_.a_texCoord, 2, _ol_webgl_.FLOAT, false, 16, 8);
+      this.locations_.a_texCoord, 2, FLOAT, false, 16, 8);
     gl.uniform1i(this.locations_.u_texture, 0);
 
     /**
@@ -320,8 +320,8 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
             framebufferExtentDimension - 1;
         gl.uniform4fv(this.locations_.u_tileOffset, u_tileOffset);
         mapRenderer.bindTileTexture(tile, tilePixelSize,
-          tileGutter * pixelRatio, _ol_webgl_.LINEAR, _ol_webgl_.LINEAR);
-        gl.drawArrays(_ol_webgl_.TRIANGLE_STRIP, 0, 4);
+          tileGutter * pixelRatio, LINEAR, LINEAR);
+        gl.drawArrays(TRIANGLE_STRIP, 0, 4);
       }
     }
 
