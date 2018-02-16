@@ -2861,7 +2861,8 @@ olx.render.State.prototype.rotation;
  *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.ProjectionLike,
  *            data: (string|undefined),
- *            type: (ol.coverage.MatrixType|undefined),
+ *            dataType: (ol.coverage.MatrixType|undefined),
+ *            type: (ol.coverage.CoverageType|undefined),
  *            url: (string|undefined),
  *            wcsParams: (olx.WCSParams|undefined),
  *            wrapX: (boolean|undefined)}}
@@ -2902,8 +2903,16 @@ olx.source.ArcGridOptions.prototype.data;
 
 
 /**
- * Data type of the raster layer. Default is `32bitFloat`.
+ * Data type of the layer. Default is `32bitFloat`.
  * @type {ol.coverage.MatrixType|undefined}
+ * @api
+ */
+olx.source.ArcGridOptions.prototype.dataType;
+
+
+/**
+ * Coverage type of the layer. Default is `rectangular`.
+ * @type {ol.coverage.CoverageType|undefined}
  * @api
  */
 olx.source.ArcGridOptions.prototype.type;
@@ -3132,6 +3141,7 @@ olx.source.ClusterOptions.prototype.wrapX;
  *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.ProjectionLike,
  *            data: (ArrayBuffer|undefined),
+ *            type: (ol.coverage.CoverageType|undefined),
  *            url: (string|undefined),
  *            wcsParams: (olx.WCSParams|undefined),
  *            wrapX: (boolean|undefined)}}
@@ -3171,6 +3181,14 @@ olx.source.GeoTIFFOptions.prototype.projection;
  * @api
  */
 olx.source.GeoTIFFOptions.prototype.data;
+
+
+/**
+ * Coverage type of the layer. Default is `rectangular`.
+ * @type {ol.coverage.CoverageType|undefined}
+ * @api
+ */
+olx.source.GeoTIFFOptions.prototype.type;
 
 
 /**

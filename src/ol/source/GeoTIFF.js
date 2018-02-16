@@ -12,6 +12,7 @@ import {get as getGeoTIFF, set as setGeoTIFF} from '../coverage/geotiff.js';
 import Band from '../coverage/Band.js';
 import MatrixType from '../coverage/MatrixType.js';
 import Matrix from '../coverage/Matrix.js';
+import CoverageType from '../coverage/CoverageType.js';
 
 
 /**
@@ -46,6 +47,7 @@ const GeoTIFF = function(options) {
     logo: options.logo,
     projection: options.projection,
     state: State.UNDEFINED,
+    type: options.type,
     url: options.url,
     wcsParams: options.wcsParams,
     wrapX: options.wrapX
@@ -190,6 +192,12 @@ GeoTIFF.prototype.parseCoverage_ = function() {
     }
 
   }
+
+  // Default type to rectangular.
+  if (!this.getType()) {
+    this.setType(CoverageType.RECTANGULAR);
+  }
+
   this.data_ = undefined;
 
   if (this.getState() === State.LOADING) {

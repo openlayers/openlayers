@@ -9,6 +9,7 @@ import State from './State.js';
 import {intersects} from '../extent.js';
 import {appendParams} from '../uri.js';
 import Band from '../coverage/Band.js';
+import CoverageType from '../coverage/CoverageType.js';
 
 
 /**
@@ -36,13 +37,14 @@ const ArcGrid = function(options) {
    * @private
    * @type {ol.coverage.MatrixType}
    */
-  this.type_ = options.type || MatrixType.FLOAT32;
+  this.dataType_ = options.dataType || MatrixType.FLOAT32;
 
   CoverageSource.call(this, {
     attributions: options.attributions,
     logo: options.logo,
     projection: options.projection,
     state: State.UNDEFINED,
+    type: options.type,
     url: options.url,
     wcsParams: options.wcsParams,
     wrapX: options.wrapX
@@ -170,9 +172,14 @@ ArcGrid.prototype.parseCoverage_ = function() {
     matrix: matrix,
     resolution: [header['CELLSIZE'], header['CELLSIZE']],
     stride: /** @type {number} */ (header['NCOLS']),
-    type: this.type_
+    type: this.dataType_
   });
   this.addBand(band);
+
+  // Default type to rectangular.
+  if (!this.getType()) {
+    this.setType(CoverageType.RECTANGULAR);
+  }
 
   this.data_ = undefined;
   this.setState(State.READY);
