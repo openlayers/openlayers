@@ -15,7 +15,7 @@ import Units from '../../proj/Units.js';
 import ReplayType from '../../render/ReplayType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
 import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
-import _ol_render_replay_ from '../../render/replay.js';
+import {ORDER} from '../../render/replay.js';
 import RendererType from '../Type.js';
 import CanvasTileLayerRenderer from '../canvas/TileLayer.js';
 import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
@@ -44,7 +44,7 @@ const IMAGE_REPLAYS = {
 const VECTOR_REPLAYS = {
   'image': [ReplayType.DEFAULT],
   'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT],
-  'vector': _ol_render_replay_.ORDER
+  'vector': ORDER
 };
 
 

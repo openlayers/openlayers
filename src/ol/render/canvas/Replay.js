@@ -17,7 +17,7 @@ import {isEmpty} from '../../obj.js';
 import VectorContext from '../VectorContext.js';
 import {drawImage, resetTransform, defaultPadding, defaultFillStyle, defaultStrokeStyle, defaultMiterLimit, defaultLineWidth, defaultLineJoin, defaultLineDashOffset, defaultLineDash, defaultLineCap} from '../canvas.js';
 import CanvasInstruction from '../canvas/Instruction.js';
-import _ol_render_replay_ from '../replay.js';
+import {TEXT_ALIGN} from '../replay.js';
 import {
   create as createTransform,
   compose as composeTransform,
@@ -718,7 +718,7 @@ CanvasReplay.prototype.replay_ = function(
         const textLength = measure(text);
         if (overflow || textLength <= pathLength) {
           const textAlign = /** @type {ol.render.canvas.TextReplay} */ (this).textStates[textKey].textAlign;
-          const startM = (pathLength - textLength) * _ol_render_replay_.TEXT_ALIGN[textAlign];
+          const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
           const parts = drawTextOnPath(
             pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
           if (parts) {

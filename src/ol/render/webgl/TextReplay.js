@@ -6,7 +6,7 @@ import {asColorLike} from '../../colorlike.js';
 import {createCanvasContext2D} from '../../dom.js';
 import GeometryType from '../../geom/GeometryType.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
-import _ol_render_replay_ from '../replay.js';
+import {TEXT_ALIGN} from '../replay.js';
 import {DEFAULT_FILLSTYLE, DEFAULT_FONT, DEFAULT_LINECAP, DEFAULT_LINEDASH,
   DEFAULT_LINEDASHOFFSET, DEFAULT_LINEJOIN, DEFAULT_LINEWIDTH, DEFAULT_MITERLIMIT,
   DEFAULT_STROKESTYLE, DEFAULT_TEXTALIGN, DEFAULT_TEXTBASELINE} from '../webgl.js';
@@ -378,8 +378,8 @@ WebGLTextReplay.prototype.setTextStyle = function(textStyle) {
     state.font = textStyle.getFont() || DEFAULT_FONT;
     state.scale = textStyle.getScale() || 1;
     this.text_ = /** @type {string} */ (textStyle.getText());
-    const textAlign = _ol_render_replay_.TEXT_ALIGN[textStyle.getTextAlign()];
-    const textBaseline = _ol_render_replay_.TEXT_ALIGN[textStyle.getTextBaseline()];
+    const textAlign = TEXT_ALIGN[textStyle.getTextAlign()];
+    const textBaseline = TEXT_ALIGN[textStyle.getTextBaseline()];
     this.textAlign_ = textAlign === undefined ?
       DEFAULT_TEXTALIGN : textAlign;
     this.textBaseline_ = textBaseline === undefined ?

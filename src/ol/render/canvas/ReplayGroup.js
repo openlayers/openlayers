@@ -14,7 +14,7 @@ import CanvasImageReplay from '../canvas/ImageReplay.js';
 import CanvasLineStringReplay from '../canvas/LineStringReplay.js';
 import CanvasPolygonReplay from '../canvas/PolygonReplay.js';
 import CanvasTextReplay from '../canvas/TextReplay.js';
-import _ol_render_replay_ from '../replay.js';
+import {ORDER} from '../replay.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
 
@@ -370,8 +370,8 @@ CanvasReplayGroup.prototype.forEachFeatureAtCoordinate = function(
   for (i = zs.length - 1; i >= 0; --i) {
     const zIndexKey = zs[i].toString();
     replays = this.replaysByZIndex_[zIndexKey];
-    for (j = _ol_render_replay_.ORDER.length - 1; j >= 0; --j) {
-      replayType = _ol_render_replay_.ORDER[j];
+    for (j = ORDER.length - 1; j >= 0; --j) {
+      replayType = ORDER[j];
       replay = replays[replayType];
       if (replay !== undefined) {
         if (declutterReplays &&
@@ -473,7 +473,7 @@ CanvasReplayGroup.prototype.replay = function(context,
   context.save();
   this.clip(context, transform);
 
-  const replayTypes = opt_replayTypes ? opt_replayTypes : _ol_render_replay_.ORDER;
+  const replayTypes = opt_replayTypes ? opt_replayTypes : ORDER;
   let i, ii, j, jj, replays, replay;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     const zIndexKey = zs[i].toString();
