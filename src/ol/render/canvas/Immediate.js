@@ -384,8 +384,7 @@ CanvasImmediateRenderer.prototype.moveToLineTo_ = function(flatCoordinates, offs
  */
 CanvasImmediateRenderer.prototype.drawRings_ = function(flatCoordinates, offset, ends, stride) {
   for (let i = 0, ii = ends.length; i < ii; ++i) {
-    offset = this.moveToLineTo_(
-      flatCoordinates, offset, ends[i], stride, true);
+    offset = this.moveToLineTo_(flatCoordinates, offset, ends[i], stride, true);
   }
   return offset;
 };
@@ -610,8 +609,7 @@ CanvasImmediateRenderer.prototype.drawMultiLineString = function(geometry) {
     const stride = geometry.getStride();
     context.beginPath();
     for (let i = 0, ii = ends.length; i < ii; ++i) {
-      offset = this.moveToLineTo_(
-        flatCoordinates, offset, ends[i], stride, false);
+      offset = this.moveToLineTo_(flatCoordinates, offset, ends[i], stride, false);
     }
     context.stroke();
   }

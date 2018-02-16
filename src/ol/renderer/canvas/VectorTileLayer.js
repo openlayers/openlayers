@@ -154,14 +154,12 @@ CanvasVectorTileLayerRenderer.prototype.prepareFrame = function(frameState, laye
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
-CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(
-  tile, frameState) {
+CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(tile, frameState) {
   const layer = this.getLayer();
   const pixelRatio = frameState.pixelRatio;
   const projection = frameState.viewState.projection;
   const revision = layer.getRevision();
-  const renderOrder = /** @type {ol.RenderOrderFunction} */
-      (layer.getRenderOrder()) || null;
+  const renderOrder = /** @type {ol.RenderOrderFunction} */ (layer.getRenderOrder()) || null;
 
   const replayState = tile.getReplayState(layer);
   if (!replayState.dirty && replayState.renderedRevision == revision &&
@@ -196,8 +194,7 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(
     replayState.dirty = false;
     const replayGroup = new CanvasReplayGroup(0, sharedExtent, resolution,
       pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
-    const squaredTolerance = getSquaredRenderTolerance(
-      resolution, pixelRatio);
+    const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
     /**
      * @param {ol.Feature|ol.render.Feature} feature Feature.

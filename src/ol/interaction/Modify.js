@@ -298,8 +298,8 @@ Modify.prototype.removeFeatureSegmentData_ = function(feature) {
   const /** @type {Array.<ol.ModifySegmentDataType>} */ nodesToRemove = [];
   rBush.forEach(
     /**
-       * @param {ol.ModifySegmentDataType} node RTree node.
-       */
+     * @param {ol.ModifySegmentDataType} node RTree node.
+     */
     function(node) {
       if (feature === node.feature) {
         nodesToRemove.push(node);
@@ -563,8 +563,7 @@ Modify.prototype.writeCircleGeometry_ = function(feature, geometry) {
 Modify.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
   const geometries = geometry.getGeometriesArray();
   for (let i = 0; i < geometries.length; ++i) {
-    this.SEGMENT_WRITERS_[geometries[i].getType()].call(
-      this, feature, geometries[i]);
+    this.SEGMENT_WRITERS_[geometries[i].getType()].call(this, feature, geometries[i]);
   }
 };
 
@@ -805,8 +804,7 @@ Modify.handleEvent = function(mapBrowserEvent) {
     this.handlePointerMove_(mapBrowserEvent);
   }
   if (this.vertexFeature_ && this.deleteCondition_(mapBrowserEvent)) {
-    if (mapBrowserEvent.type != MapBrowserEventType.SINGLECLICK ||
-        !this.ignoreNextSingleClick_) {
+    if (mapBrowserEvent.type != MapBrowserEventType.SINGLECLICK || !this.ignoreNextSingleClick_) {
       handled = this.removePoint();
     } else {
       handled = true;
@@ -817,8 +815,7 @@ Modify.handleEvent = function(mapBrowserEvent) {
     this.ignoreNextSingleClick_ = false;
   }
 
-  return PointerInteraction.handleEvent.call(this, mapBrowserEvent) &&
-      !handled;
+  return PointerInteraction.handleEvent.call(this, mapBrowserEvent) && !handled;
 };
 
 
@@ -872,8 +869,7 @@ Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
         dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
         this.snappedToVertex_ = dist <= this.pixelTolerance_;
         if (this.snappedToVertex_) {
-          vertex = squaredDist1 > squaredDist2 ?
-            closestSegment[1] : closestSegment[0];
+          vertex = squaredDist1 > squaredDist2 ? closestSegment[1] : closestSegment[0];
         }
         this.createOrUpdateVertexFeature_(vertex);
         let segment;
@@ -1008,8 +1004,7 @@ Modify.prototype.insertVertex_ = function(segmentData, vertex) {
     depth: depth,
     index: index + 1
   });
-  rTree.insert(boundingExtent(newSegmentData2.segment),
-    newSegmentData2);
+  rTree.insert(boundingExtent(newSegmentData2.segment), newSegmentData2);
   this.dragSegments_.push([newSegmentData2, 0]);
   this.ignoreNextSingleClick_ = true;
 };
@@ -1024,8 +1019,7 @@ Modify.prototype.removePoint = function() {
     const evt = this.lastPointerEvent_;
     this.willModifyFeatures_(evt);
     this.removeVertex_();
-    this.dispatchEvent(new Modify.Event(
-      ModifyEventType.MODIFYEND, this.features_, evt));
+    this.dispatchEvent(new Modify.Event(ModifyEventType.MODIFYEND, this.features_, evt));
     this.modified_ = false;
     return true;
   }

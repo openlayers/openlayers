@@ -222,8 +222,7 @@ Collection.prototype.removeAt = function(index) {
   const prev = this.array_[index];
   this.array_.splice(index, 1);
   this.updateLength_();
-  this.dispatchEvent(
-    new Collection.Event(CollectionEventType.REMOVE, prev));
+  this.dispatchEvent(new Collection.Event(CollectionEventType.REMOVE, prev));
   return prev;
 };
 

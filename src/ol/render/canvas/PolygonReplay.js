@@ -49,8 +49,7 @@ CanvasPolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCoordinates, 
   for (let i = 0; i < numEnds; ++i) {
     const end = ends[i];
     const myBegin = this.coordinates.length;
-    const myEnd = this.appendFlatCoordinates(
-      flatCoordinates, offset, end, stride, true, !stroke);
+    const myEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride, true, !stroke);
     const moveToLineToInstruction = [CanvasInstruction.MOVE_TO_LINE_TO, myBegin, myEnd];
     this.instructions.push(moveToLineToInstruction);
     this.hitDetectionInstructions.push(moveToLineToInstruction);
@@ -174,8 +173,7 @@ CanvasPolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, 
   const stride = multiPolygonGeometry.getStride();
   let offset = 0;
   for (let i = 0, ii = endss.length; i < ii; ++i) {
-    offset = this.drawFlatCoordinatess_(
-      flatCoordinates, offset, endss[i], stride);
+    offset = this.drawFlatCoordinatess_(flatCoordinates, offset, endss[i], stride);
   }
   this.endGeometry(multiPolygonGeometry, feature);
 };
