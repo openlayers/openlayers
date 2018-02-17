@@ -61,8 +61,8 @@ inherits(CanvasImageLayerRenderer, IntermediateCanvasRenderer);
  */
 CanvasImageLayerRenderer['handles'] = function(type, layer) {
   return type === RendererType.CANVAS && (layer.getType() === LayerType.IMAGE ||
-      layer.getType() === LayerType.VECTOR &&
-      /** @type {ol.layer.Vector} */ (layer).getRenderMode() === VectorRenderType.IMAGE);
+    layer.getType() === LayerType.VECTOR &&
+    /** @type {ol.layer.Vector} */ (layer).getRenderMode() === VectorRenderType.IMAGE);
 };
 
 
