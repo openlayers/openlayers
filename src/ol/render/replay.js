@@ -21,16 +21,15 @@ export const ORDER = [
  * @const
  * @enum {number}
  */
-export const TEXT_ALIGN = {
-  left: 0,
-  end: 0,
-  center: 0.5,
-  right: 1,
-  start: 1,
-  top: 0,
-  middle: 0.5,
-  hanging: 0.2,
-  alphabetic: 0.8,
-  ideographic: 0.8,
-  bottom: 1
-};
+export const TEXT_ALIGN = {};
+TEXT_ALIGN['left'] = 0;
+TEXT_ALIGN['end'] = 0;
+TEXT_ALIGN['center'] = 0.5;
+TEXT_ALIGN['right'] = 1;
+TEXT_ALIGN['start'] = 1;
+TEXT_ALIGN['top'] = 0;
+TEXT_ALIGN['middle'] = 0.5;
+TEXT_ALIGN['hanging'] = 0.2;
+TEXT_ALIGN['alphabetic'] = 0.8;
+TEXT_ALIGN['ideographic'] = 0.8;
+TEXT_ALIGN['bottom'] = 1;
