@@ -72,19 +72,16 @@ registerMultiple(PluginType.LAYER_RENDERER, [
  * @fires ol.render.Event#precompose
  * @api
  */
-const CanvasMap = function(options) {
-  options = assign({}, options);
-  delete options.renderer;
-  if (!options.controls) {
-    options.controls = defaultControls();
+export default class CanvasMap extends PluggableMap {
+  constructor(options) {
+    options = assign({}, options);
+    delete options.renderer;
+    if (!options.controls) {
+      options.controls = defaultControls();
+    }
+    if (!options.interactions) {
+      options.interactions = defaultInteractions();
+    }
+    super(options);
   }
-  if (!options.interactions) {
-    options.interactions = defaultInteractions();
-  }
-
-  PluggableMap.call(this, options);
-};
-
-inherits(CanvasMap, PluggableMap);
-
-export default CanvasMap;
+}
