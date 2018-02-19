@@ -157,11 +157,9 @@ const OverviewMap = function(opt_options) {
   element.appendChild(this.ovmapDiv_);
   element.appendChild(button);
 
-  const render = options.render ? options.render : OverviewMap.render;
-
   Control.call(this, {
     element: element,
-    render: render,
+    render: options.render || render,
     target: options.target
   });
 
@@ -306,10 +304,10 @@ OverviewMap.prototype.handleRotationChanged_ = function() {
  * @this {ol.control.OverviewMap}
  * @api
  */
-OverviewMap.render = function(mapEvent) {
+export function render(mapEvent) {
   this.validateExtent_();
   this.updateBox_();
-};
+}
 
 
 /**
