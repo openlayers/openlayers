@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import {extend} from '../array.js';
 import {createOrUpdate} from '../extent.js';
 import {transformWithOptions} from '../format/Feature.js';
-import GMLBase from '../format/GMLBase.js';
+import GMLBase, {GMLNS} from '../format/GMLBase.js';
 import XSD from '../format/XSD.js';
 import Geometry from '../geom/Geometry.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -25,7 +25,7 @@ import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
  * @type {string}
  * @private
  */
-const schemaLocation = GMLBase.GMLNS +
+const schemaLocation = GMLNS +
     ' http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
     '1.0.0/gmlsf.xsd';
 

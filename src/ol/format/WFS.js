@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import {assert} from '../asserts.js';
 import GML2 from '../format/GML2.js';
 import GML3 from '../format/GML3.js';
-import GMLBase from '../format/GMLBase.js';
+import GMLBase, {GMLNS} from '../format/GMLBase.js';
 import {and as andFilter, bbox as bboxFilter} from '../format/filter.js';
 import XMLFeature from '../format/XMLFeature.js';
 import XSD from '../format/XSD.js';
@@ -149,7 +149,7 @@ WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
   });
   assign(context, this.getReadOptions(node, opt_options ? opt_options : {}));
   const objectStack = [context];
-  this.gmlFormat_.FEATURE_COLLECTION_PARSERS[GMLBase.GMLNS][
+  this.gmlFormat_.FEATURE_COLLECTION_PARSERS[GMLNS][
     'featureMember'] =
       makeArrayPusher(GMLBase.prototype.readFeaturesInternal);
   let features = pushParseAndPop([],
@@ -696,15 +696,15 @@ function writeDuringFilter(node, filter, objectStack) {
   XSD.writeStringTextNode(valueReference, filter.propertyName);
   node.appendChild(valueReference);
 
-  const timePeriod = createElementNS(GMLBase.GMLNS, 'TimePeriod');
+  const timePeriod = createElementNS(GMLNS, 'TimePeriod');
 
   node.appendChild(timePeriod);
 
-  const begin = createElementNS(GMLBase.GMLNS, 'begin');
+  const begin = createElementNS(GMLNS, 'begin');
   timePeriod.appendChild(begin);
   writeTimeInstant(begin, filter.begin);
 
-  const end = createElementNS(GMLBase.GMLNS, 'end');
+  const end = createElementNS(GMLNS, 'end');
   timePeriod.appendChild(end);
   writeTimeInstant(end, filter.end);
 }
@@ -839,10 +839,10 @@ function writeOgcLiteral(node, value) {
  * @param {string} time PropertyName value.
  */
 function writeTimeInstant(node, time) {
-  const timeInstant = createElementNS(GMLBase.GMLNS, 'TimeInstant');
+  const timeInstant = createElementNS(GMLNS, 'TimeInstant');
   node.appendChild(timeInstant);
 
-  const timePosition = createElementNS(GMLBase.GMLNS, 'timePosition');
+  const timePosition = createElementNS(GMLNS, 'timePosition');
   timeInstant.appendChild(timePosition);
   XSD.writeStringTextNode(timePosition, time);
 }

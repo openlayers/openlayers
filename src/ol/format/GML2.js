@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {createOrUpdate} from '../extent.js';
 import {transformWithOptions} from '../format/Feature.js';
-import GMLBase from '../format/GMLBase.js';
+import GMLBase, {GMLNS} from '../format/GMLBase.js';
 import XSD from '../format/XSD.js';
 import Geometry from '../geom/Geometry.js';
 import {assign} from '../obj.js';
@@ -17,7 +17,7 @@ import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
  * @const
  * @type {string}
  */
-const schemaLocation = GMLBase.GMLNS + ' http://schemas.opengis.net/gml/2.1.2/feature.xsd';
+const schemaLocation = GMLNS + ' http://schemas.opengis.net/gml/2.1.2/feature.xsd';
 
 
 /**
@@ -36,7 +36,7 @@ const GML2 = function(opt_options) {
 
   GMLBase.call(this, options);
 
-  this.FEATURE_COLLECTION_PARSERS[GMLBase.GMLNS][
+  this.FEATURE_COLLECTION_PARSERS[GMLNS][
     'featureMember'] =
       makeArrayPusher(GMLBase.prototype.readFeaturesInternal);
 
