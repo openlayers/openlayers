@@ -321,7 +321,7 @@ SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed flat coordinates.
  */
-SimpleGeometry.transform2D = function(simpleGeometry, transform, opt_dest) {
+export function transformGeom2D(simpleGeometry, transform, opt_dest) {
   const flatCoordinates = simpleGeometry.getFlatCoordinates();
   if (!flatCoordinates) {
     return null;
@@ -331,5 +331,6 @@ SimpleGeometry.transform2D = function(simpleGeometry, transform, opt_dest) {
       flatCoordinates, 0, flatCoordinates.length, stride,
       transform, opt_dest);
   }
-};
+}
+
 export default SimpleGeometry;

@@ -1,5 +1,5 @@
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
-import SimpleGeometry from '../../../../../src/ol/geom/SimpleGeometry.js';
+import {transformGeom2D} from '../../../../../src/ol/geom/SimpleGeometry.js';
 import {rotate, translate} from '../../../../../src/ol/geom/flat/transform.js';
 
 
@@ -31,8 +31,7 @@ describe('ol.geom.flat.transform', function() {
         0, -0.0004088332670837288,
         4480.991370439071, 1529.5752568707105
       ];
-      const pixelCoordinates = SimpleGeometry.transform2D(
-        multiPolygonGeometry, transform, []);
+      const pixelCoordinates = transformGeom2D(multiPolygonGeometry, transform, []);
       expect(pixelCoordinates[0]).to.roughlyEqual(806.6035275946265, 1e-9);
       expect(pixelCoordinates[1]).to.roughlyEqual(160.48916296287916, 1e-9);
       expect(pixelCoordinates[2]).to.roughlyEqual(805.3521540835154, 1e-9);
