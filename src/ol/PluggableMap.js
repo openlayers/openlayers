@@ -18,7 +18,7 @@ import ViewHint from './ViewHint.js';
 import {assert} from './asserts.js';
 import {removeNode} from './dom.js';
 import {listen, unlistenByKey, unlisten} from './events.js';
-import Event from './events/Event.js';
+import {stopPropagation} from './events/Event.js';
 import EventType from './events/EventType.js';
 import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
 import {TRUE} from './functions.js';
@@ -248,8 +248,7 @@ const PluggableMap = function(options) {
     EventType.WHEEL
   ];
   for (let i = 0, ii = overlayEvents.length; i < ii; ++i) {
-    listen(this.overlayContainerStopEvent_, overlayEvents[i],
-      Event.stopPropagation);
+    listen(this.overlayContainerStopEvent_, overlayEvents[i], stopPropagation);
   }
   this.viewport_.appendChild(this.overlayContainerStopEvent_);
 
