@@ -27,11 +27,8 @@ const PointerInteraction = function(opt_options) {
 
   const options = opt_options ? opt_options : {};
 
-  const handleEvent = options.handleEvent ?
-    options.handleEvent : PointerInteraction.handleEvent;
-
   Interaction.call(this, {
-    handleEvent: handleEvent
+    handleEvent: options.handleEvent || handleEvent
   });
 
   /**
@@ -177,7 +174,7 @@ PointerInteraction.handleMoveEvent = nullFunction;
  * @this {ol.interaction.Pointer}
  * @api
  */
-PointerInteraction.handleEvent = function(mapBrowserEvent) {
+export function handleEvent(mapBrowserEvent) {
   if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
     return true;
   }
@@ -201,7 +198,7 @@ PointerInteraction.handleEvent = function(mapBrowserEvent) {
     }
   }
   return !stopEvent;
-};
+}
 
 
 /**

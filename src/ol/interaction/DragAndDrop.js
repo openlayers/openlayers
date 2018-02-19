@@ -40,7 +40,7 @@ const DragAndDrop = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
   Interaction.call(this, {
-    handleEvent: DragAndDrop.handleEvent
+    handleEvent: TRUE
   });
 
   /**
@@ -150,17 +150,6 @@ DragAndDrop.prototype.handleResult_ = function(file, event) {
       DragAndDropEventType.ADD_FEATURES, file,
       features, projection));
 };
-
-
-/**
- * Handles the {@link ol.MapBrowserEvent map browser event} unconditionally and
- * neither prevents the browser default nor stops event propagation.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} `false` to stop event propagation.
- * @this {ol.interaction.DragAndDrop}
- * @api
- */
-DragAndDrop.handleEvent = TRUE;
 
 
 /**

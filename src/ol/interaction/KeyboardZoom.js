@@ -26,7 +26,7 @@ import Interaction from '../interaction/Interaction.js';
 const KeyboardZoom = function(opt_options) {
 
   Interaction.call(this, {
-    handleEvent: KeyboardZoom.handleEvent
+    handleEvent: handleEvent
   });
 
   const options = opt_options ? opt_options : {};
@@ -61,9 +61,8 @@ inherits(KeyboardZoom, Interaction);
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.KeyboardZoom}
- * @api
  */
-KeyboardZoom.handleEvent = function(mapBrowserEvent) {
+function handleEvent(mapBrowserEvent) {
   let stopEvent = false;
   if (mapBrowserEvent.type == EventType.KEYDOWN ||
       mapBrowserEvent.type == EventType.KEYPRESS) {
@@ -81,5 +80,6 @@ KeyboardZoom.handleEvent = function(mapBrowserEvent) {
     }
   }
   return !stopEvent;
-};
+}
+
 export default KeyboardZoom;

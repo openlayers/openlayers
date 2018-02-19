@@ -11,7 +11,7 @@ import {boundingExtent, createEmpty} from '../extent.js';
 import {TRUE, FALSE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
 import {fromCircle} from '../geom/Polygon.js';
-import PointerInteraction from '../interaction/Pointer.js';
+import PointerInteraction, {handleEvent as handlePointerEvent} from '../interaction/Pointer.js';
 import {getValues} from '../obj.js';
 import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
@@ -590,7 +590,7 @@ export function handleEvent(evt) {
     evt.coordinate = result.vertex.slice(0, 2);
     evt.pixel = result.vertexPixel;
   }
-  return PointerInteraction.handleEvent.call(this, evt);
+  return handlePointerEvent.call(this, evt);
 }
 
 

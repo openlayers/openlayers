@@ -17,7 +17,7 @@ import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import ModifyEventType from '../interaction/ModifyEventType.js';
-import PointerInteraction from '../interaction/Pointer.js';
+import PointerInteraction, {handleEvent as handlePointerEvent} from '../interaction/Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
@@ -48,7 +48,7 @@ const Modify = function(options) {
   PointerInteraction.call(this, {
     handleDownEvent: handleDownEvent,
     handleDragEvent: handleDragEvent,
-    handleEvent: Modify.handleEvent,
+    handleEvent: handleEvent,
     handleUpEvent: handleUpEvent
   });
 
@@ -789,9 +789,8 @@ function handleUpEvent(evt) {
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Modify}
- * @api
  */
-Modify.handleEvent = function(mapBrowserEvent) {
+function handleEvent(mapBrowserEvent) {
   if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
     return true;
   }
@@ -815,8 +814,8 @@ Modify.handleEvent = function(mapBrowserEvent) {
     this.ignoreNextSingleClick_ = false;
   }
 
-  return PointerInteraction.handleEvent.call(this, mapBrowserEvent) && !handled;
-};
+  return handlePointerEvent.call(this, mapBrowserEvent) && !handled;
+}
 
 
 /**
@@ -1219,5 +1218,7 @@ Modify.Event = function(type, features, mapBrowserPointerEvent) {
    */
   this.mapBrowserEvent = mapBrowserPointerEvent;
 };
+
 inherits(Modify.Event, Event);
+
 export default Modify;
