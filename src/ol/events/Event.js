@@ -61,15 +61,16 @@ Event.prototype.preventDefault =
 /**
  * @param {Event|ol.events.Event} evt Event
  */
-Event.stopPropagation = function(evt) {
+export function stopPropagation(evt) {
   evt.stopPropagation();
-};
+}
 
 
 /**
  * @param {Event|ol.events.Event} evt Event
  */
-Event.preventDefault = function(evt) {
+export function preventDefault(evt) {
   evt.preventDefault();
-};
+}
+
 export default Event;

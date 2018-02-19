@@ -2,7 +2,7 @@
  * @module ol/interaction/Snap
  */
 import {getUid, inherits} from '../index.js';
-import Collection from '../Collection.js';
+import {CollectionEvent} from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import {distance as coordinateDistance, squaredDistance as squaredCoordinateDistance, closestOnCircle, closestOnSegment, squaredDistanceToSegment} from '../coordinate.js';
 import {listen, unlistenByKey} from '../events.js';
@@ -214,14 +214,14 @@ Snap.prototype.getFeatures_ = function() {
 
 
 /**
- * @param {ol.source.Vector.Event|ol.Collection.Event} evt Event.
+ * @param {ol.source.Vector.Event|ol.CollectionEvent} evt Event.
  * @private
  */
 Snap.prototype.handleFeatureAdd_ = function(evt) {
   let feature;
   if (evt instanceof VectorSource.Event) {
     feature = evt.feature;
-  } else if (evt instanceof Collection.Event) {
+  } else if (evt instanceof CollectionEvent) {
     feature = evt.element;
   }
   this.addFeature(/** @type {ol.Feature} */ (feature));
@@ -229,14 +229,14 @@ Snap.prototype.handleFeatureAdd_ = function(evt) {
 
 
 /**
- * @param {ol.source.Vector.Event|ol.Collection.Event} evt Event.
+ * @param {ol.source.Vector.Event|ol.CollectionEvent} evt Event.
  * @private
  */
 Snap.prototype.handleFeatureRemove_ = function(evt) {
   let feature;
   if (evt instanceof VectorSource.Event) {
     feature = evt.feature;
-  } else if (evt instanceof Collection.Event) {
+  } else if (evt instanceof CollectionEvent) {
     feature = evt.element;
   }
   this.removeFeature(/** @type {ol.Feature} */ (feature));

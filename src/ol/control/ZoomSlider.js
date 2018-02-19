@@ -7,7 +7,7 @@ import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
 import {listen} from '../events.js';
-import Event from '../events/Event.js';
+import {stopPropagation} from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {clamp} from '../math.js';
 import PointerEventType from '../pointer/EventType.js';
@@ -130,16 +130,12 @@ const ZoomSlider = function(opt_options) {
   listen(this.dragger_, PointerEventType.POINTERUP,
     this.handleDraggerEnd_, this);
 
-  listen(containerElement, EventType.CLICK,
-    this.handleContainerClick_, this);
-  listen(thumbElement, EventType.CLICK,
-    Event.stopPropagation);
-
-  const render = options.render ? options.render : ZoomSlider.render;
+  listen(containerElement, EventType.CLICK, this.handleContainerClick_, this);
+  listen(thumbElement, EventType.CLICK, stopPropagation);
 
   Control.call(this, {
     element: containerElement,
-    render: render
+    render: options.render || render
   });
 };
 
@@ -206,7 +202,7 @@ ZoomSlider.prototype.initSlider_ = function() {
  * @this {ol.control.ZoomSlider}
  * @api
  */
-ZoomSlider.render = function(mapEvent) {
+export function render(mapEvent) {
   if (!mapEvent.frameState) {
     return;
   }
@@ -218,7 +214,7 @@ ZoomSlider.render = function(mapEvent) {
     this.currentResolution_ = res;
     this.setThumbPosition_(res);
   }
-};
+}
 
 
 /**

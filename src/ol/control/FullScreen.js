@@ -80,7 +80,7 @@ const FullScreen = function(opt_options) {
 
   const tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
   const button = document.createElement('button');
-  button.className = this.cssClassName_ + '-' + FullScreen.isFullScreen();
+  button.className = this.cssClassName_ + '-' + isFullScreen();
   button.setAttribute('type', 'button');
   button.title = tipLabel;
   button.appendChild(this.labelNode_);
@@ -90,7 +90,7 @@ const FullScreen = function(opt_options) {
 
   const cssClasses = this.cssClassName_ + ' ' + CLASS_UNSELECTABLE +
       ' ' + CLASS_CONTROL + ' ' +
-      (!FullScreen.isFullScreenSupported() ? CLASS_UNSUPPORTED : '');
+      (!isFullScreenSupported() ? CLASS_UNSUPPORTED : '');
   const element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(button);
@@ -131,15 +131,15 @@ FullScreen.prototype.handleClick_ = function(event) {
  * @private
  */
 FullScreen.prototype.handleFullScreen_ = function() {
-  if (!FullScreen.isFullScreenSupported()) {
+  if (!isFullScreenSupported()) {
     return;
   }
   const map = this.getMap();
   if (!map) {
     return;
   }
-  if (FullScreen.isFullScreen()) {
-    FullScreen.exitFullScreen();
+  if (isFullScreen()) {
+    exitFullScreen();
   } else {
     let element;
     if (this.source_) {
@@ -150,10 +150,10 @@ FullScreen.prototype.handleFullScreen_ = function() {
       element = map.getTargetElement();
     }
     if (this.keys_) {
-      FullScreen.requestFullScreenWithKeys(element);
+      requestFullScreenWithKeys(element);
 
     } else {
-      FullScreen.requestFullScreen(element);
+      requestFullScreen(element);
     }
   }
 };
@@ -165,7 +165,7 @@ FullScreen.prototype.handleFullScreen_ = function() {
 FullScreen.prototype.handleFullScreenChange_ = function() {
   const button = this.element.firstElementChild;
   const map = this.getMap();
-  if (FullScreen.isFullScreen()) {
+  if (isFullScreen()) {
     button.className = this.cssClassName_ + '-true';
     replaceNode(this.labelActiveNode_, this.labelNode_);
   } else {
@@ -195,7 +195,7 @@ FullScreen.prototype.setMap = function(map) {
 /**
  * @return {boolean} Fullscreen is supported by the current platform.
  */
-FullScreen.isFullScreenSupported = function() {
+function isFullScreenSupported() {
   const body = document.body;
   return !!(
     body.webkitRequestFullscreen ||
@@ -203,23 +203,23 @@ FullScreen.isFullScreenSupported = function() {
     (body.msRequestFullscreen && document.msFullscreenEnabled) ||
     (body.requestFullscreen && document.fullscreenEnabled)
   );
-};
+}
 
 /**
  * @return {boolean} Element is currently in fullscreen.
  */
-FullScreen.isFullScreen = function() {
+function isFullScreen() {
   return !!(
     document.webkitIsFullScreen || document.mozFullScreen ||
     document.msFullscreenElement || document.fullscreenElement
   );
-};
+}
 
 /**
  * Request to fullscreen an element.
  * @param {Node} element Element to request fullscreen
  */
-FullScreen.requestFullScreen = function(element) {
+function requestFullScreen(element) {
   if (element.requestFullscreen) {
     element.requestFullscreen();
   } else if (element.msRequestFullscreen) {
@@ -229,26 +229,26 @@ FullScreen.requestFullScreen = function(element) {
   } else if (element.webkitRequestFullscreen) {
     element.webkitRequestFullscreen();
   }
-};
+}
 
 /**
  * Request to fullscreen an element with keyboard input.
  * @param {Node} element Element to request fullscreen
  */
-FullScreen.requestFullScreenWithKeys = function(element) {
+function requestFullScreenWithKeys(element) {
   if (element.mozRequestFullScreenWithKeys) {
     element.mozRequestFullScreenWithKeys();
   } else if (element.webkitRequestFullscreen) {
     element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
   } else {
-    FullScreen.requestFullScreen(element);
+    requestFullScreen(element);
   }
-};
+}
 
 /**
  * Exit fullscreen.
  */
-FullScreen.exitFullScreen = function() {
+function exitFullScreen() {
   if (document.exitFullscreen) {
     document.exitFullscreen();
   } else if (document.msExitFullscreen) {
@@ -258,6 +258,6 @@ FullScreen.exitFullScreen = function() {
   } else if (document.webkitExitFullscreen) {
     document.webkitExitFullscreen();
   }
-};
+}
 
 export default FullScreen;

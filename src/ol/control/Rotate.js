@@ -59,13 +59,11 @@ const Rotate = function(opt_options) {
   element.className = cssClasses;
   element.appendChild(button);
 
-  const render = options.render ? options.render : Rotate.render;
-
   this.callResetNorth_ = options.resetNorth ? options.resetNorth : undefined;
 
   Control.call(this, {
     element: element,
-    render: render,
+    render: options.render || render,
     target: options.target
   });
 
@@ -141,7 +139,7 @@ Rotate.prototype.resetNorth_ = function() {
  * @this {ol.control.Rotate}
  * @api
  */
-Rotate.render = function(mapEvent) {
+export function render(mapEvent) {
   const frameState = mapEvent.frameState;
   if (!frameState) {
     return;
@@ -162,5 +160,6 @@ Rotate.render = function(mapEvent) {
     this.label_.style.transform = transform;
   }
   this.rotation_ = rotation;
-};
+}
+
 export default Rotate;

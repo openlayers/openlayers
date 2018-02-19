@@ -97,11 +97,9 @@ const Attribution = function(opt_options) {
   element.appendChild(this.ulElement_);
   element.appendChild(button);
 
-  const render = options.render ? options.render : Attribution.render;
-
   Control.call(this, {
     element: element,
-    render: render,
+    render: options.render || render,
     target: options.target
   });
 
@@ -189,9 +187,9 @@ Attribution.prototype.getSourceAttributions_ = function(frameState) {
  * @this {ol.control.Attribution}
  * @api
  */
-Attribution.render = function(mapEvent) {
+export function render(mapEvent) {
   this.updateElement_(mapEvent.frameState);
-};
+}
 
 
 /**

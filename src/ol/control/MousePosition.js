@@ -41,12 +41,9 @@ const MousePosition = function(opt_options) {
   const element = document.createElement('DIV');
   element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
 
-  const render = options.render ?
-    options.render : MousePosition.render;
-
   Control.call(this, {
     element: element,
-    render: render,
+    render: options.render || render,
     target: options.target
   });
 
@@ -102,7 +99,7 @@ inherits(MousePosition, Control);
  * @this {ol.control.MousePosition}
  * @api
  */
-MousePosition.render = function(mapEvent) {
+export function render(mapEvent) {
   const frameState = mapEvent.frameState;
   if (!frameState) {
     this.mapProjection_ = null;
@@ -113,7 +110,7 @@ MousePosition.render = function(mapEvent) {
     }
   }
   this.updateHTML_(this.lastMouseMovePixel_);
-};
+}
 
 
 /**
