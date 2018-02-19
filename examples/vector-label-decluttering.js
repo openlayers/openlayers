@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import * as _ol_extent_ from '../src/ol/extent.js';
+import {getWidth} from '../src/ol/extent.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
@@ -26,7 +26,7 @@ const labelStyle = new Style({
       let widest = 0;
       for (let i = 0, ii = polygons.length; i < ii; ++i) {
         const polygon = polygons[i];
-        const width = _ol_extent_.getWidth(polygon.getExtent());
+        const width = getWidth(polygon.getExtent());
         if (width > widest) {
           widest = width;
           geometry = polygon;

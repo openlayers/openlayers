@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
-import * as _ol_extent_ from '../src/ol/extent.js';
+import {getWidth, getTopLeft} from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -11,7 +11,7 @@ import WMTSTileGrid from '../src/ol/tilegrid/WMTS.js';
 
 const projection = getProjection('EPSG:3857');
 const projectionExtent = projection.getExtent();
-const size = _ol_extent_.getWidth(projectionExtent) / 256;
+const size = getWidth(projectionExtent) / 256;
 const resolutions = new Array(14);
 const matrixIds = new Array(14);
 for (let z = 0; z < 14; ++z) {
@@ -38,7 +38,7 @@ const map = new Map({
         format: 'image/png',
         projection: projection,
         tileGrid: new WMTSTileGrid({
-          origin: _ol_extent_.getTopLeft(projectionExtent),
+          origin: getTopLeft(projectionExtent),
           resolutions: resolutions,
           matrixIds: matrixIds
         }),

@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import * as _ol_extent_ from '../src/ol/extent.js';
+import {getWidth} from '../src/ol/extent.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
@@ -25,7 +25,7 @@ function gradient(feature, resolution) {
   // we just divide the geometry's extent width by resolution and multiply with
   // pixelRatio to match the renderer's pixel coordinate system.
   const grad = context.createLinearGradient(0, 0,
-    _ol_extent_.getWidth(extent) / resolution * pixelRatio, 0);
+    getWidth(extent) / resolution * pixelRatio, 0);
   grad.addColorStop(0, 'red');
   grad.addColorStop(1 / 6, 'orange');
   grad.addColorStop(2 / 6, 'yellow');

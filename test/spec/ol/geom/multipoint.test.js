@@ -1,4 +1,4 @@
-import * as _ol_extent_ from '../../../../src/ol/extent.js';
+import {isEmpty} from '../../../../src/ol/extent.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../../src/ol/geom/Point.js';
 
@@ -27,7 +27,7 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     it('has an empty extent', function() {
-      expect(_ol_extent_.isEmpty(multiPoint.getExtent())).to.be(true);
+      expect(isEmpty(multiPoint.getExtent())).to.be(true);
     });
 
     it('has empty flat coordinates', function() {

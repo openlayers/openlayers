@@ -1,5 +1,5 @@
 import Feature from '../../../../src/ol/Feature.js';
-import * as _ol_extent_ from '../../../../src/ol/extent.js';
+import {equals} from '../../../../src/ol/extent.js';
 import EsriJSON from '../../../../src/ol/format/EsriJSON.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import LinearRing from '../../../../src/ol/geom/LinearRing.js';
@@ -305,7 +305,7 @@ describe('ol.format.EsriJSON', function() {
         expect(first.getId()).to.be(6406);
         const firstGeom = first.getGeometry();
         expect(firstGeom).to.be.a(Polygon);
-        expect(_ol_extent_.equals(firstGeom.getExtent(), [
+        expect(equals(firstGeom.getExtent(), [
           -10585772.743554419, 4712365.161160459,
           -10579560.16462974, 4716567.373073828
         ])).to.be(true);
@@ -316,7 +316,7 @@ describe('ol.format.EsriJSON', function() {
         expect(last.getId()).to.be(6030);
         const lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(Polygon);
-        expect(_ol_extent_.equals(lastGeom.getExtent(), [
+        expect(equals(lastGeom.getExtent(), [
           -10555714.026858449, 4576511.565880965,
           -10553671.199322715, 4578554.9934867555
         ])).to.be(true);

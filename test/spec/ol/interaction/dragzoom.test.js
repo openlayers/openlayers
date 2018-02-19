@@ -1,6 +1,6 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import * as _ol_extent_ from '../../../../src/ol/extent.js';
+import {getCenter} from '../../../../src/ol/extent.js';
 import {fromExtent as polygonFromExtent} from '../../../../src/ol/geom/Polygon.js';
 import DragZoom from '../../../../src/ol/interaction/DragZoom.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
@@ -79,7 +79,7 @@ describe('ol.interaction.DragZoom', function() {
       setTimeout(function() {
         const view = map.getView();
         const center = view.getCenter();
-        expect(center).to.eql(_ol_extent_.getCenter(extent));
+        expect(center).to.eql(getCenter(extent));
         done();
       }, 50);
 

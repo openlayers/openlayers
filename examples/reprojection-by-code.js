@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import * as _ol_extent_ from '../src/ol/extent.js';
+import {applyTransform} from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection, getTransform} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
@@ -49,7 +49,7 @@ function setProjection(code, name, proj4def, bbox) {
   const fromLonLat = getTransform('EPSG:4326', newProj);
 
   // very approximate calculation of projection extent
-  const extent = _ol_extent_.applyTransform(
+  const extent = applyTransform(
     [bbox[1], bbox[2], bbox[3], bbox[0]], fromLonLat);
   newProj.setExtent(extent);
   const newView = new View({

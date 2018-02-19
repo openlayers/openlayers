@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import * as _ol_extent_ from '../src/ol/extent.js';
+import {getCenter} from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {transformExtent} from '../src/ol/proj.js';
 import Stamen from '../src/ol/source/Stamen.js';
@@ -34,7 +34,7 @@ const map = new Map({
   layers: layers,
   target: 'map',
   view: new View({
-    center: _ol_extent_.getCenter(extent),
+    center: getCenter(extent),
     zoom: 4
   })
 });
