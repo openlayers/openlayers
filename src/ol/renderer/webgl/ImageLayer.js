@@ -20,7 +20,7 @@ import {
   invert as invertTransform,
   multiply as multiplyTransform
 } from '../../transform.js';
-import _ol_webgl_ from '../../webgl.js';
+import {CLAMP_TO_EDGE} from '../../webgl.js';
 import {createTexture} from '../../webgl/Context.js';
 
 /**
@@ -98,7 +98,7 @@ WebGLImageLayerRenderer.prototype.createTexture_ = function(image) {
   const gl = this.mapRenderer.getGL();
 
   return createTexture(
-    gl, imageElement, _ol_webgl_.CLAMP_TO_EDGE, _ol_webgl_.CLAMP_TO_EDGE);
+    gl, imageElement, CLAMP_TO_EDGE, CLAMP_TO_EDGE);
 };
 
 

@@ -9,11 +9,13 @@ import {linearRingIsClockwise} from '../../geom/flat/orient.js';
 import {translate} from '../../geom/flat/transform.js';
 import {lineStringIsClosed} from '../../geom/flat/topology.js';
 import {isEmpty} from '../../obj.js';
-import _ol_render_webgl_ from '../webgl.js';
+import {DEFAULT_LINECAP, DEFAULT_LINEDASH, DEFAULT_LINEDASHOFFSET,
+  DEFAULT_LINEJOIN, DEFAULT_LINEWIDTH, DEFAULT_MITERLIMIT, DEFAULT_STROKESTYLE,
+  triangleIsCounterClockwise} from '../webgl.js';
 import WebGLReplay from '../webgl/Replay.js';
 import {fragment, vertex} from '../webgl/linestringreplay/defaultshader.js';
 import Locations from '../webgl/linestringreplay/defaultshader/Locations.js';
-import _ol_webgl_ from '../../webgl.js';
+import {FLOAT} from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
 
@@ -210,7 +212,7 @@ WebGLLineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, off
     }
 
     // We group CW and straight lines, thus the not so inituitive CCW checking function.
-    sign = _ol_render_webgl_.triangleIsCounterClockwise(p0[0], p0[1], p1[0], p1[1], p2[0], p2[1])
+    sign = triangleIsCounterClockwise(p0[0], p0[1], p1[0], p1[1], p2[0], p2[1])
       ? -1 : 1;
 
     numVertices = this.addVertices_(p0, p1, p2,
@@ -471,19 +473,19 @@ WebGLLineStringReplay.prototype.setUpProgram = function(gl, context, size, pixel
 
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_lastPos);
-  gl.vertexAttribPointer(locations.a_lastPos, 2, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_lastPos, 2, FLOAT,
     false, 28, 0);
 
   gl.enableVertexAttribArray(locations.a_position);
-  gl.vertexAttribPointer(locations.a_position, 2, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_position, 2, FLOAT,
     false, 28, 8);
 
   gl.enableVertexAttribArray(locations.a_nextPos);
-  gl.vertexAttribPointer(locations.a_nextPos, 2, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_nextPos, 2, FLOAT,
     false, 28, 16);
 
   gl.enableVertexAttribArray(locations.a_direction);
-  gl.vertexAttribPointer(locations.a_direction, 1, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_direction, 1, FLOAT,
     false, 28, 24);
 
   // Enable renderer specific uniforms.
@@ -646,31 +648,31 @@ WebGLLineStringReplay.prototype.setStrokeStyle_ = function(gl, color, lineWidth,
 WebGLLineStringReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   const strokeStyleLineCap = strokeStyle.getLineCap();
   this.state_.lineCap = strokeStyleLineCap !== undefined ?
-    strokeStyleLineCap : _ol_render_webgl_.defaultLineCap;
+    strokeStyleLineCap : DEFAULT_LINECAP;
   const strokeStyleLineDash = strokeStyle.getLineDash();
   this.state_.lineDash = strokeStyleLineDash ?
-    strokeStyleLineDash : _ol_render_webgl_.defaultLineDash;
+    strokeStyleLineDash : DEFAULT_LINEDASH;
   const strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
   this.state_.lineDashOffset = strokeStyleLineDashOffset ?
-    strokeStyleLineDashOffset : _ol_render_webgl_.defaultLineDashOffset;
+    strokeStyleLineDashOffset : DEFAULT_LINEDASHOFFSET;
   const strokeStyleLineJoin = strokeStyle.getLineJoin();
   this.state_.lineJoin = strokeStyleLineJoin !== undefined ?
-    strokeStyleLineJoin : _ol_render_webgl_.defaultLineJoin;
+    strokeStyleLineJoin : DEFAULT_LINEJOIN;
   let strokeStyleColor = strokeStyle.getColor();
   if (!(strokeStyleColor instanceof CanvasGradient) &&
       !(strokeStyleColor instanceof CanvasPattern)) {
     strokeStyleColor = asArray(strokeStyleColor).map(function(c, i) {
       return i != 3 ? c / 255 : c;
-    }) || _ol_render_webgl_.defaultStrokeStyle;
+    }) || DEFAULT_STROKESTYLE;
   } else {
-    strokeStyleColor = _ol_render_webgl_.defaultStrokeStyle;
+    strokeStyleColor = DEFAULT_STROKESTYLE;
   }
   let strokeStyleWidth = strokeStyle.getWidth();
   strokeStyleWidth = strokeStyleWidth !== undefined ?
-    strokeStyleWidth : _ol_render_webgl_.defaultLineWidth;
+    strokeStyleWidth : DEFAULT_LINEWIDTH;
   let strokeStyleMiterLimit = strokeStyle.getMiterLimit();
   strokeStyleMiterLimit = strokeStyleMiterLimit !== undefined ?
-    strokeStyleMiterLimit : _ol_render_webgl_.defaultMiterLimit;
+    strokeStyleMiterLimit : DEFAULT_MITERLIMIT;
   if (!this.state_.strokeColor || !equals(this.state_.strokeColor, strokeStyleColor) ||
       this.state_.lineWidth !== strokeStyleWidth || this.state_.miterLimit !== strokeStyleMiterLimit) {
     this.state_.changed = true;

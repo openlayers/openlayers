@@ -5,7 +5,7 @@ import {inherits} from '../../index.js';
 import {numberSafeCompareFunction} from '../../array.js';
 import {buffer, createOrUpdateFromCoordinate} from '../../extent.js';
 import {isEmpty} from '../../obj.js';
-import _ol_render_replay_ from '../replay.js';
+import {ORDER} from '../replay.js';
 import ReplayGroup from '../ReplayGroup.js';
 import WebGLCircleReplay from '../webgl/CircleReplay.js';
 import WebGLImageReplay from '../webgl/ImageReplay.js';
@@ -171,8 +171,8 @@ WebGLReplayGroup.prototype.replay = function(context,
   let i, ii, j, jj, replays, replay;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replays = this.replaysByZIndex_[zs[i].toString()];
-    for (j = 0, jj = _ol_render_replay_.ORDER.length; j < jj; ++j) {
-      replay = replays[_ol_render_replay_.ORDER[j]];
+    for (j = 0, jj = ORDER.length; j < jj; ++j) {
+      replay = replays[ORDER[j]];
       if (replay !== undefined) {
         replay.replay(context,
           center, resolution, rotation, size, pixelRatio,
@@ -214,8 +214,8 @@ WebGLReplayGroup.prototype.replayHitDetection_ = function(context,
   let i, ii, j, replays, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replays = this.replaysByZIndex_[zs[i].toString()];
-    for (j = _ol_render_replay_.ORDER.length - 1; j >= 0; --j) {
-      replay = replays[_ol_render_replay_.ORDER[j]];
+    for (j = ORDER.length - 1; j >= 0; --j) {
+      replay = replays[ORDER[j]];
       if (replay !== undefined) {
         result = replay.replay(context,
           center, resolution, rotation, size, pixelRatio, opacity,

@@ -2,7 +2,7 @@
  * @module ol/webgl/Vertex
  */
 import {inherits} from '../index.js';
-import _ol_webgl_ from '../webgl.js';
+import {VERTEX_SHADER} from '../webgl.js';
 import WebGLShader from '../webgl/Shader.js';
 
 /**
@@ -22,6 +22,6 @@ inherits(WebGLVertex, WebGLShader);
  * @inheritDoc
  */
 WebGLVertex.prototype.getType = function() {
-  return _ol_webgl_.VERTEX_SHADER;
+  return VERTEX_SHADER;
 };
 export default WebGLVertex;

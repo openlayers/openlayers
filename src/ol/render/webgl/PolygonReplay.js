@@ -13,11 +13,11 @@ import {fragment, vertex} from '../webgl/polygonreplay/defaultshader.js';
 import Locations from '../webgl/polygonreplay/defaultshader/Locations.js';
 import WebGLLineStringReplay from '../webgl/LineStringReplay.js';
 import WebGLReplay from '../webgl/Replay.js';
-import _ol_render_webgl_ from '../webgl.js';
+import {triangleIsCounterClockwise, EPSILON, DEFAULT_FILLSTYLE} from '../webgl.js';
 import Stroke from '../../style/Stroke.js';
 import LinkedList from '../../structs/LinkedList.js';
 import RBush from '../../structs/RBush.js';
-import _ol_webgl_ from '../../webgl.js';
+import {FLOAT} from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
@@ -220,9 +220,9 @@ WebGLPolygonReplay.prototype.classifyPoints_ = function(list, rtree, ccw) {
   let s1 = list.nextItem();
   let pointsReclassified = false;
   do {
-    const reflex = ccw ? _ol_render_webgl_.triangleIsCounterClockwise(s1.p1.x,
+    const reflex = ccw ? triangleIsCounterClockwise(s1.p1.x,
       s1.p1.y, s0.p1.x, s0.p1.y, s0.p0.x, s0.p0.y) :
-      _ol_render_webgl_.triangleIsCounterClockwise(s0.p0.x, s0.p0.y, s0.p1.x,
+      triangleIsCounterClockwise(s0.p0.x, s0.p0.y, s0.p1.x,
         s0.p1.y, s1.p1.x, s1.p1.y);
     if (reflex === undefined) {
       this.removeItem_(s0, s1, list, rtree);
@@ -273,7 +273,7 @@ WebGLPolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
     const intersection = this.calculateIntersection_(p1, p2, currSeg.p0,
       currSeg.p1, true);
     const dist = Math.abs(p1.x - intersection[0]);
-    if (dist < minDist && _ol_render_webgl_.triangleIsCounterClockwise(p1.x, p1.y,
+    if (dist < minDist && triangleIsCounterClockwise(p1.x, p1.y,
       currSeg.p0.x, currSeg.p0.y, currSeg.p1.x, currSeg.p1.y) !== undefined) {
       minDist = dist;
       p5 = {x: intersection[0], y: intersection[1], i: -1};
@@ -714,8 +714,8 @@ WebGLPolygonReplay.prototype.calculateIntersection_ = function(p0, p1, p2, p3, o
   if (denom !== 0) {
     const ua = ((p3.x - p2.x) * (p0.y - p2.y) - (p3.y - p2.y) * (p0.x - p2.x)) / denom;
     const ub = ((p1.x - p0.x) * (p0.y - p2.y) - (p1.y - p0.y) * (p0.x - p2.x)) / denom;
-    if ((!opt_touch && ua > _ol_render_webgl_.EPSILON && ua < 1 - _ol_render_webgl_.EPSILON &&
-        ub > _ol_render_webgl_.EPSILON && ub < 1 - _ol_render_webgl_.EPSILON) || (opt_touch &&
+    if ((!opt_touch && ua > EPSILON && ua < 1 - EPSILON &&
+        ub > EPSILON && ub < 1 - EPSILON) || (opt_touch &&
         ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1)) {
       return [p0.x + ua * (p1.x - p0.x), p0.y + ua * (p1.y - p0.y)];
     }
@@ -888,7 +888,7 @@ WebGLPolygonReplay.prototype.setUpProgram = function(gl, context, size, pixelRat
 
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_position);
-  gl.vertexAttribPointer(locations.a_position, 2, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_position, 2, FLOAT,
     false, 8, 0);
 
   return locations;
@@ -1042,9 +1042,9 @@ WebGLPolygonReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyl
       !(fillStyleColor instanceof CanvasPattern)) {
     fillStyleColor = asArray(fillStyleColor).map(function(c, i) {
       return i != 3 ? c / 255 : c;
-    }) || _ol_render_webgl_.defaultFillStyle;
+    }) || DEFAULT_FILLSTYLE;
   } else {
-    fillStyleColor = _ol_render_webgl_.defaultFillStyle;
+    fillStyleColor = DEFAULT_FILLSTYLE;
   }
   if (!this.state_.fillColor || !equals(fillStyleColor, this.state_.fillColor)) {
     this.state_.fillColor = fillStyleColor;

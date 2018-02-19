@@ -11,7 +11,7 @@ import {CANVAS_LINE_DASH, SAFARI} from '../../has.js';
 import {labelCache, measureTextWidth, defaultTextAlign, measureTextHeight, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from '../canvas/Instruction.js';
 import CanvasReplay from '../canvas/Replay.js';
-import _ol_render_replay_ from '../replay.js';
+import {TEXT_ALIGN} from '../replay.js';
 import TextPlacement from '../../style/TextPlacement.js';
 
 /**
@@ -290,7 +290,7 @@ CanvasTextReplay.prototype.getImage = function(text, textKey, fillKey, strokeKey
     const textState = this.textStates[textKey] || this.textState_;
     const pixelRatio = this.pixelRatio;
     const scale = textState.scale * pixelRatio;
-    const align =  _ol_render_replay_.TEXT_ALIGN[textState.textAlign || defaultTextAlign];
+    const align =  TEXT_ALIGN[textState.textAlign || defaultTextAlign];
     const strokeWidth = strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
     const lines = text.split('\n');
@@ -353,8 +353,8 @@ CanvasTextReplay.prototype.drawTextImage_ = function(label, begin, end) {
   const textState = this.textState_;
   const strokeState = this.textStrokeState_;
   const pixelRatio = this.pixelRatio;
-  const align = _ol_render_replay_.TEXT_ALIGN[textState.textAlign || defaultTextAlign];
-  const baseline = _ol_render_replay_.TEXT_ALIGN[textState.textBaseline];
+  const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
+  const baseline = TEXT_ALIGN[textState.textBaseline];
   const strokeWidth = strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
   const anchorX = align * label.width / pixelRatio + 2 * (0.5 - align) * strokeWidth;
@@ -421,7 +421,7 @@ CanvasTextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
   }
 
   const pixelRatio = this.pixelRatio;
-  const baseline = _ol_render_replay_.TEXT_ALIGN[textState.textBaseline];
+  const baseline = TEXT_ALIGN[textState.textBaseline];
 
   const offsetY = this.textOffsetY_ * pixelRatio;
   const text = this.text_;

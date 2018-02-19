@@ -1,15 +1,15 @@
 /**
  * @module ol/webgl/Buffer
  */
-import _ol_webgl_ from '../webgl.js';
+import {STATIC_DRAW, STREAM_DRAW, DYNAMIC_DRAW} from '../webgl.js';
 
 /**
  * @enum {number}
  */
 const BufferUsage = {
-  STATIC_DRAW: _ol_webgl_.STATIC_DRAW,
-  STREAM_DRAW: _ol_webgl_.STREAM_DRAW,
-  DYNAMIC_DRAW: _ol_webgl_.DYNAMIC_DRAW
+  STATIC_DRAW: STATIC_DRAW,
+  STREAM_DRAW: STREAM_DRAW,
+  DYNAMIC_DRAW: DYNAMIC_DRAW
 };
 
 /**

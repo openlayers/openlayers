@@ -1,83 +1,88 @@
 /**
  * @module ol/render/webgl
  */
-const _ol_render_webgl_ = {};
 
 
 /**
  * @const
  * @type {string}
  */
-_ol_render_webgl_.defaultFont = '10px sans-serif';
+export const DEFAULT_FONT = '10px sans-serif';
 
 
 /**
  * @const
  * @type {ol.Color}
  */
-_ol_render_webgl_.defaultFillStyle = [0.0, 0.0, 0.0, 1.0];
+export const DEFAULT_FILLSTYLE = [0.0, 0.0, 0.0, 1.0];
 
 
 /**
  * @const
  * @type {string}
  */
-_ol_render_webgl_.defaultLineCap = 'round';
+export const DEFAULT_LINECAP = 'round';
 
 
 /**
  * @const
  * @type {Array.<number>}
  */
-_ol_render_webgl_.defaultLineDash = [];
+export const DEFAULT_LINEDASH = [];
 
 
 /**
  * @const
  * @type {number}
  */
-_ol_render_webgl_.defaultLineDashOffset = 0;
+export const DEFAULT_LINEDASHOFFSET = 0;
 
 
 /**
  * @const
  * @type {string}
  */
-_ol_render_webgl_.defaultLineJoin = 'round';
+export const DEFAULT_LINEJOIN = 'round';
 
 
 /**
  * @const
  * @type {number}
  */
-_ol_render_webgl_.defaultMiterLimit = 10;
+export const DEFAULT_MITERLIMIT = 10;
 
 /**
  * @const
  * @type {ol.Color}
  */
-_ol_render_webgl_.defaultStrokeStyle = [0.0, 0.0, 0.0, 1.0];
+export const DEFAULT_STROKESTYLE = [0.0, 0.0, 0.0, 1.0];
 
 
 /**
  * @const
  * @type {number}
  */
-_ol_render_webgl_.defaultTextAlign = 0.5;
+export const DEFAULT_TEXTALIGN = 0.5;
 
 
 /**
  * @const
  * @type {number}
  */
-_ol_render_webgl_.defaultTextBaseline = 0.5;
+export const DEFAULT_TEXTBASELINE = 0.5;
 
 
 /**
  * @const
  * @type {number}
  */
-_ol_render_webgl_.defaultLineWidth = 1;
+export const DEFAULT_LINEWIDTH = 1;
+
+/**
+ * @const
+ * @type {number}
+ */
+export const EPSILON = Number.EPSILON || 2.220446049250313e-16;
 
 /**
  * Calculates the orientation of a triangle based on the determinant method.
@@ -89,15 +94,9 @@ _ol_render_webgl_.defaultLineWidth = 1;
  * @param {number} y3 Third Y coordinate.
  * @return {boolean|undefined} Triangle is clockwise.
  */
-_ol_render_webgl_.triangleIsCounterClockwise = function(x1, y1, x2, y2, x3, y3) {
+export const triangleIsCounterClockwise = function(x1, y1, x2, y2, x3, y3) {
   const area = (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1);
-  return (area <= _ol_render_webgl_.EPSILON && area >= -_ol_render_webgl_.EPSILON) ?
+  return (area <= EPSILON && area >= -EPSILON) ?
     undefined : area > 0;
 };
 
-/**
- * @const
- * @type {number}
- */
-_ol_render_webgl_.EPSILON = Number.EPSILON || 2.220446049250313e-16;
-export default _ol_render_webgl_;

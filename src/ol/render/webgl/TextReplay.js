@@ -6,8 +6,10 @@ import {asColorLike} from '../../colorlike.js';
 import {createCanvasContext2D} from '../../dom.js';
 import GeometryType from '../../geom/GeometryType.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
-import _ol_render_replay_ from '../replay.js';
-import _ol_render_webgl_ from '../webgl.js';
+import {TEXT_ALIGN} from '../replay.js';
+import {DEFAULT_FILLSTYLE, DEFAULT_FONT, DEFAULT_LINECAP, DEFAULT_LINEDASH,
+  DEFAULT_LINEDASHOFFSET, DEFAULT_LINEJOIN, DEFAULT_LINEWIDTH, DEFAULT_MITERLIMIT,
+  DEFAULT_STROKESTYLE, DEFAULT_TEXTALIGN, DEFAULT_TEXTBASELINE} from '../webgl.js';
 import WebGLTextureReplay from '../webgl/TextureReplay.js';
 import AtlasManager from '../../style/AtlasManager.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
@@ -356,7 +358,7 @@ WebGLTextReplay.prototype.setTextStyle = function(textStyle) {
     } else {
       const textFillStyleColor = textFillStyle.getColor();
       state.fillColor = asColorLike(textFillStyleColor ?
-        textFillStyleColor : _ol_render_webgl_.defaultFillStyle);
+        textFillStyleColor : DEFAULT_FILLSTYLE);
     }
     if (!textStrokeStyle) {
       state.strokeColor = null;
@@ -364,24 +366,24 @@ WebGLTextReplay.prototype.setTextStyle = function(textStyle) {
     } else {
       const textStrokeStyleColor = textStrokeStyle.getColor();
       state.strokeColor = asColorLike(textStrokeStyleColor ?
-        textStrokeStyleColor : _ol_render_webgl_.defaultStrokeStyle);
-      state.lineWidth = textStrokeStyle.getWidth() || _ol_render_webgl_.defaultLineWidth;
-      state.lineCap = textStrokeStyle.getLineCap() || _ol_render_webgl_.defaultLineCap;
-      state.lineDashOffset = textStrokeStyle.getLineDashOffset() || _ol_render_webgl_.defaultLineDashOffset;
-      state.lineJoin = textStrokeStyle.getLineJoin() || _ol_render_webgl_.defaultLineJoin;
-      state.miterLimit = textStrokeStyle.getMiterLimit() || _ol_render_webgl_.defaultMiterLimit;
+        textStrokeStyleColor : DEFAULT_STROKESTYLE);
+      state.lineWidth = textStrokeStyle.getWidth() || DEFAULT_LINEWIDTH;
+      state.lineCap = textStrokeStyle.getLineCap() || DEFAULT_LINECAP;
+      state.lineDashOffset = textStrokeStyle.getLineDashOffset() || DEFAULT_LINEDASHOFFSET;
+      state.lineJoin = textStrokeStyle.getLineJoin() || DEFAULT_LINEJOIN;
+      state.miterLimit = textStrokeStyle.getMiterLimit() || DEFAULT_MITERLIMIT;
       const lineDash = textStrokeStyle.getLineDash();
-      state.lineDash = lineDash ? lineDash.slice() : _ol_render_webgl_.defaultLineDash;
+      state.lineDash = lineDash ? lineDash.slice() : DEFAULT_LINEDASH;
     }
-    state.font = textStyle.getFont() || _ol_render_webgl_.defaultFont;
+    state.font = textStyle.getFont() || DEFAULT_FONT;
     state.scale = textStyle.getScale() || 1;
     this.text_ = /** @type {string} */ (textStyle.getText());
-    const textAlign = _ol_render_replay_.TEXT_ALIGN[textStyle.getTextAlign()];
-    const textBaseline = _ol_render_replay_.TEXT_ALIGN[textStyle.getTextBaseline()];
+    const textAlign = TEXT_ALIGN[textStyle.getTextAlign()];
+    const textBaseline = TEXT_ALIGN[textStyle.getTextBaseline()];
     this.textAlign_ = textAlign === undefined ?
-      _ol_render_webgl_.defaultTextAlign : textAlign;
+      DEFAULT_TEXTALIGN : textAlign;
     this.textBaseline_ = textBaseline === undefined ?
-      _ol_render_webgl_.defaultTextBaseline : textBaseline;
+      DEFAULT_TEXTBASELINE : textBaseline;
     this.offsetX_ = textStyle.getOffsetX() || 0;
     this.offsetY_ = textStyle.getOffsetY() || 0;
     this.rotateWithView = !!textStyle.getRotateWithView();

@@ -12,7 +12,8 @@ import {
   translate as translateTransform
 } from '../../transform.js';
 import {create, fromTransform} from '../../vec/mat4.js';
-import _ol_webgl_ from '../../webgl.js';
+import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TRIANGLES,
+  UNSIGNED_INT, UNSIGNED_SHORT} from '../../webgl.js';
 
 /**
  * @constructor
@@ -293,9 +294,9 @@ WebGLReplay.prototype.replay = function(context,
     gl.stencilFunc(gl.NOTEQUAL, 1, 255);
   }
 
-  context.bindBuffer(_ol_webgl_.ARRAY_BUFFER, this.verticesBuffer);
+  context.bindBuffer(ARRAY_BUFFER, this.verticesBuffer);
 
-  context.bindBuffer(_ol_webgl_.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+  context.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 
   const locations = this.setUpProgram(gl, context, size, pixelRatio);
 
@@ -359,11 +360,11 @@ WebGLReplay.prototype.replay = function(context,
 WebGLReplay.prototype.drawElements = function(
   gl, context, start, end) {
   const elementType = context.hasOESElementIndexUint ?
-    _ol_webgl_.UNSIGNED_INT : _ol_webgl_.UNSIGNED_SHORT;
+    UNSIGNED_INT : UNSIGNED_SHORT;
   const elementSize = context.hasOESElementIndexUint ? 4 : 2;
 
   const numItems = end - start;
   const offsetInBytes = start * elementSize;
-  gl.drawElements(_ol_webgl_.TRIANGLES, numItems, elementType, offsetInBytes);
+  gl.drawElements(TRIANGLES, numItems, elementType, offsetInBytes);
 };
 export default WebGLReplay;
