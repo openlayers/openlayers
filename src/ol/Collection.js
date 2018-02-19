@@ -18,6 +18,33 @@ const Property = {
 
 
 /**
+ * @classdesc
+ * Events emitted by {@link ol.Collection} instances are instances of this
+ * type.
+ *
+ * @constructor
+ * @extends {ol.events.Event}
+ * @implements {oli.CollectionEvent}
+ * @param {ol.CollectionEventType} type Type.
+ * @param {*=} opt_element Element.
+ */
+export const CollectionEvent = function(type, opt_element) {
+
+  Event.call(this, type);
+
+  /**
+   * The element that is added to or removed from the collection.
+   * @type {*}
+   * @api
+   */
+  this.element = opt_element;
+
+};
+
+inherits(CollectionEvent, Event);
+
+
+/**
  * @typedef {{unique: (boolean|undefined)}}
  */
 export let CollectionOptions;
@@ -33,7 +60,7 @@ export let CollectionOptions;
  *
  * @constructor
  * @extends {ol.Object}
- * @fires ol.Collection.Event
+ * @fires ol.CollectionEvent
  * @param {Array.<T>=} opt_array Array.
  * @param {CollectionOptions=} opt_options Collection options.
  * @param {boolean|undefined} opt_options.unique Disallow the same item from
@@ -162,7 +189,7 @@ Collection.prototype.insertAt = function(index, elem) {
   this.array_.splice(index, 0, elem);
   this.updateLength_();
   this.dispatchEvent(
-    new Collection.Event(CollectionEventType.ADD, elem));
+    new CollectionEvent(CollectionEventType.ADD, elem));
 };
 
 
@@ -222,7 +249,7 @@ Collection.prototype.removeAt = function(index) {
   const prev = this.array_[index];
   this.array_.splice(index, 1);
   this.updateLength_();
-  this.dispatchEvent(new Collection.Event(CollectionEventType.REMOVE, prev));
+  this.dispatchEvent(new CollectionEvent(CollectionEventType.REMOVE, prev));
   return prev;
 };
 
@@ -242,9 +269,9 @@ Collection.prototype.setAt = function(index, elem) {
     const prev = this.array_[index];
     this.array_[index] = elem;
     this.dispatchEvent(
-      new Collection.Event(CollectionEventType.REMOVE, prev));
+      new CollectionEvent(CollectionEventType.REMOVE, prev));
     this.dispatchEvent(
-      new Collection.Event(CollectionEventType.ADD, elem));
+      new CollectionEvent(CollectionEventType.ADD, elem));
   } else {
     let j;
     for (j = n; j < index; ++j) {
@@ -275,30 +302,5 @@ Collection.prototype.assertUnique_ = function(elem, opt_except) {
     }
   }
 };
-
-/**
- * @classdesc
- * Events emitted by {@link ol.Collection} instances are instances of this
- * type.
- *
- * @constructor
- * @extends {ol.events.Event}
- * @implements {oli.Collection.Event}
- * @param {ol.CollectionEventType} type Type.
- * @param {*=} opt_element Element.
- */
-Collection.Event = function(type, opt_element) {
-
-  Event.call(this, type);
-
-  /**
-   * The element that is added to or removed from the collection.
-   * @type {*}
-   * @api
-   */
-  this.element = opt_element;
-
-};
-inherits(Collection.Event, Event);
 
 export default Collection;

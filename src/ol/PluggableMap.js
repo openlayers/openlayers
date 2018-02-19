@@ -371,7 +371,7 @@ const PluggableMap = function(options) {
 
   listen(this.controls, CollectionEventType.ADD,
     /**
-       * @param {ol.Collection.Event} event Collection event.
+       * @param {ol.CollectionEvent} event CollectionEvent.
        */
     function(event) {
       event.element.setMap(this);
@@ -379,7 +379,7 @@ const PluggableMap = function(options) {
 
   listen(this.controls, CollectionEventType.REMOVE,
     /**
-       * @param {ol.Collection.Event} event Collection event.
+       * @param {ol.CollectionEvent} event CollectionEvent.
        */
     function(event) {
       event.element.setMap(null);
@@ -396,7 +396,7 @@ const PluggableMap = function(options) {
 
   listen(this.interactions, CollectionEventType.ADD,
     /**
-       * @param {ol.Collection.Event} event Collection event.
+       * @param {ol.CollectionEvent} event CollectionEvent.
        */
     function(event) {
       event.element.setMap(this);
@@ -404,7 +404,7 @@ const PluggableMap = function(options) {
 
   listen(this.interactions, CollectionEventType.REMOVE,
     /**
-       * @param {ol.Collection.Event} event Collection event.
+       * @param {ol.CollectionEvent} event CollectionEvent.
        */
     function(event) {
       event.element.setMap(null);
@@ -414,7 +414,7 @@ const PluggableMap = function(options) {
 
   listen(this.overlays_, CollectionEventType.ADD,
     /**
-       * @param {ol.Collection.Event} event Collection event.
+       * @param {ol.CollectionEvent} event CollectionEvent.
        */
     function(event) {
       this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
@@ -422,7 +422,7 @@ const PluggableMap = function(options) {
 
   listen(this.overlays_, CollectionEventType.REMOVE,
     /**
-       * @param {ol.Collection.Event} event Collection event.
+       * @param {ol.CollectionEvent} event CollectionEvent.
        */
     function(event) {
       const overlay = /** @type {ol.Overlay} */ (event.element);

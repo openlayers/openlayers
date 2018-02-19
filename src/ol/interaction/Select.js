@@ -349,7 +349,7 @@ Select.getDefaultStyleFunction = function() {
 
 
 /**
- * @param {ol.Collection.Event} evt Event.
+ * @param {ol.CollectionEvent} evt Event.
  * @private
  */
 Select.prototype.addFeature_ = function(evt) {
@@ -361,7 +361,7 @@ Select.prototype.addFeature_ = function(evt) {
 
 
 /**
- * @param {ol.Collection.Event} evt Event.
+ * @param {ol.CollectionEvent} evt Event.
  * @private
  */
 Select.prototype.removeFeature_ = function(evt) {

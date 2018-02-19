@@ -355,7 +355,7 @@ Modify.prototype.handleSourceRemove_ = function(event) {
 
 
 /**
- * @param {ol.Collection.Event} evt Event.
+ * @param {ol.CollectionEvent} evt Event.
  * @private
  */
 Modify.prototype.handleFeatureAdd_ = function(evt) {
@@ -377,7 +377,7 @@ Modify.prototype.handleFeatureChange_ = function(evt) {
 
 
 /**
- * @param {ol.Collection.Event} evt Event.
+ * @param {ol.CollectionEvent} evt Event.
  * @private
  */
 Modify.prototype.handleFeatureRemove_ = function(evt) {
