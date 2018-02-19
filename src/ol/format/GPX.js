@@ -6,7 +6,7 @@ import Feature from '../Feature.js';
 import {includes} from '../array.js';
 import {transformWithOptions} from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
-import XSD from '../format/XSD.js';
+import {readString, readDecimal, readNonNegativeInteger, readDateTime, writeStringTextNode, writeNonNegativeIntegerTextNode, writeDecimalTextNode, writeDateTimeTextNode} from '../format/xsd.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -95,8 +95,8 @@ const GPX_PARSERS = makeStructureNS(
  */
 const LINK_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'text': makeObjectPropertySetter(XSD.readString, 'linkText'),
-    'type': makeObjectPropertySetter(XSD.readString, 'linkType')
+    'text': makeObjectPropertySetter(readString, 'linkText'),
+    'type': makeObjectPropertySetter(readString, 'linkType')
   });
 
 
@@ -106,14 +106,14 @@ const LINK_PARSERS = makeStructureNS(
  */
 const RTE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'name': makeObjectPropertySetter(XSD.readString),
-    'cmt': makeObjectPropertySetter(XSD.readString),
-    'desc': makeObjectPropertySetter(XSD.readString),
-    'src': makeObjectPropertySetter(XSD.readString),
+    'name': makeObjectPropertySetter(readString),
+    'cmt': makeObjectPropertySetter(readString),
+    'desc': makeObjectPropertySetter(readString),
+    'src': makeObjectPropertySetter(readString),
     'link': parseLink,
-    'number': makeObjectPropertySetter(XSD.readNonNegativeInteger),
+    'number': makeObjectPropertySetter(readNonNegativeInteger),
     'extensions': parseExtensions,
-    'type': makeObjectPropertySetter(XSD.readString),
+    'type': makeObjectPropertySetter(readString),
     'rtept': parseRtePt
   });
 
@@ -124,8 +124,8 @@ const RTE_PARSERS = makeStructureNS(
  */
 const RTEPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'ele': makeObjectPropertySetter(XSD.readDecimal),
-    'time': makeObjectPropertySetter(XSD.readDateTime)
+    'ele': makeObjectPropertySetter(readDecimal),
+    'time': makeObjectPropertySetter(readDateTime)
   });
 
 
@@ -135,13 +135,13 @@ const RTEPT_PARSERS = makeStructureNS(
  */
 const TRK_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'name': makeObjectPropertySetter(XSD.readString),
-    'cmt': makeObjectPropertySetter(XSD.readString),
-    'desc': makeObjectPropertySetter(XSD.readString),
-    'src': makeObjectPropertySetter(XSD.readString),
+    'name': makeObjectPropertySetter(readString),
+    'cmt': makeObjectPropertySetter(readString),
+    'desc': makeObjectPropertySetter(readString),
+    'src': makeObjectPropertySetter(readString),
     'link': parseLink,
-    'number': makeObjectPropertySetter(XSD.readNonNegativeInteger),
-    'type': makeObjectPropertySetter(XSD.readString),
+    'number': makeObjectPropertySetter(readNonNegativeInteger),
+    'type': makeObjectPropertySetter(readString),
     'extensions': parseExtensions,
     'trkseg': parseTrkSeg
   });
@@ -163,8 +163,8 @@ const TRKSEG_PARSERS = makeStructureNS(
  */
 const TRKPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'ele': makeObjectPropertySetter(XSD.readDecimal),
-    'time': makeObjectPropertySetter(XSD.readDateTime)
+    'ele': makeObjectPropertySetter(readDecimal),
+    'time': makeObjectPropertySetter(readDateTime)
   });
 
 
@@ -174,24 +174,24 @@ const TRKPT_PARSERS = makeStructureNS(
  */
 const WPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'ele': makeObjectPropertySetter(XSD.readDecimal),
-    'time': makeObjectPropertySetter(XSD.readDateTime),
-    'magvar': makeObjectPropertySetter(XSD.readDecimal),
-    'geoidheight': makeObjectPropertySetter(XSD.readDecimal),
-    'name': makeObjectPropertySetter(XSD.readString),
-    'cmt': makeObjectPropertySetter(XSD.readString),
-    'desc': makeObjectPropertySetter(XSD.readString),
-    'src': makeObjectPropertySetter(XSD.readString),
+    'ele': makeObjectPropertySetter(readDecimal),
+    'time': makeObjectPropertySetter(readDateTime),
+    'magvar': makeObjectPropertySetter(readDecimal),
+    'geoidheight': makeObjectPropertySetter(readDecimal),
+    'name': makeObjectPropertySetter(readString),
+    'cmt': makeObjectPropertySetter(readString),
+    'desc': makeObjectPropertySetter(readString),
+    'src': makeObjectPropertySetter(readString),
     'link': parseLink,
-    'sym': makeObjectPropertySetter(XSD.readString),
-    'type': makeObjectPropertySetter(XSD.readString),
-    'fix': makeObjectPropertySetter(XSD.readString),
-    'sat': makeObjectPropertySetter(XSD.readNonNegativeInteger),
-    'hdop': makeObjectPropertySetter(XSD.readDecimal),
-    'vdop': makeObjectPropertySetter(XSD.readDecimal),
-    'pdop': makeObjectPropertySetter(XSD.readDecimal),
-    'ageofdgpsdata': makeObjectPropertySetter(XSD.readDecimal),
-    'dgpsid': makeObjectPropertySetter(XSD.readNonNegativeInteger),
+    'sym': makeObjectPropertySetter(readString),
+    'type': makeObjectPropertySetter(readString),
+    'fix': makeObjectPropertySetter(readString),
+    'sat': makeObjectPropertySetter(readNonNegativeInteger),
+    'hdop': makeObjectPropertySetter(readDecimal),
+    'vdop': makeObjectPropertySetter(readDecimal),
+    'pdop': makeObjectPropertySetter(readDecimal),
+    'ageofdgpsdata': makeObjectPropertySetter(readDecimal),
+    'dgpsid': makeObjectPropertySetter(readNonNegativeInteger),
     'extensions': parseExtensions
   });
 
@@ -209,8 +209,8 @@ const LINK_SEQUENCE = ['text', 'type'];
  */
 const LINK_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'text': makeChildAppender(XSD.writeStringTextNode),
-    'type': makeChildAppender(XSD.writeStringTextNode)
+    'text': makeChildAppender(writeStringTextNode),
+    'type': makeChildAppender(writeStringTextNode)
   });
 
 
@@ -230,13 +230,13 @@ const RTE_SEQUENCE = makeStructureNS(
  */
 const RTE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'name': makeChildAppender(XSD.writeStringTextNode),
-    'cmt': makeChildAppender(XSD.writeStringTextNode),
-    'desc': makeChildAppender(XSD.writeStringTextNode),
-    'src': makeChildAppender(XSD.writeStringTextNode),
+    'name': makeChildAppender(writeStringTextNode),
+    'cmt': makeChildAppender(writeStringTextNode),
+    'desc': makeChildAppender(writeStringTextNode),
+    'src': makeChildAppender(writeStringTextNode),
     'link': makeChildAppender(writeLink),
-    'number': makeChildAppender(XSD.writeNonNegativeIntegerTextNode),
-    'type': makeChildAppender(XSD.writeStringTextNode),
+    'number': makeChildAppender(writeNonNegativeIntegerTextNode),
+    'type': makeChildAppender(writeStringTextNode),
     'rtept': makeArraySerializer(makeChildAppender(writeWptType))
   });
 
@@ -267,13 +267,13 @@ const TRK_SEQUENCE = makeStructureNS(
  */
 const TRK_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'name': makeChildAppender(XSD.writeStringTextNode),
-    'cmt': makeChildAppender(XSD.writeStringTextNode),
-    'desc': makeChildAppender(XSD.writeStringTextNode),
-    'src': makeChildAppender(XSD.writeStringTextNode),
+    'name': makeChildAppender(writeStringTextNode),
+    'cmt': makeChildAppender(writeStringTextNode),
+    'desc': makeChildAppender(writeStringTextNode),
+    'src': makeChildAppender(writeStringTextNode),
     'link': makeChildAppender(writeLink),
-    'number': makeChildAppender(XSD.writeNonNegativeIntegerTextNode),
-    'type': makeChildAppender(XSD.writeStringTextNode),
+    'number': makeChildAppender(writeNonNegativeIntegerTextNode),
+    'type': makeChildAppender(writeStringTextNode),
     'trkseg': makeArraySerializer(makeChildAppender(writeTrkSeg))
   });
 
@@ -313,24 +313,24 @@ const WPT_TYPE_SEQUENCE = makeStructureNS(
  */
 const WPT_TYPE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'ele': makeChildAppender(XSD.writeDecimalTextNode),
-    'time': makeChildAppender(XSD.writeDateTimeTextNode),
-    'magvar': makeChildAppender(XSD.writeDecimalTextNode),
-    'geoidheight': makeChildAppender(XSD.writeDecimalTextNode),
-    'name': makeChildAppender(XSD.writeStringTextNode),
-    'cmt': makeChildAppender(XSD.writeStringTextNode),
-    'desc': makeChildAppender(XSD.writeStringTextNode),
-    'src': makeChildAppender(XSD.writeStringTextNode),
+    'ele': makeChildAppender(writeDecimalTextNode),
+    'time': makeChildAppender(writeDateTimeTextNode),
+    'magvar': makeChildAppender(writeDecimalTextNode),
+    'geoidheight': makeChildAppender(writeDecimalTextNode),
+    'name': makeChildAppender(writeStringTextNode),
+    'cmt': makeChildAppender(writeStringTextNode),
+    'desc': makeChildAppender(writeStringTextNode),
+    'src': makeChildAppender(writeStringTextNode),
     'link': makeChildAppender(writeLink),
-    'sym': makeChildAppender(XSD.writeStringTextNode),
-    'type': makeChildAppender(XSD.writeStringTextNode),
-    'fix': makeChildAppender(XSD.writeStringTextNode),
-    'sat': makeChildAppender(XSD.writeNonNegativeIntegerTextNode),
-    'hdop': makeChildAppender(XSD.writeDecimalTextNode),
-    'vdop': makeChildAppender(XSD.writeDecimalTextNode),
-    'pdop': makeChildAppender(XSD.writeDecimalTextNode),
-    'ageofdgpsdata': makeChildAppender(XSD.writeDecimalTextNode),
-    'dgpsid': makeChildAppender(XSD.writeNonNegativeIntegerTextNode)
+    'sym': makeChildAppender(writeStringTextNode),
+    'type': makeChildAppender(writeStringTextNode),
+    'fix': makeChildAppender(writeStringTextNode),
+    'sat': makeChildAppender(writeNonNegativeIntegerTextNode),
+    'hdop': makeChildAppender(writeDecimalTextNode),
+    'vdop': makeChildAppender(writeDecimalTextNode),
+    'pdop': makeChildAppender(writeDecimalTextNode),
+    'ageofdgpsdata': makeChildAppender(writeDecimalTextNode),
+    'dgpsid': makeChildAppender(writeNonNegativeIntegerTextNode)
   });
 
 
@@ -883,8 +883,7 @@ GPX.prototype.writeFeaturesNode = function(features, opt_options) {
   const xmlnsUri = 'http://www.w3.org/2000/xmlns/';
   const xmlSchemaInstanceUri = 'http://www.w3.org/2001/XMLSchema-instance';
   setAttributeNS(gpx, xmlnsUri, 'xmlns:xsi', xmlSchemaInstanceUri);
-  setAttributeNS(gpx, xmlSchemaInstanceUri, 'xsi:schemaLocation',
-    SCHEMA_LOCATION);
+  setAttributeNS(gpx, xmlSchemaInstanceUri, 'xsi:schemaLocation', SCHEMA_LOCATION);
   gpx.setAttribute('version', '1.1');
   gpx.setAttribute('creator', 'OpenLayers');
 

@@ -8,7 +8,7 @@ import {assert} from '../asserts.js';
 import {asArray} from '../color.js';
 import {transformWithOptions} from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
-import XSD from '../format/XSD.js';
+import {readDecimal, readBoolean, readString, writeStringTextNode, writeCDATASection, writeDecimalTextNode, writeBooleanTextNode} from '../format/xsd.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -575,7 +575,7 @@ function readVec2(node) {
  * @return {number|undefined} Scale.
  */
 function readScale(node) {
-  return XSD.readDecimal(node);
+  return readDecimal(node);
 }
 
 
@@ -607,7 +607,7 @@ function readStyleMapValue(node, objectStack) {
 const ICON_STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Icon': makeObjectPropertySetter(readIcon),
-    'heading': makeObjectPropertySetter(XSD.readDecimal),
+    'heading': makeObjectPropertySetter(readDecimal),
     'hotSpot': makeObjectPropertySetter(readVec2),
     'scale': makeObjectPropertySetter(readScale)
   });
@@ -758,7 +758,7 @@ function labelStyleParser(node, objectStack) {
 const LINE_STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'color': makeObjectPropertySetter(readColor),
-    'width': makeObjectPropertySetter(XSD.readDecimal)
+    'width': makeObjectPropertySetter(readDecimal)
   });
 
 
@@ -794,8 +794,8 @@ function lineStyleParser(node, objectStack) {
 const POLY_STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'color': makeObjectPropertySetter(readColor),
-    'fill': makeObjectPropertySetter(XSD.readBoolean),
-    'outline': makeObjectPropertySetter(XSD.readBoolean)
+    'fill': makeObjectPropertySetter(readBoolean),
+    'outline': makeObjectPropertySetter(readBoolean)
   });
 
 
@@ -948,10 +948,10 @@ const ICON_PARSERS = makeStructureNS(
     'href': makeObjectPropertySetter(readURI)
   }, makeStructureNS(
     GX_NAMESPACE_URIS, {
-      'x': makeObjectPropertySetter(XSD.readDecimal),
-      'y': makeObjectPropertySetter(XSD.readDecimal),
-      'w': makeObjectPropertySetter(XSD.readDecimal),
-      'h': makeObjectPropertySetter(XSD.readDecimal)
+      'x': makeObjectPropertySetter(readDecimal),
+      'y': makeObjectPropertySetter(readDecimal),
+      'w': makeObjectPropertySetter(readDecimal),
+      'h': makeObjectPropertySetter(readDecimal)
     }));
 
 
@@ -998,9 +998,9 @@ function readFlatCoordinatesFromNode(node, objectStack) {
  */
 const EXTRUDE_AND_ALTITUDE_MODE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'extrude': makeObjectPropertySetter(XSD.readBoolean),
-    'tessellate': makeObjectPropertySetter(XSD.readBoolean),
-    'altitudeMode': makeObjectPropertySetter(XSD.readString)
+    'extrude': makeObjectPropertySetter(readBoolean),
+    'tessellate': makeObjectPropertySetter(readBoolean),
+    'altitudeMode': makeObjectPropertySetter(readString)
   });
 
 
@@ -1286,8 +1286,8 @@ function setCommonGeometryProperties(multiGeometry,
  */
 const DATA_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'displayName': makeObjectPropertySetter(XSD.readString),
-    'value': makeObjectPropertySetter(XSD.readString)
+    'displayName': makeObjectPropertySetter(readString),
+    'value': makeObjectPropertySetter(readString)
   });
 
 
@@ -1353,7 +1353,7 @@ function regionParser(node, objectStack) {
 const PAIR_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Style': makeObjectPropertySetter(readStyle),
-    'key': makeObjectPropertySetter(XSD.readString),
+    'key': makeObjectPropertySetter(readString),
     'styleUrl': makeObjectPropertySetter(readURI)
   });
 
@@ -1431,7 +1431,7 @@ function schemaDataParser(node, objectStack) {
 function simpleDataParser(node, objectStack) {
   const name = node.getAttribute('name');
   if (name !== null) {
-    const data = XSD.readString(node);
+    const data = readString(node);
     const featureObject =
         /** @type {Object} */ (objectStack[objectStack.length - 1]);
     featureObject[name] = data;
@@ -1445,13 +1445,13 @@ function simpleDataParser(node, objectStack) {
  */
 const LAT_LON_ALT_BOX_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'altitudeMode': makeObjectPropertySetter(XSD.readString),
-    'minAltitude': makeObjectPropertySetter(XSD.readDecimal),
-    'maxAltitude': makeObjectPropertySetter(XSD.readDecimal),
-    'north': makeObjectPropertySetter(XSD.readDecimal),
-    'south': makeObjectPropertySetter(XSD.readDecimal),
-    'east': makeObjectPropertySetter(XSD.readDecimal),
-    'west': makeObjectPropertySetter(XSD.readDecimal)
+    'altitudeMode': makeObjectPropertySetter(readString),
+    'minAltitude': makeObjectPropertySetter(readDecimal),
+    'maxAltitude': makeObjectPropertySetter(readDecimal),
+    'north': makeObjectPropertySetter(readDecimal),
+    'south': makeObjectPropertySetter(readDecimal),
+    'east': makeObjectPropertySetter(readDecimal),
+    'west': makeObjectPropertySetter(readDecimal)
   });
 
 
@@ -1484,10 +1484,10 @@ function latLonAltBoxParser(node, objectStack) {
  */
 const LOD_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'minLodPixels': makeObjectPropertySetter(XSD.readDecimal),
-    'maxLodPixels': makeObjectPropertySetter(XSD.readDecimal),
-    'minFadeExtent': makeObjectPropertySetter(XSD.readDecimal),
-    'maxFadeExtent': makeObjectPropertySetter(XSD.readDecimal)
+    'minLodPixels': makeObjectPropertySetter(readDecimal),
+    'maxLodPixels': makeObjectPropertySetter(readDecimal),
+    'minFadeExtent': makeObjectPropertySetter(readDecimal),
+    'maxFadeExtent': makeObjectPropertySetter(readDecimal)
   });
 
 
@@ -1569,12 +1569,12 @@ const NETWORK_LINK_PARSERS = makeStructureNS(
     'ExtendedData': extendedDataParser,
     'Region': regionParser,
     'Link': linkParser,
-    'address': makeObjectPropertySetter(XSD.readString),
-    'description': makeObjectPropertySetter(XSD.readString),
-    'name': makeObjectPropertySetter(XSD.readString),
-    'open': makeObjectPropertySetter(XSD.readBoolean),
-    'phoneNumber': makeObjectPropertySetter(XSD.readString),
-    'visibility': makeObjectPropertySetter(XSD.readBoolean)
+    'address': makeObjectPropertySetter(readString),
+    'description': makeObjectPropertySetter(readString),
+    'name': makeObjectPropertySetter(readString),
+    'open': makeObjectPropertySetter(readBoolean),
+    'phoneNumber': makeObjectPropertySetter(readString),
+    'visibility': makeObjectPropertySetter(readBoolean)
   });
 
 
@@ -1631,13 +1631,13 @@ const PLACEMARK_PARSERS = makeStructureNS(
       readPolygon, 'geometry'),
     'Style': makeObjectPropertySetter(readStyle),
     'StyleMap': placemarkStyleMapParser,
-    'address': makeObjectPropertySetter(XSD.readString),
-    'description': makeObjectPropertySetter(XSD.readString),
-    'name': makeObjectPropertySetter(XSD.readString),
-    'open': makeObjectPropertySetter(XSD.readBoolean),
-    'phoneNumber': makeObjectPropertySetter(XSD.readString),
+    'address': makeObjectPropertySetter(readString),
+    'description': makeObjectPropertySetter(readString),
+    'name': makeObjectPropertySetter(readString),
+    'open': makeObjectPropertySetter(readBoolean),
+    'phoneNumber': makeObjectPropertySetter(readString),
     'styleUrl': makeObjectPropertySetter(readURI),
-    'visibility': makeObjectPropertySetter(XSD.readBoolean)
+    'visibility': makeObjectPropertySetter(readBoolean)
   }, makeStructureNS(
     GX_NAMESPACE_URIS, {
       'MultiTrack': makeObjectPropertySetter(
@@ -1908,7 +1908,7 @@ KML.prototype.readNameFromNode = function(node) {
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
     if (includes(NAMESPACE_URIS, n.namespaceURI) &&
         n.localName == 'name') {
-      return XSD.readString(n);
+      return readString(n);
     }
   }
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
@@ -2083,7 +2083,7 @@ function writeColorTextNode(node, color) {
     const hex = parseInt(abgr[i], 10).toString(16);
     abgr[i] = (hex.length == 1) ? '0' + hex : hex;
   }
-  XSD.writeStringTextNode(node, abgr.join(''));
+  writeStringTextNode(node, abgr.join(''));
 }
 
 
@@ -2124,7 +2124,7 @@ function writeCoordinatesTextNode(node, coordinates, objectStack) {
       }
     }
   }
-  XSD.writeStringTextNode(node, text);
+  writeStringTextNode(node, text);
 }
 
 
@@ -2172,7 +2172,7 @@ function writeDataNode(node, pair, objectStack) {
  * @param {string} name DisplayName.
  */
 function writeDataNodeName(node, name) {
-  XSD.writeCDATASection(node, name);
+  writeCDATASection(node, name);
 }
 
 
@@ -2181,7 +2181,7 @@ function writeDataNodeName(node, name) {
  * @param {string} value Value.
  */
 function writeDataNodeValue(node, value) {
-  XSD.writeStringTextNode(node, value);
+  writeStringTextNode(node, value);
 }
 
 
@@ -2268,13 +2268,13 @@ const ICON_SEQUENCE = makeStructureNS(
  */
 const ICON_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'href': makeChildAppender(XSD.writeStringTextNode)
+    'href': makeChildAppender(writeStringTextNode)
   }, makeStructureNS(
     GX_NAMESPACE_URIS, {
-      'x': makeChildAppender(XSD.writeDecimalTextNode),
-      'y': makeChildAppender(XSD.writeDecimalTextNode),
-      'w': makeChildAppender(XSD.writeDecimalTextNode),
-      'h': makeChildAppender(XSD.writeDecimalTextNode)
+      'x': makeChildAppender(writeDecimalTextNode),
+      'y': makeChildAppender(writeDecimalTextNode),
+      'w': makeChildAppender(writeDecimalTextNode),
+      'h': makeChildAppender(writeDecimalTextNode)
     }));
 
 
@@ -2329,7 +2329,7 @@ const ICON_STYLE_SEQUENCE = makeStructureNS(
 const ICON_STYLE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Icon': makeChildAppender(writeIcon),
-    'heading': makeChildAppender(XSD.writeDecimalTextNode),
+    'heading': makeChildAppender(writeDecimalTextNode),
     'hotSpot': makeChildAppender(writeVec2),
     'scale': makeChildAppender(writeScaleTextNode)
   });
@@ -2455,7 +2455,7 @@ const LINE_STYLE_SEQUENCE = makeStructureNS(
 const LINE_STYLE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
     'color': makeChildAppender(writeColorTextNode),
-    'width': makeChildAppender(XSD.writeDecimalTextNode)
+    'width': makeChildAppender(writeDecimalTextNode)
   });
 
 
@@ -2625,28 +2625,20 @@ function writeBoundaryIs(node, linearRing, objectStack) {
  */
 const PLACEMARK_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'ExtendedData': makeChildAppender(
-      writeExtendedData),
-    'MultiGeometry': makeChildAppender(
-      writeMultiGeometry),
-    'LineString': makeChildAppender(
-      writePrimitiveGeometry),
-    'LinearRing': makeChildAppender(
-      writePrimitiveGeometry),
-    'Point': makeChildAppender(
-      writePrimitiveGeometry),
+    'ExtendedData': makeChildAppender(writeExtendedData),
+    'MultiGeometry': makeChildAppender(writeMultiGeometry),
+    'LineString': makeChildAppender(writePrimitiveGeometry),
+    'LinearRing': makeChildAppender(writePrimitiveGeometry),
+    'Point': makeChildAppender(writePrimitiveGeometry),
     'Polygon': makeChildAppender(writePolygon),
     'Style': makeChildAppender(writeStyle),
-    'address': makeChildAppender(XSD.writeStringTextNode),
-    'description': makeChildAppender(
-      XSD.writeStringTextNode),
-    'name': makeChildAppender(XSD.writeStringTextNode),
-    'open': makeChildAppender(XSD.writeBooleanTextNode),
-    'phoneNumber': makeChildAppender(
-      XSD.writeStringTextNode),
-    'styleUrl': makeChildAppender(XSD.writeStringTextNode),
-    'visibility': makeChildAppender(
-      XSD.writeBooleanTextNode)
+    'address': makeChildAppender(writeStringTextNode),
+    'description': makeChildAppender(writeStringTextNode),
+    'name': makeChildAppender(writeStringTextNode),
+    'open': makeChildAppender(writeBooleanTextNode),
+    'phoneNumber': makeChildAppender(writeStringTextNode),
+    'styleUrl': makeChildAppender(writeStringTextNode),
+    'visibility': makeChildAppender(writeBooleanTextNode)
   });
 
 
@@ -2752,11 +2744,10 @@ const PRIMITIVE_GEOMETRY_SEQUENCE = makeStructureNS(
  */
 const PRIMITIVE_GEOMETRY_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'extrude': makeChildAppender(XSD.writeBooleanTextNode),
-    'tessellate': makeChildAppender(XSD.writeBooleanTextNode),
-    'altitudeMode': makeChildAppender(XSD.writeStringTextNode),
-    'coordinates': makeChildAppender(
-      writeCoordinatesTextNode)
+    'extrude': makeChildAppender(writeBooleanTextNode),
+    'tessellate': makeChildAppender(writeBooleanTextNode),
+    'altitudeMode': makeChildAppender(writeStringTextNode),
+    'coordinates': makeChildAppender(writeCoordinatesTextNode)
   });
 
 
@@ -2870,7 +2861,7 @@ function writePolyStyle(node, style, objectStack) {
  */
 function writeScaleTextNode(node, scale) {
   // the Math is to remove any excess decimals created by float arithmetic
-  XSD.writeDecimalTextNode(node,
+  writeDecimalTextNode(node,
     Math.round(scale * 1e6) / 1e6);
 }
 
@@ -3011,4 +3002,5 @@ KML.prototype.writeFeaturesNode = function(features, opt_options) {
     this);
   return kml;
 };
+
 export default KML;

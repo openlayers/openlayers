@@ -8,7 +8,7 @@ import GML3 from '../format/GML3.js';
 import GMLBase, {GMLNS} from '../format/GMLBase.js';
 import {and as andFilter, bbox as bboxFilter} from '../format/filter.js';
 import XMLFeature from '../format/XMLFeature.js';
-import XSD from '../format/XSD.js';
+import {readNonNegativeIntegerString, readNonNegativeInteger, writeStringTextNode} from '../format/xsd.js';
 import Geometry from '../geom/Geometry.js';
 import {assign} from '../obj.js';
 import {get as getProjection} from '../proj.js';
@@ -242,7 +242,7 @@ const FEATURE_COLLECTION_PARSERS = {
  */
 WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
   const result = {};
-  const value = XSD.readNonNegativeIntegerString(
+  const value = readNonNegativeIntegerString(
     node.getAttribute('numberOfFeatures'));
   result['numberOfFeatures'] = value;
   return pushParseAndPop(
@@ -257,12 +257,9 @@ WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
  */
 const TRANSACTION_SUMMARY_PARSERS = {
   'http://www.opengis.net/wfs': {
-    'totalInserted': makeObjectPropertySetter(
-      XSD.readNonNegativeInteger),
-    'totalUpdated': makeObjectPropertySetter(
-      XSD.readNonNegativeInteger),
-    'totalDeleted': makeObjectPropertySetter(
-      XSD.readNonNegativeInteger)
+    'totalInserted': makeObjectPropertySetter(readNonNegativeInteger),
+    'totalUpdated': makeObjectPropertySetter(readNonNegativeInteger),
+    'totalDeleted': makeObjectPropertySetter(readNonNegativeInteger)
   }
 };
 
@@ -366,7 +363,7 @@ WFS.prototype.readTransactionResponseFromNode = function(node) {
  */
 const QUERY_SERIALIZERS = {
   'http://www.opengis.net/wfs': {
-    'PropertyName': makeChildAppender(XSD.writeStringTextNode)
+    'PropertyName': makeChildAppender(writeStringTextNode)
   }
 };
 
@@ -507,7 +504,7 @@ function writeProperty(node, pair, objectStack) {
   const context = objectStack[objectStack.length - 1];
   const gmlVersion = context['gmlVersion'];
   node.appendChild(name);
-  XSD.writeStringTextNode(name, pair.name);
+  writeStringTextNode(name, pair.name);
   if (pair.value !== undefined && pair.value !== null) {
     const value = createElementNS(WFSNS, 'Value');
     node.appendChild(value);
@@ -520,7 +517,7 @@ function writeProperty(node, pair, objectStack) {
           pair.value, objectStack);
       }
     } else {
-      XSD.writeStringTextNode(value, pair.value);
+      writeStringTextNode(value, pair.value);
     }
   }
 }
@@ -540,7 +537,7 @@ function writeNative(node, nativeElement, objectStack) {
     node.setAttribute('safeToIgnore', nativeElement.safeToIgnore);
   }
   if (nativeElement.value !== undefined) {
-    XSD.writeStringTextNode(node, nativeElement.value);
+    writeStringTextNode(node, nativeElement.value);
   }
 }
 
@@ -693,7 +690,7 @@ function writeWithinFilter(node, filter, objectStack) {
 function writeDuringFilter(node, filter, objectStack) {
 
   const valueReference = createElementNS(FESNS, 'ValueReference');
-  XSD.writeStringTextNode(valueReference, filter.propertyName);
+  writeStringTextNode(valueReference, filter.propertyName);
   node.appendChild(valueReference);
 
   const timePeriod = createElementNS(GMLNS, 'TimePeriod');
@@ -811,7 +808,7 @@ function writeIsLikeFilter(node, filter, objectStack) {
  */
 function writeOgcExpression(tagName, node, value) {
   const property = createElementNS(OGCNS, tagName);
-  XSD.writeStringTextNode(property, value);
+  writeStringTextNode(property, value);
   node.appendChild(property);
 }
 
@@ -844,7 +841,7 @@ function writeTimeInstant(node, time) {
 
   const timePosition = createElementNS(GMLNS, 'timePosition');
   timeInstant.appendChild(timePosition);
-  XSD.writeStringTextNode(timePosition, time);
+  writeStringTextNode(timePosition, time);
 }
 
 

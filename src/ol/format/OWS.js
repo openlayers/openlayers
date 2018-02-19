@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {readHref} from '../format/XLink.js';
 import XML from '../format/XML.js';
-import XSD from '../format/XSD.js';
+import {readString} from '../format/xsd.js';
 import {makeObjectPropertyPusher, makeObjectPropertySetter, makeStructureNS, pushParseAndPop} from '../xml.js';
 
 /**
@@ -31,12 +31,9 @@ const NAMESPACE_URIS = [null, 'http://www.opengis.net/ows/1.1'];
  */
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'ServiceIdentification': makeObjectPropertySetter(
-      readServiceIdentification),
-    'ServiceProvider': makeObjectPropertySetter(
-      readServiceProvider),
-    'OperationsMetadata': makeObjectPropertySetter(
-      readOperationsMetadata)
+    'ServiceIdentification': makeObjectPropertySetter(readServiceIdentification),
+    'ServiceProvider': makeObjectPropertySetter(readServiceProvider),
+    'OperationsMetadata': makeObjectPropertySetter(readOperationsMetadata)
   });
 
 
@@ -46,15 +43,12 @@ const PARSERS = makeStructureNS(
  */
 const ADDRESS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'DeliveryPoint': makeObjectPropertySetter(
-      XSD.readString),
-    'City': makeObjectPropertySetter(XSD.readString),
-    'AdministrativeArea': makeObjectPropertySetter(
-      XSD.readString),
-    'PostalCode': makeObjectPropertySetter(XSD.readString),
-    'Country': makeObjectPropertySetter(XSD.readString),
-    'ElectronicMailAddress': makeObjectPropertySetter(
-      XSD.readString)
+    'DeliveryPoint': makeObjectPropertySetter(readString),
+    'City': makeObjectPropertySetter(readString),
+    'AdministrativeArea': makeObjectPropertySetter(readString),
+    'PostalCode': makeObjectPropertySetter(readString),
+    'Country': makeObjectPropertySetter(readString),
+    'ElectronicMailAddress': makeObjectPropertySetter(readString)
   });
 
 
@@ -74,8 +68,7 @@ const ALLOWED_VALUES_PARSERS = makeStructureNS(
  */
 const CONSTRAINT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'AllowedValues': makeObjectPropertySetter(
-      readAllowedValues)
+    'AllowedValues': makeObjectPropertySetter(readAllowedValues)
   });
 
 
@@ -137,8 +130,8 @@ const OPERATIONS_METADATA_PARSERS = makeStructureNS(
  */
 const PHONE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'Voice': makeObjectPropertySetter(XSD.readString),
-    'Facsimile': makeObjectPropertySetter(XSD.readString)
+    'Voice': makeObjectPropertySetter(readString),
+    'Facsimile': makeObjectPropertySetter(readString)
   });
 
 
@@ -148,8 +141,7 @@ const PHONE_PARSERS = makeStructureNS(
  */
 const REQUEST_METHOD_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'Constraint': makeObjectPropertyPusher(
-      readConstraint)
+    'Constraint': makeObjectPropertyPusher(readConstraint)
   });
 
 
@@ -160,11 +152,9 @@ const REQUEST_METHOD_PARSERS = makeStructureNS(
 const SERVICE_CONTACT_PARSERS =
     makeStructureNS(
       NAMESPACE_URIS, {
-        'IndividualName': makeObjectPropertySetter(
-          XSD.readString),
-        'PositionName': makeObjectPropertySetter(XSD.readString),
-        'ContactInfo': makeObjectPropertySetter(
-          readContactInfo)
+        'IndividualName': makeObjectPropertySetter(readString),
+        'PositionName': makeObjectPropertySetter(readString),
+        'ContactInfo': makeObjectPropertySetter(readContactInfo)
       });
 
 
@@ -175,13 +165,12 @@ const SERVICE_CONTACT_PARSERS =
 const SERVICE_IDENTIFICATION_PARSERS =
     makeStructureNS(
       NAMESPACE_URIS, {
-        'Abstract': makeObjectPropertySetter(XSD.readString),
-        'AccessConstraints': makeObjectPropertySetter(XSD.readString),
-        'Fees': makeObjectPropertySetter(XSD.readString),
-        'Title': makeObjectPropertySetter(XSD.readString),
-        'ServiceTypeVersion': makeObjectPropertySetter(
-          XSD.readString),
-        'ServiceType': makeObjectPropertySetter(XSD.readString)
+        'Abstract': makeObjectPropertySetter(readString),
+        'AccessConstraints': makeObjectPropertySetter(readString),
+        'Fees': makeObjectPropertySetter(readString),
+        'Title': makeObjectPropertySetter(readString),
+        'ServiceTypeVersion': makeObjectPropertySetter(readString),
+        'ServiceType': makeObjectPropertySetter(readString)
       });
 
 
@@ -192,10 +181,9 @@ const SERVICE_IDENTIFICATION_PARSERS =
 const SERVICE_PROVIDER_PARSERS =
     makeStructureNS(
       NAMESPACE_URIS, {
-        'ProviderName': makeObjectPropertySetter(XSD.readString),
+        'ProviderName': makeObjectPropertySetter(readString),
         'ProviderSite': makeObjectPropertySetter(readHref),
-        'ServiceContact': makeObjectPropertySetter(
-          readServiceContact)
+        'ServiceContact': makeObjectPropertySetter(readServiceContact)
       });
 
 
@@ -303,8 +291,7 @@ function readGet(node, objectStack) {
  * @return {Object|undefined} The HTTP object.
  */
 function readHttp(node, objectStack) {
-  return pushParseAndPop({}, HTTP_PARSERS,
-    node, objectStack);
+  return pushParseAndPop({}, HTTP_PARSERS, node, objectStack);
 }
 
 
@@ -331,8 +318,7 @@ function readOperation(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} The operations metadata.
  */
-function readOperationsMetadata(node,
-  objectStack) {
+function readOperationsMetadata(node, objectStack) {
   return pushParseAndPop({},
     OPERATIONS_METADATA_PARSERS, node,
     objectStack);
@@ -355,8 +341,7 @@ function readPhone(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} The service identification.
  */
-function readServiceIdentification(node,
-  objectStack) {
+function readServiceIdentification(node, objectStack) {
   return pushParseAndPop(
     {}, SERVICE_IDENTIFICATION_PARSERS, node,
     objectStack);
@@ -393,7 +378,7 @@ function readServiceProvider(node, objectStack) {
  * @return {string|undefined} The value.
  */
 function readValue(node, objectStack) {
-  return XSD.readString(node);
+  return readString(node);
 }
 
 

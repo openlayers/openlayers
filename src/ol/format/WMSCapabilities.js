@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {readHref} from '../format/XLink.js';
 import XML from '../format/XML.js';
-import XSD from '../format/XSD.js';
+import {readDecimalString, readString, readNonNegativeInteger, readDecimal, readBooleanString, readNonNegativeIntegerString} from '../format/xsd.js';
 import {makeArrayPusher, makeObjectPropertyPusher, makeObjectPropertySetter,
   makeStructureNS, pushParseAndPop} from '../xml.js';
 
@@ -69,17 +69,17 @@ const CAPABILITY_PARSERS = makeStructureNS(
  */
 const SERVICE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'Name': makeObjectPropertySetter(XSD.readString),
-    'Title': makeObjectPropertySetter(XSD.readString),
-    'Abstract': makeObjectPropertySetter(XSD.readString),
+    'Name': makeObjectPropertySetter(readString),
+    'Title': makeObjectPropertySetter(readString),
+    'Abstract': makeObjectPropertySetter(readString),
     'KeywordList': makeObjectPropertySetter(readKeywordList),
     'OnlineResource': makeObjectPropertySetter(readHref),
     'ContactInformation': makeObjectPropertySetter(readContactInformation),
-    'Fees': makeObjectPropertySetter(XSD.readString),
-    'AccessConstraints': makeObjectPropertySetter(XSD.readString),
-    'LayerLimit': makeObjectPropertySetter(XSD.readNonNegativeInteger),
-    'MaxWidth': makeObjectPropertySetter(XSD.readNonNegativeInteger),
-    'MaxHeight': makeObjectPropertySetter(XSD.readNonNegativeInteger)
+    'Fees': makeObjectPropertySetter(readString),
+    'AccessConstraints': makeObjectPropertySetter(readString),
+    'LayerLimit': makeObjectPropertySetter(readNonNegativeInteger),
+    'MaxWidth': makeObjectPropertySetter(readNonNegativeInteger),
+    'MaxHeight': makeObjectPropertySetter(readNonNegativeInteger)
   });
 
 
@@ -90,11 +90,11 @@ const SERVICE_PARSERS = makeStructureNS(
 const CONTACT_INFORMATION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'ContactPersonPrimary': makeObjectPropertySetter(readContactPersonPrimary),
-    'ContactPosition': makeObjectPropertySetter(XSD.readString),
+    'ContactPosition': makeObjectPropertySetter(readString),
     'ContactAddress': makeObjectPropertySetter(readContactAddress),
-    'ContactVoiceTelephone': makeObjectPropertySetter(XSD.readString),
-    'ContactFacsimileTelephone': makeObjectPropertySetter(XSD.readString),
-    'ContactElectronicMailAddress': makeObjectPropertySetter(XSD.readString)
+    'ContactVoiceTelephone': makeObjectPropertySetter(readString),
+    'ContactFacsimileTelephone': makeObjectPropertySetter(readString),
+    'ContactElectronicMailAddress': makeObjectPropertySetter(readString)
   });
 
 
@@ -104,8 +104,8 @@ const CONTACT_INFORMATION_PARSERS = makeStructureNS(
  */
 const CONTACT_PERSON_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'ContactPerson': makeObjectPropertySetter(XSD.readString),
-    'ContactOrganization': makeObjectPropertySetter(XSD.readString)
+    'ContactPerson': makeObjectPropertySetter(readString),
+    'ContactOrganization': makeObjectPropertySetter(readString)
   });
 
 
@@ -115,12 +115,12 @@ const CONTACT_PERSON_PARSERS = makeStructureNS(
  */
 const CONTACT_ADDRESS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'AddressType': makeObjectPropertySetter(XSD.readString),
-    'Address': makeObjectPropertySetter(XSD.readString),
-    'City': makeObjectPropertySetter(XSD.readString),
-    'StateOrProvince': makeObjectPropertySetter(XSD.readString),
-    'PostCode': makeObjectPropertySetter(XSD.readString),
-    'Country': makeObjectPropertySetter(XSD.readString)
+    'AddressType': makeObjectPropertySetter(readString),
+    'Address': makeObjectPropertySetter(readString),
+    'City': makeObjectPropertySetter(readString),
+    'StateOrProvince': makeObjectPropertySetter(readString),
+    'PostCode': makeObjectPropertySetter(readString),
+    'Country': makeObjectPropertySetter(readString)
   });
 
 
@@ -130,7 +130,7 @@ const CONTACT_ADDRESS_PARSERS = makeStructureNS(
  */
 const EXCEPTION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'Format': makeArrayPusher(XSD.readString)
+    'Format': makeArrayPusher(readString)
   });
 
 
@@ -140,23 +140,23 @@ const EXCEPTION_PARSERS = makeStructureNS(
  */
 const LAYER_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'Name': makeObjectPropertySetter(XSD.readString),
-    'Title': makeObjectPropertySetter(XSD.readString),
-    'Abstract': makeObjectPropertySetter(XSD.readString),
+    'Name': makeObjectPropertySetter(readString),
+    'Title': makeObjectPropertySetter(readString),
+    'Abstract': makeObjectPropertySetter(readString),
     'KeywordList': makeObjectPropertySetter(readKeywordList),
-    'CRS': makeObjectPropertyPusher(XSD.readString),
+    'CRS': makeObjectPropertyPusher(readString),
     'EX_GeographicBoundingBox': makeObjectPropertySetter(readEXGeographicBoundingBox),
     'BoundingBox': makeObjectPropertyPusher(readBoundingBox),
     'Dimension': makeObjectPropertyPusher(readDimension),
     'Attribution': makeObjectPropertySetter(readAttribution),
     'AuthorityURL': makeObjectPropertyPusher(readAuthorityURL),
-    'Identifier': makeObjectPropertyPusher(XSD.readString),
+    'Identifier': makeObjectPropertyPusher(readString),
     'MetadataURL': makeObjectPropertyPusher(readMetadataURL),
     'DataURL': makeObjectPropertyPusher(readFormatOnlineresource),
     'FeatureListURL': makeObjectPropertyPusher(readFormatOnlineresource),
     'Style': makeObjectPropertyPusher(readStyle),
-    'MinScaleDenominator': makeObjectPropertySetter(XSD.readDecimal),
-    'MaxScaleDenominator': makeObjectPropertySetter(XSD.readDecimal),
+    'MinScaleDenominator': makeObjectPropertySetter(readDecimal),
+    'MaxScaleDenominator': makeObjectPropertySetter(readDecimal),
     'Layer': makeObjectPropertyPusher(readLayer)
   });
 
@@ -167,7 +167,7 @@ const LAYER_PARSERS = makeStructureNS(
  */
 const ATTRIBUTION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'Title': makeObjectPropertySetter(XSD.readString),
+    'Title': makeObjectPropertySetter(readString),
     'OnlineResource': makeObjectPropertySetter(readHref),
     'LogoURL': makeObjectPropertySetter(readSizedFormatOnlineresource)
   });
@@ -179,10 +179,10 @@ const ATTRIBUTION_PARSERS = makeStructureNS(
  */
 const EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS =
     makeStructureNS(NAMESPACE_URIS, {
-      'westBoundLongitude': makeObjectPropertySetter(XSD.readDecimal),
-      'eastBoundLongitude': makeObjectPropertySetter(XSD.readDecimal),
-      'southBoundLatitude': makeObjectPropertySetter(XSD.readDecimal),
-      'northBoundLatitude': makeObjectPropertySetter(XSD.readDecimal)
+      'westBoundLongitude': makeObjectPropertySetter(readDecimal),
+      'eastBoundLongitude': makeObjectPropertySetter(readDecimal),
+      'southBoundLatitude': makeObjectPropertySetter(readDecimal),
+      'northBoundLatitude': makeObjectPropertySetter(readDecimal)
     });
 
 
@@ -204,7 +204,7 @@ const REQUEST_PARSERS = makeStructureNS(
  */
 const OPERATIONTYPE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'Format': makeObjectPropertyPusher(XSD.readString),
+    'Format': makeObjectPropertyPusher(readString),
     'DCPType': makeObjectPropertyPusher(readDCPType)
   });
 
@@ -236,9 +236,9 @@ const HTTP_PARSERS = makeStructureNS(
  */
 const STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'Name': makeObjectPropertySetter(XSD.readString),
-    'Title': makeObjectPropertySetter(XSD.readString),
-    'Abstract': makeObjectPropertySetter(XSD.readString),
+    'Name': makeObjectPropertySetter(readString),
+    'Title': makeObjectPropertySetter(readString),
+    'Abstract': makeObjectPropertySetter(readString),
     'LegendURL': makeObjectPropertyPusher(readSizedFormatOnlineresource),
     'StyleSheetURL': makeObjectPropertySetter(readFormatOnlineresource),
     'StyleURL': makeObjectPropertySetter(readFormatOnlineresource)
@@ -251,7 +251,7 @@ const STYLE_PARSERS = makeStructureNS(
  */
 const FORMAT_ONLINERESOURCE_PARSERS =
     makeStructureNS(NAMESPACE_URIS, {
-      'Format': makeObjectPropertySetter(XSD.readString),
+      'Format': makeObjectPropertySetter(readString),
       'OnlineResource': makeObjectPropertySetter(readHref)
     });
 
@@ -262,7 +262,7 @@ const FORMAT_ONLINERESOURCE_PARSERS =
  */
 const KEYWORDLIST_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'Keyword': makeArrayPusher(XSD.readString)
+    'Keyword': makeArrayPusher(readString)
   });
 
 
@@ -319,15 +319,15 @@ function readAttribution(node, objectStack) {
  */
 function readBoundingBox(node, objectStack) {
   const extent = [
-    XSD.readDecimalString(node.getAttribute('minx')),
-    XSD.readDecimalString(node.getAttribute('miny')),
-    XSD.readDecimalString(node.getAttribute('maxx')),
-    XSD.readDecimalString(node.getAttribute('maxy'))
+    readDecimalString(node.getAttribute('minx')),
+    readDecimalString(node.getAttribute('miny')),
+    readDecimalString(node.getAttribute('maxx')),
+    readDecimalString(node.getAttribute('maxy'))
   ];
 
   const resolutions = [
-    XSD.readDecimalString(node.getAttribute('resx')),
-    XSD.readDecimalString(node.getAttribute('resy'))
+    readDecimalString(node.getAttribute('resx')),
+    readDecimalString(node.getAttribute('resy'))
   ];
 
   return {
@@ -454,38 +454,38 @@ function readLayer(node, objectStack) {
   if (!layerObject) {
     return undefined;
   }
-  let queryable = XSD.readBooleanString(node.getAttribute('queryable'));
+  let queryable = readBooleanString(node.getAttribute('queryable'));
   if (queryable === undefined) {
     queryable = parentLayerObject['queryable'];
   }
   layerObject['queryable'] = queryable !== undefined ? queryable : false;
 
-  let cascaded = XSD.readNonNegativeIntegerString(
+  let cascaded = readNonNegativeIntegerString(
     node.getAttribute('cascaded'));
   if (cascaded === undefined) {
     cascaded = parentLayerObject['cascaded'];
   }
   layerObject['cascaded'] = cascaded;
 
-  let opaque = XSD.readBooleanString(node.getAttribute('opaque'));
+  let opaque = readBooleanString(node.getAttribute('opaque'));
   if (opaque === undefined) {
     opaque = parentLayerObject['opaque'];
   }
   layerObject['opaque'] = opaque !== undefined ? opaque : false;
 
-  let noSubsets = XSD.readBooleanString(node.getAttribute('noSubsets'));
+  let noSubsets = readBooleanString(node.getAttribute('noSubsets'));
   if (noSubsets === undefined) {
     noSubsets = parentLayerObject['noSubsets'];
   }
   layerObject['noSubsets'] = noSubsets !== undefined ? noSubsets : false;
 
-  let fixedWidth = XSD.readDecimalString(node.getAttribute('fixedWidth'));
+  let fixedWidth = readDecimalString(node.getAttribute('fixedWidth'));
   if (!fixedWidth) {
     fixedWidth = parentLayerObject['fixedWidth'];
   }
   layerObject['fixedWidth'] = fixedWidth;
 
-  let fixedHeight = XSD.readDecimalString(node.getAttribute('fixedHeight'));
+  let fixedHeight = readDecimalString(node.getAttribute('fixedHeight'));
   if (!fixedHeight) {
     fixedHeight = parentLayerObject['fixedHeight'];
   }
@@ -524,10 +524,10 @@ function readDimension(node, objectStack) {
     'units': node.getAttribute('units'),
     'unitSymbol': node.getAttribute('unitSymbol'),
     'default': node.getAttribute('default'),
-    'multipleValues': XSD.readBooleanString(node.getAttribute('multipleValues')),
-    'nearestValue': XSD.readBooleanString(node.getAttribute('nearestValue')),
-    'current': XSD.readBooleanString(node.getAttribute('current')),
-    'values': XSD.readString(node)
+    'multipleValues': readBooleanString(node.getAttribute('multipleValues')),
+    'nearestValue': readBooleanString(node.getAttribute('nearestValue')),
+    'current': readBooleanString(node.getAttribute('current')),
+    'values': readString(node)
   };
   return dimensionObject;
 }
@@ -592,8 +592,8 @@ function readSizedFormatOnlineresource(node, objectStack) {
   const formatOnlineresource = readFormatOnlineresource(node, objectStack);
   if (formatOnlineresource) {
     const size = [
-      XSD.readNonNegativeIntegerString(node.getAttribute('width')),
-      XSD.readNonNegativeIntegerString(node.getAttribute('height'))
+      readNonNegativeIntegerString(node.getAttribute('width')),
+      readNonNegativeIntegerString(node.getAttribute('height'))
     ];
     formatOnlineresource['size'] = size;
     return formatOnlineresource;
