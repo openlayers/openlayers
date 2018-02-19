@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import * as _ol_extent_ from '../src/ol/extent.js';
+import {getCenter} from '../src/ol/extent.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
@@ -41,7 +41,7 @@ const map = new Map({
   target: 'map',
   view: new View({
     extent: viewExtent,
-    center: _ol_extent_.getCenter(viewExtent),
+    center: getCenter(viewExtent),
     zoom: 17,
     minZoom: 14
   })

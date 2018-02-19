@@ -1,4 +1,4 @@
-import * as _ol_extent_ from '../../../../src/ol/extent.js';
+import {isEmpty} from '../../../../src/ol/extent.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 
@@ -27,7 +27,7 @@ describe('ol.geom.MultiLineString', function() {
     });
 
     it('has an empty extent', function() {
-      expect(_ol_extent_.isEmpty(multiLineString.getExtent())).to.be(true);
+      expect(isEmpty(multiLineString.getExtent())).to.be(true);
     });
 
     it('has empty flat coordinates', function() {

@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
-import * as _ol_extent_ from '../src/ol/extent.js';
+import {getWidth} from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat, get as getProjection} from '../src/ol/proj.js';
 import WMTS from '../src/ol/source/WMTS.js';
@@ -24,7 +24,7 @@ const map = new Map({
 const resolutions = [];
 const matrixIds = [];
 const proj3857 = getProjection('EPSG:3857');
-const maxResolution = _ol_extent_.getWidth(proj3857.getExtent()) / 256;
+const maxResolution = getWidth(proj3857.getExtent()) / 256;
 
 for (let i = 0; i < 18; i++) {
   matrixIds[i] = i.toString();

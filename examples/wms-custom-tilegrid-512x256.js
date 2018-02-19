@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import * as _ol_extent_ from '../src/ol/extent.js';
+import {getWidth} from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -9,7 +9,7 @@ import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 
 
 const projExtent = getProjection('EPSG:3857').getExtent();
-const startResolution = _ol_extent_.getWidth(projExtent) / 256;
+const startResolution = getWidth(projExtent) / 256;
 const resolutions = new Array(22);
 for (let i = 0, ii = resolutions.length; i < ii; ++i) {
   resolutions[i] = startResolution / Math.pow(2, i);

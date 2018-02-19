@@ -1,6 +1,6 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import * as _ol_extent_ from '../../../../src/ol/extent.js';
+import {getSize} from '../../../../src/ol/extent.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
 import {assign} from '../../../../src/ol/obj.js';
@@ -146,8 +146,8 @@ describe('ol.rendering.layer.Tile', function() {
 
     function centerExtent(map) {
       const c = map.getView().calculateExtent(map.getSize());
-      const qw = _ol_extent_.getSize(c)[0] / 4;
-      const qh = _ol_extent_.getSize(c)[1] / 4;
+      const qw = getSize(c)[0] / 4;
+      const qh = getSize(c)[1] / 4;
       return [c[0] + qw, c[1] + qh, c[2] - qw, c[3] - qh];
     }
 

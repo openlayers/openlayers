@@ -1,5 +1,5 @@
 import Feature from '../../../../src/ol/Feature.js';
-import * as _ol_extent_ from '../../../../src/ol/extent.js';
+import {equals} from '../../../../src/ol/extent.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
@@ -302,7 +302,7 @@ describe('ol.format.GeoJSON', function() {
         expect(first.getId()).to.be('AFG');
         const firstGeom = first.getGeometry();
         expect(firstGeom).to.be.a(Polygon);
-        expect(_ol_extent_.equals(firstGeom.getExtent(),
+        expect(equals(firstGeom.getExtent(),
           [60.52843, 29.318572, 75.158028, 38.486282]))
           .to.be(true);
 
@@ -312,7 +312,7 @@ describe('ol.format.GeoJSON', function() {
         expect(last.getId()).to.be('ZWE');
         const lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(Polygon);
-        expect(_ol_extent_.equals(lastGeom.getExtent(),
+        expect(equals(lastGeom.getExtent(),
           [25.264226, -22.271612, 32.849861, -15.507787]))
           .to.be(true);
         done();

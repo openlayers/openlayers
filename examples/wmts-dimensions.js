@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import * as _ol_extent_ from '../src/ol/extent.js';
+import {getWidth, getTopLeft} from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -11,7 +11,7 @@ import WMTSTileGrid from '../src/ol/tilegrid/WMTS.js';
 // create the WMTS tile grid in the google projection
 const projection = getProjection('EPSG:3857');
 const tileSizePixels = 256;
-const tileSizeMtrs = _ol_extent_.getWidth(projection.getExtent()) / tileSizePixels;
+const tileSizeMtrs = getWidth(projection.getExtent()) / tileSizePixels;
 const matrixIds = [];
 const resolutions = [];
 for (let i = 0; i <= 14; i++) {
@@ -19,7 +19,7 @@ for (let i = 0; i <= 14; i++) {
   resolutions[i] = tileSizeMtrs / Math.pow(2, i);
 }
 const tileGrid = new WMTSTileGrid({
-  origin: _ol_extent_.getTopLeft(projection.getExtent()),
+  origin: getTopLeft(projection.getExtent()),
   resolutions: resolutions,
   matrixIds: matrixIds
 });

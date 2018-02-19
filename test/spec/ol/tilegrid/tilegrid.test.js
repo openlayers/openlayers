@@ -1,6 +1,6 @@
 import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from '../../../../src/ol/tilegrid/common.js';
 import TileRange from '../../../../src/ol/TileRange.js';
-import * as _ol_extent_ from '../../../../src/ol/extent.js';
+import {createOrUpdate} from '../../../../src/ol/extent.js';
 import {get as getProjection, METERS_PER_UNIT} from '../../../../src/ol/proj.js';
 import {HALF_SIZE} from '../../../../src/ol/proj/epsg3857.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
@@ -275,7 +275,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
   describe('createForExtent', function() {
     it('allows creation of tile grid from extent', function() {
-      const extent = _ol_extent_.createOrUpdate(-100, -100, 100, 100);
+      const extent = createOrUpdate(-100, -100, 100, 100);
       const grid = createForExtent(extent);
       expect(grid).to.be.a(TileGrid);
 

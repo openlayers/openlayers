@@ -1,4 +1,4 @@
-import * as _ol_extent_ from '../../../../src/ol/extent.js';
+import {isEmpty} from '../../../../src/ol/extent.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 
 
@@ -26,7 +26,7 @@ describe('ol.geom.LineString', function() {
     });
 
     it('has an empty extent', function() {
-      expect(_ol_extent_.isEmpty(lineString.getExtent())).to.be(true);
+      expect(isEmpty(lineString.getExtent())).to.be(true);
     });
 
     it('has empty flat coordinates', function() {

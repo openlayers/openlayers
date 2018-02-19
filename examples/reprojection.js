@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import * as _ol_extent_ from '../src/ol/extent.js';
+import {getWidth, getCenter} from '../src/ol/extent.js';
 import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
@@ -128,7 +128,7 @@ layers['grandcanyon'] = new TileLayer({
 });
 
 const startResolution =
-    _ol_extent_.getWidth(getProjection('EPSG:3857').getExtent()) / 256;
+    getWidth(getProjection('EPSG:3857').getExtent()) / 256;
 const resolutions = new Array(22);
 for (let i = 0, ii = resolutions.length; i < ii; ++i) {
   resolutions[i] = startResolution / Math.pow(2, i);
@@ -175,7 +175,7 @@ function updateViewProjection() {
   const newProjExtent = newProj.getExtent();
   const newView = new View({
     projection: newProj,
-    center: _ol_extent_.getCenter(newProjExtent || [0, 0, 0, 0]),
+    center: getCenter(newProjExtent || [0, 0, 0, 0]),
     zoom: 0,
     extent: newProjExtent || undefined
   });

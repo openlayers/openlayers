@@ -1,4 +1,4 @@
-import * as _ol_extent_ from '../../../../src/ol/extent.js';
+import {isEmpty, boundingExtent} from '../../../../src/ol/extent.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import LinearRing from '../../../../src/ol/geom/LinearRing.js';
 import Polygon, {fromCircle, fromExtent} from '../../../../src/ol/geom/Polygon.js';
@@ -28,7 +28,7 @@ describe('ol/geom/Polygon', function() {
     });
 
     it('has an empty extent', function() {
-      expect(_ol_extent_.isEmpty(polygon.getExtent())).to.be(true);
+      expect(isEmpty(polygon.getExtent())).to.be(true);
     });
 
     it('has empty flat coordinates', function() {
@@ -221,25 +221,25 @@ describe('ol/geom/Polygon', function() {
 
       it('does not intersect outside extent', function() {
         expect(polygon.intersectsExtent(
-          _ol_extent_.boundingExtent([outsideOuter]))).to.be(false);
+          boundingExtent([outsideOuter]))).to.be(false);
       });
 
       it('does intersect inside extent', function() {
         expect(polygon.intersectsExtent(
-          _ol_extent_.boundingExtent([inside]))).to.be(true);
+          boundingExtent([inside]))).to.be(true);
       });
 
       it('does intersect boundary extent', function() {
         const firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
         const firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
 
-        expect(polygon.intersectsExtent(_ol_extent_.boundingExtent([[firstMidX,
+        expect(polygon.intersectsExtent(boundingExtent([[firstMidX,
           firstMidY]]))).to.be(true);
       });
 
       it('does not intersect extent fully contained by inner ring', function() {
         expect(polygon.intersectsExtent(
-          _ol_extent_.boundingExtent([insideInner]))).to.be(false);
+          boundingExtent([insideInner]))).to.be(false);
       });
 
     });
@@ -320,25 +320,25 @@ describe('ol/geom/Polygon', function() {
 
       it('does not intersect outside extent', function() {
         expect(polygon.intersectsExtent(
-          _ol_extent_.boundingExtent([outsideOuter]))).to.be(false);
+          boundingExtent([outsideOuter]))).to.be(false);
       });
 
       it('does intersect inside extent', function() {
         expect(polygon.intersectsExtent(
-          _ol_extent_.boundingExtent([inside]))).to.be(true);
+          boundingExtent([inside]))).to.be(true);
       });
 
       it('does intersect boundary extent', function() {
         const firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
         const firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
 
-        expect(polygon.intersectsExtent(_ol_extent_.boundingExtent([[firstMidX,
+        expect(polygon.intersectsExtent(boundingExtent([[firstMidX,
           firstMidY]]))).to.be(true);
       });
 
       it('does not intersect extent fully contained by inner ring', function() {
         expect(polygon.intersectsExtent(
-          _ol_extent_.boundingExtent([insideInner]))).to.be(false);
+          boundingExtent([insideInner]))).to.be(false);
       });
 
     });
@@ -427,27 +427,27 @@ describe('ol/geom/Polygon', function() {
 
       it('does not intersect outside extent', function() {
         expect(polygon.intersectsExtent(
-          _ol_extent_.boundingExtent([outsideOuter]))).to.be(false);
+          boundingExtent([outsideOuter]))).to.be(false);
       });
 
       it('does intersect inside extent', function() {
         expect(polygon.intersectsExtent(
-          _ol_extent_.boundingExtent([inside]))).to.be(true);
+          boundingExtent([inside]))).to.be(true);
       });
 
       it('does intersect boundary extent', function() {
         const firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
         const firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
 
-        expect(polygon.intersectsExtent(_ol_extent_.boundingExtent([[firstMidX,
+        expect(polygon.intersectsExtent(boundingExtent([[firstMidX,
           firstMidY]]))).to.be(true);
       });
 
       it('does not intersect extent fully contained by inner ring', function() {
         expect(polygon.intersectsExtent(
-          _ol_extent_.boundingExtent([insideInner1]))).to.be(false);
+          boundingExtent([insideInner1]))).to.be(false);
         expect(polygon.intersectsExtent(
-          _ol_extent_.boundingExtent([insideInner2]))).to.be(false);
+          boundingExtent([insideInner2]))).to.be(false);
       });
 
     });

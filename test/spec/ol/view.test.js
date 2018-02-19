@@ -1,7 +1,7 @@
 import Map from '../../../src/ol/Map.js';
 import View, {createCenterConstraint, createResolutionConstraint, createRotationConstraint} from '../../../src/ol/View.js';
 import ViewHint from '../../../src/ol/ViewHint.js';
-import * as _ol_extent_ from '../../../src/ol/extent.js';
+import {createEmpty} from '../../../src/ol/extent.js';
 import Circle from '../../../src/ol/geom/Circle.js';
 import LineString from '../../../src/ol/geom/LineString.js';
 import Point from '../../../src/ol/geom/Point.js';
@@ -1348,7 +1348,7 @@ describe('ol.View', function() {
     });
     it('throws on empty extent', function() {
       expect(function() {
-        view.fit(_ol_extent_.createEmpty());
+        view.fit(createEmpty());
       }).to.throwException();
     });
     it('animates when duration is defined', function(done) {

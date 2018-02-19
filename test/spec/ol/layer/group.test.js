@@ -1,7 +1,7 @@
 import {getUid} from '../../../../src/ol/index.js';
 import {stableSort} from '../../../../src/ol/array.js';
 import Collection from '../../../../src/ol/Collection.js';
-import * as _ol_extent_ from '../../../../src/ol/extent.js';
+import {getIntersection} from '../../../../src/ol/extent.js';
 import LayerGroup from '../../../../src/ol/layer/Group.js';
 import Layer from '../../../../src/ol/layer/Layer.js';
 import {assign} from '../../../../src/ol/obj.js';
@@ -403,7 +403,7 @@ describe('ol.layer.Group', function() {
       });
       const layerStatesArray = layerGroup.getLayerStatesArray();
       expect(layerStatesArray[0].extent).to.eql(
-        _ol_extent_.getIntersection(layer3.getExtent(), groupExtent));
+        getIntersection(layer3.getExtent(), groupExtent));
       layerGroup.dispose();
     });
 

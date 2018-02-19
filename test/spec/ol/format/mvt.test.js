@@ -1,5 +1,5 @@
 import Feature from '../../../../src/ol/Feature.js';
-import * as _ol_extent_ from '../../../../src/ol/extent.js';
+import {getWidth} from '../../../../src/ol/extent.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
@@ -78,7 +78,7 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       const format = new MVT();
       format.readFeatures(data);
       const extent = format.getLastExtent();
-      expect(_ol_extent_.getWidth(extent)).to.be(4096);
+      expect(getWidth(extent)).to.be(4096);
     });
 
   });

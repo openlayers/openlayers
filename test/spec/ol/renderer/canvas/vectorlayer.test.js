@@ -2,7 +2,7 @@ import {getUid} from '../../../../../src/ol/index.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
-import * as _ol_extent_ from '../../../../../src/ol/extent.js';
+import {buffer as bufferExtent, getWidth} from '../../../../../src/ol/extent.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import {clear} from '../../../../../src/ol/obj.js';
@@ -228,7 +228,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       renderer = new CanvasVectorLayerRenderer(layer);
       const projection = getProjection('EPSG:3857');
       projExtent = projection.getExtent();
-      worldWidth = _ol_extent_.getWidth(projExtent);
+      worldWidth = getWidth(projExtent);
       buffer = layer.getRenderBuffer();
       frameState = {
         skippedFeatureUids: {},
@@ -246,7 +246,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       frameState.extent =
           [projExtent[0] - 10000, -10000, projExtent[0] + 10000, 10000];
       renderer.prepareFrame(frameState, {});
-      expect(renderer.replayGroup_.maxExtent_).to.eql(_ol_extent_.buffer([
+      expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
       ], buffer));
@@ -258,7 +258,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       frameState.extent =
           [projExtent[0] - 10000, -10000, projExtent[1] - 10000, 10000];
       renderer.prepareFrame(frameState, {});
-      expect(renderer.replayGroup_.maxExtent_).to.eql(_ol_extent_.buffer([
+      expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
       ], buffer));
@@ -269,7 +269,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       frameState.extent =
           [2 * projExtent[0] - 10000, -10000, 2 * projExtent[1] + 10000, 10000];
       renderer.prepareFrame(frameState, {});
-      expect(renderer.replayGroup_.maxExtent_).to.eql(_ol_extent_.buffer([
+      expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
         projExtent[0] - worldWidth + buffer,
         -10000, projExtent[2] + worldWidth - buffer, 10000
       ], buffer));
@@ -282,7 +282,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         -10000, projExtent[1] + 2 * worldWidth + 10000, 10000
       ];
       renderer.prepareFrame(frameState, {});
-      expect(renderer.replayGroup_.maxExtent_).to.eql(_ol_extent_.buffer([
+      expect(renderer.replayGroup_.maxExtent_).to.eql(bufferExtent([
         projExtent[0] - 2 * worldWidth - 10000,
         -10000, projExtent[2] + 2 * worldWidth + 10000, 10000
       ], buffer));
