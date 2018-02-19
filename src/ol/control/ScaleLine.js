@@ -91,11 +91,9 @@ const ScaleLine = function(opt_options) {
    */
   this.renderedHTML_ = '';
 
-  const render = options.render ? options.render : ScaleLine.render;
-
   Control.call(this, {
     element: this.element_,
-    render: render,
+    render: options.render || render,
     target: options.target
   });
 
@@ -129,7 +127,7 @@ ScaleLine.prototype.getUnits = function() {
  * @this {ol.control.ScaleLine}
  * @api
  */
-ScaleLine.render = function(mapEvent) {
+export function render(mapEvent) {
   const frameState = mapEvent.frameState;
   if (!frameState) {
     this.viewState_ = null;
@@ -137,7 +135,7 @@ ScaleLine.render = function(mapEvent) {
     this.viewState_ = frameState.viewState;
   }
   this.updateElement_();
-};
+}
 
 
 /**

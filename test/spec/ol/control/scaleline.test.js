@@ -1,6 +1,6 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import ScaleLine from '../../../../src/ol/control/ScaleLine.js';
+import ScaleLine, {render} from '../../../../src/ol/control/ScaleLine.js';
 import {fromLonLat} from '../../../../src/ol/proj.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 
@@ -67,12 +67,10 @@ describe('ol.control.ScaleLine', function() {
     describe('render', function() {
       it('defaults to `ol.control.ScaleLine.render`', function() {
         const ctrl = new ScaleLine();
-        expect(ctrl.render).to.be(ScaleLine.render);
+        expect(ctrl.render).to.be(render);
       });
       it('can be configured', function() {
-        const myRender = function() {
-
-        };
+        const myRender = function() {};
         const ctrl = new ScaleLine({
           render: myRender
         });
