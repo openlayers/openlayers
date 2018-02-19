@@ -135,11 +135,9 @@ const ZoomSlider = function(opt_options) {
   listen(thumbElement, EventType.CLICK,
     Event.stopPropagation);
 
-  const render = options.render ? options.render : ZoomSlider.render;
-
   Control.call(this, {
     element: containerElement,
-    render: render
+    render: options.render || render
   });
 };
 
@@ -206,7 +204,7 @@ ZoomSlider.prototype.initSlider_ = function() {
  * @this {ol.control.ZoomSlider}
  * @api
  */
-ZoomSlider.render = function(mapEvent) {
+export function render(mapEvent) {
   if (!mapEvent.frameState) {
     return;
   }
@@ -218,7 +216,7 @@ ZoomSlider.render = function(mapEvent) {
     this.currentResolution_ = res;
     this.setThumbPosition_(res);
   }
-};
+}
 
 
 /**
