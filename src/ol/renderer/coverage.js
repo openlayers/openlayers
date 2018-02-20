@@ -7,7 +7,6 @@ import CoverageType from '../coverage/CoverageType.js';
 import LinkedList from '../structs/LinkedList.js';
 import RBush from '../structs/RBush.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
-import {extend} from '../array.js';
 import {getTransformFromProjections} from '../proj.js';
 import ReplayType from '../render/ReplayType.js';
 

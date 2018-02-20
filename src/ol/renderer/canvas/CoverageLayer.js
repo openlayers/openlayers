@@ -6,7 +6,7 @@ import CanvasVectorLayerRenderer from './VectorLayer.js';
 import LayerType from '../../LayerType.js';
 import RendererType from '../Type.js';
 import ViewHint from '../../ViewHint.js';
-import {containsExtent, getWidth} from '../../extent.js';
+import {containsExtent, getWidth, buffer} from '../../extent.js';
 import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
 import {getTolerance, createGrid, renderCoverage} from '../coverage.js';
 import CoverageType from '../../coverage/CoverageType.js';
@@ -35,6 +35,12 @@ const CanvasCoverageLayerRenderer = function(coverageLayer) {
    * @type {number|undefined}
    */
   this.renderedSourceRevision_ = undefined;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.buffer_ = undefined;
 
   /**
    * @private
@@ -134,32 +140,30 @@ CanvasCoverageLayerRenderer.prototype.prepareFrame = function(frameState,
   const replayGroup = new CanvasReplayGroup(getTolerance(resolution, pixelRatio),
     extent, resolution, pixelRatio, false, undefined, 0);
 
-  let rtree, vertices;
   const type = coverageSource.getType() || CoverageType.RECTANGULAR;
-  if (this.renderedChecksum_ == style.getChecksum() &&
-    this.renderedSourceRevision_ == coverageSource.getRevision()) {
+  if (this.renderedChecksum_ != style.getChecksum() ||
+    this.renderedSourceRevision_ != coverageSource.getRevision()) {
 
-    rtree = this.coverageCache_;
-    vertices = this.numVertices_;
-  } else {
     const styledCoverage = coverageSource.getStyledBand(style, 1, 0);
     if (!styledCoverage) {
       return false;
     }
     const cellCoords = this.getCellCoordinates_(type, styledCoverage.getResolution());
-    vertices = cellCoords.length;
-    rtree = createGrid(styledCoverage, cellCoords, type,
+    const vertices = cellCoords.length;
+    const rtree = createGrid(styledCoverage, cellCoords, type,
       coverageSource.getProjection(), projection, 0);
 
     this.renderedChecksum_ = style.getChecksum();
     this.renderedSourceRevision_ = coverageSource.getRevision();
+    this.buffer_ = Math.max.apply(null, styledCoverage.getResolution());
     this.coverageCache_ = rtree;
     this.numVertices_ = vertices;
   }
 
   const flatCoverage = [];
+  const bufferedExtent = buffer(extent, this.buffer_);
   _ol_geom_flat_deflate_.coordinates(flatCoverage, 0,
-    rtree.getInExtent(extent), vertices + 4);
+    this.coverageCache_.getInExtent(bufferedExtent), this.numVertices_ + 4);
   if (!flatCoverage.length) {
     return false;
   }
@@ -170,7 +174,7 @@ CanvasCoverageLayerRenderer.prototype.prepareFrame = function(frameState,
   const stroke = strokeWidth !== 0 ? new Stroke({
     width: strokeWidth
   }) : undefined;
-  renderCoverage(replayGroup, flatCoverage, vertices, stroke);
+  renderCoverage(replayGroup, flatCoverage, this.numVertices_, stroke);
   replayGroup.finish();
 
   this.renderedResolution = resolution;
