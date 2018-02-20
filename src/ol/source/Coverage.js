@@ -314,7 +314,7 @@ CoverageSource.prototype.getImageInternal = function(extent, resolution, pixelRa
       this.image_.updateResolution(extent);
       return this.image_;
     } else {
-      const styledBand = this.getStyledBand();
+      const styledBand = this.getStyledBand(this.style_, 255, 0);
       if (styledBand) {
         this.image_ = new CoverageImage(styledBand.getExtent(), pixelRatio,
           this.getAttributions(), styledBand, this.coverageDrawFunction_);
@@ -330,11 +330,14 @@ CoverageSource.prototype.getImageInternal = function(extent, resolution, pixelRa
 
 /**
  * Returns the color values of the styled band(s) in an interleaved array.
+ * @param {ol.style.Coverage} style Coverage style.
+ * @param {number} minAlpha Minimum alpha value.
+ * @param {number} maxAlpha Maximum alpha value.
  * @return {?ol.coverage.Band} A new band with styled interleaved data.
  */
-CoverageSource.prototype.getStyledBand = function() {
+CoverageSource.prototype.getStyledBand = function(style, minAlpha, maxAlpha) {
   let styledMatrix;
-  const bandIndex = this.style_.getBandIndex();
+  const bandIndex = style.getBandIndex();
   if (Array.isArray(bandIndex)) {
     const bands = this.getBands();
     const toAlign = [];
@@ -347,7 +350,7 @@ CoverageSource.prototype.getStyledBand = function() {
       }
     }
     const aligned = alignRasterBands(toAlign, this.getType());
-    styledMatrix = this.style_.apply(aligned.matrices, nulls);
+    styledMatrix = style.apply(aligned.matrices, nulls, minAlpha, maxAlpha);
     return new Band({
       binary: false,
       extent: aligned.properties.extent,
@@ -359,7 +362,8 @@ CoverageSource.prototype.getStyledBand = function() {
     });
   } else if (bandIndex !== undefined) {
     const band = this.getBands()[/** @type {number} */ (bandIndex)];
-    styledMatrix = this.style_.apply(band.getCoverageData(), band.getNullValue());
+    styledMatrix = style.apply(band.getCoverageData(), band.getNullValue(),
+      minAlpha, maxAlpha);
     return new Band({
       binary: false,
       extent: band.getExtent(),
