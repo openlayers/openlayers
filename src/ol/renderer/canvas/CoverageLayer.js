@@ -10,6 +10,7 @@ import {containsExtent, getWidth} from '../../extent.js';
 import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
 import {getTolerance, createGrid, renderCoverage} from '../coverage.js';
 import CoverageType from '../../coverage/CoverageType.js';
+import _ol_geom_flat_deflate_ from '../../geom/flat/deflate.js';
 import {equivalent} from '../../proj.js';
 import Stroke from '../../style/Stroke.js';
 
@@ -27,7 +28,7 @@ const CanvasCoverageLayerRenderer = function(coverageLayer) {
    * @private
    * @type {string|undefined}
    */
-  this.renderedStyleChecksum_ = undefined;
+  this.renderedChecksum_ = undefined;
 
   /**
    * @private
@@ -37,7 +38,7 @@ const CanvasCoverageLayerRenderer = function(coverageLayer) {
 
   /**
    * @private
-   * @type {ol.coverage.Band}
+   * @type {ol.structs.RBush}
    */
   this.coverageCache_ = undefined;
 
@@ -86,7 +87,7 @@ CanvasCoverageLayerRenderer.prototype.prepareFrame = function(frameState,
   const style = coverageLayer.getStyle();
   if (!style) {
     return false;
-  } else if (this.renderedStyleChecksum_ !== style.getChecksum()) {
+  } else if (this.renderedChecksum_ !== style.getChecksum()) {
     style.fillMissingValues(coverageSource.getBands());
   }
 
@@ -133,12 +134,12 @@ CanvasCoverageLayerRenderer.prototype.prepareFrame = function(frameState,
   const replayGroup = new CanvasReplayGroup(getTolerance(resolution, pixelRatio),
     extent, resolution, pixelRatio, false, undefined, 0);
 
-  let grid, vertices;
+  let rtree, vertices;
   const type = coverageSource.getType() || CoverageType.RECTANGULAR;
-  if (this.renderedStyleChecksum_ == style.getChecksum() &&
+  if (this.renderedChecksum_ == style.getChecksum() &&
     this.renderedSourceRevision_ == coverageSource.getRevision()) {
 
-    grid = this.coverageCache_;
+    rtree = this.coverageCache_;
     vertices = this.numVertices_;
   } else {
     const styledCoverage = coverageSource.getStyledBand(style, 1, 0);
@@ -147,30 +148,35 @@ CanvasCoverageLayerRenderer.prototype.prepareFrame = function(frameState,
     }
     const cellCoords = this.getCellCoordinates_(type, styledCoverage.getResolution());
     vertices = cellCoords.length;
-    grid = createGrid(styledCoverage, cellCoords, type,
+    rtree = createGrid(styledCoverage, cellCoords, type,
       coverageSource.getProjection(), projection, 0);
-    if (!grid.length) {
-      return false;
-    }
+
+    this.renderedChecksum_ = style.getChecksum();
+    this.renderedSourceRevision_ = coverageSource.getRevision();
+    this.coverageCache_ = rtree;
+    this.numVertices_ = vertices;
+  }
+
+  const flatCoverage = [];
+  _ol_geom_flat_deflate_.coordinates(flatCoverage, 0,
+    rtree.getInExtent(extent), vertices + 4);
+  if (!flatCoverage.length) {
+    return false;
   }
 
   const strokeWidth = coverageLayer.getStroke() !== undefined ? coverageLayer.getStroke() :
     type !== CoverageType.RECTANGULAR || !equivalent(
-      coverageSource.getProjection(), projection) ? 2 : 0;
+      coverageSource.getProjection(), projection) ? 1 : 0;
   const stroke = strokeWidth !== 0 ? new Stroke({
     width: strokeWidth
   }) : undefined;
-  renderCoverage(replayGroup, grid, vertices, stroke);
+  renderCoverage(replayGroup, flatCoverage, vertices, stroke);
   replayGroup.finish();
 
   this.renderedResolution = resolution;
   this.renderedRevision = coverageLayerRevision;
   this.renderedExtent = extent;
   this.replayGroup = replayGroup;
-  this.renderedStyleChecksum_ = style.getChecksum();
-  this.renderedSourceRevision_ = coverageSource.getRevision();
-  this.coverageCache_ = grid;
-  this.numVertices_ = vertices;
 
   this.replayGroupChanged = true;
   return true;

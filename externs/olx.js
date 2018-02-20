@@ -1884,7 +1884,7 @@ olx.layer.CoverageOptions.prototype.source;
 
 /**
  * Cosmetic stroke width for the canvas renderer. The default value is 0, if the
- * cells are rectangular and the layer is not reprojected, 2 otherwise. Note
+ * cells are rectangular and the layer is not reprojected, 1 otherwise. Note
  * that providing a floating point value severely decreases performance.
  * @type {number}
  * @api
