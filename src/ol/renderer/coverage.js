@@ -5,6 +5,7 @@ import _ol_renderer_vector_ from './vector.js';
 import {equivalent} from '../proj.js';
 import CoverageType from '../coverage/CoverageType.js';
 import LinkedList from '../structs/LinkedList.js';
+import RBush from '../structs/RBush.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
 import {extend} from '../array.js';
 import {getTransformFromProjections} from '../proj.js';
@@ -27,12 +28,11 @@ export function getTolerance(resolution, pixelRatio) {
  * @param {ol.proj.Projection} inProj Coverage projection.
  * @param {ol.proj.Projection} outProj Map projection.
  * @param {number} maxAlpha Maximum alpha value.
- * @return {Array.<number>} Flat coverage.
+ * @return {ol.structs.RBush} R-tree filled with cells.
  */
 export function createGrid(band, shape, type, inProj, outProj, maxAlpha) {
   const reproj = !equivalent(inProj, outProj);
   const transform = getTransformFromProjections(inProj, outProj);
-  const flatCoverage = [];
   const matrix = band.getCoverageData();
   const numRows = (matrix.length / 4) / band.getStride();
   const origin = band.getOrigin();
@@ -72,11 +72,16 @@ export function createGrid(band, shape, type, inProj, outProj, maxAlpha) {
   let colCursor = [origin[0], origin[1]];
   let rowCursor = [colCursor[0], colCursor[1]];
   let rotation = 0;
+  const extents = [];
+  const cells = [];
+  const halfResX = resolution[0] / 2;
+  const halfResY = resolution[1] / 2;
   for (let i = numRows - 1; i >= 0; --i) {
     const firstCell = i * colorStride;
     const lastCell = firstCell + colorStride;
     for (let j = firstCell; j < lastCell; j += 4) {
       if (matrix[j + 3] !== maxAlpha) {
+        let extentCursor = [colCursor[0], colCursor[1]];
         let cell = _ol_geom_flat_transform_.translate(shape, 0, shape.length,
           2, colCursor[0], colCursor[1]);
         if (rotation) {
@@ -85,12 +90,17 @@ export function createGrid(band, shape, type, inProj, outProj, maxAlpha) {
         }
         if (reproj) {
           cell = transform(cell);
+          extentCursor = transform(extentCursor);
         }
-        extend(flatCoverage, cell);
-        flatCoverage[flatCoverage.length] = matrix[j];
-        flatCoverage[flatCoverage.length] = matrix[j + 1];
-        flatCoverage[flatCoverage.length] = matrix[j + 2];
-        flatCoverage[flatCoverage.length] = matrix[j + 3];
+        cell[cell.length] = matrix[j];
+        cell[cell.length] = matrix[j + 1];
+        cell[cell.length] = matrix[j + 2];
+        cell[cell.length] = matrix[j + 3];
+
+        cells.push(cell);
+        // These are approximate extents only, no need to make it more complex.
+        extents.push([extentCursor[0] - halfResX, extentCursor[1] - halfResY,
+          extentCursor[0] + halfResX, extentCursor[1] + halfResY]);
       }
       const nextColTransform = colTransforms.nextItem();
       colCursor = [colCursor[0] + nextColTransform.translate[0],
@@ -107,7 +117,9 @@ export function createGrid(band, shape, type, inProj, outProj, maxAlpha) {
     }
     colCursor = [rowCursor[0], rowCursor[1]];
   }
-  return flatCoverage;
+  const rtree = new RBush(cells.length);
+  rtree.load(extents, cells);
+  return rtree;
 }
 
 
