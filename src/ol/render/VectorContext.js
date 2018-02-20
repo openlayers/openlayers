@@ -47,6 +47,13 @@ VectorContext.prototype.drawCircle = function(circleGeometry, feature) {};
 
 
 /**
+ * @param {Array.<number>} flatCoverage Flat coverage array.
+ * @param {number} vertices Number of vertex coordinates in a cell.
+ */
+VectorContext.prototype.drawCoverage = function(flatCoverage, vertices) {};
+
+
+/**
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  */
