@@ -55,10 +55,9 @@ const PriorityQueue = function(priorityFunction, keyFunction) {
 
 
 /**
- * @const
  * @type {number}
  */
-PriorityQueue.DROP = Infinity;
+export const DROP = Infinity;
 
 
 /**
@@ -102,7 +101,7 @@ PriorityQueue.prototype.enqueue = function(element) {
   assert(!(this.keyFunction_(element) in this.queuedElements_),
     31); // Tried to enqueue an `element` that was already added to the queue
   const priority = this.priorityFunction_(element);
-  if (priority != PriorityQueue.DROP) {
+  if (priority != DROP) {
     this.elements_.push(element);
     this.priorities_.push(priority);
     this.queuedElements_[this.keyFunction_(element)] = true;
@@ -262,7 +261,7 @@ PriorityQueue.prototype.reprioritize = function() {
   for (i = 0; i < n; ++i) {
     element = elements[i];
     priority = priorityFunction(element);
-    if (priority == PriorityQueue.DROP) {
+    if (priority == DROP) {
       delete this.queuedElements_[this.keyFunction_(element)];
     } else {
       priorities[index] = priority;

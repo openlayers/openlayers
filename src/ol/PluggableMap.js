@@ -27,7 +27,7 @@ import LayerGroup from './layer/Group.js';
 import {getMapRendererPlugins} from './plugins.js';
 import RendererType from './renderer/Type.js';
 import {hasArea} from './size.js';
-import PriorityQueue from './structs/PriorityQueue.js';
+import {DROP} from './structs/PriorityQueue.js';
 import {create as createTransform, apply as applyTransform} from './transform.js';
 
 
@@ -878,10 +878,10 @@ PluggableMap.prototype.getTilePriority = function(tile, tileSourceKey, tileCente
   // are outside the visible extent.
   const frameState = this.frameState_;
   if (!frameState || !(tileSourceKey in frameState.wantedTiles)) {
-    return PriorityQueue.DROP;
+    return DROP;
   }
   if (!frameState.wantedTiles[tileSourceKey][tile.getKey()]) {
-    return PriorityQueue.DROP;
+    return DROP;
   }
   // Prioritize the highest zoom level tiles closest to the focus.
   // Tiles at higher zoom levels are prioritized using Math.log(tileResolution).

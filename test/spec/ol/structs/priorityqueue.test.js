@@ -1,4 +1,4 @@
-import PriorityQueue from '../../../../src/ol/structs/PriorityQueue.js';
+import PriorityQueue, {DROP} from '../../../../src/ol/structs/PriorityQueue.js';
 
 
 describe('ol.structs.PriorityQueue', function() {
@@ -102,7 +102,7 @@ describe('ol.structs.PriorityQueue', function() {
         if (i++ % 2 === 0) {
           return Math.abs(element - target);
         } else {
-          return PriorityQueue.DROP;
+          return DROP;
         }
       };
       pq.reprioritize();
