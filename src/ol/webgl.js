@@ -258,10 +258,9 @@ export const FRAMEBUFFER = 0x8D40;
 
 /**
  * @const
- * @private
  * @type {Array.<string>}
  */
-export const CONTEXT_IDS_ = [
+const CONTEXT_IDS = [
   'experimental-webgl',
   'webgl',
   'webkit-3d',
@@ -275,10 +274,10 @@ export const CONTEXT_IDS_ = [
  * @return {WebGLRenderingContext} WebGL rendering context.
  */
 export function getContext(canvas, opt_attributes) {
-  const ii = CONTEXT_IDS_.length;
+  const ii = CONTEXT_IDS.length;
   for (let i = 0; i < ii; ++i) {
     try {
-      const context = canvas.getContext(CONTEXT_IDS_[i], opt_attributes);
+      const context = canvas.getContext(CONTEXT_IDS[i], opt_attributes);
       if (context) {
         return /** @type {!WebGLRenderingContext} */ (context);
       }
