@@ -9,6 +9,7 @@ import CanvasInstruction, {
   fillInstruction, strokeInstruction, beginPathInstruction, closePathInstruction
 } from '../canvas/Instruction.js';
 import CanvasReplay from '../canvas/Replay.js';
+import {asColorLike} from '../../colorlike.js';
 
 
 /**
@@ -114,6 +115,47 @@ CanvasPolygonReplay.prototype.drawCircle = function(circleGeometry, feature) {
     this.hitDetectionInstructions.push(strokeInstruction);
   }
   this.endGeometry(circleGeometry, feature);
+};
+
+
+/**
+ * @inheritDoc
+ */
+CanvasPolygonReplay.prototype.drawCoverage = function(flatCoverage, vertices) {
+  const state = this.state;
+  const beginPathInstruction = [CanvasInstruction.BEGIN_PATH];
+  const fillInstruction = [CanvasInstruction.FILL];
+  const strokeInstruction = [CanvasInstruction.STROKE];
+  const stride = vertices + 4;
+  const redOffset = vertices;
+  const greenOffset = vertices + 1;
+  const blueOffset = vertices + 2;
+  const alphaOffset = vertices + 3;
+  const stroke = state.strokeStyle !== undefined;
+
+  for (let i = 0, ii = flatCoverage.length; i < ii; i += stride) {
+    const colorArr = [flatCoverage[i + redOffset], flatCoverage[i + greenOffset],
+      flatCoverage[i + blueOffset], flatCoverage[i + alphaOffset]];
+    const fillStyle = asColorLike(colorArr);
+    this.instructions.push([CanvasInstruction.SET_FILL_STYLE, fillStyle]);
+    if (stroke) {
+      this.instructions.push([CanvasInstruction.SET_STROKE_STYLE, fillStyle,
+        state.lineWidth, state.lineCap, state.lineJoin, state.miterLimit,
+        state.lineDash, state.lineDashOffset]);
+    }
+
+    this.instructions.push(beginPathInstruction);
+    const myBegin = this.coordinates.length;
+    let myEnd = this.appendFlatCoordinates(flatCoverage, i, i + vertices, 2,
+      true, true);
+    this.coordinates[myEnd++] = flatCoverage[i];
+    this.coordinates[myEnd++] = flatCoverage[i + 1];
+    this.instructions.push([CanvasInstruction.DRAW_COVERAGE_CELL, myBegin, myEnd]);
+    this.instructions.push(fillInstruction);
+    if (stroke) {
+      this.instructions.push(strokeInstruction);
+    }
+  }
 };
 
 

@@ -18,7 +18,8 @@ const Instruction = {
   MOVE_TO_LINE_TO: 9,
   SET_FILL_STYLE: 10,
   SET_STROKE_STYLE: 11,
-  STROKE: 12
+  STROKE: 12,
+  DRAW_COVERAGE_CELL: 13
 };
 
 

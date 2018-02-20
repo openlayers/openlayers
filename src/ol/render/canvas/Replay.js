@@ -801,6 +801,23 @@ CanvasReplay.prototype.replay_ = function(
         }
         ++i;
         break;
+      case CanvasInstruction.DRAW_COVERAGE_CELL:
+        d = /** @type {number} */ (instruction[1]);
+        dd = /** @type {number} */ (instruction[2]);
+        x = Math.round(pixelCoordinates[d]);
+        y = Math.round(pixelCoordinates[d + 1]);
+        if (x !== prevX && y !== prevY) {
+          context.moveTo(x, y);
+          for (d += 2; d < dd; d += 2) {
+            x = Math.round(pixelCoordinates[d]);
+            y = Math.round(pixelCoordinates[d + 1]);
+            context.lineTo(x, y);
+          }
+          prevX = x;
+          prevY = y;
+        }
+        ++i;
+        break;
       case CanvasInstruction.SET_FILL_STYLE:
         lastFillInstruction = instruction;
         this.fillOrigin_ = instruction[2];
