@@ -25,6 +25,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
  */
 const BATCH_CONSTRUCTORS = {
   'Circle': CanvasPolygonReplay,
+  'Coverage': CanvasPolygonReplay,
   'Default': CanvasReplay,
   'Image': CanvasImageReplay,
   'LineString': CanvasLineStringReplay,

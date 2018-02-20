@@ -7,6 +7,7 @@
  */
 export default {
   CIRCLE: 'Circle',
+  COVERAGE: 'Coverage',
   DEFAULT: 'Default',
   IMAGE: 'Image',
   LINE_STRING: 'LineString',

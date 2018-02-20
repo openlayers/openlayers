@@ -14,6 +14,7 @@ export const ORDER = [
   ReplayType.LINE_STRING,
   ReplayType.IMAGE,
   ReplayType.TEXT,
+  ReplayType.COVERAGE,
   ReplayType.DEFAULT
 ];
 
