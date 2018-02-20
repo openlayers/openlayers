@@ -1831,6 +1831,7 @@ olx.layer.BaseOptions.prototype.maxResolution;
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
  *     source: (ol.source.Coverage|undefined),
+ *     strokeWidth: (number|undefined),
  *     style: (ol.CoverageStyle|undefined),
  *     updateWhileAnimating: (boolean|undefined),
  *     updateWhileInteracting: (boolean|undefined),
@@ -1879,6 +1880,16 @@ olx.layer.CoverageOptions.prototype.opacity;
  * @api
  */
 olx.layer.CoverageOptions.prototype.source;
+
+
+/**
+ * Cosmetic stroke width for the canvas renderer. The default value is 0, if the
+ * cells are rectangular and the layer is not reprojected, 2 otherwise. Note
+ * that providing a floating point value severely decreases performance.
+ * @type {number}
+ * @api
+ */
+olx.layer.CoverageOptions.prototype.strokeWidth;
 
 
 /**

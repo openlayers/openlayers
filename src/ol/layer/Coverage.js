@@ -39,6 +39,13 @@ const CoverageLayer = function(opt_options) {
   this.style_ = options.style !== undefined ? options.style : Monochrome.defaultStyle();
 
   /**
+   * Cosmetic stroke width provided by the user.
+   * @type {number}
+   * @private
+   */
+  this.stroke_ = options.strokeWidth;
+
+  /**
    * @type {boolean}
    * @private
    */
@@ -78,6 +85,14 @@ CoverageLayer.prototype.getDeclutter = nullFunction;
  * @api
  */
 CoverageLayer.prototype.getSource;
+
+
+/**
+ * @return {number} Stroke width.
+ */
+CoverageLayer.prototype.getStroke = function() {
+  return this.stroke_;
+};
 
 
 /**
