@@ -12,7 +12,7 @@ import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
 import ExtentEventType from '../interaction/ExtentEventType.js';
-import PointerInteraction from '../interaction/Pointer.js';
+import PointerInteraction, {handleEvent as handlePointerEvent} from '../interaction/Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import Style from '../style/Style.js';
@@ -139,7 +139,7 @@ function handleEvent(mapBrowserEvent) {
     this.handlePointerMove_(mapBrowserEvent);
   }
   //call pointer to determine up/down/drag
-  PointerInteraction.handleEvent.call(this, mapBrowserEvent);
+  handlePointerEvent.call(this, mapBrowserEvent);
   //return false to stop propagation
   return false;
 }

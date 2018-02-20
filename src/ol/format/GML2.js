@@ -4,8 +4,8 @@
 import {inherits} from '../index.js';
 import {createOrUpdate} from '../extent.js';
 import {transformWithOptions} from '../format/Feature.js';
-import GMLBase from '../format/GMLBase.js';
-import XSD from '../format/XSD.js';
+import GMLBase, {GMLNS} from '../format/GMLBase.js';
+import {writeStringTextNode} from '../format/xsd.js';
 import Geometry from '../geom/Geometry.js';
 import {assign} from '../obj.js';
 import {get as getProjection, transformExtent} from '../proj.js';
@@ -17,7 +17,7 @@ import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
  * @const
  * @type {string}
  */
-const schemaLocation = GMLBase.GMLNS + ' http://schemas.opengis.net/gml/2.1.2/feature.xsd';
+const schemaLocation = GMLNS + ' http://schemas.opengis.net/gml/2.1.2/feature.xsd';
 
 
 /**
@@ -36,7 +36,7 @@ const GML2 = function(opt_options) {
 
   GMLBase.call(this, options);
 
-  this.FEATURE_COLLECTION_PARSERS[GMLBase.GMLNS][
+  this.FEATURE_COLLECTION_PARSERS[GMLNS][
     'featureMember'] =
       makeArrayPusher(GMLBase.prototype.readFeaturesInternal);
 
@@ -199,8 +199,7 @@ GML2.prototype.writeFeatureElement = function(node, feature, objectStack) {
         }
       } else {
         if (!(key in context.serializers[featureNS])) {
-          context.serializers[featureNS][key] = makeChildAppender(
-            XSD.writeStringTextNode);
+          context.serializers[featureNS][key] = makeChildAppender(writeStringTextNode);
         }
       }
     }
@@ -339,7 +338,7 @@ GML2.prototype.writeCoordinates_ = function(node, value, objectStack) {
     point = points[i];
     parts[i] = this.getCoords_(point, srsName, hasZ);
   }
-  XSD.writeStringTextNode(node, parts.join(' '));
+  writeStringTextNode(node, parts.join(' '));
 };
 
 
@@ -473,7 +472,7 @@ GML2.prototype.writePoint_ = function(node, geometry, objectStack) {
   node.appendChild(coordinates);
   const point = geometry.getCoordinates();
   const coord = this.getCoords_(point, srsName, hasZ);
-  XSD.writeStringTextNode(coordinates, coord);
+  writeStringTextNode(coordinates, coord);
 };
 
 
@@ -772,8 +771,8 @@ GML2.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
  */
 GML2.prototype.ENVELOPE_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
-    'lowerCorner': makeChildAppender(XSD.writeStringTextNode),
-    'upperCorner': makeChildAppender(XSD.writeStringTextNode)
+    'lowerCorner': makeChildAppender(writeStringTextNode),
+    'upperCorner': makeChildAppender(writeStringTextNode)
   }
 };
 

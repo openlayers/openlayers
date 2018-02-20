@@ -50,7 +50,7 @@ const SelectEventType = {
 const Select = function(opt_options) {
 
   Interaction.call(this, {
-    handleEvent: Select.handleEvent
+    handleEvent: handleEvent
   });
 
   const options = opt_options ? opt_options : {};
@@ -207,9 +207,8 @@ Select.prototype.getLayer = function(feature) {
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Select}
- * @api
  */
-Select.handleEvent = function(mapBrowserEvent) {
+function handleEvent(mapBrowserEvent) {
   if (!this.condition_(mapBrowserEvent)) {
     return true;
   }
@@ -294,7 +293,7 @@ Select.handleEvent = function(mapBrowserEvent) {
         selected, deselected, mapBrowserEvent));
   }
   return pointerMove(mapBrowserEvent);
-};
+}
 
 
 /**

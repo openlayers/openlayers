@@ -39,7 +39,7 @@ export const Mode = {
 const MouseWheelZoom = function(opt_options) {
 
   Interaction.call(this, {
-    handleEvent: MouseWheelZoom.handleEvent
+    handleEvent: handleEvent
   });
 
   const options = opt_options || {};
@@ -141,9 +141,8 @@ inherits(MouseWheelZoom, Interaction);
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} Allow event propagation.
  * @this {ol.interaction.MouseWheelZoom}
- * @api
  */
-MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
+function handleEvent(mapBrowserEvent) {
   if (!this.condition_(mapBrowserEvent)) {
     return true;
   }
@@ -257,7 +256,7 @@ MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
   this.timeoutId_ = setTimeout(this.handleWheelZoom_.bind(this, map), timeLeft);
 
   return false;
-};
+}
 
 
 /**

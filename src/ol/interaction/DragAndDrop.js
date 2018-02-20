@@ -18,7 +18,7 @@ import {get as getProjection} from '../proj.js';
 const DragAndDropEventType = {
   /**
    * Triggered when features are added
-   * @event ol.interaction.DragAndDrop.Event#addfeatures
+   * @event ol.interaction.DragAndDropEvent#addfeatures
    * @api
    */
   ADD_FEATURES: 'addfeatures'
@@ -27,11 +27,53 @@ const DragAndDropEventType = {
 
 /**
  * @classdesc
+ * Events emitted by {@link ol.interaction.DragAndDrop} instances are instances
+ * of this type.
+ *
+ * @constructor
+ * @extends {ol.events.Event}
+ * @implements {oli.interaction.DragAndDropEvent}
+ * @param {ol.interaction.DragAndDropEventType} type Type.
+ * @param {File} file File.
+ * @param {Array.<ol.Feature>=} opt_features Features.
+ * @param {ol.proj.Projection=} opt_projection Projection.
+ */
+const DragAndDropEvent = function(type, file, opt_features, opt_projection) {
+
+  Event.call(this, type);
+
+  /**
+   * The features parsed from dropped data.
+   * @type {Array.<ol.Feature>|undefined}
+   * @api
+   */
+  this.features = opt_features;
+
+  /**
+   * The dropped file.
+   * @type {File}
+   * @api
+   */
+  this.file = file;
+
+  /**
+   * The feature projection.
+   * @type {ol.proj.Projection|undefined}
+   * @api
+   */
+  this.projection = opt_projection;
+
+};
+inherits(DragAndDropEvent, Event);
+
+
+/**
+ * @classdesc
  * Handles input of vector data by drag and drop.
  *
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @fires ol.interaction.DragAndDrop.Event
+ * @fires ol.interaction.DragAndDropEvent
  * @param {olx.interaction.DragAndDropOptions=} opt_options Options.
  * @api
  */
@@ -40,7 +82,7 @@ const DragAndDrop = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
   Interaction.call(this, {
-    handleEvent: DragAndDrop.handleEvent
+    handleEvent: TRUE
   });
 
   /**
@@ -146,21 +188,10 @@ DragAndDrop.prototype.handleResult_ = function(file, event) {
     this.source_.addFeatures(features);
   }
   this.dispatchEvent(
-    new DragAndDrop.Event(
+    new DragAndDropEvent(
       DragAndDropEventType.ADD_FEATURES, file,
       features, projection));
 };
-
-
-/**
- * Handles the {@link ol.MapBrowserEvent map browser event} unconditionally and
- * neither prevents the browser default nor stops event propagation.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} `false` to stop event propagation.
- * @this {ol.interaction.DragAndDrop}
- * @api
- */
-DragAndDrop.handleEvent = TRUE;
 
 
 /**
@@ -235,46 +266,5 @@ DragAndDrop.prototype.unregisterListeners_ = function() {
   }
 };
 
-
-/**
- * @classdesc
- * Events emitted by {@link ol.interaction.DragAndDrop} instances are instances
- * of this type.
- *
- * @constructor
- * @extends {ol.events.Event}
- * @implements {oli.interaction.DragAndDropEvent}
- * @param {ol.interaction.DragAndDropEventType} type Type.
- * @param {File} file File.
- * @param {Array.<ol.Feature>=} opt_features Features.
- * @param {ol.proj.Projection=} opt_projection Projection.
- */
-DragAndDrop.Event = function(type, file, opt_features, opt_projection) {
-
-  Event.call(this, type);
-
-  /**
-   * The features parsed from dropped data.
-   * @type {Array.<ol.Feature>|undefined}
-   * @api
-   */
-  this.features = opt_features;
-
-  /**
-   * The dropped file.
-   * @type {File}
-   * @api
-   */
-  this.file = file;
-
-  /**
-   * The feature projection.
-   * @type {ol.proj.Projection|undefined}
-   * @api
-   */
-  this.projection = opt_projection;
-
-};
-inherits(DragAndDrop.Event, Event);
 
 export default DragAndDrop;

@@ -21,6 +21,14 @@ import {assign} from '../obj.js';
 import {get as getProjection} from '../proj.js';
 import {getAllTextContent, getAttributeNS, makeArrayPusher, makeReplacer, parseNode, pushParseAndPop} from '../xml.js';
 
+
+/**
+ * @const
+ * @type {string}
+ */
+export const GMLNS = 'http://www.opengis.net/gml';
+
+
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -67,7 +75,7 @@ const GMLBase = function(opt_options) {
    * @type {Object.<string, Object.<string, Object>>}
    */
   this.FEATURE_COLLECTION_PARSERS = {};
-  this.FEATURE_COLLECTION_PARSERS[GMLBase.GMLNS] = {
+  this.FEATURE_COLLECTION_PARSERS[GMLNS] = {
     'featureMember': makeReplacer(GMLBase.prototype.readFeaturesInternal),
     'featureMembers': makeReplacer(GMLBase.prototype.readFeaturesInternal)
   };
@@ -76,13 +84,6 @@ const GMLBase = function(opt_options) {
 };
 
 inherits(GMLBase, XMLFeature);
-
-
-/**
- * @const
- * @type {string}
- */
-GMLBase.GMLNS = 'http://www.opengis.net/gml';
 
 
 /**
@@ -215,7 +216,7 @@ GMLBase.prototype.readGeometryElement = function(node, objectStack) {
  */
 GMLBase.prototype.readFeatureElement = function(node, objectStack) {
   let n;
-  const fid = node.getAttribute('fid') || getAttributeNS(node, GMLBase.GMLNS, 'id');
+  const fid = node.getAttribute('fid') || getAttributeNS(node, GMLNS, 'id');
   const values = {};
   let geometryName;
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {

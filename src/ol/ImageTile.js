@@ -68,7 +68,7 @@ inherits(ImageTile, Tile);
 ImageTile.prototype.disposeInternal = function() {
   if (this.state == TileState.LOADING) {
     this.unlistenImage_();
-    this.image_ = ImageTile.getBlankImage();
+    this.image_ = getBlankImage();
   }
   if (this.interimTile) {
     this.interimTile.dispose();
@@ -105,7 +105,7 @@ ImageTile.prototype.getKey = function() {
 ImageTile.prototype.handleImageError_ = function() {
   this.state = TileState.ERROR;
   this.unlistenImage_();
-  this.image_ = ImageTile.getBlankImage();
+  this.image_ = getBlankImage();
   this.changed();
 };
 
@@ -167,10 +167,11 @@ ImageTile.prototype.unlistenImage_ = function() {
  * Get a 1-pixel blank image.
  * @return {HTMLCanvasElement} Blank image.
  */
-ImageTile.getBlankImage = function() {
+function getBlankImage() {
   const ctx = createCanvasContext2D(1, 1);
   ctx.fillStyle = 'rgba(0,0,0,0)';
   ctx.fillRect(0, 0, 1, 1);
   return ctx.canvas;
-};
+}
+
 export default ImageTile;

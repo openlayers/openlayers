@@ -6,7 +6,7 @@ import {boundingExtent} from '../extent.js';
 import OWS from '../format/OWS.js';
 import {readHref} from '../format/XLink.js';
 import XML from '../format/XML.js';
-import XSD from '../format/XSD.js';
+import {readString, readNonNegativeInteger, readDecimal} from '../format/xsd.js';
 import {pushParseAndPop, makeStructureNS,
   makeObjectPropertySetter, makeObjectPropertyPusher, makeArrayPusher} from '../xml.js';
 
@@ -79,15 +79,15 @@ const CONTENTS_PARSERS = makeStructureNS(
 const LAYER_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Style': makeObjectPropertyPusher(readStyle),
-    'Format': makeObjectPropertyPusher(XSD.readString),
+    'Format': makeObjectPropertyPusher(readString),
     'TileMatrixSetLink': makeObjectPropertyPusher(readTileMatrixSetLink),
     'Dimension': makeObjectPropertyPusher(readDimensions),
     'ResourceURL': makeObjectPropertyPusher(readResourceUrl)
   }, makeStructureNS(OWS_NAMESPACE_URIS, {
-    'Title': makeObjectPropertySetter(XSD.readString),
-    'Abstract': makeObjectPropertySetter(XSD.readString),
+    'Title': makeObjectPropertySetter(readString),
+    'Abstract': makeObjectPropertySetter(readString),
     'WGS84BoundingBox': makeObjectPropertySetter(readWgs84BoundingBox),
-    'Identifier': makeObjectPropertySetter(XSD.readString)
+    'Identifier': makeObjectPropertySetter(readString)
   }));
 
 
@@ -99,8 +99,8 @@ const STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'LegendURL': makeObjectPropertyPusher(readLegendUrl)
   }, makeStructureNS(OWS_NAMESPACE_URIS, {
-    'Title': makeObjectPropertySetter(XSD.readString),
-    'Identifier': makeObjectPropertySetter(XSD.readString)
+    'Title': makeObjectPropertySetter(readString),
+    'Identifier': makeObjectPropertySetter(readString)
   }));
 
 
@@ -110,7 +110,7 @@ const STYLE_PARSERS = makeStructureNS(
  */
 const TMS_LINKS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'TileMatrixSet': makeObjectPropertySetter(XSD.readString),
+    'TileMatrixSet': makeObjectPropertySetter(readString),
     'TileMatrixSetLimits': makeObjectPropertySetter(readTileMatrixLimitsList)
   });
 
@@ -130,11 +130,11 @@ const TMS_LIMITS_LIST_PARSERS = makeStructureNS(
  */
 const TMS_LIMITS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'TileMatrix': makeObjectPropertySetter(XSD.readString),
-    'MinTileRow': makeObjectPropertySetter(XSD.readNonNegativeInteger),
-    'MaxTileRow': makeObjectPropertySetter(XSD.readNonNegativeInteger),
-    'MinTileCol': makeObjectPropertySetter(XSD.readNonNegativeInteger),
-    'MaxTileCol': makeObjectPropertySetter(XSD.readNonNegativeInteger)
+    'TileMatrix': makeObjectPropertySetter(readString),
+    'MinTileRow': makeObjectPropertySetter(readNonNegativeInteger),
+    'MaxTileRow': makeObjectPropertySetter(readNonNegativeInteger),
+    'MinTileCol': makeObjectPropertySetter(readNonNegativeInteger),
+    'MaxTileCol': makeObjectPropertySetter(readNonNegativeInteger)
   });
 
 
@@ -144,10 +144,10 @@ const TMS_LIMITS_PARSERS = makeStructureNS(
  */
 const DIMENSION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'Default': makeObjectPropertySetter(XSD.readString),
-    'Value': makeObjectPropertyPusher(XSD.readString)
+    'Default': makeObjectPropertySetter(readString),
+    'Value': makeObjectPropertyPusher(readString)
   }, makeStructureNS(OWS_NAMESPACE_URIS, {
-    'Identifier': makeObjectPropertySetter(XSD.readString)
+    'Identifier': makeObjectPropertySetter(readString)
   }));
 
 
@@ -168,11 +168,11 @@ const WGS84_BBOX_READERS = makeStructureNS(
  */
 const TMS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'WellKnownScaleSet': makeObjectPropertySetter(XSD.readString),
+    'WellKnownScaleSet': makeObjectPropertySetter(readString),
     'TileMatrix': makeObjectPropertyPusher(readTileMatrix)
   }, makeStructureNS(OWS_NAMESPACE_URIS, {
-    'SupportedCRS': makeObjectPropertySetter(XSD.readString),
-    'Identifier': makeObjectPropertySetter(XSD.readString)
+    'SupportedCRS': makeObjectPropertySetter(readString),
+    'Identifier': makeObjectPropertySetter(readString)
   }));
 
 
@@ -183,13 +183,13 @@ const TMS_PARSERS = makeStructureNS(
 const TM_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'TopLeftCorner': makeObjectPropertySetter(readCoordinates),
-    'ScaleDenominator': makeObjectPropertySetter(XSD.readDecimal),
-    'TileWidth': makeObjectPropertySetter(XSD.readNonNegativeInteger),
-    'TileHeight': makeObjectPropertySetter(XSD.readNonNegativeInteger),
-    'MatrixWidth': makeObjectPropertySetter(XSD.readNonNegativeInteger),
-    'MatrixHeight': makeObjectPropertySetter(XSD.readNonNegativeInteger)
+    'ScaleDenominator': makeObjectPropertySetter(readDecimal),
+    'TileWidth': makeObjectPropertySetter(readNonNegativeInteger),
+    'TileHeight': makeObjectPropertySetter(readNonNegativeInteger),
+    'MatrixWidth': makeObjectPropertySetter(readNonNegativeInteger),
+    'MatrixHeight': makeObjectPropertySetter(readNonNegativeInteger)
   }, makeStructureNS(OWS_NAMESPACE_URIS, {
-    'Identifier': makeObjectPropertySetter(XSD.readString)
+    'Identifier': makeObjectPropertySetter(readString)
   }));
 
 
@@ -355,7 +355,7 @@ function readLegendUrl(node, objectStack) {
  * @return {Object|undefined} Coordinates object.
  */
 function readCoordinates(node, objectStack) {
-  const coordinates = XSD.readString(node).split(' ');
+  const coordinates = readString(node).split(' ');
   if (!coordinates || coordinates.length != 2) {
     return undefined;
   }

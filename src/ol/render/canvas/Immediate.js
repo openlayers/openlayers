@@ -10,7 +10,7 @@ import {equals} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
 import {intersects} from '../../extent.js';
 import GeometryType from '../../geom/GeometryType.js';
-import SimpleGeometry from '../../geom/SimpleGeometry.js';
+import {transformGeom2D} from '../../geom/SimpleGeometry.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
 import VectorContext from '../VectorContext.js';
@@ -409,7 +409,7 @@ CanvasImmediateRenderer.prototype.drawCircle = function(geometry) {
     if (this.strokeState_) {
       this.setContextStrokeState_(this.strokeState_);
     }
-    const pixelCoordinates = SimpleGeometry.transform2D(
+    const pixelCoordinates = transformGeom2D(
       geometry, this.transform_, this.pixelCoordinates_);
     const dx = pixelCoordinates[2] - pixelCoordinates[0];
     const dy = pixelCoordinates[3] - pixelCoordinates[1];

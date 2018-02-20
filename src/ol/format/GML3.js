@@ -5,8 +5,8 @@ import {inherits} from '../index.js';
 import {extend} from '../array.js';
 import {createOrUpdate} from '../extent.js';
 import {transformWithOptions} from '../format/Feature.js';
-import GMLBase from '../format/GMLBase.js';
-import XSD from '../format/XSD.js';
+import GMLBase, {GMLNS} from '../format/GMLBase.js';
+import {readNonNegativeIntegerString, writeStringTextNode} from '../format/xsd.js';
 import Geometry from '../geom/Geometry.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
@@ -25,7 +25,7 @@ import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
  * @type {string}
  * @private
  */
-const schemaLocation = GMLBase.GMLNS +
+const schemaLocation = GMLNS +
     ' http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
     '1.0.0/gmlsf.xsd';
 
@@ -366,16 +366,16 @@ GML3.prototype.readFlatPosList_ = function(node, objectStack) {
   // The "dimension" attribute is from the GML 3.0.1 spec.
   let dim = 2;
   if (node.getAttribute('srsDimension')) {
-    dim = XSD.readNonNegativeIntegerString(
+    dim = readNonNegativeIntegerString(
       node.getAttribute('srsDimension'));
   } else if (node.getAttribute('dimension')) {
-    dim = XSD.readNonNegativeIntegerString(
+    dim = readNonNegativeIntegerString(
       node.getAttribute('dimension'));
   } else if (node.parentNode.getAttribute('srsDimension')) {
-    dim = XSD.readNonNegativeIntegerString(
+    dim = readNonNegativeIntegerString(
       node.parentNode.getAttribute('srsDimension'));
   } else if (contextDimension) {
-    dim = XSD.readNonNegativeIntegerString(contextDimension);
+    dim = readNonNegativeIntegerString(contextDimension);
   }
   let x, y, z;
   const flatCoordinates = [];
@@ -600,7 +600,7 @@ GML3.prototype.writePos_ = function(node, value, objectStack) {
     const z = point[2] || 0;
     coords += ' ' + z;
   }
-  XSD.writeStringTextNode(node, coords);
+  writeStringTextNode(node, coords);
 };
 
 
@@ -650,7 +650,7 @@ GML3.prototype.writePosList_ = function(node, value, objectStack) {
     point = points[i];
     parts[i] = this.getCoords_(point, srsName, hasZ);
   }
-  XSD.writeStringTextNode(node, parts.join(' '));
+  writeStringTextNode(node, parts.join(' '));
 };
 
 
@@ -994,8 +994,7 @@ GML3.prototype.writeFeatureElement = function(node, feature, objectStack) {
         }
       } else {
         if (!(key in context.serializers[featureNS])) {
-          context.serializers[featureNS][key] = makeChildAppender(
-            XSD.writeStringTextNode);
+          context.serializers[featureNS][key] = makeChildAppender(writeStringTextNode);
         }
       }
     }
@@ -1181,8 +1180,8 @@ GML3.prototype.RING_SERIALIZERS_ = {
  */
 GML3.prototype.ENVELOPE_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
-    'lowerCorner': makeChildAppender(XSD.writeStringTextNode),
-    'upperCorner': makeChildAppender(XSD.writeStringTextNode)
+    'lowerCorner': makeChildAppender(writeStringTextNode),
+    'upperCorner': makeChildAppender(writeStringTextNode)
   }
 };
 

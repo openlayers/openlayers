@@ -28,7 +28,7 @@ import Interaction from '../interaction/Interaction.js';
 const KeyboardPan = function(opt_options) {
 
   Interaction.call(this, {
-    handleEvent: KeyboardPan.handleEvent
+    handleEvent: handleEvent
   });
 
   const options = opt_options || {};
@@ -74,9 +74,8 @@ inherits(KeyboardPan, Interaction);
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.KeyboardPan}
- * @api
  */
-KeyboardPan.handleEvent = function(mapBrowserEvent) {
+function handleEvent(mapBrowserEvent) {
   let stopEvent = false;
   if (mapBrowserEvent.type == EventType.KEYDOWN) {
     const keyEvent = mapBrowserEvent.originalEvent;
@@ -107,5 +106,6 @@ KeyboardPan.handleEvent = function(mapBrowserEvent) {
     }
   }
   return !stopEvent;
-};
+}
+
 export default KeyboardPan;

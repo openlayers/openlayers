@@ -25,7 +25,7 @@ const DoubleClickZoom = function(opt_options) {
   this.delta_ = options.delta ? options.delta : 1;
 
   Interaction.call(this, {
-    handleEvent: DoubleClickZoom.handleEvent
+    handleEvent: handleEvent
   });
 
   /**
@@ -45,9 +45,8 @@ inherits(DoubleClickZoom, Interaction);
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.DoubleClickZoom}
- * @api
  */
-DoubleClickZoom.handleEvent = function(mapBrowserEvent) {
+function handleEvent(mapBrowserEvent) {
   let stopEvent = false;
   const browserEvent = mapBrowserEvent.originalEvent;
   if (mapBrowserEvent.type == MapBrowserEventType.DBLCLICK) {
@@ -60,5 +59,6 @@ DoubleClickZoom.handleEvent = function(mapBrowserEvent) {
     stopEvent = true;
   }
   return !stopEvent;
-};
+}
+
 export default DoubleClickZoom;

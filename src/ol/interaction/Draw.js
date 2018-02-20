@@ -23,7 +23,7 @@ import MouseSource from '../pointer/MouseSource.js';
 import Point from '../geom/Point.js';
 import Polygon, {fromCircle, makeRegular} from '../geom/Polygon.js';
 import DrawEventType from '../interaction/DrawEventType.js';
-import PointerInteraction from '../interaction/Pointer.js';
+import PointerInteraction, {handleEvent as handlePointerEvent} from '../interaction/Pointer.js';
 import InteractionProperty from '../interaction/Property.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
@@ -398,7 +398,7 @@ export function handleEvent(event) {
     pass = false;
   }
 
-  return PointerInteraction.handleEvent.call(this, event) && pass;
+  return handlePointerEvent.call(this, event) && pass;
 }
 
 
