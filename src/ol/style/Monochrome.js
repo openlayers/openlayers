@@ -153,9 +153,11 @@ Monochrome.prototype.fillMissingValues = function(bands) {
  * Apply this style to the specified matrix.
  * @param {Array.<number>|ol.TypedArray} matrix Input matrix.
  * @param {number} nodata NoData value.
+ * @param {number} minAlpha Minimum alpha value.
+ * @param {number} maxAlpha Maximum alpha value.
  * @return {Array.<number>} Styled interleaved matrix.
  */
-Monochrome.prototype.apply = function(matrix, nodata) {
+Monochrome.prototype.apply = function(matrix, nodata, minAlpha, maxAlpha) {
   const interleaved = [];
   let k = 0;
   let i, ii;
@@ -176,7 +178,7 @@ Monochrome.prototype.apply = function(matrix, nodata) {
     interleaved[k++] = value;
     interleaved[k++] = value;
     interleaved[k++] = value;
-    interleaved[k++] = matrix[i] === nodata ? 0 : 255;
+    interleaved[k++] = matrix[i] === nodata ? maxAlpha : minAlpha;
   }
   return interleaved;
 };

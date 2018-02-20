@@ -141,9 +141,11 @@ RGB.prototype.fillMissingValues = function(bands) {
  * @param {Array.<Array.<number>|ol.TypedArray>} matrices Aligned matrices in
  * RGB order. If a channel is missing, the order still needs to be kept (e.g. RB).
  * @param {Array.<number>} nodata NoData values.
+ * @param {number} minAlpha Minimum alpha value.
+ * @param {number} maxAlpha Maximum alpha value.
  * @return {Array.<number>} Styled interleaved matrix.
  */
-RGB.prototype.apply = function(matrices, nodata) {
+RGB.prototype.apply = function(matrices, nodata, minAlpha, maxAlpha) {
   const bandIndices = this.getBandIndex();
   let i, ii;
   for (i = 0; i < 3; ++i) {
@@ -177,7 +179,7 @@ RGB.prototype.apply = function(matrices, nodata) {
     interleaved[k++] = clamp(Math.round(255 * redLerp), 0, 255);
     interleaved[k++] = clamp(Math.round(255 * greenLerp), 0, 255);
     interleaved[k++] = clamp(Math.round(255 * blueLerp), 0, 255);
-    interleaved[k++] = redNodata && greenNodata && blueNodata ? 0 : 255;
+    interleaved[k++] = redNodata && greenNodata && blueNodata ? maxAlpha : minAlpha;
   }
   return interleaved;
 };

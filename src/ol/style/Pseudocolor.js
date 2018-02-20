@@ -312,9 +312,11 @@ Pseudocolor.prototype.fillMissingValues = function(bands) {
  * Apply this style to the specified matrix.
  * @param {Array.<number>|ol.TypedArray} matrix Input matrix.
  * @param {number} nodata NoData value.
+ * @param {number} minAlpha Minimum alpha value.
+ * @param {number} maxAlpha Maximum alpha value.
  * @return {Array.<number>} Styled interleaved matrix.
  */
-Pseudocolor.prototype.apply = function(matrix, nodata) {
+Pseudocolor.prototype.apply = function(matrix, nodata, minAlpha, maxAlpha) {
   const interleaved = [];
   let k = 0;
   let i, ii, j;
@@ -335,7 +337,7 @@ Pseudocolor.prototype.apply = function(matrix, nodata) {
       interleaved[k++] = 0;
       interleaved[k++] = 0;
       interleaved[k++] = 0;
-      interleaved[k++] = 0;
+      interleaved[k++] = maxAlpha;
     } else {
       for (j = 0; j < jj; ++j) {
         if (matrix[i] <= intervals[j].higher[0]) {
@@ -352,7 +354,7 @@ Pseudocolor.prototype.apply = function(matrix, nodata) {
             interleaved[k++] = lerp(intervals[j].lower[1][2],
               intervals[j].higher[1][2], ratio);
           }
-          interleaved[k++] = matrix[i] === nodata ? 0 : 255;
+          interleaved[k++] = matrix[i] === nodata ? maxAlpha : minAlpha;
           break;
         }
       }
