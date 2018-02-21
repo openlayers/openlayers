@@ -73,13 +73,13 @@ const RenderFeature = function(type, flatCoordinates, ends, properties, id) {
    */
   this.properties_ = properties;
 
-
-  /**
-   * @private
-   * @type {ol.Transform}
-   */
-  this.tmpTransform_ = createTransform();
 };
+
+
+/**
+ * @type {ol.Transform}
+ */
+const tmpTransform = createTransform();
 
 
 /**
@@ -267,12 +267,11 @@ RenderFeature.prototype.transform = function(source, destination) {
   const pixelExtent = source.getExtent();
   const projectedExtent = source.getWorldExtent();
   const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
-  const transform = this.tmpTransform_;
-  composeTransform(transform,
+  composeTransform(tmpTransform,
     projectedExtent[0], projectedExtent[3],
     scale, -scale, 0,
     0, 0);
   transform2D(this.flatCoordinates_, 0, this.flatCoordinates_.length, 2,
-    transform, this.flatCoordinates_);
+    tmpTransform, this.flatCoordinates_);
 };
 export default RenderFeature;

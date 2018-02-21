@@ -1208,15 +1208,18 @@ PluggableMap.prototype.renderFrame_ = function(time) {
       layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
     viewState = view.getState();
-    const center = viewState.center;
-    const pixelResolution = viewState.resolution / this.pixelRatio_;
-    center[0] = Math.round(center[0] / pixelResolution) * pixelResolution;
-    center[1] = Math.round(center[1] / pixelResolution) * pixelResolution;
+    let focus = this.focus_;
+    if (!focus) {
+      focus = viewState.center;
+      const pixelResolution = viewState.resolution / this.pixelRatio_;
+      focus[0] = Math.round(focus[0] / pixelResolution) * pixelResolution;
+      focus[1] = Math.round(focus[1] / pixelResolution) * pixelResolution;
+    }
     frameState = /** @type {olx.FrameState} */ ({
       animate: false,
       coordinateToPixelTransform: this.coordinateToPixelTransform_,
       extent: extent,
-      focus: !this.focus_ ? center : this.focus_,
+      focus: focus,
       index: this.frameIndex_++,
       layerStates: layerStates,
       layerStatesArray: layerStatesArray,
