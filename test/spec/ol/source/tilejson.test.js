@@ -1,6 +1,6 @@
 import Source from '../../../../src/ol/source/Source.js';
 import TileJSON from '../../../../src/ol/source/TileJSON.js';
-import Observable from '../../../../src/ol/Observable.js';
+import {unByKey} from '../../../../src/ol/Observable.js';
 
 
 describe('ol.source.TileJSON', function() {
@@ -115,7 +115,7 @@ describe('ol.source.TileJSON', function() {
       });
       const key = source.on('change', function() {
         if (source.getState() === 'ready') {
-          Observable.unByKey(key);
+          unByKey(key);
           tileGrid = source.getTileGrid();
           done();
         }
