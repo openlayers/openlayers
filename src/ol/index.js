@@ -2,7 +2,7 @@
  * @module ol
  */
 
-import webgl from './webgl.js';
+import {getContext} from './webgl.js';
 
 
 /**
@@ -45,7 +45,7 @@ if ('WebGLRenderingContext' in window) {
   try {
     const canvas = /** @type {HTMLCanvasElement} */
         (document.createElement('CANVAS'));
-    const gl = webgl.getContext(canvas, {failIfMajorPerformanceCaveat: true});
+    const gl = getContext(canvas, {failIfMajorPerformanceCaveat: true});
     if (gl) {
       HAS_WEBGL = true;
       WEBGL_MAX_TEXTURE_SIZE = /** @type {number} */
