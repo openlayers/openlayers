@@ -3,7 +3,6 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import {toRadians} from '../src/ol/math.js';
 import OSM from '../src/ol/source/OSM.js';
 
 const view = new View({
@@ -36,9 +35,9 @@ gn.init().then(function() {
   gn.start(function(event) {
     const center = view.getCenter();
     const resolution = view.getResolution();
-    const alpha = toRadians(event.do.beta);
-    const beta = toRadians(event.do.beta);
-    const gamma = toRadians(event.do.gamma);
+    const alpha = event.do.alpha * Math.PI / 180;
+    const beta = event.do.beta * Math.PI / 180;
+    const gamma = event.do.gamma * Math.PI / 180;
 
     el('alpha').innerText = alpha + ' [rad]';
     el('beta').innerText = beta + ' [rad]';
