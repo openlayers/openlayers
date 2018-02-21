@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
 import Interaction from '../interaction/Interaction.js';
-import PointerInteraction from '../interaction/Pointer.js';
+import PointerInteraction, {centroid as centroidFromPointers} from '../interaction/Pointer.js';
 import {disable} from '../rotationconstraint.js';
 
 /**
@@ -105,7 +105,7 @@ function handleDragEvent(mapBrowserEvent) {
   // FIXME: should be the intersection point between the lines:
   //     touch0,touch1 and previousTouch0,previousTouch1
   const viewportPosition = map.getViewport().getBoundingClientRect();
-  const centroid = PointerInteraction.centroid(this.targetPointers);
+  const centroid = centroidFromPointers(this.targetPointers);
   centroid[0] -= viewportPosition.left;
   centroid[1] -= viewportPosition.top;
   this.anchor_ = map.getCoordinateFromPixel(centroid);
