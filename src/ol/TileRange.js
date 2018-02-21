@@ -45,7 +45,7 @@ const TileRange = function(minX, maxX, minY, maxY) {
  * @param {ol.TileRange|undefined} tileRange TileRange.
  * @return {ol.TileRange} Tile range.
  */
-TileRange.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
+export function createOrUpdate(minX, maxX, minY, maxY, tileRange) {
   if (tileRange !== undefined) {
     tileRange.minX = minX;
     tileRange.maxX = maxX;
@@ -55,7 +55,7 @@ TileRange.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
   } else {
     return new TileRange(minX, maxX, minY, maxY);
   }
-};
+}
 
 
 /**
