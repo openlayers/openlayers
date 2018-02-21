@@ -73,8 +73,6 @@ export function createGrid(band, shape, type, inProj, outProj, maxAlpha) {
   let rotation = 0;
   const extents = [];
   const cells = [];
-  const halfResX = resolution[0] / 2;
-  const halfResY = resolution[1] / 2;
   for (let i = numRows - 1; i >= 0; --i) {
     const firstCell = i * colorStride;
     const lastCell = firstCell + colorStride;
@@ -97,9 +95,9 @@ export function createGrid(band, shape, type, inProj, outProj, maxAlpha) {
         cell[cell.length] = matrix[j + 3];
 
         cells.push(cell);
-        // These are approximate extents only, no need to make it more complex.
-        extents.push([extentCursor[0] - halfResX, extentCursor[1] - halfResY,
-          extentCursor[0] + halfResX, extentCursor[1] + halfResY]);
+        // Save cell centers as extents.
+        extents.push([extentCursor[0], extentCursor[1], extentCursor[0],
+          extentCursor[1]]);
       }
       const nextColTransform = colTransforms.nextItem();
       colCursor = [colCursor[0] + nextColTransform.translate[0],
