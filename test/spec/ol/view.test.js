@@ -1,5 +1,8 @@
 import Map from '../../../src/ol/Map.js';
-import View, {createCenterConstraint, createResolutionConstraint, createRotationConstraint} from '../../../src/ol/View.js';
+import View, {
+  createCenterConstraint, createResolutionConstraint, createRotationConstraint,
+  isNoopAnimation
+} from '../../../src/ol/View.js';
 import ViewHint from '../../../src/ol/ViewHint.js';
 import {createEmpty} from '../../../src/ol/extent.js';
 import Circle from '../../../src/ol/geom/Circle.js';
@@ -1485,7 +1488,7 @@ describe('ol.View.isNoopAnimation()', function() {
 
   cases.forEach(function(c, i) {
     it('works for case ' + i, function() {
-      const noop = View.isNoopAnimation(c.animation);
+      const noop = isNoopAnimation(c.animation);
       expect(noop).to.equal(c.noop);
     });
   });
