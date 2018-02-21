@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Polygon from '../src/ol/geom/Polygon.js';
-import Draw from '../src/ol/interaction/Draw.js';
+import Draw, {createRegularPolygon, createBox} from '../src/ol/interaction/Draw.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -35,10 +35,10 @@ function addInteraction() {
     let geometryFunction;
     if (value === 'Square') {
       value = 'Circle';
-      geometryFunction = Draw.createRegularPolygon(4);
+      geometryFunction = createRegularPolygon(4);
     } else if (value === 'Box') {
       value = 'Circle';
-      geometryFunction = Draw.createBox();
+      geometryFunction = createBox();
     } else if (value === 'Star') {
       value = 'Circle';
       geometryFunction = function(coordinates, geometry) {

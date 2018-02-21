@@ -22,7 +22,6 @@ import MultiPolygon from '../geom/MultiPolygon.js';
 import MouseSource from '../pointer/MouseSource.js';
 import Point from '../geom/Point.js';
 import Polygon, {fromCircle, makeRegular} from '../geom/Polygon.js';
-import DrawEventType from '../interaction/DrawEventType.js';
 import PointerInteraction, {handleEvent as handlePointerEvent} from '../interaction/Pointer.js';
 import InteractionProperty from '../interaction/Property.js';
 import VectorLayer from '../layer/Vector.js';
@@ -44,12 +43,58 @@ const Mode = {
 
 
 /**
+ * @enum {string}
+ */
+const DrawEventType = {
+  /**
+   * Triggered upon feature draw start
+   * @event ol.interaction.Draw.Event#drawstart
+   * @api
+   */
+  DRAWSTART: 'drawstart',
+  /**
+   * Triggered upon feature draw end
+   * @event ol.interaction.Draw.Event#drawend
+   * @api
+   */
+  DRAWEND: 'drawend'
+};
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.Draw} instances are instances of
+ * this type.
+ *
+ * @constructor
+ * @extends {ol.events.Event}
+ * @implements {oli.DrawEvent}
+ * @param {ol.interaction.DrawEventType} type Type.
+ * @param {ol.Feature} feature The feature drawn.
+ */
+const DrawEvent = function(type, feature) {
+
+  Event.call(this, type);
+
+  /**
+   * The feature being drawn.
+   * @type {ol.Feature}
+   * @api
+   */
+  this.feature = feature;
+
+};
+
+inherits(DrawEvent, Event);
+
+
+/**
  * @classdesc
  * Interaction for drawing feature geometries.
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @fires ol.interaction.Draw.Event
+ * @fires ol.interaction.DrawEvent
  * @param {olx.interaction.DrawOptions} options Options.
  * @api
  */
@@ -290,7 +335,7 @@ const Draw = function(options) {
       wrapX: options.wrapX ? options.wrapX : false
     }),
     style: options.style ? options.style :
-      Draw.getDefaultStyleFunction(),
+      getDefaultStyleFunction(),
     updateWhileInteracting: true
   });
 
@@ -331,12 +376,12 @@ inherits(Draw, PointerInteraction);
 /**
  * @return {ol.StyleFunction} Styles.
  */
-Draw.getDefaultStyleFunction = function() {
+function getDefaultStyleFunction() {
   const styles = Style.createDefaultEditing();
   return function(feature, resolution) {
     return styles[feature.getGeometry().getType()];
   };
-};
+}
 
 
 /**
@@ -589,7 +634,7 @@ Draw.prototype.startDrawing_ = function(event) {
   }
   this.sketchFeature_.setGeometry(geometry);
   this.updateSketchFeatures_();
-  this.dispatchEvent(new Draw.Event(DrawEventType.DRAWSTART, this.sketchFeature_));
+  this.dispatchEvent(new DrawEvent(DrawEventType.DRAWSTART, this.sketchFeature_));
 };
 
 
@@ -751,7 +796,7 @@ Draw.prototype.finishDrawing = function() {
   }
 
   // First dispatch event to allow full set up of feature
-  this.dispatchEvent(new Draw.Event(DrawEventType.DRAWEND, sketchFeature));
+  this.dispatchEvent(new DrawEvent(DrawEventType.DRAWEND, sketchFeature));
 
   // Then insert feature
   if (this.features_) {
@@ -797,7 +842,7 @@ Draw.prototype.extend = function(feature) {
   this.finishCoordinate_ = last.slice();
   this.sketchCoords_.push(last.slice());
   this.updateSketchFeatures_();
-  this.dispatchEvent(new Draw.Event(DrawEventType.DRAWSTART, this.sketchFeature_));
+  this.dispatchEvent(new DrawEvent(DrawEventType.DRAWSTART, this.sketchFeature_));
 };
 
 
@@ -854,13 +899,8 @@ Draw.prototype.updateState_ = function() {
  *     polygon.
  * @api
  */
-Draw.createRegularPolygon = function(opt_sides, opt_angle) {
+export function createRegularPolygon(opt_sides, opt_angle) {
   return (
-    /**
-         * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
-         * @param {ol.geom.SimpleGeometry=} opt_geometry
-         * @return {ol.geom.SimpleGeometry}
-         */
     function(coordinates, opt_geometry) {
       const center = coordinates[0];
       const end = coordinates[1];
@@ -874,7 +914,7 @@ Draw.createRegularPolygon = function(opt_sides, opt_angle) {
       return geometry;
     }
   );
-};
+}
 
 
 /**
@@ -884,13 +924,8 @@ Draw.createRegularPolygon = function(opt_sides, opt_angle) {
  * @return {ol.DrawGeometryFunctionType} Function that draws a box-shaped polygon.
  * @api
  */
-Draw.createBox = function() {
+export function createBox() {
   return (
-    /**
-     * @param {Array.<ol.Coordinate>} coordinates
-     * @param {ol.geom.SimpleGeometry=} opt_geometry
-     * @return {ol.geom.SimpleGeometry}
-     */
     function(coordinates, opt_geometry) {
       const extent = boundingExtent(coordinates);
       const geometry = opt_geometry || new Polygon(null);
@@ -904,7 +939,7 @@ Draw.createBox = function() {
       return geometry;
     }
   );
-};
+}
 
 
 /**
@@ -930,30 +965,5 @@ function getMode(type) {
   return /** @type {!ol.interaction.Mode} */ (mode);
 }
 
-
-/**
- * @classdesc
- * Events emitted by {@link ol.interaction.Draw} instances are instances of
- * this type.
- *
- * @constructor
- * @extends {ol.events.Event}
- * @implements {oli.DrawEvent}
- * @param {ol.interaction.DrawEventType} type Type.
- * @param {ol.Feature} feature The feature drawn.
- */
-Draw.Event = function(type, feature) {
-
-  Event.call(this, type);
-
-  /**
-   * The feature being drawn.
-   * @type {ol.Feature}
-   * @api
-   */
-  this.feature = feature;
-
-};
-inherits(Draw.Event, Event);
 
 export default Draw;
