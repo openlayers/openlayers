@@ -19,8 +19,7 @@ import {iconImageCache} from '../style.js';
  * @param {ol.Color} color Color.
  * @extends {ol.events.EventTarget}
  */
-const IconImage = function(image, src, size, crossOrigin, imageState,
-  color) {
+const IconImage = function(image, src, size, crossOrigin, imageState, color) {
 
   EventTarget.call(this);
 
@@ -101,16 +100,14 @@ inherits(IconImage, EventTarget);
  * @param {ol.Color} color Color.
  * @return {ol.style.IconImage} Icon image.
  */
-IconImage.get = function(image, src, size, crossOrigin, imageState,
-  color) {
+export function get(image, src, size, crossOrigin, imageState, color) {
   let iconImage = iconImageCache.get(src, crossOrigin, color);
   if (!iconImage) {
-    iconImage = new IconImage(
-      image, src, size, crossOrigin, imageState, color);
+    iconImage = new IconImage(image, src, size, crossOrigin, imageState, color);
     iconImageCache.set(src, crossOrigin, color, iconImage);
   }
   return iconImage;
-};
+}
 
 
 /**
