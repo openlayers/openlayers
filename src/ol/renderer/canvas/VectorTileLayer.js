@@ -14,7 +14,7 @@ import {equivalent as equivalentProjection} from '../../proj.js';
 import Units from '../../proj/Units.js';
 import ReplayType from '../../render/ReplayType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
-import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
+import CanvasReplayGroup, {replayDeclutter} from '../../render/canvas/ReplayGroup.js';
 import {ORDER} from '../../render/replay.js';
 import RendererType from '../Type.js';
 import CanvasTileLayerRenderer from '../canvas/TileLayer.js';
@@ -436,7 +436,7 @@ CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameSta
     }
   }
   if (declutterReplays) {
-    CanvasReplayGroup.replayDeclutter(declutterReplays, context, rotation);
+    replayDeclutter(declutterReplays, context, rotation);
   }
   if (rotation) {
     rotateAtOffset(context, rotation,

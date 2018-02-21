@@ -204,7 +204,7 @@ export function getCircleArray(radius) {
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} rotation Rotation.
  */
-CanvasReplayGroup.replayDeclutter = function(declutterReplays, context, rotation) {
+export function replayDeclutter(declutterReplays, context, rotation) {
   const zs = Object.keys(declutterReplays).map(Number).sort(numberSafeCompareFunction);
   const skippedFeatureUids = {};
   for (let z = 0, zz = zs.length; z < zz; ++z) {
@@ -215,7 +215,7 @@ CanvasReplayGroup.replayDeclutter = function(declutterReplays, context, rotation
       replay.replay(context, transform, rotation, skippedFeatureUids);
     }
   }
-};
+}
 
 
 /**
