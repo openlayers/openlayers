@@ -1,5 +1,5 @@
 import EventTarget from '../../../src/ol/events/EventTarget.js';
-import Observable from '../../../src/ol/Observable.js';
+import Observable, {unByKey} from '../../../src/ol/Observable.js';
 
 
 describe('ol.Observable', function() {
@@ -138,7 +138,7 @@ describe('ol.Observable', function() {
       observable.dispatchEvent('foo');
       expect(listener.calledOnce).to.be(true);
 
-      Observable.unByKey(key);
+      unByKey(key);
       observable.dispatchEvent('foo');
       expect(listener.callCount).to.be(1);
     });

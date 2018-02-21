@@ -3,12 +3,12 @@
  */
 import {DEFAULT_TILE_SIZE} from './common.js';
 import {assert} from '../asserts.js';
-import TileRange from '../TileRange.js';
+import TileRange, {createOrUpdate as createOrUpdateTileRange} from '../TileRange.js';
 import {isSorted, linearFindNearest} from '../array.js';
 import {createOrUpdate, getTopLeft} from '../extent.js';
 import {clamp} from '../math.js';
 import {toSize} from '../size.js';
-import {createOrUpdate as tileCoordCreateOrUpdate} from '../tilecoord.js';
+import {createOrUpdate as createOrUpdateTileCoord} from '../tilecoord.js';
 
 /**
  * @classdesc
@@ -199,7 +199,7 @@ TileGrid.prototype.forEachTileCoordParentTileRange = function(tileCoord, callbac
     if (this.zoomFactor_ === 2) {
       x = Math.floor(x / 2);
       y = Math.floor(y / 2);
-      tileRange = TileRange.createOrUpdate(x, x, y, y, opt_tileRange);
+      tileRange = createOrUpdateTileRange(x, x, y, y, opt_tileRange);
     } else {
       tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
     }
@@ -288,7 +288,7 @@ TileGrid.prototype.getTileCoordChildTileRange = function(tileCoord, opt_tileRang
     if (this.zoomFactor_ === 2) {
       const minX = tileCoord[1] * 2;
       const minY = tileCoord[2] * 2;
-      return TileRange.createOrUpdate(minX, minX + 1, minY, minY + 1, opt_tileRange);
+      return createOrUpdateTileRange(minX, minX + 1, minY, minY + 1, opt_tileRange);
     }
     const tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
     return this.getTileRangeForExtentAndZ(
@@ -330,8 +330,7 @@ TileGrid.prototype.getTileRangeForExtentAndZ = function(extent, z, opt_tileRange
   const minX = tileCoord[1];
   const minY = tileCoord[2];
   this.getTileCoordForXYAndZ_(extent[2], extent[3], z, true, tileCoord);
-  return TileRange.createOrUpdate(
-    minX, tileCoord[1], minY, tileCoord[2], opt_tileRange);
+  return createOrUpdateTileRange(minX, tileCoord[1], minY, tileCoord[2], opt_tileRange);
 };
 
 
@@ -422,7 +421,7 @@ TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
     tileCoordY = Math.floor(tileCoordY);
   }
 
-  return tileCoordCreateOrUpdate(z, tileCoordX, tileCoordY, opt_tileCoord);
+  return createOrUpdateTileCoord(z, tileCoordX, tileCoordY, opt_tileCoord);
 };
 
 
@@ -461,7 +460,7 @@ TileGrid.prototype.getTileCoordForXYAndZ_ = function(x, y, z, reverseIntersectio
     tileCoordY = Math.floor(tileCoordY);
   }
 
-  return tileCoordCreateOrUpdate(z, tileCoordX, tileCoordY, opt_tileCoord);
+  return createOrUpdateTileCoord(z, tileCoordX, tileCoordY, opt_tileCoord);
 };
 
 

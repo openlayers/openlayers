@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import Observable from '../src/ol/Observable.js';
+import {unByKey} from '../src/ol/Observable.js';
 import Overlay from '../src/ol/Overlay.js';
 import {getArea, getLength} from '../src/ol/sphere.js';
 import View from '../src/ol/View.js';
@@ -238,7 +238,7 @@ function addInteraction() {
       // unset tooltip so that a new one can be created
       measureTooltipElement = null;
       createMeasureTooltip();
-      Observable.unByKey(listener);
+      unByKey(listener);
     }, this);
 }
 

@@ -339,7 +339,7 @@ View.prototype.animate = function(var_args) {
     animation.callback = callback;
 
     // check if animation is a no-op
-    if (View.isNoopAnimation(animation)) {
+    if (isNoopAnimation(animation)) {
       animation.complete = true;
       // we still push it onto the series for callback handling
     } else {
@@ -1204,7 +1204,7 @@ export function createRotationConstraint(options) {
  * @param {ol.ViewAnimation} animation The animation.
  * @return {boolean} The animation involves no view change.
  */
-View.isNoopAnimation = function(animation) {
+export function isNoopAnimation(animation) {
   if (animation.sourceCenter && animation.targetCenter) {
     if (!coordinatesEqual(animation.sourceCenter, animation.targetCenter)) {
       return false;
@@ -1217,5 +1217,6 @@ View.isNoopAnimation = function(animation) {
     return false;
   }
   return true;
-};
+}
+
 export default View;

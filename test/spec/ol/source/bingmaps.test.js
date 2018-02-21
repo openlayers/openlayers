@@ -1,6 +1,6 @@
 import BingMaps from '../../../../src/ol/source/BingMaps.js';
 import {quadKey} from '../../../../src/ol/tilecoord.js';
-import Observable from '../../../../src/ol/Observable.js';
+import {unByKey} from '../../../../src/ol/Observable.js';
 
 
 describe('ol.source.BingMaps', function() {
@@ -24,7 +24,7 @@ describe('ol.source.BingMaps', function() {
 
       const key = source.on('change', function() {
         if (source.getState() === 'ready') {
-          Observable.unByKey(key);
+          unByKey(key);
           tileGrid = source.getTileGrid();
           done();
         }

@@ -143,17 +143,16 @@ inherits(CanvasTextReplay, CanvasReplay);
  * each line.
  * @return {number} Width of the whole text.
  */
-CanvasTextReplay.measureTextWidths = function(font, lines, widths) {
+export function measureTextWidths(font, lines, widths) {
   const numLines = lines.length;
   let width = 0;
-  let currentWidth, i;
-  for (i = 0; i < numLines; ++i) {
-    currentWidth = measureTextWidth(font, lines[i]);
+  for (let i = 0; i < numLines; ++i) {
+    const currentWidth = measureTextWidth(font, lines[i]);
     width = Math.max(width, currentWidth);
     widths.push(currentWidth);
   }
   return width;
-};
+}
 
 
 /**
@@ -296,7 +295,7 @@ CanvasTextReplay.prototype.getImage = function(text, textKey, fillKey, strokeKey
     const lines = text.split('\n');
     const numLines = lines.length;
     const widths = [];
-    const width = CanvasTextReplay.measureTextWidths(textState.font, lines, widths);
+    const width = measureTextWidths(textState.font, lines, widths);
     const lineHeight = measureTextHeight(textState.font);
     const height = lineHeight * numLines;
     const renderWidth = (width + strokeWidth);

@@ -41,7 +41,7 @@ inherits(Observable, EventTarget);
  *     or `once()` (or an array of keys).
  * @api
  */
-Observable.unByKey = function(key) {
+export function unByKey(key) {
   if (Array.isArray(key)) {
     for (let i = 0, ii = key.length; i < ii; ++i) {
       unlistenByKey(key[i]);
@@ -49,7 +49,7 @@ Observable.unByKey = function(key) {
   } else {
     unlistenByKey(/** @type {ol.EventsKey} */ (key));
   }
-};
+}
 
 
 /**
