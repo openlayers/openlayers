@@ -6,12 +6,12 @@ import CanvasVectorLayerRenderer from './VectorLayer.js';
 import LayerType from '../../LayerType.js';
 import RendererType from '../Type.js';
 import ViewHint from '../../ViewHint.js';
-import {containsExtent, getWidth, buffer} from '../../extent.js';
+import {containsExtent, getWidth, buffer, containsCoordinate} from '../../extent.js';
 import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
 import {getTolerance, createGrid, renderCoverage} from '../coverage.js';
 import CoverageType from '../../coverage/CoverageType.js';
 import _ol_geom_flat_deflate_ from '../../geom/flat/deflate.js';
-import {equivalent} from '../../proj.js';
+import {equivalent, transformExtent} from '../../proj.js';
 import Stroke from '../../style/Stroke.js';
 
 /**
@@ -184,6 +184,26 @@ CanvasCoverageLayerRenderer.prototype.prepareFrame = function(frameState,
 
   this.replayGroupChanged = true;
   return true;
+};
+
+
+/**
+ * @inheritDoc
+ */
+CanvasCoverageLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+  const coverageLayer = /** @type {ol.layer.Coverage} */ (this.getLayer());
+  const coverageSource = coverageLayer.getSource();
+  const projection = frameState.viewState.projection;
+  const sourceProjection = coverageSource.getProjection();
+
+  const coverageExtent = equivalent(projection, sourceProjection) ?
+    coverageSource.getExtent() : transformExtent(coverageSource.getExtent(),
+      sourceProjection, projection);
+
+  if (containsCoordinate(coverageExtent, coordinate)) {
+    return true;
+  }
+  return false;
 };
 
 
