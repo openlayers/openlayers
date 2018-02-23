@@ -12,7 +12,7 @@ import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import Draw from '../../../../src/ol/interaction/Draw.js';
+import Draw, {createRegularPolygon, createBox} from '../../../../src/ol/interaction/Draw.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
@@ -1054,13 +1054,13 @@ describe('ol.interaction.Draw', function() {
     });
   });
 
-  describe('ol.interaction.Draw.createRegularPolygon', function() {
+  describe('createRegularPolygon', function() {
     it('creates a regular polygon in Circle mode', function() {
       const draw = new Draw({
         source: source,
         type: 'Circle',
         geometryFunction:
-            Draw.createRegularPolygon(4, Math.PI / 4)
+            createRegularPolygon(4, Math.PI / 4)
       });
       map.addInteraction(draw);
 
@@ -1084,12 +1084,12 @@ describe('ol.interaction.Draw', function() {
     });
   });
 
-  describe('ol.interaction.Draw.createBox', function() {
+  describe('createBox', function() {
     it('creates a box-shaped polygon in Circle mode', function() {
       const draw = new Draw({
         source: source,
         type: 'Circle',
-        geometryFunction: Draw.createBox()
+        geometryFunction: createBox()
       });
       map.addInteraction(draw);
 

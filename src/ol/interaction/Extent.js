@@ -17,6 +17,31 @@ import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import Style from '../style/Style.js';
 
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.Extent} instances are instances of
+ * this type.
+ *
+ * @constructor
+ * @implements {oli.ExtentEvent}
+ * @param {ol.Extent} extent the new extent
+ * @extends {ol.events.Event}
+ */
+const ExtentInteractionEvent = function(extent) {
+  Event.call(this, ExtentEventType.EXTENTCHANGED);
+
+  /**
+   * The current extent.
+   * @type {ol.Extent}
+   * @api
+   */
+  this.extent = extent;
+
+};
+inherits(ExtentInteractionEvent, Event);
+
+
 /**
  * @classdesc
  * Allows the user to draw a vector box by clicking and dragging on the map.
@@ -430,30 +455,8 @@ ExtentInteraction.prototype.setExtent = function(extent) {
   //Null extent means no bbox
   this.extent_ = extent ? extent : null;
   this.createOrUpdateExtentFeature_(extent);
-  this.dispatchEvent(new ExtentInteraction.Event(this.extent_));
+  this.dispatchEvent(new ExtentInteractionEvent(this.extent_));
 };
 
 
-/**
- * @classdesc
- * Events emitted by {@link ol.interaction.Extent} instances are instances of
- * this type.
- *
- * @constructor
- * @implements {oli.ExtentEvent}
- * @param {ol.Extent} extent the new extent
- * @extends {ol.events.Event}
- */
-ExtentInteraction.Event = function(extent) {
-  Event.call(this, ExtentEventType.EXTENTCHANGED);
-
-  /**
-   * The current extent.
-   * @type {ol.Extent}
-   * @api
-   */
-  this.extent = extent;
-
-};
-inherits(ExtentInteraction.Event, Event);
 export default ExtentInteraction;
