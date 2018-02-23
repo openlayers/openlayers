@@ -32,7 +32,7 @@ const Style = function(opt_options) {
    * @private
    * @type {!ol.StyleGeometryFunction}
    */
-  this.geometryFunction_ = Style.defaultGeometryFunction;
+  this.geometryFunction_ = defaultGeometryFunction;
 
   if (options.geometry !== undefined) {
     this.setGeometry(options.geometry);
@@ -249,7 +249,7 @@ Style.prototype.setGeometry = function(geometry) {
       return /** @type {ol.geom.Geometry} */ (feature.get(geometry));
     };
   } else if (!geometry) {
-    this.geometryFunction_ = Style.defaultGeometryFunction;
+    this.geometryFunction_ = defaultGeometryFunction;
   } else if (geometry !== undefined) {
     this.geometryFunction_ = function() {
       return /** @type {ol.geom.Geometry} */ (geometry);
@@ -278,7 +278,7 @@ Style.prototype.setZIndex = function(zIndex) {
  *     A style function, a single style, or an array of styles.
  * @return {ol.StyleFunction} A style function.
  */
-Style.createFunction = function(obj) {
+export function toFunction(obj) {
   let styleFunction;
 
   if (typeof obj === 'function') {
@@ -300,7 +300,7 @@ Style.createFunction = function(obj) {
     };
   }
   return styleFunction;
-};
+}
 
 
 /**
@@ -314,7 +314,7 @@ let defaultStyles = null;
  * @param {number} resolution Resolution.
  * @return {Array.<ol.style.Style>} Style.
  */
-Style.defaultFunction = function(feature, resolution) {
+export function createDefaultStyle(feature, resolution) {
   // We don't use an immediately-invoked function
   // and a closure so we don't get an error at script evaluation time in
   // browsers that do not support Canvas. (ol.style.Circle does
@@ -341,14 +341,14 @@ Style.defaultFunction = function(feature, resolution) {
     ];
   }
   return defaultStyles;
-};
+}
 
 
 /**
  * Default styles for editing features.
  * @return {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} Styles
  */
-Style.createDefaultEditing = function() {
+export function createEditingStyle() {
   /** @type {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} */
   const styles = {};
   const white = [255, 255, 255, 1];
@@ -412,7 +412,7 @@ Style.createDefaultEditing = function() {
       );
 
   return styles;
-};
+}
 
 
 /**
@@ -421,7 +421,8 @@ Style.createDefaultEditing = function() {
  *     for.
  * @return {ol.geom.Geometry|ol.render.Feature|undefined} Geometry to render.
  */
-Style.defaultGeometryFunction = function(feature) {
+function defaultGeometryFunction(feature) {
   return feature.getGeometry();
-};
+}
+
 export default Style;

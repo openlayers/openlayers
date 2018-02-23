@@ -1,7 +1,7 @@
 import Layer from '../../../../src/ol/layer/Layer.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import Style from '../../../../src/ol/style/Style.js';
+import Style, {createDefaultStyle} from '../../../../src/ol/style/Style.js';
 
 
 describe('ol.layer.Vector', function() {
@@ -74,10 +74,10 @@ describe('ol.layer.Vector', function() {
     });
 
     it('updates the internal style function', function() {
-      expect(layer.getStyleFunction()).to.be(Style.defaultFunction);
+      expect(layer.getStyleFunction()).to.be(createDefaultStyle);
       layer.setStyle(style);
       expect(layer.getStyleFunction()).not.to.be(
-        Style.defaultFunction);
+        createDefaultStyle);
     });
 
     it('allows setting an null style', function() {
@@ -89,8 +89,8 @@ describe('ol.layer.Vector', function() {
     it('sets the default style when passing undefined', function() {
       layer.setStyle(style);
       layer.setStyle(undefined);
-      expect(layer.getStyle()).to.be(Style.defaultFunction);
-      expect(layer.getStyleFunction()).to.be(Style.defaultFunction);
+      expect(layer.getStyle()).to.be(createDefaultStyle);
+      expect(layer.getStyleFunction()).to.be(createDefaultStyle);
     });
 
   });
@@ -105,7 +105,7 @@ describe('ol.layer.Vector', function() {
         source: source
       });
 
-      expect(layer.getStyle()).to.be(Style.defaultFunction);
+      expect(layer.getStyle()).to.be(createDefaultStyle);
 
       layer.setStyle(style);
       expect(layer.getStyle()).to.be(style);

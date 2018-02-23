@@ -13,7 +13,7 @@ import Interaction from '../interaction/Interaction.js';
 import VectorLayer from '../layer/Vector.js';
 import {clear} from '../obj.js';
 import VectorSource from '../source/Vector.js';
-import Style from '../style/Style.js';
+import {createEditingStyle} from '../style/Style.js';
 
 
 /**
@@ -334,7 +334,7 @@ Select.prototype.setMap = function(map) {
  * @return {ol.StyleFunction} Styles.
  */
 Select.getDefaultStyleFunction = function() {
-  const styles = Style.createDefaultEditing();
+  const styles = createEditingStyle();
   extend(styles[GeometryType.POLYGON], styles[GeometryType.LINE_STRING]);
   extend(styles[GeometryType.GEOMETRY_COLLECTION], styles[GeometryType.LINE_STRING]);
 

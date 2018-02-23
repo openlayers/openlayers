@@ -26,7 +26,7 @@ import PointerInteraction, {handleEvent as handlePointerEvent} from '../interact
 import InteractionProperty from '../interaction/Property.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
-import Style from '../style/Style.js';
+import {createEditingStyle} from '../style/Style.js';
 
 
 /**
@@ -377,7 +377,7 @@ inherits(Draw, PointerInteraction);
  * @return {ol.StyleFunction} Styles.
  */
 function getDefaultStyleFunction() {
-  const styles = Style.createDefaultEditing();
+  const styles = createEditingStyle();
   return function(feature, resolution) {
     return styles[feature.getGeometry().getType()];
   };
