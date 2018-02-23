@@ -427,8 +427,7 @@ function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
     stride = 3;
   }
   if (stride !== 4) {
-    let i, ii;
-    for (i = 0, ii = flatCoordinates.length / 4; i < ii; i++) {
+    for (let i = 0, ii = flatCoordinates.length / 4; i < ii; i++) {
       flatCoordinates[i * stride] = flatCoordinates[i * 4];
       flatCoordinates[i * stride + 1] = flatCoordinates[i * 4 + 1];
       if (layoutOptions.hasZ) {
@@ -440,7 +439,7 @@ function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
     }
     flatCoordinates.length = flatCoordinates.length / 4 * stride;
     if (ends) {
-      for (i = 0, ii = ends.length; i < ii; i++) {
+      for (let i = 0, ii = ends.length; i < ii; i++) {
         ends[i] = ends[i] / 4 * stride;
       }
     }

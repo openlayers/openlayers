@@ -372,12 +372,11 @@ MVT.prototype.readFeatures = function(source, opt_options) {
   const pbfLayers = pbf.readFields(layersPBFReader, {});
   /** @type {Array.<ol.Feature|ol.render.Feature>} */
   const features = [];
-  let pbfLayer;
   for (const name in pbfLayers) {
     if (layers && layers.indexOf(name) == -1) {
       continue;
     }
-    pbfLayer = pbfLayers[name];
+    const pbfLayer = pbfLayers[name];
 
     for (let i = 0, ii = pbfLayer.length; i < ii; ++i) {
       const rawFeature = readRawFeature(pbf, pbfLayer, i);

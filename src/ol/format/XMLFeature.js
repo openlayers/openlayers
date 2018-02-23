@@ -44,8 +44,7 @@ XMLFeature.prototype.getType = function() {
  */
 XMLFeature.prototype.readFeature = function(source, opt_options) {
   if (isDocument(source)) {
-    return this.readFeatureFromDocument(
-      /** @type {Document} */ (source), opt_options);
+    return this.readFeatureFromDocument(/** @type {Document} */ (source), opt_options);
   } else if (isNode(source)) {
     return this.readFeatureFromNode(/** @type {Node} */ (source), opt_options);
   } else if (typeof source === 'string') {
@@ -107,12 +106,10 @@ XMLFeature.prototype.readFeatures = function(source, opt_options) {
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
-XMLFeature.prototype.readFeaturesFromDocument = function(
-  doc, opt_options) {
+XMLFeature.prototype.readFeaturesFromDocument = function(doc, opt_options) {
   /** @type {Array.<ol.Feature>} */
   const features = [];
-  let n;
-  for (n = doc.firstChild; n; n = n.nextSibling) {
+  for (let n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
       extend(features, this.readFeaturesFromNode(n, opt_options));
     }

@@ -928,9 +928,7 @@ function readGxTrack(node, objectStack) {
   }
   const flatCoordinates = gxTrackObject.flatCoordinates;
   const whens = gxTrackObject.whens;
-  let i, ii;
-  for (i = 0, ii = Math.min(flatCoordinates.length, whens.length); i < ii;
-    ++i) {
+  for (let i = 0, ii = Math.min(flatCoordinates.length, whens.length); i < ii; ++i) {
     flatCoordinates[4 * i + 3] = whens[i];
   }
   const lineString = new LineString(null);
@@ -1081,8 +1079,8 @@ function readMultiGeometry(node, objectStack) {
   let multiGeometry;
   let homogeneous = true;
   const type = geometries[0].getType();
-  let geometry, i, ii;
-  for (i = 1, ii = geometries.length; i < ii; ++i) {
+  let geometry;
+  for (let i = 1, ii = geometries.length; i < ii; ++i) {
     geometry = geometries[i];
     if (geometry.getType() != type) {
       homogeneous = false;
@@ -1096,7 +1094,7 @@ function readMultiGeometry(node, objectStack) {
       const point = geometries[0];
       layout = point.getLayout();
       flatCoordinates = point.getFlatCoordinates();
-      for (i = 1, ii = geometries.length; i < ii; ++i) {
+      for (let i = 1, ii = geometries.length; i < ii; ++i) {
         geometry = geometries[i];
         extend(flatCoordinates, geometry.getFlatCoordinates());
       }
@@ -1171,13 +1169,11 @@ function readPolygon(node, objectStack) {
     const polygon = new Polygon(null);
     const flatCoordinates = flatLinearRings[0];
     const ends = [flatCoordinates.length];
-    let i, ii;
-    for (i = 1, ii = flatLinearRings.length; i < ii; ++i) {
+    for (let i = 1, ii = flatLinearRings.length; i < ii; ++i) {
       extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
-    polygon.setFlatCoordinates(
-      GeometryLayout.XYZ, flatCoordinates, ends);
+    polygon.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates, ends);
     polygon.setProperties(properties);
     return polygon;
   } else {
@@ -1251,16 +1247,15 @@ function readStyle(node, objectStack) {
  *     multiGeometry A multi-geometry.
  * @param {Array.<ol.geom.Geometry>} geometries List of geometries.
  */
-function setCommonGeometryProperties(multiGeometry,
-  geometries) {
+function setCommonGeometryProperties(multiGeometry, geometries) {
   const ii = geometries.length;
   const extrudes = new Array(geometries.length);
   const tessellates = new Array(geometries.length);
   const altitudeModes = new Array(geometries.length);
-  let geometry, i, hasExtrude, hasTessellate, hasAltitudeMode;
+  let hasExtrude, hasTessellate, hasAltitudeMode;
   hasExtrude = hasTessellate = hasAltitudeMode = false;
-  for (i = 0; i < ii; ++i) {
-    geometry = geometries[i];
+  for (let i = 0; i < ii; ++i) {
+    const geometry = geometries[i];
     extrudes[i] = geometry.get('extrude');
     tessellates[i] = geometry.get('tessellate');
     altitudeModes[i] = geometry.get('altitudeMode');
@@ -1846,8 +1841,7 @@ KML.prototype.readFeaturesFromNode = function(node, opt_options) {
     }
   } else if (localName == 'kml') {
     features = [];
-    let n;
-    for (n = node.firstElementChild; n; n = n.nextElementSibling) {
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
       const fs = this.readFeaturesFromNode(n, opt_options);
       if (fs) {
         extend(features, fs);
@@ -1886,8 +1880,7 @@ KML.prototype.readName = function(source) {
  * @return {string|undefined} Name.
  */
 KML.prototype.readNameFromDocument = function(doc) {
-  let n;
-  for (n = doc.firstChild; n; n = n.nextSibling) {
+  for (let n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
       const name = this.readNameFromNode(n);
       if (name) {
@@ -1904,14 +1897,13 @@ KML.prototype.readNameFromDocument = function(doc) {
  * @return {string|undefined} Name.
  */
 KML.prototype.readNameFromNode = function(node) {
-  let n;
-  for (n = node.firstElementChild; n; n = n.nextElementSibling) {
+  for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
     if (includes(NAMESPACE_URIS, n.namespaceURI) &&
         n.localName == 'name') {
       return readString(n);
     }
   }
-  for (n = node.firstElementChild; n; n = n.nextElementSibling) {
+  for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
     const localName = n.localName;
     if (includes(NAMESPACE_URIS, n.namespaceURI) &&
         (localName == 'Document' ||
@@ -2078,8 +2070,7 @@ function writeColorTextNode(node, color) {
   const rgba = asArray(color);
   const opacity = (rgba.length == 4) ? rgba[3] : 1;
   const abgr = [opacity * 255, rgba[2], rgba[1], rgba[0]];
-  let i;
-  for (i = 0; i < 4; ++i) {
+  for (let i = 0; i < 4; ++i) {
     const hex = parseInt(abgr[i], 10).toString(16);
     abgr[i] = (hex.length == 1) ? '0' + hex : hex;
   }
@@ -2109,17 +2100,16 @@ function writeCoordinatesTextNode(node, coordinates, objectStack) {
     assert(false, 34); // Invalid geometry layout
   }
 
-  let d, i;
   const ii = coordinates.length;
   let text = '';
   if (ii > 0) {
     text += coordinates[0];
-    for (d = 1; d < dimension; ++d) {
+    for (let d = 1; d < dimension; ++d) {
       text += ',' + coordinates[d];
     }
-    for (i = stride; i < ii; i += stride) {
+    for (let i = stride; i < ii; i += stride) {
       text += ' ' + coordinates[i];
-      for (d = 1; d < dimension; ++d) {
+      for (let d = 1; d < dimension; ++d) {
         text += ',' + coordinates[i + d];
       }
     }
@@ -2501,8 +2491,7 @@ const GEOMETRY_TYPE_TO_NODENAME = {
  * @param {string=} opt_nodeName Node name.
  * @return {Node|undefined} Node.
  */
-const GEOMETRY_NODE_FACTORY = function(value, objectStack,
-  opt_nodeName) {
+const GEOMETRY_NODE_FACTORY = function(value, objectStack, opt_nodeName) {
   if (value) {
     const parentNode = objectStack[objectStack.length - 1].node;
     return createElementNS(parentNode.namespaceURI,
