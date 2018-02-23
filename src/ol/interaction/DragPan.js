@@ -7,7 +7,7 @@ import {scale as scaleCoordinate, rotate as rotateCoordinate, add as addCoordina
 import {easeOut} from '../easing.js';
 import {noModifierKeys} from '../events/condition.js';
 import {FALSE} from '../functions.js';
-import PointerInteraction from '../interaction/Pointer.js';
+import PointerInteraction, {centroid as centroidFromPointers} from '../interaction/Pointer.js';
 
 /**
  * @classdesc
@@ -67,7 +67,7 @@ inherits(DragPan, PointerInteraction);
  */
 function handleDragEvent(mapBrowserEvent) {
   const targetPointers = this.targetPointers;
-  const centroid = PointerInteraction.centroid(targetPointers);
+  const centroid = centroidFromPointers(targetPointers);
   if (targetPointers.length == this.lastPointersCount_) {
     if (this.kinetic_) {
       this.kinetic_.update(centroid[0], centroid[1]);

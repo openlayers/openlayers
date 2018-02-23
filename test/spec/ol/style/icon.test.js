@@ -1,7 +1,7 @@
 import {getUid} from '../../../../src/ol/index.js';
 import {iconImageCache} from '../../../../src/ol/style.js';
 import Icon from '../../../../src/ol/style/Icon.js';
-import IconImage from '../../../../src/ol/style/IconImage.js';
+import IconImage, {get as getIconImage} from '../../../../src/ol/style/IconImage.js';
 
 
 describe('ol.style.Icon', function() {
@@ -17,8 +17,7 @@ describe('ol.style.Icon', function() {
         img: canvas,
         imgSize: size
       });
-      expect(IconImage.get(
-        canvas, getUid(canvas), size, '').getImage()).to.eql(canvas);
+      expect(getIconImage(canvas, getUid(canvas), size, '').getImage()).to.eql(canvas);
     });
 
     it('imgSize overrides img.width and img.height', function(done) {

@@ -86,7 +86,7 @@ inherits(PointerInteraction, Interaction);
  * @param {Array.<ol.pointer.PointerEvent>} pointerEvents List of events.
  * @return {ol.Pixel} Centroid pixel.
  */
-PointerInteraction.centroid = function(pointerEvents) {
+export function centroid(pointerEvents) {
   const length = pointerEvents.length;
   let clientX = 0;
   let clientY = 0;
@@ -95,21 +95,20 @@ PointerInteraction.centroid = function(pointerEvents) {
     clientY += pointerEvents[i].clientY;
   }
   return [clientX / length, clientY / length];
-};
+}
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Whether the event is a pointerdown, pointerdrag
  *     or pointerup event.
- * @private
  */
-PointerInteraction.prototype.isPointerDraggingEvent_ = function(mapBrowserEvent) {
+function isPointerDraggingEvent(mapBrowserEvent) {
   const type = mapBrowserEvent.type;
   return type === MapBrowserEventType.POINTERDOWN ||
     type === MapBrowserEventType.POINTERDRAG ||
     type === MapBrowserEventType.POINTERUP;
-};
+}
 
 
 /**
@@ -117,7 +116,7 @@ PointerInteraction.prototype.isPointerDraggingEvent_ = function(mapBrowserEvent)
  * @private
  */
 PointerInteraction.prototype.updateTrackedPointers_ = function(mapBrowserEvent) {
-  if (this.isPointerDraggingEvent_(mapBrowserEvent)) {
+  if (isPointerDraggingEvent(mapBrowserEvent)) {
     const event = mapBrowserEvent.pointerEvent;
 
     const id = event.pointerId.toString();
