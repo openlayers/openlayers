@@ -22,7 +22,7 @@ import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
-import Style from '../style/Style.js';
+import {createEditingStyle} from '../style/Style.js';
 
 /**
  * @classdesc
@@ -1180,7 +1180,7 @@ Modify.prototype.updateSegmentIndices_ = function(
  * @return {ol.StyleFunction} Styles.
  */
 Modify.getDefaultStyleFunction = function() {
-  const style = Style.createDefaultEditing();
+  const style = createEditingStyle();
   return function(feature, resolution) {
     return style[GeometryType.POINT];
   };

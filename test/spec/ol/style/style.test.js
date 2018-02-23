@@ -1,6 +1,6 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import Style from '../../../../src/ol/style/Style.js';
+import Style, {toFunction} from '../../../../src/ol/style/Style.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
@@ -240,16 +240,16 @@ describe('ol.style.Style', function() {
 
 });
 
-describe('ol.style.Style.createFunction()', function() {
+describe('toFunction()', function() {
   const style = new Style();
 
   it('creates a style function from a single style', function() {
-    const styleFunction = Style.createFunction(style);
+    const styleFunction = toFunction(style);
     expect(styleFunction()).to.eql([style]);
   });
 
   it('creates a style function from an array of styles', function() {
-    const styleFunction = Style.createFunction([style]);
+    const styleFunction = toFunction([style]);
     expect(styleFunction()).to.eql([style]);
   });
 
@@ -257,13 +257,13 @@ describe('ol.style.Style.createFunction()', function() {
     const original = function() {
       return [style];
     };
-    const styleFunction = Style.createFunction(original);
+    const styleFunction = toFunction(original);
     expect(styleFunction).to.be(original);
   });
 
   it('throws on (some) unexpected input', function() {
     expect(function() {
-      Style.createFunction({bogus: 'input'});
+      toFunction({bogus: 'input'});
     }).to.throwException();
   });
 
