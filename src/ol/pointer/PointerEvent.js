@@ -196,6 +196,13 @@ inherits(PointerEvent, Event);
 
 
 /**
+ * Is the `buttons` property supported?
+ * @type {boolean}
+ */
+const HAS_BUTTONS = false;
+
+
+/**
  * @private
  * @param {Object.<string, ?>} eventDict The event dictionary.
  * @return {number} Button indicator.
@@ -223,7 +230,7 @@ PointerEvent.prototype.getButtons_ = function(eventDict) {
   //
   // This is fixed with DOM Level 4's use of buttons
   let buttons;
-  if (eventDict.buttons || PointerEvent.HAS_BUTTONS) {
+  if (eventDict.buttons || HAS_BUTTONS) {
     buttons = eventDict.buttons;
   } else {
     switch (eventDict.which) {
@@ -254,13 +261,6 @@ PointerEvent.prototype.getPressure_ = function(eventDict, buttons) {
   }
   return pressure;
 };
-
-
-/**
- * Is the `buttons` property supported?
- * @type {boolean}
- */
-PointerEvent.HAS_BUTTONS = false;
 
 
 /**

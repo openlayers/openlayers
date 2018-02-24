@@ -66,26 +66,23 @@ inherits(MouseSource, EventSource);
 
 
 /**
- * @const
  * @type {number}
  */
-MouseSource.POINTER_ID = 1;
+export const POINTER_ID = 1;
 
 
 /**
- * @const
  * @type {string}
  */
-MouseSource.POINTER_TYPE = 'mouse';
+const POINTER_TYPE = 'mouse';
 
 
 /**
  * Radius around touchend that swallows mouse events.
  *
- * @const
  * @type {number}
  */
-MouseSource.DEDUP_DIST = 25;
+const DEDUP_DIST = 25;
 
 
 /**
@@ -120,8 +117,8 @@ MouseSource.prototype.isEventSimulatedFromTouch_ = function(inEvent) {
     // simulated mouse events will be swallowed near a primary touchend
     const dx = Math.abs(x - t[0]);
     const dy = Math.abs(y - t[1]);
-    if (dx <= MouseSource.DEDUP_DIST &&
-        dy <= MouseSource.DEDUP_DIST) {
+    if (dx <= DEDUP_DIST &&
+        dy <= DEDUP_DIST) {
       return true;
     }
   }
@@ -137,7 +134,7 @@ MouseSource.prototype.isEventSimulatedFromTouch_ = function(inEvent) {
  * @param {ol.pointer.PointerEventHandler} dispatcher Event handler.
  * @return {Object} The copied event.
  */
-MouseSource.prepareEvent = function(inEvent, dispatcher) {
+function prepareEvent(inEvent, dispatcher) {
   const e = dispatcher.cloneEvent(inEvent, inEvent);
 
   // forward mouse preventDefault
@@ -147,12 +144,12 @@ MouseSource.prepareEvent = function(inEvent, dispatcher) {
     pd();
   };
 
-  e.pointerId = MouseSource.POINTER_ID;
+  e.pointerId = POINTER_ID;
   e.isPrimary = true;
-  e.pointerType = MouseSource.POINTER_TYPE;
+  e.pointerType = POINTER_TYPE;
 
   return e;
-};
+}
 
 
 /**
@@ -164,11 +161,11 @@ MouseSource.prototype.mousedown = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
     // TODO(dfreedman) workaround for some elements not sending mouseup
     // http://crbug/149091
-    if (MouseSource.POINTER_ID.toString() in this.pointerMap) {
+    if (POINTER_ID.toString() in this.pointerMap) {
       this.cancel(inEvent);
     }
-    const e = MouseSource.prepareEvent(inEvent, this.dispatcher);
-    this.pointerMap[MouseSource.POINTER_ID.toString()] = inEvent;
+    const e = prepareEvent(inEvent, this.dispatcher);
+    this.pointerMap[POINTER_ID.toString()] = inEvent;
     this.dispatcher.down(e, inEvent);
   }
 };
@@ -181,7 +178,7 @@ MouseSource.prototype.mousedown = function(inEvent) {
  */
 MouseSource.prototype.mousemove = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
-    const e = MouseSource.prepareEvent(inEvent, this.dispatcher);
+    const e = prepareEvent(inEvent, this.dispatcher);
     this.dispatcher.move(e, inEvent);
   }
 };
@@ -194,10 +191,10 @@ MouseSource.prototype.mousemove = function(inEvent) {
  */
 MouseSource.prototype.mouseup = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
-    const p = this.pointerMap[MouseSource.POINTER_ID.toString()];
+    const p = this.pointerMap[POINTER_ID.toString()];
 
     if (p && p.button === inEvent.button) {
-      const e = MouseSource.prepareEvent(inEvent, this.dispatcher);
+      const e = prepareEvent(inEvent, this.dispatcher);
       this.dispatcher.up(e, inEvent);
       this.cleanupMouse();
     }
@@ -212,7 +209,7 @@ MouseSource.prototype.mouseup = function(inEvent) {
  */
 MouseSource.prototype.mouseover = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
-    const e = MouseSource.prepareEvent(inEvent, this.dispatcher);
+    const e = prepareEvent(inEvent, this.dispatcher);
     this.dispatcher.enterOver(e, inEvent);
   }
 };
@@ -225,7 +222,7 @@ MouseSource.prototype.mouseover = function(inEvent) {
  */
 MouseSource.prototype.mouseout = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
-    const e = MouseSource.prepareEvent(inEvent, this.dispatcher);
+    const e = prepareEvent(inEvent, this.dispatcher);
     this.dispatcher.leaveOut(e, inEvent);
   }
 };
@@ -237,7 +234,7 @@ MouseSource.prototype.mouseout = function(inEvent) {
  * @param {Event} inEvent The in event.
  */
 MouseSource.prototype.cancel = function(inEvent) {
-  const e = MouseSource.prepareEvent(inEvent, this.dispatcher);
+  const e = prepareEvent(inEvent, this.dispatcher);
   this.dispatcher.cancel(e, inEvent);
   this.cleanupMouse();
 };
@@ -247,6 +244,6 @@ MouseSource.prototype.cancel = function(inEvent) {
  * Remove the mouse from the list of active pointers.
  */
 MouseSource.prototype.cleanupMouse = function() {
-  delete this.pointerMap[MouseSource.POINTER_ID.toString()];
+  delete this.pointerMap[POINTER_ID.toString()];
 };
 export default MouseSource;

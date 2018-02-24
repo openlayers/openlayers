@@ -80,6 +80,45 @@ const PointerEventHandler = function(element) {
 
 inherits(PointerEventHandler, EventTarget);
 
+/**
+ * Properties to copy when cloning an event, with default values.
+ * @type {Array.<Array>}
+ */
+const CLONE_PROPS = [
+  // MouseEvent
+  ['bubbles', false],
+  ['cancelable', false],
+  ['view', null],
+  ['detail', null],
+  ['screenX', 0],
+  ['screenY', 0],
+  ['clientX', 0],
+  ['clientY', 0],
+  ['ctrlKey', false],
+  ['altKey', false],
+  ['shiftKey', false],
+  ['metaKey', false],
+  ['button', 0],
+  ['relatedTarget', null],
+  // DOM Level 3
+  ['buttons', 0],
+  // PointerEvent
+  ['pointerId', 0],
+  ['width', 0],
+  ['height', 0],
+  ['pressure', 0],
+  ['tiltX', 0],
+  ['tiltY', 0],
+  ['pointerType', ''],
+  ['hwTimestamp', 0],
+  ['isPrimary', false],
+  // event instance
+  ['type', ''],
+  ['target', null],
+  ['currentTarget', null],
+  ['which', 0]
+];
+
 
 /**
  * Set up the event sources (mouse, touch and native pointers)
@@ -204,9 +243,9 @@ PointerEventHandler.prototype.removeEvents_ = function(events) {
  */
 PointerEventHandler.prototype.cloneEvent = function(event, inEvent) {
   const eventCopy = {};
-  for (let i = 0, ii = PointerEventHandler.CLONE_PROPS.length; i < ii; i++) {
-    const p = PointerEventHandler.CLONE_PROPS[i][0];
-    eventCopy[p] = event[p] || inEvent[p] || PointerEventHandler.CLONE_PROPS[i][1];
+  for (let i = 0, ii = CLONE_PROPS.length; i < ii; i++) {
+    const p = CLONE_PROPS[i][0];
+    eventCopy[p] = event[p] || inEvent[p] || CLONE_PROPS[i][1];
   }
 
   return eventCopy;
@@ -402,42 +441,4 @@ PointerEventHandler.prototype.disposeInternal = function() {
 };
 
 
-/**
- * Properties to copy when cloning an event, with default values.
- * @type {Array.<Array>}
- */
-PointerEventHandler.CLONE_PROPS = [
-  // MouseEvent
-  ['bubbles', false],
-  ['cancelable', false],
-  ['view', null],
-  ['detail', null],
-  ['screenX', 0],
-  ['screenY', 0],
-  ['clientX', 0],
-  ['clientY', 0],
-  ['ctrlKey', false],
-  ['altKey', false],
-  ['shiftKey', false],
-  ['metaKey', false],
-  ['button', 0],
-  ['relatedTarget', null],
-  // DOM Level 3
-  ['buttons', 0],
-  // PointerEvent
-  ['pointerId', 0],
-  ['width', 0],
-  ['height', 0],
-  ['pressure', 0],
-  ['tiltX', 0],
-  ['tiltY', 0],
-  ['pointerType', ''],
-  ['hwTimestamp', 0],
-  ['isPrimary', false],
-  // event instance
-  ['type', ''],
-  ['target', null],
-  ['currentTarget', null],
-  ['which', 0]
-];
 export default PointerEventHandler;
