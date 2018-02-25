@@ -7,7 +7,7 @@ import {modulo} from './math.js';
 import {toEPSG4326, fromEPSG4326, PROJECTIONS as EPSG3857_PROJECTIONS} from './proj/epsg3857.js';
 import {PROJECTIONS as EPSG4326_PROJECTIONS} from './proj/epsg4326.js';
 import Projection from './proj/Projection.js';
-import Units from './proj/Units.js';
+import Units, {METERS_PER_UNIT} from './proj/Units.js';
 import * as projections from './proj/projections.js';
 import {add as addTransformFunc, clear as clearTransformFuncs, get as getTransformFunc} from './proj/transforms.js';
 
@@ -18,7 +18,7 @@ import {add as addTransformFunc, clear as clearTransformFuncs, get as getTransfo
  * @type {Object.<ol.proj.Units, number>}
  * @api
  */
-export const METERS_PER_UNIT = Units.METERS_PER_UNIT;
+export {METERS_PER_UNIT};
 
 
 /**
@@ -147,7 +147,7 @@ export function getPointResolution(projection, resolution, point, opt_units) {
       const height = getDistance(vertices.slice(4, 6), vertices.slice(6, 8));
       pointResolution = (width + height) / 2;
       const metersPerUnit = opt_units ?
-        Units.METERS_PER_UNIT[opt_units] :
+        METERS_PER_UNIT[opt_units] :
         projection.getMetersPerUnit();
       if (metersPerUnit !== undefined) {
         pointResolution /= metersPerUnit;
