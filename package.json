@@ -76,7 +76,7 @@
     "nomnom": "2.0.0",
     "pixelmatch": "^4.0.2",
     "proj4": "2.4.4",
-    "recast": "0.14.2",
+    "recast": "0.14.4",
     "serve": "^6.0.6",
     "sinon": "4.4.1",
     "url-polyfill": "^1.0.7",
