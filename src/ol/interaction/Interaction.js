@@ -132,11 +132,11 @@ Interaction.pan = function(view, delta, opt_duration) {
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
-Interaction.rotate = function(view, rotation, opt_anchor, opt_duration) {
+export function rotate(view, rotation, opt_anchor, opt_duration) {
   rotation = view.constrainRotation(rotation, 0);
   Interaction.rotateWithoutConstraints(
     view, rotation, opt_anchor, opt_duration);
-};
+}
 
 
 /**
@@ -177,11 +177,10 @@ Interaction.rotateWithoutConstraints = function(view, rotation, opt_anchor, opt_
  *     will select the nearest resolution. If not defined 0 is
  *     assumed.
  */
-Interaction.zoom = function(view, resolution, opt_anchor, opt_duration, opt_direction) {
+export function zoom(view, resolution, opt_anchor, opt_duration, opt_direction) {
   resolution = view.constrainResolution(resolution, 0, opt_direction);
-  Interaction.zoomWithoutConstraints(
-    view, resolution, opt_anchor, opt_duration);
-};
+  zoomWithoutConstraints(view, resolution, opt_anchor, opt_duration);
+}
 
 
 /**
@@ -218,8 +217,7 @@ Interaction.zoomByDelta = function(view, delta, opt_anchor, opt_duration) {
     ];
   }
 
-  Interaction.zoomWithoutConstraints(
-    view, resolution, opt_anchor, opt_duration);
+  zoomWithoutConstraints(view, resolution, opt_anchor, opt_duration);
 };
 
 
@@ -229,7 +227,7 @@ Interaction.zoomByDelta = function(view, delta, opt_anchor, opt_duration) {
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
-Interaction.zoomWithoutConstraints = function(view, resolution, opt_anchor, opt_duration) {
+export function zoomWithoutConstraints(view, resolution, opt_anchor, opt_duration) {
   if (resolution) {
     const currentResolution = view.getResolution();
     const currentCenter = view.getCenter();
@@ -249,5 +247,6 @@ Interaction.zoomWithoutConstraints = function(view, resolution, opt_anchor, opt_
       view.setResolution(resolution);
     }
   }
-};
+}
+
 export default Interaction;

@@ -6,7 +6,7 @@ import {disable} from '../rotationconstraint.js';
 import ViewHint from '../ViewHint.js';
 import {altShiftKeysOnly, mouseOnly, mouseActionButton} from '../events/condition.js';
 import {FALSE} from '../functions.js';
-import Interaction from '../interaction/Interaction.js';
+import Interaction, {rotate} from '../interaction/Interaction.js';
 import PointerInteraction from '../interaction/Pointer.js';
 
 /**
@@ -96,8 +96,7 @@ function handleUpEvent(mapBrowserEvent) {
   const view = map.getView();
   view.setHint(ViewHint.INTERACTING, -1);
   const rotation = view.getRotation();
-  Interaction.rotate(view, rotation,
-    undefined, this.duration_);
+  rotate(view, rotation, undefined, this.duration_);
   return false;
 }
 

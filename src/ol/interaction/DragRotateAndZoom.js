@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import {disable} from '../rotationconstraint.js';
 import ViewHint from '../ViewHint.js';
 import {shiftKeyOnly, mouseOnly} from '../events/condition.js';
-import Interaction from '../interaction/Interaction.js';
+import Interaction, {rotate, zoom, zoomWithoutConstraints} from '../interaction/Interaction.js';
 import PointerInteraction from '../interaction/Pointer.js';
 
 /**
@@ -93,7 +93,7 @@ function handleDragEvent(mapBrowserEvent) {
   this.lastAngle_ = theta;
   if (this.lastMagnitude_ !== undefined) {
     const resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
-    Interaction.zoomWithoutConstraints(view, resolution);
+    zoomWithoutConstraints(view, resolution);
   }
   if (this.lastMagnitude_ !== undefined) {
     this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;
@@ -116,9 +116,8 @@ function handleUpEvent(mapBrowserEvent) {
   const view = map.getView();
   view.setHint(ViewHint.INTERACTING, -1);
   const direction = this.lastScaleDelta_ - 1;
-  Interaction.rotate(view, view.getRotation());
-  Interaction.zoom(view, view.getResolution(),
-    undefined, this.duration_, direction);
+  rotate(view, view.getRotation());
+  zoom(view, view.getResolution(), undefined, this.duration_, direction);
   this.lastScaleDelta_ = 0;
   return false;
 }
