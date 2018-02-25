@@ -8,6 +8,37 @@ import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import Interaction from '../interaction/Interaction.js';
 import {getValues} from '../obj.js';
 
+
+/**
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {ol.interaction.Pointer}
+ */
+const handleDragEvent = nullFunction;
+
+
+/**
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @return {boolean} Capture dragging.
+ * @this {ol.interaction.Pointer}
+ */
+const handleUpEvent = FALSE;
+
+
+/**
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @return {boolean} Capture dragging.
+ * @this {ol.interaction.Pointer}
+ */
+const handleDownEvent = FALSE;
+
+
+/**
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {ol.interaction.Pointer}
+ */
+const handleMoveEvent = nullFunction;
+
+
 /**
  * @classdesc
  * Base class that calls user-defined functions on `down`, `move` and `up`
@@ -36,28 +67,28 @@ const PointerInteraction = function(opt_options) {
    * @private
    */
   this.handleDownEvent_ = options.handleDownEvent ?
-    options.handleDownEvent : PointerInteraction.handleDownEvent;
+    options.handleDownEvent : handleDownEvent;
 
   /**
    * @type {function(ol.MapBrowserPointerEvent)}
    * @private
    */
   this.handleDragEvent_ = options.handleDragEvent ?
-    options.handleDragEvent : PointerInteraction.handleDragEvent;
+    options.handleDragEvent : handleDragEvent;
 
   /**
    * @type {function(ol.MapBrowserPointerEvent)}
    * @private
    */
   this.handleMoveEvent_ = options.handleMoveEvent ?
-    options.handleMoveEvent : PointerInteraction.handleMoveEvent;
+    options.handleMoveEvent : handleMoveEvent;
 
   /**
    * @type {function(ol.MapBrowserPointerEvent):boolean}
    * @private
    */
   this.handleUpEvent_ = options.handleUpEvent ?
-    options.handleUpEvent : PointerInteraction.handleUpEvent;
+    options.handleUpEvent : handleUpEvent;
 
   /**
    * @type {boolean}
@@ -132,36 +163,6 @@ PointerInteraction.prototype.updateTrackedPointers_ = function(mapBrowserEvent) 
     this.targetPointers = getValues(this.trackedPointers_);
   }
 };
-
-
-/**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {ol.interaction.Pointer}
- */
-PointerInteraction.handleDragEvent = nullFunction;
-
-
-/**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
- * @return {boolean} Capture dragging.
- * @this {ol.interaction.Pointer}
- */
-PointerInteraction.handleUpEvent = FALSE;
-
-
-/**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
- * @return {boolean} Capture dragging.
- * @this {ol.interaction.Pointer}
- */
-PointerInteraction.handleDownEvent = FALSE;
-
-
-/**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {ol.interaction.Pointer}
- */
-PointerInteraction.handleMoveEvent = nullFunction;
 
 
 /**
