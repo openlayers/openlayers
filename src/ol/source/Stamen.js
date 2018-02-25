@@ -2,7 +2,7 @@
  * @module ol/source/Stamen
  */
 import {inherits} from '../index.js';
-import OSM from '../source/OSM.js';
+import {ATTRIBUTION as OSM_ATTRIBUTION} from '../source/OSM.js';
 import XYZ from '../source/XYZ.js';
 
 
@@ -14,7 +14,7 @@ const ATTRIBUTIONS = [
   'Map tiles by <a href="https://stamen.com/">Stamen Design</a>, ' +
         'under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY' +
         ' 3.0</a>.',
-  OSM.ATTRIBUTION
+  OSM_ATTRIBUTION
 ];
 
 

@@ -2,14 +2,14 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import OSM from '../src/ol/source/OSM.js';
+import OSM, {ATTRIBUTION} from '../src/ol/source/OSM.js';
 
 
 const openCycleMapLayer = new TileLayer({
   source: new OSM({
     attributions: [
       'All maps © <a href="https://www.opencyclemap.org/">OpenCycleMap</a>',
-      OSM.ATTRIBUTION
+      ATTRIBUTION
     ],
     url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png' +
         '?apikey=0e6fc415256d4fbb9b5166a718591d71'
@@ -20,7 +20,7 @@ const openSeaMapLayer = new TileLayer({
   source: new OSM({
     attributions: [
       'All maps © <a href="http://www.openseamap.org/">OpenSeaMap</a>',
-      OSM.ATTRIBUTION
+      ATTRIBUTION
     ],
     opaque: false,
     url: 'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png'

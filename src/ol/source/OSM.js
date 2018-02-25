@@ -4,6 +4,19 @@
 import {inherits} from '../index.js';
 import XYZ from '../source/XYZ.js';
 
+
+/**
+ * The attribution containing a link to the OpenStreetMap Copyright and License
+ * page.
+ * @const
+ * @type {string}
+ * @api
+ */
+export const ATTRIBUTION = '&copy; ' +
+      '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
+      'contributors.';
+
+
 /**
  * @classdesc
  * Layer source for the OpenStreetMap tile server.
@@ -21,7 +34,7 @@ const OSM = function(opt_options) {
   if (options.attributions !== undefined) {
     attributions = options.attributions;
   } else {
-    attributions = [OSM.ATTRIBUTION];
+    attributions = [ATTRIBUTION];
   }
 
   const crossOrigin = options.crossOrigin !== undefined ?
@@ -46,15 +59,4 @@ const OSM = function(opt_options) {
 
 inherits(OSM, XYZ);
 
-
-/**
- * The attribution containing a link to the OpenStreetMap Copyright and License
- * page.
- * @const
- * @type {string}
- * @api
- */
-OSM.ATTRIBUTION = '&copy; ' +
-      '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
-      'contributors.';
 export default OSM;
