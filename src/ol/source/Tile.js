@@ -317,7 +317,7 @@ TileSource.prototype.useTile = nullFunction;
  * @param {string} type Type.
  * @param {ol.Tile} tile The tile.
  */
-TileSource.Event = function(type, tile) {
+export const TileSourceEvent = function(type, tile) {
 
   Event.call(this, type);
 
@@ -329,5 +329,6 @@ TileSource.Event = function(type, tile) {
   this.tile = tile;
 
 };
-inherits(TileSource.Event, Event);
+inherits(TileSourceEvent, Event);
+
 export default TileSource;
