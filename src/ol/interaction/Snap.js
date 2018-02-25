@@ -13,7 +13,7 @@ import GeometryType from '../geom/GeometryType.js';
 import {fromCircle} from '../geom/Polygon.js';
 import PointerInteraction, {handleEvent as handlePointerEvent} from '../interaction/Pointer.js';
 import {getValues} from '../obj.js';
-import VectorSource from '../source/Vector.js';
+import {VectorSourceEvent} from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 
@@ -219,7 +219,7 @@ Snap.prototype.getFeatures_ = function() {
  */
 Snap.prototype.handleFeatureAdd_ = function(evt) {
   let feature;
-  if (evt instanceof VectorSource.Event) {
+  if (evt instanceof VectorSourceEvent) {
     feature = evt.feature;
   } else if (evt instanceof CollectionEvent) {
     feature = evt.element;
@@ -234,7 +234,7 @@ Snap.prototype.handleFeatureAdd_ = function(evt) {
  */
 Snap.prototype.handleFeatureRemove_ = function(evt) {
   let feature;
-  if (evt instanceof VectorSource.Event) {
+  if (evt instanceof VectorSourceEvent) {
     feature = evt.feature;
   } else if (evt instanceof CollectionEvent) {
     feature = evt.element;
