@@ -9,7 +9,7 @@ import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {intersects, getHeight, getWidth} from '../extent.js';
 import {get as getProjection} from '../proj.js';
-import ImageSource from '../source/Image.js';
+import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
 
 /**
  * @classdesc
@@ -28,7 +28,7 @@ const Static = function(options) {
 
   const /** @type {ol.ImageLoadFunctionType} */ imageLoadFunction =
       options.imageLoadFunction !== undefined ?
-        options.imageLoadFunction : ImageSource.defaultImageLoadFunction;
+        options.imageLoadFunction : defaultImageLoadFunction;
 
   ImageSource.call(this, {
     attributions: options.attributions,

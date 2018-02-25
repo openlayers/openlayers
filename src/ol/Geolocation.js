@@ -3,7 +3,7 @@
  */
 import {inherits} from './index.js';
 import GeolocationProperty from './GeolocationProperty.js';
-import BaseObject from './Object.js';
+import BaseObject, {getChangeEventType} from './Object.js';
 import {listen} from './events.js';
 import EventType from './events/EventType.js';
 import {circular as circularPolygon} from './geom/Polygon.js';
@@ -79,10 +79,10 @@ const Geolocation = function(opt_options) {
   this.watchId_ = undefined;
 
   listen(
-    this, BaseObject.getChangeEventType(GeolocationProperty.PROJECTION),
+    this, getChangeEventType(GeolocationProperty.PROJECTION),
     this.handleProjectionChanged_, this);
   listen(
-    this, BaseObject.getChangeEventType(GeolocationProperty.TRACKING),
+    this, getChangeEventType(GeolocationProperty.TRACKING),
     this.handleTrackingChanged_, this);
 
   if (options.projection !== undefined) {

@@ -7,7 +7,7 @@ import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getCenter, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import {assign} from '../obj.js';
-import ImageSource from '../source/Image.js';
+import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
 import {appendParams} from '../uri.js';
 
 /**
@@ -58,7 +58,7 @@ const ImageMapGuide = function(options) {
    * @type {ol.ImageLoadFunctionType}
    */
   this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
-    options.imageLoadFunction : ImageSource.defaultImageLoadFunction;
+    options.imageLoadFunction : defaultImageLoadFunction;
 
   /**
    * @private
@@ -173,7 +173,7 @@ ImageMapGuide.prototype.getImageLoadFunction = function() {
  * @param {number} dpi The display resolution.
  * @return {number} The computed map scale.
  */
-ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
+function getScale(extent, size, metersPerUnit, dpi) {
   const mcsW = getWidth(extent);
   const mcsH = getHeight(extent);
   const devW = size[0];
@@ -184,7 +184,7 @@ ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
   } else {
     return mcsH * metersPerUnit / (devH * mpp); // height limited
   }
-};
+}
 
 
 /**
@@ -207,7 +207,7 @@ ImageMapGuide.prototype.updateParams = function(params) {
  * @return {string} The mapagent map image request URL.
  */
 ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, size, projection) {
-  const scale = ImageMapGuide.getScale(extent, size,
+  const scale = getScale(extent, size,
     this.metersPerUnit_, this.displayDpi_);
   const center = getCenter(extent);
   const baseParams = {

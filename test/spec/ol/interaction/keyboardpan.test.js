@@ -2,7 +2,6 @@ import Map from '../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../src/ol/View.js';
 import Event from '../../../../src/ol/events/Event.js';
-import Interaction from '../../../../src/ol/interaction/Interaction.js';
 
 describe('ol.interaction.KeyboardPan', function() {
   let map;
@@ -24,25 +23,35 @@ describe('ol.interaction.KeyboardPan', function() {
 
   describe('handleEvent()', function() {
     it('pans on arrow keys', function() {
-      const spy = sinon.spy(Interaction, 'pan');
+      const view = map.getView();
+      const spy = sinon.spy(view, 'animate');
       const event = new MapBrowserEvent('keydown', map, {
         type: 'keydown',
         target: map.getTargetElement(),
         preventDefault: Event.prototype.preventDefault
       });
+
       event.originalEvent.keyCode = 40; // DOWN
       map.handleMapBrowserEvent(event);
+      expect(spy.getCall(0).args[0].center).to.eql([0, -128]);
+      view.setCenter([0, 0]);
+
       event.originalEvent.keyCode = 38; // UP
       map.handleMapBrowserEvent(event);
+      expect(spy.getCall(1).args[0].center).to.eql([0, 128]);
+      view.setCenter([0, 0]);
+
       event.originalEvent.keyCode = 37; // LEFT
       map.handleMapBrowserEvent(event);
+      expect(spy.getCall(2).args[0].center).to.eql([-128, 0]);
+      view.setCenter([0, 0]);
+
       event.originalEvent.keyCode = 39; // RIGHT
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(0).args[1]).to.eql([0, -128]);
-      expect(spy.getCall(1).args[1]).to.eql([0, 128]);
-      expect(spy.getCall(2).args[1]).to.eql([-128, 0]);
-      expect(spy.getCall(3).args[1]).to.eql([128, 0]);
-      Interaction.pan.restore();
+      expect(spy.getCall(3).args[0].center).to.eql([128, 0]);
+      view.setCenter([0, 0]);
+
+      view.animate.restore();
     });
   });
 

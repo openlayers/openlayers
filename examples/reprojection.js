@@ -8,7 +8,7 @@ import {register} from '../src/ol/proj/proj4.js';
 import OSM from '../src/ol/source/OSM.js';
 import TileImage from '../src/ol/source/TileImage.js';
 import TileWMS from '../src/ol/source/TileWMS.js';
-import WMTS from '../src/ol/source/WMTS.js';
+import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 import XYZ from '../src/ol/source/XYZ.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 import proj4 from 'proj4';
@@ -104,7 +104,7 @@ fetch(url).then(function(response) {
   return response.text();
 }).then(function(text) {
   const result = parser.read(text);
-  const options = WMTS.optionsFromCapabilities(result, {
+  const options = optionsFromCapabilities(result, {
     layer: 'OSM_Land_Mask',
     matrixSet: 'EPSG3413_250m'
   });

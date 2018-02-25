@@ -8,7 +8,7 @@ import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getHeight, getWidth} from '../extent.js';
 import {assign} from '../obj.js';
-import ImageSource from '../source/Image.js';
+import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
 import {appendParams} from '../uri.js';
 
 /**
@@ -60,7 +60,7 @@ const ImageArcGISRest = function(opt_options) {
    * @type {ol.ImageLoadFunctionType}
    */
   this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
-    options.imageLoadFunction : ImageSource.defaultImageLoadFunction;
+    options.imageLoadFunction : defaultImageLoadFunction;
 
 
   /**

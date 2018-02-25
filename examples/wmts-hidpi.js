@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import WMTS from '../src/ol/source/WMTS.js';
+import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 
 
 const capabilitiesUrl = 'https://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml';
@@ -27,7 +27,7 @@ fetch(capabilitiesUrl).then(function(response) {
   return response.text();
 }).then(function(text) {
   const result = new WMTSCapabilities().read(text);
-  const options = WMTS.optionsFromCapabilities(result, {
+  const options = optionsFromCapabilities(result, {
     layer: layer,
     matrixSet: 'google3857',
     style: 'normal'

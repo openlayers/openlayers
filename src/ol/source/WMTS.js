@@ -309,7 +309,7 @@ WMTS.prototype.updateDimensions = function(dimensions) {
  * @return {?olx.source.WMTSOptions} WMTS source options object or `null` if the layer was not found.
  * @api
  */
-WMTS.optionsFromCapabilities = function(wmtsCap, config) {
+export function optionsFromCapabilities(wmtsCap, config) {
   const layers = wmtsCap['Contents']['Layer'];
   const l = find(layers, function(elt, index, array) {
     return elt['Identifier'] == config['layer'];
@@ -476,5 +476,6 @@ WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     wrapX: wrapX,
     crossOrigin: config['crossOrigin']
   };
-};
+}
+
 export default WMTS;

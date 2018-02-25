@@ -6,7 +6,7 @@ import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
-import BaseObject from '../Object.js';
+import {getChangeEventType} from '../Object.js';
 import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
 import {listen} from '../events.js';
 import Event from '../events/Event.js';
@@ -365,7 +365,7 @@ const Draw = function(options) {
   }
 
   listen(this,
-    BaseObject.getChangeEventType(InteractionProperty.ACTIVE),
+    getChangeEventType(InteractionProperty.ACTIVE),
     this.updateState_, this);
 
 };

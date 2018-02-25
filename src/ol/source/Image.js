@@ -43,6 +43,32 @@ const ImageSourceEventType = {
 
 /**
  * @classdesc
+ * Events emitted by {@link ol.source.Image} instances are instances of this
+ * type.
+ *
+ * @constructor
+ * @extends {ol.events.Event}
+ * @implements {oli.source.ImageEvent}
+ * @param {string} type Type.
+ * @param {ol.Image} image The image.
+ */
+const ImageSourceEvent = function(type, image) {
+
+  Event.call(this, type);
+
+  /**
+   * The image related to the event.
+   * @type {ol.Image}
+   * @api
+   */
+  this.image = image;
+
+};
+inherits(ImageSourceEvent, Event);
+
+
+/**
+ * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for sources providing a single image.
@@ -174,17 +200,17 @@ ImageSource.prototype.handleImageChange = function(event) {
   switch (image.getState()) {
     case ImageState.LOADING:
       this.dispatchEvent(
-        new ImageSource.Event(ImageSourceEventType.IMAGELOADSTART,
+        new ImageSourceEvent(ImageSourceEventType.IMAGELOADSTART,
           image));
       break;
     case ImageState.LOADED:
       this.dispatchEvent(
-        new ImageSource.Event(ImageSourceEventType.IMAGELOADEND,
+        new ImageSourceEvent(ImageSourceEventType.IMAGELOADEND,
           image));
       break;
     case ImageState.ERROR:
       this.dispatchEvent(
-        new ImageSource.Event(ImageSourceEventType.IMAGELOADERROR,
+        new ImageSourceEvent(ImageSourceEventType.IMAGELOADERROR,
           image));
       break;
     default:
@@ -199,35 +225,9 @@ ImageSource.prototype.handleImageChange = function(event) {
  * @param {ol.Image} image Image.
  * @param {string} src Source.
  */
-ImageSource.defaultImageLoadFunction = function(image, src) {
+export function defaultImageLoadFunction(image, src) {
   image.getImage().src = src;
-};
-
-
-/**
- * @classdesc
- * Events emitted by {@link ol.source.Image} instances are instances of this
- * type.
- *
- * @constructor
- * @extends {ol.events.Event}
- * @implements {oli.source.ImageEvent}
- * @param {string} type Type.
- * @param {ol.Image} image The image.
- */
-ImageSource.Event = function(type, image) {
-
-  Event.call(this, type);
-
-  /**
-   * The image related to the event.
-   * @type {ol.Image}
-   * @api
-   */
-  this.image = image;
-
-};
-inherits(ImageSource.Event, Event);
+}
 
 
 export default ImageSource;

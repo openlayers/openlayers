@@ -7,7 +7,7 @@ import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import OSM from '../src/ol/source/OSM.js';
+import OSM, {ATTRIBUTION} from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import CircleStyle from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
@@ -86,7 +86,7 @@ const map = new Map({
       source: new OSM({
         attributions: [
           'All maps © <a href="https://www.opencyclemap.org/">OpenCycleMap</a>',
-          OSM.ATTRIBUTION
+          ATTRIBUTION
         ],
         url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png' +
             '?apikey=0e6fc415256d4fbb9b5166a718591d71'

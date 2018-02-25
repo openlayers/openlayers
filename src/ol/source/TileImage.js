@@ -35,7 +35,7 @@ const TileImage = function(options) {
     state: options.state,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction ?
-      options.tileLoadFunction : TileImage.defaultTileLoadFunction,
+      options.tileLoadFunction : defaultTileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
     tileUrlFunction: options.tileUrlFunction,
     url: options.url,
@@ -365,7 +365,8 @@ TileImage.prototype.setTileGridForProjection = function(projection, tilegrid) {
  * @param {ol.ImageTile} imageTile Image tile.
  * @param {string} src Source.
  */
-TileImage.defaultTileLoadFunction = function(imageTile, src) {
+function defaultTileLoadFunction(imageTile, src) {
   imageTile.getImage().src = src;
-};
+}
+
 export default TileImage;

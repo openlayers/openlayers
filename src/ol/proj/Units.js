@@ -1,6 +1,7 @@
 /**
  * @module ol/proj/Units
  */
+
 /**
  * Projection units: `'degrees'`, `'ft'`, `'m'`, `'pixels'`, `'tile-pixels'` or
  * `'us-ft'`.
@@ -22,11 +23,11 @@ const Units = {
  * @type {Object.<ol.proj.Units, number>}
  * @api
  */
-Units.METERS_PER_UNIT = {};
+export const METERS_PER_UNIT = {};
 // use the radius of the Normal sphere
-Units.METERS_PER_UNIT[Units.DEGREES] =
-    2 * Math.PI * 6370997 / 360;
-Units.METERS_PER_UNIT[Units.FEET] = 0.3048;
-Units.METERS_PER_UNIT[Units.METERS] = 1;
-Units.METERS_PER_UNIT[Units.USFEET] = 1200 / 3937;
+METERS_PER_UNIT[Units.DEGREES] = 2 * Math.PI * 6370997 / 360;
+METERS_PER_UNIT[Units.FEET] = 0.3048;
+METERS_PER_UNIT[Units.METERS] = 1;
+METERS_PER_UNIT[Units.USFEET] = 1200 / 3937;
+
 export default Units;

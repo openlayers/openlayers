@@ -13,7 +13,7 @@ import GeometryType from '../geom/GeometryType.js';
 import {fromCircle} from '../geom/Polygon.js';
 import PointerInteraction, {handleEvent as handlePointerEvent} from '../interaction/Pointer.js';
 import {getValues} from '../obj.js';
-import VectorSource from '../source/Vector.js';
+import {VectorSourceEvent} from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 
@@ -120,7 +120,7 @@ const Snap = function(opt_options) {
    * @type {function(ol.SnapSegmentDataType, ol.SnapSegmentDataType): number}
    * @private
    */
-  this.sortByDistance_ = Snap.sortByDistance.bind(this);
+  this.sortByDistance_ = sortByDistance.bind(this);
 
 
   /**
@@ -219,7 +219,7 @@ Snap.prototype.getFeatures_ = function() {
  */
 Snap.prototype.handleFeatureAdd_ = function(evt) {
   let feature;
-  if (evt instanceof VectorSource.Event) {
+  if (evt instanceof VectorSourceEvent) {
     feature = evt.feature;
   } else if (evt instanceof CollectionEvent) {
     feature = evt.element;
@@ -234,7 +234,7 @@ Snap.prototype.handleFeatureAdd_ = function(evt) {
  */
 Snap.prototype.handleFeatureRemove_ = function(evt) {
   let feature;
-  if (evt instanceof VectorSource.Event) {
+  if (evt instanceof VectorSourceEvent) {
     feature = evt.feature;
   } else if (evt instanceof CollectionEvent) {
     feature = evt.element;
@@ -616,11 +616,10 @@ function handleUpEvent(evt) {
  * @return {number} The difference in distance.
  * @this {ol.interaction.Snap}
  */
-Snap.sortByDistance = function(a, b) {
-  return squaredDistanceToSegment(
-    this.pixelCoordinate_, a.segment) -
-      squaredDistanceToSegment(
-        this.pixelCoordinate_, b.segment);
-};
+function sortByDistance(a, b) {
+  const deltaA = squaredDistanceToSegment(this.pixelCoordinate_, a.segment);
+  const deltaB = squaredDistanceToSegment(this.pixelCoordinate_, b.segment);
+  return deltaA - deltaB;
+}
 
 export default Snap;

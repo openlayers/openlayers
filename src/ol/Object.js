@@ -7,6 +7,40 @@ import Observable from './Observable.js';
 import Event from './events/Event.js';
 import {assign} from './obj.js';
 
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.Object} instances are instances of this type.
+ *
+ * @param {string} type The event type.
+ * @param {string} key The property name.
+ * @param {*} oldValue The old value for `key`.
+ * @extends {ol.events.Event}
+ * @implements {oli.Object.Event}
+ * @constructor
+ */
+const BaseObjectEvent = function(type, key, oldValue) {
+  Event.call(this, type);
+
+  /**
+   * The name of the property whose value is changing.
+   * @type {string}
+   * @api
+   */
+  this.key = key;
+
+  /**
+   * The old value. To get the new value use `e.target.get(e.key)` where
+   * `e` is the event object.
+   * @type {*}
+   * @api
+   */
+  this.oldValue = oldValue;
+
+};
+inherits(BaseObjectEvent, Event);
+
+
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -85,11 +119,11 @@ const changeEventTypeCache = {};
  * @param {string} key Key name.
  * @return {string} Change name.
  */
-BaseObject.getChangeEventType = function(key) {
+export function getChangeEventType(key) {
   return changeEventTypeCache.hasOwnProperty(key) ?
     changeEventTypeCache[key] :
     (changeEventTypeCache[key] = 'change:' + key);
-};
+}
 
 
 /**
@@ -133,10 +167,10 @@ BaseObject.prototype.getProperties = function() {
  */
 BaseObject.prototype.notify = function(key, oldValue) {
   let eventType;
-  eventType = BaseObject.getChangeEventType(key);
-  this.dispatchEvent(new BaseObject.Event(eventType, key, oldValue));
+  eventType = getChangeEventType(key);
+  this.dispatchEvent(new BaseObjectEvent(eventType, key, oldValue));
   eventType = ObjectEventType.PROPERTYCHANGE;
-  this.dispatchEvent(new BaseObject.Event(eventType, key, oldValue));
+  this.dispatchEvent(new BaseObjectEvent(eventType, key, oldValue));
 };
 
 
@@ -191,35 +225,4 @@ BaseObject.prototype.unset = function(key, opt_silent) {
 };
 
 
-/**
- * @classdesc
- * Events emitted by {@link ol.Object} instances are instances of this type.
- *
- * @param {string} type The event type.
- * @param {string} key The property name.
- * @param {*} oldValue The old value for `key`.
- * @extends {ol.events.Event}
- * @implements {oli.Object.Event}
- * @constructor
- */
-BaseObject.Event = function(type, key, oldValue) {
-  Event.call(this, type);
-
-  /**
-   * The name of the property whose value is changing.
-   * @type {string}
-   * @api
-   */
-  this.key = key;
-
-  /**
-   * The old value. To get the new value use `e.target.get(e.key)` where
-   * `e` is the event object.
-   * @type {*}
-   * @api
-   */
-  this.oldValue = oldValue;
-
-};
-inherits(BaseObject.Event, Event);
 export default BaseObject;

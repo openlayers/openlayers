@@ -4,7 +4,7 @@
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getUid, inherits} from '../index.js';
-import BaseObject from '../Object.js';
+import {getChangeEventType} from '../Object.js';
 import BaseLayer from '../layer/Base.js';
 import LayerProperty from '../layer/Property.js';
 import {assign} from '../obj.js';
@@ -63,7 +63,7 @@ const Layer = function(options) {
   }
 
   listen(this,
-    BaseObject.getChangeEventType(LayerProperty.SOURCE),
+    getChangeEventType(LayerProperty.SOURCE),
     this.handleSourcePropertyChange_, this);
 
   const source = options.source ? options.source : null;

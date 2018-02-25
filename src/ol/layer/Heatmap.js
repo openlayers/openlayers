@@ -3,7 +3,7 @@
  */
 import {listen} from '../events.js';
 import {inherits} from '../index.js';
-import BaseObject from '../Object.js';
+import {getChangeEventType} from '../Object.js';
 import {createCanvasContext2D} from '../dom.js';
 import VectorLayer from '../layer/Vector.js';
 import {clamp} from '../math.js';
@@ -81,7 +81,7 @@ const Heatmap = function(opt_options) {
   this.styleCache_ = null;
 
   listen(this,
-    BaseObject.getChangeEventType(Property.GRADIENT),
+    getChangeEventType(Property.GRADIENT),
     this.handleGradientChanged_, this);
 
   this.setGradient(options.gradient ? options.gradient : DEFAULT_GRADIENT);
@@ -91,10 +91,10 @@ const Heatmap = function(opt_options) {
   this.setRadius(options.radius !== undefined ? options.radius : 8);
 
   listen(this,
-    BaseObject.getChangeEventType(Property.BLUR),
+    getChangeEventType(Property.BLUR),
     this.handleStyleChanged_, this);
   listen(this,
-    BaseObject.getChangeEventType(Property.RADIUS),
+    getChangeEventType(Property.RADIUS),
     this.handleStyleChanged_, this);
 
   this.handleStyleChanged_();

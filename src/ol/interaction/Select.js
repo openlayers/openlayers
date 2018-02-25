@@ -22,11 +22,53 @@ import {createEditingStyle} from '../style/Style.js';
 const SelectEventType = {
   /**
    * Triggered when feature(s) has been (de)selected.
-   * @event ol.interaction.Select.Event#select
+   * @event SelectEvent#select
    * @api
    */
   SELECT: 'select'
 };
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.Select} instances are instances of
+ * this type.
+ *
+ * @param {SelectEventType} type The event type.
+ * @param {Array.<ol.Feature>} selected Selected features.
+ * @param {Array.<ol.Feature>} deselected Deselected features.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Associated
+ *     {@link ol.MapBrowserEvent}.
+ * @implements {oli.SelectEvent}
+ * @extends {ol.events.Event}
+ * @constructor
+ */
+const SelectEvent = function(type, selected, deselected, mapBrowserEvent) {
+  Event.call(this, type);
+
+  /**
+   * Selected features array.
+   * @type {Array.<ol.Feature>}
+   * @api
+   */
+  this.selected = selected;
+
+  /**
+   * Deselected features array.
+   * @type {Array.<ol.Feature>}
+   * @api
+   */
+  this.deselected = deselected;
+
+  /**
+   * Associated {@link ol.MapBrowserEvent}.
+   * @type {ol.MapBrowserEvent}
+   * @api
+   */
+  this.mapBrowserEvent = mapBrowserEvent;
+};
+
+inherits(SelectEvent, Event);
 
 
 /**
@@ -44,7 +86,7 @@ const SelectEventType = {
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.SelectOptions=} opt_options Options.
- * @fires ol.interaction.Select.Event
+ * @fires SelectEvent
  * @api
  */
 const Select = function(opt_options) {
@@ -104,7 +146,7 @@ const Select = function(opt_options) {
       wrapX: options.wrapX
     }),
     style: options.style ? options.style :
-      Select.getDefaultStyleFunction(),
+      getDefaultStyleFunction(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
@@ -289,7 +331,7 @@ function handleEvent(mapBrowserEvent) {
   }
   if (selected.length > 0 || deselected.length > 0) {
     this.dispatchEvent(
-      new Select.Event(SelectEventType.SELECT,
+      new SelectEvent(SelectEventType.SELECT,
         selected, deselected, mapBrowserEvent));
   }
   return pointerMove(mapBrowserEvent);
@@ -333,7 +375,7 @@ Select.prototype.setMap = function(map) {
 /**
  * @return {ol.StyleFunction} Styles.
  */
-Select.getDefaultStyleFunction = function() {
+function getDefaultStyleFunction() {
   const styles = createEditingStyle();
   extend(styles[GeometryType.POLYGON], styles[GeometryType.LINE_STRING]);
   extend(styles[GeometryType.GEOMETRY_COLLECTION], styles[GeometryType.LINE_STRING]);
@@ -344,7 +386,7 @@ Select.getDefaultStyleFunction = function() {
     }
     return styles[feature.getGeometry().getType()];
   };
-};
+}
 
 
 /**
@@ -379,48 +421,6 @@ Select.prototype.removeFeatureLayerAssociation_ = function(feature) {
   const key = getUid(feature);
   delete this.featureLayerAssociation_[key];
 };
-
-
-/**
- * @classdesc
- * Events emitted by {@link ol.interaction.Select} instances are instances of
- * this type.
- *
- * @param {ol.interaction.SelectEventType} type The event type.
- * @param {Array.<ol.Feature>} selected Selected features.
- * @param {Array.<ol.Feature>} deselected Deselected features.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Associated
- *     {@link ol.MapBrowserEvent}.
- * @implements {oli.SelectEvent}
- * @extends {ol.events.Event}
- * @constructor
- */
-Select.Event = function(type, selected, deselected, mapBrowserEvent) {
-  Event.call(this, type);
-
-  /**
-   * Selected features array.
-   * @type {Array.<ol.Feature>}
-   * @api
-   */
-  this.selected = selected;
-
-  /**
-   * Deselected features array.
-   * @type {Array.<ol.Feature>}
-   * @api
-   */
-  this.deselected = deselected;
-
-  /**
-   * Associated {@link ol.MapBrowserEvent}.
-   * @type {ol.MapBrowserEvent}
-   * @api
-   */
-  this.mapBrowserEvent = mapBrowserEvent;
-};
-
-inherits(Select.Event, Event);
 
 
 export default Select;

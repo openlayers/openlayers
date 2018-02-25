@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../index.js';
 import TileState from '../TileState.js';
 import {expandUrl, createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
-import TileSource from '../source/Tile.js';
+import TileSource, {TileSourceEvent} from '../source/Tile.js';
 import TileEventType from '../source/TileEventType.js';
 import {getKeyZXY} from '../tilecoord.js';
 
@@ -130,7 +130,7 @@ UrlTile.prototype.handleTileChange = function(event) {
         TileEventType.TILELOADEND : undefined;
   }
   if (type != undefined) {
-    this.dispatchEvent(new TileSource.Event(type, tile));
+    this.dispatchEvent(new TileSourceEvent(type, tile));
   }
 };
 

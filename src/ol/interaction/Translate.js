@@ -3,14 +3,74 @@
  */
 import {inherits} from '../index.js';
 import Collection from '../Collection.js';
-import BaseObject from '../Object.js';
+import {getChangeEventType} from '../Object.js';
 import {listen} from '../events.js';
 import Event from '../events/Event.js';
 import {TRUE} from '../functions.js';
 import {includes} from '../array.js';
 import PointerInteraction from '../interaction/Pointer.js';
 import InteractionProperty from '../interaction/Property.js';
-import TranslateEventType from '../interaction/TranslateEventType.js';
+
+
+/**
+ * @enum {string}
+ */
+const TranslateEventType = {
+  /**
+   * Triggered upon feature translation start.
+   * @event TranslateEvent#translatestart
+   * @api
+   */
+  TRANSLATESTART: 'translatestart',
+  /**
+   * Triggered upon feature translation.
+   * @event TranslateEvent#translating
+   * @api
+   */
+  TRANSLATING: 'translating',
+  /**
+   * Triggered upon feature translation end.
+   * @event TranslateEvent#translateend
+   * @api
+   */
+  TRANSLATEEND: 'translateend'
+};
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.Translate} instances are instances of
+ * this type.
+ *
+ * @constructor
+ * @extends {ol.events.Event}
+ * @implements {oli.interaction.TranslateEvent}
+ * @param {ol.interaction.TranslateEventType} type Type.
+ * @param {ol.Collection.<ol.Feature>} features The features translated.
+ * @param {ol.Coordinate} coordinate The event coordinate.
+ */
+export const TranslateEvent = function(type, features, coordinate) {
+
+  Event.call(this, type);
+
+  /**
+   * The features being translated.
+   * @type {ol.Collection.<ol.Feature>}
+   * @api
+   */
+  this.features = features;
+
+  /**
+   * The coordinate of the drag event.
+   * @const
+   * @type {ol.Coordinate}
+   * @api
+   */
+  this.coordinate = coordinate;
+};
+
+inherits(TranslateEvent, Event);
+
 
 /**
  * @classdesc
@@ -18,7 +78,7 @@ import TranslateEventType from '../interaction/TranslateEventType.js';
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @fires ol.interaction.Translate.Event
+ * @fires ol.interaction.TranslateEvent
  * @param {olx.interaction.TranslateOptions=} opt_options Options.
  * @api
  */
@@ -80,7 +140,7 @@ const Translate = function(opt_options) {
   this.lastFeature_ = null;
 
   listen(this,
-    BaseObject.getChangeEventType(InteractionProperty.ACTIVE),
+    getChangeEventType(InteractionProperty.ACTIVE),
     this.handleActiveChanged_, this);
 
 };
@@ -102,7 +162,7 @@ function handleDownEvent(event) {
     const features = this.features_ || new Collection([this.lastFeature_]);
 
     this.dispatchEvent(
-      new Translate.Event(
+      new TranslateEvent(
         TranslateEventType.TRANSLATESTART, features,
         event.coordinate));
     return true;
@@ -124,7 +184,7 @@ function handleUpEvent(event) {
     const features = this.features_ || new Collection([this.lastFeature_]);
 
     this.dispatchEvent(
-      new Translate.Event(
+      new TranslateEvent(
         TranslateEventType.TRANSLATEEND, features,
         event.coordinate));
     return true;
@@ -153,7 +213,7 @@ function handleDragEvent(event) {
 
     this.lastCoordinate_ = newCoordinate;
     this.dispatchEvent(
-      new Translate.Event(
+      new TranslateEvent(
         TranslateEventType.TRANSLATING, features,
         newCoordinate));
   }
@@ -256,39 +316,5 @@ Translate.prototype.updateState_ = function(oldMap) {
   }
 };
 
-
-/**
- * @classdesc
- * Events emitted by {@link ol.interaction.Translate} instances are instances of
- * this type.
- *
- * @constructor
- * @extends {ol.events.Event}
- * @implements {oli.interaction.TranslateEvent}
- * @param {ol.interaction.TranslateEventType} type Type.
- * @param {ol.Collection.<ol.Feature>} features The features translated.
- * @param {ol.Coordinate} coordinate The event coordinate.
- */
-Translate.Event = function(type, features, coordinate) {
-
-  Event.call(this, type);
-
-  /**
-   * The features being translated.
-   * @type {ol.Collection.<ol.Feature>}
-   * @api
-   */
-  this.features = features;
-
-  /**
-   * The coordinate of the drag event.
-   * @const
-   * @type {ol.Coordinate}
-   * @api
-   */
-  this.coordinate = coordinate;
-};
-
-inherits(Translate.Event, Event);
 
 export default Translate;

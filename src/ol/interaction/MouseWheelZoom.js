@@ -7,7 +7,7 @@ import {always} from '../events/condition.js';
 import {easeOut} from '../easing.js';
 import EventType from '../events/EventType.js';
 import {DEVICE_PIXEL_RATIO, FIREFOX, SAFARI} from '../has.js';
-import Interaction from '../interaction/Interaction.js';
+import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
 import {clamp} from '../math.js';
 
 
@@ -280,8 +280,7 @@ MouseWheelZoom.prototype.handleWheelZoom_ = function(map) {
   }
   const maxDelta = MAX_DELTA;
   const delta = clamp(this.delta_, -maxDelta, maxDelta);
-  Interaction.zoomByDelta(view, -delta, this.lastAnchor_,
-    this.duration_);
+  zoomByDelta(view, -delta, this.lastAnchor_, this.duration_);
   this.mode_ = undefined;
   this.delta_ = 0;
   this.lastAnchor_ = null;

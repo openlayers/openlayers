@@ -2,7 +2,7 @@
  * @module ol/control/ScaleLine
  */
 import {inherits} from '../index.js';
-import BaseObject from '../Object.js';
+import {getChangeEventType} from '../Object.js';
 import {assert} from '../asserts.js';
 import Control from '../control/Control.js';
 import ScaleLineUnits from '../control/ScaleLineUnits.js';
@@ -98,7 +98,7 @@ const ScaleLine = function(opt_options) {
   });
 
   listen(
-    this, BaseObject.getChangeEventType(UNITS),
+    this, getChangeEventType(UNITS),
     this.handleUnitsChanged_, this);
 
   this.setUnits(/** @type {ol.control.ScaleLineUnits} */ (options.units) ||

@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
-import Interaction from '../interaction/Interaction.js';
+import {zoom, zoomWithoutConstraints} from '../interaction/Interaction.js';
 import PointerInteraction, {centroid as centroidFromPointers} from '../interaction/Pointer.js';
 
 /**
@@ -110,7 +110,7 @@ function handleDragEvent(mapBrowserEvent) {
 
   // scale, bypass the resolution constraint
   map.render();
-  Interaction.zoomWithoutConstraints(view, newResolution, this.anchor_);
+  zoomWithoutConstraints(view, newResolution, this.anchor_);
 }
 
 
@@ -132,8 +132,7 @@ function handleUpEvent(mapBrowserEvent) {
       // direction not to zoom out/in if user was pinching in/out.
       // Direction is > 0 if pinching out, and < 0 if pinching in.
       const direction = this.lastScaleDelta_ - 1;
-      Interaction.zoom(view, resolution,
-        this.anchor_, this.duration_, direction);
+      zoom(view, resolution, this.anchor_, this.duration_, direction);
     }
     return false;
   } else {

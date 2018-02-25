@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import EventType from '../events/EventType.js';
 import {targetNotEditable} from '../events/condition.js';
-import Interaction from '../interaction/Interaction.js';
+import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
 
 /**
  * @classdesc
@@ -73,8 +73,7 @@ function handleEvent(mapBrowserEvent) {
       const map = mapBrowserEvent.map;
       const delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
       const view = map.getView();
-      Interaction.zoomByDelta(
-        view, delta, undefined, this.duration_);
+      zoomByDelta(view, delta, undefined, this.duration_);
       mapBrowserEvent.preventDefault();
       stopEvent = true;
     }

@@ -21,6 +21,33 @@ import SourceState from '../source/State.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.source.Vector} instances are instances of this
+ * type.
+ *
+ * @constructor
+ * @extends {ol.events.Event}
+ * @implements {oli.source.Vector.Event}
+ * @param {string} type Type.
+ * @param {ol.Feature=} opt_feature Feature.
+ */
+export const VectorSourceEvent = function(type, opt_feature) {
+
+  Event.call(this, type);
+
+  /**
+   * The feature being added or removed.
+   * @type {ol.Feature|undefined}
+   * @api
+   */
+  this.feature = opt_feature;
+
+};
+inherits(VectorSourceEvent, Event);
+
+
 /**
  * @classdesc
  * Provides a source of features for vector layers. Vector features provided
@@ -191,7 +218,7 @@ VectorSource.prototype.addFeatureInternal = function(feature) {
   }
 
   this.dispatchEvent(
-    new VectorSource.Event(VectorEventType.ADDFEATURE, feature));
+    new VectorSourceEvent(VectorEventType.ADDFEATURE, feature));
 };
 
 
@@ -283,7 +310,7 @@ VectorSource.prototype.addFeaturesInternal = function(features) {
   }
 
   for (let i = 0, length = newFeatures.length; i < length; i++) {
-    this.dispatchEvent(new VectorSource.Event(VectorEventType.ADDFEATURE, newFeatures[i]));
+    this.dispatchEvent(new VectorSourceEvent(VectorEventType.ADDFEATURE, newFeatures[i]));
   }
 };
 
@@ -364,7 +391,7 @@ VectorSource.prototype.clear = function(opt_fast) {
   this.loadedExtentsRtree_.clear();
   this.nullGeometryFeatures_ = {};
 
-  const clearEvent = new VectorSource.Event(VectorEventType.CLEAR);
+  const clearEvent = new VectorSourceEvent(VectorEventType.CLEAR);
   this.dispatchEvent(clearEvent);
   this.changed();
 };
@@ -709,7 +736,7 @@ VectorSource.prototype.handleFeatureChange_ = function(event) {
     }
   }
   this.changed();
-  this.dispatchEvent(new VectorSource.Event(
+  this.dispatchEvent(new VectorSourceEvent(
     VectorEventType.CHANGEFEATURE, feature));
 };
 
@@ -805,7 +832,7 @@ VectorSource.prototype.removeFeatureInternal = function(feature) {
   } else {
     delete this.undefIdIndex_[featureKey];
   }
-  this.dispatchEvent(new VectorSource.Event(
+  this.dispatchEvent(new VectorSourceEvent(
     VectorEventType.REMOVEFEATURE, feature));
 };
 
@@ -840,29 +867,4 @@ VectorSource.prototype.setLoader = function(loader) {
   this.loader_ = loader;
 };
 
-
-/**
- * @classdesc
- * Events emitted by {@link ol.source.Vector} instances are instances of this
- * type.
- *
- * @constructor
- * @extends {ol.events.Event}
- * @implements {oli.source.Vector.Event}
- * @param {string} type Type.
- * @param {ol.Feature=} opt_feature Feature.
- */
-VectorSource.Event = function(type, opt_feature) {
-
-  Event.call(this, type);
-
-  /**
-   * The feature being added or removed.
-   * @type {ol.Feature|undefined}
-   * @api
-   */
-  this.feature = opt_feature;
-
-};
-inherits(VectorSource.Event, Event);
 export default VectorSource;

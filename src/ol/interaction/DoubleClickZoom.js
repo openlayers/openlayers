@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import Interaction from '../interaction/Interaction.js';
+import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
 
 /**
  * @classdesc
@@ -54,7 +54,7 @@ function handleEvent(mapBrowserEvent) {
     const anchor = mapBrowserEvent.coordinate;
     const delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
     const view = map.getView();
-    Interaction.zoomByDelta(view, delta, anchor, this.duration_);
+    zoomByDelta(view, delta, anchor, this.duration_);
     mapBrowserEvent.preventDefault();
     stopEvent = true;
   }

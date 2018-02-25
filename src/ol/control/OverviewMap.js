@@ -6,7 +6,7 @@ import Collection from '../Collection.js';
 import PluggableMap from '../PluggableMap.js';
 import MapEventType from '../MapEventType.js';
 import MapProperty from '../MapProperty.js';
-import BaseObject from '../Object.js';
+import {getChangeEventType} from '../Object.js';
 import ObjectEventType from '../ObjectEventType.js';
 import Overlay from '../Overlay.js';
 import OverlayPositioning from '../OverlayPositioning.js';
@@ -270,7 +270,7 @@ OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
  */
 OverviewMap.prototype.bindView_ = function(view) {
   listen(view,
-    BaseObject.getChangeEventType(ViewProperty.ROTATION),
+    getChangeEventType(ViewProperty.ROTATION),
     this.handleRotationChanged_, this);
 };
 
@@ -282,7 +282,7 @@ OverviewMap.prototype.bindView_ = function(view) {
  */
 OverviewMap.prototype.unbindView_ = function(view) {
   unlisten(view,
-    BaseObject.getChangeEventType(ViewProperty.ROTATION),
+    getChangeEventType(ViewProperty.ROTATION),
     this.handleRotationChanged_, this);
 };
 

@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../index.js';
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
-import BaseObject from '../Object.js';
+import {getChangeEventType} from '../Object.js';
 import ObjectEventType from '../ObjectEventType.js';
 import {assert} from '../asserts.js';
 import {listen, unlistenByKey} from '../events.js';
@@ -58,7 +58,7 @@ const LayerGroup = function(opt_options) {
   this.listenerKeys_ = {};
 
   listen(this,
-    BaseObject.getChangeEventType(Property.LAYERS),
+    getChangeEventType(Property.LAYERS),
     this.handleLayersChanged_, this);
 
   if (layers) {
