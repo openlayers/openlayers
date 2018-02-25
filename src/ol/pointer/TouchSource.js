@@ -34,7 +34,8 @@
 import {inherits} from '../index.js';
 import {remove} from '../array.js';
 import EventSource from '../pointer/EventSource.js';
-import MouseSource from '../pointer/MouseSource.js';
+import {POINTER_ID} from '../pointer/MouseSource.js';
+
 
 /**
  * @constructor
@@ -80,33 +81,29 @@ const TouchSource = function(dispatcher, mouseSource) {
    * @type {number|undefined}
    */
   this.resetId_ = undefined;
+
+  /**
+   * Mouse event timeout: This should be long enough to
+   * ignore compat mouse events made by touch.
+   * @private
+   * @type {number}
+   */
+  this.dedupTimeout_ = 2500;
 };
 
 inherits(TouchSource, EventSource);
 
 
 /**
- * Mouse event timeout: This should be long enough to
- * ignore compat mouse events made by touch.
- * @const
  * @type {number}
  */
-TouchSource.DEDUP_TIMEOUT = 2500;
+const CLICK_COUNT_TIMEOUT = 200;
 
 
 /**
- * @const
- * @type {number}
- */
-TouchSource.CLICK_COUNT_TIMEOUT = 200;
-
-
-/**
- * @const
  * @type {string}
  */
-TouchSource.POINTER_TYPE = 'touch';
-
+const POINTER_TYPE = 'touch';
 
 /**
  * @private
@@ -126,7 +123,7 @@ TouchSource.prototype.isPrimaryTouch_ = function(inTouch) {
 TouchSource.prototype.setPrimaryTouch_ = function(inTouch) {
   const count = Object.keys(this.pointerMap).length;
   if (count === 0 || (count === 1 &&
-      MouseSource.POINTER_ID.toString() in this.pointerMap)) {
+      POINTER_ID.toString() in this.pointerMap)) {
     this.firstTouchId_ = inTouch.identifier;
     this.cancelResetClickCount_();
   }
@@ -151,7 +148,7 @@ TouchSource.prototype.removePrimaryPointer_ = function(inPointer) {
 TouchSource.prototype.resetClickCount_ = function() {
   this.resetId_ = setTimeout(
     this.resetClickCountHandler_.bind(this),
-    TouchSource.CLICK_COUNT_TIMEOUT);
+    CLICK_COUNT_TIMEOUT);
 };
 
 
@@ -197,7 +194,7 @@ TouchSource.prototype.touchToPointer_ = function(browserEvent, inTouch) {
   e.height = inTouch.webkitRadiusY || inTouch.radiusY || 0;
   e.pressure = inTouch.webkitForce || inTouch.force || 0.5;
   e.isPrimary = this.isPrimaryTouch_(inTouch);
-  e.pointerType = TouchSource.POINTER_TYPE;
+  e.pointerType = POINTER_TYPE;
 
   // make sure that the properties that are different for
   // each `Touch` object are not copied from the BrowserEvent object
@@ -277,7 +274,7 @@ TouchSource.prototype.vacuumTouches_ = function(inEvent) {
       // Never remove pointerId == 1, which is mouse.
       // Touch identifiers are 2 smaller than their pointerId, which is the
       // index in pointermap.
-      if (key != MouseSource.POINTER_ID &&
+      if (key != POINTER_ID &&
           !this.findTouch_(touchList, key - 2)) {
         d.push(value.out);
       }
@@ -444,7 +441,7 @@ TouchSource.prototype.dedupSynthMouse_ = function(inEvent) {
     setTimeout(function() {
       // remove touch after timeout
       remove(lts, lt);
-    }, TouchSource.DEDUP_TIMEOUT);
+    }, this.dedupTimeout_);
   }
 };
 export default TouchSource;

@@ -57,21 +57,21 @@ const MsSource = function(dispatcher) {
    * @type {!Object.<string, Event|Object>}
    */
   this.pointerMap = dispatcher.pointerMap;
-
-  /**
-   * @const
-   * @type {Array.<string>}
-   */
-  this.POINTER_TYPES = [
-    '',
-    'unavailable',
-    'touch',
-    'pen',
-    'mouse'
-  ];
 };
 
 inherits(MsSource, EventSource);
+
+/**
+ * @const
+ * @type {Array.<string>}
+ */
+const POINTER_TYPES = [
+  '',
+  'unavailable',
+  'touch',
+  'pen',
+  'mouse'
+];
 
 
 /**
@@ -86,7 +86,7 @@ MsSource.prototype.prepareEvent_ = function(inEvent) {
   let e = inEvent;
   if (typeof inEvent.pointerType === 'number') {
     e = this.dispatcher.cloneEvent(inEvent, inEvent);
-    e.pointerType = this.POINTER_TYPES[inEvent.pointerType];
+    e.pointerType = POINTER_TYPES[inEvent.pointerType];
   }
 
   return e;

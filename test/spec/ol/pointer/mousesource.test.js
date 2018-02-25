@@ -32,7 +32,11 @@ describe('ol.pointer.MouseSource', function() {
         this.registerSource('mouse', mouseSource);
 
         if (TOUCH) {
-          this.registerSource('touch', new TouchSource(this, mouseSource));
+          const touchSource = new TouchSource(this, mouseSource);
+          // set the timeout to a lower value, to speed up the tests
+          touchSource.dedupTimeout_ = 100;
+
+          this.registerSource('touch', touchSource);
         }
       }
 
@@ -74,9 +78,6 @@ describe('ol.pointer.MouseSource', function() {
     });
 
     it('dispatches real mouse events after timeout', function() {
-      // set the timeout to a lower value, to speed up the tests
-      TouchSource.DEDUP_TIMEOUT = 100;
-
       listen(handler, 'pointerdown', eventSpy);
 
       // first simulate a touch event, then a mouse event
