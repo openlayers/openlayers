@@ -120,7 +120,7 @@ const Snap = function(opt_options) {
    * @type {function(ol.SnapSegmentDataType, ol.SnapSegmentDataType): number}
    * @private
    */
-  this.sortByDistance_ = Snap.sortByDistance.bind(this);
+  this.sortByDistance_ = sortByDistance.bind(this);
 
 
   /**
@@ -616,11 +616,10 @@ function handleUpEvent(evt) {
  * @return {number} The difference in distance.
  * @this {ol.interaction.Snap}
  */
-Snap.sortByDistance = function(a, b) {
-  return squaredDistanceToSegment(
-    this.pixelCoordinate_, a.segment) -
-      squaredDistanceToSegment(
-        this.pixelCoordinate_, b.segment);
-};
+function sortByDistance(a, b) {
+  const deltaA = squaredDistanceToSegment(this.pixelCoordinate_, a.segment);
+  const deltaB = squaredDistanceToSegment(this.pixelCoordinate_, b.segment);
+  return deltaA - deltaB;
+}
 
 export default Snap;
