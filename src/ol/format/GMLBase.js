@@ -122,12 +122,11 @@ GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
     const context = objectStack[0];
     let featureType = context['featureType'];
     let featureNS = context['featureNS'];
-    let i, ii;
     const prefix = 'p';
     const defaultPrefix = 'p0';
     if (!featureType && node.childNodes) {
       featureType = [], featureNS = {};
-      for (i = 0, ii = node.childNodes.length; i < ii; ++i) {
+      for (let i = 0, ii = node.childNodes.length; i < ii; ++i) {
         const child = node.childNodes[i];
         if (child.nodeType === 1) {
           const ft = child.nodeName.split(':').pop();
@@ -165,7 +164,7 @@ GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
     const featureTypes = Array.isArray(featureType) ? featureType : [featureType];
     for (const p in featureNS) {
       const parsers = {};
-      for (i = 0, ii = featureTypes.length; i < ii; ++i) {
+      for (let i = 0, ii = featureTypes.length; i < ii; ++i) {
         const featurePrefix = featureTypes[i].indexOf(':') === -1 ?
           defaultPrefix : featureTypes[i].split(':')[0];
         if (featurePrefix === p) {

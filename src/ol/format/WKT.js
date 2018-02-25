@@ -611,8 +611,7 @@ function encodeMultiLineStringGeometry(geom) {
   const array = [];
   const components = geom.getLineStrings();
   for (let i = 0, ii = components.length; i < ii; ++i) {
-    array.push('(' + encodeLineStringGeometry(
-      components[i]) + ')');
+    array.push('(' + encodeLineStringGeometry(components[i]) + ')');
   }
   return array.join(',');
 }
@@ -626,8 +625,7 @@ function encodePolygonGeometry(geom) {
   const array = [];
   const rings = geom.getLinearRings();
   for (let i = 0, ii = rings.length; i < ii; ++i) {
-    array.push('(' + encodeLineStringGeometry(
-      rings[i]) + ')');
+    array.push('(' + encodeLineStringGeometry(rings[i]) + ')');
   }
   return array.join(',');
 }
@@ -641,8 +639,7 @@ function encodeMultiPolygonGeometry(geom) {
   const array = [];
   const components = geom.getPolygons();
   for (let i = 0, ii = components.length; i < ii; ++i) {
-    array.push('(' + encodePolygonGeometry(
-      components[i]) + ')');
+    array.push('(' + encodePolygonGeometry(components[i]) + ')');
   }
   return array.join(',');
 }
@@ -768,9 +765,8 @@ WKT.prototype.readFeaturesFromText = function(text, opt_options) {
     geometries = [geometry];
   }
   const features = [];
-  let feature;
   for (let i = 0, ii = geometries.length; i < ii; ++i) {
-    feature = new Feature();
+    const feature = new Feature();
     feature.setGeometry(geometries[i]);
     features.push(feature);
   }

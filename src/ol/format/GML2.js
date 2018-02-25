@@ -13,7 +13,7 @@ import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
   makeReplacer, makeSimpleNodeFactory, OBJECT_PROPERTY_NODE_FACTORY, pushParseAndPop, pushSerializeAndPop} from '../xml.js';
 
 
-  /**
+/**
  * @const
  * @type {string}
  */
@@ -69,13 +69,12 @@ GML2.prototype.readFlatCoordinates_ = function(node, objectStack) {
     }
   }
   const coordsGroups = s.trim().split(/\s+/);
-  let x, y, z;
   const flatCoordinates = [];
   for (let i = 0, ii = coordsGroups.length; i < ii; i++) {
     const coords = coordsGroups[i].split(/,+/);
-    x = parseFloat(coords[0]);
-    y = parseFloat(coords[1]);
-    z = (coords.length === 3) ? parseFloat(coords[2]) : 0;
+    const x = parseFloat(coords[0]);
+    const y = parseFloat(coords[1]);
+    const z = (coords.length === 3) ? parseFloat(coords[2]) : 0;
     if (axisOrientation.substr(0, 2) === 'en') {
       flatCoordinates.push(x, y, z);
     } else {
@@ -333,9 +332,8 @@ GML2.prototype.writeCoordinates_ = function(node, value, objectStack) {
   const points = value.getCoordinates();
   const len = points.length;
   const parts = new Array(len);
-  let point;
   for (let i = 0; i < len; ++i) {
-    point = points[i];
+    const point = points[i];
     parts[i] = this.getCoords_(point, srsName, hasZ);
   }
   writeStringTextNode(node, parts.join(' '));
@@ -349,8 +347,7 @@ GML2.prototype.writeCoordinates_ = function(node, value, objectStack) {
  * @private
  */
 GML2.prototype.writeCurveSegments_ = function(node, line, objectStack) {
-  const child = createElementNS(node.namespaceURI,
-    'LineStringSegment');
+  const child = createElementNS(node.namespaceURI, 'LineStringSegment');
   node.appendChild(child);
   this.writeCurveOrLineString_(child, line, objectStack);
 };
