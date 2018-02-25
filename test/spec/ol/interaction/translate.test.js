@@ -4,7 +4,7 @@ import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import View from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import Translate from '../../../../src/ol/interaction/Translate.js';
+import Translate, {TranslateEvent} from '../../../../src/ol/interaction/Translate.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
@@ -80,7 +80,7 @@ describe('ol.interaction.Translate', function() {
    * modifications. Helper function to
    * @param {ol.Feature} feature Translated feature.
    * @param {ol.interaction.Translate} interaction The interaction.
-   * @return {Array<ol.interaction.Translate.Event|string>} events
+   * @return {Array<TranslateEvent|string>} events
    */
   function trackEvents(feature, interaction) {
     const events = [];
@@ -100,7 +100,7 @@ describe('ol.interaction.Translate', function() {
    * Validates the event array to verify proper event sequence. Checks
    * that first and last event are correct TranslateEvents and that feature
    * modifications event are in between.
-   * @param {Array<ol.interaction.Translate.Event|string>} events The events.
+   * @param {Array<TranslateEvent|string>} events The events.
    * @param {Array<ol.Feature>} features The features.
    */
   function validateEvents(events, features) {
@@ -109,11 +109,11 @@ describe('ol.interaction.Translate', function() {
     const endevent = events[events.length - 1];
 
     // first event should be translatestart
-    expect(startevent).to.be.an(Translate.Event);
+    expect(startevent).to.be.an(TranslateEvent);
     expect(startevent.type).to.eql('translatestart');
 
     // last event should be translateend
-    expect(endevent).to.be.an(Translate.Event);
+    expect(endevent).to.be.an(TranslateEvent);
     expect(endevent.type).to.eql('translateend');
 
     // make sure we get change events to events array
