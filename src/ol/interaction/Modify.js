@@ -16,13 +16,67 @@ import {always, primaryAction, altKeyOnly, singleClick} from '../events/conditio
 import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
-import ModifyEventType from '../interaction/ModifyEventType.js';
 import PointerInteraction, {handleEvent as handlePointerEvent} from '../interaction/Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 import {createEditingStyle} from '../style/Style.js';
+
+
+/**
+ * @enum {string}
+ */
+const ModifyEventType = {
+  /**
+   * Triggered upon feature modification start
+   * @event ModifyEvent#modifystart
+   * @api
+   */
+  MODIFYSTART: 'modifystart',
+  /**
+   * Triggered upon feature modification end
+   * @event ModifyEvent#modifyend
+   * @api
+   */
+  MODIFYEND: 'modifyend'
+};
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.Modify} instances are instances of
+ * this type.
+ *
+ * @constructor
+ * @extends {ol.events.Event}
+ * @implements {oli.ModifyEvent}
+ * @param {ModifyEventType} type Type.
+ * @param {ol.Collection.<ol.Feature>} features The features modified.
+ * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
+ *     {@link ol.MapBrowserPointerEvent}.
+ */
+export const ModifyEvent = function(type, features, mapBrowserPointerEvent) {
+
+  Event.call(this, type);
+
+  /**
+   * The features being modified.
+   * @type {ol.Collection.<ol.Feature>}
+   * @api
+   */
+  this.features = features;
+
+  /**
+   * Associated {@link ol.MapBrowserEvent}.
+   * @type {ol.MapBrowserEvent}
+   * @api
+   */
+  this.mapBrowserEvent = mapBrowserPointerEvent;
+};
+
+inherits(ModifyEvent, Event);
+
 
 /**
  * @classdesc
@@ -40,7 +94,7 @@ import {createEditingStyle} from '../style/Style.js';
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.ModifyOptions} options Options.
- * @fires ol.interaction.Modify.Event
+ * @fires ol.interaction.ModifyEvent
  * @api
  */
 const Modify = function(options) {
@@ -161,7 +215,7 @@ const Modify = function(options) {
       wrapX: !!options.wrapX
     }),
     style: options.style ? options.style :
-      Modify.getDefaultStyleFunction(),
+      getDefaultStyleFunction(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
@@ -229,16 +283,18 @@ inherits(Modify, PointerInteraction);
 
 
 /**
- * @define {number} The segment index assigned to a circle's center when
+ * The segment index assigned to a circle's center when
  * breaking up a cicrle into ModifySegmentDataType segments.
+ * @type {number}
  */
-Modify.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX = 0;
+const CIRCLE_CENTER_INDEX = 0;
 
 /**
- * @define {number} The segment index assigned to a circle's circumference when
+ * The segment index assigned to a circle's circumference when
  * breaking up a circle into ModifySegmentDataType segments.
+ * @type {number}
  */
-Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX = 1;
+const CIRCLE_CIRCUMFERENCE_INDEX = 1;
 
 
 /**
@@ -266,7 +322,7 @@ Modify.prototype.addFeature_ = function(feature) {
 Modify.prototype.willModifyFeatures_ = function(evt) {
   if (!this.modified_) {
     this.modified_ = true;
-    this.dispatchEvent(new Modify.Event(
+    this.dispatchEvent(new ModifyEvent(
       ModifyEventType.MODIFYSTART, this.features_, evt));
   }
 };
@@ -525,9 +581,9 @@ Modify.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
 
 /**
  * We convert a circle into two segments.  The segment at index
- * {@link ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX} is the
+ * {@link CIRCLE_CENTER_INDEX} is the
  * circle's center (a point).  The segment at index
- * {@link ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX} is
+ * {@link CIRCLE_CIRCUMFERENCE_INDEX} is
  * the circumference, and is not a line segment.
  *
  * @param {ol.Feature} feature Feature.
@@ -539,13 +595,13 @@ Modify.prototype.writeCircleGeometry_ = function(feature, geometry) {
   const centerSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
     feature: feature,
     geometry: geometry,
-    index: Modify.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX,
+    index: CIRCLE_CENTER_INDEX,
     segment: [coordinates, coordinates]
   });
   const circumferenceSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
     feature: feature,
     geometry: geometry,
-    index: Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX,
+    index: CIRCLE_CIRCUMFERENCE_INDEX,
     segment: [coordinates, coordinates]
   });
   const featureSegments = [centerSegmentData, circumferenceSegmentData];
@@ -631,7 +687,7 @@ function handleDownEvent(evt) {
         componentSegments[uid] = new Array(2);
       }
       if (segmentDataMatch.geometry.getType() === GeometryType.CIRCLE &&
-      segmentDataMatch.index === Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+      segmentDataMatch.index === CIRCLE_CIRCUMFERENCE_INDEX) {
 
         const closestVertex = closestOnSegmentData(pixelCoordinate, segmentDataMatch);
         if (coordinatesEqual(closestVertex, vertex) && !componentSegments[uid][0]) {
@@ -727,7 +783,7 @@ function handleDragEvent(evt) {
         break;
       case GeometryType.CIRCLE:
         segment[0] = segment[1] = vertex;
-        if (segmentData.index === Modify.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX) {
+        if (segmentData.index === CIRCLE_CENTER_INDEX) {
           this.changingFeature_ = true;
           geometry.setCenter(vertex);
           this.changingFeature_ = false;
@@ -775,7 +831,7 @@ function handleUpEvent(evt) {
     }
   }
   if (this.modified_) {
-    this.dispatchEvent(new Modify.Event(
+    this.dispatchEvent(new ModifyEvent(
       ModifyEventType.MODIFYEND, this.features_, evt));
     this.modified_ = false;
   }
@@ -856,7 +912,7 @@ Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
       const vertexSegments = {};
 
       if (node.geometry.getType() === GeometryType.CIRCLE &&
-      node.index === Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+      node.index === CIRCLE_CIRCUMFERENCE_INDEX) {
 
         this.snappedToVertex_ = true;
         this.createOrUpdateVertexFeature_(vertex);
@@ -912,7 +968,7 @@ function pointDistanceToSegmentDataSquared(pointCoordinates, segmentData) {
   if (geometry.getType() === GeometryType.CIRCLE) {
     const circleGeometry = /** @type {ol.geom.Circle} */ (geometry);
 
-    if (segmentData.index === Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+    if (segmentData.index === CIRCLE_CIRCUMFERENCE_INDEX) {
       const distanceToCenterSquared =
             squaredCoordinateDistance(circleGeometry.getCenter(), pointCoordinates);
       const distanceToCircumference =
@@ -936,7 +992,7 @@ function closestOnSegmentData(pointCoordinates, segmentData) {
   const geometry = segmentData.geometry;
 
   if (geometry.getType() === GeometryType.CIRCLE &&
-  segmentData.index === Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+  segmentData.index === CIRCLE_CIRCUMFERENCE_INDEX) {
     return geometry.getClosestPoint(pointCoordinates);
   }
   return closestOnSegment(pointCoordinates, segmentData.segment);
@@ -1018,7 +1074,7 @@ Modify.prototype.removePoint = function() {
     const evt = this.lastPointerEvent_;
     this.willModifyFeatures_(evt);
     this.removeVertex_();
-    this.dispatchEvent(new Modify.Event(ModifyEventType.MODIFYEND, this.features_, evt));
+    this.dispatchEvent(new ModifyEvent(ModifyEventType.MODIFYEND, this.features_, evt));
     this.modified_ = false;
     return true;
   }
@@ -1179,46 +1235,12 @@ Modify.prototype.updateSegmentIndices_ = function(
 /**
  * @return {ol.StyleFunction} Styles.
  */
-Modify.getDefaultStyleFunction = function() {
+function getDefaultStyleFunction() {
   const style = createEditingStyle();
   return function(feature, resolution) {
     return style[GeometryType.POINT];
   };
-};
+}
 
-
-/**
- * @classdesc
- * Events emitted by {@link ol.interaction.Modify} instances are instances of
- * this type.
- *
- * @constructor
- * @extends {ol.events.Event}
- * @implements {oli.ModifyEvent}
- * @param {ol.interaction.ModifyEventType} type Type.
- * @param {ol.Collection.<ol.Feature>} features The features modified.
- * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
- *     {@link ol.MapBrowserPointerEvent}.
- */
-Modify.Event = function(type, features, mapBrowserPointerEvent) {
-
-  Event.call(this, type);
-
-  /**
-   * The features being modified.
-   * @type {ol.Collection.<ol.Feature>}
-   * @api
-   */
-  this.features = features;
-
-  /**
-   * Associated {@link ol.MapBrowserEvent}.
-   * @type {ol.MapBrowserEvent}
-   * @api
-   */
-  this.mapBrowserEvent = mapBrowserPointerEvent;
-};
-
-inherits(Modify.Event, Event);
 
 export default Modify;

@@ -9,7 +9,7 @@ import Circle from '../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import Modify from '../../../../src/ol/interaction/Modify.js';
+import Modify, {ModifyEvent} from '../../../../src/ol/interaction/Modify.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
@@ -101,7 +101,7 @@ describe('ol.interaction.Modify', function() {
    * modifications. Helper function to
    * @param {ol.Feature} feature Modified feature.
    * @param {ol.interaction.Modify} interaction The interaction.
-   * @return {Array<ol.interaction.Modify.Event|string>} events
+   * @return {Array<ModifyEvent|string>} events
    */
   function trackEvents(feature, interaction) {
     const events = [];
@@ -121,7 +121,7 @@ describe('ol.interaction.Modify', function() {
   * Validates the event array to verify proper event sequence. Checks
   * that first and last event are correct ModifyEvents and that feature
   * modifications event are in between.
-  * @param {Array<ol.interaction.Modify.Event|string>} events The events.
+  * @param {Array<ModifyEvent|string>} events The events.
   * @param {Array<ol.Feature>} features The features.
   */
   function validateEvents(events, features) {
@@ -130,11 +130,11 @@ describe('ol.interaction.Modify', function() {
     const endevent = events[events.length - 1];
 
     // first event should be modifystary
-    expect(startevent).to.be.an(Modify.Event);
+    expect(startevent).to.be.a(ModifyEvent);
     expect(startevent.type).to.eql('modifystart');
 
     // last event should be modifyend
-    expect(endevent).to.be.an(Modify.Event);
+    expect(endevent).to.be.a(ModifyEvent);
     expect(endevent.type).to.eql('modifyend');
 
     // make sure we get change events to events array
