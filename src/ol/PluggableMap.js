@@ -10,7 +10,7 @@ import MapBrowserEventType from './MapBrowserEventType.js';
 import MapEvent from './MapEvent.js';
 import MapEventType from './MapEventType.js';
 import MapProperty from './MapProperty.js';
-import BaseObject from './Object.js';
+import BaseObject, {getChangeEventType} from './Object.js';
 import ObjectEventType from './ObjectEventType.js';
 import TileQueue from './TileQueue.js';
 import View from './View.js';
@@ -346,13 +346,13 @@ const PluggableMap = function(options) {
   this.skippedFeatureUids_ = {};
 
   listen(
-    this, BaseObject.getChangeEventType(MapProperty.LAYERGROUP),
+    this, getChangeEventType(MapProperty.LAYERGROUP),
     this.handleLayerGroupChanged_, this);
-  listen(this, BaseObject.getChangeEventType(MapProperty.VIEW),
+  listen(this, getChangeEventType(MapProperty.VIEW),
     this.handleViewChanged_, this);
-  listen(this, BaseObject.getChangeEventType(MapProperty.SIZE),
+  listen(this, getChangeEventType(MapProperty.SIZE),
     this.handleSizeChanged_, this);
-  listen(this, BaseObject.getChangeEventType(MapProperty.TARGET),
+  listen(this, getChangeEventType(MapProperty.TARGET),
     this.handleTargetChanged_, this);
 
   // setProperties will trigger the rendering of the map if the map

@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import Collection from '../Collection.js';
-import BaseObject from '../Object.js';
+import {getChangeEventType} from '../Object.js';
 import {listen} from '../events.js';
 import Event from '../events/Event.js';
 import {TRUE} from '../functions.js';
@@ -80,7 +80,7 @@ const Translate = function(opt_options) {
   this.lastFeature_ = null;
 
   listen(this,
-    BaseObject.getChangeEventType(InteractionProperty.ACTIVE),
+    getChangeEventType(InteractionProperty.ACTIVE),
     this.handleActiveChanged_, this);
 
 };

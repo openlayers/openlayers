@@ -5,7 +5,7 @@ import {assert} from './asserts.js';
 import {listen, unlisten, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 import {inherits} from './index.js';
-import BaseObject from './Object.js';
+import BaseObject, {getChangeEventType} from './Object.js';
 import Geometry from './geom/Geometry.js';
 import Style from './style/Style.js';
 
@@ -90,7 +90,7 @@ const Feature = function(opt_geometryOrProperties) {
   this.geometryChangeKey_ = null;
 
   listen(
-    this, BaseObject.getChangeEventType(this.geometryName_),
+    this, getChangeEventType(this.geometryName_),
     this.handleGeometryChanged_, this);
 
   if (opt_geometryOrProperties !== undefined) {
@@ -266,11 +266,11 @@ Feature.prototype.setId = function(id) {
  */
 Feature.prototype.setGeometryName = function(name) {
   unlisten(
-    this, BaseObject.getChangeEventType(this.geometryName_),
+    this, getChangeEventType(this.geometryName_),
     this.handleGeometryChanged_, this);
   this.geometryName_ = name;
   listen(
-    this, BaseObject.getChangeEventType(this.geometryName_),
+    this, getChangeEventType(this.geometryName_),
     this.handleGeometryChanged_, this);
   this.handleGeometryChanged_();
 };

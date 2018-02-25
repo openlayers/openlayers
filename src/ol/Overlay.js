@@ -3,7 +3,7 @@
  */
 import {inherits} from './index.js';
 import MapEventType from './MapEventType.js';
-import BaseObject from './Object.js';
+import BaseObject, {getChangeEventType} from './Object.js';
 import OverlayPositioning from './OverlayPositioning.js';
 import {CLASS_SELECTABLE} from './css.js';
 import {removeNode, removeChildren, outerWidth, outerHeight} from './dom.js';
@@ -126,23 +126,23 @@ const Overlay = function(options) {
   this.mapPostrenderListenerKey = null;
 
   listen(
-    this, BaseObject.getChangeEventType(Property.ELEMENT),
+    this, getChangeEventType(Property.ELEMENT),
     this.handleElementChanged, this);
 
   listen(
-    this, BaseObject.getChangeEventType(Property.MAP),
+    this, getChangeEventType(Property.MAP),
     this.handleMapChanged, this);
 
   listen(
-    this, BaseObject.getChangeEventType(Property.OFFSET),
+    this, getChangeEventType(Property.OFFSET),
     this.handleOffsetChanged, this);
 
   listen(
-    this, BaseObject.getChangeEventType(Property.POSITION),
+    this, getChangeEventType(Property.POSITION),
     this.handlePositionChanged, this);
 
   listen(
-    this, BaseObject.getChangeEventType(Property.POSITIONING),
+    this, getChangeEventType(Property.POSITIONING),
     this.handlePositioningChanged, this);
 
   if (options.element !== undefined) {
