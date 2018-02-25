@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
-import WMTS from '../src/ol/source/WMTS.js';
+import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 
 const parser = new WMTSCapabilities();
 let map;
@@ -12,7 +12,7 @@ fetch('data/WMTSCapabilities.xml').then(function(response) {
   return response.text();
 }).then(function(text) {
   const result = parser.read(text);
-  const options = WMTS.optionsFromCapabilities(result, {
+  const options = optionsFromCapabilities(result, {
     layer: 'layer-7328',
     matrixSet: 'EPSG:3857'
   });
