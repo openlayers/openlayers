@@ -12,7 +12,7 @@ import {containsExtent, getCenter, getForViewAndSize, getHeight, getWidth} from 
 import {assign} from '../obj.js';
 import {get as getProjection, transform} from '../proj.js';
 import {calculateSourceResolution} from '../reproj.js';
-import ImageSource from '../source/Image.js';
+import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
 import WMSServerType from '../source/WMSServerType.js';
 import {compareVersions} from '../string.js';
 import {appendParams} from '../uri.js';
@@ -55,7 +55,7 @@ const ImageWMS = function(opt_options) {
    * @type {ol.ImageLoadFunctionType}
    */
   this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
-    options.imageLoadFunction : ImageSource.defaultImageLoadFunction;
+    options.imageLoadFunction : defaultImageLoadFunction;
 
   /**
    * @private

@@ -2,7 +2,7 @@ import ImageTile from '../../../src/ol/ImageTile.js';
 import TileState from '../../../src/ol/TileState.js';
 import {listen, unlistenByKey} from '../../../src/ol/events.js';
 import EventType from '../../../src/ol/events/EventType.js';
-import ImageSource from '../../../src/ol/source/Image.js';
+import {defaultImageLoadFunction} from '../../../src/ol/source/Image.js';
 
 
 describe('ol.ImageTile', function() {
@@ -13,7 +13,7 @@ describe('ol.ImageTile', function() {
       const tileCoord = [0, 0, 0];
       const state = TileState.IDLE;
       const src = 'spec/ol/data/osm-0-0-0.png';
-      const tileLoadFunction = ImageSource.defaultImageLoadFunction;
+      const tileLoadFunction = defaultImageLoadFunction;
       const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
       let previousState = tile.getState();
@@ -38,7 +38,7 @@ describe('ol.ImageTile', function() {
       const tileCoord = [0, 0, 0];
       const state = TileState.ERROR;
       const src = 'spec/ol/data/osm-0-0-0.png';
-      const tileLoadFunction = ImageSource.defaultImageLoadFunction;
+      const tileLoadFunction = defaultImageLoadFunction;
       const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
       let previousState = tile.getState();
@@ -63,7 +63,7 @@ describe('ol.ImageTile', function() {
       const tileCoord = [0, 0, 0];
       const state = TileState.IDLE;
       const src = 'spec/ol/data/osm-0-0-99.png';
-      const tileLoadFunction = ImageSource.defaultImageLoadFunction;
+      const tileLoadFunction = defaultImageLoadFunction;
       const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
       const key = listen(tile, EventType.CHANGE, function(event) {
@@ -89,7 +89,7 @@ describe('ol.ImageTile', function() {
       const tileCoord = [0, 0, 0];
       const state = TileState.IDLE;
       const src = 'spec/ol/data/osm-0-0-0.png';
-      const tileLoadFunction = ImageSource.defaultImageLoadFunction;
+      const tileLoadFunction = defaultImageLoadFunction;
       const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
       tile.load();
       expect(tile.getState()).to.be(TileState.LOADING);
