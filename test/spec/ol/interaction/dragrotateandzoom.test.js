@@ -2,7 +2,6 @@ import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import View from '../../../../src/ol/View.js';
 import DragRotateAndZoom from '../../../../src/ol/interaction/DragRotateAndZoom.js';
-import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
@@ -62,22 +61,30 @@ describe('ol.interaction.DragRotateAndZoom', function() {
         new PointerEvent('pointermove', {clientX: 20, clientY: 10}, {pointerType: 'mouse'}),
         true);
       interaction.lastAngle_ = Math.PI;
-      const spy = sinon.spy(Interaction, 'rotateWithoutConstraints');
+
+      let view = map.getView();
+      let spy = sinon.spy(view, 'rotate');
       interaction.handleDragEvent_(event);
       expect(spy.callCount).to.be(1);
       expect(interaction.lastAngle_).to.be(-0.8308214428190254);
-      map.setView(new View({
+      view.rotate.restore();
+
+      view = new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1,
         enableRotation: false
-      }));
+      });
+      map.setView(view);
+
       event = new MapBrowserPointerEvent('pointermove', map,
         new PointerEvent('pointermove', {clientX: 24, clientY: 16}, {pointerType: 'mouse'}),
         true);
+
+      spy = sinon.spy(view, 'rotate');
       interaction.handleDragEvent_(event);
-      expect(spy.callCount).to.be(1);
-      Interaction.rotateWithoutConstraints.restore();
+      expect(spy.callCount).to.be(0);
+      view.rotate.restore();
     });
   });
 

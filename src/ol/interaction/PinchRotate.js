@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
-import Interaction, {rotate} from '../interaction/Interaction.js';
+import {rotate, rotateWithoutConstraints} from '../interaction/Interaction.js';
 import PointerInteraction, {centroid as centroidFromPointers} from '../interaction/Pointer.js';
 import {disable} from '../rotationconstraint.js';
 
@@ -114,8 +114,7 @@ function handleDragEvent(mapBrowserEvent) {
   if (this.rotating_) {
     const rotation = view.getRotation();
     map.render();
-    Interaction.rotateWithoutConstraints(view,
-      rotation + rotationDelta, this.anchor_);
+    rotateWithoutConstraints(view, rotation + rotationDelta, this.anchor_);
   }
 }
 

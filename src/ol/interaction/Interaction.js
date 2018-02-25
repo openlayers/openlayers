@@ -108,7 +108,7 @@ Interaction.prototype.setMap = function(map) {
  * @param {ol.Coordinate} delta Delta.
  * @param {number=} opt_duration Duration.
  */
-Interaction.pan = function(view, delta, opt_duration) {
+export function pan(view, delta, opt_duration) {
   const currentCenter = view.getCenter();
   if (currentCenter) {
     const center = view.constrainCenter(
@@ -123,7 +123,7 @@ Interaction.pan = function(view, delta, opt_duration) {
       view.setCenter(center);
     }
   }
-};
+}
 
 
 /**
@@ -134,8 +134,7 @@ Interaction.pan = function(view, delta, opt_duration) {
  */
 export function rotate(view, rotation, opt_anchor, opt_duration) {
   rotation = view.constrainRotation(rotation, 0);
-  Interaction.rotateWithoutConstraints(
-    view, rotation, opt_anchor, opt_duration);
+  rotateWithoutConstraints(view, rotation, opt_anchor, opt_duration);
 }
 
 
@@ -145,7 +144,7 @@ export function rotate(view, rotation, opt_anchor, opt_duration) {
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
-Interaction.rotateWithoutConstraints = function(view, rotation, opt_anchor, opt_duration) {
+export function rotateWithoutConstraints(view, rotation, opt_anchor, opt_duration) {
   if (rotation !== undefined) {
     const currentRotation = view.getRotation();
     const currentCenter = view.getCenter();
@@ -160,7 +159,7 @@ Interaction.rotateWithoutConstraints = function(view, rotation, opt_anchor, opt_
       view.rotate(rotation, opt_anchor);
     }
   }
-};
+}
 
 
 /**
@@ -189,7 +188,7 @@ export function zoom(view, resolution, opt_anchor, opt_duration, opt_direction) 
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
-Interaction.zoomByDelta = function(view, delta, opt_anchor, opt_duration) {
+export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
   const currentResolution = view.getResolution();
   let resolution = view.constrainResolution(currentResolution, delta, 0);
 
@@ -218,7 +217,7 @@ Interaction.zoomByDelta = function(view, delta, opt_anchor, opt_duration) {
   }
 
   zoomWithoutConstraints(view, resolution, opt_anchor, opt_duration);
-};
+}
 
 
 /**

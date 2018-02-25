@@ -6,7 +6,7 @@ import {disable} from '../rotationconstraint.js';
 import ViewHint from '../ViewHint.js';
 import {altShiftKeysOnly, mouseOnly, mouseActionButton} from '../events/condition.js';
 import {FALSE} from '../functions.js';
-import Interaction, {rotate} from '../interaction/Interaction.js';
+import {rotate, rotateWithoutConstraints} from '../interaction/Interaction.js';
 import PointerInteraction from '../interaction/Pointer.js';
 
 /**
@@ -75,8 +75,7 @@ function handleDragEvent(mapBrowserEvent) {
   if (this.lastAngle_ !== undefined) {
     const delta = theta - this.lastAngle_;
     const rotation = view.getRotation();
-    Interaction.rotateWithoutConstraints(
-      view, rotation - delta);
+    rotateWithoutConstraints(view, rotation - delta);
   }
   this.lastAngle_ = theta;
 }

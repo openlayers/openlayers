@@ -6,7 +6,7 @@ import {rotate as rotateCoordinate} from '../coordinate.js';
 import EventType from '../events/EventType.js';
 import KeyCode from '../events/KeyCode.js';
 import {noModifierKeys, targetNotEditable} from '../events/condition.js';
-import Interaction from '../interaction/Interaction.js';
+import Interaction, {pan} from '../interaction/Interaction.js';
 
 /**
  * @classdesc
@@ -100,7 +100,7 @@ function handleEvent(mapBrowserEvent) {
       }
       const delta = [deltaX, deltaY];
       rotateCoordinate(delta, view.getRotation());
-      Interaction.pan(view, delta, this.duration_);
+      pan(view, delta, this.duration_);
       mapBrowserEvent.preventDefault();
       stopEvent = true;
     }
