@@ -465,10 +465,9 @@ Modify.prototype.writePointGeometry_ = function(feature, geometry) {
  */
 Modify.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
   const points = geometry.getCoordinates();
-  let coordinates, i, ii, segmentData;
-  for (i = 0, ii = points.length; i < ii; ++i) {
-    coordinates = points[i];
-    segmentData = /** @type {ol.ModifySegmentDataType} */ ({
+  for (let i = 0, ii = points.length; i < ii; ++i) {
+    const coordinates = points[i];
+    const segmentData = /** @type {ol.ModifySegmentDataType} */ ({
       feature: feature,
       geometry: geometry,
       depth: [i],
@@ -487,10 +486,9 @@ Modify.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
  */
 Modify.prototype.writeLineStringGeometry_ = function(feature, geometry) {
   const coordinates = geometry.getCoordinates();
-  let i, ii, segment, segmentData;
-  for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-    segment = coordinates.slice(i, i + 2);
-    segmentData = /** @type {ol.ModifySegmentDataType} */ ({
+  for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+    const segment = coordinates.slice(i, i + 2);
+    const segmentData = /** @type {ol.ModifySegmentDataType} */ ({
       feature: feature,
       geometry: geometry,
       index: i,
@@ -508,12 +506,11 @@ Modify.prototype.writeLineStringGeometry_ = function(feature, geometry) {
  */
 Modify.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
   const lines = geometry.getCoordinates();
-  let coordinates, i, ii, j, jj, segment, segmentData;
-  for (j = 0, jj = lines.length; j < jj; ++j) {
-    coordinates = lines[j];
-    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      segment = coordinates.slice(i, i + 2);
-      segmentData = /** @type {ol.ModifySegmentDataType} */ ({
+  for (let j = 0, jj = lines.length; j < jj; ++j) {
+    const coordinates = lines[j];
+    for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      const segment = coordinates.slice(i, i + 2);
+      const segmentData = /** @type {ol.ModifySegmentDataType} */ ({
         feature: feature,
         geometry: geometry,
         depth: [j],
@@ -533,12 +530,11 @@ Modify.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
  */
 Modify.prototype.writePolygonGeometry_ = function(feature, geometry) {
   const rings = geometry.getCoordinates();
-  let coordinates, i, ii, j, jj, segment, segmentData;
-  for (j = 0, jj = rings.length; j < jj; ++j) {
-    coordinates = rings[j];
-    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      segment = coordinates.slice(i, i + 2);
-      segmentData = /** @type {ol.ModifySegmentDataType} */ ({
+  for (let j = 0, jj = rings.length; j < jj; ++j) {
+    const coordinates = rings[j];
+    for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      const segment = coordinates.slice(i, i + 2);
+      const segmentData = /** @type {ol.ModifySegmentDataType} */ ({
         feature: feature,
         geometry: geometry,
         depth: [j],
@@ -558,14 +554,13 @@ Modify.prototype.writePolygonGeometry_ = function(feature, geometry) {
  */
 Modify.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
   const polygons = geometry.getCoordinates();
-  let coordinates, i, ii, j, jj, k, kk, rings, segment, segmentData;
-  for (k = 0, kk = polygons.length; k < kk; ++k) {
-    rings = polygons[k];
-    for (j = 0, jj = rings.length; j < jj; ++j) {
-      coordinates = rings[j];
-      for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-        segment = coordinates.slice(i, i + 2);
-        segmentData = /** @type {ol.ModifySegmentDataType} */ ({
+  for (let k = 0, kk = polygons.length; k < kk; ++k) {
+    const rings = polygons[k];
+    for (let j = 0, jj = rings.length; j < jj; ++j) {
+      const coordinates = rings[j];
+      for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+        const segment = coordinates.slice(i, i + 2);
+        const segmentData = /** @type {ol.ModifySegmentDataType} */ ({
           feature: feature,
           geometry: geometry,
           depth: [j, k],
@@ -811,11 +806,9 @@ function handleDragEvent(evt) {
  * @this {ol.interaction.Modify}
  */
 function handleUpEvent(evt) {
-  let segmentData;
-  let geometry;
   for (let i = this.dragSegments_.length - 1; i >= 0; --i) {
-    segmentData = this.dragSegments_[i][0];
-    geometry = segmentData.geometry;
+    const segmentData = this.dragSegments_[i][0];
+    const geometry = segmentData.geometry;
     if (geometry.getType() === GeometryType.CIRCLE) {
       // Update a circle object in the R* bush:
       const coordinates = geometry.getCenter();
@@ -826,13 +819,11 @@ function handleUpEvent(evt) {
       this.rBush_.update(createOrUpdateFromCoordinate(coordinates), centerSegmentData);
       this.rBush_.update(geometry.getExtent(), circumferenceSegmentData);
     } else {
-      this.rBush_.update(boundingExtent(segmentData.segment),
-        segmentData);
+      this.rBush_.update(boundingExtent(segmentData.segment), segmentData);
     }
   }
   if (this.modified_) {
-    this.dispatchEvent(new ModifyEvent(
-      ModifyEventType.MODIFYEND, this.features_, evt));
+    this.dispatchEvent(new ModifyEvent(ModifyEventType.MODIFYEND, this.features_, evt));
     this.modified_ = false;
   }
   return false;
@@ -927,9 +918,8 @@ Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
           vertex = squaredDist1 > squaredDist2 ? closestSegment[1] : closestSegment[0];
         }
         this.createOrUpdateVertexFeature_(vertex);
-        let segment;
         for (let i = 1, ii = nodes.length; i < ii; ++i) {
-          segment = nodes[i].segment;
+          const segment = nodes[i].segment;
           if ((coordinatesEqual(closestSegment[0], segment[0]) &&
               coordinatesEqual(closestSegment[1], segment[1]) ||
               (coordinatesEqual(closestSegment[0], segment[1]) &&

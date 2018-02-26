@@ -269,11 +269,11 @@ function handleEvent(mapBrowserEvent) {
     clear(this.featureLayerAssociation_);
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
       (
-      /**
-           * @param {ol.Feature|ol.render.Feature} feature Feature.
-           * @param {ol.layer.Layer} layer Layer.
-           * @return {boolean|undefined} Continue to iterate over the features.
-           */
+        /**
+         * @param {ol.Feature|ol.render.Feature} feature Feature.
+         * @param {ol.layer.Layer} layer Layer.
+         * @return {boolean|undefined} Continue to iterate over the features.
+         */
         function(feature, layer) {
           if (this.filter_(feature, layer)) {
             selected.push(feature);
@@ -284,8 +284,7 @@ function handleEvent(mapBrowserEvent) {
         layerFilter: this.layerFilter_,
         hitTolerance: this.hitTolerance_
       });
-    let i;
-    for (i = features.getLength() - 1; i >= 0; --i) {
+    for (let i = features.getLength() - 1; i >= 0; --i) {
       const feature = features.item(i);
       const index = selected.indexOf(feature);
       if (index > -1) {
@@ -303,11 +302,11 @@ function handleEvent(mapBrowserEvent) {
     // Modify the currently selected feature(s).
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
       (
-      /**
-           * @param {ol.Feature|ol.render.Feature} feature Feature.
-           * @param {ol.layer.Layer} layer Layer.
-           * @return {boolean|undefined} Continue to iterate over the features.
-           */
+        /**
+         * @param {ol.Feature|ol.render.Feature} feature Feature.
+         * @param {ol.layer.Layer} layer Layer.
+         * @return {boolean|undefined} Continue to iterate over the features.
+         */
         function(feature, layer) {
           if (this.filter_(feature, layer)) {
             if ((add || toggle) && !includes(features.getArray(), feature)) {
@@ -323,8 +322,7 @@ function handleEvent(mapBrowserEvent) {
         layerFilter: this.layerFilter_,
         hitTolerance: this.hitTolerance_
       });
-    let j;
-    for (j = deselected.length - 1; j >= 0; --j) {
+    for (let j = deselected.length - 1; j >= 0; --j) {
       features.remove(deselected[j]);
     }
     features.extend(selected);
