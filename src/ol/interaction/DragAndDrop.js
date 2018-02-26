@@ -128,12 +128,10 @@ inherits(DragAndDrop, Interaction);
  */
 function handleDrop(event) {
   const files = event.dataTransfer.files;
-  let i, ii, file;
-  for (i = 0, ii = files.length; i < ii; ++i) {
-    file = files.item(i);
+  for (let i = 0, ii = files.length; i < ii; ++i) {
+    const file = files.item(i);
     const reader = new FileReader();
-    reader.addEventListener(EventType.LOAD,
-      this.handleResult_.bind(this, file));
+    reader.addEventListener(EventType.LOAD, this.handleResult_.bind(this, file));
     reader.readAsText(file);
   }
 }
@@ -165,8 +163,7 @@ DragAndDrop.prototype.handleResult_ = function(file, event) {
 
   const formatConstructors = this.formatConstructors_;
   let features = [];
-  let i, ii;
-  for (i = 0, ii = formatConstructors.length; i < ii; ++i) {
+  for (let i = 0, ii = formatConstructors.length; i < ii; ++i) {
     /**
      * Avoid "cannot instantiate abstract class" error.
      * @type {Function}
@@ -202,14 +199,10 @@ DragAndDrop.prototype.registerListeners_ = function() {
   if (map) {
     const dropArea = this.target ? this.target : map.getViewport();
     this.dropListenKeys_ = [
-      listen(dropArea, EventType.DROP,
-        handleDrop, this),
-      listen(dropArea, EventType.DRAGENTER,
-        handleStop, this),
-      listen(dropArea, EventType.DRAGOVER,
-        handleStop, this),
-      listen(dropArea, EventType.DROP,
-        handleStop, this)
+      listen(dropArea, EventType.DROP, handleDrop, this),
+      listen(dropArea, EventType.DRAGENTER, handleStop, this),
+      listen(dropArea, EventType.DRAGOVER, handleStop, this),
+      listen(dropArea, EventType.DROP, handleStop, this)
     ];
   }
 };
