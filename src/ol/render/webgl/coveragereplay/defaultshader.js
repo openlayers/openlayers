@@ -7,11 +7,11 @@ import _ol_webgl_Vertex_ from '../../../webgl/Vertex.js';
 const _ol_render_webgl_coveragereplay_defaultshader_ = {};
 
 _ol_render_webgl_coveragereplay_defaultshader_.fragment = new _ol_webgl_Fragment_(DEBUG_WEBGL ?
-  'precision mediump float;\n\n\n\nuniform vec4 u_color;\nuniform float u_opacity;\n\nvoid main(void) {\n  gl_FragColor = u_color;\n  float alpha = u_color.a * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n' :
-  'precision mediump float;uniform vec4 e;uniform float f;void main(void){gl_FragColor=e;float alpha=e.a*f;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}');
+  'precision mediump float;\nvarying vec4 v_color;\n\n\nuniform float u_opacity;\n\nvoid main(void) {\n  gl_FragColor = v_color;\n  float alpha = v_color.a * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n' :
+  'precision mediump float;varying vec4 a;uniform float g;void main(void){gl_FragColor=a;float alpha=a.a*g;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}');
 
 _ol_render_webgl_coveragereplay_defaultshader_.vertex = new _ol_webgl_Vertex_(DEBUG_WEBGL ?
-  '\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);\n}\n\n\n' :
-  'attribute vec2 a;uniform mat4 b;uniform mat4 c;uniform mat4 d;void main(void){gl_Position=b*vec4(a,0.0,1.0);}');
+  'varying vec4 v_color;\n\nattribute vec2 a_position;\nattribute vec4 a_color;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  v_color = a_color;\n  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);\n}\n\n\n' :
+  'varying vec4 a;attribute vec2 b;attribute vec4 c;uniform mat4 d;uniform mat4 e;uniform mat4 f;void main(void){a=c;gl_Position=d*vec4(b,0.0,1.0);}');
 
 export default _ol_render_webgl_coveragereplay_defaultshader_;

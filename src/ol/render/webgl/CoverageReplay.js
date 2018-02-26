@@ -2,7 +2,7 @@
  * @module ol/render/webgl/CoverageReplay
  */
 import {inherits} from '../../index.js';
-import {equals, extend} from '../../array.js';
+import {extend} from '../../array.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_render_webgl_coveragereplay_defaultshader_ from './coveragereplay/defaultshader.js';
 import _ol_render_webgl_coveragereplay_defaultshader_Locations_ from './coveragereplay/defaultshader/Locations.js';
@@ -27,30 +27,10 @@ const WebGLCoverageReplay = function(tolerance, maxExtent) {
   this.defaultLocations_ = null;
 
   /**
-   * @private
-   * @type {Array.<Array.<number>>}
-   */
-  this.styles_ = [];
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.styleIndices_ = [];
-
-  /**
    * Indices of a single cell, used as a template.
    * @type {Array.<number>}
    */
   this.cellIndices = [];
-
-  /**
-   * @private
-   * @type {{fillColor: Array.<number>)}}
-   */
-  this.state_ = {
-    fillColor: []
-  };
 
 };
 
@@ -66,7 +46,6 @@ WebGLCoverageReplay.prototype.drawCoverage = function(flatCoverage, cellStride) 
   const greenOffset = cellStride + 1;
   const blueOffset = cellStride + 2;
   const alphaOffset = cellStride + 3;
-  const state = this.state_;
   const maxIndex = Math.max.apply(null, this.cellIndices) + 1;
   let indexCount = 0;
 
@@ -76,14 +55,13 @@ WebGLCoverageReplay.prototype.drawCoverage = function(flatCoverage, cellStride) 
     const colorArr = [flatCoverage[i + redOffset] / 255,
       flatCoverage[i + greenOffset] / 255, flatCoverage[i + blueOffset] / 255,
       flatCoverage[i + alphaOffset]];
-    if (!equals(colorArr, state.fillColor)) {
-      this.styles_.push(colorArr);
-      this.styleIndices_.push(this.indices.length);
-      state.fillColor = colorArr;
+
+    for (let j = i, jj = i + cellStride; j < jj; j += 2) {
+      extend(this.vertices, _ol_geom_flat_transform_.translate(flatCoverage, j,
+        j + 2, 2, -this.origin[0], -this.origin[1]));
+      extend(this.vertices, colorArr);
     }
 
-    extend(this.vertices, _ol_geom_flat_transform_.translate(flatCoverage, i,
-      i + cellStride, 2, -this.origin[0], -this.origin[1]));
     let numIndices = this.indices.length;
     for (let j = 0; j < this.cellIndices.length; ++j) {
       this.indices[numIndices++] = this.cellIndices[j] + indexCount;
@@ -150,7 +128,11 @@ WebGLCoverageReplay.prototype.setUpProgram = function(gl, context, size, pixelRa
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_position);
   gl.vertexAttribPointer(locations.a_position, 2, _ol_webgl_.FLOAT,
-    false, 8, 0);
+    false, 24, 0);
+
+  gl.enableVertexAttribArray(locations.a_color);
+  gl.vertexAttribPointer(locations.a_color, 4, _ol_webgl_.FLOAT,
+    false, 24, 8);
 
   return locations;
 };
@@ -161,6 +143,7 @@ WebGLCoverageReplay.prototype.setUpProgram = function(gl, context, size, pixelRa
  */
 WebGLCoverageReplay.prototype.shutDownProgram = function(gl, locations) {
   gl.disableVertexAttribArray(locations.a_position);
+  gl.disableVertexAttribArray(locations.a_color);
 };
 
 
@@ -168,13 +151,10 @@ WebGLCoverageReplay.prototype.shutDownProgram = function(gl, locations) {
  * @inheritDoc
  */
 WebGLCoverageReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
-  //Draw by style groups to minimize drawElements() calls.
-  let i, start, end, nextStyle;
+  let i, start, end;
   end = this.startIndices[this.startIndices.length - 1];
-  for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-    start = this.styleIndices_[i];
-    nextStyle = this.styles_[i];
-    this.setFillStyle_(gl, nextStyle);
+  for (i = this.startIndices.length - 2; i >= 0; --i) {
+    start = this.startIndices[i];
     this.drawElements(gl, context, start, end);
     end = start;
   }
@@ -187,16 +167,6 @@ WebGLCoverageReplay.prototype.drawReplay = function(gl, context, skippedFeatures
 WebGLCoverageReplay.prototype.drawHitDetectionReplayOneByOne = function(gl,
   context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
   return undefined;
-};
-
-
-/**
- * @private
- * @param {WebGLRenderingContext} gl gl.
- * @param {Array.<number>} color Color.
- */
-WebGLCoverageReplay.prototype.setFillStyle_ = function(gl, color) {
-  gl.uniform4fv(this.defaultLocations_.u_color, color);
 };
 
 
