@@ -16,7 +16,7 @@ import CanvasVectorLayerRenderer from './renderer/canvas/VectorLayer.js';
 import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js';
 import WebGLImageLayerRenderer from './renderer/webgl/ImageLayer.js';
 import WebGLMapRenderer from './renderer/webgl/Map.js';
-import WebGLCoverageLayerRenderer from './renderer/canvas/CoverageLayer.js';
+import WebGLCoverageLayerRenderer from './renderer/webgl/CoverageLayer.js';
 import WebGLTileLayerRenderer from './renderer/webgl/TileLayer.js';
 import WebGLVectorLayerRenderer from './renderer/webgl/VectorLayer.js';
 

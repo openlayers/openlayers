@@ -29,22 +29,19 @@ const WebGLVectorLayerRenderer = function(mapRenderer, vectorLayer) {
   this.dirty_ = false;
 
   /**
-   * @private
    * @type {number}
    */
-  this.renderedRevision_ = -1;
+  this.renderedRevision = -1;
 
   /**
-   * @private
    * @type {number}
    */
-  this.renderedResolution_ = NaN;
+  this.renderedResolution = NaN;
 
   /**
-   * @private
    * @type {module:ol/extent~Extent}
    */
-  this.renderedExtent_ = createEmpty();
+  this.renderedExtent = createEmpty();
 
   /**
    * @private
@@ -53,10 +50,9 @@ const WebGLVectorLayerRenderer = function(mapRenderer, vectorLayer) {
   this.renderedRenderOrder_ = null;
 
   /**
-   * @private
    * @type {ol.render.webgl.ReplayGroup}
    */
-  this.replayGroup_ = null;
+  this.replayGroup = null;
 
   /**
    * The last layer state.
@@ -101,7 +97,7 @@ WebGLVectorLayerRenderer['create'] = function(mapRenderer, layer) {
 WebGLVectorLayerRenderer.prototype.composeFrame = function(frameState, layerState, context) {
   this.layerState_ = layerState;
   const viewState = frameState.viewState;
-  const replayGroup = this.replayGroup_;
+  const replayGroup = this.replayGroup;
   const size = frameState.size;
   const pixelRatio = frameState.pixelRatio;
   const gl = this.mapRenderer.getGL();
@@ -122,11 +118,11 @@ WebGLVectorLayerRenderer.prototype.composeFrame = function(frameState, layerStat
  * @inheritDoc
  */
 WebGLVectorLayerRenderer.prototype.disposeInternal = function() {
-  const replayGroup = this.replayGroup_;
+  const replayGroup = this.replayGroup;
   if (replayGroup) {
     const context = this.mapRenderer.getContext();
     replayGroup.getDeleteResourcesFunction(context)();
-    this.replayGroup_ = null;
+    this.replayGroup = null;
   }
   WebGLLayerRenderer.prototype.disposeInternal.call(this);
 };
@@ -136,7 +132,7 @@ WebGLVectorLayerRenderer.prototype.disposeInternal = function() {
  * @inheritDoc
  */
 WebGLVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
-  if (!this.replayGroup_ || !this.layerState_) {
+  if (!this.replayGroup || !this.layerState_) {
     return undefined;
   } else {
     const context = this.mapRenderer.getContext();
@@ -145,7 +141,7 @@ WebGLVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordin
     const layerState = this.layerState_;
     /** @type {!Object.<string, boolean>} */
     const features = {};
-    return this.replayGroup_.forEachFeatureAtCoordinate(coordinate,
+    return this.replayGroup.forEachFeatureAtCoordinate(coordinate,
       context, viewState.center, viewState.resolution, viewState.rotation,
       frameState.size, frameState.pixelRatio, layerState.opacity,
       {},
@@ -168,13 +164,13 @@ WebGLVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordin
  * @inheritDoc
  */
 WebGLVectorLayerRenderer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
-  if (!this.replayGroup_ || !this.layerState_) {
+  if (!this.replayGroup || !this.layerState_) {
     return false;
   } else {
     const context = this.mapRenderer.getContext();
     const viewState = frameState.viewState;
     const layerState = this.layerState_;
-    return this.replayGroup_.hasFeatureAtCoordinate(coordinate,
+    return this.replayGroup.hasFeatureAtCoordinate(coordinate,
       context, viewState.center, viewState.resolution, viewState.rotation,
       frameState.size, frameState.pixelRatio, layerState.opacity,
       frameState.skippedFeatureUids);
@@ -242,16 +238,16 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
     vectorLayerRenderBuffer * resolution);
 
   if (!this.dirty_ &&
-      this.renderedResolution_ == resolution &&
-      this.renderedRevision_ == vectorLayerRevision &&
+      this.renderedResolution == resolution &&
+      this.renderedRevision == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
-      containsExtent(this.renderedExtent_, extent)) {
+      containsExtent(this.renderedExtent, extent)) {
     return true;
   }
 
-  if (this.replayGroup_) {
+  if (this.replayGroup) {
     frameState.postRenderFunctions.push(
-      this.replayGroup_.getDeleteResourcesFunction(context));
+      this.replayGroup.getDeleteResourcesFunction(context));
   }
 
   this.dirty_ = false;
@@ -293,11 +289,11 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
   }
   replayGroup.finish(context);
 
-  this.renderedResolution_ = resolution;
-  this.renderedRevision_ = vectorLayerRevision;
+  this.renderedResolution = resolution;
+  this.renderedRevision = vectorLayerRevision;
   this.renderedRenderOrder_ = vectorLayerRenderOrder;
-  this.renderedExtent_ = extent;
-  this.replayGroup_ = replayGroup;
+  this.renderedExtent = extent;
+  this.replayGroup = replayGroup;
 
   return true;
 };

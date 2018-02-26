@@ -8,6 +8,7 @@ import {isEmpty} from '../../obj.js';
 import {ORDER} from '../replay.js';
 import ReplayGroup from '../ReplayGroup.js';
 import WebGLCircleReplay from '../webgl/CircleReplay.js';
+import WebGLCoverageReplay from '../webgl/CoverageReplay.js';
 import WebGLImageReplay from '../webgl/ImageReplay.js';
 import WebGLLineStringReplay from '../webgl/LineStringReplay.js';
 import WebGLPolygonReplay from '../webgl/PolygonReplay.js';
@@ -25,6 +26,7 @@ const HIT_DETECTION_SIZE = [1, 1];
  */
 const BATCH_CONSTRUCTORS = {
   'Circle': WebGLCircleReplay,
+  'Coverage': WebGLCoverageReplay,
   'Image': WebGLImageReplay,
   'LineString': WebGLLineStringReplay,
   'Polygon': WebGLPolygonReplay,
