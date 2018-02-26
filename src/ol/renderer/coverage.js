@@ -125,9 +125,13 @@ export function createGrid(band, shape, type, inProj, outProj, maxAlpha) {
  * @param {Array.<number>} flatCoverage Coverage cell coordinates and colors.
  * @param {number} numVertices Number of vertex coordinates in a cell.
  * @param {ol.style.Stroke} stroke Stroke style for cosmetic stroke.
+ * @param {Array.<number>=} indices Index numbers for WebGL renderer.
  */
-export function renderCoverage(replayGroup, flatCoverage, numVertices, stroke) {
+export function renderCoverage(replayGroup, flatCoverage, numVertices, stroke, indices) {
   const coverageReplay = replayGroup.getReplay(undefined, ReplayType.COVERAGE);
+  if (indices) {
+    coverageReplay.cellIndices = indices;
+  }
   coverageReplay.setFillStrokeStyle(undefined, stroke);
   coverageReplay.drawCoverage(flatCoverage, numVertices);
 }
