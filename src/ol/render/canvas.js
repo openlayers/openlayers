@@ -129,7 +129,7 @@ export const checkFont = (function() {
   const size = '32px ';
   const referenceFonts = ['monospace', 'serif'];
   const len = referenceFonts.length;
-  const text = 'wmytzilWMYTZIL@#/&?$%10';
+  const text = 'wmytzilWMYTZIL@#/&?$%10\uF013';
   let interval, referenceWidth;
 
   function isAvailable(font) {
