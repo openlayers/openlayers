@@ -1,12 +1,18 @@
 ---
 layout: example.html
 title: Mousewheel/Trackpad Zoom
-shortdesc: Restrict wheel/trackpad zooming to integer zoom levels.
+shortdesc: Shows advanced wheel/trackpad zoom options.
 docs: >
-  By default, the `ol.interaction.MouseWheelZoom` can leave the map at
-  fractional zoom levels. If instead you want to constrain wheel/trackpad
-  zooming to integer zoom levels, set <code>constrainResolution: true</code>
-  when constructing the interaction.
-tags: "trackpad, mousewheel, zoom, interaction"
+  This example uses a custom `ol.interaction.MouseWheelZoom` configuration:
+
+   * By default, wheel/trackpad zoom is always active, which can be unexpected
+     on pages with a lot of scrollable content and an embedded map. To perform
+     wheel/trackpad zoom actions only when the map has the focus, set
+     `condition: ol.events.condition.focus` as constructor option. This requires
+     a map div with a `tabindex` attribute set.
+   * By default, the interaction can leave the map at fractional zoom levels. If
+     instead you want to constrain wheel/trackpad zooming to integer zoom
+     levels, set `constrainResolution: true`.
+tags: "trackpad, mousewheel, zoom, scroll, interaction"
 ---
-<div id="map" class="map"></div>
+<div tabindex="1" id="map" class="map"></div>
