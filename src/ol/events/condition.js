@@ -42,6 +42,19 @@ export const altShiftKeysOnly = function(mapBrowserEvent) {
 
 
 /**
+ * Return `true` if the map has the focus. This condition requires a map target
+ * element with a `tabindex` attribute, e.g. `<div id="map" tabindex="1">`.
+ *
+ * @param {ol.MapBrowserEvent} event Map browser event.
+ * @return {boolean} The map has the focus.
+ * @api
+ */
+export const focus = function(event) {
+  return event.target.getTargetElement() === document.activeElement;
+};
+
+
+/**
  * Return always true.
  *
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
