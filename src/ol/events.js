@@ -33,8 +33,7 @@ export function bindListener(listenerObj) {
  *     listener, for {@link ol.events.unlistenByKey}.
  * @return {ol.EventsKey|undefined} The matching listener object.
  */
-export function findListener(listeners, listener, opt_this,
-  opt_setDeleteIndex) {
+export function findListener(listeners, listener, opt_this, opt_setDeleteIndex) {
   let listenerObj;
   for (let i = 0, ii = listeners.length; i < ii; ++i) {
     listenerObj = listeners[i];
@@ -124,8 +123,7 @@ export function listen(target, type, listener, opt_this, opt_once) {
   if (!listeners) {
     listeners = listenerMap[type] = [];
   }
-  let listenerObj = findListener(listeners, listener, opt_this,
-    false);
+  let listenerObj = findListener(listeners, listener, opt_this, false);
   if (listenerObj) {
     if (!opt_once) {
       // Turn one-off listener into a permanent one.
@@ -188,8 +186,7 @@ export function listenOnce(target, type, listener, opt_this) {
 export function unlisten(target, type, listener, opt_this) {
   const listeners = getListeners(target, type);
   if (listeners) {
-    const listenerObj = findListener(listeners, listener, opt_this,
-      true);
+    const listenerObj = findListener(listeners, listener, opt_this, true);
     if (listenerObj) {
       unlistenByKey(listenerObj);
     }

@@ -105,8 +105,7 @@ Observable.prototype.on = function(type, listener) {
     }
     return keys;
   } else {
-    return listen(
-      this, /** @type {string} */ (type), listener);
+    return listen(this, /** @type {string} */ (type), listener);
   }
 };
 
@@ -129,8 +128,7 @@ Observable.prototype.once = function(type, listener) {
     }
     return keys;
   } else {
-    return listenOnce(
-      this, /** @type {string} */ (type), listener);
+    return listenOnce(this, /** @type {string} */ (type), listener);
   }
 };
 

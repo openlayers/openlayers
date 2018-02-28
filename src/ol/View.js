@@ -197,8 +197,7 @@ View.prototype.applyOptions_ = function(options) {
         this.minResolution_, this.maxResolution_);
     }
   }
-  properties[ViewProperty.ROTATION] =
-      options.rotation !== undefined ? options.rotation : 0;
+  properties[ViewProperty.ROTATION] = options.rotation !== undefined ? options.rotation : 0;
   this.setProperties(properties);
 
   /**
