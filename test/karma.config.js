@@ -56,6 +56,9 @@ module.exports = function(karma) {
     reporters: ['progress'],
     webpackMiddleware: {
       noInfo: true
+    },
+    webpack: {
+      mode: 'development'
     }
   });
 
