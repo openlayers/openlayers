@@ -11,6 +11,7 @@ import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
 import {getTolerance, createGrid, renderCoverage} from '../coverage.js';
 import CoverageType from '../../coverage/CoverageType.js';
 import _ol_geom_flat_deflate_ from '../../geom/flat/deflate.js';
+import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import {equivalent, transformExtent} from '../../proj.js';
 import Stroke from '../../style/Stroke.js';
 
@@ -148,10 +149,12 @@ CanvasCoverageLayerRenderer.prototype.prepareFrame = function(frameState,
     if (!styledCoverage) {
       return false;
     }
-    const cellCoords = this.getCellCoordinates_(type, styledCoverage.getResolution());
+    const pattern = coverageSource.getPattern();
+    const cellCoords = this.getCellCoordinates_(type,
+      styledCoverage.getResolution(), pattern);
     const vertices = cellCoords.length;
     const rtree = createGrid(styledCoverage, cellCoords, type,
-      coverageSource.getProjection(), projection, 0);
+      coverageSource.getProjection(), projection, 0, pattern);
 
     this.renderedChecksum_ = style.getChecksum();
     this.renderedSourceRevision_ = coverageSource.getRevision();
@@ -211,9 +214,10 @@ CanvasCoverageLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coor
  * @private
  * @param {ol.coverage.CoverageType} type Coverage type.
  * @param {ol.Size} resolution Cell resolution.
+ * @param {ol.CoveragePattern} pattern Coverage pattern.
  * @return {Array.<number>} Cell coordinates relative to centroid.
  */
-CanvasCoverageLayerRenderer.prototype.getCellCoordinates_ = function(type, resolution) {
+CanvasCoverageLayerRenderer.prototype.getCellCoordinates_ = function(type, resolution, pattern) {
   const halfX = resolution[0] / 2;
   const halfY = resolution[1] / 2;
   switch (type) {
@@ -222,8 +226,10 @@ CanvasCoverageLayerRenderer.prototype.getCellCoordinates_ = function(type, resol
       return [-halfX, -fourthY, 0, -halfY, halfX, -fourthY, halfX, fourthY,
         0, halfY, -halfX, fourthY];
     case CoverageType.CUSTOM:
-      // TODO: Implement custom pattern expansion.
-      break;
+      const shape = [];
+      _ol_geom_flat_deflate_.coordinates(shape, 0, pattern.shape, 2);
+      return _ol_geom_flat_transform_.scale(shape, 0, shape.length, 2,
+        resolution[0], resolution[1], [0, 0]);
     // Default type is CoverageType.RECTANGULAR.
     default:
       return [-halfX, -halfY, halfX, -halfY, halfX, halfY, -halfX, halfY];
