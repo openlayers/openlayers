@@ -361,50 +361,50 @@ const PluggableMap = function(options) {
 
   this.controls.forEach(
     /**
-       * @param {ol.control.Control} control Control.
-       * @this {ol.PluggableMap}
-       */
+     * @param {ol.control.Control} control Control.
+     * @this {ol.PluggableMap}
+     */
     function(control) {
       control.setMap(this);
     }.bind(this));
 
   listen(this.controls, CollectionEventType.ADD,
     /**
-       * @param {ol.CollectionEvent} event CollectionEvent.
-       */
+     * @param {ol.CollectionEvent} event CollectionEvent.
+     */
     function(event) {
       event.element.setMap(this);
     }, this);
 
   listen(this.controls, CollectionEventType.REMOVE,
     /**
-       * @param {ol.CollectionEvent} event CollectionEvent.
-       */
+     * @param {ol.CollectionEvent} event CollectionEvent.
+     */
     function(event) {
       event.element.setMap(null);
     }, this);
 
   this.interactions.forEach(
     /**
-       * @param {ol.interaction.Interaction} interaction Interaction.
-       * @this {ol.PluggableMap}
-       */
+     * @param {ol.interaction.Interaction} interaction Interaction.
+     * @this {ol.PluggableMap}
+     */
     function(interaction) {
       interaction.setMap(this);
     }.bind(this));
 
   listen(this.interactions, CollectionEventType.ADD,
     /**
-       * @param {ol.CollectionEvent} event CollectionEvent.
-       */
+     * @param {ol.CollectionEvent} event CollectionEvent.
+     */
     function(event) {
       event.element.setMap(this);
     }, this);
 
   listen(this.interactions, CollectionEventType.REMOVE,
     /**
-       * @param {ol.CollectionEvent} event CollectionEvent.
-       */
+     * @param {ol.CollectionEvent} event CollectionEvent.
+     */
     function(event) {
       event.element.setMap(null);
     }, this);
@@ -413,16 +413,16 @@ const PluggableMap = function(options) {
 
   listen(this.overlays_, CollectionEventType.ADD,
     /**
-       * @param {ol.CollectionEvent} event CollectionEvent.
-       */
+     * @param {ol.CollectionEvent} event CollectionEvent.
+     */
     function(event) {
       this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
     }, this);
 
   listen(this.overlays_, CollectionEventType.REMOVE,
     /**
-       * @param {ol.CollectionEvent} event CollectionEvent.
-       */
+     * @param {ol.CollectionEvent} event CollectionEvent.
+     */
     function(event) {
       const overlay = /** @type {ol.Overlay} */ (event.element);
       const id = overlay.getId();
@@ -685,9 +685,7 @@ PluggableMap.prototype.getTarget = function() {
 PluggableMap.prototype.getTargetElement = function() {
   const target = this.getTarget();
   if (target !== undefined) {
-    return typeof target === 'string' ?
-      document.getElementById(target) :
-      target;
+    return typeof target === 'string' ? document.getElementById(target) : target;
   } else {
     return null;
   }

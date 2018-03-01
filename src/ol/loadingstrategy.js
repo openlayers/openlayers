@@ -48,10 +48,8 @@ export function tile(tileGrid) {
       const extents = [];
       /** @type {ol.TileCoord} */
       const tileCoord = [z, 0, 0];
-      for (tileCoord[1] = tileRange.minX; tileCoord[1] <= tileRange.maxX;
-        ++tileCoord[1]) {
-        for (tileCoord[2] = tileRange.minY; tileCoord[2] <= tileRange.maxY;
-          ++tileCoord[2]) {
+      for (tileCoord[1] = tileRange.minX; tileCoord[1] <= tileRange.maxX; ++tileCoord[1]) {
+        for (tileCoord[2] = tileRange.minY; tileCoord[2] <= tileRange.maxY; ++tileCoord[2]) {
           extents.push(tileGrid.getTileCoordExtent(tileCoord));
         }
       }

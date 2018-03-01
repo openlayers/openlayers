@@ -43,13 +43,11 @@ let HAS_WEBGL = false;
 
 if ('WebGLRenderingContext' in window) {
   try {
-    const canvas = /** @type {HTMLCanvasElement} */
-        (document.createElement('CANVAS'));
+    const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS'));
     const gl = getContext(canvas, {failIfMajorPerformanceCaveat: true});
     if (gl) {
       HAS_WEBGL = true;
-      WEBGL_MAX_TEXTURE_SIZE = /** @type {number} */
-        (gl.getParameter(gl.MAX_TEXTURE_SIZE));
+      WEBGL_MAX_TEXTURE_SIZE = /** @type {number} */ (gl.getParameter(gl.MAX_TEXTURE_SIZE));
       WEBGL_EXTENSIONS = gl.getSupportedExtensions();
     }
   } catch (e) {
