@@ -27,9 +27,10 @@ export function getTolerance(resolution, pixelRatio) {
  * @param {ol.proj.Projection} inProj Coverage projection.
  * @param {ol.proj.Projection} outProj Map projection.
  * @param {number} maxAlpha Maximum alpha value.
+ * @param {ol.CoveragePattern=} pattern Coverage pattern.
  * @return {ol.structs.RBush} R-tree filled with cells.
  */
-export function createGrid(band, shape, type, inProj, outProj, maxAlpha) {
+export function createGrid(band, shape, type, inProj, outProj, maxAlpha, pattern) {
   const reproj = !equivalent(inProj, outProj);
   const transform = getTransformFromProjections(inProj, outProj);
   const matrix = band.getCoverageData();
@@ -66,6 +67,25 @@ export function createGrid(band, shape, type, inProj, outProj, maxAlpha) {
       translate: [resolution[0], 0],
       rotate: 0
     });
+  } else {
+    const rows = pattern.rowPattern;
+    for (let i = 0, ii = rows.length; i < ii; ++i) {
+      const translate = rows[i].translate;
+      rowTransforms.insertItem({
+        translate: [translate[0] * resolution[0], translate[1] * resolution[1]],
+        rotate: rows[i].rotate,
+        offset: rows[i].offset
+      });
+    }
+
+    const cols = pattern.columnPattern;
+    for (let i = 0, ii = cols.length; i < ii; ++i) {
+      const translate = cols[i].translate;
+      colTransforms.insertItem({
+        translate: [translate[0] * resolution[0], translate[1] * resolution[1]],
+        rotate: cols[i].rotate
+      });
+    }
   }
 
   let colCursor = [origin[0], origin[1]];
@@ -79,12 +99,13 @@ export function createGrid(band, shape, type, inProj, outProj, maxAlpha) {
     for (let j = firstCell; j < lastCell; j += 4) {
       if (matrix[j + 3] !== maxAlpha) {
         let extentCursor = [colCursor[0], colCursor[1]];
-        let cell = _ol_geom_flat_transform_.translate(shape, 0, shape.length,
-          2, colCursor[0], colCursor[1]);
+        let cell = shape;
         if (rotation) {
           cell = _ol_geom_flat_transform_.rotate(cell, 0, cell.length, 2,
-            rotation, colCursor);
+            rotation, [0, 0]);
         }
+        cell = _ol_geom_flat_transform_.translate(cell, 0, cell.length, 2,
+          colCursor[0], colCursor[1]);
         if (reproj) {
           cell = transform(cell);
           extentCursor = transform(extentCursor);

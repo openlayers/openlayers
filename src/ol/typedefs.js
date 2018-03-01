@@ -169,6 +169,45 @@ ol.CoverageDrawFunctionType;
 
 
 /**
+ * A simple object describing cell shapes along with their relationship in a coverage.
+ * Every pattern starts from the centroid of the lower left cell. Column pattern
+ * describes horizontal relationship, while row pattern describes vertical.
+ * The shape must be in a normalized coordinate system (0,0 to 1,1) spanning
+ * across the bounding box of the cell (e.g. `[[0, 0], [1, 0], [1, 1], [0, 1]]`
+ * is a square).
+ *
+ * @typedef {{shape: Array.<ol.Coordinate>,
+ *            columnPattern: Array.<ol.CoverageColumnPattern>,
+ *            rowPattern: Array.<ol.CoverageRowPattern>}}
+ */
+ol.CoveragePattern;
+
+
+/**
+ * A pattern describing relationship between adjacent cells. The trasnlate parameter
+ * applies to the centroids, while the rotation applies to the shape around its centroid.
+ * Rotation is counter-clockwise, and in radians.
+ *
+ * @typedef {{translate: Array.<number>,
+ *            rotate: number}}
+ */
+ol.CoverageColumnPattern;
+
+
+/**
+ * A pattern describing relationship between adjacent rows. The trasnlate parameter
+ * applies to the centroids of the two rows' first cells, while the rotation applies
+ * to the shape around its centroid. Rotation is counter-clockwise, and in radians.
+ * The offset defines the difference between the column patters of the two rows.
+ *
+ * @typedef {{translate: Array.<number>,
+ *            rotate: number,
+ *            offset: number}}
+ */
+ol.CoverageRowPattern;
+
+
+/**
  * Convenience type for passing around common coverage properties internally.
  * @typedef {{extent: ol.Extent,
  *            nodata: (number|null),

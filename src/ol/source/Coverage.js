@@ -2,6 +2,7 @@
  * @module ol/source/Coverage
  */
 import {inherits} from '../index.js';
+import CoverageType from '../coverage/CoverageType.js';
 import Source from './Source.js';
 import {get as getProjection, equivalent} from '../proj.js';
 import {unlistenByKey, listen} from '../events.js';
@@ -46,6 +47,16 @@ const CoverageSource = function(options) {
    * @type {ol.coverage.CoverageType|null}
    */
   this.type_ = options.type;
+
+
+  /**
+   * @private
+   * @type {ol.CoveragePattern}
+   */
+  this.pattern_ = options.pattern;
+  if (this.pattern_) {
+    this.type_ = CoverageType.CUSTOM;
+  }
 
   /**
    * @private
@@ -243,6 +254,14 @@ CoverageSource.prototype.getExtent = function() {
  */
 CoverageSource.prototype.getType = function() {
   return this.type_;
+};
+
+
+/**
+ * @return {ol.CoveragePattern} Coverage pattern.
+ */
+CoverageSource.prototype.getPattern = function() {
+  return this.pattern_;
 };
 
 
