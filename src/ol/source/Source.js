@@ -1,7 +1,8 @@
 /**
  * @module ol/source/Source
  */
-import {inherits, nullFunction} from '../index.js';
+import {inherits} from '../index.js';
+import {UNDEFINED} from '../functions.js';
 import BaseObject from '../Object.js';
 import {get as getProjection} from '../proj.js';
 import SourceState from '../source/State.js';
@@ -89,7 +90,7 @@ Source.prototype.adaptAttributions_ = function(attributionLike) {
  * @return {T|undefined} Callback result.
  * @template T
  */
-Source.prototype.forEachFeatureAtCoordinate = nullFunction;
+Source.prototype.forEachFeatureAtCoordinate = UNDEFINED;
 
 
 /**

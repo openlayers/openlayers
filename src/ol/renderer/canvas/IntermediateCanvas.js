@@ -1,10 +1,11 @@
 /**
  * @module ol/renderer/canvas/IntermediateCanvas
  */
-import {inherits, nullFunction} from '../../index.js';
+import {inherits} from '../../index.js';
 import {scale as scaleCoordinate} from '../../coordinate.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, intersects} from '../../extent.js';
+import {UNDEFINED} from '../../functions.js';
 import CanvasLayerRenderer from '../canvas/Layer.js';
 import {create as createTransform, apply as applyTransform} from '../../transform.js';
 
@@ -123,7 +124,7 @@ IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = function(coordin
     return undefined;
   }
 
-  if (this.getLayer().getSource().forEachFeatureAtCoordinate !== nullFunction) {
+  if (this.getLayer().getSource().forEachFeatureAtCoordinate !== UNDEFINED) {
     // for ImageCanvas sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
     return CanvasLayerRenderer.prototype.forEachLayerAtCoordinate.apply(this, arguments);

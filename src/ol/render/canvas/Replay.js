@@ -1,7 +1,8 @@
 /**
  * @module ol/render/canvas/Replay
  */
-import {getUid, inherits, nullFunction} from '../../index.js';
+import {getUid, inherits} from '../../index.js';
+import {UNDEFINED} from '../../functions.js';
 import {equals, reverseSubArray} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
 import {buffer, clone, coordinateRelationship, createEmpty, createOrUpdate,
@@ -1068,7 +1069,7 @@ CanvasReplay.prototype.endGeometry = function(geometry, feature) {
 /**
  * FIXME empty description for jsdoc
  */
-CanvasReplay.prototype.finish = nullFunction;
+CanvasReplay.prototype.finish = UNDEFINED;
 
 
 /**

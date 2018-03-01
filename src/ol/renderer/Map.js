@@ -1,12 +1,12 @@
 /**
  * @module ol/renderer/Map
  */
-import {getUid, inherits, nullFunction} from '../index.js';
+import {getUid, inherits} from '../index.js';
 import Disposable from '../Disposable.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getWidth} from '../extent.js';
-import {TRUE} from '../functions.js';
+import {TRUE, UNDEFINED} from '../functions.js';
 import {visibleAtResolution} from '../layer/Layer.js';
 import {getLayerRendererPlugins} from '../plugins.js';
 import {iconImageCache} from '../style.js';
@@ -289,7 +289,7 @@ MapRenderer.prototype.removeLayerRendererByKey_ = function(layerKey) {
  * Render.
  * @param {?olx.FrameState} frameState Frame state.
  */
-MapRenderer.prototype.renderFrame = nullFunction;
+MapRenderer.prototype.renderFrame = UNDEFINED;
 
 
 /**

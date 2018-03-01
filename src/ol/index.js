@@ -94,14 +94,6 @@ export function inherits(childCtor, parentCtor) {
 
 
 /**
- * A reusable function, used e.g. as a default for callbacks.
- *
- * @return {undefined} Nothing.
- */
-export function nullFunction() {}
-
-
-/**
  * Counter for getUid.
  * @type {number}
  * @private

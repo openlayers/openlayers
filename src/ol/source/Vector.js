@@ -2,7 +2,7 @@
  * @module ol/source/Vector
  */
 
-import {getUid, inherits, nullFunction} from '../index.js';
+import {getUid, inherits} from '../index.js';
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import ObjectEventType from '../ObjectEventType.js';
@@ -13,7 +13,7 @@ import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, equals} from '../extent.js';
 import {xhr} from '../featureloader.js';
-import {TRUE} from '../functions.js';
+import {TRUE, UNDEFINED} from '../functions.js';
 import {all as allStrategy} from '../loadingstrategy.js';
 import {isEmpty, getValues} from '../obj.js';
 import Source from '../source/Source.js';
@@ -75,7 +75,7 @@ const VectorSource = function(opt_options) {
    * @private
    * @type {ol.FeatureLoader}
    */
-  this.loader_ = nullFunction;
+  this.loader_ = UNDEFINED;
 
   /**
    * @private

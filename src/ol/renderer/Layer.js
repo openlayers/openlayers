@@ -1,13 +1,13 @@
 /**
  * @module ol/renderer/Layer
  */
-import {getUid, inherits, nullFunction} from '../index.js';
+import {getUid, inherits} from '../index.js';
 import ImageState from '../ImageState.js';
 import Observable from '../Observable.js';
 import TileState from '../TileState.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
-import {FALSE} from '../functions.js';
+import {FALSE, UNDEFINED} from '../functions.js';
 import SourceState from '../source/State.js';
 
 /**
@@ -42,7 +42,7 @@ inherits(LayerRenderer, Observable);
  * @return {T|undefined} Callback result.
  * @template S,T
  */
-LayerRenderer.prototype.forEachFeatureAtCoordinate = nullFunction;
+LayerRenderer.prototype.forEachFeatureAtCoordinate = UNDEFINED;
 
 
 /**

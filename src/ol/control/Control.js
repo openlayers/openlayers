@@ -1,7 +1,8 @@
 /**
  * @module ol/control/Control
  */
-import {inherits, nullFunction} from '../index.js';
+import {inherits} from '../index.js';
+import {UNDEFINED} from '../functions.js';
 import MapEventType from '../MapEventType.js';
 import BaseObject from '../Object.js';
 import {removeNode} from '../dom.js';
@@ -67,7 +68,7 @@ const Control = function(options) {
   /**
    * @type {function(ol.MapEvent)}
    */
-  this.render = options.render ? options.render : nullFunction;
+  this.render = options.render ? options.render : UNDEFINED;
 
   if (options.target) {
     this.setTarget(options.target);
@@ -118,7 +119,7 @@ Control.prototype.setMap = function(map) {
     const target = this.target_ ?
       this.target_ : map.getOverlayContainerStopEvent();
     target.appendChild(this.element);
-    if (this.render !== nullFunction) {
+    if (this.render !== UNDEFINED) {
       this.listenerKeys.push(listen(map,
         MapEventType.POSTRENDER, this.render, this));
     }

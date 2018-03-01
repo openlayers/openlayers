@@ -2,7 +2,8 @@
  * @module ol/View
  */
 import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
-import {inherits, getUid, nullFunction} from './index.js';
+import {inherits, getUid} from './index.js';
+import {UNDEFINED} from './functions.js';
 import {createExtent, none as centerNone} from './centerconstraint.js';
 import BaseObject from './Object.js';
 import {createSnapToResolutions, createSnapToPower} from './resolutionconstraint.js';
@@ -948,7 +949,7 @@ View.prototype.fit = function(geometryOrExtent, opt_options) {
   const centerX = centerRotX * cosAngle - centerRotY * sinAngle;
   const centerY = centerRotY * cosAngle + centerRotX * sinAngle;
   const center = [centerX, centerY];
-  const callback = options.callback ? options.callback : nullFunction;
+  const callback = options.callback ? options.callback : UNDEFINED;
 
   if (options.duration !== undefined) {
     this.animate({

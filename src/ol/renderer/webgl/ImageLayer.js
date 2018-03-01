@@ -2,7 +2,8 @@
  * @module ol/renderer/webgl/ImageLayer
  */
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
-import {inherits, nullFunction} from '../../index.js';
+import {inherits} from '../../index.js';
+import {UNDEFINED} from '../../functions.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
@@ -254,7 +255,7 @@ WebGLImageLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameSta
     return undefined;
   }
 
-  if (this.getLayer().getSource().forEachFeatureAtCoordinate !== nullFunction) {
+  if (this.getLayer().getSource().forEachFeatureAtCoordinate !== UNDEFINED) {
     // for ImageCanvas sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
     const coordinate = applyTransform(

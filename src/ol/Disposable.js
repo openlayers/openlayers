@@ -1,7 +1,7 @@
 /**
  * @module ol/Disposable
  */
-import {nullFunction} from './index.js';
+import {UNDEFINED} from './functions.js';
 
 /**
  * Objects that need to clean up after themselves.
@@ -30,5 +30,5 @@ Disposable.prototype.dispose = function() {
  * Extension point for disposable objects.
  * @protected
  */
-Disposable.prototype.disposeInternal = nullFunction;
+Disposable.prototype.disposeInternal = UNDEFINED;
 export default Disposable;

@@ -3,8 +3,9 @@
  */
 // FIXME draw drag box
 import Event from '../events/Event.js';
-import {inherits, nullFunction} from '../index.js';
+import {inherits} from '../index.js';
 import {always, mouseOnly, mouseActionButton} from '../events/condition.js';
+import {UNDEFINED} from '../functions.js';
 import PointerInteraction from '../interaction/Pointer.js';
 import RenderBox from '../render/Box.js';
 
@@ -182,7 +183,7 @@ DragBox.prototype.getGeometry = function() {
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @protected
  */
-DragBox.prototype.onBoxEnd = nullFunction;
+DragBox.prototype.onBoxEnd = UNDEFINED;
 
 
 /**

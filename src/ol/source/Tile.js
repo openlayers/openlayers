@@ -1,7 +1,8 @@
 /**
  * @module ol/source/Tile
  */
-import {inherits, nullFunction} from '../index.js';
+import {inherits} from '../index.js';
+import {UNDEFINED} from '../functions.js';
 import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import Event from '../events/Event.js';
@@ -303,7 +304,7 @@ TileSource.prototype.refresh = function() {
  * @param {number} y Tile coordinate y.
  * @param {ol.proj.Projection} projection Projection.
  */
-TileSource.prototype.useTile = nullFunction;
+TileSource.prototype.useTile = UNDEFINED;
 
 
 /**
