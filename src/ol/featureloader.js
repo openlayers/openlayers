@@ -1,7 +1,7 @@
 /**
  * @module ol/featureloader
  */
-import {nullFunction} from './index.js';
+import {UNDEFINED} from './functions.js';
 import FormatType from './format/FormatType.js';
 import {parse} from './xml.js';
 
@@ -88,11 +88,11 @@ export function loadFeaturesXhr(url, format, success, failure) {
 export function xhr(url, format) {
   return loadFeaturesXhr(url, format,
     /**
-       * @param {Array.<ol.Feature>} features The loaded features.
-       * @param {ol.proj.Projection} dataProjection Data projection.
-       * @this {ol.source.Vector}
-       */
+     * @param {Array.<ol.Feature>} features The loaded features.
+     * @param {ol.proj.Projection} dataProjection Data projection.
+     * @this {ol.source.Vector}
+     */
     function(features, dataProjection) {
       this.addFeatures(features);
-    }, /* FIXME handle error */ nullFunction);
+    }, /* FIXME handle error */ UNDEFINED);
 }

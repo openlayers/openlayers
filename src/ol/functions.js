@@ -17,3 +17,10 @@ export function TRUE() {
 export function FALSE() {
   return false;
 }
+
+/**
+ * A reusable function, used e.g. as a default for callbacks.
+ *
+ * @return {undefined} Nothing.
+ */
+export function UNDEFINED() {}

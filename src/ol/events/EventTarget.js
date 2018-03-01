@@ -1,9 +1,10 @@
 /**
  * @module ol/events/EventTarget
  */
-import {inherits, nullFunction} from '../index.js';
+import {inherits} from '../index.js';
 import Disposable from '../Disposable.js';
 import {unlistenAll} from '../events.js';
+import {UNDEFINED} from '../functions.js';
 import Event from '../events/Event.js';
 
 /**
@@ -96,7 +97,7 @@ EventTarget.prototype.dispatchEvent = function(event) {
       let pendingRemovals = this.pendingRemovals_[type];
       delete this.pendingRemovals_[type];
       while (pendingRemovals--) {
-        this.removeEventListener(type, nullFunction);
+        this.removeEventListener(type, UNDEFINED);
       }
       delete this.dispatching_[type];
     }
@@ -147,7 +148,7 @@ EventTarget.prototype.removeEventListener = function(type, listener) {
     const index = listeners.indexOf(listener);
     if (type in this.pendingRemovals_) {
       // make listener a no-op, and remove later in #dispatchEvent()
-      listeners[index] = nullFunction;
+      listeners[index] = UNDEFINED;
       ++this.pendingRemovals_[type];
     } else {
       listeners.splice(index, 1);
