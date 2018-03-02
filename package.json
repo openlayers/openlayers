@@ -47,7 +47,7 @@
     "babel-cli": "6.26.0",
     "babel-minify-webpack-plugin": "^0.3.0",
     "babel-plugin-jsdoc-closure": "1.2.0",
-    "clean-css-cli": "4.1.10",
+    "clean-css-cli": "4.1.11",
     "copy-webpack-plugin": "^4.0.1",
     "coveralls": "3.0.0",
     "eslint": "4.18.1",
