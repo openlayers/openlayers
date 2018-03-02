@@ -11,6 +11,8 @@ import WebGLReplayGroup from '../../render/webgl/ReplayGroup.js';
 import {getTolerance, createGrid, renderCoverage} from '../coverage.js';
 import CoverageType from '../../coverage/CoverageType.js';
 import _ol_geom_flat_deflate_ from '../../geom/flat/deflate.js';
+import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
+import Tessellator from '../../webgl/Tessellator.js';
 import {equivalent, transformExtent} from '../../proj.js';
 
 /**
@@ -136,10 +138,11 @@ WebGLCoverageLayerRenderer.prototype.prepareFrame = function(frameState, layerSt
     if (!styledCoverage) {
       return false;
     }
-    const cell = this.getCellCoordinates_(type, styledCoverage.getResolution());
+    const pattern = coverageSource.getPattern();
+    const cell = this.getCellCoordinates_(type, styledCoverage.getResolution(), pattern);
     const vertices = cell.vertices.length;
     const rtree = createGrid(styledCoverage, cell.vertices, type,
-      coverageSource.getProjection(), projection, 0);
+      coverageSource.getProjection(), projection, 0, pattern);
 
     this.renderedChecksum_ = style.getChecksum();
     this.renderedSourceRevision_ = coverageSource.getRevision();
@@ -211,10 +214,11 @@ WebGLCoverageLayerRenderer.prototype.hasFeatureAtCoordinate = function(coordinat
  * @private
  * @param {ol.coverage.CoverageType} type Coverage type.
  * @param {ol.Size} resolution Cell resolution.
+ * @param {ol.CoveragePattern} pattern Coverage pattern.
  * @return {{vertices: Array.<number>,
              indices: Array.<number>}} Cell coordinates relative to centroid and indices.
  */
-WebGLCoverageLayerRenderer.prototype.getCellCoordinates_ = function(type, resolution) {
+WebGLCoverageLayerRenderer.prototype.getCellCoordinates_ = function(type, resolution, pattern) {
   const shape = {
     vertices: [],
     indices: []
@@ -229,7 +233,13 @@ WebGLCoverageLayerRenderer.prototype.getCellCoordinates_ = function(type, resolu
       shape.indices = [0, 1, 2, 2, 3, 0, 0, 3, 5, 5, 3, 4];
       break;
     case CoverageType.CUSTOM:
-      // TODO: Implement custom pattern expansion.
+      let cellShape = [];
+      _ol_geom_flat_deflate_.coordinates(cellShape, 0, pattern.shape, 2);
+      cellShape = _ol_geom_flat_transform_.scale(cellShape, 0, cellShape.length, 2,
+        resolution[0], resolution[1], [0, 0]);
+      const tessellator = new Tessellator(cellShape, [], 2);
+      shape.vertices = tessellator.vertices;
+      shape.indices = tessellator.indices;
       break;
     // Default type is CoverageType.RECTANGULAR.
     default:
