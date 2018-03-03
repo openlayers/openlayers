@@ -41,7 +41,7 @@ let WEBGL_EXTENSIONS; // value is set below
 let HAS_WEBGL = false;
 
 
-if ('WebGLRenderingContext' in window) {
+if (typeof window !== 'undefined' && 'WebGLRenderingContext' in window) {
   try {
     const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS'));
     const gl = getContext(canvas, {failIfMajorPerformanceCaveat: true});

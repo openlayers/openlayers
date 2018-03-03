@@ -167,7 +167,7 @@ export const checkFont = (function() {
       }
     }
     if (done) {
-      window.clearInterval(interval);
+      clearInterval(interval);
       interval = undefined;
     }
   }
@@ -184,7 +184,7 @@ export const checkFont = (function() {
         if (!isAvailable(fontFamily)) {
           checked[fontFamily] = 0;
           if (interval === undefined) {
-            interval = window.setInterval(check, 32);
+            interval = setInterval(check, 32);
           }
         }
       }
