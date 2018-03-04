@@ -74,7 +74,7 @@ export const POINTER_ID = 1;
 /**
  * @type {string}
  */
-const POINTER_TYPE = 'mouse';
+export const POINTER_TYPE = 'mouse';
 
 
 /**

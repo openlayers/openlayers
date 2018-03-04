@@ -199,7 +199,7 @@ inherits(PointerEvent, Event);
  * Is the `buttons` property supported?
  * @type {boolean}
  */
-const HAS_BUTTONS = false;
+let HAS_BUTTONS = false;
 
 
 /**
@@ -269,7 +269,7 @@ PointerEvent.prototype.getPressure_ = function(eventDict, buttons) {
 (function() {
   try {
     const ev = new MouseEvent('click', {buttons: 1});
-    PointerEvent.HAS_BUTTONS = ev.buttons === 1;
+    HAS_BUTTONS = ev.buttons === 1;
   } catch (e) {
     // pass
   }

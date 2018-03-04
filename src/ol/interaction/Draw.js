@@ -19,7 +19,7 @@ import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
-import MouseSource from '../pointer/MouseSource.js';
+import {POINTER_TYPE} from '../pointer/MouseSource.js';
 import Point from '../geom/Point.js';
 import Polygon, {fromCircle, makeRegular} from '../geom/Polygon.js';
 import PointerInteraction, {handleEvent as handlePointerEvent} from '../interaction/Pointer.js';
@@ -435,7 +435,7 @@ export function handleEvent(event) {
     pass = event.type === MapBrowserEventType.POINTERMOVE;
     if (pass && this.freehand_) {
       pass = this.handlePointerMove_(event);
-    } else if (event.pointerEvent.pointerType == MouseSource.POINTER_TYPE ||
+    } else if (event.pointerEvent.pointerType == POINTER_TYPE ||
         (event.type === MapBrowserEventType.POINTERDRAG && !this.downTimeout_)) {
       this.handlePointerMove_(event);
     }
