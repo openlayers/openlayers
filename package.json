@@ -81,7 +81,7 @@
     "sinon": "4.4.2",
     "url-polyfill": "^1.0.7",
     "walk": "^2.3.9",
-    "webpack": "3.11.0",
+    "webpack": "4.1.0",
     "webpack-dev-server": "2.11.1",
     "webpack-merge": "4.1.2"
   },
