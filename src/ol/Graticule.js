@@ -2,6 +2,7 @@
  * @module ol/Graticule
  */
 import {degreesToStringHDMS} from './coordinate.js';
+import {listen, unlistenByKey} from './events.js';
 import {intersects, getCenter} from './extent.js';
 import GeometryLayout from './geom/GeometryLayout.js';
 import LineString from './geom/LineString.js';
@@ -129,8 +130,13 @@ const Graticule = function(opt_options) {
   this.map_ = null;
 
   /**
-   * @type {ol.proj.Projection}
+   * @type {?ol.EventsKey}
    * @private
+   */
+  this.postcomposeListenerKey_ = null;
+
+  /**
+   * @type {ol.proj.Projection}
    */
   this.projection_ = null;
 
@@ -721,11 +727,12 @@ Graticule.prototype.updateProjectionInfo_ = function(projection) {
  */
 Graticule.prototype.setMap = function(map) {
   if (this.map_) {
-    this.map_.un(RenderEventType.POSTCOMPOSE, this.handlePostCompose_, this);
+    unlistenByKey(this.postcomposeListenerKey_);
+    this.postcomposeListenerKey_ = null;
     this.map_.render();
   }
   if (map) {
-    map.on(RenderEventType.POSTCOMPOSE, this.handlePostCompose_, this);
+    this.postcomposeListenerKey_ = listen(map, RenderEventType.POSTCOMPOSE, this.handlePostCompose_, this);
     map.render();
   }
   this.map_ = map;
