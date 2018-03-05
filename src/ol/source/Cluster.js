@@ -6,6 +6,7 @@ import {getUid, inherits} from '../index.js';
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
 import {scale as scaleCoordinate, add as addCoordinate} from '../coordinate.js';
+import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
 import Point from '../geom/Point.js';
@@ -66,8 +67,7 @@ const Cluster = function(options) {
    */
   this.source = options.source;
 
-  this.source.on(EventType.CHANGE,
-    Cluster.prototype.refresh, this);
+  listen(this.source, EventType.CHANGE, this.refresh, this);
 };
 
 inherits(Cluster, VectorSource);
