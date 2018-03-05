@@ -224,10 +224,8 @@ WebGLContext.prototype.getShader = function(shaderObject) {
  * @param {ol.webgl.Vertex} vertexShaderObject Vertex shader.
  * @return {WebGLProgram} Program.
  */
-WebGLContext.prototype.getProgram = function(
-  fragmentShaderObject, vertexShaderObject) {
-  const programKey =
-      getUid(fragmentShaderObject) + '/' + getUid(vertexShaderObject);
+WebGLContext.prototype.getProgram = function(fragmentShaderObject, vertexShaderObject) {
+  const programKey = getUid(fragmentShaderObject) + '/' + getUid(vertexShaderObject);
   if (programKey in this.programCache_) {
     return this.programCache_[programKey];
   } else {

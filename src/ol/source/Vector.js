@@ -490,10 +490,10 @@ VectorSource.prototype.forEachFeatureInExtent = function(extent, callback) {
 VectorSource.prototype.forEachFeatureIntersectingExtent = function(extent, callback) {
   return this.forEachFeatureInExtent(extent,
     /**
-       * @param {ol.Feature} feature Feature.
-       * @return {T|undefined} The return value from the last call to the callback.
-       * @template T
-       */
+     * @param {ol.Feature} feature Feature.
+     * @return {T|undefined} The return value from the last call to the callback.
+     * @template T
+     */
     function(feature) {
       const geometry = feature.getGeometry();
       if (geometry.intersectsExtent(extent)) {
@@ -754,17 +754,16 @@ VectorSource.prototype.isEmpty = function() {
  * @param {number} resolution Resolution.
  * @param {ol.proj.Projection} projection Projection.
  */
-VectorSource.prototype.loadFeatures = function(
-  extent, resolution, projection) {
+VectorSource.prototype.loadFeatures = function(extent, resolution, projection) {
   const loadedExtentsRtree = this.loadedExtentsRtree_;
   const extentsToLoad = this.strategy_(extent, resolution);
   for (let i = 0, ii = extentsToLoad.length; i < ii; ++i) {
     const extentToLoad = extentsToLoad[i];
     const alreadyLoaded = loadedExtentsRtree.forEachInExtent(extentToLoad,
       /**
-         * @param {{extent: ol.Extent}} object Object.
-         * @return {boolean} Contains.
-         */
+       * @param {{extent: ol.Extent}} object Object.
+       * @return {boolean} Contains.
+       */
       function(object) {
         return containsExtent(object.extent, extentToLoad);
       });

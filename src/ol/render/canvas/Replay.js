@@ -16,7 +16,9 @@ import {transform2D} from '../../geom/flat/transform.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
 import {isEmpty} from '../../obj.js';
 import VectorContext from '../VectorContext.js';
-import {drawImage, resetTransform, defaultPadding, defaultFillStyle, defaultStrokeStyle, defaultMiterLimit, defaultLineWidth, defaultLineJoin, defaultLineDashOffset, defaultLineDash, defaultLineCap} from '../canvas.js';
+import {drawImage, resetTransform, defaultPadding, defaultFillStyle, defaultStrokeStyle,
+  defaultMiterLimit, defaultLineWidth, defaultLineJoin, defaultLineDashOffset,
+  defaultLineDash, defaultLineCap} from '../canvas.js';
 import CanvasInstruction from '../canvas/Instruction.js';
 import {TEXT_ALIGN} from '../replay.js';
 import {
@@ -581,8 +583,7 @@ CanvasReplay.prototype.replay_ = function(
 
   // When the batch size gets too big, performance decreases. 200 is a good
   // balance between batch size and number of fill/stroke instructions.
-  const batchSize =
-      this.instructions != instructions || this.overlaps ? 0 : 200;
+  const batchSize = this.instructions != instructions || this.overlaps ? 0 : 200;
   let /** @type {ol.Feature|ol.render.Feature} */ feature;
   let x, y;
   while (i < ii) {

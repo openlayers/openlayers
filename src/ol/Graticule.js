@@ -192,8 +192,7 @@ const Graticule = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.targetSize_ = options.targetSize !== undefined ?
-    options.targetSize : 100;
+  this.targetSize_ = options.targetSize !== undefined ? options.targetSize : 100;
 
   /**
    * @type {number}
@@ -337,8 +336,7 @@ const Graticule = function(opt_options) {
  * @private
  */
 Graticule.prototype.addMeridian_ = function(lon, minLat, maxLat, squaredTolerance, extent, index) {
-  const lineString = this.getMeridian_(lon, minLat, maxLat,
-    squaredTolerance, index);
+  const lineString = this.getMeridian_(lon, minLat, maxLat, squaredTolerance, index);
   if (intersects(lineString.getExtent(), extent)) {
     if (this.meridiansLabels_) {
       const textPoint = this.getMeridianPoint_(lineString, extent, index);
@@ -385,8 +383,7 @@ Graticule.prototype.getMeridianPoint_ = function(lineString, extent, index) {
  * @private
  */
 Graticule.prototype.addParallel_ = function(lat, minLon, maxLon, squaredTolerance, extent, index) {
-  const lineString = this.getParallel_(lat, minLon, maxLon, squaredTolerance,
-    index);
+  const lineString = this.getParallel_(lat, minLon, maxLon, squaredTolerance, index);
   if (intersects(lineString.getExtent(), extent)) {
     if (this.parallelsLabels_) {
       const textPoint = this.getParallelPoint_(lineString, extent, index);
@@ -457,8 +454,7 @@ Graticule.prototype.createGraticule_ = function(extent, center, resolution, squa
     Math.min(extent[3], this.maxLatP_)
   ];
 
-  validExtent = transformExtent(validExtent, this.projection_,
-    'EPSG:4326');
+  validExtent = transformExtent(validExtent, this.projection_, 'EPSG:4326');
   const maxLat = validExtent[3];
   const maxLon = validExtent[2];
   const minLat = validExtent[1];
@@ -572,10 +568,8 @@ Graticule.prototype.getMap = function() {
  * @private
  */
 Graticule.prototype.getMeridian_ = function(lon, minLat, maxLat, squaredTolerance, index) {
-  const flatCoordinates = meridian(lon,
-    minLat, maxLat, this.projection_, squaredTolerance);
-  const lineString = this.meridians_[index] !== undefined ?
-    this.meridians_[index] : new LineString(null);
+  const flatCoordinates = meridian(lon, minLat, maxLat, this.projection_, squaredTolerance);
+  const lineString = this.meridians_[index] !== undefined ? this.meridians_[index] : new LineString(null);
   lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
   return lineString;
 };
@@ -601,10 +595,8 @@ Graticule.prototype.getMeridians = function() {
  * @private
  */
 Graticule.prototype.getParallel_ = function(lat, minLon, maxLon, squaredTolerance, index) {
-  const flatCoordinates = parallel(lat,
-    minLon, maxLon, this.projection_, squaredTolerance);
-  const lineString = this.parallels_[index] !== undefined ?
-    this.parallels_[index] : new LineString(null);
+  const flatCoordinates = parallel(lat, minLon, maxLon, this.projection_, squaredTolerance);
+  const lineString = this.parallels_[index] !== undefined ? this.parallels_[index] : new LineString(null);
   lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
   return lineString;
 };
@@ -685,8 +677,7 @@ Graticule.prototype.updateProjectionInfo_ = function(projection) {
 
   const extent = projection.getExtent();
   const worldExtent = projection.getWorldExtent();
-  const worldExtentP = transformExtent(worldExtent,
-    epsg4326Projection, projection);
+  const worldExtentP = transformExtent(worldExtent, epsg4326Projection, projection);
 
   const maxLat = worldExtent[3];
   const maxLon = worldExtent[2];

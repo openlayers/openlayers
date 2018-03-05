@@ -479,8 +479,7 @@ GML2.prototype.writePoint_ = function(node, geometry, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-GML2.prototype.writeMultiPoint_ = function(node, geometry,
-  objectStack) {
+GML2.prototype.writeMultiPoint_ = function(node, geometry, objectStack) {
   const context = objectStack[objectStack.length - 1];
   const hasZ = context['hasZ'];
   const srsName = context['srsName'];

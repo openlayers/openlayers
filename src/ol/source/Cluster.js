@@ -96,8 +96,7 @@ Cluster.prototype.getSource = function() {
 /**
  * @inheritDoc
  */
-Cluster.prototype.loadFeatures = function(extent, resolution,
-  projection) {
+Cluster.prototype.loadFeatures = function(extent, resolution, projection) {
   this.source.loadFeatures(extent, resolution, projection);
   if (resolution !== this.resolution) {
     this.clear();

@@ -543,8 +543,7 @@ View.prototype.constrainCenter = function(center) {
  * @return {number|undefined} Constrained resolution.
  * @api
  */
-View.prototype.constrainResolution = function(
-  resolution, opt_delta, opt_direction) {
+View.prototype.constrainResolution = function(resolution, opt_delta, opt_direction) {
   const delta = opt_delta || 0;
   const direction = opt_direction || 0;
   return this.constraints_.resolution(resolution, delta, direction);
