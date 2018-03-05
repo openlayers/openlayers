@@ -55,66 +55,6 @@ Your pull request must:
  * Be possible to merge automatically.
 
 
-### The `check` build target
-
-It is strongly recommended that you run
-
-    $ make check
-
-before every commit.  This will catch many problems quickly, and it is much
-faster than waiting for the Travis CI integration tests to run.
-
-The `check` build target runs a number of quick tests on your code.  These
-include:
-
- * Lint
- * Compile
- * Tests
-
-
-### Follow OpenLayers's coding style
-
-OpenLayers follows [Google's JavaScript Style
-Guide](https://google.github.io/styleguide/javascriptguide.xml).
-This is checked using [ESLint](http://eslint.org/), you
-can run the linter locally on your machine before committing using the `lint`
-target:
-
-    $ make lint
-
-In addition to fixing problems identified by the linter, please also follow the
-style of the existing OpenLayers code, which includes:
-
- * Always wrap the body of `for`, `if`, and `while` statements in braces.
-
- * Class methods should be in alphabetical order.
-
- * `var` declarations should not span multiple lines.  If you cannot fit all
-   the declarations in a single line, then start a new `var` declaration on a
-   new line.  Within a single line, variables should be declared in
-   alphabetical order.
-
- * Do not use assignments inside expressions.
-
- * Use uppercase for `@const` variables.
-
-### Configure your editor
-
-If possible, configure your editor to follow the coding conventions of the
-library.  A `.editorconfig` file is included at the root of the repository that
-can be used to configure whitespace and charset handling in your editor.  See
-that file for a description of the conventions.  The [EditorConfig](
-http://editorconfig.org/#download) site links to plugins for various editors.
-
-### Pass the integration tests run automatically by the Travis CI system
-
-The integration tests contain a number of automated checks to ensure that the
-code follows the OpenLayers style and does not break tests or examples.  You
-can run the integration tests locally using the `ci` target:
-
-    $ make ci
-
-
 ### Address a single issue or add a single item of functionality
 
 Please submit separate pull requests for separate issues.  This allows each to
@@ -168,33 +108,3 @@ Occasionally other changes to `master` might mean that your pull request cannot
 be merged automatically.  In this case you may need to rebase your branch on a
 more recent `master`, resolve any conflicts, and `git push --force` to update
 your branch so that it can be merged automatically.
-
-## Building on Windows
-
-Most developers build on Linux. Building on Windows is possible under Cygwin.
-When installing Cygwin from https://www.cygwin.com/, include the developer
-tools to get GNU make.
-
-First (before npm install), to avoid file permission problems between Windows
-and Cygwin, edit Cygwin's /etc/fstab file to disable ACLs like this
-`none /cygdrive cygdrive binary,noacl,posix=0,user 0 0`
-
-Python is normally installed with Cygwin so need not be installed separately.
-By default Cygwin will use its own version of Python rather than Window's,
-so the Python modules should be installed for Cygwin's Python.
-
-The build targets `check-deps`, `serve`, `lint`, `build`, `test`, `check` and
-`host-examples` described above should all work. `host-examples` takes quite a
-while to run. If a target does not run properly first time, try it again.
-
-Currently, Firefox fails to run http://localhost:3000/build/examples
-from make serve, but Chrome and Internet Explorer will.
-
-Microsoft Visual Studio's javascript debugger may be used to debug the
-build/hosted/your-branch/examples. It will be convenient to set
-build/hosted/your-branch/examples/index.html as the startup page.
-
-Your OpenLayers source tree need not be under the Cygwin root.
-if you checkout to c:/openlayers then you can build under Cygwin at /cygdrive/c/openlayers .
-However, keep the path to the OpenLayers files short otherwise you may see
-`ENAMETOOLONG` errors.

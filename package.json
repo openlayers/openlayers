@@ -9,7 +9,7 @@
   ],
   "homepage": "https://openlayers.org/",
   "scripts": {
-    "lint": "eslint tasks test src/ol examples transforms",
+    "lint": "eslint tasks test src/ol examples",
     "pretest": "npm run lint",
     "posttest": "npm run typecheck",
     "test": "npm run karma -- --single-run",
@@ -61,7 +61,6 @@
     "html-webpack-plugin": "^3.0.1",
     "istanbul": "0.4.5",
     "jquery": "3.3.1",
-    "jscodeshift": "^0.4.0",
     "jsdoc": "3.5.5",
     "karma": "^2.0.0",
     "karma-chrome-launcher": "2.2.0",
@@ -82,7 +81,6 @@
     "url-polyfill": "^1.0.7",
     "walk": "^2.3.9",
     "webpack": "3.11.0",
-    "webpack-dev-server": "2.11.1",
     "webpack-merge": "4.1.2"
   },
   "eslintConfig": {
