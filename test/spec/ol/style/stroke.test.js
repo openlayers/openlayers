@@ -14,6 +14,7 @@ describe('ol.style.Stroke', function() {
     it('copies all values', function() {
       const original = new Stroke({
         color: '#319FD3',
+        lineAlignment: 'inner',
         lineCap: 'square',
         lineJoin: 'miter',
         lineDash: [1, 2, 3],
@@ -23,6 +24,7 @@ describe('ol.style.Stroke', function() {
       });
       const clone = original.clone();
       expect(original.getColor()).to.eql(clone.getColor());
+      expect(original.getLineAlignment()).to.eql(clone.getLineAlignment());
       expect(original.getLineCap()).to.eql(clone.getLineCap());
       expect(original.getLineJoin()).to.eql(clone.getLineJoin());
       expect(original.getLineDash()).to.eql(clone.getLineDash());

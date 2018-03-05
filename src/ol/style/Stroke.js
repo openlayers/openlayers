@@ -9,6 +9,7 @@ import {getUid} from '../index.js';
  * @property {module:ol/color~Color|module:ol/colorlike~ColorLike} [color] A color, gradient or pattern.
  * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
  * Default null; if null, the Canvas/renderer default black will be used.
+ * @property {string} [lineAlignment='center']  Line alignment: `center`, `inner`.
  * @property {string} [lineCap='round'] Line cap style: `butt`, `round`, or `square`.
  * @property {string} [lineJoin='round'] Line join style: `bevel`, `round`, or `miter`.
  * @property {Array.<number>} [lineDash] Line dash pattern. Default is `undefined` (no dash).
@@ -40,6 +41,12 @@ const Stroke = function(opt_options) {
    * @type {module:ol/color~Color|module:ol/colorlike~ColorLike}
    */
   this.color_ = options.color !== undefined ? options.color : null;
+
+  /**
+   * @private
+   * @type {string|undefined}
+   */
+  this.lineAlignment_ = options.lineAlignment;
 
   /**
    * @private
@@ -94,6 +101,7 @@ Stroke.prototype.clone = function() {
   const color = this.getColor();
   return new Stroke({
     color: (color && color.slice) ? color.slice() : color || undefined,
+    lineAlignment: this.getLineAlignment(),
     lineCap: this.getLineCap(),
     lineDash: this.getLineDash() ? this.getLineDash().slice() : undefined,
     lineDashOffset: this.getLineDashOffset(),
@@ -111,6 +119,16 @@ Stroke.prototype.clone = function() {
  */
 Stroke.prototype.getColor = function() {
   return this.color_;
+};
+
+
+/**
+ * Get the line alignment type for the stroke.
+ * @return {string|undefined} Line alignment.
+ * @api
+ */
+Stroke.prototype.getLineAlignment = function() {
+  return this.lineAlignment_;
 };
 
 
@@ -182,6 +200,18 @@ Stroke.prototype.getWidth = function() {
  */
 Stroke.prototype.setColor = function(color) {
   this.color_ = color;
+  this.checksum_ = undefined;
+};
+
+
+/**
+ * Set the line alignment.
+ *
+ * @param {string|undefined} lineAlignment Line alignment.
+ * @api
+ */
+Stroke.prototype.setLineAlignment = function(lineAlignment) {
+  this.lineAlignment_ = lineAlignment;
   this.checksum_ = undefined;
 };
 
@@ -280,6 +310,8 @@ Stroke.prototype.getChecksum = function() {
       this.checksum_ += '-';
     }
     this.checksum_ += ',' +
+        (this.lineAlignment_ !== undefined ?
+          this.lineAlignment_.toString() : '-') + ',' +
         (this.lineCap_ !== undefined ?
           this.lineCap_.toString() : '-') + ',' +
         (this.lineDash_ ?

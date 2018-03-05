@@ -18,7 +18,7 @@ import {isEmpty} from '../../obj.js';
 import VectorContext from '../VectorContext.js';
 import {drawImage, resetTransform, defaultPadding, defaultFillStyle, defaultStrokeStyle,
   defaultMiterLimit, defaultLineWidth, defaultLineJoin, defaultLineDashOffset,
-  defaultLineDash, defaultLineCap} from '../canvas.js';
+  defaultLineDash, defaultLineCap, defaultLineAlignment} from '../canvas.js';
 import CanvasInstruction from '../canvas/Instruction.js';
 import {TEXT_ALIGN} from '../replay.js';
 import {
@@ -822,7 +822,16 @@ CanvasReplay.prototype.replay_ = function(
         if (batchSize) {
           pendingStroke++;
         } else {
-          context.stroke();
+          const alignment = /** @type {string} */ (lastStrokeInstruction[8]);
+          if (alignment === 'inner') {
+            context.save();
+            context.clip();
+            context.lineWidth *= 2;
+            context.stroke();
+            context.restore();
+          } else {
+            context.stroke();
+          }
         }
         ++i;
         break;
@@ -921,6 +930,9 @@ CanvasReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
     const strokeStyleColor = strokeStyle.getColor();
     state.strokeStyle = asColorLike(strokeStyleColor ?
       strokeStyleColor : defaultStrokeStyle);
+    const strokeStyleLineAlignment = strokeStyle.getLineAlignment();
+    state.lineAlignment = strokeStyleLineAlignment !== undefined ?
+      strokeStyleLineAlignment : defaultLineAlignment;
     const strokeStyleLineCap = strokeStyle.getLineCap();
     state.lineCap = strokeStyleLineCap !== undefined ?
       strokeStyleLineCap : defaultLineCap;
@@ -947,6 +959,7 @@ CanvasReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
     }
   } else {
     state.strokeStyle = undefined;
+    state.lineAlignment = undefined;
     state.lineCap = undefined;
     state.lineDash = null;
     state.lineDashOffset = undefined;
@@ -990,7 +1003,8 @@ CanvasReplay.prototype.createStroke = function(state) {
     CanvasInstruction.SET_STROKE_STYLE,
     state.strokeStyle, state.lineWidth * this.pixelRatio, state.lineCap,
     state.lineJoin, state.miterLimit,
-    this.applyPixelRatio(state.lineDash), state.lineDashOffset * this.pixelRatio
+    this.applyPixelRatio(state.lineDash), state.lineDashOffset * this.pixelRatio,
+    state.lineAlignment
   ];
 };
 
@@ -1017,6 +1031,7 @@ CanvasReplay.prototype.updateFillStyle = function(state, createFill, geometry) {
  */
 CanvasReplay.prototype.updateStrokeStyle = function(state, applyStroke) {
   const strokeStyle = state.strokeStyle;
+  const lineAlignment = state.lineAlignment;
   const lineCap = state.lineCap;
   const lineDash = state.lineDash;
   const lineDashOffset = state.lineDashOffset;
@@ -1024,6 +1039,7 @@ CanvasReplay.prototype.updateStrokeStyle = function(state, applyStroke) {
   const lineWidth = state.lineWidth;
   const miterLimit = state.miterLimit;
   if (state.currentStrokeStyle != strokeStyle ||
+      state.currentLineAlignment != lineAlignment ||
       state.currentLineCap != lineCap ||
       (lineDash != state.currentLineDash && !equals(state.currentLineDash, lineDash)) ||
       state.currentLineDashOffset != lineDashOffset ||
@@ -1034,6 +1050,7 @@ CanvasReplay.prototype.updateStrokeStyle = function(state, applyStroke) {
       applyStroke.call(this, state);
     }
     state.currentStrokeStyle = strokeStyle;
+    state.currentLineAlignment = lineAlignment;
     state.currentLineCap = lineCap;
     state.currentLineDash = lineDash;
     state.currentLineDashOffset = lineDashOffset;

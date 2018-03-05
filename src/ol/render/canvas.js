@@ -87,6 +87,13 @@ export const defaultFillStyle = [0, 0, 0, 1];
  * @const
  * @type {string}
  */
+export const defaultLineAlignment = 'center';
+
+
+/**
+ * @const
+ * @type {string}
+ */
 export const defaultLineCap = 'round';
 
 

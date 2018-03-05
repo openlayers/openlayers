@@ -48,11 +48,9 @@ const map = new Map({
 
 const highlightStyle = new Style({
   stroke: new Stroke({
-    color: '#f00',
-    width: 1
-  }),
-  fill: new Fill({
-    color: 'rgba(255,0,0,0.1)'
+    color: 'rgba(255,0,0,0.6)',
+    lineAlignment: 'inner',
+    width: 8
   }),
   text: new Text({
     font: '12px Calibri,sans-serif',

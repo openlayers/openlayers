@@ -30,15 +30,21 @@ const styleFunction = (function() {
       width: 3
     })
   });
-  styles['MultiPolygon'] = new Style({
-    stroke: new Stroke({
-      color: 'yellow',
-      width: 1
+  styles['MultiPolygon'] = [
+    new Style({
+      stroke: new Stroke({
+        color: 'rgba(255, 255, 0, 1.0)',
+        width: 1
+      })
     }),
-    fill: new Fill({
-      color: 'rgba(255, 255, 0, 0.1)'
+    new Style({
+      stroke: new Stroke({
+        color: 'rgba(255, 255, 0, 0.25)',
+        lineAlignment: 'inner',
+        width: 10
+      })
     })
-  });
+  ];
   styles['default'] = new Style({
     stroke: new Stroke({
       color: 'red',
