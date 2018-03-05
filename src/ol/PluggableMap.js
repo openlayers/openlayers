@@ -500,15 +500,11 @@ PluggableMap.prototype.addOverlayInternal_ = function(overlay) {
  */
 PluggableMap.prototype.disposeInternal = function() {
   this.mapBrowserEventHandler_.dispose();
-  unlisten(this.viewport_, EventType.CONTEXTMENU,
-    this.handleBrowserEvent, this);
-  unlisten(this.viewport_, EventType.WHEEL,
-    this.handleBrowserEvent, this);
-  unlisten(this.viewport_, EventType.MOUSEWHEEL,
-    this.handleBrowserEvent, this);
+  unlisten(this.viewport_, EventType.CONTEXTMENU, this.handleBrowserEvent, this);
+  unlisten(this.viewport_, EventType.WHEEL, this.handleBrowserEvent, this);
+  unlisten(this.viewport_, EventType.MOUSEWHEEL, this.handleBrowserEvent, this);
   if (this.handleResize_ !== undefined) {
-    removeEventListener(EventType.RESIZE,
-      this.handleResize_, false);
+    removeEventListener(EventType.RESIZE, this.handleResize_, false);
     this.handleResize_ = undefined;
   }
   if (this.animationDelayKey_) {
@@ -792,8 +788,7 @@ PluggableMap.prototype.getPixelFromCoordinate = function(coordinate) {
   if (!frameState) {
     return null;
   } else {
-    return applyTransform(frameState.coordinateToPixelTransform,
-      coordinate.slice(0, 2));
+    return applyTransform(frameState.coordinateToPixelTransform, coordinate.slice(0, 2));
   }
 };
 
@@ -1010,8 +1005,7 @@ PluggableMap.prototype.handleTargetChanged_ = function() {
     this.renderer_.removeLayerRenderers();
     removeNode(this.viewport_);
     if (this.handleResize_ !== undefined) {
-      removeEventListener(EventType.RESIZE,
-        this.handleResize_, false);
+      removeEventListener(EventType.RESIZE, this.handleResize_, false);
       this.handleResize_ = undefined;
     }
   } else {
@@ -1020,16 +1014,13 @@ PluggableMap.prototype.handleTargetChanged_ = function() {
     const keyboardEventTarget = !this.keyboardEventTarget_ ?
       targetElement : this.keyboardEventTarget_;
     this.keyHandlerKeys_ = [
-      listen(keyboardEventTarget, EventType.KEYDOWN,
-        this.handleBrowserEvent, this),
-      listen(keyboardEventTarget, EventType.KEYPRESS,
-        this.handleBrowserEvent, this)
+      listen(keyboardEventTarget, EventType.KEYDOWN, this.handleBrowserEvent, this),
+      listen(keyboardEventTarget, EventType.KEYPRESS, this.handleBrowserEvent, this)
     ];
 
     if (!this.handleResize_) {
       this.handleResize_ = this.updateSize.bind(this);
-      addEventListener(EventType.RESIZE,
-        this.handleResize_, false);
+      addEventListener(EventType.RESIZE, this.handleResize_, false);
     }
   }
 
@@ -1130,8 +1121,7 @@ PluggableMap.prototype.renderSync = function() {
  */
 PluggableMap.prototype.render = function() {
   if (this.animationDelayKey_ === undefined) {
-    this.animationDelayKey_ = requestAnimationFrame(
-      this.animationDelay_);
+    this.animationDelayKey_ = requestAnimationFrame(this.animationDelay_);
   }
 };
 
@@ -1267,14 +1257,12 @@ PluggableMap.prototype.renderFrame_ = function(time) {
         !equals(frameState.extent, this.previousExtent_);
 
     if (idle) {
-      this.dispatchEvent(
-        new MapEvent(MapEventType.MOVEEND, this, frameState));
+      this.dispatchEvent(new MapEvent(MapEventType.MOVEEND, this, frameState));
       clone(frameState.extent, this.previousExtent_);
     }
   }
 
-  this.dispatchEvent(
-    new MapEvent(MapEventType.POSTRENDER, this, frameState));
+  this.dispatchEvent(new MapEvent(MapEventType.POSTRENDER, this, frameState));
 
   setTimeout(this.handlePostRender.bind(this), 0);
 

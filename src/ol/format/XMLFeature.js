@@ -61,8 +61,7 @@ XMLFeature.prototype.readFeature = function(source, opt_options) {
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @return {ol.Feature} Feature.
  */
-XMLFeature.prototype.readFeatureFromDocument = function(
-  doc, opt_options) {
+XMLFeature.prototype.readFeatureFromDocument = function(doc, opt_options) {
   const features = this.readFeaturesFromDocument(doc, opt_options);
   if (features.length > 0) {
     return features[0];

@@ -2192,8 +2192,7 @@ const DOCUMENT_SERIALIZERS = makeStructureNS(
  * @param {string=} opt_nodeName Node name.
  * @return {Node|undefined} Node.
  */
-const DOCUMENT_NODE_FACTORY = function(value, objectStack,
-  opt_nodeName) {
+const DOCUMENT_NODE_FACTORY = function(value, objectStack, opt_nodeName) {
   const parentNode = objectStack[objectStack.length - 1].node;
   return createElementNS(parentNode.namespaceURI, 'Placemark');
 };

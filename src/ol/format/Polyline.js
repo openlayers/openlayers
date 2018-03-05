@@ -319,13 +319,11 @@ Polyline.prototype.readGeometryFromText = function(text, opt_options) {
   const stride = getStrideForLayout(this.geometryLayout_);
   const flatCoordinates = decodeDeltas(text, stride, this.factor_);
   flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
-  const coordinates = inflateCoordinates(
-    flatCoordinates, 0, flatCoordinates.length, stride);
+  const coordinates = inflateCoordinates(flatCoordinates, 0, flatCoordinates.length, stride);
 
-  return (
-    /** @type {ol.geom.Geometry} */ transformWithOptions(
-      new LineString(coordinates, this.geometryLayout_), false,
-      this.adaptOptions(opt_options))
+  return /** @type {ol.geom.Geometry} */ (transformWithOptions(
+    new LineString(coordinates, this.geometryLayout_), false,
+    this.adaptOptions(opt_options))
   );
 };
 

@@ -326,8 +326,7 @@ ImageWMS.prototype.getUrl = function() {
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  * @api
  */
-ImageWMS.prototype.setImageLoadFunction = function(
-  imageLoadFunction) {
+ImageWMS.prototype.setImageLoadFunction = function(imageLoadFunction) {
   this.image_ = null;
   this.imageLoadFunction_ = imageLoadFunction;
   this.changed();

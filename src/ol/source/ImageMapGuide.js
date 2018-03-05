@@ -233,8 +233,7 @@ ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, size, project
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  * @api
  */
-ImageMapGuide.prototype.setImageLoadFunction = function(
-  imageLoadFunction) {
+ImageMapGuide.prototype.setImageLoadFunction = function(imageLoadFunction) {
   this.image_ = null;
   this.imageLoadFunction_ = imageLoadFunction;
   this.changed();

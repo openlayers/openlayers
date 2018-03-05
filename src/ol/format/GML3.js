@@ -813,8 +813,7 @@ GML3.prototype.writeMultiSurfaceOrPolygon_ = function(node, geometry, objectStac
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-GML3.prototype.writeMultiPoint_ = function(node, geometry,
-  objectStack) {
+GML3.prototype.writeMultiPoint_ = function(node, geometry, objectStack) {
   const context = objectStack[objectStack.length - 1];
   const srsName = context['srsName'];
   const hasZ = context['hasZ'];

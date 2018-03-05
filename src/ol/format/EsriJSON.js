@@ -109,9 +109,8 @@ function readGeometry(object, opt_options) {
     }
   }
   const geometryReader = GEOMETRY_READERS[type];
-  return (
-    /** @type {ol.geom.Geometry} */ transformWithOptions(
-      geometryReader(object), false, opt_options)
+  return /** @type {ol.geom.Geometry} */ (transformWithOptions(
+    geometryReader(object), false, opt_options)
   );
 }
 
@@ -429,11 +428,9 @@ EsriJSON.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-EsriJSON.prototype.readFeatureFromObject = function(
-  object, opt_options) {
+EsriJSON.prototype.readFeatureFromObject = function(object, opt_options) {
   const esriJSONFeature = /** @type {EsriJSONFeature} */ (object);
-  const geometry = readGeometry(esriJSONFeature.geometry,
-    opt_options);
+  const geometry = readGeometry(esriJSONFeature.geometry, opt_options);
   const feature = new Feature();
   if (this.geometryName_) {
     feature.setGeometryName(this.geometryName_);
@@ -441,8 +438,7 @@ EsriJSON.prototype.readFeatureFromObject = function(
   feature.setGeometry(geometry);
   if (opt_options && opt_options.idField &&
     esriJSONFeature.attributes[opt_options.idField]) {
-    feature.setId(/** @type {number} */(
-      esriJSONFeature.attributes[opt_options.idField]));
+    feature.setId(/** @type {number} */(esriJSONFeature.attributes[opt_options.idField]));
   }
   if (esriJSONFeature.attributes) {
     feature.setProperties(esriJSONFeature.attributes);
@@ -454,21 +450,17 @@ EsriJSON.prototype.readFeatureFromObject = function(
 /**
  * @inheritDoc
  */
-EsriJSON.prototype.readFeaturesFromObject = function(
-  object, opt_options) {
+EsriJSON.prototype.readFeaturesFromObject = function(object, opt_options) {
   const esriJSONObject = /** @type {EsriJSONObject} */ (object);
   const options = opt_options ? opt_options : {};
   if (esriJSONObject.features) {
-    const esriJSONFeatureCollection = /** @type {EsriJSONFeatureCollection} */
-      (object);
+    const esriJSONFeatureCollection = /** @type {EsriJSONFeatureCollection} */ (object);
     /** @type {Array.<ol.Feature>} */
     const features = [];
     const esriJSONFeatures = esriJSONFeatureCollection.features;
-    let i, ii;
     options.idField = object.objectIdFieldName;
-    for (i = 0, ii = esriJSONFeatures.length; i < ii; ++i) {
-      features.push(this.readFeatureFromObject(esriJSONFeatures[i],
-        options));
+    for (let i = 0, ii = esriJSONFeatures.length; i < ii; ++i) {
+      features.push(this.readFeatureFromObject(esriJSONFeatures[i], options));
     }
     return features;
   } else {
@@ -492,10 +484,8 @@ EsriJSON.prototype.readGeometry;
 /**
  * @inheritDoc
  */
-EsriJSON.prototype.readGeometryFromObject = function(
-  object, opt_options) {
-  return readGeometry(
-    /** @type {EsriJSONGeometry} */(object), opt_options);
+EsriJSON.prototype.readGeometryFromObject = function(object, opt_options) {
+  return readGeometry(/** @type {EsriJSONGeometry} */(object), opt_options);
 };
 
 
@@ -557,10 +547,8 @@ EsriJSON.prototype.writeGeometry;
  * @override
  * @api
  */
-EsriJSON.prototype.writeGeometryObject = function(geometry,
-  opt_options) {
-  return writeGeometry(geometry,
-    this.adaptOptions(opt_options));
+EsriJSON.prototype.writeGeometryObject = function(geometry, opt_options) {
+  return writeGeometry(geometry, this.adaptOptions(opt_options));
 };
 
 
@@ -585,14 +573,12 @@ EsriJSON.prototype.writeFeature;
  * @override
  * @api
  */
-EsriJSON.prototype.writeFeatureObject = function(
-  feature, opt_options) {
+EsriJSON.prototype.writeFeatureObject = function(feature, opt_options) {
   opt_options = this.adaptOptions(opt_options);
   const object = {};
   const geometry = feature.getGeometry();
   if (geometry) {
-    object['geometry'] =
-      writeGeometry(geometry, opt_options);
+    object['geometry'] = writeGeometry(geometry, opt_options);
     if (opt_options && opt_options.featureProjection) {
       object['geometry']['spatialReference'] = /** @type {EsriJSONCRS} */({
         wkid: getProjection(opt_options.featureProjection).getCode().split(':').pop()
@@ -634,8 +620,7 @@ EsriJSON.prototype.writeFeatures;
 EsriJSON.prototype.writeFeaturesObject = function(features, opt_options) {
   opt_options = this.adaptOptions(opt_options);
   const objects = [];
-  let i, ii;
-  for (i = 0, ii = features.length; i < ii; ++i) {
+  for (let i = 0, ii = features.length; i < ii; ++i) {
     objects.push(this.writeFeatureObject(features[i], opt_options));
   }
   return /** @type {EsriJSONFeatureCollection} */ ({

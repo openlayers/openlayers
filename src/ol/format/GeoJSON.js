@@ -106,9 +106,8 @@ function readGeometry(object, opt_options) {
     return null;
   }
   const geometryReader = GEOMETRY_READERS[object.type];
-  return (
-    /** @type {ol.geom.Geometry} */ transformWithOptions(
-      geometryReader(object), false, opt_options)
+  return /** @type {ol.geom.Geometry} */ (transformWithOptions(
+    geometryReader(object), false, opt_options)
   );
 }
 
@@ -121,9 +120,9 @@ function readGeometry(object, opt_options) {
 function readGeometryCollectionGeometry(object, opt_options) {
   const geometries = object.geometries.map(
     /**
-       * @param {GeoJSONGeometry} geometry Geometry.
-       * @return {ol.geom.Geometry} geometry Geometry.
-       */
+     * @param {GeoJSONGeometry} geometry Geometry.
+     * @return {ol.geom.Geometry} geometry Geometry.
+     */
     function(geometry) {
       return readGeometry(geometry, opt_options);
     });
@@ -388,8 +387,7 @@ GeoJSON.prototype.readFeaturesFromObject = function(object, opt_options) {
     const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (object);
     features = [];
     const geoJSONFeatures = geoJSONFeatureCollection.features;
-    let i, ii;
-    for (i = 0, ii = geoJSONFeatures.length; i < ii; ++i) {
+    for (let i = 0, ii = geoJSONFeatures.length; i < ii; ++i) {
       features.push(this.readFeatureFromObject(geoJSONFeatures[i], opt_options));
     }
   } else {
@@ -523,8 +521,7 @@ GeoJSON.prototype.writeFeatures;
 GeoJSON.prototype.writeFeaturesObject = function(features, opt_options) {
   opt_options = this.adaptOptions(opt_options);
   const objects = [];
-  let i, ii;
-  for (i = 0, ii = features.length; i < ii; ++i) {
+  for (let i = 0, ii = features.length; i < ii; ++i) {
     objects.push(this.writeFeatureObject(features[i], opt_options));
   }
   return /** @type {GeoJSONFeatureCollection} */ ({
