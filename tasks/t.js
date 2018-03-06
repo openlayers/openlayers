@@ -154,22 +154,18 @@ function processBlocks(blocks) {
 function format(data) {
   let source = '';
   for (const name in data) {
-    const comment = data[name].comment;
 
     // add the @typedef
-    source += `\n/**\n${comment} */\n`;
-    source += `export let ${name};\n\n`;
+    source += `\n/**\n * @typedef {Object} ${name}\n`;
 
     const params = data[name].params;
     if (!params.length) {
       throw new Error(`No params for ${name}`);
     }
 
-    source += '/**\n';
-    source += ` * @param {${name}} options TODO: repace this\n *\n`;
     params.forEach(param => {
-      const description = param.description.split('\n').join('\n * ');
-      source += ` * @param ${param.type} options.${param.name} ${description}\n`;
+      const description = param.description.replace(/\n$/, '').split('\n').join('\n * ');
+      source += ` * @property ${param.type} ${param.name} ${description}\n`;
     });
     source += ' */\n\n';
   }
