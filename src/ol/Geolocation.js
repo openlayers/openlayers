@@ -13,11 +13,14 @@ import {get as getProjection, getTransformFromProjections, identityTransform} fr
 
 
 /**
- * @typedef {{tracking: (boolean|undefined),
- *     trackingOptions: (GeolocationPositionOptions|undefined),
- *     projection: ol.ProjectionLike}}
+ * @typedef {Object} GeolocationOptions
+ * @property {boolean} [tracking=false] Start Tracking right after
+ * instantiation.
+ * @property {GeolocationPositionOptions} [trackingOptions] Tracking options.
+ * See {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}.
+ * @property {module:ol/types~ProjectionLike} [projection] The projection the position
+ * is reported in.
  */
-export let GeolocationOptions;
 
 
 /**
@@ -27,11 +30,11 @@ export let GeolocationOptions;
  * is used to locate a user's position.
  *
  * To get notified of position changes, register a listener for the generic
- * `change` event on your instance of `ol.Geolocation`.
+ * `change` event on your instance of {@link module:ol/Geolocation~Geolocation}.
  *
  * Example:
  *
- *     var geolocation = new ol.Geolocation({
+ *     var geolocation = new Geolocation({
  *       // take the projection to use from the map's view
  *       projection: view.getProjection()
  *     });
@@ -42,15 +45,8 @@ export let GeolocationOptions;
  *
  * @fires error
  * @constructor
- * @extends {ol.Object}
- * @param {GeolocationOptions=} opt_options Options.
- * @param {boolean|undefined} opt_options.tracking Start Tracking. Default is
- *     `false`.
- * @param {GeolocationPositionOptions|undefined} opt_options.trackingOptions
- *     Tracking options. See
- *     {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}.
- * @param {ol.ProjectionLike} opt_options.projection The projection the position
- *     is reported in.
+ * @extends {module:ol/Object~Object}
+ * @param {module:ol/Geolocation~GeolocationOptions=} opt_options Options.
  * @api
  */
 const Geolocation = function(opt_options) {
@@ -62,13 +58,13 @@ const Geolocation = function(opt_options) {
   /**
    * The unprojected (EPSG:4326) device position.
    * @private
-   * @type {ol.Coordinate}
+   * @type {module:ol/types~Coordinate}
    */
   this.position_ = null;
 
   /**
    * @private
-   * @type {ol.TransformFunction}
+   * @type {module:ol/types~TransformFunction}
    */
   this.transform_ = identityTransform;
 
@@ -203,12 +199,12 @@ Geolocation.prototype.getAccuracy = function() {
 
 /**
  * Get a geometry of the position accuracy.
- * @return {?ol.geom.Polygon} A geometry of the position accuracy.
+ * @return {?module:ol/geom/Polygon~Polygon} A geometry of the position accuracy.
  * @observable
  * @api
  */
 Geolocation.prototype.getAccuracyGeometry = function() {
-  return /** @type {?ol.geom.Polygon} */ (this.get(GeolocationProperty.ACCURACY_GEOMETRY) || null);
+  return /** @type {?module:ol/geom/Polygon~Polygon} */ (this.get(GeolocationProperty.ACCURACY_GEOMETRY) || null);
 };
 
 
@@ -251,25 +247,25 @@ Geolocation.prototype.getHeading = function() {
 
 /**
  * Get the position of the device.
- * @return {ol.Coordinate|undefined} The current position of the device reported
+ * @return {module:ol/types~Coordinate|undefined} The current position of the device reported
  *     in the current projection.
  * @observable
  * @api
  */
 Geolocation.prototype.getPosition = function() {
-  return /** @type {ol.Coordinate|undefined} */ (this.get(GeolocationProperty.POSITION));
+  return /** @type {module:ol/types~Coordinate|undefined} */ (this.get(GeolocationProperty.POSITION));
 };
 
 
 /**
  * Get the projection associated with the position.
- * @return {ol.proj.Projection|undefined} The projection the position is
+ * @return {module:ol/proj/Projection~Projection|undefined} The projection the position is
  *     reported in.
  * @observable
  * @api
  */
 Geolocation.prototype.getProjection = function() {
-  return /** @type {ol.proj.Projection|undefined} */ (this.get(GeolocationProperty.PROJECTION));
+  return /** @type {module:ol/proj/Projection~Projection|undefined} */ (this.get(GeolocationProperty.PROJECTION));
 };
 
 
@@ -312,7 +308,7 @@ Geolocation.prototype.getTrackingOptions = function() {
 
 /**
  * Set the projection to use for transforming the coordinates.
- * @param {ol.ProjectionLike} projection The projection the position is
+ * @param {module:ol/types~ProjectionLike} projection The projection the position is
  *     reported in.
  * @observable
  * @api
