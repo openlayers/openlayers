@@ -420,11 +420,10 @@ export function parseNode(parsersNS, node, objectStack, opt_this) {
  * @return {T} Object.
  * @template T
  */
-export function pushParseAndPop(
-  object, parsersNS, node, objectStack, opt_this) {
+export function pushParseAndPop(object, parsersNS, node, objectStack, opt_this) {
   objectStack.push(object);
   parseNode(parsersNS, node, objectStack, opt_this);
-  return objectStack.pop();
+  return /** @type {T} */ (objectStack.pop());
 }
 
 
@@ -491,10 +490,8 @@ export function serialize(
  * @return {O|undefined} Object.
  * @template O, T
  */
-export function pushSerializeAndPop(object,
-  serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
+export function pushSerializeAndPop(object, serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
   objectStack.push(object);
-  serialize(
-    serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this);
-  return objectStack.pop();
+  serialize(serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this);
+  return /** @type {O|undefined} */ (objectStack.pop());
 }
