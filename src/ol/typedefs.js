@@ -378,20 +378,6 @@ ol.ModifySegmentDataType;
 
 
 /**
- * An array with two elements, representing a pixel. The first element is the
- * x-coordinate, the second the y-coordinate of the pixel.
- * @typedef {Array.<number>}
- */
-ol.Pixel;
-
-
-/**
- * @typedef {function(ol.PluggableMap, ?olx.FrameState): boolean}
- */
-ol.PostRenderFunction;
-
-
-/**
  * Function to perform manipulations before rendering. This function is called
  * with the {@link ol.Map} as first and an optional {@link olx.FrameState} as
  * second argument. Return `true` to keep this function for the next frame,
