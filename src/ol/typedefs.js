@@ -367,17 +367,6 @@ ol.LRUCacheEntry;
 
 
 /**
- * @typedef {{controls: (ol.Collection.<ol.control.Control>|undefined),
- *            interactions: (ol.Collection.<ol.interaction.Interaction>|undefined),
- *            keyboardEventTarget: (Element|Document),
- *            overlays: ol.Collection.<ol.Overlay>,
- *            mapRendererPlugin: olx.MapRendererPlugin,
- *            values: Object.<string, *>}}
- */
-ol.MapOptionsInternal;
-
-
-/**
  * An array representing an affine 2d transformation for use with
  * {@link ol.transform} functions. The array has 6 elements.
  * @typedef {!Array.<number>}

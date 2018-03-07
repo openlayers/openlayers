@@ -32,6 +32,17 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 
 /**
+ * @typedef {Object} MapOptionsInternal
+ * @property {module:ol/Collection~Collection.<module:ol/control/Control~Control>} [controls]
+ * @property {module:ol/Collection~Collection.<module:ol/interaction/Interaction~Interaction>} [interactions]
+ * @property {Element|Document} keyboardEventTarget
+ * @property {module:ol/Collection~Collection.<module:ol/Overlay~Overlay>} overlays
+ * @property {olx.MapRendererPlugin} mapRendererPlugin
+ * @property {Object.<string, *>} values
+ */
+
+
+/**
  * Object literal with config options for the map.
  * @typedef {{controls: (ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined),
  *     pixelRatio: (number|undefined),
