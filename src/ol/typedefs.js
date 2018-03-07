@@ -245,13 +245,6 @@ ol.EventTargetLike;
 
 
 /**
- * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.
- * @typedef {Array.<number>}
- */
-ol.Extent;
-
-
-/**
  * {@link ol.source.Vector} sources use a function of this type to load
  * features.
  *
