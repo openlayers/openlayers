@@ -10,9 +10,13 @@ import {clamp} from '../math.js';
 
 /**
  * Object literal with config options for interactions.
- * @typedef {{handleEvent: function(ol.MapBrowserEvent):boolean}}
+ * @typedef {Object} InteractionOptions
+ * @property {function(module:ol/MapBrowserEvent~MapBrowserEvent):boolean} handleEvent
+ * Method called by the map to notify the interaction that a browser event was
+ * dispatched to the map. If the function returns a falsy value, propagation of
+ * the event to other interactions in the map's interactions chain will be
+ * prevented (this includes functions with no explicit return).
  */
-export let InteractionOptions;
 
 
 /**
@@ -21,21 +25,15 @@ export let InteractionOptions;
  * instantiated in apps.
  * User actions that change the state of the map. Some are similar to controls,
  * but are not associated with a DOM element.
- * For example, {@link ol.interaction.KeyboardZoom} is functionally the same as
- * {@link ol.control.Zoom}, but triggered by a keyboard event not a button
- * element event.
+ * For example, {@link module:ol/interaction/KeyboardZoom~KeyboardZoom} is
+ * functionally the same as {@link module:ol/control/Zoom~Zoom}, but triggered
+ * by a keyboard event not a button element event.
  * Although interactions do not have a DOM element, some of them do render
  * vectors and so are visible on the screen.
  *
  * @constructor
- * @param {InteractionOptions} options Options.
- * @param {function(ol.MapBrowserEvent):boolean} options.handleEvent Method
- *     called by the map to notify the interaction that a browser event was
- *     dispatched to the map. If the function returns a falsy value,
- *     propagation of the event to other interactions in the map's interactions
- *     chain will be prevented (this includes functions with no explicit
- *     return).
- * @extends {ol.Object}
+ * @param {module:ol/interaction/Interaction~InteractionOptions} options Options.
+ * @extends {module:ol/Object~Object}
  * @api
  */
 const Interaction = function(options) {
@@ -44,14 +42,14 @@ const Interaction = function(options) {
 
   /**
    * @private
-   * @type {ol.PluggableMap}
+   * @type {module:ol/PluggableMap~PluggableMap}
    */
   this.map_ = null;
 
   this.setActive(true);
 
   /**
-   * @type {function(ol.MapBrowserEvent):boolean}
+   * @type {function(module:ol/MapBrowserEvent~MapBrowserEvent):boolean}
    */
   this.handleEvent = options.handleEvent;
 
@@ -73,7 +71,7 @@ Interaction.prototype.getActive = function() {
 
 /**
  * Get the map associated with this interaction.
- * @return {ol.PluggableMap} Map.
+ * @return {module:ol/PluggableMap~PluggableMap} Map.
  * @api
  */
 Interaction.prototype.getMap = function() {
@@ -96,7 +94,7 @@ Interaction.prototype.setActive = function(active) {
  * Remove the interaction from its current map and attach it to the new map.
  * Subclasses may set up event handlers to get notified about changes to
  * the map here.
- * @param {ol.PluggableMap} map Map.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
  */
 Interaction.prototype.setMap = function(map) {
   this.map_ = map;
@@ -104,8 +102,8 @@ Interaction.prototype.setMap = function(map) {
 
 
 /**
- * @param {ol.View} view View.
- * @param {ol.Coordinate} delta Delta.
+ * @param {module:ol/View~View} view View.
+ * @param {module:ol/types~Coordinate} delta Delta.
  * @param {number=} opt_duration Duration.
  */
 export function pan(view, delta, opt_duration) {
@@ -127,9 +125,9 @@ export function pan(view, delta, opt_duration) {
 
 
 /**
- * @param {ol.View} view View.
+ * @param {module:ol/View~View} view View.
  * @param {number|undefined} rotation Rotation.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ * @param {module:ol/types~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
 export function rotate(view, rotation, opt_anchor, opt_duration) {
@@ -139,9 +137,9 @@ export function rotate(view, rotation, opt_anchor, opt_duration) {
 
 
 /**
- * @param {ol.View} view View.
+ * @param {module:ol/View~View} view View.
  * @param {number|undefined} rotation Rotation.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ * @param {module:ol/types~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
 export function rotateWithoutConstraints(view, rotation, opt_anchor, opt_duration) {
@@ -163,9 +161,9 @@ export function rotateWithoutConstraints(view, rotation, opt_anchor, opt_duratio
 
 
 /**
- * @param {ol.View} view View.
+ * @param {module:ol/View~View} view View.
  * @param {number|undefined} resolution Resolution to go to.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ * @param {module:ol/types~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  * @param {number=} opt_direction Zooming direction; > 0 indicates
  *     zooming out, in which case the constraints system will select
@@ -183,9 +181,9 @@ export function zoom(view, resolution, opt_anchor, opt_duration, opt_direction) 
 
 
 /**
- * @param {ol.View} view View.
+ * @param {module:ol/View~View} view View.
  * @param {number} delta Delta from previous zoom level.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ * @param {module:ol/types~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
 export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
@@ -221,9 +219,9 @@ export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
 
 
 /**
- * @param {ol.View} view View.
+ * @param {module:ol/View~View} view View.
  * @param {number|undefined} resolution Resolution to go to.
- * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
+ * @param {module:ol/types~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
 export function zoomWithoutConstraints(view, resolution, opt_anchor, opt_duration) {

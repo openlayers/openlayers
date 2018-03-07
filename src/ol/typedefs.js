@@ -178,13 +178,6 @@ ol.Constraints;
 
 
 /**
- * An array of numbers representing an xy coordinate. Example: `[16, 48]`.
- * @typedef {Array.<number>}
- */
-ol.Coordinate;
-
-
-/**
  * A function that takes a {@link ol.Coordinate} and transforms it into a
  * `{string}`.
  *
@@ -237,20 +230,6 @@ ol.EventsConditionType;
 
 
 /**
- * Key to use with {@link ol.Observable#unByKey}.
- *
- * @typedef {{bindTo: (Object|undefined),
- *     boundListener: (ol.EventsListenerFunctionType|undefined),
- *     callOnce: boolean,
- *     deleteIndex: (number|undefined),
- *     listener: ol.EventsListenerFunctionType,
- *     target: (EventTarget|ol.events.EventTarget),
- *     type: string}}
- */
-ol.EventsKey;
-
-
-/**
  * Listener function. This function is called with an event object as argument.
  * When the function returns `false`, event propagation will stop.
  *
@@ -263,13 +242,6 @@ ol.EventsListenerFunctionType;
  * @typedef {EventTarget|ol.events.EventTarget}
  */
 ol.EventTargetLike;
-
-
-/**
- * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.
- * @typedef {Array.<number>}
- */
-ol.Extent;
 
 
 /**
@@ -300,15 +272,6 @@ ol.FeatureLoader;
  * @typedef {function(ol.Extent, number, ol.proj.Projection) : string}
  */
 ol.FeatureUrlFunction;
-
-
-/**
- * @typedef {{
- *     geom: ol.geom.Point,
- *     text: string
- * }}
- */
-ol.GraticuleLabelDataType;
 
 
 /**
@@ -404,25 +367,6 @@ ol.LRUCacheEntry;
 
 
 /**
- * @typedef {{controls: (ol.Collection.<ol.control.Control>|undefined),
- *            interactions: (ol.Collection.<ol.interaction.Interaction>|undefined),
- *            keyboardEventTarget: (Element|Document),
- *            overlays: ol.Collection.<ol.Overlay>,
- *            mapRendererPlugin: olx.MapRendererPlugin,
- *            values: Object.<string, *>}}
- */
-ol.MapOptionsInternal;
-
-
-/**
- * An array representing an affine 2d transformation for use with
- * {@link ol.transform} functions. The array has 6 elements.
- * @typedef {!Array.<number>}
- */
-ol.Transform;
-
-
-/**
  * @typedef {{depth: (Array.<number>|undefined),
  *            feature: ol.Feature,
  *            geometry: ol.geom.SimpleGeometry,
@@ -434,20 +378,6 @@ ol.ModifySegmentDataType;
 
 
 /**
- * An array with two elements, representing a pixel. The first element is the
- * x-coordinate, the second the y-coordinate of the pixel.
- * @typedef {Array.<number>}
- */
-ol.Pixel;
-
-
-/**
- * @typedef {function(ol.PluggableMap, ?olx.FrameState): boolean}
- */
-ol.PostRenderFunction;
-
-
-/**
  * Function to perform manipulations before rendering. This function is called
  * with the {@link ol.Map} as first and an optional {@link olx.FrameState} as
  * second argument. Return `true` to keep this function for the next frame,
@@ -455,14 +385,6 @@ ol.PostRenderFunction;
  * @typedef {function(ol.PluggableMap, ?olx.FrameState): boolean}
  */
 ol.PreRenderFunction;
-
-
-/**
- * A projection as {@link ol.proj.Projection}, SRS identifier string or
- * undefined.
- * @typedef {ol.proj.Projection|string|undefined}
- */
-ol.ProjectionLike;
 
 
 /**
@@ -551,13 +473,6 @@ ol.RotationConstraintType;
  *     boolean}
  */
 ol.SelectFilterFunction;
-
-
-/**
- * An array of numbers representing a size: `[width, height]`.
- * @typedef {Array.<number>}
- */
-ol.Size;
 
 
 /**
@@ -729,17 +644,6 @@ ol.TileReplayState;
  *           ol.proj.Projection): (string|undefined)}
  */
 ol.TileUrlFunctionType;
-
-
-/**
- * A transform function accepts an array of input coordinate values, an optional
- * output array, and an optional dimension (default should be 2).  The function
- * transforms the input coordinate values, populates the output array, and
- * returns the output array.
- *
- * @typedef {function(Array.<number>, Array.<number>=, number=): Array.<number>}
- */
-ol.TransformFunction;
 
 
 /**

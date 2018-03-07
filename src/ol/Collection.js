@@ -19,13 +19,13 @@ const Property = {
 
 /**
  * @classdesc
- * Events emitted by {@link ol.Collection} instances are instances of this
+ * Events emitted by {@link module:ol/Collection~Collection} instances are instances of this
  * type.
  *
  * @constructor
- * @extends {ol.events.Event}
+ * @extends {module:ol/events/Event~Event}
  * @implements {oli.CollectionEvent}
- * @param {ol.CollectionEventType} type Type.
+ * @param {module:ol/CollectionEventType} type Type.
  * @param {*=} opt_element Element.
  */
 export const CollectionEvent = function(type, opt_element) {
@@ -45,10 +45,10 @@ inherits(CollectionEvent, Event);
 
 
 /**
- * @typedef {{unique: (boolean|undefined)}}
+ * @typedef {Object} CollectionOptions
+ * @property {boolean} [unique=false] Disallow the same item from being added to
+ * the collection twice.
  */
-export let CollectionOptions;
-
 
 /**
  * @classdesc
@@ -59,12 +59,10 @@ export let CollectionOptions;
  * Collection as a whole.
  *
  * @constructor
- * @extends {ol.Object}
- * @fires ol.CollectionEvent
+ * @extends {module:ol/Object~Object}
+ * @fires module:ol/Collection~CollectionEvent
  * @param {Array.<T>=} opt_array Array.
- * @param {CollectionOptions=} opt_options Collection options.
- * @param {boolean|undefined} opt_options.unique Disallow the same item from
- *     being added to the collection twice.  Default is false.
+ * @param {module:ol/Collection~CollectionOptions=} opt_options Collection options.
  * @template T
  * @api
  */
@@ -114,7 +112,7 @@ Collection.prototype.clear = function() {
  * Add elements to the collection.  This pushes each item in the provided array
  * to the end of the collection.
  * @param {!Array.<T>} arr Array.
- * @return {ol.Collection.<T>} This collection.
+ * @return {module:ol/Collection~Collection.<T>} This collection.
  * @api
  */
 Collection.prototype.extend = function(arr) {
