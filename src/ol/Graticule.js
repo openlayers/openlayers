@@ -34,6 +34,11 @@ const INTERVALS = [
   90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.01, 0.005, 0.002, 0.001
 ];
 
+/**
+ * @typedef {Object} GraticuleLabelDataType
+ * @property {module:ol/geom/Point~Point} geom
+ * @property {string} text
+ */
 
 /**
  * @typedef {{map: (ol.PluggableMap|undefined),
