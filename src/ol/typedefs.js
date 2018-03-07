@@ -388,14 +388,6 @@ ol.PreRenderFunction;
 
 
 /**
- * A projection as {@link ol.proj.Projection}, SRS identifier string or
- * undefined.
- * @typedef {ol.proj.Projection|string|undefined}
- */
-ol.ProjectionLike;
-
-
-/**
  * A function that takes an array of input data, performs some operation, and
  * returns an array of ouput data.
  * For `pixel` type operations, the function will be called with an array of
