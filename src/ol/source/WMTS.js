@@ -288,7 +288,7 @@ WMTS.prototype.updateDimensions = function(dimensions) {
 /**
  * Generate source options from a capabilities object.
  * @param {Object} wmtsCap An object representing the capabilities document.
- * @param {Object} config Configuration properties for the layer.  Defaults for
+ * @param {!Object} config Configuration properties for the layer.  Defaults for
  *                  the layer will apply if not provided.
  *
  * Required config properties:

@@ -97,7 +97,7 @@ const Snap = function(opt_options) {
    * If a feature geometry changes while a pointer drag|move event occurs, the
    * feature doesn't get updated right away.  It will be at the next 'pointerup'
    * event fired.
-   * @type {Object.<number, ol.Feature>}
+   * @type {!Object.<number, ol.Feature>}
    * @private
    */
   this.pendingFeatures_ = {};

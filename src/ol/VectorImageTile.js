@@ -40,7 +40,7 @@ const VectorImageTile = function(tileCoord, state, sourceRevision, format,
 
   /**
    * @private
-   * @type {Object.<string, CanvasRenderingContext2D>}
+   * @type {!Object.<string, CanvasRenderingContext2D>}
    */
   this.context_ = {};
 
@@ -52,7 +52,7 @@ const VectorImageTile = function(tileCoord, state, sourceRevision, format,
 
   /**
    * @private
-   * @type {Object.<string, ol.TileReplayState>}
+   * @type {!Object.<string, ol.TileReplayState>}
    */
   this.replayState_ = {};
 

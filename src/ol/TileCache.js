@@ -21,13 +21,12 @@ inherits(TileCache, LRUCache);
 
 
 /**
- * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
+ * @param {!Object.<string, ol.TileRange>} usedTiles Used tiles.
  */
 TileCache.prototype.expireCache = function(usedTiles) {
-  let tile, zKey;
   while (this.canExpireCache()) {
-    tile = this.peekLast();
-    zKey = tile.tileCoord[0].toString();
+    const tile = this.peekLast();
+    const zKey = tile.tileCoord[0].toString();
     if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
       break;
     } else {

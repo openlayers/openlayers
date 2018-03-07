@@ -79,7 +79,7 @@ const CanvasTextReplay = function(
   this.textFillState_ = null;
 
   /**
-   * @type {Object.<string, ol.CanvasFillState>}
+   * @type {!Object.<string, ol.CanvasFillState>}
    */
   this.fillStates = {};
 
@@ -90,7 +90,7 @@ const CanvasTextReplay = function(
   this.textStrokeState_ = null;
 
   /**
-   * @type {Object.<string, ol.CanvasStrokeState>}
+   * @type {!Object.<string, ol.CanvasStrokeState>}
    */
   this.strokeStates = {};
 
@@ -101,7 +101,7 @@ const CanvasTextReplay = function(
   this.textState_ = /** @type {ol.CanvasTextState} */ ({});
 
   /**
-   * @type {Object.<string, ol.CanvasTextState>}
+   * @type {!Object.<string, ol.CanvasTextState>}
    */
   this.textStates = {};
 

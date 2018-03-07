@@ -133,8 +133,7 @@ export function makeArrayExtender(valueReader, opt_this) {
     function(node, objectStack) {
       const value = valueReader.call(opt_this, node, objectStack);
       if (value !== undefined) {
-        const array = /** @type {Array.<*>} */
-              (objectStack[objectStack.length - 1]);
+        const array = /** @type {Array.<*>} */ (objectStack[objectStack.length - 1]);
         extend(array, value);
       }
     }
@@ -157,8 +156,7 @@ export function makeArrayPusher(valueReader, opt_this) {
      * @param {Array.<*>} objectStack Object stack.
      */
     function(node, objectStack) {
-      const value = valueReader.call(opt_this !== undefined ? opt_this : this,
-        node, objectStack);
+      const value = valueReader.call(opt_this !== undefined ? opt_this : this, node, objectStack);
       if (value !== undefined) {
         const array = objectStack[objectStack.length - 1];
         array.push(value);
@@ -182,8 +180,7 @@ export function makeReplacer(valueReader, opt_this) {
      * @param {Array.<*>} objectStack Object stack.
      */
     function(node, objectStack) {
-      const value = valueReader.call(opt_this !== undefined ? opt_this : this,
-        node, objectStack);
+      const value = valueReader.call(opt_this !== undefined ? opt_this : this, node, objectStack);
       if (value !== undefined) {
         objectStack[objectStack.length - 1] = value;
       }
@@ -207,13 +204,10 @@ export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
      * @param {Array.<*>} objectStack Object stack.
      */
     function(node, objectStack) {
-      const value = valueReader.call(opt_this !== undefined ? opt_this : this,
-        node, objectStack);
+      const value = valueReader.call(opt_this !== undefined ? opt_this : this, node, objectStack);
       if (value !== undefined) {
-        const object = /** @type {Object} */
-              (objectStack[objectStack.length - 1]);
-        const property = opt_property !== undefined ?
-          opt_property : node.localName;
+        const object = /** @type {!Object} */ (objectStack[objectStack.length - 1]);
+        const property = opt_property !== undefined ? opt_property : node.localName;
         let array;
         if (property in object) {
           array = object[property];
@@ -241,13 +235,10 @@ export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
      * @param {Array.<*>} objectStack Object stack.
      */
     function(node, objectStack) {
-      const value = valueReader.call(opt_this !== undefined ? opt_this : this,
-        node, objectStack);
+      const value = valueReader.call(opt_this !== undefined ? opt_this : this, node, objectStack);
       if (value !== undefined) {
-        const object = /** @type {Object} */
-              (objectStack[objectStack.length - 1]);
-        const property = opt_property !== undefined ?
-          opt_property : node.localName;
+        const object = /** @type {!Object} */ (objectStack[objectStack.length - 1]);
+        const property = opt_property !== undefined ? opt_property : node.localName;
         object[property] = value;
       }
     });
@@ -266,8 +257,7 @@ export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
  */
 export function makeChildAppender(nodeWriter, opt_this) {
   return function(node, value, objectStack) {
-    nodeWriter.call(opt_this !== undefined ? opt_this : this,
-      node, value, objectStack);
+    nodeWriter.call(opt_this !== undefined ? opt_this : this, node, value, objectStack);
     const parent = objectStack[objectStack.length - 1];
     const parentNode = parent.node;
     parentNode.appendChild(node);

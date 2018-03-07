@@ -277,7 +277,7 @@ const KML = function(opt_options) {
 
   /**
    * @private
-   * @type {Object.<string, (Array.<ol.style.Style>|string)>}
+   * @type {!Object.<string, (Array.<ol.style.Style>|string)>}
    */
   this.sharedStyles_ = {};
 
@@ -384,14 +384,11 @@ function createNameStyleFunction(foundStyle, name) {
  * @param {Array.<ol.style.Style>|undefined} style Style.
  * @param {string} styleUrl Style URL.
  * @param {Array.<ol.style.Style>} defaultStyle Default style.
- * @param {Object.<string, (Array.<ol.style.Style>|string)>} sharedStyles Shared
- *          styles.
- * @param {boolean|undefined} showPointNames true to show names for point
- *          placemarks.
+ * @param {!Object.<string, (Array.<ol.style.Style>|string)>} sharedStyles Shared styles.
+ * @param {boolean|undefined} showPointNames true to show names for point placemarks.
  * @return {ol.StyleFunction} Feature style function.
  */
-function createFeatureStyleFunction(style, styleUrl,
-  defaultStyle, sharedStyles, showPointNames) {
+function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles, showPointNames) {
 
   return (
     /**
@@ -418,25 +415,21 @@ function createFeatureStyleFunction(style, styleUrl,
 
       if (style) {
         if (drawName) {
-          nameStyle = createNameStyleFunction(style[0],
-            name);
+          nameStyle = createNameStyleFunction(style[0], name);
           return style.concat(nameStyle);
         }
         return style;
       }
       if (styleUrl) {
-        const foundStyle = findStyle(styleUrl, defaultStyle,
-          sharedStyles);
+        const foundStyle = findStyle(styleUrl, defaultStyle, sharedStyles);
         if (drawName) {
-          nameStyle = createNameStyleFunction(foundStyle[0],
-            name);
+          nameStyle = createNameStyleFunction(foundStyle[0], name);
           return foundStyle.concat(nameStyle);
         }
         return foundStyle;
       }
       if (drawName) {
-        nameStyle = createNameStyleFunction(defaultStyle[0],
-          name);
+        nameStyle = createNameStyleFunction(defaultStyle[0], name);
         return defaultStyle.concat(nameStyle);
       }
       return defaultStyle;
@@ -448,7 +441,7 @@ function createFeatureStyleFunction(style, styleUrl,
 /**
  * @param {Array.<ol.style.Style>|string|undefined} styleValue Style value.
  * @param {Array.<ol.style.Style>} defaultStyle Default style.
- * @param {Object.<string, (Array.<ol.style.Style>|string)>} sharedStyles
+ * @param {!Object.<string, (Array.<ol.style.Style>|string)>} sharedStyles
  * Shared styles.
  * @return {Array.<ol.style.Style>} Style.
  */
@@ -462,8 +455,7 @@ function findStyle(styleValue, defaultStyle, sharedStyles) {
     if (!(styleValue in sharedStyles) && ('#' + styleValue in sharedStyles)) {
       styleValue = '#' + styleValue;
     }
-    return findStyle(
-      sharedStyles[styleValue], defaultStyle, sharedStyles);
+    return findStyle(sharedStyles[styleValue], defaultStyle, sharedStyles);
   } else {
     return defaultStyle;
   }

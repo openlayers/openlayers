@@ -321,7 +321,7 @@ const PluggableMap = function(options) {
 
   /**
    * @private
-   * @type {Array.<module:ol/types~PostRenderFunction>}
+   * @type {!Array.<module:ol/types~PostRenderFunction>}
    */
   this.postRenderFunctions_ = [];
 
@@ -1232,8 +1232,7 @@ PluggableMap.prototype.renderFrame_ = function(time) {
     if (frameState.animate) {
       this.render();
     }
-    Array.prototype.push.apply(
-      this.postRenderFunctions_, frameState.postRenderFunctions);
+    Array.prototype.push.apply(this.postRenderFunctions_, frameState.postRenderFunctions);
 
     if (previousFrameState) {
       const moveStart = !this.previousExtent_ ||

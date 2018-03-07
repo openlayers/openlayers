@@ -164,7 +164,7 @@ LayerRenderer.prototype.scheduleExpireCache = function(frameState, tileSource) {
 
 
 /**
- * @param {Object.<string, Object.<string, ol.TileRange>>} usedTiles Used tiles.
+ * @param {!Object.<string, !Object.<string, ol.TileRange>>} usedTiles Used tiles.
  * @param {ol.source.Tile} tileSource Tile source.
  * @param {number} z Z.
  * @param {ol.TileRange} tileRange Tile range.

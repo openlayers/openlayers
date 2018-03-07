@@ -379,7 +379,7 @@ const GPX_SERIALIZERS = makeStructureNS(
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {ol.LayoutOptions} layoutOptions Layout options.
  * @param {Node} node Node.
- * @param {Object} values Values.
+ * @param {!Object} values Values.
  * @return {Array.<number>} Flat coordinates.
  */
 function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
@@ -477,14 +477,11 @@ function parseExtensions(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  */
 function parseRtePt(node, objectStack) {
-  const values = pushParseAndPop(
-    {}, RTEPT_PARSERS, node, objectStack);
+  const values = pushParseAndPop({}, RTEPT_PARSERS, node, objectStack);
   if (values) {
-    const rteValues = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-    const flatCoordinates = /** @type {Array.<number>} */
-        (rteValues['flatCoordinates']);
-    const layoutOptions = /** @type {ol.LayoutOptions} */
-        (rteValues['layoutOptions']);
+    const rteValues = /** @type {!Object} */ (objectStack[objectStack.length - 1]);
+    const flatCoordinates = /** @type {Array.<number>} */ (rteValues['flatCoordinates']);
+    const layoutOptions = /** @type {ol.LayoutOptions} */ (rteValues['layoutOptions']);
     appendCoordinate(flatCoordinates, layoutOptions, node, values);
   }
 }
@@ -497,11 +494,9 @@ function parseRtePt(node, objectStack) {
 function parseTrkPt(node, objectStack) {
   const values = pushParseAndPop({}, TRKPT_PARSERS, node, objectStack);
   if (values) {
-    const trkValues = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-    const flatCoordinates = /** @type {Array.<number>} */
-        (trkValues['flatCoordinates']);
-    const layoutOptions = /** @type {ol.LayoutOptions} */
-        (trkValues['layoutOptions']);
+    const trkValues = /** @type {!Object} */ (objectStack[objectStack.length - 1]);
+    const flatCoordinates = /** @type {Array.<number>} */ (trkValues['flatCoordinates']);
+    const layoutOptions = /** @type {ol.LayoutOptions} */ (trkValues['layoutOptions']);
     appendCoordinate(flatCoordinates, layoutOptions, node, values);
   }
 }
