@@ -178,13 +178,6 @@ ol.Constraints;
 
 
 /**
- * An array of numbers representing an xy coordinate. Example: `[16, 48]`.
- * @typedef {Array.<number>}
- */
-ol.Coordinate;
-
-
-/**
  * A function that takes a {@link ol.Coordinate} and transforms it into a
  * `{string}`.
  *
