@@ -46,6 +46,12 @@
  */
 
 /**
+ * An array of numbers representing a size: `[width, height]`.
+ * @typedef {Array.<number>} Size
+ * @api
+ */
+
+/**
  * An array representing an affine 2d transformation for use with
  * {@link module:ol/transform} functions. The array has 6 elements.
  * @typedef {!Array.<number>} Transform
