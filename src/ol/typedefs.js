@@ -230,20 +230,6 @@ ol.EventsConditionType;
 
 
 /**
- * Key to use with {@link ol.Observable#unByKey}.
- *
- * @typedef {{bindTo: (Object|undefined),
- *     boundListener: (ol.EventsListenerFunctionType|undefined),
- *     callOnce: boolean,
- *     deleteIndex: (number|undefined),
- *     listener: ol.EventsListenerFunctionType,
- *     target: (EventTarget|ol.events.EventTarget),
- *     type: string}}
- */
-ol.EventsKey;
-
-
-/**
  * Listener function. This function is called with an event object as argument.
  * When the function returns `false`, event propagation will stop.
  *

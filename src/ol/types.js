@@ -9,3 +9,15 @@
  * @api
  */
 
+/**
+ * Key to use with {@link module:ol/Observable~Observable#unByKey}.
+ * @typedef {Object} EventsKey
+ * @property {Object} [bindTo]
+ * @property {ol.EventsListenerFunctionType} [boundListener]
+ * @property {boolean} callOnce
+ * @property {number} [deleteIndex]
+ * @property {ol.EventsListenerFunctionType} listener
+ * @property {EventTarget|ol.events.EventTarget} target
+ * @property {string} type
+ */
+
