@@ -45,7 +45,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 /**
  * Object literal with config options for the map.
  * @typedef {Object} MapOptions
- * @property {module:ol/Collection~Collectiion.<module:ol/control/Control~Control>|Array.<module:ol/control/Control~Control>} [controls]
+ * @property {module:ol/Collection~Collection.<module:ol/control/Control~Control>|Array.<module:ol/control/Control~Control>} [controls]
  * Controls initially added to the map. If not specified,
  * {@link module:ol/control~defaults} is used.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
