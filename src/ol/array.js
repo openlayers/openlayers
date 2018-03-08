@@ -126,15 +126,13 @@ export function reverseSubArray(arr, begin, end) {
 
 /**
  * @param {Array.<VALUE>} arr The array to modify.
- * @param {Array.<VALUE>|VALUE} data The elements or arrays of elements
- *     to add to arr.
+ * @param {!Array.<VALUE>|VALUE} data The elements or arrays of elements to add to arr.
  * @template VALUE
  */
 export function extend(arr, data) {
-  let i;
   const extension = Array.isArray(data) ? data : [data];
   const length = extension.length;
-  for (i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     arr[arr.length] = extension[i];
   }
 }
@@ -160,7 +158,7 @@ export function remove(arr, obj) {
  * @param {Array.<VALUE>} arr The array to search in.
  * @param {function(VALUE, number, ?) : boolean} func The function to compare.
  * @template VALUE
- * @return {VALUE} The element found.
+ * @return {VALUE|null} The element found or null.
  */
 export function find(arr, func) {
   const length = arr.length >>> 0;

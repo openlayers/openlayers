@@ -242,9 +242,8 @@ WebGLTextureReplay.prototype.drawCoordinates = function(flatCoordinates, offset,
 /**
  * @protected
  * @param {Array.<WebGLTexture>} textures Textures.
- * @param {Array.<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>} images
- *    Images.
- * @param {Object.<string, WebGLTexture>} texturePerImage Texture cache.
+ * @param {Array.<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>} images Images.
+ * @param {!Object.<string, WebGLTexture>} texturePerImage Texture cache.
  * @param {WebGLRenderingContext} gl Gl.
  */
 WebGLTextureReplay.prototype.createTextures = function(textures, images, texturePerImage, gl) {

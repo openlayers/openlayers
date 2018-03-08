@@ -100,8 +100,7 @@ const CanvasReplayGroup = function(
 
   /**
    * @private
-   * @type {!Object.<string,
-   *        Object.<ol.render.ReplayType, ol.render.canvas.Replay>>}
+   * @type {!Object.<string, !Object.<ol.render.ReplayType, ol.render.canvas.Replay>>}
    */
   this.replaysByZIndex_ = {};
 

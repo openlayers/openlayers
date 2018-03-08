@@ -143,7 +143,7 @@ WebGLVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordin
     const viewState = frameState.viewState;
     const layer = this.getLayer();
     const layerState = this.layerState_;
-    /** @type {Object.<string, boolean>} */
+    /** @type {!Object.<string, boolean>} */
     const features = {};
     return this.replayGroup_.forEachFeatureAtCoordinate(coordinate,
       context, viewState.center, viewState.resolution, viewState.rotation,

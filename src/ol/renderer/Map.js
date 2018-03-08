@@ -32,7 +32,7 @@ const MapRenderer = function(container, map) {
 
   /**
    * @private
-   * @type {Object.<string, ol.renderer.Layer>}
+   * @type {!Object.<string, ol.renderer.Layer>}
    */
   this.layerRenderers_ = {};
 

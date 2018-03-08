@@ -253,14 +253,13 @@ CanvasVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordi
     const resolution = frameState.viewState.resolution;
     const rotation = frameState.viewState.rotation;
     const layer = /** @type {ol.layer.Vector} */ (this.getLayer());
-    /** @type {Object.<string, boolean>} */
+    /** @type {!Object.<string, boolean>} */
     const features = {};
-    const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
-      rotation, hitTolerance, {},
+    const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
       /**
-         * @param {ol.Feature|ol.render.Feature} feature Feature.
-         * @return {?} Callback result.
-         */
+       * @param {ol.Feature|ol.render.Feature} feature Feature.
+       * @return {?} Callback result.
+       */
       function(feature) {
         const key = getUid(feature).toString();
         if (!(key in features)) {

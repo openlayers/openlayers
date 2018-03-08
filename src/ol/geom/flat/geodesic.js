@@ -32,7 +32,7 @@ function line(interpolate, transform, squaredTolerance) {
   /** @type {Array.<number>} */
   const fractionStack = [1, 0];
 
-  /** @type {Object.<string, boolean>} */
+  /** @type {!Object.<string, boolean>} */
   const fractions = {};
 
   let maxIterations = 1e5;

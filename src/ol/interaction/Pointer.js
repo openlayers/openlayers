@@ -97,7 +97,7 @@ const PointerInteraction = function(opt_options) {
   this.handlingDownUpSequence = false;
 
   /**
-   * @type {Object.<string, ol.pointer.PointerEvent>}
+   * @type {!Object.<string, ol.pointer.PointerEvent>}
    * @private
    */
   this.trackedPointers_ = {};

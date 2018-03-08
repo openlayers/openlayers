@@ -61,13 +61,13 @@ const TileImage = function(options) {
 
   /**
    * @protected
-   * @type {Object.<string, ol.TileCache>}
+   * @type {!Object.<string, ol.TileCache>}
    */
   this.tileCacheForProjection = {};
 
   /**
    * @protected
-   * @type {Object.<string, ol.tilegrid.TileGrid>}
+   * @type {!Object.<string, ol.tilegrid.TileGrid>}
    */
   this.tileGridForProjection = {};
 
@@ -173,8 +173,7 @@ TileImage.prototype.getTileGridForProjection = function(projection) {
   } else {
     const projKey = getUid(projection).toString();
     if (!(projKey in this.tileGridForProjection)) {
-      this.tileGridForProjection[projKey] =
-          getTileGridForProjection(projection);
+      this.tileGridForProjection[projKey] = getTileGridForProjection(projection);
     }
     return /** @type {!ol.tilegrid.TileGrid} */ (this.tileGridForProjection[projKey]);
   }

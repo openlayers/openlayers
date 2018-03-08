@@ -129,7 +129,7 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
 
   /**
    * @private
-   * @type {Object.<number,ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>>}
+   * @type {!Object.<number,ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>>}
    */
   this.coordinateCache_ = {};
 

@@ -126,21 +126,21 @@ const VectorSource = function(opt_options) {
 
   /**
    * @private
-   * @type {Object.<string, ol.Feature>}
+   * @type {!Object.<string, ol.Feature>}
    */
   this.nullGeometryFeatures_ = {};
 
   /**
    * A lookup of features by id (the return from feature.getId()).
    * @private
-   * @type {Object.<string, ol.Feature>}
+   * @type {!Object.<string, ol.Feature>}
    */
   this.idIndex_ = {};
 
   /**
    * A lookup of features without id (keyed by ol.getUid(feature)).
    * @private
-   * @type {Object.<string, ol.Feature>}
+   * @type {!Object.<string, ol.Feature>}
    */
   this.undefIdIndex_ = {};
 

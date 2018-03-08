@@ -63,7 +63,7 @@ const UrlTile = function(options) {
 
   /**
    * @private
-   * @type {Object.<number, boolean>}
+   * @type {!Object.<number, boolean>}
    */
   this.tileLoadingKeys_ = {};
 

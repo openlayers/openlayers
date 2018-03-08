@@ -265,7 +265,7 @@ CanvasVectorTileLayerRenderer.prototype.forEachFeatureAtCoordinate = function(co
   const rotation = frameState.viewState.rotation;
   hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
   const layer = this.getLayer();
-  /** @type {Object.<string, boolean>} */
+  /** @type {!Object.<string, boolean>} */
   const features = {};
 
   /** @type {Array.<ol.VectorImageTile>} */
@@ -290,8 +290,7 @@ CanvasVectorTileLayerRenderer.prototype.forEachFeatureAtCoordinate = function(co
         continue;
       }
       replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
-      found = found || replayGroup.forEachFeatureAtCoordinate(
-        coordinate, resolution, rotation, hitTolerance, {},
+      found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.

@@ -10,7 +10,7 @@ import {asString} from '../color.js';
 const IconImageCache = function() {
 
   /**
-   * @type {Object.<string, ol.style.IconImage>}
+   * @type {!Object.<string, ol.style.IconImage>}
    * @private
    */
   this.cache_ = {};

@@ -34,19 +34,19 @@ const WebGLContext = function(canvas, gl) {
 
   /**
    * @private
-   * @type {Object.<string, ol.WebglBufferCacheEntry>}
+   * @type {!Object.<string, ol.WebglBufferCacheEntry>}
    */
   this.bufferCache_ = {};
 
   /**
    * @private
-   * @type {Object.<string, WebGLShader>}
+   * @type {!Object.<string, WebGLShader>}
    */
   this.shaderCache_ = {};
 
   /**
    * @private
-   * @type {Object.<string, WebGLProgram>}
+   * @type {!Object.<string, WebGLProgram>}
    */
   this.programCache_ = {};
 
