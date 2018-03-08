@@ -13,11 +13,11 @@ import {iconImageCache} from '../style.js';
  * @constructor
  * @param {Image|HTMLCanvasElement} image Image.
  * @param {string|undefined} src Src.
- * @param {ol.Size} size Size.
+ * @param {module:ol/size~Size} size Size.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.ImageState} imageState Image state.
  * @param {ol.Color} color Color.
- * @extends {ol.events.EventTarget}
+ * @extends {module:ol/events/EventTarget~EventTarget}
  */
 const IconImage = function(image, src, size, crossOrigin, imageState, color) {
 
@@ -55,7 +55,7 @@ const IconImage = function(image, src, size, crossOrigin, imageState, color) {
 
   /**
    * @private
-   * @type {Array.<ol.EventsKey>}
+   * @type {Array.<module:ol/events~EventsKey>}
    */
   this.imageListenerKeys_ = null;
 
@@ -67,7 +67,7 @@ const IconImage = function(image, src, size, crossOrigin, imageState, color) {
 
   /**
    * @private
-   * @type {ol.Size}
+   * @type {module:ol/size~Size}
    */
   this.size_ = size;
 
@@ -94,7 +94,7 @@ inherits(IconImage, EventTarget);
 /**
  * @param {Image|HTMLCanvasElement} image Image.
  * @param {string} src Src.
- * @param {ol.Size} size Size.
+ * @param {module:ol/size~Size} size Size.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.ImageState} imageState Image state.
  * @param {ol.Color} color Color.
@@ -197,7 +197,7 @@ IconImage.prototype.getHitDetectionImage = function(pixelRatio) {
 
 
 /**
- * @return {ol.Size} Image size.
+ * @return {module:ol/size~Size} Image size.
  */
 IconImage.prototype.getSize = function() {
   return this.size_;

@@ -14,7 +14,7 @@ import {deflateCoordinate} from '../geom/flat/deflate.js';
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {ol.Coordinate} center Center.
+ * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number=} opt_radius Radius.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
@@ -82,8 +82,8 @@ Circle.prototype.containsXY = function(x, y) {
 
 
 /**
- * Return the center of the circle as {@link ol.Coordinate coordinate}.
- * @return {ol.Coordinate} Center.
+ * Return the center of the circle as {@link module:ol/coordinate~Coordinate coordinate}.
+ * @return {module:ol/coordinate~Coordinate} Center.
  * @api
  */
 Circle.prototype.getCenter = function() {
@@ -158,8 +158,8 @@ Circle.prototype.intersectsExtent = function(extent) {
 
 
 /**
- * Set the center of the circle as {@link ol.Coordinate coordinate}.
- * @param {ol.Coordinate} center Center.
+ * Set the center of the circle as {@link module:ol/coordinate~Coordinate coordinate}.
+ * @param {module:ol/coordinate~Coordinate} center Center.
  * @api
  */
 Circle.prototype.setCenter = function(center) {
@@ -175,9 +175,9 @@ Circle.prototype.setCenter = function(center) {
 
 
 /**
- * Set the center (as {@link ol.Coordinate coordinate}) and the radius (as
+ * Set the center (as {@link module:ol/coordinate~Coordinate coordinate}) and the radius (as
  * number) of the circle.
- * @param {ol.Coordinate} center Center.
+ * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} radius Radius.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
@@ -250,9 +250,9 @@ Circle.prototype.setRadius = function(radius) {
  * correspond to the shape that would be obtained by transforming every point
  * of the original circle.
  *
- * @param {ol.ProjectionLike} source The current projection.  Can be a
+ * @param {module:ol/proj~ProjectionLike} source The current projection.  Can be a
  *     string identifier or a {@link ol.proj.Projection} object.
- * @param {ol.ProjectionLike} destination The desired projection.  Can be a
+ * @param {module:ol/proj~ProjectionLike} destination The desired projection.  Can be a
  *     string identifier or a {@link ol.proj.Projection} object.
  * @return {ol.geom.Circle} This geometry.  Note that original geometry is
  *     modified in place.

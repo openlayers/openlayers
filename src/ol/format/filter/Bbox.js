@@ -11,7 +11,7 @@ import Filter from '../filter/Filter.js';
  *
  * @constructor
  * @param {!string} geometryName Geometry name to use.
- * @param {!ol.Extent} extent Extent.
+ * @param {!module:ol/extent~Extent} extent Extent.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @extends {ol.format.filter.Filter}
@@ -29,7 +29,7 @@ const Bbox = function(geometryName, extent, opt_srsName) {
 
   /**
    * @public
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.extent = extent;
 

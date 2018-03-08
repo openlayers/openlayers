@@ -115,7 +115,7 @@ inherits(PointerInteraction, Interaction);
 
 /**
  * @param {Array.<ol.pointer.PointerEvent>} pointerEvents List of events.
- * @return {ol.Pixel} Centroid pixel.
+ * @return {module:ol~Pixel} Centroid pixel.
  */
 export function centroid(pointerEvents) {
   const length = pointerEvents.length;

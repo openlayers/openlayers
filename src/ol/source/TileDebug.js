@@ -13,8 +13,8 @@ import {getKeyZXY} from '../tilecoord.js';
 /**
  * @constructor
  * @extends {ol.Tile}
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.Size} tileSize Tile size.
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+ * @param {module:ol/size~Size} tileSize Tile size.
  * @param {string} text Text.
  */
 const LabeledTile = function(tileCoord, tileSize, text) {
@@ -23,7 +23,7 @@ const LabeledTile = function(tileCoord, tileSize, text) {
 
   /**
    * @private
-   * @type {ol.Size}
+   * @type {module:ol/size~Size}
    */
   this.tileSize_ = tileSize;
 

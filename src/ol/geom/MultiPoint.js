@@ -18,7 +18,7 @@ import {squaredDistance as squaredDx} from '../math.js';
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {Array.<ol.Coordinate>} coordinates Coordinates.
+ * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
@@ -84,7 +84,7 @@ MultiPoint.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDis
 
 /**
  * Return the coordinates of the multipoint.
- * @return {Array.<ol.Coordinate>} Coordinates.
+ * @return {Array.<module:ol/coordinate~Coordinate>} Coordinates.
  * @override
  * @api
  */
@@ -161,7 +161,7 @@ MultiPoint.prototype.intersectsExtent = function(extent) {
 
 /**
  * Set the coordinates of the multipoint.
- * @param {Array.<ol.Coordinate>} coordinates Coordinates.
+ * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @override
  * @api

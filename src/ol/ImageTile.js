@@ -10,13 +10,13 @@ import EventType from './events/EventType.js';
 
 /**
  * @constructor
- * @extends {ol.Tile}
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.TileState} state State.
+ * @extends {module:ol/Tile~Tile}
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+ * @param {module:ol/TileState~TileState} state State.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
- * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
- * @param {olx.TileOptions=} opt_options Tile options.
+ * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
+ * @param {module:ol/Tile~Options=} opt_options Tile options.
  */
 const ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
@@ -47,13 +47,13 @@ const ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction,
 
   /**
    * @private
-   * @type {Array.<ol.EventsKey>}
+   * @type {Array.<module:ol/events~EventsKey>}
    */
   this.imageListenerKeys_ = null;
 
   /**
    * @private
-   * @type {ol.TileLoadFunctionType}
+   * @type {module:ol/Tile~LoadFunction}
    */
   this.tileLoadFunction_ = tileLoadFunction;
 

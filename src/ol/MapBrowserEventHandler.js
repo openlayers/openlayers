@@ -11,10 +11,12 @@ import PointerEventType from './pointer/EventType.js';
 import PointerEventHandler from './pointer/PointerEventHandler.js';
 
 /**
- * @param {ol.PluggableMap} map The map with the viewport to listen to events on.
- * @param {number|undefined} moveTolerance The minimal distance the pointer must travel to trigger a move.
+ * @param {module:ol/PluggableMap~PluggableMap} map The map with the viewport to
+ * listen to events on.
+ * @param {number=} moveTolerance The minimal distance the pointer must travel
+ * to trigger a move.
  * @constructor
- * @extends {ol.events.EventTarget}
+ * @extends {module:ol/events/EventTarget~EventTarget}
  */
 const MapBrowserEventHandler = function(map, moveTolerance) {
 
@@ -22,7 +24,7 @@ const MapBrowserEventHandler = function(map, moveTolerance) {
 
   /**
    * This is the element that we will listen to the real events on.
-   * @type {ol.PluggableMap}
+   * @type {module:ol/PluggableMap~PluggableMap}
    * @private
    */
   this.map_ = map;
@@ -40,7 +42,7 @@ const MapBrowserEventHandler = function(map, moveTolerance) {
   this.dragging_ = false;
 
   /**
-   * @type {!Array.<ol.EventsKey>}
+   * @type {!Array.<module:ol/events~EventsKey>}
    * @private
    */
   this.dragListenerKeys_ = [];
@@ -55,7 +57,7 @@ const MapBrowserEventHandler = function(map, moveTolerance) {
   /**
    * The most recent "down" type event (or null if none have occurred).
    * Set on pointerdown.
-   * @type {ol.pointer.PointerEvent}
+   * @type {module:ol/pointer/PointerEvent~PointerEvent}
    * @private
    */
   this.down_ = null;
@@ -78,7 +80,7 @@ const MapBrowserEventHandler = function(map, moveTolerance) {
    * Event handler which generates pointer events for
    * the viewport element.
    *
-   * @type {ol.pointer.PointerEventHandler}
+   * @type {module:ol/pointer/PointerEventHandler~PointerEventHandler}
    * @private
    */
   this.pointerEventHandler_ = new PointerEventHandler(element);
@@ -87,13 +89,13 @@ const MapBrowserEventHandler = function(map, moveTolerance) {
    * Event handler which generates pointer events for
    * the document (used when dragging).
    *
-   * @type {ol.pointer.PointerEventHandler}
+   * @type {module:ol/pointer/PointerEventHandler~PointerEventHandler}
    * @private
    */
   this.documentPointerEventHandler_ = null;
 
   /**
-   * @type {?ol.EventsKey}
+   * @type {?module:ol/events~EventsKey}
    * @private
    */
   this.pointerdownListenerKey_ = listen(this.pointerEventHandler_,
@@ -101,7 +103,7 @@ const MapBrowserEventHandler = function(map, moveTolerance) {
     this.handlePointerDown_, this);
 
   /**
-   * @type {?ol.EventsKey}
+   * @type {?module:ol/events~EventsKey}
    * @private
    */
   this.relayedListenerKey_ = listen(this.pointerEventHandler_,
@@ -114,7 +116,8 @@ inherits(MapBrowserEventHandler, EventTarget);
 
 
 /**
- * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @param {module:ol/pointer/PointerEvent~PointerEvent} pointerEvent Pointer
+ * event.
  * @private
  */
 MapBrowserEventHandler.prototype.emulateClick_ = function(pointerEvent) {
@@ -143,7 +146,8 @@ MapBrowserEventHandler.prototype.emulateClick_ = function(pointerEvent) {
 /**
  * Keeps track on how many pointers are currently active.
  *
- * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @param {module:ol/pointer/PointerEvent~PointerEvent} pointerEvent Pointer
+ * event.
  * @private
  */
 MapBrowserEventHandler.prototype.updateActivePointers_ = function(pointerEvent) {
@@ -160,7 +164,8 @@ MapBrowserEventHandler.prototype.updateActivePointers_ = function(pointerEvent) 
 
 
 /**
- * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @param {module:ol/pointer/PointerEvent~PointerEvent} pointerEvent Pointer
+ * event.
  * @private
  */
 MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
@@ -191,7 +196,8 @@ MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
 
 
 /**
- * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @param {module:ol/pointer/PointerEvent~PointerEvent} pointerEvent Pointer
+ * event.
  * @return {boolean} If the left mouse button was pressed.
  * @private
  */
@@ -201,7 +207,8 @@ MapBrowserEventHandler.prototype.isMouseActionButton_ = function(pointerEvent) {
 
 
 /**
- * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @param {module:ol/pointer/PointerEvent~PointerEvent} pointerEvent Pointer
+ * event.
  * @private
  */
 MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) {
@@ -249,7 +256,8 @@ MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) {
 
 
 /**
- * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @param {module:ol/pointer/PointerEvent~PointerEvent} pointerEvent Pointer
+ * event.
  * @private
  */
 MapBrowserEventHandler.prototype.handlePointerMove_ = function(pointerEvent) {
@@ -275,7 +283,8 @@ MapBrowserEventHandler.prototype.handlePointerMove_ = function(pointerEvent) {
 /**
  * Wrap and relay a pointer event.  Note that this requires that the type
  * string for the MapBrowserPointerEvent matches the PointerEvent type.
- * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @param {module:ol/pointer/PointerEvent~PointerEvent} pointerEvent Pointer
+ * event.
  * @private
  */
 MapBrowserEventHandler.prototype.relayEvent_ = function(pointerEvent) {
@@ -286,7 +295,8 @@ MapBrowserEventHandler.prototype.relayEvent_ = function(pointerEvent) {
 
 
 /**
- * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
+ * @param {module:ol/pointer/PointerEvent~PointerEvent} pointerEvent Pointer
+ * event.
  * @return {boolean} Is moving.
  * @private
  */

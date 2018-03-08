@@ -27,7 +27,7 @@ import {create as createTransform, compose as composeTransform} from '../transfo
 const RenderFeature = function(type, flatCoordinates, ends, properties, id) {
   /**
    * @private
-   * @type {ol.Extent|undefined}
+   * @type {module:ol/extent~Extent|undefined}
    */
   this.extent_;
 
@@ -77,7 +77,7 @@ const RenderFeature = function(type, flatCoordinates, ends, properties, id) {
 
 
 /**
- * @type {ol.Transform}
+ * @type {module:ol/transform~Transform}
  */
 const tmpTransform = createTransform();
 
@@ -104,7 +104,7 @@ RenderFeature.prototype.getEndss = function() {
 
 /**
  * Get the extent of this feature's geometry.
- * @return {ol.Extent} Extent.
+ * @return {module:ol/extent~Extent} Extent.
  * @api
  */
 RenderFeature.prototype.getExtent = function() {
@@ -260,8 +260,8 @@ RenderFeature.prototype.getType = function() {
  * Transform geometry coordinates from tile pixel space to projected.
  * The SRS of the source and destination are expected to be the same.
  *
- * @param {ol.ProjectionLike} source The current projection
- * @param {ol.ProjectionLike} destination The desired projection.
+ * @param {module:ol/proj~ProjectionLike} source The current projection
+ * @param {module:ol/proj~ProjectionLike} destination The desired projection.
  */
 RenderFeature.prototype.transform = function(source, destination) {
   const pixelExtent = source.getExtent();

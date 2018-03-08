@@ -35,8 +35,8 @@ const MAX_TRIANGLE_WIDTH = 0.25;
  *
  * @param {ol.proj.Projection} sourceProj Source projection.
  * @param {ol.proj.Projection} targetProj Target projection.
- * @param {ol.Extent} targetExtent Target extent to triangulate.
- * @param {ol.Extent} maxSourceExtent Maximal source extent that can be used.
+ * @param {module:ol/extent~Extent} targetExtent Target extent to triangulate.
+ * @param {module:ol/extent~Extent} maxSourceExtent Maximal source extent that can be used.
  * @param {number} errorThreshold Acceptable error (in source units).
  * @constructor
  */
@@ -55,13 +55,13 @@ const Triangulation = function(sourceProj, targetProj, targetExtent,
    */
   this.targetProj_ = targetProj;
 
-  /** @type {!Object.<string, ol.Coordinate>} */
+  /** @type {!Object.<string, module:ol/coordinate~Coordinate>} */
   let transformInvCache = {};
   const transformInv = getTransform(this.targetProj_, this.sourceProj_);
 
   /**
-   * @param {ol.Coordinate} c A coordinate.
-   * @return {ol.Coordinate} Transformed coordinate.
+   * @param {module:ol/coordinate~Coordinate} c A coordinate.
+   * @return {module:ol/coordinate~Coordinate} Transformed coordinate.
    * @private
    */
   this.transformInv_ = function(c) {
@@ -73,7 +73,7 @@ const Triangulation = function(sourceProj, targetProj, targetExtent,
   };
 
   /**
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    * @private
    */
   this.maxSourceExtent_ = maxSourceExtent;
@@ -180,12 +180,12 @@ const Triangulation = function(sourceProj, targetProj, targetExtent,
 
 /**
  * Adds triangle to the triangulation.
- * @param {ol.Coordinate} a The target a coordinate.
- * @param {ol.Coordinate} b The target b coordinate.
- * @param {ol.Coordinate} c The target c coordinate.
- * @param {ol.Coordinate} aSrc The source a coordinate.
- * @param {ol.Coordinate} bSrc The source b coordinate.
- * @param {ol.Coordinate} cSrc The source c coordinate.
+ * @param {module:ol/coordinate~Coordinate} a The target a coordinate.
+ * @param {module:ol/coordinate~Coordinate} b The target b coordinate.
+ * @param {module:ol/coordinate~Coordinate} c The target c coordinate.
+ * @param {module:ol/coordinate~Coordinate} aSrc The source a coordinate.
+ * @param {module:ol/coordinate~Coordinate} bSrc The source b coordinate.
+ * @param {module:ol/coordinate~Coordinate} cSrc The source c coordinate.
  * @private
  */
 Triangulation.prototype.addTriangle_ = function(a, b, c,
@@ -202,14 +202,14 @@ Triangulation.prototype.addTriangle_ = function(a, b, c,
  * (and reprojects the vertices) if valid.
  * Performs quad subdivision if needed to increase precision.
  *
- * @param {ol.Coordinate} a The target a coordinate.
- * @param {ol.Coordinate} b The target b coordinate.
- * @param {ol.Coordinate} c The target c coordinate.
- * @param {ol.Coordinate} d The target d coordinate.
- * @param {ol.Coordinate} aSrc The source a coordinate.
- * @param {ol.Coordinate} bSrc The source b coordinate.
- * @param {ol.Coordinate} cSrc The source c coordinate.
- * @param {ol.Coordinate} dSrc The source d coordinate.
+ * @param {module:ol/coordinate~Coordinate} a The target a coordinate.
+ * @param {module:ol/coordinate~Coordinate} b The target b coordinate.
+ * @param {module:ol/coordinate~Coordinate} c The target c coordinate.
+ * @param {module:ol/coordinate~Coordinate} d The target d coordinate.
+ * @param {module:ol/coordinate~Coordinate} aSrc The source a coordinate.
+ * @param {module:ol/coordinate~Coordinate} bSrc The source b coordinate.
+ * @param {module:ol/coordinate~Coordinate} cSrc The source c coordinate.
+ * @param {module:ol/coordinate~Coordinate} dSrc The source d coordinate.
  * @param {number} maxSubdivision Maximal allowed subdivision of the quad.
  * @private
  */
@@ -323,7 +323,7 @@ Triangulation.prototype.addQuad_ = function(a, b, c, d,
 /**
  * Calculates extent of the 'source' coordinates from all the triangles.
  *
- * @return {ol.Extent} Calculated extent.
+ * @return {module:ol/extent~Extent} Calculated extent.
  */
 Triangulation.prototype.calculateSourceExtent = function() {
   const extent = createEmpty();

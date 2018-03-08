@@ -26,7 +26,7 @@ import {quantizeMultiArray} from '../geom/flat/simplify.js';
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {Array.<Array.<Array.<ol.Coordinate>>>} coordinates Coordinates.
+ * @param {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
@@ -175,7 +175,7 @@ MultiPolygon.prototype.getArea = function() {
  *     (clockwise for exterior and counter-clockwise for interior rings).
  *     By default, coordinate orientation will depend on how the geometry was
  *     constructed.
- * @return {Array.<Array.<Array.<ol.Coordinate>>>} Coordinates.
+ * @return {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>} Coordinates.
  * @override
  * @api
  */
@@ -351,7 +351,7 @@ MultiPolygon.prototype.intersectsExtent = function(extent) {
 
 /**
  * Set the coordinates of the multipolygon.
- * @param {Array.<Array.<Array.<ol.Coordinate>>>} coordinates Coordinates.
+ * @param {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @override
  * @api

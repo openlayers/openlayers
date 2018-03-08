@@ -329,12 +329,12 @@ OverviewMap.prototype.validateExtent_ = function() {
     return;
   }
 
-  const mapSize = /** @type {ol.Size} */ (map.getSize());
+  const mapSize = /** @type {module:ol/size~Size} */ (map.getSize());
 
   const view = map.getView();
   const extent = view.calculateExtent(mapSize);
 
-  const ovmapSize = /** @type {ol.Size} */ (ovmap.getSize());
+  const ovmapSize = /** @type {module:ol/size~Size} */ (ovmap.getSize());
 
   const ovview = ovmap.getView();
   const ovextent = ovview.calculateExtent(ovmapSize);
@@ -374,7 +374,7 @@ OverviewMap.prototype.resetExtent_ = function() {
   const map = this.getMap();
   const ovmap = this.ovmap_;
 
-  const mapSize = /** @type {ol.Size} */ (map.getSize());
+  const mapSize = /** @type {module:ol/size~Size} */ (map.getSize());
 
   const view = map.getView();
   const extent = view.calculateExtent(mapSize);
@@ -421,7 +421,7 @@ OverviewMap.prototype.updateBox_ = function() {
     return;
   }
 
-  const mapSize = /** @type {ol.Size} */ (map.getSize());
+  const mapSize = /** @type {module:ol/size~Size} */ (map.getSize());
 
   const view = map.getView();
 
@@ -450,8 +450,8 @@ OverviewMap.prototype.updateBox_ = function() {
 
 /**
  * @param {number} rotation Target rotation.
- * @param {ol.Coordinate} coordinate Coordinate.
- * @return {ol.Coordinate|undefined} Coordinate for rotation and center anchor.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
+ * @return {module:ol/coordinate~Coordinate|undefined} Coordinate for rotation and center anchor.
  * @private
  */
 OverviewMap.prototype.calculateCoordinateRotate_ = function(

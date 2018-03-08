@@ -36,7 +36,7 @@ const CanvasTileLayerRenderer = function(tileLayer) {
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.renderedExtent_ = null;
 
@@ -54,7 +54,7 @@ const CanvasTileLayerRenderer = function(tileLayer) {
 
   /**
    * @protected
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.tmpExtent = createEmpty();
 
@@ -66,7 +66,7 @@ const CanvasTileLayerRenderer = function(tileLayer) {
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.imageTransform_ = createTransform();
 
@@ -300,7 +300,7 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
 /**
  * @param {ol.Tile} tile Tile.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.LayerState} layerState Layer state.
+ * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @param {number} x Left of the tile.
  * @param {number} y Top of the tile.
  * @param {number} w Width of the tile.

@@ -52,7 +52,7 @@ const CanvasVectorLayerRenderer = function(vectorLayer) {
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.renderedExtent_ = createEmpty();
 
@@ -140,7 +140,7 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
   const clipExtent = layerState.extent;
   const clipped = clipExtent !== undefined;
   if (clipped) {
-    this.clip(context, frameState,  /** @type {ol.Extent} */ (clipExtent));
+    this.clip(context, frameState,  /** @type {module:ol/extent~Extent} */ (clipExtent));
   }
   const replayGroup = this.replayGroup_;
   if (replayGroup && !replayGroup.isEmpty()) {

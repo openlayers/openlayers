@@ -4,11 +4,18 @@
 
 
 /**
+ * An array of numbers representing a size: `[width, height]`.
+ * @typedef {Array.<number>} Size
+ * @api
+ */
+
+
+/**
  * Returns a buffered size.
- * @param {ol.Size} size Size.
+ * @param {module:ol/size~Size} size Size.
  * @param {number} num The amount by which to buffer.
- * @param {ol.Size=} opt_size Optional reusable size array.
- * @return {ol.Size} The buffered size.
+ * @param {module:ol/size~Size=} opt_size Optional reusable size array.
+ * @return {module:ol/size~Size} The buffered size.
  */
 export function buffer(size, num, opt_size) {
   if (opt_size === undefined) {
@@ -22,7 +29,7 @@ export function buffer(size, num, opt_size) {
 
 /**
  * Determines if a size has a positive area.
- * @param {ol.Size} size The size to test.
+ * @param {module:ol/size~Size} size The size to test.
  * @return {boolean} The size has a positive area.
  */
 export function hasArea(size) {
@@ -32,10 +39,10 @@ export function hasArea(size) {
 
 /**
  * Returns a size scaled by a ratio. The result will be an array of integers.
- * @param {ol.Size} size Size.
+ * @param {module:ol/size~Size} size Size.
  * @param {number} ratio Ratio.
- * @param {ol.Size=} opt_size Optional reusable size array.
- * @return {ol.Size} The scaled size.
+ * @param {module:ol/size~Size=} opt_size Optional reusable size array.
+ * @return {module:ol/size~Size} The scaled size.
  */
 export function scale(size, ratio, opt_size) {
   if (opt_size === undefined) {
@@ -48,12 +55,12 @@ export function scale(size, ratio, opt_size) {
 
 
 /**
- * Returns an `ol.Size` array for the passed in number (meaning: square) or
- * `ol.Size` array.
+ * Returns an `module:ol/size~Size` array for the passed in number (meaning: square) or
+ * `module:ol/size~Size` array.
  * (meaning: non-square),
- * @param {number|ol.Size} size Width and height.
- * @param {ol.Size=} opt_size Optional reusable size array.
- * @return {ol.Size} Size.
+ * @param {number|module:ol/size~Size} size Width and height.
+ * @param {module:ol/size~Size=} opt_size Optional reusable size array.
+ * @return {module:ol/size~Size} Size.
  * @api
  */
 export function toSize(size, opt_size) {
@@ -68,4 +75,3 @@ export function toSize(size, opt_size) {
     return opt_size;
   }
 }
-

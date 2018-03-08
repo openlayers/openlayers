@@ -1,5 +1,0 @@
-/**
- * An {@link ol.ColorLike} can be a color, gradient or pattern accepted by
- * [CanvasRenderingContext2D.fillStyle](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyle).
- * @namespace ol.colorlike
- */

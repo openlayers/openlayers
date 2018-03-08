@@ -6,6 +6,14 @@ import {getContext} from './webgl.js';
 
 
 /**
+ * An array with two elements, representing a pixel. The first element is the
+ * x-coordinate, the second the y-coordinate of the pixel.
+ * @typedef {Array.<number>} Pixel
+ * @api
+ */
+
+
+/**
  * Include debuggable shader sources.  Default is `true`. This should be set to
  * `false` for production builds.
  * TODO: move to a separate ol-webgl package

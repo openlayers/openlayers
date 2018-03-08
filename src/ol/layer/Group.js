@@ -47,13 +47,13 @@ const LayerGroup = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<ol.EventsKey>}
+   * @type {Array.<module:ol/events~EventsKey>}
    */
   this.layersListenerKeys_ = [];
 
   /**
    * @private
-   * @type {Object.<string, Array.<ol.EventsKey>>}
+   * @type {Object.<string, Array.<module:ol/events~EventsKey>>}
    */
   this.listenerKeys_ = {};
 

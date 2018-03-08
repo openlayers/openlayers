@@ -20,7 +20,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 
 /**
  * @type {Object.<ol.render.ReplayType,
- *                function(new: ol.render.canvas.Replay, number, ol.Extent,
+ *                function(new: ol.render.canvas.Replay, number, module:ol/extent~Extent,
  *                number, number, boolean, Array.<ol.DeclutterGroup>)>}
  */
 const BATCH_CONSTRUCTORS = {
@@ -37,7 +37,7 @@ const BATCH_CONSTRUCTORS = {
  * @constructor
  * @extends {ol.render.ReplayGroup}
  * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Max extent.
+ * @param {module:ol/extent~Extent} maxExtent Max extent.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {boolean} overlaps The replay group can have overlapping geometries.
@@ -70,7 +70,7 @@ const CanvasReplayGroup = function(
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.maxExtent_ = maxExtent;
 
@@ -112,7 +112,7 @@ const CanvasReplayGroup = function(
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.hitDetectionTransform_ = createTransform();
 };
@@ -238,7 +238,7 @@ CanvasReplayGroup.prototype.addDeclutter = function(group) {
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Transform} transform Transform.
+ * @param {module:ol/transform~Transform} transform Transform.
  */
 CanvasReplayGroup.prototype.clip = function(context, transform) {
   const flatClipCoords = this.getClipCoords(transform);
@@ -282,7 +282,7 @@ CanvasReplayGroup.prototype.finish = function() {
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {number} hitTolerance Hit tolerance in pixels.
@@ -315,7 +315,7 @@ CanvasReplayGroup.prototype.forEachFeatureAtCoordinate = function(
   }
 
   /**
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   let hitExtent;
   if (this.renderBuffer_ !== undefined) {
@@ -396,7 +396,7 @@ CanvasReplayGroup.prototype.forEachFeatureAtCoordinate = function(
 
 
 /**
- * @param {ol.Transform} transform Transform.
+ * @param {module:ol/transform~Transform} transform Transform.
  * @return {Array.<number>} Clip coordinates.
  */
 CanvasReplayGroup.prototype.getClipCoords = function(transform) {
@@ -451,7 +451,7 @@ CanvasReplayGroup.prototype.isEmpty = function() {
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Transform} transform Transform.
+ * @param {module:ol/transform~Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.

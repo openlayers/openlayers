@@ -70,12 +70,12 @@ const GEOMETRY_READERS = {
  * Concatenate arcs into a coordinate array.
  * @param {Array.<number>} indices Indices of arcs to concatenate.  Negative
  *     values indicate arcs need to be reversed.
- * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs (already
+ * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} arcs Array of arcs (already
  *     transformed).
- * @return {Array.<ol.Coordinate>} Coordinates array.
+ * @return {Array.<module:ol/coordinate~Coordinate>} Coordinates array.
  */
 function concatenateArcs(indices, arcs) {
-  /** @type {Array.<ol.Coordinate>} */
+  /** @type {Array.<module:ol/coordinate~Coordinate>} */
   const coordinates = [];
   let index, arc;
   for (let i = 0, ii = indices.length; i < ii; ++i) {
@@ -141,7 +141,7 @@ function readMultiPointGeometry(object, scale, translate) {
  * Create a linestring from a TopoJSON geometry object.
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
- * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
+ * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
  * @return {ol.geom.LineString} Geometry.
  */
 function readLineStringGeometry(object, arcs) {
@@ -154,7 +154,7 @@ function readLineStringGeometry(object, arcs) {
  * Create a multi-linestring from a TopoJSON geometry object.
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
- * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
+ * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
  * @return {ol.geom.MultiLineString} Geometry.
  */
 function readMultiLineStringGeometry(object, arcs) {
@@ -170,7 +170,7 @@ function readMultiLineStringGeometry(object, arcs) {
  * Create a polygon from a TopoJSON geometry object.
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
- * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
+ * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
  * @return {ol.geom.Polygon} Geometry.
  */
 function readPolygonGeometry(object, arcs) {
@@ -186,7 +186,7 @@ function readPolygonGeometry(object, arcs) {
  * Create a multi-polygon from a TopoJSON geometry object.
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
- * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
+ * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
  * @return {ol.geom.MultiPolygon} Geometry.
  */
 function readMultiPolygonGeometry(object, arcs) {
@@ -210,7 +210,7 @@ function readMultiPolygonGeometry(object, arcs) {
  *
  * @param {TopoJSONGeometryCollection} collection TopoJSON Geometry
  *     object.
- * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
+ * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
@@ -234,7 +234,7 @@ function readFeaturesFromGeometryCollection(collection, arcs, scale, translate, 
  * Create a feature from a TopoJSON geometry object.
  *
  * @param {TopoJSONGeometry} object TopoJSON geometry object.
- * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
+ * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
@@ -329,7 +329,7 @@ TopoJSON.prototype.readFeaturesFromObject = function(object, opt_options) {
  * Apply a linear transform to array of arcs.  The provided array of arcs is
  * modified in place.
  *
- * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
+ * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
  */
@@ -343,7 +343,7 @@ function transformArcs(arcs, scale, translate) {
 /**
  * Apply a linear transform to an arc.  The provided arc is modified in place.
  *
- * @param {Array.<ol.Coordinate>} arc Arc.
+ * @param {Array.<module:ol/coordinate~Coordinate>} arc Arc.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
  */
@@ -365,7 +365,7 @@ function transformArc(arc, scale, translate) {
  * Apply a linear transform to a vertex.  The provided vertex is modified in
  * place.
  *
- * @param {ol.Coordinate} vertex Vertex.
+ * @param {module:ol/coordinate~Coordinate} vertex Vertex.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
  */

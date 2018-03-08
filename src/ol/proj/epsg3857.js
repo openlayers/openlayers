@@ -25,7 +25,7 @@ export const HALF_SIZE = Math.PI * RADIUS;
 
 /**
  * @const
- * @type {ol.Extent}
+ * @type {module:ol/extent~Extent}
  */
 export const EXTENT = [
   -HALF_SIZE, -HALF_SIZE,
@@ -35,7 +35,7 @@ export const EXTENT = [
 
 /**
  * @const
- * @type {ol.Extent}
+ * @type {module:ol/extent~Extent}
  */
 export const WORLD_EXTENT = [-180, -85, 180, 85];
 

@@ -8,15 +8,34 @@ import Zoom from './control/Zoom.js';
 
 
 /**
+ * @typedef {Object} DefaultsOptions
+ * @property {boolean|undefined} [attribution=true] Include
+ * {@link module:ol/control/Attribution~Attribution}.
+ * @property {module:ol/control/Attribution~AttributionOptions} [attributionOptions]
+ * Options for {@link module:ol/control/Attribution~Attribution}.
+ * @property {boolean} [rotate=true] Include
+ * {@link module:ol/control/Rotate~Rotate}.
+ * @property {module:ol/control/Rotate~RotateOptions} [rotateOptions] Options
+ * for {@link module:ol/control/Rotate~Rotate}.
+ * @property {boolean} [zoom] Include {@link module:ol/control/Zoom~Zoom}.
+ * @property {module:ol/control/Zoom~ZoomOptions} [zoomOptions] Options for
+ * {@link module:ol/control/Zoom~Zoom}.
+ * @api
+ */
+
+
+/**
  * Set of controls included in maps by default. Unless configured otherwise,
  * this returns a collection containing an instance of each of the following
  * controls:
- * * {@link ol.control.Zoom}
- * * {@link ol.control.Rotate}
- * * {@link ol.control.Attribution}
+ * * {@link module:ol/control/Zoom~Zoom}
+ * * {@link module:ol/control/Rotate~Rotate}
+ * * {@link module:ol/control/Attribution~Attribution}
  *
- * @param {olx.control.DefaultsOptions=} opt_options Defaults options.
- * @return {ol.Collection.<ol.control.Control>} Controls.
+ * @param {module:ol/control~DefaultsOptions~DefaultsOptions=} opt_options
+ * Defaults options.
+ * @return {module:ol/Collection~Collection.<module:ol/control/Control~Control>}
+ * Controls.
  * @api
  */
 export function defaults(opt_options) {

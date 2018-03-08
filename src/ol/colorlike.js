@@ -5,22 +5,34 @@ import {toString} from './color.js';
 
 
 /**
- * @param {ol.Color|ol.ColorLike} color Color.
- * @return {ol.ColorLike} The color as an ol.ColorLike
+ * A type accepted by CanvasRenderingContext2D.fillStyle
+ * or CanvasRenderingContext2D.strokeStyle.
+ * Represents a color, pattern, or gradient. The origin for patterns and
+ * gradients as fill style is the top-left corner of the extent of the geometry
+ * being filled.
+ *
+ * @typedef {string|CanvasPattern|CanvasGradient} ColorLike
+ * @api
+ */
+
+
+/**
+ * @param {module:ol/color~Color|module:ol/colorlike~ColorLike} color Color.
+ * @return {module:ol/color~ColorLike} The color as an {@link ol/color~ColorLike}.
  * @api
  */
 export function asColorLike(color) {
   if (isColorLike(color)) {
     return /** @type {string|CanvasPattern|CanvasGradient} */ (color);
   } else {
-    return toString(/** @type {ol.Color} */ (color));
+    return toString(/** @type {module:ol/color~Color} */ (color));
   }
 }
 
 
 /**
- * @param {?} color The value that is potentially an ol.ColorLike
- * @return {boolean} Whether the color is an ol.ColorLike
+ * @param {?} color The value that is potentially an {@link ol/color~ColorLike}.
+ * @return {boolean} The color is an {@link ol/color~ColorLike}.
  */
 export function isColorLike(color) {
   return (

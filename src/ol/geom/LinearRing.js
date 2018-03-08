@@ -19,7 +19,7 @@ import {douglasPeucker} from '../geom/flat/simplify.js';
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {Array.<ol.Coordinate>} coordinates Coordinates.
+ * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
@@ -89,7 +89,7 @@ LinearRing.prototype.getArea = function() {
 
 /**
  * Return the coordinates of the linear ring.
- * @return {Array.<ol.Coordinate>} Coordinates.
+ * @return {Array.<module:ol/coordinate~Coordinate>} Coordinates.
  * @override
  * @api
  */
@@ -131,7 +131,7 @@ LinearRing.prototype.intersectsExtent = function(extent) {};
 
 /**
  * Set the coordinates of the linear ring.
- * @param {Array.<ol.Coordinate>} coordinates Coordinates.
+ * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @override
  * @api

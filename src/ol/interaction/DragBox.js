@@ -43,7 +43,7 @@ const DragBoxEventType = {
  * this type.
  *
  * @param {string} type The event type.
- * @param {ol.Coordinate} coordinate The event coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate The event coordinate.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Originating event.
  * @extends {ol.events.Event}
  * @constructor
@@ -55,7 +55,7 @@ const DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
   /**
    * The coordinate of the drag event.
    * @const
-   * @type {ol.Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    * @api
    */
   this.coordinate = coordinate;
@@ -112,7 +112,7 @@ const DragBox = function(opt_options) {
   this.minArea_ = options.minArea !== undefined ? options.minArea : 64;
 
   /**
-   * @type {ol.Pixel}
+   * @type {module:ol~Pixel}
    * @private
    */
   this.startPixel_ = null;
@@ -139,8 +139,8 @@ inherits(DragBox, PointerInteraction);
  * should fire.
  * @param {ol.MapBrowserEvent} mapBrowserEvent The originating MapBrowserEvent
  *     leading to the box end.
- * @param {ol.Pixel} startPixel The starting pixel of the box.
- * @param {ol.Pixel} endPixel The end pixel of the box.
+ * @param {module:ol~Pixel} startPixel The starting pixel of the box.
+ * @param {module:ol~Pixel} endPixel The end pixel of the box.
  * @return {boolean} Whether or not the boxend condition should be fired.
  * @this {ol.interaction.DragBox}
  */

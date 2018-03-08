@@ -12,11 +12,11 @@ import WebGLReplayGroup from '../webgl/ReplayGroup.js';
  * @constructor
  * @extends {ol.render.VectorContext}
  * @param {ol.webgl.Context} context Context.
- * @param {ol.Coordinate} center Center.
+ * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
- * @param {ol.Size} size Size.
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/size~Size} size Size.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} pixelRatio Pixel ratio.
  * @struct
  */

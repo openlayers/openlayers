@@ -122,7 +122,7 @@ const Graticule = function(opt_options) {
   this.map_ = null;
 
   /**
-   * @type {?module:ol/types~EventsKey}
+   * @type {?module:ol/events~EventsKey}
    * @private
    */
   this.postcomposeListenerKey_ = null;
@@ -211,19 +211,19 @@ const Graticule = function(opt_options) {
   this.strokeStyle_ = options.strokeStyle !== undefined ? options.strokeStyle : DEFAULT_STROKE_STYLE;
 
   /**
-   * @type {module:ol/types~TransformFunction|undefined}
+   * @type {module:ol/proj~TransformFunction|undefined}
    * @private
    */
   this.fromLonLatTransform_ = undefined;
 
   /**
-   * @type {module:ol/types~TransformFunction|undefined}
+   * @type {module:ol/proj~TransformFunction|undefined}
    * @private
    */
   this.toLonLatTransform_ = undefined;
 
   /**
-   * @type {module:ol/types~Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    * @private
    */
   this.projectionCenterLonLat_ = null;
@@ -322,7 +322,7 @@ const Graticule = function(opt_options) {
  * @param {number} minLat Minimal latitude.
  * @param {number} maxLat Maximal latitude.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {module:ol/types~Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} index Index.
  * @return {number} Index.
  * @private
@@ -344,7 +344,7 @@ Graticule.prototype.addMeridian_ = function(lon, minLat, maxLat, squaredToleranc
 
 /**
  * @param {module:ol/geom/LineString~LineString} lineString Meridian
- * @param {module:ol/types~Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} index Index.
  * @return {module:ol/geom/Point~Point} Meridian point.
  * @private
@@ -369,7 +369,7 @@ Graticule.prototype.getMeridianPoint_ = function(lineString, extent, index) {
  * @param {number} minLon Minimal longitude.
  * @param {number} maxLon Maximal longitude.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {module:ol/types~Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} index Index.
  * @return {number} Index.
  * @private
@@ -392,7 +392,7 @@ Graticule.prototype.addParallel_ = function(lat, minLon, maxLon, squaredToleranc
 
 /**
  * @param {module:ol/geom/LineString~LineString} lineString Parallels.
- * @param {module:ol/types~Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} index Index.
  * @return {module:ol/geom/Point~Point} Parallel point.
  * @private
@@ -413,8 +413,8 @@ Graticule.prototype.getParallelPoint_ = function(lineString, extent, index) {
 
 
 /**
- * @param {module:ol/types~Extent} extent Extent.
- * @param {module:ol/types~Coordinate} center Center.
+ * @param {module:ol/extent~Extent} extent Extent.
+ * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} squaredTolerance Squared tolerance.
  * @private

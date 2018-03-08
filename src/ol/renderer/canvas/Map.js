@@ -54,7 +54,7 @@ const CanvasMapRenderer = function(container, map) {
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.transform_ = createTransform();
 
@@ -112,7 +112,7 @@ CanvasMapRenderer.prototype.dispatchComposeEvent_ = function(type, frameState) {
 /**
  * @param {olx.FrameState} frameState Frame state.
  * @protected
- * @return {!ol.Transform} Transform.
+ * @return {!module:ol/transform~Transform} Transform.
  */
 CanvasMapRenderer.prototype.getTransform = function(frameState) {
   const viewState = frameState.viewState;

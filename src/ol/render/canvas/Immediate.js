@@ -30,8 +30,8 @@ import {create as createTransform, compose as composeTransform} from '../../tran
  * @extends {ol.render.VectorContext}
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.Extent} extent Extent.
- * @param {ol.Transform} transform Transform.
+ * @param {module:ol/extent~Extent} extent Extent.
+ * @param {module:ol/transform~Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @struct
  */
@@ -52,13 +52,13 @@ const CanvasImmediateRenderer = function(context, pixelRatio, extent, transform,
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.extent_ = extent;
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.transform_ = transform;
 
@@ -232,7 +232,7 @@ const CanvasImmediateRenderer = function(context, pixelRatio, extent, transform,
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.tmpLocalTransform_ = createTransform();
 

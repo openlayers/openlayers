@@ -71,7 +71,7 @@ const Icon = function(opt_options) {
   const image = options.img !== undefined ? options.img : null;
 
   /**
-   * @type {ol.Size}
+   * @type {module:ol/size~Size}
    */
   const imgSize = options.imgSize !== undefined ? options.imgSize : null;
 
@@ -131,7 +131,7 @@ const Icon = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Size}
+   * @type {module:ol/size~Size}
    */
   this.size_ = options.size !== undefined ? options.size : null;
 

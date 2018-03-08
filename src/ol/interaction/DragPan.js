@@ -35,7 +35,7 @@ const DragPan = function(opt_options) {
   this.kinetic_ = options.kinetic;
 
   /**
-   * @type {ol.Pixel}
+   * @type {module:ol~Pixel}
    */
   this.lastCentroid = null;
 
@@ -106,7 +106,7 @@ function handleUpEvent(mapBrowserEvent) {
     if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
       const distance = this.kinetic_.getDistance();
       const angle = this.kinetic_.getAngle();
-      const center = /** @type {!ol.Coordinate} */ (view.getCenter());
+      const center = /** @type {!module:ol/coordinate~Coordinate} */ (view.getCenter());
       const centerpx = map.getPixelFromCoordinate(center);
       const dest = map.getCoordinateFromPixel([
         centerpx[0] - distance * Math.cos(angle),

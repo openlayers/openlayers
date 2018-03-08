@@ -101,7 +101,7 @@ const DragAndDrop = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<ol.EventsKey>}
+   * @type {Array.<module:ol/events~EventsKey>}
    */
   this.dropListenKeys_ = null;
 

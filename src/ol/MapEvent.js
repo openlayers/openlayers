@@ -7,14 +7,14 @@ import Event from './events/Event.js';
 /**
  * @classdesc
  * Events emitted as map events are instances of this type.
- * See {@link ol.Map} for which events trigger a map event.
+ * See {@link module:ol/Map~Map} for which events trigger a map event.
  *
  * @constructor
- * @extends {ol.events.Event}
+ * @extends {module:ol/events/Event~Event}
  * @implements {oli.MapEvent}
  * @param {string} type Event type.
- * @param {ol.PluggableMap} map Map.
- * @param {?olx.FrameState=} opt_frameState Frame state.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
+ * @param {?module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
  */
 const MapEvent = function(type, map, opt_frameState) {
 
@@ -22,14 +22,14 @@ const MapEvent = function(type, map, opt_frameState) {
 
   /**
    * The map where the event occurred.
-   * @type {ol.PluggableMap}
+   * @type {module:ol/PluggableMap~PluggableMap}
    * @api
    */
   this.map = map;
 
   /**
    * The frame state at the time of the event.
-   * @type {?olx.FrameState}
+   * @type {?module:ol/PluggableMap~FrameState}
    * @api
    */
   this.frameState = opt_frameState !== undefined ? opt_frameState : null;

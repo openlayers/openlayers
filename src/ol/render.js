@@ -7,23 +7,48 @@ import CanvasImmediateRenderer from './render/canvas/Immediate.js';
 
 
 /**
+ * A function to be used when sorting features before rendering.
+ * It takes two instances of {@link module:ol/Feature} or
+ * {@link module:ol/render/Feature} and returns a `{number}`.
+ *
+ * @typedef {function((module:ol/Feature~Feature|module:ol/render/Feature~Feature),
+ *           (module:ol/Feature~Feature|module:ol/render/Feature~Feature)):number} OrderFunction
+ */
+
+
+/**
+ * @typedef {Object} ToContextOptions
+ * @property {module:ol/size~Size} [size] Desired size of the canvas in css
+ * pixels. When provided, both canvas and css size will be set according to the
+ * `pixelRatio`. If not provided, the current canvas and css sizes will not be
+ * altered.
+ * @property {number} [pixelRatio=window.devicePixelRatio] Pixel ratio (canvas
+ * pixel to css pixel ratio) for the canvas.
+ */
+
+
+/**
  * Binds a Canvas Immediate API to a canvas context, to allow drawing geometries
  * to the context's canvas.
  *
  * The units for geometry coordinates are css pixels relative to the top left
  * corner of the canvas element.
  * ```js
+ * import {toContext} from 'ol/render';
+ * import Fill from 'ol/style/Fill';
+ * import Polygon from 'ol/geom/Polygon';
+ *
  * var canvas = document.createElement('canvas');
- * var render = ol.render.toContext(canvas.getContext('2d'),
+ * var render = toContext(canvas.getContext('2d'),
  *     { size: [100, 100] });
- * render.setFillStrokeStyle(new ol.style.Fill({ color: blue }));
+ * render.setFillStrokeStyle(new Fill({ color: blue }));
  * render.drawPolygon(
- *     new ol.geom.Polygon([[[0, 0], [100, 100], [100, 0], [0, 0]]]));
+ *     new Polygon([[[0, 0], [100, 100], [100, 0], [0, 0]]]));
  * ```
  *
  * @param {CanvasRenderingContext2D} context Canvas context.
- * @param {olx.render.ToContextOptions=} opt_options Options.
- * @return {ol.render.canvas.Immediate} Canvas Immediate.
+ * @param {module:ol/render~ToContextOptions=} opt_options Options.
+ * @return {module:ol/render/canvas/Immediate~Immediate} Canvas Immediate.
  * @api
  */
 export function toContext(context, opt_options) {

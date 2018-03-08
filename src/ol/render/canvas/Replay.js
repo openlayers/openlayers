@@ -32,7 +32,7 @@ import {
  * @constructor
  * @extends {ol.render.VectorContext}
  * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Maximum extent.
+ * @param {module:ol/extent~Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {boolean} overlaps The replay can have overlapping geometries.
@@ -49,7 +49,7 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.tmpExtent_ = createEmpty();
 
@@ -62,7 +62,7 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
   /**
    * @protected
    * @const
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.maxExtent = maxExtent;
 
@@ -93,7 +93,7 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
 
   /**
    * @private
-   * @type {ol.Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    */
   this.fillOrigin_;
 
@@ -111,7 +111,7 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.bufferedMaxExtent_ = null;
 
@@ -129,13 +129,13 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
 
   /**
    * @private
-   * @type {!Object.<number,ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>>}
+   * @type {!Object.<number,module:ol/coordinate~Coordinate|Array.<module:ol/coordinate~Coordinate>|Array.<Array.<module:ol/coordinate~Coordinate>>>}
    */
   this.coordinateCache_ = {};
 
   /**
    * @private
-   * @type {!ol.Transform}
+   * @type {!module:ol/transform~Transform}
    */
   this.renderedTransform_ = createTransform();
 
@@ -165,13 +165,13 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
 
   /**
    * @private
-   * @type {!ol.Transform}
+   * @type {!module:ol/transform~Transform}
    */
   this.tmpLocalTransform_ = createTransform();
 
   /**
    * @private
-   * @type {!ol.Transform}
+   * @type {!module:ol/transform~Transform}
    */
   this.resetTransform = createTransform();
 };
@@ -181,10 +181,10 @@ inherits(CanvasReplay, VectorContext);
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Coordinate} p1 1st point of the background box.
- * @param {ol.Coordinate} p2 2nd point of the background box.
- * @param {ol.Coordinate} p3 3rd point of the background box.
- * @param {ol.Coordinate} p4 4th point of the background box.
+ * @param {module:ol/coordinate~Coordinate} p1 1st point of the background box.
+ * @param {module:ol/coordinate~Coordinate} p2 2nd point of the background box.
+ * @param {module:ol/coordinate~Coordinate} p3 3rd point of the background box.
+ * @param {module:ol/coordinate~Coordinate} p4 4th point of the background box.
  * @param {Array.<*>} fillInstruction Fill instruction.
  * @param {Array.<*>} strokeInstruction Stroke instruction.
  */
@@ -245,13 +245,13 @@ CanvasReplay.prototype.replayImage_ = function(context, x, y, image,
   const boxX = x - padding[3];
   const boxY = y - padding[0];
 
-  /** @type {ol.Coordinate} */
+  /** @type {module:ol/coordinate~Coordinate} */
   let p1;
-  /** @type {ol.Coordinate} */
+  /** @type {module:ol/coordinate~Coordinate} */
   let p2;
-  /** @type {ol.Coordinate} */
+  /** @type {module:ol/coordinate~Coordinate} */
   let p3;
-  /** @type {ol.Coordinate} */
+  /** @type {module:ol/coordinate~Coordinate} */
   let p4;
   if (fillStroke || rotation !== 0) {
     p1 = [boxX, boxY];
@@ -534,13 +534,13 @@ CanvasReplay.prototype.renderDeclutter_ = function(declutterGroup, feature) {
 /**
  * @private
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Transform} transform Transform.
+ * @param {module:ol/transform~Transform} transform Transform.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
  * @param {Array.<*>} instructions Instructions array.
  * @param {function((ol.Feature|ol.render.Feature)): T|undefined}
  *     featureCallback Feature callback.
- * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
+ * @param {module:ol/extent~Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
  * @return {T|undefined} Callback result.
  * @template T
@@ -851,7 +851,7 @@ CanvasReplay.prototype.replay_ = function(
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Transform} transform Transform.
+ * @param {module:ol/transform~Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
@@ -866,13 +866,13 @@ CanvasReplay.prototype.replay = function(
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Transform} transform Transform.
+ * @param {module:ol/transform~Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
  * @param {function((ol.Feature|ol.render.Feature)): T=} opt_featureCallback
  *     Feature callback.
- * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
+ * @param {module:ol/extent~Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
  * @return {T|undefined} Callback result.
  * @template T
@@ -1077,7 +1077,7 @@ CanvasReplay.prototype.finish = UNDEFINED;
  * Get the buffered rendering extent.  Rendering will be clipped to the extent
  * provided to the constructor.  To account for symbolizers that may intersect
  * this extent, we calculate a buffered extent (e.g. based on stroke width).
- * @return {ol.Extent} The buffered rendering extent.
+ * @return {module:ol/extent~Extent} The buffered rendering extent.
  * @protected
  */
 CanvasReplay.prototype.getBufferedMaxExtent = function() {

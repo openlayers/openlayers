@@ -7,7 +7,7 @@ import {fromKey, getKey} from './tilecoord.js';
 
 /**
  * @constructor
- * @extends {ol.structs.LRUCache.<ol.Tile>}
+ * @extends {module:ol/structs/LRUCache~LRUCache.<module:ol/Tile~Tile>}
  * @param {number=} opt_highWaterMark High water mark.
  * @struct
  */
@@ -21,7 +21,7 @@ inherits(TileCache, LRUCache);
 
 
 /**
- * @param {!Object.<string, ol.TileRange>} usedTiles Used tiles.
+ * @param {!Object.<string, module:ol/TileRange~TileRange>} usedTiles Used tiles.
  */
 TileCache.prototype.expireCache = function(usedTiles) {
   while (this.canExpireCache()) {

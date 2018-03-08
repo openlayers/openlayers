@@ -21,7 +21,7 @@ const HIT_DETECTION_SIZE = [1, 1];
 /**
  * @type {Object.<ol.render.ReplayType,
  *                function(new: ol.render.webgl.Replay, number,
- *                ol.Extent)>}
+ *                module:ol/extent~Extent)>}
  */
 const BATCH_CONSTRUCTORS = {
   'Circle': WebGLCircleReplay,
@@ -36,7 +36,7 @@ const BATCH_CONSTRUCTORS = {
  * @constructor
  * @extends {ol.render.ReplayGroup}
  * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Max extent.
+ * @param {module:ol/extent~Extent} maxExtent Max extent.
  * @param {number=} opt_renderBuffer Render buffer.
  * @struct
  */
@@ -44,7 +44,7 @@ const WebGLReplayGroup = function(tolerance, maxExtent, opt_renderBuffer) {
   ReplayGroup.call(this);
 
   /**
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    * @private
    */
   this.maxExtent_ = maxExtent;
@@ -152,10 +152,10 @@ WebGLReplayGroup.prototype.isEmpty = function() {
 
 /**
  * @param {ol.webgl.Context} context Context.
- * @param {ol.Coordinate} center Center.
+ * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
- * @param {ol.Size} size Size.
+ * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
@@ -187,17 +187,17 @@ WebGLReplayGroup.prototype.replay = function(context,
 /**
  * @private
  * @param {ol.webgl.Context} context Context.
- * @param {ol.Coordinate} center Center.
+ * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
- * @param {ol.Size} size Size.
+ * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
- * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
  * @return {T|undefined} Callback result.
  * @template T
@@ -231,12 +231,12 @@ WebGLReplayGroup.prototype.replayHitDetection_ = function(context,
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {ol.webgl.Context} context Context.
- * @param {ol.Coordinate} center Center.
+ * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
- * @param {ol.Size} size Size.
+ * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
@@ -255,7 +255,7 @@ WebGLReplayGroup.prototype.forEachFeatureAtCoordinate = function(
 
 
   /**
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   let hitExtent;
   if (this.renderBuffer_ !== undefined) {
@@ -286,12 +286,12 @@ WebGLReplayGroup.prototype.forEachFeatureAtCoordinate = function(
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {ol.webgl.Context} context Context.
- * @param {ol.Coordinate} center Center.
+ * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
- * @param {ol.Size} size Size.
+ * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features

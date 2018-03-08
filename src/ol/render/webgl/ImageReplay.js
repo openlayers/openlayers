@@ -9,7 +9,7 @@ import WebGLBuffer from '../../webgl/Buffer.js';
  * @constructor
  * @extends {ol.render.webgl.TextureReplay}
  * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Max extent.
+ * @param {module:ol/extent~Extent} maxExtent Max extent.
  * @struct
  */
 const WebGLImageReplay = function(tolerance, maxExtent) {

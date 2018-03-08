@@ -35,7 +35,7 @@ const RBush = function(opt_maxEntries) {
 
 /**
  * Insert a value into the RBush.
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {T} value Value.
  */
 RBush.prototype.insert = function(extent, value) {
@@ -55,7 +55,7 @@ RBush.prototype.insert = function(extent, value) {
 
 /**
  * Bulk-insert values into the RBush.
- * @param {Array.<ol.Extent>} extents Extents.
+ * @param {Array.<module:ol/extent~Extent>} extents Extents.
  * @param {Array.<T>} values Values.
  */
 RBush.prototype.load = function(extents, values) {
@@ -97,7 +97,7 @@ RBush.prototype.remove = function(value) {
 
 /**
  * Update the extent of a value in the RBush.
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {T} value Value.
  */
 RBush.prototype.update = function(extent, value) {
@@ -124,7 +124,7 @@ RBush.prototype.getAll = function() {
 
 /**
  * Return all values in the given extent.
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @return {Array.<T>} All in extent.
  */
 RBush.prototype.getInExtent = function(extent) {
@@ -158,7 +158,7 @@ RBush.prototype.forEach = function(callback, opt_this) {
 
 /**
  * Calls a callback function with each value in the provided extent.
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {function(this: S, T): *} callback Callback.
  * @param {S=} opt_this The object to use as `this` in `callback`.
  * @return {*} Callback return value.
@@ -207,8 +207,8 @@ RBush.prototype.clear = function() {
 
 
 /**
- * @param {ol.Extent=} opt_extent Extent.
- * @return {ol.Extent} Extent.
+ * @param {module:ol/extent~Extent=} opt_extent Extent.
+ * @return {module:ol/extent~Extent} Extent.
  */
 RBush.prototype.getExtent = function(opt_extent) {
   // FIXME add getExtent() to rbush

@@ -61,7 +61,7 @@ const TileSource = function(options) {
 
   /**
    * @protected
-   * @type {ol.Size}
+   * @type {module:ol/size~Size}
    */
   this.tmpSize = [0, 0];
 
@@ -73,7 +73,7 @@ const TileSource = function(options) {
 
   /**
    * @protected
-   * @type {olx.TileOptions}
+   * @type {module:ol/Tile~Options}
    */
   this.tileOptions = {transition: options.transition};
 
@@ -254,7 +254,7 @@ TileSource.prototype.getTilePixelRatio = function(pixelRatio) {
  * @param {number} z Z.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
- * @return {ol.Size} Tile size.
+ * @return {module:ol/size~Size} Tile size.
  */
 TileSource.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
   const tileGrid = this.getTileGridForProjection(projection);
@@ -272,9 +272,9 @@ TileSource.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
  * Returns a tile coordinate wrapped around the x-axis. When the tile coordinate
  * is outside the resolution and extent range of the tile grid, `null` will be
  * returned.
- * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {ol.proj.Projection=} opt_projection Projection.
- * @return {ol.TileCoord} Tile coordinate to be passed to the tileUrlFunction or
+ * @return {module:ol/tilecoord~TileCoord} Tile coordinate to be passed to the tileUrlFunction or
  *     null if no tile URL should be created for the passed `tileCoord`.
  */
 TileSource.prototype.getTileCoordForTileUrlFunction = function(tileCoord, opt_projection) {

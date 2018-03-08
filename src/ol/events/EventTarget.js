@@ -7,6 +7,12 @@ import {unlistenAll} from '../events.js';
 import {UNDEFINED} from '../functions.js';
 import Event from '../events/Event.js';
 
+
+/**
+ * @typedef {EventTarget|module:ol/events/EventTarget~EventTarget} EventTargetLike
+ */
+
+
 /**
  * @classdesc
  * A simplified implementation of the W3C DOM Level 2 EventTarget interface.
@@ -43,7 +49,7 @@ const EventTarget = function() {
 
   /**
    * @private
-   * @type {!Object.<string, Array.<ol.EventsListenerFunctionType>>}
+   * @type {!Object.<string, Array.<module:ol/events~ListenerFunction>>}
    */
   this.listeners_ = {};
 
@@ -54,7 +60,7 @@ inherits(EventTarget, Disposable);
 
 /**
  * @param {string} type Type.
- * @param {ol.EventsListenerFunctionType} listener Listener.
+ * @param {module:ol/events~ListenerFunction} listener Listener.
  */
 EventTarget.prototype.addEventListener = function(type, listener) {
   let listeners = this.listeners_[type];
@@ -69,7 +75,7 @@ EventTarget.prototype.addEventListener = function(type, listener) {
 
 /**
  * @param {{type: string,
- *     target: (EventTarget|ol.events.EventTarget|undefined)}|ol.events.Event|
+ *     target: (EventTarget|module:ol/events/EventTarget~EventTarget|undefined)}|ol.events.Event|
  *     string} event Event or event type.
  * @return {boolean|undefined} `false` if anyone called preventDefault on the
  *     event object or if any of the listeners returned false.
@@ -119,7 +125,7 @@ EventTarget.prototype.disposeInternal = function() {
  * order that they will be called in.
  *
  * @param {string} type Type.
- * @return {Array.<ol.EventsListenerFunctionType>} Listeners.
+ * @return {Array.<module:ol/events~ListenerFunction>} Listeners.
  */
 EventTarget.prototype.getListeners = function(type) {
   return this.listeners_[type];
@@ -140,7 +146,7 @@ EventTarget.prototype.hasListener = function(opt_type) {
 
 /**
  * @param {string} type Type.
- * @param {ol.EventsListenerFunctionType} listener Listener.
+ * @param {module:ol/events~ListenerFunction} listener Listener.
  */
 EventTarget.prototype.removeEventListener = function(type, listener) {
   const listeners = this.listeners_[type];

@@ -103,7 +103,7 @@ Interaction.prototype.setMap = function(map) {
 
 /**
  * @param {module:ol/View~View} view View.
- * @param {module:ol/types~Coordinate} delta Delta.
+ * @param {module:ol/coordinate~Coordinate} delta Delta.
  * @param {number=} opt_duration Duration.
  */
 export function pan(view, delta, opt_duration) {
@@ -127,7 +127,7 @@ export function pan(view, delta, opt_duration) {
 /**
  * @param {module:ol/View~View} view View.
  * @param {number|undefined} rotation Rotation.
- * @param {module:ol/types~Coordinate=} opt_anchor Anchor coordinate.
+ * @param {module:ol/coordinate~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
 export function rotate(view, rotation, opt_anchor, opt_duration) {
@@ -139,7 +139,7 @@ export function rotate(view, rotation, opt_anchor, opt_duration) {
 /**
  * @param {module:ol/View~View} view View.
  * @param {number|undefined} rotation Rotation.
- * @param {module:ol/types~Coordinate=} opt_anchor Anchor coordinate.
+ * @param {module:ol/coordinate~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
 export function rotateWithoutConstraints(view, rotation, opt_anchor, opt_duration) {
@@ -163,7 +163,7 @@ export function rotateWithoutConstraints(view, rotation, opt_anchor, opt_duratio
 /**
  * @param {module:ol/View~View} view View.
  * @param {number|undefined} resolution Resolution to go to.
- * @param {module:ol/types~Coordinate=} opt_anchor Anchor coordinate.
+ * @param {module:ol/coordinate~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  * @param {number=} opt_direction Zooming direction; > 0 indicates
  *     zooming out, in which case the constraints system will select
@@ -183,7 +183,7 @@ export function zoom(view, resolution, opt_anchor, opt_duration, opt_direction) 
 /**
  * @param {module:ol/View~View} view View.
  * @param {number} delta Delta from previous zoom level.
- * @param {module:ol/types~Coordinate=} opt_anchor Anchor coordinate.
+ * @param {module:ol/coordinate~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
 export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
@@ -221,7 +221,7 @@ export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
 /**
  * @param {module:ol/View~View} view View.
  * @param {number|undefined} resolution Resolution to go to.
- * @param {module:ol/types~Coordinate=} opt_anchor Anchor coordinate.
+ * @param {module:ol/coordinate~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
 export function zoomWithoutConstraints(view, resolution, opt_anchor, opt_duration) {

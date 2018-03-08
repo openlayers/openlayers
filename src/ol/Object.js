@@ -10,16 +10,17 @@ import {assign} from './obj.js';
 
 /**
  * @classdesc
- * Events emitted by {@link ol.Object} instances are instances of this type.
+ * Events emitted by {@link module:ol/Object~Object} instances are instances of
+ * this type.
  *
  * @param {string} type The event type.
  * @param {string} key The property name.
  * @param {*} oldValue The old value for `key`.
- * @extends {ol.events.Event}
+ * @extends {module:ol/events/Event~Event}
  * @implements {oli.Object.Event}
  * @constructor
  */
-const BaseObjectEvent = function(type, key, oldValue) {
+const ObjectEvent = function(type, key, oldValue) {
   Event.call(this, type);
 
   /**
@@ -38,7 +39,7 @@ const BaseObjectEvent = function(type, key, oldValue) {
   this.oldValue = oldValue;
 
 };
-inherits(BaseObjectEvent, Event);
+inherits(ObjectEvent, Event);
 
 
 /**
@@ -47,29 +48,30 @@ inherits(BaseObjectEvent, Event);
  * instantiated in apps.
  * Most non-trivial classes inherit from this.
  *
- * This extends {@link ol.Observable} with observable properties, where each
- * property is observable as well as the object as a whole.
+ * This extends {@link module:ol/Observable~Observable} with observable
+ * properties, where each property is observable as well as the object as a
+ * whole.
  *
  * Classes that inherit from this have pre-defined properties, to which you can
  * add your owns. The pre-defined properties are listed in this documentation as
  * 'Observable Properties', and have their own accessors; for example,
- * {@link ol.Map} has a `target` property, accessed with `getTarget()`  and
- * changed with `setTarget()`. Not all properties are however settable. There
- * are also general-purpose accessors `get()` and `set()`. For example,
- * `get('target')` is equivalent to `getTarget()`.
+ * {@link module:ol/Map~Map} has a `target` property, accessed with
+ * `getTarget()` and changed with `setTarget()`. Not all properties are however
+ * settable. There are also general-purpose accessors `get()` and `set()`. For
+ * example, `get('target')` is equivalent to `getTarget()`.
  *
  * The `set` accessors trigger a change event, and you can monitor this by
- * registering a listener. For example, {@link ol.View} has a `center`
- * property, so `view.on('change:center', function(evt) {...});` would call the
- * function whenever the value of the center property changes. Within the
- * function, `evt.target` would be the view, so `evt.target.getCenter()` would
- * return the new center.
+ * registering a listener. For example, {@link module:ol/View~View} has a
+ * `center` property, so `view.on('change:center', function(evt) {...});` would
+ * call the function whenever the value of the center property changes. Within
+ * the function, `evt.target` would be the view, so `evt.target.getCenter()`
+ * would return the new center.
  *
  * You can add your own observable properties with
  * `object.set('prop', 'value')`, and retrieve that with `object.get('prop')`.
  * You can listen for changes on that property value with
  * `object.on('change:prop', listener)`. You can get a list of all
- * properties with {@link ol.Object#getProperties object.getProperties()}.
+ * properties with {@link module:ol/Object~Object#getProperties}.
  *
  * Note that the observable properties are separate from standard JS properties.
  * You can, for example, give your map object a title with
@@ -81,18 +83,18 @@ inherits(BaseObjectEvent, Event);
  * object.unset('foo').
  *
  * @constructor
- * @extends {ol.Observable}
+ * @extends {module:ol/Observable~Observable}
  * @param {Object.<string, *>=} opt_values An object with key-value pairs.
- * @fires ol.Object.Event
+ * @fires module:ol/Object~ObjectEvent
  * @api
  */
 const BaseObject = function(opt_values) {
   Observable.call(this);
 
-  // Call ol.getUid to ensure that the order of objects' ids is the same as
-  // the order in which they were created.  This also helps to ensure that
-  // object properties are always added in the same order, which helps many
-  // JavaScript engines generate faster code.
+  // Call {@link module:ol~getUid} to ensure that the order of objects' ids is
+  // the same as the order in which they were created.  This also helps to
+  // ensure that object properties are always added in the same order, which
+  // helps many JavaScript engines generate faster code.
   getUid(this);
 
   /**
@@ -168,9 +170,9 @@ BaseObject.prototype.getProperties = function() {
 BaseObject.prototype.notify = function(key, oldValue) {
   let eventType;
   eventType = getChangeEventType(key);
-  this.dispatchEvent(new BaseObjectEvent(eventType, key, oldValue));
+  this.dispatchEvent(new ObjectEvent(eventType, key, oldValue));
   eventType = ObjectEventType.PROPERTYCHANGE;
-  this.dispatchEvent(new BaseObjectEvent(eventType, key, oldValue));
+  this.dispatchEvent(new ObjectEvent(eventType, key, oldValue));
 };
 
 

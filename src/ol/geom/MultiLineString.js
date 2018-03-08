@@ -21,7 +21,7 @@ import {douglasPeuckerArray} from '../geom/flat/simplify.js';
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
+ * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
@@ -121,7 +121,7 @@ MultiLineString.prototype.closestPointXY = function(x, y, closestPoint, minSquar
  * @param {number} m M.
  * @param {boolean=} opt_extrapolate Extrapolate. Default is `false`.
  * @param {boolean=} opt_interpolate Interpolate. Default is `false`.
- * @return {ol.Coordinate} Coordinate.
+ * @return {module:ol/coordinate~Coordinate} Coordinate.
  * @api
  */
 MultiLineString.prototype.getCoordinateAtM = function(m, opt_extrapolate, opt_interpolate) {
@@ -139,7 +139,7 @@ MultiLineString.prototype.getCoordinateAtM = function(m, opt_extrapolate, opt_in
 
 /**
  * Return the coordinates of the multilinestring.
- * @return {Array.<Array.<ol.Coordinate>>} Coordinates.
+ * @return {Array.<Array.<module:ol/coordinate~Coordinate>>} Coordinates.
  * @override
  * @api
  */
@@ -254,7 +254,7 @@ MultiLineString.prototype.intersectsExtent = function(extent) {
 
 /**
  * Set the coordinates of the multilinestring.
- * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
+ * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @override
  * @api

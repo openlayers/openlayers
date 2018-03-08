@@ -22,7 +22,7 @@ import {douglasPeucker} from '../geom/flat/simplify.js';
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {Array.<ol.Coordinate>} coordinates Coordinates.
+ * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
@@ -32,7 +32,7 @@ const LineString = function(coordinates, opt_layout) {
 
   /**
    * @private
-   * @type {ol.Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    */
   this.flatMidpoint_ = null;
 
@@ -63,7 +63,7 @@ inherits(LineString, SimpleGeometry);
 
 /**
  * Append the passed coordinate to the coordinates of the linestring.
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @api
  */
 LineString.prototype.appendCoordinate = function(coordinate) {
@@ -112,7 +112,7 @@ LineString.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDis
  * If the callback returns a truthy value the function returns that
  * value immediately. Otherwise the function returns `false`.
  *
- * @param {function(this: S, ol.Coordinate, ol.Coordinate): T} callback Function
+ * @param {function(this: S, module:ol/coordinate~Coordinate, module:ol/coordinate~Coordinate): T} callback Function
  *     called for each segment.
  * @return {T|boolean} Value.
  * @template T,S
@@ -134,7 +134,7 @@ LineString.prototype.forEachSegment = function(callback) {
  *
  * @param {number} m M.
  * @param {boolean=} opt_extrapolate Extrapolate. Default is `false`.
- * @return {ol.Coordinate} Coordinate.
+ * @return {module:ol/coordinate~Coordinate} Coordinate.
  * @api
  */
 LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
@@ -150,7 +150,7 @@ LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
 
 /**
  * Return the coordinates of the linestring.
- * @return {Array.<ol.Coordinate>} Coordinates.
+ * @return {Array.<module:ol/coordinate~Coordinate>} Coordinates.
  * @override
  * @api
  */
@@ -165,9 +165,9 @@ LineString.prototype.getCoordinates = function() {
  * The `fraction` is a number between 0 and 1, where 0 is the start of the
  * linestring and 1 is the end.
  * @param {number} fraction Fraction.
- * @param {ol.Coordinate=} opt_dest Optional coordinate whose values will
+ * @param {module:ol/coordinate~Coordinate=} opt_dest Optional coordinate whose values will
  *     be modified. If not provided, a new coordinate will be returned.
- * @return {ol.Coordinate} Coordinate of the interpolated point.
+ * @return {module:ol/coordinate~Coordinate} Coordinate of the interpolated point.
  * @api
  */
 LineString.prototype.getCoordinateAt = function(fraction, opt_dest) {
@@ -237,7 +237,7 @@ LineString.prototype.intersectsExtent = function(extent) {
 
 /**
  * Set the coordinates of the linestring.
- * @param {Array.<ol.Coordinate>} coordinates Coordinates.
+ * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @override
  * @api

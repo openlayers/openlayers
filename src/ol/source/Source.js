@@ -80,7 +80,7 @@ Source.prototype.adaptAttributions_ = function(attributionLike) {
 };
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {number} hitTolerance Hit tolerance in pixels.

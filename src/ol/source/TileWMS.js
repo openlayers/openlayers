@@ -82,7 +82,7 @@ const TileWMS = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.tmpExtent_ = createEmpty();
 
@@ -98,9 +98,9 @@ inherits(TileWMS, TileImage);
  * Return the GetFeatureInfo URL for the passed coordinate, resolution, and
  * projection. Return `undefined` if the GetFeatureInfo URL cannot be
  * constructed.
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
- * @param {ol.ProjectionLike} projection Projection.
+ * @param {module:ol/proj~ProjectionLike} projection Projection.
  * @param {!Object} params GetFeatureInfo params. `INFO_FORMAT` at least should
  *     be provided. If `QUERY_LAYERS` is not provided then the layers specified
  *     in the `LAYERS` parameter will be used. `VERSION` should not be
@@ -181,9 +181,9 @@ TileWMS.prototype.getParams = function() {
 
 
 /**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.Size} tileSize Tile size.
- * @param {ol.Extent} tileExtent Tile extent.
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+ * @param {module:ol/size~Size} tileSize Tile size.
+ * @param {module:ol/extent~Extent} tileExtent Tile extent.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
  * @param {Object} params Params.

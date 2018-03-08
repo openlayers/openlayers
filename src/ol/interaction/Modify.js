@@ -151,7 +151,7 @@ const Modify = function(options) {
   this.vertexSegments_ = null;
 
   /**
-   * @type {ol.Pixel}
+   * @type {module:ol~Pixel}
    * @private
    */
   this.lastPixel_ = [0, 0];
@@ -620,7 +620,7 @@ Modify.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) 
 
 
 /**
- * @param {ol.Coordinate} coordinates Coordinates.
+ * @param {module:ol/coordinate~Coordinate} coordinates Coordinates.
  * @return {ol.Feature} Vertex feature.
  * @private
  */
@@ -876,7 +876,7 @@ Modify.prototype.handlePointerMove_ = function(evt) {
 
 
 /**
- * @param {ol.Pixel} pixel Pixel
+ * @param {module:ol~Pixel} pixel Pixel
  * @param {ol.PluggableMap} map Map.
  * @private
  */
@@ -946,7 +946,7 @@ Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
 /**
  * Returns the distance from a point to a line segment.
  *
- * @param {ol.Coordinate} pointCoordinates The coordinates of the point from
+ * @param {module:ol/coordinate~Coordinate} pointCoordinates The coordinates of the point from
  *        which to calculate the distance.
  * @param {ol.ModifySegmentDataType} segmentData The object describing the line
  *        segment we are calculating the distance to.
@@ -972,11 +972,11 @@ function pointDistanceToSegmentDataSquared(pointCoordinates, segmentData) {
 /**
  * Returns the point closest to a given line segment.
  *
- * @param {ol.Coordinate} pointCoordinates The point to which a closest point
+ * @param {module:ol/coordinate~Coordinate} pointCoordinates The point to which a closest point
  *        should be found.
  * @param {ol.ModifySegmentDataType} segmentData The object describing the line
  *        segment which should contain the closest point.
- * @return {ol.Coordinate} The point closest to the specified line segment.
+ * @return {module:ol/coordinate~Coordinate} The point closest to the specified line segment.
  */
 function closestOnSegmentData(pointCoordinates, segmentData) {
   const geometry = segmentData.geometry;
@@ -991,7 +991,7 @@ function closestOnSegmentData(pointCoordinates, segmentData) {
 
 /**
  * @param {ol.ModifySegmentDataType} segmentData Segment data.
- * @param {ol.Coordinate} vertex Vertex.
+ * @param {module:ol/coordinate~Coordinate} vertex Vertex.
  * @private
  */
 Modify.prototype.insertVertex_ = function(segmentData, vertex) {
@@ -1223,7 +1223,7 @@ Modify.prototype.updateSegmentIndices_ = function(
 
 
 /**
- * @return {ol.StyleFunction} Styles.
+ * @return {module:ol/style~StyleFunction} Styles.
  */
 function getDefaultStyleFunction() {
   const style = createEditingStyle();

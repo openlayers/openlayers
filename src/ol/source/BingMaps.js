@@ -149,7 +149,7 @@ BingMaps.prototype.handleImageryMetadataResponse = function(response) {
         .replace('{culture}', culture);
       return (
       /**
-           * @param {ol.TileCoord} tileCoord Tile coordinate.
+           * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
            * @param {number} pixelRatio Pixel ratio.
            * @param {ol.proj.Projection} projection Projection.
            * @return {string|undefined} Tile URL.

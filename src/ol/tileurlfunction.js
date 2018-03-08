@@ -8,8 +8,8 @@ import {hash as tileCoordHash} from './tilecoord.js';
 
 /**
  * @param {string} template Template.
- * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
- * @return {ol.TileUrlFunctionType} Tile URL function.
+ * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid Tile grid.
+ * @return {module:ol/tileurlfunction~Type} Tile URL function.
  */
 export function createFromTemplate(template, tileGrid) {
   const zRegEx = /\{z\}/g;
@@ -18,9 +18,9 @@ export function createFromTemplate(template, tileGrid) {
   const dashYRegEx = /\{-y\}/g;
   return (
     /**
-     * @param {ol.TileCoord} tileCoord Tile Coordinate.
+     * @param {module:ol/tilecoord~TileCoord} tileCoord Tile Coordinate.
      * @param {number} pixelRatio Pixel ratio.
-     * @param {ol.proj.Projection} projection Projection.
+     * @param {module:ol/proj/Projection~Projection} projection Projection.
      * @return {string|undefined} Tile URL.
      */
     function(tileCoord, pixelRatio, projection) {
@@ -48,8 +48,8 @@ export function createFromTemplate(template, tileGrid) {
 
 /**
  * @param {Array.<string>} templates Templates.
- * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
- * @return {ol.TileUrlFunctionType} Tile URL function.
+ * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid Tile grid.
+ * @return {module:ol/tileurlfunction~Type} Tile URL function.
  */
 export function createFromTemplates(templates, tileGrid) {
   const len = templates.length;
@@ -62,8 +62,8 @@ export function createFromTemplates(templates, tileGrid) {
 
 
 /**
- * @param {Array.<ol.TileUrlFunctionType>} tileUrlFunctions Tile URL Functions.
- * @return {ol.TileUrlFunctionType} Tile URL function.
+ * @param {Array.<module:ol/tileurlfunction~Type>} tileUrlFunctions Tile URL Functions.
+ * @return {module:ol/tileurlfunction~Type} Tile URL function.
  */
 export function createFromTileUrlFunctions(tileUrlFunctions) {
   if (tileUrlFunctions.length === 1) {
@@ -71,9 +71,9 @@ export function createFromTileUrlFunctions(tileUrlFunctions) {
   }
   return (
     /**
-     * @param {ol.TileCoord} tileCoord Tile Coordinate.
+     * @param {module:ol/tilecoord~TileCoord} tileCoord Tile Coordinate.
      * @param {number} pixelRatio Pixel ratio.
-     * @param {ol.proj.Projection} projection Projection.
+     * @param {module:ol/proj/Projection~Projection} projection Projection.
      * @return {string|undefined} Tile URL.
      */
     function(tileCoord, pixelRatio, projection) {
@@ -90,9 +90,9 @@ export function createFromTileUrlFunctions(tileUrlFunctions) {
 
 
 /**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection} projection Projection.
+ * @param {module:ol/proj/Projection~Projection} projection Projection.
  * @return {string|undefined} Tile URL.
  */
 export function nullTileUrlFunction(tileCoord, pixelRatio, projection) {

@@ -206,7 +206,7 @@ function getMeasureContext() {
 
 /**
  * @param {string} font Font to use for measuring.
- * @return {ol.Size} Measurement.
+ * @return {module:ol/size~Size} Measurement.
  */
 export const measureTextHeight = (function() {
   let span;
@@ -265,7 +265,7 @@ export const resetTransform = createTransform();
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Transform|null} transform Transform.
+ * @param {module:ol/transform~Transform|null} transform Transform.
  * @param {number} opacity Opacity.
  * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image Image.
  * @param {number} originX Origin X.

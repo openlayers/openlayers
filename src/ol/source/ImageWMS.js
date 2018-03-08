@@ -52,7 +52,7 @@ const ImageWMS = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.ImageLoadFunctionType}
+   * @type {module:ol/Image~LoadFunction}
    */
   this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
     options.imageLoadFunction : defaultImageLoadFunction;
@@ -90,7 +90,7 @@ const ImageWMS = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Size}
+   * @type {module:ol/size~Size}
    */
   this.imageSize_ = [0, 0];
 
@@ -113,7 +113,7 @@ inherits(ImageWMS, ImageSource);
 
 /**
  * @const
- * @type {ol.Size}
+ * @type {module:ol/size~Size}
  */
 const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
 
@@ -122,9 +122,9 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * Return the GetFeatureInfo URL for the passed coordinate, resolution, and
  * projection. Return `undefined` if the GetFeatureInfo URL cannot be
  * constructed.
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
- * @param {ol.ProjectionLike} projection Projection.
+ * @param {module:ol/proj~ProjectionLike} projection Projection.
  * @param {!Object} params GetFeatureInfo params. `INFO_FORMAT` at least should
  *     be provided. If `QUERY_LAYERS` is not provided then the layers specified
  *     in the `LAYERS` parameter will be used. `VERSION` should not be
@@ -245,7 +245,7 @@ ImageWMS.prototype.getImageInternal = function(extent, resolution, pixelRatio, p
 
 /**
  * Return the image load function of the source.
- * @return {ol.ImageLoadFunctionType} The image load function.
+ * @return {module:ol/Image~LoadFunction} The image load function.
  * @api
  */
 ImageWMS.prototype.getImageLoadFunction = function() {
@@ -254,8 +254,8 @@ ImageWMS.prototype.getImageLoadFunction = function() {
 
 
 /**
- * @param {ol.Extent} extent Extent.
- * @param {ol.Size} size Size.
+ * @param {module:ol/extent~Extent} extent Extent.
+ * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
  * @param {Object} params Params.
@@ -323,7 +323,7 @@ ImageWMS.prototype.getUrl = function() {
 
 /**
  * Set the image load function of the source.
- * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
+ * @param {module:ol/Image~LoadFunction} imageLoadFunction Image load function.
  * @api
  */
 ImageWMS.prototype.setImageLoadFunction = function(imageLoadFunction) {

@@ -30,7 +30,7 @@ const PinchRotate = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    */
   this.anchor_ = null;
 

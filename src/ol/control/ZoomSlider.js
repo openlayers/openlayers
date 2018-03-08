@@ -92,7 +92,7 @@ const ZoomSlider = function(opt_options) {
   /**
    * The calculated thumb size (border box plus margins).  Set when initSlider_
    * is called.
-   * @type {ol.Size}
+   * @type {module:ol/size~Size}
    * @private
    */
   this.thumbSize_ = null;

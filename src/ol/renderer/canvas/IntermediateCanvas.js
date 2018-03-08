@@ -21,7 +21,7 @@ const IntermediateCanvasRenderer = function(layer) {
 
   /**
    * @protected
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.coordinateToCanvasPixelTransform = createTransform();
 
@@ -52,7 +52,7 @@ IntermediateCanvasRenderer.prototype.composeFrame = function(frameState, layerSt
         !containsExtent(extent, frameState.extent) &&
         intersects(extent, frameState.extent);
     if (clipped) {
-      this.clip(context, frameState, /** @type {ol.Extent} */ (extent));
+      this.clip(context, frameState, /** @type {module:ol/extent~Extent} */ (extent));
     }
 
     const imageTransform = this.getImageTransform();
@@ -90,7 +90,7 @@ IntermediateCanvasRenderer.prototype.getImage = function() {};
 
 /**
  * @abstract
- * @return {!ol.Transform} Image transform.
+ * @return {!module:ol/transform~Transform} Image transform.
  */
 IntermediateCanvasRenderer.prototype.getImageTransform = function() {};
 

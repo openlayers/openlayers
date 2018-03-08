@@ -12,6 +12,57 @@ import {containsExtent} from './extent.js';
 
 
 /**
+ * @typedef {Object} OverlayOptions
+ * @property {number|string} [id] Set the overlay id. The overlay id can be used
+ * with the {@link module:ol/Map~Map#getOverlayById} method.
+ * @property {Element} [element] The overlay element.
+ * @property {Array.<number>} [offset=[0, 0]] Offsets in pixels used when positioning
+ * the overlay. The first element in the
+ * array is the horizontal offset. A positive value shifts the overlay right.
+ * The second element in the array is the vertical offset. A positive value
+ * shifts the overlay down.
+ * @property {module:ol/coordinate~Coordinate~Coordinate} [position] The overlay position
+ * in map projection.
+ * @property {module:ol/OverlayPositioning~OverlayPositioning} [positioning='top-left'] Defines how
+ * the overlay is actually positioned with respect to its `position` property.
+ * Possible values are `'bottom-left'`, `'bottom-center'`, `'bottom-right'`,
+ * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
+ * `'top-center'`, and `'top-right'`.
+ * @property {boolean} [stopEvent=true] Whether event propagation to the map
+ * viewport should be stopped. If `true` the overlay is placed in the same
+ * container as that of the controls (CSS class name
+ * `ol-overlaycontainer-stopevent`); if `false` it is placed in the container
+ * with CSS class name `ol-overlaycontainer`.
+ * @property {boolean} [insertFirst=true] Whether the overlay is inserted first
+ * in the overlay container, or appended. If the overlay is placed in the same
+ * container as that of the controls (see the `stopEvent` option) you will
+ * probably set `insertFirst` to `true` so the overlay is displayed below the
+ * controls.
+ * @property {boolean} [autoPan=false] If set to `true` the map is panned when
+ * calling `setPosition`, so that the overlay is entirely visible in the current
+ * viewport.
+ * @property {module:ol/Overlay~OverlayPanOptions} [autoPanAnimation] The
+ * animation options used to pan the overlay into view. This animation is only
+ * used when `autoPan` is enabled. A `duration` and `easing` may be provided to
+ * customize the animation.
+ * @property {number} [autoPanMargin=20] The margin (in pixels) between the
+ * overlay and the borders of the map when autopanning.
+ * @property {string} [className='ol-overlay-container ol-selectable'] CSS class
+ * name.
+ */
+
+
+/**
+ * @typedef {Object} OverlayPanOptions
+ * @property {number} [duration=1000] The duration of the animation in
+ * milliseconds.
+ * @property {function(number):number} [easing] The easing function to use. Can
+ * be one from {@link module:ol/easing} or a custom function.
+ * Default is {@link module:ol/easing~inAndOut}.
+ */
+
+
+/**
  * @enum {string}
  * @protected
  */
@@ -27,21 +78,23 @@ const Property = {
 /**
  * @classdesc
  * An element to be displayed over the map and attached to a single map
- * location.  Like {@link ol.control.Control}, Overlays are visible widgets.
- * Unlike Controls, they are not in a fixed position on the screen, but are tied
- * to a geographical coordinate, so panning the map will move an Overlay but not
- * a Control.
+ * location.  Like {@link module:ol/control/Control~Control}, Overlays are
+ * visible widgets. Unlike Controls, they are not in a fixed position on the
+ * screen, but are tied to a geographical coordinate, so panning the map will
+ * move an Overlay but not a Control.
  *
  * Example:
  *
- *     var popup = new ol.Overlay({
+ *     import Overlay from 'ol/Overlay';
+ *
+ *     var popup = new Overlay({
  *       element: document.getElementById('popup')
  *     });
  *     popup.setPosition(coordinate);
  *     map.addOverlay(popup);
  *
  * @constructor
- * @extends {ol.Object}
+ * @extends {module:ol/Object~Object}
  * @param {olx.OverlayOptions} options Overlay options.
  * @api
  */
@@ -121,7 +174,7 @@ const Overlay = function(options) {
 
   /**
    * @protected
-   * @type {?ol.EventsKey}
+   * @type {?module:ol/events~EventsKey}
    */
   this.mapPostrenderListenerKey = null;
 
@@ -152,7 +205,7 @@ const Overlay = function(options) {
   this.setOffset(options.offset !== undefined ? options.offset : [0, 0]);
 
   this.setPositioning(options.positioning !== undefined ?
-    /** @type {ol.OverlayPositioning} */ (options.positioning) :
+    /** @type {module:ol/OverlayPositioning~OverlayPositioning} */ (options.positioning) :
     OverlayPositioning.TOP_LEFT);
 
   if (options.position !== undefined) {
@@ -187,12 +240,13 @@ Overlay.prototype.getId = function() {
 
 /**
  * Get the map associated with this overlay.
- * @return {ol.PluggableMap|undefined} The map that the overlay is part of.
+ * @return {module:ol/PluggableMap~PluggableMap|undefined} The map that the
+ * overlay is part of.
  * @observable
  * @api
  */
 Overlay.prototype.getMap = function() {
-  return /** @type {ol.PluggableMap|undefined} */ (this.get(Property.MAP));
+  return /** @type {module:ol/PluggableMap~PluggableMap|undefined} */ (this.get(Property.MAP));
 };
 
 
@@ -209,25 +263,25 @@ Overlay.prototype.getOffset = function() {
 
 /**
  * Get the current position of this overlay.
- * @return {ol.Coordinate|undefined} The spatial point that the overlay is
+ * @return {module:ol/coordinate~Coordinate|undefined} The spatial point that the overlay is
  *     anchored at.
  * @observable
  * @api
  */
 Overlay.prototype.getPosition = function() {
-  return /** @type {ol.Coordinate|undefined} */ (this.get(Property.POSITION));
+  return /** @type {module:ol/coordinate~Coordinate|undefined} */ (this.get(Property.POSITION));
 };
 
 
 /**
  * Get the current positioning of this overlay.
- * @return {ol.OverlayPositioning} How the overlay is positioned
+ * @return {module:ol/OverlayPositioning~OverlayPositioning} How the overlay is positioned
  *     relative to its point on the map.
  * @observable
  * @api
  */
 Overlay.prototype.getPositioning = function() {
-  return /** @type {ol.OverlayPositioning} */ (this.get(Property.POSITIONING));
+  return /** @type {module:ol/OverlayPositioning~OverlayPositioning} */ (this.get(Property.POSITIONING));
 };
 
 
@@ -316,7 +370,8 @@ Overlay.prototype.setElement = function(element) {
 
 /**
  * Set the map to be associated with this overlay.
- * @param {ol.PluggableMap|undefined} map The map that the overlay is part of.
+ * @param {module:ol/PluggableMap~PluggableMap|undefined} map The map that the
+ * overlay is part of.
  * @observable
  * @api
  */
@@ -339,7 +394,7 @@ Overlay.prototype.setOffset = function(offset) {
 /**
  * Set the position for this overlay. If the position is `undefined` the
  * overlay is hidden.
- * @param {ol.Coordinate|undefined} position The spatial point that the overlay
+ * @param {module:ol/coordinate~Coordinate|undefined} position The spatial point that the overlay
  *     is anchored at.
  * @observable
  * @api
@@ -390,7 +445,7 @@ Overlay.prototype.panIntoView = function() {
     }
 
     if (delta[0] !== 0 || delta[1] !== 0) {
-      const center = /** @type {ol.Coordinate} */ (map.getView().getCenter());
+      const center = /** @type {module:ol/coordinate~Coordinate} */ (map.getView().getCenter());
       const centerPx = map.getPixelFromCoordinate(center);
       const newCenterPx = [
         centerPx[0] + delta[0],
@@ -410,8 +465,8 @@ Overlay.prototype.panIntoView = function() {
 /**
  * Get the extent of an element relative to the document
  * @param {Element|undefined} element The element.
- * @param {ol.Size|undefined} size The size of the element.
- * @return {ol.Extent} The extent.
+ * @param {module:ol/size~Size|undefined} size The size of the element.
+ * @return {module:ol/extent~Extent} The extent.
  * @protected
  */
 Overlay.prototype.getRect = function(element, size) {
@@ -429,7 +484,7 @@ Overlay.prototype.getRect = function(element, size) {
 
 /**
  * Set the positioning for this overlay.
- * @param {ol.OverlayPositioning} positioning how the overlay is
+ * @param {module:ol/OverlayPositioning~OverlayPositioning} positioning how the overlay is
  *     positioned relative to its point on the map.
  * @observable
  * @api
@@ -471,8 +526,8 @@ Overlay.prototype.updatePixelPosition = function() {
 
 
 /**
- * @param {ol.Pixel} pixel The pixel location.
- * @param {ol.Size|undefined} mapSize The map size.
+ * @param {module:ol~Pixel} pixel The pixel location.
+ * @param {module:ol/size~Size|undefined} mapSize The map size.
  * @protected
  */
 Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {

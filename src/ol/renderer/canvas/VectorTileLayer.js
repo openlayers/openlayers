@@ -83,7 +83,7 @@ const CanvasVectorTileLayerRenderer = function(layer) {
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.tmpTransform_ = createTransform();
 
@@ -159,7 +159,7 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(tile, fram
   const pixelRatio = frameState.pixelRatio;
   const projection = frameState.viewState.projection;
   const revision = layer.getRevision();
-  const renderOrder = /** @type {ol.RenderOrderFunction} */ (layer.getRenderOrder()) || null;
+  const renderOrder = /** @type {module:ol/render~OrderFunction} */ (layer.getRenderOrder()) || null;
 
   const replayState = tile.getReplayState(layer);
   if (!replayState.dirty && replayState.renderedRevision == revision &&
@@ -311,7 +311,7 @@ CanvasVectorTileLayerRenderer.prototype.forEachFeatureAtCoordinate = function(co
 /**
  * @param {ol.VectorTile} tile Tile.
  * @param {olx.FrameState} frameState Frame state.
- * @return {ol.Transform} transform Transform.
+ * @return {module:ol/transform~Transform} transform Transform.
  * @private
  */
 CanvasVectorTileLayerRenderer.prototype.getReplayTransform_ = function(tile, frameState) {
@@ -476,7 +476,7 @@ CanvasVectorTileLayerRenderer.prototype.renderFeature = function(feature, square
 /**
  * @param {ol.VectorImageTile} tile Tile.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.LayerState} layerState Layer state.
+ * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @private
  */
 CanvasVectorTileLayerRenderer.prototype.renderTileImage_ = function(

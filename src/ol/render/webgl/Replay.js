@@ -20,7 +20,7 @@ import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TRIANGLES,
  * @abstract
  * @extends {ol.render.VectorContext}
  * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Max extent.
+ * @param {module:ol/extent~Extent} maxExtent Max extent.
  * @struct
  */
 const WebGLReplay = function(tolerance, maxExtent) {
@@ -35,7 +35,7 @@ const WebGLReplay = function(tolerance, maxExtent) {
   /**
    * @protected
    * @const
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.maxExtent = maxExtent;
 
@@ -45,25 +45,25 @@ const WebGLReplay = function(tolerance, maxExtent) {
    * we use the "Rendering Relative to Eye" technique described in the "3D
    * Engine Design for Virtual Globes" book.
    * @protected
-   * @type {ol.Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    */
   this.origin = getCenter(maxExtent);
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.projectionMatrix_ = createTransform();
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.offsetRotateMatrix_ = createTransform();
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.offsetScaleMatrix_ = createTransform();
 
@@ -143,7 +143,7 @@ WebGLReplay.prototype.finish = function(context) {};
  * @protected
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
- * @param {ol.Size} size Size.
+ * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @return {ol.render.webgl.circlereplay.defaultshader.Locations|
             ol.render.webgl.linestringreplay.defaultshader.Locations|
@@ -185,7 +185,7 @@ WebGLReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hi
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
- * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
  * @return {T|undefined} Callback result.
  * @template T
@@ -201,7 +201,7 @@ WebGLReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, ski
  *  to skip.
  * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
- * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
  * @return {T|undefined} Callback result.
  * @template T
@@ -246,17 +246,17 @@ WebGLReplay.prototype.drawHitDetectionReplayAll = function(gl, context, skippedF
 
 /**
  * @param {ol.webgl.Context} context Context.
- * @param {ol.Coordinate} center Center.
+ * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
- * @param {ol.Size} size Size.
+ * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
- * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
  * @return {T|undefined} Callback result.
  * @template T

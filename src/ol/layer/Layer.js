@@ -11,6 +11,21 @@ import {assign} from '../obj.js';
 import RenderEventType from '../render/EventType.js';
 import SourceState from '../source/State.js';
 
+
+/**
+ * @typedef {Object} State
+ * @property {module:ol/layer/Layer~Layer} layer
+ * @property {number} opacity
+ * @property {module:ol/source/Source~State} sourceState
+ * @property {boolean} visible
+ * @property {boolean} managed
+ * @property {module:ol/extent~Extent} [extent]
+ * @property {number} zIndex
+ * @property {number} maxResolution
+ * @property {number} minResolution
+ */
+
+
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -42,19 +57,19 @@ const Layer = function(options) {
 
   /**
    * @private
-   * @type {?ol.EventsKey}
+   * @type {?module:ol/events~EventsKey}
    */
   this.mapPrecomposeKey_ = null;
 
   /**
    * @private
-   * @type {?ol.EventsKey}
+   * @type {?module:ol/events~EventsKey}
    */
   this.mapRenderKey_ = null;
 
   /**
    * @private
-   * @type {?ol.EventsKey}
+   * @type {?module:ol/events~EventsKey}
    */
   this.sourceChangeKey_ = null;
 
@@ -77,7 +92,7 @@ inherits(Layer, BaseLayer);
  * Return `true` if the layer is visible, and if the passed resolution is
  * between the layer's minResolution and maxResolution. The comparison is
  * inclusive for `minResolution` and exclusive for `maxResolution`.
- * @param {ol.LayerState} layerState Layer state.
+ * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @param {number} resolution Resolution.
  * @return {boolean} The layer is visible at the given resolution.
  */

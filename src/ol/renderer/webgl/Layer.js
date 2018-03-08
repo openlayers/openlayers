@@ -63,13 +63,13 @@ const WebGLLayerRenderer = function(mapRenderer, layer) {
 
   /**
    * @protected
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.texCoordMatrix = createTransform();
 
   /**
    * @protected
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.projectionMatrix = createTransform();
 
@@ -114,7 +114,7 @@ WebGLLayerRenderer.prototype.bindFramebuffer = function(frameState, framebufferD
     }.bind(null, gl, this.framebuffer, this.texture);
 
     frameState.postRenderFunctions.push(
-      /** @type {ol.PostRenderFunction} */ (postRenderFunction)
+      /** @type {module:ol/PluggableMap~PostRenderFunction} */ (postRenderFunction)
     );
 
     const texture = createEmptyTexture(
@@ -138,7 +138,7 @@ WebGLLayerRenderer.prototype.bindFramebuffer = function(frameState, framebufferD
 
 /**
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.LayerState} layerState Layer state.
+ * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @param {ol.webgl.Context} context Context.
  */
 WebGLLayerRenderer.prototype.composeFrame = function(frameState, layerState, context) {
@@ -208,7 +208,7 @@ WebGLLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, fra
 
 
 /**
- * @return {!ol.Transform} Matrix.
+ * @return {!module:ol/transform~Transform} Matrix.
  */
 WebGLLayerRenderer.prototype.getTexCoordMatrix = function() {
   return this.texCoordMatrix;
@@ -224,7 +224,7 @@ WebGLLayerRenderer.prototype.getTexture = function() {
 
 
 /**
- * @return {!ol.Transform} Matrix.
+ * @return {!module:ol/transform~Transform} Matrix.
  */
 WebGLLayerRenderer.prototype.getProjectionMatrix = function() {
   return this.projectionMatrix;
@@ -244,7 +244,7 @@ WebGLLayerRenderer.prototype.handleWebGLContextLost = function() {
 /**
  * @abstract
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.LayerState} layerState Layer state.
+ * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @param {ol.webgl.Context} context Context.
  * @return {boolean} whether composeFrame should be called.
  */
@@ -253,7 +253,7 @@ WebGLLayerRenderer.prototype.prepareFrame = function(frameState, layerState, con
 
 /**
  * @abstract
- * @param {ol.Pixel} pixel Pixel.
+ * @param {module:ol~Pixel} pixel Pixel.
  * @param {olx.FrameState} frameState FrameState.
  * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.

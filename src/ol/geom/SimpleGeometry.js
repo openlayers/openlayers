@@ -104,7 +104,7 @@ SimpleGeometry.prototype.getCoordinates = function() {};
 
 /**
  * Return the first coordinate of the geometry.
- * @return {ol.Coordinate} First coordinate.
+ * @return {module:ol/coordinate~Coordinate} First coordinate.
  * @api
  */
 SimpleGeometry.prototype.getFirstCoordinate = function() {
@@ -122,7 +122,7 @@ SimpleGeometry.prototype.getFlatCoordinates = function() {
 
 /**
  * Return the last coordinate of the geometry.
- * @return {ol.Coordinate} Last point.
+ * @return {module:ol/coordinate~Coordinate} Last point.
  * @api
  */
 SimpleGeometry.prototype.getLastCoordinate = function() {
@@ -317,7 +317,7 @@ SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
 
 /**
  * @param {ol.geom.SimpleGeometry} simpleGeometry Simple geometry.
- * @param {ol.Transform} transform Transform.
+ * @param {module:ol/transform~Transform} transform Transform.
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed flat coordinates.
  */

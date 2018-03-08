@@ -6,18 +6,37 @@ import {padNumber} from './string.js';
 
 
 /**
+ * An array of numbers representing an xy coordinate. Example: `[16, 48]`.
+ * @typedef {Array.<number>} Coordinate
+ * @api
+ */
+
+
+/**
+ * A function that takes a {@link module:ol/coordinate~Coordinate} and
+ * transforms it into a `{string}`.
+ *
+ * @typedef {function((module:ol/coordinate~CoordinateFormat|undefined)): string} CoordinateFormat
+ * @api
+ */
+
+
+/**
  * Add `delta` to `coordinate`. `coordinate` is modified in place and returned
  * by the function.
  *
  * Example:
  *
+ *     import {add} from 'ol/coordinate';
+ *
  *     var coord = [7.85, 47.983333];
- *     ol.coordinate.add(coord, [-2, 4]);
+ *     add(coord, [-2, 4]);
  *     // coord is now [5.85, 51.983333]
  *
- * @param {ol.Coordinate} coordinate Coordinate.
- * @param {ol.Coordinate} delta Delta.
- * @return {ol.Coordinate} The input coordinate adjusted by the given delta.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} delta Delta.
+ * @return {module:ol/coordinate~Coordinate} The input coordinate adjusted by
+ * the given delta.
  * @api
  */
 export function add(coordinate, delta) {
@@ -30,9 +49,9 @@ export function add(coordinate, delta) {
 /**
  * Calculates the point closest to the passed coordinate on the passed circle.
  *
- * @param {ol.Coordinate} coordinate The coordinate.
- * @param {ol.geom.Circle} circle The circle.
- * @return {ol.Coordinate} Closest point on the circumference
+ * @param {module:ol/coordinate~Coordinate} coordinate The coordinate.
+ * @param {module:ol/geom/Circle~Circle} circle The circle.
+ * @return {module:ol/coordinate~Coordinate} Closest point on the circumference.
  */
 export function closestOnCircle(coordinate, circle) {
   const r = circle.getRadius();
@@ -62,10 +81,11 @@ export function closestOnCircle(coordinate, circle) {
  * the foot is on the segment, or the closest segment coordinate when the foot
  * is outside the segment.
  *
- * @param {ol.Coordinate} coordinate The coordinate.
- * @param {Array.<ol.Coordinate>} segment The two coordinates of the segment.
- * @return {ol.Coordinate} The foot of the perpendicular of the coordinate to
- *     the segment.
+ * @param {module:ol/coordinate~Coordinate} coordinate The coordinate.
+ * @param {Array.<module:ol/coordinate~Coordinate>} segment The two coordinates
+ * of the segment.
+ * @return {module:ol/coordinate~Coordinate} The foot of the perpendicular of
+ * the coordinate to the segment.
  */
 export function closestOnSegment(coordinate, segment) {
   const x0 = coordinate[0];
@@ -96,32 +116,37 @@ export function closestOnSegment(coordinate, segment) {
 
 
 /**
- * Returns a {@link ol.CoordinateFormatType} function that can be used to format
- * a {ol.Coordinate} to a string.
+ * Returns a {@link module:ol/coordinate~CoordinateFormat} function that can be
+ * used to format
+ * a {module:ol/coordinate~Coordinate} to a string.
  *
  * Example without specifying the fractional digits:
  *
+ *     import {createStringXY} from 'ol/coordinate';
+ *
  *     var coord = [7.85, 47.983333];
- *     var stringifyFunc = ol.coordinate.createStringXY();
+ *     var stringifyFunc = createStringXY();
  *     var out = stringifyFunc(coord);
  *     // out is now '8, 48'
  *
  * Example with explicitly specifying 2 fractional digits:
  *
+ *     import {createStringXY} from 'ol/coordinate';
+ *
  *     var coord = [7.85, 47.983333];
- *     var stringifyFunc = ol.coordinate.createStringXY(2);
+ *     var stringifyFunc = createStringXY(2);
  *     var out = stringifyFunc(coord);
  *     // out is now '7.85, 47.98'
  *
  * @param {number=} opt_fractionDigits The number of digits to include
  *    after the decimal point. Default is `0`.
- * @return {ol.CoordinateFormatType} Coordinate format.
+ * @return {module:ol/coordinate~CoordinateFormat} Coordinate format.
  * @api
  */
 export function createStringXY(opt_fractionDigits) {
   return (
     /**
-     * @param {ol.Coordinate|undefined} coordinate Coordinate.
+     * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
      * @return {string} String XY.
      */
     function(coordinate) {
@@ -166,25 +191,29 @@ export function degreesToStringHDMS(hemispheres, degrees, opt_fractionDigits) {
 
 
 /**
- * Transforms the given {@link ol.Coordinate} to a string using the given string
- * template. The strings `{x}` and `{y}` in the template will be replaced with
- * the first and second coordinate values respectively.
+ * Transforms the given {@link module:ol/coordinate~Coordinate} to a string
+ * using the given string template. The strings `{x}` and `{y}` in the template
+ * will be replaced with the first and second coordinate values respectively.
  *
  * Example without specifying the fractional digits:
  *
+ *     import {format} from 'ol/coordinate';
+ *
  *     var coord = [7.85, 47.983333];
  *     var template = 'Coordinate is ({x}|{y}).';
- *     var out = ol.coordinate.format(coord, template);
+ *     var out = format(coord, template);
  *     // out is now 'Coordinate is (8|48).'
  *
  * Example explicitly specifying the fractional digits:
  *
+ *     import {format} from 'ol/coordinate';
+ *
  *     var coord = [7.85, 47.983333];
  *     var template = 'Coordinate is ({x}|{y}).';
- *     var out = ol.coordinate.format(coord, template, 2);
+ *     var out = format(coord, template, 2);
  *     // out is now 'Coordinate is (7.85|47.98).'
  *
- * @param {ol.Coordinate|undefined} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {string} template A template string with `{x}` and `{y}` placeholders
  *     that will be replaced by first and second coordinate values.
  * @param {number=} opt_fractionDigits The number of digits to include
@@ -204,8 +233,8 @@ export function format(coordinate, template, opt_fractionDigits) {
 
 
 /**
- * @param {ol.Coordinate} coordinate1 First coordinate.
- * @param {ol.Coordinate} coordinate2 Second coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate1 First coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate2 Second coordinate.
  * @return {boolean} The two coordinates are equal.
  */
 export function equals(coordinate1, coordinate2) {
@@ -226,14 +255,16 @@ export function equals(coordinate1, coordinate2) {
  *
  * Example:
  *
+ *     import {rotate} from 'ol/coordinate';
+ *
  *     var coord = [7.85, 47.983333];
  *     var rotateRadians = Math.PI / 2; // 90 degrees
- *     ol.coordinate.rotate(coord, rotateRadians);
+ *     rotate(coord, rotateRadians);
  *     // coord is now [-47.983333, 7.85]
  *
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {number} angle Angle in radian.
- * @return {ol.Coordinate} Coordinate.
+ * @return {module:ol/coordinate~Coordinate} Coordinate.
  * @api
  */
 export function rotate(coordinate, angle) {
@@ -253,14 +284,16 @@ export function rotate(coordinate, angle) {
  *
  * Example:
  *
+ *     import {scale as scaleCoordinate} from 'ol/coordinate';
+ *
  *     var coord = [7.85, 47.983333];
  *     var scale = 1.2;
- *     ol.coordinate.scale(coord, scale);
+ *     scaleCoordinate(coord, scale);
  *     // coord is now [9.42, 57.5799996]
  *
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {number} scale Scale factor.
- * @return {ol.Coordinate} Coordinate.
+ * @return {module:ol/coordinate~Coordinate} Coordinate.
  */
 export function scale(coordinate, scale) {
   coordinate[0] *= scale;
@@ -270,8 +303,8 @@ export function scale(coordinate, scale) {
 
 
 /**
- * @param {ol.Coordinate} coord1 First coordinate.
- * @param {ol.Coordinate} coord2 Second coordinate.
+ * @param {module:ol/coordinate~Coordinate} coord1 First coordinate.
+ * @param {module:ol/coordinate~Coordinate} coord2 Second coordinate.
  * @return {number} Squared distance between coord1 and coord2.
  */
 export function squaredDistance(coord1, coord2) {
@@ -282,8 +315,8 @@ export function squaredDistance(coord1, coord2) {
 
 
 /**
- * @param {ol.Coordinate} coord1 First coordinate.
- * @param {ol.Coordinate} coord2 Second coordinate.
+ * @param {module:ol/coordinate~Coordinate} coord1 First coordinate.
+ * @param {module:ol/coordinate~Coordinate} coord2 Second coordinate.
  * @return {number} Distance between coord1 and coord2.
  */
 export function distance(coord1, coord2) {
@@ -294,8 +327,9 @@ export function distance(coord1, coord2) {
 /**
  * Calculate the squared distance from a coordinate to a line segment.
  *
- * @param {ol.Coordinate} coordinate Coordinate of the point.
- * @param {Array.<ol.Coordinate>} segment Line segment (2 coordinates).
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate of the point.
+ * @param {Array.<module:ol/coordinate~Coordinate>} segment Line segment (2
+ * coordinates).
  * @return {number} Squared distance from the point to the line segment.
  */
 export function squaredDistanceToSegment(coordinate, segment) {
@@ -310,17 +344,21 @@ export function squaredDistanceToSegment(coordinate, segment) {
  *
  * Example without specifying fractional digits:
  *
+ *     import {toStringHDMS} from 'ol/coordinate';
+ *
  *     var coord = [7.85, 47.983333];
- *     var out = ol.coordinate.toStringHDMS(coord);
+ *     var out = toStringHDMS(coord);
  *     // out is now '47° 58′ 60″ N 7° 50′ 60″ E'
  *
  * Example explicitly specifying 1 fractional digit:
  *
+ *     import {toStringHDMS} from 'ol/coordinate';
+ *
  *     var coord = [7.85, 47.983333];
- *     var out = ol.coordinate.toStringHDMS(coord, 1);
+ *     var out = toStringHDMS(coord, 1);
  *     // out is now '47° 58′ 60.0″ N 7° 50′ 60.0″ E'
  *
- * @param {ol.Coordinate|undefined} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {number=} opt_fractionDigits The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} Hemisphere, degrees, minutes and seconds.
@@ -341,17 +379,21 @@ export function toStringHDMS(coordinate, opt_fractionDigits) {
  *
  * Example without specifying fractional digits:
  *
+ *     import {toStringXY} from 'ol/coordinate';
+ *
  *     var coord = [7.85, 47.983333];
- *     var out = ol.coordinate.toStringXY(coord);
+ *     var out = toStringXY(coord);
  *     // out is now '8, 48'
  *
  * Example explicitly specifying 1 fractional digit:
  *
+ *     import {toStringXY} from 'ol/coordinate';
+ *
  *     var coord = [7.85, 47.983333];
- *     var out = ol.coordinate.toStringXY(coord, 1);
+ *     var out = toStringXY(coord, 1);
  *     // out is now '7.8, 48.0'
  *
- * @param {ol.Coordinate|undefined} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {number=} opt_fractionDigits The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} XY.

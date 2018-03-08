@@ -4,9 +4,15 @@
 import {linearFindNearest} from './array.js';
 import {clamp} from './math.js';
 
+
+/**
+ * @typedef {function((number|undefined), number, number): (number|undefined)} Type
+ */
+
+
 /**
  * @param {Array.<number>} resolutions Resolutions.
- * @return {ol.ResolutionConstraintType} Zoom function.
+ * @return {module:ol/resolutionconstraint~Type} Zoom function.
  */
 export function createSnapToResolutions(resolutions) {
   return (
@@ -39,7 +45,7 @@ export function createSnapToResolutions(resolutions) {
  * @param {number} power Power.
  * @param {number} maxResolution Maximum resolution.
  * @param {number=} opt_maxLevel Maximum level.
- * @return {ol.ResolutionConstraintType} Zoom function.
+ * @return {module:ol/resolutionconstraint~Type} Zoom function.
  */
 export function createSnapToPower(power, maxResolution, opt_maxLevel) {
   return (

@@ -5,8 +5,31 @@ import {clear} from './obj.js';
 
 
 /**
- * @param {ol.EventsKey} listenerObj Listener object.
- * @return {ol.EventsListenerFunctionType} Bound listener.
+ * Key to use with {@link module:ol/Observable~Observable#unByKey}.
+ * @typedef {Object} EventsKey
+ * @property {Object} [bindTo]
+ * @property {module:ol/events~ListenerFunction} [boundListener]
+ * @property {boolean} callOnce
+ * @property {number} [deleteIndex]
+ * @property {module:ol/events~ListenerFunction} listener
+ * @property {EventTarget|module:ol/events/EventTarget~EventTarget} target
+ * @property {string} type
+ * @api
+ */
+
+
+/**
+ * Listener function. This function is called with an event object as argument.
+ * When the function returns `false`, event propagation will stop.
+ *
+ * @typedef {function(module:ol/events/Event~Event)|function(module:ol/events/Event~Event): boolean} ListenerFunction
+ * @api
+ */
+
+
+/**
+ * @param {module:ol/events~EventsKey} listenerObj Listener object.
+ * @return {module:ol/events~ListenerFunction} Bound listener.
  */
 export function bindListener(listenerObj) {
   const boundListener = function(evt) {
@@ -23,15 +46,15 @@ export function bindListener(listenerObj) {
 
 
 /**
- * Finds the matching {@link ol.EventsKey} in the given listener
+ * Finds the matching {@link module:ol/events~EventsKey} in the given listener
  * array.
  *
- * @param {!Array<!ol.EventsKey>} listeners Array of listeners.
+ * @param {!Array<!module:ol/events~EventsKey>} listeners Array of listeners.
  * @param {!Function} listener The listener function.
  * @param {Object=} opt_this The `this` value inside the listener.
  * @param {boolean=} opt_setDeleteIndex Set the deleteIndex on the matching
- *     listener, for {@link ol.events.unlistenByKey}.
- * @return {ol.EventsKey|undefined} The matching listener object.
+ *     listener, for {@link module:ol/events~unlistenByKey}.
+ * @return {module:ol/events~EventsKey|undefined} The matching listener object.
  */
 export function findListener(listeners, listener, opt_this, opt_setDeleteIndex) {
   let listenerObj;
@@ -50,9 +73,9 @@ export function findListener(listeners, listener, opt_this, opt_setDeleteIndex) 
 
 
 /**
- * @param {ol.EventTargetLike} target Target.
+ * @param {module:ol/events/EventTarget~EventTargetLike} target Target.
  * @param {string} type Type.
- * @return {Array.<ol.EventsKey>|undefined} Listeners.
+ * @return {Array.<module:ol/events~EventsKey>|undefined} Listeners.
  */
 export function getListeners(target, type) {
   const listenerMap = target.ol_lm;
@@ -63,8 +86,8 @@ export function getListeners(target, type) {
 /**
  * Get the lookup of listeners.  If one does not exist on the target, it is
  * created.
- * @param {ol.EventTargetLike} target Target.
- * @return {!Object.<string, Array.<ol.EventsKey>>} Map of
+ * @param {module:ol/events/EventTarget~EventTargetLike} target Target.
+ * @return {!Object.<string, Array.<module:ol/events~EventsKey>>} Map of
  *     listeners by event type.
  */
 function getListenerMap(target) {
@@ -80,7 +103,7 @@ function getListenerMap(target) {
  * Clean up all listener objects of the given type.  All properties on the
  * listener objects will be removed, and if no listeners remain in the listener
  * map, it will be removed from the target.
- * @param {ol.EventTargetLike} target Target.
+ * @param {module:ol/events/EventTarget~EventTargetLike} target Target.
  * @param {string} type Type.
  */
 function removeListeners(target, type) {
@@ -107,15 +130,15 @@ function removeListeners(target, type) {
  * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
  *
  * This function efficiently binds a `listener` to a `this` object, and returns
- * a key for use with {@link ol.events.unlistenByKey}.
+ * a key for use with {@link module:ol/events~unlistenByKey}.
  *
- * @param {ol.EventTargetLike} target Event target.
+ * @param {module:ol/events/EventTarget~EventTargetLike} target Event target.
  * @param {string} type Event type.
- * @param {ol.EventsListenerFunctionType} listener Listener.
+ * @param {module:ol/events~ListenerFunction} listener Listener.
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
  * @param {boolean=} opt_once If true, add the listener as one-off listener.
- * @return {ol.EventsKey} Unique key for the listener.
+ * @return {module:ol/events~EventsKey} Unique key for the listener.
  */
 export function listen(target, type, listener, opt_this, opt_once) {
   const listenerMap = getListenerMap(target);
@@ -130,7 +153,7 @@ export function listen(target, type, listener, opt_this, opt_once) {
       listenerObj.callOnce = false;
     }
   } else {
-    listenerObj = /** @type {ol.EventsKey} */ ({
+    listenerObj = /** @type {module:ol/events~EventsKey} */ ({
       bindTo: opt_this,
       callOnce: !!opt_once,
       listener: listener,
@@ -151,19 +174,19 @@ export function listen(target, type, listener, opt_this, opt_once) {
  *
  * This function efficiently binds a `listener` as self-unregistering listener
  * to a `this` object, and returns a key for use with
- * {@link ol.events.unlistenByKey} in case the listener needs to be unregistered
- * before it is called.
+ * {@link module:ol/events~unlistenByKey} in case the listener needs to be
+ * unregistered before it is called.
  *
- * When {@link ol.events.listen} is called with the same arguments after this
+ * When {@link module:ol/events~listen} is called with the same arguments after this
  * function, the self-unregistering listener will be turned into a permanent
  * listener.
  *
- * @param {ol.EventTargetLike} target Event target.
+ * @param {module:ol/events/EventTarget~EventTargetLike} target Event target.
  * @param {string} type Event type.
- * @param {ol.EventsListenerFunctionType} listener Listener.
+ * @param {module:ol/events~ListenerFunction} listener Listener.
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
- * @return {ol.EventsKey} Key for unlistenByKey.
+ * @return {module:ol/events~EventsKey} Key for unlistenByKey.
  */
 export function listenOnce(target, type, listener, opt_this) {
   return listen(target, type, listener, opt_this, true);
@@ -175,11 +198,11 @@ export function listenOnce(target, type, listener, opt_this) {
  * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
  *
  * To return a listener, this function needs to be called with the exact same
- * arguments that were used for a previous {@link ol.events.listen} call.
+ * arguments that were used for a previous {@link module:ol/events~listen} call.
  *
- * @param {ol.EventTargetLike} target Event target.
+ * @param {module:ol/events/EventTarget~EventTargetLike} target Event target.
  * @param {string} type Event type.
- * @param {ol.EventsListenerFunctionType} listener Listener.
+ * @param {module:ol/events~ListenerFunction} listener Listener.
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
  */
@@ -199,9 +222,9 @@ export function unlisten(target, type, listener, opt_this) {
  * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
  *
  * The argument passed to this function is the key returned from
- * {@link ol.events.listen} or {@link ol.events.listenOnce}.
+ * {@link module:ol/events~listen} or {@link module:ol/events~listenOnce}.
  *
- * @param {ol.EventsKey} key The key.
+ * @param {module:ol/events~EventsKey} key The key.
  */
 export function unlistenByKey(key) {
   if (key && key.target) {
@@ -225,7 +248,7 @@ export function unlistenByKey(key) {
  * Unregisters all event listeners on an event target. Inspired by
  * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
  *
- * @param {ol.EventTargetLike} target Target.
+ * @param {module:ol/events/EventTarget~EventTargetLike} target Target.
  */
 export function unlistenAll(target) {
   const listenerMap = getListenerMap(target);

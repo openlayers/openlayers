@@ -56,7 +56,7 @@ DragZoom.prototype.onBoxEnd = function() {
 
   const view = /** @type {!ol.View} */ (map.getView());
 
-  const size = /** @type {!ol.Size} */ (map.getSize());
+  const size = /** @type {!module:ol/size~Size} */ (map.getSize());
 
   let extent = this.getGeometry().getExtent();
 

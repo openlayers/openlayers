@@ -6,8 +6,8 @@ import {get as getProjection, getTransform} from '../../proj.js';
 
 
 /**
- * @param {function(number): ol.Coordinate} interpolate Interpolate function.
- * @param {ol.TransformFunction} transform Transform from longitude/latitude to
+ * @param {function(number): module:ol/coordinate~Coordinate} interpolate Interpolate function.
+ * @param {module:ol/proj~TransformFunction} transform Transform from longitude/latitude to
  *     projected coordinates.
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
@@ -25,9 +25,9 @@ function line(interpolate, transform, squaredTolerance) {
   let a = transform(geoA);
   let b = transform(geoB);
 
-  /** @type {Array.<ol.Coordinate>} */
+  /** @type {Array.<module:ol/coordinate~Coordinate>} */
   const geoStack = [geoB, geoA];
-  /** @type {Array.<ol.Coordinate>} */
+  /** @type {Array.<module:ol/coordinate~Coordinate>} */
   const stack = [b, a];
   /** @type {Array.<number>} */
   const fractionStack = [1, 0];
@@ -102,7 +102,7 @@ export function greatCircleArc(lon1, lat1, lon2, lat2, projection, squaredTolera
   return line(
     /**
      * @param {number} frac Fraction.
-     * @return {ol.Coordinate} Coordinate.
+     * @return {module:ol/coordinate~Coordinate} Coordinate.
      */
     function(frac) {
       if (1 <= d) {
@@ -137,7 +137,7 @@ export function meridian(lon, lat1, lat2, projection, squaredTolerance) {
   return line(
     /**
      * @param {number} frac Fraction.
-     * @return {ol.Coordinate} Coordinate.
+     * @return {module:ol/coordinate~Coordinate} Coordinate.
      */
     function(frac) {
       return [lon, lat1 + ((lat2 - lat1) * frac)];
@@ -160,7 +160,7 @@ export function parallel(lat, lon1, lon2, projection, squaredTolerance) {
   return line(
     /**
      * @param {number} frac Fraction.
-     * @return {ol.Coordinate} Coordinate.
+     * @return {module:ol/coordinate~Coordinate} Coordinate.
      */
     function(frac) {
       return [lon1 + ((lon2 - lon1) * frac), lat];

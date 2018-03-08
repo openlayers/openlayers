@@ -58,14 +58,14 @@ const VectorLayer = function(opt_options) {
 
   /**
    * User provided style.
-   * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
+   * @type {ol.style.Style|Array.<ol.style.Style>|module:ol/style~StyleFunction}
    * @private
    */
   this.style_ = null;
 
   /**
    * Style function for use within the library.
-   * @type {ol.StyleFunction|undefined}
+   * @type {module:ol/style~StyleFunction|undefined}
    * @private
    */
   this.styleFunction_ = undefined;
@@ -133,7 +133,7 @@ VectorLayer.prototype.getRenderBuffer = function() {
  *     order.
  */
 VectorLayer.prototype.getRenderOrder = function() {
-  return /** @type {ol.RenderOrderFunction|null|undefined} */ (this.get(Property.RENDER_ORDER));
+  return /** @type {module:ol/render~OrderFunction|null|undefined} */ (this.get(Property.RENDER_ORDER));
 };
 
 
@@ -149,7 +149,7 @@ VectorLayer.prototype.getSource;
 /**
  * Get the style for features.  This returns whatever was passed to the `style`
  * option at construction or to the `setStyle` method.
- * @return {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
+ * @return {ol.style.Style|Array.<ol.style.Style>|module:ol/style~StyleFunction}
  *     Layer style.
  * @api
  */
@@ -160,7 +160,7 @@ VectorLayer.prototype.getStyle = function() {
 
 /**
  * Get the style function.
- * @return {ol.StyleFunction|undefined} Layer style function.
+ * @return {module:ol/style~StyleFunction|undefined} Layer style function.
  * @api
  */
 VectorLayer.prototype.getStyleFunction = function() {
@@ -187,7 +187,7 @@ VectorLayer.prototype.getUpdateWhileInteracting = function() {
 
 
 /**
- * @param {ol.RenderOrderFunction|null|undefined} renderOrder
+ * @param {module:ol/render~OrderFunction|null|undefined} renderOrder
  *     Render order.
  */
 VectorLayer.prototype.setRenderOrder = function(renderOrder) {
@@ -202,7 +202,7 @@ VectorLayer.prototype.setRenderOrder = function(renderOrder) {
  * it is `null` the layer has no style (a `null` style), so only features
  * that have their own styles will be rendered in the layer. See
  * {@link ol.style} for information on the default style.
- * @param {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|null|undefined}
+ * @param {ol.style.Style|Array.<ol.style.Style>|module:ol/style~StyleFunction|null|undefined}
  *     style Layer style.
  * @api
  */

@@ -132,14 +132,14 @@ ImageStyle.prototype.getImageState = function() {};
 
 /**
  * @abstract
- * @return {ol.Size} Image size.
+ * @return {module:ol/size~Size} Image size.
  */
 ImageStyle.prototype.getImageSize = function() {};
 
 
 /**
  * @abstract
- * @return {ol.Size} Size of the hit-detection image.
+ * @return {module:ol/size~Size} Size of the hit-detection image.
  */
 ImageStyle.prototype.getHitDetectionImageSize = function() {};
 
@@ -155,7 +155,7 @@ ImageStyle.prototype.getOrigin = function() {};
 /**
  * Get the size of the symbolizer (in pixels).
  * @abstract
- * @return {ol.Size} Size.
+ * @return {module:ol/size~Size} Size.
  */
 ImageStyle.prototype.getSize = function() {};
 
@@ -217,7 +217,7 @@ ImageStyle.prototype.setSnapToPixel = function(snapToPixel) {
  * @abstract
  * @param {function(this: T, ol.events.Event)} listener Listener function.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
- * @return {ol.EventsKey|undefined} Listener key.
+ * @return {module:ol/events~EventsKey|undefined} Listener key.
  * @template T
  */
 ImageStyle.prototype.listenImageChange = function(listener, thisArg) {};

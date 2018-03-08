@@ -23,8 +23,8 @@ import Triangulation from '../reproj/Triangulation.js';
  * @param {ol.tilegrid.TileGrid} sourceTileGrid Source tile grid.
  * @param {ol.proj.Projection} targetProj Target projection.
  * @param {ol.tilegrid.TileGrid} targetTileGrid Target tile grid.
- * @param {ol.TileCoord} tileCoord Coordinate of the tile.
- * @param {ol.TileCoord} wrappedTileCoord Coordinate of the tile wrapped in X.
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Coordinate of the tile.
+ * @param {module:ol/tilecoord~TileCoord} wrappedTileCoord Coordinate of the tile wrapped in X.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} gutter Gutter of the source tiles.
  * @param {ol.ReprojTileFunctionType} getTileFunction
@@ -76,7 +76,7 @@ const ReprojTile = function(sourceProj, sourceTileGrid,
 
   /**
    * @private
-   * @type {ol.TileCoord}
+   * @type {module:ol/tilecoord~TileCoord}
    */
   this.wrappedTileCoord_ = wrappedTileCoord ? wrappedTileCoord : tileCoord;
 
@@ -88,7 +88,7 @@ const ReprojTile = function(sourceProj, sourceTileGrid,
 
   /**
    * @private
-   * @type {Array.<ol.EventsKey>}
+   * @type {Array.<module:ol/events~EventsKey>}
    */
   this.sourcesListenerKeys_ = null;
 

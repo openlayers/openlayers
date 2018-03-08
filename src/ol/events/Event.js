@@ -9,7 +9,7 @@
  * This implementation only provides `type` and `target` properties, and
  * `stopPropagation` and `preventDefault` methods. It is meant as base class
  * for higher level events defined in the library, and works with
- * {@link ol.events.EventTarget}.
+ * {@link module:ol/events/EventTarget~EventTarget}.
  *
  * @constructor
  * @implements {oli.events.Event}

@@ -78,14 +78,14 @@ ol.CanvasFillState;
 /**
  * A function returning the canvas element (`{HTMLCanvasElement}`)
  * used by the source as an image. The arguments passed to the function are:
- * {@link ol.Extent} the image extent, `{number}` the image resolution,
- * `{number}` the device pixel ratio, {@link ol.Size} the image size, and
+ * {@link module:ol/extent~Extent} the image extent, `{number}` the image resolution,
+ * `{number}` the device pixel ratio, {@link module:ol/size~Size} the image size, and
  * {@link ol.proj.Projection} the image projection. The canvas returned by
  * this function is cached by the source. The this keyword inside the function
  * references the {@link ol.source.ImageCanvas}.
  *
- * @typedef {function(this:ol.source.ImageCanvas, ol.Extent, number,
- *     number, ol.Size, ol.proj.Projection): HTMLCanvasElement}
+ * @typedef {function(this:ol.source.ImageCanvas, module:ol/extent~Extent, number,
+ *     number, module:ol/size~Size, ol.proj.Projection): HTMLCanvasElement}
  */
 ol.CanvasFunctionType;
 
@@ -133,57 +133,10 @@ ol.CanvasTextState;
 
 
 /**
- * @typedef {function((ol.Coordinate|undefined)): (ol.Coordinate|undefined)}
- */
-ol.CenterConstraintType;
-
-
-/**
  * @typedef {{strokeStyle: (ol.ColorLike|undefined), strokeWidth: number,
  *   size: number, lineDash: Array.<number>}}
  */
 ol.CircleRenderOptions;
-
-
-/**
- * A color represented as a short array [red, green, blue, alpha].
- * red, green, and blue should be integers in the range 0..255 inclusive.
- * alpha should be a float in the range 0..1 inclusive. If no alpha value is
- * given then `1` will be used.
- * @typedef {Array.<number>}
- */
-ol.Color;
-
-
-/**
- * A type accepted by CanvasRenderingContext2D.fillStyle
- * or CanvasRenderingContext2D.strokeStyle.
- * Represents a color, pattern, or gradient. The origin for patterns and
- * gradients as fill style is the top-left corner of the extent of the geometry
- * being filled.
- *
- * @typedef {string|CanvasPattern|CanvasGradient}
- */
-ol.ColorLike;
-
-
-/**
- * @typedef {{
- *   center: ol.CenterConstraintType,
- *   resolution: ol.ResolutionConstraintType,
- *   rotation: ol.RotationConstraintType
- * }}
- */
-ol.Constraints;
-
-
-/**
- * A function that takes a {@link ol.Coordinate} and transforms it into a
- * `{string}`.
- *
- * @typedef {function((ol.Coordinate|undefined)): string}
- */
-ol.CoordinateFormatType;
 
 
 /**
@@ -202,9 +155,9 @@ ol.DeclutterGroup;
 
 /**
  * A function that takes a {@link ol.MapBrowserEvent} and two
- * {@link ol.Pixel}s and returns a `{boolean}`. If the condition is met,
+ * {@link module:ol~Pixel}s and returns a `{boolean}`. If the condition is met,
  * true should be returned.
- * @typedef {function(ol.MapBrowserEvent, ol.Pixel, ol.Pixel):boolean}
+ * @typedef {function(ol.MapBrowserEvent, module:ol~Pixel, module:ol~Pixel):boolean}
  */
 ol.DragBoxEndConditionType;
 
@@ -214,7 +167,7 @@ ol.DragBoxEndConditionType;
  * arguments, and returns a geometry. The optional existing geometry is the
  * geometry that is returned when the function is called without a second
  * argument.
- * @typedef {function(!Array.<ol.Coordinate>, ol.geom.SimpleGeometry=):
+ * @typedef {function(!Array.<module:ol/coordinate~Coordinate>, ol.geom.SimpleGeometry=):
  *     ol.geom.SimpleGeometry}
  */
 ol.DrawGeometryFunctionType;
@@ -227,81 +180,6 @@ ol.DrawGeometryFunctionType;
  * @typedef {function(ol.MapBrowserEvent): boolean}
  */
 ol.EventsConditionType;
-
-
-/**
- * Listener function. This function is called with an event object as argument.
- * When the function returns `false`, event propagation will stop.
- *
- * @typedef {function(ol.events.Event)|function(ol.events.Event): boolean}
- */
-ol.EventsListenerFunctionType;
-
-
-/**
- * @typedef {EventTarget|ol.events.EventTarget}
- */
-ol.EventTargetLike;
-
-
-/**
- * {@link ol.source.Vector} sources use a function of this type to load
- * features.
- *
- * This function takes an {@link ol.Extent} representing the area to be loaded,
- * a `{number}` representing the resolution (map units per pixel) and an
- * {@link ol.proj.Projection} for the projection  as arguments. `this` within
- * the function is bound to the {@link ol.source.Vector} it's called from.
- *
- * The function is responsible for loading the features and adding them to the
- * source.
- * @typedef {function(this:ol.source.Vector, ol.Extent, number,
- *                    ol.proj.Projection)}
- */
-ol.FeatureLoader;
-
-
-/**
- * {@link ol.source.Vector} sources use a function of this type to get the url
- * to load features from.
- *
- * This function takes an {@link ol.Extent} representing the area to be loaded,
- * a `{number}` representing the resolution (map units per pixel) and an
- * {@link ol.proj.Projection} for the projection  as arguments and returns a
- * `{string}` representing the URL.
- * @typedef {function(ol.Extent, number, ol.proj.Projection) : string}
- */
-ol.FeatureUrlFunction;
-
-
-/**
- * A function that is called to trigger asynchronous canvas drawing.  It is
- * called with a "done" callback that should be called when drawing is done.
- * If any error occurs during drawing, the "done" callback should be called with
- * that error.
- *
- * @typedef {function(function(Error))}
- */
-ol.ImageCanvasLoader;
-
-
-/**
- * A function that takes an {@link ol.Image} for the image and a `{string}` for
- * the src as arguments. It is supposed to make it so the underlying image
- * {@link ol.Image#getImage} is assigned the content specified by the src. If
- * not specified, the default is
- *
- *     function(image, src) {
- *       image.getImage().src = src;
- *     }
- *
- * Providing a custom `imageLoadFunction` can be useful to load images with
- * post requests or - in general - through XHR requests, where the src of the
- * image element would be set to a data URI when the content is loaded.
- *
- * @typedef {function(ol.Image, string)}
- */
-ol.ImageLoadFunctionType;
 
 
 /**
@@ -320,20 +198,6 @@ ol.KMLGxTrackObject_;
 
 
 /**
- * @typedef {{layer: ol.layer.Layer,
- *            opacity: number,
- *            sourceState: ol.source.State,
- *            visible: boolean,
- *            managed: boolean,
- *            extent: (ol.Extent|undefined),
- *            zIndex: number,
- *            maxResolution: number,
- *            minResolution: number}}
- */
-ol.LayerState;
-
-
-/**
  * @typedef {{hasZ: (boolean|undefined), hasM: (boolean|undefined)}}
  */
 ol.LayoutOptions;
@@ -348,11 +212,11 @@ ol.LinkedListItem;
 
 
 /**
- * A function that takes an {@link ol.Extent} and a resolution as arguments, and
- * returns an array of {@link ol.Extent} with the extents to load. Usually this
+ * A function that takes an {@link module:ol/extent~Extent} and a resolution as arguments, and
+ * returns an array of {@link module:ol/extent~Extent} with the extents to load. Usually this
  * is one of the standard {@link ol.loadingstrategy} strategies.
  *
- * @typedef {function(ol.Extent, number): Array.<ol.Extent>}
+ * @typedef {function(module:ol/extent~Extent, number): Array.<module:ol/extent~Extent>}
  */
 ol.LoadingStrategy;
 
@@ -371,7 +235,7 @@ ol.LRUCacheEntry;
  *            feature: ol.Feature,
  *            geometry: ol.geom.SimpleGeometry,
  *            index: (number),
- *            segment: Array.<ol.Extent>,
+ *            segment: Array.<module:ol/extent~Extent>,
  *            featureSegments: (Array.<ol.ModifySegmentDataType>|undefined)}}
  */
 ol.ModifySegmentDataType;
@@ -422,18 +286,7 @@ ol.RegularShapeRenderOptions;
 
 
 /**
- * A function to be used when sorting features before rendering.
- * It takes two instances of {@link ol.Feature} or {@link ol.render.Feature} and
- * returns a `{number}`.
- *
- * @typedef {function((ol.Feature|ol.render.Feature), (ol.Feature|ol.render.Feature)):
- *     number}
- */
-ol.RenderOrderFunction;
-
-
-/**
- * @typedef {function(ol.Extent, number, number) : ol.ImageBase}
+ * @typedef {function(module:ol/extent~Extent, number, number) : ol.ImageBase}
  */
 ol.ReprojImageFunctionType;
 
@@ -447,22 +300,10 @@ ol.ReprojTileFunctionType;
 /**
  * Single triangle; consists of 3 source points and 3 target points.
  *
- * @typedef {{source: Array.<ol.Coordinate>,
- *            target: Array.<ol.Coordinate>}}
+ * @typedef {{source: Array.<module:ol/coordinate~Coordinate>,
+ *            target: Array.<module:ol/coordinate~Coordinate>}}
  */
 ol.ReprojTriangle;
-
-
-/**
- * @typedef {function((number|undefined), number, number): (number|undefined)}
- */
-ol.ResolutionConstraintType;
-
-
-/**
- * @typedef {function((number|undefined), number): (number|undefined)}
- */
-ol.RotationConstraintType;
 
 
 /**
@@ -478,8 +319,8 @@ ol.SelectFilterFunction;
 /**
  * @typedef {{
  *     snapped: {boolean},
- *     vertex: (ol.Coordinate|null),
- *     vertexPixel: (ol.Pixel|null)
+ *     vertex: (module:ol/coordinate~Coordinate|null),
+ *     vertexPixel: (module:ol~Pixel|null)
  * }}
  */
 ol.SnapResultType;
@@ -488,7 +329,7 @@ ol.SnapResultType;
 /**
  * @typedef {{
  *     feature: ol.Feature,
- *     segment: Array.<ol.Coordinate>
+ *     segment: Array.<module:ol/coordinate~Coordinate>
  * }}
  */
 ol.SnapSegmentDataType;
@@ -496,8 +337,8 @@ ol.SnapSegmentDataType;
 
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            extent: (null|ol.Extent|undefined),
- *            projection: ol.ProjectionLike,
+ *            extent: (null|module:ol/extent~Extent|undefined),
+ *            projection: module:ol/proj~ProjectionLike,
  *            resolutions: (Array.<number>|undefined),
  *            state: (ol.source.State|undefined)}}
  */
@@ -507,14 +348,14 @@ ol.SourceImageOptions;
 /**
  * @typedef {{revision: number,
  *            resolution: number,
- *            extent: ol.Extent}}
+ *            extent: module:ol/extent~Extent}}
  */
 ol.SourceRasterRenderedState;
 
 
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            projection: ol.ProjectionLike,
+ *            projection: module:ol/proj~ProjectionLike,
  *            state: (ol.source.State|undefined),
  *            wrapX: (boolean|undefined)}}
  */
@@ -524,10 +365,10 @@ ol.SourceSourceOptions;
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            cacheSize: (number|undefined),
- *            extent: (ol.Extent|undefined),
+ *            extent: (module:ol/extent~Extent|undefined),
  *            opaque: (boolean|undefined),
  *            tilePixelRatio: (number|undefined),
- *            projection: ol.ProjectionLike,
+ *            projection: module:ol/proj~ProjectionLike,
  *            state: (ol.source.State|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            wrapX: (boolean|undefined),
@@ -539,31 +380,20 @@ ol.SourceTileOptions;
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            cacheSize: (number|undefined),
- *            extent: (ol.Extent|undefined),
+ *            extent: (module:ol/extent~Extent|undefined),
  *            opaque: (boolean|undefined),
- *            projection: ol.ProjectionLike,
+ *            projection: module:ol/proj~ProjectionLike,
  *            state: (ol.source.State|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            tileLoadFunction: ol.TileLoadFunctionType,
+ *            tileLoadFunction: module:ol/Tile~LoadFunction,
  *            tilePixelRatio: (number|undefined),
- *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
+ *            tileUrlFunction: (module:ol/tileurlfunction~Type|undefined),
  *            url: (string|undefined),
  *            urls: (Array.<string>|undefined),
  *            wrapX: (boolean|undefined),
  *            transition: (number|undefined)}}
  */
 ol.SourceUrlTileOptions;
-
-
-/**
- * A function that takes an {@link ol.Feature} and a `{number}` representing
- * the view's resolution. The function should return a {@link ol.style.Style}
- * or an array of them. This way e.g. a vector layer can be styled.
- *
- * @typedef {function((ol.Feature|ol.render.Feature), number):
- *     (ol.style.Style|Array.<ol.style.Style>)}
- */
-ol.StyleFunction;
 
 
 /**
@@ -582,7 +412,7 @@ ol.StyleGeometryFunction;
  * 1. The pixel coordinates of the geometry in GeoJSON notation.
  * 2. The {@link olx.render.State} of the layer renderer.
  *
- * @typedef {function((ol.Coordinate|Array<ol.Coordinate>|Array.<Array.<ol.Coordinate>>),olx.render.State)}
+ * @typedef {function((module:ol/coordinate~Coordinate|Array<module:ol/coordinate~Coordinate>|Array.<Array.<module:ol/coordinate~Coordinate>>),olx.render.State)}
  */
 ol.StyleRenderFunction;
 
@@ -595,76 +425,6 @@ ol.StyleRenderFunction;
  *            snapToPixel: boolean}}
  */
 ol.StyleImageOptions;
-
-
-/**
- * An array of three numbers representing the location of a tile in a tile
- * grid. The order is `z`, `x`, and `y`. `z` is the zoom level.
- * @typedef {Array.<number>}
- */
-ol.TileCoord;
-
-
-/**
- * A function that takes an {@link ol.Tile} for the tile and a `{string}` for
- * the url as arguments.
- *
- * @typedef {function(ol.Tile, string)}
- */
-ol.TileLoadFunctionType;
-
-
-/**
- * @typedef {function(ol.Tile, string, ol.Coordinate, number): number}
- */
-ol.TilePriorityFunction;
-
-
-/**
- * @typedef {{
- *     dirty: boolean,
- *     renderedRenderOrder: (null|ol.RenderOrderFunction),
- *     renderedTileRevision: number,
- *     renderedRevision: number}}
- */
-ol.TileReplayState;
-
-
-/**
- * {@link ol.source.Tile} sources use a function of this type to get the url
- * that provides a tile for a given tile coordinate.
- *
- * This function takes an {@link ol.TileCoord} for the tile coordinate, a
- * `{number}` representing the pixel ratio and an {@link ol.proj.Projection} for
- * the projection  as arguments and returns a `{string}` representing the tile
- * URL, or undefined if no tile should be requested for the passed tile
- * coordinate.
- *
- * @typedef {function(ol.TileCoord, number,
- *           ol.proj.Projection): (string|undefined)}
- */
-ol.TileUrlFunctionType;
-
-
-/**
- * An animation configuration
- *
- * @typedef {{
- *   sourceCenter: (ol.Coordinate|undefined),
- *   targetCenter: (ol.Coordinate|undefined),
- *   sourceResolution: (number|undefined),
- *   targetResolution: (number|undefined),
- *   sourceRotation: (number|undefined),
- *   targetRotation: (number|undefined),
- *   anchor: (ol.Coordinate|undefined),
- *   start: number,
- *   duration: number,
- *   complete: boolean,
- *   easing: function(number):number,
- *   callback: (function(boolean)|undefined)
- *  }}
- */
-ol.ViewAnimation;
 
 
 /**
@@ -706,7 +466,7 @@ ol.WebglTextureCacheEntry;
 /**
  * Number of features; bounds/extent.
  * @typedef {{numberOfFeatures: number,
- *            bounds: ol.Extent}}
+ *            bounds: module:ol/extent~Extent}}
  */
 ol.WFSFeatureCollectionMetadata;
 
@@ -725,27 +485,6 @@ ol.WFSTransactionResponse;
  * @typedef {{type: number, value: (number|string|undefined), position: number}}
  */
 ol.WKTToken;
-
-
-/**
- * When using {@link ol.xml.makeChildAppender} or
- * {@link ol.xml.makeSimpleNodeFactory}, the top `objectStack` item needs to
- * have this structure.
- * @typedef {{node:Node}}
- */
-ol.XmlNodeStackItem;
-
-
-/**
- * @typedef {function(Node, Array.<*>)}
- */
-ol.XmlParser;
-
-
-/**
- * @typedef {function(Node, *, Array.<*>)}
- */
-ol.XmlSerializer;
 
 
 /**

@@ -78,13 +78,13 @@ const MousePosition = function(opt_options) {
 
   /**
    * @private
-   * @type {?ol.TransformFunction}
+   * @type {?module:ol/proj~TransformFunction}
    */
   this.transform_ = null;
 
   /**
    * @private
-   * @type {ol.Pixel}
+   * @type {module:ol~Pixel}
    */
   this.lastMouseMovePixel_ = null;
 
@@ -124,13 +124,13 @@ MousePosition.prototype.handleProjectionChanged_ = function() {
 /**
  * Return the coordinate format type used to render the current position or
  * undefined.
- * @return {ol.CoordinateFormatType|undefined} The format to render the current
+ * @return {module:ol/coordinate~CoordinateFormat|undefined} The format to render the current
  *     position in.
  * @observable
  * @api
  */
 MousePosition.prototype.getCoordinateFormat = function() {
-  return /** @type {ol.CoordinateFormatType|undefined} */ (this.get(COORDINATE_FORMAT));
+  return /** @type {module:ol/coordinate~CoordinateFormat|undefined} */ (this.get(COORDINATE_FORMAT));
 };
 
 
@@ -187,7 +187,7 @@ MousePosition.prototype.setMap = function(map) {
 
 /**
  * Set the coordinate format type used to render the current position.
- * @param {ol.CoordinateFormatType} format The format to render the current
+ * @param {module:ol/coordinate~CoordinateFormat} format The format to render the current
  *     position in.
  * @observable
  * @api
@@ -199,7 +199,7 @@ MousePosition.prototype.setCoordinateFormat = function(format) {
 
 /**
  * Set the projection that is used to report the mouse position.
- * @param {ol.ProjectionLike} projection The projection to report mouse
+ * @param {module:ol/proj~ProjectionLike} projection The projection to report mouse
  *     position in.
  * @observable
  * @api
@@ -210,7 +210,7 @@ MousePosition.prototype.setProjection = function(projection) {
 
 
 /**
- * @param {?ol.Pixel} pixel Pixel.
+ * @param {?module:ol~Pixel} pixel Pixel.
  * @private
  */
 MousePosition.prototype.updateHTML_ = function(pixel) {

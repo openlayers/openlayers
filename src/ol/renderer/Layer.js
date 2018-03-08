@@ -33,7 +33,7 @@ inherits(LayerRenderer, Observable);
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState Frame state.
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {function(this: S, (ol.Feature|ol.render.Feature), ol.layer.Layer): T}
@@ -46,7 +46,7 @@ LayerRenderer.prototype.forEachFeatureAtCoordinate = UNDEFINED;
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState Frame state.
  * @return {boolean} Is there a feature at the given coordinate?
  */
@@ -157,7 +157,7 @@ LayerRenderer.prototype.scheduleExpireCache = function(frameState, tileSource) {
     }.bind(null, tileSource);
 
     frameState.postRenderFunctions.push(
-      /** @type {ol.PostRenderFunction} */ (postRenderFunction)
+      /** @type {module:ol/PluggableMap~PostRenderFunction} */ (postRenderFunction)
     );
   }
 };
@@ -199,7 +199,7 @@ LayerRenderer.prototype.updateUsedTiles = function(usedTiles, tileSource, z, til
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} currentZ Current Z.
  * @param {number} preload Load low resolution tiles up to 'preload' levels.
  * @param {function(this: T, ol.Tile)=} opt_tileCallback Tile callback.

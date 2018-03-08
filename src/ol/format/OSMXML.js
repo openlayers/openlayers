@@ -45,7 +45,7 @@ const NAMESPACE_URIS = [null];
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const WAY_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -56,7 +56,7 @@ const WAY_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -67,7 +67,7 @@ const PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const NODE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -83,7 +83,7 @@ function readNode(node, objectStack) {
   const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   const state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const id = node.getAttribute('id');
-  /** @type {ol.Coordinate} */
+  /** @type {module:ol/coordinate~Coordinate} */
   const coordinates = [
     parseFloat(node.getAttribute('lon')),
     parseFloat(node.getAttribute('lat'))

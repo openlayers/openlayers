@@ -27,12 +27,12 @@ const TierSizeCalculation = {
  * @constructor
  * @extends {ol.ImageTile}
  * @param {ol.tilegrid.TileGrid} tileGrid TileGrid that the tile belongs to.
- * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {ol.TileState} state State.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
- * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
- * @param {olx.TileOptions=} opt_options Tile options.
+ * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
+ * @param {module:ol/Tile~Options=} opt_options Tile options.
  */
 export const CustomTile = function(
   tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
@@ -47,7 +47,7 @@ export const CustomTile = function(
 
   /**
    * @private
-   * @type {ol.Size}
+   * @type {module:ol/size~Size}
    */
   this.tileSize_ = toSize(tileGrid.getTileSize(tileCoord[0]));
 };
@@ -161,13 +161,13 @@ const Zoomify = function(opt_options) {
 
   /**
    * @param {string} template Template.
-   * @return {ol.TileUrlFunctionType} Tile URL function.
+   * @return {module:ol/tileurlfunction~Type} Tile URL function.
    */
   function createFromTemplate(template) {
 
     return (
       /**
-       * @param {ol.TileCoord} tileCoord Tile Coordinate.
+       * @param {module:ol/tilecoord~TileCoord} tileCoord Tile Coordinate.
        * @param {number} pixelRatio Pixel ratio.
        * @param {ol.proj.Projection} projection Projection.
        * @return {string|undefined} Tile URL.

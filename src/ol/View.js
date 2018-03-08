@@ -25,6 +25,116 @@ import Units from './proj/Units.js';
 
 
 /**
+ * An animation configuration
+ *
+ * @typedef {Object} Animation
+ * @property {module:ol/coordinate~Coordinate} [sourceCenter]
+ * @property {module:ol/coordinate~Coordinate} [targetCenter]
+ * @property {number} [sourceResolution]
+ * @property {number} [targetResolution]
+ * @property {number} [sourceRotation]
+ * @property {number} [sourceRotation]
+ * @property {module:ol/coordinate~Coordinate} [anchor]
+ * @property {number} start
+ * @property {number} duration
+ * @property {boolean} complete
+ * @property {function(number):number} easing
+ * @property {function(boolean)} callback
+ */
+
+
+/**
+ * @typedef {Object} Constraints
+ * @property {module:ol/centerconstraint~Type} center
+ * @property {module:ol/resolutionconstraint~Type} resolution
+ * @property {module:ol/rotationconstraint~Type} rotation
+ */
+
+
+/**
+ * @typedef {Object} FitOptions
+ * @property {module:ol/size~Size} [size] The size in pixels of the box to fit
+ * the extent into. Default is the current size of the first map in the DOM that
+ * uses this view, or `[100, 100]` if no such map is found.
+ * @property {!Array.<number>} [padding=[0, 0, 0, 0]] Padding (in pixels) to be
+ * cleared inside the view. Values in the array are top, right, bottom and left
+ * padding.
+ * @property {boolean} [constrainResolution=true] Constrain the resolution.
+ * @property {boolean} [nearest=false] If `constrainResolution` is `true`, get
+ * the nearest extent instead of the closest that actually fits the view.
+ * @property {number} [minResolution=0] Minimum resolution that we zoom to.
+ * @property {number} [maxZoom] Maximum zoom level that we zoom to. If
+ * `minResolution` is given, this property is ignored.
+ * @property {number} [duration] The duration of the animation in milliseconds.
+ * By default, there is no animation to the target extent.
+ * @property {function(number):number} [easing] The easing function used during
+ * the animation (defaults to {@link module:ol/easing~inAndOut}).
+ * The function will be called for each frame with a number representing a
+ * fraction of the animation's duration.  The function should return a number
+ * between 0 and 1 representing the progress toward the destination state.
+ * @property {function(boolean)} [callback] Function called when the view is in
+ * its final position. The callback will be called with `true` if the animation
+ * series completed on its own or `false` if it was cancelled.
+ */
+
+
+/**
+ * @typedef {Object} ViewOptions
+ * @property {module:ol/coordinate~Coordinate~Coordinate} [center] The initial center for
+ * the view. The coordinate system for the center is specified with the
+ * `projection` option. Layer sources will not be fetched if this is not set,
+ * but the center can be set later with {@link #setCenter}.
+ * @property {boolean|number} [constrainRotation=true] Rotation constraint.
+ * `false` means no constraint. `true` means no constraint, but snap to zero
+ * near zero. A number constrains the rotation to that number of values. For
+ * example, `4` will constrain the rotation to 0, 90, 180, and 270 degrees.
+ * @property {boolean} [enableRotation=true] Enable rotation.
+ * If `false`, a rotation constraint that always sets the rotation to zero is
+ * used. The `constrainRotation` option has no effect if `enableRotation` is
+ * `false`.
+ * @property {module:ol/extent~Extent} [extent] The extent that constrains the
+ * center, in other words, center cannot be set outside this extent.
+ * @property {number} [maxResolution] The maximum resolution used to determine
+ * the resolution constraint. It is used together with `minResolution` (or
+ * `maxZoom`) and `zoomFactor`. If unspecified it is calculated in such a way
+ * that the projection's validity extent fits in a 256x256 px tile. If the
+ * projection is Spherical Mercator (the default) then `maxResolution` defaults
+ * to `40075016.68557849 / 256 = 156543.03392804097`.
+ * @property {number} [minResolution] The minimum resolution used to determine
+ * the resolution constraint.  It is used together with `maxResolution` (or
+ * `minZoom`) and `zoomFactor`.  If unspecified it is calculated assuming 29
+ * zoom levels (with a factor of 2). If the projection is Spherical Mercator
+ * (the default) then `minResolution` defaults to
+ * `40075016.68557849 / 256 / Math.pow(2, 28) = 0.0005831682455839253`.
+ * @property {number} [maxZoom=28] The maximum zoom level used to determine the
+ * resolution constraint. It is used together with `minZoom` (or
+ * `maxResolution`) and `zoomFactor`.  Note that if `minResolution` is also
+ * provided, it is given precedence over `maxZoom`.
+ * @property {number} [minZoom=0] The minimum zoom level used to determine the
+ * resolution constraint. It is used together with `maxZoom` (or
+ * `minResolution`) and `zoomFactor`.  Note that if `maxResolution` is also
+ * provided, it is given precedence over `minZoom`.
+ * @property {module:ol/proj~ProjectionLike} [projection='EPSG:3857'] The
+ * projection. The default is Spherical Mercator.
+ * @property {number} [resolution] The initial resolution for the view. The
+ * units are `projection` units per pixel (e.g. meters per pixel). An
+ * alternative to setting this is to set `zoom`. Layer sources will not be
+ * fetched if neither this nor `zoom` are defined, but they can be set later
+ * with {@link #setZoom} or {@link #setResolution}.
+ * @property {Array.<number>} [resolutions] Resolutions to determine the
+ * resolution constraint. If set the `maxResolution`, `minResolution`,
+ * `minZoom`, `maxZoom`, and `zoomFactor` options are ignored.
+ * @property {number} [rotation=0] The initial rotation for the view in radians
+ * (positive rotation clockwise, 0 means North).
+ * @property {number} [zoom] Only used if `resolution` is not defined. Zoom
+ * level used to calculate the initial resolution for the view. The initial
+ * resolution is determined using the {@link #constrainResolution} method.
+ * @property {number} [zoomFactor=2] The zoom factor used to determine the
+ * resolution constraint.
+ */
+
+
+/**
  * Default min zoom level for the map view.
  * @type {number}
  */
@@ -33,18 +143,18 @@ const DEFAULT_MIN_ZOOM = 0;
 
 /**
  * @classdesc
- * An ol.View object represents a simple 2D view of the map.
+ * A View object represents a simple 2D view of the map.
  *
  * This is the object to act upon to change the center, resolution,
  * and rotation of the map.
  *
  * ### The view states
  *
- * An `ol.View` is determined by three states: `center`, `resolution`,
+ * An View is determined by three states: `center`, `resolution`,
  * and `rotation`. Each state has a corresponding getter and setter, e.g.
  * `getCenter` and `setCenter` for the `center` state.
  *
- * An `ol.View` has a `projection`. The projection determines the
+ * An View has a `projection`. The projection determines the
  * coordinate system of the center, and its units determine the units of the
  * resolution (projection units per pixel). The default projection is
  * Spherical Mercator (EPSG:3857).
@@ -56,7 +166,7 @@ const DEFAULT_MIN_ZOOM = 0;
  * that is passed to a setter will effectively be the value set in the view,
  * and returned by the corresponding getter.
  *
- * But an `ol.View` object also has a *resolution constraint*, a
+ * But a View object also has a *resolution constraint*, a
  * *rotation constraint* and a *center constraint*.
  *
  * As said above, no constraints are applied when the setters are used to set
@@ -84,8 +194,8 @@ const DEFAULT_MIN_ZOOM = 0;
  * default the center is not constrained at all.
  *
  * @constructor
- * @extends {ol.Object}
- * @param {olx.ViewOptions=} opt_options View options.
+ * @extends {module:ol/Object~Object}
+ * @param {module:ol/View~ViewOptions=} opt_options View options.
  * @api
  */
 const View = function(opt_options) {
@@ -101,7 +211,7 @@ const View = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<Array.<ol.ViewAnimation>>}
+   * @type {Array.<Array.<module:ol/View~Animation>>}
    */
   this.animations_ = [];
 
@@ -116,7 +226,7 @@ const View = function(opt_options) {
   /**
    * @private
    * @const
-   * @type {ol.proj.Projection}
+   * @type {module:ol/proj/Projection~Projection}
    */
   this.projection_ = createProjection(options.projection, 'EPSG:3857');
 
@@ -128,7 +238,7 @@ inherits(View, BaseObject);
 
 /**
  * Set up the view with the given options.
- * @param {olx.ViewOptions} options View options.
+ * @param {module:ol/View~ViewOptions} options View options.
  */
 View.prototype.applyOptions_ = function(options) {
 
@@ -178,7 +288,7 @@ View.prototype.applyOptions_ = function(options) {
 
   /**
    * @private
-   * @type {ol.Constraints}
+   * @type {module:ol/View~Constraints}
    */
   this.constraints_ = {
     center: centerConstraint,
@@ -203,7 +313,7 @@ View.prototype.applyOptions_ = function(options) {
 
   /**
    * @private
-   * @type {olx.ViewOptions}
+   * @type {module:ol/View~ViewOptions}
    */
   this.options_ = options;
 
@@ -214,8 +324,8 @@ View.prototype.applyOptions_ = function(options) {
  * current resolution (or zoom), center, and rotation are applied to any stored
  * options.  The provided options can be uesd to apply new min/max zoom or
  * resolution limits.
- * @param {olx.ViewOptions} newOptions New options to be applied.
- * @return {olx.ViewOptions} New options updated with the current view state.
+ * @param {module:ol/View~ViewOptions} newOptions New options to be applied.
+ * @return {module:ol/View~ViewOptions} New options updated with the current view state.
  */
 View.prototype.getUpdatedOptions_ = function(newOptions) {
   const options = assign({}, this.options_);
@@ -246,7 +356,7 @@ View.prototype.getUpdatedOptions_ = function(newOptions) {
  *
  * By default, the animation lasts one second and uses in-and-out easing.  You
  * can customize this behavior by including `duration` (in milliseconds) and
- * `easing` options (see {@link ol.easing}).
+ * `easing` options (see {@link module:ol/easing}).
  *
  * To chain together multiple animations, call the method with multiple
  * animation objects.  For example, to first zoom and then pan:
@@ -304,7 +414,7 @@ View.prototype.animate = function(var_args) {
   for (let i = 0; i < animationCount; ++i) {
     const options = /** @type {olx.AnimationOptions} */ (arguments[i]);
 
-    const animation = /** @type {ol.ViewAnimation} */ ({
+    const animation = /** @type {module:ol/View~Animation} */ ({
       start: start,
       complete: false,
       anchor: options.anchor,
@@ -472,8 +582,8 @@ View.prototype.updateAnimations_ = function() {
 
 /**
  * @param {number} rotation Target rotation.
- * @param {ol.Coordinate} anchor Rotation anchor.
- * @return {ol.Coordinate|undefined} Center for rotation and anchor.
+ * @param {module:ol/coordinate~Coordinate} anchor Rotation anchor.
+ * @return {module:ol/coordinate~Coordinate|undefined} Center for rotation and anchor.
  */
 View.prototype.calculateCenterRotate = function(rotation, anchor) {
   let center;
@@ -489,8 +599,8 @@ View.prototype.calculateCenterRotate = function(rotation, anchor) {
 
 /**
  * @param {number} resolution Target resolution.
- * @param {ol.Coordinate} anchor Zoom anchor.
- * @return {ol.Coordinate|undefined} Center for resolution and anchor.
+ * @param {module:ol/coordinate~Coordinate} anchor Zoom anchor.
+ * @return {module:ol/coordinate~Coordinate|undefined} Center for resolution and anchor.
  */
 View.prototype.calculateCenterZoom = function(resolution, anchor) {
   let center;
@@ -509,7 +619,7 @@ View.prototype.calculateCenterZoom = function(resolution, anchor) {
 
 /**
  * @private
- * @return {ol.Size} Viewport size or `[100, 100]` when no viewport is found.
+ * @return {module:ol/size~Size} Viewport size or `[100, 100]` when no viewport is found.
  */
 View.prototype.getSizeFromViewport_ = function() {
   const size = [100, 100];
@@ -526,8 +636,8 @@ View.prototype.getSizeFromViewport_ = function() {
 
 /**
  * Get the constrained center of this view.
- * @param {ol.Coordinate|undefined} center Center.
- * @return {ol.Coordinate|undefined} Constrained center.
+ * @param {module:ol/coordinate~Coordinate|undefined} center Center.
+ * @return {module:ol/coordinate~Coordinate|undefined} Constrained center.
  * @api
  */
 View.prototype.constrainCenter = function(center) {
@@ -565,17 +675,17 @@ View.prototype.constrainRotation = function(rotation, opt_delta) {
 
 /**
  * Get the view center.
- * @return {ol.Coordinate|undefined} The center of the view.
+ * @return {module:ol/coordinate~Coordinate|undefined} The center of the view.
  * @observable
  * @api
  */
 View.prototype.getCenter = function() {
-  return /** @type {ol.Coordinate|undefined} */ (this.get(ViewProperty.CENTER));
+  return /** @type {module:ol/coordinate~Coordinate|undefined} */ (this.get(ViewProperty.CENTER));
 };
 
 
 /**
- * @return {ol.Constraints} Constraints.
+ * @return {module:ol/View~Constraints} Constraints.
  */
 View.prototype.getConstraints = function() {
   return this.constraints_;
@@ -602,14 +712,14 @@ View.prototype.getHints = function(opt_hints) {
  * The size is the pixel dimensions of the box into which the calculated extent
  * should fit. In most cases you want to get the extent of the entire map,
  * that is `map.getSize()`.
- * @param {ol.Size=} opt_size Box pixel size. If not provided, the size of the
+ * @param {module:ol/size~Size=} opt_size Box pixel size. If not provided, the size of the
  * first map that uses this view will be used.
- * @return {ol.Extent} Extent.
+ * @return {module:ol/extent~Extent} Extent.
  * @api
  */
 View.prototype.calculateExtent = function(opt_size) {
   const size = opt_size || this.getSizeFromViewport_();
-  const center = /** @type {!ol.Coordinate} */ (this.getCenter());
+  const center = /** @type {!module:ol/coordinate~Coordinate} */ (this.getCenter());
   assert(center, 1); // The view center is not defined
   const resolution = /** @type {!number} */ (this.getResolution());
   assert(resolution !== undefined, 2); // The view resolution is not defined
@@ -682,7 +792,7 @@ View.prototype.setMinZoom = function(zoom) {
 
 /**
  * Get the view projection.
- * @return {ol.proj.Projection} The projection of the view.
+ * @return {module:ol/proj/Projection~Projection} The projection of the view.
  * @api
  */
 View.prototype.getProjection = function() {
@@ -703,7 +813,7 @@ View.prototype.getResolution = function() {
 
 /**
  * Get the resolutions for the view. This returns the array of resolutions
- * passed to the constructor of the {ol.View}, or undefined if none were given.
+ * passed to the constructor of the View, or undefined if none were given.
  * @return {Array.<number>|undefined} The resolutions of the view.
  * @api
  */
@@ -714,8 +824,8 @@ View.prototype.getResolutions = function() {
 
 /**
  * Get the resolution for a provided extent (in map units) and size (in pixels).
- * @param {ol.Extent} extent Extent.
- * @param {ol.Size=} opt_size Box pixel size.
+ * @param {module:ol/extent~Extent} extent Extent.
+ * @param {module:ol/size~Size=} opt_size Box pixel size.
  * @return {number} The resolution at which the provided extent will render at
  *     the given size.
  * @api
@@ -790,7 +900,7 @@ View.prototype.getValueForResolutionFunction = function(opt_power) {
  * @return {olx.ViewState} View state.
  */
 View.prototype.getState = function() {
-  const center = /** @type {ol.Coordinate} */ (this.getCenter());
+  const center = /** @type {module:ol/coordinate~Coordinate} */ (this.getCenter());
   const projection = this.getProjection();
   const resolution = /** @type {number} */ (this.getResolution());
   const rotation = this.getRotation();
@@ -864,7 +974,7 @@ View.prototype.getResolutionForZoom = function(zoom) {
  * The size is pixel dimensions of the box to fit the extent into.
  * In most cases you will want to use the map size, that is `map.getSize()`.
  * Takes care of the map angle.
- * @param {ol.geom.SimpleGeometry|ol.Extent} geometryOrExtent The geometry or
+ * @param {module:ol/geom/SimpleGeometry~SimpleGeometry|module:ol/extent~Extent} geometryOrExtent The geometry or
  *     extent to fit the view to.
  * @param {olx.view.FitOptions=} opt_options Options.
  * @api
@@ -875,7 +985,7 @@ View.prototype.fit = function(geometryOrExtent, opt_options) {
   if (!size) {
     size = this.getSizeFromViewport_();
   }
-  /** @type {ol.geom.SimpleGeometry} */
+  /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */
   let geometry;
   if (!(geometryOrExtent instanceof SimpleGeometry)) {
     assert(Array.isArray(geometryOrExtent),
@@ -967,9 +1077,9 @@ View.prototype.fit = function(geometryOrExtent, opt_options) {
 
 /**
  * Center on coordinate and view position.
- * @param {ol.Coordinate} coordinate Coordinate.
- * @param {ol.Size} size Box pixel size.
- * @param {ol.Pixel} position Position on the view to center on.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
+ * @param {module:ol/size~Size} size Box pixel size.
+ * @param {module:ol~Pixel} position Position on the view to center on.
  * @api
  */
 View.prototype.centerOn = function(coordinate, size, position) {
@@ -1003,7 +1113,7 @@ View.prototype.isDef = function() {
 /**
  * Rotate the view around a given coordinate.
  * @param {number} rotation New rotation value for the view.
- * @param {ol.Coordinate=} opt_anchor The rotation center.
+ * @param {module:ol/coordinate~Coordinate=} opt_anchor The rotation center.
  * @api
  */
 View.prototype.rotate = function(rotation, opt_anchor) {
@@ -1017,7 +1127,7 @@ View.prototype.rotate = function(rotation, opt_anchor) {
 
 /**
  * Set the center of the current view.
- * @param {ol.Coordinate|undefined} center The center of the view.
+ * @param {module:ol/coordinate~Coordinate|undefined} center The center of the view.
  * @observable
  * @api
  */
@@ -1030,7 +1140,7 @@ View.prototype.setCenter = function(center) {
 
 
 /**
- * @param {ol.ViewHint} hint Hint.
+ * @param {module:ol/ViewHint~ViewHint} hint Hint.
  * @param {number} delta Delta.
  * @return {number} New value.
  */
@@ -1080,8 +1190,8 @@ View.prototype.setZoom = function(zoom) {
 
 
 /**
- * @param {olx.ViewOptions} options View options.
- * @return {ol.CenterConstraintType} The constraint.
+ * @param {module:ol/View~ViewOptions} options View options.
+ * @return {module:ol/centerconstraint~Type} The constraint.
  */
 export function createCenterConstraint(options) {
   if (options.extent !== undefined) {
@@ -1093,8 +1203,8 @@ export function createCenterConstraint(options) {
 
 
 /**
- * @param {olx.ViewOptions} options View options.
- * @return {{constraint: ol.ResolutionConstraintType, maxResolution: number,
+ * @param {module:ol/View~ViewOptions} options View options.
+ * @return {{constraint: module:ol/resolutionconstraint~Type, maxResolution: number,
  *     minResolution: number, zoomFactor: number}} The constraint.
  */
 export function createResolutionConstraint(options) {
@@ -1175,8 +1285,8 @@ export function createResolutionConstraint(options) {
 
 
 /**
- * @param {olx.ViewOptions} options View options.
- * @return {ol.RotationConstraintType} Rotation constraint.
+ * @param {module:ol/View~ViewOptions} options View options.
+ * @return {module:ol/rotationconstraint~Type} Rotation constraint.
  */
 export function createRotationConstraint(options) {
   const enableRotation = options.enableRotation !== undefined ?
@@ -1200,7 +1310,7 @@ export function createRotationConstraint(options) {
 
 /**
  * Determine if an animation involves no view change.
- * @param {ol.ViewAnimation} animation The animation.
+ * @param {module:ol/View~Animation} animation The animation.
  * @return {boolean} The animation involves no view change.
  */
 export function isNoopAnimation(animation) {

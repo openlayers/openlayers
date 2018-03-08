@@ -55,7 +55,7 @@ const ImageMapGuide = function(options) {
 
   /**
    * @private
-   * @type {ol.ImageLoadFunctionType}
+   * @type {module:ol/Image~LoadFunction}
    */
   this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
     options.imageLoadFunction : defaultImageLoadFunction;
@@ -158,7 +158,7 @@ ImageMapGuide.prototype.getImageInternal = function(extent, resolution, pixelRat
 
 /**
  * Return the image load function of the source.
- * @return {ol.ImageLoadFunctionType} The image load function.
+ * @return {module:ol/Image~LoadFunction} The image load function.
  * @api
  */
 ImageMapGuide.prototype.getImageLoadFunction = function() {
@@ -167,8 +167,8 @@ ImageMapGuide.prototype.getImageLoadFunction = function() {
 
 
 /**
- * @param {ol.Extent} extent The map extents.
- * @param {ol.Size} size The viewport size.
+ * @param {module:ol/extent~Extent} extent The map extents.
+ * @param {module:ol/size~Size} size The viewport size.
  * @param {number} metersPerUnit The meters-per-unit value.
  * @param {number} dpi The display resolution.
  * @return {number} The computed map scale.
@@ -201,8 +201,8 @@ ImageMapGuide.prototype.updateParams = function(params) {
 /**
  * @param {string} baseUrl The mapagent url.
  * @param {Object.<string, string|number>} params Request parameters.
- * @param {ol.Extent} extent Extent.
- * @param {ol.Size} size Size.
+ * @param {module:ol/extent~Extent} extent Extent.
+ * @param {module:ol/size~Size} size Size.
  * @param {ol.proj.Projection} projection Projection.
  * @return {string} The mapagent map image request URL.
  */
@@ -230,7 +230,7 @@ ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, size, project
 
 /**
  * Set the image load function of the MapGuide source.
- * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
+ * @param {module:ol/Image~LoadFunction} imageLoadFunction Image load function.
  * @api
  */
 ImageMapGuide.prototype.setImageLoadFunction = function(imageLoadFunction) {

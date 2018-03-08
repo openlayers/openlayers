@@ -63,7 +63,7 @@ export function not(condition) {
  * intersects a fixed bounding box
  *
  * @param {!string} geometryName Geometry name to use.
- * @param {!ol.Extent} extent Extent.
+ * @param {!module:ol/extent~Extent} extent Extent.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @returns {!ol.format.filter.Bbox} `<BBOX>` operator.

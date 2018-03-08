@@ -104,7 +104,7 @@ const WMTS = function(options) {
 
   /**
    * @param {string} template Template.
-   * @return {ol.TileUrlFunctionType} Tile URL function.
+   * @return {module:ol/tileurlfunction~Type} Tile URL function.
    * @private
    */
   this.createFromWMTSTemplate_ = function(template) {
@@ -121,7 +121,7 @@ const WMTS = function(options) {
 
     return (
       /**
-       * @param {ol.TileCoord} tileCoord Tile coordinate.
+       * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
        * @param {number} pixelRatio Pixel ratio.
        * @param {ol.proj.Projection} projection Projection.
        * @return {string|undefined} Tile URL.
