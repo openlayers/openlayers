@@ -29,7 +29,7 @@ import Event from '../events/Event.js';
  *    returns false.
  *
  * @constructor
- * @extends {ol.Disposable}
+ * @extends {module:ol/Disposable~Disposable}
  */
 const EventTarget = function() {
 
@@ -75,7 +75,7 @@ EventTarget.prototype.addEventListener = function(type, listener) {
 
 /**
  * @param {{type: string,
- *     target: (EventTarget|module:ol/events/EventTarget~EventTarget|undefined)}|ol.events.Event|
+ *     target: (EventTarget|module:ol/events/EventTarget~EventTarget|undefined)}|module:ol/events/Event~Event|
  *     string} event Event or event type.
  * @return {boolean|undefined} `false` if anyone called preventDefault on the
  *     event object or if any of the listeners returned false.
