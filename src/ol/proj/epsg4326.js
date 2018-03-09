@@ -19,7 +19,7 @@ export const RADIUS = 6378137;
  * Extent of the EPSG:4326 projection which is the whole world.
  *
  * @const
- * @type {ol.Extent}
+ * @type {module:ol/extent~Extent}
  */
 export const EXTENT = [-180, -90, 180, 90];
 

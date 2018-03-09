@@ -371,7 +371,7 @@ Select.prototype.setMap = function(map) {
 
 
 /**
- * @return {ol.StyleFunction} Styles.
+ * @return {module:ol/style~StyleFunction} Styles.
  */
 function getDefaultStyleFunction() {
   const styles = createEditingStyle();

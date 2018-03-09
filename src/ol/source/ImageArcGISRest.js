@@ -57,7 +57,7 @@ const ImageArcGISRest = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.ImageLoadFunctionType}
+   * @type {module:ol/Image~LoadFunction}
    */
   this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
     options.imageLoadFunction : defaultImageLoadFunction;
@@ -77,7 +77,7 @@ const ImageArcGISRest = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Size}
+   * @type {module:ol/size~Size}
    */
   this.imageSize_ = [0, 0];
 
@@ -183,7 +183,7 @@ ImageArcGISRest.prototype.getImageInternal = function(extent, resolution, pixelR
 
 /**
  * Return the image load function of the source.
- * @return {ol.ImageLoadFunctionType} The image load function.
+ * @return {module:ol/Image~LoadFunction} The image load function.
  * @api
  */
 ImageArcGISRest.prototype.getImageLoadFunction = function() {
@@ -192,8 +192,8 @@ ImageArcGISRest.prototype.getImageLoadFunction = function() {
 
 
 /**
- * @param {ol.Extent} extent Extent.
- * @param {ol.Size} size Size.
+ * @param {module:ol/extent~Extent} extent Extent.
+ * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
  * @param {Object} params Params.
@@ -234,7 +234,7 @@ ImageArcGISRest.prototype.getUrl = function() {
 
 /**
  * Set the image load function of the source.
- * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
+ * @param {module:ol/Image~LoadFunction} imageLoadFunction Image load function.
  * @api
  */
 ImageArcGISRest.prototype.setImageLoadFunction = function(imageLoadFunction) {

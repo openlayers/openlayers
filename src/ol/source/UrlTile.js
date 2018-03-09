@@ -35,13 +35,13 @@ const UrlTile = function(options) {
 
   /**
    * @protected
-   * @type {ol.TileLoadFunctionType}
+   * @type {module:ol/Tile~LoadFunction}
    */
   this.tileLoadFunction = options.tileLoadFunction;
 
   /**
    * @protected
-   * @type {ol.TileUrlFunctionType}
+   * @type {module:ol/tileurlfunction~Type}
    */
   this.tileUrlFunction = this.fixedTileUrlFunction ?
     this.fixedTileUrlFunction.bind(this) : nullTileUrlFunction;
@@ -73,14 +73,14 @@ inherits(UrlTile, TileSource);
 
 
 /**
- * @type {ol.TileUrlFunctionType|undefined}
+ * @type {module:ol/tileurlfunction~Type|undefined}
  * @protected
  */
 UrlTile.prototype.fixedTileUrlFunction;
 
 /**
  * Return the tile load function of the source.
- * @return {ol.TileLoadFunctionType} TileLoadFunction
+ * @return {module:ol/Tile~LoadFunction} TileLoadFunction
  * @api
  */
 UrlTile.prototype.getTileLoadFunction = function() {
@@ -90,7 +90,7 @@ UrlTile.prototype.getTileLoadFunction = function() {
 
 /**
  * Return the tile URL function of the source.
- * @return {ol.TileUrlFunctionType} TileUrlFunction
+ * @return {module:ol/tileurlfunction~Type} TileUrlFunction
  * @api
  */
 UrlTile.prototype.getTileUrlFunction = function() {
@@ -137,7 +137,7 @@ UrlTile.prototype.handleTileChange = function(event) {
 
 /**
  * Set the tile load function of the source.
- * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
+ * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
  * @api
  */
 UrlTile.prototype.setTileLoadFunction = function(tileLoadFunction) {
@@ -149,7 +149,7 @@ UrlTile.prototype.setTileLoadFunction = function(tileLoadFunction) {
 
 /**
  * Set the tile URL function of the source.
- * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
+ * @param {module:ol/tileurlfunction~Type} tileUrlFunction Tile URL function.
  * @param {string=} opt_key Optional new tile key for the source.
  * @api
  */

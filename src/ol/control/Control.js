@@ -61,7 +61,7 @@ const Control = function(options) {
 
   /**
    * @protected
-   * @type {!Array.<ol.EventsKey>}
+   * @type {!Array.<module:ol/events~EventsKey>}
    */
   this.listenerKeys = [];
 

@@ -57,7 +57,7 @@ const MouseSource = function(dispatcher) {
 
   /**
    * @const
-   * @type {Array.<ol.Pixel>}
+   * @type {Array.<module:ol~Pixel>}
    */
   this.lastTouches = [];
 };

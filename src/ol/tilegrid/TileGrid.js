@@ -69,13 +69,13 @@ const TileGrid = function(options) {
 
   /**
    * @private
-   * @type {ol.Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    */
   this.origin_ = options.origin !== undefined ? options.origin : null;
 
   /**
    * @private
-   * @type {Array.<ol.Coordinate>}
+   * @type {Array.<module:ol/coordinate~Coordinate>}
    */
   this.origins_ = null;
   if (options.origins !== undefined) {
@@ -97,7 +97,7 @@ const TileGrid = function(options) {
 
   /**
    * @private
-   * @type {Array.<number|ol.Size>}
+   * @type {Array.<number|module:ol/size~Size>}
    */
   this.tileSizes_ = null;
   if (options.tileSizes !== undefined) {
@@ -108,7 +108,7 @@ const TileGrid = function(options) {
 
   /**
    * @private
-   * @type {number|ol.Size}
+   * @type {number|module:ol/size~Size}
    */
   this.tileSize_ = options.tileSize !== undefined ?
     options.tileSize :
@@ -120,7 +120,7 @@ const TileGrid = function(options) {
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.extent_ = extent !== undefined ? extent : null;
 
@@ -133,7 +133,7 @@ const TileGrid = function(options) {
 
   /**
    * @private
-   * @type {ol.Size}
+   * @type {module:ol/size~Size}
    */
   this.tmpSize_ = [0, 0];
 
@@ -153,7 +153,7 @@ const TileGrid = function(options) {
 
 /**
  * @private
- * @type {ol.TileCoord}
+ * @type {module:ol/tilecoord~TileCoord}
  */
 const tmpTileCoord = [0, 0, 0];
 
@@ -161,9 +161,9 @@ const tmpTileCoord = [0, 0, 0];
 /**
  * Call a function with each tile coordinate for a given extent and zoom level.
  *
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} zoom Integer zoom level.
- * @param {function(ol.TileCoord)} callback Function called with each tile coordinate.
+ * @param {function(module:ol/tilecoord~TileCoord)} callback Function called with each tile coordinate.
  * @api
  */
 TileGrid.prototype.forEachTileCoord = function(extent, zoom, callback) {
@@ -177,11 +177,11 @@ TileGrid.prototype.forEachTileCoord = function(extent, zoom, callback) {
 
 
 /**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {function(this: T, number, ol.TileRange): boolean} callback Callback.
  * @param {T=} opt_this The object to use as `this` in `callback`.
  * @param {ol.TileRange=} opt_tileRange Temporary ol.TileRange object.
- * @param {ol.Extent=} opt_extent Temporary ol.Extent object.
+ * @param {module:ol/extent~Extent=} opt_extent Temporary module:ol/extent~Extent object.
  * @return {boolean} Callback succeeded.
  * @template T
  */
@@ -214,7 +214,7 @@ TileGrid.prototype.forEachTileCoordParentTileRange = function(tileCoord, callbac
 
 /**
  * Get the extent for this tile grid, if it was configured.
- * @return {ol.Extent} Extent.
+ * @return {module:ol/extent~Extent} Extent.
  */
 TileGrid.prototype.getExtent = function() {
   return this.extent_;
@@ -244,7 +244,7 @@ TileGrid.prototype.getMinZoom = function() {
 /**
  * Get the origin for the grid at the given zoom level.
  * @param {number} z Integer zoom level.
- * @return {ol.Coordinate} Origin.
+ * @return {module:ol/coordinate~Coordinate} Origin.
  * @api
  */
 TileGrid.prototype.getOrigin = function(z) {
@@ -278,9 +278,9 @@ TileGrid.prototype.getResolutions = function() {
 
 
 /**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {ol.TileRange=} opt_tileRange Temporary ol.TileRange object.
- * @param {ol.Extent=} opt_extent Temporary ol.Extent object.
+ * @param {module:ol/extent~Extent=} opt_extent Temporary module:ol/extent~Extent object.
  * @return {ol.TileRange} Tile range.
  */
 TileGrid.prototype.getTileCoordChildTileRange = function(tileCoord, opt_tileRange, opt_extent) {
@@ -302,8 +302,8 @@ TileGrid.prototype.getTileCoordChildTileRange = function(tileCoord, opt_tileRang
  * Get the extent for a tile range.
  * @param {number} z Integer zoom level.
  * @param {ol.TileRange} tileRange Tile range.
- * @param {ol.Extent=} opt_extent Temporary ol.Extent object.
- * @return {ol.Extent} Extent.
+ * @param {module:ol/extent~Extent=} opt_extent Temporary module:ol/extent~Extent object.
+ * @return {module:ol/extent~Extent} Extent.
  */
 TileGrid.prototype.getTileRangeExtent = function(z, tileRange, opt_extent) {
   const origin = this.getOrigin(z);
@@ -319,7 +319,7 @@ TileGrid.prototype.getTileRangeExtent = function(z, tileRange, opt_extent) {
 
 /**
  * Get a tile range for the given extent and integer zoom level.
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} z Integer zoom level.
  * @param {ol.TileRange=} opt_tileRange Temporary tile range object.
  * @return {ol.TileRange} Tile range.
@@ -335,8 +335,8 @@ TileGrid.prototype.getTileRangeForExtentAndZ = function(extent, z, opt_tileRange
 
 
 /**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @return {ol.Coordinate} Tile center.
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+ * @return {module:ol/coordinate~Coordinate} Tile center.
  */
 TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
   const origin = this.getOrigin(tileCoord[0]);
@@ -352,9 +352,9 @@ TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
 /**
  * Get the extent of a tile coordinate.
  *
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.Extent=} opt_extent Temporary extent object.
- * @return {ol.Extent} Extent.
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+ * @param {module:ol/extent~Extent=} opt_extent Temporary extent object.
+ * @return {module:ol/extent~Extent} Extent.
  * @api
  */
 TileGrid.prototype.getTileCoordExtent = function(tileCoord, opt_extent) {
@@ -374,10 +374,10 @@ TileGrid.prototype.getTileCoordExtent = function(tileCoord, opt_extent) {
  * method considers that coordinates that intersect tile boundaries should be
  * assigned the higher tile coordinate.
  *
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
- * @param {ol.TileCoord=} opt_tileCoord Destination ol.TileCoord object.
- * @return {ol.TileCoord} Tile coordinate.
+ * @param {module:ol/tilecoord~TileCoord=} opt_tileCoord Destination module:ol/tilecoord~TileCoord object.
+ * @return {module:ol/tilecoord~TileCoord} Tile coordinate.
  * @api
  */
 TileGrid.prototype.getTileCoordForCoordAndResolution = function(coordinate, resolution, opt_tileCoord) {
@@ -395,8 +395,8 @@ TileGrid.prototype.getTileCoordForCoordAndResolution = function(coordinate, reso
  * @param {boolean} reverseIntersectionPolicy Instead of letting edge
  *     intersections go to the higher tile coordinate, let edge intersections
  *     go to the lower tile coordinate.
- * @param {ol.TileCoord=} opt_tileCoord Temporary ol.TileCoord object.
- * @return {ol.TileCoord} Tile coordinate.
+ * @param {module:ol/tilecoord~TileCoord=} opt_tileCoord Temporary module:ol/tilecoord~TileCoord object.
+ * @return {module:ol/tilecoord~TileCoord} Tile coordinate.
  * @private
  */
 TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
@@ -436,8 +436,8 @@ TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
  * @param {boolean} reverseIntersectionPolicy Instead of letting edge
  *     intersections go to the higher tile coordinate, let edge intersections
  *     go to the lower tile coordinate.
- * @param {ol.TileCoord=} opt_tileCoord Temporary ol.TileCoord object.
- * @return {ol.TileCoord} Tile coordinate.
+ * @param {module:ol/tilecoord~TileCoord=} opt_tileCoord Temporary module:ol/tilecoord~TileCoord object.
+ * @return {module:ol/tilecoord~TileCoord} Tile coordinate.
  * @private
  */
 TileGrid.prototype.getTileCoordForXYAndZ_ = function(x, y, z, reverseIntersectionPolicy, opt_tileCoord) {
@@ -466,10 +466,10 @@ TileGrid.prototype.getTileCoordForXYAndZ_ = function(x, y, z, reverseIntersectio
 
 /**
  * Get a tile coordinate given a map coordinate and zoom level.
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {number} z Zoom level.
- * @param {ol.TileCoord=} opt_tileCoord Destination ol.TileCoord object.
- * @return {ol.TileCoord} Tile coordinate.
+ * @param {module:ol/tilecoord~TileCoord=} opt_tileCoord Destination module:ol/tilecoord~TileCoord object.
+ * @return {module:ol/tilecoord~TileCoord} Tile coordinate.
  * @api
  */
 TileGrid.prototype.getTileCoordForCoordAndZ = function(coordinate, z, opt_tileCoord) {
@@ -479,7 +479,7 @@ TileGrid.prototype.getTileCoordForCoordAndZ = function(coordinate, z, opt_tileCo
 
 
 /**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @return {number} Tile resolution.
  */
 TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
@@ -490,9 +490,9 @@ TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
 /**
  * Get the tile size for a zoom level. The type of the return value matches the
  * `tileSize` or `tileSizes` that the tile grid was configured with. To always
- * get an `ol.Size`, run the result through `ol.size.toSize()`.
+ * get an `module:ol/size~Size`, run the result through `module:ol/size~Size.toSize()`.
  * @param {number} z Z.
- * @return {number|ol.Size} Tile size.
+ * @return {number|module:ol/size~Size} Tile size.
  * @api
  */
 TileGrid.prototype.getTileSize = function(z) {
@@ -532,7 +532,7 @@ TileGrid.prototype.getZForResolution = function(resolution, opt_direction) {
 
 
 /**
- * @param {!ol.Extent} extent Extent for this tile grid.
+ * @param {!module:ol/extent~Extent} extent Extent for this tile grid.
  * @private
  */
 TileGrid.prototype.calculateTileRanges_ = function(extent) {

@@ -8,7 +8,7 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
  * Projection definition class. One of these is created for each projection
  * supported in the application and stored in the {@link ol.proj} namespace.
  * You can use these in applications, but this is not required, as API params
- * and options use {@link ol.ProjectionLike} which means the simple string
+ * and options use {@link module:ol/proj~ProjectionLike} which means the simple string
  * code will suffice.
  *
  * You can use {@link ol.proj.get} to retrieve the object for a particular
@@ -54,7 +54,7 @@ const Projection = function(options) {
    * with `ol.proj.Units.TILE_PIXELS` units, this is the extent of the tile in
    * tile pixel space.
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.extent_ = options.extent !== undefined ? options.extent : null;
 
@@ -63,7 +63,7 @@ const Projection = function(options) {
    * `ol.proj.Units.TILE_PIXELS` units, this is the extent of the tile in
    * projected coordinate space.
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.worldExtent_ = options.worldExtent !== undefined ?
     options.worldExtent : null;
@@ -89,7 +89,7 @@ const Projection = function(options) {
 
   /**
    * @private
-   * @type {function(number, ol.Coordinate):number|undefined}
+   * @type {function(number, module:ol/coordinate~Coordinate):number|undefined}
    */
   this.getPointResolutionFunc_ = options.getPointResolution;
 
@@ -127,7 +127,7 @@ Projection.prototype.getCode = function() {
 
 /**
  * Get the validity extent for this projection.
- * @return {ol.Extent} Extent.
+ * @return {module:ol/extent~Extent} Extent.
  * @api
  */
 Projection.prototype.getExtent = function() {
@@ -159,7 +159,7 @@ Projection.prototype.getMetersPerUnit = function() {
 
 /**
  * Get the world extent for this projection.
- * @return {ol.Extent} Extent.
+ * @return {module:ol/extent~Extent} Extent.
  * @api
  */
 Projection.prototype.getWorldExtent = function() {
@@ -222,7 +222,7 @@ Projection.prototype.setDefaultTileGrid = function(tileGrid) {
 
 /**
  * Set the validity extent for this projection.
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @api
  */
 Projection.prototype.setExtent = function(extent) {
@@ -233,7 +233,7 @@ Projection.prototype.setExtent = function(extent) {
 
 /**
  * Set the world extent for this projection.
- * @param {ol.Extent} worldExtent World extent
+ * @param {module:ol/extent~Extent} worldExtent World extent
  *     [minlon, minlat, maxlon, maxlat].
  * @api
  */
@@ -245,7 +245,7 @@ Projection.prototype.setWorldExtent = function(worldExtent) {
 /**
  * Set the getPointResolution function (see {@link ol.proj#getPointResolution}
  * for this projection.
- * @param {function(number, ol.Coordinate):number} func Function
+ * @param {function(number, module:ol/coordinate~Coordinate):number} func Function
  * @api
  */
 Projection.prototype.setGetPointResolution = function(func) {
@@ -255,7 +255,7 @@ Projection.prototype.setGetPointResolution = function(func) {
 
 /**
  * Get the custom point resolution function for this projection (if set).
- * @return {function(number, ol.Coordinate):number|undefined} The custom point
+ * @return {function(number, module:ol/coordinate~Coordinate):number|undefined} The custom point
  * resolution function (if set).
  */
 Projection.prototype.getPointResolutionFunc = function() {

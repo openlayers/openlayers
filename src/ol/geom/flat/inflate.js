@@ -8,8 +8,8 @@
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {Array.<ol.Coordinate>=} opt_coordinates Coordinates.
- * @return {Array.<ol.Coordinate>} Coordinates.
+ * @param {Array.<module:ol/coordinate~Coordinate>=} opt_coordinates Coordinates.
+ * @return {Array.<module:ol/coordinate~Coordinate>} Coordinates.
  */
 export function inflateCoordinates(flatCoordinates, offset, end, stride, opt_coordinates) {
   const coordinates = opt_coordinates !== undefined ? opt_coordinates : [];
@@ -27,8 +27,8 @@ export function inflateCoordinates(flatCoordinates, offset, end, stride, opt_coo
  * @param {number} offset Offset.
  * @param {Array.<number>} ends Ends.
  * @param {number} stride Stride.
- * @param {Array.<Array.<ol.Coordinate>>=} opt_coordinatess Coordinatess.
- * @return {Array.<Array.<ol.Coordinate>>} Coordinatess.
+ * @param {Array.<Array.<module:ol/coordinate~Coordinate>>=} opt_coordinatess Coordinatess.
+ * @return {Array.<Array.<module:ol/coordinate~Coordinate>>} Coordinatess.
  */
 export function inflateCoordinatesArray(flatCoordinates, offset, ends, stride, opt_coordinatess) {
   const coordinatess = opt_coordinatess !== undefined ? opt_coordinatess : [];
@@ -49,9 +49,9 @@ export function inflateCoordinatesArray(flatCoordinates, offset, ends, stride, o
  * @param {number} offset Offset.
  * @param {Array.<Array.<number>>} endss Endss.
  * @param {number} stride Stride.
- * @param {Array.<Array.<Array.<ol.Coordinate>>>=} opt_coordinatesss
+ * @param {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>=} opt_coordinatesss
  *     Coordinatesss.
- * @return {Array.<Array.<Array.<ol.Coordinate>>>} Coordinatesss.
+ * @return {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>} Coordinatesss.
  */
 export function inflateMultiCoordinatesArray(flatCoordinates, offset, endss, stride, opt_coordinatesss) {
   const coordinatesss = opt_coordinatesss !== undefined ? opt_coordinatesss : [];

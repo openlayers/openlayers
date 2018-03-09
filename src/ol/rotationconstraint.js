@@ -3,6 +3,12 @@
  */
 import {toRadians} from './math.js';
 
+
+/**
+ * @typedef {function((number|undefined), number): (number|undefined)} Type
+ */
+
+
 /**
  * @param {number|undefined} rotation Rotation.
  * @param {number} delta Delta.
@@ -33,7 +39,7 @@ export function none(rotation, delta) {
 
 /**
  * @param {number} n N.
- * @return {ol.RotationConstraintType} Rotation constraint.
+ * @return {module:ol/rotationconstraint~Type} Rotation constraint.
  */
 export function createSnapToN(n) {
   const theta = 2 * Math.PI / n;
@@ -56,7 +62,7 @@ export function createSnapToN(n) {
 
 /**
  * @param {number=} opt_tolerance Tolerance.
- * @return {ol.RotationConstraintType} Rotation constraint.
+ * @return {module:ol/rotationconstraint~Type} Rotation constraint.
  */
 export function createSnapToZero(opt_tolerance) {
   const tolerance = opt_tolerance || toRadians(5);

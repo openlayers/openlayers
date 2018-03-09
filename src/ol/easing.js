@@ -49,8 +49,8 @@ export function linear(t) {
 
 /**
  * Start slow, speed up, and at the very end slow down again.  This has the
- * same general behavior as {@link ol.easing.inAndOut}, but the final slowdown
- * is delayed.
+ * same general behavior as {@link module:ol/easing~inAndOut}, but the final
+ * slowdown is delayed.
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
  * @api

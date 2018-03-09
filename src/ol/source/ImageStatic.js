@@ -26,7 +26,7 @@ const Static = function(options) {
   const crossOrigin = options.crossOrigin !== undefined ?
     options.crossOrigin : null;
 
-  const /** @type {ol.ImageLoadFunctionType} */ imageLoadFunction =
+  const /** @type {module:ol/Image~LoadFunction} */ imageLoadFunction =
       options.imageLoadFunction !== undefined ?
         options.imageLoadFunction : defaultImageLoadFunction;
 
@@ -43,7 +43,7 @@ const Static = function(options) {
 
   /**
    * @private
-   * @type {ol.Size}
+   * @type {module:ol/size~Size}
    */
   this.imageSize_ = options.imageSize ? options.imageSize : null;
 

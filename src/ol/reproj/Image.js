@@ -20,7 +20,7 @@ import Triangulation from '../reproj/Triangulation.js';
  * @extends {ol.ImageBase}
  * @param {ol.proj.Projection} sourceProj Source projection (of the data).
  * @param {ol.proj.Projection} targetProj Target projection.
- * @param {ol.Extent} targetExtent Target extent.
+ * @param {module:ol/extent~Extent} targetExtent Target extent.
  * @param {number} targetResolution Target resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.ReprojImageFunctionType} getImageFunction
@@ -37,7 +37,7 @@ const ReprojImage = function(sourceProj, targetProj,
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.maxSourceExtent_ = sourceProj.getExtent();
   const maxTargetExtent = targetProj.getExtent();
@@ -67,7 +67,7 @@ const ReprojImage = function(sourceProj, targetProj,
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.targetExtent_ = targetExtent;
 
@@ -95,7 +95,7 @@ const ReprojImage = function(sourceProj, targetProj,
 
   /**
    * @private
-   * @type {?ol.EventsKey}
+   * @type {?module:ol/events~EventsKey}
    */
   this.sourceListenerKey_ = null;
 
@@ -190,7 +190,7 @@ ReprojImage.prototype.load = function() {
  * @private
  */
 ReprojImage.prototype.unlistenSource_ = function() {
-  unlistenByKey(/** @type {!ol.EventsKey} */ (this.sourceListenerKey_));
+  unlistenByKey(/** @type {!module:ol/events~EventsKey} */ (this.sourceListenerKey_));
   this.sourceListenerKey_ = null;
 };
 export default ReprojImage;

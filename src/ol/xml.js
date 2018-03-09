@@ -5,9 +5,28 @@ import {extend} from './array.js';
 
 
 /**
+ * When using {@link module:ol/xml~makeChildAppender} or
+ * {@link module:ol/xml~makeSimpleNodeFactory}, the top `objectStack` item needs
+ * to have this structure.
+ * @typedef {Object} NodeStackItem
+ * @property {Node} node
+ */
+
+
+/**
+ * @typedef {function(Node, Array.<*>)} Parser
+ */
+
+
+/**
+ * @typedef {function(Node, *, Array.<*>)} Serializer
+ */
+
+
+/**
  * This document should be used when creating nodes for XML serializations. This
- * document is also used by {@link ol.xml.createElementNS} and
- * {@link ol.xml.setAttributeNS}
+ * document is also used by {@link module:ol/xml~createElementNS} and
+ * {@link module:ol/xml~setAttributeNS}
  * @const
  * @type {Document}
  */
@@ -121,7 +140,7 @@ export function parse(xml) {
  * @param {function(this: T, Node, Array.<*>): (Array.<*>|undefined)}
  *     valueReader Value reader.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
- * @return {ol.XmlParser} Parser.
+ * @return {module:ol/xml~Parser} Parser.
  * @template T
  */
 export function makeArrayExtender(valueReader, opt_this) {
@@ -146,7 +165,7 @@ export function makeArrayExtender(valueReader, opt_this) {
  * object stack.
  * @param {function(this: T, Node, Array.<*>): *} valueReader Value reader.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
- * @return {ol.XmlParser} Parser.
+ * @return {module:ol/xml~Parser} Parser.
  * @template T
  */
 export function makeArrayPusher(valueReader, opt_this) {
@@ -170,7 +189,7 @@ export function makeArrayPusher(valueReader, opt_this) {
  * top of the stack.
  * @param {function(this: T, Node, Array.<*>): *} valueReader Value reader.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
- * @return {ol.XmlParser} Parser.
+ * @return {module:ol/xml~Parser} Parser.
  * @template T
  */
 export function makeReplacer(valueReader, opt_this) {
@@ -194,7 +213,7 @@ export function makeReplacer(valueReader, opt_this) {
  * @param {function(this: T, Node, Array.<*>): *} valueReader Value reader.
  * @param {string=} opt_property Property.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
- * @return {ol.XmlParser} Parser.
+ * @return {module:ol/xml~Parser} Parser.
  * @template T
  */
 export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
@@ -225,7 +244,7 @@ export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
  * @param {function(this: T, Node, Array.<*>): *} valueReader Value reader.
  * @param {string=} opt_property Property.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
- * @return {ol.XmlParser} Parser.
+ * @return {module:ol/xml~Parser} Parser.
  * @template T
  */
 export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
@@ -248,11 +267,11 @@ export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
 /**
  * Create a serializer that appends nodes written by its `nodeWriter` to its
  * designated parent. The parent is the `node` of the
- * {@link ol.XmlNodeStackItem} at the top of the `objectStack`.
+ * {@link module:ol/xml~NodeStackItem} at the top of the `objectStack`.
  * @param {function(this: T, Node, V, Array.<*>)}
  *     nodeWriter Node writer.
  * @param {T=} opt_this The object to use as `this` in `nodeWriter`.
- * @return {ol.XmlSerializer} Serializer.
+ * @return {module:ol/xml~Serializer} Serializer.
  * @template T, V
  */
 export function makeChildAppender(nodeWriter, opt_this) {
@@ -267,7 +286,7 @@ export function makeChildAppender(nodeWriter, opt_this) {
 
 /**
  * Create a serializer that calls the provided `nodeWriter` from
- * {@link ol.xml.serialize}. This can be used by the parent writer to have the
+ * {@link module:ol/xml~serialize}. This can be used by the parent writer to have the
  * 'nodeWriter' called with an array of values when the `nodeWriter` was
  * designed to serialize a single item. An example would be a LineString
  * geometry writer, which could be reused for writing MultiLineString
@@ -275,7 +294,7 @@ export function makeChildAppender(nodeWriter, opt_this) {
  * @param {function(this: T, Node, V, Array.<*>)}
  *     nodeWriter Node writer.
  * @param {T=} opt_this The object to use as `this` in `nodeWriter`.
- * @return {ol.XmlSerializer} Serializer.
+ * @return {module:ol/xml~Serializer} Serializer.
  * @template T, V
  */
 export function makeArraySerializer(nodeWriter, opt_this) {
@@ -295,7 +314,7 @@ export function makeArraySerializer(nodeWriter, opt_this) {
 
 /**
  * Create a node factory which can use the `opt_keys` passed to
- * {@link ol.xml.serialize} or {@link ol.xml.pushSerializeAndPop} as node names,
+ * {@link module:ol/xml~serialize} or {@link module:ol/xml~pushSerializeAndPop} as node names,
  * or a fixed node name. The namespace of the created nodes can either be fixed,
  * or the parent namespace will be used.
  * @param {string=} opt_nodeName Fixed node name which will be used for all
@@ -334,8 +353,8 @@ export function makeSimpleNodeFactory(opt_nodeName, opt_namespaceURI) {
 
 /**
  * A node factory that creates a node using the parent's `namespaceURI` and the
- * `nodeName` passed by {@link ol.xml.serialize} or
- * {@link ol.xml.pushSerializeAndPop} to the node factory.
+ * `nodeName` passed by {@link module:ol/xml~serialize} or
+ * {@link module:ol/xml~pushSerializeAndPop} to the node factory.
  * @const
  * @type {function(*, Array.<*>, string=): (Node|undefined)}
  */
@@ -343,8 +362,8 @@ export const OBJECT_PROPERTY_NODE_FACTORY = makeSimpleNodeFactory();
 
 
 /**
- * Create an array of `values` to be used with {@link ol.xml.serialize} or
- * {@link ol.xml.pushSerializeAndPop}, where `orderedKeys` has to be provided as
+ * Create an array of `values` to be used with {@link module:ol/xml~serialize} or
+ * {@link module:ol/xml~pushSerializeAndPop}, where `orderedKeys` has to be provided as
  * `opt_key` argument.
  * @param {Object.<string, V>} object Key-value pairs for the sequence. Keys can
  *     be a subset of the `orderedKeys`.
@@ -389,7 +408,7 @@ export function makeStructureNS(namespaceURIs, structure, opt_structureNS) {
 
 /**
  * Parse a node using the parsers and object stack.
- * @param {Object.<string, Object.<string, ol.XmlParser>>} parsersNS
+ * @param {Object.<string, Object.<string, module:ol/xml~Parser>>} parsersNS
  *     Parsers by namespace.
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
@@ -412,7 +431,7 @@ export function parseNode(parsersNS, node, objectStack, opt_this) {
 /**
  * Push an object on top of the stack, parse and return the popped object.
  * @param {T} object Object.
- * @param {Object.<string, Object.<string, ol.XmlParser>>} parsersNS
+ * @param {Object.<string, Object.<string, module:ol/xml~Parser>>} parsersNS
  *     Parsers by namespace.
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
@@ -429,7 +448,7 @@ export function pushParseAndPop(object, parsersNS, node, objectStack, opt_this) 
 
 /**
  * Walk through an array of `values` and call a serializer for each value.
- * @param {Object.<string, Object.<string, ol.XmlSerializer>>} serializersNS
+ * @param {Object.<string, Object.<string, module:ol/xml~Serializer>>} serializersNS
  *     Namespaced serializers.
  * @param {function(this: T, *, Array.<*>, (string|undefined)): (Node|undefined)} nodeFactory
  *     Node factory. The `nodeFactory` creates the node whose namespace and name
@@ -438,7 +457,7 @@ export function pushParseAndPop(object, parsersNS, node, objectStack, opt_this) 
  *     the value we want to serialize. An example for this would be different
  *     geometry writers based on the geometry type.
  * @param {Array.<*>} values Values to serialize. An example would be an array
- *     of {@link ol.Feature} instances.
+ *     of {@link module:ol/Feature~Feature} instances.
  * @param {Array.<*>} objectStack Node stack.
  * @param {Array.<string>=} opt_keys Keys of the `values`. Will be passed to the
  *     `nodeFactory`. This is used for serializing object literals where the
@@ -469,7 +488,7 @@ export function serialize(
 
 /**
  * @param {O} object Object.
- * @param {Object.<string, Object.<string, ol.XmlSerializer>>} serializersNS
+ * @param {Object.<string, Object.<string, module:ol/xml~Serializer>>} serializersNS
  *     Namespaced serializers.
  * @param {function(this: T, *, Array.<*>, (string|undefined)): (Node|undefined)} nodeFactory
  *     Node factory. The `nodeFactory` creates the node whose namespace and name
@@ -478,7 +497,7 @@ export function serialize(
  *     the value we want to serialize. An example for this would be different
  *     geometry writers based on the geometry type.
  * @param {Array.<*>} values Values to serialize. An example would be an array
- *     of {@link ol.Feature} instances.
+ *     of {@link module:ol/Feature~Feature} instances.
  * @param {Array.<*>} objectStack Node stack.
  * @param {Array.<string>=} opt_keys Keys of the `values`. Will be passed to the
  *     `nodeFactory`. This is used for serializing object literals where the

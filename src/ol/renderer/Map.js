@@ -38,7 +38,7 @@ const MapRenderer = function(container, map) {
 
   /**
    * @private
-   * @type {Object.<string, ol.EventsKey>}
+   * @type {Object.<string, module:ol/events~EventsKey>}
    */
   this.layerRendererListeners_ = {};
 
@@ -87,7 +87,7 @@ function expireIconCache(map, frameState) {
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {function(this: S, (ol.Feature|ol.render.Feature),
@@ -157,7 +157,7 @@ MapRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameSta
 
 /**
  * @abstract
- * @param {ol.Pixel} pixel Pixel.
+ * @param {module:ol~Pixel} pixel Pixel.
  * @param {olx.FrameState} frameState FrameState.
  * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
@@ -175,7 +175,7 @@ MapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
@@ -311,7 +311,7 @@ MapRenderer.prototype.removeUnusedLayerRenderers_ = function(map, frameState) {
  * @protected
  */
 MapRenderer.prototype.scheduleExpireIconCache = function(frameState) {
-  frameState.postRenderFunctions.push(/** @type {ol.PostRenderFunction} */ (expireIconCache));
+  frameState.postRenderFunctions.push(/** @type {module:ol/PluggableMap~PostRenderFunction} */ (expireIconCache));
 };
 
 
@@ -323,7 +323,7 @@ MapRenderer.prototype.scheduleRemoveUnusedLayerRenderers = function(frameState) 
   for (const layerKey in this.layerRenderers_) {
     if (!(layerKey in frameState.layerStates)) {
       frameState.postRenderFunctions.push(
-        /** @type {ol.PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
+        /** @type {module:ol/PluggableMap~PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
       );
       return;
     }
@@ -332,8 +332,8 @@ MapRenderer.prototype.scheduleRemoveUnusedLayerRenderers = function(frameState) 
 
 
 /**
- * @param {ol.LayerState} state1 First layer state.
- * @param {ol.LayerState} state2 Second layer state.
+ * @param {module:ol/layer/Layer~State} state1 First layer state.
+ * @param {module:ol/layer/Layer~State} state2 Second layer state.
  * @return {number} The zIndex difference.
  */
 export function sortByZIndex(state1, state2) {

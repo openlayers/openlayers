@@ -3,9 +3,28 @@
  */
 import PluginType from './PluginType.js';
 
+
+/**
+ * @typedef {Object} MapRendererPlugin
+ * @property {function(module:ol/renderer/Type):boolean} handles Determine if
+ * this renderer handles the provided layer.
+ * @property {function(Element, module:ol/PluggableMap~PluggableMap):module:ol/renderer/Map~Map} create
+ * Create the map renderer.
+ */
+
+
+/**
+ * @typedef {Object} LayerRendererPlugin
+ * @property {function(module:ol/renderer/Type, module:ol/layer/Layer~Layer):boolean} handles
+ * Determine if this renderer handles the provided layer.
+ * @property {function(module:ol/renderer/Map~Map, module:ol/layer/Layer~Layer):module:ol/renderer/Layer~Layer} create
+ * Create a layer renderer.
+ */
+
+
 /**
  * The registry of map renderer plugins.
- * @type {Array<olx.MapRendererPlugin>}
+ * @type {Array<module:ol/plugins~MapRendererPlugin>}
  * @private
  */
 const mapRendererPlugins = [];
@@ -39,7 +58,7 @@ export function getLayerRendererPlugins() {
 
 /**
  * Register a plugin.
- * @param {ol.PluginType} type The plugin type.
+ * @param {module:ol/PluginType~PluginType} type The plugin type.
  * @param {*} plugin The plugin.
  */
 export function register(type, plugin) {
@@ -64,7 +83,7 @@ export function register(type, plugin) {
 
 /**
  * Register multiple plugins.
- * @param {ol.PluginType} type The plugin type.
+ * @param {module:ol/PluginType~PluginType} type The plugin type.
  * @param {Array} plugins The plugins.
  */
 export function registerMultiple(type, plugins) {

@@ -42,8 +42,8 @@ const TileRange = function(minX, maxX, minY, maxY) {
  * @param {number} maxX Maximum X.
  * @param {number} minY Minimum Y.
  * @param {number} maxY Maximum Y.
- * @param {ol.TileRange|undefined} tileRange TileRange.
- * @return {ol.TileRange} Tile range.
+ * @param {module:ol/TileRange~TileRange=} tileRange TileRange.
+ * @return {module:ol/TileRange~TileRange} Tile range.
  */
 export function createOrUpdate(minX, maxX, minY, maxY, tileRange) {
   if (tileRange !== undefined) {
@@ -59,7 +59,7 @@ export function createOrUpdate(minX, maxX, minY, maxY, tileRange) {
 
 
 /**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @return {boolean} Contains tile coordinate.
  */
 TileRange.prototype.contains = function(tileCoord) {
@@ -68,7 +68,7 @@ TileRange.prototype.contains = function(tileCoord) {
 
 
 /**
- * @param {ol.TileRange} tileRange Tile range.
+ * @param {module:ol/TileRange~TileRange} tileRange Tile range.
  * @return {boolean} Contains.
  */
 TileRange.prototype.containsTileRange = function(tileRange) {
@@ -88,7 +88,7 @@ TileRange.prototype.containsXY = function(x, y) {
 
 
 /**
- * @param {ol.TileRange} tileRange Tile range.
+ * @param {module:ol/TileRange~TileRange} tileRange Tile range.
  * @return {boolean} Equals.
  */
 TileRange.prototype.equals = function(tileRange) {
@@ -98,7 +98,7 @@ TileRange.prototype.equals = function(tileRange) {
 
 
 /**
- * @param {ol.TileRange} tileRange Tile range.
+ * @param {module:ol/TileRange~TileRange} tileRange Tile range.
  */
 TileRange.prototype.extend = function(tileRange) {
   if (tileRange.minX < this.minX) {
@@ -125,7 +125,7 @@ TileRange.prototype.getHeight = function() {
 
 
 /**
- * @return {ol.Size} Size.
+ * @return {module:ol/size~Size} Size.
  */
 TileRange.prototype.getSize = function() {
   return [this.getWidth(), this.getHeight()];
@@ -141,7 +141,7 @@ TileRange.prototype.getWidth = function() {
 
 
 /**
- * @param {ol.TileRange} tileRange Tile range.
+ * @param {module:ol/TileRange~TileRange} tileRange Tile range.
  * @return {boolean} Intersects.
  */
 TileRange.prototype.intersects = function(tileRange) {

@@ -5,21 +5,32 @@ import {inherits} from './index.js';
 import ImageBase from './ImageBase.js';
 import ImageState from './ImageState.js';
 
+
+/**
+ * A function that is called to trigger asynchronous canvas drawing.  It is
+ * called with a "done" callback that should be called when drawing is done.
+ * If any error occurs during drawing, the "done" callback should be called with
+ * that error.
+ *
+ * @typedef {function(function(Error))} Loader
+ */
+
+
 /**
  * @constructor
- * @extends {ol.ImageBase}
- * @param {ol.Extent} extent Extent.
+ * @extends {module:ol/ImageBase~ImageBase}
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {HTMLCanvasElement} canvas Canvas.
- * @param {ol.ImageCanvasLoader=} opt_loader Optional loader function to
+ * @param {module:ol/ImageCanvas~Loader=} opt_loader Optional loader function to
  *     support asynchronous canvas drawing.
  */
 const ImageCanvas = function(extent, resolution, pixelRatio, canvas, opt_loader) {
 
   /**
    * Optional canvas loader function.
-   * @type {?ol.ImageCanvasLoader}
+   * @type {?module:ol/ImageCanvas~Loader}
    * @private
    */
   this.loader_ = opt_loader !== undefined ? opt_loader : null;

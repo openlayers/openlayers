@@ -18,7 +18,7 @@ import Style from './style/Style.js';
  * Features can be styled individually with `setStyle`; otherwise they use the
  * style of their vector layer.
  *
- * Note that attribute properties are set as {@link ol.Object} properties on
+ * Note that attribute properties are set as {@link module:ol/Object~Object} properties on
  * the feature object, so they are observable, and have get/set accessors.
  *
  * Typically, a feature has a single geometry property. You can set the
@@ -30,9 +30,14 @@ import Style from './style/Style.js';
  * property associated with the geometry for the feature.  For example:
  *
  * ```js
- * var feature = new ol.Feature({
- *   geometry: new ol.geom.Polygon(polyCoords),
- *   labelPoint: new ol.geom.Point(labelCoords),
+ *
+ * import Feature from 'ol/Feature';
+ * import Polygon from 'ol/geom/Polygon';
+ * import Point from 'ol/geom/Point';
+ *
+ * var feature = new Feature({
+ *   geometry: new Polygon(polyCoords),
+ *   labelPoint: new Point(labelCoords),
  *   name: 'My Polygon'
  * });
  *
@@ -47,11 +52,11 @@ import Style from './style/Style.js';
  * ```
  *
  * @constructor
- * @extends {ol.Object}
- * @param {ol.geom.Geometry|Object.<string, *>=} opt_geometryOrProperties
- *     You may pass a Geometry object directly, or an object literal
- *     containing properties.  If you pass an object literal, you may
- *     include a Geometry associated with a `geometry` key.
+ * @extends {module:ol/Object~Object}
+ * @param {module:ol/geom/Geometry~Geometry|Object.<string, *>=} opt_geometryOrProperties
+ * You may pass a Geometry object directly, or an object literal containing
+ * properties. If you pass an object literal, you may include a Geometry
+ * associated with a `geometry` key.
  * @api
  */
 const Feature = function(opt_geometryOrProperties) {
@@ -73,19 +78,19 @@ const Feature = function(opt_geometryOrProperties) {
   /**
    * User provided style.
    * @private
-   * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
+   * @type {module:ol/style/Style~Geometry|Array.<module:ol/style/Style~Geometry>|module:ol/style~StyleFunction}
    */
   this.style_ = null;
 
   /**
    * @private
-   * @type {ol.StyleFunction|undefined}
+   * @type {module:ol/style~StyleFunction|undefined}
    */
   this.styleFunction_ = undefined;
 
   /**
    * @private
-   * @type {?ol.EventsKey}
+   * @type {?module:ol/events~EventsKey}
    */
   this.geometryChangeKey_ = null;
 
@@ -112,7 +117,7 @@ inherits(Feature, BaseObject);
 /**
  * Clone this feature. If the original feature has a geometry it
  * is also cloned. The feature id is not set in the clone.
- * @return {ol.Feature} The clone.
+ * @return {module:ol/Feature~Feature} The clone.
  * @api
  */
 Feature.prototype.clone = function() {
@@ -133,13 +138,13 @@ Feature.prototype.clone = function() {
 /**
  * Get the feature's default geometry.  A feature may have any number of named
  * geometries.  The "default" geometry (the one that is rendered by default) is
- * set when calling {@link ol.Feature#setGeometry}.
- * @return {ol.geom.Geometry|undefined} The default geometry for the feature.
+ * set when calling {@link module:ol/Feature~Feature#setGeometry}.
+ * @return {module:ol/geom/Geometry~Geometry|undefined} The default geometry for the feature.
  * @api
  * @observable
  */
 Feature.prototype.getGeometry = function() {
-  return /** @type {ol.geom.Geometry|undefined} */ (
+  return /** @type {module:ol/geom/Geometry~Geometry|undefined} */ (
     this.get(this.geometryName_));
 };
 
@@ -147,7 +152,7 @@ Feature.prototype.getGeometry = function() {
 /**
  * Get the feature identifier.  This is a stable identifier for the feature and
  * is either set when reading data from a remote source or set explicitly by
- * calling {@link ol.Feature#setId}.
+ * calling {@link module:ol/Feature~Feature#setId}.
  * @return {number|string|undefined} Id.
  * @api
  */
@@ -170,8 +175,8 @@ Feature.prototype.getGeometryName = function() {
 
 /**
  * Get the feature's style. Will return what was provided to the
- * {@link ol.Feature#setStyle} method.
- * @return {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction} The feature style.
+ * {@link module:ol/Feature~Feature#setStyle} method.
+ * @return {module:ol/style/Style~Geometry|Array.<module:ol/style/Style~Geometry>|module:ol/style~StyleFunction} The feature style.
  * @api
  */
 Feature.prototype.getStyle = function() {
@@ -181,7 +186,7 @@ Feature.prototype.getStyle = function() {
 
 /**
  * Get the feature's style function.
- * @return {ol.StyleFunction|undefined} Return a function
+ * @return {module:ol/style~StyleFunction|undefined} Return a function
  * representing the current style of this feature.
  * @api
  */
@@ -217,8 +222,8 @@ Feature.prototype.handleGeometryChanged_ = function() {
 
 /**
  * Set the default geometry for the feature.  This will update the property
- * with the name returned by {@link ol.Feature#getGeometryName}.
- * @param {ol.geom.Geometry|undefined} geometry The new geometry.
+ * with the name returned by {@link module:ol/Feature~Feature#getGeometryName}.
+ * @param {module:ol/geom/Geometry~Geometry|undefined} geometry The new geometry.
  * @api
  * @observable
  */
@@ -231,9 +236,9 @@ Feature.prototype.setGeometry = function(geometry) {
  * Set the style for the feature.  This can be a single style object, an array
  * of styles, or a function that takes a resolution and returns an array of
  * styles. If it is `null` the feature has no style (a `null` style).
- * @param {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction} style Style for this feature.
+ * @param {module:ol/style/Style~Geometry|Array.<module:ol/style/Style~Geometry>|module:ol/style~StyleFunction} style Style for this feature.
  * @api
- * @fires ol.events.Event#event:change
+ * @fires module:ol/events/Event~Event#event:change
  */
 Feature.prototype.setStyle = function(style) {
   this.style_ = style;
@@ -245,11 +250,11 @@ Feature.prototype.setStyle = function(style) {
 /**
  * Set the feature id.  The feature id is considered stable and may be used when
  * requesting features or comparing identifiers returned from a remote source.
- * The feature id can be used with the {@link ol.source.Vector#getFeatureById}
- * method.
+ * The feature id can be used with the
+ * {@link module:ol/source/Vector~Vector#getFeatureById} method.
  * @param {number|string|undefined} id The feature id.
  * @api
- * @fires ol.events.Event#event:change
+ * @fires module:ol/events/Event~Event#event:change
  */
 Feature.prototype.setId = function(id) {
   this.id_ = id;
@@ -259,7 +264,7 @@ Feature.prototype.setId = function(id) {
 
 /**
  * Set the property name to be used when getting the feature's default geometry.
- * When calling {@link ol.Feature#getGeometry}, the value of the property with
+ * When calling {@link module:ol/Feature~Feature#getGeometry}, the value of the property with
  * this name will be returned.
  * @param {string} name The property name of the default geometry.
  * @api
@@ -278,25 +283,25 @@ Feature.prototype.setGeometryName = function(name) {
 
 /**
  * Convert the provided object into a feature style function.  Functions passed
- * through unchanged.  Arrays of ol.style.Style or single style objects wrapped
+ * through unchanged.  Arrays of module:ol/style/Style~Geometry or single style objects wrapped
  * in a new feature style function.
- * @param {ol.StyleFunction|!Array.<ol.style.Style>|!ol.style.Style} obj
+ * @param {module:ol/style~StyleFunction|!Array.<module:ol/style/Style~Geometry>|!module:ol/style/Style~Geometry} obj
  *     A feature style function, a single style, or an array of styles.
- * @return {ol.StyleFunction} A style function.
+ * @return {module:ol/style~StyleFunction} A style function.
  */
 export function createStyleFunction(obj) {
   if (typeof obj === 'function') {
     return obj;
   } else {
     /**
-     * @type {Array.<ol.style.Style>}
+     * @type {Array.<module:ol/style/Style~Geometry>}
      */
     let styles;
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
       assert(obj instanceof Style,
-        41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
+        41); // Expected an `module:ol/style/Style~Geometry` or an array of `module:ol/style/Style~Geometry`
       styles = [obj];
     }
     return function() {

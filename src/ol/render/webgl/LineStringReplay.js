@@ -39,7 +39,7 @@ const Instruction = {
  * @constructor
  * @extends {ol.render.webgl.Replay}
  * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Max extent.
+ * @param {module:ol/extent~Extent} maxExtent Max extent.
  * @struct
  */
 const WebGLLineStringReplay = function(tolerance, maxExtent) {

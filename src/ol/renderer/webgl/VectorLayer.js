@@ -42,7 +42,7 @@ const WebGLVectorLayerRenderer = function(mapRenderer, vectorLayer) {
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.renderedExtent_ = createEmpty();
 
@@ -61,7 +61,7 @@ const WebGLVectorLayerRenderer = function(mapRenderer, vectorLayer) {
   /**
    * The last layer state.
    * @private
-   * @type {?ol.LayerState}
+   * @type {?module:ol/layer/Layer~State}
    */
   this.layerState_ = null;
 

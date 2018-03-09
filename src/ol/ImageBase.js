@@ -8,11 +8,11 @@ import EventType from './events/EventType.js';
 /**
  * @constructor
  * @abstract
- * @extends {ol.events.EventTarget}
- * @param {ol.Extent} extent Extent.
+ * @extends {module:ol/events/EventTarget~EventTarget}
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {number|undefined} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.ImageState} state State.
+ * @param {module:ol/ImageState~ImageState} state State.
  */
 const ImageBase = function(extent, resolution, pixelRatio, state) {
 
@@ -20,7 +20,7 @@ const ImageBase = function(extent, resolution, pixelRatio, state) {
 
   /**
    * @protected
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.extent = extent;
 
@@ -38,7 +38,7 @@ const ImageBase = function(extent, resolution, pixelRatio, state) {
 
   /**
    * @protected
-   * @type {ol.ImageState}
+   * @type {module:ol/ImageState~ImageState}
    */
   this.state = state;
 
@@ -56,7 +56,7 @@ ImageBase.prototype.changed = function() {
 
 
 /**
- * @return {ol.Extent} Extent.
+ * @return {module:ol/extent~Extent} Extent.
  */
 ImageBase.prototype.getExtent = function() {
   return this.extent;
@@ -87,7 +87,7 @@ ImageBase.prototype.getResolution = function() {
 
 
 /**
- * @return {ol.ImageState} State.
+ * @return {module:ol/ImageState~ImageState} State.
  */
 ImageBase.prototype.getState = function() {
   return this.state;

@@ -59,7 +59,7 @@ const RasterSourceEvent = function(type, frameState, data) {
 
   /**
    * The raster extent.
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    * @api
    */
   this.extent = frameState.extent;
@@ -222,7 +222,7 @@ RasterSource.prototype.setOperation = function(operation, opt_lib) {
 
 /**
  * Update the stored frame state.
- * @param {ol.Extent} extent The view extent (in map units).
+ * @param {module:ol/extent~Extent} extent The view extent (in map units).
  * @param {number} resolution The view resolution.
  * @param {ol.proj.Projection} projection The view projection.
  * @return {olx.FrameState} The updated frame state.
@@ -379,7 +379,7 @@ let sharedContext = null;
  * Get image data from a renderer.
  * @param {ol.renderer.canvas.Layer} renderer Layer renderer.
  * @param {olx.FrameState} frameState The frame state.
- * @param {ol.LayerState} layerState The layer state.
+ * @param {module:ol/layer/Layer~State} layerState The layer state.
  * @return {ImageData} The image data.
  */
 function getImageData(renderer, frameState, layerState) {
@@ -406,7 +406,7 @@ function getImageData(renderer, frameState, layerState) {
 /**
  * Get a list of layer states from a list of renderers.
  * @param {Array.<ol.renderer.canvas.Layer>} renderers Layer renderers.
- * @return {Array.<ol.LayerState>} The layer states.
+ * @return {Array.<module:ol/layer/Layer~State>} The layer states.
  */
 function getLayerStatesArray(renderers) {
   return renderers.map(function(renderer) {

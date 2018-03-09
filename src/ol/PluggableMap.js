@@ -32,6 +32,36 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 
 /**
+ * State of the current frame. Only `pixelRatio`, `time` and `viewState` should
+ * be used in applications.
+ * @typedef {Object} FrameState
+ * @property {number} pixelRatio The pixel ratio of the frame.
+ * @property {number} time The time when rendering of the frame was requested.
+ * @property {olx.ViewState} viewState The state of the current view.
+ * @property {boolean} animate
+ * @property {module:ol/transform~Transform} coordinateToPixelTransform
+ * @property {null|module:ol/extent~Extent} extent
+ * @property {module:ol/coordinate~Coordinate} focus
+ * @property {number} index
+ * @property {Object.<number, module:ol/layer/Layer~State>} layerStates
+ * @property {Array.<module:ol/layer/Layer~State} layerStatesArray
+ * @property {module:ol/transform~Transform} pixelToCoordinateTransform
+ * @property {Array.<module:ol/PluggableMap~PostRenderFunction>} postRenderFunctions
+ * @property {module:ol/size~Size} size
+ * @property {!Object.<string, boolean>} skippedFeatureUids
+ * @property {module:ol/TileQueue~TileQueue} tileQueue
+ * @property {Object.<string, Object.<string, module:ol/TileRange~TileRange>>} usedTiles
+ * @property {Array.<number>} viewHints
+ * @property {!Object.<string, Object.<string, boolean>>} wantedTiles
+ */
+
+
+/**
+ * @typedef {function(module:ol/PluggableMap~PluggableMap, ?olx.FrameState): boolean} PostRenderFunction
+ */
+
+
+/**
  * @typedef {Object} MapOptionsInternal
  * @property {module:ol/Collection~Collection.<module:ol/control/Control~Control>} [controls]
  * @property {module:ol/Collection~Collection.<module:ol/interaction/Interaction~Interaction>} [interactions]
@@ -157,13 +187,13 @@ const PluggableMap = function(options) {
 
   /**
    * @private
-   * @type {module:ol/types~Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.coordinateToPixelTransform_ = createTransform();
 
   /**
    * @private
-   * @type {module:ol/types~Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.pixelToCoordinateTransform_ = createTransform();
 
@@ -182,25 +212,25 @@ const PluggableMap = function(options) {
   /**
    * The extent at the previous 'moveend' event.
    * @private
-   * @type {module:ol/types~Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.previousExtent_ = null;
 
   /**
    * @private
-   * @type {?module:ol/types~EventsKey}
+   * @type {?module:ol/events~EventsKey}
    */
   this.viewPropertyListenerKey_ = null;
 
   /**
    * @private
-   * @type {?module:ol/types~EventsKey}
+   * @type {?module:ol/events~EventsKey}
    */
   this.viewChangeListenerKey_ = null;
 
   /**
    * @private
-   * @type {Array.<module:ol/types~EventsKey>}
+   * @type {Array.<module:ol/events~EventsKey>}
    */
   this.layerGroupPropertyListenerKeys_ = null;
 
@@ -265,7 +295,7 @@ const PluggableMap = function(options) {
 
   /**
    * @private
-   * @type {Array.<module:ol/types~EventsKey>}
+   * @type {Array.<module:ol/events~EventsKey>}
    */
   this.keyHandlerKeys_ = null;
 
@@ -315,13 +345,13 @@ const PluggableMap = function(options) {
 
   /**
    * @private
-   * @type {module:ol/types~Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    */
   this.focus_ = null;
 
   /**
    * @private
-   * @type {!Array.<module:ol/types~PostRenderFunction>}
+   * @type {!Array.<module:ol/PluggableMap~PostRenderFunction>}
    */
   this.postRenderFunctions_ = [];
 
@@ -515,7 +545,7 @@ PluggableMap.prototype.disposeInternal = function() {
  * Detect features that intersect a pixel on the viewport, and execute a
  * callback with each intersecting feature. Layers included in the detection can
  * be configured through the `layerFilter` option in `opt_options`.
- * @param {module:ol/types~Pixel} pixel Pixel.
+ * @param {module:ol~Pixel} pixel Pixel.
  * @param {function(this: S, (module:ol/Feature~Feature|module:ol/render/Feature~Feature),
  *     module:ol/layer/Layer~Layer): T} callback Feature callback. The callback will be
  *     called with two arguments. The first argument is one
@@ -548,7 +578,7 @@ PluggableMap.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_opt
 
 /**
  * Get all features that intersect a pixel on the viewport.
- * @param {module:ol/types~Pixel} pixel Pixel.
+ * @param {module:ol~Pixel} pixel Pixel.
  * @param {olx.AtPixelOptions=} opt_options Optional options.
  * @return {Array.<module:ol/Feature~Feature|module:ol/render/Feature~Feature>} The detected features or
  * `null` if none were found.
@@ -569,7 +599,7 @@ PluggableMap.prototype.getFeaturesAtPixel = function(pixel, opt_options) {
  * Detect layers that have a color value at a pixel on the viewport, and
  * execute a callback with each matching layer. Layers included in the
  * detection can be configured through `opt_layerFilter`.
- * @param {module:ol/types~Pixel} pixel Pixel.
+ * @param {module:ol~Pixel} pixel Pixel.
  * @param {function(this: S, module:ol/layer/Layer~Layer, (Uint8ClampedArray|Uint8Array)): T} callback
  *     Layer callback. This callback will receive two arguments: first is the
  *     {@link module:ol/layer/Layer~Layer layer}, second argument is an array representing
@@ -605,7 +635,7 @@ PluggableMap.prototype.forEachLayerAtPixel = function(pixel, callback, opt_this,
 /**
  * Detect if features intersect a pixel on the viewport. Layers included in the
  * detection can be configured through `opt_layerFilter`.
- * @param {module:ol/types~Pixel} pixel Pixel.
+ * @param {module:ol~Pixel} pixel Pixel.
  * @param {olx.AtPixelOptions=} opt_options Optional options.
  * @return {boolean} Is there a feature at the given pixel?
  * @template U
@@ -628,7 +658,7 @@ PluggableMap.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
 /**
  * Returns the coordinate in view projection for a browser event.
  * @param {Event} event Event.
- * @return {module:ol/types~Coordinate} Coordinate.
+ * @return {module:ol/coordinate~Coordinate} Coordinate.
  * @api
  */
 PluggableMap.prototype.getEventCoordinate = function(event) {
@@ -639,7 +669,7 @@ PluggableMap.prototype.getEventCoordinate = function(event) {
 /**
  * Returns the map pixel position for a browser event relative to the viewport.
  * @param {Event} event Event.
- * @return {module:ol/types~Pixel} Pixel.
+ * @return {module:ol~Pixel} Pixel.
  * @api
  */
 PluggableMap.prototype.getEventPixel = function(event) {
@@ -686,8 +716,8 @@ PluggableMap.prototype.getTargetElement = function() {
 /**
  * Get the coordinate for a given pixel.  This returns a coordinate in the
  * map view projection.
- * @param {module:ol/types~Pixel} pixel Pixel position in the map viewport.
- * @return {module:ol/types~Coordinate} The coordinate for the pixel position.
+ * @param {module:ol~Pixel} pixel Pixel position in the map viewport.
+ * @return {module:ol/coordinate~Coordinate} The coordinate for the pixel position.
  * @api
  */
 PluggableMap.prototype.getCoordinateFromPixel = function(pixel) {
@@ -774,8 +804,8 @@ PluggableMap.prototype.getLayers = function() {
 /**
  * Get the pixel for a coordinate.  This takes a coordinate in the map view
  * projection and returns the corresponding pixel.
- * @param {module:ol/types~Coordinate} coordinate A map coordinate.
- * @return {module:ol/types~Pixel} A pixel position in the map viewport.
+ * @param {module:ol/coordinate~Coordinate} coordinate A map coordinate.
+ * @return {module:ol~Pixel} A pixel position in the map viewport.
  * @api
  */
 PluggableMap.prototype.getPixelFromCoordinate = function(coordinate) {
@@ -799,12 +829,12 @@ PluggableMap.prototype.getRenderer = function() {
 
 /**
  * Get the size of this map.
- * @return {module:ol/types~Size|undefined} The size in pixels of the map in the DOM.
+ * @return {module:ol/size~Size|undefined} The size in pixels of the map in the DOM.
  * @observable
  * @api
  */
 PluggableMap.prototype.getSize = function() {
-  return /** @type {module:ol/types~Size|undefined} */ (this.get(MapProperty.SIZE));
+  return /** @type {module:ol/size~Size|undefined} */ (this.get(MapProperty.SIZE));
 };
 
 
@@ -857,7 +887,7 @@ PluggableMap.prototype.getOverlayContainerStopEvent = function() {
 /**
  * @param {module:ol/Tile~Tile} tile Tile.
  * @param {string} tileSourceKey Tile source key.
- * @param {module:ol/types~Coordinate} tileCenter Tile center.
+ * @param {module:ol/coordinate~Coordinate} tileCenter Tile center.
  * @param {number} tileResolution Tile resolution.
  * @return {number} Tile priority.
  */
@@ -1277,7 +1307,7 @@ PluggableMap.prototype.setLayerGroup = function(layerGroup) {
 
 /**
  * Set the size of this map.
- * @param {module:ol/types~Size|undefined} size The size in pixels of the map in the DOM.
+ * @param {module:ol/size~Size|undefined} size The size in pixels of the map in the DOM.
  * @observable
  * @api
  */

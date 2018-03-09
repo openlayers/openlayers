@@ -18,7 +18,7 @@ import {get as getProjection, getTransformFromProjections, identityTransform} fr
  * instantiation.
  * @property {GeolocationPositionOptions} [trackingOptions] Tracking options.
  * See {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}.
- * @property {module:ol/types~ProjectionLike} [projection] The projection the position
+ * @property {module:ol/proj~ProjectionLike} [projection] The projection the position
  * is reported in.
  */
 
@@ -58,13 +58,13 @@ const Geolocation = function(opt_options) {
   /**
    * The unprojected (EPSG:4326) device position.
    * @private
-   * @type {module:ol/types~Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    */
   this.position_ = null;
 
   /**
    * @private
-   * @type {module:ol/types~TransformFunction}
+   * @type {module:ol/proj~TransformFunction}
    */
   this.transform_ = identityTransform;
 
@@ -247,13 +247,13 @@ Geolocation.prototype.getHeading = function() {
 
 /**
  * Get the position of the device.
- * @return {module:ol/types~Coordinate|undefined} The current position of the device reported
+ * @return {module:ol/coordinate~Coordinate|undefined} The current position of the device reported
  *     in the current projection.
  * @observable
  * @api
  */
 Geolocation.prototype.getPosition = function() {
-  return /** @type {module:ol/types~Coordinate|undefined} */ (this.get(GeolocationProperty.POSITION));
+  return /** @type {module:ol/coordinate~Coordinate|undefined} */ (this.get(GeolocationProperty.POSITION));
 };
 
 
@@ -308,7 +308,7 @@ Geolocation.prototype.getTrackingOptions = function() {
 
 /**
  * Set the projection to use for transforming the coordinates.
- * @param {module:ol/types~ProjectionLike} projection The projection the position is
+ * @param {module:ol/proj~ProjectionLike} projection The projection the position is
  *     reported in.
  * @observable
  * @api

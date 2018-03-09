@@ -143,7 +143,7 @@ WFS.prototype.readFeatures;
  * @inheritDoc
  */
 WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
-  const context = /** @type {ol.XmlNodeStackItem} */ ({
+  const context = /** @type {module:ol/xml~NodeStackItem} */ ({
     'featureType': this.featureType_,
     'featureNS': this.featureNS_
   });
@@ -225,7 +225,7 @@ WFS.prototype.readFeatureCollectionMetadataFromDocument = function(doc) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const FEATURE_COLLECTION_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -253,7 +253,7 @@ WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const TRANSACTION_SUMMARY_PARSERS = {
   'http://www.opengis.net/wfs': {
@@ -277,7 +277,7 @@ function readTransactionSummary(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const OGC_FID_PARSERS = {
   'http://www.opengis.net/ogc': {
@@ -299,7 +299,7 @@ function fidParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const INSERT_RESULTS_PARSERS = {
   'http://www.opengis.net/wfs': {
@@ -321,7 +321,7 @@ function readInsertResults(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const TRANSACTION_RESPONSE_PARSERS = {
   'http://www.opengis.net/wfs': {
@@ -359,7 +359,7 @@ WFS.prototype.readTransactionResponseFromNode = function(node) {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  */
 const QUERY_SERIALIZERS = {
   'http://www.opengis.net/wfs': {
@@ -441,7 +441,7 @@ function writeDelete(node, feature, objectStack) {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  */
 const TRANSACTION_SERIALIZERS = {
   'http://www.opengis.net/wfs': {
@@ -483,7 +483,7 @@ function writeUpdate(node, feature, objectStack) {
         values.push({name: name, value: value});
       }
     }
-    pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */ (
+    pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */ (
       {'gmlVersion': context['gmlVersion'], node: node,
         'hasZ': context['hasZ'], 'srsName': context['srsName']}),
     TRANSACTION_SERIALIZERS,
@@ -543,7 +543,7 @@ function writeNative(node, nativeElement, objectStack) {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  */
 const GETFEATURE_SERIALIZERS = {
   'http://www.opengis.net/wfs': {
@@ -596,7 +596,7 @@ function writeQuery(node, featureType, objectStack) {
   if (featureNS) {
     setAttributeNS(node, XMLNS, 'xmlns:' + featurePrefix, featureNS);
   }
-  const item = /** @type {ol.XmlNodeStackItem} */ (assign({}, context));
+  const item = /** @type {module:ol/xml~NodeStackItem} */ (assign({}, context));
   item.node = node;
   pushSerializeAndPop(item,
     QUERY_SERIALIZERS,
@@ -617,7 +617,7 @@ function writeQuery(node, featureType, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeFilterCondition(node, filter, objectStack) {
-  /** @type {ol.XmlNodeStackItem} */
+  /** @type {module:ol/xml~NodeStackItem} */
   const item = {node: node};
   pushSerializeAndPop(item,
     GETFEATURE_SERIALIZERS,
@@ -713,7 +713,7 @@ function writeDuringFilter(node, filter, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeLogicalFilter(node, filter, objectStack) {
-  /** @type {ol.XmlNodeStackItem} */
+  /** @type {module:ol/xml~NodeStackItem} */
   const item = {node: node};
   const conditions = filter.conditions;
   for (let i = 0, ii = conditions.length; i < ii; ++i) {
@@ -732,7 +732,7 @@ function writeLogicalFilter(node, filter, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeNotFilter(node, filter, objectStack) {
-  /** @type {ol.XmlNodeStackItem} */
+  /** @type {module:ol/xml~NodeStackItem} */
   const item = {node: node};
   const condition = filter.condition;
   pushSerializeAndPop(item,
@@ -866,7 +866,7 @@ export function writeFilter(filter) {
  */
 function writeGetFeature(node, featureTypes, objectStack) {
   const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const item = /** @type {ol.XmlNodeStackItem} */ (assign({}, context));
+  const item = /** @type {module:ol/xml~NodeStackItem} */ (assign({}, context));
   item.node = node;
   pushSerializeAndPop(item,
     GETFEATURE_SERIALIZERS,
@@ -922,7 +922,7 @@ WFS.prototype.writeGetFeature = function(options) {
   }
   setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
     'xsi:schemaLocation', this.schemaLocation_);
-  /** @type {ol.XmlNodeStackItem} */
+  /** @type {module:ol/xml~NodeStackItem} */
   const context = {
     node: node,
     'srsName': options.srsName,
@@ -957,7 +957,7 @@ WFS.prototype.writeTransaction = function(inserts, updates, deletes, options) {
   node.setAttribute('service', 'WFS');
   node.setAttribute('version', version);
   let baseObj;
-  /** @type {ol.XmlNodeStackItem} */
+  /** @type {module:ol/xml~NodeStackItem} */
   let obj;
   if (options) {
     baseObj = options.gmlOptions ? options.gmlOptions : {};

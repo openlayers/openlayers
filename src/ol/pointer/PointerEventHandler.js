@@ -44,7 +44,7 @@ import TouchSource from '../pointer/TouchSource.js';
 
 /**
  * @constructor
- * @extends {ol.events.EventTarget}
+ * @extends {module:ol/events/EventTarget~EventTarget}
  * @param {Element|HTMLDocument} element Viewport element.
  */
 const PointerEventHandler = function(element) {

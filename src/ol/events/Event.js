@@ -9,7 +9,7 @@
  * This implementation only provides `type` and `target` properties, and
  * `stopPropagation` and `preventDefault` methods. It is meant as base class
  * for higher level events defined in the library, and works with
- * {@link ol.events.EventTarget}.
+ * {@link module:ol/events/EventTarget~EventTarget}.
  *
  * @constructor
  * @implements {oli.events.Event}
@@ -59,7 +59,7 @@ Event.prototype.preventDefault =
 
 
 /**
- * @param {Event|ol.events.Event} evt Event
+ * @param {Event|module:ol/events/Event~Event} evt Event
  */
 export function stopPropagation(evt) {
   evt.stopPropagation();
@@ -67,7 +67,7 @@ export function stopPropagation(evt) {
 
 
 /**
- * @param {Event|ol.events.Event} evt Event
+ * @param {Event|module:ol/events/Event~Event} evt Event
  */
 export function preventDefault(evt) {
   evt.preventDefault();

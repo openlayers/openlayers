@@ -33,7 +33,7 @@ const CanvasImageLayerRenderer = function(imageLayer) {
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.imageTransform_ = createTransform();
 

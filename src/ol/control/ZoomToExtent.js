@@ -21,7 +21,7 @@ const ZoomToExtent = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
   /**
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    * @protected
    */
   this.extent = options.extent ? options.extent : null;

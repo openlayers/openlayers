@@ -9,21 +9,21 @@ export default {
 
   /**
    * Triggered after a map frame is rendered.
-   * @event ol.MapEvent#postrender
+   * @event module:ol/MapEvent~MapEvent#postrender
    * @api
    */
   POSTRENDER: 'postrender',
 
   /**
    * Triggered when the map starts moving.
-   * @event ol.MapEvent#movestart
+   * @event module:ol/MapEvent~MapEvent#movestart
    * @api
    */
   MOVESTART: 'movestart',
 
   /**
    * Triggered after the map is moved.
-   * @event ol.MapEvent#moveend
+   * @event module:ol/MapEvent~MapEvent#moveend
    * @api
    */
   MOVEEND: 'moveend'

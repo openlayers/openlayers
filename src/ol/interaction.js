@@ -15,26 +15,50 @@ import PinchZoom from './interaction/PinchZoom.js';
 
 
 /**
+ * @typedef {Object} DefaultsOptions
+ * @property {boolean} [altShiftDragRotate=true] Whether Alt-Shift-drag rotate is
+ * desired.
+ * @property {boolean} [constrainResolution=false] Zoom to the closest integer
+ * zoom level after the wheel/trackpad or pinch gesture ends.
+ * @property {boolean} [doubleClickZoom=true] Whether double click zoom is
+ * desired.
+ * @property {boolean} [keyboard=true] Whether keyboard interaction is desired.
+ * @property {boolean} [mouseWheelZoom=true] Whether mousewheel zoom is desired.
+ * @property {boolean} [shiftDragZoom=true] Whether Shift-drag zoom is desired.
+ * @property {boolean} [dragPan=true] Whether drag pan is desired.
+ * @property {boolean} [pinchRotate=true] Whether pinch rotate is desired.
+ * @property {boolean} [pinchZoom=true] Whether pinch zoom is desired.
+ * @property {number} [zoomDelta] Zoom level delta when using keyboard or
+ * mousewheel zoom.
+ * @property {number} [zoomDuration] Duration of the zoom animation in
+ * milliseconds.
+ */
+
+
+/**
  * Set of interactions included in maps by default. Specific interactions can be
  * excluded by setting the appropriate option to false in the constructor
  * options, but the order of the interactions is fixed.  If you want to specify
  * a different order for interactions, you will need to create your own
- * {@link ol.interaction.Interaction} instances and insert them into a
- * {@link ol.Collection} in the order you want before creating your
- * {@link ol.Map} instance. The default set of interactions, in sequence, is:
- * * {@link ol.interaction.DragRotate}
- * * {@link ol.interaction.DoubleClickZoom}
- * * {@link ol.interaction.DragPan}
- * * {@link ol.interaction.PinchRotate}
- * * {@link ol.interaction.PinchZoom}
- * * {@link ol.interaction.KeyboardPan}
- * * {@link ol.interaction.KeyboardZoom}
- * * {@link ol.interaction.MouseWheelZoom}
- * * {@link ol.interaction.DragZoom}
+ * {@link module:ol/interaction/Interaction~Interaction} instances and insert
+ * them into a {@link module:ol/Collection~Collection} in the order you want
+ * before creating your {@link module:ol/Map~Map} instance. The default set of
+ * interactions, in sequence, is:
+ * * {@link module:ol/interaction/DragRotate~DragRotate}
+ * * {@link module:ol/interaction/DoubleClickZoom~DoubleClickZoom}
+ * * {@link module:ol/interaction/DragPan~DragPan}
+ * * {@link module:ol/interaction/PinchRotate~PinchRotate}
+ * * {@link module:ol/interaction/PinchZoom~PinchZoom}
+ * * {@link module:ol/interaction/KeyboardPan~KeyboardPan}
+ * * {@link module:ol/interaction/KeyboardZoom~KeyboardZoom}
+ * * {@link module:ol/interaction/MouseWheelZoom~MouseWheelZoom}
+ * * {@link module:ol/interaction/DragZoom~DragZoom}
  *
- * @param {olx.interaction.DefaultsOptions=} opt_options Defaults options.
- * @return {ol.Collection.<ol.interaction.Interaction>} A collection of
- * interactions to be used with the ol.Map constructor's interactions option.
+ * @param {module:ol/interaction/Interaction~DefaultsOptions=} opt_options
+ * Defaults options.
+ * @return {module:ol/Collection~Collection.<module:ol/interaction/Interaction~Interaction>}
+ * A collection of interactions to be used with the {@link module:ol/Map~Map}
+ * constructor's `interactions` option.
  * @api
  */
 export function defaults(opt_options) {

@@ -30,7 +30,7 @@ const Geometry = function() {
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.extent_ = createEmpty();
 
@@ -60,7 +60,7 @@ const Geometry = function() {
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.tmpTransform_ = createTransform();
 
@@ -81,7 +81,7 @@ Geometry.prototype.clone = function() {};
  * @abstract
  * @param {number} x X.
  * @param {number} y Y.
- * @param {ol.Coordinate} closestPoint Closest point.
+ * @param {module:ol/coordinate~Coordinate} closestPoint Closest point.
  * @param {number} minSquaredDistance Minimum squared distance.
  * @return {number} Minimum squared distance.
  */
@@ -90,10 +90,10 @@ Geometry.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDista
 
 /**
  * Return the closest point of the geometry to the passed point as
- * {@link ol.Coordinate coordinate}.
- * @param {ol.Coordinate} point Point.
- * @param {ol.Coordinate=} opt_closestPoint Closest point.
- * @return {ol.Coordinate} Closest point.
+ * {@link module:ol/coordinate~Coordinate coordinate}.
+ * @param {module:ol/coordinate~Coordinate} point Point.
+ * @param {module:ol/coordinate~Coordinate=} opt_closestPoint Closest point.
+ * @return {module:ol/coordinate~Coordinate} Closest point.
  * @api
  */
 Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
@@ -106,7 +106,7 @@ Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
 /**
  * Returns true if this geometry includes the specified coordinate. If the
  * coordinate is on the boundary of the geometry, returns false.
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @return {boolean} Contains coordinate.
  * @api
  */
@@ -117,9 +117,9 @@ Geometry.prototype.intersectsCoordinate = function(coordinate) {
 
 /**
  * @abstract
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @protected
- * @return {ol.Extent} extent Extent.
+ * @return {module:ol/extent~Extent} extent Extent.
  */
 Geometry.prototype.computeExtent = function(extent) {};
 
@@ -134,8 +134,8 @@ Geometry.prototype.containsXY = FALSE;
 
 /**
  * Get the extent of the geometry.
- * @param {ol.Extent=} opt_extent Extent.
- * @return {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent=} opt_extent Extent.
+ * @return {module:ol/extent~Extent} extent Extent.
  * @api
  */
 Geometry.prototype.getExtent = function(opt_extent) {
@@ -152,7 +152,7 @@ Geometry.prototype.getExtent = function(opt_extent) {
  * coordinates in place.
  * @abstract
  * @param {number} angle Rotation angle in radians.
- * @param {ol.Coordinate} anchor The rotation center.
+ * @param {module:ol/coordinate~Coordinate} anchor The rotation center.
  * @api
  */
 Geometry.prototype.rotate = function(angle, anchor) {};
@@ -165,7 +165,7 @@ Geometry.prototype.rotate = function(angle, anchor) {};
  * @param {number} sx The scaling factor in the x-direction.
  * @param {number=} opt_sy The scaling factor in the y-direction (defaults to
  *     sx).
- * @param {ol.Coordinate=} opt_anchor The scale origin (defaults to the center
+ * @param {module:ol/coordinate~Coordinate=} opt_anchor The scale origin (defaults to the center
  *     of the geometry extent).
  * @api
  */
@@ -214,7 +214,7 @@ Geometry.prototype.getType = function() {};
  * If you do not want the geometry modified in place, first `clone()` it and
  * then use this function on the clone.
  * @abstract
- * @param {ol.TransformFunction} transformFn Transform.
+ * @param {module:ol/proj~TransformFunction} transformFn Transform.
  */
 Geometry.prototype.applyTransform = function(transformFn) {};
 
@@ -222,7 +222,7 @@ Geometry.prototype.applyTransform = function(transformFn) {};
 /**
  * Test if the geometry and the passed extent intersect.
  * @abstract
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @return {boolean} `true` if the geometry and the extent intersect.
  */
 Geometry.prototype.intersectsExtent = function(extent) {};
@@ -245,9 +245,9 @@ Geometry.prototype.translate = function(deltaX, deltaY) {};
  * If you do not want the geometry modified in place, first `clone()` it and
  * then use this function on the clone.
  *
- * @param {ol.ProjectionLike} source The current projection.  Can be a
+ * @param {module:ol/proj~ProjectionLike} source The current projection.  Can be a
  *     string identifier or a {@link ol.proj.Projection} object.
- * @param {ol.ProjectionLike} destination The desired projection.  Can be a
+ * @param {module:ol/proj~ProjectionLike} destination The desired projection.  Can be a
  *     string identifier or a {@link ol.proj.Projection} object.
  * @return {ol.geom.Geometry} This geometry.  Note that original geometry is
  *     modified in place.

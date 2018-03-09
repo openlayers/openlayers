@@ -74,7 +74,7 @@ FeatureFormat.prototype.adaptOptions = function(options) {
 
 /**
  * Get the extent from the source of the last {@link readFeatures} call.
- * @return {ol.Extent} Tile extent.
+ * @return {module:ol/extent~Extent} Tile extent.
  */
 FeatureFormat.prototype.getLastExtent = function() {
   return null;
@@ -166,11 +166,11 @@ FeatureFormat.prototype.writeGeometry = function(geometry, opt_options) {};
 export default FeatureFormat;
 
 /**
- * @param {ol.geom.Geometry|ol.Extent} geometry Geometry.
+ * @param {ol.geom.Geometry|module:ol/extent~Extent} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
  * @param {(olx.format.WriteOptions|olx.format.ReadOptions)=} opt_options
  *     Options.
- * @return {ol.geom.Geometry|ol.Extent} Transformed geometry.
+ * @return {ol.geom.Geometry|module:ol/extent~Extent} Transformed geometry.
  */
 export function transformWithOptions(geometry, write, opt_options) {
   const featureProjection = opt_options ?
@@ -178,7 +178,7 @@ export function transformWithOptions(geometry, write, opt_options) {
   const dataProjection = opt_options ?
     getProjection(opt_options.dataProjection) : null;
   /**
-   * @type {ol.geom.Geometry|ol.Extent}
+   * @type {ol.geom.Geometry|module:ol/extent~Extent}
    */
   let transformed;
   if (featureProjection && dataProjection &&

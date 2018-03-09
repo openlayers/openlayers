@@ -73,7 +73,7 @@ const VectorSource = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.FeatureLoader}
+   * @type {module:ol/featureloader~FeatureLoader}
    */
   this.loader_ = UNDEFINED;
 
@@ -91,7 +91,7 @@ const VectorSource = function(opt_options) {
 
   /**
    * @private
-   * @type {string|ol.FeatureUrlFunction|undefined}
+   * @type {string|module:ol/featureloader~FeatureUrlFunction|undefined}
    */
   this.url_ = options.url;
 
@@ -120,7 +120,7 @@ const VectorSource = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.structs.RBush.<{extent: ol.Extent}>}
+   * @type {ol.structs.RBush.<{extent: module:ol/extent~Extent}>}
    */
   this.loadedExtentsRtree_ = new RBush();
 
@@ -146,7 +146,7 @@ const VectorSource = function(opt_options) {
 
   /**
    * @private
-   * @type {Object.<string, Array.<ol.EventsKey>>}
+   * @type {Object.<string, Array.<module:ol/events~EventsKey>>}
    */
   this.featureChangeKeys_ = {};
 
@@ -423,7 +423,7 @@ VectorSource.prototype.forEachFeature = function(callback) {
  * a "truthy" value, iteration will stop and the function will return the same
  * value.
  *
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {function(ol.Feature): T} callback Called with each feature
  *     whose goemetry contains the provided coordinate.
  * @return {T|undefined} The return value from the last call to the callback.
@@ -455,7 +455,7 @@ VectorSource.prototype.forEachFeatureAtCoordinateDirect = function(coordinate, c
  * When `useSpatialIndex` is set to false, this method will loop through all
  * features, equivalent to {@link ol.source.Vector#forEachFeature}.
  *
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {function(ol.Feature): T} callback Called with each feature
  *     whose bounding box intersects the provided extent.
  * @return {T|undefined} The return value from the last call to the callback.
@@ -480,7 +480,7 @@ VectorSource.prototype.forEachFeatureInExtent = function(extent, callback) {
  * {@link ol.source.Vector#forEachFeatureInExtent
  * source.forEachFeatureInExtent()} method instead.
  *
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {function(ol.Feature): T} callback Called with each feature
  *     whose geometry intersects the provided extent.
  * @return {T|undefined} The return value from the last call to the callback.
@@ -539,7 +539,7 @@ VectorSource.prototype.getFeatures = function() {
 
 /**
  * Get all features whose geometry intersects the provided coordinate.
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
@@ -559,7 +559,7 @@ VectorSource.prototype.getFeaturesAtCoordinate = function(coordinate) {
  *
  * This method is not available when the source is configured with
  * `useSpatialIndex` set to `false`.
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
@@ -573,7 +573,7 @@ VectorSource.prototype.getFeaturesInExtent = function(extent) {
  *
  * This method is not available when the source is configured with
  * `useSpatialIndex` set to `false`.
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {function(ol.Feature):boolean=} opt_filter Feature filter function.
  *     The filter function will receive one argument, the {@link ol.Feature feature}
  *     and it should return a boolean value. By default, no filtering is made.
@@ -628,9 +628,9 @@ VectorSource.prototype.getClosestFeatureToCoordinate = function(coordinate, opt_
  *
  * This method is not available when the source is configured with
  * `useSpatialIndex` set to `false`.
- * @param {ol.Extent=} opt_extent Destination extent. If provided, no new extent
+ * @param {module:ol/extent~Extent=} opt_extent Destination extent. If provided, no new extent
  *     will be created. Instead, that extent's coordinates will be overwritten.
- * @return {ol.Extent} Extent.
+ * @return {module:ol/extent~Extent} Extent.
  * @api
  */
 VectorSource.prototype.getExtent = function(opt_extent) {
@@ -681,7 +681,7 @@ VectorSource.prototype.getResolutions = function() {};
 /**
  * Get the url associated with this source.
  *
- * @return {string|ol.FeatureUrlFunction|undefined} The url.
+ * @return {string|module:ol/featureloader~FeatureUrlFunction|undefined} The url.
  * @api
  */
 VectorSource.prototype.getUrl = function() {
@@ -750,7 +750,7 @@ VectorSource.prototype.isEmpty = function() {
 
 
 /**
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {ol.proj.Projection} projection Projection.
  */
@@ -761,7 +761,7 @@ VectorSource.prototype.loadFeatures = function(extent, resolution, projection) {
     const extentToLoad = extentsToLoad[i];
     const alreadyLoaded = loadedExtentsRtree.forEachInExtent(extentToLoad,
       /**
-       * @param {{extent: ol.Extent}} object Object.
+       * @param {{extent: module:ol/extent~Extent}} object Object.
        * @return {boolean} Contains.
        */
       function(object) {
@@ -777,7 +777,7 @@ VectorSource.prototype.loadFeatures = function(extent, resolution, projection) {
 
 /**
  * Remove an extent from the list of loaded extents.
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @api
  */
 VectorSource.prototype.removeLoadedExtent = function(extent) {
@@ -859,7 +859,7 @@ VectorSource.prototype.removeFromIdIndex_ = function(feature) {
 /**
  * Set the new loader of the source. The next loadFeatures call will use the
  * new loader.
- * @param {ol.FeatureLoader} loader The loader to set.
+ * @param {module:ol/featureloader~FeatureLoader} loader The loader to set.
  * @api
  */
 VectorSource.prototype.setLoader = function(loader) {

@@ -15,7 +15,7 @@ import CanvasReplay from '../canvas/Replay.js';
  * @constructor
  * @extends {ol.render.canvas.Replay}
  * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Maximum extent.
+ * @param {module:ol/extent~Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {boolean} overlaps The replay can have overlapping geometries.

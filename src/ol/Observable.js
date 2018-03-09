@@ -12,11 +12,11 @@ import EventType from './events/EventType.js';
  * instantiated in apps.
  * An event target providing convenient methods for listener registration
  * and unregistration. A generic `change` event is always available through
- * {@link ol.Observable#changed}.
+ * {@link module:ol/Observable~Observable#changed}.
  *
  * @constructor
- * @extends {ol.events.EventTarget}
- * @fires ol.events.Event
+ * @extends {module:ol/events/EventTarget~EventTarget}
+ * @fires module:ol/events/Event~Event
  * @struct
  * @api
  */
@@ -37,7 +37,7 @@ inherits(Observable, EventTarget);
 
 /**
  * Removes an event listener using the key returned by `on()` or `once()`.
- * @param {ol.EventsKey|Array.<ol.EventsKey>} key The key returned by `on()`
+ * @param {module:ol/events~EventsKey|Array.<module:ol/events~EventsKey>} key The key returned by `on()`
  *     or `once()` (or an array of keys).
  * @api
  */
@@ -47,7 +47,7 @@ export function unByKey(key) {
       unlistenByKey(key[i]);
     }
   } else {
-    unlistenByKey(/** @type {ol.EventsKey} */ (key));
+    unlistenByKey(/** @type {module:ol/events~EventsKey} */ (key));
   }
 }
 
@@ -68,8 +68,8 @@ Observable.prototype.changed = function() {
  * Object with a `type` property.
  *
  * @param {{type: string,
- *     target: (EventTarget|ol.events.EventTarget|undefined)}|ol.events.Event|
- *     string} event Event object.
+ *     target: (EventTarget|module:ol/events/EventTarget~EventTarget|undefined)}|
+ *     module:ol/events/Event~Event|string} event Event object.
  * @function
  * @api
  */
@@ -91,7 +91,7 @@ Observable.prototype.getRevision = function() {
  * Listen for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {function(?): ?} listener The listener function.
- * @return {ol.EventsKey|Array.<ol.EventsKey>} Unique key for the listener. If
+ * @return {module:ol/events~EventsKey|Array.<module:ol/events~EventsKey>} Unique key for the listener. If
  *     called with an array of event types as the first argument, the return
  *     will be an array of keys.
  * @api
@@ -114,7 +114,7 @@ Observable.prototype.on = function(type, listener) {
  * Listen once for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {function(?): ?} listener The listener function.
- * @return {ol.EventsKey|Array.<ol.EventsKey>} Unique key for the listener. If
+ * @return {module:ol/events~EventsKey|Array.<module:ol/events~EventsKey>} Unique key for the listener. If
  *     called with an array of event types as the first argument, the return
  *     will be an array of keys.
  * @api

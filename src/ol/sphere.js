@@ -16,7 +16,7 @@ import GeometryType from './geom/GeometryType.js';
  * Object literal with options for the {@link getLength} or {@link getArea}
  * functions.
  * @typedef {Object} SphereMetricOptions
- * @property {module:ol/types~ProjectionLike} [projection='EPSG:3857']
+ * @property {module:ol/proj~ProjectionLike} [projection='EPSG:3857']
  * Projection of the  geometry.  By default, the geometry is assumed to be in
  * Web Mercator.
  * @property {number} [radius=6371008.8] Sphere radius.  By default, the radius of the
@@ -143,7 +143,7 @@ export function getLength(geometry, opt_options) {
  * Polygons on a Sphere", JPL Publication 07-03, Jet Propulsion
  * Laboratory, Pasadena, CA, June 2007
  *
- * @param {Array.<module:ol/types~Coordinate>} coordinates List of coordinates of a linear
+ * @param {Array.<module:ol/coordinate~Coordinate>} coordinates List of coordinates of a linear
  * ring. If the ring is oriented clockwise, the area will be positive,
  * otherwise it will be negative.
  * @param {number} radius The sphere radius.
@@ -232,13 +232,13 @@ export function getArea(geometry, opt_options) {
 /**
  * Returns the coordinate at the given distance and bearing from `c1`.
  *
- * @param {module:ol/types~Coordinate} c1 The origin point (`[lon, lat]` in degrees).
+ * @param {module:ol/coordinate~Coordinate} c1 The origin point (`[lon, lat]` in degrees).
  * @param {number} distance The great-circle distance between the origin
  *     point and the target point.
  * @param {number} bearing The bearing (in radians).
  * @param {number=} opt_radius The sphere radius to use.  Defaults to the Earth's
  *     mean radius using the WGS84 ellipsoid.
- * @return {module:ol/types~Coordinate} The target point.
+ * @return {module:ol/coordinate~Coordinate} The target point.
  */
 export function offset(c1, distance, bearing, opt_radius) {
   const radius = opt_radius || DEFAULT_RADIUS;

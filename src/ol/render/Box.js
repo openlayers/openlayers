@@ -36,13 +36,13 @@ const RenderBox = function(className) {
 
   /**
    * @private
-   * @type {ol.Pixel}
+   * @type {module:ol~Pixel}
    */
   this.startPixel_ = null;
 
   /**
    * @private
-   * @type {ol.Pixel}
+   * @type {module:ol~Pixel}
    */
   this.endPixel_ = null;
 
@@ -91,8 +91,8 @@ RenderBox.prototype.setMap = function(map) {
 
 
 /**
- * @param {ol.Pixel} startPixel Start pixel.
- * @param {ol.Pixel} endPixel End pixel.
+ * @param {module:ol~Pixel} startPixel Start pixel.
+ * @param {module:ol~Pixel} endPixel End pixel.
  */
 RenderBox.prototype.setPixels = function(startPixel, endPixel) {
   this.startPixel_ = startPixel;

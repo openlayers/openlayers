@@ -59,7 +59,7 @@ inherits(GML2, GMLBase);
  */
 GML2.prototype.readFlatCoordinates_ = function(node, objectStack) {
   const s = getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
-  const context = /** @type {ol.XmlNodeStackItem} */ (objectStack[0]);
+  const context = /** @type {module:ol/xml~NodeStackItem} */ (objectStack[0]);
   const containerSrs = context['srsName'];
   let axisOrientation = 'enu';
   if (containerSrs) {
@@ -89,7 +89,7 @@ GML2.prototype.readFlatCoordinates_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {ol.Extent|undefined} Envelope.
+ * @return {module:ol/extent~Extent|undefined} Envelope.
  */
 GML2.prototype.readBox_ = function(node, objectStack) {
   /** @type {Array.<number>} */
@@ -205,7 +205,7 @@ GML2.prototype.writeFeatureElement = function(node, feature, objectStack) {
   }
   const item = assign({}, context);
   item.node = node;
-  pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
+  pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
     (item), context.serializers,
     makeSimpleNodeFactory(undefined, featureNS),
     values,
@@ -278,7 +278,7 @@ GML2.prototype.writeMultiCurveOrLineString_ = function(node, geometry, objectSta
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Geometry|ol.Extent} geometry Geometry.
+ * @param {ol.geom.Geometry|module:ol/extent~Extent} geometry Geometry.
  * @param {Array.<*>} objectStack Node stack.
  */
 GML2.prototype.writeGeometryElement = function(node, geometry, objectStack) {
@@ -296,7 +296,7 @@ GML2.prototype.writeGeometryElement = function(node, geometry, objectStack) {
   } else {
     value = transformWithOptions(/** @type {ol.geom.Geometry} */ (geometry), true, context);
   }
-  pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
+  pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
     (item), this.GEOMETRY_SERIALIZERS_,
     this.GEOMETRY_NODE_FACTORY_, [value],
     objectStack, undefined, this);
@@ -565,7 +565,7 @@ GML2.prototype.writeSurfaceOrPolygonMember_ = function(node, polygon, objectStac
 
 /**
  * @param {Node} node Node.
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -577,7 +577,7 @@ GML2.prototype.writeEnvelope = function(node, extent, objectStack) {
   }
   const keys = ['lowerCorner', 'upperCorner'];
   const values = [extent[0] + ' ' + extent[1], extent[2] + ' ' + extent[3]];
-  pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
+  pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
     ({node: node}), this.ENVELOPE_SERIALIZERS_,
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
@@ -614,7 +614,7 @@ GML2.prototype.MULTIGEOMETRY_MEMBER_NODE_FACTORY_ = function(value, objectStack,
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  * @private
  */
 GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
@@ -626,7 +626,7 @@ GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  * @private
  */
 GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
@@ -639,7 +639,7 @@ GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  * @private
  */
 GML2.prototype.BOX_PARSERS_ = {
@@ -652,7 +652,7 @@ GML2.prototype.BOX_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  * @private
  */
 GML2.prototype.GEOMETRY_PARSERS_ = {
@@ -676,7 +676,7 @@ GML2.prototype.GEOMETRY_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.GEOMETRY_SERIALIZERS_ = {
@@ -709,7 +709,7 @@ GML2.prototype.GEOMETRY_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
@@ -723,7 +723,7 @@ GML2.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.RING_SERIALIZERS_ = {
@@ -735,7 +735,7 @@ GML2.prototype.RING_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.POINTMEMBER_SERIALIZERS_ = {
@@ -748,7 +748,7 @@ GML2.prototype.POINTMEMBER_SERIALIZERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
@@ -762,7 +762,7 @@ GML2.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.ENVELOPE_SERIALIZERS_ = {

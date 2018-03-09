@@ -8,15 +8,35 @@ import {listenOnce, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 import {getHeight} from './extent.js';
 
+
+/**
+ * A function that takes an {@link module:ol/Image~Image} for the image and a
+ * `{string}` for the src as arguments. It is supposed to make it so the
+ * underlying image {@link module:ol/Image~Image#getImage} is assigned the
+ * content specified by the src. If not specified, the default is
+ *
+ *     function(image, src) {
+ *       image.getImage().src = src;
+ *     }
+ *
+ * Providing a custom `imageLoadFunction` can be useful to load images with
+ * post requests or - in general - through XHR requests, where the src of the
+ * image element would be set to a data URI when the content is loaded.
+ *
+ * @typedef {function(module:ol/Image~Image, string)} LoadFunction
+ * @api
+ */
+
+
 /**
  * @constructor
- * @extends {ol.ImageBase}
- * @param {ol.Extent} extent Extent.
+ * @extends {module:ol/ImageBase~ImageBase}
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {number|undefined} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
- * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
+ * @param {module:ol/Image~LoadFunction} imageLoadFunction Image load function.
  */
 const ImageWrapper = function(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
 
@@ -39,19 +59,19 @@ const ImageWrapper = function(extent, resolution, pixelRatio, src, crossOrigin, 
 
   /**
    * @private
-   * @type {Array.<ol.EventsKey>}
+   * @type {Array.<module:ol/events~EventsKey>}
    */
   this.imageListenerKeys_ = null;
 
   /**
    * @protected
-   * @type {ol.ImageState}
+   * @type {module:ol/ImageState~ImageState}
    */
   this.state = ImageState.IDLE;
 
   /**
    * @private
-   * @type {ol.ImageLoadFunctionType}
+   * @type {module:ol/Image~LoadFunction}
    */
   this.imageLoadFunction_ = imageLoadFunction;
 

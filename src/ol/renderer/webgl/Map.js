@@ -109,7 +109,7 @@ const WebGLMapRenderer = function(container, map) {
 
   /**
    * @private
-   * @type {ol.Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    */
   this.focus_ = null;
 
@@ -124,7 +124,7 @@ const WebGLMapRenderer = function(container, map) {
        * @this {ol.renderer.webgl.Map}
        */
     (function(element) {
-      const tileCenter = /** @type {ol.Coordinate} */ (element[1]);
+      const tileCenter = /** @type {module:ol/coordinate~Coordinate} */ (element[1]);
       const tileResolution = /** @type {number} */ (element[2]);
       const deltaX = tileCenter[0] - this.focus_[0];
       const deltaY = tileCenter[1] - this.focus_[1];
@@ -152,7 +152,7 @@ const WebGLMapRenderer = function(container, map) {
           this.tileTextureQueue_.reprioritize();
           const element = this.tileTextureQueue_.dequeue();
           const tile = /** @type {ol.Tile} */ (element[0]);
-          const tileSize = /** @type {ol.Size} */ (element[3]);
+          const tileSize = /** @type {module:ol/size~Size} */ (element[3]);
           const tileGutter = /** @type {number} */ (element[4]);
           this.bindTileTexture(
             tile, tileSize, tileGutter, LINEAR, LINEAR);
@@ -196,7 +196,7 @@ WebGLMapRenderer['create'] = function(container, map) {
 
 /**
  * @param {ol.Tile} tile Tile.
- * @param {ol.Size} tileSize Tile size.
+ * @param {module:ol/size~Size} tileSize Tile size.
  * @param {number} tileGutter Tile gutter.
  * @param {number} magFilter Mag filter.
  * @param {number} minFilter Min filter.
@@ -444,7 +444,7 @@ WebGLMapRenderer.prototype.renderFrame = function(frameState) {
 
   this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, frameState);
 
-  /** @type {Array.<ol.LayerState>} */
+  /** @type {Array.<module:ol/layer/Layer~State>} */
   const layerStatesToDraw = [];
   const layerStatesArray = frameState.layerStatesArray;
   stableSort(layerStatesArray, sortByZIndex);
@@ -492,7 +492,7 @@ WebGLMapRenderer.prototype.renderFrame = function(frameState) {
   if (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
       WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
     frameState.postRenderFunctions.push(
-      /** @type {ol.PostRenderFunction} */ (this.expireCache_.bind(this))
+      /** @type {module:ol/PluggableMap~PostRenderFunction} */ (this.expireCache_.bind(this))
     );
   }
 

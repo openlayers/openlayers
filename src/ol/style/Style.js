@@ -274,9 +274,9 @@ Style.prototype.setZIndex = function(zIndex) {
  * Convert the provided object into a style function.  Functions passed through
  * unchanged.  Arrays of ol.style.Style or single style objects wrapped in a
  * new style function.
- * @param {ol.StyleFunction|Array.<ol.style.Style>|ol.style.Style} obj
+ * @param {module:ol/style~StyleFunction|Array.<ol.style.Style>|ol.style.Style} obj
  *     A style function, a single style, or an array of styles.
- * @return {ol.StyleFunction} A style function.
+ * @return {module:ol/style~StyleFunction} A style function.
  */
 export function toFunction(obj) {
   let styleFunction;

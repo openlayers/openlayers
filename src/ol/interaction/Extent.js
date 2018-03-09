@@ -25,7 +25,7 @@ import {createEditingStyle} from '../style/Style.js';
  *
  * @constructor
  * @implements {oli.ExtentEvent}
- * @param {ol.Extent} extent the new extent
+ * @param {module:ol/extent~Extent} extent the new extent
  * @extends {ol.events.Event}
  */
 const ExtentInteractionEvent = function(extent) {
@@ -33,7 +33,7 @@ const ExtentInteractionEvent = function(extent) {
 
   /**
    * The current extent.
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    * @api
    */
   this.extent = extent;
@@ -60,14 +60,14 @@ const ExtentInteraction = function(opt_options) {
 
   /**
    * Extent of the drawn box
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    * @private
    */
   this.extent_ = null;
 
   /**
    * Handler for pointer move events
-   * @type {function (ol.Coordinate): ol.Extent|null}
+   * @type {function (module:ol/coordinate~Coordinate): module:ol/extent~Extent|null}
    * @private
    */
   this.pointerHandler_ = null;
@@ -260,7 +260,7 @@ function handleUpEvent(mapBrowserEvent) {
 /**
  * Returns the default style for the drawn bbox
  *
- * @return {ol.StyleFunction} Default Extent style
+ * @return {module:ol/style~StyleFunction} Default Extent style
  */
 function getDefaultExtentStyleFunction() {
   const style = createEditingStyle();
@@ -272,7 +272,7 @@ function getDefaultExtentStyleFunction() {
 /**
  * Returns the default style for the pointer
  *
- * @return {ol.StyleFunction} Default pointer style
+ * @return {module:ol/style~StyleFunction} Default pointer style
  */
 function getDefaultPointerStyleFunction() {
   const style = createEditingStyle();
@@ -282,8 +282,8 @@ function getDefaultPointerStyleFunction() {
 }
 
 /**
- * @param {ol.Coordinate} fixedPoint corner that will be unchanged in the new extent
- * @returns {function (ol.Coordinate): ol.Extent} event handler
+ * @param {module:ol/coordinate~Coordinate} fixedPoint corner that will be unchanged in the new extent
+ * @returns {function (module:ol/coordinate~Coordinate): module:ol/extent~Extent} event handler
  */
 function getPointHandler(fixedPoint) {
   return function(point) {
@@ -292,9 +292,9 @@ function getPointHandler(fixedPoint) {
 }
 
 /**
- * @param {ol.Coordinate} fixedP1 first corner that will be unchanged in the new extent
- * @param {ol.Coordinate} fixedP2 second corner that will be unchanged in the new extent
- * @returns {function (ol.Coordinate): ol.Extent|null} event handler
+ * @param {module:ol/coordinate~Coordinate} fixedP1 first corner that will be unchanged in the new extent
+ * @param {module:ol/coordinate~Coordinate} fixedP2 second corner that will be unchanged in the new extent
+ * @returns {function (module:ol/coordinate~Coordinate): module:ol/extent~Extent|null} event handler
  */
 function getEdgeHandler(fixedP1, fixedP2) {
   if (fixedP1[0] == fixedP2[0]) {
@@ -311,8 +311,8 @@ function getEdgeHandler(fixedP1, fixedP2) {
 }
 
 /**
- * @param {ol.Extent} extent extent
- * @returns {Array<Array<ol.Coordinate>>} extent line segments
+ * @param {module:ol/extent~Extent} extent extent
+ * @returns {Array<Array<module:ol/coordinate~Coordinate>>} extent line segments
  */
 function getSegments(extent) {
   return [
@@ -324,9 +324,9 @@ function getSegments(extent) {
 }
 
 /**
- * @param {ol.Pixel} pixel cursor location
+ * @param {module:ol~Pixel} pixel cursor location
  * @param {ol.PluggableMap} map map
- * @returns {ol.Coordinate|null} snapped vertex on extent
+ * @returns {module:ol/coordinate~Coordinate|null} snapped vertex on extent
  * @private
  */
 ExtentInteraction.prototype.snapToVertex_ = function(pixel, map) {
@@ -381,7 +381,7 @@ ExtentInteraction.prototype.handlePointerMove_ = function(mapBrowserEvent) {
 };
 
 /**
- * @param {ol.Extent} extent extent
+ * @param {module:ol/extent~Extent} extent extent
  * @returns {ol.Feature} extent as featrue
  * @private
  */
@@ -408,7 +408,7 @@ ExtentInteraction.prototype.createOrUpdateExtentFeature_ = function(extent) {
 
 
 /**
- * @param {ol.Coordinate} vertex location of feature
+ * @param {module:ol/coordinate~Coordinate} vertex location of feature
  * @returns {ol.Feature} vertex as feature
  * @private
  */
@@ -438,7 +438,7 @@ ExtentInteraction.prototype.setMap = function(map) {
 /**
  * Returns the current drawn extent in the view projection
  *
- * @return {ol.Extent} Drawn extent in the view projection.
+ * @return {module:ol/extent~Extent} Drawn extent in the view projection.
  * @api
  */
 ExtentInteraction.prototype.getExtent = function() {
@@ -448,7 +448,7 @@ ExtentInteraction.prototype.getExtent = function() {
 /**
  * Manually sets the drawn extent, using the view projection.
  *
- * @param {ol.Extent} extent Extent
+ * @param {module:ol/extent~Extent} extent Extent
  * @api
  */
 ExtentInteraction.prototype.setExtent = function(extent) {

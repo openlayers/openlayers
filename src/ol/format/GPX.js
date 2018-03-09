@@ -79,7 +79,7 @@ const FEATURE_READER = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const GPX_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -91,7 +91,7 @@ const GPX_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const LINK_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -102,7 +102,7 @@ const LINK_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const RTE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -120,7 +120,7 @@ const RTE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const RTEPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -131,7 +131,7 @@ const RTEPT_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const TRK_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -149,7 +149,7 @@ const TRK_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const TRKSEG_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -159,7 +159,7 @@ const TRKSEG_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const TRKPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -170,7 +170,7 @@ const TRKPT_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
 const WPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -205,7 +205,7 @@ const LINK_SEQUENCE = ['text', 'type'];
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  */
 const LINK_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -226,7 +226,7 @@ const RTE_SEQUENCE = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  */
 const RTE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -263,7 +263,7 @@ const TRK_SEQUENCE = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  */
 const TRK_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -287,7 +287,7 @@ const TRKSEG_NODE_FACTORY = makeSimpleNodeFactory('trkpt');
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  */
 const TRKSEG_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -309,7 +309,7 @@ const WPT_TYPE_SEQUENCE = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  */
 const WPT_TYPE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -365,7 +365,7 @@ function GPX_NODE_FACTORY(value, objectStack, opt_nodeName) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
  */
 const GPX_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -712,7 +712,7 @@ function writeLink(node, value, objectStack) {
     properties['linkText'],
     properties['linkType']
   ];
-  pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */ ({node: node}),
+  pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */ ({node: node}),
     LINK_SERIALIZERS, OBJECT_PROPERTY_NODE_FACTORY,
     link, objectStack, LINK_SEQUENCE);
 }
@@ -720,7 +720,7 @@ function writeLink(node, value, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeWptType(node, coordinate, objectStack) {
@@ -755,7 +755,7 @@ function writeWptType(node, coordinate, objectStack) {
     RTEPT_TYPE_SEQUENCE[namespaceURI] :
     WPT_TYPE_SEQUENCE[namespaceURI];
   const values = makeSequence(properties, orderedKeys);
-  pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
+  pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
     ({node: node, 'properties': properties}),
     WPT_TYPE_SERIALIZERS, OBJECT_PROPERTY_NODE_FACTORY,
     values, objectStack, orderedKeys);
@@ -794,7 +794,7 @@ function writeRte(node, feature, objectStack) {
 function writeTrk(node, feature, objectStack) {
   const options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
   const properties = feature.getProperties();
-  /** @type {ol.XmlNodeStackItem} */
+  /** @type {module:ol/xml~NodeStackItem} */
   const context = {node: node, 'properties': properties};
   let geometry = feature.getGeometry();
   if (geometry) {
@@ -817,7 +817,7 @@ function writeTrk(node, feature, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeTrkSeg(node, lineString, objectStack) {
-  /** @type {ol.XmlNodeStackItem} */
+  /** @type {module:ol/xml~NodeStackItem} */
   const context = {node: node, 'geometryLayout': lineString.getLayout(),
     'properties': {}};
   pushSerializeAndPop(context,
@@ -881,7 +881,7 @@ GPX.prototype.writeFeaturesNode = function(features, opt_options) {
   gpx.setAttribute('version', '1.1');
   gpx.setAttribute('creator', 'OpenLayers');
 
-  pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
+  pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
     ({node: gpx}), GPX_SERIALIZERS, GPX_NODE_FACTORY, features, [opt_options]);
   return gpx;
 };

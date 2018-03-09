@@ -74,13 +74,13 @@ const Snap = function(opt_options) {
   this.features_ = options.features ? options.features : null;
 
   /**
-   * @type {Array.<ol.EventsKey>}
+   * @type {Array.<module:ol/events~EventsKey>}
    * @private
    */
   this.featuresListenerKeys_ = [];
 
   /**
-   * @type {Object.<number, ol.EventsKey>}
+   * @type {Object.<number, module:ol/events~EventsKey>}
    * @private
    */
   this.featureChangeListenerKeys_ = {};
@@ -88,7 +88,7 @@ const Snap = function(opt_options) {
   /**
    * Extents are preserved so indexed segment can be quickly removed
    * when its feature geometry changes
-   * @type {Object.<number, ol.Extent>}
+   * @type {Object.<number, module:ol/extent~Extent>}
    * @private
    */
   this.indexedFeaturesExtents_ = {};
@@ -104,7 +104,7 @@ const Snap = function(opt_options) {
 
   /**
    * Used for distance sorting in sortByDistance_
-   * @type {ol.Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    * @private
    */
   this.pixelCoordinate_ = null;
@@ -334,8 +334,8 @@ Snap.prototype.shouldStopEvent = FALSE;
 
 
 /**
- * @param {ol.Pixel} pixel Pixel
- * @param {ol.Coordinate} pixelCoordinate Coordinate
+ * @param {module:ol~Pixel} pixel Pixel
+ * @param {module:ol/coordinate~Coordinate} pixelCoordinate Coordinate
  * @param {ol.PluggableMap} map Map.
  * @return {ol.SnapResultType} Snap result
  */

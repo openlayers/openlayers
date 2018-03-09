@@ -29,7 +29,7 @@ const CanvasLayerRenderer = function(layer) {
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {module:ol/transform~Transform}
    */
   this.transform_ = createTransform();
 
@@ -41,7 +41,7 @@ inherits(CanvasLayerRenderer, LayerRenderer);
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.Extent} extent Clip extent.
+ * @param {module:ol/extent~Extent} extent Clip extent.
  * @protected
  */
 CanvasLayerRenderer.prototype.clip = function(context, frameState, extent) {
@@ -49,10 +49,10 @@ CanvasLayerRenderer.prototype.clip = function(context, frameState, extent) {
   const width = frameState.size[0] * pixelRatio;
   const height = frameState.size[1] * pixelRatio;
   const rotation = frameState.viewState.rotation;
-  const topLeft = getTopLeft(/** @type {ol.Extent} */ (extent));
-  const topRight = getTopRight(/** @type {ol.Extent} */ (extent));
-  const bottomRight = getBottomRight(/** @type {ol.Extent} */ (extent));
-  const bottomLeft = getBottomLeft(/** @type {ol.Extent} */ (extent));
+  const topLeft = getTopLeft(/** @type {module:ol/extent~Extent} */ (extent));
+  const topRight = getTopRight(/** @type {module:ol/extent~Extent} */ (extent));
+  const bottomRight = getBottomRight(/** @type {module:ol/extent~Extent} */ (extent));
+  const bottomLeft = getBottomLeft(/** @type {module:ol/extent~Extent} */ (extent));
 
   applyTransform(frameState.coordinateToPixelTransform, topLeft);
   applyTransform(frameState.coordinateToPixelTransform, topRight);
@@ -75,7 +75,7 @@ CanvasLayerRenderer.prototype.clip = function(context, frameState, extent) {
  * @param {ol.render.EventType} type Event type.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.Transform=} opt_transform Transform.
+ * @param {module:ol/transform~Transform=} opt_transform Transform.
  * @private
  */
 CanvasLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, frameState, opt_transform) {
@@ -99,7 +99,7 @@ CanvasLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, fr
 
 
 /**
- * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
  * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
@@ -121,8 +121,8 @@ CanvasLayerRenderer.prototype.forEachLayerAtCoordinate = function(coordinate, fr
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.LayerState} layerState Layer state.
- * @param {ol.Transform=} opt_transform Transform.
+ * @param {module:ol/layer/Layer~State} layerState Layer state.
+ * @param {module:ol/transform~Transform=} opt_transform Transform.
  * @protected
  */
 CanvasLayerRenderer.prototype.postCompose = function(context, frameState, layerState, opt_transform) {
@@ -133,7 +133,7 @@ CanvasLayerRenderer.prototype.postCompose = function(context, frameState, layerS
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.Transform=} opt_transform Transform.
+ * @param {module:ol/transform~Transform=} opt_transform Transform.
  * @protected
  */
 CanvasLayerRenderer.prototype.preCompose = function(context, frameState, opt_transform) {
@@ -144,7 +144,7 @@ CanvasLayerRenderer.prototype.preCompose = function(context, frameState, opt_tra
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.Transform=} opt_transform Transform.
+ * @param {module:ol/transform~Transform=} opt_transform Transform.
  * @protected
  */
 CanvasLayerRenderer.prototype.dispatchRenderEvent = function(context, frameState, opt_transform) {
@@ -156,7 +156,7 @@ CanvasLayerRenderer.prototype.dispatchRenderEvent = function(context, frameState
  * @param {olx.FrameState} frameState Frame state.
  * @param {number} offsetX Offset on the x-axis in view coordinates.
  * @protected
- * @return {!ol.Transform} Transform.
+ * @return {!module:ol/transform~Transform} Transform.
  */
 CanvasLayerRenderer.prototype.getTransform = function(frameState, offsetX) {
   const viewState = frameState.viewState;
@@ -175,7 +175,7 @@ CanvasLayerRenderer.prototype.getTransform = function(frameState, offsetX) {
 /**
  * @abstract
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.LayerState} layerState Layer state.
+ * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @param {CanvasRenderingContext2D} context Context.
  */
 CanvasLayerRenderer.prototype.composeFrame = function(frameState, layerState, context) {};
@@ -183,7 +183,7 @@ CanvasLayerRenderer.prototype.composeFrame = function(frameState, layerState, co
 /**
  * @abstract
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.LayerState} layerState Layer state.
+ * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @return {boolean} whether composeFrame should be called.
  */
 CanvasLayerRenderer.prototype.prepareFrame = function(frameState, layerState) {};

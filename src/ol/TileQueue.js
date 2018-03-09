@@ -7,10 +7,16 @@ import {listen, unlisten} from './events.js';
 import EventType from './events/EventType.js';
 import PriorityQueue from './structs/PriorityQueue.js';
 
+
+/**
+ * @typedef {function(module:ol/Tile~Tile, string, module:ol/coordinate~Coordinate, number): number} PriorityFunction
+ */
+
+
 /**
  * @constructor
- * @extends {ol.structs.PriorityQueue.<Array>}
- * @param {ol.TilePriorityFunction} tilePriorityFunction
+ * @extends {module:ol/structs/PriorityQueue~PriorityQueue.<Array>}
+ * @param {module:ol/TileQueue~PriorityFunction} tilePriorityFunction
  *     Tile priority function.
  * @param {function(): ?} tileChangeCallback
  *     Function called on each tile change event.
@@ -32,7 +38,7 @@ const TileQueue = function(tilePriorityFunction, tileChangeCallback) {
        * @return {string} Key.
        */
     function(element) {
-      return /** @type {ol.Tile} */ (element[0]).getKey();
+      return /** @type {module:ol/Tile~Tile} */ (element[0]).getKey();
     });
 
   /**
@@ -81,11 +87,11 @@ TileQueue.prototype.getTilesLoading = function() {
 
 
 /**
- * @param {ol.events.Event} event Event.
+ * @param {module:ol/events/Event~Event} event Event.
  * @protected
  */
 TileQueue.prototype.handleTileChange = function(event) {
-  const tile = /** @type {ol.Tile} */ (event.target);
+  const tile = /** @type {module:ol/Tile~Tile} */ (event.target);
   const state = tile.getState();
   if (state === TileState.LOADED || state === TileState.ERROR ||
       state === TileState.EMPTY || state === TileState.ABORT) {
@@ -111,7 +117,7 @@ TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
   let state, tile, tileKey;
   while (this.tilesLoading_ < maxTotalLoading && newLoads < maxNewLoads &&
          this.getCount() > 0) {
-    tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
+    tile = /** @type {module:ol/Tile~Tile} */ (this.dequeue()[0]);
     tileKey = tile.getKey();
     state = tile.getState();
     if (state === TileState.ABORT) {

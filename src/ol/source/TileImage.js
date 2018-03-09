@@ -53,8 +53,8 @@ const TileImage = function(options) {
 
   /**
    * @protected
-   * @type {function(new: ol.ImageTile, ol.TileCoord, ol.TileState, string,
-   *        ?string, ol.TileLoadFunctionType, olx.TileOptions=)}
+   * @type {function(new: ol.ImageTile, module:ol/tilecoord~TileCoord, ol.TileState, string,
+   *        ?string, module:ol/Tile~LoadFunction, module:ol/Tile~Options=)}
    */
   this.tileClass = options.tileClass !== undefined ?
     options.tileClass : ImageTile;
@@ -343,7 +343,7 @@ TileImage.prototype.setRenderReprojectionEdges = function(render) {
  * (e.g. projection has no extent defined) or
  * for optimization reasons (custom tile size, resolutions, ...).
  *
- * @param {ol.ProjectionLike} projection Projection.
+ * @param {module:ol/proj~ProjectionLike} projection Projection.
  * @param {ol.tilegrid.TileGrid} tilegrid Tile grid to use for the projection.
  * @api
  */

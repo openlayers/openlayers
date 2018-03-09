@@ -113,7 +113,7 @@ const Draw = function(options) {
   this.shouldHandle_ = false;
 
   /**
-   * @type {ol.Pixel}
+   * @type {module:ol~Pixel}
    * @private
    */
   this.downPx_ = null;
@@ -209,7 +209,7 @@ const Draw = function(options) {
   if (!geometryFunction) {
     if (this.type_ === GeometryType.CIRCLE) {
       /**
-       * @param {!Array.<ol.Coordinate>} coordinates
+       * @param {!Array.<module:ol/coordinate~Coordinate>} coordinates
        *     The coordinates.
        * @param {ol.geom.SimpleGeometry=} opt_geometry Optional geometry.
        * @return {ol.geom.SimpleGeometry} A geometry.
@@ -233,7 +233,7 @@ const Draw = function(options) {
         Constructor = Polygon;
       }
       /**
-       * @param {!Array.<ol.Coordinate>} coordinates
+       * @param {!Array.<module:ol/coordinate~Coordinate>} coordinates
        *     The coordinates.
        * @param {ol.geom.SimpleGeometry=} opt_geometry Optional geometry.
        * @return {ol.geom.SimpleGeometry} A geometry.
@@ -274,7 +274,7 @@ const Draw = function(options) {
   /**
    * Finish coordinate for the feature (first point for polygons, last point for
    * linestrings).
-   * @type {ol.Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    * @private
    */
   this.finishCoordinate_ = null;
@@ -295,7 +295,7 @@ const Draw = function(options) {
 
   /**
    * Sketch coordinates. Used when drawing a line or polygon.
-   * @type {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>}
+   * @type {module:ol/coordinate~Coordinate|Array.<module:ol/coordinate~Coordinate>|Array.<Array.<module:ol/coordinate~Coordinate>>}
    * @private
    */
   this.sketchCoords_ = null;
@@ -309,7 +309,7 @@ const Draw = function(options) {
 
   /**
    * Sketch line coordinates. Used when drawing a polygon or circle.
-   * @type {Array.<ol.Coordinate>}
+   * @type {Array.<module:ol/coordinate~Coordinate>}
    * @private
    */
   this.sketchLineCoords_ = null;
@@ -374,7 +374,7 @@ inherits(Draw, PointerInteraction);
 
 
 /**
- * @return {ol.StyleFunction} Styles.
+ * @return {module:ol/style~StyleFunction} Styles.
  */
 function getDefaultStyleFunction() {
   const styles = createEditingStyle();
@@ -662,7 +662,7 @@ Draw.prototype.modifyDrawing_ = function(event) {
   }
   last[0] = coordinate[0];
   last[1] = coordinate[1];
-  this.geometryFunction_(/** @type {!Array.<ol.Coordinate>} */ (this.sketchCoords_), geometry);
+  this.geometryFunction_(/** @type {!Array.<module:ol/coordinate~Coordinate>} */ (this.sketchCoords_), geometry);
   if (this.sketchPoint_) {
     const sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());
     sketchPointGeom.setCoordinates(coordinate);

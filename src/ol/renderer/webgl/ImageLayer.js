@@ -50,7 +50,7 @@ const WebGLImageLayerRenderer = function(mapRenderer, imageLayer) {
 
   /**
    * @private
-   * @type {?ol.Transform}
+   * @type {?module:ol/transform~Transform}
    */
   this.hitTransformationMatrix_ = null;
 
@@ -176,7 +176,7 @@ WebGLImageLayerRenderer.prototype.prepareFrame = function(frameState, layerState
             }
           }.bind(null, gl, this.texture);
           frameState.postRenderFunctions.push(
-            /** @type {ol.PostRenderFunction} */ (postRenderFunction)
+            /** @type {module:ol/PluggableMap~PostRenderFunction} */ (postRenderFunction)
           );
         }
       }
@@ -209,10 +209,10 @@ WebGLImageLayerRenderer.prototype.prepareFrame = function(frameState, layerState
  * @param {number} canvasWidth Canvas width.
  * @param {number} canvasHeight Canvas height.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.Coordinate} viewCenter View center.
+ * @param {module:ol/coordinate~Coordinate} viewCenter View center.
  * @param {number} viewResolution View resolution.
  * @param {number} viewRotation View rotation.
- * @param {ol.Extent} imageExtent Image extent.
+ * @param {module:ol/extent~Extent} imageExtent Image extent.
  * @private
  */
 WebGLImageLayerRenderer.prototype.updateProjectionMatrix_ = function(canvasWidth, canvasHeight, pixelRatio,
@@ -306,9 +306,9 @@ WebGLImageLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameSta
 /**
  * The transformation matrix to get the pixel on the image for a
  * pixel on the map.
- * @param {ol.Size} mapSize The map size.
- * @param {ol.Size} imageSize The image size.
- * @return {ol.Transform} The transformation matrix.
+ * @param {module:ol/size~Size} mapSize The map size.
+ * @param {module:ol/size~Size} imageSize The image size.
+ * @return {module:ol/transform~Transform} The transformation matrix.
  * @private
  */
 WebGLImageLayerRenderer.prototype.getHitTransformationMatrix_ = function(mapSize, imageSize) {

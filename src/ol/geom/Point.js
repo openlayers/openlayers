@@ -15,7 +15,7 @@ import {squaredDistance as squaredDx} from '../math.js';
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {ol.Coordinate} coordinates Coordinates.
+ * @param {module:ol/coordinate~Coordinate} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
@@ -61,7 +61,7 @@ Point.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance
 
 /**
  * Return the coordinate of the point.
- * @return {ol.Coordinate} Coordinates.
+ * @return {module:ol/coordinate~Coordinate} Coordinates.
  * @override
  * @api
  */

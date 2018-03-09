@@ -43,10 +43,10 @@ const BaseLayer = function(options) {
   this.setProperties(properties);
 
   /**
-   * @type {ol.LayerState}
+   * @type {module:ol/layer/Layer~State}
    * @private
    */
-  this.state_ = /** @type {ol.LayerState} */ ({
+  this.state_ = /** @type {module:ol/layer/Layer~State} */ ({
     layer: /** @type {ol.layer.Layer} */ (this),
     managed: true
   });
@@ -73,7 +73,7 @@ BaseLayer.prototype.getType = function() {
 
 
 /**
- * @return {ol.LayerState} Layer state.
+ * @return {module:ol/layer/Layer~State} Layer state.
  */
 BaseLayer.prototype.getLayerState = function() {
   this.state_.opacity = clamp(this.getOpacity(), 0, 1);
@@ -99,22 +99,22 @@ BaseLayer.prototype.getLayersArray = function(opt_array) {};
 
 /**
  * @abstract
- * @param {Array.<ol.LayerState>=} opt_states Optional list of layer
+ * @param {Array.<module:ol/layer/Layer~State>=} opt_states Optional list of layer
  *     states (to be modified in place).
- * @return {Array.<ol.LayerState>} List of layer states.
+ * @return {Array.<module:ol/layer/Layer~State>} List of layer states.
  */
 BaseLayer.prototype.getLayerStatesArray = function(opt_states) {};
 
 
 /**
- * Return the {@link ol.Extent extent} of the layer or `undefined` if it
+ * Return the {@link module:ol/extent~Extent extent} of the layer or `undefined` if it
  * will be visible regardless of extent.
- * @return {ol.Extent|undefined} The layer extent.
+ * @return {module:ol/extent~Extent|undefined} The layer extent.
  * @observable
  * @api
  */
 BaseLayer.prototype.getExtent = function() {
-  return /** @type {ol.Extent|undefined} */ (this.get(LayerProperty.EXTENT));
+  return /** @type {module:ol/extent~Extent|undefined} */ (this.get(LayerProperty.EXTENT));
 };
 
 
@@ -184,7 +184,7 @@ BaseLayer.prototype.getZIndex = function() {
 /**
  * Set the extent at which the layer is visible.  If `undefined`, the layer
  * will be visible at all extents.
- * @param {ol.Extent|undefined} extent The extent of the layer.
+ * @param {module:ol/extent~Extent|undefined} extent The extent of the layer.
  * @observable
  * @api
  */

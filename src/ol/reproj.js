@@ -13,9 +13,9 @@ import {getPointResolution, transform} from './proj.js';
  * The resolution is calculated regardless of what resolutions
  * are actually available in the dataset (TileGrid, Image, ...).
  *
- * @param {ol.proj.Projection} sourceProj Source projection.
- * @param {ol.proj.Projection} targetProj Target projection.
- * @param {ol.Coordinate} targetCenter Target center.
+ * @param {module:ol/proj/Projection~Projection} sourceProj Source projection.
+ * @param {module:ol/proj/Projection~Projection} targetProj Target projection.
+ * @param {module:ol/coordinate~Coordinate} targetCenter Target center.
  * @param {number} targetResolution Target resolution.
  * @return {number} The best resolution to use. Can be +-Infinity, NaN or 0.
  */
@@ -61,7 +61,7 @@ export function calculateSourceResolution(sourceProj, targetProj,
  * @param {number} centroidY Centroid of the triangle (y coordinate in pixels).
  * @param {number} x X coordinate of the point (in pixels).
  * @param {number} y Y coordinate of the point (in pixels).
- * @return {ol.Coordinate} New point 1 px farther from the centroid.
+ * @return {module:ol/coordinate~Coordinate} New point 1 px farther from the centroid.
  */
 function enlargeClipPoint(centroidX, centroidY, x, y) {
   const dX = x - centroidX;
@@ -78,13 +78,14 @@ function enlargeClipPoint(centroidX, centroidY, x, y) {
  * @param {number} height Height of the canvas.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} sourceResolution Source resolution.
- * @param {ol.Extent} sourceExtent Extent of the data source.
+ * @param {module:ol/extent~Extent} sourceExtent Extent of the data source.
  * @param {number} targetResolution Target resolution.
- * @param {ol.Extent} targetExtent Target extent.
- * @param {ol.reproj.Triangulation} triangulation Calculated triangulation.
- * @param {Array.<{extent: ol.Extent,
+ * @param {module:ol/extent~Extent} targetExtent Target extent.
+ * @param {module:ol/reproj/Triangulation~Triangulation} triangulation
+ * Calculated triangulation.
+ * @param {Array.<{extent: module:ol/extent~Extent,
  *                 image: (HTMLCanvasElement|Image|HTMLVideoElement)}>} sources
- *             Array of sources.
+ * Array of sources.
  * @param {number} gutter Gutter of the sources.
  * @param {boolean=} opt_renderEdges Render reprojection edges.
  * @return {HTMLCanvasElement} Canvas with reprojected data.

@@ -47,7 +47,7 @@ const TranslateEventType = {
  * @implements {oli.interaction.TranslateEvent}
  * @param {ol.interaction.TranslateEventType} type Type.
  * @param {ol.Collection.<ol.Feature>} features The features translated.
- * @param {ol.Coordinate} coordinate The event coordinate.
+ * @param {module:ol/coordinate~Coordinate} coordinate The event coordinate.
  */
 export const TranslateEvent = function(type, features, coordinate) {
 
@@ -63,7 +63,7 @@ export const TranslateEvent = function(type, features, coordinate) {
   /**
    * The coordinate of the drag event.
    * @const
-   * @type {ol.Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    * @api
    */
   this.coordinate = coordinate;
@@ -94,7 +94,7 @@ const Translate = function(opt_options) {
 
   /**
    * The last position we translated to.
-   * @type {ol.Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    * @private
    */
   this.lastCoordinate_ = null;
@@ -241,7 +241,7 @@ function handleMoveEvent(event) {
 /**
  * Tests to see if the given coordinates intersects any of our selected
  * features.
- * @param {ol.Pixel} pixel Pixel coordinate to test for intersection.
+ * @param {module:ol~Pixel} pixel Pixel coordinate to test for intersection.
  * @param {ol.PluggableMap} map Map to test the intersection on.
  * @return {ol.Feature} Returns the feature found at the specified pixel
  * coordinates.

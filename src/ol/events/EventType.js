@@ -9,7 +9,7 @@
 export default {
   /**
    * Generic change event. Triggered when the revision counter is increased.
-   * @event ol.events.Event#change
+   * @event module:ol/events/Event~Event#change
    * @api
    */
   CHANGE: 'change',

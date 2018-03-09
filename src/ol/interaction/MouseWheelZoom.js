@@ -82,7 +82,7 @@ const MouseWheelZoom = function(opt_options) {
 
   /**
    * @private
-   * @type {?ol.Coordinate}
+   * @type {?module:ol/coordinate~Coordinate}
    */
   this.lastAnchor_ = null;
 

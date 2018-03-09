@@ -73,7 +73,7 @@ const MVT = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.extent_ = null;
 

@@ -15,7 +15,7 @@ import {createTexture} from '../../webgl/Context.js';
  * @abstract
  * @extends {ol.render.webgl.Replay}
  * @param {number} tolerance Tolerance.
- * @param {ol.Extent} maxExtent Max extent.
+ * @param {module:ol/extent~Extent} maxExtent Max extent.
  * @struct
  */
 const WebGLTextureReplay = function(tolerance, maxExtent) {

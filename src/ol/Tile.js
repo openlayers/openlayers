@@ -7,16 +7,52 @@ import {easeIn} from './easing.js';
 import EventTarget from './events/EventTarget.js';
 import EventType from './events/EventType.js';
 
+
+/**
+ * A function that takes an {@link module:ol/Tile~Tile} for the tile and a
+ * `{string}` for the url as arguments.
+ *
+ * @typedef {function(module:ol/Tile~Tile, string)} LoadFunction
+ * @api
+ */
+
+
+/**
+ * {@link module:ol/source/Tile~Tile} sources use a function of this type to get
+ * the url that provides a tile for a given tile coordinate.
+ *
+ * This function takes an {@link module:ol/tilecoord~TileCoord} for the tile
+ * coordinate, a `{number}` representing the pixel ratio and a
+ * {@link module:ol/proj/Projection~Projection} for the projection  as arguments
+ * and returns a `{string}` representing the tile URL, or undefined if no tile
+ * should be requested for the passed tile coordinate.
+ *
+ * @typedef {function(module:ol/tilecoord~TileCoord, number,
+ *           module:ol/proj/Projection~Projection): (string|undefined)} Type
+ * @api
+ */
+
+
+/**
+ * @typedef {Object} Options
+ * @property {number|undefined} transition A duration for tile opacity
+ * transitions.  By default, tiles will render with an opacity transition that
+ * lasts 250 ms.  To change the duration, pass a number in milliseconds.  A
+ * duration of 0 disables the opacity transition.
+ * @api
+ */
+
+
 /**
  * @classdesc
  * Base class for tiles.
  *
  * @constructor
  * @abstract
- * @extends {ol.events.EventTarget}
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.TileState} state State.
- * @param {olx.TileOptions=} opt_options Tile options.
+ * @extends {module:ol/events/EventTarget~EventTarget}
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+ * @param {module:ol/TileState~TileState} state State.
+ * @param {module:ol/Tile~Options=} opt_options Tile options.
  */
 const Tile = function(tileCoord, state, opt_options) {
   EventTarget.call(this);
@@ -24,13 +60,13 @@ const Tile = function(tileCoord, state, opt_options) {
   const options = opt_options ? opt_options : {};
 
   /**
-   * @type {ol.TileCoord}
+   * @type {module:ol/tilecoord~TileCoord}
    */
   this.tileCoord = tileCoord;
 
   /**
    * @protected
-   * @type {ol.TileState}
+   * @type {module:ol/TileState~TileState}
    */
   this.state = state;
 
@@ -38,7 +74,7 @@ const Tile = function(tileCoord, state, opt_options) {
    * An "interim" tile for this tile. The interim tile may be used while this
    * one is loading, for "smooth" transitions when changing params/dimensions
    * on the source.
-   * @type {ol.Tile}
+   * @type {module:ol/Tile~Tile}
    */
   this.interimTile = null;
 
@@ -88,7 +124,7 @@ Tile.prototype.getKey = function() {
  * Get the interim tile most suitable for rendering using the chain of interim
  * tiles. This corresponds to the  most recent tile that has been loaded, if no
  * such tile exists, the original tile is returned.
- * @return {!ol.Tile} Best tile for rendering.
+ * @return {!module:ol/Tile~Tile} Best tile for rendering.
  */
 Tile.prototype.getInterimTile = function() {
   if (!this.interimTile) {
@@ -148,7 +184,7 @@ Tile.prototype.refreshInterimChain = function() {
 
 /**
  * Get the tile coordinate for this tile.
- * @return {ol.TileCoord} The tile coordinate.
+ * @return {module:ol/tilecoord~TileCoord} The tile coordinate.
  * @api
  */
 Tile.prototype.getTileCoord = function() {
@@ -157,14 +193,14 @@ Tile.prototype.getTileCoord = function() {
 
 
 /**
- * @return {ol.TileState} State.
+ * @return {module:ol/TileState~TileState} State.
  */
 Tile.prototype.getState = function() {
   return this.state;
 };
 
 /**
- * @param {ol.TileState} state State.
+ * @param {module:ol/TileState~TileState} state State.
  */
 Tile.prototype.setState = function(state) {
   this.state = state;

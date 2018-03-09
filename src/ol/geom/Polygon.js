@@ -27,7 +27,7 @@ import {modulo} from '../math.js';
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {Array.<Array.<ol.Coordinate>>} coordinates Array of linear
+ * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Array of linear
  *     rings that define the polygon. The first linear ring of the array
  *     defines the outer-boundary or surface of the polygon. Each subsequent
  *     linear ring defines a hole in the surface of the polygon. A linear ring
@@ -54,7 +54,7 @@ const Polygon = function(coordinates, opt_layout) {
 
   /**
    * @private
-   * @type {ol.Coordinate}
+   * @type {module:ol/coordinate~Coordinate}
    */
   this.flatInteriorPoint_ = null;
 
@@ -165,7 +165,7 @@ Polygon.prototype.getArea = function() {
  *     (clockwise for exterior and counter-clockwise for interior rings).
  *     By default, coordinate orientation will depend on how the geometry was
  *     constructed.
- * @return {Array.<Array.<ol.Coordinate>>} Coordinates.
+ * @return {Array.<Array.<module:ol/coordinate~Coordinate>>} Coordinates.
  * @override
  * @api
  */
@@ -332,7 +332,7 @@ Polygon.prototype.intersectsExtent = function(extent) {
 
 /**
  * Set the coordinates of the polygon.
- * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
+ * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @override
  * @api
@@ -369,7 +369,7 @@ export default Polygon;
 
 /**
  * Create an approximation of a circle on the surface of a sphere.
- * @param {ol.Coordinate} center Center (`[lon, lat]` in degrees).
+ * @param {module:ol/coordinate~Coordinate} center Center (`[lon, lat]` in degrees).
  * @param {number} radius The great-circle distance from the center to
  *     the polygon vertices.
  * @param {number=} opt_n Optional number of vertices for the resulting
@@ -395,7 +395,7 @@ export function circular(center, radius, opt_n, opt_sphereRadius) {
 
 /**
  * Create a polygon from an extent. The layout used is `XY`.
- * @param {ol.Extent} extent The extent.
+ * @param {module:ol/extent~Extent} extent The extent.
  * @return {ol.geom.Polygon} The polygon.
  * @api
  */
@@ -442,7 +442,7 @@ export function fromCircle(circle, opt_sides, opt_angle) {
 /**
  * Modify the coordinates of a polygon to make it a regular polygon.
  * @param {ol.geom.Polygon} polygon Polygon geometry.
- * @param {ol.Coordinate} center Center of the regular polygon.
+ * @param {module:ol/coordinate~Coordinate} center Center of the regular polygon.
  * @param {number} radius Radius of the regular polygon.
  * @param {number=} opt_angle Start angle for the first vertex of the polygon in
  *     radians. Default is 0.

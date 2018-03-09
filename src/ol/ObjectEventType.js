@@ -8,7 +8,7 @@
 export default {
   /**
    * Triggered when a property is changed.
-   * @event ol.Object.Event#propertychange
+   * @event module:ol/Object~Event#propertychange
    * @api
    */
   PROPERTYCHANGE: 'propertychange'

@@ -50,7 +50,7 @@ const TileArcGISRest = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Extent}
+   * @type {module:ol/extent~Extent}
    */
   this.tmpExtent_ = createEmpty();
 
@@ -86,9 +86,9 @@ TileArcGISRest.prototype.getParams = function() {
 
 
 /**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.Size} tileSize Tile size.
- * @param {ol.Extent} tileExtent Tile extent.
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+ * @param {module:ol/size~Size} tileSize Tile size.
+ * @param {module:ol/extent~Extent} tileExtent Tile extent.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
  * @param {Object} params Params.

@@ -63,7 +63,7 @@ export default WMTSTileGrid;
  * optional TileMatrixSetLimits.
  * @param {Object} matrixSet An object representing a matrixSet in the
  *     capabilities document.
- * @param {ol.Extent=} opt_extent An optional extent to restrict the tile
+ * @param {module:ol/extent~Extent=} opt_extent An optional extent to restrict the tile
  *     ranges the server provides.
  * @param {Array.<Object>=} opt_matrixLimits An optional object representing
  *     the available matrices for tileGrid.
@@ -76,11 +76,11 @@ export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matri
   const resolutions = [];
   /** @type {!Array.<string>} */
   const matrixIds = [];
-  /** @type {!Array.<ol.Coordinate>} */
+  /** @type {!Array.<module:ol/coordinate~Coordinate>} */
   const origins = [];
-  /** @type {!Array.<ol.Size>} */
+  /** @type {!Array.<module:ol/size~Size>} */
   const tileSizes = [];
-  /** @type {!Array.<ol.Size>} */
+  /** @type {!Array.<module:ol/size~Size>} */
   const sizes = [];
 
   const matrixLimits = opt_matrixLimits !== undefined ? opt_matrixLimits : [];

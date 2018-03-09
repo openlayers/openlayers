@@ -12,8 +12,9 @@ import TileGrid from './tilegrid/TileGrid.js';
 
 
 /**
- * @param {ol.proj.Projection} projection Projection.
- * @return {!ol.tilegrid.TileGrid} Default tile grid for the passed projection.
+ * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @return {!module:ol/tilegrid/TileGrid~TileGrid} Default tile grid for the
+ * passed projection.
  */
 export function getForProjection(projection) {
   let tileGrid = projection.getDefaultTileGrid();
@@ -26,10 +27,10 @@ export function getForProjection(projection) {
 
 
 /**
- * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.proj.Projection} projection Projection.
- * @return {ol.TileCoord} Tile coordinate.
+ * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid Tile grid.
+ * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+ * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @return {module:ol/tilecoord~TileCoord} Tile coordinate.
  */
 export function wrapX(tileGrid, tileCoord, projection) {
   const z = tileCoord[0];
@@ -47,14 +48,14 @@ export function wrapX(tileGrid, tileCoord, projection) {
 
 
 /**
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {number=} opt_maxZoom Maximum zoom level (default is
  *     DEFAULT_MAX_ZOOM).
- * @param {number|ol.Size=} opt_tileSize Tile size (default uses
+ * @param {number|module:ol/size~Size=} opt_tileSize Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {ol.extent.Corner=} opt_corner Extent corner (default is
- *     ol.extent.Corner.TOP_LEFT).
- * @return {!ol.tilegrid.TileGrid} TileGrid instance.
+ * @param {module:ol/extent~Extent.Corner=} opt_corner Extent corner (default is
+ *     module:ol/extent~Extent.Corner.TOP_LEFT).
+ * @return {!module:ol/tilegrid/TileGrid~TileGrid} TileGrid instance.
  */
 export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
   const corner = opt_corner !== undefined ? opt_corner : Corner.TOP_LEFT;
@@ -74,7 +75,7 @@ export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
 /**
  * Creates a tile grid with a standard XYZ tiling scheme.
  * @param {olx.tilegrid.XYZOptions=} opt_options Tile grid options.
- * @return {!ol.tilegrid.TileGrid} Tile grid instance.
+ * @return {!module:ol/tilegrid/TileGrid~TileGrid} Tile grid instance.
  * @api
  */
 export function createXYZ(opt_options) {
@@ -94,10 +95,10 @@ export function createXYZ(opt_options) {
 
 /**
  * Create a resolutions array from an extent.  A zoom factor of 2 is assumed.
- * @param {ol.Extent} extent Extent.
+ * @param {module:ol/extent~Extent} extent Extent.
  * @param {number=} opt_maxZoom Maximum zoom level (default is
  *     DEFAULT_MAX_ZOOM).
- * @param {number|ol.Size=} opt_tileSize Tile size (default uses
+ * @param {number|module:ol/size~Size=} opt_tileSize Tile size (default uses
  *     DEFAULT_TILE_SIZE).
  * @return {!Array.<number>} Resolutions array.
  */
@@ -123,14 +124,14 @@ function resolutionsFromExtent(extent, opt_maxZoom, opt_tileSize) {
 
 
 /**
- * @param {ol.ProjectionLike} projection Projection.
+ * @param {module:ol/proj~ProjectionLike} projection Projection.
  * @param {number=} opt_maxZoom Maximum zoom level (default is
  *     DEFAULT_MAX_ZOOM).
- * @param {number|ol.Size=} opt_tileSize Tile size (default uses
+ * @param {number|module:ol/size~Size=} opt_tileSize Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {ol.extent.Corner=} opt_corner Extent corner (default is
- *     ol.extent.Corner.BOTTOM_LEFT).
- * @return {!ol.tilegrid.TileGrid} TileGrid instance.
+ * @param {module:ol/extent~Extent.Corner=} opt_corner Extent corner (default is
+ *     module:ol/extent~Extent.Corner.BOTTOM_LEFT).
+ * @return {!module:ol/tilegrid/TileGrid~TileGrid} TileGrid instance.
  */
 export function createForProjection(projection, opt_maxZoom, opt_tileSize, opt_corner) {
   const extent = extentFromProjection(projection);
@@ -142,8 +143,8 @@ export function createForProjection(projection, opt_maxZoom, opt_tileSize, opt_c
 /**
  * Generate a tile grid extent from a projection.  If the projection has an
  * extent, it is used.  If not, a global extent is assumed.
- * @param {ol.ProjectionLike} projection Projection.
- * @return {ol.Extent} Extent.
+ * @param {module:ol/proj~ProjectionLike} projection Projection.
+ * @return {module:ol/extent~Extent} Extent.
  */
 export function extentFromProjection(projection) {
   projection = getProjection(projection);
