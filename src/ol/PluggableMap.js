@@ -44,7 +44,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {module:ol/coordinate~Coordinate} focus
  * @property {number} index
  * @property {Object.<number, module:ol/layer/Layer~State>} layerStates
- * @property {Array.<module:ol/layer/Layer~State} layerStatesArray
+ * @property {Array.<module:ol/layer/Layer~State>} layerStatesArray
  * @property {module:ol/transform~Transform} pixelToCoordinateTransform
  * @property {Array.<module:ol/PluggableMap~PostRenderFunction>} postRenderFunctions
  * @property {module:ol/size~Size} size
