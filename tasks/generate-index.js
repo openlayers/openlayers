@@ -103,7 +103,7 @@ function generateExports(symbols, namespaces, imports) {
       nsdefs.push(`${ns[i]} = {};`);
     }
   }
-  blocks = imports.concat(nsdefs).concat(blocks);
+  blocks = imports.concat(nsdefs.sort()).concat(blocks.sort());
   blocks.push('');
   return blocks.join('\n');
 }
