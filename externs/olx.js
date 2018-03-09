@@ -204,8 +204,8 @@ olx.control;
  *     collapsible: (boolean|undefined),
  *     collapsed: (boolean|undefined),
  *     tipLabel: (string|undefined),
- *     label: (string|Node|undefined),
- *     collapseLabel: (string|Node|undefined),
+ *     label: (string|Element|undefined),
+ *     collapseLabel: (string|Element|undefined),
  *     render: (function(ol.MapEvent)|undefined),
  *     target: (Element|string|undefined)}}
  */
@@ -258,8 +258,8 @@ olx.control.AttributionOptions.prototype.tipLabel;
 
 /**
  * Text label to use for the collapsed attributions button. Default is `i`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
- * @type {string|Node|undefined}
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @type {string|Element|undefined}
  * @api
  */
 olx.control.AttributionOptions.prototype.label;
@@ -267,8 +267,8 @@ olx.control.AttributionOptions.prototype.label;
 
 /**
  * Text label to use for the expanded attributions button. Default is `»`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
- * @type {string|Node|undefined}
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @type {string|Element|undefined}
  * @api
  */
 olx.control.AttributionOptions.prototype.collapseLabel;
@@ -320,8 +320,8 @@ olx.control.ControlOptions.prototype.target;
 
 /**
  * @typedef {{className: (string|undefined),
- *     label: (string|Node|undefined),
- *     labelActive: (string|Node|undefined),
+ *     label: (string|Element|undefined),
+ *     labelActive: (string|Element|undefined),
  *     tipLabel: (string|undefined),
  *     keys: (boolean|undefined),
  *     target: (Element|string|undefined),
@@ -340,8 +340,8 @@ olx.control.FullScreenOptions.prototype.className;
 
 /**
  * Text label to use for the button. Default is `\u2922` (NORTH EAST AND SOUTH WEST ARROW).
- * Instead of text, also a Node (e.g. a `span` element) can be used.
- * @type {string|Node|undefined}
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @type {string|Element|undefined}
  * @api
  */
 olx.control.FullScreenOptions.prototype.label;
@@ -350,8 +350,8 @@ olx.control.FullScreenOptions.prototype.label;
 /**
  * Text label to use for the button when full-screen is active.
  * Default is `\u00d7` (a cross).
- * Instead of text, also a Node (e.g. a `span` element) can be used.
- * @type {string|Node|undefined}
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @type {string|Element|undefined}
  * @api
  */
 olx.control.FullScreenOptions.prototype.labelActive;
@@ -451,9 +451,9 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
 
 /**
  * @typedef {{collapsed: (boolean|undefined),
- *     collapseLabel: (string|Node|undefined),
+ *     collapseLabel: (string|Element|undefined),
  *     collapsible: (boolean|undefined),
- *     label: (string|Node|undefined),
+ *     label: (string|Element|undefined),
  *     layers: (Array.<ol.layer.Layer>|ol.Collection.<ol.layer.Layer>|undefined),
  *     render: (function(ol.MapEvent)|undefined),
  *     target: (Element|string|undefined),
@@ -474,8 +474,8 @@ olx.control.OverviewMapOptions.prototype.collapsed;
 
 /**
  * Text label to use for the expanded overviewmap button. Default is `«`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
- * @type {string|Node|undefined}
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @type {string|Element|undefined}
  * @api
  */
 olx.control.OverviewMapOptions.prototype.collapseLabel;
@@ -491,8 +491,8 @@ olx.control.OverviewMapOptions.prototype.collapsible;
 
 /**
  * Text label to use for the collapsed overviewmap button. Default is `»`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
- * @type {string|Node|undefined}
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @type {string|Element|undefined}
  * @api
  */
 olx.control.OverviewMapOptions.prototype.label;
@@ -617,7 +617,7 @@ olx.control.RotateOptions.prototype.className;
 
 /**
  * Text label to use for the rotate button. Default is `⇧`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * Instead of text, also an element (e.g. a `span` element) can be used.
  * @type {string|Element|undefined}
  * @api
  */
@@ -678,8 +678,8 @@ olx.control.RotateOptions.prototype.target;
 /**
  * @typedef {{duration: (number|undefined),
  *     className: (string|undefined),
- *     zoomInLabel: (string|Node|undefined),
- *     zoomOutLabel: (string|Node|undefined),
+ *     zoomInLabel: (string|Element|undefined),
+ *     zoomOutLabel: (string|Element|undefined),
  *     zoomInTipLabel: (string|undefined),
  *     zoomOutTipLabel: (string|undefined),
  *     delta: (number|undefined),
@@ -706,8 +706,8 @@ olx.control.ZoomOptions.prototype.className;
 
 /**
  * Text label to use for the zoom-in button. Default is `+`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
- * @type {string|Node|undefined}
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @type {string|Element|undefined}
  * @api
  */
 olx.control.ZoomOptions.prototype.zoomInLabel;
@@ -715,8 +715,8 @@ olx.control.ZoomOptions.prototype.zoomInLabel;
 
 /**
  * Text label to use for the zoom-out button. Default is `-`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
- * @type {string|Node|undefined}
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @type {string|Element|undefined}
  * @api
  */
 olx.control.ZoomOptions.prototype.zoomOutLabel;
@@ -809,7 +809,7 @@ olx.control.ZoomSliderOptions.prototype.render;
 /**
  * @typedef {{className: (string|undefined),
  *     target: (Element|string|undefined),
- *     label: (string|Node|undefined),
+ *     label: (string|Element|undefined),
  *     tipLabel: (string|undefined),
  *     extent: (ol.Extent|undefined)}}
  */
@@ -835,8 +835,8 @@ olx.control.ZoomToExtentOptions.prototype.target;
 
 /**
  * Text label to use for the button. Default is `E`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
- * @type {string|Node|undefined}
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @type {string|Element|undefined}
  * @api
  */
 olx.control.ZoomToExtentOptions.prototype.label;

@@ -64,7 +64,7 @@ const FullScreen = function(opt_options) {
 
   /**
    * @private
-   * @type {Node}
+   * @type {Element}
    */
   this.labelNode_ = typeof label === 'string' ?
     document.createTextNode(label) : label;
@@ -73,7 +73,7 @@ const FullScreen = function(opt_options) {
 
   /**
    * @private
-   * @type {Node}
+   * @type {Element}
    */
   this.labelActiveNode_ = typeof labelActive === 'string' ?
     document.createTextNode(labelActive) : labelActive;
@@ -217,7 +217,7 @@ function isFullScreen() {
 
 /**
  * Request to fullscreen an element.
- * @param {Node} element Element to request fullscreen
+ * @param {Element} element Element to request fullscreen
  */
 function requestFullScreen(element) {
   if (element.requestFullscreen) {
@@ -233,7 +233,7 @@ function requestFullScreen(element) {
 
 /**
  * Request to fullscreen an element with keyboard input.
- * @param {Node} element Element to request fullscreen
+ * @param {Element} element Element to request fullscreen
  */
 function requestFullScreenWithKeys(element) {
   if (element.mozRequestFullScreenWithKeys) {
