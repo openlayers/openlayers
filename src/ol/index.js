@@ -26,7 +26,6 @@ export const DEBUG_WEBGL = true;
  * TODO: move to a separate ol-webgl package
  * The maximum supported WebGL texture size in pixels. If WebGL is not
  * supported, the value is set to `undefined`.
- * @const
  * @type {number|undefined}
  */
 let WEBGL_MAX_TEXTURE_SIZE; // value is set below
@@ -35,7 +34,6 @@ let WEBGL_MAX_TEXTURE_SIZE; // value is set below
 /**
  * TODO: move to a separate ol-webgl package
  * List of supported WebGL extensions.
- * @const
  * @type {Array.<string>}
  */
 let WEBGL_EXTENSIONS; // value is set below
