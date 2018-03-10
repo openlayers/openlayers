@@ -1,13 +1,5 @@
 
 /**
- * @typedef {Object} TileOptions
- * @property {number|undefined} transition A duration for tile opacity transitions.  By default, tiles will render with
- * an opacity transition that lasts 250 ms.  To change the duration, pass a
- * number in milliseconds.  A duration of 0 disables the opacity transition.
- */
-
-
-/**
  * @typedef {Object} AtPixelOptions
  * @property {((function(ol.layer.Layer): boolean)|undefined)} layerFilter Layer filter function. The filter function will receive one argument, the
  * {@link ol.layer.Layer layer-candidate} and it should return a boolean value.
@@ -16,48 +8,6 @@
  * @property {number|undefined} hitTolerance Hit-detection tolerance in pixels. Pixels inside the radius around the given position
  * will be checked for features. This only works for the canvas renderer and
  * not for WebGL. Default is `0`.
- */
-
-
-/**
- * @typedef {Object} OverlayOptions
- * @property {number|string|undefined} id Set the overlay id. The overlay id can be used with the
- * {@link ol.Map#getOverlayById} method.
- * @property {Element|undefined} element The overlay element.
- * @property {Array.<number>|undefined} offset Offsets in pixels used when positioning the overlay. The first element in the
- * array is the horizontal offset. A positive value shifts the overlay right.
- * The second element in the array is the vertical offset. A positive value
- * shifts the overlay down. Default is `[0, 0]`.
- * @property {ol.Coordinate|undefined} position The overlay position in map projection.
- * @property {ol.OverlayPositioning|string|undefined} positioning Defines how the overlay is actually positioned with respect to its `position`
- * property. Possible values are `'bottom-left'`, `'bottom-center'`,
- * `'bottom-right'`, `'center-left'`, `'center-center'`, `'center-right'`,
- * `'top-left'`, `'top-center'`, and `'top-right'`. Default is `'top-left'`.
- * @property {boolean|undefined} stopEvent Whether event propagation to the map viewport should be stopped. Default is
- * `true`. If `true` the overlay is placed in the same container as that of the
- * controls (CSS class name `ol-overlaycontainer-stopevent`); if `false` it is
- * placed in the container with CSS class name `ol-overlaycontainer`.
- * @property {boolean|undefined} insertFirst Whether the overlay is inserted first in the overlay container, or appended.
- * Default is `true`. If the overlay is placed in the same container as that of
- * the controls (see the `stopEvent` option) you will probably set `insertFirst`
- * to `true` so the overlay is displayed below the controls.
- * @property {boolean|undefined} autoPan If set to `true` the map is panned when calling `setPosition`, so that the
- * overlay is entirely visible in the current viewport.
- * The default is `false`.
- * @property {olx.OverlayPanOptions|undefined} autoPanAnimation The animation options used to pan the overlay into view. This animation
- * is only used when `autoPan` is enabled. A `duration` and `easing` may be
- * provided to customize the animation.
- * @property {number|undefined} autoPanMargin The margin (in pixels) between the overlay and the borders of the map when
- * autopanning. The default is `20`.
- * @property {string|undefined} className CSS class name. Default is `ol-overlay-container ol-selectable`.
- */
-
-
-/**
- * @typedef {Object} OverlayPanOptions
- * @property {number|undefined} duration The duration of the animation in milliseconds. Default is `1000`.
- * @property {undefined|function(number):number} easing The easing function to use. Can be an {@link ol.easing} or a custom function.
- * Default is {@link ol.easing.inAndOut}.
  */
 
 
@@ -75,57 +25,6 @@
  * `{number}` view resolution and an `{ol.Coordinate}` as arguments, and returns
  * the `{number}` resolution at the passed coordinate. If this is `undefined`,
  * the default {@link ol.proj#getPointResolution} function will be used.
- */
-
-
-/**
- * @typedef {Object} ViewOptions
- * @property {ol.Coordinate|undefined} center The initial center for the view. The coordinate system for the center is
- * specified with the `projection` option. Default is `undefined`, and layer
- * sources will not be fetched if this is not set.
- * @property {boolean|number|undefined} constrainRotation Rotation constraint. `false` means no constraint. `true` means no constraint,
- * but snap to zero near zero. A number constrains the rotation to that number
- * of values. For example, `4` will constrain the rotation to 0, 90, 180, and
- * 270 degrees. The default is `true`.
- * @property {boolean|undefined} enableRotation Enable rotation. Default is `true`. If `false` a rotation constraint that
- * always sets the rotation to zero is used. The `constrainRotation` option
- * has no effect if `enableRotation` is `false`.
- * @property {ol.Extent|undefined} extent The extent that constrains the center, in other words, center cannot be set
- * outside this extent. Default is `undefined`.
- * @property {number|undefined} maxResolution The maximum resolution used to determine the resolution constraint. It is
- * used together with `minResolution` (or `maxZoom`) and `zoomFactor`. If
- * unspecified it is calculated in such a way that the projection's validity
- * extent fits in a 256x256 px tile. If the projection is Spherical Mercator
- * (the default) then `maxResolution` defaults to `40075016.68557849 / 256 =
- * 156543.03392804097`.
- * @property {number|undefined} minResolution The minimum resolution used to determine the resolution constraint.  It is
- * used together with `maxResolution` (or `minZoom`) and `zoomFactor`.  If
- * unspecified it is calculated assuming 29 zoom levels (with a factor of 2).
- * If the projection is Spherical Mercator (the default) then `minResolution`
- * defaults to `40075016.68557849 / 256 / Math.pow(2, 28) =
- * 0.0005831682455839253`.
- * @property {number|undefined} maxZoom The maximum zoom level used to determine the resolution constraint. It is
- * used together with `minZoom` (or `maxResolution`) and `zoomFactor`. Default
- * is `28`.  Note that if `minResolution` is also provided, it is given
- * precedence over `maxZoom`.
- * @property {number|undefined} minZoom The minimum zoom level used to determine the resolution constraint. It is
- * used together with `maxZoom` (or `minResolution`) and `zoomFactor`. Default
- * is `0`. Note that if `maxResolution` is also provided, it is given
- * precedence over `minZoom`.
- * @property {ol.ProjectionLike} projection The projection. Default is `EPSG:3857` (Spherical Mercator).
- * @property {number|undefined} resolution The initial resolution for the view. The units are `projection` units per
- * pixel (e.g. meters per pixel). An alternative to setting this is to set
- * `zoom`. Default is `undefined`, and layer sources will not be fetched if
- * neither this nor `zoom` are defined.
- * @property {Array.<number>|undefined} resolutions Resolutions to determine the resolution constraint. If set the
- * `maxResolution`, `minResolution`, `minZoom`, `maxZoom`, and `zoomFactor`
- * options are ignored.
- * @property {number|undefined} rotation The initial rotation for the view in radians (positive rotation clockwise).
- * Default is `0`.
- * @property {number|undefined} zoom Only used if `resolution` is not defined. Zoom level used to calculate the
- * initial resolution for the view. The initial resolution is determined using
- * the `ol.View#constrainResolution` method.
- * @property {number|undefined} zoomFactor The zoom factor used to determine the resolution constraint.  Default is `2`.
  */
 
 
@@ -157,10 +56,10 @@
  * Default is `true`.
  * @property {boolean|undefined} collapsed Specify if attributions should be collapsed at startup. Default is `true`.
  * @property {string|undefined} tipLabel Text label to use for the button tip. Default is `Attributions`
- * @property {string|Node|undefined} label Text label to use for the collapsed attributions button. Default is `i`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
- * @property {string|Node|undefined} collapseLabel Text label to use for the expanded attributions button. Default is `»`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @property {string|Element|undefined} label Text label to use for the collapsed attributions button. Default is `i`.
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @property {string|Element|undefined} collapseLabel Text label to use for the expanded attributions button. Default is `»`.
+ * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {function(ol.MapEvent)|undefined} render Function called when the control should be re-rendered. This is called
  * in a requestAnimationFrame callback.
  */
@@ -178,24 +77,13 @@
 
 
 /**
- * @typedef {Object} control_DefaultsOptions
- * @property {boolean|undefined} attribution Attribution. Default is `true`.
- * @property {olx.control.AttributionOptions|undefined} attributionOptions Attribution options.
- * @property {boolean|undefined} rotate Rotate. Default is `true`.
- * @property {olx.control.RotateOptions|undefined} rotateOptions Rotate options.
- * @property {boolean|undefined} zoom Zoom. Default is `true`.
- * @property {olx.control.ZoomOptions|undefined} zoomOptions Zoom options.
- */
-
-
-/**
  * @typedef {Object} control_FullScreenOptions
  * @property {string|undefined} className CSS class name. Default is `ol-full-screen`.
- * @property {string|Node|undefined} label Text label to use for the button. Default is `\u2922` (NORTH EAST AND SOUTH WEST ARROW).
- * Instead of text, also a Node (e.g. a `span` element) can be used.
- * @property {string|Node|undefined} labelActive Text label to use for the button when full-screen is active.
+ * @property {string|Element|undefined} label Text label to use for the button. Default is `\u2922` (NORTH EAST AND SOUTH WEST ARROW).
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @property {string|Element|undefined} labelActive Text label to use for the button when full-screen is active.
  * Default is `\u00d7` (a cross).
- * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string|undefined} tipLabel Text label to use for the button tip. Default is `Toggle full-screen`
  * @property {boolean|undefined} keys Full keyboard access.
  * @property {Element|string|undefined} target Specify a target if you want the control to be rendered outside of the map's
@@ -207,7 +95,7 @@
 /**
  * @typedef {Object} control_MousePositionOptions
  * @property {string|undefined} className CSS class name. Default is `ol-mouse-position`.
- * @property {ol.CoordinateFormatType|undefined} coordinateFormat Coordinate format.
+ * @property {module:ol/coordinate~CoordinateFormat|undefined} coordinateFormat Coordinate format.
  * @property {ol.ProjectionLike} projection Projection.
  * @property {function(ol.MapEvent)|undefined} render Function called when the control should be re-rendered. This is called
  * in a requestAnimationFrame callback.
@@ -221,11 +109,11 @@
  * @typedef {Object} control_OverviewMapOptions
  * @property {boolean|undefined} collapsed Whether the control should start collapsed or not (expanded).
  * Default to `true`.
- * @property {string|Node|undefined} collapseLabel Text label to use for the expanded overviewmap button. Default is `«`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @property {string|Element|undefined} collapseLabel Text label to use for the expanded overviewmap button. Default is `«`.
+ * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {boolean|undefined} collapsible Whether the control can be collapsed or not. Default to `true`.
- * @property {string|Node|undefined} label Text label to use for the collapsed overviewmap button. Default is `»`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @property {string|Element|undefined} label Text label to use for the collapsed overviewmap button. Default is `»`.
+ * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {Array.<ol.layer.Layer>|ol.Collection.<ol.layer.Layer>|undefined} layers Layers for the overview map. If not set, then all main map layers are used
  * instead.
  * @property {function(ol.MapEvent)|undefined} render Function called when the control should be re-rendered. This is called
@@ -254,7 +142,7 @@
  * @typedef {Object} control_RotateOptions
  * @property {string|undefined} className CSS class name. Default is `ol-rotate`.
  * @property {string|Element|undefined} label Text label to use for the rotate button. Default is `⇧`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string|undefined} tipLabel Text label to use for the rotate tip. Default is `Reset rotation`
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {boolean|undefined} autoHide Hide the control when rotation is 0. Default is `true`.
@@ -271,10 +159,10 @@
  * @typedef {Object} control_ZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {string|undefined} className CSS class name. Default is `ol-zoom`.
- * @property {string|Node|undefined} zoomInLabel Text label to use for the zoom-in button. Default is `+`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
- * @property {string|Node|undefined} zoomOutLabel Text label to use for the zoom-out button. Default is `-`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @property {string|Element|undefined} zoomInLabel Text label to use for the zoom-in button. Default is `+`.
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @property {string|Element|undefined} zoomOutLabel Text label to use for the zoom-out button. Default is `-`.
+ * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string|undefined} zoomInTipLabel Text label to use for the button tip. Default is `Zoom in`
  * @property {string|undefined} zoomOutTipLabel Text label to use for the button tip. Default is `Zoom out`
  * @property {number|undefined} delta The zoom delta applied on each click.
@@ -299,8 +187,8 @@
  * @property {string|undefined} className Class name. Default is `ol-zoom-extent`.
  * @property {Element|string|undefined} target Specify a target if you want the control to be rendered outside of the map's
  * viewport.
- * @property {string|Node|undefined} label Text label to use for the button. Default is `E`.
- * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @property {string|Element|undefined} label Text label to use for the button. Default is `E`.
+ * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string|undefined} tipLabel Text label to use for the button tip. Default is `Zoom to extent`
  * @property {ol.Extent|undefined} extent The extent to zoom to. If undefined the validity extent of the view
  * projection is used.
@@ -419,7 +307,7 @@
 
 /**
  * @typedef {Object} format_IGCOptions
- * @property {ol.format.IGCZ|undefined} altitudeMode Altitude mode. Possible values are `barometric`, `gps`, and `none`. Default
+ * @property {IGCZ|string|undefined} altitudeMode Altitude mode. Possible values are `barometric`, `gps`, and `none`. Default
  * is `none`.
  */
 
@@ -540,23 +428,6 @@
 
 
 /**
- * @typedef {Object} interaction_DefaultsOptions
- * @property {boolean|undefined} altShiftDragRotate Whether Alt-Shift-drag rotate is desired. Default is `true`.
- * @property {boolean|undefined} constrainResolution Zoom to the closest integer zoom level after the wheel/trackpad or
- * pinch gesture ends. Default is `false`.
- * @property {boolean|undefined} doubleClickZoom Whether double click zoom is desired. Default is `true`.
- * @property {boolean|undefined} keyboard Whether keyboard interaction is desired. Default is `true`.
- * @property {boolean|undefined} mouseWheelZoom Whether mousewheel zoom is desired. Default is `true`.
- * @property {boolean|undefined} shiftDragZoom Whether Shift-drag zoom is desired. Default is `true`.
- * @property {boolean|undefined} dragPan Whether drag pan is desired. Default is `true`.
- * @property {boolean|undefined} pinchRotate Whether pinch rotate is desired. Default is `true`.
- * @property {boolean|undefined} pinchZoom Whether pinch zoom is desired. Default is `true`.
- * @property {number|undefined} zoomDelta Zoom delta.
- * @property {number|undefined} zoomDuration Zoom duration.
- */
-
-
-/**
  * @typedef {Object} interaction_DoubleClickZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} delta The zoom delta applied on each double click, default is `1`.
@@ -637,6 +508,8 @@
  * devices.
  * @property {ol.Collection.<ol.Feature>|undefined} features Destination collection for the drawn features.
  * @property {ol.source.Vector|undefined} source Destination source for the drawn features.
+ * @property {number|undefined} dragVertexDelay Delay in milliseconds after pointerdown before the current vertex can be
+ * dragged to its exact position. Default is 500 ms.
  * @property {number|undefined} snapTolerance Pixel distance for snapping to the drawing finish. Default is `12`.
  * @property {ol.geom.GeometryType|string} type Drawing type ('Point', 'LineString', 'Polygon', 'MultiPoint',
  * 'MultiLineString', 'MultiPolygon' or 'Circle').
@@ -744,6 +617,8 @@
 
 /**
  * @typedef {Object} interaction_MouseWheelZoomOptions
+ * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled. Default is {@link ol.events.condition.always}.
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} timeout Mouse wheel timeout duration in milliseconds. Default is `80`.
  * @property {boolean|undefined} constrainResolution When using a trackpad or magic mouse, zoom to the closest integer zoom level
@@ -982,6 +857,7 @@
  * z-index means higher priority. Default is `false`.
  * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} style Layer style. See {@link ol.style} for default style which will be used if
  * this is not defined.
+ * @property {number|undefined} maxTilesLoading Maximum number tiles to load simultaneously.  Default is `16`.
  * @property {boolean|undefined} updateWhileAnimating When set to `true`, feature batches will be recreated during animations.
  * This means that no vectors will be shown clipped, but the setting will have a
  * performance impact for large amounts of vector data. When set to `false`,
@@ -1053,16 +929,6 @@
  * @property {number} resolution Resolution that the render batch was created and optimized for. This is
  * not the view's resolution that is being rendered.
  * @property {number} rotation Rotation of the rendered layer in radians.
- */
-
-
-/**
- * @typedef {Object} render_ToContextOptions
- * @property {ol.Size|undefined} size Desired size of the canvas in css pixels. When provided, both canvas and css
- * size will be set according to the `pixelRatio`. If not provided, the current
- * canvas and css sizes will not be altered.
- * @property {number|undefined} pixelRatio Pixel ratio (canvas pixel to css pixel ratio) for the canvas. Default
- * is the detected device pixel ratio.
  */
 
 
@@ -2013,38 +1879,6 @@
 
 
 /**
- * @typedef {Object} view_FitOptions
- * @property {ol.Size|undefined} size The size in pixels of the box to fit the extent into. Default is
- * the current size of the first map in the DOM that uses this view, or
- * `[100, 100]` if no such map is found.
- * @property {!Array.<number>|undefined} padding Padding (in pixels) to be cleared inside the view. Values in the array are
- * top, right, bottom and left padding. Default is `[0, 0, 0, 0]`.
- * @property {boolean|undefined} constrainResolution Constrain the resolution. Default is `true`.
- * @property {boolean|undefined} nearest Get the nearest extent. Default is `false`.
- * @property {number|undefined} minResolution Minimum resolution that we zoom to. Default is `0`.
- * @property {number|undefined} maxZoom Maximum zoom level that we zoom to. If `minResolution` is given,
- * this property is ignored.
- * @property {number|undefined} duration The duration of the animation in milliseconds. By default, there is no
- * animations.
- * @property {undefined|function(number):number} easing The easing function used during the animation (defaults to {@link ol.easing.inAndOut}).
- * The function will be called for each frame with a number representing a
- * fraction of the animation's duration.  The function should return a number
- * between 0 and 1 representing the progress toward the destination state.
- * @property {undefined|function(boolean)} callback Optional function called when the view is in it's final position. The callback will be
- * called with `true` if the animation series completed on its own or `false`
- * if it was cancelled.
- */
-
-
-/**
- * @typedef {Object} FrameState
- * @property {number} pixelRatio 
- * @property {number} time 
- * @property {olx.ViewState} viewState 
- */
-
-
-/**
  * @typedef {Object} ViewState
  * @property {ol.Coordinate} center 
  * @property {ol.proj.Projection} projection 
@@ -2060,19 +1894,5 @@
  * @property {number|undefined} maxSize The maximum size in pixels of atlas images. Default is
  * `WEBGL_MAX_TEXTURE_SIZE` or 2048 if WebGL is not supported.
  * @property {number|undefined} space The space in pixels between images (default: 1).
- */
-
-
-/**
- * @typedef {Object} MapRendererPlugin
- * @property {function(ol.renderer.Type):boolean} handles Determine if this renderer handles the provided layer.
- * @property {function(Element, ol.PluggableMap):ol.renderer.Map} create Create the map renderer.
- */
-
-
-/**
- * @typedef {Object} LayerRendererPlugin
- * @property {function(ol.renderer.Type, ol.layer.Layer):boolean} handles Determine if this renderer handles the provided layer.
- * @property {function(ol.renderer.Map, ol.layer.Layer):ol.renderer.Layer} create Create a layer renderer.
  */
 
