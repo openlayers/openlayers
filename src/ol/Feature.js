@@ -78,7 +78,7 @@ const Feature = function(opt_geometryOrProperties) {
   /**
    * User provided style.
    * @private
-   * @type {module:ol/style/Style~Geometry|Array.<module:ol/style/Style~Geometry>|module:ol/style~StyleFunction}
+   * @type {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction}
    */
   this.style_ = null;
 
@@ -176,7 +176,7 @@ Feature.prototype.getGeometryName = function() {
 /**
  * Get the feature's style. Will return what was provided to the
  * {@link module:ol/Feature~Feature#setStyle} method.
- * @return {module:ol/style/Style~Geometry|Array.<module:ol/style/Style~Geometry>|module:ol/style~StyleFunction} The feature style.
+ * @return {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction} The feature style.
  * @api
  */
 Feature.prototype.getStyle = function() {
@@ -236,7 +236,7 @@ Feature.prototype.setGeometry = function(geometry) {
  * Set the style for the feature.  This can be a single style object, an array
  * of styles, or a function that takes a resolution and returns an array of
  * styles. If it is `null` the feature has no style (a `null` style).
- * @param {module:ol/style/Style~Geometry|Array.<module:ol/style/Style~Geometry>|module:ol/style~StyleFunction} style Style for this feature.
+ * @param {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction} style Style for this feature.
  * @api
  * @fires module:ol/events/Event~Event#event:change
  */
@@ -283,9 +283,9 @@ Feature.prototype.setGeometryName = function(name) {
 
 /**
  * Convert the provided object into a feature style function.  Functions passed
- * through unchanged.  Arrays of module:ol/style/Style~Geometry or single style objects wrapped
+ * through unchanged.  Arrays of module:ol/style/Style~Style or single style objects wrapped
  * in a new feature style function.
- * @param {module:ol/style~StyleFunction|!Array.<module:ol/style/Style~Geometry>|!module:ol/style/Style~Geometry} obj
+ * @param {module:ol/style~StyleFunction|!Array.<module:ol/style/Style~Style>|!module:ol/style/Style~Style} obj
  *     A feature style function, a single style, or an array of styles.
  * @return {module:ol/style~StyleFunction} A style function.
  */
@@ -294,14 +294,14 @@ export function createStyleFunction(obj) {
     return obj;
   } else {
     /**
-     * @type {Array.<module:ol/style/Style~Geometry>}
+     * @type {Array.<module:ol/style/Style~Style>}
      */
     let styles;
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
       assert(obj instanceof Style,
-        41); // Expected an `module:ol/style/Style~Geometry` or an array of `module:ol/style/Style~Geometry`
+        41); // Expected an `module:ol/style/Style~Style` or an array of `module:ol/style/Style~Style`
       styles = [obj];
     }
     return function() {
