@@ -58,7 +58,7 @@ const Attribution = function(opt_options) {
   if (typeof collapseLabel === 'string') {
     /**
      * @private
-     * @type {Node}
+     * @type {Element}
      */
     this.collapseLabel_ = document.createElement('span');
     this.collapseLabel_.textContent = collapseLabel;
@@ -71,7 +71,7 @@ const Attribution = function(opt_options) {
   if (typeof label === 'string') {
     /**
      * @private
-     * @type {Node}
+     * @type {Element}
      */
     this.label_ = document.createElement('span');
     this.label_.textContent = label;
