@@ -1,17 +1,4 @@
 
-/**
- * @typedef {Object} format_GeoJSONOptions
- * @property {ol.ProjectionLike} defaultDataProjection Default data projection. Default is `EPSG:4326`.
- * @property {ol.ProjectionLike} featureProjection Projection for features read or written by the format.  Options passed to
- * read or write methods will take precedence.
- * @property {string|undefined} geometryName Geometry name to use when creating features.
- * @property {boolean|undefined} extractGeometryName Certain GeoJSON providers include the geometry_name field in the feature
- * geoJSON. If set to `true` the geoJSON reader will look for that field to
- * set the geometry name. If both this field is set to `true` and a
- * `geometryName` is provided, the `geometryName` will take precedence.
- * Default is `false`.
- */
-
 
 /**
  * @typedef {Object} format_EsriJSONOptions

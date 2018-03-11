@@ -19,13 +19,29 @@ import Polygon from '../geom/Polygon.js';
 import {assign, isEmpty} from '../obj.js';
 import {get as getProjection} from '../proj.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {ol.ProjectionLike} defaultDataProjection Default data projection.
+ * Default is `EPSG:4326`.
+ * @property {ol.ProjectionLike} featureProjection Projection for features read or
+ * written by the format.  Options passed to read or write methods will take precedence.
+ * @property {string|undefined} geometryName Geometry name to use when creating features.
+ * @property {boolean|undefined} extractGeometryName Certain GeoJSON providers include
+ * the geometry_name field in the feature GeoJSON. If set to `true` the GeoJSON reader
+ * will look for that field to set the geometry name. If both this field is set to `true`
+ * and a `geometryName` is provided, the `geometryName` will take precedence.
+ * Default is `false`.
+ */
+
+
 /**
  * @classdesc
  * Feature format for reading and writing data in the GeoJSON format.
  *
  * @constructor
  * @extends {ol.format.JSONFeature}
- * @param {olx.format.GeoJSONOptions=} opt_options Options.
+ * @param {module:ol/format/GeoJSON~Options=} opt_options Options.
  * @api
  */
 const GeoJSON = function(opt_options) {
