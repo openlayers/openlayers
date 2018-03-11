@@ -21,7 +21,7 @@ import {containsExtent} from './extent.js';
  * array is the horizontal offset. A positive value shifts the overlay right.
  * The second element in the array is the vertical offset. A positive value
  * shifts the overlay down.
- * @property {module:ol/coordinate~Coordinate~Coordinate} [position] The overlay position
+ * @property {module:ol/coordinate~Coordinate} [position] The overlay position
  * in map projection.
  * @property {module:ol/OverlayPositioning~OverlayPositioning} [positioning='top-left'] Defines how
  * the overlay is actually positioned with respect to its `position` property.

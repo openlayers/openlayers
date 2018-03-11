@@ -80,7 +80,7 @@ import Units from './proj/Units.js';
 
 /**
  * @typedef {Object} ViewOptions
- * @property {module:ol/coordinate~Coordinate~Coordinate} [center] The initial center for
+ * @property {module:ol/coordinate~Coordinate} [center] The initial center for
  * the view. The coordinate system for the center is specified with the
  * `projection` option. Layer sources will not be fetched if this is not set,
  * but the center can be set later with {@link #setCenter}.
