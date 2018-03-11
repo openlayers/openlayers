@@ -37,11 +37,37 @@ const MIN_RATIO = 0.1;
 
 
 /**
+ * @typedef {Object} Options
+ * @property {boolean|undefined} collapsed Whether the control should start collapsed
+ * or not (expanded).  Default to `true`.
+ * @property {string|Element|undefined} collapseLabel Text label to use for the
+ * expanded overviewmap button. Default is `'«'`. Instead of text, also an element
+ * (e.g. a `span` element) can be used.
+ * @property {boolean|undefined} collapsible Whether the control can be collapsed
+ * or not. Default to `true`.
+ * @property {string|Element|undefined} label Text label to use for the collapsed
+ * overviewmap button. Default is `'»'`. Instead of text, also an element
+ * (e.g. a `span` element) can be used.
+ * @property {Array.<ol.layer.Layer>|ol.Collection.<ol.layer.Layer>|undefined} layers
+ * Layers for the overview map. If not set, then all main map layers are used
+ * instead.
+ * @property {function(ol.MapEvent)|undefined} render Function called when the control
+ * should be re-rendered. This is called in a `requestAnimationFrame` callback.
+ * @property {Element|string|undefined} target Specify a target if you want the control
+ * to be rendered outside of the map's viewport.
+ * @property {string|undefined} tipLabel Text label to use for the button tip. Default
+ * is `'Overview map'`.
+ * @property {ol.View|undefined} view Custom view for the overview map. If not provided,
+ * a default view with an EPSG:3857 projection will be used.
+ */
+
+
+/**
  * Create a new control with a map acting as an overview map for an other
  * defined map.
  * @constructor
  * @extends {ol.control.Control}
- * @param {olx.control.OverviewMapOptions=} opt_options OverviewMap options.
+ * @param {module:ol/control/OverviewMap~Options=} opt_options OverviewMap options.
  * @api
  */
 const OverviewMap = function(opt_options) {
