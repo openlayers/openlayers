@@ -1,17 +1,5 @@
 
 /**
- * @typedef {Object} control_ScaleLineOptions
- * @property {string|undefined} className CSS Class name. Default is `ol-scale-line`.
- * @property {number|undefined} minWidth Minimum width in pixels. Default is `64`.
- * @property {function(ol.MapEvent)|undefined} render Function called when the control should be re-rendered. This is called
- * in a requestAnimationFrame callback.
- * @property {Element|string|undefined} target Specify a target if you want the control to be rendered outside of the map's
- * viewport.
- * @property {ol.control.ScaleLineUnits|string|undefined} units Units. Default is `metric`.
- */
-
-
-/**
  * @typedef {Object} control_RotateOptions
  * @property {string|undefined} className CSS class name. Default is `ol-rotate`.
  * @property {string|Element|undefined} label Text label to use for the rotate button. Default is `⇧`.

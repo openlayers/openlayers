@@ -6,58 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{className: (string|undefined),
- *     minWidth: (number|undefined),
- *     render: (function(ol.MapEvent)|undefined),
- *     target: (Element|string|undefined),
- *     units: (ol.control.ScaleLineUnits|string|undefined)}}
- */
-olx.control.ScaleLineOptions;
-
-
-/**
- * CSS Class name. Default is `ol-scale-line`.
- * @type {string|undefined}
- * @api
- */
-olx.control.ScaleLineOptions.prototype.className;
-
-
-/**
- * Minimum width in pixels. Default is `64`.
- * @type {number|undefined}
- * @api
- */
-olx.control.ScaleLineOptions.prototype.minWidth;
-
-
-/**
- * Function called when the control should be re-rendered. This is called
- * in a requestAnimationFrame callback.
- * @type {function(ol.MapEvent)|undefined}
- * @api
- */
-olx.control.ScaleLineOptions.prototype.render;
-
-
-/**
- * Specify a target if you want the control to be rendered outside of the map's
- * viewport.
- * @type {Element|string|undefined}
- * @api
- */
-olx.control.ScaleLineOptions.prototype.target;
-
-
-/**
- * Units. Default is `metric`.
- * @type {ol.control.ScaleLineUnits|string|undefined}
- * @api
- */
-olx.control.ScaleLineOptions.prototype.units;
-
-
-/**
  * @typedef {{duration: (number|undefined),
  *     className: (string|undefined),
  *     label: (string|Element|undefined),
