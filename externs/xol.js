@@ -1,22 +1,5 @@
 
 /**
- * @typedef {Object} control_RotateOptions
- * @property {string|undefined} className CSS class name. Default is `ol-rotate`.
- * @property {string|Element|undefined} label Text label to use for the rotate button. Default is `⇧`.
- * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|undefined} tipLabel Text label to use for the rotate tip. Default is `Reset rotation`
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
- * @property {boolean|undefined} autoHide Hide the control when rotation is 0. Default is `true`.
- * @property {function(ol.MapEvent)|undefined} render Function called when the control should be re-rendered. This is called
- * in a requestAnimationFrame callback.
- * @property {function()|undefined} resetNorth Function called when the control is clicked. This will override the
- * default resetNorth.
- * @property {Element|string|undefined} target Specify a target if you want the control to be rendered outside of the map's
- * viewport.
- */
-
-
-/**
  * @typedef {Object} control_ZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {string|undefined} className CSS class name. Default is `ol-zoom`.
