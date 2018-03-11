@@ -62,6 +62,19 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 
 /**
+ * @typedef {Object} AtPixelOptions
+ * @property {((function(ol.layer.Layer): boolean)|undefined)} layerFilter Layer filter
+ * function. The filter function will receive one argument, the
+ * {@link ol.layer.Layer layer-candidate} and it should return a boolean value.
+ * Only layers which are visible and for which this function returns `true`
+ * will be tested for features. By default, all visible layers will be tested.
+ * @property {number|undefined} hitTolerance Hit-detection tolerance in pixels. Pixels
+ * inside the radius around the given position will be checked for features. This only
+ * works for the canvas renderer and not for WebGL. Default is `0`.
+ */
+
+
+/**
  * @typedef {Object} MapOptionsInternal
  * @property {module:ol/Collection~Collection.<module:ol/control/Control~Control>} [controls]
  * @property {module:ol/Collection~Collection.<module:ol/interaction/Interaction~Interaction>} [interactions]
@@ -554,7 +567,7 @@ PluggableMap.prototype.disposeInternal = function() {
  *     the {@link module:ol/layer/Layer~Layer layer} of the feature and will be null for
  *     unmanaged layers. To stop detection, callback functions can return a
  *     truthy value.
- * @param {olx.AtPixelOptions=} opt_options Optional options.
+ * @param {module:ol/PluggableMap~AtPixelOptions=} opt_options Optional options.
  * @return {T|undefined} Callback result, i.e. the return value of last
  * callback execution, or the first truthy callback return value.
  * @template S,T
@@ -579,7 +592,7 @@ PluggableMap.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_opt
 /**
  * Get all features that intersect a pixel on the viewport.
  * @param {module:ol~Pixel} pixel Pixel.
- * @param {olx.AtPixelOptions=} opt_options Optional options.
+ * @param {module:ol/PluggableMap~AtPixelOptions=} opt_options Optional options.
  * @return {Array.<module:ol/Feature~Feature|module:ol/render/Feature~Feature>} The detected features or
  * `null` if none were found.
  * @api
@@ -636,7 +649,7 @@ PluggableMap.prototype.forEachLayerAtPixel = function(pixel, callback, opt_this,
  * Detect if features intersect a pixel on the viewport. Layers included in the
  * detection can be configured through `opt_layerFilter`.
  * @param {module:ol~Pixel} pixel Pixel.
- * @param {olx.AtPixelOptions=} opt_options Optional options.
+ * @param {module:ol/PluggableMap~AtPixelOptions=} opt_options Optional options.
  * @return {boolean} Is there a feature at the given pixel?
  * @template U
  * @api

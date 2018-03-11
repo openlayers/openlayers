@@ -26,6 +26,18 @@ const LEADING_DIGITS = [1, 2, 5];
 
 
 /**
+ * @typedef {Object} Options
+ * @property {string|undefined} className CSS Class name. Default is `'ol-scale-line'`.
+ * @property {number|undefined} minWidth Minimum width in pixels. Default is `64`.
+ * @property {function(ol.MapEvent)|undefined} render Function called when the control
+ * should be re-rendered. This is called in a `requestAnimationFrame` callback.
+ * @property {Element|string|undefined} target Specify a target if you want the control
+ * to be rendered outside of the map's viewport.
+ * @property {ol.control.ScaleLineUnits|string|undefined} units Units. Default is `'metric'`.
+ */
+
+
+/**
  * @classdesc
  * A control displaying rough y-axis distances, calculated for the center of the
  * viewport. For conformal projections (e.g. EPSG:3857, the default view
@@ -37,7 +49,7 @@ const LEADING_DIGITS = [1, 2, 5];
  *
  * @constructor
  * @extends {ol.control.Control}
- * @param {olx.control.ScaleLineOptions=} opt_options Scale line options.
+ * @param {module:ol/control/ScaleLine~Options=} opt_options Scale line options.
  * @api
  */
 const ScaleLine = function(opt_options) {

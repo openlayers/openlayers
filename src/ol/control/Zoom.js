@@ -8,6 +8,25 @@ import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
+ * @property {string|undefined} className CSS class name. Default is `'ol-zoom'`.
+ * @property {string|Element|undefined} zoomInLabel Text label to use for the zoom-in
+ * button. Default is `'+'`. Instead of text, also an element (e.g. a `span` element) can be used.
+ * @property {string|Element|undefined} zoomOutLabel Text label to use for the zoom-out button.
+ * Default is `'-'`. Instead of text, also an element (e.g. a `span` element) can be used.
+ * @property {string|undefined} zoomInTipLabel Text label to use for the button tip. Default is
+ * `'Zoom in'`.
+ * @property {string|undefined} zoomOutTipLabel Text label to use for the button tip. Default is
+ * `'Zoom out'`.
+ * @property {number|undefined} delta The zoom delta applied on each click.
+ * @property {Element|string|undefined} target Specify a target if you want the control to be
+ * rendered outside of the map's viewport.
+ */
+
+
 /**
  * @classdesc
  * A control with 2 buttons, one for zoom in and one for zoom out.
@@ -16,7 +35,7 @@ import {easeOut} from '../easing.js';
  *
  * @constructor
  * @extends {ol.control.Control}
- * @param {olx.control.ZoomOptions=} opt_options Zoom options.
+ * @param {module:ol/control/Zoom~Options=} opt_options Zoom options.
  * @api
  */
 const Zoom = function(opt_options) {
