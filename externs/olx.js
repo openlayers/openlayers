@@ -7,57 +7,6 @@ let olx;
 
 /**
  * @typedef {{className: (string|undefined),
- *     duration: (number|undefined),
- *     maxResolution: (number|undefined),
- *     minResolution: (number|undefined),
- *     render: (function(ol.MapEvent)|undefined)}}
- */
-olx.control.ZoomSliderOptions;
-
-
-/**
- * CSS class name.
- * @type {string|undefined}
- * @api
- */
-olx.control.ZoomSliderOptions.prototype.className;
-
-
-/**
- * Animation duration in milliseconds. Default is `200`.
- * @type {number|undefined}
- * @api
- */
-olx.control.ZoomSliderOptions.prototype.duration;
-
-
-/**
- * Maximum resolution.
- * @type {number|undefined}
- * @api
- */
-olx.control.ZoomSliderOptions.prototype.maxResolution;
-
-
-/**
- * Minimum resolution.
- * @type {number|undefined}
- * @api
- */
-olx.control.ZoomSliderOptions.prototype.minResolution;
-
-
-/**
- * Function called when the control should be re-rendered. This is called
- * in a requestAnimationFrame callback.
- * @type {function(ol.MapEvent)|undefined}
- * @api
- */
-olx.control.ZoomSliderOptions.prototype.render;
-
-
-/**
- * @typedef {{className: (string|undefined),
  *     target: (Element|string|undefined),
  *     label: (string|Element|undefined),
  *     tipLabel: (string|undefined),

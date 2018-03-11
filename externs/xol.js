@@ -1,16 +1,5 @@
 
 /**
- * @typedef {Object} control_ZoomSliderOptions
- * @property {string|undefined} className CSS class name.
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `200`.
- * @property {number|undefined} maxResolution Maximum resolution.
- * @property {number|undefined} minResolution Minimum resolution.
- * @property {function(ol.MapEvent)|undefined} render Function called when the control should be re-rendered. This is called
- * in a requestAnimationFrame callback.
- */
-
-
-/**
  * @typedef {Object} control_ZoomToExtentOptions
  * @property {string|undefined} className Class name. Default is `ol-zoom-extent`.
  * @property {Element|string|undefined} target Specify a target if you want the control to be rendered outside of the map's
