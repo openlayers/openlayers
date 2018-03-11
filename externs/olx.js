@@ -6,20 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{geometryName: (string|undefined)}}
- */
-olx.format.EsriJSONOptions;
-
-
-/**
- * Geometry name to use when creating features.
- * @type {string|undefined}
- * @api
- */
-olx.format.EsriJSONOptions.prototype.geometryName;
-
-
-/**
  * @typedef {{featureClass: (function((ol.geom.Geometry|Object.<string, *>)=)|
  *         function(ol.geom.GeometryType,Array.<number>,
  *             (Array.<number>|Array.<Array.<number>>),Object.<string, *>)|

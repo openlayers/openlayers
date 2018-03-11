@@ -49,12 +49,18 @@ GEOMETRY_WRITERS[GeometryType.MULTI_POLYGON] = writeMultiPolygonGeometry;
 
 
 /**
+ * @typedef {Object} Options
+ * @property {string|undefined} geometryName Geometry name to use when creating features.
+ */
+
+
+/**
  * @classdesc
  * Feature format for reading and writing data in the EsriJSON format.
  *
  * @constructor
  * @extends {ol.format.JSONFeature}
- * @param {olx.format.EsriJSONOptions=} opt_options Options.
+ * @param {module:ol/format/EsriJSON~Options=} opt_options Options.
  * @api
  */
 const EsriJSON = function(opt_options) {

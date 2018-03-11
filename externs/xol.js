@@ -1,11 +1,4 @@
 
-
-/**
- * @typedef {Object} format_EsriJSONOptions
- * @property {string|undefined} geometryName Geometry name to use when creating features.
- */
-
-
 /**
  * @typedef {Object} format_MVTOptions
  * @property {undefined|function((ol.geom.Geometry|Object.<string,*>)=)|    function(ol.geom.GeometryType,Array.<number>,
