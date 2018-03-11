@@ -758,13 +758,6 @@ olx.format.WMSGetFeatureInfoOptions.prototype.layers;
 
 
 /**
- * Namespace.
- * @type {Object}
- */
-olx.interaction;
-
-
-/**
  * @typedef {{duration: (number|undefined),
  *     delta: (number|undefined)}}
  */
@@ -1772,13 +1765,6 @@ olx.interaction.SnapOptions.prototype.source;
 
 
 /**
- * Namespace.
- * @type {Object}
- */
-olx.layer;
-
-
-/**
  * @typedef {{opacity: (number|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
@@ -2632,13 +2618,6 @@ olx.layer.VectorTileOptions.prototype.zIndex;
 
 
 /**
- * Namespace.
- * @type {Object}
- */
-olx.render;
-
-
-/**
  * @typedef {{context: CanvasRenderingContext2D,
  *     feature: (ol.Feature|ol.render.Feature),
  *     geometry: ol.geom.SimpleGeometry,
@@ -2680,13 +2659,6 @@ olx.render.State.prototype.resolution;
  * @api
  */
 olx.render.State.prototype.rotation;
-
-
-/**
- * Namespace.
- * @type {Object}
- */
-olx.source;
 
 
 /**
@@ -5238,13 +5210,6 @@ olx.source.ZoomifyOptions.prototype.tileSize;
 
 
 /**
- * Namespace.
- * @type {Object}
- */
-olx.style;
-
-
-/**
  * @typedef {{fill: (ol.style.Fill|undefined),
  *     radius: number,
  *     snapToPixel: (boolean|undefined),
@@ -5937,13 +5902,6 @@ olx.style.StyleOptions.prototype.zIndex;
 
 
 /**
- * Namespace.
- * @type {Object}
- */
-olx.tilegrid;
-
-
-/**
  * @typedef {{extent: (ol.Extent|undefined),
  *     minZoom: (number|undefined),
  *     origin: (ol.Coordinate|undefined),
@@ -6175,16 +6133,6 @@ olx.tilegrid.XYZOptions.prototype.minZoom;
  * @api
  */
 olx.tilegrid.XYZOptions.prototype.tileSize;
-
-
-/**
- * Namespace.
- * @type {Object}
- */
-olx.view;
-
-
-/* typedefs for object literals exposed by the library */
 
 
 /**
