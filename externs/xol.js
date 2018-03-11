@@ -1,17 +1,5 @@
 
 /**
- * @typedef {Object} AtPixelOptions
- * @property {((function(ol.layer.Layer): boolean)|undefined)} layerFilter Layer filter function. The filter function will receive one argument, the
- * {@link ol.layer.Layer layer-candidate} and it should return a boolean value.
- * Only layers which are visible and for which this function returns `true`
- * will be tested for features. By default, all visible layers will be tested.
- * @property {number|undefined} hitTolerance Hit-detection tolerance in pixels. Pixels inside the radius around the given position
- * will be checked for features. This only works for the canvas renderer and
- * not for WebGL. Default is `0`.
- */
-
-
-/**
  * @typedef {Object} ProjectionOptions
  * @property {string} code The SRS identifier code, e.g. `EPSG:4326`.
  * @property {ol.proj.Units|string|undefined} units Units. Required unless a proj4 projection is defined for `code`.

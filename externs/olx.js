@@ -2,37 +2,7 @@
 /**
  * @type {Object}
  */
-var olx;
-
-
-/**
- * Object literal with options for the {@link ol.Map#forEachFeatureAtPixel} and
- * {@link ol.Map#hasFeatureAtPixel} methods.
- * @typedef {{layerFilter: ((function(ol.layer.Layer): boolean)|undefined),
- *    hitTolerance: (number|undefined)}}
- */
-olx.AtPixelOptions;
-
-
-/**
- * Layer filter function. The filter function will receive one argument, the
- * {@link ol.layer.Layer layer-candidate} and it should return a boolean value.
- * Only layers which are visible and for which this function returns `true`
- * will be tested for features. By default, all visible layers will be tested.
- * @type {((function(ol.layer.Layer): boolean)|undefined)}
- * @api
- */
-olx.AtPixelOptions.prototype.layerFilter;
-
-
-/**
- * Hit-detection tolerance in pixels. Pixels inside the radius around the given position
- * will be checked for features. This only works for the canvas renderer and
- * not for WebGL. Default is `0`.
- * @type {number|undefined}
- * @api
- */
-olx.AtPixelOptions.prototype.hitTolerance;
+let olx;
 
 
 /**
