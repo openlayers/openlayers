@@ -5,6 +5,22 @@ import Geometry from '../geom/Geometry.js';
 import {assign} from '../obj.js';
 import {get as getProjection, equivalent as equivalentProjection, transformExtent} from '../proj.js';
 
+
+/**
+ * @typedef {Object} ReadOptions
+ * @property {ol.ProjectionLike} dataProjection Projection of the data we are reading.
+ * If not provided, the projection will be derived from the data (where possible) or
+ * the `defaultDataProjection` of the format is assigned (where set). If the projection
+ * can not be derived from the data and if no `defaultDataProjection` is set for a format,
+ * the features will not be reprojected.
+ * @property {ol.Extent} extent Tile extent of the tile being read. This is only used and
+ * required for {@link ol.format.MVT}.
+ * @property {ol.ProjectionLike} featureProjection Projection of the feature geometries
+ * created by the format reader. If not provided, features will be returned in the
+ * `dataProjection`.
+ */
+
+
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -38,8 +54,8 @@ const FeatureFormat = function() {
 /**
  * Adds the data projection to the read options.
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Options.
- * @return {olx.format.ReadOptions|undefined} Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
+ * @return {module:ol/format/Feature~ReadOptions|undefined} Options.
  * @protected
  */
 FeatureFormat.prototype.getReadOptions = function(source, opt_options) {
@@ -58,10 +74,10 @@ FeatureFormat.prototype.getReadOptions = function(source, opt_options) {
 /**
  * Sets the `defaultDataProjection` on the options, if no `dataProjection`
  * is set.
- * @param {olx.format.WriteOptions|olx.format.ReadOptions|undefined} options
+ * @param {olx.format.WriteOptions|module:ol/format/Feature~ReadOptions|undefined} options
  *     Options.
  * @protected
- * @return {olx.format.WriteOptions|olx.format.ReadOptions|undefined}
+ * @return {olx.format.WriteOptions|module:ol/format/Feature~ReadOptions|undefined}
  *     Updated options.
  */
 FeatureFormat.prototype.adaptOptions = function(options) {
@@ -93,7 +109,7 @@ FeatureFormat.prototype.getType = function() {};
  *
  * @abstract
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  */
 FeatureFormat.prototype.readFeature = function(source, opt_options) {};
@@ -104,7 +120,7 @@ FeatureFormat.prototype.readFeature = function(source, opt_options) {};
  *
  * @abstract
  * @param {Document|Node|ArrayBuffer|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  */
 FeatureFormat.prototype.readFeatures = function(source, opt_options) {};
@@ -115,7 +131,7 @@ FeatureFormat.prototype.readFeatures = function(source, opt_options) {};
  *
  * @abstract
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
  */
 FeatureFormat.prototype.readGeometry = function(source, opt_options) {};
@@ -168,7 +184,7 @@ export default FeatureFormat;
 /**
  * @param {ol.geom.Geometry|module:ol/extent~Extent} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
- * @param {(olx.format.WriteOptions|olx.format.ReadOptions)=} opt_options
+ * @param {(olx.format.WriteOptions|module:ol/format/Feature~ReadOptions)=} opt_options
  *     Options.
  * @return {ol.geom.Geometry|module:ol/extent~Extent} Transformed geometry.
  */

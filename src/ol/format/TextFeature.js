@@ -54,7 +54,7 @@ TextFeature.prototype.readFeature = function(source, opt_options) {
 /**
  * @abstract
  * @param {string} text Text.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
  * @return {ol.Feature} Feature.
  */
@@ -72,7 +72,7 @@ TextFeature.prototype.readFeatures = function(source, opt_options) {
 /**
  * @abstract
  * @param {string} text Text.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
@@ -90,7 +90,7 @@ TextFeature.prototype.readGeometry = function(source, opt_options) {
 /**
  * @abstract
  * @param {string} text Text.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */

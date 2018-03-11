@@ -58,7 +58,7 @@ XMLFeature.prototype.readFeature = function(source, opt_options) {
 
 /**
  * @param {Document} doc Document.
- * @param {olx.format.ReadOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @return {ol.Feature} Feature.
  */
 XMLFeature.prototype.readFeatureFromDocument = function(doc, opt_options) {
@@ -73,7 +73,7 @@ XMLFeature.prototype.readFeatureFromDocument = function(doc, opt_options) {
 
 /**
  * @param {Node} node Node.
- * @param {olx.format.ReadOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @return {ol.Feature} Feature.
  */
 XMLFeature.prototype.readFeatureFromNode = function(node, opt_options) {
@@ -101,7 +101,7 @@ XMLFeature.prototype.readFeatures = function(source, opt_options) {
 
 /**
  * @param {Document} doc Document.
- * @param {olx.format.ReadOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
@@ -120,7 +120,7 @@ XMLFeature.prototype.readFeaturesFromDocument = function(doc, opt_options) {
 /**
  * @abstract
  * @param {Node} node Node.
- * @param {olx.format.ReadOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
@@ -147,7 +147,7 @@ XMLFeature.prototype.readGeometry = function(source, opt_options) {
 
 /**
  * @param {Document} doc Document.
- * @param {olx.format.ReadOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
@@ -158,7 +158,7 @@ XMLFeature.prototype.readGeometryFromDocument = function(doc, opt_options) {
 
 /**
  * @param {Node} node Node.
- * @param {olx.format.ReadOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */

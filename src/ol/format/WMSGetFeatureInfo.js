@@ -143,7 +143,7 @@ WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */

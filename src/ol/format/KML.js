@@ -1678,7 +1678,7 @@ KML.prototype.readPlacemark_ = function(node, objectStack) {
   if (id !== null) {
     feature.setId(id);
   }
-  const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
 
   const geometry = object['geometry'];
   if (geometry) {
@@ -1768,7 +1768,7 @@ KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api
  */
@@ -1799,7 +1799,7 @@ KML.prototype.readFeatureFromNode = function(node, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */

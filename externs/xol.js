@@ -1,19 +1,5 @@
 
 /**
- * @typedef {Object} format_ReadOptions
- * @property {ol.ProjectionLike} dataProjection Projection of the data we are reading. If not provided, the projection will
- * be derived from the data (where possible) or the `defaultDataProjection` of
- * the format is assigned (where set). If the projection can not be derived from
- * the data and if no `defaultDataProjection` is set for a format, the features
- * will not be reprojected.
- * @property {ol.Extent} extent Tile extent of the tile being read. This is only used and required for
- * {@link ol.format.MVT}.
- * @property {ol.ProjectionLike} featureProjection Projection of the feature geometries created by the format reader. If not
- * provided, features will be returned in the `dataProjection`.
- */
-
-
-/**
  * @typedef {Object} format_WriteOptions
  * @property {ol.ProjectionLike} dataProjection Projection of the data we are writing. If not provided, the
  * `defaultDataProjection` of the format is assigned (where set). If no

@@ -522,7 +522,7 @@ function parseTrkSeg(node, objectStack) {
  * @return {ol.Feature|undefined} Track.
  */
 function readRte(node, objectStack) {
-  const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
   const values = pushParseAndPop({
     'flatCoordinates': [],
     'layoutOptions': {}
@@ -551,7 +551,7 @@ function readRte(node, objectStack) {
  * @return {ol.Feature|undefined} Track.
  */
 function readTrk(node, objectStack) {
-  const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
   const values = pushParseAndPop({
     'flatCoordinates': [],
     'ends': [],
@@ -583,7 +583,7 @@ function readTrk(node, objectStack) {
  * @return {ol.Feature|undefined} Waypoint.
  */
 function readWpt(node, objectStack) {
-  const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
   const values = pushParseAndPop({}, WPT_PARSERS, node, objectStack);
   if (!values) {
     return undefined;
@@ -625,7 +625,7 @@ GPX.prototype.handleReadExtensions_ = function(features) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api
  */
@@ -659,7 +659,7 @@ GPX.prototype.readFeatureFromNode = function(node, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */

@@ -67,7 +67,7 @@ JSONFeature.prototype.readFeatures = function(source, opt_options) {
 /**
  * @abstract
  * @param {Object} object Object.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
  * @return {ol.Feature} Feature.
  */
@@ -77,7 +77,7 @@ JSONFeature.prototype.readFeatureFromObject = function(object, opt_options) {};
 /**
  * @abstract
  * @param {Object} object Object.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
@@ -96,7 +96,7 @@ JSONFeature.prototype.readGeometry = function(source, opt_options) {
 /**
  * @abstract
  * @param {Object} object Object.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */

@@ -279,7 +279,7 @@ function getGeometryType(type, numEnds) {
  * @private
  * @param {ol.ext.PBF} pbf PBF
  * @param {Object} rawFeature Raw Mapbox feature.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.Feature|ol.render.Feature} Feature.
  */
 MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {

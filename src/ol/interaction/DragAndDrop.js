@@ -236,7 +236,7 @@ DragAndDrop.prototype.setMap = function(map) {
 /**
  * @param {ol.format.Feature} format Format.
  * @param {string} text Text.
- * @param {olx.format.ReadOptions} options Read options.
+ * @param {module:ol/format/Feature~ReadOptions} options Read options.
  * @private
  * @return {Array.<ol.Feature>} Features.
  */
