@@ -82,7 +82,7 @@ const GEOMETRY_READERS = {
 
 /**
  * @const
- * @type {Object.<string, function(ol.geom.Geometry, olx.format.WriteOptions=): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
+ * @type {Object.<string, function(ol.geom.Geometry, module:ol/format/Feature~WriteOptions=): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
  */
 const GEOMETRY_WRITERS = {
   'Point': writePointGeometry,
@@ -186,7 +186,7 @@ function readPolygonGeometry(object) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry|GeoJSONGeometryCollection} GeoJSON geometry.
  */
 function writeGeometry(geometry, opt_options) {
@@ -210,7 +210,7 @@ function writeEmptyGeometryCollectionGeometry(geometry) {
 
 /**
  * @param {ol.geom.GeometryCollection} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometryCollection} GeoJSON geometry collection.
  */
 function writeGeometryCollectionGeometry(geometry, opt_options) {
@@ -228,7 +228,7 @@ function writeGeometryCollectionGeometry(geometry, opt_options) {
 
 /**
  * @param {ol.geom.LineString} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeLineStringGeometry(geometry, opt_options) {
@@ -241,7 +241,7 @@ function writeLineStringGeometry(geometry, opt_options) {
 
 /**
  * @param {ol.geom.MultiLineString} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeMultiLineStringGeometry(geometry, opt_options) {
@@ -254,7 +254,7 @@ function writeMultiLineStringGeometry(geometry, opt_options) {
 
 /**
  * @param {ol.geom.MultiPoint} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeMultiPointGeometry(geometry, opt_options) {
@@ -267,7 +267,7 @@ function writeMultiPointGeometry(geometry, opt_options) {
 
 /**
  * @param {ol.geom.MultiPolygon} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeMultiPolygonGeometry(geometry, opt_options) {
@@ -284,7 +284,7 @@ function writeMultiPolygonGeometry(geometry, opt_options) {
 
 /**
  * @param {ol.geom.Point} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writePointGeometry(geometry, opt_options) {
@@ -297,7 +297,7 @@ function writePointGeometry(geometry, opt_options) {
 
 /**
  * @param {ol.geom.Polygon} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writePolygonGeometry(geometry, opt_options) {
@@ -453,7 +453,7 @@ GeoJSON.prototype.readProjectionFromObject = function(object) {
  *
  * @function
  * @param {ol.Feature} feature Feature.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} GeoJSON.
  * @override
  * @api
@@ -465,7 +465,7 @@ GeoJSON.prototype.writeFeature;
  * Encode a feature as a GeoJSON Feature object.
  *
  * @param {ol.Feature} feature Feature.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONFeature} Object.
  * @override
  * @api
@@ -502,7 +502,7 @@ GeoJSON.prototype.writeFeatureObject = function(feature, opt_options) {
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} GeoJSON.
  * @api
  */
@@ -513,7 +513,7 @@ GeoJSON.prototype.writeFeatures;
  * Encode an array of features as a GeoJSON object.
  *
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONFeatureCollection} GeoJSON Object.
  * @override
  * @api
@@ -536,7 +536,7 @@ GeoJSON.prototype.writeFeaturesObject = function(features, opt_options) {
  *
  * @function
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} GeoJSON.
  * @api
  */
@@ -547,7 +547,7 @@ GeoJSON.prototype.writeGeometry;
  * Encode a geometry as a GeoJSON object.
  *
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry|GeoJSONGeometryCollection} Object.
  * @override
  * @api

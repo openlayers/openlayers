@@ -1,33 +1,5 @@
 
 /**
- * @typedef {Object} format_WriteOptions
- * @property {ol.ProjectionLike} dataProjection Projection of the data we are writing. If not provided, the
- * `defaultDataProjection` of the format is assigned (where set). If no
- * `defaultDataProjection` is set for a format, the features will be returned
- * in the `featureProjection`.
- * @property {ol.ProjectionLike} featureProjection Projection of the feature geometries that will be serialized by the format
- * writer. If not provided, geometries are assumed to be in the
- * `dataProjection` if that is set; in other words, they are not transformed.
- * @property {boolean|undefined} rightHanded When writing geometries, follow the right-hand rule for linear ring
- * orientation.  This means that polygons will have counter-clockwise exterior
- * rings and clockwise interior rings.  By default, coordinates are serialized
- * as they are provided at construction.  If `true`, the right-hand rule will
- * be applied.  If `false`, the left-hand rule will be applied (clockwise for
- * exterior and counter-clockwise for interior rings).  Note that not all
- * formats support this.  The GeoJSON format does use this property when writing
- * geometries.
- * 
- * @property {number|undefined} decimals Maximum number of decimal places for coordinates. Coordinates are stored
- * internally as floats, but floating-point arithmetic can create coordinates
- * with a large number of decimal places, not generally wanted on output.
- * Set a number here to round coordinates. Can also be used to ensure that
- * coordinates read in can be written back out with the same number of decimals.
- * Default is no rounding.
- * 
- */
-
-
-/**
  * @typedef {Object} format_GeoJSONOptions
  * @property {ol.ProjectionLike} defaultDataProjection Default data projection. Default is `EPSG:4326`.
  * @property {ol.ProjectionLike} featureProjection Projection for features read or written by the format.  Options passed to

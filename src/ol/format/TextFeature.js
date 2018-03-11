@@ -126,7 +126,7 @@ TextFeature.prototype.writeFeature = function(feature, opt_options) {
 /**
  * @abstract
  * @param {ol.Feature} feature Features.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @protected
  * @return {string} Text.
  */
@@ -144,7 +144,7 @@ TextFeature.prototype.writeFeatures = function(features, opt_options) {
 /**
  * @abstract
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @protected
  * @return {string} Text.
  */
@@ -162,7 +162,7 @@ TextFeature.prototype.writeGeometry = function(geometry, opt_options) {
 /**
  * @abstract
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @protected
  * @return {string} Text.
  */

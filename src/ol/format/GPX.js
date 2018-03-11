@@ -768,7 +768,7 @@ function writeWptType(node, coordinate, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeRte(node, feature, objectStack) {
-  const options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[0]);
   const properties = feature.getProperties();
   const context = {node: node, 'properties': properties};
   let geometry = feature.getGeometry();
@@ -792,7 +792,7 @@ function writeRte(node, feature, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeTrk(node, feature, objectStack) {
-  const options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[0]);
   const properties = feature.getProperties();
   /** @type {module:ol/xml~NodeStackItem} */
   const context = {node: node, 'properties': properties};
@@ -832,7 +832,7 @@ function writeTrkSeg(node, lineString, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeWpt(node, feature, objectStack) {
-  const options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[0]);
   const context = objectStack[objectStack.length - 1];
   context['properties'] = feature.getProperties();
   let geometry = feature.getGeometry();
@@ -852,7 +852,7 @@ function writeWpt(node, feature, objectStack) {
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} Result.
  * @api
  */
@@ -865,7 +865,7 @@ GPX.prototype.writeFeatures;
  * as tracks (`<trk>`).
  *
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @override
  * @api

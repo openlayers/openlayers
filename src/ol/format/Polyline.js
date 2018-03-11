@@ -366,7 +366,7 @@ Polyline.prototype.writeFeaturesText = function(features, opt_options) {
  *
  * @function
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} Geometry.
  * @api
  */

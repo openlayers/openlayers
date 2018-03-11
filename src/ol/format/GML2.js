@@ -282,7 +282,7 @@ GML2.prototype.writeMultiCurveOrLineString_ = function(node, geometry, objectSta
  * @param {Array.<*>} objectStack Node stack.
  */
 GML2.prototype.writeGeometryElement = function(node, geometry, objectStack) {
-  const context = /** @type {olx.format.WriteOptions} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[objectStack.length - 1]);
   const item = assign({}, context);
   item.node = node;
   let value;

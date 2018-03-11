@@ -6,66 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{dataProjection: ol.ProjectionLike,
- *     featureProjection: ol.ProjectionLike,
- *     rightHanded: (boolean|undefined),
- *     decimals: (number|undefined)}}
- */
-olx.format.WriteOptions;
-
-
-/**
- * Projection of the data we are writing. If not provided, the
- * `defaultDataProjection` of the format is assigned (where set). If no
- * `defaultDataProjection` is set for a format, the features will be returned
- * in the `featureProjection`.
- * @type {ol.ProjectionLike}
- * @api
- */
-olx.format.WriteOptions.prototype.dataProjection;
-
-
-/**
- * Projection of the feature geometries that will be serialized by the format
- * writer. If not provided, geometries are assumed to be in the
- * `dataProjection` if that is set; in other words, they are not transformed.
- * @type {ol.ProjectionLike}
- * @api
- */
-olx.format.WriteOptions.prototype.featureProjection;
-
-
-/**
- * When writing geometries, follow the right-hand rule for linear ring
- * orientation.  This means that polygons will have counter-clockwise exterior
- * rings and clockwise interior rings.  By default, coordinates are serialized
- * as they are provided at construction.  If `true`, the right-hand rule will
- * be applied.  If `false`, the left-hand rule will be applied (clockwise for
- * exterior and counter-clockwise for interior rings).  Note that not all
- * formats support this.  The GeoJSON format does use this property when writing
- * geometries.
- *
- * @type {boolean|undefined}
- * @api
- */
-olx.format.WriteOptions.prototype.rightHanded;
-
-
-/**
- * Maximum number of decimal places for coordinates. Coordinates are stored
- * internally as floats, but floating-point arithmetic can create coordinates
- * with a large number of decimal places, not generally wanted on output.
- * Set a number here to round coordinates. Can also be used to ensure that
- * coordinates read in can be written back out with the same number of decimals.
- * Default is no rounding.
- *
- * @type {number|undefined}
- * @api
- */
-olx.format.WriteOptions.prototype.decimals;
-
-
-/**
  * @typedef {{defaultDataProjection: ol.ProjectionLike,
  *     geometryName: (string|undefined),
  *     extractGeometryName: (boolean|undefined),

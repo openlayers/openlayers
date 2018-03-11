@@ -856,7 +856,7 @@ Parser.prototype.parseGeometry_ = function() {
  *
  * @function
  * @param {ol.Feature} feature Feature.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
  * @api
  */
@@ -880,7 +880,7 @@ WKT.prototype.writeFeatureText = function(feature, opt_options) {
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
  * @api
  */
@@ -908,7 +908,7 @@ WKT.prototype.writeFeaturesText = function(features, opt_options) {
  *
  * @function
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
  * @api
  */
