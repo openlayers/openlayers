@@ -6,13 +6,6 @@ let olx;
 
 
 /**
- * Namespace.
- * @type {Object}
- */
-olx.control;
-
-
-/**
  * @typedef {{collapsed: (boolean|undefined),
  *     collapseLabel: (string|Element|undefined),
  *     collapsible: (boolean|undefined),

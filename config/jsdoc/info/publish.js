@@ -2,8 +2,8 @@
  * @fileoverview Generates JSON output based on exportable symbols (those with
  * an api tag) and boolean defines (with a define tag and a default value).
  */
-var assert = require('assert');
-var path = require('path');
+const assert = require('assert');
+const path = require('path');
 
 
 /**
@@ -15,7 +15,7 @@ var path = require('path');
 exports.publish = function(data, opts) {
 
   function getTypes(data) {
-    var types = [];
+    const types = [];
     data.forEach(function(name) {
       types.push(name.replace(/^function$/, 'Function'));
     });
@@ -24,43 +24,43 @@ exports.publish = function(data, opts) {
 
   // get all doclets with the "api" property or define (excluding events) or
   // with olx namespace
-  var classes = {};
-  var docs = data(
-      [
-        {define: {isObject: true}},
-        function() {
-          if (this.kind == 'class') {
-            if (!('extends' in this) || typeof this.api == 'boolean') {
-              classes[this.longname] = this;
-              return true;
-            }
+  const classes = {};
+  const docs = data(
+    [
+      {define: {isObject: true}},
+      function() {
+        if (this.kind == 'class') {
+          if (!('extends' in this) || typeof this.api == 'boolean') {
+            classes[this.longname] = this;
+            return true;
           }
-          return (typeof this.api == 'boolean' ||
-              this.meta && (/[\\\/]externs$/).test(this.meta.path));
         }
-      ],
-      {kind: {'!is': 'file'}},
-      {kind: {'!is': 'event'}}).get();
+        return (typeof this.api == 'boolean' ||
+              this.meta && (/[\\\/]externs$/).test(this.meta.path));
+      }
+    ],
+    {kind: {'!is': 'file'}},
+    {kind: {'!is': 'event'}}).get();
 
   // get symbols data, filter out those that are members of private classes
-  var symbols = [];
-  var defines = [];
-  var typedefs = [];
-  var externs = [];
-  var base = [];
-  var augments = {};
-  var symbolsByName = {};
+  const symbols = [];
+  const defines = [];
+  const typedefs = [];
+  const externs = [];
+  let base = [];
+  const augments = {};
+  const symbolsByName = {};
   docs.filter(function(doc) {
-    var include = true;
-    var constructor = doc.memberof;
+    let include = true;
+    const constructor = doc.memberof;
     if (constructor && constructor.substr(-1) === '_' && constructor.indexOf('module:') === -1) {
       assert.strictEqual(doc.inherited, true,
-          'Unexpected export on private class: ' + doc.longname);
+        'Unexpected export on private class: ' + doc.longname);
       include = false;
     }
     return include;
   }).forEach(function(doc) {
-    var isExterns = (/[\\\/]externs$/).test(doc.meta.path);
+    const isExterns = (/[\\\/]externs$/).test(doc.meta.path);
     if (isExterns && doc.longname.indexOf('olx.') === 0) {
       if (doc.kind == 'typedef') {
         typedefs.push({
@@ -68,12 +68,15 @@ exports.publish = function(data, opts) {
           types: ['{}']
         });
       } else {
-        var typedef = typedefs[typedefs.length - 1];
-        var type = typedef.types[0];
+        const typedef = typedefs[typedefs.length - 1];
+        if (!typedef) {
+          throw new Error(`Expected to see a typedef before ${doc.longname} at ${doc.meta.filename}:${doc.meta.lineno}`);
+        }
+        const type = typedef.types[0];
         typedef.types[0] = type
-            .replace(/\}$/, ', ' + doc.longname.split('#')[1] +
+          .replace(/\}$/, ', ' + doc.longname.split('#')[1] +
                 ': (' + getTypes(doc.type.names).join('|') + ')}')
-            .replace('{, ', '{');
+          .replace('{, ', '{');
       }
     } else if (doc.define) {
       defines.push({
@@ -88,7 +91,7 @@ exports.publish = function(data, opts) {
         types: getTypes(doc.type.names)
       });
     } else {
-      var symbol = {
+      const symbol = {
         name: doc.longname,
         kind: doc.kind,
         description: doc.classdesc || doc.description,
@@ -104,9 +107,9 @@ exports.publish = function(data, opts) {
         symbol.types = getTypes(doc.type.names);
       }
       if (doc.params) {
-        var params = [];
+        const params = [];
         doc.params.forEach(function(param) {
-          var paramInfo = {
+          const paramInfo = {
             name: param.name
           };
           params.push(paramInfo);
@@ -141,10 +144,10 @@ exports.publish = function(data, opts) {
         });
       }
 
-      var target = isExterns ? externs : (doc.api ? symbols : base);
-      var existingSymbol = symbolsByName[symbol.name];
+      const target = isExterns ? externs : (doc.api ? symbols : base);
+      const existingSymbol = symbolsByName[symbol.name];
       if (existingSymbol) {
-        var idx = target.indexOf(existingSymbol);
+        const idx = target.indexOf(existingSymbol);
         target.splice(idx, 1);
       }
       target.push(symbol);
@@ -168,13 +171,13 @@ exports.publish = function(data, opts) {
 
   return new Promise(function(resolve, reject) {
     process.stdout.write(
-        JSON.stringify({
-          symbols: symbols,
-          defines: defines,
-          typedefs: typedefs,
-          externs: externs,
-          base: base
-        }, null, 2));
+      JSON.stringify({
+        symbols: symbols,
+        defines: defines,
+        typedefs: typedefs,
+        externs: externs,
+        base: base
+      }, null, 2));
   });
 
 };
