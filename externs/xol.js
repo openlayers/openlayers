@@ -1,21 +1,5 @@
 
 /**
- * @typedef {Object} control_ZoomOptions
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
- * @property {string|undefined} className CSS class name. Default is `ol-zoom`.
- * @property {string|Element|undefined} zoomInLabel Text label to use for the zoom-in button. Default is `+`.
- * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|Element|undefined} zoomOutLabel Text label to use for the zoom-out button. Default is `-`.
- * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|undefined} zoomInTipLabel Text label to use for the button tip. Default is `Zoom in`
- * @property {string|undefined} zoomOutTipLabel Text label to use for the button tip. Default is `Zoom out`
- * @property {number|undefined} delta The zoom delta applied on each click.
- * @property {Element|string|undefined} target Specify a target if you want the control to be rendered outside of the map's
- * viewport.
- */
-
-
-/**
  * @typedef {Object} control_ZoomSliderOptions
  * @property {string|undefined} className CSS class name.
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `200`.
