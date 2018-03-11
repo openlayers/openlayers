@@ -1,18 +1,5 @@
 
 /**
- * @typedef {Object} control_ZoomToExtentOptions
- * @property {string|undefined} className Class name. Default is `ol-zoom-extent`.
- * @property {Element|string|undefined} target Specify a target if you want the control to be rendered outside of the map's
- * viewport.
- * @property {string|Element|undefined} label Text label to use for the button. Default is `E`.
- * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|undefined} tipLabel Text label to use for the button tip. Default is `Zoom to extent`
- * @property {ol.Extent|undefined} extent The extent to zoom to. If undefined the validity extent of the view
- * projection is used.
- */
-
-
-/**
  * @typedef {Object} format_ReadOptions
  * @property {ol.ProjectionLike} dataProjection Projection of the data we are reading. If not provided, the projection will
  * be derived from the data (where possible) or the `defaultDataProjection` of

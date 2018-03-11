@@ -6,66 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{className: (string|undefined),
- *     target: (Element|string|undefined),
- *     label: (string|Element|undefined),
- *     tipLabel: (string|undefined),
- *     extent: (ol.Extent|undefined)}}
- */
-olx.control.ZoomToExtentOptions;
-
-
-/**
- * Class name. Default is `ol-zoom-extent`.
- * @type {string|undefined}
- * @api
- */
-olx.control.ZoomToExtentOptions.prototype.className;
-
-
-/**
- * Specify a target if you want the control to be rendered outside of the map's
- * viewport.
- * @type {Element|string|undefined}
- * @api
- */
-olx.control.ZoomToExtentOptions.prototype.target;
-
-
-/**
- * Text label to use for the button. Default is `E`.
- * Instead of text, also an element (e.g. a `span` element) can be used.
- * @type {string|Element|undefined}
- * @api
- */
-olx.control.ZoomToExtentOptions.prototype.label;
-
-
-/**
- * Text label to use for the button tip. Default is `Zoom to extent`
- * @type {string|undefined}
- * @api
- */
-olx.control.ZoomToExtentOptions.prototype.tipLabel;
-
-
-/**
- * The extent to zoom to. If undefined the validity extent of the view
- * projection is used.
- * @type {ol.Extent|undefined}
- * @api
- */
-olx.control.ZoomToExtentOptions.prototype.extent;
-
-
-/**
- * Namespace.
- * @type {Object}
- */
-olx.format;
-
-
-/**
  * @typedef {{dataProjection: ol.ProjectionLike,
  *     extent: (ol.Extent|undefined),
  *     featureProjection: ol.ProjectionLike,
