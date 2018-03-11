@@ -1,16 +1,5 @@
 
 /**
- * @typedef {Object} control_ControlOptions
- * @property {Element|undefined} element The element is the control's container element. This only needs to be
- * specified if you're developing a custom control.
- * @property {function(ol.MapEvent)|undefined} render Function called when the control should be re-rendered. This is called
- * in a requestAnimationFrame callback.
- * @property {Element|string|undefined} target Specify a target if you want the control to be rendered outside of the map's
- * viewport.
- */
-
-
-/**
  * @typedef {Object} control_FullScreenOptions
  * @property {string|undefined} className CSS class name. Default is `ol-full-screen`.
  * @property {string|Element|undefined} label Text label to use for the button. Default is `\u2922` (NORTH EAST AND SOUTH WEST ARROW).

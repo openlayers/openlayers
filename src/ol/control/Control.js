@@ -8,6 +8,20 @@ import BaseObject from '../Object.js';
 import {removeNode} from '../dom.js';
 import {listen, unlistenByKey} from '../events.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {Element|undefined} element The element is the control's
+ * container element. This only needs to be specified if you're developing
+ * a custom control.
+ * @property {function(ol.MapEvent)|undefined} render Function called when
+ * the control should be re-rendered. This is called in a `requestAnimationFrame`
+ * callback.
+ * @property {Element|string|undefined} target Specify a target if you want
+ * the control to be rendered outside of the map's viewport.
+ */
+
+
 /**
  * @classdesc
  * A control is a visible widget with a DOM element in a fixed position on the
@@ -34,7 +48,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @constructor
  * @extends {ol.Object}
  * @implements {oli.control.Control}
- * @param {olx.control.ControlOptions} options Control options.
+ * @param {module:ol/control/Control~Options} options Control options.
  * @api
  */
 const Control = function(options) {

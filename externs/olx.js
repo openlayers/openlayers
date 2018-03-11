@@ -13,41 +13,6 @@ olx.control;
 
 
 /**
- * @typedef {{element: (Element|undefined),
- *     render: (function(ol.MapEvent)|undefined),
- *     target: (Element|string|undefined)}}
- */
-olx.control.ControlOptions;
-
-
-/**
- * The element is the control's container element. This only needs to be
- * specified if you're developing a custom control.
- * @type {Element|undefined}
- * @api
- */
-olx.control.ControlOptions.prototype.element;
-
-
-/**
- * Function called when the control should be re-rendered. This is called
- * in a requestAnimationFrame callback.
- * @type {function(ol.MapEvent)|undefined}
- * @api
- */
-olx.control.ControlOptions.prototype.render;
-
-
-/**
- * Specify a target if you want the control to be rendered outside of the map's
- * viewport.
- * @type {Element|string|undefined}
- * @api
- */
-olx.control.ControlOptions.prototype.target;
-
-
-/**
  * @typedef {{className: (string|undefined),
  *     label: (string|Element|undefined),
  *     labelActive: (string|Element|undefined),
