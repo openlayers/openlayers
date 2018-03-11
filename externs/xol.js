@@ -1,22 +1,5 @@
 
 /**
- * @typedef {Object} AnimationOptions
- * @property {ol.Coordinate|undefined} center The center of the view at the end of the animation.
- * @property {number|undefined} zoom The zoom level of the view at the end of the animation.  This takes
- * precedence over `resolution`.
- * @property {number|undefined} resolution The resolution of the view at the end of the animation.  If `zoom` is also
- * provided, this option will be ignored.
- * @property {number|undefined} rotation The rotation of the view at the end of the animation.
- * @property {ol.Coordinate|undefined} anchor Optional anchor to remained fixed during a rotation or resolution animation.
- * @property {number|undefined} duration The duration of the animation in milliseconds (defaults to `1000`).
- * @property {undefined|function(number):number} easing The easing function used during the animation (defaults to {@link ol.easing.inAndOut}).
- * The function will be called for each frame with a number representing a
- * fraction of the animation's duration.  The function should return a number
- * between 0 and 1 representing the progress toward the destination state.
- */
-
-
-/**
  * @typedef {Object} control_AttributionOptions
  * @property {string|undefined} className CSS class name. Default is `ol-attribution`.
  * @property {Element|string|undefined} target Specify a target if you want the control to be rendered outside of the map's
