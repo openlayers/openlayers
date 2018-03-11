@@ -1,20 +1,5 @@
 
 /**
- * @typedef {Object} format_MVTOptions
- * @property {undefined|function((ol.geom.Geometry|Object.<string,*>)=)|    function(ol.geom.GeometryType,Array.<number>,
-        (Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)}
- featureClass Class for features returned by {@link ol.format.MVT#readFeatures}. Set to
- * {@link ol.Feature} to get full editing and geometry support at the cost of
- * decreased rendering performance. The default is {@link ol.render.Feature},
- * which is optimized for rendering and hit detection.
- * @property {string|undefined} geometryName Geometry name to use when creating features. Default is 'geometry'.
- * @property {string|undefined} layerName Name of the feature attribute that holds the layer name. Default is 'layer'.
- * @property {Array.<string>|undefined} layers Layers to read features from. If not provided, features will be read from all
- * layers.
- */
-
-
-/**
  * @typedef {Object} format_PolylineOptions
  * @property {number|undefined} factor The factor by which the coordinates values will be scaled.
  * Default is `1e5`.

@@ -6,56 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{featureClass: (function((ol.geom.Geometry|Object.<string, *>)=)|
- *         function(ol.geom.GeometryType,Array.<number>,
- *             (Array.<number>|Array.<Array.<number>>),Object.<string, *>)|
- *         undefined),
- *     geometryName: (string|undefined),
- *     layers: (Array.<string>|undefined),
- *     layerName: (string|undefined)}}
- */
-olx.format.MVTOptions;
-
-
-/**
- * Class for features returned by {@link ol.format.MVT#readFeatures}. Set to
- * {@link ol.Feature} to get full editing and geometry support at the cost of
- * decreased rendering performance. The default is {@link ol.render.Feature},
- * which is optimized for rendering and hit detection.
- * @type {undefined|function((ol.geom.Geometry|Object.<string,*>)=)|
- *     function(ol.geom.GeometryType,Array.<number>,
- *         (Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)}
- * @api
- */
-olx.format.MVTOptions.prototype.featureClass;
-
-
-/**
- * Geometry name to use when creating features. Default is 'geometry'.
- * @type {string|undefined}
- * @api
- */
-olx.format.MVTOptions.prototype.geometryName;
-
-
-/**
- * Name of the feature attribute that holds the layer name. Default is 'layer'.
- * @type {string|undefined}
- * @api
- */
-olx.format.MVTOptions.prototype.layerName;
-
-
-/**
- * Layers to read features from. If not provided, features will be read from all
- * layers.
- * @type {Array.<string>|undefined}
- * @api
- */
-olx.format.MVTOptions.prototype.layers;
-
-
-/**
  * @typedef {{factor: (number|undefined),
  *     geometryLayout: (ol.geom.GeometryLayout|undefined)}}
  */
