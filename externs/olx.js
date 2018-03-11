@@ -13,67 +13,6 @@ olx.control;
 
 
 /**
- * @typedef {{className: (string|undefined),
- *     coordinateFormat: (module:ol/coordinate~CoordinateFormat|undefined),
- *     projection: ol.ProjectionLike,
- *     render: (function(ol.MapEvent)|undefined),
- *     target: (Element|string|undefined),
- *     undefinedHTML: (string|undefined)}}
- */
-olx.control.MousePositionOptions;
-
-
-/**
- * CSS class name. Default is `ol-mouse-position`.
- * @type {string|undefined}
- * @api
- */
-olx.control.MousePositionOptions.prototype.className;
-
-
-/**
- * Coordinate format.
- * @type {module:ol/coordinate~CoordinateFormat|undefined}
- * @api
- */
-olx.control.MousePositionOptions.prototype.coordinateFormat;
-
-
-/**
- * Projection.
- * @type {ol.ProjectionLike}
- * @api
- */
-olx.control.MousePositionOptions.prototype.projection;
-
-
-/**
- * Function called when the control should be re-rendered. This is called
- * in a requestAnimationFrame callback.
- * @type {function(ol.MapEvent)|undefined}
- * @api
- */
-olx.control.MousePositionOptions.prototype.render;
-
-
-/**
- * Specify a target if you want the control to be rendered outside of the map's
- * viewport.
- * @type {Element|string|undefined}
- * @api
- */
-olx.control.MousePositionOptions.prototype.target;
-
-
-/**
- * Markup for undefined coordinates. Default is `` (empty string).
- * @type {string|undefined}
- * @api
- */
-olx.control.MousePositionOptions.prototype.undefinedHTML;
-
-
-/**
  * @typedef {{collapsed: (boolean|undefined),
  *     collapseLabel: (string|Element|undefined),
  *     collapsible: (boolean|undefined),

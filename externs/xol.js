@@ -1,18 +1,5 @@
 
 /**
- * @typedef {Object} control_MousePositionOptions
- * @property {string|undefined} className CSS class name. Default is `ol-mouse-position`.
- * @property {module:ol/coordinate~CoordinateFormat|undefined} coordinateFormat Coordinate format.
- * @property {ol.ProjectionLike} projection Projection.
- * @property {function(ol.MapEvent)|undefined} render Function called when the control should be re-rendered. This is called
- * in a requestAnimationFrame callback.
- * @property {Element|string|undefined} target Specify a target if you want the control to be rendered outside of the map's
- * viewport.
- * @property {string|undefined} undefinedHTML Markup for undefined coordinates. Default is `` (empty string).
- */
-
-
-/**
  * @typedef {Object} control_OverviewMapOptions
  * @property {boolean|undefined} collapsed Whether the control should start collapsed or not (expanded).
  * Default to `true`.
