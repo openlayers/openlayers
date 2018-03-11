@@ -1,22 +1,5 @@
 
 /**
- * @typedef {Object} ProjectionOptions
- * @property {string} code The SRS identifier code, e.g. `EPSG:4326`.
- * @property {ol.proj.Units|string|undefined} units Units. Required unless a proj4 projection is defined for `code`.
- * @property {ol.Extent|undefined} extent The validity extent for the SRS.
- * @property {string|undefined} axisOrientation The axis orientation as specified in Proj4. The default is `enu`.
- * @property {boolean|undefined} global Whether the projection is valid for the whole globe. Default is `false`.
- * @property {number|undefined} metersPerUnit The meters per unit for the SRS. If not provided, the `units` are used to get
- * the meters per unit from the {@link ol.proj.METERS_PER_UNIT} lookup table.
- * @property {ol.Extent|undefined} worldExtent The world extent for the SRS.
- * @property {(function(number, ol.Coordinate):number|undefined)} getPointResolution Function to determine resolution at a point. The function is called with a
- * `{number}` view resolution and an `{ol.Coordinate}` as arguments, and returns
- * the `{number}` resolution at the passed coordinate. If this is `undefined`,
- * the default {@link ol.proj#getPointResolution} function will be used.
- */
-
-
-/**
  * @typedef {Object} AnimationOptions
  * @property {ol.Coordinate|undefined} center The center of the view at the end of the animation.
  * @property {number|undefined} zoom The zoom level of the view at the end of the animation.  This takes
