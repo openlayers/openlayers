@@ -33,6 +33,27 @@ const getChangeType = (function() {
 
 
 /**
+ * @typedef {Object} Options
+ * @property {string|undefined} className CSS class name. Default is
+ * `'ol-full-screen'`.
+ * @property {string|Element|undefined} label Text label to use for the button.
+ * Default is `'\u2922'` (NORTH EAST AND SOUTH WEST ARROW).
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @property {string|Element|undefined} labelActive Text label to use for the
+ * button when full-screen is active. Default is `'\u00d7'` (a cross).
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @property {string|undefined} tipLabel Text label to use for the button tip.
+ * Default is `'Toggle full-screen'`.
+ * @property {boolean|undefined} keys Full keyboard access.
+ * @property {Element|string|undefined} target Specify a target if you want the
+ * control to be rendered outside of the map's viewport.
+ * @property {Element|string|undefined} source The element to be displayed
+ * fullscreen. When not provided, the element containing the map viewport will
+ * be displayed fullscreen.
+ */
+
+
+/**
  * @classdesc
  * Provides a button that when clicked fills up the full screen with the map.
  * The full screen source element is by default the element containing the map viewport unless
@@ -46,7 +67,7 @@ const getChangeType = (function() {
  *
  * @constructor
  * @extends {ol.control.Control}
- * @param {olx.control.FullScreenOptions=} opt_options Options.
+ * @param {module:ol/control/FullScreen~Options=} opt_options Options.
  * @api
  */
 const FullScreen = function(opt_options) {
