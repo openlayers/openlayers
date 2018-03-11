@@ -1,25 +1,5 @@
 
 /**
- * @typedef {Object} control_AttributionOptions
- * @property {string|undefined} className CSS class name. Default is `ol-attribution`.
- * @property {Element|string|undefined} target Specify a target if you want the control to be rendered outside of the map's
- * viewport.
- * @property {boolean|undefined} collapsible Specify if attributions can be collapsed. If you use an OSM source,
- * should be set to `false` — see
- * {@link https://www.openstreetmap.org/copyright OSM Copyright} —
- * Default is `true`.
- * @property {boolean|undefined} collapsed Specify if attributions should be collapsed at startup. Default is `true`.
- * @property {string|undefined} tipLabel Text label to use for the button tip. Default is `Attributions`
- * @property {string|Element|undefined} label Text label to use for the collapsed attributions button. Default is `i`.
- * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|Element|undefined} collapseLabel Text label to use for the expanded attributions button. Default is `»`.
- * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {function(ol.MapEvent)|undefined} render Function called when the control should be re-rendered. This is called
- * in a requestAnimationFrame callback.
- */
-
-
-/**
  * @typedef {Object} control_ControlOptions
  * @property {Element|undefined} element The element is the control's container element. This only needs to be
  * specified if you're developing a custom control.
