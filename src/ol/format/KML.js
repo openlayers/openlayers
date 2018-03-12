@@ -1849,7 +1849,7 @@ KML.prototype.readFeaturesFromNode = function(node, opt_options) {
 /**
  * Read the name of the KML.
  *
- * @param {Document|Node|string} source Souce.
+ * @param {Document|Node|string} source Source.
  * @return {string|undefined} Name.
  * @api
  */

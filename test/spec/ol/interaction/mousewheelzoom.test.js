@@ -41,7 +41,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
       interaction.handleWheelZoom_.restore();
     });
 
-    it('works with the defaut value', function(done) {
+    it('works with the default value', function(done) {
       const event = new MapBrowserEvent('mousewheel', map, {
         type: 'mousewheel',
         target: map.getViewport(),

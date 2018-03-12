@@ -886,7 +886,7 @@ describe('ol.interaction.Draw', function() {
       draw.freehand_ = true;
       draw.freehandCondition_ = always;
 
-      // no feture created when not moved
+      // no feature created when not moved
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
