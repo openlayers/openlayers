@@ -8,6 +8,14 @@ import XMLFeature from '../format/XMLFeature.js';
 import {assign} from '../obj.js';
 import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {Array.<string>|undefined} layers If set, only features of the
+ * given layers will be returned by the format when read.
+ */
+
+
 /**
  * @classdesc
  * Format for reading WMSGetFeatureInfo format. It uses
@@ -15,7 +23,7 @@ import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
  *
  * @constructor
  * @extends {ol.format.XMLFeature}
- * @param {olx.format.WMSGetFeatureInfoOptions=} opt_options Options.
+ * @param {module:ol/format/WMSGetFeatureInfo~Options=} opt_options Options.
  * @api
  */
 const WMSGetFeatureInfo = function(opt_options) {

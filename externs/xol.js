@@ -1,12 +1,5 @@
 
 /**
- * @typedef {Object} format_WMSGetFeatureInfoOptions
- * @property {Array.<string>|undefined} layers If set, only features of the given layers will be returned by the format
- * when read.
- */
-
-
-/**
  * @typedef {Object} interaction_DoubleClickZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} delta The zoom delta applied on each double click, default is `1`.

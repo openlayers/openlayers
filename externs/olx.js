@@ -6,23 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{
- *     layers: (Array.<string>|undefined)
- * }}
- */
-olx.format.WMSGetFeatureInfoOptions;
-
-
-/**
- * If set, only features of the given layers will be returned by the format
- * when read.
- * @type {Array.<string>|undefined}
- * @api
- */
-olx.format.WMSGetFeatureInfoOptions.prototype.layers;
-
-
-/**
  * @typedef {{duration: (number|undefined),
  *     delta: (number|undefined)}}
  */
