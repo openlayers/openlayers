@@ -1,22 +1,5 @@
 
 /**
- * @typedef {Object} format_WFSWriteTransactionOptions
- * @property {string} featureNS The namespace URI used for features.
- * @property {string} featurePrefix The prefix for the feature namespace.
- * @property {string} featureType The feature type name.
- * @property {string|undefined} srsName SRS name. No srsName attribute will be set on geometries when this is not
- * provided.
- * @property {string|undefined} handle Handle.
- * @property {boolean|undefined} hasZ Must be set to true if the transaction is for a 3D layer. This will allow
- * the Z coordinate to be included in the transaction.
- * @property {Array.<Object>} nativeElements Native elements. Currently not supported.
- * @property {module:ol/format/GMLBase~Options|undefined} gmlOptions GML options for the WFS transaction writer.
- * @property {string|undefined} version WFS version to use for the transaction. Can be either `1.0.0` or `1.1.0`.
- * Default is `1.1.0`.
- */
-
-
-/**
  * @typedef {Object} format_WKTOptions
  * @property {boolean|undefined} splitCollection Whether to split GeometryCollections into
  * multiple features on reading. Default is `false`.
