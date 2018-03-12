@@ -151,7 +151,7 @@ const ExtentInteraction = function(opt_options) {
 inherits(ExtentInteraction, PointerInteraction);
 
 /**
- * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Event.
  * @return {boolean} Propagate event?
  * @this {ol.interaction.Extent}
  */
@@ -366,7 +366,7 @@ ExtentInteraction.prototype.snapToVertex_ = function(pixel, map) {
 };
 
 /**
- * @param {ol.MapBrowserEvent} mapBrowserEvent pointer move event
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent pointer move event
  * @private
  */
 ExtentInteraction.prototype.handlePointerMove_ = function(mapBrowserEvent) {

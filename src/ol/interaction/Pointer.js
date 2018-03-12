@@ -166,10 +166,10 @@ PointerInteraction.prototype.updateTrackedPointers_ = function(mapBrowserEvent) 
 
 
 /**
- * Handles the {@link ol.MapBrowserEvent map browser event} and may call into
+ * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may call into
  * other functions, if event sequences like e.g. 'drag' or 'down-up' etc. are
  * detected.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Pointer}
  * @api

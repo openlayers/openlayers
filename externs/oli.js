@@ -74,7 +74,7 @@ oli.DragBoxEvent.prototype.coordinate;
 
 
 /**
- * @type {ol.MapBrowserEvent}
+ * @type {module:ol/MapBrowserEvent~MapBrowserEvent}
  */
 oli.DragBoxEvent.prototype.mapBrowserEvent;
 
@@ -115,7 +115,7 @@ oli.ModifyEvent.prototype.features;
 
 
 /**
- * @type {ol.MapBrowserEvent}
+ * @type {module:ol/MapBrowserEvent~MapBrowserEvent}
  */
 oli.ModifyEvent.prototype.mapBrowserEvent;
 
@@ -211,7 +211,7 @@ oli.SelectEvent.prototype.selected;
 
 
 /**
- * @type {ol.MapBrowserEvent}
+ * @type {module:ol/MapBrowserEvent~MapBrowserEvent}
  */
 oli.SelectEvent.prototype.mapBrowserEvent;
 

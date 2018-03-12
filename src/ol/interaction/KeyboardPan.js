@@ -35,7 +35,7 @@ const KeyboardPan = function(opt_options) {
 
   /**
    * @private
-   * @param {ol.MapBrowserEvent} mapBrowserEvent Browser event.
+   * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Browser event.
    * @return {boolean} Combined condition result.
    */
   this.defaultCondition_ = function(mapBrowserEvent) {
@@ -68,10 +68,10 @@ const KeyboardPan = function(opt_options) {
 inherits(KeyboardPan, Interaction);
 
 /**
- * Handles the {@link ol.MapBrowserEvent map browser event} if it was a
+ * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} if it was a
  * `KeyEvent`, and decides the direction to pan to (if an arrow key was
  * pressed).
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.KeyboardPan}
  */

@@ -68,8 +68,8 @@ export const ModifyEvent = function(type, features, mapBrowserPointerEvent) {
   this.features = features;
 
   /**
-   * Associated {@link ol.MapBrowserEvent}.
-   * @type {ol.MapBrowserEvent}
+   * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
+   * @type {module:ol/MapBrowserEvent~MapBrowserEvent}
    * @api
    */
   this.mapBrowserEvent = mapBrowserPointerEvent;
@@ -115,7 +115,7 @@ const Modify = function(options) {
 
   /**
    * @private
-   * @param {ol.MapBrowserEvent} mapBrowserEvent Browser event.
+   * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Browser event.
    * @return {boolean} Combined condition result.
    */
   this.defaultDeleteCondition_ = function(mapBrowserEvent) {
@@ -831,9 +831,9 @@ function handleUpEvent(evt) {
 
 
 /**
- * Handles the {@link ol.MapBrowserEvent map browser event} and may modify the
+ * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may modify the
  * geometry.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Modify}
  */
@@ -866,7 +866,7 @@ function handleEvent(mapBrowserEvent) {
 
 
 /**
- * @param {ol.MapBrowserEvent} evt Event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt Event.
  * @private
  */
 Modify.prototype.handlePointerMove_ = function(evt) {

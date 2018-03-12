@@ -221,7 +221,7 @@ function handleDragEvent(event) {
 
 
 /**
- * @param {ol.MapBrowserEvent} event Event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Event.
  * @this {ol.interaction.Translate}
  */
 function handleMoveEvent(event) {

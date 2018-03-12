@@ -136,9 +136,9 @@ inherits(MouseWheelZoom, Interaction);
 
 
 /**
- * Handles the {@link ol.MapBrowserEvent map browser event} (if it was a
+ * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} (if it was a
  * mousewheel-event) and eventually zooms the map.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} Allow event propagation.
  * @this {ol.interaction.MouseWheelZoom}
  */

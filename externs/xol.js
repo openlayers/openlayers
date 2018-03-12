@@ -22,12 +22,12 @@
 /**
  * @typedef {Object} interaction_DragBoxOptions
  * @property {string|undefined} className CSS class name for styling the box. The default is `ol-dragbox`.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.always}.
  * @property {number|undefined} minArea The minimum area of the box in pixel, this value is used by the default
  * `boxEndCondition` function. Default is `64`.
- * @property {ol.DragBoxEndConditionType|undefined} boxEndCondition A function that takes a {@link ol.MapBrowserEvent} and two
+ * @property {ol.DragBoxEndConditionType|undefined} boxEndCondition A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
  * {@link ol.Pixel}s to indicate whether a `boxend` event should be fired.
  * Default is `true` if the area of the box is bigger than the `minArea` option.
  */
@@ -35,7 +35,7 @@
 
 /**
  * @typedef {Object} interaction_DragPanOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.noModifierKeys}.
  * @property {ol.Kinetic|undefined} kinetic Kinetic inertia to apply to the pan.
@@ -44,7 +44,7 @@
 
 /**
  * @typedef {Object} interaction_DragRotateAndZoomOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.shiftKeyOnly}.
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `400`.
@@ -53,7 +53,7 @@
 
 /**
  * @typedef {Object} interaction_DragRotateOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.altShiftKeysOnly}.
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
@@ -63,7 +63,7 @@
 /**
  * @typedef {Object} interaction_DragZoomOptions
  * @property {string|undefined} className CSS class name for styling the box. The default is `ol-dragzoom`.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.shiftKeyOnly}.
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `200`.
@@ -91,12 +91,12 @@
  * is finished. The default is no restriction.
  * @property {number|undefined} minPoints The number of points that must be drawn before a polygon ring or line string
  * can be finished. Default is `3` for polygon rings and `2` for line strings.
- * @property {ol.EventsConditionType|undefined} finishCondition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} finishCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether the drawing can be finished.
  * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} style Style for sketch features.
  * @property {ol.DrawGeometryFunctionType|undefined} geometryFunction Function that is called when a geometry's coordinates are updated.
  * @property {string|undefined} geometryName Geometry name to use for features created by the draw interaction.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * By default {@link ol.events.condition.noModifierKeys}, i.e. a click, adds a
  * vertex or deactivates freehand drawing.
@@ -104,7 +104,7 @@
  * interaction always operate in freehand mode and takes precedence over any
  * `freehandCondition` option.
  * @property {ol.EventsConditionType|undefined} freehandCondition Condition that activates freehand drawing for lines and polygons. This
- * function takes an {@link ol.MapBrowserEvent} and returns a boolean to
+ * function takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean to
  * indicate whether that event should be handled. The default is
  * {@link ol.events.condition.shiftKeyOnly}, meaning that the Shift key
  * activates freehand drawing.
@@ -143,7 +143,7 @@
 
 /**
  * @typedef {Object} interaction_KeyboardPanOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.noModifierKeys} and
  * {@link ol.events.condition.targetNotEditable}.
@@ -155,7 +155,7 @@
 /**
  * @typedef {Object} interaction_KeyboardZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `100`.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.targetNotEditable}.
  * @property {number|undefined} delta The amount to zoom on each key press. Default is `1`.
@@ -164,15 +164,15 @@
 
 /**
  * @typedef {Object} interaction_ModifyOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event will be considered to add or move a vertex
  * to the sketch.
  * Default is {@link ol.events.condition.primaryAction}.
- * @property {ol.EventsConditionType|undefined} deleteCondition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} deleteCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * By default, {@link ol.events.condition.singleClick} with
  * {@link ol.events.condition.altKeyOnly} results in a vertex deletion.
- * @property {ol.EventsConditionType|undefined} insertVertexCondition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} insertVertexCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether a new vertex can be added to the sketch features.
  * Default is {@link ol.events.condition.always}
  * @property {number|undefined} pixelTolerance Pixel tolerance for considering the pointer close enough to a segment or
@@ -189,7 +189,7 @@
 
 /**
  * @typedef {Object} interaction_MouseWheelZoomOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled. Default is {@link ol.events.condition.always}.
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
  * @property {number|undefined} timeout Mouse wheel timeout duration in milliseconds. Default is `80`.
@@ -222,7 +222,7 @@
  * sequence is started.
  * @property {(function(ol.MapBrowserPointerEvent)|undefined)} handleDragEvent Function handling "drag" events. This function is called on "move" events
  * during a drag sequence.
- * @property {(function(ol.MapBrowserEvent):boolean|undefined)} handleEvent Method called by the map to notify the interaction that a browser event was
+ * @property {(function(module:ol/MapBrowserEvent~MapBrowserEvent):boolean|undefined)} handleEvent Method called by the map to notify the interaction that a browser event was
  * dispatched to the map. The function may return `false` to prevent the
  * propagation of the event to other interactions in the map's interactions
  * chain.
@@ -236,11 +236,11 @@
 
 /**
  * @typedef {Object} interaction_SelectOptions
- * @property {ol.EventsConditionType|undefined} addCondition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} addCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * By default, this is {@link ol.events.condition.never}. Use this if you want
  * to use different events for add and remove instead of `toggle`.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * This is the event for the selected features as a whole. By default, this is
  * {@link ol.events.condition.singleClick}. Clicking on a feature selects that
@@ -255,11 +255,11 @@
  * absent, all visible layers will be considered selectable.
  * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} style Style for the selected features. By default the default edit style is used
  * (see {@link ol.style}).
- * @property {ol.EventsConditionType|undefined} removeCondition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} removeCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * By default, this is {@link ol.events.condition.never}. Use this if you want
  * to use different events for add and remove instead of `toggle`.
- * @property {ol.EventsConditionType|undefined} toggleCondition A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * @property {ol.EventsConditionType|undefined} toggleCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * This is in addition to the `condition` event. By default,
  * {@link ol.events.condition.shiftKeyOnly}, i.e. pressing `shift` as well as

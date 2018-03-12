@@ -580,7 +580,7 @@ Snap.prototype.writePolygonGeometry_ = function(feature, geometry) {
 
 /**
  * Handle all pointer events events.
- * @param {ol.MapBrowserEvent} evt A move event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt A move event.
  * @return {boolean} Pass the event to other interactions.
  * @this {ol.interaction.Snap}
  */

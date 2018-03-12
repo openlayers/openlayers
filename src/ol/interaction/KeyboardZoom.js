@@ -55,10 +55,10 @@ inherits(KeyboardZoom, Interaction);
 
 
 /**
- * Handles the {@link ol.MapBrowserEvent map browser event} if it was a
+ * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} if it was a
  * `KeyEvent`, and decides whether to zoom in or out (depending on whether the
  * key pressed was '+' or '-').
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.KeyboardZoom}
  */

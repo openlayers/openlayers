@@ -154,10 +154,10 @@ ol.DeclutterGroup;
 
 
 /**
- * A function that takes a {@link ol.MapBrowserEvent} and two
+ * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
  * {@link module:ol~Pixel}s and returns a `{boolean}`. If the condition is met,
  * true should be returned.
- * @typedef {function(ol.MapBrowserEvent, module:ol~Pixel, module:ol~Pixel):boolean}
+ * @typedef {function(module:ol/MapBrowserEvent~MapBrowserEvent, module:ol~Pixel, module:ol~Pixel):boolean}
  */
 ol.DragBoxEndConditionType;
 
@@ -174,10 +174,10 @@ ol.DrawGeometryFunctionType;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * `{boolean}`. If the condition is met, true should be returned.
  *
- * @typedef {function(ol.MapBrowserEvent): boolean}
+ * @typedef {function(module:ol/MapBrowserEvent~MapBrowserEvent): boolean}
  */
 ol.EventsConditionType;
 

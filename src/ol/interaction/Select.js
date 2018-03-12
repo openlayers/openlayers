@@ -37,8 +37,8 @@ const SelectEventType = {
  * @param {SelectEventType} type The event type.
  * @param {Array.<module:ol/Feature~Feature>} selected Selected features.
  * @param {Array.<module:ol/Feature~Feature>} deselected Deselected features.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Associated
- *     {@link ol.MapBrowserEvent}.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Associated
+ *     {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
  * @implements {oli.SelectEvent}
  * @extends {ol.events.Event}
  * @constructor
@@ -61,8 +61,8 @@ const SelectEvent = function(type, selected, deselected, mapBrowserEvent) {
   this.deselected = deselected;
 
   /**
-   * Associated {@link ol.MapBrowserEvent}.
-   * @type {ol.MapBrowserEvent}
+   * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
+   * @type {module:ol/MapBrowserEvent~MapBrowserEvent}
    * @api
    */
   this.mapBrowserEvent = mapBrowserEvent;
@@ -244,9 +244,9 @@ Select.prototype.getLayer = function(feature) {
 
 
 /**
- * Handles the {@link ol.MapBrowserEvent map browser event} and may change the
+ * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may change the
  * selected state of features.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Select}
  */

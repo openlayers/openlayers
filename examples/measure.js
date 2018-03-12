@@ -93,7 +93,7 @@ const continueLineMsg = 'Click to continue drawing the line';
 
 /**
  * Handle pointer move.
- * @param {ol.MapBrowserEvent} evt The event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt The event.
  */
 const pointerMoveHandler = function(evt) {
   if (evt.dragging) {

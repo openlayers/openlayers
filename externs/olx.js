@@ -91,7 +91,7 @@ olx.interaction.DragBoxOptions.prototype.className;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.always}.
  * @type {ol.EventsConditionType|undefined}
@@ -110,7 +110,7 @@ olx.interaction.DragBoxOptions.prototype.minArea;
 
 
 /**
- * A function that takes a {@link ol.MapBrowserEvent} and two
+ * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
  * {@link ol.Pixel}s to indicate whether a `boxend` event should be fired.
  * Default is `true` if the area of the box is bigger than the `minArea` option.
  * @type {ol.DragBoxEndConditionType|undefined}
@@ -127,7 +127,7 @@ olx.interaction.DragPanOptions;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.noModifierKeys}.
  * @type {ol.EventsConditionType|undefined}
@@ -152,7 +152,7 @@ olx.interaction.DragRotateAndZoomOptions;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.shiftKeyOnly}.
  * @type {ol.EventsConditionType|undefined}
@@ -177,7 +177,7 @@ olx.interaction.DragRotateOptions;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.altShiftKeysOnly}.
  * @type {ol.EventsConditionType|undefined}
@@ -212,7 +212,7 @@ olx.interaction.DragZoomOptions.prototype.className;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.shiftKeyOnly}.
  * @type {ol.EventsConditionType|undefined}
@@ -340,7 +340,7 @@ olx.interaction.DrawOptions.prototype.minPoints;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether the drawing can be finished.
  * @type {ol.EventsConditionType|undefined}
  * @api
@@ -373,7 +373,7 @@ olx.interaction.DrawOptions.prototype.geometryName;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * By default {@link ol.events.condition.noModifierKeys}, i.e. a click, adds a
  * vertex or deactivates freehand drawing.
@@ -395,7 +395,7 @@ olx.interaction.DrawOptions.prototype.freehand;
 
 /**
  * Condition that activates freehand drawing for lines and polygons. This
- * function takes an {@link ol.MapBrowserEvent} and returns a boolean to
+ * function takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean to
  * indicate whether that event should be handled. The default is
  * {@link ol.events.condition.shiftKeyOnly}, meaning that the Shift key
  * activates freehand drawing.
@@ -513,7 +513,7 @@ olx.interaction.KeyboardPanOptions;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.noModifierKeys} and
  * {@link ol.events.condition.targetNotEditable}.
@@ -556,7 +556,7 @@ olx.interaction.KeyboardZoomOptions.prototype.duration;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.targetNotEditable}.
  * @type {ol.EventsConditionType|undefined}
@@ -589,7 +589,7 @@ olx.interaction.ModifyOptions;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event will be considered to add or move a vertex
  * to the sketch.
  * Default is {@link ol.events.condition.primaryAction}.
@@ -600,7 +600,7 @@ olx.interaction.ModifyOptions.prototype.condition;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * By default, {@link ol.events.condition.singleClick} with
  * {@link ol.events.condition.altKeyOnly} results in a vertex deletion.
@@ -611,7 +611,7 @@ olx.interaction.ModifyOptions.prototype.deleteCondition;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether a new vertex can be added to the sketch features.
  * Default is {@link ol.events.condition.always}
  * @type {ol.EventsConditionType|undefined}
@@ -675,7 +675,7 @@ olx.interaction.MouseWheelZoomOptions;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled. Default is {@link ol.events.condition.always}.
  * @type {ol.EventsConditionType|undefined}
  * @api
@@ -769,7 +769,7 @@ olx.interaction.PinchZoomOptions.prototype.constrainResolution;
 /**
  * @typedef {{handleDownEvent: (function(ol.MapBrowserPointerEvent):boolean|undefined),
  *     handleDragEvent: (function(ol.MapBrowserPointerEvent)|undefined),
- *     handleEvent: (function(ol.MapBrowserEvent):boolean|undefined),
+ *     handleEvent: (function(module:ol/MapBrowserEvent~MapBrowserEvent):boolean|undefined),
  *     handleMoveEvent: (function(ol.MapBrowserPointerEvent)|undefined),
  *     handleUpEvent: (function(ol.MapBrowserPointerEvent):boolean|undefined)}}
  */
@@ -799,7 +799,7 @@ olx.interaction.PointerOptions.prototype.handleDragEvent;
  * dispatched to the map. The function may return `false` to prevent the
  * propagation of the event to other interactions in the map's interactions
  * chain.
- * @type {(function(ol.MapBrowserEvent):boolean|undefined)}
+ * @type {(function(module:ol/MapBrowserEvent~MapBrowserEvent):boolean|undefined)}
  * @api
  */
 olx.interaction.PointerOptions.prototype.handleEvent;
@@ -841,7 +841,7 @@ olx.interaction.SelectOptions;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * By default, this is {@link ol.events.condition.never}. Use this if you want
  * to use different events for add and remove instead of `toggle`.
@@ -852,7 +852,7 @@ olx.interaction.SelectOptions.prototype.addCondition;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * This is the event for the selected features as a whole. By default, this is
  * {@link ol.events.condition.singleClick}. Clicking on a feature selects that
@@ -888,7 +888,7 @@ olx.interaction.SelectOptions.prototype.style;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * By default, this is {@link ol.events.condition.never}. Use this if you want
  * to use different events for add and remove instead of `toggle`.
@@ -899,7 +899,7 @@ olx.interaction.SelectOptions.prototype.removeCondition;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * This is in addition to the `condition` event. By default,
  * {@link ol.events.condition.shiftKeyOnly}, i.e. pressing `shift` as well as

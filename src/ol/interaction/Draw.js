@@ -394,9 +394,9 @@ Draw.prototype.setMap = function(map) {
 
 
 /**
- * Handles the {@link ol.MapBrowserEvent map browser event} and may actually
+ * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may actually
  * draw or finish the drawing.
- * @param {ol.MapBrowserEvent} event Map browser event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Draw}
  * @api
@@ -521,7 +521,7 @@ function handleUpEvent(event) {
 
 /**
  * Handle move events.
- * @param {ol.MapBrowserEvent} event A move event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event A move event.
  * @return {boolean} Pass the event to other interactions.
  * @private
  */
@@ -553,7 +553,7 @@ Draw.prototype.handlePointerMove_ = function(event) {
 
 /**
  * Determine if an event is within the snapping tolerance of the start coord.
- * @param {ol.MapBrowserEvent} event Event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Event.
  * @return {boolean} The event is within the snapping tolerance of the start.
  * @private
  */
@@ -592,7 +592,7 @@ Draw.prototype.atFinish_ = function(event) {
 
 
 /**
- * @param {ol.MapBrowserEvent} event Event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Event.
  * @private
  */
 Draw.prototype.createOrUpdateSketchPoint_ = function(event) {
@@ -609,7 +609,7 @@ Draw.prototype.createOrUpdateSketchPoint_ = function(event) {
 
 /**
  * Start the drawing.
- * @param {ol.MapBrowserEvent} event Event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Event.
  * @private
  */
 Draw.prototype.startDrawing_ = function(event) {
@@ -640,7 +640,7 @@ Draw.prototype.startDrawing_ = function(event) {
 
 /**
  * Modify the drawing.
- * @param {ol.MapBrowserEvent} event Event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Event.
  * @private
  */
 Draw.prototype.modifyDrawing_ = function(event) {
@@ -687,7 +687,7 @@ Draw.prototype.modifyDrawing_ = function(event) {
 
 /**
  * Add a new coordinate to the drawing.
- * @param {ol.MapBrowserEvent} event Event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Event.
  * @private
  */
 Draw.prototype.addToDrawing_ = function(event) {
