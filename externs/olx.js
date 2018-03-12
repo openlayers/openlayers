@@ -6,56 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{
- *     defaultDataProjection: ol.ProjectionLike,
- *     layerName: (string|undefined),
- *     layers: (Array.<string>|undefined)
- * }}
- */
-olx.format.TopoJSONOptions;
-
-
-/**
- * Default data projection. Default is `EPSG:4326`.
- * @type {ol.ProjectionLike}
- * @api
- */
-olx.format.TopoJSONOptions.prototype.defaultDataProjection;
-
-
-/**
- * Set the name of the TopoJSON topology `objects`'s children as feature
- * property with the specified name. This means that when set to `'layer'`, a
- * topology like
- * ```
- * {
- *   "type": "Topology",
- *   "objects": {
- *     "example": {
- *       "type": "GeometryCollection",
- *       "geometries": []
- *     }
- *   }
- * }
- * ```
- * will result in features that have a property `'layer'` set to `'example'`.
- * When not set, no property will be added to features.
- * @type {string|undefined}
- * @api
- */
-olx.format.TopoJSONOptions.prototype.layerName;
-
-
-/**
- * Names of the TopoJSON topology's `objects`'s children to read features from.
- * If not provided, features will be read from all children.
- * @type {Array.<string>|undefined}
- * @api
- */
-olx.format.TopoJSONOptions.prototype.layers;
-
-
-/**
  * @typedef {{altitudeMode: (IGCZ|string|undefined)}}
  */
 olx.format.IGCOptions;

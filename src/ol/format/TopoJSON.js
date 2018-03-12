@@ -13,13 +13,40 @@ import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import {get as getProjection} from '../proj.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {ol.ProjectionLike} defaultDataProjection Default data projection.
+ * Default is `EPSG:4326`.
+ * @property {string|undefined} layerName Set the name of the TopoJSON topology
+ * `objects`'s children as feature property with the specified name. This means
+ * that when set to `'layer'`, a topology like
+ * ```
+ * {
+ *   "type": "Topology",
+ *   "objects": {
+ *     "example": {
+ *       "type": "GeometryCollection",
+ *       "geometries": []
+ *     }
+ *   }
+ * }
+ * ```
+ * will result in features that have a property `'layer'` set to `'example'`.
+ * When not set, no property will be added to features.
+ * @property {Array.<string>|undefined} layers Names of the TopoJSON topology's
+ * `objects`'s children to read features from.  If not provided, features will
+ * be read from all children.
+ */
+
+
 /**
  * @classdesc
  * Feature format for reading data in the TopoJSON format.
  *
  * @constructor
  * @extends {ol.format.JSONFeature}
- * @param {olx.format.TopoJSONOptions=} opt_options Options.
+ * @param {module:ol/format/TopoJSON~Options=} opt_options Options.
  * @api
  */
 const TopoJSON = function(opt_options) {

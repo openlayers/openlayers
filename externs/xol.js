@@ -1,29 +1,5 @@
 
 /**
- * @typedef {Object} format_TopoJSONOptions
- * @property {ol.ProjectionLike} defaultDataProjection Default data projection. Default is `EPSG:4326`.
- * @property {string|undefined} layerName Set the name of the TopoJSON topology `objects`'s children as feature
- * property with the specified name. This means that when set to `'layer'`, a
- * topology like
- * ```
- * {
- *   "type": "Topology",
- *   "objects": {
- *     "example": {
- *       "type": "GeometryCollection",
- *       "geometries": []
- *     }
- *   }
- * }
- * ```
- * will result in features that have a property `'layer'` set to `'example'`.
- * When not set, no property will be added to features.
- * @property {Array.<string>|undefined} layers Names of the TopoJSON topology's `objects`'s children to read features from.
- * If not provided, features will be read from all children.
- */
-
-
-/**
  * @typedef {Object} format_IGCOptions
  * @property {IGCZ|string|undefined} altitudeMode Altitude mode. Possible values are `barometric`, `gps`, and `none`. Default
  * is `none`.
