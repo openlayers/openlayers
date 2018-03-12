@@ -227,6 +227,19 @@ function createStyleDefaults() {
 
 }
 
+
+/**
+ * @typedef {Object} Options
+ * @property {boolean|undefined} extractStyles Extract styles from the KML.
+ * Default is `true`.
+ * @property {boolean|undefined} showPointNames Show names as labels for placemarks
+ * which contain points. Default is `true`.
+ * @property {Array.<ol.style.Style>|undefined} defaultStyle Default style. The
+ * default default style is the same as Google Earth.
+ * @property {boolean|undefined} writeStyles Write styles into KML. Default is `true`.
+ */
+
+
 /**
  * @classdesc
  * Feature format for reading and writing data in the KML format.
@@ -236,7 +249,7 @@ function createStyleDefaults() {
  *
  * @constructor
  * @extends {ol.format.XMLFeature}
- * @param {olx.format.KMLOptions=} opt_options Options.
+ * @param {module:ol/format/KML~Options=} opt_options Options.
  * @api
  */
 const KML = function(opt_options) {

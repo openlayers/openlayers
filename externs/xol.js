@@ -1,14 +1,5 @@
 
 /**
- * @typedef {Object} format_KMLOptions
- * @property {boolean|undefined} extractStyles Extract styles from the KML. Default is `true`.
- * @property {boolean|undefined} showPointNames Show names as labels for placemarks which contain points. Default is `true`.
- * @property {Array.<ol.style.Style>|undefined} defaultStyle Default style. The default default style is the same as Google Earth.
- * @property {boolean|undefined} writeStyles Write styles into KML. Default is `true`.
- */
-
-
-/**
  * @typedef {Object} format_GMLOptions
  * @property {Object.<string, string>|string|undefined} featureNS Feature namespace. If not defined will be derived from GML. If multiple
  * feature types have been configured which come from different feature

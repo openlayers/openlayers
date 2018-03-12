@@ -6,47 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{extractStyles: (boolean|undefined),
- *     defaultStyle: (Array.<ol.style.Style>|undefined),
- *     showPointNames: (boolean|undefined),
- *     writeStyles: (boolean|undefined)}}
- */
-olx.format.KMLOptions;
-
-
-/**
- * Extract styles from the KML. Default is `true`.
- * @type {boolean|undefined}
- * @api
- */
-olx.format.KMLOptions.prototype.extractStyles;
-
-
-/**
- * Show names as labels for placemarks which contain points. Default is `true`.
- * @type {boolean|undefined}
- * @api
- */
-olx.format.KMLOptions.prototype.showPointNames;
-
-
-/**
- * Default style. The default default style is the same as Google Earth.
- * @type {Array.<ol.style.Style>|undefined}
- * @api
- */
-olx.format.KMLOptions.prototype.defaultStyle;
-
-
-/**
- * Write styles into KML. Default is `true`.
- * @type {boolean|undefined}
- * @api
- */
-olx.format.KMLOptions.prototype.writeStyles;
-
-
-/**
  * @typedef {{featureNS: (Object.<string, string>|string|undefined),
  *     featureType: (Array.<string>|string|undefined),
  *     srsName: string,
