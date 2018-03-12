@@ -83,7 +83,7 @@
  * @property {number|undefined} dragVertexDelay Delay in milliseconds after pointerdown before the current vertex can be
  * dragged to its exact position. Default is 500 ms.
  * @property {number|undefined} snapTolerance Pixel distance for snapping to the drawing finish. Default is `12`.
- * @property {ol.geom.GeometryType|string} type Drawing type ('Point', 'LineString', 'Polygon', 'MultiPoint',
+ * @property {module:ol/geom/GeometryType~GeometryType|string} type Drawing type ('Point', 'LineString', 'Polygon', 'MultiPoint',
  * 'MultiLineString', 'MultiPolygon' or 'Circle').
  * @property {boolean|undefined} stopClick Stop click, singleclick, and doubleclick events from firing during drawing.
  * Default is `false`.
@@ -116,11 +116,11 @@
  * @typedef {Object} interaction_ExtentOptions
  * @property {ol.Extent|undefined} extent Initial extent. Defaults to no initial extent
  * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} boxStyle Style for the drawn extent box.
- * Defaults to ol.style.Style.createDefaultEditing()[ol.geom.GeometryType.POLYGON]
+ * Defaults to ol.style.Style.createDefaultEditing()[module:ol/geom/GeometryType~GeometryType.POLYGON]
  * @property {number|undefined} pixelTolerance Pixel tolerance for considering the pointer close enough to a segment or
  * vertex for editing. Default is `10`.
  * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} pointerStyle Style for the cursor used to draw the extent.
- * Defaults to ol.style.Style.createDefaultEditing()[ol.geom.GeometryType.POINT]
+ * Defaults to ol.style.Style.createDefaultEditing()[module:ol/geom/GeometryType~GeometryType.POINT]
  * @property {boolean|undefined} wrapX Wrap the drawn extent across multiple maps in the X direction?
  * Only affects visuals, not functionality. Defaults to false.
  */
@@ -532,8 +532,8 @@
  * @property {ol.AttributionLike|undefined} attributions Attributions.
  * @property {number|undefined} distance Minimum distance in pixels between clusters. Default is `20`.
  * @property {ol.Extent|undefined} extent Extent.
- * @property {undefined|function(ol.Feature):ol.geom.Point} geometryFunction Function that takes an {@link ol.Feature} as argument and returns an
- * {@link ol.geom.Point} as cluster calculation point for the feature. When a
+ * @property {undefined|function(ol.Feature):module:ol/geom/Point~Point} geometryFunction Function that takes an {@link ol.Feature} as argument and returns an
+ * {@link module:ol/geom/Point~Point} as cluster calculation point for the feature. When a
  * feature should not be considered for clustering, the function should return
  * `null`. The default, which works when the underyling source contains point
  * features only, is
@@ -542,7 +542,7 @@
  *   return feature.getGeometry();
  * }
  * ```
- * See {@link ol.geom.Polygon#getInteriorPoint} for a way to get a cluster
+ * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
  * @property {ol.format.Feature|undefined} format Format.
  * @property {ol.ProjectionLike} projection Projection.
@@ -1362,7 +1362,7 @@
 
 /**
  * @typedef {Object} style_StyleOptions
- * @property {undefined|string|ol.geom.Geometry|ol.StyleGeometryFunction} geometry Feature property or geometry or function returning a geometry to render for
+ * @property {undefined|string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction} geometry Feature property or geometry or function returning a geometry to render for
  * this style.
  * @property {ol.style.Fill|undefined} fill Fill style.
  * @property {ol.style.Image|undefined} image Image style.

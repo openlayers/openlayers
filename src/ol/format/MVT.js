@@ -24,7 +24,7 @@ import RenderFeature from '../render/Feature.js';
 
 /**
  * @typedef {Object} Options
- * @property {undefined|function((ol.geom.Geometry|Object.<string,*>)=)|function(ol.geom.GeometryType,Array.<number>,(Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)} featureClass
+ * @property {undefined|function((module:ol/geom/Geometry~Geometry|Object.<string,*>)=)|function(module:ol/geom/GeometryType~GeometryType,Array.<number>,(Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)} featureClass
  * Class for features returned by {@link ol.format.MVT#readFeatures}. Set to
  * {@link ol.Feature} to get full editing and geometry support at the cost of
  * decreased rendering performance. The default is {@link ol.render.Feature},
@@ -63,8 +63,8 @@ const MVT = function(opt_options) {
 
   /**
    * @private
-   * @type {function((ol.geom.Geometry|Object.<string,*>)=)|
-   *     function(ol.geom.GeometryType,Array.<number>,
+   * @type {function((module:ol/geom/Geometry~Geometry|Object.<string,*>)=)|
+   *     function(module:ol/geom/GeometryType~GeometryType,Array.<number>,
    *         (Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)}
    */
   this.featureClass_ = options.featureClass ?
@@ -272,10 +272,10 @@ MVT.prototype.readRawGeometry_ = function(pbf, feature, flatCoordinates, ends) {
  * @param {number} type The raw feature's geometry type
  * @param {number} numEnds Number of ends of the flat coordinates of the
  * geometry.
- * @return {ol.geom.GeometryType} The geometry type.
+ * @return {module:ol/geom/GeometryType~GeometryType} The geometry type.
  */
 function getGeometryType(type, numEnds) {
-  /** @type {ol.geom.GeometryType} */
+  /** @type {module:ol/geom/GeometryType~GeometryType} */
   let geometryType;
   if (type === 1) {
     geometryType = numEnds === 1 ?

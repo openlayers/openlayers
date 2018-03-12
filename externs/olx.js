@@ -243,7 +243,7 @@ olx.interaction.DragZoomOptions.prototype.out;
  *     source: (ol.source.Vector|undefined),
  *     dragVertexDelay: (number|undefined),
  *     snapTolerance: (number|undefined),
- *     type: (ol.geom.GeometryType|string),
+ *     type: (module:ol/geom/GeometryType~GeometryType|string),
  *     stopClick: (boolean|undefined),
  *     maxPoints: (number|undefined),
  *     minPoints: (number|undefined),
@@ -306,7 +306,7 @@ olx.interaction.DrawOptions.prototype.snapTolerance;
 /**
  * Drawing type ('Point', 'LineString', 'Polygon', 'MultiPoint',
  * 'MultiLineString', 'MultiPolygon' or 'Circle').
- * @type {ol.geom.GeometryType|string}
+ * @type {module:ol/geom/GeometryType~GeometryType|string}
  * @api
  */
 olx.interaction.DrawOptions.prototype.type;
@@ -432,7 +432,7 @@ olx.interaction.ExtentOptions.prototype.extent;
 
 /**
  * Style for the drawn extent box.
- * Defaults to ol.style.Style.createDefaultEditing()[ol.geom.GeometryType.POLYGON]
+ * Defaults to ol.style.Style.createDefaultEditing()[module:ol/geom/GeometryType~GeometryType.POLYGON]
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  * @api
  */
@@ -448,7 +448,7 @@ olx.interaction.ExtentOptions.prototype.pixelTolerance;
 
 /**
  * Style for the cursor used to draw the extent.
- * Defaults to ol.style.Style.createDefaultEditing()[ol.geom.GeometryType.POINT]
+ * Defaults to ol.style.Style.createDefaultEditing()[module:ol/geom/GeometryType~GeometryType.POINT]
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  * @api
  */
@@ -1868,7 +1868,7 @@ olx.layer.VectorTileOptions.prototype.zIndex;
 /**
  * @typedef {{context: CanvasRenderingContext2D,
  *     feature: (ol.Feature|ol.render.Feature),
- *     geometry: ol.geom.SimpleGeometry,
+ *     geometry: module:ol/geom/SimpleGeometry~SimpleGeometry,
  *     pixelRatio: number,
  *     resolution: number,
  *     rotation: number}}
@@ -2017,7 +2017,7 @@ olx.source.BingMapsOptions.prototype.transition;
  *     distance: (number|undefined),
  *     extent: (ol.Extent|undefined),
  *     format: (ol.format.Feature|undefined),
- *     geometryFunction: (undefined|function(ol.Feature):ol.geom.Point),
+ *     geometryFunction: (undefined|function(ol.Feature):module:ol/geom/Point~Point),
  *     projection: ol.ProjectionLike,
  *     source: ol.source.Vector,
  *     wrapX: (boolean|undefined)}}
@@ -2051,7 +2051,7 @@ olx.source.ClusterOptions.prototype.extent;
 
 /**
  * Function that takes an {@link ol.Feature} as argument and returns an
- * {@link ol.geom.Point} as cluster calculation point for the feature. When a
+ * {@link module:ol/geom/Point~Point} as cluster calculation point for the feature. When a
  * feature should not be considered for clustering, the function should return
  * `null`. The default, which works when the underyling source contains point
  * features only, is
@@ -2060,9 +2060,9 @@ olx.source.ClusterOptions.prototype.extent;
  *   return feature.getGeometry();
  * }
  * ```
- * See {@link ol.geom.Polygon#getInteriorPoint} for a way to get a cluster
+ * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
- * @type {undefined|function(ol.Feature):ol.geom.Point}
+ * @type {undefined|function(ol.Feature):module:ol/geom/Point~Point}
  * @api
  */
 olx.source.ClusterOptions.prototype.geometryFunction;
@@ -5079,7 +5079,7 @@ olx.style.TextOptions.prototype.padding;
 
 
 /**
- * @typedef {{geometry: (undefined|string|ol.geom.Geometry|ol.StyleGeometryFunction),
+ * @typedef {{geometry: (undefined|string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction),
  *     fill: (ol.style.Fill|undefined),
  *     image: (ol.style.Image|undefined),
  *     renderer: (ol.StyleRenderFunction|undefined),
@@ -5093,7 +5093,7 @@ olx.style.StyleOptions;
 /**
  * Feature property or geometry or function returning a geometry to render for
  * this style.
- * @type {undefined|string|ol.geom.Geometry|ol.StyleGeometryFunction}
+ * @type {undefined|string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction}
  * @api
  */
 olx.style.StyleOptions.prototype.geometry;

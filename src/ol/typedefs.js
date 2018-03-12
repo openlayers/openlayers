@@ -167,8 +167,8 @@ ol.DragBoxEndConditionType;
  * arguments, and returns a geometry. The optional existing geometry is the
  * geometry that is returned when the function is called without a second
  * argument.
- * @typedef {function(!Array.<module:ol/coordinate~Coordinate>, ol.geom.SimpleGeometry=):
- *     ol.geom.SimpleGeometry}
+ * @typedef {function(!Array.<module:ol/coordinate~Coordinate>, module:ol/geom/SimpleGeometry~SimpleGeometry=):
+ *     module:ol/geom/SimpleGeometry~SimpleGeometry}
  */
 ol.DrawGeometryFunctionType;
 
@@ -233,7 +233,7 @@ ol.LRUCacheEntry;
 /**
  * @typedef {{depth: (Array.<number>|undefined),
  *            feature: ol.Feature,
- *            geometry: ol.geom.SimpleGeometry,
+ *            geometry: module:ol/geom/SimpleGeometry~SimpleGeometry,
  *            index: (number),
  *            segment: Array.<module:ol/extent~Extent>,
  *            featureSegments: (Array.<ol.ModifySegmentDataType>|undefined)}}
@@ -398,10 +398,10 @@ ol.SourceUrlTileOptions;
 
 /**
  * A function that takes an {@link ol.Feature} as argument and returns an
- * {@link ol.geom.Geometry} that will be rendered and styled for the feature.
+ * {@link module:ol/geom/Geometry~Geometry} that will be rendered and styled for the feature.
  *
  * @typedef {function((ol.Feature|ol.render.Feature)):
- *     (ol.geom.Geometry|ol.render.Feature|undefined)}
+ *     (module:ol/geom/Geometry~Geometry|ol.render.Feature|undefined)}
  */
 ol.StyleGeometryFunction;
 

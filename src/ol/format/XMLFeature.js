@@ -149,7 +149,7 @@ XMLFeature.prototype.readGeometry = function(source, opt_options) {
  * @param {Document} doc Document.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @protected
- * @return {ol.geom.Geometry} Geometry.
+ * @return {module:ol/geom/Geometry~Geometry} Geometry.
  */
 XMLFeature.prototype.readGeometryFromDocument = function(doc, opt_options) {
   return null; // not implemented
@@ -160,7 +160,7 @@ XMLFeature.prototype.readGeometryFromDocument = function(doc, opt_options) {
  * @param {Node} node Node.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @protected
- * @return {ol.geom.Geometry} Geometry.
+ * @return {module:ol/geom/Geometry~Geometry} Geometry.
  */
 XMLFeature.prototype.readGeometryFromNode = function(node, opt_options) {
   return null; // not implemented
@@ -253,7 +253,7 @@ XMLFeature.prototype.writeGeometry = function(geometry, opt_options) {
 
 
 /**
- * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  */

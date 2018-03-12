@@ -51,13 +51,13 @@ const Cluster = function(options) {
 
   /**
    * @param {ol.Feature} feature Feature.
-   * @return {ol.geom.Point} Cluster calculation point.
+   * @return {module:ol/geom/Point~Point} Cluster calculation point.
    * @protected
    */
   this.geometryFunction = options.geometryFunction || function(feature) {
-    const geometry = /** @type {ol.geom.Point} */ (feature.getGeometry());
+    const geometry = /** @type {module:ol/geom/Point~Point} */ (feature.getGeometry());
     assert(geometry instanceof Point,
-      10); // The default `geometryFunction` can only handle `ol.geom.Point` geometries
+      10); // The default `geometryFunction` can only handle `module:ol/geom/Point~Point` geometries
     return geometry;
   };
 

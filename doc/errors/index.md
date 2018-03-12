@@ -43,7 +43,7 @@ Unknown `serverType` configured.
 
 ### 10
 
-The default `geometryFunction` can only handle `ol.geom.Point` geometries.
+The default `geometryFunction` can only handle `ol/geom/Point` geometries.
 
 ### 11
 

@@ -140,7 +140,7 @@ let draw; // global so we can remove it later
 
 /**
  * Format length output.
- * @param {ol.geom.LineString} line The line.
+ * @param {module:ol/geom/LineString~LineString} line The line.
  * @return {string} The formatted length.
  */
 const formatLength = function(line) {
@@ -159,7 +159,7 @@ const formatLength = function(line) {
 
 /**
  * Format area output.
- * @param {ol.geom.Polygon} polygon The polygon.
+ * @param {module:ol/geom/Polygon~Polygon} polygon The polygon.
  * @return {string} Formatted area.
  */
 const formatArea = function(polygon) {

@@ -158,7 +158,7 @@ FeatureFormat.prototype.readFeatures = function(source, opt_options) {};
  * @abstract
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {ol.geom.Geometry} Geometry.
+ * @return {module:ol/geom/Geometry~Geometry} Geometry.
  */
 FeatureFormat.prototype.readGeometry = function(source, opt_options) {};
 
@@ -199,7 +199,7 @@ FeatureFormat.prototype.writeFeatures = function(features, opt_options) {};
  * Write a single geometry in this format.
  *
  * @abstract
- * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */
@@ -208,11 +208,11 @@ FeatureFormat.prototype.writeGeometry = function(geometry, opt_options) {};
 export default FeatureFormat;
 
 /**
- * @param {ol.geom.Geometry|module:ol/extent~Extent} geometry Geometry.
+ * @param {module:ol/geom/Geometry~Geometry|module:ol/extent~Extent} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
  * @param {(module:ol/format/Feature~WriteOptions|module:ol/format/Feature~ReadOptions)=} opt_options
  *     Options.
- * @return {ol.geom.Geometry|module:ol/extent~Extent} Transformed geometry.
+ * @return {module:ol/geom/Geometry~Geometry|module:ol/extent~Extent} Transformed geometry.
  */
 export function transformWithOptions(geometry, write, opt_options) {
   const featureProjection = opt_options ?
@@ -220,7 +220,7 @@ export function transformWithOptions(geometry, write, opt_options) {
   const dataProjection = opt_options ?
     getProjection(opt_options.dataProjection) : null;
   /**
-   * @type {ol.geom.Geometry|module:ol/extent~Extent}
+   * @type {module:ol/geom/Geometry~Geometry|module:ol/extent~Extent}
    */
   let transformed;
   if (featureProjection && dataProjection &&

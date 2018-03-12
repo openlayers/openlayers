@@ -223,7 +223,7 @@ const Modify = function(options) {
   /**
   * @const
   * @private
-  * @type {!Object.<string, function(ol.Feature, ol.geom.Geometry)>}
+  * @type {!Object.<string, function(ol.Feature, module:ol/geom/Geometry~Geometry)>}
   */
   this.SEGMENT_WRITERS_ = {
     'Point': this.writePointGeometry_,
@@ -444,7 +444,7 @@ Modify.prototype.handleFeatureRemove_ = function(evt) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.Point} geometry Geometry.
+ * @param {module:ol/geom/Point~Point} geometry Geometry.
  * @private
  */
 Modify.prototype.writePointGeometry_ = function(feature, geometry) {
@@ -460,7 +460,7 @@ Modify.prototype.writePointGeometry_ = function(feature, geometry) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.MultiPoint} geometry Geometry.
+ * @param {module:ol/geom/MultiPoint~MultiPoint} geometry Geometry.
  * @private
  */
 Modify.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
@@ -481,7 +481,7 @@ Modify.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.LineString} geometry Geometry.
+ * @param {module:ol/geom/LineString~LineString} geometry Geometry.
  * @private
  */
 Modify.prototype.writeLineStringGeometry_ = function(feature, geometry) {
@@ -501,7 +501,7 @@ Modify.prototype.writeLineStringGeometry_ = function(feature, geometry) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.MultiLineString} geometry Geometry.
+ * @param {module:ol/geom/MultiLineString~MultiLineString} geometry Geometry.
  * @private
  */
 Modify.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
@@ -525,7 +525,7 @@ Modify.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.Polygon} geometry Geometry.
+ * @param {module:ol/geom/Polygon~Polygon} geometry Geometry.
  * @private
  */
 Modify.prototype.writePolygonGeometry_ = function(feature, geometry) {
@@ -549,7 +549,7 @@ Modify.prototype.writePolygonGeometry_ = function(feature, geometry) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.MultiPolygon} geometry Geometry.
+ * @param {module:ol/geom/MultiPolygon~MultiPolygon} geometry Geometry.
  * @private
  */
 Modify.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
@@ -582,7 +582,7 @@ Modify.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
  * the circumference, and is not a line segment.
  *
  * @param {ol.Feature} feature Feature.
- * @param {ol.geom.Circle} geometry Geometry.
+ * @param {module:ol/geom/Circle~Circle} geometry Geometry.
  * @private
  */
 Modify.prototype.writeCircleGeometry_ = function(feature, geometry) {
@@ -608,7 +608,7 @@ Modify.prototype.writeCircleGeometry_ = function(feature, geometry) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.GeometryCollection} geometry Geometry.
+ * @param {module:ol/geom/GeometryCollection~GeometryCollection} geometry Geometry.
  * @private
  */
 Modify.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
@@ -631,7 +631,7 @@ Modify.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
     this.vertexFeature_ = vertexFeature;
     this.overlay_.getSource().addFeature(vertexFeature);
   } else {
-    const geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
+    const geometry = /** @type {module:ol/geom/Point~Point} */ (vertexFeature.getGeometry());
     geometry.setCoordinates(coordinates);
   }
   return vertexFeature;
@@ -664,7 +664,7 @@ function handleDownEvent(evt) {
   const vertexFeature = this.vertexFeature_;
   if (vertexFeature) {
     const insertVertices = [];
-    const geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
+    const geometry = /** @type {module:ol/geom/Point~Point} */ (vertexFeature.getGeometry());
     const vertex = geometry.getCoordinates();
     const vertexExtent = boundingExtent([vertex]);
     const segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
@@ -956,7 +956,7 @@ function pointDistanceToSegmentDataSquared(pointCoordinates, segmentData) {
   const geometry = segmentData.geometry;
 
   if (geometry.getType() === GeometryType.CIRCLE) {
-    const circleGeometry = /** @type {ol.geom.Circle} */ (geometry);
+    const circleGeometry = /** @type {module:ol/geom/Circle~Circle} */ (geometry);
 
     if (segmentData.index === CIRCLE_CIRCUMFERENCE_INDEX) {
       const distanceToCenterSquared =
@@ -1191,7 +1191,7 @@ Modify.prototype.removeVertex_ = function() {
 
 
 /**
- * @param {ol.geom.SimpleGeometry} geometry Geometry.
+ * @param {module:ol/geom/SimpleGeometry~SimpleGeometry} geometry Geometry.
  * @param {Array} coordinates Coordinates.
  * @private
  */
@@ -1203,7 +1203,7 @@ Modify.prototype.setGeometryCoordinates_ = function(geometry, coordinates) {
 
 
 /**
- * @param {ol.geom.SimpleGeometry} geometry Geometry.
+ * @param {module:ol/geom/SimpleGeometry~SimpleGeometry} geometry Geometry.
  * @param {number} index Index.
  * @param {Array.<number>|undefined} depth Depth.
  * @param {number} delta Delta (1 or -1).

@@ -98,7 +98,7 @@ JSONFeature.prototype.readGeometry = function(source, opt_options) {
  * @param {Object} object Object.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
- * @return {ol.geom.Geometry} Geometry.
+ * @return {module:ol/geom/Geometry~Geometry} Geometry.
  */
 JSONFeature.prototype.readGeometryFromObject = function(object, opt_options) {};
 
@@ -164,7 +164,7 @@ JSONFeature.prototype.writeGeometry = function(geometry, opt_options) {
 
 /**
  * @abstract
- * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {Object} Object.
  */

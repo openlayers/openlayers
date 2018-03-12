@@ -89,7 +89,7 @@ inherits(WebGLImmediateRenderer, VectorContext);
 
 /**
  * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
- * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
+ * @param {module:ol/geom/Geometry~Geometry|ol.render.Feature} geometry Geometry.
  * @private
  */
 WebGLImmediateRenderer.prototype.drawText_ = function(replayGroup, geometry) {
@@ -130,7 +130,7 @@ WebGLImmediateRenderer.prototype.setStyle = function(style) {
  * Render a geometry into the canvas.  Call
  * {@link ol.render.webgl.Immediate#setStyle} first to set the rendering style.
  *
- * @param {ol.geom.Geometry|ol.render.Feature} geometry The geometry to render.
+ * @param {module:ol/geom/Geometry~Geometry|ol.render.Feature} geometry The geometry to render.
  * @override
  * @api
  */
@@ -138,28 +138,28 @@ WebGLImmediateRenderer.prototype.drawGeometry = function(geometry) {
   const type = geometry.getType();
   switch (type) {
     case GeometryType.POINT:
-      this.drawPoint(/** @type {ol.geom.Point} */ (geometry), null);
+      this.drawPoint(/** @type {module:ol/geom/Point~Point} */ (geometry), null);
       break;
     case GeometryType.LINE_STRING:
-      this.drawLineString(/** @type {ol.geom.LineString} */ (geometry), null);
+      this.drawLineString(/** @type {module:ol/geom/LineString~LineString} */ (geometry), null);
       break;
     case GeometryType.POLYGON:
-      this.drawPolygon(/** @type {ol.geom.Polygon} */ (geometry), null);
+      this.drawPolygon(/** @type {module:ol/geom/Polygon~Polygon} */ (geometry), null);
       break;
     case GeometryType.MULTI_POINT:
-      this.drawMultiPoint(/** @type {ol.geom.MultiPoint} */ (geometry), null);
+      this.drawMultiPoint(/** @type {module:ol/geom/MultiPoint~MultiPoint} */ (geometry), null);
       break;
     case GeometryType.MULTI_LINE_STRING:
-      this.drawMultiLineString(/** @type {ol.geom.MultiLineString} */ (geometry), null);
+      this.drawMultiLineString(/** @type {module:ol/geom/MultiLineString~MultiLineString} */ (geometry), null);
       break;
     case GeometryType.MULTI_POLYGON:
-      this.drawMultiPolygon(/** @type {ol.geom.MultiPolygon} */ (geometry), null);
+      this.drawMultiPolygon(/** @type {module:ol/geom/MultiPolygon~MultiPolygon} */ (geometry), null);
       break;
     case GeometryType.GEOMETRY_COLLECTION:
-      this.drawGeometryCollection(/** @type {ol.geom.GeometryCollection} */ (geometry), null);
+      this.drawGeometryCollection(/** @type {module:ol/geom/GeometryCollection~GeometryCollection} */ (geometry), null);
       break;
     case GeometryType.CIRCLE:
-      this.drawCircle(/** @type {ol.geom.Circle} */ (geometry), null);
+      this.drawCircle(/** @type {module:ol/geom/Circle~Circle} */ (geometry), null);
       break;
     default:
       // pass

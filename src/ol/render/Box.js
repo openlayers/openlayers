@@ -15,7 +15,7 @@ import Polygon from '../geom/Polygon.js';
 const RenderBox = function(className) {
 
   /**
-   * @type {ol.geom.Polygon}
+   * @type {module:ol/geom/Polygon~Polygon}
    * @private
    */
   this.geometry_ = null;
@@ -126,7 +126,7 @@ RenderBox.prototype.createOrUpdateGeometry = function() {
 
 
 /**
- * @return {ol.geom.Polygon} Geometry.
+ * @return {module:ol/geom/Polygon~Polygon} Geometry.
  */
 RenderBox.prototype.getGeometry = function() {
   return this.geometry_;

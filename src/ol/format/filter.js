@@ -78,7 +78,7 @@ export function bbox(geometryName, extent, opt_srsName) {
  * contains a given geometry.
  *
  * @param {!string} geometryName Geometry name to use.
- * @param {!ol.geom.Geometry} geometry Geometry.
+ * @param {!module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @returns {!ol.format.filter.Contains} `<Contains>` operator.
@@ -93,7 +93,7 @@ export function contains(geometryName, geometry, opt_srsName) {
  * intersects a given geometry.
  *
  * @param {!string} geometryName Geometry name to use.
- * @param {!ol.geom.Geometry} geometry Geometry.
+ * @param {!module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @returns {!ol.format.filter.Intersects} `<Intersects>` operator.
@@ -108,7 +108,7 @@ export function intersects(geometryName, geometry, opt_srsName) {
  * is within a given geometry.
  *
  * @param {!string} geometryName Geometry name to use.
- * @param {!ol.geom.Geometry} geometry Geometry.
+ * @param {!module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @returns {!ol.format.filter.Within} `<Within>` operator.

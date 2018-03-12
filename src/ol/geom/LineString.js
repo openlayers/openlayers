@@ -21,9 +21,9 @@ import {douglasPeucker} from '../geom/flat/simplify.js';
  * Linestring geometry.
  *
  * @constructor
- * @extends {ol.geom.SimpleGeometry}
+ * @extends {module:ol/geom/SimpleGeometry~SimpleGeometry}
  * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
  * @api
  */
 const LineString = function(coordinates, opt_layout) {
@@ -78,7 +78,7 @@ LineString.prototype.appendCoordinate = function(coordinate) {
 
 /**
  * Make a complete copy of the geometry.
- * @return {!ol.geom.LineString} Clone.
+ * @return {!module:ol/geom/LineString~LineString} Clone.
  * @override
  * @api
  */
@@ -238,7 +238,7 @@ LineString.prototype.intersectsExtent = function(extent) {
 /**
  * Set the coordinates of the linestring.
  * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
  * @override
  * @api
  */
@@ -258,7 +258,7 @@ LineString.prototype.setCoordinates = function(coordinates, opt_layout) {
 
 
 /**
- * @param {ol.geom.GeometryLayout} layout Layout.
+ * @param {module:ol/geom/GeometryLayout~GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
 LineString.prototype.setFlatCoordinates = function(layout, flatCoordinates) {

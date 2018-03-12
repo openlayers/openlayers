@@ -423,7 +423,7 @@ function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
  * @param {ol.LayoutOptions} layoutOptions Layout options.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<number>=} ends Ends.
- * @return {ol.geom.GeometryLayout} Layout.
+ * @return {module:ol/geom/GeometryLayout~GeometryLayout} Layout.
  */
 function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
   let layout = GeometryLayout.XY;
@@ -785,7 +785,7 @@ function writeRte(node, feature, objectStack) {
   const context = {node: node, 'properties': properties};
   let geometry = feature.getGeometry();
   if (geometry) {
-    geometry = /** @type {ol.geom.LineString} */ (transformWithOptions(geometry, true, options));
+    geometry = /** @type {module:ol/geom/LineString~LineString} */ (transformWithOptions(geometry, true, options));
     context['geometryLayout'] = geometry.getLayout();
     properties['rtept'] = geometry.getCoordinates();
   }
@@ -810,7 +810,7 @@ function writeTrk(node, feature, objectStack) {
   const context = {node: node, 'properties': properties};
   let geometry = feature.getGeometry();
   if (geometry) {
-    geometry = /** @type {ol.geom.MultiLineString} */
+    geometry = /** @type {module:ol/geom/MultiLineString~MultiLineString} */
       (transformWithOptions(geometry, true, options));
     properties['trkseg'] = geometry.getLineStrings();
   }
@@ -825,7 +825,7 @@ function writeTrk(node, feature, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.LineString} lineString LineString.
+ * @param {module:ol/geom/LineString~LineString} lineString LineString.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeTrkSeg(node, lineString, objectStack) {
@@ -849,7 +849,7 @@ function writeWpt(node, feature, objectStack) {
   context['properties'] = feature.getProperties();
   let geometry = feature.getGeometry();
   if (geometry) {
-    geometry = /** @type {ol.geom.Point} */
+    geometry = /** @type {module:ol/geom/Point~Point} */
       (transformWithOptions(geometry, true, options));
     context['geometryLayout'] = geometry.getLayout();
     writeWptType(node, geometry.getCoordinates(), objectStack);

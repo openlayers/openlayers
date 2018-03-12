@@ -169,7 +169,7 @@ function handleDragEvent(mapBrowserEvent) {
 
 /**
  * Returns geometry of last drawn box.
- * @return {ol.geom.Polygon} Geometry.
+ * @return {module:ol/geom/Polygon~Polygon} Geometry.
  * @api
  */
 DragBox.prototype.getGeometry = function() {

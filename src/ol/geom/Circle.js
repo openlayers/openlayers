@@ -13,10 +13,10 @@ import {deflateCoordinate} from '../geom/flat/deflate.js';
  * Circle geometry.
  *
  * @constructor
- * @extends {ol.geom.SimpleGeometry}
+ * @extends {module:ol/geom/SimpleGeometry~SimpleGeometry}
  * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number=} opt_radius Radius.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
  * @api
  */
 const Circle = function(center, opt_radius, opt_layout) {
@@ -30,7 +30,7 @@ inherits(Circle, SimpleGeometry);
 
 /**
  * Make a complete copy of the geometry.
- * @return {!ol.geom.Circle} Clone.
+ * @return {!module:ol/geom/Circle~Circle} Clone.
  * @override
  * @api
  */
@@ -179,7 +179,7 @@ Circle.prototype.setCenter = function(center) {
  * number) of the circle.
  * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} radius Radius.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
  * @api
  */
 Circle.prototype.setCenterAndRadius = function(center, radius, opt_layout) {
@@ -217,7 +217,7 @@ Circle.prototype.setCoordinates = function(coordinates, opt_layout) {};
 
 
 /**
- * @param {ol.geom.GeometryLayout} layout Layout.
+ * @param {module:ol/geom/GeometryLayout~GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
 Circle.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
@@ -254,7 +254,7 @@ Circle.prototype.setRadius = function(radius) {
  *     string identifier or a {@link ol.proj.Projection} object.
  * @param {module:ol/proj~ProjectionLike} destination The desired projection.  Can be a
  *     string identifier or a {@link ol.proj.Projection} object.
- * @return {ol.geom.Circle} This geometry.  Note that original geometry is
+ * @return {module:ol/geom/Circle~Circle} This geometry.  Note that original geometry is
  *     modified in place.
  * @function
  * @api

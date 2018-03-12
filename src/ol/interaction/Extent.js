@@ -419,7 +419,7 @@ ExtentInteraction.prototype.createOrUpdatePointerFeature_ = function(vertex) {
     this.vertexFeature_ = vertexFeature;
     this.vertexOverlay_.getSource().addFeature(vertexFeature);
   } else {
-    const geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
+    const geometry = /** @type {module:ol/geom/Point~Point} */ (vertexFeature.getGeometry());
     geometry.setCoordinates(vertex);
   }
   return vertexFeature;

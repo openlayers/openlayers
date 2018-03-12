@@ -224,16 +224,16 @@ GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.Geometry|undefined} Geometry.
+ * @return {module:ol/geom/Geometry~Geometry|undefined} Geometry.
  */
 GMLBase.prototype.readGeometryElement = function(node, objectStack) {
   const context = /** @type {Object} */ (objectStack[0]);
   context['srsName'] = node.firstElementChild.getAttribute('srsName');
   context['srsDimension'] = node.firstElementChild.getAttribute('srsDimension');
-  /** @type {ol.geom.Geometry} */
+  /** @type {module:ol/geom/Geometry~Geometry} */
   const geometry = pushParseAndPop(null, this.GEOMETRY_PARSERS_, node, objectStack, this);
   if (geometry) {
-    return /** @type {ol.geom.Geometry} */ (transformWithOptions(geometry, false, context));
+    return /** @type {module:ol/geom/Geometry~Geometry} */ (transformWithOptions(geometry, false, context));
   } else {
     return undefined;
   }
@@ -285,7 +285,7 @@ GMLBase.prototype.readFeatureElement = function(node, objectStack) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.Point|undefined} Point.
+ * @return {module:ol/geom/Point~Point|undefined} Point.
  */
 GMLBase.prototype.readPoint = function(node, objectStack) {
   const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
@@ -300,7 +300,7 @@ GMLBase.prototype.readPoint = function(node, objectStack) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.MultiPoint|undefined} MultiPoint.
+ * @return {module:ol/geom/MultiPoint~MultiPoint|undefined} MultiPoint.
  */
 GMLBase.prototype.readMultiPoint = function(node, objectStack) {
   /** @type {Array.<Array.<number>>} */
@@ -317,10 +317,10 @@ GMLBase.prototype.readMultiPoint = function(node, objectStack) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.MultiLineString|undefined} MultiLineString.
+ * @return {module:ol/geom/MultiLineString~MultiLineString|undefined} MultiLineString.
  */
 GMLBase.prototype.readMultiLineString = function(node, objectStack) {
-  /** @type {Array.<ol.geom.LineString>} */
+  /** @type {Array.<module:ol/geom/LineString~LineString>} */
   const lineStrings = pushParseAndPop([],
     this.MULTILINESTRING_PARSERS_, node, objectStack, this);
   if (lineStrings) {
@@ -336,10 +336,10 @@ GMLBase.prototype.readMultiLineString = function(node, objectStack) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.MultiPolygon|undefined} MultiPolygon.
+ * @return {module:ol/geom/MultiPolygon~MultiPolygon|undefined} MultiPolygon.
  */
 GMLBase.prototype.readMultiPolygon = function(node, objectStack) {
-  /** @type {Array.<ol.geom.Polygon>} */
+  /** @type {Array.<module:ol/geom/Polygon~Polygon>} */
   const polygons = pushParseAndPop([], this.MULTIPOLYGON_PARSERS_, node, objectStack, this);
   if (polygons) {
     const multiPolygon = new MultiPolygon(null);
@@ -384,7 +384,7 @@ GMLBase.prototype.polygonMemberParser_ = function(node, objectStack) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.LineString|undefined} LineString.
+ * @return {module:ol/geom/LineString~LineString|undefined} LineString.
  */
 GMLBase.prototype.readLineString = function(node, objectStack) {
   const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
@@ -419,7 +419,7 @@ GMLBase.prototype.readFlatLinearRing_ = function(node, objectStack) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.LinearRing|undefined} LinearRing.
+ * @return {module:ol/geom/LinearRing~LinearRing|undefined} LinearRing.
  */
 GMLBase.prototype.readLinearRing = function(node, objectStack) {
   const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
@@ -436,7 +436,7 @@ GMLBase.prototype.readLinearRing = function(node, objectStack) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.Polygon|undefined} Polygon.
+ * @return {module:ol/geom/Polygon~Polygon|undefined} Polygon.
  */
 GMLBase.prototype.readPolygon = function(node, objectStack) {
   /** @type {Array.<Array.<number>>} */

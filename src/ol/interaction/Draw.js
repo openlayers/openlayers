@@ -159,10 +159,10 @@ const Draw = function(options) {
 
   /**
    * Geometry type.
-   * @type {ol.geom.GeometryType}
+   * @type {module:ol/geom/GeometryType~GeometryType}
    * @private
    */
-  this.type_ = /** @type {ol.geom.GeometryType} */ (options.type);
+  this.type_ = /** @type {module:ol/geom/GeometryType~GeometryType} */ (options.type);
 
   /**
    * Drawing mode (derived from geometry type.
@@ -211,11 +211,11 @@ const Draw = function(options) {
       /**
        * @param {!Array.<module:ol/coordinate~Coordinate>} coordinates
        *     The coordinates.
-       * @param {ol.geom.SimpleGeometry=} opt_geometry Optional geometry.
-       * @return {ol.geom.SimpleGeometry} A geometry.
+       * @param {module:ol/geom/SimpleGeometry~SimpleGeometry=} opt_geometry Optional geometry.
+       * @return {module:ol/geom/SimpleGeometry~SimpleGeometry} A geometry.
        */
       geometryFunction = function(coordinates, opt_geometry) {
-        const circle = opt_geometry ? /** @type {ol.geom.Circle} */ (opt_geometry) :
+        const circle = opt_geometry ? /** @type {module:ol/geom/Circle~Circle} */ (opt_geometry) :
           new Circle([NaN, NaN]);
         const squaredLength = squaredCoordinateDistance(
           coordinates[0], coordinates[1]);
@@ -235,8 +235,8 @@ const Draw = function(options) {
       /**
        * @param {!Array.<module:ol/coordinate~Coordinate>} coordinates
        *     The coordinates.
-       * @param {ol.geom.SimpleGeometry=} opt_geometry Optional geometry.
-       * @return {ol.geom.SimpleGeometry} A geometry.
+       * @param {module:ol/geom/SimpleGeometry~SimpleGeometry=} opt_geometry Optional geometry.
+       * @return {module:ol/geom/SimpleGeometry~SimpleGeometry} A geometry.
        */
       geometryFunction = function(coordinates, opt_geometry) {
         let geometry = opt_geometry;
@@ -601,7 +601,7 @@ Draw.prototype.createOrUpdateSketchPoint_ = function(event) {
     this.sketchPoint_ = new Feature(new Point(coordinates));
     this.updateSketchFeatures_();
   } else {
-    const sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());
+    const sketchPointGeom = /** @type {module:ol/geom/Point~Point} */ (this.sketchPoint_.getGeometry());
     sketchPointGeom.setCoordinates(coordinates);
   }
 };
@@ -645,7 +645,7 @@ Draw.prototype.startDrawing_ = function(event) {
  */
 Draw.prototype.modifyDrawing_ = function(event) {
   let coordinate = event.coordinate;
-  const geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
+  const geometry = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   let coordinates, last;
   if (this.mode_ === Mode.POINT) {
     last = this.sketchCoords_;
@@ -664,7 +664,7 @@ Draw.prototype.modifyDrawing_ = function(event) {
   last[1] = coordinate[1];
   this.geometryFunction_(/** @type {!Array.<module:ol/coordinate~Coordinate>} */ (this.sketchCoords_), geometry);
   if (this.sketchPoint_) {
-    const sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());
+    const sketchPointGeom = /** @type {module:ol/geom/Point~Point} */ (this.sketchPoint_.getGeometry());
     sketchPointGeom.setCoordinates(coordinate);
   }
   let sketchLineGeom;
@@ -674,11 +674,11 @@ Draw.prototype.modifyDrawing_ = function(event) {
       this.sketchLine_ = new Feature(new LineString(null));
     }
     const ring = geometry.getLinearRing(0);
-    sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());
+    sketchLineGeom = /** @type {module:ol/geom/LineString~LineString} */ (this.sketchLine_.getGeometry());
     sketchLineGeom.setFlatCoordinates(
       ring.getLayout(), ring.getFlatCoordinates());
   } else if (this.sketchLineCoords_) {
-    sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());
+    sketchLineGeom = /** @type {module:ol/geom/LineString~LineString} */ (this.sketchLine_.getGeometry());
     sketchLineGeom.setCoordinates(this.sketchLineCoords_);
   }
   this.updateSketchFeatures_();
@@ -692,7 +692,7 @@ Draw.prototype.modifyDrawing_ = function(event) {
  */
 Draw.prototype.addToDrawing_ = function(event) {
   const coordinate = event.coordinate;
-  const geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
+  const geometry = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   let done;
   let coordinates;
   if (this.mode_ === Mode.LINE_STRING) {
@@ -737,7 +737,7 @@ Draw.prototype.removeLastPoint = function() {
   if (!this.sketchFeature_) {
     return;
   }
-  const geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
+  const geometry = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   let coordinates, sketchLineGeom;
   if (this.mode_ === Mode.LINE_STRING) {
     coordinates = this.sketchCoords_;
@@ -749,7 +749,7 @@ Draw.prototype.removeLastPoint = function() {
   } else if (this.mode_ === Mode.POLYGON) {
     coordinates = this.sketchCoords_[0];
     coordinates.splice(-2, 1);
-    sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());
+    sketchLineGeom = /** @type {module:ol/geom/LineString~LineString} */ (this.sketchLine_.getGeometry());
     sketchLineGeom.setCoordinates(coordinates);
     this.geometryFunction_(this.sketchCoords_, geometry);
   }
@@ -774,7 +774,7 @@ Draw.prototype.finishDrawing = function() {
     return;
   }
   let coordinates = this.sketchCoords_;
-  const geometry = /** @type {ol.geom.SimpleGeometry} */ (sketchFeature.getGeometry());
+  const geometry = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (sketchFeature.getGeometry());
   if (this.mode_ === Mode.LINE_STRING) {
     // remove the redundant last point
     coordinates.pop();
@@ -835,7 +835,7 @@ Draw.prototype.abortDrawing_ = function() {
  */
 Draw.prototype.extend = function(feature) {
   const geometry = feature.getGeometry();
-  const lineString = /** @type {ol.geom.LineString} */ (geometry);
+  const lineString = /** @type {module:ol/geom/LineString~LineString} */ (geometry);
   this.sketchFeature_ = feature;
   this.sketchCoords_ = lineString.getCoordinates();
   const last = this.sketchCoords_[this.sketchCoords_.length - 1];
@@ -889,7 +889,7 @@ Draw.prototype.updateState_ = function() {
 /**
  * Create a `geometryFunction` for `type: 'Circle'` that will create a regular
  * polygon with a user specified number of sides and start angle instead of an
- * `ol.geom.Circle` geometry.
+ * `module:ol/geom/Circle~Circle` geometry.
  * @param {number=} opt_sides Number of sides of the regular polygon. Default is
  *     32.
  * @param {number=} opt_angle Angle of the first point in radians. 0 means East.
@@ -906,7 +906,7 @@ export function createRegularPolygon(opt_sides, opt_angle) {
       const end = coordinates[1];
       const radius = Math.sqrt(
         squaredCoordinateDistance(center, end));
-      const geometry = opt_geometry ? /** @type {ol.geom.Polygon} */ (opt_geometry) :
+      const geometry = opt_geometry ? /** @type {module:ol/geom/Polygon~Polygon} */ (opt_geometry) :
         fromCircle(new Circle(center), opt_sides);
       const angle = opt_angle ? opt_angle :
         Math.atan((end[1] - center[1]) / (end[0] - center[0]));
@@ -945,7 +945,7 @@ export function createBox() {
 /**
  * Get the drawing mode.  The mode for mult-part geometries is the same as for
  * their single-part cousins.
- * @param {ol.geom.GeometryType} type Geometry type.
+ * @param {module:ol/geom/GeometryType~GeometryType} type Geometry type.
  * @return {ol.interaction.Mode} Drawing mode.
  */
 function getMode(type) {

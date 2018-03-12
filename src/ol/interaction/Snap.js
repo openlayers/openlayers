@@ -134,7 +134,7 @@ const Snap = function(opt_options) {
   /**
   * @const
   * @private
-  * @type {Object.<string, function(ol.Feature, ol.geom.Geometry)>}
+  * @type {Object.<string, function(ol.Feature, module:ol/geom/Geometry~Geometry)>}
   */
   this.SEGMENT_WRITERS_ = {
     'Point': this.writePointGeometry_,
@@ -383,7 +383,7 @@ Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
     } else if (this.edge_) {
       if (isCircle) {
         vertex = closestOnCircle(pixelCoordinate,
-          /** @type {ol.geom.Circle} */ (segments[0].feature.getGeometry()));
+          /** @type {module:ol/geom/Circle~Circle} */ (segments[0].feature.getGeometry()));
       } else {
         vertex = closestOnSegment(pixelCoordinate, closestSegment);
       }
@@ -428,7 +428,7 @@ Snap.prototype.updateFeature_ = function(feature) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.Circle} geometry Geometry.
+ * @param {module:ol/geom/Circle~Circle} geometry Geometry.
  * @private
  */
 Snap.prototype.writeCircleGeometry_ = function(feature, geometry) {
@@ -447,7 +447,7 @@ Snap.prototype.writeCircleGeometry_ = function(feature, geometry) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.GeometryCollection} geometry Geometry.
+ * @param {module:ol/geom/GeometryCollection~GeometryCollection} geometry Geometry.
  * @private
  */
 Snap.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
@@ -463,7 +463,7 @@ Snap.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.LineString} geometry Geometry.
+ * @param {module:ol/geom/LineString~LineString} geometry Geometry.
  * @private
  */
 Snap.prototype.writeLineStringGeometry_ = function(feature, geometry) {
@@ -481,7 +481,7 @@ Snap.prototype.writeLineStringGeometry_ = function(feature, geometry) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.MultiLineString} geometry Geometry.
+ * @param {module:ol/geom/MultiLineString~MultiLineString} geometry Geometry.
  * @private
  */
 Snap.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
@@ -502,7 +502,7 @@ Snap.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.MultiPoint} geometry Geometry.
+ * @param {module:ol/geom/MultiPoint~MultiPoint} geometry Geometry.
  * @private
  */
 Snap.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
@@ -520,7 +520,7 @@ Snap.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.MultiPolygon} geometry Geometry.
+ * @param {module:ol/geom/MultiPolygon~MultiPolygon} geometry Geometry.
  * @private
  */
 Snap.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
@@ -544,7 +544,7 @@ Snap.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.Point} geometry Geometry.
+ * @param {module:ol/geom/Point~Point} geometry Geometry.
  * @private
  */
 Snap.prototype.writePointGeometry_ = function(feature, geometry) {
@@ -559,7 +559,7 @@ Snap.prototype.writePointGeometry_ = function(feature, geometry) {
 
 /**
  * @param {ol.Feature} feature Feature
- * @param {ol.geom.Polygon} geometry Geometry.
+ * @param {module:ol/geom/Polygon~Polygon} geometry Geometry.
  * @private
  */
 Snap.prototype.writePolygonGeometry_ = function(feature, geometry) {
