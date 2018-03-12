@@ -14,7 +14,7 @@ import {assign} from '../obj.js';
 import {get as getProjection} from '../proj.js';
 import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
   makeObjectPropertySetter, makeSimpleNodeFactory, parse, parseNode,
-  pushParseAndPop, pushSerializeAndPop, setAttributeNS} from '../xml.js';
+  pushParseAndPop, pushSerializeAndPop, XML_SCHEMA_INSTANCE_URI} from '../xml.js';
 
 
 /**
@@ -487,7 +487,7 @@ function writeDelete(node, feature, objectStack) {
   const featureNS = context['featureNS'];
   const typeName = getTypeName(featurePrefix, featureType);
   node.setAttribute('typeName', typeName);
-  setAttributeNS(node, XMLNS, 'xmlns:' + featurePrefix, featureNS);
+  node.setAttributeNS(XMLNS, 'xmlns:' + featurePrefix, featureNS);
   const fid = feature.getId();
   if (fid !== undefined) {
     writeOgcFidFilter(node, fid, objectStack);
@@ -523,7 +523,7 @@ function writeUpdate(node, feature, objectStack) {
   const typeName = getTypeName(featurePrefix, featureType);
   const geometryName = feature.getGeometryName();
   node.setAttribute('typeName', typeName);
-  setAttributeNS(node, XMLNS, 'xmlns:' + featurePrefix, featureNS);
+  node.setAttributeNS(XMLNS, 'xmlns:' + featurePrefix, featureNS);
   const fid = feature.getId();
   if (fid !== undefined) {
     const keys = feature.getKeys();
@@ -649,7 +649,7 @@ function writeQuery(node, featureType, objectStack) {
     node.setAttribute('srsName', srsName);
   }
   if (featureNS) {
-    setAttributeNS(node, XMLNS, 'xmlns:' + featurePrefix, featureNS);
+    node.setAttributeNS(XMLNS, 'xmlns:' + featurePrefix, featureNS);
   }
   const item = /** @type {module:ol/xml~NodeStackItem} */ (assign({}, context));
   item.node = node;
@@ -975,8 +975,7 @@ WFS.prototype.writeGetFeature = function(options) {
       }
     }
   }
-  setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
-    'xsi:schemaLocation', this.schemaLocation_);
+  node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', this.schemaLocation_);
   /** @type {module:ol/xml~NodeStackItem} */
   const context = {
     node: node,
@@ -1021,8 +1020,7 @@ WFS.prototype.writeTransaction = function(inserts, updates, deletes, options) {
     }
   }
   const schemaLocation = SCHEMA_LOCATIONS[version];
-  setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
-    'xsi:schemaLocation', schemaLocation);
+  node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', schemaLocation);
   const featurePrefix = options.featurePrefix ? options.featurePrefix : FEATURE_PREFIX;
   if (inserts) {
     obj = {node: node, 'featureNS': options.featureNS,

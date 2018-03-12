@@ -17,7 +17,7 @@ import {assign} from '../obj.js';
 import {get as getProjection, transformExtent} from '../proj.js';
 import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
   makeReplacer, makeSimpleNodeFactory, OBJECT_PROPERTY_NODE_FACTORY, parseNode,
-  pushParseAndPop, pushSerializeAndPop, setAttributeNS} from '../xml.js';
+  pushParseAndPop, pushSerializeAndPop, XML_SCHEMA_INSTANCE_URI} from '../xml.js';
 
 
 /**
@@ -1139,10 +1139,8 @@ GML3.prototype.writeFeatures;
  */
 GML3.prototype.writeFeaturesNode = function(features, opt_options) {
   opt_options = this.adaptOptions(opt_options);
-  const node = createElementNS('http://www.opengis.net/gml',
-    'featureMembers');
-  setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
-    'xsi:schemaLocation', this.schemaLocation);
+  const node = createElementNS('http://www.opengis.net/gml', 'featureMembers');
+  node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', this.schemaLocation);
   const context = {
     srsName: this.srsName,
     hasZ: this.hasZ,
