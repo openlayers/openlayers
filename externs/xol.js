@@ -1,12 +1,5 @@
 
 /**
- * @typedef {Object} format_IGCOptions
- * @property {IGCZ|string|undefined} altitudeMode Altitude mode. Possible values are `barometric`, `gps`, and `none`. Default
- * is `none`.
- */
-
-
-/**
  * @typedef {Object} format_KMLOptions
  * @property {boolean|undefined} extractStyles Extract styles from the KML. Default is `true`.
  * @property {boolean|undefined} showPointNames Show names as labels for placemarks which contain points. Default is `true`.

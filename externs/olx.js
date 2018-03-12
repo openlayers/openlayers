@@ -6,21 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{altitudeMode: (IGCZ|string|undefined)}}
- */
-olx.format.IGCOptions;
-
-
-/**
- * Altitude mode. Possible values are `barometric`, `gps`, and `none`. Default
- * is `none`.
- * @type {IGCZ|string|undefined}
- * @api
- */
-olx.format.IGCOptions.prototype.altitudeMode;
-
-
-/**
  * @typedef {{extractStyles: (boolean|undefined),
  *     defaultStyle: (Array.<ol.style.Style>|undefined),
  *     showPointNames: (boolean|undefined),
