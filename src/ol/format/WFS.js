@@ -31,6 +31,31 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
 
 
 /**
+ * @typedef {Object} WriteGetFeatureOptions
+ * @property {string} featureNS The namespace URI used for features.
+ * @property {string} featurePrefix The prefix for the feature namespace.
+ * @property {Array.<string>} featureTypes The feature type names.
+ * @property {string|undefined} srsName SRS name. No srsName attribute will be set on
+ * geometries when this is not provided.
+ * @property {string|undefined} handle Handle.
+ * @property {string|undefined} outputFormat Output format.
+ * @property {number|undefined} maxFeatures Maximum number of features to fetch.
+ * @property {string|undefined} geometryName Geometry name to use in a BBOX filter.
+ * @property {Array.<string>|undefined} propertyNames Optional list of property names to serialize.
+ * @property {number|undefined} startIndex Start index to use for WFS paging. This is a
+ * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services.
+ * @property {number|undefined} count Number of features to retrieve when paging. This is a
+ * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services. Please note that some
+ * Web Feature Services have repurposed `maxfeatures` instead.
+ * @property {ol.Extent|undefined} bbox Extent to use for the BBOX filter.
+ * @property {ol.format.filter.Filter|undefined} filter Filter condition. See
+ * {@link ol.format.filter} for more information.
+ * @property {string|undefined} resultType Indicates what response should be returned,
+ * E.g. `hits` only includes the `numberOfFeatures` attribute in the response and no features.
+ */
+
+
+/**
  * @type {string}
  */
 const FEATURE_PREFIX = 'feature';
@@ -890,7 +915,7 @@ function writeGetFeature(node, featureTypes, objectStack) {
 /**
  * Encode format as WFS `GetFeature` and return the Node.
  *
- * @param {olx.format.WFSWriteGetFeatureOptions} options Options.
+ * @param {module:ol/format/WFS~WriteGetFeatureOptions} options Options.
  * @return {Node} Result.
  * @api
  */
