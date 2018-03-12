@@ -60,7 +60,7 @@ const CanvasTileLayerRenderer = function(tileLayer) {
 
   /**
    * @private
-   * @type {ol.TileRange}
+   * @type {module:ol/TileRange~TileRange}
    */
   this.tmpTileRange_ = new TileRange(0, 0, 0, 0);
 

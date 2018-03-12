@@ -69,7 +69,7 @@ JSONFeature.prototype.readFeatures = function(source, opt_options) {
  * @param {Object} object Object.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
- * @return {ol.Feature} Feature.
+ * @return {module:ol/Feature~Feature} Feature.
  */
 JSONFeature.prototype.readFeatureFromObject = function(object, opt_options) {};
 
@@ -79,7 +79,7 @@ JSONFeature.prototype.readFeatureFromObject = function(object, opt_options) {};
  * @param {Object} object Object.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  */
 JSONFeature.prototype.readFeaturesFromObject = function(object, opt_options) {};
 
@@ -98,7 +98,7 @@ JSONFeature.prototype.readGeometry = function(source, opt_options) {
  * @param {Object} object Object.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
- * @return {ol.geom.Geometry} Geometry.
+ * @return {module:ol/geom/Geometry~Geometry} Geometry.
  */
 JSONFeature.prototype.readGeometryFromObject = function(object, opt_options) {};
 
@@ -115,7 +115,7 @@ JSONFeature.prototype.readProjection = function(source) {
  * @abstract
  * @param {Object} object Object.
  * @protected
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  */
 JSONFeature.prototype.readProjectionFromObject = function(object) {};
 
@@ -130,7 +130,7 @@ JSONFeature.prototype.writeFeature = function(feature, opt_options) {
 
 /**
  * @abstract
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {Object} Object.
  */
@@ -147,7 +147,7 @@ JSONFeature.prototype.writeFeatures = function(features, opt_options) {
 
 /**
  * @abstract
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {Object} Object.
  */
@@ -164,7 +164,7 @@ JSONFeature.prototype.writeGeometry = function(geometry, opt_options) {
 
 /**
  * @abstract
- * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {Object} Object.
  */

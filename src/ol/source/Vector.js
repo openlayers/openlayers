@@ -31,7 +31,7 @@ import RBush from '../structs/RBush.js';
  * @extends {ol.events.Event}
  * @implements {oli.source.Vector.Event}
  * @param {string} type Type.
- * @param {ol.Feature=} opt_feature Feature.
+ * @param {module:ol/Feature~Feature=} opt_feature Feature.
  */
 export const VectorSourceEvent = function(type, opt_feature) {
 
@@ -39,7 +39,7 @@ export const VectorSourceEvent = function(type, opt_feature) {
 
   /**
    * The feature being added or removed.
-   * @type {ol.Feature|undefined}
+   * @type {module:ol/Feature~Feature|undefined}
    * @api
    */
   this.feature = opt_feature;
@@ -114,7 +114,7 @@ const VectorSource = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.structs.RBush.<ol.Feature>}
+   * @type {ol.structs.RBush.<module:ol/Feature~Feature>}
    */
   this.featuresRtree_ = useSpatialIndex ? new RBush() : null;
 
@@ -126,21 +126,21 @@ const VectorSource = function(opt_options) {
 
   /**
    * @private
-   * @type {!Object.<string, ol.Feature>}
+   * @type {!Object.<string, module:ol/Feature~Feature>}
    */
   this.nullGeometryFeatures_ = {};
 
   /**
    * A lookup of features by id (the return from feature.getId()).
    * @private
-   * @type {!Object.<string, ol.Feature>}
+   * @type {!Object.<string, module:ol/Feature~Feature>}
    */
   this.idIndex_ = {};
 
   /**
    * A lookup of features without id (keyed by ol.getUid(feature)).
    * @private
-   * @type {!Object.<string, ol.Feature>}
+   * @type {!Object.<string, module:ol/Feature~Feature>}
    */
   this.undefIdIndex_ = {};
 
@@ -152,7 +152,7 @@ const VectorSource = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Collection.<ol.Feature>}
+   * @type {ol.Collection.<module:ol/Feature~Feature>}
    */
   this.featuresCollection_ = null;
 
@@ -184,7 +184,7 @@ inherits(VectorSource, Source);
  * instead. A feature will not be added to the source if feature with
  * the same id is already there. The reason for this behavior is to avoid
  * feature duplication when using bbox or tile loading strategies.
- * @param {ol.Feature} feature Feature to add.
+ * @param {module:ol/Feature~Feature} feature Feature to add.
  * @api
  */
 VectorSource.prototype.addFeature = function(feature) {
@@ -195,7 +195,7 @@ VectorSource.prototype.addFeature = function(feature) {
 
 /**
  * Add a feature without firing a `change` event.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @protected
  */
 VectorSource.prototype.addFeatureInternal = function(feature) {
@@ -224,7 +224,7 @@ VectorSource.prototype.addFeatureInternal = function(feature) {
 
 /**
  * @param {string} featureKey Unique identifier for the feature.
- * @param {ol.Feature} feature The feature.
+ * @param {module:ol/Feature~Feature} feature The feature.
  * @private
  */
 VectorSource.prototype.setupChangeEvents_ = function(featureKey, feature) {
@@ -239,7 +239,7 @@ VectorSource.prototype.setupChangeEvents_ = function(featureKey, feature) {
 
 /**
  * @param {string} featureKey Unique identifier for the feature.
- * @param {ol.Feature} feature The feature.
+ * @param {module:ol/Feature~Feature} feature The feature.
  * @return {boolean} The feature is "valid", in the sense that it is also a
  *     candidate for insertion into the Rtree.
  * @private
@@ -264,7 +264,7 @@ VectorSource.prototype.addToIndex_ = function(featureKey, feature) {
 
 /**
  * Add a batch of features to the source.
- * @param {Array.<ol.Feature>} features Features to add.
+ * @param {Array.<module:ol/Feature~Feature>} features Features to add.
  * @api
  */
 VectorSource.prototype.addFeatures = function(features) {
@@ -275,7 +275,7 @@ VectorSource.prototype.addFeatures = function(features) {
 
 /**
  * Add features without firing a `change` event.
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @protected
  */
 VectorSource.prototype.addFeaturesInternal = function(features) {
@@ -316,7 +316,7 @@ VectorSource.prototype.addFeaturesInternal = function(features) {
 
 
 /**
- * @param {!ol.Collection.<ol.Feature>} collection Collection.
+ * @param {!ol.Collection.<module:ol/Feature~Feature>} collection Collection.
  * @private
  */
 VectorSource.prototype.bindFeaturesCollection_ = function(collection) {
@@ -341,7 +341,7 @@ VectorSource.prototype.bindFeaturesCollection_ = function(collection) {
     function(evt) {
       if (!modifyingCollection) {
         modifyingCollection = true;
-        this.addFeature(/** @type {ol.Feature} */ (evt.element));
+        this.addFeature(/** @type {module:ol/Feature~Feature} */ (evt.element));
         modifyingCollection = false;
       }
     }, this);
@@ -349,7 +349,7 @@ VectorSource.prototype.bindFeaturesCollection_ = function(collection) {
     function(evt) {
       if (!modifyingCollection) {
         modifyingCollection = true;
-        this.removeFeature(/** @type {ol.Feature} */ (evt.element));
+        this.removeFeature(/** @type {module:ol/Feature~Feature} */ (evt.element));
         modifyingCollection = false;
       }
     }, this);
@@ -402,7 +402,7 @@ VectorSource.prototype.clear = function(opt_fast) {
  * with each one.  If the callback returns any "truthy" value, iteration will
  * stop and the function will return the same value.
  *
- * @param {function(ol.Feature): T} callback Called with each feature
+ * @param {function(module:ol/Feature~Feature): T} callback Called with each feature
  *     on the source.  Return a truthy value to stop iteration.
  * @return {T|undefined} The return value from the last call to the callback.
  * @template T
@@ -424,7 +424,7 @@ VectorSource.prototype.forEachFeature = function(callback) {
  * value.
  *
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
- * @param {function(ol.Feature): T} callback Called with each feature
+ * @param {function(module:ol/Feature~Feature): T} callback Called with each feature
  *     whose goemetry contains the provided coordinate.
  * @return {T|undefined} The return value from the last call to the callback.
  * @template T
@@ -456,7 +456,7 @@ VectorSource.prototype.forEachFeatureAtCoordinateDirect = function(coordinate, c
  * features, equivalent to {@link ol.source.Vector#forEachFeature}.
  *
  * @param {module:ol/extent~Extent} extent Extent.
- * @param {function(ol.Feature): T} callback Called with each feature
+ * @param {function(module:ol/Feature~Feature): T} callback Called with each feature
  *     whose bounding box intersects the provided extent.
  * @return {T|undefined} The return value from the last call to the callback.
  * @template T
@@ -481,7 +481,7 @@ VectorSource.prototype.forEachFeatureInExtent = function(extent, callback) {
  * source.forEachFeatureInExtent()} method instead.
  *
  * @param {module:ol/extent~Extent} extent Extent.
- * @param {function(ol.Feature): T} callback Called with each feature
+ * @param {function(module:ol/Feature~Feature): T} callback Called with each feature
  *     whose geometry intersects the provided extent.
  * @return {T|undefined} The return value from the last call to the callback.
  * @template T
@@ -490,7 +490,7 @@ VectorSource.prototype.forEachFeatureInExtent = function(extent, callback) {
 VectorSource.prototype.forEachFeatureIntersectingExtent = function(extent, callback) {
   return this.forEachFeatureInExtent(extent,
     /**
-     * @param {ol.Feature} feature Feature.
+     * @param {module:ol/Feature~Feature} feature Feature.
      * @return {T|undefined} The return value from the last call to the callback.
      * @template T
      */
@@ -510,7 +510,7 @@ VectorSource.prototype.forEachFeatureIntersectingExtent = function(extent, callb
  * Get the features collection associated with this source. Will be `null`
  * unless the source was configured with `useSpatialIndex` set to `false`, or
  * with an {@link ol.Collection} as `features`.
- * @return {ol.Collection.<ol.Feature>} The collection of features.
+ * @return {ol.Collection.<module:ol/Feature~Feature>} The collection of features.
  * @api
  */
 VectorSource.prototype.getFeaturesCollection = function() {
@@ -520,7 +520,7 @@ VectorSource.prototype.getFeaturesCollection = function() {
 
 /**
  * Get all features on the source in random order.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 VectorSource.prototype.getFeatures = function() {
@@ -533,14 +533,14 @@ VectorSource.prototype.getFeatures = function() {
       extend(features, getValues(this.nullGeometryFeatures_));
     }
   }
-  return /** @type {Array.<ol.Feature>} */ (features);
+  return /** @type {Array.<module:ol/Feature~Feature>} */ (features);
 };
 
 
 /**
  * Get all features whose geometry intersects the provided coordinate.
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 VectorSource.prototype.getFeaturesAtCoordinate = function(coordinate) {
@@ -560,7 +560,7 @@ VectorSource.prototype.getFeaturesAtCoordinate = function(coordinate) {
  * This method is not available when the source is configured with
  * `useSpatialIndex` set to `false`.
  * @param {module:ol/extent~Extent} extent Extent.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 VectorSource.prototype.getFeaturesInExtent = function(extent) {
@@ -574,10 +574,10 @@ VectorSource.prototype.getFeaturesInExtent = function(extent) {
  * This method is not available when the source is configured with
  * `useSpatialIndex` set to `false`.
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
- * @param {function(ol.Feature):boolean=} opt_filter Feature filter function.
- *     The filter function will receive one argument, the {@link ol.Feature feature}
+ * @param {function(module:ol/Feature~Feature):boolean=} opt_filter Feature filter function.
+ *     The filter function will receive one argument, the {@link module:ol/Feature~Feature feature}
  *     and it should return a boolean value. By default, no filtering is made.
- * @return {ol.Feature} Closest feature.
+ * @return {module:ol/Feature~Feature} Closest feature.
  * @api
  */
 VectorSource.prototype.getClosestFeatureToCoordinate = function(coordinate, opt_filter) {
@@ -597,7 +597,7 @@ VectorSource.prototype.getClosestFeatureToCoordinate = function(coordinate, opt_
   const filter = opt_filter ? opt_filter : TRUE;
   this.featuresRtree_.forEachInExtent(extent,
     /**
-       * @param {ol.Feature} feature Feature.
+       * @param {module:ol/Feature~Feature} feature Feature.
        */
     function(feature) {
       if (filter(feature)) {
@@ -644,7 +644,7 @@ VectorSource.prototype.getExtent = function(opt_extent) {
  * `source.getFeatureById(2)` will return a feature with id `'2'` or `2`.
  *
  * @param {string|number} id Feature identifier.
- * @return {ol.Feature} The feature (or `null` if not found).
+ * @return {module:ol/Feature~Feature} The feature (or `null` if not found).
  * @api
  */
 VectorSource.prototype.getFeatureById = function(id) {
@@ -694,7 +694,7 @@ VectorSource.prototype.getUrl = function() {
  * @private
  */
 VectorSource.prototype.handleFeatureChange_ = function(event) {
-  const feature = /** @type {ol.Feature} */ (event.target);
+  const feature = /** @type {module:ol/Feature~Feature} */ (event.target);
   const featureKey = getUid(feature).toString();
   const geometry = feature.getGeometry();
   if (!geometry) {
@@ -752,7 +752,7 @@ VectorSource.prototype.isEmpty = function() {
 /**
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} resolution Resolution.
- * @param {ol.proj.Projection} projection Projection.
+ * @param {module:ol/proj/Projection~Projection} projection Projection.
  */
 VectorSource.prototype.loadFeatures = function(extent, resolution, projection) {
   const loadedExtentsRtree = this.loadedExtentsRtree_;
@@ -799,7 +799,7 @@ VectorSource.prototype.removeLoadedExtent = function(extent) {
  * Remove a single feature from the source.  If you want to remove all features
  * at once, use the {@link ol.source.Vector#clear source.clear()} method
  * instead.
- * @param {ol.Feature} feature Feature to remove.
+ * @param {module:ol/Feature~Feature} feature Feature to remove.
  * @api
  */
 VectorSource.prototype.removeFeature = function(feature) {
@@ -818,7 +818,7 @@ VectorSource.prototype.removeFeature = function(feature) {
 
 /**
  * Remove feature without firing a `change` event.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @protected
  */
 VectorSource.prototype.removeFeatureInternal = function(feature) {
@@ -839,7 +839,7 @@ VectorSource.prototype.removeFeatureInternal = function(feature) {
 /**
  * Remove a feature from the id index.  Called internally when the feature id
  * may have changed.
- * @param {ol.Feature} feature The feature.
+ * @param {module:ol/Feature~Feature} feature The feature.
  * @return {boolean} Removed the feature from the index.
  * @private
  */

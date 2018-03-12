@@ -91,7 +91,7 @@ olx.interaction.DragBoxOptions.prototype.className;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.always}.
  * @type {ol.EventsConditionType|undefined}
@@ -110,7 +110,7 @@ olx.interaction.DragBoxOptions.prototype.minArea;
 
 
 /**
- * A function that takes a {@link ol.MapBrowserEvent} and two
+ * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
  * {@link ol.Pixel}s to indicate whether a `boxend` event should be fired.
  * Default is `true` if the area of the box is bigger than the `minArea` option.
  * @type {ol.DragBoxEndConditionType|undefined}
@@ -127,7 +127,7 @@ olx.interaction.DragPanOptions;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.noModifierKeys}.
  * @type {ol.EventsConditionType|undefined}
@@ -152,7 +152,7 @@ olx.interaction.DragRotateAndZoomOptions;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.shiftKeyOnly}.
  * @type {ol.EventsConditionType|undefined}
@@ -177,7 +177,7 @@ olx.interaction.DragRotateOptions;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.altShiftKeysOnly}.
  * @type {ol.EventsConditionType|undefined}
@@ -212,7 +212,7 @@ olx.interaction.DragZoomOptions.prototype.className;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.shiftKeyOnly}.
  * @type {ol.EventsConditionType|undefined}
@@ -239,11 +239,11 @@ olx.interaction.DragZoomOptions.prototype.out;
 
 /**
  * @typedef {{clickTolerance: (number|undefined),
- *     features: (ol.Collection.<ol.Feature>|undefined),
+ *     features: (ol.Collection.<module:ol/Feature~Feature>|undefined),
  *     source: (ol.source.Vector|undefined),
  *     dragVertexDelay: (number|undefined),
  *     snapTolerance: (number|undefined),
- *     type: (ol.geom.GeometryType|string),
+ *     type: (module:ol/geom/GeometryType~GeometryType|string),
  *     stopClick: (boolean|undefined),
  *     maxPoints: (number|undefined),
  *     minPoints: (number|undefined),
@@ -273,7 +273,7 @@ olx.interaction.DrawOptions.prototype.clickTolerance;
 
 /**
  * Destination collection for the drawn features.
- * @type {ol.Collection.<ol.Feature>|undefined}
+ * @type {ol.Collection.<module:ol/Feature~Feature>|undefined}
  * @api
  */
 olx.interaction.DrawOptions.prototype.features;
@@ -306,7 +306,7 @@ olx.interaction.DrawOptions.prototype.snapTolerance;
 /**
  * Drawing type ('Point', 'LineString', 'Polygon', 'MultiPoint',
  * 'MultiLineString', 'MultiPolygon' or 'Circle').
- * @type {ol.geom.GeometryType|string}
+ * @type {module:ol/geom/GeometryType~GeometryType|string}
  * @api
  */
 olx.interaction.DrawOptions.prototype.type;
@@ -340,7 +340,7 @@ olx.interaction.DrawOptions.prototype.minPoints;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether the drawing can be finished.
  * @type {ol.EventsConditionType|undefined}
  * @api
@@ -373,7 +373,7 @@ olx.interaction.DrawOptions.prototype.geometryName;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * By default {@link ol.events.condition.noModifierKeys}, i.e. a click, adds a
  * vertex or deactivates freehand drawing.
@@ -395,7 +395,7 @@ olx.interaction.DrawOptions.prototype.freehand;
 
 /**
  * Condition that activates freehand drawing for lines and polygons. This
- * function takes an {@link ol.MapBrowserEvent} and returns a boolean to
+ * function takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean to
  * indicate whether that event should be handled. The default is
  * {@link ol.events.condition.shiftKeyOnly}, meaning that the Shift key
  * activates freehand drawing.
@@ -432,7 +432,7 @@ olx.interaction.ExtentOptions.prototype.extent;
 
 /**
  * Style for the drawn extent box.
- * Defaults to ol.style.Style.createDefaultEditing()[ol.geom.GeometryType.POLYGON]
+ * Defaults to ol.style.Style.createDefaultEditing()[module:ol/geom/GeometryType~GeometryType.POLYGON]
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  * @api
  */
@@ -448,7 +448,7 @@ olx.interaction.ExtentOptions.prototype.pixelTolerance;
 
 /**
  * Style for the cursor used to draw the extent.
- * Defaults to ol.style.Style.createDefaultEditing()[ol.geom.GeometryType.POINT]
+ * Defaults to ol.style.Style.createDefaultEditing()[module:ol/geom/GeometryType~GeometryType.POINT]
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  * @api
  */
@@ -465,7 +465,7 @@ olx.interaction.ExtentOptions.prototype.wrapX;
 
 /**
  * @typedef {{
- *     features: (ol.Collection.<ol.Feature>|undefined),
+ *     features: (ol.Collection.<module:ol/Feature~Feature>|undefined),
  *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean),
  *     hitTolerance: (number|undefined)
  * }}
@@ -476,7 +476,7 @@ olx.interaction.TranslateOptions;
 /**
  * Only features contained in this collection will be able to be translated. If
  * not specified, all features on the map will be able to be translated.
- * @type {ol.Collection.<ol.Feature>|undefined}
+ * @type {ol.Collection.<module:ol/Feature~Feature>|undefined}
  * @api
  */
 olx.interaction.TranslateOptions.prototype.features;
@@ -513,7 +513,7 @@ olx.interaction.KeyboardPanOptions;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.noModifierKeys} and
  * {@link ol.events.condition.targetNotEditable}.
@@ -556,7 +556,7 @@ olx.interaction.KeyboardZoomOptions.prototype.duration;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.targetNotEditable}.
  * @type {ol.EventsConditionType|undefined}
@@ -581,7 +581,7 @@ olx.interaction.KeyboardZoomOptions.prototype.delta;
  *     pixelTolerance: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     source: (ol.source.Vector|undefined),
- *     features: (ol.Collection.<ol.Feature>|undefined),
+ *     features: (ol.Collection.<module:ol/Feature~Feature>|undefined),
  *     wrapX: (boolean|undefined)
  * }}
  */
@@ -589,7 +589,7 @@ olx.interaction.ModifyOptions;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event will be considered to add or move a vertex
  * to the sketch.
  * Default is {@link ol.events.condition.primaryAction}.
@@ -600,7 +600,7 @@ olx.interaction.ModifyOptions.prototype.condition;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * By default, {@link ol.events.condition.singleClick} with
  * {@link ol.events.condition.altKeyOnly} results in a vertex deletion.
@@ -611,7 +611,7 @@ olx.interaction.ModifyOptions.prototype.deleteCondition;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether a new vertex can be added to the sketch features.
  * Default is {@link ol.events.condition.always}
  * @type {ol.EventsConditionType|undefined}
@@ -650,7 +650,7 @@ olx.interaction.ModifyOptions.prototype.source;
 /**
  * The features the interaction works on.  If a feature collection is not
  * provided, a vector source must be provided with the source option.
- * @type {ol.Collection.<ol.Feature>|undefined}
+ * @type {ol.Collection.<module:ol/Feature~Feature>|undefined}
  * @api
  */
 olx.interaction.ModifyOptions.prototype.features;
@@ -675,7 +675,7 @@ olx.interaction.MouseWheelZoomOptions;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled. Default is {@link ol.events.condition.always}.
  * @type {ol.EventsConditionType|undefined}
  * @api
@@ -769,7 +769,7 @@ olx.interaction.PinchZoomOptions.prototype.constrainResolution;
 /**
  * @typedef {{handleDownEvent: (function(ol.MapBrowserPointerEvent):boolean|undefined),
  *     handleDragEvent: (function(ol.MapBrowserPointerEvent)|undefined),
- *     handleEvent: (function(ol.MapBrowserEvent):boolean|undefined),
+ *     handleEvent: (function(module:ol/MapBrowserEvent~MapBrowserEvent):boolean|undefined),
  *     handleMoveEvent: (function(ol.MapBrowserPointerEvent)|undefined),
  *     handleUpEvent: (function(ol.MapBrowserPointerEvent):boolean|undefined)}}
  */
@@ -799,7 +799,7 @@ olx.interaction.PointerOptions.prototype.handleDragEvent;
  * dispatched to the map. The function may return `false` to prevent the
  * propagation of the event to other interactions in the map's interactions
  * chain.
- * @type {(function(ol.MapBrowserEvent):boolean|undefined)}
+ * @type {(function(module:ol/MapBrowserEvent~MapBrowserEvent):boolean|undefined)}
  * @api
  */
 olx.interaction.PointerOptions.prototype.handleEvent;
@@ -832,7 +832,7 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
  *     removeCondition: (ol.EventsConditionType|undefined),
  *     toggleCondition: (ol.EventsConditionType|undefined),
  *     multi: (boolean|undefined),
- *     features: (ol.Collection.<ol.Feature>|undefined),
+ *     features: (ol.Collection.<module:ol/Feature~Feature>|undefined),
  *     filter: (ol.SelectFilterFunction|undefined),
  *     wrapX: (boolean|undefined),
  *     hitTolerance: (number|undefined)}}
@@ -841,7 +841,7 @@ olx.interaction.SelectOptions;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * By default, this is {@link ol.events.condition.never}. Use this if you want
  * to use different events for add and remove instead of `toggle`.
@@ -852,7 +852,7 @@ olx.interaction.SelectOptions.prototype.addCondition;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * This is the event for the selected features as a whole. By default, this is
  * {@link ol.events.condition.singleClick}. Clicking on a feature selects that
@@ -888,7 +888,7 @@ olx.interaction.SelectOptions.prototype.style;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * By default, this is {@link ol.events.condition.never}. Use this if you want
  * to use different events for add and remove instead of `toggle`.
@@ -899,7 +899,7 @@ olx.interaction.SelectOptions.prototype.removeCondition;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * This is in addition to the `condition` event. By default,
  * {@link ol.events.condition.shiftKeyOnly}, i.e. pressing `shift` as well as
@@ -927,13 +927,13 @@ olx.interaction.SelectOptions.prototype.multi;
  * not set the interaction will create a collection. In any case the collection
  * used by the interaction is returned by
  * {@link ol.interaction.Select#getFeatures}.
- * @type {ol.Collection.<ol.Feature>|undefined}
+ * @type {ol.Collection.<module:ol/Feature~Feature>|undefined}
  * @api
  */
 olx.interaction.SelectOptions.prototype.features;
 
 /**
- * A function that takes an {@link ol.Feature} and an {@link ol.layer.Layer} and
+ * A function that takes an {@link module:ol/Feature~Feature} and an {@link ol.layer.Layer} and
  * returns `true` if the feature may be selected or `false` otherwise.
  * @type {ol.SelectFilterFunction|undefined}
  * @api
@@ -962,7 +962,7 @@ olx.interaction.SelectOptions.prototype.hitTolerance;
 /**
  * Options for snap
  * @typedef {{
- *     features: (ol.Collection.<ol.Feature>|undefined),
+ *     features: (ol.Collection.<module:ol/Feature~Feature>|undefined),
  *     pixelTolerance: (number|undefined),
  *     source: (ol.source.Vector|undefined),
  *     edge: (boolean|undefined),
@@ -974,7 +974,7 @@ olx.interaction.SnapOptions;
 
 /**
  * Snap to these features. Either this option or source should be provided.
- * @type {ol.Collection.<ol.Feature>|undefined}
+ * @type {ol.Collection.<module:ol/Feature~Feature>|undefined}
  * @api
  */
 olx.interaction.SnapOptions.prototype.features;
@@ -1220,7 +1220,7 @@ olx.layer.GroupOptions.prototype.layers;
  *     radius: (number|undefined),
  *     blur: (number|undefined),
  *     shadow: (number|undefined),
- *     weight: (string|function(ol.Feature):number|undefined),
+ *     weight: (string|function(module:ol/Feature~Feature):number|undefined),
  *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
@@ -1269,7 +1269,7 @@ olx.layer.HeatmapOptions.prototype.shadow;
  * The feature attribute to use for the weight or a function that returns a
  * weight from a feature. Weight values should range from 0 to 1 (and values
  * outside will be clamped to that range). Default is `weight`.
- * @type {string|function(ol.Feature):number|undefined}
+ * @type {string|function(module:ol/Feature~Feature):number|undefined}
  * @api
  */
 olx.layer.HeatmapOptions.prototype.weight;
@@ -1867,8 +1867,8 @@ olx.layer.VectorTileOptions.prototype.zIndex;
 
 /**
  * @typedef {{context: CanvasRenderingContext2D,
- *     feature: (ol.Feature|ol.render.Feature),
- *     geometry: ol.geom.SimpleGeometry,
+ *     feature: (module:ol/Feature~Feature|ol.render.Feature),
+ *     geometry: module:ol/geom/SimpleGeometry~SimpleGeometry,
  *     pixelRatio: number,
  *     resolution: number,
  *     rotation: number}}
@@ -2017,7 +2017,7 @@ olx.source.BingMapsOptions.prototype.transition;
  *     distance: (number|undefined),
  *     extent: (ol.Extent|undefined),
  *     format: (ol.format.Feature|undefined),
- *     geometryFunction: (undefined|function(ol.Feature):ol.geom.Point),
+ *     geometryFunction: (undefined|function(module:ol/Feature~Feature):module:ol/geom/Point~Point),
  *     projection: ol.ProjectionLike,
  *     source: ol.source.Vector,
  *     wrapX: (boolean|undefined)}}
@@ -2050,8 +2050,8 @@ olx.source.ClusterOptions.prototype.extent;
 
 
 /**
- * Function that takes an {@link ol.Feature} as argument and returns an
- * {@link ol.geom.Point} as cluster calculation point for the feature. When a
+ * Function that takes an {@link module:ol/Feature~Feature} as argument and returns an
+ * {@link module:ol/geom/Point~Point} as cluster calculation point for the feature. When a
  * feature should not be considered for clustering, the function should return
  * `null`. The default, which works when the underyling source contains point
  * features only, is
@@ -2060,9 +2060,9 @@ olx.source.ClusterOptions.prototype.extent;
  *   return feature.getGeometry();
  * }
  * ```
- * See {@link ol.geom.Polygon#getInteriorPoint} for a way to get a cluster
+ * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
- * @type {undefined|function(ol.Feature):ol.geom.Point}
+ * @type {undefined|function(module:ol/Feature~Feature):module:ol/geom/Point~Point}
  * @api
  */
 olx.source.ClusterOptions.prototype.geometryFunction;
@@ -2885,7 +2885,7 @@ olx.source.ImageCanvasOptions.prototype.attributions;
  * Canvas function. The function returning the canvas element used by the source
  * as an image. The arguments passed to the function are: `{ol.Extent}` the
  * image extent, `{number}` the image resolution, `{number}` the device pixel
- * ratio, `{ol.Size}` the image size, and `{ol.proj.Projection}` the image
+ * ratio, `{ol.Size}` the image size, and `{module:ol/proj/Projection~Projection}` the image
  * projection. The canvas returned by this function is cached by the source. If
  * the value returned by the function is later changed then
  * `dispatchChangeEvent` should be called on the source for the source to
@@ -3693,12 +3693,12 @@ olx.source.TileWMSOptions.prototype.transition;
 
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
- *     features: (Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined),
+ *     features: (Array.<module:ol/Feature~Feature>|ol.Collection.<module:ol/Feature~Feature>|undefined),
  *     format: (ol.format.Feature|undefined),
- *     loader: (ol.FeatureLoader|undefined),
+ *     loader: (module:ol/Feature~FeatureLoader|undefined),
  *     overlaps: (boolean|undefined),
  *     strategy: (ol.LoadingStrategy|undefined),
- *     url: (string|ol.FeatureUrlFunction|undefined),
+ *     url: (string|module:ol/Feature~FeatureUrlFunction|undefined),
  *     useSpatialIndex: (boolean|undefined),
  *     wrapX: (boolean|undefined)}}
  */
@@ -3716,7 +3716,7 @@ olx.source.VectorOptions.prototype.attributions;
 /**
  * Features. If provided as {@link ol.Collection}, the features in the source
  * and the collection will stay in sync.
- * @type {Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined}
+ * @type {Array.<module:ol/Feature~Feature>|ol.Collection.<module:ol/Feature~Feature>|undefined}
  * @api
  */
 olx.source.VectorOptions.prototype.features;
@@ -3766,7 +3766,7 @@ olx.source.VectorOptions.prototype.format;
  *    strategy: ol.loadingstrategy.bbox
  *  });
  * ```
- * @type {ol.FeatureLoader|undefined}
+ * @type {module:ol/Feature~FeatureLoader|undefined}
  * @api
  */
 olx.source.VectorOptions.prototype.loader;
@@ -3796,7 +3796,7 @@ olx.source.VectorOptions.prototype.strategy;
  * Setting this option instructs the source to load features using an XHR loader
  * (see {@link ol.featureloader.xhr}). Use a `string` and an
  * {@link ol.loadingstrategy.all} for a one-off download of all features from
- * the given URL. Use a {@link ol.FeatureUrlFunction} to generate the url with
+ * the given URL. Use a {@link module:ol/Feature~FeatureUrlFunction} to generate the url with
  * other loading strategies.
  * Requires `format` to be set as well.
  * When default XHR feature loader is provided, the features will
@@ -3807,7 +3807,7 @@ olx.source.VectorOptions.prototype.strategy;
  * defaultDataProjection constructor option on the format.
  * Note that if a source contains non-feature data, such as a GeoJSON geometry
  * or a KML NetworkLink, these will be ignored. Use a custom loader to load these.
- * @type {string|ol.FeatureUrlFunction|undefined}
+ * @type {string|module:ol/Feature~FeatureUrlFunction|undefined}
  * @api
  */
 olx.source.VectorOptions.prototype.url;
@@ -5079,7 +5079,7 @@ olx.style.TextOptions.prototype.padding;
 
 
 /**
- * @typedef {{geometry: (undefined|string|ol.geom.Geometry|ol.StyleGeometryFunction),
+ * @typedef {{geometry: (undefined|string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction),
  *     fill: (ol.style.Fill|undefined),
  *     image: (ol.style.Image|undefined),
  *     renderer: (ol.StyleRenderFunction|undefined),
@@ -5093,7 +5093,7 @@ olx.style.StyleOptions;
 /**
  * Feature property or geometry or function returning a geometry to render for
  * this style.
- * @type {undefined|string|ol.geom.Geometry|ol.StyleGeometryFunction}
+ * @type {undefined|string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction}
  * @api
  */
 olx.style.StyleOptions.prototype.geometry;
@@ -5385,7 +5385,7 @@ olx.tilegrid.XYZOptions.prototype.tileSize;
 
 /**
  * @typedef {{center: ol.Coordinate,
- *     projection: ol.proj.Projection,
+ *     projection: module:ol/proj/Projection~Projection,
  *     resolution: number,
  *     rotation: number,
  *     zoom: number}}
@@ -5401,7 +5401,7 @@ olx.ViewState.prototype.center;
 
 
 /**
- * @type {ol.proj.Projection}
+ * @type {module:ol/proj/Projection~Projection}
  * @api
  */
 olx.ViewState.prototype.projection;

@@ -150,7 +150,7 @@ GML2.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack, opt_nodeNam
   const multiCurve = context['multiCurve'];
   let nodeName;
   if (!Array.isArray(value)) {
-    nodeName = /** @type {ol.geom.Geometry} */ (value).getType();
+    nodeName = /** @type {module:ol/geom/Geometry~Geometry} */ (value).getType();
     if (nodeName === 'MultiPolygon' && multiSurface === true) {
       nodeName = 'MultiSurface';
     } else if (nodeName === 'Polygon' && surface === true) {
@@ -168,7 +168,7 @@ GML2.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack, opt_nodeNam
 
 /**
  * @param {Node} node Node.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {Array.<*>} objectStack Node stack.
  */
 GML2.prototype.writeFeatureElement = function(node, feature, objectStack) {
@@ -215,7 +215,7 @@ GML2.prototype.writeFeatureElement = function(node, feature, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.LineString} geometry LineString geometry.
+ * @param {module:ol/geom/LineString~LineString} geometry LineString geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -241,7 +241,7 @@ GML2.prototype.writeCurveOrLineString_ = function(node, geometry, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.LineString} line LineString geometry.
+ * @param {module:ol/geom/LineString~LineString} line LineString geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -256,7 +256,7 @@ GML2.prototype.writeLineStringOrCurveMember_ = function(node, line, objectStack)
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.MultiLineString} geometry MultiLineString geometry.
+ * @param {module:ol/geom/MultiLineString~MultiLineString} geometry MultiLineString geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -278,7 +278,7 @@ GML2.prototype.writeMultiCurveOrLineString_ = function(node, geometry, objectSta
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Geometry|module:ol/extent~Extent} geometry Geometry.
+ * @param {module:ol/geom/Geometry~Geometry|module:ol/extent~Extent} geometry Geometry.
  * @param {Array.<*>} objectStack Node stack.
  */
 GML2.prototype.writeGeometryElement = function(node, geometry, objectStack) {
@@ -294,7 +294,7 @@ GML2.prototype.writeGeometryElement = function(node, geometry, objectStack) {
       value = geometry;
     }
   } else {
-    value = transformWithOptions(/** @type {ol.geom.Geometry} */ (geometry), true, context);
+    value = transformWithOptions(/** @type {module:ol/geom/Geometry~Geometry} */ (geometry), true, context);
   }
   pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
     (item), this.GEOMETRY_SERIALIZERS_,
@@ -320,7 +320,7 @@ GML2.prototype.createCoordinatesNode_ = function(namespaceURI) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.LineString|ol.geom.LinearRing} value Geometry.
+ * @param {module:ol/geom/LineString~LineString|module:ol/geom/LinearRing~LinearRing} value Geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -342,7 +342,7 @@ GML2.prototype.writeCoordinates_ = function(node, value, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.LineString} line LineString geometry.
+ * @param {module:ol/geom/LineString~LineString} line LineString geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -355,7 +355,7 @@ GML2.prototype.writeCurveSegments_ = function(node, line, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Polygon} geometry Polygon geometry.
+ * @param {module:ol/geom/Polygon~Polygon} geometry Polygon geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -403,7 +403,7 @@ GML2.prototype.RING_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Polygon} polygon Polygon geometry.
+ * @param {module:ol/geom/Polygon~Polygon} polygon Polygon geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -416,7 +416,7 @@ GML2.prototype.writeSurfacePatches_ = function(node, polygon, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.LinearRing} ring LinearRing geometry.
+ * @param {module:ol/geom/LinearRing~LinearRing} ring LinearRing geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -454,7 +454,7 @@ GML2.prototype.getCoords_ = function(point, opt_srsName, opt_hasZ) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Point} geometry Point geometry.
+ * @param {module:ol/geom/Point~Point} geometry Point geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -475,7 +475,7 @@ GML2.prototype.writePoint_ = function(node, geometry, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.MultiPoint} geometry MultiPoint geometry.
+ * @param {module:ol/geom/MultiPoint~MultiPoint} geometry MultiPoint geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -496,7 +496,7 @@ GML2.prototype.writeMultiPoint_ = function(node, geometry, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Point} point Point geometry.
+ * @param {module:ol/geom/Point~Point} point Point geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -509,7 +509,7 @@ GML2.prototype.writePointMember_ = function(node, point, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.LinearRing} geometry LinearRing geometry.
+ * @param {module:ol/geom/LinearRing~LinearRing} geometry LinearRing geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -527,7 +527,7 @@ GML2.prototype.writeLinearRing_ = function(node, geometry, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.MultiPolygon} geometry MultiPolygon geometry.
+ * @param {module:ol/geom/MultiPolygon~MultiPolygon} geometry MultiPolygon geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -549,7 +549,7 @@ GML2.prototype.writeMultiSurfaceOrPolygon_ = function(node, geometry, objectStac
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Polygon} polygon Polygon geometry.
+ * @param {module:ol/geom/Polygon~Polygon} polygon Polygon geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */

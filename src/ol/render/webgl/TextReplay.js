@@ -136,20 +136,20 @@ WebGLTextReplay.prototype.drawText = function(geometry, feature) {
         stride = geometry.getStride();
         break;
       case GeometryType.CIRCLE:
-        flatCoordinates = /** @type {ol.geom.Circle} */ (geometry).getCenter();
+        flatCoordinates = /** @type {module:ol/geom/Circle~Circle} */ (geometry).getCenter();
         break;
       case GeometryType.LINE_STRING:
-        flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatMidpoint();
+        flatCoordinates = /** @type {module:ol/geom/LineString~LineString} */ (geometry).getFlatMidpoint();
         break;
       case GeometryType.MULTI_LINE_STRING:
-        flatCoordinates = /** @type {ol.geom.MultiLineString} */ (geometry).getFlatMidpoints();
+        flatCoordinates = /** @type {module:ol/geom/MultiLineString~MultiLineString} */ (geometry).getFlatMidpoints();
         end = flatCoordinates.length;
         break;
       case GeometryType.POLYGON:
-        flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
+        flatCoordinates = /** @type {module:ol/geom/Polygon~Polygon} */ (geometry).getFlatInteriorPoint();
         break;
       case GeometryType.MULTI_POLYGON:
-        flatCoordinates = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatInteriorPoints();
+        flatCoordinates = /** @type {module:ol/geom/MultiPolygon~MultiPolygon} */ (geometry).getFlatInteriorPoints();
         end = flatCoordinates.length;
         break;
       default:

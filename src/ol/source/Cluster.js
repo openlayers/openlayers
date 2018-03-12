@@ -44,20 +44,20 @@ const Cluster = function(options) {
   this.distance = options.distance !== undefined ? options.distance : 20;
 
   /**
-   * @type {Array.<ol.Feature>}
+   * @type {Array.<module:ol/Feature~Feature>}
    * @protected
    */
   this.features = [];
 
   /**
-   * @param {ol.Feature} feature Feature.
-   * @return {ol.geom.Point} Cluster calculation point.
+   * @param {module:ol/Feature~Feature} feature Feature.
+   * @return {module:ol/geom/Point~Point} Cluster calculation point.
    * @protected
    */
   this.geometryFunction = options.geometryFunction || function(feature) {
-    const geometry = /** @type {ol.geom.Point} */ (feature.getGeometry());
+    const geometry = /** @type {module:ol/geom/Point~Point} */ (feature.getGeometry());
     assert(geometry instanceof Point,
-      10); // The default `geometryFunction` can only handle `ol.geom.Point` geometries
+      10); // The default `geometryFunction` can only handle `module:ol/geom/Point~Point` geometries
     return geometry;
   };
 
@@ -174,8 +174,8 @@ Cluster.prototype.cluster = function() {
 
 
 /**
- * @param {Array.<ol.Feature>} features Features
- * @return {ol.Feature} The cluster feature.
+ * @param {Array.<module:ol/Feature~Feature>} features Features
+ * @return {module:ol/Feature~Feature} The cluster feature.
  * @protected
  */
 Cluster.prototype.createCluster = function(features) {

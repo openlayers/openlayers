@@ -35,8 +35,8 @@ const DragAndDropEventType = {
  * @implements {oli.interaction.DragAndDropEvent}
  * @param {ol.interaction.DragAndDropEventType} type Type.
  * @param {File} file File.
- * @param {Array.<ol.Feature>=} opt_features Features.
- * @param {ol.proj.Projection=} opt_projection Projection.
+ * @param {Array.<module:ol/Feature~Feature>=} opt_features Features.
+ * @param {module:ol/proj/Projection~Projection=} opt_projection Projection.
  */
 const DragAndDropEvent = function(type, file, opt_features, opt_projection) {
 
@@ -44,7 +44,7 @@ const DragAndDropEvent = function(type, file, opt_features, opt_projection) {
 
   /**
    * The features parsed from dropped data.
-   * @type {Array.<ol.Feature>|undefined}
+   * @type {Array.<module:ol/Feature~Feature>|undefined}
    * @api
    */
   this.features = opt_features;
@@ -58,7 +58,7 @@ const DragAndDropEvent = function(type, file, opt_features, opt_projection) {
 
   /**
    * The feature projection.
-   * @type {ol.proj.Projection|undefined}
+   * @type {module:ol/proj/Projection~Projection|undefined}
    * @api
    */
   this.projection = opt_projection;
@@ -94,7 +94,7 @@ const DragAndDrop = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.proj.Projection}
+   * @type {module:ol/proj/Projection~Projection}
    */
   this.projection_ = options.projection ?
     getProjection(options.projection) : null;
@@ -238,7 +238,7 @@ DragAndDrop.prototype.setMap = function(map) {
  * @param {string} text Text.
  * @param {module:ol/format/Feature~ReadOptions} options Read options.
  * @private
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  */
 DragAndDrop.prototype.tryReadFeatures_ = function(format, text, options) {
   try {

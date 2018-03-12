@@ -81,7 +81,7 @@ inherits(TopoJSON, JSONFeature);
 
 /**
  * @const
- * @type {Object.<string, function(TopoJSONGeometry, Array, ...Array): ol.geom.Geometry>}
+ * @type {Object.<string, function(TopoJSONGeometry, Array, ...Array): module:ol/geom/Geometry~Geometry>}
  */
 const GEOMETRY_READERS = {
   'Point': readPointGeometry,
@@ -134,7 +134,7 @@ function concatenateArcs(indices, arcs) {
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
- * @return {ol.geom.Point} Geometry.
+ * @return {module:ol/geom/Point~Point} Geometry.
  */
 function readPointGeometry(object, scale, translate) {
   const coordinates = object.coordinates;
@@ -151,7 +151,7 @@ function readPointGeometry(object, scale, translate) {
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
- * @return {ol.geom.MultiPoint} Geometry.
+ * @return {module:ol/geom/MultiPoint~MultiPoint} Geometry.
  */
 function readMultiPointGeometry(object, scale, translate) {
   const coordinates = object.coordinates;
@@ -169,7 +169,7 @@ function readMultiPointGeometry(object, scale, translate) {
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
- * @return {ol.geom.LineString} Geometry.
+ * @return {module:ol/geom/LineString~LineString} Geometry.
  */
 function readLineStringGeometry(object, arcs) {
   const coordinates = concatenateArcs(object.arcs, arcs);
@@ -182,7 +182,7 @@ function readLineStringGeometry(object, arcs) {
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
- * @return {ol.geom.MultiLineString} Geometry.
+ * @return {module:ol/geom/MultiLineString~MultiLineString} Geometry.
  */
 function readMultiLineStringGeometry(object, arcs) {
   const coordinates = [];
@@ -198,7 +198,7 @@ function readMultiLineStringGeometry(object, arcs) {
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
- * @return {ol.geom.Polygon} Geometry.
+ * @return {module:ol/geom/Polygon~Polygon} Geometry.
  */
 function readPolygonGeometry(object, arcs) {
   const coordinates = [];
@@ -214,7 +214,7 @@ function readPolygonGeometry(object, arcs) {
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
- * @return {ol.geom.MultiPolygon} Geometry.
+ * @return {module:ol/geom/MultiPolygon~MultiPolygon} Geometry.
  */
 function readMultiPolygonGeometry(object, arcs) {
   const coordinates = [];
@@ -244,7 +244,7 @@ function readMultiPolygonGeometry(object, arcs) {
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {Array.<module:ol/Feature~Feature>} Array of features.
  */
 function readFeaturesFromGeometryCollection(collection, arcs, scale, translate, property, name, opt_options) {
   const geometries = collection.geometries;
@@ -268,7 +268,7 @@ function readFeaturesFromGeometryCollection(collection, arcs, scale, translate, 
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {ol.Feature} Feature.
+ * @return {module:ol/Feature~Feature} Feature.
  */
 function readFeatureFromGeometry(object, arcs, scale, translate, property, name, opt_options) {
   let geometry;
@@ -280,7 +280,7 @@ function readFeatureFromGeometry(object, arcs, scale, translate, property, name,
     geometry = geometryReader(object, arcs);
   }
   const feature = new Feature();
-  feature.setGeometry(/** @type {ol.geom.Geometry} */ (
+  feature.setGeometry(/** @type {module:ol/geom/Geometry~Geometry} */ (
     transformWithOptions(geometry, false, opt_options)));
   if (object.id !== undefined) {
     feature.setId(object.id);
@@ -304,7 +304,7 @@ function readFeatureFromGeometry(object, arcs, scale, translate, property, name,
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 TopoJSON.prototype.readFeatures;
@@ -326,7 +326,7 @@ TopoJSON.prototype.readFeaturesFromObject = function(object, opt_options) {
     if (transform) {
       transformArcs(arcs, scale, translate);
     }
-    /** @type {Array.<ol.Feature>} */
+    /** @type {Array.<module:ol/Feature~Feature>} */
     const features = [];
     const topoJSONFeatures = topoJSONTopology.objects;
     const property = this.layerName_;
@@ -406,7 +406,7 @@ function transformVertex(vertex, scale, translate) {
  * Read the projection from a TopoJSON source.
  *
  * @param {Document|Node|Object|string} object Source.
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  * @override
  * @api
  */

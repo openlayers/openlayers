@@ -20,7 +20,7 @@ const Units = {
 /**
  * Meters per unit lookup table.
  * @const
- * @type {Object.<ol.proj.Units, number>}
+ * @type {Object.<module:ol/proj/Units~Units, number>}
  * @api
  */
 export const METERS_PER_UNIT = {};

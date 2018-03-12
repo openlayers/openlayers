@@ -288,7 +288,7 @@ CanvasReplayGroup.prototype.finish = function() {
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
- * @param {function((ol.Feature|ol.render.Feature)): T} callback Feature
+ * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T} callback Feature
  *     callback.
  * @param {Object.<string, ol.DeclutterGroup>} declutterReplays Declutter
  *     replays.
@@ -335,7 +335,7 @@ CanvasReplayGroup.prototype.forEachFeatureAtCoordinate = function(
   let replayType;
 
   /**
-   * @param {ol.Feature|ol.render.Feature} feature Feature.
+   * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
    * @return {?} Callback result.
    */
   function featureCallback(feature) {

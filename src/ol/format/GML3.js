@@ -96,10 +96,10 @@ inherits(GML3, GMLBase);
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {ol.geom.MultiLineString|undefined} MultiLineString.
+ * @return {module:ol/geom/MultiLineString~MultiLineString|undefined} MultiLineString.
  */
 GML3.prototype.readMultiCurve_ = function(node, objectStack) {
-  /** @type {Array.<ol.geom.LineString>} */
+  /** @type {Array.<module:ol/geom/LineString~LineString>} */
   const lineStrings = pushParseAndPop([],
     this.MULTICURVE_PARSERS_, node, objectStack, this);
   if (lineStrings) {
@@ -116,10 +116,10 @@ GML3.prototype.readMultiCurve_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {ol.geom.MultiPolygon|undefined} MultiPolygon.
+ * @return {module:ol/geom/MultiPolygon~MultiPolygon|undefined} MultiPolygon.
  */
 GML3.prototype.readMultiSurface_ = function(node, objectStack) {
-  /** @type {Array.<ol.geom.Polygon>} */
+  /** @type {Array.<module:ol/geom/Polygon~Polygon>} */
   const polygons = pushParseAndPop([],
     this.MULTISURFACE_PARSERS_, node, objectStack, this);
   if (polygons) {
@@ -240,7 +240,7 @@ GML3.prototype.exteriorParser_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {ol.geom.Polygon|undefined} Polygon.
+ * @return {module:ol/geom/Polygon~Polygon|undefined} Polygon.
  */
 GML3.prototype.readSurface_ = function(node, objectStack) {
   /** @type {Array.<Array.<number>>} */
@@ -268,7 +268,7 @@ GML3.prototype.readSurface_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {ol.geom.LineString|undefined} LineString.
+ * @return {module:ol/geom/LineString~LineString|undefined} LineString.
  */
 GML3.prototype.readCurve_ = function(node, objectStack) {
   /** @type {Array.<number>} */
@@ -573,7 +573,7 @@ GML3.prototype.SEGMENTS_PARSERS_ = {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Point} value Point geometry.
+ * @param {module:ol/geom/Point~Point} value Point geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -631,7 +631,7 @@ GML3.prototype.getCoords_ = function(point, opt_srsName, opt_hasZ) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.LineString|ol.geom.LinearRing} value Geometry.
+ * @param {module:ol/geom/LineString~LineString|module:ol/geom/LinearRing~LinearRing} value Geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -656,7 +656,7 @@ GML3.prototype.writePosList_ = function(node, value, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Point} geometry Point geometry.
+ * @param {module:ol/geom/Point~Point} geometry Point geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -695,7 +695,7 @@ GML3.prototype.writeEnvelope = function(node, extent, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.LinearRing} geometry LinearRing geometry.
+ * @param {module:ol/geom/LinearRing~LinearRing} geometry LinearRing geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -732,7 +732,7 @@ GML3.prototype.RING_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Polygon} geometry Polygon geometry.
+ * @param {module:ol/geom/Polygon~Polygon} geometry Polygon geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -761,7 +761,7 @@ GML3.prototype.writeSurfaceOrPolygon_ = function(node, geometry, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.LineString} geometry LineString geometry.
+ * @param {module:ol/geom/LineString~LineString} geometry LineString geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -787,7 +787,7 @@ GML3.prototype.writeCurveOrLineString_ = function(node, geometry, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.MultiPolygon} geometry MultiPolygon geometry.
+ * @param {module:ol/geom/MultiPolygon~MultiPolygon} geometry MultiPolygon geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -809,7 +809,7 @@ GML3.prototype.writeMultiSurfaceOrPolygon_ = function(node, geometry, objectStac
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.MultiPoint} geometry MultiPoint geometry.
+ * @param {module:ol/geom/MultiPoint~MultiPoint} geometry MultiPoint geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -830,7 +830,7 @@ GML3.prototype.writeMultiPoint_ = function(node, geometry, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.MultiLineString} geometry MultiLineString geometry.
+ * @param {module:ol/geom/MultiLineString~MultiLineString} geometry MultiLineString geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -852,7 +852,7 @@ GML3.prototype.writeMultiCurveOrLineString_ = function(node, geometry, objectSta
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.LinearRing} ring LinearRing geometry.
+ * @param {module:ol/geom/LinearRing~LinearRing} ring LinearRing geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -865,7 +865,7 @@ GML3.prototype.writeRing_ = function(node, ring, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Polygon} polygon Polygon geometry.
+ * @param {module:ol/geom/Polygon~Polygon} polygon Polygon geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -881,7 +881,7 @@ GML3.prototype.writeSurfaceOrPolygonMember_ = function(node, polygon, objectStac
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Point} point Point geometry.
+ * @param {module:ol/geom/Point~Point} point Point geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -894,7 +894,7 @@ GML3.prototype.writePointMember_ = function(node, point, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.LineString} line LineString geometry.
+ * @param {module:ol/geom/LineString~LineString} line LineString geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -909,7 +909,7 @@ GML3.prototype.writeLineStringOrCurveMember_ = function(node, line, objectStack)
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Polygon} polygon Polygon geometry.
+ * @param {module:ol/geom/Polygon~Polygon} polygon Polygon geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -922,7 +922,7 @@ GML3.prototype.writeSurfacePatches_ = function(node, polygon, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.LineString} line LineString geometry.
+ * @param {module:ol/geom/LineString~LineString} line LineString geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -936,7 +936,7 @@ GML3.prototype.writeCurveSegments_ = function(node, line, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Geometry|module:ol/extent~Extent} geometry Geometry.
+ * @param {module:ol/geom/Geometry~Geometry|module:ol/extent~Extent} geometry Geometry.
  * @param {Array.<*>} objectStack Node stack.
  */
 GML3.prototype.writeGeometryElement = function(node, geometry, objectStack) {
@@ -952,7 +952,7 @@ GML3.prototype.writeGeometryElement = function(node, geometry, objectStack) {
       value = geometry;
     }
   } else {
-    value = transformWithOptions(/** @type {ol.geom.Geometry} */ (geometry), true, context);
+    value = transformWithOptions(/** @type {module:ol/geom/Geometry~Geometry} */ (geometry), true, context);
   }
   pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
     (item), this.GEOMETRY_SERIALIZERS_,
@@ -963,7 +963,7 @@ GML3.prototype.writeGeometryElement = function(node, geometry, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {Array.<*>} objectStack Node stack.
  */
 GML3.prototype.writeFeatureElement = function(node, feature, objectStack) {
@@ -1010,7 +1010,7 @@ GML3.prototype.writeFeatureElement = function(node, feature, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -1075,7 +1075,7 @@ GML3.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack, opt_nodeNam
   const multiCurve = context['multiCurve'];
   let nodeName;
   if (!Array.isArray(value)) {
-    nodeName = /** @type {ol.geom.Geometry} */ (value).getType();
+    nodeName = /** @type {module:ol/geom/Geometry~Geometry} */ (value).getType();
     if (nodeName === 'MultiPolygon' && multiSurface === true) {
       nodeName = 'MultiSurface';
     } else if (nodeName === 'Polygon' && surface === true) {
@@ -1096,7 +1096,7 @@ GML3.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack, opt_nodeNam
 /**
  * Encode a geometry in GML 3.1.1 Simple Features.
  *
- * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @override
@@ -1120,7 +1120,7 @@ GML3.prototype.writeGeometryNode = function(geometry, opt_options) {
  * Encode an array of features in GML 3.1.1 Simple Features.
  *
  * @function
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {string} Result.
  * @api
@@ -1131,7 +1131,7 @@ GML3.prototype.writeFeatures;
 /**
  * Encode an array of features in the GML 3.1.1 format as an XML node.
  *
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @override

@@ -61,7 +61,7 @@ const map = new Map({
 const zoomtoswitzerlandbest = document.getElementById('zoomtoswitzerlandbest');
 zoomtoswitzerlandbest.addEventListener('click', function() {
   const feature = source.getFeatures()[0];
-  const polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
+  const polygon = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (feature.getGeometry());
   view.fit(polygon, {padding: [170, 50, 30, 150], constrainResolution: false});
 }, false);
 
@@ -69,7 +69,7 @@ const zoomtoswitzerlandconstrained =
     document.getElementById('zoomtoswitzerlandconstrained');
 zoomtoswitzerlandconstrained.addEventListener('click', function() {
   const feature = source.getFeatures()[0];
-  const polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
+  const polygon = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (feature.getGeometry());
   view.fit(polygon, {padding: [170, 50, 30, 150]});
 }, false);
 
@@ -77,21 +77,21 @@ const zoomtoswitzerlandnearest =
     document.getElementById('zoomtoswitzerlandnearest');
 zoomtoswitzerlandnearest.addEventListener('click', function() {
   const feature = source.getFeatures()[0];
-  const polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
+  const polygon = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (feature.getGeometry());
   view.fit(polygon, {padding: [170, 50, 30, 150], nearest: true});
 }, false);
 
 const zoomtolausanne = document.getElementById('zoomtolausanne');
 zoomtolausanne.addEventListener('click', function() {
   const feature = source.getFeatures()[1];
-  const point = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
+  const point = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (feature.getGeometry());
   view.fit(point, {padding: [170, 50, 30, 150], minResolution: 50});
 }, false);
 
 const centerlausanne = document.getElementById('centerlausanne');
 centerlausanne.addEventListener('click', function() {
   const feature = source.getFeatures()[1];
-  const point = /** @type {ol.geom.Point} */ (feature.getGeometry());
+  const point = /** @type {module:ol/geom/Point~Point} */ (feature.getGeometry());
   const size = /** @type {ol.Size} */ (map.getSize());
   view.centerOn(point.getCoordinates(), size, [570, 500]);
 }, false);

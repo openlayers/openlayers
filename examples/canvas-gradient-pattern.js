@@ -70,7 +70,7 @@ const style = new Style({
  * The styling function for the vector layer, will return an array of styles
  * which either contains the aboove gradient or pattern.
  *
- * @param {ol.Feature} feature The feature to style.
+ * @param {module:ol/Feature~Feature} feature The feature to style.
  * @param {number} resolution Resolution.
  * @return {ol.style.Style} The style to use for the feature.
  */

@@ -43,7 +43,7 @@ map.addOverlay(marker);
 // is time aware.
 // The Z dimension is actually used to store the rotation (heading).
 const positions = new LineString([],
-  /** @type {ol.geom.GeometryLayout} */ ('XYZM'));
+  /** @type {module:ol/geom/GeometryLayout~GeometryLayout} */ ('XYZM'));
 
 // Geolocation Control
 const geolocation = new Geolocation({

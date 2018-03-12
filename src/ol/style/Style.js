@@ -24,7 +24,7 @@ const Style = function(opt_options) {
 
   /**
    * @private
-   * @type {string|ol.geom.Geometry|ol.StyleGeometryFunction}
+   * @type {string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction}
    */
   this.geometry_ = null;
 
@@ -122,7 +122,7 @@ Style.prototype.setRenderer = function(renderer) {
 
 /**
  * Get the geometry to be rendered.
- * @return {string|ol.geom.Geometry|ol.StyleGeometryFunction}
+ * @return {string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction}
  * Feature property or geometry or function that returns the geometry that will
  * be rendered with this style.
  * @api
@@ -236,7 +236,7 @@ Style.prototype.getZIndex = function() {
 /**
  * Set a geometry that is rendered instead of the feature's geometry.
  *
- * @param {string|ol.geom.Geometry|ol.StyleGeometryFunction} geometry
+ * @param {string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction} geometry
  *     Feature property or geometry or function returning a geometry to render
  *     for this style.
  * @api
@@ -246,13 +246,13 @@ Style.prototype.setGeometry = function(geometry) {
     this.geometryFunction_ = geometry;
   } else if (typeof geometry === 'string') {
     this.geometryFunction_ = function(feature) {
-      return /** @type {ol.geom.Geometry} */ (feature.get(geometry));
+      return /** @type {module:ol/geom/Geometry~Geometry} */ (feature.get(geometry));
     };
   } else if (!geometry) {
     this.geometryFunction_ = defaultGeometryFunction;
   } else if (geometry !== undefined) {
     this.geometryFunction_ = function() {
-      return /** @type {ol.geom.Geometry} */ (geometry);
+      return /** @type {module:ol/geom/Geometry~Geometry} */ (geometry);
     };
   }
   this.geometry_ = geometry;
@@ -310,7 +310,7 @@ let defaultStyles = null;
 
 
 /**
- * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @return {Array.<ol.style.Style>} Style.
  */
@@ -346,10 +346,10 @@ export function createDefaultStyle(feature, resolution) {
 
 /**
  * Default styles for editing features.
- * @return {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} Styles
+ * @return {Object.<module:ol/geom/GeometryType~GeometryType, Array.<ol.style.Style>>} Styles
  */
 export function createEditingStyle() {
-  /** @type {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} */
+  /** @type {Object.<module:ol/geom/GeometryType~GeometryType, Array.<ol.style.Style>>} */
   const styles = {};
   const white = [255, 255, 255, 1];
   const blue = [0, 153, 255, 1];
@@ -417,9 +417,9 @@ export function createEditingStyle() {
 
 /**
  * Function that is called with a feature and returns its default geometry.
- * @param {ol.Feature|ol.render.Feature} feature Feature to get the geometry
+ * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature to get the geometry
  *     for.
- * @return {ol.geom.Geometry|ol.render.Feature|undefined} Geometry to render.
+ * @return {module:ol/geom/Geometry~Geometry|ol.render.Feature|undefined} Geometry to render.
  */
 function defaultGeometryFunction(feature) {
   return feature.getGeometry();

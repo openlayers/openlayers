@@ -146,7 +146,7 @@ function readTag(node, objectStack) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 OSMXML.prototype.readFeatures;
@@ -201,7 +201,7 @@ OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  * @api
  */
 OSMXML.prototype.readProjection;

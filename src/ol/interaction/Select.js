@@ -35,10 +35,10 @@ const SelectEventType = {
  * this type.
  *
  * @param {SelectEventType} type The event type.
- * @param {Array.<ol.Feature>} selected Selected features.
- * @param {Array.<ol.Feature>} deselected Deselected features.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Associated
- *     {@link ol.MapBrowserEvent}.
+ * @param {Array.<module:ol/Feature~Feature>} selected Selected features.
+ * @param {Array.<module:ol/Feature~Feature>} deselected Deselected features.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Associated
+ *     {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
  * @implements {oli.SelectEvent}
  * @extends {ol.events.Event}
  * @constructor
@@ -48,21 +48,21 @@ const SelectEvent = function(type, selected, deselected, mapBrowserEvent) {
 
   /**
    * Selected features array.
-   * @type {Array.<ol.Feature>}
+   * @type {Array.<module:ol/Feature~Feature>}
    * @api
    */
   this.selected = selected;
 
   /**
    * Deselected features array.
-   * @type {Array.<ol.Feature>}
+   * @type {Array.<module:ol/Feature~Feature>}
    * @api
    */
   this.deselected = deselected;
 
   /**
-   * Associated {@link ol.MapBrowserEvent}.
-   * @type {ol.MapBrowserEvent}
+   * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
+   * @type {module:ol/MapBrowserEvent~MapBrowserEvent}
    * @api
    */
   this.mapBrowserEvent = mapBrowserEvent;
@@ -198,7 +198,7 @@ inherits(Select, Interaction);
 
 
 /**
- * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  * @param {ol.layer.Layer} layer Layer.
  * @private
  */
@@ -210,7 +210,7 @@ Select.prototype.addFeatureLayerAssociation_ = function(feature, layer) {
 
 /**
  * Get the selected features.
- * @return {ol.Collection.<ol.Feature>} Features collection.
+ * @return {ol.Collection.<module:ol/Feature~Feature>} Features collection.
  * @api
  */
 Select.prototype.getFeatures = function() {
@@ -233,7 +233,7 @@ Select.prototype.getHitTolerance = function() {
  * the (last) selected feature. Note that this will not work with any
  * programmatic method like pushing features to
  * {@link ol.interaction.Select#getFeatures collection}.
- * @param {ol.Feature|ol.render.Feature} feature Feature
+ * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature
  * @return {ol.layer.Vector} Layer.
  * @api
  */
@@ -244,9 +244,9 @@ Select.prototype.getLayer = function(feature) {
 
 
 /**
- * Handles the {@link ol.MapBrowserEvent map browser event} and may change the
+ * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may change the
  * selected state of features.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Select}
  */
@@ -270,7 +270,7 @@ function handleEvent(mapBrowserEvent) {
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
       (
         /**
-         * @param {ol.Feature|ol.render.Feature} feature Feature.
+         * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
          */
@@ -303,7 +303,7 @@ function handleEvent(mapBrowserEvent) {
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
       (
         /**
-         * @param {ol.Feature|ol.render.Feature} feature Feature.
+         * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
          */
@@ -394,7 +394,7 @@ function getDefaultStyleFunction() {
 Select.prototype.addFeature_ = function(evt) {
   const map = this.getMap();
   if (map) {
-    map.skipFeature(/** @type {ol.Feature} */ (evt.element));
+    map.skipFeature(/** @type {module:ol/Feature~Feature} */ (evt.element));
   }
 };
 
@@ -406,13 +406,13 @@ Select.prototype.addFeature_ = function(evt) {
 Select.prototype.removeFeature_ = function(evt) {
   const map = this.getMap();
   if (map) {
-    map.unskipFeature(/** @type {ol.Feature} */ (evt.element));
+    map.unskipFeature(/** @type {module:ol/Feature~Feature} */ (evt.element));
   }
 };
 
 
 /**
- * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  * @private
  */
 Select.prototype.removeFeatureLayerAssociation_ = function(feature) {

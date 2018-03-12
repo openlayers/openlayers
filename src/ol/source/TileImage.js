@@ -204,7 +204,7 @@ TileImage.prototype.getTileCacheForProjection = function(projection) {
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection} projection Projection.
+ * @param {module:ol/proj/Projection~Projection} projection Projection.
  * @param {string} key The key set on the tile.
  * @return {!ol.Tile} Tile.
  * @private
@@ -233,7 +233,7 @@ TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projection, key)
  * @inheritDoc
  */
 TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection) {
-  const sourceProjection = /** @type {!ol.proj.Projection} */ (this.getProjection());
+  const sourceProjection = /** @type {!module:ol/proj/Projection~Projection} */ (this.getProjection());
   if (!ENABLE_RASTER_REPROJECTION ||
       !sourceProjection || !projection || equivalent(sourceProjection, projection)) {
     return this.getTileInternal(z, x, y, pixelRatio, sourceProjection || projection);
@@ -282,7 +282,7 @@ TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection) {
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
  * @param {number} pixelRatio Pixel ratio.
- * @param {!ol.proj.Projection} projection Projection.
+ * @param {!module:ol/proj/Projection~Projection} projection Projection.
  * @return {!ol.Tile} Tile.
  * @protected
  */

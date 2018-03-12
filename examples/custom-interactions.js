@@ -49,7 +49,7 @@ app.Drag = function() {
   this.cursor_ = 'pointer';
 
   /**
-   * @type {ol.Feature}
+   * @type {module:ol/Feature~Feature}
    * @private
    */
   this.feature_ = null;
@@ -65,7 +65,7 @@ inherits(app.Drag, PointerInteraction);
 
 
 /**
- * @param {ol.MapBrowserEvent} evt Map browser event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt Map browser event.
  * @return {boolean} `true` to start the drag sequence.
  */
 app.Drag.prototype.handleDownEvent = function(evt) {
@@ -86,7 +86,7 @@ app.Drag.prototype.handleDownEvent = function(evt) {
 
 
 /**
- * @param {ol.MapBrowserEvent} evt Map browser event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt Map browser event.
  */
 app.Drag.prototype.handleDragEvent = function(evt) {
   const deltaX = evt.coordinate[0] - this.coordinate_[0];
@@ -101,7 +101,7 @@ app.Drag.prototype.handleDragEvent = function(evt) {
 
 
 /**
- * @param {ol.MapBrowserEvent} evt Event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt Event.
  */
 app.Drag.prototype.handleMoveEvent = function(evt) {
   if (this.cursor_) {

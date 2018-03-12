@@ -20,9 +20,9 @@ import {douglasPeuckerArray} from '../geom/flat/simplify.js';
  * Multi-linestring geometry.
  *
  * @constructor
- * @extends {ol.geom.SimpleGeometry}
+ * @extends {module:ol/geom/SimpleGeometry~SimpleGeometry}
  * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
  * @api
  */
 const MultiLineString = function(coordinates, opt_layout) {
@@ -56,7 +56,7 @@ inherits(MultiLineString, SimpleGeometry);
 
 /**
  * Append the passed linestring to the multilinestring.
- * @param {ol.geom.LineString} lineString LineString.
+ * @param {module:ol/geom/LineString~LineString} lineString LineString.
  * @api
  */
 MultiLineString.prototype.appendLineString = function(lineString) {
@@ -72,7 +72,7 @@ MultiLineString.prototype.appendLineString = function(lineString) {
 
 /**
  * Make a complete copy of the geometry.
- * @return {!ol.geom.MultiLineString} Clone.
+ * @return {!module:ol/geom/MultiLineString~MultiLineString} Clone.
  * @override
  * @api
  */
@@ -160,7 +160,7 @@ MultiLineString.prototype.getEnds = function() {
 /**
  * Return the linestring at the specified index.
  * @param {number} index Index.
- * @return {ol.geom.LineString} LineString.
+ * @return {module:ol/geom/LineString~LineString} LineString.
  * @api
  */
 MultiLineString.prototype.getLineString = function(index) {
@@ -176,14 +176,14 @@ MultiLineString.prototype.getLineString = function(index) {
 
 /**
  * Return the linestrings of this multilinestring.
- * @return {Array.<ol.geom.LineString>} LineStrings.
+ * @return {Array.<module:ol/geom/LineString~LineString>} LineStrings.
  * @api
  */
 MultiLineString.prototype.getLineStrings = function() {
   const flatCoordinates = this.flatCoordinates;
   const ends = this.ends_;
   const layout = this.layout;
-  /** @type {Array.<ol.geom.LineString>} */
+  /** @type {Array.<module:ol/geom/LineString~LineString>} */
   const lineStrings = [];
   let offset = 0;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
@@ -255,7 +255,7 @@ MultiLineString.prototype.intersectsExtent = function(extent) {
 /**
  * Set the coordinates of the multilinestring.
  * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
  * @override
  * @api
  */
@@ -276,7 +276,7 @@ MultiLineString.prototype.setCoordinates = function(coordinates, opt_layout) {
 
 
 /**
- * @param {ol.geom.GeometryLayout} layout Layout.
+ * @param {module:ol/geom/GeometryLayout~GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<number>} ends Ends.
  */
@@ -288,7 +288,7 @@ MultiLineString.prototype.setFlatCoordinates = function(layout, flatCoordinates,
 
 
 /**
- * @param {Array.<ol.geom.LineString>} lineStrings LineStrings.
+ * @param {Array.<module:ol/geom/LineString~LineString>} lineStrings LineStrings.
  */
 MultiLineString.prototype.setLineStrings = function(lineStrings) {
   let layout = this.getLayout();

@@ -257,7 +257,7 @@ ImageWMS.prototype.getImageLoadFunction = function() {
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection} projection Projection.
+ * @param {module:ol/proj/Projection~Projection} projection Projection.
  * @param {Object} params Params.
  * @return {string} Request URL.
  * @private

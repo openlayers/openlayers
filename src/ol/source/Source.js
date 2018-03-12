@@ -28,7 +28,7 @@ const Source = function(options) {
 
   /**
    * @private
-   * @type {ol.proj.Projection}
+   * @type {module:ol/proj/Projection~Projection}
    */
   this.projection_ = getProjection(options.projection);
 
@@ -85,7 +85,7 @@ Source.prototype.adaptAttributions_ = function(attributionLike) {
  * @param {number} rotation Rotation.
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
- * @param {function((ol.Feature|ol.render.Feature)): T} callback Feature
+ * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T} callback Feature
  *     callback.
  * @return {T|undefined} Callback result.
  * @template T
@@ -104,7 +104,7 @@ Source.prototype.getAttributions = function() {
 
 /**
  * Get the projection of the source.
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  * @api
  */
 Source.prototype.getProjection = function() {

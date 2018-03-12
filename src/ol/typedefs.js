@@ -80,12 +80,12 @@ ol.CanvasFillState;
  * used by the source as an image. The arguments passed to the function are:
  * {@link module:ol/extent~Extent} the image extent, `{number}` the image resolution,
  * `{number}` the device pixel ratio, {@link module:ol/size~Size} the image size, and
- * {@link ol.proj.Projection} the image projection. The canvas returned by
+ * {@link module:ol/proj/Projection~Projection} the image projection. The canvas returned by
  * this function is cached by the source. The this keyword inside the function
  * references the {@link ol.source.ImageCanvas}.
  *
  * @typedef {function(this:ol.source.ImageCanvas, module:ol/extent~Extent, number,
- *     number, module:ol/size~Size, ol.proj.Projection): HTMLCanvasElement}
+ *     number, module:ol/size~Size, module:ol/proj/Projection~Projection): HTMLCanvasElement}
  */
 ol.CanvasFunctionType;
 
@@ -154,10 +154,10 @@ ol.DeclutterGroup;
 
 
 /**
- * A function that takes a {@link ol.MapBrowserEvent} and two
+ * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
  * {@link module:ol~Pixel}s and returns a `{boolean}`. If the condition is met,
  * true should be returned.
- * @typedef {function(ol.MapBrowserEvent, module:ol~Pixel, module:ol~Pixel):boolean}
+ * @typedef {function(module:ol/MapBrowserEvent~MapBrowserEvent, module:ol~Pixel, module:ol~Pixel):boolean}
  */
 ol.DragBoxEndConditionType;
 
@@ -167,17 +167,17 @@ ol.DragBoxEndConditionType;
  * arguments, and returns a geometry. The optional existing geometry is the
  * geometry that is returned when the function is called without a second
  * argument.
- * @typedef {function(!Array.<module:ol/coordinate~Coordinate>, ol.geom.SimpleGeometry=):
- *     ol.geom.SimpleGeometry}
+ * @typedef {function(!Array.<module:ol/coordinate~Coordinate>, module:ol/geom/SimpleGeometry~SimpleGeometry=):
+ *     module:ol/geom/SimpleGeometry~SimpleGeometry}
  */
 ol.DrawGeometryFunctionType;
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * `{boolean}`. If the condition is met, true should be returned.
  *
- * @typedef {function(ol.MapBrowserEvent): boolean}
+ * @typedef {function(module:ol/MapBrowserEvent~MapBrowserEvent): boolean}
  */
 ol.EventsConditionType;
 
@@ -232,8 +232,8 @@ ol.LRUCacheEntry;
 
 /**
  * @typedef {{depth: (Array.<number>|undefined),
- *            feature: ol.Feature,
- *            geometry: ol.geom.SimpleGeometry,
+ *            feature: module:ol/Feature~Feature,
+ *            geometry: module:ol/geom/SimpleGeometry~SimpleGeometry,
  *            index: (number),
  *            segment: Array.<module:ol/extent~Extent>,
  *            featureSegments: (Array.<ol.ModifySegmentDataType>|undefined)}}
@@ -307,10 +307,10 @@ ol.ReprojTriangle;
 
 
 /**
- * A function that takes an {@link ol.Feature} or {@link ol.render.Feature} and
+ * A function that takes an {@link module:ol/Feature~Feature} or {@link ol.render.Feature} and
  * an {@link ol.layer.Layer} and returns `true` if the feature may be selected
  * or `false` otherwise.
- * @typedef {function((ol.Feature|ol.render.Feature), ol.layer.Layer):
+ * @typedef {function((module:ol/Feature~Feature|ol.render.Feature), ol.layer.Layer):
  *     boolean}
  */
 ol.SelectFilterFunction;
@@ -328,7 +328,7 @@ ol.SnapResultType;
 
 /**
  * @typedef {{
- *     feature: ol.Feature,
+ *     feature: module:ol/Feature~Feature,
  *     segment: Array.<module:ol/coordinate~Coordinate>
  * }}
  */
@@ -397,11 +397,11 @@ ol.SourceUrlTileOptions;
 
 
 /**
- * A function that takes an {@link ol.Feature} as argument and returns an
- * {@link ol.geom.Geometry} that will be rendered and styled for the feature.
+ * A function that takes an {@link module:ol/Feature~Feature} as argument and returns an
+ * {@link module:ol/geom/Geometry~Geometry} that will be rendered and styled for the feature.
  *
- * @typedef {function((ol.Feature|ol.render.Feature)):
- *     (ol.geom.Geometry|ol.render.Feature|undefined)}
+ * @typedef {function((module:ol/Feature~Feature|ol.render.Feature)):
+ *     (module:ol/geom/Geometry~Geometry|ol.render.Feature|undefined)}
  */
 ol.StyleGeometryFunction;
 

@@ -58,7 +58,7 @@ const CanvasVectorLayerRenderer = function(vectorLayer) {
 
   /**
    * @private
-   * @type {function(ol.Feature, ol.Feature): number|null}
+   * @type {function(module:ol/Feature~Feature, module:ol/Feature~Feature): number|null}
    */
   this.renderedRenderOrder_ = null;
 
@@ -257,7 +257,7 @@ CanvasVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordi
     const features = {};
     const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
       /**
-       * @param {ol.Feature|ol.render.Feature} feature Feature.
+       * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {
@@ -358,7 +358,7 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
     pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
-   * @param {ol.Feature} feature Feature.
+   * @param {module:ol/Feature~Feature} feature Feature.
    * @this {ol.renderer.canvas.VectorLayer}
    */
   const render = function(feature) {
@@ -374,11 +374,11 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
     }
   }.bind(this);
   if (vectorLayerRenderOrder) {
-    /** @type {Array.<ol.Feature>} */
+    /** @type {Array.<module:ol/Feature~Feature>} */
     const features = [];
     vectorSource.forEachFeatureInExtent(extent,
       /**
-       * @param {ol.Feature} feature Feature.
+       * @param {module:ol/Feature~Feature} feature Feature.
        */
       function(feature) {
         features.push(feature);
@@ -404,7 +404,7 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {(ol.style.Style|Array.<ol.style.Style>)} styles The style or array of

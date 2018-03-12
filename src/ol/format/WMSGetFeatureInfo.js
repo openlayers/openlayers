@@ -89,13 +89,13 @@ WMSGetFeatureInfo.prototype.setLayers = function(layers) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @private
  */
 WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
   node.setAttribute('namespaceURI', this.featureNS_);
   const localName = node.localName;
-  /** @type {Array.<ol.Feature>} */
+  /** @type {Array.<module:ol/Feature~Feature>} */
   let features = [];
   if (node.childNodes.length === 0) {
     return features;
@@ -152,7 +152,7 @@ WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 WMSGetFeatureInfo.prototype.readFeatures;

@@ -45,7 +45,7 @@ export const WORLD_EXTENT = [-180, -85, 180, 85];
  * Projection object for web/spherical Mercator (EPSG:3857).
  *
  * @constructor
- * @extends {ol.proj.Projection}
+ * @extends {module:ol/proj/Projection~Projection}
  * @param {string} code Code.
  */
 function EPSG3857Projection(code) {
@@ -67,7 +67,7 @@ inherits(EPSG3857Projection, Projection);
  * Projections equal to EPSG:3857.
  *
  * @const
- * @type {Array.<ol.proj.Projection>}
+ * @type {Array.<module:ol/proj/Projection~Projection>}
  */
 export const PROJECTIONS = [
   new EPSG3857Projection('EPSG:3857'),

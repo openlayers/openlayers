@@ -24,9 +24,9 @@ import RenderFeature from '../render/Feature.js';
 
 /**
  * @typedef {Object} Options
- * @property {undefined|function((ol.geom.Geometry|Object.<string,*>)=)|function(ol.geom.GeometryType,Array.<number>,(Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)} featureClass
+ * @property {undefined|function((module:ol/geom/Geometry~Geometry|Object.<string,*>)=)|function(module:ol/geom/GeometryType~GeometryType,Array.<number>,(Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)} featureClass
  * Class for features returned by {@link ol.format.MVT#readFeatures}. Set to
- * {@link ol.Feature} to get full editing and geometry support at the cost of
+ * {@link module:ol/Feature~Feature} to get full editing and geometry support at the cost of
  * decreased rendering performance. The default is {@link ol.render.Feature},
  * which is optimized for rendering and hit detection.
  * @property {string|undefined} geometryName Geometry name to use when creating
@@ -54,7 +54,7 @@ const MVT = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
   /**
-   * @type {ol.proj.Projection}
+   * @type {module:ol/proj/Projection~Projection}
    */
   this.defaultDataProjection = new Projection({
     code: '',
@@ -63,8 +63,8 @@ const MVT = function(opt_options) {
 
   /**
    * @private
-   * @type {function((ol.geom.Geometry|Object.<string,*>)=)|
-   *     function(ol.geom.GeometryType,Array.<number>,
+   * @type {function((module:ol/geom/Geometry~Geometry|Object.<string,*>)=)|
+   *     function(module:ol/geom/GeometryType~GeometryType,Array.<number>,
    *         (Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)}
    */
   this.featureClass_ = options.featureClass ?
@@ -272,10 +272,10 @@ MVT.prototype.readRawGeometry_ = function(pbf, feature, flatCoordinates, ends) {
  * @param {number} type The raw feature's geometry type
  * @param {number} numEnds Number of ends of the flat coordinates of the
  * geometry.
- * @return {ol.geom.GeometryType} The geometry type.
+ * @return {module:ol/geom/GeometryType~GeometryType} The geometry type.
  */
 function getGeometryType(type, numEnds) {
-  /** @type {ol.geom.GeometryType} */
+  /** @type {module:ol/geom/GeometryType~GeometryType} */
   let geometryType;
   if (type === 1) {
     geometryType = numEnds === 1 ?
@@ -297,7 +297,7 @@ function getGeometryType(type, numEnds) {
  * @param {ol.ext.PBF} pbf PBF
  * @param {Object} rawFeature Raw Mapbox feature.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {ol.Feature|ol.render.Feature} Feature.
+ * @return {module:ol/Feature~Feature|ol.render.Feature} Feature.
  */
 MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
   const type = rawFeature.type;
@@ -387,7 +387,7 @@ MVT.prototype.readFeatures = function(source, opt_options) {
 
   const pbf = new PBF(/** @type {ArrayBuffer} */ (source));
   const pbfLayers = pbf.readFields(layersPBFReader, {});
-  /** @type {Array.<ol.Feature|ol.render.Feature>} */
+  /** @type {Array.<module:ol/Feature~Feature|ol.render.Feature>} */
   const features = [];
   for (const name in pbfLayers) {
     if (layers && layers.indexOf(name) == -1) {

@@ -52,7 +52,7 @@ const ModifyEventType = {
  * @extends {ol.events.Event}
  * @implements {oli.ModifyEvent}
  * @param {ModifyEventType} type Type.
- * @param {ol.Collection.<ol.Feature>} features The features modified.
+ * @param {ol.Collection.<module:ol/Feature~Feature>} features The features modified.
  * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
  *     {@link ol.MapBrowserPointerEvent}.
  */
@@ -62,14 +62,14 @@ export const ModifyEvent = function(type, features, mapBrowserPointerEvent) {
 
   /**
    * The features being modified.
-   * @type {ol.Collection.<ol.Feature>}
+   * @type {ol.Collection.<module:ol/Feature~Feature>}
    * @api
    */
   this.features = features;
 
   /**
-   * Associated {@link ol.MapBrowserEvent}.
-   * @type {ol.MapBrowserEvent}
+   * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
+   * @type {module:ol/MapBrowserEvent~MapBrowserEvent}
    * @api
    */
   this.mapBrowserEvent = mapBrowserPointerEvent;
@@ -115,7 +115,7 @@ const Modify = function(options) {
 
   /**
    * @private
-   * @param {ol.MapBrowserEvent} mapBrowserEvent Browser event.
+   * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Browser event.
    * @return {boolean} Combined condition result.
    */
   this.defaultDeleteCondition_ = function(mapBrowserEvent) {
@@ -138,7 +138,7 @@ const Modify = function(options) {
 
   /**
    * Editing vertex.
-   * @type {ol.Feature}
+   * @type {module:ol/Feature~Feature}
    * @private
    */
   this.vertexFeature_ = null;
@@ -223,7 +223,7 @@ const Modify = function(options) {
   /**
   * @const
   * @private
-  * @type {!Object.<string, function(ol.Feature, ol.geom.Geometry)>}
+  * @type {!Object.<string, function(module:ol/Feature~Feature, module:ol/geom/Geometry~Geometry)>}
   */
   this.SEGMENT_WRITERS_ = {
     'Point': this.writePointGeometry_,
@@ -260,7 +260,7 @@ const Modify = function(options) {
   }
 
   /**
-   * @type {ol.Collection.<ol.Feature>}
+   * @type {ol.Collection.<module:ol/Feature~Feature>}
    * @private
    */
   this.features_ = features;
@@ -298,7 +298,7 @@ const CIRCLE_CIRCUMFERENCE_INDEX = 1;
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @private
  */
 Modify.prototype.addFeature_ = function(feature) {
@@ -329,7 +329,7 @@ Modify.prototype.willModifyFeatures_ = function(evt) {
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @private
  */
 Modify.prototype.removeFeature_ = function(feature) {
@@ -346,7 +346,7 @@ Modify.prototype.removeFeature_ = function(feature) {
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @private
  */
 Modify.prototype.removeFeatureSegmentData_ = function(feature) {
@@ -415,7 +415,7 @@ Modify.prototype.handleSourceRemove_ = function(event) {
  * @private
  */
 Modify.prototype.handleFeatureAdd_ = function(evt) {
-  this.addFeature_(/** @type {ol.Feature} */ (evt.element));
+  this.addFeature_(/** @type {module:ol/Feature~Feature} */ (evt.element));
 };
 
 
@@ -425,7 +425,7 @@ Modify.prototype.handleFeatureAdd_ = function(evt) {
  */
 Modify.prototype.handleFeatureChange_ = function(evt) {
   if (!this.changingFeature_) {
-    const feature = /** @type {ol.Feature} */ (evt.target);
+    const feature = /** @type {module:ol/Feature~Feature} */ (evt.target);
     this.removeFeature_(feature);
     this.addFeature_(feature);
   }
@@ -437,14 +437,14 @@ Modify.prototype.handleFeatureChange_ = function(evt) {
  * @private
  */
 Modify.prototype.handleFeatureRemove_ = function(evt) {
-  const feature = /** @type {ol.Feature} */ (evt.element);
+  const feature = /** @type {module:ol/Feature~Feature} */ (evt.element);
   this.removeFeature_(feature);
 };
 
 
 /**
- * @param {ol.Feature} feature Feature
- * @param {ol.geom.Point} geometry Geometry.
+ * @param {module:ol/Feature~Feature} feature Feature
+ * @param {module:ol/geom/Point~Point} geometry Geometry.
  * @private
  */
 Modify.prototype.writePointGeometry_ = function(feature, geometry) {
@@ -459,8 +459,8 @@ Modify.prototype.writePointGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
- * @param {ol.geom.MultiPoint} geometry Geometry.
+ * @param {module:ol/Feature~Feature} feature Feature
+ * @param {module:ol/geom/MultiPoint~MultiPoint} geometry Geometry.
  * @private
  */
 Modify.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
@@ -480,8 +480,8 @@ Modify.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
- * @param {ol.geom.LineString} geometry Geometry.
+ * @param {module:ol/Feature~Feature} feature Feature
+ * @param {module:ol/geom/LineString~LineString} geometry Geometry.
  * @private
  */
 Modify.prototype.writeLineStringGeometry_ = function(feature, geometry) {
@@ -500,8 +500,8 @@ Modify.prototype.writeLineStringGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
- * @param {ol.geom.MultiLineString} geometry Geometry.
+ * @param {module:ol/Feature~Feature} feature Feature
+ * @param {module:ol/geom/MultiLineString~MultiLineString} geometry Geometry.
  * @private
  */
 Modify.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
@@ -524,8 +524,8 @@ Modify.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
- * @param {ol.geom.Polygon} geometry Geometry.
+ * @param {module:ol/Feature~Feature} feature Feature
+ * @param {module:ol/geom/Polygon~Polygon} geometry Geometry.
  * @private
  */
 Modify.prototype.writePolygonGeometry_ = function(feature, geometry) {
@@ -548,8 +548,8 @@ Modify.prototype.writePolygonGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
- * @param {ol.geom.MultiPolygon} geometry Geometry.
+ * @param {module:ol/Feature~Feature} feature Feature
+ * @param {module:ol/geom/MultiPolygon~MultiPolygon} geometry Geometry.
  * @private
  */
 Modify.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
@@ -581,8 +581,8 @@ Modify.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
  * {@link CIRCLE_CIRCUMFERENCE_INDEX} is
  * the circumference, and is not a line segment.
  *
- * @param {ol.Feature} feature Feature.
- * @param {ol.geom.Circle} geometry Geometry.
+ * @param {module:ol/Feature~Feature} feature Feature.
+ * @param {module:ol/geom/Circle~Circle} geometry Geometry.
  * @private
  */
 Modify.prototype.writeCircleGeometry_ = function(feature, geometry) {
@@ -607,8 +607,8 @@ Modify.prototype.writeCircleGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
- * @param {ol.geom.GeometryCollection} geometry Geometry.
+ * @param {module:ol/Feature~Feature} feature Feature
+ * @param {module:ol/geom/GeometryCollection~GeometryCollection} geometry Geometry.
  * @private
  */
 Modify.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
@@ -621,7 +621,7 @@ Modify.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) 
 
 /**
  * @param {module:ol/coordinate~Coordinate} coordinates Coordinates.
- * @return {ol.Feature} Vertex feature.
+ * @return {module:ol/Feature~Feature} Vertex feature.
  * @private
  */
 Modify.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
@@ -631,7 +631,7 @@ Modify.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
     this.vertexFeature_ = vertexFeature;
     this.overlay_.getSource().addFeature(vertexFeature);
   } else {
-    const geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
+    const geometry = /** @type {module:ol/geom/Point~Point} */ (vertexFeature.getGeometry());
     geometry.setCoordinates(coordinates);
   }
   return vertexFeature;
@@ -664,7 +664,7 @@ function handleDownEvent(evt) {
   const vertexFeature = this.vertexFeature_;
   if (vertexFeature) {
     const insertVertices = [];
-    const geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
+    const geometry = /** @type {module:ol/geom/Point~Point} */ (vertexFeature.getGeometry());
     const vertex = geometry.getCoordinates();
     const vertexExtent = boundingExtent([vertex]);
     const segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
@@ -831,9 +831,9 @@ function handleUpEvent(evt) {
 
 
 /**
- * Handles the {@link ol.MapBrowserEvent map browser event} and may modify the
+ * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may modify the
  * geometry.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Modify}
  */
@@ -866,7 +866,7 @@ function handleEvent(mapBrowserEvent) {
 
 
 /**
- * @param {ol.MapBrowserEvent} evt Event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt Event.
  * @private
  */
 Modify.prototype.handlePointerMove_ = function(evt) {
@@ -956,7 +956,7 @@ function pointDistanceToSegmentDataSquared(pointCoordinates, segmentData) {
   const geometry = segmentData.geometry;
 
   if (geometry.getType() === GeometryType.CIRCLE) {
-    const circleGeometry = /** @type {ol.geom.Circle} */ (geometry);
+    const circleGeometry = /** @type {module:ol/geom/Circle~Circle} */ (geometry);
 
     if (segmentData.index === CIRCLE_CIRCUMFERENCE_INDEX) {
       const distanceToCenterSquared =
@@ -1191,7 +1191,7 @@ Modify.prototype.removeVertex_ = function() {
 
 
 /**
- * @param {ol.geom.SimpleGeometry} geometry Geometry.
+ * @param {module:ol/geom/SimpleGeometry~SimpleGeometry} geometry Geometry.
  * @param {Array} coordinates Coordinates.
  * @private
  */
@@ -1203,7 +1203,7 @@ Modify.prototype.setGeometryCoordinates_ = function(geometry, coordinates) {
 
 
 /**
- * @param {ol.geom.SimpleGeometry} geometry Geometry.
+ * @param {module:ol/geom/SimpleGeometry~SimpleGeometry} geometry Geometry.
  * @param {number} index Index.
  * @param {Array.<number>|undefined} depth Depth.
  * @param {number} delta Delta (1 or -1).

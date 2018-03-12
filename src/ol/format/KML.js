@@ -405,7 +405,7 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
 
   return (
     /**
-     * @param {ol.Feature} feature feature.
+     * @param {module:ol/Feature~Feature} feature feature.
      * @param {number} resolution Resolution.
      * @return {Array.<ol.style.Style>} Style.
      */
@@ -890,7 +890,7 @@ const GX_MULTITRACK_GEOMETRY_PARSERS = makeStructureNS(
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.MultiLineString|undefined} MultiLineString.
+ * @return {module:ol/geom/MultiLineString~MultiLineString|undefined} MultiLineString.
  */
 function readGxMultiTrack(node, objectStack) {
   const lineStrings = pushParseAndPop([],
@@ -920,7 +920,7 @@ const GX_TRACK_PARSERS = makeStructureNS(
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.LineString|undefined} LineString.
+ * @return {module:ol/geom/LineString~LineString|undefined} LineString.
  */
 function readGxTrack(node, objectStack) {
   const gxTrackObject = pushParseAndPop(
@@ -1010,7 +1010,7 @@ const EXTRUDE_AND_ALTITUDE_MODE_PARSERS = makeStructureNS(
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.LineString|undefined} LineString.
+ * @return {module:ol/geom/LineString~LineString|undefined} LineString.
  */
 function readLineString(node, objectStack) {
   const properties = pushParseAndPop({},
@@ -1032,7 +1032,7 @@ function readLineString(node, objectStack) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.Polygon|undefined} Polygon.
+ * @return {module:ol/geom/Polygon~Polygon|undefined} Polygon.
  */
 function readLinearRing(node, objectStack) {
   const properties = pushParseAndPop({},
@@ -1069,7 +1069,7 @@ const MULTI_GEOMETRY_PARSERS = makeStructureNS(
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.Geometry} Geometry.
+ * @return {module:ol/geom/Geometry~Geometry} Geometry.
  */
 function readMultiGeometry(node, objectStack) {
   const geometries = pushParseAndPop([],
@@ -1080,7 +1080,7 @@ function readMultiGeometry(node, objectStack) {
   if (geometries.length === 0) {
     return new GeometryCollection(geometries);
   }
-  /** @type {ol.geom.Geometry} */
+  /** @type {module:ol/geom/Geometry~Geometry} */
   let multiGeometry;
   let homogeneous = true;
   const type = geometries[0].getType();
@@ -1122,14 +1122,14 @@ function readMultiGeometry(node, objectStack) {
   } else {
     multiGeometry = new GeometryCollection(geometries);
   }
-  return /** @type {ol.geom.Geometry} */ (multiGeometry);
+  return /** @type {module:ol/geom/Geometry~Geometry} */ (multiGeometry);
 }
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.Point|undefined} Point.
+ * @return {module:ol/geom/Point~Point|undefined} Point.
  */
 function readPoint(node, objectStack) {
   const properties = pushParseAndPop({},
@@ -1162,7 +1162,7 @@ const FLAT_LINEAR_RINGS_PARSERS = makeStructureNS(
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.geom.Polygon|undefined} Polygon.
+ * @return {module:ol/geom/Polygon~Polygon|undefined} Polygon.
  */
 function readPolygon(node, objectStack) {
   const properties = pushParseAndPop(/** @type {Object<string,*>} */ ({}),
@@ -1248,9 +1248,9 @@ function readStyle(node, objectStack) {
 /**
  * Reads an array of geometries and creates arrays for common geometry
  * properties. Then sets them to the multi geometry.
- * @param {ol.geom.MultiPoint|ol.geom.MultiLineString|ol.geom.MultiPolygon}
+ * @param {module:ol/geom/MultiPoint~MultiPoint|module:ol/geom/MultiLineString~MultiLineString|module:ol/geom/MultiPolygon~MultiPolygon}
  *     multiGeometry A multi-geometry.
- * @param {Array.<ol.geom.Geometry>} geometries List of geometries.
+ * @param {Array.<module:ol/geom/Geometry~Geometry>} geometries List of geometries.
  */
 function setCommonGeometryProperties(multiGeometry, geometries) {
   const ii = geometries.length;
@@ -1652,7 +1652,7 @@ const PLACEMARK_PARSERS = makeStructureNS(
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Array.<ol.Feature>|undefined} Features.
+ * @return {Array.<module:ol/Feature~Feature>|undefined} Features.
  */
 KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
   // FIXME use scope somehow
@@ -1664,7 +1664,7 @@ KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
       'Style': this.readSharedStyle_.bind(this),
       'StyleMap': this.readSharedStyleMap_.bind(this)
     });
-  /** @type {Array.<ol.Feature>} */
+  /** @type {Array.<module:ol/Feature~Feature>} */
   const features = pushParseAndPop([], parsersNS, node, objectStack, this);
   if (features) {
     return features;
@@ -1678,7 +1678,7 @@ KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {ol.Feature|undefined} Feature.
+ * @return {module:ol/Feature~Feature|undefined} Feature.
  */
 KML.prototype.readPlacemark_ = function(node, objectStack) {
   const object = pushParseAndPop({'geometry': null},
@@ -1782,7 +1782,7 @@ KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {ol.Feature} Feature.
+ * @return {module:ol/Feature~Feature} Feature.
  * @api
  */
 KML.prototype.readFeature;
@@ -1813,7 +1813,7 @@ KML.prototype.readFeatureFromNode = function(node, opt_options) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 KML.prototype.readFeatures;
@@ -2061,7 +2061,7 @@ KML.prototype.readRegionFromNode = function(node) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  * @api
  */
 KML.prototype.readProjection;
@@ -2205,7 +2205,7 @@ const DOCUMENT_NODE_FACTORY = function(value, objectStack, opt_nodeName) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {Array.<*>} objectStack Object stack.
  * @this {ol.format.KML}
  */
@@ -2499,7 +2499,7 @@ const GEOMETRY_NODE_FACTORY = function(value, objectStack, opt_nodeName) {
   if (value) {
     const parentNode = objectStack[objectStack.length - 1].node;
     return createElementNS(parentNode.namespaceURI,
-      GEOMETRY_TYPE_TO_NODENAME[/** @type {ol.geom.Geometry} */ (value).getType()]);
+      GEOMETRY_TYPE_TO_NODENAME[/** @type {module:ol/geom/Geometry~Geometry} */ (value).getType()]);
   }
 };
 
@@ -2554,30 +2554,30 @@ const MULTI_GEOMETRY_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeMultiGeometry(node, geometry, objectStack) {
   /** @type {module:ol/xml~NodeStackItem} */
   const context = {node: node};
   const type = geometry.getType();
-  /** @type {Array.<ol.geom.Geometry>} */
+  /** @type {Array.<module:ol/geom/Geometry~Geometry>} */
   let geometries;
   /** @type {function(*, Array.<*>, string=): (Node|undefined)} */
   let factory;
   if (type == GeometryType.GEOMETRY_COLLECTION) {
-    geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
+    geometries = /** @type {module:ol/geom/GeometryCollection~GeometryCollection} */ (geometry).getGeometries();
     factory = GEOMETRY_NODE_FACTORY;
   } else if (type == GeometryType.MULTI_POINT) {
-    geometries = /** @type {ol.geom.MultiPoint} */ (geometry).getPoints();
+    geometries = /** @type {module:ol/geom/MultiPoint~MultiPoint} */ (geometry).getPoints();
     factory = POINT_NODE_FACTORY;
   } else if (type == GeometryType.MULTI_LINE_STRING) {
     geometries =
-        (/** @type {ol.geom.MultiLineString} */ (geometry)).getLineStrings();
+        (/** @type {module:ol/geom/MultiLineString~MultiLineString} */ (geometry)).getLineStrings();
     factory = LINE_STRING_NODE_FACTORY;
   } else if (type == GeometryType.MULTI_POLYGON) {
     geometries =
-        (/** @type {ol.geom.MultiPolygon} */ (geometry)).getPolygons();
+        (/** @type {module:ol/geom/MultiPolygon~MultiPolygon} */ (geometry)).getPolygons();
     factory = POLYGON_NODE_FACTORY;
   } else {
     assert(false, 39); // Unknown geometry type
@@ -2601,7 +2601,7 @@ const BOUNDARY_IS_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.LinearRing} linearRing Linear ring.
+ * @param {module:ol/geom/LinearRing~LinearRing} linearRing Linear ring.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeBoundaryIs(node, linearRing, objectStack) {
@@ -2658,7 +2658,7 @@ const EXTENDEDDATA_NODE_FACTORY = makeSimpleNodeFactory('ExtendedData');
  * FIXME currently we do serialize arbitrary/custom feature properties
  * (ExtendedData).
  * @param {Node} node Node.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
  * @this {ol.format.KML}
  */
@@ -2746,7 +2746,7 @@ const PRIMITIVE_GEOMETRY_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.SimpleGeometry} geometry Geometry.
+ * @param {module:ol/geom/SimpleGeometry~SimpleGeometry} geometry Geometry.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writePrimitiveGeometry(node, geometry, objectStack) {
@@ -2798,7 +2798,7 @@ const OUTER_BOUNDARY_NODE_FACTORY = makeSimpleNodeFactory('outerBoundaryIs');
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Polygon} polygon Polygon.
+ * @param {module:ol/geom/Polygon~Polygon} polygon Polygon.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writePolygon(node, polygon, objectStack) {
@@ -2952,7 +2952,7 @@ const KML_SERIALIZERS = makeStructureNS(
  * MultiLineStrings, and MultiPolygons are output as MultiGeometries.
  *
  * @function
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {string} Result.
  * @api
@@ -2964,7 +2964,7 @@ KML.prototype.writeFeatures;
  * Encode an array of features in the KML format as an XML node. GeometryCollections,
  * MultiPoints, MultiLineStrings, and MultiPolygons are output as MultiGeometries.
  *
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @override

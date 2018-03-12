@@ -12,12 +12,12 @@ import {transform2D} from '../geom/flat/transform.js';
 import {create as createTransform, compose as composeTransform} from '../transform.js';
 
 /**
- * Lightweight, read-only, {@link ol.Feature} and {@link ol.geom.Geometry} like
+ * Lightweight, read-only, {@link module:ol/Feature~Feature} and {@link module:ol/geom/Geometry~Geometry} like
  * structure, optimized for vector tile rendering and styling. Geometry access
  * through the API is limited to getting the type and extent of the geometry.
  *
  * @constructor
- * @param {ol.geom.GeometryType} type Geometry type.
+ * @param {module:ol/geom/GeometryType~GeometryType} type Geometry type.
  * @param {Array.<number>} flatCoordinates Flat coordinates. These always need
  *     to be right-handed for polygons.
  * @param {Array.<number>|Array.<Array.<number>>} ends Ends or Endss.
@@ -39,7 +39,7 @@ const RenderFeature = function(type, flatCoordinates, ends, properties, id) {
 
   /**
    * @private
-   * @type {ol.geom.GeometryType}
+   * @type {module:ol/geom/GeometryType~GeometryType}
    */
   this.type_ = type;
 
@@ -205,7 +205,7 @@ RenderFeature.prototype.getFlatCoordinates =
 
 
 /**
- * For API compatibility with {@link ol.Feature}, this method is useful when
+ * For API compatibility with {@link module:ol/Feature~Feature}, this method is useful when
  * determining the geometry type in style function (see {@link #getType}).
  * @return {ol.render.Feature} Feature.
  * @api
@@ -249,7 +249,7 @@ RenderFeature.prototype.getStyleFunction = UNDEFINED;
 
 /**
  * Get the type of this feature's geometry.
- * @return {ol.geom.GeometryType} Geometry type.
+ * @return {module:ol/geom/GeometryType~GeometryType} Geometry type.
  * @api
  */
 RenderFeature.prototype.getType = function() {

@@ -188,7 +188,7 @@ WFS.prototype.setFeatureType = function(featureType) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 WFS.prototype.readFeatures;
@@ -425,7 +425,7 @@ const QUERY_SERIALIZERS = {
 
 /**
  * @param {Node} node Node.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeFeature(node, feature, objectStack) {
@@ -476,7 +476,7 @@ function getTypeName(featurePrefix, featureType) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeDelete(node, feature, objectStack) {
@@ -511,7 +511,7 @@ const TRANSACTION_SERIALIZERS = {
 
 /**
  * @param {Node} node Node.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeUpdate(node, feature, objectStack) {
@@ -997,9 +997,9 @@ WFS.prototype.writeGetFeature = function(options) {
 /**
  * Encode format as WFS `Transaction` and return the Node.
  *
- * @param {Array.<ol.Feature>} inserts The features to insert.
- * @param {Array.<ol.Feature>} updates The features to update.
- * @param {Array.<ol.Feature>} deletes The features to delete.
+ * @param {Array.<module:ol/Feature~Feature>} inserts The features to insert.
+ * @param {Array.<module:ol/Feature~Feature>} updates The features to update.
+ * @param {Array.<module:ol/Feature~Feature>} deletes The features to delete.
  * @param {module:ol/format/WFS~WriteTransactionOptions} options Write options.
  * @return {Node} Result.
  * @api
@@ -1069,7 +1069,7 @@ WFS.prototype.writeTransaction = function(inserts, updates, deletes, options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @return {?ol.proj.Projection} Projection.
+ * @return {?module:ol/proj/Projection~Projection} Projection.
  * @api
  */
 WFS.prototype.readProjection;

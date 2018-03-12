@@ -89,7 +89,7 @@ const MousePosition = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.proj.Projection}
+   * @type {module:ol/proj/Projection~Projection}
    */
   this.mapProjection_ = null;
 
@@ -153,13 +153,13 @@ MousePosition.prototype.getCoordinateFormat = function() {
 
 /**
  * Return the projection that is used to report the mouse position.
- * @return {ol.proj.Projection|undefined} The projection to report mouse
+ * @return {module:ol/proj/Projection~Projection|undefined} The projection to report mouse
  *     position in.
  * @observable
  * @api
  */
 MousePosition.prototype.getProjection = function() {
-  return /** @type {ol.proj.Projection|undefined} */ (this.get(PROJECTION));
+  return /** @type {module:ol/proj/Projection~Projection|undefined} */ (this.get(PROJECTION));
 };
 
 

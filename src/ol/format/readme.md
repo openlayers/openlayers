@@ -3,7 +3,7 @@
 
 * `readFeatures` returning an `Array.<ol.Feature>`
 * `readFeature` returning an `ol.Feature`
-* `readGeometry` returning an `ol.geom.Geometry`
+* `readGeometry` returning an `module:ol/geom/Geometry~Geometry`
 
 Having different functions for multiple return types allows both the user to specify what type of data they want and for the compiler to properly type check the code. Depending on the format, it is entirely reasonable to leave one or more of these methods unimplemented, or provide sensible default implementations.
 

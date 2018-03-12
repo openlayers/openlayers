@@ -224,7 +224,7 @@ RasterSource.prototype.setOperation = function(operation, opt_lib) {
  * Update the stored frame state.
  * @param {module:ol/extent~Extent} extent The view extent (in map units).
  * @param {number} resolution The view resolution.
- * @param {ol.proj.Projection} projection The view projection.
+ * @param {module:ol/proj/Projection~Projection} projection The view projection.
  * @return {olx.FrameState} The updated frame state.
  * @private
  */

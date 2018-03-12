@@ -129,7 +129,7 @@ VectorLayer.prototype.getRenderBuffer = function() {
 
 
 /**
- * @return {function(ol.Feature, ol.Feature): number|null|undefined} Render
+ * @return {function(module:ol/Feature~Feature, module:ol/Feature~Feature): number|null|undefined} Render
  *     order.
  */
 VectorLayer.prototype.getRenderOrder = function() {

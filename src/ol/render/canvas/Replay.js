@@ -407,7 +407,7 @@ CanvasReplay.prototype.drawCustom = function(geometry, feature, renderer) {
   let flatCoordinates, replayEnd, replayEnds, replayEndss;
   let offset;
   if (type == GeometryType.MULTI_POLYGON) {
-    geometry = /** @type {ol.geom.MultiPolygon} */ (geometry);
+    geometry = /** @type {module:ol/geom/MultiPolygon~MultiPolygon} */ (geometry);
     flatCoordinates = geometry.getOrientedFlatCoordinates();
     replayEndss = [];
     const endss = geometry.getEndss();
@@ -422,10 +422,10 @@ CanvasReplay.prototype.drawCustom = function(geometry, feature, renderer) {
   } else if (type == GeometryType.POLYGON || type == GeometryType.MULTI_LINE_STRING) {
     replayEnds = [];
     flatCoordinates = (type == GeometryType.POLYGON) ?
-      /** @type {ol.geom.Polygon} */ (geometry).getOrientedFlatCoordinates() :
+      /** @type {module:ol/geom/Polygon~Polygon} */ (geometry).getOrientedFlatCoordinates() :
       geometry.getFlatCoordinates();
     offset = this.drawCustomCoordinates_(flatCoordinates, 0,
-      /** @type {ol.geom.Polygon|ol.geom.MultiLineString} */ (geometry).getEnds(),
+      /** @type {module:ol/geom/Polygon~Polygon|module:ol/geom/MultiLineString~MultiLineString} */ (geometry).getEnds(),
       stride, replayEnds);
     this.instructions.push([CanvasInstruction.CUSTOM,
       replayBegin, replayEnds, geometry, renderer, inflateCoordinatesArray]);
@@ -448,8 +448,8 @@ CanvasReplay.prototype.drawCustom = function(geometry, feature, renderer) {
 
 /**
  * @protected
- * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
- * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {module:ol/geom/Geometry~Geometry|ol.render.Feature} geometry Geometry.
+ * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  */
 CanvasReplay.prototype.beginGeometry = function(geometry, feature) {
   this.beginGeometryInstruction1_ = [CanvasInstruction.BEGIN_GEOMETRY, feature, 0];
@@ -496,7 +496,7 @@ CanvasReplay.prototype.setStrokeStyle_ = function(context, instruction) {
 
 /**
  * @param {ol.DeclutterGroup} declutterGroup Declutter group.
- * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  */
 CanvasReplay.prototype.renderDeclutter_ = function(declutterGroup, feature) {
   if (declutterGroup && declutterGroup.length > 5) {
@@ -538,7 +538,7 @@ CanvasReplay.prototype.renderDeclutter_ = function(declutterGroup, feature) {
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
  * @param {Array.<*>} instructions Instructions array.
- * @param {function((ol.Feature|ol.render.Feature)): T|undefined}
+ * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T|undefined}
  *     featureCallback Feature callback.
  * @param {module:ol/extent~Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
@@ -584,14 +584,14 @@ CanvasReplay.prototype.replay_ = function(
   // When the batch size gets too big, performance decreases. 200 is a good
   // balance between batch size and number of fill/stroke instructions.
   const batchSize = this.instructions != instructions || this.overlaps ? 0 : 200;
-  let /** @type {ol.Feature|ol.render.Feature} */ feature;
+  let /** @type {module:ol/Feature~Feature|ol.render.Feature} */ feature;
   let x, y;
   while (i < ii) {
     const instruction = instructions[i];
     const type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
     switch (type) {
       case CanvasInstruction.BEGIN_GEOMETRY:
-        feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
+        feature = /** @type {module:ol/Feature~Feature|ol.render.Feature} */ (instruction[1]);
         if ((skipFeatures &&
             skippedFeaturesHash[getUid(feature).toString()]) ||
             !feature.getGeometry()) {
@@ -638,7 +638,7 @@ CanvasReplay.prototype.replay_ = function(
       case CanvasInstruction.CUSTOM:
         d = /** @type {number} */ (instruction[1]);
         dd = instruction[2];
-        const geometry = /** @type {ol.geom.SimpleGeometry} */ (instruction[3]);
+        const geometry = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (instruction[3]);
         const renderer = instruction[4];
         const fn = instruction.length == 6 ? instruction[5] : undefined;
         state.geometry = geometry;
@@ -760,7 +760,7 @@ CanvasReplay.prototype.replay_ = function(
         break;
       case CanvasInstruction.END_GEOMETRY:
         if (featureCallback !== undefined) {
-          feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
+          feature = /** @type {module:ol/Feature~Feature|ol.render.Feature} */ (instruction[1]);
           const result = featureCallback(feature);
           if (result) {
             return result;
@@ -870,7 +870,7 @@ CanvasReplay.prototype.replay = function(
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
- * @param {function((ol.Feature|ol.render.Feature)): T=} opt_featureCallback
+ * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T=} opt_featureCallback
  *     Feature callback.
  * @param {module:ol/extent~Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
@@ -967,7 +967,7 @@ CanvasReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
 
 /**
  * @param {ol.CanvasFillStrokeState} state State.
- * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
+ * @param {module:ol/geom/Geometry~Geometry|ol.render.Feature} geometry Geometry.
  * @return {Array.<*>} Fill instruction.
  */
 CanvasReplay.prototype.createFill = function(state, geometry) {
@@ -1005,8 +1005,8 @@ CanvasReplay.prototype.createStroke = function(state) {
 
 /**
  * @param {ol.CanvasFillStrokeState} state State.
- * @param {function(this:ol.render.canvas.Replay, ol.CanvasFillStrokeState, (ol.geom.Geometry|ol.render.Feature)):Array.<*>} createFill Create fill.
- * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
+ * @param {function(this:ol.render.canvas.Replay, ol.CanvasFillStrokeState, (module:ol/geom/Geometry~Geometry|ol.render.Feature)):Array.<*>} createFill Create fill.
+ * @param {module:ol/geom/Geometry~Geometry|ol.render.Feature} geometry Geometry.
  */
 CanvasReplay.prototype.updateFillStyle = function(state, createFill, geometry) {
   const fillStyle = state.fillStyle;
@@ -1053,8 +1053,8 @@ CanvasReplay.prototype.updateStrokeStyle = function(state, applyStroke) {
 
 
 /**
- * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
- * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {module:ol/geom/Geometry~Geometry|ol.render.Feature} geometry Geometry.
+ * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  */
 CanvasReplay.prototype.endGeometry = function(geometry, feature) {
   this.beginGeometryInstruction1_[2] = this.instructions.length;

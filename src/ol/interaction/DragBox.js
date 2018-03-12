@@ -44,7 +44,7 @@ const DragBoxEventType = {
  *
  * @param {string} type The event type.
  * @param {module:ol/coordinate~Coordinate} coordinate The event coordinate.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Originating event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Originating event.
  * @extends {ol.events.Event}
  * @constructor
  * @implements {oli.DragBoxEvent}
@@ -62,7 +62,7 @@ const DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
 
   /**
    * @const
-   * @type {ol.MapBrowserEvent}
+   * @type {module:ol/MapBrowserEvent~MapBrowserEvent}
    * @api
    */
   this.mapBrowserEvent = mapBrowserEvent;
@@ -137,7 +137,7 @@ inherits(DragBox, PointerInteraction);
 /**
  * The default condition for determining whether the boxend event
  * should fire.
- * @param {ol.MapBrowserEvent} mapBrowserEvent The originating MapBrowserEvent
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent The originating MapBrowserEvent
  *     leading to the box end.
  * @param {module:ol~Pixel} startPixel The starting pixel of the box.
  * @param {module:ol~Pixel} endPixel The end pixel of the box.
@@ -169,7 +169,7 @@ function handleDragEvent(mapBrowserEvent) {
 
 /**
  * Returns geometry of last drawn box.
- * @return {ol.geom.Polygon} Geometry.
+ * @return {module:ol/geom/Polygon~Polygon} Geometry.
  * @api
  */
 DragBox.prototype.getGeometry = function() {
@@ -180,7 +180,7 @@ DragBox.prototype.getGeometry = function() {
 /**
  * To be overridden by child classes.
  * FIXME: use constructor option instead of relying on overriding.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @protected
  */
 DragBox.prototype.onBoxEnd = UNDEFINED;

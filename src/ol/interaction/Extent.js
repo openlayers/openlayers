@@ -89,14 +89,14 @@ const ExtentInteraction = function(opt_options) {
 
   /**
    * Feature for displaying the visible extent
-   * @type {ol.Feature}
+   * @type {module:ol/Feature~Feature}
    * @private
    */
   this.extentFeature_ = null;
 
   /**
    * Feature for displaying the visible pointer
-   * @type {ol.Feature}
+   * @type {module:ol/Feature~Feature}
    * @private
    */
   this.vertexFeature_ = null;
@@ -151,7 +151,7 @@ const ExtentInteraction = function(opt_options) {
 inherits(ExtentInteraction, PointerInteraction);
 
 /**
- * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Event.
  * @return {boolean} Propagate event?
  * @this {ol.interaction.Extent}
  */
@@ -366,7 +366,7 @@ ExtentInteraction.prototype.snapToVertex_ = function(pixel, map) {
 };
 
 /**
- * @param {ol.MapBrowserEvent} mapBrowserEvent pointer move event
+ * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent pointer move event
  * @private
  */
 ExtentInteraction.prototype.handlePointerMove_ = function(mapBrowserEvent) {
@@ -382,7 +382,7 @@ ExtentInteraction.prototype.handlePointerMove_ = function(mapBrowserEvent) {
 
 /**
  * @param {module:ol/extent~Extent} extent extent
- * @returns {ol.Feature} extent as featrue
+ * @returns {module:ol/Feature~Feature} extent as featrue
  * @private
  */
 ExtentInteraction.prototype.createOrUpdateExtentFeature_ = function(extent) {
@@ -409,7 +409,7 @@ ExtentInteraction.prototype.createOrUpdateExtentFeature_ = function(extent) {
 
 /**
  * @param {module:ol/coordinate~Coordinate} vertex location of feature
- * @returns {ol.Feature} vertex as feature
+ * @returns {module:ol/Feature~Feature} vertex as feature
  * @private
  */
 ExtentInteraction.prototype.createOrUpdatePointerFeature_ = function(vertex) {
@@ -419,7 +419,7 @@ ExtentInteraction.prototype.createOrUpdatePointerFeature_ = function(vertex) {
     this.vertexFeature_ = vertexFeature;
     this.vertexOverlay_.getSource().addFeature(vertexFeature);
   } else {
-    const geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
+    const geometry = /** @type {module:ol/geom/Point~Point} */ (vertexFeature.getGeometry());
     geometry.setCoordinates(vertex);
   }
   return vertexFeature;

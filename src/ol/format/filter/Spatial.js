@@ -14,7 +14,7 @@ import Filter from '../filter/Filter.js';
  * @abstract
  * @param {!string} tagName The XML tag name for this filter.
  * @param {!string} geometryName Geometry name to use.
- * @param {!ol.geom.Geometry} geometry Geometry.
+ * @param {!module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @extends {ol.format.filter.Filter}
@@ -31,7 +31,7 @@ const Spatial = function(tagName, geometryName, geometry, opt_srsName) {
 
   /**
    * @public
-   * @type {ol.geom.Geometry}
+   * @type {module:ol/geom/Geometry~Geometry}
    */
   this.geometry = geometry;
 

@@ -59,7 +59,7 @@ XMLFeature.prototype.readFeature = function(source, opt_options) {
 /**
  * @param {Document} doc Document.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
- * @return {ol.Feature} Feature.
+ * @return {module:ol/Feature~Feature} Feature.
  */
 XMLFeature.prototype.readFeatureFromDocument = function(doc, opt_options) {
   const features = this.readFeaturesFromDocument(doc, opt_options);
@@ -74,7 +74,7 @@ XMLFeature.prototype.readFeatureFromDocument = function(doc, opt_options) {
 /**
  * @param {Node} node Node.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
- * @return {ol.Feature} Feature.
+ * @return {module:ol/Feature~Feature} Feature.
  */
 XMLFeature.prototype.readFeatureFromNode = function(node, opt_options) {
   return null; // not implemented
@@ -103,10 +103,10 @@ XMLFeature.prototype.readFeatures = function(source, opt_options) {
  * @param {Document} doc Document.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @protected
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  */
 XMLFeature.prototype.readFeaturesFromDocument = function(doc, opt_options) {
-  /** @type {Array.<ol.Feature>} */
+  /** @type {Array.<module:ol/Feature~Feature>} */
   const features = [];
   for (let n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
@@ -122,7 +122,7 @@ XMLFeature.prototype.readFeaturesFromDocument = function(doc, opt_options) {
  * @param {Node} node Node.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @protected
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  */
 XMLFeature.prototype.readFeaturesFromNode = function(node, opt_options) {};
 
@@ -149,7 +149,7 @@ XMLFeature.prototype.readGeometry = function(source, opt_options) {
  * @param {Document} doc Document.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @protected
- * @return {ol.geom.Geometry} Geometry.
+ * @return {module:ol/geom/Geometry~Geometry} Geometry.
  */
 XMLFeature.prototype.readGeometryFromDocument = function(doc, opt_options) {
   return null; // not implemented
@@ -160,7 +160,7 @@ XMLFeature.prototype.readGeometryFromDocument = function(doc, opt_options) {
  * @param {Node} node Node.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @protected
- * @return {ol.geom.Geometry} Geometry.
+ * @return {module:ol/geom/Geometry~Geometry} Geometry.
  */
 XMLFeature.prototype.readGeometryFromNode = function(node, opt_options) {
   return null; // not implemented
@@ -187,7 +187,7 @@ XMLFeature.prototype.readProjection = function(source) {
 /**
  * @param {Document} doc Document.
  * @protected
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  */
 XMLFeature.prototype.readProjectionFromDocument = function(doc) {
   return this.defaultDataProjection;
@@ -197,7 +197,7 @@ XMLFeature.prototype.readProjectionFromDocument = function(doc) {
 /**
  * @param {Node} node Node.
  * @protected
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  */
 XMLFeature.prototype.readProjectionFromNode = function(node) {
   return this.defaultDataProjection;
@@ -214,7 +214,7 @@ XMLFeature.prototype.writeFeature = function(feature, opt_options) {
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @protected
  * @return {Node} Node.
@@ -234,7 +234,7 @@ XMLFeature.prototype.writeFeatures = function(features, opt_options) {
 
 
 /**
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  */
@@ -253,7 +253,7 @@ XMLFeature.prototype.writeGeometry = function(geometry, opt_options) {
 
 
 /**
- * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  */

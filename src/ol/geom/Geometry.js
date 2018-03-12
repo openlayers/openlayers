@@ -42,7 +42,7 @@ const Geometry = function() {
 
   /**
    * @protected
-   * @type {Object.<string, ol.geom.Geometry>}
+   * @type {Object.<string, module:ol/geom/Geometry~Geometry>}
    */
   this.simplifiedGeometryCache = {};
 
@@ -72,7 +72,7 @@ inherits(Geometry, BaseObject);
 /**
  * Make a complete copy of the geometry.
  * @abstract
- * @return {!ol.geom.Geometry} Clone.
+ * @return {!module:ol/geom/Geometry~Geometry} Clone.
  */
 Geometry.prototype.clone = function() {};
 
@@ -180,7 +180,7 @@ Geometry.prototype.scale = function(sx, opt_sy, opt_anchor) {};
  * simplification is used to preserve topology.
  * @function
  * @param {number} tolerance The tolerance distance for simplification.
- * @return {ol.geom.Geometry} A new, simplified version of the original
+ * @return {module:ol/geom/Geometry~Geometry} A new, simplified version of the original
  *     geometry.
  * @api
  */
@@ -195,7 +195,7 @@ Geometry.prototype.simplify = function(tolerance) {
  * @see https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
  * @abstract
  * @param {number} squaredTolerance Squared tolerance.
- * @return {ol.geom.Geometry} Simplified geometry.
+ * @return {module:ol/geom/Geometry~Geometry} Simplified geometry.
  */
 Geometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {};
 
@@ -203,7 +203,7 @@ Geometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {};
 /**
  * Get the type of this geometry.
  * @abstract
- * @return {ol.geom.GeometryType} Geometry type.
+ * @return {module:ol/geom/GeometryType~GeometryType} Geometry type.
  */
 Geometry.prototype.getType = function() {};
 
@@ -246,10 +246,10 @@ Geometry.prototype.translate = function(deltaX, deltaY) {};
  * then use this function on the clone.
  *
  * @param {module:ol/proj~ProjectionLike} source The current projection.  Can be a
- *     string identifier or a {@link ol.proj.Projection} object.
+ *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
  * @param {module:ol/proj~ProjectionLike} destination The desired projection.  Can be a
- *     string identifier or a {@link ol.proj.Projection} object.
- * @return {ol.geom.Geometry} This geometry.  Note that original geometry is
+ *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+ * @return {module:ol/geom/Geometry~Geometry} This geometry.  Note that original geometry is
  *     modified in place.
  * @api
  */

@@ -95,7 +95,7 @@ const NEWLINE_RE = /\r\n|\r|\n/;
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {ol.Feature} Feature.
+ * @return {module:ol/Feature~Feature} Feature.
  * @api
  */
 IGC.prototype.readFeature;
@@ -185,7 +185,7 @@ IGC.prototype.readFeatureFromText = function(text, opt_options) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 IGC.prototype.readFeatures;
@@ -209,7 +209,7 @@ IGC.prototype.readFeaturesFromText = function(text, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  * @api
  */
 IGC.prototype.readProjection;

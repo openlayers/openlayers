@@ -17,9 +17,9 @@ import {squaredDistance as squaredDx} from '../math.js';
  * Multi-point geometry.
  *
  * @constructor
- * @extends {ol.geom.SimpleGeometry}
+ * @extends {module:ol/geom/SimpleGeometry~SimpleGeometry}
  * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
  * @api
  */
 const MultiPoint = function(coordinates, opt_layout) {
@@ -32,7 +32,7 @@ inherits(MultiPoint, SimpleGeometry);
 
 /**
  * Append the passed point to this multipoint.
- * @param {ol.geom.Point} point Point.
+ * @param {module:ol/geom/Point~Point} point Point.
  * @api
  */
 MultiPoint.prototype.appendPoint = function(point) {
@@ -47,7 +47,7 @@ MultiPoint.prototype.appendPoint = function(point) {
 
 /**
  * Make a complete copy of the geometry.
- * @return {!ol.geom.MultiPoint} Clone.
+ * @return {!module:ol/geom/MultiPoint~MultiPoint} Clone.
  * @override
  * @api
  */
@@ -97,7 +97,7 @@ MultiPoint.prototype.getCoordinates = function() {
 /**
  * Return the point at the specified index.
  * @param {number} index Index.
- * @return {ol.geom.Point} Point.
+ * @return {module:ol/geom/Point~Point} Point.
  * @api
  */
 MultiPoint.prototype.getPoint = function(index) {
@@ -114,14 +114,14 @@ MultiPoint.prototype.getPoint = function(index) {
 
 /**
  * Return the points of this multipoint.
- * @return {Array.<ol.geom.Point>} Points.
+ * @return {Array.<module:ol/geom/Point~Point>} Points.
  * @api
  */
 MultiPoint.prototype.getPoints = function() {
   const flatCoordinates = this.flatCoordinates;
   const layout = this.layout;
   const stride = this.stride;
-  /** @type {Array.<ol.geom.Point>} */
+  /** @type {Array.<module:ol/geom/Point~Point>} */
   const points = [];
   for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
     const point = new Point(null);
@@ -162,7 +162,7 @@ MultiPoint.prototype.intersectsExtent = function(extent) {
 /**
  * Set the coordinates of the multipoint.
  * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
  * @override
  * @api
  */
@@ -182,7 +182,7 @@ MultiPoint.prototype.setCoordinates = function(coordinates, opt_layout) {
 
 
 /**
- * @param {ol.geom.GeometryLayout} layout Layout.
+ * @param {module:ol/geom/GeometryLayout~GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
 MultiPoint.prototype.setFlatCoordinates = function(layout, flatCoordinates) {

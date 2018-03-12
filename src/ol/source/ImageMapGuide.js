@@ -203,7 +203,7 @@ ImageMapGuide.prototype.updateParams = function(params) {
  * @param {Object.<string, string|number>} params Request parameters.
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {module:ol/size~Size} size Size.
- * @param {ol.proj.Projection} projection Projection.
+ * @param {module:ol/proj/Projection~Projection} projection Projection.
  * @return {string} The mapagent map image request URL.
  */
 ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, size, projection) {
