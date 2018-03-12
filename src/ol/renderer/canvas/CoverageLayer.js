@@ -14,6 +14,7 @@ import _ol_geom_flat_deflate_ from '../../geom/flat/deflate.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import {equivalent, transformExtent} from '../../proj.js';
 import Stroke from '../../style/Stroke.js';
+import State from '../../source/State.js';
 
 /**
  * @constructor
@@ -196,16 +197,20 @@ CanvasCoverageLayerRenderer.prototype.prepareFrame = function(frameState,
 CanvasCoverageLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   const coverageLayer = /** @type {ol.layer.Coverage} */ (this.getLayer());
   const coverageSource = coverageLayer.getSource();
-  const projection = frameState.viewState.projection;
-  const sourceProjection = coverageSource.getProjection();
 
-  const coverageExtent = equivalent(projection, sourceProjection) ?
-    coverageSource.getExtent() : transformExtent(coverageSource.getExtent(),
-      sourceProjection, projection);
+  if (coverageSource.getState() === State.READY) {
+    const projection = frameState.viewState.projection;
+    const sourceProjection = coverageSource.getProjection();
 
-  if (containsCoordinate(coverageExtent, coordinate)) {
-    return true;
+    const coverageExtent = equivalent(projection, sourceProjection) ?
+      coverageSource.getExtent() : transformExtent(coverageSource.getExtent(),
+        sourceProjection, projection);
+
+    if (containsCoordinate(coverageExtent, coordinate)) {
+      return true;
+    }
   }
+
   return false;
 };
 
