@@ -19,13 +19,22 @@ const IGCZ = {
   NONE: 'none'
 };
 
+
+/**
+ * @typedef {Object} Options
+ * @property {IGCZ|string|undefined} altitudeMode Altitude mode. Possible
+ * values are `'barometric'`, `'gps'`, and `'none'`. Default
+ * is `'none'`.
+ */
+
+
 /**
  * @classdesc
  * Feature format for `*.igc` flight recording files.
  *
  * @constructor
  * @extends {ol.format.TextFeature}
- * @param {olx.format.IGCOptions=} opt_options Options.
+ * @param {module:ol/format/IGC~Options=} opt_options Options.
  * @api
  */
 const IGC = function(opt_options) {
@@ -85,7 +94,7 @@ const NEWLINE_RE = /\r\n|\r|\n/;
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api
  */
@@ -175,7 +184,7 @@ IGC.prototype.readFeatureFromText = function(text, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */

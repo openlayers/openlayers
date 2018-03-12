@@ -227,6 +227,19 @@ function createStyleDefaults() {
 
 }
 
+
+/**
+ * @typedef {Object} Options
+ * @property {boolean|undefined} extractStyles Extract styles from the KML.
+ * Default is `true`.
+ * @property {boolean|undefined} showPointNames Show names as labels for placemarks
+ * which contain points. Default is `true`.
+ * @property {Array.<ol.style.Style>|undefined} defaultStyle Default style. The
+ * default default style is the same as Google Earth.
+ * @property {boolean|undefined} writeStyles Write styles into KML. Default is `true`.
+ */
+
+
 /**
  * @classdesc
  * Feature format for reading and writing data in the KML format.
@@ -236,7 +249,7 @@ function createStyleDefaults() {
  *
  * @constructor
  * @extends {ol.format.XMLFeature}
- * @param {olx.format.KMLOptions=} opt_options Options.
+ * @param {module:ol/format/KML~Options=} opt_options Options.
  * @api
  */
 const KML = function(opt_options) {
@@ -1678,7 +1691,7 @@ KML.prototype.readPlacemark_ = function(node, objectStack) {
   if (id !== null) {
     feature.setId(id);
   }
-  const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
 
   const geometry = object['geometry'];
   if (geometry) {
@@ -1768,7 +1781,7 @@ KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api
  */
@@ -1799,7 +1812,7 @@ KML.prototype.readFeatureFromNode = function(node, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
@@ -2698,7 +2711,7 @@ function writePlacemark(node, feature, objectStack) {
     OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
 
   // serialize geometry
-  const options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[0]);
   let geometry = feature.getGeometry();
   if (geometry) {
     geometry = transformWithOptions(geometry, true, options);
@@ -2940,7 +2953,7 @@ const KML_SERIALIZERS = makeStructureNS(
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {string} Result.
  * @api
  */
@@ -2952,7 +2965,7 @@ KML.prototype.writeFeatures;
  * MultiPoints, MultiLineStrings, and MultiPolygons are output as MultiGeometries.
  *
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @override
  * @api

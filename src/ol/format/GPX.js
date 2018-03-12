@@ -17,13 +17,25 @@ import {createElementNS, makeArrayPusher, makeArraySerializer, makeChildAppender
   OBJECT_PROPERTY_NODE_FACTORY, parseNode, pushParseAndPop, pushSerializeAndPop,
   setAttributeNS} from '../xml.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {function(ol.Feature, Node)|undefined} readExtensions Callback function
+ * to process `extensions` nodes. To prevent memory leaks, this callback function must
+ * not store any references to the node. Note that the `extensions`
+ * node is not allowed in GPX 1.0. Moreover, only `extensions`
+ * nodes from `wpt`, `rte` and `trk` can be processed, as those are
+ * directly mapped to a feature.
+ */
+
+
 /**
  * @classdesc
  * Feature format for reading and writing data in the GPX format.
  *
  * @constructor
  * @extends {ol.format.XMLFeature}
- * @param {olx.format.GPXOptions=} opt_options Options.
+ * @param {module:ol/format/GPX~Options=} opt_options Options.
  * @api
  */
 const GPX = function(opt_options) {
@@ -522,7 +534,7 @@ function parseTrkSeg(node, objectStack) {
  * @return {ol.Feature|undefined} Track.
  */
 function readRte(node, objectStack) {
-  const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
   const values = pushParseAndPop({
     'flatCoordinates': [],
     'layoutOptions': {}
@@ -551,7 +563,7 @@ function readRte(node, objectStack) {
  * @return {ol.Feature|undefined} Track.
  */
 function readTrk(node, objectStack) {
-  const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
   const values = pushParseAndPop({
     'flatCoordinates': [],
     'ends': [],
@@ -583,7 +595,7 @@ function readTrk(node, objectStack) {
  * @return {ol.Feature|undefined} Waypoint.
  */
 function readWpt(node, objectStack) {
-  const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
   const values = pushParseAndPop({}, WPT_PARSERS, node, objectStack);
   if (!values) {
     return undefined;
@@ -625,7 +637,7 @@ GPX.prototype.handleReadExtensions_ = function(features) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api
  */
@@ -659,7 +671,7 @@ GPX.prototype.readFeatureFromNode = function(node, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
@@ -768,7 +780,7 @@ function writeWptType(node, coordinate, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeRte(node, feature, objectStack) {
-  const options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[0]);
   const properties = feature.getProperties();
   const context = {node: node, 'properties': properties};
   let geometry = feature.getGeometry();
@@ -792,7 +804,7 @@ function writeRte(node, feature, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeTrk(node, feature, objectStack) {
-  const options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[0]);
   const properties = feature.getProperties();
   /** @type {module:ol/xml~NodeStackItem} */
   const context = {node: node, 'properties': properties};
@@ -832,7 +844,7 @@ function writeTrkSeg(node, lineString, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeWpt(node, feature, objectStack) {
-  const options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[0]);
   const context = objectStack[objectStack.length - 1];
   context['properties'] = feature.getProperties();
   let geometry = feature.getGeometry();
@@ -852,7 +864,7 @@ function writeWpt(node, feature, objectStack) {
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} Result.
  * @api
  */
@@ -865,7 +877,7 @@ GPX.prototype.writeFeatures;
  * as tracks (`<trk>`).
  *
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @override
  * @api

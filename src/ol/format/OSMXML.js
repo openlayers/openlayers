@@ -80,7 +80,7 @@ const NODE_PARSERS = makeStructureNS(
  * @param {Array.<*>} objectStack Object stack.
  */
 function readNode(node, objectStack) {
-  const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
+  const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
   const state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const id = node.getAttribute('id');
   /** @type {module:ol/coordinate~Coordinate} */
@@ -145,7 +145,7 @@ function readTag(node, objectStack) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */

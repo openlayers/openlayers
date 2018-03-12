@@ -18,6 +18,13 @@ import SimpleGeometry from '../geom/SimpleGeometry.js';
 
 
 /**
+ * @typedef {Object} Options
+ * @property {boolean|undefined} splitCollection Whether to split GeometryCollections into
+ * multiple features on reading. Default is `false`.
+ */
+
+
+/**
  * @const
  * @type {string}
  */
@@ -526,7 +533,7 @@ Parser.prototype.formatErrorMessage_ = function() {
  *
  * @constructor
  * @extends {ol.format.TextFeature}
- * @param {olx.format.WKTOptions=} opt_options Options.
+ * @param {module:ol/format/WKT~Options=} opt_options Options.
  * @api
  */
 const WKT = function(opt_options) {
@@ -718,7 +725,7 @@ WKT.prototype.parse_ = function(wkt) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api
  */
@@ -744,7 +751,7 @@ WKT.prototype.readFeatureFromText = function(text, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
@@ -779,7 +786,7 @@ WKT.prototype.readFeaturesFromText = function(text, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
  * @api
  */
@@ -856,7 +863,7 @@ Parser.prototype.parseGeometry_ = function() {
  *
  * @function
  * @param {ol.Feature} feature Feature.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
  * @api
  */
@@ -880,7 +887,7 @@ WKT.prototype.writeFeatureText = function(feature, opt_options) {
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
  * @api
  */
@@ -908,7 +915,7 @@ WKT.prototype.writeFeaturesText = function(features, opt_options) {
  *
  * @function
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
  * @api
  */

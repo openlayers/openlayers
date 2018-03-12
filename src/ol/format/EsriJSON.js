@@ -37,7 +37,7 @@ GEOMETRY_READERS[GeometryType.MULTI_POLYGON] = readMultiPolygonGeometry;
 
 /**
  * @const
- * @type {Object.<string, function(ol.geom.Geometry, olx.format.WriteOptions=): (EsriJSONGeometry)>}
+ * @type {Object.<string, function(ol.geom.Geometry, module:ol/format/Feature~WriteOptions=): (EsriJSONGeometry)>}
  */
 const GEOMETRY_WRITERS = {};
 GEOMETRY_WRITERS[GeometryType.POINT] = writePointGeometry;
@@ -49,12 +49,18 @@ GEOMETRY_WRITERS[GeometryType.MULTI_POLYGON] = writeMultiPolygonGeometry;
 
 
 /**
+ * @typedef {Object} Options
+ * @property {string|undefined} geometryName Geometry name to use when creating features.
+ */
+
+
+/**
  * @classdesc
  * Feature format for reading and writing data in the EsriJSON format.
  *
  * @constructor
  * @extends {ol.format.JSONFeature}
- * @param {olx.format.EsriJSONOptions=} opt_options Options.
+ * @param {module:ol/format/EsriJSON~Options=} opt_options Options.
  * @api
  */
 const EsriJSON = function(opt_options) {
@@ -77,7 +83,7 @@ inherits(EsriJSON, JSONFeature);
 
 /**
  * @param {EsriJSONGeometry} object Object.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
  */
 function readGeometry(object, opt_options) {
@@ -261,7 +267,7 @@ function readPolygonGeometry(object) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {EsriJSONGeometry} EsriJSON geometry.
  */
 function writePointGeometry(geometry, opt_options) {
@@ -316,7 +322,7 @@ function getHasZM(geometry) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
 function writeLineStringGeometry(geometry, opt_options) {
@@ -333,7 +339,7 @@ function writeLineStringGeometry(geometry, opt_options) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {EsriJSONPolygon} EsriJSON geometry.
  */
 function writePolygonGeometry(geometry, opt_options) {
@@ -349,7 +355,7 @@ function writePolygonGeometry(geometry, opt_options) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
 function writeMultiLineStringGeometry(geometry, opt_options) {
@@ -364,7 +370,7 @@ function writeMultiLineStringGeometry(geometry, opt_options) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {EsriJSONMultipoint} EsriJSON geometry.
  */
 function writeMultiPointGeometry(geometry, opt_options) {
@@ -379,7 +385,7 @@ function writeMultiPointGeometry(geometry, opt_options) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {EsriJSONPolygon} EsriJSON geometry.
  */
 function writeMultiPolygonGeometry(geometry, opt_options) {
@@ -405,7 +411,7 @@ function writeMultiPolygonGeometry(geometry, opt_options) {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api
  */
@@ -418,7 +424,7 @@ EsriJSON.prototype.readFeature;
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
@@ -474,7 +480,7 @@ EsriJSON.prototype.readFeaturesFromObject = function(object, opt_options) {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
  * @api
  */
@@ -516,7 +522,7 @@ EsriJSON.prototype.readProjectionFromObject = function(object) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {EsriJSONGeometry} EsriJSON geometry.
  */
 function writeGeometry(geometry, opt_options) {
@@ -531,7 +537,7 @@ function writeGeometry(geometry, opt_options) {
  *
  * @function
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} EsriJSON.
  * @api
  */
@@ -542,7 +548,7 @@ EsriJSON.prototype.writeGeometry;
  * Encode a geometry as a EsriJSON object.
  *
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {EsriJSONGeometry} Object.
  * @override
  * @api
@@ -557,7 +563,7 @@ EsriJSON.prototype.writeGeometryObject = function(geometry, opt_options) {
  *
  * @function
  * @param {ol.Feature} feature Feature.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} EsriJSON.
  * @api
  */
@@ -568,7 +574,7 @@ EsriJSON.prototype.writeFeature;
  * Encode a feature as a esriJSON Feature object.
  *
  * @param {ol.Feature} feature Feature.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {Object} Object.
  * @override
  * @api
@@ -601,7 +607,7 @@ EsriJSON.prototype.writeFeatureObject = function(feature, opt_options) {
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} EsriJSON.
  * @api
  */
@@ -612,7 +618,7 @@ EsriJSON.prototype.writeFeatures;
  * Encode an array of features as a EsriJSON object.
  *
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {Object} EsriJSON Object.
  * @override
  * @api

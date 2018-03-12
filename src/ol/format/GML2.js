@@ -26,12 +26,12 @@ const schemaLocation = GMLNS + ' http://schemas.opengis.net/gml/2.1.2/feature.xs
  * version 2.1.2.
  *
  * @constructor
- * @param {olx.format.GMLOptions=} opt_options Optional configuration object.
+ * @param {module:ol/format/GMLBase~Options=} opt_options Optional configuration object.
  * @extends {ol.format.GMLBase}
  * @api
  */
 const GML2 = function(opt_options) {
-  const options = /** @type {olx.format.GMLOptions} */
+  const options = /** @type {module:ol/format/GMLBase~Options} */
       (opt_options ? opt_options : {});
 
   GMLBase.call(this, options);
@@ -282,7 +282,7 @@ GML2.prototype.writeMultiCurveOrLineString_ = function(node, geometry, objectSta
  * @param {Array.<*>} objectStack Node stack.
  */
 GML2.prototype.writeGeometryElement = function(node, geometry, objectStack) {
-  const context = /** @type {olx.format.WriteOptions} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[objectStack.length - 1]);
   const item = assign({}, context);
   item.node = node;
   let value;

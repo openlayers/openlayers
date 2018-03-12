@@ -58,7 +58,7 @@ XMLFeature.prototype.readFeature = function(source, opt_options) {
 
 /**
  * @param {Document} doc Document.
- * @param {olx.format.ReadOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @return {ol.Feature} Feature.
  */
 XMLFeature.prototype.readFeatureFromDocument = function(doc, opt_options) {
@@ -73,7 +73,7 @@ XMLFeature.prototype.readFeatureFromDocument = function(doc, opt_options) {
 
 /**
  * @param {Node} node Node.
- * @param {olx.format.ReadOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @return {ol.Feature} Feature.
  */
 XMLFeature.prototype.readFeatureFromNode = function(node, opt_options) {
@@ -101,7 +101,7 @@ XMLFeature.prototype.readFeatures = function(source, opt_options) {
 
 /**
  * @param {Document} doc Document.
- * @param {olx.format.ReadOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
@@ -120,7 +120,7 @@ XMLFeature.prototype.readFeaturesFromDocument = function(doc, opt_options) {
 /**
  * @abstract
  * @param {Node} node Node.
- * @param {olx.format.ReadOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
@@ -147,7 +147,7 @@ XMLFeature.prototype.readGeometry = function(source, opt_options) {
 
 /**
  * @param {Document} doc Document.
- * @param {olx.format.ReadOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
@@ -158,7 +158,7 @@ XMLFeature.prototype.readGeometryFromDocument = function(doc, opt_options) {
 
 /**
  * @param {Node} node Node.
- * @param {olx.format.ReadOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
@@ -215,7 +215,7 @@ XMLFeature.prototype.writeFeature = function(feature, opt_options) {
 
 /**
  * @param {ol.Feature} feature Feature.
- * @param {olx.format.WriteOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @protected
  * @return {Node} Node.
  */
@@ -235,7 +235,7 @@ XMLFeature.prototype.writeFeatures = function(features, opt_options) {
 
 /**
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  */
 XMLFeature.prototype.writeFeaturesNode = function(features, opt_options) {
@@ -254,7 +254,7 @@ XMLFeature.prototype.writeGeometry = function(geometry, opt_options) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  */
 XMLFeature.prototype.writeGeometryNode = function(geometry, opt_options) {

@@ -13,6 +13,16 @@ import {flipXY} from '../geom/flat/flip.js';
 import {inflateCoordinates} from '../geom/flat/inflate.js';
 import {get as getProjection} from '../proj.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {number|undefined} factor The factor by which the coordinates
+ * values will be scaled. Default is `1e5`.
+ * @property {ol.geom.GeometryLayout|undefined} geometryLayout Layout of the
+ * feature geometries created by the format reader. Default is `ol.geom.GeometryLayout.XY`.
+ */
+
+
 /**
  * @classdesc
  * Feature format for reading and writing data in the Encoded
@@ -20,8 +30,7 @@ import {get as getProjection} from '../proj.js';
  *
  * @constructor
  * @extends {ol.format.TextFeature}
- * @param {olx.format.PolylineOptions=} opt_options
- *     Optional configuration object.
+ * @param {module:ol/format/Polyline~Options=} opt_options Optional configuration object.
  * @api
  */
 const Polyline = function(opt_options) {
@@ -262,7 +271,7 @@ export function encodeUnsignedInteger(num) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api
  */
@@ -284,7 +293,7 @@ Polyline.prototype.readFeatureFromText = function(text, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
@@ -305,7 +314,7 @@ Polyline.prototype.readFeaturesFromText = function(text, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
  * @api
  */
@@ -366,7 +375,7 @@ Polyline.prototype.writeFeaturesText = function(features, opt_options) {
  *
  * @function
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} Geometry.
  * @api
  */

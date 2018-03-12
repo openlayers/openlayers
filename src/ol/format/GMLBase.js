@@ -30,6 +30,38 @@ export const GMLNS = 'http://www.opengis.net/gml';
 
 
 /**
+ * @typedef {Object} Options
+ * @property {Object.<string, string>|string|undefined} featureNS Feature
+ * namespace. If not defined will be derived from GML. If multiple
+ * feature types have been configured which come from different feature
+ * namespaces, this will be an object with the keys being the prefixes used
+ * in the entries of featureType array. The values of the object will be the
+ * feature namespaces themselves. So for instance there might be a featureType
+ * item `topp:states` in the `featureType` array and then there will be a key
+ * `topp` in the featureNS object with value `http://www.openplans.org/topp`.
+ * @property {Array.<string>|string|undefined} featureType Feature type(s) to parse.
+ * If multiple feature types need to be configured
+ * which come from different feature namespaces, `featureNS` will be an object
+ * with the keys being the prefixes used in the entries of featureType array.
+ * The values of the object will be the feature namespaces themselves.
+ * So for instance there might be a featureType item `topp:states` and then
+ * there will be a key named `topp` in the featureNS object with value
+ * `http://www.openplans.org/topp`.
+ * @property {string} srsName srsName to use when writing geometries.
+ * @property {boolean|undefined} surface Write gml:Surface instead of gml:Polygon
+ * elements. This also affects the elements in multi-part geometries. Default is `false`.
+ * @property {boolean|undefined} curve Write gml:Curve instead of gml:LineString
+ * elements. This also affects the elements in multi-part geometries. Default is `false`.
+ * @property {boolean|undefined} multiCurve Write gml:MultiCurve instead of gml:MultiLineString.
+ * Since the latter is deprecated in GML 3, the default is `true`.
+ * @property {boolean|undefined} multiSurface Write gml:multiSurface instead of
+ * gml:MultiPolygon. Since the latter is deprecated in GML 3, the default is `true`.
+ * @property {string|undefined} schemaLocation Optional schemaLocation to use when
+ * writing out the GML, this will override the default provided.
+ */
+
+
+/**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
@@ -40,12 +72,12 @@ export const GMLNS = 'http://www.opengis.net/gml';
  *
  * @constructor
  * @abstract
- * @param {olx.format.GMLOptions=} opt_options
+ * @param {module:ol/format/GMLBase~Options=} opt_options
  *     Optional configuration object.
  * @extends {ol.format.XMLFeature}
  */
 const GMLBase = function(opt_options) {
-  const options = /** @type {olx.format.GMLOptions} */ (opt_options ? opt_options : {});
+  const options = /** @type {module:ol/format/GMLBase~Options} */ (opt_options ? opt_options : {});
 
   /**
    * @protected
@@ -540,7 +572,7 @@ GMLBase.prototype.readGeometryFromNode = function(node, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */

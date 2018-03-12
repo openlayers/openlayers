@@ -21,13 +21,30 @@ import Projection from '../proj/Projection.js';
 import Units from '../proj/Units.js';
 import RenderFeature from '../render/Feature.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {undefined|function((ol.geom.Geometry|Object.<string,*>)=)|function(ol.geom.GeometryType,Array.<number>,(Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)} featureClass
+ * Class for features returned by {@link ol.format.MVT#readFeatures}. Set to
+ * {@link ol.Feature} to get full editing and geometry support at the cost of
+ * decreased rendering performance. The default is {@link ol.render.Feature},
+ * which is optimized for rendering and hit detection.
+ * @property {string|undefined} geometryName Geometry name to use when creating
+ * features. Default is `'geometry'`.
+ * @property {string|undefined} layerName Name of the feature attribute that
+ * holds the layer name. Default is `'layer'`.
+ * @property {Array.<string>|undefined} layers Layers to read features from. If not
+ * provided, features will be read from all layers.
+ */
+
+
 /**
  * @classdesc
  * Feature format for reading data in the Mapbox MVT format.
  *
  * @constructor
  * @extends {ol.format.Feature}
- * @param {olx.format.MVTOptions=} opt_options Options.
+ * @param {module:ol/format/MVT~Options=} opt_options Options.
  * @api
  */
 const MVT = function(opt_options) {
@@ -279,7 +296,7 @@ function getGeometryType(type, numEnds) {
  * @private
  * @param {ol.ext.PBF} pbf PBF
  * @param {Object} rawFeature Raw Mapbox feature.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {ol.Feature|ol.render.Feature} Feature.
  */
 MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {

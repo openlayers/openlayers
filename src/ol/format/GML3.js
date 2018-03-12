@@ -37,13 +37,13 @@ const schemaLocation = GMLNS +
  * Currently only supports GML 3.1.1 Simple Features profile.
  *
  * @constructor
- * @param {olx.format.GMLOptions=} opt_options
+ * @param {module:ol/format/GMLBase~Options=} opt_options
  *     Optional configuration object.
  * @extends {ol.format.GMLBase}
  * @api
  */
 const GML3 = function(opt_options) {
-  const options = /** @type {olx.format.GMLOptions} */
+  const options = /** @type {module:ol/format/GMLBase~Options} */
       (opt_options ? opt_options : {});
 
   GMLBase.call(this, options);
@@ -940,7 +940,7 @@ GML3.prototype.writeCurveSegments_ = function(node, line, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  */
 GML3.prototype.writeGeometryElement = function(node, geometry, objectStack) {
-  const context = /** @type {olx.format.WriteOptions} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[objectStack.length - 1]);
   const item = assign({}, context);
   item.node = node;
   let value;
@@ -1097,7 +1097,7 @@ GML3.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack, opt_nodeNam
  * Encode a geometry in GML 3.1.1 Simple Features.
  *
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @override
  * @api
@@ -1121,7 +1121,7 @@ GML3.prototype.writeGeometryNode = function(geometry, opt_options) {
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {string} Result.
  * @api
  */
@@ -1132,7 +1132,7 @@ GML3.prototype.writeFeatures;
  * Encode an array of features in the GML 3.1.1 format as an XML node.
  *
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @override
  * @api

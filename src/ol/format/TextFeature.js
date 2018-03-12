@@ -54,7 +54,7 @@ TextFeature.prototype.readFeature = function(source, opt_options) {
 /**
  * @abstract
  * @param {string} text Text.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
  * @return {ol.Feature} Feature.
  */
@@ -72,7 +72,7 @@ TextFeature.prototype.readFeatures = function(source, opt_options) {
 /**
  * @abstract
  * @param {string} text Text.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
@@ -90,7 +90,7 @@ TextFeature.prototype.readGeometry = function(source, opt_options) {
 /**
  * @abstract
  * @param {string} text Text.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
@@ -126,7 +126,7 @@ TextFeature.prototype.writeFeature = function(feature, opt_options) {
 /**
  * @abstract
  * @param {ol.Feature} feature Features.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @protected
  * @return {string} Text.
  */
@@ -144,7 +144,7 @@ TextFeature.prototype.writeFeatures = function(features, opt_options) {
 /**
  * @abstract
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @protected
  * @return {string} Text.
  */
@@ -162,7 +162,7 @@ TextFeature.prototype.writeGeometry = function(geometry, opt_options) {
 /**
  * @abstract
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions=} opt_options Write options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @protected
  * @return {string} Text.
  */

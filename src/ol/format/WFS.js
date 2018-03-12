@@ -18,6 +18,62 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
 
 
 /**
+ * @typedef {Object} Options
+ * @property {Object.<string, string>|string|undefined} featureNS The namespace
+ * URI used for features.
+ * @property {Array.<string>|string|undefined} featureType The feature type to parse.
+ * Only used for read operations.
+ * @property {ol.format.GMLBase|undefined} gmlFormat The GML format to use to parse
+ * the response. Default is `ol.format.GML3`.
+ * @property {string|undefined} schemaLocation Optional schemaLocation to use for
+ * serialization, this will override the default.
+ */
+
+
+/**
+ * @typedef {Object} WriteGetFeatureOptions
+ * @property {string} featureNS The namespace URI used for features.
+ * @property {string} featurePrefix The prefix for the feature namespace.
+ * @property {Array.<string>} featureTypes The feature type names.
+ * @property {string|undefined} srsName SRS name. No srsName attribute will be set on
+ * geometries when this is not provided.
+ * @property {string|undefined} handle Handle.
+ * @property {string|undefined} outputFormat Output format.
+ * @property {number|undefined} maxFeatures Maximum number of features to fetch.
+ * @property {string|undefined} geometryName Geometry name to use in a BBOX filter.
+ * @property {Array.<string>|undefined} propertyNames Optional list of property names to serialize.
+ * @property {number|undefined} startIndex Start index to use for WFS paging. This is a
+ * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services.
+ * @property {number|undefined} count Number of features to retrieve when paging. This is a
+ * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services. Please note that some
+ * Web Feature Services have repurposed `maxfeatures` instead.
+ * @property {ol.Extent|undefined} bbox Extent to use for the BBOX filter.
+ * @property {ol.format.filter.Filter|undefined} filter Filter condition. See
+ * {@link ol.format.filter} for more information.
+ * @property {string|undefined} resultType Indicates what response should be returned,
+ * E.g. `hits` only includes the `numberOfFeatures` attribute in the response and no features.
+ */
+
+
+/**
+ * @typedef {Object} WriteTransactionOptions
+ * @property {string} featureNS The namespace URI used for features.
+ * @property {string} featurePrefix The prefix for the feature namespace.
+ * @property {string} featureType The feature type name.
+ * @property {string|undefined} srsName SRS name. No srsName attribute will be set on
+ * geometries when this is not provided.
+ * @property {string|undefined} handle Handle.
+ * @property {boolean|undefined} hasZ Must be set to true if the transaction is for
+ * a 3D layer. This will allow the Z coordinate to be included in the transaction.
+ * @property {Array.<Object>} nativeElements Native elements. Currently not supported.
+ * @property {module:ol/format/GMLBase~Options|undefined} gmlOptions GML options for
+ * the WFS transaction writer.
+ * @property {string|undefined} version WFS version to use for the transaction. Can be
+ * either `1.0.0` or `1.1.0`. Default is `1.1.0`.
+ */
+
+
+/**
  * @type {string}
  */
 const FEATURE_PREFIX = 'feature';
@@ -71,8 +127,7 @@ const DEFAULT_VERSION = '1.1.0';
  * Also see {@link ol.format.GMLBase} which is used by this format.
  *
  * @constructor
- * @param {olx.format.WFSOptions=} opt_options
- *     Optional configuration object.
+ * @param {module:ol/format/WFS~Options=} opt_options Optional configuration object.
  * @extends {ol.format.XMLFeature}
  * @api
  */
@@ -132,7 +187,7 @@ WFS.prototype.setFeatureType = function(featureType) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @param {olx.format.ReadOptions=} opt_options Read options.
+ * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
@@ -878,7 +933,7 @@ function writeGetFeature(node, featureTypes, objectStack) {
 /**
  * Encode format as WFS `GetFeature` and return the Node.
  *
- * @param {olx.format.WFSWriteGetFeatureOptions} options Options.
+ * @param {module:ol/format/WFS~WriteGetFeatureOptions} options Options.
  * @return {Node} Result.
  * @api
  */
@@ -945,7 +1000,7 @@ WFS.prototype.writeGetFeature = function(options) {
  * @param {Array.<ol.Feature>} inserts The features to insert.
  * @param {Array.<ol.Feature>} updates The features to update.
  * @param {Array.<ol.Feature>} deletes The features to delete.
- * @param {olx.format.WFSWriteTransactionOptions} options Write options.
+ * @param {module:ol/format/WFS~WriteTransactionOptions} options Write options.
  * @return {Node} Result.
  * @api
  */

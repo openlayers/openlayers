@@ -10,7 +10,7 @@ import GML3 from '../format/GML3.js';
  * Currently only supports GML 3.1.1 Simple Features profile.
  *
  * @constructor
- * @param {olx.format.GMLOptions=} opt_options
+ * @param {module:ol/format/GMLBase~Options=} opt_options
  *     Optional configuration object.
  * @extends {ol.format.GMLBase}
  * @api
@@ -23,7 +23,7 @@ const GML = GML3;
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {string} Result.
  * @api
  */
@@ -35,7 +35,7 @@ GML.prototype.writeFeatures;
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Options.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @api
  */
