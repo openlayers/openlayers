@@ -37,13 +37,13 @@ const schemaLocation = GMLNS +
  * Currently only supports GML 3.1.1 Simple Features profile.
  *
  * @constructor
- * @param {olx.format.GMLOptions=} opt_options
+ * @param {module:ol/format/GMLBase~Options=} opt_options
  *     Optional configuration object.
  * @extends {ol.format.GMLBase}
  * @api
  */
 const GML3 = function(opt_options) {
-  const options = /** @type {olx.format.GMLOptions} */
+  const options = /** @type {module:ol/format/GMLBase~Options} */
       (opt_options ? opt_options : {});
 
   GMLBase.call(this, options);

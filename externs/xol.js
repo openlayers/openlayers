@@ -1,35 +1,5 @@
 
 /**
- * @typedef {Object} format_GMLOptions
- * @property {Object.<string, string>|string|undefined} featureNS Feature namespace. If not defined will be derived from GML. If multiple
- * feature types have been configured which come from different feature
- * namespaces, this will be an object with the keys being the prefixes used
- * in the entries of featureType array. The values of the object will be the
- * feature namespaces themselves. So for instance there might be a featureType
- * item `topp:states` in the `featureType` array and then there will be a key
- * `topp` in the featureNS object with value `http://www.openplans.org/topp`.
- * @property {Array.<string>|string|undefined} featureType Feature type(s) to parse. If multiple feature types need to be configured
- * which come from different feature namespaces, `featureNS` will be an object
- * with the keys being the prefixes used in the entries of featureType array.
- * The values of the object will be the feature namespaces themselves.
- * So for instance there might be a featureType item `topp:states` and then
- * there will be a key named `topp` in the featureNS object with value
- * `http://www.openplans.org/topp`.
- * @property {string} srsName srsName to use when writing geometries.
- * @property {boolean|undefined} surface Write gml:Surface instead of gml:Polygon elements. This also affects the
- * elements in multi-part geometries. Default is `false`.
- * @property {boolean|undefined} curve Write gml:Curve instead of gml:LineString elements. This also affects the
- * elements in multi-part geometries. Default is `false`.
- * @property {boolean|undefined} multiCurve Write gml:MultiCurve instead of gml:MultiLineString. Since the latter is
- * deprecated in GML 3, the default is `true`.
- * @property {boolean|undefined} multiSurface Write gml:multiSurface instead of gml:MultiPolygon. Since the latter is
- * deprecated in GML 3, the default is `true`.
- * @property {string|undefined} schemaLocation Optional schemaLocation to use when writing out the GML, this will override
- * the default provided.
- */
-
-
-/**
  * @typedef {Object} format_GPXOptions
  * @property {function(ol.Feature, Node)|undefined} readExtensions Callback function to process `extensions` nodes.
  * To prevent memory leaks, this callback function must
@@ -85,7 +55,7 @@
  * @property {boolean|undefined} hasZ Must be set to true if the transaction is for a 3D layer. This will allow
  * the Z coordinate to be included in the transaction.
  * @property {Array.<Object>} nativeElements Native elements. Currently not supported.
- * @property {olx.format.GMLOptions|undefined} gmlOptions GML options for the WFS transaction writer.
+ * @property {module:ol/format/GMLBase~Options|undefined} gmlOptions GML options for the WFS transaction writer.
  * @property {string|undefined} version WFS version to use for the transaction. Can be either `1.0.0` or `1.1.0`.
  * Default is `1.1.0`.
  */

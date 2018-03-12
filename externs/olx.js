@@ -6,100 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{featureNS: (Object.<string, string>|string|undefined),
- *     featureType: (Array.<string>|string|undefined),
- *     srsName: string,
- *     surface: (boolean|undefined),
- *     curve: (boolean|undefined),
- *     multiCurve: (boolean|undefined),
- *     multiSurface: (boolean|undefined),
- *     schemaLocation: (string|undefined)}}
- */
-olx.format.GMLOptions;
-
-
-/**
- * Feature namespace. If not defined will be derived from GML. If multiple
- * feature types have been configured which come from different feature
- * namespaces, this will be an object with the keys being the prefixes used
- * in the entries of featureType array. The values of the object will be the
- * feature namespaces themselves. So for instance there might be a featureType
- * item `topp:states` in the `featureType` array and then there will be a key
- * `topp` in the featureNS object with value `http://www.openplans.org/topp`.
- * @type {Object.<string, string>|string|undefined}
- * @api
- */
-olx.format.GMLOptions.prototype.featureNS;
-
-
-/**
- * Feature type(s) to parse. If multiple feature types need to be configured
- * which come from different feature namespaces, `featureNS` will be an object
- * with the keys being the prefixes used in the entries of featureType array.
- * The values of the object will be the feature namespaces themselves.
- * So for instance there might be a featureType item `topp:states` and then
- * there will be a key named `topp` in the featureNS object with value
- * `http://www.openplans.org/topp`.
- * @type {Array.<string>|string|undefined}
- * @api
- */
-olx.format.GMLOptions.prototype.featureType;
-
-
-/**
- * srsName to use when writing geometries.
- * @type {string}
- * @api
- */
-olx.format.GMLOptions.prototype.srsName;
-
-
-/**
- * Write gml:Surface instead of gml:Polygon elements. This also affects the
- * elements in multi-part geometries. Default is `false`.
- * @type {boolean|undefined}
- * @api
- */
-olx.format.GMLOptions.prototype.surface;
-
-
-/**
- * Write gml:Curve instead of gml:LineString elements. This also affects the
- * elements in multi-part geometries. Default is `false`.
- * @type {boolean|undefined}
- * @api
- */
-olx.format.GMLOptions.prototype.curve;
-
-
-/**
- * Write gml:MultiCurve instead of gml:MultiLineString. Since the latter is
- * deprecated in GML 3, the default is `true`.
- * @type {boolean|undefined}
- * @api
- */
-olx.format.GMLOptions.prototype.multiCurve;
-
-
-/**
- * Write gml:multiSurface instead of gml:MultiPolygon. Since the latter is
- * deprecated in GML 3, the default is `true`.
- * @type {boolean|undefined}
- * @api
- */
-olx.format.GMLOptions.prototype.multiSurface;
-
-
-/**
- * Optional schemaLocation to use when writing out the GML, this will override
- * the default provided.
- * @type {string|undefined}
- * @api
- */
-olx.format.GMLOptions.prototype.schemaLocation;
-
-
-/**
  * @typedef {{readExtensions: (function(ol.Feature, Node)|undefined)}}
  */
 olx.format.GPXOptions;
@@ -304,7 +210,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.resultType;
  *     handle: (string|undefined),
  *     hasZ: (boolean|undefined),
  *     nativeElements: Array.<Object>,
- *     gmlOptions: (olx.format.GMLOptions|undefined),
+ *     gmlOptions: (module:ol/format/GMLBase~Options|undefined),
  *     version: (string|undefined)}}
  */
 olx.format.WFSWriteTransactionOptions;
@@ -370,7 +276,7 @@ olx.format.WFSWriteTransactionOptions.prototype.nativeElements;
 
 /**
  * GML options for the WFS transaction writer.
- * @type {olx.format.GMLOptions|undefined}
+ * @type {module:ol/format/GMLBase~Options|undefined}
  * @api
  */
 olx.format.WFSWriteTransactionOptions.prototype.gmlOptions;
