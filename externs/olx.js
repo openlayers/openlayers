@@ -6,31 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{factor: (number|undefined),
- *     geometryLayout: (ol.geom.GeometryLayout|undefined)}}
- */
-olx.format.PolylineOptions;
-
-
-/**
- * The factor by which the coordinates values will be scaled.
- * Default is `1e5`.
- * @type {number|undefined}
- * @api
- */
-olx.format.PolylineOptions.prototype.factor;
-
-
-/**
- * Layout of the feature geometries created by the format reader.
- * Default is `ol.geom.GeometryLayout.XY`.
- * @type {ol.geom.GeometryLayout|undefined}
- * @api
- */
-olx.format.PolylineOptions.prototype.geometryLayout;
-
-
-/**
  * @typedef {{
  *     defaultDataProjection: ol.ProjectionLike,
  *     layerName: (string|undefined),

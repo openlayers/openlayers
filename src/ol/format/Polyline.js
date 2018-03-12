@@ -13,6 +13,16 @@ import {flipXY} from '../geom/flat/flip.js';
 import {inflateCoordinates} from '../geom/flat/inflate.js';
 import {get as getProjection} from '../proj.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {number|undefined} factor The factor by which the coordinates
+ * values will be scaled. Default is `1e5`.
+ * @property {ol.geom.GeometryLayout|undefined} geometryLayout Layout of the
+ * feature geometries created by the format reader. Default is `ol.geom.GeometryLayout.XY`.
+ */
+
+
 /**
  * @classdesc
  * Feature format for reading and writing data in the Encoded
@@ -20,8 +30,7 @@ import {get as getProjection} from '../proj.js';
  *
  * @constructor
  * @extends {ol.format.TextFeature}
- * @param {olx.format.PolylineOptions=} opt_options
- *     Optional configuration object.
+ * @param {module:ol/format/Polyline~Options=} opt_options Optional configuration object.
  * @api
  */
 const Polyline = function(opt_options) {

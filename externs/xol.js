@@ -1,14 +1,5 @@
 
 /**
- * @typedef {Object} format_PolylineOptions
- * @property {number|undefined} factor The factor by which the coordinates values will be scaled.
- * Default is `1e5`.
- * @property {ol.geom.GeometryLayout|undefined} geometryLayout Layout of the feature geometries created by the format reader.
- * Default is `ol.geom.GeometryLayout.XY`.
- */
-
-
-/**
  * @typedef {Object} format_TopoJSONOptions
  * @property {ol.ProjectionLike} defaultDataProjection Default data projection. Default is `EPSG:4326`.
  * @property {string|undefined} layerName Set the name of the TopoJSON topology `objects`'s children as feature
