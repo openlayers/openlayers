@@ -6,48 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{featureNS: (Object.<string, string>|string|undefined),
- *     featureType: (Array.<string>|string|undefined),
- *     gmlFormat: (ol.format.GMLBase|undefined),
- *     schemaLocation: (string|undefined)}}
- */
-olx.format.WFSOptions;
-
-
-/**
- * The namespace URI used for features.
- * @type {Object.<string, string>|string|undefined}
- * @api
- */
-olx.format.WFSOptions.prototype.featureNS;
-
-
-/**
- * The feature type to parse. Only used for read operations.
- * @type {Array.<string>|string|undefined}
- * @api
- */
-olx.format.WFSOptions.prototype.featureType;
-
-
-/**
- * The GML format to use to parse the response. Default is `ol.format.GML3`.
- * @type {ol.format.GMLBase|undefined}
- * @api
- */
-olx.format.WFSOptions.prototype.gmlFormat;
-
-
-/**
- * Optional schemaLocation to use for serialization, this will override the
- * default.
- * @type {string|undefined}
- * @api
- */
-olx.format.WFSOptions.prototype.schemaLocation;
-
-
-/**
  * @typedef {{featureNS: string,
  *     featurePrefix: string,
  *     featureTypes: Array.<string>,

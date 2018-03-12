@@ -18,6 +18,19 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
 
 
 /**
+ * @typedef {Object} Options
+ * @property {Object.<string, string>|string|undefined} featureNS The namespace
+ * URI used for features.
+ * @property {Array.<string>|string|undefined} featureType The feature type to parse.
+ * Only used for read operations.
+ * @property {ol.format.GMLBase|undefined} gmlFormat The GML format to use to parse
+ * the response. Default is `ol.format.GML3`.
+ * @property {string|undefined} schemaLocation Optional schemaLocation to use for
+ * serialization, this will override the default.
+ */
+
+
+/**
  * @type {string}
  */
 const FEATURE_PREFIX = 'feature';
@@ -71,8 +84,7 @@ const DEFAULT_VERSION = '1.1.0';
  * Also see {@link ol.format.GMLBase} which is used by this format.
  *
  * @constructor
- * @param {olx.format.WFSOptions=} opt_options
- *     Optional configuration object.
+ * @param {module:ol/format/WFS~Options=} opt_options Optional configuration object.
  * @extends {ol.format.XMLFeature}
  * @api
  */

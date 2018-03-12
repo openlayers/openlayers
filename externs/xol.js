@@ -1,15 +1,5 @@
 
 /**
- * @typedef {Object} format_WFSOptions
- * @property {Object.<string, string>|string|undefined} featureNS The namespace URI used for features.
- * @property {Array.<string>|string|undefined} featureType The feature type to parse. Only used for read operations.
- * @property {ol.format.GMLBase|undefined} gmlFormat The GML format to use to parse the response. Default is `ol.format.GML3`.
- * @property {string|undefined} schemaLocation Optional schemaLocation to use for serialization, this will override the
- * default.
- */
-
-
-/**
  * @typedef {Object} format_WFSWriteGetFeatureOptions
  * @property {string} featureNS The namespace URI used for features.
  * @property {string} featurePrefix The prefix for the feature namespace.
