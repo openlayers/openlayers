@@ -17,13 +17,25 @@ import {createElementNS, makeArrayPusher, makeArraySerializer, makeChildAppender
   OBJECT_PROPERTY_NODE_FACTORY, parseNode, pushParseAndPop, pushSerializeAndPop,
   setAttributeNS} from '../xml.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {function(ol.Feature, Node)|undefined} readExtensions Callback function
+ * to process `extensions` nodes. To prevent memory leaks, this callback function must
+ * not store any references to the node. Note that the `extensions`
+ * node is not allowed in GPX 1.0. Moreover, only `extensions`
+ * nodes from `wpt`, `rte` and `trk` can be processed, as those are
+ * directly mapped to a feature.
+ */
+
+
 /**
  * @classdesc
  * Feature format for reading and writing data in the GPX format.
  *
  * @constructor
  * @extends {ol.format.XMLFeature}
- * @param {olx.format.GPXOptions=} opt_options Options.
+ * @param {module:ol/format/GPX~Options=} opt_options Options.
  * @api
  */
 const GPX = function(opt_options) {

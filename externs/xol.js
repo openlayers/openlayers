@@ -1,16 +1,5 @@
 
 /**
- * @typedef {Object} format_GPXOptions
- * @property {function(ol.Feature, Node)|undefined} readExtensions Callback function to process `extensions` nodes.
- * To prevent memory leaks, this callback function must
- * not store any references to the node. Note that the `extensions`
- * node is not allowed in GPX 1.0. Moreover, only `extensions`
- * nodes from `wpt`, `rte` and `trk` can be processed, as those are
- * directly mapped to a feature.
- */
-
-
-/**
  * @typedef {Object} format_WFSOptions
  * @property {Object.<string, string>|string|undefined} featureNS The namespace URI used for features.
  * @property {Array.<string>|string|undefined} featureType The feature type to parse. Only used for read operations.
