@@ -332,12 +332,12 @@ function writePolygonGeometry(geometry, opt_options) {
  * Read a feature from a GeoJSON Feature source.  Only works for Feature or
  * geometry types.  Use {@link ol.format.GeoJSON#readFeatures} to read
  * FeatureCollection source. If feature at source has an id, it will be used
- * as Feature id by calling {@link ol.Feature#setId} internally.
+ * as Feature id by calling {@link module:ol/Feature~Feature#setId} internally.
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {ol.Feature} Feature.
+ * @return {module:ol/Feature~Feature} Feature.
  * @api
  */
 GeoJSON.prototype.readFeature;
@@ -351,7 +351,7 @@ GeoJSON.prototype.readFeature;
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 GeoJSON.prototype.readFeatures;
@@ -397,7 +397,7 @@ GeoJSON.prototype.readFeatureFromObject = function(object, opt_options) {
  */
 GeoJSON.prototype.readFeaturesFromObject = function(object, opt_options) {
   const geoJSONObject = /** @type {GeoJSONObject} */ (object);
-  /** @type {Array.<ol.Feature>} */
+  /** @type {Array.<module:ol/Feature~Feature>} */
   let features = null;
   if (geoJSONObject.type === 'FeatureCollection') {
     const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (object);
@@ -468,7 +468,7 @@ GeoJSON.prototype.readProjectionFromObject = function(object) {
  * Encode a feature as a GeoJSON Feature string.
  *
  * @function
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} GeoJSON.
  * @override
@@ -480,7 +480,7 @@ GeoJSON.prototype.writeFeature;
 /**
  * Encode a feature as a GeoJSON Feature object.
  *
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONFeature} Object.
  * @override
@@ -517,7 +517,7 @@ GeoJSON.prototype.writeFeatureObject = function(feature, opt_options) {
  * Encode an array of features as GeoJSON.
  *
  * @function
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} GeoJSON.
  * @api
@@ -528,7 +528,7 @@ GeoJSON.prototype.writeFeatures;
 /**
  * Encode an array of features as a GeoJSON object.
  *
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONFeatureCollection} GeoJSON Object.
  * @override

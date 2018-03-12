@@ -46,7 +46,7 @@ const TranslateEventType = {
  * @extends {ol.events.Event}
  * @implements {oli.interaction.TranslateEvent}
  * @param {ol.interaction.TranslateEventType} type Type.
- * @param {ol.Collection.<ol.Feature>} features The features translated.
+ * @param {ol.Collection.<module:ol/Feature~Feature>} features The features translated.
  * @param {module:ol/coordinate~Coordinate} coordinate The event coordinate.
  */
 export const TranslateEvent = function(type, features, coordinate) {
@@ -55,7 +55,7 @@ export const TranslateEvent = function(type, features, coordinate) {
 
   /**
    * The features being translated.
-   * @type {ol.Collection.<ol.Feature>}
+   * @type {ol.Collection.<module:ol/Feature~Feature>}
    * @api
    */
   this.features = features;
@@ -101,7 +101,7 @@ const Translate = function(opt_options) {
 
 
   /**
-   * @type {ol.Collection.<ol.Feature>}
+   * @type {ol.Collection.<module:ol/Feature~Feature>}
    * @private
    */
   this.features_ = options.features !== undefined ? options.features : null;
@@ -134,7 +134,7 @@ const Translate = function(opt_options) {
   this.hitTolerance_ = options.hitTolerance ? options.hitTolerance : 0;
 
   /**
-   * @type {ol.Feature}
+   * @type {module:ol/Feature~Feature}
    * @private
    */
   this.lastFeature_ = null;
@@ -243,7 +243,7 @@ function handleMoveEvent(event) {
  * features.
  * @param {module:ol~Pixel} pixel Pixel coordinate to test for intersection.
  * @param {ol.PluggableMap} map Map to test the intersection on.
- * @return {ol.Feature} Returns the feature found at the specified pixel
+ * @return {module:ol/Feature~Feature} Returns the feature found at the specified pixel
  * coordinates.
  * @private
  */

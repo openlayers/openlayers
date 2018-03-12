@@ -86,7 +86,7 @@ oli.DrawEvent = function() {};
 
 
 /**
- * @type {ol.Feature}
+ * @type {module:ol/Feature~Feature}
  */
 oli.DrawEvent.prototype.feature;
 
@@ -109,7 +109,7 @@ oli.ModifyEvent = function() {};
 
 
 /**
- * @type {ol.Collection.<ol.Feature>}
+ * @type {ol.Collection.<module:ol/Feature~Feature>}
  */
 oli.ModifyEvent.prototype.features;
 
@@ -199,13 +199,13 @@ oli.SelectEvent = function() {};
 
 
 /**
- * @type {Array.<ol.Feature>}
+ * @type {Array.<module:ol/Feature~Feature>}
  */
 oli.SelectEvent.prototype.deselected;
 
 
 /**
- * @type {Array.<ol.Feature>}
+ * @type {Array.<module:ol/Feature~Feature>}
  */
 oli.SelectEvent.prototype.selected;
 
@@ -248,7 +248,7 @@ oli.interaction.DragAndDropEvent = function() {};
 
 
 /**
- * @type {Array.<ol.Feature>|undefined}
+ * @type {Array.<module:ol/Feature~Feature>|undefined}
  */
 oli.interaction.DragAndDropEvent.prototype.features;
 
@@ -272,7 +272,7 @@ oli.interaction.TranslateEvent = function() {};
 
 
 /**
- * @type {ol.Collection.<ol.Feature>}
+ * @type {ol.Collection.<module:ol/Feature~Feature>}
  */
 oli.interaction.TranslateEvent.prototype.features;
 
@@ -380,6 +380,6 @@ oli.source.Vector.Event = function() {};
 
 
 /**
- * @type {ol.Feature|undefined}
+ * @type {module:ol/Feature~Feature|undefined}
  */
 oli.source.Vector.Event.prototype.feature;

@@ -53,7 +53,7 @@ import {get as getProjection, equivalent as equivalentProjection, transformExten
  * instantiated in apps.
  * Base class for feature formats.
  * {ol.format.Feature} subclasses provide the ability to decode and encode
- * {@link ol.Feature} objects from a variety of commonly used geospatial
+ * {@link module:ol/Feature~Feature} objects from a variety of commonly used geospatial
  * file formats.  See the documentation for each format for more details.
  *
  * @constructor
@@ -136,7 +136,7 @@ FeatureFormat.prototype.getType = function() {};
  * @abstract
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {ol.Feature} Feature.
+ * @return {module:ol/Feature~Feature} Feature.
  */
 FeatureFormat.prototype.readFeature = function(source, opt_options) {};
 
@@ -147,7 +147,7 @@ FeatureFormat.prototype.readFeature = function(source, opt_options) {};
  * @abstract
  * @param {Document|Node|ArrayBuffer|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  */
 FeatureFormat.prototype.readFeatures = function(source, opt_options) {};
 
@@ -177,7 +177,7 @@ FeatureFormat.prototype.readProjection = function(source) {};
  * Encode a feature in this format.
  *
  * @abstract
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */
@@ -188,7 +188,7 @@ FeatureFormat.prototype.writeFeature = function(feature, opt_options) {};
  * Encode an array of features in this format.
  *
  * @abstract
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */

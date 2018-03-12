@@ -44,7 +44,7 @@ const vector = new VectorLayer({
 
 /**
  * Currently drawn feature.
- * @type {ol.Feature}
+ * @type {module:ol/Feature~Feature}
  */
 let sketch;
 

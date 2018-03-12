@@ -70,7 +70,7 @@ const DrawEventType = {
  * @extends {ol.events.Event}
  * @implements {oli.DrawEvent}
  * @param {ol.interaction.DrawEventType} type Type.
- * @param {ol.Feature} feature The feature drawn.
+ * @param {module:ol/Feature~Feature} feature The feature drawn.
  */
 const DrawEvent = function(type, feature) {
 
@@ -78,7 +78,7 @@ const DrawEvent = function(type, feature) {
 
   /**
    * The feature being drawn.
-   * @type {ol.Feature}
+   * @type {module:ol/Feature~Feature}
    * @api
    */
   this.feature = feature;
@@ -145,7 +145,7 @@ const Draw = function(options) {
 
   /**
    * Target collection for drawn features.
-   * @type {ol.Collection.<ol.Feature>}
+   * @type {ol.Collection.<module:ol/Feature~Feature>}
    * @private
    */
   this.features_ = options.features ? options.features : null;
@@ -281,14 +281,14 @@ const Draw = function(options) {
 
   /**
    * Sketch feature.
-   * @type {ol.Feature}
+   * @type {module:ol/Feature~Feature}
    * @private
    */
   this.sketchFeature_ = null;
 
   /**
    * Sketch point.
-   * @type {ol.Feature}
+   * @type {module:ol/Feature~Feature}
    * @private
    */
   this.sketchPoint_ = null;
@@ -302,7 +302,7 @@ const Draw = function(options) {
 
   /**
    * Sketch line. Used when drawing polygon.
-   * @type {ol.Feature}
+   * @type {module:ol/Feature~Feature}
    * @private
    */
   this.sketchLine_ = null;
@@ -810,7 +810,7 @@ Draw.prototype.finishDrawing = function() {
 
 /**
  * Stop drawing without adding the sketch feature to the target layer.
- * @return {ol.Feature} The sketch feature (or null if none).
+ * @return {module:ol/Feature~Feature} The sketch feature (or null if none).
  * @private
  */
 Draw.prototype.abortDrawing_ = function() {
@@ -830,7 +830,7 @@ Draw.prototype.abortDrawing_ = function() {
  * Extend an existing geometry by adding additional points. This only works
  * on features with `LineString` geometries, where the interaction will
  * extend lines by adding points to the end of the coordinates array.
- * @param {!ol.Feature} feature Feature to be extended.
+ * @param {!module:ol/Feature~Feature} feature Feature to be extended.
  * @api
  */
 Draw.prototype.extend = function(feature) {

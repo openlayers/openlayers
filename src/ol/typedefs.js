@@ -232,7 +232,7 @@ ol.LRUCacheEntry;
 
 /**
  * @typedef {{depth: (Array.<number>|undefined),
- *            feature: ol.Feature,
+ *            feature: module:ol/Feature~Feature,
  *            geometry: module:ol/geom/SimpleGeometry~SimpleGeometry,
  *            index: (number),
  *            segment: Array.<module:ol/extent~Extent>,
@@ -307,10 +307,10 @@ ol.ReprojTriangle;
 
 
 /**
- * A function that takes an {@link ol.Feature} or {@link ol.render.Feature} and
+ * A function that takes an {@link module:ol/Feature~Feature} or {@link ol.render.Feature} and
  * an {@link ol.layer.Layer} and returns `true` if the feature may be selected
  * or `false` otherwise.
- * @typedef {function((ol.Feature|ol.render.Feature), ol.layer.Layer):
+ * @typedef {function((module:ol/Feature~Feature|ol.render.Feature), ol.layer.Layer):
  *     boolean}
  */
 ol.SelectFilterFunction;
@@ -328,7 +328,7 @@ ol.SnapResultType;
 
 /**
  * @typedef {{
- *     feature: ol.Feature,
+ *     feature: module:ol/Feature~Feature,
  *     segment: Array.<module:ol/coordinate~Coordinate>
  * }}
  */
@@ -397,10 +397,10 @@ ol.SourceUrlTileOptions;
 
 
 /**
- * A function that takes an {@link ol.Feature} as argument and returns an
+ * A function that takes an {@link module:ol/Feature~Feature} as argument and returns an
  * {@link module:ol/geom/Geometry~Geometry} that will be rendered and styled for the feature.
  *
- * @typedef {function((ol.Feature|ol.render.Feature)):
+ * @typedef {function((module:ol/Feature~Feature|ol.render.Feature)):
  *     (module:ol/geom/Geometry~Geometry|ol.render.Feature|undefined)}
  */
 ol.StyleGeometryFunction;

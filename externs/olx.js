@@ -239,7 +239,7 @@ olx.interaction.DragZoomOptions.prototype.out;
 
 /**
  * @typedef {{clickTolerance: (number|undefined),
- *     features: (ol.Collection.<ol.Feature>|undefined),
+ *     features: (ol.Collection.<module:ol/Feature~Feature>|undefined),
  *     source: (ol.source.Vector|undefined),
  *     dragVertexDelay: (number|undefined),
  *     snapTolerance: (number|undefined),
@@ -273,7 +273,7 @@ olx.interaction.DrawOptions.prototype.clickTolerance;
 
 /**
  * Destination collection for the drawn features.
- * @type {ol.Collection.<ol.Feature>|undefined}
+ * @type {ol.Collection.<module:ol/Feature~Feature>|undefined}
  * @api
  */
 olx.interaction.DrawOptions.prototype.features;
@@ -465,7 +465,7 @@ olx.interaction.ExtentOptions.prototype.wrapX;
 
 /**
  * @typedef {{
- *     features: (ol.Collection.<ol.Feature>|undefined),
+ *     features: (ol.Collection.<module:ol/Feature~Feature>|undefined),
  *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean),
  *     hitTolerance: (number|undefined)
  * }}
@@ -476,7 +476,7 @@ olx.interaction.TranslateOptions;
 /**
  * Only features contained in this collection will be able to be translated. If
  * not specified, all features on the map will be able to be translated.
- * @type {ol.Collection.<ol.Feature>|undefined}
+ * @type {ol.Collection.<module:ol/Feature~Feature>|undefined}
  * @api
  */
 olx.interaction.TranslateOptions.prototype.features;
@@ -581,7 +581,7 @@ olx.interaction.KeyboardZoomOptions.prototype.delta;
  *     pixelTolerance: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     source: (ol.source.Vector|undefined),
- *     features: (ol.Collection.<ol.Feature>|undefined),
+ *     features: (ol.Collection.<module:ol/Feature~Feature>|undefined),
  *     wrapX: (boolean|undefined)
  * }}
  */
@@ -650,7 +650,7 @@ olx.interaction.ModifyOptions.prototype.source;
 /**
  * The features the interaction works on.  If a feature collection is not
  * provided, a vector source must be provided with the source option.
- * @type {ol.Collection.<ol.Feature>|undefined}
+ * @type {ol.Collection.<module:ol/Feature~Feature>|undefined}
  * @api
  */
 olx.interaction.ModifyOptions.prototype.features;
@@ -832,7 +832,7 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
  *     removeCondition: (ol.EventsConditionType|undefined),
  *     toggleCondition: (ol.EventsConditionType|undefined),
  *     multi: (boolean|undefined),
- *     features: (ol.Collection.<ol.Feature>|undefined),
+ *     features: (ol.Collection.<module:ol/Feature~Feature>|undefined),
  *     filter: (ol.SelectFilterFunction|undefined),
  *     wrapX: (boolean|undefined),
  *     hitTolerance: (number|undefined)}}
@@ -927,13 +927,13 @@ olx.interaction.SelectOptions.prototype.multi;
  * not set the interaction will create a collection. In any case the collection
  * used by the interaction is returned by
  * {@link ol.interaction.Select#getFeatures}.
- * @type {ol.Collection.<ol.Feature>|undefined}
+ * @type {ol.Collection.<module:ol/Feature~Feature>|undefined}
  * @api
  */
 olx.interaction.SelectOptions.prototype.features;
 
 /**
- * A function that takes an {@link ol.Feature} and an {@link ol.layer.Layer} and
+ * A function that takes an {@link module:ol/Feature~Feature} and an {@link ol.layer.Layer} and
  * returns `true` if the feature may be selected or `false` otherwise.
  * @type {ol.SelectFilterFunction|undefined}
  * @api
@@ -962,7 +962,7 @@ olx.interaction.SelectOptions.prototype.hitTolerance;
 /**
  * Options for snap
  * @typedef {{
- *     features: (ol.Collection.<ol.Feature>|undefined),
+ *     features: (ol.Collection.<module:ol/Feature~Feature>|undefined),
  *     pixelTolerance: (number|undefined),
  *     source: (ol.source.Vector|undefined),
  *     edge: (boolean|undefined),
@@ -974,7 +974,7 @@ olx.interaction.SnapOptions;
 
 /**
  * Snap to these features. Either this option or source should be provided.
- * @type {ol.Collection.<ol.Feature>|undefined}
+ * @type {ol.Collection.<module:ol/Feature~Feature>|undefined}
  * @api
  */
 olx.interaction.SnapOptions.prototype.features;
@@ -1220,7 +1220,7 @@ olx.layer.GroupOptions.prototype.layers;
  *     radius: (number|undefined),
  *     blur: (number|undefined),
  *     shadow: (number|undefined),
- *     weight: (string|function(ol.Feature):number|undefined),
+ *     weight: (string|function(module:ol/Feature~Feature):number|undefined),
  *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
@@ -1269,7 +1269,7 @@ olx.layer.HeatmapOptions.prototype.shadow;
  * The feature attribute to use for the weight or a function that returns a
  * weight from a feature. Weight values should range from 0 to 1 (and values
  * outside will be clamped to that range). Default is `weight`.
- * @type {string|function(ol.Feature):number|undefined}
+ * @type {string|function(module:ol/Feature~Feature):number|undefined}
  * @api
  */
 olx.layer.HeatmapOptions.prototype.weight;
@@ -1867,7 +1867,7 @@ olx.layer.VectorTileOptions.prototype.zIndex;
 
 /**
  * @typedef {{context: CanvasRenderingContext2D,
- *     feature: (ol.Feature|ol.render.Feature),
+ *     feature: (module:ol/Feature~Feature|ol.render.Feature),
  *     geometry: module:ol/geom/SimpleGeometry~SimpleGeometry,
  *     pixelRatio: number,
  *     resolution: number,
@@ -2017,7 +2017,7 @@ olx.source.BingMapsOptions.prototype.transition;
  *     distance: (number|undefined),
  *     extent: (ol.Extent|undefined),
  *     format: (ol.format.Feature|undefined),
- *     geometryFunction: (undefined|function(ol.Feature):module:ol/geom/Point~Point),
+ *     geometryFunction: (undefined|function(module:ol/Feature~Feature):module:ol/geom/Point~Point),
  *     projection: ol.ProjectionLike,
  *     source: ol.source.Vector,
  *     wrapX: (boolean|undefined)}}
@@ -2050,7 +2050,7 @@ olx.source.ClusterOptions.prototype.extent;
 
 
 /**
- * Function that takes an {@link ol.Feature} as argument and returns an
+ * Function that takes an {@link module:ol/Feature~Feature} as argument and returns an
  * {@link module:ol/geom/Point~Point} as cluster calculation point for the feature. When a
  * feature should not be considered for clustering, the function should return
  * `null`. The default, which works when the underyling source contains point
@@ -2062,7 +2062,7 @@ olx.source.ClusterOptions.prototype.extent;
  * ```
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
- * @type {undefined|function(ol.Feature):module:ol/geom/Point~Point}
+ * @type {undefined|function(module:ol/Feature~Feature):module:ol/geom/Point~Point}
  * @api
  */
 olx.source.ClusterOptions.prototype.geometryFunction;
@@ -3693,12 +3693,12 @@ olx.source.TileWMSOptions.prototype.transition;
 
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
- *     features: (Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined),
+ *     features: (Array.<module:ol/Feature~Feature>|ol.Collection.<module:ol/Feature~Feature>|undefined),
  *     format: (ol.format.Feature|undefined),
- *     loader: (ol.FeatureLoader|undefined),
+ *     loader: (module:ol/Feature~FeatureLoader|undefined),
  *     overlaps: (boolean|undefined),
  *     strategy: (ol.LoadingStrategy|undefined),
- *     url: (string|ol.FeatureUrlFunction|undefined),
+ *     url: (string|module:ol/Feature~FeatureUrlFunction|undefined),
  *     useSpatialIndex: (boolean|undefined),
  *     wrapX: (boolean|undefined)}}
  */
@@ -3716,7 +3716,7 @@ olx.source.VectorOptions.prototype.attributions;
 /**
  * Features. If provided as {@link ol.Collection}, the features in the source
  * and the collection will stay in sync.
- * @type {Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined}
+ * @type {Array.<module:ol/Feature~Feature>|ol.Collection.<module:ol/Feature~Feature>|undefined}
  * @api
  */
 olx.source.VectorOptions.prototype.features;
@@ -3766,7 +3766,7 @@ olx.source.VectorOptions.prototype.format;
  *    strategy: ol.loadingstrategy.bbox
  *  });
  * ```
- * @type {ol.FeatureLoader|undefined}
+ * @type {module:ol/Feature~FeatureLoader|undefined}
  * @api
  */
 olx.source.VectorOptions.prototype.loader;
@@ -3796,7 +3796,7 @@ olx.source.VectorOptions.prototype.strategy;
  * Setting this option instructs the source to load features using an XHR loader
  * (see {@link ol.featureloader.xhr}). Use a `string` and an
  * {@link ol.loadingstrategy.all} for a one-off download of all features from
- * the given URL. Use a {@link ol.FeatureUrlFunction} to generate the url with
+ * the given URL. Use a {@link module:ol/Feature~FeatureUrlFunction} to generate the url with
  * other loading strategies.
  * Requires `format` to be set as well.
  * When default XHR feature loader is provided, the features will
@@ -3807,7 +3807,7 @@ olx.source.VectorOptions.prototype.strategy;
  * defaultDataProjection constructor option on the format.
  * Note that if a source contains non-feature data, such as a GeoJSON geometry
  * or a KML NetworkLink, these will be ignored. Use a custom loader to load these.
- * @type {string|ol.FeatureUrlFunction|undefined}
+ * @type {string|module:ol/Feature~FeatureUrlFunction|undefined}
  * @api
  */
 olx.source.VectorOptions.prototype.url;

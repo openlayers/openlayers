@@ -168,7 +168,7 @@ GML2.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack, opt_nodeNam
 
 /**
  * @param {Node} node Node.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {Array.<*>} objectStack Node stack.
  */
 GML2.prototype.writeFeatureElement = function(node, feature, objectStack) {

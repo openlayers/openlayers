@@ -20,7 +20,7 @@ import {createElementNS, makeArrayPusher, makeArraySerializer, makeChildAppender
 
 /**
  * @typedef {Object} Options
- * @property {function(ol.Feature, Node)|undefined} readExtensions Callback function
+ * @property {function(module:ol/Feature~Feature, Node)|undefined} readExtensions Callback function
  * to process `extensions` nodes. To prevent memory leaks, this callback function must
  * not store any references to the node. Note that the `extensions`
  * node is not allowed in GPX 1.0. Moreover, only `extensions`
@@ -50,7 +50,7 @@ const GPX = function(opt_options) {
   this.defaultDataProjection = getProjection('EPSG:4326');
 
   /**
-   * @type {function(ol.Feature, Node)|undefined}
+   * @type {function(module:ol/Feature~Feature, Node)|undefined}
    * @private
    */
   this.readExtensions_ = options.readExtensions;
@@ -80,7 +80,7 @@ const SCHEMA_LOCATION = 'http://www.topografix.com/GPX/1/1 ' +
 
 /**
  * @const
- * @type {Object.<string, function(Node, Array.<*>): (ol.Feature|undefined)>}
+ * @type {Object.<string, function(Node, Array.<*>): (module:ol/Feature~Feature|undefined)>}
  */
 const FEATURE_READER = {
   'rte': readRte,
@@ -364,7 +364,7 @@ const GEOMETRY_TYPE_TO_NODENAME = {
  * @return {Node|undefined} Node.
  */
 function GPX_NODE_FACTORY(value, objectStack, opt_nodeName) {
-  const geometry = /** @type {ol.Feature} */ (value).getGeometry();
+  const geometry = /** @type {module:ol/Feature~Feature} */ (value).getGeometry();
   if (geometry) {
     const nodeName = GEOMETRY_TYPE_TO_NODENAME[geometry.getType()];
     if (nodeName) {
@@ -531,7 +531,7 @@ function parseTrkSeg(node, objectStack) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.Feature|undefined} Track.
+ * @return {module:ol/Feature~Feature|undefined} Track.
  */
 function readRte(node, objectStack) {
   const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
@@ -560,7 +560,7 @@ function readRte(node, objectStack) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.Feature|undefined} Track.
+ * @return {module:ol/Feature~Feature|undefined} Track.
  */
 function readTrk(node, objectStack) {
   const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
@@ -592,7 +592,7 @@ function readTrk(node, objectStack) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.Feature|undefined} Waypoint.
+ * @return {module:ol/Feature~Feature|undefined} Waypoint.
  */
 function readWpt(node, objectStack) {
   const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
@@ -612,7 +612,7 @@ function readWpt(node, objectStack) {
 
 
 /**
- * @param {Array.<ol.Feature>} features List of features.
+ * @param {Array.<module:ol/Feature~Feature>} features List of features.
  * @private
  */
 GPX.prototype.handleReadExtensions_ = function(features) {
@@ -638,7 +638,7 @@ GPX.prototype.handleReadExtensions_ = function(features) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {ol.Feature} Feature.
+ * @return {module:ol/Feature~Feature} Feature.
  * @api
  */
 GPX.prototype.readFeature;
@@ -672,7 +672,7 @@ GPX.prototype.readFeatureFromNode = function(node, opt_options) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 GPX.prototype.readFeatures;
@@ -686,7 +686,7 @@ GPX.prototype.readFeaturesFromNode = function(node, opt_options) {
     return [];
   }
   if (node.localName == 'gpx') {
-    /** @type {Array.<ol.Feature>} */
+    /** @type {Array.<module:ol/Feature~Feature>} */
     const features = pushParseAndPop([], GPX_PARSERS,
       node, [this.getReadOptions(node, opt_options)]);
     if (features) {
@@ -776,7 +776,7 @@ function writeWptType(node, coordinate, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeRte(node, feature, objectStack) {
@@ -800,7 +800,7 @@ function writeRte(node, feature, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeTrk(node, feature, objectStack) {
@@ -840,7 +840,7 @@ function writeTrkSeg(node, lineString, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeWpt(node, feature, objectStack) {
@@ -863,7 +863,7 @@ function writeWpt(node, feature, objectStack) {
  * as tracks (`<trk>`).
  *
  * @function
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} Result.
  * @api
@@ -876,7 +876,7 @@ GPX.prototype.writeFeatures;
  * LineString geometries are output as routes (`<rte>`), and MultiLineString
  * as tracks (`<trk>`).
  *
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @override

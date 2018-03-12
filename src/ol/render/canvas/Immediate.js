@@ -492,7 +492,7 @@ CanvasImmediateRenderer.prototype.drawGeometry = function(geometry) {
  * this method is called.  If you need `zIndex` support, you should be using an
  * {@link ol.layer.Vector} instead.
  *
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  * @override
  * @api

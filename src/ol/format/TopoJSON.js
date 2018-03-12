@@ -244,7 +244,7 @@ function readMultiPolygonGeometry(object, arcs) {
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<ol.Feature>} Array of features.
+ * @return {Array.<module:ol/Feature~Feature>} Array of features.
  */
 function readFeaturesFromGeometryCollection(collection, arcs, scale, translate, property, name, opt_options) {
   const geometries = collection.geometries;
@@ -268,7 +268,7 @@ function readFeaturesFromGeometryCollection(collection, arcs, scale, translate, 
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {ol.Feature} Feature.
+ * @return {module:ol/Feature~Feature} Feature.
  */
 function readFeatureFromGeometry(object, arcs, scale, translate, property, name, opt_options) {
   let geometry;
@@ -304,7 +304,7 @@ function readFeatureFromGeometry(object, arcs, scale, translate, property, name,
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 TopoJSON.prototype.readFeatures;
@@ -326,7 +326,7 @@ TopoJSON.prototype.readFeaturesFromObject = function(object, opt_options) {
     if (transform) {
       transformArcs(arcs, scale, translate);
     }
-    /** @type {Array.<ol.Feature>} */
+    /** @type {Array.<module:ol/Feature~Feature>} */
     const features = [];
     const topoJSONFeatures = topoJSONTopology.objects;
     const property = this.layerName_;

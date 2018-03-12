@@ -22,7 +22,7 @@ const GML = GML3;
  * Encode an array of features in GML 3.1.1 Simple Features.
  *
  * @function
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {string} Result.
  * @api
@@ -34,7 +34,7 @@ GML.prototype.writeFeatures;
  * Encode an array of features in the GML 3.1.1 format as an XML node.
  *
  * @function
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @api

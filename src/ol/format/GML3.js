@@ -963,7 +963,7 @@ GML3.prototype.writeGeometryElement = function(node, geometry, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {Array.<*>} objectStack Node stack.
  */
 GML3.prototype.writeFeatureElement = function(node, feature, objectStack) {
@@ -1010,7 +1010,7 @@ GML3.prototype.writeFeatureElement = function(node, feature, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -1120,7 +1120,7 @@ GML3.prototype.writeGeometryNode = function(geometry, opt_options) {
  * Encode an array of features in GML 3.1.1 Simple Features.
  *
  * @function
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {string} Result.
  * @api
@@ -1131,7 +1131,7 @@ GML3.prototype.writeFeatures;
 /**
  * Encode an array of features in the GML 3.1.1 format as an XML node.
  *
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @override

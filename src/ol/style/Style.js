@@ -310,7 +310,7 @@ let defaultStyles = null;
 
 
 /**
- * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @return {Array.<ol.style.Style>} Style.
  */
@@ -417,7 +417,7 @@ export function createEditingStyle() {
 
 /**
  * Function that is called with a feature and returns its default geometry.
- * @param {ol.Feature|ol.render.Feature} feature Feature to get the geometry
+ * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature to get the geometry
  *     for.
  * @return {module:ol/geom/Geometry~Geometry|ol.render.Feature|undefined} Geometry to render.
  */

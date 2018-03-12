@@ -85,7 +85,7 @@ Source.prototype.adaptAttributions_ = function(attributionLike) {
  * @param {number} rotation Rotation.
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
- * @param {function((ol.Feature|ol.render.Feature)): T} callback Feature
+ * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T} callback Feature
  *     callback.
  * @return {T|undefined} Callback result.
  * @template T

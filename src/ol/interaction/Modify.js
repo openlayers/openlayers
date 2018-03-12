@@ -52,7 +52,7 @@ const ModifyEventType = {
  * @extends {ol.events.Event}
  * @implements {oli.ModifyEvent}
  * @param {ModifyEventType} type Type.
- * @param {ol.Collection.<ol.Feature>} features The features modified.
+ * @param {ol.Collection.<module:ol/Feature~Feature>} features The features modified.
  * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
  *     {@link ol.MapBrowserPointerEvent}.
  */
@@ -62,7 +62,7 @@ export const ModifyEvent = function(type, features, mapBrowserPointerEvent) {
 
   /**
    * The features being modified.
-   * @type {ol.Collection.<ol.Feature>}
+   * @type {ol.Collection.<module:ol/Feature~Feature>}
    * @api
    */
   this.features = features;
@@ -138,7 +138,7 @@ const Modify = function(options) {
 
   /**
    * Editing vertex.
-   * @type {ol.Feature}
+   * @type {module:ol/Feature~Feature}
    * @private
    */
   this.vertexFeature_ = null;
@@ -223,7 +223,7 @@ const Modify = function(options) {
   /**
   * @const
   * @private
-  * @type {!Object.<string, function(ol.Feature, module:ol/geom/Geometry~Geometry)>}
+  * @type {!Object.<string, function(module:ol/Feature~Feature, module:ol/geom/Geometry~Geometry)>}
   */
   this.SEGMENT_WRITERS_ = {
     'Point': this.writePointGeometry_,
@@ -260,7 +260,7 @@ const Modify = function(options) {
   }
 
   /**
-   * @type {ol.Collection.<ol.Feature>}
+   * @type {ol.Collection.<module:ol/Feature~Feature>}
    * @private
    */
   this.features_ = features;
@@ -298,7 +298,7 @@ const CIRCLE_CIRCUMFERENCE_INDEX = 1;
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @private
  */
 Modify.prototype.addFeature_ = function(feature) {
@@ -329,7 +329,7 @@ Modify.prototype.willModifyFeatures_ = function(evt) {
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @private
  */
 Modify.prototype.removeFeature_ = function(feature) {
@@ -346,7 +346,7 @@ Modify.prototype.removeFeature_ = function(feature) {
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @private
  */
 Modify.prototype.removeFeatureSegmentData_ = function(feature) {
@@ -415,7 +415,7 @@ Modify.prototype.handleSourceRemove_ = function(event) {
  * @private
  */
 Modify.prototype.handleFeatureAdd_ = function(evt) {
-  this.addFeature_(/** @type {ol.Feature} */ (evt.element));
+  this.addFeature_(/** @type {module:ol/Feature~Feature} */ (evt.element));
 };
 
 
@@ -425,7 +425,7 @@ Modify.prototype.handleFeatureAdd_ = function(evt) {
  */
 Modify.prototype.handleFeatureChange_ = function(evt) {
   if (!this.changingFeature_) {
-    const feature = /** @type {ol.Feature} */ (evt.target);
+    const feature = /** @type {module:ol/Feature~Feature} */ (evt.target);
     this.removeFeature_(feature);
     this.addFeature_(feature);
   }
@@ -437,13 +437,13 @@ Modify.prototype.handleFeatureChange_ = function(evt) {
  * @private
  */
 Modify.prototype.handleFeatureRemove_ = function(evt) {
-  const feature = /** @type {ol.Feature} */ (evt.element);
+  const feature = /** @type {module:ol/Feature~Feature} */ (evt.element);
   this.removeFeature_(feature);
 };
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/Point~Point} geometry Geometry.
  * @private
  */
@@ -459,7 +459,7 @@ Modify.prototype.writePointGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/MultiPoint~MultiPoint} geometry Geometry.
  * @private
  */
@@ -480,7 +480,7 @@ Modify.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/LineString~LineString} geometry Geometry.
  * @private
  */
@@ -500,7 +500,7 @@ Modify.prototype.writeLineStringGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/MultiLineString~MultiLineString} geometry Geometry.
  * @private
  */
@@ -524,7 +524,7 @@ Modify.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/Polygon~Polygon} geometry Geometry.
  * @private
  */
@@ -548,7 +548,7 @@ Modify.prototype.writePolygonGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/MultiPolygon~MultiPolygon} geometry Geometry.
  * @private
  */
@@ -581,7 +581,7 @@ Modify.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
  * {@link CIRCLE_CIRCUMFERENCE_INDEX} is
  * the circumference, and is not a line segment.
  *
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {module:ol/geom/Circle~Circle} geometry Geometry.
  * @private
  */
@@ -607,7 +607,7 @@ Modify.prototype.writeCircleGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/GeometryCollection~GeometryCollection} geometry Geometry.
  * @private
  */
@@ -621,7 +621,7 @@ Modify.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) 
 
 /**
  * @param {module:ol/coordinate~Coordinate} coordinates Coordinates.
- * @return {ol.Feature} Vertex feature.
+ * @return {module:ol/Feature~Feature} Vertex feature.
  * @private
  */
 Modify.prototype.createOrUpdateVertexFeature_ = function(coordinates) {

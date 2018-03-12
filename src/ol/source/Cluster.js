@@ -44,13 +44,13 @@ const Cluster = function(options) {
   this.distance = options.distance !== undefined ? options.distance : 20;
 
   /**
-   * @type {Array.<ol.Feature>}
+   * @type {Array.<module:ol/Feature~Feature>}
    * @protected
    */
   this.features = [];
 
   /**
-   * @param {ol.Feature} feature Feature.
+   * @param {module:ol/Feature~Feature} feature Feature.
    * @return {module:ol/geom/Point~Point} Cluster calculation point.
    * @protected
    */
@@ -174,8 +174,8 @@ Cluster.prototype.cluster = function() {
 
 
 /**
- * @param {Array.<ol.Feature>} features Features
- * @return {ol.Feature} The cluster feature.
+ * @param {Array.<module:ol/Feature~Feature>} features Features
+ * @return {module:ol/Feature~Feature} The cluster feature.
  * @protected
  */
 Cluster.prototype.createCluster = function(features) {

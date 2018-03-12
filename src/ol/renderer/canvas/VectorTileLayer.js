@@ -197,7 +197,7 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(tile, fram
     const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
     /**
-     * @param {ol.Feature|ol.render.Feature} feature Feature.
+     * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
      * @this {ol.renderer.canvas.VectorTileLayer}
      */
     const render = function(feature) {
@@ -292,7 +292,7 @@ CanvasVectorTileLayerRenderer.prototype.forEachFeatureAtCoordinate = function(co
       replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
       found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
         /**
-         * @param {ol.Feature|ol.render.Feature} feature Feature.
+         * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {
@@ -446,7 +446,7 @@ CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameSta
 
 
 /**
- * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {(ol.style.Style|Array.<ol.style.Style>)} styles The style or array of
  *     styles.

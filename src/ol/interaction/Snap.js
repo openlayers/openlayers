@@ -68,7 +68,7 @@ const Snap = function(opt_options) {
   this.edge_ = options.edge !== undefined ? options.edge : true;
 
   /**
-   * @type {ol.Collection.<ol.Feature>}
+   * @type {ol.Collection.<module:ol/Feature~Feature>}
    * @private
    */
   this.features_ = options.features ? options.features : null;
@@ -97,7 +97,7 @@ const Snap = function(opt_options) {
    * If a feature geometry changes while a pointer drag|move event occurs, the
    * feature doesn't get updated right away.  It will be at the next 'pointerup'
    * event fired.
-   * @type {!Object.<number, ol.Feature>}
+   * @type {!Object.<number, module:ol/Feature~Feature>}
    * @private
    */
   this.pendingFeatures_ = {};
@@ -134,7 +134,7 @@ const Snap = function(opt_options) {
   /**
   * @const
   * @private
-  * @type {Object.<string, function(ol.Feature, module:ol/geom/Geometry~Geometry)>}
+  * @type {Object.<string, function(module:ol/Feature~Feature, module:ol/geom/Geometry~Geometry)>}
   */
   this.SEGMENT_WRITERS_ = {
     'Point': this.writePointGeometry_,
@@ -154,7 +154,7 @@ inherits(Snap, PointerInteraction);
 
 /**
  * Add a feature to the collection of features that we may snap to.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {boolean=} opt_listen Whether to listen to the feature change or not
  *     Defaults to `true`.
  * @api
@@ -181,7 +181,7 @@ Snap.prototype.addFeature = function(feature, opt_listen) {
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @private
  */
 Snap.prototype.forEachFeatureAdd_ = function(feature) {
@@ -190,7 +190,7 @@ Snap.prototype.forEachFeatureAdd_ = function(feature) {
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @private
  */
 Snap.prototype.forEachFeatureRemove_ = function(feature) {
@@ -199,7 +199,7 @@ Snap.prototype.forEachFeatureRemove_ = function(feature) {
 
 
 /**
- * @return {ol.Collection.<ol.Feature>|Array.<ol.Feature>} Features.
+ * @return {ol.Collection.<module:ol/Feature~Feature>|Array.<module:ol/Feature~Feature>} Features.
  * @private
  */
 Snap.prototype.getFeatures_ = function() {
@@ -209,7 +209,7 @@ Snap.prototype.getFeatures_ = function() {
   } else if (this.source_) {
     features = this.source_.getFeatures();
   }
-  return /** @type {!Array.<ol.Feature>|!ol.Collection.<ol.Feature>} */ (features);
+  return /** @type {!Array.<module:ol/Feature~Feature>|!ol.Collection.<module:ol/Feature~Feature>} */ (features);
 };
 
 
@@ -224,7 +224,7 @@ Snap.prototype.handleFeatureAdd_ = function(evt) {
   } else if (evt instanceof CollectionEvent) {
     feature = evt.element;
   }
-  this.addFeature(/** @type {ol.Feature} */ (feature));
+  this.addFeature(/** @type {module:ol/Feature~Feature} */ (feature));
 };
 
 
@@ -239,7 +239,7 @@ Snap.prototype.handleFeatureRemove_ = function(evt) {
   } else if (evt instanceof CollectionEvent) {
     feature = evt.element;
   }
-  this.removeFeature(/** @type {ol.Feature} */ (feature));
+  this.removeFeature(/** @type {module:ol/Feature~Feature} */ (feature));
 };
 
 
@@ -248,7 +248,7 @@ Snap.prototype.handleFeatureRemove_ = function(evt) {
  * @private
  */
 Snap.prototype.handleFeatureChange_ = function(evt) {
-  const feature = /** @type {ol.Feature} */ (evt.target);
+  const feature = /** @type {module:ol/Feature~Feature} */ (evt.target);
   if (this.handlingDownUpSequence) {
     const uid = getUid(feature);
     if (!(uid in this.pendingFeatures_)) {
@@ -262,7 +262,7 @@ Snap.prototype.handleFeatureChange_ = function(evt) {
 
 /**
  * Remove a feature from the collection of features that we may snap to.
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {boolean=} opt_unlisten Whether to unlisten to the feature change
  *     or not. Defaults to `true`.
  * @api
@@ -417,7 +417,7 @@ Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @private
  */
 Snap.prototype.updateFeature_ = function(feature) {
@@ -427,7 +427,7 @@ Snap.prototype.updateFeature_ = function(feature) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/Circle~Circle} geometry Geometry.
  * @private
  */
@@ -446,7 +446,7 @@ Snap.prototype.writeCircleGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/GeometryCollection~GeometryCollection} geometry Geometry.
  * @private
  */
@@ -462,7 +462,7 @@ Snap.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/LineString~LineString} geometry Geometry.
  * @private
  */
@@ -480,7 +480,7 @@ Snap.prototype.writeLineStringGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/MultiLineString~MultiLineString} geometry Geometry.
  * @private
  */
@@ -501,7 +501,7 @@ Snap.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/MultiPoint~MultiPoint} geometry Geometry.
  * @private
  */
@@ -519,7 +519,7 @@ Snap.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/MultiPolygon~MultiPolygon} geometry Geometry.
  * @private
  */
@@ -543,7 +543,7 @@ Snap.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/Point~Point} geometry Geometry.
  * @private
  */
@@ -558,7 +558,7 @@ Snap.prototype.writePointGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {ol.Feature} feature Feature
+ * @param {module:ol/Feature~Feature} feature Feature
  * @param {module:ol/geom/Polygon~Polygon} geometry Geometry.
  * @private
  */

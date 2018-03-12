@@ -56,7 +56,7 @@ TextFeature.prototype.readFeature = function(source, opt_options) {
  * @param {string} text Text.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
- * @return {ol.Feature} Feature.
+ * @return {module:ol/Feature~Feature} Feature.
  */
 TextFeature.prototype.readFeatureFromText = function(text, opt_options) {};
 
@@ -74,7 +74,7 @@ TextFeature.prototype.readFeatures = function(source, opt_options) {
  * @param {string} text Text.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
  * @protected
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  */
 TextFeature.prototype.readFeaturesFromText = function(text, opt_options) {};
 
@@ -125,7 +125,7 @@ TextFeature.prototype.writeFeature = function(feature, opt_options) {
 
 /**
  * @abstract
- * @param {ol.Feature} feature Features.
+ * @param {module:ol/Feature~Feature} feature Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @protected
  * @return {string} Text.
@@ -143,7 +143,7 @@ TextFeature.prototype.writeFeatures = function(features, opt_options) {
 
 /**
  * @abstract
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @protected
  * @return {string} Text.

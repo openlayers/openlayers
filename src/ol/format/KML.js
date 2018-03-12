@@ -405,7 +405,7 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
 
   return (
     /**
-     * @param {ol.Feature} feature feature.
+     * @param {module:ol/Feature~Feature} feature feature.
      * @param {number} resolution Resolution.
      * @return {Array.<ol.style.Style>} Style.
      */
@@ -1652,7 +1652,7 @@ const PLACEMARK_PARSERS = makeStructureNS(
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Array.<ol.Feature>|undefined} Features.
+ * @return {Array.<module:ol/Feature~Feature>|undefined} Features.
  */
 KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
   // FIXME use scope somehow
@@ -1664,7 +1664,7 @@ KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
       'Style': this.readSharedStyle_.bind(this),
       'StyleMap': this.readSharedStyleMap_.bind(this)
     });
-  /** @type {Array.<ol.Feature>} */
+  /** @type {Array.<module:ol/Feature~Feature>} */
   const features = pushParseAndPop([], parsersNS, node, objectStack, this);
   if (features) {
     return features;
@@ -1678,7 +1678,7 @@ KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {ol.Feature|undefined} Feature.
+ * @return {module:ol/Feature~Feature|undefined} Feature.
  */
 KML.prototype.readPlacemark_ = function(node, objectStack) {
   const object = pushParseAndPop({'geometry': null},
@@ -1782,7 +1782,7 @@ KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {ol.Feature} Feature.
+ * @return {module:ol/Feature~Feature} Feature.
  * @api
  */
 KML.prototype.readFeature;
@@ -1813,7 +1813,7 @@ KML.prototype.readFeatureFromNode = function(node, opt_options) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 KML.prototype.readFeatures;
@@ -2205,7 +2205,7 @@ const DOCUMENT_NODE_FACTORY = function(value, objectStack, opt_nodeName) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {Array.<*>} objectStack Object stack.
  * @this {ol.format.KML}
  */
@@ -2658,7 +2658,7 @@ const EXTENDEDDATA_NODE_FACTORY = makeSimpleNodeFactory('ExtendedData');
  * FIXME currently we do serialize arbitrary/custom feature properties
  * (ExtendedData).
  * @param {Node} node Node.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
  * @this {ol.format.KML}
  */
@@ -2952,7 +2952,7 @@ const KML_SERIALIZERS = makeStructureNS(
  * MultiLineStrings, and MultiPolygons are output as MultiGeometries.
  *
  * @function
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {string} Result.
  * @api
@@ -2964,7 +2964,7 @@ KML.prototype.writeFeatures;
  * Encode an array of features in the KML format as an XML node. GeometryCollections,
  * MultiPoints, MultiLineStrings, and MultiPolygons are output as MultiGeometries.
  *
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @override

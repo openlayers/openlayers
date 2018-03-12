@@ -726,7 +726,7 @@ WKT.prototype.parse_ = function(wkt) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {ol.Feature} Feature.
+ * @return {module:ol/Feature~Feature} Feature.
  * @api
  */
 WKT.prototype.readFeature;
@@ -752,7 +752,7 @@ WKT.prototype.readFeatureFromText = function(text, opt_options) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 WKT.prototype.readFeatures;
@@ -862,7 +862,7 @@ Parser.prototype.parseGeometry_ = function() {
  * Encode a feature as a WKT string.
  *
  * @function
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
  * @api
@@ -886,7 +886,7 @@ WKT.prototype.writeFeatureText = function(feature, opt_options) {
  * Encode an array of features as a WKT string.
  *
  * @function
- * @param {Array.<ol.Feature>} features Features.
+ * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
  * @api

@@ -48,7 +48,7 @@ const WebGLVectorLayerRenderer = function(mapRenderer, vectorLayer) {
 
   /**
    * @private
-   * @type {function(ol.Feature, ol.Feature): number|null}
+   * @type {function(module:ol/Feature~Feature, module:ol/Feature~Feature): number|null}
    */
   this.renderedRenderOrder_ = null;
 
@@ -150,7 +150,7 @@ WebGLVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordin
       frameState.size, frameState.pixelRatio, layerState.opacity,
       {},
       /**
-         * @param {ol.Feature|ol.render.Feature} feature Feature.
+         * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
          */
       function(feature) {
@@ -261,7 +261,7 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
     extent, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
-   * @param {ol.Feature} feature Feature.
+   * @param {module:ol/Feature~Feature} feature Feature.
    * @this {ol.renderer.webgl.VectorLayer}
    */
   const render = function(feature) {
@@ -277,11 +277,11 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
     }
   };
   if (vectorLayerRenderOrder) {
-    /** @type {Array.<ol.Feature>} */
+    /** @type {Array.<module:ol/Feature~Feature>} */
     const features = [];
     vectorSource.forEachFeatureInExtent(extent,
       /**
-       * @param {ol.Feature} feature Feature.
+       * @param {module:ol/Feature~Feature} feature Feature.
        */
       function(feature) {
         features.push(feature);
@@ -304,7 +304,7 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {(ol.style.Style|Array.<ol.style.Style>)} styles The style or array of

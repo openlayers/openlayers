@@ -49,7 +49,7 @@ app.Drag = function() {
   this.cursor_ = 'pointer';
 
   /**
-   * @type {ol.Feature}
+   * @type {module:ol/Feature~Feature}
    * @private
    */
   this.feature_ = null;

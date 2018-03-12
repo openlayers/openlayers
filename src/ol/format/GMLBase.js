@@ -135,7 +135,7 @@ const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {Array.<ol.Feature> | undefined} Features.
+ * @return {Array.<module:ol/Feature~Feature> | undefined} Features.
  */
 GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
   const localName = node.localName;
@@ -243,7 +243,7 @@ GMLBase.prototype.readGeometryElement = function(node, objectStack) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {ol.Feature} Feature.
+ * @return {module:ol/Feature~Feature} Feature.
  */
 GMLBase.prototype.readFeatureElement = function(node, objectStack) {
   let n;
@@ -573,7 +573,7 @@ GMLBase.prototype.readGeometryFromNode = function(node, opt_options) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<module:ol/Feature~Feature>} Features.
  * @api
  */
 GMLBase.prototype.readFeatures;

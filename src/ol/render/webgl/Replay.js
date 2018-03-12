@@ -95,7 +95,7 @@ const WebGLReplay = function(tolerance, maxExtent) {
   /**
    * Start index per feature (the feature).
    * @protected
-   * @type {Array.<ol.Feature|ol.render.Feature>}
+   * @type {Array.<module:ol/Feature~Feature|ol.render.Feature>}
    */
   this.startIndicesFeature = [];
 
@@ -184,7 +184,7 @@ WebGLReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hi
  * @param {ol.webgl.Context} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
- * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
+ * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
  * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
  * @return {T|undefined} Callback result.
@@ -199,7 +199,7 @@ WebGLReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, ski
  * @param {ol.webgl.Context} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
- * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
+ * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
@@ -226,7 +226,7 @@ WebGLReplay.prototype.drawHitDetectionReplay = function(gl, context, skippedFeat
  * @param {ol.webgl.Context} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
- * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
+ * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -254,7 +254,7 @@ WebGLReplay.prototype.drawHitDetectionReplayAll = function(gl, context, skippedF
  * @param {number} opacity Global opacity.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
- * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
+ * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
