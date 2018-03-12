@@ -92,7 +92,7 @@ TileSource.prototype.canExpireCache = function() {
 
 /**
  * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
+ * @param {Object.<string, module:ol/TileRange~TileRange>} usedTiles Used tiles.
  */
 TileSource.prototype.expireCache = function(projection, usedTiles) {
   const tileCache = this.getTileCacheForProjection(projection);
@@ -105,7 +105,7 @@ TileSource.prototype.expireCache = function(projection, usedTiles) {
 /**
  * @param {module:ol/proj/Projection~Projection} projection Projection.
  * @param {number} z Zoom level.
- * @param {ol.TileRange} tileRange Tile range.
+ * @param {module:ol/TileRange~TileRange} tileRange Tile range.
  * @param {function(ol.Tile):(boolean|undefined)} callback Called with each
  *     loaded tile.  If the callback returns `false`, the tile will not be
  *     considered loaded.

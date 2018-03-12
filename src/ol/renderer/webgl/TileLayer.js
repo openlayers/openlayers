@@ -68,7 +68,7 @@ const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {ol.TileRange}
+   * @type {module:ol/TileRange~TileRange}
    */
   this.renderedTileRange_ = null;
 
@@ -139,7 +139,7 @@ WebGLTileLayerRenderer.prototype.createLoadedTileFinder = function(source, proje
   return (
     /**
      * @param {number} zoom Zoom level.
-     * @param {ol.TileRange} tileRange Tile range.
+     * @param {module:ol/TileRange~TileRange} tileRange Tile range.
      * @return {boolean} The tile range is fully loaded.
      */
     function(zoom, tileRange) {

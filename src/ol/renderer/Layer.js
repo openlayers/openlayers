@@ -59,7 +59,7 @@ LayerRenderer.prototype.hasFeatureAtCoordinate = FALSE;
  * @param {module:ol/proj/Projection~Projection} projection Projection of the tiles.
  * @param {Object.<number, Object.<string, ol.Tile>>} tiles Lookup of loaded
  *     tiles by zoom level.
- * @return {function(number, ol.TileRange):boolean} A function that can be
+ * @return {function(number, module:ol/TileRange~TileRange):boolean} A function that can be
  *     called with a zoom level and a tile range to add loaded tiles to the
  *     lookup.
  * @protected
@@ -68,7 +68,7 @@ LayerRenderer.prototype.createLoadedTileFinder = function(source, projection, ti
   return (
     /**
      * @param {number} zoom Zoom level.
-     * @param {ol.TileRange} tileRange Tile range.
+     * @param {module:ol/TileRange~TileRange} tileRange Tile range.
      * @return {boolean} The tile range is fully loaded.
      */
     function(zoom, tileRange) {
@@ -164,10 +164,10 @@ LayerRenderer.prototype.scheduleExpireCache = function(frameState, tileSource) {
 
 
 /**
- * @param {!Object.<string, !Object.<string, ol.TileRange>>} usedTiles Used tiles.
+ * @param {!Object.<string, !Object.<string, module:ol/TileRange~TileRange>>} usedTiles Used tiles.
  * @param {ol.source.Tile} tileSource Tile source.
  * @param {number} z Z.
- * @param {ol.TileRange} tileRange Tile range.
+ * @param {module:ol/TileRange~TileRange} tileRange Tile range.
  * @protected
  */
 LayerRenderer.prototype.updateUsedTiles = function(usedTiles, tileSource, z, tileRange) {
