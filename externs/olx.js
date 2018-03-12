@@ -6,21 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{splitCollection: (boolean|undefined)}}
- */
-olx.format.WKTOptions;
-
-
-/**
- * Whether to split GeometryCollections into
- * multiple features on reading. Default is `false`.
- * @type {boolean|undefined}
- * @api
- */
-olx.format.WKTOptions.prototype.splitCollection;
-
-
-/**
  * @typedef {{
  *     layers: (Array.<string>|undefined)
  * }}

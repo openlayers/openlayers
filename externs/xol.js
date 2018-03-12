@@ -1,12 +1,5 @@
 
 /**
- * @typedef {Object} format_WKTOptions
- * @property {boolean|undefined} splitCollection Whether to split GeometryCollections into
- * multiple features on reading. Default is `false`.
- */
-
-
-/**
  * @typedef {Object} format_WMSGetFeatureInfoOptions
  * @property {Array.<string>|undefined} layers If set, only features of the given layers will be returned by the format
  * when read.

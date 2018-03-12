@@ -18,6 +18,13 @@ import SimpleGeometry from '../geom/SimpleGeometry.js';
 
 
 /**
+ * @typedef {Object} Options
+ * @property {boolean|undefined} splitCollection Whether to split GeometryCollections into
+ * multiple features on reading. Default is `false`.
+ */
+
+
+/**
  * @const
  * @type {string}
  */
@@ -526,7 +533,7 @@ Parser.prototype.formatErrorMessage_ = function() {
  *
  * @constructor
  * @extends {ol.format.TextFeature}
- * @param {olx.format.WKTOptions=} opt_options Options.
+ * @param {module:ol/format/WKT~Options=} opt_options Options.
  * @api
  */
 const WKT = function(opt_options) {
