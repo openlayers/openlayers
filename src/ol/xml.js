@@ -25,12 +25,17 @@ import {extend} from './array.js';
 
 /**
  * This document should be used when creating nodes for XML serializations. This
- * document is also used by {@link module:ol/xml~createElementNS} and
- * {@link module:ol/xml~setAttributeNS}
+ * document is also used by {@link module:ol/xml~createElementNS}
  * @const
  * @type {Document}
  */
 export const DOCUMENT = document.implementation.createDocument('', '', null);
+
+
+/**
+ * @type {string}
+ */
+export const XML_SCHEMA_INSTANCE_URI = 'http://www.w3.org/2001/XMLSchema-instance';
 
 
 /**
@@ -109,17 +114,6 @@ export function isNode(value) {
  */
 export function getAttributeNS(node, namespaceURI, name) {
   return node.getAttributeNS(namespaceURI, name) || '';
-}
-
-
-/**
- * @param {Node} node Node.
- * @param {?string} namespaceURI Namespace URI.
- * @param {string} name Attribute name.
- * @param {string|number} value Value.
- */
-export function setAttributeNS(node, namespaceURI, name, value) {
-  node.setAttributeNS(namespaceURI, name, value);
 }
 
 

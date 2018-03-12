@@ -15,7 +15,7 @@ import {get as getProjection} from '../proj.js';
 import {createElementNS, makeArrayPusher, makeArraySerializer, makeChildAppender,
   makeObjectPropertySetter, makeSequence, makeSimpleNodeFactory, makeStructureNS,
   OBJECT_PROPERTY_NODE_FACTORY, parseNode, pushParseAndPop, pushSerializeAndPop,
-  setAttributeNS} from '../xml.js';
+  XML_SCHEMA_INSTANCE_URI} from '../xml.js';
 
 /**
  * @classdesc
@@ -729,8 +729,8 @@ function writeWptType(node, coordinate, objectStack) {
   const namespaceURI = parentNode.namespaceURI;
   const properties = context['properties'];
   //FIXME Projection handling
-  setAttributeNS(node, null, 'lat', coordinate[1]);
-  setAttributeNS(node, null, 'lon', coordinate[0]);
+  node.setAttributeNS(null, 'lat', coordinate[1]);
+  node.setAttributeNS(null, 'lon', coordinate[0]);
   const geometryLayout = context['geometryLayout'];
   switch (geometryLayout) {
     case GeometryLayout.XYZM:
@@ -875,9 +875,8 @@ GPX.prototype.writeFeaturesNode = function(features, opt_options) {
   //FIXME Serialize metadata
   const gpx = createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
   const xmlnsUri = 'http://www.w3.org/2000/xmlns/';
-  const xmlSchemaInstanceUri = 'http://www.w3.org/2001/XMLSchema-instance';
-  setAttributeNS(gpx, xmlnsUri, 'xmlns:xsi', xmlSchemaInstanceUri);
-  setAttributeNS(gpx, xmlSchemaInstanceUri, 'xsi:schemaLocation', SCHEMA_LOCATION);
+  gpx.setAttributeNS(xmlnsUri, 'xmlns:xsi', XML_SCHEMA_INSTANCE_URI);
+  gpx.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', SCHEMA_LOCATION);
   gpx.setAttribute('version', '1.1');
   gpx.setAttribute('creator', 'OpenLayers');
 

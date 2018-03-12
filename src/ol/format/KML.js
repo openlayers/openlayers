@@ -31,7 +31,7 @@ import {createElementNS, getAllTextContent, isDocument, isNode, makeArrayExtende
   makeArrayPusher, makeChildAppender, makeObjectPropertySetter,
   makeReplacer, makeSequence, makeSimpleNodeFactory, makeStructureNS,
   OBJECT_PROPERTY_NODE_FACTORY, parse, parseNode, pushParseAndPop,
-  pushSerializeAndPop, setAttributeNS} from '../xml.js';
+  pushSerializeAndPop, XML_SCHEMA_INSTANCE_URI} from '../xml.js';
 
 
 /**
@@ -2961,12 +2961,9 @@ KML.prototype.writeFeaturesNode = function(features, opt_options) {
   opt_options = this.adaptOptions(opt_options);
   const kml = createElementNS(NAMESPACE_URIS[4], 'kml');
   const xmlnsUri = 'http://www.w3.org/2000/xmlns/';
-  const xmlSchemaInstanceUri = 'http://www.w3.org/2001/XMLSchema-instance';
-  setAttributeNS(kml, xmlnsUri, 'xmlns:gx',
-    GX_NAMESPACE_URIS[0]);
-  setAttributeNS(kml, xmlnsUri, 'xmlns:xsi', xmlSchemaInstanceUri);
-  setAttributeNS(kml, xmlSchemaInstanceUri, 'xsi:schemaLocation',
-    SCHEMA_LOCATION);
+  kml.setAttributeNS(xmlnsUri, 'xmlns:gx', GX_NAMESPACE_URIS[0]);
+  kml.setAttributeNS(xmlnsUri, 'xmlns:xsi', XML_SCHEMA_INSTANCE_URI);
+  kml.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', SCHEMA_LOCATION);
 
   const /** @type {module:ol/xml~NodeStackItem} */ context = {node: kml};
   const properties = {};
