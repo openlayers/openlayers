@@ -37,7 +37,7 @@ d3.json('data/topojson/us.json', function(error, us) {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {ol.Size} size Size.
-   * @param {ol.proj.Projection} projection Projection.
+   * @param {module:ol/proj/Projection~Projection} projection Projection.
    * @return {HTMLCanvasElement} A canvas element.
    */
   const canvasFunction = function(extent, resolution, pixelRatio, size, projection) {

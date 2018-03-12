@@ -187,7 +187,7 @@ XMLFeature.prototype.readProjection = function(source) {
 /**
  * @param {Document} doc Document.
  * @protected
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  */
 XMLFeature.prototype.readProjectionFromDocument = function(doc) {
   return this.defaultDataProjection;
@@ -197,7 +197,7 @@ XMLFeature.prototype.readProjectionFromDocument = function(doc) {
 /**
  * @param {Node} node Node.
  * @protected
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  */
 XMLFeature.prototype.readProjectionFromNode = function(node) {
   return this.defaultDataProjection;

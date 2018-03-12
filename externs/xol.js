@@ -755,7 +755,7 @@
  * @property {ol.CanvasFunctionType} canvasFunction Canvas function. The function returning the canvas element used by the source
  * as an image. The arguments passed to the function are: `{ol.Extent}` the
  * image extent, `{number}` the image resolution, `{number}` the device pixel
- * ratio, `{ol.Size}` the image size, and `{ol.proj.Projection}` the image
+ * ratio, `{ol.Size}` the image size, and `{module:ol/proj/Projection~Projection}` the image
  * projection. The canvas returned by this function is cached by the source. If
  * the value returned by the function is later changed then
  * `dispatchChangeEvent` should be called on the source for the source to
@@ -1453,7 +1453,7 @@
 /**
  * @typedef {Object} ViewState
  * @property {ol.Coordinate} center 
- * @property {ol.proj.Projection} projection 
+ * @property {module:ol/proj/Projection~Projection} projection 
  * @property {number} resolution 
  * @property {number} rotation 
  * @property {number} zoom The current zoom level.

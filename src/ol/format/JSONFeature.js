@@ -115,7 +115,7 @@ JSONFeature.prototype.readProjection = function(source) {
  * @abstract
  * @param {Object} object Object.
  * @protected
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  */
 JSONFeature.prototype.readProjectionFromObject = function(object) {};
 

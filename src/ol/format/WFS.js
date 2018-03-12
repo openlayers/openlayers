@@ -1069,7 +1069,7 @@ WFS.prototype.writeTransaction = function(inserts, updates, deletes, options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @return {?ol.proj.Projection} Projection.
+ * @return {?module:ol/proj/Projection~Projection} Projection.
  * @api
  */
 WFS.prototype.readProjection;

@@ -254,7 +254,7 @@ oli.interaction.DragAndDropEvent.prototype.features;
 
 
 /**
- * @type {ol.proj.Projection|undefined}
+ * @type {module:ol/proj/Projection~Projection|undefined}
  */
 oli.interaction.DragAndDropEvent.prototype.projection;
 

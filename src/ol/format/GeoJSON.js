@@ -438,7 +438,7 @@ GeoJSON.prototype.readGeometryFromObject = function(object, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  * @api
  */
 GeoJSON.prototype.readProjection;
@@ -460,7 +460,7 @@ GeoJSON.prototype.readProjectionFromObject = function(object) {
   } else {
     projection = this.defaultDataProjection;
   }
-  return /** @type {ol.proj.Projection} */ (projection);
+  return /** @type {module:ol/proj/Projection~Projection} */ (projection);
 };
 
 

@@ -64,13 +64,13 @@ const FeatureFormat = function() {
 
   /**
    * @protected
-   * @type {ol.proj.Projection}
+   * @type {module:ol/proj/Projection~Projection}
    */
   this.defaultDataProjection = null;
 
   /**
    * @protected
-   * @type {ol.proj.Projection}
+   * @type {module:ol/proj/Projection~Projection}
    */
   this.defaultFeatureProjection = null;
 
@@ -168,7 +168,7 @@ FeatureFormat.prototype.readGeometry = function(source, opt_options) {};
  *
  * @abstract
  * @param {Document|Node|Object|string} source Source.
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  */
 FeatureFormat.prototype.readProjection = function(source) {};
 

@@ -33,8 +33,8 @@ const MAX_TRIANGLE_WIDTH = 0.25;
  * Class containing triangulation of the given target extent.
  * Used for determining source data and the reprojection itself.
  *
- * @param {ol.proj.Projection} sourceProj Source projection.
- * @param {ol.proj.Projection} targetProj Target projection.
+ * @param {module:ol/proj/Projection~Projection} sourceProj Source projection.
+ * @param {module:ol/proj/Projection~Projection} targetProj Target projection.
  * @param {module:ol/extent~Extent} targetExtent Target extent to triangulate.
  * @param {module:ol/extent~Extent} maxSourceExtent Maximal source extent that can be used.
  * @param {number} errorThreshold Acceptable error (in source units).
@@ -44,13 +44,13 @@ const Triangulation = function(sourceProj, targetProj, targetExtent,
   maxSourceExtent, errorThreshold) {
 
   /**
-   * @type {ol.proj.Projection}
+   * @type {module:ol/proj/Projection~Projection}
    * @private
    */
   this.sourceProj_ = sourceProj;
 
   /**
-   * @type {ol.proj.Projection}
+   * @type {module:ol/proj/Projection~Projection}
    * @private
    */
   this.targetProj_ = targetProj;

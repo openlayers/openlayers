@@ -139,7 +139,7 @@ ImageSource.prototype.findNearestResolution = function(resolution) {
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection} projection Projection.
+ * @param {module:ol/proj/Projection~Projection} projection Projection.
  * @return {ol.ImageBase} Single image.
  */
 ImageSource.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
@@ -183,7 +183,7 @@ ImageSource.prototype.getImage = function(extent, resolution, pixelRatio, projec
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection} projection Projection.
+ * @param {module:ol/proj/Projection~Projection} projection Projection.
  * @return {ol.ImageBase} Single image.
  * @protected
  */

@@ -54,7 +54,7 @@ const MVT = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
   /**
-   * @type {ol.proj.Projection}
+   * @type {module:ol/proj/Projection~Projection}
    */
   this.defaultDataProjection = new Projection({
     code: '',

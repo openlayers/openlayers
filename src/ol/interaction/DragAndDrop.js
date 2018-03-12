@@ -36,7 +36,7 @@ const DragAndDropEventType = {
  * @param {ol.interaction.DragAndDropEventType} type Type.
  * @param {File} file File.
  * @param {Array.<ol.Feature>=} opt_features Features.
- * @param {ol.proj.Projection=} opt_projection Projection.
+ * @param {module:ol/proj/Projection~Projection=} opt_projection Projection.
  */
 const DragAndDropEvent = function(type, file, opt_features, opt_projection) {
 
@@ -58,7 +58,7 @@ const DragAndDropEvent = function(type, file, opt_features, opt_projection) {
 
   /**
    * The feature projection.
-   * @type {ol.proj.Projection|undefined}
+   * @type {module:ol/proj/Projection~Projection|undefined}
    * @api
    */
   this.projection = opt_projection;
@@ -94,7 +94,7 @@ const DragAndDrop = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.proj.Projection}
+   * @type {module:ol/proj/Projection~Projection}
    */
   this.projection_ = options.projection ?
     getProjection(options.projection) : null;

@@ -7,7 +7,7 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
 /**
  * @typedef {Object} Options
  * @property {string} code The SRS identifier code, e.g. `EPSG:4326`.
- * @property {ol.proj.Units|string|undefined} units Units. Required unless a
+ * @property {module:ol/proj/Units~Units|string|undefined} units Units. Required unless a
  * proj4 projection is defined for `code`.
  * @property {ol.Extent|undefined} extent The validity extent for the SRS.
  * @property {string|undefined} axisOrientation The axis orientation as specified
@@ -15,7 +15,7 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
  * @property {boolean|undefined} global Whether the projection is valid for the
  * whole globe. Default is `false`.
  * @property {number|undefined} metersPerUnit The meters per unit for the SRS.
- * If not provided, the `units` are used to get the meters per unit from the {@link ol.proj.METERS_PER_UNIT}
+ * If not provided, the `units` are used to get the meters per unit from the {@link module:ol/proj/Units~METERS_PER_UNIT}
  * lookup table.
  * @property {ol.Extent|undefined} worldExtent The world extent for the SRS.
  * @property {(function(number, ol.Coordinate):number|undefined)} getPointResolution
@@ -34,7 +34,7 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
  * and options use {@link module:ol/proj~ProjectionLike} which means the simple string
  * code will suffice.
  *
- * You can use {@link ol.proj.get} to retrieve the object for a particular
+ * You can use {@link module:ol/proj~get} to retrieve the object for a particular
  * projection.
  *
  * The library includes definitions for `EPSG:4326` and `EPSG:3857`, together
@@ -49,7 +49,7 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
  *
  * If you use proj4js, aliases can be added using `proj4.defs()`; see
  * [documentation](https://github.com/proj4js/proj4js). To set an alternative
- * namespace for proj4, use {@link ol.proj.setProj4}.
+ * namespace for proj4, use {@link module:ol/proj~setProj4}.
  *
  * @constructor
  * @param {module:ol/proj/Projection~Options} options Projection options.
@@ -64,17 +64,17 @@ const Projection = function(options) {
   this.code_ = options.code;
 
   /**
-   * Units of projected coordinates. When set to `ol.proj.Units.TILE_PIXELS`, a
+   * Units of projected coordinates. When set to `TILE_PIXELS`, a
    * `this.extent_` and `this.worldExtent_` must be configured properly for each
    * tile.
    * @private
-   * @type {ol.proj.Units}
+   * @type {module:ol/proj/Units~Units}
    */
-  this.units_ = /** @type {ol.proj.Units} */ (options.units);
+  this.units_ = /** @type {module:ol/proj/Units~Units} */ (options.units);
 
   /**
    * Validity extent of the projection in projected coordinates. For projections
-   * with `ol.proj.Units.TILE_PIXELS` units, this is the extent of the tile in
+   * with `TILE_PIXELS` units, this is the extent of the tile in
    * tile pixel space.
    * @private
    * @type {module:ol/extent~Extent}
@@ -83,7 +83,7 @@ const Projection = function(options) {
 
   /**
    * Extent of the world in EPSG:4326. For projections with
-   * `ol.proj.Units.TILE_PIXELS` units, this is the extent of the tile in
+   * `TILE_PIXELS` units, this is the extent of the tile in
    * projected coordinate space.
    * @private
    * @type {module:ol/extent~Extent}
@@ -160,7 +160,7 @@ Projection.prototype.getExtent = function() {
 
 /**
  * Get the units of this projection.
- * @return {ol.proj.Units} Units.
+ * @return {module:ol/proj/Units~Units} Units.
  * @api
  */
 Projection.prototype.getUnits = function() {

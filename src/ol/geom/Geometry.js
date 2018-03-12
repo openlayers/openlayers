@@ -246,9 +246,9 @@ Geometry.prototype.translate = function(deltaX, deltaY) {};
  * then use this function on the clone.
  *
  * @param {module:ol/proj~ProjectionLike} source The current projection.  Can be a
- *     string identifier or a {@link ol.proj.Projection} object.
+ *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
  * @param {module:ol/proj~ProjectionLike} destination The desired projection.  Can be a
- *     string identifier or a {@link ol.proj.Projection} object.
+ *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
  * @return {module:ol/geom/Geometry~Geometry} This geometry.  Note that original geometry is
  *     modified in place.
  * @api

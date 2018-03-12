@@ -169,7 +169,7 @@ const Zoomify = function(opt_options) {
       /**
        * @param {module:ol/tilecoord~TileCoord} tileCoord Tile Coordinate.
        * @param {number} pixelRatio Pixel ratio.
-       * @param {ol.proj.Projection} projection Projection.
+       * @param {module:ol/proj/Projection~Projection} projection Projection.
        * @return {string|undefined} Tile URL.
        */
       function(tileCoord, pixelRatio, projection) {

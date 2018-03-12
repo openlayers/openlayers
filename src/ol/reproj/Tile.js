@@ -19,9 +19,9 @@ import Triangulation from '../reproj/Triangulation.js';
  *
  * @constructor
  * @extends {ol.Tile}
- * @param {ol.proj.Projection} sourceProj Source projection.
+ * @param {module:ol/proj/Projection~Projection} sourceProj Source projection.
  * @param {ol.tilegrid.TileGrid} sourceTileGrid Source tile grid.
- * @param {ol.proj.Projection} targetProj Target projection.
+ * @param {module:ol/proj/Projection~Projection} targetProj Target projection.
  * @param {ol.tilegrid.TileGrid} targetTileGrid Target tile grid.
  * @param {module:ol/tilecoord~TileCoord} tileCoord Coordinate of the tile.
  * @param {module:ol/tilecoord~TileCoord} wrappedTileCoord Coordinate of the tile wrapped in X.

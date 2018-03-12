@@ -406,7 +406,7 @@ function transformVertex(vertex, scale, translate) {
  * Read the projection from a TopoJSON source.
  *
  * @param {Document|Node|Object|string} object Source.
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  * @override
  * @api
  */

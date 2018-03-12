@@ -108,7 +108,7 @@ TextFeature.prototype.readProjection = function(source) {
 /**
  * @param {string} text Text.
  * @protected
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  */
 TextFeature.prototype.readProjectionFromText = function(text) {
   return this.defaultDataProjection;

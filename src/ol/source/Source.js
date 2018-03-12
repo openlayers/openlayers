@@ -28,7 +28,7 @@ const Source = function(options) {
 
   /**
    * @private
-   * @type {ol.proj.Projection}
+   * @type {module:ol/proj/Projection~Projection}
    */
   this.projection_ = getProjection(options.projection);
 
@@ -104,7 +104,7 @@ Source.prototype.getAttributions = function() {
 
 /**
  * Get the projection of the source.
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  * @api
  */
 Source.prototype.getProjection = function() {

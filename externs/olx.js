@@ -2885,7 +2885,7 @@ olx.source.ImageCanvasOptions.prototype.attributions;
  * Canvas function. The function returning the canvas element used by the source
  * as an image. The arguments passed to the function are: `{ol.Extent}` the
  * image extent, `{number}` the image resolution, `{number}` the device pixel
- * ratio, `{ol.Size}` the image size, and `{ol.proj.Projection}` the image
+ * ratio, `{ol.Size}` the image size, and `{module:ol/proj/Projection~Projection}` the image
  * projection. The canvas returned by this function is cached by the source. If
  * the value returned by the function is later changed then
  * `dispatchChangeEvent` should be called on the source for the source to
@@ -5385,7 +5385,7 @@ olx.tilegrid.XYZOptions.prototype.tileSize;
 
 /**
  * @typedef {{center: ol.Coordinate,
- *     projection: ol.proj.Projection,
+ *     projection: module:ol/proj/Projection~Projection,
  *     resolution: number,
  *     rotation: number,
  *     zoom: number}}
@@ -5401,7 +5401,7 @@ olx.ViewState.prototype.center;
 
 
 /**
- * @type {ol.proj.Projection}
+ * @type {module:ol/proj/Projection~Projection}
  * @api
  */
 olx.ViewState.prototype.projection;

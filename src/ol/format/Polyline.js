@@ -342,7 +342,7 @@ Polyline.prototype.readGeometryFromText = function(text, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  * @api
  */
 Polyline.prototype.readProjection;

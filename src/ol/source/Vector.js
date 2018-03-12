@@ -752,7 +752,7 @@ VectorSource.prototype.isEmpty = function() {
 /**
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} resolution Resolution.
- * @param {ol.proj.Projection} projection Projection.
+ * @param {module:ol/proj/Projection~Projection} projection Projection.
  */
 VectorSource.prototype.loadFeatures = function(extent, resolution, projection) {
   const loadedExtentsRtree = this.loadedExtentsRtree_;

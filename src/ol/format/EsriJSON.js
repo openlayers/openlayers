@@ -500,7 +500,7 @@ EsriJSON.prototype.readGeometryFromObject = function(object, opt_options) {
  *
  * @function
  * @param {ArrayBuffer|Document|Node|Object|string} source Source.
- * @return {ol.proj.Projection} Projection.
+ * @return {module:ol/proj/Projection~Projection} Projection.
  * @api
  */
 EsriJSON.prototype.readProjection;

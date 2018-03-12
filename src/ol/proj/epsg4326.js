@@ -40,7 +40,7 @@ export const METERS_PER_UNIT = Math.PI * RADIUS / 180;
  * OpenLayers treats EPSG:4326 as a pseudo-projection, with x,y coordinates.
  *
  * @constructor
- * @extends {ol.proj.Projection}
+ * @extends {module:ol/proj/Projection~Projection}
  * @param {string} code Code.
  * @param {string=} opt_axisOrientation Axis orientation.
  */
@@ -62,7 +62,7 @@ inherits(EPSG4326Projection, Projection);
  * Projections equal to EPSG:4326.
  *
  * @const
- * @type {Array.<ol.proj.Projection>}
+ * @type {Array.<module:ol/proj/Projection~Projection>}
  */
 export const PROJECTIONS = [
   new EPSG4326Projection('CRS:84'),

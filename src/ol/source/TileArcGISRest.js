@@ -90,7 +90,7 @@ TileArcGISRest.prototype.getParams = function() {
  * @param {module:ol/size~Size} tileSize Tile size.
  * @param {module:ol/extent~Extent} tileExtent Tile extent.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection} projection Projection.
+ * @param {module:ol/proj/Projection~Projection} projection Projection.
  * @param {Object} params Params.
  * @return {string|undefined} Request URL.
  * @private
