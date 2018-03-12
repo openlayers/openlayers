@@ -207,7 +207,7 @@ export function handleEvent(mapBrowserEvent) {
  *
  * The method receives the return code of the "handleDownEvent" function.
  *
- * By default this function is the "identity" function. It's overidden in
+ * By default this function is the "identity" function. It's overridden in
  * child classes.
  *
  * @param {boolean} handled Was the event handled by the interaction?

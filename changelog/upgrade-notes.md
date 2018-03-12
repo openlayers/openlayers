@@ -4,7 +4,7 @@
 
 #### Removal of ol.FeatureStyleFunction
 
-The signature of the vector style function passed to the feature has changed. The function now always takes the `feature` and the `resolution` as aguments, the `feature` is no longer bound to `this`.
+The signature of the vector style function passed to the feature has changed. The function now always takes the `feature` and the `resolution` as arguments, the `feature` is no longer bound to `this`.
 
 Old code:
 ```js

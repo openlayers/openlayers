@@ -241,7 +241,7 @@ WebGLContext.prototype.getProgram = function(fragmentShaderObject, vertexShaderO
 
 
 /**
- * FIXME empy description for jsdoc
+ * FIXME empty description for jsdoc
  */
 WebGLContext.prototype.handleWebGLContextLost = function() {
   clear(this.bufferCache_);
@@ -255,7 +255,7 @@ WebGLContext.prototype.handleWebGLContextLost = function() {
 
 
 /**
- * FIXME empy description for jsdoc
+ * FIXME empty description for jsdoc
  */
 WebGLContext.prototype.handleWebGLContextRestored = function() {
 };

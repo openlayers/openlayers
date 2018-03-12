@@ -344,7 +344,7 @@ View.prototype.applyOptions_ = function(options) {
 /**
  * Get an updated version of the view options used to construct the view.  The
  * current resolution (or zoom), center, and rotation are applied to any stored
- * options.  The provided options can be uesd to apply new min/max zoom or
+ * options.  The provided options can be used to apply new min/max zoom or
  * resolution limits.
  * @param {module:ol/View~ViewOptions} newOptions New options to be applied.
  * @return {module:ol/View~ViewOptions} New options updated with the current view state.

@@ -58,7 +58,7 @@ describe('ol.structs.LinkedList', function() {
       expect(ll.head_.data).to.be(item);
     });
 
-    it('otherwise sets the cursor to the prevous item', function() {
+    it('otherwise sets the cursor to the previous item', function() {
       ll = new LinkedList(false);
       ll.insertItem(item);
       ll.insertItem(item2);

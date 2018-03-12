@@ -203,7 +203,7 @@ function readRawFeature(pbf, layer, i) {
 
 /**
  * Read the raw geometry from the pbf offset stored in a raw feature's geometry
- * proeprty.
+ * property.
  * @suppress {missingProperties}
  * @param {ol.ext.PBF} pbf PBF.
  * @param {Object} feature Raw feature.

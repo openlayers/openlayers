@@ -284,7 +284,7 @@ inherits(Modify, PointerInteraction);
 
 /**
  * The segment index assigned to a circle's center when
- * breaking up a cicrle into ModifySegmentDataType segments.
+ * breaking up a circle into ModifySegmentDataType segments.
  * @type {number}
  */
 const CIRCLE_CENTER_INDEX = 0;

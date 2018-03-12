@@ -253,7 +253,7 @@ ol.PreRenderFunction;
 
 /**
  * A function that takes an array of input data, performs some operation, and
- * returns an array of ouput data.
+ * returns an array of output data.
  * For `pixel` type operations, the function will be called with an array of
  * pixels, where each pixel is an array of four numbers (`[r, g, b, a]`) in the
  * range of 0 - 255. It should return a single pixel array.
