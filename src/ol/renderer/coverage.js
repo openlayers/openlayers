@@ -1,12 +1,12 @@
 /**
  * @module ol/renderer/coverage
  */
-import _ol_renderer_vector_ from './vector.js';
+import {getTolerance as getVectorTolerance} from './vector.js';
 import {equivalent} from '../proj.js';
 import CoverageType from '../coverage/CoverageType.js';
 import LinkedList from '../structs/LinkedList.js';
 import RBush from '../structs/RBush.js';
-import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
+import {translate, rotate} from '../geom/flat/transform.js';
 import {getTransformFromProjections} from '../proj.js';
 import ReplayType from '../render/ReplayType.js';
 
@@ -16,7 +16,7 @@ import ReplayType from '../render/ReplayType.js';
  * @return {number} Pixel tolerance.
  */
 export function getTolerance(resolution, pixelRatio) {
-  return _ol_renderer_vector_.getTolerance(resolution, pixelRatio);
+  return getVectorTolerance(resolution, pixelRatio);
 }
 
 
@@ -43,47 +43,47 @@ export function createGrid(band, shape, type, inProj, outProj, maxAlpha, pattern
   // TODO: It might be beneficial to use affine transforms with transform2D here.
   if (type === CoverageType.RECTANGULAR) {
     rowTransforms.insertItem({
-      translate: [0, resolution[1]],
-      rotate: 0,
+      translation: [0, resolution[1]],
+      rotation: 0,
       offset: 0
     });
     colTransforms.insertItem({
-      translate: [resolution[0], 0],
-      rotate: 0
+      translation: [resolution[0], 0],
+      rotation: 0
     });
   } else if (type === CoverageType.HEXAGONAL) {
     const translateX = resolution[1] * (2 / 3);
     rowTransforms.insertItem({
-      translate: [resolution[0] / 2, translateX],
-      rotate: 0,
+      translation: [resolution[0] / 2, translateX],
+      rotation: 0,
       offset: 0
     });
     rowTransforms.insertItem({
-      translate: [-resolution[0] / 2, translateX],
-      rotate: 0,
+      translation: [-resolution[0] / 2, translateX],
+      rotation: 0,
       offset: 0
     });
     colTransforms.insertItem({
-      translate: [resolution[0], 0],
-      rotate: 0
+      translation: [resolution[0], 0],
+      rotation: 0
     });
   } else {
     const rows = pattern.rowPattern;
     for (let i = 0, ii = rows.length; i < ii; ++i) {
-      const translate = rows[i].translate;
+      const currTranslate = rows[i].translation;
       rowTransforms.insertItem({
-        translate: [translate[0] * resolution[0], translate[1] * resolution[1]],
-        rotate: rows[i].rotate,
+        translation: [currTranslate[0] * resolution[0], currTranslate[1] * resolution[1]],
+        rotation: rows[i].rotation,
         offset: rows[i].offset
       });
     }
 
     const cols = pattern.columnPattern;
     for (let i = 0, ii = cols.length; i < ii; ++i) {
-      const translate = cols[i].translate;
+      const currTranslate = cols[i].translation;
       colTransforms.insertItem({
-        translate: [translate[0] * resolution[0], translate[1] * resolution[1]],
-        rotate: cols[i].rotate
+        translation: [currTranslate[0] * resolution[0], currTranslate[1] * resolution[1]],
+        rotation: cols[i].rotation
       });
     }
   }
@@ -101,11 +101,9 @@ export function createGrid(band, shape, type, inProj, outProj, maxAlpha, pattern
         let extentCursor = [colCursor[0], colCursor[1]];
         let cell = shape;
         if (rotation) {
-          cell = _ol_geom_flat_transform_.rotate(cell, 0, cell.length, 2,
-            rotation, [0, 0]);
+          cell = rotate(cell, 0, cell.length, 2, rotation, [0, 0]);
         }
-        cell = _ol_geom_flat_transform_.translate(cell, 0, cell.length, 2,
-          colCursor[0], colCursor[1]);
+        cell = translate(cell, 0, cell.length, 2, colCursor[0], colCursor[1]);
         if (reproj) {
           cell = transform(cell);
           extentCursor = transform(extentCursor);
@@ -121,14 +119,14 @@ export function createGrid(band, shape, type, inProj, outProj, maxAlpha, pattern
           extentCursor[1]]);
       }
       const nextColTransform = colTransforms.nextItem();
-      colCursor = [colCursor[0] + nextColTransform.translate[0],
-        colCursor[1] + nextColTransform.translate[1]];
-      rotation += nextColTransform.rotate;
+      colCursor = [colCursor[0] + nextColTransform.translation[0],
+        colCursor[1] + nextColTransform.translation[1]];
+      rotation += nextColTransform.rotation;
     }
     const nextRowTransform = rowTransforms.nextItem();
-    rowCursor = [rowCursor[0] + nextRowTransform.translate[0],
-      rowCursor[1] + nextRowTransform.translate[1]];
-    rotation = nextRowTransform.rotate;
+    rowCursor = [rowCursor[0] + nextRowTransform.translation[0],
+      rowCursor[1] + nextRowTransform.translation[1]];
+    rotation = nextRowTransform.rotation;
     colTransforms.lastItem();
     for (let j = 0; j < nextRowTransform.offset; ++j) {
       colTransforms.nextItem();

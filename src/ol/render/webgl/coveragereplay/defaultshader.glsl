@@ -1,4 +1,4 @@
-//! NAMESPACE=_ol_render_webgl_coveragereplay_defaultshader_
+//! MODULE=ol/render/webgl/coveragereplay/defaultshader
 
 
 //! COMMON

@@ -10,8 +10,8 @@ import {containsExtent, getWidth, buffer, containsCoordinate} from '../../extent
 import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
 import {getTolerance, createGrid, renderCoverage} from '../coverage.js';
 import CoverageType from '../../coverage/CoverageType.js';
-import _ol_geom_flat_deflate_ from '../../geom/flat/deflate.js';
-import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
+import {deflateCoordinates} from '../../geom/flat/deflate.js';
+import {scale} from '../../geom/flat/transform.js';
 import {equivalent, transformExtent} from '../../proj.js';
 import Stroke from '../../style/Stroke.js';
 import State from '../../source/State.js';
@@ -166,7 +166,7 @@ CanvasCoverageLayerRenderer.prototype.prepareFrame = function(frameState,
 
   const flatCoverage = [];
   const bufferedExtent = buffer(extent, this.buffer_);
-  _ol_geom_flat_deflate_.coordinates(flatCoverage, 0,
+  deflateCoordinates(flatCoverage, 0,
     this.coverageCache_.getInExtent(bufferedExtent), this.numVertices_ + 4);
   if (!flatCoverage.length) {
     return false;
@@ -232,9 +232,9 @@ CanvasCoverageLayerRenderer.prototype.getCellCoordinates_ = function(type, resol
         0, halfY, -halfX, fourthY];
     case CoverageType.CUSTOM:
       const shape = [];
-      _ol_geom_flat_deflate_.coordinates(shape, 0, pattern.shape, 2);
-      return _ol_geom_flat_transform_.scale(shape, 0, shape.length, 2,
-        resolution[0], resolution[1], [0, 0]);
+      deflateCoordinates(shape, 0, pattern.shape, 2);
+      return scale(shape, 0, shape.length, 2, resolution[0], resolution[1],
+        [0, 0]);
     // Default type is CoverageType.RECTANGULAR.
     default:
       return [-halfX, -halfY, halfX, -halfY, halfX, halfY, -halfX, halfY];

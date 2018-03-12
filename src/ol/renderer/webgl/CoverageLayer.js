@@ -10,8 +10,8 @@ import {containsExtent, buffer, containsCoordinate} from '../../extent.js';
 import WebGLReplayGroup from '../../render/webgl/ReplayGroup.js';
 import {getTolerance, createGrid, renderCoverage} from '../coverage.js';
 import CoverageType from '../../coverage/CoverageType.js';
-import _ol_geom_flat_deflate_ from '../../geom/flat/deflate.js';
-import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
+import {deflateCoordinates} from '../../geom/flat/deflate.js';
+import {scale} from '../../geom/flat/transform.js';
 import Tessellator from '../../webgl/Tessellator.js';
 import {equivalent, transformExtent} from '../../proj.js';
 import State from '../../source/State.js';
@@ -161,7 +161,7 @@ WebGLCoverageLayerRenderer.prototype.prepareFrame = function(frameState, layerSt
 
   const flatCoverage = [];
   const bufferedExtent = buffer(extent, this.buffer_);
-  _ol_geom_flat_deflate_.coordinates(flatCoverage, 0,
+  deflateCoordinates(flatCoverage, 0,
     this.coverageCache_.getInExtent(bufferedExtent), this.numVertices_ + 4);
   if (!flatCoverage.length) {
     return false;
@@ -239,8 +239,8 @@ WebGLCoverageLayerRenderer.prototype.getCellCoordinates_ = function(type, resolu
       break;
     case CoverageType.CUSTOM:
       let cellShape = [];
-      _ol_geom_flat_deflate_.coordinates(cellShape, 0, pattern.shape, 2);
-      cellShape = _ol_geom_flat_transform_.scale(cellShape, 0, cellShape.length, 2,
+      deflateCoordinates(cellShape, 0, pattern.shape, 2);
+      cellShape = scale(cellShape, 0, cellShape.length, 2,
         resolution[0], resolution[1], [0, 0]);
       const tessellator = new Tessellator(cellShape, [], 2);
       shape.vertices = tessellator.vertices;

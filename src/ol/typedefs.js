@@ -141,11 +141,11 @@ ol.CircleRenderOptions;
 
 /**
  * @typedef {{binary: (boolean|undefined),
- *             extent: ol.Extent,
+ *             extent: module:ol/extent~Extent,
  *             nodata: (number|undefined),
  *             matrix: (ArrayBuffer|Array.<number>),
- *             origin: (ol.Coordinate|undefined),
- *             resolution: ol.Size,
+ *             origin: (module:ol/coordinate~Coordinate|undefined),
+ *             resolution: module:ol/size~Size,
  *             stride: number,
  *             type: ol.coverage.MatrixType}}
  */
@@ -176,7 +176,7 @@ ol.CoverageDrawFunctionType;
  * across the bounding box of the cell (e.g. `[[0, 0], [1, 0], [1, 1], [0, 1]]`
  * is a square).
  *
- * @typedef {{shape: Array.<ol.Coordinate>,
+ * @typedef {{shape: Array.<module:ol/coordinate~Coordinate>,
  *            columnPattern: Array.<ol.CoverageColumnPattern>,
  *            rowPattern: Array.<ol.CoverageRowPattern>}}
  */
@@ -209,10 +209,10 @@ ol.CoverageRowPattern;
 
 /**
  * Convenience type for passing around common coverage properties internally.
- * @typedef {{extent: ol.Extent,
+ * @typedef {{extent: module:ol/extent~Extent,
  *            nodata: (number|null),
- *            origin: ol.Coordinate,
- *            resolution: ol.Size,
+ *            origin: module:ol/coordinate~Coordinate,
+ *            resolution: module:ol/size~Size,
  *            stride: number,
  *            type: ol.coverage.CoverageType}}
  */

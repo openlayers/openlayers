@@ -1,7 +1,8 @@
 /**
  * @module ol/layer/Coverage
  */
-import {inherits, nullFunction} from '../index.js';
+import {inherits} from '../index.js';
+import {UNDEFINED} from '../functions.js';
 import {assign} from '../obj.js';
 import LayerType from '../LayerType.js';
 import Layer from '../layer/Layer.js';
@@ -75,7 +76,7 @@ inherits(CoverageLayer, Layer);
  * Dummy function for compatibility reasons.
  * @return {undefined} False.
  */
-CoverageLayer.prototype.getDeclutter = nullFunction;
+CoverageLayer.prototype.getDeclutter = UNDEFINED;
 
 
 /**

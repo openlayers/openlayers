@@ -3,12 +3,12 @@
  */
 import {inherits} from '../../index.js';
 import {extend} from '../../array.js';
-import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
-import _ol_render_webgl_coveragereplay_defaultshader_ from './coveragereplay/defaultshader.js';
-import _ol_render_webgl_coveragereplay_defaultshader_Locations_ from './coveragereplay/defaultshader/Locations.js';
+import {translate} from '../../geom/flat/transform.js';
+import {fragment, vertex} from './coveragereplay/defaultshader.js';
+import Locations from './coveragereplay/defaultshader/Locations.js';
 import WebGLReplay from './Replay.js';
-import _ol_webgl_ from '../../webgl.js';
-import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
+import {FLOAT} from '../../webgl.js';
+import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
  * @constructor
@@ -57,7 +57,7 @@ WebGLCoverageReplay.prototype.drawCoverage = function(flatCoverage, cellStride) 
       flatCoverage[i + alphaOffset]];
 
     for (let j = i, jj = i + cellStride; j < jj; j += 2) {
-      extend(this.vertices, _ol_geom_flat_transform_.translate(flatCoverage, j,
+      extend(this.vertices, translate(flatCoverage, j,
         j + 2, 2, -this.origin[0], -this.origin[1]));
       extend(this.vertices, colorArr);
     }
@@ -76,10 +76,10 @@ WebGLCoverageReplay.prototype.drawCoverage = function(flatCoverage, cellStride) 
  **/
 WebGLCoverageReplay.prototype.finish = function(context) {
   // create, bind, and populate the vertices buffer
-  this.verticesBuffer = new _ol_webgl_Buffer_(this.vertices);
+  this.verticesBuffer = new WebGLBuffer(this.vertices);
 
   // create, bind, and populate the indices buffer
-  this.indicesBuffer = new _ol_webgl_Buffer_(this.indices);
+  this.indicesBuffer = new WebGLBuffer(this.indices);
 
   this.startIndices.push(this.indices.length);
 
@@ -110,14 +110,14 @@ WebGLCoverageReplay.prototype.getDeleteResourcesFunction = function(context) {
  */
 WebGLCoverageReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
   // get the program
-  const fragmentShader = _ol_render_webgl_coveragereplay_defaultshader_.fragment;
-  const vertexShader = _ol_render_webgl_coveragereplay_defaultshader_.vertex;
+  const fragmentShader = fragment;
+  const vertexShader = vertex;
   const program = context.getProgram(fragmentShader, vertexShader);
 
   // get the locations
   let locations;
   if (!this.defaultLocations_) {
-    locations = new _ol_render_webgl_coveragereplay_defaultshader_Locations_(gl, program);
+    locations = new Locations(gl, program);
     this.defaultLocations_ = locations;
   } else {
     locations = this.defaultLocations_;
@@ -127,11 +127,11 @@ WebGLCoverageReplay.prototype.setUpProgram = function(gl, context, size, pixelRa
 
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_position);
-  gl.vertexAttribPointer(locations.a_position, 2, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_position, 2, FLOAT,
     false, 24, 0);
 
   gl.enableVertexAttribArray(locations.a_color);
-  gl.vertexAttribPointer(locations.a_color, 4, _ol_webgl_.FLOAT,
+  gl.vertexAttribPointer(locations.a_color, 4, FLOAT,
     false, 24, 8);
 
   return locations;

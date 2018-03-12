@@ -2,7 +2,7 @@
  * @module ol/coverage/Image
  */
 import {inherits} from '../index.js';
-import _ol_ImageBase_ from '../ImageBase.js';
+import ImageBase from '../ImageBase.js';
 import ImageState from '../ImageState.js';
 import {getHeight} from '../extent.js';
 import {createCanvasContext2D} from '../dom.js';
@@ -18,7 +18,7 @@ import {createCanvasContext2D} from '../dom.js';
  */
 const CoverageImage = function(extent, pixelRatio, attributions, band, coverageDrawFunc) {
 
-  _ol_ImageBase_.call(this, extent, undefined, pixelRatio, ImageState.IDLE,
+  ImageBase.call(this, extent, undefined, pixelRatio, ImageState.IDLE,
     attributions);
 
   /**
@@ -47,7 +47,7 @@ const CoverageImage = function(extent, pixelRatio, attributions, band, coverageD
 
 };
 
-inherits(CoverageImage, _ol_ImageBase_);
+inherits(CoverageImage, ImageBase);
 
 
 /**
