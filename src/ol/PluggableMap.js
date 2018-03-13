@@ -80,7 +80,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {module:ol/Collection~Collection.<module:ol/interaction/Interaction~Interaction>} [interactions]
  * @property {Element|Document} keyboardEventTarget
  * @property {module:ol/Collection~Collection.<module:ol/Overlay~Overlay>} overlays
- * @property {olx.MapRendererPlugin} mapRendererPlugin
+ * @property {module:ol/plugins~MapRendererPlugin} mapRendererPlugin
  * @property {Object.<string, *>} values
  */
 
@@ -1461,7 +1461,7 @@ function createOptionsInternal(options) {
   }
 
   /**
-   * @type {olx.MapRendererPlugin}
+   * @type {module:ol/plugins~MapRendererPlugin}
    */
   let mapRendererPlugin;
 
