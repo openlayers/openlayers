@@ -149,7 +149,7 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
     const vectorRenderer = this.vectorRenderer_;
     if (vectorRenderer) {
       const context = vectorRenderer.context;
-      const imageFrameState = /** @type {olx.FrameState} */ (assign({}, frameState, {
+      const imageFrameState = /** @type {module:ol/PluggableMap~FrameState} */ (assign({}, frameState, {
         size: [
           getWidth(renderedExtent) / viewResolution,
           getHeight(renderedExtent) / viewResolution

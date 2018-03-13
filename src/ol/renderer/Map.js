@@ -48,7 +48,7 @@ inherits(MapRenderer, Disposable);
 
 
 /**
- * @param {olx.FrameState} frameState FrameState.
+ * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
  * @protected
  */
 MapRenderer.prototype.calculateMatrices2D = function(frameState) {
@@ -79,7 +79,7 @@ MapRenderer.prototype.removeLayerRenderers = function() {
 
 /**
  * @param {ol.PluggableMap} map Map.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  */
 function expireIconCache(map, frameState) {
   iconImageCache.expire();
@@ -88,7 +88,7 @@ function expireIconCache(map, frameState) {
 
 /**
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
- * @param {olx.FrameState} frameState FrameState.
+ * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {function(this: S, (module:ol/Feature~Feature|ol.render.Feature),
  *     ol.layer.Layer): T} callback Feature callback.
@@ -158,7 +158,7 @@ MapRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameSta
 /**
  * @abstract
  * @param {module:ol~Pixel} pixel Pixel.
- * @param {olx.FrameState} frameState FrameState.
+ * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
  * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
@@ -176,7 +176,7 @@ MapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback
 
 /**
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
- * @param {olx.FrameState} frameState FrameState.
+ * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
  *     function, only layers which are visible and for which this function
@@ -287,14 +287,14 @@ MapRenderer.prototype.removeLayerRendererByKey_ = function(layerKey) {
 
 /**
  * Render.
- * @param {?olx.FrameState} frameState Frame state.
+ * @param {?module:ol/PluggableMap~FrameState} frameState Frame state.
  */
 MapRenderer.prototype.renderFrame = UNDEFINED;
 
 
 /**
  * @param {ol.PluggableMap} map Map.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @private
  */
 MapRenderer.prototype.removeUnusedLayerRenderers_ = function(map, frameState) {
@@ -307,7 +307,7 @@ MapRenderer.prototype.removeUnusedLayerRenderers_ = function(map, frameState) {
 
 
 /**
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @protected
  */
 MapRenderer.prototype.scheduleExpireIconCache = function(frameState) {
@@ -316,7 +316,7 @@ MapRenderer.prototype.scheduleExpireIconCache = function(frameState) {
 
 
 /**
- * @param {!olx.FrameState} frameState Frame state.
+ * @param {!module:ol/PluggableMap~FrameState} frameState Frame state.
  * @protected
  */
 MapRenderer.prototype.scheduleRemoveUnusedLayerRenderers = function(frameState) {

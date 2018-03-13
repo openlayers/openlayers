@@ -40,7 +40,7 @@ inherits(CanvasLayerRenderer, LayerRenderer);
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/extent~Extent} extent Clip extent.
  * @protected
  */
@@ -74,7 +74,7 @@ CanvasLayerRenderer.prototype.clip = function(context, frameState, extent) {
 /**
  * @param {ol.render.EventType} type Event type.
  * @param {CanvasRenderingContext2D} context Context.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/transform~Transform=} opt_transform Transform.
  * @private
  */
@@ -100,7 +100,7 @@ CanvasLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, fr
 
 /**
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
- * @param {olx.FrameState} frameState FrameState.
+ * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
  * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
@@ -120,7 +120,7 @@ CanvasLayerRenderer.prototype.forEachLayerAtCoordinate = function(coordinate, fr
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @param {module:ol/transform~Transform=} opt_transform Transform.
  * @protected
@@ -132,7 +132,7 @@ CanvasLayerRenderer.prototype.postCompose = function(context, frameState, layerS
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/transform~Transform=} opt_transform Transform.
  * @protected
  */
@@ -143,7 +143,7 @@ CanvasLayerRenderer.prototype.preCompose = function(context, frameState, opt_tra
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/transform~Transform=} opt_transform Transform.
  * @protected
  */
@@ -153,7 +153,7 @@ CanvasLayerRenderer.prototype.dispatchRenderEvent = function(context, frameState
 
 
 /**
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {number} offsetX Offset on the x-axis in view coordinates.
  * @protected
  * @return {!module:ol/transform~Transform} Transform.
@@ -174,7 +174,7 @@ CanvasLayerRenderer.prototype.getTransform = function(frameState, offsetX) {
 
 /**
  * @abstract
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @param {CanvasRenderingContext2D} context Context.
  */
@@ -182,7 +182,7 @@ CanvasLayerRenderer.prototype.composeFrame = function(frameState, layerState, co
 
 /**
  * @abstract
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @return {boolean} whether composeFrame should be called.
  */

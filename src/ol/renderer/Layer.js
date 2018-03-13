@@ -34,7 +34,7 @@ inherits(LayerRenderer, Observable);
 
 /**
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {function(this: S, (module:ol/Feature~Feature|ol.render.Feature), ol.layer.Layer): T}
  *     callback Feature callback.
@@ -47,7 +47,7 @@ LayerRenderer.prototype.forEachFeatureAtCoordinate = UNDEFINED;
 
 /**
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @return {boolean} Is there a feature at the given coordinate?
  */
 LayerRenderer.prototype.hasFeatureAtCoordinate = FALSE;
@@ -137,7 +137,7 @@ LayerRenderer.prototype.renderIfReadyAndVisible = function() {
 
 
 /**
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {ol.source.Tile} tileSource Tile source.
  * @protected
  */
@@ -146,7 +146,7 @@ LayerRenderer.prototype.scheduleExpireCache = function(frameState, tileSource) {
     /**
      * @param {ol.source.Tile} tileSource Tile source.
      * @param {ol.PluggableMap} map Map.
-     * @param {olx.FrameState} frameState Frame state.
+     * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
      */
     const postRenderFunction = function(tileSource, map, frameState) {
       const tileSourceKey = getUid(tileSource).toString();
@@ -194,7 +194,7 @@ LayerRenderer.prototype.updateUsedTiles = function(usedTiles, tileSource, z, til
  * - registers idle tiles in frameState.wantedTiles so that they are not
  *   discarded by the tile queue
  * - enqueues missing tiles
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {ol.source.Tile} tileSource Tile source.
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @param {number} pixelRatio Pixel ratio.

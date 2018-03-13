@@ -57,7 +57,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 
 /**
- * @typedef {function(module:ol/PluggableMap~PluggableMap, ?olx.FrameState): boolean} PostRenderFunction
+ * @typedef {function(module:ol/PluggableMap~PluggableMap, ?module:ol/PluggableMap~FrameState): boolean} PostRenderFunction
  */
 
 
@@ -218,7 +218,7 @@ const PluggableMap = function(options) {
 
   /**
    * @private
-   * @type {?olx.FrameState}
+   * @type {?module:ol/PluggableMap~FrameState}
    */
   this.frameState_ = null;
 
@@ -1224,7 +1224,7 @@ PluggableMap.prototype.renderFrame_ = function(time) {
   const view = this.getView();
   const extent = createEmpty();
   const previousFrameState = this.frameState_;
-  /** @type {?olx.FrameState} */
+  /** @type {?module:ol/PluggableMap~FrameState} */
   let frameState = null;
   if (size !== undefined && hasArea(size) && view && view.isDef()) {
     const viewHints = view.getHints(this.frameState_ ? this.frameState_.viewHints : undefined);
@@ -1241,7 +1241,7 @@ PluggableMap.prototype.renderFrame_ = function(time) {
       focus[0] = Math.round(focus[0] / pixelResolution) * pixelResolution;
       focus[1] = Math.round(focus[1] / pixelResolution) * pixelResolution;
     }
-    frameState = /** @type {olx.FrameState} */ ({
+    frameState = /** @type {module:ol/PluggableMap~FrameState} */ ({
       animate: false,
       coordinateToPixelTransform: this.coordinateToPixelTransform_,
       extent: extent,

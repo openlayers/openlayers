@@ -91,7 +91,7 @@ inherits(WebGLLayerRenderer, LayerRenderer);
 
 
 /**
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {number} framebufferDimension Framebuffer dimension.
  * @protected
  */
@@ -137,7 +137,7 @@ WebGLLayerRenderer.prototype.bindFramebuffer = function(frameState, framebufferD
 
 
 /**
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @param {ol.webgl.Context} context Context.
  */
@@ -184,7 +184,7 @@ WebGLLayerRenderer.prototype.composeFrame = function(frameState, layerState, con
 /**
  * @param {ol.render.EventType} type Event type.
  * @param {ol.webgl.Context} context WebGL context.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @private
  */
 WebGLLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, frameState) {
@@ -243,7 +243,7 @@ WebGLLayerRenderer.prototype.handleWebGLContextLost = function() {
 
 /**
  * @abstract
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @param {ol.webgl.Context} context Context.
  * @return {boolean} whether composeFrame should be called.
@@ -254,7 +254,7 @@ WebGLLayerRenderer.prototype.prepareFrame = function(frameState, layerState, con
 /**
  * @abstract
  * @param {module:ol~Pixel} pixel Pixel.
- * @param {olx.FrameState} frameState FrameState.
+ * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
  * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.

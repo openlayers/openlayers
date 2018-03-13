@@ -142,7 +142,7 @@ const WebGLMapRenderer = function(container, map) {
 
   /**
    * @param {ol.PluggableMap} map Map.
-   * @param {?olx.FrameState} frameState Frame state.
+   * @param {?module:ol/PluggableMap~FrameState} frameState Frame state.
    * @return {boolean} false.
    * @this {ol.renderer.webgl.Map}
    */
@@ -261,7 +261,7 @@ WebGLMapRenderer.prototype.bindTileTexture = function(tile, tileSize, tileGutter
 
 /**
  * @param {ol.render.EventType} type Event type.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @private
  */
 WebGLMapRenderer.prototype.dispatchComposeEvent_ = function(type, frameState) {
@@ -311,7 +311,7 @@ WebGLMapRenderer.prototype.disposeInternal = function() {
 
 /**
  * @param {ol.PluggableMap} map Map.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @private
  */
 WebGLMapRenderer.prototype.expireCache_ = function(map, frameState) {
