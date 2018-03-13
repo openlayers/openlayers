@@ -80,10 +80,22 @@ CanvasImageLayerRenderer['create'] = function(mapRenderer, layer) {
       const candidate = /** @type {Object.<string, Function>} */ (candidates[i]);
       if (candidate !== CanvasImageLayerRenderer && candidate['handles'](RendererType.CANVAS, layer)) {
         renderer.setVectorRenderer(candidate['create'](mapRenderer, layer));
+        break;
       }
     }
   }
   return renderer;
+};
+
+
+/**
+ * @inheritDoc
+ */
+CanvasImageLayerRenderer.prototype.disposeInternal = function() {
+  if (this.vectorRenderer_) {
+    this.vectorRenderer_.dispose();
+  }
+  IntermediateCanvasRenderer.prototype.disposeInternal.call(this);
 };
 
 
@@ -210,6 +222,9 @@ CanvasImageLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordin
  * @param {ol.renderer.canvas.VectorLayer} renderer Vector renderer.
  */
 CanvasImageLayerRenderer.prototype.setVectorRenderer = function(renderer) {
+  if (this.vectorRenderer_) {
+    this.vectorRenderer_.dispose();
+  }
   this.vectorRenderer_ = renderer;
 };
 export default CanvasImageLayerRenderer;
