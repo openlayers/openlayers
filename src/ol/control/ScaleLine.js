@@ -27,13 +27,13 @@ const LEADING_DIGITS = [1, 2, 5];
 
 /**
  * @typedef {Object} Options
- * @property {string|undefined} className CSS Class name. Default is `'ol-scale-line'`.
- * @property {number|undefined} minWidth Minimum width in pixels. Default is `64`.
- * @property {function(ol.MapEvent)|undefined} render Function called when the control
+ * @property {string} [className='ol-scale-line'] CSS Class name.
+ * @property {number} [minWidth=64] Minimum width in pixels.
+ * @property {function(ol.MapEvent)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
- * @property {Element|string|undefined} target Specify a target if you want the control
+ * @property {Element|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
- * @property {ol.control.ScaleLineUnits|string|undefined} units Units. Default is `'metric'`.
+ * @property {ol.control.ScaleLineUnits|string} [units='metric'] Units.
  */
 
 

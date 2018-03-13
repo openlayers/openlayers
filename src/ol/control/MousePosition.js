@@ -23,18 +23,15 @@ const COORDINATE_FORMAT = 'coordinateFormat';
 
 /**
  * @typedef {Object} Options
- * @property {string|undefined} className CSS class name. Default is
- * `'ol-mouse-position'`.
- * @property {module:ol/coordinate~CoordinateFormat|undefined} coordinateFormat
- * Coordinate format.
+ * @property {string} [className='ol-mouse-position'] CSS class name.
+ * @property {module:ol/coordinate~CoordinateFormat} [coordinateFormat] Coordinate format.
  * @property {ol.ProjectionLike} projection Projection.
- * @property {function(ol.MapEvent)|undefined} render Function called when the
+ * @property {function(ol.MapEvent)} [render] Function called when the
  * control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
- * @property {Element|string|undefined} target Specify a target if you want the
+ * @property {Element|string} [target] Specify a target if you want the
  * control to be rendered outside of the map's viewport.
- * @property {string|undefined} undefinedHTML Markup for undefined coordinates.
- * Default is `''` (empty string).
+ * @property {string} [undefinedHTML=''] Markup for undefined coordinates.
  */
 
 
