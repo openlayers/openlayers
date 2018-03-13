@@ -31,7 +31,7 @@ const Direction = {
  * @property {number} [duration=200] Animation duration in milliseconds.
  * @property {number|undefined} maxResolution Maximum resolution.
  * @property {number|undefined} minResolution Minimum resolution.
- * @property {function(ol.MapEvent)|undefined} render Function called when the control
+ * @property {function(ol.MapEvent)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  */
 

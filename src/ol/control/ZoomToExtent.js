@@ -10,14 +10,13 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 
 /**
  * @typedef {Object} Options
- * @property {string|undefined} className Class name. Default is `'ol-zoom-extent'`.
- * @property {Element|string|undefined} target Specify a target if you want the control
+ * @property {string} [className='ol-zoom-extent'] Class name.
+ * @property {Element|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
- * @property {string|Element|undefined} label Text label to use for the button. Default
- * is `'E'`. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|undefined} tipLabel Text label to use for the button tip. Default
- * is `'Zoom to extent'`.
- * @property {ol.Extent|undefined} extent The extent to zoom to. If undefined the validity
+ * @property {string|Element} [label='E'] Text label to use for the button.
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @property {string} [tipLabel='Zoom to extent'] Text label to use for the button tip.
+ * @property {ol.Extent} [extent] The extent to zoom to. If undefined the validity
  * extent of the view projection is used.
  */
 
