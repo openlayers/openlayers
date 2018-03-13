@@ -11,18 +11,16 @@ import {easeOut} from '../easing.js';
 
 /**
  * @typedef {Object} Options
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
- * @property {string|undefined} className CSS class name. Default is `'ol-zoom'`.
- * @property {string|Element|undefined} zoomInLabel Text label to use for the zoom-in
- * button. Default is `'+'`. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|Element|undefined} zoomOutLabel Text label to use for the zoom-out button.
- * Default is `'-'`. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|undefined} zoomInTipLabel Text label to use for the button tip. Default is
- * `'Zoom in'`.
- * @property {string|undefined} zoomOutTipLabel Text label to use for the button tip. Default is
- * `'Zoom out'`.
- * @property {number|undefined} delta The zoom delta applied on each click.
- * @property {Element|string|undefined} target Specify a target if you want the control to be
+ * @property {number|undefined} [duration=250] Animation duration in milliseconds.
+ * @property {string|undefined} [className='ol-zoom'] CSS class name.
+ * @property {string|Element|undefined} [zoomInLabel='+'] Text label to use for the zoom-in
+ * button. Instead of text, also an element (e.g. a `span` element) can be used.
+ * @property {string|Element|undefined} [zoomOutLabel='-'] Text label to use for the zoom-out button.
+ * Instead of text, also an element (e.g. a `span` element) can be used.
+ * @property {string|undefined} [zoomInTipLabel='Zoom in'] Text label to use for the button tip.
+ * @property {string|undefined} [zoomOutTipLabel='Zoom out'] Text label to use for the button tip.
+ * @property {number|undefined} [delta=1] The zoom delta applied on each click.
+ * @property {Element|string|undefined} [target] Specify a target if you want the control to be
  * rendered outside of the map's viewport.
  */
 

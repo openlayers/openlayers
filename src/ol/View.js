@@ -146,9 +146,8 @@ import Units from './proj/Units.js';
  * the animation.
  * @property {ol.Coordinate|undefined} anchor Optional anchor to remained fixed
  * during a rotation or resolution animation.
- * @property {number|undefined} duration The duration of the animation in milliseconds
- * (defaults to `1000`).
- * @property {undefined|function(number):number} easing The easing function used
+ * @property {number|undefined} [duration=1000] The duration of the animation in milliseconds.
+ * @property {undefined|function(number):number} [easing] The easing function used
  * during the animation (defaults to {@link ol.easing.inAndOut}).
  * The function will be called for each frame with a number representing a
  * fraction of the animation's duration.  The function should return a number
