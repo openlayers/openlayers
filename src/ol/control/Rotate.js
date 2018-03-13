@@ -12,17 +12,17 @@ import {inherits} from '../index.js';
 
 /**
  * @typedef {Object} Options
- * @property {string|undefined} [className='ol-rotate'] CSS class name.
- * @property {string|Element|undefined} [label='⇧'] Text label to use for the rotate button.
+ * @property {string} [className='ol-rotate'] CSS class name.
+ * @property {string|Element} [label='⇧'] Text label to use for the rotate button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|undefined} [tipLabel='Reset rotation'] Text label to use for the rotate tip.
- * @property {number|undefined} [duration=250] Animation duration in milliseconds.
- * @property {boolean|undefined} [autoHide=true] Hide the control when rotation is 0.
+ * @property {string} [tipLabel='Reset rotation'] Text label to use for the rotate tip.
+ * @property {number} [duration=250] Animation duration in milliseconds.
+ * @property {boolean} [autoHide=true] Hide the control when rotation is 0.
  * @property {function(ol.MapEvent)|undefined} render Function called when the control should
  * be re-rendered. This is called in a `requestAnimationFrame` callback.
- * @property {function()|undefined} [resetNorth] Function called when the control is clicked.
+ * @property {function()} [resetNorth] Function called when the control is clicked.
  * This will override the default `resetNorth`.
- * @property {Element|string|undefined} [target] Specify a target if you want the control to be
+ * @property {Element|string} [target] Specify a target if you want the control to be
  * rendered outside of the map's viewport.
  */
 
