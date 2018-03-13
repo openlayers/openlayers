@@ -144,10 +144,10 @@ const Overlay = function(options) {
 
   /**
    * @protected
-   * @type {olx.OverlayPanOptions}
+   * @type {module:ol/Overlay~OverlayPanOptions}
    */
   this.autoPanAnimation = options.autoPanAnimation ||
-    /** @type {olx.OverlayPanOptions} */ ({});
+    /** @type {module:ol/Overlay~OverlayPanOptions} */ ({});
 
   /**
    * @protected
