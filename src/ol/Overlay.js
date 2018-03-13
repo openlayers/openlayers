@@ -95,7 +95,7 @@ const Property = {
  *
  * @constructor
  * @extends {module:ol/Object~Object}
- * @param {olx.OverlayOptions} options Overlay options.
+ * @param {module:ol/Overlay~OverlayOptions} options Overlay options.
  * @api
  */
 const Overlay = function(options) {
@@ -104,7 +104,7 @@ const Overlay = function(options) {
 
   /**
    * @protected
-   * @type {olx.OverlayOptions}
+   * @type {module:ol/Overlay~OverlayOptions}
    */
   this.options = options;
 
@@ -594,7 +594,7 @@ Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
 /**
  * returns the options this Overlay has been created with
  * @public
- * @return {olx.OverlayOptions} overlay options
+ * @return {module:ol/Overlay~OverlayOptions} overlay options
  */
 Overlay.prototype.getOptions = function() {
   return this.options;
