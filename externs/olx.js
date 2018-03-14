@@ -6,52 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{className: (string|undefined),
- *     condition: (ol.EventsConditionType|undefined),
- *     minArea: (number|undefined),
- *     boxEndCondition: (ol.DragBoxEndConditionType|undefined)}}
- */
-olx.interaction.DragBoxOptions;
-
-
-/**
- * CSS class name for styling the box. The default is `ol-dragbox`.
- * @type {string|undefined}
- * @api
- */
-olx.interaction.DragBoxOptions.prototype.className;
-
-
-/**
- * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.always}.
- * @type {ol.EventsConditionType|undefined}
- * @api
- */
-olx.interaction.DragBoxOptions.prototype.condition;
-
-
-/**
- * The minimum area of the box in pixel, this value is used by the default
- * `boxEndCondition` function. Default is `64`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.DragBoxOptions.prototype.minArea;
-
-
-/**
- * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
- * {@link ol.Pixel}s to indicate whether a `boxend` event should be fired.
- * Default is `true` if the area of the box is bigger than the `minArea` option.
- * @type {ol.DragBoxEndConditionType|undefined}
- * @api
- */
-olx.interaction.DragBoxOptions.prototype.boxEndCondition;
-
-
-/**
  * @typedef {{condition: (ol.EventsConditionType|undefined),
  *     kinetic: (ol.Kinetic|undefined)}}
  */

@@ -1,19 +1,5 @@
 
 /**
- * @typedef {Object} interaction_DragBoxOptions
- * @property {string|undefined} className CSS class name for styling the box. The default is `ol-dragbox`.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.always}.
- * @property {number|undefined} minArea The minimum area of the box in pixel, this value is used by the default
- * `boxEndCondition` function. Default is `64`.
- * @property {ol.DragBoxEndConditionType|undefined} boxEndCondition A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
- * {@link ol.Pixel}s to indicate whether a `boxend` event should be fired.
- * Default is `true` if the area of the box is bigger than the `minArea` option.
- */
-
-
-/**
  * @typedef {Object} interaction_DragPanOptions
  * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.

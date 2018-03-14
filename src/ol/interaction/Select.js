@@ -99,25 +99,25 @@ const Select = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.condition_ = options.condition ? options.condition : singleClick;
 
   /**
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.addCondition_ = options.addCondition ? options.addCondition : never;
 
   /**
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.removeCondition_ = options.removeCondition ? options.removeCondition : never;
 
   /**
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.toggleCondition_ = options.toggleCondition ? options.toggleCondition : shiftKeyOnly;
 

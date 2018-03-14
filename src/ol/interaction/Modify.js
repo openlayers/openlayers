@@ -108,7 +108,7 @@ const Modify = function(options) {
 
   /**
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.condition_ = options.condition ? options.condition : primaryAction;
 
@@ -123,14 +123,14 @@ const Modify = function(options) {
   };
 
   /**
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    * @private
    */
   this.deleteCondition_ = options.deleteCondition ?
     options.deleteCondition : this.defaultDeleteCondition_;
 
   /**
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    * @private
    */
   this.insertVertexCondition_ = options.insertVertexCondition ?

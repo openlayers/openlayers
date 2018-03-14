@@ -35,7 +35,7 @@ const DragRotateAndZoom = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.condition_ = options.condition ? options.condition : shiftKeyOnly;
 

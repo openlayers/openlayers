@@ -201,7 +201,7 @@ const Draw = function(options) {
   /**
    * A function to decide if a potential finish coordinate is permissible
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.finishCondition_ = options.finishCondition ? options.finishCondition : TRUE;
 
@@ -348,13 +348,13 @@ const Draw = function(options) {
 
   /**
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.condition_ = options.condition ? options.condition : noModifierKeys;
 
   /**
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.freehandCondition_;
   if (options.freehand) {

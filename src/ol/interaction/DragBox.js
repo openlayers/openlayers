@@ -11,26 +11,48 @@ import RenderBox from '../render/Box.js';
 
 
 /**
+ * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
+ * {@link module:ol~Pixel}s and returns a `{boolean}`. If the condition is met,
+ * true should be returned.
+ * @typedef {function(module:ol/MapBrowserEvent~MapBrowserEvent, module:ol~Pixel, module:ol~Pixel):boolean} EndCondition
+ */
+
+
+/**
+ * @typedef {Object} Options
+ * @property {string|undefined} className CSS class name for styling the box. The default is `ol-dragbox`.
+ * @property {module:ol/events/condition~Condition|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol/events/condition~always}.
+ * @property {number|undefined} minArea The minimum area of the box in pixel, this value is used by the default
+ * `boxEndCondition` function. Default is `64`.
+ * @property {module:ol/interaction/DragBox~EndCondition|undefined} boxEndCondition A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
+ * {@link module:ol~Pixel}s to indicate whether a `boxend` event should be fired.
+ * Default is `true` if the area of the box is bigger than the `minArea` option.
+ */
+
+
+/**
  * @enum {string}
  */
 const DragBoxEventType = {
   /**
    * Triggered upon drag box start.
-   * @event ol.interaction.DragBoxEvent#boxstart
+   * @event module:ol/interaction/DragBox~DragBoxEvent#boxstart
    * @api
    */
   BOXSTART: 'boxstart',
 
   /**
    * Triggered on drag when box is active.
-   * @event ol.interaction.DragBoxEvent#boxdrag
+   * @event module:ol/interaction/DragBox~DragBoxEvent#boxdrag
    * @api
    */
   BOXDRAG: 'boxdrag',
 
   /**
    * Triggered upon drag box end.
-   * @event ol.interaction.DragBoxEvent#boxend
+   * @event module:ol/interaction/DragBox~DragBoxEvent#boxend
    * @api
    */
   BOXEND: 'boxend'
@@ -39,13 +61,13 @@ const DragBoxEventType = {
 
 /**
  * @classdesc
- * Events emitted by {@link ol.interaction.DragBox} instances are instances of
+ * Events emitted by {@link module:ol/interaction/DragBox~DragBox} instances are instances of
  * this type.
  *
  * @param {string} type The event type.
  * @param {module:ol/coordinate~Coordinate} coordinate The event coordinate.
  * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Originating event.
- * @extends {ol.events.Event}
+ * @extends {module:ol/events/Event~Event}
  * @constructor
  * @implements {oli.DragBoxEvent}
  */
@@ -75,18 +97,18 @@ inherits(DragBoxEvent, Event);
 /**
  * @classdesc
  * Allows the user to draw a vector box by clicking and dragging on the map,
- * normally combined with an {@link ol.events.condition} that limits
+ * normally combined with an {@link module:ol/events/condition} that limits
  * it to when the shift or other key is held down. This is used, for example,
  * for zooming to a specific area of the map
- * (see {@link ol.interaction.DragZoom} and
- * {@link ol.interaction.DragRotateAndZoom}).
+ * (see {@link module:ol/interaction/DragZoom~DragZoom} and
+ * {@link module:ol/interaction/DragRotateAndZoom}).
  *
  * This interaction is only supported for mouse devices.
  *
  * @constructor
- * @extends {ol.interaction.Pointer}
- * @fires ol.interaction.DragBoxEvent
- * @param {olx.interaction.DragBoxOptions=} opt_options Options.
+ * @extends {module:ol/interaction/Pointer}
+ * @fires module:ol/interaction/DragBox~DragBoxEvent
+ * @param {module:ol/interaction/DragBox~Options=} opt_options Options.
  * @api
  */
 const DragBox = function(opt_options) {
@@ -100,7 +122,7 @@ const DragBox = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
   /**
-   * @type {ol.render.Box}
+   * @type {module:ol/render/Box~Box}
    * @private
    */
   this.box_ = new RenderBox(options.className || 'ol-dragbox');
@@ -119,13 +141,13 @@ const DragBox = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.condition_ = options.condition ? options.condition : always;
 
   /**
    * @private
-   * @type {ol.DragBoxEndConditionType}
+   * @type {module:ol/interaction/DragBox~EndCondition}
    */
   this.boxEndCondition_ = options.boxEndCondition ?
     options.boxEndCondition : defaultBoxEndCondition;
@@ -142,7 +164,7 @@ inherits(DragBox, PointerInteraction);
  * @param {module:ol~Pixel} startPixel The starting pixel of the box.
  * @param {module:ol~Pixel} endPixel The end pixel of the box.
  * @return {boolean} Whether or not the boxend condition should be fired.
- * @this {ol.interaction.DragBox}
+ * @this {module:ol/interaction/DragBox~DragBox}
  */
 function defaultBoxEndCondition(mapBrowserEvent, startPixel, endPixel) {
   const width = endPixel[0] - startPixel[0];
@@ -152,8 +174,8 @@ function defaultBoxEndCondition(mapBrowserEvent, startPixel, endPixel) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {ol.interaction.DragBox}
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {module:ol/interaction/DragBox~DragBox}
  */
 function handleDragEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
@@ -187,9 +209,9 @@ DragBox.prototype.onBoxEnd = UNDEFINED;
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {ol.interaction.DragBox}
+ * @this {module:ol/interaction/DragBox~DragBox}
  */
 function handleUpEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
@@ -209,9 +231,9 @@ function handleUpEvent(mapBrowserEvent) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {ol.interaction.DragBox}
+ * @this {module:ol/interaction/DragBox~DragBox}
  */
 function handleDownEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {

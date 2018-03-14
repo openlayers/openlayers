@@ -154,15 +154,6 @@ ol.DeclutterGroup;
 
 
 /**
- * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
- * {@link module:ol~Pixel}s and returns a `{boolean}`. If the condition is met,
- * true should be returned.
- * @typedef {function(module:ol/MapBrowserEvent~MapBrowserEvent, module:ol~Pixel, module:ol~Pixel):boolean}
- */
-ol.DragBoxEndConditionType;
-
-
-/**
  * Function that takes an array of coordinates and an optional existing geometry as
  * arguments, and returns a geometry. The optional existing geometry is the
  * geometry that is returned when the function is called without a second
@@ -171,15 +162,6 @@ ol.DragBoxEndConditionType;
  *     module:ol/geom/SimpleGeometry~SimpleGeometry}
  */
 ol.DrawGeometryFunctionType;
-
-
-/**
- * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
- * `{boolean}`. If the condition is met, true should be returned.
- *
- * @typedef {function(module:ol/MapBrowserEvent~MapBrowserEvent): boolean}
- */
-ol.EventsConditionType;
 
 
 /**

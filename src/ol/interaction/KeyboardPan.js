@@ -45,7 +45,7 @@ const KeyboardPan = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.condition_ = options.condition !== undefined ?
     options.condition : this.defaultCondition_;
