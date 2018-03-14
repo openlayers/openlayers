@@ -1,14 +1,5 @@
 
 /**
- * @typedef {Object} interaction_DragPanOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.noModifierKeys}.
- * @property {ol.Kinetic|undefined} kinetic Kinetic inertia to apply to the pan.
- */
-
-
-/**
  * @typedef {Object} interaction_DragRotateAndZoomOptions
  * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
