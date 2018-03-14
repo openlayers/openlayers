@@ -16,7 +16,7 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
  * @property {string|Element} [label='E'] Text label to use for the button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [tipLabel='Zoom to extent'] Text label to use for the button tip.
- * @property {ol.Extent} [extent] The extent to zoom to. If undefined the validity
+ * @property {module:ol/extent~Extent} [extent] The extent to zoom to. If undefined the validity
  * extent of the view projection is used.
  */
 

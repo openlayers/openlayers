@@ -13,7 +13,7 @@ import {get as getProjection, equivalent as equivalentProjection, transformExten
  * the `defaultDataProjection` of the format is assigned (where set). If the projection
  * can not be derived from the data and if no `defaultDataProjection` is set for a format,
  * the features will not be reprojected.
- * @property {ol.Extent} extent Tile extent of the tile being read. This is only used and
+ * @property {module:ol/extent~Extent} extent Tile extent of the tile being read. This is only used and
  * required for {@link ol.format.MVT}.
  * @property {ol.ProjectionLike} featureProjection Projection of the feature geometries
  * created by the format reader. If not provided, features will be returned in the
