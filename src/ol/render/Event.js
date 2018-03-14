@@ -10,7 +10,7 @@ import Event from '../events/Event.js';
  * @implements {oli.render.Event}
  * @param {ol.render.EventType} type Type.
  * @param {ol.render.VectorContext=} opt_vectorContext Vector context.
- * @param {olx.FrameState=} opt_frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
  * @param {?CanvasRenderingContext2D=} opt_context Context.
  * @param {?ol.webgl.Context=} opt_glContext WebGL Context.
  */
@@ -29,7 +29,7 @@ const RenderEvent = function(
 
   /**
    * An object representing the current render frame state.
-   * @type {olx.FrameState|undefined}
+   * @type {module:ol/PluggableMap~FrameState|undefined}
    * @api
    */
   this.frameState = opt_frameState;

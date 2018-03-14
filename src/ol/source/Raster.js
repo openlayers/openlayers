@@ -51,7 +51,7 @@ const RasterEventType = {
  * @extends {ol.events.Event}
  * @implements {oli.source.RasterEvent}
  * @param {string} type Type.
- * @param {olx.FrameState} frameState The frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState The frame state.
  * @param {Object} data An object made available to operations.
  */
 const RasterSourceEvent = function(type, frameState, data) {
@@ -145,7 +145,7 @@ const RasterSource = function(options) {
 
   /**
    * The most recently requested frame state.
-   * @type {olx.FrameState}
+   * @type {module:ol/PluggableMap~FrameState}
    * @private
    */
   this.requestedFrameState_;
@@ -165,7 +165,7 @@ const RasterSource = function(options) {
 
   /**
    * @private
-   * @type {olx.FrameState}
+   * @type {module:ol/PluggableMap~FrameState}
    */
   this.frameState_ = {
     animate: false,
@@ -225,12 +225,12 @@ RasterSource.prototype.setOperation = function(operation, opt_lib) {
  * @param {module:ol/extent~Extent} extent The view extent (in map units).
  * @param {number} resolution The view resolution.
  * @param {module:ol/proj/Projection~Projection} projection The view projection.
- * @return {olx.FrameState} The updated frame state.
+ * @return {module:ol/PluggableMap~FrameState} The updated frame state.
  * @private
  */
 RasterSource.prototype.updateFrameState_ = function(extent, resolution, projection) {
 
-  const frameState = /** @type {olx.FrameState} */ (assign({}, this.frameState_));
+  const frameState = /** @type {module:ol/PluggableMap~FrameState} */ (assign({}, this.frameState_));
 
   frameState.viewState = /** @type {olx.ViewState} */ (assign({}, frameState.viewState));
 
@@ -330,7 +330,7 @@ RasterSource.prototype.processSources_ = function() {
 
 /**
  * Called when pixel processing is complete.
- * @param {olx.FrameState} frameState The frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState The frame state.
  * @param {Error} err Any error during processing.
  * @param {ImageData} output The output image data.
  * @param {Object} data The user data.
@@ -378,7 +378,7 @@ let sharedContext = null;
 /**
  * Get image data from a renderer.
  * @param {ol.renderer.canvas.Layer} renderer Layer renderer.
- * @param {olx.FrameState} frameState The frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState The frame state.
  * @param {module:ol/layer/Layer~State} layerState The layer state.
  * @return {ImageData} The image data.
  */

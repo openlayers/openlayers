@@ -32,7 +32,7 @@ const mapRendererPlugins = [];
 
 /**
  * Get all registered map renderer plugins.
- * @return {Array<olx.MapRendererPlugin>} The registered map renderer plugins.
+ * @return {Array<module:ol/plugins~MapRendererPlugin>} The registered map renderer plugins.
  */
 export function getMapRendererPlugins() {
   return mapRendererPlugins;
@@ -66,7 +66,7 @@ export function register(type, plugin) {
   switch (type) {
     case PluginType.MAP_RENDERER: {
       plugins = mapRendererPlugins;
-      plugins.push(/** @type {olx.MapRendererPlugin} */ (plugin));
+      plugins.push(/** @type {module:ol/plugins~MapRendererPlugin} */ (plugin));
       break;
     }
     case PluginType.LAYER_RENDERER: {

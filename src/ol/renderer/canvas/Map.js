@@ -86,7 +86,7 @@ CanvasMapRenderer['create'] = function(container, map) {
 
 /**
  * @param {ol.render.EventType} type Event type.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @private
  */
 CanvasMapRenderer.prototype.dispatchComposeEvent_ = function(type, frameState) {
@@ -110,7 +110,7 @@ CanvasMapRenderer.prototype.dispatchComposeEvent_ = function(type, frameState) {
 
 
 /**
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @protected
  * @return {!module:ol/transform~Transform} Transform.
  */

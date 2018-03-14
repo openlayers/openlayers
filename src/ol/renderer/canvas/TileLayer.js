@@ -299,7 +299,7 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
 
 /**
  * @param {ol.Tile} tile Tile.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @param {number} x Left of the tile.
  * @param {number} y Top of the tile.

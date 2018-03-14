@@ -151,7 +151,7 @@ CanvasVectorTileLayerRenderer.prototype.prepareFrame = function(frameState, laye
 
 /**
  * @param {ol.VectorImageTile} tile Tile.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @private
  */
 CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(tile, frameState) {
@@ -310,7 +310,7 @@ CanvasVectorTileLayerRenderer.prototype.forEachFeatureAtCoordinate = function(co
 
 /**
  * @param {ol.VectorTile} tile Tile.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @return {module:ol/transform~Transform} transform Transform.
  * @private
  */
@@ -475,7 +475,7 @@ CanvasVectorTileLayerRenderer.prototype.renderFeature = function(feature, square
 
 /**
  * @param {ol.VectorImageTile} tile Tile.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @private
  */

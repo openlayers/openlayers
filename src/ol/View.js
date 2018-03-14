@@ -997,7 +997,7 @@ View.prototype.getResolutionForZoom = function(zoom) {
  * Takes care of the map angle.
  * @param {module:ol/geom/SimpleGeometry~SimpleGeometry|module:ol/extent~Extent} geometryOrExtent The geometry or
  *     extent to fit the view to.
- * @param {olx.view.FitOptions=} opt_options Options.
+ * @param {module:ol/View~FitOptions=} opt_options Options.
  * @api
  */
 View.prototype.fit = function(geometryOrExtent, opt_options) {

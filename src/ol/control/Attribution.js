@@ -148,7 +148,7 @@ inherits(Attribution, Control);
 
 /**
  * Get a list of visible attributions.
- * @param {olx.FrameState} frameState Frame state.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @return {Array.<string>} Attributions.
  * @private
  */
@@ -219,7 +219,7 @@ export function render(mapEvent) {
 
 /**
  * @private
- * @param {?olx.FrameState} frameState Frame state.
+ * @param {?module:ol/PluggableMap~FrameState} frameState Frame state.
  */
 Attribution.prototype.updateElement_ = function(frameState) {
   if (!frameState) {
