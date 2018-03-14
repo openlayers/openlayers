@@ -6,51 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{formatConstructors: (Array.<function(new: ol.format.Feature)>|undefined),
- *     source: (ol.source.Vector|undefined),
- *     projection: ol.ProjectionLike,
- *     target: (Element|undefined)}}
- */
-olx.interaction.DragAndDropOptions;
-
-
-/**
- * Format constructors.
- * @type {Array.<function(new: ol.format.Feature)>|undefined}
- * @api
- */
-olx.interaction.DragAndDropOptions.prototype.formatConstructors;
-
-
-/**
- * Optional vector source where features will be added.  If a source is provided
- * all existing features will be removed and new features will be added when
- * they are dropped on the target.  If you want to add features to a vector
- * source without removing the existing features (append only), instead of
- * providing the source option listen for the "addfeatures" event.
- * @type {ol.source.Vector|undefined}
- * @api
- */
-olx.interaction.DragAndDropOptions.prototype.source;
-
-
-/**
- * Target projection. By default, the map's view's projection is used.
- * @type {ol.ProjectionLike}
- * @api
- */
-olx.interaction.DragAndDropOptions.prototype.projection;
-
-
-/**
- * The element that is used as the drop target, default is the viewport element.
- * @type {Element|undefined}
- * @api
- */
-olx.interaction.DragAndDropOptions.prototype.target;
-
-
-/**
  * @typedef {{className: (string|undefined),
  *     condition: (ol.EventsConditionType|undefined),
  *     minArea: (number|undefined),

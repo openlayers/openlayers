@@ -1,18 +1,5 @@
 
 /**
- * @typedef {Object} interaction_DragAndDropOptions
- * @property {Array.<function(new: ol.format.Feature)>|undefined} formatConstructors Format constructors.
- * @property {ol.source.Vector|undefined} source Optional vector source where features will be added.  If a source is provided
- * all existing features will be removed and new features will be added when
- * they are dropped on the target.  If you want to add features to a vector
- * source without removing the existing features (append only), instead of
- * providing the source option listen for the "addfeatures" event.
- * @property {ol.ProjectionLike} projection Target projection. By default, the map's view's projection is used.
- * @property {Element|undefined} target The element that is used as the drop target, default is the viewport element.
- */
-
-
-/**
  * @typedef {Object} interaction_DragBoxOptions
  * @property {string|undefined} className CSS class name for styling the box. The default is `ol-dragbox`.
  * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
@@ -452,7 +439,7 @@
  *    rendered as vectors and can stay upright on rotated views.
  *  * `'vector'`: Vector tiles are rendered as vectors. Most accurate rendering
  *    even during animations, but slower performance than the other options.
- * 
+ *
  * When `declutter` is set to `true`, `'hybrid'` will be used instead of
  * `'image'`. The default is `'hybrid'`.
  * @property {ol.RenderOrderFunction|undefined} renderOrder Render order. Function to be used when sorting features before rendering. By
@@ -697,7 +684,7 @@
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
  * for more detail.
- * 
+ *
  * Default is `anonymous`.
  * @property {number|undefined} maxZoom Max zoom. Default is `19`.
  * @property {boolean|undefined} opaque Whether the layer is opaque. Default is `true`.
@@ -977,9 +964,9 @@
  * @property {module:ol/Feature~FeatureLoader|undefined} loader The loader function used to load features, from a remote source for example.
  * If this is not set and `url` is set, the source will create and use an XHR
  * feature loader.
- * 
+ *
  * Example:
- * 
+ *
  * ```js
  * var vectorSource = new ol.source.Vector({
  *   format: new ol.format.GeoJSON(),
@@ -1031,18 +1018,18 @@
  * @property {boolean|undefined} useSpatialIndex By default, an RTree is used as spatial index. When features are removed and
  * added frequently, and the total number of features is low, setting this to
  * `false` may improve performance.
- * 
+ *
  * Note that
  * {@link ol.source.Vector#getFeaturesInExtent},
  * {@link ol.source.Vector#getClosestFeatureToCoordinate} and
  * {@link ol.source.Vector#getExtent} cannot be used when `useSpatialIndex` is
  * set to `false`, and {@link ol.source.Vector#forEachFeatureInExtent} will loop
  * through all features.
- * 
+ *
  * When set to `false`, the features will be maintained in an
  * {@link ol.Collection}, which can be retrieved through
  * {@link ol.source.Vector#getFeaturesCollection}.
- * 
+ *
  * The default is `true`.
  * @property {boolean|undefined} wrapX Wrap the world horizontally. Default is `true`. For vector editing across the
  * -180° and 180° meridians to work properly, this should be set to `false`. The
@@ -1306,9 +1293,9 @@
  * Internet Explorer 10 and lower [do not support][mdn] the `setLineDash`
  * method on the `CanvasRenderingContext2D` and therefore this option will
  * have no visual effect in these browsers.
- * 
+ *
  * [mdn]: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash#Browser_compatibility
- * 
+ *
  * @property {number|undefined} lineDashOffset Line dash offset. Default is '0'.
  * @property {number|undefined} miterLimit Miter limit. Default is `10`.
  * @property {number|undefined} width Width.
@@ -1362,7 +1349,7 @@
  * @property {ol.StyleRenderFunction|undefined} renderer Custom renderer. When configured, `fill`, `stroke` and `image` will be
  * ignored, and the provided function will be called with each render frame for
  * each geometry.
- * 
+ *
  * @property {ol.style.Stroke|undefined} stroke Stroke style.
  * @property {ol.style.Text|undefined} text Text style.
  * @property {number|undefined} zIndex Z index.
@@ -1445,10 +1432,10 @@
 
 /**
  * @typedef {Object} ViewState
- * @property {ol.Coordinate} center 
- * @property {module:ol/proj/Projection~Projection} projection 
- * @property {number} resolution 
- * @property {number} rotation 
+ * @property {ol.Coordinate} center
+ * @property {module:ol/proj/Projection~Projection} projection
+ * @property {number} resolution
+ * @property {number} rotation
  * @property {number} zoom The current zoom level.
  */
 
@@ -1460,4 +1447,3 @@
  * `WEBGL_MAX_TEXTURE_SIZE` or 2048 if WebGL is not supported.
  * @property {number|undefined} space The space in pixels between images (default: 1).
  */
-
