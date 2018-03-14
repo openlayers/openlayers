@@ -6,29 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{duration: (number|undefined),
- *     delta: (number|undefined)}}
- */
-olx.interaction.DoubleClickZoomOptions;
-
-
-/**
- * Animation duration in milliseconds. Default is `250`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.DoubleClickZoomOptions.prototype.duration;
-
-
-/**
- * The zoom delta applied on each double click, default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.DoubleClickZoomOptions.prototype.delta;
-
-
-/**
  * @typedef {{formatConstructors: (Array.<function(new: ol.format.Feature)>|undefined),
  *     source: (ol.source.Vector|undefined),
  *     projection: ol.ProjectionLike,

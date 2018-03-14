@@ -1,12 +1,5 @@
 
 /**
- * @typedef {Object} interaction_DoubleClickZoomOptions
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
- * @property {number|undefined} delta The zoom delta applied on each double click, default is `1`.
- */
-
-
-/**
  * @typedef {Object} interaction_DragAndDropOptions
  * @property {Array.<function(new: ol.format.Feature)>|undefined} formatConstructors Format constructors.
  * @property {ol.source.Vector|undefined} source Optional vector source where features will be added.  If a source is provided
