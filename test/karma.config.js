@@ -74,7 +74,8 @@ module.exports = function(karma) {
       },
       SL_Firefox: {
         base: 'SauceLabs',
-        browserName: 'firefox'
+        browserName: 'firefox',
+        version: '58'
       },
       SL_Edge: {
         base: 'SauceLabs',
