@@ -6,49 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{className: (string|undefined),
- *     condition: (ol.EventsConditionType|undefined),
- *     duration: (number|undefined),
- *     out: (boolean|undefined)}}
- */
-olx.interaction.DragZoomOptions;
-
-
-/**
- * CSS class name for styling the box. The default is `ol-dragzoom`.
- * @type {string|undefined}
- * @api
- */
-olx.interaction.DragZoomOptions.prototype.className;
-
-
-/**
- * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.shiftKeyOnly}.
- * @type {ol.EventsConditionType|undefined}
- * @api
- */
-olx.interaction.DragZoomOptions.prototype.condition;
-
-
-/**
- * Animation duration in milliseconds. Default is `200`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.DragZoomOptions.prototype.duration;
-
-
-/**
- * Use interaction for zooming out. Default is `false`.
- * @type {boolean|undefined}
- * @api
- */
-olx.interaction.DragZoomOptions.prototype.out;
-
-
-/**
  * @typedef {{clickTolerance: (number|undefined),
  *     features: (ol.Collection.<module:ol/Feature~Feature>|undefined),
  *     source: (ol.source.Vector|undefined),

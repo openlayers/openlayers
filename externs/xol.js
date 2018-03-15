@@ -1,16 +1,5 @@
 
 /**
- * @typedef {Object} interaction_DragZoomOptions
- * @property {string|undefined} className CSS class name for styling the box. The default is `ol-dragzoom`.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.shiftKeyOnly}.
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `200`.
- * @property {boolean|undefined} out Use interaction for zooming out. Default is `false`.
- */
-
-
-/**
  * @typedef {Object} interaction_DrawOptions
  * @property {number|undefined} clickTolerance The maximum distance in pixels between "down" and "up" for a "up" event
  * to be considered a "click" event and actually add a point/vertex to the
