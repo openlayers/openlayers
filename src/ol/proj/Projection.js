@@ -9,7 +9,7 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
  * @property {string} code The SRS identifier code, e.g. `EPSG:4326`.
  * @property {module:ol/proj/Units~Units|string|undefined} units Units. Required unless a
  * proj4 projection is defined for `code`.
- * @property {ol.Extent|undefined} extent The validity extent for the SRS.
+ * @property {module:ol/extent~Extent} [extent] The validity extent for the SRS.
  * @property {string|undefined} axisOrientation The axis orientation as specified
  * in Proj4. The default is `enu`.
  * @property {boolean|undefined} global Whether the projection is valid for the
@@ -17,7 +17,7 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
  * @property {number|undefined} metersPerUnit The meters per unit for the SRS.
  * If not provided, the `units` are used to get the meters per unit from the {@link module:ol/proj/Units~METERS_PER_UNIT}
  * lookup table.
- * @property {ol.Extent|undefined} worldExtent The world extent for the SRS.
+ * @property {module:ol/extent~Extent} [worldExtent] The world extent for the SRS.
  * @property {(function(number, ol.Coordinate):number|undefined)} getPointResolution
  * Function to determine resolution at a point. The function is called with a
  * `{number}` view resolution and an `{ol.Coordinate}` as arguments, and returns

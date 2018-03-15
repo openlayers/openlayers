@@ -47,7 +47,7 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
  * @property {number|undefined} count Number of features to retrieve when paging. This is a
  * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services. Please note that some
  * Web Feature Services have repurposed `maxfeatures` instead.
- * @property {ol.Extent|undefined} bbox Extent to use for the BBOX filter.
+ * @property {module:ol/extent~Extent} [bbox] Extent to use for the BBOX filter.
  * @property {ol.format.filter.Filter|undefined} filter Filter condition. See
  * {@link ol.format.filter} for more information.
  * @property {string|undefined} resultType Indicates what response should be returned,
