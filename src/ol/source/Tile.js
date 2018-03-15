@@ -49,7 +49,7 @@ const TileSource = function(options) {
 
   /**
    * @protected
-   * @type {ol.tilegrid.TileGrid}
+   * @type {module:ol/tilegrid/TileGrid~TileGrid}
    */
   this.tileGrid = options.tileGrid !== undefined ? options.tileGrid : null;
 
@@ -202,7 +202,7 @@ TileSource.prototype.getTile = function(z, x, y, pixelRatio, projection) {};
 
 /**
  * Return the tile grid of the tile source.
- * @return {ol.tilegrid.TileGrid} Tile grid.
+ * @return {module:ol/tilegrid/TileGrid~TileGrid} Tile grid.
  * @api
  */
 TileSource.prototype.getTileGrid = function() {
@@ -212,7 +212,7 @@ TileSource.prototype.getTileGrid = function() {
 
 /**
  * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @return {!ol.tilegrid.TileGrid} Tile grid.
+ * @return {!module:ol/tilegrid/TileGrid~TileGrid} Tile grid.
  */
 TileSource.prototype.getTileGridForProjection = function(projection) {
   if (!this.tileGrid) {

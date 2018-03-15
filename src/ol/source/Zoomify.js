@@ -26,7 +26,7 @@ const TierSizeCalculation = {
 /**
  * @constructor
  * @extends {ol.ImageTile}
- * @param {ol.tilegrid.TileGrid} tileGrid TileGrid that the tile belongs to.
+ * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid TileGrid that the tile belongs to.
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {ol.TileState} state State.
  * @param {string} src Image source URI.

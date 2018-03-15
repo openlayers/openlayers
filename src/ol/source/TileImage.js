@@ -67,7 +67,7 @@ const TileImage = function(options) {
 
   /**
    * @protected
-   * @type {!Object.<string, ol.tilegrid.TileGrid>}
+   * @type {!Object.<string, module:ol/tilegrid/TileGrid~TileGrid>}
    */
   this.tileGridForProjection = {};
 
@@ -175,7 +175,7 @@ TileImage.prototype.getTileGridForProjection = function(projection) {
     if (!(projKey in this.tileGridForProjection)) {
       this.tileGridForProjection[projKey] = getTileGridForProjection(projection);
     }
-    return /** @type {!ol.tilegrid.TileGrid} */ (this.tileGridForProjection[projKey]);
+    return /** @type {!module:ol/tilegrid/TileGrid~TileGrid} */ (this.tileGridForProjection[projKey]);
   }
 };
 
@@ -344,7 +344,7 @@ TileImage.prototype.setRenderReprojectionEdges = function(render) {
  * for optimization reasons (custom tile size, resolutions, ...).
  *
  * @param {module:ol/proj~ProjectionLike} projection Projection.
- * @param {ol.tilegrid.TileGrid} tilegrid Tile grid to use for the projection.
+ * @param {module:ol/tilegrid/TileGrid~TileGrid} tilegrid Tile grid to use for the projection.
  * @api
  */
 TileImage.prototype.setTileGridForProjection = function(projection, tilegrid) {

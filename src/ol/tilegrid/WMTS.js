@@ -11,7 +11,7 @@ import TileGrid from '../tilegrid/TileGrid.js';
  * Set the grid pattern for sources accessing WMTS tiled-image servers.
  *
  * @constructor
- * @extends {ol.tilegrid.TileGrid}
+ * @extends {module:ol/tilegrid/TileGrid~TileGrid}
  * @param {olx.tilegrid.WMTSOptions} options WMTS options.
  * @struct
  * @api
