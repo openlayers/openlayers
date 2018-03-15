@@ -1,23 +1,5 @@
 
 /**
- * @typedef {Object} interaction_DragRotateAndZoomOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.shiftKeyOnly}.
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `400`.
- */
-
-
-/**
- * @typedef {Object} interaction_DragRotateOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.altShiftKeysOnly}.
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
- */
-
-
-/**
  * @typedef {Object} interaction_DragZoomOptions
  * @property {string|undefined} className CSS class name for styling the box. The default is `ol-dragzoom`.
  * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean

@@ -6,56 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{condition: (ol.EventsConditionType|undefined),
- *     duration: (number|undefined)}}
- */
-olx.interaction.DragRotateAndZoomOptions;
-
-
-/**
- * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.shiftKeyOnly}.
- * @type {ol.EventsConditionType|undefined}
- * @api
- */
-olx.interaction.DragRotateAndZoomOptions.prototype.condition;
-
-
-/**
- * Animation duration in milliseconds. Default is `400`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.DragRotateAndZoomOptions.prototype.duration;
-
-
-/**
- * @typedef {{condition: (ol.EventsConditionType|undefined),
- *     duration: (number|undefined)}}
- */
-olx.interaction.DragRotateOptions;
-
-
-/**
- * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.altShiftKeysOnly}.
- * @type {ol.EventsConditionType|undefined}
- * @api
- */
-olx.interaction.DragRotateOptions.prototype.condition;
-
-
-/**
- * Animation duration in milliseconds. Default is `250`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.DragRotateOptions.prototype.duration;
-
-
-/**
  * @typedef {{className: (string|undefined),
  *     condition: (ol.EventsConditionType|undefined),
  *     duration: (number|undefined),
