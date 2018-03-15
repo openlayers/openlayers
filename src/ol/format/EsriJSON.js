@@ -50,7 +50,7 @@ GEOMETRY_WRITERS[GeometryType.MULTI_POLYGON] = writeMultiPolygonGeometry;
 
 /**
  * @typedef {Object} Options
- * @property {string|undefined} geometryName Geometry name to use when creating features.
+ * @property {string} [geometryName] Geometry name to use when creating features.
  */
 
 

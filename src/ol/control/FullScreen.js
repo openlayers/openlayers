@@ -34,20 +34,17 @@ const getChangeType = (function() {
 
 /**
  * @typedef {Object} Options
- * @property {string|undefined} className CSS class name. Default is
- * `'ol-full-screen'`.
- * @property {string|Element|undefined} label Text label to use for the button.
- * Default is `'\u2922'` (NORTH EAST AND SOUTH WEST ARROW).
+ * @property {string} [className='ol-full-screen'] CSS class name.
+ * @property {string|Element} [label='\u2922'] Text label to use for the button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|Element|undefined} labelActive Text label to use for the
- * button when full-screen is active. Default is `'\u00d7'` (a cross).
+ * @property {string|Element} [labelActive='\u00d7'] Text label to use for the
+ * button when full-screen is active.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|undefined} tipLabel Text label to use for the button tip.
- * Default is `'Toggle full-screen'`.
- * @property {boolean|undefined} keys Full keyboard access.
- * @property {Element|string|undefined} target Specify a target if you want the
+ * @property {string} [tipLabel='Toggle full-screen'] Text label to use for the button tip.
+ * @property {boolean} [keys=false] Full keyboard access.
+ * @property {Element|string} [target] Specify a target if you want the
  * control to be rendered outside of the map's viewport.
- * @property {Element|string|undefined} source The element to be displayed
+ * @property {Element|string} [source] The element to be displayed
  * fullscreen. When not provided, the element containing the map viewport will
  * be displayed fullscreen.
  */

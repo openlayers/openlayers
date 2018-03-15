@@ -7,18 +7,16 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
 /**
  * @typedef {Object} Options
  * @property {string} code The SRS identifier code, e.g. `EPSG:4326`.
- * @property {module:ol/proj/Units~Units|string|undefined} units Units. Required unless a
+ * @property {module:ol/proj/Units~Units|string} [units] Units. Required unless a
  * proj4 projection is defined for `code`.
  * @property {module:ol/extent~Extent} [extent] The validity extent for the SRS.
- * @property {string|undefined} axisOrientation The axis orientation as specified
- * in Proj4. The default is `enu`.
- * @property {boolean|undefined} global Whether the projection is valid for the
- * whole globe. Default is `false`.
- * @property {number|undefined} metersPerUnit The meters per unit for the SRS.
+ * @property {string} [axisOrientation='enu'] The axis orientation as specified in Proj4.
+ * @property {boolean} [global=false] Whether the projection is valid for the whole globe.
+ * @property {number} [metersPerUnit] The meters per unit for the SRS.
  * If not provided, the `units` are used to get the meters per unit from the {@link module:ol/proj/Units~METERS_PER_UNIT}
  * lookup table.
  * @property {module:ol/extent~Extent} [worldExtent] The world extent for the SRS.
- * @property {(function(number, module:ol/coordinate~Coordinate):number|undefined)} getPointResolution
+ * @property {function(number, module:ol/coordinate~Coordinate):number} [getPointResolution]
  * Function to determine resolution at a point. The function is called with a
  * `{number}` view resolution and an `{module:ol/coordinate~Coordinate}` as arguments, and returns
  * the `{number}` resolution at the passed coordinate. If this is `undefined`,

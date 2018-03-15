@@ -9,7 +9,7 @@ import Zoom from './control/Zoom.js';
 
 /**
  * @typedef {Object} DefaultsOptions
- * @property {boolean|undefined} [attribution=true] Include
+ * @property {boolean} [attribution=true] Include
  * {@link module:ol/control/Attribution~Attribution}.
  * @property {module:ol/control/Attribution~AttributionOptions} [attributionOptions]
  * Options for {@link module:ol/control/Attribution~Attribution}.

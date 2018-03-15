@@ -30,7 +30,7 @@ import {get as getProjection, equivalent as equivalentProjection, transformExten
  * @property {ol.ProjectionLike} featureProjection Projection of the feature geometries
  * that will be serialized by the format writer. If not provided, geometries are assumed
  * to be in the `dataProjection` if that is set; in other words, they are not transformed.
- * @property {boolean|undefined} rightHanded When writing geometries, follow the right-hand
+ * @property {boolean} [rightHanded] When writing geometries, follow the right-hand
  * rule for linear ring orientation.  This means that polygons will have counter-clockwise
  * exterior rings and clockwise interior rings.  By default, coordinates are serialized
  * as they are provided at construction.  If `true`, the right-hand rule will
@@ -38,7 +38,7 @@ import {get as getProjection, equivalent as equivalentProjection, transformExten
  * exterior and counter-clockwise for interior rings).  Note that not all
  * formats support this.  The GeoJSON format does use this property when writing
  * geometries.
- * @property {number|undefined} decimals Maximum number of decimal places for coordinates.
+ * @property {number} [decimals] Maximum number of decimal places for coordinates.
  * Coordinates are stored internally as floats, but floating-point arithmetic can create
  * coordinates with a large number of decimal places, not generally wanted on output.
  * Set a number here to round coordinates. Can also be used to ensure that

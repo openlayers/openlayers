@@ -24,16 +24,16 @@ import RenderFeature from '../render/Feature.js';
 
 /**
  * @typedef {Object} Options
- * @property {undefined|function((module:ol/geom/Geometry~Geometry|Object.<string,*>)=)|function(module:ol/geom/GeometryType~GeometryType,Array.<number>,(Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)} featureClass
+ * @property {function((module:ol/geom/Geometry~Geometry|Object.<string,*>)=)|function(module:ol/geom/GeometryType~GeometryType,Array.<number>,(Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)} [featureClass]
  * Class for features returned by {@link ol.format.MVT#readFeatures}. Set to
  * {@link module:ol/Feature~Feature} to get full editing and geometry support at the cost of
  * decreased rendering performance. The default is {@link ol.render.Feature},
  * which is optimized for rendering and hit detection.
- * @property {string|undefined} geometryName Geometry name to use when creating
- * features. Default is `'geometry'`.
- * @property {string|undefined} layerName Name of the feature attribute that
- * holds the layer name. Default is `'layer'`.
- * @property {Array.<string>|undefined} layers Layers to read features from. If not
+ * @property {string} [geometryName='geometry'] Geometry name to use when creating
+ * features.
+ * @property {string} [layerName='layer'] Name of the feature attribute that
+ * holds the layer name.
+ * @property {Array.<string>} [layers] Layers to read features from. If not
  * provided, features will be read from all layers.
  */
 

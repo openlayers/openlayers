@@ -35,10 +35,8 @@ import EventType from './events/EventType.js';
 
 /**
  * @typedef {Object} Options
- * @property {number|undefined} transition A duration for tile opacity
- * transitions.  By default, tiles will render with an opacity transition that
- * lasts 250 ms.  To change the duration, pass a number in milliseconds.  A
- * duration of 0 disables the opacity transition.
+ * @property {number} [transition=250] A duration for tile opacity
+ * transitions in milliseconds. A duration of 0 disables the opacity transition.
  * @api
  */
 
@@ -90,8 +88,7 @@ const Tile = function(tileCoord, state, opt_options) {
    * The duration for the opacity transition.
    * @type {number}
    */
-  this.transition_ = options.transition === undefined ?
-    250 : options.transition;
+  this.transition_ = options.transition === undefined ? 250 : options.transition;
 
   /**
    * Lookup of start times for rendering transitions.  If the start time is
