@@ -211,7 +211,7 @@ function addInteraction() {
       // set sketch
       sketch = evt.feature;
 
-      /** @type {ol.Coordinate|undefined} */
+      /** @type {module:ol/coordinate~Coordinate|undefined} */
       let tooltipCoord = evt.coordinate;
 
       listener = sketch.getGeometry().on('change', function(evt) {

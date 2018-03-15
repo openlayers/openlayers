@@ -18,9 +18,9 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
  * If not provided, the `units` are used to get the meters per unit from the {@link module:ol/proj/Units~METERS_PER_UNIT}
  * lookup table.
  * @property {module:ol/extent~Extent} [worldExtent] The world extent for the SRS.
- * @property {(function(number, ol.Coordinate):number|undefined)} getPointResolution
+ * @property {(function(number, module:ol/coordinate~Coordinate):number|undefined)} getPointResolution
  * Function to determine resolution at a point. The function is called with a
- * `{number}` view resolution and an `{ol.Coordinate}` as arguments, and returns
+ * `{number}` view resolution and an `{module:ol/coordinate~Coordinate}` as arguments, and returns
  * the `{number}` resolution at the passed coordinate. If this is `undefined`,
  * the default {@link ol.proj#getPointResolution} function will be used.
  */
