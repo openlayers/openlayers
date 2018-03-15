@@ -154,17 +154,6 @@ ol.DeclutterGroup;
 
 
 /**
- * Function that takes an array of coordinates and an optional existing geometry as
- * arguments, and returns a geometry. The optional existing geometry is the
- * geometry that is returned when the function is called without a second
- * argument.
- * @typedef {function(!Array.<module:ol/coordinate~Coordinate>, module:ol/geom/SimpleGeometry~SimpleGeometry=):
- *     module:ol/geom/SimpleGeometry~SimpleGeometry}
- */
-ol.DrawGeometryFunctionType;
-
-
-/**
  * @typedef {{x: number, xunits: (ol.style.IconAnchorUnits|undefined),
  *            y: number, yunits: (ol.style.IconAnchorUnits|undefined),
  *            origin: (ol.style.IconOrigin|undefined)}}

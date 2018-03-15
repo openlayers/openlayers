@@ -1,46 +1,5 @@
 
 /**
- * @typedef {Object} interaction_DrawOptions
- * @property {number|undefined} clickTolerance The maximum distance in pixels between "down" and "up" for a "up" event
- * to be considered a "click" event and actually add a point/vertex to the
- * geometry being drawn.  Default is 6 pixels.  That value was chosen for
- * the draw interaction to behave correctly on mouse as well as on touch
- * devices.
- * @property {ol.Collection.<module:ol/Feature~Feature>|undefined} features Destination collection for the drawn features.
- * @property {ol.source.Vector|undefined} source Destination source for the drawn features.
- * @property {number|undefined} dragVertexDelay Delay in milliseconds after pointerdown before the current vertex can be
- * dragged to its exact position. Default is 500 ms.
- * @property {number|undefined} snapTolerance Pixel distance for snapping to the drawing finish. Default is `12`.
- * @property {module:ol/geom/GeometryType~GeometryType|string} type Drawing type ('Point', 'LineString', 'Polygon', 'MultiPoint',
- * 'MultiLineString', 'MultiPolygon' or 'Circle').
- * @property {boolean|undefined} stopClick Stop click, singleclick, and doubleclick events from firing during drawing.
- * Default is `false`.
- * @property {number|undefined} maxPoints The number of points that can be drawn before a polygon ring or line string
- * is finished. The default is no restriction.
- * @property {number|undefined} minPoints The number of points that must be drawn before a polygon ring or line string
- * can be finished. Default is `3` for polygon rings and `2` for line strings.
- * @property {ol.EventsConditionType|undefined} finishCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether the drawing can be finished.
- * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} style Style for sketch features.
- * @property {ol.DrawGeometryFunctionType|undefined} geometryFunction Function that is called when a geometry's coordinates are updated.
- * @property {string|undefined} geometryName Geometry name to use for features created by the draw interaction.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * By default {@link ol.events.condition.noModifierKeys}, i.e. a click, adds a
- * vertex or deactivates freehand drawing.
- * @property {boolean|undefined} freehand Operate in freehand mode for lines, polygons, and circles.  This makes the
- * interaction always operate in freehand mode and takes precedence over any
- * `freehandCondition` option.
- * @property {ol.EventsConditionType|undefined} freehandCondition Condition that activates freehand drawing for lines and polygons. This
- * function takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean to
- * indicate whether that event should be handled. The default is
- * {@link ol.events.condition.shiftKeyOnly}, meaning that the Shift key
- * activates freehand drawing.
- * @property {boolean|undefined} wrapX Wrap the world horizontally on the sketch overlay. Default is `false`.
- */
-
-
-/**
  * @typedef {Object} interaction_ExtentOptions
  * @property {ol.Extent|undefined} extent Initial extent. Defaults to no initial extent
  * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} boxStyle Style for the drawn extent box.

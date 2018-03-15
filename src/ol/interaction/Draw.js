@@ -30,6 +30,69 @@ import {createEditingStyle} from '../style/Style.js';
 
 
 /**
+ * @typedef {Object} Options
+ * @property {module:ol/geom/GeometryType~GeometryType} type Geometry type of
+ * the geometries being drawn with this instance.
+ * @property {number} [clickTolerance=6] The maximum distance in pixels between
+ * "down" and "up" for a "up" event to be considered a "click" event and
+ * actually add a point/vertex to the geometry being drawn.  The default of `6`
+ * was chosen for the draw interaction to behave correctly on mouse as well as
+ * on touch devices.
+ * @property {module:ol/Collection~Collection.<module:ol/Feature~Feature>} [features]
+ * Destination collection for the drawn features.
+ * @property {module:ol/source/Vector~Vector} [source] Destination source for
+ * the drawn features.
+ * @property {number} [dragVertexDelay=500] Delay in milliseconds after pointerdown
+ * before the current vertex can be dragged to its exact position.
+ * @property {number} [snapTolerance=12] Pixel distance for snapping to the
+ * drawing finish.
+ * @property {boolean} [stopClick=false] Stop click, singleclick, and
+ * doubleclick events from firing during drawing.
+ * @property {number} [maxPoints] The number of points that can be drawn before
+ * a polygon ring or line string is finished. By default there is no
+ * restriction.
+ * @property {number} [minPoints] The number of points that must be drawn
+ * before a polygon ring or line string can be finished. Default is `3` for
+ * polygon rings and `2` for line strings.
+ * @property {module:ol/events/condition~Condition} [finishCondition] A function
+ * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether the drawing can be finished.
+ * @property {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction} [style]
+ * Style for sketch features.
+ * @property {module:ol/interaction/Draw~GeometryFunction} [geometryFunction]
+ * Function that is called when a geometry's coordinates are updated.
+ * @property {string} [geometryName] Geometry name to use for features created
+ * by the draw interaction.
+ * @property {module:ol/events/condition~Condition} [condition] A function that
+ * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether that event should be handled.
+ * By default {@link module:ol/events/condition~noModifierKeys}, i.e. a click,
+ * adds a vertex or deactivates freehand drawing.
+ * @property {boolean} [freehand=false] Operate in freehand mode for lines,
+ * polygons, and circles.  This makes the interaction always operate in freehand
+ * mode and takes precedence over any `freehandCondition` option.
+ * @property {module:ol/events/condition~Condition} [freehandCondition]
+ * Condition that activates freehand drawing for lines and polygons. This
+ * function takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
+ * returns a boolean to indicate whether that event should be handled. The
+ * default is {@link module:ol/events/condition~shiftKeyOnly}, meaning that the
+ * Shift key activates freehand drawing.
+ * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
+ * overlay.
+ */
+
+
+/**
+ * Function that takes an array of coordinates and an optional existing geometry as
+ * arguments, and returns a geometry. The optional existing geometry is the
+ * geometry that is returned when the function is called without a second
+ * argument.
+ * @typedef {function(!Array.<module:ol/coordinate~Coordinate>, module:ol/geom/SimpleGeometry~SimpleGeometry=):
+ *     module:ol/geom/SimpleGeometry~SimpleGeometry} GeometryFunction
+ */
+
+
+/**
  * Draw mode.  This collapses multi-part geometry types with their single-part
  * cousins.
  * @enum {string}
@@ -48,13 +111,13 @@ const Mode = {
 const DrawEventType = {
   /**
    * Triggered upon feature draw start
-   * @event ol.interaction.Draw.Event#drawstart
+   * @event module:ol/interaction/Draw~DrawEvent#drawstart
    * @api
    */
   DRAWSTART: 'drawstart',
   /**
    * Triggered upon feature draw end
-   * @event ol.interaction.Draw.Event#drawend
+   * @event module:ol/interaction/Draw~DrawEvent#drawend
    * @api
    */
   DRAWEND: 'drawend'
@@ -63,13 +126,13 @@ const DrawEventType = {
 
 /**
  * @classdesc
- * Events emitted by {@link ol.interaction.Draw} instances are instances of
- * this type.
+ * Events emitted by {@link module:ol/interaction/Draw~Draw} instances are
+ * instances of this type.
  *
  * @constructor
- * @extends {ol.events.Event}
+ * @extends {module:ol/events/Event~Event}
  * @implements {oli.DrawEvent}
- * @param {ol.interaction.DrawEventType} type Type.
+ * @param {module:ol/interaction/Draw~DrawEventType} type Type.
  * @param {module:ol/Feature~Feature} feature The feature drawn.
  */
 const DrawEvent = function(type, feature) {
@@ -93,9 +156,9 @@ inherits(DrawEvent, Event);
  * Interaction for drawing feature geometries.
  *
  * @constructor
- * @extends {ol.interaction.Pointer}
- * @fires ol.interaction.DrawEvent
- * @param {olx.interaction.DrawOptions} options Options.
+ * @extends {module:ol/interaction/Pointer~Pointer}
+ * @fires module:ol/interaction/Draw~DrawEvent
+ * @param {module:ol/interaction/Draw~Options} options Options.
  * @api
  */
 const Draw = function(options) {
@@ -138,14 +201,14 @@ const Draw = function(options) {
 
   /**
    * Target source for drawn features.
-   * @type {ol.source.Vector}
+   * @type {module:ol/source/Vector~Vector}
    * @private
    */
   this.source_ = options.source ? options.source : null;
 
   /**
    * Target collection for drawn features.
-   * @type {ol.Collection.<module:ol/Feature~Feature>}
+   * @type {module:ol/Collection~Collection.<module:ol/Feature~Feature>}
    * @private
    */
   this.features_ = options.features ? options.features : null;
@@ -166,7 +229,7 @@ const Draw = function(options) {
 
   /**
    * Drawing mode (derived from geometry type.
-   * @type {ol.interaction.Mode}
+   * @type {module:ol/interaction/Draw~Mode}
    * @private
    */
   this.mode_ = getMode(this.type_);
@@ -260,7 +323,7 @@ const Draw = function(options) {
   }
 
   /**
-   * @type {ol.DrawGeometryFunctionType}
+   * @type {module:ol/interaction/Draw~GeometryFunction}
    * @private
    */
   this.geometryFunction_ = geometryFunction;
@@ -326,7 +389,7 @@ const Draw = function(options) {
 
   /**
    * Draw overlay where our sketch features are drawn.
-   * @type {ol.layer.Vector}
+   * @type {module:ol/layer/Vector~Vector}
    * @private
    */
   this.overlay_ = new VectorLayer({
@@ -398,7 +461,7 @@ Draw.prototype.setMap = function(map) {
  * draw or finish the drawing.
  * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {ol.interaction.Draw}
+ * @this {module:ol/interaction/Draw~Draw}
  * @api
  */
 export function handleEvent(event) {
@@ -448,9 +511,9 @@ export function handleEvent(event) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} event Event.
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} event Event.
  * @return {boolean} Start drag sequence?
- * @this {ol.interaction.Draw}
+ * @this {module:ol/interaction/Draw~Draw}
  */
 function handleDownEvent(event) {
   this.shouldHandle_ = !this.freehand_;
@@ -476,9 +539,9 @@ function handleDownEvent(event) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} event Event.
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} event Event.
  * @return {boolean} Stop drag sequence?
- * @this {ol.interaction.Draw}
+ * @this {module:ol/interaction/Draw~Draw}
  */
 function handleUpEvent(event) {
   let pass = true;
@@ -764,8 +827,8 @@ Draw.prototype.removeLastPoint = function() {
 
 /**
  * Stop drawing and add the sketch feature to the target layer.
- * The {@link ol.interaction.DrawEventType.DRAWEND} event is dispatched before
- * inserting the feature.
+ * The {@link module:ol/interaction/Draw~DrawEventType.DRAWEND} event is
+ * dispatched before inserting the feature.
  * @api
  */
 Draw.prototype.finishDrawing = function() {
@@ -895,7 +958,7 @@ Draw.prototype.updateState_ = function() {
  * @param {number=} opt_angle Angle of the first point in radians. 0 means East.
  *     Default is the angle defined by the heading from the center of the
  *     regular polygon to the current pointer position.
- * @return {ol.DrawGeometryFunctionType} Function that draws a
+ * @return {module:ol/interaction/Draw~GeometryFunction} Function that draws a
  *     polygon.
  * @api
  */
@@ -921,7 +984,7 @@ export function createRegularPolygon(opt_sides, opt_angle) {
  * Create a `geometryFunction` that will create a box-shaped polygon (aligned
  * with the coordinate system axes).  Use this with the draw interaction and
  * `type: 'Circle'` to return a box instead of a circle geometry.
- * @return {ol.DrawGeometryFunctionType} Function that draws a box-shaped polygon.
+ * @return {module:ol/interaction/Draw~GeometryFunction} Function that draws a box-shaped polygon.
  * @api
  */
 export function createBox() {
@@ -946,7 +1009,7 @@ export function createBox() {
  * Get the drawing mode.  The mode for mult-part geometries is the same as for
  * their single-part cousins.
  * @param {module:ol/geom/GeometryType~GeometryType} type Geometry type.
- * @return {ol.interaction.Mode} Drawing mode.
+ * @return {module:ol/interaction/Draw~Mode} Drawing mode.
  */
 function getMode(type) {
   let mode;
@@ -962,7 +1025,7 @@ function getMode(type) {
   } else if (type === GeometryType.CIRCLE) {
     mode = Mode.CIRCLE;
   }
-  return /** @type {!ol.interaction.Mode} */ (mode);
+  return /** @type {!module:ol/interaction/Draw~Mode} */ (mode);
 }
 
 
