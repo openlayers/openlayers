@@ -11,7 +11,7 @@ import TileGrid from '../tilegrid/TileGrid.js';
  * Set the grid pattern for sources accessing WMTS tiled-image servers.
  *
  * @constructor
- * @extends {ol.tilegrid.TileGrid}
+ * @extends {module:ol/tilegrid/TileGrid~TileGrid}
  * @param {olx.tilegrid.WMTSOptions} options WMTS options.
  * @struct
  * @api
@@ -67,7 +67,7 @@ export default WMTSTileGrid;
  *     ranges the server provides.
  * @param {Array.<Object>=} opt_matrixLimits An optional object representing
  *     the available matrices for tileGrid.
- * @return {ol.tilegrid.WMTS} WMTS tileGrid instance.
+ * @return {module:ol/tilegrid/WMTS~WMTSTileGrid} WMTS tileGrid instance.
  * @api
  */
 export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matrixLimits) {

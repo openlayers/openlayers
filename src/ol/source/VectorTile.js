@@ -81,7 +81,7 @@ const VectorTileSource = function(options) {
 
   /**
    * @private
-   * @type {Object.<string,ol.tilegrid.TileGrid>}
+   * @type {Object.<string, module:ol/tilegrid/TileGrid~TileGrid>}
    */
   this.tileGrids_ = {};
 

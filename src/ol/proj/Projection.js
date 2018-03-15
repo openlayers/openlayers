@@ -118,7 +118,7 @@ const Projection = function(options) {
 
   /**
    * @private
-   * @type {ol.tilegrid.TileGrid}
+   * @type {module:ol/tilegrid/TileGrid~TileGrid}
    */
   this.defaultTileGrid_ = null;
 
@@ -228,7 +228,7 @@ Projection.prototype.setGlobal = function(global) {
 
 
 /**
- * @return {ol.tilegrid.TileGrid} The default tile grid.
+ * @return {module:ol/tilegrid/TileGrid~TileGrid} The default tile grid.
  */
 Projection.prototype.getDefaultTileGrid = function() {
   return this.defaultTileGrid_;
@@ -236,7 +236,7 @@ Projection.prototype.getDefaultTileGrid = function() {
 
 
 /**
- * @param {ol.tilegrid.TileGrid} tileGrid The default tile grid.
+ * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid The default tile grid.
  */
 Projection.prototype.setDefaultTileGrid = function(tileGrid) {
   this.defaultTileGrid_ = tileGrid;

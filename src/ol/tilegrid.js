@@ -53,15 +53,13 @@ export function wrapX(tileGrid, tileCoord, projection) {
  *     DEFAULT_MAX_ZOOM).
  * @param {number|module:ol/size~Size=} opt_tileSize Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {module:ol/extent~Extent.Corner=} opt_corner Extent corner (default is
- *     module:ol/extent~Extent.Corner.TOP_LEFT).
+ * @param {module:ol/extent/Corner~Corner=} opt_corner Extent corner (default is `'top-left'`).
  * @return {!module:ol/tilegrid/TileGrid~TileGrid} TileGrid instance.
  */
 export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
   const corner = opt_corner !== undefined ? opt_corner : Corner.TOP_LEFT;
 
-  const resolutions = resolutionsFromExtent(
-    extent, opt_maxZoom, opt_tileSize);
+  const resolutions = resolutionsFromExtent(extent, opt_maxZoom, opt_tileSize);
 
   return new TileGrid({
     extent: extent,
@@ -129,14 +127,12 @@ function resolutionsFromExtent(extent, opt_maxZoom, opt_tileSize) {
  *     DEFAULT_MAX_ZOOM).
  * @param {number|module:ol/size~Size=} opt_tileSize Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {module:ol/extent~Extent.Corner=} opt_corner Extent corner (default is
- *     module:ol/extent~Extent.Corner.BOTTOM_LEFT).
+ * @param {module:ol/extent/Corner~Corner=} opt_corner Extent corner (default is `'top-left'`).
  * @return {!module:ol/tilegrid/TileGrid~TileGrid} TileGrid instance.
  */
 export function createForProjection(projection, opt_maxZoom, opt_tileSize, opt_corner) {
   const extent = extentFromProjection(projection);
-  return createForExtent(
-    extent, opt_maxZoom, opt_tileSize, opt_corner);
+  return createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner);
 }
 
 
@@ -150,8 +146,7 @@ export function extentFromProjection(projection) {
   projection = getProjection(projection);
   let extent = projection.getExtent();
   if (!extent) {
-    const half = 180 * METERS_PER_UNIT[Units.DEGREES] /
-        projection.getMetersPerUnit();
+    const half = 180 * METERS_PER_UNIT[Units.DEGREES] / projection.getMetersPerUnit();
     extent = createOrUpdate(-half, -half, half, half);
   }
   return extent;

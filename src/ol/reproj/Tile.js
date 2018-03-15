@@ -20,9 +20,9 @@ import Triangulation from '../reproj/Triangulation.js';
  * @constructor
  * @extends {ol.Tile}
  * @param {module:ol/proj/Projection~Projection} sourceProj Source projection.
- * @param {ol.tilegrid.TileGrid} sourceTileGrid Source tile grid.
+ * @param {module:ol/tilegrid/TileGrid~TileGrid} sourceTileGrid Source tile grid.
  * @param {module:ol/proj/Projection~Projection} targetProj Target projection.
- * @param {ol.tilegrid.TileGrid} targetTileGrid Target tile grid.
+ * @param {module:ol/tilegrid/TileGrid~TileGrid} targetTileGrid Target tile grid.
  * @param {module:ol/tilecoord~TileCoord} tileCoord Coordinate of the tile.
  * @param {module:ol/tilecoord~TileCoord} wrappedTileCoord Coordinate of the tile wrapped in X.
  * @param {number} pixelRatio Pixel ratio.
@@ -64,13 +64,13 @@ const ReprojTile = function(sourceProj, sourceTileGrid,
 
   /**
    * @private
-   * @type {ol.tilegrid.TileGrid}
+   * @type {module:ol/tilegrid/TileGrid~TileGrid}
    */
   this.sourceTileGrid_ = sourceTileGrid;
 
   /**
    * @private
-   * @type {ol.tilegrid.TileGrid}
+   * @type {module:ol/tilegrid/TileGrid~TileGrid}
    */
   this.targetTileGrid_ = targetTileGrid;
 

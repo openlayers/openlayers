@@ -196,7 +196,7 @@ LayerRenderer.prototype.updateUsedTiles = function(usedTiles, tileSource, z, til
  * - enqueues missing tiles
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {ol.source.Tile} tileSource Tile source.
- * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid Tile grid.
  * @param {number} pixelRatio Pixel ratio.
  * @param {module:ol/proj/Projection~Projection} projection Projection.
  * @param {module:ol/extent~Extent} extent Extent.
