@@ -6,56 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{extent: (ol.Extent|undefined),
- *     boxStyle: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
- *     pixelTolerance: (number|undefined),
- *     pointerStyle: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
- *     wrapX: (boolean|undefined)}}
- * @api
- */
-olx.interaction.ExtentOptions;
-
-/**
- * Initial extent. Defaults to no initial extent
- * @type {ol.Extent|undefined}
- * @api
- */
-olx.interaction.ExtentOptions.prototype.extent;
-
-/**
- * Style for the drawn extent box.
- * Defaults to ol.style.Style.createDefaultEditing()[module:ol/geom/GeometryType~GeometryType.POLYGON]
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
- * @api
- */
-olx.interaction.ExtentOptions.prototype.boxStyle;
-
-/**
- * Pixel tolerance for considering the pointer close enough to a segment or
- * vertex for editing. Default is `10`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.ExtentOptions.prototype.pixelTolerance;
-
-/**
- * Style for the cursor used to draw the extent.
- * Defaults to ol.style.Style.createDefaultEditing()[module:ol/geom/GeometryType~GeometryType.POINT]
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
- * @api
- */
-olx.interaction.ExtentOptions.prototype.pointerStyle;
-
-/**
- * Wrap the drawn extent across multiple maps in the X direction?
- * Only affects visuals, not functionality. Defaults to false.
- * @type {boolean|undefined}
- * @api
- */
-olx.interaction.ExtentOptions.prototype.wrapX;
-
-
-/**
  * @typedef {{
  *     features: (ol.Collection.<module:ol/Feature~Feature>|undefined),
  *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean),

@@ -1,19 +1,5 @@
 
 /**
- * @typedef {Object} interaction_ExtentOptions
- * @property {ol.Extent|undefined} extent Initial extent. Defaults to no initial extent
- * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} boxStyle Style for the drawn extent box.
- * Defaults to ol.style.Style.createDefaultEditing()[module:ol/geom/GeometryType~GeometryType.POLYGON]
- * @property {number|undefined} pixelTolerance Pixel tolerance for considering the pointer close enough to a segment or
- * vertex for editing. Default is `10`.
- * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} pointerStyle Style for the cursor used to draw the extent.
- * Defaults to ol.style.Style.createDefaultEditing()[module:ol/geom/GeometryType~GeometryType.POINT]
- * @property {boolean|undefined} wrapX Wrap the drawn extent across multiple maps in the X direction?
- * Only affects visuals, not functionality. Defaults to false.
- */
-
-
-/**
  * @typedef {Object} interaction_TranslateOptions
  * @property {ol.Collection.<module:ol/Feature~Feature>|undefined} features Only features contained in this collection will be able to be translated. If
  * not specified, all features on the map will be able to be translated.
