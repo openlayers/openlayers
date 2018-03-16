@@ -34,17 +34,17 @@ import {createEditingStyle} from '../style/Style.js';
  */
 
 
- /**
-  * @enum {string}
-  */
- const ExtentEventType = {
-   /**
-    * Triggered after the extent is changed
-    * @event module:ol/interaction/Extent~ExtentEventType#extentchanged
-    * @api
-    */
-   EXTENTCHANGED: 'extentchanged'
- };
+/**
+ * @enum {string}
+ */
+const ExtentEventType = {
+  /**
+   * Triggered after the extent is changed
+   * @event module:ol/interaction/Extent~ExtentEventType#extentchanged
+   * @api
+   */
+  EXTENTCHANGED: 'extentchanged'
+};
 
 
 /**
