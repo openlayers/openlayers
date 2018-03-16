@@ -30,8 +30,76 @@ const SelectEventType = {
 
 
 /**
+ * A function that takes an {@link module:ol/Feature~Feature} or
+ * {@link module:ol/render/Feature~Feature} and an
+ * {@link module:ol/layer/Layer~Layer} and returns `true` if the feature may be
+ * selected or `false` otherwise.
+ * @typedef {function((module:ol/Feature~Feature|module:ol/render/Feature~Feature), module:ol/layer/Layer~Layer):
+ *     boolean} FilterFunction
+ */
+
+
+/**
+ * @typedef {Object} Options
+ * @property {module:ol/events/condition~Condition} [addCondition] A function
+ * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether that event should be handled.
+ * By default, this is {@link module:ol/events/condition~never}. Use this if you
+ * want to use different events for add and remove instead of `toggle`.
+ * @property {module:ol/events/condition~Condition} [condition] A function that
+ * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether that event should be handled. This is the event
+ * for the selected features as a whole. By default, this is
+ * {@link module:ol/events/condition~singleClick}. Clicking on a feature selects that
+ * feature and removes any that were in the selection. Clicking outside any
+ * feature removes all from the selection.
+ * See `toggle`, `add`, `remove` options for adding/removing extra features to/
+ * from the selection.
+ * @property {Array.<module:ol/layer/Layer~Layer>|function(module:ol/layer/Layer~Layer): boolean} [layers]
+ * A list of layers from which features should be selected. Alternatively, a
+ * filter function can be provided. The function will be called for each layer
+ * in the map and should return `true` for layers that you want to be
+ * selectable. If the option is absent, all visible layers will be considered
+ * selectable.
+ * @property {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction} [style]
+ * Style for the selected features. By default the default edit style is used
+ * (see {@link module:ol/style}).
+ * @property {module:ol/events/condition~Condition} [removeCondition] A function
+ * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether that event should be handled.
+ * By default, this is {@link module:ol/events/condition~never}. Use this if you
+ * want to use different events for add and remove instead of `toggle`.
+ * @property {module:ol/events/condition~Condition} [toggleCondition] A function
+ * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether that event should be handled. This is in addition
+ * to the `condition` event. By default,
+ * {@link module:ol/events/condition~shiftKeyOnly}, i.e. pressing `shift` as
+ * well as the `condition` event, adds that feature to the current selection if
+ * it is not currently selected, and removes it if it is. See `add` and `remove`
+ * if you want to use different events instead of a toggle.
+ * @property {boolean} [multi=false] A boolean that determines if the default
+ * behaviour should select only single features or all (overlapping) features at
+ * the clicked map position. The default of `false` means single select.
+ * @property {module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>} [features]
+ * Collection where the interaction will place selected features. Optional. If
+ * not set the interaction will create a collection. In any case the collection
+ * used by the interaction is returned by
+ * {@link module:ol/interaction/Select~Select#getFeatures}.
+ * @property {module:ol/interaction/Select~FilterFunction} [filter] A function
+ * that takes an {@link module:ol/Feature~Feature} and an
+ * {@link module:ol/layer/Layer~Layer} and returns `true` if the feature may be
+ * selected or `false` otherwise.
+ * @property {boolean} [wrapX=true] Wrap the world horizontally on the selection
+ * overlay.
+ * @property {number} [hitTolerance=0] Hit-detection tolerance. Pixels inside
+ * the radius around the given position will be checked for features. This only
+ * works for the canvas renderer and not for WebGL.
+ */
+
+
+/**
  * @classdesc
- * Events emitted by {@link ol.interaction.Select} instances are instances of
+ * Events emitted by {@link module:ol/interaction/Select~Select} instances are instances of
  * this type.
  *
  * @param {SelectEventType} type The event type.
@@ -40,7 +108,7 @@ const SelectEventType = {
  * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Associated
  *     {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
  * @implements {oli.SelectEvent}
- * @extends {ol.events.Event}
+ * @extends {module:ol/events/Event~Event}
  * @constructor
  */
 const SelectEvent = function(type, selected, deselected, mapBrowserEvent) {
@@ -84,8 +152,8 @@ inherits(SelectEvent, Event);
  * Selected features are added to an internal unmanaged layer.
  *
  * @constructor
- * @extends {ol.interaction.Interaction}
- * @param {olx.interaction.SelectOptions=} opt_options Options.
+ * @extends {module:ol/interaction/Interaction~Interaction}
+ * @param {module:ol/interaction/Select~Options=} opt_options Options.
  * @fires SelectEvent
  * @api
  */
@@ -129,7 +197,7 @@ const Select = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.SelectFilterFunction}
+   * @type {module:ol/interaction/Select~FilterFunction}
    */
   this.filter_ = options.filter ? options.filter : TRUE;
 
@@ -153,11 +221,11 @@ const Select = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.layer.Vector}
+   * @type {module:ol/layer/Vector~Vector}
    */
   this.featureOverlay_ = featureOverlay;
 
-  /** @type {function(ol.layer.Layer): boolean} */
+  /** @type {function(module:ol/layer/Layer~Layer): boolean} */
   let layerFilter;
   if (options.layers) {
     if (typeof options.layers === 'function') {
@@ -174,7 +242,7 @@ const Select = function(opt_options) {
 
   /**
    * @private
-   * @type {function(ol.layer.Layer): boolean}
+   * @type {function(module:ol/layer/Layer~Layer): boolean}
    */
   this.layerFilter_ = layerFilter;
 
@@ -182,7 +250,7 @@ const Select = function(opt_options) {
    * An association between selected feature (key)
    * and layer (value)
    * @private
-   * @type {Object.<number, ol.layer.Layer>}
+   * @type {Object.<number, module:ol/layer/Layer~Layer>}
    */
   this.featureLayerAssociation_ = {};
 
@@ -198,8 +266,8 @@ inherits(Select, Interaction);
 
 
 /**
- * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
- * @param {ol.layer.Layer} layer Layer.
+ * @param {module:ol/Feature~Feature|module:ol/render/Feature~Feature} feature Feature.
+ * @param {module:ol/layer/Layer~Layer} layer Layer.
  * @private
  */
 Select.prototype.addFeatureLayerAssociation_ = function(feature, layer) {
@@ -210,7 +278,7 @@ Select.prototype.addFeatureLayerAssociation_ = function(feature, layer) {
 
 /**
  * Get the selected features.
- * @return {ol.Collection.<module:ol/Feature~Feature>} Features collection.
+ * @return {module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>} Features collection.
  * @api
  */
 Select.prototype.getFeatures = function() {
@@ -229,17 +297,17 @@ Select.prototype.getHitTolerance = function() {
 
 
 /**
- * Returns the associated {@link ol.layer.Vector vectorlayer} of
+ * Returns the associated {@link module:ol/layer/Vector~Vector vectorlayer} of
  * the (last) selected feature. Note that this will not work with any
  * programmatic method like pushing features to
- * {@link ol.interaction.Select#getFeatures collection}.
- * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature
- * @return {ol.layer.Vector} Layer.
+ * {@link module:ol/interaction/Select~Select#getFeatures collection}.
+ * @param {module:ol/Feature~Feature|module:ol/render/Feature~Feature} feature Feature
+ * @return {module:ol/layer/Vector~Vector} Layer.
  * @api
  */
 Select.prototype.getLayer = function(feature) {
   const key = getUid(feature);
-  return /** @type {ol.layer.Vector} */ (this.featureLayerAssociation_[key]);
+  return /** @type {module:ol/layer/Vector~Vector} */ (this.featureLayerAssociation_[key]);
 };
 
 
@@ -248,7 +316,7 @@ Select.prototype.getLayer = function(feature) {
  * selected state of features.
  * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {ol.interaction.Select}
+ * @this {module:ol/interaction/Select~Select}
  */
 function handleEvent(mapBrowserEvent) {
   if (!this.condition_(mapBrowserEvent)) {
@@ -270,8 +338,8 @@ function handleEvent(mapBrowserEvent) {
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
       (
         /**
-         * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
-         * @param {ol.layer.Layer} layer Layer.
+         * @param {module:ol/Feature~Feature|module:ol/render/Feature~Feature} feature Feature.
+         * @param {module:ol/layer/Layer~Layer} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
          */
         function(feature, layer) {
@@ -303,8 +371,8 @@ function handleEvent(mapBrowserEvent) {
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
       (
         /**
-         * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
-         * @param {ol.layer.Layer} layer Layer.
+         * @param {module:ol/Feature~Feature|module:ol/render/Feature~Feature} feature Feature.
+         * @param {module:ol/layer/Layer~Layer} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
          */
         function(feature, layer) {
@@ -351,7 +419,7 @@ Select.prototype.setHitTolerance = function(hitTolerance) {
 /**
  * Remove the interaction from its current map, if any,  and attach it to a new
  * map, if any. Pass `null` to just remove the interaction from the current map.
- * @param {ol.PluggableMap} map Map.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
  * @override
  * @api
  */
@@ -388,7 +456,7 @@ function getDefaultStyleFunction() {
 
 
 /**
- * @param {ol.CollectionEvent} evt Event.
+ * @param {module:ol/collection/Collection~CollectionEvent} evt Event.
  * @private
  */
 Select.prototype.addFeature_ = function(evt) {
@@ -400,7 +468,7 @@ Select.prototype.addFeature_ = function(evt) {
 
 
 /**
- * @param {ol.CollectionEvent} evt Event.
+ * @param {module:ol/collection/Collection~CollectionEvent} evt Event.
  * @private
  */
 Select.prototype.removeFeature_ = function(evt) {
@@ -412,7 +480,7 @@ Select.prototype.removeFeature_ = function(evt) {
 
 
 /**
- * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature|module:ol/render/Feature~Feature} feature Feature.
  * @private
  */
 Select.prototype.removeFeatureLayerAssociation_ = function(feature) {

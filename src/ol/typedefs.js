@@ -257,16 +257,6 @@ ol.ReprojTriangle;
 
 
 /**
- * A function that takes an {@link module:ol/Feature~Feature} or {@link ol.render.Feature} and
- * an {@link ol.layer.Layer} and returns `true` if the feature may be selected
- * or `false` otherwise.
- * @typedef {function((module:ol/Feature~Feature|ol.render.Feature), ol.layer.Layer):
- *     boolean}
- */
-ol.SelectFilterFunction;
-
-
-/**
  * @typedef {{
  *     snapped: {boolean},
  *     vertex: (module:ol/coordinate~Coordinate|null),

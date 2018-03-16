@@ -15,55 +15,6 @@
 
 
 /**
- * @typedef {Object} interaction_SelectOptions
- * @property {ol.EventsConditionType|undefined} addCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * By default, this is {@link ol.events.condition.never}. Use this if you want
- * to use different events for add and remove instead of `toggle`.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * This is the event for the selected features as a whole. By default, this is
- * {@link ol.events.condition.singleClick}. Clicking on a feature selects that
- * feature and removes any that were in the selection. Clicking outside any
- * feature removes all from the selection.
- * See `toggle`, `add`, `remove` options for adding/removing extra features to/
- * from the selection.
- * @property {undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean} layers A list of layers from which features should be
- * selected. Alternatively, a filter function can be provided. The
- * function will be called for each layer in the map and should return
- * `true` for layers that you want to be selectable. If the option is
- * absent, all visible layers will be considered selectable.
- * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} style Style for the selected features. By default the default edit style is used
- * (see {@link ol.style}).
- * @property {ol.EventsConditionType|undefined} removeCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * By default, this is {@link ol.events.condition.never}. Use this if you want
- * to use different events for add and remove instead of `toggle`.
- * @property {ol.EventsConditionType|undefined} toggleCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * This is in addition to the `condition` event. By default,
- * {@link ol.events.condition.shiftKeyOnly}, i.e. pressing `shift` as well as
- * the `condition` event, adds that feature to the current selection if it is
- * not currently selected, and removes it if it is.
- * See `add` and `remove` if you want to use different events instead of a
- * toggle.
- * @property {boolean|undefined} multi A boolean that determines if the default behaviour should select only
- * single features or all (overlapping) features at the clicked map
- * position. Default is false i.e single select
- * @property {ol.Collection.<module:ol/Feature~Feature>|undefined} features Collection where the interaction will place selected features. Optional. If
- * not set the interaction will create a collection. In any case the collection
- * used by the interaction is returned by
- * {@link ol.interaction.Select#getFeatures}.
- * @property {ol.SelectFilterFunction|undefined} filter A function that takes an {@link module:ol/Feature~Feature} and an {@link ol.layer.Layer} and
- * returns `true` if the feature may be selected or `false` otherwise.
- * @property {boolean|undefined} wrapX Wrap the world horizontally on the selection overlay. Default is `true`.
- * @property {number|undefined} hitTolerance Hit-detection tolerance. Pixels inside the radius around the given position
- * will be checked for features. This only works for the canvas renderer and
- * not for WebGL. Default is `0`.
- */
-
-
-/**
  * @typedef {Object} interaction_SnapOptions
  * @property {ol.Collection.<module:ol/Feature~Feature>|undefined} features Snap to these features. Either this option or source should be provided.
  * @property {boolean|undefined} edge Snap to edges. Default is `true`.
