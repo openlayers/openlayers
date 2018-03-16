@@ -15,13 +15,6 @@
 
 
 /**
- * @typedef {Object} interaction_PinchRotateOptions
- * @property {number|undefined} duration The duration of the animation in milliseconds. Default is `250`.
- * @property {number|undefined} threshold Minimal angle in radians to start a rotation. Default is `0.3`.
- */
-
-
-/**
  * @typedef {Object} interaction_PinchZoomOptions
  * @property {number|undefined} duration Animation duration in milliseconds. Default is `400`.
  * @property {boolean|undefined} constrainResolution Zoom to the closest integer zoom level after the pinch gesture ends. Default is `false`.

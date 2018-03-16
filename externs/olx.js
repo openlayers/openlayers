@@ -47,28 +47,6 @@ olx.interaction.TranslateOptions.prototype.hitTolerance;
 
 
 /**
- * @typedef {{threshold: (number|undefined),
- *     duration: (number|undefined)}}
- */
-olx.interaction.PinchRotateOptions;
-
-
-/**
- * The duration of the animation in milliseconds. Default is `250`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.PinchRotateOptions.prototype.duration;
-
-
-/**
- * Minimal angle in radians to start a rotation. Default is `0.3`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.PinchRotateOptions.prototype.threshold;
-
-
 /**
  * @typedef {{
  *     duration: (number|undefined),

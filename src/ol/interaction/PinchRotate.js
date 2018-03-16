@@ -8,14 +8,23 @@ import {rotate, rotateWithoutConstraints} from '../interaction/Interaction.js';
 import PointerInteraction, {centroid as centroidFromPointers} from '../interaction/Pointer.js';
 import {disable} from '../rotationconstraint.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {number} [duration=250] The duration of the animation in
+ * milliseconds.
+ * @property {number} [threshold=0.3] Minimal angle in radians to start a rotation.
+  */
+
+
 /**
  * @classdesc
  * Allows the user to rotate the map by twisting with two fingers
  * on a touch screen.
  *
  * @constructor
- * @extends {ol.interaction.Pointer}
- * @param {olx.interaction.PinchRotateOptions=} opt_options Options.
+ * @extends {module:ol/interaction/Pointer~Pointer}
+ * @param {module:ol/interaction/PinchRotate~Options=} opt_options Options.
  * @api
  */
 const PinchRotate = function(opt_options) {
@@ -70,8 +79,8 @@ inherits(PinchRotate, PointerInteraction);
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {ol.interaction.PinchRotate}
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {module:ol/interaction/PinchRotate~PinchRotate}
  */
 function handleDragEvent(mapBrowserEvent) {
   let rotationDelta = 0.0;
@@ -120,9 +129,9 @@ function handleDragEvent(mapBrowserEvent) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {ol.interaction.PinchRotate}
+ * @this {module:ol/interaction/PinchRotate~PinchRotate}
  */
 function handleUpEvent(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
@@ -141,9 +150,9 @@ function handleUpEvent(mapBrowserEvent) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {ol.interaction.PinchRotate}
+ * @this {module:ol/interaction/PinchRotate~PinchRotate}
  */
 function handleDownEvent(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {
