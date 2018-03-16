@@ -15,31 +15,6 @@
 
 
 /**
- * @typedef {Object} interaction_ModifyOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event will be considered to add or move a vertex
- * to the sketch.
- * Default is {@link ol.events.condition.primaryAction}.
- * @property {ol.EventsConditionType|undefined} deleteCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * By default, {@link ol.events.condition.singleClick} with
- * {@link ol.events.condition.altKeyOnly} results in a vertex deletion.
- * @property {ol.EventsConditionType|undefined} insertVertexCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether a new vertex can be added to the sketch features.
- * Default is {@link ol.events.condition.always}
- * @property {number|undefined} pixelTolerance Pixel tolerance for considering the pointer close enough to a segment or
- * vertex for editing. Default is `10`.
- * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} style Style used for the features being modified. By default the default edit
- * style is used (see {@link ol.style}).
- * @property {ol.source.Vector|undefined} source The vector source with features to modify.  If a vector source is not
- * provided, a feature collection must be provided with the features option.
- * @property {ol.Collection.<module:ol/Feature~Feature>|undefined} features The features the interaction works on.  If a feature collection is not
- * provided, a vector source must be provided with the source option.
- * @property {boolean|undefined} wrapX Wrap the world horizontally on the sketch overlay. Default is `false`.
- */
-
-
-/**
  * @typedef {Object} interaction_MouseWheelZoomOptions
  * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled. Default is {@link ol.events.condition.always}.

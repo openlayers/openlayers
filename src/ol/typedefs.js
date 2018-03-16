@@ -202,17 +202,6 @@ ol.LRUCacheEntry;
 
 
 /**
- * @typedef {{depth: (Array.<number>|undefined),
- *            feature: module:ol/Feature~Feature,
- *            geometry: module:ol/geom/SimpleGeometry~SimpleGeometry,
- *            index: (number),
- *            segment: Array.<module:ol/extent~Extent>,
- *            featureSegments: (Array.<ol.ModifySegmentDataType>|undefined)}}
- */
-ol.ModifySegmentDataType;
-
-
-/**
  * A function that takes an array of input data, performs some operation, and
  * returns an array of output data.
  * For `pixel` type operations, the function will be called with an array of
