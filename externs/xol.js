@@ -15,24 +15,6 @@
 
 
 /**
- * @typedef {Object} interaction_PointerOptions
- * @property {(function(ol.MapBrowserPointerEvent):boolean|undefined)} handleDownEvent Function handling "down" events. If the function returns `true` then a drag
- * sequence is started.
- * @property {(function(ol.MapBrowserPointerEvent)|undefined)} handleDragEvent Function handling "drag" events. This function is called on "move" events
- * during a drag sequence.
- * @property {(function(module:ol/MapBrowserEvent~MapBrowserEvent):boolean|undefined)} handleEvent Method called by the map to notify the interaction that a browser event was
- * dispatched to the map. The function may return `false` to prevent the
- * propagation of the event to other interactions in the map's interactions
- * chain.
- * @property {(function(ol.MapBrowserPointerEvent)|undefined)} handleMoveEvent Function handling "move" events. This function is called on "move" events,
- * also during a drag sequence (so during a drag sequence both the
- * `handleDragEvent` function and this function are called).
- * @property {(function(ol.MapBrowserPointerEvent):boolean|undefined)} handleUpEvent Function handling "up" events. If the function returns `false` then the
- * current drag sequence is stopped.
- */
-
-
-/**
  * @typedef {Object} interaction_SelectOptions
  * @property {ol.EventsConditionType|undefined} addCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
