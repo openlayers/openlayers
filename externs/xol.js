@@ -15,17 +15,6 @@
 
 
 /**
- * @typedef {Object} interaction_SnapOptions
- * @property {ol.Collection.<module:ol/Feature~Feature>|undefined} features Snap to these features. Either this option or source should be provided.
- * @property {boolean|undefined} edge Snap to edges. Default is `true`.
- * @property {boolean|undefined} vertex Snap to vertices. Default is `true`.
- * @property {number|undefined} pixelTolerance Pixel tolerance for considering the pointer close enough to a segment or
- * vertex for snapping. Default is `10` pixels.
- * @property {ol.source.Vector|undefined} source Snap to features from this source. Either this option or features should be provided
- */
-
-
-/**
  * @typedef {Object} layer_BaseOptions
  * @property {number|undefined} opacity Opacity (0, 1). Default is `1`.
  * @property {boolean|undefined} visible Visibility. Default is `true`.

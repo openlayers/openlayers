@@ -257,25 +257,6 @@ ol.ReprojTriangle;
 
 
 /**
- * @typedef {{
- *     snapped: {boolean},
- *     vertex: (module:ol/coordinate~Coordinate|null),
- *     vertexPixel: (module:ol~Pixel|null)
- * }}
- */
-ol.SnapResultType;
-
-
-/**
- * @typedef {{
- *     feature: module:ol/Feature~Feature,
- *     segment: Array.<module:ol/coordinate~Coordinate>
- * }}
- */
-ol.SnapSegmentDataType;
-
-
-/**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            extent: (null|module:ol/extent~Extent|undefined),
  *            projection: module:ol/proj~ProjectionLike,

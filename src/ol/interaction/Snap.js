@@ -17,10 +17,37 @@ import {VectorSourceEvent} from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 
+
+/**
+ * @typedef {Object} Result
+ * @property {boolean} snapped
+ * @property {module:ol/coordinate~Coordinate|null} vertex
+ * @property {module:ol~Pixel|null} vertexPixel
+ */
+
+
+/**
+ * @typedef {Object} SegmentData
+ * @property {module:ol/Feature~Feature} feature
+ * @property {Array.<module:ol/coordinate~Coordinate>} segment
+ */
+
+
+/**
+ * @typedef {Object} Options
+ * @property {module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>|undefined} features Snap to these features. Either this option or source should be provided.
+ * @property {boolean|undefined} edge Snap to edges. Default is `true`.
+ * @property {boolean|undefined} vertex Snap to vertices. Default is `true`.
+ * @property {number|undefined} pixelTolerance Pixel tolerance for considering the pointer close enough to a segment or
+ * vertex for snapping. Default is `10` pixels.
+ * @property {module:ol/source/Vector~Vector|undefined} source Snap to features from this source. Either this option or features should be provided
+ */
+
+
 /**
  * @classdesc
  * Handles snapping of vector features while modifying or drawing them.  The
- * features can come from a {@link ol.source.Vector} or {@link ol.Collection}
+ * features can come from a {@link module:ol/source/Vector~Vector} or {@link module:ol/collection/Collection~Collection}
  * Any interaction object that allows the user to interact
  * with the features using the mouse can benefit from the snapping, as long
  * as it is added before.
@@ -30,13 +57,15 @@ import RBush from '../structs/RBush.js';
  *
  * Example:
  *
- *     var snap = new ol.interaction.Snap({
+ *     import Snap from 'ol/interaction/Snap';
+ *
+ *     var snap = new Snap({
  *       source: source
  *     });
  *
  * @constructor
- * @extends {ol.interaction.Pointer}
- * @param {olx.interaction.SnapOptions=} opt_options Options.
+ * @extends {module:ol/interaction/Pointer~Pointer}
+ * @param {module:ol/interaction/Snap~Options=} opt_options Options.
  * @api
  */
 const Snap = function(opt_options) {
@@ -50,7 +79,7 @@ const Snap = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
   /**
-   * @type {ol.source.Vector}
+   * @type {module:ol/source/Vector~Vector}
    * @private
    */
   this.source_ = options.source ? options.source : null;
@@ -68,7 +97,7 @@ const Snap = function(opt_options) {
   this.edge_ = options.edge !== undefined ? options.edge : true;
 
   /**
-   * @type {ol.Collection.<module:ol/Feature~Feature>}
+   * @type {module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>}
    * @private
    */
   this.features_ = options.features ? options.features : null;
@@ -117,7 +146,7 @@ const Snap = function(opt_options) {
     options.pixelTolerance : 10;
 
   /**
-   * @type {function(ol.SnapSegmentDataType, ol.SnapSegmentDataType): number}
+   * @type {function(module:ol/interaction/Snap~SegmentData, module:ol/interaction/Snap~SegmentData): number}
    * @private
    */
   this.sortByDistance_ = sortByDistance.bind(this);
@@ -125,7 +154,7 @@ const Snap = function(opt_options) {
 
   /**
   * Segment RTree for each layer
-  * @type {ol.structs.RBush.<ol.SnapSegmentDataType>}
+  * @type {module:ol/structs/RBush~RBush.<module:ol/interaction/Snap~SegmentData>}
   * @private
   */
   this.rBush_ = new RBush();
@@ -199,7 +228,7 @@ Snap.prototype.forEachFeatureRemove_ = function(feature) {
 
 
 /**
- * @return {ol.Collection.<module:ol/Feature~Feature>|Array.<module:ol/Feature~Feature>} Features.
+ * @return {module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>|Array.<module:ol/Feature~Feature>} Features.
  * @private
  */
 Snap.prototype.getFeatures_ = function() {
@@ -209,12 +238,12 @@ Snap.prototype.getFeatures_ = function() {
   } else if (this.source_) {
     features = this.source_.getFeatures();
   }
-  return /** @type {!Array.<module:ol/Feature~Feature>|!ol.Collection.<module:ol/Feature~Feature>} */ (features);
+  return /** @type {!Array.<module:ol/Feature~Feature>|!module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>} */ (features);
 };
 
 
 /**
- * @param {ol.source.Vector.Event|ol.CollectionEvent} evt Event.
+ * @param {module:ol/source/Vector~Vector.Event|module:ol/collection/Collection~CollectionEvent} evt Event.
  * @private
  */
 Snap.prototype.handleFeatureAdd_ = function(evt) {
@@ -229,7 +258,7 @@ Snap.prototype.handleFeatureAdd_ = function(evt) {
 
 
 /**
- * @param {ol.source.Vector.Event|ol.CollectionEvent} evt Event.
+ * @param {module:ol/source/Vector~Vector.Event|module:ol/collection/Collection~CollectionEvent} evt Event.
  * @private
  */
 Snap.prototype.handleFeatureRemove_ = function(evt) {
@@ -244,7 +273,7 @@ Snap.prototype.handleFeatureRemove_ = function(evt) {
 
 
 /**
- * @param {ol.events.Event} evt Event.
+ * @param {module:ol/events/Event~Event} evt Event.
  * @private
  */
 Snap.prototype.handleFeatureChange_ = function(evt) {
@@ -336,8 +365,8 @@ Snap.prototype.shouldStopEvent = FALSE;
 /**
  * @param {module:ol~Pixel} pixel Pixel
  * @param {module:ol/coordinate~Coordinate} pixelCoordinate Coordinate
- * @param {ol.PluggableMap} map Map.
- * @return {ol.SnapResultType} Snap result
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
+ * @return {module:ol/interaction/Snap~Result} Snap result
  */
 Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
 
@@ -408,7 +437,7 @@ Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
       vertexPixel = [Math.round(vertexPixel[0]), Math.round(vertexPixel[1])];
     }
   }
-  return /** @type {ol.SnapResultType} */ ({
+  return /** @type {module:ol/interaction/Snap~Result} */ ({
     snapped: snapped,
     vertex: vertex,
     vertexPixel: vertexPixel
@@ -436,7 +465,7 @@ Snap.prototype.writeCircleGeometry_ = function(feature, geometry) {
   const coordinates = polygon.getCoordinates()[0];
   for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
     const segment = coordinates.slice(i, i + 2);
-    const segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+    const segmentData = /** @type {module:ol/interaction/Snap~SegmentData} */ ({
       feature: feature,
       segment: segment
     });
@@ -470,7 +499,7 @@ Snap.prototype.writeLineStringGeometry_ = function(feature, geometry) {
   const coordinates = geometry.getCoordinates();
   for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
     const segment = coordinates.slice(i, i + 2);
-    const segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+    const segmentData = /** @type {module:ol/interaction/Snap~SegmentData} */ ({
       feature: feature,
       segment: segment
     });
@@ -490,7 +519,7 @@ Snap.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
     const coordinates = lines[j];
     for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       const segment = coordinates.slice(i, i + 2);
-      const segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+      const segmentData = /** @type {module:ol/interaction/Snap~SegmentData} */ ({
         feature: feature,
         segment: segment
       });
@@ -509,7 +538,7 @@ Snap.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
   const points = geometry.getCoordinates();
   for (let i = 0, ii = points.length; i < ii; ++i) {
     const coordinates = points[i];
-    const segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+    const segmentData = /** @type {module:ol/interaction/Snap~SegmentData} */ ({
       feature: feature,
       segment: [coordinates, coordinates]
     });
@@ -531,7 +560,7 @@ Snap.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
       const coordinates = rings[j];
       for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
         const segment = coordinates.slice(i, i + 2);
-        const segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+        const segmentData = /** @type {module:ol/interaction/Snap~SegmentData} */ ({
           feature: feature,
           segment: segment
         });
@@ -549,7 +578,7 @@ Snap.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
  */
 Snap.prototype.writePointGeometry_ = function(feature, geometry) {
   const coordinates = geometry.getCoordinates();
-  const segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+  const segmentData = /** @type {module:ol/interaction/Snap~SegmentData} */ ({
     feature: feature,
     segment: [coordinates, coordinates]
   });
@@ -568,7 +597,7 @@ Snap.prototype.writePolygonGeometry_ = function(feature, geometry) {
     const coordinates = rings[j];
     for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       const segment = coordinates.slice(i, i + 2);
-      const segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+      const segmentData = /** @type {module:ol/interaction/Snap~SegmentData} */ ({
         feature: feature,
         segment: segment
       });
@@ -582,7 +611,7 @@ Snap.prototype.writePolygonGeometry_ = function(feature, geometry) {
  * Handle all pointer events events.
  * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt A move event.
  * @return {boolean} Pass the event to other interactions.
- * @this {ol.interaction.Snap}
+ * @this {module:ol/interaction/Snap~Snap}
  */
 export function handleEvent(evt) {
   const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
@@ -595,9 +624,9 @@ export function handleEvent(evt) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} evt Event.
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} evt Event.
  * @return {boolean} Stop drag sequence?
- * @this {ol.interaction.Snap}
+ * @this {module:ol/interaction/Snap~Snap}
  */
 function handleUpEvent(evt) {
   const featuresToUpdate = getValues(this.pendingFeatures_);
@@ -611,10 +640,10 @@ function handleUpEvent(evt) {
 
 /**
  * Sort segments by distance, helper function
- * @param {ol.SnapSegmentDataType} a The first segment data.
- * @param {ol.SnapSegmentDataType} b The second segment data.
+ * @param {module:ol/interaction/Snap~SegmentData} a The first segment data.
+ * @param {module:ol/interaction/Snap~SegmentData} b The second segment data.
  * @return {number} The difference in distance.
- * @this {ol.interaction.Snap}
+ * @this {module:ol/interaction/Snap~Snap}
  */
 function sortByDistance(a, b) {
   const deltaA = squaredDistanceToSegment(this.pixelCoordinate_, a.segment);

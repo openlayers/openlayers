@@ -47,59 +47,6 @@ olx.interaction.TranslateOptions.prototype.hitTolerance;
 
 
 /**
- * Options for snap
- * @typedef {{
- *     features: (ol.Collection.<module:ol/Feature~Feature>|undefined),
- *     pixelTolerance: (number|undefined),
- *     source: (ol.source.Vector|undefined),
- *     edge: (boolean|undefined),
- *     vertex: (boolean|undefined)
- * }}
- */
-olx.interaction.SnapOptions;
-
-
-/**
- * Snap to these features. Either this option or source should be provided.
- * @type {ol.Collection.<module:ol/Feature~Feature>|undefined}
- * @api
- */
-olx.interaction.SnapOptions.prototype.features;
-
-/**
- * Snap to edges. Default is `true`.
- * @type {boolean|undefined}
- * @api
- */
-olx.interaction.SnapOptions.prototype.edge;
-
-
-/**
- * Snap to vertices. Default is `true`.
- * @type {boolean|undefined}
- * @api
- */
-olx.interaction.SnapOptions.prototype.vertex;
-
-
-/**
- * Pixel tolerance for considering the pointer close enough to a segment or
- * vertex for snapping. Default is `10` pixels.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.SnapOptions.prototype.pixelTolerance;
-
-
-/**
- * Snap to features from this source. Either this option or features should be provided
- * @type {ol.source.Vector|undefined}
- * @api
- */
-olx.interaction.SnapOptions.prototype.source;
-
-
-/**
  * @typedef {{opacity: (number|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
