@@ -15,16 +15,6 @@
 
 
 /**
- * @typedef {Object} interaction_KeyboardZoomOptions
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `100`.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.targetNotEditable}.
- * @property {number|undefined} delta The amount to zoom on each key press. Default is `1`.
- */
-
-
-/**
  * @typedef {Object} interaction_ModifyOptions
  * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event will be considered to add or move a vertex

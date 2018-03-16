@@ -47,40 +47,6 @@ olx.interaction.TranslateOptions.prototype.hitTolerance;
 
 
 /**
- * @typedef {{duration: (number|undefined),
- *     condition: (ol.EventsConditionType|undefined),
- *     delta: (number|undefined)}}
- */
-olx.interaction.KeyboardZoomOptions;
-
-
-/**
- * Animation duration in milliseconds. Default is `100`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.KeyboardZoomOptions.prototype.duration;
-
-
-/**
- * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.targetNotEditable}.
- * @type {ol.EventsConditionType|undefined}
- * @api
- */
-olx.interaction.KeyboardZoomOptions.prototype.condition;
-
-
-/**
- * The amount to zoom on each key press. Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.KeyboardZoomOptions.prototype.delta;
-
-
-/**
  * @typedef {{
  *     condition: (ol.EventsConditionType|undefined),
  *     deleteCondition: (ol.EventsConditionType|undefined),

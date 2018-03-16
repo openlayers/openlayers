@@ -6,6 +6,18 @@ import EventType from '../events/EventType.js';
 import {targetNotEditable} from '../events/condition.js';
 import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {number} [duration=100] Animation duration in milliseconds.
+ * @property {module:ol/events/condition~Condition} [condition] A function that
+ * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether that event should be handled. Default is
+ * {@link module:ol/events/condition~targetNotEditable}.
+ * @property {number} [delta=1] The zoom level delta on each key press.
+ */
+
+
 /**
  * @classdesc
  * Allows the user to zoom the map using keyboard + and -.
@@ -13,14 +25,14 @@ import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
  * the keys can only be used when browser focus is on the element to which
  * the keyboard events are attached. By default, this is the map div,
  * though you can change this with the `keyboardEventTarget` in
- * {@link ol.Map}. `document` never loses focus but, for any other element,
- * focus will have to be on, and returned to, this element if the keys are to
- * function.
- * See also {@link ol.interaction.KeyboardPan}.
+ * {@link module:ol/Map~Map}. `document` never loses focus but, for any other
+ * element, focus will have to be on, and returned to, this element if the keys
+ * are to function.
+ * See also {@link moudle:ol/interaction/KeyboardPan~KeyboardPan}.
  *
  * @constructor
- * @param {olx.interaction.KeyboardZoomOptions=} opt_options Options.
- * @extends {ol.interaction.Interaction}
+ * @param {module:ol/interaction/KeyboardZoom~Options=} opt_options Options.
+ * @extends {module:ol/interaction/Interaction~Interaction}
  * @api
  */
 const KeyboardZoom = function(opt_options) {
@@ -33,7 +45,7 @@ const KeyboardZoom = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.condition_ = options.condition ? options.condition : targetNotEditable;
 
@@ -60,7 +72,7 @@ inherits(KeyboardZoom, Interaction);
  * key pressed was '+' or '-').
  * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {ol.interaction.KeyboardZoom}
+ * @this {module:ol/interaction/KeyboardZoom~KeyboardZoom}
  */
 function handleEvent(mapBrowserEvent) {
   let stopEvent = false;
