@@ -30,7 +30,7 @@ import PointerInteraction from '../interaction/Pointer.js';
  *
  * @constructor
  * @extends {module:ol/interaction/Pointer~Pointer}
- * @param {ol/interaction/DragRotate~Options=} opt_options Options.
+ * @param {module:ol/interaction/DragRotate~Options=} opt_options Options.
  * @api
  */
 const DragRotate = function(opt_options) {

@@ -32,7 +32,7 @@ import DragBox from '../interaction/DragBox.js';
  *
  * @constructor
  * @extends {module:ol/interaction/DragBox~DragBox}
- * @param {ol/interaction/DragZoom~Options=} opt_options Options.
+ * @param {module:ol/interaction/DragZoom~Options=} opt_options Options.
  * @api
  */
 const DragZoom = function(opt_options) {

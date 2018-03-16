@@ -50,7 +50,7 @@ export const Mode = {
  *
  * @constructor
  * @extends {module:ol/interaction/Interaction~Interaction}
- * @param {module:olx/interaction/MouseWheelZoom~Options=} opt_options Options.
+ * @param {module:ol/interaction/MouseWheelZoom~Options=} opt_options Options.
  * @api
  */
 const MouseWheelZoom = function(opt_options) {

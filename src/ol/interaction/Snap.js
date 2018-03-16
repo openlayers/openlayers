@@ -35,7 +35,7 @@ import RBush from '../structs/RBush.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>|undefined} features Snap to these features. Either this option or source should be provided.
+ * @property {module:ol/Collection~Collection.<module:ol/Feature~Feature>|undefined} features Snap to these features. Either this option or source should be provided.
  * @property {boolean|undefined} edge Snap to edges. Default is `true`.
  * @property {boolean|undefined} vertex Snap to vertices. Default is `true`.
  * @property {number|undefined} pixelTolerance Pixel tolerance for considering the pointer close enough to a segment or
@@ -47,7 +47,7 @@ import RBush from '../structs/RBush.js';
 /**
  * @classdesc
  * Handles snapping of vector features while modifying or drawing them.  The
- * features can come from a {@link module:ol/source/Vector~Vector} or {@link module:ol/collection/Collection~Collection}
+ * features can come from a {@link module:ol/source/Vector~Vector} or {@link module:ol/Collection~Collection}
  * Any interaction object that allows the user to interact
  * with the features using the mouse can benefit from the snapping, as long
  * as it is added before.
@@ -97,7 +97,7 @@ const Snap = function(opt_options) {
   this.edge_ = options.edge !== undefined ? options.edge : true;
 
   /**
-   * @type {module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>}
+   * @type {module:ol/Collection~Collection.<module:ol/Feature~Feature>}
    * @private
    */
   this.features_ = options.features ? options.features : null;
@@ -228,7 +228,7 @@ Snap.prototype.forEachFeatureRemove_ = function(feature) {
 
 
 /**
- * @return {module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>|Array.<module:ol/Feature~Feature>} Features.
+ * @return {module:ol/Collection~Collection.<module:ol/Feature~Feature>|Array.<module:ol/Feature~Feature>} Features.
  * @private
  */
 Snap.prototype.getFeatures_ = function() {
@@ -238,12 +238,12 @@ Snap.prototype.getFeatures_ = function() {
   } else if (this.source_) {
     features = this.source_.getFeatures();
   }
-  return /** @type {!Array.<module:ol/Feature~Feature>|!module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>} */ (features);
+  return /** @type {!Array.<module:ol/Feature~Feature>|!module:ol/Collection~Collection.<module:ol/Feature~Feature>} */ (features);
 };
 
 
 /**
- * @param {module:ol/source/Vector~Vector.Event|module:ol/collection/Collection~CollectionEvent} evt Event.
+ * @param {module:ol/source/Vector~Vector.Event|module:ol/Collection~CollectionEvent} evt Event.
  * @private
  */
 Snap.prototype.handleFeatureAdd_ = function(evt) {
@@ -258,7 +258,7 @@ Snap.prototype.handleFeatureAdd_ = function(evt) {
 
 
 /**
- * @param {module:ol/source/Vector~Vector.Event|module:ol/collection/Collection~CollectionEvent} evt Event.
+ * @param {module:ol/source/Vector~Vector.Event|module:ol/Collection~CollectionEvent} evt Event.
  * @private
  */
 Snap.prototype.handleFeatureRemove_ = function(evt) {

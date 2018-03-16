@@ -46,7 +46,7 @@ import {createEditingStyle} from '../style/Style.js';
    EXTENTCHANGED: 'extentchanged'
  };
 
- 
+
 /**
  * @classdesc
  * Events emitted by {@link module:ol/interaction/Extent~Extent} instances are
@@ -80,7 +80,7 @@ inherits(ExtentInteractionEvent, Event);
  * @constructor
  * @extends {module:ol/interaction/Pointer~Pointer}
  * @fires module:ol/interaction/Extent~Event
- * @param {ol/interaction/Extent~Options=} opt_options Options.
+ * @param {module:ol/interaction/Extent~Options=} opt_options Options.
  * @api
  */
 const ExtentInteraction = function(opt_options) {

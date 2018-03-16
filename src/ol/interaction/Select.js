@@ -80,7 +80,7 @@ const SelectEventType = {
  * @property {boolean} [multi=false] A boolean that determines if the default
  * behaviour should select only single features or all (overlapping) features at
  * the clicked map position. The default of `false` means single select.
- * @property {module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>} [features]
+ * @property {module:ol/Collection~Collection.<module:ol/Feature~Feature>} [features]
  * Collection where the interaction will place selected features. Optional. If
  * not set the interaction will create a collection. In any case the collection
  * used by the interaction is returned by
@@ -278,7 +278,7 @@ Select.prototype.addFeatureLayerAssociation_ = function(feature, layer) {
 
 /**
  * Get the selected features.
- * @return {module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>} Features collection.
+ * @return {module:ol/Collection~Collection.<module:ol/Feature~Feature>} Features collection.
  * @api
  */
 Select.prototype.getFeatures = function() {
@@ -456,7 +456,7 @@ function getDefaultStyleFunction() {
 
 
 /**
- * @param {module:ol/collection/Collection~CollectionEvent} evt Event.
+ * @param {module:ol/Collection~CollectionEvent} evt Event.
  * @private
  */
 Select.prototype.addFeature_ = function(evt) {
@@ -468,7 +468,7 @@ Select.prototype.addFeature_ = function(evt) {
 
 
 /**
- * @param {module:ol/collection/Collection~CollectionEvent} evt Event.
+ * @param {module:ol/Collection~CollectionEvent} evt Event.
  * @private
  */
 Select.prototype.removeFeature_ = function(evt) {

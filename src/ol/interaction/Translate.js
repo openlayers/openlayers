@@ -39,7 +39,7 @@ const TranslateEventType = {
 
 /**
  * @typedef {Object} interaction_TranslateOptions
- * @property {module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>|undefined} features Only features contained in this collection will be able to be translated. If
+ * @property {module:ol/Collection~Collection.<module:ol/Feature~Feature>|undefined} features Only features contained in this collection will be able to be translated. If
  * not specified, all features on the map will be able to be translated.
  * @property {undefined|Array.<module:ol/layer/Layer~Layer>|function(module:ol/layer/Layer~Layer): boolean} layers A list of layers from which features should be
  * translated. Alternatively, a filter function can be provided. The
@@ -61,7 +61,7 @@ const TranslateEventType = {
  * @extends {module:ol/events/Event~Event}
  * @implements {oli.interaction.TranslateEvent}
  * @param {module:ol/interaction/Translate~TranslateEventType} type Type.
- * @param {module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>} features The features translated.
+ * @param {module:ol/Collection~Collection.<module:ol/Feature~Feature>} features The features translated.
  * @param {module:ol/coordinate~Coordinate} coordinate The event coordinate.
  */
 export const TranslateEvent = function(type, features, coordinate) {
@@ -70,7 +70,7 @@ export const TranslateEvent = function(type, features, coordinate) {
 
   /**
    * The features being translated.
-   * @type {module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>}
+   * @type {module:ol/Collection~Collection.<module:ol/Feature~Feature>}
    * @api
    */
   this.features = features;
@@ -116,7 +116,7 @@ const Translate = function(opt_options) {
 
 
   /**
-   * @type {module:ol/collection/Collection~Collection.<module:ol/Feature~Feature>}
+   * @type {module:ol/Collection~Collection.<module:ol/Feature~Feature>}
    * @private
    */
   this.features_ = options.features !== undefined ? options.features : null;
