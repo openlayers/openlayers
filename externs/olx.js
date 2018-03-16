@@ -47,31 +47,6 @@ olx.interaction.TranslateOptions.prototype.hitTolerance;
 
 
 /**
-/**
- * @typedef {{
- *     duration: (number|undefined),
- *     constrainResolution: (boolean|undefined)
- * }}
- */
-olx.interaction.PinchZoomOptions;
-
-
-/**
- * Animation duration in milliseconds. Default is `400`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.PinchZoomOptions.prototype.duration;
-
-/**
- * Zoom to the closest integer zoom level after the pinch gesture ends. Default is `false`.
- * @type {boolean|undefined}
- * @api
- */
-olx.interaction.PinchZoomOptions.prototype.constrainResolution;
-
-
-/**
  * @typedef {{handleDownEvent: (function(ol.MapBrowserPointerEvent):boolean|undefined),
  *     handleDragEvent: (function(ol.MapBrowserPointerEvent)|undefined),
  *     handleEvent: (function(module:ol/MapBrowserEvent~MapBrowserEvent):boolean|undefined),

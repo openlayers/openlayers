@@ -15,13 +15,6 @@
 
 
 /**
- * @typedef {Object} interaction_PinchZoomOptions
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `400`.
- * @property {boolean|undefined} constrainResolution Zoom to the closest integer zoom level after the pinch gesture ends. Default is `false`.
- */
-
-
-/**
  * @typedef {Object} interaction_PointerOptions
  * @property {(function(ol.MapBrowserPointerEvent):boolean|undefined)} handleDownEvent Function handling "down" events. If the function returns `true` then a drag
  * sequence is started.
