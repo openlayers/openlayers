@@ -6,47 +6,6 @@ let olx;
 
 
 /**
- * @typedef {{
- *     features: (ol.Collection.<module:ol/Feature~Feature>|undefined),
- *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean),
- *     hitTolerance: (number|undefined)
- * }}
- */
-olx.interaction.TranslateOptions;
-
-
-/**
- * Only features contained in this collection will be able to be translated. If
- * not specified, all features on the map will be able to be translated.
- * @type {ol.Collection.<module:ol/Feature~Feature>|undefined}
- * @api
- */
-olx.interaction.TranslateOptions.prototype.features;
-
-
-/**
- * A list of layers from which features should be
- * translated. Alternatively, a filter function can be provided. The
- * function will be called for each layer in the map and should return
- * `true` for layers that you want to be translatable. If the option is
- * absent, all visible layers will be considered translatable.
- * @type {undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean}
- * @api
- */
-olx.interaction.TranslateOptions.prototype.layers;
-
-
-/**
- * Hit-detection tolerance. Pixels inside the radius around the given position
- * will be checked for features. This only works for the canvas renderer and
- * not for WebGL. Default is `0`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.TranslateOptions.prototype.hitTolerance;
-
-
-/**
  * @typedef {{opacity: (number|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
