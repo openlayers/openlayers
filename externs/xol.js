@@ -15,21 +15,6 @@
 
 
 /**
- * @typedef {Object} interaction_MouseWheelZoomOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled. Default is {@link ol.events.condition.always}.
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
- * @property {number|undefined} timeout Mouse wheel timeout duration in milliseconds. Default is `80`.
- * @property {boolean|undefined} constrainResolution When using a trackpad or magic mouse, zoom to the closest integer zoom level
- * after the scroll gesture ends.
- * Default is `false`.
- * @property {boolean|undefined} useAnchor Enable zooming using the mouse's location as the anchor. Default is `true`.
- * When set to false, zooming in and out will zoom to the center of the screen
- * instead of zooming on the mouse's location.
- */
-
-
-/**
  * @typedef {Object} interaction_PinchRotateOptions
  * @property {number|undefined} duration The duration of the animation in milliseconds. Default is `250`.
  * @property {number|undefined} threshold Minimal angle in radians to start a rotation. Default is `0.3`.

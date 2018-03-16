@@ -47,61 +47,6 @@ olx.interaction.TranslateOptions.prototype.hitTolerance;
 
 
 /**
- * @typedef {{constrainResolution: (boolean|undefined),
- *     condition: (ol.EventsConditionType|undefined),
- *     duration: (number|undefined),
- *     timeout: (number|undefined),
- *     useAnchor: (boolean|undefined)}}
- */
-olx.interaction.MouseWheelZoomOptions;
-
-
-/**
- * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled. Default is {@link ol.events.condition.always}.
- * @type {ol.EventsConditionType|undefined}
- * @api
- */
-olx.interaction.MouseWheelZoomOptions.prototype.condition;
-
-
-/**
- * Animation duration in milliseconds. Default is `250`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.MouseWheelZoomOptions.prototype.duration;
-
-
-/**
- * Mouse wheel timeout duration in milliseconds. Default is `80`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.MouseWheelZoomOptions.prototype.timeout;
-
-
-/**
- * When using a trackpad or magic mouse, zoom to the closest integer zoom level
- * after the scroll gesture ends.
- * Default is `false`.
- * @type {boolean|undefined}
- * @api
- */
-olx.interaction.MouseWheelZoomOptions.prototype.constrainResolution;
-
-
-/**
- * Enable zooming using the mouse's location as the anchor. Default is `true`.
- * When set to false, zooming in and out will zoom to the center of the screen
- * instead of zooming on the mouse's location.
- * @type {boolean|undefined}
- * @api
- */
-olx.interaction.MouseWheelZoomOptions.prototype.useAnchor;
-
-
-/**
  * @typedef {{threshold: (number|undefined),
  *     duration: (number|undefined)}}
  */
