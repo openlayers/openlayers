@@ -8,6 +8,20 @@ import KeyCode from '../events/KeyCode.js';
 import {noModifierKeys, targetNotEditable} from '../events/condition.js';
 import Interaction, {pan} from '../interaction/Interaction.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {module:ol/events/condition~Condition} [condition] A function that
+ * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether that event should be handled. Default is
+ * {@link module:ol/events/condition~noModifierKeys} and
+ * {@link module:ol/events/condition~targetNotEditable}.
+ * @property {number} [duration=100] Animation duration in milliseconds.
+ * @property {number} [pixelDelta=128] The amount of pixels to pan on each key
+ * press.
+ */
+
+
 /**
  * @classdesc
  * Allows the user to pan the map using keyboard arrows.
@@ -15,14 +29,14 @@ import Interaction, {pan} from '../interaction/Interaction.js';
  * the keys can only be used when browser focus is on the element to which
  * the keyboard events are attached. By default, this is the map div,
  * though you can change this with the `keyboardEventTarget` in
- * {@link ol.Map}. `document` never loses focus but, for any other element,
- * focus will have to be on, and returned to, this element if the keys are to
- * function.
- * See also {@link ol.interaction.KeyboardZoom}.
+ * {@link module:ol/Map~Map}. `document` never loses focus but, for any other
+ * element, focus will have to be on, and returned to, this element if the keys
+ * are to function.
+ * See also {@link module:ol/interaction/KeyboardZoom~KeyboardZoom}.
  *
  * @constructor
- * @extends {ol.interaction.Interaction}
- * @param {olx.interaction.KeyboardPanOptions=} opt_options Options.
+ * @extends {module:ol/interaction/Interaction~Interaction}
+ * @param {module:ol/interaction/KeyboardPan~Options=} opt_options Options.
  * @api
  */
 const KeyboardPan = function(opt_options) {
@@ -73,7 +87,7 @@ inherits(KeyboardPan, Interaction);
  * pressed).
  * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {ol.interaction.KeyboardPan}
+ * @this {module:ol/interaction/KeyboardPan~KeyboardPan}
  */
 function handleEvent(mapBrowserEvent) {
   let stopEvent = false;

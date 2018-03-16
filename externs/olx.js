@@ -47,41 +47,6 @@ olx.interaction.TranslateOptions.prototype.hitTolerance;
 
 
 /**
- * @typedef {{condition: (ol.EventsConditionType|undefined),
- *     duration: (number|undefined),
- *     pixelDelta: (number|undefined)}}
- */
-olx.interaction.KeyboardPanOptions;
-
-
-/**
- * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.noModifierKeys} and
- * {@link ol.events.condition.targetNotEditable}.
- * @type {ol.EventsConditionType|undefined}
- * @api
- */
-olx.interaction.KeyboardPanOptions.prototype.condition;
-
-
-/**
- * Animation duration in milliseconds. Default is `100`.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.KeyboardPanOptions.prototype.duration;
-
-
-/**
- * Pixel The amount to pan on each key press. Default is `128` pixels.
- * @type {number|undefined}
- * @api
- */
-olx.interaction.KeyboardPanOptions.prototype.pixelDelta;
-
-
-/**
  * @typedef {{duration: (number|undefined),
  *     condition: (ol.EventsConditionType|undefined),
  *     delta: (number|undefined)}}
