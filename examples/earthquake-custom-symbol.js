@@ -30,8 +30,7 @@ const styleFunction = function(feature) {
   scale = size / 10;
   let style = styleCache[size];
   if (!style) {
-    const canvas =
-        /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     const vectorContext = toContext(
       /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d')),
       {size: [size, size], pixelRatio: 1});

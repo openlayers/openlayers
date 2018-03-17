@@ -146,8 +146,7 @@ const Overlay = function(options) {
    * @protected
    * @type {module:ol/Overlay~OverlayPanOptions}
    */
-  this.autoPanAnimation = options.autoPanAnimation ||
-    /** @type {module:ol/Overlay~OverlayPanOptions} */ ({});
+  this.autoPanAnimation = options.autoPanAnimation || /** @type {module:ol/Overlay~OverlayPanOptions} */ ({});
 
   /**
    * @protected
