@@ -825,8 +825,7 @@ function polyStyleParser(node, objectStack) {
   if (fill !== undefined) {
     styleObject['fill'] = fill;
   }
-  const outline =
-      /** @type {boolean|undefined} */ (object['outline']);
+  const outline = /** @type {boolean|undefined} */ (object['outline']);
   if (outline !== undefined) {
     styleObject['outline'] = outline;
   }
@@ -1432,8 +1431,7 @@ function simpleDataParser(node, objectStack) {
   const name = node.getAttribute('name');
   if (name !== null) {
     const data = readString(node);
-    const featureObject =
-        /** @type {Object} */ (objectStack[objectStack.length - 1]);
+    const featureObject = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     featureObject[name] = data;
   }
 }
