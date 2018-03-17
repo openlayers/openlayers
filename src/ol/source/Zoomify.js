@@ -161,7 +161,7 @@ const Zoomify = function(opt_options) {
 
   /**
    * @param {string} template Template.
-   * @return {module:ol/tileurlfunction~Type} Tile URL function.
+   * @return {module:ol/Tile~UrlFunction} Tile URL function.
    */
   function createFromTemplate(template) {
 

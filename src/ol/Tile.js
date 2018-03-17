@@ -28,7 +28,7 @@ import EventType from './events/EventType.js';
  * should be requested for the passed tile coordinate.
  *
  * @typedef {function(module:ol/tilecoord~TileCoord, number,
- *           module:ol/proj/Projection~Projection): (string|undefined)} Type
+ *           module:ol/proj/Projection~Projection): (string|undefined)} UrlFunction
  * @api
  */
 

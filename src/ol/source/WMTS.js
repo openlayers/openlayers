@@ -104,7 +104,7 @@ const WMTS = function(options) {
 
   /**
    * @param {string} template Template.
-   * @return {module:ol/tileurlfunction~Type} Tile URL function.
+   * @return {module:ol/Tile~UrlFunction} Tile URL function.
    * @private
    */
   this.createFromWMTSTemplate_ = function(template) {

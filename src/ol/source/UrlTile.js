@@ -41,7 +41,7 @@ const UrlTile = function(options) {
 
   /**
    * @protected
-   * @type {module:ol/tileurlfunction~Type}
+   * @type {module:ol/Tile~UrlFunction}
    */
   this.tileUrlFunction = this.fixedTileUrlFunction ?
     this.fixedTileUrlFunction.bind(this) : nullTileUrlFunction;
@@ -73,7 +73,7 @@ inherits(UrlTile, TileSource);
 
 
 /**
- * @type {module:ol/tileurlfunction~Type|undefined}
+ * @type {module:ol/Tile~UrlFunction|undefined}
  * @protected
  */
 UrlTile.prototype.fixedTileUrlFunction;
@@ -90,7 +90,7 @@ UrlTile.prototype.getTileLoadFunction = function() {
 
 /**
  * Return the tile URL function of the source.
- * @return {module:ol/tileurlfunction~Type} TileUrlFunction
+ * @return {module:ol/Tile~UrlFunction} TileUrlFunction
  * @api
  */
 UrlTile.prototype.getTileUrlFunction = function() {
@@ -149,7 +149,7 @@ UrlTile.prototype.setTileLoadFunction = function(tileLoadFunction) {
 
 /**
  * Set the tile URL function of the source.
- * @param {module:ol/tileurlfunction~Type} tileUrlFunction Tile URL function.
+ * @param {module:ol/Tile~UrlFunction} tileUrlFunction Tile URL function.
  * @param {string=} opt_key Optional new tile key for the source.
  * @api
  */

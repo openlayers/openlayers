@@ -273,7 +273,7 @@ const UTFGrid = function(options) {
 
   /**
    * @private
-   * @type {!module:ol/tileurlfunction~Type}
+   * @type {!module:ol/Tile~UrlFunction}
    */
   this.tileUrlFunction_ = nullTileUrlFunction;
 
