@@ -97,7 +97,7 @@ export function quadKey(tileCoord) {
 
 /**
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
- * @param {!module:ol/tilegrid~TileGrid} tileGrid Tile grid.
+ * @param {!module:ol/tilegrid/TileGrid~TileGrid} tileGrid Tile grid.
  * @return {boolean} Tile coordinate is within extent and zoom level range.
  */
 export function withinExtentAndZ(tileCoord, tileGrid) {

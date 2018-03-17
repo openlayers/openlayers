@@ -377,7 +377,7 @@ ol.SourceTileOptions;
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: module:ol/Tile~LoadFunction,
  *            tilePixelRatio: (number|undefined),
- *            tileUrlFunction: (module:ol/tileurlfunction~Type|undefined),
+ *            tileUrlFunction: (module:ol/Tile~UrlFunction|undefined),
  *            url: (string|undefined),
  *            urls: (Array.<string>|undefined),
  *            wrapX: (boolean|undefined),

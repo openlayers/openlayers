@@ -9,7 +9,7 @@ import {hash as tileCoordHash} from './tilecoord.js';
 /**
  * @param {string} template Template.
  * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid Tile grid.
- * @return {module:ol/tileurlfunction~Type} Tile URL function.
+ * @return {module:ol/Tile~UrlFunction} Tile URL function.
  */
 export function createFromTemplate(template, tileGrid) {
   const zRegEx = /\{z\}/g;
@@ -49,7 +49,7 @@ export function createFromTemplate(template, tileGrid) {
 /**
  * @param {Array.<string>} templates Templates.
  * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid Tile grid.
- * @return {module:ol/tileurlfunction~Type} Tile URL function.
+ * @return {module:ol/Tile~UrlFunction} Tile URL function.
  */
 export function createFromTemplates(templates, tileGrid) {
   const len = templates.length;
@@ -62,8 +62,8 @@ export function createFromTemplates(templates, tileGrid) {
 
 
 /**
- * @param {Array.<module:ol/tileurlfunction~Type>} tileUrlFunctions Tile URL Functions.
- * @return {module:ol/tileurlfunction~Type} Tile URL function.
+ * @param {Array.<module:ol/Tile~UrlFunction>} tileUrlFunctions Tile URL Functions.
+ * @return {module:ol/Tile~UrlFunction} Tile URL function.
  */
 export function createFromTileUrlFunctions(tileUrlFunctions) {
   if (tileUrlFunctions.length === 1) {
