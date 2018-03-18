@@ -9,17 +9,28 @@ import {FALSE} from '../functions.js';
 import {rotate, rotateWithoutConstraints} from '../interaction/Interaction.js';
 import PointerInteraction from '../interaction/Pointer.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {module:ol/events/condition~Condition} [condition] A function that takes an
+ * {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link module:ol/events/condition~altShiftKeysOnly}.
+ * @property {number} [duration=250] Animation duration in milliseconds.
+ */
+
+
 /**
  * @classdesc
  * Allows the user to rotate the map by clicking and dragging on the map,
- * normally combined with an {@link ol.events.condition} that limits
+ * normally combined with an {@link module:ol/events/condition} that limits
  * it to when the alt and shift keys are held down.
  *
  * This interaction is only supported for mouse devices.
  *
  * @constructor
- * @extends {ol.interaction.Pointer}
- * @param {olx.interaction.DragRotateOptions=} opt_options Options.
+ * @extends {module:ol/interaction/Pointer~Pointer}
+ * @param {module:ol/interaction/DragRotate~Options=} opt_options Options.
  * @api
  */
 const DragRotate = function(opt_options) {
@@ -34,7 +45,7 @@ const DragRotate = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.condition_ = options.condition ? options.condition : altShiftKeysOnly;
 
@@ -55,8 +66,8 @@ inherits(DragRotate, PointerInteraction);
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {ol.interaction.DragRotate}
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {module:ol/interaction/DragRotate~DragRotate}
  */
 function handleDragEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
@@ -82,9 +93,9 @@ function handleDragEvent(mapBrowserEvent) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {ol.interaction.DragRotate}
+ * @this {module:ol/interaction/DragRotate~DragRotate}
  */
 function handleUpEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
@@ -101,9 +112,9 @@ function handleUpEvent(mapBrowserEvent) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {ol.interaction.DragRotate}
+ * @this {module:ol/interaction/DragRotate~DragRotate}
  */
 function handleDownEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {

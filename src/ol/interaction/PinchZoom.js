@@ -7,14 +7,23 @@ import {FALSE} from '../functions.js';
 import {zoom, zoomWithoutConstraints} from '../interaction/Interaction.js';
 import PointerInteraction, {centroid as centroidFromPointers} from '../interaction/Pointer.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {number} [duration=400] Animation duration in milliseconds.
+ * @property {boolean} [constrainResolution=false] Zoom to the closest integer
+ * zoom level after the pinch gesture ends.
+ */
+
+
 /**
  * @classdesc
  * Allows the user to zoom the map by pinching with two fingers
  * on a touch screen.
  *
  * @constructor
- * @extends {ol.interaction.Pointer}
- * @param {olx.interaction.PinchZoomOptions=} opt_options Options.
+ * @extends {module:ol/interaction/Pointer~Pointer}
+ * @param {module:ol/interaction/PinchZoom~Options=} opt_options Options.
  * @api
  */
 const PinchZoom = function(opt_options) {
@@ -63,8 +72,8 @@ inherits(PinchZoom, PointerInteraction);
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {ol.interaction.PinchZoom}
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {module:ol/interaction/PinchZoom~PinchZoom}
  */
 function handleDragEvent(mapBrowserEvent) {
   let scaleDelta = 1.0;
@@ -115,9 +124,9 @@ function handleDragEvent(mapBrowserEvent) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {ol.interaction.PinchZoom}
+ * @this {module:ol/interaction/PinchZoom~PinchZoom}
  */
 function handleUpEvent(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
@@ -142,9 +151,9 @@ function handleUpEvent(mapBrowserEvent) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {ol.interaction.PinchZoom}
+ * @this {module:ol/interaction/PinchZoom~PinchZoom}
  */
 function handleDownEvent(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {

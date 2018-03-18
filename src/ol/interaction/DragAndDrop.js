@@ -13,12 +13,25 @@ import {get as getProjection} from '../proj.js';
 
 
 /**
+ * @typedef {Object} Options
+ * @property {Array.<function(new: ol.format.Feature)>|undefined} formatConstructors Format constructors.
+ * @property {ol.source.Vector|undefined} source Optional vector source where features will be added.  If a source is provided
+ * all existing features will be removed and new features will be added when
+ * they are dropped on the target.  If you want to add features to a vector
+ * source without removing the existing features (append only), instead of
+ * providing the source option listen for the "addfeatures" event.
+ * @property {ol.ProjectionLike} projection Target projection. By default, the map's view's projection is used.
+ * @property {Element|undefined} target The element that is used as the drop target, default is the viewport element.
+ */
+
+
+/**
  * @enum {string}
  */
 const DragAndDropEventType = {
   /**
    * Triggered when features are added
-   * @event ol.interaction.DragAndDropEvent#addfeatures
+   * @event module:ol/interaction/DragAndDrop~DragAndDropEvent#addfeatures
    * @api
    */
   ADD_FEATURES: 'addfeatures'
@@ -27,13 +40,13 @@ const DragAndDropEventType = {
 
 /**
  * @classdesc
- * Events emitted by {@link ol.interaction.DragAndDrop} instances are instances
+ * Events emitted by {@link module:ol/interaction/DragAndDrop~DragAndDrop} instances are instances
  * of this type.
  *
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.interaction.DragAndDropEvent}
- * @param {ol.interaction.DragAndDropEventType} type Type.
+ * @param {module:ol/interaction/DragAndDrop~DragAndDropEventType} type Type.
  * @param {File} file File.
  * @param {Array.<module:ol/Feature~Feature>=} opt_features Features.
  * @param {module:ol/proj/Projection~Projection=} opt_projection Projection.
@@ -72,9 +85,9 @@ inherits(DragAndDropEvent, Event);
  * Handles input of vector data by drag and drop.
  *
  * @constructor
- * @extends {ol.interaction.Interaction}
- * @fires ol.interaction.DragAndDropEvent
- * @param {olx.interaction.DragAndDropOptions=} opt_options Options.
+ * @extends {module:ol/interaction/Interaction~Interaction}
+ * @fires module:ol/interaction/DragAndDrop~DragAndDropEvent
+ * @param {module:ol/interaction/DragAndDrop~Options=} opt_options Options.
  * @api
  */
 const DragAndDrop = function(opt_options) {
@@ -124,7 +137,7 @@ inherits(DragAndDrop, Interaction);
 
 /**
  * @param {Event} event Event.
- * @this {ol.interaction.DragAndDrop}
+ * @this {module:ol/interaction/DragAndDrop~DragAndDrop}
  */
 function handleDrop(event) {
   const files = event.dataTransfer.files;

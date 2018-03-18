@@ -28,12 +28,29 @@ export const Mode = {
 
 
 /**
+ * @typedef {Object} Options
+ * @property {module:ol/events/condition~Condition} [condition] A function that
+ * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether that event should be handled. Default is
+ * {@link module:ol/events/condition~always}.
+ * @property {number} [duration=250] Animation duration in milliseconds.
+ * @property {number} [timeout=80] Mouse wheel timeout duration in milliseconds.
+ * @property {boolean} [constrainResolution=false] When using a trackpad or
+ * magic mouse, zoom to the closest integer zoom level after the scroll gesture
+ * ends.
+ * @property {boolean} [useAnchor=true] Enable zooming using the mouse's
+ * location as the anchor. When set to `false`, zooming in and out will zoom to
+ * the center of the screen instead of zooming on the mouse's location.
+ */
+
+
+/**
  * @classdesc
  * Allows the user to zoom the map by scrolling the mouse wheel.
  *
  * @constructor
- * @extends {ol.interaction.Interaction}
- * @param {olx.interaction.MouseWheelZoomOptions=} opt_options Options.
+ * @extends {module:ol/interaction/Interaction~Interaction}
+ * @param {module:ol/interaction/MouseWheelZoom~Options=} opt_options Options.
  * @api
  */
 const MouseWheelZoom = function(opt_options) {
@@ -76,7 +93,7 @@ const MouseWheelZoom = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.condition_ = options.condition ? options.condition : always;
 
@@ -100,7 +117,7 @@ const MouseWheelZoom = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.interaction.Mode|undefined}
+   * @type {module:ol/interaction/MouseWheelZoom~Mode|undefined}
    */
   this.mode_ = undefined;
 
@@ -140,7 +157,7 @@ inherits(MouseWheelZoom, Interaction);
  * mousewheel-event) and eventually zooms the map.
  * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} Allow event propagation.
- * @this {ol.interaction.MouseWheelZoom}
+ * @this {module:ol/interaction/MouseWheelZoom~MouseWheelZoom}
  */
 function handleEvent(mapBrowserEvent) {
   if (!this.condition_(mapBrowserEvent)) {
@@ -271,7 +288,7 @@ MouseWheelZoom.prototype.decrementInteractingHint_ = function() {
 
 /**
  * @private
- * @param {ol.PluggableMap} map Map.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
  */
 MouseWheelZoom.prototype.handleWheelZoom_ = function(map) {
   const view = map.getView();

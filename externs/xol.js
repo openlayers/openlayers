@@ -1,300 +1,5 @@
 
 /**
- * @typedef {Object} interaction_DoubleClickZoomOptions
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
- * @property {number|undefined} delta The zoom delta applied on each double click, default is `1`.
- */
-
-
-/**
- * @typedef {Object} interaction_DragAndDropOptions
- * @property {Array.<function(new: ol.format.Feature)>|undefined} formatConstructors Format constructors.
- * @property {ol.source.Vector|undefined} source Optional vector source where features will be added.  If a source is provided
- * all existing features will be removed and new features will be added when
- * they are dropped on the target.  If you want to add features to a vector
- * source without removing the existing features (append only), instead of
- * providing the source option listen for the "addfeatures" event.
- * @property {ol.ProjectionLike} projection Target projection. By default, the map's view's projection is used.
- * @property {Element|undefined} target The element that is used as the drop target, default is the viewport element.
- */
-
-
-/**
- * @typedef {Object} interaction_DragBoxOptions
- * @property {string|undefined} className CSS class name for styling the box. The default is `ol-dragbox`.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.always}.
- * @property {number|undefined} minArea The minimum area of the box in pixel, this value is used by the default
- * `boxEndCondition` function. Default is `64`.
- * @property {ol.DragBoxEndConditionType|undefined} boxEndCondition A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
- * {@link ol.Pixel}s to indicate whether a `boxend` event should be fired.
- * Default is `true` if the area of the box is bigger than the `minArea` option.
- */
-
-
-/**
- * @typedef {Object} interaction_DragPanOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.noModifierKeys}.
- * @property {ol.Kinetic|undefined} kinetic Kinetic inertia to apply to the pan.
- */
-
-
-/**
- * @typedef {Object} interaction_DragRotateAndZoomOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.shiftKeyOnly}.
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `400`.
- */
-
-
-/**
- * @typedef {Object} interaction_DragRotateOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.altShiftKeysOnly}.
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
- */
-
-
-/**
- * @typedef {Object} interaction_DragZoomOptions
- * @property {string|undefined} className CSS class name for styling the box. The default is `ol-dragzoom`.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.shiftKeyOnly}.
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `200`.
- * @property {boolean|undefined} out Use interaction for zooming out. Default is `false`.
- */
-
-
-/**
- * @typedef {Object} interaction_DrawOptions
- * @property {number|undefined} clickTolerance The maximum distance in pixels between "down" and "up" for a "up" event
- * to be considered a "click" event and actually add a point/vertex to the
- * geometry being drawn.  Default is 6 pixels.  That value was chosen for
- * the draw interaction to behave correctly on mouse as well as on touch
- * devices.
- * @property {ol.Collection.<module:ol/Feature~Feature>|undefined} features Destination collection for the drawn features.
- * @property {ol.source.Vector|undefined} source Destination source for the drawn features.
- * @property {number|undefined} dragVertexDelay Delay in milliseconds after pointerdown before the current vertex can be
- * dragged to its exact position. Default is 500 ms.
- * @property {number|undefined} snapTolerance Pixel distance for snapping to the drawing finish. Default is `12`.
- * @property {module:ol/geom/GeometryType~GeometryType|string} type Drawing type ('Point', 'LineString', 'Polygon', 'MultiPoint',
- * 'MultiLineString', 'MultiPolygon' or 'Circle').
- * @property {boolean|undefined} stopClick Stop click, singleclick, and doubleclick events from firing during drawing.
- * Default is `false`.
- * @property {number|undefined} maxPoints The number of points that can be drawn before a polygon ring or line string
- * is finished. The default is no restriction.
- * @property {number|undefined} minPoints The number of points that must be drawn before a polygon ring or line string
- * can be finished. Default is `3` for polygon rings and `2` for line strings.
- * @property {ol.EventsConditionType|undefined} finishCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether the drawing can be finished.
- * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} style Style for sketch features.
- * @property {ol.DrawGeometryFunctionType|undefined} geometryFunction Function that is called when a geometry's coordinates are updated.
- * @property {string|undefined} geometryName Geometry name to use for features created by the draw interaction.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * By default {@link ol.events.condition.noModifierKeys}, i.e. a click, adds a
- * vertex or deactivates freehand drawing.
- * @property {boolean|undefined} freehand Operate in freehand mode for lines, polygons, and circles.  This makes the
- * interaction always operate in freehand mode and takes precedence over any
- * `freehandCondition` option.
- * @property {ol.EventsConditionType|undefined} freehandCondition Condition that activates freehand drawing for lines and polygons. This
- * function takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean to
- * indicate whether that event should be handled. The default is
- * {@link ol.events.condition.shiftKeyOnly}, meaning that the Shift key
- * activates freehand drawing.
- * @property {boolean|undefined} wrapX Wrap the world horizontally on the sketch overlay. Default is `false`.
- */
-
-
-/**
- * @typedef {Object} interaction_ExtentOptions
- * @property {ol.Extent|undefined} extent Initial extent. Defaults to no initial extent
- * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} boxStyle Style for the drawn extent box.
- * Defaults to ol.style.Style.createDefaultEditing()[module:ol/geom/GeometryType~GeometryType.POLYGON]
- * @property {number|undefined} pixelTolerance Pixel tolerance for considering the pointer close enough to a segment or
- * vertex for editing. Default is `10`.
- * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} pointerStyle Style for the cursor used to draw the extent.
- * Defaults to ol.style.Style.createDefaultEditing()[module:ol/geom/GeometryType~GeometryType.POINT]
- * @property {boolean|undefined} wrapX Wrap the drawn extent across multiple maps in the X direction?
- * Only affects visuals, not functionality. Defaults to false.
- */
-
-
-/**
- * @typedef {Object} interaction_TranslateOptions
- * @property {ol.Collection.<module:ol/Feature~Feature>|undefined} features Only features contained in this collection will be able to be translated. If
- * not specified, all features on the map will be able to be translated.
- * @property {undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean} layers A list of layers from which features should be
- * translated. Alternatively, a filter function can be provided. The
- * function will be called for each layer in the map and should return
- * `true` for layers that you want to be translatable. If the option is
- * absent, all visible layers will be considered translatable.
- * @property {number|undefined} hitTolerance Hit-detection tolerance. Pixels inside the radius around the given position
- * will be checked for features. This only works for the canvas renderer and
- * not for WebGL. Default is `0`.
- */
-
-
-/**
- * @typedef {Object} interaction_KeyboardPanOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.noModifierKeys} and
- * {@link ol.events.condition.targetNotEditable}.
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `100`.
- * @property {number|undefined} pixelDelta Pixel The amount to pan on each key press. Default is `128` pixels.
- */
-
-
-/**
- * @typedef {Object} interaction_KeyboardZoomOptions
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `100`.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.targetNotEditable}.
- * @property {number|undefined} delta The amount to zoom on each key press. Default is `1`.
- */
-
-
-/**
- * @typedef {Object} interaction_ModifyOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event will be considered to add or move a vertex
- * to the sketch.
- * Default is {@link ol.events.condition.primaryAction}.
- * @property {ol.EventsConditionType|undefined} deleteCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * By default, {@link ol.events.condition.singleClick} with
- * {@link ol.events.condition.altKeyOnly} results in a vertex deletion.
- * @property {ol.EventsConditionType|undefined} insertVertexCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether a new vertex can be added to the sketch features.
- * Default is {@link ol.events.condition.always}
- * @property {number|undefined} pixelTolerance Pixel tolerance for considering the pointer close enough to a segment or
- * vertex for editing. Default is `10`.
- * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} style Style used for the features being modified. By default the default edit
- * style is used (see {@link ol.style}).
- * @property {ol.source.Vector|undefined} source The vector source with features to modify.  If a vector source is not
- * provided, a feature collection must be provided with the features option.
- * @property {ol.Collection.<module:ol/Feature~Feature>|undefined} features The features the interaction works on.  If a feature collection is not
- * provided, a vector source must be provided with the source option.
- * @property {boolean|undefined} wrapX Wrap the world horizontally on the sketch overlay. Default is `false`.
- */
-
-
-/**
- * @typedef {Object} interaction_MouseWheelZoomOptions
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled. Default is {@link ol.events.condition.always}.
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `250`.
- * @property {number|undefined} timeout Mouse wheel timeout duration in milliseconds. Default is `80`.
- * @property {boolean|undefined} constrainResolution When using a trackpad or magic mouse, zoom to the closest integer zoom level
- * after the scroll gesture ends.
- * Default is `false`.
- * @property {boolean|undefined} useAnchor Enable zooming using the mouse's location as the anchor. Default is `true`.
- * When set to false, zooming in and out will zoom to the center of the screen
- * instead of zooming on the mouse's location.
- */
-
-
-/**
- * @typedef {Object} interaction_PinchRotateOptions
- * @property {number|undefined} duration The duration of the animation in milliseconds. Default is `250`.
- * @property {number|undefined} threshold Minimal angle in radians to start a rotation. Default is `0.3`.
- */
-
-
-/**
- * @typedef {Object} interaction_PinchZoomOptions
- * @property {number|undefined} duration Animation duration in milliseconds. Default is `400`.
- * @property {boolean|undefined} constrainResolution Zoom to the closest integer zoom level after the pinch gesture ends. Default is `false`.
- */
-
-
-/**
- * @typedef {Object} interaction_PointerOptions
- * @property {(function(ol.MapBrowserPointerEvent):boolean|undefined)} handleDownEvent Function handling "down" events. If the function returns `true` then a drag
- * sequence is started.
- * @property {(function(ol.MapBrowserPointerEvent)|undefined)} handleDragEvent Function handling "drag" events. This function is called on "move" events
- * during a drag sequence.
- * @property {(function(module:ol/MapBrowserEvent~MapBrowserEvent):boolean|undefined)} handleEvent Method called by the map to notify the interaction that a browser event was
- * dispatched to the map. The function may return `false` to prevent the
- * propagation of the event to other interactions in the map's interactions
- * chain.
- * @property {(function(ol.MapBrowserPointerEvent)|undefined)} handleMoveEvent Function handling "move" events. This function is called on "move" events,
- * also during a drag sequence (so during a drag sequence both the
- * `handleDragEvent` function and this function are called).
- * @property {(function(ol.MapBrowserPointerEvent):boolean|undefined)} handleUpEvent Function handling "up" events. If the function returns `false` then the
- * current drag sequence is stopped.
- */
-
-
-/**
- * @typedef {Object} interaction_SelectOptions
- * @property {ol.EventsConditionType|undefined} addCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * By default, this is {@link ol.events.condition.never}. Use this if you want
- * to use different events for add and remove instead of `toggle`.
- * @property {ol.EventsConditionType|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * This is the event for the selected features as a whole. By default, this is
- * {@link ol.events.condition.singleClick}. Clicking on a feature selects that
- * feature and removes any that were in the selection. Clicking outside any
- * feature removes all from the selection.
- * See `toggle`, `add`, `remove` options for adding/removing extra features to/
- * from the selection.
- * @property {undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean} layers A list of layers from which features should be
- * selected. Alternatively, a filter function can be provided. The
- * function will be called for each layer in the map and should return
- * `true` for layers that you want to be selectable. If the option is
- * absent, all visible layers will be considered selectable.
- * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined} style Style for the selected features. By default the default edit style is used
- * (see {@link ol.style}).
- * @property {ol.EventsConditionType|undefined} removeCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * By default, this is {@link ol.events.condition.never}. Use this if you want
- * to use different events for add and remove instead of `toggle`.
- * @property {ol.EventsConditionType|undefined} toggleCondition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * This is in addition to the `condition` event. By default,
- * {@link ol.events.condition.shiftKeyOnly}, i.e. pressing `shift` as well as
- * the `condition` event, adds that feature to the current selection if it is
- * not currently selected, and removes it if it is.
- * See `add` and `remove` if you want to use different events instead of a
- * toggle.
- * @property {boolean|undefined} multi A boolean that determines if the default behaviour should select only
- * single features or all (overlapping) features at the clicked map
- * position. Default is false i.e single select
- * @property {ol.Collection.<module:ol/Feature~Feature>|undefined} features Collection where the interaction will place selected features. Optional. If
- * not set the interaction will create a collection. In any case the collection
- * used by the interaction is returned by
- * {@link ol.interaction.Select#getFeatures}.
- * @property {ol.SelectFilterFunction|undefined} filter A function that takes an {@link module:ol/Feature~Feature} and an {@link ol.layer.Layer} and
- * returns `true` if the feature may be selected or `false` otherwise.
- * @property {boolean|undefined} wrapX Wrap the world horizontally on the selection overlay. Default is `true`.
- * @property {number|undefined} hitTolerance Hit-detection tolerance. Pixels inside the radius around the given position
- * will be checked for features. This only works for the canvas renderer and
- * not for WebGL. Default is `0`.
- */
-
-
-/**
- * @typedef {Object} interaction_SnapOptions
- * @property {ol.Collection.<module:ol/Feature~Feature>|undefined} features Snap to these features. Either this option or source should be provided.
- * @property {boolean|undefined} edge Snap to edges. Default is `true`.
- * @property {boolean|undefined} vertex Snap to vertices. Default is `true`.
- * @property {number|undefined} pixelTolerance Pixel tolerance for considering the pointer close enough to a segment or
- * vertex for snapping. Default is `10` pixels.
- * @property {ol.source.Vector|undefined} source Snap to features from this source. Either this option or features should be provided
- */
-
-
-/**
  * @typedef {Object} layer_BaseOptions
  * @property {number|undefined} opacity Opacity (0, 1). Default is `1`.
  * @property {boolean|undefined} visible Visibility. Default is `true`.
@@ -459,7 +164,7 @@
  *    rendered as vectors and can stay upright on rotated views.
  *  * `'vector'`: Vector tiles are rendered as vectors. Most accurate rendering
  *    even during animations, but slower performance than the other options.
- * 
+ *
  * When `declutter` is set to `true`, `'hybrid'` will be used instead of
  * `'image'`. The default is `'hybrid'`.
  * @property {ol.RenderOrderFunction|undefined} renderOrder Render order. Function to be used when sorting features before rendering. By
@@ -704,7 +409,7 @@
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
  * for more detail.
- * 
+ *
  * Default is `anonymous`.
  * @property {number|undefined} maxZoom Max zoom. Default is `19`.
  * @property {boolean|undefined} opaque Whether the layer is opaque. Default is `true`.
@@ -984,9 +689,9 @@
  * @property {module:ol/Feature~FeatureLoader|undefined} loader The loader function used to load features, from a remote source for example.
  * If this is not set and `url` is set, the source will create and use an XHR
  * feature loader.
- * 
+ *
  * Example:
- * 
+ *
  * ```js
  * var vectorSource = new ol.source.Vector({
  *   format: new ol.format.GeoJSON(),
@@ -1038,18 +743,18 @@
  * @property {boolean|undefined} useSpatialIndex By default, an RTree is used as spatial index. When features are removed and
  * added frequently, and the total number of features is low, setting this to
  * `false` may improve performance.
- * 
+ *
  * Note that
  * {@link ol.source.Vector#getFeaturesInExtent},
  * {@link ol.source.Vector#getClosestFeatureToCoordinate} and
  * {@link ol.source.Vector#getExtent} cannot be used when `useSpatialIndex` is
  * set to `false`, and {@link ol.source.Vector#forEachFeatureInExtent} will loop
  * through all features.
- * 
+ *
  * When set to `false`, the features will be maintained in an
  * {@link ol.Collection}, which can be retrieved through
  * {@link ol.source.Vector#getFeaturesCollection}.
- * 
+ *
  * The default is `true`.
  * @property {boolean|undefined} wrapX Wrap the world horizontally. Default is `true`. For vector editing across the
  * -180° and 180° meridians to work properly, this should be set to `false`. The
@@ -1313,9 +1018,9 @@
  * Internet Explorer 10 and lower [do not support][mdn] the `setLineDash`
  * method on the `CanvasRenderingContext2D` and therefore this option will
  * have no visual effect in these browsers.
- * 
+ *
  * [mdn]: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash#Browser_compatibility
- * 
+ *
  * @property {number|undefined} lineDashOffset Line dash offset. Default is '0'.
  * @property {number|undefined} miterLimit Miter limit. Default is `10`.
  * @property {number|undefined} width Width.
@@ -1369,7 +1074,7 @@
  * @property {ol.StyleRenderFunction|undefined} renderer Custom renderer. When configured, `fill`, `stroke` and `image` will be
  * ignored, and the provided function will be called with each render frame for
  * each geometry.
- * 
+ *
  * @property {ol.style.Stroke|undefined} stroke Stroke style.
  * @property {ol.style.Text|undefined} text Text style.
  * @property {number|undefined} zIndex Z index.
@@ -1452,10 +1157,10 @@
 
 /**
  * @typedef {Object} ViewState
- * @property {ol.Coordinate} center 
- * @property {module:ol/proj/Projection~Projection} projection 
- * @property {number} resolution 
- * @property {number} rotation 
+ * @property {ol.Coordinate} center
+ * @property {module:ol/proj/Projection~Projection} projection
+ * @property {number} resolution
+ * @property {number} rotation
  * @property {number} zoom The current zoom level.
  */
 
@@ -1467,4 +1172,3 @@
  * `WEBGL_MAX_TEXTURE_SIZE` or 2048 if WebGL is not supported.
  * @property {number|undefined} space The space in pixels between images (default: 1).
  */
-

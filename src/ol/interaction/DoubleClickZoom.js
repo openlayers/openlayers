@@ -5,13 +5,21 @@ import {inherits} from '../index.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {number} [duration] Animation duration in milliseconds. Default is `250`.
+ * @property {number} [delta] The zoom delta applied on each double click, default is `1`.
+ */
+
+
 /**
  * @classdesc
  * Allows the user to zoom by double-clicking on the map.
  *
  * @constructor
- * @extends {ol.interaction.Interaction}
- * @param {olx.interaction.DoubleClickZoomOptions=} opt_options Options.
+ * @extends {module:ol/interaction/Interaction~Interaction}
+ * @param {module:ol/interaction/DoubleClickZoom~Options=} opt_options Options.
  * @api
  */
 const DoubleClickZoom = function(opt_options) {
@@ -44,7 +52,7 @@ inherits(DoubleClickZoom, Interaction);
  * doubleclick) and eventually zooms the map.
  * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {ol.interaction.DoubleClickZoom}
+ * @this {module:ol/interaction/DoubleClickZoom~DoubleClickZoom}
  */
 function handleEvent(mapBrowserEvent) {
   let stopEvent = false;

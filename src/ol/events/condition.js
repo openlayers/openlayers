@@ -8,6 +8,14 @@ import {WEBKIT, MAC} from '../has.js';
 
 
 /**
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * `{boolean}`. If the condition is met, true should be returned.
+ *
+ * @typedef {function(module:ol/MapBrowserEvent~MapBrowserEvent): boolean} Condition
+ */
+
+
+/**
  * Return `true` if only the alt-key is pressed, `false` otherwise (e.g. when
  * additionally the shift-key is pressed).
  *

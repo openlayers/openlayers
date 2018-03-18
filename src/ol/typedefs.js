@@ -154,35 +154,6 @@ ol.DeclutterGroup;
 
 
 /**
- * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
- * {@link module:ol~Pixel}s and returns a `{boolean}`. If the condition is met,
- * true should be returned.
- * @typedef {function(module:ol/MapBrowserEvent~MapBrowserEvent, module:ol~Pixel, module:ol~Pixel):boolean}
- */
-ol.DragBoxEndConditionType;
-
-
-/**
- * Function that takes an array of coordinates and an optional existing geometry as
- * arguments, and returns a geometry. The optional existing geometry is the
- * geometry that is returned when the function is called without a second
- * argument.
- * @typedef {function(!Array.<module:ol/coordinate~Coordinate>, module:ol/geom/SimpleGeometry~SimpleGeometry=):
- *     module:ol/geom/SimpleGeometry~SimpleGeometry}
- */
-ol.DrawGeometryFunctionType;
-
-
-/**
- * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
- * `{boolean}`. If the condition is met, true should be returned.
- *
- * @typedef {function(module:ol/MapBrowserEvent~MapBrowserEvent): boolean}
- */
-ol.EventsConditionType;
-
-
-/**
  * @typedef {{x: number, xunits: (ol.style.IconAnchorUnits|undefined),
  *            y: number, yunits: (ol.style.IconAnchorUnits|undefined),
  *            origin: (ol.style.IconOrigin|undefined)}}
@@ -228,17 +199,6 @@ ol.LoadingStrategy;
  *            value_: *}}
  */
 ol.LRUCacheEntry;
-
-
-/**
- * @typedef {{depth: (Array.<number>|undefined),
- *            feature: module:ol/Feature~Feature,
- *            geometry: module:ol/geom/SimpleGeometry~SimpleGeometry,
- *            index: (number),
- *            segment: Array.<module:ol/extent~Extent>,
- *            featureSegments: (Array.<ol.ModifySegmentDataType>|undefined)}}
- */
-ol.ModifySegmentDataType;
 
 
 /**
@@ -294,35 +254,6 @@ ol.ReprojTileFunctionType;
  *            target: Array.<module:ol/coordinate~Coordinate>}}
  */
 ol.ReprojTriangle;
-
-
-/**
- * A function that takes an {@link module:ol/Feature~Feature} or {@link ol.render.Feature} and
- * an {@link ol.layer.Layer} and returns `true` if the feature may be selected
- * or `false` otherwise.
- * @typedef {function((module:ol/Feature~Feature|ol.render.Feature), ol.layer.Layer):
- *     boolean}
- */
-ol.SelectFilterFunction;
-
-
-/**
- * @typedef {{
- *     snapped: {boolean},
- *     vertex: (module:ol/coordinate~Coordinate|null),
- *     vertexPixel: (module:ol~Pixel|null)
- * }}
- */
-ol.SnapResultType;
-
-
-/**
- * @typedef {{
- *     feature: module:ol/Feature~Feature,
- *     segment: Array.<module:ol/coordinate~Coordinate>
- * }}
- */
-ol.SnapSegmentDataType;
 
 
 /**

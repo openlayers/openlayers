@@ -44,17 +44,61 @@ const ModifyEventType = {
 
 
 /**
+ * @typedef {Object} SegmentData
+ * @property {Array.<number>} [depth]
+ * @property {module:ol/Feature~Feature} feature
+ * @property {module:ol/geom/SimpleGeometry~SimpleGeometry} geometry
+ * @property {number} index
+ * @property {Array.<module:ol/extent~Extent>} segment
+ * @property {Array.<module:ol/interaction/Modify~SegmentData>} [featureSegments]
+ */
+
+
+/**
+ * @typedef {Object} Options
+ * @property {module:ol/events/condition~Condition} [condition] A function that
+ * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether that event will be considered to add or move a
+ * vertex to the sketch. Default is
+ * {@link module:ol/events/condition~primaryAction}.
+ * @property {module:ol/events/condition~Condition} [deleteCondition] A function
+ * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether that event should be handled. By default,
+ * {@link module:ol/events/condition~singleClick} with
+ * {@link module:ol/events/condition~altKeyOnly} results in a vertex deletion.
+ * @property {module:ol/events/condition~Condition} [insertVertexCondition] A
+ * function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
+ * returns a boolean to indicate whether a new vertex can be added to the sketch
+ * features. Default is {@link module:ol/events/condition~always}.
+ * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
+ * pointer close enough to a segment or vertex for editing.
+ * @property {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction} [style]
+ * Style used for the features being modified. By default the default edit
+ * style is used (see {@link module:ol/style}).
+ * @property {module:ol/source/Vector~Vector} [source] The vector source with
+ * features to modify.  If a vector source is not provided, a feature collection
+ * must be provided with the features option.
+ * @property {module:ol/Collection~Collection.<module:ol/Feature~Feature>} [features]
+ * The features the interaction works on.  If a feature collection is not
+ * provided, a vector source must be provided with the source option.
+ * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
+ * overlay.
+ */
+
+
+/**
  * @classdesc
- * Events emitted by {@link ol.interaction.Modify} instances are instances of
- * this type.
+ * Events emitted by {@link module:ol/interaction/Modify~Modify} instances are
+ * instances of this type.
  *
  * @constructor
- * @extends {ol.events.Event}
+ * @extends {module:ol/events/Event~Event}
  * @implements {oli.ModifyEvent}
  * @param {ModifyEventType} type Type.
- * @param {ol.Collection.<module:ol/Feature~Feature>} features The features modified.
- * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
- *     {@link ol.MapBrowserPointerEvent}.
+ * @param {module:ol/Collection~Collection.<module:ol/Feature~Feature>} features
+ * The features modified.
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserPointerEvent
+ * Associated {@link module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent}.
  */
 export const ModifyEvent = function(type, features, mapBrowserPointerEvent) {
 
@@ -62,7 +106,7 @@ export const ModifyEvent = function(type, features, mapBrowserPointerEvent) {
 
   /**
    * The features being modified.
-   * @type {ol.Collection.<module:ol/Feature~Feature>}
+   * @type {module:ol/Collection~Collection.<module:ol/Feature~Feature>}
    * @api
    */
   this.features = features;
@@ -92,9 +136,9 @@ inherits(ModifyEvent, Event);
  * for deletion, use the `deleteCondition` option.
  *
  * @constructor
- * @extends {ol.interaction.Pointer}
- * @param {olx.interaction.ModifyOptions} options Options.
- * @fires ol.interaction.ModifyEvent
+ * @extends {module:ol/interaction/Pointer~Pointer}
+ * @param {module:ol/interaction/Modify~Options} options Options.
+ * @fires module:ol/interaction/Modify~ModifyEvent
  * @api
  */
 const Modify = function(options) {
@@ -108,7 +152,7 @@ const Modify = function(options) {
 
   /**
    * @private
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    */
   this.condition_ = options.condition ? options.condition : primaryAction;
 
@@ -123,14 +167,14 @@ const Modify = function(options) {
   };
 
   /**
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    * @private
    */
   this.deleteCondition_ = options.deleteCondition ?
     options.deleteCondition : this.defaultDeleteCondition_;
 
   /**
-   * @type {ol.EventsConditionType}
+   * @type {module:ol/events/condition~Condition}
    * @private
    */
   this.insertVertexCondition_ = options.insertVertexCondition ?
@@ -172,7 +216,7 @@ const Modify = function(options) {
 
   /**
    * Segment RTree for each layer
-   * @type {ol.structs.RBush.<ol.ModifySegmentDataType>}
+   * @type {module:ol/structs/RBush~RBush.<module:ol/interaction/Modify~SegmentData>}
    * @private
    */
   this.rBush_ = new RBush();
@@ -206,7 +250,7 @@ const Modify = function(options) {
 
   /**
    * Draw overlay where sketch features are drawn.
-   * @type {ol.layer.Vector}
+   * @type {module:ol/layer/Vector~Vector}
    * @private
    */
   this.overlay_ = new VectorLayer({
@@ -239,7 +283,7 @@ const Modify = function(options) {
 
 
   /**
-   * @type {ol.source.Vector}
+   * @type {module:ol/source/Vector~Vector}
    * @private
    */
   this.source_ = null;
@@ -260,7 +304,7 @@ const Modify = function(options) {
   }
 
   /**
-   * @type {ol.Collection.<module:ol/Feature~Feature>}
+   * @type {module:ol/Collection~Collection.<module:ol/Feature~Feature>}
    * @private
    */
   this.features_ = features;
@@ -272,7 +316,7 @@ const Modify = function(options) {
     this.handleFeatureRemove_, this);
 
   /**
-   * @type {ol.MapBrowserPointerEvent}
+   * @type {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent}
    * @private
    */
   this.lastPointerEvent_ = null;
@@ -316,7 +360,7 @@ Modify.prototype.addFeature_ = function(feature) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} evt Map browser event
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} evt Map browser event
  * @private
  */
 Modify.prototype.willModifyFeatures_ = function(evt) {
@@ -351,10 +395,10 @@ Modify.prototype.removeFeature_ = function(feature) {
  */
 Modify.prototype.removeFeatureSegmentData_ = function(feature) {
   const rBush = this.rBush_;
-  const /** @type {Array.<ol.ModifySegmentDataType>} */ nodesToRemove = [];
+  const /** @type {Array.<module:ol/interaction/Modify~SegmentData>} */ nodesToRemove = [];
   rBush.forEach(
     /**
-     * @param {ol.ModifySegmentDataType} node RTree node.
+     * @param {module:ol/interaction/Modify~SegmentData} node RTree node.
      */
     function(node) {
       if (feature === node.feature) {
@@ -389,7 +433,7 @@ Modify.prototype.setMap = function(map) {
 
 
 /**
- * @param {ol.source.Vector.Event} event Event.
+ * @param {module:ol/source/Vector~VectorSourceEvent} event Event.
  * @private
  */
 Modify.prototype.handleSourceAdd_ = function(event) {
@@ -400,7 +444,7 @@ Modify.prototype.handleSourceAdd_ = function(event) {
 
 
 /**
- * @param {ol.source.Vector.Event} event Event.
+ * @param {module:ol/source/Vector~VectorSourceEvent} event Event.
  * @private
  */
 Modify.prototype.handleSourceRemove_ = function(event) {
@@ -411,7 +455,7 @@ Modify.prototype.handleSourceRemove_ = function(event) {
 
 
 /**
- * @param {ol.CollectionEvent} evt Event.
+ * @param {module:ol/Collection~CollectionEvent} evt Event.
  * @private
  */
 Modify.prototype.handleFeatureAdd_ = function(evt) {
@@ -420,7 +464,7 @@ Modify.prototype.handleFeatureAdd_ = function(evt) {
 
 
 /**
- * @param {ol.events.Event} evt Event.
+ * @param {module:ol/events/Event~Event} evt Event.
  * @private
  */
 Modify.prototype.handleFeatureChange_ = function(evt) {
@@ -433,7 +477,7 @@ Modify.prototype.handleFeatureChange_ = function(evt) {
 
 
 /**
- * @param {ol.CollectionEvent} evt Event.
+ * @param {module:ol/Collection~CollectionEvent} evt Event.
  * @private
  */
 Modify.prototype.handleFeatureRemove_ = function(evt) {
@@ -449,7 +493,7 @@ Modify.prototype.handleFeatureRemove_ = function(evt) {
  */
 Modify.prototype.writePointGeometry_ = function(feature, geometry) {
   const coordinates = geometry.getCoordinates();
-  const segmentData = /** @type {ol.ModifySegmentDataType} */ ({
+  const segmentData = /** @type {module:ol/interaction/Modify~SegmentData} */ ({
     feature: feature,
     geometry: geometry,
     segment: [coordinates, coordinates]
@@ -467,7 +511,7 @@ Modify.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
   const points = geometry.getCoordinates();
   for (let i = 0, ii = points.length; i < ii; ++i) {
     const coordinates = points[i];
-    const segmentData = /** @type {ol.ModifySegmentDataType} */ ({
+    const segmentData = /** @type {module:ol/interaction/Modify~SegmentData} */ ({
       feature: feature,
       geometry: geometry,
       depth: [i],
@@ -488,7 +532,7 @@ Modify.prototype.writeLineStringGeometry_ = function(feature, geometry) {
   const coordinates = geometry.getCoordinates();
   for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
     const segment = coordinates.slice(i, i + 2);
-    const segmentData = /** @type {ol.ModifySegmentDataType} */ ({
+    const segmentData = /** @type {module:ol/interaction/Modify~SegmentData} */ ({
       feature: feature,
       geometry: geometry,
       index: i,
@@ -510,7 +554,7 @@ Modify.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
     const coordinates = lines[j];
     for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       const segment = coordinates.slice(i, i + 2);
-      const segmentData = /** @type {ol.ModifySegmentDataType} */ ({
+      const segmentData = /** @type {module:ol/interaction/Modify~SegmentData} */ ({
         feature: feature,
         geometry: geometry,
         depth: [j],
@@ -534,7 +578,7 @@ Modify.prototype.writePolygonGeometry_ = function(feature, geometry) {
     const coordinates = rings[j];
     for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       const segment = coordinates.slice(i, i + 2);
-      const segmentData = /** @type {ol.ModifySegmentDataType} */ ({
+      const segmentData = /** @type {module:ol/interaction/Modify~SegmentData} */ ({
         feature: feature,
         geometry: geometry,
         depth: [j],
@@ -560,7 +604,7 @@ Modify.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
       const coordinates = rings[j];
       for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
         const segment = coordinates.slice(i, i + 2);
-        const segmentData = /** @type {ol.ModifySegmentDataType} */ ({
+        const segmentData = /** @type {module:ol/interaction/Modify~SegmentData} */ ({
           feature: feature,
           geometry: geometry,
           depth: [j, k],
@@ -587,13 +631,13 @@ Modify.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
  */
 Modify.prototype.writeCircleGeometry_ = function(feature, geometry) {
   const coordinates = geometry.getCenter();
-  const centerSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
+  const centerSegmentData = /** @type {module:ol/interaction/Modify~SegmentData} */ ({
     feature: feature,
     geometry: geometry,
     index: CIRCLE_CENTER_INDEX,
     segment: [coordinates, coordinates]
   });
-  const circumferenceSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
+  const circumferenceSegmentData = /** @type {module:ol/interaction/Modify~SegmentData} */ ({
     feature: feature,
     geometry: geometry,
     index: CIRCLE_CIRCUMFERENCE_INDEX,
@@ -639,8 +683,8 @@ Modify.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
 
 
 /**
- * @param {ol.ModifySegmentDataType} a The first segment data.
- * @param {ol.ModifySegmentDataType} b The second segment data.
+ * @param {module:ol/interaction/Modify~SegmentData} a The first segment data.
+ * @param {module:ol/interaction/Modify~SegmentData} b The second segment data.
  * @return {number} The difference in indexes.
  */
 function compareIndexes(a, b) {
@@ -649,9 +693,9 @@ function compareIndexes(a, b) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} evt Event.
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} evt Event.
  * @return {boolean} Start drag sequence?
- * @this {ol.interaction.Modify}
+ * @this {module:ol/interaction/Modify~Modify}
  */
 function handleDownEvent(evt) {
   if (!this.condition_(evt)) {
@@ -725,8 +769,8 @@ function handleDownEvent(evt) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} evt Event.
- * @this {ol.interaction.Modify}
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} evt Event.
+ * @this {module:ol/interaction/Modify~Modify}
  */
 function handleDragEvent(evt) {
   this.ignoreNextSingleClick_ = false;
@@ -801,9 +845,9 @@ function handleDragEvent(evt) {
 
 
 /**
- * @param {ol.MapBrowserPointerEvent} evt Event.
+ * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} evt Event.
  * @return {boolean} Stop drag sequence?
- * @this {ol.interaction.Modify}
+ * @this {module:ol/interaction/Modify~Modify}
  */
 function handleUpEvent(evt) {
   for (let i = this.dragSegments_.length - 1; i >= 0; --i) {
@@ -835,7 +879,7 @@ function handleUpEvent(evt) {
  * geometry.
  * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {ol.interaction.Modify}
+ * @this {module:ol/interaction/Modify~Modify}
  */
 function handleEvent(mapBrowserEvent) {
   if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
@@ -877,7 +921,7 @@ Modify.prototype.handlePointerMove_ = function(evt) {
 
 /**
  * @param {module:ol~Pixel} pixel Pixel
- * @param {ol.PluggableMap} map Map.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
  * @private
  */
 Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
@@ -948,7 +992,7 @@ Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
  *
  * @param {module:ol/coordinate~Coordinate} pointCoordinates The coordinates of the point from
  *        which to calculate the distance.
- * @param {ol.ModifySegmentDataType} segmentData The object describing the line
+ * @param {module:ol/interaction/Modify~SegmentData} segmentData The object describing the line
  *        segment we are calculating the distance to.
  * @return {number} The square of the distance between a point and a line segment.
  */
@@ -974,7 +1018,7 @@ function pointDistanceToSegmentDataSquared(pointCoordinates, segmentData) {
  *
  * @param {module:ol/coordinate~Coordinate} pointCoordinates The point to which a closest point
  *        should be found.
- * @param {ol.ModifySegmentDataType} segmentData The object describing the line
+ * @param {module:ol/interaction/Modify~SegmentData} segmentData The object describing the line
  *        segment which should contain the closest point.
  * @return {module:ol/coordinate~Coordinate} The point closest to the specified line segment.
  */
@@ -990,7 +1034,7 @@ function closestOnSegmentData(pointCoordinates, segmentData) {
 
 
 /**
- * @param {ol.ModifySegmentDataType} segmentData Segment data.
+ * @param {module:ol/interaction/Modify~SegmentData} segmentData Segment data.
  * @param {module:ol/coordinate~Coordinate} vertex Vertex.
  * @private
  */
@@ -1031,7 +1075,7 @@ Modify.prototype.insertVertex_ = function(segmentData, vertex) {
   const rTree = this.rBush_;
   rTree.remove(segmentData);
   this.updateSegmentIndices_(geometry, index, depth, 1);
-  const newSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
+  const newSegmentData = /** @type {module:ol/interaction/Modify~SegmentData} */ ({
     segment: [segment[0], vertex],
     feature: feature,
     geometry: geometry,
@@ -1042,7 +1086,7 @@ Modify.prototype.insertVertex_ = function(segmentData, vertex) {
     newSegmentData);
   this.dragSegments_.push([newSegmentData, 1]);
 
-  const newSegmentData2 = /** @type {ol.ModifySegmentDataType} */ ({
+  const newSegmentData2 = /** @type {module:ol/interaction/Modify~SegmentData} */ ({
     segment: [vertex, segment[1]],
     feature: feature,
     geometry: geometry,
@@ -1167,7 +1211,7 @@ Modify.prototype.removeVertex_ = function() {
         segments.push(right.segment[1]);
       }
       if (left !== undefined && right !== undefined) {
-        const newSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
+        const newSegmentData = /** @type {module:ol/interaction/Modify~SegmentData} */ ({
           depth: segmentData.depth,
           feature: segmentData.feature,
           geometry: segmentData.geometry,
