@@ -32,7 +32,7 @@ import {easeOut} from '../easing.js';
  * use css selectors `.ol-zoom-in` and `.ol-zoom-out`.
  *
  * @constructor
- * @extends {ol.control.Control}
+ * @extends {module:ol/control/Control~Control}
  * @param {module:ol/control/Zoom~Options=} opt_options Zoom options.
  * @api
  */

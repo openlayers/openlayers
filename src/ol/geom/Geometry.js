@@ -21,7 +21,7 @@ import {create as createTransform, compose as composeTransform} from '../transfo
  *
  * @constructor
  * @abstract
- * @extends {ol.Object}
+ * @extends {module:ol/Object~BaseObject}
  * @api
  */
 const Geometry = function() {

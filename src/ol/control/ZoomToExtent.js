@@ -27,7 +27,7 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
  * extent. To style this control use the css selector `.ol-zoom-extent`.
  *
  * @constructor
- * @extends {ol.control.Control}
+ * @extends {module:ol/control/Control~Control}
  * @param {module:ol/control/ZoomToExtent~Options=} opt_options Options.
  * @api
  */

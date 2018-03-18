@@ -48,7 +48,7 @@ const MIN_RATIO = 0.1;
  * @property {Array.<ol.layer.Layer>|ol.Collection.<ol.layer.Layer>} [layers]
  * Layers for the overview map. If not set, then all main map layers are used
  * instead.
- * @property {function(ol.MapEvent)} [render] Function called when the control
+ * @property {function(module:ol/MapEvent~MapEvent)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {Element|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
@@ -62,7 +62,7 @@ const MIN_RATIO = 0.1;
  * Create a new control with a map acting as an overview map for an other
  * defined map.
  * @constructor
- * @extends {ol.control.Control}
+ * @extends {module:ol/control/Control~Control}
  * @param {module:ol/control/OverviewMap~Options=} opt_options OverviewMap options.
  * @api
  */
@@ -270,7 +270,7 @@ OverviewMap.prototype.setMap = function(map) {
 
 /**
  * Handle map property changes.  This only deals with changes to the map's view.
- * @param {ol.Object.Event} event The propertychange event.
+ * @param {module:ol/Object~BaseObject.Event} event The propertychange event.
  * @private
  */
 OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
@@ -322,8 +322,8 @@ OverviewMap.prototype.handleRotationChanged_ = function() {
 
 /**
  * Update the overview map element.
- * @param {ol.MapEvent} mapEvent Map event.
- * @this {ol.control.OverviewMap}
+ * @param {module:ol/MapEvent~MapEvent} mapEvent Map event.
+ * @this {module:ol/control/OverviewMap~OverviewMap}
  * @api
  */
 export function render(mapEvent) {

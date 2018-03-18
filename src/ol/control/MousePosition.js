@@ -26,7 +26,7 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * @property {string} [className='ol-mouse-position'] CSS class name.
  * @property {module:ol/coordinate~CoordinateFormat} [coordinateFormat] Coordinate format.
  * @property {ol.ProjectionLike} projection Projection.
- * @property {function(ol.MapEvent)} [render] Function called when the
+ * @property {function(module:ol/MapEvent~MapEvent)} [render] Function called when the
  * control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  * @property {Element|string} [target] Specify a target if you want the
@@ -43,7 +43,7 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * can be changed by using the css selector `.ol-mouse-position`.
  *
  * @constructor
- * @extends {ol.control.Control}
+ * @extends {module:ol/control/Control~Control}
  * @param {module:ol/control/MousePosition~Options=} opt_options Mouse position
  *     options.
  * @api
@@ -109,8 +109,8 @@ inherits(MousePosition, Control);
 
 /**
  * Update the mouseposition element.
- * @param {ol.MapEvent} mapEvent Map event.
- * @this {ol.control.MousePosition}
+ * @param {module:ol/MapEvent~MapEvent} mapEvent Map event.
+ * @this {module:ol/control/MousePosition~MousePosition}
  * @api
  */
 export function render(mapEvent) {

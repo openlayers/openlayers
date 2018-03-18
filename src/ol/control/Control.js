@@ -14,7 +14,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {Element|undefined} element The element is the control's
  * container element. This only needs to be specified if you're developing
  * a custom control.
- * @property {function(ol.MapEvent)|undefined} render Function called when
+ * @property {function(module:ol/MapEvent~MapEvent)|undefined} render Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  * @property {Element|string|undefined} target Specify a target if you want
@@ -33,20 +33,19 @@ import {listen, unlistenByKey} from '../events.js';
  * This is the base class for controls. You can use it for simple custom
  * controls by creating the element with listeners, creating an instance:
  * ```js
- * var myControl = new ol.control.Control({element: myElement});
+ * var myControl = new Control({element: myElement});
  * ```
  * and then adding this to the map.
  *
  * The main advantage of having this as a control rather than a simple separate
  * DOM element is that preventing propagation is handled for you. Controls
- * will also be `ol.Object`s in a `ol.Collection`, so you can use their
- * methods.
+ * will also be objects in a `ol.Collection`, so you can use their methods.
  *
  * You can also extend this base for your own control class. See
  * examples/custom-controls for an example of how to do this.
  *
  * @constructor
- * @extends {ol.Object}
+ * @extends {module:ol/Object~BaseObject}
  * @implements {oli.control.Control}
  * @param {module:ol/control/Control~Options} options Control options.
  * @api
@@ -80,7 +79,7 @@ const Control = function(options) {
   this.listenerKeys = [];
 
   /**
-   * @type {function(ol.MapEvent)}
+   * @type {function(module:ol/MapEvent~MapEvent)}
    */
   this.render = options.render ? options.render : UNDEFINED;
 
