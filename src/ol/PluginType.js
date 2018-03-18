@@ -3,11 +3,9 @@
  */
 
 /**
- * A plugin type used when registering a plugin.  The supported plugin types are
- * 'MAP_RENDERER', and 'LAYER_RENDERER'.
+ * A plugin type used when registering a plugin.
  * @enum {string}
  */
 export default {
-  MAP_RENDERER: 'MAP_RENDERER',
   LAYER_RENDERER: 'LAYER_RENDERER'
 };

@@ -16,12 +16,10 @@ import {compose as composeTransform, invert as invertTransform, setFromArray as 
  * @constructor
  * @abstract
  * @extends {module:ol/Disposable~Disposable}
- * @param {Element} container Container.
  * @param {module:ol/PluggableMap~PluggableMap} map Map.
  * @struct
  */
-const MapRenderer = function(container, map) {
-
+const MapRenderer = function(map) {
   Disposable.call(this);
 
   /**

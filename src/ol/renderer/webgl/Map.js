@@ -7,7 +7,6 @@ import {stableSort} from '../../array.js';
 import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {listen} from '../../events.js';
-import {WEBGL} from '../../has.js';
 import {visibleAtResolution} from '../../layer/Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
@@ -43,12 +42,13 @@ const WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
 /**
  * @constructor
  * @extends {ol.renderer.Map}
- * @param {Element} container Container.
  * @param {module:ol/PluggableMap~PluggableMap} map Map.
  * @api
  */
-const WebGLMapRenderer = function(container, map) {
-  MapRenderer.call(this, container, map);
+const WebGLMapRenderer = function(map) {
+  MapRenderer.call(this, map);
+
+  const container = map.getViewport();
 
   /**
    * @private
@@ -182,28 +182,7 @@ inherits(WebGLMapRenderer, MapRenderer);
 
 
 /**
- * Determine if this renderer handles the provided layer.
- * @param {ol.renderer.Type} type The renderer type.
- * @return {boolean} The renderer can render the layer.
- */
-WebGLMapRenderer['handles'] = function(type) {
-  return WEBGL && type === RendererType.WEBGL;
-};
-
-
-/**
- * Create the map renderer.
- * @param {Element} container Container.
- * @param {module:ol/PluggableMap~PluggableMap} map Map.
- * @return {ol.renderer.webgl.Map} The map renderer.
- */
-WebGLMapRenderer['create'] = function(container, map) {
-  return new WebGLMapRenderer(container, map);
-};
-
-
-/**
- * @param {module:ol/Tile~Tile} tile Tile.
+ * @param {ol.Tile} tile Tile.
  * @param {module:ol/size~Size} tileSize Tile size.
  * @param {number} tileGutter Tile gutter.
  * @param {number} magFilter Mag filter.
@@ -612,4 +591,5 @@ WebGLMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, cal
   }
   return undefined;
 };
+
 export default WebGLMapRenderer;

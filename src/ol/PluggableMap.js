@@ -24,8 +24,6 @@ import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEm
 import {TRUE} from './functions.js';
 import {DEVICE_PIXEL_RATIO, TOUCH} from './has.js';
 import LayerGroup from './layer/Group.js';
-import {getMapRendererPlugins} from './plugins.js';
-import RendererType from './renderer/Type.js';
 import {hasArea} from './size.js';
 import {DROP} from './structs/PriorityQueue.js';
 import {create as createTransform, apply as applyTransform} from './transform.js';
@@ -80,7 +78,6 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {module:ol/Collection~Collection.<module:ol/interaction/Interaction~Interaction>} [interactions]
  * @property {Element|Document} keyboardEventTarget
  * @property {module:ol/Collection~Collection.<module:ol/Overlay~Overlay>} overlays
- * @property {module:ol/plugins~MapRendererPlugin} mapRendererPlugin
  * @property {Object.<string, *>} values
  */
 
@@ -123,12 +120,6 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * Increasing this value can make it easier to click on the map.
  * @property {module:ol/Collection~Collection.<module:ol/Overlay~Overlay>|Array.<module:ol/Overlay~Overlay>} [overlays]
  * Overlays initially added to the map. By default, no overlays are added.
- * @property {module:ol/renderer/Type|Array.<module:ol/renderer/Type>} [renderer]
- * Renderer. By default, Canvas and WebGL renderers are tested for support in
- * that order, and the first supported used. Specify a
- * {@link module:ol/renderer/Type} here to use a specific renderer. Note that
- * the Canvas renderer fully supports vector data, but WebGL can only render
- * Point geometries reliably.
  * @property {Element|string} [target] The container for the map, either the
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
@@ -348,7 +339,7 @@ const PluggableMap = function(options) {
    * @type {module:ol/renderer/Map~Map}
    * @private
    */
-  this.renderer_ = optionsInternal.mapRendererPlugin['create'](this.viewport_, this);
+  this.renderer_ = this.createRenderer(this.viewport_, this);
 
   /**
    * @type {function(Event)|undefined}
@@ -473,6 +464,11 @@ const PluggableMap = function(options) {
 };
 
 inherits(PluggableMap, BaseObject);
+
+
+PluggableMap.prototype.createRenderer = function() {
+  throw new Error('Use a map type that has a createRenderer method');
+};
 
 
 /**
@@ -1401,16 +1397,6 @@ PluggableMap.prototype.unskipFeature = function(feature) {
 
 
 /**
- * @type {Array.<module:ol/renderer/Type>}
- * @const
- */
-const DEFAULT_RENDERER_TYPES = [
-  RendererType.CANVAS,
-  RendererType.WEBGL
-];
-
-
-/**
  * @param {MapOptions} options Map options.
  * @return {module:ol/PluggableMap~MapOptionsInternal} Internal map options.
  */
@@ -1439,47 +1425,6 @@ function createOptionsInternal(options) {
 
   values[MapProperty.VIEW] = options.view !== undefined ?
     options.view : new View();
-
-  /**
-   * @type {Array.<module:ol/renderer/Type>}
-   */
-  let rendererTypes;
-
-  if (options.renderer !== undefined) {
-    if (Array.isArray(options.renderer)) {
-      rendererTypes = options.renderer;
-    } else if (typeof options.renderer === 'string') {
-      rendererTypes = [options.renderer];
-    } else {
-      assert(false, 46); // Incorrect format for `renderer` option
-    }
-    if (rendererTypes.indexOf(/** @type {module:ol/renderer/Type} */ ('dom')) >= 0) {
-      rendererTypes = rendererTypes.concat(DEFAULT_RENDERER_TYPES);
-    }
-  } else {
-    rendererTypes = DEFAULT_RENDERER_TYPES;
-  }
-
-  /**
-   * @type {module:ol/plugins~MapRendererPlugin}
-   */
-  let mapRendererPlugin;
-
-  const mapRendererPlugins = getMapRendererPlugins();
-  outer: for (let i = 0, ii = rendererTypes.length; i < ii; ++i) {
-    const rendererType = rendererTypes[i];
-    for (let j = 0, jj = mapRendererPlugins.length; j < jj; ++j) {
-      const candidate = mapRendererPlugins[j];
-      if (candidate['handles'](rendererType)) {
-        mapRendererPlugin = candidate;
-        break outer;
-      }
-    }
-  }
-
-  if (!mapRendererPlugin) {
-    throw new Error('Unable to create a map renderer for types: ' +  rendererTypes.join(', '));
-  }
 
   let controls;
   if (options.controls !== undefined) {
@@ -1521,7 +1466,6 @@ function createOptionsInternal(options) {
     interactions: interactions,
     keyboardEventTarget: keyboardEventTarget,
     overlays: overlays,
-    mapRendererPlugin: mapRendererPlugin,
     values: values
   };
 

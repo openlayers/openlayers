@@ -7,15 +7,13 @@ import PluginType from './PluginType.js';
 import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';
 import {assign} from './obj.js';
-import {register, registerMultiple} from './plugins.js';
+import {registerMultiple} from './plugins.js';
 import WebGLImageLayerRenderer from './renderer/webgl/ImageLayer.js';
 import WebGLMapRenderer from './renderer/webgl/Map.js';
 import WebGLTileLayerRenderer from './renderer/webgl/TileLayer.js';
 import WebGLVectorLayerRenderer from './renderer/webgl/VectorLayer.js';
 
 
-// TODO: move these to new ol-webgl package
-register(PluginType.MAP_RENDERER, WebGLMapRenderer);
 registerMultiple(PluginType.LAYER_RENDERER, [
   WebGLImageLayerRenderer,
   WebGLTileLayerRenderer,
@@ -79,7 +77,6 @@ registerMultiple(PluginType.LAYER_RENDERER, [
  */
 const WebGLMap = function(options) {
   options = assign({}, options);
-  delete options.renderer;
   if (!options.controls) {
     options.controls = defaultControls();
   }
@@ -91,5 +88,10 @@ const WebGLMap = function(options) {
 };
 
 inherits(WebGLMap, PluggableMap);
+
+
+WebGLMap.prototype.createRenderer = function() {
+  return new WebGLMapRenderer(this);
+};
 
 export default WebGLMap;

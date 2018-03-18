@@ -19,7 +19,7 @@ describe('ol.renderer.canvas.Map', function() {
       const map = new Map({
         target: document.createElement('div')
       });
-      const renderer = new CanvasMapRenderer(map.viewport_, map);
+      const renderer = new CanvasMapRenderer(map);
       expect(renderer).to.be.a(CanvasMapRenderer);
     });
 

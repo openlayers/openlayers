@@ -7,14 +7,13 @@ import PluginType from './PluginType.js';
 import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';
 import {assign} from './obj.js';
-import {register, registerMultiple} from './plugins.js';
+import {registerMultiple} from './plugins.js';
 import CanvasImageLayerRenderer from './renderer/canvas/ImageLayer.js';
 import CanvasMapRenderer from './renderer/canvas/Map.js';
 import CanvasTileLayerRenderer from './renderer/canvas/TileLayer.js';
 import CanvasVectorLayerRenderer from './renderer/canvas/VectorLayer.js';
 import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js';
 
-register(PluginType.MAP_RENDERER, CanvasMapRenderer);
 registerMultiple(PluginType.LAYER_RENDERER, [
   CanvasImageLayerRenderer,
   CanvasTileLayerRenderer,
@@ -89,5 +88,9 @@ const Map = function(options) {
 };
 
 inherits(Map, PluggableMap);
+
+Map.prototype.createRenderer = function() {
+  return new CanvasMapRenderer(this);
+};
 
 export default Map;

@@ -23,23 +23,6 @@ import PluginType from './PluginType.js';
 
 
 /**
- * The registry of map renderer plugins.
- * @type {Array<module:ol/plugins~MapRendererPlugin>}
- * @private
- */
-const mapRendererPlugins = [];
-
-
-/**
- * Get all registered map renderer plugins.
- * @return {Array<module:ol/plugins~MapRendererPlugin>} The registered map renderer plugins.
- */
-export function getMapRendererPlugins() {
-  return mapRendererPlugins;
-}
-
-
-/**
  * The registry of layer renderer plugins.
  * @type {Array<olx.LayerRendererPlugin>}
  * @private
@@ -64,11 +47,6 @@ export function getLayerRendererPlugins() {
 export function register(type, plugin) {
   let plugins;
   switch (type) {
-    case PluginType.MAP_RENDERER: {
-      plugins = mapRendererPlugins;
-      plugins.push(/** @type {module:ol/plugins~MapRendererPlugin} */ (plugin));
-      break;
-    }
     case PluginType.LAYER_RENDERER: {
       plugins = layerRendererPlugins;
       plugins.push(/** @type {olx.LayerRendererPlugin} */ (plugin));
