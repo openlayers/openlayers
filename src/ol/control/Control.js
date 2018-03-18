@@ -33,7 +33,7 @@ import {listen, unlistenByKey} from '../events.js';
  * This is the base class for controls. You can use it for simple custom
  * controls by creating the element with listeners, creating an instance:
  * ```js
- * var myControl = new ol.control.Control({element: myElement});
+ * var myControl = new module:ol/control/Control~Control({element: myElement});
  * ```
  * and then adding this to the map.
  *

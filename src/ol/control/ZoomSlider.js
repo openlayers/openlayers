@@ -45,7 +45,7 @@ const Direction = {
  *     map.addControl(new ol.control.ZoomSlider());
  *
  * @constructor
- * @extends {ol.control.Control}
+ * @extends {module:ol/control/Control~Control}
  * @param {module:ol/control/ZoomSlider~Options=} opt_options Zoom slider options.
  * @api
  */

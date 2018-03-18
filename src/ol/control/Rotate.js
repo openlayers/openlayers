@@ -34,7 +34,7 @@ import {inherits} from '../index.js';
  * selector is added to the button when the rotation is 0.
  *
  * @constructor
- * @extends {ol.control.Control}
+ * @extends {module:ol/control/Control~Control}
  * @param {module:ol/control/Rotate~Options=} opt_options Rotate options.
  * @api
  */

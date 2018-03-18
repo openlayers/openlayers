@@ -48,7 +48,7 @@ const LEADING_DIGITS = [1, 2, 5];
  * but this can be changed by using the css selector `.ol-scale-line`.
  *
  * @constructor
- * @extends {ol.control.Control}
+ * @extends {module:ol/control/Control~Control}
  * @param {module:ol/control/ScaleLine~Options=} opt_options Scale line options.
  * @api
  */

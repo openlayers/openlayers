@@ -66,7 +66,7 @@ const getChangeType = (function() {
  *
  *
  * @constructor
- * @extends {ol.control.Control}
+ * @extends {module:ol/control/Control~Control}
  * @param {module:ol/control/FullScreen~Options=} opt_options Options.
  * @api
  */

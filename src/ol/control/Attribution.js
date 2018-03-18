@@ -43,7 +43,7 @@ import {visibleAtResolution} from '../layer/Layer.js';
  * be changed by using a css selector for `.ol-attribution`.
  *
  * @constructor
- * @extends {ol.control.Control}
+ * @extends {module:ol/control/Control~Control}
  * @param {module:ol/control/Attribution~Options=} opt_options Attribution options.
  * @api
  */

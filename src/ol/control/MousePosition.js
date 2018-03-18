@@ -43,7 +43,7 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * can be changed by using the css selector `.ol-mouse-position`.
  *
  * @constructor
- * @extends {ol.control.Control}
+ * @extends {module:ol/control/Control~Control}
  * @param {module:ol/control/MousePosition~Options=} opt_options Mouse position
  *     options.
  * @api
