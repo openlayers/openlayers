@@ -106,7 +106,7 @@ inherits(DragBoxEvent, Event);
  * This interaction is only supported for mouse devices.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer}
+ * @extends {module:ol/interaction/Pointer~Pointer}
  * @fires module:ol/interaction/DragBox~DragBoxEvent
  * @param {module:ol/interaction/DragBox~Options=} opt_options Options.
  * @api
