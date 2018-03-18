@@ -334,7 +334,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
         if (mask[i][j]) {
           if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
             var result;
-            if (!(declutteredFeatures && (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) ||
+            if (!(declutteredFeatures && (replayType == ol.render.ReplayType.IMAGE || replayType == ol.render.ReplayType.TEXT)) ||
                 declutteredFeatures.indexOf(feature) !== -1) {
               result = callback(feature);
             }
@@ -352,18 +352,18 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
 
   /** @type {Array.<number>} */
   var zs = Object.keys(this.replaysByZIndex_).map(Number);
-  zs.sort(numberSafeCompareFunction);
+  zs.sort(ol.array.numberSafeCompareFunction);
 
   var i, j, replays, replay, result;
   for (i = zs.length - 1; i >= 0; --i) {
     var zIndexKey = zs[i].toString();
     replays = this.replaysByZIndex_[zIndexKey];
-    for (j = _ol_render_replay_.ORDER.length - 1; j >= 0; --j) {
-      replayType = _ol_render_replay_.ORDER[j];
+    for (j = ol.render.replay.ORDER.length - 1; j >= 0; --j) {
+      replayType = ol.render.replay.ORDER[j];
       replay = replays[replayType];
       if (replay !== undefined) {
         if (declutterReplays &&
-            (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) {
+            (replayType == ol.render.ReplayType.IMAGE || replayType == ol.render.ReplayType.TEXT)) {
           var declutter = declutterReplays[zIndexKey];
           if (!declutter) {
             declutterReplays[zIndexKey] = [replay, transform.slice(0)];

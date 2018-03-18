@@ -197,8 +197,8 @@ describe('ol.Map', function() {
       document.body.appendChild(target);
       map = new ol.Map({
         target: target,
-        layers: [new ol.layer.Vector_({
-          source: new ol.source.Vector_({
+        layers: [new ol.layer.Vector({
+          source: new ol.source.Vector({
             features: [new ol.Feature(new ol.geom.LineString([[-50, 0], [50, 0]]))]
           })
         })],
@@ -227,7 +227,7 @@ describe('ol.Map', function() {
     it('returns an array of found features with declutter: true', function() {
       var layer = map.getLayers().item(0);
       map.removeLayer(layer);
-      var otherLayer = new _ol_layer_Vector_({
+      var otherLayer = new ol.layer.Vector({
         declutter: true,
         source: layer.getSource()
       });
@@ -235,7 +235,7 @@ describe('ol.Map', function() {
       map.renderSync();
       var features = map.getFeaturesAtPixel([50, 50]);
       expect(features).to.be.an(Array);
-      expect(features[0]).to.be.an(_ol_Feature_);
+      expect(features[0]).to.be.an(ol.Feature);
     });
 
     it('respects options', function() {
