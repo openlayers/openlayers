@@ -13,11 +13,6 @@ import CanvasMapRenderer from './renderer/canvas/Map.js';
 import CanvasTileLayerRenderer from './renderer/canvas/TileLayer.js';
 import CanvasVectorLayerRenderer from './renderer/canvas/VectorLayer.js';
 import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js';
-import WebGLImageLayerRenderer from './renderer/webgl/ImageLayer.js';
-import WebGLMapRenderer from './renderer/webgl/Map.js';
-import WebGLTileLayerRenderer from './renderer/webgl/TileLayer.js';
-import WebGLVectorLayerRenderer from './renderer/webgl/VectorLayer.js';
-
 
 register(PluginType.MAP_RENDERER, CanvasMapRenderer);
 registerMultiple(PluginType.LAYER_RENDERER, [
@@ -26,15 +21,6 @@ registerMultiple(PluginType.LAYER_RENDERER, [
   CanvasVectorLayerRenderer,
   CanvasVectorTileLayerRenderer
 ]);
-
-// TODO: move these to new ol-webgl package
-register(PluginType.MAP_RENDERER, WebGLMapRenderer);
-registerMultiple(PluginType.LAYER_RENDERER, [
-  WebGLImageLayerRenderer,
-  WebGLTileLayerRenderer,
-  WebGLVectorLayerRenderer
-]);
-
 
 /**
  * @classdesc
