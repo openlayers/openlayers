@@ -42,7 +42,7 @@ const Direction = {
  *
  * Example:
  *
- *     map.addControl(new ol.control.ZoomSlider());
+ *     map.addControl(new ZoomSlider());
  *
  * @constructor
  * @extends {module:ol/control/Control~Control}
@@ -210,7 +210,7 @@ ZoomSlider.prototype.initSlider_ = function() {
 /**
  * Update the zoomslider element.
  * @param {module:ol/MapEvent~MapEvent} mapEvent Map event.
- * @this {ol.control.ZoomSlider}
+ * @this {module:ol/control/ZoomSlider~ZoomSlider}
  * @api
  */
 export function render(mapEvent) {

@@ -209,7 +209,7 @@ Attribution.prototype.getSourceAttributions_ = function(frameState) {
 /**
  * Update the attribution element.
  * @param {module:ol/MapEvent~MapEvent} mapEvent Map event.
- * @this {ol.control.Attribution}
+ * @this {module:ol/control/Attribution~Attribution}
  * @api
  */
 export function render(mapEvent) {

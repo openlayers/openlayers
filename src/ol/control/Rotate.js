@@ -154,7 +154,7 @@ Rotate.prototype.resetNorth_ = function() {
 /**
  * Update the rotate control element.
  * @param {module:ol/MapEvent~MapEvent} mapEvent Map event.
- * @this {ol.control.Rotate}
+ * @this {module:ol/control/Rotate~Rotate}
  * @api
  */
 export function render(mapEvent) {

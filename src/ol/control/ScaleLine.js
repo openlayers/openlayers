@@ -33,7 +33,7 @@ const LEADING_DIGITS = [1, 2, 5];
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {Element|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
- * @property {ol.control.ScaleLineUnits|string} [units='metric'] Units.
+ * @property {module:ol/control/ScaleLineUnits~ScaleLineUnits|string} [units='metric'] Units.
  */
 
 
@@ -113,7 +113,7 @@ const ScaleLine = function(opt_options) {
     this, getChangeEventType(UNITS),
     this.handleUnitsChanged_, this);
 
-  this.setUnits(/** @type {ol.control.ScaleLineUnits} */ (options.units) ||
+  this.setUnits(/** @type {module:ol/control/ScaleLineUnits~ScaleLineUnits} */ (options.units) ||
       ScaleLineUnits.METRIC);
 
 };
@@ -123,20 +123,20 @@ inherits(ScaleLine, Control);
 
 /**
  * Return the units to use in the scale line.
- * @return {ol.control.ScaleLineUnits|undefined} The units to use in the scale
- *     line.
+ * @return {module:ol/control/ScaleLineUnits~ScaleLineUnits|undefined} The units
+ * to use in the scale line.
  * @observable
  * @api
  */
 ScaleLine.prototype.getUnits = function() {
-  return /** @type {ol.control.ScaleLineUnits|undefined} */ (this.get(UNITS));
+  return /** @type {module:ol/control/ScaleLineUnits~ScaleLineUnits|undefined} */ (this.get(UNITS));
 };
 
 
 /**
  * Update the scale line element.
  * @param {module:ol/MapEvent~MapEvent} mapEvent Map event.
- * @this {ol.control.ScaleLine}
+ * @this {module:ol/control/ScaleLine~ScaleLine}
  * @api
  */
 export function render(mapEvent) {
@@ -160,7 +160,7 @@ ScaleLine.prototype.handleUnitsChanged_ = function() {
 
 /**
  * Set the units to use in the scale line.
- * @param {ol.control.ScaleLineUnits} units The units to use in the scale line.
+ * @param {module:ol/control/ScaleLineUnits~ScaleLineUnits} units The units to use in the scale line.
  * @observable
  * @api
  */

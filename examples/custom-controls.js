@@ -21,7 +21,7 @@ const app = window.app;
 
 /**
  * @constructor
- * @extends {ol.control.Control}
+ * @extends {module:ol/control/Control~Control}
  * @param {Object=} opt_options Control options.
  */
 app.RotateNorthControl = function(opt_options) {

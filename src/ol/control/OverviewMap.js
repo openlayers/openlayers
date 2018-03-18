@@ -323,7 +323,7 @@ OverviewMap.prototype.handleRotationChanged_ = function() {
 /**
  * Update the overview map element.
  * @param {module:ol/MapEvent~MapEvent} mapEvent Map event.
- * @this {ol.control.OverviewMap}
+ * @this {module:ol/control/OverviewMap~OverviewMap}
  * @api
  */
 export function render(mapEvent) {

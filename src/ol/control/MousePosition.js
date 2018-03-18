@@ -110,7 +110,7 @@ inherits(MousePosition, Control);
 /**
  * Update the mouseposition element.
  * @param {module:ol/MapEvent~MapEvent} mapEvent Map event.
- * @this {ol.control.MousePosition}
+ * @this {module:ol/control/MousePosition~MousePosition}
  * @api
  */
 export function render(mapEvent) {
