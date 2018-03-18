@@ -18,7 +18,7 @@ import SourceState from '../source/State.js';
  *
  * @constructor
  * @abstract
- * @extends {ol.Object}
+ * @extends {module:ol/Object~BaseObject}
  * @param {ol.SourceSourceOptions} options Source options.
  * @api
  */
