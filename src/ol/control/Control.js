@@ -14,7 +14,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {Element|undefined} element The element is the control's
  * container element. This only needs to be specified if you're developing
  * a custom control.
- * @property {function(ol.MapEvent)|undefined} render Function called when
+ * @property {function(module:ol/MapEvent~MapEvent)|undefined} render Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  * @property {Element|string|undefined} target Specify a target if you want
@@ -80,7 +80,7 @@ const Control = function(options) {
   this.listenerKeys = [];
 
   /**
-   * @type {function(ol.MapEvent)}
+   * @type {function(module:ol/MapEvent~MapEvent)}
    */
   this.render = options.render ? options.render : UNDEFINED;
 

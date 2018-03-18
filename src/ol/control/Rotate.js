@@ -18,7 +18,7 @@ import {inherits} from '../index.js';
  * @property {string} [tipLabel='Reset rotation'] Text label to use for the rotate tip.
  * @property {number} [duration=250] Animation duration in milliseconds.
  * @property {boolean} [autoHide=true] Hide the control when rotation is 0.
- * @property {function(ol.MapEvent)} [render] Function called when the control should
+ * @property {function(module:ol/MapEvent~MapEvent)} [render] Function called when the control should
  * be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {function()} [resetNorth] Function called when the control is clicked.
  * This will override the default `resetNorth`.
@@ -153,7 +153,7 @@ Rotate.prototype.resetNorth_ = function() {
 
 /**
  * Update the rotate control element.
- * @param {ol.MapEvent} mapEvent Map event.
+ * @param {module:ol/MapEvent~MapEvent} mapEvent Map event.
  * @this {ol.control.Rotate}
  * @api
  */

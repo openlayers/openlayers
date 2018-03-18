@@ -29,7 +29,7 @@ import {visibleAtResolution} from '../layer/Layer.js';
  * @property {string|Element} [collapseLabel='»'] Text label to use
  * for the expanded attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {function(ol.MapEvent)} [render] Function called when
+ * @property {function(module:ol/MapEvent~MapEvent)} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  */
@@ -208,7 +208,7 @@ Attribution.prototype.getSourceAttributions_ = function(frameState) {
 
 /**
  * Update the attribution element.
- * @param {ol.MapEvent} mapEvent Map event.
+ * @param {module:ol/MapEvent~MapEvent} mapEvent Map event.
  * @this {ol.control.Attribution}
  * @api
  */

@@ -31,7 +31,7 @@ const Direction = {
  * @property {number} [duration=200] Animation duration in milliseconds.
  * @property {number|undefined} maxResolution Maximum resolution.
  * @property {number|undefined} minResolution Minimum resolution.
- * @property {function(ol.MapEvent)} [render] Function called when the control
+ * @property {function(module:ol/MapEvent~MapEvent)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  */
 
@@ -209,7 +209,7 @@ ZoomSlider.prototype.initSlider_ = function() {
 
 /**
  * Update the zoomslider element.
- * @param {ol.MapEvent} mapEvent Map event.
+ * @param {module:ol/MapEvent~MapEvent} mapEvent Map event.
  * @this {ol.control.ZoomSlider}
  * @api
  */
