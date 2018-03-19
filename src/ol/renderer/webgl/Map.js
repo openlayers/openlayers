@@ -367,7 +367,7 @@ WebGLMapRenderer.prototype.getType = function() {
 
 
 /**
- * @param {ol.events.Event} event Event.
+ * @param {module:ol/events/Event~Event} event Event.
  * @protected
  */
 WebGLMapRenderer.prototype.handleWebGLContextLost = function(event) {

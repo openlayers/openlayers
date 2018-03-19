@@ -44,7 +44,7 @@ const DragAndDropEventType = {
  * of this type.
  *
  * @constructor
- * @extends {ol.events.Event}
+ * @extends {module:ol/events/Event~Event}
  * @implements {oli.interaction.DragAndDropEvent}
  * @param {module:ol/interaction/DragAndDrop~DragAndDropEventType} type Type.
  * @param {File} file File.

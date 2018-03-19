@@ -200,7 +200,7 @@ WebGLVectorLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameSt
 
 /**
  * Handle changes in image style state.
- * @param {ol.events.Event} event Image style change event.
+ * @param {module:ol/events/Event~Event} event Image style change event.
  * @private
  */
 WebGLVectorLayerRenderer.prototype.handleStyleImageChange_ = function(event) {

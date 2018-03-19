@@ -273,7 +273,7 @@ CanvasVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordi
 
 
 /**
- * @param {ol.events.Event} event Event.
+ * @param {module:ol/events/Event~Event} event Event.
  */
 CanvasVectorLayerRenderer.prototype.handleFontsChanged_ = function(event) {
   const layer = this.getLayer();
@@ -285,7 +285,7 @@ CanvasVectorLayerRenderer.prototype.handleFontsChanged_ = function(event) {
 
 /**
  * Handle changes in image style state.
- * @param {ol.events.Event} event Image style change event.
+ * @param {module:ol/events/Event~Event} event Image style change event.
  * @private
  */
 CanvasVectorLayerRenderer.prototype.handleStyleImageChange_ = function(event) {

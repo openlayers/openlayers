@@ -28,7 +28,7 @@ import RBush from '../structs/RBush.js';
  * type.
  *
  * @constructor
- * @extends {ol.events.Event}
+ * @extends {module:ol/events/Event~Event}
  * @implements {oli.source.Vector.Event}
  * @param {string} type Type.
  * @param {module:ol/Feature~Feature=} opt_feature Feature.
@@ -690,7 +690,7 @@ VectorSource.prototype.getUrl = function() {
 
 
 /**
- * @param {ol.events.Event} event Event.
+ * @param {module:ol/events/Event~Event} event Event.
  * @private
  */
 VectorSource.prototype.handleFeatureChange_ = function(event) {

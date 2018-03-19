@@ -47,7 +47,7 @@ const ImageSourceEventType = {
  * type.
  *
  * @constructor
- * @extends {ol.events.Event}
+ * @extends {module:ol/events/Event~Event}
  * @implements {oli.source.ImageEvent}
  * @param {string} type Type.
  * @param {ol.Image} image The image.
@@ -192,7 +192,7 @@ ImageSource.prototype.getImageInternal = function(extent, resolution, pixelRatio
 
 /**
  * Handle image change events.
- * @param {ol.events.Event} event Event.
+ * @param {module:ol/events/Event~Event} event Event.
  * @protected
  */
 ImageSource.prototype.handleImageChange = function(event) {

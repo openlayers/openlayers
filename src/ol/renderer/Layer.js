@@ -91,7 +91,7 @@ LayerRenderer.prototype.getLayer = function() {
 
 /**
  * Handle changes in image state.
- * @param {ol.events.Event} event Image change event.
+ * @param {module:ol/events/Event~Event} event Image change event.
  * @private
  */
 LayerRenderer.prototype.handleImageChange_ = function(event) {

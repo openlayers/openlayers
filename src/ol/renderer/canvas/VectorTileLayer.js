@@ -339,7 +339,7 @@ CanvasVectorTileLayerRenderer.prototype.getReplayTransform_ = function(tile, fra
 
 
 /**
- * @param {ol.events.Event} event Event.
+ * @param {module:ol/events/Event~Event} event Event.
  */
 CanvasVectorTileLayerRenderer.prototype.handleFontsChanged_ = function(event) {
   const layer = this.getLayer();
@@ -351,7 +351,7 @@ CanvasVectorTileLayerRenderer.prototype.handleFontsChanged_ = function(event) {
 
 /**
  * Handle changes in image style state.
- * @param {ol.events.Event} event Image style change event.
+ * @param {module:ol/events/Event~Event} event Image style change event.
  * @private
  */
 CanvasVectorTileLayerRenderer.prototype.handleStyleImageChange_ = function(event) {

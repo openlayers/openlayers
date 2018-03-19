@@ -112,7 +112,7 @@ UrlTile.prototype.getUrls = function() {
 
 /**
  * Handle tile change events.
- * @param {ol.events.Event} event Event.
+ * @param {module:ol/events/Event~Event} event Event.
  * @protected
  */
 UrlTile.prototype.handleTileChange = function(event) {
