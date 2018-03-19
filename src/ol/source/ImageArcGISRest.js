@@ -71,7 +71,7 @@ const ImageArcGISRest = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Image}
+   * @type {module:ol/Image~Image}
    */
   this.image_ = null;
 
