@@ -53,7 +53,7 @@ const MIN_RATIO = 0.1;
  * @property {Element|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
  * @property {string} [tipLabel='Overview map'] Text label to use for the button tip.
- * @property {ol.View} [view] Custom view for the overview map. If not provided,
+ * @property {module:ol/View~View} [view] Custom view for the overview map. If not provided,
  * a default view with an EPSG:3857 projection will be used.
  */
 
@@ -275,7 +275,7 @@ OverviewMap.prototype.setMap = function(map) {
  */
 OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
   if (event.key === MapProperty.VIEW) {
-    const oldView = /** @type {ol.View} */ (event.oldValue);
+    const oldView = /** @type {module:ol/View~View} */ (event.oldValue);
     if (oldView) {
       this.unbindView_(oldView);
     }
@@ -287,7 +287,7 @@ OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
 
 /**
  * Register listeners for view property changes.
- * @param {ol.View} view The view.
+ * @param {module:ol/View~View} view The view.
  * @private
  */
 OverviewMap.prototype.bindView_ = function(view) {
@@ -299,7 +299,7 @@ OverviewMap.prototype.bindView_ = function(view) {
 
 /**
  * Unregister listeners for view property changes.
- * @param {ol.View} view The view.
+ * @param {module:ol/View~View} view The view.
  * @private
  */
 OverviewMap.prototype.unbindView_ = function(view) {
