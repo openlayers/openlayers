@@ -121,7 +121,7 @@ LayerGroup.prototype.handleLayersChanged_ = function(event) {
 
 
 /**
- * @param {ol.CollectionEvent} collectionEvent CollectionEvent.
+ * @param {module:ol/Collection~CollectionEvent} collectionEvent CollectionEvent.
  * @private
  */
 LayerGroup.prototype.handleLayersAdd_ = function(collectionEvent) {
@@ -136,7 +136,7 @@ LayerGroup.prototype.handleLayersAdd_ = function(collectionEvent) {
 
 
 /**
- * @param {ol.CollectionEvent} collectionEvent CollectionEvent.
+ * @param {module:ol/Collection~CollectionEvent} collectionEvent CollectionEvent.
  * @private
  */
 LayerGroup.prototype.handleLayersRemove_ = function(collectionEvent) {
