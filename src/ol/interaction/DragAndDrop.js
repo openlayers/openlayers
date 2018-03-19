@@ -14,14 +14,14 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {Array.<function(new: ol.format.Feature)>|undefined} formatConstructors Format constructors.
- * @property {ol.source.Vector|undefined} source Optional vector source where features will be added.  If a source is provided
+ * @property {Array.<function(new: ol.format.Feature)>} [formatConstructors] Format constructors.
+ * @property {ol.source.Vector} [source] Optional vector source where features will be added.  If a source is provided
  * all existing features will be removed and new features will be added when
  * they are dropped on the target.  If you want to add features to a vector
  * source without removing the existing features (append only), instead of
  * providing the source option listen for the "addfeatures" event.
- * @property {ol.ProjectionLike} projection Target projection. By default, the map's view's projection is used.
- * @property {Element|undefined} target The element that is used as the drop target, default is the viewport element.
+ * @property {module:ol/proj~ProjectionLike} [projection] Target projection. By default, the map's view's projection is used.
+ * @property {Element} [target] The element that is used as the drop target, default is the viewport element.
  */
 
 
@@ -44,7 +44,7 @@ const DragAndDropEventType = {
  * of this type.
  *
  * @constructor
- * @extends {ol.events.Event}
+ * @extends {module:ol/events/Event~Event}
  * @implements {oli.interaction.DragAndDropEvent}
  * @param {module:ol/interaction/DragAndDrop~DragAndDropEventType} type Type.
  * @param {File} file File.

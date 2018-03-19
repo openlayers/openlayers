@@ -57,11 +57,9 @@ LayerRenderer.prototype.hasFeatureAtCoordinate = FALSE;
  * Create a function that adds loaded tiles to the tile lookup.
  * @param {ol.source.Tile} source Tile source.
  * @param {module:ol/proj/Projection~Projection} projection Projection of the tiles.
- * @param {Object.<number, Object.<string, ol.Tile>>} tiles Lookup of loaded
- *     tiles by zoom level.
+ * @param {Object.<number, Object.<string, module:ol/Tile~Tile>>} tiles Lookup of loaded tiles by zoom level.
  * @return {function(number, module:ol/TileRange~TileRange):boolean} A function that can be
- *     called with a zoom level and a tile range to add loaded tiles to the
- *     lookup.
+ *     called with a zoom level and a tile range to add loaded tiles to the lookup.
  * @protected
  */
 LayerRenderer.prototype.createLoadedTileFinder = function(source, projection, tiles) {
@@ -93,7 +91,7 @@ LayerRenderer.prototype.getLayer = function() {
 
 /**
  * Handle changes in image state.
- * @param {ol.events.Event} event Image change event.
+ * @param {module:ol/events/Event~Event} event Image change event.
  * @private
  */
 LayerRenderer.prototype.handleImageChange_ = function(event) {
@@ -107,9 +105,8 @@ LayerRenderer.prototype.handleImageChange_ = function(event) {
 /**
  * Load the image if not already loaded, and register the image change
  * listener if needed.
- * @param {ol.ImageBase} image Image.
- * @return {boolean} `true` if the image is already loaded, `false`
- *     otherwise.
+ * @param {module:ol/ImageBase~ImageBase} image Image.
+ * @return {boolean} `true` if the image is already loaded, `false` otherwise.
  * @protected
  */
 LayerRenderer.prototype.loadImage = function(image) {
@@ -202,7 +199,7 @@ LayerRenderer.prototype.updateUsedTiles = function(usedTiles, tileSource, z, til
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} currentZ Current Z.
  * @param {number} preload Load low resolution tiles up to 'preload' levels.
- * @param {function(this: T, ol.Tile)=} opt_tileCallback Tile callback.
+ * @param {function(this: T, module:ol/Tile~Tile)=} opt_tileCallback Tile callback.
  * @param {T=} opt_this Object to use as `this` in `opt_tileCallback`.
  * @protected
  * @template T

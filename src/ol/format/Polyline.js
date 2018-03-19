@@ -16,10 +16,9 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {number|undefined} factor The factor by which the coordinates
- * values will be scaled. Default is `1e5`.
- * @property {module:ol/geom/GeometryLayout~GeometryLayout|undefined} geometryLayout Layout of the
- * feature geometries created by the format reader. Default is `module:ol/geom/GeometryLayout~GeometryLayout.XY`.
+ * @property {number} [factor=1e5] The factor by which the coordinates values will be scaled.
+ * @property {module:ol/geom/GeometryLayout~GeometryLayout} [geometryLayout='XY'] Layout of the
+ * feature geometries created by the format reader.
  */
 
 

@@ -98,7 +98,7 @@ VectorTileSource.prototype.getOverlaps = function() {
 };
 
 /**
- * clear {@link ol.TileCache} and delete all source tiles
+ * clear {@link module:ol/TileCache~TileCache} and delete all source tiles
  * @api
  */
 VectorTileSource.prototype.clear = function() {
@@ -112,7 +112,7 @@ VectorTileSource.prototype.clear = function() {
 VectorTileSource.prototype.getTile = function(z, x, y, pixelRatio, projection) {
   const tileCoordKey = getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
-    return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+    return /** @type {!module:ol/Tile~Tile} */ (this.tileCache.get(tileCoordKey));
   } else {
     const tileCoord = [z, x, y];
     const urlTileCoord = this.getTileCoordForTileUrlFunction(

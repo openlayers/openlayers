@@ -89,7 +89,7 @@ LayerGroup.prototype.handleLayerChange_ = function() {
 
 
 /**
- * @param {ol.events.Event} event Event.
+ * @param {module:ol/events/Event~Event} event Event.
  * @private
  */
 LayerGroup.prototype.handleLayersChanged_ = function(event) {

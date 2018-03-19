@@ -17,7 +17,7 @@ import Triangulation from '../reproj/Triangulation.js';
  * See {@link ol.source.Image}.
  *
  * @constructor
- * @extends {ol.ImageBase}
+ * @extends {module:ol/ImageBase~ImageBase}
  * @param {module:ol/proj/Projection~Projection} sourceProj Source projection (of the data).
  * @param {module:ol/proj/Projection~Projection} targetProj Target projection.
  * @param {module:ol/extent~Extent} targetExtent Target extent.
@@ -75,7 +75,7 @@ const ReprojImage = function(sourceProj, targetProj,
 
   /**
    * @private
-   * @type {ol.ImageBase}
+   * @type {module:ol/ImageBase~ImageBase}
    */
   this.sourceImage_ =
       getImageFunction(sourceExtent, sourceResolution, pixelRatio);

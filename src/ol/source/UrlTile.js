@@ -112,11 +112,11 @@ UrlTile.prototype.getUrls = function() {
 
 /**
  * Handle tile change events.
- * @param {ol.events.Event} event Event.
+ * @param {module:ol/events/Event~Event} event Event.
  * @protected
  */
 UrlTile.prototype.handleTileChange = function(event) {
-  const tile = /** @type {ol.Tile} */ (event.target);
+  const tile = /** @type {module:ol/Tile~Tile} */ (event.target);
   const uid = getUid(tile);
   const tileState = tile.getState();
   let type;

@@ -47,7 +47,7 @@ const ImageSourceEventType = {
  * type.
  *
  * @constructor
- * @extends {ol.events.Event}
+ * @extends {module:ol/events/Event~Event}
  * @implements {oli.source.ImageEvent}
  * @param {string} type Type.
  * @param {ol.Image} image The image.
@@ -140,7 +140,7 @@ ImageSource.prototype.findNearestResolution = function(resolution) {
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @return {ol.ImageBase} Single image.
+ * @return {module:ol/ImageBase~ImageBase} Single image.
  */
 ImageSource.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
   const sourceProjection = this.getProjection();
@@ -184,7 +184,7 @@ ImageSource.prototype.getImage = function(extent, resolution, pixelRatio, projec
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @return {ol.ImageBase} Single image.
+ * @return {module:ol/ImageBase~ImageBase} Single image.
  * @protected
  */
 ImageSource.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {};
@@ -192,7 +192,7 @@ ImageSource.prototype.getImageInternal = function(extent, resolution, pixelRatio
 
 /**
  * Handle image change events.
- * @param {ol.events.Event} event Event.
+ * @param {module:ol/events/Event~Event} event Event.
  * @protected
  */
 ImageSource.prototype.handleImageChange = function(event) {

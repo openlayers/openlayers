@@ -35,12 +35,12 @@ import RBush from '../structs/RBush.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/Collection~Collection.<module:ol/Feature~Feature>|undefined} features Snap to these features. Either this option or source should be provided.
- * @property {boolean|undefined} edge Snap to edges. Default is `true`.
- * @property {boolean|undefined} vertex Snap to vertices. Default is `true`.
- * @property {number|undefined} pixelTolerance Pixel tolerance for considering the pointer close enough to a segment or
- * vertex for snapping. Default is `10` pixels.
- * @property {module:ol/source/Vector~Vector|undefined} source Snap to features from this source. Either this option or features should be provided
+ * @property {module:ol/Collection~Collection.<module:ol/Feature~Feature>} [features] Snap to these features. Either this option or source should be provided.
+ * @property {boolean} [edge=true] Snap to edges.
+ * @property {boolean} [vertex=true] Snap to vertices.
+ * @property {number} [pixelTolerance=10] Pixel tolerance for considering the pointer close enough to a segment or
+ * vertex for snapping.
+ * @property {module:ol/source/Vector~Vector} [source] Snap to features from this source. Either this option or features should be provided
  */
 
 

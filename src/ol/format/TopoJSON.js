@@ -16,9 +16,8 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {ol.ProjectionLike} defaultDataProjection Default data projection.
- * Default is `EPSG:4326`.
- * @property {string|undefined} layerName Set the name of the TopoJSON topology
+ * @property {module:ol/proj~ProjectionLike} [defaultDataProjection='EPSG:4326'] Default data projection.
+ * @property {string} [layerName] Set the name of the TopoJSON topology
  * `objects`'s children as feature property with the specified name. This means
  * that when set to `'layer'`, a topology like
  * ```
@@ -34,7 +33,7 @@ import {get as getProjection} from '../proj.js';
  * ```
  * will result in features that have a property `'layer'` set to `'example'`.
  * When not set, no property will be added to features.
- * @property {Array.<string>|undefined} layers Names of the TopoJSON topology's
+ * @property {Array.<string>} [layers] Names of the TopoJSON topology's
  * `objects`'s children to read features from.  If not provided, features will
  * be read from all children.
  */

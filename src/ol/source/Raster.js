@@ -48,7 +48,7 @@ const RasterEventType = {
  * type.
  *
  * @constructor
- * @extends {ol.events.Event}
+ * @extends {module:ol/events/Event~Event}
  * @implements {oli.source.RasterEvent}
  * @param {string} type Type.
  * @param {module:ol/PluggableMap~FrameState} frameState The frame state.
@@ -129,7 +129,7 @@ const RasterSource = function(options) {
 
   /**
    * @private
-   * @type {ol.TileQueue}
+   * @type {module:ol/TileQueue~TileQueue}
    */
   this.tileQueue_ = new TileQueue(
     function() {

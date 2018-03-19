@@ -61,7 +61,7 @@ const TileImage = function(options) {
 
   /**
    * @protected
-   * @type {!Object.<string, ol.TileCache>}
+   * @type {!Object.<string, module:ol/TileCache~TileCache>}
    */
   this.tileCacheForProjection = {};
 
@@ -206,7 +206,7 @@ TileImage.prototype.getTileCacheForProjection = function(projection) {
  * @param {number} pixelRatio Pixel ratio.
  * @param {module:ol/proj/Projection~Projection} projection Projection.
  * @param {string} key The key set on the tile.
- * @return {!ol.Tile} Tile.
+ * @return {!module:ol/Tile~Tile} Tile.
  * @private
  */
 TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projection, key) {
@@ -243,7 +243,7 @@ TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection) {
     let tile;
     const tileCoordKey = getKey(tileCoord);
     if (cache.containsKey(tileCoordKey)) {
-      tile = /** @type {!ol.Tile} */ (cache.get(tileCoordKey));
+      tile = /** @type {!module:ol/Tile~Tile} */ (cache.get(tileCoordKey));
     }
     const key = this.getKey();
     if (tile && tile.key == key) {
@@ -283,7 +283,7 @@ TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection) {
  * @param {number} y Tile coordinate y.
  * @param {number} pixelRatio Pixel ratio.
  * @param {!module:ol/proj/Projection~Projection} projection Projection.
- * @return {!ol.Tile} Tile.
+ * @return {!module:ol/Tile~Tile} Tile.
  * @protected
  */
 TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, projection) {

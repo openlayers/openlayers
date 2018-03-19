@@ -8,8 +8,8 @@ import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
 
 /**
  * @typedef {Object} Options
- * @property {number} [duration] Animation duration in milliseconds. Default is `250`.
- * @property {number} [delta] The zoom delta applied on each double click, default is `1`.
+ * @property {number} [duration=250] Animation duration in milliseconds.
+ * @property {number} [delta=1] The zoom delta applied on each double click.
  */
 
 

@@ -236,13 +236,13 @@ ol.RegularShapeRenderOptions;
 
 
 /**
- * @typedef {function(module:ol/extent~Extent, number, number) : ol.ImageBase}
+ * @typedef {function(module:ol/extent~Extent, number, number) : module:ol/ImageBase~ImageBase}
  */
 ol.ReprojImageFunctionType;
 
 
 /**
- * @typedef {function(number, number, number, number) : ol.Tile}
+ * @typedef {function(number, number, number, number) : module:ol/Tile~Tile}
  */
 ol.ReprojTileFunctionType;
 

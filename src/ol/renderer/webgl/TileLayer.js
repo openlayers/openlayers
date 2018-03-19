@@ -242,7 +242,7 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
     gl.uniform1i(this.locations_.u_texture, 0);
 
     /**
-     * @type {Object.<number, Object.<string, ol.Tile>>}
+     * @type {Object.<number, Object.<string, module:ol/Tile~Tile>>}
      */
     const tilesToDrawByZ = {};
     tilesToDrawByZ[z] = {};
@@ -344,7 +344,7 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
     frameState, tileSource, tileGrid, pixelRatio, projection, extent, z,
     tileLayer.getPreload(),
     /**
-       * @param {ol.Tile} tile Tile.
+       * @param {module:ol/Tile~Tile} tile Tile.
        */
     function(tile) {
       if (tile.getState() == TileState.LOADED &&

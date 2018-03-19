@@ -136,7 +136,7 @@ const WebGLMapRenderer = function(container, map) {
        * @return {string} Key.
        */
     function(element) {
-      return /** @type {ol.Tile} */ (element[0]).getKey();
+      return /** @type {module:ol/Tile~Tile} */ (element[0]).getKey();
     });
 
 
@@ -151,7 +151,7 @@ const WebGLMapRenderer = function(container, map) {
         if (!this.tileTextureQueue_.isEmpty()) {
           this.tileTextureQueue_.reprioritize();
           const element = this.tileTextureQueue_.dequeue();
-          const tile = /** @type {ol.Tile} */ (element[0]);
+          const tile = /** @type {module:ol/Tile~Tile} */ (element[0]);
           const tileSize = /** @type {module:ol/size~Size} */ (element[3]);
           const tileGutter = /** @type {number} */ (element[4]);
           this.bindTileTexture(
@@ -195,7 +195,7 @@ WebGLMapRenderer['create'] = function(container, map) {
 
 
 /**
- * @param {ol.Tile} tile Tile.
+ * @param {module:ol/Tile~Tile} tile Tile.
  * @param {module:ol/size~Size} tileSize Tile size.
  * @param {number} tileGutter Tile gutter.
  * @param {number} magFilter Mag filter.
@@ -367,7 +367,7 @@ WebGLMapRenderer.prototype.getType = function() {
 
 
 /**
- * @param {ol.events.Event} event Event.
+ * @param {module:ol/events/Event~Event} event Event.
  * @protected
  */
 WebGLMapRenderer.prototype.handleWebGLContextLost = function(event) {
@@ -409,7 +409,7 @@ WebGLMapRenderer.prototype.initializeGL_ = function() {
 
 
 /**
- * @param {ol.Tile} tile Tile.
+ * @param {module:ol/Tile~Tile} tile Tile.
  * @return {boolean} Is tile texture loaded.
  */
 WebGLMapRenderer.prototype.isTileTextureLoaded = function(tile) {

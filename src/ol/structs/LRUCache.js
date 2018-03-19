@@ -12,7 +12,7 @@ import EventType from '../events/EventType.js';
  * items from the cache is the responsibility of the user.
  * @constructor
  * @extends {module:ol/events/EventTarget~EventTarget}
- * @fires ol.events.Event
+ * @fires module:ol/events/Event~Event
  * @struct
  * @template T
  * @param {number=} opt_highWaterMark High water mark.

@@ -6,7 +6,7 @@ import Event from '../events/Event.js';
 
 /**
  * @constructor
- * @extends {ol.events.Event}
+ * @extends {module:ol/events/Event~Event}
  * @implements {oli.render.Event}
  * @param {ol.render.EventType} type Type.
  * @param {ol.render.VectorContext=} opt_vectorContext Vector context.

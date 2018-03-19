@@ -53,7 +53,7 @@ const BaseLayer = function(options) {
 
   /**
    * The layer type.
-   * @type {ol.LayerType}
+   * @type {module:ol/LayerType~LayerType}
    * @protected;
    */
   this.type;
@@ -65,7 +65,7 @@ inherits(BaseLayer, BaseObject);
 
 /**
  * Get the layer type (used when creating a layer renderer).
- * @return {ol.LayerType} The layer type.
+ * @return {module:ol/LayerType~LayerType} The layer type.
  */
 BaseLayer.prototype.getType = function() {
   return this.type;
