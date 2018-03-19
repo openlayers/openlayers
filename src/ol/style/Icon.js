@@ -99,7 +99,7 @@ const Icon = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Color}
+   * @type {module:ol/color~Color}
    */
   this.color_ = options.color !== undefined ? asArray(options.color) : null;
 
@@ -248,7 +248,7 @@ Icon.prototype.getAnchor = function() {
 
 /**
  * Get the icon color.
- * @return {ol.Color} Color.
+ * @return {module:ol/color~Color} Color.
  * @api
  */
 Icon.prototype.getColor = function() {

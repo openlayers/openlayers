@@ -16,7 +16,7 @@ import {iconImageCache} from '../style.js';
  * @param {module:ol/size~Size} size Size.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.ImageState} imageState Image state.
- * @param {ol.Color} color Color.
+ * @param {module:ol/color~Color} color Color.
  * @extends {module:ol/events/EventTarget~EventTarget}
  */
 const IconImage = function(image, src, size, crossOrigin, imageState, color) {
@@ -49,7 +49,7 @@ const IconImage = function(image, src, size, crossOrigin, imageState, color) {
 
   /**
    * @private
-   * @type {ol.Color}
+   * @type {module:ol/color~Color}
    */
   this.color_ = color;
 
@@ -97,7 +97,7 @@ inherits(IconImage, EventTarget);
  * @param {module:ol/size~Size} size Size.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.ImageState} imageState Image state.
- * @param {ol.Color} color Color.
+ * @param {module:ol/color~Color} color Color.
  * @return {ol.style.IconImage} Icon image.
  */
 export function get(image, src, size, crossOrigin, imageState, color) {

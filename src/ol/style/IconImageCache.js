@@ -32,7 +32,7 @@ const IconImageCache = function() {
 /**
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
- * @param {ol.Color} color Color.
+ * @param {module:ol/color~Color} color Color.
  * @return {string} Cache key.
  */
 function getKey(src, crossOrigin, color) {
@@ -70,7 +70,7 @@ IconImageCache.prototype.expire = function() {
 /**
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
- * @param {ol.Color} color Color.
+ * @param {module:ol/color~Color} color Color.
  * @return {ol.style.IconImage} Icon image.
  */
 IconImageCache.prototype.get = function(src, crossOrigin, color) {
@@ -82,7 +82,7 @@ IconImageCache.prototype.get = function(src, crossOrigin, color) {
 /**
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
- * @param {ol.Color} color Color.
+ * @param {module:ol/color~Color} color Color.
  * @param {ol.style.IconImage} iconImage Icon image.
  */
 IconImageCache.prototype.set = function(src, crossOrigin, color, iconImage) {

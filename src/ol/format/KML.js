@@ -35,7 +35,7 @@ import {createElementNS, getAllTextContent, isDocument, isNode, makeArrayExtende
 
 
 /**
- * @type {ol.Color}
+ * @type {module:ol/color~Color}
  */
 let DEFAULT_COLOR;
 
@@ -477,7 +477,7 @@ function findStyle(styleValue, defaultStyle, sharedStyles) {
 
 /**
  * @param {Node} node Node.
- * @return {ol.Color|undefined} Color.
+ * @return {module:ol/color~Color|undefined} Color.
  */
 function readColor(node) {
   const s = getAllTextContent(node, false);
@@ -746,7 +746,7 @@ function labelStyleParser(node, objectStack) {
   const styleObject = objectStack[objectStack.length - 1];
   const textStyle = new Text({
     fill: new Fill({
-      color: /** @type {ol.Color} */
+      color: /** @type {module:ol/color~Color} */
           ('color' in object ? object['color'] : DEFAULT_COLOR)
     }),
     scale: /** @type {number|undefined} */
@@ -784,7 +784,7 @@ function lineStyleParser(node, objectStack) {
   }
   const styleObject = objectStack[objectStack.length - 1];
   const strokeStyle = new Stroke({
-    color: /** @type {ol.Color} */
+    color: /** @type {module:ol/color~Color} */
         ('color' in object ? object['color'] : DEFAULT_COLOR),
     width: /** @type {number} */ ('width' in object ? object['width'] : 1)
   });
@@ -817,7 +817,7 @@ function polyStyleParser(node, objectStack) {
   }
   const styleObject = objectStack[objectStack.length - 1];
   const fillStyle = new Fill({
-    color: /** @type {ol.Color} */
+    color: /** @type {module:ol/color~Color} */
         ('color' in object ? object['color'] : DEFAULT_COLOR)
   });
   styleObject['fillStyle'] = fillStyle;
@@ -2067,7 +2067,7 @@ KML.prototype.readProjection;
 
 /**
  * @param {Node} node Node to append a TextNode with the color to.
- * @param {ol.Color|string} color Color.
+ * @param {module:ol/color~Color|string} color Color.
  */
 function writeColorTextNode(node, color) {
   const rgba = asArray(color);
