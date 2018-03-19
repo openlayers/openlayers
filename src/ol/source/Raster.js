@@ -129,7 +129,7 @@ const RasterSource = function(options) {
 
   /**
    * @private
-   * @type {ol.TileQueue}
+   * @type {module:ol/TileQueue~TileQueue}
    */
   this.tileQueue_ = new TileQueue(
     function() {
