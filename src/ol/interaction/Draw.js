@@ -182,13 +182,13 @@ const Draw = function(options) {
   this.downPx_ = null;
 
   /**
-   * @type {number}
+   * @type {number|undefined}
    * @private
    */
   this.downTimeout_;
 
   /**
-   * @type {number}
+   * @type {number|undefined}
    * @private
    */
   this.lastDragTime_;
