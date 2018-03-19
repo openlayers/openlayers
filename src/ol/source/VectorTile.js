@@ -98,7 +98,7 @@ VectorTileSource.prototype.getOverlaps = function() {
 };
 
 /**
- * clear {@link ol.TileCache} and delete all source tiles
+ * clear {@link module:ol/TileCache~TileCache} and delete all source tiles
  * @api
  */
 VectorTileSource.prototype.clear = function() {

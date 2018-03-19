@@ -55,7 +55,7 @@ const TileSource = function(options) {
 
   /**
    * @protected
-   * @type {ol.TileCache}
+   * @type {module:ol/TileCache~TileCache}
    */
   this.tileCache = new TileCache(options.cacheSize);
 
@@ -225,7 +225,7 @@ TileSource.prototype.getTileGridForProjection = function(projection) {
 
 /**
  * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @return {ol.TileCache} Tile cache.
+ * @return {module:ol/TileCache~TileCache} Tile cache.
  * @protected
  */
 TileSource.prototype.getTileCacheForProjection = function(projection) {

@@ -61,7 +61,7 @@ const TileImage = function(options) {
 
   /**
    * @protected
-   * @type {!Object.<string, ol.TileCache>}
+   * @type {!Object.<string, module:ol/TileCache~TileCache>}
    */
   this.tileCacheForProjection = {};
 
