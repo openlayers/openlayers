@@ -39,16 +39,16 @@ const TranslateEventType = {
 
 /**
  * @typedef {Object} interaction_TranslateOptions
- * @property {module:ol/Collection~Collection.<module:ol/Feature~Feature>|undefined} features Only features contained in this collection will be able to be translated. If
+ * @property {module:ol/Collection~Collection.<module:ol/Feature~Feature>} [features] Only features contained in this collection will be able to be translated. If
  * not specified, all features on the map will be able to be translated.
- * @property {undefined|Array.<module:ol/layer/Layer~Layer>|function(module:ol/layer/Layer~Layer): boolean} layers A list of layers from which features should be
+ * @property {Array.<module:ol/layer/Layer~Layer>|function(module:ol/layer/Layer~Layer): boolean} [layers] A list of layers from which features should be
  * translated. Alternatively, a filter function can be provided. The
  * function will be called for each layer in the map and should return
  * `true` for layers that you want to be translatable. If the option is
  * absent, all visible layers will be considered translatable.
- * @property {number|undefined} hitTolerance Hit-detection tolerance. Pixels inside the radius around the given position
+ * @property {number} [hitTolerance=0] Hit-detection tolerance. Pixels inside the radius around the given position
  * will be checked for features. This only works for the canvas renderer and
- * not for WebGL. Default is `0`.
+ * not for WebGL.
  */
 
 

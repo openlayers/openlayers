@@ -20,13 +20,13 @@ import RenderBox from '../render/Box.js';
 
 /**
  * @typedef {Object} Options
- * @property {string|undefined} className CSS class name for styling the box. The default is `ol-dragbox`.
- * @property {module:ol/events/condition~Condition|undefined} condition A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
+ * @property {string} [className='ol-dragbox'] CSS class name for styling the box.
+ * @property {module:ol/events/condition~Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol/events/condition~always}.
- * @property {number|undefined} minArea The minimum area of the box in pixel, this value is used by the default
- * `boxEndCondition` function. Default is `64`.
- * @property {module:ol/interaction/DragBox~EndCondition|undefined} boxEndCondition A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
+ * @property {number} [minArea=64] The minimum area of the box in pixel, this value is used by the default
+ * `boxEndCondition` function.
+ * @property {module:ol/interaction/DragBox~EndCondition} [boxEndCondition] A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
  * {@link module:ol~Pixel}s to indicate whether a `boxend` event should be fired.
  * Default is `true` if the area of the box is bigger than the `minArea` option.
  */

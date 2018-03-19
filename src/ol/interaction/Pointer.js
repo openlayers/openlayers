@@ -57,7 +57,7 @@ const handleMoveEvent = UNDEFINED;
  * also during a drag sequence (so during a drag sequence both the
  * `handleDragEvent` function and this function are called).
  * @property {(function(module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent):boolean)} [handleUpEvent]
- Function handling "up" events. If the function returns `false` then the
+ *  Function handling "up" events. If the function returns `false` then the
  * current drag sequence is stopped.
  */
 

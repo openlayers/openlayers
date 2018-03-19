@@ -230,13 +230,11 @@ function createStyleDefaults() {
 
 /**
  * @typedef {Object} Options
- * @property {boolean|undefined} extractStyles Extract styles from the KML.
- * Default is `true`.
- * @property {boolean|undefined} showPointNames Show names as labels for placemarks
- * which contain points. Default is `true`.
- * @property {Array.<ol.style.Style>|undefined} defaultStyle Default style. The
+ * @property {boolean} [extractStyles=true] Extract styles from the KML.
+ * @property {boolean} [showPointNames=true] Show names as labels for placemarks which contain points.
+ * @property {Array.<ol.style.Style>} [defaultStyle] Default style. The
  * default default style is the same as Google Earth.
- * @property {boolean|undefined} writeStyles Write styles into KML. Default is `true`.
+ * @property {boolean} [writeStyles=true] Write styles into KML.
  */
 
 

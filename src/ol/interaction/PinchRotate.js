@@ -14,7 +14,7 @@ import {disable} from '../rotationconstraint.js';
  * @property {number} [duration=250] The duration of the animation in
  * milliseconds.
  * @property {number} [threshold=0.3] Minimal angle in radians to start a rotation.
-  */
+ */
 
 
 /**
