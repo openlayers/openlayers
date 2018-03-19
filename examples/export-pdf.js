@@ -5,6 +5,7 @@ import {defaults as defaultControls} from '../src/ol/control.js';
 import WKT from '../src/ol/format/WKT.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
+import {unByKey} from '../src/ol/Observable.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
@@ -74,37 +75,51 @@ exportButton.addEventListener('click', function() {
     ++loading;
   };
 
-  function tileLoadEnd() {
-    ++loaded;
-    if (loading === loaded) {
-      const canvas = this;
-      window.setTimeout(function() {
-        loading = 0;
-        loaded = 0;
-        const data = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('landscape', undefined, format);
-        pdf.addImage(data, 'JPEG', 0, 0, dim[0], dim[1]);
-        pdf.save('map.pdf');
-        source.un('tileloadstart', tileLoadStart);
-        source.un('tileloadend', tileLoadEnd, canvas);
-        source.un('tileloaderror', tileLoadEnd, canvas);
-        map.setSize(size);
-        map.getView().fit(extent);
-        map.renderSync();
-        exportButton.disabled = false;
-        document.body.style.cursor = 'auto';
-      }, 100);
-    }
+  let timer;
+  let keys = [];
+
+  function tileLoadEndFactory(canvas) {
+    return () => {
+      ++loaded;
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+      if (loading === loaded) {
+        timer = window.setTimeout(() => {
+          loading = 0;
+          loaded = 0;
+          const data = canvas.toDataURL('image/jpeg');
+          const pdf = new jsPDF('landscape', undefined, format);
+          pdf.addImage(data, 'JPEG', 0, 0, dim[0], dim[1]);
+          pdf.save('map.pdf');
+          keys.forEach(unByKey);
+          keys = [];
+          map.setSize(size);
+          map.getView().fit(extent, {size});
+          map.renderSync();
+          exportButton.disabled = false;
+          document.body.style.cursor = 'auto';
+        }, 500);
+      }
+    };
   }
 
   map.once('postcompose', function(event) {
-    source.on('tileloadstart', tileLoadStart);
-    source.on('tileloadend', tileLoadEnd, event.context.canvas);
-    source.on('tileloaderror', tileLoadEnd, event.context.canvas);
+    const canvas = event.context.canvas;
+    const tileLoadEnd = tileLoadEndFactory(canvas);
+    keys = [
+      source.on('tileloadstart', tileLoadStart),
+      source.on('tileloadend', tileLoadEnd),
+      source.on('tileloaderror', tileLoadEnd)
+    ];
+    tileLoadEnd();
   });
 
-  map.setSize([width, height]);
-  map.getView().fit(extent);
+  const printSize = [width, height];
+  map.setSize(printSize);
+  map.getView().fit(extent, {size: printSize});
+  loaded = -1;
   map.renderSync();
 
 }, false);
