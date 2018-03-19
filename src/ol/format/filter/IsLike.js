@@ -25,31 +25,26 @@ const IsLike = function(propertyName, pattern, opt_wildCard, opt_singleChar, opt
   Comparison.call(this, 'PropertyIsLike', propertyName);
 
   /**
-   * @public
    * @type {!string}
    */
   this.pattern = pattern;
 
   /**
-   * @public
    * @type {!string}
    */
   this.wildCard = (opt_wildCard !== undefined) ? opt_wildCard : '*';
 
   /**
-   * @public
    * @type {!string}
    */
   this.singleChar = (opt_singleChar !== undefined) ? opt_singleChar : '.';
 
   /**
-   * @public
    * @type {!string}
    */
   this.escapeChar = (opt_escapeChar !== undefined) ? opt_escapeChar : '!';
 
   /**
-   * @public
    * @type {boolean|undefined}
    */
   this.matchCase = opt_matchCase;

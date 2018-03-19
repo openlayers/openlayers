@@ -22,13 +22,11 @@ const ComparisonBinary = function(tagName, propertyName, expression, opt_matchCa
   Comparison.call(this, tagName, propertyName);
 
   /**
-   * @public
    * @type {!(string|number)}
    */
   this.expression = expression;
 
   /**
-   * @public
    * @type {boolean|undefined}
    */
   this.matchCase = opt_matchCase;

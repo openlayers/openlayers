@@ -22,19 +22,16 @@ const Bbox = function(geometryName, extent, opt_srsName) {
   Filter.call(this, 'BBOX');
 
   /**
-   * @public
    * @type {!string}
    */
   this.geometryName = geometryName;
 
   /**
-   * @public
    * @type {module:ol/extent~Extent}
    */
   this.extent = extent;
 
   /**
-   * @public
    * @type {string|undefined}
    */
   this.srsName = opt_srsName;
