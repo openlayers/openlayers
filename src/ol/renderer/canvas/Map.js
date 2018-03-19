@@ -21,7 +21,7 @@ import SourceState from '../../source/State.js';
  * @constructor
  * @extends {ol.renderer.Map}
  * @param {Element} container Container.
- * @param {ol.PluggableMap} map Map.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
  * @api
  */
 const CanvasMapRenderer = function(container, map) {
@@ -76,7 +76,7 @@ CanvasMapRenderer['handles'] = function(type) {
 /**
  * Create the map renderer.
  * @param {Element} container Container.
- * @param {ol.PluggableMap} map Map.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
  * @return {ol.renderer.canvas.Map} The map renderer.
  */
 CanvasMapRenderer['create'] = function(container, map) {

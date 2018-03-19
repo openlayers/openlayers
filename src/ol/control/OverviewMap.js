@@ -136,7 +136,7 @@ const OverviewMap = function(opt_options) {
   this.ovmapDiv_.className = 'ol-overviewmap-map';
 
   /**
-   * @type {ol.PluggableMap}
+   * @type {module:ol/PluggableMap~PluggableMap}
    * @private
    */
   this.ovmap_ = new PluggableMap({
@@ -588,7 +588,7 @@ OverviewMap.prototype.getCollapsed = function() {
 
 /**
  * Return the overview map.
- * @return {ol.PluggableMap} Overview map.
+ * @return {module:ol/PluggableMap~PluggableMap} Overview map.
  * @api
  */
 OverviewMap.prototype.getOverviewMap = function() {

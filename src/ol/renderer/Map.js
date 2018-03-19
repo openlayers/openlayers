@@ -17,7 +17,7 @@ import {compose as composeTransform, invert as invertTransform, setFromArray as 
  * @abstract
  * @extends {module:ol/Disposable~Disposabl}
  * @param {Element} container Container.
- * @param {ol.PluggableMap} map Map.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
  * @struct
  */
 const MapRenderer = function(container, map) {
@@ -26,7 +26,7 @@ const MapRenderer = function(container, map) {
 
   /**
    * @private
-   * @type {ol.PluggableMap}
+   * @type {module:ol/PluggableMap~PluggableMap}
    */
   this.map_ = map;
 
@@ -78,7 +78,7 @@ MapRenderer.prototype.removeLayerRenderers = function() {
 
 
 /**
- * @param {ol.PluggableMap} map Map.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  */
 function expireIconCache(map, frameState) {
@@ -246,7 +246,7 @@ MapRenderer.prototype.getLayerRenderers = function() {
 
 
 /**
- * @return {ol.PluggableMap} Map.
+ * @return {module:ol/PluggableMap~PluggableMap} Map.
  */
 MapRenderer.prototype.getMap = function() {
   return this.map_;
@@ -293,7 +293,7 @@ MapRenderer.prototype.renderFrame = UNDEFINED;
 
 
 /**
- * @param {ol.PluggableMap} map Map.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @private
  */

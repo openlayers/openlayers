@@ -30,7 +30,7 @@ const RenderBox = function(className) {
 
   /**
    * @private
-   * @type {ol.PluggableMap}
+   * @type {module:ol/PluggableMap~PluggableMap}
    */
   this.map_ = null;
 
@@ -75,7 +75,7 @@ RenderBox.prototype.render_ = function() {
 
 
 /**
- * @param {ol.PluggableMap} map Map.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
  */
 RenderBox.prototype.setMap = function(map) {
   if (this.map_) {

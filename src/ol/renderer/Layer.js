@@ -145,7 +145,7 @@ LayerRenderer.prototype.scheduleExpireCache = function(frameState, tileSource) {
   if (tileSource.canExpireCache()) {
     /**
      * @param {ol.source.Tile} tileSource Tile source.
-     * @param {ol.PluggableMap} map Map.
+     * @param {module:ol/PluggableMap~PluggableMap} map Map.
      * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
      */
     const postRenderFunction = function(tileSource, map, frameState) {
