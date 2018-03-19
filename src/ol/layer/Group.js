@@ -26,7 +26,7 @@ const Property = {
 
 /**
  * @classdesc
- * A {@link ol.Collection} of layers that are handled together.
+ * A {@link module:ol/Collection~Collection} of layers that are handled together.
  *
  * A generic `change` event is triggered when the group/Collection changes.
  *
@@ -149,22 +149,22 @@ LayerGroup.prototype.handleLayersRemove_ = function(collectionEvent) {
 
 
 /**
- * Returns the {@link ol.Collection collection} of {@link ol.layer.Layer layers}
+ * Returns the {@link module:ol/Collection~Collection collection} of {@link ol.layer.Layer layers}
  * in this group.
- * @return {!ol.Collection.<ol.layer.Base>} Collection of
+ * @return {!module:ol/Collection~Collection.<ol.layer.Base>} Collection of
  *   {@link ol.layer.Base layers} that are part of this group.
  * @observable
  * @api
  */
 LayerGroup.prototype.getLayers = function() {
-  return /** @type {!ol.Collection.<ol.layer.Base>} */ (this.get(Property.LAYERS));
+  return /** @type {!module:ol/Collection~Collection.<ol.layer.Base>} */ (this.get(Property.LAYERS));
 };
 
 
 /**
- * Set the {@link ol.Collection collection} of {@link ol.layer.Layer layers}
+ * Set the {@link module:ol/Collection~Collection collection} of {@link ol.layer.Layer layers}
  * in this group.
- * @param {!ol.Collection.<ol.layer.Base>} layers Collection of
+ * @param {!module:ol/Collection~Collection.<ol.layer.Base>} layers Collection of
  *   {@link ol.layer.Base layers} that are part of this group.
  * @observable
  * @api

@@ -152,7 +152,7 @@ const VectorSource = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Collection.<module:ol/Feature~Feature>}
+   * @type {module:ol/Collection~Collection.<module:ol/Feature~Feature>}
    */
   this.featuresCollection_ = null;
 
@@ -316,7 +316,7 @@ VectorSource.prototype.addFeaturesInternal = function(features) {
 
 
 /**
- * @param {!ol.Collection.<module:ol/Feature~Feature>} collection Collection.
+ * @param {!module:ol/Collection~Collection.<module:ol/Feature~Feature>} collection Collection.
  * @private
  */
 VectorSource.prototype.bindFeaturesCollection_ = function(collection) {
@@ -509,8 +509,8 @@ VectorSource.prototype.forEachFeatureIntersectingExtent = function(extent, callb
 /**
  * Get the features collection associated with this source. Will be `null`
  * unless the source was configured with `useSpatialIndex` set to `false`, or
- * with an {@link ol.Collection} as `features`.
- * @return {ol.Collection.<module:ol/Feature~Feature>} The collection of features.
+ * with an {@link module:ol/Collection~Collection} as `features`.
+ * @return {module:ol/Collection~Collection.<module:ol/Feature~Feature>} The collection of features.
  * @api
  */
 VectorSource.prototype.getFeaturesCollection = function() {

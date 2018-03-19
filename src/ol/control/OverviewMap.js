@@ -45,7 +45,7 @@ const MIN_RATIO = 0.1;
  * @property {boolean} [collapsible=true] Whether the control can be collapsed or not.
  * @property {string|Element} [label='»'] Text label to use for the collapsed
  * overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {Array.<ol.layer.Layer>|ol.Collection.<ol.layer.Layer>} [layers]
+ * @property {Array.<ol.layer.Layer>|module:ol/Collection~Collection.<ol.layer.Layer>} [layers]
  * Layers for the overview map. If not set, then all main map layers are used
  * instead.
  * @property {function(module:ol/MapEvent~MapEvent)} [render] Function called when the control
