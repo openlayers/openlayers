@@ -9,7 +9,7 @@ import Polygon from '../geom/Polygon.js';
 
 /**
  * @constructor
- * @extends {ol.Disposable}
+ * @extends {module:ol/Disposable~Disposable}
  * @param {string} className CSS class name.
  */
 const RenderBox = function(className) {

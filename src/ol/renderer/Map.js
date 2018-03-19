@@ -15,7 +15,7 @@ import {compose as composeTransform, invert as invertTransform, setFromArray as 
 /**
  * @constructor
  * @abstract
- * @extends {ol.Disposable}
+ * @extends {module:ol/Disposable~Disposabl}
  * @param {Element} container Container.
  * @param {ol.PluggableMap} map Map.
  * @struct
