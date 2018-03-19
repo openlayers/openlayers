@@ -26,7 +26,7 @@ const ImageLayer = function(opt_options) {
   /**
    * The layer type.
    * @protected
-   * @type {ol.LayerType}
+   * @type {module:ol/LayerType~LayerType}
    */
   this.type = LayerType.IMAGE;
 
