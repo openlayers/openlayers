@@ -11,14 +11,14 @@ import Zoom from './control/Zoom.js';
  * @typedef {Object} DefaultsOptions
  * @property {boolean} [attribution=true] Include
  * {@link module:ol/control/Attribution~Attribution}.
- * @property {module:ol/control/Attribution~AttributionOptions} [attributionOptions]
+ * @property {module:ol/control/Attribution~Options} [attributionOptions]
  * Options for {@link module:ol/control/Attribution~Attribution}.
  * @property {boolean} [rotate=true] Include
  * {@link module:ol/control/Rotate~Rotate}.
- * @property {module:ol/control/Rotate~RotateOptions} [rotateOptions] Options
+ * @property {module:ol/control/Rotate~Options} [rotateOptions] Options
  * for {@link module:ol/control/Rotate~Rotate}.
  * @property {boolean} [zoom] Include {@link module:ol/control/Zoom~Zoom}.
- * @property {module:ol/control/Zoom~ZoomOptions} [zoomOptions] Options for
+ * @property {module:ol/control/Zoom~Options} [zoomOptions] Options for
  * {@link module:ol/control/Zoom~Zoom}.
  * @api
  */

@@ -270,7 +270,7 @@ OverviewMap.prototype.setMap = function(map) {
 
 /**
  * Handle map property changes.  This only deals with changes to the map's view.
- * @param {module:ol/Object~BaseObject.Event} event The propertychange event.
+ * @param {module:ol/Object~ObjectEvent} event The propertychange event.
  * @private
  */
 OverviewMap.prototype.handleMapPropertyChange_ = function(event) {

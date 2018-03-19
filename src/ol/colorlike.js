@@ -18,7 +18,7 @@ import {toString} from './color.js';
 
 /**
  * @param {module:ol/color~Color|module:ol/colorlike~ColorLike} color Color.
- * @return {module:ol/color~ColorLike} The color as an {@link ol/color~ColorLike}.
+ * @return {module:ol/colorlike~ColorLike} The color as an {@link ol/colorlike~ColorLike}.
  * @api
  */
 export function asColorLike(color) {
@@ -31,8 +31,8 @@ export function asColorLike(color) {
 
 
 /**
- * @param {?} color The value that is potentially an {@link ol/color~ColorLike}.
- * @return {boolean} The color is an {@link ol/color~ColorLike}.
+ * @param {?} color The value that is potentially an {@link ol/colorlike~ColorLike}.
+ * @return {boolean} The color is an {@link ol/colorlike~ColorLike}.
  */
 export function isColorLike(color) {
   return (
