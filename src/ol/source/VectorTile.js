@@ -62,7 +62,7 @@ const VectorTileSource = function(options) {
 
   /**
    * @private
-   * @type {Object.<string,ol.VectorTile>}
+   * @type {Object.<string, module:ol/VectorTile~VectorTile>}
    */
   this.sourceTiles_ = {};
 
@@ -74,7 +74,7 @@ const VectorTileSource = function(options) {
 
   /**
    * @protected
-   * @type {function(new: ol.VectorTile, module:ol/tilecoord~TileCoord, module:ol/TileState~TileState, string,
+   * @type {function(new: module:ol/VectorTile~VectorTile, module:ol/tilecoord~TileCoord, module:ol/TileState~TileState, string,
    *        ol.format.Feature, module:ol/Tile~LoadFunction)}
    */
   this.tileClass = options.tileClass ? options.tileClass : VectorTile;

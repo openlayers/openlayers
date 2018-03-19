@@ -309,7 +309,7 @@ CanvasVectorTileLayerRenderer.prototype.forEachFeatureAtCoordinate = function(co
 
 
 /**
- * @param {ol.VectorTile} tile Tile.
+ * @param {module:ol/VectorTile~VectorTile} tile Tile.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @return {module:ol/transform~Transform} transform Transform.
  * @private
