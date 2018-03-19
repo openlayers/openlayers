@@ -125,7 +125,7 @@ ImageStyle.prototype.getHitDetectionImage = function(pixelRatio) {};
 
 /**
  * @abstract
- * @return {ol.ImageState} Image state.
+ * @return {module:ol/ImageState~ImageState} Image state.
  */
 ImageStyle.prototype.getImageState = function() {};
 

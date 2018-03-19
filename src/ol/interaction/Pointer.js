@@ -11,7 +11,7 @@ import {getValues} from '../obj.js';
 
 /**
  * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {module:ol/interaction/Pointer~Pointer}
+ * @this {module:ol/interaction/Pointer~PointerInteraction}
  */
 const handleDragEvent = UNDEFINED;
 
@@ -19,7 +19,7 @@ const handleDragEvent = UNDEFINED;
 /**
  * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Capture dragging.
- * @this {module:ol/interaction/Pointer~Pointer}
+ * @this {module:ol/interaction/Pointer~PointerInteraction}
  */
 const handleUpEvent = FALSE;
 
@@ -27,14 +27,14 @@ const handleUpEvent = FALSE;
 /**
  * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Capture dragging.
- * @this {module:ol/interaction/Pointer~Pointer}
+ * @this {module:ol/interaction/Pointer~PointerInteraction}
  */
 const handleDownEvent = FALSE;
 
 
 /**
  * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {module:ol/interaction/Pointer~Pointer}
+ * @this {module:ol/interaction/Pointer~PointerInteraction}
  */
 const handleMoveEvent = UNDEFINED;
 
@@ -194,7 +194,7 @@ PointerInteraction.prototype.updateTrackedPointers_ = function(mapBrowserEvent) 
  * detected.
  * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {module:ol/interaction/Pointer~Pointer}
+ * @this {module:ol/interaction/Pointer~PointerInteraction}
  * @api
  */
 export function handleEvent(mapBrowserEvent) {

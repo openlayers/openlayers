@@ -18,7 +18,6 @@ const Not = function(condition) {
   Filter.call(this, 'Not');
 
   /**
-   * @public
    * @type {!ol.format.filter.Filter}
    */
   this.condition = condition;

@@ -20,7 +20,6 @@ const Comparison = function(tagName, propertyName) {
   Filter.call(this, tagName);
 
   /**
-   * @public
    * @type {!string}
    */
   this.propertyName = propertyName;

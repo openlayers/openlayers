@@ -53,7 +53,7 @@ const TileImage = function(options) {
 
   /**
    * @protected
-   * @type {function(new: ol.ImageTile, module:ol/tilecoord~TileCoord, ol.TileState, string,
+   * @type {function(new: ol.ImageTile, module:ol/tilecoord~TileCoord, module:ol/TileState~TileState, string,
    *        ?string, module:ol/Tile~LoadFunction, module:ol/Tile~Options=)}
    */
   this.tileClass = options.tileClass !== undefined ?

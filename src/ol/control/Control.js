@@ -68,7 +68,7 @@ const Control = function(options) {
 
   /**
    * @private
-   * @type {ol.PluggableMap}
+   * @type {module:ol/PluggableMap~PluggableMap}
    */
   this.map_ = null;
 
@@ -103,7 +103,7 @@ Control.prototype.disposeInternal = function() {
 
 /**
  * Get the map associated with this control.
- * @return {ol.PluggableMap} Map.
+ * @return {module:ol/PluggableMap~PluggableMap} Map.
  * @api
  */
 Control.prototype.getMap = function() {
@@ -115,7 +115,7 @@ Control.prototype.getMap = function() {
  * Remove the control from its current map and attach it to the new map.
  * Subclasses may set up event handlers to get notified about changes to
  * the map here.
- * @param {ol.PluggableMap} map Map.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
  * @override
  * @api
  */

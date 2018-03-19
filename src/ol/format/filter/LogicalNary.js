@@ -21,7 +21,6 @@ const LogicalNary = function(tagName, conditions) {
   Filter.call(this, tagName);
 
   /**
-   * @public
    * @type {Array.<ol.format.filter.Filter>}
    */
   this.conditions = Array.prototype.slice.call(arguments, 1);

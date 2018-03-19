@@ -70,7 +70,7 @@ ol.Attribution;
 
 
 /**
- * @typedef {{fillStyle: ol.ColorLike}}
+ * @typedef {{fillStyle: module:ol/colorlike~ColorLike}}
  */
 ol.CanvasFillState;
 
@@ -91,8 +91,8 @@ ol.CanvasFunctionType;
 
 
 /**
- * @typedef {{currentFillStyle: (ol.ColorLike|undefined),
- *            currentStrokeStyle: (ol.ColorLike|undefined),
+ * @typedef {{currentFillStyle: (module:ol/colorlike~ColorLike|undefined),
+ *            currentStrokeStyle: (module:ol/colorlike~ColorLike|undefined),
  *            currentLineCap: (string|undefined),
  *            currentLineDash: Array.<number>,
  *            currentLineDashOffset: (number|undefined),
@@ -100,8 +100,8 @@ ol.CanvasFunctionType;
  *            currentLineWidth: (number|undefined),
  *            currentMiterLimit: (number|undefined),
  *            lastStroke: (number|undefined),
- *            fillStyle: (ol.ColorLike|undefined),
- *            strokeStyle: (ol.ColorLike|undefined),
+ *            fillStyle: (module:ol/colorlike~ColorLike|undefined),
+ *            strokeStyle: (module:ol/colorlike~ColorLike|undefined),
  *            lineCap: (string|undefined),
  *            lineDash: Array.<number>,
  *            lineDashOffset: (number|undefined),
@@ -119,7 +119,7 @@ ol.CanvasFillStrokeState;
  *            lineJoin: string,
  *            lineWidth: number,
  *            miterLimit: number,
- *            strokeStyle: ol.ColorLike}}
+ *            strokeStyle: module:ol/colorlike~ColorLike}}
  */
 ol.CanvasStrokeState;
 
@@ -133,7 +133,7 @@ ol.CanvasTextState;
 
 
 /**
- * @typedef {{strokeStyle: (ol.ColorLike|undefined), strokeWidth: number,
+ * @typedef {{strokeStyle: (module:ol/colorlike~ColorLike|undefined), strokeWidth: number,
  *   size: number, lineDash: Array.<number>}}
  */
 ol.CircleRenderOptions;
@@ -223,7 +223,7 @@ ol.RasterOperation;
 
 /**
  * @typedef {{
- *   strokeStyle: (ol.ColorLike|undefined),
+ *   strokeStyle: (module:ol/colorlike~ColorLike|undefined),
  *   strokeWidth: number,
  *   size: number,
  *   lineCap: string,

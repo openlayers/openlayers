@@ -14,7 +14,7 @@ import ContextEventType from '../webgl/ContextEventType.js';
  * A WebGL context for accessing low-level WebGL capabilities.
  *
  * @constructor
- * @extends {ol.Disposable}
+ * @extends {module:ol/Disposable~Disposable}
  * @param {HTMLCanvasElement} canvas Canvas.
  * @param {WebGLRenderingContext} gl GL.
  */

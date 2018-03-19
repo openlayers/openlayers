@@ -17,7 +17,7 @@ export const defaultFont = '10px sans-serif';
 
 /**
  * @const
- * @type {ol.Color}
+ * @type {module:ol/color~Color}
  */
 export const defaultFillStyle = [0, 0, 0, 1];
 
@@ -59,7 +59,7 @@ export const defaultMiterLimit = 10;
 
 /**
  * @const
- * @type {ol.Color}
+ * @type {module:ol/color~Color}
  */
 export const defaultStrokeStyle = [0, 0, 0, 1];
 

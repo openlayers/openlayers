@@ -19,13 +19,11 @@ const IsBetween = function(propertyName, lowerBoundary, upperBoundary) {
   Comparison.call(this, 'PropertyIsBetween', propertyName);
 
   /**
-   * @public
    * @type {!number}
    */
   this.lowerBoundary = lowerBoundary;
 
   /**
-   * @public
    * @type {!number}
    */
   this.upperBoundary = upperBoundary;

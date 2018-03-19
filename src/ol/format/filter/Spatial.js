@@ -24,19 +24,16 @@ const Spatial = function(tagName, geometryName, geometry, opt_srsName) {
   Filter.call(this, tagName);
 
   /**
-   * @public
    * @type {!string}
    */
   this.geometryName = geometryName || 'the_geom';
 
   /**
-   * @public
    * @type {module:ol/geom/Geometry~Geometry}
    */
   this.geometry = geometry;
 
   /**
-   * @public
    * @type {string|undefined}
    */
   this.srsName = opt_srsName;

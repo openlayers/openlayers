@@ -20,7 +20,7 @@ const Stroke = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Color|ol.ColorLike}
+   * @type {module:ol/color~Color|module:ol/colorlike~ColorLike}
    */
   this.color_ = options.color !== undefined ? options.color : null;
 
@@ -89,7 +89,7 @@ Stroke.prototype.clone = function() {
 
 /**
  * Get the stroke color.
- * @return {ol.Color|ol.ColorLike} Color.
+ * @return {module:ol/color~Color|module:ol/colorlike~ColorLike} Color.
  * @api
  */
 Stroke.prototype.getColor = function() {
@@ -160,7 +160,7 @@ Stroke.prototype.getWidth = function() {
 /**
  * Set the color.
  *
- * @param {ol.Color|ol.ColorLike} color Color.
+ * @param {module:ol/color~Color|module:ol/colorlike~ColorLike} color Color.
  * @api
  */
 Stroke.prototype.setColor = function(color) {

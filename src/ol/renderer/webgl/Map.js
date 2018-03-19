@@ -36,7 +36,7 @@ const WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
  * @constructor
  * @extends {ol.renderer.Map}
  * @param {Element} container Container.
- * @param {ol.PluggableMap} map Map.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
  * @api
  */
 const WebGLMapRenderer = function(container, map) {
@@ -141,7 +141,7 @@ const WebGLMapRenderer = function(container, map) {
 
 
   /**
-   * @param {ol.PluggableMap} map Map.
+   * @param {module:ol/PluggableMap~PluggableMap} map Map.
    * @param {?module:ol/PluggableMap~FrameState} frameState Frame state.
    * @return {boolean} false.
    * @this {ol.renderer.webgl.Map}
@@ -186,7 +186,7 @@ WebGLMapRenderer['handles'] = function(type) {
 /**
  * Create the map renderer.
  * @param {Element} container Container.
- * @param {ol.PluggableMap} map Map.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
  * @return {ol.renderer.webgl.Map} The map renderer.
  */
 WebGLMapRenderer['create'] = function(container, map) {
@@ -310,7 +310,7 @@ WebGLMapRenderer.prototype.disposeInternal = function() {
 
 
 /**
- * @param {ol.PluggableMap} map Map.
+ * @param {module:ol/PluggableMap~PluggableMap} map Map.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @private
  */

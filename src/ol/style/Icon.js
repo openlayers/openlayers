@@ -92,14 +92,14 @@ const Icon = function(opt_options) {
     6); // A defined and non-empty `src` or `image` must be provided
 
   /**
-   * @type {ol.ImageState}
+   * @type {module:ol/ImageState~ImageState}
    */
   const imageState = options.src !== undefined ?
     ImageState.IDLE : ImageState.LOADED;
 
   /**
    * @private
-   * @type {ol.Color}
+   * @type {module:ol/color~Color}
    */
   this.color_ = options.color !== undefined ? asArray(options.color) : null;
 
@@ -248,7 +248,7 @@ Icon.prototype.getAnchor = function() {
 
 /**
  * Get the icon color.
- * @return {ol.Color} Color.
+ * @return {module:ol/color~Color} Color.
  * @api
  */
 Icon.prototype.getColor = function() {

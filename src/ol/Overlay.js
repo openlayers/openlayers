@@ -592,7 +592,6 @@ Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
 
 /**
  * returns the options this Overlay has been created with
- * @public
  * @return {module:ol/Overlay~OverlayOptions} overlay options
  */
 Overlay.prototype.getOptions = function() {

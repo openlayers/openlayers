@@ -12,7 +12,7 @@ export const DEFAULT_FONT = '10px sans-serif';
 
 /**
  * @const
- * @type {ol.Color}
+ * @type {module:ol/color~Color}
  */
 export const DEFAULT_FILLSTYLE = [0.0, 0.0, 0.0, 1.0];
 
@@ -53,7 +53,7 @@ export const DEFAULT_MITERLIMIT = 10;
 
 /**
  * @const
- * @type {ol.Color}
+ * @type {module:ol/color~Color}
  */
 export const DEFAULT_STROKESTYLE = [0.0, 0.0, 0.0, 1.0];
 

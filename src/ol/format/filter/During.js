@@ -19,13 +19,11 @@ const During = function(propertyName, begin, end) {
   Comparison.call(this, 'During', propertyName);
 
   /**
-   * @public
    * @type {!string}
    */
   this.begin = begin;
 
   /**
-   * @public
    * @type {!string}
    */
   this.end = end;
