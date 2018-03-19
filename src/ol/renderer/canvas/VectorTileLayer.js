@@ -150,7 +150,7 @@ CanvasVectorTileLayerRenderer.prototype.prepareFrame = function(frameState, laye
 
 
 /**
- * @param {ol.VectorImageTile} tile Tile.
+ * @param {module:ol/VectorImageTile~VectorImageTile} tile Tile.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @private
  */
@@ -248,7 +248,7 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(tile, fram
  */
 CanvasVectorTileLayerRenderer.prototype.drawTileImage = function(
   tile, frameState, layerState, x, y, w, h, gutter, transition) {
-  const vectorImageTile = /** @type {ol.VectorImageTile} */ (tile);
+  const vectorImageTile = /** @type {module:ol/VectorImageTile~VectorImageTile} */ (tile);
   this.createReplayGroup_(vectorImageTile, frameState);
   if (this.context) {
     this.renderTileImage_(vectorImageTile, frameState, layerState);
@@ -268,7 +268,7 @@ CanvasVectorTileLayerRenderer.prototype.forEachFeatureAtCoordinate = function(co
   /** @type {!Object.<string, boolean>} */
   const features = {};
 
-  /** @type {Array.<ol.VectorImageTile>} */
+  /** @type {Array.<module:ol/VectorImageTile~VectorImageTile>} */
   const renderedTiles = this.renderedTiles;
 
   const source = /** @type {ol.source.VectorTile} */ (layer.getSource());
@@ -385,7 +385,7 @@ CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameSta
   const clips = [];
   const zs = [];
   for (let i = tiles.length - 1; i >= 0; --i) {
-    const tile = /** @type {ol.VectorImageTile} */ (tiles[i]);
+    const tile = /** @type {module:ol/VectorImageTile~VectorImageTile} */ (tiles[i]);
     if (tile.getState() == TileState.ABORT) {
       continue;
     }
@@ -474,7 +474,7 @@ CanvasVectorTileLayerRenderer.prototype.renderFeature = function(feature, square
 
 
 /**
- * @param {ol.VectorImageTile} tile Tile.
+ * @param {module:ol/VectorImageTile~VectorImageTile} tile Tile.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @private
