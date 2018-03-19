@@ -20,7 +20,7 @@ import {createElementNS, makeArrayPusher, makeArraySerializer, makeChildAppender
 
 /**
  * @typedef {Object} Options
- * @property {function(module:ol/Feature~Feature, Node)|undefined} readExtensions Callback function
+ * @property {function(module:ol/Feature~Feature, Node)} [readExtensions] Callback function
  * to process `extensions` nodes. To prevent memory leaks, this callback function must
  * not store any references to the node. Note that the `extensions`
  * node is not allowed in GPX 1.0. Moreover, only `extensions`

@@ -19,8 +19,8 @@ import SimpleGeometry from '../geom/SimpleGeometry.js';
 
 /**
  * @typedef {Object} Options
- * @property {boolean|undefined} splitCollection Whether to split GeometryCollections into
- * multiple features on reading. Default is `false`.
+ * @property {boolean} [splitCollection=false] Whether to split GeometryCollections into
+ * multiple features on reading.
  */
 
 

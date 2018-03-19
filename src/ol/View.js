@@ -136,7 +136,7 @@ import Units from './proj/Units.js';
 
 /**
  * @typedef {Object} AnimationOptions
- * @property {ol.Coordinate|undefined} center The center of the view at the end of
+ * @property {module:ol/coordinate~Coordinate|undefined} center The center of the view at the end of
  * the animation.
  * @property {number|undefined} zoom The zoom level of the view at the end of the
  * animation. This takes precedence over `resolution`.
@@ -144,7 +144,7 @@ import Units from './proj/Units.js';
  * of the animation.  If `zoom` is also provided, this option will be ignored.
  * @property {number|undefined} rotation The rotation of the view at the end of
  * the animation.
- * @property {ol.Coordinate|undefined} anchor Optional anchor to remained fixed
+ * @property {module:ol/coordinate~Coordinate|undefined} anchor Optional anchor to remained fixed
  * during a rotation or resolution animation.
  * @property {number} [duration=1000] The duration of the animation in milliseconds.
  * @property {function(number):number} [easing] The easing function used

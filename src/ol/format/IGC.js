@@ -22,9 +22,8 @@ const IGCZ = {
 
 /**
  * @typedef {Object} Options
- * @property {IGCZ|string|undefined} altitudeMode Altitude mode. Possible
- * values are `'barometric'`, `'gps'`, and `'none'`. Default
- * is `'none'`.
+ * @property {IGCZ|string} [altitudeMode='none'] Altitude mode. Possible
+ * values are `'barometric'`, `'gps'`, and `'none'`.
  */
 
 
