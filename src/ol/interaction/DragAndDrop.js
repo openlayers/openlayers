@@ -20,7 +20,7 @@ import {get as getProjection} from '../proj.js';
  * they are dropped on the target.  If you want to add features to a vector
  * source without removing the existing features (append only), instead of
  * providing the source option listen for the "addfeatures" event.
- * @property {ol.ProjectionLike} projection Target projection. By default, the map's view's projection is used.
+ * @property {module:ol/proj~ProjectionLike} projection Target projection. By default, the map's view's projection is used.
  * @property {Element|undefined} target The element that is used as the drop target, default is the viewport element.
  */
 

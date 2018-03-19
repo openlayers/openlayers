@@ -25,7 +25,7 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * @typedef {Object} Options
  * @property {string} [className='ol-mouse-position'] CSS class name.
  * @property {module:ol/coordinate~CoordinateFormat} [coordinateFormat] Coordinate format.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {function(module:ol/MapEvent~MapEvent)} [render] Function called when the
  * control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.

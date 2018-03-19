@@ -16,7 +16,7 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {ol.ProjectionLike} defaultDataProjection Default data projection.
+ * @property {module:ol/proj~ProjectionLike} defaultDataProjection Default data projection.
  * Default is `EPSG:4326`.
  * @property {string|undefined} layerName Set the name of the TopoJSON topology
  * `objects`'s children as feature property with the specified name. This means

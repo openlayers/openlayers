@@ -22,9 +22,9 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {ol.ProjectionLike} defaultDataProjection Default data projection.
+ * @property {module:ol/proj~ProjectionLike} defaultDataProjection Default data projection.
  * Default is `EPSG:4326`.
- * @property {ol.ProjectionLike} featureProjection Projection for features read or
+ * @property {module:ol/proj~ProjectionLike} featureProjection Projection for features read or
  * written by the format.  Options passed to read or write methods will take precedence.
  * @property {string|undefined} geometryName Geometry name to use when creating features.
  * @property {boolean|undefined} extractGeometryName Certain GeoJSON providers include
