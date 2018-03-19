@@ -12,7 +12,7 @@ import SourceState from '../source/State.js';
 
 /**
  * @constructor
- * @extends {ol.Observable}
+ * @extends {module:ol/Observable~Observable}
  * @param {ol.layer.Layer} layer Layer.
  * @struct
  */
