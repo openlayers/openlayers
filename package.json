@@ -67,7 +67,7 @@
     "karma-firefox-launcher": "^1.0.1",
     "karma-mocha": "1.3.0",
     "karma-sauce-launcher": "1.2.0",
-    "karma-webpack": "2.0.13",
+    "karma-webpack": "3.0.0",
     "marked": "0.3.17",
     "mocha": "5.0.4",
     "mustache": "^2.3.0",
