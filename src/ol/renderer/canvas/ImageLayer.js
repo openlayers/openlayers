@@ -27,7 +27,7 @@ const CanvasImageLayerRenderer = function(imageLayer) {
 
   /**
    * @private
-   * @type {?ol.ImageBase}
+   * @type {?module:ol/ImageBase~ImageBase}
    */
   this.image_ = null;
 

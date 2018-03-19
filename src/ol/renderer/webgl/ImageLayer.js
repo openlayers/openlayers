@@ -38,7 +38,7 @@ const WebGLImageLayerRenderer = function(mapRenderer, imageLayer) {
   /**
    * The last rendered image.
    * @private
-   * @type {?ol.ImageBase}
+   * @type {?module:ol/ImageBase~ImageBase}
    */
   this.image_ = null;
 
@@ -85,7 +85,7 @@ WebGLImageLayerRenderer['create'] = function(mapRenderer, layer) {
 
 
 /**
- * @param {ol.ImageBase} image Image.
+ * @param {module:ol/ImageBase~ImageBase} image Image.
  * @private
  * @return {WebGLTexture} Texture.
  */

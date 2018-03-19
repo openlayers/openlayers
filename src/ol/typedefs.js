@@ -236,7 +236,7 @@ ol.RegularShapeRenderOptions;
 
 
 /**
- * @typedef {function(module:ol/extent~Extent, number, number) : ol.ImageBase}
+ * @typedef {function(module:ol/extent~Extent, number, number) : module:ol/ImageBase~ImageBase}
  */
 ol.ReprojImageFunctionType;
 

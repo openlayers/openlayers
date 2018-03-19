@@ -140,7 +140,7 @@ ImageSource.prototype.findNearestResolution = function(resolution) {
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @return {ol.ImageBase} Single image.
+ * @return {module:ol/ImageBase~ImageBase} Single image.
  */
 ImageSource.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
   const sourceProjection = this.getProjection();
@@ -184,7 +184,7 @@ ImageSource.prototype.getImage = function(extent, resolution, pixelRatio, projec
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @return {ol.ImageBase} Single image.
+ * @return {module:ol/ImageBase~ImageBase} Single image.
  * @protected
  */
 ImageSource.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {};

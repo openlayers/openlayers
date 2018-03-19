@@ -107,9 +107,8 @@ LayerRenderer.prototype.handleImageChange_ = function(event) {
 /**
  * Load the image if not already loaded, and register the image change
  * listener if needed.
- * @param {ol.ImageBase} image Image.
- * @return {boolean} `true` if the image is already loaded, `false`
- *     otherwise.
+ * @param {module:ol/ImageBase~ImageBase} image Image.
+ * @return {boolean} `true` if the image is already loaded, `false` otherwise.
  * @protected
  */
 LayerRenderer.prototype.loadImage = function(image) {
