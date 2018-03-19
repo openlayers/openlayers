@@ -18,7 +18,7 @@ import Triangulation from '../reproj/Triangulation.js';
  * See {@link ol.source.TileImage}.
  *
  * @constructor
- * @extends {ol.Tile}
+ * @extends {module:ol/Tile~Tile}
  * @param {module:ol/proj/Projection~Projection} sourceProj Source projection.
  * @param {module:ol/tilegrid/TileGrid~TileGrid} sourceTileGrid Source tile grid.
  * @param {module:ol/proj/Projection~Projection} targetProj Target projection.
@@ -82,7 +82,7 @@ const ReprojTile = function(sourceProj, sourceTileGrid,
 
   /**
    * @private
-   * @type {!Array.<ol.Tile>}
+   * @type {!Array.<module:ol/Tile~Tile>}
    */
   this.sourceTiles_ = [];
 

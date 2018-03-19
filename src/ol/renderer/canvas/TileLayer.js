@@ -48,7 +48,7 @@ const CanvasTileLayerRenderer = function(tileLayer) {
 
   /**
    * @protected
-   * @type {!Array.<ol.Tile>}
+   * @type {!Array.<module:ol/Tile~Tile>}
    */
   this.renderedTiles = [];
 
@@ -105,7 +105,7 @@ CanvasTileLayerRenderer['create'] = function(mapRenderer, layer) {
 
 /**
  * @private
- * @param {ol.Tile} tile Tile.
+ * @param {module:ol/Tile~Tile} tile Tile.
  * @return {boolean} Tile is drawable.
  */
 CanvasTileLayerRenderer.prototype.isDrawableTile_ = function(tile) {
@@ -151,7 +151,7 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
   const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
 
   /**
-   * @type {Object.<number, Object.<string, ol.Tile>>}
+   * @type {Object.<number, Object.<string, module:ol/Tile~Tile>>}
    */
   const tilesToDrawByZ = {};
   tilesToDrawByZ[z] = {};
@@ -298,7 +298,7 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
 
 
 /**
- * @param {ol.Tile} tile Tile.
+ * @param {module:ol/Tile~Tile} tile Tile.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/layer/Layer~State} layerState Layer state.
  * @param {number} x Left of the tile.

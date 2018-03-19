@@ -106,7 +106,7 @@ TileSource.prototype.expireCache = function(projection, usedTiles) {
  * @param {module:ol/proj/Projection~Projection} projection Projection.
  * @param {number} z Zoom level.
  * @param {module:ol/TileRange~TileRange} tileRange Tile range.
- * @param {function(ol.Tile):(boolean|undefined)} callback Called with each
+ * @param {function(module:ol/Tile~Tile):(boolean|undefined)} callback Called with each
  *     loaded tile.  If the callback returns `false`, the tile will not be
  *     considered loaded.
  * @return {boolean} The tile range is fully covered with loaded tiles.
@@ -124,7 +124,7 @@ TileSource.prototype.forEachLoadedTile = function(projection, z, tileRange, call
       tileCoordKey = getKeyZXY(z, x, y);
       loaded = false;
       if (tileCache.containsKey(tileCoordKey)) {
-        tile = /** @type {!ol.Tile} */ (tileCache.get(tileCoordKey));
+        tile = /** @type {!module:ol/Tile~Tile} */ (tileCache.get(tileCoordKey));
         loaded = tile.getState() === TileState.LOADED;
         if (loaded) {
           loaded = (callback(tile) !== false);
@@ -195,7 +195,7 @@ TileSource.prototype.getResolutions = function() {
  * @param {number} y Tile coordinate y.
  * @param {number} pixelRatio Pixel ratio.
  * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @return {!ol.Tile} Tile.
+ * @return {!module:ol/Tile~Tile} Tile.
  */
 TileSource.prototype.getTile = function(z, x, y, pixelRatio, projection) {};
 
@@ -316,7 +316,7 @@ TileSource.prototype.useTile = UNDEFINED;
  * @extends {ol.events.Event}
  * @implements {oli.source.Tile.Event}
  * @param {string} type Type.
- * @param {ol.Tile} tile The tile.
+ * @param {module:ol/Tile~Tile} tile The tile.
  */
 export const TileSourceEvent = function(type, tile) {
 
@@ -324,7 +324,7 @@ export const TileSourceEvent = function(type, tile) {
 
   /**
    * The tile related to the event.
-   * @type {ol.Tile}
+   * @type {module:ol/Tile~Tile}
    * @api
    */
   this.tile = tile;

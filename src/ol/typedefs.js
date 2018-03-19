@@ -242,7 +242,7 @@ ol.ReprojImageFunctionType;
 
 
 /**
- * @typedef {function(number, number, number, number) : ol.Tile}
+ * @typedef {function(number, number, number, number) : module:ol/Tile~Tile}
  */
 ol.ReprojTileFunctionType;
 

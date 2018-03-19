@@ -12,7 +12,7 @@ import {getKeyZXY} from '../tilecoord.js';
 
 /**
  * @constructor
- * @extends {ol.Tile}
+ * @extends {module:ol/Tile~Tile}
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {module:ol/size~Size} tileSize Tile size.
  * @param {string} text Text.
