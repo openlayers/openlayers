@@ -18,7 +18,7 @@ const Fill = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Color|ol.ColorLike}
+   * @type {ol.Color|module:ol/colorlike~ColorLike}
    */
   this.color_ = options.color !== undefined ? options.color : null;
 
@@ -31,7 +31,7 @@ const Fill = function(opt_options) {
 
 
 /**
- * Clones the style. The color is not cloned if it is an {@link ol.ColorLike}.
+ * Clones the style. The color is not cloned if it is an {@link module:ol/colorlike~ColorLike}.
  * @return {ol.style.Fill} The cloned style.
  * @api
  */
@@ -45,7 +45,7 @@ Fill.prototype.clone = function() {
 
 /**
  * Get the fill color.
- * @return {ol.Color|ol.ColorLike} Color.
+ * @return {ol.Color|module:ol/colorlike~ColorLike} Color.
  * @api
  */
 Fill.prototype.getColor = function() {
@@ -56,7 +56,7 @@ Fill.prototype.getColor = function() {
 /**
  * Set the color.
  *
- * @param {ol.Color|ol.ColorLike} color Color.
+ * @param {ol.Color|module:ol/colorlike~ColorLike} color Color.
  * @api
  */
 Fill.prototype.setColor = function(color) {

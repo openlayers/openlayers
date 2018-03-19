@@ -44,14 +44,14 @@ const WebGLTextReplay = function(tolerance, maxExtent) {
 
   /**
    * @private
-   * @type {{strokeColor: (ol.ColorLike|null),
+   * @type {{strokeColor: (module:ol/colorlike~ColorLike|null),
    *         lineCap: (string|undefined),
    *         lineDash: Array.<number>,
    *         lineDashOffset: (number|undefined),
    *         lineJoin: (string|undefined),
    *         lineWidth: number,
    *         miterLimit: (number|undefined),
-   *         fillColor: (ol.ColorLike|null),
+   *         fillColor: (module:ol/colorlike~ColorLike|null),
    *         font: (string|undefined),
    *         scale: (number|undefined)}}
    */

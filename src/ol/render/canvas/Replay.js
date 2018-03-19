@@ -482,7 +482,7 @@ CanvasReplay.prototype.fill_ = function(context) {
  * @param {Array.<*>} instruction Instruction.
  */
 CanvasReplay.prototype.setStrokeStyle_ = function(context, instruction) {
-  context.strokeStyle = /** @type {ol.ColorLike} */ (instruction[1]);
+  context.strokeStyle = /** @type {module:ol/colorlike~ColorLike} */ (instruction[1]);
   context.lineWidth = /** @type {number} */ (instruction[2]);
   context.lineCap = /** @type {string} */ (instruction[3]);
   context.lineJoin = /** @type {string} */ (instruction[4]);
@@ -814,7 +814,7 @@ CanvasReplay.prototype.replay_ = function(
           }
         }
 
-        context.fillStyle = /** @type {ol.ColorLike} */ (instruction[1]);
+        context.fillStyle = /** @type {module:ol/colorlike~ColorLike} */ (instruction[1]);
         ++i;
         break;
       case CanvasInstruction.SET_STROKE_STYLE:
