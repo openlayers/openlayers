@@ -152,7 +152,7 @@ const RasterSource = function(options) {
 
   /**
    * The most recently rendered image canvas.
-   * @type {ol.ImageCanvas}
+   * @type {module:ol/ImageCanvas~ImageCanvas}
    * @private
    */
   this.renderedImageCanvas_ = null;

@@ -45,7 +45,7 @@ const MIN_RATIO = 0.1;
  * @property {boolean} [collapsible=true] Whether the control can be collapsed or not.
  * @property {string|Element} [label='»'] Text label to use for the collapsed
  * overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {Array.<ol.layer.Layer>|ol.Collection.<ol.layer.Layer>} [layers]
+ * @property {Array.<ol.layer.Layer>|module:ol/Collection~Collection.<ol.layer.Layer>} [layers]
  * Layers for the overview map. If not set, then all main map layers are used
  * instead.
  * @property {function(module:ol/MapEvent~MapEvent)} [render] Function called when the control
@@ -53,7 +53,7 @@ const MIN_RATIO = 0.1;
  * @property {Element|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
  * @property {string} [tipLabel='Overview map'] Text label to use for the button tip.
- * @property {ol.View} [view] Custom view for the overview map. If not provided,
+ * @property {module:ol/View~View} [view] Custom view for the overview map. If not provided,
  * a default view with an EPSG:3857 projection will be used.
  */
 
@@ -270,12 +270,12 @@ OverviewMap.prototype.setMap = function(map) {
 
 /**
  * Handle map property changes.  This only deals with changes to the map's view.
- * @param {module:ol/Object~BaseObject.Event} event The propertychange event.
+ * @param {module:ol/Object~ObjectEvent} event The propertychange event.
  * @private
  */
 OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
   if (event.key === MapProperty.VIEW) {
-    const oldView = /** @type {ol.View} */ (event.oldValue);
+    const oldView = /** @type {module:ol/View~View} */ (event.oldValue);
     if (oldView) {
       this.unbindView_(oldView);
     }
@@ -287,7 +287,7 @@ OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
 
 /**
  * Register listeners for view property changes.
- * @param {ol.View} view The view.
+ * @param {module:ol/View~View} view The view.
  * @private
  */
 OverviewMap.prototype.bindView_ = function(view) {
@@ -299,7 +299,7 @@ OverviewMap.prototype.bindView_ = function(view) {
 
 /**
  * Unregister listeners for view property changes.
- * @param {ol.View} view The view.
+ * @param {module:ol/View~View} view The view.
  * @private
  */
 OverviewMap.prototype.unbindView_ = function(view) {

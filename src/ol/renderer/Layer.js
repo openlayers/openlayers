@@ -12,7 +12,7 @@ import SourceState from '../source/State.js';
 
 /**
  * @constructor
- * @extends {ol.Observable}
+ * @extends {module:ol/Observable~Observable}
  * @param {ol.layer.Layer} layer Layer.
  * @struct
  */
@@ -95,7 +95,7 @@ LayerRenderer.prototype.getLayer = function() {
  * @private
  */
 LayerRenderer.prototype.handleImageChange_ = function(event) {
-  const image = /** @type {ol.Image} */ (event.target);
+  const image = /** @type {module:ol/Image~Image} */ (event.target);
   if (image.getState() === ImageState.LOADED) {
     this.renderIfReadyAndVisible();
   }

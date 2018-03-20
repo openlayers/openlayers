@@ -39,7 +39,7 @@ import {listen, unlistenByKey} from '../events.js';
  *
  * The main advantage of having this as a control rather than a simple separate
  * DOM element is that preventing propagation is handled for you. Controls
- * will also be objects in a `ol.Collection`, so you can use their methods.
+ * will also be objects in a {@link module:ol/Collection~Collection}, so you can use their methods.
  *
  * You can also extend this base for your own control class. See
  * examples/custom-controls for an example of how to do this.

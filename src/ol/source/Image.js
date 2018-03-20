@@ -50,7 +50,7 @@ const ImageSourceEventType = {
  * @extends {module:ol/events/Event~Event}
  * @implements {oli.source.ImageEvent}
  * @param {string} type Type.
- * @param {ol.Image} image The image.
+ * @param {module:ol/Image~Image} image The image.
  */
 const ImageSourceEvent = function(type, image) {
 
@@ -58,7 +58,7 @@ const ImageSourceEvent = function(type, image) {
 
   /**
    * The image related to the event.
-   * @type {ol.Image}
+   * @type {module:ol/Image~Image}
    * @api
    */
   this.image = image;
@@ -196,7 +196,7 @@ ImageSource.prototype.getImageInternal = function(extent, resolution, pixelRatio
  * @protected
  */
 ImageSource.prototype.handleImageChange = function(event) {
-  const image = /** @type {ol.Image} */ (event.target);
+  const image = /** @type {module:ol/Image~Image} */ (event.target);
   switch (image.getState()) {
     case ImageState.LOADING:
       this.dispatchEvent(
@@ -220,9 +220,9 @@ ImageSource.prototype.handleImageChange = function(event) {
 
 
 /**
- * Default image load function for image sources that use ol.Image image
+ * Default image load function for image sources that use module:ol/Image~Image image
  * instances.
- * @param {ol.Image} image Image.
+ * @param {module:ol/Image~Image} image Image.
  * @param {string} src Source.
  */
 export function defaultImageLoadFunction(image, src) {

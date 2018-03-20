@@ -53,7 +53,7 @@ const TileImage = function(options) {
 
   /**
    * @protected
-   * @type {function(new: ol.ImageTile, module:ol/tilecoord~TileCoord, module:ol/TileState~TileState, string,
+   * @type {function(new: module:ol/ImageTile~ImageTile, module:ol/tilecoord~TileCoord, module:ol/TileState~TileState, string,
    *        ?string, module:ol/Tile~LoadFunction, module:ol/Tile~Options=)}
    */
   this.tileClass = options.tileClass !== undefined ?
@@ -361,7 +361,7 @@ TileImage.prototype.setTileGridForProjection = function(projection, tilegrid) {
 
 
 /**
- * @param {ol.ImageTile} imageTile Image tile.
+ * @param {module:ol/ImageTile~ImageTile} imageTile Image tile.
  * @param {string} src Source.
  */
 function defaultTileLoadFunction(imageTile, src) {

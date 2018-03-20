@@ -32,7 +32,7 @@ const ImageCanvasSource = function(options) {
 
   /**
    * @private
-   * @type {ol.ImageCanvas}
+   * @type {module:ol/ImageCanvas~ImageCanvas}
    */
   this.canvas_ = null;
 

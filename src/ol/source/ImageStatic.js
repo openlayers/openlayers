@@ -37,7 +37,7 @@ const Static = function(options) {
 
   /**
    * @private
-   * @type {ol.Image}
+   * @type {module:ol/Image~Image}
    */
   this.image_ = new ImageWrapper(imageExtent, undefined, 1, options.url, crossOrigin, imageLoadFunction);
 
