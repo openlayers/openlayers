@@ -59,7 +59,7 @@ GEOMETRY_WRITERS[GeometryType.MULTI_POLYGON] = writeMultiPolygonGeometry;
  * Feature format for reading and writing data in the EsriJSON format.
  *
  * @constructor
- * @extends {ol.format.JSONFeature}
+ * @extends {module:ol/format/JSONFeature~JSONFeature}
  * @param {module:ol/format/EsriJSON~Options=} opt_options Options.
  * @api
  */

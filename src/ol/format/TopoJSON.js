@@ -44,7 +44,7 @@ import {get as getProjection} from '../proj.js';
  * Feature format for reading data in the TopoJSON format.
  *
  * @constructor
- * @extends {ol.format.JSONFeature}
+ * @extends {module:ol/format/JSONFeature~JSONFeature}
  * @param {module:ol/format/TopoJSON~Options=} opt_options Options.
  * @api
  */
