@@ -20,29 +20,16 @@ const vtLayer = new VectorTileLayer({
       'ne:ne_10m_admin_0_countries@EPSG%3A900913@pbf/{z}/{x}/{-y}.pbf'
   }),
   style: function(feature) {
-    // normal style
-    let style = new Style({
+    const selected = !!selection[feature.get(idProp)];
+    return new Style({
       stroke: new Stroke({
-        color: 'gray',
-        width: 1
+        color: selected ? 'rgba(200,20,20,0.8)' : 'gray',
+        width: selected ? 2 : 1
       }),
       fill: new Fill({
-        color: 'rgba(20,20,20,0.9)'
+        color: selected ? 'rgba(200,20,20,0.2)' : 'rgba(20,20,20,0.9)'
       })
     });
-    if (selection[feature.get(idProp)]) {
-      // selection style
-      style = new Style({
-        stroke: new Stroke({
-          color: 'rgba(200,20,20,0.8)',
-          width: 2
-        }),
-        fill: new Fill({
-          color: 'rgba(200,20,20,0.2)'
-        })
-      });
-    }
-    return style;
   }
 });
 
@@ -59,14 +46,12 @@ const map = new Map({
 
 const selectElement = document.getElementById('type');
 
-map.on('click', updateSelection);
-
-function updateSelection(event) {
+map.on('click', function(event) {
   const features = map.getFeaturesAtPixel(event.pixel);
   if (!features) {
     selection = {};
     // force redraw of layer style
-    vtLayer.setStyle(vtLayer.getStyleFunction());
+    vtLayer.setStyle(vtLayer.getStyle());
     return;
   }
   const feature = features[0];
@@ -79,5 +64,5 @@ function updateSelection(event) {
   selection[fid] = feature;
 
   // force redraw of layer style
-  vtLayer.setStyle(vtLayer.getStyleFunction());
-}
+  vtLayer.setStyle(vtLayer.getStyle());
+});
