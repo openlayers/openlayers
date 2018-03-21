@@ -34,6 +34,19 @@ describe('ol.Object', function() {
       });
     });
 
+    describe('get a set symbolic property', function() {
+      let v;
+      const s = Symbol('test');
+      beforeEach(function() {
+        o.set(s, 1);
+        v = o.get(s);
+      });
+
+      it('returns expected value', function() {
+        expect(v).to.eql(1);
+      });
+    });
+
     describe('unset a set property', function() {
       beforeEach(function() {
         o.set('k', 1);
@@ -92,6 +105,27 @@ describe('ol.Object', function() {
       expect(keys.sort()).to.eql(['get', 'prop1', 'prop2', 'toString']);
     });
 
+    it('returns symbolic property keys', function() {
+      const one = Symbol('one');
+      const two = Symbol('two');
+      const o = new BaseObject({
+        prop1: 'val1',
+        prop2: 'val2',
+        toString: 'string',
+        get: 'foo',
+        [one]: 'one'
+      });
+
+      let keys = o.getKeys();
+      expect(keys.length).to.be(5);
+      expect(keys.map(x => x.toString()).sort()).to.eql([one.toString(), 'get', 'prop1', 'prop2', 'toString']);
+
+      o.set(two, 2);
+      keys = o.getKeys();
+      expect(keys.length).to.be(6);
+      expect(keys.map(x => x.toString()).sort()).to.eql([one.toString(), two.toString(), 'get', 'prop1', 'prop2', 'toString']);
+    });
+
   });
 
   describe('setProperties', function() {
@@ -107,11 +141,22 @@ describe('ol.Object', function() {
       const keys = o.getKeys().sort();
       expect(keys).to.eql(['k1', 'k2']);
     });
+
+    it('includes symbols set on the object', function() {
+      const k1 = Symbol('k2');
+      o.setProperties({
+        [k1]: 1,
+        k2: 2
+      });
+      expect(o.get(k1)).to.eql(1);
+      const keys = o.getKeys().map(x => x.toString()).sort();
+      expect(keys).to.eql([k1.toString(), 'k2']);
+    });
   });
 
   describe('notify', function() {
 
-    let listener1, listener2;
+    let listener1, listener2, listener3;
 
     beforeEach(function() {
       listener1 = sinon.spy();
@@ -119,6 +164,9 @@ describe('ol.Object', function() {
 
       listener2 = sinon.spy();
       listen(o, 'propertychange', listener2);
+
+      listener3 = sinon.spy();
+      listen(o, 'change:Symbol(k)', listener3);
     });
 
     it('dispatches events', function() {
@@ -138,6 +186,19 @@ describe('ol.Object', function() {
       expect(args).to.have.length(1);
       const event = args[0];
       expect(event.key).to.be('k');
+      expect(event.oldValue).to.be(1);
+    });
+
+    it('dispatches events for symbols', function() {
+      const s = Symbol('k');
+      o.notify(s, 1);
+      expect(listener1.notCalled).to.be(true);
+      expect(listener2.calledOnce).to.be(true);
+      expect(listener3.calledOnce).to.be(true);
+      const args = listener3.firstCall.args;
+      expect(args).to.have.length(1);
+      const event = args[0];
+      expect(event.key).to.be(s);
       expect(event.oldValue).to.be(1);
     });
   });

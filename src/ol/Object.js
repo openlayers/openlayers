@@ -25,7 +25,7 @@ const ObjectEvent = function(type, key, oldValue) {
 
   /**
    * The name of the property whose value is changing.
-   * @type {string}
+   * @type {string|symbol}
    * @api
    */
   this.key = key;
@@ -99,7 +99,7 @@ const BaseObject = function(opt_values) {
 
   /**
    * @private
-   * @type {!Object.<string, *>}
+   * @type {!Object.<(string|symbol), *>}
    */
   this.values_ = {};
 
@@ -112,19 +112,19 @@ inherits(BaseObject, Observable);
 
 
 /**
- * @type {Object.<string, string>}
+ * @type {Object.<(string|symbol), string>}
  */
 const changeEventTypeCache = {};
 
 
 /**
- * @param {string} key Key name.
+ * @param {string|symbol} key Key name.
  * @return {string} Change name.
  */
 export function getChangeEventType(key) {
   return changeEventTypeCache.hasOwnProperty(key) ?
     changeEventTypeCache[key] :
-    (changeEventTypeCache[key] = 'change:' + key);
+    (changeEventTypeCache[key] = 'change:' + key.toString());
 }
 
 
@@ -145,17 +145,20 @@ BaseObject.prototype.get = function(key) {
 
 /**
  * Get a list of object property names.
- * @return {Array.<string>} List of property names.
+ * @return {Array.<(string|symbol)>} List of property names.
  * @api
  */
 BaseObject.prototype.getKeys = function() {
+  if (typeof Object.getOwnPropertySymbols === 'function') {
+    return [].concat(Object.keys(this.values_), Object.getOwnPropertySymbols(this.values_));
+  }
   return Object.keys(this.values_);
 };
 
 
 /**
  * Get an object of all property names and values.
- * @return {Object.<string, *>} Object.
+ * @return {Object.<(string|symbol), *>} Object.
  * @api
  */
 BaseObject.prototype.getProperties = function() {
@@ -164,7 +167,7 @@ BaseObject.prototype.getProperties = function() {
 
 
 /**
- * @param {string} key Key name.
+ * @param {string|symbol} key Key name.
  * @param {*} oldValue Old value.
  */
 BaseObject.prototype.notify = function(key, oldValue) {
@@ -178,7 +181,7 @@ BaseObject.prototype.notify = function(key, oldValue) {
 
 /**
  * Sets a value.
- * @param {string} key Key name.
+ * @param {string|symbol} key Key name.
  * @param {*} value Value.
  * @param {boolean=} opt_silent Update without triggering an event.
  * @api
@@ -199,7 +202,7 @@ BaseObject.prototype.set = function(key, value, opt_silent) {
 /**
  * Sets a collection of key-value pairs.  Note that this changes any existing
  * properties and adds new ones (it does not remove any existing properties).
- * @param {Object.<string, *>} values Values.
+ * @param {Object.<(string|symbol), *>} values Values.
  * @param {boolean=} opt_silent Update without triggering an event.
  * @api
  */
@@ -207,12 +210,17 @@ BaseObject.prototype.setProperties = function(values, opt_silent) {
   for (const key in values) {
     this.set(key, values[key], opt_silent);
   }
+  if (typeof Object.getOwnPropertySymbols === 'function') {
+    for (const symbol of Object.getOwnPropertySymbols(values)) {
+      this.set(symbol, values[symbol], opt_silent);
+    }
+  }
 };
 
 
 /**
  * Unsets a property.
- * @param {string} key Key name.
+ * @param {string|symbol} key Key name.
  * @param {boolean=} opt_silent Unset without triggering an event.
  * @api
  */
