@@ -21,7 +21,7 @@ import {pushParseAndPop, makeStructureNS} from '../xml.js';
  * [OSMXML format](http://wiki.openstreetmap.org/wiki/OSM_XML).
  *
  * @constructor
- * @extends {ol.format.XMLFeature}
+ * @extends {module:ol/format/XMLFeature~XMLFeature}
  * @api
  */
 const OSMXML = function() {

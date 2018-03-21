@@ -260,7 +260,7 @@ function createStyleDefaults() {
  * which do not support this will need a URL polyfill to be loaded before use.
  *
  * @constructor
- * @extends {ol.format.XMLFeature}
+ * @extends {module:ol/format/XMLFeature~XMLFeature}
  * @param {module:ol/format/KML~Options=} opt_options Options.
  * @api
  */

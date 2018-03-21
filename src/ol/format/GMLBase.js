@@ -74,7 +74,7 @@ export const GMLNS = 'http://www.opengis.net/gml';
  * @abstract
  * @param {module:ol/format/GMLBase~Options=} opt_options
  *     Optional configuration object.
- * @extends {ol.format.XMLFeature}
+ * @extends {module:ol/format/XMLFeature~XMLFeature}
  */
 const GMLBase = function(opt_options) {
   const options = /** @type {module:ol/format/GMLBase~Options} */ (opt_options ? opt_options : {});
