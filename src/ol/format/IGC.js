@@ -32,7 +32,7 @@ const IGCZ = {
  * Feature format for `*.igc` flight recording files.
  *
  * @constructor
- * @extends {ol.format.TextFeature}
+ * @extends {module:ol/format/TextFeature~TextFeature}
  * @param {module:ol/format/IGC~Options=} opt_options Options.
  * @api
  */

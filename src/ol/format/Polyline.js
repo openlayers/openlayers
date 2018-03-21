@@ -28,7 +28,7 @@ import {get as getProjection} from '../proj.js';
  * Polyline Algorithm Format.
  *
  * @constructor
- * @extends {ol.format.TextFeature}
+ * @extends {module:ol/format/TextFeature~TextFeature}
  * @param {module:ol/format/Polyline~Options=} opt_options Optional configuration object.
  * @api
  */
