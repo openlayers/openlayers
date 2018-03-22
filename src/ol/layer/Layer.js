@@ -13,6 +13,24 @@ import SourceState from '../source/State.js';
 
 
 /**
+ * @typedef {Object} Options
+ * @property {number} [opacity=1] Opacity (0, 1).
+ * @property {boolean} [visible=true] Visibility.
+ * @property {ol.Extent} [extent] The bounding extent for layer rendering.  The layer will not be
+ * rendered outside of this extent.
+ * @property {number} [zIndex=0] The z-index for layer rendering.  At rendering time, the layers
+ * will be ordered, first by Z-index and then by position.
+ * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
+ * visible.
+ * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * be visible.
+ * @property {ol.source.Source} [source] Source for this layer.  If not provided to the constructor,
+ * the source can be set by calling {@link ol.layer.Layer#setSource layer.setSource(source)} after
+ * construction.
+ */
+
+
+/**
  * @typedef {Object} State
  * @property {module:ol/layer/Layer~Layer} layer
  * @property {number} opacity
@@ -45,7 +63,7 @@ import SourceState from '../source/State.js';
  * @abstract
  * @extends {module:ol/layer/Base~BaseLayer}
  * @fires ol.render.Event
- * @param {olx.layer.LayerOptions} options Layer options.
+ * @param {module:ol/layer/Layer~Options} options Layer options.
  * @api
  */
 const Layer = function(options) {

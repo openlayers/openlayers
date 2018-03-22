@@ -41,7 +41,7 @@ const VectorLayer = function(opt_options) {
   delete baseOptions.renderBuffer;
   delete baseOptions.updateWhileAnimating;
   delete baseOptions.updateWhileInteracting;
-  Layer.call(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
+  Layer.call(this, /** @type {module:ol/layer/Layer~Options} */ (baseOptions));
 
   /**
    * @private

@@ -28,7 +28,7 @@ const TileLayer = function(opt_options) {
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;
-  Layer.call(this,  /** @type {olx.layer.LayerOptions} */ (baseOptions));
+  Layer.call(this,  /** @type {module:ol/layer/Layer~Options} */ (baseOptions));
 
   this.setPreload(options.preload !== undefined ? options.preload : 0);
   this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?

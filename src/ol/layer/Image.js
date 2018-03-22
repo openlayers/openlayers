@@ -21,7 +21,7 @@ import Layer from '../layer/Layer.js';
  */
 const ImageLayer = function(opt_options) {
   const options = opt_options ? opt_options : {};
-  Layer.call(this,  /** @type {olx.layer.LayerOptions} */ (options));
+  Layer.call(this,  /** @type {module:ol/layer/Layer~Options} */ (options));
 
   /**
    * The layer type.
