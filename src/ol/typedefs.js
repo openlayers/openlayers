@@ -128,12 +128,6 @@ ol.DeclutterGroup;
 
 
 /**
- * @typedef {{hasZ: (boolean|undefined), hasM: (boolean|undefined)}}
- */
-ol.LayoutOptions;
-
-
-/**
  * @typedef {{prev: (ol.LinkedListItem|undefined),
  *            next: (ol.LinkedListItem|undefined),
  *            data: ?}}
