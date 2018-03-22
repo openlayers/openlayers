@@ -362,12 +362,6 @@ ol.WFSTransactionResponse;
 
 
 /**
- * @typedef {{type: number, value: (number|string|undefined), position: number}}
- */
-ol.WKTToken;
-
-
-/**
  * @typedef {{minX: number, minY: number, maxX: number, maxY: number,
  *            value: (Object|undefined)}}
  */

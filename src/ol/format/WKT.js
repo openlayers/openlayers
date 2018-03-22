@@ -23,6 +23,12 @@ import SimpleGeometry from '../geom/SimpleGeometry.js';
  * multiple features on reading.
  */
 
+/**
+ * @typedef {Object} Token
+ * @property {number} type
+ * @property {number|string} [value]
+ * @property {number} position
+ */
 
 /**
  * @const
@@ -130,7 +136,7 @@ Lexer.prototype.nextChar_ = function() {
 
 /**
  * Fetch and return the next token.
- * @return {!ol.WKTToken} Next string token.
+ * @return {!module:ol/format/WKT~Token} Next string token.
  */
 Lexer.prototype.nextToken = function() {
   const c = this.nextChar_();
@@ -217,7 +223,7 @@ const Parser = function(lexer) {
   this.lexer_ = lexer;
 
   /**
-   * @type {ol.WKTToken}
+   * @type {module:ol/format/WKT~Token}
    * @private
    */
   this.token_;
