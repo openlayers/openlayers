@@ -125,7 +125,7 @@ FeatureFormat.prototype.getLastExtent = function() {
 
 /**
  * @abstract
- * @return {ol.format.FormatType} Format.
+ * @return {module:ol/format/FormatType~FormatType} Format.
  */
 FeatureFormat.prototype.getType = function() {};
 
