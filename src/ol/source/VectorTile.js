@@ -13,7 +13,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
 /**
  * @classdesc
  * Class for layer sources providing vector data divided into a tile grid, to be
- * used with {@link ol.layer.VectorTile}. Although this source receives tiles
+ * used with {@link module:ol/layer/VectorTile~VectorTile}. Although this source receives tiles
  * with vector features from the server, it is not meant for feature editing.
  * Features are optimized for rendering, their geometries are clipped at or near
  * tile boundaries and simplified for a view resolution. See

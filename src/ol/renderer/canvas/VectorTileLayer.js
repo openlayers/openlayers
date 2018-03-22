@@ -51,7 +51,7 @@ const VECTOR_REPLAYS = {
 /**
  * @constructor
  * @extends {ol.renderer.canvas.TileLayer}
- * @param {ol.layer.VectorTile} layer VectorTile layer.
+ * @param {module:ol/layer/VectorTile~VectorTile} layer VectorTile layer.
  * @api
  */
 const CanvasVectorTileLayerRenderer = function(layer) {
@@ -115,7 +115,7 @@ CanvasVectorTileLayerRenderer['handles'] = function(type, layer) {
  * @return {ol.renderer.canvas.VectorTileLayer} The layer renderer.
  */
 CanvasVectorTileLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasVectorTileLayerRenderer(/** @type {ol.layer.VectorTile} */ (layer));
+  return new CanvasVectorTileLayerRenderer(/** @type {module:ol/layer/VectorTile~VectorTile} */ (layer));
 };
 
 
