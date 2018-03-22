@@ -43,7 +43,7 @@ import SourceState from '../source/State.js';
  *
  * @constructor
  * @abstract
- * @extends {ol.layer.Base}
+ * @extends {module:ol/layer/Base~BaseLayer}
  * @fires ol.render.Event
  * @param {olx.layer.LayerOptions} options Layer options.
  * @api
