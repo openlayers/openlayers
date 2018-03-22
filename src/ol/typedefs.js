@@ -353,10 +353,3 @@ ol.WFSFeatureCollectionMetadata;
  *            insertIds: Array.<string>}}
  */
 ol.WFSTransactionResponse;
-
-
-/**
- * @typedef {{minX: number, minY: number, maxX: number, maxY: number,
- *            value: (Object|undefined)}}
- */
-ol.RBushEntry;

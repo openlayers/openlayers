@@ -502,7 +502,7 @@ CanvasReplay.prototype.renderDeclutter_ = function(declutterGroup, feature) {
   if (declutterGroup && declutterGroup.length > 5) {
     const groupCount = declutterGroup[4];
     if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
-      /** @type {ol.RBushEntry} */
+      /** @type {module:ol/structs/RBush~Entry} */
       const box = {
         minX: /** @type {number} */ (declutterGroup[0]),
         minY: /** @type {number} */ (declutterGroup[1]),
