@@ -28,7 +28,7 @@ import {createTexture} from '../../webgl/Context.js';
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
  * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
- * @param {ol.layer.Image} imageLayer Tile layer.
+ * @param {module:ol/layer/Image~ImageLayer} imageLayer Tile layer.
  * @api
  */
 const WebGLImageLayerRenderer = function(mapRenderer, imageLayer) {
@@ -79,7 +79,7 @@ WebGLImageLayerRenderer['handles'] = function(type, layer) {
 WebGLImageLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLImageLayerRenderer(
     /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
-    /** @type {ol.layer.Image} */ (layer)
+    /** @type {module:ol/layer/Image~ImageLayer} */ (layer)
   );
 };
 
@@ -140,7 +140,7 @@ WebGLImageLayerRenderer.prototype.prepareFrame = function(frameState, layerState
 
   let image = this.image_;
   let texture = this.texture;
-  const imageLayer = /** @type {ol.layer.Image} */ (this.getLayer());
+  const imageLayer = /** @type {module:ol/layer/Image~ImageLayer} */ (this.getLayer());
   const imageSource = imageLayer.getSource();
 
   const hints = frameState.viewHints;

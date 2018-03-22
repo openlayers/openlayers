@@ -18,7 +18,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 /**
  * @constructor
  * @extends {ol.renderer.canvas.IntermediateCanvas}
- * @param {ol.layer.Image} imageLayer Single image layer.
+ * @param {module:ol/layer/Image~ImageLayer} imageLayer Single image layer.
  * @api
  */
 const CanvasImageLayerRenderer = function(imageLayer) {
@@ -73,7 +73,7 @@ CanvasImageLayerRenderer['handles'] = function(type, layer) {
  * @return {ol.renderer.canvas.ImageLayer} The layer renderer.
  */
 CanvasImageLayerRenderer['create'] = function(mapRenderer, layer) {
-  const renderer = new CanvasImageLayerRenderer(/** @type {ol.layer.Image} */ (layer));
+  const renderer = new CanvasImageLayerRenderer(/** @type {module:ol/layer/Image~ImageLayer} */ (layer));
   if (layer.getType() === LayerType.VECTOR) {
     const candidates = getLayerRendererPlugins();
     for (let i = 0, ii = candidates.length; i < ii; ++i) {
@@ -127,7 +127,7 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
   const viewResolution = viewState.resolution;
 
   let image;
-  const imageLayer = /** @type {ol.layer.Image} */ (this.getLayer());
+  const imageLayer = /** @type {module:ol/layer/Image~ImageLayer} */ (this.getLayer());
   const imageSource = imageLayer.getSource();
 
   const hints = frameState.viewHints;
