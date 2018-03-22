@@ -53,7 +53,7 @@ const Layer = function(options) {
   const baseOptions = assign({}, options);
   delete baseOptions.source;
 
-  BaseLayer.call(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));
+  BaseLayer.call(this, /** @type {module:ol/layer/Base~Options} */ (baseOptions));
 
   /**
    * @private

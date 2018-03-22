@@ -7,67 +7,6 @@ let olx;
 
 /**
  * @typedef {{opacity: (number|undefined),
- *     visible: (boolean|undefined),
- *     extent: (ol.Extent|undefined),
- *     zIndex: (number|undefined),
- *     minResolution: (number|undefined),
- *     maxResolution: (number|undefined)}}
- */
-olx.layer.BaseOptions;
-
-
-/**
- * Opacity (0, 1). Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.layer.BaseOptions.prototype.opacity;
-
-
-/**
- * Visibility. Default is `true`.
- * @type {boolean|undefined}
- * @api
- */
-olx.layer.BaseOptions.prototype.visible;
-
-
-/**
- * The bounding extent for layer rendering.  The layer will not be rendered
- * outside of this extent.
- * @type {ol.Extent|undefined}
- * @api
- */
-olx.layer.BaseOptions.prototype.extent;
-
-
-/**
- * The z-index for layer rendering.  At rendering time, the layers will be
- * ordered, first by Z-index and then by position. The default Z-index is 0.
- * @type {number|undefined}
- * @api
- */
-olx.layer.BaseOptions.prototype.zIndex;
-
-
-/**
- * The minimum resolution (inclusive) at which this layer will be visible.
- * @type {number|undefined}
- * @api
- */
-olx.layer.BaseOptions.prototype.minResolution;
-
-
-/**
- * The maximum resolution (exclusive) below which this layer will be visible.
- * @type {number|undefined}
- * @api
- */
-olx.layer.BaseOptions.prototype.maxResolution;
-
-
-/**
- * @typedef {{opacity: (number|undefined),
  *     source: (ol.source.Source|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
