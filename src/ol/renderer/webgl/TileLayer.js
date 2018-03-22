@@ -30,7 +30,7 @@ import WebGLBuffer from '../../webgl/Buffer.js';
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
  * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
- * @param {ol.layer.Tile} tileLayer Tile layer.
+ * @param {module:ol/layer/Tile~TileLayer} tileLayer Tile layer.
  * @api
  */
 const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
@@ -115,7 +115,7 @@ WebGLTileLayerRenderer['handles'] = function(type, layer) {
 WebGLTileLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLTileLayerRenderer(
     /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
-    /** @type {ol.layer.Tile} */ (layer)
+    /** @type {module:ol/layer/Tile~TileLayer} */ (layer)
   );
 };
 
@@ -178,7 +178,7 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
   const viewState = frameState.viewState;
   const projection = viewState.projection;
 
-  const tileLayer = /** @type {ol.layer.Tile} */ (this.getLayer());
+  const tileLayer = /** @type {module:ol/layer/Tile~TileLayer} */ (this.getLayer());
   const tileSource = tileLayer.getSource();
   const tileGrid = tileSource.getTileGridForProjection(projection);
   const z = tileGrid.getZForResolution(viewState.resolution);
