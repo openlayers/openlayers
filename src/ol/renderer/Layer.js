@@ -13,7 +13,7 @@ import SourceState from '../source/State.js';
 /**
  * @constructor
  * @extends {module:ol/Observable~Observable}
- * @param {ol.layer.Layer} layer Layer.
+ * @param {module:ol/layer/Layer~Layer} layer Layer.
  * @struct
  */
 const LayerRenderer = function(layer) {
@@ -22,7 +22,7 @@ const LayerRenderer = function(layer) {
 
   /**
    * @private
-   * @type {ol.layer.Layer}
+   * @type {module:ol/layer/Layer~Layer}
    */
   this.layer_ = layer;
 
@@ -36,7 +36,7 @@ inherits(LayerRenderer, Observable);
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {function(this: S, (module:ol/Feature~Feature|ol.render.Feature), ol.layer.Layer): T}
+ * @param {function(this: S, (module:ol/Feature~Feature|ol.render.Feature), module:ol/layer/Layer~Layer): T}
  *     callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @return {T|undefined} Callback result.
@@ -82,7 +82,7 @@ LayerRenderer.prototype.createLoadedTileFinder = function(source, projection, ti
 
 
 /**
- * @return {ol.layer.Layer} Layer.
+ * @return {module:ol/layer/Layer~Layer} Layer.
  */
 LayerRenderer.prototype.getLayer = function() {
   return this.layer_;

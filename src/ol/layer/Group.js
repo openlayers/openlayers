@@ -149,7 +149,7 @@ LayerGroup.prototype.handleLayersRemove_ = function(collectionEvent) {
 
 
 /**
- * Returns the {@link module:ol/Collection~Collection collection} of {@link ol.layer.Layer layers}
+ * Returns the {@link module:ol/Collection~Collection collection} of {@link module:ol/layer/Layer~Layer layers}
  * in this group.
  * @return {!module:ol/Collection~Collection.<ol.layer.Base>} Collection of
  *   {@link ol.layer.Base layers} that are part of this group.
@@ -162,7 +162,7 @@ LayerGroup.prototype.getLayers = function() {
 
 
 /**
- * Set the {@link module:ol/Collection~Collection collection} of {@link ol.layer.Layer layers}
+ * Set the {@link module:ol/Collection~Collection collection} of {@link module:ol/layer/Layer~Layer layers}
  * in this group.
  * @param {!module:ol/Collection~Collection.<ol.layer.Base>} layers Collection of
  *   {@link ol.layer.Base layers} that are part of this group.

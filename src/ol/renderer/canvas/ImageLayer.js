@@ -56,7 +56,7 @@ inherits(CanvasImageLayerRenderer, IntermediateCanvasRenderer);
 /**
  * Determine if this renderer handles the provided layer.
  * @param {ol.renderer.Type} type The renderer type.
- * @param {ol.layer.Layer} layer The candidate layer.
+ * @param {module:ol/layer/Layer~Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
 CanvasImageLayerRenderer['handles'] = function(type, layer) {
@@ -69,7 +69,7 @@ CanvasImageLayerRenderer['handles'] = function(type, layer) {
 /**
  * Create a layer renderer.
  * @param {ol.renderer.Map} mapRenderer The map renderer.
- * @param {ol.layer.Layer} layer The layer to be rendererd.
+ * @param {module:ol/layer/Layer~Layer} layer The layer to be rendererd.
  * @return {ol.renderer.canvas.ImageLayer} The layer renderer.
  */
 CanvasImageLayerRenderer['create'] = function(mapRenderer, layer) {

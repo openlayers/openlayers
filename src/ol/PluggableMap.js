@@ -63,9 +63,9 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 /**
  * @typedef {Object} AtPixelOptions
- * @property {((function(ol.layer.Layer): boolean)|undefined)} layerFilter Layer filter
+ * @property {((function(module:ol/layer/Layer~Layer): boolean)|undefined)} layerFilter Layer filter
  * function. The filter function will receive one argument, the
- * {@link ol.layer.Layer layer-candidate} and it should return a boolean value.
+ * {@link module:ol/layer/Layer~Layer layer-candidate} and it should return a boolean value.
  * Only layers which are visible and for which this function returns `true`
  * will be tested for features. By default, all visible layers will be tested.
  * @property {number} [hitTolerance=0] Hit-detection tolerance in pixels. Pixels

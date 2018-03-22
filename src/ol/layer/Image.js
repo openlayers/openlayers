@@ -14,7 +14,7 @@ import Layer from '../layer/Layer.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @constructor
- * @extends {ol.layer.Layer}
+ * @extends {module:ol/layer/Layer~Layer}
  * @fires ol.render.Event
  * @param {olx.layer.ImageOptions=} opt_options Layer options.
  * @api

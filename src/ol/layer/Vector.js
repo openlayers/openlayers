@@ -26,7 +26,7 @@ const Property = {
  * options means that `title` is observable, and has get/set accessors.
  *
  * @constructor
- * @extends {ol.layer.Layer}
+ * @extends {module:ol/layer/Layer~Layer}
  * @fires ol.render.Event
  * @param {olx.layer.VectorOptions=} opt_options Options.
  * @api

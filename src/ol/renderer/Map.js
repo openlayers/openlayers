@@ -91,9 +91,9 @@ function expireIconCache(map, frameState) {
  * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {function(this: S, (module:ol/Feature~Feature|ol.render.Feature),
- *     ol.layer.Layer): T} callback Feature callback.
+ *     module:ol/layer/Layer~Layer): T} callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
- * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
+ * @param {function(this: U, module:ol/layer/Layer~Layer): boolean} layerFilter Layer filter
  *     function, only layers which are visible and for which this function
  *     returns `true` will be tested for features.  By default, all visible
  *     layers will be tested.
@@ -109,7 +109,7 @@ MapRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameSta
 
   /**
    * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
-   * @param {ol.layer.Layer} layer Layer.
+   * @param {module:ol/layer/Layer~Layer} layer Layer.
    * @return {?} Callback result.
    */
   function forEachFeatureAtCoordinate(feature, layer) {
@@ -159,10 +159,10 @@ MapRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameSta
  * @abstract
  * @param {module:ol~Pixel} pixel Pixel.
  * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
- * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
+ * @param {function(this: S, module:ol/layer/Layer~Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
- * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
+ * @param {function(this: U, module:ol/layer/Layer~Layer): boolean} layerFilter Layer filter
  *     function, only layers which are visible and for which this function
  *     returns `true` will be tested for features.  By default, all visible
  *     layers will be tested.
@@ -178,7 +178,7 @@ MapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
  * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
+ * @param {function(this: U, module:ol/layer/Layer~Layer): boolean} layerFilter Layer filter
  *     function, only layers which are visible and for which this function
  *     returns `true` will be tested for features.  By default, all visible
  *     layers will be tested.
@@ -195,7 +195,7 @@ MapRenderer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, 
 
 
 /**
- * @param {ol.layer.Layer} layer Layer.
+ * @param {module:ol/layer/Layer~Layer} layer Layer.
  * @protected
  * @return {ol.renderer.Layer} Layer renderer.
  */
