@@ -88,7 +88,7 @@ const VectorLayer = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.layer.VectorTileRenderType|string}
+   * @type {module:ol/layer/VectorTileRenderType~VectorTileRenderType|string}
    */
   this.renderMode_ = options.renderMode || VectorRenderType.VECTOR;
 
