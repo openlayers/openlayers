@@ -161,7 +161,7 @@ const OverviewMap = function(opt_options) {
   box.style.boxSizing = 'border-box';
 
   /**
-   * @type {ol.Overlay}
+   * @type {module:ol/Overlay~Overlay}
    * @private
    */
   this.boxOverlay_ = new Overlay({
