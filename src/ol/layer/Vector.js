@@ -215,7 +215,7 @@ VectorLayer.prototype.setStyle = function(style) {
 
 
 /**
- * @return {ol.layer.VectorRenderType|string} The render mode.
+ * @return {module:ol/layer/VectorRenderType~VectorRenderType|string} The render mode.
  */
 VectorLayer.prototype.getRenderMode = function() {
   return this.renderMode_;
