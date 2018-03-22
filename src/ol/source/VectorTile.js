@@ -56,7 +56,7 @@ const VectorTileSource = function(options) {
 
   /**
    * @private
-   * @type {ol.format.Feature}
+   * @type {module:ol/format/Feature~FeatureFormat}
    */
   this.format_ = options.format ? options.format : null;
 
@@ -75,7 +75,7 @@ const VectorTileSource = function(options) {
   /**
    * @protected
    * @type {function(new: module:ol/VectorTile~VectorTile, module:ol/tilecoord~TileCoord, module:ol/TileState~TileState, string,
-   *        ol.format.Feature, module:ol/Tile~LoadFunction)}
+   *        module:ol/format/Feature~FeatureFormat, module:ol/Tile~LoadFunction)}
    */
   this.tileClass = options.tileClass ? options.tileClass : VectorTile;
 

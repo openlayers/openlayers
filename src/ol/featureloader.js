@@ -38,7 +38,7 @@ import FormatType from './format/FormatType.js';
 
 /**
  * @param {string|module:ol/featureloader~FeatureUrlFunction} url Feature URL service.
- * @param {module:ol/format/Feature~Feature} format Feature format.
+ * @param {module:ol/format/Feature~FeatureFormat} format Feature format.
  * @param {function(this:module:ol/VectorTile~VectorTile, Array.<module:ol/Feature~Feature>, module:ol/proj/Projection~Projection, module:ol/extent~Extent)|function(this:module:ol/source/Vector~Vector, Array.<module:ol/Feature~Feature>)} success
  *     Function called with the loaded features and optionally with the data
  *     projection. Called with the vector tile or source as `this`.
@@ -111,7 +111,7 @@ export function loadFeaturesXhr(url, format, success, failure) {
  * loads features (with XHR), parses the features, and adds them to the
  * vector source.
  * @param {string|module:ol/featureloader~FeatureUrlFunction} url Feature URL service.
- * @param {module:ol/format/Feature~Feature} format Feature format.
+ * @param {module:ol/format/Feature~FeatureFormat} format Feature format.
  * @return {module:ol/featureloader~FeatureLoader} The feature loader.
  * @api
  */

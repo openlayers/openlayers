@@ -26,7 +26,7 @@ import {loadFeaturesXhr} from './featureloader.js';
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {module:ol/TileState~TileState} state State.
  * @param {number} sourceRevision Source revision.
- * @param {module:ol/format/Feature~Feature} format Feature format.
+ * @param {module:ol/format/Feature~FeatureFormat} format Feature format.
  * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
  * @param {module:ol/tilecoord~TileCoord} urlTileCoord Wrapped tile coordinate for source urls.
  * @param {module:ol/Tile~UrlFunction} tileUrlFunction Tile url function.
@@ -36,7 +36,7 @@ import {loadFeaturesXhr} from './featureloader.js';
  * @param {number} pixelRatio Pixel ratio.
  * @param {module:ol/proj/Projection~Projection} projection Projection.
  * @param {function(new: module:ol/VectorTile~VectorTile, module:ol/tilecoord~TileCoord, module:ol/TileState~TileState, string,
- *     module:ol/format/Feature~Feature, module:ol/Tile~LoadFunction)} tileClass Class to
+ *     module:ol/format/Feature~FeatureFormat, module:ol/Tile~LoadFunction)} tileClass Class to
  *     instantiate for source tiles.
  * @param {function(this: module:ol/source/VectorTile~VectorTile, module:ol/events/Event~Event)} handleTileChange
  *     Function to call when a source tile's state changes.

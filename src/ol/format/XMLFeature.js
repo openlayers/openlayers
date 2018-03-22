@@ -15,7 +15,7 @@ import {isDocument, isNode, parse} from '../xml.js';
  *
  * @constructor
  * @abstract
- * @extends {ol.format.Feature}
+ * @extends {module:ol/format/Feature~FeatureFormat}
  */
 const XMLFeature = function() {
 

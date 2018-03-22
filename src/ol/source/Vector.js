@@ -79,7 +79,7 @@ const VectorSource = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.format.Feature|undefined}
+   * @type {module:ol/format/Feature~FeatureFormat|undefined}
    */
   this.format_ = options.format;
 
@@ -100,7 +100,7 @@ const VectorSource = function(opt_options) {
   } else if (this.url_ !== undefined) {
     assert(this.format_, 7); // `format` must be set when `url` is set
     // create a XHR feature loader for "url" and "format"
-    this.loader_ = xhr(this.url_, /** @type {ol.format.Feature} */ (this.format_));
+    this.loader_ = xhr(this.url_, /** @type {module:ol/format/Feature~FeatureFormat} */ (this.format_));
   }
 
   /**
@@ -656,7 +656,7 @@ VectorSource.prototype.getFeatureById = function(id) {
 /**
  * Get the format associated with this source.
  *
- * @return {ol.format.Feature|undefined} The feature format.
+ * @return {module:ol/format/Feature~FeatureFormat|undefined} The feature format.
  * @api
  */
 VectorSource.prototype.getFormat = function() {
