@@ -15,7 +15,7 @@ import {apply as applyTransform} from '../../transform.js';
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
  * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
- * @param {ol.layer.Vector} vectorLayer Vector layer.
+ * @param {module:ol/layer/Vector~VectorLayer} vectorLayer Vector layer.
  * @api
  */
 const WebGLVectorLayerRenderer = function(mapRenderer, vectorLayer) {
@@ -90,7 +90,7 @@ WebGLVectorLayerRenderer['handles'] = function(type, layer) {
 WebGLVectorLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLVectorLayerRenderer(
     /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
-    /** @type {ol.layer.Vector} */ (layer)
+    /** @type {module:ol/layer/Vector~VectorLayer} */ (layer)
   );
 };
 
@@ -212,7 +212,7 @@ WebGLVectorLayerRenderer.prototype.handleStyleImageChange_ = function(event) {
  * @inheritDoc
  */
 WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerState, context) {
-  const vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
+  const vectorLayer = /** @type {module:ol/layer/Vector~VectorLayer} */ (this.getLayer());
   const vectorSource = vectorLayer.getSource();
 
   const animating = frameState.viewHints[ViewHint.ANIMATING];

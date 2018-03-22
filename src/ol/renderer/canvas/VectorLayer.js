@@ -19,7 +19,7 @@ import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, 
 /**
  * @constructor
  * @extends {ol.renderer.canvas.Layer}
- * @param {ol.layer.Vector} vectorLayer Vector layer.
+ * @param {module:ol/layer/Vector~VectorLayer} vectorLayer Vector layer.
  * @api
  */
 const CanvasVectorLayerRenderer = function(vectorLayer) {
@@ -104,7 +104,7 @@ CanvasVectorLayerRenderer['handles'] = function(type, layer) {
  * @return {ol.renderer.canvas.VectorLayer} The layer renderer.
  */
 CanvasVectorLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasVectorLayerRenderer(/** @type {ol.layer.Vector} */ (layer));
+  return new CanvasVectorLayerRenderer(/** @type {module:ol/layer/Vector~VectorLayer} */ (layer));
 };
 
 
@@ -147,7 +147,7 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
     if (this.declutterTree_) {
       this.declutterTree_.clear();
     }
-    const layer = /** @type {ol.layer.Vector} */ (this.getLayer());
+    const layer = /** @type {module:ol/layer/Vector~VectorLayer} */ (this.getLayer());
     let drawOffsetX = 0;
     let drawOffsetY = 0;
     let replayContext;
@@ -252,7 +252,7 @@ CanvasVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordi
   } else {
     const resolution = frameState.viewState.resolution;
     const rotation = frameState.viewState.rotation;
-    const layer = /** @type {ol.layer.Vector} */ (this.getLayer());
+    const layer = /** @type {module:ol/layer/Vector~VectorLayer} */ (this.getLayer());
     /** @type {!Object.<string, boolean>} */
     const features = {};
     const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
@@ -297,7 +297,7 @@ CanvasVectorLayerRenderer.prototype.handleStyleImageChange_ = function(event) {
  * @inheritDoc
  */
 CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerState) {
-  const vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
+  const vectorLayer = /** @type {module:ol/layer/Vector~VectorLayer} */ (this.getLayer());
   const vectorSource = vectorLayer.getSource();
 
   const animating = frameState.viewHints[ViewHint.ANIMATING];
