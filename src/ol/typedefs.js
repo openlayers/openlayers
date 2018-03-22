@@ -22,32 +22,6 @@ const ol = {};
 
 
 /**
- * @typedef {{x: number, y: number, width: number, height: number}}
- */
-ol.AtlasBlock;
-
-
-/**
- * Provides information for an image inside an atlas.
- * `offsetX` and `offsetY` are the position of the image inside
- * the atlas image `image`.
- * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement}}
- */
-ol.AtlasInfo;
-
-
-/**
- * Provides information for an image inside an atlas manager.
- * `offsetX` and `offsetY` is the position of the image inside
- * the atlas image `image` and the position of the hit-detection image
- * inside the hit-detection atlas image `hitImage`.
- * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement,
- *    hitImage: HTMLCanvasElement}}
- */
-ol.AtlasManagerInfo;
-
-
-/**
  * A type that can be used to provide attribution information for data sources.
  *
  * It represents either
@@ -151,27 +125,6 @@ ol.CircleRenderOptions;
  * @typedef {Array.<*>}
  */
 ol.DeclutterGroup;
-
-
-/**
- * @typedef {{x: number, xunits: (ol.style.IconAnchorUnits|undefined),
- *            y: number, yunits: (ol.style.IconAnchorUnits|undefined),
- *            origin: (ol.style.IconOrigin|undefined)}}
- */
-ol.KMLVec2_;
-
-
-/**
- * @typedef {{flatCoordinates: Array.<number>,
- *            whens: Array.<number>}}
- */
-ol.KMLGxTrackObject_;
-
-
-/**
- * @typedef {{hasZ: (boolean|undefined), hasM: (boolean|undefined)}}
- */
-ol.LayoutOptions;
 
 
 /**
@@ -400,16 +353,3 @@ ol.WFSFeatureCollectionMetadata;
  *            insertIds: Array.<string>}}
  */
 ol.WFSTransactionResponse;
-
-
-/**
- * @typedef {{type: number, value: (number|string|undefined), position: number}}
- */
-ol.WKTToken;
-
-
-/**
- * @typedef {{minX: number, minY: number, maxX: number, maxY: number,
- *            value: (Object|undefined)}}
- */
-ol.RBushEntry;

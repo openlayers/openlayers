@@ -33,6 +33,20 @@ import {createElementNS, getAllTextContent, isDocument, isNode, makeArrayExtende
   OBJECT_PROPERTY_NODE_FACTORY, parse, parseNode, pushParseAndPop,
   pushSerializeAndPop, XML_SCHEMA_INSTANCE_URI} from '../xml.js';
 
+/**
+ * @typedef {Object} Vec2
+ * @property {number} x
+ * @property {module:ol/style/IconAnchorUnits~IconAnchorUnits} xunits
+ * @property {number} y
+ * @property {module:ol/style/IconAnchorUnits~IconAnchorUnits} yunits
+ * @property {module:ol/style/IconOrigin~IconOrigin} origin
+ */
+
+/**
+ * @typedef {Object} GxTrackObject
+ * @property {Array.<number>} flatCoordinates
+ * @property {Array.<number>} whens
+ */
 
 /**
  * @type {module:ol/color~Color}
@@ -58,12 +72,12 @@ export function getDefaultFillStyle() {
 let DEFAULT_IMAGE_STYLE_ANCHOR;
 
 /**
- * @type {ol.style.IconAnchorUnits}
+ * @type {module:ol/style/IconAnchorUnits~IconAnchorUnits}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
 
 /**
- * @type {ol.style.IconAnchorUnits}
+ * @type {module:ol/style/IconAnchorUnits~IconAnchorUnits}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
 
@@ -335,7 +349,7 @@ const SCHEMA_LOCATION = 'http://www.opengis.net/kml/2.2 ' +
 
 
 /**
- * @type {Object.<string, ol.style.IconAnchorUnits>}
+ * @type {Object.<string, module:ol/style/IconAnchorUnits~IconAnchorUnits>}
  */
 const ICON_ANCHOR_UNITS_MAP = {
   'fraction': IconAnchorUnits.FRACTION,
@@ -544,7 +558,7 @@ function readURI(node) {
 
 /**
  * @param {Node} node Node.
- * @return {ol.KMLVec2_} Vec2.
+ * @return {module:ol/format/KML~Vec2} Vec2.
  */
 function readVec2(node) {
   const xunits = node.getAttribute('xunits');
@@ -645,7 +659,7 @@ function iconStyleParser(node, objectStack) {
   }
   let anchor, anchorXUnits, anchorYUnits;
   let anchorOrigin = IconOrigin.BOTTOM_LEFT;
-  const hotSpot = /** @type {ol.KMLVec2_|undefined} */
+  const hotSpot = /** @type {module:ol/format/KML~Vec2|undefined} */
       (object['hotSpot']);
   if (hotSpot) {
     anchor = [hotSpot.x, hotSpot.y];
@@ -856,7 +870,7 @@ function readFlatLinearRing(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  */
 function gxCoordParser(node, objectStack) {
-  const gxTrackObject = /** @type {ol.KMLGxTrackObject_} */
+  const gxTrackObject = /** @type {module:ol/format/KML~GxTrackObject} */
       (objectStack[objectStack.length - 1]);
   const flatCoordinates = gxTrackObject.flatCoordinates;
   const s = getAllTextContent(node, false);
@@ -921,7 +935,7 @@ const GX_TRACK_PARSERS = makeStructureNS(
  */
 function readGxTrack(node, objectStack) {
   const gxTrackObject = pushParseAndPop(
-    /** @type {ol.KMLGxTrackObject_} */ ({
+    /** @type {module:ol/format/KML~GxTrackObject} */ ({
       flatCoordinates: [],
       whens: []
     }), GX_TRACK_PARSERS, node, objectStack);
@@ -1598,7 +1612,7 @@ function linkParser(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  */
 function whenParser(node, objectStack) {
-  const gxTrackObject = /** @type {ol.KMLGxTrackObject_} */
+  const gxTrackObject = /** @type {module:ol/format/KML~GxTrackObject} */
       (objectStack[objectStack.length - 1]);
   const whens = gxTrackObject.whens;
   const s = getAllTextContent(node, false);
@@ -2352,7 +2366,7 @@ function writeIconStyle(node, style, objectStack) {
     }
 
     if (anchor && (anchor[0] !== size[0] / 2 || anchor[1] !== size[1] / 2)) {
-      const /** @type {ol.KMLVec2_} */ hotSpot = {
+      const /** @type {module:ol/format/KML~Vec2} */ hotSpot = {
         x: anchor[0],
         xunits: IconAnchorUnits.PIXELS,
         y: size[1] - anchor[1],
@@ -2912,7 +2926,7 @@ function writeStyle(node, style, objectStack) {
 
 /**
  * @param {Node} node Node to append a TextNode with the Vec2 to.
- * @param {ol.KMLVec2_} vec2 Vec2.
+ * @param {module:ol/format/KML~Vec2} vec2 Vec2.
  */
 function writeVec2(node, vec2) {
   node.setAttribute('x', vec2.x);

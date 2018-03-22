@@ -7,6 +7,15 @@ import {createOrUpdate, equals} from '../extent.js';
 import {isEmpty} from '../obj.js';
 
 /**
+ * @typedef {Object} Entry
+ * @property {number} minX
+ * @property {number} minY
+ * @property {number} maxX
+ * @property {number} maxY
+ * @property {Object} [value]
+ */
+
+/**
  * Wrapper around the RBush by Vladimir Agafonkin.
  *
  * @constructor
@@ -26,7 +35,7 @@ const RBush = function(opt_maxEntries) {
    * A mapping between the objects added to this rbush wrapper
    * and the objects that are actually added to the internal rbush.
    * @private
-   * @type {Object.<number, ol.RBushEntry>}
+   * @type {Object.<number, module:ol/structs/RBush~Entry>}
    */
   this.items_ = {};
 
@@ -39,7 +48,7 @@ const RBush = function(opt_maxEntries) {
  * @param {T} value Value.
  */
 RBush.prototype.insert = function(extent, value) {
-  /** @type {ol.RBushEntry} */
+  /** @type {module:ol/structs/RBush~Entry} */
   const item = {
     minX: extent[0],
     minY: extent[1],
@@ -64,7 +73,7 @@ RBush.prototype.load = function(extents, values) {
     const extent = extents[i];
     const value = values[i];
 
-    /** @type {ol.RBushEntry} */
+    /** @type {module:ol/structs/RBush~Entry} */
     const item = {
       minX: extent[0],
       minY: extent[1],
@@ -128,7 +137,7 @@ RBush.prototype.getAll = function() {
  * @return {Array.<T>} All in extent.
  */
 RBush.prototype.getInExtent = function(extent) {
-  /** @type {ol.RBushEntry} */
+  /** @type {module:ol/structs/RBush~Entry} */
   const bbox = {
     minX: extent[0],
     minY: extent[1],

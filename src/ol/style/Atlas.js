@@ -3,6 +3,24 @@
  */
 import {createCanvasContext2D} from '../dom.js';
 
+
+/**
+ * @typedef {Object} AtlasBlock
+ * @property {number} x
+ * @property {number} y
+ * @property {number} width
+ * @property {number} height
+ */
+
+/**
+ * Provides information for an image inside an atlas.
+ * `offsetX` and `offsetY` are the position of the image inside the atlas image `image`.
+ * @typedef {Object} AtlasInfo
+ * @property {number} offsetX
+ * @property {number} offsetY
+ * @property {HTMLCanvasElement} image
+ */
+
 /**
  * This class facilitates the creation of image atlases.
  *
@@ -30,13 +48,13 @@ const Atlas = function(size, space) {
 
   /**
    * @private
-   * @type {Array.<ol.AtlasBlock>}
+   * @type {Array.<module:ol/style/Atlas~AtlasBlock>}
    */
   this.emptyBlocks_ = [{x: 0, y: 0, width: size, height: size}];
 
   /**
    * @private
-   * @type {Object.<string, ol.AtlasInfo>}
+   * @type {Object.<string, module:ol/style/Atlas~AtlasInfo>}
    */
   this.entries_ = {};
 
@@ -56,7 +74,7 @@ const Atlas = function(size, space) {
 
 /**
  * @param {string} id The identifier of the entry to check.
- * @return {?ol.AtlasInfo} The atlas info.
+ * @return {?module:ol/style/Atlas~AtlasInfo} The atlas info.
  */
 Atlas.prototype.get = function(id) {
   return this.entries_[id] || null;
@@ -71,7 +89,7 @@ Atlas.prototype.get = function(id) {
  *    Called to render the new image onto an atlas image.
  * @param {Object=} opt_this Value to use as `this` when executing
  *    `renderCallback`.
- * @return {?ol.AtlasInfo} The position and atlas image for the entry.
+ * @return {?module:ol/style/Atlas~AtlasInfo} The position and atlas image for the entry.
  */
 Atlas.prototype.add = function(id, width, height, renderCallback, opt_this) {
   for (let i = 0, ii = this.emptyBlocks_.length; i < ii; ++i) {
@@ -105,7 +123,7 @@ Atlas.prototype.add = function(id, width, height, renderCallback, opt_this) {
 /**
  * @private
  * @param {number} index The index of the block.
- * @param {ol.AtlasBlock} block The block to split.
+ * @param {module:ol/style/Atlas~AtlasBlock} block The block to split.
  * @param {number} width The width of the entry to insert.
  * @param {number} height The height of the entry to insert.
  */
@@ -113,9 +131,9 @@ Atlas.prototype.split_ = function(index, block, width, height) {
   const deltaWidth = block.width - width;
   const deltaHeight = block.height - height;
 
-  /** @type {ol.AtlasBlock} */
+  /** @type {module:ol/style/Atlas~AtlasBlock} */
   let newBlock1;
-  /** @type {ol.AtlasBlock} */
+  /** @type {module:ol/style/Atlas~AtlasBlock} */
   let newBlock2;
 
   if (deltaWidth > deltaHeight) {
@@ -164,8 +182,8 @@ Atlas.prototype.split_ = function(index, block, width, height) {
  * blocks (that are potentially smaller) are filled first.
  * @private
  * @param {number} index The index of the block to remove.
- * @param {ol.AtlasBlock} newBlock1 The 1st block to add.
- * @param {ol.AtlasBlock} newBlock2 The 2nd block to add.
+ * @param {module:ol/style/Atlas~AtlasBlock} newBlock1 The 1st block to add.
+ * @param {module:ol/style/Atlas~AtlasBlock} newBlock2 The 2nd block to add.
  */
 Atlas.prototype.updateBlocks_ = function(index, newBlock1, newBlock2) {
   const args = [index, 1];

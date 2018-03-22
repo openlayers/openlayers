@@ -28,6 +28,11 @@ import {createElementNS, makeArrayPusher, makeArraySerializer, makeChildAppender
  * directly mapped to a feature.
  */
 
+/**
+ * @typedef {Object} LayoutOptions
+ * @property {boolean} [hasZ]
+ * @property {boolean} [hasM]
+ */
 
 /**
  * @classdesc
@@ -389,7 +394,7 @@ const GPX_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @param {ol.LayoutOptions} layoutOptions Layout options.
+ * @param {module:ol/format/GPX~LayoutOptions} layoutOptions Layout options.
  * @param {Node} node Node.
  * @param {!Object} values Values.
  * @return {Array.<number>} Flat coordinates.
@@ -420,7 +425,7 @@ function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
  * Choose GeometryLayout based on flags in layoutOptions and adjust flatCoordinates
  * and ends arrays by shrinking them accordingly (removing unused zero entries).
  *
- * @param {ol.LayoutOptions} layoutOptions Layout options.
+ * @param {module:ol/format/GPX~LayoutOptions} layoutOptions Layout options.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<number>=} ends Ends.
  * @return {module:ol/geom/GeometryLayout~GeometryLayout} Layout.
@@ -493,7 +498,7 @@ function parseRtePt(node, objectStack) {
   if (values) {
     const rteValues = /** @type {!Object} */ (objectStack[objectStack.length - 1]);
     const flatCoordinates = /** @type {Array.<number>} */ (rteValues['flatCoordinates']);
-    const layoutOptions = /** @type {ol.LayoutOptions} */ (rteValues['layoutOptions']);
+    const layoutOptions = /** @type {module:ol/format/GPX~LayoutOptions} */ (rteValues['layoutOptions']);
     appendCoordinate(flatCoordinates, layoutOptions, node, values);
   }
 }
@@ -508,7 +513,7 @@ function parseTrkPt(node, objectStack) {
   if (values) {
     const trkValues = /** @type {!Object} */ (objectStack[objectStack.length - 1]);
     const flatCoordinates = /** @type {Array.<number>} */ (trkValues['flatCoordinates']);
-    const layoutOptions = /** @type {ol.LayoutOptions} */ (trkValues['layoutOptions']);
+    const layoutOptions = /** @type {module:ol/format/GPX~LayoutOptions} */ (trkValues['layoutOptions']);
     appendCoordinate(flatCoordinates, layoutOptions, node, values);
   }
 }
@@ -545,7 +550,7 @@ function readRte(node, objectStack) {
   const flatCoordinates = /** @type {Array.<number>} */
       (values['flatCoordinates']);
   delete values['flatCoordinates'];
-  const layoutOptions = /** @type {ol.LayoutOptions} */ (values['layoutOptions']);
+  const layoutOptions = /** @type {module:ol/format/GPX~LayoutOptions} */ (values['layoutOptions']);
   delete values['layoutOptions'];
   const layout = applyLayoutOptions(layoutOptions, flatCoordinates);
   const geometry = new LineString(null);
@@ -577,7 +582,7 @@ function readTrk(node, objectStack) {
   delete values['flatCoordinates'];
   const ends = /** @type {Array.<number>} */ (values['ends']);
   delete values['ends'];
-  const layoutOptions = /** @type {ol.LayoutOptions} */ (values['layoutOptions']);
+  const layoutOptions = /** @type {module:ol/format/GPX~LayoutOptions} */ (values['layoutOptions']);
   delete values['layoutOptions'];
   const layout = applyLayoutOptions(layoutOptions, flatCoordinates, ends);
   const geometry = new MultiLineString(null);
@@ -600,7 +605,7 @@ function readWpt(node, objectStack) {
   if (!values) {
     return undefined;
   }
-  const layoutOptions = /** @type {ol.LayoutOptions} */ ({});
+  const layoutOptions = /** @type {module:ol/format/GPX~LayoutOptions} */ ({});
   const coordinates = appendCoordinate([], layoutOptions, node, values);
   const layout = applyLayoutOptions(layoutOptions, coordinates);
   const geometry = new Point(coordinates, layout);

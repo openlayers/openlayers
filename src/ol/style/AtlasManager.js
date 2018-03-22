@@ -7,6 +7,19 @@ import Atlas from '../style/Atlas.js';
 
 
 /**
+ * Provides information for an image inside an atlas manager.
+ * `offsetX` and `offsetY` is the position of the image inside
+ * the atlas image `image` and the position of the hit-detection image
+ * inside the hit-detection atlas image `hitImage`.
+ * @typedef {Object} AtlasManagerInfo
+ * @property {number} offsetX
+ * @property {number} offsetY
+ * @property {HTMLCanvasElement} image
+ * @property {HTMLCanvasElement} hitImage
+ */
+
+
+/**
  * The size in pixels of the first atlas image.
  * @type {number}
  */
@@ -88,17 +101,17 @@ const AtlasManager = function(opt_options) {
 
 /**
  * @param {string} id The identifier of the entry to check.
- * @return {?ol.AtlasManagerInfo} The position and atlas image for the
+ * @return {?module:ol/style/AtlasManager~AtlasManagerInfo} The position and atlas image for the
  *    entry, or `null` if the entry is not part of the atlas manager.
  */
 AtlasManager.prototype.getInfo = function(id) {
-  /** @type {?ol.AtlasInfo} */
+  /** @type {?module:ol/style/Atlas~AtlasInfo} */
   const info = this.getInfo_(this.atlases_, id);
 
   if (!info) {
     return null;
   }
-  const hitInfo = /** @type {ol.AtlasInfo} */ (this.getInfo_(this.hitAtlases_, id));
+  const hitInfo = /** @type {module:ol/style/Atlas~AtlasInfo} */ (this.getInfo_(this.hitAtlases_, id));
 
   return this.mergeInfos_(info, hitInfo);
 };
@@ -108,7 +121,7 @@ AtlasManager.prototype.getInfo = function(id) {
  * @private
  * @param {Array.<ol.style.Atlas>} atlases The atlases to search.
  * @param {string} id The identifier of the entry to check.
- * @return {?ol.AtlasInfo} The position and atlas image for the entry,
+ * @return {?module:ol/style/Atlas~AtlasInfo} The position and atlas image for the entry,
  *    or `null` if the entry is not part of the atlases.
  */
 AtlasManager.prototype.getInfo_ = function(atlases, id) {
@@ -125,14 +138,14 @@ AtlasManager.prototype.getInfo_ = function(atlases, id) {
 
 /**
  * @private
- * @param {ol.AtlasInfo} info The info for the real image.
- * @param {ol.AtlasInfo} hitInfo The info for the hit-detection
+ * @param {module:ol/style/Atlas~AtlasInfo} info The info for the real image.
+ * @param {module:ol/style/Atlas~AtlasInfo} hitInfo The info for the hit-detection
  *    image.
- * @return {?ol.AtlasManagerInfo} The position and atlas image for the
+ * @return {?module:ol/style/AtlasManager~AtlasManagerInfo} The position and atlas image for the
  *    entry, or `null` if the entry is not part of the atlases.
  */
 AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
-  return /** @type {ol.AtlasManagerInfo} */ ({
+  return /** @type {module:ol/style/AtlasManager~AtlasManagerInfo} */ ({
     offsetX: info.offsetX,
     offsetY: info.offsetY,
     image: info.image,
@@ -160,7 +173,7 @@ AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
  *    detection atlas image.
  * @param {Object=} opt_this Value to use as `this` when executing
  *    `renderCallback` and `renderHitCallback`.
- * @return {?ol.AtlasManagerInfo}  The position and atlas image for the
+ * @return {?module:ol/style/AtlasManager~AtlasManagerInfo}  The position and atlas image for the
  *    entry, or `null` if the image is too big.
  */
 AtlasManager.prototype.add = function(id, width, height,
@@ -170,7 +183,7 @@ AtlasManager.prototype.add = function(id, width, height,
     return null;
   }
 
-  /** @type {?ol.AtlasInfo} */
+  /** @type {?module:ol/style/Atlas~AtlasInfo} */
   const info = this.add_(false,
     id, width, height, renderCallback, opt_this);
   if (!info) {
@@ -183,7 +196,7 @@ AtlasManager.prototype.add = function(id, width, height,
   const renderHitCallback = opt_renderHitCallback !== undefined ?
     opt_renderHitCallback : UNDEFINED;
 
-  const hitInfo = /** @type {ol.AtlasInfo} */ (this.add_(true,
+  const hitInfo = /** @type {module:ol/style/Atlas~AtlasInfo} */ (this.add_(true,
     id, width, height, renderHitCallback, opt_this));
 
   return this.mergeInfos_(info, hitInfo);
@@ -200,7 +213,7 @@ AtlasManager.prototype.add = function(id, width, height,
  *    Called to render the new image onto an atlas image.
  * @param {Object=} opt_this Value to use as `this` when executing
  *    `renderCallback` and `renderHitCallback`.
- * @return {?ol.AtlasInfo}  The position and atlas image for the entry,
+ * @return {?module:ol/style/Atlas~AtlasInfo}  The position and atlas image for the entry,
  *    or `null` if the image is too big.
  */
 AtlasManager.prototype.add_ = function(isHitAtlas, id, width, height,
