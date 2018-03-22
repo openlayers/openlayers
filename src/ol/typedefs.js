@@ -128,21 +128,6 @@ ol.DeclutterGroup;
 
 
 /**
- * @typedef {{x: number, xunits: (ol.style.IconAnchorUnits|undefined),
- *            y: number, yunits: (ol.style.IconAnchorUnits|undefined),
- *            origin: (ol.style.IconOrigin|undefined)}}
- */
-ol.KMLVec2_;
-
-
-/**
- * @typedef {{flatCoordinates: Array.<number>,
- *            whens: Array.<number>}}
- */
-ol.KMLGxTrackObject_;
-
-
-/**
  * @typedef {{hasZ: (boolean|undefined), hasM: (boolean|undefined)}}
  */
 ol.LayoutOptions;
