@@ -81,7 +81,7 @@ const WebGLReplay = function(tolerance, maxExtent) {
 
   /**
    * @protected
-   * @type {?ol.webgl.Buffer}
+   * @type {?module:ol/webgl/Buffer~WebGLBuffer}
    */
   this.indicesBuffer = null;
 
@@ -107,7 +107,7 @@ const WebGLReplay = function(tolerance, maxExtent) {
 
   /**
    * @protected
-   * @type {?ol.webgl.Buffer}
+   * @type {?module:ol/webgl/Buffer~WebGLBuffer}
    */
   this.verticesBuffer = null;
 

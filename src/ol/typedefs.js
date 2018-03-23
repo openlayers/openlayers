@@ -302,7 +302,7 @@ ol.StyleImageOptions;
 
 
 /**
- * @typedef {{buf: ol.webgl.Buffer,
+ * @typedef {{buf: module:ol/webgl/Buffer~WebGLBuffer,
  *            buffer: WebGLBuffer}}
  */
 ol.WebglBufferCacheEntry;

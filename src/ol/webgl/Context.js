@@ -99,7 +99,7 @@ inherits(WebGLContext, Disposable);
  * the WebGL buffer, bind it, populate it, and add an entry to
  * the cache.
  * @param {number} target Target.
- * @param {ol.webgl.Buffer} buf Buffer.
+ * @param {module:ol/webgl/Buffer~WebGLBuffer} buf Buffer.
  */
 WebGLContext.prototype.bindBuffer = function(target, buf) {
   const gl = this.getGL();
@@ -128,7 +128,7 @@ WebGLContext.prototype.bindBuffer = function(target, buf) {
 
 
 /**
- * @param {ol.webgl.Buffer} buf Buffer.
+ * @param {module:ol/webgl/Buffer~WebGLBuffer} buf Buffer.
  */
 WebGLContext.prototype.deleteBuffer = function(buf) {
   const gl = this.getGL();

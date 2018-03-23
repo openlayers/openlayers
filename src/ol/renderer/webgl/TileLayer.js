@@ -57,7 +57,7 @@ const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {ol.webgl.Buffer}
+   * @type {module:ol/webgl/Buffer~WebGLBuffer}
    */
   this.renderArrayBuffer_ = new WebGLBuffer([
     0, 0, 0, 1,

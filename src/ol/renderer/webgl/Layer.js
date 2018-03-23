@@ -34,7 +34,7 @@ const WebGLLayerRenderer = function(mapRenderer, layer) {
 
   /**
    * @private
-   * @type {ol.webgl.Buffer}
+   * @type {module:ol/webgl/Buffer~WebGLBuffer}
    */
   this.arrayBuffer_ = new WebGLBuffer([
     -1, -1, 0, 0,
