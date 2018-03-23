@@ -260,7 +260,7 @@ function createStyleDefaults() {
  * which do not support this will need a URL polyfill to be loaded before use.
  *
  * @constructor
- * @extends {ol.format.XMLFeature}
+ * @extends {module:ol/format/XMLFeature~XMLFeature}
  * @param {module:ol/format/KML~Options=} opt_options Options.
  * @api
  */
@@ -2217,7 +2217,7 @@ const DOCUMENT_NODE_FACTORY = function(value, objectStack, opt_nodeName) {
  * @param {Node} node Node.
  * @param {Array.<module:ol/Feature~Feature>} features Features.
  * @param {Array.<*>} objectStack Object stack.
- * @this {ol.format.KML}
+ * @this {module:ol/format/KML~KML}
  */
 function writeDocument(node, features, objectStack) {
   const /** @type {module:ol/xml~NodeStackItem} */ context = {node: node};
@@ -2670,7 +2670,7 @@ const EXTENDEDDATA_NODE_FACTORY = makeSimpleNodeFactory('ExtendedData');
  * @param {Node} node Node.
  * @param {module:ol/Feature~Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
- * @this {ol.format.KML}
+ * @this {module:ol/format/KML~KML}
  */
 function writePlacemark(node, feature, objectStack) {
   const /** @type {module:ol/xml~NodeStackItem} */ context = {node: node};

@@ -14,7 +14,7 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {Array.<function(new: ol.format.Feature)>} [formatConstructors] Format constructors.
+ * @property {Array.<function(new: module:ol/format/Feature~FeatureFormat)>} [formatConstructors] Format constructors.
  * @property {ol.source.Vector} [source] Optional vector source where features will be added.  If a source is provided
  * all existing features will be removed and new features will be added when
  * they are dropped on the target.  If you want to add features to a vector
@@ -100,7 +100,7 @@ const DragAndDrop = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<function(new: ol.format.Feature)>}
+   * @type {Array.<function(new: module:ol/format/Feature~FeatureFormat)>}
    */
   this.formatConstructors_ = options.formatConstructors ?
     options.formatConstructors : [];
@@ -183,7 +183,7 @@ DragAndDrop.prototype.handleResult_ = function(file, event) {
      */
     const formatConstructor = formatConstructors[i];
     /**
-     * @type {ol.format.Feature}
+     * @type {module:ol/format/Feature~FeatureFormat}
      */
     const format = new formatConstructor();
     features = this.tryReadFeatures_(format, result, {
@@ -247,7 +247,7 @@ DragAndDrop.prototype.setMap = function(map) {
 
 
 /**
- * @param {ol.format.Feature} format Format.
+ * @param {module:ol/format/Feature~FeatureFormat} format Format.
  * @param {string} text Text.
  * @param {module:ol/format/Feature~ReadOptions} options Read options.
  * @private

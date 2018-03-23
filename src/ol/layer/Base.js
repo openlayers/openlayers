@@ -27,7 +27,7 @@ import {assign} from '../obj.js';
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
- * Note that with `ol.layer.Base` and all its subclasses, any property set in
+ * Note that with `module:ol/layer/Base~BaseLayer` and all its subclasses, any property set in
  * the options is set as a {@link module:ol/Object~BaseObject} property on the layer object, so
  * is observable, and has get/set accessors.
  *
@@ -63,7 +63,7 @@ const BaseLayer = function(options) {
    * @private
    */
   this.state_ = /** @type {module:ol/layer/Layer~State} */ ({
-    layer: /** @type {ol.layer.Layer} */ (this),
+    layer: /** @type {module:ol/layer/Layer~Layer} */ (this),
     managed: true
   });
 
@@ -106,9 +106,9 @@ BaseLayer.prototype.getLayerState = function() {
 
 /**
  * @abstract
- * @param {Array.<ol.layer.Layer>=} opt_array Array of layers (to be
+ * @param {Array.<module:ol/layer/Layer~Layer>=} opt_array Array of layers (to be
  *     modified in place).
- * @return {Array.<ol.layer.Layer>} Array of layers.
+ * @return {Array.<module:ol/layer/Layer~Layer>} Array of layers.
  */
 BaseLayer.prototype.getLayersArray = function(opt_array) {};
 

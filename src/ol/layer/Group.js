@@ -31,7 +31,7 @@ const Property = {
  * A generic `change` event is triggered when the group/Collection changes.
  *
  * @constructor
- * @extends {ol.layer.Base}
+ * @extends {module:ol/layer/Base~BaseLayer}
  * @param {olx.layer.GroupOptions=} opt_options Layer options.
  * @api
  */
@@ -125,7 +125,7 @@ LayerGroup.prototype.handleLayersChanged_ = function(event) {
  * @private
  */
 LayerGroup.prototype.handleLayersAdd_ = function(collectionEvent) {
-  const layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
+  const layer = /** @type {module:ol/layer/Base~BaseLayer} */ (collectionEvent.element);
   const key = getUid(layer).toString();
   this.listenerKeys_[key] = [
     listen(layer, ObjectEventType.PROPERTYCHANGE, this.handleLayerChange_, this),
@@ -140,7 +140,7 @@ LayerGroup.prototype.handleLayersAdd_ = function(collectionEvent) {
  * @private
  */
 LayerGroup.prototype.handleLayersRemove_ = function(collectionEvent) {
-  const layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
+  const layer = /** @type {module:ol/layer/Base~BaseLayer} */ (collectionEvent.element);
   const key = getUid(layer).toString();
   this.listenerKeys_[key].forEach(unlistenByKey);
   delete this.listenerKeys_[key];
@@ -149,23 +149,23 @@ LayerGroup.prototype.handleLayersRemove_ = function(collectionEvent) {
 
 
 /**
- * Returns the {@link module:ol/Collection~Collection collection} of {@link ol.layer.Layer layers}
+ * Returns the {@link module:ol/Collection~Collection collection} of {@link module:ol/layer/Layer~Layer layers}
  * in this group.
- * @return {!module:ol/Collection~Collection.<ol.layer.Base>} Collection of
- *   {@link ol.layer.Base layers} that are part of this group.
+ * @return {!module:ol/Collection~Collection.<module:ol/layer/Base~BaseLayer>} Collection of
+ *   {@link module:ol/layer/Base~BaseLayer layers} that are part of this group.
  * @observable
  * @api
  */
 LayerGroup.prototype.getLayers = function() {
-  return /** @type {!module:ol/Collection~Collection.<ol.layer.Base>} */ (this.get(Property.LAYERS));
+  return /** @type {!module:ol/Collection~Collection.<module:ol/layer/Base~BaseLayer>} */ (this.get(Property.LAYERS));
 };
 
 
 /**
- * Set the {@link module:ol/Collection~Collection collection} of {@link ol.layer.Layer layers}
+ * Set the {@link module:ol/Collection~Collection collection} of {@link module:ol/layer/Layer~Layer layers}
  * in this group.
- * @param {!module:ol/Collection~Collection.<ol.layer.Base>} layers Collection of
- *   {@link ol.layer.Base layers} that are part of this group.
+ * @param {!module:ol/Collection~Collection.<module:ol/layer/Base~BaseLayer>} layers Collection of
+ *   {@link module:ol/layer/Base~BaseLayer layers} that are part of this group.
  * @observable
  * @api
  */

@@ -39,7 +39,7 @@ import {createElementNS, makeArrayPusher, makeArraySerializer, makeChildAppender
  * Feature format for reading and writing data in the GPX format.
  *
  * @constructor
- * @extends {ol.format.XMLFeature}
+ * @extends {module:ol/format/XMLFeature~XMLFeature}
  * @param {module:ol/format/GPX~Options=} opt_options Options.
  * @api
  */

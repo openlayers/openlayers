@@ -538,7 +538,7 @@ Parser.prototype.formatErrorMessage_ = function() {
  * format.
  *
  * @constructor
- * @extends {ol.format.TextFeature}
+ * @extends {module:ol/format/TextFeature~TextFeature}
  * @param {module:ol/format/WKT~Options=} opt_options Options.
  * @api
  */

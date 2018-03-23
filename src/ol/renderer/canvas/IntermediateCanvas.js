@@ -13,7 +13,7 @@ import {create as createTransform, apply as applyTransform} from '../../transfor
  * @constructor
  * @abstract
  * @extends {ol.renderer.canvas.Layer}
- * @param {ol.layer.Layer} layer Layer.
+ * @param {module:ol/layer/Layer~Layer} layer Layer.
  */
 const IntermediateCanvasRenderer = function(layer) {
 

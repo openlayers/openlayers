@@ -17,7 +17,7 @@ import {assign} from '../obj.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @constructor
- * @extends {ol.layer.Vector}
+ * @extends {module:ol/layer/Vector~VectorLayer}
  * @param {olx.layer.VectorTileOptions=} opt_options Options.
  * @api
  */

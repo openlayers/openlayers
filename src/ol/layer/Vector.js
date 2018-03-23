@@ -26,7 +26,7 @@ const Property = {
  * options means that `title` is observable, and has get/set accessors.
  *
  * @constructor
- * @extends {ol.layer.Layer}
+ * @extends {module:ol/layer/Layer~Layer}
  * @fires ol.render.Event
  * @param {olx.layer.VectorOptions=} opt_options Options.
  * @api
@@ -88,7 +88,7 @@ const VectorLayer = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.layer.VectorTileRenderType|string}
+   * @type {module:ol/layer/VectorTileRenderType~VectorTileRenderType|string}
    */
   this.renderMode_ = options.renderMode || VectorRenderType.VECTOR;
 
@@ -215,7 +215,7 @@ VectorLayer.prototype.setStyle = function(style) {
 
 
 /**
- * @return {ol.layer.VectorRenderType|string} The render mode.
+ * @return {module:ol/layer/VectorRenderType~VectorRenderType|string} The render mode.
  */
 VectorLayer.prototype.getRenderMode = function() {
   return this.renderMode_;

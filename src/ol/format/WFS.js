@@ -128,7 +128,7 @@ const DEFAULT_VERSION = '1.1.0';
  *
  * @constructor
  * @param {module:ol/format/WFS~Options=} opt_options Optional configuration object.
- * @extends {ol.format.XMLFeature}
+ * @extends {module:ol/format/XMLFeature~XMLFeature}
  * @api
  */
 const WFS = function(opt_options) {

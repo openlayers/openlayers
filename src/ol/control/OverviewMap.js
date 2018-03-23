@@ -45,7 +45,7 @@ const MIN_RATIO = 0.1;
  * @property {boolean} [collapsible=true] Whether the control can be collapsed or not.
  * @property {string|Element} [label='»'] Text label to use for the collapsed
  * overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {Array.<ol.layer.Layer>|module:ol/Collection~Collection.<ol.layer.Layer>} [layers]
+ * @property {Array.<module:ol/layer/Layer~Layer>|module:ol/Collection~Collection.<module:ol/layer/Layer~Layer>} [layers]
  * Layers for the overview map. If not set, then all main map layers are used
  * instead.
  * @property {function(module:ol/MapEvent~MapEvent)} [render] Function called when the control
@@ -149,7 +149,7 @@ const OverviewMap = function(opt_options) {
   if (options.layers) {
     options.layers.forEach(
       /**
-       * @param {ol.layer.Layer} layer Layer.
+       * @param {module:ol/layer/Layer~Layer} layer Layer.
        */
       function(layer) {
         ovmap.addLayer(layer);
@@ -161,7 +161,7 @@ const OverviewMap = function(opt_options) {
   box.style.boxSizing = 'border-box';
 
   /**
-   * @type {ol.Overlay}
+   * @type {module:ol/Overlay~Overlay}
    * @private
    */
   this.boxOverlay_ = new Overlay({

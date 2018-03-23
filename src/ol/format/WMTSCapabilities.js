@@ -15,7 +15,7 @@ import {pushParseAndPop, makeStructureNS,
  * Format for reading WMTS capabilities data.
  *
  * @constructor
- * @extends {ol.format.XML}
+ * @extends {module:ol/format/XML~XML}
  * @api
  */
 const WMTSCapabilities = function() {

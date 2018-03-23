@@ -22,7 +22,7 @@ import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
  * {@link ol.format.GML2} to read features.
  *
  * @constructor
- * @extends {ol.format.XMLFeature}
+ * @extends {module:ol/format/XMLFeature~XMLFeature}
  * @param {module:ol/format/WMSGetFeatureInfo~Options=} opt_options Options.
  * @api
  */

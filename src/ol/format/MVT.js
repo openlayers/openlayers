@@ -43,7 +43,7 @@ import RenderFeature from '../render/Feature.js';
  * Feature format for reading data in the Mapbox MVT format.
  *
  * @constructor
- * @extends {ol.format.Feature}
+ * @extends {module:ol/format/Feature~FeatureFormat}
  * @param {module:ol/format/MVT~Options=} opt_options Options.
  * @api
  */

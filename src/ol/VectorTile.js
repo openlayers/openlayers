@@ -11,7 +11,7 @@ import TileState from './TileState.js';
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {module:ol/TileState~TileState} state State.
  * @param {string} src Data source url.
- * @param {module:ol/format/Feature~Feature} format Feature format.
+ * @param {module:ol/format/Feature~FeatureFormat} format Feature format.
  * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
  * @param {module:ol/Tile~Options=} opt_options Tile options.
  */
@@ -32,7 +32,7 @@ const VectorTile = function(tileCoord, state, src, format, tileLoadFunction, opt
 
   /**
    * @private
-   * @type {module:ol/format/Feature~Feature}
+   * @type {module:ol/format/Feature~FeatureFormat}
    */
   this.format_ = format;
 
@@ -108,7 +108,7 @@ VectorTile.prototype.getExtent = function() {
 
 /**
  * Get the feature format assigned for reading this tile's features.
- * @return {module:ol/format/Feature~Feature} Feature format.
+ * @return {module:ol/format/Feature~FeatureFormat} Feature format.
  * @api
  */
 VectorTile.prototype.getFormat = function() {

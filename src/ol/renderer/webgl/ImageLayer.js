@@ -28,7 +28,7 @@ import {createTexture} from '../../webgl/Context.js';
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
  * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
- * @param {ol.layer.Image} imageLayer Tile layer.
+ * @param {module:ol/layer/Image~ImageLayer} imageLayer Tile layer.
  * @api
  */
 const WebGLImageLayerRenderer = function(mapRenderer, imageLayer) {
@@ -62,7 +62,7 @@ inherits(WebGLImageLayerRenderer, WebGLLayerRenderer);
 /**
  * Determine if this renderer handles the provided layer.
  * @param {ol.renderer.Type} type The renderer type.
- * @param {ol.layer.Layer} layer The candidate layer.
+ * @param {module:ol/layer/Layer~Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
 WebGLImageLayerRenderer['handles'] = function(type, layer) {
@@ -73,13 +73,13 @@ WebGLImageLayerRenderer['handles'] = function(type, layer) {
 /**
  * Create a layer renderer.
  * @param {ol.renderer.Map} mapRenderer The map renderer.
- * @param {ol.layer.Layer} layer The layer to be rendererd.
+ * @param {module:ol/layer/Layer~Layer} layer The layer to be rendererd.
  * @return {ol.renderer.webgl.ImageLayer} The layer renderer.
  */
 WebGLImageLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLImageLayerRenderer(
     /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
-    /** @type {ol.layer.Image} */ (layer)
+    /** @type {module:ol/layer/Image~ImageLayer} */ (layer)
   );
 };
 
@@ -140,7 +140,7 @@ WebGLImageLayerRenderer.prototype.prepareFrame = function(frameState, layerState
 
   let image = this.image_;
   let texture = this.texture;
-  const imageLayer = /** @type {ol.layer.Image} */ (this.getLayer());
+  const imageLayer = /** @type {module:ol/layer/Image~ImageLayer} */ (this.getLayer());
   const imageSource = imageLayer.getSource();
 
   const hints = frameState.viewHints;

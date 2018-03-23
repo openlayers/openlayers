@@ -15,7 +15,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 /**
  * @constructor
  * @extends {ol.renderer.canvas.IntermediateCanvas}
- * @param {ol.layer.Tile|ol.layer.VectorTile} tileLayer Tile layer.
+ * @param {module:ol/layer/Tile~TileLayer|module:ol/layer/VectorTile~VectorTile} tileLayer Tile layer.
  * @api
  */
 const CanvasTileLayerRenderer = function(tileLayer) {
@@ -84,7 +84,7 @@ inherits(CanvasTileLayerRenderer, IntermediateCanvasRenderer);
 /**
  * Determine if this renderer handles the provided layer.
  * @param {ol.renderer.Type} type The renderer type.
- * @param {ol.layer.Layer} layer The candidate layer.
+ * @param {module:ol/layer/Layer~Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
 CanvasTileLayerRenderer['handles'] = function(type, layer) {
@@ -95,11 +95,11 @@ CanvasTileLayerRenderer['handles'] = function(type, layer) {
 /**
  * Create a layer renderer.
  * @param {ol.renderer.Map} mapRenderer The map renderer.
- * @param {ol.layer.Layer} layer The layer to be rendererd.
+ * @param {module:ol/layer/Layer~Layer} layer The layer to be rendererd.
  * @return {ol.renderer.canvas.TileLayer} The layer renderer.
  */
 CanvasTileLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasTileLayerRenderer(/** @type {ol.layer.Tile} */ (layer));
+  return new CanvasTileLayerRenderer(/** @type {module:ol/layer/Tile~TileLayer} */ (layer));
 };
 
 
@@ -348,7 +348,7 @@ CanvasTileLayerRenderer.prototype.getImage = function() {
 
 /**
  * @function
- * @return {ol.layer.Tile|ol.layer.VectorTile}
+ * @return {module:ol/layer/Tile~TileLayer|module:ol/layer/VectorTile~VectorTile}
  */
 CanvasTileLayerRenderer.prototype.getLayer;
 

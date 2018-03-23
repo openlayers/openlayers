@@ -37,13 +37,13 @@ import SourceState from '../source/State.js';
  * Layers are usually added to a map with {@link ol.Map#addLayer}. Components
  * like {@link module:ol/interaction/Select~Select} use unmanaged layers
  * internally. These unmanaged layers are associated with the map using
- * {@link ol.layer.Layer#setMap} instead.
+ * {@link module:ol/layer/Layer~Layer#setMap} instead.
  *
  * A generic `change` event is fired when the state of the source changes.
  *
  * @constructor
  * @abstract
- * @extends {ol.layer.Base}
+ * @extends {module:ol/layer/Base~BaseLayer}
  * @fires ol.render.Event
  * @param {olx.layer.LayerOptions} options Layer options.
  * @api

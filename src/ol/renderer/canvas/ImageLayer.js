@@ -18,7 +18,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 /**
  * @constructor
  * @extends {ol.renderer.canvas.IntermediateCanvas}
- * @param {ol.layer.Image} imageLayer Single image layer.
+ * @param {module:ol/layer/Image~ImageLayer} imageLayer Single image layer.
  * @api
  */
 const CanvasImageLayerRenderer = function(imageLayer) {
@@ -56,24 +56,24 @@ inherits(CanvasImageLayerRenderer, IntermediateCanvasRenderer);
 /**
  * Determine if this renderer handles the provided layer.
  * @param {ol.renderer.Type} type The renderer type.
- * @param {ol.layer.Layer} layer The candidate layer.
+ * @param {module:ol/layer/Layer~Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
 CanvasImageLayerRenderer['handles'] = function(type, layer) {
   return type === RendererType.CANVAS && (layer.getType() === LayerType.IMAGE ||
     layer.getType() === LayerType.VECTOR &&
-    /** @type {ol.layer.Vector} */ (layer).getRenderMode() === VectorRenderType.IMAGE);
+    /** @type {module:ol/layer/Vector~VectorLayer} */ (layer).getRenderMode() === VectorRenderType.IMAGE);
 };
 
 
 /**
  * Create a layer renderer.
  * @param {ol.renderer.Map} mapRenderer The map renderer.
- * @param {ol.layer.Layer} layer The layer to be rendererd.
+ * @param {module:ol/layer/Layer~Layer} layer The layer to be rendererd.
  * @return {ol.renderer.canvas.ImageLayer} The layer renderer.
  */
 CanvasImageLayerRenderer['create'] = function(mapRenderer, layer) {
-  const renderer = new CanvasImageLayerRenderer(/** @type {ol.layer.Image} */ (layer));
+  const renderer = new CanvasImageLayerRenderer(/** @type {module:ol/layer/Image~ImageLayer} */ (layer));
   if (layer.getType() === LayerType.VECTOR) {
     const candidates = getLayerRendererPlugins();
     for (let i = 0, ii = candidates.length; i < ii; ++i) {
@@ -127,7 +127,7 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
   const viewResolution = viewState.resolution;
 
   let image;
-  const imageLayer = /** @type {ol.layer.Image} */ (this.getLayer());
+  const imageLayer = /** @type {module:ol/layer/Image~ImageLayer} */ (this.getLayer());
   const imageSource = imageLayer.getSource();
 
   const hints = frameState.viewHints;

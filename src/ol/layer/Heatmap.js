@@ -39,7 +39,7 @@ const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  * options means that `title` is observable, and has get/set accessors.
  *
  * @constructor
- * @extends {ol.layer.Vector}
+ * @extends {module:ol/layer/Vector~VectorLayer}
  * @fires ol.render.Event
  * @param {olx.layer.HeatmapOptions=} opt_options Options.
  * @api

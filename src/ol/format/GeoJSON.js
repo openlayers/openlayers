@@ -38,7 +38,7 @@ import {get as getProjection} from '../proj.js';
  * Feature format for reading and writing data in the GeoJSON format.
  *
  * @constructor
- * @extends {ol.format.JSONFeature}
+ * @extends {module:ol/format/JSONFeature~JSONFeature}
  * @param {module:ol/format/GeoJSON~Options=} opt_options Options.
  * @api
  */

@@ -13,7 +13,7 @@ import FormatType from '../format/FormatType.js';
  *
  * @constructor
  * @abstract
- * @extends {ol.format.Feature}
+ * @extends {module:ol/format/Feature~FeatureFormat}
  */
 const TextFeature = function() {
   FeatureFormat.call(this);
