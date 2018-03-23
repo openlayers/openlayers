@@ -81,7 +81,7 @@ WebGLReplayGroup.prototype.addDeclutter = function(style, group) {};
 
 
 /**
- * @param {ol.webgl.Context} context WebGL context.
+ * @param {module:ol/webgl/Context~WebGLContext} context WebGL context.
  * @return {function()} Delete resources function.
  */
 WebGLReplayGroup.prototype.getDeleteResourcesFunction = function(context) {
@@ -106,7 +106,7 @@ WebGLReplayGroup.prototype.getDeleteResourcesFunction = function(context) {
 
 
 /**
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  */
 WebGLReplayGroup.prototype.finish = function(context) {
   let zKey;
@@ -151,7 +151,7 @@ WebGLReplayGroup.prototype.isEmpty = function() {
 
 
 /**
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
@@ -186,7 +186,7 @@ WebGLReplayGroup.prototype.replay = function(context,
 
 /**
  * @private
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
@@ -232,7 +232,7 @@ WebGLReplayGroup.prototype.replayHitDetection_ = function(context,
 
 /**
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
@@ -287,7 +287,7 @@ WebGLReplayGroup.prototype.forEachFeatureAtCoordinate = function(
 
 /**
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.

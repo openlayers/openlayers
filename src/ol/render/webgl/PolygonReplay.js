@@ -20,6 +20,22 @@ import RBush from '../../structs/RBush.js';
 import {FLOAT} from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
+
+/**
+ * @typedef {Object} PolygonVertex
+ * @property {number} x
+ * @property {number} y
+ * @property {number} i
+ * @property {boolean} [reflex]
+ */
+
+/**
+ * @typedef {Object} PolygonSegment
+ * @property {module:ol/render/webgl/PolygonReplay~PolygonVertex} p0
+ * @property {module:ol/render/webgl/PolygonReplay~PolygonVertex} p1
+ */
+
+
 /**
  * @constructor
  * @extends {ol.render.webgl.Replay}
@@ -144,11 +160,11 @@ WebGLPolygonReplay.prototype.processFlatCoordinates_ = function(
     0, flatCoordinates.length, stride);
   let i, ii;
   let n = this.vertices.length / 2;
-  /** @type {ol.WebglPolygonVertex} */
+  /** @type {module:ol/render/webgl/PolygonReplay~PolygonVertex} */
   let start;
-  /** @type {ol.WebglPolygonVertex} */
+  /** @type {module:ol/render/webgl/PolygonReplay~PolygonVertex} */
   let p0;
-  /** @type {ol.WebglPolygonVertex} */
+  /** @type {module:ol/render/webgl/PolygonReplay~PolygonVertex} */
   let p1;
   const extents = [];
   const segments = [];
@@ -260,11 +276,11 @@ WebGLPolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
   }
 
   const p1 = seg.p1;
-  /** @type {ol.WebglPolygonVertex} */
+  /** @type {module:ol/render/webgl/PolygonReplay~PolygonVertex} */
   const p2 = {x: listMaxX, y: p1.y, i: -1};
   let minDist = Infinity;
   let i, ii, bestPoint;
-  /** @type {ol.WebglPolygonVertex} */
+  /** @type {module:ol/render/webgl/PolygonReplay~PolygonVertex} */
   let p5;
 
   const intersectingSegments = this.getIntersections_({p0: p1, p1: p2}, rtree, true);
@@ -586,13 +602,13 @@ WebGLPolygonReplay.prototype.splitPolygon_ = function(list, rtree) {
  * @param {number} x X coordinate.
  * @param {number} y Y coordinate.
  * @param {number} i Index.
- * @return {ol.WebglPolygonVertex} List item.
+ * @return {module:ol/render/webgl/PolygonReplay~PolygonVertex} List item.
  */
 WebGLPolygonReplay.prototype.createPoint_ = function(x, y, i) {
   let numVertices = this.vertices.length;
   this.vertices[numVertices++] = x;
   this.vertices[numVertices++] = y;
-  /** @type {ol.WebglPolygonVertex} */
+  /** @type {module:ol/render/webgl/PolygonReplay~PolygonVertex} */
   const p = {
     x: x,
     y: y,
@@ -605,11 +621,11 @@ WebGLPolygonReplay.prototype.createPoint_ = function(x, y, i) {
 
 /**
  * @private
- * @param {ol.WebglPolygonVertex} p0 First point of segment.
- * @param {ol.WebglPolygonVertex} p1 Second point of segment.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p0 First point of segment.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p1 Second point of segment.
  * @param {ol.structs.LinkedList} list Polygon ring.
  * @param {ol.structs.RBush=} opt_rtree Insert the segment into the R-Tree.
- * @return {ol.WebglPolygonSegment} segment.
+ * @return {module:ol/render/webgl/PolygonReplay~PolygonSegment} segment.
  */
 WebGLPolygonReplay.prototype.insertItem_ = function(p0, p1, list, opt_rtree) {
   const seg = {
@@ -627,8 +643,8 @@ WebGLPolygonReplay.prototype.insertItem_ = function(p0, p1, list, opt_rtree) {
 
 /**
   * @private
-  * @param {ol.WebglPolygonSegment} s0 Segment before the remove candidate.
-  * @param {ol.WebglPolygonSegment} s1 Remove candidate segment.
+  * @param {module:ol/render/webgl/PolygonReplay~PolygonSegment} s0 Segment before the remove candidate.
+  * @param {module:ol/render/webgl/PolygonReplay~PolygonSegment} s1 Remove candidate segment.
   * @param {ol.structs.LinkedList} list Polygon ring.
   * @param {ol.structs.RBush} rtree R-Tree of the polygon.
   */
@@ -645,12 +661,12 @@ WebGLPolygonReplay.prototype.removeItem_ = function(s0, s1, list, rtree) {
 
 /**
  * @private
- * @param {ol.WebglPolygonVertex} p0 First point.
- * @param {ol.WebglPolygonVertex} p1 Second point.
- * @param {ol.WebglPolygonVertex} p2 Third point.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p0 First point.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p1 Second point.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p2 Third point.
  * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  * @param {boolean=} opt_reflex Only include reflex points.
- * @return {Array.<ol.WebglPolygonVertex>} Points in the triangle.
+ * @return {Array.<module:ol/render/webgl/PolygonReplay~PolygonVertex>} Points in the triangle.
  */
 WebGLPolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1, p2, rtree, opt_reflex) {
   const result = [];
@@ -675,10 +691,10 @@ WebGLPolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1, p2, rtree, 
 
 /**
  * @private
- * @param {ol.WebglPolygonSegment} segment Segment.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonSegment} segment Segment.
  * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  * @param {boolean=} opt_touch Touching segments should be considered an intersection.
- * @return {Array.<ol.WebglPolygonSegment>} Intersecting segments.
+ * @return {Array.<module:ol/render/webgl/PolygonReplay~PolygonSegment>} Intersecting segments.
  */
 WebGLPolygonReplay.prototype.getIntersections_ = function(segment, rtree, opt_touch) {
   const p0 = segment.p0;
@@ -702,10 +718,10 @@ WebGLPolygonReplay.prototype.getIntersections_ = function(segment, rtree, opt_to
  * @see http://paulbourke.net/geometry/pointlineplane/
  *
  * @private
- * @param {ol.WebglPolygonVertex} p0 First point.
- * @param {ol.WebglPolygonVertex} p1 Second point.
- * @param {ol.WebglPolygonVertex} p2 Third point.
- * @param {ol.WebglPolygonVertex} p3 Fourth point.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p0 First point.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p1 Second point.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p2 Third point.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p3 Fourth point.
  * @param {boolean=} opt_touch Touching segments should be considered an intersection.
  * @return {Array.<number>|undefined} Intersection coordinates.
  */
@@ -726,11 +742,11 @@ WebGLPolygonReplay.prototype.calculateIntersection_ = function(p0, p1, p2, p3, o
 
 /**
  * @private
- * @param {ol.WebglPolygonVertex} p0 Point before the start of the diagonal.
- * @param {ol.WebglPolygonVertex} p1 Start point of the diagonal.
- * @param {ol.WebglPolygonVertex} p2 Ear candidate.
- * @param {ol.WebglPolygonVertex} p3 End point of the diagonal.
- * @param {ol.WebglPolygonVertex} p4 Point after the end of the diagonal.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p0 Point before the start of the diagonal.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p1 Start point of the diagonal.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p2 Ear candidate.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p3 End point of the diagonal.
+ * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p4 Point after the end of the diagonal.
  * @return {boolean} Diagonal is inside the polygon.
  */
 WebGLPolygonReplay.prototype.diagonalIsInside_ = function(p0, p1, p2, p3, p4) {
@@ -986,7 +1002,7 @@ WebGLPolygonReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, conte
 /**
  * @private
  * @param {WebGLRenderingContext} gl gl.
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
 WebGLPolygonReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {

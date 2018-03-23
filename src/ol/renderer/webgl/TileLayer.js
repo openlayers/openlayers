@@ -39,13 +39,13 @@ const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {ol.webgl.Fragment}
+   * @type {module:ol/webgl/Fragment~WebGLFragment}
    */
   this.fragmentShader_ = fragment;
 
   /**
    * @private
-   * @type {ol.webgl.Vertex}
+   * @type {module:ol/webgl/Vertex~WebGLVertex}
    */
   this.vertexShader_ = vertex;
 
@@ -57,7 +57,7 @@ const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {ol.webgl.Buffer}
+   * @type {module:ol/webgl/Buffer~WebGLBuffer}
    */
   this.renderArrayBuffer_ = new WebGLBuffer([
     0, 0, 0, 1,

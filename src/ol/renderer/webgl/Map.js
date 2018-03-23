@@ -26,6 +26,14 @@ import ContextEventType from '../../webgl/ContextEventType.js';
 
 
 /**
+ * @typedef {Object} TextureCacheEntry
+ * @property {number} magFilter
+ * @property {number} minFilter
+ * @property {WebGLTexture} texture
+ */
+
+
+/**
  * Texture cache high water mark.
  * @type {number}
  */
@@ -92,7 +100,7 @@ const WebGLMapRenderer = function(container, map) {
 
   /**
    * @private
-   * @type {ol.webgl.Context}
+   * @type {module:ol/webgl/Context~WebGLContext}
    */
   this.context_ = new WebGLContext(this.canvas_, this.gl_);
 
@@ -103,7 +111,7 @@ const WebGLMapRenderer = function(container, map) {
 
   /**
    * @private
-   * @type {ol.structs.LRUCache.<ol.WebglTextureCacheEntry|null>}
+   * @type {ol.structs.LRUCache.<module:ol/renderer/webgl/Map~TextureCacheEntry|null>}
    */
   this.textureCache_ = new LRUCache();
 
@@ -295,9 +303,9 @@ WebGLMapRenderer.prototype.disposeInternal = function() {
   if (!gl.isContextLost()) {
     this.textureCache_.forEach(
       /**
-         * @param {?ol.WebglTextureCacheEntry} textureCacheEntry
-         *     Texture cache entry.
-         */
+       * @param {?module:ol/renderer/webgl/Map~TextureCacheEntry} textureCacheEntry
+       *     Texture cache entry.
+       */
       function(textureCacheEntry) {
         if (textureCacheEntry) {
           gl.deleteTexture(textureCacheEntry.texture);
@@ -335,7 +343,7 @@ WebGLMapRenderer.prototype.expireCache_ = function(map, frameState) {
 
 
 /**
- * @return {ol.webgl.Context} The context.
+ * @return {module:ol/webgl/Context~WebGLContext} The context.
  */
 WebGLMapRenderer.prototype.getContext = function() {
   return this.context_;

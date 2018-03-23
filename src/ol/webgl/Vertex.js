@@ -7,7 +7,7 @@ import WebGLShader from '../webgl/Shader.js';
 
 /**
  * @constructor
- * @extends {ol.webgl.Shader}
+ * @extends {module:ol/webgl/Shader~WebGLShader}
  * @param {string} source Source.
  * @struct
  */
