@@ -302,42 +302,6 @@ ol.StyleImageOptions;
 
 
 /**
- * @typedef {{buf: module:ol/webgl/Buffer~WebGLBuffer,
- *            buffer: WebGLBuffer}}
- */
-ol.WebglBufferCacheEntry;
-
-
-/**
- * @typedef {{atlas: ol.style.AtlasManager,
- *            width: Object.<string, number>,
- *            height: number}}
- */
-ol.WebglGlyphAtlas;
-
-
-/**
- * @typedef {{p0: ol.WebglPolygonVertex,
- *            p1: ol.WebglPolygonVertex}}
- */
-ol.WebglPolygonSegment;
-
-/**
- * @typedef {{x: number,
- *            y: number,
- *            i: number,
- *            reflex: (boolean|undefined)}}
- */
-ol.WebglPolygonVertex;
-
-
-/**
- * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
- */
-ol.WebglTextureCacheEntry;
-
-
-/**
  * Number of features; bounds/extent.
  * @typedef {{numberOfFeatures: number,
  *            bounds: module:ol/extent~Extent}}

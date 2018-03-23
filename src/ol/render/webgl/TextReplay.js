@@ -15,6 +15,14 @@ import AtlasManager from '../../style/AtlasManager.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
+ * @typedef {Object} GlyphAtlas
+ * @property {module:ol/style/AtlasManager~AtlasManager} atlas
+ * @property {Object.<string, number>} width
+ * @property {number} height
+ */
+
+
+/**
  * @constructor
  * @extends {ol.render.webgl.TextureReplay}
  * @param {number} tolerance Tolerance.
@@ -100,13 +108,13 @@ const WebGLTextReplay = function(tolerance, maxExtent) {
 
   /**
    * @private
-   * @type {Object.<string, ol.WebglGlyphAtlas>}
+   * @type {Object.<string, module:ol/render/webgl/TextReplay~GlyphAtlas>}
    */
   this.atlases_ = {};
 
   /**
    * @private
-   * @type {ol.WebglGlyphAtlas|undefined}
+   * @type {module:ol/render/webgl/TextReplay~GlyphAtlas|undefined}
    */
   this.currAtlas_ = undefined;
 
@@ -397,7 +405,7 @@ WebGLTextReplay.prototype.setTextStyle = function(textStyle) {
 /**
  * @private
  * @param {Object} state Font attributes.
- * @return {ol.WebglGlyphAtlas} Glyph atlas.
+ * @return {module:ol/render/webgl/TextReplay~GlyphAtlas} Glyph atlas.
  */
 WebGLTextReplay.prototype.getAtlas_ = function(state) {
   let params = [];

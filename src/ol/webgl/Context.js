@@ -9,6 +9,14 @@ import {clear} from '../obj.js';
 import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TEXTURE_2D, TEXTURE_WRAP_S, TEXTURE_WRAP_T} from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
 
+
+/**
+ * @typedef {Object} BufferCacheEntry
+ * @property {module:ol/webgl/Buffer~WebGLBuffer} buf
+ * @property {WebGLBuffer} buffer
+ */
+
+
 /**
  * @classdesc
  * A WebGL context for accessing low-level WebGL capabilities.
@@ -34,7 +42,7 @@ const WebGLContext = function(canvas, gl) {
 
   /**
    * @private
-   * @type {!Object.<string, ol.WebglBufferCacheEntry>}
+   * @type {!Object.<string, module:ol/webgl/Context~BufferCacheEntry>}
    */
   this.bufferCache_ = {};
 
