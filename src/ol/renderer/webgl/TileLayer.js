@@ -39,7 +39,7 @@ const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {ol.webgl.Fragment}
+   * @type {module:ol/webgl/Fragment~WebGLFragment}
    */
   this.fragmentShader_ = fragment;
 

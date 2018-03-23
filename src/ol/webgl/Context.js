@@ -220,7 +220,7 @@ WebGLContext.prototype.getShader = function(shaderObject) {
  * Get the program from the cache if it's in the cache. Otherwise create
  * the WebGL program, attach the shaders to it, and add an entry to the
  * cache.
- * @param {ol.webgl.Fragment} fragmentShaderObject Fragment shader.
+ * @param {module:ol/webgl/Fragment~WebGLFragment} fragmentShaderObject Fragment shader.
  * @param {ol.webgl.Vertex} vertexShaderObject Vertex shader.
  * @return {WebGLProgram} Program.
  */
