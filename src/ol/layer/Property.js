@@ -12,5 +12,6 @@ export default {
   Z_INDEX: 'zIndex',
   MAX_RESOLUTION: 'maxResolution',
   MIN_RESOLUTION: 'minResolution',
-  SOURCE: 'source'
+  SOURCE: 'source',
+  ID:'id'
 };
