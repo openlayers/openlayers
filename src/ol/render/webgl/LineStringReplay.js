@@ -549,7 +549,7 @@ WebGLLineStringReplay.prototype.drawReplay = function(gl, context, skippedFeatur
 /**
  * @private
  * @param {WebGLRenderingContext} gl gl.
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
 WebGLLineStringReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {

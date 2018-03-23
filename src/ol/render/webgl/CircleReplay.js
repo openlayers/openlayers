@@ -181,7 +181,7 @@ WebGLCircleReplay.prototype.finish = function(context) {
 WebGLCircleReplay.prototype.getDeleteResourcesFunction = function(context) {
   // We only delete our stuff here. The shaders and the program may
   // be used by other CircleReplay instances (for other layers). And
-  // they will be deleted when disposing of the ol.webgl.Context
+  // they will be deleted when disposing of the module:ol/webgl/Context~WebGLContext
   // object.
   const verticesBuffer = this.verticesBuffer;
   const indicesBuffer = this.indicesBuffer;
@@ -311,7 +311,7 @@ WebGLCircleReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, contex
 /**
  * @private
  * @param {WebGLRenderingContext} gl gl.
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
 WebGLCircleReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {

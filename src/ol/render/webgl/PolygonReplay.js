@@ -986,7 +986,7 @@ WebGLPolygonReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, conte
 /**
  * @private
  * @param {WebGLRenderingContext} gl gl.
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
 WebGLPolygonReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {

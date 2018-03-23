@@ -139,7 +139,7 @@ WebGLLayerRenderer.prototype.bindFramebuffer = function(frameState, framebufferD
 /**
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/layer/Layer~State} layerState Layer state.
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  */
 WebGLLayerRenderer.prototype.composeFrame = function(frameState, layerState, context) {
 
@@ -183,7 +183,7 @@ WebGLLayerRenderer.prototype.composeFrame = function(frameState, layerState, con
 
 /**
  * @param {ol.render.EventType} type Event type.
- * @param {ol.webgl.Context} context WebGL context.
+ * @param {module:ol/webgl/Context~WebGLContext} context WebGL context.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @private
  */
@@ -245,7 +245,7 @@ WebGLLayerRenderer.prototype.handleWebGLContextLost = function() {
  * @abstract
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/layer/Layer~State} layerState Layer state.
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @return {boolean} whether composeFrame should be called.
  */
 WebGLLayerRenderer.prototype.prepareFrame = function(frameState, layerState, context) {};

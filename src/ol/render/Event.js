@@ -12,7 +12,7 @@ import Event from '../events/Event.js';
  * @param {ol.render.VectorContext=} opt_vectorContext Vector context.
  * @param {module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
  * @param {?CanvasRenderingContext2D=} opt_context Context.
- * @param {?ol.webgl.Context=} opt_glContext WebGL Context.
+ * @param {?module:ol/webgl/Context~WebGLContext=} opt_glContext WebGL Context.
  */
 const RenderEvent = function(
   type, opt_vectorContext, opt_frameState, opt_context,
@@ -45,7 +45,7 @@ const RenderEvent = function(
   /**
    * WebGL context. Only available when a WebGL renderer is used, null
    * otherwise.
-   * @type {ol.webgl.Context|null|undefined}
+   * @type {module:ol/webgl/Context~WebGLContext|null|undefined}
    * @api
    */
   this.glContext = opt_glContext;

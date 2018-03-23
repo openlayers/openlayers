@@ -125,7 +125,7 @@ inherits(WebGLReplay, VectorContext);
 
 /**
  * @abstract
- * @param {ol.webgl.Context} context WebGL context.
+ * @param {module:ol/webgl/Context~WebGLContext} context WebGL context.
  * @return {function()} Delete resources function.
  */
 WebGLReplay.prototype.getDeleteResourcesFunction = function(context) {};
@@ -133,7 +133,7 @@ WebGLReplay.prototype.getDeleteResourcesFunction = function(context) {};
 
 /**
  * @abstract
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  */
 WebGLReplay.prototype.finish = function(context) {};
 
@@ -142,7 +142,7 @@ WebGLReplay.prototype.finish = function(context) {};
  * @abstract
  * @protected
  * @param {WebGLRenderingContext} gl gl.
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @return {ol.render.webgl.circlereplay.defaultshader.Locations|
@@ -169,7 +169,7 @@ WebGLReplay.prototype.shutDownProgram = function(gl, locations) {};
  * @abstract
  * @protected
  * @param {WebGLRenderingContext} gl gl.
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  * @param {boolean} hitDetection Hit detection mode.
@@ -181,7 +181,7 @@ WebGLReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hi
  * @abstract
  * @protected
  * @param {WebGLRenderingContext} gl gl.
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
@@ -196,7 +196,7 @@ WebGLReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, ski
 /**
  * @protected
  * @param {WebGLRenderingContext} gl gl.
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
@@ -223,7 +223,7 @@ WebGLReplay.prototype.drawHitDetectionReplay = function(gl, context, skippedFeat
 /**
  * @protected
  * @param {WebGLRenderingContext} gl gl.
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
@@ -245,7 +245,7 @@ WebGLReplay.prototype.drawHitDetectionReplayAll = function(gl, context, skippedF
 
 
 /**
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
@@ -353,7 +353,7 @@ WebGLReplay.prototype.replay = function(context,
 /**
  * @protected
  * @param {WebGLRenderingContext} gl gl.
- * @param {ol.webgl.Context} context Context.
+ * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {number} start Start index.
  * @param {number} end End index.
  */

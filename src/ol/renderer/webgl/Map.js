@@ -92,7 +92,7 @@ const WebGLMapRenderer = function(container, map) {
 
   /**
    * @private
-   * @type {ol.webgl.Context}
+   * @type {module:ol/webgl/Context~WebGLContext}
    */
   this.context_ = new WebGLContext(this.canvas_, this.gl_);
 
@@ -335,7 +335,7 @@ WebGLMapRenderer.prototype.expireCache_ = function(map, frameState) {
 
 
 /**
- * @return {ol.webgl.Context} The context.
+ * @return {module:ol/webgl/Context~WebGLContext} The context.
  */
 WebGLMapRenderer.prototype.getContext = function() {
   return this.context_;
