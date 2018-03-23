@@ -39,7 +39,7 @@ const VectorTileLayer = function(opt_options) {
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;
-  VectorLayer.call(this,  /** @type {olx.layer.VectorOptions} */ (baseOptions));
+  VectorLayer.call(this,  /** @type {module:ol/layer/Vector~Options} */ (baseOptions));
 
   this.setPreload(options.preload ? options.preload : 0);
   this.setUseInterimTilesOnError(options.useInterimTilesOnError ?

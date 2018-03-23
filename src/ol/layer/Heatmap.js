@@ -78,7 +78,7 @@ const Heatmap = function(opt_options) {
   delete baseOptions.blur;
   delete baseOptions.shadow;
   delete baseOptions.weight;
-  VectorLayer.call(this, /** @type {olx.layer.VectorOptions} */ (baseOptions));
+  VectorLayer.call(this, /** @type {module:ol/layer/Vector~Options} */ (baseOptions));
 
   /**
    * @private
