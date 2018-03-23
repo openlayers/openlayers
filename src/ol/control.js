@@ -32,7 +32,7 @@ import Zoom from './control/Zoom.js';
  * * {@link module:ol/control/Rotate~Rotate}
  * * {@link module:ol/control/Attribution~Attribution}
  *
- * @param {module:ol/control~DefaultsOptions~DefaultsOptions=} opt_options
+ * @param {module:ol/control~DefaultsOptions=} opt_options
  * Defaults options.
  * @return {module:ol/Collection~Collection.<module:ol/control/Control~Control>}
  * Controls.
