@@ -101,7 +101,7 @@ const VectorTileLayer = function(opt_options) {
   VectorLayer.call(this,  /** @type {module:ol/layer/Vector~Options} */ (baseOptions));
 
   this.setPreload(options.preload ? options.preload : 0);
-  this.setUseInterimTilesOnError(options.useInterimTilesOnError ?
+  this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
     options.useInterimTilesOnError : true);
 
   /**
