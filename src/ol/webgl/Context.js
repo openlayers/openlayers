@@ -198,7 +198,7 @@ WebGLContext.prototype.getHitDetectionFramebuffer = function() {
 /**
  * Get shader from the cache if it's in the cache. Otherwise, create
  * the WebGL shader, compile it, and add entry to cache.
- * @param {ol.webgl.Shader} shaderObject Shader object.
+ * @param {module:ol/webgl/Shader~WebGLShader} shaderObject Shader object.
  * @return {WebGLShader} Shader.
  */
 WebGLContext.prototype.getShader = function(shaderObject) {
