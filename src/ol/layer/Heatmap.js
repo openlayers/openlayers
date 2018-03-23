@@ -14,6 +14,30 @@ import Style from '../style/Style.js';
 
 
 /**
+ * @typedef {Object} Options
+ * @property {number} [opacity=1] Opacity (0, 1).
+ * @property {boolean} [visible=true] Visibility.
+ * @property {ol.Extent} [extent] The bounding extent for layer rendering.  The layer will not be
+ * rendered outside of this extent.
+ * @property {number} [zIndex=0] The z-index for layer rendering.  At rendering time, the layers
+ * will be ordered, first by Z-index and then by position.
+ * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
+ * visible.
+ * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * be visible.
+ * @property {Array.<string>} [gradient=['#00f', '#0ff', '#0f0', '#ff0', '#f00']] The color gradient
+ * of the heatmap, specified as an array of CSS color strings.
+ * @property {number} [radius=8] Radius size in pixels.
+ * @property {number} [blur=15] Blur size in pixels.
+ * @property {number} [shadow=250] Shadow size in pixels.
+ * @property {string|function(module:ol/Feature~Feature):number} [weight='weight'] The feature
+ * attribute to use for the weight or a function that returns a weight from a feature. Weight values
+ * should range from 0 to 1 (and values outside will be clamped to that range).
+ * @property {ol.source.Vector} [source] Source.
+ */
+
+
+/**
  * @enum {string}
  * @private
  */
@@ -41,7 +65,7 @@ const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  * @constructor
  * @extends {module:ol/layer/Vector~VectorLayer}
  * @fires ol.render.Event
- * @param {olx.layer.HeatmapOptions=} opt_options Options.
+ * @param {module:ol/layer/Heatmap~Options=} opt_options Options.
  * @api
  */
 const Heatmap = function(opt_options) {
