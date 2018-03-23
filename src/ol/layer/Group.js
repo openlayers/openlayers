@@ -16,6 +16,22 @@ import SourceState from '../source/State.js';
 
 
 /**
+ * @typedef {Object} Options
+ * @property {number} [opacity=1] Opacity (0, 1).
+ * @property {boolean} [visible=true] Visibility.
+ * @property {ol.Extent} [extent] The bounding extent for layer rendering.  The layer will not be
+ * rendered outside of this extent.
+ * @property {number} [zIndex=0] The z-index for layer rendering.  At rendering time, the layers
+ * will be ordered, first by Z-index and then by position.
+ * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
+ * visible.
+ * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * be visible.
+ * @property {(Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>)} [layers] Child layers.
+ */
+
+
+/**
  * @enum {string}
  * @private
  */
@@ -32,13 +48,13 @@ const Property = {
  *
  * @constructor
  * @extends {module:ol/layer/Base~BaseLayer}
- * @param {olx.layer.GroupOptions=} opt_options Layer options.
+ * @param {module:ol/layer/Group~Options=} opt_options Layer options.
  * @api
  */
 const LayerGroup = function(opt_options) {
 
   const options = opt_options || {};
-  const baseOptions = /** @type {olx.layer.GroupOptions} */ (assign({}, options));
+  const baseOptions = /** @type {module:ol/layer/Group~Options} */ (assign({}, options));
   delete baseOptions.layers;
 
   let layers = options.layers;
