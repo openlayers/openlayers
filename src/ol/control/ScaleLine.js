@@ -75,7 +75,7 @@ const ScaleLine = function(opt_options) {
 
   /**
    * @private
-   * @type {?olx.ViewState}
+   * @type {?module:ol/View~State}
    */
   this.viewState_ = null;
 

@@ -37,7 +37,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @typedef {Object} FrameState
  * @property {number} pixelRatio The pixel ratio of the frame.
  * @property {number} time The time when rendering of the frame was requested.
- * @property {olx.ViewState} viewState The state of the current view.
+ * @property {module:ol/View~State} viewState The state of the current view.
  * @property {boolean} animate
  * @property {module:ol/transform~Transform} coordinateToPixelTransform
  * @property {null|module:ol/extent~Extent} extent
