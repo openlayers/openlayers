@@ -1,18 +1,5 @@
 
 /**
- * @typedef {Object} layer_BaseOptions
- * @property {number|undefined} opacity Opacity (0, 1). Default is `1`.
- * @property {boolean|undefined} visible Visibility. Default is `true`.
- * @property {ol.Extent|undefined} extent The bounding extent for layer rendering.  The layer will not be rendered
- * outside of this extent.
- * @property {number|undefined} zIndex The z-index for layer rendering.  At rendering time, the layers will be
- * ordered, first by Z-index and then by position. The default Z-index is 0.
- * @property {number|undefined} minResolution The minimum resolution (inclusive) at which this layer will be visible.
- * @property {number|undefined} maxResolution The maximum resolution (exclusive) below which this layer will be visible.
- */
-
-
-/**
  * @typedef {Object} layer_LayerOptions
  * @property {number|undefined} opacity Opacity (0, 1). Default is `1`.
  * @property {ol.source.Source|undefined} source Source for this layer.  If not provided to the constructor, the source can
@@ -1152,16 +1139,6 @@
  * are 22 levels in the grid set.
  * @property {number|undefined} minZoom Minimum zoom. Default is 0.
  * @property {number|ol.Size|undefined} tileSize Tile size in pixels. Default is `[256, 256]`.
- */
-
-
-/**
- * @typedef {Object} ViewState
- * @property {ol.Coordinate} center
- * @property {module:ol/proj/Projection~Projection} projection
- * @property {number} resolution
- * @property {number} rotation
- * @property {number} zoom The current zoom level.
  */
 
 
