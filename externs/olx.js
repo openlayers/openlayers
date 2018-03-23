@@ -4316,52 +4316,6 @@ olx.tilegrid.XYZOptions.prototype.tileSize;
 
 
 /**
- * @typedef {{center: ol.Coordinate,
- *     projection: module:ol/proj/Projection~Projection,
- *     resolution: number,
- *     rotation: number,
- *     zoom: number}}
- */
-olx.ViewState;
-
-
-/**
- * @type {ol.Coordinate}
- * @api
- */
-olx.ViewState.prototype.center;
-
-
-/**
- * @type {module:ol/proj/Projection~Projection}
- * @api
- */
-olx.ViewState.prototype.projection;
-
-
-/**
- * @type {number}
- * @api
- */
-olx.ViewState.prototype.resolution;
-
-
-/**
- * @type {number}
- * @api
- */
-olx.ViewState.prototype.rotation;
-
-
-/**
- * The current zoom level.
- * @type {number}
- * @api
- */
-olx.ViewState.prototype.zoom;
-
-
-/**
  * @typedef {{initialSize: (number|undefined),
  *     maxSize: (number|undefined),
  *     space: (number|undefined)}}

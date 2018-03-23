@@ -183,7 +183,7 @@ const RasterSource = function(options) {
     tileQueue: this.tileQueue_,
     time: Date.now(),
     usedTiles: {},
-    viewState: /** @type {olx.ViewState} */ ({
+    viewState: /** @type {module:ol/View~State} */ ({
       rotation: 0
     }),
     viewHints: [],
@@ -232,7 +232,7 @@ RasterSource.prototype.updateFrameState_ = function(extent, resolution, projecti
 
   const frameState = /** @type {module:ol/PluggableMap~FrameState} */ (assign({}, this.frameState_));
 
-  frameState.viewState = /** @type {olx.ViewState} */ (assign({}, frameState.viewState));
+  frameState.viewState = /** @type {module:ol/View~State} */ (assign({}, frameState.viewState));
 
   const center = getCenter(extent);
 

@@ -156,6 +156,16 @@ import Units from './proj/Units.js';
 
 
 /**
+ * @typedef {Object} State
+ * @property {module:ol/coordinate~Coordinate} center
+ * @property {module:ol/proj/Projection~Projection} projection
+ * @property {number} resolution
+ * @property {number} rotation
+ * @property {number} zoom
+ */
+
+
+/**
  * Default min zoom level for the map view.
  * @type {number}
  */
@@ -918,14 +928,14 @@ View.prototype.getValueForResolutionFunction = function(opt_power) {
 
 
 /**
- * @return {olx.ViewState} View state.
+ * @return {module:ol/View~State} View state.
  */
 View.prototype.getState = function() {
   const center = /** @type {module:ol/coordinate~Coordinate} */ (this.getCenter());
   const projection = this.getProjection();
   const resolution = /** @type {number} */ (this.getResolution());
   const rotation = this.getRotation();
-  return /** @type {olx.ViewState} */ ({
+  return /** @type {module:ol/View~State} */ ({
     center: center.slice(),
     projection: projection !== undefined ? projection : null,
     resolution: resolution,

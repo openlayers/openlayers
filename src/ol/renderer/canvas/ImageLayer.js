@@ -154,7 +154,7 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
           getWidth(renderedExtent) / viewResolution,
           getHeight(renderedExtent) / viewResolution
         ],
-        viewState: /** @type {olx.ViewState} */ (assign({}, frameState.viewState, {
+        viewState: /** @type {module:ol/View~State} */ (assign({}, frameState.viewState, {
           rotation: 0
         }))
       }));
