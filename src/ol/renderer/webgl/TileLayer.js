@@ -45,7 +45,7 @@ const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {ol.webgl.Vertex}
+   * @type {module:ol/webgl/Vertex~WebGLVertex}
    */
   this.vertexShader_ = vertex;
 
