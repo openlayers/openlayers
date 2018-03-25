@@ -9,6 +9,15 @@ import SourceState from '../source/State.js';
 
 
 /**
+ * @typedef {Object} Options
+ * @property {ol.AttributionLike} [attributions]
+ * @property {module:ol/proj~ProjectionLike} projection
+ * @property {ol.source.State} [state]
+ * @property {boolean} [wrapX]
+ */
+
+
+/**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
@@ -19,7 +28,7 @@ import SourceState from '../source/State.js';
  * @constructor
  * @abstract
  * @extends {module:ol/Object~BaseObject}
- * @param {ol.SourceSourceOptions} options Source options.
+ * @param {module:ol/source/Source~Options} options Source options.
  * @api
  */
 const Source = function(options) {

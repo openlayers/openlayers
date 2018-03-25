@@ -229,15 +229,6 @@ ol.SourceRasterRenderedState;
 
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            projection: module:ol/proj~ProjectionLike,
- *            state: (ol.source.State|undefined),
- *            wrapX: (boolean|undefined)}}
- */
-ol.SourceSourceOptions;
-
-
-/**
- * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            cacheSize: (number|undefined),
  *            extent: (module:ol/extent~Extent|undefined),
  *            opaque: (boolean|undefined),
