@@ -929,7 +929,7 @@ olx.source.ImageCanvasOptions.prototype.attributions;
  * ratio, `{ol.Size}` the image size, and `{module:ol/proj/Projection~Projection}` the image
  * projection. The canvas returned by this function is cached by the source. If
  * the value returned by the function is later changed then
- * `dispatchChangeEvent` should be called on the source for the source to
+ * `changed` should be called on the source for the source to
  * invalidate the current cached image.
  * @type {ol.CanvasFunctionType}
  * @api
