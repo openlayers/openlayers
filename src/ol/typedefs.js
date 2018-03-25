@@ -210,16 +210,6 @@ ol.ReprojTriangle;
 
 
 /**
- * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            extent: (null|module:ol/extent~Extent|undefined),
- *            projection: module:ol/proj~ProjectionLike,
- *            resolutions: (Array.<number>|undefined),
- *            state: (ol.source.State|undefined)}}
- */
-ol.SourceImageOptions;
-
-
-/**
  * @typedef {{revision: number,
  *            resolution: number,
  *            extent: module:ol/extent~Extent}}

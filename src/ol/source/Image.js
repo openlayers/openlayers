@@ -68,6 +68,16 @@ inherits(ImageSourceEvent, Event);
 
 
 /**
+ * @typedef {Object} Options
+ * @property {ol.AttributionLike} [attributions]
+ * @property {module:ol/extent~Extent} [extent]
+ * @property {module:ol/proj~ProjectionLike} projection
+ * @property {Array.<number>} [resolutions]
+ * @property {ol.source.State} [state]
+ */
+
+
+/**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
@@ -76,7 +86,7 @@ inherits(ImageSourceEvent, Event);
  * @constructor
  * @abstract
  * @extends {ol.source.Source}
- * @param {ol.SourceImageOptions} options Single image source options.
+ * @param {module:ol/source/Image~Options} options Single image source options.
  * @api
  */
 const ImageSource = function(options) {
