@@ -14,7 +14,7 @@ import {assign} from '../obj.js';
  * @typedef {Object} Options
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
- * @property {ol.Extent} [extent] The bounding extent for layer rendering.  The layer will not be
+ * @property {module:ol/extent~Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
  * @property {number} [zIndex=0] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position.
