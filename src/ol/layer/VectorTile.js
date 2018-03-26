@@ -30,7 +30,7 @@ import {assign} from '../obj.js';
  * Recommended value: Vector tiles are usually generated with a buffer, so this value should match
  * the largest possible buffer of the used tiles. It should be at least the size of the largest
  * point symbol or line width.
- * @property {ol.layer.VectorRenderType|string} [renderMode='hybrid'] Render mode for vector tiles:
+ * @property {module:ol/layer/VectorRenderType~VectorRenderType|string} [renderMode='hybrid'] Render mode for vector tiles:
  *  * `'image'`: Vector tiles are rendered as images. Great performance, but point symbols and texts
  *    are always rotated with the view and pixels are scaled during zoom animations.
  *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom

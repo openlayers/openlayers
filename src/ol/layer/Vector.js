@@ -27,7 +27,7 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * @property {number} [renderBuffer=100] The buffer in pixels around the viewport extent used by the
  * renderer when getting features from the vector source for the rendering or hit-detection.
  * Recommended value: the size of the largest symbol, line width or label.
- * @property {ol.layer.VectorRenderType|string} [renderMode='vector'] Render mode for vector layers:
+ * @property {module:ol/layer/VectorRenderType~VectorRenderType|string} [renderMode='vector'] Render mode for vector layers:
  *  * `'image'`: Vector layers are rendered as images. Great performance, but point symbols and
  *    texts are always rotated with the view and pixels are scaled during zoom animations.
  *  * `'vector'`: Vector layers are rendered as vectors. Most accurate rendering even during
