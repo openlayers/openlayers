@@ -111,7 +111,7 @@ const SelectEventType = {
  * @extends {module:ol/events/Event~Event}
  * @constructor
  */
-const SelectEvent = function(type, selected, deselected, mapBrowserEvent) {
+export const SelectEvent = function(type, selected, deselected, mapBrowserEvent) {
   Event.call(this, type);
 
   /**

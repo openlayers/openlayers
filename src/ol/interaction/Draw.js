@@ -135,7 +135,7 @@ const DrawEventType = {
  * @param {module:ol/interaction/Draw~DrawEventType} type Type.
  * @param {module:ol/Feature~Feature} feature The feature drawn.
  */
-const DrawEvent = function(type, feature) {
+export const DrawEvent = function(type, feature) {
 
   Event.call(this, type);
 
