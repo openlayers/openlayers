@@ -57,7 +57,7 @@ const ExtentEventType = {
  * @param {module:ol/extent~Extent} extent the new extent
  * @extends {module:ol/events/Event~Event}
  */
-const ExtentInteractionEvent = function(extent) {
+export const ExtentInteractionEvent = function(extent) {
   Event.call(this, ExtentEventType.EXTENTCHANGED);
 
   /**

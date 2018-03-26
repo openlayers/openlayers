@@ -71,7 +71,7 @@ const DragBoxEventType = {
  * @constructor
  * @implements {oli.DragBoxEvent}
  */
-const DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
+export const DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
   Event.call(this, type);
 
   /**
