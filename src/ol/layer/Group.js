@@ -19,7 +19,7 @@ import SourceState from '../source/State.js';
  * @typedef {Object} Options
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
- * @property {ol.Extent} [extent] The bounding extent for layer rendering.  The layer will not be
+ * @property {module:ol/extent~Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
  * @property {number} [zIndex=0] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position.
@@ -27,7 +27,7 @@ import SourceState from '../source/State.js';
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {(Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>)} [layers] Child layers.
+ * @property {(Array.<module:ol/layer/Base~BaseLayer>|module:ol/Collection~Collection.<module:ol/layer/Base~BaseLayer>)} [layers] Child layers.
  */
 
 

@@ -13,7 +13,7 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * @typedef {Object} Options
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
- * @property {ol.Extent} [extent] The bounding extent for layer rendering.  The layer will not be
+ * @property {module:ol/extent~Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
  * @property {number} [zIndex=0] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position.
@@ -27,13 +27,13 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * @property {number} [renderBuffer=100] The buffer in pixels around the viewport extent used by the
  * renderer when getting features from the vector source for the rendering or hit-detection.
  * Recommended value: the size of the largest symbol, line width or label.
- * @property {ol.layer.VectorRenderType|string} [renderMode='vector'] Render mode for vector layers:
+ * @property {module:ol/layer/VectorRenderType~VectorRenderType|string} [renderMode='vector'] Render mode for vector layers:
  *  * `'image'`: Vector layers are rendered as images. Great performance, but point symbols and
  *    texts are always rotated with the view and pixels are scaled during zoom animations.
  *  * `'vector'`: Vector layers are rendered as vectors. Most accurate rendering even during
  *    animations, but slower performance.
  * @property {ol.source.Vector} [source] Source.
- * @property {ol.PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {module:ol/PluggableMap~PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link ol.Map#addLayer}.

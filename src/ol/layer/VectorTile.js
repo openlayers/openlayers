@@ -14,7 +14,7 @@ import {assign} from '../obj.js';
  * @typedef {Object} Options
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
- * @property {ol.Extent} [extent] The bounding extent for layer rendering.  The layer will not be
+ * @property {module:ol/extent~Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
  * @property {number} [zIndex=0] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position.
@@ -30,7 +30,7 @@ import {assign} from '../obj.js';
  * Recommended value: Vector tiles are usually generated with a buffer, so this value should match
  * the largest possible buffer of the used tiles. It should be at least the size of the largest
  * point symbol or line width.
- * @property {ol.layer.VectorRenderType|string} [renderMode='hybrid'] Render mode for vector tiles:
+ * @property {module:ol/layer/VectorRenderType~VectorRenderType|string} [renderMode='hybrid'] Render mode for vector tiles:
  *  * `'image'`: Vector tiles are rendered as images. Great performance, but point symbols and texts
  *    are always rotated with the view and pixels are scaled during zoom animations.
  *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom
@@ -41,7 +41,7 @@ import {assign} from '../obj.js';
  *
  * When `declutter` is set to `true`, `'hybrid'` will be used instead of `'image'`.
  * @property {ol.source.VectorTile} [source] Source.
- * @property {ol.PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {module:ol/PluggableMap~PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link ol.Map#addLayer}.

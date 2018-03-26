@@ -211,13 +211,13 @@ Lexer.prototype.readText_ = function() {
 
 /**
  * Class to parse the tokens from the WKT string.
- * @param {ol.format.Lexer} lexer The lexer.
+ * @param {module:ol/format/WKT~Lexer} lexer The lexer.
  * @constructor
  */
 const Parser = function(lexer) {
 
   /**
-   * @type {ol.format.Lexer}
+   * @type {module:ol/format/WKT~Lexer}
    * @private
    */
   this.lexer_ = lexer;
