@@ -27,7 +27,7 @@ import SourceState from '../source/State.js';
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {(Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>)} [layers] Child layers.
+ * @property {(Array.<ol.layer.Base>|module:ol/Collection~Collection.<ol.layer.Base>)} [layers] Child layers.
  */
 
 
