@@ -3521,36 +3521,3 @@ olx.tilegrid.XYZOptions.prototype.minZoom;
  * @api
  */
 olx.tilegrid.XYZOptions.prototype.tileSize;
-
-
-/**
- * @typedef {{initialSize: (number|undefined),
- *     maxSize: (number|undefined),
- *     space: (number|undefined)}}
- */
-olx.style.AtlasManagerOptions;
-
-
-/**
- * The size in pixels of the first atlas image. Default is `256`.
- * @type {number|undefined}
- * @api
- */
-olx.style.AtlasManagerOptions.prototype.initialSize;
-
-
-/**
- * The maximum size in pixels of atlas images. Default is
- * `WEBGL_MAX_TEXTURE_SIZE` or 2048 if WebGL is not supported.
- * @type {number|undefined}
- * @api
- */
-olx.style.AtlasManagerOptions.prototype.maxSize;
-
-
-/**
- * The space in pixels between images (default: 1).
- * @type {number|undefined}
- * @api
- */
-olx.style.AtlasManagerOptions.prototype.space;

@@ -7,6 +7,15 @@ import Atlas from '../style/Atlas.js';
 
 
 /**
+ * @typedef {Object} Options
+ * @property {number} [initialSize=256] The size in pixels of the first atlas image.
+ * @property {number} [maxSize] The maximum size in pixels of atlas images. Default is
+ * `WEBGL_MAX_TEXTURE_SIZE` or 2048 if WebGL is not supported.
+ * @property {number} [space=1] The space in pixels between images.
+ */
+
+
+/**
  * Provides information for an image inside an atlas manager.
  * `offsetX` and `offsetY` is the position of the image inside
  * the atlas image `image` and the position of the hit-detection image
@@ -47,7 +56,7 @@ const MAX_ATLAS_SIZE = -1;
  * @constructor
  * @struct
  * @api
- * @param {olx.style.AtlasManagerOptions=} opt_options Options.
+ * @param {module:ol/style/AtlasManager~Options=} opt_options Options.
  */
 const AtlasManager = function(opt_options) {
 
