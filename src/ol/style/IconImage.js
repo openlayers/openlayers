@@ -98,7 +98,7 @@ inherits(IconImage, EventTarget);
  * @param {?string} crossOrigin Cross origin.
  * @param {module:ol/ImageState~ImageState} imageState Image state.
  * @param {module:ol/color~Color} color Color.
- * @return {ol.style.IconImage} Icon image.
+ * @return {module:ol/style/IconImage~IconImage} Icon image.
  */
 export function get(image, src, size, crossOrigin, imageState, color) {
   let iconImage = iconImageCache.get(src, crossOrigin, color);

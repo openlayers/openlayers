@@ -70,7 +70,7 @@ const Stroke = function(opt_options) {
 
 /**
  * Clones the style.
- * @return {ol.style.Stroke} The cloned style.
+ * @return {module:ol/style/Stroke~Stroke} The cloned style.
  * @api
  */
 Stroke.prototype.clone = function() {

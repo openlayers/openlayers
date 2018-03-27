@@ -70,7 +70,7 @@ const Text = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.style.Fill}
+   * @type {module:ol/style/Fill~Fill}
    */
   this.fill_ = options.fill !== undefined ? options.fill :
     new Fill({color: DEFAULT_FILL_COLOR});
@@ -83,7 +83,7 @@ const Text = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.style.TextPlacement|string}
+   * @type {module:ol/style/Text~TextPlacement|string}
    */
   this.placement_ = options.placement !== undefined ? options.placement : TextPlacement.POINT;
 
@@ -95,7 +95,7 @@ const Text = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.style.Stroke}
+   * @type {module:ol/style/Stroke~Stroke}
    */
   this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
@@ -113,13 +113,13 @@ const Text = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.style.Fill}
+   * @type {module:ol/style/Fill~Fill}
    */
   this.backgroundFill_ = options.backgroundFill ? options.backgroundFill : null;
 
   /**
    * @private
-   * @type {ol.style.Stroke}
+   * @type {module:ol/style/Stroke~Stroke}
    */
   this.backgroundStroke_ = options.backgroundStroke ? options.backgroundStroke : null;
 
@@ -133,7 +133,7 @@ const Text = function(opt_options) {
 
 /**
  * Clones the style.
- * @return {ol.style.Text} The cloned style.
+ * @return {module:ol/style/Text~Text} The cloned style.
  * @api
  */
 Text.prototype.clone = function() {
@@ -190,7 +190,7 @@ Text.prototype.getMaxAngle = function() {
 
 /**
  * Get the label placement.
- * @return {ol.style.TextPlacement|string} Text placement.
+ * @return {module:ol/style/Text~TextPlacement|string} Text placement.
  * @api
  */
 Text.prototype.getPlacement = function() {
@@ -220,7 +220,7 @@ Text.prototype.getOffsetY = function() {
 
 /**
  * Get the fill style for the text.
- * @return {ol.style.Fill} Fill style.
+ * @return {module:ol/style/Fill~Fill} Fill style.
  * @api
  */
 Text.prototype.getFill = function() {
@@ -260,7 +260,7 @@ Text.prototype.getScale = function() {
 
 /**
  * Get the stroke style for the text.
- * @return {ol.style.Stroke} Stroke style.
+ * @return {module:ol/style/Stroke~Stroke} Stroke style.
  * @api
  */
 Text.prototype.getStroke = function() {
@@ -300,7 +300,7 @@ Text.prototype.getTextBaseline = function() {
 
 /**
  * Get the background fill style for the text.
- * @return {ol.style.Fill} Fill style.
+ * @return {module:ol/style/Fill~Fill} Fill style.
  * @api
  */
 Text.prototype.getBackgroundFill = function() {
@@ -310,7 +310,7 @@ Text.prototype.getBackgroundFill = function() {
 
 /**
  * Get the background stroke style for the text.
- * @return {ol.style.Stroke} Stroke style.
+ * @return {module:ol/style/Stroke~Stroke} Stroke style.
  * @api
  */
 Text.prototype.getBackgroundStroke = function() {
@@ -386,7 +386,7 @@ Text.prototype.setOffsetY = function(offsetY) {
 /**
  * Set the text placement.
  *
- * @param {ol.style.TextPlacement|string} placement Placement.
+ * @param {module:ol/style/Text~TextPlacement|string} placement Placement.
  * @api
  */
 Text.prototype.setPlacement = function(placement) {
@@ -397,7 +397,7 @@ Text.prototype.setPlacement = function(placement) {
 /**
  * Set the fill.
  *
- * @param {ol.style.Fill} fill Fill style.
+ * @param {module:ol/style/Fill~Fill} fill Fill style.
  * @api
  */
 Text.prototype.setFill = function(fill) {
@@ -430,7 +430,7 @@ Text.prototype.setScale = function(scale) {
 /**
  * Set the stroke.
  *
- * @param {ol.style.Stroke} stroke Stroke style.
+ * @param {module:ol/style/Stroke~Stroke} stroke Stroke style.
  * @api
  */
 Text.prototype.setStroke = function(stroke) {
@@ -474,7 +474,7 @@ Text.prototype.setTextBaseline = function(textBaseline) {
 /**
  * Set the background fill.
  *
- * @param {ol.style.Fill} fill Fill style.
+ * @param {module:ol/style/Fill~Fill} fill Fill style.
  * @api
  */
 Text.prototype.setBackgroundFill = function(fill) {
@@ -485,7 +485,7 @@ Text.prototype.setBackgroundFill = function(fill) {
 /**
  * Set the background stroke.
  *
- * @param {ol.style.Stroke} stroke Stroke style.
+ * @param {module:ol/style/Stroke~Stroke} stroke Stroke style.
  * @api
  */
 Text.prototype.setBackgroundStroke = function(stroke) {

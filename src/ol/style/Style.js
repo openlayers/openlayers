@@ -40,13 +40,13 @@ const Style = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.style.Fill}
+   * @type {module:ol/style/Fill~Fill}
    */
   this.fill_ = options.fill !== undefined ? options.fill : null;
 
   /**
    * @private
-   * @type {ol.style.Image}
+   * @type {module:ol/style/Image~ImageStyle}
    */
   this.image_ = options.image !== undefined ? options.image : null;
 
@@ -58,13 +58,13 @@ const Style = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.style.Stroke}
+   * @type {module:ol/style/Stroke~Stroke}
    */
   this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
   /**
    * @private
-   * @type {ol.style.Text}
+   * @type {module:ol/style/Text~Text}
    */
   this.text_ = options.text !== undefined ? options.text : null;
 
@@ -79,7 +79,7 @@ const Style = function(opt_options) {
 
 /**
  * Clones the style.
- * @return {ol.style.Style} The cloned style.
+ * @return {module:ol/style/Style~Style} The cloned style.
  * @api
  */
 Style.prototype.clone = function() {
@@ -145,7 +145,7 @@ Style.prototype.getGeometryFunction = function() {
 
 /**
  * Get the fill style.
- * @return {ol.style.Fill} Fill style.
+ * @return {module:ol/style/Fill~Fill} Fill style.
  * @api
  */
 Style.prototype.getFill = function() {
@@ -155,7 +155,7 @@ Style.prototype.getFill = function() {
 
 /**
  * Set the fill style.
- * @param {ol.style.Fill} fill Fill style.
+ * @param {module:ol/style/Fill~Fill} fill Fill style.
  * @api
  */
 Style.prototype.setFill = function(fill) {
@@ -165,7 +165,7 @@ Style.prototype.setFill = function(fill) {
 
 /**
  * Get the image style.
- * @return {ol.style.Image} Image style.
+ * @return {module:ol/style/Image~ImageStyle} Image style.
  * @api
  */
 Style.prototype.getImage = function() {
@@ -175,7 +175,7 @@ Style.prototype.getImage = function() {
 
 /**
  * Set the image style.
- * @param {ol.style.Image} image Image style.
+ * @param {module:ol/style/Image~ImageStyle} image Image style.
  * @api
  */
 Style.prototype.setImage = function(image) {
@@ -185,7 +185,7 @@ Style.prototype.setImage = function(image) {
 
 /**
  * Get the stroke style.
- * @return {ol.style.Stroke} Stroke style.
+ * @return {module:ol/style/Stroke~Stroke} Stroke style.
  * @api
  */
 Style.prototype.getStroke = function() {
@@ -195,7 +195,7 @@ Style.prototype.getStroke = function() {
 
 /**
  * Set the stroke style.
- * @param {ol.style.Stroke} stroke Stroke style.
+ * @param {module:ol/style/Stroke~Stroke} stroke Stroke style.
  * @api
  */
 Style.prototype.setStroke = function(stroke) {
@@ -205,7 +205,7 @@ Style.prototype.setStroke = function(stroke) {
 
 /**
  * Get the text style.
- * @return {ol.style.Text} Text style.
+ * @return {module:ol/style/Text~Text} Text style.
  * @api
  */
 Style.prototype.getText = function() {
@@ -215,7 +215,7 @@ Style.prototype.getText = function() {
 
 /**
  * Set the text style.
- * @param {ol.style.Text} text Text style.
+ * @param {module:ol/style/Text~Text} text Text style.
  * @api
  */
 Style.prototype.setText = function(text) {
@@ -272,9 +272,9 @@ Style.prototype.setZIndex = function(zIndex) {
 
 /**
  * Convert the provided object into a style function.  Functions passed through
- * unchanged.  Arrays of ol.style.Style or single style objects wrapped in a
+ * unchanged.  Arrays of module:ol/style/Style~Style or single style objects wrapped in a
  * new style function.
- * @param {module:ol/style~StyleFunction|Array.<ol.style.Style>|ol.style.Style} obj
+ * @param {module:ol/style~StyleFunction|Array.<module:ol/style/Style~Style>|module:ol/style/Style~Style} obj
  *     A style function, a single style, or an array of styles.
  * @return {module:ol/style~StyleFunction} A style function.
  */
@@ -285,14 +285,14 @@ export function toFunction(obj) {
     styleFunction = obj;
   } else {
     /**
-     * @type {Array.<ol.style.Style>}
+     * @type {Array.<module:ol/style/Style~Style>}
      */
     let styles;
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
       assert(obj instanceof Style,
-        41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
+        41); // Expected an `module:ol/style/Style~Style` or an array of `module:ol/style/Style~Style`
       styles = [obj];
     }
     styleFunction = function() {
@@ -304,7 +304,7 @@ export function toFunction(obj) {
 
 
 /**
- * @type {Array.<ol.style.Style>}
+ * @type {Array.<module:ol/style/Style~Style>}
  */
 let defaultStyles = null;
 
@@ -312,12 +312,12 @@ let defaultStyles = null;
 /**
  * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  * @param {number} resolution Resolution.
- * @return {Array.<ol.style.Style>} Style.
+ * @return {Array.<module:ol/style/Style~Style>} Style.
  */
 export function createDefaultStyle(feature, resolution) {
   // We don't use an immediately-invoked function
   // and a closure so we don't get an error at script evaluation time in
-  // browsers that do not support Canvas. (ol.style.Circle does
+  // browsers that do not support Canvas. (module:ol/style/Circle~CircleStyle does
   // canvas.getContext('2d') at construction time, which will cause an.error
   // in such browsers.)
   if (!defaultStyles) {
@@ -346,10 +346,10 @@ export function createDefaultStyle(feature, resolution) {
 
 /**
  * Default styles for editing features.
- * @return {Object.<module:ol/geom/GeometryType~GeometryType, Array.<ol.style.Style>>} Styles
+ * @return {Object.<module:ol/geom/GeometryType~GeometryType, Array.<module:ol/style/Style~Style>>} Styles
  */
 export function createEditingStyle() {
-  /** @type {Object.<module:ol/geom/GeometryType~GeometryType, Array.<ol.style.Style>>} */
+  /** @type {Object.<module:ol/geom/GeometryType~GeometryType, Array.<module:ol/style/Style~Style>>} */
   const styles = {};
   const white = [255, 255, 255, 1];
   const blue = [0, 153, 255, 1];

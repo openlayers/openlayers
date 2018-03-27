@@ -54,13 +54,13 @@ import {createElementNS, getAllTextContent, isDocument, isNode, makeArrayExtende
 let DEFAULT_COLOR;
 
 /**
- * @type {ol.style.Fill}
+ * @type {module:ol/style/Fill~Fill}
  */
 let DEFAULT_FILL_STYLE = null;
 
 /**
  * Get the default fill style (or null if not yet set).
- * @return {ol.style.Fill} The default fill style.
+ * @return {module:ol/style/Fill~Fill} The default fill style.
  */
 export function getDefaultFillStyle() {
   return DEFAULT_FILL_STYLE;
@@ -97,13 +97,13 @@ let DEFAULT_IMAGE_STYLE_SRC;
 let DEFAULT_IMAGE_SCALE_MULTIPLIER;
 
 /**
- * @type {ol.style.Image}
+ * @type {module:ol/style/Image~ImageStyle}
  */
 let DEFAULT_IMAGE_STYLE = null;
 
 /**
  * Get the default image style (or null if not yet set).
- * @return {ol.style.Image} The default image style.
+ * @return {module:ol/style/Image~ImageStyle} The default image style.
  */
 export function getDefaultImageStyle() {
   return DEFAULT_IMAGE_STYLE;
@@ -115,57 +115,57 @@ export function getDefaultImageStyle() {
 let DEFAULT_NO_IMAGE_STYLE;
 
 /**
- * @type {ol.style.Stroke}
+ * @type {module:ol/style/Stroke~Stroke}
  */
 let DEFAULT_STROKE_STYLE = null;
 
 /**
  * Get the default stroke style (or null if not yet set).
- * @return {ol.style.Stroke} The default stroke style.
+ * @return {module:ol/style/Stroke~Stroke} The default stroke style.
  */
 export function getDefaultStrokeStyle() {
   return DEFAULT_STROKE_STYLE;
 }
 
 /**
- * @type {ol.style.Stroke}
+ * @type {module:ol/style/Stroke~Stroke}
  */
 let DEFAULT_TEXT_STROKE_STYLE;
 
 /**
- * @type {ol.style.Text}
+ * @type {module:ol/style/Text~Text}
  */
 let DEFAULT_TEXT_STYLE = null;
 
 /**
  * Get the default text style (or null if not yet set).
- * @return {ol.style.Text} The default text style.
+ * @return {module:ol/style/Text~Text} The default text style.
  */
 export function getDefaultTextStyle() {
   return DEFAULT_TEXT_STYLE;
 }
 
 /**
- * @type {ol.style.Style}
+ * @type {module:ol/style/Style~Style}
  */
 let DEFAULT_STYLE = null;
 
 /**
  * Get the default style (or null if not yet set).
- * @return {ol.style.Style} The default style.
+ * @return {module:ol/style/Style~Style} The default style.
  */
 export function getDefaultStyle() {
   return DEFAULT_STYLE;
 }
 
 /**
- * @type {Array.<ol.style.Style>}
+ * @type {Array.<module:ol/style/Style~Style>}
  */
 let DEFAULT_STYLE_ARRAY = null;
 
 /**
  * Get the default style array (or null if not yet set).
- * @return {Array.<ol.style.Style>} The default style.
+ * @return {Array.<module:ol/style/Style~Style>} The default style.
  */
 export function getDefaultStyleArray() {
   return DEFAULT_STYLE_ARRAY;
@@ -234,7 +234,7 @@ function createStyleDefaults() {
 
   /**
    * @const
-   * @type {Array.<ol.style.Style>}
+   * @type {Array.<module:ol/style/Style~Style>}
    * @private
    */
   DEFAULT_STYLE_ARRAY = [DEFAULT_STYLE];
@@ -246,7 +246,7 @@ function createStyleDefaults() {
  * @typedef {Object} Options
  * @property {boolean} [extractStyles=true] Extract styles from the KML.
  * @property {boolean} [showPointNames=true] Show names as labels for placemarks which contain points.
- * @property {Array.<ol.style.Style>} [defaultStyle] Default style. The
+ * @property {Array.<module:ol/style/Style~Style>} [defaultStyle] Default style. The
  * default default style is the same as Google Earth.
  * @property {boolean} [writeStyles=true] Write styles into KML.
  */
@@ -281,7 +281,7 @@ const KML = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<ol.style.Style>}
+   * @type {Array.<module:ol/style/Style~Style>}
    */
   this.defaultStyle_ = options.defaultStyle ?
     options.defaultStyle : DEFAULT_STYLE_ARRAY;
@@ -302,7 +302,7 @@ const KML = function(opt_options) {
 
   /**
    * @private
-   * @type {!Object.<string, (Array.<ol.style.Style>|string)>}
+   * @type {!Object.<string, (Array.<module:ol/style/Style~Style>|string)>}
    */
   this.sharedStyles_ = {};
 
@@ -359,9 +359,9 @@ const ICON_ANCHOR_UNITS_MAP = {
 
 
 /**
- * @param {ol.style.Style|undefined} foundStyle Style.
+ * @param {module:ol/style/Style~Style|undefined} foundStyle Style.
  * @param {string} name Name.
- * @return {ol.style.Style} style Style.
+ * @return {module:ol/style/Style~Style} style Style.
  */
 function createNameStyleFunction(foundStyle, name) {
   let textStyle = null;
@@ -406,10 +406,10 @@ function createNameStyleFunction(foundStyle, name) {
 
 
 /**
- * @param {Array.<ol.style.Style>|undefined} style Style.
+ * @param {Array.<module:ol/style/Style~Style>|undefined} style Style.
  * @param {string} styleUrl Style URL.
- * @param {Array.<ol.style.Style>} defaultStyle Default style.
- * @param {!Object.<string, (Array.<ol.style.Style>|string)>} sharedStyles Shared styles.
+ * @param {Array.<module:ol/style/Style~Style>} defaultStyle Default style.
+ * @param {!Object.<string, (Array.<module:ol/style/Style~Style>|string)>} sharedStyles Shared styles.
  * @param {boolean|undefined} showPointNames true to show names for point placemarks.
  * @return {module:ol/style~StyleFunction} Feature style function.
  */
@@ -419,11 +419,11 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
     /**
      * @param {module:ol/Feature~Feature} feature feature.
      * @param {number} resolution Resolution.
-     * @return {Array.<ol.style.Style>} Style.
+     * @return {Array.<module:ol/style/Style~Style>} Style.
      */
     function(feature, resolution) {
       let drawName = showPointNames;
-      /** @type {ol.style.Style|undefined} */
+      /** @type {module:ol/style/Style~Style|undefined} */
       let nameStyle;
       let name = '';
       if (drawName) {
@@ -464,11 +464,11 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
 
 
 /**
- * @param {Array.<ol.style.Style>|string|undefined} styleValue Style value.
- * @param {Array.<ol.style.Style>} defaultStyle Default style.
- * @param {!Object.<string, (Array.<ol.style.Style>|string)>} sharedStyles
+ * @param {Array.<module:ol/style/Style~Style>|string|undefined} styleValue Style value.
+ * @param {Array.<module:ol/style/Style~Style>} defaultStyle Default style.
+ * @param {!Object.<string, (Array.<module:ol/style/Style~Style>|string)>} sharedStyles
  * Shared styles.
- * @return {Array.<ol.style.Style>} Style.
+ * @return {Array.<module:ol/style/Style~Style>} Style.
  */
 function findStyle(styleValue, defaultStyle, sharedStyles) {
   if (Array.isArray(styleValue)) {
@@ -609,7 +609,7 @@ const STYLE_MAP_PARSERS = makeStructureNS(
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {Array.<ol.style.Style>|string|undefined} StyleMap.
+ * @return {Array.<module:ol/style/Style~Style>|string|undefined} StyleMap.
  */
 function readStyleMapValue(node, objectStack) {
   return pushParseAndPop(undefined,
@@ -1214,7 +1214,7 @@ const STYLE_PARSERS = makeStructureNS(
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {Array.<ol.style.Style>} Style.
+ * @return {Array.<module:ol/style/Style~Style>} Style.
  */
 function readStyle(node, objectStack) {
   const styleObject = pushParseAndPop(
@@ -1222,23 +1222,23 @@ function readStyle(node, objectStack) {
   if (!styleObject) {
     return null;
   }
-  let fillStyle = /** @type {ol.style.Fill} */
+  let fillStyle = /** @type {module:ol/style/Fill~Fill} */
       ('fillStyle' in styleObject ?
         styleObject['fillStyle'] : DEFAULT_FILL_STYLE);
   const fill = /** @type {boolean|undefined} */ (styleObject['fill']);
   if (fill !== undefined && !fill) {
     fillStyle = null;
   }
-  let imageStyle = /** @type {ol.style.Image} */
+  let imageStyle = /** @type {module:ol/style/Image~ImageStyle} */
       ('imageStyle' in styleObject ?
         styleObject['imageStyle'] : DEFAULT_IMAGE_STYLE);
   if (imageStyle == DEFAULT_NO_IMAGE_STYLE) {
     imageStyle = undefined;
   }
-  const textStyle = /** @type {ol.style.Text} */
+  const textStyle = /** @type {module:ol/style/Text~Text} */
       ('textStyle' in styleObject ?
         styleObject['textStyle'] : DEFAULT_TEXT_STYLE);
-  let strokeStyle = /** @type {ol.style.Stroke} */
+  let strokeStyle = /** @type {module:ol/style/Stroke~Stroke} */
       ('strokeStyle' in styleObject ?
         styleObject['strokeStyle'] : DEFAULT_STROKE_STYLE);
   const outline = /** @type {boolean|undefined} */
@@ -1387,7 +1387,7 @@ function pairDataParser(node, objectStack) {
     if (styleUrl) {
       objectStack[objectStack.length - 1] = styleUrl;
     }
-    const Style = /** @type {ol.style.Style} */
+    const Style = /** @type {module:ol/style/Style~Style} */
         (pairObject['Style']);
     if (Style) {
       objectStack[objectStack.length - 1] = Style;
@@ -2341,7 +2341,7 @@ const ICON_STYLE_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {ol.style.Icon} style Icon style.
+ * @param {module:ol/style/Icon~Icon} style Icon style.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeIconStyle(node, style, objectStack) {
@@ -2419,7 +2419,7 @@ const LABEL_STYLE_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {ol.style.Text} style style.
+ * @param {module:ol/style/Text~Text} style style.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeLabelStyle(node, style, objectStack) {
@@ -2465,7 +2465,7 @@ const LINE_STYLE_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {ol.style.Stroke} style style.
+ * @param {module:ol/style/Stroke~Stroke} style style.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeLineStyle(node, style, objectStack) {
@@ -2848,7 +2848,7 @@ const COLOR_NODE_FACTORY = makeSimpleNodeFactory('color');
 
 /**
  * @param {Node} node Node.
- * @param {ol.style.Fill} style Style.
+ * @param {module:ol/style/Fill~Fill} style Style.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writePolyStyle(node, style, objectStack) {
@@ -2894,7 +2894,7 @@ const STYLE_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeStyle(node, style, objectStack) {

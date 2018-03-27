@@ -100,7 +100,7 @@ const Heatmap = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<Array.<ol.style.Style>>}
+   * @type {Array.<Array.<module:ol/style/Style~Style>>}
    */
   this.styleCache_ = null;
 
