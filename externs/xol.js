@@ -709,7 +709,7 @@
 
 /**
  * @typedef {Object} style_CircleOptions
- * @property {ol.style.Fill|undefined} fill Fill style.
+ * @property {module:ol/style/Fill~Fill|undefined} fill Fill style.
  * @property {number} radius Circle radius.
  * @property {boolean|undefined} snapToPixel If `true` integral numbers of pixels are used as the X and Y pixel
  * coordinate when drawing the circle in the output canvas. If `false`
@@ -718,8 +718,8 @@
  * rendering. Note that accuracy is important if the circle's
  * position is animated. Without it, the circle may jitter noticeably.
  * Default value is `true`.
- * @property {ol.style.Stroke|undefined} stroke Stroke style.
- * @property {ol.style.AtlasManager|undefined} atlasManager The atlas manager to use for this circle. When using WebGL it is
+ * @property {module:ol/style/Stroke~Stroke|undefined} stroke Stroke style.
+ * @property {module:ol/style/AtlasManager~AtlasManager|undefined} atlasManager The atlas manager to use for this circle. When using WebGL it is
  * recommended to use an atlas manager to avoid texture switching.
  * If an atlas manager is given, the circle is added to an atlas.
  * By default no atlas manager is used.
@@ -727,22 +727,14 @@
 
 
 /**
- * @typedef {Object} style_FillOptions
- * @property {ol.Color|ol.ColorLike|undefined} color A color, gradient or pattern. See {@link ol.color}
- * and {@link ol.colorlike} for possible formats. Default null;
- * if null, the Canvas/renderer default black will be used.
- */
-
-
-/**
  * @typedef {Object} style_IconOptions
  * @property {Array.<number>|undefined} anchor Anchor. Default value is `[0.5, 0.5]` (icon center).
- * @property {ol.style.IconOrigin|undefined} anchorOrigin Origin of the anchor: `bottom-left`, `bottom-right`, `top-left` or
+ * @property {module:ol/style/IconOrigin~IconOrigin|undefined} anchorOrigin Origin of the anchor: `bottom-left`, `bottom-right`, `top-left` or
  * `top-right`. Default is `top-left`.
- * @property {ol.style.IconAnchorUnits|undefined} anchorXUnits Units in which the anchor x value is specified. A value of `'fraction'`
+ * @property {module:ol/style/IconAnchorUnits~IconAnchorUnits|undefined} anchorXUnits Units in which the anchor x value is specified. A value of `'fraction'`
  * indicates the x value is a fraction of the icon. A value of `'pixels'`
  * indicates the x value in pixels. Default is `'fraction'`.
- * @property {ol.style.IconAnchorUnits|undefined} anchorYUnits Units in which the anchor y value is specified. A value of `'fraction'`
+ * @property {module:ol/style/IconAnchorUnits~IconAnchorUnits|undefined} anchorYUnits Units in which the anchor y value is specified. A value of `'fraction'`
  * indicates the y value is a fraction of the icon. A value of `'pixels'`
  * indicates the y value in pixels. Default is `'fraction'`.
  * @property {ol.Color|string|undefined} color Color to tint the icon. If not specified, the icon will be left as is.
@@ -757,7 +749,7 @@
  * @property {Array.<number>|undefined} offset Offset, which, together with the size and the offset origin,
  * define the sub-rectangle to use from the original icon image. Default value
  * is `[0, 0]`.
- * @property {ol.style.IconOrigin|undefined} offsetOrigin Origin of the offset: `bottom-left`, `bottom-right`, `top-left` or
+ * @property {module:ol/style/IconOrigin~IconOrigin|undefined} offsetOrigin Origin of the offset: `bottom-left`, `bottom-right`, `top-left` or
  * `top-right`. Default is `top-left`.
  * @property {number|undefined} opacity Opacity of the icon. Default is `1`.
  * @property {number|undefined} scale Scale. Default is `1`.
@@ -781,7 +773,7 @@
 
 /**
  * @typedef {Object} style_RegularShapeOptions
- * @property {ol.style.Fill|undefined} fill Fill style.
+ * @property {module:ol/style/Fill~Fill|undefined} fill Fill style.
  * @property {number} points Number of points for stars and regular polygons. In case of a polygon, the
  * number of points is the number of sides.
  * @property {number|undefined} radius Radius of a regular polygon.
@@ -797,33 +789,13 @@
  * rendering. Note that accuracy is important if the shape's
  * position is animated. Without it, the shape may jitter noticeably.
  * Default value is `true`.
- * @property {ol.style.Stroke|undefined} stroke Stroke style.
+ * @property {module:ol/style/Stroke~Stroke|undefined} stroke Stroke style.
  * @property {number|undefined} rotation Rotation in radians (positive rotation clockwise). Default is `0`.
  * @property {boolean|undefined} rotateWithView Whether to rotate the shape with the view. Default is `false`.
- * @property {ol.style.AtlasManager|undefined} atlasManager The atlas manager to use for this symbol. When using WebGL it is
+ * @property {module:ol/style/AtlasManager~AtlasManager|undefined} atlasManager The atlas manager to use for this symbol. When using WebGL it is
  * recommended to use an atlas manager to avoid texture switching.
  * If an atlas manager is given, the symbol is added to an atlas.
  * By default no atlas manager is used.
- */
-
-
-/**
- * @typedef {Object} style_StrokeOptions
- * @property {ol.Color|ol.ColorLike|undefined} color A color, gradient or pattern. See {@link ol.color}
- * and {@link ol.colorlike} for possible formats. Default null;
- * if null, the Canvas/renderer default black will be used.
- * @property {string|undefined} lineCap Line cap style: `butt`, `round`, or `square`. Default is `round`.
- * @property {string|undefined} lineJoin Line join style: `bevel`, `round`, or `miter`. Default is `round`.
- * @property {Array.<number>|undefined} lineDash Line dash pattern. Default is `undefined` (no dash). Please note that
- * Internet Explorer 10 and lower [do not support][mdn] the `setLineDash`
- * method on the `CanvasRenderingContext2D` and therefore this option will
- * have no visual effect in these browsers.
- *
- * [mdn]: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash#Browser_compatibility
- *
- * @property {number|undefined} lineDashOffset Line dash offset. Default is '0'.
- * @property {number|undefined} miterLimit Miter limit. Default is `10`.
- * @property {number|undefined} width Width.
  */
 
 
@@ -842,7 +814,7 @@
  * @property {boolean|undefined} overflow For polygon labels or when `placement` is set to `'line'`, allow text to
  * exceed the width of the polygon at the label position or the length of
  * the path that it follows. Default is `false`.
- * @property {ol.style.TextPlacement|undefined} placement Text placement.
+ * @property {module:ol/style/Text~TextPlacement|undefined} placement Text placement.
  * @property {number|undefined} scale Scale.
  * @property {boolean|undefined} rotateWithView Whether to rotate the text with the view. Default is `false`.
  * @property {number|undefined} rotation Rotation in radians (positive rotation clockwise). Default is `0`.
@@ -853,11 +825,11 @@
  * exceeded.
  * @property {string|undefined} textBaseline Text base line. Possible values: 'bottom', 'top', 'middle', 'alphabetic',
  * 'hanging', 'ideographic'. Default is 'middle'.
- * @property {ol.style.Fill|undefined} fill Fill style. If none is provided, we'll use a dark fill-style (#333).
- * @property {ol.style.Stroke|undefined} stroke Stroke style.
- * @property {ol.style.Fill|undefined} backgroundFill Fill style for the text background when `placement` is `'point'`. Default is
+ * @property {module:ol/style/Fill~Fill|undefined} fill Fill style. If none is provided, we'll use a dark fill-style (#333).
+ * @property {module:ol/style/Stroke~Stroke|undefined} stroke Stroke style.
+ * @property {module:ol/style/Fill~Fill|undefined} backgroundFill Fill style for the text background when `placement` is `'point'`. Default is
  * no fill.
- * @property {ol.style.Stroke|undefined} backgroundStroke Stroke style for the text background  when `placement` is `'point'`. Default
+ * @property {module:ol/style/Stroke~Stroke|undefined} backgroundStroke Stroke style for the text background  when `placement` is `'point'`. Default
  * is no stroke.
  * @property {Array.<number>|undefined} padding Padding in pixels around the text for decluttering and background. The order
  * of values in the array is `[top, right, bottom, left]`. Default is
@@ -869,14 +841,14 @@
  * @typedef {Object} style_StyleOptions
  * @property {undefined|string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction} geometry Feature property or geometry or function returning a geometry to render for
  * this style.
- * @property {ol.style.Fill|undefined} fill Fill style.
- * @property {ol.style.Image|undefined} image Image style.
+ * @property {module:ol/style/Fill~Fill|undefined} fill Fill style.
+ * @property {module:ol/style/Image~ImageStyle|undefined} image Image style.
  * @property {ol.StyleRenderFunction|undefined} renderer Custom renderer. When configured, `fill`, `stroke` and `image` will be
  * ignored, and the provided function will be called with each render frame for
  * each geometry.
  *
- * @property {ol.style.Stroke|undefined} stroke Stroke style.
- * @property {ol.style.Text|undefined} text Text style.
+ * @property {module:ol/style/Stroke~Stroke|undefined} stroke Stroke style.
+ * @property {module:ol/style/Text~Text|undefined} text Text style.
  * @property {number|undefined} zIndex Z index.
  */
 
@@ -952,13 +924,4 @@
  * are 22 levels in the grid set.
  * @property {number|undefined} minZoom Minimum zoom. Default is 0.
  * @property {number|ol.Size|undefined} tileSize Tile size in pixels. Default is `[256, 256]`.
- */
-
-
-/**
- * @typedef {Object} style_AtlasManagerOptions
- * @property {number|undefined} initialSize The size in pixels of the first atlas image. Default is `256`.
- * @property {number|undefined} maxSize The maximum size in pixels of atlas images. Default is
- * `WEBGL_MAX_TEXTURE_SIZE` or 2048 if WebGL is not supported.
- * @property {number|undefined} space The space in pixels between images (default: 1).
  */
