@@ -2656,22 +2656,6 @@ olx.style.CircleOptions.prototype.atlasManager;
 
 
 /**
- * @typedef {{color: (ol.Color|ol.ColorLike|undefined)}}
- */
-olx.style.FillOptions;
-
-
-/**
- * A color, gradient or pattern. See {@link ol.color}
- * and {@link ol.colorlike} for possible formats. Default null;
- * if null, the Canvas/renderer default black will be used.
- * @type {ol.Color|ol.ColorLike|undefined}
- * @api
- */
-olx.style.FillOptions.prototype.color;
-
-
-/**
  * @typedef {{anchor: (Array.<number>|undefined),
  *     anchorOrigin: (module:ol/style/IconOrigin~IconOrigin|undefined),
  *     anchorXUnits: (module:ol/style/IconAnchorUnits~IconAnchorUnits|undefined),
