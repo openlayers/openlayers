@@ -3,6 +3,23 @@
  */
 import {getUid} from '../index.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {module:ol/color~Color|module:ol/colorlike~ColorLike} [color] A color, gradient or pattern.
+ * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
+ * Default null; if null, the Canvas/renderer default black will be used.
+ * @property {string} [lineCap='round'] Line cap style: `butt`, `round`, or `square`.
+ * @property {string} [lineJoin='round'] Line join style: `bevel`, `round`, or `miter`.
+ * @property {Array.<number>} [lineDash] Line dash pattern. Default is `undefined` (no dash).
+ * Please note that Internet Explorer 10 and lower do not support the `setLineDash` method on
+ * the `CanvasRenderingContext2D` and therefore this option will have no visual effect in these browsers.
+ * @property {number} [lineDashOffset=0] Line dash offset.
+ * @property {number} [miterLimit=10] Miter limit.
+ * @property {number} [width] Width.
+ */
+
+
 /**
  * @classdesc
  * Set stroke style for vector features.
@@ -11,7 +28,7 @@ import {getUid} from '../index.js';
  * the options; they will not return the default.
  *
  * @constructor
- * @param {olx.style.StrokeOptions=} opt_options Options.
+ * @param {module:ol/style/Stroke~Options=} opt_options Options.
  * @api
  */
 const Stroke = function(opt_options) {
@@ -70,7 +87,7 @@ const Stroke = function(opt_options) {
 
 /**
  * Clones the style.
- * @return {ol.style.Stroke} The cloned style.
+ * @return {module:ol/style/Stroke~Stroke} The cloned style.
  * @api
  */
 Stroke.prototype.clone = function() {

@@ -74,7 +74,7 @@ inherits(WebGLReplayGroup, ReplayGroup);
 
 
 /**
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  * @param {boolean} group Group with previous replay.
  */
 WebGLReplayGroup.prototype.addDeclutter = function(style, group) {};

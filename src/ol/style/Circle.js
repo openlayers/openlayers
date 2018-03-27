@@ -10,7 +10,7 @@ import RegularShape from '../style/RegularShape.js';
  *
  * @constructor
  * @param {olx.style.CircleOptions=} opt_options Options.
- * @extends {ol.style.RegularShape}
+ * @extends {module:ol/style/RegularShape~RegularShape}
  * @api
  */
 const CircleStyle = function(opt_options) {
@@ -33,7 +33,7 @@ inherits(CircleStyle, RegularShape);
 
 /**
  * Clones the style.  If an atlasmanager was provided to the original style it will be used in the cloned style, too.
- * @return {ol.style.Circle} The cloned style.
+ * @return {module:ol/style/Circle~CircleStyle} The cloned style.
  * @override
  * @api
  */

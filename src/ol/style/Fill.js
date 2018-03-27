@@ -4,12 +4,21 @@
 import {getUid} from '../index.js';
 import {asString} from '../color.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {module:ol/color~Color|module:ol/colorlike~ColorLike} [color] A color, gradient or pattern.
+ * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
+ * Default null; if null, the Canvas/renderer default black will be used.
+ */
+
+
 /**
  * @classdesc
  * Set fill style for vector features.
  *
  * @constructor
- * @param {olx.style.FillOptions=} opt_options Options.
+ * @param {module:ol/style/Fill~Options=} opt_options Options.
  * @api
  */
 const Fill = function(opt_options) {
@@ -32,7 +41,7 @@ const Fill = function(opt_options) {
 
 /**
  * Clones the style. The color is not cloned if it is an {@link module:ol/colorlike~ColorLike}.
- * @return {ol.style.Fill} The cloned style.
+ * @return {module:ol/style/Fill~Fill} The cloned style.
  * @api
  */
 Fill.prototype.clone = function() {

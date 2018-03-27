@@ -435,7 +435,7 @@ CanvasImmediateRenderer.prototype.drawCircle = function(geometry) {
  * Set the rendering style.  Note that since this is an immediate rendering API,
  * any `zIndex` on the provided style will be ignored.
  *
- * @param {ol.style.Style} style The rendering style.
+ * @param {module:ol/style/Style~Style} style The rendering style.
  * @override
  * @api
  */
@@ -493,7 +493,7 @@ CanvasImmediateRenderer.prototype.drawGeometry = function(geometry) {
  * {@link module:ol/layer/Vector~VectorLayer} instead.
  *
  * @param {module:ol/Feature~Feature} feature Feature.
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  * @override
  * @api
  */
@@ -811,8 +811,8 @@ CanvasImmediateRenderer.prototype.setContextTextState_ = function(textState) {
  * Set the fill and stroke style for subsequent draw operations.  To clear
  * either fill or stroke styles, pass null for the appropriate parameter.
  *
- * @param {ol.style.Fill} fillStyle Fill style.
- * @param {ol.style.Stroke} strokeStyle Stroke style.
+ * @param {module:ol/style/Fill~Fill} fillStyle Fill style.
+ * @param {module:ol/style/Stroke~Stroke} strokeStyle Stroke style.
  * @override
  */
 CanvasImmediateRenderer.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
@@ -859,7 +859,7 @@ CanvasImmediateRenderer.prototype.setFillStrokeStyle = function(fillStyle, strok
  * Set the image style for subsequent draw operations.  Pass null to remove
  * the image style.
  *
- * @param {ol.style.Image} imageStyle Image style.
+ * @param {module:ol/style/Image~ImageStyle} imageStyle Image style.
  * @override
  */
 CanvasImmediateRenderer.prototype.setImageStyle = function(imageStyle) {
@@ -891,7 +891,7 @@ CanvasImmediateRenderer.prototype.setImageStyle = function(imageStyle) {
  * Set the text style for subsequent draw operations.  Pass null to
  * remove the text style.
  *
- * @param {ol.style.Text} textStyle Text style.
+ * @param {module:ol/style/Text~Text} textStyle Text style.
  * @override
  */
 CanvasImmediateRenderer.prototype.setTextStyle = function(textStyle) {

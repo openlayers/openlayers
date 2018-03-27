@@ -18,7 +18,7 @@ const SIMPLIFY_TOLERANCE = 0.5;
  * @const
  * @type {Object.<module:ol/geom/GeometryType~GeometryType,
  *                function(ol.render.ReplayGroup, module:ol/geom/Geometry~Geometry,
- *                         ol.style.Style, Object)>}
+ *                         module:ol/style/Style~Style, Object)>}
  */
 const GEOMETRY_RENDERERS = {
   'Point': renderPointGeometry,
@@ -66,7 +66,7 @@ export function getTolerance(resolution, pixelRatio) {
 /**
  * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {module:ol/geom/Circle~Circle} geometry Geometry.
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  * @param {module:ol/Feature~Feature} feature Feature.
  */
 function renderCircleGeometry(replayGroup, geometry, style, feature) {
@@ -89,7 +89,7 @@ function renderCircleGeometry(replayGroup, geometry, style, feature) {
 /**
  * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {function(this: T, module:ol/events/Event~Event)} listener Listener function.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
@@ -121,7 +121,7 @@ export function renderFeature(replayGroup, feature, style, squaredTolerance, lis
 /**
  * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  */
 function renderFeatureInternal(replayGroup, feature, style, squaredTolerance) {
@@ -143,7 +143,7 @@ function renderFeatureInternal(replayGroup, feature, style, squaredTolerance) {
 /**
  * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  */
 function renderGeometry(replayGroup, geometry, style, feature) {
@@ -162,7 +162,7 @@ function renderGeometry(replayGroup, geometry, style, feature) {
 /**
  * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {module:ol/geom/GeometryCollection~GeometryCollection} geometry Geometry.
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  * @param {module:ol/Feature~Feature} feature Feature.
  */
 function renderGeometryCollectionGeometry(replayGroup, geometry, style, feature) {
@@ -179,7 +179,7 @@ function renderGeometryCollectionGeometry(replayGroup, geometry, style, feature)
 /**
  * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {module:ol/geom/LineString~LineString|ol.render.Feature} geometry Geometry.
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  */
 function renderLineStringGeometry(replayGroup, geometry, style, feature) {
@@ -201,7 +201,7 @@ function renderLineStringGeometry(replayGroup, geometry, style, feature) {
 /**
  * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {module:ol/geom/MultiLineString~MultiLineString|ol.render.Feature} geometry Geometry.
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  */
 function renderMultiLineStringGeometry(replayGroup, geometry, style, feature) {
@@ -223,7 +223,7 @@ function renderMultiLineStringGeometry(replayGroup, geometry, style, feature) {
 /**
  * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {module:ol/geom/MultiPolygon~MultiPolygon} geometry Geometry.
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  * @param {module:ol/Feature~Feature} feature Feature.
  */
 function renderMultiPolygonGeometry(replayGroup, geometry, style, feature) {
@@ -246,7 +246,7 @@ function renderMultiPolygonGeometry(replayGroup, geometry, style, feature) {
 /**
  * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {module:ol/geom/Point~Point|ol.render.Feature} geometry Geometry.
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  */
 function renderPointGeometry(replayGroup, geometry, style, feature) {
@@ -271,7 +271,7 @@ function renderPointGeometry(replayGroup, geometry, style, feature) {
 /**
  * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {module:ol/geom/MultiPoint~MultiPoint|ol.render.Feature} geometry Geometry.
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  */
 function renderMultiPointGeometry(replayGroup, geometry, style, feature) {
@@ -296,7 +296,7 @@ function renderMultiPointGeometry(replayGroup, geometry, style, feature) {
 /**
  * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {module:ol/geom/Polygon~Polygon|ol.render.Feature} geometry Geometry.
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  */
 function renderPolygonGeometry(replayGroup, geometry, style, feature) {

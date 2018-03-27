@@ -307,7 +307,7 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
  * @param {module:ol/Feature~Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {(ol.style.Style|Array.<ol.style.Style>)} styles The style or array of
+ * @param {(module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>)} styles The style or array of
  *     styles.
  * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.

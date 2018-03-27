@@ -18,7 +18,7 @@ import ImageStyle from '../style/Image.js';
  *
  * @constructor
  * @param {olx.style.IconOptions=} opt_options Options.
- * @extends {ol.style.Image}
+ * @extends {module:ol/style/Image~ImageStyle}
  * @api
  */
 const Icon = function(opt_options) {
@@ -39,21 +39,21 @@ const Icon = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.style.IconOrigin}
+   * @type {module:ol/style/IconOrigin~IconOrigin}
    */
   this.anchorOrigin_ = options.anchorOrigin !== undefined ?
     options.anchorOrigin : IconOrigin.TOP_LEFT;
 
   /**
    * @private
-   * @type {ol.style.IconAnchorUnits}
+   * @type {module:ol/style/IconAnchorUnits~IconAnchorUnits}
    */
   this.anchorXUnits_ = options.anchorXUnits !== undefined ?
     options.anchorXUnits : IconAnchorUnits.FRACTION;
 
   /**
    * @private
-   * @type {ol.style.IconAnchorUnits}
+   * @type {module:ol/style/IconAnchorUnits~IconAnchorUnits}
    */
   this.anchorYUnits_ = options.anchorYUnits !== undefined ?
     options.anchorYUnits : IconAnchorUnits.FRACTION;
@@ -105,7 +105,7 @@ const Icon = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.style.IconImage}
+   * @type {module:ol/style/IconImage~IconImage}
    */
   this.iconImage_ = getIconImage(
     image, /** @type {string} */ (src), imgSize, this.crossOrigin_, imageState, this.color_);
@@ -118,7 +118,7 @@ const Icon = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.style.IconOrigin}
+   * @type {module:ol/style/IconOrigin~IconOrigin}
    */
   this.offsetOrigin_ = options.offsetOrigin !== undefined ?
     options.offsetOrigin : IconOrigin.TOP_LEFT;
@@ -177,7 +177,7 @@ inherits(Icon, ImageStyle);
 
 /**
  * Clones the style. The underlying Image/HTMLCanvasElement is not cloned.
- * @return {ol.style.Icon} The cloned style.
+ * @return {module:ol/style/Icon~Icon} The cloned style.
  * @api
  */
 Icon.prototype.clone = function() {

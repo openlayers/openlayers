@@ -40,7 +40,7 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
  * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
  * means higher priority.
- * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction} [style] Layer style. See
+ * @property {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|ol.StyleFunction} [style] Layer style. See
  * {@link ol.style} for default style which will be used if this is not defined.
  * @property {number} [maxTilesLoading=16] Maximum number tiles to load simultaneously.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
@@ -101,7 +101,7 @@ const VectorLayer = function(opt_options) {
 
   /**
    * User provided style.
-   * @type {ol.style.Style|Array.<ol.style.Style>|module:ol/style~StyleFunction}
+   * @type {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction}
    * @private
    */
   this.style_ = null;
@@ -192,7 +192,7 @@ VectorLayer.prototype.getSource;
 /**
  * Get the style for features.  This returns whatever was passed to the `style`
  * option at construction or to the `setStyle` method.
- * @return {ol.style.Style|Array.<ol.style.Style>|module:ol/style~StyleFunction}
+ * @return {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction}
  *     Layer style.
  * @api
  */
@@ -245,7 +245,7 @@ VectorLayer.prototype.setRenderOrder = function(renderOrder) {
  * it is `null` the layer has no style (a `null` style), so only features
  * that have their own styles will be rendered in the layer. See
  * {@link ol.style} for information on the default style.
- * @param {ol.style.Style|Array.<ol.style.Style>|module:ol/style~StyleFunction|null|undefined}
+ * @param {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction|null|undefined}
  *     style Layer style.
  * @api
  */

@@ -17,7 +17,7 @@ import ImageStyle from '../style/Image.js';
  *
  * @constructor
  * @param {olx.style.RegularShapeOptions} options Options.
- * @extends {ol.style.Image}
+ * @extends {module:ol/style/Image~ImageStyle}
  * @api
  */
 const RegularShape = function(options) {
@@ -41,7 +41,7 @@ const RegularShape = function(options) {
 
   /**
    * @private
-   * @type {ol.style.Fill}
+   * @type {module:ol/style/Fill~Fill}
    */
   this.fill_ = options.fill !== undefined ? options.fill : null;
 
@@ -78,7 +78,7 @@ const RegularShape = function(options) {
 
   /**
    * @private
-   * @type {ol.style.Stroke}
+   * @type {module:ol/style/Stroke~Stroke}
    */
   this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
@@ -108,7 +108,7 @@ const RegularShape = function(options) {
 
   /**
    * @protected
-   * @type {ol.style.AtlasManager|undefined}
+   * @type {module:ol/style/AtlasManager~AtlasManager|undefined}
    */
   this.atlasManager_ = options.atlasManager;
 
@@ -140,7 +140,7 @@ inherits(RegularShape, ImageStyle);
 
 /**
  * Clones the style. If an atlasmanager was provided to the original style it will be used in the cloned style, too.
- * @return {ol.style.RegularShape} The cloned style.
+ * @return {module:ol/style/RegularShape~RegularShape} The cloned style.
  * @api
  */
 RegularShape.prototype.clone = function() {
@@ -183,7 +183,7 @@ RegularShape.prototype.getAngle = function() {
 
 /**
  * Get the fill style for the shape.
- * @return {ol.style.Fill} Fill style.
+ * @return {module:ol/style/Fill~Fill} Fill style.
  * @api
  */
 RegularShape.prototype.getFill = function() {
@@ -282,7 +282,7 @@ RegularShape.prototype.getSize = function() {
 
 /**
  * Get the stroke style for the shape.
- * @return {ol.style.Stroke} Stroke style.
+ * @return {module:ol/style/Stroke~Stroke} Stroke style.
  * @api
  */
 RegularShape.prototype.getStroke = function() {
@@ -310,7 +310,7 @@ RegularShape.prototype.unlistenImageChange = function(listener, thisArg) {};
 
 /**
  * @protected
- * @param {ol.style.AtlasManager|undefined} atlasManager An atlas manager.
+ * @param {module:ol/style/AtlasManager~AtlasManager|undefined} atlasManager An atlas manager.
  */
 RegularShape.prototype.render_ = function(atlasManager) {
   let imageSize;

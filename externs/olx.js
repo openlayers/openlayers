@@ -2598,18 +2598,18 @@ olx.source.ZoomifyOptions.prototype.tileSize;
 
 
 /**
- * @typedef {{fill: (ol.style.Fill|undefined),
+ * @typedef {{fill: (module:ol/style/Fill~Fill|undefined),
  *     radius: number,
  *     snapToPixel: (boolean|undefined),
- *     stroke: (ol.style.Stroke|undefined),
- *     atlasManager: (ol.style.AtlasManager|undefined)}}
+ *     stroke: (module:ol/style/Stroke~Stroke|undefined),
+ *     atlasManager: (module:ol/style/AtlasManager~AtlasManager|undefined)}}
  */
 olx.style.CircleOptions;
 
 
 /**
  * Fill style.
- * @type {ol.style.Fill|undefined}
+ * @type {module:ol/style/Fill~Fill|undefined}
  * @api
  */
 olx.style.CircleOptions.prototype.fill;
@@ -2639,7 +2639,7 @@ olx.style.CircleOptions.prototype.snapToPixel;
 
 /**
  * Stroke style.
- * @type {ol.style.Stroke|undefined}
+ * @type {module:ol/style/Stroke~Stroke|undefined}
  * @api
  */
 olx.style.CircleOptions.prototype.stroke;
@@ -2650,37 +2650,21 @@ olx.style.CircleOptions.prototype.stroke;
  * recommended to use an atlas manager to avoid texture switching.
  * If an atlas manager is given, the circle is added to an atlas.
  * By default no atlas manager is used.
- * @type {ol.style.AtlasManager|undefined}
+ * @type {module:ol/style/AtlasManager~AtlasManager|undefined}
  */
 olx.style.CircleOptions.prototype.atlasManager;
 
 
 /**
- * @typedef {{color: (ol.Color|ol.ColorLike|undefined)}}
- */
-olx.style.FillOptions;
-
-
-/**
- * A color, gradient or pattern. See {@link ol.color}
- * and {@link ol.colorlike} for possible formats. Default null;
- * if null, the Canvas/renderer default black will be used.
- * @type {ol.Color|ol.ColorLike|undefined}
- * @api
- */
-olx.style.FillOptions.prototype.color;
-
-
-/**
  * @typedef {{anchor: (Array.<number>|undefined),
- *     anchorOrigin: (ol.style.IconOrigin|undefined),
- *     anchorXUnits: (ol.style.IconAnchorUnits|undefined),
- *     anchorYUnits: (ol.style.IconAnchorUnits|undefined),
+ *     anchorOrigin: (module:ol/style/IconOrigin~IconOrigin|undefined),
+ *     anchorXUnits: (module:ol/style/IconAnchorUnits~IconAnchorUnits|undefined),
+ *     anchorYUnits: (module:ol/style/IconAnchorUnits~IconAnchorUnits|undefined),
  *     color: (ol.Color|string|undefined),
  *     crossOrigin: (null|string|undefined),
  *     img: (Image|HTMLCanvasElement|undefined),
  *     offset: (Array.<number>|undefined),
- *     offsetOrigin: (ol.style.IconOrigin|undefined),
+ *     offsetOrigin: (module:ol/style/IconOrigin~IconOrigin|undefined),
  *     opacity: (number|undefined),
  *     scale: (number|undefined),
  *     snapToPixel: (boolean|undefined),
@@ -2704,7 +2688,7 @@ olx.style.IconOptions.prototype.anchor;
 /**
  * Origin of the anchor: `bottom-left`, `bottom-right`, `top-left` or
  * `top-right`. Default is `top-left`.
- * @type {ol.style.IconOrigin|undefined}
+ * @type {module:ol/style/IconOrigin~IconOrigin|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.anchorOrigin;
@@ -2714,7 +2698,7 @@ olx.style.IconOptions.prototype.anchorOrigin;
  * Units in which the anchor x value is specified. A value of `'fraction'`
  * indicates the x value is a fraction of the icon. A value of `'pixels'`
  * indicates the x value in pixels. Default is `'fraction'`.
- * @type {ol.style.IconAnchorUnits|undefined}
+ * @type {module:ol/style/IconAnchorUnits~IconAnchorUnits|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.anchorXUnits;
@@ -2724,7 +2708,7 @@ olx.style.IconOptions.prototype.anchorXUnits;
  * Units in which the anchor y value is specified. A value of `'fraction'`
  * indicates the y value is a fraction of the icon. A value of `'pixels'`
  * indicates the y value in pixels. Default is `'fraction'`.
- * @type {ol.style.IconAnchorUnits|undefined}
+ * @type {module:ol/style/IconAnchorUnits~IconAnchorUnits|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.anchorYUnits;
@@ -2773,7 +2757,7 @@ olx.style.IconOptions.prototype.offset;
 /**
  * Origin of the offset: `bottom-left`, `bottom-right`, `top-left` or
  * `top-right`. Default is `top-left`.
- * @type {ol.style.IconOrigin|undefined}
+ * @type {module:ol/style/IconOrigin~IconOrigin|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.offsetOrigin;
@@ -2854,24 +2838,24 @@ olx.style.IconOptions.prototype.src;
 
 /**
  * Specify radius for regular polygons, or radius1 and radius2 for stars.
- * @typedef {{fill: (ol.style.Fill|undefined),
+ * @typedef {{fill: (module:ol/style/Fill~Fill|undefined),
  *     points: number,
  *     radius: (number|undefined),
  *     radius1: (number|undefined),
  *     radius2: (number|undefined),
  *     angle: (number|undefined),
  *     snapToPixel: (boolean|undefined),
- *     stroke: (ol.style.Stroke|undefined),
+ *     stroke: (module:ol/style/Stroke~Stroke|undefined),
  *     rotation: (number|undefined),
  *     rotateWithView: (boolean|undefined),
- *     atlasManager: (ol.style.AtlasManager|undefined)}}
+ *     atlasManager: (module:ol/style/AtlasManager~AtlasManager|undefined)}}
  */
 olx.style.RegularShapeOptions;
 
 
 /**
  * Fill style.
- * @type {ol.style.Fill|undefined}
+ * @type {module:ol/style/Fill~Fill|undefined}
  * @api
  */
 olx.style.RegularShapeOptions.prototype.fill;
@@ -2936,7 +2920,7 @@ olx.style.RegularShapeOptions.prototype.snapToPixel;
 
 /**
  * Stroke style.
- * @type {ol.style.Stroke|undefined}
+ * @type {module:ol/style/Stroke~Stroke|undefined}
  * @api
  */
 olx.style.RegularShapeOptions.prototype.stroke;
@@ -2963,85 +2947,9 @@ olx.style.RegularShapeOptions.prototype.rotateWithView;
  * recommended to use an atlas manager to avoid texture switching.
  * If an atlas manager is given, the symbol is added to an atlas.
  * By default no atlas manager is used.
- * @type {ol.style.AtlasManager|undefined}
+ * @type {module:ol/style/AtlasManager~AtlasManager|undefined}
  */
 olx.style.RegularShapeOptions.prototype.atlasManager;
-
-
-/**
- * @typedef {{color: (ol.Color|ol.ColorLike|undefined),
- *     lineCap: (string|undefined),
- *     lineJoin: (string|undefined),
- *     lineDash: (Array.<number>|undefined),
- *     lineDashOffset: (number|undefined),
- *     miterLimit: (number|undefined),
- *     width: (number|undefined)}}
- */
-olx.style.StrokeOptions;
-
-
-/**
- * A color, gradient or pattern. See {@link ol.color}
- * and {@link ol.colorlike} for possible formats. Default null;
- * if null, the Canvas/renderer default black will be used.
- * @type {ol.Color|ol.ColorLike|undefined}
- * @api
- */
-olx.style.StrokeOptions.prototype.color;
-
-
-/**
- * Line cap style: `butt`, `round`, or `square`. Default is `round`.
- * @type {string|undefined}
- * @api
- */
-olx.style.StrokeOptions.prototype.lineCap;
-
-
-/**
- * Line join style: `bevel`, `round`, or `miter`. Default is `round`.
- * @type {string|undefined}
- * @api
- */
-olx.style.StrokeOptions.prototype.lineJoin;
-
-
-/**
- * Line dash pattern. Default is `undefined` (no dash). Please note that
- * Internet Explorer 10 and lower [do not support][mdn] the `setLineDash`
- * method on the `CanvasRenderingContext2D` and therefore this option will
- * have no visual effect in these browsers.
- *
- * [mdn]: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash#Browser_compatibility
- *
- * @type {Array.<number>|undefined}
- * @api
- */
-olx.style.StrokeOptions.prototype.lineDash;
-
-
-/**
- * Line dash offset. Default is '0'.
- * @type {number|undefined}
- * @api
- */
-olx.style.StrokeOptions.prototype.lineDashOffset;
-
-
-/**
- * Miter limit. Default is `10`.
- * @type {number|undefined}
- * @api
- */
-olx.style.StrokeOptions.prototype.miterLimit;
-
-
-/**
- * Width.
- * @type {number|undefined}
- * @api
- */
-olx.style.StrokeOptions.prototype.width;
 
 
 /**
@@ -3050,17 +2958,17 @@ olx.style.StrokeOptions.prototype.width;
  *     offsetX: (number|undefined),
  *     offsetY: (number|undefined),
  *     overflow: (boolean|undefined),
- *     placement: (ol.style.TextPlacement|string|undefined),
+ *     placement: (module:ol/style/Text~TextPlacement|string|undefined),
  *     scale: (number|undefined),
  *     rotateWithView: (boolean|undefined),
  *     rotation: (number|undefined),
  *     text: (string|undefined),
  *     textAlign: (string|undefined),
  *     textBaseline: (string|undefined),
- *     fill: (ol.style.Fill|undefined),
- *     stroke: (ol.style.Stroke|undefined),
- *     backgroundFill: (ol.style.Fill|undefined),
- *     backgroundStroke: (ol.style.Stroke|undefined),
+ *     fill: (module:ol/style/Fill~Fill|undefined),
+ *     stroke: (module:ol/style/Stroke~Stroke|undefined),
+ *     backgroundFill: (module:ol/style/Fill~Fill|undefined),
+ *     backgroundStroke: (module:ol/style/Stroke~Stroke|undefined),
  *     padding: (Array.<number>|undefined)}}
  */
 olx.style.TextOptions;
@@ -3116,7 +3024,7 @@ olx.style.TextOptions.prototype.overflow;
 
 /**
  * Text placement.
- * @type {ol.style.TextPlacement|undefined}
+ * @type {module:ol/style/Text~TextPlacement|undefined}
  * @api
  */
 olx.style.TextOptions.prototype.placement;
@@ -3176,7 +3084,7 @@ olx.style.TextOptions.prototype.textBaseline;
 
 /**
  * Fill style. If none is provided, we'll use a dark fill-style (#333).
- * @type {ol.style.Fill|undefined}
+ * @type {module:ol/style/Fill~Fill|undefined}
  * @api
  */
 olx.style.TextOptions.prototype.fill;
@@ -3184,7 +3092,7 @@ olx.style.TextOptions.prototype.fill;
 
 /**
  * Stroke style.
- * @type {ol.style.Stroke|undefined}
+ * @type {module:ol/style/Stroke~Stroke|undefined}
  * @api
  */
 olx.style.TextOptions.prototype.stroke;
@@ -3193,7 +3101,7 @@ olx.style.TextOptions.prototype.stroke;
 /**
  * Fill style for the text background when `placement` is `'point'`. Default is
  * no fill.
- * @type {ol.style.Fill|undefined}
+ * @type {module:ol/style/Fill~Fill|undefined}
  * @api
  */
 olx.style.TextOptions.prototype.backgroundFill;
@@ -3202,7 +3110,7 @@ olx.style.TextOptions.prototype.backgroundFill;
 /**
  * Stroke style for the text background  when `placement` is `'point'`. Default
  * is no stroke.
- * @type {ol.style.Stroke|undefined}
+ * @type {module:ol/style/Stroke~Stroke|undefined}
  * @api
  */
 olx.style.TextOptions.prototype.backgroundStroke;
@@ -3220,11 +3128,11 @@ olx.style.TextOptions.prototype.padding;
 
 /**
  * @typedef {{geometry: (undefined|string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction),
- *     fill: (ol.style.Fill|undefined),
- *     image: (ol.style.Image|undefined),
+ *     fill: (module:ol/style/Fill~Fill|undefined),
+ *     image: (module:ol/style/Image~ImageStyle|undefined),
  *     renderer: (ol.StyleRenderFunction|undefined),
- *     stroke: (ol.style.Stroke|undefined),
- *     text: (ol.style.Text|undefined),
+ *     stroke: (module:ol/style/Stroke~Stroke|undefined),
+ *     text: (module:ol/style/Text~Text|undefined),
  *     zIndex: (number|undefined)}}
  */
 olx.style.StyleOptions;
@@ -3241,7 +3149,7 @@ olx.style.StyleOptions.prototype.geometry;
 
 /**
  * Fill style.
- * @type {ol.style.Fill|undefined}
+ * @type {module:ol/style/Fill~Fill|undefined}
  * @api
  */
 olx.style.StyleOptions.prototype.fill;
@@ -3249,7 +3157,7 @@ olx.style.StyleOptions.prototype.fill;
 
 /**
  * Image style.
- * @type {ol.style.Image|undefined}
+ * @type {module:ol/style/Image~ImageStyle|undefined}
  * @api
  */
 olx.style.StyleOptions.prototype.image;
@@ -3267,7 +3175,7 @@ olx.style.StyleOptions.prototype.renderer;
 
 /**
  * Stroke style.
- * @type {ol.style.Stroke|undefined}
+ * @type {module:ol/style/Stroke~Stroke|undefined}
  * @api
  */
 olx.style.StyleOptions.prototype.stroke;
@@ -3275,7 +3183,7 @@ olx.style.StyleOptions.prototype.stroke;
 
 /**
  * Text style.
- * @type {ol.style.Text|undefined}
+ * @type {module:ol/style/Text~Text|undefined}
  * @api
  */
 olx.style.StyleOptions.prototype.text;
@@ -3521,36 +3429,3 @@ olx.tilegrid.XYZOptions.prototype.minZoom;
  * @api
  */
 olx.tilegrid.XYZOptions.prototype.tileSize;
-
-
-/**
- * @typedef {{initialSize: (number|undefined),
- *     maxSize: (number|undefined),
- *     space: (number|undefined)}}
- */
-olx.style.AtlasManagerOptions;
-
-
-/**
- * The size in pixels of the first atlas image. Default is `256`.
- * @type {number|undefined}
- * @api
- */
-olx.style.AtlasManagerOptions.prototype.initialSize;
-
-
-/**
- * The maximum size in pixels of atlas images. Default is
- * `WEBGL_MAX_TEXTURE_SIZE` or 2048 if WebGL is not supported.
- * @type {number|undefined}
- * @api
- */
-olx.style.AtlasManagerOptions.prototype.maxSize;
-
-
-/**
- * The space in pixels between images (default: 1).
- * @type {number|undefined}
- * @api
- */
-olx.style.AtlasManagerOptions.prototype.space;

@@ -60,25 +60,25 @@ const WebGLImmediateRenderer = function(context, center, resolution, rotation, s
 
   /**
    * @private
-   * @type {ol.style.Image}
+   * @type {module:ol/style/Image~ImageStyle}
    */
   this.imageStyle_ = null;
 
   /**
    * @private
-   * @type {ol.style.Fill}
+   * @type {module:ol/style/Fill~Fill}
    */
   this.fillStyle_ = null;
 
   /**
    * @private
-   * @type {ol.style.Stroke}
+   * @type {module:ol/style/Stroke~Stroke}
    */
   this.strokeStyle_ = null;
 
   /**
    * @private
-   * @type {ol.style.Text}
+   * @type {module:ol/style/Text~Text}
    */
   this.textStyle_ = null;
 
@@ -115,7 +115,7 @@ WebGLImmediateRenderer.prototype.drawText_ = function(replayGroup, geometry) {
  * Set the rendering style.  Note that since this is an immediate rendering API,
  * any `zIndex` on the provided style will be ignored.
  *
- * @param {ol.style.Style} style The rendering style.
+ * @param {module:ol/style/Style~Style} style The rendering style.
  * @override
  * @api
  */

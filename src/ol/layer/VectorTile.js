@@ -49,7 +49,7 @@ import {assign} from '../obj.js';
  * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
  * means higher priority. When set to `true`, a `renderMode` of `'image'` will be overridden with
  * `'hybrid'`.
- * @property {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction} [style] Layer style. See
+ * @property {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|ol.StyleFunction} [style] Layer style. See
  * {@link ol.style} for default style which will be used if this is not defined.
  * @property {number} [maxTilesLoading=16] Maximum number tiles to load simultaneously.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
@@ -62,7 +62,7 @@ import {assign} from '../obj.js';
  * means no preloading.
  * @property {ol.RenderOrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created.
- * @property {(ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction)} [style] Layer style. See
+ * @property {(module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|ol.StyleFunction)} [style] Layer style. See
  * {@link ol.style} for default style which will be used if this is not defined.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  */

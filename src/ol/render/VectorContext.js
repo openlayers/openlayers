@@ -34,7 +34,7 @@ VectorContext.prototype.drawGeometry = function(geometry) {};
 /**
  * Set the rendering style.
  *
- * @param {ol.style.Style} style The rendering style.
+ * @param {module:ol/style/Style~Style} style The rendering style.
  */
 VectorContext.prototype.setStyle = function(style) {};
 
@@ -48,7 +48,7 @@ VectorContext.prototype.drawCircle = function(circleGeometry, feature) {};
 
 /**
  * @param {module:ol/Feature~Feature} feature Feature.
- * @param {ol.style.Style} style Style.
+ * @param {module:ol/style/Style~Style} style Style.
  */
 VectorContext.prototype.drawFeature = function(feature, style) {};
 
@@ -115,21 +115,21 @@ VectorContext.prototype.drawText = function(geometry, feature) {};
 
 
 /**
- * @param {ol.style.Fill} fillStyle Fill style.
- * @param {ol.style.Stroke} strokeStyle Stroke style.
+ * @param {module:ol/style/Fill~Fill} fillStyle Fill style.
+ * @param {module:ol/style/Stroke~Stroke} strokeStyle Stroke style.
  */
 VectorContext.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {};
 
 
 /**
- * @param {ol.style.Image} imageStyle Image style.
+ * @param {module:ol/style/Image~ImageStyle} imageStyle Image style.
  * @param {ol.DeclutterGroup=} opt_declutterGroup Declutter.
  */
 VectorContext.prototype.setImageStyle = function(imageStyle, opt_declutterGroup) {};
 
 
 /**
- * @param {ol.style.Text} textStyle Text style.
+ * @param {module:ol/style/Text~Text} textStyle Text style.
  * @param {ol.DeclutterGroup=} opt_declutterGroup Declutter.
  */
 VectorContext.prototype.setTextStyle = function(textStyle, opt_declutterGroup) {};
