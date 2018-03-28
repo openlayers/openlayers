@@ -18,13 +18,39 @@ import {compareVersions} from '../string.js';
 import {appendParams} from '../uri.js';
 
 /**
+ * @typedef {Object} Options
+ * @property {ol.AttributionLike} [attributions] Attributions.
+ * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
+ * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
+ * @property {boolean} [hidpi=true] Use the `ol.Map#pixelRatio` value when requesting
+ * the image from the remote server.
+ * @property {ol.source.WMSServerType|string} [serverType=undefined] The type of
+ * the remote WMS server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
+ * @property {ol.ImageLoadFunctionType} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {Object.<string,*>} params WMS request parameters.
+ * At least a `LAYERS` param is required. `STYLES` is
+ * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
+ * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
+ * @property {ol.ProjectionLike} projection Projection.
+ * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport, `2` means
+ * twice the width and height of the map viewport, and so on. Must be `1` or
+ * higher.
+ * @property {Array.<number>} [resolutions] Resolutions.
+ * If specified, requests will be made for these resolutions only.
+ * @property {string} url WMS service URL.
+ */
+
+
+/**
  * @classdesc
  * Source for WMS servers providing single, untiled images.
  *
  * @constructor
  * @fires ol.source.Image.Event
  * @extends {ol.source.Image}
- * @param {olx.source.ImageWMSOptions=} opt_options Options.
+ * @param {module:ol/source/ImageWMS~Options=} [opt_options] ImageWMS options.
  * @api
  */
 const ImageWMS = function(opt_options) {
