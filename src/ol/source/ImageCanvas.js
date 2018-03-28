@@ -7,12 +7,33 @@ import {containsExtent, getHeight, getWidth, scaleFromCenter} from '../extent.js
 import ImageSource from '../source/Image.js';
 
 /**
+ * @typedef {Object} Options
+ * @property {ol.AttributionLike} [attributions] Attributions.
+ * @property {ol.CanvasFunctionType} [canvasFunction] Canvas function.
+ * The function returning the canvas element used by the source
+ * as an image. The arguments passed to the function are: `{ol.Extent}` the
+ * image extent, `{number}` the image resolution, `{number}` the device pixel
+ * ratio, `{ol.Size}` the image size, and `{module:ol/proj/Projection~Projection}` the image
+ * projection. The canvas returned by this function is cached by the source. If
+ * the value returned by the function is later changed then
+ * `dispatchChangeEvent` should be called on the source for the source to
+ * invalidate the current cached image.
+ * @property {ol.ProjectionLike} projection Projection.
+ * @property {number} [ratio=1.5] Ratio. 1 means canvases are the size of the map viewport, 2 means twice the
+ * width and height of the map viewport, and so on. Must be `1` or higher.
+ * @property {Array.<number>} [resolutions] Resolutions.
+ * If specified, new canvases will be created for these resolutions
+ * @property {ol.source.State} [state] Source state.
+ */
+
+
+/**
  * @classdesc
  * Base class for image sources where a canvas element is the image.
  *
  * @constructor
  * @extends {ol.source.Image}
- * @param {olx.source.ImageCanvasOptions} options Constructor options.
+ * @param {module:ol/source/ImageCanvas~Options=} options ImageCanvas options.
  * @api
  */
 const ImageCanvasSource = function(options) {
