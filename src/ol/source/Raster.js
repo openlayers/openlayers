@@ -82,6 +82,25 @@ const RasterSourceEvent = function(type, frameState, data) {
 };
 inherits(RasterSourceEvent, Event);
 
+/**
+ * @typedef {Object} Options
+ * @property {Array.<ol.source.Source>} sources Input sources.
+ * @property {ol.RasterOperation} [operation] Raster operation.
+ * The operation will be called with data from input sources
+ * and the output will be assigned to the raster source.
+ * @property {Object} [lib] Functions that will be made available to operations run in a worker.
+ * @property {number} [threads] By default, operations will be run in a single worker thread.
+ * To avoid using workers altogether, set `threads: 0`.  For pixel operations, operations can
+ * be run in multiple worker threads.  Note that there is additional overhead in
+ * transferring data to multiple workers, and that depending on the user's
+ * system, it may not be possible to parallelize the work.
+ * @property {ol.source.RasterOperationType} [operationType] Operation type.
+ * Supported values are `'pixel'` and `'image'`.  By default,
+ * `'pixel'` operations are assumed, and operations will be called with an
+ * array of pixels from input sources.  If set to `'image'`, operations will
+ * be called with an array of ImageData objects from input sources.
+ */
+
 
 /**
  * @classdesc
@@ -92,7 +111,7 @@ inherits(RasterSourceEvent, Event);
  * @constructor
  * @extends {ol.source.Image}
  * @fires ol.source.Raster.Event
- * @param {olx.source.RasterOptions} options Options.
+ * @param {module:ol/source/Raster~Options=} options Options.
  * @api
  */
 const RasterSource = function(options) {
