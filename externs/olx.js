@@ -50,55 +50,6 @@ olx.render.State.prototype.rotation;
 
 
 /**
- * @typedef {{preemptive: (boolean|undefined),
- *     jsonp: (boolean|undefined),
- *     tileJSON: (TileJSON|undefined),
- *     url: (string|undefined)}}
- */
-olx.source.TileUTFGridOptions;
-
-
-/**
- * Use JSONP with callback to load the TileJSON. Useful when the server
- * does not support CORS. Default is `false`.
- * @type {boolean|undefined}
- * @api
- */
-olx.source.TileUTFGridOptions.prototype.jsonp;
-
-
-/**
- * If `true` the TileUTFGrid source loads the tiles based on their "visibility".
- * This improves the speed of response, but increases traffic.
- * Note that if set to `false`, you need to pass `true` as `opt_request`
- * to the `forDataAtCoordinateAndResolution` method otherwise no data
- * will ever be loaded.
- * Default is `true`.
- * @type {boolean|undefined}
- * @api
- */
-olx.source.TileUTFGridOptions.prototype.preemptive;
-
-
-/**
- * TileJSON configuration for this source. If not provided, `url` must be
- * configured.
- * @type {TileJSON|undefined}
- * @api
- */
-olx.source.TileUTFGridOptions.prototype.tileJSON;
-
-
-/**
- * TileJSON endpoint that provides the configuration for this source. Request
- * will be made through JSONP. If not provided, `tileJSON` must be configured.
- * @type {string|undefined}
- * @api
- */
-olx.source.TileUTFGridOptions.prototype.url;
-
-
-/**
  * @typedef {{cacheSize: (number|undefined),
  *     layer: string,
  *     reprojectionErrorThreshold: (number|undefined),
