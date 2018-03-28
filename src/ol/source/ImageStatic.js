@@ -12,12 +12,29 @@ import {get as getProjection} from '../proj.js';
 import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
 
 /**
+ * @typedef {Object} Options
+ * @property {ol.AttributionLike} [attributions] Attributions.
+ * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
+ * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
+ * @property {ol.Extent} [imageExtent] Extent of the image in map coordinates.
+ * This is the [left, bottom, right, top] map coordinates of your image.
+ * @property {ol.ImageLoadFunctionType} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {ol.ProjectionLike} projection Projection.
+ * @property {ol.Size} [imageSize] Size of the image in pixels. Usually the image size is auto-detected, so this
+ * only needs to be set if auto-detection fails for some reason.
+ * @property {string} url Image URL.
+ */
+
+
+/**
  * @classdesc
  * A layer source for displaying a single, static image.
  *
  * @constructor
  * @extends {ol.source.Image}
- * @param {olx.source.ImageStaticOptions} options Options.
+ * @param {module:ol/source/ImageStatic~Options=} options ImageStatic options.
  * @api
  */
 const Static = function(options) {
