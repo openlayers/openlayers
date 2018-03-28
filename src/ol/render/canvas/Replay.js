@@ -48,12 +48,6 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
   this.declutterTree = declutterTree;
 
   /**
-   * @private
-   * @type {module:ol/extent~Extent}
-   */
-  this.tmpExtent_ = createEmpty();
-
-  /**
    * @protected
    * @type {number}
    */
@@ -167,17 +161,22 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
    * @private
    * @type {!module:ol/transform~Transform}
    */
-  this.tmpLocalTransform_ = createTransform();
-
-  /**
-   * @private
-   * @type {!module:ol/transform~Transform}
-   */
   this.resetTransform = createTransform();
 };
 
 inherits(CanvasReplay, VectorContext);
 
+
+/**
+ * @type {module:ol/extent~Extent}
+ */
+const tmpExtent = createEmpty();
+
+
+/**
+ * @type {!module:ol/transform~Transform}
+ */
+const tmpTransform = createTransform();
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
@@ -231,7 +230,6 @@ CanvasReplay.prototype.replayImage_ = function(context, x, y, image,
   anchorX, anchorY, declutterGroup, height, opacity, originX, originY,
   rotation, scale, snapToPixel, width, padding, fillInstruction, strokeInstruction) {
   const fillStroke = fillInstruction || strokeInstruction;
-  const localTransform = this.tmpLocalTransform_;
   anchorX *= scale;
   anchorY *= scale;
   x -= anchorX;
@@ -239,7 +237,6 @@ CanvasReplay.prototype.replayImage_ = function(context, x, y, image,
 
   const w = (width + originX > image.width) ? image.width - originX : width;
   const h = (height + originY > image.height) ? image.height - originY : height;
-  const box = this.tmpExtent_;
   const boxW = padding[3] + w * scale + padding[1];
   const boxH = padding[0] + h * scale + padding[2];
   const boxX = x - padding[3];
@@ -264,22 +261,21 @@ CanvasReplay.prototype.replayImage_ = function(context, x, y, image,
   if (rotation !== 0) {
     const centerX = x + anchorX;
     const centerY = y + anchorY;
-    transform = composeTransform(localTransform,
-      centerX, centerY, 1, 1, rotation, -centerX, -centerY);
+    transform = composeTransform(tmpTransform, centerX, centerY, 1, 1, rotation, -centerX, -centerY);
 
-    createOrUpdateEmpty(box);
-    extendCoordinate(box, applyTransform(localTransform, p1));
-    extendCoordinate(box, applyTransform(localTransform, p2));
-    extendCoordinate(box, applyTransform(localTransform, p3));
-    extendCoordinate(box, applyTransform(localTransform, p4));
+    createOrUpdateEmpty(tmpExtent);
+    extendCoordinate(tmpExtent, applyTransform(tmpTransform, p1));
+    extendCoordinate(tmpExtent, applyTransform(tmpTransform, p2));
+    extendCoordinate(tmpExtent, applyTransform(tmpTransform, p3));
+    extendCoordinate(tmpExtent, applyTransform(tmpTransform, p4));
   } else {
-    createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, box);
+    createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, tmpExtent);
   }
   const canvas = context.canvas;
   const strokePadding = strokeInstruction ? (strokeInstruction[2] * scale / 2) : 0;
   const intersects =
-      box[0] - strokePadding <= canvas.width && box[2] + strokePadding >= 0 &&
-      box[1] - strokePadding <= canvas.height && box[3] + strokePadding >= 0;
+      tmpExtent[0] - strokePadding <= canvas.width && tmpExtent[2] + strokePadding >= 0 &&
+      tmpExtent[1] - strokePadding <= canvas.height && tmpExtent[3] + strokePadding >= 0;
 
   if (snapToPixel) {
     x = Math.round(x);
@@ -290,7 +286,7 @@ CanvasReplay.prototype.replayImage_ = function(context, x, y, image,
     if (!intersects && declutterGroup[4] == 1) {
       return;
     }
-    extend(declutterGroup, box);
+    extend(declutterGroup, tmpExtent);
     const declutterArgs = intersects ?
       [context, transform ? transform.slice(0) : null, opacity, image, originX, originY, w, h, x, y, scale] :
       null;

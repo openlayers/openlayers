@@ -58,15 +58,15 @@ const Geometry = function() {
    */
   this.simplifiedGeometryRevision = 0;
 
-  /**
-   * @private
-   * @type {module:ol/transform~Transform}
-   */
-  this.tmpTransform_ = createTransform();
-
 };
 
 inherits(Geometry, BaseObject);
+
+
+/**
+ * @type {module:ol/transform~Transform}
+ */
+const tmpTransform = createTransform();
 
 
 /**
@@ -254,7 +254,6 @@ Geometry.prototype.translate = function(deltaX, deltaY) {};
  * @api
  */
 Geometry.prototype.transform = function(source, destination) {
-  const tmpTransform = this.tmpTransform_;
   source = getProjection(source);
   const transformFn = source.getUnits() == Units.TILE_PIXELS ?
     function(inCoordinates, outCoordinates, stride) {
