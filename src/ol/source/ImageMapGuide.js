@@ -11,13 +11,31 @@ import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
 import {appendParams} from '../uri.js';
 
 /**
+ * @typedef {Object} Options
+ * @property {string} [url] The mapagent url.
+ * @property {number} [displayDpi=96] The display resolution.
+ * @property {number} [metersPerUnit=1] The meters-per-unit value.
+ * @property {boolean} [hidpi=true] Use the `ol.Map#pixelRatio` value when requesting
+ * the image from the remote server.
+ * @property {boolean} [useOverlay] If `true`, will use `GETDYNAMICMAPOVERLAYIMAGE`.
+ * @property {ol.ProjectionLike} projection Projection.
+ * @property {number} [ratio=1] Ratio. `1` means image requests are the size of the map viewport, `2` means
+ * twice the width and height of the map viewport, and so on. Must be `1` or higher.
+ * @property {Array.<number>} [resolutions] Resolutions.
+ * If specified, requests will be made for these resolutions only.
+ * @property {ol.ImageLoadFunctionType} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {Object} [params] Additional parameters.
+ */
+
+
+/**
  * @classdesc
  * Source for images from Mapguide servers
  *
  * @constructor
  * @fires ol.source.Image.Event
  * @extends {ol.source.Image}
- * @param {olx.source.ImageMapGuideOptions} options Options.
+ * @param {module:ol/source/ImageMapGuide~Options=} options ImageMapGuide options.
  * @api
  */
 const ImageMapGuide = function(options) {
