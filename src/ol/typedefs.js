@@ -222,21 +222,6 @@ ol.SourceRasterRenderedState;
  *            cacheSize: (number|undefined),
  *            extent: (module:ol/extent~Extent|undefined),
  *            opaque: (boolean|undefined),
- *            tilePixelRatio: (number|undefined),
- *            projection: module:ol/proj~ProjectionLike,
- *            state: (ol.source.State|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            wrapX: (boolean|undefined),
- *            transition: (number|undefined)}}
- */
-ol.SourceTileOptions;
-
-
-/**
- * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            cacheSize: (number|undefined),
- *            extent: (module:ol/extent~Extent|undefined),
- *            opaque: (boolean|undefined),
  *            projection: module:ol/proj~ProjectionLike,
  *            state: (ol.source.State|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),

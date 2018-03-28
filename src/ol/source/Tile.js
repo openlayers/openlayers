@@ -13,6 +13,21 @@ import {getKeyZXY, withinExtentAndZ} from '../tilecoord.js';
 import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.js';
 
 /**
+ * @typedef {Object} Options
+ * @property {ol.AttributionLike} [attributions]
+ * @property {number} [cacheSize]
+ * @property {module:ol/extent~Extent} [extent]
+ * @property {boolean} [opaque]
+ * @property {number} [tilePixelRatio]
+ * @property {module:ol/proj~ProjectionLike} [projection]
+ * @property {ol.source.State} [state]
+ * @property {ol.tilegrid.TileGrid} [tileGrid]
+ * @property {boolean} [wrapX=true]
+ * @property {number} [transition]
+ */
+
+
+/**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
@@ -21,7 +36,7 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  * @constructor
  * @abstract
  * @extends {ol.source.Source}
- * @param {ol.SourceTileOptions} options Tile source options.
+ * @param {module:ol/source/SourceTile~Options} options SourceTile source options.
  * @api
  */
 const TileSource = function(options) {
