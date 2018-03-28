@@ -157,11 +157,6 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
    */
   this.viewRotation_ = 0;
 
-  /**
-   * @private
-   * @type {!module:ol/transform~Transform}
-   */
-  this.resetTransform = createTransform();
 };
 
 inherits(CanvasReplay, VectorContext);
