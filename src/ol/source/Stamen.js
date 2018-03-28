@@ -89,12 +89,33 @@ const ProviderConfig = {
 
 
 /**
+ * @typedef {Object} Options
+ * @property {number} [cacheSize=2048] Cache size.
+ * @property {string} [layer] Layer.
+ * @property {number} [minZoom] Minimum zoom.
+ * @property {number} [maxZoom] Maximum zoom.
+ * @property {boolean} [opaque] Whether the layer is opaque.
+ * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @property {ol.TileLoadFunctionType} [tileLoadFunction]
+ * Optional function to load a tile given a URL. The default is
+ * ```js
+ * function(imageTile, src) {
+ *   imageTile.getImage().src = src;
+ * };
+ * ```
+ * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
+ * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
+ */
+
+
+/**
  * @classdesc
  * Layer source for the Stamen tile server.
  *
  * @constructor
  * @extends {ol.source.XYZ}
- * @param {olx.source.StamenOptions} options Stamen options.
+ * @param {module:ol/source/Stamen~Options=} options Stamen options.
  * @api
  */
 const Stamen = function(options) {
