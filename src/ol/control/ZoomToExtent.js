@@ -15,7 +15,7 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
  * to be rendered outside of the map's viewport.
  * @property {string|Element} [label='E'] Text label to use for the button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string} [tipLabel='Zoom to extent'] Text label to use for the button tip.
+ * @property {string} [tipLabel='Fit to extent'] Text label to use for the button tip.
  * @property {module:ol/extent~Extent} [extent] The extent to zoom to. If undefined the validity
  * extent of the view projection is used.
  */
@@ -40,12 +40,10 @@ const ZoomToExtent = function(opt_options) {
    */
   this.extent = options.extent ? options.extent : null;
 
-  const className = options.className !== undefined ? options.className :
-    'ol-zoom-extent';
+  const className = options.className !== undefined ? options.className : 'ol-zoom-extent';
 
   const label = options.label !== undefined ? options.label : 'E';
-  const tipLabel = options.tipLabel !== undefined ?
-    options.tipLabel : 'Fit to extent';
+  const tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Fit to extent';
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.title = tipLabel;
@@ -53,8 +51,7 @@ const ZoomToExtent = function(opt_options) {
     typeof label === 'string' ? document.createTextNode(label) : label
   );
 
-  listen(button, EventType.CLICK,
-    this.handleClick_, this);
+  listen(button, EventType.CLICK, this.handleClick_, this);
 
   const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
   const element = document.createElement('div');
