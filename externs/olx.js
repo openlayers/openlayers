@@ -484,30 +484,6 @@ olx.source.MapQuestOptions.prototype.url;
 
 
 /**
- * @typedef {{projection: ol.ProjectionLike,
- *     tileGrid: (ol.tilegrid.TileGrid|undefined),
- *     wrapX: (boolean|undefined)}}
- */
-olx.source.TileDebugOptions;
-
-
-/**
- * Projection.
- * @type {ol.ProjectionLike}
- * @api
- */
-olx.source.TileDebugOptions.prototype.projection;
-
-
-/**
- * Tile grid.
- * @type {ol.tilegrid.TileGrid|undefined}
- * @api
- */
-olx.source.TileDebugOptions.prototype.tileGrid;
-
-
-/**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
