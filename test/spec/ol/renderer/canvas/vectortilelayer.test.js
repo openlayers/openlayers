@@ -61,7 +61,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       feature2.setStyle(featureStyle);
       const TileClass = function() {
         VectorTile.apply(this, arguments);
-        this.setState('loaded');
+        this.setState(TileState.LOADED);
         this.setFeatures([feature1, feature2, feature3]);
         this.setProjection(getProjection('EPSG:4326'));
         tileCallback(this);
@@ -292,8 +292,9 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     let layer, renderer, replayGroup;
     const TileClass = function() {
       VectorImageTile.apply(this, arguments);
-      this.setState('loaded');
+      this.setState(TileState.LOADED);
       const sourceTile = new VectorTile([0, 0, 0]);
+      sourceTile.setState(TileState.LOADED);
       sourceTile.setProjection(getProjection('EPSG:3857'));
       sourceTile.getReplayGroup = function() {
         return replayGroup;
