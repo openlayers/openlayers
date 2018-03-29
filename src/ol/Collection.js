@@ -45,7 +45,7 @@ inherits(CollectionEvent, Event);
 
 
 /**
- * @typedef {Object} CollectionOptions
+ * @typedef {Object} Options
  * @property {boolean} [unique=false] Disallow the same item from being added to
  * the collection twice.
  */
@@ -62,7 +62,7 @@ inherits(CollectionEvent, Event);
  * @extends {module:ol/Object~Object}
  * @fires module:ol/Collection~CollectionEvent
  * @param {Array.<T>=} opt_array Array.
- * @param {module:ol/Collection~CollectionOptions=} opt_options Collection options.
+ * @param {module:ol/Collection~Options=} opt_options Collection options.
  * @template T
  * @api
  */

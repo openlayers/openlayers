@@ -12,7 +12,7 @@ import {containsExtent} from './extent.js';
 
 
 /**
- * @typedef {Object} OverlayOptions
+ * @typedef {Object} Options
  * @property {number|string} [id] Set the overlay id. The overlay id can be used
  * with the {@link module:ol/Map~Map#getOverlayById} method.
  * @property {Element} [element] The overlay element.
@@ -41,7 +41,7 @@ import {containsExtent} from './extent.js';
  * @property {boolean} [autoPan=false] If set to `true` the map is panned when
  * calling `setPosition`, so that the overlay is entirely visible in the current
  * viewport.
- * @property {module:ol/Overlay~OverlayPanOptions} [autoPanAnimation] The
+ * @property {module:ol/Overlay~PanOptions} [autoPanAnimation] The
  * animation options used to pan the overlay into view. This animation is only
  * used when `autoPan` is enabled. A `duration` and `easing` may be provided to
  * customize the animation.
@@ -53,7 +53,7 @@ import {containsExtent} from './extent.js';
 
 
 /**
- * @typedef {Object} OverlayPanOptions
+ * @typedef {Object} PanOptions
  * @property {number} [duration=1000] The duration of the animation in
  * milliseconds.
  * @property {function(number):number} [easing] The easing function to use. Can
@@ -95,7 +95,7 @@ const Property = {
  *
  * @constructor
  * @extends {module:ol/Object~Object}
- * @param {module:ol/Overlay~OverlayOptions} options Overlay options.
+ * @param {module:ol/Overlay~Options} options Overlay options.
  * @api
  */
 const Overlay = function(options) {
@@ -104,7 +104,7 @@ const Overlay = function(options) {
 
   /**
    * @protected
-   * @type {module:ol/Overlay~OverlayOptions}
+   * @type {module:ol/Overlay~Options}
    */
   this.options = options;
 
@@ -144,9 +144,9 @@ const Overlay = function(options) {
 
   /**
    * @protected
-   * @type {module:ol/Overlay~OverlayPanOptions}
+   * @type {module:ol/Overlay~PanOptions}
    */
-  this.autoPanAnimation = options.autoPanAnimation || /** @type {module:ol/Overlay~OverlayPanOptions} */ ({});
+  this.autoPanAnimation = options.autoPanAnimation || /** @type {module:ol/Overlay~PanOptions} */ ({});
 
   /**
    * @protected
@@ -592,7 +592,7 @@ Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
 
 /**
  * returns the options this Overlay has been created with
- * @return {module:ol/Overlay~OverlayOptions} overlay options
+ * @return {module:ol/Overlay~Options} overlay options
  */
 Overlay.prototype.getOptions = function() {
   return this.options;

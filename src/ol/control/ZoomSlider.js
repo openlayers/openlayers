@@ -29,8 +29,6 @@ const Direction = {
  * @typedef {Object} Options
  * @property {string} [className='ol-zoomslider'] CSS class name.
  * @property {number} [duration=200] Animation duration in milliseconds.
- * @property {number|undefined} maxResolution Maximum resolution.
- * @property {number|undefined} minResolution Minimum resolution.
  * @property {function(module:ol/MapEvent~MapEvent)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  */
