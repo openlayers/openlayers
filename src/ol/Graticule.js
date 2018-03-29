@@ -41,7 +41,7 @@ const INTERVALS = [
  */
 
 /**
- * @typedef {Object} GraticuleOptions
+ * @typedef {Object} Options
  * @property {module:ol/PluggableMap~PluggableMap} [map] Reference to an
  * {@link module:ol/Map~Map} object.
  * @property {number} [maxLines=100] The maximum number of meridians and
@@ -109,7 +109,7 @@ const INTERVALS = [
 /**
  * Render a grid for a coordinate system on a map.
  * @constructor
- * @param {module:ol/Graticule~GraticuleOptions=} opt_options Options.
+ * @param {module:ol/Graticule~Options=} opt_options Options.
  * @api
  */
 const Graticule = function(opt_options) {

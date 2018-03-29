@@ -13,7 +13,7 @@ import {get as getProjection, getTransformFromProjections, identityTransform} fr
 
 
 /**
- * @typedef {Object} GeolocationOptions
+ * @typedef {Object} Options
  * @property {boolean} [tracking=false] Start Tracking right after
  * instantiation.
  * @property {GeolocationPositionOptions} [trackingOptions] Tracking options.
@@ -46,7 +46,7 @@ import {get as getProjection, getTransformFromProjections, identityTransform} fr
  * @fires error
  * @constructor
  * @extends {module:ol/Object~Object}
- * @param {module:ol/Geolocation~GeolocationOptions=} opt_options Options.
+ * @param {module:ol/Geolocation~Options=} opt_options Options.
  * @api
  */
 const Geolocation = function(opt_options) {
