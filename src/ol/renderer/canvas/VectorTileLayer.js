@@ -176,7 +176,7 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(tile, fram
   const zIndexKeys = {};
   for (let t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
     const sourceTile = tile.getTile(tile.tileKeys[t]);
-    if (sourceTile.getState() == TileState.ERROR) {
+    if (sourceTile.getState() != TileState.LOADED) {
       continue;
     }
 
@@ -286,7 +286,7 @@ CanvasVectorTileLayerRenderer.prototype.forEachFeatureAtCoordinate = function(co
     }
     for (let t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
       const sourceTile = tile.getTile(tile.tileKeys[t]);
-      if (sourceTile.getState() == TileState.ERROR) {
+      if (sourceTile.getState() != TileState.LOADED) {
         continue;
       }
       replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
@@ -395,7 +395,7 @@ CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameSta
     let transform = undefined;
     for (let t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
       const sourceTile = tile.getTile(tile.tileKeys[t]);
-      if (sourceTile.getState() == TileState.ERROR) {
+      if (sourceTile.getState() != TileState.LOADED) {
         continue;
       }
       const replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
@@ -500,7 +500,7 @@ CanvasVectorTileLayerRenderer.prototype.renderTileImage_ = function(
     const tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
     for (let i = 0, ii = tile.tileKeys.length; i < ii; ++i) {
       const sourceTile = tile.getTile(tile.tileKeys[i]);
-      if (sourceTile.getState() == TileState.ERROR) {
+      if (sourceTile.getState() != TileState.LOADED) {
         continue;
       }
       const pixelScale = pixelRatio / resolution;
