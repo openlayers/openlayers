@@ -36,39 +36,21 @@ const map = new Map({
   })
 });
 
-const typeSelect = document.getElementById('type');
 const shallSmoothen = document.getElementById('shall-smoothen');
 const numIterations = document.getElementById('iterations');
 
-let draw; // global so we can remove it later
-function addInteraction() {
-  const value = typeSelect.value;
-  if (value !== 'None') {
-    draw = new Draw({
-      source: vectorSource,
-      type: typeSelect.value
-    });
-    map.addInteraction(draw);
-    draw.on('drawend', function(event) {
-      const feat = event.feature;
-      const geometry = feat.getGeometry();
-      const isPoly = geometry.getType() === 'Polygon';
-      const isLine = geometry.getType() === 'LineString';
-      if (shallSmoothen.checked && (isPoly || isLine)) {
-        const coords = geometry.getCoordinates();
-        const smoothened = makeSmooth(isPoly ? coords[0] : coords, parseInt(numIterations.value, 10) || 5);
-        geometry.setCoordinates(isPoly ? [smoothened] : smoothened);
-      }
-    });
+const draw = new Draw({
+  source: vectorSource,
+  type: 'LineString'
+});
+map.addInteraction(draw);
+draw.on('drawend', function(event) {
+  if (!shallSmoothen.checked) {
+    return;
   }
-}
-
-/**
- * Handle change event.
- */
-typeSelect.onchange = function() {
-  map.removeInteraction(draw);
-  addInteraction();
-};
-
-addInteraction();
+  const feat = event.feature;
+  const geometry = feat.getGeometry();
+  const coords = geometry.getCoordinates();
+  const smoothened = makeSmooth(coords, parseInt(numIterations.value, 10) || 5);
+  geometry.setCoordinates(smoothened);
+});
