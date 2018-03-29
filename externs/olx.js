@@ -50,62 +50,6 @@ olx.render.State.prototype.rotation;
 
 
 /**
- * @typedef {{cacheSize: (number|undefined),
- *     layer: string,
- *     reprojectionErrorThreshold: (number|undefined),
- *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: (string|undefined)}}
- */
-olx.source.MapQuestOptions;
-
-
-/**
- * Cache size. Default is `2048`.
- * @type {number|undefined}
- * @api
- */
-olx.source.MapQuestOptions.prototype.cacheSize;
-
-
-/**
- * Layer. Possible values are `osm`, `sat`, and `hyb`.
- * @type {string}
- * @api
- */
-olx.source.MapQuestOptions.prototype.layer;
-
-
-/**
- * Maximum allowed reprojection error (in pixels). Default is `0.5`.
- * Higher values can increase reprojection performance, but decrease precision.
- * @type {number|undefined}
- * @api
- */
-olx.source.MapQuestOptions.prototype.reprojectionErrorThreshold;
-
-
-/**
- * Optional function to load a tile given a URL. The default is
- * ```js
- * function(imageTile, src) {
- *   imageTile.getImage().src = src;
- * };
- * ```
- * @type {ol.TileLoadFunctionType|undefined}
- * @api
- */
-olx.source.MapQuestOptions.prototype.tileLoadFunction;
-
-
-/**
- * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
- * @type {string|undefined}
- * @api
- */
-olx.source.MapQuestOptions.prototype.url;
-
-
-/**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
