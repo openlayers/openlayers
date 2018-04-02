@@ -930,7 +930,7 @@ olx.source.ImageCanvasOptions.prototype.attributions;
  * projection. The canvas returned by this function is cached by the source. If
  * the value returned by the function is later changed then
  * `changed` should be called on the source for the source to
- * invalidate the current cached image.
+ * invalidate the current cached image. See @link: {@link module:ol/Observable~Observable#changed}
  * @type {ol.CanvasFunctionType}
  * @api
  */
