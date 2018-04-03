@@ -20,7 +20,7 @@ function glsl_compress(s, shortNames) {
   // strip multi-line comments
   s = s.replace(/\/\*[\s\S]*?\*\//g, '');
   // strip single line comments
-  s = s.replace(/\/\/.*?\n/, '');
+  s = s.replace(/\/\/.*?\n/g, '');
   // replace multiple whitespace with a single space
   s = s.replace(/\s+/g, ' ');
   // remove whitespace between non-word tokens
