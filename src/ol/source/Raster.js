@@ -84,7 +84,7 @@ inherits(RasterSourceEvent, Event);
 
 /**
  * @typedef {Object} Options
- * @property {Array.<ol.source.Source>} sources Input sources.
+ * @property {Array.<module:ol/source/Source~Source>} sources Input sources.
  * @property {ol.RasterOperation} [operation] Raster operation.
  * The operation will be called with data from input sources
  * and the output will be assigned to the raster source.
@@ -436,7 +436,7 @@ function getLayerStatesArray(renderers) {
 
 /**
  * Create renderers for all sources.
- * @param {Array.<ol.source.Source>} sources The sources.
+ * @param {Array.<module:ol/source/Source~Source>} sources The sources.
  * @return {Array.<ol.renderer.canvas.Layer>} Array of layer renderers.
  */
 function createRenderers(sources) {
@@ -451,7 +451,7 @@ function createRenderers(sources) {
 
 /**
  * Create a renderer for the provided source.
- * @param {ol.source.Source} source The source.
+ * @param {module:ol/source/Source~Source} source The source.
  * @return {ol.renderer.canvas.Layer} The renderer.
  */
 function createRenderer(source) {

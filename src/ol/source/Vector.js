@@ -141,7 +141,7 @@ inherits(VectorSourceEvent, Event);
  * vector data that is optimized for rendering.
  *
  * @constructor
- * @extends {ol.source.Source}
+ * @extends {module:ol/source/Source~Source}
  * @fires ol.source.Vector.Event
  * @param {module:ol/source/Vector~Options=} opt_options Vector source options.
  * @api

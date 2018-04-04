@@ -35,7 +35,7 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  *
  * @constructor
  * @abstract
- * @extends {ol.source.Source}
+ * @extends {module:ol/source/Source~Source}
  * @param {module:ol/source/Tile~Options=} options SourceTile source options.
  * @api
  */

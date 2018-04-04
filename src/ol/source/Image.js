@@ -85,7 +85,7 @@ inherits(ImageSourceEvent, Event);
  *
  * @constructor
  * @abstract
- * @extends {ol.source.Source}
+ * @extends {module:ol/source/Source~Source}
  * @param {module:ol/source/Image~Options} options Single image source options.
  * @api
  */
