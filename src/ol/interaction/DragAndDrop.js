@@ -15,7 +15,7 @@ import {get as getProjection} from '../proj.js';
 /**
  * @typedef {Object} Options
  * @property {Array.<function(new: module:ol/format/Feature~FeatureFormat)>} [formatConstructors] Format constructors.
- * @property {ol.source.Vector} [source] Optional vector source where features will be added.  If a source is provided
+ * @property {module:ol/source/Vector~VectorSource} [source] Optional vector source where features will be added.  If a source is provided
  * all existing features will be removed and new features will be added when
  * they are dropped on the target.  If you want to add features to a vector
  * source without removing the existing features (append only), instead of
@@ -120,7 +120,7 @@ const DragAndDrop = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.source.Vector}
+   * @type {module:ol/source/Vector~VectorSource}
    */
   this.source_ = options.source || null;
 

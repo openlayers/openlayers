@@ -24,7 +24,7 @@ import RBush from '../structs/RBush.js';
 
 /**
  * @classdesc
- * Events emitted by {@link ol.source.Vector} instances are instances of this
+ * Events emitted by {@link module:ol/source/Vector~VectorSource} instances are instances of this
  * type.
  *
  * @constructor
@@ -64,7 +64,7 @@ inherits(VectorSourceEvent, Event);
  * Example:
  *
  * ```js
- * var vectorSource = new ol.source.Vector({
+ * var vectorSource = new module:ol/source/Vector~VectorSource({
  *   format: new ol.format.GeoJSON(),
  *   loader: function(extent, resolution, projection) {
  *      var proj = projection.getCode();
@@ -119,15 +119,15 @@ inherits(VectorSourceEvent, Event);
  * `false` may improve performance.
  *
  * Note that
- * {@link ol.source.Vector#getFeaturesInExtent},
- * {@link ol.source.Vector#getClosestFeatureToCoordinate} and
- * {@link ol.source.Vector#getExtent} cannot be used when `useSpatialIndex` is
- * set to `false`, and {@link ol.source.Vector#forEachFeatureInExtent} will loop
+ * {@link module:ol/source/Vector~VectorSource#getFeaturesInExtent},
+ * {@link module:ol/source/Vector~VectorSource#getClosestFeatureToCoordinate} and
+ * {@link module:ol/source/Vector~VectorSource#getExtent} cannot be used when `useSpatialIndex` is
+ * set to `false`, and {@link module:ol/source/Vector~VectorSource#forEachFeatureInExtent} will loop
  * through all features.
  *
  * When set to `false`, the features will be maintained in an
  * {@link ol.Collection}, which can be retrieved through
- * {@link ol.source.Vector#getFeaturesCollection}.
+ * {@link module:ol/source/Vector~VectorSource#getFeaturesCollection}.
  * @property {boolean} [wrapX=true] Wrap the world horizontally. For vector editing across the
  * -180° and 180° meridians to work properly, this should be set to `false`. The
  * resulting geometry coordinates will then exceed the world bounds.
@@ -266,7 +266,7 @@ inherits(VectorSource, Source);
 
 /**
  * Add a single feature to the source.  If you want to add a batch of features
- * at once, call {@link ol.source.Vector#addFeatures source.addFeatures()}
+ * at once, call {@link module:ol/source/Vector~VectorSource#addFeatures source.addFeatures()}
  * instead. A feature will not be added to the source if feature with
  * the same id is already there. The reason for this behavior is to avoid
  * feature duplication when using bbox or tile loading strategies.
@@ -535,11 +535,11 @@ VectorSource.prototype.forEachFeatureAtCoordinateDirect = function(coordinate, c
  * value, iteration will stop and the function will return the same value.
  *
  * If you are interested in features whose geometry intersects an extent, call
- * the {@link ol.source.Vector#forEachFeatureIntersectingExtent
+ * the {@link module:ol/source/Vector~VectorSource#forEachFeatureIntersectingExtent
  * source.forEachFeatureIntersectingExtent()} method instead.
  *
  * When `useSpatialIndex` is set to false, this method will loop through all
- * features, equivalent to {@link ol.source.Vector#forEachFeature}.
+ * features, equivalent to {@link module:ol/source/Vector~VectorSource#forEachFeature}.
  *
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {function(module:ol/Feature~Feature): T} callback Called with each feature
@@ -563,7 +563,7 @@ VectorSource.prototype.forEachFeatureInExtent = function(extent, callback) {
  * value, iteration will stop and the function will return the same value.
  *
  * If you only want to test for bounding box intersection, call the
- * {@link ol.source.Vector#forEachFeatureInExtent
+ * {@link module:ol/source/Vector~VectorSource#forEachFeatureInExtent
  * source.forEachFeatureInExtent()} method instead.
  *
  * @param {module:ol/extent~Extent} extent Extent.
@@ -883,7 +883,7 @@ VectorSource.prototype.removeLoadedExtent = function(extent) {
 
 /**
  * Remove a single feature from the source.  If you want to remove all features
- * at once, use the {@link ol.source.Vector#clear source.clear()} method
+ * at once, use the {@link module:ol/source/Vector~VectorSource#clear source.clear()} method
  * instead.
  * @param {module:ol/Feature~Feature} feature Feature to remove.
  * @api

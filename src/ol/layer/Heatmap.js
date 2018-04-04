@@ -33,7 +33,7 @@ import Style from '../style/Style.js';
  * @property {string|function(module:ol/Feature~Feature):number} [weight='weight'] The feature
  * attribute to use for the weight or a function that returns a weight from a feature. Weight values
  * should range from 0 to 1 (and values outside will be clamped to that range).
- * @property {ol.source.Vector} [source] Source.
+ * @property {module:ol/source/Vector~VectorSource} [source] Source.
  */
 
 

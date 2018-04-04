@@ -32,7 +32,7 @@ import VectorSource from '../source/Vector.js';
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
- * @property {ol.source.Vector} source Source.
+ * @property {module:ol/source/Vector~VectorSource} source Source.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
 
@@ -45,7 +45,7 @@ import VectorSource from '../source/Vector.js';
  *
  * @constructor
  * @param {module:ol/source/Cluster~Options=} options Cluster options.
- * @extends {ol.source.Vector}
+ * @extends {module:ol/source/Vector~VectorSource}
  * @api
  */
 const Cluster = function(options) {
@@ -87,7 +87,7 @@ const Cluster = function(options) {
   };
 
   /**
-   * @type {ol.source.Vector}
+   * @type {module:ol/source/Vector~VectorSource}
    * @protected
    */
   this.source = options.source;
@@ -110,7 +110,7 @@ Cluster.prototype.getDistance = function() {
 
 /**
  * Get a reference to the wrapped source.
- * @return {ol.source.Vector} Source.
+ * @return {module:ol/source/Vector~VectorSource} Source.
  * @api
  */
 Cluster.prototype.getSource = function() {

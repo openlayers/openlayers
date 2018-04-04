@@ -130,7 +130,7 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
   const projection = viewState.projection;
   const rotation = viewState.rotation;
   const projectionExtent = projection.getExtent();
-  const vectorSource = /** @type {ol.source.Vector} */ (this.getLayer().getSource());
+  const vectorSource = /** @type {module:ol/source/Vector~VectorSource} */ (this.getLayer().getSource());
 
   let transform = this.getTransform(frameState, 0);
 
