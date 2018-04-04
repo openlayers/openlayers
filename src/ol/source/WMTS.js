@@ -27,9 +27,9 @@ import {appendParams} from '../uri.js';
  * @property {ol.source.WMTSRequestEncoding|string} [requestEncoding='KVP'] Request encoding.
  * @property {string} layer Layer name as advertised in the WMTS capabilities.
  * @property {string} style Style name as advertised in the WMTS capabilities.
- * @property {function(new: ol.ImageTile, module:ol/tilecoord~TileCoord,
- *                 ol.TileState, string, ?string,
- *                 ol.TileLoadFunctionType)} [tileClass]  Class used to instantiate image tiles. Default is {@link ol.ImageTile}.
+ * @property {function(new: module:ol/ImageTile~ImageTile, module:ol/tilecoord~TileCoord,
+ *                 module:ol/TileState~TileState, string, ?string,
+ *                 ol.TileLoadFunctionType)} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
  * @property {number} [tilePixelRatio=1] The pixel ratio used by the tile service.
  * For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
@@ -71,10 +71,10 @@ import {appendParams} from '../uri.js';
  * this. See http://mapserver.org/output/tile_mode.html.
  * @property {boolean} [hidpi=true] Use the `ol.Map#pixelRatio` value when requesting
  * the image from the remote server.
- * @property {function(new: ol.ImageTile, module:ol/tilecoord~TileCoord,
- *                 ol.TileState, string, ?string,
+ * @property {function(new: module:ol/ImageTile~ImageTile, module:ol/tilecoord~TileCoord,
+ *                 module:ol/TileState~TileState, string, ?string,
  *                 ol.TileLoadFunctionType)} [tileClass] Class used to instantiate image tiles.
- * Default is {@link ol.ImageTile}.
+ * Default is {@link module:ol/ImageTile~ImageTile}.
  * @property {ol.tilegrid.TileGrid} [tileGrid] Tile grid. Base this on the resolutions,
  * tilesize and extent supported by the server.
  * If this is not defined, a default grid will be used: if there is a projection

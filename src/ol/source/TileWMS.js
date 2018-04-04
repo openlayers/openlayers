@@ -43,10 +43,10 @@ import {appendParams} from '../uri.js';
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {function(new: ol.ImageTile, module:ol/tilecoord~TileCoord,
- *                 ol.TileState, string, ?string,
+ * @property {function(new: module:ol/ImageTile~ImageTile, module:ol/tilecoord~TileCoord,
+ *                 module:ol/TileState~TileState, string, ?string,
  *                 ol.TileLoadFunctionType)} [tileClass] Class used to instantiate image tiles.
- * Default is {@link ol.ImageTile}.
+ * Default is {@link module:ol/ImageTile~ImageTile}.
  * @property {ol.tilegrid.TileGrid} [tileGrid] Tile grid. Base this on the resolutions,
  * tilesize and extent supported by the server.
  * If this is not defined, a default grid will be used: if there is a projection
