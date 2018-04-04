@@ -246,7 +246,7 @@ Parser.prototype.consume_ = function() {
 
 /**
  * Tests if the given type matches the type of the current token.
- * @param {ol.format.TokenType} type Token type.
+ * @param {module:ol/format/WKT~TokenType} type Token type.
  * @return {boolean} Whether the token matches the given type.
  */
 Parser.prototype.isTokenType = function(type) {
@@ -257,7 +257,7 @@ Parser.prototype.isTokenType = function(type) {
 
 /**
  * If the given type matches the current token, consume it.
- * @param {ol.format.TokenType} type Token type.
+ * @param {module:ol/format/WKT~TokenType} type Token type.
  * @return {boolean} Whether the token matches the given type.
  */
 Parser.prototype.match = function(type) {
