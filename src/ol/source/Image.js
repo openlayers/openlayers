@@ -43,7 +43,7 @@ const ImageSourceEventType = {
 
 /**
  * @classdesc
- * Events emitted by {@link ol.source.Image} instances are instances of this
+ * Events emitted by {@link module:ol/source/Image~ImageSource} instances are instances of this
  * type.
  *
  * @constructor

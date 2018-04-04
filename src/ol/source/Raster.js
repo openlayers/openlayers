@@ -109,7 +109,7 @@ inherits(RasterSourceEvent, Event);
  * output pixel values.
  *
  * @constructor
- * @extends {ol.source.Image}
+ * @extends {module:ol/source/Image~ImageSource}
  * @fires ol.source.Raster.Event
  * @param {module:ol/source/Raster~Options=} options Options.
  * @api
@@ -467,7 +467,7 @@ function createRenderer(source) {
 
 /**
  * Create an image renderer for the provided source.
- * @param {ol.source.Image} source The source.
+ * @param {module:ol/source/Image~ImageSource} source The source.
  * @return {ol.renderer.canvas.Layer} The renderer.
  */
 function createImageRenderer(source) {

@@ -32,7 +32,7 @@ import ImageSource from '../source/Image.js';
  * Base class for image sources where a canvas element is the image.
  *
  * @constructor
- * @extends {ol.source.Image}
+ * @extends {module:ol/source/Image~ImageSource}
  * @param {module:ol/source/ImageCanvas~Options=} options ImageCanvas options.
  * @api
  */
