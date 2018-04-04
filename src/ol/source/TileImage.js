@@ -47,7 +47,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
  * @property {Array.<string>} [urls] An array of URL templates.
- * @property {boolean} [wrapX=undefined] Whether to wrap the world horizontally. The default, is to
+ * @property {boolean} [wrapX] Whether to wrap the world horizontally. The default, is to
  * request out-of-bounds tiles from the server. When set to `false`, only one
  * world will be rendered. When set to `true`, tiles will be requested for one
  * world only, but they will be wrapped horizontally to render multiple worlds.

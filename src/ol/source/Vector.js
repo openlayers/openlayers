@@ -54,7 +54,7 @@ inherits(VectorSourceEvent, Event);
  * @property {Array.<module:ol/Feature~Feature>|ol.Collection.<module:ol/Feature~Feature>} [features]
  * Features. If provided as {@link ol.Collection}, the features in the source
  * and the collection will stay in sync.
- * @property {ol.format.Feature} [format=undefined] The feature format used by the XHR
+ * @property {ol.format.Feature} [format] The feature format used by the XHR
  * feature loader when `url` is set. Required if `url` is set, otherwise ignored.
  * @property {module:ol/Feature~FeatureLoader} [loader]
  * The loader function used to load features, from a remote source for example.

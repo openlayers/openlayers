@@ -26,7 +26,7 @@ import {appendParams} from '../uri.js';
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
  * @property {boolean} [hidpi=true] Use the `ol.Map#pixelRatio` value when requesting
  * the image from the remote server.
- * @property {ol.source.WMSServerType|string} [serverType=undefined] The type of
+ * @property {ol.source.WMSServerType|string} [serverType] The type of
  * the remote WMS server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
  * @property {ol.ImageLoadFunctionType} [imageLoadFunction] Optional function to load an image given a URL.
  * @property {Object.<string,*>} params WMS request parameters.
