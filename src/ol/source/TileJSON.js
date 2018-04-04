@@ -18,12 +18,39 @@ import TileImage from '../source/TileImage.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 /**
+ * @typedef {Object} Options
+ * @property {ol.AttributionLike} [attributions] Attributions.
+ * @property {number} [cacheSize=2048] Cache size.
+ * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
+ * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
+ * @property {boolean} [jsonp=false] Use JSONP with callback to load the TileJSON.
+ * Useful when the server does not support CORS..
+ * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @property {tileJSON} [tileJSON] TileJSON configuration for this source.
+ * If not provided, `url` must be configured.
+ * @property {ol.TileLoadFunctionType} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * ```js
+ * function(imageTile, src) {
+ *   imageTile.getImage().src = src;
+ * };
+ * ```
+ * @property {string} [url] URL to the TileJSON file. If not provided, `tileJSON` must be configured.
+ * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
+ * @property {number} [transition] Duration of the opacity transition for rendering.
+ * To disable the opacity transition, pass `transition: 0`.
+ */
+
+
+/**
  * @classdesc
  * Layer source for tile data in TileJSON format.
  *
  * @constructor
  * @extends {ol.source.TileImage}
- * @param {olx.source.TileJSONOptions} options TileJSON options.
+ * @param {module:ol/source/TileJSON~Options=} options TileJSON options.
  * @api
  */
 const TileJSON = function(options) {

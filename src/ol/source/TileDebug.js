@@ -76,6 +76,14 @@ LabeledTile.prototype.load = function() {};
 
 
 /**
+ * @typedef {Object} Options
+ * @property {module:ol/proj~ProjectionLike} projection Projection.
+ * @property {ol.tilegrid.TileGrid} [tileGrid] Tile grid.
+ * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
+ */
+
+
+/**
  * @classdesc
  * A pseudo tile source, which does not fetch tiles from a server, but renders
  * a grid outline for the tile grid/projection along with the coordinates for
@@ -85,7 +93,7 @@ LabeledTile.prototype.load = function() {};
  *
  * @constructor
  * @extends {ol.source.Tile}
- * @param {olx.source.TileDebugOptions} options Debug tile options.
+ * @param {module:ol/source/TileDebug~Options=} options Debug tile options.
  * @api
  */
 const TileDebug = function(options) {

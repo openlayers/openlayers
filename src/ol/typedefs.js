@@ -218,40 +218,6 @@ ol.SourceRasterRenderedState;
 
 
 /**
- * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            cacheSize: (number|undefined),
- *            extent: (module:ol/extent~Extent|undefined),
- *            opaque: (boolean|undefined),
- *            tilePixelRatio: (number|undefined),
- *            projection: module:ol/proj~ProjectionLike,
- *            state: (ol.source.State|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            wrapX: (boolean|undefined),
- *            transition: (number|undefined)}}
- */
-ol.SourceTileOptions;
-
-
-/**
- * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            cacheSize: (number|undefined),
- *            extent: (module:ol/extent~Extent|undefined),
- *            opaque: (boolean|undefined),
- *            projection: module:ol/proj~ProjectionLike,
- *            state: (ol.source.State|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            tileLoadFunction: module:ol/Tile~LoadFunction,
- *            tilePixelRatio: (number|undefined),
- *            tileUrlFunction: (module:ol/Tile~UrlFunction|undefined),
- *            url: (string|undefined),
- *            urls: (Array.<string>|undefined),
- *            wrapX: (boolean|undefined),
- *            transition: (number|undefined)}}
- */
-ol.SourceUrlTileOptions;
-
-
-/**
  * A function that takes an {@link module:ol/Feature~Feature} as argument and returns an
  * {@link module:ol/geom/Geometry~Geometry} that will be rendered and styled for the feature.
  *

@@ -11,6 +11,50 @@ import {getKeyZXY} from '../tilecoord.js';
 import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.js';
 
 /**
+ * @typedef {Object} Options
+ * @property {ol.AttributionLike} [attributions] Attributions.
+ * @property {number} [cacheSize=128] Cache size.
+ * @property {ol.format.Feature} [format] Feature format for tiles. Used and required by the default.
+ * @property {boolean} [overlaps=true] This source may have overlapping geometries. Setting this
+ * to `false` (e.g. for sources with polygons that represent administrative
+ * boundaries or TopoJSON sources) allows the renderer to optimise fill and
+ * stroke operations.
+ * @property {module:ol/proj~ProjectionLike} projection Projection.
+ * @property {ol.source.State} [state] Source state.
+ * @property {function(new: ol.VectorTile, ol.TileCoord,
+ *                 ol.TileState, string, ?string,
+ *                 ol.TileLoadFunctionType)} [tileClass] Class used to instantiate image tiles.
+ * Default is {@link ol.VectorTile}.
+ * @property {ol.tilegrid.TileGrid} [tileGrid] Tile grid.
+ * @property {ol.TileLoadFunctionType} [tileLoadFunction]
+ * Optional function to load a tile given a URL. Could look like this:
+ * ```js
+ * function(tile, url) {
+ *   tile.setLoader(function() {
+ *     var data = // ... fetch data
+ *     var format = tile.getFormat();
+ *     tile.setFeatures(format.readFeatures(data, {
+ *       // uncomment the line below for ol.format.MVT only
+ *       extent: tile.getExtent(),
+ *       featureProjection: map.getView().getProjection()
+ *     }));
+ *   };
+ * });
+ * @property {ol.TileUrlFunctionType} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
+ * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
+ * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
+ * used instead of defining each one separately in the `urls` option.
+ * @property {Array.<string>} [urls] An array of URL templates.
+ * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
+ * When set to `false`, only one world
+ * will be rendered. When set to `true`, tiles will be wrapped horizontally to
+ * render multiple worlds.
+ * @property {number} [transition] Duration of the opacity transition for rendering.
+ * To disable the opacity transition, pass `transition: 0`.
+ */
+
+
+/**
  * @classdesc
  * Class for layer sources providing vector data divided into a tile grid, to be
  * used with {@link module:ol/layer/VectorTile~VectorTile}. Although this source receives tiles
@@ -23,7 +67,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * @constructor
  * @fires ol.source.Tile.Event
  * @extends {ol.source.UrlTile}
- * @param {olx.source.VectorTileOptions} options Vector tile options.
+ * @param {module:ol/source/VectorTile~Options=} options Vector tile options.
  * @api
  */
 const VectorTileSource = function(options) {

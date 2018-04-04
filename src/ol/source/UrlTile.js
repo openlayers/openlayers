@@ -9,6 +9,25 @@ import TileEventType from '../source/TileEventType.js';
 import {getKeyZXY} from '../tilecoord.js';
 
 /**
+ * @typedef {Object} Options
+ * @property {ol.AttributionLike} [attributions]
+ * @property {number} [cacheSize]
+ * @property {module:ol/extent~Extent} [extent]
+ * @property {boolean} [opaque]
+ * @property {module:ol/proj~ProjectionLike} [projection]
+ * @property {ol.source.State} [state]
+ * @property {ol.tilegrid.TileGrid} [tileGrid]
+ * @property {module:ol/Tile~LoadFunction} tileLoadFunction
+ * @property {number} [tilePixelRatio]
+ * @property {module:ol/Tile~UrlFunction} [tileUrlFunction]
+ * @property {string} [url]
+ * @property {Array.<string>} [urls]
+ * @property {boolean} [wrapX=true]
+ * @property {number} [transition]
+ */
+
+
+/**
  * @classdesc
  * Base class for sources providing tiles divided into a tile grid over http.
  *
@@ -16,7 +35,7 @@ import {getKeyZXY} from '../tilecoord.js';
  * @abstract
  * @fires ol.source.Tile.Event
  * @extends {ol.source.Tile}
- * @param {ol.SourceUrlTileOptions} options Image tile options.
+ * @param {module:ol/source/UrlTile~Options=} options Image tile options.
  */
 const UrlTile = function(options) {
 

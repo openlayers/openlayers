@@ -13,13 +13,38 @@ import Point from '../geom/Point.js';
 import VectorSource from '../source/Vector.js';
 
 /**
+ * @typedef {Object} Options
+ * @property {ol.AttributionLike} [attributions] Attributions.
+ * @property {number} [distance=20] Minimum distance in pixels between clusters.
+ * @property {ol.Extent} [extent] Extent.
+ * @property {ol.format.Feature} [format] Format.
+ * @property {function(module:ol/Feature~Feature):module:ol/geom/Point~Point} [geometryFunction]
+ * Function that takes an {@link module:ol/Feature~Feature} as argument and returns an
+ * {@link module:ol/geom/Point~Point} as cluster calculation point for the feature. When a
+ * feature should not be considered for clustering, the function should return
+ * `null`. The default, which works when the underyling source contains point
+ * features only, is
+ * ```js
+ * function(feature) {
+ *   return feature.getGeometry();
+ * }
+ * ```
+ * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
+ * calculation point for polygons.
+ * @property {module:ol/proj~ProjectionLike} projection Projection.
+ * @property {ol.source.Vector} source Source.
+ * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
+ */
+
+
+/**
  * @classdesc
  * Layer source to cluster vector data. Works out of the box with point
  * geometries. For other geometry types, or if not all geometries should be
  * considered for clustering, a custom `geometryFunction` can be defined.
  *
  * @constructor
- * @param {olx.source.ClusterOptions} options Constructor options.
+ * @param {module:ol/source/Cluster~Options=} options Cluster options.
  * @extends {ol.source.Vector}
  * @api
  */

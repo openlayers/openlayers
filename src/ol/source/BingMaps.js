@@ -12,12 +12,33 @@ import {createOrUpdate, quadKey} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 /**
+ * @typedef {Object} Options
+ * @property {number} [cacheSize=2048] Cache size.
+ * @property {boolean} [hidpi=false] If `true` hidpi tiles will be requested.
+ * @property {string} [culture='en-us'] Culture code.
+ * @property {string} key Bing Maps API key. Get yours at http://www.bingmapsportal.com/.
+ * @property {string} imagerySet Type of imagery.
+ * @property {number} [maxZoom=21] Max zoom. Default is what's advertized by the BingMaps service.
+ * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @property {ol.TileLoadFunctionType} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * ```js
+ * function(imageTile, src) {
+ *   imageTile.getImage().src = src;
+ * };
+ * ```
+ * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
+ * @property {number} [transition] Duration of the opacity transition for rendering.
+ * To disable the opacity transition, pass `transition: 0`.
+ */
+
+/**
  * @classdesc
  * Layer source for Bing Maps tile data.
  *
  * @constructor
  * @extends {ol.source.TileImage}
- * @param {olx.source.BingMapsOptions} options Bing Maps options.
+ * @param {module:ol/source/BingMaps~Options=} options Bing Maps options.
  * @api
  */
 const BingMaps = function(options) {

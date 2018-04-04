@@ -250,12 +250,29 @@ CustomTile.prototype.load = function() {
 
 
 /**
+ * @typedef {Object} Options
+ * @property {boolean} [preemptive=true]
+ * If `true` the TileUTFGrid source loads the tiles based on their "visibility".
+ * This improves the speed of response, but increases traffic.
+ * Note that if set to `false`, you need to pass `true` as `opt_request`
+ * to the `forDataAtCoordinateAndResolution` method otherwise no data
+ * will ever be loaded.
+ * @property {boolean} [jsonp=false] Use JSONP with callback to load the TileJSON.
+ * Useful when the server does not support CORS..
+ * @property {tileJSON} [tileJSON] TileJSON configuration for this source.
+ * If not provided, `url` must be configured.
+ * @property {string} [url] TileJSON endpoint that provides the configuration for this source.
+ * Request will be made through JSONP. If not provided, `tileJSON` must be configured.
+ */
+
+
+/**
  * @classdesc
  * Layer source for UTFGrid interaction data loaded from TileJSON format.
  *
  * @constructor
  * @extends {ol.source.Tile}
- * @param {olx.source.TileUTFGridOptions} options Source options.
+ * @param {module:ol/source/TileUTFGrid~Options=} options Source options.
  * @api
  */
 const UTFGrid = function(options) {
