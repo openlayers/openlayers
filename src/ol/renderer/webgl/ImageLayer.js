@@ -3,12 +3,11 @@
  */
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
 import {inherits} from '../../index.js';
-import {UNDEFINED} from '../../functions.js';
+import {TRUE, UNDEFINED} from '../../functions.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {getIntersection, isEmpty} from '../../extent.js';
-import {TRUE} from '../../functions.js';
 import RendererType from '../Type.js';
 import WebGLLayerRenderer from '../webgl/Layer.js';
 import {
