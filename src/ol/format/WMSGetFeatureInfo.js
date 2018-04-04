@@ -11,8 +11,7 @@ import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
 
 /**
  * @typedef {Object} Options
- * @property {Array.<string>|undefined} layers If set, only features of the
- * given layers will be returned by the format when read.
+ * @property {Array.<string>} [layers] If set, only features of the given layers will be returned by the format when read.
  */
 
 

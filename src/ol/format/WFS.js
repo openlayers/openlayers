@@ -19,14 +19,10 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
 
 /**
  * @typedef {Object} Options
- * @property {Object.<string, string>|string|undefined} featureNS The namespace
- * URI used for features.
- * @property {Array.<string>|string|undefined} featureType The feature type to parse.
- * Only used for read operations.
- * @property {ol.format.GMLBase|undefined} gmlFormat The GML format to use to parse
- * the response. Default is `ol.format.GML3`.
- * @property {string|undefined} schemaLocation Optional schemaLocation to use for
- * serialization, this will override the default.
+ * @property {Object.<string, string>|string} [featureNS] The namespace URI used for features.
+ * @property {Array.<string>|string} [featureType] The feature type to parse. Only used for read operations.
+ * @property {module:ol/format/GMLBase~GMLBase} [gmlFormat] The GML format to use to parse the response. Default is `ol.format.GML3`.
+ * @property {string} [schemaLocation] Optional schemaLocation to use for serialization, this will override the default.
  */
 
 
@@ -35,22 +31,22 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
  * @property {string} featureNS The namespace URI used for features.
  * @property {string} featurePrefix The prefix for the feature namespace.
  * @property {Array.<string>} featureTypes The feature type names.
- * @property {string|undefined} srsName SRS name. No srsName attribute will be set on
+ * @property {string} [srsName] SRS name. No srsName attribute will be set on
  * geometries when this is not provided.
- * @property {string|undefined} handle Handle.
- * @property {string|undefined} outputFormat Output format.
- * @property {number|undefined} maxFeatures Maximum number of features to fetch.
- * @property {string|undefined} geometryName Geometry name to use in a BBOX filter.
- * @property {Array.<string>|undefined} propertyNames Optional list of property names to serialize.
- * @property {number|undefined} startIndex Start index to use for WFS paging. This is a
+ * @property {string} [handle] Handle.
+ * @property {string} [outputFormat] Output format.
+ * @property {number} [maxFeatures] Maximum number of features to fetch.
+ * @property {string} [geometryName] Geometry name to use in a BBOX filter.
+ * @property {Array.<string>} [propertyNames] Optional list of property names to serialize.
+ * @property {number} [startIndex] Start index to use for WFS paging. This is a
  * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services.
- * @property {number|undefined} count Number of features to retrieve when paging. This is a
+ * @property {number} [count] Number of features to retrieve when paging. This is a
  * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services. Please note that some
  * Web Feature Services have repurposed `maxfeatures` instead.
  * @property {module:ol/extent~Extent} [bbox] Extent to use for the BBOX filter.
- * @property {ol.format.filter.Filter|undefined} filter Filter condition. See
+ * @property {ol.format.filter.Filter} [filter] Filter condition. See
  * {@link ol.format.filter} for more information.
- * @property {string|undefined} resultType Indicates what response should be returned,
+ * @property {string} [resultType] Indicates what response should be returned,
  * E.g. `hits` only includes the `numberOfFeatures` attribute in the response and no features.
  */
 
@@ -60,16 +56,14 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
  * @property {string} featureNS The namespace URI used for features.
  * @property {string} featurePrefix The prefix for the feature namespace.
  * @property {string} featureType The feature type name.
- * @property {string|undefined} srsName SRS name. No srsName attribute will be set on
+ * @property {string} [srsName] SRS name. No srsName attribute will be set on
  * geometries when this is not provided.
- * @property {string|undefined} handle Handle.
- * @property {boolean|undefined} hasZ Must be set to true if the transaction is for
+ * @property {string} [handle] Handle.
+ * @property {boolean} [hasZ] Must be set to true if the transaction is for
  * a 3D layer. This will allow the Z coordinate to be included in the transaction.
  * @property {Array.<Object>} nativeElements Native elements. Currently not supported.
- * @property {module:ol/format/GMLBase~Options|undefined} gmlOptions GML options for
- * the WFS transaction writer.
- * @property {string|undefined} version WFS version to use for the transaction. Can be
- * either `1.0.0` or `1.1.0`. Default is `1.1.0`.
+ * @property {module:ol/format/GMLBase~Options} [gmlOptions] GML options for the WFS transaction writer.
+ * @property {string} [version='1.1.0'] WFS version to use for the transaction. Can be either `1.0.0` or `1.1.0`.
  */
 
 
