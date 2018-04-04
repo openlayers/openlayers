@@ -22,8 +22,8 @@ function getSymbols(callback) {
 
 const srcPath = path.posix.resolve(__dirname, '../src').replace(/\\/g,'/');
 function getPath(name) {
-  const fullPath = require.resolve(path.resolve('src', name)).replace(/\\/g,'/');
-  return './' + path.posix.relative(srcPath, fullPath);
+  const fullPath = require.resolve(path.resolve('src', name));
+  return './' + path.posix.relative(srcPath, fullPath.replace(/\\/g,'/'));
 }
 
 /**
