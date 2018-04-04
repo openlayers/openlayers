@@ -16,8 +16,8 @@ import ImageSource from '../source/Image.js';
  * ratio, `{ol.Size}` the image size, and `{module:ol/proj/Projection~Projection}` the image
  * projection. The canvas returned by this function is cached by the source. If
  * the value returned by the function is later changed then
- * `dispatchChangeEvent` should be called on the source for the source to
- * invalidate the current cached image.
+ * `changed` should be called on the source for the source to
+ * invalidate the current cached image. See @link: {@link module:ol/Observable~Observable#changed}
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {number} [ratio=1.5] Ratio. 1 means canvases are the size of the map viewport, 2 means twice the
  * width and height of the map viewport, and so on. Must be `1` or higher.
