@@ -21,7 +21,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * stroke operations.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {module:ol/source/State~State} [state] Source state.
- * @property {function(new: ol.VectorTile, ol.TileCoord,
+ * @property {function(new: ol.VectorTile, module:ol/tilecoord~TileCoord,
  *                 ol.TileState, string, ?string,
  *                 ol.TileLoadFunctionType)} [tileClass] Class used to instantiate image tiles.
  * Default is {@link ol.VectorTile}.

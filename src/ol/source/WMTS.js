@@ -27,7 +27,7 @@ import {appendParams} from '../uri.js';
  * @property {ol.source.WMTSRequestEncoding|string} [requestEncoding='KVP'] Request encoding.
  * @property {string} layer Layer name as advertised in the WMTS capabilities.
  * @property {string} style Style name as advertised in the WMTS capabilities.
- * @property {function(new: ol.ImageTile, ol.TileCoord,
+ * @property {function(new: ol.ImageTile, module:ol/tilecoord~TileCoord,
  *                 ol.TileState, string, ?string,
  *                 ol.TileLoadFunctionType)} [tileClass]  Class used to instantiate image tiles. Default is {@link ol.ImageTile}.
  * @property {number} [tilePixelRatio=1] The pixel ratio used by the tile service.
@@ -71,7 +71,7 @@ import {appendParams} from '../uri.js';
  * this. See http://mapserver.org/output/tile_mode.html.
  * @property {boolean} [hidpi=true] Use the `ol.Map#pixelRatio` value when requesting
  * the image from the remote server.
- * @property {function(new: ol.ImageTile, ol.TileCoord,
+ * @property {function(new: ol.ImageTile, module:ol/tilecoord~TileCoord,
  *                 ol.TileState, string, ?string,
  *                 ol.TileLoadFunctionType)} [tileClass] Class used to instantiate image tiles.
  * Default is {@link ol.ImageTile}.
