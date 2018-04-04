@@ -16,7 +16,7 @@ import {getKeyZXY} from '../tilecoord.js';
  * @property {boolean} [opaque]
  * @property {module:ol/proj~ProjectionLike} [projection]
  * @property {module:ol/source/State~State} [state]
- * @property {ol.tilegrid.TileGrid} [tileGrid]
+ * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid]
  * @property {module:ol/Tile~LoadFunction} tileLoadFunction
  * @property {number} [tilePixelRatio]
  * @property {module:ol/Tile~UrlFunction} [tileUrlFunction]

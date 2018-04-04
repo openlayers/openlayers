@@ -75,7 +75,7 @@ import {appendParams} from '../uri.js';
  *                 module:ol/TileState~TileState, string, ?string,
  *                 ol.TileLoadFunctionType)} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/ImageTile~ImageTile}.
- * @property {ol.tilegrid.TileGrid} [tileGrid] Tile grid. Base this on the resolutions,
+ * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid] Tile grid. Base this on the resolutions,
  * tilesize and extent supported by the server.
  * If this is not defined, a default grid will be used: if there is a projection
  * extent, the grid will be based on that; if not, a grid based on a global

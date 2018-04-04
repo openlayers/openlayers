@@ -21,7 +21,7 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  * @property {number} [tilePixelRatio]
  * @property {module:ol/proj~ProjectionLike} [projection]
  * @property {module:ol/source/State~State} [state]
- * @property {ol.tilegrid.TileGrid} [tileGrid]
+ * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid]
  * @property {boolean} [wrapX=true]
  * @property {number} [transition]
  */

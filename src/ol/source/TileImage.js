@@ -31,7 +31,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  *                 module:ol/TileState~TileState, string, ?string,
  *                 ol.TileLoadFunctionType)} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/ImageTile~ImageTile}.
- * @property {ol.tilegrid.TileGrid} [tileGrid] Tile grid.
+ * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid] Tile grid.
  * @property {ol.TileLoadFunctionType} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {

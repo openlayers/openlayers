@@ -78,7 +78,7 @@ LabeledTile.prototype.load = function() {};
 /**
  * @typedef {Object} Options
  * @property {module:ol/proj~ProjectionLike} projection Projection.
- * @property {ol.tilegrid.TileGrid} [tileGrid] Tile grid.
+ * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid] Tile grid.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
 
