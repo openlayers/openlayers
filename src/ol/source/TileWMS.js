@@ -78,7 +78,7 @@ import {appendParams} from '../uri.js';
  * Layer source for tile data from WMS servers.
  *
  * @constructor
- * @extends {ol.source.TileImage}
+ * @extends {module:ol/source/TileImage~TileImage}
  * @param {module:ol/source/TileWMS~Options=} [opt_options] Tile WMS options.
  * @api
  */

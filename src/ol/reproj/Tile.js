@@ -15,7 +15,7 @@ import Triangulation from '../reproj/Triangulation.js';
 /**
  * @classdesc
  * Class encapsulating single reprojected tile.
- * See {@link ol.source.TileImage}.
+ * See {@link module:ol/source/TileImage~TileImage}.
  *
  * @constructor
  * @extends {module:ol/Tile~Tile}

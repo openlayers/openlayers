@@ -19,7 +19,7 @@ import {appendParams} from '../uri.js';
  * {@link ol.source.XYZ} data source.
  *
  * @constructor
- * @extends {ol.source.TileImage}
+ * @extends {module:ol/source/TileImage~TileImage}
  * @param {olx.source.TileArcGISRestOptions=} opt_options Tile ArcGIS Rest
  *     options.
  * @api

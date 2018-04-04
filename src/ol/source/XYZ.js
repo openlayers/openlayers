@@ -52,7 +52,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * TMS where `x` 0 and `y` 0 are in the bottom left can be used by
  * using the `{-y}` placeholder in the URL template, so long as the
  * source does not have a custom tile grid. In this case,
- * {@link ol.source.TileImage} can be used with a `tileUrlFunction`
+ * {@link module:ol/source/TileImage~TileImage} can be used with a `tileUrlFunction`
  * such as:
  *
  *  tileUrlFunction: function(coordinate) {
@@ -62,7 +62,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  *
  *
  * @constructor
- * @extends {ol.source.TileImage}
+ * @extends {module:ol/source/TileImage~TileImage}
  * @param {module:ol/source/XYZ~Options=} opt_options XYZ options.
  * @api
  */

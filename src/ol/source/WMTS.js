@@ -100,7 +100,7 @@ import {appendParams} from '../uri.js';
  * Layer source for tile data from WMTS servers.
  *
  * @constructor
- * @extends {ol.source.TileImage}
+ * @extends {module:ol/source/TileImage~TileImage}
  * @param {module:ol/source/WMTS~Options=} options WMTS options.
  * @api
  */

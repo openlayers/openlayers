@@ -37,7 +37,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * Layer source for Bing Maps tile data.
  *
  * @constructor
- * @extends {ol.source.TileImage}
+ * @extends {module:ol/source/TileImage~TileImage}
  * @param {module:ol/source/BingMaps~Options=} options Bing Maps options.
  * @api
  */

@@ -1,5 +1,5 @@
 /**
- * @module ol/source/TileImage
+ * @module module:ol/source/TileImage~TileImage
  */
 import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
 import {getUid, inherits} from '../index.js';
