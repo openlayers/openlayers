@@ -18,7 +18,7 @@ import {appendParams} from '../uri.js';
  * @property {boolean} [hidpi=true] Use the `ol.Map#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {boolean} [useOverlay] If `true`, will use `GETDYNAMICMAPOVERLAYIMAGE`.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {number} [ratio=1] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {Array.<number>} [resolutions] Resolutions.

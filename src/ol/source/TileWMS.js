@@ -40,7 +40,7 @@ import {appendParams} from '../uri.js';
  * this. See http://mapserver.org/output/tile_mode.html.
  * @property {boolean} [hidpi=true] Use the `ol.Map#pixelRatio` value when requesting
  * the image from the remote server.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {function(new: ol.ImageTile, ol.TileCoord,

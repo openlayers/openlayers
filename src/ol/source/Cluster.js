@@ -31,7 +31,7 @@ import VectorSource from '../source/Vector.js';
  * ```
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {ol.source.Vector} source Source.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */

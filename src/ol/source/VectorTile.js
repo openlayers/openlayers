@@ -19,7 +19,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
  * stroke operations.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {ol.source.State} [state] Source state.
  * @property {function(new: ol.VectorTile, ol.TileCoord,
  *                 ol.TileState, string, ?string,
