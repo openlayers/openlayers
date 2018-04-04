@@ -14,7 +14,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * @typedef {Object} Options
  * @property {ol.AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize=128] Cache size.
- * @property {ol.format.Feature} [format] Feature format for tiles. Used and required by the default.
+ * @property {module:ol/format/Feature~FeatureFormat} [format] Feature format for tiles. Used and required by the default.
  * @property {boolean} [overlaps=true] This source may have overlapping geometries. Setting this
  * to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
