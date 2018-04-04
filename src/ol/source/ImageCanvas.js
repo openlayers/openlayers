@@ -23,7 +23,7 @@ import ImageSource from '../source/Image.js';
  * width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {Array.<number>} [resolutions] Resolutions.
  * If specified, new canvases will be created for these resolutions
- * @property {ol.source.State} [state] Source state.
+ * @property {module:ol/source/State~State} [state] Source state.
  */
 
 

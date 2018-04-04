@@ -73,7 +73,7 @@ inherits(ImageSourceEvent, Event);
  * @property {module:ol/extent~Extent} [extent]
  * @property {module:ol/proj~ProjectionLike} projection
  * @property {Array.<number>} [resolutions]
- * @property {ol.source.State} [state]
+ * @property {module:ol/source/State~State} [state]
  */
 
 
