@@ -118,7 +118,7 @@ const DEFAULT_VERSION = '1.1.0';
  * Feature format for reading and writing data in the WFS format.
  * By default, supports WFS version 1.1.0. You can pass a GML format
  * as option if you want to read a WFS that contains GML2 (WFS 1.0.0).
- * Also see {@link ol.format.GMLBase} which is used by this format.
+ * Also see {@link module:ol/format/GMLBase~GMLBase} which is used by this format.
  *
  * @constructor
  * @param {module:ol/format/WFS~Options=} opt_options Optional configuration object.
@@ -142,7 +142,7 @@ const WFS = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.format.GMLBase}
+   * @type {module:ol/format/GMLBase~GMLBase}
    */
   this.gmlFormat_ = options.gmlFormat ?
     options.gmlFormat : new GML3();
