@@ -289,7 +289,7 @@ describe('ol.control.ScaleLine', function() {
       ctrl.setUnits('nautical');
       expect(ctrl.element_.innerText).to.be('0.05 nm');
 
-      ctrl.setUnits('imperial');
+      ctrl.setUnits('us');
       expect(ctrl.element_.innerText).to.be('500 ft');
 
 
@@ -317,7 +317,7 @@ describe('ol.control.ScaleLine', function() {
       ctrl.setUnits('nautical');
       expect(ctrl.element_.innerText).to.be('0.00005 nm');
 
-      ctrl.setUnits('imperial');
+      ctrl.setUnits('us');
       expect(ctrl.element_.innerText).to.be('5 in');
     });
 
