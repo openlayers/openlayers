@@ -279,7 +279,13 @@ describe('ol.control.ScaleLine', function() {
         })
       }));
       map.renderSync();
+
+      ctrl.setUnits('metric');
       expect(ctrl.element_.innerText).to.be('100 m');
+
+      ctrl.setUnits('imperial');
+      expect(ctrl.element_.innerText).to.be('500 ft');
+
       map.setView(new View({
         center: [0, 0],
         zoom: 0,
@@ -294,7 +300,12 @@ describe('ol.control.ScaleLine', function() {
         })
       }));
       map.renderSync();
+
+      ctrl.setUnits('metric');
       expect(ctrl.element_.innerText).to.be('100 mm');
+
+      ctrl.setUnits('imperial');
+      expect(ctrl.element_.innerText).to.be('5 in');
     });
 
     it('Metric display works with Geographic (EPSG:4326) projection', function() {
