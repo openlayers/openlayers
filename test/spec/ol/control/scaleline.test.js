@@ -369,6 +369,16 @@ describe('ol.control.ScaleLine', function() {
       }
     };
 
+    const getImperialUnit = function(zoom) {
+      if (zoom >= 21) {
+        return 'in';
+      } else if (zoom >= 10) {
+        return 'ft';
+      } else {
+        return 'mi';
+      }
+    };
+
     beforeEach(function() {
       currentZoom = 33;
       renderedHtmls = {};
@@ -427,6 +437,9 @@ describe('ol.control.ScaleLine', function() {
         const currentHtml = ctrl.element_.innerHTML;
         expect(currentHtml in renderedHtmls).to.be(false);
         renderedHtmls[currentHtml] = true;
+
+        const unit = ctrl.innerElement_.textContent.match(/\d+ (.+)/)[1];
+        expect(unit).to.eql(getImperialUnit(currentZoom));
       }
     });
     it('nautical: is rendered differently for different zoomlevels', function() {
