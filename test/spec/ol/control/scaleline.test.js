@@ -286,6 +286,13 @@ describe('ol.control.ScaleLine', function() {
       ctrl.setUnits('imperial');
       expect(ctrl.element_.innerText).to.be('500 ft');
 
+      ctrl.setUnits('nautical');
+      expect(ctrl.element_.innerText).to.be('0.05 nm');
+
+      ctrl.setUnits('imperial');
+      expect(ctrl.element_.innerText).to.be('500 ft');
+
+
       map.setView(new View({
         center: [0, 0],
         zoom: 0,
@@ -303,6 +310,12 @@ describe('ol.control.ScaleLine', function() {
 
       ctrl.setUnits('metric');
       expect(ctrl.element_.innerText).to.be('100 mm');
+
+      ctrl.setUnits('imperial');
+      expect(ctrl.element_.innerText).to.be('5 in');
+
+      ctrl.setUnits('nautical');
+      expect(ctrl.element_.innerText).to.be('0.00005 nm');
 
       ctrl.setUnits('imperial');
       expect(ctrl.element_.innerText).to.be('5 in');
