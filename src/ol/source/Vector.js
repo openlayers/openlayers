@@ -487,6 +487,7 @@ VectorSource.prototype.clear = function(opt_fast) {
  * Iterate through all features on the source, calling the provided callback
  * with each one.  If the callback returns any "truthy" value, iteration will
  * stop and the function will return the same value.
+ * Note: this function only iterate through the feature that have a defined geometry.
  *
  * @param {function(module:ol/Feature~Feature): T} callback Called with each feature
  *     on the source.  Return a truthy value to stop iteration.
