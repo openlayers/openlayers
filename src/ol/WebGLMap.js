@@ -3,22 +3,13 @@
  */
 import {inherits} from './index.js';
 import PluggableMap from './PluggableMap.js';
-import PluginType from './PluginType.js';
 import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';
 import {assign} from './obj.js';
-import {registerMultiple} from './plugins.js';
 import WebGLImageLayerRenderer from './renderer/webgl/ImageLayer.js';
 import WebGLMapRenderer from './renderer/webgl/Map.js';
 import WebGLTileLayerRenderer from './renderer/webgl/TileLayer.js';
 import WebGLVectorLayerRenderer from './renderer/webgl/VectorLayer.js';
-
-
-registerMultiple(PluginType.LAYER_RENDERER, [
-  WebGLImageLayerRenderer,
-  WebGLTileLayerRenderer,
-  WebGLVectorLayerRenderer
-]);
 
 
 /**
@@ -91,7 +82,13 @@ inherits(WebGLMap, PluggableMap);
 
 
 WebGLMap.prototype.createRenderer = function() {
-  return new WebGLMapRenderer(this);
+  const renderer = new WebGLMapRenderer(this);
+  renderer.registerLayerRenderers([
+    WebGLImageLayerRenderer,
+    WebGLTileLayerRenderer,
+    WebGLVectorLayerRenderer
+  ]);
+  return renderer;
 };
 
 export default WebGLMap;

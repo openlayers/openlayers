@@ -1,4 +1,4 @@
-import Map from '../src/ol/Map.js';
+import Map from '../src/ol/WebGLMap.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import {WEBGL} from '../src/ol/has.js';
@@ -19,7 +19,6 @@ if (!WEBGL) {
 
   const map = new Map({
     layers: [osm],
-    renderer: /** @type {Array<ol.renderer.Type>} */ (['webgl', 'canvas']),
     target: 'map',
     controls: defaultControls({
       attributionOptions: {

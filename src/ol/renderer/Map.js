@@ -8,7 +8,6 @@ import EventType from '../events/EventType.js';
 import {getWidth} from '../extent.js';
 import {TRUE, UNDEFINED} from '../functions.js';
 import {visibleAtResolution} from '../layer/Layer.js';
-import {getLayerRendererPlugins} from '../plugins.js';
 import {iconImageCache} from '../style.js';
 import {compose as composeTransform, invert as invertTransform, setFromArray as transformSetFromArray} from '../transform.js';
 
@@ -40,9 +39,33 @@ const MapRenderer = function(map) {
    */
   this.layerRendererListeners_ = {};
 
+  /**
+   * @private
+   * @type {Array.<module:ol/renderer/Layer~LayerRenderer}
+   */
+  this.layerRendererConstructors_ = [];
+
 };
 
 inherits(MapRenderer, Disposable);
+
+
+/**
+ * Register layer renderer constructors.
+ * @param {Array.<module:ol/renderer/Layer~LayerRenderer>} constructors Layer renderers.
+ */
+MapRenderer.prototype.registerLayerRenderers = function(constructors) {
+  this.layerRendererConstructors_.push.apply(this.layerRendererConstructors_, constructors);
+};
+
+
+/**
+ * Get the registered layer renderer constructors.
+ * @return {Array.<module:ol/renderer/Layer~LayerRenderer>} Registered layer renderers.
+ */
+MapRenderer.prototype.getLayerRendererConstructors = function() {
+  return this.layerRendererConstructors_;
+};
 
 
 /**
@@ -202,12 +225,11 @@ MapRenderer.prototype.getLayerRenderer = function(layer) {
   if (layerKey in this.layerRenderers_) {
     return this.layerRenderers_[layerKey];
   } else {
-    const layerRendererPlugins = getLayerRendererPlugins();
     let renderer;
-    for (let i = 0, ii = layerRendererPlugins.length; i < ii; ++i) {
-      const plugin = layerRendererPlugins[i];
-      if (plugin['handles'](layer)) {
-        renderer = plugin['create'](this, layer);
+    for (let i = 0, ii = this.layerRendererConstructors_.length; i < ii; ++i) {
+      const candidate = this.layerRendererConstructors_[i];
+      if (candidate['handles'](layer)) {
+        renderer = candidate['create'](this, layer);
         break;
       }
     }
