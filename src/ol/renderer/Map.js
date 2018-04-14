@@ -204,10 +204,9 @@ MapRenderer.prototype.getLayerRenderer = function(layer) {
   } else {
     const layerRendererPlugins = getLayerRendererPlugins();
     let renderer;
-    const type = this.getType();
     for (let i = 0, ii = layerRendererPlugins.length; i < ii; ++i) {
       const plugin = layerRendererPlugins[i];
-      if (plugin['handles'](type, layer)) {
+      if (plugin['handles'](layer)) {
         renderer = plugin['create'](this, layer);
         break;
       }
@@ -249,13 +248,6 @@ MapRenderer.prototype.getLayerRenderers = function() {
 MapRenderer.prototype.getMap = function() {
   return this.map_;
 };
-
-
-/**
- * @abstract
- * @return {ol.renderer.Type} Type
- */
-MapRenderer.prototype.getType = function() {};
 
 
 /**

@@ -16,7 +16,6 @@ import ReplayType from '../../render/ReplayType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
 import CanvasReplayGroup, {replayDeclutter} from '../../render/canvas/ReplayGroup.js';
 import {ORDER} from '../../render/replay.js';
-import RendererType from '../Type.js';
 import CanvasTileLayerRenderer from '../canvas/TileLayer.js';
 import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import {
@@ -99,12 +98,11 @@ inherits(CanvasVectorTileLayerRenderer, CanvasTileLayerRenderer);
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {ol.renderer.Type} type The renderer type.
  * @param {module:ol/layer/Layer~Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-CanvasVectorTileLayerRenderer['handles'] = function(type, layer) {
-  return type === RendererType.CANVAS && layer.getType() === LayerType.VECTOR_TILE;
+CanvasVectorTileLayerRenderer['handles'] = function(layer) {
+  return layer.getType() === LayerType.VECTOR_TILE;
 };
 
 

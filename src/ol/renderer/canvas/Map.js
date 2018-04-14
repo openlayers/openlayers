@@ -12,7 +12,6 @@ import RenderEventType from '../../render/EventType.js';
 import {rotateAtOffset} from '../../render/canvas.js';
 import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
 import MapRenderer, {sortByZIndex} from '../Map.js';
-import RendererType from '../Type.js';
 import SourceState from '../../source/State.js';
 
 /**
@@ -101,14 +100,6 @@ CanvasMapRenderer.prototype.getTransform = function(frameState) {
   const dx2 = -viewState.center[0];
   const dy2 = -viewState.center[1];
   return composeTransform(this.transform_, dx1, dy1, sx, sy, angle, dx2, dy2);
-};
-
-
-/**
- * @inheritDoc
- */
-CanvasMapRenderer.prototype.getType = function() {
-  return RendererType.CANVAS;
 };
 
 

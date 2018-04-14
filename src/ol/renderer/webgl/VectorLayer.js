@@ -6,7 +6,6 @@ import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {buffer, containsExtent, createEmpty} from '../../extent.js';
 import WebGLReplayGroup from '../../render/webgl/ReplayGroup.js';
-import RendererType from '../Type.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import WebGLLayerRenderer from '../webgl/Layer.js';
 import {apply as applyTransform} from '../../transform.js';
@@ -72,12 +71,11 @@ inherits(WebGLVectorLayerRenderer, WebGLLayerRenderer);
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {ol.renderer.Type} type The renderer type.
  * @param {module:ol/layer/Layer~Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-WebGLVectorLayerRenderer['handles'] = function(type, layer) {
-  return type === RendererType.WEBGL && layer.getType() === LayerType.VECTOR;
+WebGLVectorLayerRenderer['handles'] = function(layer) {
+  return layer.getType() === LayerType.VECTOR;
 };
 
 

@@ -8,7 +8,6 @@ import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, createEmpty, equals, getIntersection, isEmpty} from '../../extent.js';
-import RendererType from '../Type.js';
 import IntermediateCanvasRenderer from '../canvas/IntermediateCanvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
@@ -83,12 +82,11 @@ inherits(CanvasTileLayerRenderer, IntermediateCanvasRenderer);
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {ol.renderer.Type} type The renderer type.
  * @param {module:ol/layer/Layer~Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-CanvasTileLayerRenderer['handles'] = function(type, layer) {
-  return type === RendererType.CANVAS && layer.getType() === LayerType.TILE;
+CanvasTileLayerRenderer['handles'] = function(layer) {
+  return layer.getType() === LayerType.TILE;
 };
 
 

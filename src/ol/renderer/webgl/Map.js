@@ -12,7 +12,6 @@ import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import WebGLImmediateRenderer from '../../render/webgl/Immediate.js';
 import MapRenderer, {sortByZIndex} from '../Map.js';
-import RendererType from '../Type.js';
 import SourceState from '../../source/State.js';
 import LRUCache from '../../structs/LRUCache.js';
 import PriorityQueue from '../../structs/PriorityQueue.js';
@@ -342,14 +341,6 @@ WebGLMapRenderer.prototype.getGL = function() {
  */
 WebGLMapRenderer.prototype.getTileTextureQueue = function() {
   return this.tileTextureQueue_;
-};
-
-
-/**
- * @inheritDoc
- */
-WebGLMapRenderer.prototype.getType = function() {
-  return RendererType.WEBGL;
 };
 
 
