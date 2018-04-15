@@ -1,0 +1,6 @@
+{
+  "extends": "openlayers/react",
+  "globals": {
+    "graphql": false
+  }
+}

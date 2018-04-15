@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charSet="utf-8">
+    <title>{title}</title>
+    <style>{baseCss}</style>
+    <style>{olCss}</style>
+    <style>
+      html, body {
+        height: 100%;
+        overflow: hidden;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    <style>{exampleCss}</style>
+  </head>
+  <body>
+    {html}
+    <script type="module" src="{mainBundleUrl}"></script>
+  </body>
+</html>
