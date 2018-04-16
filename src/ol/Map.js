@@ -3,38 +3,14 @@
  */
 import {inherits} from './index.js';
 import PluggableMap from './PluggableMap.js';
-import PluginType from './PluginType.js';
 import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';
 import {assign} from './obj.js';
-import {register, registerMultiple} from './plugins.js';
 import CanvasImageLayerRenderer from './renderer/canvas/ImageLayer.js';
 import CanvasMapRenderer from './renderer/canvas/Map.js';
 import CanvasTileLayerRenderer from './renderer/canvas/TileLayer.js';
 import CanvasVectorLayerRenderer from './renderer/canvas/VectorLayer.js';
 import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js';
-import WebGLImageLayerRenderer from './renderer/webgl/ImageLayer.js';
-import WebGLMapRenderer from './renderer/webgl/Map.js';
-import WebGLTileLayerRenderer from './renderer/webgl/TileLayer.js';
-import WebGLVectorLayerRenderer from './renderer/webgl/VectorLayer.js';
-
-
-register(PluginType.MAP_RENDERER, CanvasMapRenderer);
-registerMultiple(PluginType.LAYER_RENDERER, [
-  CanvasImageLayerRenderer,
-  CanvasTileLayerRenderer,
-  CanvasVectorLayerRenderer,
-  CanvasVectorTileLayerRenderer
-]);
-
-// TODO: move these to new ol-webgl package
-register(PluginType.MAP_RENDERER, WebGLMapRenderer);
-registerMultiple(PluginType.LAYER_RENDERER, [
-  WebGLImageLayerRenderer,
-  WebGLTileLayerRenderer,
-  WebGLVectorLayerRenderer
-]);
-
 
 /**
  * @classdesc
@@ -103,5 +79,16 @@ const Map = function(options) {
 };
 
 inherits(Map, PluggableMap);
+
+Map.prototype.createRenderer = function() {
+  const renderer = new CanvasMapRenderer(this);
+  renderer.registerLayerRenderers([
+    CanvasImageLayerRenderer,
+    CanvasTileLayerRenderer,
+    CanvasVectorLayerRenderer,
+    CanvasVectorTileLayerRenderer
+  ]);
+  return renderer;
+};
 
 export default Map;

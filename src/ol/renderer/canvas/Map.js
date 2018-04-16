@@ -1,8 +1,6 @@
 /**
  * @module ol/renderer/canvas/Map
  */
-// FIXME offset panning
-
 import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
 import {inherits} from '../../index.js';
 import {stableSort} from '../../array.js';
@@ -14,19 +12,18 @@ import RenderEventType from '../../render/EventType.js';
 import {rotateAtOffset} from '../../render/canvas.js';
 import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
 import MapRenderer, {sortByZIndex} from '../Map.js';
-import RendererType from '../Type.js';
 import SourceState from '../../source/State.js';
 
 /**
  * @constructor
  * @extends {ol.renderer.Map}
- * @param {Element} container Container.
  * @param {module:ol/PluggableMap~PluggableMap} map Map.
  * @api
  */
-const CanvasMapRenderer = function(container, map) {
+const CanvasMapRenderer = function(map) {
+  MapRenderer.call(this, map);
 
-  MapRenderer.call(this, container, map);
+  const container = map.getViewport();
 
   /**
    * @private
@@ -61,27 +58,6 @@ const CanvasMapRenderer = function(container, map) {
 };
 
 inherits(CanvasMapRenderer, MapRenderer);
-
-
-/**
- * Determine if this renderer handles the provided layer.
- * @param {ol.renderer.Type} type The renderer type.
- * @return {boolean} The renderer can render the layer.
- */
-CanvasMapRenderer['handles'] = function(type) {
-  return type === RendererType.CANVAS;
-};
-
-
-/**
- * Create the map renderer.
- * @param {Element} container Container.
- * @param {module:ol/PluggableMap~PluggableMap} map Map.
- * @return {ol.renderer.canvas.Map} The map renderer.
- */
-CanvasMapRenderer['create'] = function(container, map) {
-  return new CanvasMapRenderer(container, map);
-};
 
 
 /**
@@ -124,14 +100,6 @@ CanvasMapRenderer.prototype.getTransform = function(frameState) {
   const dx2 = -viewState.center[0];
   const dy2 = -viewState.center[1];
   return composeTransform(this.transform_, dx1, dy1, sx, sy, angle, dx2, dy2);
-};
-
-
-/**
- * @inheritDoc
- */
-CanvasMapRenderer.prototype.getType = function() {
-  return RendererType.CANVAS;
 };
 
 

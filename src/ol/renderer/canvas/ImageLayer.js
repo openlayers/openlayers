@@ -10,8 +10,6 @@ import {equals} from '../../array.js';
 import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
 import VectorRenderType from '../../layer/VectorRenderType.js';
 import {assign} from '../../obj.js';
-import {getLayerRendererPlugins} from '../../plugins.js';
-import RendererType from '../Type.js';
 import IntermediateCanvasRenderer from '../canvas/IntermediateCanvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
@@ -55,14 +53,13 @@ inherits(CanvasImageLayerRenderer, IntermediateCanvasRenderer);
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {ol.renderer.Type} type The renderer type.
  * @param {module:ol/layer/Layer~Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-CanvasImageLayerRenderer['handles'] = function(type, layer) {
-  return type === RendererType.CANVAS && (layer.getType() === LayerType.IMAGE ||
+CanvasImageLayerRenderer['handles'] = function(layer) {
+  return layer.getType() === LayerType.IMAGE ||
     layer.getType() === LayerType.VECTOR &&
-    /** @type {module:ol/layer/Vector~VectorLayer} */ (layer).getRenderMode() === VectorRenderType.IMAGE);
+    /** @type {module:ol/layer/Vector~VectorLayer} */ (layer).getRenderMode() === VectorRenderType.IMAGE;
 };
 
 
@@ -75,10 +72,10 @@ CanvasImageLayerRenderer['handles'] = function(type, layer) {
 CanvasImageLayerRenderer['create'] = function(mapRenderer, layer) {
   const renderer = new CanvasImageLayerRenderer(/** @type {module:ol/layer/Image~ImageLayer} */ (layer));
   if (layer.getType() === LayerType.VECTOR) {
-    const candidates = getLayerRendererPlugins();
+    const candidates = mapRenderer.getLayerRendererConstructors();
     for (let i = 0, ii = candidates.length; i < ii; ++i) {
       const candidate = /** @type {Object.<string, Function>} */ (candidates[i]);
-      if (candidate !== CanvasImageLayerRenderer && candidate['handles'](RendererType.CANVAS, layer)) {
+      if (candidate !== CanvasImageLayerRenderer && candidate['handles'](layer)) {
         renderer.setVectorRenderer(candidate['create'](mapRenderer, layer));
         break;
       }

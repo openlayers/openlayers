@@ -2,6 +2,39 @@
 
 ### Next release
 
+#### Removal of the renderer option for maps
+
+The `renderer` option has been removed from the `Map` constructor.  The purpose of this change is to avoid bundling code in your application that you do not need.  Previously, code for both the Canvas and WebGL renderers was included in all applications - even though most people only use one renderer.  The `Map` constructor now gives you a Canvas (2D) based renderer.  If you want to try the WebGL renderer, you can import the constructor from `ol/WebGLMap`.
+
+Old code:
+```js
+import Map from 'ol/Map';
+
+const canvasMap = new Map({
+  renderer: ['canvas']
+  // other options...
+});
+
+const webglMap = new Map({
+  renderer: ['webgl']
+  // other options...
+});
+```
+
+New code:
+```js
+import Map from 'ol/Map';
+import WebGLMap from 'ol/WebGLMap';
+
+const canvasMap = new Map({
+  // options...
+});
+
+const webglMap = new WebGLMap({
+  // options...
+});
+```
+
 #### Removal of ol.FeatureStyleFunction
 
 The signature of the vector style function passed to the feature has changed. The function now always takes the `feature` and the `resolution` as arguments, the `feature` is no longer bound to `this`.

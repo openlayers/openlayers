@@ -12,7 +12,6 @@ import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
 import RenderEventType from '../../render/EventType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
 import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
-import RendererType from '../Type.js';
 import CanvasLayerRenderer from '../canvas/Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 
@@ -88,12 +87,11 @@ inherits(CanvasVectorLayerRenderer, CanvasLayerRenderer);
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {ol.renderer.Type} type The renderer type.
  * @param {module:ol/layer/Layer~Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-CanvasVectorLayerRenderer['handles'] = function(type, layer) {
-  return type === RendererType.CANVAS && layer.getType() === LayerType.VECTOR;
+CanvasVectorLayerRenderer['handles'] = function(layer) {
+  return layer.getType() === LayerType.VECTOR;
 };
 
 

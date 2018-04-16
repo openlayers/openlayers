@@ -11,7 +11,6 @@ import TileState from '../../TileState.js';
 import {numberSafeCompareFunction} from '../../array.js';
 import {createEmpty, intersects} from '../../extent.js';
 import {roundUpToPowerOfTwo} from '../../math.js';
-import RendererType from '../Type.js';
 import WebGLLayerRenderer from '../webgl/Layer.js';
 import {fragment, vertex} from '../webgl/tilelayershader.js';
 import Locations from '../webgl/tilelayershader/Locations.js';
@@ -97,12 +96,11 @@ inherits(WebGLTileLayerRenderer, WebGLLayerRenderer);
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {ol.renderer.Type} type The renderer type.
  * @param {module:ol/layer/Layer~Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-WebGLTileLayerRenderer['handles'] = function(type, layer) {
-  return type === RendererType.WEBGL && layer.getType() === LayerType.TILE;
+WebGLTileLayerRenderer['handles'] = function(layer) {
+  return layer.getType() === LayerType.TILE;
 };
 
 

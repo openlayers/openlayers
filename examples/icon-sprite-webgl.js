@@ -1,5 +1,5 @@
 import Feature from '../src/ol/Feature.js';
-import Map from '../src/ol/Map.js';
+import Map from '../src/ol/WebGLMap.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
@@ -80,7 +80,6 @@ const vector = new VectorLayer({
 });
 
 const map = new Map({
-  renderer: /** @type {Array<ol.renderer.Type>} */ (['webgl', 'canvas']),
   layers: [vector],
   target: document.getElementById('map'),
   view: new View({
