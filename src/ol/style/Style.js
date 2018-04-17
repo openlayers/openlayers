@@ -17,12 +17,23 @@ import Stroke from '../style/Stroke.js';
 
 
 /**
+ * Custom renderer function. Takes two arguments:
+ *
+ * 1. The pixel coordinates of the geometry in GeoJSON notation.
+ * 2. The {@link olx.render.State} of the layer renderer.
+ *
+ * @typedef {function((module:ol/coordinate~Coordinate|Array<module:ol/coordinate~Coordinate>|Array.<Array.<module:ol/coordinate~Coordinate>>),olx.render.State)}
+ * RenderFunction
+ */
+
+
+/**
  * @typedef {Object} Options
  * @property {string|module:ol/geom/Geometry~Geometry|module:ol/style/Style~GeometryFunction} [geometry] Feature property or geometry
  * or function returning a geometry to render for this style.
  * @property {module:ol/style/Fill~Fill} [fill] Fill style.
  * @property {module:ol/style/Image~ImageStyle} [image] Image style.
- * @property {ol.StyleRenderFunction} [renderer] Custom renderer. When configured, `fill`, `stroke` and `image` will be
+ * @property {module:ol/style/Style~RenderFunction} [renderer] Custom renderer. When configured, `fill`, `stroke` and `image` will be
  * ignored, and the provided function will be called with each render frame for each geometry.
  * @property {module:ol/style/Stroke~Stroke} [stroke] Stroke style.
  * @property {module:ol/style/Text~Text} [text] Text style.
@@ -75,7 +86,7 @@ const Style = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.StyleRenderFunction|null}
+   * @type {module:ol/style/Style~RenderFunction|null}
    */
   this.renderer_ = options.renderer !== undefined ? options.renderer : null;
 
@@ -124,7 +135,7 @@ Style.prototype.clone = function() {
 /**
  * Get the custom renderer function that was configured with
  * {@link #setRenderer} or the `renderer` constructor option.
- * @return {ol.StyleRenderFunction|null} Custom renderer function.
+ * @return {module:ol/style/Style~RenderFunction|null} Custom renderer function.
  * @api
  */
 Style.prototype.getRenderer = function() {
@@ -135,7 +146,7 @@ Style.prototype.getRenderer = function() {
 /**
  * Sets a custom renderer function for this style. When set, `fill`, `stroke`
  * and `image` options of the style will be ignored.
- * @param {ol.StyleRenderFunction|null} renderer Custom renderer function.
+ * @param {module:ol/style/Style~RenderFunction|null} renderer Custom renderer function.
  * @api
  */
 Style.prototype.setRenderer = function(renderer) {

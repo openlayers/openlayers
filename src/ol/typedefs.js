@@ -218,17 +218,6 @@ ol.SourceRasterRenderedState;
 
 
 /**
- * Custom renderer function. Takes two arguments:
- *
- * 1. The pixel coordinates of the geometry in GeoJSON notation.
- * 2. The {@link olx.render.State} of the layer renderer.
- *
- * @typedef {function((module:ol/coordinate~Coordinate|Array<module:ol/coordinate~Coordinate>|Array.<Array.<module:ol/coordinate~Coordinate>>),olx.render.State)}
- */
-ol.StyleRenderFunction;
-
-
-/**
  * @typedef {{opacity: number,
  *            rotateWithView: boolean,
  *            rotation: number,
