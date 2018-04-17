@@ -7,6 +7,21 @@ import CircleStyle from '../style/Circle.js';
 import Fill from '../style/Fill.js';
 import Stroke from '../style/Stroke.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction} [geometry] Feature property or geometry
+ * or function returning a geometry to render for this style.
+ * @property {module:ol/style/Fill~Fill} [fill] Fill style.
+ * @property {module:ol/style/Image~ImageStyle} [image] Image style.
+ * @property {ol.StyleRenderFunction} [renderer] Custom renderer. When configured, `fill`, `stroke` and `image` will be
+ * ignored, and the provided function will be called with each render frame for each geometry.
+ * @property {module:ol/style/Stroke~Stroke} [stroke] Stroke style.
+ * @property {module:ol/style/Text~Text} [text] Text style.
+ * @property {number} [zIndex] Z index.
+ */
+
+
 /**
  * @classdesc
  * Container for vector feature rendering styles. Any changes made to the style
@@ -15,7 +30,7 @@ import Stroke from '../style/Stroke.js';
  *
  * @constructor
  * @struct
- * @param {olx.style.StyleOptions=} opt_options Style options.
+ * @param {module:ol/style/Style~Options=} opt_options Style options.
  * @api
  */
 const Style = function(opt_options) {
