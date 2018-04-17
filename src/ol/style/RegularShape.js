@@ -9,6 +9,30 @@ import ImageState from '../ImageState.js';
 import {defaultStrokeStyle, defaultFillStyle, defaultLineCap, defaultLineWidth, defaultLineJoin, defaultMiterLimit} from '../render/canvas.js';
 import ImageStyle from '../style/Image.js';
 
+
+/**
+ * Specify radius for regular polygons, or radius1 and radius2 for stars.
+ * @typedef {Object} Options
+ * @property {module:ol/style/Fill~Fill} [fill] Fill style.
+ * @property {number} points Number of points for stars and regular polygons. In case of a polygon, the number of points
+ * is the number of sides.
+ * @property {number} [radius] Radius of a regular polygon.
+ * @property {number} [radius1] Outer radius of a star.
+ * @property {number} [radius2] Inner radius of a star.
+ * @property {number} [angle=0] Shape's angle in radians. A value of 0 will have one of the shape's point facing up.
+ * @property {boolean} [snapToPixel=true] If `true` integral numbers of pixels are used as the X and Y pixel coordinate
+ * when drawing the shape in the output canvas. If `false` fractional numbers may be used. Using `true` allows for
+ * "sharp" rendering (no blur), while using `false` allows for "accurate" rendering. Note that accuracy is important if
+ * the shape's position is animated. Without it, the shape may jitter noticeably.
+ * @property {module:ol/style/Stroke~Stroke} [stroke] Stroke style.
+ * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
+ * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
+ * @property {module:ol/style/AtlasManager~AtlasManager} [atlasManager] The atlas manager to use for this symbol. When
+ * using WebGL it is recommended to use an atlas manager to avoid texture switching. If an atlas manager is given, the
+ * symbol is added to an atlas. By default no atlas manager is used.
+ */
+
+
 /**
  * @classdesc
  * Set regular shape style for vector features. The resulting shape will be
@@ -16,7 +40,7 @@ import ImageStyle from '../style/Image.js';
  * `radius2` are provided.
  *
  * @constructor
- * @param {olx.style.RegularShapeOptions} options Options.
+ * @param {module:ol/style/RegularShape~Options} options Options.
  * @extends {module:ol/style/Image~ImageStyle}
  * @api
  */
