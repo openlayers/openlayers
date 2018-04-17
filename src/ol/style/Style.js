@@ -7,10 +7,18 @@ import CircleStyle from '../style/Circle.js';
 import Fill from '../style/Fill.js';
 import Stroke from '../style/Stroke.js';
 
+/**
+ * A function that takes an {@link module:ol/Feature~Feature} as argument and returns an
+ * {@link module:ol/geom/Geometry~Geometry} that will be rendered and styled for the feature.
+ *
+ * @typedef {function((module:ol/Feature~Feature|ol.render.Feature)):
+ *     (module:ol/geom/Geometry~Geometry|ol.render.Feature|undefined)} GeometryFunction
+ */
+
 
 /**
  * @typedef {Object} Options
- * @property {string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction} [geometry] Feature property or geometry
+ * @property {string|module:ol/geom/Geometry~Geometry|module:ol/style/Style~GeometryFunction} [geometry] Feature property or geometry
  * or function returning a geometry to render for this style.
  * @property {module:ol/style/Fill~Fill} [fill] Fill style.
  * @property {module:ol/style/Image~ImageStyle} [image] Image style.
@@ -39,13 +47,13 @@ const Style = function(opt_options) {
 
   /**
    * @private
-   * @type {string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction}
+   * @type {string|module:ol/geom/Geometry~Geometry|module:ol/style/Style~GeometryFunction}
    */
   this.geometry_ = null;
 
   /**
    * @private
-   * @type {!ol.StyleGeometryFunction}
+   * @type {!module:ol/style/Style~GeometryFunction}
    */
   this.geometryFunction_ = defaultGeometryFunction;
 
@@ -137,7 +145,7 @@ Style.prototype.setRenderer = function(renderer) {
 
 /**
  * Get the geometry to be rendered.
- * @return {string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction}
+ * @return {string|module:ol/geom/Geometry~Geometry|module:ol/style/Style~GeometryFunction}
  * Feature property or geometry or function that returns the geometry that will
  * be rendered with this style.
  * @api
@@ -149,7 +157,7 @@ Style.prototype.getGeometry = function() {
 
 /**
  * Get the function used to generate a geometry for rendering.
- * @return {!ol.StyleGeometryFunction} Function that is called with a feature
+ * @return {!module:ol/style/Style~GeometryFunction} Function that is called with a feature
  * and returns the geometry to render instead of the feature's geometry.
  * @api
  */
@@ -251,7 +259,7 @@ Style.prototype.getZIndex = function() {
 /**
  * Set a geometry that is rendered instead of the feature's geometry.
  *
- * @param {string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction} geometry
+ * @param {string|module:ol/geom/Geometry~Geometry|module:ol/style/Style~GeometryFunction} geometry
  *     Feature property or geometry or function returning a geometry to render
  *     for this style.
  * @api

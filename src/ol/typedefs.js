@@ -218,16 +218,6 @@ ol.SourceRasterRenderedState;
 
 
 /**
- * A function that takes an {@link module:ol/Feature~Feature} as argument and returns an
- * {@link module:ol/geom/Geometry~Geometry} that will be rendered and styled for the feature.
- *
- * @typedef {function((module:ol/Feature~Feature|ol.render.Feature)):
- *     (module:ol/geom/Geometry~Geometry|ol.render.Feature|undefined)}
- */
-ol.StyleGeometryFunction;
-
-
-/**
  * Custom renderer function. Takes two arguments:
  *
  * 1. The pixel coordinates of the geometry in GeoJSON notation.
