@@ -218,16 +218,6 @@ ol.SourceRasterRenderedState;
 
 
 /**
- * @typedef {{opacity: number,
- *            rotateWithView: boolean,
- *            rotation: number,
- *            scale: number,
- *            snapToPixel: boolean}}
- */
-ol.StyleImageOptions;
-
-
-/**
  * Number of features; bounds/extent.
  * @typedef {{numberOfFeatures: number,
  *            bounds: module:ol/extent~Extent}}

@@ -1,6 +1,18 @@
 /**
  * @module ol/style/Image
  */
+
+
+/**
+ * @typedef {Object} Options
+ * @property {number} opacity
+ * @property {boolean} rotateWithView
+ * @property {number} rotation
+ * @property {number} number
+ * @property {boolean} snapToPixel
+ */
+
+
 /**
  * @classdesc
  * A base class used for creating subclasses and not instantiated in
@@ -9,7 +21,7 @@
  *
  * @constructor
  * @abstract
- * @param {ol.StyleImageOptions} options Options.
+ * @param {module:ol/style/Image~Options} options Options.
  * @api
  */
 const ImageStyle = function(options) {
