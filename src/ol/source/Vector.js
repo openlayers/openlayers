@@ -827,6 +827,21 @@ VectorSource.prototype.handleFeatureChange_ = function(event) {
     VectorEventType.CHANGEFEATURE, feature));
 };
 
+/**
+ * Returns true if the feature is contained within the source.
+ * @param {ol.Feature} feature Feature.
+ * @return {boolean} Has feature.
+ * @api
+ */
+VectorSource.prototype.hasFeature = function(feature) {
+  const id = feature.getId();
+  if (id !== undefined) {
+    return id in this.idIndex_;
+  } else {
+    const featureKey = getUid(feature).toString();
+    return featureKey in this.undefIdIndex_;
+  }
+};
 
 /**
  * @return {boolean} Is empty.
