@@ -77,7 +77,7 @@ export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
  * @api
  */
 export function createXYZ(opt_options) {
-  const options = /** @type {olx.tilegrid.TileGridOptions} */ ({});
+  const options = /** @type {module:ol/tilegrid/TileGrid~Options} */ ({});
   assign(options, opt_options !== undefined ?
     opt_options : /** @type {olx.tilegrid.XYZOptions} */ ({}));
   if (options.extent === undefined) {
