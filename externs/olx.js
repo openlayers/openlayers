@@ -50,64 +50,6 @@ olx.render.State.prototype.rotation;
 
 
 /**
- * @typedef {{fill: (module:ol/style/Fill~Fill|undefined),
- *     radius: number,
- *     snapToPixel: (boolean|undefined),
- *     stroke: (module:ol/style/Stroke~Stroke|undefined),
- *     atlasManager: (module:ol/style/AtlasManager~AtlasManager|undefined)}}
- */
-olx.style.CircleOptions;
-
-
-/**
- * Fill style.
- * @type {module:ol/style/Fill~Fill|undefined}
- * @api
- */
-olx.style.CircleOptions.prototype.fill;
-
-
-/**
- * Circle radius.
- * @type {number}
- * @api
- */
-olx.style.CircleOptions.prototype.radius;
-
-
-/**
- * If `true` integral numbers of pixels are used as the X and Y pixel
- * coordinate when drawing the circle in the output canvas. If `false`
- * fractional numbers may be used. Using `true` allows for "sharp"
- * rendering (no blur), while using `false` allows for "accurate"
- * rendering. Note that accuracy is important if the circle's
- * position is animated. Without it, the circle may jitter noticeably.
- * Default value is `true`.
- * @type {boolean|undefined}
- * @api
- */
-olx.style.CircleOptions.prototype.snapToPixel;
-
-
-/**
- * Stroke style.
- * @type {module:ol/style/Stroke~Stroke|undefined}
- * @api
- */
-olx.style.CircleOptions.prototype.stroke;
-
-
-/**
- * The atlas manager to use for this circle. When using WebGL it is
- * recommended to use an atlas manager to avoid texture switching.
- * If an atlas manager is given, the circle is added to an atlas.
- * By default no atlas manager is used.
- * @type {module:ol/style/AtlasManager~AtlasManager|undefined}
- */
-olx.style.CircleOptions.prototype.atlasManager;
-
-
-/**
  * @typedef {{anchor: (Array.<number>|undefined),
  *     anchorOrigin: (module:ol/style/IconOrigin~IconOrigin|undefined),
  *     anchorXUnits: (module:ol/style/IconAnchorUnits~IconAnchorUnits|undefined),
