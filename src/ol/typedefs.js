@@ -121,14 +121,6 @@ ol.DeclutterGroup;
 
 
 /**
- * @typedef {{prev: (ol.LinkedListItem|undefined),
- *            next: (ol.LinkedListItem|undefined),
- *            data: ?}}
- */
-ol.LinkedListItem;
-
-
-/**
  * A function that takes an {@link module:ol/extent~Extent} and a resolution as arguments, and
  * returns an array of {@link module:ol/extent~Extent} with the extents to load. Usually this
  * is one of the standard {@link ol.loadingstrategy} strategies.

@@ -2,6 +2,15 @@
  * @module ol/structs/LinkedList
  */
 
+
+/**
+ * @typedef {Object} Item
+ * @property {module:ol/structs/LinkedList~Item} [prev]
+ * @property {module:ol/structs/LinkedList~Item} [next]
+ * @property {?} data
+ */
+
+
 /**
  * Creates an empty linked list structure.
  *
@@ -14,19 +23,19 @@ const LinkedList = function(opt_circular) {
 
   /**
    * @private
-   * @type {ol.LinkedListItem|undefined}
+   * @type {module:ol/structs/LinkedList~Item}|undefined}
    */
   this.first_ = undefined;
 
   /**
    * @private
-   * @type {ol.LinkedListItem|undefined}
+   * @type {module:ol/structs/LinkedList~Item}|undefined}
    */
   this.last_ = undefined;
 
   /**
    * @private
-   * @type {ol.LinkedListItem|undefined}
+   * @type {module:ol/structs/LinkedList~Item}|undefined}
    */
   this.head_ = undefined;
 
@@ -50,7 +59,7 @@ const LinkedList = function(opt_circular) {
  */
 LinkedList.prototype.insertItem = function(data) {
 
-  /** @type {ol.LinkedListItem} */
+  /** @type {module:ol/structs/LinkedList~Item}} */
   const item = {
     prev: undefined,
     next: undefined,
