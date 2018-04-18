@@ -123,14 +123,14 @@ VectorContext.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {}
 
 /**
  * @param {module:ol/style/Image~ImageStyle} imageStyle Image style.
- * @param {ol.DeclutterGroup=} opt_declutterGroup Declutter.
+ * @param {module:ol/render/canvas~DeclutterGroup=} opt_declutterGroup Declutter.
  */
 VectorContext.prototype.setImageStyle = function(imageStyle, opt_declutterGroup) {};
 
 
 /**
  * @param {module:ol/style/Text~Text} textStyle Text style.
- * @param {ol.DeclutterGroup=} opt_declutterGroup Declutter.
+ * @param {module:ol/render/canvas~DeclutterGroup=} opt_declutterGroup Declutter.
  */
 VectorContext.prototype.setTextStyle = function(textStyle, opt_declutterGroup) {};
 export default VectorContext;

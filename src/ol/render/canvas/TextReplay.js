@@ -32,7 +32,7 @@ const CanvasTextReplay = function(
 
   /**
    * @private
-   * @type {ol.DeclutterGroup}
+   * @type {module:ol/render/canvas~DeclutterGroup}
    */
   this.declutterGroup_;
 
@@ -381,7 +381,7 @@ CanvasTextReplay.prototype.drawTextImage_ = function(label, begin, end) {
  * @private
  * @param {number} begin Begin.
  * @param {number} end End.
- * @param {ol.DeclutterGroup} declutterGroup Declutter group.
+ * @param {module:ol/render/canvas~DeclutterGroup} declutterGroup Declutter group.
  */
 CanvasTextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
   const strokeState = this.textStrokeState_;
@@ -466,7 +466,7 @@ CanvasTextReplay.prototype.setTextStyle = function(textStyle, declutterGroup) {
   if (!textStyle) {
     this.text_ = '';
   } else {
-    this.declutterGroup_ = /** @type {ol.DeclutterGroup} */ (declutterGroup);
+    this.declutterGroup_ = /** @type {module:ol/render/canvas~DeclutterGroup} */ (declutterGroup);
 
     const textFillStyle = textStyle.getFill();
     if (!textFillStyle) {

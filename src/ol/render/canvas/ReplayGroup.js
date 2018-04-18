@@ -21,7 +21,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 /**
  * @type {Object.<ol.render.ReplayType,
  *                function(new: ol.render.canvas.Replay, number, module:ol/extent~Extent,
- *                number, number, boolean, Array.<ol.DeclutterGroup>)>}
+ *                number, number, boolean, Array.<module:ol/render/canvas~DeclutterGroup>)>}
  */
 const BATCH_CONSTRUCTORS = {
   'Circle': CanvasPolygonReplay,
@@ -57,7 +57,7 @@ const CanvasReplayGroup = function(
   this.declutterTree_ = declutterTree;
 
   /**
-   * @type {ol.DeclutterGroup}
+   * @type {module:ol/render/canvas~DeclutterGroup}
    * @private
    */
   this.declutterGroup_ = null;
@@ -219,7 +219,7 @@ export function replayDeclutter(declutterReplays, context, rotation) {
 
 /**
  * @param {boolean} group Group with previous replay.
- * @return {ol.DeclutterGroup} Declutter instruction group.
+ * @return {module:ol/render/canvas~DeclutterGroup} Declutter instruction group.
  */
 CanvasReplayGroup.prototype.addDeclutter = function(group) {
   let declutter = null;
@@ -290,7 +290,7 @@ CanvasReplayGroup.prototype.finish = function() {
  *     to skip.
  * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T} callback Feature
  *     callback.
- * @param {Object.<string, ol.DeclutterGroup>} declutterReplays Declutter
+ * @param {Object.<string, module:ol/render/canvas~DeclutterGroup>} declutterReplays Declutter
  *     replays.
  * @return {T|undefined} Callback result.
  * @template T
@@ -457,7 +457,7 @@ CanvasReplayGroup.prototype.isEmpty = function() {
  *     to skip.
  * @param {Array.<ol.render.ReplayType>=} opt_replayTypes Ordered replay types
  *     to replay. Default is {@link ol.render.replay.ORDER}
- * @param {Object.<string, ol.DeclutterGroup>=} opt_declutterReplays Declutter
+ * @param {Object.<string, module:ol/render/canvas~DeclutterGroup>=} opt_declutterReplays Declutter
  *     replays.
  */
 CanvasReplayGroup.prototype.replay = function(context,
