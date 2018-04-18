@@ -565,7 +565,7 @@ CanvasReplay.prototype.replay_ = function(
   const coordinateCache = this.coordinateCache_;
   const viewRotation = this.viewRotation_;
 
-  const state = /** @type {olx.render.State} */ ({
+  const state = /** @type {module:ol/render~State} */ ({
     context: context,
     pixelRatio: this.pixelRatio,
     resolution: this.resolution,

@@ -20,9 +20,9 @@ import Stroke from '../style/Stroke.js';
  * Custom renderer function. Takes two arguments:
  *
  * 1. The pixel coordinates of the geometry in GeoJSON notation.
- * 2. The {@link olx.render.State} of the layer renderer.
+ * 2. The {@link module:ol/render~State} of the layer renderer.
  *
- * @typedef {function((module:ol/coordinate~Coordinate|Array<module:ol/coordinate~Coordinate>|Array.<Array.<module:ol/coordinate~Coordinate>>),olx.render.State)}
+ * @typedef {function((module:ol/coordinate~Coordinate|Array<module:ol/coordinate~Coordinate>|Array.<Array.<module:ol/coordinate~Coordinate>>),module:ol/render~State)}
  * RenderFunction
  */
 
