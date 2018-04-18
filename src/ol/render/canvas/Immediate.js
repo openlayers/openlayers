@@ -70,7 +70,7 @@ const CanvasImmediateRenderer = function(context, pixelRatio, extent, transform,
 
   /**
    * @private
-   * @type {?ol.CanvasFillState}
+   * @type {?module:ol/render/canvas~FillState}
    */
   this.contextFillState_ = null;
 
@@ -88,7 +88,7 @@ const CanvasImmediateRenderer = function(context, pixelRatio, extent, transform,
 
   /**
    * @private
-   * @type {?ol.CanvasFillState}
+   * @type {?module:ol/render/canvas~FillState}
    */
   this.fillState_ = null;
 
@@ -208,7 +208,7 @@ const CanvasImmediateRenderer = function(context, pixelRatio, extent, transform,
 
   /**
    * @private
-   * @type {?ol.CanvasFillState}
+   * @type {?module:ol/render/canvas~FillState}
    */
   this.textFillState_ = null;
 
@@ -698,7 +698,7 @@ CanvasImmediateRenderer.prototype.drawMultiPolygon = function(geometry) {
 
 
 /**
- * @param {ol.CanvasFillState} fillState Fill state.
+ * @param {module:ol/render/canvas~FillState} fillState Fill state.
  * @private
  */
 CanvasImmediateRenderer.prototype.setContextFillState_ = function(fillState) {

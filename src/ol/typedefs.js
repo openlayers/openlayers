@@ -22,12 +22,6 @@ const ol = {};
 
 
 /**
- * @typedef {{fillStyle: module:ol/colorlike~ColorLike}}
- */
-ol.CanvasFillState;
-
-
-/**
  * A function returning the canvas element (`{HTMLCanvasElement}`)
  * used by the source as an image. The arguments passed to the function are:
  * {@link module:ol/extent~Extent} the image extent, `{number}` the image resolution,

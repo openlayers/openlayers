@@ -74,12 +74,12 @@ const CanvasTextReplay = function(
 
   /**
    * @private
-   * @type {?ol.CanvasFillState}
+   * @type {?module:ol/render/canvas~FillState}
    */
   this.textFillState_ = null;
 
   /**
-   * @type {!Object.<string, ol.CanvasFillState>}
+   * @type {!Object.<string, module:ol/render/canvas~FillState>}
    */
   this.fillStates = {};
 
@@ -413,7 +413,7 @@ CanvasTextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
   const fillKey = this.fillKey_;
   if (fillState) {
     if (!(fillKey in this.fillStates)) {
-      this.fillStates[fillKey] = /** @type {ol.CanvasFillState} */ ({
+      this.fillStates[fillKey] = /** @type {module:ol/render/canvas~FillState} */ ({
         fillStyle: fillState.fillStyle
       });
     }
@@ -474,7 +474,7 @@ CanvasTextReplay.prototype.setTextStyle = function(textStyle, declutterGroup) {
     } else {
       fillState = this.textFillState_;
       if (!fillState) {
-        fillState = this.textFillState_ = /** @type {ol.CanvasFillState} */ ({});
+        fillState = this.textFillState_ = /** @type {module:ol/render/canvas~FillState} */ ({});
       }
       fillState.fillStyle = asColorLike(
         textFillStyle.getColor() || defaultFillStyle);

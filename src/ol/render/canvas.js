@@ -9,6 +9,11 @@ import {create as createTransform} from '../transform.js';
 
 
 /**
+ * @typedef {{fillStyle: module:ol/colorlike~ColorLike}} FillState
+ */
+
+
+/**
  * @const
  * @type {string}
  */
