@@ -12,6 +12,12 @@ import {clamp} from '../math.js';
 import {calculateSourceResolution, render as renderReprojected} from '../reproj.js';
 import Triangulation from '../reproj/Triangulation.js';
 
+
+/**
+ * @typedef {function(number, number, number, number) : module:ol/Tile~Tile} FunctionType
+ */
+
+
 /**
  * @classdesc
  * Class encapsulating single reprojected tile.
@@ -27,7 +33,7 @@ import Triangulation from '../reproj/Triangulation.js';
  * @param {module:ol/tilecoord~TileCoord} wrappedTileCoord Coordinate of the tile wrapped in X.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} gutter Gutter of the source tiles.
- * @param {ol.ReprojTileFunctionType} getTileFunction
+ * @param {module:ol/reproj/Tile~FunctionType} getTileFunction
  *     Function returning source tiles (z, x, y, pixelRatio).
  * @param {number=} opt_errorThreshold Acceptable reprojection error (in px).
  * @param {boolean=} opt_renderEdges Render reprojection edges.

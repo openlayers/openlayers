@@ -182,12 +182,6 @@ ol.RegularShapeRenderOptions;
 
 
 /**
- * @typedef {function(number, number, number, number) : module:ol/Tile~Tile}
- */
-ol.ReprojTileFunctionType;
-
-
-/**
  * Single triangle; consists of 3 source points and 3 target points.
  *
  * @typedef {{source: Array.<module:ol/coordinate~Coordinate>,
