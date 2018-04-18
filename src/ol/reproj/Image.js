@@ -11,6 +11,12 @@ import {getCenter, getIntersection, getHeight, getWidth} from '../extent.js';
 import {calculateSourceResolution, render as renderReprojected} from '../reproj.js';
 import Triangulation from '../reproj/Triangulation.js';
 
+
+/**
+ * @typedef {function(module:ol/extent~Extent, number, number) : module:ol/ImageBase~ImageBase} FunctionType
+ */
+
+
 /**
  * @classdesc
  * Class encapsulating single reprojected image.
@@ -23,7 +29,7 @@ import Triangulation from '../reproj/Triangulation.js';
  * @param {module:ol/extent~Extent} targetExtent Target extent.
  * @param {number} targetResolution Target resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.ReprojImageFunctionType} getImageFunction
+ * @param {module:ol/reproj/Image~FunctionType} getImageFunction
  *     Function returning source images (extent, resolution, pixelRatio).
  */
 const ReprojImage = function(sourceProj, targetProj,

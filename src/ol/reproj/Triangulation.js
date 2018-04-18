@@ -8,6 +8,14 @@ import {getTransform} from '../proj.js';
 
 
 /**
+ * Single triangle; consists of 3 source points and 3 target points.
+ * @typedef {Object} Triangle
+ * @property {Array.<module:ol/coordinate~Coordinate>} source
+ * @property {Array.<module:ol/coordinate~Coordinate>} target
+ */
+
+
+/**
  * Maximum number of subdivision steps during raster reprojection triangulation.
  * Prevents high memory usage and large number of proj4 calls (for certain
  * transformations and areas). At most `2*(2^this)` triangles are created for
@@ -85,7 +93,7 @@ const Triangulation = function(sourceProj, targetProj, targetExtent,
   this.errorThresholdSquared_ = errorThreshold * errorThreshold;
 
   /**
-   * @type {Array.<ol.ReprojTriangle>}
+   * @type {Array.<module:ol/reproj/Triangulation~Triangle>}
    * @private
    */
   this.triangles_ = [];
@@ -340,7 +348,7 @@ Triangulation.prototype.calculateSourceExtent = function() {
 
 
 /**
- * @return {Array.<ol.ReprojTriangle>} Array of the calculated triangles.
+ * @return {Array.<module:ol/reproj/Triangulation~Triangle>} Array of the calculated triangles.
  */
 Triangulation.prototype.getTriangles = function() {
   return this.triangles_;
