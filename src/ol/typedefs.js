@@ -22,28 +22,6 @@ const ol = {};
 
 
 /**
- * @typedef {{currentFillStyle: (module:ol/colorlike~ColorLike|undefined),
- *            currentStrokeStyle: (module:ol/colorlike~ColorLike|undefined),
- *            currentLineCap: (string|undefined),
- *            currentLineDash: Array.<number>,
- *            currentLineDashOffset: (number|undefined),
- *            currentLineJoin: (string|undefined),
- *            currentLineWidth: (number|undefined),
- *            currentMiterLimit: (number|undefined),
- *            lastStroke: (number|undefined),
- *            fillStyle: (module:ol/colorlike~ColorLike|undefined),
- *            strokeStyle: (module:ol/colorlike~ColorLike|undefined),
- *            lineCap: (string|undefined),
- *            lineDash: Array.<number>,
- *            lineDashOffset: (number|undefined),
- *            lineJoin: (string|undefined),
- *            lineWidth: (number|undefined),
- *            miterLimit: (number|undefined)}|null}
- */
-ol.CanvasFillStrokeState;
-
-
-/**
  * @typedef {{lineCap: string,
  *            lineDash: Array.<number>,
  *            lineDashOffset: number,

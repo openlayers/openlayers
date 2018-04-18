@@ -14,6 +14,28 @@ import {create as createTransform} from '../transform.js';
 
 
 /**
+ * @typedef {Object} FillStrokeState
+ * @property {module:ol/colorlike~ColorLike} [currentFillStyle]
+ * @property {module:ol/colorlike~ColorLike} [currentStrokeStyle]
+ * @property string{} [currentLineCap]
+ * @property {Array.<number>} currentLineDash
+ * @property {number} [currentLineDashOffset]
+ * @property {string} [currentLineJoin]
+ * @property {number} [currentLineWidth]
+ * @property {number} [currentMiterLimit]
+ * @property {number} [lastStroke]
+ * @property {module:ol/colorlike~ColorLike} [fillStyle]
+ * @property {module:ol/colorlike~ColorLike} [strokeStyle]
+ * @property {string} [lineCap]
+ * @property {Array.<number>} lineDash
+ * @property {number} [lineDashOffset]
+ * @property {string} [lineJoin]
+ * @property {number} [lineWidth]
+ * @property {number} [miterLimit]
+ */
+
+
+/**
  * @const
  * @type {string}
  */

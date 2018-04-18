@@ -147,9 +147,9 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
 
   /**
    * @protected
-   * @type {ol.CanvasFillStrokeState}
+   * @type {module:ol/render/canvas~FillStrokeState}
    */
-  this.state = /** @type {ol.CanvasFillStrokeState} */ ({});
+  this.state = /** @type {module:ol/render/canvas~FillStrokeState} */ ({});
 
   /**
    * @private
@@ -957,7 +957,7 @@ CanvasReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
 
 
 /**
- * @param {ol.CanvasFillStrokeState} state State.
+ * @param {module:ol/render/canvas~FillStrokeState} state State.
  * @param {module:ol/geom/Geometry~Geometry|ol.render.Feature} geometry Geometry.
  * @return {Array.<*>} Fill instruction.
  */
@@ -973,7 +973,7 @@ CanvasReplay.prototype.createFill = function(state, geometry) {
 
 
 /**
- * @param {ol.CanvasFillStrokeState} state State.
+ * @param {module:ol/render/canvas~FillStrokeState} state State.
  */
 CanvasReplay.prototype.applyStroke = function(state) {
   this.instructions.push(this.createStroke(state));
@@ -981,7 +981,7 @@ CanvasReplay.prototype.applyStroke = function(state) {
 
 
 /**
- * @param {ol.CanvasFillStrokeState} state State.
+ * @param {module:ol/render/canvas~FillStrokeState} state State.
  * @return {Array.<*>} Stroke instruction.
  */
 CanvasReplay.prototype.createStroke = function(state) {
@@ -995,8 +995,8 @@ CanvasReplay.prototype.createStroke = function(state) {
 
 
 /**
- * @param {ol.CanvasFillStrokeState} state State.
- * @param {function(this:ol.render.canvas.Replay, ol.CanvasFillStrokeState, (module:ol/geom/Geometry~Geometry|ol.render.Feature)):Array.<*>} createFill Create fill.
+ * @param {module:ol/render/canvas~FillStrokeState} state State.
+ * @param {function(this:ol.render.canvas.Replay, module:ol/render/canvas~FillStrokeState, (module:ol/geom/Geometry~Geometry|ol.render.Feature)):Array.<*>} createFill Create fill.
  * @param {module:ol/geom/Geometry~Geometry|ol.render.Feature} geometry Geometry.
  */
 CanvasReplay.prototype.updateFillStyle = function(state, createFill, geometry) {
@@ -1011,8 +1011,8 @@ CanvasReplay.prototype.updateFillStyle = function(state, createFill, geometry) {
 
 
 /**
- * @param {ol.CanvasFillStrokeState} state State.
- * @param {function(this:ol.render.canvas.Replay, ol.CanvasFillStrokeState)} applyStroke Apply stroke.
+ * @param {module:ol/render/canvas~FillStrokeState} state State.
+ * @param {function(this:ol.render.canvas.Replay, module:ol/render/canvas~FillStrokeState)} applyStroke Apply stroke.
  */
 CanvasReplay.prototype.updateStrokeStyle = function(state, applyStroke) {
   const strokeStyle = state.strokeStyle;
