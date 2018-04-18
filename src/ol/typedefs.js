@@ -22,18 +22,6 @@ const ol = {};
 
 
 /**
- * @typedef {{lineCap: string,
- *            lineDash: Array.<number>,
- *            lineDashOffset: number,
- *            lineJoin: string,
- *            lineWidth: number,
- *            miterLimit: number,
- *            strokeStyle: module:ol/colorlike~ColorLike}}
- */
-ol.CanvasStrokeState;
-
-
-/**
  * @typedef {{font: string,
  *            textAlign: (string|undefined),
  *            textBaseline: string}}

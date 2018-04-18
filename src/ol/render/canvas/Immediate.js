@@ -76,7 +76,7 @@ const CanvasImmediateRenderer = function(context, pixelRatio, extent, transform,
 
   /**
    * @private
-   * @type {?ol.CanvasStrokeState}
+   * @type {?module:ol/render/canvas~StrokeState}
    */
   this.contextStrokeState_ = null;
 
@@ -94,7 +94,7 @@ const CanvasImmediateRenderer = function(context, pixelRatio, extent, transform,
 
   /**
    * @private
-   * @type {?ol.CanvasStrokeState}
+   * @type {?module:ol/render/canvas~StrokeState}
    */
   this.strokeState_ = null;
 
@@ -214,7 +214,7 @@ const CanvasImmediateRenderer = function(context, pixelRatio, extent, transform,
 
   /**
    * @private
-   * @type {?ol.CanvasStrokeState}
+   * @type {?module:ol/render/canvas~StrokeState}
    */
   this.textStrokeState_ = null;
 
@@ -718,7 +718,7 @@ CanvasImmediateRenderer.prototype.setContextFillState_ = function(fillState) {
 
 
 /**
- * @param {ol.CanvasStrokeState} strokeState Stroke state.
+ * @param {module:ol/render/canvas~StrokeState} strokeState Stroke state.
  * @private
  */
 CanvasImmediateRenderer.prototype.setContextStrokeState_ = function(strokeState) {

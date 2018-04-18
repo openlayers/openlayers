@@ -85,12 +85,12 @@ const CanvasTextReplay = function(
 
   /**
    * @private
-   * @type {?ol.CanvasStrokeState}
+   * @type {?module:ol/render/canvas~StrokeState}
    */
   this.textStrokeState_ = null;
 
   /**
-   * @type {!Object.<string, ol.CanvasStrokeState>}
+   * @type {!Object.<string, module:ol/render/canvas~StrokeState>}
    */
   this.strokeStates = {};
 
@@ -391,7 +391,7 @@ CanvasTextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
   const strokeKey = this.strokeKey_;
   if (strokeState) {
     if (!(strokeKey in this.strokeStates)) {
-      this.strokeStates[strokeKey] = /** @type {ol.CanvasStrokeState} */ ({
+      this.strokeStates[strokeKey] = /** @type {module:ol/render/canvas~StrokeState} */ ({
         strokeStyle: strokeState.strokeStyle,
         lineCap: strokeState.lineCap,
         lineDashOffset: strokeState.lineDashOffset,
@@ -486,7 +486,7 @@ CanvasTextReplay.prototype.setTextStyle = function(textStyle, declutterGroup) {
     } else {
       strokeState = this.textStrokeState_;
       if (!strokeState) {
-        strokeState = this.textStrokeState_ = /** @type {ol.CanvasStrokeState} */ ({});
+        strokeState = this.textStrokeState_ = /** @type {module:ol/render/canvas~StrokeState} */ ({});
       }
       const lineDash = textStrokeStyle.getLineDash();
       const lineDashOffset = textStrokeStyle.getLineDashOffset();

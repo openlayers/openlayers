@@ -36,6 +36,18 @@ import {create as createTransform} from '../transform.js';
 
 
 /**
+ * @typedef {Object} StrokeState
+ * @property {string} lineCap
+ * @property {Array.<number>} lineDash
+ * @property {number} lineDashOffset
+ * @property {string} lineJoin
+ * @property {number} lineWidth
+ * @property {number} miterLimit
+ * @property {module:ol/colorlike~ColorLike} strokeStyle
+ */
+
+
+/**
  * @const
  * @type {string}
  */
