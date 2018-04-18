@@ -151,20 +151,6 @@ ol.RasterOperation;
 
 
 /**
- * @typedef {{
- *   strokeStyle: (module:ol/colorlike~ColorLike|undefined),
- *   strokeWidth: number,
- *   size: number,
- *   lineCap: string,
- *   lineDash: Array.<number>,
- *   lineJoin: string,
- *   miterLimit: number
- * }}
- */
-ol.RegularShapeRenderOptions;
-
-
-/**
  * Number of features; bounds/extent.
  * @typedef {{numberOfFeatures: number,
  *            bounds: module:ol/extent~Extent}}

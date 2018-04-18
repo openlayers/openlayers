@@ -34,6 +34,18 @@ import ImageStyle from '../style/Image.js';
 
 
 /**
+ * @typedef {Object} RenderOptions
+ * @property {module:ol/colorlike~ColorLike} [strokeStyle]
+ * @property {number} strokeWidth
+ * @property {number} size
+ * @property {string} lineCap
+ * @property {Array.<number>} lineDash
+ * @property {string} lineJoin
+ * @property {number} miterLimit
+ */
+
+
+/**
  * @classdesc
  * Set regular shape style for vector features. The resulting shape will be
  * a regular polygon when `radius` is provided, or a star when `radius1` and
@@ -378,7 +390,7 @@ RegularShape.prototype.render_ = function(atlasManager) {
 
   let size = 2 * (this.radius_ + strokeWidth) + 1;
 
-  /** @type {ol.RegularShapeRenderOptions} */
+  /** @type {module:ol/style/RegularShape~RenderOptions} */
   const renderOptions = {
     strokeStyle: strokeStyle,
     strokeWidth: strokeWidth,
@@ -441,7 +453,7 @@ RegularShape.prototype.render_ = function(atlasManager) {
 
 /**
  * @private
- * @param {ol.RegularShapeRenderOptions} renderOptions Render options.
+ * @param {module:ol/style/RegularShape~RenderOptions} renderOptions Render options.
  * @param {CanvasRenderingContext2D} context The rendering context.
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
@@ -502,7 +514,7 @@ RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
 
 /**
  * @private
- * @param {ol.RegularShapeRenderOptions} renderOptions Render options.
+ * @param {module:ol/style/RegularShape~RenderOptions} renderOptions Render options.
  */
 RegularShape.prototype.createHitDetectionCanvas_ = function(renderOptions) {
   this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
@@ -522,7 +534,7 @@ RegularShape.prototype.createHitDetectionCanvas_ = function(renderOptions) {
 
 /**
  * @private
- * @param {ol.RegularShapeRenderOptions} renderOptions Render options.
+ * @param {module:ol/style/RegularShape~RenderOptions} renderOptions Render options.
  * @param {CanvasRenderingContext2D} context The context.
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
