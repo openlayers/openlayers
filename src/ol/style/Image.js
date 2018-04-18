@@ -187,6 +187,7 @@ ImageStyle.prototype.setOpacity = function(opacity) {
  * Set whether to rotate the style with the view.
  *
  * @param {boolean} rotateWithView Rotate with map.
+ * @api
  */
 ImageStyle.prototype.setRotateWithView = function(rotateWithView) {
   this.rotateWithView_ = rotateWithView;
@@ -219,6 +220,7 @@ ImageStyle.prototype.setScale = function(scale) {
  * Set whether to snap the image to the closest pixel.
  *
  * @param {boolean} snapToPixel Snap to pixel?
+ * @api
  */
 ImageStyle.prototype.setSnapToPixel = function(snapToPixel) {
   this.snapToPixel_ = snapToPixel;
