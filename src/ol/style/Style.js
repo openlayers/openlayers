@@ -8,6 +8,40 @@ import Fill from '../style/Fill.js';
 import Stroke from '../style/Stroke.js';
 
 /**
+ * A function that takes an {@link module:ol/Feature~Feature} as argument and returns an
+ * {@link module:ol/geom/Geometry~Geometry} that will be rendered and styled for the feature.
+ *
+ * @typedef {function((module:ol/Feature~Feature|ol.render.Feature)):
+ *     (module:ol/geom/Geometry~Geometry|ol.render.Feature|undefined)} GeometryFunction
+ */
+
+
+/**
+ * Custom renderer function. Takes two arguments:
+ *
+ * 1. The pixel coordinates of the geometry in GeoJSON notation.
+ * 2. The {@link olx.render.State} of the layer renderer.
+ *
+ * @typedef {function((module:ol/coordinate~Coordinate|Array<module:ol/coordinate~Coordinate>|Array.<Array.<module:ol/coordinate~Coordinate>>),olx.render.State)}
+ * RenderFunction
+ */
+
+
+/**
+ * @typedef {Object} Options
+ * @property {string|module:ol/geom/Geometry~Geometry|module:ol/style/Style~GeometryFunction} [geometry] Feature property or geometry
+ * or function returning a geometry to render for this style.
+ * @property {module:ol/style/Fill~Fill} [fill] Fill style.
+ * @property {module:ol/style/Image~ImageStyle} [image] Image style.
+ * @property {module:ol/style/Style~RenderFunction} [renderer] Custom renderer. When configured, `fill`, `stroke` and `image` will be
+ * ignored, and the provided function will be called with each render frame for each geometry.
+ * @property {module:ol/style/Stroke~Stroke} [stroke] Stroke style.
+ * @property {module:ol/style/Text~Text} [text] Text style.
+ * @property {number} [zIndex] Z index.
+ */
+
+
+/**
  * @classdesc
  * Container for vector feature rendering styles. Any changes made to the style
  * or its children through `set*()` methods will not take effect until the
@@ -15,7 +49,7 @@ import Stroke from '../style/Stroke.js';
  *
  * @constructor
  * @struct
- * @param {olx.style.StyleOptions=} opt_options Style options.
+ * @param {module:ol/style/Style~Options=} opt_options Style options.
  * @api
  */
 const Style = function(opt_options) {
@@ -24,13 +58,13 @@ const Style = function(opt_options) {
 
   /**
    * @private
-   * @type {string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction}
+   * @type {string|module:ol/geom/Geometry~Geometry|module:ol/style/Style~GeometryFunction}
    */
   this.geometry_ = null;
 
   /**
    * @private
-   * @type {!ol.StyleGeometryFunction}
+   * @type {!module:ol/style/Style~GeometryFunction}
    */
   this.geometryFunction_ = defaultGeometryFunction;
 
@@ -52,7 +86,7 @@ const Style = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.StyleRenderFunction|null}
+   * @type {module:ol/style/Style~RenderFunction|null}
    */
   this.renderer_ = options.renderer !== undefined ? options.renderer : null;
 
@@ -101,7 +135,7 @@ Style.prototype.clone = function() {
 /**
  * Get the custom renderer function that was configured with
  * {@link #setRenderer} or the `renderer` constructor option.
- * @return {ol.StyleRenderFunction|null} Custom renderer function.
+ * @return {module:ol/style/Style~RenderFunction|null} Custom renderer function.
  * @api
  */
 Style.prototype.getRenderer = function() {
@@ -112,7 +146,7 @@ Style.prototype.getRenderer = function() {
 /**
  * Sets a custom renderer function for this style. When set, `fill`, `stroke`
  * and `image` options of the style will be ignored.
- * @param {ol.StyleRenderFunction|null} renderer Custom renderer function.
+ * @param {module:ol/style/Style~RenderFunction|null} renderer Custom renderer function.
  * @api
  */
 Style.prototype.setRenderer = function(renderer) {
@@ -122,7 +156,7 @@ Style.prototype.setRenderer = function(renderer) {
 
 /**
  * Get the geometry to be rendered.
- * @return {string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction}
+ * @return {string|module:ol/geom/Geometry~Geometry|module:ol/style/Style~GeometryFunction}
  * Feature property or geometry or function that returns the geometry that will
  * be rendered with this style.
  * @api
@@ -134,7 +168,7 @@ Style.prototype.getGeometry = function() {
 
 /**
  * Get the function used to generate a geometry for rendering.
- * @return {!ol.StyleGeometryFunction} Function that is called with a feature
+ * @return {!module:ol/style/Style~GeometryFunction} Function that is called with a feature
  * and returns the geometry to render instead of the feature's geometry.
  * @api
  */
@@ -236,7 +270,7 @@ Style.prototype.getZIndex = function() {
 /**
  * Set a geometry that is rendered instead of the feature's geometry.
  *
- * @param {string|module:ol/geom/Geometry~Geometry|ol.StyleGeometryFunction} geometry
+ * @param {string|module:ol/geom/Geometry~Geometry|module:ol/style/Style~GeometryFunction} geometry
  *     Feature property or geometry or function returning a geometry to render
  *     for this style.
  * @api
