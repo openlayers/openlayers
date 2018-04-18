@@ -85,6 +85,35 @@ describe('ol.source.Vector', function() {
 
     });
 
+    describe('#hasFeature', function() {
+
+      it('returns true for added feature without id', function() {
+        const feature = new Feature();
+        vectorSource.addFeature(feature);
+        expect(vectorSource.hasFeature(feature)).to.be(true);
+      });
+
+      it('returns true for added feature with id', function() {
+        const feature = new Feature();
+        feature.setId('1');
+        vectorSource.addFeature(feature);
+        expect(vectorSource.hasFeature(feature)).to.be(true);
+      });
+
+      it('return false for removed feature', function() {
+        const feature = new Feature();
+        vectorSource.addFeature(feature);
+        vectorSource.removeFeature(feature);
+        expect(vectorSource.hasFeature(feature)).to.be(false);
+      });
+
+      it('returns false for non-added feature', function() {
+        const feature = new Feature();
+        expect(vectorSource.hasFeature(feature)).to.be(false);
+      });
+
+    });
+
   });
 
   describe('when populated with 3 features', function() {
