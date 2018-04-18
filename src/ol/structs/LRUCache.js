@@ -6,6 +6,16 @@ import {assert} from '../asserts.js';
 import EventTarget from '../events/EventTarget.js';
 import EventType from '../events/EventType.js';
 
+
+/**
+ * @typedef {Object} Entry
+ * @property {string} key_
+ * @property {Object} newer
+ * @property {Object} older
+ * @property {value_} value_
+ */
+
+
 /**
  * Implements a Least-Recently-Used cache where the keys do not conflict with
  * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
@@ -34,19 +44,19 @@ const LRUCache = function(opt_highWaterMark) {
 
   /**
    * @private
-   * @type {!Object.<string, ol.LRUCacheEntry>}
+   * @type {!Object.<string, module:ol/structs/LRUCache~Entry>}
    */
   this.entries_ = {};
 
   /**
    * @private
-   * @type {?ol.LRUCacheEntry}
+   * @type {?module:ol/structs/LRUCache~Entry}
    */
   this.oldest_ = null;
 
   /**
    * @private
-   * @type {?ol.LRUCacheEntry}
+   * @type {?module:ol/structs/LRUCache~Entry}
    */
   this.newest_ = null;
 
@@ -112,7 +122,7 @@ LRUCache.prototype.get = function(key) {
   if (entry === this.newest_) {
     return entry.value_;
   } else if (entry === this.oldest_) {
-    this.oldest_ = /** @type {ol.LRUCacheEntry} */ (this.oldest_.newer);
+    this.oldest_ = /** @type {module:ol/structs/LRUCache~Entry} */ (this.oldest_.newer);
     this.oldest_.older = null;
   } else {
     entry.newer.older = entry.older;
@@ -135,12 +145,12 @@ LRUCache.prototype.remove = function(key) {
   const entry = this.entries_[key];
   assert(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
   if (entry === this.newest_) {
-    this.newest_ = /** @type {ol.LRUCacheEntry} */ (entry.older);
+    this.newest_ = /** @type {module:ol/structs/LRUCache~Entry} */ (entry.older);
     if (this.newest_) {
       this.newest_.newer = null;
     }
   } else if (entry === this.oldest_) {
-    this.oldest_ = /** @type {ol.LRUCacheEntry} */ (entry.newer);
+    this.oldest_ = /** @type {module:ol/structs/LRUCache~Entry} */ (entry.newer);
     if (this.oldest_) {
       this.oldest_.older = null;
     }
@@ -224,7 +234,7 @@ LRUCache.prototype.pop = function() {
   if (entry.newer) {
     entry.newer.older = null;
   }
-  this.oldest_ = /** @type {ol.LRUCacheEntry} */ (entry.newer);
+  this.oldest_ = /** @type {module:ol/structs/LRUCache~Entry} */ (entry.newer);
   if (!this.oldest_) {
     this.newest_ = null;
   }
@@ -250,7 +260,7 @@ LRUCache.prototype.replace = function(key, value) {
 LRUCache.prototype.set = function(key, value) {
   assert(!(key in this.entries_),
     16); // Tried to set a value for a key that is used already
-  const entry = /** @type {ol.LRUCacheEntry} */ ({
+  const entry = /** @type {module:ol/structs/LRUCache~Entry} */ ({
     key_: key,
     newer: null,
     older: this.newest_,

@@ -131,15 +131,6 @@ ol.LoadingStrategy;
 
 
 /**
- * @typedef {{key_: string,
- *            newer: Object,
- *            older: Object,
- *            value_: *}}
- */
-ol.LRUCacheEntry;
-
-
-/**
  * A function that takes an array of input data, performs some operation, and
  * returns an array of output data.
  * For `pixel` type operations, the function will be called with an array of
