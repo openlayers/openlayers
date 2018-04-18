@@ -10,13 +10,40 @@ import {clamp} from '../math.js';
 import {toSize} from '../size.js';
 import {createOrUpdate as createOrUpdateTileCoord} from '../tilecoord.js';
 
+
+/**
+ * @typedef {Object} Options
+ * @property {module:ol/extent~Extent} [extent] Extent for the tile grid. No tiles outside this
+ * extent will be requested by {@link module:ol/source/Tile} sources. When no `origin` or
+ * `origins` are configured, the `origin` will be set to the top-left corner of the extent.
+ * @property {number} [minZoom=0] Minimum zoom.
+ * @property {module:ol/coordinate~Coordinate} [origin] The tile grid origin, i.e. where the `x`
+ * and `y` axes meet (`[z, 0, 0]`). Tile coordinates increase left to right and upwards. If not
+ * specified, `extent` or `origins` must be provided.
+ * @property {Array.<module:ol/coordinate~Coordinate>} [origins] Tile grid origins, i.e. where
+ * the `x` and `y` axes meet (`[z, 0, 0]`), for each zoom level. If given, the array length
+ * should match the length of the `resolutions` array, i.e. each resolution can have a different
+ * origin. Tile coordinates increase left to right and upwards. If not specified, `extent` or
+ * `origin` must be provided.
+ * @property {!Array.<number>} resolutions Resolutions. The array index of each resolution needs
+ * to match the zoom level. This means that even if a `minZoom` is configured, the resolutions
+ * array will have a length of `maxZoom + 1`.
+ * @property {Array.<module:ol/size~Size>} [sizes] Sizes.
+ * @property {number|module:ol/size~Size} [tileSize] Tile size.
+ * Default is `[256, 256]`.
+ * @property {Array.<module:ol/size~Size>} [tileSizes] Tile sizes. If given, the array length
+ * should match the length of the `resolutions` array, i.e. each resolution can have a different
+ * tile size.
+ */
+
+
 /**
  * @classdesc
  * Base class for setting the grid pattern for sources accessing tiled-image
  * servers.
  *
  * @constructor
- * @param {olx.tilegrid.TileGridOptions} options Tile grid options.
+ * @param {module:ol/tilegrid/TileGrid~Options} options Tile grid options.
  * @struct
  * @api
  */
