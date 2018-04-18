@@ -76,6 +76,16 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
 
 
 /**
+ * Total deleted; total inserted; total updated; array of insert ids.
+ * @typedef {Object} TransactionResponse
+ * @property {number} totalDeleted
+ * @property {number} totalInserted
+ * @property {number} totalUpdated
+ * @property {Array.<string>} insertIds
+ */
+
+
+/**
  * @type {string}
  */
 const FEATURE_PREFIX = 'feature';
@@ -223,7 +233,7 @@ WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
  * Read transaction response of the source.
  *
  * @param {Document|Node|Object|string} source Source.
- * @return {ol.WFSTransactionResponse|undefined} Transaction response.
+ * @return {module:ol/format/WFS~TransactionResponse|undefined} Transaction response.
  * @api
  */
 WFS.prototype.readTransactionResponse = function(source) {
@@ -392,7 +402,7 @@ const TRANSACTION_RESPONSE_PARSERS = {
 
 /**
  * @param {Document} doc Document.
- * @return {ol.WFSTransactionResponse|undefined} Transaction response.
+ * @return {module:ol/format/WFS~TransactionResponse|undefined} Transaction response.
  */
 WFS.prototype.readTransactionResponseFromDocument = function(doc) {
   for (let n = doc.firstChild; n; n = n.nextSibling) {
@@ -406,11 +416,11 @@ WFS.prototype.readTransactionResponseFromDocument = function(doc) {
 
 /**
  * @param {Node} node Node.
- * @return {ol.WFSTransactionResponse|undefined} Transaction response.
+ * @return {module:ol/format/WFS~TransactionResponse|undefined} Transaction response.
  */
 WFS.prototype.readTransactionResponseFromNode = function(node) {
   return pushParseAndPop(
-    /** @type {ol.WFSTransactionResponse} */({}),
+    /** @type {module:ol/format/WFS~TransactionResponse} */({}),
     TRANSACTION_RESPONSE_PARSERS, node, []);
 };
 

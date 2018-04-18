@@ -148,13 +148,3 @@ ol.LoadingStrategy;
  *     (Array.<number>|ImageData)}
  */
 ol.RasterOperation;
-
-
-/**
- * Total deleted; total inserted; total updated; array of insert ids.
- * @typedef {{totalDeleted: number,
- *            totalInserted: number,
- *            totalUpdated: number,
- *            insertIds: Array.<string>}}
- */
-ol.WFSTransactionResponse;
