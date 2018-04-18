@@ -12,7 +12,7 @@ import EventType from '../events/EventType.js';
  * @property {string} key_
  * @property {Object} newer
  * @property {Object} older
- * @property {value_} value_
+ * @property {*} value_
  */
 
 
