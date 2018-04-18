@@ -17,7 +17,7 @@ import {create as createTransform} from '../transform.js';
  * @typedef {Object} FillStrokeState
  * @property {module:ol/colorlike~ColorLike} [currentFillStyle]
  * @property {module:ol/colorlike~ColorLike} [currentStrokeStyle]
- * @property string{} [currentLineCap]
+ * @property {string} [currentLineCap]
  * @property {Array.<number>} currentLineDash
  * @property {number} [currentLineDashOffset]
  * @property {string} [currentLineJoin]
