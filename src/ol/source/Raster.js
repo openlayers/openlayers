@@ -23,6 +23,25 @@ import {create as createTransform} from '../transform.js';
 
 
 /**
+ * A function that takes an array of input data, performs some operation, and
+ * returns an array of output data.
+ * For `pixel` type operations, the function will be called with an array of
+ * pixels, where each pixel is an array of four numbers (`[r, g, b, a]`) in the
+ * range of 0 - 255. It should return a single pixel array.
+ * For `'image'` type operations, functions will be called with an array of
+ * {@link ImageData https://developer.mozilla.org/en-US/docs/Web/API/ImageData}
+ * and should return a single {@link ImageData
+ * https://developer.mozilla.org/en-US/docs/Web/API/ImageData}.  The operations
+ * are called with a second "data" argument, which can be used for storage.  The
+ * data object is accessible from raster events, where it can be initialized in
+ * "beforeoperations" and accessed again in "afteroperations".
+ *
+ * @typedef {function((Array.<Array.<number>>|Array.<ImageData>), Object):
+ *     (Array.<number>|ImageData)} Operation
+ */
+
+
+/**
  * @enum {string}
  */
 const RasterEventType = {
@@ -85,7 +104,7 @@ inherits(RasterSourceEvent, Event);
 /**
  * @typedef {Object} Options
  * @property {Array.<module:ol/source/Source~Source>} sources Input sources.
- * @property {ol.RasterOperation} [operation] Raster operation.
+ * @property {module:ol/source/Raster~Operation} [operation] Raster operation.
  * The operation will be called with data from input sources
  * and the output will be assigned to the raster source.
  * @property {Object} [lib] Functions that will be made available to operations run in a worker.
@@ -105,7 +124,7 @@ inherits(RasterSourceEvent, Event);
 /**
  * @classdesc
  * A source that transforms data from any number of input sources using an
- * {@link ol.RasterOperation} function to transform input pixel values into
+ * {@link module:ol/source/Raster~Operation} function to transform input pixel values into
  * output pixel values.
  *
  * @constructor
@@ -222,7 +241,7 @@ inherits(RasterSource, ImageSource);
 
 /**
  * Set the operation.
- * @param {ol.RasterOperation} operation New operation.
+ * @param {module:ol/source/Raster~Operation} operation New operation.
  * @param {Object=} opt_lib Functions that will be available to operations run
  *     in a worker.
  * @api
