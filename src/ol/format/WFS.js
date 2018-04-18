@@ -68,6 +68,14 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
 
 
 /**
+ * Number of features; bounds/extent.
+ * @typedef {Object} FeatureCollectionMetadata
+ * @property {number} numberOfFeatures
+ * @property {module:ol/extent~Extent} bounds
+ */
+
+
+/**
  * @type {string}
  */
 const FEATURE_PREFIX = 'feature';
@@ -237,7 +245,7 @@ WFS.prototype.readTransactionResponse = function(source) {
  * Read feature collection metadata of the source.
  *
  * @param {Document|Node|Object|string} source Source.
- * @return {ol.WFSFeatureCollectionMetadata|undefined}
+ * @return {module:ol/format/WFS~FeatureCollectionMetadata|undefined}
  *     FeatureCollection metadata.
  * @api
  */
@@ -259,7 +267,7 @@ WFS.prototype.readFeatureCollectionMetadata = function(source) {
 
 /**
  * @param {Document} doc Document.
- * @return {ol.WFSFeatureCollectionMetadata|undefined}
+ * @return {module:ol/format/WFS~FeatureCollectionMetadata|undefined}
  *     FeatureCollection metadata.
  */
 WFS.prototype.readFeatureCollectionMetadataFromDocument = function(doc) {
@@ -286,7 +294,7 @@ const FEATURE_COLLECTION_PARSERS = {
 
 /**
  * @param {Node} node Node.
- * @return {ol.WFSFeatureCollectionMetadata|undefined}
+ * @return {module:ol/format/WFS~FeatureCollectionMetadata|undefined}
  *     FeatureCollection metadata.
  */
 WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
@@ -295,7 +303,7 @@ WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
     node.getAttribute('numberOfFeatures'));
   result['numberOfFeatures'] = value;
   return pushParseAndPop(
-    /** @type {ol.WFSFeatureCollectionMetadata} */ (result),
+    /** @type {module:ol/format/WFS~FeatureCollectionMetadata} */ (result),
     FEATURE_COLLECTION_PARSERS, node, [], this.gmlFormat_);
 };
 

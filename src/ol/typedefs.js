@@ -151,14 +151,6 @@ ol.RasterOperation;
 
 
 /**
- * Number of features; bounds/extent.
- * @typedef {{numberOfFeatures: number,
- *            bounds: module:ol/extent~Extent}}
- */
-ol.WFSFeatureCollectionMetadata;
-
-
-/**
  * Total deleted; total inserted; total updated; array of insert ids.
  * @typedef {{totalDeleted: number,
  *            totalInserted: number,
