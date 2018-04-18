@@ -96,12 +96,12 @@ const CanvasTextReplay = function(
 
   /**
    * @private
-   * @type {ol.CanvasTextState}
+   * @type {module:ol/render/canvas~TextState}
    */
-  this.textState_ = /** @type {ol.CanvasTextState} */ ({});
+  this.textState_ = /** @type {module:ol/render/canvas~TextState} */ ({});
 
   /**
-   * @type {!Object.<string, ol.CanvasTextState>}
+   * @type {!Object.<string, module:ol/render/canvas~TextState>}
    */
   this.textStates = {};
 
@@ -404,7 +404,7 @@ CanvasTextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
   }
   const textKey = this.textKey_;
   if (!(this.textKey_ in this.textStates)) {
-    this.textStates[this.textKey_] = /** @type {ol.CanvasTextState} */ ({
+    this.textStates[this.textKey_] = /** @type {module:ol/render/canvas~TextState} */ ({
       font: textState.font,
       textAlign: textState.textAlign || defaultTextAlign,
       scale: textState.scale

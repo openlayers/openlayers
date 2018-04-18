@@ -48,6 +48,14 @@ import {create as createTransform} from '../transform.js';
 
 
 /**
+ * @typedef {Object} TextState
+ * @property {string} font
+ * @property {string} [textAlign]
+ * @property {string} textBaseline
+ */
+
+
+/**
  * @const
  * @type {string}
  */

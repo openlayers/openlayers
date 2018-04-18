@@ -22,14 +22,6 @@ const ol = {};
 
 
 /**
- * @typedef {{font: string,
- *            textAlign: (string|undefined),
- *            textBaseline: string}}
- */
-ol.CanvasTextState;
-
-
-/**
  * Container for decluttered replay instructions that need to be rendered or
  * omitted together, i.e. when styles render both an image and text, or for the
  * characters that form text along lines. The basic elements of this array are
