@@ -107,13 +107,6 @@ ol.CanvasTextState;
 
 
 /**
- * @typedef {{strokeStyle: (module:ol/colorlike~ColorLike|undefined), strokeWidth: number,
- *   size: number, lineDash: Array.<number>}}
- */
-ol.CircleRenderOptions;
-
-
-/**
  * Container for decluttered replay instructions that need to be rendered or
  * omitted together, i.e. when styles render both an image and text, or for the
  * characters that form text along lines. The basic elements of this array are
@@ -207,14 +200,6 @@ ol.ReprojTileFunctionType;
  *            target: Array.<module:ol/coordinate~Coordinate>}}
  */
 ol.ReprojTriangle;
-
-
-/**
- * @typedef {{revision: number,
- *            resolution: number,
- *            extent: module:ol/extent~Extent}}
- */
-ol.SourceRasterRenderedState;
 
 
 /**
