@@ -143,16 +143,15 @@ export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matri
     return b[scaleDenominatorPropName] - a[scaleDenominatorPropName];
   });
 
-  matrixSet[matrixIdsPropName].forEach(function(elt, index, array) {
+  matrixSet[matrixIdsPropName].forEach(function(elt) {
 
     let matrixAvailable;
     // use of matrixLimits to filter TileMatrices from GetCapabilities
     // TileMatrixSet from unavailable matrix levels.
     if (matrixLimits.length > 0) {
-      matrixAvailable = find(matrixLimits,
-        function(elt_ml, index_ml, array_ml) {
-          return elt[identifierPropName] == elt_ml[matrixIdsPropName];
-        });
+      matrixAvailable = find(matrixLimits, function(elt_ml) {
+        return elt[identifierPropName] == elt_ml[matrixIdsPropName];
+      });
     } else {
       matrixAvailable = true;
     }
