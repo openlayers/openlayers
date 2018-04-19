@@ -16,7 +16,7 @@ import VectorSource from '../source/Vector.js';
  * @typedef {Object} Options
  * @property {ol.AttributionLike} [attributions] Attributions.
  * @property {number} [distance=20] Minimum distance in pixels between clusters.
- * @property {ol.Extent} [extent] Extent.
+ * @property {module:ol/extent~Extent} [extent] Extent.
  * @property {ol.format.Feature} [format] Format.
  * @property {function(module:ol/Feature~Feature):module:ol/geom/Point~Point} [geometryFunction]
  * Function that takes an {@link module:ol/Feature~Feature} as argument and returns an
