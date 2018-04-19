@@ -9,8 +9,20 @@ import SourceState from '../source/State.js';
 
 
 /**
+ * A type that can be used to provide attribution information for data sources.
+ *
+ * It represents either
+ * * a simple string (e.g. `'© Acme Inc.'`)
+ * * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`)
+ * * a function that returns a string or array of strings (`{@link ol.Attribution}`)
+ *
+ * @typedef {string|Array.<string>|ol.Attribution} AttributionLike
+ */
+
+
+/**
  * @typedef {Object} Options
- * @property {ol.AttributionLike} [attributions]
+ * @property {module:ol/source/Source~AttributionLike} [attributions]
  * @property {module:ol/proj~ProjectionLike} projection
  * @property {module:ol/source/State~State} [state]
  * @property {boolean} [wrapX]
@@ -66,7 +78,7 @@ inherits(Source, BaseObject);
 
 /**
  * Turns the attributions option into an attributions function.
- * @param {ol.AttributionLike|undefined} attributionLike The attribution option.
+ * @param {module:ol/source/Source~AttributionLike|undefined} attributionLike The attribution option.
  * @return {?ol.Attribution} An attribution function (or null).
  */
 Source.prototype.adaptAttributions_ = function(attributionLike) {
@@ -157,7 +169,7 @@ Source.prototype.refresh = function() {
 
 /**
  * Set the attributions of the source.
- * @param {ol.AttributionLike|undefined} attributions Attributions.
+ * @param {module:ol/source/Source~AttributionLike|undefined} attributions Attributions.
  *     Can be passed as `string`, `Array<string>`, `{@link ol.Attribution}`,
  *     or `undefined`.
  * @api

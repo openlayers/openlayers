@@ -19,7 +19,7 @@ import {appendParams} from '../uri.js';
 
 /**
  * @typedef {Object} Options
- * @property {ol.AttributionLike} [attributions] Attributions.
+ * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See

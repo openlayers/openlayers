@@ -8,7 +8,7 @@ import ImageSource from '../source/Image.js';
 
 /**
  * @typedef {Object} Options
- * @property {ol.AttributionLike} [attributions] Attributions.
+ * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
  * @property {ol.CanvasFunctionType} [canvasFunction] Canvas function.
  * The function returning the canvas element used by the source
  * as an image. The arguments passed to the function are: `{module:ol/extent~Extent}` the

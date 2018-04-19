@@ -22,19 +22,6 @@ const ol = {};
 
 
 /**
- * A type that can be used to provide attribution information for data sources.
- *
- * It represents either
- * * a simple string (e.g. `'© Acme Inc.'`)
- * * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`)
- * * a function that returns a string or array of strings (`{@link ol.Attribution}`)
- *
- * @typedef {string|Array.<string>|ol.Attribution}
- */
-ol.AttributionLike;
-
-
-/**
  * A function that returns a string or an array of strings representing source
  * attributions.
  *
