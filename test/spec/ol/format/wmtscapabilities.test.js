@@ -136,21 +136,24 @@ describe('ol.format.WMTSCapabilities', function() {
 
       const layer = capabilities.Contents.Layer[0];
       expect(layer.TileMatrixSetLink).to.be.an('array');
-      expect(layer.TileMatrixSetLink).to.have.length(1);
-      expect(layer.TileMatrixSetLink[0].TileMatrixSet).to.be
-        .eql('PM');
+      expect(layer.TileMatrixSetLink).to.have.length(2);
+      expect(layer.TileMatrixSetLink[0].TileMatrixSet).to.be.eql('PM');
       expect(layer.TileMatrixSetLink[0].TileMatrixSetLimits).to.be.an('array');
       expect(layer.TileMatrixSetLink[0].TileMatrixSetLimits).to.have.length(20);
-      expect(layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].TileMatrix)
-        .to.be.eql('0');
-      expect(layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MinTileRow)
-        .to.be.eql(0);
-      expect(layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MaxTileRow)
-        .to.be.eql(1);
-      expect(layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MinTileCol)
-        .to.be.eql(0);
-      expect(layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MaxTileCol)
-        .to.be.eql(1);
+      expect(layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].TileMatrix).to.be.eql('0');
+      expect(layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MinTileRow).to.be.eql(0);
+      expect(layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MaxTileRow).to.be.eql(1);
+      expect(layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MinTileCol).to.be.eql(0);
+      expect(layer.TileMatrixSetLink[0].TileMatrixSetLimits[0].MaxTileCol).to.be.eql(1);
+
+      expect(layer.TileMatrixSetLink[1].TileMatrixSet).to.be.eql('Prefixed');
+      expect(layer.TileMatrixSetLink[1].TileMatrixSetLimits).to.be.an('array');
+      expect(layer.TileMatrixSetLink[1].TileMatrixSetLimits).to.have.length(2);
+      expect(layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].TileMatrix).to.be.eql('Prefixed:0');
+      expect(layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].MinTileRow).to.be.eql(0);
+      expect(layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].MaxTileRow).to.be.eql(1);
+      expect(layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].MinTileCol).to.be.eql(0);
+      expect(layer.TileMatrixSetLink[1].TileMatrixSetLimits[0].MaxTileCol).to.be.eql(1);
 
     });
 
