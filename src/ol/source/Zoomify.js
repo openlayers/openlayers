@@ -102,7 +102,7 @@ CustomTile.prototype.getImage = function() {
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
  * @property {string} [tierSizeCalculation] Tier size calculation method: `default` or `truncated`.
- * @property {ol.Size} [size] Size of the image.
+ * @property {module:ol/size~Size} [size] Size of the image.
  * @property {module:ol/extent~Extent} [extent] Extent for the TileGrid that is created.
  * Default sets the TileGrid in the
  * fourth quadrant, meaning extent is `[0, -height, width, 0]`. To change the

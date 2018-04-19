@@ -13,7 +13,7 @@ import ImageSource from '../source/Image.js';
  * The function returning the canvas element used by the source
  * as an image. The arguments passed to the function are: `{module:ol/extent~Extent}` the
  * image extent, `{number}` the image resolution, `{number}` the device pixel
- * ratio, `{ol.Size}` the image size, and `{module:ol/proj/Projection~Projection}` the image
+ * ratio, `{module:ol/size~Size}` the image size, and `{module:ol/proj/Projection~Projection}` the image
  * projection. The canvas returned by this function is cached by the source. If
  * the value returned by the function is later changed then
  * `changed` should be called on the source for the source to

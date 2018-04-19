@@ -30,7 +30,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
  * should be set to `2`.
- * @property {number|ol.Size} [tileSize=[256, 256]] The tile size used by the tile service.
+ * @property {number|module:ol/size~Size} [tileSize=[256, 256]] The tile size used by the tile service.
  * @property {ol.TileUrlFunctionType} [tileUrlFunction] Optional function to get
  * tile URL given a tile coordinate and the projection.
  * Required if url or urls are not provided.
