@@ -248,6 +248,25 @@ Conditions Générales d'Utilisation disponibles ici : http://professionnels.ign
           </TileMatrixLimits>
         </TileMatrixSetLimits>
       </TileMatrixSetLink>
+      <TileMatrixSetLink>
+        <TileMatrixSet>Prefixed</TileMatrixSet>
+        <TileMatrixSetLimits>
+          <TileMatrixLimits>
+            <TileMatrix>Prefixed:0</TileMatrix>
+            <MinTileRow>0</MinTileRow>
+            <MaxTileRow>1</MaxTileRow>
+            <MinTileCol>0</MinTileCol>
+            <MaxTileCol>1</MaxTileCol>
+          </TileMatrixLimits>
+          <TileMatrixLimits>
+            <TileMatrix>Prefixed:1</TileMatrix>
+            <MinTileRow>0</MinTileRow>
+            <MaxTileRow>2</MaxTileRow>
+            <MinTileCol>0</MinTileCol>
+            <MaxTileCol>2</MaxTileCol>
+          </TileMatrixLimits>
+        </TileMatrixSetLimits>
+      </TileMatrixSetLink>
     </Layer>
     <TileMatrixSet>
       <ows:Identifier>PM</ows:Identifier>
@@ -449,6 +468,28 @@ Conditions Générales d'Utilisation disponibles ici : http://professionnels.ign
         <TileHeight>256</TileHeight>
         <MatrixWidth>512</MatrixWidth>
         <MatrixHeight>512</MatrixHeight>
+      </TileMatrix>
+    </TileMatrixSet>
+    <TileMatrixSet>
+      <ows:Identifier>Prefixed</ows:Identifier>
+      <ows:SupportedCRS>EPSG:3857</ows:SupportedCRS>
+      <TileMatrix>
+        <ows:Identifier>0</ows:Identifier>
+        <ScaleDenominator>559082264.0287178958533332</ScaleDenominator>
+        <TopLeftCorner>-20037508 20037508</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1</MatrixWidth>
+        <MatrixHeight>1</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>1</ows:Identifier>
+        <ScaleDenominator>279541132.0143588959472254</ScaleDenominator>
+        <TopLeftCorner>-20037508 20037508</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>2</MatrixWidth>
+        <MatrixHeight>2</MatrixHeight>
       </TileMatrix>
     </TileMatrixSet>
   </Contents>

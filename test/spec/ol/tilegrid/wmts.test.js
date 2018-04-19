@@ -145,5 +145,30 @@ describe('ol.tilegrid.WMTS', function() {
             Array.apply(null, Array(20)).map(Number.prototype.valueOf, 256));
 
         });
+
+      it('can use prefixed matrixLimits', function() {
+        const matrixSetObj = capabilities.Contents.TileMatrixSet[1];
+        const matrixLimitArray = capabilities.Contents.Layer[0].TileMatrixSetLink[1].TileMatrixSetLimits;
+        const tileGrid = createFromCapabilitiesMatrixSet(matrixSetObj, undefined, matrixLimitArray);
+        expect(tileGrid.matrixIds_).to.be.an('array');
+        expect(tileGrid.matrixIds_).to.have.length(2);
+        expect(tileGrid.matrixIds_).to.eql(['0', '1']);
+
+        expect(tileGrid.resolutions_).to.be.an('array');
+        expect(tileGrid.resolutions_).to.have.length(2);
+        expect(tileGrid.resolutions_).to.eql([156543.033928041, 78271.51696402048]);
+
+        expect(tileGrid.origins_).to.be.an('array');
+        expect(tileGrid.origins_).to.have.length(2);
+        expect(tileGrid.origins_).to.eql(
+          Array.apply(null, Array(2)).map(Array.prototype.valueOf, [-20037508, 20037508])
+        );
+
+        expect(tileGrid.tileSizes_).to.be.an('array');
+        expect(tileGrid.tileSizes_).to.have.length(2);
+        expect(tileGrid.tileSizes_).to.eql(
+          Array.apply(null, Array(2)).map(Number.prototype.valueOf, 256)
+        );
+      });
     });
 });

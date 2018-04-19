@@ -150,7 +150,15 @@ export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matri
     // TileMatrixSet from unavailable matrix levels.
     if (matrixLimits.length > 0) {
       matrixAvailable = find(matrixLimits, function(elt_ml) {
-        return elt[identifierPropName] == elt_ml[matrixIdsPropName];
+        if (elt[identifierPropName] == elt_ml[matrixIdsPropName]) {
+          return true;
+        }
+        // Fallback for tileMatrix identifiers that don't get prefixed
+        // by their tileMatrixSet identifiers.
+        if (elt[identifierPropName].indexOf(':') === -1) {
+          return matrixSet[identifierPropName] + ':' + elt[identifierPropName] === elt_ml[matrixIdsPropName];
+        }
+        return false;
       });
     } else {
       matrixAvailable = true;
