@@ -1,25 +1,25 @@
-var classes = {};
-var observables = {};
+const classes = {};
+const observables = {};
 
 exports.handlers = {
 
   newDoclet: function(e) {
-    var doclet = e.doclet;
+    const doclet = e.doclet;
     if (doclet.kind == 'class') {
       classes[doclet.longname] = doclet;
     }
   },
 
   parseComplete: function(e) {
-    var doclets = e.doclets;
-    var cls, doclet, event, i, ii, observable;
+    const doclets = e.doclets;
+    let cls, doclet, event, i, ii, observable;
     for (i = 0, ii = doclets.length - 1; i < ii; ++i) {
       doclet = doclets[i];
       cls = classes[doclet.longname.split('#')[0]];
       if (typeof doclet.observable == 'string' && cls) {
-        var name = doclet.name.replace(/^[sg]et/, '');
+        let name = doclet.name.replace(/^[sg]et/, '');
         name = name.substr(0, 1).toLowerCase() + name.substr(1);
-        var key = doclet.longname.split('#')[0] + '#' + name;
+        const key = doclet.longname.split('#')[0] + '#' + name;
         doclet.observable = key;
         if (!observables[key]) {
           observables[key] = {};
@@ -27,7 +27,7 @@ exports.handlers = {
         observable = observables[key];
         observable.name = name;
         observable.readonly = typeof observable.readonly == 'boolean' ?
-            observable.readonly : true;
+          observable.readonly : true;
         if (doclet.name.indexOf('get') === 0) {
           observable.type = doclet.returns[0].type;
           observable.description = doclet.returns[0].description;

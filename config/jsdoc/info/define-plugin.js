@@ -6,7 +6,7 @@
  */
 
 
-var DEFAULT_VALUE = /default\s+is\s+`?(true|false)`?/i;
+const DEFAULT_VALUE = /default\s+is\s+`?(true|false)`?/i;
 
 
 /**
@@ -19,9 +19,9 @@ exports.defineTags = function(dictionary) {
     canHaveType: true,
     mustHaveValue: true,
     onTagged: function(doclet, tag) {
-      var types = tag.value.type.names;
+      const types = tag.value.type.names;
       if (types.length === 1 && types[0] === 'boolean') {
-        var match = tag.value.description.match(DEFAULT_VALUE);
+        const match = tag.value.description.match(DEFAULT_VALUE);
         if (match) {
           doclet.define = {
             default: match[1] === 'true'

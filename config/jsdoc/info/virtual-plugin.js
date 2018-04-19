@@ -4,7 +4,7 @@
  */
 exports.defineTags = function(dictionary) {
 
-  var classTag = dictionary.lookUp('class');
+  const classTag = dictionary.lookUp('class');
   dictionary.defineTag('interface', {
     mustHaveValue: false,
     onTagged: function(doclet, tag) {

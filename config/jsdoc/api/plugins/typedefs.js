@@ -3,19 +3,19 @@
  * Changes @enum annotations into @typedef.
  */
 
-var lastOlxTypedef = null;
-var olxTypes = {};
+let lastOlxTypedef = null;
+const olxTypes = {};
 // names of the olx typenames
-var olxTypeNames = [];
+const olxTypeNames = [];
 // types that are undefined or typedefs containing undefined
-var undefinedLikes = null;
+let undefinedLikes = null;
 
 function addSubparams(params) {
-  for (var j = 0, jj = params.length; j < jj; ++j) {
-    var param = params[j];
-    var types = param.type.names;
-    for (var k = 0, kk = types.length; k < kk; ++k) {
-      var name = types[k];
+  for (let j = 0, jj = params.length; j < jj; ++j) {
+    const param = params[j];
+    const types = param.type.names;
+    for (let k = 0, kk = types.length; k < kk; ++k) {
+      const name = types[k];
       if (name in olxTypes) {
         param.subparams = olxTypes[name];
         // TODO addSubparams(param.subparams);
@@ -30,20 +30,22 @@ function addSubparams(params) {
 /**
  * Changes the description of the param, if it is found to be a required
  * option of an olxTypeName.
+ * @param {Object} doclet The doclet.
+ * @returns {Object} The modified doclet.
  */
-function markRequiredIfNeeded(doclet){
-  var memberof = doclet.memberof;
+function markRequiredIfNeeded(doclet) {
+  const memberof = doclet.memberof;
   // only check doclets that belong to an olxTypeName
   if (!memberof || olxTypeNames.indexOf(memberof) == -1) {
     return doclet;
   }
 
-  var types = doclet.type.names;
-  var isRequiredParam = true;
+  const types = doclet.type.names;
+  let isRequiredParam = true;
 
   // iterate over all types that are like-undefined (see above for explanation)
-  for (var idx = undefinedLikes.length - 1; idx >= 0; idx--) {
-    var undefinedLike = undefinedLikes[idx];
+  for (let idx = undefinedLikes.length - 1; idx >= 0; idx--) {
+    const undefinedLike = undefinedLikes[idx];
     // … if the current types contains a type that is undefined-like,
     // it is not required.
     if (types.indexOf(undefinedLike) != -1) {
@@ -52,9 +54,9 @@ function markRequiredIfNeeded(doclet){
   }
 
   if (isRequiredParam) {
-    var reqSnippet = '<span class="required-option">Required.</span></p>';
-    var endsWithP = /<\/p>$/i;
-    var description = doclet.description;
+    const reqSnippet = '<span class="required-option">Required.</span></p>';
+    const endsWithP = /<\/p>$/i;
+    let description = doclet.description;
     if (description && endsWithP.test(description)) {
       description = description.replace(endsWithP, ' ' + reqSnippet);
     } else if (doclet.description === undefined) {
@@ -69,13 +71,14 @@ function markRequiredIfNeeded(doclet){
  * Iterates over all doclets and finds the names of types that contain
  * undefined. Stores the names in the global variable undefinedLikes, so
  * that e.g. markRequiredIfNeeded can use these.
+ * @param {Array} doclets The doclets.
  */
 function findTypesLikeUndefined(doclets) {
   undefinedLikes = ['undefined']; // include type 'undefined' explicitly
-  for (var i = doclets.length - 1; i >= 0; --i) {
-    var doclet = doclets[i];
-    if(doclet.kind === 'typedef') {
-      var types = doclet.type.names;
+  for (let i = doclets.length - 1; i >= 0; --i) {
+    const doclet = doclets[i];
+    if (doclet.kind === 'typedef') {
+      const types = doclet.type.names;
       if (types.indexOf('undefined') !== -1) {
         // the typedef contains 'undefined', so it self is undefinedLike.
         undefinedLikes.push(doclet.longname);
@@ -87,7 +90,7 @@ function findTypesLikeUndefined(doclets) {
 exports.handlers = {
 
   newDoclet: function(e) {
-    var doclet = e.doclet;
+    const doclet = e.doclet;
     if (doclet.meta.filename == 'olx.js') {
       if (doclet.kind == 'typedef') {
         lastOlxTypedef = doclet;
@@ -108,11 +111,11 @@ exports.handlers = {
   },
 
   parseComplete: function(e) {
-    var doclets = e.doclets;
+    const doclets = e.doclets;
     findTypesLikeUndefined(doclets);
-    for (var i = doclets.length - 1; i >= 0; --i) {
-      var doclet = doclets[i];
-      var params = doclet.params;
+    for (let i = doclets.length - 1; i >= 0; --i) {
+      const doclet = doclets[i];
+      const params = doclet.params;
       if (params) {
         addSubparams(params);
       }
