@@ -27,7 +27,7 @@ const DEFAULT_FILL_COLOR = '#333';
  * @property {module:ol/style/TextPlacement~TextPlacement|string} [placement] Text placement.
  * @property {number} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
- * @property {number} rotation=0 Rotation in radians (positive rotation clockwise).
+ * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {string} [text] Text content.
  * @property {string} [textAlign] Text alignment. Possible values: 'left', 'right', 'center', 'end' or 'start'.
  * Default is 'center' for `placement: 'point'`. For `placement: 'line'`, the default is to let the renderer choose a
