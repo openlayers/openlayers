@@ -24,7 +24,7 @@ const DEFAULT_FILL_COLOR = '#333';
  * @property {number} [offsetY=0] Vertical text offset in pixels. A positive will shift the text down.
  * @property {boolean} [overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
  * the width of the polygon at the label position or the length of the path that it follows.
- * @property {module:ol/style/Text~TextPlacement|string} [placement] Text placement.
+ * @property {module:ol/style/TextPlacement~TextPlacement|string} [placement] Text placement.
  * @property {number} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
  * @property {number} rotation=0 Rotation in radians (positive rotation clockwise).
@@ -114,7 +114,7 @@ const Text = function(opt_options) {
 
   /**
    * @private
-   * @type {module:ol/style/Text~TextPlacement|string}
+   * @type {module:ol/style/TextPlacement~TextPlacement|string}
    */
   this.placement_ = options.placement !== undefined ? options.placement : TextPlacement.POINT;
 
@@ -221,7 +221,7 @@ Text.prototype.getMaxAngle = function() {
 
 /**
  * Get the label placement.
- * @return {module:ol/style/Text~TextPlacement|string} Text placement.
+ * @return {module:ol/style/TextPlacement~TextPlacement|string} Text placement.
  * @api
  */
 Text.prototype.getPlacement = function() {
@@ -417,7 +417,7 @@ Text.prototype.setOffsetY = function(offsetY) {
 /**
  * Set the text placement.
  *
- * @param {module:ol/style/Text~TextPlacement|string} placement Placement.
+ * @param {module:ol/style/TextPlacement~TextPlacement|string} placement Placement.
  * @api
  */
 Text.prototype.setPlacement = function(placement) {
