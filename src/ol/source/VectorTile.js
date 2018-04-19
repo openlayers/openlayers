@@ -12,7 +12,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
 
 /**
  * @typedef {Object} Options
- * @property {ol.AttributionLike} [attributions] Attributions.
+ * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize=128] Cache size.
  * @property {module:ol/format/Feature~FeatureFormat} [format] Feature format for tiles. Used and required by the default.
  * @property {boolean} [overlaps=true] This source may have overlapping geometries. Setting this

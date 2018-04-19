@@ -14,7 +14,7 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
 
 /**
  * @typedef {Object} Options
- * @property {ol.AttributionLike} [attributions]
+ * @property {module:ol/source/Source~AttributionLike} [attributions]
  * @property {number} [cacheSize]
  * @property {module:ol/extent~Extent} [extent]
  * @property {boolean} [opaque]

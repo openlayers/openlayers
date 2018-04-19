@@ -14,7 +14,7 @@ import VectorSource from '../source/Vector.js';
 
 /**
  * @typedef {Object} Options
- * @property {ol.AttributionLike} [attributions] Attributions.
+ * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
  * @property {number} [distance=20] Minimum distance in pixels between clusters.
  * @property {module:ol/extent~Extent} [extent] Extent.
  * @property {ol.format.Feature} [format] Format.

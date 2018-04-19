@@ -50,7 +50,7 @@ inherits(VectorSourceEvent, Event);
 
 /**
  * @typedef {Object} Options
- * @property {ol.AttributionLike} [attributions] Attributions.
+ * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
  * @property {Array.<module:ol/Feature~Feature>|ol.Collection.<module:ol/Feature~Feature>} [features]
  * Features. If provided as {@link ol.Collection}, the features in the source
  * and the collection will stay in sync.

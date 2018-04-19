@@ -22,28 +22,6 @@ const ol = {};
 
 
 /**
- * A type that can be used to provide attribution information for data sources.
- *
- * It represents either
- * * a simple string (e.g. `'© Acme Inc.'`)
- * * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`)
- * * a function that returns a string or array of strings (`{@link ol.Attribution}`)
- *
- * @typedef {string|Array.<string>|ol.Attribution}
- */
-ol.AttributionLike;
-
-
-/**
- * A function that returns a string or an array of strings representing source
- * attributions.
- *
- * @typedef {function(olx.FrameState): (string|Array.<string>)}
- */
-ol.Attribution;
-
-
-/**
  * @typedef {{fillStyle: module:ol/colorlike~ColorLike}}
  */
 ol.CanvasFillState;
@@ -128,55 +106,3 @@ ol.DeclutterGroup;
  * @typedef {function(module:ol/extent~Extent, number): Array.<module:ol/extent~Extent>}
  */
 ol.LoadingStrategy;
-
-
-/**
- * A function that takes an array of input data, performs some operation, and
- * returns an array of output data.
- * For `pixel` type operations, the function will be called with an array of
- * pixels, where each pixel is an array of four numbers (`[r, g, b, a]`) in the
- * range of 0 - 255. It should return a single pixel array.
- * For `'image'` type operations, functions will be called with an array of
- * {@link ImageData https://developer.mozilla.org/en-US/docs/Web/API/ImageData}
- * and should return a single {@link ImageData
- * https://developer.mozilla.org/en-US/docs/Web/API/ImageData}.  The operations
- * are called with a second "data" argument, which can be used for storage.  The
- * data object is accessible from raster events, where it can be initialized in
- * "beforeoperations" and accessed again in "afteroperations".
- *
- * @typedef {function((Array.<Array.<number>>|Array.<ImageData>), Object):
- *     (Array.<number>|ImageData)}
- */
-ol.RasterOperation;
-
-
-/**
- * @typedef {{
- *   strokeStyle: (module:ol/colorlike~ColorLike|undefined),
- *   strokeWidth: number,
- *   size: number,
- *   lineCap: string,
- *   lineDash: Array.<number>,
- *   lineJoin: string,
- *   miterLimit: number
- * }}
- */
-ol.RegularShapeRenderOptions;
-
-
-/**
- * Number of features; bounds/extent.
- * @typedef {{numberOfFeatures: number,
- *            bounds: module:ol/extent~Extent}}
- */
-ol.WFSFeatureCollectionMetadata;
-
-
-/**
- * Total deleted; total inserted; total updated; array of insert ids.
- * @typedef {{totalDeleted: number,
- *            totalInserted: number,
- *            totalUpdated: number,
- *            insertIds: Array.<string>}}
- */
-ol.WFSTransactionResponse;
