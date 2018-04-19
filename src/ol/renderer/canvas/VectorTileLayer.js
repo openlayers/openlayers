@@ -167,7 +167,7 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(tile, fram
     return;
   }
 
-  const source = /** @type {module:ol/source/VectorTile~VectorTileSource} */ (layer.getSource());
+  const source = /** @type {module:ol/source/VectorTile~VectorTile} */ (layer.getSource());
   const sourceTileGrid = source.getTileGrid();
   const tileGrid = source.getTileGridForProjection(projection);
   const resolution = tileGrid.getResolution(tile.tileCoord[0]);
@@ -271,7 +271,7 @@ CanvasVectorTileLayerRenderer.prototype.forEachFeatureAtCoordinate = function(co
   /** @type {Array.<module:ol/VectorImageTile~VectorImageTile>} */
   const renderedTiles = this.renderedTiles;
 
-  const source = /** @type {module:ol/source/VectorTile~VectorTileSource} */ (layer.getSource());
+  const source = /** @type {module:ol/source/VectorTile~VectorTile} */ (layer.getSource());
   const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
   let bufferedExtent, found;
   let i, ii, replayGroup;
@@ -316,7 +316,7 @@ CanvasVectorTileLayerRenderer.prototype.forEachFeatureAtCoordinate = function(co
  */
 CanvasVectorTileLayerRenderer.prototype.getReplayTransform_ = function(tile, frameState) {
   const layer = this.getLayer();
-  const source = /** @type {module:ol/source/VectorTile~VectorTileSource} */ (layer.getSource());
+  const source = /** @type {module:ol/source/VectorTile~VectorTile} */ (layer.getSource());
   const tileGrid = source.getTileGrid();
   const tileCoord = tile.tileCoord;
   const tileResolution = tileGrid.getResolution(tileCoord[0]);
@@ -365,7 +365,7 @@ CanvasVectorTileLayerRenderer.prototype.handleStyleImageChange_ = function(event
 CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameState, layerState) {
   const layer = this.getLayer();
   const declutterReplays = layer.getDeclutter() ? {} : null;
-  const source = /** @type {module:ol/source/VectorTile~VectorTileSource} */ (layer.getSource());
+  const source = /** @type {module:ol/source/VectorTile~VectorTile} */ (layer.getSource());
   const renderMode = layer.getRenderMode();
   const replayTypes = VECTOR_REPLAYS[renderMode];
   const pixelRatio = frameState.pixelRatio;
@@ -490,7 +490,7 @@ CanvasVectorTileLayerRenderer.prototype.renderTileImage_ = function(
     const tileCoord = tile.wrappedTileCoord;
     const z = tileCoord[0];
     const pixelRatio = frameState.pixelRatio;
-    const source = /** @type {module:ol/source/VectorTile~VectorTileSource} */ (layer.getSource());
+    const source = /** @type {module:ol/source/VectorTile~VectorTile} */ (layer.getSource());
     const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
     const resolution = tileGrid.getResolution(z);
     const context = tile.getContext(layer);

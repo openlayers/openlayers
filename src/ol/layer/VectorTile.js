@@ -40,7 +40,7 @@ import {assign} from '../obj.js';
  *    animations, but slower performance than the other options.
  *
  * When `declutter` is set to `true`, `'hybrid'` will be used instead of `'image'`.
- * @property {module:ol/source/VectorTile~VectorTileSource} [source] Source.
+ * @property {module:ol/source/VectorTile~VectorTile} [source] Source.
  * @property {module:ol/PluggableMap~PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
@@ -161,9 +161,9 @@ VectorTileLayer.prototype.setUseInterimTilesOnError = function(useInterimTilesOn
 
 
 /**
- * Return the associated {@link module:ol/source/VectorTile~VectorTileSource vectortilesource} of the layer.
+ * Return the associated {@link module:ol/source/VectorTile~VectorTile vectortilesource} of the layer.
  * @function
- * @return {module:ol/source/VectorTile~VectorTileSource} Source.
+ * @return {module:ol/source/VectorTile~VectorTile} Source.
  * @api
  */
 VectorTileLayer.prototype.getSource;

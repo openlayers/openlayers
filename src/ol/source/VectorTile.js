@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import TileState from '../TileState.js';
 import VectorImageTile, {defaultLoadFunction} from '../VectorImageTile.js';
-import VectorTile from '../VectorTile.js';
+import Tile from '../VectorTile.js';
 import {toSize} from '../size.js';
 import UrlTile from '../source/UrlTile.js';
 import {getKeyZXY} from '../tilecoord.js';
@@ -70,7 +70,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * @param {module:ol/source/VectorTile~Options=} options Vector tile options.
  * @api
  */
-const VectorTileSource = function(options) {
+const VectorTile = function(options) {
   const projection = options.projection || 'EPSG:3857';
 
   const extent = options.extent || extentFromProjection(projection);
@@ -121,7 +121,7 @@ const VectorTileSource = function(options) {
    * @type {function(new: module:ol/VectorTile~VectorTile, module:ol/tilecoord~TileCoord, module:ol/TileState~TileState, string,
    *        module:ol/format/Feature~FeatureFormat, module:ol/Tile~LoadFunction)}
    */
-  this.tileClass = options.tileClass ? options.tileClass : VectorTile;
+  this.tileClass = options.tileClass ? options.tileClass : Tile;
 
   /**
    * @private
@@ -131,13 +131,13 @@ const VectorTileSource = function(options) {
 
 };
 
-inherits(VectorTileSource, UrlTile);
+inherits(VectorTile, UrlTile);
 
 
 /**
  * @return {boolean} The source can have overlapping geometries.
  */
-VectorTileSource.prototype.getOverlaps = function() {
+VectorTile.prototype.getOverlaps = function() {
   return this.overlaps_;
 };
 
@@ -145,7 +145,7 @@ VectorTileSource.prototype.getOverlaps = function() {
  * clear {@link module:ol/TileCache~TileCache} and delete all source tiles
  * @api
  */
-VectorTileSource.prototype.clear = function() {
+VectorTile.prototype.clear = function() {
   this.tileCache.clear();
   this.sourceTiles_ = {};
 };
@@ -153,7 +153,7 @@ VectorTileSource.prototype.clear = function() {
 /**
  * @inheritDoc
  */
-VectorTileSource.prototype.getTile = function(z, x, y, pixelRatio, projection) {
+VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projection) {
   const tileCoordKey = getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!module:ol/Tile~Tile} */ (this.tileCache.get(tileCoordKey));
@@ -180,7 +180,7 @@ VectorTileSource.prototype.getTile = function(z, x, y, pixelRatio, projection) {
 /**
  * @inheritDoc
  */
-VectorTileSource.prototype.getTileGridForProjection = function(projection) {
+VectorTile.prototype.getTileGridForProjection = function(projection) {
   const code = projection.getCode();
   let tileGrid = this.tileGrids_[code];
   if (!tileGrid) {
@@ -197,7 +197,7 @@ VectorTileSource.prototype.getTileGridForProjection = function(projection) {
 /**
  * @inheritDoc
  */
-VectorTileSource.prototype.getTilePixelRatio = function(pixelRatio) {
+VectorTile.prototype.getTilePixelRatio = function(pixelRatio) {
   return pixelRatio;
 };
 
@@ -205,9 +205,9 @@ VectorTileSource.prototype.getTilePixelRatio = function(pixelRatio) {
 /**
  * @inheritDoc
  */
-VectorTileSource.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
+VectorTile.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
   const tileGrid = this.getTileGridForProjection(projection);
   const tileSize = toSize(tileGrid.getTileSize(z), this.tmpSize);
   return [Math.round(tileSize[0] * pixelRatio), Math.round(tileSize[1] * pixelRatio)];
 };
-export default VectorTileSource;
+export default VectorTile;

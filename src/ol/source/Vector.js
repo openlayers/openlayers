@@ -137,7 +137,7 @@ inherits(VectorSourceEvent, Event);
 /**
  * @classdesc
  * Provides a source of features for vector layers. Vector features provided
- * by this source are suitable for editing. See {@link module:ol/source/VectorTile~VectorTileSource} for
+ * by this source are suitable for editing. See {@link module:ol/source/VectorTile~VectorTile} for
  * vector data that is optimized for rendering.
  *
  * @constructor
