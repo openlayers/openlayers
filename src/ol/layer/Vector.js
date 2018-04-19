@@ -32,7 +32,7 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  *    texts are always rotated with the view and pixels are scaled during zoom animations.
  *  * `'vector'`: Vector layers are rendered as vectors. Most accurate rendering even during
  *    animations, but slower performance.
- * @property {ol.source.Vector} [source] Source.
+ * @property {module:ol/source/Vector~VectorSource} [source] Source.
  * @property {module:ol/PluggableMap~PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
@@ -181,9 +181,9 @@ VectorLayer.prototype.getRenderOrder = function() {
 
 
 /**
- * Return the associated {@link ol.source.Vector vectorsource} of the layer.
+ * Return the associated {@link module:ol/source/Vector~VectorSource vectorsource} of the layer.
  * @function
- * @return {ol.source.Vector} Source.
+ * @return {module:ol/source/Vector~VectorSource} Source.
  * @api
  */
 VectorLayer.prototype.getSource;

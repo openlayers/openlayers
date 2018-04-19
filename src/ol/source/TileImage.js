@@ -1,5 +1,5 @@
 /**
- * @module ol/source/TileImage
+ * @module module:ol/source/TileImage~TileImage
  */
 import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
 import {getUid, inherits} from '../index.js';
@@ -26,12 +26,12 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {ol.source.State} [state] Source state.
- * @property {function(new: ol.ImageTile, ol.TileCoord,
- *                 ol.TileState, string, ?string,
+ * @property {module:ol/source/State~State} [state] Source state.
+ * @property {function(new: module:ol/ImageTile~ImageTile, module:ol/tilecoord~TileCoord,
+ *                 module:ol/TileState~TileState, string, ?string,
  *                 ol.TileLoadFunctionType)} [tileClass] Class used to instantiate image tiles.
- * Default is {@link ol.ImageTile}.
- * @property {ol.tilegrid.TileGrid} [tileGrid] Tile grid.
+ * Default is {@link module:ol/ImageTile~ImageTile}.
+ * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid] Tile grid.
  * @property {ol.TileLoadFunctionType} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {

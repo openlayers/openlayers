@@ -43,7 +43,7 @@ const ImageSourceEventType = {
 
 /**
  * @classdesc
- * Events emitted by {@link ol.source.Image} instances are instances of this
+ * Events emitted by {@link module:ol/source/Image~ImageSource} instances are instances of this
  * type.
  *
  * @constructor
@@ -73,7 +73,7 @@ inherits(ImageSourceEvent, Event);
  * @property {module:ol/extent~Extent} [extent]
  * @property {module:ol/proj~ProjectionLike} projection
  * @property {Array.<number>} [resolutions]
- * @property {ol.source.State} [state]
+ * @property {module:ol/source/State~State} [state]
  */
 
 
@@ -85,7 +85,7 @@ inherits(ImageSourceEvent, Event);
  *
  * @constructor
  * @abstract
- * @extends {ol.source.Source}
+ * @extends {module:ol/source/Source~Source}
  * @param {module:ol/source/Image~Options} options Single image source options.
  * @api
  */

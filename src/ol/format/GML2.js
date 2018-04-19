@@ -27,7 +27,7 @@ const schemaLocation = GMLNS + ' http://schemas.opengis.net/gml/2.1.2/feature.xs
  *
  * @constructor
  * @param {module:ol/format/GMLBase~Options=} opt_options Optional configuration object.
- * @extends {ol.format.GMLBase}
+ * @extends {module:ol/format/GMLBase~GMLBase}
  * @api
  */
 const GML2 = function(opt_options) {

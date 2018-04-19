@@ -22,7 +22,7 @@ import Layer from '../layer/Layer.js';
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link ol.Map#addLayer}.
- * @property {ol.source.Image} [source] Source for this layer.
+ * @property {module:ol/source/Image~ImageSource} [source] Source for this layer.
  */
 
 
@@ -57,9 +57,9 @@ inherits(ImageLayer, Layer);
 
 
 /**
- * Return the associated {@link ol.source.Image source} of the image layer.
+ * Return the associated {@link module:ol/source/Image~ImageSource source} of the image layer.
  * @function
- * @return {ol.source.Image} Source.
+ * @return {module:ol/source/Image~ImageSource} Source.
  * @api
  */
 ImageLayer.prototype.getSource;

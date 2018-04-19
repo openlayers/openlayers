@@ -49,7 +49,7 @@ import {appendParams} from '../uri.js';
  *
  * @constructor
  * @fires ol.source.Image.Event
- * @extends {ol.source.Image}
+ * @extends {module:ol/source/Image~ImageSource}
  * @param {module:ol/source/ImageWMS~Options=} [opt_options] ImageWMS options.
  * @api
  */

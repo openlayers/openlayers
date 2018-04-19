@@ -11,9 +11,9 @@ import ImageSource from '../source/Image.js';
  * @property {ol.AttributionLike} [attributions] Attributions.
  * @property {ol.CanvasFunctionType} [canvasFunction] Canvas function.
  * The function returning the canvas element used by the source
- * as an image. The arguments passed to the function are: `{ol.Extent}` the
+ * as an image. The arguments passed to the function are: `{module:ol/extent~Extent}` the
  * image extent, `{number}` the image resolution, `{number}` the device pixel
- * ratio, `{ol.Size}` the image size, and `{module:ol/proj/Projection~Projection}` the image
+ * ratio, `{module:ol/size~Size}` the image size, and `{module:ol/proj/Projection~Projection}` the image
  * projection. The canvas returned by this function is cached by the source. If
  * the value returned by the function is later changed then
  * `changed` should be called on the source for the source to
@@ -23,7 +23,7 @@ import ImageSource from '../source/Image.js';
  * width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {Array.<number>} [resolutions] Resolutions.
  * If specified, new canvases will be created for these resolutions
- * @property {ol.source.State} [state] Source state.
+ * @property {module:ol/source/State~State} [state] Source state.
  */
 
 
@@ -32,7 +32,7 @@ import ImageSource from '../source/Image.js';
  * Base class for image sources where a canvas element is the image.
  *
  * @constructor
- * @extends {ol.source.Image}
+ * @extends {module:ol/source/Image~ImageSource}
  * @param {module:ol/source/ImageCanvas~Options=} options ImageCanvas options.
  * @api
  */

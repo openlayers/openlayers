@@ -24,7 +24,7 @@ import SourceState from '../source/State.js';
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {ol.source.Source} [source] Source for this layer.  If not provided to the constructor,
+ * @property {module:ol/source/Source~Source} [source] Source for this layer.  If not provided to the constructor,
  * the source can be set by calling {@link ol.layer.Layer#setSource layer.setSource(source)} after
  * construction.
  */
@@ -142,13 +142,13 @@ Layer.prototype.getLayerStatesArray = function(opt_states) {
 
 /**
  * Get the layer source.
- * @return {ol.source.Source} The layer source (or `null` if not yet set).
+ * @return {module:ol/source/Source~Source} The layer source (or `null` if not yet set).
  * @observable
  * @api
  */
 Layer.prototype.getSource = function() {
   const source = this.get(LayerProperty.SOURCE);
-  return /** @type {ol.source.Source} */ (source) || null;
+  return /** @type {module:ol/source/Source~Source} */ (source) || null;
 };
 
 
@@ -226,7 +226,7 @@ Layer.prototype.setMap = function(map) {
 
 /**
  * Set the layer source.
- * @param {ol.source.Source} source The layer source.
+ * @param {module:ol/source/Source~Source} source The layer source.
  * @observable
  * @api
  */

@@ -20,16 +20,16 @@ import {appendParams} from '../uri.js';
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
- * @property {ol.tilegrid.WMTS} tileGrid Tile grid.
+ * @property {module:ol/tilegrid/WMTS~WMTSTileGrid} tileGrid Tile grid.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {ol.source.WMTSRequestEncoding|string} [requestEncoding='KVP'] Request encoding.
  * @property {string} layer Layer name as advertised in the WMTS capabilities.
  * @property {string} style Style name as advertised in the WMTS capabilities.
- * @property {function(new: ol.ImageTile, ol.TileCoord,
- *                 ol.TileState, string, ?string,
- *                 ol.TileLoadFunctionType)} [tileClass]  Class used to instantiate image tiles. Default is {@link ol.ImageTile}.
+ * @property {function(new: module:ol/ImageTile~ImageTile, module:ol/tilecoord~TileCoord,
+ *                 module:ol/TileState~TileState, string, ?string,
+ *                 ol.TileLoadFunctionType)} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
  * @property {number} [tilePixelRatio=1] The pixel ratio used by the tile service.
  * For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
@@ -55,43 +55,6 @@ import {appendParams} from '../uri.js';
  * @property {boolean} [wrapX=false] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
-
-
- * At least a `LAYERS` param is required. `STYLES` is
- * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
- * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
- * @property {number} [gutter=0]
- * The size in pixels of the gutter around image tiles to ignore. By setting
- * this property to a non-zero value, images will be requested that are wider
- * and taller than the tile size by a value of `2 x gutter`.
- * Using a non-zero value allows artifacts of rendering at tile edges to be
- * ignored. If you control the WMS service it is recommended to address
- * "artifacts at tile edges" issues by properly configuring the WMS service. For
- * example, MapServer has a `tile_map_edge_buffer` configuration parameter for
- * this. See http://mapserver.org/output/tile_mode.html.
- * @property {boolean} [hidpi=true] Use the `ol.Map#pixelRatio` value when requesting
- * the image from the remote server.
- * @property {function(new: ol.ImageTile, ol.TileCoord,
- *                 ol.TileState, string, ?string,
- *                 ol.TileLoadFunctionType)} [tileClass] Class used to instantiate image tiles.
- * Default is {@link ol.ImageTile}.
- * @property {ol.tilegrid.TileGrid} [tileGrid] Tile grid. Base this on the resolutions,
- * tilesize and extent supported by the server.
- * If this is not defined, a default grid will be used: if there is a projection
- * extent, the grid will be based on that; if not, a grid based on a global
- * extent with origin at 0,0 will be used..
- * @property {ol.source.WMSServerType|string} [serverType]
- * The type of the remote WMS server. Currently only used when `hidpi` is
- * `true`.
- * @property {string} [url] WMS service URL.
- * @property {Array.<string>} [urls] WMS service urls.
- * Use this instead of `url` when the WMS supports multiple urls for GetMap requests.
- * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
- * When set to `false`, only one world
- * will be rendered. When `true`, tiles will be requested for one world only,
- * but they will be wrapped horizontally to render multiple worlds.
- * @property {number} [transition] Duration of the opacity transition for rendering.
- * To disable the opacity transition, pass `transition: 0`.
  */
 
 
@@ -100,7 +63,7 @@ import {appendParams} from '../uri.js';
  * Layer source for tile data from WMTS servers.
  *
  * @constructor
- * @extends {ol.source.TileImage}
+ * @extends {module:ol/source/TileImage~TileImage}
  * @param {module:ol/source/WMTS~Options=} options WMTS options.
  * @api
  */

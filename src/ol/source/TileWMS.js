@@ -43,11 +43,11 @@ import {appendParams} from '../uri.js';
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {function(new: ol.ImageTile, ol.TileCoord,
- *                 ol.TileState, string, ?string,
+ * @property {function(new: module:ol/ImageTile~ImageTile, module:ol/tilecoord~TileCoord,
+ *                 module:ol/TileState~TileState, string, ?string,
  *                 ol.TileLoadFunctionType)} [tileClass] Class used to instantiate image tiles.
- * Default is {@link ol.ImageTile}.
- * @property {ol.tilegrid.TileGrid} [tileGrid] Tile grid. Base this on the resolutions,
+ * Default is {@link module:ol/ImageTile~ImageTile}.
+ * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid] Tile grid. Base this on the resolutions,
  * tilesize and extent supported by the server.
  * If this is not defined, a default grid will be used: if there is a projection
  * extent, the grid will be based on that; if not, a grid based on a global
@@ -78,7 +78,7 @@ import {appendParams} from '../uri.js';
  * Layer source for tile data from WMS servers.
  *
  * @constructor
- * @extends {ol.source.TileImage}
+ * @extends {module:ol/source/TileImage~TileImage}
  * @param {module:ol/source/TileWMS~Options=} [opt_options] Tile WMS options.
  * @api
  */

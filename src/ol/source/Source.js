@@ -12,7 +12,7 @@ import SourceState from '../source/State.js';
  * @typedef {Object} Options
  * @property {ol.AttributionLike} [attributions]
  * @property {module:ol/proj~ProjectionLike} projection
- * @property {ol.source.State} [state]
+ * @property {module:ol/source/State~State} [state]
  * @property {boolean} [wrapX]
  */
 
@@ -49,7 +49,7 @@ const Source = function(options) {
 
   /**
    * @private
-   * @type {ol.source.State}
+   * @type {module:ol/source/State~State}
    */
   this.state_ = options.state !== undefined ?
     options.state : SourceState.READY;
@@ -129,8 +129,8 @@ Source.prototype.getResolutions = function() {};
 
 
 /**
- * Get the state of the source, see {@link ol.source.State} for possible states.
- * @return {ol.source.State} State.
+ * Get the state of the source, see {@link module:ol/source/State~State} for possible states.
+ * @return {module:ol/source/State~State} State.
  * @api
  */
 Source.prototype.getState = function() {
@@ -170,7 +170,7 @@ Source.prototype.setAttributions = function(attributions) {
 
 /**
  * Set the state of the source.
- * @param {ol.source.State} state State.
+ * @param {module:ol/source/State~State} state State.
  * @protected
  */
 Source.prototype.setState = function(state) {

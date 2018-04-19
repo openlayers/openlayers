@@ -20,7 +20,7 @@ import Triangulation from '../reproj/Triangulation.js';
 /**
  * @classdesc
  * Class encapsulating single reprojected image.
- * See {@link ol.source.Image}.
+ * See {@link module:ol/source/Image~ImageSource}.
  *
  * @constructor
  * @extends {module:ol/ImageBase~ImageBase}

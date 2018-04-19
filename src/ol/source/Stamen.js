@@ -114,7 +114,7 @@ const ProviderConfig = {
  * Layer source for the Stamen tile server.
  *
  * @constructor
- * @extends {ol.source.XYZ}
+ * @extends {module:ol/source/XYZ~XYZ}
  * @param {module:ol/source/Stamen~Options=} options Stamen options.
  * @api
  */

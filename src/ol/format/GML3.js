@@ -39,7 +39,7 @@ const schemaLocation = GMLNS +
  * @constructor
  * @param {module:ol/format/GMLBase~Options=} opt_options
  *     Optional configuration object.
- * @extends {ol.format.GMLBase}
+ * @extends {module:ol/format/GMLBase~GMLBase}
  * @api
  */
 const GML3 = function(opt_options) {

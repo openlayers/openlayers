@@ -20,8 +20,8 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  * @property {boolean} [opaque]
  * @property {number} [tilePixelRatio]
  * @property {module:ol/proj~ProjectionLike} [projection]
- * @property {ol.source.State} [state]
- * @property {ol.tilegrid.TileGrid} [tileGrid]
+ * @property {module:ol/source/State~State} [state]
+ * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid]
  * @property {boolean} [wrapX=true]
  * @property {number} [transition]
  */
@@ -35,7 +35,7 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  *
  * @constructor
  * @abstract
- * @extends {ol.source.Source}
+ * @extends {module:ol/source/Source~Source}
  * @param {module:ol/source/Tile~Options=} options SourceTile source options.
  * @api
  */

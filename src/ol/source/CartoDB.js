@@ -36,7 +36,7 @@ import XYZ from '../source/XYZ.js';
  * Layer source for the CartoDB Maps API.
  *
  * @constructor
- * @extends {ol.source.XYZ}
+ * @extends {module:ol/source/XYZ~XYZ}
  * @param {module:ol/source/CartoDB~Options=} options CartoDB options.
  * @api
  */

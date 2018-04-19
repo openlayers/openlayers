@@ -19,7 +19,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {number} [maxZoom=18] Optional max zoom level.
  * @property {number} [maxZoom=0] Optional min zoom level.
- * @property {ol.tilegrid.WMTS} tileGrid Tile grid.
+ * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid] Tile grid.
  * @property {ol.TileLoadFunctionType} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
@@ -30,7 +30,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
  * should be set to `2`.
- * @property {number|ol.Size} [tileSize=[256, 256]] The tile size used by the tile service.
+ * @property {number|module:ol/size~Size} [tileSize=[256, 256]] The tile size used by the tile service.
  * @property {ol.TileUrlFunctionType} [tileUrlFunction] Optional function to get
  * tile URL given a tile coordinate and the projection.
  * Required if url or urls are not provided.
@@ -52,7 +52,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * TMS where `x` 0 and `y` 0 are in the bottom left can be used by
  * using the `{-y}` placeholder in the URL template, so long as the
  * source does not have a custom tile grid. In this case,
- * {@link ol.source.TileImage} can be used with a `tileUrlFunction`
+ * {@link module:ol/source/TileImage~TileImage} can be used with a `tileUrlFunction`
  * such as:
  *
  *  tileUrlFunction: function(coordinate) {
@@ -62,7 +62,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  *
  *
  * @constructor
- * @extends {ol.source.TileImage}
+ * @extends {module:ol/source/TileImage~TileImage}
  * @param {module:ol/source/XYZ~Options=} opt_options XYZ options.
  * @api
  */
