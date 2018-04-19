@@ -22,15 +22,6 @@ const ol = {};
 
 
 /**
- * A function that returns a string or an array of strings representing source
- * attributions.
- *
- * @typedef {function(olx.FrameState): (string|Array.<string>)}
- */
-ol.Attribution;
-
-
-/**
  * @typedef {{fillStyle: module:ol/colorlike~ColorLike}}
  */
 ol.CanvasFillState;

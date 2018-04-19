@@ -9,14 +9,22 @@ import SourceState from '../source/State.js';
 
 
 /**
+ * A function that returns a string or an array of strings representing source
+ * attributions.
+ *
+ * @typedef {function(module:ol/PluggableMap~FrameState): (string|Array.<string>)} Attribution
+ */
+
+
+/**
  * A type that can be used to provide attribution information for data sources.
  *
  * It represents either
  * * a simple string (e.g. `'© Acme Inc.'`)
  * * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`)
- * * a function that returns a string or array of strings (`{@link ol.Attribution}`)
+ * * a function that returns a string or array of strings (`{@link module:ol/source/Source~Attribution}`)
  *
- * @typedef {string|Array.<string>|ol.Attribution} AttributionLike
+ * @typedef {string|Array.<string>|module:ol/source/Source~Attribution} AttributionLike
  */
 
 
@@ -55,7 +63,7 @@ const Source = function(options) {
 
   /**
    * @private
-   * @type {?ol.Attribution}
+   * @type {?module:ol/source/Source~Attribution}
    */
   this.attributions_ = this.adaptAttributions_(options.attributions);
 
@@ -79,7 +87,7 @@ inherits(Source, BaseObject);
 /**
  * Turns the attributions option into an attributions function.
  * @param {module:ol/source/Source~AttributionLike|undefined} attributionLike The attribution option.
- * @return {?ol.Attribution} An attribution function (or null).
+ * @return {?module:ol/source/Source~Attribution} An attribution function (or null).
  */
 Source.prototype.adaptAttributions_ = function(attributionLike) {
   if (!attributionLike) {
@@ -116,7 +124,7 @@ Source.prototype.forEachFeatureAtCoordinate = UNDEFINED;
 
 /**
  * Get the attribution function for the source.
- * @return {?ol.Attribution} Attribution function.
+ * @return {?module:ol/source/Source~Attribution} Attribution function.
  */
 Source.prototype.getAttributions = function() {
   return this.attributions_;
@@ -170,7 +178,7 @@ Source.prototype.refresh = function() {
 /**
  * Set the attributions of the source.
  * @param {module:ol/source/Source~AttributionLike|undefined} attributions Attributions.
- *     Can be passed as `string`, `Array<string>`, `{@link ol.Attribution}`,
+ *     Can be passed as `string`, `Array<string>`, `{@link module:ol/source/Source~Attribution}`,
  *     or `undefined`.
  * @api
  */
