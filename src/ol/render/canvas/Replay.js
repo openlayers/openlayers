@@ -147,9 +147,9 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
 
   /**
    * @protected
-   * @type {ol.CanvasFillStrokeState}
+   * @type {module:ol/render/canvas~FillStrokeState}
    */
-  this.state = /** @type {ol.CanvasFillStrokeState} */ ({});
+  this.state = /** @type {module:ol/render/canvas~FillStrokeState} */ ({});
 
   /**
    * @private
@@ -208,7 +208,7 @@ CanvasReplay.prototype.replayTextBackground_ = function(context, p1, p2, p3, p4,
  * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image Image.
  * @param {number} anchorX Anchor X.
  * @param {number} anchorY Anchor Y.
- * @param {ol.DeclutterGroup} declutterGroup Declutter group.
+ * @param {module:ol/render/canvas~DeclutterGroup} declutterGroup Declutter group.
  * @param {number} height Height.
  * @param {number} opacity Opacity.
  * @param {number} originX Origin X.
@@ -486,7 +486,7 @@ CanvasReplay.prototype.setStrokeStyle_ = function(context, instruction) {
 
 
 /**
- * @param {ol.DeclutterGroup} declutterGroup Declutter group.
+ * @param {module:ol/render/canvas~DeclutterGroup} declutterGroup Declutter group.
  * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
  */
 CanvasReplay.prototype.renderDeclutter_ = function(declutterGroup, feature) {
@@ -565,7 +565,7 @@ CanvasReplay.prototype.replay_ = function(
   const coordinateCache = this.coordinateCache_;
   const viewRotation = this.viewRotation_;
 
-  const state = /** @type {olx.render.State} */ ({
+  const state = /** @type {module:ol/render~State} */ ({
     context: context,
     pixelRatio: this.pixelRatio,
     resolution: this.resolution,
@@ -656,7 +656,7 @@ CanvasReplay.prototype.replay_ = function(
         // Remaining arguments in DRAW_IMAGE are in alphabetical order
         anchorX = /** @type {number} */ (instruction[4]);
         anchorY = /** @type {number} */ (instruction[5]);
-        declutterGroup = featureCallback ? null : /** @type {ol.DeclutterGroup} */ (instruction[6]);
+        declutterGroup = featureCallback ? null : /** @type {module:ol/render/canvas~DeclutterGroup} */ (instruction[6]);
         const height = /** @type {number} */ (instruction[7]);
         const opacity = /** @type {number} */ (instruction[8]);
         const originX = /** @type {number} */ (instruction[9]);
@@ -695,7 +695,7 @@ CanvasReplay.prototype.replay_ = function(
         const begin = /** @type {number} */ (instruction[1]);
         const end = /** @type {number} */ (instruction[2]);
         const baseline = /** @type {number} */ (instruction[3]);
-        declutterGroup = featureCallback ? null : /** @type {ol.DeclutterGroup} */ (instruction[4]);
+        declutterGroup = featureCallback ? null : /** @type {module:ol/render/canvas~DeclutterGroup} */ (instruction[4]);
         const overflow = /** @type {number} */ (instruction[5]);
         const fillKey = /** @type {string} */ (instruction[6]);
         const maxAngle = /** @type {number} */ (instruction[7]);
@@ -957,7 +957,7 @@ CanvasReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
 
 
 /**
- * @param {ol.CanvasFillStrokeState} state State.
+ * @param {module:ol/render/canvas~FillStrokeState} state State.
  * @param {module:ol/geom/Geometry~Geometry|ol.render.Feature} geometry Geometry.
  * @return {Array.<*>} Fill instruction.
  */
@@ -973,7 +973,7 @@ CanvasReplay.prototype.createFill = function(state, geometry) {
 
 
 /**
- * @param {ol.CanvasFillStrokeState} state State.
+ * @param {module:ol/render/canvas~FillStrokeState} state State.
  */
 CanvasReplay.prototype.applyStroke = function(state) {
   this.instructions.push(this.createStroke(state));
@@ -981,7 +981,7 @@ CanvasReplay.prototype.applyStroke = function(state) {
 
 
 /**
- * @param {ol.CanvasFillStrokeState} state State.
+ * @param {module:ol/render/canvas~FillStrokeState} state State.
  * @return {Array.<*>} Stroke instruction.
  */
 CanvasReplay.prototype.createStroke = function(state) {
@@ -995,8 +995,8 @@ CanvasReplay.prototype.createStroke = function(state) {
 
 
 /**
- * @param {ol.CanvasFillStrokeState} state State.
- * @param {function(this:ol.render.canvas.Replay, ol.CanvasFillStrokeState, (module:ol/geom/Geometry~Geometry|ol.render.Feature)):Array.<*>} createFill Create fill.
+ * @param {module:ol/render/canvas~FillStrokeState} state State.
+ * @param {function(this:ol.render.canvas.Replay, module:ol/render/canvas~FillStrokeState, (module:ol/geom/Geometry~Geometry|ol.render.Feature)):Array.<*>} createFill Create fill.
  * @param {module:ol/geom/Geometry~Geometry|ol.render.Feature} geometry Geometry.
  */
 CanvasReplay.prototype.updateFillStyle = function(state, createFill, geometry) {
@@ -1011,8 +1011,8 @@ CanvasReplay.prototype.updateFillStyle = function(state, createFill, geometry) {
 
 
 /**
- * @param {ol.CanvasFillStrokeState} state State.
- * @param {function(this:ol.render.canvas.Replay, ol.CanvasFillStrokeState)} applyStroke Apply stroke.
+ * @param {module:ol/render/canvas~FillStrokeState} state State.
+ * @param {function(this:ol.render.canvas.Replay, module:ol/render/canvas~FillStrokeState)} applyStroke Apply stroke.
  */
 CanvasReplay.prototype.updateStrokeStyle = function(state, applyStroke) {
   const strokeStyle = state.strokeStyle;

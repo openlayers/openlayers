@@ -32,7 +32,7 @@ const CanvasTextReplay = function(
 
   /**
    * @private
-   * @type {ol.DeclutterGroup}
+   * @type {module:ol/render/canvas~DeclutterGroup}
    */
   this.declutterGroup_;
 
@@ -74,34 +74,34 @@ const CanvasTextReplay = function(
 
   /**
    * @private
-   * @type {?ol.CanvasFillState}
+   * @type {?module:ol/render/canvas~FillState}
    */
   this.textFillState_ = null;
 
   /**
-   * @type {!Object.<string, ol.CanvasFillState>}
+   * @type {!Object.<string, module:ol/render/canvas~FillState>}
    */
   this.fillStates = {};
 
   /**
    * @private
-   * @type {?ol.CanvasStrokeState}
+   * @type {?module:ol/render/canvas~StrokeState}
    */
   this.textStrokeState_ = null;
 
   /**
-   * @type {!Object.<string, ol.CanvasStrokeState>}
+   * @type {!Object.<string, module:ol/render/canvas~StrokeState>}
    */
   this.strokeStates = {};
 
   /**
    * @private
-   * @type {ol.CanvasTextState}
+   * @type {module:ol/render/canvas~TextState}
    */
-  this.textState_ = /** @type {ol.CanvasTextState} */ ({});
+  this.textState_ = /** @type {module:ol/render/canvas~TextState} */ ({});
 
   /**
-   * @type {!Object.<string, ol.CanvasTextState>}
+   * @type {!Object.<string, module:ol/render/canvas~TextState>}
    */
   this.textStates = {};
 
@@ -381,7 +381,7 @@ CanvasTextReplay.prototype.drawTextImage_ = function(label, begin, end) {
  * @private
  * @param {number} begin Begin.
  * @param {number} end End.
- * @param {ol.DeclutterGroup} declutterGroup Declutter group.
+ * @param {module:ol/render/canvas~DeclutterGroup} declutterGroup Declutter group.
  */
 CanvasTextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
   const strokeState = this.textStrokeState_;
@@ -391,7 +391,7 @@ CanvasTextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
   const strokeKey = this.strokeKey_;
   if (strokeState) {
     if (!(strokeKey in this.strokeStates)) {
-      this.strokeStates[strokeKey] = /** @type {ol.CanvasStrokeState} */ ({
+      this.strokeStates[strokeKey] = /** @type {module:ol/render/canvas~StrokeState} */ ({
         strokeStyle: strokeState.strokeStyle,
         lineCap: strokeState.lineCap,
         lineDashOffset: strokeState.lineDashOffset,
@@ -404,7 +404,7 @@ CanvasTextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
   }
   const textKey = this.textKey_;
   if (!(this.textKey_ in this.textStates)) {
-    this.textStates[this.textKey_] = /** @type {ol.CanvasTextState} */ ({
+    this.textStates[this.textKey_] = /** @type {module:ol/render/canvas~TextState} */ ({
       font: textState.font,
       textAlign: textState.textAlign || defaultTextAlign,
       scale: textState.scale
@@ -413,7 +413,7 @@ CanvasTextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
   const fillKey = this.fillKey_;
   if (fillState) {
     if (!(fillKey in this.fillStates)) {
-      this.fillStates[fillKey] = /** @type {ol.CanvasFillState} */ ({
+      this.fillStates[fillKey] = /** @type {module:ol/render/canvas~FillState} */ ({
         fillStyle: fillState.fillStyle
       });
     }
@@ -466,7 +466,7 @@ CanvasTextReplay.prototype.setTextStyle = function(textStyle, declutterGroup) {
   if (!textStyle) {
     this.text_ = '';
   } else {
-    this.declutterGroup_ = /** @type {ol.DeclutterGroup} */ (declutterGroup);
+    this.declutterGroup_ = /** @type {module:ol/render/canvas~DeclutterGroup} */ (declutterGroup);
 
     const textFillStyle = textStyle.getFill();
     if (!textFillStyle) {
@@ -474,7 +474,7 @@ CanvasTextReplay.prototype.setTextStyle = function(textStyle, declutterGroup) {
     } else {
       fillState = this.textFillState_;
       if (!fillState) {
-        fillState = this.textFillState_ = /** @type {ol.CanvasFillState} */ ({});
+        fillState = this.textFillState_ = /** @type {module:ol/render/canvas~FillState} */ ({});
       }
       fillState.fillStyle = asColorLike(
         textFillStyle.getColor() || defaultFillStyle);
@@ -486,7 +486,7 @@ CanvasTextReplay.prototype.setTextStyle = function(textStyle, declutterGroup) {
     } else {
       strokeState = this.textStrokeState_;
       if (!strokeState) {
-        strokeState = this.textStrokeState_ = /** @type {ol.CanvasStrokeState} */ ({});
+        strokeState = this.textStrokeState_ = /** @type {module:ol/render/canvas~StrokeState} */ ({});
       }
       const lineDash = textStrokeStyle.getLineDash();
       const lineDashOffset = textStrokeStyle.getLineDashOffset();

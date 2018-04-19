@@ -6,10 +6,25 @@ import ImageCanvas from '../ImageCanvas.js';
 import {containsExtent, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import ImageSource from '../source/Image.js';
 
+
+/**
+ * A function returning the canvas element (`{HTMLCanvasElement}`)
+ * used by the source as an image. The arguments passed to the function are:
+ * {@link module:ol/extent~Extent} the image extent, `{number}` the image resolution,
+ * `{number}` the device pixel ratio, {@link module:ol/size~Size} the image size, and
+ * {@link module:ol/proj/Projection~Projection} the image projection. The canvas returned by
+ * this function is cached by the source. The this keyword inside the function
+ * references the {@link module:ol/source/ImageCanvas}.
+ *
+ * @typedef {function(this:module:ol/ImageCanvas~ImageCanvas, module:ol/extent~Extent, number,
+ *     number, module:ol/size~Size, module:ol/proj/Projection~Projection): HTMLCanvasElement} FunctionType
+ */
+
+
 /**
  * @typedef {Object} Options
  * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
- * @property {ol.CanvasFunctionType} [canvasFunction] Canvas function.
+ * @property {module:ol/source/ImageCanvas~FunctionType} [canvasFunction] Canvas function.
  * The function returning the canvas element used by the source
  * as an image. The arguments passed to the function are: `{module:ol/extent~Extent}` the
  * image extent, `{number}` the image resolution, `{number}` the device pixel
@@ -47,7 +62,7 @@ const ImageCanvasSource = function(options) {
 
   /**
    * @private
-   * @type {ol.CanvasFunctionType}
+   * @type {module:ol/source/ImageCanvas~FunctionType}
    */
   this.canvasFunction_ = options.canvasFunction;
 
