@@ -41,7 +41,7 @@ import {assign} from '../obj.js';
  *
  * @constructor
  * @extends {module:ol/layer/Layer~Layer}
- * @fires ol.render.Event
+ * @fires module:ol/render/Event~RenderEvent
  * @param {module:ol/layer/Tile~Options=} opt_options Tile layer options.
  * @api
  */

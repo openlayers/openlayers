@@ -96,7 +96,7 @@ const affectBlue = document.getElementById('affect-blue');
  * This method sets the globalCompositeOperation to the value of the select
  * field and it is bound to the precompose event of the layers.
  *
- * @param {ol.render.Event} evt The render event.
+ * @param {module:ol/render/Event~RenderEvent} evt The render event.
  */
 const setBlendModeFromSelect = function(evt) {
   evt.context.globalCompositeOperation = select.value;
@@ -107,7 +107,7 @@ const setBlendModeFromSelect = function(evt) {
  * This method resets the globalCompositeOperation to the default value of
  * 'source-over' and it is bound to the postcompose event of the layers.
  *
- * @param {ol.render.Event} evt The render event.
+ * @param {module:ol/render/Event~RenderEvent} evt The render event.
  */
 const resetBlendModeFromSelect = function(evt) {
   evt.context.globalCompositeOperation = 'source-over';

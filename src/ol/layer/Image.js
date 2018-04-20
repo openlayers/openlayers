@@ -36,7 +36,7 @@ import Layer from '../layer/Layer.js';
  *
  * @constructor
  * @extends {module:ol/layer/Layer~Layer}
- * @fires ol.render.Event
+ * @fires module:ol/render/Event~RenderEvent
  * @param {module:ol/layer/Image~Options=} opt_options Layer options.
  * @api
  */

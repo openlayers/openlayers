@@ -62,7 +62,7 @@ import SourceState from '../source/State.js';
  * @constructor
  * @abstract
  * @extends {module:ol/layer/Base~BaseLayer}
- * @fires ol.render.Event
+ * @fires module:ol/render/Event~RenderEvent
  * @param {module:ol/layer/Layer~Options} options Layer options.
  * @api
  */

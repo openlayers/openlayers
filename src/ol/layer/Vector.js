@@ -70,7 +70,7 @@ const Property = {
  *
  * @constructor
  * @extends {module:ol/layer/Layer~Layer}
- * @fires ol.render.Event
+ * @fires module:ol/render/Event~RenderEvent
  * @param {module:ol/layer/Vector~Options=} opt_options Options.
  * @api
  */
