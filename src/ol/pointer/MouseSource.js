@@ -35,9 +35,9 @@ import {inherits} from '../index.js';
 import EventSource from '../pointer/EventSource.js';
 
 /**
- * @param {ol.pointer.PointerEventHandler} dispatcher Event handler.
+ * @param {module:ol/pointer/PointerEventHandler~PointerEventHandler} dispatcher Event handler.
  * @constructor
- * @extends {ol.pointer.EventSource}
+ * @extends {module:ol/pointer/EventSource~EventSource}
  */
 const MouseSource = function(dispatcher) {
   const mapping = {
@@ -131,7 +131,7 @@ MouseSource.prototype.isEventSimulatedFromTouch_ = function(inEvent) {
  * for the fake pointer event.
  *
  * @param {Event} inEvent The in event.
- * @param {ol.pointer.PointerEventHandler} dispatcher Event handler.
+ * @param {module:ol/pointer/PointerEventHandler~PointerEventHandler} dispatcher Event handler.
  * @return {Object} The copied event.
  */
 function prepareEvent(inEvent, dispatcher) {

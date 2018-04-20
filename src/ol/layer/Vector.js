@@ -40,7 +40,7 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
  * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
  * means higher priority.
- * @property {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|ol.StyleFunction} [style] Layer style. See
+ * @property {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction} [style] Layer style. See
  * {@link ol.style} for default style which will be used if this is not defined.
  * @property {number} [maxTilesLoading=16] Maximum number tiles to load simultaneously.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be

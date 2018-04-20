@@ -127,7 +127,7 @@ const ZoomSlider = function(opt_options) {
   containerElement.className = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
   containerElement.appendChild(thumbElement);
   /**
-   * @type {ol.pointer.PointerEventHandler}
+   * @type {module:ol/pointer/PointerEventHandler~PointerEventHandler}
    * @private
    */
   this.dragger_ = new PointerEventHandler(containerElement);
@@ -249,7 +249,7 @@ ZoomSlider.prototype.handleContainerClick_ = function(event) {
 
 /**
  * Handle dragger start events.
- * @param {ol.pointer.PointerEvent} event The drag event.
+ * @param {module:ol/pointer/PointerEvent~PointerEvent} event The drag event.
  * @private
  */
 ZoomSlider.prototype.handleDraggerStart_ = function(event) {
@@ -265,7 +265,7 @@ ZoomSlider.prototype.handleDraggerStart_ = function(event) {
 /**
  * Handle dragger drag events.
  *
- * @param {ol.pointer.PointerEvent|Event} event The drag event.
+ * @param {module:ol/pointer/PointerEvent~PointerEvent|Event} event The drag event.
  * @private
  */
 ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
@@ -285,7 +285,7 @@ ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
 
 /**
  * Handle dragger end events.
- * @param {ol.pointer.PointerEvent|Event} event The drag event.
+ * @param {module:ol/pointer/PointerEvent~PointerEvent|Event} event The drag event.
  * @private
  */
 ZoomSlider.prototype.handleDraggerEnd_ = function(event) {

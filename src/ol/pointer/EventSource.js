@@ -2,14 +2,13 @@
  * @module ol/pointer/EventSource
  */
 /**
- * @param {ol.pointer.PointerEventHandler} dispatcher Event handler.
- * @param {!Object.<string, function(Event)>} mapping Event
- *     mapping.
+ * @param {module:ol/pointer/PointerEventHandler~PointerEventHandler} dispatcher Event handler.
+ * @param {!Object.<string, function(Event)>} mapping Event mapping.
  * @constructor
  */
 const EventSource = function(dispatcher, mapping) {
   /**
-   * @type {ol.pointer.PointerEventHandler}
+   * @type {module:ol/pointer/PointerEventHandler~PointerEventHandler}
    */
   this.dispatcher = dispatcher;
 
