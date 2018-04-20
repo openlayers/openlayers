@@ -94,7 +94,7 @@ const Property = {
  *     map.addOverlay(popup);
  *
  * @constructor
- * @extends {module:ol/Object~Object}
+ * @extends {module:ol/Object~BaseObject}
  * @param {module:ol/Overlay~Options} options Overlay options.
  * @api
  */

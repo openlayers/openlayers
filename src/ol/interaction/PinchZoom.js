@@ -22,7 +22,7 @@ import PointerInteraction, {centroid as centroidFromPointers} from '../interacti
  * on a touch screen.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~Pointer}
+ * @extends {module:ol/interaction/Pointer~PointerInteraction}
  * @param {module:ol/interaction/PinchZoom~Options=} opt_options Options.
  * @api
  */

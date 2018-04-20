@@ -18,7 +18,7 @@ import Style from './style/Style.js';
  * Features can be styled individually with `setStyle`; otherwise they use the
  * style of their vector layer.
  *
- * Note that attribute properties are set as {@link module:ol/Object~Object} properties on
+ * Note that attribute properties are set as {@link module:ol/Object~BaseObject} properties on
  * the feature object, so they are observable, and have get/set accessors.
  *
  * Typically, a feature has a single geometry property. You can set the
@@ -52,7 +52,7 @@ import Style from './style/Style.js';
  * ```
  *
  * @constructor
- * @extends {module:ol/Object~Object}
+ * @extends {module:ol/Object~BaseObject}
  * @param {module:ol/geom/Geometry~Geometry|Object.<string, *>=} opt_geometryOrProperties
  * You may pass a Geometry object directly, or an object literal containing
  * properties. If you pass an object literal, you may include a Geometry

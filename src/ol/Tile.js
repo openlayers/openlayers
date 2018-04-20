@@ -16,7 +16,6 @@ import EventType from './events/EventType.js';
  * @api
  */
 
-
 /**
  * {@link module:ol/source/Tile~Tile} sources use a function of this type to get
  * the url that provides a tile for a given tile coordinate.
@@ -49,7 +48,7 @@ import EventType from './events/EventType.js';
  * @abstract
  * @extends {module:ol/events/EventTarget~EventTarget}
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
- * @param {module:ol/TileState~TileState} state State.
+ * @param {module:ol/TileState} state State.
  * @param {module:ol/Tile~Options=} opt_options Tile options.
  */
 const Tile = function(tileCoord, state, opt_options) {
@@ -64,7 +63,7 @@ const Tile = function(tileCoord, state, opt_options) {
 
   /**
    * @protected
-   * @type {module:ol/TileState~TileState}
+   * @type {module:ol/TileState}
    */
   this.state = state;
 
@@ -190,14 +189,14 @@ Tile.prototype.getTileCoord = function() {
 
 
 /**
- * @return {module:ol/TileState~TileState} State.
+ * @return {module:ol/TileState} State.
  */
 Tile.prototype.getState = function() {
   return this.state;
 };
 
 /**
- * @param {module:ol/TileState~TileState} state State.
+ * @param {module:ol/TileState} state State.
  */
 Tile.prototype.setState = function(state) {
   this.state = state;

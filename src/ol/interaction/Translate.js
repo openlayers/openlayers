@@ -92,7 +92,7 @@ inherits(TranslateEvent, Event);
  * Interaction for translating (moving) features.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~Pointer}
+ * @extends {module:ol/interaction/Pointer~PointerInteraction}
  * @fires module:ol/interaction/Translate~TranslateEvent
  * @param {module:ol/interaction/Translate~Options=} opt_options Options.
  * @api

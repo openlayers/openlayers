@@ -45,7 +45,7 @@ import {get as getProjection, getTransformFromProjections, identityTransform} fr
  *
  * @fires error
  * @constructor
- * @extends {module:ol/Object~Object}
+ * @extends {module:ol/Object~BaseObject}
  * @param {module:ol/Geolocation~Options=} opt_options Options.
  * @api
  */

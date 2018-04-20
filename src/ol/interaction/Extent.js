@@ -78,7 +78,7 @@ inherits(ExtentInteractionEvent, Event);
  * This interaction is only supported for mouse devices.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~Pointer}
+ * @extends {module:ol/interaction/Pointer~PointerInteraction}
  * @fires module:ol/interaction/Extent~Event
  * @param {module:ol/interaction/Extent~Options=} opt_options Options.
  * @api

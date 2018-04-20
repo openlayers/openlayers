@@ -132,7 +132,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 /**
  * @constructor
- * @extends {module:ol/Object~Object}
+ * @extends {module:ol/Object~BaseObject}
  * @param {module:ol/PluggableMap~MapOptions} options Map options.
  * @fires module:ol/MapBrowserEvent~MapBrowserEvent
  * @fires module:ol/MapEvent~MapEvent

@@ -59,7 +59,7 @@ inherits(CollectionEvent, Event);
  * Collection as a whole.
  *
  * @constructor
- * @extends {module:ol/Object~Object}
+ * @extends {module:ol/Object~BaseObject}
  * @fires module:ol/Collection~CollectionEvent
  * @param {Array.<T>=} opt_array Array.
  * @param {module:ol/Collection~Options=} opt_options Collection options.

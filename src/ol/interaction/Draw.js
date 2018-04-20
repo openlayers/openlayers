@@ -156,7 +156,7 @@ inherits(DrawEvent, Event);
  * Interaction for drawing feature geometries.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~Pointer}
+ * @extends {module:ol/interaction/Pointer~PointerInteraction}
  * @fires module:ol/interaction/Draw~DrawEvent
  * @param {module:ol/interaction/Draw~Options} options Options.
  * @api
