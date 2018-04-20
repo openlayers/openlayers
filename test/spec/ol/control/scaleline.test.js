@@ -279,7 +279,20 @@ describe('ol.control.ScaleLine', function() {
         })
       }));
       map.renderSync();
+
+      ctrl.setUnits('metric');
       expect(ctrl.element_.innerText).to.be('100 m');
+
+      ctrl.setUnits('imperial');
+      expect(ctrl.element_.innerText).to.be('500 ft');
+
+      ctrl.setUnits('nautical');
+      expect(ctrl.element_.innerText).to.be('0.05 nm');
+
+      ctrl.setUnits('us');
+      expect(ctrl.element_.innerText).to.be('500 ft');
+
+
       map.setView(new View({
         center: [0, 0],
         zoom: 0,
@@ -294,7 +307,18 @@ describe('ol.control.ScaleLine', function() {
         })
       }));
       map.renderSync();
+
+      ctrl.setUnits('metric');
       expect(ctrl.element_.innerText).to.be('100 mm');
+
+      ctrl.setUnits('imperial');
+      expect(ctrl.element_.innerText).to.be('5 in');
+
+      ctrl.setUnits('nautical');
+      expect(ctrl.element_.innerText).to.be('0.00005 nm');
+
+      ctrl.setUnits('us');
+      expect(ctrl.element_.innerText).to.be('5 in');
     });
 
     it('Metric display works with Geographic (EPSG:4326) projection', function() {
@@ -369,6 +393,16 @@ describe('ol.control.ScaleLine', function() {
       }
     };
 
+    const getImperialUnit = function(zoom) {
+      if (zoom >= 21) {
+        return 'in';
+      } else if (zoom >= 10) {
+        return 'ft';
+      } else {
+        return 'mi';
+      }
+    };
+
     beforeEach(function() {
       currentZoom = 33;
       renderedHtmls = {};
@@ -427,6 +461,9 @@ describe('ol.control.ScaleLine', function() {
         const currentHtml = ctrl.element_.innerHTML;
         expect(currentHtml in renderedHtmls).to.be(false);
         renderedHtmls[currentHtml] = true;
+
+        const unit = ctrl.innerElement_.textContent.match(/\d+ (.+)/)[1];
+        expect(unit).to.eql(getImperialUnit(currentZoom));
       }
     });
     it('nautical: is rendered differently for different zoomlevels', function() {
