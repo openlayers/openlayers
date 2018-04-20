@@ -35,7 +35,7 @@ const BATCH_CONSTRUCTORS = {
 
 /**
  * @constructor
- * @extends {ol.render.ReplayGroup}
+ * @extends {module:ol/render/ReplayGroup~ReplayGroup}
  * @param {number} tolerance Tolerance.
  * @param {module:ol/extent~Extent} maxExtent Max extent.
  * @param {number} resolution Resolution.
