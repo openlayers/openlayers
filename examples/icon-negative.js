@@ -13,7 +13,7 @@ import Style from '../src/ol/style/Style.js';
 
 function createStyle(src, img) {
   return new Style({
-    image: new Icon(/** @type {olx.style.IconOptions} */ ({
+    image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
       anchor: [0.5, 0.96],
       crossOrigin: 'anonymous',
       src: src,
