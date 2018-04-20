@@ -28,7 +28,7 @@ import {
 
 
 /**
- * @type {!Object.<string, Array.<ol.render.ReplayType>>}
+ * @type {!Object.<string, Array.<module:ol/render/ReplayType~ReplayType>>}
  */
 const IMAGE_REPLAYS = {
   'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
@@ -38,7 +38,7 @@ const IMAGE_REPLAYS = {
 
 
 /**
- * @type {!Object.<string, Array.<ol.render.ReplayType>>}
+ * @type {!Object.<string, Array.<module:ol/render/ReplayType~ReplayType>>}
  */
 const VECTOR_REPLAYS = {
   'image': [ReplayType.DEFAULT],
