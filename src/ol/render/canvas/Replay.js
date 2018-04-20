@@ -996,7 +996,7 @@ CanvasReplay.prototype.createStroke = function(state) {
 
 /**
  * @param {module:ol/render/canvas~FillStrokeState} state State.
- * @param {function(this:ol.render.canvas.Replay, module:ol/render/canvas~FillStrokeState, (module:ol/geom/Geometry~Geometry|module:ol/render/Feature~RenderFeature)):Array.<*>} createFill Create fill.
+ * @param {function(this:module:ol/render/canvas/Replay~CanvasReplay, module:ol/render/canvas~FillStrokeState, (module:ol/geom/Geometry~Geometry|module:ol/render/Feature~RenderFeature)):Array.<*>} createFill Create fill.
  * @param {module:ol/geom/Geometry~Geometry|module:ol/render/Feature~RenderFeature} geometry Geometry.
  */
 CanvasReplay.prototype.updateFillStyle = function(state, createFill, geometry) {
@@ -1012,7 +1012,7 @@ CanvasReplay.prototype.updateFillStyle = function(state, createFill, geometry) {
 
 /**
  * @param {module:ol/render/canvas~FillStrokeState} state State.
- * @param {function(this:ol.render.canvas.Replay, module:ol/render/canvas~FillStrokeState)} applyStroke Apply stroke.
+ * @param {function(this:module:ol/render/canvas/Replay~CanvasReplay, module:ol/render/canvas~FillStrokeState)} applyStroke Apply stroke.
  */
 CanvasReplay.prototype.updateStrokeStyle = function(state, applyStroke) {
   const strokeStyle = state.strokeStyle;

@@ -20,7 +20,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 
 /**
  * @type {Object.<module:ol/render/ReplayType~ReplayType,
- *                function(new: ol.render.canvas.Replay, number, module:ol/extent~Extent,
+ *                function(new: module:ol/render/canvas/Replay~CanvasReplay, number, module:ol/extent~Extent,
  *                number, number, boolean, Array.<module:ol/render/canvas~DeclutterGroup>)>}
  */
 const BATCH_CONSTRUCTORS = {
@@ -100,7 +100,7 @@ const CanvasReplayGroup = function(
 
   /**
    * @private
-   * @type {!Object.<string, !Object.<module:ol/render/ReplayType~ReplayType, ol.render.canvas.Replay>>}
+   * @type {!Object.<string, !Object.<module:ol/render/ReplayType~ReplayType, module:ol/render/canvas/Replay~CanvasReplay>>}
    */
   this.replaysByZIndex_ = {};
 
@@ -431,7 +431,7 @@ CanvasReplayGroup.prototype.getReplay = function(zIndex, replayType) {
 
 
 /**
- * @return {Object.<string, Object.<module:ol/render/ReplayType~ReplayType, ol.render.canvas.Replay>>} Replays.
+ * @return {Object.<string, Object.<module:ol/render/ReplayType~ReplayType, module:ol/render/canvas/Replay~CanvasReplay>>} Replays.
  */
 CanvasReplayGroup.prototype.getReplays = function() {
   return this.replaysByZIndex_;

@@ -7,7 +7,7 @@ import CanvasReplay from '../canvas/Replay.js';
 
 /**
  * @constructor
- * @extends {ol.render.canvas.Replay}
+ * @extends {module:ol/render/canvas/Replay~CanvasReplay}
  * @param {number} tolerance Tolerance.
  * @param {module:ol/extent~Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
