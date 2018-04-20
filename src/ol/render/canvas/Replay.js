@@ -579,7 +579,7 @@ CanvasReplay.prototype.replay_ = function(
   let x, y;
   while (i < ii) {
     const instruction = instructions[i];
-    const type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
+    const type = /** @type {module:ol/render/canvas/Instruction~Instruction} */ (instruction[0]);
     switch (type) {
       case CanvasInstruction.BEGIN_GEOMETRY:
         feature = /** @type {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} */ (instruction[1]);
@@ -892,7 +892,7 @@ CanvasReplay.prototype.reverseHitDetectionInstructions = function() {
   let begin = -1;
   for (i = 0; i < n; ++i) {
     instruction = hitDetectionInstructions[i];
-    type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
+    type = /** @type {module:ol/render/canvas/Instruction~Instruction} */ (instruction[0]);
     if (type == CanvasInstruction.END_GEOMETRY) {
       begin = i;
     } else if (type == CanvasInstruction.BEGIN_GEOMETRY) {
