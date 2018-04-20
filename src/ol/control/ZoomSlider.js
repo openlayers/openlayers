@@ -127,7 +127,7 @@ const ZoomSlider = function(opt_options) {
   containerElement.className = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
   containerElement.appendChild(thumbElement);
   /**
-   * @type {ol.pointer.PointerEventHandler}
+   * @type {module:ol/pointer/PointerEventHandler~PointerEventHandler}
    * @private
    */
   this.dragger_ = new PointerEventHandler(containerElement);

@@ -35,7 +35,7 @@ import {inherits} from '../index.js';
 import EventSource from '../pointer/EventSource.js';
 
 /**
- * @param {ol.pointer.PointerEventHandler} dispatcher Event handler.
+ * @param {module:ol/pointer/PointerEventHandler~PointerEventHandler} dispatcher Event handler.
  * @constructor
  * @extends {ol.pointer.EventSource}
  */
