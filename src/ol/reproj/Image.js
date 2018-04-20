@@ -59,7 +59,7 @@ const ReprojImage = function(sourceProj, targetProj,
 
   /**
    * @private
-   * @type {!ol.reproj.Triangulation}
+   * @type {!module:ol/reproj/Triangulation~Triangulation}
    */
   this.triangulation_ = new Triangulation(
     sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_,
