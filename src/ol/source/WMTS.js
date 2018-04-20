@@ -352,7 +352,7 @@ WMTS.prototype.updateDimensions = function(dimensions) {
  *  - format - {string} Image format for the layer. Default is the first
  *       format returned in the GetCapabilities response.
  *  - crossOrigin - {string|null|undefined} Cross origin. Default is `undefined`.
- * @return {?olx.source.WMTSOptions} WMTS source options object or `null` if the layer was not found.
+ * @return {?module:ol/source/WMTS~Options} WMTS source options object or `null` if the layer was not found.
  * @api
  */
 export function optionsFromCapabilities(wmtsCap, config) {

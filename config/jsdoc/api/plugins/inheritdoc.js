@@ -19,16 +19,16 @@ exports.defineTags = function(dictionary) {
 };
 
 
-var lookup = {};
-var incompleteByClass = {};
-var keepKeys = ['comment', 'meta', 'name', 'memberof', 'longname', 'augment',
-    'stability'];
+const lookup = {};
+const incompleteByClass = {};
+const keepKeys = ['comment', 'meta', 'name', 'memberof', 'longname', 'augment',
+  'stability'];
 
 exports.handlers = {
 
   newDoclet: function(e) {
-    var doclet = e.doclet;
-    var incompletes;
+    const doclet = e.doclet;
+    let incompletes;
     if (!(doclet.longname in lookup)) {
       lookup[doclet.longname] = [];
     }
@@ -45,9 +45,9 @@ exports.handlers = {
   },
 
   parseComplete: function(e) {
-    var ancestors, candidate, candidates, doclet, i, j, k, l, key;
-    var incompleteDoclet, stability, incomplete, incompletes;
-    var doclets = e.doclets;
+    let ancestors, candidate, candidates, doclet, i, j, k, l, key;
+    let incompleteDoclet, stability, incomplete, incompletes;
+    const doclets = e.doclets;
     for (i = doclets.length - 1; i >= 0; --i) {
       doclet = doclets[i];
       if (doclet.augments) {

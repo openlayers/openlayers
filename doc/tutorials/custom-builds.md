@@ -56,7 +56,6 @@ Creating a custom build requires writing a build configuration file. The format 
       "externs/esrijson.js",
       "externs/geojson.js",
       "externs/oli.js",
-      "externs/olx.js",
       "externs/proj4js.js",
       "externs/tilejson.js",
       "externs/topojson.js"
@@ -169,8 +168,6 @@ and re-run the build script. The build size should now be smaller.
 
 The Closure documentation explains that "externs" are for external names used in the code being compiled. The compiler includes externs for built-ins such as `document`. The `externs` directory of the OpenLayers code includes files for all those used in some part of the library. For example, if you use Bing Maps, you should include the Bing externs file in the `externs` section of the config file.
 
-`oli.js` and `olx.js` are externs files for the OpenLayers API. For example `olx.js` includes extern definitions for OpenLayers's constructor options. `closure-compiler.js` fixes any issues that may arise with a specific compiler version. You should always use these three files as externs when creating custom builds.
-
 ### Other compiler options
 
 There are a couple of other compiler options in the config file above. `manage_closure_dependencies` and `rewrite_polyfills` should always be used.
@@ -208,7 +205,6 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](https://openl
       "externs/closure-compiler.js",
       "externs/esrijson.js",
       "externs/geojson.js",
-      "externs/olx.js",
       "externs/oli.js",
       "externs/proj4js.js",
       "externs/tilejson.js",

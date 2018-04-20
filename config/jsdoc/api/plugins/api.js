@@ -1,5 +1,6 @@
 /**
  * Define an @api tag
+ * @param {Object} dictionary The tag dictionary.
  */
 exports.defineTags = function(dictionary) {
   dictionary.defineTag('api', {
@@ -8,11 +9,10 @@ exports.defineTags = function(dictionary) {
     canHaveName: false,
     onTagged: function(doclet, tag) {
       includeTypes(doclet);
-      doclet.stability = "stable";
+      doclet.stability = 'stable';
     }
   });
 };
-
 
 
 /*
@@ -21,19 +21,19 @@ exports.defineTags = function(dictionary) {
  * from the documentation.
  */
 
-var api = [];
-var classes = {};
-var types = {};
+const api = [];
+const classes = {};
+const types = {};
 
 function hasApiMembers(doclet) {
   return doclet.longname.split('#')[0] == this.longname;
 }
 
 function includeAugments(doclet) {
-  var augments = doclet.augments;
+  const augments = doclet.augments;
   if (augments) {
-    var cls;
-    for (var i = augments.length - 1; i >= 0; --i) {
+    let cls;
+    for (let i = augments.length - 1; i >= 0; --i) {
       cls = classes[augments[i]];
       if (cls) {
         includeAugments(cls);
@@ -68,7 +68,7 @@ function includeAugments(doclet) {
 
 function extractTypes(item) {
   item.type.names.forEach(function(type) {
-    var match = type.match(/^(.*<)?([^>]*)>?$/);
+    const match = type.match(/^(.*<)?([^>]*)>?$/);
     if (match) {
       types[match[2]] = true;
     }
@@ -86,7 +86,6 @@ function includeTypes(doclet) {
     types[doclet.meta.code.name] = true;
   }
   if (doclet.type && doclet.meta.code.type == 'MemberExpression') {
-    // types in olx.js
     extractTypes(doclet);
   }
 }
@@ -94,12 +93,7 @@ function includeTypes(doclet) {
 exports.handlers = {
 
   newDoclet: function(e) {
-    var doclet = e.doclet;
-    // Keep track of api items - needed in parseComplete to determine classes
-    // with api members.
-    if (doclet.meta.filename == 'olx.js' && doclet.kind == 'typedef') {
-      doclet.undocumented = false;
-    }
+    const doclet = e.doclet;
     if (doclet.stability) {
       api.push(doclet);
     }
@@ -114,9 +108,9 @@ exports.handlers = {
   },
 
   parseComplete: function(e) {
-    var doclets = e.doclets;
-    for (var i = doclets.length - 1; i >= 0; --i) {
-      var doclet = doclets[i];
+    const doclets = e.doclets;
+    for (let i = doclets.length - 1; i >= 0; --i) {
+      const doclet = doclets[i];
       if (doclet.stability || doclet.namespace_) {
         if (doclet.kind == 'class') {
           includeAugments(doclet);

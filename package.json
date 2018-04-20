@@ -9,7 +9,7 @@
   ],
   "homepage": "https://openlayers.org/",
   "scripts": {
-    "lint": "eslint tasks test src/ol examples",
+    "lint": "eslint tasks test src/ol examples config",
     "pretest": "npm run lint",
     "posttest": "npm run typecheck",
     "test": "npm run karma -- --single-run",

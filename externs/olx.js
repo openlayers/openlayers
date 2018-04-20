@@ -1,6 +1,0 @@
-
-/**
- * @type {Object}
- */
-let olx;
-

@@ -58,7 +58,7 @@ describe('ol.rendering.style.Icon', function() {
       img.onload = function() {
         imgInfo.img = img;
         feature.setStyle(new Style({
-          image: new Icon(/** @type {olx.style.IconOptions} */ (imgInfo))
+          image: new Icon(/** @type {module:ol/style/Icon~Options} */ (imgInfo))
         }));
         vectorSource.addFeature(feature);
         callback();

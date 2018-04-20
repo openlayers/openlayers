@@ -21,6 +21,15 @@ import SourceState from '../source/State.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 
+/**
+ * A function that takes an {@link module:ol/extent~Extent} and a resolution as arguments, and
+ * returns an array of {@link module:ol/extent~Extent} with the extents to load. Usually this
+ * is one of the standard {@link ol.loadingstrategy} strategies.
+ *
+ * @typedef {function(module:ol/extent~Extent, number): Array.<module:ol/extent~Extent>} LoadingStrategy
+ * @api
+ */
+
 
 /**
  * @classdesc
@@ -95,7 +104,7 @@ inherits(VectorSourceEvent, Event);
  * Setting this to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
  * stroke operations.
- * @property {ol.LoadingStrategy} [strategy] The loading strategy to use.
+ * @property {module:ol/source/Vector~LoadingStrategy} [strategy] The loading strategy to use.
  * By default an {@link ol.loadingstrategy.all}
  * strategy is used, a one-off strategy which loads all features at once.
  * @property {string|module:ol/Feature~FeatureUrlFunction} [url]
@@ -191,7 +200,7 @@ const VectorSource = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.LoadingStrategy}
+   * @type {module:ol/source/Vector~LoadingStrategy}
    */
   this.strategy_ = options.strategy !== undefined ? options.strategy : allStrategy;
 

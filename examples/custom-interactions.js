@@ -157,7 +157,7 @@ const map = new Map({
         features: [pointFeature, lineFeature, polygonFeature]
       }),
       style: new Style({
-        image: new Icon(/** @type {olx.style.IconOptions} */ ({
+        image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
           anchor: [0.5, 46],
           anchorXUnits: 'fraction',
           anchorYUnits: 'pixels',

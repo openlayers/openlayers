@@ -6,7 +6,7 @@
 /**
  * @type {Object}
  */
-var oli;
+let oli;
 
 
 /**
@@ -187,7 +187,7 @@ oli.MapEvent.prototype.map;
 
 
 /**
- * @type {olx.FrameState}
+ * @type {module:ol/PluggableMap~FrameState}
  */
 oli.MapEvent.prototype.frameState;
 
@@ -302,7 +302,7 @@ oli.render.Event.prototype.context;
 
 
 /**
- * @type {olx.FrameState|undefined}
+ * @type {module:ol/PluggableMap~FrameState|undefined}
  */
 oli.render.Event.prototype.frameState;
 

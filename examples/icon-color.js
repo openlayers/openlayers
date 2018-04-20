@@ -24,7 +24,7 @@ const madrid = new Feature({
 });
 
 rome.setStyle(new Style({
-  image: new Icon(/** @type {olx.style.IconOptions} */ ({
+  image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
     color: '#8959A8',
     crossOrigin: 'anonymous',
     src: 'data/dot.png'
@@ -32,7 +32,7 @@ rome.setStyle(new Style({
 }));
 
 london.setStyle(new Style({
-  image: new Icon(/** @type {olx.style.IconOptions} */ ({
+  image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
     color: '#4271AE',
     crossOrigin: 'anonymous',
     src: 'data/dot.png'
@@ -40,7 +40,7 @@ london.setStyle(new Style({
 }));
 
 madrid.setStyle(new Style({
-  image: new Icon(/** @type {olx.style.IconOptions} */ ({
+  image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
     color: [113, 140, 0],
     crossOrigin: 'anonymous',
     src: 'data/dot.png'
