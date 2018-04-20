@@ -19,7 +19,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 
 /**
  * @classdesc
- * A concrete subclass of {@link ol.render.VectorContext} that implements
+ * A concrete subclass of {@link module:ol/render/VectorContext~VectorContext} that implements
  * direct rendering of features and geometries to an HTML5 Canvas context.
  * Instances of this class are created internally by the library and
  * provided to application code as vectorContext member of the
@@ -27,7 +27,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
  * render events emitted by layers and maps.
  *
  * @constructor
- * @extends {ol.render.VectorContext}
+ * @extends {module:ol/render/VectorContext~VectorContext}
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
  * @param {module:ol/extent~Extent} extent Extent.

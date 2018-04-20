@@ -10,7 +10,7 @@ import WebGLReplayGroup from '../webgl/ReplayGroup.js';
 
 /**
  * @constructor
- * @extends {ol.render.VectorContext}
+ * @extends {module:ol/render/VectorContext~VectorContext}
  * @param {module:ol/webgl/Context~WebGLContext} context Context.
  * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} resolution Resolution.

@@ -30,7 +30,7 @@ import {
 
 /**
  * @constructor
- * @extends {ol.render.VectorContext}
+ * @extends {module:ol/render/VectorContext~VectorContext}
  * @param {number} tolerance Tolerance.
  * @param {module:ol/extent~Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.

@@ -9,7 +9,7 @@ import Event from '../events/Event.js';
  * @extends {module:ol/events/Event~Event}
  * @implements {oli.render.Event}
  * @param {module:ol/render/EventType~EventType} type Type.
- * @param {ol.render.VectorContext=} opt_vectorContext Vector context.
+ * @param {module:ol/render/VectorContext~VectorContext=} opt_vectorContext Vector context.
  * @param {module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
  * @param {?CanvasRenderingContext2D=} opt_context Context.
  * @param {?module:ol/webgl/Context~WebGLContext=} opt_glContext WebGL Context.
@@ -22,7 +22,7 @@ const RenderEvent = function(
 
   /**
    * For canvas, this is an instance of {@link ol.render.canvas.Immediate}.
-   * @type {ol.render.VectorContext|undefined}
+   * @type {module:ol/render/VectorContext~VectorContext|undefined}
    * @api
    */
   this.vectorContext = opt_vectorContext;

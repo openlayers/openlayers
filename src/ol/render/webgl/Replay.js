@@ -18,7 +18,7 @@ import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TRIANGLES,
 /**
  * @constructor
  * @abstract
- * @extends {ol.render.VectorContext}
+ * @extends {module:ol/render/VectorContext~VectorContext}
  * @param {number} tolerance Tolerance.
  * @param {module:ol/extent~Extent} maxExtent Max extent.
  * @struct

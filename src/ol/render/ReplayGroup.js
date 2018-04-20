@@ -13,7 +13,7 @@ const ReplayGroup = function() {};
  * @abstract
  * @param {number|undefined} zIndex Z index.
  * @param {ol.render.ReplayType} replayType Replay type.
- * @return {ol.render.VectorContext} Replay.
+ * @return {module:ol/render/VectorContext~VectorContext} Replay.
  */
 ReplayGroup.prototype.getReplay = function(zIndex, replayType) {};
 
