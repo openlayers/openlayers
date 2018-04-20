@@ -34,7 +34,7 @@ import {getKeyZXY} from '../tilecoord.js';
  * @constructor
  * @abstract
  * @fires module:ol/source/Tile~TileSourceEvent
- * @extends {ol.source.Tile}
+ * @extends {module:ol/source/Tile~TileSource}
  * @param {module:ol/source/UrlTile~Options=} options Image tile options.
  */
 const UrlTile = function(options) {

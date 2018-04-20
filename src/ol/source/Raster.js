@@ -497,7 +497,7 @@ function createImageRenderer(source) {
 
 /**
  * Create a tile renderer for the provided source.
- * @param {ol.source.Tile} source The source.
+ * @param {module:ol/source/Tile~TileSource} source The source.
  * @return {ol.renderer.canvas.Layer} The renderer.
  */
 function createTileRenderer(source) {

@@ -127,7 +127,7 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
   const viewCenter = viewState.center;
 
   const tileLayer = this.getLayer();
-  const tileSource = /** @type {ol.source.Tile} */ (tileLayer.getSource());
+  const tileSource = /** @type {module:ol/source/Tile~TileSource} */ (tileLayer.getSource());
   const sourceRevision = tileSource.getRevision();
   const tileGrid = tileSource.getTileGridForProjection(projection);
   const z = tileGrid.getZForResolution(viewResolution, this.zDirection);
