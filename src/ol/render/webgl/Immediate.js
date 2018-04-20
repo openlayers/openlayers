@@ -89,7 +89,7 @@ inherits(WebGLImmediateRenderer, VectorContext);
 
 /**
  * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
- * @param {module:ol/geom/Geometry~Geometry|ol.render.Feature} geometry Geometry.
+ * @param {module:ol/geom/Geometry~Geometry|module:ol/render/Feature~RenderFeature} geometry Geometry.
  * @private
  */
 WebGLImmediateRenderer.prototype.drawText_ = function(replayGroup, geometry) {
@@ -130,7 +130,7 @@ WebGLImmediateRenderer.prototype.setStyle = function(style) {
  * Render a geometry into the canvas.  Call
  * {@link ol.render.webgl.Immediate#setStyle} first to set the rendering style.
  *
- * @param {module:ol/geom/Geometry~Geometry|ol.render.Feature} geometry The geometry to render.
+ * @param {module:ol/geom/Geometry~Geometry|module:ol/render/Feature~RenderFeature} geometry The geometry to render.
  * @override
  * @api
  */

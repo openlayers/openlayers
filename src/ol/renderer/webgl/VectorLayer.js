@@ -148,9 +148,9 @@ WebGLVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordin
       frameState.size, frameState.pixelRatio, layerState.opacity,
       {},
       /**
-         * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
-         * @return {?} Callback result.
-         */
+       * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
+       * @return {?} Callback result.
+       */
       function(feature) {
         const key = getUid(feature).toString();
         if (!(key in features)) {

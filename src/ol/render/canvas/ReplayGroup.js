@@ -286,12 +286,9 @@ CanvasReplayGroup.prototype.finish = function() {
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
- *     to skip.
- * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T} callback Feature
- *     callback.
- * @param {Object.<string, module:ol/render/canvas~DeclutterGroup>} declutterReplays Declutter
- *     replays.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+ * @param {function((module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature)): T} callback Feature callback.
+ * @param {Object.<string, module:ol/render/canvas~DeclutterGroup>} declutterReplays Declutter replays.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -335,7 +332,7 @@ CanvasReplayGroup.prototype.forEachFeatureAtCoordinate = function(
   let replayType;
 
   /**
-   * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
+   * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
    * @return {?} Callback result.
    */
   function featureCallback(feature) {
@@ -453,12 +450,10 @@ CanvasReplayGroup.prototype.isEmpty = function() {
  * @param {CanvasRenderingContext2D} context Context.
  * @param {module:ol/transform~Transform} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
- *     to skip.
- * @param {Array.<ol.render.ReplayType>=} opt_replayTypes Ordered replay types
- *     to replay. Default is {@link ol.render.replay.ORDER}
- * @param {Object.<string, module:ol/render/canvas~DeclutterGroup>=} opt_declutterReplays Declutter
- *     replays.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+ * @param {Array.<ol.render.ReplayType>=} opt_replayTypes Ordered replay types to replay.
+ *     Default is {@link ol.render.replay.ORDER}
+ * @param {Object.<string, module:ol/render/canvas~DeclutterGroup>=} opt_declutterReplays Declutter replays.
  */
 CanvasReplayGroup.prototype.replay = function(context,
   transform, viewRotation, skippedFeaturesHash, opt_replayTypes, opt_declutterReplays) {

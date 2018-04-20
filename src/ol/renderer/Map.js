@@ -111,7 +111,7 @@ function expireIconCache(map, frameState) {
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
  * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {function(this: S, (module:ol/Feature~Feature|ol.render.Feature),
+ * @param {function(this: S, (module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature),
  *     module:ol/layer/Layer~Layer): T} callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @param {function(this: U, module:ol/layer/Layer~Layer): boolean} layerFilter Layer filter
@@ -129,7 +129,7 @@ MapRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameSta
   const viewResolution = viewState.resolution;
 
   /**
-   * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
+   * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
    * @param {module:ol/layer/Layer~Layer} layer Layer.
    * @return {?} Callback result.
    */

@@ -27,7 +27,7 @@ import RenderFeature from '../render/Feature.js';
  * @property {function((module:ol/geom/Geometry~Geometry|Object.<string,*>)=)|function(module:ol/geom/GeometryType~GeometryType,Array.<number>,(Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)} [featureClass]
  * Class for features returned by {@link ol.format.MVT#readFeatures}. Set to
  * {@link module:ol/Feature~Feature} to get full editing and geometry support at the cost of
- * decreased rendering performance. The default is {@link ol.render.Feature},
+ * decreased rendering performance. The default is {@link module:ol/render/Feature~RenderFeature},
  * which is optimized for rendering and hit detection.
  * @property {string} [geometryName='geometry'] Geometry name to use when creating
  * features.
@@ -297,7 +297,7 @@ function getGeometryType(type, numEnds) {
  * @param {ol.ext.PBF} pbf PBF
  * @param {Object} rawFeature Raw Mapbox feature.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature~Feature|ol.render.Feature} Feature.
+ * @return {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} Feature.
  */
 MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
   const type = rawFeature.type;
@@ -387,7 +387,7 @@ MVT.prototype.readFeatures = function(source, opt_options) {
 
   const pbf = new PBF(/** @type {ArrayBuffer} */ (source));
   const pbfLayers = pbf.readFields(layersPBFReader, {});
-  /** @type {Array.<module:ol/Feature~Feature|ol.render.Feature>} */
+  /** @type {Array.<module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature>} */
   const features = [];
   for (const name in pbfLayers) {
     if (layers && layers.indexOf(name) == -1) {

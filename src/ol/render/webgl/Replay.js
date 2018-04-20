@@ -95,7 +95,7 @@ const WebGLReplay = function(tolerance, maxExtent) {
   /**
    * Start index per feature (the feature).
    * @protected
-   * @type {Array.<module:ol/Feature~Feature|ol.render.Feature>}
+   * @type {Array.<module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature>}
    */
   this.startIndicesFeature = [];
 
@@ -170,8 +170,7 @@ WebGLReplay.prototype.shutDownProgram = function(gl, locations) {};
  * @protected
  * @param {WebGLRenderingContext} gl gl.
  * @param {module:ol/webgl/Context~WebGLContext} context Context.
- * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
- *  to skip.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
  * @param {boolean} hitDetection Hit detection mode.
  */
 WebGLReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {};
@@ -182,11 +181,9 @@ WebGLReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hi
  * @protected
  * @param {WebGLRenderingContext} gl gl.
  * @param {module:ol/webgl/Context~WebGLContext} context Context.
- * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
- *  to skip.
- * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
- * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting
- *  this extent are checked.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+ * @param {function((module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature)): T|undefined} featureCallback Feature callback.
+ * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting this extent are checked.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -197,9 +194,8 @@ WebGLReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, ski
  * @protected
  * @param {WebGLRenderingContext} gl gl.
  * @param {module:ol/webgl/Context~WebGLContext} context Context.
- * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
- *  to skip.
- * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+ * @param {function((module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature)): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
@@ -224,9 +220,8 @@ WebGLReplay.prototype.drawHitDetectionReplay = function(gl, context, skippedFeat
  * @protected
  * @param {WebGLRenderingContext} gl gl.
  * @param {module:ol/webgl/Context~WebGLContext} context Context.
- * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
- *  to skip.
- * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+ * @param {function((module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature)): T|undefined} featureCallback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -252,9 +247,8 @@ WebGLReplay.prototype.drawHitDetectionReplayAll = function(gl, context, skippedF
  * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} opacity Global opacity.
- * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
- *  to skip.
- * @param {function((module:ol/Feature~Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+ * @param {function((module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature)): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.

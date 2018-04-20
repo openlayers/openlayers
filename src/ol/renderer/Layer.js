@@ -36,7 +36,7 @@ inherits(LayerRenderer, Observable);
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {function(this: S, (module:ol/Feature~Feature|ol.render.Feature), module:ol/layer/Layer~Layer): T}
+ * @param {function(this: S, (module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature), module:ol/layer/Layer~Layer): T}
  *     callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @return {T|undefined} Callback result.

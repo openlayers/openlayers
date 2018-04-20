@@ -255,7 +255,7 @@ CanvasVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordi
     const features = {};
     const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
       /**
-       * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
+       * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {

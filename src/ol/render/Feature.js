@@ -207,7 +207,7 @@ RenderFeature.prototype.getFlatCoordinates =
 /**
  * For API compatibility with {@link module:ol/Feature~Feature}, this method is useful when
  * determining the geometry type in style function (see {@link #getType}).
- * @return {ol.render.Feature} Feature.
+ * @return {module:ol/render/Feature~RenderFeature} Feature.
  * @api
  */
 RenderFeature.prototype.getGeometry = function() {
@@ -227,7 +227,7 @@ RenderFeature.prototype.getProperties = function() {
 
 /**
  * Get the feature for working with its geometry.
- * @return {ol.render.Feature} Feature.
+ * @return {module:ol/render/Feature~RenderFeature} Feature.
  */
 RenderFeature.prototype.getSimplifiedGeometry =
     RenderFeature.prototype.getGeometry;

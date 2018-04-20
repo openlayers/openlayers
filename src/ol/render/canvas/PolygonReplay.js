@@ -201,7 +201,7 @@ CanvasPolygonReplay.prototype.finish = function() {
 
 /**
  * @private
- * @param {module:ol/geom/Geometry~Geometry|ol.render.Feature} geometry Geometry.
+ * @param {module:ol/geom/Geometry~Geometry|module:ol/render/Feature~RenderFeature} geometry Geometry.
  */
 CanvasPolygonReplay.prototype.setFillStrokeStyles_ = function(geometry) {
   const state = this.state;
