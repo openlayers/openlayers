@@ -8,7 +8,7 @@ import Event from '../events/Event.js';
  * @constructor
  * @extends {module:ol/events/Event~Event}
  * @implements {oli.render.Event}
- * @param {ol.render.EventType} type Type.
+ * @param {module:ol/render/EventType~EventType} type Type.
  * @param {ol.render.VectorContext=} opt_vectorContext Vector context.
  * @param {module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
  * @param {?CanvasRenderingContext2D=} opt_context Context.
