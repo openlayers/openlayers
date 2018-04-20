@@ -60,8 +60,8 @@ inherits(VectorSourceEvent, Event);
 /**
  * @typedef {Object} Options
  * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
- * @property {Array.<module:ol/Feature~Feature>|ol.Collection.<module:ol/Feature~Feature>} [features]
- * Features. If provided as {@link ol.Collection}, the features in the source
+ * @property {Array.<module:ol/Feature~Feature>|module:ol/Collection~Collection.<module:ol/Feature~Feature>} [features]
+ * Features. If provided as {@link module:ol/Collection~Collection}, the features in the source
  * and the collection will stay in sync.
  * @property {module:ol/format/Feature~FeatureFormat} [format] The feature format used by the XHR
  * feature loader when `url` is set. Required if `url` is set, otherwise ignored.
@@ -135,7 +135,7 @@ inherits(VectorSourceEvent, Event);
  * through all features.
  *
  * When set to `false`, the features will be maintained in an
- * {@link ol.Collection}, which can be retrieved through
+ * {@link module:ol/Collection~Collection}, which can be retrieved through
  * {@link module:ol/source/Vector~VectorSource#getFeaturesCollection}.
  * @property {boolean} [wrapX=true] Wrap the world horizontally. For vector editing across the
  * -180° and 180° meridians to work properly, this should be set to `false`. The
