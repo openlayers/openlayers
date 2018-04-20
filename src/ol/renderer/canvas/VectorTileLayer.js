@@ -447,7 +447,7 @@ CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameSta
  * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {(module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>)} styles The style or array of styles.
- * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
+ * @param {module:ol/render/canvas/ReplayGroup~CanvasReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
 CanvasVectorTileLayerRenderer.prototype.renderFeature = function(feature, squaredTolerance, styles, replayGroup) {
