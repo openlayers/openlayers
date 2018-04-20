@@ -41,7 +41,7 @@ import {POINTER_ID} from '../pointer/MouseSource.js';
  * @constructor
  * @param {module:ol/pointer/PointerEventHandler~PointerEventHandler} dispatcher The event handler.
  * @param {ol.pointer.MouseSource} mouseSource Mouse source.
- * @extends {ol.pointer.EventSource}
+ * @extends {module:ol/pointer/EventSource~EventSource}
  */
 const TouchSource = function(dispatcher, mouseSource) {
   const mapping = {

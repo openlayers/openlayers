@@ -37,7 +37,7 @@ import EventSource from '../pointer/EventSource.js';
 /**
  * @param {module:ol/pointer/PointerEventHandler~PointerEventHandler} dispatcher Event handler.
  * @constructor
- * @extends {ol.pointer.EventSource}
+ * @extends {module:ol/pointer/EventSource~EventSource}
  */
 const NativeSource = function(dispatcher) {
   const mapping = {

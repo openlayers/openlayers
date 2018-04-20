@@ -70,7 +70,7 @@ const PointerEventHandler = function(element) {
   this.eventMap_ = {};
 
   /**
-   * @type {Array.<ol.pointer.EventSource>}
+   * @type {Array.<module:ol/pointer/EventSource~EventSource>}
    * @private
    */
   this.eventSourceList_ = [];
@@ -147,7 +147,7 @@ PointerEventHandler.prototype.registerSources = function() {
  * Add a new event source that will generate pointer events.
  *
  * @param {string} name A name for the event source
- * @param {ol.pointer.EventSource} source The source event.
+ * @param {module:ol/pointer/EventSource~EventSource} source The source event.
  */
 PointerEventHandler.prototype.registerSource = function(name, source) {
   const s = source;
