@@ -38,7 +38,7 @@ const TranslateEventType = {
 
 
 /**
- * @typedef {Object} interaction_TranslateOptions
+ * @typedef {Object} Options
  * @property {module:ol/Collection~Collection.<module:ol/Feature~Feature>} [features] Only features contained in this collection will be able to be translated. If
  * not specified, all features on the map will be able to be translated.
  * @property {Array.<module:ol/layer/Layer~Layer>|function(module:ol/layer/Layer~Layer): boolean} [layers] A list of layers from which features should be
@@ -94,7 +94,7 @@ inherits(TranslateEvent, Event);
  * @constructor
  * @extends {module:ol/interaction/Pointer~Pointer}
  * @fires module:ol/interaction/Translate~TranslateEvent
- * @param {olx.interaction.TranslateOptions=} opt_options Options.
+ * @param {module:ol/interaction/Translate~Options=} opt_options Options.
  * @api
  */
 const Translate = function(opt_options) {
