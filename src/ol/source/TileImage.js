@@ -61,7 +61,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * Base class for sources providing images divided into a tile grid.
  *
  * @constructor
- * @fires ol.source.Tile.Event
+ * @fires module:ol/source/Tile~TileSourceEvent
  * @extends {ol.source.UrlTile}
  * @param {module:ol/source/TileImage~Options=} options Image tile options.
  * @api

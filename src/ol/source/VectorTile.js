@@ -65,7 +65,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * editing.
  *
  * @constructor
- * @fires ol.source.Tile.Event
+ * @fires module:ol/source/Tile~TileSourceEvent
  * @extends {ol.source.UrlTile}
  * @param {module:ol/source/VectorTile~Options=} options Vector tile options.
  * @api
