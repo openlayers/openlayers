@@ -710,7 +710,7 @@ CanvasReplay.prototype.replay_ = function(
         const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
         const textLength = measure(text);
         if (overflow || textLength <= pathLength) {
-          const textAlign = /** @type {ol.render.canvas.TextReplay} */ (this).textStates[textKey].textAlign;
+          const textAlign = /** @type {module:ol.render.canvas.TextReplay~CanvasTextReplay} */ (this).textStates[textKey].textAlign;
           const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
           const parts = drawTextOnPath(
             pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
@@ -720,7 +720,7 @@ CanvasReplay.prototype.replay_ = function(
               for (c = 0, cc = parts.length; c < cc; ++c) {
                 part = parts[c]; // x, y, anchorX, rotation, chunk
                 chars = /** @type {string} */ (part[4]);
-                label = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, '', strokeKey);
+                label = /** @type {module:ol.render.canvas.TextReplay~CanvasTextReplay} */ (this).getImage(chars, textKey, '', strokeKey);
                 anchorX = /** @type {number} */ (part[2]) + strokeWidth;
                 anchorY = baseline * label.height + (0.5 - baseline) * 2 * strokeWidth - offsetY;
                 this.replayImage_(context,
@@ -734,7 +734,7 @@ CanvasReplay.prototype.replay_ = function(
               for (c = 0, cc = parts.length; c < cc; ++c) {
                 part = parts[c]; // x, y, anchorX, rotation, chunk
                 chars = /** @type {string} */ (part[4]);
-                label = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, fillKey, '');
+                label = /** @type {module:ol.render.canvas.TextReplay~CanvasTextReplay} */ (this).getImage(chars, textKey, fillKey, '');
                 anchorX = /** @type {number} */ (part[2]);
                 anchorY = baseline * label.height - offsetY;
                 this.replayImage_(context,
