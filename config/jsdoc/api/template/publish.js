@@ -203,8 +203,8 @@ function buildNav(members) {
     return 0;
   });
   _.each(merged, function(v) {
-    // exclude 'olx' and interfaces from sidebar
-    if (v.longname.indexOf('olx') !== 0 && v.interface !== true) {
+    // exclude interfaces from sidebar
+    if (v.interface !== true) {
       if (v.kind == 'namespace') {
         nav.push({
           type: 'namespace',

@@ -86,7 +86,6 @@ function includeTypes(doclet) {
     types[doclet.meta.code.name] = true;
   }
   if (doclet.type && doclet.meta.code.type == 'MemberExpression') {
-    // types in olx.js
     extractTypes(doclet);
   }
 }
@@ -95,11 +94,6 @@ exports.handlers = {
 
   newDoclet: function(e) {
     const doclet = e.doclet;
-    // Keep track of api items - needed in parseComplete to determine classes
-    // with api members.
-    if (doclet.meta.filename == 'olx.js' && doclet.kind == 'typedef') {
-      doclet.undocumented = false;
-    }
     if (doclet.stability) {
       api.push(doclet);
     }

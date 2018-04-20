@@ -1,42 +1,18 @@
 /*
- * Converts olx.js @type annotations into properties of the previous @typedef.
  * Changes @enum annotations into @typedef.
  */
 
-let lastOlxTypedef = null;
-const olxTypes = {};
-// names of the olx typenames
-const olxTypeNames = [];
 // types that are undefined or typedefs containing undefined
 let undefinedLikes = null;
 
-function addSubparams(params) {
-  for (let j = 0, jj = params.length; j < jj; ++j) {
-    const param = params[j];
-    const types = param.type.names;
-    for (let k = 0, kk = types.length; k < kk; ++k) {
-      const name = types[k];
-      if (name in olxTypes) {
-        param.subparams = olxTypes[name];
-        // TODO addSubparams(param.subparams);
-        // TODO Do we need to support multiple object literal types per
-        // param?
-        break;
-      }
-    }
-  }
-}
-
 /**
- * Changes the description of the param, if it is found to be a required
- * option of an olxTypeName.
+ * Changes the description of the param if it is required.
  * @param {Object} doclet The doclet.
  * @returns {Object} The modified doclet.
  */
 function markRequiredIfNeeded(doclet) {
   const memberof = doclet.memberof;
-  // only check doclets that belong to an olxTypeName
-  if (!memberof || olxTypeNames.indexOf(memberof) == -1) {
+  if (!memberof) {
     return doclet;
   }
 
@@ -91,19 +67,7 @@ exports.handlers = {
 
   newDoclet: function(e) {
     const doclet = e.doclet;
-    if (doclet.meta.filename == 'olx.js') {
-      if (doclet.kind == 'typedef') {
-        lastOlxTypedef = doclet;
-        olxTypeNames.push(doclet.longname);
-        olxTypes[doclet.longname] = [];
-        doclet.properties = [];
-      } else if (lastOlxTypedef && doclet.memberof == lastOlxTypedef.longname) {
-        lastOlxTypedef.properties.push(doclet);
-        olxTypes[lastOlxTypedef.longname].push(doclet);
-      } else {
-        lastOlxTypedef = null;
-      }
-    } else if (doclet.isEnum) {
+    if (doclet.isEnum) {
       // We never export enums, so we document them like typedefs
       doclet.kind = 'typedef';
       delete doclet.isEnum;
@@ -114,12 +78,7 @@ exports.handlers = {
     const doclets = e.doclets;
     findTypesLikeUndefined(doclets);
     for (let i = doclets.length - 1; i >= 0; --i) {
-      const doclet = doclets[i];
-      const params = doclet.params;
-      if (params) {
-        addSubparams(params);
-      }
-      markRequiredIfNeeded(doclet);
+      markRequiredIfNeeded(doclets[i]);
     }
   }
 

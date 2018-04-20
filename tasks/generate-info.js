@@ -9,7 +9,6 @@ const isWindows = process.platform.indexOf('win') === 0;
 const sourceDir = path.join(__dirname, '..', 'src');
 const externsDir = path.join(__dirname, '..', 'externs');
 const externsPaths = [
-  path.join(externsDir, 'olx.js'),
   path.join(externsDir, 'geojson.js')
 ];
 const infoPath = path.join(__dirname, '..', 'build', 'info.json');

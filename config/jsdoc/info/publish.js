@@ -22,8 +22,7 @@ exports.publish = function(data, opts) {
     return types;
   }
 
-  // get all doclets with the "api" property or define (excluding events) or
-  // with olx namespace
+  // get all doclets with the "api" property or define (excluding events)
   const classes = {};
   const docs = data(
     [
@@ -61,24 +60,7 @@ exports.publish = function(data, opts) {
     return include;
   }).forEach(function(doc) {
     const isExterns = (/[\\\/]externs$/).test(doc.meta.path);
-    if (isExterns && doc.longname.indexOf('olx.') === 0) {
-      if (doc.kind == 'typedef') {
-        typedefs.push({
-          name: doc.longname,
-          types: ['{}']
-        });
-      } else {
-        const typedef = typedefs[typedefs.length - 1];
-        if (!typedef) {
-          throw new Error(`Expected to see a typedef before ${doc.longname} at ${doc.meta.filename}:${doc.meta.lineno}`);
-        }
-        const type = typedef.types[0];
-        typedef.types[0] = type
-          .replace(/\}$/, ', ' + doc.longname.split('#')[1] +
-                ': (' + getTypes(doc.type.names).join('|') + ')}')
-          .replace('{, ', '{');
-      }
-    } else if (doc.define) {
+    if (doc.define) {
       defines.push({
         name: doc.longname,
         description: doc.description,

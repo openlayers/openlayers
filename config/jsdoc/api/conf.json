@@ -11,8 +11,7 @@
         "excludePattern": "(^|\\/|\\\\)_",
         "include": [
             "src",
-            "externs/oli.js",
-            "externs/olx.js"
+            "externs/oli.js"
         ]
     },
     "plugins": [

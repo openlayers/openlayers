@@ -177,7 +177,6 @@ The minimum config file looks like this:
     ],
     "js": [
       "node_modules/openlayers/src/ol/typedefs.js",
-      "node_modules/openlayers/externs/olx.js",
       "node_modules/openlayers/externs/oli.js"
     ],
     "extra_annotation_name": [
@@ -229,7 +228,6 @@ Here is a version of `config.json` with more compilation checks enabled:
     ],
     "js": [
       "node_modules/openlayers/src/ol/typedefs.js",
-      "node_modules/openlayers/externs/olx.js",
       "node_modules/openlayers/externs/oli.js"
     ],
     "jscomp_error": [
