@@ -23,12 +23,12 @@ import {createEditingStyle} from '../style/Style.js';
  * initial extent.
  * @property {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction} [boxStyle]
  * Style for the drawn extent box. Defaults to
- * {@link module:ol/style/Style~createEditing()[module:ol/geom/GeometryType~GeometryType.POLYGON]}
+ * {@link module:ol/style/Style~createEditing()[module:ol/geom/GeometryType.POLYGON]}
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
  * @property {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction} [pointerStyle]
  * Style for the cursor used to draw the extent. Defaults to
- * {@link module:ol/style/Style~createEditing()[module:ol/geom/GeometryType~GeometryType.POINT]}
+ * {@link module:ol/style/Style~createEditing()[module:ol/geom/GeometryType.POINT]}
  * @property {boolean} [wrapX=false] Wrap the drawn extent across multiple maps
  * in the X direction? Only affects visuals, not functionality.
  */

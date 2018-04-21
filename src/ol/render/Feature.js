@@ -17,7 +17,7 @@ import {create as createTransform, compose as composeTransform} from '../transfo
  * through the API is limited to getting the type and extent of the geometry.
  *
  * @constructor
- * @param {module:ol/geom/GeometryType~GeometryType} type Geometry type.
+ * @param {module:ol/geom/GeometryType} type Geometry type.
  * @param {Array.<number>} flatCoordinates Flat coordinates. These always need
  *     to be right-handed for polygons.
  * @param {Array.<number>|Array.<Array.<number>>} ends Ends or Endss.
@@ -39,7 +39,7 @@ const RenderFeature = function(type, flatCoordinates, ends, properties, id) {
 
   /**
    * @private
-   * @type {module:ol/geom/GeometryType~GeometryType}
+   * @type {module:ol/geom/GeometryType}
    */
   this.type_ = type;
 
@@ -249,7 +249,7 @@ RenderFeature.prototype.getStyleFunction = UNDEFINED;
 
 /**
  * Get the type of this feature's geometry.
- * @return {module:ol/geom/GeometryType~GeometryType} Geometry type.
+ * @return {module:ol/geom/GeometryType} Geometry type.
  * @api
  */
 RenderFeature.prototype.getType = function() {

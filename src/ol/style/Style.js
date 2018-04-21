@@ -380,10 +380,10 @@ export function createDefaultStyle(feature, resolution) {
 
 /**
  * Default styles for editing features.
- * @return {Object.<module:ol/geom/GeometryType~GeometryType, Array.<module:ol/style/Style~Style>>} Styles
+ * @return {Object.<module:ol/geom/GeometryType, Array.<module:ol/style/Style~Style>>} Styles
  */
 export function createEditingStyle() {
-  /** @type {Object.<module:ol/geom/GeometryType~GeometryType, Array.<module:ol/style/Style~Style>>} */
+  /** @type {Object.<module:ol/geom/GeometryType, Array.<module:ol/style/Style~Style>>} */
   const styles = {};
   const white = [255, 255, 255, 1];
   const blue = [0, 153, 255, 1];

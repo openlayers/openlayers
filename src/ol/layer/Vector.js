@@ -27,7 +27,7 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * @property {number} [renderBuffer=100] The buffer in pixels around the viewport extent used by the
  * renderer when getting features from the vector source for the rendering or hit-detection.
  * Recommended value: the size of the largest symbol, line width or label.
- * @property {module:ol/layer/VectorRenderType~VectorRenderType|string} [renderMode='vector'] Render mode for vector layers:
+ * @property {module:ol/layer/VectorRenderType|string} [renderMode='vector'] Render mode for vector layers:
  *  * `'image'`: Vector layers are rendered as images. Great performance, but point symbols and
  *    texts are always rotated with the view and pixels are scaled during zoom animations.
  *  * `'vector'`: Vector layers are rendered as vectors. Most accurate rendering even during
@@ -50,6 +50,22 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * @property {boolean} [updateWhileInteracting=false] When set to `true`, feature batches will be
  * recreated during interactions. See also `updateWhileAnimating`.
  */
+
+
+/**
+ * @enum {string}
+ * Render mode for vector layers:
+ *  * `'image'`: Vector layers are rendered as images. Great performance, but
+ *    point symbols and texts are always rotated with the view and pixels are
+ *    scaled during zoom animations.
+ *  * `'vector'`: Vector layers are rendered as vectors. Most accurate rendering
+ *    even during animations, but slower performance.
+ * @api
+ */
+export const RenderType = {
+  IMAGE: 'image',
+  VECTOR: 'vector'
+};
 
 
 /**
@@ -138,7 +154,7 @@ const VectorLayer = function(opt_options) {
   /**
    * The layer type.
    * @protected
-   * @type {module:ol/LayerType~LayerType}
+   * @type {module:ol/LayerType}
    */
   this.type = LayerType.VECTOR;
 
@@ -258,7 +274,7 @@ VectorLayer.prototype.setStyle = function(style) {
 
 
 /**
- * @return {module:ol/layer/VectorRenderType~VectorRenderType|string} The render mode.
+ * @return {module:ol/layer/VectorRenderType|string} The render mode.
  */
 VectorLayer.prototype.getRenderMode = function() {
   return this.renderMode_;

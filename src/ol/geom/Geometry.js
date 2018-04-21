@@ -10,6 +10,7 @@ import {get as getProjection, getTransform} from '../proj.js';
 import Units from '../proj/Units.js';
 import {create as createTransform, compose as composeTransform} from '../transform.js';
 
+
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -203,7 +204,7 @@ Geometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {};
 /**
  * Get the type of this geometry.
  * @abstract
- * @return {module:ol/geom/GeometryType~GeometryType} Geometry type.
+ * @return {module:ol/geom/GeometryType} Geometry type.
  */
 Geometry.prototype.getType = function() {};
 

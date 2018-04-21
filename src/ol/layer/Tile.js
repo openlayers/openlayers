@@ -61,7 +61,7 @@ const TileLayer = function(opt_options) {
   /**
    * The layer type.
    * @protected
-   * @type {module:ol/LayerType~LayerType}
+   * @type {module:ol/LayerType}
    */
   this.type = LayerType.TILE;
 

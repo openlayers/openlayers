@@ -605,7 +605,7 @@ Graticule.prototype.getParallels = function() {
 
 
 /**
- * @param {module:ol/render/Event~Event} e Event.
+ * @param {module:ol/render/Event~RenderEvent} e Event.
  * @private
  */
 Graticule.prototype.handlePostCompose_ = function(e) {
