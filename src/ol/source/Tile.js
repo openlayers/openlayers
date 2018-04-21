@@ -324,7 +324,7 @@ TileSource.prototype.useTile = UNDEFINED;
 
 /**
  * @classdesc
- * Events emitted by {@link ol.source.Tile} instances are instances of this
+ * Events emitted by {@link module:ol/source/Tile~TileSource} instances are instances of this
  * type.
  *
  * @constructor

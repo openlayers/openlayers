@@ -22,7 +22,7 @@ import {assign} from '../obj.js';
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {ol.RenderOrderFunction} [renderOrder] Render order. Function to be used when sorting
+ * @property {module:ol/render~OrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created. Use
  * `null` to avoid the sort, but get an undefined draw order.
  * @property {number} [renderBuffer=100] The buffer in pixels around the tile extent used by the
@@ -60,7 +60,7 @@ import {assign} from '../obj.js';
  * recreated during interactions. See also `updateWhileAnimating`.
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
- * @property {ol.RenderOrderFunction} [renderOrder] Render order. Function to be used when sorting
+ * @property {module:ol/render~OrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created.
  * @property {(module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction)} [style] Layer style. See
  * {@link ol.style} for default style which will be used if this is not defined.

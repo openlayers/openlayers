@@ -64,7 +64,7 @@ const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  *
  * @constructor
  * @extends {module:ol/layer/Vector~VectorLayer}
- * @fires ol.render.Event
+ * @fires module:ol/render/Event~RenderEvent
  * @param {module:ol/layer/Heatmap~Options=} opt_options Options.
  * @api
  */
@@ -259,7 +259,7 @@ Heatmap.prototype.handleStyleChanged_ = function() {
 
 
 /**
- * @param {ol.render.Event} event Post compose event
+ * @param {module:ol/render/Event~RenderEvent} event Post compose event
  * @private
  */
 Heatmap.prototype.handleRender_ = function(event) {

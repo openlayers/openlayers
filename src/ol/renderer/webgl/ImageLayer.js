@@ -113,7 +113,7 @@ WebGLImageLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordina
     coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
 
     /**
-       * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
+       * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
        * @return {?} Callback result.
        */
     function(feature) {

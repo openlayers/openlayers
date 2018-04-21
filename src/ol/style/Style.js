@@ -11,8 +11,8 @@ import Stroke from '../style/Stroke.js';
  * A function that takes an {@link module:ol/Feature~Feature} as argument and returns an
  * {@link module:ol/geom/Geometry~Geometry} that will be rendered and styled for the feature.
  *
- * @typedef {function((module:ol/Feature~Feature|ol.render.Feature)):
- *     (module:ol/geom/Geometry~Geometry|ol.render.Feature|undefined)} GeometryFunction
+ * @typedef {function((module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature)):
+ *     (module:ol/geom/Geometry~Geometry|module:ol/render/Feature~RenderFeature|undefined)} GeometryFunction
  */
 
 
@@ -344,7 +344,7 @@ let defaultStyles = null;
 
 
 /**
- * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
+ * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
  * @param {number} resolution Resolution.
  * @return {Array.<module:ol/style/Style~Style>} Style.
  */
@@ -451,9 +451,8 @@ export function createEditingStyle() {
 
 /**
  * Function that is called with a feature and returns its default geometry.
- * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature to get the geometry
- *     for.
- * @return {module:ol/geom/Geometry~Geometry|ol.render.Feature|undefined} Geometry to render.
+ * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature to get the geometry for.
+ * @return {module:ol/geom/Geometry~Geometry|module:ol/render/Feature~RenderFeature|undefined} Geometry to render.
  */
 function defaultGeometryFunction(feature) {
   return feature.getGeometry();

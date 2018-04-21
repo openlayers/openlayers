@@ -36,7 +36,7 @@ inherits(LayerRenderer, Observable);
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {function(this: S, (module:ol/Feature~Feature|ol.render.Feature), module:ol/layer/Layer~Layer): T}
+ * @param {function(this: S, (module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature), module:ol/layer/Layer~Layer): T}
  *     callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @return {T|undefined} Callback result.
@@ -55,7 +55,7 @@ LayerRenderer.prototype.hasFeatureAtCoordinate = FALSE;
 
 /**
  * Create a function that adds loaded tiles to the tile lookup.
- * @param {ol.source.Tile} source Tile source.
+ * @param {module:ol/source/Tile~TileSource} source Tile source.
  * @param {module:ol/proj/Projection~Projection} projection Projection of the tiles.
  * @param {Object.<number, Object.<string, module:ol/Tile~Tile>>} tiles Lookup of loaded tiles by zoom level.
  * @return {function(number, module:ol/TileRange~TileRange):boolean} A function that can be
@@ -135,13 +135,13 @@ LayerRenderer.prototype.renderIfReadyAndVisible = function() {
 
 /**
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
- * @param {ol.source.Tile} tileSource Tile source.
+ * @param {module:ol/source/Tile~TileSource} tileSource Tile source.
  * @protected
  */
 LayerRenderer.prototype.scheduleExpireCache = function(frameState, tileSource) {
   if (tileSource.canExpireCache()) {
     /**
-     * @param {ol.source.Tile} tileSource Tile source.
+     * @param {module:ol/source/Tile~TileSource} tileSource Tile source.
      * @param {module:ol/PluggableMap~PluggableMap} map Map.
      * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
      */
@@ -162,7 +162,7 @@ LayerRenderer.prototype.scheduleExpireCache = function(frameState, tileSource) {
 
 /**
  * @param {!Object.<string, !Object.<string, module:ol/TileRange~TileRange>>} usedTiles Used tiles.
- * @param {ol.source.Tile} tileSource Tile source.
+ * @param {module:ol/source/Tile~TileSource} tileSource Tile source.
  * @param {number} z Z.
  * @param {module:ol/TileRange~TileRange} tileRange Tile range.
  * @protected
@@ -192,7 +192,7 @@ LayerRenderer.prototype.updateUsedTiles = function(usedTiles, tileSource, z, til
  *   discarded by the tile queue
  * - enqueues missing tiles
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
- * @param {ol.source.Tile} tileSource Tile source.
+ * @param {module:ol/source/Tile~TileSource} tileSource Tile source.
  * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid Tile grid.
  * @param {number} pixelRatio Pixel ratio.
  * @param {module:ol/proj/Projection~Projection} projection Projection.

@@ -21,7 +21,7 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {ol.RenderOrderFunction} [renderOrder] Render order. Function to be used when sorting
+ * @property {module:ol/render~OrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created. Use
  * `null` to avoid the sort, but get an undefined draw order.
  * @property {number} [renderBuffer=100] The buffer in pixels around the viewport extent used by the
@@ -70,7 +70,7 @@ const Property = {
  *
  * @constructor
  * @extends {module:ol/layer/Layer~Layer}
- * @fires ol.render.Event
+ * @fires module:ol/render/Event~RenderEvent
  * @param {module:ol/layer/Vector~Options=} opt_options Options.
  * @api
  */

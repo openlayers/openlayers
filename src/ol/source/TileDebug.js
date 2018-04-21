@@ -92,7 +92,7 @@ LabeledTile.prototype.load = function() {};
  * Uses Canvas context2d, so requires Canvas support.
  *
  * @constructor
- * @extends {ol.source.Tile}
+ * @extends {module:ol/source/Tile~TileSource}
  * @param {module:ol/source/TileDebug~Options=} options Debug tile options.
  * @api
  */

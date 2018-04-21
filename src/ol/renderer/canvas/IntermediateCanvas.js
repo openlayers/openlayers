@@ -107,9 +107,9 @@ IntermediateCanvasRenderer.prototype.forEachFeatureAtCoordinate = function(coord
   return source.forEachFeatureAtCoordinate(
     coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
     /**
-       * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
-       * @return {?} Callback result.
-       */
+     * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
+     * @return {?} Callback result.
+     */
     function(feature) {
       return callback.call(thisArg, feature, layer);
     });

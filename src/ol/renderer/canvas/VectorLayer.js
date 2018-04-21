@@ -63,7 +63,7 @@ const CanvasVectorLayerRenderer = function(vectorLayer) {
 
   /**
    * @private
-   * @type {ol.render.canvas.ReplayGroup}
+   * @type {module:ol/render/canvas/ReplayGroup~CanvasReplayGroup}
    */
   this.replayGroup_ = null;
 
@@ -255,7 +255,7 @@ CanvasVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordi
     const features = {};
     const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
       /**
-       * @param {module:ol/Feature~Feature|ol.render.Feature} feature Feature.
+       * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {
@@ -405,9 +405,8 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
  * @param {module:ol/Feature~Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {(module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>)} styles The style or array of
- *     styles.
- * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
+ * @param {(module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>)} styles The style or array of styles.
+ * @param {module:ol/render/canvas/ReplayGroup~CanvasReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
 CanvasVectorLayerRenderer.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {

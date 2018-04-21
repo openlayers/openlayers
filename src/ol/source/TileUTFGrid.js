@@ -271,7 +271,7 @@ CustomTile.prototype.load = function() {
  * Layer source for UTFGrid interaction data loaded from TileJSON format.
  *
  * @constructor
- * @extends {ol.source.Tile}
+ * @extends {module:ol/source/Tile~TileSource}
  * @param {module:ol/source/TileUTFGrid~Options=} options Source options.
  * @api
  */

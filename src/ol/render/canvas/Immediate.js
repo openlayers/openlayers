@@ -19,15 +19,15 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 
 /**
  * @classdesc
- * A concrete subclass of {@link ol.render.VectorContext} that implements
+ * A concrete subclass of {@link module:ol/render/VectorContext~VectorContext} that implements
  * direct rendering of features and geometries to an HTML5 Canvas context.
  * Instances of this class are created internally by the library and
  * provided to application code as vectorContext member of the
- * {@link ol.render.Event} object associated with postcompose, precompose and
+ * {@link module:ol/render/Event~RenderEvent} object associated with postcompose, precompose and
  * render events emitted by layers and maps.
  *
  * @constructor
- * @extends {ol.render.VectorContext}
+ * @extends {module:ol/render/VectorContext~VectorContext}
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
  * @param {module:ol/extent~Extent} extent Extent.
@@ -450,7 +450,7 @@ CanvasImmediateRenderer.prototype.setStyle = function(style) {
  * Render a geometry into the canvas.  Call
  * {@link ol.render.canvas.Immediate#setStyle} first to set the rendering style.
  *
- * @param {module:ol/geom/Geometry~Geometry|ol.render.Feature} geometry The geometry to render.
+ * @param {module:ol/geom/Geometry~Geometry|module:ol/render/Feature~RenderFeature} geometry The geometry to render.
  * @override
  * @api
  */
@@ -526,7 +526,7 @@ CanvasImmediateRenderer.prototype.drawGeometryCollection = function(geometry) {
  * Render a Point geometry into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {module:ol/geom/Point~Point|ol.render.Feature} geometry Point geometry.
+ * @param {module:ol/geom/Point~Point|module:ol/render/Feature~RenderFeature} geometry Point geometry.
  * @override
  */
 CanvasImmediateRenderer.prototype.drawPoint = function(geometry) {
@@ -545,7 +545,7 @@ CanvasImmediateRenderer.prototype.drawPoint = function(geometry) {
  * Render a MultiPoint geometry  into the canvas.  Rendering is immediate and
  * uses the current style.
  *
- * @param {module:ol/geom/MultiPoint~MultiPoint|ol.render.Feature} geometry MultiPoint geometry.
+ * @param {module:ol/geom/MultiPoint~MultiPoint|module:ol/render/Feature~RenderFeature} geometry MultiPoint geometry.
  * @override
  */
 CanvasImmediateRenderer.prototype.drawMultiPoint = function(geometry) {
@@ -564,7 +564,7 @@ CanvasImmediateRenderer.prototype.drawMultiPoint = function(geometry) {
  * Render a LineString into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {module:ol/geom/LineString~LineString|ol.render.Feature} geometry LineString geometry.
+ * @param {module:ol/geom/LineString~LineString|module:ol/render/Feature~RenderFeature} geometry LineString geometry.
  * @override
  */
 CanvasImmediateRenderer.prototype.drawLineString = function(geometry) {
@@ -591,8 +591,7 @@ CanvasImmediateRenderer.prototype.drawLineString = function(geometry) {
  * Render a MultiLineString geometry into the canvas.  Rendering is immediate
  * and uses the current style.
  *
- * @param {module:ol/geom/MultiLineString~MultiLineString|ol.render.Feature} geometry MultiLineString
- *     geometry.
+ * @param {module:ol/geom/MultiLineString~MultiLineString|module:ol/render/Feature~RenderFeature} geometry MultiLineString geometry.
  * @override
  */
 CanvasImmediateRenderer.prototype.drawMultiLineString = function(geometry) {
@@ -624,7 +623,7 @@ CanvasImmediateRenderer.prototype.drawMultiLineString = function(geometry) {
  * Render a Polygon geometry into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {module:ol/geom/Polygon~Polygon|ol.render.Feature} geometry Polygon geometry.
+ * @param {module:ol/geom/Polygon~Polygon|module:ol/render/Feature~RenderFeature} geometry Polygon geometry.
  * @override
  */
 CanvasImmediateRenderer.prototype.drawPolygon = function(geometry) {
