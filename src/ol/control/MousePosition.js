@@ -31,9 +31,11 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * callback.
  * @property {Element|string} [target] Specify a target if you want the
  * control to be rendered outside of the map's viewport.
- * @property {string} [undefinedHTML=''] Markup for undefined coordinates.  If
- * `undefined`, then the last pointer position is retained when the pointer
- * moves outside the viewport.
+ * @property {string} [undefinedHTML='&nbsp;'] Markup to show when coordinates are not
+ * available (e.g. when the pointer leaves the map viewport).  By default, the last position
+ * will be replaced with `'&nbsp;'` when the pointer leaves the viewport.  To
+ * retain the last rendered position, set this option to something falsey (like an empty
+ * string `''`).
  */
 
 
@@ -78,13 +80,13 @@ const MousePosition = function(opt_options) {
    * @private
    * @type {string}
    */
-  this.undefinedHTML_ = 'undefinedHTML' in options ? options.undefinedHTML : '';
+  this.undefinedHTML_ = 'undefinedHTML' in options ? options.undefinedHTML : '&nbsp;';
 
   /**
    * @private
    * @type {boolean}
    */
-  this.renderOnMouseOut_ = this.undefinedHTML_ !== undefined;
+  this.renderOnMouseOut_ = !!this.undefinedHTML_;
 
   /**
    * @private
@@ -238,7 +240,7 @@ MousePosition.prototype.setProjection = function(projection) {
  * @private
  */
 MousePosition.prototype.updateHTML_ = function(pixel) {
-  let html = this.undefinedHTML_ === undefined ? ' ' : this.undefinedHTML_;
+  let html = this.undefinedHTML_;
   if (pixel && this.mapProjection_) {
     if (!this.transform_) {
       const projection = this.getProjection();
@@ -261,7 +263,7 @@ MousePosition.prototype.updateHTML_ = function(pixel) {
       }
     }
   }
-  if (!this.renderedHTML_ || html != this.renderedHTML_) {
+  if (!this.renderedHTML_ || html !== this.renderedHTML_) {
     this.element.innerHTML = html;
     this.renderedHTML_ = html;
   }

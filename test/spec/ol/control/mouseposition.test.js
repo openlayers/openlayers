@@ -1,10 +1,9 @@
 import Map from '../../../../src/ol/Map.js';
 import MousePosition from '../../../../src/ol/control/MousePosition.js';
 import View from '../../../../src/ol/View.js';
-
 import EventType from '../../../../src/ol/events/EventType.js';
 
-describe('ol.control.MousePosition', function() {
+describe('ol/control/MousePosition', function() {
 
   describe('constructor', function() {
 
@@ -66,7 +65,7 @@ describe('ol.control.MousePosition', function() {
     }
 
     describe('undefinedHTML', function() {
-      it('sets div.ol-mouse-position to options.undefinedHTML when mouse moves out', function(done) {
+      it('renders undefinedHTML when mouse moves out', function() {
         const ctrl = new MousePosition({
           undefinedHTML: 'some text'
         });
@@ -74,39 +73,53 @@ describe('ol.control.MousePosition', function() {
         map.renderSync();
 
         const element = document.querySelector('.ol-mouse-position', map.getTarget());
-        expect(element.innerText).to.be('some text');
+
+        simulateEvent(EventType.MOUSEOUT, width + 1, height + 1);
+        expect(element.innerHTML).to.be('some text');
 
         simulateEvent(EventType.MOUSEMOVE, 20, 30);
-        map.renderSync();
-        expect(element.innerText).to.be('20,-30');
+        expect(element.innerHTML).to.be('20,-30');
 
-        map.once('postrender', function() {
-          expect(element.innerText).to.be('some text');
-          done();
-        });
         simulateEvent(EventType.MOUSEOUT, width + 1, height + 1);
-        map.renderSync();
+        expect(element.innerHTML).to.be('some text');
       });
 
-      it('Retain mouse position in div.ol-mouse-position when options.undefinedHTML=undefined and mouse moves outside the viewport', function(done) {
+      it('clears the mouse position by default when the mouse moves outside the viewport', function() {
+        const ctrl = new MousePosition();
+        ctrl.setMap(map);
+        map.renderSync();
+
+        const element = document.querySelector('.ol-mouse-position', map.getTarget());
+
+        simulateEvent(EventType.MOUSEOUT, width + 1, height + 1);
+        expect(element.innerHTML).to.be('&nbsp;');
+
+        target.dispatchEvent(new MouseEvent('mousemove'));
+        simulateEvent(EventType.MOUSEMOVE, 20, 30);
+        expect(element.innerHTML).to.be('20,-30');
+
+        simulateEvent(EventType.MOUSEOUT, width + 1, height + 1);
+        expect(element.innerHTML).to.be('&nbsp;');
+      });
+
+      it('retains the mouse position when undefinedHTML is falsey and mouse moves outside the viewport', function() {
         const ctrl = new MousePosition({
-          undefinedHTML: undefined
+          undefinedHTML: ''
         });
         ctrl.setMap(map);
         map.renderSync();
 
         const element = document.querySelector('.ol-mouse-position', map.getTarget());
-        expect(element.innerHTML).to.be(' ');
+
+        simulateEvent(EventType.MOUSEOUT, width + 1, height + 1);
+        expect(element.innerHTML).to.be('');
 
         target.dispatchEvent(new MouseEvent('mousemove'));
         simulateEvent(EventType.MOUSEMOVE, 20, 30);
-        map.renderSync();
-        map.once('postrender', function() {
-          expect(element.innerText).to.be('20,-30');
-          done();
-        });
+        expect(element.innerHTML).to.be('20,-30');
+
         simulateEvent(EventType.MOUSEOUT, width + 1, height + 1);
-        map.renderSync();
+        expect(element.innerHTML).to.be('20,-30');
       });
     });
   });
