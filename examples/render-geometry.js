@@ -1,6 +1,4 @@
-import LineString from '../src/ol/geom/LineString.js';
-import Point from '../src/ol/geom/Point.js';
-import Polygon from '../src/ol/geom/Polygon.js';
+import {LineString, Point, Polygon} from '../src/ol/geom.js';
 import {toContext} from '../src/ol/render.js';
 import CircleStyle from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
