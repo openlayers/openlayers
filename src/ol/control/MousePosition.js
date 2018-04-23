@@ -31,7 +31,9 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * callback.
  * @property {Element|string} [target] Specify a target if you want the
  * control to be rendered outside of the map's viewport.
- * @property {string} [undefinedHTML=''] Markup for undefined coordinates.
+ * @property {string} [undefinedHTML=''] Markup for undefined coordinates.  If
+ * `undefined`, then the last pointer position is retained when the pointer
+ * moves outside the viewport.
  */
 
 
@@ -76,7 +78,13 @@ const MousePosition = function(opt_options) {
    * @private
    * @type {string}
    */
-  this.undefinedHTML_ = options.undefinedHTML !== undefined ? options.undefinedHTML : '';
+  this.undefinedHTML_ = 'undefinedHTML' in options ? options.undefinedHTML : '';
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.renderOnMouseOut_ = this.undefinedHTML_ !== undefined;
 
   /**
    * @private
@@ -190,11 +198,13 @@ MousePosition.prototype.setMap = function(map) {
   if (map) {
     const viewport = map.getViewport();
     this.listenerKeys.push(
-      listen(viewport, EventType.MOUSEMOVE,
-        this.handleMouseMove, this),
-      listen(viewport, EventType.MOUSEOUT,
-        this.handleMouseOut, this)
+      listen(viewport, EventType.MOUSEMOVE, this.handleMouseMove, this)
     );
+    if (this.renderOnMouseOut_) {
+      this.listenerKeys.push(
+        listen(viewport, EventType.MOUSEOUT, this.handleMouseOut, this)
+      );
+    }
   }
 };
 
@@ -228,7 +238,7 @@ MousePosition.prototype.setProjection = function(projection) {
  * @private
  */
 MousePosition.prototype.updateHTML_ = function(pixel) {
-  let html = this.undefinedHTML_;
+  let html = this.undefinedHTML_ === undefined ? ' ' : this.undefinedHTML_;
   if (pixel && this.mapProjection_) {
     if (!this.transform_) {
       const projection = this.getProjection();
