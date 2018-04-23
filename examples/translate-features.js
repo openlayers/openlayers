@@ -1,9 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import {defaults as defaultInteractions} from '../src/ol/interaction.js';
-import Select from '../src/ol/interaction/Select.js';
-import Translate from '../src/ol/interaction/Translate.js';
+import {defaults as defaultInteractions, Select, Translate} from '../src/ol/interaction.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';

@@ -1,7 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultInteractions} from '../src/ol/interaction.js';
-import DragRotateAndZoom from '../src/ol/interaction/DragRotateAndZoom.js';
+import {defaults as defaultInteractions, DragRotateAndZoom} from '../src/ol/interaction.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
