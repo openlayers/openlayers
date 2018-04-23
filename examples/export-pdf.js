@@ -6,8 +6,7 @@ import WKT from '../src/ol/format/WKT.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import {unByKey} from '../src/ol/Observable.js';
-import OSM from '../src/ol/source/OSM.js';
-import VectorSource from '../src/ol/source/Vector.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
 const raster = new TileLayer({
   source: new OSM()

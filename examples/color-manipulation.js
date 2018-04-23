@@ -2,8 +2,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import ImageLayer from '../src/ol/layer/Image.js';
-import RasterSource from '../src/ol/source/Raster.js';
-import Stamen from '../src/ol/source/Stamen.js';
+import {Raster as RasterSource, Stamen} from '../src/ol/source.js';
 
 
 /**

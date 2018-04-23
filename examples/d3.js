@@ -5,8 +5,7 @@ import {getWidth, getCenter} from '../src/ol/extent.js';
 import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat, toLonLat} from '../src/ol/proj.js';
-import ImageCanvasSource from '../src/ol/source/ImageCanvas.js';
-import Stamen from '../src/ol/source/Stamen.js';
+import {ImageCanvas as ImageCanvasSource, Stamen} from '../src/ol/source.js';
 
 
 const map = new Map({

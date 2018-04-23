@@ -1,8 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileArcGISRest from '../src/ol/source/TileArcGISRest.js';
+import {OSM, TileArcGISRest} from '../src/ol/source.js';
 
 const url = 'https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/' +
     'Specialty/ESRI_StateCityHighway_USA/MapServer';
