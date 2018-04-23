@@ -5,17 +5,29 @@ import {inherits} from '../index.js';
 import {getChangeEventType} from '../Object.js';
 import {assert} from '../asserts.js';
 import Control from '../control/Control.js';
-import ScaleLineUnits from '../control/ScaleLineUnits.js';
 import {CLASS_UNSELECTABLE} from '../css.js';
 import {listen} from '../events.js';
 import {getPointResolution, METERS_PER_UNIT} from '../proj.js';
-import Units from '../proj/Units.js';
+import ProjUnits from '../proj/Units.js';
 
 
 /**
  * @type {string}
  */
-const UNITS = 'units';
+const UNITS_PROP = 'units';
+
+/**
+ * Units for the scale line. Supported values are `'degrees'`, `'imperial'`,
+ * `'nautical'`, `'metric'`, `'us'`.
+ * @enum {string}
+ */
+export const Units = {
+  DEGREES: 'degrees',
+  IMPERIAL: 'imperial',
+  NAUTICAL: 'nautical',
+  METRIC: 'metric',
+  US: 'us'
+};
 
 
 /**
@@ -33,7 +45,7 @@ const LEADING_DIGITS = [1, 2, 5];
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {Element|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
- * @property {module:ol/control/ScaleLineUnits~ScaleLineUnits|string} [units='metric'] Units.
+ * @property {module:ol/control/ScaleLine~Units|string} [units='metric'] Units.
  */
 
 
@@ -110,11 +122,11 @@ const ScaleLine = function(opt_options) {
   });
 
   listen(
-    this, getChangeEventType(UNITS),
+    this, getChangeEventType(UNITS_PROP),
     this.handleUnitsChanged_, this);
 
-  this.setUnits(/** @type {module:ol/control/ScaleLineUnits~ScaleLineUnits} */ (options.units) ||
-      ScaleLineUnits.METRIC);
+  this.setUnits(/** @type {module:ol/control/ScaleLine~Units} */ (options.units) ||
+      Units.METRIC);
 
 };
 
@@ -123,13 +135,13 @@ inherits(ScaleLine, Control);
 
 /**
  * Return the units to use in the scale line.
- * @return {module:ol/control/ScaleLineUnits~ScaleLineUnits|undefined} The units
+ * @return {module:ol/control/ScaleLine~Units|undefined} The units
  * to use in the scale line.
  * @observable
  * @api
  */
 ScaleLine.prototype.getUnits = function() {
-  return /** @type {module:ol/control/ScaleLineUnits~ScaleLineUnits|undefined} */ (this.get(UNITS));
+  return /** @type {module:ol/control/ScaleLine~Units|undefined} */ (this.get(UNITS_PROP));
 };
 
 
@@ -160,12 +172,12 @@ ScaleLine.prototype.handleUnitsChanged_ = function() {
 
 /**
  * Set the units to use in the scale line.
- * @param {module:ol/control/ScaleLineUnits~ScaleLineUnits} units The units to use in the scale line.
+ * @param {module:ol/control/ScaleLine~Units} units The units to use in the scale line.
  * @observable
  * @api
  */
 ScaleLine.prototype.setUnits = function(units) {
-  this.set(UNITS, units);
+  this.set(UNITS_PROP, units);
 };
 
 
@@ -186,21 +198,21 @@ ScaleLine.prototype.updateElement_ = function() {
   const center = viewState.center;
   const projection = viewState.projection;
   const units = this.getUnits();
-  const pointResolutionUnits = units == ScaleLineUnits.DEGREES ?
-    Units.DEGREES :
-    Units.METERS;
+  const pointResolutionUnits = units == Units.DEGREES ?
+    ProjUnits.DEGREES :
+    ProjUnits.METERS;
   let pointResolution =
       getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
-  if (projection.getUnits() != Units.DEGREES && projection.getMetersPerUnit()
-    && pointResolutionUnits == Units.METERS) {
+  if (projection.getUnits() != ProjUnits.DEGREES && projection.getMetersPerUnit()
+    && pointResolutionUnits == ProjUnits.METERS) {
     pointResolution *= projection.getMetersPerUnit();
   }
 
   let nominalCount = this.minWidth_ * pointResolution;
   let suffix = '';
-  if (units == ScaleLineUnits.DEGREES) {
-    const metersPerDegree = METERS_PER_UNIT[Units.DEGREES];
-    if (projection.getUnits() == Units.DEGREES) {
+  if (units == Units.DEGREES) {
+    const metersPerDegree = METERS_PER_UNIT[ProjUnits.DEGREES];
+    if (projection.getUnits() == ProjUnits.DEGREES) {
       nominalCount *= metersPerDegree;
     } else {
       pointResolution /= metersPerDegree;
@@ -214,7 +226,7 @@ ScaleLine.prototype.updateElement_ = function() {
     } else {
       suffix = '\u00b0'; // degrees
     }
-  } else if (units == ScaleLineUnits.IMPERIAL) {
+  } else if (units == Units.IMPERIAL) {
     if (nominalCount < 0.9144) {
       suffix = 'in';
       pointResolution /= 0.0254;
@@ -225,10 +237,10 @@ ScaleLine.prototype.updateElement_ = function() {
       suffix = 'mi';
       pointResolution /= 1609.344;
     }
-  } else if (units == ScaleLineUnits.NAUTICAL) {
+  } else if (units == Units.NAUTICAL) {
     pointResolution /= 1852;
     suffix = 'nm';
-  } else if (units == ScaleLineUnits.METRIC) {
+  } else if (units == Units.METRIC) {
     if (nominalCount < 0.001) {
       suffix = 'μm';
       pointResolution *= 1000000;
@@ -241,7 +253,7 @@ ScaleLine.prototype.updateElement_ = function() {
       suffix = 'km';
       pointResolution /= 1000;
     }
-  } else if (units == ScaleLineUnits.US) {
+  } else if (units == Units.US) {
     if (nominalCount < 0.9144) {
       suffix = 'in';
       pointResolution *= 39.37;
