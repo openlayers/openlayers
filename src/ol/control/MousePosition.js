@@ -31,7 +31,9 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * callback.
  * @property {Element|string} [target] Specify a target if you want the
  * control to be rendered outside of the map's viewport.
- * @property {string} [undefinedHTML=''] Markup for undefined coordinates.
+ * @property {string} [undefinedHTML=''] Markup for undefined coordinates.  If
+ * `undefined`, then the last pointer position is retained when the pointer
+ * moves outside the viewport.
  */
 
 
