@@ -1,6 +1,6 @@
 import {UNDEFINED} from '../../../../src/ol/functions.js';
 import {listen} from '../../../../src/ol/events.js';
-import {iconImageCache} from '../../../../src/ol/style.js';
+import {shared as iconImageCache} from '../../../../src/ol/style/IconImageCache.js';
 import IconImage from '../../../../src/ol/style/IconImage.js';
 
 describe('ol.style.IconImageCache', function() {

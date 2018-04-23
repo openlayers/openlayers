@@ -4,7 +4,7 @@
 import {asString} from '../color.js';
 
 /**
- * Singleton class. Available through {@link ol.style.iconImageCache}.
+ * Singleton class. Available through {@link module:ol/style/IconImageCache~shared}.
  * @constructor
  */
 const IconImageCache = function() {
@@ -104,3 +104,11 @@ IconImageCache.prototype.setSize = function(maxCacheSize) {
   this.expire();
 };
 export default IconImageCache;
+
+
+/**
+ * The {@link module:ol/style/IconImageCache~IconImageCache} for
+ * {@link module:ol/style/Icon~Icon} images.
+ * @api
+ */
+export const shared = new IconImageCache();
