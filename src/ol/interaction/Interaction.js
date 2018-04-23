@@ -33,7 +33,7 @@ import {clamp} from '../math.js';
  *
  * @constructor
  * @param {module:ol/interaction/Interaction~InteractionOptions} options Options.
- * @extends {module:ol/Object~Object}
+ * @extends {module:ol/Object~BaseObject}
  * @api
  */
 const Interaction = function(options) {

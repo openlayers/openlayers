@@ -30,7 +30,7 @@ import PointerInteraction from '../interaction/Pointer.js';
  * And this interaction is not included in the default interactions.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~Pointer}
+ * @extends {module:ol/interaction/Pointer~PointerInteraction}
  * @param {module:ol/interaction/DragRotateAndZoom~Options=} opt_options Options.
  * @api
  */

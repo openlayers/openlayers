@@ -28,7 +28,7 @@ import {assign} from '../obj.js';
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Note that with `module:ol/layer/Base~BaseLayer` and all its subclasses, any property set in
- * the options is set as a {@link module:ol/Object~BaseObject} property on the layer object, so
+ * the options is set as a {@link module:ol/Object~BaseObject property on the layer object, so
  * is observable, and has get/set accessors.
  *
  * @constructor
@@ -69,7 +69,7 @@ const BaseLayer = function(options) {
 
   /**
    * The layer type.
-   * @type {module:ol/LayerType~LayerType}
+   * @type {module:ol/LayerType}
    * @protected;
    */
   this.type;
@@ -81,7 +81,7 @@ inherits(BaseLayer, BaseObject);
 
 /**
  * Get the layer type (used when creating a layer renderer).
- * @return {module:ol/LayerType~LayerType} The layer type.
+ * @return {module:ol/LayerType} The layer type.
  */
 BaseLayer.prototype.getType = function() {
   return this.type;

@@ -31,7 +31,7 @@ import {createEditingStyle} from '../style/Style.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/geom/GeometryType~GeometryType} type Geometry type of
+ * @property {module:ol/geom/GeometryType} type Geometry type of
  * the geometries being drawn with this instance.
  * @property {number} [clickTolerance=6] The maximum distance in pixels between
  * "down" and "up" for a "up" event to be considered a "click" event and
@@ -156,7 +156,7 @@ inherits(DrawEvent, Event);
  * Interaction for drawing feature geometries.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~Pointer}
+ * @extends {module:ol/interaction/Pointer~PointerInteraction}
  * @fires module:ol/interaction/Draw~DrawEvent
  * @param {module:ol/interaction/Draw~Options} options Options.
  * @api
@@ -222,10 +222,10 @@ const Draw = function(options) {
 
   /**
    * Geometry type.
-   * @type {module:ol/geom/GeometryType~GeometryType}
+   * @type {module:ol/geom/GeometryType}
    * @private
    */
-  this.type_ = /** @type {module:ol/geom/GeometryType~GeometryType} */ (options.type);
+  this.type_ = /** @type {module:ol/geom/GeometryType} */ (options.type);
 
   /**
    * Drawing mode (derived from geometry type.
@@ -1008,7 +1008,7 @@ export function createBox() {
 /**
  * Get the drawing mode.  The mode for mult-part geometries is the same as for
  * their single-part cousins.
- * @param {module:ol/geom/GeometryType~GeometryType} type Geometry type.
+ * @param {module:ol/geom/GeometryType} type Geometry type.
  * @return {module:ol/interaction/Draw~Mode} Drawing mode.
  */
 function getMode(type) {

@@ -136,7 +136,7 @@ inherits(ModifyEvent, Event);
  * for deletion, use the `deleteCondition` option.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~Pointer}
+ * @extends {module:ol/interaction/Pointer~PointerInteraction}
  * @param {module:ol/interaction/Modify~Options} options Options.
  * @fires module:ol/interaction/Modify~ModifyEvent
  * @api

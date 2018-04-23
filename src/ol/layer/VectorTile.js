@@ -11,6 +11,26 @@ import {assign} from '../obj.js';
 
 
 /**
+ * @enum {string}
+ * Render mode for vector tiles:
+ *  * `'image'`: Vector tiles are rendered as images. Great performance, but
+ *    point symbols and texts are always rotated with the view and pixels are
+ *    scaled during zoom animations.
+ *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels
+ *    are scaled during zoom animations. Point symbols and texts are accurately
+ *    rendered as vectors and can stay upright on rotated views.
+ *  * `'vector'`: Vector tiles are rendered as vectors. Most accurate rendering
+ *    even during animations, but slower performance than the other options.
+ * @api
+ */
+export const RenderType = {
+  IMAGE: 'image',
+  HYBRID: 'hybrid',
+  VECTOR: 'vector'
+};
+
+
+/**
  * @typedef {Object} Options
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
@@ -30,7 +50,7 @@ import {assign} from '../obj.js';
  * Recommended value: Vector tiles are usually generated with a buffer, so this value should match
  * the largest possible buffer of the used tiles. It should be at least the size of the largest
  * point symbol or line width.
- * @property {module:ol/layer/VectorRenderType~VectorRenderType|string} [renderMode='hybrid'] Render mode for vector tiles:
+ * @property {module:ol/layer/VectorTileRenderType|string} [renderMode='hybrid'] Render mode for vector tiles:
  *  * `'image'`: Vector tiles are rendered as images. Great performance, but point symbols and texts
  *    are always rotated with the view and pixels are scaled during zoom animations.
  *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom
@@ -71,7 +91,7 @@ import {assign} from '../obj.js';
 /**
  * @classdesc
  * Layer for vector tile data that is rendered client-side.
- * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
+ * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
@@ -107,7 +127,7 @@ const VectorTileLayer = function(opt_options) {
   /**
    * The layer type.
    * @protected
-   * @type {module:ol/LayerType~LayerType}
+   * @type {module:ol/LayerType}
    */
   this.type = LayerType.VECTOR_TILE;
 

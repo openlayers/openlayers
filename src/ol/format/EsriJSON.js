@@ -24,7 +24,7 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @const
- * @type {Object.<module:ol/geom/GeometryType~GeometryType, function(EsriJSONGeometry): module:ol/geom/Geometry~Geometry>}
+ * @type {Object.<module:ol/geom/GeometryType, function(EsriJSONGeometry): module:ol/geom/Geometry~Geometry>}
  */
 const GEOMETRY_READERS = {};
 GEOMETRY_READERS[GeometryType.POINT] = readPointGeometry;
@@ -90,7 +90,7 @@ function readGeometry(object, opt_options) {
   if (!object) {
     return null;
   }
-  /** @type {module:ol/geom/GeometryType~GeometryType} */
+  /** @type {module:ol/geom/GeometryType} */
   let type;
   if (typeof object.x === 'number' && typeof object.y === 'number') {
     type = GeometryType.POINT;

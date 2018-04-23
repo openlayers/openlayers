@@ -64,7 +64,7 @@ import RBush from '../structs/RBush.js';
  *     });
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~Pointer}
+ * @extends {module:ol/interaction/Pointer~PointerInteraction}
  * @param {module:ol/interaction/Snap~Options=} opt_options Options.
  * @api
  */

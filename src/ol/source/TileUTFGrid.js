@@ -21,7 +21,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * @constructor
  * @extends {module:ol/Tile~Tile}
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
- * @param {module:ol/TileState~TileState} state State.
+ * @param {module:ol/TileState} state State.
  * @param {string} src Image source URI.
  * @param {module:ol/extent~Extent} extent Extent of the tile.
  * @param {boolean} preemptive Load the tile when visible (before it's needed).

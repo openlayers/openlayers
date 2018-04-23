@@ -41,7 +41,7 @@ const MapRenderer = function(map) {
 
   /**
    * @private
-   * @type {Array.<module:ol/renderer/Layer~LayerRenderer}
+   * @type {Array.<module:ol/renderer/Layer~LayerRenderer>}
    */
   this.layerRendererConstructors_ = [];
 

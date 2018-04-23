@@ -23,7 +23,7 @@ import {disable} from '../rotationconstraint.js';
  * on a touch screen.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~Pointer}
+ * @extends {module:ol/interaction/Pointer~PointerInteraction}
  * @param {module:ol/interaction/PinchRotate~Options=} opt_options Options.
  * @api
  */

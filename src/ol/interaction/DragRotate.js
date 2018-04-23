@@ -29,7 +29,7 @@ import PointerInteraction from '../interaction/Pointer.js';
  * This interaction is only supported for mouse devices.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~Pointer}
+ * @extends {module:ol/interaction/Pointer~PointerInteraction}
  * @param {module:ol/interaction/DragRotate~Options=} opt_options Options.
  * @api
  */

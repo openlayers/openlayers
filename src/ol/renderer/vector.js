@@ -16,7 +16,7 @@ const SIMPLIFY_TOLERANCE = 0.5;
 
 /**
  * @const
- * @type {Object.<module:ol/geom/GeometryType~GeometryType,
+ * @type {Object.<module:ol/geom/GeometryType,
  *                function(module:ol/render/ReplayGroup~ReplayGroup, module:ol/geom/Geometry~Geometry,
  *                         module:ol/style/Style~Style, Object)>}
  */

@@ -62,8 +62,8 @@ import WebGLVectorLayerRenderer from './renderer/webgl/VectorLayer.js';
  * @param {module:ol/PluggableMap~MapOptions} options Map options.
  * @fires module:ol/MapBrowserEvent~MapBrowserEvent
  * @fires module:ol/MapEvent~MapEvent
- * @fires module:ol/render/Event~Event#postcompose
- * @fires module:ol/render/Event~Event#precompose
+ * @fires module:ol/render/Event~RenderEvent#postcompose
+ * @fires module:ol/render/Event~RenderEvent#precompose
  * @api
  */
 const WebGLMap = function(options) {

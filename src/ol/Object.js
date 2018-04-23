@@ -10,7 +10,7 @@ import {assign} from './obj.js';
 
 /**
  * @classdesc
- * Events emitted by {@link module:ol/Object~Object} instances are instances of
+ * Events emitted by {@link module:ol/Object~BaseObject} instances are instances of
  * this type.
  *
  * @param {string} type The event type.
@@ -71,7 +71,7 @@ inherits(ObjectEvent, Event);
  * `object.set('prop', 'value')`, and retrieve that with `object.get('prop')`.
  * You can listen for changes on that property value with
  * `object.on('change:prop', listener)`. You can get a list of all
- * properties with {@link module:ol/Object~Object#getProperties}.
+ * properties with {@link module:ol/Object~BaseObject#getProperties}.
  *
  * Note that the observable properties are separate from standard JS properties.
  * You can, for example, give your map object a title with

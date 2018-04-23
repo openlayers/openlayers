@@ -6,10 +6,16 @@ import Tile from './Tile.js';
 import TileState from './TileState.js';
 
 /**
+ * @typedef {function(new: ol.VectorTile, module:ol/tilecoord~TileCoord,
+ * module:ol/TileState, string, ?string, ol.TileLoadFunctionType)} TileClass
+ * @api
+ */
+
+/**
  * @constructor
  * @extends {module:ol/Tile~Tile}
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
- * @param {module:ol/TileState~TileState} state State.
+ * @param {module:ol/TileState} state State.
  * @param {string} src Data source url.
  * @param {module:ol/format/Feature~FeatureFormat} format Feature format.
  * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.

@@ -25,7 +25,7 @@ const Property = {
  * @constructor
  * @extends {module:ol/events/Event~Event}
  * @implements {oli.CollectionEvent}
- * @param {module:ol/CollectionEventType~CollectionEventType} type Type.
+ * @param {module:ol/CollectionEventType} type Type.
  * @param {*=} opt_element Element.
  */
 export const CollectionEvent = function(type, opt_element) {
@@ -59,7 +59,7 @@ inherits(CollectionEvent, Event);
  * Collection as a whole.
  *
  * @constructor
- * @extends {module:ol/Object~Object}
+ * @extends {module:ol/Object~BaseObject}
  * @fires module:ol/Collection~CollectionEvent
  * @param {Array.<T>=} opt_array Array.
  * @param {module:ol/Collection~Options=} opt_options Collection options.

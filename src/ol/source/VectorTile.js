@@ -21,9 +21,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * stroke operations.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {module:ol/source/State~State} [state] Source state.
- * @property {function(new: ol.VectorTile, module:ol/tilecoord~TileCoord,
- *                 module:ol/TileState~TileState, string, ?string,
- *                 ol.TileLoadFunctionType)} [tileClass] Class used to instantiate image tiles.
+ * @property {module:ol/VectorTile~TileClass} [tileClass] Class used to instantiate image tiles.
  * Default is {@link ol.VectorTile}.
  * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid] Tile grid.
  * @property {ol.TileLoadFunctionType} [tileLoadFunction]
@@ -118,7 +116,7 @@ const VectorTile = function(options) {
 
   /**
    * @protected
-   * @type {function(new: module:ol/VectorTile~VectorTile, module:ol/tilecoord~TileCoord, module:ol/TileState~TileState, string,
+   * @type {function(new: module:ol/VectorTile~VectorTile, module:ol/tilecoord~TileCoord, module:ol/TileState, string,
    *        module:ol/format/Feature~FeatureFormat, module:ol/Tile~LoadFunction)}
    */
   this.tileClass = options.tileClass ? options.tileClass : Tile;
