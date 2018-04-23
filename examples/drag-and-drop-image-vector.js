@@ -1,10 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import GPX from '../src/ol/format/GPX.js';
-import GeoJSON from '../src/ol/format/GeoJSON.js';
-import IGC from '../src/ol/format/IGC.js';
-import KML from '../src/ol/format/KML.js';
-import TopoJSON from '../src/ol/format/TopoJSON.js';
+import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import DragAndDrop from '../src/ol/interaction/DragAndDrop.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
