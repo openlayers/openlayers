@@ -1,8 +1,7 @@
 // NOCOMPILE
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import ImageLayer from '../src/ol/layer/Image.js';
-import TileLayer from '../src/ol/layer/Tile.js';
+import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import RasterSource from '../src/ol/source/Raster.js';
 import XYZ from '../src/ol/source/XYZ.js';

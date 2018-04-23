@@ -2,8 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Polygon from '../src/ol/geom/Polygon.js';
 import Draw, {createRegularPolygon, createBox} from '../src/ol/interaction/Draw.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import VectorLayer from '../src/ol/layer/Vector.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
 const raster = new TileLayer({

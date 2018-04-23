@@ -2,8 +2,7 @@ import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {circular as circularPolygon} from '../src/ol/geom/Polygon.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import VectorLayer from '../src/ol/layer/Vector.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import TileWMS from '../src/ol/source/TileWMS.js';
 import VectorSource from '../src/ol/source/Vector.js';
 

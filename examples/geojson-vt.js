@@ -4,8 +4,7 @@ import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import VectorTileLayer from '../src/ol/layer/VectorTile.js';
+import {Tile as TileLayer, VectorTile as VectorTileLayer} from '../src/ol/layer.js';
 import Projection from '../src/ol/proj/Projection.js';
 
 
