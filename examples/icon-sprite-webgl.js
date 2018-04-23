@@ -4,8 +4,7 @@ import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import Icon from '../src/ol/style/Icon.js';
-import Style from '../src/ol/style/Style.js';
+import {Icon, Style} from '../src/ol/style.js';
 
 
 const iconInfo = [{

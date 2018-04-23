@@ -9,7 +9,7 @@ import {getWidth} from '../extent.js';
 import {TRUE, UNDEFINED} from '../functions.js';
 import {visibleAtResolution} from '../layer/Layer.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
-import {compose as composeTransform, invert as invertTransform, setFromArray as transformSetFromArray} from '../transform.js'; import IconImageCache from '../style/IconImageCache.js';
+import {compose as composeTransform, invert as invertTransform, setFromArray as transformSetFromArray} from '../transform.js';
 
 
 /**

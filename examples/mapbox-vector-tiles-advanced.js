@@ -4,11 +4,7 @@ import MVT from '../src/ol/format/MVT.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
-import Fill from '../src/ol/style/Fill.js';
-import Icon from '../src/ol/style/Icon.js';
-import Stroke from '../src/ol/style/Stroke.js';
-import Style from '../src/ol/style/Style.js';
-import Text from '../src/ol/style/Text.js';
+import {Fill, Icon, Stroke, Style, Text} from '../src/ol/style.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 
 

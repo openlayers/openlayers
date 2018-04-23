@@ -4,9 +4,7 @@ import TopoJSON from '../src/ol/format/TopoJSON.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import Fill from '../src/ol/style/Fill.js';
-import Stroke from '../src/ol/style/Stroke.js';
-import Style from '../src/ol/style/Style.js';
+import {Fill, Stroke, Style} from '../src/ol/style.js';
 
 
 const raster = new TileLayer({

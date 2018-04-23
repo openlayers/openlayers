@@ -5,12 +5,7 @@ import KML from '../src/ol/format/KML.js';
 import {defaults as defaultInteractions, Select} from '../src/ol/interaction.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {Cluster, Stamen, Vector as VectorSource} from '../src/ol/source.js';
-import CircleStyle from '../src/ol/style/Circle.js';
-import Fill from '../src/ol/style/Fill.js';
-import RegularShape from '../src/ol/style/RegularShape.js';
-import Stroke from '../src/ol/style/Stroke.js';
-import Style from '../src/ol/style/Style.js';
-import Text from '../src/ol/style/Text.js';
+import {Circle as CircleStyle, Fill, RegularShape, Stroke, Style, Text} from '../src/ol/style.js';
 
 
 const earthquakeFill = new Fill({

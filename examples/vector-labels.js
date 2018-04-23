@@ -3,11 +3,7 @@ import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import CircleStyle from '../src/ol/style/Circle.js';
-import Fill from '../src/ol/style/Fill.js';
-import Stroke from '../src/ol/style/Stroke.js';
-import Style from '../src/ol/style/Style.js';
-import Text from '../src/ol/style/Text.js';
+import {Circle as CircleStyle, Fill, Stroke, Style, Text} from '../src/ol/style.js';
 
 let openSansAdded = false;
 
