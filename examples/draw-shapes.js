@@ -4,8 +4,7 @@ import Polygon from '../src/ol/geom/Polygon.js';
 import Draw, {createRegularPolygon, createBox} from '../src/ol/interaction/Draw.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import OSM from '../src/ol/source/OSM.js';
-import VectorSource from '../src/ol/source/Vector.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
 const raster = new TileLayer({
   source: new OSM()

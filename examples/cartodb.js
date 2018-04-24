@@ -1,8 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import CartoDB from '../src/ol/source/CartoDB.js';
-import OSM from '../src/ol/source/OSM.js';
+import {CartoDB, OSM} from '../src/ol/source.js';
 
 const mapConfig = {
   'layers': [{

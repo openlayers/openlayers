@@ -3,9 +3,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import OSM from '../src/ol/source/OSM.js';
-import RasterSource from '../src/ol/source/Raster.js';
-import XYZ from '../src/ol/source/XYZ.js';
+import {OSM, Raster, XYZ} from '../src/ol/source.js';
 
 
 /**
@@ -108,7 +106,7 @@ const elevation = new XYZ({
   transition: 0
 });
 
-const raster = new RasterSource({
+const raster = new Raster({
   sources: [elevation],
   operationType: 'image',
   operation: shade

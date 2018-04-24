@@ -3,8 +3,7 @@ import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileDebug from '../src/ol/source/TileDebug.js';
+import {OSM, TileDebug} from '../src/ol/source.js';
 
 
 const osmSource = new OSM();
