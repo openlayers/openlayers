@@ -1,9 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import {defaults as defaultInteractions} from '../src/ol/interaction.js';
-import Modify from '../src/ol/interaction/Modify.js';
-import Select from '../src/ol/interaction/Select.js';
+import {defaults as defaultInteractions, Modify, Select} from '../src/ol/interaction.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import CircleStyle from '../src/ol/style/Circle.js';

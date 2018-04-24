@@ -1,8 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
-import {defaults as defaultInteractions} from '../src/ol/interaction.js';
-import DragAndDrop from '../src/ol/interaction/DragAndDrop.js';
+import {defaults as defaultInteractions, DragAndDrop} from '../src/ol/interaction.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import {BingMaps, Vector as VectorSource} from '../src/ol/source.js';
