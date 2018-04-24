@@ -53,7 +53,7 @@ import {appendParams} from '../uri.js';
  * @property {ol.source.WMSServerType|string} [serverType]
  * The type of the remote WMS server. Currently only used when `hidpi` is
  * `true`.
- * @property {ol.TileLoadFunctionType} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;

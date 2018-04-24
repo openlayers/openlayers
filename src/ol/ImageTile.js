@@ -10,7 +10,7 @@ import EventType from './events/EventType.js';
 
 /**
  * @typedef {function(new: module:ol/ImageTile~ImageTile, module:ol/tilecoord~TileCoord,
- * module:ol/TileState, string, ?string, ol.TileLoadFunctionType)} TileClass
+ * module:ol/TileState, string, ?string, module:ol/Tile~LoadFunction)} TileClass
  * @api
  */
 

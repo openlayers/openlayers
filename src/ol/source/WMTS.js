@@ -42,7 +42,7 @@ import {appendParams} from '../uri.js';
  * template.  For KVP encoding, it is normal URL. A `{?-?}` template pattern,
  * for example `subdomain{a-f}.domain.com`, may be used instead of defining
  * each one separately in the `urls` option.
- * @property {ol.TileLoadFunctionType} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
