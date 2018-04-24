@@ -11,7 +11,7 @@ import ComparisonBinary from '../filter/ComparisonBinary.js';
  * @constructor
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} expression The value to compare.
- * @extends {ol.format.filter.ComparisonBinary}
+ * @extends {module:ol/format/filter/ComparisonBinary~ComparisonBinary}
  * @api
  */
 const LessThanOrEqualTo = function(propertyName, expression) {

@@ -12,7 +12,7 @@ import ComparisonBinary from '../filter/ComparisonBinary.js';
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!(string|number)} expression The value to compare.
  * @param {boolean=} opt_matchCase Case-sensitive?
- * @extends {ol.format.filter.ComparisonBinary}
+ * @extends {module:ol/format/filter/ComparisonBinary~ComparisonBinary}
  * @api
  */
 const NotEqualTo = function(propertyName, expression, opt_matchCase) {

@@ -9,8 +9,8 @@ import LogicalNary from '../filter/LogicalNary.js';
  * Represents a logical `<Or>` operator between two ore more filter conditions.
  *
  * @constructor
- * @param {...ol.format.filter.Filter} conditions Conditions.
- * @extends {ol.format.filter.LogicalNary}
+ * @param {...module:ol/format/filter/Filter~Filter} conditions Conditions.
+ * @extends {module:ol/format/filter/LogicalNary~LogicalNary}
  * @api
  */
 const Or = function(conditions) {

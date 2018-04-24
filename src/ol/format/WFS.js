@@ -44,7 +44,7 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
  * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services. Please note that some
  * Web Feature Services have repurposed `maxfeatures` instead.
  * @property {module:ol/extent~Extent} [bbox] Extent to use for the BBOX filter.
- * @property {ol.format.filter.Filter} [filter] Filter condition. See
+ * @property {module:ol/format/filter/Filter~Filter} [filter] Filter condition. See
  * {@link ol.format.filter} for more information.
  * @property {string} [resultType] Indicates what response should be returned,
  * E.g. `hits` only includes the `numberOfFeatures` attribute in the response and no features.
@@ -680,7 +680,7 @@ function writeQuery(node, featureType, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.filter.Filter} filter Filter.
+ * @param {module:ol/format/filter/Filter~Filter} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeFilterCondition(node, filter, objectStack) {
@@ -695,7 +695,7 @@ function writeFilterCondition(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.filter.Bbox} filter Filter.
+ * @param {module:ol/format/filter/Bbox~Bbox} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeBboxFilter(node, filter, objectStack) {
@@ -709,7 +709,7 @@ function writeBboxFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.filter.Contains} filter Filter.
+ * @param {module:ol/format/filter/Contains~Contains} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeContainsFilter(node, filter, objectStack) {
@@ -723,7 +723,7 @@ function writeContainsFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.filter.Intersects} filter Filter.
+ * @param {module:ol/format/filter/Intersects~Intersects} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeIntersectsFilter(node, filter, objectStack) {
@@ -737,7 +737,7 @@ function writeIntersectsFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.filter.Within} filter Filter.
+ * @param {module:ol/format/filter/Within~Within} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeWithinFilter(node, filter, objectStack) {
@@ -751,7 +751,7 @@ function writeWithinFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.filter.During} filter Filter.
+ * @param {module:ol/format/filter/During~During} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeDuringFilter(node, filter, objectStack) {
@@ -776,7 +776,7 @@ function writeDuringFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.filter.LogicalNary} filter Filter.
+ * @param {module:ol/format/filter/LogicalNary~LogicalNary} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeLogicalFilter(node, filter, objectStack) {
@@ -795,7 +795,7 @@ function writeLogicalFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.filter.Not} filter Filter.
+ * @param {module:ol/format/filter/Not~Not} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeNotFilter(node, filter, objectStack) {
@@ -811,7 +811,7 @@ function writeNotFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.filter.ComparisonBinary} filter Filter.
+ * @param {module:ol/format/filter/ComparisonBinary~ComparisonBinary} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeComparisonFilter(node, filter, objectStack) {
@@ -825,7 +825,7 @@ function writeComparisonFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.filter.IsNull} filter Filter.
+ * @param {module:ol/format/filter/IsNull~IsNull} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeIsNullFilter(node, filter, objectStack) {
@@ -835,7 +835,7 @@ function writeIsNullFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.filter.IsBetween} filter Filter.
+ * @param {module:ol/format/filter/IsBetween~IsBetween} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeIsBetweenFilter(node, filter, objectStack) {
@@ -853,7 +853,7 @@ function writeIsBetweenFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.filter.IsLike} filter Filter.
+ * @param {module:ol/format/filter/IsLike~IsLike} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeIsLikeFilter(node, filter, objectStack) {
@@ -915,7 +915,7 @@ function writeTimeInstant(node, time) {
 /**
  * Encode filter as WFS `Filter` and return the Node.
  *
- * @param {ol.format.filter.Filter} filter Filter.
+ * @param {module:ol/format/filter/Filter~Filter} filter Filter.
  * @return {Node} Result.
  * @api
  */

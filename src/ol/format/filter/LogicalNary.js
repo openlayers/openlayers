@@ -13,15 +13,15 @@ import Filter from '../filter/Filter.js';
  * @constructor
  * @abstract
  * @param {!string} tagName The XML tag name for this filter.
- * @param {...ol.format.filter.Filter} conditions Conditions.
- * @extends {ol.format.filter.Filter}
+ * @param {...module:ol/format/filter/Filter~Filter} conditions Conditions.
+ * @extends {module:ol/format/filter/Filter~Filter}
  */
 const LogicalNary = function(tagName, conditions) {
 
   Filter.call(this, tagName);
 
   /**
-   * @type {Array.<ol.format.filter.Filter>}
+   * @type {Array.<module:ol/format/filter/Filter~Filter>}
    */
   this.conditions = Array.prototype.slice.call(arguments, 1);
   assert(this.conditions.length >= 2, 57); // At least 2 conditions are required.
