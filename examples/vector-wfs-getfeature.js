@@ -5,8 +5,7 @@ import {
   like as likeFilter,
   and as andFilter
 } from '../src/ol/format/filter.js';
-import WFS from '../src/ol/format/WFS.js';
-import GeoJSON from '../src/ol/format/GeoJSON.js';
+import {WFS, GeoJSON} from '../src/ol/format.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
