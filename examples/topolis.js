@@ -8,11 +8,7 @@ import {Point, LineString, Polygon} from '../src/ol/geom.js';
 import {Draw, Snap} from '../src/ol/interaction.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import Style from '../src/ol/style/Style.js';
-import Stroke from '../src/ol/style/Stroke.js';
-import Fill from '../src/ol/style/Fill.js';
-import CircleStyle from '../src/ol/style/Circle.js';
-import Text from '../src/ol/style/Text.js';
+import {Fill, Circle as CircleStyle, Stroke, Style, Text} from '../src/ol/style.js';
 import MousePosition from '../src/ol/control/MousePosition.js';
 
 const raster = new TileLayer({

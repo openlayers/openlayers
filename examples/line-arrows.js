@@ -4,9 +4,7 @@ import Point from '../src/ol/geom/Point.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import Icon from '../src/ol/style/Icon.js';
-import Stroke from '../src/ol/style/Stroke.js';
-import Style from '../src/ol/style/Style.js';
+import {Icon, Stroke, Style} from '../src/ol/style.js';
 
 const raster = new TileLayer({
   source: new OSM()

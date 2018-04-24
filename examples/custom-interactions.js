@@ -6,10 +6,7 @@ import {LineString, Point, Polygon} from '../src/ol/geom.js';
 import {defaults as defaultInteractions, Pointer as PointerInteraction} from '../src/ol/interaction.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {TileJSON, Vector as VectorSource} from '../src/ol/source.js';
-import Fill from '../src/ol/style/Fill.js';
-import Icon from '../src/ol/style/Icon.js';
-import Stroke from '../src/ol/style/Stroke.js';
-import Style from '../src/ol/style/Style.js';
+import {Fill, Icon, Stroke, Style} from '../src/ol/style.js';
 
 
 /**

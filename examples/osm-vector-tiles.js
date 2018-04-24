@@ -4,9 +4,7 @@ import TopoJSON from '../src/ol/format/TopoJSON.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
-import Fill from '../src/ol/style/Fill.js';
-import Stroke from '../src/ol/style/Stroke.js';
-import Style from '../src/ol/style/Style.js';
+import {Fill, Stroke, Style} from '../src/ol/style.js';
 
 const key = 'vector-tiles-5eJz6JX';
 

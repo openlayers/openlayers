@@ -8,8 +8,9 @@ import EventType from '../events/EventType.js';
 import {getWidth} from '../extent.js';
 import {TRUE, UNDEFINED} from '../functions.js';
 import {visibleAtResolution} from '../layer/Layer.js';
-import {iconImageCache} from '../style.js';
+import {shared as iconImageCache} from '../style/IconImageCache.js';
 import {compose as composeTransform, invert as invertTransform, setFromArray as transformSetFromArray} from '../transform.js';
+
 
 /**
  * @constructor

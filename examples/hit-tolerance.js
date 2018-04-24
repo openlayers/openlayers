@@ -4,8 +4,7 @@ import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import Feature from '../src/ol/Feature.js';
 import LineString from '../src/ol/geom/LineString.js';
-import Style from '../src/ol/style/Style.js';
-import Stroke from '../src/ol/style/Stroke.js';
+import {Stroke, Style} from '../src/ol/style.js';
 
 const raster = new TileLayer({
   source: new OSM()

@@ -8,9 +8,7 @@ import Point from '../src/ol/geom/Point.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import CircleStyle from '../src/ol/style/Circle.js';
-import Stroke from '../src/ol/style/Stroke.js';
-import Style from '../src/ol/style/Style.js';
+import {Circle as CircleStyle, Stroke, Style} from '../src/ol/style.js';
 
 
 const map = new Map({
