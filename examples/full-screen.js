@@ -1,7 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
-import FullScreen from '../src/ol/control/FullScreen.js';
+import {defaults as defaultControls, FullScreen} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 

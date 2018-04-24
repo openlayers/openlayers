@@ -84,5 +84,6 @@
   },
   "eslintConfig": {
     "extends": "openlayers"
-  }
+  },
+  "sideEffects": false
 }

@@ -1,7 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
-import OverviewMap from '../src/ol/control/OverviewMap.js';
+import {defaults as defaultControls, OverviewMap} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
