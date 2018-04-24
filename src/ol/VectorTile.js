@@ -6,7 +6,7 @@ import Tile from './Tile.js';
 import TileState from './TileState.js';
 
 /**
- * @typedef {function(new: ol.VectorTile, module:ol/tilecoord~TileCoord,
+ * @typedef {function(new: module:ol/VectorTile~VectorTile, module:ol/tilecoord~TileCoord,
  * module:ol/TileState, string, ?string, ol.TileLoadFunctionType)} TileClass
  * @api
  */
