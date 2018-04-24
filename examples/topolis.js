@@ -4,9 +4,7 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import Point from '../src/ol/geom/Point.js';
-import LineString from '../src/ol/geom/LineString.js';
-import Polygon from '../src/ol/geom/Polygon.js';
+import {Point, LineString, Polygon} from '../src/ol/geom.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import Snap from '../src/ol/interaction/Snap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
