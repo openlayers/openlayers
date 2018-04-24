@@ -151,8 +151,8 @@ ExampleBuilder.prototype.render = async function(dir, chunk) {
     }
   }
   if (data.cloak) {
-    for (const key in data.cloak) {
-      jsSource = jsSource.replace(new RegExp(key, 'g'), data.cloak[key]);
+    for (const entry of data.cloak) {
+      jsSource = jsSource.replace(new RegExp(entry.key, 'g'), entry.value);
     }
   }
   data.js = {
