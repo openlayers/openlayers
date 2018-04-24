@@ -2,8 +2,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {getWidth, getCenter} from '../src/ol/extent.js';
-import ImageLayer from '../src/ol/layer/Image.js';
-import TileLayer from '../src/ol/layer/Tile.js';
+import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
 import {fromLonLat, toLonLat} from '../src/ol/proj.js';
 import {ImageCanvas as ImageCanvasSource, Stamen} from '../src/ol/source.js';
 

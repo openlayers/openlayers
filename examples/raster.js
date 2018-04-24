@@ -2,8 +2,7 @@
 // this example uses d3 for which we don't have an externs file.
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import ImageLayer from '../src/ol/layer/Image.js';
-import TileLayer from '../src/ol/layer/Tile.js';
+import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import RasterSource from '../src/ol/source/Raster.js';
 

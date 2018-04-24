@@ -3,8 +3,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import WKT from '../src/ol/format/WKT.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import VectorLayer from '../src/ol/layer/Vector.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {unByKey} from '../src/ol/Observable.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
