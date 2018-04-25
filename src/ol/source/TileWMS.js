@@ -50,7 +50,7 @@ import {appendParams} from '../uri.js';
  * If this is not defined, a default grid will be used: if there is a projection
  * extent, the grid will be based on that; if not, a grid based on a global
  * extent with origin at 0,0 will be used..
- * @property {ol.source.WMSServerType|string} [serverType]
+ * @property {module:ol/source/WMSServerType|string} [serverType]
  * The type of the remote WMS server. Currently only used when `hidpi` is
  * `true`.
  * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
@@ -124,9 +124,9 @@ const TileWMS = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.source.WMSServerType|undefined}
+   * @type {module:ol/source/WMSServerType|undefined}
    */
-  this.serverType_ = /** @type {ol.source.WMSServerType|undefined} */ (options.serverType);
+  this.serverType_ = /** @type {module:ol/source/WMSServerType|undefined} */ (options.serverType);
 
   /**
    * @private
