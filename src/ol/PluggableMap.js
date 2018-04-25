@@ -336,7 +336,7 @@ const PluggableMap = function(options) {
   this.overlayIdIndex_ = {};
 
   /**
-   * @type {module:ol/renderer/Map~Map}
+   * @type {module:ol/renderer/Map}
    * @private
    */
   this.renderer_ = this.createRenderer(this.viewport_, this);
@@ -831,7 +831,7 @@ PluggableMap.prototype.getPixelFromCoordinate = function(coordinate) {
 
 /**
  * Get the map renderer.
- * @return {module:ol/renderer/Map~Map} Renderer
+ * @return {module:ol/renderer/Map} Renderer
  */
 PluggableMap.prototype.getRenderer = function() {
   return this.renderer_;

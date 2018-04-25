@@ -30,7 +30,7 @@ const MapRenderer = function(map) {
 
   /**
    * @private
-   * @type {!Object.<string, ol.renderer.Layer>}
+   * @type {!Object.<string, module:ol/renderer/Layer>}
    */
   this.layerRenderers_ = {};
 
@@ -219,7 +219,7 @@ MapRenderer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, 
 /**
  * @param {module:ol/layer/Layer} layer Layer.
  * @protected
- * @return {ol.renderer.Layer} Layer renderer.
+ * @return {module:ol/renderer/Layer} Layer renderer.
  */
 MapRenderer.prototype.getLayerRenderer = function(layer) {
   const layerKey = getUid(layer).toString();
@@ -249,7 +249,7 @@ MapRenderer.prototype.getLayerRenderer = function(layer) {
 /**
  * @param {string} layerKey Layer key.
  * @protected
- * @return {ol.renderer.Layer} Layer renderer.
+ * @return {module:ol/renderer/Layer} Layer renderer.
  */
 MapRenderer.prototype.getLayerRendererByKey = function(layerKey) {
   return this.layerRenderers_[layerKey];
@@ -258,7 +258,7 @@ MapRenderer.prototype.getLayerRendererByKey = function(layerKey) {
 
 /**
  * @protected
- * @return {Object.<string, ol.renderer.Layer>} Layer renderers.
+ * @return {Object.<string, module:ol/renderer/Layer>} Layer renderers.
  */
 MapRenderer.prototype.getLayerRenderers = function() {
   return this.layerRenderers_;
@@ -284,7 +284,7 @@ MapRenderer.prototype.handleLayerRendererChange_ = function() {
 
 /**
  * @param {string} layerKey Layer key.
- * @return {ol.renderer.Layer} Layer renderer.
+ * @return {module:ol/renderer/Layer} Layer renderer.
  * @private
  */
 MapRenderer.prototype.removeLayerRendererByKey_ = function(layerKey) {

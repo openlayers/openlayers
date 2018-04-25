@@ -16,7 +16,7 @@ import SourceState from '../../source/State.js';
 
 /**
  * @constructor
- * @extends {ol.renderer.Map}
+ * @extends {module:ol/renderer/Map}
  * @param {module:ol/PluggableMap} map Map.
  * @api
  */
@@ -146,7 +146,7 @@ CanvasMapRenderer.prototype.renderFrame = function(frameState) {
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerState = layerStatesArray[i];
     layer = layerState.layer;
-    layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
+    layerRenderer = /** @type {module:ol/renderer/canvas/Layer} */ (this.getLayerRenderer(layer));
     if (!visibleAtResolution(layerState, viewResolution) ||
         layerState.sourceState != SourceState.READY) {
       continue;
@@ -192,7 +192,7 @@ CanvasMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, ca
     const layerState = layerStates[i];
     const layer = layerState.layer;
     if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
-      const layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
+      const layerRenderer = /** @type {module:ol/renderer/canvas/Layer} */ (this.getLayerRenderer(layer));
       result = layerRenderer.forEachLayerAtCoordinate(
         coordinate, frameState, callback, thisArg);
       if (result) {

@@ -15,7 +15,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 
 /**
  * @constructor
- * @extends {ol.renderer.canvas.IntermediateCanvas}
+ * @extends {module:ol/renderer/canvas/IntermediateCanvas}
  * @param {module:ol/layer/Image} imageLayer Single image layer.
  * @api
  */
@@ -42,7 +42,7 @@ const CanvasImageLayerRenderer = function(imageLayer) {
 
   /**
    * @private
-   * @type {ol.renderer.canvas.VectorLayer}
+   * @type {module:ol/renderer/canvas/VectorLayer}
    */
   this.vectorRenderer_ = null;
 
@@ -65,9 +65,9 @@ CanvasImageLayerRenderer['handles'] = function(layer) {
 
 /**
  * Create a layer renderer.
- * @param {ol.renderer.Map} mapRenderer The map renderer.
+ * @param {module:ol/renderer/Map} mapRenderer The map renderer.
  * @param {module:ol/layer/Layer} layer The layer to be rendererd.
- * @return {ol.renderer.canvas.ImageLayer} The layer renderer.
+ * @return {module:ol/renderer/canvas/ImageLayer} The layer renderer.
  */
 CanvasImageLayerRenderer['create'] = function(mapRenderer, layer) {
   const renderer = new CanvasImageLayerRenderer(/** @type {module:ol/layer/Image} */ (layer));
@@ -216,7 +216,7 @@ CanvasImageLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordin
 
 
 /**
- * @param {ol.renderer.canvas.VectorLayer} renderer Vector renderer.
+ * @param {module:ol/renderer/canvas/VectorLayer} renderer Vector renderer.
  */
 CanvasImageLayerRenderer.prototype.setVectorRenderer = function(renderer) {
   if (this.vectorRenderer_) {

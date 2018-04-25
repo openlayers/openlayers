@@ -49,7 +49,7 @@ const VECTOR_REPLAYS = {
 
 /**
  * @constructor
- * @extends {ol.renderer.canvas.TileLayer}
+ * @extends {module:ol/renderer/canvas/TileLayer}
  * @param {module:ol/layer/VectorTile~VectorTile} layer VectorTile layer.
  * @api
  */
@@ -108,9 +108,9 @@ CanvasVectorTileLayerRenderer['handles'] = function(layer) {
 
 /**
  * Create a layer renderer.
- * @param {ol.renderer.Map} mapRenderer The map renderer.
+ * @param {module:ol/renderer/Map} mapRenderer The map renderer.
  * @param {module:ol/layer/Layer} layer The layer to be rendererd.
- * @return {ol.renderer.canvas.VectorTileLayer} The layer renderer.
+ * @return {module:ol/renderer/canvas/VectorTileLayer} The layer renderer.
  */
 CanvasVectorTileLayerRenderer['create'] = function(mapRenderer, layer) {
   return new CanvasVectorTileLayerRenderer(/** @type {module:ol/layer/VectorTile~VectorTile} */ (layer));
@@ -195,8 +195,8 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(tile, fram
     const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
     /**
-     * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
-     * @this {ol.renderer.canvas.VectorTileLayer}
+     * @param {module:ol/Feature|module:ol/render/Feature~RenderFeature} feature Feature.
+     * @this {module:ol/renderer/canvas/VectorTileLayer}
      */
     const render = function(feature) {
       let styles;
