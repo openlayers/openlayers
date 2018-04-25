@@ -227,7 +227,7 @@ RBush.prototype.getExtent = function(opt_extent) {
 
 
 /**
- * @param {ol.structs.RBush} rbush R-Tree.
+ * @param {module:ol/structs/RBush} rbush R-Tree.
  */
 RBush.prototype.concat = function(rbush) {
   this.rbush_.load(rbush.rbush_.all());

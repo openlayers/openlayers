@@ -110,7 +110,7 @@ const WebGLMapRenderer = function(map) {
 
   /**
    * @private
-   * @type {ol.structs.LRUCache.<module:ol/renderer/webgl/Map~TextureCacheEntry|null>}
+   * @type {module:ol/structs/LRUCache.<module:ol/renderer/webgl/Map~TextureCacheEntry|null>}
    */
   this.textureCache_ = new LRUCache();
 
@@ -122,7 +122,7 @@ const WebGLMapRenderer = function(map) {
 
   /**
    * @private
-   * @type {ol.structs.PriorityQueue.<Array>}
+   * @type {module:ol/structs/PriorityQueue.<Array>}
    */
   this.tileTextureQueue_ = new PriorityQueue(
     /**
@@ -339,7 +339,7 @@ WebGLMapRenderer.prototype.getGL = function() {
 
 
 /**
- * @return {ol.structs.PriorityQueue.<Array>} Tile texture queue.
+ * @return {module:ol/structs/PriorityQueue.<Array>} Tile texture queue.
  */
 WebGLMapRenderer.prototype.getTileTextureQueue = function() {
   return this.tileTextureQueue_;
