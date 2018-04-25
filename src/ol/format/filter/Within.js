@@ -14,7 +14,7 @@ import Spatial from '../filter/Spatial.js';
  * @param {!module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @extends {ol.format.filter.Spatial}
+ * @extends {module:ol/format/filter/Spatial~Spatial}
  * @api
  */
 const Within = function(geometryName, geometry, opt_srsName) {

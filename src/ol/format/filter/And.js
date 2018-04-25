@@ -10,8 +10,8 @@ import LogicalNary from '../filter/LogicalNary.js';
  *
  * @constructor
  * @abstract
- * @param {...ol.format.filter.Filter} conditions Conditions.
- * @extends {ol.format.filter.LogicalNary}
+ * @param {...module:ol/format/filter/Filter~Filter} conditions Conditions.
+ * @extends {module:ol/format/filter/LogicalNary~LogicalNary}
  */
 const And = function(conditions) {
   const params = ['And'].concat(Array.prototype.slice.call(arguments));

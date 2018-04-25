@@ -34,7 +34,7 @@ import {appendParams} from '../uri.js';
  * @property {ol.ProjectionLike} projection Projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {ol.TileLoadFunctionType} [tileLoadFunction] Optional function to load a tile given a URL.
+ * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL.
  * The default is
  * ```js
  * function(imageTile, src) {

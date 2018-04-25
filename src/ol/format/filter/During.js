@@ -12,7 +12,7 @@ import Comparison from '../filter/Comparison.js';
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!string} begin The begin date in ISO-8601 format.
  * @param {!string} end The end date in ISO-8601 format.
- * @extends {ol.format.filter.Comparison}
+ * @extends {module:ol/format/filter/Comparison~Comparison}
  * @api
  */
 const During = function(propertyName, begin, end) {

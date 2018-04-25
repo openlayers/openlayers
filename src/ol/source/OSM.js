@@ -29,7 +29,7 @@ export const ATTRIBUTION = '&copy; ' +
  * @property {boolean} [opaque=true] Whether the layer is opaque.
  * @property {number} [reprojectionErrorThreshold=1.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {ol.TileLoadFunctionType} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;

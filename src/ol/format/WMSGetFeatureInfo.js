@@ -18,7 +18,7 @@ import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
 /**
  * @classdesc
  * Format for reading WMSGetFeatureInfo format. It uses
- * {@link ol.format.GML2} to read features.
+ * {@link module:ol/format/GML2~GML2} to read features.
  *
  * @constructor
  * @extends {module:ol/format/XMLFeature~XMLFeature}
@@ -38,7 +38,7 @@ const WMSGetFeatureInfo = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.format.GML2}
+   * @type {module:ol/format/GML2~GML2}
    */
   this.gmlFormat_ = new GML2();
 

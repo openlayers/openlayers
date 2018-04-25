@@ -23,8 +23,8 @@ import Within from '../format/filter/Within.js';
 /**
  * Create a logical `<And>` operator between two or more filter conditions.
  *
- * @param {...ol.format.filter.Filter} conditions Filter conditions.
- * @returns {!ol.format.filter.And} `<And>` operator.
+ * @param {...module:ol/format/filter/Filter~Filter} conditions Filter conditions.
+ * @returns {!module:ol/format/filter/And~And} `<And>` operator.
  * @api
  */
 export function and(conditions) {
@@ -36,8 +36,8 @@ export function and(conditions) {
 /**
  * Create a logical `<Or>` operator between two or more filter conditions.
  *
- * @param {...ol.format.filter.Filter} conditions Filter conditions.
- * @returns {!ol.format.filter.Or} `<Or>` operator.
+ * @param {...module:ol/format/filter/Filter~Filter} conditions Filter conditions.
+ * @returns {!module:ol/format/filter/Or~Or} `<Or>` operator.
  * @api
  */
 export function or(conditions) {
@@ -49,8 +49,8 @@ export function or(conditions) {
 /**
  * Represents a logical `<Not>` operator for a filter condition.
  *
- * @param {!ol.format.filter.Filter} condition Filter condition.
- * @returns {!ol.format.filter.Not} `<Not>` operator.
+ * @param {!module:ol/format/filter/Filter~Filter} condition Filter condition.
+ * @returns {!module:ol/format/filter/Not~Not} `<Not>` operator.
  * @api
  */
 export function not(condition) {
@@ -66,7 +66,7 @@ export function not(condition) {
  * @param {!module:ol/extent~Extent} extent Extent.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @returns {!ol.format.filter.Bbox} `<BBOX>` operator.
+ * @returns {!module:ol/format/filter/Bbox~Bbox} `<BBOX>` operator.
  * @api
  */
 export function bbox(geometryName, extent, opt_srsName) {
@@ -81,7 +81,7 @@ export function bbox(geometryName, extent, opt_srsName) {
  * @param {!module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @returns {!ol.format.filter.Contains} `<Contains>` operator.
+ * @returns {!module:ol/format/filter/Contains~Contains} `<Contains>` operator.
  * @api
  */
 export function contains(geometryName, geometry, opt_srsName) {
@@ -96,7 +96,7 @@ export function contains(geometryName, geometry, opt_srsName) {
  * @param {!module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @returns {!ol.format.filter.Intersects} `<Intersects>` operator.
+ * @returns {!module:ol/format/filter/Intersects~Intersects} `<Intersects>` operator.
  * @api
  */
 export function intersects(geometryName, geometry, opt_srsName) {
@@ -111,7 +111,7 @@ export function intersects(geometryName, geometry, opt_srsName) {
  * @param {!module:ol/geom/Geometry~Geometry} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @returns {!ol.format.filter.Within} `<Within>` operator.
+ * @returns {!module:ol/format/filter/Within~Within} `<Within>` operator.
  * @api
  */
 export function within(geometryName, geometry, opt_srsName) {
@@ -125,7 +125,7 @@ export function within(geometryName, geometry, opt_srsName) {
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!(string|number)} expression The value to compare.
  * @param {boolean=} opt_matchCase Case-sensitive?
- * @returns {!ol.format.filter.EqualTo} `<PropertyIsEqualTo>` operator.
+ * @returns {!module:ol/format/filter/EqualTo~EqualTo} `<PropertyIsEqualTo>` operator.
  * @api
  */
 export function equalTo(propertyName, expression, opt_matchCase) {
@@ -139,7 +139,7 @@ export function equalTo(propertyName, expression, opt_matchCase) {
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!(string|number)} expression The value to compare.
  * @param {boolean=} opt_matchCase Case-sensitive?
- * @returns {!ol.format.filter.NotEqualTo} `<PropertyIsNotEqualTo>` operator.
+ * @returns {!module:ol/format/filter/NotEqualTo~NotEqualTo} `<PropertyIsNotEqualTo>` operator.
  * @api
  */
 export function notEqualTo(propertyName, expression, opt_matchCase) {
@@ -152,7 +152,7 @@ export function notEqualTo(propertyName, expression, opt_matchCase) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} expression The value to compare.
- * @returns {!ol.format.filter.LessThan} `<PropertyIsLessThan>` operator.
+ * @returns {!module:ol/format/filter/LessThan~LessThan} `<PropertyIsLessThan>` operator.
  * @api
  */
 export function lessThan(propertyName, expression) {
@@ -165,7 +165,7 @@ export function lessThan(propertyName, expression) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} expression The value to compare.
- * @returns {!ol.format.filter.LessThanOrEqualTo} `<PropertyIsLessThanOrEqualTo>` operator.
+ * @returns {!module:ol/format/filter/LessThanOrEqualTo~LessThanOrEqualTo} `<PropertyIsLessThanOrEqualTo>` operator.
  * @api
  */
 export function lessThanOrEqualTo(propertyName, expression) {
@@ -178,7 +178,7 @@ export function lessThanOrEqualTo(propertyName, expression) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} expression The value to compare.
- * @returns {!ol.format.filter.GreaterThan} `<PropertyIsGreaterThan>` operator.
+ * @returns {!module:ol/format/filter/GreaterThan~GreaterThan} `<PropertyIsGreaterThan>` operator.
  * @api
  */
 export function greaterThan(propertyName, expression) {
@@ -191,7 +191,7 @@ export function greaterThan(propertyName, expression) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} expression The value to compare.
- * @returns {!ol.format.filter.GreaterThanOrEqualTo} `<PropertyIsGreaterThanOrEqualTo>` operator.
+ * @returns {!module:ol/format/filter/GreaterThanOrEqualTo~GreaterThanOrEqualTo} `<PropertyIsGreaterThanOrEqualTo>` operator.
  * @api
  */
 export function greaterThanOrEqualTo(propertyName, expression) {
@@ -204,7 +204,7 @@ export function greaterThanOrEqualTo(propertyName, expression) {
  * is null.
  *
  * @param {!string} propertyName Name of the context property to compare.
- * @returns {!ol.format.filter.IsNull} `<PropertyIsNull>` operator.
+ * @returns {!module:ol/format/filter/IsNull~IsNull} `<PropertyIsNull>` operator.
  * @api
  */
 export function isNull(propertyName) {
@@ -219,7 +219,7 @@ export function isNull(propertyName) {
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} lowerBoundary The lower bound of the range.
  * @param {!number} upperBoundary The upper bound of the range.
- * @returns {!ol.format.filter.IsBetween} `<PropertyIsBetween>` operator.
+ * @returns {!module:ol/format/filter/IsBetween~IsBetween} `<PropertyIsBetween>` operator.
  * @api
  */
 export function between(propertyName, lowerBoundary, upperBoundary) {
@@ -240,7 +240,7 @@ export function between(propertyName, lowerBoundary, upperBoundary) {
  * @param {string=} opt_escapeChar Escape character which can be used to escape
  *    the pattern characters. Default is '!'.
  * @param {boolean=} opt_matchCase Case-sensitive?
- * @returns {!ol.format.filter.IsLike} `<PropertyIsLike>` operator.
+ * @returns {!module:ol/format/filter/IsLike~IsLike} `<PropertyIsLike>` operator.
  * @api
  */
 export function like(propertyName, pattern,
@@ -256,7 +256,7 @@ export function like(propertyName, pattern,
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!string} begin The begin date in ISO-8601 format.
  * @param {!string} end The end date in ISO-8601 format.
- * @returns {!ol.format.filter.During} `<During>` operator.
+ * @returns {!module:ol/format/filter/During~During} `<During>` operator.
  * @api
  */
 export function during(propertyName, begin, end) {

@@ -22,7 +22,7 @@ const WMTSCapabilities = function() {
   XML.call(this);
 
   /**
-   * @type {ol.format.OWS}
+   * @type {module:ol/format/OWS~OWS}
    * @private
    */
   this.owsParser_ = new OWS();

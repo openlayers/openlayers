@@ -15,7 +15,7 @@ import Comparison from '../filter/Comparison.js';
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!(string|number)} expression The value to compare.
  * @param {boolean=} opt_matchCase Case-sensitive?
- * @extends {ol.format.filter.Comparison}
+ * @extends {module:ol/format/filter/Comparison~Comparison}
  */
 const ComparisonBinary = function(tagName, propertyName, expression, opt_matchCase) {
 
