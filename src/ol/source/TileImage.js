@@ -60,7 +60,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  *
  * @constructor
  * @fires module:ol/source/Tile~TileSourceEvent
- * @extends {ol.source.UrlTile}
+ * @extends {module:ol/source/UrlTile}
  * @param {module:ol/source/TileImage~Options=} options Image tile options.
  * @api
  */
