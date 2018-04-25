@@ -28,7 +28,7 @@ import {get as getProjection} from '../proj.js';
  * Polyline Algorithm Format.
  *
  * @constructor
- * @extends {module:ol/format/TextFeature~TextFeature}
+ * @extends {module:ol/format/TextFeature}
  * @param {module:ol/format/Polyline~Options=} opt_options Optional configuration object.
  * @api
  */
@@ -271,7 +271,7 @@ export function encodeUnsignedInteger(num) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature~Feature} Feature.
+ * @return {module:ol/Feature} Feature.
  * @api
  */
 Polyline.prototype.readFeature;
@@ -293,7 +293,7 @@ Polyline.prototype.readFeatureFromText = function(text, opt_options) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature~Feature>} Features.
+ * @return {Array.<module:ol/Feature>} Features.
  * @api
  */
 Polyline.prototype.readFeatures;
@@ -314,7 +314,7 @@ Polyline.prototype.readFeaturesFromText = function(text, opt_options) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/geom/Geometry~Geometry} Geometry.
+ * @return {module:ol/geom/Geometry} Geometry.
  * @api
  */
 Polyline.prototype.readGeometry;
@@ -329,9 +329,12 @@ Polyline.prototype.readGeometryFromText = function(text, opt_options) {
   flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
   const coordinates = inflateCoordinates(flatCoordinates, 0, flatCoordinates.length, stride);
 
-  return /** @type {module:ol/geom/Geometry~Geometry} */ (transformWithOptions(
-    new LineString(coordinates, this.geometryLayout_), false,
-    this.adaptOptions(opt_options))
+  return (
+    /** @type {module:ol/geom/Geometry} */ (transformWithOptions(
+      new LineString(coordinates, this.geometryLayout_),
+      false,
+      this.adaptOptions(opt_options)
+    ))
   );
 };
 
@@ -341,7 +344,7 @@ Polyline.prototype.readGeometryFromText = function(text, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/proj/Projection~Projection} Projection.
+ * @return {module:ol/proj/Projection} Projection.
  * @api
  */
 Polyline.prototype.readProjection;
@@ -373,7 +376,7 @@ Polyline.prototype.writeFeaturesText = function(features, opt_options) {
  * Write a single geometry in Polyline format.
  *
  * @function
- * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} Geometry.
  * @api
@@ -385,7 +388,7 @@ Polyline.prototype.writeGeometry;
  * @inheritDoc
  */
 Polyline.prototype.writeGeometryText = function(geometry, opt_options) {
-  geometry = /** @type {module:ol/geom/LineString~LineString} */
+  geometry = /** @type {module:ol/geom/LineString} */
     (transformWithOptions(geometry, true, this.adaptOptions(opt_options)));
   const flatCoordinates = geometry.getFlatCoordinates();
   const stride = geometry.getStride();

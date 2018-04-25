@@ -13,7 +13,7 @@ import {deflateCoordinate} from '../geom/flat/deflate.js';
  * Circle geometry.
  *
  * @constructor
- * @extends {module:ol/geom/SimpleGeometry~SimpleGeometry}
+ * @extends {module:ol/geom/SimpleGeometry}
  * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number=} opt_radius Radius.
  * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
@@ -30,7 +30,7 @@ inherits(Circle, SimpleGeometry);
 
 /**
  * Make a complete copy of the geometry.
- * @return {!module:ol/geom/Circle~Circle} Clone.
+ * @return {!module:ol/geom/Circle} Clone.
  * @override
  * @api
  */
@@ -254,7 +254,7 @@ Circle.prototype.setRadius = function(radius) {
  *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
  * @param {module:ol/proj~ProjectionLike} destination The desired projection.  Can be a
  *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
- * @return {module:ol/geom/Circle~Circle} This geometry.  Note that original geometry is
+ * @return {module:ol/geom/Circle} This geometry.  Note that original geometry is
  *     modified in place.
  * @function
  * @api

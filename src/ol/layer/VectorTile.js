@@ -60,8 +60,8 @@ export const RenderType = {
  *    animations, but slower performance than the other options.
  *
  * When `declutter` is set to `true`, `'hybrid'` will be used instead of `'image'`.
- * @property {module:ol/source/VectorTile~VectorTile} [source] Source.
- * @property {module:ol/PluggableMap~PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {module:ol/source/VectorTile} [source] Source.
+ * @property {module:ol/PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link ol.Map#addLayer}.
@@ -69,7 +69,7 @@ export const RenderType = {
  * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
  * means higher priority. When set to `true`, a `renderMode` of `'image'` will be overridden with
  * `'hybrid'`.
- * @property {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction} [style] Layer style. See
+ * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction} [style] Layer style. See
  * {@link ol.style} for default style which will be used if this is not defined.
  * @property {number} [maxTilesLoading=16] Maximum number tiles to load simultaneously.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
@@ -82,7 +82,7 @@ export const RenderType = {
  * means no preloading.
  * @property {module:ol/render~OrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created.
- * @property {(module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction)} [style] Layer style. See
+ * @property {(module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction)} [style] Layer style. See
  * {@link ol.style} for default style which will be used if this is not defined.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  */
@@ -96,7 +96,7 @@ export const RenderType = {
  * options means that `title` is observable, and has get/set accessors.
  *
  * @constructor
- * @extends {module:ol/layer/Vector~VectorLayer}
+ * @extends {module:ol/layer/Vector}
  * @param {module:ol/layer/VectorTile~Options=} opt_options Options.
  * @api
  */
@@ -181,9 +181,9 @@ VectorTileLayer.prototype.setUseInterimTilesOnError = function(useInterimTilesOn
 
 
 /**
- * Return the associated {@link module:ol/source/VectorTile~VectorTile vectortilesource} of the layer.
+ * Return the associated {@link module:ol/source/VectorTile vectortilesource} of the layer.
  * @function
- * @return {module:ol/source/VectorTile~VectorTile} Source.
+ * @return {module:ol/source/VectorTile} Source.
  * @api
  */
 VectorTileLayer.prototype.getSource;

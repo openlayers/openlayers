@@ -27,7 +27,7 @@ import SourceState from '../source/State.js';
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {(Array.<module:ol/layer/Base~BaseLayer>|module:ol/Collection~Collection.<module:ol/layer/Base~BaseLayer>)} [layers] Child layers.
+ * @property {(Array.<module:ol/layer/Base>|module:ol/Collection.<module:ol/layer/Base>)} [layers] Child layers.
  */
 
 
@@ -47,7 +47,7 @@ const Property = {
  * A generic `change` event is triggered when the group/Collection changes.
  *
  * @constructor
- * @extends {module:ol/layer/Base~BaseLayer}
+ * @extends {module:ol/layer/Base}
  * @param {module:ol/layer/Group~Options=} opt_options Layer options.
  * @api
  */
@@ -105,7 +105,7 @@ LayerGroup.prototype.handleLayerChange_ = function() {
 
 
 /**
- * @param {module:ol/events/Event~Event} event Event.
+ * @param {module:ol/events/Event} event Event.
  * @private
  */
 LayerGroup.prototype.handleLayersChanged_ = function(event) {
@@ -141,7 +141,7 @@ LayerGroup.prototype.handleLayersChanged_ = function(event) {
  * @private
  */
 LayerGroup.prototype.handleLayersAdd_ = function(collectionEvent) {
-  const layer = /** @type {module:ol/layer/Base~BaseLayer} */ (collectionEvent.element);
+  const layer = /** @type {module:ol/layer/Base} */ (collectionEvent.element);
   const key = getUid(layer).toString();
   this.listenerKeys_[key] = [
     listen(layer, ObjectEventType.PROPERTYCHANGE, this.handleLayerChange_, this),
@@ -156,7 +156,7 @@ LayerGroup.prototype.handleLayersAdd_ = function(collectionEvent) {
  * @private
  */
 LayerGroup.prototype.handleLayersRemove_ = function(collectionEvent) {
-  const layer = /** @type {module:ol/layer/Base~BaseLayer} */ (collectionEvent.element);
+  const layer = /** @type {module:ol/layer/Base} */ (collectionEvent.element);
   const key = getUid(layer).toString();
   this.listenerKeys_[key].forEach(unlistenByKey);
   delete this.listenerKeys_[key];
@@ -165,23 +165,25 @@ LayerGroup.prototype.handleLayersRemove_ = function(collectionEvent) {
 
 
 /**
- * Returns the {@link module:ol/Collection~Collection collection} of {@link module:ol/layer/Layer~Layer layers}
+ * Returns the {@link module:ol/Collection collection} of {@link module:ol/layer/Layer~Layer layers}
  * in this group.
- * @return {!module:ol/Collection~Collection.<module:ol/layer/Base~BaseLayer>} Collection of
- *   {@link module:ol/layer/Base~BaseLayer layers} that are part of this group.
+ * @return {!module:ol/Collection.<module:ol/layer/Base>} Collection of
+ *   {@link module:ol/layer/Base layers} that are part of this group.
  * @observable
  * @api
  */
 LayerGroup.prototype.getLayers = function() {
-  return /** @type {!module:ol/Collection~Collection.<module:ol/layer/Base~BaseLayer>} */ (this.get(Property.LAYERS));
+  return (
+    /** @type {!module:ol/Collection.<module:ol/layer/Base>} */ (this.get(Property.LAYERS))
+  );
 };
 
 
 /**
- * Set the {@link module:ol/Collection~Collection collection} of {@link module:ol/layer/Layer~Layer layers}
+ * Set the {@link module:ol/Collection collection} of {@link module:ol/layer/Layer~Layer layers}
  * in this group.
- * @param {!module:ol/Collection~Collection.<module:ol/layer/Base~BaseLayer>} layers Collection of
- *   {@link module:ol/layer/Base~BaseLayer layers} that are part of this group.
+ * @param {!module:ol/Collection.<module:ol/layer/Base>} layers Collection of
+ *   {@link module:ol/layer/Base layers} that are part of this group.
  * @observable
  * @api
  */

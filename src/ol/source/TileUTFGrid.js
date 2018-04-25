@@ -19,7 +19,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 /**
  * @constructor
- * @extends {module:ol/Tile~Tile}
+ * @extends {module:ol/Tile}
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {module:ol/TileState} state State.
  * @param {string} src Image source URI.
@@ -271,7 +271,7 @@ CustomTile.prototype.load = function() {
  * Layer source for UTFGrid interaction data loaded from TileJSON format.
  *
  * @constructor
- * @extends {module:ol/source/Tile~TileSource}
+ * @extends {module:ol/source/Tile}
  * @param {module:ol/source/TileUTFGrid~Options=} options Source options.
  * @api
  */
@@ -466,7 +466,9 @@ UTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
 UTFGrid.prototype.getTile = function(z, x, y, pixelRatio, projection) {
   const tileCoordKey = getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
-    return /** @type {!module:ol/Tile~Tile} */ (this.tileCache.get(tileCoordKey));
+    return (
+      /** @type {!module:ol/Tile} */ (this.tileCache.get(tileCoordKey))
+    );
   } else {
     const tileCoord = [z, x, y];
     const urlTileCoord =

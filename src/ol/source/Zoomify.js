@@ -25,8 +25,8 @@ const TierSizeCalculation = {
 
 /**
  * @constructor
- * @extends {module:ol/ImageTile~ImageTile}
- * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid TileGrid that the tile belongs to.
+ * @extends {module:ol/ImageTile}
+ * @param {module:ol/tilegrid/TileGrid} tileGrid TileGrid that the tile belongs to.
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {module:ol/TileState} state State.
  * @param {string} src Image source URI.
@@ -120,7 +120,7 @@ CustomTile.prototype.getImage = function() {
  * Imaging Protocol are supported).
  *
  * @constructor
- * @extends {module:ol/source/TileImage~TileImage}
+ * @extends {module:ol/source/TileImage}
  * @param {module:ol/source/Zoomify~Options=} opt_options Options.
  * @api
  */
@@ -204,7 +204,7 @@ const Zoomify = function(opt_options) {
       /**
        * @param {module:ol/tilecoord~TileCoord} tileCoord Tile Coordinate.
        * @param {number} pixelRatio Pixel ratio.
-       * @param {module:ol/proj/Projection~Projection} projection Projection.
+       * @param {module:ol/proj/Projection} projection Projection.
        * @return {string|undefined} Tile URL.
        */
       function(tileCoord, pixelRatio, projection) {
@@ -230,7 +230,8 @@ const Zoomify = function(opt_options) {
             return localContext[p];
           });
         }
-      });
+      }
+    );
   }
 
   const tileUrlFunction = createFromTileUrlFunctions(urls.map(createFromTemplate));

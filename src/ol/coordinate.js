@@ -50,7 +50,7 @@ export function add(coordinate, delta) {
  * Calculates the point closest to the passed coordinate on the passed circle.
  *
  * @param {module:ol/coordinate~Coordinate} coordinate The coordinate.
- * @param {module:ol/geom/Circle~Circle} circle The circle.
+ * @param {module:ol/geom/Circle} circle The circle.
  * @return {module:ol/coordinate~Coordinate} Closest point on the circumference.
  */
 export function closestOnCircle(coordinate, circle) {

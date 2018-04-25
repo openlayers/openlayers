@@ -11,10 +11,10 @@ import Spatial from '../filter/Spatial.js';
  *
  * @constructor
  * @param {!string} geometryName Geometry name to use.
- * @param {!module:ol/geom/Geometry~Geometry} geometry Geometry.
+ * @param {!module:ol/geom/Geometry} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @extends {module:ol/format/filter/Spatial~Spatial}
+ * @extends {module:ol/format/filter/Spatial}
  * @api
  */
 const Contains = function(geometryName, geometry, opt_srsName) {

@@ -41,7 +41,7 @@ const Fill = function(opt_options) {
 
 /**
  * Clones the style. The color is not cloned if it is an {@link module:ol/colorlike~ColorLike}.
- * @return {module:ol/style/Fill~Fill} The cloned style.
+ * @return {module:ol/style/Fill} The cloned style.
  * @api
  */
 Fill.prototype.clone = function() {

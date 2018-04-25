@@ -18,7 +18,7 @@ import Comparison from '../filter/Comparison.js';
  * @param {string=} opt_escapeChar Escape character which can be used to escape
  *    the pattern characters. Default is '!'.
  * @param {boolean=} opt_matchCase Case-sensitive?
- * @extends {module:ol/format/filter/Comparison~Comparison}
+ * @extends {module:ol/format/filter/Comparison}
  * @api
  */
 const IsLike = function(propertyName, pattern, opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {

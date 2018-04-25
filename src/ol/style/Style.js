@@ -8,11 +8,11 @@ import Fill from '../style/Fill.js';
 import Stroke from '../style/Stroke.js';
 
 /**
- * A function that takes an {@link module:ol/Feature~Feature} as argument and returns an
- * {@link module:ol/geom/Geometry~Geometry} that will be rendered and styled for the feature.
+ * A function that takes an {@link module:ol/Feature} as argument and returns an
+ * {@link module:ol/geom/Geometry} that will be rendered and styled for the feature.
  *
- * @typedef {function((module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature)):
- *     (module:ol/geom/Geometry~Geometry|module:ol/render/Feature~RenderFeature|undefined)} GeometryFunction
+ * @typedef {function((module:ol/Feature|module:ol/render/Feature)):
+ *     (module:ol/geom/Geometry|module:ol/render/Feature|undefined)} GeometryFunction
  */
 
 
@@ -29,14 +29,14 @@ import Stroke from '../style/Stroke.js';
 
 /**
  * @typedef {Object} Options
- * @property {string|module:ol/geom/Geometry~Geometry|module:ol/style/Style~GeometryFunction} [geometry] Feature property or geometry
+ * @property {string|module:ol/geom/Geometry|module:ol/style/Style~GeometryFunction} [geometry] Feature property or geometry
  * or function returning a geometry to render for this style.
- * @property {module:ol/style/Fill~Fill} [fill] Fill style.
- * @property {module:ol/style/Image~ImageStyle} [image] Image style.
+ * @property {module:ol/style/Fill} [fill] Fill style.
+ * @property {module:ol/style/Image} [image] Image style.
  * @property {module:ol/style/Style~RenderFunction} [renderer] Custom renderer. When configured, `fill`, `stroke` and `image` will be
  * ignored, and the provided function will be called with each render frame for each geometry.
- * @property {module:ol/style/Stroke~Stroke} [stroke] Stroke style.
- * @property {module:ol/style/Text~Text} [text] Text style.
+ * @property {module:ol/style/Stroke} [stroke] Stroke style.
+ * @property {module:ol/style/Text} [text] Text style.
  * @property {number} [zIndex] Z index.
  */
 
@@ -58,7 +58,7 @@ const Style = function(opt_options) {
 
   /**
    * @private
-   * @type {string|module:ol/geom/Geometry~Geometry|module:ol/style/Style~GeometryFunction}
+   * @type {string|module:ol/geom/Geometry|module:ol/style/Style~GeometryFunction}
    */
   this.geometry_ = null;
 
@@ -74,14 +74,14 @@ const Style = function(opt_options) {
 
   /**
    * @private
-   * @type {module:ol/style/Fill~Fill}
+   * @type {module:ol/style/Fill}
    */
   this.fill_ = options.fill !== undefined ? options.fill : null;
 
   /**
-   * @private
-   * @type {module:ol/style/Image~ImageStyle}
-   */
+     * @private
+     * @type {module:ol/style/Image}
+     */
   this.image_ = options.image !== undefined ? options.image : null;
 
   /**
@@ -92,13 +92,13 @@ const Style = function(opt_options) {
 
   /**
    * @private
-   * @type {module:ol/style/Stroke~Stroke}
+   * @type {module:ol/style/Stroke}
    */
   this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
   /**
    * @private
-   * @type {module:ol/style/Text~Text}
+   * @type {module:ol/style/Text}
    */
   this.text_ = options.text !== undefined ? options.text : null;
 
@@ -113,7 +113,7 @@ const Style = function(opt_options) {
 
 /**
  * Clones the style.
- * @return {module:ol/style/Style~Style} The cloned style.
+ * @return {module:ol/style/Style} The cloned style.
  * @api
  */
 Style.prototype.clone = function() {
@@ -156,7 +156,7 @@ Style.prototype.setRenderer = function(renderer) {
 
 /**
  * Get the geometry to be rendered.
- * @return {string|module:ol/geom/Geometry~Geometry|module:ol/style/Style~GeometryFunction}
+ * @return {string|module:ol/geom/Geometry|module:ol/style/Style~GeometryFunction}
  * Feature property or geometry or function that returns the geometry that will
  * be rendered with this style.
  * @api
@@ -179,7 +179,7 @@ Style.prototype.getGeometryFunction = function() {
 
 /**
  * Get the fill style.
- * @return {module:ol/style/Fill~Fill} Fill style.
+ * @return {module:ol/style/Fill} Fill style.
  * @api
  */
 Style.prototype.getFill = function() {
@@ -189,7 +189,7 @@ Style.prototype.getFill = function() {
 
 /**
  * Set the fill style.
- * @param {module:ol/style/Fill~Fill} fill Fill style.
+ * @param {module:ol/style/Fill} fill Fill style.
  * @api
  */
 Style.prototype.setFill = function(fill) {
@@ -199,7 +199,7 @@ Style.prototype.setFill = function(fill) {
 
 /**
  * Get the image style.
- * @return {module:ol/style/Image~ImageStyle} Image style.
+ * @return {module:ol/style/Image} Image style.
  * @api
  */
 Style.prototype.getImage = function() {
@@ -209,7 +209,7 @@ Style.prototype.getImage = function() {
 
 /**
  * Set the image style.
- * @param {module:ol/style/Image~ImageStyle} image Image style.
+ * @param {module:ol/style/Image} image Image style.
  * @api
  */
 Style.prototype.setImage = function(image) {
@@ -219,7 +219,7 @@ Style.prototype.setImage = function(image) {
 
 /**
  * Get the stroke style.
- * @return {module:ol/style/Stroke~Stroke} Stroke style.
+ * @return {module:ol/style/Stroke} Stroke style.
  * @api
  */
 Style.prototype.getStroke = function() {
@@ -229,7 +229,7 @@ Style.prototype.getStroke = function() {
 
 /**
  * Set the stroke style.
- * @param {module:ol/style/Stroke~Stroke} stroke Stroke style.
+ * @param {module:ol/style/Stroke} stroke Stroke style.
  * @api
  */
 Style.prototype.setStroke = function(stroke) {
@@ -239,7 +239,7 @@ Style.prototype.setStroke = function(stroke) {
 
 /**
  * Get the text style.
- * @return {module:ol/style/Text~Text} Text style.
+ * @return {module:ol/style/Text} Text style.
  * @api
  */
 Style.prototype.getText = function() {
@@ -249,7 +249,7 @@ Style.prototype.getText = function() {
 
 /**
  * Set the text style.
- * @param {module:ol/style/Text~Text} text Text style.
+ * @param {module:ol/style/Text} text Text style.
  * @api
  */
 Style.prototype.setText = function(text) {
@@ -270,7 +270,7 @@ Style.prototype.getZIndex = function() {
 /**
  * Set a geometry that is rendered instead of the feature's geometry.
  *
- * @param {string|module:ol/geom/Geometry~Geometry|module:ol/style/Style~GeometryFunction} geometry
+ * @param {string|module:ol/geom/Geometry|module:ol/style/Style~GeometryFunction} geometry
  *     Feature property or geometry or function returning a geometry to render
  *     for this style.
  * @api
@@ -280,13 +280,17 @@ Style.prototype.setGeometry = function(geometry) {
     this.geometryFunction_ = geometry;
   } else if (typeof geometry === 'string') {
     this.geometryFunction_ = function(feature) {
-      return /** @type {module:ol/geom/Geometry~Geometry} */ (feature.get(geometry));
+      return (
+        /** @type {module:ol/geom/Geometry} */ (feature.get(geometry))
+      );
     };
   } else if (!geometry) {
     this.geometryFunction_ = defaultGeometryFunction;
   } else if (geometry !== undefined) {
     this.geometryFunction_ = function() {
-      return /** @type {module:ol/geom/Geometry~Geometry} */ (geometry);
+      return (
+        /** @type {module:ol/geom/Geometry} */ (geometry)
+      );
     };
   }
   this.geometry_ = geometry;
@@ -306,9 +310,9 @@ Style.prototype.setZIndex = function(zIndex) {
 
 /**
  * Convert the provided object into a style function.  Functions passed through
- * unchanged.  Arrays of module:ol/style/Style~Style or single style objects wrapped in a
+ * unchanged.  Arrays of module:ol/style/Style or single style objects wrapped in a
  * new style function.
- * @param {module:ol/style~StyleFunction|Array.<module:ol/style/Style~Style>|module:ol/style/Style~Style} obj
+ * @param {module:ol/style~StyleFunction|Array.<module:ol/style/Style>|module:ol/style/Style} obj
  *     A style function, a single style, or an array of styles.
  * @return {module:ol/style~StyleFunction} A style function.
  */
@@ -319,7 +323,7 @@ export function toFunction(obj) {
     styleFunction = obj;
   } else {
     /**
-     * @type {Array.<module:ol/style/Style~Style>}
+     * @type {Array.<module:ol/style/Style>}
      */
     let styles;
     if (Array.isArray(obj)) {
@@ -338,15 +342,15 @@ export function toFunction(obj) {
 
 
 /**
- * @type {Array.<module:ol/style/Style~Style>}
+ * @type {Array.<module:ol/style/Style>}
  */
 let defaultStyles = null;
 
 
 /**
- * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
+ * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
  * @param {number} resolution Resolution.
- * @return {Array.<module:ol/style/Style~Style>} Style.
+ * @return {Array.<module:ol/style/Style>} Style.
  */
 export function createDefaultStyle(feature, resolution) {
   // We don't use an immediately-invoked function
@@ -380,10 +384,10 @@ export function createDefaultStyle(feature, resolution) {
 
 /**
  * Default styles for editing features.
- * @return {Object.<module:ol/geom/GeometryType, Array.<module:ol/style/Style~Style>>} Styles
+ * @return {Object.<module:ol/geom/GeometryType, Array.<module:ol/style/Style>>} Styles
  */
 export function createEditingStyle() {
-  /** @type {Object.<module:ol/geom/GeometryType, Array.<module:ol/style/Style~Style>>} */
+  /** @type {Object.<module:ol/geom/GeometryType, Array.<module:ol/style/Style>>} */
   const styles = {};
   const white = [255, 255, 255, 1];
   const blue = [0, 153, 255, 1];
@@ -451,8 +455,8 @@ export function createEditingStyle() {
 
 /**
  * Function that is called with a feature and returns its default geometry.
- * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature to get the geometry for.
- * @return {module:ol/geom/Geometry~Geometry|module:ol/render/Feature~RenderFeature|undefined} Geometry to render.
+ * @param {module:ol/Feature|module:ol/render/Feature} feature Feature to get the geometry for.
+ * @return {module:ol/geom/Geometry|module:ol/render/Feature|undefined} Geometry to render.
  */
 function defaultGeometryFunction(feature) {
   return feature.getGeometry();

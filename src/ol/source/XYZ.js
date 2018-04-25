@@ -19,7 +19,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {number} [maxZoom=18] Optional max zoom level.
  * @property {number} [maxZoom=0] Optional min zoom level.
- * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid] Tile grid.
+ * @property {module:ol/tilegrid/TileGrid} [tileGrid] Tile grid.
  * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
@@ -52,7 +52,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * TMS where `x` 0 and `y` 0 are in the bottom left can be used by
  * using the `{-y}` placeholder in the URL template, so long as the
  * source does not have a custom tile grid. In this case,
- * {@link module:ol/source/TileImage~TileImage} can be used with a `tileUrlFunction`
+ * {@link module:ol/source/TileImage} can be used with a `tileUrlFunction`
  * such as:
  *
  *  tileUrlFunction: function(coordinate) {
@@ -62,7 +62,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  *
  *
  * @constructor
- * @extends {module:ol/source/TileImage~TileImage}
+ * @extends {module:ol/source/TileImage}
  * @param {module:ol/source/XYZ~Options=} opt_options XYZ options.
  * @api
  */

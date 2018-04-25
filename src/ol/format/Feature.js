@@ -64,13 +64,13 @@ const FeatureFormat = function() {
 
   /**
    * @protected
-   * @type {module:ol/proj/Projection~Projection}
+   * @type {module:ol/proj/Projection}
    */
   this.defaultDataProjection = null;
 
   /**
    * @protected
-   * @type {module:ol/proj/Projection~Projection}
+   * @type {module:ol/proj/Projection}
    */
   this.defaultFeatureProjection = null;
 
@@ -136,7 +136,7 @@ FeatureFormat.prototype.getType = function() {};
  * @abstract
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature~Feature} Feature.
+ * @return {module:ol/Feature} Feature.
  */
 FeatureFormat.prototype.readFeature = function(source, opt_options) {};
 
@@ -147,7 +147,7 @@ FeatureFormat.prototype.readFeature = function(source, opt_options) {};
  * @abstract
  * @param {Document|Node|ArrayBuffer|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature~Feature>} Features.
+ * @return {Array.<module:ol/Feature>} Features.
  */
 FeatureFormat.prototype.readFeatures = function(source, opt_options) {};
 
@@ -158,7 +158,7 @@ FeatureFormat.prototype.readFeatures = function(source, opt_options) {};
  * @abstract
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/geom/Geometry~Geometry} Geometry.
+ * @return {module:ol/geom/Geometry} Geometry.
  */
 FeatureFormat.prototype.readGeometry = function(source, opt_options) {};
 
@@ -168,7 +168,7 @@ FeatureFormat.prototype.readGeometry = function(source, opt_options) {};
  *
  * @abstract
  * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/proj/Projection~Projection} Projection.
+ * @return {module:ol/proj/Projection} Projection.
  */
 FeatureFormat.prototype.readProjection = function(source) {};
 
@@ -177,7 +177,7 @@ FeatureFormat.prototype.readProjection = function(source) {};
  * Encode a feature in this format.
  *
  * @abstract
- * @param {module:ol/Feature~Feature} feature Feature.
+ * @param {module:ol/Feature} feature Feature.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */
@@ -188,7 +188,7 @@ FeatureFormat.prototype.writeFeature = function(feature, opt_options) {};
  * Encode an array of features in this format.
  *
  * @abstract
- * @param {Array.<module:ol/Feature~Feature>} features Features.
+ * @param {Array.<module:ol/Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */
@@ -199,7 +199,7 @@ FeatureFormat.prototype.writeFeatures = function(features, opt_options) {};
  * Write a single geometry in this format.
  *
  * @abstract
- * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */
@@ -208,11 +208,11 @@ FeatureFormat.prototype.writeGeometry = function(geometry, opt_options) {};
 export default FeatureFormat;
 
 /**
- * @param {module:ol/geom/Geometry~Geometry|module:ol/extent~Extent} geometry Geometry.
+ * @param {module:ol/geom/Geometry|module:ol/extent~Extent} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
  * @param {(module:ol/format/Feature~WriteOptions|module:ol/format/Feature~ReadOptions)=} opt_options
  *     Options.
- * @return {module:ol/geom/Geometry~Geometry|module:ol/extent~Extent} Transformed geometry.
+ * @return {module:ol/geom/Geometry|module:ol/extent~Extent} Transformed geometry.
  */
 export function transformWithOptions(geometry, write, opt_options) {
   const featureProjection = opt_options ?
@@ -220,7 +220,7 @@ export function transformWithOptions(geometry, write, opt_options) {
   const dataProjection = opt_options ?
     getProjection(opt_options.dataProjection) : null;
   /**
-   * @type {module:ol/geom/Geometry~Geometry|module:ol/extent~Extent}
+   * @type {module:ol/geom/Geometry|module:ol/extent~Extent}
    */
   let transformed;
   if (featureProjection && dataProjection &&

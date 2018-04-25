@@ -18,7 +18,7 @@ import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, 
 /**
  * @constructor
  * @extends {ol.renderer.canvas.Layer}
- * @param {module:ol/layer/Vector~VectorLayer} vectorLayer Vector layer.
+ * @param {module:ol/layer/Vector} vectorLayer Vector layer.
  * @api
  */
 const CanvasVectorLayerRenderer = function(vectorLayer) {
@@ -57,13 +57,13 @@ const CanvasVectorLayerRenderer = function(vectorLayer) {
 
   /**
    * @private
-   * @type {function(module:ol/Feature~Feature, module:ol/Feature~Feature): number|null}
+   * @type {function(module:ol/Feature, module:ol/Feature): number|null}
    */
   this.renderedRenderOrder_ = null;
 
   /**
    * @private
-   * @type {module:ol/render/canvas/ReplayGroup~CanvasReplayGroup}
+   * @type {module:ol/render/canvas/ReplayGroup}
    */
   this.replayGroup_ = null;
 
@@ -87,7 +87,7 @@ inherits(CanvasVectorLayerRenderer, CanvasLayerRenderer);
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {module:ol/layer/Layer~Layer} layer The candidate layer.
+ * @param {module:ol/layer/Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
 CanvasVectorLayerRenderer['handles'] = function(layer) {
@@ -98,11 +98,11 @@ CanvasVectorLayerRenderer['handles'] = function(layer) {
 /**
  * Create a layer renderer.
  * @param {ol.renderer.Map} mapRenderer The map renderer.
- * @param {module:ol/layer/Layer~Layer} layer The layer to be rendererd.
+ * @param {module:ol/layer/Layer} layer The layer to be rendererd.
  * @return {ol.renderer.canvas.VectorLayer} The layer renderer.
  */
 CanvasVectorLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasVectorLayerRenderer(/** @type {module:ol/layer/Vector~VectorLayer} */ (layer));
+  return new CanvasVectorLayerRenderer(/** @type {module:ol/layer/Vector} */ (layer));
 };
 
 
@@ -128,7 +128,7 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
   const projection = viewState.projection;
   const rotation = viewState.rotation;
   const projectionExtent = projection.getExtent();
-  const vectorSource = /** @type {module:ol/source/Vector~VectorSource} */ (this.getLayer().getSource());
+  const vectorSource = /** @type {module:ol/source/Vector} */ (this.getLayer().getSource());
 
   let transform = this.getTransform(frameState, 0);
 
@@ -145,7 +145,7 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
     if (this.declutterTree_) {
       this.declutterTree_.clear();
     }
-    const layer = /** @type {module:ol/layer/Vector~VectorLayer} */ (this.getLayer());
+    const layer = /** @type {module:ol/layer/Vector} */ (this.getLayer());
     let drawOffsetX = 0;
     let drawOffsetY = 0;
     let replayContext;
@@ -250,12 +250,12 @@ CanvasVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordi
   } else {
     const resolution = frameState.viewState.resolution;
     const rotation = frameState.viewState.rotation;
-    const layer = /** @type {module:ol/layer/Vector~VectorLayer} */ (this.getLayer());
+    const layer = /** @type {module:ol/layer/Vector} */ (this.getLayer());
     /** @type {!Object.<string, boolean>} */
     const features = {};
     const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
       /**
-       * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
+       * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {
@@ -271,7 +271,7 @@ CanvasVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordi
 
 
 /**
- * @param {module:ol/events/Event~Event} event Event.
+ * @param {module:ol/events/Event} event Event.
  */
 CanvasVectorLayerRenderer.prototype.handleFontsChanged_ = function(event) {
   const layer = this.getLayer();
@@ -283,7 +283,7 @@ CanvasVectorLayerRenderer.prototype.handleFontsChanged_ = function(event) {
 
 /**
  * Handle changes in image style state.
- * @param {module:ol/events/Event~Event} event Image style change event.
+ * @param {module:ol/events/Event} event Image style change event.
  * @private
  */
 CanvasVectorLayerRenderer.prototype.handleStyleImageChange_ = function(event) {
@@ -295,7 +295,7 @@ CanvasVectorLayerRenderer.prototype.handleStyleImageChange_ = function(event) {
  * @inheritDoc
  */
 CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerState) {
-  const vectorLayer = /** @type {module:ol/layer/Vector~VectorLayer} */ (this.getLayer());
+  const vectorLayer = /** @type {module:ol/layer/Vector} */ (this.getLayer());
   const vectorSource = vectorLayer.getSource();
 
   const animating = frameState.viewHints[ViewHint.ANIMATING];
@@ -356,7 +356,7 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
     pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
-   * @param {module:ol/Feature~Feature} feature Feature.
+   * @param {module:ol/Feature} feature Feature.
    * @this {ol.renderer.canvas.VectorLayer}
    */
   const render = function(feature) {
@@ -372,11 +372,11 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
     }
   }.bind(this);
   if (vectorLayerRenderOrder) {
-    /** @type {Array.<module:ol/Feature~Feature>} */
+    /** @type {Array.<module:ol/Feature>} */
     const features = [];
     vectorSource.forEachFeatureInExtent(extent,
       /**
-       * @param {module:ol/Feature~Feature} feature Feature.
+       * @param {module:ol/Feature} feature Feature.
        */
       function(feature) {
         features.push(feature);
@@ -402,11 +402,11 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature.
+ * @param {module:ol/Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {(module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>)} styles The style or array of styles.
- * @param {module:ol/render/canvas/ReplayGroup~CanvasReplayGroup} replayGroup Replay group.
+ * @param {(module:ol/style/Style|Array.<module:ol/style/Style>)} styles The style or array of styles.
+ * @param {module:ol/render/canvas/ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
 CanvasVectorLayerRenderer.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {

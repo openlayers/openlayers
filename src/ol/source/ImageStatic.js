@@ -33,7 +33,7 @@ import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
  * A layer source for displaying a single, static image.
  *
  * @constructor
- * @extends {module:ol/source/Image~ImageSource}
+ * @extends {module:ol/source/Image}
  * @param {module:ol/source/ImageStatic~Options=} options ImageStatic options.
  * @api
  */

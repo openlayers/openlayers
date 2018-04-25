@@ -29,7 +29,7 @@ import PointerInteraction from '../interaction/Pointer.js';
  * This interaction is only supported for mouse devices.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~PointerInteraction}
+ * @extends {module:ol/interaction/Pointer}
  * @param {module:ol/interaction/DragRotate~Options=} opt_options Options.
  * @api
  */
@@ -66,8 +66,8 @@ inherits(DragRotate, PointerInteraction);
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {module:ol/interaction/DragRotate~DragRotate}
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {module:ol/interaction/DragRotate}
  */
 function handleDragEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
@@ -93,9 +93,9 @@ function handleDragEvent(mapBrowserEvent) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {module:ol/interaction/DragRotate~DragRotate}
+ * @this {module:ol/interaction/DragRotate}
  */
 function handleUpEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
@@ -112,9 +112,9 @@ function handleUpEvent(mapBrowserEvent) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {module:ol/interaction/DragRotate~DragRotate}
+ * @this {module:ol/interaction/DragRotate}
  */
 function handleDownEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {

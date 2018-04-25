@@ -10,8 +10,8 @@ import WebGLReplayGroup from '../webgl/ReplayGroup.js';
 
 /**
  * @constructor
- * @extends {module:ol/render/VectorContext~VectorContext}
- * @param {module:ol/webgl/Context~WebGLContext} context Context.
+ * @extends {module:ol/render/VectorContext}
+ * @param {module:ol/webgl/Context} context Context.
  * @param {module:ol/coordinate~Coordinate} center Center.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
@@ -60,25 +60,25 @@ const WebGLImmediateRenderer = function(context, center, resolution, rotation, s
 
   /**
    * @private
-   * @type {module:ol/style/Image~ImageStyle}
+   * @type {module:ol/style/Image}
    */
   this.imageStyle_ = null;
 
   /**
    * @private
-   * @type {module:ol/style/Fill~Fill}
+   * @type {module:ol/style/Fill}
    */
   this.fillStyle_ = null;
 
   /**
    * @private
-   * @type {module:ol/style/Stroke~Stroke}
+   * @type {module:ol/style/Stroke}
    */
   this.strokeStyle_ = null;
 
   /**
    * @private
-   * @type {module:ol/style/Text~Text}
+   * @type {module:ol/style/Text}
    */
   this.textStyle_ = null;
 
@@ -89,7 +89,7 @@ inherits(WebGLImmediateRenderer, VectorContext);
 
 /**
  * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
- * @param {module:ol/geom/Geometry~Geometry|module:ol/render/Feature~RenderFeature} geometry Geometry.
+ * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry Geometry.
  * @private
  */
 WebGLImmediateRenderer.prototype.drawText_ = function(replayGroup, geometry) {
@@ -115,7 +115,7 @@ WebGLImmediateRenderer.prototype.drawText_ = function(replayGroup, geometry) {
  * Set the rendering style.  Note that since this is an immediate rendering API,
  * any `zIndex` on the provided style will be ignored.
  *
- * @param {module:ol/style/Style~Style} style The rendering style.
+ * @param {module:ol/style/Style} style The rendering style.
  * @override
  * @api
  */
@@ -130,7 +130,7 @@ WebGLImmediateRenderer.prototype.setStyle = function(style) {
  * Render a geometry into the canvas.  Call
  * {@link ol.render.webgl.Immediate#setStyle} first to set the rendering style.
  *
- * @param {module:ol/geom/Geometry~Geometry|module:ol/render/Feature~RenderFeature} geometry The geometry to render.
+ * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry The geometry to render.
  * @override
  * @api
  */
@@ -138,28 +138,28 @@ WebGLImmediateRenderer.prototype.drawGeometry = function(geometry) {
   const type = geometry.getType();
   switch (type) {
     case GeometryType.POINT:
-      this.drawPoint(/** @type {module:ol/geom/Point~Point} */ (geometry), null);
+      this.drawPoint(/** @type {module:ol/geom/Point} */ (geometry), null);
       break;
     case GeometryType.LINE_STRING:
-      this.drawLineString(/** @type {module:ol/geom/LineString~LineString} */ (geometry), null);
+      this.drawLineString(/** @type {module:ol/geom/LineString} */ (geometry), null);
       break;
     case GeometryType.POLYGON:
-      this.drawPolygon(/** @type {module:ol/geom/Polygon~Polygon} */ (geometry), null);
+      this.drawPolygon(/** @type {module:ol/geom/Polygon} */ (geometry), null);
       break;
     case GeometryType.MULTI_POINT:
-      this.drawMultiPoint(/** @type {module:ol/geom/MultiPoint~MultiPoint} */ (geometry), null);
+      this.drawMultiPoint(/** @type {module:ol/geom/MultiPoint} */ (geometry), null);
       break;
     case GeometryType.MULTI_LINE_STRING:
-      this.drawMultiLineString(/** @type {module:ol/geom/MultiLineString~MultiLineString} */ (geometry), null);
+      this.drawMultiLineString(/** @type {module:ol/geom/MultiLineString} */ (geometry), null);
       break;
     case GeometryType.MULTI_POLYGON:
-      this.drawMultiPolygon(/** @type {module:ol/geom/MultiPolygon~MultiPolygon} */ (geometry), null);
+      this.drawMultiPolygon(/** @type {module:ol/geom/MultiPolygon} */ (geometry), null);
       break;
     case GeometryType.GEOMETRY_COLLECTION:
-      this.drawGeometryCollection(/** @type {module:ol/geom/GeometryCollection~GeometryCollection} */ (geometry), null);
+      this.drawGeometryCollection(/** @type {module:ol/geom/GeometryCollection} */ (geometry), null);
       break;
     case GeometryType.CIRCLE:
-      this.drawCircle(/** @type {module:ol/geom/Circle~Circle} */ (geometry), null);
+      this.drawCircle(/** @type {module:ol/geom/Circle} */ (geometry), null);
       break;
     default:
       // pass

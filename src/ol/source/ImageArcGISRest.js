@@ -50,7 +50,7 @@ import {appendParams} from '../uri.js';
  *
  * @constructor
  * @fires ol.source.Image.Event
- * @extends {module:ol/source/Image~ImageSource}
+ * @extends {module:ol/source/Image}
  * @param {module:ol/source/ImageArcGISRest~Options=} opt_options Image ArcGIS Rest Options.
  * @api
  */
@@ -223,7 +223,7 @@ ImageArcGISRest.prototype.getImageLoadFunction = function() {
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @param {Object} params Params.
  * @return {string} Request URL.
  * @private

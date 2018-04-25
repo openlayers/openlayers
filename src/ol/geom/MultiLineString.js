@@ -20,7 +20,7 @@ import {douglasPeuckerArray} from '../geom/flat/simplify.js';
  * Multi-linestring geometry.
  *
  * @constructor
- * @extends {module:ol/geom/SimpleGeometry~SimpleGeometry}
+ * @extends {module:ol/geom/SimpleGeometry}
  * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
  * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
  * @api
@@ -56,7 +56,7 @@ inherits(MultiLineString, SimpleGeometry);
 
 /**
  * Append the passed linestring to the multilinestring.
- * @param {module:ol/geom/LineString~LineString} lineString LineString.
+ * @param {module:ol/geom/LineString} lineString LineString.
  * @api
  */
 MultiLineString.prototype.appendLineString = function(lineString) {
@@ -72,7 +72,7 @@ MultiLineString.prototype.appendLineString = function(lineString) {
 
 /**
  * Make a complete copy of the geometry.
- * @return {!module:ol/geom/MultiLineString~MultiLineString} Clone.
+ * @return {!module:ol/geom/MultiLineString} Clone.
  * @override
  * @api
  */
@@ -160,7 +160,7 @@ MultiLineString.prototype.getEnds = function() {
 /**
  * Return the linestring at the specified index.
  * @param {number} index Index.
- * @return {module:ol/geom/LineString~LineString} LineString.
+ * @return {module:ol/geom/LineString} LineString.
  * @api
  */
 MultiLineString.prototype.getLineString = function(index) {
@@ -176,14 +176,14 @@ MultiLineString.prototype.getLineString = function(index) {
 
 /**
  * Return the linestrings of this multilinestring.
- * @return {Array.<module:ol/geom/LineString~LineString>} LineStrings.
+ * @return {Array.<module:ol/geom/LineString>} LineStrings.
  * @api
  */
 MultiLineString.prototype.getLineStrings = function() {
   const flatCoordinates = this.flatCoordinates;
   const ends = this.ends_;
   const layout = this.layout;
-  /** @type {Array.<module:ol/geom/LineString~LineString>} */
+  /** @type {Array.<module:ol/geom/LineString>} */
   const lineStrings = [];
   let offset = 0;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
@@ -288,7 +288,7 @@ MultiLineString.prototype.setFlatCoordinates = function(layout, flatCoordinates,
 
 
 /**
- * @param {Array.<module:ol/geom/LineString~LineString>} lineStrings LineStrings.
+ * @param {Array.<module:ol/geom/LineString>} lineStrings LineStrings.
  */
 MultiLineString.prototype.setLineStrings = function(lineStrings) {
   let layout = this.getLayout();

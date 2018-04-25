@@ -39,9 +39,9 @@ const TranslateEventType = {
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/Collection~Collection.<module:ol/Feature~Feature>} [features] Only features contained in this collection will be able to be translated. If
+ * @property {module:ol/Collection.<module:ol/Feature>} [features] Only features contained in this collection will be able to be translated. If
  * not specified, all features on the map will be able to be translated.
- * @property {Array.<module:ol/layer/Layer~Layer>|function(module:ol/layer/Layer~Layer): boolean} [layers] A list of layers from which features should be
+ * @property {Array.<module:ol/layer/Layer>|function(module:ol/layer/Layer): boolean} [layers] A list of layers from which features should be
  * translated. Alternatively, a filter function can be provided. The
  * function will be called for each layer in the map and should return
  * `true` for layers that you want to be translatable. If the option is
@@ -58,10 +58,10 @@ const TranslateEventType = {
  * are instances of this type.
  *
  * @constructor
- * @extends {module:ol/events/Event~Event}
+ * @extends {module:ol/events/Event}
  * @implements {oli.interaction.TranslateEvent}
  * @param {module:ol/interaction/Translate~TranslateEventType} type Type.
- * @param {module:ol/Collection~Collection.<module:ol/Feature~Feature>} features The features translated.
+ * @param {module:ol/Collection.<module:ol/Feature>} features The features translated.
  * @param {module:ol/coordinate~Coordinate} coordinate The event coordinate.
  */
 export const TranslateEvent = function(type, features, coordinate) {
@@ -70,7 +70,7 @@ export const TranslateEvent = function(type, features, coordinate) {
 
   /**
    * The features being translated.
-   * @type {module:ol/Collection~Collection.<module:ol/Feature~Feature>}
+   * @type {module:ol/Collection.<module:ol/Feature>}
    * @api
    */
   this.features = features;
@@ -92,7 +92,7 @@ inherits(TranslateEvent, Event);
  * Interaction for translating (moving) features.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~PointerInteraction}
+ * @extends {module:ol/interaction/Pointer}
  * @fires module:ol/interaction/Translate~TranslateEvent
  * @param {module:ol/interaction/Translate~Options=} opt_options Options.
  * @api
@@ -116,12 +116,12 @@ const Translate = function(opt_options) {
 
 
   /**
-   * @type {module:ol/Collection~Collection.<module:ol/Feature~Feature>}
+   * @type {module:ol/Collection.<module:ol/Feature>}
    * @private
    */
   this.features_ = options.features !== undefined ? options.features : null;
 
-  /** @type {function(module:ol/layer/Layer~Layer): boolean} */
+  /** @type {function(module:ol/layer/Layer): boolean} */
   let layerFilter;
   if (options.layers) {
     if (typeof options.layers === 'function') {
@@ -138,7 +138,7 @@ const Translate = function(opt_options) {
 
   /**
    * @private
-   * @type {function(module:ol/layer/Layer~Layer): boolean}
+   * @type {function(module:ol/layer/Layer): boolean}
    */
   this.layerFilter_ = layerFilter;
 
@@ -149,7 +149,7 @@ const Translate = function(opt_options) {
   this.hitTolerance_ = options.hitTolerance ? options.hitTolerance : 0;
 
   /**
-   * @type {module:ol/Feature~Feature}
+   * @type {module:ol/Feature}
    * @private
    */
   this.lastFeature_ = null;
@@ -164,9 +164,9 @@ inherits(Translate, PointerInteraction);
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} event Event.
+ * @param {module:ol/MapBrowserPointerEvent} event Event.
  * @return {boolean} Start drag sequence?
- * @this {module:ol/interaction/Translate~Translate}
+ * @this {module:ol/interaction/Translate}
  */
 function handleDownEvent(event) {
   this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
@@ -187,9 +187,9 @@ function handleDownEvent(event) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} event Event.
+ * @param {module:ol/MapBrowserPointerEvent} event Event.
  * @return {boolean} Stop drag sequence?
- * @this {module:ol/interaction/Translate~Translate}
+ * @this {module:ol/interaction/Translate}
  */
 function handleUpEvent(event) {
   if (this.lastCoordinate_) {
@@ -209,8 +209,8 @@ function handleUpEvent(event) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} event Event.
- * @this {module:ol/interaction/Translate~Translate}
+ * @param {module:ol/MapBrowserPointerEvent} event Event.
+ * @this {module:ol/interaction/Translate}
  */
 function handleDragEvent(event) {
   if (this.lastCoordinate_) {
@@ -236,8 +236,8 @@ function handleDragEvent(event) {
 
 
 /**
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Event.
- * @this {module:ol/interaction/Translate~Translate}
+ * @param {module:ol/MapBrowserEvent} event Event.
+ * @this {module:ol/interaction/Translate}
  */
 function handleMoveEvent(event) {
   const elem = event.map.getViewport();
@@ -257,8 +257,8 @@ function handleMoveEvent(event) {
  * Tests to see if the given coordinates intersects any of our selected
  * features.
  * @param {module:ol~Pixel} pixel Pixel coordinate to test for intersection.
- * @param {module:ol/PluggableMap~PluggableMap} map Map to test the intersection on.
- * @return {module:ol/Feature~Feature} Returns the feature found at the specified pixel
+ * @param {module:ol/PluggableMap} map Map to test the intersection on.
+ * @return {module:ol/Feature} Returns the feature found at the specified pixel
  * coordinates.
  * @private
  */
@@ -316,7 +316,7 @@ Translate.prototype.handleActiveChanged_ = function() {
 
 
 /**
- * @param {module:ol/PluggableMap~PluggableMap} oldMap Old map.
+ * @param {module:ol/PluggableMap} oldMap Old map.
  * @private
  */
 Translate.prototype.updateState_ = function(oldMap) {

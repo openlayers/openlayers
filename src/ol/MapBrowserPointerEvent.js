@@ -6,10 +6,10 @@ import MapBrowserEvent from './MapBrowserEvent.js';
 
 /**
  * @constructor
- * @extends {module:ol/MapBrowserEvent~MapBrowserEvent}
+ * @extends {module:ol/MapBrowserEvent}
  * @param {string} type Event type.
- * @param {module:ol/PluggableMap~PluggableMap} map Map.
- * @param {module:ol/pointer/PointerEvent~PointerEvent} pointerEvent Pointer
+ * @param {module:ol/PluggableMap} map Map.
+ * @param {module:ol/pointer/PointerEvent} pointerEvent Pointer
  * event.
  * @param {boolean=} opt_dragging Is the map currently being dragged?
  * @param {?module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
@@ -22,7 +22,7 @@ const MapBrowserPointerEvent = function(type, map, pointerEvent, opt_dragging,
 
   /**
    * @const
-   * @type {module:ol/pointer/PointerEvent~PointerEvent}
+   * @type {module:ol/pointer/PointerEvent}
    */
   this.pointerEvent = pointerEvent;
 

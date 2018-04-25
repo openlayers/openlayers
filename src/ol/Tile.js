@@ -9,10 +9,10 @@ import EventType from './events/EventType.js';
 
 
 /**
- * A function that takes an {@link module:ol/Tile~Tile} for the tile and a
+ * A function that takes an {@link module:ol/Tile} for the tile and a
  * `{string}` for the url as arguments.
  *
- * @typedef {function(module:ol/Tile~Tile, string)} LoadFunction
+ * @typedef {function(module:ol/Tile, string)} LoadFunction
  * @api
  */
 
@@ -22,12 +22,12 @@ import EventType from './events/EventType.js';
  *
  * This function takes an {@link module:ol/tilecoord~TileCoord} for the tile
  * coordinate, a `{number}` representing the pixel ratio and a
- * {@link module:ol/proj/Projection~Projection} for the projection  as arguments
+ * {@link module:ol/proj/Projection} for the projection  as arguments
  * and returns a `{string}` representing the tile URL, or undefined if no tile
  * should be requested for the passed tile coordinate.
  *
  * @typedef {function(module:ol/tilecoord~TileCoord, number,
- *           module:ol/proj/Projection~Projection): (string|undefined)} UrlFunction
+ *           module:ol/proj/Projection): (string|undefined)} UrlFunction
  * @api
  */
 
@@ -46,7 +46,7 @@ import EventType from './events/EventType.js';
  *
  * @constructor
  * @abstract
- * @extends {module:ol/events/EventTarget~EventTarget}
+ * @extends {module:ol/events/EventTarget}
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {module:ol/TileState} state State.
  * @param {module:ol/Tile~Options=} opt_options Tile options.
@@ -71,7 +71,7 @@ const Tile = function(tileCoord, state, opt_options) {
    * An "interim" tile for this tile. The interim tile may be used while this
    * one is loading, for "smooth" transitions when changing params/dimensions
    * on the source.
-   * @type {module:ol/Tile~Tile}
+   * @type {module:ol/Tile}
    */
   this.interimTile = null;
 
@@ -120,7 +120,7 @@ Tile.prototype.getKey = function() {
  * Get the interim tile most suitable for rendering using the chain of interim
  * tiles. This corresponds to the  most recent tile that has been loaded, if no
  * such tile exists, the original tile is returned.
- * @return {!module:ol/Tile~Tile} Best tile for rendering.
+ * @return {!module:ol/Tile} Best tile for rendering.
  */
 Tile.prototype.getInterimTile = function() {
   if (!this.interimTile) {

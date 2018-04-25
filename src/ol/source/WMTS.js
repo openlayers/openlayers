@@ -20,7 +20,7 @@ import {appendParams} from '../uri.js';
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
- * @property {module:ol/tilegrid/WMTS~WMTSTileGrid} tileGrid Tile grid.
+ * @property {module:ol/tilegrid/WMTS} tileGrid Tile grid.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
@@ -61,7 +61,7 @@ import {appendParams} from '../uri.js';
  * Layer source for tile data from WMTS servers.
  *
  * @constructor
- * @extends {module:ol/source/TileImage~TileImage}
+ * @extends {module:ol/source/TileImage}
  * @param {module:ol/source/WMTS~Options=} options WMTS options.
  * @api
  */
@@ -167,7 +167,7 @@ const WMTS = function(options) {
       /**
        * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
        * @param {number} pixelRatio Pixel ratio.
-       * @param {module:ol/proj/Projection~Projection} projection Projection.
+       * @param {module:ol/proj/Projection} projection Projection.
        * @return {string|undefined} Tile URL.
        */
       function(tileCoord, pixelRatio, projection) {

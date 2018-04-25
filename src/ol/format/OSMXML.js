@@ -21,7 +21,7 @@ import {pushParseAndPop, makeStructureNS} from '../xml.js';
  * [OSMXML format](http://wiki.openstreetmap.org/wiki/OSM_XML).
  *
  * @constructor
- * @extends {module:ol/format/XMLFeature~XMLFeature}
+ * @extends {module:ol/format/XMLFeature}
  * @api
  */
 const OSMXML = function() {
@@ -146,7 +146,7 @@ function readTag(node, objectStack) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature~Feature>} Features.
+ * @return {Array.<module:ol/Feature>} Features.
  * @api
  */
 OSMXML.prototype.readFeatures;
@@ -201,7 +201,7 @@ OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/proj/Projection~Projection} Projection.
+ * @return {module:ol/proj/Projection} Projection.
  * @api
  */
 OSMXML.prototype.readProjection;

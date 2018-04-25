@@ -39,9 +39,9 @@ import {POINTER_ID} from '../pointer/MouseSource.js';
 
 /**
  * @constructor
- * @param {module:ol/pointer/PointerEventHandler~PointerEventHandler} dispatcher The event handler.
- * @param {module:ol/pointer/MouseSource~MouseSource} mouseSource Mouse source.
- * @extends {module:ol/pointer/EventSource~EventSource}
+ * @param {module:ol/pointer/PointerEventHandler} dispatcher The event handler.
+ * @param {module:ol/pointer/MouseSource} mouseSource Mouse source.
+ * @extends {module:ol/pointer/EventSource}
  */
 const TouchSource = function(dispatcher, mouseSource) {
   const mapping = {
@@ -60,7 +60,7 @@ const TouchSource = function(dispatcher, mouseSource) {
 
   /**
    * @const
-   * @type {module:ol/pointer/MouseSource~MouseSource}
+   * @type {module:ol/pointer/MouseSource}
    */
   this.mouseSource = mouseSource;
 

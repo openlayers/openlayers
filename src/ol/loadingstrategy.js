@@ -30,7 +30,7 @@ export function bbox(extent, resolution) {
 
 /**
  * Creates a strategy function for loading features based on a tile grid.
- * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid Tile grid.
+ * @param {module:ol/tilegrid/TileGrid} tileGrid Tile grid.
  * @return {function(module:ol/extent~Extent, number): Array.<module:ol/extent~Extent>} Loading strategy.
  * @api
  */
@@ -54,5 +54,6 @@ export function tile(tileGrid) {
         }
       }
       return extents;
-    });
+    }
+  );
 }

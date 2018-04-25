@@ -6,13 +6,13 @@ import Event from '../events/Event.js';
 
 /**
  * @constructor
- * @extends {module:ol/events/Event~Event}
+ * @extends {module:ol/events/Event}
  * @implements {oli.render.Event}
  * @param {module:ol/render/EventType~EventType} type Type.
- * @param {module:ol/render/VectorContext~VectorContext=} opt_vectorContext Vector context.
+ * @param {module:ol/render/VectorContext=} opt_vectorContext Vector context.
  * @param {module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
  * @param {?CanvasRenderingContext2D=} opt_context Context.
- * @param {?module:ol/webgl/Context~WebGLContext=} opt_glContext WebGL Context.
+ * @param {?module:ol/webgl/Context=} opt_glContext WebGL Context.
  */
 const RenderEvent = function(
   type, opt_vectorContext, opt_frameState, opt_context,
@@ -22,7 +22,7 @@ const RenderEvent = function(
 
   /**
    * For canvas, this is an instance of {@link ol.render.canvas.Immediate}.
-   * @type {module:ol/render/VectorContext~VectorContext|undefined}
+   * @type {module:ol/render/VectorContext|undefined}
    * @api
    */
   this.vectorContext = opt_vectorContext;
@@ -45,7 +45,7 @@ const RenderEvent = function(
   /**
    * WebGL context. Only available when a WebGL renderer is used, null
    * otherwise.
-   * @type {module:ol/webgl/Context~WebGLContext|null|undefined}
+   * @type {module:ol/webgl/Context|null|undefined}
    * @api
    */
   this.glContext = opt_glContext;

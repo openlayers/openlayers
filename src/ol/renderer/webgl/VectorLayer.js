@@ -14,7 +14,7 @@ import {apply as applyTransform} from '../../transform.js';
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
  * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
- * @param {module:ol/layer/Vector~VectorLayer} vectorLayer Vector layer.
+ * @param {module:ol/layer/Vector} vectorLayer Vector layer.
  * @api
  */
 const WebGLVectorLayerRenderer = function(mapRenderer, vectorLayer) {
@@ -47,7 +47,7 @@ const WebGLVectorLayerRenderer = function(mapRenderer, vectorLayer) {
 
   /**
    * @private
-   * @type {function(module:ol/Feature~Feature, module:ol/Feature~Feature): number|null}
+   * @type {function(module:ol/Feature, module:ol/Feature): number|null}
    */
   this.renderedRenderOrder_ = null;
 
@@ -71,7 +71,7 @@ inherits(WebGLVectorLayerRenderer, WebGLLayerRenderer);
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {module:ol/layer/Layer~Layer} layer The candidate layer.
+ * @param {module:ol/layer/Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
 WebGLVectorLayerRenderer['handles'] = function(layer) {
@@ -82,13 +82,13 @@ WebGLVectorLayerRenderer['handles'] = function(layer) {
 /**
  * Create a layer renderer.
  * @param {ol.renderer.Map} mapRenderer The map renderer.
- * @param {module:ol/layer/Layer~Layer} layer The layer to be rendererd.
+ * @param {module:ol/layer/Layer} layer The layer to be rendererd.
  * @return {ol.renderer.webgl.VectorLayer} The layer renderer.
  */
 WebGLVectorLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLVectorLayerRenderer(
     /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
-    /** @type {module:ol/layer/Vector~VectorLayer} */ (layer)
+    /** @type {module:ol/layer/Vector} */ (layer)
   );
 };
 
@@ -148,7 +148,7 @@ WebGLVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordin
       frameState.size, frameState.pixelRatio, layerState.opacity,
       {},
       /**
-       * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
+       * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {
@@ -198,7 +198,7 @@ WebGLVectorLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameSt
 
 /**
  * Handle changes in image style state.
- * @param {module:ol/events/Event~Event} event Image style change event.
+ * @param {module:ol/events/Event} event Image style change event.
  * @private
  */
 WebGLVectorLayerRenderer.prototype.handleStyleImageChange_ = function(event) {
@@ -210,7 +210,7 @@ WebGLVectorLayerRenderer.prototype.handleStyleImageChange_ = function(event) {
  * @inheritDoc
  */
 WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerState, context) {
-  const vectorLayer = /** @type {module:ol/layer/Vector~VectorLayer} */ (this.getLayer());
+  const vectorLayer = /** @type {module:ol/layer/Vector} */ (this.getLayer());
   const vectorSource = vectorLayer.getSource();
 
   const animating = frameState.viewHints[ViewHint.ANIMATING];
@@ -259,7 +259,7 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
     extent, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
-   * @param {module:ol/Feature~Feature} feature Feature.
+   * @param {module:ol/Feature} feature Feature.
    * @this {ol.renderer.webgl.VectorLayer}
    */
   const render = function(feature) {
@@ -275,11 +275,11 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
     }
   };
   if (vectorLayerRenderOrder) {
-    /** @type {Array.<module:ol/Feature~Feature>} */
+    /** @type {Array.<module:ol/Feature>} */
     const features = [];
     vectorSource.forEachFeatureInExtent(extent,
       /**
-       * @param {module:ol/Feature~Feature} feature Feature.
+       * @param {module:ol/Feature} feature Feature.
        */
       function(feature) {
         features.push(feature);
@@ -302,10 +302,10 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature.
+ * @param {module:ol/Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {(module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>)} styles The style or array of
+ * @param {(module:ol/style/Style|Array.<module:ol/style/Style>)} styles The style or array of
  *     styles.
  * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.

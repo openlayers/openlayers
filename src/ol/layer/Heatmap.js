@@ -30,10 +30,10 @@ import Style from '../style/Style.js';
  * @property {number} [radius=8] Radius size in pixels.
  * @property {number} [blur=15] Blur size in pixels.
  * @property {number} [shadow=250] Shadow size in pixels.
- * @property {string|function(module:ol/Feature~Feature):number} [weight='weight'] The feature
+ * @property {string|function(module:ol/Feature):number} [weight='weight'] The feature
  * attribute to use for the weight or a function that returns a weight from a feature. Weight values
  * should range from 0 to 1 (and values outside will be clamped to that range).
- * @property {module:ol/source/Vector~VectorSource} [source] Source.
+ * @property {module:ol/source/Vector} [source] Source.
  */
 
 
@@ -63,7 +63,7 @@ const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  * options means that `title` is observable, and has get/set accessors.
  *
  * @constructor
- * @extends {module:ol/layer/Vector~VectorLayer}
+ * @extends {module:ol/layer/Vector}
  * @fires module:ol/render/Event~RenderEvent
  * @param {module:ol/layer/Heatmap~Options=} opt_options Options.
  * @api
@@ -100,7 +100,7 @@ const Heatmap = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<Array.<module:ol/style/Style~Style>>}
+   * @type {Array.<Array.<module:ol/style/Style>>}
    */
   this.styleCache_ = null;
 
@@ -259,7 +259,7 @@ Heatmap.prototype.handleStyleChanged_ = function() {
 
 
 /**
- * @param {module:ol/render/Event~RenderEvent} event Post compose event
+ * @param {module:ol/render/Event} event Post compose event
  * @private
  */
 Heatmap.prototype.handleRender_ = function(event) {

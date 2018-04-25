@@ -67,7 +67,7 @@ const RasterEventType = {
  * type.
  *
  * @constructor
- * @extends {module:ol/events/Event~Event}
+ * @extends {module:ol/events/Event}
  * @implements {oli.source.RasterEvent}
  * @param {string} type Type.
  * @param {module:ol/PluggableMap~FrameState} frameState The frame state.
@@ -103,7 +103,7 @@ inherits(RasterSourceEvent, Event);
 
 /**
  * @typedef {Object} Options
- * @property {Array.<module:ol/source/Source~Source>} sources Input sources.
+ * @property {Array.<module:ol/source/Source>} sources Input sources.
  * @property {module:ol/source/Raster~Operation} [operation] Raster operation.
  * The operation will be called with data from input sources
  * and the output will be assigned to the raster source.
@@ -128,7 +128,7 @@ inherits(RasterSourceEvent, Event);
  * output pixel values.
  *
  * @constructor
- * @extends {module:ol/source/Image~ImageSource}
+ * @extends {module:ol/source/Image}
  * @fires ol.source.Raster.Event
  * @param {module:ol/source/Raster~Options=} options Options.
  * @api
@@ -167,7 +167,7 @@ const RasterSource = function(options) {
 
   /**
    * @private
-   * @type {module:ol/TileQueue~TileQueue}
+   * @type {module:ol/TileQueue}
    */
   this.tileQueue_ = new TileQueue(
     function() {
@@ -190,7 +190,7 @@ const RasterSource = function(options) {
 
   /**
    * The most recently rendered image canvas.
-   * @type {module:ol/ImageCanvas~ImageCanvas}
+   * @type {module:ol/ImageCanvas}
    * @private
    */
   this.renderedImageCanvas_ = null;
@@ -262,7 +262,7 @@ RasterSource.prototype.setOperation = function(operation, opt_lib) {
  * Update the stored frame state.
  * @param {module:ol/extent~Extent} extent The view extent (in map units).
  * @param {number} resolution The view resolution.
- * @param {module:ol/proj/Projection~Projection} projection The view projection.
+ * @param {module:ol/proj/Projection} projection The view projection.
  * @return {module:ol/PluggableMap~FrameState} The updated frame state.
  * @private
  */
@@ -455,7 +455,7 @@ function getLayerStatesArray(renderers) {
 
 /**
  * Create renderers for all sources.
- * @param {Array.<module:ol/source/Source~Source>} sources The sources.
+ * @param {Array.<module:ol/source/Source>} sources The sources.
  * @return {Array.<ol.renderer.canvas.Layer>} Array of layer renderers.
  */
 function createRenderers(sources) {
@@ -470,7 +470,7 @@ function createRenderers(sources) {
 
 /**
  * Create a renderer for the provided source.
- * @param {module:ol/source/Source~Source} source The source.
+ * @param {module:ol/source/Source} source The source.
  * @return {ol.renderer.canvas.Layer} The renderer.
  */
 function createRenderer(source) {
@@ -486,7 +486,7 @@ function createRenderer(source) {
 
 /**
  * Create an image renderer for the provided source.
- * @param {module:ol/source/Image~ImageSource} source The source.
+ * @param {module:ol/source/Image} source The source.
  * @return {ol.renderer.canvas.Layer} The renderer.
  */
 function createImageRenderer(source) {
@@ -497,7 +497,7 @@ function createImageRenderer(source) {
 
 /**
  * Create a tile renderer for the provided source.
- * @param {module:ol/source/Tile~TileSource} source The source.
+ * @param {module:ol/source/Tile} source The source.
  * @return {ol.renderer.canvas.Layer} The renderer.
  */
 function createTileRenderer(source) {

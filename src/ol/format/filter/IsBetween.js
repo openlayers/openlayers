@@ -12,7 +12,7 @@ import Comparison from '../filter/Comparison.js';
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} lowerBoundary The lower bound of the range.
  * @param {!number} upperBoundary The upper bound of the range.
- * @extends {module:ol/format/filter/Comparison~Comparison}
+ * @extends {module:ol/format/filter/Comparison}
  * @api
  */
 const IsBetween = function(propertyName, lowerBoundary, upperBoundary) {

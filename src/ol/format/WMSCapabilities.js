@@ -14,7 +14,7 @@ import {makeArrayPusher, makeObjectPropertyPusher, makeObjectPropertySetter,
  * Format for reading WMS capabilities data
  *
  * @constructor
- * @extends {module:ol/format/XML~XML}
+ * @extends {module:ol/format/XML}
  * @api
  */
 const WMSCapabilities = function() {

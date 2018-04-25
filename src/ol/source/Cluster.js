@@ -17,9 +17,9 @@ import VectorSource from '../source/Vector.js';
  * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
  * @property {number} [distance=20] Minimum distance in pixels between clusters.
  * @property {module:ol/extent~Extent} [extent] Extent.
- * @property {function(module:ol/Feature~Feature):module:ol/geom/Point~Point} [geometryFunction]
- * Function that takes an {@link module:ol/Feature~Feature} as argument and returns an
- * {@link module:ol/geom/Point~Point} as cluster calculation point for the feature. When a
+ * @property {function(module:ol/Feature):module:ol/geom/Point} [geometryFunction]
+ * Function that takes an {@link module:ol/Feature} as argument and returns an
+ * {@link module:ol/geom/Point} as cluster calculation point for the feature. When a
  * feature should not be considered for clustering, the function should return
  * `null`. The default, which works when the underyling source contains point
  * features only, is
@@ -31,7 +31,7 @@ import VectorSource from '../source/Vector.js';
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
- * @property {module:ol/source/Vector~VectorSource} source Source.
+ * @property {module:ol/source/Vector} source Source.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
 
@@ -44,7 +44,7 @@ import VectorSource from '../source/Vector.js';
  *
  * @constructor
  * @param {module:ol/source/Cluster~Options=} options Cluster options.
- * @extends {module:ol/source/Vector~VectorSource}
+ * @extends {module:ol/source/Vector}
  * @api
  */
 const Cluster = function(options) {
@@ -68,25 +68,25 @@ const Cluster = function(options) {
   this.distance = options.distance !== undefined ? options.distance : 20;
 
   /**
-   * @type {Array.<module:ol/Feature~Feature>}
+   * @type {Array.<module:ol/Feature>}
    * @protected
    */
   this.features = [];
 
   /**
-   * @param {module:ol/Feature~Feature} feature Feature.
-   * @return {module:ol/geom/Point~Point} Cluster calculation point.
+   * @param {module:ol/Feature} feature Feature.
+   * @return {module:ol/geom/Point} Cluster calculation point.
    * @protected
    */
   this.geometryFunction = options.geometryFunction || function(feature) {
-    const geometry = /** @type {module:ol/geom/Point~Point} */ (feature.getGeometry());
+    const geometry = /** @type {module:ol/geom/Point} */ (feature.getGeometry());
     assert(geometry instanceof Point,
       10); // The default `geometryFunction` can only handle `module:ol/geom/Point~Point` geometries
     return geometry;
   };
 
   /**
-   * @type {module:ol/source/Vector~VectorSource}
+   * @type {module:ol/source/Vector}
    * @protected
    */
   this.source = options.source;
@@ -109,7 +109,7 @@ Cluster.prototype.getDistance = function() {
 
 /**
  * Get a reference to the wrapped source.
- * @return {module:ol/source/Vector~VectorSource} Source.
+ * @return {module:ol/source/Vector} Source.
  * @api
  */
 Cluster.prototype.getSource = function() {
@@ -198,8 +198,8 @@ Cluster.prototype.cluster = function() {
 
 
 /**
- * @param {Array.<module:ol/Feature~Feature>} features Features
- * @return {module:ol/Feature~Feature} The cluster feature.
+ * @param {Array.<module:ol/Feature>} features Features
+ * @return {module:ol/Feature} The cluster feature.
  * @protected
  */
 Cluster.prototype.createCluster = function(features) {

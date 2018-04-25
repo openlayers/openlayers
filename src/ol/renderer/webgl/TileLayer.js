@@ -29,7 +29,7 @@ import WebGLBuffer from '../../webgl/Buffer.js';
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
  * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
- * @param {module:ol/layer/Tile~TileLayer} tileLayer Tile layer.
+ * @param {module:ol/layer/Tile} tileLayer Tile layer.
  * @api
  */
 const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
@@ -38,13 +38,13 @@ const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {module:ol/webgl/Fragment~WebGLFragment}
+   * @type {module:ol/webgl/Fragment}
    */
   this.fragmentShader_ = fragment;
 
   /**
    * @private
-   * @type {module:ol/webgl/Vertex~WebGLVertex}
+   * @type {module:ol/webgl/Vertex}
    */
   this.vertexShader_ = vertex;
 
@@ -56,7 +56,7 @@ const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {module:ol/webgl/Buffer~WebGLBuffer}
+   * @type {module:ol/webgl/Buffer}
    */
   this.renderArrayBuffer_ = new WebGLBuffer([
     0, 0, 0, 1,
@@ -67,7 +67,7 @@ const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {module:ol/TileRange~TileRange}
+   * @type {module:ol/TileRange}
    */
   this.renderedTileRange_ = null;
 
@@ -96,7 +96,7 @@ inherits(WebGLTileLayerRenderer, WebGLLayerRenderer);
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {module:ol/layer/Layer~Layer} layer The candidate layer.
+ * @param {module:ol/layer/Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
 WebGLTileLayerRenderer['handles'] = function(layer) {
@@ -107,13 +107,13 @@ WebGLTileLayerRenderer['handles'] = function(layer) {
 /**
  * Create a layer renderer.
  * @param {ol.renderer.Map} mapRenderer The map renderer.
- * @param {module:ol/layer/Layer~Layer} layer The layer to be rendererd.
+ * @param {module:ol/layer/Layer} layer The layer to be rendererd.
  * @return {ol.renderer.webgl.TileLayer} The layer renderer.
  */
 WebGLTileLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLTileLayerRenderer(
     /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
-    /** @type {module:ol/layer/Tile~TileLayer} */ (layer)
+    /** @type {module:ol/layer/Tile} */ (layer)
   );
 };
 
@@ -137,7 +137,7 @@ WebGLTileLayerRenderer.prototype.createLoadedTileFinder = function(source, proje
   return (
     /**
      * @param {number} zoom Zoom level.
-     * @param {module:ol/TileRange~TileRange} tileRange Tile range.
+     * @param {module:ol/TileRange} tileRange Tile range.
      * @return {boolean} The tile range is fully loaded.
      */
     function(zoom, tileRange) {
@@ -152,7 +152,8 @@ WebGLTileLayerRenderer.prototype.createLoadedTileFinder = function(source, proje
         return loaded;
       }
       return source.forEachLoadedTile(projection, zoom, tileRange, callback);
-    });
+    }
+  );
 };
 
 
@@ -176,7 +177,7 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
   const viewState = frameState.viewState;
   const projection = viewState.projection;
 
-  const tileLayer = /** @type {module:ol/layer/Tile~TileLayer} */ (this.getLayer());
+  const tileLayer = /** @type {module:ol/layer/Tile} */ (this.getLayer());
   const tileSource = tileLayer.getSource();
   const tileGrid = tileSource.getTileGridForProjection(projection);
   const z = tileGrid.getZForResolution(viewState.resolution);
@@ -240,7 +241,7 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
     gl.uniform1i(this.locations_.u_texture, 0);
 
     /**
-     * @type {Object.<number, Object.<string, module:ol/Tile~Tile>>}
+     * @type {Object.<number, Object.<string, module:ol/Tile>>}
      */
     const tilesToDrawByZ = {};
     tilesToDrawByZ[z] = {};
@@ -342,8 +343,8 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
     frameState, tileSource, tileGrid, pixelRatio, projection, extent, z,
     tileLayer.getPreload(),
     /**
-       * @param {module:ol/Tile~Tile} tile Tile.
-       */
+     * @param {module:ol/Tile} tile Tile.
+     */
     function(tile) {
       if (tile.getState() == TileState.LOADED &&
             !mapRenderer.isTileTextureLoaded(tile) &&

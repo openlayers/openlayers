@@ -22,23 +22,23 @@ import {loadFeaturesXhr} from './featureloader.js';
 
 /**
  * @constructor
- * @extends {module:ol/Tile~Tile}
+ * @extends {module:ol/Tile}
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {module:ol/TileState} state State.
  * @param {number} sourceRevision Source revision.
- * @param {module:ol/format/Feature~FeatureFormat} format Feature format.
+ * @param {module:ol/format/Feature} format Feature format.
  * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
  * @param {module:ol/tilecoord~TileCoord} urlTileCoord Wrapped tile coordinate for source urls.
  * @param {module:ol/Tile~UrlFunction} tileUrlFunction Tile url function.
- * @param {module:ol/tilegrid/TileGrid~TileGrid} sourceTileGrid Tile grid of the source.
- * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid Tile grid of the renderer.
- * @param {Object.<string, module:ol/VectorTile~VectorTile>} sourceTiles Source tiles.
+ * @param {module:ol/tilegrid/TileGrid} sourceTileGrid Tile grid of the source.
+ * @param {module:ol/tilegrid/TileGrid} tileGrid Tile grid of the renderer.
+ * @param {Object.<string, module:ol/VectorTile>} sourceTiles Source tiles.
  * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @param {function(new: module:ol/VectorTile~VectorTile, module:ol/tilecoord~TileCoord, module:ol/TileState, string,
- *     module:ol/format/Feature~FeatureFormat, module:ol/Tile~LoadFunction)} tileClass Class to
+ * @param {module:ol/proj/Projection} projection Projection.
+ * @param {function(new: module:ol/VectorTile, module:ol/tilecoord~TileCoord, module:ol/TileState, string,
+ *     module:ol/format/Feature, module:ol/Tile~LoadFunction)} tileClass Class to
  *     instantiate for source tiles.
- * @param {function(this: module:ol/source/VectorTile~VectorTile, module:ol/events/Event~Event)} handleTileChange
+ * @param {function(this: module:ol/source/VectorTile, module:ol/events/Event)} handleTileChange
  *     Function to call when a source tile's state changes.
  * @param {module:ol/Tile~Options=} opt_options Tile options.
  */
@@ -68,7 +68,7 @@ const VectorImageTile = function(tileCoord, state, sourceRevision, format,
 
   /**
    * @private
-   * @type {Object.<string, module:ol/VectorTile~VectorTile>}
+   * @type {Object.<string, module:ol/VectorTile>}
    */
   this.sourceTiles_ = sourceTiles;
 
@@ -164,7 +164,7 @@ VectorImageTile.prototype.disposeInternal = function() {
 
 
 /**
- * @param {module:ol/layer/Layer~Layer} layer Layer.
+ * @param {module:ol/layer/Layer} layer Layer.
  * @return {CanvasRenderingContext2D} The rendering context.
  */
 VectorImageTile.prototype.getContext = function(layer) {
@@ -178,7 +178,7 @@ VectorImageTile.prototype.getContext = function(layer) {
 
 /**
  * Get the Canvas for this tile.
- * @param {module:ol/layer/Layer~Layer} layer Layer.
+ * @param {module:ol/layer/Layer} layer Layer.
  * @return {HTMLCanvasElement} Canvas.
  */
 VectorImageTile.prototype.getImage = function(layer) {
@@ -188,7 +188,7 @@ VectorImageTile.prototype.getImage = function(layer) {
 
 
 /**
- * @param {module:ol/layer/Layer~Layer} layer Layer.
+ * @param {module:ol/layer/Layer} layer Layer.
  * @return {module:ol/VectorImageTile~ReplayState} The replay state.
  */
 VectorImageTile.prototype.getReplayState = function(layer) {
@@ -215,7 +215,7 @@ VectorImageTile.prototype.getKey = function() {
 
 /**
  * @param {string} tileKey Key (tileCoord) of the source tile.
- * @return {module:ol/VectorTile~VectorTile} Source tile.
+ * @return {module:ol/VectorTile} Source tile.
  */
 VectorImageTile.prototype.getTile = function(tileKey) {
   return this.sourceTiles_[tileKey];
@@ -299,7 +299,7 @@ export default VectorImageTile;
 
 /**
  * Sets the loader for a tile.
- * @param {module:ol/VectorTile~VectorTile} tile Vector tile.
+ * @param {module:ol/VectorTile} tile Vector tile.
  * @param {string} url URL.
  */
 export function defaultLoadFunction(tile, url) {

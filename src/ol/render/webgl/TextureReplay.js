@@ -362,7 +362,7 @@ WebGLTextureReplay.prototype.drawReplay = function(gl, context, skippedFeaturesH
  *
  * @protected
  * @param {WebGLRenderingContext} gl gl.
- * @param {module:ol/webgl/Context~WebGLContext} context Context.
+ * @param {module:ol/webgl/Context} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  * @param {Array.<WebGLTexture>} textures Textures.

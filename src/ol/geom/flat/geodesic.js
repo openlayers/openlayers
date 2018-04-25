@@ -84,7 +84,7 @@ function line(interpolate, transform, squaredTolerance) {
  * @param {number} lat1 Latitude 1 in degrees.
  * @param {number} lon2 Longitude 2 in degrees.
  * @param {number} lat2 Latitude 2 in degrees.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */
@@ -128,7 +128,7 @@ export function greatCircleArc(lon1, lat1, lon2, lat2, projection, squaredTolera
  * @param {number} lon Longitude.
  * @param {number} lat1 Latitude 1.
  * @param {number} lat2 Latitude 2.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */
@@ -151,7 +151,7 @@ export function meridian(lon, lat1, lat2, projection, squaredTolerance) {
  * @param {number} lat Latitude.
  * @param {number} lon1 Longitude 1.
  * @param {number} lon2 Longitude 2.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */

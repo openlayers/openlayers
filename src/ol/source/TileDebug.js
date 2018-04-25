@@ -12,7 +12,7 @@ import {getKeyZXY} from '../tilecoord.js';
 
 /**
  * @constructor
- * @extends {module:ol/Tile~Tile}
+ * @extends {module:ol/Tile}
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {module:ol/size~Size} tileSize Tile size.
  * @param {string} text Text.
@@ -78,7 +78,7 @@ LabeledTile.prototype.load = function() {};
 /**
  * @typedef {Object} Options
  * @property {module:ol/proj~ProjectionLike} projection Projection.
- * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid] Tile grid.
+ * @property {module:ol/tilegrid/TileGrid} [tileGrid] Tile grid.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
 
@@ -92,7 +92,7 @@ LabeledTile.prototype.load = function() {};
  * Uses Canvas context2d, so requires Canvas support.
  *
  * @constructor
- * @extends {module:ol/source/Tile~TileSource}
+ * @extends {module:ol/source/Tile}
  * @param {module:ol/source/TileDebug~Options=} options Debug tile options.
  * @api
  */

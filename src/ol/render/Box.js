@@ -9,13 +9,13 @@ import Polygon from '../geom/Polygon.js';
 
 /**
  * @constructor
- * @extends {module:ol/Disposable~Disposable}
+ * @extends {module:ol/Disposable}
  * @param {string} className CSS class name.
  */
 const RenderBox = function(className) {
 
   /**
-   * @type {module:ol/geom/Polygon~Polygon}
+   * @type {module:ol/geom/Polygon}
    * @private
    */
   this.geometry_ = null;
@@ -30,7 +30,7 @@ const RenderBox = function(className) {
 
   /**
    * @private
-   * @type {module:ol/PluggableMap~PluggableMap}
+   * @type {module:ol/PluggableMap}
    */
   this.map_ = null;
 
@@ -75,7 +75,7 @@ RenderBox.prototype.render_ = function() {
 
 
 /**
- * @param {module:ol/PluggableMap~PluggableMap} map Map.
+ * @param {module:ol/PluggableMap} map Map.
  */
 RenderBox.prototype.setMap = function(map) {
   if (this.map_) {
@@ -126,7 +126,7 @@ RenderBox.prototype.createOrUpdateGeometry = function() {
 
 
 /**
- * @return {module:ol/geom/Polygon~Polygon} Geometry.
+ * @return {module:ol/geom/Polygon} Geometry.
  */
 RenderBox.prototype.getGeometry = function() {
   return this.geometry_;

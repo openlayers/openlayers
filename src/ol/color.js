@@ -185,7 +185,9 @@ function fromStringInternal_(s) {
   } else {
     assert(false, 14); // Invalid color
   }
-  return /** @type {module:ol/color~Color} */ (color);
+  return (
+    /** @type {module:ol/color~Color} */ (color)
+  );
 }
 
 

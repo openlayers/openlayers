@@ -8,7 +8,7 @@ import EventType from './events/EventType.js';
 /**
  * @constructor
  * @abstract
- * @extends {module:ol/events/EventTarget~EventTarget}
+ * @extends {module:ol/events/EventTarget}
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {number|undefined} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.

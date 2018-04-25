@@ -21,7 +21,7 @@ import {douglasPeucker} from '../geom/flat/simplify.js';
  * Linestring geometry.
  *
  * @constructor
- * @extends {module:ol/geom/SimpleGeometry~SimpleGeometry}
+ * @extends {module:ol/geom/SimpleGeometry}
  * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
  * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
  * @api
@@ -78,7 +78,7 @@ LineString.prototype.appendCoordinate = function(coordinate) {
 
 /**
  * Make a complete copy of the geometry.
- * @return {!module:ol/geom/LineString~LineString} Clone.
+ * @return {!module:ol/geom/LineString} Clone.
  * @override
  * @api
  */

@@ -49,7 +49,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * Layer source for tile data in TileJSON format.
  *
  * @constructor
- * @extends {module:ol/source/TileImage~TileImage}
+ * @extends {module:ol/source/TileImage}
  * @param {module:ol/source/TileJSON~Options=} options TileJSON options.
  * @api
  */

@@ -32,7 +32,7 @@ import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
  *
  * @constructor
  * @param {module:ol/interaction/KeyboardZoom~Options=} opt_options Options.
- * @extends {module:ol/interaction/Interaction~Interaction}
+ * @extends {module:ol/interaction/Interaction}
  * @api
  */
 const KeyboardZoom = function(opt_options) {
@@ -67,12 +67,12 @@ inherits(KeyboardZoom, Interaction);
 
 
 /**
- * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} if it was a
+ * Handles the {@link module:ol/MapBrowserEvent map browser event} if it was a
  * `KeyEvent`, and decides whether to zoom in or out (depending on whether the
  * key pressed was '+' or '-').
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {module:ol/MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {module:ol/interaction/KeyboardZoom~KeyboardZoom}
+ * @this {module:ol/interaction/KeyboardZoom}
  */
 function handleEvent(mapBrowserEvent) {
   let stopEvent = false;

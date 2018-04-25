@@ -10,53 +10,53 @@ import {getValues} from '../obj.js';
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {module:ol/interaction/Pointer~PointerInteraction}
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {module:ol/interaction/Pointer}
  */
 const handleDragEvent = UNDEFINED;
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Capture dragging.
- * @this {module:ol/interaction/Pointer~PointerInteraction}
+ * @this {module:ol/interaction/Pointer}
  */
 const handleUpEvent = FALSE;
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Capture dragging.
- * @this {module:ol/interaction/Pointer~PointerInteraction}
+ * @this {module:ol/interaction/Pointer}
  */
 const handleDownEvent = FALSE;
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {module:ol/interaction/Pointer~PointerInteraction}
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {module:ol/interaction/Pointer}
  */
 const handleMoveEvent = UNDEFINED;
 
 
 /**
  * @typedef {Object} Options
- * @property {(function(module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent):boolean)} [handleDownEvent]
+ * @property {(function(module:ol/MapBrowserPointerEvent):boolean)} [handleDownEvent]
  * Function handling "down" events. If the function returns `true` then a drag
  * sequence is started.
- * @property {(function(module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent))} [handleDragEvent]
+ * @property {(function(module:ol/MapBrowserPointerEvent))} [handleDragEvent]
  * Function handling "drag" events. This function is called on "move" events
  * during a drag sequence.
- * @property {(function(module:ol/MapBrowserEvent~MapBrowserEvent):boolean)} [handleEvent]
+ * @property {(function(module:ol/MapBrowserEvent):boolean)} [handleEvent]
  * Method called by the map to notify the interaction that a browser event was
  * dispatched to the map. The function may return `false` to prevent the
  * propagation of the event to other interactions in the map's interactions
  * chain.
- * @property {(function(module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent))} [handleMoveEvent]
+ * @property {(function(module:ol/MapBrowserPointerEvent))} [handleMoveEvent]
  * Function handling "move" events. This function is called on "move" events,
  * also during a drag sequence (so during a drag sequence both the
  * `handleDragEvent` function and this function are called).
- * @property {(function(module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent):boolean)} [handleUpEvent]
+ * @property {(function(module:ol/MapBrowserPointerEvent):boolean)} [handleUpEvent]
  *  Function handling "up" events. If the function returns `false` then the
  * current drag sequence is stopped.
  */
@@ -74,7 +74,7 @@ const handleMoveEvent = UNDEFINED;
  *
  * @constructor
  * @param {module:ol/interaction/Pointer~Options=} opt_options Options.
- * @extends {module:ol/interaction/Interaction~Interaction}
+ * @extends {module:ol/interaction/Interaction}
  * @api
  */
 const PointerInteraction = function(opt_options) {
@@ -86,28 +86,28 @@ const PointerInteraction = function(opt_options) {
   });
 
   /**
-   * @type {function(module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent):boolean}
+   * @type {function(module:ol/MapBrowserPointerEvent):boolean}
    * @private
    */
   this.handleDownEvent_ = options.handleDownEvent ?
     options.handleDownEvent : handleDownEvent;
 
   /**
-   * @type {function(module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent)}
+   * @type {function(module:ol/MapBrowserPointerEvent)}
    * @private
    */
   this.handleDragEvent_ = options.handleDragEvent ?
     options.handleDragEvent : handleDragEvent;
 
   /**
-   * @type {function(module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent)}
+   * @type {function(module:ol/MapBrowserPointerEvent)}
    * @private
    */
   this.handleMoveEvent_ = options.handleMoveEvent ?
     options.handleMoveEvent : handleMoveEvent;
 
   /**
-   * @type {function(module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent):boolean}
+   * @type {function(module:ol/MapBrowserPointerEvent):boolean}
    * @private
    */
   this.handleUpEvent_ = options.handleUpEvent ?
@@ -120,13 +120,13 @@ const PointerInteraction = function(opt_options) {
   this.handlingDownUpSequence = false;
 
   /**
-   * @type {!Object.<string, module:ol/pointer/PointerEvent~PointerEvent>}
+   * @type {!Object.<string, module:ol/pointer/PointerEvent>}
    * @private
    */
   this.trackedPointers_ = {};
 
   /**
-   * @type {Array.<module:ol/pointer/PointerEvent~PointerEvent>}
+   * @type {Array.<module:ol/pointer/PointerEvent>}
    * @protected
    */
   this.targetPointers = [];
@@ -137,7 +137,7 @@ inherits(PointerInteraction, Interaction);
 
 
 /**
- * @param {Array.<module:ol/pointer/PointerEvent~PointerEvent>} pointerEvents List of events.
+ * @param {Array.<module:ol/pointer/PointerEvent>} pointerEvents List of events.
  * @return {module:ol~Pixel} Centroid pixel.
  */
 export function centroid(pointerEvents) {
@@ -153,7 +153,7 @@ export function centroid(pointerEvents) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Whether the event is a pointerdown, pointerdrag
  *     or pointerup event.
  */
@@ -166,7 +166,7 @@ function isPointerDraggingEvent(mapBrowserEvent) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @private
  */
 PointerInteraction.prototype.updateTrackedPointers_ = function(mapBrowserEvent) {
@@ -189,12 +189,12 @@ PointerInteraction.prototype.updateTrackedPointers_ = function(mapBrowserEvent) 
 
 
 /**
- * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may call into
+ * Handles the {@link module:ol/MapBrowserEvent map browser event} and may call into
  * other functions, if event sequences like e.g. 'drag' or 'down-up' etc. are
  * detected.
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {module:ol/MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {module:ol/interaction/Pointer~PointerInteraction}
+ * @this {module:ol/interaction/Pointer}
  * @api
  */
 export function handleEvent(mapBrowserEvent) {

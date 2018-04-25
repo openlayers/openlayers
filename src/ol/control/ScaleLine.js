@@ -41,7 +41,7 @@ const LEADING_DIGITS = [1, 2, 5];
  * @typedef {Object} Options
  * @property {string} [className='ol-scale-line'] CSS Class name.
  * @property {number} [minWidth=64] Minimum width in pixels.
- * @property {function(module:ol/MapEvent~MapEvent)} [render] Function called when the control
+ * @property {function(module:ol/MapEvent)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {Element|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
@@ -60,7 +60,7 @@ const LEADING_DIGITS = [1, 2, 5];
  * but this can be changed by using the css selector `.ol-scale-line`.
  *
  * @constructor
- * @extends {module:ol/control/Control~Control}
+ * @extends {module:ol/control/Control}
  * @param {module:ol/control/ScaleLine~Options=} opt_options Scale line options.
  * @api
  */
@@ -141,14 +141,16 @@ inherits(ScaleLine, Control);
  * @api
  */
 ScaleLine.prototype.getUnits = function() {
-  return /** @type {module:ol/control/ScaleLine~Units|undefined} */ (this.get(UNITS_PROP));
+  return (
+    /** @type {module:ol/control/ScaleLine~Units|undefined} */ (this.get(UNITS_PROP))
+  );
 };
 
 
 /**
  * Update the scale line element.
- * @param {module:ol/MapEvent~MapEvent} mapEvent Map event.
- * @this {module:ol/control/ScaleLine~ScaleLine}
+ * @param {module:ol/MapEvent} mapEvent Map event.
+ * @this {module:ol/control/ScaleLine}
  * @api
  */
 export function render(mapEvent) {

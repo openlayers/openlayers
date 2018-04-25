@@ -89,7 +89,7 @@ const AtlasManager = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<module:ol/style/Atlas~Atlas>}
+   * @type {Array.<module:ol/style/Atlas>}
    */
   this.atlases_ = [new Atlas(this.currentSize_, this.space_)];
 
@@ -102,7 +102,7 @@ const AtlasManager = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<module:ol/style/Atlas~Atlas>}
+   * @type {Array.<module:ol/style/Atlas>}
    */
   this.hitAtlases_ = [new Atlas(this.currentHitSize_, this.space_)];
 };
@@ -128,7 +128,7 @@ AtlasManager.prototype.getInfo = function(id) {
 
 /**
  * @private
- * @param {Array.<module:ol/style/Atlas~Atlas>} atlases The atlases to search.
+ * @param {Array.<module:ol/style/Atlas>} atlases The atlases to search.
  * @param {string} id The identifier of the entry to check.
  * @return {?module:ol/style/Atlas~AtlasInfo} The position and atlas image for the entry,
  *    or `null` if the entry is not part of the atlases.
@@ -154,12 +154,14 @@ AtlasManager.prototype.getInfo_ = function(atlases, id) {
  *    entry, or `null` if the entry is not part of the atlases.
  */
 AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
-  return /** @type {module:ol/style/AtlasManager~AtlasManagerInfo} */ ({
-    offsetX: info.offsetX,
-    offsetY: info.offsetY,
-    image: info.image,
-    hitImage: hitInfo.image
-  });
+  return (
+    /** @type {module:ol/style/AtlasManager~AtlasManagerInfo} */ ({
+      offsetX: info.offsetX,
+      offsetY: info.offsetY,
+      image: info.image,
+      hitImage: hitInfo.image
+    })
+  );
 };
 
 

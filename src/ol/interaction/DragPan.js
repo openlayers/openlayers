@@ -15,7 +15,7 @@ import PointerInteraction, {centroid as centroidFromPointers} from '../interacti
  * @property {module:ol/events/condition~Condition} [condition] A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link module:ol/events/condition~noModifierKeys}.
- * @property {module:ol/Kinetic~Kinetic} [kinetic] Kinetic inertia to apply to the pan.
+ * @property {module:ol/Kinetic} [kinetic] Kinetic inertia to apply to the pan.
  */
 
 
@@ -24,7 +24,7 @@ import PointerInteraction, {centroid as centroidFromPointers} from '../interacti
  * Allows the user to pan the map by dragging the map.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~PointerInteraction}
+ * @extends {module:ol/interaction/Pointer}
  * @param {module:ol/interaction/DragPan~Options=} opt_options Options.
  * @api
  */
@@ -40,7 +40,7 @@ const DragPan = function(opt_options) {
 
   /**
    * @private
-   * @type {module:ol/Kinetic~Kinetic|undefined}
+   * @type {module:ol/Kinetic|undefined}
    */
   this.kinetic_ = options.kinetic;
 
@@ -72,8 +72,8 @@ inherits(DragPan, PointerInteraction);
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {module:ol/interaction/DragPan~DragPan}
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {module:ol/interaction/DragPan}
  */
 function handleDragEvent(mapBrowserEvent) {
   const targetPointers = this.targetPointers;
@@ -105,9 +105,9 @@ function handleDragEvent(mapBrowserEvent) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {module:ol/interaction/DragPan~DragPan}
+ * @this {module:ol/interaction/DragPan}
  */
 function handleUpEvent(mapBrowserEvent) {
   const map = mapBrowserEvent.map;
@@ -143,9 +143,9 @@ function handleUpEvent(mapBrowserEvent) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {module:ol/interaction/DragPan~DragPan}
+ * @this {module:ol/interaction/DragPan}
  */
 function handleDownEvent(mapBrowserEvent) {
   if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {

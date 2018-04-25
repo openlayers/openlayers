@@ -229,7 +229,7 @@ ImageStyle.prototype.setSnapToPixel = function(snapToPixel) {
 
 /**
  * @abstract
- * @param {function(this: T, module:ol/events/Event~Event)} listener Listener function.
+ * @param {function(this: T, module:ol/events/Event)} listener Listener function.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
  * @return {module:ol/events~EventsKey|undefined} Listener key.
  * @template T
@@ -246,7 +246,7 @@ ImageStyle.prototype.load = function() {};
 
 /**
  * @abstract
- * @param {function(this: T, module:ol/events/Event~Event)} listener Listener function.
+ * @param {function(this: T, module:ol/events/Event)} listener Listener function.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
  * @template T
  */

@@ -47,7 +47,7 @@ const ImageSourceEventType = {
  * type.
  *
  * @constructor
- * @extends {module:ol/events/Event~Event}
+ * @extends {module:ol/events/Event}
  * @implements {oli.source.ImageEvent}
  * @param {string} type Type.
  * @param {module:ol/Image~Image} image The image.
@@ -85,7 +85,7 @@ inherits(ImageSourceEvent, Event);
  *
  * @constructor
  * @abstract
- * @extends {module:ol/source/Source~Source}
+ * @extends {module:ol/source/Source}
  * @param {module:ol/source/Image~Options} options Single image source options.
  * @api
  */
@@ -149,8 +149,8 @@ ImageSource.prototype.findNearestResolution = function(resolution) {
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @return {module:ol/ImageBase~ImageBase} Single image.
+ * @param {module:ol/proj/Projection} projection Projection.
+ * @return {module:ol/ImageBase} Single image.
  */
 ImageSource.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
   const sourceProjection = this.getProjection();
@@ -193,8 +193,8 @@ ImageSource.prototype.getImage = function(extent, resolution, pixelRatio, projec
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @return {module:ol/ImageBase~ImageBase} Single image.
+ * @param {module:ol/proj/Projection} projection Projection.
+ * @return {module:ol/ImageBase} Single image.
  * @protected
  */
 ImageSource.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {};
@@ -202,7 +202,7 @@ ImageSource.prototype.getImageInternal = function(extent, resolution, pixelRatio
 
 /**
  * Handle image change events.
- * @param {module:ol/events/Event~Event} event Event.
+ * @param {module:ol/events/Event} event Event.
  * @protected
  */
 ImageSource.prototype.handleImageChange = function(event) {

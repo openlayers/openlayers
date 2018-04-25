@@ -7,7 +7,7 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
 /**
  * @typedef {Object} Options
  * @property {string} code The SRS identifier code, e.g. `EPSG:4326`.
- * @property {module:ol/proj/Units~Units|string} [units] Units. Required unless a
+ * @property {module:ol/proj/Units|string} [units] Units. Required unless a
  * proj4 projection is defined for `code`.
  * @property {module:ol/extent~Extent} [extent] The validity extent for the SRS.
  * @property {string} [axisOrientation='enu'] The axis orientation as specified in Proj4.
@@ -66,9 +66,9 @@ const Projection = function(options) {
    * `this.extent_` and `this.worldExtent_` must be configured properly for each
    * tile.
    * @private
-   * @type {module:ol/proj/Units~Units}
+   * @type {module:ol/proj/Units}
    */
-  this.units_ = /** @type {module:ol/proj/Units~Units} */ (options.units);
+  this.units_ = /** @type {module:ol/proj/Units} */ (options.units);
 
   /**
    * Validity extent of the projection in projected coordinates. For projections
@@ -116,7 +116,7 @@ const Projection = function(options) {
 
   /**
    * @private
-   * @type {module:ol/tilegrid/TileGrid~TileGrid}
+   * @type {module:ol/tilegrid/TileGrid}
    */
   this.defaultTileGrid_ = null;
 
@@ -158,7 +158,7 @@ Projection.prototype.getExtent = function() {
 
 /**
  * Get the units of this projection.
- * @return {module:ol/proj/Units~Units} Units.
+ * @return {module:ol/proj/Units} Units.
  * @api
  */
 Projection.prototype.getUnits = function() {
@@ -226,7 +226,7 @@ Projection.prototype.setGlobal = function(global) {
 
 
 /**
- * @return {module:ol/tilegrid/TileGrid~TileGrid} The default tile grid.
+ * @return {module:ol/tilegrid/TileGrid} The default tile grid.
  */
 Projection.prototype.getDefaultTileGrid = function() {
   return this.defaultTileGrid_;
@@ -234,7 +234,7 @@ Projection.prototype.getDefaultTileGrid = function() {
 
 
 /**
- * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid The default tile grid.
+ * @param {module:ol/tilegrid/TileGrid} tileGrid The default tile grid.
  */
 Projection.prototype.setDefaultTileGrid = function(tileGrid) {
   this.defaultTileGrid_ = tileGrid;

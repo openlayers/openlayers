@@ -60,7 +60,7 @@ import {appendParams} from '../uri.js';
  * {@link module:ol/source/XYZ~XYZ} data source.
  *
  * @constructor
- * @extends {module:ol/source/TileImage~TileImage}
+ * @extends {module:ol/source/TileImage}
  * @param {module:ol/source/TileArcGISRest~Options=} opt_options Tile ArcGIS Rest options.
  * @api
  */
@@ -130,7 +130,7 @@ TileArcGISRest.prototype.getParams = function() {
  * @param {module:ol/size~Size} tileSize Tile size.
  * @param {module:ol/extent~Extent} tileExtent Tile extent.
  * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @param {Object} params Params.
  * @return {string|undefined} Request URL.
  * @private

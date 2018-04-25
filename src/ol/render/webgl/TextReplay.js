@@ -16,7 +16,7 @@ import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
  * @typedef {Object} GlyphAtlas
- * @property {module:ol/style/AtlasManager~AtlasManager} atlas
+ * @property {module:ol/style/AtlasManager} atlas
  * @property {Object.<string, number>} width
  * @property {number} height
  */
@@ -144,20 +144,20 @@ WebGLTextReplay.prototype.drawText = function(geometry, feature) {
         stride = geometry.getStride();
         break;
       case GeometryType.CIRCLE:
-        flatCoordinates = /** @type {module:ol/geom/Circle~Circle} */ (geometry).getCenter();
+        flatCoordinates = /** @type {module:ol/geom/Circle} */ (geometry).getCenter();
         break;
       case GeometryType.LINE_STRING:
-        flatCoordinates = /** @type {module:ol/geom/LineString~LineString} */ (geometry).getFlatMidpoint();
+        flatCoordinates = /** @type {module:ol/geom/LineString} */ (geometry).getFlatMidpoint();
         break;
       case GeometryType.MULTI_LINE_STRING:
-        flatCoordinates = /** @type {module:ol/geom/MultiLineString~MultiLineString} */ (geometry).getFlatMidpoints();
+        flatCoordinates = /** @type {module:ol/geom/MultiLineString} */ (geometry).getFlatMidpoints();
         end = flatCoordinates.length;
         break;
       case GeometryType.POLYGON:
-        flatCoordinates = /** @type {module:ol/geom/Polygon~Polygon} */ (geometry).getFlatInteriorPoint();
+        flatCoordinates = /** @type {module:ol/geom/Polygon} */ (geometry).getFlatInteriorPoint();
         break;
       case GeometryType.MULTI_POLYGON:
-        flatCoordinates = /** @type {module:ol/geom/MultiPolygon~MultiPolygon} */ (geometry).getFlatInteriorPoints();
+        flatCoordinates = /** @type {module:ol/geom/MultiPolygon} */ (geometry).getFlatInteriorPoints();
         end = flatCoordinates.length;
         break;
       default:

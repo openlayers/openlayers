@@ -58,7 +58,7 @@ import ImageStyle from '../style/Image.js';
  *
  * @constructor
  * @param {module:ol/style/Icon~Options=} opt_options Options.
- * @extends {module:ol/style/Image~ImageStyle}
+ * @extends {module:ol/style/Image}
  * @api
  */
 const Icon = function(opt_options) {
@@ -145,7 +145,7 @@ const Icon = function(opt_options) {
 
   /**
    * @private
-   * @type {module:ol/style/IconImage~IconImage}
+   * @type {module:ol/style/IconImage}
    */
   this.iconImage_ = getIconImage(
     image, /** @type {string} */ (src), imgSize, this.crossOrigin_, imageState, this.color_);
@@ -217,7 +217,7 @@ inherits(Icon, ImageStyle);
 
 /**
  * Clones the style. The underlying Image/HTMLCanvasElement is not cloned.
- * @return {module:ol/style/Icon~Icon} The cloned style.
+ * @return {module:ol/style/Icon} The cloned style.
  * @api
  */
 Icon.prototype.clone = function() {

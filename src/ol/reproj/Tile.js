@@ -14,7 +14,7 @@ import Triangulation from '../reproj/Triangulation.js';
 
 
 /**
- * @typedef {function(number, number, number, number) : module:ol/Tile~Tile} FunctionType
+ * @typedef {function(number, number, number, number) : module:ol/Tile} FunctionType
  */
 
 
@@ -24,11 +24,11 @@ import Triangulation from '../reproj/Triangulation.js';
  * See {@link module:ol/source/TileImage~TileImage}.
  *
  * @constructor
- * @extends {module:ol/Tile~Tile}
- * @param {module:ol/proj/Projection~Projection} sourceProj Source projection.
- * @param {module:ol/tilegrid/TileGrid~TileGrid} sourceTileGrid Source tile grid.
- * @param {module:ol/proj/Projection~Projection} targetProj Target projection.
- * @param {module:ol/tilegrid/TileGrid~TileGrid} targetTileGrid Target tile grid.
+ * @extends {module:ol/Tile}
+ * @param {module:ol/proj/Projection} sourceProj Source projection.
+ * @param {module:ol/tilegrid/TileGrid} sourceTileGrid Source tile grid.
+ * @param {module:ol/proj/Projection} targetProj Target projection.
+ * @param {module:ol/tilegrid/TileGrid} targetTileGrid Target tile grid.
  * @param {module:ol/tilecoord~TileCoord} tileCoord Coordinate of the tile.
  * @param {module:ol/tilecoord~TileCoord} wrappedTileCoord Coordinate of the tile wrapped in X.
  * @param {number} pixelRatio Pixel ratio.
@@ -70,13 +70,13 @@ const ReprojTile = function(sourceProj, sourceTileGrid,
 
   /**
    * @private
-   * @type {module:ol/tilegrid/TileGrid~TileGrid}
+   * @type {module:ol/tilegrid/TileGrid}
    */
   this.sourceTileGrid_ = sourceTileGrid;
 
   /**
    * @private
-   * @type {module:ol/tilegrid/TileGrid~TileGrid}
+   * @type {module:ol/tilegrid/TileGrid}
    */
   this.targetTileGrid_ = targetTileGrid;
 
@@ -88,7 +88,7 @@ const ReprojTile = function(sourceProj, sourceTileGrid,
 
   /**
    * @private
-   * @type {!Array.<module:ol/Tile~Tile>}
+   * @type {!Array.<module:ol/Tile>}
    */
   this.sourceTiles_ = [];
 
@@ -146,7 +146,7 @@ const ReprojTile = function(sourceProj, sourceTileGrid,
 
   /**
    * @private
-   * @type {!module:ol/reproj/Triangulation~Triangulation}
+   * @type {!module:ol/reproj/Triangulation}
    */
   this.triangulation_ = new Triangulation(
     sourceProj, targetProj, limitedTargetExtent, maxSourceExtent,

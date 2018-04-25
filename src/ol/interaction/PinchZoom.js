@@ -22,7 +22,7 @@ import PointerInteraction, {centroid as centroidFromPointers} from '../interacti
  * on a touch screen.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~PointerInteraction}
+ * @extends {module:ol/interaction/Pointer}
  * @param {module:ol/interaction/PinchZoom~Options=} opt_options Options.
  * @api
  */
@@ -72,8 +72,8 @@ inherits(PinchZoom, PointerInteraction);
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {module:ol/interaction/PinchZoom~PinchZoom}
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {module:ol/interaction/PinchZoom}
  */
 function handleDragEvent(mapBrowserEvent) {
   let scaleDelta = 1.0;
@@ -124,9 +124,9 @@ function handleDragEvent(mapBrowserEvent) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {module:ol/interaction/PinchZoom~PinchZoom}
+ * @this {module:ol/interaction/PinchZoom}
  */
 function handleUpEvent(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
@@ -151,9 +151,9 @@ function handleUpEvent(mapBrowserEvent) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {module:ol/interaction/PinchZoom~PinchZoom}
+ * @this {module:ol/interaction/PinchZoom}
  */
 function handleDownEvent(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {

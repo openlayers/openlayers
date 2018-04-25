@@ -32,7 +32,7 @@ const IGCZ = {
  * Feature format for `*.igc` flight recording files.
  *
  * @constructor
- * @extends {module:ol/format/TextFeature~TextFeature}
+ * @extends {module:ol/format/TextFeature}
  * @param {module:ol/format/IGC~Options=} opt_options Options.
  * @api
  */
@@ -94,7 +94,7 @@ const NEWLINE_RE = /\r\n|\r|\n/;
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature~Feature} Feature.
+ * @return {module:ol/Feature} Feature.
  * @api
  */
 IGC.prototype.readFeature;
@@ -184,7 +184,7 @@ IGC.prototype.readFeatureFromText = function(text, opt_options) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature~Feature>} Features.
+ * @return {Array.<module:ol/Feature>} Features.
  * @api
  */
 IGC.prototype.readFeatures;
@@ -208,7 +208,7 @@ IGC.prototype.readFeaturesFromText = function(text, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/proj/Projection~Projection} Projection.
+ * @return {module:ol/proj/Projection} Projection.
  * @api
  */
 IGC.prototype.readProjection;

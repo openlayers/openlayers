@@ -16,7 +16,7 @@ import TextPlacement from '../../style/TextPlacement.js';
 
 /**
  * @constructor
- * @extends {module:ol/render/canvas/Replay~CanvasReplay}
+ * @extends {module:ol/render/canvas/Replay}
  * @param {number} tolerance Tolerance.
  * @param {module:ol/extent~Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
@@ -226,24 +226,24 @@ CanvasTextReplay.prototype.drawText = function(geometry, feature) {
         end = flatCoordinates.length;
         break;
       case GeometryType.LINE_STRING:
-        flatCoordinates = /** @type {module:ol/geom/LineString~LineString} */ (geometry).getFlatMidpoint();
+        flatCoordinates = /** @type {module:ol/geom/LineString} */ (geometry).getFlatMidpoint();
         break;
       case GeometryType.CIRCLE:
-        flatCoordinates = /** @type {module:ol/geom/Circle~Circle} */ (geometry).getCenter();
+        flatCoordinates = /** @type {module:ol/geom/Circle} */ (geometry).getCenter();
         break;
       case GeometryType.MULTI_LINE_STRING:
-        flatCoordinates = /** @type {module:ol/geom/MultiLineString~MultiLineString} */ (geometry).getFlatMidpoints();
+        flatCoordinates = /** @type {module:ol/geom/MultiLineString} */ (geometry).getFlatMidpoints();
         end = flatCoordinates.length;
         break;
       case GeometryType.POLYGON:
-        flatCoordinates = /** @type {module:ol/geom/Polygon~Polygon} */ (geometry).getFlatInteriorPoint();
+        flatCoordinates = /** @type {module:ol/geom/Polygon} */ (geometry).getFlatInteriorPoint();
         if (!textState.overflow && flatCoordinates[2] / this.resolution < width) {
           return;
         }
         stride = 3;
         break;
       case GeometryType.MULTI_POLYGON:
-        const interiorPoints = /** @type {module:ol/geom/MultiPolygon~MultiPolygon} */ (geometry).getFlatInteriorPoints();
+        const interiorPoints = /** @type {module:ol/geom/MultiPolygon} */ (geometry).getFlatInteriorPoints();
         flatCoordinates = [];
         for (i = 0, ii = interiorPoints.length; i < ii; i += 3) {
           if (textState.overflow || interiorPoints[i + 2] / this.resolution >= width) {

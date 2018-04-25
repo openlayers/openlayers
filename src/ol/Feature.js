@@ -18,7 +18,7 @@ import Style from './style/Style.js';
  * Features can be styled individually with `setStyle`; otherwise they use the
  * style of their vector layer.
  *
- * Note that attribute properties are set as {@link module:ol/Object~BaseObject} properties on
+ * Note that attribute properties are set as {@link module:ol/Object} properties on
  * the feature object, so they are observable, and have get/set accessors.
  *
  * Typically, a feature has a single geometry property. You can set the
@@ -52,8 +52,8 @@ import Style from './style/Style.js';
  * ```
  *
  * @constructor
- * @extends {module:ol/Object~BaseObject}
- * @param {module:ol/geom/Geometry~Geometry|Object.<string, *>=} opt_geometryOrProperties
+ * @extends {module:ol/Object}
+ * @param {module:ol/geom/Geometry|Object.<string, *>=} opt_geometryOrProperties
  * You may pass a Geometry object directly, or an object literal containing
  * properties. If you pass an object literal, you may include a Geometry
  * associated with a `geometry` key.
@@ -78,7 +78,7 @@ const Feature = function(opt_geometryOrProperties) {
   /**
    * User provided style.
    * @private
-   * @type {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction}
+   * @type {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction}
    */
   this.style_ = null;
 
@@ -117,7 +117,7 @@ inherits(Feature, BaseObject);
 /**
  * Clone this feature. If the original feature has a geometry it
  * is also cloned. The feature id is not set in the clone.
- * @return {module:ol/Feature~Feature} The clone.
+ * @return {module:ol/Feature} The clone.
  * @api
  */
 Feature.prototype.clone = function() {
@@ -139,13 +139,14 @@ Feature.prototype.clone = function() {
  * Get the feature's default geometry.  A feature may have any number of named
  * geometries.  The "default" geometry (the one that is rendered by default) is
  * set when calling {@link module:ol/Feature~Feature#setGeometry}.
- * @return {module:ol/geom/Geometry~Geometry|undefined} The default geometry for the feature.
+ * @return {module:ol/geom/Geometry|undefined} The default geometry for the feature.
  * @api
  * @observable
  */
 Feature.prototype.getGeometry = function() {
-  return /** @type {module:ol/geom/Geometry~Geometry|undefined} */ (
-    this.get(this.geometryName_));
+  return (
+    /** @type {module:ol/geom/Geometry|undefined} */ (this.get(this.geometryName_))
+  );
 };
 
 
@@ -176,7 +177,7 @@ Feature.prototype.getGeometryName = function() {
 /**
  * Get the feature's style. Will return what was provided to the
  * {@link module:ol/Feature~Feature#setStyle} method.
- * @return {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction} The feature style.
+ * @return {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction} The feature style.
  * @api
  */
 Feature.prototype.getStyle = function() {
@@ -223,7 +224,7 @@ Feature.prototype.handleGeometryChanged_ = function() {
 /**
  * Set the default geometry for the feature.  This will update the property
  * with the name returned by {@link module:ol/Feature~Feature#getGeometryName}.
- * @param {module:ol/geom/Geometry~Geometry|undefined} geometry The new geometry.
+ * @param {module:ol/geom/Geometry|undefined} geometry The new geometry.
  * @api
  * @observable
  */
@@ -236,7 +237,7 @@ Feature.prototype.setGeometry = function(geometry) {
  * Set the style for the feature.  This can be a single style object, an array
  * of styles, or a function that takes a resolution and returns an array of
  * styles. If it is `null` the feature has no style (a `null` style).
- * @param {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction} style Style for this feature.
+ * @param {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction} style Style for this feature.
  * @api
  * @fires module:ol/events/Event~Event#event:change
  */
@@ -283,9 +284,9 @@ Feature.prototype.setGeometryName = function(name) {
 
 /**
  * Convert the provided object into a feature style function.  Functions passed
- * through unchanged.  Arrays of module:ol/style/Style~Style or single style objects wrapped
+ * through unchanged.  Arrays of module:ol/style/Style or single style objects wrapped
  * in a new feature style function.
- * @param {module:ol/style~StyleFunction|!Array.<module:ol/style/Style~Style>|!module:ol/style/Style~Style} obj
+ * @param {module:ol/style~StyleFunction|!Array.<module:ol/style/Style>|!module:ol/style/Style} obj
  *     A feature style function, a single style, or an array of styles.
  * @return {module:ol/style~StyleFunction} A style function.
  */
@@ -294,7 +295,7 @@ export function createStyleFunction(obj) {
     return obj;
   } else {
     /**
-     * @type {Array.<module:ol/style/Style~Style>}
+     * @type {Array.<module:ol/style/Style>}
      */
     let styles;
     if (Array.isArray(obj)) {

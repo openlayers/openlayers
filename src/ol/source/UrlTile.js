@@ -16,7 +16,7 @@ import {getKeyZXY} from '../tilecoord.js';
  * @property {boolean} [opaque]
  * @property {module:ol/proj~ProjectionLike} [projection]
  * @property {module:ol/source/State~State} [state]
- * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid]
+ * @property {module:ol/tilegrid/TileGrid} [tileGrid]
  * @property {module:ol/Tile~LoadFunction} tileLoadFunction
  * @property {number} [tilePixelRatio]
  * @property {module:ol/Tile~UrlFunction} [tileUrlFunction]
@@ -33,8 +33,8 @@ import {getKeyZXY} from '../tilecoord.js';
  *
  * @constructor
  * @abstract
- * @fires module:ol/source/Tile~TileSourceEvent
- * @extends {module:ol/source/Tile~TileSource}
+ * @fires module:ol/source/TileEvent
+ * @extends {module:ol/source/Tile}
  * @param {module:ol/source/UrlTile~Options=} options Image tile options.
  */
 const UrlTile = function(options) {
@@ -131,11 +131,11 @@ UrlTile.prototype.getUrls = function() {
 
 /**
  * Handle tile change events.
- * @param {module:ol/events/Event~Event} event Event.
+ * @param {module:ol/events/Event} event Event.
  * @protected
  */
 UrlTile.prototype.handleTileChange = function(event) {
-  const tile = /** @type {module:ol/Tile~Tile} */ (event.target);
+  const tile = /** @type {module:ol/Tile} */ (event.target);
   const uid = getUid(tile);
   const tileState = tile.getState();
   let type;

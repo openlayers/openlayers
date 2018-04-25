@@ -22,8 +22,8 @@ import {assign} from '../obj.js';
  * be visible.
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
- * @property {module:ol/source/Tile~TileSource} [source] Source for this layer.
- * @property {module:ol/PluggableMap~PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {module:ol/source/Tile} [source] Source for this layer.
+ * @property {module:ol/PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link ol.Map#addLayer}.
@@ -40,7 +40,7 @@ import {assign} from '../obj.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @constructor
- * @extends {module:ol/layer/Layer~Layer}
+ * @extends {module:ol/layer/Layer}
  * @fires module:ol/render/Event~RenderEvent
  * @param {module:ol/layer/Tile~Options=} opt_options Tile layer options.
  * @api
@@ -84,7 +84,7 @@ TileLayer.prototype.getPreload = function() {
 /**
  * Return the associated {@link ol.source.Tile tilesource} of the layer.
  * @function
- * @return {module:ol/source/Tile~TileSource} Source.
+ * @return {module:ol/source/Tile} Source.
  * @api
  */
 TileLayer.prototype.getSource;

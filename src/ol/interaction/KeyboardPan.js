@@ -35,7 +35,7 @@ import Interaction, {pan} from '../interaction/Interaction.js';
  * See also {@link module:ol/interaction/KeyboardZoom~KeyboardZoom}.
  *
  * @constructor
- * @extends {module:ol/interaction/Interaction~Interaction}
+ * @extends {module:ol/interaction/Interaction}
  * @param {module:ol/interaction/KeyboardPan~Options=} opt_options Options.
  * @api
  */
@@ -49,7 +49,7 @@ const KeyboardPan = function(opt_options) {
 
   /**
    * @private
-   * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Browser event.
+   * @param {module:ol/MapBrowserEvent} mapBrowserEvent Browser event.
    * @return {boolean} Combined condition result.
    */
   this.defaultCondition_ = function(mapBrowserEvent) {
@@ -82,12 +82,12 @@ const KeyboardPan = function(opt_options) {
 inherits(KeyboardPan, Interaction);
 
 /**
- * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} if it was a
+ * Handles the {@link module:ol/MapBrowserEvent map browser event} if it was a
  * `KeyEvent`, and decides the direction to pan to (if an arrow key was
  * pressed).
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {module:ol/MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {module:ol/interaction/KeyboardPan~KeyboardPan}
+ * @this {module:ol/interaction/KeyboardPan}
  */
 function handleEvent(mapBrowserEvent) {
   let stopEvent = false;

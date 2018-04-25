@@ -42,8 +42,8 @@ const TileRange = function(minX, maxX, minY, maxY) {
  * @param {number} maxX Maximum X.
  * @param {number} minY Minimum Y.
  * @param {number} maxY Maximum Y.
- * @param {module:ol/TileRange~TileRange=} tileRange TileRange.
- * @return {module:ol/TileRange~TileRange} Tile range.
+ * @param {module:ol/TileRange=} tileRange TileRange.
+ * @return {module:ol/TileRange} Tile range.
  */
 export function createOrUpdate(minX, maxX, minY, maxY, tileRange) {
   if (tileRange !== undefined) {
@@ -68,7 +68,7 @@ TileRange.prototype.contains = function(tileCoord) {
 
 
 /**
- * @param {module:ol/TileRange~TileRange} tileRange Tile range.
+ * @param {module:ol/TileRange} tileRange Tile range.
  * @return {boolean} Contains.
  */
 TileRange.prototype.containsTileRange = function(tileRange) {
@@ -88,7 +88,7 @@ TileRange.prototype.containsXY = function(x, y) {
 
 
 /**
- * @param {module:ol/TileRange~TileRange} tileRange Tile range.
+ * @param {module:ol/TileRange} tileRange Tile range.
  * @return {boolean} Equals.
  */
 TileRange.prototype.equals = function(tileRange) {
@@ -98,7 +98,7 @@ TileRange.prototype.equals = function(tileRange) {
 
 
 /**
- * @param {module:ol/TileRange~TileRange} tileRange Tile range.
+ * @param {module:ol/TileRange} tileRange Tile range.
  */
 TileRange.prototype.extend = function(tileRange) {
   if (tileRange.minX < this.minX) {
@@ -141,7 +141,7 @@ TileRange.prototype.getWidth = function() {
 
 
 /**
- * @param {module:ol/TileRange~TileRange} tileRange Tile range.
+ * @param {module:ol/TileRange} tileRange Tile range.
  * @return {boolean} Intersects.
  */
 TileRange.prototype.intersects = function(tileRange) {
