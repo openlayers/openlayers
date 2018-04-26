@@ -26,7 +26,7 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * @property {string} [className='ol-mouse-position'] CSS class name.
  * @property {module:ol/coordinate~CoordinateFormat} [coordinateFormat] Coordinate format.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
- * @property {function(module:ol/MapEvent~MapEvent)} [render] Function called when the
+ * @property {function(module:ol/MapEvent)} [render] Function called when the
  * control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  * @property {Element|string} [target] Specify a target if you want the
@@ -47,7 +47,7 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * can be changed by using the css selector `.ol-mouse-position`.
  *
  * @constructor
- * @extends {module:ol/control/Control~Control}
+ * @extends {module:ol/control/Control}
  * @param {module:ol/control/MousePosition~Options=} opt_options Mouse position
  *     options.
  * @api
@@ -96,7 +96,7 @@ const MousePosition = function(opt_options) {
 
   /**
    * @private
-   * @type {module:ol/proj/Projection~Projection}
+   * @type {module:ol/proj/Projection}
    */
   this.mapProjection_ = null;
 
@@ -119,8 +119,8 @@ inherits(MousePosition, Control);
 
 /**
  * Update the mouseposition element.
- * @param {module:ol/MapEvent~MapEvent} mapEvent Map event.
- * @this {module:ol/control/MousePosition~MousePosition}
+ * @param {module:ol/MapEvent} mapEvent Map event.
+ * @this {module:ol/control/MousePosition}
  * @api
  */
 export function render(mapEvent) {
@@ -154,19 +154,23 @@ MousePosition.prototype.handleProjectionChanged_ = function() {
  * @api
  */
 MousePosition.prototype.getCoordinateFormat = function() {
-  return /** @type {module:ol/coordinate~CoordinateFormat|undefined} */ (this.get(COORDINATE_FORMAT));
+  return (
+    /** @type {module:ol/coordinate~CoordinateFormat|undefined} */ (this.get(COORDINATE_FORMAT))
+  );
 };
 
 
 /**
  * Return the projection that is used to report the mouse position.
- * @return {module:ol/proj/Projection~Projection|undefined} The projection to report mouse
+ * @return {module:ol/proj/Projection|undefined} The projection to report mouse
  *     position in.
  * @observable
  * @api
  */
 MousePosition.prototype.getProjection = function() {
-  return /** @type {module:ol/proj/Projection~Projection|undefined} */ (this.get(PROJECTION));
+  return (
+    /** @type {module:ol/proj/Projection|undefined} */ (this.get(PROJECTION))
+  );
 };
 
 

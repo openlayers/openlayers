@@ -24,7 +24,7 @@ import RenderFeature from '../render/Feature.js';
 
 /**
  * @typedef {Object} Options
- * @property {function((module:ol/geom/Geometry~Geometry|Object.<string,*>)=)|function(module:ol/geom/GeometryType,Array.<number>,(Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)} [featureClass]
+ * @property {function((module:ol/geom/Geometry|Object.<string,*>)=)|function(module:ol/geom/GeometryType,Array.<number>,(Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)} [featureClass]
  * Class for features returned by {@link ol.format.MVT#readFeatures}. Set to
  * {@link module:ol/Feature~Feature} to get full editing and geometry support at the cost of
  * decreased rendering performance. The default is {@link module:ol/render/Feature~RenderFeature},
@@ -43,7 +43,7 @@ import RenderFeature from '../render/Feature.js';
  * Feature format for reading data in the Mapbox MVT format.
  *
  * @constructor
- * @extends {module:ol/format/Feature~FeatureFormat}
+ * @extends {module:ol/format/Feature}
  * @param {module:ol/format/MVT~Options=} opt_options Options.
  * @api
  */
@@ -54,7 +54,7 @@ const MVT = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
   /**
-   * @type {module:ol/proj/Projection~Projection}
+   * @type {module:ol/proj/Projection}
    */
   this.defaultDataProjection = new Projection({
     code: '',
@@ -63,7 +63,7 @@ const MVT = function(opt_options) {
 
   /**
    * @private
-   * @type {function((module:ol/geom/Geometry~Geometry|Object.<string,*>)=)|
+   * @type {function((module:ol/geom/Geometry|Object.<string,*>)=)|
    *     function(module:ol/geom/GeometryType,Array.<number>,
    *         (Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)}
    */
@@ -297,7 +297,7 @@ function getGeometryType(type, numEnds) {
  * @param {ol.ext.PBF} pbf PBF
  * @param {Object} rawFeature Raw Mapbox feature.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} Feature.
+ * @return {module:ol/Feature|module:ol/render/Feature} Feature.
  */
 MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
   const type = rawFeature.type;
@@ -387,7 +387,7 @@ MVT.prototype.readFeatures = function(source, opt_options) {
 
   const pbf = new PBF(/** @type {ArrayBuffer} */ (source));
   const pbfLayers = pbf.readFields(layersPBFReader, {});
-  /** @type {Array.<module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature>} */
+  /** @type {Array.<module:ol/Feature|module:ol/render/Feature>} */
   const features = [];
   for (const name in pbfLayers) {
     if (layers && layers.indexOf(name) == -1) {

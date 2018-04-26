@@ -31,7 +31,7 @@ import DragBox from '../interaction/DragBox.js';
  * your custom one configured with `className`.
  *
  * @constructor
- * @extends {module:ol/interaction/DragBox~DragBox}
+ * @extends {module:ol/interaction/DragBox}
  * @param {module:ol/interaction/DragZoom~Options=} opt_options Options.
  * @api
  */
@@ -68,7 +68,7 @@ inherits(DragZoom, DragBox);
 DragZoom.prototype.onBoxEnd = function() {
   const map = this.getMap();
 
-  const view = /** @type {!module:ol/View~View} */ (map.getView());
+  const view = /** @type {!module:ol/View} */ (map.getView());
 
   const size = /** @type {!module:ol/size~Size} */ (map.getSize());
 

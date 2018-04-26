@@ -25,7 +25,7 @@ import {quantizeMultiArray} from '../geom/flat/simplify.js';
  * Multi-polygon geometry.
  *
  * @constructor
- * @extends {module:ol/geom/SimpleGeometry~SimpleGeometry}
+ * @extends {module:ol/geom/SimpleGeometry}
  * @param {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>} coordinates Coordinates.
  * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
  * @api
@@ -85,7 +85,7 @@ inherits(MultiPolygon, SimpleGeometry);
 
 /**
  * Append the passed polygon to this multipolygon.
- * @param {module:ol/geom/Polygon~Polygon} polygon Polygon.
+ * @param {module:ol/geom/Polygon} polygon Polygon.
  * @api
  */
 MultiPolygon.prototype.appendPolygon = function(polygon) {
@@ -110,7 +110,7 @@ MultiPolygon.prototype.appendPolygon = function(polygon) {
 
 /**
  * Make a complete copy of the geometry.
- * @return {!module:ol/geom/MultiPolygon~MultiPolygon} Clone.
+ * @return {!module:ol/geom/MultiPolygon} Clone.
  * @override
  * @api
  */
@@ -219,8 +219,8 @@ MultiPolygon.prototype.getFlatInteriorPoints = function() {
 
 
 /**
- * Return the interior points as {@link module:ol/geom/MultiPoint~MultiPoint multipoint}.
- * @return {module:ol/geom/MultiPoint~MultiPoint} Interior points as XYM coordinates, where M is
+ * Return the interior points as {@link module:ol/geom/MultiPoint multipoint}.
+ * @return {module:ol/geom/MultiPoint} Interior points as XYM coordinates, where M is
  * the length of the horizontal intersection that the point belongs to.
  * @api
  */
@@ -273,7 +273,7 @@ MultiPolygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance
 /**
  * Return the polygon at the specified index.
  * @param {number} index Index.
- * @return {module:ol/geom/Polygon~Polygon} Polygon.
+ * @return {module:ol/geom/Polygon} Polygon.
  * @api
  */
 MultiPolygon.prototype.getPolygon = function(index) {
@@ -303,7 +303,7 @@ MultiPolygon.prototype.getPolygon = function(index) {
 
 /**
  * Return the polygons of this multipolygon.
- * @return {Array.<module:ol/geom/Polygon~Polygon>} Polygons.
+ * @return {Array.<module:ol/geom/Polygon>} Polygons.
  * @api
  */
 MultiPolygon.prototype.getPolygons = function() {
@@ -391,7 +391,7 @@ MultiPolygon.prototype.setFlatCoordinates = function(layout, flatCoordinates, en
 
 
 /**
- * @param {Array.<module:ol/geom/Polygon~Polygon>} polygons Polygons.
+ * @param {Array.<module:ol/geom/Polygon>} polygons Polygons.
  */
 MultiPolygon.prototype.setPolygons = function(polygons) {
   let layout = this.getLayout();

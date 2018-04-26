@@ -44,7 +44,7 @@ export {default as ZoomToExtent} from './control/ZoomToExtent.js';
  *
  * @param {module:ol/control~DefaultsOptions=} opt_options
  * Defaults options.
- * @return {module:ol/Collection~Collection.<module:ol/control/Control~Control>}
+ * @return {module:ol/Collection.<module:ol/control/Control>}
  * Controls.
  * @api
  */

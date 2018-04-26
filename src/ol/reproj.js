@@ -13,8 +13,8 @@ import {getPointResolution, transform} from './proj.js';
  * The resolution is calculated regardless of what resolutions
  * are actually available in the dataset (TileGrid, Image, ...).
  *
- * @param {module:ol/proj/Projection~Projection} sourceProj Source projection.
- * @param {module:ol/proj/Projection~Projection} targetProj Target projection.
+ * @param {module:ol/proj/Projection} sourceProj Source projection.
+ * @param {module:ol/proj/Projection} targetProj Target projection.
  * @param {module:ol/coordinate~Coordinate} targetCenter Target center.
  * @param {number} targetResolution Target resolution.
  * @return {number} The best resolution to use. Can be +-Infinity, NaN or 0.
@@ -81,7 +81,7 @@ function enlargeClipPoint(centroidX, centroidY, x, y) {
  * @param {module:ol/extent~Extent} sourceExtent Extent of the data source.
  * @param {number} targetResolution Target resolution.
  * @param {module:ol/extent~Extent} targetExtent Target extent.
- * @param {module:ol/reproj/Triangulation~Triangulation} triangulation
+ * @param {module:ol/reproj/Triangulation} triangulation
  * Calculated triangulation.
  * @param {Array.<{extent: module:ol/extent~Extent,
  *                 image: (HTMLCanvasElement|Image|HTMLVideoElement)}>} sources

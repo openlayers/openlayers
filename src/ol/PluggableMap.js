@@ -47,23 +47,23 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {Array.<module:ol/PluggableMap~PostRenderFunction>} postRenderFunctions
  * @property {module:ol/size~Size} size
  * @property {!Object.<string, boolean>} skippedFeatureUids
- * @property {module:ol/TileQueue~TileQueue} tileQueue
- * @property {Object.<string, Object.<string, module:ol/TileRange~TileRange>>} usedTiles
+ * @property {module:ol/TileQueue} tileQueue
+ * @property {Object.<string, Object.<string, module:ol/TileRange>>} usedTiles
  * @property {Array.<number>} viewHints
  * @property {!Object.<string, Object.<string, boolean>>} wantedTiles
  */
 
 
 /**
- * @typedef {function(module:ol/PluggableMap~PluggableMap, ?module:ol/PluggableMap~FrameState): boolean} PostRenderFunction
+ * @typedef {function(module:ol/PluggableMap, ?module:ol/PluggableMap~FrameState): boolean} PostRenderFunction
  */
 
 
 /**
  * @typedef {Object} AtPixelOptions
- * @property {((function(module:ol/layer/Layer~Layer): boolean)|undefined)} layerFilter Layer filter
+ * @property {((function(module:ol/layer/Layer): boolean)|undefined)} layerFilter Layer filter
  * function. The filter function will receive one argument, the
- * {@link module:ol/layer/Layer~Layer layer-candidate} and it should return a boolean value.
+ * {@link module:ol/layer/Layer layer-candidate} and it should return a boolean value.
  * Only layers which are visible and for which this function returns `true`
  * will be tested for features. By default, all visible layers will be tested.
  * @property {number} [hitTolerance=0] Hit-detection tolerance in pixels. Pixels
@@ -74,10 +74,10 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 /**
  * @typedef {Object} MapOptionsInternal
- * @property {module:ol/Collection~Collection.<module:ol/control/Control~Control>} [controls]
- * @property {module:ol/Collection~Collection.<module:ol/interaction/Interaction~Interaction>} [interactions]
+ * @property {module:ol/Collection.<module:ol/control/Control>} [controls]
+ * @property {module:ol/Collection.<module:ol/interaction/Interaction>} [interactions]
  * @property {Element|Document} keyboardEventTarget
- * @property {module:ol/Collection~Collection.<module:ol/Overlay~Overlay>} overlays
+ * @property {module:ol/Collection.<module:ol/Overlay>} overlays
  * @property {Object.<string, *>} values
  */
 
@@ -85,12 +85,12 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 /**
  * Object literal with config options for the map.
  * @typedef {Object} MapOptions
- * @property {module:ol/Collection~Collection.<module:ol/control/Control~Control>|Array.<module:ol/control/Control~Control>} [controls]
+ * @property {module:ol/Collection.<module:ol/control/Control>|Array.<module:ol/control/Control>} [controls]
  * Controls initially added to the map. If not specified,
  * {@link module:ol/control~defaults} is used.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
  * physical pixels and device-independent pixels (dips) on the device.
- * @property {module:ol/Collection~Collection.<module:ol/interaction/Interaction~Interaction>|Array.<module:ol/interaction/Interaction~Interaction>} [interactions]
+ * @property {module:ol/Collection.<module:ol/interaction/Interaction>|Array.<module:ol/interaction/Interaction>} [interactions]
  * Interactions that are initially added to the map. If not specified,
  * {@link module:ol/interaction~defaults} is used.
  * @property {Element|Document|string} [keyboardEventTarget] The element to
@@ -118,7 +118,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {number} [moveTolerance=1] The minimum distance in pixels the
  * cursor must move to be detected as a map move event instead of a click.
  * Increasing this value can make it easier to click on the map.
- * @property {module:ol/Collection~Collection.<module:ol/Overlay~Overlay>|Array.<module:ol/Overlay~Overlay>} [overlays]
+ * @property {module:ol/Collection.<module:ol/Overlay>|Array.<module:ol/Overlay>} [overlays]
  * Overlays initially added to the map. By default, no overlays are added.
  * @property {Element|string} [target] The container for the map, either the
  * element itself or the `id` of the element. If not specified at construction
@@ -132,7 +132,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 /**
  * @constructor
- * @extends {module:ol/Object~BaseObject}
+ * @extends {module:ol/Object}
  * @param {module:ol/PluggableMap~MapOptions} options Map options.
  * @fires module:ol/MapBrowserEvent~MapBrowserEvent
  * @fires module:ol/MapEvent~MapEvent
@@ -283,7 +283,7 @@ const PluggableMap = function(options) {
 
   /**
    * @private
-   * @type {module:ol/MapBrowserEventHandler~MapBrowserEventHandler}
+   * @type {module:ol/MapBrowserEventHandler}
    */
   this.mapBrowserEventHandler_ = new MapBrowserEventHandler(this, options.moveTolerance);
   for (const key in MapBrowserEventType) {
@@ -311,19 +311,19 @@ const PluggableMap = function(options) {
     this.handleBrowserEvent, this);
 
   /**
-   * @type {module:ol/Collection~Collection.<module:ol/control/Control~Control>}
+   * @type {module:ol/Collection.<module:ol/control/Control>}
    * @protected
    */
   this.controls = optionsInternal.controls || new Collection();
 
   /**
-   * @type {module:ol/Collection~Collection.<module:ol/interaction/Interaction~Interaction>}
+   * @type {module:ol/Collection.<module:ol/interaction/Interaction>}
    * @protected
    */
   this.interactions = optionsInternal.interactions || new Collection();
 
   /**
-   * @type {module:ol/Collection~Collection.<module:ol/Overlay~Overlay>}
+   * @type {module:ol/Collection.<module:ol/Overlay>}
    * @private
    */
   this.overlays_ = optionsInternal.overlays;
@@ -331,7 +331,7 @@ const PluggableMap = function(options) {
   /**
    * A lookup of overlays by id.
    * @private
-   * @type {Object.<string, module:ol/Overlay~Overlay>}
+   * @type {Object.<string, module:ol/Overlay>}
    */
   this.overlayIdIndex_ = {};
 
@@ -361,7 +361,7 @@ const PluggableMap = function(options) {
 
   /**
    * @private
-   * @type {module:ol/TileQueue~TileQueue}
+   * @type {module:ol/TileQueue}
    */
   this.tileQueue_ = new TileQueue(
     this.getTilePriority.bind(this),
@@ -390,8 +390,8 @@ const PluggableMap = function(options) {
 
   this.controls.forEach(
     /**
-     * @param {module:ol/control/Control~Control} control Control.
-     * @this {module:ol/PluggableMap~PluggableMap}
+     * @param {module:ol/control/Control} control Control.
+     * @this {module:ol/PluggableMap}
      */
     function(control) {
       control.setMap(this);
@@ -415,8 +415,8 @@ const PluggableMap = function(options) {
 
   this.interactions.forEach(
     /**
-     * @param {module:ol/interaction/Interaction~Interaction} interaction Interaction.
-     * @this {module:ol/PluggableMap~PluggableMap}
+     * @param {module:ol/interaction/Interaction} interaction Interaction.
+     * @this {module:ol/PluggableMap}
      */
     function(interaction) {
       interaction.setMap(this);
@@ -445,7 +445,7 @@ const PluggableMap = function(options) {
      * @param {module:ol/Collection~CollectionEvent} event CollectionEvent.
      */
     function(event) {
-      this.addOverlayInternal_(/** @type {module:ol/Overlay~Overlay} */ (event.element));
+      this.addOverlayInternal_(/** @type {module:ol/Overlay} */ (event.element));
     }, this);
 
   listen(this.overlays_, CollectionEventType.REMOVE,
@@ -453,7 +453,7 @@ const PluggableMap = function(options) {
      * @param {module:ol/Collection~CollectionEvent} event CollectionEvent.
      */
     function(event) {
-      const overlay = /** @type {module:ol/Overlay~Overlay} */ (event.element);
+      const overlay = /** @type {module:ol/Overlay} */ (event.element);
       const id = overlay.getId();
       if (id !== undefined) {
         delete this.overlayIdIndex_[id.toString()];
@@ -473,7 +473,7 @@ PluggableMap.prototype.createRenderer = function() {
 
 /**
  * Add the given control to the map.
- * @param {module:ol/control/Control~Control} control Control.
+ * @param {module:ol/control/Control} control Control.
  * @api
  */
 PluggableMap.prototype.addControl = function(control) {
@@ -483,7 +483,7 @@ PluggableMap.prototype.addControl = function(control) {
 
 /**
  * Add the given interaction to the map.
- * @param {module:ol/interaction/Interaction~Interaction} interaction Interaction to add.
+ * @param {module:ol/interaction/Interaction} interaction Interaction to add.
  * @api
  */
 PluggableMap.prototype.addInteraction = function(interaction) {
@@ -506,7 +506,7 @@ PluggableMap.prototype.addLayer = function(layer) {
 
 /**
  * Add the given overlay to the map.
- * @param {module:ol/Overlay~Overlay} overlay Overlay.
+ * @param {module:ol/Overlay} overlay Overlay.
  * @api
  */
 PluggableMap.prototype.addOverlay = function(overlay) {
@@ -516,7 +516,7 @@ PluggableMap.prototype.addOverlay = function(overlay) {
 
 /**
  * This deals with map's overlay collection changes.
- * @param {module:ol/Overlay~Overlay} overlay Overlay.
+ * @param {module:ol/Overlay} overlay Overlay.
  * @private
  */
 PluggableMap.prototype.addOverlayInternal_ = function(overlay) {
@@ -555,12 +555,12 @@ PluggableMap.prototype.disposeInternal = function() {
  * callback with each intersecting feature. Layers included in the detection can
  * be configured through the `layerFilter` option in `opt_options`.
  * @param {module:ol~Pixel} pixel Pixel.
- * @param {function(this: S, (module:ol/Feature~Feature|module:ol/render/Feature~Feature),
- *     module:ol/layer/Layer~Layer): T} callback Feature callback. The callback will be
+ * @param {function(this: S, (module:ol/Feature|module:ol/render/Feature~Feature),
+ *     module:ol/layer/Layer): T} callback Feature callback. The callback will be
  *     called with two arguments. The first argument is one
- *     {@link module:ol/Feature~Feature feature} or
+ *     {@link module:ol/Feature feature} or
  *     {@link module:ol/render/Feature~Feature render feature} at the pixel, the second is
- *     the {@link module:ol/layer/Layer~Layer layer} of the feature and will be null for
+ *     the {@link module:ol/layer/Layer layer} of the feature and will be null for
  *     unmanaged layers. To stop detection, callback functions can return a
  *     truthy value.
  * @param {module:ol/PluggableMap~AtPixelOptions=} opt_options Optional options.
@@ -589,7 +589,7 @@ PluggableMap.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_opt
  * Get all features that intersect a pixel on the viewport.
  * @param {module:ol~Pixel} pixel Pixel.
  * @param {module:ol/PluggableMap~AtPixelOptions=} opt_options Optional options.
- * @return {Array.<module:ol/Feature~Feature|module:ol/render/Feature~Feature>} The detected features or
+ * @return {Array.<module:ol/Feature|module:ol/render/Feature~Feature>} The detected features or
  * `null` if none were found.
  * @api
  */
@@ -609,16 +609,16 @@ PluggableMap.prototype.getFeaturesAtPixel = function(pixel, opt_options) {
  * execute a callback with each matching layer. Layers included in the
  * detection can be configured through `opt_layerFilter`.
  * @param {module:ol~Pixel} pixel Pixel.
- * @param {function(this: S, module:ol/layer/Layer~Layer, (Uint8ClampedArray|Uint8Array)): T} callback
+ * @param {function(this: S, module:ol/layer/Layer, (Uint8ClampedArray|Uint8Array)): T} callback
  *     Layer callback. This callback will receive two arguments: first is the
- *     {@link module:ol/layer/Layer~Layer layer}, second argument is an array representing
+ *     {@link module:ol/layer/Layer layer}, second argument is an array representing
  *     [R, G, B, A] pixel values (0 - 255) and will be `null` for layer types
  *     that do not currently support this argument. To stop detection, callback
  *     functions can return a truthy value.
  * @param {S=} opt_this Value to use as `this` when executing `callback`.
- * @param {(function(this: U, module:ol/layer/Layer~Layer): boolean)=} opt_layerFilter Layer
+ * @param {(function(this: U, module:ol/layer/Layer): boolean)=} opt_layerFilter Layer
  *     filter function. The filter function will receive one argument, the
- *     {@link module:ol/layer/Layer~Layer layer-candidate} and it should return a boolean
+ *     {@link module:ol/layer/Layer layer-candidate} and it should return a boolean
  *     value. Only layers which are visible and for which this function returns
  *     `true` will be tested for features. By default, all visible layers will
  *     be tested.
@@ -742,7 +742,7 @@ PluggableMap.prototype.getCoordinateFromPixel = function(pixel) {
 /**
  * Get the map controls. Modifying this collection changes the controls
  * associated with the map.
- * @return {module:ol/Collection~Collection.<module:ol/control/Control~Control>} Controls.
+ * @return {module:ol/Collection.<module:ol/control/Control>} Controls.
  * @api
  */
 PluggableMap.prototype.getControls = function() {
@@ -753,7 +753,7 @@ PluggableMap.prototype.getControls = function() {
 /**
  * Get the map overlays. Modifying this collection changes the overlays
  * associated with the map.
- * @return {module:ol/Collection~Collection.<module:ol/Overlay~Overlay>} Overlays.
+ * @return {module:ol/Collection.<module:ol/Overlay>} Overlays.
  * @api
  */
 PluggableMap.prototype.getOverlays = function() {
@@ -766,7 +766,7 @@ PluggableMap.prototype.getOverlays = function() {
  * Note that the index treats string and numeric identifiers as the same. So
  * `map.getOverlayById(2)` will return an overlay with id `'2'` or `2`.
  * @param {string|number} id Overlay identifier.
- * @return {module:ol/Overlay~Overlay} Overlay.
+ * @return {module:ol/Overlay} Overlay.
  * @api
  */
 PluggableMap.prototype.getOverlayById = function(id) {
@@ -780,7 +780,7 @@ PluggableMap.prototype.getOverlayById = function(id) {
  * associated with the map.
  *
  * Interactions are used for e.g. pan, zoom and rotate.
- * @return {module:ol/Collection~Collection.<module:ol/interaction/Interaction~Interaction>} Interactions.
+ * @return {module:ol/Collection.<module:ol/interaction/Interaction>} Interactions.
  * @api
  */
 PluggableMap.prototype.getInteractions = function() {
@@ -795,13 +795,15 @@ PluggableMap.prototype.getInteractions = function() {
  * @api
  */
 PluggableMap.prototype.getLayerGroup = function() {
-  return /** @type {module:ol/layer/Group~Group} */ (this.get(MapProperty.LAYERGROUP));
+  return (
+    /** @type {module:ol/layer/Group~Group} */ (this.get(MapProperty.LAYERGROUP))
+  );
 };
 
 
 /**
  * Get the collection of layers associated with this map.
- * @return {!module:ol/Collection~Collection.<module:ol/layer/Base~Base>} Layers.
+ * @return {!module:ol/Collection.<module:ol/layer/Base~Base>} Layers.
  * @api
  */
 PluggableMap.prototype.getLayers = function() {
@@ -843,19 +845,23 @@ PluggableMap.prototype.getRenderer = function() {
  * @api
  */
 PluggableMap.prototype.getSize = function() {
-  return /** @type {module:ol/size~Size|undefined} */ (this.get(MapProperty.SIZE));
+  return (
+    /** @type {module:ol/size~Size|undefined} */ (this.get(MapProperty.SIZE))
+  );
 };
 
 
 /**
  * Get the view associated with this map. A view manages properties such as
  * center and resolution.
- * @return {module:ol/View~View} The view that controls this map.
+ * @return {module:ol/View} The view that controls this map.
  * @observable
  * @api
  */
 PluggableMap.prototype.getView = function() {
-  return /** @type {module:ol/View~View} */ (this.get(MapProperty.VIEW));
+  return (
+    /** @type {module:ol/View} */ (this.get(MapProperty.VIEW))
+  );
 };
 
 
@@ -894,7 +900,7 @@ PluggableMap.prototype.getOverlayContainerStopEvent = function() {
 
 
 /**
- * @param {module:ol/Tile~Tile} tile Tile.
+ * @param {module:ol/Tile} tile Tile.
  * @param {string} tileSourceKey Tile source key.
  * @param {module:ol/coordinate~Coordinate} tileCenter Tile center.
  * @param {number} tileResolution Tile resolution.
@@ -935,7 +941,7 @@ PluggableMap.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
 
 
 /**
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent The event to handle.
+ * @param {module:ol/MapBrowserEvent} mapBrowserEvent The event to handle.
  */
 PluggableMap.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   if (!this.frameState_) {
@@ -1162,8 +1168,8 @@ PluggableMap.prototype.render = function() {
 
 /**
  * Remove the given control from the map.
- * @param {module:ol/control/Control~Control} control Control.
- * @return {module:ol/control/Control~Control|undefined} The removed control (or undefined
+ * @param {module:ol/control/Control} control Control.
+ * @return {module:ol/control/Control|undefined} The removed control (or undefined
  *     if the control was not found).
  * @api
  */
@@ -1174,8 +1180,8 @@ PluggableMap.prototype.removeControl = function(control) {
 
 /**
  * Remove the given interaction from the map.
- * @param {module:ol/interaction/Interaction~Interaction} interaction Interaction to remove.
- * @return {module:ol/interaction/Interaction~Interaction|undefined} The removed interaction (or
+ * @param {module:ol/interaction/Interaction} interaction Interaction to remove.
+ * @return {module:ol/interaction/Interaction|undefined} The removed interaction (or
  *     undefined if the interaction was not found).
  * @api
  */
@@ -1199,8 +1205,8 @@ PluggableMap.prototype.removeLayer = function(layer) {
 
 /**
  * Remove the given overlay from the map.
- * @param {module:ol/Overlay~Overlay} overlay Overlay.
- * @return {module:ol/Overlay~Overlay|undefined} The removed overlay (or undefined
+ * @param {module:ol/Overlay} overlay Overlay.
+ * @return {module:ol/Overlay|undefined} The removed overlay (or undefined
  *     if the overlay was not found).
  * @api
  */
@@ -1339,7 +1345,7 @@ PluggableMap.prototype.setTarget = function(target) {
 
 /**
  * Set the view for this map.
- * @param {module:ol/View~View} view The view that controls this map.
+ * @param {module:ol/View} view The view that controls this map.
  * @observable
  * @api
  */
@@ -1349,7 +1355,7 @@ PluggableMap.prototype.setView = function(view) {
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature.
+ * @param {module:ol/Feature} feature Feature.
  */
 PluggableMap.prototype.skipFeature = function(feature) {
   const featureUid = getUid(feature).toString();
@@ -1387,7 +1393,7 @@ PluggableMap.prototype.updateSize = function() {
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature.
+ * @param {module:ol/Feature} feature Feature.
  */
 PluggableMap.prototype.unskipFeature = function(feature) {
   const featureUid = getUid(feature).toString();

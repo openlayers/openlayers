@@ -22,7 +22,7 @@ import {create as createTransform, compose as composeTransform} from '../transfo
  *
  * @constructor
  * @abstract
- * @extends {module:ol/Object~BaseObject}
+ * @extends {module:ol/Object}
  * @api
  */
 const Geometry = function() {
@@ -43,7 +43,7 @@ const Geometry = function() {
 
   /**
    * @protected
-   * @type {Object.<string, module:ol/geom/Geometry~Geometry>}
+   * @type {Object.<string, module:ol/geom/Geometry>}
    */
   this.simplifiedGeometryCache = {};
 
@@ -73,7 +73,7 @@ const tmpTransform = createTransform();
 /**
  * Make a complete copy of the geometry.
  * @abstract
- * @return {!module:ol/geom/Geometry~Geometry} Clone.
+ * @return {!module:ol/geom/Geometry} Clone.
  */
 Geometry.prototype.clone = function() {};
 
@@ -181,7 +181,7 @@ Geometry.prototype.scale = function(sx, opt_sy, opt_anchor) {};
  * simplification is used to preserve topology.
  * @function
  * @param {number} tolerance The tolerance distance for simplification.
- * @return {module:ol/geom/Geometry~Geometry} A new, simplified version of the original
+ * @return {module:ol/geom/Geometry} A new, simplified version of the original
  *     geometry.
  * @api
  */
@@ -196,7 +196,7 @@ Geometry.prototype.simplify = function(tolerance) {
  * @see https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
  * @abstract
  * @param {number} squaredTolerance Squared tolerance.
- * @return {module:ol/geom/Geometry~Geometry} Simplified geometry.
+ * @return {module:ol/geom/Geometry} Simplified geometry.
  */
 Geometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {};
 
@@ -250,7 +250,7 @@ Geometry.prototype.translate = function(deltaX, deltaY) {};
  *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
  * @param {module:ol/proj~ProjectionLike} destination The desired projection.  Can be a
  *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
- * @return {module:ol/geom/Geometry~Geometry} This geometry.  Note that original geometry is
+ * @return {module:ol/geom/Geometry} This geometry.  Note that original geometry is
  *     modified in place.
  * @api
  */

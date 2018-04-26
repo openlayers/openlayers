@@ -9,8 +9,8 @@ import Filter from '../filter/Filter.js';
  * Represents a logical `<Not>` operator for a filter condition.
  *
  * @constructor
- * @param {!module:ol/format/filter/Filter~Filter} condition Filter condition.
- * @extends {module:ol/format/filter/Filter~Filter}
+ * @param {!module:ol/format/filter/Filter} condition Filter condition.
+ * @extends {module:ol/format/filter/Filter}
  * @api
  */
 const Not = function(condition) {
@@ -18,7 +18,7 @@ const Not = function(condition) {
   Filter.call(this, 'Not');
 
   /**
-   * @type {!module:ol/format/filter/Filter~Filter}
+   * @type {!module:ol/format/filter/Filter}
    */
   this.condition = condition;
 };

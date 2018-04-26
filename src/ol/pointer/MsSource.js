@@ -35,9 +35,9 @@ import {inherits} from '../index.js';
 import EventSource from '../pointer/EventSource.js';
 
 /**
- * @param {module:ol/pointer/PointerEventHandler~PointerEventHandler} dispatcher Event handler.
+ * @param {module:ol/pointer/PointerEventHandler} dispatcher Event handler.
  * @constructor
- * @extends {module:ol/pointer/EventSource~EventSource}
+ * @extends {module:ol/pointer/EventSource}
  */
 const MsSource = function(dispatcher) {
   const mapping = {

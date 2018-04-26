@@ -19,7 +19,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 
 /**
  * @classdesc
- * A concrete subclass of {@link module:ol/render/VectorContext~VectorContext} that implements
+ * A concrete subclass of {@link module:ol/render/VectorContext} that implements
  * direct rendering of features and geometries to an HTML5 Canvas context.
  * Instances of this class are created internally by the library and
  * provided to application code as vectorContext member of the
@@ -27,7 +27,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
  * render events emitted by layers and maps.
  *
  * @constructor
- * @extends {module:ol/render/VectorContext~VectorContext}
+ * @extends {module:ol/render/VectorContext}
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
  * @param {module:ol/extent~Extent} extent Extent.
@@ -394,7 +394,7 @@ CanvasImmediateRenderer.prototype.drawRings_ = function(flatCoordinates, offset,
  * Render a circle geometry into the canvas.  Rendering is immediate and uses
  * the current fill and stroke styles.
  *
- * @param {module:ol/geom/Circle~Circle} geometry Circle geometry.
+ * @param {module:ol/geom/Circle} geometry Circle geometry.
  * @override
  * @api
  */
@@ -435,7 +435,7 @@ CanvasImmediateRenderer.prototype.drawCircle = function(geometry) {
  * Set the rendering style.  Note that since this is an immediate rendering API,
  * any `zIndex` on the provided style will be ignored.
  *
- * @param {module:ol/style/Style~Style} style The rendering style.
+ * @param {module:ol/style/Style} style The rendering style.
  * @override
  * @api
  */
@@ -450,7 +450,7 @@ CanvasImmediateRenderer.prototype.setStyle = function(style) {
  * Render a geometry into the canvas.  Call
  * {@link ol.render.canvas.Immediate#setStyle} first to set the rendering style.
  *
- * @param {module:ol/geom/Geometry~Geometry|module:ol/render/Feature~RenderFeature} geometry The geometry to render.
+ * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry The geometry to render.
  * @override
  * @api
  */
@@ -458,28 +458,28 @@ CanvasImmediateRenderer.prototype.drawGeometry = function(geometry) {
   const type = geometry.getType();
   switch (type) {
     case GeometryType.POINT:
-      this.drawPoint(/** @type {module:ol/geom/Point~Point} */ (geometry));
+      this.drawPoint(/** @type {module:ol/geom/Point} */ (geometry));
       break;
     case GeometryType.LINE_STRING:
-      this.drawLineString(/** @type {module:ol/geom/LineString~LineString} */ (geometry));
+      this.drawLineString(/** @type {module:ol/geom/LineString} */ (geometry));
       break;
     case GeometryType.POLYGON:
-      this.drawPolygon(/** @type {module:ol/geom/Polygon~Polygon} */ (geometry));
+      this.drawPolygon(/** @type {module:ol/geom/Polygon} */ (geometry));
       break;
     case GeometryType.MULTI_POINT:
-      this.drawMultiPoint(/** @type {module:ol/geom/MultiPoint~MultiPoint} */ (geometry));
+      this.drawMultiPoint(/** @type {module:ol/geom/MultiPoint} */ (geometry));
       break;
     case GeometryType.MULTI_LINE_STRING:
-      this.drawMultiLineString(/** @type {module:ol/geom/MultiLineString~MultiLineString} */ (geometry));
+      this.drawMultiLineString(/** @type {module:ol/geom/MultiLineString} */ (geometry));
       break;
     case GeometryType.MULTI_POLYGON:
-      this.drawMultiPolygon(/** @type {module:ol/geom/MultiPolygon~MultiPolygon} */ (geometry));
+      this.drawMultiPolygon(/** @type {module:ol/geom/MultiPolygon} */ (geometry));
       break;
     case GeometryType.GEOMETRY_COLLECTION:
-      this.drawGeometryCollection(/** @type {module:ol/geom/GeometryCollection~GeometryCollection} */ (geometry));
+      this.drawGeometryCollection(/** @type {module:ol/geom/GeometryCollection} */ (geometry));
       break;
     case GeometryType.CIRCLE:
-      this.drawCircle(/** @type {module:ol/geom/Circle~Circle} */ (geometry));
+      this.drawCircle(/** @type {module:ol/geom/Circle} */ (geometry));
       break;
     default:
   }
@@ -492,8 +492,8 @@ CanvasImmediateRenderer.prototype.drawGeometry = function(geometry) {
  * this method is called.  If you need `zIndex` support, you should be using an
  * {@link module:ol/layer/Vector~VectorLayer} instead.
  *
- * @param {module:ol/Feature~Feature} feature Feature.
- * @param {module:ol/style/Style~Style} style Style.
+ * @param {module:ol/Feature} feature Feature.
+ * @param {module:ol/style/Style} style Style.
  * @override
  * @api
  */
@@ -511,7 +511,7 @@ CanvasImmediateRenderer.prototype.drawFeature = function(feature, style) {
  * Render a GeometryCollection to the canvas.  Rendering is immediate and
  * uses the current styles appropriate for each geometry in the collection.
  *
- * @param {module:ol/geom/GeometryCollection~GeometryCollection} geometry Geometry collection.
+ * @param {module:ol/geom/GeometryCollection} geometry Geometry collection.
  * @override
  */
 CanvasImmediateRenderer.prototype.drawGeometryCollection = function(geometry) {
@@ -526,7 +526,7 @@ CanvasImmediateRenderer.prototype.drawGeometryCollection = function(geometry) {
  * Render a Point geometry into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {module:ol/geom/Point~Point|module:ol/render/Feature~RenderFeature} geometry Point geometry.
+ * @param {module:ol/geom/Point|module:ol/render/Feature} geometry Point geometry.
  * @override
  */
 CanvasImmediateRenderer.prototype.drawPoint = function(geometry) {
@@ -545,7 +545,7 @@ CanvasImmediateRenderer.prototype.drawPoint = function(geometry) {
  * Render a MultiPoint geometry  into the canvas.  Rendering is immediate and
  * uses the current style.
  *
- * @param {module:ol/geom/MultiPoint~MultiPoint|module:ol/render/Feature~RenderFeature} geometry MultiPoint geometry.
+ * @param {module:ol/geom/MultiPoint|module:ol/render/Feature} geometry MultiPoint geometry.
  * @override
  */
 CanvasImmediateRenderer.prototype.drawMultiPoint = function(geometry) {
@@ -564,7 +564,7 @@ CanvasImmediateRenderer.prototype.drawMultiPoint = function(geometry) {
  * Render a LineString into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {module:ol/geom/LineString~LineString|module:ol/render/Feature~RenderFeature} geometry LineString geometry.
+ * @param {module:ol/geom/LineString|module:ol/render/Feature} geometry LineString geometry.
  * @override
  */
 CanvasImmediateRenderer.prototype.drawLineString = function(geometry) {
@@ -591,7 +591,7 @@ CanvasImmediateRenderer.prototype.drawLineString = function(geometry) {
  * Render a MultiLineString geometry into the canvas.  Rendering is immediate
  * and uses the current style.
  *
- * @param {module:ol/geom/MultiLineString~MultiLineString|module:ol/render/Feature~RenderFeature} geometry MultiLineString geometry.
+ * @param {module:ol/geom/MultiLineString|module:ol/render/Feature} geometry MultiLineString geometry.
  * @override
  */
 CanvasImmediateRenderer.prototype.drawMultiLineString = function(geometry) {
@@ -623,7 +623,7 @@ CanvasImmediateRenderer.prototype.drawMultiLineString = function(geometry) {
  * Render a Polygon geometry into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {module:ol/geom/Polygon~Polygon|module:ol/render/Feature~RenderFeature} geometry Polygon geometry.
+ * @param {module:ol/geom/Polygon|module:ol/render/Feature} geometry Polygon geometry.
  * @override
  */
 CanvasImmediateRenderer.prototype.drawPolygon = function(geometry) {
@@ -658,7 +658,7 @@ CanvasImmediateRenderer.prototype.drawPolygon = function(geometry) {
 /**
  * Render MultiPolygon geometry into the canvas.  Rendering is immediate and
  * uses the current style.
- * @param {module:ol/geom/MultiPolygon~MultiPolygon} geometry MultiPolygon geometry.
+ * @param {module:ol/geom/MultiPolygon} geometry MultiPolygon geometry.
  * @override
  */
 CanvasImmediateRenderer.prototype.drawMultiPolygon = function(geometry) {
@@ -810,8 +810,8 @@ CanvasImmediateRenderer.prototype.setContextTextState_ = function(textState) {
  * Set the fill and stroke style for subsequent draw operations.  To clear
  * either fill or stroke styles, pass null for the appropriate parameter.
  *
- * @param {module:ol/style/Fill~Fill} fillStyle Fill style.
- * @param {module:ol/style/Stroke~Stroke} strokeStyle Stroke style.
+ * @param {module:ol/style/Fill} fillStyle Fill style.
+ * @param {module:ol/style/Stroke} strokeStyle Stroke style.
  * @override
  */
 CanvasImmediateRenderer.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
@@ -858,7 +858,7 @@ CanvasImmediateRenderer.prototype.setFillStrokeStyle = function(fillStyle, strok
  * Set the image style for subsequent draw operations.  Pass null to remove
  * the image style.
  *
- * @param {module:ol/style/Image~ImageStyle} imageStyle Image style.
+ * @param {module:ol/style/Image} imageStyle Image style.
  * @override
  */
 CanvasImmediateRenderer.prototype.setImageStyle = function(imageStyle) {
@@ -890,7 +890,7 @@ CanvasImmediateRenderer.prototype.setImageStyle = function(imageStyle) {
  * Set the text style for subsequent draw operations.  Pass null to
  * remove the text style.
  *
- * @param {module:ol/style/Text~Text} textStyle Text style.
+ * @param {module:ol/style/Text} textStyle Text style.
  * @override
  */
 CanvasImmediateRenderer.prototype.setTextStyle = function(textStyle) {

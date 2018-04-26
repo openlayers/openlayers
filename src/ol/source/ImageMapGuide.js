@@ -34,7 +34,7 @@ import {appendParams} from '../uri.js';
  *
  * @constructor
  * @fires ol.source.Image.Event
- * @extends {module:ol/source/Image~ImageSource}
+ * @extends {module:ol/source/Image}
  * @param {module:ol/source/ImageMapGuide~Options=} options ImageMapGuide options.
  * @api
  */
@@ -221,7 +221,7 @@ ImageMapGuide.prototype.updateParams = function(params) {
  * @param {Object.<string, string|number>} params Request parameters.
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {module:ol/size~Size} size Size.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @return {string} The mapagent map image request URL.
  */
 ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, size, projection) {

@@ -14,8 +14,8 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {Array.<function(new: module:ol/format/Feature~FeatureFormat)>} [formatConstructors] Format constructors.
- * @property {module:ol/source/Vector~VectorSource} [source] Optional vector source where features will be added.  If a source is provided
+ * @property {Array.<function(new: module:ol/format/Feature)>} [formatConstructors] Format constructors.
+ * @property {module:ol/source/Vector} [source] Optional vector source where features will be added.  If a source is provided
  * all existing features will be removed and new features will be added when
  * they are dropped on the target.  If you want to add features to a vector
  * source without removing the existing features (append only), instead of
@@ -44,12 +44,12 @@ const DragAndDropEventType = {
  * of this type.
  *
  * @constructor
- * @extends {module:ol/events/Event~Event}
+ * @extends {module:ol/events/Event}
  * @implements {oli.interaction.DragAndDropEvent}
  * @param {module:ol/interaction/DragAndDrop~DragAndDropEventType} type Type.
  * @param {File} file File.
- * @param {Array.<module:ol/Feature~Feature>=} opt_features Features.
- * @param {module:ol/proj/Projection~Projection=} opt_projection Projection.
+ * @param {Array.<module:ol/Feature>=} opt_features Features.
+ * @param {module:ol/proj/Projection=} opt_projection Projection.
  */
 const DragAndDropEvent = function(type, file, opt_features, opt_projection) {
 
@@ -57,7 +57,7 @@ const DragAndDropEvent = function(type, file, opt_features, opt_projection) {
 
   /**
    * The features parsed from dropped data.
-   * @type {Array.<module:ol/Feature~Feature>|undefined}
+   * @type {Array.<module:ol/Feature>|undefined}
    * @api
    */
   this.features = opt_features;
@@ -71,7 +71,7 @@ const DragAndDropEvent = function(type, file, opt_features, opt_projection) {
 
   /**
    * The feature projection.
-   * @type {module:ol/proj/Projection~Projection|undefined}
+   * @type {module:ol/proj/Projection|undefined}
    * @api
    */
   this.projection = opt_projection;
@@ -85,7 +85,7 @@ inherits(DragAndDropEvent, Event);
  * Handles input of vector data by drag and drop.
  *
  * @constructor
- * @extends {module:ol/interaction/Interaction~Interaction}
+ * @extends {module:ol/interaction/Interaction}
  * @fires module:ol/interaction/DragAndDrop~DragAndDropEvent
  * @param {module:ol/interaction/DragAndDrop~Options=} opt_options Options.
  * @api
@@ -100,14 +100,14 @@ const DragAndDrop = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<function(new: module:ol/format/Feature~FeatureFormat)>}
+   * @type {Array.<function(new: module:ol/format/Feature)>}
    */
   this.formatConstructors_ = options.formatConstructors ?
     options.formatConstructors : [];
 
   /**
    * @private
-   * @type {module:ol/proj/Projection~Projection}
+   * @type {module:ol/proj/Projection}
    */
   this.projection_ = options.projection ?
     getProjection(options.projection) : null;
@@ -120,7 +120,7 @@ const DragAndDrop = function(opt_options) {
 
   /**
    * @private
-   * @type {module:ol/source/Vector~VectorSource}
+   * @type {module:ol/source/Vector}
    */
   this.source_ = options.source || null;
 
@@ -137,7 +137,7 @@ inherits(DragAndDrop, Interaction);
 
 /**
  * @param {Event} event Event.
- * @this {module:ol/interaction/DragAndDrop~DragAndDrop}
+ * @this {module:ol/interaction/DragAndDrop}
  */
 function handleDrop(event) {
   const files = event.dataTransfer.files;
@@ -183,7 +183,7 @@ DragAndDrop.prototype.handleResult_ = function(file, event) {
      */
     const formatConstructor = formatConstructors[i];
     /**
-     * @type {module:ol/format/Feature~FeatureFormat}
+     * @type {module:ol/format/Feature}
      */
     const format = new formatConstructor();
     features = this.tryReadFeatures_(format, result, {
@@ -247,11 +247,11 @@ DragAndDrop.prototype.setMap = function(map) {
 
 
 /**
- * @param {module:ol/format/Feature~FeatureFormat} format Format.
+ * @param {module:ol/format/Feature} format Format.
  * @param {string} text Text.
  * @param {module:ol/format/Feature~ReadOptions} options Read options.
  * @private
- * @return {Array.<module:ol/Feature~Feature>} Features.
+ * @return {Array.<module:ol/Feature>} Features.
  */
 DragAndDrop.prototype.tryReadFeatures_ = function(format, text, options) {
   try {

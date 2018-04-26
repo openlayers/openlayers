@@ -26,7 +26,7 @@ import {createTexture} from '../../webgl/Context.js';
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
  * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
- * @param {module:ol/layer/Image~ImageLayer} imageLayer Tile layer.
+ * @param {module:ol/layer/Image} imageLayer Tile layer.
  * @api
  */
 const WebGLImageLayerRenderer = function(mapRenderer, imageLayer) {
@@ -36,7 +36,7 @@ const WebGLImageLayerRenderer = function(mapRenderer, imageLayer) {
   /**
    * The last rendered image.
    * @private
-   * @type {?module:ol/ImageBase~ImageBase}
+   * @type {?module:ol/ImageBase}
    */
   this.image_ = null;
 
@@ -59,7 +59,7 @@ inherits(WebGLImageLayerRenderer, WebGLLayerRenderer);
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {module:ol/layer/Layer~Layer} layer The candidate layer.
+ * @param {module:ol/layer/Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
 WebGLImageLayerRenderer['handles'] = function(layer) {
@@ -70,19 +70,19 @@ WebGLImageLayerRenderer['handles'] = function(layer) {
 /**
  * Create a layer renderer.
  * @param {ol.renderer.Map} mapRenderer The map renderer.
- * @param {module:ol/layer/Layer~Layer} layer The layer to be rendererd.
+ * @param {module:ol/layer/Layer} layer The layer to be rendererd.
  * @return {ol.renderer.webgl.ImageLayer} The layer renderer.
  */
 WebGLImageLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLImageLayerRenderer(
     /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
-    /** @type {module:ol/layer/Image~ImageLayer} */ (layer)
+    /** @type {module:ol/layer/Image} */ (layer)
   );
 };
 
 
 /**
- * @param {module:ol/ImageBase~ImageBase} image Image.
+ * @param {module:ol/ImageBase} image Image.
  * @private
  * @return {WebGLTexture} Texture.
  */
@@ -113,9 +113,9 @@ WebGLImageLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordina
     coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
 
     /**
-       * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
-       * @return {?} Callback result.
-       */
+     * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+     * @return {?} Callback result.
+     */
     function(feature) {
       return callback.call(thisArg, feature, layer);
     });
@@ -137,7 +137,7 @@ WebGLImageLayerRenderer.prototype.prepareFrame = function(frameState, layerState
 
   let image = this.image_;
   let texture = this.texture;
-  const imageLayer = /** @type {module:ol/layer/Image~ImageLayer} */ (this.getLayer());
+  const imageLayer = /** @type {module:ol/layer/Image} */ (this.getLayer());
   const imageSource = imageLayer.getSource();
 
   const hints = frameState.viewHints;

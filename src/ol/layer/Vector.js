@@ -32,15 +32,15 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  *    texts are always rotated with the view and pixels are scaled during zoom animations.
  *  * `'vector'`: Vector layers are rendered as vectors. Most accurate rendering even during
  *    animations, but slower performance.
- * @property {module:ol/source/Vector~VectorSource} [source] Source.
- * @property {module:ol/PluggableMap~PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {module:ol/source/Vector} [source] Source.
+ * @property {module:ol/PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link ol.Map#addLayer}.
  * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
  * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
  * means higher priority.
- * @property {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction} [style] Layer style. See
+ * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction} [style] Layer style. See
  * {@link ol.style} for default style which will be used if this is not defined.
  * @property {number} [maxTilesLoading=16] Maximum number tiles to load simultaneously.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
@@ -85,7 +85,7 @@ const Property = {
  * options means that `title` is observable, and has get/set accessors.
  *
  * @constructor
- * @extends {module:ol/layer/Layer~Layer}
+ * @extends {module:ol/layer/Layer}
  * @fires module:ol/render/Event~RenderEvent
  * @param {module:ol/layer/Vector~Options=} opt_options Options.
  * @api
@@ -117,7 +117,7 @@ const VectorLayer = function(opt_options) {
 
   /**
    * User provided style.
-   * @type {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction}
+   * @type {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction}
    * @private
    */
   this.style_ = null;
@@ -188,18 +188,20 @@ VectorLayer.prototype.getRenderBuffer = function() {
 
 
 /**
- * @return {function(module:ol/Feature~Feature, module:ol/Feature~Feature): number|null|undefined} Render
+ * @return {function(module:ol/Feature, module:ol/Feature): number|null|undefined} Render
  *     order.
  */
 VectorLayer.prototype.getRenderOrder = function() {
-  return /** @type {module:ol/render~OrderFunction|null|undefined} */ (this.get(Property.RENDER_ORDER));
+  return (
+    /** @type {module:ol/render~OrderFunction|null|undefined} */ (this.get(Property.RENDER_ORDER))
+  );
 };
 
 
 /**
- * Return the associated {@link module:ol/source/Vector~VectorSource vectorsource} of the layer.
+ * Return the associated {@link module:ol/source/Vector vectorsource} of the layer.
  * @function
- * @return {module:ol/source/Vector~VectorSource} Source.
+ * @return {module:ol/source/Vector} Source.
  * @api
  */
 VectorLayer.prototype.getSource;
@@ -208,7 +210,7 @@ VectorLayer.prototype.getSource;
 /**
  * Get the style for features.  This returns whatever was passed to the `style`
  * option at construction or to the `setStyle` method.
- * @return {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction}
+ * @return {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction}
  *     Layer style.
  * @api
  */
@@ -261,7 +263,7 @@ VectorLayer.prototype.setRenderOrder = function(renderOrder) {
  * it is `null` the layer has no style (a `null` style), so only features
  * that have their own styles will be rendered in the layer. See
  * {@link ol.style} for information on the default style.
- * @param {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction|null|undefined}
+ * @param {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction|null|undefined}
  *     style Layer style.
  * @api
  */

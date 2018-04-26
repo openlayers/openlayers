@@ -30,7 +30,7 @@ import PointerInteraction from '../interaction/Pointer.js';
  * And this interaction is not included in the default interactions.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~PointerInteraction}
+ * @extends {module:ol/interaction/Pointer}
  * @param {module:ol/interaction/DragRotateAndZoom~Options=} opt_options Options.
  * @api
  */
@@ -80,8 +80,8 @@ inherits(DragRotateAndZoom, PointerInteraction);
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {module:ol/interaction/DragRotateAndZoom~DragRotateAndZoom}
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {module:ol/interaction/DragRotateAndZoom}
  */
 function handleDragEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
@@ -113,9 +113,9 @@ function handleDragEvent(mapBrowserEvent) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {module:ol/interaction/DragRotateAndZoom~DragRotateAndZoom}
+ * @this {module:ol/interaction/DragRotateAndZoom}
  */
 function handleUpEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
@@ -134,9 +134,9 @@ function handleUpEvent(mapBrowserEvent) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {module:ol/interaction/DragRotateAndZoom~DragRotateAndZoom}
+ * @this {module:ol/interaction/DragRotateAndZoom}
  */
 function handleDownEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {

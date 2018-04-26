@@ -23,7 +23,7 @@ import {disable} from '../rotationconstraint.js';
  * on a touch screen.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~PointerInteraction}
+ * @extends {module:ol/interaction/Pointer}
  * @param {module:ol/interaction/PinchRotate~Options=} opt_options Options.
  * @api
  */
@@ -79,8 +79,8 @@ inherits(PinchRotate, PointerInteraction);
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {module:ol/interaction/PinchRotate~PinchRotate}
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {module:ol/interaction/PinchRotate}
  */
 function handleDragEvent(mapBrowserEvent) {
   let rotationDelta = 0.0;
@@ -129,9 +129,9 @@ function handleDragEvent(mapBrowserEvent) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {module:ol/interaction/PinchRotate~PinchRotate}
+ * @this {module:ol/interaction/PinchRotate}
  */
 function handleUpEvent(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
@@ -150,9 +150,9 @@ function handleUpEvent(mapBrowserEvent) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {module:ol/interaction/PinchRotate~PinchRotate}
+ * @this {module:ol/interaction/PinchRotate}
  */
 function handleDownEvent(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {

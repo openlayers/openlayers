@@ -37,7 +37,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * Layer source for Bing Maps tile data.
  *
  * @constructor
- * @extends {module:ol/source/TileImage~TileImage}
+ * @extends {module:ol/source/TileImage}
  * @param {module:ol/source/BingMaps~Options=} options Bing Maps options.
  * @api
  */
@@ -169,12 +169,12 @@ BingMaps.prototype.handleImageryMetadataResponse = function(response) {
         .replace('{subdomain}', subdomain)
         .replace('{culture}', culture);
       return (
-      /**
-           * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
-           * @param {number} pixelRatio Pixel ratio.
-           * @param {module:ol/proj/Projection~Projection} projection Projection.
-           * @return {string|undefined} Tile URL.
-           */
+        /**
+         * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+         * @param {number} pixelRatio Pixel ratio.
+         * @param {module:ol/proj/Projection} projection Projection.
+         * @return {string|undefined} Tile URL.
+         */
         function(tileCoord, pixelRatio, projection) {
           if (!tileCoord) {
             return undefined;

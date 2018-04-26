@@ -45,15 +45,15 @@ const MIN_RATIO = 0.1;
  * @property {boolean} [collapsible=true] Whether the control can be collapsed or not.
  * @property {string|Element} [label='»'] Text label to use for the collapsed
  * overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {Array.<module:ol/layer/Layer~Layer>|module:ol/Collection~Collection.<module:ol/layer/Layer~Layer>} [layers]
+ * @property {Array.<module:ol/layer/Layer>|module:ol/Collection.<module:ol/layer/Layer>} [layers]
  * Layers for the overview map. If not set, then all main map layers are used
  * instead.
- * @property {function(module:ol/MapEvent~MapEvent)} [render] Function called when the control
+ * @property {function(module:ol/MapEvent)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {Element|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
  * @property {string} [tipLabel='Overview map'] Text label to use for the button tip.
- * @property {module:ol/View~View} [view] Custom view for the overview map. If not provided,
+ * @property {module:ol/View} [view] Custom view for the overview map. If not provided,
  * a default view with an EPSG:3857 projection will be used.
  */
 
@@ -62,7 +62,7 @@ const MIN_RATIO = 0.1;
  * Create a new control with a map acting as an overview map for an other
  * defined map.
  * @constructor
- * @extends {module:ol/control/Control~Control}
+ * @extends {module:ol/control/Control}
  * @param {module:ol/control/OverviewMap~Options=} opt_options OverviewMap options.
  * @api
  */
@@ -136,7 +136,7 @@ const OverviewMap = function(opt_options) {
   this.ovmapDiv_.className = 'ol-overviewmap-map';
 
   /**
-   * @type {module:ol/Map~Map}
+   * @type {module:ol/Map}
    * @private
    */
   this.ovmap_ = new Map({
@@ -149,7 +149,7 @@ const OverviewMap = function(opt_options) {
   if (options.layers) {
     options.layers.forEach(
       /**
-       * @param {module:ol/layer/Layer~Layer} layer Layer.
+       * @param {module:ol/layer/Layer} layer Layer.
        */
       function(layer) {
         ovmap.addLayer(layer);
@@ -161,7 +161,7 @@ const OverviewMap = function(opt_options) {
   box.style.boxSizing = 'border-box';
 
   /**
-   * @type {module:ol/Overlay~Overlay}
+   * @type {module:ol/Overlay}
    * @private
    */
   this.boxOverlay_ = new Overlay({
@@ -275,7 +275,7 @@ OverviewMap.prototype.setMap = function(map) {
  */
 OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
   if (event.key === MapProperty.VIEW) {
-    const oldView = /** @type {module:ol/View~View} */ (event.oldValue);
+    const oldView = /** @type {module:ol/View} */ (event.oldValue);
     if (oldView) {
       this.unbindView_(oldView);
     }
@@ -287,7 +287,7 @@ OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
 
 /**
  * Register listeners for view property changes.
- * @param {module:ol/View~View} view The view.
+ * @param {module:ol/View} view The view.
  * @private
  */
 OverviewMap.prototype.bindView_ = function(view) {
@@ -299,7 +299,7 @@ OverviewMap.prototype.bindView_ = function(view) {
 
 /**
  * Unregister listeners for view property changes.
- * @param {module:ol/View~View} view The view.
+ * @param {module:ol/View} view The view.
  * @private
  */
 OverviewMap.prototype.unbindView_ = function(view) {
@@ -322,8 +322,8 @@ OverviewMap.prototype.handleRotationChanged_ = function() {
 
 /**
  * Update the overview map element.
- * @param {module:ol/MapEvent~MapEvent} mapEvent Map event.
- * @this {module:ol/control/OverviewMap~OverviewMap}
+ * @param {module:ol/MapEvent} mapEvent Map event.
+ * @this {module:ol/control/OverviewMap}
  * @api
  */
 export function render(mapEvent) {
@@ -588,7 +588,7 @@ OverviewMap.prototype.getCollapsed = function() {
 
 /**
  * Return the overview map.
- * @return {module:ol/PluggableMap~PluggableMap} Overview map.
+ * @return {module:ol/PluggableMap} Overview map.
  * @api
  */
 OverviewMap.prototype.getOverviewMap = function() {

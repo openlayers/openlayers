@@ -21,7 +21,7 @@ import EventType from '../events/EventType.js';
  * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
  * items from the cache is the responsibility of the user.
  * @constructor
- * @extends {module:ol/events/EventTarget~EventTarget}
+ * @extends {module:ol/events/EventTarget}
  * @fires module:ol/events/Event~Event
  * @struct
  * @template T

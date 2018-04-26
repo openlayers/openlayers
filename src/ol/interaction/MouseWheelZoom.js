@@ -49,7 +49,7 @@ export const Mode = {
  * Allows the user to zoom the map by scrolling the mouse wheel.
  *
  * @constructor
- * @extends {module:ol/interaction/Interaction~Interaction}
+ * @extends {module:ol/interaction/Interaction}
  * @param {module:ol/interaction/MouseWheelZoom~Options=} opt_options Options.
  * @api
  */
@@ -153,11 +153,11 @@ inherits(MouseWheelZoom, Interaction);
 
 
 /**
- * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} (if it was a
+ * Handles the {@link module:ol/MapBrowserEvent map browser event} (if it was a
  * mousewheel-event) and eventually zooms the map.
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {module:ol/MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} Allow event propagation.
- * @this {module:ol/interaction/MouseWheelZoom~MouseWheelZoom}
+ * @this {module:ol/interaction/MouseWheelZoom}
  */
 function handleEvent(mapBrowserEvent) {
   if (!this.condition_(mapBrowserEvent)) {
@@ -288,7 +288,7 @@ MouseWheelZoom.prototype.decrementInteractingHint_ = function() {
 
 /**
  * @private
- * @param {module:ol/PluggableMap~PluggableMap} map Map.
+ * @param {module:ol/PluggableMap} map Map.
  */
 MouseWheelZoom.prototype.handleWheelZoom_ = function(map) {
   const view = map.getView();

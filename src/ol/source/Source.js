@@ -47,7 +47,7 @@ import SourceState from '../source/State.js';
  *
  * @constructor
  * @abstract
- * @extends {module:ol/Object~BaseObject}
+ * @extends {module:ol/Object}
  * @param {module:ol/source/Source~Options} options Source options.
  * @api
  */
@@ -57,7 +57,7 @@ const Source = function(options) {
 
   /**
    * @private
-   * @type {module:ol/proj/Projection~Projection}
+   * @type {module:ol/proj/Projection}
    */
   this.projection_ = getProjection(options.projection);
 
@@ -114,7 +114,7 @@ Source.prototype.adaptAttributions_ = function(attributionLike) {
  * @param {number} rotation Rotation.
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
- * @param {function((module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature)): T} callback Feature callback.
+ * @param {function((module:ol/Feature|module:ol/render/Feature)): T} callback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -132,7 +132,7 @@ Source.prototype.getAttributions = function() {
 
 /**
  * Get the projection of the source.
- * @return {module:ol/proj/Projection~Projection} Projection.
+ * @return {module:ol/proj/Projection} Projection.
  * @api
  */
 Source.prototype.getProjection = function() {

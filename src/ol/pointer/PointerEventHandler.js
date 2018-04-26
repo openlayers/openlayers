@@ -44,7 +44,7 @@ import TouchSource from '../pointer/TouchSource.js';
 
 /**
  * @constructor
- * @extends {module:ol/events/EventTarget~EventTarget}
+ * @extends {module:ol/events/EventTarget}
  * @param {Element|HTMLDocument} element Viewport element.
  */
 const PointerEventHandler = function(element) {
@@ -70,7 +70,7 @@ const PointerEventHandler = function(element) {
   this.eventMap_ = {};
 
   /**
-   * @type {Array.<module:ol/pointer/EventSource~EventSource>}
+   * @type {Array.<module:ol/pointer/EventSource>}
    * @private
    */
   this.eventSourceList_ = [];
@@ -147,7 +147,7 @@ PointerEventHandler.prototype.registerSources = function() {
  * Add a new event source that will generate pointer events.
  *
  * @param {string} name A name for the event source
- * @param {module:ol/pointer/EventSource~EventSource} source The source event.
+ * @param {module:ol/pointer/EventSource} source The source event.
  */
 PointerEventHandler.prototype.registerSource = function(name, source) {
   const s = source;
@@ -388,7 +388,7 @@ PointerEventHandler.prototype.contains_ = function(container, contained) {
  * @param {string} inType A string representing the type of event to create.
  * @param {Object} data Pointer event data.
  * @param {Event} event The event.
- * @return {module:ol/pointer/PointerEvent~PointerEvent} A PointerEvent of type `inType`.
+ * @return {module:ol/pointer/PointerEvent} A PointerEvent of type `inType`.
  */
 PointerEventHandler.prototype.makeEvent = function(inType, data, event) {
   return new PointerEvent(inType, event, data);
@@ -423,7 +423,7 @@ PointerEventHandler.prototype.fireNativeEvent = function(event) {
  * This proxy method is required for the legacy IE support.
  * @param {string} eventType The pointer event type.
  * @param {Event} event The event.
- * @return {module:ol/pointer/PointerEvent~PointerEvent} The wrapped event.
+ * @return {module:ol/pointer/PointerEvent} The wrapped event.
  */
 PointerEventHandler.prototype.wrapMouseEvent = function(eventType, event) {
   const pointerEvent = this.makeEvent(

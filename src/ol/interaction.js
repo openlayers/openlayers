@@ -61,8 +61,8 @@ export {default as Translate} from './interaction/Translate.js';
  * excluded by setting the appropriate option to false in the constructor
  * options, but the order of the interactions is fixed.  If you want to specify
  * a different order for interactions, you will need to create your own
- * {@link module:ol/interaction/Interaction~Interaction} instances and insert
- * them into a {@link module:ol/Collection~Collection} in the order you want
+ * {@link module:ol/interaction/Interaction} instances and insert
+ * them into a {@link module:ol/Collection} in the order you want
  * before creating your {@link module:ol/Map~Map} instance. The default set of
  * interactions, in sequence, is:
  * * {@link module:ol/interaction/DragRotate~DragRotate}
@@ -77,7 +77,7 @@ export {default as Translate} from './interaction/Translate.js';
  *
  * @param {module:ol/interaction/Interaction~DefaultsOptions=} opt_options
  * Defaults options.
- * @return {module:ol/Collection~Collection.<module:ol/interaction/Interaction~Interaction>}
+ * @return {module:ol/Collection.<module:ol/interaction/Interaction>}
  * A collection of interactions to be used with the {@link module:ol/Map~Map}
  * constructor's `interactions` option.
  * @api

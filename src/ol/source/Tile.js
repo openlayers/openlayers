@@ -21,7 +21,7 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  * @property {number} [tilePixelRatio]
  * @property {module:ol/proj~ProjectionLike} [projection]
  * @property {module:ol/source/State~State} [state]
- * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid]
+ * @property {module:ol/tilegrid/TileGrid} [tileGrid]
  * @property {boolean} [wrapX=true]
  * @property {number} [transition]
  */
@@ -35,7 +35,7 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  *
  * @constructor
  * @abstract
- * @extends {module:ol/source/Source~Source}
+ * @extends {module:ol/source/Source}
  * @param {module:ol/source/Tile~Options=} options SourceTile source options.
  * @api
  */
@@ -64,13 +64,13 @@ const TileSource = function(options) {
 
   /**
    * @protected
-   * @type {module:ol/tilegrid/TileGrid~TileGrid}
+   * @type {module:ol/tilegrid/TileGrid}
    */
   this.tileGrid = options.tileGrid !== undefined ? options.tileGrid : null;
 
   /**
    * @protected
-   * @type {module:ol/TileCache~TileCache}
+   * @type {module:ol/TileCache}
    */
   this.tileCache = new TileCache(options.cacheSize);
 
@@ -106,8 +106,8 @@ TileSource.prototype.canExpireCache = function() {
 
 
 /**
- * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @param {Object.<string, module:ol/TileRange~TileRange>} usedTiles Used tiles.
+ * @param {module:ol/proj/Projection} projection Projection.
+ * @param {Object.<string, module:ol/TileRange>} usedTiles Used tiles.
  */
 TileSource.prototype.expireCache = function(projection, usedTiles) {
   const tileCache = this.getTileCacheForProjection(projection);
@@ -118,10 +118,10 @@ TileSource.prototype.expireCache = function(projection, usedTiles) {
 
 
 /**
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @param {number} z Zoom level.
- * @param {module:ol/TileRange~TileRange} tileRange Tile range.
- * @param {function(module:ol/Tile~Tile):(boolean|undefined)} callback Called with each
+ * @param {module:ol/TileRange} tileRange Tile range.
+ * @param {function(module:ol/Tile):(boolean|undefined)} callback Called with each
  *     loaded tile.  If the callback returns `false`, the tile will not be
  *     considered loaded.
  * @return {boolean} The tile range is fully covered with loaded tiles.
@@ -139,7 +139,7 @@ TileSource.prototype.forEachLoadedTile = function(projection, z, tileRange, call
       tileCoordKey = getKeyZXY(z, x, y);
       loaded = false;
       if (tileCache.containsKey(tileCoordKey)) {
-        tile = /** @type {!module:ol/Tile~Tile} */ (tileCache.get(tileCoordKey));
+        tile = /** @type {!module:ol/Tile} */ (tileCache.get(tileCoordKey));
         loaded = tile.getState() === TileState.LOADED;
         if (loaded) {
           loaded = (callback(tile) !== false);
@@ -155,7 +155,7 @@ TileSource.prototype.forEachLoadedTile = function(projection, z, tileRange, call
 
 
 /**
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @return {number} Gutter.
  */
 TileSource.prototype.getGutter = function(projection) {
@@ -187,7 +187,7 @@ TileSource.prototype.setKey = function(key) {
 
 
 /**
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @return {boolean} Opaque.
  */
 TileSource.prototype.getOpaque = function(projection) {
@@ -209,15 +209,15 @@ TileSource.prototype.getResolutions = function() {
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
  * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @return {!module:ol/Tile~Tile} Tile.
+ * @param {module:ol/proj/Projection} projection Projection.
+ * @return {!module:ol/Tile} Tile.
  */
 TileSource.prototype.getTile = function(z, x, y, pixelRatio, projection) {};
 
 
 /**
  * Return the tile grid of the tile source.
- * @return {module:ol/tilegrid/TileGrid~TileGrid} Tile grid.
+ * @return {module:ol/tilegrid/TileGrid} Tile grid.
  * @api
  */
 TileSource.prototype.getTileGrid = function() {
@@ -226,8 +226,8 @@ TileSource.prototype.getTileGrid = function() {
 
 
 /**
- * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @return {!module:ol/tilegrid/TileGrid~TileGrid} Tile grid.
+ * @param {module:ol/proj/Projection} projection Projection.
+ * @return {!module:ol/tilegrid/TileGrid} Tile grid.
  */
 TileSource.prototype.getTileGridForProjection = function(projection) {
   if (!this.tileGrid) {
@@ -239,8 +239,8 @@ TileSource.prototype.getTileGridForProjection = function(projection) {
 
 
 /**
- * @param {module:ol/proj/Projection~Projection} projection Projection.
- * @return {module:ol/TileCache~TileCache} Tile cache.
+ * @param {module:ol/proj/Projection} projection Projection.
+ * @return {module:ol/TileCache} Tile cache.
  * @protected
  */
 TileSource.prototype.getTileCacheForProjection = function(projection) {
@@ -268,7 +268,7 @@ TileSource.prototype.getTilePixelRatio = function(pixelRatio) {
 /**
  * @param {number} z Z.
  * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @return {module:ol/size~Size} Tile size.
  */
 TileSource.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
@@ -288,7 +288,7 @@ TileSource.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
  * is outside the resolution and extent range of the tile grid, `null` will be
  * returned.
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
- * @param {module:ol/proj/Projection~Projection=} opt_projection Projection.
+ * @param {module:ol/proj/Projection=} opt_projection Projection.
  * @return {module:ol/tilecoord~TileCoord} Tile coordinate to be passed to the tileUrlFunction or
  *     null if no tile URL should be created for the passed `tileCoord`.
  */
@@ -317,7 +317,7 @@ TileSource.prototype.refresh = function() {
  * @param {number} z Tile coordinate z.
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  */
 TileSource.prototype.useTile = UNDEFINED;
 
@@ -328,10 +328,10 @@ TileSource.prototype.useTile = UNDEFINED;
  * type.
  *
  * @constructor
- * @extends {module:ol/events/Event~Event}
+ * @extends {module:ol/events/Event}
  * @implements {oli.source.Tile.Event}
  * @param {string} type Type.
- * @param {module:ol/Tile~Tile} tile The tile.
+ * @param {module:ol/Tile} tile The tile.
  */
 export const TileSourceEvent = function(type, tile) {
 
@@ -339,7 +339,7 @@ export const TileSourceEvent = function(type, tile) {
 
   /**
    * The tile related to the event.
-   * @type {module:ol/Tile~Tile}
+   * @type {module:ol/Tile}
    * @api
    */
   this.tile = tile;

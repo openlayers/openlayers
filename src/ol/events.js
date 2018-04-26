@@ -12,7 +12,7 @@ import {clear} from './obj.js';
  * @property {boolean} callOnce
  * @property {number} [deleteIndex]
  * @property {module:ol/events~ListenerFunction} listener
- * @property {EventTarget|module:ol/events/EventTarget~EventTarget} target
+ * @property {EventTarget|module:ol/events/EventTarget} target
  * @property {string} type
  * @api
  */
@@ -22,7 +22,7 @@ import {clear} from './obj.js';
  * Listener function. This function is called with an event object as argument.
  * When the function returns `false`, event propagation will stop.
  *
- * @typedef {function(module:ol/events/Event~Event)|function(module:ol/events/Event~Event): boolean} ListenerFunction
+ * @typedef {function(module:ol/events/Event)|function(module:ol/events/Event): boolean} ListenerFunction
  * @api
  */
 

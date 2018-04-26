@@ -13,7 +13,7 @@ import Filter from '../filter/Filter.js';
  * @abstract
  * @param {!string} tagName The XML tag name for this filter.
  * @param {!string} propertyName Name of the context property to compare.
- * @extends {module:ol/format/filter/Filter~Filter}
+ * @extends {module:ol/format/filter/Filter}
  */
 const Comparison = function(tagName, propertyName) {
 

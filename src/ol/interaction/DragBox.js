@@ -11,10 +11,10 @@ import RenderBox from '../render/Box.js';
 
 
 /**
- * A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
+ * A function that takes a {@link module:ol/MapBrowserEvent} and two
  * {@link module:ol~Pixel}s and returns a `{boolean}`. If the condition is met,
  * true should be returned.
- * @typedef {function(module:ol/MapBrowserEvent~MapBrowserEvent, module:ol~Pixel, module:ol~Pixel):boolean} EndCondition
+ * @typedef {function(module:ol/MapBrowserEvent, module:ol~Pixel, module:ol~Pixel):boolean} EndCondition
  */
 
 
@@ -66,8 +66,8 @@ const DragBoxEventType = {
  *
  * @param {string} type The event type.
  * @param {module:ol/coordinate~Coordinate} coordinate The event coordinate.
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Originating event.
- * @extends {module:ol/events/Event~Event}
+ * @param {module:ol/MapBrowserEvent} mapBrowserEvent Originating event.
+ * @extends {module:ol/events/Event}
  * @constructor
  * @implements {oli.DragBoxEvent}
  */
@@ -84,7 +84,7 @@ const DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
 
   /**
    * @const
-   * @type {module:ol/MapBrowserEvent~MapBrowserEvent}
+   * @type {module:ol/MapBrowserEvent}
    * @api
    */
   this.mapBrowserEvent = mapBrowserEvent;
@@ -106,7 +106,7 @@ inherits(DragBoxEvent, Event);
  * This interaction is only supported for mouse devices.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~PointerInteraction}
+ * @extends {module:ol/interaction/Pointer}
  * @fires module:ol/interaction/DragBox~DragBoxEvent
  * @param {module:ol/interaction/DragBox~Options=} opt_options Options.
  * @api
@@ -159,12 +159,12 @@ inherits(DragBox, PointerInteraction);
 /**
  * The default condition for determining whether the boxend event
  * should fire.
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent The originating MapBrowserEvent
+ * @param {module:ol/MapBrowserEvent} mapBrowserEvent The originating MapBrowserEvent
  *     leading to the box end.
  * @param {module:ol~Pixel} startPixel The starting pixel of the box.
  * @param {module:ol~Pixel} endPixel The end pixel of the box.
  * @return {boolean} Whether or not the boxend condition should be fired.
- * @this {module:ol/interaction/DragBox~DragBox}
+ * @this {module:ol/interaction/DragBox}
  */
 function defaultBoxEndCondition(mapBrowserEvent, startPixel, endPixel) {
   const width = endPixel[0] - startPixel[0];
@@ -174,8 +174,8 @@ function defaultBoxEndCondition(mapBrowserEvent, startPixel, endPixel) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {module:ol/interaction/DragBox~DragBox}
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {module:ol/interaction/DragBox}
  */
 function handleDragEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
@@ -191,7 +191,7 @@ function handleDragEvent(mapBrowserEvent) {
 
 /**
  * Returns geometry of last drawn box.
- * @return {module:ol/geom/Polygon~Polygon} Geometry.
+ * @return {module:ol/geom/Polygon} Geometry.
  * @api
  */
 DragBox.prototype.getGeometry = function() {
@@ -202,16 +202,16 @@ DragBox.prototype.getGeometry = function() {
 /**
  * To be overridden by child classes.
  * FIXME: use constructor option instead of relying on overriding.
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {module:ol/MapBrowserEvent} mapBrowserEvent Map browser event.
  * @protected
  */
 DragBox.prototype.onBoxEnd = UNDEFINED;
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {module:ol/interaction/DragBox~DragBox}
+ * @this {module:ol/interaction/DragBox}
  */
 function handleUpEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
@@ -231,9 +231,9 @@ function handleUpEvent(mapBrowserEvent) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {module:ol/interaction/DragBox~DragBox}
+ * @this {module:ol/interaction/DragBox}
  */
 function handleDownEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {

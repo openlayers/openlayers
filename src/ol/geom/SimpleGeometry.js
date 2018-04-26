@@ -16,7 +16,7 @@ import {clear} from '../obj.js';
  *
  * @constructor
  * @abstract
- * @extends {module:ol/geom/Geometry~Geometry}
+ * @extends {module:ol/geom/Geometry}
  * @api
  */
 const SimpleGeometry = function() {
@@ -59,7 +59,9 @@ function getLayoutForStride(stride) {
   } else if (stride == 4) {
     layout = GeometryLayout.XYZM;
   }
-  return /** @type {module:ol/geom/GeometryLayout~GeometryLayout} */ (layout);
+  return (
+    /** @type {module:ol/geom/GeometryLayout~GeometryLayout} */ (layout)
+  );
 }
 
 
@@ -182,7 +184,7 @@ SimpleGeometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {
 
 /**
  * @param {number} squaredTolerance Squared tolerance.
- * @return {module:ol/geom/SimpleGeometry~SimpleGeometry} Simplified geometry.
+ * @return {module:ol/geom/SimpleGeometry} Simplified geometry.
  * @protected
  */
 SimpleGeometry.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
@@ -316,7 +318,7 @@ SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
 
 
 /**
- * @param {module:ol/geom/SimpleGeometry~SimpleGeometry} simpleGeometry Simple geometry.
+ * @param {module:ol/geom/SimpleGeometry} simpleGeometry Simple geometry.
  * @param {module:ol/transform~Transform} transform Transform.
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed flat coordinates.

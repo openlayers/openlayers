@@ -45,7 +45,7 @@ import {get as getProjection, getTransformFromProjections, identityTransform} fr
  *
  * @fires error
  * @constructor
- * @extends {module:ol/Object~BaseObject}
+ * @extends {module:ol/Object}
  * @param {module:ol/Geolocation~Options=} opt_options Options.
  * @api
  */
@@ -199,12 +199,14 @@ Geolocation.prototype.getAccuracy = function() {
 
 /**
  * Get a geometry of the position accuracy.
- * @return {?module:ol/geom/Polygon~Polygon} A geometry of the position accuracy.
+ * @return {?module:ol/geom/Polygon} A geometry of the position accuracy.
  * @observable
  * @api
  */
 Geolocation.prototype.getAccuracyGeometry = function() {
-  return /** @type {?module:ol/geom/Polygon~Polygon} */ (this.get(GeolocationProperty.ACCURACY_GEOMETRY) || null);
+  return (
+    /** @type {?module:ol/geom/Polygon} */ (this.get(GeolocationProperty.ACCURACY_GEOMETRY) || null)
+  );
 };
 
 
@@ -253,19 +255,23 @@ Geolocation.prototype.getHeading = function() {
  * @api
  */
 Geolocation.prototype.getPosition = function() {
-  return /** @type {module:ol/coordinate~Coordinate|undefined} */ (this.get(GeolocationProperty.POSITION));
+  return (
+    /** @type {module:ol/coordinate~Coordinate|undefined} */ (this.get(GeolocationProperty.POSITION))
+  );
 };
 
 
 /**
  * Get the projection associated with the position.
- * @return {module:ol/proj/Projection~Projection|undefined} The projection the position is
+ * @return {module:ol/proj/Projection|undefined} The projection the position is
  *     reported in.
  * @observable
  * @api
  */
 Geolocation.prototype.getProjection = function() {
-  return /** @type {module:ol/proj/Projection~Projection|undefined} */ (this.get(GeolocationProperty.PROJECTION));
+  return (
+    /** @type {module:ol/proj/Projection|undefined} */ (this.get(GeolocationProperty.PROJECTION))
+  );
 };
 
 

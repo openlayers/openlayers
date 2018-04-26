@@ -41,7 +41,7 @@ import Event from '../events/Event.js';
  * touch events and even native pointer events.
  *
  * @constructor
- * @extends {module:ol/events/Event~Event}
+ * @extends {module:ol/events/Event}
  * @param {string} type The type of the event to create.
  * @param {Event} originalEvent The event.
  * @param {Object.<string, ?>=} opt_eventDict An optional dictionary of

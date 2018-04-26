@@ -26,7 +26,7 @@ import {modulo} from '../math.js';
  * Polygon geometry.
  *
  * @constructor
- * @extends {module:ol/geom/SimpleGeometry~SimpleGeometry}
+ * @extends {module:ol/geom/SimpleGeometry}
  * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Array of linear
  *     rings that define the polygon. The first linear ring of the array
  *     defines the outer-boundary or surface of the polygon. Each subsequent
@@ -91,7 +91,7 @@ inherits(Polygon, SimpleGeometry);
 
 /**
  * Append the passed linear ring to this polygon.
- * @param {module:ol/geom/LinearRing~LinearRing} linearRing Linear ring.
+ * @param {module:ol/geom/LinearRing} linearRing Linear ring.
  * @api
  */
 Polygon.prototype.appendLinearRing = function(linearRing) {
@@ -107,7 +107,7 @@ Polygon.prototype.appendLinearRing = function(linearRing) {
 
 /**
  * Make a complete copy of the geometry.
- * @return {!module:ol/geom/Polygon~Polygon} Clone.
+ * @return {!module:ol/geom/Polygon} Clone.
  * @override
  * @api
  */
@@ -209,7 +209,7 @@ Polygon.prototype.getFlatInteriorPoint = function() {
 
 /**
  * Return an interior point of the polygon.
- * @return {module:ol/geom/Point~Point} Interior point as XYM coordinate, where M is the
+ * @return {module:ol/geom/Point} Interior point as XYM coordinate, where M is the
  * length of the horizontal intersection that the point belongs to.
  * @api
  */
@@ -237,7 +237,7 @@ Polygon.prototype.getLinearRingCount = function() {
  * at index `1` and beyond.
  *
  * @param {number} index Index.
- * @return {module:ol/geom/LinearRing~LinearRing} Linear ring.
+ * @return {module:ol/geom/LinearRing} Linear ring.
  * @api
  */
 Polygon.prototype.getLinearRing = function(index) {
@@ -253,7 +253,7 @@ Polygon.prototype.getLinearRing = function(index) {
 
 /**
  * Return the linear rings of the polygon.
- * @return {Array.<module:ol/geom/LinearRing~LinearRing>} Linear rings.
+ * @return {Array.<module:ol/geom/LinearRing>} Linear rings.
  * @api
  */
 Polygon.prototype.getLinearRings = function() {
@@ -376,7 +376,7 @@ export default Polygon;
  *     polygon. Default is `32`.
  * @param {number=} opt_sphereRadius Optional radius for the sphere (defaults to
  *     the Earth's mean radius using the WGS84 ellipsoid).
- * @return {module:ol/geom/Polygon~Polygon} The "circular" polygon.
+ * @return {module:ol/geom/Polygon} The "circular" polygon.
  * @api
  */
 export function circular(center, radius, opt_n, opt_sphereRadius) {
@@ -396,7 +396,7 @@ export function circular(center, radius, opt_n, opt_sphereRadius) {
 /**
  * Create a polygon from an extent. The layout used is `XY`.
  * @param {module:ol/extent~Extent} extent The extent.
- * @return {module:ol/geom/Polygon~Polygon} The polygon.
+ * @return {module:ol/geom/Polygon} The polygon.
  * @api
  */
 export function fromExtent(extent) {
@@ -415,11 +415,11 @@ export function fromExtent(extent) {
 
 /**
  * Create a regular polygon from a circle.
- * @param {module:ol/geom/Circle~Circle} circle Circle geometry.
+ * @param {module:ol/geom/Circle} circle Circle geometry.
  * @param {number=} opt_sides Number of sides of the polygon. Default is 32.
  * @param {number=} opt_angle Start angle for the first vertex of the polygon in
  *     radians. Default is 0.
- * @return {module:ol/geom/Polygon~Polygon} Polygon geometry.
+ * @return {module:ol/geom/Polygon} Polygon geometry.
  * @api
  */
 export function fromCircle(circle, opt_sides, opt_angle) {
@@ -441,7 +441,7 @@ export function fromCircle(circle, opt_sides, opt_angle) {
 
 /**
  * Modify the coordinates of a polygon to make it a regular polygon.
- * @param {module:ol/geom/Polygon~Polygon} polygon Polygon geometry.
+ * @param {module:ol/geom/Polygon} polygon Polygon geometry.
  * @param {module:ol/coordinate~Coordinate} center Center of the regular polygon.
  * @param {number} radius Radius of the regular polygon.
  * @param {number=} opt_angle Start angle for the first vertex of the polygon in

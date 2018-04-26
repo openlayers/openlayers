@@ -494,7 +494,9 @@ export function getCorner(extent, corner) {
   } else {
     assert(false, 13); // Invalid corner
   }
-  return /** @type {!module:ol/coordinate~Coordinate} */ (coordinate);
+  return (
+    /** @type {!module:ol/coordinate~Coordinate} */ (coordinate)
+  );
 }
 
 

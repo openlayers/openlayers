@@ -11,7 +11,7 @@ import {clamp} from '../math.js';
 /**
  * Object literal with config options for interactions.
  * @typedef {Object} InteractionOptions
- * @property {function(module:ol/MapBrowserEvent~MapBrowserEvent):boolean} handleEvent
+ * @property {function(module:ol/MapBrowserEvent):boolean} handleEvent
  * Method called by the map to notify the interaction that a browser event was
  * dispatched to the map. If the function returns a falsy value, propagation of
  * the event to other interactions in the map's interactions chain will be
@@ -33,7 +33,7 @@ import {clamp} from '../math.js';
  *
  * @constructor
  * @param {module:ol/interaction/Interaction~InteractionOptions} options Options.
- * @extends {module:ol/Object~BaseObject}
+ * @extends {module:ol/Object}
  * @api
  */
 const Interaction = function(options) {
@@ -42,14 +42,14 @@ const Interaction = function(options) {
 
   /**
    * @private
-   * @type {module:ol/PluggableMap~PluggableMap}
+   * @type {module:ol/PluggableMap}
    */
   this.map_ = null;
 
   this.setActive(true);
 
   /**
-   * @type {function(module:ol/MapBrowserEvent~MapBrowserEvent):boolean}
+   * @type {function(module:ol/MapBrowserEvent):boolean}
    */
   this.handleEvent = options.handleEvent;
 
@@ -71,7 +71,7 @@ Interaction.prototype.getActive = function() {
 
 /**
  * Get the map associated with this interaction.
- * @return {module:ol/PluggableMap~PluggableMap} Map.
+ * @return {module:ol/PluggableMap} Map.
  * @api
  */
 Interaction.prototype.getMap = function() {
@@ -94,7 +94,7 @@ Interaction.prototype.setActive = function(active) {
  * Remove the interaction from its current map and attach it to the new map.
  * Subclasses may set up event handlers to get notified about changes to
  * the map here.
- * @param {module:ol/PluggableMap~PluggableMap} map Map.
+ * @param {module:ol/PluggableMap} map Map.
  */
 Interaction.prototype.setMap = function(map) {
   this.map_ = map;
@@ -102,7 +102,7 @@ Interaction.prototype.setMap = function(map) {
 
 
 /**
- * @param {module:ol/View~View} view View.
+ * @param {module:ol/View} view View.
  * @param {module:ol/coordinate~Coordinate} delta Delta.
  * @param {number=} opt_duration Duration.
  */
@@ -125,7 +125,7 @@ export function pan(view, delta, opt_duration) {
 
 
 /**
- * @param {module:ol/View~View} view View.
+ * @param {module:ol/View} view View.
  * @param {number|undefined} rotation Rotation.
  * @param {module:ol/coordinate~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
@@ -137,7 +137,7 @@ export function rotate(view, rotation, opt_anchor, opt_duration) {
 
 
 /**
- * @param {module:ol/View~View} view View.
+ * @param {module:ol/View} view View.
  * @param {number|undefined} rotation Rotation.
  * @param {module:ol/coordinate~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
@@ -161,7 +161,7 @@ export function rotateWithoutConstraints(view, rotation, opt_anchor, opt_duratio
 
 
 /**
- * @param {module:ol/View~View} view View.
+ * @param {module:ol/View} view View.
  * @param {number|undefined} resolution Resolution to go to.
  * @param {module:ol/coordinate~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
@@ -181,7 +181,7 @@ export function zoom(view, resolution, opt_anchor, opt_duration, opt_direction) 
 
 
 /**
- * @param {module:ol/View~View} view View.
+ * @param {module:ol/View} view View.
  * @param {number} delta Delta from previous zoom level.
  * @param {module:ol/coordinate~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
@@ -219,7 +219,7 @@ export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
 
 
 /**
- * @param {module:ol/View~View} view View.
+ * @param {module:ol/View} view View.
  * @param {number|undefined} resolution Resolution to go to.
  * @param {module:ol/coordinate~Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.

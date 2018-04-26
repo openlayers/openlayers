@@ -28,14 +28,14 @@ import RBush from '../structs/RBush.js';
 
 /**
  * @typedef {Object} SegmentData
- * @property {module:ol/Feature~Feature} feature
+ * @property {module:ol/Feature} feature
  * @property {Array.<module:ol/coordinate~Coordinate>} segment
  */
 
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/Collection~Collection.<module:ol/Feature~Feature>} [features] Snap to these features. Either this option or source should be provided.
+ * @property {module:ol/Collection.<module:ol/Feature>} [features] Snap to these features. Either this option or source should be provided.
  * @property {boolean} [edge=true] Snap to edges.
  * @property {boolean} [vertex=true] Snap to vertices.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the pointer close enough to a segment or
@@ -64,7 +64,7 @@ import RBush from '../structs/RBush.js';
  *     });
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~PointerInteraction}
+ * @extends {module:ol/interaction/Pointer}
  * @param {module:ol/interaction/Snap~Options=} opt_options Options.
  * @api
  */
@@ -97,7 +97,7 @@ const Snap = function(opt_options) {
   this.edge_ = options.edge !== undefined ? options.edge : true;
 
   /**
-   * @type {module:ol/Collection~Collection.<module:ol/Feature~Feature>}
+   * @type {module:ol/Collection.<module:ol/Feature>}
    * @private
    */
   this.features_ = options.features ? options.features : null;
@@ -126,7 +126,7 @@ const Snap = function(opt_options) {
    * If a feature geometry changes while a pointer drag|move event occurs, the
    * feature doesn't get updated right away.  It will be at the next 'pointerup'
    * event fired.
-   * @type {!Object.<number, module:ol/Feature~Feature>}
+   * @type {!Object.<number, module:ol/Feature>}
    * @private
    */
   this.pendingFeatures_ = {};
@@ -154,7 +154,7 @@ const Snap = function(opt_options) {
 
   /**
   * Segment RTree for each layer
-  * @type {module:ol/structs/RBush~RBush.<module:ol/interaction/Snap~SegmentData>}
+  * @type {module:ol/structs/RBush.<module:ol/interaction/Snap~SegmentData>}
   * @private
   */
   this.rBush_ = new RBush();
@@ -163,7 +163,7 @@ const Snap = function(opt_options) {
   /**
   * @const
   * @private
-  * @type {Object.<string, function(module:ol/Feature~Feature, module:ol/geom/Geometry~Geometry)>}
+  * @type {Object.<string, function(module:ol/Feature, module:ol/geom/Geometry)>}
   */
   this.SEGMENT_WRITERS_ = {
     'Point': this.writePointGeometry_,
@@ -183,7 +183,7 @@ inherits(Snap, PointerInteraction);
 
 /**
  * Add a feature to the collection of features that we may snap to.
- * @param {module:ol/Feature~Feature} feature Feature.
+ * @param {module:ol/Feature} feature Feature.
  * @param {boolean=} opt_listen Whether to listen to the feature change or not
  *     Defaults to `true`.
  * @api
@@ -210,7 +210,7 @@ Snap.prototype.addFeature = function(feature, opt_listen) {
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature.
+ * @param {module:ol/Feature} feature Feature.
  * @private
  */
 Snap.prototype.forEachFeatureAdd_ = function(feature) {
@@ -219,7 +219,7 @@ Snap.prototype.forEachFeatureAdd_ = function(feature) {
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature.
+ * @param {module:ol/Feature} feature Feature.
  * @private
  */
 Snap.prototype.forEachFeatureRemove_ = function(feature) {
@@ -228,7 +228,7 @@ Snap.prototype.forEachFeatureRemove_ = function(feature) {
 
 
 /**
- * @return {module:ol/Collection~Collection.<module:ol/Feature~Feature>|Array.<module:ol/Feature~Feature>} Features.
+ * @return {module:ol/Collection.<module:ol/Feature>|Array.<module:ol/Feature>} Features.
  * @private
  */
 Snap.prototype.getFeatures_ = function() {
@@ -238,12 +238,14 @@ Snap.prototype.getFeatures_ = function() {
   } else if (this.source_) {
     features = this.source_.getFeatures();
   }
-  return /** @type {!Array.<module:ol/Feature~Feature>|!module:ol/Collection~Collection.<module:ol/Feature~Feature>} */ (features);
+  return (
+    /** @type {!Array.<module:ol/Feature>|!module:ol/Collection.<module:ol/Feature>} */ (features)
+  );
 };
 
 
 /**
- * @param {module:ol/source/Vector~Vector.Event|module:ol/Collection~CollectionEvent} evt Event.
+ * @param {module:ol/source/Vector~Vector|module:ol/Collection~CollectionEvent} evt Event.
  * @private
  */
 Snap.prototype.handleFeatureAdd_ = function(evt) {
@@ -253,12 +255,12 @@ Snap.prototype.handleFeatureAdd_ = function(evt) {
   } else if (evt instanceof CollectionEvent) {
     feature = evt.element;
   }
-  this.addFeature(/** @type {module:ol/Feature~Feature} */ (feature));
+  this.addFeature(/** @type {module:ol/Feature} */ (feature));
 };
 
 
 /**
- * @param {module:ol/source/Vector~Vector.Event|module:ol/Collection~CollectionEvent} evt Event.
+ * @param {module:ol/source/Vector~Vector|module:ol/Collection~CollectionEvent} evt Event.
  * @private
  */
 Snap.prototype.handleFeatureRemove_ = function(evt) {
@@ -268,16 +270,16 @@ Snap.prototype.handleFeatureRemove_ = function(evt) {
   } else if (evt instanceof CollectionEvent) {
     feature = evt.element;
   }
-  this.removeFeature(/** @type {module:ol/Feature~Feature} */ (feature));
+  this.removeFeature(/** @type {module:ol/Feature} */ (feature));
 };
 
 
 /**
- * @param {module:ol/events/Event~Event} evt Event.
+ * @param {module:ol/events/Event} evt Event.
  * @private
  */
 Snap.prototype.handleFeatureChange_ = function(evt) {
-  const feature = /** @type {module:ol/Feature~Feature} */ (evt.target);
+  const feature = /** @type {module:ol/Feature} */ (evt.target);
   if (this.handlingDownUpSequence) {
     const uid = getUid(feature);
     if (!(uid in this.pendingFeatures_)) {
@@ -291,7 +293,7 @@ Snap.prototype.handleFeatureChange_ = function(evt) {
 
 /**
  * Remove a feature from the collection of features that we may snap to.
- * @param {module:ol/Feature~Feature} feature Feature
+ * @param {module:ol/Feature} feature Feature
  * @param {boolean=} opt_unlisten Whether to unlisten to the feature change
  *     or not. Defaults to `true`.
  * @api
@@ -365,7 +367,7 @@ Snap.prototype.shouldStopEvent = FALSE;
 /**
  * @param {module:ol~Pixel} pixel Pixel
  * @param {module:ol/coordinate~Coordinate} pixelCoordinate Coordinate
- * @param {module:ol/PluggableMap~PluggableMap} map Map.
+ * @param {module:ol/PluggableMap} map Map.
  * @return {module:ol/interaction/Snap~Result} Snap result
  */
 Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
@@ -412,7 +414,7 @@ Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
     } else if (this.edge_) {
       if (isCircle) {
         vertex = closestOnCircle(pixelCoordinate,
-          /** @type {module:ol/geom/Circle~Circle} */ (segments[0].feature.getGeometry()));
+          /** @type {module:ol/geom/Circle} */ (segments[0].feature.getGeometry()));
       } else {
         vertex = closestOnSegment(pixelCoordinate, closestSegment);
       }
@@ -437,16 +439,18 @@ Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
       vertexPixel = [Math.round(vertexPixel[0]), Math.round(vertexPixel[1])];
     }
   }
-  return /** @type {module:ol/interaction/Snap~Result} */ ({
-    snapped: snapped,
-    vertex: vertex,
-    vertexPixel: vertexPixel
-  });
+  return (
+    /** @type {module:ol/interaction/Snap~Result} */ ({
+      snapped: snapped,
+      vertex: vertex,
+      vertexPixel: vertexPixel
+    })
+  );
 };
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature
+ * @param {module:ol/Feature} feature Feature
  * @private
  */
 Snap.prototype.updateFeature_ = function(feature) {
@@ -456,8 +460,8 @@ Snap.prototype.updateFeature_ = function(feature) {
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature
- * @param {module:ol/geom/Circle~Circle} geometry Geometry.
+ * @param {module:ol/Feature} feature Feature
+ * @param {module:ol/geom/Circle} geometry Geometry.
  * @private
  */
 Snap.prototype.writeCircleGeometry_ = function(feature, geometry) {
@@ -475,8 +479,8 @@ Snap.prototype.writeCircleGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature
- * @param {module:ol/geom/GeometryCollection~GeometryCollection} geometry Geometry.
+ * @param {module:ol/Feature} feature Feature
+ * @param {module:ol/geom/GeometryCollection} geometry Geometry.
  * @private
  */
 Snap.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
@@ -491,8 +495,8 @@ Snap.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature
- * @param {module:ol/geom/LineString~LineString} geometry Geometry.
+ * @param {module:ol/Feature} feature Feature
+ * @param {module:ol/geom/LineString} geometry Geometry.
  * @private
  */
 Snap.prototype.writeLineStringGeometry_ = function(feature, geometry) {
@@ -509,8 +513,8 @@ Snap.prototype.writeLineStringGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature
- * @param {module:ol/geom/MultiLineString~MultiLineString} geometry Geometry.
+ * @param {module:ol/Feature} feature Feature
+ * @param {module:ol/geom/MultiLineString} geometry Geometry.
  * @private
  */
 Snap.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
@@ -530,8 +534,8 @@ Snap.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature
- * @param {module:ol/geom/MultiPoint~MultiPoint} geometry Geometry.
+ * @param {module:ol/Feature} feature Feature
+ * @param {module:ol/geom/MultiPoint} geometry Geometry.
  * @private
  */
 Snap.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
@@ -548,8 +552,8 @@ Snap.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature
- * @param {module:ol/geom/MultiPolygon~MultiPolygon} geometry Geometry.
+ * @param {module:ol/Feature} feature Feature
+ * @param {module:ol/geom/MultiPolygon} geometry Geometry.
  * @private
  */
 Snap.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
@@ -572,8 +576,8 @@ Snap.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature
- * @param {module:ol/geom/Point~Point} geometry Geometry.
+ * @param {module:ol/Feature} feature Feature
+ * @param {module:ol/geom/Point} geometry Geometry.
  * @private
  */
 Snap.prototype.writePointGeometry_ = function(feature, geometry) {
@@ -587,8 +591,8 @@ Snap.prototype.writePointGeometry_ = function(feature, geometry) {
 
 
 /**
- * @param {module:ol/Feature~Feature} feature Feature
- * @param {module:ol/geom/Polygon~Polygon} geometry Geometry.
+ * @param {module:ol/Feature} feature Feature
+ * @param {module:ol/geom/Polygon} geometry Geometry.
  * @private
  */
 Snap.prototype.writePolygonGeometry_ = function(feature, geometry) {
@@ -609,9 +613,9 @@ Snap.prototype.writePolygonGeometry_ = function(feature, geometry) {
 
 /**
  * Handle all pointer events events.
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt A move event.
+ * @param {module:ol/MapBrowserEvent} evt A move event.
  * @return {boolean} Pass the event to other interactions.
- * @this {module:ol/interaction/Snap~Snap}
+ * @this {module:ol/interaction/Snap}
  */
 export function handleEvent(evt) {
   const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
@@ -624,9 +628,9 @@ export function handleEvent(evt) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} evt Event.
+ * @param {module:ol/MapBrowserPointerEvent} evt Event.
  * @return {boolean} Stop drag sequence?
- * @this {module:ol/interaction/Snap~Snap}
+ * @this {module:ol/interaction/Snap}
  */
 function handleUpEvent(evt) {
   const featuresToUpdate = getValues(this.pendingFeatures_);
@@ -643,7 +647,7 @@ function handleUpEvent(evt) {
  * @param {module:ol/interaction/Snap~SegmentData} a The first segment data.
  * @param {module:ol/interaction/Snap~SegmentData} b The second segment data.
  * @return {number} The difference in distance.
- * @this {module:ol/interaction/Snap~Snap}
+ * @this {module:ol/interaction/Snap}
  */
 function sortByDistance(a, b) {
   const deltaA = squaredDistanceToSegment(this.pixelCoordinate_, a.segment);

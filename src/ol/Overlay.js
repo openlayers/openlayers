@@ -94,7 +94,7 @@ const Property = {
  *     map.addOverlay(popup);
  *
  * @constructor
- * @extends {module:ol/Object~BaseObject}
+ * @extends {module:ol/Object}
  * @param {module:ol/Overlay~Options} options Overlay options.
  * @api
  */
@@ -239,13 +239,15 @@ Overlay.prototype.getId = function() {
 
 /**
  * Get the map associated with this overlay.
- * @return {module:ol/PluggableMap~PluggableMap|undefined} The map that the
+ * @return {module:ol/PluggableMap|undefined} The map that the
  * overlay is part of.
  * @observable
  * @api
  */
 Overlay.prototype.getMap = function() {
-  return /** @type {module:ol/PluggableMap~PluggableMap|undefined} */ (this.get(Property.MAP));
+  return (
+    /** @type {module:ol/PluggableMap|undefined} */ (this.get(Property.MAP))
+  );
 };
 
 
@@ -268,7 +270,9 @@ Overlay.prototype.getOffset = function() {
  * @api
  */
 Overlay.prototype.getPosition = function() {
-  return /** @type {module:ol/coordinate~Coordinate|undefined} */ (this.get(Property.POSITION));
+  return (
+    /** @type {module:ol/coordinate~Coordinate|undefined} */ (this.get(Property.POSITION))
+  );
 };
 
 
@@ -280,7 +284,9 @@ Overlay.prototype.getPosition = function() {
  * @api
  */
 Overlay.prototype.getPositioning = function() {
-  return /** @type {module:ol/OverlayPositioning~OverlayPositioning} */ (this.get(Property.POSITIONING));
+  return (
+    /** @type {module:ol/OverlayPositioning~OverlayPositioning} */ (this.get(Property.POSITIONING))
+  );
 };
 
 
@@ -369,7 +375,7 @@ Overlay.prototype.setElement = function(element) {
 
 /**
  * Set the map to be associated with this overlay.
- * @param {module:ol/PluggableMap~PluggableMap|undefined} map The map that the
+ * @param {module:ol/PluggableMap|undefined} map The map that the
  * overlay is part of.
  * @observable
  * @api

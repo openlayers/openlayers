@@ -396,7 +396,7 @@ WebGLLineStringReplay.prototype.drawPolygonCoordinates = function(
 
 
 /**
- * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
+ * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
  * @param {number=} opt_index Index count.
  */
 WebGLLineStringReplay.prototype.setPolygonStyle = function(feature, opt_index) {
@@ -549,7 +549,7 @@ WebGLLineStringReplay.prototype.drawReplay = function(gl, context, skippedFeatur
 /**
  * @private
  * @param {WebGLRenderingContext} gl gl.
- * @param {module:ol/webgl/Context~WebGLContext} context Context.
+ * @param {module:ol/webgl/Context} context Context.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
 WebGLLineStringReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {

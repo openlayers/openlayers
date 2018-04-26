@@ -74,7 +74,7 @@ function getLengthInternal(coordinates, radius) {
  * great circle distances between coordinates.  For polygons, the length is
  * the sum of all rings.  For points, the length is zero.  For multi-part
  * geometries, the length is the sum of the length of each part.
- * @param {module:ol/geom/Geometry~Geometry} geometry A geometry.
+ * @param {module:ol/geom/Geometry} geometry A geometry.
  * @param {module:ol/sphere~SphereMetricOptions=} opt_options Options for the
  * length calculation.  By default, geometries are assumed to be in 'EPSG:3857'.
  * You can change this by providing a `projection` option.
@@ -98,20 +98,20 @@ export function getLength(geometry, opt_options) {
     }
     case GeometryType.LINE_STRING:
     case GeometryType.LINEAR_RING: {
-      coordinates = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (geometry).getCoordinates();
+      coordinates = /** @type {module:ol/geom/SimpleGeometry} */ (geometry).getCoordinates();
       length = getLengthInternal(coordinates, radius);
       break;
     }
     case GeometryType.MULTI_LINE_STRING:
     case GeometryType.POLYGON: {
-      coordinates = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (geometry).getCoordinates();
+      coordinates = /** @type {module:ol/geom/SimpleGeometry} */ (geometry).getCoordinates();
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
         length += getLengthInternal(coordinates[i], radius);
       }
       break;
     }
     case GeometryType.MULTI_POLYGON: {
-      coordinates = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (geometry).getCoordinates();
+      coordinates = /** @type {module:ol/geom/SimpleGeometry} */ (geometry).getCoordinates();
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
         coords = coordinates[i];
         for (j = 0, jj = coords.length; j < jj; ++j) {
@@ -121,7 +121,7 @@ export function getLength(geometry, opt_options) {
       break;
     }
     case GeometryType.GEOMETRY_COLLECTION: {
-      const geometries = /** @type {module:ol/geom/GeometryCollection~GeometryCollection} */ (geometry).getGeometries();
+      const geometries = /** @type {module:ol/geom/GeometryCollection} */ (geometry).getGeometries();
       for (i = 0, ii = geometries.length; i < ii; ++i) {
         length += getLength(geometries[i], opt_options);
       }
@@ -170,7 +170,7 @@ function getAreaInternal(coordinates, radius) {
 /**
  * Get the spherical area of a geometry.  This is the area (in meters) assuming
  * that polygon edges are segments of great circles on a sphere.
- * @param {module:ol/geom/Geometry~Geometry} geometry A geometry.
+ * @param {module:ol/geom/Geometry} geometry A geometry.
  * @param {module:ol/sphere~SphereMetricOptions=} opt_options Options for the area
  *     calculation.  By default, geometries are assumed to be in 'EPSG:3857'.
  *     You can change this by providing a `projection` option.
@@ -196,7 +196,7 @@ export function getArea(geometry, opt_options) {
       break;
     }
     case GeometryType.POLYGON: {
-      coordinates = /** @type {module:ol/geom/Polygon~Polygon} */ (geometry).getCoordinates();
+      coordinates = /** @type {module:ol/geom/Polygon} */ (geometry).getCoordinates();
       area = Math.abs(getAreaInternal(coordinates[0], radius));
       for (i = 1, ii = coordinates.length; i < ii; ++i) {
         area -= Math.abs(getAreaInternal(coordinates[i], radius));
@@ -204,7 +204,7 @@ export function getArea(geometry, opt_options) {
       break;
     }
     case GeometryType.MULTI_POLYGON: {
-      coordinates = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (geometry).getCoordinates();
+      coordinates = /** @type {module:ol/geom/SimpleGeometry} */ (geometry).getCoordinates();
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
         coords = coordinates[i];
         area += Math.abs(getAreaInternal(coords[0], radius));
@@ -215,7 +215,7 @@ export function getArea(geometry, opt_options) {
       break;
     }
     case GeometryType.GEOMETRY_COLLECTION: {
-      const geometries = /** @type {module:ol/geom/GeometryCollection~GeometryCollection} */ (geometry).getGeometries();
+      const geometries = /** @type {module:ol/geom/GeometryCollection} */ (geometry).getGeometries();
       for (i = 0, ii = geometries.length; i < ii; ++i) {
         area += getArea(geometries[i], opt_options);
       }

@@ -158,7 +158,7 @@ import Units from './proj/Units.js';
 /**
  * @typedef {Object} State
  * @property {module:ol/coordinate~Coordinate} center
- * @property {module:ol/proj/Projection~Projection} projection
+ * @property {module:ol/proj/Projection} projection
  * @property {number} resolution
  * @property {number} rotation
  * @property {number} zoom
@@ -225,7 +225,7 @@ const DEFAULT_MIN_ZOOM = 0;
  * default the center is not constrained at all.
  *
  * @constructor
- * @extends {module:ol/Object~BaseObject}
+ * @extends {module:ol/Object}
  * @param {module:ol/View~ViewOptions=} opt_options View options.
  * @api
  */
@@ -257,7 +257,7 @@ const View = function(opt_options) {
   /**
    * @private
    * @const
-   * @type {module:ol/proj/Projection~Projection}
+   * @type {module:ol/proj/Projection}
    */
   this.projection_ = createProjection(options.projection, 'EPSG:3857');
 
@@ -711,7 +711,9 @@ View.prototype.constrainRotation = function(rotation, opt_delta) {
  * @api
  */
 View.prototype.getCenter = function() {
-  return /** @type {module:ol/coordinate~Coordinate|undefined} */ (this.get(ViewProperty.CENTER));
+  return (
+    /** @type {module:ol/coordinate~Coordinate|undefined} */ (this.get(ViewProperty.CENTER))
+  );
 };
 
 
@@ -823,7 +825,7 @@ View.prototype.setMinZoom = function(zoom) {
 
 /**
  * Get the view projection.
- * @return {module:ol/proj/Projection~Projection} The projection of the view.
+ * @return {module:ol/proj/Projection} The projection of the view.
  * @api
  */
 View.prototype.getProjection = function() {
@@ -935,13 +937,15 @@ View.prototype.getState = function() {
   const projection = this.getProjection();
   const resolution = /** @type {number} */ (this.getResolution());
   const rotation = this.getRotation();
-  return /** @type {module:ol/View~State} */ ({
-    center: center.slice(),
-    projection: projection !== undefined ? projection : null,
-    resolution: resolution,
-    rotation: rotation,
-    zoom: this.getZoom()
-  });
+  return (
+    /** @type {module:ol/View~State} */ ({
+      center: center.slice(),
+      projection: projection !== undefined ? projection : null,
+      resolution: resolution,
+      rotation: rotation,
+      zoom: this.getZoom()
+    })
+  );
 };
 
 
@@ -1005,7 +1009,7 @@ View.prototype.getResolutionForZoom = function(zoom) {
  * The size is pixel dimensions of the box to fit the extent into.
  * In most cases you will want to use the map size, that is `map.getSize()`.
  * Takes care of the map angle.
- * @param {module:ol/geom/SimpleGeometry~SimpleGeometry|module:ol/extent~Extent} geometryOrExtent The geometry or
+ * @param {module:ol/geom/SimpleGeometry|module:ol/extent~Extent} geometryOrExtent The geometry or
  *     extent to fit the view to.
  * @param {module:ol/View~FitOptions=} opt_options Options.
  * @api
@@ -1016,7 +1020,7 @@ View.prototype.fit = function(geometryOrExtent, opt_options) {
   if (!size) {
     size = this.getSizeFromViewport_();
   }
-  /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */
+  /** @type {module:ol/geom/SimpleGeometry} */
   let geometry;
   if (!(geometryOrExtent instanceof SimpleGeometry)) {
     assert(Array.isArray(geometryOrExtent),

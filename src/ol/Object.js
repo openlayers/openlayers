@@ -16,7 +16,7 @@ import {assign} from './obj.js';
  * @param {string} type The event type.
  * @param {string} key The property name.
  * @param {*} oldValue The old value for `key`.
- * @extends {module:ol/events/Event~Event}
+ * @extends {module:ol/events/Event}
  * @implements {oli.Object.Event}
  * @constructor
  */
@@ -48,7 +48,7 @@ inherits(ObjectEvent, Event);
  * instantiated in apps.
  * Most non-trivial classes inherit from this.
  *
- * This extends {@link module:ol/Observable~Observable} with observable
+ * This extends {@link module:ol/Observable} with observable
  * properties, where each property is observable as well as the object as a
  * whole.
  *
@@ -83,7 +83,7 @@ inherits(ObjectEvent, Event);
  * object.unset('foo').
  *
  * @constructor
- * @extends {module:ol/Observable~Observable}
+ * @extends {module:ol/Observable}
  * @param {Object.<string, *>=} opt_values An object with key-value pairs.
  * @fires module:ol/Object~ObjectEvent
  * @api

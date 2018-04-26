@@ -20,7 +20,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 
 /**
  * @type {Object.<module:ol/render/ReplayType~ReplayType,
- *                function(new: module:ol/render/canvas/Replay~CanvasReplay, number, module:ol/extent~Extent,
+ *                function(new: module:ol/render/canvas/Replay, number, module:ol/extent~Extent,
  *                number, number, boolean, Array.<module:ol/render/canvas~DeclutterGroup>)>}
  */
 const BATCH_CONSTRUCTORS = {
@@ -35,7 +35,7 @@ const BATCH_CONSTRUCTORS = {
 
 /**
  * @constructor
- * @extends {module:ol/render/ReplayGroup~ReplayGroup}
+ * @extends {module:ol/render/ReplayGroup}
  * @param {number} tolerance Tolerance.
  * @param {module:ol/extent~Extent} maxExtent Max extent.
  * @param {number} resolution Resolution.
@@ -100,7 +100,7 @@ const CanvasReplayGroup = function(
 
   /**
    * @private
-   * @type {!Object.<string, !Object.<module:ol/render/ReplayType~ReplayType, module:ol/render/canvas/Replay~CanvasReplay>>}
+   * @type {!Object.<string, !Object.<module:ol/render/ReplayType~ReplayType, module:ol/render/canvas/Replay>>}
    */
   this.replaysByZIndex_ = {};
 
@@ -287,7 +287,7 @@ CanvasReplayGroup.prototype.finish = function() {
  * @param {number} rotation Rotation.
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
- * @param {function((module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature)): T} callback Feature callback.
+ * @param {function((module:ol/Feature|module:ol/render/Feature)): T} callback Feature callback.
  * @param {Object.<string, module:ol/render/canvas~DeclutterGroup>} declutterReplays Declutter replays.
  * @return {T|undefined} Callback result.
  * @template T
@@ -332,7 +332,7 @@ CanvasReplayGroup.prototype.forEachFeatureAtCoordinate = function(
   let replayType;
 
   /**
-   * @param {module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature} feature Feature.
+   * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
    * @return {?} Callback result.
    */
   function featureCallback(feature) {
@@ -431,7 +431,7 @@ CanvasReplayGroup.prototype.getReplay = function(zIndex, replayType) {
 
 
 /**
- * @return {Object.<string, Object.<module:ol/render/ReplayType~ReplayType, module:ol/render/canvas/Replay~CanvasReplay>>} Replays.
+ * @return {Object.<string, Object.<module:ol/render/ReplayType~ReplayType, module:ol/render/canvas/Replay>>} Replays.
  */
 CanvasReplayGroup.prototype.getReplays = function() {
   return this.replaysByZIndex_;

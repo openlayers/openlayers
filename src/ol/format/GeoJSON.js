@@ -38,7 +38,7 @@ import {get as getProjection} from '../proj.js';
  * Feature format for reading and writing data in the GeoJSON format.
  *
  * @constructor
- * @extends {module:ol/format/JSONFeature~JSONFeature}
+ * @extends {module:ol/format/JSONFeature}
  * @param {module:ol/format/GeoJSON~Options=} opt_options Options.
  * @api
  */
@@ -81,7 +81,7 @@ inherits(GeoJSON, JSONFeature);
 
 /**
  * @const
- * @type {Object.<string, function(GeoJSONObject): module:ol/geom/Geometry~Geometry>}
+ * @type {Object.<string, function(GeoJSONObject): module:ol/geom/Geometry>}
  */
 const GEOMETRY_READERS = {
   'Point': readPointGeometry,
@@ -96,7 +96,7 @@ const GEOMETRY_READERS = {
 
 /**
  * @const
- * @type {Object.<string, function(module:ol/geom/Geometry~Geometry, module:ol/format/Feature~WriteOptions=): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
+ * @type {Object.<string, function(module:ol/geom/Geometry, module:ol/format/Feature~WriteOptions=): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
  */
 const GEOMETRY_WRITERS = {
   'Point': writePointGeometry,
@@ -113,15 +113,15 @@ const GEOMETRY_WRITERS = {
 /**
  * @param {GeoJSONGeometry|GeoJSONGeometryCollection} object Object.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/geom/Geometry~Geometry} Geometry.
+ * @return {module:ol/geom/Geometry} Geometry.
  */
 function readGeometry(object, opt_options) {
   if (!object) {
     return null;
   }
   const geometryReader = GEOMETRY_READERS[object.type];
-  return /** @type {module:ol/geom/Geometry~Geometry} */ (transformWithOptions(
-    geometryReader(object), false, opt_options)
+  return (
+    /** @type {module:ol/geom/Geometry} */ (transformWithOptions(geometryReader(object), false, opt_options))
   );
 }
 
@@ -129,13 +129,13 @@ function readGeometry(object, opt_options) {
 /**
  * @param {GeoJSONGeometryCollection} object Object.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/geom/GeometryCollection~GeometryCollection} Geometry collection.
+ * @return {module:ol/geom/GeometryCollection} Geometry collection.
  */
 function readGeometryCollectionGeometry(object, opt_options) {
   const geometries = object.geometries.map(
     /**
      * @param {GeoJSONGeometry} geometry Geometry.
-     * @return {module:ol/geom/Geometry~Geometry} geometry Geometry.
+     * @return {module:ol/geom/Geometry} geometry Geometry.
      */
     function(geometry) {
       return readGeometry(geometry, opt_options);
@@ -146,7 +146,7 @@ function readGeometryCollectionGeometry(object, opt_options) {
 
 /**
  * @param {GeoJSONGeometry} object Object.
- * @return {module:ol/geom/Point~Point} Point.
+ * @return {module:ol/geom/Point} Point.
  */
 function readPointGeometry(object) {
   return new Point(object.coordinates);
@@ -155,7 +155,7 @@ function readPointGeometry(object) {
 
 /**
  * @param {GeoJSONGeometry} object Object.
- * @return {module:ol/geom/LineString~LineString} LineString.
+ * @return {module:ol/geom/LineString} LineString.
  */
 function readLineStringGeometry(object) {
   return new LineString(object.coordinates);
@@ -164,7 +164,7 @@ function readLineStringGeometry(object) {
 
 /**
  * @param {GeoJSONGeometry} object Object.
- * @return {module:ol/geom/MultiLineString~MultiLineString} MultiLineString.
+ * @return {module:ol/geom/MultiLineString} MultiLineString.
  */
 function readMultiLineStringGeometry(object) {
   return new MultiLineString(object.coordinates);
@@ -173,7 +173,7 @@ function readMultiLineStringGeometry(object) {
 
 /**
  * @param {GeoJSONGeometry} object Object.
- * @return {module:ol/geom/MultiPoint~MultiPoint} MultiPoint.
+ * @return {module:ol/geom/MultiPoint} MultiPoint.
  */
 function readMultiPointGeometry(object) {
   return new MultiPoint(object.coordinates);
@@ -182,7 +182,7 @@ function readMultiPointGeometry(object) {
 
 /**
  * @param {GeoJSONGeometry} object Object.
- * @return {module:ol/geom/MultiPolygon~MultiPolygon} MultiPolygon.
+ * @return {module:ol/geom/MultiPolygon} MultiPolygon.
  */
 function readMultiPolygonGeometry(object) {
   return new MultiPolygon(object.coordinates);
@@ -191,7 +191,7 @@ function readMultiPolygonGeometry(object) {
 
 /**
  * @param {GeoJSONGeometry} object Object.
- * @return {module:ol/geom/Polygon~Polygon} Polygon.
+ * @return {module:ol/geom/Polygon} Polygon.
  */
 function readPolygonGeometry(object) {
   return new Polygon(object.coordinates);
@@ -199,19 +199,19 @@ function readPolygonGeometry(object) {
 
 
 /**
- * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry|GeoJSONGeometryCollection} GeoJSON geometry.
  */
 function writeGeometry(geometry, opt_options) {
   const geometryWriter = GEOMETRY_WRITERS[geometry.getType()];
-  return geometryWriter(/** @type {module:ol/geom/Geometry~Geometry} */ (
+  return geometryWriter(/** @type {module:ol/geom/Geometry} */ (
     transformWithOptions(geometry, true, opt_options)), opt_options);
 }
 
 
 /**
- * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry} geometry Geometry.
  * @return {GeoJSONGeometryCollection} Empty GeoJSON geometry collection.
  */
 function writeEmptyGeometryCollectionGeometry(geometry) {
@@ -223,7 +223,7 @@ function writeEmptyGeometryCollectionGeometry(geometry) {
 
 
 /**
- * @param {module:ol/geom/GeometryCollection~GeometryCollection} geometry Geometry.
+ * @param {module:ol/geom/GeometryCollection} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometryCollection} GeoJSON geometry collection.
  */
@@ -241,7 +241,7 @@ function writeGeometryCollectionGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/LineString~LineString} geometry Geometry.
+ * @param {module:ol/geom/LineString} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
@@ -254,7 +254,7 @@ function writeLineStringGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/MultiLineString~MultiLineString} geometry Geometry.
+ * @param {module:ol/geom/MultiLineString} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
@@ -267,7 +267,7 @@ function writeMultiLineStringGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/MultiPoint~MultiPoint} geometry Geometry.
+ * @param {module:ol/geom/MultiPoint} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
@@ -280,7 +280,7 @@ function writeMultiPointGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/MultiPolygon~MultiPolygon} geometry Geometry.
+ * @param {module:ol/geom/MultiPolygon} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
@@ -297,7 +297,7 @@ function writeMultiPolygonGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/Point~Point} geometry Geometry.
+ * @param {module:ol/geom/Point} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
@@ -310,7 +310,7 @@ function writePointGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/Polygon~Polygon} geometry Geometry.
+ * @param {module:ol/geom/Polygon} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
@@ -330,12 +330,12 @@ function writePolygonGeometry(geometry, opt_options) {
  * Read a feature from a GeoJSON Feature source.  Only works for Feature or
  * geometry types.  Use {@link ol.format.GeoJSON#readFeatures} to read
  * FeatureCollection source. If feature at source has an id, it will be used
- * as Feature id by calling {@link module:ol/Feature~Feature#setId} internally.
+ * as Feature id by calling {@link module:ol/Feature#setId} internally.
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature~Feature} Feature.
+ * @return {module:ol/Feature} Feature.
  * @api
  */
 GeoJSON.prototype.readFeature;
@@ -349,7 +349,7 @@ GeoJSON.prototype.readFeature;
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature~Feature>} Features.
+ * @return {Array.<module:ol/Feature>} Features.
  * @api
  */
 GeoJSON.prototype.readFeatures;
@@ -395,7 +395,7 @@ GeoJSON.prototype.readFeatureFromObject = function(object, opt_options) {
  */
 GeoJSON.prototype.readFeaturesFromObject = function(object, opt_options) {
   const geoJSONObject = /** @type {GeoJSONObject} */ (object);
-  /** @type {Array.<module:ol/Feature~Feature>} */
+  /** @type {Array.<module:ol/Feature>} */
   let features = null;
   if (geoJSONObject.type === 'FeatureCollection') {
     const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (object);
@@ -417,7 +417,7 @@ GeoJSON.prototype.readFeaturesFromObject = function(object, opt_options) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/geom/Geometry~Geometry} Geometry.
+ * @return {module:ol/geom/Geometry} Geometry.
  * @api
  */
 GeoJSON.prototype.readGeometry;
@@ -436,7 +436,7 @@ GeoJSON.prototype.readGeometryFromObject = function(object, opt_options) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/proj/Projection~Projection} Projection.
+ * @return {module:ol/proj/Projection} Projection.
  * @api
  */
 GeoJSON.prototype.readProjection;
@@ -458,7 +458,9 @@ GeoJSON.prototype.readProjectionFromObject = function(object) {
   } else {
     projection = this.defaultDataProjection;
   }
-  return /** @type {module:ol/proj/Projection~Projection} */ (projection);
+  return (
+    /** @type {module:ol/proj/Projection} */ (projection)
+  );
 };
 
 
@@ -466,7 +468,7 @@ GeoJSON.prototype.readProjectionFromObject = function(object) {
  * Encode a feature as a GeoJSON Feature string.
  *
  * @function
- * @param {module:ol/Feature~Feature} feature Feature.
+ * @param {module:ol/Feature} feature Feature.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} GeoJSON.
  * @override
@@ -478,7 +480,7 @@ GeoJSON.prototype.writeFeature;
 /**
  * Encode a feature as a GeoJSON Feature object.
  *
- * @param {module:ol/Feature~Feature} feature Feature.
+ * @param {module:ol/Feature} feature Feature.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONFeature} Object.
  * @override
@@ -515,7 +517,7 @@ GeoJSON.prototype.writeFeatureObject = function(feature, opt_options) {
  * Encode an array of features as GeoJSON.
  *
  * @function
- * @param {Array.<module:ol/Feature~Feature>} features Features.
+ * @param {Array.<module:ol/Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} GeoJSON.
  * @api
@@ -526,7 +528,7 @@ GeoJSON.prototype.writeFeatures;
 /**
  * Encode an array of features as a GeoJSON object.
  *
- * @param {Array.<module:ol/Feature~Feature>} features Features.
+ * @param {Array.<module:ol/Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONFeatureCollection} GeoJSON Object.
  * @override
@@ -549,7 +551,7 @@ GeoJSON.prototype.writeFeaturesObject = function(features, opt_options) {
  * Encode a geometry as a GeoJSON string.
  *
  * @function
- * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} GeoJSON.
  * @api
@@ -560,7 +562,7 @@ GeoJSON.prototype.writeGeometry;
 /**
  * Encode a geometry as a GeoJSON object.
  *
- * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry|GeoJSONGeometryCollection} Object.
  * @override

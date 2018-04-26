@@ -17,7 +17,7 @@ import {squaredDistance as squaredDx} from '../math.js';
  * Multi-point geometry.
  *
  * @constructor
- * @extends {module:ol/geom/SimpleGeometry~SimpleGeometry}
+ * @extends {module:ol/geom/SimpleGeometry}
  * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
  * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
  * @api
@@ -32,7 +32,7 @@ inherits(MultiPoint, SimpleGeometry);
 
 /**
  * Append the passed point to this multipoint.
- * @param {module:ol/geom/Point~Point} point Point.
+ * @param {module:ol/geom/Point} point Point.
  * @api
  */
 MultiPoint.prototype.appendPoint = function(point) {
@@ -47,7 +47,7 @@ MultiPoint.prototype.appendPoint = function(point) {
 
 /**
  * Make a complete copy of the geometry.
- * @return {!module:ol/geom/MultiPoint~MultiPoint} Clone.
+ * @return {!module:ol/geom/MultiPoint} Clone.
  * @override
  * @api
  */
@@ -97,7 +97,7 @@ MultiPoint.prototype.getCoordinates = function() {
 /**
  * Return the point at the specified index.
  * @param {number} index Index.
- * @return {module:ol/geom/Point~Point} Point.
+ * @return {module:ol/geom/Point} Point.
  * @api
  */
 MultiPoint.prototype.getPoint = function(index) {
@@ -114,14 +114,14 @@ MultiPoint.prototype.getPoint = function(index) {
 
 /**
  * Return the points of this multipoint.
- * @return {Array.<module:ol/geom/Point~Point>} Points.
+ * @return {Array.<module:ol/geom/Point>} Points.
  * @api
  */
 MultiPoint.prototype.getPoints = function() {
   const flatCoordinates = this.flatCoordinates;
   const layout = this.layout;
   const stride = this.stride;
-  /** @type {Array.<module:ol/geom/Point~Point>} */
+  /** @type {Array.<module:ol/geom/Point>} */
   const points = [];
   for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
     const point = new Point(null);

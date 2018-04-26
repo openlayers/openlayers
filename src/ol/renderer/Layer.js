@@ -12,8 +12,8 @@ import SourceState from '../source/State.js';
 
 /**
  * @constructor
- * @extends {module:ol/Observable~Observable}
- * @param {module:ol/layer/Layer~Layer} layer Layer.
+ * @extends {module:ol/Observable}
+ * @param {module:ol/layer/Layer} layer Layer.
  * @struct
  */
 const LayerRenderer = function(layer) {
@@ -22,7 +22,7 @@ const LayerRenderer = function(layer) {
 
   /**
    * @private
-   * @type {module:ol/layer/Layer~Layer}
+   * @type {module:ol/layer/Layer}
    */
   this.layer_ = layer;
 
@@ -36,7 +36,7 @@ inherits(LayerRenderer, Observable);
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {function(this: S, (module:ol/Feature~Feature|module:ol/render/Feature~RenderFeature), module:ol/layer/Layer~Layer): T}
+ * @param {function(this: S, (module:ol/Feature|module:ol/render/Feature), module:ol/layer/Layer): T}
  *     callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @return {T|undefined} Callback result.
@@ -55,10 +55,10 @@ LayerRenderer.prototype.hasFeatureAtCoordinate = FALSE;
 
 /**
  * Create a function that adds loaded tiles to the tile lookup.
- * @param {module:ol/source/Tile~TileSource} source Tile source.
- * @param {module:ol/proj/Projection~Projection} projection Projection of the tiles.
- * @param {Object.<number, Object.<string, module:ol/Tile~Tile>>} tiles Lookup of loaded tiles by zoom level.
- * @return {function(number, module:ol/TileRange~TileRange):boolean} A function that can be
+ * @param {module:ol/source/Tile} source Tile source.
+ * @param {module:ol/proj/Projection} projection Projection of the tiles.
+ * @param {Object.<number, Object.<string, module:ol/Tile>>} tiles Lookup of loaded tiles by zoom level.
+ * @return {function(number, module:ol/TileRange):boolean} A function that can be
  *     called with a zoom level and a tile range to add loaded tiles to the lookup.
  * @protected
  */
@@ -66,7 +66,7 @@ LayerRenderer.prototype.createLoadedTileFinder = function(source, projection, ti
   return (
     /**
      * @param {number} zoom Zoom level.
-     * @param {module:ol/TileRange~TileRange} tileRange Tile range.
+     * @param {module:ol/TileRange} tileRange Tile range.
      * @return {boolean} The tile range is fully loaded.
      */
     function(zoom, tileRange) {
@@ -77,12 +77,13 @@ LayerRenderer.prototype.createLoadedTileFinder = function(source, projection, ti
         tiles[zoom][tile.tileCoord.toString()] = tile;
       }
       return source.forEachLoadedTile(projection, zoom, tileRange, callback);
-    });
+    }
+  );
 };
 
 
 /**
- * @return {module:ol/layer/Layer~Layer} Layer.
+ * @return {module:ol/layer/Layer} Layer.
  */
 LayerRenderer.prototype.getLayer = function() {
   return this.layer_;
@@ -91,7 +92,7 @@ LayerRenderer.prototype.getLayer = function() {
 
 /**
  * Handle changes in image state.
- * @param {module:ol/events/Event~Event} event Image change event.
+ * @param {module:ol/events/Event} event Image change event.
  * @private
  */
 LayerRenderer.prototype.handleImageChange_ = function(event) {
@@ -105,7 +106,7 @@ LayerRenderer.prototype.handleImageChange_ = function(event) {
 /**
  * Load the image if not already loaded, and register the image change
  * listener if needed.
- * @param {module:ol/ImageBase~ImageBase} image Image.
+ * @param {module:ol/ImageBase} image Image.
  * @return {boolean} `true` if the image is already loaded, `false` otherwise.
  * @protected
  */
@@ -135,14 +136,14 @@ LayerRenderer.prototype.renderIfReadyAndVisible = function() {
 
 /**
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
- * @param {module:ol/source/Tile~TileSource} tileSource Tile source.
+ * @param {module:ol/source/Tile} tileSource Tile source.
  * @protected
  */
 LayerRenderer.prototype.scheduleExpireCache = function(frameState, tileSource) {
   if (tileSource.canExpireCache()) {
     /**
-     * @param {module:ol/source/Tile~TileSource} tileSource Tile source.
-     * @param {module:ol/PluggableMap~PluggableMap} map Map.
+     * @param {module:ol/source/Tile} tileSource Tile source.
+     * @param {module:ol/PluggableMap} map Map.
      * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
      */
     const postRenderFunction = function(tileSource, map, frameState) {
@@ -161,10 +162,10 @@ LayerRenderer.prototype.scheduleExpireCache = function(frameState, tileSource) {
 
 
 /**
- * @param {!Object.<string, !Object.<string, module:ol/TileRange~TileRange>>} usedTiles Used tiles.
- * @param {module:ol/source/Tile~TileSource} tileSource Tile source.
+ * @param {!Object.<string, !Object.<string, module:ol/TileRange>>} usedTiles Used tiles.
+ * @param {module:ol/source/Tile} tileSource Tile source.
  * @param {number} z Z.
- * @param {module:ol/TileRange~TileRange} tileRange Tile range.
+ * @param {module:ol/TileRange} tileRange Tile range.
  * @protected
  */
 LayerRenderer.prototype.updateUsedTiles = function(usedTiles, tileSource, z, tileRange) {
@@ -192,14 +193,14 @@ LayerRenderer.prototype.updateUsedTiles = function(usedTiles, tileSource, z, til
  *   discarded by the tile queue
  * - enqueues missing tiles
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
- * @param {module:ol/source/Tile~TileSource} tileSource Tile source.
- * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid Tile grid.
+ * @param {module:ol/source/Tile} tileSource Tile source.
+ * @param {module:ol/tilegrid/TileGrid} tileGrid Tile grid.
  * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} currentZ Current Z.
  * @param {number} preload Load low resolution tiles up to 'preload' levels.
- * @param {function(this: T, module:ol/Tile~Tile)=} opt_tileCallback Tile callback.
+ * @param {function(this: T, module:ol/Tile)=} opt_tileCallback Tile callback.
  * @param {T=} opt_this Object to use as `this` in `opt_tileCallback`.
  * @protected
  * @template T

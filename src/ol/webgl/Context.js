@@ -12,7 +12,7 @@ import ContextEventType from '../webgl/ContextEventType.js';
 
 /**
  * @typedef {Object} BufferCacheEntry
- * @property {module:ol/webgl/Buffer~WebGLBuffer} buf
+ * @property {module:ol/webgl/Buffer} buf
  * @property {WebGLBuffer} buffer
  */
 
@@ -22,7 +22,7 @@ import ContextEventType from '../webgl/ContextEventType.js';
  * A WebGL context for accessing low-level WebGL capabilities.
  *
  * @constructor
- * @extends {module:ol/Disposable~Disposable}
+ * @extends {module:ol/Disposable}
  * @param {HTMLCanvasElement} canvas Canvas.
  * @param {WebGLRenderingContext} gl GL.
  */
@@ -107,7 +107,7 @@ inherits(WebGLContext, Disposable);
  * the WebGL buffer, bind it, populate it, and add an entry to
  * the cache.
  * @param {number} target Target.
- * @param {module:ol/webgl/Buffer~WebGLBuffer} buf Buffer.
+ * @param {module:ol/webgl/Buffer} buf Buffer.
  */
 WebGLContext.prototype.bindBuffer = function(target, buf) {
   const gl = this.getGL();
@@ -136,7 +136,7 @@ WebGLContext.prototype.bindBuffer = function(target, buf) {
 
 
 /**
- * @param {module:ol/webgl/Buffer~WebGLBuffer} buf Buffer.
+ * @param {module:ol/webgl/Buffer} buf Buffer.
  */
 WebGLContext.prototype.deleteBuffer = function(buf) {
   const gl = this.getGL();
@@ -206,7 +206,7 @@ WebGLContext.prototype.getHitDetectionFramebuffer = function() {
 /**
  * Get shader from the cache if it's in the cache. Otherwise, create
  * the WebGL shader, compile it, and add entry to cache.
- * @param {module:ol/webgl/Shader~WebGLShader} shaderObject Shader object.
+ * @param {module:ol/webgl/Shader} shaderObject Shader object.
  * @return {WebGLShader} Shader.
  */
 WebGLContext.prototype.getShader = function(shaderObject) {
@@ -228,8 +228,8 @@ WebGLContext.prototype.getShader = function(shaderObject) {
  * Get the program from the cache if it's in the cache. Otherwise create
  * the WebGL program, attach the shaders to it, and add an entry to the
  * cache.
- * @param {module:ol/webgl/Fragment~WebGLFragment} fragmentShaderObject Fragment shader.
- * @param {module:ol/webgl/Vertex~WebGLVertex} vertexShaderObject Vertex shader.
+ * @param {module:ol/webgl/Fragment} fragmentShaderObject Fragment shader.
+ * @param {module:ol/webgl/Vertex} vertexShaderObject Vertex shader.
  * @return {WebGLProgram} Program.
  */
 WebGLContext.prototype.getProgram = function(fragmentShaderObject, vertexShaderObject) {

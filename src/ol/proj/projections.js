@@ -4,7 +4,7 @@
 
 
 /**
- * @type {Object.<string, module:ol/proj/Projection~Projection>}
+ * @type {Object.<string, module:ol/proj/Projection>}
  */
 let cache = {};
 
@@ -20,7 +20,7 @@ export function clear() {
 /**
  * Get a cached projection by code.
  * @param {string} code The code for the projection.
- * @return {module:ol/proj/Projection~Projection} The projection (if cached).
+ * @return {module:ol/proj/Projection} The projection (if cached).
  */
 export function get(code) {
   return cache[code] || null;
@@ -30,7 +30,7 @@ export function get(code) {
 /**
  * Add a projection to the cache.
  * @param {string} code The projection code.
- * @param {module:ol/proj/Projection~Projection} projection The projection to cache.
+ * @param {module:ol/proj/Projection} projection The projection to cache.
  */
 export function add(code, projection) {
   cache[code] = projection;

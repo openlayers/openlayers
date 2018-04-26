@@ -38,7 +38,7 @@ import {createEditingStyle} from '../style/Style.js';
  * actually add a point/vertex to the geometry being drawn.  The default of `6`
  * was chosen for the draw interaction to behave correctly on mouse as well as
  * on touch devices.
- * @property {module:ol/Collection~Collection.<module:ol/Feature~Feature>} [features]
+ * @property {module:ol/Collection.<module:ol/Feature>} [features]
  * Destination collection for the drawn features.
  * @property {module:ol/source/Vector~Vector} [source] Destination source for
  * the drawn features.
@@ -57,7 +57,7 @@ import {createEditingStyle} from '../style/Style.js';
  * @property {module:ol/events/condition~Condition} [finishCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether the drawing can be finished.
- * @property {module:ol/style/Style~Style|Array.<module:ol/style/Style~Style>|module:ol/style~StyleFunction} [style]
+ * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction} [style]
  * Style for sketch features.
  * @property {module:ol/interaction/Draw~GeometryFunction} [geometryFunction]
  * Function that is called when a geometry's coordinates are updated.
@@ -87,8 +87,8 @@ import {createEditingStyle} from '../style/Style.js';
  * arguments, and returns a geometry. The optional existing geometry is the
  * geometry that is returned when the function is called without a second
  * argument.
- * @typedef {function(!Array.<module:ol/coordinate~Coordinate>, module:ol/geom/SimpleGeometry~SimpleGeometry=):
- *     module:ol/geom/SimpleGeometry~SimpleGeometry} GeometryFunction
+ * @typedef {function(!Array.<module:ol/coordinate~Coordinate>, module:ol/geom/SimpleGeometry=):
+ *     module:ol/geom/SimpleGeometry} GeometryFunction
  */
 
 
@@ -130,10 +130,10 @@ const DrawEventType = {
  * instances of this type.
  *
  * @constructor
- * @extends {module:ol/events/Event~Event}
+ * @extends {module:ol/events/Event}
  * @implements {oli.DrawEvent}
  * @param {module:ol/interaction/Draw~DrawEventType} type Type.
- * @param {module:ol/Feature~Feature} feature The feature drawn.
+ * @param {module:ol/Feature} feature The feature drawn.
  */
 const DrawEvent = function(type, feature) {
 
@@ -141,7 +141,7 @@ const DrawEvent = function(type, feature) {
 
   /**
    * The feature being drawn.
-   * @type {module:ol/Feature~Feature}
+   * @type {module:ol/Feature}
    * @api
    */
   this.feature = feature;
@@ -156,7 +156,7 @@ inherits(DrawEvent, Event);
  * Interaction for drawing feature geometries.
  *
  * @constructor
- * @extends {module:ol/interaction/Pointer~PointerInteraction}
+ * @extends {module:ol/interaction/Pointer}
  * @fires module:ol/interaction/Draw~DrawEvent
  * @param {module:ol/interaction/Draw~Options} options Options.
  * @api
@@ -208,7 +208,7 @@ const Draw = function(options) {
 
   /**
    * Target collection for drawn features.
-   * @type {module:ol/Collection~Collection.<module:ol/Feature~Feature>}
+   * @type {module:ol/Collection.<module:ol/Feature>}
    * @private
    */
   this.features_ = options.features ? options.features : null;
@@ -274,11 +274,11 @@ const Draw = function(options) {
       /**
        * @param {!Array.<module:ol/coordinate~Coordinate>} coordinates
        *     The coordinates.
-       * @param {module:ol/geom/SimpleGeometry~SimpleGeometry=} opt_geometry Optional geometry.
-       * @return {module:ol/geom/SimpleGeometry~SimpleGeometry} A geometry.
+       * @param {module:ol/geom/SimpleGeometry=} opt_geometry Optional geometry.
+       * @return {module:ol/geom/SimpleGeometry} A geometry.
        */
       geometryFunction = function(coordinates, opt_geometry) {
-        const circle = opt_geometry ? /** @type {module:ol/geom/Circle~Circle} */ (opt_geometry) :
+        const circle = opt_geometry ? /** @type {module:ol/geom/Circle} */ (opt_geometry) :
           new Circle([NaN, NaN]);
         const squaredLength = squaredCoordinateDistance(
           coordinates[0], coordinates[1]);
@@ -298,8 +298,8 @@ const Draw = function(options) {
       /**
        * @param {!Array.<module:ol/coordinate~Coordinate>} coordinates
        *     The coordinates.
-       * @param {module:ol/geom/SimpleGeometry~SimpleGeometry=} opt_geometry Optional geometry.
-       * @return {module:ol/geom/SimpleGeometry~SimpleGeometry} A geometry.
+       * @param {module:ol/geom/SimpleGeometry=} opt_geometry Optional geometry.
+       * @return {module:ol/geom/SimpleGeometry} A geometry.
        */
       geometryFunction = function(coordinates, opt_geometry) {
         let geometry = opt_geometry;
@@ -344,14 +344,14 @@ const Draw = function(options) {
 
   /**
    * Sketch feature.
-   * @type {module:ol/Feature~Feature}
+   * @type {module:ol/Feature}
    * @private
    */
   this.sketchFeature_ = null;
 
   /**
    * Sketch point.
-   * @type {module:ol/Feature~Feature}
+   * @type {module:ol/Feature}
    * @private
    */
   this.sketchPoint_ = null;
@@ -365,7 +365,7 @@ const Draw = function(options) {
 
   /**
    * Sketch line. Used when drawing polygon.
-   * @type {module:ol/Feature~Feature}
+   * @type {module:ol/Feature}
    * @private
    */
   this.sketchLine_ = null;
@@ -457,11 +457,11 @@ Draw.prototype.setMap = function(map) {
 
 
 /**
- * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may actually
+ * Handles the {@link module:ol/MapBrowserEvent map browser event} and may actually
  * draw or finish the drawing.
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Map browser event.
+ * @param {module:ol/MapBrowserEvent} event Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {module:ol/interaction/Draw~Draw}
+ * @this {module:ol/interaction/Draw}
  * @api
  */
 export function handleEvent(event) {
@@ -511,9 +511,9 @@ export function handleEvent(event) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} event Event.
+ * @param {module:ol/MapBrowserPointerEvent} event Event.
  * @return {boolean} Start drag sequence?
- * @this {module:ol/interaction/Draw~Draw}
+ * @this {module:ol/interaction/Draw}
  */
 function handleDownEvent(event) {
   this.shouldHandle_ = !this.freehand_;
@@ -539,9 +539,9 @@ function handleDownEvent(event) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent~MapBrowserPointerEvent} event Event.
+ * @param {module:ol/MapBrowserPointerEvent} event Event.
  * @return {boolean} Stop drag sequence?
- * @this {module:ol/interaction/Draw~Draw}
+ * @this {module:ol/interaction/Draw}
  */
 function handleUpEvent(event) {
   let pass = true;
@@ -584,7 +584,7 @@ function handleUpEvent(event) {
 
 /**
  * Handle move events.
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event A move event.
+ * @param {module:ol/MapBrowserEvent} event A move event.
  * @return {boolean} Pass the event to other interactions.
  * @private
  */
@@ -616,7 +616,7 @@ Draw.prototype.handlePointerMove_ = function(event) {
 
 /**
  * Determine if an event is within the snapping tolerance of the start coord.
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Event.
+ * @param {module:ol/MapBrowserEvent} event Event.
  * @return {boolean} The event is within the snapping tolerance of the start.
  * @private
  */
@@ -655,7 +655,7 @@ Draw.prototype.atFinish_ = function(event) {
 
 
 /**
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Event.
+ * @param {module:ol/MapBrowserEvent} event Event.
  * @private
  */
 Draw.prototype.createOrUpdateSketchPoint_ = function(event) {
@@ -664,7 +664,7 @@ Draw.prototype.createOrUpdateSketchPoint_ = function(event) {
     this.sketchPoint_ = new Feature(new Point(coordinates));
     this.updateSketchFeatures_();
   } else {
-    const sketchPointGeom = /** @type {module:ol/geom/Point~Point} */ (this.sketchPoint_.getGeometry());
+    const sketchPointGeom = /** @type {module:ol/geom/Point} */ (this.sketchPoint_.getGeometry());
     sketchPointGeom.setCoordinates(coordinates);
   }
 };
@@ -672,7 +672,7 @@ Draw.prototype.createOrUpdateSketchPoint_ = function(event) {
 
 /**
  * Start the drawing.
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Event.
+ * @param {module:ol/MapBrowserEvent} event Event.
  * @private
  */
 Draw.prototype.startDrawing_ = function(event) {
@@ -703,12 +703,12 @@ Draw.prototype.startDrawing_ = function(event) {
 
 /**
  * Modify the drawing.
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Event.
+ * @param {module:ol/MapBrowserEvent} event Event.
  * @private
  */
 Draw.prototype.modifyDrawing_ = function(event) {
   let coordinate = event.coordinate;
-  const geometry = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (this.sketchFeature_.getGeometry());
+  const geometry = /** @type {module:ol/geom/SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   let coordinates, last;
   if (this.mode_ === Mode.POINT) {
     last = this.sketchCoords_;
@@ -727,7 +727,7 @@ Draw.prototype.modifyDrawing_ = function(event) {
   last[1] = coordinate[1];
   this.geometryFunction_(/** @type {!Array.<module:ol/coordinate~Coordinate>} */ (this.sketchCoords_), geometry);
   if (this.sketchPoint_) {
-    const sketchPointGeom = /** @type {module:ol/geom/Point~Point} */ (this.sketchPoint_.getGeometry());
+    const sketchPointGeom = /** @type {module:ol/geom/Point} */ (this.sketchPoint_.getGeometry());
     sketchPointGeom.setCoordinates(coordinate);
   }
   let sketchLineGeom;
@@ -737,11 +737,11 @@ Draw.prototype.modifyDrawing_ = function(event) {
       this.sketchLine_ = new Feature(new LineString(null));
     }
     const ring = geometry.getLinearRing(0);
-    sketchLineGeom = /** @type {module:ol/geom/LineString~LineString} */ (this.sketchLine_.getGeometry());
+    sketchLineGeom = /** @type {module:ol/geom/LineString} */ (this.sketchLine_.getGeometry());
     sketchLineGeom.setFlatCoordinates(
       ring.getLayout(), ring.getFlatCoordinates());
   } else if (this.sketchLineCoords_) {
-    sketchLineGeom = /** @type {module:ol/geom/LineString~LineString} */ (this.sketchLine_.getGeometry());
+    sketchLineGeom = /** @type {module:ol/geom/LineString} */ (this.sketchLine_.getGeometry());
     sketchLineGeom.setCoordinates(this.sketchLineCoords_);
   }
   this.updateSketchFeatures_();
@@ -750,12 +750,12 @@ Draw.prototype.modifyDrawing_ = function(event) {
 
 /**
  * Add a new coordinate to the drawing.
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} event Event.
+ * @param {module:ol/MapBrowserEvent} event Event.
  * @private
  */
 Draw.prototype.addToDrawing_ = function(event) {
   const coordinate = event.coordinate;
-  const geometry = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (this.sketchFeature_.getGeometry());
+  const geometry = /** @type {module:ol/geom/SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   let done;
   let coordinates;
   if (this.mode_ === Mode.LINE_STRING) {
@@ -800,7 +800,7 @@ Draw.prototype.removeLastPoint = function() {
   if (!this.sketchFeature_) {
     return;
   }
-  const geometry = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (this.sketchFeature_.getGeometry());
+  const geometry = /** @type {module:ol/geom/SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   let coordinates, sketchLineGeom;
   if (this.mode_ === Mode.LINE_STRING) {
     coordinates = this.sketchCoords_;
@@ -812,7 +812,7 @@ Draw.prototype.removeLastPoint = function() {
   } else if (this.mode_ === Mode.POLYGON) {
     coordinates = this.sketchCoords_[0];
     coordinates.splice(-2, 1);
-    sketchLineGeom = /** @type {module:ol/geom/LineString~LineString} */ (this.sketchLine_.getGeometry());
+    sketchLineGeom = /** @type {module:ol/geom/LineString} */ (this.sketchLine_.getGeometry());
     sketchLineGeom.setCoordinates(coordinates);
     this.geometryFunction_(this.sketchCoords_, geometry);
   }
@@ -837,7 +837,7 @@ Draw.prototype.finishDrawing = function() {
     return;
   }
   let coordinates = this.sketchCoords_;
-  const geometry = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (sketchFeature.getGeometry());
+  const geometry = /** @type {module:ol/geom/SimpleGeometry} */ (sketchFeature.getGeometry());
   if (this.mode_ === Mode.LINE_STRING) {
     // remove the redundant last point
     coordinates.pop();
@@ -873,7 +873,7 @@ Draw.prototype.finishDrawing = function() {
 
 /**
  * Stop drawing without adding the sketch feature to the target layer.
- * @return {module:ol/Feature~Feature} The sketch feature (or null if none).
+ * @return {module:ol/Feature} The sketch feature (or null if none).
  * @private
  */
 Draw.prototype.abortDrawing_ = function() {
@@ -893,12 +893,12 @@ Draw.prototype.abortDrawing_ = function() {
  * Extend an existing geometry by adding additional points. This only works
  * on features with `LineString` geometries, where the interaction will
  * extend lines by adding points to the end of the coordinates array.
- * @param {!module:ol/Feature~Feature} feature Feature to be extended.
+ * @param {!module:ol/Feature} feature Feature to be extended.
  * @api
  */
 Draw.prototype.extend = function(feature) {
   const geometry = feature.getGeometry();
-  const lineString = /** @type {module:ol/geom/LineString~LineString} */ (geometry);
+  const lineString = /** @type {module:ol/geom/LineString} */ (geometry);
   this.sketchFeature_ = feature;
   this.sketchCoords_ = lineString.getCoordinates();
   const last = this.sketchCoords_[this.sketchCoords_.length - 1];
@@ -963,20 +963,18 @@ Draw.prototype.updateState_ = function() {
  * @api
  */
 export function createRegularPolygon(opt_sides, opt_angle) {
-  return (
-    function(coordinates, opt_geometry) {
-      const center = coordinates[0];
-      const end = coordinates[1];
-      const radius = Math.sqrt(
-        squaredCoordinateDistance(center, end));
-      const geometry = opt_geometry ? /** @type {module:ol/geom/Polygon~Polygon} */ (opt_geometry) :
-        fromCircle(new Circle(center), opt_sides);
-      const angle = opt_angle ? opt_angle :
-        Math.atan((end[1] - center[1]) / (end[0] - center[0]));
-      makeRegular(geometry, center, radius, angle);
-      return geometry;
-    }
-  );
+  return function(coordinates, opt_geometry) {
+    const center = coordinates[0];
+    const end = coordinates[1];
+    const radius = Math.sqrt(
+      squaredCoordinateDistance(center, end));
+    const geometry = opt_geometry ? /** @type {module:ol/geom/Polygon} */ (opt_geometry) :
+      fromCircle(new Circle(center), opt_sides);
+    const angle = opt_angle ? opt_angle :
+      Math.atan((end[1] - center[1]) / (end[0] - center[0]));
+    makeRegular(geometry, center, radius, angle);
+    return geometry;
+  };
 }
 
 
@@ -1025,7 +1023,9 @@ function getMode(type) {
   } else if (type === GeometryType.CIRCLE) {
     mode = Mode.CIRCLE;
   }
-  return /** @type {!module:ol/interaction/Draw~Mode} */ (mode);
+  return (
+    /** @type {!module:ol/interaction/Draw~Mode} */ (mode)
+  );
 }
 
 

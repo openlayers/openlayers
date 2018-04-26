@@ -10,7 +10,7 @@ import Comparison from '../filter/Comparison.js';
  *
  * @constructor
  * @param {!string} propertyName Name of the context property to compare.
- * @extends {module:ol/format/filter/Comparison~Comparison}
+ * @extends {module:ol/format/filter/Comparison}
  * @api
  */
 const IsNull = function(propertyName) {

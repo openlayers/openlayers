@@ -15,7 +15,7 @@ import EventType from './events/EventType.js';
  * {@link module:ol/Observable~Observable#changed}.
  *
  * @constructor
- * @extends {module:ol/events/EventTarget~EventTarget}
+ * @extends {module:ol/events/EventTarget}
  * @fires module:ol/events/Event~Event
  * @struct
  * @api
@@ -68,8 +68,8 @@ Observable.prototype.changed = function() {
  * Object with a `type` property.
  *
  * @param {{type: string,
- *     target: (EventTarget|module:ol/events/EventTarget~EventTarget|undefined)}|
- *     module:ol/events/Event~Event|string} event Event object.
+ *     target: (EventTarget|module:ol/events/EventTarget|undefined)}|
+ *     module:ol/events/Event|string} event Event object.
  * @function
  * @api
  */

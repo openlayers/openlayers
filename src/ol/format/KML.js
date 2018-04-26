@@ -54,13 +54,13 @@ import {createElementNS, getAllTextContent, isDocument, isNode, makeArrayExtende
 let DEFAULT_COLOR;
 
 /**
- * @type {module:ol/style/Fill~Fill}
+ * @type {module:ol/style/Fill}
  */
 let DEFAULT_FILL_STYLE = null;
 
 /**
  * Get the default fill style (or null if not yet set).
- * @return {module:ol/style/Fill~Fill} The default fill style.
+ * @return {module:ol/style/Fill} The default fill style.
  */
 export function getDefaultFillStyle() {
   return DEFAULT_FILL_STYLE;
@@ -97,13 +97,13 @@ let DEFAULT_IMAGE_STYLE_SRC;
 let DEFAULT_IMAGE_SCALE_MULTIPLIER;
 
 /**
- * @type {module:ol/style/Image~ImageStyle}
+ * @type {module:ol/style/Image}
  */
 let DEFAULT_IMAGE_STYLE = null;
 
 /**
  * Get the default image style (or null if not yet set).
- * @return {module:ol/style/Image~ImageStyle} The default image style.
+ * @return {module:ol/style/Image} The default image style.
  */
 export function getDefaultImageStyle() {
   return DEFAULT_IMAGE_STYLE;
@@ -115,57 +115,57 @@ export function getDefaultImageStyle() {
 let DEFAULT_NO_IMAGE_STYLE;
 
 /**
- * @type {module:ol/style/Stroke~Stroke}
+ * @type {module:ol/style/Stroke}
  */
 let DEFAULT_STROKE_STYLE = null;
 
 /**
  * Get the default stroke style (or null if not yet set).
- * @return {module:ol/style/Stroke~Stroke} The default stroke style.
+ * @return {module:ol/style/Stroke} The default stroke style.
  */
 export function getDefaultStrokeStyle() {
   return DEFAULT_STROKE_STYLE;
 }
 
 /**
- * @type {module:ol/style/Stroke~Stroke}
+ * @type {module:ol/style/Stroke}
  */
 let DEFAULT_TEXT_STROKE_STYLE;
 
 /**
- * @type {module:ol/style/Text~Text}
+ * @type {module:ol/style/Text}
  */
 let DEFAULT_TEXT_STYLE = null;
 
 /**
  * Get the default text style (or null if not yet set).
- * @return {module:ol/style/Text~Text} The default text style.
+ * @return {module:ol/style/Text} The default text style.
  */
 export function getDefaultTextStyle() {
   return DEFAULT_TEXT_STYLE;
 }
 
 /**
- * @type {module:ol/style/Style~Style}
+ * @type {module:ol/style/Style}
  */
 let DEFAULT_STYLE = null;
 
 /**
  * Get the default style (or null if not yet set).
- * @return {module:ol/style/Style~Style} The default style.
+ * @return {module:ol/style/Style} The default style.
  */
 export function getDefaultStyle() {
   return DEFAULT_STYLE;
 }
 
 /**
- * @type {Array.<module:ol/style/Style~Style>}
+ * @type {Array.<module:ol/style/Style>}
  */
 let DEFAULT_STYLE_ARRAY = null;
 
 /**
  * Get the default style array (or null if not yet set).
- * @return {Array.<module:ol/style/Style~Style>} The default style.
+ * @return {Array.<module:ol/style/Style>} The default style.
  */
 export function getDefaultStyleArray() {
   return DEFAULT_STYLE_ARRAY;
@@ -234,7 +234,7 @@ function createStyleDefaults() {
 
   /**
    * @const
-   * @type {Array.<module:ol/style/Style~Style>}
+   * @type {Array.<module:ol/style/Style>}
    * @private
    */
   DEFAULT_STYLE_ARRAY = [DEFAULT_STYLE];
@@ -246,7 +246,7 @@ function createStyleDefaults() {
  * @typedef {Object} Options
  * @property {boolean} [extractStyles=true] Extract styles from the KML.
  * @property {boolean} [showPointNames=true] Show names as labels for placemarks which contain points.
- * @property {Array.<module:ol/style/Style~Style>} [defaultStyle] Default style. The
+ * @property {Array.<module:ol/style/Style>} [defaultStyle] Default style. The
  * default default style is the same as Google Earth.
  * @property {boolean} [writeStyles=true] Write styles into KML.
  */
@@ -260,7 +260,7 @@ function createStyleDefaults() {
  * which do not support this will need a URL polyfill to be loaded before use.
  *
  * @constructor
- * @extends {module:ol/format/XMLFeature~XMLFeature}
+ * @extends {module:ol/format/XMLFeature}
  * @param {module:ol/format/KML~Options=} opt_options Options.
  * @api
  */
@@ -281,7 +281,7 @@ const KML = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<module:ol/style/Style~Style>}
+   * @type {Array.<module:ol/style/Style>}
    */
   this.defaultStyle_ = options.defaultStyle ?
     options.defaultStyle : DEFAULT_STYLE_ARRAY;
@@ -302,7 +302,7 @@ const KML = function(opt_options) {
 
   /**
    * @private
-   * @type {!Object.<string, (Array.<module:ol/style/Style~Style>|string)>}
+   * @type {!Object.<string, (Array.<module:ol/style/Style>|string)>}
    */
   this.sharedStyles_ = {};
 
@@ -359,9 +359,9 @@ const ICON_ANCHOR_UNITS_MAP = {
 
 
 /**
- * @param {module:ol/style/Style~Style|undefined} foundStyle Style.
+ * @param {module:ol/style/Style|undefined} foundStyle Style.
  * @param {string} name Name.
- * @return {module:ol/style/Style~Style} style Style.
+ * @return {module:ol/style/Style} style Style.
  */
 function createNameStyleFunction(foundStyle, name) {
   let textStyle = null;
@@ -406,10 +406,10 @@ function createNameStyleFunction(foundStyle, name) {
 
 
 /**
- * @param {Array.<module:ol/style/Style~Style>|undefined} style Style.
+ * @param {Array.<module:ol/style/Style>|undefined} style Style.
  * @param {string} styleUrl Style URL.
- * @param {Array.<module:ol/style/Style~Style>} defaultStyle Default style.
- * @param {!Object.<string, (Array.<module:ol/style/Style~Style>|string)>} sharedStyles Shared styles.
+ * @param {Array.<module:ol/style/Style>} defaultStyle Default style.
+ * @param {!Object.<string, (Array.<module:ol/style/Style>|string)>} sharedStyles Shared styles.
  * @param {boolean|undefined} showPointNames true to show names for point placemarks.
  * @return {module:ol/style~StyleFunction} Feature style function.
  */
@@ -417,13 +417,13 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
 
   return (
     /**
-     * @param {module:ol/Feature~Feature} feature feature.
+     * @param {module:ol/Feature} feature feature.
      * @param {number} resolution Resolution.
-     * @return {Array.<module:ol/style/Style~Style>} Style.
+     * @return {Array.<module:ol/style/Style>} Style.
      */
     function(feature, resolution) {
       let drawName = showPointNames;
-      /** @type {module:ol/style/Style~Style|undefined} */
+      /** @type {module:ol/style/Style|undefined} */
       let nameStyle;
       let name = '';
       if (drawName) {
@@ -464,11 +464,11 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
 
 
 /**
- * @param {Array.<module:ol/style/Style~Style>|string|undefined} styleValue Style value.
- * @param {Array.<module:ol/style/Style~Style>} defaultStyle Default style.
- * @param {!Object.<string, (Array.<module:ol/style/Style~Style>|string)>} sharedStyles
+ * @param {Array.<module:ol/style/Style>|string|undefined} styleValue Style value.
+ * @param {Array.<module:ol/style/Style>} defaultStyle Default style.
+ * @param {!Object.<string, (Array.<module:ol/style/Style>|string)>} sharedStyles
  * Shared styles.
- * @return {Array.<module:ol/style/Style~Style>} Style.
+ * @return {Array.<module:ol/style/Style>} Style.
  */
 function findStyle(styleValue, defaultStyle, sharedStyles) {
   if (Array.isArray(styleValue)) {
@@ -609,7 +609,7 @@ const STYLE_MAP_PARSERS = makeStructureNS(
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {Array.<module:ol/style/Style~Style>|string|undefined} StyleMap.
+ * @return {Array.<module:ol/style/Style>|string|undefined} StyleMap.
  */
 function readStyleMapValue(node, objectStack) {
   return pushParseAndPop(undefined,
@@ -901,7 +901,7 @@ const GX_MULTITRACK_GEOMETRY_PARSERS = makeStructureNS(
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/MultiLineString~MultiLineString|undefined} MultiLineString.
+ * @return {module:ol/geom/MultiLineString|undefined} MultiLineString.
  */
 function readGxMultiTrack(node, objectStack) {
   const lineStrings = pushParseAndPop([],
@@ -931,7 +931,7 @@ const GX_TRACK_PARSERS = makeStructureNS(
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/LineString~LineString|undefined} LineString.
+ * @return {module:ol/geom/LineString|undefined} LineString.
  */
 function readGxTrack(node, objectStack) {
   const gxTrackObject = pushParseAndPop(
@@ -1021,7 +1021,7 @@ const EXTRUDE_AND_ALTITUDE_MODE_PARSERS = makeStructureNS(
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/LineString~LineString|undefined} LineString.
+ * @return {module:ol/geom/LineString|undefined} LineString.
  */
 function readLineString(node, objectStack) {
   const properties = pushParseAndPop({},
@@ -1043,7 +1043,7 @@ function readLineString(node, objectStack) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/Polygon~Polygon|undefined} Polygon.
+ * @return {module:ol/geom/Polygon|undefined} Polygon.
  */
 function readLinearRing(node, objectStack) {
   const properties = pushParseAndPop({},
@@ -1080,7 +1080,7 @@ const MULTI_GEOMETRY_PARSERS = makeStructureNS(
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/Geometry~Geometry} Geometry.
+ * @return {module:ol/geom/Geometry} Geometry.
  */
 function readMultiGeometry(node, objectStack) {
   const geometries = pushParseAndPop([],
@@ -1091,7 +1091,7 @@ function readMultiGeometry(node, objectStack) {
   if (geometries.length === 0) {
     return new GeometryCollection(geometries);
   }
-  /** @type {module:ol/geom/Geometry~Geometry} */
+  /** @type {module:ol/geom/Geometry} */
   let multiGeometry;
   let homogeneous = true;
   const type = geometries[0].getType();
@@ -1133,14 +1133,16 @@ function readMultiGeometry(node, objectStack) {
   } else {
     multiGeometry = new GeometryCollection(geometries);
   }
-  return /** @type {module:ol/geom/Geometry~Geometry} */ (multiGeometry);
+  return (
+    /** @type {module:ol/geom/Geometry} */ (multiGeometry)
+  );
 }
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/Point~Point|undefined} Point.
+ * @return {module:ol/geom/Point|undefined} Point.
  */
 function readPoint(node, objectStack) {
   const properties = pushParseAndPop({},
@@ -1173,7 +1175,7 @@ const FLAT_LINEAR_RINGS_PARSERS = makeStructureNS(
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/Polygon~Polygon|undefined} Polygon.
+ * @return {module:ol/geom/Polygon|undefined} Polygon.
  */
 function readPolygon(node, objectStack) {
   const properties = pushParseAndPop(/** @type {Object<string,*>} */ ({}),
@@ -1214,7 +1216,7 @@ const STYLE_PARSERS = makeStructureNS(
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {Array.<module:ol/style/Style~Style>} Style.
+ * @return {Array.<module:ol/style/Style>} Style.
  */
 function readStyle(node, objectStack) {
   const styleObject = pushParseAndPop(
@@ -1222,23 +1224,23 @@ function readStyle(node, objectStack) {
   if (!styleObject) {
     return null;
   }
-  let fillStyle = /** @type {module:ol/style/Fill~Fill} */
+  let fillStyle = /** @type {module:ol/style/Fill} */
       ('fillStyle' in styleObject ?
         styleObject['fillStyle'] : DEFAULT_FILL_STYLE);
   const fill = /** @type {boolean|undefined} */ (styleObject['fill']);
   if (fill !== undefined && !fill) {
     fillStyle = null;
   }
-  let imageStyle = /** @type {module:ol/style/Image~ImageStyle} */
+  let imageStyle = /** @type {module:ol/style/Image} */
       ('imageStyle' in styleObject ?
         styleObject['imageStyle'] : DEFAULT_IMAGE_STYLE);
   if (imageStyle == DEFAULT_NO_IMAGE_STYLE) {
     imageStyle = undefined;
   }
-  const textStyle = /** @type {module:ol/style/Text~Text} */
+  const textStyle = /** @type {module:ol/style/Text} */
       ('textStyle' in styleObject ?
         styleObject['textStyle'] : DEFAULT_TEXT_STYLE);
-  let strokeStyle = /** @type {module:ol/style/Stroke~Stroke} */
+  let strokeStyle = /** @type {module:ol/style/Stroke} */
       ('strokeStyle' in styleObject ?
         styleObject['strokeStyle'] : DEFAULT_STROKE_STYLE);
   const outline = /** @type {boolean|undefined} */
@@ -1259,9 +1261,9 @@ function readStyle(node, objectStack) {
 /**
  * Reads an array of geometries and creates arrays for common geometry
  * properties. Then sets them to the multi geometry.
- * @param {module:ol/geom/MultiPoint~MultiPoint|module:ol/geom/MultiLineString~MultiLineString|module:ol/geom/MultiPolygon~MultiPolygon}
+ * @param {module:ol/geom/MultiPoint|module:ol/geom/MultiLineString|module:ol/geom/MultiPolygon}
  *     multiGeometry A multi-geometry.
- * @param {Array.<module:ol/geom/Geometry~Geometry>} geometries List of geometries.
+ * @param {Array.<module:ol/geom/Geometry>} geometries List of geometries.
  */
 function setCommonGeometryProperties(multiGeometry, geometries) {
   const ii = geometries.length;
@@ -1387,7 +1389,7 @@ function pairDataParser(node, objectStack) {
     if (styleUrl) {
       objectStack[objectStack.length - 1] = styleUrl;
     }
-    const Style = /** @type {module:ol/style/Style~Style} */
+    const Style = /** @type {module:ol/style/Style} */
         (pairObject['Style']);
     if (Style) {
       objectStack[objectStack.length - 1] = Style;
@@ -1662,7 +1664,7 @@ const PLACEMARK_PARSERS = makeStructureNS(
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Array.<module:ol/Feature~Feature>|undefined} Features.
+ * @return {Array.<module:ol/Feature>|undefined} Features.
  */
 KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
   // FIXME use scope somehow
@@ -1674,7 +1676,7 @@ KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
       'Style': this.readSharedStyle_.bind(this),
       'StyleMap': this.readSharedStyleMap_.bind(this)
     });
-  /** @type {Array.<module:ol/Feature~Feature>} */
+  /** @type {Array.<module:ol/Feature>} */
   const features = pushParseAndPop([], parsersNS, node, objectStack, this);
   if (features) {
     return features;
@@ -1688,7 +1690,7 @@ KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {module:ol/Feature~Feature|undefined} Feature.
+ * @return {module:ol/Feature|undefined} Feature.
  */
 KML.prototype.readPlacemark_ = function(node, objectStack) {
   const object = pushParseAndPop({'geometry': null},
@@ -1792,7 +1794,7 @@ KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature~Feature} Feature.
+ * @return {module:ol/Feature} Feature.
  * @api
  */
 KML.prototype.readFeature;
@@ -1823,7 +1825,7 @@ KML.prototype.readFeatureFromNode = function(node, opt_options) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature~Feature>} Features.
+ * @return {Array.<module:ol/Feature>} Features.
  * @api
  */
 KML.prototype.readFeatures;
@@ -2071,7 +2073,7 @@ KML.prototype.readRegionFromNode = function(node) {
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/proj/Projection~Projection} Projection.
+ * @return {module:ol/proj/Projection} Projection.
  * @api
  */
 KML.prototype.readProjection;
@@ -2215,9 +2217,9 @@ const DOCUMENT_NODE_FACTORY = function(value, objectStack, opt_nodeName) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<module:ol/Feature~Feature>} features Features.
+ * @param {Array.<module:ol/Feature>} features Features.
  * @param {Array.<*>} objectStack Object stack.
- * @this {module:ol/format/KML~KML}
+ * @this {module:ol/format/KML}
  */
 function writeDocument(node, features, objectStack) {
   const /** @type {module:ol/xml~NodeStackItem} */ context = {node: node};
@@ -2341,7 +2343,7 @@ const ICON_STYLE_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/style/Icon~Icon} style Icon style.
+ * @param {module:ol/style/Icon} style Icon style.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeIconStyle(node, style, objectStack) {
@@ -2419,7 +2421,7 @@ const LABEL_STYLE_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/style/Text~Text} style style.
+ * @param {module:ol/style/Text} style style.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeLabelStyle(node, style, objectStack) {
@@ -2465,7 +2467,7 @@ const LINE_STYLE_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/style/Stroke~Stroke} style style.
+ * @param {module:ol/style/Stroke} style style.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeLineStyle(node, style, objectStack) {
@@ -2509,7 +2511,7 @@ const GEOMETRY_NODE_FACTORY = function(value, objectStack, opt_nodeName) {
   if (value) {
     const parentNode = objectStack[objectStack.length - 1].node;
     return createElementNS(parentNode.namespaceURI,
-      GEOMETRY_TYPE_TO_NODENAME[/** @type {module:ol/geom/Geometry~Geometry} */ (value).getType()]);
+      GEOMETRY_TYPE_TO_NODENAME[/** @type {module:ol/geom/Geometry} */ (value).getType()]);
   }
 };
 
@@ -2564,30 +2566,30 @@ const MULTI_GEOMETRY_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry} geometry Geometry.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeMultiGeometry(node, geometry, objectStack) {
   /** @type {module:ol/xml~NodeStackItem} */
   const context = {node: node};
   const type = geometry.getType();
-  /** @type {Array.<module:ol/geom/Geometry~Geometry>} */
+  /** @type {Array.<module:ol/geom/Geometry>} */
   let geometries;
   /** @type {function(*, Array.<*>, string=): (Node|undefined)} */
   let factory;
   if (type == GeometryType.GEOMETRY_COLLECTION) {
-    geometries = /** @type {module:ol/geom/GeometryCollection~GeometryCollection} */ (geometry).getGeometries();
+    geometries = /** @type {module:ol/geom/GeometryCollection} */ (geometry).getGeometries();
     factory = GEOMETRY_NODE_FACTORY;
   } else if (type == GeometryType.MULTI_POINT) {
-    geometries = /** @type {module:ol/geom/MultiPoint~MultiPoint} */ (geometry).getPoints();
+    geometries = /** @type {module:ol/geom/MultiPoint} */ (geometry).getPoints();
     factory = POINT_NODE_FACTORY;
   } else if (type == GeometryType.MULTI_LINE_STRING) {
     geometries =
-        (/** @type {module:ol/geom/MultiLineString~MultiLineString} */ (geometry)).getLineStrings();
+        (/** @type {module:ol/geom/MultiLineString} */ (geometry)).getLineStrings();
     factory = LINE_STRING_NODE_FACTORY;
   } else if (type == GeometryType.MULTI_POLYGON) {
     geometries =
-        (/** @type {module:ol/geom/MultiPolygon~MultiPolygon} */ (geometry)).getPolygons();
+        (/** @type {module:ol/geom/MultiPolygon} */ (geometry)).getPolygons();
     factory = POLYGON_NODE_FACTORY;
   } else {
     assert(false, 39); // Unknown geometry type
@@ -2611,7 +2613,7 @@ const BOUNDARY_IS_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/geom/LinearRing~LinearRing} linearRing Linear ring.
+ * @param {module:ol/geom/LinearRing} linearRing Linear ring.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeBoundaryIs(node, linearRing, objectStack) {
@@ -2668,9 +2670,9 @@ const EXTENDEDDATA_NODE_FACTORY = makeSimpleNodeFactory('ExtendedData');
  * FIXME currently we do serialize arbitrary/custom feature properties
  * (ExtendedData).
  * @param {Node} node Node.
- * @param {module:ol/Feature~Feature} feature Feature.
+ * @param {module:ol/Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
- * @this {module:ol/format/KML~KML}
+ * @this {module:ol/format/KML}
  */
 function writePlacemark(node, feature, objectStack) {
   const /** @type {module:ol/xml~NodeStackItem} */ context = {node: node};
@@ -2756,7 +2758,7 @@ const PRIMITIVE_GEOMETRY_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/geom/SimpleGeometry~SimpleGeometry} geometry Geometry.
+ * @param {module:ol/geom/SimpleGeometry} geometry Geometry.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writePrimitiveGeometry(node, geometry, objectStack) {
@@ -2808,7 +2810,7 @@ const OUTER_BOUNDARY_NODE_FACTORY = makeSimpleNodeFactory('outerBoundaryIs');
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/geom/Polygon~Polygon} polygon Polygon.
+ * @param {module:ol/geom/Polygon} polygon Polygon.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writePolygon(node, polygon, objectStack) {
@@ -2848,7 +2850,7 @@ const COLOR_NODE_FACTORY = makeSimpleNodeFactory('color');
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/style/Fill~Fill} style Style.
+ * @param {module:ol/style/Fill} style Style.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writePolyStyle(node, style, objectStack) {
@@ -2894,7 +2896,7 @@ const STYLE_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/style/Style~Style} style Style.
+ * @param {module:ol/style/Style} style Style.
  * @param {Array.<*>} objectStack Object stack.
  */
 function writeStyle(node, style, objectStack) {
@@ -2962,7 +2964,7 @@ const KML_SERIALIZERS = makeStructureNS(
  * MultiLineStrings, and MultiPolygons are output as MultiGeometries.
  *
  * @function
- * @param {Array.<module:ol/Feature~Feature>} features Features.
+ * @param {Array.<module:ol/Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {string} Result.
  * @api
@@ -2974,7 +2976,7 @@ KML.prototype.writeFeatures;
  * Encode an array of features in the KML format as an XML node. GeometryCollections,
  * MultiPoints, MultiLineStrings, and MultiPolygons are output as MultiGeometries.
  *
- * @param {Array.<module:ol/Feature~Feature>} features Features.
+ * @param {Array.<module:ol/Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
  * @return {Node} Node.
  * @override

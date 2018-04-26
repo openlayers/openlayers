@@ -10,10 +10,10 @@ import MapEvent from './MapEvent.js';
  * See {@link module:ol/Map~Map} for which events trigger a map browser event.
  *
  * @constructor
- * @extends {module:ol/MapEvent~MapEvent}
+ * @extends {module:ol/MapEvent}
  * @implements {oli.MapBrowserEvent}
  * @param {string} type Event type.
- * @param {module:ol/PluggableMap~PluggableMap} map Map.
+ * @param {module:ol/PluggableMap} map Map.
  * @param {Event} browserEvent Browser event.
  * @param {boolean=} opt_dragging Is the map currently being dragged?
  * @param {?module:ol/PluggableMap~FrameState=} opt_frameState Frame state.

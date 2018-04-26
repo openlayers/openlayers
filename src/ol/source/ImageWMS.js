@@ -49,7 +49,7 @@ import {appendParams} from '../uri.js';
  *
  * @constructor
  * @fires ol.source.Image.Event
- * @extends {module:ol/source/Image~ImageSource}
+ * @extends {module:ol/source/Image}
  * @param {module:ol/source/ImageWMS~Options=} [opt_options] ImageWMS options.
  * @api
  */
@@ -283,7 +283,7 @@ ImageWMS.prototype.getImageLoadFunction = function() {
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @param {Object} params Params.
  * @return {string} Request URL.
  * @private

@@ -10,10 +10,10 @@ import Event from './events/Event.js';
  * See {@link module:ol/Map~Map} for which events trigger a map event.
  *
  * @constructor
- * @extends {module:ol/events/Event~Event}
+ * @extends {module:ol/events/Event}
  * @implements {oli.MapEvent}
  * @param {string} type Event type.
- * @param {module:ol/PluggableMap~PluggableMap} map Map.
+ * @param {module:ol/PluggableMap} map Map.
  * @param {?module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
  */
 const MapEvent = function(type, map, opt_frameState) {
@@ -22,7 +22,7 @@ const MapEvent = function(type, map, opt_frameState) {
 
   /**
    * The map where the event occurred.
-   * @type {module:ol/PluggableMap~PluggableMap}
+   * @type {module:ol/PluggableMap}
    * @api
    */
   this.map = map;

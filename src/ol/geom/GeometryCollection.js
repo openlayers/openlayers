@@ -11,11 +11,11 @@ import {clear} from '../obj.js';
 
 /**
  * @classdesc
- * An array of {@link module:ol/geom/Geometry~Geometry} objects.
+ * An array of {@link module:ol/geom/Geometry} objects.
  *
  * @constructor
- * @extends {module:ol/geom/Geometry~Geometry}
- * @param {Array.<module:ol/geom/Geometry~Geometry>=} opt_geometries Geometries.
+ * @extends {module:ol/geom/Geometry}
+ * @param {Array.<module:ol/geom/Geometry>=} opt_geometries Geometries.
  * @api
  */
 const GeometryCollection = function(opt_geometries) {
@@ -24,7 +24,7 @@ const GeometryCollection = function(opt_geometries) {
 
   /**
    * @private
-   * @type {Array.<module:ol/geom/Geometry~Geometry>}
+   * @type {Array.<module:ol/geom/Geometry>}
    */
   this.geometries_ = opt_geometries ? opt_geometries : null;
 
@@ -35,8 +35,8 @@ inherits(GeometryCollection, Geometry);
 
 
 /**
- * @param {Array.<module:ol/geom/Geometry~Geometry>} geometries Geometries.
- * @return {Array.<module:ol/geom/Geometry~Geometry>} Cloned geometries.
+ * @param {Array.<module:ol/geom/Geometry>} geometries Geometries.
+ * @return {Array.<module:ol/geom/Geometry>} Cloned geometries.
  */
 function cloneGeometries(geometries) {
   const clonedGeometries = [];
@@ -79,7 +79,7 @@ GeometryCollection.prototype.listenGeometriesChange_ = function() {
 
 /**
  * Make a complete copy of the geometry.
- * @return {!module:ol/geom/GeometryCollection~GeometryCollection} Clone.
+ * @return {!module:ol/geom/GeometryCollection} Clone.
  * @override
  * @api
  */
@@ -135,7 +135,7 @@ GeometryCollection.prototype.computeExtent = function(extent) {
 
 /**
  * Return the geometries that make up this geometry collection.
- * @return {Array.<module:ol/geom/Geometry~Geometry>} Geometries.
+ * @return {Array.<module:ol/geom/Geometry>} Geometries.
  * @api
  */
 GeometryCollection.prototype.getGeometries = function() {
@@ -144,7 +144,7 @@ GeometryCollection.prototype.getGeometries = function() {
 
 
 /**
- * @return {Array.<module:ol/geom/Geometry~Geometry>} Geometries.
+ * @return {Array.<module:ol/geom/Geometry>} Geometries.
  */
 GeometryCollection.prototype.getGeometriesArray = function() {
   return this.geometries_;
@@ -257,7 +257,7 @@ GeometryCollection.prototype.scale = function(sx, opt_sy, opt_anchor) {
 
 /**
  * Set the geometries that make up this geometry collection.
- * @param {Array.<module:ol/geom/Geometry~Geometry>} geometries Geometries.
+ * @param {Array.<module:ol/geom/Geometry>} geometries Geometries.
  * @api
  */
 GeometryCollection.prototype.setGeometries = function(geometries) {
@@ -266,7 +266,7 @@ GeometryCollection.prototype.setGeometries = function(geometries) {
 
 
 /**
- * @param {Array.<module:ol/geom/Geometry~Geometry>} geometries Geometries.
+ * @param {Array.<module:ol/geom/Geometry>} geometries Geometries.
  */
 GeometryCollection.prototype.setGeometriesArray = function(geometries) {
   this.unlistenGeometriesChange_();

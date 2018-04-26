@@ -45,7 +45,7 @@ import {appendParams} from '../uri.js';
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {module:ol/ImageTile~TileClass} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/ImageTile~TileClass}.
- * @property {module:ol/tilegrid/TileGrid~TileGrid} [tileGrid] Tile grid. Base this on the resolutions,
+ * @property {module:ol/tilegrid/TileGrid} [tileGrid] Tile grid. Base this on the resolutions,
  * tilesize and extent supported by the server.
  * If this is not defined, a default grid will be used: if there is a projection
  * extent, the grid will be based on that; if not, a grid based on a global
@@ -76,7 +76,7 @@ import {appendParams} from '../uri.js';
  * Layer source for tile data from WMS servers.
  *
  * @constructor
- * @extends {module:ol/source/TileImage~TileImage}
+ * @extends {module:ol/source/TileImage}
  * @param {module:ol/source/TileWMS~Options=} [opt_options] Tile WMS options.
  * @api
  */
@@ -239,7 +239,7 @@ TileWMS.prototype.getParams = function() {
  * @param {module:ol/size~Size} tileSize Tile size.
  * @param {module:ol/extent~Extent} tileExtent Tile extent.
  * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @param {Object} params Params.
  * @return {string|undefined} Request URL.
  * @private

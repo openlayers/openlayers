@@ -58,7 +58,7 @@ import WebGLVectorLayerRenderer from './renderer/webgl/VectorLayer.js';
  * with `addLayer` can be groups, which can contain further groups, and so on.
  *
  * @constructor
- * @extends {module:ol/PluggableMap~PluggableMap}
+ * @extends {module:ol/PluggableMap}
  * @param {module:ol/PluggableMap~MapOptions} options Map options.
  * @fires module:ol/MapBrowserEvent~MapBrowserEvent
  * @fires module:ol/MapEvent~MapEvent

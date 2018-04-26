@@ -13,7 +13,7 @@ import Triangulation from '../reproj/Triangulation.js';
 
 
 /**
- * @typedef {function(module:ol/extent~Extent, number, number) : module:ol/ImageBase~ImageBase} FunctionType
+ * @typedef {function(module:ol/extent~Extent, number, number) : module:ol/ImageBase} FunctionType
  */
 
 
@@ -23,9 +23,9 @@ import Triangulation from '../reproj/Triangulation.js';
  * See {@link module:ol/source/Image~ImageSource}.
  *
  * @constructor
- * @extends {module:ol/ImageBase~ImageBase}
- * @param {module:ol/proj/Projection~Projection} sourceProj Source projection (of the data).
- * @param {module:ol/proj/Projection~Projection} targetProj Target projection.
+ * @extends {module:ol/ImageBase}
+ * @param {module:ol/proj/Projection} sourceProj Source projection (of the data).
+ * @param {module:ol/proj/Projection} targetProj Target projection.
  * @param {module:ol/extent~Extent} targetExtent Target extent.
  * @param {number} targetResolution Target resolution.
  * @param {number} pixelRatio Pixel ratio.
@@ -37,7 +37,7 @@ const ReprojImage = function(sourceProj, targetProj,
 
   /**
    * @private
-   * @type {module:ol/proj/Projection~Projection}
+   * @type {module:ol/proj/Projection}
    */
   this.targetProj_ = targetProj;
 
@@ -59,7 +59,7 @@ const ReprojImage = function(sourceProj, targetProj,
 
   /**
    * @private
-   * @type {!module:ol/reproj/Triangulation~Triangulation}
+   * @type {!module:ol/reproj/Triangulation}
    */
   this.triangulation_ = new Triangulation(
     sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_,
@@ -81,7 +81,7 @@ const ReprojImage = function(sourceProj, targetProj,
 
   /**
    * @private
-   * @type {module:ol/ImageBase~ImageBase}
+   * @type {module:ol/ImageBase}
    */
   this.sourceImage_ =
       getImageFunction(sourceExtent, sourceResolution, pixelRatio);
@@ -138,7 +138,7 @@ ReprojImage.prototype.getImage = function() {
 
 
 /**
- * @return {module:ol/proj/Projection~Projection} Projection.
+ * @return {module:ol/proj/Projection} Projection.
  */
 ReprojImage.prototype.getProjection = function() {
   return this.targetProj_;

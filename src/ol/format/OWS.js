@@ -9,7 +9,7 @@ import {makeObjectPropertyPusher, makeObjectPropertySetter, makeStructureNS, pus
 
 /**
  * @constructor
- * @extends {module:ol/format/XML~XML}
+ * @extends {module:ol/format/XML}
  */
 const OWS = function() {
   XML.call(this);

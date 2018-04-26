@@ -9,8 +9,8 @@ import CanvasImmediateRenderer from './render/canvas/Immediate.js';
 /**
  * @typedef {Object} State
  * @property {CanvasRenderingContext2D} context Canvas context that the layer is being rendered to.
- * @property {module:ol/Feature~Feature|module:ol/render/Feature~Feature} feature
- * @property {module:ol/geom/SimpleGeometry~SimpleGeometry} geometry
+ * @property {module:ol/Feature|module:ol/render/Feature~Feature} feature
+ * @property {module:ol/geom/SimpleGeometry} geometry
  * @property {number} pixelRatio Pixel ratio used by the layer renderer.
  * @property {number} resolution Resolution that the render batch was created and optimized for.
  * This is not the view's resolution that is being rendered.
@@ -23,8 +23,8 @@ import CanvasImmediateRenderer from './render/canvas/Immediate.js';
  * It takes two instances of {@link module:ol/Feature} or
  * {@link module:ol/render/Feature} and returns a `{number}`.
  *
- * @typedef {function((module:ol/Feature~Feature|module:ol/render/Feature~Feature),
- *           (module:ol/Feature~Feature|module:ol/render/Feature~Feature)):number} OrderFunction
+ * @typedef {function((module:ol/Feature|module:ol/render/Feature~Feature),
+ *           (module:ol/Feature|module:ol/render/Feature~Feature)):number} OrderFunction
  */
 
 

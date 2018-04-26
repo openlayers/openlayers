@@ -15,14 +15,14 @@ import {pushParseAndPop, makeStructureNS,
  * Format for reading WMTS capabilities data.
  *
  * @constructor
- * @extends {module:ol/format/XML~XML}
+ * @extends {module:ol/format/XML}
  * @api
  */
 const WMTSCapabilities = function() {
   XML.call(this);
 
   /**
-   * @type {module:ol/format/OWS~OWS}
+   * @type {module:ol/format/OWS}
    * @private
    */
   this.owsParser_ = new OWS();

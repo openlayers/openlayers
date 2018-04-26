@@ -10,7 +10,7 @@ import {asString} from '../color.js';
 const IconImageCache = function() {
 
   /**
-   * @type {!Object.<string, module:ol/style/IconImage~IconImage>}
+   * @type {!Object.<string, module:ol/style/IconImage>}
    * @private
    */
   this.cache_ = {};
@@ -71,7 +71,7 @@ IconImageCache.prototype.expire = function() {
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
  * @param {module:ol/color~Color} color Color.
- * @return {module:ol/style/IconImage~IconImage} Icon image.
+ * @return {module:ol/style/IconImage} Icon image.
  */
 IconImageCache.prototype.get = function(src, crossOrigin, color) {
   const key = getKey(src, crossOrigin, color);
@@ -83,7 +83,7 @@ IconImageCache.prototype.get = function(src, crossOrigin, color) {
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
  * @param {module:ol/color~Color} color Color.
- * @param {module:ol/style/IconImage~IconImage} iconImage Icon image.
+ * @param {module:ol/style/IconImage} iconImage Icon image.
  */
 IconImageCache.prototype.set = function(src, crossOrigin, color, iconImage) {
   const key = getKey(src, crossOrigin, color);

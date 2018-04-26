@@ -14,7 +14,7 @@ import {squaredDistance as squaredDx} from '../math.js';
  * Point geometry.
  *
  * @constructor
- * @extends {module:ol/geom/SimpleGeometry~SimpleGeometry}
+ * @extends {module:ol/geom/SimpleGeometry}
  * @param {module:ol/coordinate~Coordinate} coordinates Coordinates.
  * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
  * @api
@@ -29,7 +29,7 @@ inherits(Point, SimpleGeometry);
 
 /**
  * Make a complete copy of the geometry.
- * @return {!module:ol/geom/Point~Point} Clone.
+ * @return {!module:ol/geom/Point} Clone.
  * @override
  * @api
  */

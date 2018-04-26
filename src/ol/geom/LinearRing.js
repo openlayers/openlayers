@@ -18,7 +18,7 @@ import {douglasPeucker} from '../geom/flat/simplify.js';
  * on its own.
  *
  * @constructor
- * @extends {module:ol/geom/SimpleGeometry~SimpleGeometry}
+ * @extends {module:ol/geom/SimpleGeometry}
  * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
  * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
  * @api
@@ -48,7 +48,7 @@ inherits(LinearRing, SimpleGeometry);
 
 /**
  * Make a complete copy of the geometry.
- * @return {!module:ol/geom/LinearRing~LinearRing} Clone.
+ * @return {!module:ol/geom/LinearRing} Clone.
  * @override
  * @api
  */

@@ -21,7 +21,7 @@ import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
  * {@link module:ol/format/GML2~GML2} to read features.
  *
  * @constructor
- * @extends {module:ol/format/XMLFeature~XMLFeature}
+ * @extends {module:ol/format/XMLFeature}
  * @param {module:ol/format/WMSGetFeatureInfo~Options=} opt_options Options.
  * @api
  */
@@ -38,7 +38,7 @@ const WMSGetFeatureInfo = function(opt_options) {
 
   /**
    * @private
-   * @type {module:ol/format/GML2~GML2}
+   * @type {module:ol/format/GML2}
    */
   this.gmlFormat_ = new GML2();
 
@@ -88,13 +88,13 @@ WMSGetFeatureInfo.prototype.setLayers = function(layers) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {Array.<module:ol/Feature~Feature>} Features.
+ * @return {Array.<module:ol/Feature>} Features.
  * @private
  */
 WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
   node.setAttribute('namespaceURI', this.featureNS_);
   const localName = node.localName;
-  /** @type {Array.<module:ol/Feature~Feature>} */
+  /** @type {Array.<module:ol/Feature>} */
   let features = [];
   if (node.childNodes.length === 0) {
     return features;
@@ -151,7 +151,7 @@ WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
- * @return {Array.<module:ol/Feature~Feature>} Features.
+ * @return {Array.<module:ol/Feature>} Features.
  * @api
  */
 WMSGetFeatureInfo.prototype.readFeatures;

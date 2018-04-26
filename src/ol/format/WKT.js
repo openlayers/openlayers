@@ -271,7 +271,7 @@ Parser.prototype.match = function(type) {
 
 /**
  * Try to parse the tokens provided by the lexer.
- * @return {module:ol/geom/Geometry~Geometry} The geometry.
+ * @return {module:ol/geom/Geometry} The geometry.
  */
 Parser.prototype.parse = function() {
   this.consume_();
@@ -306,7 +306,7 @@ Parser.prototype.parseGeometryLayout_ = function() {
 
 
 /**
- * @return {!Array.<module:ol/geom/Geometry~Geometry>} A collection of geometries.
+ * @return {!Array.<module:ol/geom/Geometry>} A collection of geometries.
  * @private
  */
 Parser.prototype.parseGeometryCollectionText_ = function() {
@@ -538,7 +538,7 @@ Parser.prototype.formatErrorMessage_ = function() {
  * format.
  *
  * @constructor
- * @extends {module:ol/format/TextFeature~TextFeature}
+ * @extends {module:ol/format/TextFeature}
  * @param {module:ol/format/WKT~Options=} opt_options Options.
  * @api
  */
@@ -562,7 +562,7 @@ inherits(WKT, TextFeature);
 
 
 /**
- * @param {module:ol/geom/Point~Point} geom Point geometry.
+ * @param {module:ol/geom/Point} geom Point geometry.
  * @return {string} Coordinates part of Point as WKT.
  */
 function encodePointGeometry(geom) {
@@ -575,7 +575,7 @@ function encodePointGeometry(geom) {
 
 
 /**
- * @param {module:ol/geom/MultiPoint~MultiPoint} geom MultiPoint geometry.
+ * @param {module:ol/geom/MultiPoint} geom MultiPoint geometry.
  * @return {string} Coordinates part of MultiPoint as WKT.
  */
 function encodeMultiPointGeometry(geom) {
@@ -589,7 +589,7 @@ function encodeMultiPointGeometry(geom) {
 
 
 /**
- * @param {module:ol/geom/GeometryCollection~GeometryCollection} geom GeometryCollection geometry.
+ * @param {module:ol/geom/GeometryCollection} geom GeometryCollection geometry.
  * @return {string} Coordinates part of GeometryCollection as WKT.
  */
 function encodeGeometryCollectionGeometry(geom) {
@@ -603,7 +603,7 @@ function encodeGeometryCollectionGeometry(geom) {
 
 
 /**
- * @param {module:ol/geom/LineString~LineString|module:ol/geom/LinearRing~LinearRing} geom LineString geometry.
+ * @param {module:ol/geom/LineString|module:ol/geom/LinearRing} geom LineString geometry.
  * @return {string} Coordinates part of LineString as WKT.
  */
 function encodeLineStringGeometry(geom) {
@@ -617,7 +617,7 @@ function encodeLineStringGeometry(geom) {
 
 
 /**
- * @param {module:ol/geom/MultiLineString~MultiLineString} geom MultiLineString geometry.
+ * @param {module:ol/geom/MultiLineString} geom MultiLineString geometry.
  * @return {string} Coordinates part of MultiLineString as WKT.
  */
 function encodeMultiLineStringGeometry(geom) {
@@ -631,7 +631,7 @@ function encodeMultiLineStringGeometry(geom) {
 
 
 /**
- * @param {module:ol/geom/Polygon~Polygon} geom Polygon geometry.
+ * @param {module:ol/geom/Polygon} geom Polygon geometry.
  * @return {string} Coordinates part of Polygon as WKT.
  */
 function encodePolygonGeometry(geom) {
@@ -645,7 +645,7 @@ function encodePolygonGeometry(geom) {
 
 
 /**
- * @param {module:ol/geom/MultiPolygon~MultiPolygon} geom MultiPolygon geometry.
+ * @param {module:ol/geom/MultiPolygon} geom MultiPolygon geometry.
  * @return {string} Coordinates part of MultiPolygon as WKT.
  */
 function encodeMultiPolygonGeometry(geom) {
@@ -658,7 +658,7 @@ function encodeMultiPolygonGeometry(geom) {
 }
 
 /**
- * @param {module:ol/geom/SimpleGeometry~SimpleGeometry} geom SimpleGeometry geometry.
+ * @param {module:ol/geom/SimpleGeometry} geom SimpleGeometry geometry.
  * @return {string} Potential dimensional information for WKT type.
  */
 function encodeGeometryLayout(geom) {
@@ -676,7 +676,7 @@ function encodeGeometryLayout(geom) {
 
 /**
  * @const
- * @type {Object.<string, function(module:ol/geom/Geometry~Geometry): string>}
+ * @type {Object.<string, function(module:ol/geom/Geometry): string>}
  */
 const GeometryEncoder = {
   'Point': encodePointGeometry,
@@ -691,7 +691,7 @@ const GeometryEncoder = {
 
 /**
  * Encode a geometry as WKT.
- * @param {module:ol/geom/Geometry~Geometry} geom The geometry to encode.
+ * @param {module:ol/geom/Geometry} geom The geometry to encode.
  * @return {string} WKT string for the geometry.
  */
 function encode(geom) {
@@ -715,7 +715,7 @@ function encode(geom) {
 /**
  * Parse a WKT string.
  * @param {string} wkt WKT string.
- * @return {module:ol/geom/Geometry~Geometry|undefined}
+ * @return {module:ol/geom/Geometry|undefined}
  *     The geometry created.
  * @private
  */
@@ -732,7 +732,7 @@ WKT.prototype.parse_ = function(wkt) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature~Feature} Feature.
+ * @return {module:ol/Feature} Feature.
  * @api
  */
 WKT.prototype.readFeature;
@@ -758,7 +758,7 @@ WKT.prototype.readFeatureFromText = function(text, opt_options) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature~Feature>} Features.
+ * @return {Array.<module:ol/Feature>} Features.
  * @api
  */
 WKT.prototype.readFeatures;
@@ -772,7 +772,7 @@ WKT.prototype.readFeaturesFromText = function(text, opt_options) {
   const geometry = this.readGeometryFromText(text, opt_options);
   if (this.splitCollection_ &&
       geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
-    geometries = (/** @type {module:ol/geom/GeometryCollection~GeometryCollection} */ (geometry))
+    geometries = (/** @type {module:ol/geom/GeometryCollection} */ (geometry))
       .getGeometriesArray();
   } else {
     geometries = [geometry];
@@ -793,7 +793,7 @@ WKT.prototype.readFeaturesFromText = function(text, opt_options) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/geom/Geometry~Geometry} Geometry.
+ * @return {module:ol/geom/Geometry} Geometry.
  * @api
  */
 WKT.prototype.readGeometry;
@@ -805,7 +805,9 @@ WKT.prototype.readGeometry;
 WKT.prototype.readGeometryFromText = function(text, opt_options) {
   const geometry = this.parse_(text);
   if (geometry) {
-    return /** @type {module:ol/geom/Geometry~Geometry} */ (transformWithOptions(geometry, false, opt_options));
+    return (
+      /** @type {module:ol/geom/Geometry} */ (transformWithOptions(geometry, false, opt_options))
+    );
   } else {
     return null;
   }
@@ -813,7 +815,7 @@ WKT.prototype.readGeometryFromText = function(text, opt_options) {
 
 
 /**
- * @enum {function (new:module:ol/geom/Geometry~Geometry, Array, module:ol/geom/GeometryLayout~GeometryLayout)}
+ * @enum {function (new:module:ol/geom/Geometry, Array, module:ol/geom/GeometryLayout~GeometryLayout)}
  */
 const GeometryConstructor = {
   'POINT': Point,
@@ -839,7 +841,7 @@ const GeometryParser = {
 
 
 /**
- * @return {!module:ol/geom/Geometry~Geometry} The geometry.
+ * @return {!module:ol/geom/Geometry} The geometry.
  * @private
  */
 Parser.prototype.parseGeometry_ = function() {
@@ -868,7 +870,7 @@ Parser.prototype.parseGeometry_ = function() {
  * Encode a feature as a WKT string.
  *
  * @function
- * @param {module:ol/Feature~Feature} feature Feature.
+ * @param {module:ol/Feature} feature Feature.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
  * @api
@@ -892,7 +894,7 @@ WKT.prototype.writeFeatureText = function(feature, opt_options) {
  * Encode an array of features as a WKT string.
  *
  * @function
- * @param {Array.<module:ol/Feature~Feature>} features Features.
+ * @param {Array.<module:ol/Feature>} features Features.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
  * @api
@@ -920,7 +922,7 @@ WKT.prototype.writeFeaturesText = function(features, opt_options) {
  * Write a single geometry as a WKT string.
  *
  * @function
- * @param {module:ol/geom/Geometry~Geometry} geometry Geometry.
+ * @param {module:ol/geom/Geometry} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
  * @api
@@ -932,7 +934,7 @@ WKT.prototype.writeGeometry;
  * @inheritDoc
  */
 WKT.prototype.writeGeometryText = function(geometry, opt_options) {
-  return encode(/** @type {module:ol/geom/Geometry~Geometry} */ (
+  return encode(/** @type {module:ol/geom/Geometry} */ (
     transformWithOptions(geometry, true, opt_options)));
 };
 

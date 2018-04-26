@@ -8,7 +8,7 @@ import {hash as tileCoordHash} from './tilecoord.js';
 
 /**
  * @param {string} template Template.
- * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid Tile grid.
+ * @param {module:ol/tilegrid/TileGrid} tileGrid Tile grid.
  * @return {module:ol/Tile~UrlFunction} Tile URL function.
  */
 export function createFromTemplate(template, tileGrid) {
@@ -20,7 +20,7 @@ export function createFromTemplate(template, tileGrid) {
     /**
      * @param {module:ol/tilecoord~TileCoord} tileCoord Tile Coordinate.
      * @param {number} pixelRatio Pixel ratio.
-     * @param {module:ol/proj/Projection~Projection} projection Projection.
+     * @param {module:ol/proj/Projection} projection Projection.
      * @return {string|undefined} Tile URL.
      */
     function(tileCoord, pixelRatio, projection) {
@@ -48,7 +48,7 @@ export function createFromTemplate(template, tileGrid) {
 
 /**
  * @param {Array.<string>} templates Templates.
- * @param {module:ol/tilegrid/TileGrid~TileGrid} tileGrid Tile grid.
+ * @param {module:ol/tilegrid/TileGrid} tileGrid Tile grid.
  * @return {module:ol/Tile~UrlFunction} Tile URL function.
  */
 export function createFromTemplates(templates, tileGrid) {
@@ -73,7 +73,7 @@ export function createFromTileUrlFunctions(tileUrlFunctions) {
     /**
      * @param {module:ol/tilecoord~TileCoord} tileCoord Tile Coordinate.
      * @param {number} pixelRatio Pixel ratio.
-     * @param {module:ol/proj/Projection~Projection} projection Projection.
+     * @param {module:ol/proj/Projection} projection Projection.
      * @return {string|undefined} Tile URL.
      */
     function(tileCoord, pixelRatio, projection) {
@@ -92,7 +92,7 @@ export function createFromTileUrlFunctions(tileUrlFunctions) {
 /**
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/proj/Projection~Projection} projection Projection.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @return {string|undefined} Tile URL.
  */
 export function nullTileUrlFunction(tileCoord, pixelRatio, projection) {
