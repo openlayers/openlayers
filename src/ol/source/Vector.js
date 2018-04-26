@@ -840,7 +840,7 @@ VectorSource.prototype.handleFeatureChange_ = function(event) {
 
 /**
  * Returns true if the feature is contained within the source.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature} feature Feature.
  * @return {boolean} Has feature.
  * @api
  */

@@ -195,7 +195,7 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(tile, fram
     const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
     /**
-     * @param {module:ol/Feature|module:ol/render/Feature~RenderFeature} feature Feature.
+     * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
      * @this {module:ol/renderer/canvas/VectorTileLayer}
      */
     const render = function(feature) {
