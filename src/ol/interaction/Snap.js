@@ -40,14 +40,14 @@ import RBush from '../structs/RBush.js';
  * @property {boolean} [vertex=true] Snap to vertices.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the pointer close enough to a segment or
  * vertex for snapping.
- * @property {module:ol/source/Vector~Vector} [source] Snap to features from this source. Either this option or features should be provided
+ * @property {module:ol/source/Vector} [source] Snap to features from this source. Either this option or features should be provided
  */
 
 
 /**
  * @classdesc
  * Handles snapping of vector features while modifying or drawing them.  The
- * features can come from a {@link module:ol/source/Vector~Vector} or {@link module:ol/Collection~Collection}
+ * features can come from a {@link module:ol/source/Vector} or {@link module:ol/Collection~Collection}
  * Any interaction object that allows the user to interact
  * with the features using the mouse can benefit from the snapping, as long
  * as it is added before.
@@ -79,7 +79,7 @@ const Snap = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
   /**
-   * @type {module:ol/source/Vector~Vector}
+   * @type {module:ol/source/Vector}
    * @private
    */
   this.source_ = options.source ? options.source : null;
@@ -245,7 +245,7 @@ Snap.prototype.getFeatures_ = function() {
 
 
 /**
- * @param {module:ol/source/Vector~Vector|module:ol/Collection~CollectionEvent} evt Event.
+ * @param {module:ol/source/Vector|module:ol/Collection~CollectionEvent} evt Event.
  * @private
  */
 Snap.prototype.handleFeatureAdd_ = function(evt) {
@@ -260,7 +260,7 @@ Snap.prototype.handleFeatureAdd_ = function(evt) {
 
 
 /**
- * @param {module:ol/source/Vector~Vector|module:ol/Collection~CollectionEvent} evt Event.
+ * @param {module:ol/source/Vector|module:ol/Collection~CollectionEvent} evt Event.
  * @private
  */
 Snap.prototype.handleFeatureRemove_ = function(evt) {

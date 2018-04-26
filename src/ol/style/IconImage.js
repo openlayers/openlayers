@@ -15,7 +15,7 @@ import {shared as iconImageCache} from '../style/IconImageCache.js';
  * @param {string|undefined} src Src.
  * @param {module:ol/size~Size} size Size.
  * @param {?string} crossOrigin Cross origin.
- * @param {module:ol/ImageState~ImageState} imageState Image state.
+ * @param {module:ol/ImageState} imageState Image state.
  * @param {module:ol/color~Color} color Color.
  * @extends {module:ol/events/EventTarget}
  */
@@ -61,7 +61,7 @@ const IconImage = function(image, src, size, crossOrigin, imageState, color) {
 
   /**
    * @private
-   * @type {module:ol/ImageState~ImageState}
+   * @type {module:ol/ImageState}
    */
   this.imageState_ = imageState;
 
@@ -96,7 +96,7 @@ inherits(IconImage, EventTarget);
  * @param {string} src Src.
  * @param {module:ol/size~Size} size Size.
  * @param {?string} crossOrigin Cross origin.
- * @param {module:ol/ImageState~ImageState} imageState Image state.
+ * @param {module:ol/ImageState} imageState Image state.
  * @param {module:ol/color~Color} color Color.
  * @return {module:ol/style/IconImage} Icon image.
  */
@@ -169,7 +169,7 @@ IconImage.prototype.getImage = function(pixelRatio) {
 
 
 /**
- * @return {module:ol/ImageState~ImageState} Image state.
+ * @return {module:ol/ImageState} Image state.
  */
 IconImage.prototype.getImageState = function() {
   return this.imageState_;

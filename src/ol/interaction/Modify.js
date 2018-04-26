@@ -72,10 +72,10 @@ const ModifyEventType = {
  * features. Default is {@link module:ol/events/condition~always}.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
- * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction} [style]
+ * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~Function} [style]
  * Style used for the features being modified. By default the default edit
  * style is used (see {@link module:ol/style}).
- * @property {module:ol/source/Vector~Vector} [source] The vector source with
+ * @property {module:ol/source/Vector} [source] The vector source with
  * features to modify.  If a vector source is not provided, a feature collection
  * must be provided with the features option.
  * @property {module:ol/Collection.<module:ol/Feature>} [features]
@@ -283,7 +283,7 @@ const Modify = function(options) {
 
 
   /**
-   * @type {module:ol/source/Vector~Vector}
+   * @type {module:ol/source/Vector}
    * @private
    */
   this.source_ = null;
@@ -1267,7 +1267,7 @@ Modify.prototype.updateSegmentIndices_ = function(
 
 
 /**
- * @return {module:ol/style~StyleFunction} Styles.
+ * @return {module:ol/style/Style~Function} Styles.
  */
 function getDefaultStyleFunction() {
   const style = createEditingStyle();

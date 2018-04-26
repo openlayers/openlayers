@@ -23,7 +23,7 @@ import {containsExtent} from './extent.js';
  * shifts the overlay down.
  * @property {module:ol/coordinate~Coordinate} [position] The overlay position
  * in map projection.
- * @property {module:ol/OverlayPositioning~OverlayPositioning} [positioning='top-left'] Defines how
+ * @property {module:ol/OverlayPositioning} [positioning='top-left'] Defines how
  * the overlay is actually positioned with respect to its `position` property.
  * Possible values are `'bottom-left'`, `'bottom-center'`, `'bottom-right'`,
  * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
@@ -204,7 +204,7 @@ const Overlay = function(options) {
   this.setOffset(options.offset !== undefined ? options.offset : [0, 0]);
 
   this.setPositioning(options.positioning !== undefined ?
-    /** @type {module:ol/OverlayPositioning~OverlayPositioning} */ (options.positioning) :
+    /** @type {module:ol/OverlayPositioning} */ (options.positioning) :
     OverlayPositioning.TOP_LEFT);
 
   if (options.position !== undefined) {
@@ -278,14 +278,14 @@ Overlay.prototype.getPosition = function() {
 
 /**
  * Get the current positioning of this overlay.
- * @return {module:ol/OverlayPositioning~OverlayPositioning} How the overlay is positioned
+ * @return {module:ol/OverlayPositioning} How the overlay is positioned
  *     relative to its point on the map.
  * @observable
  * @api
  */
 Overlay.prototype.getPositioning = function() {
   return (
-    /** @type {module:ol/OverlayPositioning~OverlayPositioning} */ (this.get(Property.POSITIONING))
+    /** @type {module:ol/OverlayPositioning} */ (this.get(Property.POSITIONING))
   );
 };
 
@@ -489,7 +489,7 @@ Overlay.prototype.getRect = function(element, size) {
 
 /**
  * Set the positioning for this overlay.
- * @param {module:ol/OverlayPositioning~OverlayPositioning} positioning how the overlay is
+ * @param {module:ol/OverlayPositioning} positioning how the overlay is
  *     positioned relative to its point on the map.
  * @observable
  * @api

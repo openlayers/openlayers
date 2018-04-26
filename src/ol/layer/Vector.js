@@ -40,7 +40,7 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
  * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
  * means higher priority.
- * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction} [style] Layer style. See
+ * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~Function} [style] Layer style. See
  * {@link ol.style} for default style which will be used if this is not defined.
  * @property {number} [maxTilesLoading=16] Maximum number tiles to load simultaneously.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
@@ -117,14 +117,14 @@ const VectorLayer = function(opt_options) {
 
   /**
    * User provided style.
-   * @type {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction}
+   * @type {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~Function}
    * @private
    */
   this.style_ = null;
 
   /**
    * Style function for use within the library.
-   * @type {module:ol/style~StyleFunction|undefined}
+   * @type {module:ol/style/Style~Function|undefined}
    * @private
    */
   this.styleFunction_ = undefined;
@@ -210,7 +210,7 @@ VectorLayer.prototype.getSource;
 /**
  * Get the style for features.  This returns whatever was passed to the `style`
  * option at construction or to the `setStyle` method.
- * @return {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction}
+ * @return {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~Function}
  *     Layer style.
  * @api
  */
@@ -221,7 +221,7 @@ VectorLayer.prototype.getStyle = function() {
 
 /**
  * Get the style function.
- * @return {module:ol/style~StyleFunction|undefined} Layer style function.
+ * @return {module:ol/style/Style~Function|undefined} Layer style function.
  * @api
  */
 VectorLayer.prototype.getStyleFunction = function() {
@@ -263,7 +263,7 @@ VectorLayer.prototype.setRenderOrder = function(renderOrder) {
  * it is `null` the layer has no style (a `null` style), so only features
  * that have their own styles will be rendered in the layer. See
  * {@link ol.style} for information on the default style.
- * @param {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction|null|undefined}
+ * @param {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~Function|null|undefined}
  *     style Layer style.
  * @api
  */

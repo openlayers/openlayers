@@ -53,7 +53,7 @@ import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js'
  * options are added to this group, and `addLayer` and `removeLayer` change the
  * layer collection in the group. `getLayers` is a convenience function for
  * `getLayerGroup().getLayers()`. Note that {@link module:ol/layer/Group~Group}
- * is a subclass of {@link module:ol/layer/Base~Base}, so layers entered in the
+ * is a subclass of {@link module:ol/layer/Base}, so layers entered in the
  * options or added with `addLayer` can be groups, which can contain further
  * groups, and so on.
  *
