@@ -16,7 +16,6 @@ import {assign} from '../obj.js';
 import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
 import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
 import ImageSource from '../source/Image.js';
-import RasterOperationType from '../source/RasterOperationType.js';
 import SourceState from '../source/State.js';
 import TileSource from '../source/Tile.js';
 import {create as createTransform} from '../transform.js';
@@ -58,6 +57,16 @@ const RasterEventType = {
    * @api
    */
   AFTEROPERATIONS: 'afteroperations'
+};
+
+
+/**
+ * Raster operation type. Supported values are `'pixel'` and `'image'`.
+ * @enum {string}
+ */
+const RasterOperationType = {
+  PIXEL: 'pixel',
+  IMAGE: 'image'
 };
 
 
@@ -113,7 +122,7 @@ inherits(RasterSourceEvent, Event);
  * be run in multiple worker threads.  Note that there is additional overhead in
  * transferring data to multiple workers, and that depending on the user's
  * system, it may not be possible to parallelize the work.
- * @property {ol.source.RasterOperationType} [operationType] Operation type.
+ * @property {module:ol/source/Raster~RasterOperationType} [operationType='pixel'] Operation type.
  * Supported values are `'pixel'` and `'image'`.  By default,
  * `'pixel'` operations are assumed, and operations will be called with an
  * array of pixels from input sources.  If set to `'image'`, operations will
