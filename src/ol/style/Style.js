@@ -7,6 +7,18 @@ import CircleStyle from '../style/Circle.js';
 import Fill from '../style/Fill.js';
 import Stroke from '../style/Stroke.js';
 
+
+/**
+ * A function that takes an {@link module:ol/Feature} and a `{number}`
+ * representing the view's resolution. The function should return a
+ * {@link module:ol/style/Style} or an array of them. This way e.g. a
+ * vector layer can be styled.
+ *
+ * @typedef {function((module:ol/Feature|module:ol/render/Feature), number):
+ *     (module:ol/style/Style|Array.<module:ol/style/Style>)} StyleFunction
+ */
+
+
 /**
  * A function that takes an {@link module:ol/Feature} as argument and returns an
  * {@link module:ol/geom/Geometry} that will be rendered and styled for the feature.
@@ -312,9 +324,9 @@ Style.prototype.setZIndex = function(zIndex) {
  * Convert the provided object into a style function.  Functions passed through
  * unchanged.  Arrays of module:ol/style/Style or single style objects wrapped in a
  * new style function.
- * @param {module:ol/style~StyleFunction|Array.<module:ol/style/Style>|module:ol/style/Style} obj
+ * @param {module:ol/style/Style~StyleFunction|Array.<module:ol/style/Style>|module:ol/style/Style} obj
  *     A style function, a single style, or an array of styles.
- * @return {module:ol/style~StyleFunction} A style function.
+ * @return {module:ol/style/Style~StyleFunction} A style function.
  */
 export function toFunction(obj) {
   let styleFunction;

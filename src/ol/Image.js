@@ -65,7 +65,7 @@ const ImageWrapper = function(extent, resolution, pixelRatio, src, crossOrigin, 
 
   /**
    * @protected
-   * @type {module:ol/ImageState~ImageState}
+   * @type {module:ol/ImageState}
    */
   this.state = ImageState.IDLE;
 

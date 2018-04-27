@@ -40,7 +40,7 @@ import {createEditingStyle} from '../style/Style.js';
  * on touch devices.
  * @property {module:ol/Collection.<module:ol/Feature>} [features]
  * Destination collection for the drawn features.
- * @property {module:ol/source/Vector~Vector} [source] Destination source for
+ * @property {module:ol/source/Vector} [source] Destination source for
  * the drawn features.
  * @property {number} [dragVertexDelay=500] Delay in milliseconds after pointerdown
  * before the current vertex can be dragged to its exact position.
@@ -57,7 +57,7 @@ import {createEditingStyle} from '../style/Style.js';
  * @property {module:ol/events/condition~Condition} [finishCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether the drawing can be finished.
- * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style~StyleFunction} [style]
+ * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style]
  * Style for sketch features.
  * @property {module:ol/interaction/Draw~GeometryFunction} [geometryFunction]
  * Function that is called when a geometry's coordinates are updated.
@@ -201,7 +201,7 @@ const Draw = function(options) {
 
   /**
    * Target source for drawn features.
-   * @type {module:ol/source/Vector~Vector}
+   * @type {module:ol/source/Vector}
    * @private
    */
   this.source_ = options.source ? options.source : null;
@@ -437,7 +437,7 @@ inherits(Draw, PointerInteraction);
 
 
 /**
- * @return {module:ol/style~StyleFunction} Styles.
+ * @return {module:ol/style/Style~StyleFunction} Styles.
  */
 function getDefaultStyleFunction() {
   const styles = createEditingStyle();

@@ -6,25 +6,25 @@ import FormatType from './format/FormatType.js';
 
 
 /**
- * {@link module:ol/source/Vector~Vector} sources use a function of this type to
+ * {@link module:ol/source/Vector} sources use a function of this type to
  * load features.
  *
  * This function takes an {@link module:ol/extent~Extent} representing the area to be loaded,
  * a `{number}` representing the resolution (map units per pixel) and an
  * {@link module:ol/proj/Projection} for the projection  as
  * arguments. `this` within the function is bound to the
- * {@link module:ol/source/Vector~Vector} it's called from.
+ * {@link module:ol/source/Vector} it's called from.
  *
  * The function is responsible for loading the features and adding them to the
  * source.
- * @typedef {function(this:module:ol/source/Vector~Vector, module:ol/extent~Extent, number,
+ * @typedef {function(this:module:ol/source/Vector, module:ol/extent~Extent, number,
  *                    module:ol/proj/Projection)} FeatureLoader
  * @api
  */
 
 
 /**
- * {@link module:ol/source/Vector~Vector} sources use a function of this type to
+ * {@link module:ol/source/Vector} sources use a function of this type to
  * get the url to load features from.
  *
  * This function takes an {@link module:ol/extent~Extent} representing the area
@@ -39,10 +39,10 @@ import FormatType from './format/FormatType.js';
 /**
  * @param {string|module:ol/featureloader~FeatureUrlFunction} url Feature URL service.
  * @param {module:ol/format/Feature} format Feature format.
- * @param {function(this:module:ol/VectorTile, Array.<module:ol/Feature>, module:ol/proj/Projection, module:ol/extent~Extent)|function(this:module:ol/source/Vector~Vector, Array.<module:ol/Feature>)} success
+ * @param {function(this:module:ol/VectorTile, Array.<module:ol/Feature>, module:ol/proj/Projection, module:ol/extent~Extent)|function(this:module:ol/source/Vector, Array.<module:ol/Feature>)} success
  *     Function called with the loaded features and optionally with the data
  *     projection. Called with the vector tile or source as `this`.
- * @param {function(this:module:ol/VectorTile)|function(this:module:ol/source/Vector~Vector)} failure
+ * @param {function(this:module:ol/VectorTile)|function(this:module:ol/source/Vector)} failure
  *     Function called when loading failed. Called with the vector tile or
  *     source as `this`.
  * @return {module:ol/featureloader~FeatureLoader} The feature loader.
@@ -53,7 +53,7 @@ export function loadFeaturesXhr(url, format, success, failure) {
      * @param {module:ol/extent~Extent} extent Extent.
      * @param {number} resolution Resolution.
      * @param {module:ol/proj/Projection} projection Projection.
-     * @this {module:ol/source/Vector~Vector|module:ol/VectorTile}
+     * @this {module:ol/source/Vector|module:ol/VectorTile}
      */
     function(extent, resolution, projection) {
       const xhr = new XMLHttpRequest();
@@ -121,7 +121,7 @@ export function xhr(url, format) {
      * @param {Array.<module:ol/Feature>} features The loaded features.
      * @param {module:ol/proj/Projection} dataProjection Data
      * projection.
-     * @this {module:ol/source/Vector~Vector}
+     * @this {module:ol/source/Vector}
      */
     function(features, dataProjection) {
       this.addFeatures(features);

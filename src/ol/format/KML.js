@@ -411,7 +411,7 @@ function createNameStyleFunction(foundStyle, name) {
  * @param {Array.<module:ol/style/Style>} defaultStyle Default style.
  * @param {!Object.<string, (Array.<module:ol/style/Style>|string)>} sharedStyles Shared styles.
  * @param {boolean|undefined} showPointNames true to show names for point placemarks.
- * @return {module:ol/style~StyleFunction} Feature style function.
+ * @return {module:ol/style/Style~StyleFunction} Feature style function.
  */
 function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles, showPointNames) {
 

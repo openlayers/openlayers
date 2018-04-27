@@ -101,7 +101,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * map target (i.e. the user-provided div for the map). If this is not
  * `document`, the target element needs to be focused for key events to be
  * emitted, requiring that the target element has a `tabindex` attribute.
- * @property {Array.<module:ol/layer/Base~Base>|module:ol/Collection.<module:ol/layer/Base~Base>} [layers]
+ * @property {Array.<module:ol/layer/Base>|module:ol/Collection.<module:ol/layer/Base>} [layers]
  * Layers. If this is not defined, a map with no layers will be rendered. Note
  * that layers are rendered in the order supplied, so if you want, for example,
  * a vector layer to appear on top of a tile layer, it must come after the tile
@@ -495,7 +495,7 @@ PluggableMap.prototype.addInteraction = function(interaction) {
  * Adds the given layer to the top of this map. If you want to add a layer
  * elsewhere in the stack, use `getLayers()` and the methods available on
  * {@link module:ol/Collection~Collection}.
- * @param {module:ol/layer/Base~Base} layer Layer.
+ * @param {module:ol/layer/Base} layer Layer.
  * @api
  */
 PluggableMap.prototype.addLayer = function(layer) {
@@ -559,7 +559,7 @@ PluggableMap.prototype.disposeInternal = function() {
  *     module:ol/layer/Layer): T} callback Feature callback. The callback will be
  *     called with two arguments. The first argument is one
  *     {@link module:ol/Feature feature} or
- *     {@link module:ol/render/Feature~Feature render feature} at the pixel, the second is
+ *     {@link module:ol/render/Feature render feature} at the pixel, the second is
  *     the {@link module:ol/layer/Layer layer} of the feature and will be null for
  *     unmanaged layers. To stop detection, callback functions can return a
  *     truthy value.
@@ -803,7 +803,7 @@ PluggableMap.prototype.getLayerGroup = function() {
 
 /**
  * Get the collection of layers associated with this map.
- * @return {!module:ol/Collection.<module:ol/layer/Base~Base>} Layers.
+ * @return {!module:ol/Collection.<module:ol/layer/Base>} Layers.
  * @api
  */
 PluggableMap.prototype.getLayers = function() {
@@ -1192,8 +1192,8 @@ PluggableMap.prototype.removeInteraction = function(interaction) {
 
 /**
  * Removes the given layer from the map.
- * @param {module:ol/layer/Base~Base} layer Layer.
- * @return {module:ol/layer/Base~Base|undefined} The removed layer (or undefined if the
+ * @param {module:ol/layer/Base} layer Layer.
+ * @return {module:ol/layer/Base|undefined} The removed layer (or undefined if the
  *     layer was not found).
  * @api
  */

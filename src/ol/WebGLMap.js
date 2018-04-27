@@ -54,7 +54,7 @@ import WebGLVectorLayerRenderer from './renderer/webgl/VectorLayer.js';
  * layer collection in the group. `getLayers` is a convenience function for
  * `getLayerGroup().getLayers()`.
  * Note that {@link module:ol/layer/Group~Group} is a subclass of
- * {@link module:ol/layer/Base~Base}, so layers entered in the options or added
+ * {@link module:ol/layer/Base}, so layers entered in the options or added
  * with `addLayer` can be groups, which can contain further groups, and so on.
  *
  * @constructor

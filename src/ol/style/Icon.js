@@ -132,7 +132,7 @@ const Icon = function(opt_options) {
     6); // A defined and non-empty `src` or `image` must be provided
 
   /**
-   * @type {module:ol/ImageState~ImageState}
+   * @type {module:ol/ImageState}
    */
   const imageState = options.src !== undefined ?
     ImageState.IDLE : ImageState.LOADED;
