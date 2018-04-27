@@ -61,7 +61,7 @@ const SelectEventType = {
  * in the map and should return `true` for layers that you want to be
  * selectable. If the option is absent, all visible layers will be considered
  * selectable.
- * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~Function} [style]
+ * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style]
  * Style for the selected features. By default the default edit style is used
  * (see {@link module:ol/style}).
  * @property {module:ol/events/condition~Condition} [removeCondition] A function
@@ -441,7 +441,7 @@ Select.prototype.setMap = function(map) {
 
 
 /**
- * @return {module:ol/style/Style~Function} Styles.
+ * @return {module:ol/style/Style~StyleFunction} Styles.
  */
 function getDefaultStyleFunction() {
   const styles = createEditingStyle();

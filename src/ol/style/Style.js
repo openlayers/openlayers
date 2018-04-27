@@ -15,7 +15,7 @@ import Stroke from '../style/Stroke.js';
  * vector layer can be styled.
  *
  * @typedef {function((module:ol/Feature|module:ol/render/Feature), number):
- *     (module:ol/style/Style|Array.<module:ol/style/Style>)} Function
+ *     (module:ol/style/Style|Array.<module:ol/style/Style>)} StyleFunction
  */
 
 
@@ -324,9 +324,9 @@ Style.prototype.setZIndex = function(zIndex) {
  * Convert the provided object into a style function.  Functions passed through
  * unchanged.  Arrays of module:ol/style/Style or single style objects wrapped in a
  * new style function.
- * @param {module:ol/style/Style~Function|Array.<module:ol/style/Style>|module:ol/style/Style} obj
+ * @param {module:ol/style/Style~StyleFunction|Array.<module:ol/style/Style>|module:ol/style/Style} obj
  *     A style function, a single style, or an array of styles.
- * @return {module:ol/style/Style~Function} A style function.
+ * @return {module:ol/style/Style~StyleFunction} A style function.
  */
 export function toFunction(obj) {
   let styleFunction;

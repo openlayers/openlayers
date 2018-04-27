@@ -57,7 +57,7 @@ import {createEditingStyle} from '../style/Style.js';
  * @property {module:ol/events/condition~Condition} [finishCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether the drawing can be finished.
- * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~Function} [style]
+ * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style]
  * Style for sketch features.
  * @property {module:ol/interaction/Draw~GeometryFunction} [geometryFunction]
  * Function that is called when a geometry's coordinates are updated.
@@ -437,7 +437,7 @@ inherits(Draw, PointerInteraction);
 
 
 /**
- * @return {module:ol/style/Style~Function} Styles.
+ * @return {module:ol/style/Style~StyleFunction} Styles.
  */
 function getDefaultStyleFunction() {
   const styles = createEditingStyle();
