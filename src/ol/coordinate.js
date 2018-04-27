@@ -16,7 +16,7 @@ import {padNumber} from './string.js';
  * A function that takes a {@link module:ol/coordinate~Coordinate} and
  * transforms it into a `{string}`.
  *
- * @typedef {function((module:ol/coordinate~CoordinateFormat|undefined)): string} CoordinateFormat
+ * @typedef {function((module:ol/coordinate~Coordinate|undefined)): string} CoordinateFormat
  * @api
  */
 
