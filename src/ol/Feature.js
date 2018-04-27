@@ -252,7 +252,7 @@ Feature.prototype.setStyle = function(style) {
  * Set the feature id.  The feature id is considered stable and may be used when
  * requesting features or comparing identifiers returned from a remote source.
  * The feature id can be used with the
- * {@link module:ol/source/Vector#getFeatureById} method.
+ * {@link module:ol/source/Vector~VectorSource#getFeatureById} method.
  * @param {number|string|undefined} id The feature id.
  * @api
  * @fires module:ol/events/Event~Event#event:change
