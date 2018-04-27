@@ -1240,7 +1240,7 @@ export function createCenterConstraint(options) {
 /**
  * @param {module:ol/View~ViewOptions} options View options.
  * @return {{constraint: module:ol/resolutionconstraint~Type, maxResolution: number,
- *     minResolution: number, zoomFactor: number}} The constraint.
+ *     minResolution: number, minZoom: number, zoomFactor: number}} The constraint.
  */
 export function createResolutionConstraint(options) {
   let resolutionConstraint;
