@@ -40,7 +40,7 @@ const WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
 
 /**
  * @constructor
- * @extends {ol.renderer.Map}
+ * @extends {module:ol/renderer/Map}
  * @param {module:ol/PluggableMap} map Map.
  * @api
  */
@@ -110,7 +110,7 @@ const WebGLMapRenderer = function(map) {
 
   /**
    * @private
-   * @type {ol.structs.LRUCache.<module:ol/renderer/webgl/Map~TextureCacheEntry|null>}
+   * @type {module:ol/structs/LRUCache.<module:ol/renderer/webgl/Map~TextureCacheEntry|null>}
    */
   this.textureCache_ = new LRUCache();
 
@@ -122,13 +122,13 @@ const WebGLMapRenderer = function(map) {
 
   /**
    * @private
-   * @type {ol.structs.PriorityQueue.<Array>}
+   * @type {module:ol/structs/PriorityQueue.<Array>}
    */
   this.tileTextureQueue_ = new PriorityQueue(
     /**
      * @param {Array.<*>} element Element.
      * @return {number} Priority.
-     * @this {ol.renderer.webgl.Map}
+     * @this {module:ol/renderer/webgl/Map}
      */
     function(element) {
       const tileCenter = /** @type {module:ol/coordinate~Coordinate} */ (element[1]);
@@ -153,7 +153,7 @@ const WebGLMapRenderer = function(map) {
    * @param {module:ol/PluggableMap} map Map.
    * @param {?module:ol/PluggableMap~FrameState} frameState Frame state.
    * @return {boolean} false.
-   * @this {ol.renderer.webgl.Map}
+   * @this {module:ol/renderer/webgl/Map}
    */
   this.loadNextTileTexture_ =
       function(map, frameState) {
@@ -339,7 +339,7 @@ WebGLMapRenderer.prototype.getGL = function() {
 
 
 /**
- * @return {ol.structs.PriorityQueue.<Array>} Tile texture queue.
+ * @return {module:ol/structs/PriorityQueue.<Array>} Tile texture queue.
  */
 WebGLMapRenderer.prototype.getTileTextureQueue = function() {
   return this.tileTextureQueue_;
@@ -357,7 +357,7 @@ WebGLMapRenderer.prototype.handleWebGLContextLost = function(event) {
 
   const renderers = this.getLayerRenderers();
   for (const id in renderers) {
-    const renderer = /** @type {ol.renderer.webgl.Layer} */ (renderers[id]);
+    const renderer = /** @type {module:ol/renderer/webgl/Layer} */ (renderers[id]);
     renderer.handleWebGLContextLost();
   }
 };
@@ -435,7 +435,7 @@ WebGLMapRenderer.prototype.renderFrame = function(frameState) {
     layerState = layerStatesArray[i];
     if (visibleAtResolution(layerState, viewResolution) &&
         layerState.sourceState == SourceState.READY) {
-      layerRenderer = /** @type {ol.renderer.webgl.Layer} */ (this.getLayerRenderer(layerState.layer));
+      layerRenderer = /** @type {module:ol/renderer/webgl/Layer} */ (this.getLayerRenderer(layerState.layer));
       if (layerRenderer.prepareFrame(frameState, layerState, context)) {
         layerStatesToDraw.push(layerState);
       }
@@ -458,7 +458,7 @@ WebGLMapRenderer.prototype.renderFrame = function(frameState) {
 
   for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
     layerState = layerStatesToDraw[i];
-    layerRenderer = /** @type {ol.renderer.webgl.Layer} */ (this.getLayerRenderer(layerState.layer));
+    layerRenderer = /** @type {module:ol/renderer/webgl/Layer} */ (this.getLayerRenderer(layerState.layer));
     layerRenderer.composeFrame(frameState, layerState, context);
   }
 
@@ -574,7 +574,7 @@ WebGLMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, cal
     const layer = layerState.layer;
     if (visibleAtResolution(layerState, viewState.resolution) &&
         layerFilter.call(thisArg, layer)) {
-      const layerRenderer = /** @type {ol.renderer.webgl.Layer} */ (this.getLayerRenderer(layer));
+      const layerRenderer = /** @type {module:ol/renderer/webgl/Layer} */ (this.getLayerRenderer(layer));
       result = layerRenderer.forEachLayerAtPixel(
         pixel, frameState, callback, thisArg);
       if (result) {

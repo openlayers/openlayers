@@ -156,7 +156,7 @@ const RasterSource = function(options) {
 
   /**
    * @private
-   * @type {Array.<ol.renderer.canvas.Layer>}
+   * @type {Array.<module:ol/renderer/canvas/Layer>}
    */
   this.renderers_ = createRenderers(options.sources);
 
@@ -415,7 +415,7 @@ let sharedContext = null;
 
 /**
  * Get image data from a renderer.
- * @param {ol.renderer.canvas.Layer} renderer Layer renderer.
+ * @param {module:ol/renderer/canvas/Layer} renderer Layer renderer.
  * @param {module:ol/PluggableMap~FrameState} frameState The frame state.
  * @param {module:ol/layer/Layer~State} layerState The layer state.
  * @return {ImageData} The image data.
@@ -443,7 +443,7 @@ function getImageData(renderer, frameState, layerState) {
 
 /**
  * Get a list of layer states from a list of renderers.
- * @param {Array.<ol.renderer.canvas.Layer>} renderers Layer renderers.
+ * @param {Array.<module:ol/renderer/canvas/Layer>} renderers Layer renderers.
  * @return {Array.<module:ol/layer/Layer~State>} The layer states.
  */
 function getLayerStatesArray(renderers) {
@@ -456,7 +456,7 @@ function getLayerStatesArray(renderers) {
 /**
  * Create renderers for all sources.
  * @param {Array.<module:ol/source/Source>} sources The sources.
- * @return {Array.<ol.renderer.canvas.Layer>} Array of layer renderers.
+ * @return {Array.<module:ol/renderer/canvas/Layer>} Array of layer renderers.
  */
 function createRenderers(sources) {
   const len = sources.length;
@@ -471,7 +471,7 @@ function createRenderers(sources) {
 /**
  * Create a renderer for the provided source.
  * @param {module:ol/source/Source} source The source.
- * @return {ol.renderer.canvas.Layer} The renderer.
+ * @return {module:ol/renderer/canvas/Layer} The renderer.
  */
 function createRenderer(source) {
   let renderer = null;
@@ -487,7 +487,7 @@ function createRenderer(source) {
 /**
  * Create an image renderer for the provided source.
  * @param {module:ol/source/Image} source The source.
- * @return {ol.renderer.canvas.Layer} The renderer.
+ * @return {module:ol/renderer/canvas/Layer} The renderer.
  */
 function createImageRenderer(source) {
   const layer = new ImageLayer({source: source});
@@ -498,7 +498,7 @@ function createImageRenderer(source) {
 /**
  * Create a tile renderer for the provided source.
  * @param {module:ol/source/Tile} source The source.
- * @return {ol.renderer.canvas.Layer} The renderer.
+ * @return {module:ol/renderer/canvas/Layer} The renderer.
  */
 function createTileRenderer(source) {
   const layer = new TileLayer({source: source});

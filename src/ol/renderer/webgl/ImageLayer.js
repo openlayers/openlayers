@@ -24,8 +24,8 @@ import {createTexture} from '../../webgl/Context.js';
 
 /**
  * @constructor
- * @extends {ol.renderer.webgl.Layer}
- * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
+ * @extends {module:ol/renderer/webgl/Layer}
+ * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
  * @param {module:ol/layer/Image} imageLayer Tile layer.
  * @api
  */
@@ -69,13 +69,13 @@ WebGLImageLayerRenderer['handles'] = function(layer) {
 
 /**
  * Create a layer renderer.
- * @param {ol.renderer.Map} mapRenderer The map renderer.
+ * @param {module:ol/renderer/Map} mapRenderer The map renderer.
  * @param {module:ol/layer/Layer} layer The layer to be rendererd.
- * @return {ol.renderer.webgl.ImageLayer} The layer renderer.
+ * @return {module:ol/renderer/webgl/ImageLayer} The layer renderer.
  */
 WebGLImageLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLImageLayerRenderer(
-    /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
+    /** @type {module:ol/renderer/webgl/Map} */ (mapRenderer),
     /** @type {module:ol/layer/Image} */ (layer)
   );
 };

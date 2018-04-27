@@ -24,7 +24,7 @@ import {appendParams} from '../uri.js';
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {ol.source.WMTSRequestEncoding|string} [requestEncoding='KVP'] Request encoding.
+ * @property {module:ol/source/WMTSRequestEncoding|string} [requestEncoding='KVP'] Request encoding.
  * @property {string} layer Layer name as advertised in the WMTS capabilities.
  * @property {string} style Style name as advertised in the WMTS capabilities.
  * @property {module:ol/ImageTile~TileClass} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
@@ -115,10 +115,10 @@ const WMTS = function(options) {
 
   /**
    * @private
-   * @type {ol.source.WMTSRequestEncoding}
+   * @type {module:ol/source/WMTSRequestEncoding}
    */
   this.requestEncoding_ = options.requestEncoding !== undefined ?
-    /** @type {ol.source.WMTSRequestEncoding} */ (options.requestEncoding) :
+    /** @type {module:ol/source/WMTSRequestEncoding} */ (options.requestEncoding) :
     WMTSRequestEncoding.KVP;
 
   const requestEncoding = this.requestEncoding_;
@@ -276,7 +276,7 @@ WMTS.prototype.getMatrixSet = function() {
 
 /**
  * Return the request encoding, either "KVP" or "REST".
- * @return {ol.source.WMTSRequestEncoding} Request encoding.
+ * @return {module:ol/source/WMTSRequestEncoding} Request encoding.
  * @api
  */
 WMTS.prototype.getRequestEncoding = function() {

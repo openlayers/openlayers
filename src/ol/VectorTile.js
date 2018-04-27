@@ -125,7 +125,7 @@ VectorTile.prototype.getFormat = function() {
 /**
  * Get the features for this tile. Geometries will be in the projection returned
  * by {@link module:ol/VectorTile~VectorTile#getProjection}.
- * @return {Array.<module:ol/Feature|module:ol/render/Feature~Feature>} Features.
+ * @return {Array.<module:ol/Feature|module:ol/render/Feature>} Features.
  * @api
  */
 VectorTile.prototype.getFeatures = function() {

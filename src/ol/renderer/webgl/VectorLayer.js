@@ -12,8 +12,8 @@ import {apply as applyTransform} from '../../transform.js';
 
 /**
  * @constructor
- * @extends {ol.renderer.webgl.Layer}
- * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
+ * @extends {module:ol/renderer/webgl/Layer}
+ * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
  * @param {module:ol/layer/Vector} vectorLayer Vector layer.
  * @api
  */
@@ -81,13 +81,13 @@ WebGLVectorLayerRenderer['handles'] = function(layer) {
 
 /**
  * Create a layer renderer.
- * @param {ol.renderer.Map} mapRenderer The map renderer.
+ * @param {module:ol/renderer/Map} mapRenderer The map renderer.
  * @param {module:ol/layer/Layer} layer The layer to be rendererd.
- * @return {ol.renderer.webgl.VectorLayer} The layer renderer.
+ * @return {module:ol/renderer/webgl/VectorLayer} The layer renderer.
  */
 WebGLVectorLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLVectorLayerRenderer(
-    /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
+    /** @type {module:ol/renderer/webgl/Map} */ (mapRenderer),
     /** @type {module:ol/layer/Vector} */ (layer)
   );
 };
@@ -260,7 +260,7 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
    * @param {module:ol/Feature} feature Feature.
-   * @this {ol.renderer.webgl.VectorLayer}
+   * @this {module:ol/renderer/webgl/VectorLayer}
    */
   const render = function(feature) {
     let styles;

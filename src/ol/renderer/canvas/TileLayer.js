@@ -13,7 +13,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 
 /**
  * @constructor
- * @extends {ol.renderer.canvas.IntermediateCanvas}
+ * @extends {module:ol/renderer/canvas/IntermediateCanvas}
  * @param {module:ol/layer/Tile|module:ol/layer/VectorTile~VectorTile} tileLayer Tile layer.
  * @api
  */
@@ -92,9 +92,9 @@ CanvasTileLayerRenderer['handles'] = function(layer) {
 
 /**
  * Create a layer renderer.
- * @param {ol.renderer.Map} mapRenderer The map renderer.
+ * @param {module:ol/renderer/Map} mapRenderer The map renderer.
  * @param {module:ol/layer/Layer} layer The layer to be rendererd.
- * @return {ol.renderer.canvas.TileLayer} The layer renderer.
+ * @return {module:ol/renderer/canvas/TileLayer} The layer renderer.
  */
 CanvasTileLayerRenderer['create'] = function(mapRenderer, layer) {
   return new CanvasTileLayerRenderer(/** @type {module:ol/layer/Tile} */ (layer));

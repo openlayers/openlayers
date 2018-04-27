@@ -18,8 +18,8 @@ import {createEmptyTexture} from '../../webgl/Context.js';
 /**
  * @constructor
  * @abstract
- * @extends {ol.renderer.Layer}
- * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
+ * @extends {module:ol/renderer/Layer}
+ * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
  * @param {module:ol/layer/Layer} layer Layer.
  */
 const WebGLLayerRenderer = function(mapRenderer, layer) {
@@ -28,7 +28,7 @@ const WebGLLayerRenderer = function(mapRenderer, layer) {
 
   /**
    * @protected
-   * @type {ol.renderer.webgl.Map}
+   * @type {module:ol/renderer/webgl/Map}
    */
   this.mapRenderer = mapRenderer;
 
@@ -81,7 +81,7 @@ const WebGLLayerRenderer = function(mapRenderer, layer) {
 
   /**
    * @private
-   * @type {ol.renderer.webgl.defaultmapshader.Locations}
+   * @type {module:ol/renderer/webgl/defaultmapshader/Locations}
    */
   this.defaultLocations_ = null;
 

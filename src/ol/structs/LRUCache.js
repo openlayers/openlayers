@@ -95,7 +95,7 @@ LRUCache.prototype.containsKey = function(key) {
 
 
 /**
- * @param {function(this: S, T, string, ol.structs.LRUCache): ?} f The function
+ * @param {function(this: S, T, string, module:ol/structs/LRUCache): ?} f The function
  *     to call for every entry from the oldest to the newer. This function takes
  *     3 arguments (the entry value, the entry key and the LRUCache object).
  *     The return value is ignored.

@@ -17,7 +17,7 @@ import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, 
 
 /**
  * @constructor
- * @extends {ol.renderer.canvas.Layer}
+ * @extends {module:ol/renderer/canvas/Layer}
  * @param {module:ol/layer/Vector} vectorLayer Vector layer.
  * @api
  */
@@ -97,9 +97,9 @@ CanvasVectorLayerRenderer['handles'] = function(layer) {
 
 /**
  * Create a layer renderer.
- * @param {ol.renderer.Map} mapRenderer The map renderer.
+ * @param {module:ol/renderer/Map} mapRenderer The map renderer.
  * @param {module:ol/layer/Layer} layer The layer to be rendererd.
- * @return {ol.renderer.canvas.VectorLayer} The layer renderer.
+ * @return {module:ol/renderer/canvas/VectorLayer} The layer renderer.
  */
 CanvasVectorLayerRenderer['create'] = function(mapRenderer, layer) {
   return new CanvasVectorLayerRenderer(/** @type {module:ol/layer/Vector} */ (layer));
@@ -357,7 +357,7 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
    * @param {module:ol/Feature} feature Feature.
-   * @this {ol.renderer.canvas.VectorLayer}
+   * @this {module:ol/renderer/canvas/VectorLayer}
    */
   const render = function(feature) {
     let styles;

@@ -27,8 +27,8 @@ import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
  * @constructor
- * @extends {ol.renderer.webgl.Layer}
- * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
+ * @extends {module:ol/renderer/webgl/Layer}
+ * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
  * @param {module:ol/layer/Tile} tileLayer Tile layer.
  * @api
  */
@@ -50,7 +50,7 @@ const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {ol.renderer.webgl.tilelayershader.Locations}
+   * @type {module:ol/renderer/webgl/tilelayershader/Locations}
    */
   this.locations_ = null;
 
@@ -106,13 +106,13 @@ WebGLTileLayerRenderer['handles'] = function(layer) {
 
 /**
  * Create a layer renderer.
- * @param {ol.renderer.Map} mapRenderer The map renderer.
+ * @param {module:ol/renderer/Map} mapRenderer The map renderer.
  * @param {module:ol/layer/Layer} layer The layer to be rendererd.
- * @return {ol.renderer.webgl.TileLayer} The layer renderer.
+ * @return {module:ol/renderer/webgl/TileLayer} The layer renderer.
  */
 WebGLTileLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLTileLayerRenderer(
-    /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
+    /** @type {module:ol/renderer/webgl/Map} */ (mapRenderer),
     /** @type {module:ol/layer/Tile} */ (layer)
   );
 };

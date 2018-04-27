@@ -225,7 +225,7 @@ LinkedList.prototype.setFirstItem = function() {
 
 /**
  * Concatenates two lists.
- * @param {ol.structs.LinkedList} list List to merge into the current list.
+ * @param {module:ol/structs/LinkedList} list List to merge into the current list.
  */
 LinkedList.prototype.concat = function(list) {
   if (list.head_) {

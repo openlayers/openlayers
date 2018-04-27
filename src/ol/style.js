@@ -9,7 +9,7 @@
  * {@link module:ol/style/Style} or an array of them. This way e.g. a
  * vector layer can be styled.
  *
- * @typedef {function((module:ol/Feature|module:ol/render/Feature~Feature), number):
+ * @typedef {function((module:ol/Feature|module:ol/render/Feature), number):
  *     (module:ol/style/Style|Array.<module:ol/style/Style>)} StyleFunction
  * @api
  */

@@ -150,8 +150,8 @@ WebGLPolygonReplay.prototype.drawCoordinates_ = function(
  * @private
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} stride Stride.
- * @param {ol.structs.LinkedList} list Linked list.
- * @param {ol.structs.RBush} rtree R-Tree of the polygon.
+ * @param {module:ol/structs/LinkedList} list Linked list.
+ * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
  * @param {boolean} clockwise Coordinate order should be clockwise.
  */
 WebGLPolygonReplay.prototype.processFlatCoordinates_ = function(
@@ -203,7 +203,7 @@ WebGLPolygonReplay.prototype.processFlatCoordinates_ = function(
 /**
  * Returns the rightmost coordinates of a polygon on the X axis.
  * @private
- * @param {ol.structs.LinkedList} list Polygons ring.
+ * @param {module:ol/structs/LinkedList} list Polygons ring.
  * @return {Array.<number>} Max X coordinates.
  */
 WebGLPolygonReplay.prototype.getMaxCoords_ = function(list) {
@@ -225,8 +225,8 @@ WebGLPolygonReplay.prototype.getMaxCoords_ = function(list) {
 /**
  * Classifies the points of a polygon list as convex, reflex. Removes collinear vertices.
  * @private
- * @param {ol.structs.LinkedList} list Polygon ring.
- * @param {ol.structs.RBush} rtree R-Tree of the polygon.
+ * @param {module:ol/structs/LinkedList} list Polygon ring.
+ * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
  * @param {boolean} ccw The orientation of the polygon is counter-clockwise.
  * @return {boolean} There were reclassified points.
  */
@@ -261,11 +261,11 @@ WebGLPolygonReplay.prototype.classifyPoints_ = function(list, rtree, ccw) {
 
 /**
  * @private
- * @param {ol.structs.LinkedList} hole Linked list of the hole.
+ * @param {module:ol/structs/LinkedList} hole Linked list of the hole.
  * @param {number} holeMaxX Maximum X value of the hole.
- * @param {ol.structs.LinkedList} list Linked list of the polygon.
+ * @param {module:ol/structs/LinkedList} list Linked list of the polygon.
  * @param {number} listMaxX Maximum X value of the polygon.
- * @param {ol.structs.RBush} rtree R-Tree of the polygon.
+ * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
  * @return {boolean} Bridging was successful.
  */
 WebGLPolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
@@ -338,8 +338,8 @@ WebGLPolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
 
 /**
  * @private
- * @param {ol.structs.LinkedList} list Linked list of the polygon.
- * @param {ol.structs.RBush} rtree R-Tree of the polygon.
+ * @param {module:ol/structs/LinkedList} list Linked list of the polygon.
+ * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
  */
 WebGLPolygonReplay.prototype.triangulate_ = function(list, rtree) {
   let ccw = false;
@@ -388,8 +388,8 @@ WebGLPolygonReplay.prototype.triangulate_ = function(list, rtree) {
 
 /**
  * @private
- * @param {ol.structs.LinkedList} list Linked list of the polygon.
- * @param {ol.structs.RBush} rtree R-Tree of the polygon.
+ * @param {module:ol/structs/LinkedList} list Linked list of the polygon.
+ * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
  * @param {boolean} simple The polygon is simple.
  * @param {boolean} ccw Orientation of the polygon is counter-clockwise.
  * @return {boolean} There were processed ears.
@@ -447,8 +447,8 @@ WebGLPolygonReplay.prototype.clipEars_ = function(list, rtree, simple, ccw) {
 
 /**
  * @private
- * @param {ol.structs.LinkedList} list Linked list of the polygon.
- * @param {ol.structs.RBush} rtree R-Tree of the polygon.
+ * @param {module:ol/structs/LinkedList} list Linked list of the polygon.
+ * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
  * @param {boolean=} opt_touch Resolve touching segments.
  * @return {boolean} There were resolved intersections.
 */
@@ -516,8 +516,8 @@ WebGLPolygonReplay.prototype.resolveSelfIntersections_ = function(
 
 /**
  * @private
- * @param {ol.structs.LinkedList} list Linked list of the polygon.
- * @param {ol.structs.RBush} rtree R-Tree of the polygon.
+ * @param {module:ol/structs/LinkedList} list Linked list of the polygon.
+ * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
  * @return {boolean} The polygon is simple.
  */
 WebGLPolygonReplay.prototype.isSimple_ = function(list, rtree) {
@@ -535,7 +535,7 @@ WebGLPolygonReplay.prototype.isSimple_ = function(list, rtree) {
 
 /**
  * @private
- * @param {ol.structs.LinkedList} list Linked list of the polygon.
+ * @param {module:ol/structs/LinkedList} list Linked list of the polygon.
  * @return {boolean} Orientation is clockwise.
  */
 WebGLPolygonReplay.prototype.isClockwise_ = function(list) {
@@ -555,8 +555,8 @@ WebGLPolygonReplay.prototype.isClockwise_ = function(list) {
 
 /**
  * @private
- * @param {ol.structs.LinkedList} list Linked list of the polygon.
- * @param {ol.structs.RBush} rtree R-Tree of the polygon.
+ * @param {module:ol/structs/LinkedList} list Linked list of the polygon.
+ * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
  */
 WebGLPolygonReplay.prototype.splitPolygon_ = function(list, rtree) {
   const start = list.firstItem();
@@ -623,8 +623,8 @@ WebGLPolygonReplay.prototype.createPoint_ = function(x, y, i) {
  * @private
  * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p0 First point of segment.
  * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p1 Second point of segment.
- * @param {ol.structs.LinkedList} list Polygon ring.
- * @param {ol.structs.RBush=} opt_rtree Insert the segment into the R-Tree.
+ * @param {module:ol/structs/LinkedList} list Polygon ring.
+ * @param {module:ol/structs/RBush=} opt_rtree Insert the segment into the R-Tree.
  * @return {module:ol/render/webgl/PolygonReplay~PolygonSegment} segment.
  */
 WebGLPolygonReplay.prototype.insertItem_ = function(p0, p1, list, opt_rtree) {
@@ -645,8 +645,8 @@ WebGLPolygonReplay.prototype.insertItem_ = function(p0, p1, list, opt_rtree) {
   * @private
   * @param {module:ol/render/webgl/PolygonReplay~PolygonSegment} s0 Segment before the remove candidate.
   * @param {module:ol/render/webgl/PolygonReplay~PolygonSegment} s1 Remove candidate segment.
-  * @param {ol.structs.LinkedList} list Polygon ring.
-  * @param {ol.structs.RBush} rtree R-Tree of the polygon.
+  * @param {module:ol/structs/LinkedList} list Polygon ring.
+  * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
   */
 WebGLPolygonReplay.prototype.removeItem_ = function(s0, s1, list, rtree) {
   if (list.getCurrItem() === s1) {
@@ -664,7 +664,7 @@ WebGLPolygonReplay.prototype.removeItem_ = function(s0, s1, list, rtree) {
  * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p0 First point.
  * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p1 Second point.
  * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p2 Third point.
- * @param {ol.structs.RBush} rtree R-Tree of the polygon.
+ * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
  * @param {boolean=} opt_reflex Only include reflex points.
  * @return {Array.<module:ol/render/webgl/PolygonReplay~PolygonVertex>} Points in the triangle.
  */
@@ -692,7 +692,7 @@ WebGLPolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1, p2, rtree, 
 /**
  * @private
  * @param {module:ol/render/webgl/PolygonReplay~PolygonSegment} segment Segment.
- * @param {ol.structs.RBush} rtree R-Tree of the polygon.
+ * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
  * @param {boolean=} opt_touch Touching segments should be considered an intersection.
  * @return {Array.<module:ol/render/webgl/PolygonReplay~PolygonSegment>} Intersecting segments.
  */

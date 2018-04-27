@@ -34,7 +34,7 @@ const SelectEventType = {
  * {@link module:ol/render/Feature~Feature} and an
  * {@link module:ol/layer/Layer} and returns `true` if the feature may be
  * selected or `false` otherwise.
- * @typedef {function((module:ol/Feature|module:ol/render/Feature~Feature), module:ol/layer/Layer):
+ * @typedef {function((module:ol/Feature|module:ol/render/Feature), module:ol/layer/Layer):
  *     boolean} FilterFunction
  */
 
@@ -266,7 +266,7 @@ inherits(Select, Interaction);
 
 
 /**
- * @param {module:ol/Feature|module:ol/render/Feature~Feature} feature Feature.
+ * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
  * @param {module:ol/layer/Layer} layer Layer.
  * @private
  */
@@ -301,7 +301,7 @@ Select.prototype.getHitTolerance = function() {
  * the (last) selected feature. Note that this will not work with any
  * programmatic method like pushing features to
  * {@link module:ol/interaction/Select~Select#getFeatures collection}.
- * @param {module:ol/Feature|module:ol/render/Feature~Feature} feature Feature
+ * @param {module:ol/Feature|module:ol/render/Feature} feature Feature
  * @return {module:ol/layer/Vector~Vector} Layer.
  * @api
  */
@@ -340,7 +340,7 @@ function handleEvent(mapBrowserEvent) {
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
       (
         /**
-         * @param {module:ol/Feature|module:ol/render/Feature~Feature} feature Feature.
+         * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
          * @param {module:ol/layer/Layer} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
          */
@@ -373,7 +373,7 @@ function handleEvent(mapBrowserEvent) {
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
       (
         /**
-         * @param {module:ol/Feature|module:ol/render/Feature~Feature} feature Feature.
+         * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
          * @param {module:ol/layer/Layer} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
          */
@@ -482,7 +482,7 @@ Select.prototype.removeFeature_ = function(evt) {
 
 
 /**
- * @param {module:ol/Feature|module:ol/render/Feature~Feature} feature Feature.
+ * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
  * @private
  */
 Select.prototype.removeFeatureLayerAssociation_ = function(feature) {

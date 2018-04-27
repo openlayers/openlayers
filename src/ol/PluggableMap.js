@@ -336,7 +336,7 @@ const PluggableMap = function(options) {
   this.overlayIdIndex_ = {};
 
   /**
-   * @type {module:ol/renderer/Map~Map}
+   * @type {module:ol/renderer/Map}
    * @private
    */
   this.renderer_ = this.createRenderer(this.viewport_, this);
@@ -555,7 +555,7 @@ PluggableMap.prototype.disposeInternal = function() {
  * callback with each intersecting feature. Layers included in the detection can
  * be configured through the `layerFilter` option in `opt_options`.
  * @param {module:ol~Pixel} pixel Pixel.
- * @param {function(this: S, (module:ol/Feature|module:ol/render/Feature~Feature),
+ * @param {function(this: S, (module:ol/Feature|module:ol/render/Feature),
  *     module:ol/layer/Layer): T} callback Feature callback. The callback will be
  *     called with two arguments. The first argument is one
  *     {@link module:ol/Feature feature} or
@@ -589,7 +589,7 @@ PluggableMap.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_opt
  * Get all features that intersect a pixel on the viewport.
  * @param {module:ol~Pixel} pixel Pixel.
  * @param {module:ol/PluggableMap~AtPixelOptions=} opt_options Optional options.
- * @return {Array.<module:ol/Feature|module:ol/render/Feature~Feature>} The detected features or
+ * @return {Array.<module:ol/Feature|module:ol/render/Feature>} The detected features or
  * `null` if none were found.
  * @api
  */
@@ -831,7 +831,7 @@ PluggableMap.prototype.getPixelFromCoordinate = function(coordinate) {
 
 /**
  * Get the map renderer.
- * @return {module:ol/renderer/Map~Map} Renderer
+ * @return {module:ol/renderer/Map} Renderer
  */
 PluggableMap.prototype.getRenderer = function() {
   return this.renderer_;

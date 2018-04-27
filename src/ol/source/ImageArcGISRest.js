@@ -46,7 +46,7 @@ import {appendParams} from '../uri.js';
  *
  * If underlying map service is not using labels,
  * take advantage of ol image caching and use
- * {@link ol.source.TileArcGISRest} data source.
+ * {@link module:ol/source/TileArcGISRest} data source.
  *
  * @constructor
  * @fires ol.source.Image.Event

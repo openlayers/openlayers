@@ -14,7 +14,7 @@ import {create as createTransform, apply as applyTransform, compose as composeTr
 /**
  * @constructor
  * @abstract
- * @extends {ol.renderer.Layer}
+ * @extends {module:ol/renderer/Layer}
  * @param {module:ol/layer/Layer} layer Layer.
  */
 const CanvasLayerRenderer = function(layer) {

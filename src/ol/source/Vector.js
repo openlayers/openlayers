@@ -209,13 +209,13 @@ const VectorSource = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.structs.RBush.<module:ol/Feature>}
+   * @type {module:ol/structs/RBush.<module:ol/Feature>}
    */
   this.featuresRtree_ = useSpatialIndex ? new RBush() : null;
 
   /**
    * @private
-   * @type {ol.structs.RBush.<{extent: module:ol/extent~Extent}>}
+   * @type {module:ol/structs/RBush.<{extent: module:ol/extent~Extent}>}
    */
   this.loadedExtentsRtree_ = new RBush();
 
@@ -840,7 +840,7 @@ VectorSource.prototype.handleFeatureChange_ = function(event) {
 
 /**
  * Returns true if the feature is contained within the source.
- * @param {ol.Feature} feature Feature.
+ * @param {module:ol/Feature} feature Feature.
  * @return {boolean} Has feature.
  * @api
  */
