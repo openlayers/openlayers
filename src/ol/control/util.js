@@ -1,3 +1,6 @@
+/**
+ * @module ol/control/util
+ */
 import Collection from '../Collection.js';
 import Attribution from './Attribution.js';
 import Rotate from './Rotate.js';
