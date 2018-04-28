@@ -1,23 +1,15 @@
-const fs = require('fs-extra');
+const fse = require('fs-extra');
 const path = require('path');
-const async = require('async');
 const generateInfo = require('./generate-info');
 
 
 /**
  * Read the symbols from info file.
- * @param {function(Error, Array.<string>, Array.<Object>)} callback Called
- *     with the patterns and symbols (or any error).
+ * @return {Promise<Array>} Resolves with an array of symbol objects.
  */
-function getSymbols(callback) {
-  generateInfo(function(err) {
-    if (err) {
-      callback(new Error('Trouble generating info: ' + err.message));
-      return;
-    }
-    const symbols = require('../build/info.json').symbols;
-    callback(null, symbols.filter(symbol => symbol.kind != 'member'));
-  });
+async function getSymbols() {
+  const info = await generateInfo();
+  return info.symbols.filter(symbol => symbol.kind != 'member');
 }
 
 const srcPath = path.posix.resolve(__dirname, '../src').replace(/\\/g, '/');
@@ -27,15 +19,13 @@ function getPath(name) {
 }
 
 /**
- * Generate a list of symbol names.
- *
+ * Generate a list of imports.
  * @param {Array.<Object>} symbols List of symbols.
- * @param {function(Error, Array.<Object>, Array.<string>)} callback Called with
- *     the filtered list of symbols and a list of all provides (or any error).
+ * @return {Promise<Array>} A list of imports sorted by export name.
  */
-function addImports(symbols, callback) {
+function getImports(symbols) {
   const imports = {};
-  symbols.forEach(function(symbol) {
+  symbols.forEach(symbol => {
     const defaultExport = symbol.name.split('~');
     const namedExport = symbol.name.split('.');
     if (defaultExport.length > 1) {
@@ -50,8 +40,7 @@ function addImports(symbols, callback) {
       imports[namedImport] = true;
     }
   });
-
-  callback(null, symbols, Object.keys(imports).sort());
+  return Object.keys(imports).sort();
 }
 
 
@@ -112,24 +101,12 @@ function generateExports(symbols, namespaces, imports) {
 
 /**
  * Generate the exports code.
- *
- * @param {function(Error, string)} callback Called with the exports code or any
- *     error generating it.
+ * @return {Promise<string>} Resolves with the exports code.
  */
-function main(callback) {
-  async.waterfall([
-    getSymbols,
-    addImports,
-    function(symbols, imports, done) {
-      let code, err;
-      try {
-        code = generateExports(symbols, {}, imports);
-      } catch (e) {
-        err = e;
-      }
-      done(err, code);
-    }
-  ], callback);
+async function main() {
+  const symbols = await getSymbols();
+  const imports = await getImports(symbols);
+  return generateExports(symbols, {}, imports);
 }
 
 
@@ -138,16 +115,11 @@ function main(callback) {
  * function, and write the output file.
  */
 if (require.main === module) {
-  async.waterfall([
-    main,
-    fs.outputFile.bind(fs, path.resolve('src', 'index.js'))
-  ], function(err) {
-    if (err) {
-      process.stderr.write(err.message + '\n');
-      process.exit(1);
-    } else {
-      process.exit(0);
-    }
+  main().then(async code => {
+    const filepath = path.join(__dirname, '..', 'src', 'index.js');
+    await fse.outputFile(filepath, code);
+  }).catch(err => {
+    process.stderr.write(`${err.message}\n`, () => process.exit(1));
   });
 }
 

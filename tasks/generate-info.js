@@ -1,8 +1,6 @@
-const fs = require('fs-extra');
+const fse = require('fs-extra');
 const path = require('path');
 const spawn = require('child_process').spawn;
-
-const async = require('async');
 const walk = require('walk').walk;
 const isWindows = process.platform.indexOf('win') === 0;
 
@@ -31,7 +29,7 @@ function getBinaryPath(binaryName) {
 
   for (let i = 0; i < expectedPaths.length; i++) {
     const expectedPath = expectedPaths[i];
-    if (fs.existsSync(expectedPath)) {
+    if (fse.existsSync(expectedPath)) {
       return expectedPath;
     }
   }
@@ -46,91 +44,38 @@ const jsdocConfig = path.join(
 
 
 /**
- * Get the mtime of the info file.
- * @param {function(Error, Date)} callback Callback called with any
- *     error and the mtime of the info file (zero date if it doesn't exist).
+ * Generate a list of all .js paths in the source directory.
+ * @return {Promise<Array>} Resolves to an array of source paths.
  */
-function getInfoTime(callback) {
-  fs.stat(infoPath, function(err, stats) {
-    if (err) {
-      if (err.code === 'ENOENT') {
-        callback(null, new Date(0));
-      } else {
-        callback(err);
-      }
-    } else {
-      callback(null, stats.mtime);
-    }
-  });
-}
+function getPaths() {
+  return new Promise((resolve, reject) => {
+    let paths = [].concat(externsPaths);
 
-
-/**
- * Test whether any externs are newer than the provided date.
- * @param {Date} date Modification time of info file.
- * @param {function(Error, Date, boolen)} callback Called with any
- *     error, the mtime of the info file (zero date if it doesn't exist), and
- *     whether any externs are newer than that date.
- */
-function getNewerExterns(date, callback) {
-  let newer = false;
-  const walker = walk(externsDir);
-  walker.on('file', function(root, stats, next) {
-    const sourcePath = path.join(root, stats.name);
-    externsPaths.forEach(function(path) {
-      if (sourcePath === path && stats.mtime > date) {
-        newer = true;
+    const walker = walk(sourceDir);
+    walker.on('file', (root, stats, next) => {
+      const sourcePath = path.join(root, stats.name);
+      if (/\.js$/.test(sourcePath)) {
+        paths.push(sourcePath);
       }
+      next();
     });
-    next();
-  });
-  walker.on('errors', function() {
-    callback(new Error('Trouble walking ' + externsDir));
-  });
-  walker.on('end', function() {
-    callback(null, date, newer);
-  });
-}
+    walker.on('errors', () => {
+      reject(new Error(`Trouble walking ${sourceDir}`));
+    });
 
-
-/**
- * Generate a list of all .js paths in the source directory if any are newer
- * than the provided date.
- * @param {Date} date Modification time of info file.
- * @param {boolean} newer Whether any externs are newer than date.
- * @param {function(Error, Array.<string>)} callback Called with any
- *     error and the array of source paths (empty if none newer).
- */
-function getNewer(date, newer, callback) {
-  let paths = [].concat(externsPaths);
-
-  const walker = walk(sourceDir);
-  walker.on('file', function(root, stats, next) {
-    const sourcePath = path.join(root, stats.name);
-    if (/\.js$/.test(sourcePath)) {
-      paths.push(sourcePath);
-      if (stats.mtime > date) {
-        newer = true;
+    walker.on('end', () => {
+      /**
+       * Windows has restrictions on length of command line, so passing all the
+       * changed paths to a task will fail if this limit is exceeded.
+       * To get round this, if this is Windows and there are newer files, just
+       * pass the sourceDir to the task so it can do the walking.
+       */
+      if (isWindows) {
+        paths = [sourceDir].concat(externsPaths);
       }
-    }
-    next();
-  });
-  walker.on('errors', function() {
-    callback(new Error('Trouble walking ' + sourceDir));
-  });
-  walker.on('end', function() {
 
-    /**
-     * Windows has restrictions on length of command line, so passing all the
-     * changed paths to a task will fail if this limit is exceeded.
-     * To get round this, if this is Windows and there are newer files, just
-     * pass the sourceDir to the task so it can do the walking.
-     */
-    if (isWindows) {
-      paths = [sourceDir].concat(externsPaths);
-    }
-
-    callback(null, newer ? paths : []);
+      resolve(paths);
+    });
   });
 }
 
@@ -165,95 +110,66 @@ function parseOutput(output) {
 /**
  * Spawn JSDoc.
  * @param {Array.<string>} paths Paths to source files.
- * @param {function(Error, string)} callback Callback called with any error and
- *     the JSDoc output (new metadata).  If provided with an empty list of paths
- *     the callback will be called with null.
+ * @return {Promise<string>} Resolves with the JSDoc output (new metadata).
+ *     If provided with an empty list of paths, resolves with null.
  */
-function spawnJSDoc(paths, callback) {
-  if (paths.length === 0) {
-    process.nextTick(function() {
-      callback(null, null);
+function spawnJSDoc(paths) {
+  return new Promise((resolve, reject) => {
+    let output = '';
+    let errors = '';
+    const cwd = path.join(__dirname, '..');
+    const child = spawn(jsdoc, ['-c', jsdocConfig].concat(paths), {cwd: cwd});
+
+    child.stdout.on('data', data => {
+      output += String(data);
     });
-    return;
-  }
 
-  let output = '';
-  let errors = '';
-  const cwd = path.join(__dirname, '..');
-  const child = spawn(jsdoc, ['-c', jsdocConfig].concat(paths), {cwd: cwd});
+    child.stderr.on('data', data => {
+      errors += String(data);
+    });
 
-  child.stdout.on('data', function(data) {
-    output += String(data);
-  });
+    child.on('exit', code => {
+      if (code) {
+        reject(new Error(errors || 'JSDoc failed with no output'));
+        return;
+      }
 
-  child.stderr.on('data', function(data) {
-    errors += String(data);
-  });
-
-  child.on('exit', function(code) {
-    if (code) {
-      callback(new Error(errors || 'JSDoc failed with no output'));
-    } else {
       let info;
       try {
         info = parseOutput(output);
       } catch (err) {
-        callback(err);
+        reject(err);
         return;
       }
-      callback(null, info);
-    }
+      resolve(info);
+    });
   });
 }
 
+/**
+ * Writes the info.json file.
+ * @param {Object} info The info.
+ */
+async function write(info) {
+  await fse.outputJson(infoPath, info, {spaces: 2});
+}
 
 /**
- * Write symbol and define metadata to the info file.
- * @param {Object} info Symbol and define metadata.
- * @param {function(Error)} callback Callback.
+ * Generate info from the sources.
+ * @return {Promise<Error>} Resolves with the info object.
  */
-function writeInfo(info, callback) {
-  if (info) {
-    const str = JSON.stringify(info, null, '  ');
-    fs.outputFile(infoPath, str, callback);
-  } else {
-    process.nextTick(function() {
-      callback(null);
-    });
-  }
+async function main() {
+  const paths = await getPaths();
+  return await spawnJSDoc(paths);
 }
 
 
 /**
- * Determine if source files have been changed, run JSDoc and write updated
- * info if there are any changes.
- *
- * @param {function(Error)} callback Called when the info file has been written
- *     (or an error occurs).
- */
-function main(callback) {
-  async.waterfall([
-    getInfoTime,
-    getNewerExterns,
-    getNewer,
-    spawnJSDoc,
-    writeInfo
-  ], callback);
-}
-
-
-/**
- * If running this module directly, read the config file and call the main
- * function.
+ * If running this module directly, generate and write out the info.json file.
  */
 if (require.main === module) {
-  main(function(err) {
-    if (err) {
-      process.stderr.write(err.message + '\n');
-      process.exit(1);
-    } else {
-      process.exit(0);
-    }
+  main().then(write).catch(err => {
+    process.stderr.write(`${err.message}\n`, () => process.exit(1));
   });
 }
 
