@@ -34,12 +34,12 @@ map.addInteraction(extent);
 extent.setActive(false);
 
 //Enable interaction by holding shift
-this.addEventListener('keydown', function(event) {
+window.addEventListener('keydown', function(event) {
   if (event.keyCode == 16) {
     extent.setActive(true);
   }
 });
-this.addEventListener('keyup', function(event) {
+window.addEventListener('keyup', function(event) {
   if (event.keyCode == 16) {
     extent.setActive(false);
   }
