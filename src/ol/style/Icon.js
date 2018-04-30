@@ -16,12 +16,12 @@ import ImageStyle from '../style/Image.js';
 /**
  * @typedef {Object} Options
  * @property {Array.<number>} [anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
- * @property {module:ol/style/IconOrigin~IconOrigin} [anchorOrigin] Origin of the anchor: `bottom-left`, `bottom-right`,
+ * @property {module:ol/style/IconOrigin} [anchorOrigin] Origin of the anchor: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`. Default is `top-left`.
- * @property {module:ol/style/IconAnchorUnits~IconAnchorUnits} [anchorXUnits] Units in which the anchor x value is
+ * @property {module:ol/style/IconAnchorUnits} [anchorXUnits] Units in which the anchor x value is
  * specified. A value of `'fraction'` indicates the x value is a fraction of the icon. A value of `'pixels'` indicates
  * the x value in pixels. Default is `'fraction'`.
- * @property {module:ol/style/IconAnchorUnits~IconAnchorUnits} [anchorYUnits] Units in which the anchor y value is
+ * @property {module:ol/style/IconAnchorUnits} [anchorYUnits] Units in which the anchor y value is
  * specified. A value of `'fraction'` indicates the y value is a fraction of the icon. A value of `'pixels'` indicates
  * the y value in pixels. Default is `'fraction'`.
  * @property {module:ol/color~Color|string} [color] Color to tint the icon. If not specified,
@@ -34,7 +34,7 @@ import ImageStyle from '../style/Image.js';
  * to provide the size of the image, with the `imgSize` option.
  * @property {Array.<number>} [offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
  * sub-rectangle to use from the original icon image.
- * @property {module:ol/style/IconOrigin~IconOrigin} [offsetOrigin] Origin of the offset: `bottom-left`, `bottom-right`,
+ * @property {module:ol/style/IconOrigin} [offsetOrigin] Origin of the offset: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`. Default is `top-left`.
  * @property {number} [opacity=1] Opacity of the icon.
  * @property {number} [scale=1] Scale.
@@ -79,21 +79,21 @@ const Icon = function(opt_options) {
 
   /**
    * @private
-   * @type {module:ol/style/IconOrigin~IconOrigin}
+   * @type {module:ol/style/IconOrigin}
    */
   this.anchorOrigin_ = options.anchorOrigin !== undefined ?
     options.anchorOrigin : IconOrigin.TOP_LEFT;
 
   /**
    * @private
-   * @type {module:ol/style/IconAnchorUnits~IconAnchorUnits}
+   * @type {module:ol/style/IconAnchorUnits}
    */
   this.anchorXUnits_ = options.anchorXUnits !== undefined ?
     options.anchorXUnits : IconAnchorUnits.FRACTION;
 
   /**
    * @private
-   * @type {module:ol/style/IconAnchorUnits~IconAnchorUnits}
+   * @type {module:ol/style/IconAnchorUnits}
    */
   this.anchorYUnits_ = options.anchorYUnits !== undefined ?
     options.anchorYUnits : IconAnchorUnits.FRACTION;
@@ -158,7 +158,7 @@ const Icon = function(opt_options) {
 
   /**
    * @private
-   * @type {module:ol/style/IconOrigin~IconOrigin}
+   * @type {module:ol/style/IconOrigin}
    */
   this.offsetOrigin_ = options.offsetOrigin !== undefined ?
     options.offsetOrigin : IconOrigin.TOP_LEFT;

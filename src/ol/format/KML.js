@@ -36,10 +36,10 @@ import {createElementNS, getAllTextContent, isDocument, isNode, makeArrayExtende
 /**
  * @typedef {Object} Vec2
  * @property {number} x
- * @property {module:ol/style/IconAnchorUnits~IconAnchorUnits} xunits
+ * @property {module:ol/style/IconAnchorUnits} xunits
  * @property {number} y
- * @property {module:ol/style/IconAnchorUnits~IconAnchorUnits} yunits
- * @property {module:ol/style/IconOrigin~IconOrigin} origin
+ * @property {module:ol/style/IconAnchorUnits} yunits
+ * @property {module:ol/style/IconOrigin} origin
  */
 
 /**
@@ -72,12 +72,12 @@ export function getDefaultFillStyle() {
 let DEFAULT_IMAGE_STYLE_ANCHOR;
 
 /**
- * @type {module:ol/style/IconAnchorUnits~IconAnchorUnits}
+ * @type {module:ol/style/IconAnchorUnits}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
 
 /**
- * @type {module:ol/style/IconAnchorUnits~IconAnchorUnits}
+ * @type {module:ol/style/IconAnchorUnits}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
 
@@ -349,7 +349,7 @@ const SCHEMA_LOCATION = 'http://www.opengis.net/kml/2.2 ' +
 
 
 /**
- * @type {Object.<string, module:ol/style/IconAnchorUnits~IconAnchorUnits>}
+ * @type {Object.<string, module:ol/style/IconAnchorUnits>}
  */
 const ICON_ANCHOR_UNITS_MAP = {
   'fraction': IconAnchorUnits.FRACTION,

@@ -40,6 +40,7 @@ import ImageStyle from '../style/Image.js';
  * @property {number} size
  * @property {string} lineCap
  * @property {Array.<number>} lineDash
+ * @property {number} lineDashOffset
  * @property {string} lineJoin
  * @property {number} miterLimit
  */
