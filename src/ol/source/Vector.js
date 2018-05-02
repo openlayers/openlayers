@@ -885,6 +885,14 @@ VectorSource.prototype.loadFeatures = function(extent, resolution, projection) {
   }
 };
 
+/**
+ * Refreshes the source by clearing all features. clear() dispatches a
+ * 'change' event that triggers a reload of all features.
+ * @api
+ */
+VectorSource.prototype.refresh = function() {
+  this.clear();
+};
 
 /**
  * Remove an extent from the list of loaded extents.
