@@ -22,7 +22,7 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/proj~ProjectionLike} [defaultDataProjection='EPSG:4326'] Default data projection.
+ * @property {module:ol/proj~ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
  * @property {module:ol/proj~ProjectionLike} [featureProjection] Projection for features read or
  * written by the format.  Options passed to read or write methods will take precedence.
  * @property {string} [geometryName] Geometry name to use when creating features.
@@ -51,10 +51,9 @@ const GeoJSON = function(opt_options) {
   /**
    * @inheritDoc
    */
-  this.defaultDataProjection = getProjection(
-    options.defaultDataProjection ?
-      options.defaultDataProjection : 'EPSG:4326');
-
+  this.dataProjection = getProjection(
+    options.dataProjection ?
+      options.dataProjection : 'EPSG:4326');
 
   if (options.featureProjection) {
     this.defaultFeatureProjection = getProjection(options.featureProjection);
@@ -456,7 +455,7 @@ GeoJSON.prototype.readProjectionFromObject = function(object) {
       assert(false, 36); // Unknown SRS type
     }
   } else {
-    projection = this.defaultDataProjection;
+    projection = this.dataProjection;
   }
   return (
     /** @type {module:ol/proj/Projection} */ (projection)

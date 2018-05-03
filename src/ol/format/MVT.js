@@ -56,7 +56,7 @@ const MVT = function(opt_options) {
   /**
    * @type {module:ol/proj/Projection}
    */
-  this.defaultDataProjection = new Projection({
+  this.dataProjection = new Projection({
     code: '',
     units: Units.TILE_PIXELS
   });
@@ -411,7 +411,7 @@ MVT.prototype.readFeatures = function(source, opt_options) {
  * @api
  */
 MVT.prototype.readProjection = function(source) {
-  return this.defaultDataProjection;
+  return this.dataProjection;
 };
 
 
