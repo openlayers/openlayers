@@ -20,14 +20,14 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
  * Function to determine resolution at a point. The function is called with a
  * `{number}` view resolution and an `{module:ol/coordinate~Coordinate}` as arguments, and returns
  * the `{number}` resolution at the passed coordinate. If this is `undefined`,
- * the default {@link ol.proj#getPointResolution} function will be used.
+ * the default {@link module:ol/proj~getPointResolution} function will be used.
  */
 
 
 /**
  * @classdesc
  * Projection definition class. One of these is created for each projection
- * supported in the application and stored in the {@link ol.proj} namespace.
+ * supported in the application and stored in the {@link module:ol/proj} namespace.
  * You can use these in applications, but this is not required, as API params
  * and options use {@link module:ol/proj~ProjectionLike} which means the simple string
  * code will suffice.
@@ -264,7 +264,7 @@ Projection.prototype.setWorldExtent = function(worldExtent) {
 
 
 /**
- * Set the getPointResolution function (see {@link ol.proj#getPointResolution}
+ * Set the getPointResolution function (see {@link module:ol/proj~getPointResolution}
  * for this projection.
  * @param {function(number, module:ol/coordinate~Coordinate):number} func Function
  * @api
