@@ -60,6 +60,17 @@ const GeoJSON = function(opt_options) {
   }
 
   /**
+   * Indicate if the data projection has been provided manually.
+   * @type {boolean}
+   * @private
+   */
+  this.isDataProjectionProvided_ = false;
+
+  if ('dataProjection' in options) {
+    this.isDataProjectionProvided_ = true;
+  }
+
+  /**
    * Name of the geometry attribute for features.
    * @type {string|undefined}
    * @private
@@ -448,14 +459,14 @@ GeoJSON.prototype.readProjectionFromObject = function(object) {
   const geoJSONObject = /** @type {GeoJSONObject} */ (object);
   const crs = geoJSONObject.crs;
   let projection;
-  if (crs) {
+  if (crs === undefined || (crs && this.isDataProjectionProvided_)) {
+    projection = this.dataProjection;
+  } else {
     if (crs.type == 'name') {
       projection = getProjection(crs.properties.name);
     } else {
       assert(false, 36); // Unknown SRS type
     }
-  } else {
-    projection = this.dataProjection;
   }
   return (
     /** @type {module:ol/proj/Projection} */ (projection)
