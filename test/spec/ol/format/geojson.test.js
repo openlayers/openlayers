@@ -518,6 +518,54 @@ describe('ol.format.GeoJSON', function() {
 
     });
 
+    it('override crs with dataProjection', function() {
+
+      const json = {
+        type: 'FeatureCollection',
+        crs: {
+          type: 'EPSG',
+          properties: {
+            code: 4326
+          }
+        },
+        features: [{
+          type: 'Feature',
+          properties: {
+            foo: 'bar'
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [1, 2]
+          }
+        }, {
+          type: 'Feature',
+          properties: {
+            bam: 'baz'
+          },
+          geometry: {
+            type: 'LineString',
+            coordinates: [[1, 2], [3, 4]]
+          }
+        }]
+      };
+      const features = format.readFeatures(json, {dataProjection: 'EPSG:4326'});
+
+      expect(features.length).to.be(2);
+
+      const first = features[0];
+      expect(first).to.be.a(Feature);
+      expect(first.get('foo')).to.be('bar');
+      expect(first.getGeometry()).to.be.a(Point);
+
+      const second = features[1];
+      expect(second).to.be.a(Feature);
+      expect(second.get('bam')).to.be('baz');
+      expect(second.getGeometry()).to.be.a(LineString);
+
+      expect(format.readProjection(json)).to.be(getProjection('EPSG:4326'));
+
+    });
+
   });
 
   describe('#writeFeatures', function() {
