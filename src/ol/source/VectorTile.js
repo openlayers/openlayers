@@ -32,7 +32,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  *     var data = // ... fetch data
  *     var format = tile.getFormat();
  *     tile.setFeatures(format.readFeatures(data, {
- *       // uncomment the line below for ol.format.MVT only
+ *       // uncomment the line below for module:ol/format/MVT only
  *       extent: tile.getExtent(),
  *       featureProjection: map.getView().getProjection()
  *     }));

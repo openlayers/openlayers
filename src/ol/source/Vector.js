@@ -74,7 +74,7 @@ inherits(VectorSourceEvent, Event);
  *
  * ```js
  * var vectorSource = new VectorSource({
- *   format: new ol.format.GeoJSON(),
+ *   format: new GeoJSON(),
  *   loader: function(extent, resolution, projection) {
  *      var proj = projection.getCode();
  *      var url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
