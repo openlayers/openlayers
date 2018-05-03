@@ -452,7 +452,7 @@ CanvasReplayGroup.prototype.isEmpty = function() {
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
  * @param {Array.<module:ol/render/ReplayType~ReplayType>=} opt_replayTypes Ordered replay types to replay.
- *     Default is {@link ol.render.replay.ORDER}
+ *     Default is {@link module:ol/render/replay~ORDER}
  * @param {Object.<string, module:ol/render/canvas~DeclutterGroup>=} opt_declutterReplays Declutter replays.
  */
 CanvasReplayGroup.prototype.replay = function(context,

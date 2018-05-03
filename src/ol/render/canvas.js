@@ -64,7 +64,7 @@ import {create as createTransform} from '../transform.js';
  * rendered extent of the group in pixel space. `count` is the number of styles
  * in the group, i.e. 2 when an image and a text are grouped, or 1 otherwise.
  * In addition to these four elements, declutter instruction arrays (i.e. the
- * arguments to @{link ol.render.canvas.drawImage} are appended to the array.
+ * arguments to @{link module:ol/render/canvas~drawImage} are appended to the array.
  * @typedef {Array.<*>} DeclutterGroup
  */
 

@@ -448,7 +448,7 @@ CanvasImmediateRenderer.prototype.setStyle = function(style) {
 
 /**
  * Render a geometry into the canvas.  Call
- * {@link ol.render.canvas.Immediate#setStyle} first to set the rendering style.
+ * {@link module:ol/render/canvas/Immediate~CanvasImmediateRenderer#setStyle} first to set the rendering style.
  *
  * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry The geometry to render.
  * @override

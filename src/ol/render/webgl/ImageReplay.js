@@ -7,7 +7,7 @@ import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
  * @constructor
- * @extends {ol.render.webgl.TextureReplay}
+ * @extends {module:ol/render/webgl/TextureReplay}
  * @param {number} tolerance Tolerance.
  * @param {module:ol/extent~Extent} maxExtent Max extent.
  * @struct
