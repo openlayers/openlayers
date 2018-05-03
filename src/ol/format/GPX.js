@@ -52,7 +52,7 @@ const GPX = function(opt_options) {
   /**
    * @inheritDoc
    */
-  this.defaultDataProjection = getProjection('EPSG:4326');
+  this.dataProjection = getProjection('EPSG:4326');
 
   /**
    * @type {function(module:ol/Feature, Node)|undefined}

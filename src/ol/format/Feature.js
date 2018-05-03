@@ -10,8 +10,8 @@ import {get as getProjection, equivalent as equivalentProjection, transformExten
  * @typedef {Object} ReadOptions
  * @property {module:ol/proj~ProjectionLike} dataProjection Projection of the data we are reading.
  * If not provided, the projection will be derived from the data (where possible) or
- * the `defaultDataProjection` of the format is assigned (where set). If the projection
- * can not be derived from the data and if no `defaultDataProjection` is set for a format,
+ * the `dataProjection` of the format is assigned (where set). If the projection
+ * can not be derived from the data and if no `dataProjection` is set for a format,
  * the features will not be reprojected.
  * @property {module:ol/extent~Extent} extent Tile extent of the tile being read. This is only used and
  * required for {@link ol.format.MVT}.
@@ -24,8 +24,8 @@ import {get as getProjection, equivalent as equivalentProjection, transformExten
 /**
  * @typedef {Object} WriteOptions
  * @property {module:ol/proj~ProjectionLike} dataProjection Projection of the data we are writing.
- * If not provided, the `defaultDataProjection` of the format is assigned (where set).
- * If no `defaultDataProjection` is set for a format, the features will be returned
+ * If not provided, the `dataProjection` of the format is assigned (where set).
+ * If no `dataProjection` is set for a format, the features will be returned
  * in the `featureProjection`.
  * @property {module:ol/proj~ProjectionLike} featureProjection Projection of the feature geometries
  * that will be serialized by the format writer. If not provided, geometries are assumed
@@ -66,7 +66,7 @@ const FeatureFormat = function() {
    * @protected
    * @type {module:ol/proj/Projection}
    */
-  this.defaultDataProjection = null;
+  this.dataProjection = null;
 
   /**
    * @protected
@@ -98,7 +98,7 @@ FeatureFormat.prototype.getReadOptions = function(source, opt_options) {
 
 
 /**
- * Sets the `defaultDataProjection` on the options, if no `dataProjection`
+ * Sets the `dataProjection` on the options, if no `dataProjection`
  * is set.
  * @param {module:ol/format/Feature~WriteOptions|module:ol/format/Feature~ReadOptions|undefined} options
  *     Options.
@@ -108,7 +108,7 @@ FeatureFormat.prototype.getReadOptions = function(source, opt_options) {
  */
 FeatureFormat.prototype.adaptOptions = function(options) {
   return assign({
-    dataProjection: this.defaultDataProjection,
+    dataProjection: this.dataProjection,
     featureProjection: this.defaultFeatureProjection
   }, options);
 };

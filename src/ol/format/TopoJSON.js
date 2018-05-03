@@ -16,7 +16,7 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/proj~ProjectionLike} [defaultDataProjection='EPSG:4326'] Default data projection.
+ * @property {module:ol/proj~ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
  * @property {string} [layerName] Set the name of the TopoJSON topology
  * `objects`'s children as feature property with the specified name. This means
  * that when set to `'layer'`, a topology like
@@ -69,9 +69,9 @@ const TopoJSON = function(opt_options) {
   /**
    * @inheritDoc
    */
-  this.defaultDataProjection = getProjection(
-    options.defaultDataProjection ?
-      options.defaultDataProjection : 'EPSG:4326');
+  this.dataProjection = getProjection(
+    options.dataProjection ?
+      options.dataProjection : 'EPSG:4326');
 
 };
 
@@ -416,7 +416,7 @@ TopoJSON.prototype.readProjection;
  * @inheritDoc
  */
 TopoJSON.prototype.readProjectionFromObject = function(object) {
-  return this.defaultDataProjection;
+  return this.dataProjection;
 };
 
 

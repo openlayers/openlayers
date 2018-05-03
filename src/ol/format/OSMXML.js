@@ -30,7 +30,7 @@ const OSMXML = function() {
   /**
    * @inheritDoc
    */
-  this.defaultDataProjection = getProjection('EPSG:4326');
+  this.dataProjection = getProjection('EPSG:4326');
 };
 
 inherits(OSMXML, XMLFeature);
