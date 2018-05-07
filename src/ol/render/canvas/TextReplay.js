@@ -258,14 +258,18 @@ CanvasTextReplay.prototype.drawText = function(geometry, feature) {
       default:
     }
     end = this.appendFlatCoordinates(flatCoordinates, 0, end, stride, false, false);
-    this.beginGeometry(geometry, feature);
     if (textState.backgroundFill || textState.backgroundStroke) {
       this.setFillStrokeStyle(textState.backgroundFill, textState.backgroundStroke);
-      this.updateFillStyle(this.state, this.createFill, geometry);
-      this.hitDetectionInstructions.push(this.createFill(this.state, geometry));
-      this.updateStrokeStyle(this.state, this.applyStroke);
-      this.hitDetectionInstructions.push(this.createStroke(this.state));
+      if (textState.backgroundFill) {
+        this.updateFillStyle(this.state, this.createFill, geometry);
+        this.hitDetectionInstructions.push(this.createFill(this.state, geometry));
+      }
+      if (textState.backgroundStroke) {
+        this.updateStrokeStyle(this.state, this.applyStroke);
+        this.hitDetectionInstructions.push(this.createStroke(this.state));
+      }
     }
+    this.beginGeometry(geometry, feature);
     this.drawTextImage_(label, begin, end);
     this.endGeometry(geometry, feature);
   }
