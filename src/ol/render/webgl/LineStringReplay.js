@@ -37,7 +37,7 @@ const Instruction = {
 
 /**
  * @constructor
- * @extends {ol.render.webgl.Replay}
+ * @extends {module:ol/render/webgl/Replay}
  * @param {number} tolerance Tolerance.
  * @param {module:ol/extent~Extent} maxExtent Max extent.
  * @struct

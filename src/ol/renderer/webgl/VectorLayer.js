@@ -53,7 +53,7 @@ const WebGLVectorLayerRenderer = function(mapRenderer, vectorLayer) {
 
   /**
    * @private
-   * @type {ol.render.webgl.ReplayGroup}
+   * @type {module:ol/render/webgl/ReplayGroup}
    */
   this.replayGroup_ = null;
 
@@ -307,7 +307,7 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
  * @param {number} pixelRatio Pixel ratio.
  * @param {(module:ol/style/Style|Array.<module:ol/style/Style>)} styles The style or array of
  *     styles.
- * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
+ * @param {module:ol/render/webgl/ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
 WebGLVectorLayerRenderer.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {

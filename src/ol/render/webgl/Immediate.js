@@ -88,7 +88,7 @@ inherits(WebGLImmediateRenderer, VectorContext);
 
 
 /**
- * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
+ * @param {module:ol/render/webgl/ReplayGroup} replayGroup Replay group.
  * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry Geometry.
  * @private
  */
