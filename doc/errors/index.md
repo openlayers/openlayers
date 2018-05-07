@@ -139,7 +139,7 @@ Invalid geometry layout. Must be `XY`, `XYZ`, `XYM` or `XYZM`.
 
 ### 36
 
-Unknown SRS type. Expected `"name"` or `"EPSG"`.
+Unknown SRS type. Expected `"name"`.
 
 ### 37
 
