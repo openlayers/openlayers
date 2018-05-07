@@ -64,7 +64,7 @@ exportButton.addEventListener('click', function() {
   const dim = dims[format];
   const width = Math.round(dim[0] * resolution / 25.4);
   const height = Math.round(dim[1] * resolution / 25.4);
-  const size = /** @type {ol.Size} */ (map.getSize());
+  const size = /** @type {module:ol/size~Size} */ (map.getSize());
   const extent = map.getView().calculateExtent(size);
 
   const source = raster.getSource();
