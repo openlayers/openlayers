@@ -23,21 +23,21 @@ const LinkedList = function(opt_circular) {
 
   /**
    * @private
-   * @type {module:ol/structs/LinkedList~Item}|undefined}
+   * @type {module:ol/structs/LinkedList~Item|undefined}
    */
-  this.first_ = undefined;
+  this.first_;
 
   /**
    * @private
-   * @type {module:ol/structs/LinkedList~Item}|undefined}
+   * @type {module:ol/structs/LinkedList~Item|undefined}
    */
-  this.last_ = undefined;
+  this.last_;
 
   /**
    * @private
-   * @type {module:ol/structs/LinkedList~Item}|undefined}
+   * @type {module:ol/structs/LinkedList~Item|undefined}
    */
-  this.head_ = undefined;
+  this.head_;
 
   /**
    * @private
@@ -59,7 +59,7 @@ const LinkedList = function(opt_circular) {
  */
 LinkedList.prototype.insertItem = function(data) {
 
-  /** @type {module:ol/structs/LinkedList~Item}} */
+  /** @type {module:ol/structs/LinkedList~Item} */
   const item = {
     prev: undefined,
     next: undefined,
