@@ -48,7 +48,6 @@ const ImageSourceEventType = {
  *
  * @constructor
  * @extends {module:ol/events/Event}
- * @implements {oli.source.ImageEvent}
  * @param {string} type Type.
  * @param {module:ol/Image~Image} image The image.
  */

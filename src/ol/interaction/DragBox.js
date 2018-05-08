@@ -69,7 +69,6 @@ const DragBoxEventType = {
  * @param {module:ol/MapBrowserEvent} mapBrowserEvent Originating event.
  * @extends {module:ol/events/Event}
  * @constructor
- * @implements {oli.DragBoxEvent}
  */
 const DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
   Event.call(this, type);

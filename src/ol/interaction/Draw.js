@@ -131,7 +131,6 @@ const DrawEventType = {
  *
  * @constructor
  * @extends {module:ol/events/Event}
- * @implements {oli.DrawEvent}
  * @param {module:ol/interaction/Draw~DrawEventType} type Type.
  * @param {module:ol/Feature} feature The feature drawn.
  */

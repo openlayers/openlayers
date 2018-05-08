@@ -17,7 +17,6 @@ import {assign} from './obj.js';
  * @param {string} key The property name.
  * @param {*} oldValue The old value for `key`.
  * @extends {module:ol/events/Event}
- * @implements {oli.Object.Event}
  * @constructor
  */
 const ObjectEvent = function(type, key, oldValue) {

@@ -329,7 +329,6 @@ TileSource.prototype.useTile = UNDEFINED;
  *
  * @constructor
  * @extends {module:ol/events/Event}
- * @implements {oli.source.Tile.Event}
  * @param {string} type Type.
  * @param {module:ol/Tile} tile The tile.
  */

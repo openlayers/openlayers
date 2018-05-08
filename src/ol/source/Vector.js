@@ -38,7 +38,6 @@ import RBush from '../structs/RBush.js';
  *
  * @constructor
  * @extends {module:ol/events/Event}
- * @implements {oli.source.Vector.Event}
  * @param {string} type Type.
  * @param {module:ol/Feature=} opt_feature Feature.
  */

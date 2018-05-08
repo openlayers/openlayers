@@ -9,7 +9,6 @@ import {VERSION, inherits} from './index.js';
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error}
  * @constructor
  * @extends {Error}
- * @implements {oli.AssertionError}
  * @param {number} code Error code.
  */
 const AssertionError = function(code) {

@@ -11,7 +11,6 @@ import MapEvent from './MapEvent.js';
  *
  * @constructor
  * @extends {module:ol/MapEvent}
- * @implements {oli.MapBrowserEvent}
  * @param {string} type Event type.
  * @param {module:ol/PluggableMap} map Map.
  * @param {Event} browserEvent Browser event.

@@ -107,7 +107,6 @@ const SelectEventType = {
  * @param {Array.<module:ol/Feature>} deselected Deselected features.
  * @param {module:ol/MapBrowserEvent} mapBrowserEvent Associated
  *     {@link module:ol/MapBrowserEvent}.
- * @implements {oli.SelectEvent}
  * @extends {module:ol/events/Event}
  * @constructor
  */

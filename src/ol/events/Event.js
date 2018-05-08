@@ -12,7 +12,6 @@
  * {@link module:ol/events/EventTarget~EventTarget}.
  *
  * @constructor
- * @implements {oli.events.Event}
  * @param {string} type Type.
  */
 const Event = function(type) {

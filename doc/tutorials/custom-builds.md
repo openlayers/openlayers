@@ -55,7 +55,6 @@ Creating a custom build requires writing a build configuration file. The format 
       "externs/closure-compiler.js",
       "externs/esrijson.js",
       "externs/geojson.js",
-      "externs/oli.js",
       "externs/proj4js.js",
       "externs/tilejson.js",
       "externs/topojson.js"
@@ -205,7 +204,6 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](https://openl
       "externs/closure-compiler.js",
       "externs/esrijson.js",
       "externs/geojson.js",
-      "externs/oli.js",
       "externs/proj4js.js",
       "externs/tilejson.js",
       "externs/topojson.js"

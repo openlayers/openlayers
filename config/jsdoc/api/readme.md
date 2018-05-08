@@ -47,21 +47,6 @@ ol.MapBrowserEventType = {
 ```
 Note the value of the `@event` annotation. The text before the hash refers to the event class that the event belongs to, and the text after the hash is the type of the event.
 
-To export event properties, they need to be defined in `externs/oli.js` (also see `readme.md` in `externs/`) and marked with an @api annotation:
-```js
-/** @interface */
-oli.MapBrowserEvent;
-
-/**
- * @type {ol.Coordinate}
- * @api
- */
-oli.MapBrowserEvent.prototype.coordinate;
-
-// ...
-
-};
-```
 To document which events are fired by a class or method, the `@fires` annotation is used:
 ```js
 /**

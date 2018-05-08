@@ -46,7 +46,6 @@ import {listen, unlistenByKey} from '../events.js';
  *
  * @constructor
  * @extends {module:ol/Object}
- * @implements {oli.control.Control}
  * @param {module:ol/control/Control~Options} options Control options.
  * @api
  */
