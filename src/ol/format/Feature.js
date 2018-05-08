@@ -14,7 +14,7 @@ import {get as getProjection, equivalent as equivalentProjection, transformExten
  * can not be derived from the data and if no `defaultDataProjection` is set for a format,
  * the features will not be reprojected.
  * @property {module:ol/extent~Extent} extent Tile extent of the tile being read. This is only used and
- * required for {@link ol.format.MVT}.
+ * required for {@link module:ol/format/MVT}.
  * @property {module:ol/proj~ProjectionLike} featureProjection Projection of the feature geometries
  * created by the format reader. If not provided, features will be returned in the
  * `dataProjection`.
@@ -230,7 +230,7 @@ export function transformWithOptions(geometry, write, opt_options) {
         write ? featureProjection : dataProjection,
         write ? dataProjection : featureProjection);
     } else {
-      // FIXME this is necessary because ol.format.GML treats extents
+      // FIXME this is necessary because module:ol/format/GML treats extents
       // as geometries
       transformed = transformExtent(
         geometry,

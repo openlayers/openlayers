@@ -21,7 +21,7 @@ import Layer from '../layer/Layer.js';
  * @property {module:ol/PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use {@link ol.Map#addLayer}.
+ * use {@link module:ol/PluggableMap#addLayer}.
  * @property {module:ol/source/Image} [source] Source for this layer.
  */
 

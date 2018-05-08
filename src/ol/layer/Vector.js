@@ -36,12 +36,12 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * @property {module:ol/PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
- * use {@link ol.Map#addLayer}.
+ * use {@link module:ol/PluggableMap#addLayer}.
  * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
  * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
  * means higher priority.
- * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style] Layer style. See
- * {@link ol.style} for default style which will be used if this is not defined.
+ * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style]
+ * Layer style. See {@link module:ol/style/Style} for default style which will be used if this is not defined.
  * @property {number} [maxTilesLoading=16] Maximum number tiles to load simultaneously.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
  * recreated during animations. This means that no vectors will be shown clipped, but the setting
@@ -262,7 +262,7 @@ VectorLayer.prototype.setRenderOrder = function(renderOrder) {
  * an array of styles. If it is `undefined` the default style is used. If
  * it is `null` the layer has no style (a `null` style), so only features
  * that have their own styles will be rendered in the layer. See
- * {@link ol.style} for information on the default style.
+ * {@link module:ol/style/Style} for information on the default style.
  * @param {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction|null|undefined}
  *     style Layer style.
  * @api

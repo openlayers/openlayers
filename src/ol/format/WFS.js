@@ -21,7 +21,8 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
  * @typedef {Object} Options
  * @property {Object.<string, string>|string} [featureNS] The namespace URI used for features.
  * @property {Array.<string>|string} [featureType] The feature type to parse. Only used for read operations.
- * @property {module:ol/format/GMLBase} [gmlFormat] The GML format to use to parse the response. Default is `ol.format.GML3`.
+ * @property {module:ol/format/GMLBase} [gmlFormat] The GML format to use to parse the response. Default
+ * is `module:ol/format/GML3`.
  * @property {string} [schemaLocation] Optional schemaLocation to use for serialization, this will override the default.
  */
 
@@ -45,7 +46,7 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
  * Web Feature Services have repurposed `maxfeatures` instead.
  * @property {module:ol/extent~Extent} [bbox] Extent to use for the BBOX filter.
  * @property {module:ol/format/filter/Filter} [filter] Filter condition. See
- * {@link ol.format.filter} for more information.
+ * {@link module:ol/format/filter} for more information.
  * @property {string} [resultType] Indicates what response should be returned,
  * E.g. `hits` only includes the `numberOfFeatures` attribute in the response and no features.
  */

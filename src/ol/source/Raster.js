@@ -46,14 +46,14 @@ import {create as createTransform} from '../transform.js';
 const RasterEventType = {
   /**
    * Triggered before operations are run.
-   * @event ol.source.Raster.Event#beforeoperations
+   * @event oli.source.RasterEvent#beforeoperations
    * @api
    */
   BEFOREOPERATIONS: 'beforeoperations',
 
   /**
    * Triggered after operations are run.
-   * @event ol.source.Raster.Event#afteroperations
+   * @event oli.source.RasterEvent#afteroperations
    * @api
    */
   AFTEROPERATIONS: 'afteroperations'
@@ -72,7 +72,7 @@ const RasterOperationType = {
 
 /**
  * @classdesc
- * Events emitted by {@link ol.source.Raster} instances are instances of this
+ * Events emitted by {@link module:ol/source/Raster} instances are instances of this
  * type.
  *
  * @constructor
@@ -138,7 +138,7 @@ inherits(RasterSourceEvent, Event);
  *
  * @constructor
  * @extends {module:ol/source/Image}
- * @fires ol.source.Raster.Event
+ * @fires oli.source.RasterEvent
  * @param {module:ol/source/Raster~Options=} options Options.
  * @api
  */
@@ -152,7 +152,7 @@ const RasterSource = function(options) {
 
   /**
    * @private
-   * @type {ol.source.RasterOperationType}
+   * @type {module:ol/source/Raster~RasterOperationType}
    */
   this.operationType_ = options.operationType !== undefined ?
     options.operationType : RasterOperationType.PIXEL;
@@ -328,7 +328,7 @@ RasterSource.prototype.getImage = function(extent, resolution, pixelRatio, proje
   const frameState = this.updateFrameState_(extent, resolution, projection);
   this.requestedFrameState_ = frameState;
 
-  // check if we can't reuse the existing ol.ImageCanvas
+  // check if we can't reuse the existing module:ol/ImageCanvas
   if (this.renderedImageCanvas_) {
     const renderedResolution = this.renderedImageCanvas_.getResolution();
     const renderedExtent = this.renderedImageCanvas_.getExtent();

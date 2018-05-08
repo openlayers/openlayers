@@ -1,6 +1,6 @@
 /**
  * The ol.proj namespace stores:
- * * a list of {@link ol.proj.Projection}
+ * * a list of {@link module:ol/proj/Projection}
  * objects, one for each projection supported by the application
  * * a list of transform functions needed to convert coordinates in one projection
  * into another.
@@ -35,18 +35,18 @@
  * Note that Proj4js does not support projection extents. If you want to add
  * one for creating default tile grids, you can add it after the Projection
  * object has been created with `setExtent`, for example,
- * `ol.proj.get('EPSG:1234').setExtent(extent)`.
+ * `proj.get('EPSG:1234').setExtent(extent)`.
  *
  * In addition to Proj4js support, any transform functions can be added with
- * {@link ol.proj.addCoordinateTransforms}. To use this, you must first create
- * a {@link ol.proj.Projection} object for the new projection and add it with
- * {@link ol.proj.addProjection}. You can then add the forward and inverse
- * functions with {@link ol.proj.addCoordinateTransforms}. See
+ * {@link module:ol/proj~addCoordinateTransforms}. To use this, you must first create
+ * a {@link module:ol/proj/Projection} object for the new projection and add it with
+ * {@link module:ol/proj~addProjection}. You can then add the forward and inverse
+ * functions with {@link module:ol/proj~addCoordinateTransforms}. See
  * examples/wms-custom-proj for an example of this.
  *
  * Note that if no transforms are needed and you only need to define the
- * projection, just add a {@link ol.proj.Projection} with
- * {@link ol.proj.addProjection}. See examples/wms-no-proj for an example of
+ * projection, just add a {@link module:ol/proj/Projection} with
+ * {@link module:ol/proj~addProjection}. See examples/wms-no-proj for an example of
  * this.
  *
  * @namespace ol.proj

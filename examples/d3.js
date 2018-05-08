@@ -24,17 +24,17 @@ const map = new Map({
 
 
 /**
- * Load the topojson data and create an ol.layer.Image for that data.
+ * Load the topojson data and create an ol layer Image for that data.
  */
 d3.json('data/topojson/us.json', function(error, us) {
   const features = topojson.feature(us, us.objects.counties);
 
   /**
    * This function uses d3 to render the topojson features to a canvas.
-   * @param {ol.Extent} extent Extent.
+   * @param {module:ol/extent~Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {ol.Size} size Size.
+   * @param {module:ol/size~Size} size Size.
    * @param {module:ol/proj/Projection~Projection} projection Projection.
    * @return {HTMLCanvasElement} A canvas element.
    */

@@ -116,7 +116,7 @@ inherits(TileDebug, TileSource);
 TileDebug.prototype.getTile = function(z, x, y) {
   const tileCoordKey = getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
-    return /** @type {!ol.source.LabeledTile} */ (this.tileCache.get(tileCoordKey));
+    return /** @type {!module:ol/source/TileDebug~LabeledTile} */ (this.tileCache.get(tileCoordKey));
   } else {
     const tileSize = toSize(this.tileGrid.getTileSize(z));
     const tileCoord = [z, x, y];

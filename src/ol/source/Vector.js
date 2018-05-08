@@ -24,7 +24,7 @@ import RBush from '../structs/RBush.js';
 /**
  * A function that takes an {@link module:ol/extent~Extent} and a resolution as arguments, and
  * returns an array of {@link module:ol/extent~Extent} with the extents to load. Usually this
- * is one of the standard {@link ol.loadingstrategy} strategies.
+ * is one of the standard {@link module:ol/loadingstrategy} strategies.
  *
  * @typedef {function(module:ol/extent~Extent, number): Array.<module:ol/extent~Extent>} LoadingStrategy
  * @api
@@ -73,8 +73,9 @@ inherits(VectorSourceEvent, Event);
  * Example:
  *
  * ```js
+ * import {bbox as loadingStrategyBbox} from 'ol/strategy';
  * var vectorSource = new VectorSource({
- *   format: new ol.format.GeoJSON(),
+ *   format: new GeoJSON(),
  *   loader: function(extent, resolution, projection) {
  *      var proj = projection.getCode();
  *      var url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
@@ -97,7 +98,7 @@ inherits(VectorSourceEvent, Event);
  *      }
  *      xhr.send();
  *    },
- *    strategy: ol.loadingstrategy.bbox
+ *    strategy: loadingStrategyBbox
  *  });
  * ```
  * @property {boolean} [overlaps=true] This source may have overlapping geometries.
@@ -105,12 +106,12 @@ inherits(VectorSourceEvent, Event);
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
  * stroke operations.
  * @property {module:ol/source/Vector~LoadingStrategy} [strategy] The loading strategy to use.
- * By default an {@link ol.loadingstrategy.all}
+ * By default an {@link module:ol/loadingstrategy~all}
  * strategy is used, a one-off strategy which loads all features at once.
  * @property {string|module:ol/featureloader~FeatureUrlfunction} [url]
  * Setting this option instructs the source to load features using an XHR loader
- * (see {@link ol.featureloader.xhr}). Use a `string` and an
- * {@link ol.loadingstrategy.all} for a one-off download of all features from
+ * (see {@link module:ol/featureloader~xhr}). Use a `string` and an
+ * {@link module:ol/loadingstrategy~all} for a one-off download of all features from
  * the given URL. Use a {@link module:ol/featureloader~FeatureUrlfunction} to generate the url with
  * other loading strategies.
  * Requires `format` to be set as well.
@@ -151,7 +152,7 @@ inherits(VectorSourceEvent, Event);
  *
  * @constructor
  * @extends {module:ol/source/Source}
- * @fires ol.source.Vector.Event
+ * @fires oli.source.VectorEvent
  * @param {module:ol/source/Vector~Options=} opt_options Vector source options.
  * @api
  */
@@ -233,7 +234,7 @@ const VectorSource = function(opt_options) {
   this.idIndex_ = {};
 
   /**
-   * A lookup of features without id (keyed by ol.getUid(feature)).
+   * A lookup of features without id (keyed by module:ol~getUid(feature)).
    * @private
    * @type {!Object.<string, module:ol/Feature>}
    */

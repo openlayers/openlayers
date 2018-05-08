@@ -21,7 +21,7 @@ const RenderEvent = function(
   Event.call(this, type);
 
   /**
-   * For canvas, this is an instance of {@link ol.render.canvas.Immediate}.
+   * For canvas, this is an instance of {@link module:ol/render/canvas/Immediate}.
    * @type {module:ol/render/VectorContext|undefined}
    * @api
    */

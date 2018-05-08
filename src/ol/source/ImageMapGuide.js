@@ -15,7 +15,7 @@ import {appendParams} from '../uri.js';
  * @property {string} [url] The mapagent url.
  * @property {number} [displayDpi=96] The display resolution.
  * @property {number} [metersPerUnit=1] The meters-per-unit value.
- * @property {boolean} [hidpi=true] Use the `ol.Map#pixelRatio` value when requesting
+ * @property {boolean} [hidpi=true] Use the `module:ol/PluggableMap#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {boolean} [useOverlay] If `true`, will use `GETDYNAMICMAPOVERLAYIMAGE`.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
@@ -23,7 +23,8 @@ import {appendParams} from '../uri.js';
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {Array.<number>} [resolutions] Resolutions.
  * If specified, requests will be made for these resolutions only.
- * @property {ol.ImageLoadFunctionType} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {module:ol/Image~ImageWrapper#LoadFunction} [imageLoadFunction] Optional function to load an
+ * image given a URL.
  * @property {Object} [params] Additional parameters.
  */
 
@@ -33,7 +34,7 @@ import {appendParams} from '../uri.js';
  * Source for images from Mapguide servers
  *
  * @constructor
- * @fires ol.source.Image.Event
+ * @fires oli.source.ImageEvent
  * @extends {module:ol/source/Image}
  * @param {module:ol/source/ImageMapGuide~Options=} options ImageMapGuide options.
  * @api

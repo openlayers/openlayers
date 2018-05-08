@@ -20,7 +20,8 @@ import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
  * @property {module:ol/extent~Extent} [imageExtent] Extent of the image in map coordinates.
  * This is the [left, bottom, right, top] map coordinates of your image.
- * @property {ol.ImageLoadFunctionType} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {module:ol/Image~ImageWrapper#LoadFunction} [imageLoadFunction] Optional function to load an
+ * image given a URL.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {module:ol/size~Size} [imageSize] Size of the image in pixels. Usually the image size is auto-detected, so this
  * only needs to be set if auto-detection fails for some reason.
