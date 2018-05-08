@@ -25,7 +25,7 @@ import SourceState from '../source/State.js';
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
  * @property {module:ol/source/Source} [source] Source for this layer.  If not provided to the constructor,
- * the source can be set by calling {@link ol.layer.Layer#setSource layer.setSource(source)} after
+ * the source can be set by calling {@link module:ol/layer/Layer#setSource layer.setSource(source)} after
  * construction.
  */
 

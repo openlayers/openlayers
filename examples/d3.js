@@ -24,7 +24,7 @@ const map = new Map({
 
 
 /**
- * Load the topojson data and create an ol.layer.Image for that data.
+ * Load the topojson data and create an ol layer Image for that data.
  */
 d3.json('data/topojson/us.json', function(error, us) {
   const features = topojson.feature(us, us.objects.counties);
