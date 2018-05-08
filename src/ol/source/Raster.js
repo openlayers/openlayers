@@ -77,7 +77,6 @@ const RasterOperationType = {
  *
  * @constructor
  * @extends {module:ol/events/Event}
- * @implements {oli.source.RasterEvent}
  * @param {string} type Type.
  * @param {module:ol/PluggableMap~FrameState} frameState The frame state.
  * @param {Object} data An object made available to operations.

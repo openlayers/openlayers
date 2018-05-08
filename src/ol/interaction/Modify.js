@@ -93,7 +93,6 @@ const ModifyEventType = {
  *
  * @constructor
  * @extends {module:ol/events/Event}
- * @implements {oli.ModifyEvent}
  * @param {ModifyEventType} type Type.
  * @param {module:ol/Collection.<module:ol/Feature>} features
  * The features modified.

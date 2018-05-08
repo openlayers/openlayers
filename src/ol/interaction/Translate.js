@@ -59,7 +59,6 @@ const TranslateEventType = {
  *
  * @constructor
  * @extends {module:ol/events/Event}
- * @implements {oli.interaction.TranslateEvent}
  * @param {module:ol/interaction/Translate~TranslateEventType} type Type.
  * @param {module:ol/Collection.<module:ol/Feature>} features The features translated.
  * @param {module:ol/coordinate~Coordinate} coordinate The event coordinate.

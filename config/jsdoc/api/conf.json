@@ -10,8 +10,7 @@
         "includePattern": ".+\\.js(doc)?$",
         "excludePattern": "(^|\\/|\\\\)_",
         "include": [
-            "src",
-            "externs/oli.js"
+            "src"
         ]
     },
     "plugins": [

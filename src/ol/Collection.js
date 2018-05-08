@@ -24,7 +24,6 @@ const Property = {
  *
  * @constructor
  * @extends {module:ol/events/Event}
- * @implements {oli.CollectionEvent}
  * @param {module:ol/CollectionEventType} type Type.
  * @param {*=} opt_element Element.
  */

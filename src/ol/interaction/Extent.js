@@ -53,7 +53,6 @@ const ExtentEventType = {
  * instances of this type.
  *
  * @constructor
- * @implements {oli.ExtentEvent}
  * @param {module:ol/extent~Extent} extent the new extent
  * @extends {module:ol/events/Event}
  */

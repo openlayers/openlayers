@@ -57,10 +57,8 @@ function includeAugments(doclet) {
             }
           });
         }
-        if (cls.longname.indexOf('oli.') !== 0) {
-          cls._hideConstructor = true;
-          delete cls.undocumented;
-        }
+        cls._hideConstructor = true;
+        delete cls.undocumented;
       }
     }
   }

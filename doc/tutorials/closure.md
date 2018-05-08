@@ -175,9 +175,6 @@ The minimum config file looks like this:
     "define": [
       "ol.ENABLE_WEBGL=false"
     ],
-    "js": [
-      "node_modules/openlayers/externs/oli.js"
-    ],
     "extra_annotation_name": [
       "api", "observable"
     ],
@@ -224,9 +221,6 @@ Here is a version of `config.json` with more compilation checks enabled:
     ],
     "define": [
       "ol.ENABLE_WEBGL=false"
-    ],
-    "js": [
-      "node_modules/openlayers/externs/oli.js"
     ],
     "jscomp_error": [
       "*"
