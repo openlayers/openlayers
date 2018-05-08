@@ -107,7 +107,7 @@ const ImageSource = function(options) {
 
   /**
    * @private
-   * @type {ol.reproj.Image}
+   * @type {module:ol/reproj/Image~ReprojImage}
    */
   this.reprojectedImage_ = null;
 

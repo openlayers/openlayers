@@ -87,6 +87,6 @@ const centerlausanne = document.getElementById('centerlausanne');
 centerlausanne.addEventListener('click', function() {
   const feature = source.getFeatures()[1];
   const point = /** @type {module:ol/geom/Point~Point} */ (feature.getGeometry());
-  const size = /** @type {ol.Size} */ (map.getSize());
+  const size = /** @type {module:ol/size~Size} */ (map.getSize());
   view.centerOn(point.getCoordinates(), size, [570, 500]);
 }, false);

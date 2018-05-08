@@ -3,7 +3,7 @@
  */
 // FIXME test, especially polygons with holes and multipolygons
 // FIXME need to handle large thick features (where pixel size matters)
-// FIXME add offset and end to ol.geom.flat.transform.transform2D?
+// FIXME add offset and end to module:ol/geom/flat/transform~transform2D?
 
 import {inherits} from '../../index.js';
 import {equals} from '../../array.js';

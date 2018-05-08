@@ -82,7 +82,7 @@ const LayerGroup = function(opt_options) {
       layers = new Collection(layers.slice(), {unique: true});
     } else {
       assert(layers instanceof Collection,
-        43); // Expected `layers` to be an array or an `ol.Collection`
+        43); // Expected `layers` to be an array or an `module:ol/Collection`
       layers = layers;
     }
   } else {

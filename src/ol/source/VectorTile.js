@@ -22,7 +22,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {module:ol/source/State~State} [state] Source state.
  * @property {module:ol/VectorTile~TileClass} [tileClass] Class used to instantiate image tiles.
- * Default is {@link ol.VectorTile}.
+ * Default is {@link module:ol/VectorTile}.
  * @property {module:ol/tilegrid/TileGrid} [tileGrid] Tile grid.
  * @property {module:ol/Tile~LoadFunction} [tileLoadFunction]
  * Optional function to load a tile given a URL. Could look like this:
