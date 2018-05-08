@@ -1,6 +1,90 @@
 /**
  * @module ol/style/Style
  */
+
+/**
+ * Feature styles.
+ *
+ * If no style is defined, the following default style is used:
+ * ```js
+ *  import {Fill, Stroke, Cirle, Style} from 'ol/style';
+ *
+ *  var fill = new Fill({
+ *    color: 'rgba(255,255,255,0.4)'
+ *  });
+ *  var stroke = new Stroke({
+ *    color: '#3399CC',
+ *    width: 1.25
+ *  });
+ *  var styles = [
+ *    new Style({
+ *      image: new Circle({
+ *        fill: fill,
+ *        stroke: stroke,
+ *        radius: 5
+ *      }),
+ *      fill: fill,
+ *      stroke: stroke
+ *    })
+ *  ];
+ * ```
+ *
+ * A separate editing style has the following defaults:
+ * ```js
+ *  import {Fill, Stroke, Cirle, Style} from 'ol/style';
+ *  import GeometryType from 'ol/geom/GeometryType';
+ *
+ *  var white = [255, 255, 255, 1];
+ *  var blue = [0, 153, 255, 1];
+ *  var width = 3;
+ *  styles[GeometryType.POLYGON] = [
+ *    new Style({
+ *      fill: new Fill({
+ *        color: [255, 255, 255, 0.5]
+ *      })
+ *    })
+ *  ];
+ *  styles[GeometryType.MULTI_POLYGON] =
+ *      styles[GeometryType.POLYGON];
+ *  styles[GeometryType.LINE_STRING] = [
+ *    new Style({
+ *      stroke: new Stroke({
+ *        color: white,
+ *        width: width + 2
+ *      })
+ *    }),
+ *    new Style({
+ *      stroke: new Stroke({
+ *        color: blue,
+ *        width: width
+ *      })
+ *    })
+ *  ];
+ *  styles[GeometryType.MULTI_LINE_STRING] =
+ *      styles[GeometryType.LINE_STRING];
+ *  styles[GeometryType.POINT] = [
+ *    new Style({
+ *      image: new Circle({
+ *        radius: width * 2,
+ *        fill: new Fill({
+ *          color: blue
+ *        }),
+ *        stroke: new Stroke({
+ *          color: white,
+ *          width: width / 2
+ *        })
+ *      }),
+ *      zIndex: Infinity
+ *    })
+ *  ];
+ *  styles[GeometryType.MULTI_POINT] =
+ *      styles[GeometryType.POINT];
+ *  styles[GEOMETRY_COLLECTION] =
+ *      styles[GeometryType.POLYGON].concat(
+ *          styles[GeometryType.POINT]
+ *      );
+ * ```
+ */
 import {assert} from '../asserts.js';
 import GeometryType from '../geom/GeometryType.js';
 import CircleStyle from '../style/Circle.js';
