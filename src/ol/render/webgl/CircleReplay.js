@@ -27,7 +27,7 @@ const WebGLCircleReplay = function(tolerance, maxExtent) {
 
   /**
    * @private
-   * @type {ol.render.webgl.circlereplay.defaultshader.Locations}
+   * @type {module:ol/render/webgl/circlereplay/defaultshader/Locations}
    */
   this.defaultLocations_ = null;
 

@@ -19,21 +19,21 @@ const ImageSourceEventType = {
 
   /**
    * Triggered when an image starts loading.
-   * @event ol.source.Image.Event#imageloadstart
+   * @event ol/source/Image~ImageSourceEvent#imageloadstart
    * @api
    */
   IMAGELOADSTART: 'imageloadstart',
 
   /**
    * Triggered when an image finishes loading.
-   * @event ol.source.Image.Event#imageloadend
+   * @event ol/source/Image~ImageSourceEvent#imageloadend
    * @api
    */
   IMAGELOADEND: 'imageloadend',
 
   /**
    * Triggered if image loading results in an error.
-   * @event ol.source.Image.Event#imageloaderror
+   * @event ol/source/Image~ImageSourceEvent#imageloaderror
    * @api
    */
   IMAGELOADERROR: 'imageloaderror'
@@ -107,7 +107,7 @@ const ImageSource = function(options) {
 
   /**
    * @private
-   * @type {ol.reproj.Image}
+   * @type {module:ol/reproj/Image}
    */
   this.reprojectedImage_ = null;
 

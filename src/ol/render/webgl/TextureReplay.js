@@ -65,7 +65,7 @@ const WebGLTextureReplay = function(tolerance, maxExtent) {
 
   /**
    * @protected
-   * @type {ol.render.webgl.texturereplay.defaultshader.Locations}
+   * @type {module:ol/render/webgl/texturereplay/defaultshader/Locations}
    */
   this.defaultLocations = null;
 

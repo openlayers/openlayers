@@ -47,7 +47,7 @@ const WebGLLineStringReplay = function(tolerance, maxExtent) {
 
   /**
    * @private
-   * @type {ol.render.webgl.linestringreplay.defaultshader.Locations}
+   * @type {module:ol/render/webgl/linestringreplay/defaultshader/Locations}
    */
   this.defaultLocations_ = null;
 

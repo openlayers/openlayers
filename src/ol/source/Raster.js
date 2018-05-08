@@ -46,14 +46,14 @@ import {create as createTransform} from '../transform.js';
 const RasterEventType = {
   /**
    * Triggered before operations are run.
-   * @event ol.source.Raster.Event#beforeoperations
+   * @event ol/source/Raster~RasterSourceEvent#beforeoperations
    * @api
    */
   BEFOREOPERATIONS: 'beforeoperations',
 
   /**
    * Triggered after operations are run.
-   * @event ol.source.Raster.Event#afteroperations
+   * @event ol/source/Raster~RasterSourceEvent#afteroperations
    * @api
    */
   AFTEROPERATIONS: 'afteroperations'
@@ -138,7 +138,7 @@ inherits(RasterSourceEvent, Event);
  *
  * @constructor
  * @extends {module:ol/source/Image}
- * @fires ol.source.Raster.Event
+ * @fires ol/source/Raster~RasterSourceEvent
  * @param {module:ol/source/Raster~Options=} options Options.
  * @api
  */

@@ -114,7 +114,7 @@ const WebGLReplay = function(tolerance, maxExtent) {
   /**
    * Optional parameter for PolygonReplay instances.
    * @protected
-   * @type {ol.render.webgl.LineStringReplay|undefined}
+   * @type {module:ol/render/webgl/LineStringReplay|undefined}
    */
   this.lineStringReplay = undefined;
 
@@ -145,10 +145,10 @@ WebGLReplay.prototype.finish = function(context) {};
  * @param {module:ol/webgl/Context} context Context.
  * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
- * @return {ol.render.webgl.circlereplay.defaultshader.Locations|
-            ol.render.webgl.linestringreplay.defaultshader.Locations|
-            ol.render.webgl.polygonreplay.defaultshader.Locations|
-            ol.render.webgl.texturereplay.defaultshader.Locations} Locations.
+ * @return {module:ol/render/webgl/circlereplay/defaultshader/Locations|
+            ol/render/webgl/linestringreplay/defaultshader/Locations|
+            ol/render/webgl/polygonreplay/defaultshader/Locations|
+            ol/render/webgl/texturereplay/defaultshader/Locations} Locations.
  */
 WebGLReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {};
 
@@ -157,10 +157,10 @@ WebGLReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {};
  * @abstract
  * @protected
  * @param {WebGLRenderingContext} gl gl.
- * @param {ol.render.webgl.circlereplay.defaultshader.Locations|
-           ol.render.webgl.linestringreplay.defaultshader.Locations|
-           ol.render.webgl.polygonreplay.defaultshader.Locations|
-           ol.render.webgl.texturereplay.defaultshader.Locations} locations Locations.
+ * @param {module:ol/render/webgl/circlereplay/defaultshader/Locations|
+           ol/render/webgl/linestringreplay/defaultshader/Locations|
+           ol/render/webgl/polygonreplay/defaultshader/Locations|
+           ol/render/webgl/texturereplay/defaultshader/Locations} locations Locations.
  */
 WebGLReplay.prototype.shutDownProgram = function(gl, locations) {};
 

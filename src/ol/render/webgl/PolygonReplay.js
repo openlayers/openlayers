@@ -51,7 +51,7 @@ const WebGLPolygonReplay = function(tolerance, maxExtent) {
 
   /**
    * @private
-   * @type {ol.render.webgl.polygonreplay.defaultshader.Locations}
+   * @type {module:ol/render/webgl/polygonreplay/defaultshader/Locations}
    */
   this.defaultLocations_ = null;
 
