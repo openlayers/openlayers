@@ -1,4 +1,8 @@
 /**
+ * @module ol/tilegrid/common
+ */
+
+/**
  * Default maximum zoom for default tile grids.
  * @type {number}
  */

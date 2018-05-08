@@ -183,7 +183,7 @@ inherits(WebGLMapRenderer, MapRenderer);
 
 
 /**
- * @param {ol.Tile} tile Tile.
+ * @param {module:ol/Tile} tile Tile.
  * @param {module:ol/size~Size} tileSize Tile size.
  * @param {number} tileGutter Tile gutter.
  * @param {number} magFilter Mag filter.

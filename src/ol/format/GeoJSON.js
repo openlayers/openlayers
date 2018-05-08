@@ -328,7 +328,7 @@ function writePolygonGeometry(geometry, opt_options) {
 
 /**
  * Read a feature from a GeoJSON Feature source.  Only works for Feature or
- * geometry types.  Use {@link ol.format.GeoJSON#readFeatures} to read
+ * geometry types.  Use {@link module:ol/format/GeoJSON#readFeatures} to read
  * FeatureCollection source. If feature at source has an id, it will be used
  * as Feature id by calling {@link module:ol/Feature#setId} internally.
  *

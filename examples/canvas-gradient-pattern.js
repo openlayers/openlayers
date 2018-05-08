@@ -70,7 +70,7 @@ const style = new Style({
  *
  * @param {module:ol/Feature~Feature} feature The feature to style.
  * @param {number} resolution Resolution.
- * @return {ol.style.Style} The style to use for the feature.
+ * @return {module:ol/style/Style} The style to use for the feature.
  */
 const getStackedStyle = function(feature, resolution) {
   const id = feature.getId();

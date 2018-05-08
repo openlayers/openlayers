@@ -67,8 +67,7 @@ export const GMLNS = 'http://www.opengis.net/gml';
  * instantiated in apps.
  * Feature base format for reading and writing data in the GML format.
  * This class cannot be instantiated, it contains only base content that
- * is shared with versioned format classes ol.format.GML2 and
- * ol.format.GML3.
+ * is shared with versioned format classes GML2 and GML3.
  *
  * @constructor
  * @abstract

@@ -114,7 +114,7 @@ const resetBlendModeFromSelect = function(evt) {
 /**
  * Bind the pre- and postcompose handlers to the passed layer.
  *
- * @param {ol.layer.Vector} layer The layer to bind the handlers to.
+ * @param {module:ol/layer/Vector} layer The layer to bind the handlers to.
  */
 const bindLayerListeners = function(layer) {
   layer.on('precompose', setBlendModeFromSelect);
@@ -125,7 +125,7 @@ const bindLayerListeners = function(layer) {
 /**
  * Unind the pre- and postcompose handlers to the passed layers.
  *
- * @param {ol.layer.Vector} layer The layer to unbind the handlers from.
+ * @param {module:ol/layer/Vector} layer The layer to unbind the handlers from.
  */
 const unbindLayerListeners = function(layer) {
   layer.un('precompose', setBlendModeFromSelect);

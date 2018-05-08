@@ -19,9 +19,9 @@ import {appendParams} from '../uri.js';
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
- * @property {boolean} [hidpi=true] Use the `ol.Map#pixelRatio` value when requesting the image from
+ * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting the image from
  * the remote server.
- * @property {ol.ImageLoadFunctionType} [imageLoadFunction] Optional function to load an image given
+ * @property {module:ol/Image~LoadFunction} [imageLoadFunction] Optional function to load an image given
  * a URL.
  * @property {Object.<string,*>} params ArcGIS Rest parameters. This field is optional. Service
  * defaults will be used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is
@@ -49,7 +49,7 @@ import {appendParams} from '../uri.js';
  * {@link module:ol/source/TileArcGISRest} data source.
  *
  * @constructor
- * @fires ol.source.Image.Event
+ * @fires ol/source/Image~ImageSourceEvent
  * @extends {module:ol/source/Image}
  * @param {module:ol/source/ImageArcGISRest~Options=} opt_options Image ArcGIS Rest Options.
  * @api

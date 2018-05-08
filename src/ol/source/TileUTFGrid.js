@@ -384,7 +384,7 @@ UTFGrid.prototype.forDataAtCoordinateAndResolution = function(
   if (this.tileGrid) {
     const tileCoord = this.tileGrid.getTileCoordForCoordAndResolution(
       coordinate, resolution);
-    const tile = /** @type {!ol.source.CustomTile} */(this.getTile(
+    const tile = /** @type {!module:ol/source/TileUTFGrid~CustomTile} */(this.getTile(
       tileCoord[0], tileCoord[1], tileCoord[2], 1, this.getProjection()));
     tile.forDataAtCoordinate(coordinate, callback, null, opt_request);
   } else {
@@ -408,7 +408,7 @@ UTFGrid.prototype.handleTileJSONError = function() {
 
 
 /**
- * TODO: very similar to ol.source.TileJSON#handleTileJSONResponse
+ * TODO: very similar to ol/source/TileJSON#handleTileJSONResponse
  * @protected
  * @param {TileJSON} tileJSON Tile JSON.
  */

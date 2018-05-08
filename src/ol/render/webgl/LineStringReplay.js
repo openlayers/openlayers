@@ -37,7 +37,7 @@ const Instruction = {
 
 /**
  * @constructor
- * @extends {ol.render.webgl.Replay}
+ * @extends {module:ol/render/webgl/Replay}
  * @param {number} tolerance Tolerance.
  * @param {module:ol/extent~Extent} maxExtent Max extent.
  * @struct
@@ -47,7 +47,7 @@ const WebGLLineStringReplay = function(tolerance, maxExtent) {
 
   /**
    * @private
-   * @type {ol.render.webgl.linestringreplay.defaultshader.Locations}
+   * @type {module:ol/render/webgl/linestringreplay/defaultshader/Locations}
    */
   this.defaultLocations_ = null;
 

@@ -25,7 +25,7 @@ import SourceState from '../source/State.js';
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
  * @property {module:ol/source/Source} [source] Source for this layer.  If not provided to the constructor,
- * the source can be set by calling {@link ol.layer.Layer#setSource layer.setSource(source)} after
+ * the source can be set by calling {@link module:ol/layer/Layer#setSource layer.setSource(source)} after
  * construction.
  */
 
@@ -52,7 +52,7 @@ import SourceState from '../source/State.js';
  * Layers group together those properties that pertain to how the data is to be
  * displayed, irrespective of the source of that data.
  *
- * Layers are usually added to a map with {@link ol.Map#addLayer}. Components
+ * Layers are usually added to a map with {@link module:ol/Map#addLayer}. Components
  * like {@link module:ol/interaction/Select~Select} use unmanaged layers
  * internally. These unmanaged layers are associated with the map using
  * {@link module:ol/layer/Layer~Layer#setMap} instead.
@@ -191,12 +191,12 @@ Layer.prototype.handleSourcePropertyChange_ = function() {
 /**
  * Sets the layer to be rendered on top of other layers on a map. The map will
  * not manage this layer in its layers collection, and the callback in
- * {@link ol.Map#forEachLayerAtPixel} will receive `null` as layer. This
+ * {@link module:ol/Map#forEachLayerAtPixel} will receive `null` as layer. This
  * is useful for temporary layers. To remove an unmanaged layer from the map,
  * use `#setMap(null)`.
  *
  * To add the layer to a map and have it managed by the map, use
- * {@link ol.Map#addLayer} instead.
+ * {@link module:ol/Map#addLayer} instead.
  * @param {module:ol/PluggableMap} map Map.
  * @api
  */

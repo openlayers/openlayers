@@ -13,7 +13,7 @@ import {createTexture} from '../../webgl/Context.js';
 /**
  * @constructor
  * @abstract
- * @extends {ol.render.webgl.Replay}
+ * @extends {module:ol/render/webgl/Replay}
  * @param {number} tolerance Tolerance.
  * @param {module:ol/extent~Extent} maxExtent Max extent.
  * @struct
@@ -65,7 +65,7 @@ const WebGLTextureReplay = function(tolerance, maxExtent) {
 
   /**
    * @protected
-   * @type {ol.render.webgl.texturereplay.defaultshader.Locations}
+   * @type {module:ol/render/webgl/texturereplay/defaultshader/Locations}
    */
   this.defaultLocations = null;
 
