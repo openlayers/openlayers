@@ -155,7 +155,7 @@ export const defaultLineWidth = 1;
 
 /**
  * The label cache for text rendering. To change the default cache size of 2048
- * entries, use {@link ol.structs.LRUCache#setSize}.
+ * entries, use {@link module:ol/structs/LRUCache#setSize}.
  * @type {module:ol/structs/LRUCache.<HTMLCanvasElement>}
  * @api
  */
