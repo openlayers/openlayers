@@ -49,7 +49,7 @@ import {appendParams} from '../uri.js';
  * {@link module:ol/source/TileArcGISRest} data source.
  *
  * @constructor
- * @fires ol.source.Image.Event
+ * @fires module:ol/source/Image~ImageSourceEvent
  * @extends {module:ol/source/Image}
  * @param {module:ol/source/ImageArcGISRest~Options=} opt_options Image ArcGIS Rest Options.
  * @api

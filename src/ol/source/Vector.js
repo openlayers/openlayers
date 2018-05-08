@@ -151,7 +151,7 @@ inherits(VectorSourceEvent, Event);
  *
  * @constructor
  * @extends {module:ol/source/Source}
- * @fires ol.source.Vector.Event
+ * @fires oli.source.VectorEvent
  * @param {module:ol/source/Vector~Options=} opt_options Vector source options.
  * @api
  */

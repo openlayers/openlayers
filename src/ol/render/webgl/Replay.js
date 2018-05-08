@@ -114,7 +114,7 @@ const WebGLReplay = function(tolerance, maxExtent) {
   /**
    * Optional parameter for PolygonReplay instances.
    * @protected
-   * @type {module:/ol/render/webgl/LineStringReplay|undefined}
+   * @type {module:ol/render/webgl/LineStringReplay|undefined}
    */
   this.lineStringReplay = undefined;
 

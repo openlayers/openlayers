@@ -119,7 +119,7 @@ In this case, we want to extract an `Array` of `module:ol/Feature`s. Here's how 
 In the above there are many common operations, like setting the property of the object on the top of the stack, or reading an object and appending that to an array on the top of the stack. There are many helper functions here, for example:
 
 * `module:ol/xml~makeObjectPropertySetter` reads a value from the child element and sets a property on the object on the top of the stack.
-* `module:/ol/xml~makeArrayPusher` reads a value from the child element and appends it to the array on the top of the stack.
+* `module:ol/xml~makeArrayPusher` reads a value from the child element and appends it to the array on the top of the stack.
 * `module:ol/xml~makeReplacer` reads a value from the child element and *replaces* whatever is on top of the stack with it.
 
 ### Putting it all together

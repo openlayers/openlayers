@@ -33,7 +33,7 @@ import {appendParams} from '../uri.js';
  * Source for images from Mapguide servers
  *
  * @constructor
- * @fires ol.source.Image.Event
+ * @fires oli.source.ImageEvent
  * @extends {module:ol/source/Image}
  * @param {module:ol/source/ImageMapGuide~Options=} options ImageMapGuide options.
  * @api

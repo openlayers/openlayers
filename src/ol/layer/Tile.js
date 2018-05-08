@@ -82,7 +82,7 @@ TileLayer.prototype.getPreload = function() {
 
 
 /**
- * Return the associated {@link ol.source.Tile tilesource} of the layer.
+ * Return the associated {@link module:ol/source/Tile tilesource} of the layer.
  * @function
  * @return {module:ol/source/Tile} Source.
  * @api

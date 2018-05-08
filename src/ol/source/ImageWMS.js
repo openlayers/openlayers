@@ -48,7 +48,7 @@ import {appendParams} from '../uri.js';
  * Source for WMS servers providing single, untiled images.
  *
  * @constructor
- * @fires ol.source.Image.Event
+ * @fires oli.source.ImageEvent
  * @extends {module:ol/source/Image}
  * @param {module:ol/source/ImageWMS~Options=} [opt_options] ImageWMS options.
  * @api
