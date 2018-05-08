@@ -30,7 +30,8 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * @property {module:ol/ImageTile~TileClass} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/ImageTile~ImageTile}.
  * @property {module:ol/tilegrid/TileGrid} [tileGrid] Tile grid.
- * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a
+ * URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
@@ -40,7 +41,8 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
  * should be set to `2`.
- * @property {ol.TileUrlFunctionType} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
+ * @property {module:ol/Tile~UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile
+ * coordinate and the projection.
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
