@@ -17,7 +17,7 @@ const app = {};
 
 /**
  * @constructor
- * @extends {ol.interaction.Pointer}
+ * @extends {module:ol/interaction/Pointer~PointerInteraction}
  */
 app.Drag = function() {
 
