@@ -29,7 +29,7 @@ export default {
 
   /**
    * Triggered when a feature is removed from the source.
-   * See {@link ol.source.Vector#clear source.clear()} for exceptions.
+   * See {@link module:ol/source/Vector#clear source.clear()} for exceptions.
    * @event ol/source/Vector~VectorSourceEvent#removefeature
    * @api
    */

@@ -26,12 +26,12 @@ import {appendParams} from '../uri.js';
  * override the default service layer visibility. See
  * {@link http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/}
  * for further reference.
- * @property {ol.tilegrid.TileGrid} [tileGrid] Tile grid. Base this on the resolutions,
+ * @property {module:ol/tilegrid/TileGrid} [tileGrid] Tile grid. Base this on the resolutions,
  * tilesize and extent supported by the server.
  * If this is not defined, a default grid will be used: if there is a projection
  * extent, the grid will be based on that; if not, a grid based on a global
  * extent with origin at 0,0 will be used.
- * @property {ol.ProjectionLike} projection Projection.
+ * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL.

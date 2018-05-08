@@ -148,7 +148,7 @@ import Units from './proj/Units.js';
  * during a rotation or resolution animation.
  * @property {number} [duration=1000] The duration of the animation in milliseconds.
  * @property {function(number):number} [easing] The easing function used
- * during the animation (defaults to {@link ol.easing.inAndOut}).
+ * during the animation (defaults to {@link module:ol/easing~inAndOut}).
  * The function will be called for each frame with a number representing a
  * fraction of the animation's duration.  The function should return a number
  * between 0 and 1 representing the progress toward the destination state.

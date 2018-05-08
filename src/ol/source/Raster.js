@@ -72,7 +72,7 @@ const RasterOperationType = {
 
 /**
  * @classdesc
- * Events emitted by {@link ol.source.Raster} instances are instances of this
+ * Events emitted by {@link module:ol/source/Raster} instances are instances of this
  * type.
  *
  * @constructor
@@ -152,7 +152,7 @@ const RasterSource = function(options) {
 
   /**
    * @private
-   * @type {ol.source.RasterOperationType}
+   * @type {module:ol/source/RasterOperationType}
    */
   this.operationType_ = options.operationType !== undefined ?
     options.operationType : RasterOperationType.PIXEL;
@@ -328,7 +328,7 @@ RasterSource.prototype.getImage = function(extent, resolution, pixelRatio, proje
   const frameState = this.updateFrameState_(extent, resolution, projection);
   this.requestedFrameState_ = frameState;
 
-  // check if we can't reuse the existing ol.ImageCanvas
+  // check if we can't reuse the existing ol/ImageCanvas
   if (this.renderedImageCanvas_) {
     const renderedResolution = this.renderedImageCanvas_.getResolution();
     const renderedExtent = this.renderedImageCanvas_.getExtent();
