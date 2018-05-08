@@ -146,9 +146,9 @@ WebGLReplay.prototype.finish = function(context) {};
  * @param {module:ol/size~Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
  * @return {module:ol/render/webgl/circlereplay/defaultshader/Locations|
-            ol/render/webgl/linestringreplay/defaultshader/Locations|
-            ol/render/webgl/polygonreplay/defaultshader/Locations|
-            ol/render/webgl/texturereplay/defaultshader/Locations} Locations.
+            module:ol/render/webgl/linestringreplay/defaultshader/Locations|
+            module:ol/render/webgl/polygonreplay/defaultshader/Locations|
+            module:ol/render/webgl/texturereplay/defaultshader/Locations} Locations.
  */
 WebGLReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {};
 
@@ -158,9 +158,9 @@ WebGLReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {};
  * @protected
  * @param {WebGLRenderingContext} gl gl.
  * @param {module:ol/render/webgl/circlereplay/defaultshader/Locations|
-           ol/render/webgl/linestringreplay/defaultshader/Locations|
-           ol/render/webgl/polygonreplay/defaultshader/Locations|
-           ol/render/webgl/texturereplay/defaultshader/Locations} locations Locations.
+           module:ol/render/webgl/linestringreplay/defaultshader/Locations|
+           module:ol/render/webgl/polygonreplay/defaultshader/Locations|
+           module:ol/render/webgl/texturereplay/defaultshader/Locations} locations Locations.
  */
 WebGLReplay.prototype.shutDownProgram = function(gl, locations) {};
 

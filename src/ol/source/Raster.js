@@ -152,7 +152,7 @@ const RasterSource = function(options) {
 
   /**
    * @private
-   * @type {module:ol/source/RasterOperationType}
+   * @type {module:ol/source/Raster~RasterOperationType}
    */
   this.operationType_ = options.operationType !== undefined ?
     options.operationType : RasterOperationType.PIXEL;
