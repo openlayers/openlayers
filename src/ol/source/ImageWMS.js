@@ -28,7 +28,8 @@ import {appendParams} from '../uri.js';
  * the image from the remote server.
  * @property {module:ol/source/WMSServerType|string} [serverType] The type of
  * the remote WMS server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
- * @property {ol.ImageLoadFunctionType} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {module:ol/Image~ImageWrapper#LoadFunction} [imageLoadFunction] Optional function to load an
+ * image given a URL.
  * @property {Object.<string,*>} params WMS request parameters.
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`

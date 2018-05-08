@@ -21,8 +21,8 @@ import {appendParams} from '../uri.js';
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
  * @property {boolean} [hidpi=true] Use the `ol.Map#pixelRatio` value when requesting the image from
  * the remote server.
- * @property {ol.ImageLoadFunctionType} [imageLoadFunction] Optional function to load an image given
- * a URL.
+ * @property {module:ol/Image~ImageWrapper#LoadFunction} [imageLoadFunction] Optional function to load an
+ * image given a URL.
  * @property {Object.<string,*>} params ArcGIS Rest parameters. This field is optional. Service
  * defaults will be used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is
  * `IMAGE` by default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`, and `IMAGESR`

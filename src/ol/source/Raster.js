@@ -328,7 +328,7 @@ RasterSource.prototype.getImage = function(extent, resolution, pixelRatio, proje
   const frameState = this.updateFrameState_(extent, resolution, projection);
   this.requestedFrameState_ = frameState;
 
-  // check if we can't reuse the existing ol.ImageCanvas
+  // check if we can't reuse the existing module:ol/ImageCanvas
   if (this.renderedImageCanvas_) {
     const renderedResolution = this.renderedImageCanvas_.getResolution();
     const renderedExtent = this.renderedImageCanvas_.getExtent();

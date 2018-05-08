@@ -23,7 +23,8 @@ import {appendParams} from '../uri.js';
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {Array.<number>} [resolutions] Resolutions.
  * If specified, requests will be made for these resolutions only.
- * @property {ol.ImageLoadFunctionType} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {module:ol/Image~ImageWrapper#LoadFunction} [imageLoadFunction] Optional function to load an
+ * image given a URL.
  * @property {Object} [params] Additional parameters.
  */
 
