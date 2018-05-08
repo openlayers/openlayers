@@ -15,7 +15,7 @@ import {appendParams} from '../uri.js';
  * @property {string} [url] The mapagent url.
  * @property {number} [displayDpi=96] The display resolution.
  * @property {number} [metersPerUnit=1] The meters-per-unit value.
- * @property {boolean} [hidpi=true] Use the `ol.Map#pixelRatio` value when requesting
+ * @property {boolean} [hidpi=true] Use the `module:ol/PluggableMap#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {boolean} [useOverlay] If `true`, will use `GETDYNAMICMAPOVERLAYIMAGE`.
  * @property {module:ol/proj~ProjectionLike} projection Projection.

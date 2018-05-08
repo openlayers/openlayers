@@ -19,7 +19,7 @@ import {appendParams} from '../uri.js';
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
- * @property {boolean} [hidpi=true] Use the `ol.Map#pixelRatio` value when requesting the image from
+ * @property {boolean} [hidpi=true] Use the `module:ol/PluggableMap#pixelRatio` value when requesting the image from
  * the remote server.
  * @property {module:ol/Image~ImageWrapper#LoadFunction} [imageLoadFunction] Optional function to load an
  * image given a URL.

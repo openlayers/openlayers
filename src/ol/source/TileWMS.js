@@ -38,7 +38,7 @@ import {appendParams} from '../uri.js';
  * "artifacts at tile edges" issues by properly configuring the WMS service. For
  * example, MapServer has a `tile_map_edge_buffer` configuration parameter for
  * this. See http://mapserver.org/output/tile_mode.html.
- * @property {boolean} [hidpi=true] Use the `ol.Map#pixelRatio` value when requesting
+ * @property {boolean} [hidpi=true] Use the `module:ol/PluggableMap#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
