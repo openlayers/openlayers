@@ -52,7 +52,7 @@ let helpTooltipElement;
 
 /**
  * Overlay to show the help messages.
- * @type {ol.Overlay}
+ * @type {module:ol/Overlay}
  */
 let helpTooltip;
 
@@ -66,7 +66,7 @@ let measureTooltipElement;
 
 /**
  * Overlay to show the measurement.
- * @type {ol.Overlay}
+ * @type {module:ol/Overlay}
  */
 let measureTooltip;
 
