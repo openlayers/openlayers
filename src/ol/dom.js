@@ -10,14 +10,14 @@
  * @return {CanvasRenderingContext2D} The context.
  */
 export function createCanvasContext2D(opt_width, opt_height) {
-  const canvas = document.createElement('CANVAS');
+  const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS'));
   if (opt_width) {
     canvas.width = opt_width;
   }
   if (opt_height) {
     canvas.height = opt_height;
   }
-  return canvas.getContext('2d');
+  return /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
 }
 
 
