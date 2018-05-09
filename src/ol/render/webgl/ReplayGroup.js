@@ -19,7 +19,7 @@ import WebGLTextReplay from '../webgl/TextReplay.js';
 const HIT_DETECTION_SIZE = [1, 1];
 
 /**
- * @type {Object.<module:ol/render/ReplayType~ReplayType,
+ * @type {Object.<module:ol/render/ReplayType,
  *                function(new: module:ol/render/webgl/Replay, number,
  *                module:ol/extent~Extent)>}
  */
@@ -64,7 +64,7 @@ const WebGLReplayGroup = function(tolerance, maxExtent, opt_renderBuffer) {
   /**
    * @private
    * @type {!Object.<string,
-   *        Object.<module:ol/render/ReplayType~ReplayType, module:ol/render/webgl/Replay>>}
+   *        Object.<module:ol/render/ReplayType, module:ol/render/webgl/Replay>>}
    */
   this.replaysByZIndex_ = {};
 

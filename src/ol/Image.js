@@ -23,7 +23,7 @@ import {getHeight} from './extent.js';
  * post requests or - in general - through XHR requests, where the src of the
  * image element would be set to a data URI when the content is loaded.
  *
- * @typedef {function(module:ol/Image~Image, string)} LoadFunction
+ * @typedef {function(module:ol/Image, string)} LoadFunction
  * @api
  */
 

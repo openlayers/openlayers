@@ -220,7 +220,7 @@ const Select = function(opt_options) {
 
   /**
    * @private
-   * @type {module:ol/layer/Vector~Vector}
+   * @type {module:ol/layer/Vector}
    */
   this.featureOverlay_ = featureOverlay;
 
@@ -301,13 +301,13 @@ Select.prototype.getHitTolerance = function() {
  * programmatic method like pushing features to
  * {@link module:ol/interaction/Select~Select#getFeatures collection}.
  * @param {module:ol/Feature|module:ol/render/Feature} feature Feature
- * @return {module:ol/layer/Vector~Vector} Layer.
+ * @return {module:ol/layer/Vector} Layer.
  * @api
  */
 Select.prototype.getLayer = function(feature) {
   const key = getUid(feature);
   return (
-    /** @type {module:ol/layer/Vector~Vector} */ (this.featureLayerAssociation_[key])
+    /** @type {module:ol/layer/Vector} */ (this.featureLayerAssociation_[key])
   );
 };
 

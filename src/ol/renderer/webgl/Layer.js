@@ -182,7 +182,7 @@ WebGLLayerRenderer.prototype.composeFrame = function(frameState, layerState, con
 
 
 /**
- * @param {module:ol/render/EventType~EventType} type Event type.
+ * @param {module:ol/render/EventType} type Event type.
  * @param {module:ol/webgl/Context} context WebGL context.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @private

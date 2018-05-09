@@ -61,7 +61,7 @@ inherits(CanvasMapRenderer, MapRenderer);
 
 
 /**
- * @param {module:ol/render/EventType~EventType} type Event type.
+ * @param {module:ol/render/EventType} type Event type.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @private
  */

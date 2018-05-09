@@ -53,7 +53,7 @@ export function wrapX(tileGrid, tileCoord, projection) {
  *     DEFAULT_MAX_ZOOM).
  * @param {number|module:ol/size~Size=} opt_tileSize Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {module:ol/extent/Corner~Corner=} opt_corner Extent corner (default is `'top-left'`).
+ * @param {module:ol/extent/Corner=} opt_corner Extent corner (default is `'top-left'`).
  * @return {!module:ol/tilegrid/TileGrid} TileGrid instance.
  */
 export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
@@ -139,7 +139,7 @@ function resolutionsFromExtent(extent, opt_maxZoom, opt_tileSize) {
  *     DEFAULT_MAX_ZOOM).
  * @param {number|module:ol/size~Size=} opt_tileSize Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {module:ol/extent/Corner~Corner=} opt_corner Extent corner (default is `'top-left'`).
+ * @param {module:ol/extent/Corner=} opt_corner Extent corner (default is `'top-left'`).
  * @return {!module:ol/tilegrid/TileGrid} TileGrid instance.
  */
 export function createForProjection(projection, opt_maxZoom, opt_tileSize, opt_corner) {

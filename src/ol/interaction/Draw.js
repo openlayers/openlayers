@@ -388,7 +388,7 @@ const Draw = function(options) {
 
   /**
    * Draw overlay where our sketch features are drawn.
-   * @type {module:ol/layer/Vector~Vector}
+   * @type {module:ol/layer/Vector}
    * @private
    */
   this.overlay_ = new VectorLayer({

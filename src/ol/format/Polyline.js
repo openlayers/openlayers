@@ -17,7 +17,7 @@ import {get as getProjection} from '../proj.js';
 /**
  * @typedef {Object} Options
  * @property {number} [factor=1e5] The factor by which the coordinates values will be scaled.
- * @property {module:ol/geom/GeometryLayout~GeometryLayout} [geometryLayout='XY'] Layout of the
+ * @property {module:ol/geom/GeometryLayout} [geometryLayout='XY'] Layout of the
  * feature geometries created by the format reader.
  */
 
@@ -51,7 +51,7 @@ const Polyline = function(opt_options) {
 
   /**
    * @private
-   * @type {module:ol/geom/GeometryLayout~GeometryLayout}
+   * @type {module:ol/geom/GeometryLayout}
    */
   this.geometryLayout_ = options.geometryLayout ?
     options.geometryLayout : GeometryLayout.XY;

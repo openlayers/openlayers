@@ -106,7 +106,7 @@ const ImageMapGuide = function(options) {
 
   /**
    * @private
-   * @type {module:ol/Image~Image}
+   * @type {module:ol/Image}
    */
   this.image_ = null;
 

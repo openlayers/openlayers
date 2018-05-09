@@ -249,7 +249,7 @@ const Modify = function(options) {
 
   /**
    * Draw overlay where sketch features are drawn.
-   * @type {module:ol/layer/Vector~Vector}
+   * @type {module:ol/layer/Vector}
    * @private
    */
   this.overlay_ = new VectorLayer({

@@ -16,7 +16,7 @@ import {squaredDistance as squaredDx} from '../math.js';
  * @constructor
  * @extends {module:ol/geom/SimpleGeometry}
  * @param {module:ol/coordinate~Coordinate} coordinates Coordinates.
- * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @api
  */
 const Point = function(coordinates, opt_layout) {
@@ -116,7 +116,7 @@ Point.prototype.setCoordinates = function(coordinates, opt_layout) {
 
 
 /**
- * @param {module:ol/geom/GeometryLayout~GeometryLayout} layout Layout.
+ * @param {module:ol/geom/GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
 Point.prototype.setFlatCoordinates = function(layout, flatCoordinates) {

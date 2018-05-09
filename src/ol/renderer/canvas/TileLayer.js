@@ -14,7 +14,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 /**
  * @constructor
  * @extends {module:ol/renderer/canvas/IntermediateCanvas}
- * @param {module:ol/layer/Tile|module:ol/layer/VectorTile~VectorTile} tileLayer Tile layer.
+ * @param {module:ol/layer/Tile|module:ol/layer/VectorTile} tileLayer Tile layer.
  * @api
  */
 const CanvasTileLayerRenderer = function(tileLayer) {
@@ -346,7 +346,7 @@ CanvasTileLayerRenderer.prototype.getImage = function() {
 
 /**
  * @function
- * @return {module:ol/layer/Tile|module:ol/layer/VectorTile~VectorTile}
+ * @return {module:ol/layer/Tile|module:ol/layer/VectorTile}
  */
 CanvasTileLayerRenderer.prototype.getLayer;
 

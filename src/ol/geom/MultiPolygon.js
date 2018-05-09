@@ -27,7 +27,7 @@ import {quantizeMultiArray} from '../geom/flat/simplify.js';
  * @constructor
  * @extends {module:ol/geom/SimpleGeometry}
  * @param {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>} coordinates Coordinates.
- * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @api
  */
 const MultiPolygon = function(coordinates, opt_layout) {
@@ -352,7 +352,7 @@ MultiPolygon.prototype.intersectsExtent = function(extent) {
 /**
  * Set the coordinates of the multipolygon.
  * @param {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>} coordinates Coordinates.
- * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @override
  * @api
  */
@@ -379,7 +379,7 @@ MultiPolygon.prototype.setCoordinates = function(coordinates, opt_layout) {
 
 
 /**
- * @param {module:ol/geom/GeometryLayout~GeometryLayout} layout Layout.
+ * @param {module:ol/geom/GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<Array.<number>>} endss Endss.
  */
