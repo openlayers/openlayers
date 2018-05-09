@@ -8,7 +8,7 @@
  * @property {number} opacity
  * @property {boolean} rotateWithView
  * @property {number} rotation
- * @property {number} number
+ * @property {number} scale
  * @property {boolean} snapToPixel
  */
 
