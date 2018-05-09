@@ -142,7 +142,7 @@ const ExtentInteraction = function(opt_options) {
 
   /**
    * Layer for the extentFeature
-   * @type {module:ol/layer/Vector~Vector}
+   * @type {module:ol/layer/Vector}
    * @private
    */
   this.extentOverlay_ = new VectorLayer({
@@ -157,7 +157,7 @@ const ExtentInteraction = function(opt_options) {
 
   /**
    * Layer for the vertexFeature
-   * @type {module:ol/layer/Vector~Vector}
+   * @type {module:ol/layer/Vector}
    * @private
    */
   this.vertexOverlay_ = new VectorLayer({

@@ -33,7 +33,7 @@ import {modulo} from '../math.js';
  *     linear ring defines a hole in the surface of the polygon. A linear ring
  *     is an array of vertices' coordinates where the first coordinate and the
  *     last are equivalent.
- * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @api
  */
 const Polygon = function(coordinates, opt_layout) {
@@ -333,7 +333,7 @@ Polygon.prototype.intersectsExtent = function(extent) {
 /**
  * Set the coordinates of the polygon.
  * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
- * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @override
  * @api
  */
@@ -354,7 +354,7 @@ Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
 
 
 /**
- * @param {module:ol/geom/GeometryLayout~GeometryLayout} layout Layout.
+ * @param {module:ol/geom/GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<number>} ends Ends.
  */

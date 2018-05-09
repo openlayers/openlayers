@@ -171,7 +171,7 @@ BaseLayer.prototype.getOpacity = function() {
 
 /**
  * @abstract
- * @return {module:ol/source/State~State} Source state.
+ * @return {module:ol/source/State} Source state.
  */
 BaseLayer.prototype.getSourceState = function() {};
 

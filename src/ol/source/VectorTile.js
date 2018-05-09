@@ -20,7 +20,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
  * stroke operations.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
- * @property {module:ol/source/State~State} [state] Source state.
+ * @property {module:ol/source/State} [state] Source state.
  * @property {module:ol/VectorTile~TileClass} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/VectorTile}.
  * @property {module:ol/tilegrid/TileGrid} [tileGrid] Tile grid.

@@ -1175,7 +1175,7 @@ View.prototype.setCenter = function(center) {
 
 
 /**
- * @param {module:ol/ViewHint~ViewHint} hint Hint.
+ * @param {module:ol/ViewHint} hint Hint.
  * @param {number} delta Delta.
  * @return {number} New value.
  */

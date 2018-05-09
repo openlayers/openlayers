@@ -19,7 +19,7 @@ import {squaredDistance as squaredDx} from '../math.js';
  * @constructor
  * @extends {module:ol/geom/SimpleGeometry}
  * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
- * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @api
  */
 const MultiPoint = function(coordinates, opt_layout) {
@@ -162,7 +162,7 @@ MultiPoint.prototype.intersectsExtent = function(extent) {
 /**
  * Set the coordinates of the multipoint.
  * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
- * @param {module:ol/geom/GeometryLayout~GeometryLayout=} opt_layout Layout.
+ * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @override
  * @api
  */
@@ -182,7 +182,7 @@ MultiPoint.prototype.setCoordinates = function(coordinates, opt_layout) {
 
 
 /**
- * @param {module:ol/geom/GeometryLayout~GeometryLayout} layout Layout.
+ * @param {module:ol/geom/GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
 MultiPoint.prototype.setFlatCoordinates = function(layout, flatCoordinates) {

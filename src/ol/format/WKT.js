@@ -229,7 +229,7 @@ const Parser = function(lexer) {
   this.token_;
 
   /**
-   * @type {module:ol/geom/GeometryLayout~GeometryLayout}
+   * @type {module:ol/geom/GeometryLayout}
    * @private
    */
   this.layout_ = GeometryLayout.XY;
@@ -282,7 +282,7 @@ Parser.prototype.parse = function() {
 
 /**
  * Try to parse the dimensional info.
- * @return {module:ol/geom/GeometryLayout~GeometryLayout} The layout.
+ * @return {module:ol/geom/GeometryLayout} The layout.
  * @private
  */
 Parser.prototype.parseGeometryLayout_ = function() {
@@ -815,7 +815,7 @@ WKT.prototype.readGeometryFromText = function(text, opt_options) {
 
 
 /**
- * @enum {function (new:module:ol/geom/Geometry, Array, module:ol/geom/GeometryLayout~GeometryLayout)}
+ * @enum {function (new:module:ol/geom/Geometry, Array, module:ol/geom/GeometryLayout)}
  */
 const GeometryConstructor = {
   'POINT': Point,

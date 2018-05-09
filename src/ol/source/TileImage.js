@@ -26,7 +26,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {module:ol/source/State~State} [state] Source state.
+ * @property {module:ol/source/State} [state] Source state.
  * @property {module:ol/ImageTile~TileClass} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/ImageTile~ImageTile}.
  * @property {module:ol/tilegrid/TileGrid} [tileGrid] Tile grid.

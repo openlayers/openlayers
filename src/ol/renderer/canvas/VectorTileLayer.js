@@ -28,7 +28,7 @@ import {
 
 
 /**
- * @type {!Object.<string, Array.<module:ol/render/ReplayType~ReplayType>>}
+ * @type {!Object.<string, Array.<module:ol/render/ReplayType>>}
  */
 const IMAGE_REPLAYS = {
   'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
@@ -38,7 +38,7 @@ const IMAGE_REPLAYS = {
 
 
 /**
- * @type {!Object.<string, Array.<module:ol/render/ReplayType~ReplayType>>}
+ * @type {!Object.<string, Array.<module:ol/render/ReplayType>>}
  */
 const VECTOR_REPLAYS = {
   'image': [ReplayType.DEFAULT],
@@ -50,7 +50,7 @@ const VECTOR_REPLAYS = {
 /**
  * @constructor
  * @extends {module:ol/renderer/canvas/TileLayer}
- * @param {module:ol/layer/VectorTile~VectorTile} layer VectorTile layer.
+ * @param {module:ol/layer/VectorTile} layer VectorTile layer.
  * @api
  */
 const CanvasVectorTileLayerRenderer = function(layer) {
@@ -113,7 +113,7 @@ CanvasVectorTileLayerRenderer['handles'] = function(layer) {
  * @return {module:ol/renderer/canvas/VectorTileLayer} The layer renderer.
  */
 CanvasVectorTileLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasVectorTileLayerRenderer(/** @type {module:ol/layer/VectorTile~VectorTile} */ (layer));
+  return new CanvasVectorTileLayerRenderer(/** @type {module:ol/layer/VectorTile} */ (layer));
 };
 
 

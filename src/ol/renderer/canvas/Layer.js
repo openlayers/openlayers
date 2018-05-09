@@ -72,7 +72,7 @@ CanvasLayerRenderer.prototype.clip = function(context, frameState, extent) {
 
 
 /**
- * @param {module:ol/render/EventType~EventType} type Event type.
+ * @param {module:ol/render/EventType} type Event type.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/transform~Transform=} opt_transform Transform.

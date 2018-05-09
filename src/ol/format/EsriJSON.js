@@ -127,7 +127,7 @@ function readGeometry(object, opt_options) {
  * array. It is used for checking for holes.
  * Logic inspired by: https://github.com/Esri/terraformer-arcgis-parser
  * @param {Array.<!Array.<!Array.<number>>>} rings Rings.
- * @param {module:ol/geom/GeometryLayout~GeometryLayout} layout Geometry layout.
+ * @param {module:ol/geom/GeometryLayout} layout Geometry layout.
  * @return {Array.<!Array.<!Array.<number>>>} Transformed rings.
  */
 function convertRings(rings, layout) {
@@ -218,7 +218,7 @@ function readMultiLineStringGeometry(object) {
 
 /**
  * @param {EsriJSONGeometry} object Object.
- * @return {module:ol/geom/GeometryLayout~GeometryLayout} The geometry layout to use.
+ * @return {module:ol/geom/GeometryLayout} The geometry layout to use.
  */
 function getGeometryLayout(object) {
   let layout = GeometryLayout.XY;

@@ -96,7 +96,7 @@ LayerRenderer.prototype.getLayer = function() {
  * @private
  */
 LayerRenderer.prototype.handleImageChange_ = function(event) {
-  const image = /** @type {module:ol/Image~Image} */ (event.target);
+  const image = /** @type {module:ol/Image} */ (event.target);
   if (image.getState() === ImageState.LOADED) {
     this.renderIfReadyAndVisible();
   }

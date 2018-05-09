@@ -428,7 +428,7 @@ function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
  * @param {module:ol/format/GPX~LayoutOptions} layoutOptions Layout options.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<number>=} ends Ends.
- * @return {module:ol/geom/GeometryLayout~GeometryLayout} Layout.
+ * @return {module:ol/geom/GeometryLayout} Layout.
  */
 function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
   let layout = GeometryLayout.XY;

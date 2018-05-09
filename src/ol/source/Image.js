@@ -49,7 +49,7 @@ const ImageSourceEventType = {
  * @constructor
  * @extends {module:ol/events/Event}
  * @param {string} type Type.
- * @param {module:ol/Image~Image} image The image.
+ * @param {module:ol/Image} image The image.
  */
 const ImageSourceEvent = function(type, image) {
 
@@ -57,7 +57,7 @@ const ImageSourceEvent = function(type, image) {
 
   /**
    * The image related to the event.
-   * @type {module:ol/Image~Image}
+   * @type {module:ol/Image}
    * @api
    */
   this.image = image;
@@ -72,7 +72,7 @@ inherits(ImageSourceEvent, Event);
  * @property {module:ol/extent~Extent} [extent]
  * @property {module:ol/proj~ProjectionLike} projection
  * @property {Array.<number>} [resolutions]
- * @property {module:ol/source/State~State} [state]
+ * @property {module:ol/source/State} [state]
  */
 
 
@@ -205,7 +205,7 @@ ImageSource.prototype.getImageInternal = function(extent, resolution, pixelRatio
  * @protected
  */
 ImageSource.prototype.handleImageChange = function(event) {
-  const image = /** @type {module:ol/Image~Image} */ (event.target);
+  const image = /** @type {module:ol/Image} */ (event.target);
   switch (image.getState()) {
     case ImageState.LOADING:
       this.dispatchEvent(
@@ -231,7 +231,7 @@ ImageSource.prototype.handleImageChange = function(event) {
 /**
  * Default image load function for image sources that use module:ol/Image~Image image
  * instances.
- * @param {module:ol/Image~Image} image Image.
+ * @param {module:ol/Image} image Image.
  * @param {string} src Source.
  */
 export function defaultImageLoadFunction(image, src) {

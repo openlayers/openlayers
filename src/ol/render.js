@@ -60,7 +60,7 @@ import CanvasImmediateRenderer from './render/canvas/Immediate.js';
  *
  * @param {CanvasRenderingContext2D} context Canvas context.
  * @param {module:ol/render~ToContextOptions=} opt_options Options.
- * @return {module:ol/render/canvas/Immediate~Immediate} Canvas Immediate.
+ * @return {module:ol/render/canvas/Immediate} Canvas Immediate.
  * @api
  */
 export function toContext(context, opt_options) {

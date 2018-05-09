@@ -790,13 +790,13 @@ PluggableMap.prototype.getInteractions = function() {
 
 /**
  * Get the layergroup associated with this map.
- * @return {module:ol/layer/Group~Group} A layer group containing the layers in this map.
+ * @return {module:ol/layer/Group} A layer group containing the layers in this map.
  * @observable
  * @api
  */
 PluggableMap.prototype.getLayerGroup = function() {
   return (
-    /** @type {module:ol/layer/Group~Group} */ (this.get(MapProperty.LAYERGROUP))
+    /** @type {module:ol/layer/Group} */ (this.get(MapProperty.LAYERGROUP))
   );
 };
 
@@ -1310,8 +1310,7 @@ PluggableMap.prototype.renderFrame_ = function(time) {
 
 /**
  * Sets the layergroup of this map.
- * @param {module:ol/layer/Group~Group} layerGroup A layer group containing the layers in
- *     this map.
+ * @param {module:ol/layer/Group} layerGroup A layer group containing the layers in this map.
  * @observable
  * @api
  */

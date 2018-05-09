@@ -121,7 +121,7 @@ const DragBox = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
   /**
-   * @type {module:ol/render/Box~Box}
+   * @type {module:ol/render/Box}
    * @private
    */
   this.box_ = new RenderBox(options.className || 'ol-dragbox');

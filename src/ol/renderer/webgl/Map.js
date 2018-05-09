@@ -248,7 +248,7 @@ WebGLMapRenderer.prototype.bindTileTexture = function(tile, tileSize, tileGutter
 
 
 /**
- * @param {module:ol/render/EventType~EventType} type Event type.
+ * @param {module:ol/render/EventType} type Event type.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @private
  */

@@ -165,7 +165,7 @@ export function containsXY(extent, x, y) {
  * Get the relationship between a coordinate and extent.
  * @param {module:ol/extent~Extent} extent The extent.
  * @param {module:ol/coordinate~Coordinate} coordinate The coordinate.
- * @return {module:ol/extent/Relationship~Relationship} The relationship (bitwise compare with
+ * @return {module:ol/extent/Relationship} The relationship (bitwise compare with
  *     module:ol/extent/Relationship~Relationship).
  */
 export function coordinateRelationship(extent, coordinate) {
@@ -478,7 +478,7 @@ export function getCenter(extent) {
 /**
  * Get a corner coordinate of an extent.
  * @param {module:ol/extent~Extent} extent Extent.
- * @param {module:ol/extent/Corner~Corner} corner Corner.
+ * @param {module:ol/extent/Corner} corner Corner.
  * @return {module:ol/coordinate~Coordinate} Corner coordinate.
  */
 export function getCorner(extent, corner) {
