@@ -144,7 +144,7 @@ export function makeArrayExtender(valueReader, opt_this) {
      * @param {Array.<*>} objectStack Object stack.
      */
     function(node, objectStack) {
-      const value = valueReader.call(opt_this, node, objectStack);
+      const value = valueReader.call(opt_this !== undefined ? opt_this : this, node, objectStack);
       if (value !== undefined) {
         const array = /** @type {Array.<*>} */ (objectStack[objectStack.length - 1]);
         extend(array, value);
@@ -469,7 +469,7 @@ export function serialize(
   for (let i = 0; i < length; ++i) {
     value = values[i];
     if (value !== undefined) {
-      node = nodeFactory.call(opt_this, value, objectStack,
+      node = nodeFactory.call(opt_this !== undefined ? opt_this : this, value, objectStack,
         opt_keys !== undefined ? opt_keys[i] : undefined);
       if (node !== undefined) {
         serializersNS[node.namespaceURI][node.localName]
