@@ -115,7 +115,6 @@ Control.prototype.getMap = function() {
  * Subclasses may set up event handlers to get notified about changes to
  * the map here.
  * @param {module:ol/PluggableMap} map Map.
- * @override
  * @api
  */
 Control.prototype.setMap = function(map) {

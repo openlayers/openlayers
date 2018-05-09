@@ -41,7 +41,6 @@ const Event = function(type) {
 /**
  * Stop event propagation.
  * @function
- * @override
  * @api
  */
 Event.prototype.preventDefault =
@@ -49,7 +48,6 @@ Event.prototype.preventDefault =
   /**
    * Stop event propagation.
    * @function
-   * @override
    * @api
    */
   Event.prototype.stopPropagation = function() {
