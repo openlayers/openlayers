@@ -11,7 +11,7 @@ import {WEBKIT, MAC} from '../has.js';
  * A function that takes an {@link module:ol/MapBrowserEvent} and returns a
  * `{boolean}`. If the condition is met, true should be returned.
  *
- * @typedef {function(module:ol/MapBrowserEvent): boolean} Condition
+ * @typedef {function(this: ?, module:ol/MapBrowserEvent): boolean} Condition
  */
 
 

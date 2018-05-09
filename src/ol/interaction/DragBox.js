@@ -14,7 +14,7 @@ import RenderBox from '../render/Box.js';
  * A function that takes a {@link module:ol/MapBrowserEvent} and two
  * {@link module:ol~Pixel}s and returns a `{boolean}`. If the condition is met,
  * true should be returned.
- * @typedef {function(module:ol/MapBrowserEvent, module:ol~Pixel, module:ol~Pixel):boolean} EndCondition
+ * @typedef {function(this: ?, module:ol/MapBrowserEvent, module:ol~Pixel, module:ol~Pixel):boolean} EndCondition
  */
 
 
