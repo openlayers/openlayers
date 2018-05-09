@@ -12,9 +12,6 @@ The initial release aims to support much of the functionality provided by versio
 
 It is also designed such that major new features, such as displaying 3D maps, or using WebGL to quickly display large vector data sets, can be added in later releases.
 
-## Google Closure
-OpenLayers was written in a way so it can be compiled with [__Closure Compiler__](https://developers.google.com/closure/compiler/). Its 'advanced' compilation mode offers a level of compression that exceeds anything else available.
-
 ## Public API
 Using the advanced optimizations of the Closure Compiler means that properties and methods are renamed &ndash; `longMeaningfulName` might become `xB` &ndash; and so are effectively unusable in applications using the library. To be usable, they have to be explicitly `exported`. This means the exported names, those not renamed, effectively become the public API of the library. These __exportable__ properties and methods are marked in the source, and documented in the [API docs](../../apidoc). This is the officially supported API of the library. A build containing all these exportable names is known as a __full build__. A hosted version of this is available, which can be used by any application.
 
