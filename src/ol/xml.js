@@ -144,7 +144,7 @@ export function makeArrayExtender(valueReader, opt_this) {
      * @param {Array.<*>} objectStack Object stack.
      */
     function(node, objectStack) {
-      const value = valueReader.call(opt_this, node, objectStack);
+      const value = valueReader.call(opt_this !== undefined ? opt_this : this, node, objectStack);
       if (value !== undefined) {
         const array = /** @type {Array.<*>} */ (objectStack[objectStack.length - 1]);
         extend(array, value);
@@ -171,7 +171,7 @@ export function makeArrayPusher(valueReader, opt_this) {
     function(node, objectStack) {
       const value = valueReader.call(opt_this !== undefined ? opt_this : this, node, objectStack);
       if (value !== undefined) {
-        const array = objectStack[objectStack.length - 1];
+        const array = /** @type {Array.<*>} */ (objectStack[objectStack.length - 1]);
         array.push(value);
       }
     });
@@ -271,7 +271,7 @@ export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
 export function makeChildAppender(nodeWriter, opt_this) {
   return function(node, value, objectStack) {
     nodeWriter.call(opt_this !== undefined ? opt_this : this, node, value, objectStack);
-    const parent = objectStack[objectStack.length - 1];
+    const parent = /** @type {module:ol/xml~NodeStackItem} */ (objectStack[objectStack.length - 1]);
     const parentNode = parent.node;
     parentNode.appendChild(node);
   };
@@ -329,7 +329,7 @@ export function makeSimpleNodeFactory(opt_nodeName, opt_namespaceURI) {
      * @return {Node} Node.
      */
     function(value, objectStack, opt_nodeName) {
-      const context = objectStack[objectStack.length - 1];
+      const context = /** @type {module:ol/xml~NodeStackItem} */ (objectStack[objectStack.length - 1]);
       const node = context.node;
       let nodeName = fixedNodeName;
       if (nodeName === undefined) {
@@ -389,7 +389,7 @@ export function makeSequence(object, orderedKeys) {
  */
 export function makeStructureNS(namespaceURIs, structure, opt_structureNS) {
   /**
-   * @type {Object.<string, *>}
+   * @type {Object.<string, T>}
    */
   const structureNS = opt_structureNS !== undefined ? opt_structureNS : {};
   let i, ii;
@@ -469,7 +469,7 @@ export function serialize(
   for (let i = 0; i < length; ++i) {
     value = values[i];
     if (value !== undefined) {
-      node = nodeFactory.call(opt_this, value, objectStack,
+      node = nodeFactory.call(opt_this !== undefined ? opt_this : this, value, objectStack,
         opt_keys !== undefined ? opt_keys[i] : undefined);
       if (node !== undefined) {
         serializersNS[node.namespaceURI][node.localName]
