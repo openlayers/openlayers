@@ -21,9 +21,6 @@ Table of contents:
 * [Why aren't there any features in my source?](#why-aren-t-there-any-features-in-my-source-)
 * [How do I force a re-render of the map?](#how-do-i-force-a-re-render-of-the-map-)
 * [Why are my features not found?](#why-are-my-features-not-found-)
-* [How do I create a custom build of OpenLayers?](#how-do-i-create-a-custom-build-of-openlayers-)
-* [Do I need to write my own code using Closure library?](#do-i-need-to-write-my-own-code-using-closure-library-)
-* [Do I need to compress my code with Closure compiler?](#do-i-need-to-compress-my-code-with-closure-compiler-)
 
 
 ## What projection is OpenLayers using?
@@ -335,37 +332,3 @@ var vectorLayer = new ol.layer.Vector({
 ```
 
 The recommended value is the size of the largest symbol, line width or label.
-
-## How do I create a custom build of OpenLayers?
-
-Please refer to the [official create custom builds tutorial](tutorials/custom-builds.html)
-which explains how to create a custom build of OpenLayers with just those parts
-included that you want.
-
-
-## Do I need to write my own code using Closure library?
-
-OpenLayers is built on top of the [Google Closure JavaScript
-library](https://developers.google.com/closure/library/), but this
-does not mean that you must use that library in your application code.
-
-OpenLayers should play well with all sorts of JavaScript libraries out there,
-and you are in no way forced to use a specific one. Choose one that looks
-right for you.
-
-
-## Do I need to compress my code with Closure compiler?
-
-No, you don't need to do compress your code with the [Google Closure
-compiler](https://developers.google.com/closure/compiler/).
-
-It may be a good choice though, because when your application code and the
-OpenLayers source code is compiled together using closure compiler, the
-resulting build will most probably be the smallest in terms of byte-size. For
-more details refer to the
-[compile application and OpenLayers together tutorial](tutorials/closure.html).
-
-If you don't want to use the closure compiler, or you can't, you are not at all
-forced to use it.
-
-
