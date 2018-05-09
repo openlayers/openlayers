@@ -389,7 +389,7 @@ export function makeSequence(object, orderedKeys) {
  */
 export function makeStructureNS(namespaceURIs, structure, opt_structureNS) {
   /**
-   * @type {Object.<string, *>}
+   * @type {Object.<string, T>}
    */
   const structureNS = opt_structureNS !== undefined ? opt_structureNS : {};
   let i, ii;
