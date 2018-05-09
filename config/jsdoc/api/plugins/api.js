@@ -24,6 +24,7 @@ exports.defineTags = function(dictionary) {
 const api = [];
 const classes = {};
 const types = {};
+const modules = {};
 
 function hasApiMembers(doclet) {
   return doclet.longname.split('#')[0] == this.longname;
@@ -68,6 +69,7 @@ function extractTypes(item) {
   item.type.names.forEach(function(type) {
     const match = type.match(/^(.*<)?([^>]*)>?$/);
     if (match) {
+      modules[match[2]] = true;
       types[match[2]] = true;
     }
   });
@@ -93,6 +95,7 @@ exports.handlers = {
   newDoclet: function(e) {
     const doclet = e.doclet;
     if (doclet.stability) {
+      modules[doclet.longname.split('~').shift()] = true;
       api.push(doclet);
     }
     // Mark explicity defined namespaces - needed in parseComplete to keep
@@ -101,6 +104,7 @@ exports.handlers = {
       doclet.namespace_ = true;
     }
     if (doclet.kind == 'class') {
+      modules[doclet.longname.split('~').shift()] = true;
       classes[doclet.longname] = doclet;
     }
   },
@@ -124,6 +128,9 @@ exports.handlers = {
           });
         }
         // Always document namespaces and items with stability annotation
+        continue;
+      }
+      if (doclet.kind == 'module' && doclet.longname in modules) {
         continue;
       }
       if (doclet.kind == 'class' && api.some(hasApiMembers, doclet)) {

@@ -22,7 +22,8 @@
     "presrc-closure": "npm run prebuild",
     "src-closure": "babel -q --out-dir build/src-closure src/",
     "pretypecheck": "npm run src-closure",
-    "typecheck": "node tasks/typecheck"
+    "typecheck": "node tasks/typecheck",
+    "apidoc": "jsdoc -c config/jsdoc/api/conf.json -d build/apidoc"
   },
   "main": "src/ol/index.js",
   "repository": {
