@@ -171,7 +171,7 @@ export function makeArrayPusher(valueReader, opt_this) {
     function(node, objectStack) {
       const value = valueReader.call(opt_this !== undefined ? opt_this : this, node, objectStack);
       if (value !== undefined) {
-        const array = objectStack[objectStack.length - 1];
+        const array = /** @type {Array.<*>} */ (objectStack[objectStack.length - 1]);
         array.push(value);
       }
     });
@@ -271,7 +271,7 @@ export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
 export function makeChildAppender(nodeWriter, opt_this) {
   return function(node, value, objectStack) {
     nodeWriter.call(opt_this !== undefined ? opt_this : this, node, value, objectStack);
-    const parent = objectStack[objectStack.length - 1];
+    const parent = /** @type {module:ol/xml~NodeStackItem} */ (objectStack[objectStack.length - 1]);
     const parentNode = parent.node;
     parentNode.appendChild(node);
   };
@@ -329,7 +329,7 @@ export function makeSimpleNodeFactory(opt_nodeName, opt_namespaceURI) {
      * @return {Node} Node.
      */
     function(value, objectStack, opt_nodeName) {
-      const context = objectStack[objectStack.length - 1];
+      const context = /** @type {module:ol/xml~NodeStackItem} */ (objectStack[objectStack.length - 1]);
       const node = context.node;
       let nodeName = fixedNodeName;
       if (nodeName === undefined) {
