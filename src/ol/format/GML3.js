@@ -152,6 +152,15 @@ GML3.prototype.surfaceMemberParser_ = function(node, objectStack) {
     node, objectStack, this);
 };
 
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
+GML3.prototype.geometryMemberParser_ = function(node, objectStack) {
+  ol.xml.parseNode(this.GEOMETRYMEMBER_PARSERS_, node,
+      objectStack, this);
+};
 
 /**
  * @param {Node} node Node.
@@ -299,6 +308,23 @@ GML3.prototype.readEnvelope_ = function(node, objectStack) {
     flatCoordinates[2][1]);
 };
 
+/**
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ * @return {ol.geom.GeometryCollection|undefined} GeometryCollection.
+ */
+GML3.prototype.readMultiGeometry_ = function(node, objectStack) {
+  /** @type {Array.<ol.geom.Geometry>} */
+  var geometries = ol.xml.pushParseAndPop([],
+      this.MULTIGEOMETRY_PARSERS_, node, objectStack, this);
+  if (geometries) {
+    var geometryCollection = new ol.geom.GeometryCollection(geometries);
+    return geometryCollection;
+  } else {
+    return undefined;
+  }
+};
 
 /**
  * @param {Node} node Node.
@@ -444,7 +470,9 @@ GML3.prototype.GEOMETRY_PARSERS_ = {
     'Curve': makeReplacer(GML3.prototype.readCurve_),
     'MultiCurve': makeReplacer(
       GML3.prototype.readMultiCurve_),
-    'Envelope': makeReplacer(GML3.prototype.readEnvelope_)
+    'Envelope': makeReplacer(GML3.prototype.readEnvelope_),
+    'MultiGeometry': ol.xml.makeReplacer(
+      GML3.prototype.readMultiGeometry_)
   }
 };
 
@@ -544,6 +572,47 @@ GML3.prototype.ENVELOPE_PARSERS_ = {
   }
 };
 
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @private
+ */
+GML3.prototype.MULTIGEOMETRY_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'geometryMember': ol.xml.makeArrayPusher(GML3.prototype.geometryMemberParser_),
+    'geometryMembers': ol.xml.makeArrayPusher(GML3.prototype.geometryMemberParser_)
+  }
+};
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @private
+ */
+GML3.prototype.GEOMETRYMEMBER_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'Point': ol.xml.makeArrayPusher(ol.format.GMLBase.prototype.readPoint),
+    'MultiPoint': ol.xml.makeArrayPusher(
+        GMLBase.prototype.readMultiPoint),
+    'LineString': ol.xml.makeArrayPusher(
+        GMLBase.prototype.readLineString),
+    'MultiLineString': ol.xml.makeArrayPusher(
+        GMLBase.prototype.readMultiLineString),
+    'LinearRing': ol.xml.makeArrayPusher(
+        GMLBase.prototype.readLinearRing),
+    'Polygon': ol.xml.makeArrayPusher(ol.format.GMLBase.prototype.readPolygon),
+    'MultiPolygon': ol.xml.makeArrayPusher(
+        GMLBase.prototype.readMultiPolygon),
+    'Surface': ol.xml.makeArrayPusher(GML3.prototype.readSurface_),
+    'MultiSurface': ol.xml.makeArrayPusher(
+        GML3.prototype.readMultiSurface_),
+    'Curve': ol.xml.makeArrayPusher(GML3.prototype.readCurve_),
+    'MultiCurve': ol.xml.makeArrayPusher(
+        GML3.prototype.readMultiCurve_),
+    'Envelope': ol.xml.makeArrayPusher(GML3.prototype.readEnvelope_),
+    'MultiGeometry': ol.xml.makeArrayPusher(GML3.prototype.readMultiGeometry)
+  }
+}
 
 /**
  * @const
