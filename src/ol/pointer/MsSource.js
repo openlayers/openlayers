@@ -54,7 +54,7 @@ const MsSource = function(dispatcher) {
 
   /**
    * @const
-   * @type {!Object.<string, Event|Object>}
+   * @type {!Object.<string, MSPointerEvent|Object>}
    */
   this.pointerMap = dispatcher.pointerMap;
 };
@@ -79,7 +79,7 @@ const POINTER_TYPES = [
  * for the fake pointer event.
  *
  * @private
- * @param {Event} inEvent The in event.
+ * @param {MSPointerEvent} inEvent The in event.
  * @return {Object} The copied event.
  */
 MsSource.prototype.prepareEvent_ = function(inEvent) {
@@ -105,7 +105,7 @@ MsSource.prototype.cleanup = function(pointerId) {
 /**
  * Handler for `msPointerDown`.
  *
- * @param {Event} inEvent The in event.
+ * @param {MSPointerEvent} inEvent The in event.
  */
 MsSource.prototype.msPointerDown = function(inEvent) {
   this.pointerMap[inEvent.pointerId.toString()] = inEvent;
@@ -117,7 +117,7 @@ MsSource.prototype.msPointerDown = function(inEvent) {
 /**
  * Handler for `msPointerMove`.
  *
- * @param {Event} inEvent The in event.
+ * @param {MSPointerEvent} inEvent The in event.
  */
 MsSource.prototype.msPointerMove = function(inEvent) {
   const e = this.prepareEvent_(inEvent);
@@ -128,7 +128,7 @@ MsSource.prototype.msPointerMove = function(inEvent) {
 /**
  * Handler for `msPointerUp`.
  *
- * @param {Event} inEvent The in event.
+ * @param {MSPointerEvent} inEvent The in event.
  */
 MsSource.prototype.msPointerUp = function(inEvent) {
   const e = this.prepareEvent_(inEvent);
@@ -140,7 +140,7 @@ MsSource.prototype.msPointerUp = function(inEvent) {
 /**
  * Handler for `msPointerOut`.
  *
- * @param {Event} inEvent The in event.
+ * @param {MSPointerEvent} inEvent The in event.
  */
 MsSource.prototype.msPointerOut = function(inEvent) {
   const e = this.prepareEvent_(inEvent);
@@ -151,7 +151,7 @@ MsSource.prototype.msPointerOut = function(inEvent) {
 /**
  * Handler for `msPointerOver`.
  *
- * @param {Event} inEvent The in event.
+ * @param {MSPointerEvent} inEvent The in event.
  */
 MsSource.prototype.msPointerOver = function(inEvent) {
   const e = this.prepareEvent_(inEvent);
@@ -162,7 +162,7 @@ MsSource.prototype.msPointerOver = function(inEvent) {
 /**
  * Handler for `msPointerCancel`.
  *
- * @param {Event} inEvent The in event.
+ * @param {MSPointerEvent} inEvent The in event.
  */
 MsSource.prototype.msPointerCancel = function(inEvent) {
   const e = this.prepareEvent_(inEvent);
@@ -174,7 +174,7 @@ MsSource.prototype.msPointerCancel = function(inEvent) {
 /**
  * Handler for `msLostPointerCapture`.
  *
- * @param {Event} inEvent The in event.
+ * @param {MSPointerEvent} inEvent The in event.
  */
 MsSource.prototype.msLostPointerCapture = function(inEvent) {
   const e = this.dispatcher.makeEvent('lostpointercapture',
@@ -186,7 +186,7 @@ MsSource.prototype.msLostPointerCapture = function(inEvent) {
 /**
  * Handler for `msGotPointerCapture`.
  *
- * @param {Event} inEvent The in event.
+ * @param {MSPointerEvent} inEvent The in event.
  */
 MsSource.prototype.msGotPointerCapture = function(inEvent) {
   const e = this.dispatcher.makeEvent('gotpointercapture',

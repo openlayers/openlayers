@@ -94,7 +94,7 @@ ImageCanvas.prototype.load = function() {
 
 
 /**
- * @inheritDoc
+ * @return {HTMLCanvasElement} Canvas element.
  */
 ImageCanvas.prototype.getImage = function() {
   return this.canvas_;

@@ -29,7 +29,7 @@ const CanvasVectorLayerRenderer = function(vectorLayer) {
    * Declutter tree.
    * @private
    */
-  this.declutterTree_ = vectorLayer.getDeclutter() ? rbush(9) : null;
+  this.declutterTree_ = vectorLayer.getDeclutter() ? rbush(9, undefined) : null;
 
   /**
    * @private

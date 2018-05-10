@@ -66,7 +66,7 @@ const CanvasVectorTileLayerRenderer = function(layer) {
    * Declutter tree.
    * @private
    */
-  this.declutterTree_ = layer.getDeclutter() ? rbush(9) : null;
+  this.declutterTree_ = layer.getDeclutter() ? rbush(9, undefined) : null;
 
   /**
    * @private

@@ -29,7 +29,7 @@ const RBush = function(opt_maxEntries) {
   /**
    * @private
    */
-  this.rbush_ = rbush(opt_maxEntries);
+  this.rbush_ = rbush(opt_maxEntries, undefined);
 
   /**
    * A mapping between the objects added to this rbush wrapper
