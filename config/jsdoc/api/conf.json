@@ -1,6 +1,7 @@
 {
   "opts": {
-    "recurse": true
+    "recurse": true,
+    "template": "config/jsdoc/api/template"
   },
   "tags": {
     "allowUnknownTags": true

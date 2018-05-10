@@ -76,14 +76,11 @@ function extractTypes(item) {
 }
 
 function includeTypes(doclet) {
-  if (doclet.params && doclet.kind != 'class') {
+  if (doclet.params) {
     doclet.params.forEach(extractTypes);
   }
   if (doclet.returns) {
     doclet.returns.forEach(extractTypes);
-  }
-  if (doclet.isEnum) {
-    types[doclet.meta.code.name] = true;
   }
   if (doclet.type && doclet.meta.code.type == 'MemberExpression') {
     extractTypes(doclet);
@@ -131,6 +128,10 @@ exports.handlers = {
         continue;
       }
       if (doclet.kind == 'module' && doclet.longname in modules) {
+        // Document all modules that are referenced by the API
+        continue;
+      }
+      if (doclet.isEnum) {
         continue;
       }
       if (doclet.kind == 'class' && api.some(hasApiMembers, doclet)) {

@@ -23,7 +23,7 @@
     "src-closure": "babel -q --out-dir build/src-closure src/",
     "pretypecheck": "npm run src-closure",
     "typecheck": "node tasks/typecheck",
-    "apidoc": "jsdoc -c config/jsdoc/api/conf.json -d build/apidoc"
+    "apidoc": "jsdoc config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -d build/apidoc"
   },
   "main": "src/ol/index.js",
   "repository": {
