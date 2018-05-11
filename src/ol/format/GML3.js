@@ -13,6 +13,7 @@ import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Polygon from '../geom/Polygon.js';
+import GeometryCollection from '../geom/GeometryCollection';
 import {assign} from '../obj.js';
 import {get as getProjection, transformExtent} from '../proj.js';
 import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
@@ -158,8 +159,8 @@ GML3.prototype.surfaceMemberParser_ = function(node, objectStack) {
  * @private
  */
 GML3.prototype.geometryMemberParser_ = function(node, objectStack) {
-  ol.xml.parseNode(this.GEOMETRYMEMBER_PARSERS_, node,
-      objectStack, this);
+  parseNode(this.GEOMETRYMEMBER_PARSERS_, node,
+    objectStack, this);
 };
 
 /**
@@ -316,10 +317,10 @@ GML3.prototype.readEnvelope_ = function(node, objectStack) {
  */
 GML3.prototype.readMultiGeometry_ = function(node, objectStack) {
   /** @type {Array.<ol.geom.Geometry>} */
-  var geometries = ol.xml.pushParseAndPop([],
-      this.MULTIGEOMETRY_PARSERS_, node, objectStack, this);
+  const geometries = pushParseAndPop([],
+    this.MULTIGEOMETRY_PARSERS_, node, objectStack, this);
   if (geometries) {
-    var geometryCollection = new ol.geom.GeometryCollection(geometries);
+    const geometryCollection = new GeometryCollection(geometries);
     return geometryCollection;
   } else {
     return undefined;
@@ -471,7 +472,7 @@ GML3.prototype.GEOMETRY_PARSERS_ = {
     'MultiCurve': makeReplacer(
       GML3.prototype.readMultiCurve_),
     'Envelope': makeReplacer(GML3.prototype.readEnvelope_),
-    'MultiGeometry': ol.xml.makeReplacer(
+    'MultiGeometry': makeReplacer(
       GML3.prototype.readMultiGeometry_)
   }
 };
@@ -579,8 +580,8 @@ GML3.prototype.ENVELOPE_PARSERS_ = {
  */
 GML3.prototype.MULTIGEOMETRY_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'geometryMember': ol.xml.makeArrayPusher(GML3.prototype.geometryMemberParser_),
-    'geometryMembers': ol.xml.makeArrayPusher(GML3.prototype.geometryMemberParser_)
+    'geometryMember': makeArrayPusher(GML3.prototype.geometryMemberParser_),
+    'geometryMembers': makeArrayPusher(GML3.prototype.geometryMemberParser_)
   }
 };
 
@@ -591,28 +592,28 @@ GML3.prototype.MULTIGEOMETRY_PARSERS_ = {
  */
 GML3.prototype.GEOMETRYMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'Point': ol.xml.makeArrayPusher(ol.format.GMLBase.prototype.readPoint),
-    'MultiPoint': ol.xml.makeArrayPusher(
-        GMLBase.prototype.readMultiPoint),
-    'LineString': ol.xml.makeArrayPusher(
-        GMLBase.prototype.readLineString),
-    'MultiLineString': ol.xml.makeArrayPusher(
-        GMLBase.prototype.readMultiLineString),
-    'LinearRing': ol.xml.makeArrayPusher(
-        GMLBase.prototype.readLinearRing),
-    'Polygon': ol.xml.makeArrayPusher(ol.format.GMLBase.prototype.readPolygon),
-    'MultiPolygon': ol.xml.makeArrayPusher(
-        GMLBase.prototype.readMultiPolygon),
-    'Surface': ol.xml.makeArrayPusher(GML3.prototype.readSurface_),
-    'MultiSurface': ol.xml.makeArrayPusher(
-        GML3.prototype.readMultiSurface_),
-    'Curve': ol.xml.makeArrayPusher(GML3.prototype.readCurve_),
-    'MultiCurve': ol.xml.makeArrayPusher(
-        GML3.prototype.readMultiCurve_),
-    'Envelope': ol.xml.makeArrayPusher(GML3.prototype.readEnvelope_),
-    'MultiGeometry': ol.xml.makeArrayPusher(GML3.prototype.readMultiGeometry)
+    'Point': makeArrayPusher(GMLBase.prototype.readPoint),
+    'MultiPoint': makeArrayPusher(
+      GMLBase.prototype.readMultiPoint),
+    'LineString': makeArrayPusher(
+      GMLBase.prototype.readLineString),
+    'MultiLineString': makeArrayPusher(
+      GMLBase.prototype.readMultiLineString),
+    'LinearRing': makeArrayPusher(
+      GMLBase.prototype.readLinearRing),
+    'Polygon': makeArrayPusher(GMLBase.prototype.readPolygon),
+    'MultiPolygon': makeArrayPusher(
+      GMLBase.prototype.readMultiPolygon),
+    'Surface': makeArrayPusher(GML3.prototype.readSurface_),
+    'MultiSurface': makeArrayPusher(
+      GML3.prototype.readMultiSurface_),
+    'Curve': makeArrayPusher(GML3.prototype.readCurve_),
+    'MultiCurve': makeArrayPusher(
+      GML3.prototype.readMultiCurve_),
+    'Envelope': makeArrayPusher(GML3.prototype.readEnvelope_),
+    'MultiGeometry': makeArrayPusher(GML3.prototype.readMultiGeometry)
   }
-}
+};
 
 /**
  * @const
