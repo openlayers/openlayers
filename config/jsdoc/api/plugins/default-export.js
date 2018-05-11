@@ -22,7 +22,7 @@ function addDefaultExportPath(obj) {
           const lines = file.split('\n');
           let hasDefaultExport = false;
           for (let i = 0, ii = lines.length; i < ii; ++i) {
-            hasDefaultExport = hasDefaultExport || lines[i].indexOf('export default ') == 0;
+            hasDefaultExport = hasDefaultExport || /^export default [^\{]/.test(lines[i]);
             const match = lines[i].match(/^export default ([A-Za-z_$][A-Za-z0-9_$]+);$/);
             if (match) {
               // Use variable name if default export is assigned to a variable.

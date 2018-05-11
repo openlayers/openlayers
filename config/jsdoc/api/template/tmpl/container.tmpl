@@ -20,12 +20,10 @@
     <br>
     <?js if (doc.stability || doc.kind == 'namespace') {
       var ancestors = doc.ancestors.map(a => a.replace(/>\./g, '>').replace(/\.</g, '<')).join('/');
-      var name = doc.name.toLowerCase();
       var parts = [];
       if (ancestors) {
-        parts.push(ancestors);
+        parts.push(ancestors.split('~').shift());
       }
-      parts.push(name);
       var importPath = parts.join('/');
     ?>
     <pre class="prettyprint source"><code>import <?js= doc.name ?> from '<?js= importPath ?>';</code></pre>

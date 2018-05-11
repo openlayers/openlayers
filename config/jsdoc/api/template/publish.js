@@ -1,4 +1,13 @@
 /*global env: true */
+
+const hasOwnProp = Object.prototype.hasOwnProperty;
+
+// Work around an issue with hasOwnProperty in JSDoc's templateHelper.js.
+//TODO Fix in JSDoc.
+Object.prototype.hasOwnProperty = function(property) {
+  return property in this;
+};
+
 const template = require('jsdoc/lib/jsdoc/template');
 const fs = require('jsdoc/lib/jsdoc/fs');
 const path = require('jsdoc/lib/jsdoc/path');
@@ -9,8 +18,11 @@ const _ = require('underscore');
 const htmlsafe = helper.htmlsafe;
 const linkto = helper.linkto;
 const resolveAuthorLinks = helper.resolveAuthorLinks;
-const hasOwnProp = Object.prototype.hasOwnProperty;
 const outdir = env.opts.destination;
+
+// Work around an issue with hasOwnProperty in JSDoc's templateHelper.js.
+//TODO Fix in JSDoc.
+Object.prototype.hasOwnProperty = hasOwnProp;
 
 let view;
 let data;
@@ -192,7 +204,7 @@ function attachModuleSymbols(doclets, modules) {
 function buildNav(members) {
   const nav = [];
   // merge namespaces and classes, then sort
-  const merged = members.namespaces.concat(members.classes);
+  const merged = members.modules.concat(members.classes);
   merged.sort(function(a, b) {
     if (a.longname > b.longname) {
       return 1;
@@ -205,9 +217,9 @@ function buildNav(members) {
   _.each(merged, function(v) {
     // exclude interfaces from sidebar
     if (v.interface !== true) {
-      if (v.kind == 'namespace') {
+      if (v.kind == 'module') {
         nav.push({
-          type: 'namespace',
+          type: 'module',
           longname: v.longname,
           name: v.name,
           members: find({

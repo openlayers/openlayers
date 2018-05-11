@@ -30,7 +30,7 @@ import Layer from '../layer/Layer.js';
  * @classdesc
  * Server-rendered images that are available for arbitrary extents and
  * resolutions.
- * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject
+ * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
