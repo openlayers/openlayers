@@ -50,7 +50,15 @@ exports.createPages = async (
   {graphql, boundActionCreators},
   {sourceInstanceName, baseCss = ''}
 ) => {
-  const {createPage} = boundActionCreators;
+  const {createPage, createRedirect} = boundActionCreators;
+
+  createRedirect({
+    fromPath: `/examples/`,
+    isPermanent: false,
+    redirectInBrowser: true,
+    toPath: `/examples/map/`
+  });
+
   const {data} = await graphql(`
     {
       allFile(
@@ -100,6 +108,7 @@ exports.createPages = async (
 
   const embedDirName = 'example-embeds';
   const embedDir = path.join(__dirname, '..', '..', 'public', embedDirName);
+  const exampleDir = path.join(__dirname, '..', '..', 'public', 'examples');
 
   rollupCache = await bundle.write({
     format: 'es',
@@ -108,6 +117,7 @@ exports.createPages = async (
   });
 
   const writes = [];
+  const index = {};
 
   for (const name in examples) {
     const node = examples[name].md;
@@ -162,6 +172,10 @@ exports.createPages = async (
     writes.push(writeFile(path.join(embedDir, embedName), embed));
 
     const slug = markdownNode.fields.slug;
+    index[name] = {
+      title: markdownNode.frontmatter.title,
+      slug
+    };
 
     createPage({
       path: slug,
@@ -176,6 +190,10 @@ exports.createPages = async (
       }
     });
   }
+
+  writes.push(
+    writeFile(path.join(exampleDir, 'index.json'), JSON.stringify(index))
+  );
 
   await Promise.all(writes);
 };
