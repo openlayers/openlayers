@@ -17,6 +17,7 @@
     "serve-examples": "mkdir -p build/examples && webpack --config examples/webpack/config.js --mode development --watch & serve build/examples",
     "build-examples": "webpack --config examples/webpack/config.js --mode production",
     "build-index": "node tasks/generate-index",
+    "build-site": "cd site && npm install && npm run build",
     "prebuild": "npm run build-index",
     "build": "rollup --config config/rollup.js",
     "presrc-closure": "npm run prebuild",
