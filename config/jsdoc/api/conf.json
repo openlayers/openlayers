@@ -10,7 +10,7 @@
     "includePattern": ".+\\.js(doc)?$",
     "excludePattern": "(^|\\/|\\\\)_",
     "include": [
-      "src"
+      "src/ol"
     ]
   },
   "plugins": [
