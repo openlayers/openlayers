@@ -15,7 +15,8 @@
   },
   "plugins": [
     "plugins/markdown",
-    "config/jsdoc/api/plugins/default-export",
+    "config/jsdoc/api/plugins/normalize-exports",
+    "config/jsdoc/api/plugins/inline-options",
     "config/jsdoc/api/plugins/events",
     "config/jsdoc/api/plugins/observable",
     "config/jsdoc/api/plugins/api"
