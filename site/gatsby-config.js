@@ -9,7 +9,7 @@ module.exports = {
         pathToConfigModule: 'src/utils/typography.js'
       }
     },
-    'gatsby-plugin-jss',
+    'gatsby-plugin-emotion',
     {
       resolve: 'gatsby-source-filesystem',
       options: {

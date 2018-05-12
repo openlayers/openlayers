@@ -1,54 +1,78 @@
-import React, {Component, Fragment} from 'react';
 import {object} from 'prop-types';
-import injectSheet from 'react-jss';
 import ExampleList from './ExampleList';
+import React, {Component, Fragment} from 'react';
+import styled from 'react-emotion';
+
+const Wrapper = styled('div')({
+  display: 'flex'
+});
+
+const Sidebar = styled('div')({
+  marginRight: '1em'
+});
+
+const Content = styled('div')({
+  minWidth: 300,
+  flexGrow: 1
+});
+
+const Embed = styled('iframe')({
+  margin: 0,
+  padding: 0,
+  height: 350,
+  width: '100%'
+});
+
+const Aside = styled('aside')({
+  textAlign: 'right',
+  fontSize: '0.75em'
+});
+
+const Block = styled('pre')({
+  overflow: 'auto'
+});
 
 class Example extends Component {
   render() {
     const example = this.props.data.sitePage.context;
 
     return (
-      <section className={this.props.classes.wrapper}>
-        <div className={this.props.classes.nav}>
+      <Wrapper>
+        <Sidebar>
           <ExampleList active={example.slug} />
-        </div>
-        <div className={this.props.classes.content}>
+        </Sidebar>
+        <Content>
           <h1>{example.frontmatter.title}</h1>
-          <iframe
-            className={this.props.classes.embed}
-            src={example.embedUrl}
-            frameBorder="0"
-          />
-          <aside className={this.props.classes.aside}>
+          <Embed src={example.embedUrl} frameBorder="0" />
+          <Aside>
             <p>
               <a href={example.embedUrl}>stand-alone version</a>
             </p>
-          </aside>
+          </Aside>
           <h3>script</h3>
-          <pre className={this.props.classes.pre}>
+          <Block>
             <code>{example.js}</code>
-          </pre>
+          </Block>
           <h3>markup</h3>
-          <pre className={this.props.classes.pre}>
+          <Block>
             <code>{example.html}</code>
-          </pre>
+          </Block>
           {example.css && (
             <Fragment>
               <h3>style</h3>
-              <pre className={this.props.classes.pre}>
+              <Block>
                 <code>{example.css}</code>
-              </pre>
+              </Block>
             </Fragment>
           )}
-        </div>
-      </section>
+        </Content>
+      </Wrapper>
     );
   }
 }
 
 Example.propTypes = {
-  data: object.isRequired,
-  classes: object.isRequired
+  data: object.isRequired
 };
 
 export const query = graphql`
@@ -68,30 +92,4 @@ export const query = graphql`
   }
 `;
 
-const styles = {
-  wrapper: {
-    display: 'flex'
-  },
-  nav: {
-    marginRight: '1em'
-  },
-  content: {
-    minWidth: 300,
-    flexGrow: 1
-  },
-  pre: {
-    overflow: 'auto'
-  },
-  embed: {
-    margin: 0,
-    padding: 0,
-    height: 350,
-    width: '100%'
-  },
-  aside: {
-    textAlign: 'right',
-    fontSize: '0.75em'
-  }
-};
-
-export default injectSheet(styles)(Example);
+export default Example;

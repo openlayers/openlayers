@@ -1,7 +1,15 @@
-import React, {Component} from 'react';
-import {object} from 'prop-types';
-import injectSheet from 'react-jss';
 import Link from 'gatsby-link';
+import React, {Component} from 'react';
+import styled from 'react-emotion';
+
+const Wrapper = styled('div')({
+  minWidth: '10em'
+});
+
+const List = styled('ul')({
+  margin: 0,
+  listStyle: 'none'
+});
 
 class ExampleList extends Component {
   constructor(props) {
@@ -35,28 +43,12 @@ class ExampleList extends Component {
         </li>
       );
     }
-    return <ul className={this.props.classes.list}>{list}</ul>;
+    return <List>{list}</List>;
   }
 
   render() {
-    return (
-      <div className={this.props.classes.wrapper}>{this.renderList()}</div>
-    );
+    return <Wrapper>{this.renderList()}</Wrapper>;
   }
 }
 
-ExampleList.propTypes = {
-  classes: object.isRequired
-};
-
-const styles = {
-  wrapper: {
-    minWidth: '10em'
-  },
-  list: {
-    margin: 0,
-    listStyle: 'none'
-  }
-};
-
-export default injectSheet(styles)(ExampleList);
+export default ExampleList;

@@ -3,12 +3,9 @@ const {createFilePath} = require('gatsby-source-filesystem');
 const rollup = require('rollup');
 const resolve = require('rollup-plugin-node-resolve');
 const common = require('rollup-plugin-commonjs');
-const fs = require('fs');
+const fse = require('fs-extra');
 const promisify = require('util').promisify;
 const compileTemplate = require('string-template/compile');
-
-const writeFile = promisify(fs.writeFile);
-const readFile = promisify(fs.readFile);
 
 let rollupCache;
 const rollupPlugins = [resolve(), common()];
@@ -19,7 +16,7 @@ async function getOLCss() {
     return olCss;
   }
   const cssPath = path.join(__dirname, '..', '..', '..', 'css', 'ol.css');
-  olCss = await readFile(cssPath, {encoding: 'utf8'});
+  olCss = await fse.readFile(cssPath, {encoding: 'utf8'});
   return olCss;
 }
 
@@ -29,7 +26,7 @@ async function getEmbedTemplate() {
     return embedTemplate;
   }
   const embedPath = path.join(__dirname, 'embed.html');
-  const src = await readFile(embedPath, {encoding: 'utf8'});
+  const src = await fse.readFile(embedPath, {encoding: 'utf8'});
   embedTemplate = compileTemplate(src);
   return embedTemplate;
 }
@@ -54,7 +51,7 @@ exports.createPages = async (
 
   createRedirect({
     fromPath: `/examples/`,
-    isPermanent: false,
+    isPermanent: true,
     redirectInBrowser: true,
     toPath: `/examples/map/`
   });
@@ -154,8 +151,8 @@ exports.createPages = async (
     let exampleCss = '';
     const cssNode = examples[name].css;
     if (cssNode) {
-      exampleCss = await readFile(cssNode.absolutePath, {encoding: 'utf8'});
-      await writeFile(path.join(embedDir, cssNode.base), exampleCss);
+      exampleCss = await fse.readFile(cssNode.absolutePath, {encoding: 'utf8'});
+      await fse.writeFile(path.join(embedDir, cssNode.base), exampleCss);
     }
 
     const embedTemplate = await getEmbedTemplate();
@@ -169,7 +166,7 @@ exports.createPages = async (
     });
 
     const embedName = `${name}.html`;
-    writes.push(writeFile(path.join(embedDir, embedName), embed));
+    writes.push(fse.writeFile(path.join(embedDir, embedName), embed));
 
     const slug = markdownNode.fields.slug;
     index[name] = {
@@ -191,8 +188,10 @@ exports.createPages = async (
     });
   }
 
+  await fse.ensureDir(exampleDir);
+
   writes.push(
-    writeFile(path.join(exampleDir, 'index.json'), JSON.stringify(index))
+    fse.writeFile(path.join(exampleDir, 'index.json'), JSON.stringify(index))
   );
 
   await Promise.all(writes);
