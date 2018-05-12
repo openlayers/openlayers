@@ -82,6 +82,9 @@ function includeTypes(doclet) {
   if (doclet.returns) {
     doclet.returns.forEach(extractTypes);
   }
+  if (doclet.properties) {
+    doclet.properties.forEach(extractTypes);
+  }
   if (doclet.type && doclet.meta.code.type == 'MemberExpression') {
     extractTypes(doclet);
   }
@@ -131,7 +134,7 @@ exports.handlers = {
         // Document all modules that are referenced by the API
         continue;
       }
-      if (doclet.isEnum) {
+      if (doclet.isEnum || doclet.kind == 'typedef') {
         continue;
       }
       if (doclet.kind == 'class' && api.some(hasApiMembers, doclet)) {
