@@ -59,7 +59,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * with vector features from the server, it is not meant for feature editing.
  * Features are optimized for rendering, their geometries are clipped at or near
  * tile boundaries and simplified for a view resolution. See
- * {@link module:ol/source/VectorSource} for vector sources that are suitable for feature
+ * {@link module:ol/source/Vector} for vector sources that are suitable for feature
  * editing.
  *
  * @constructor
