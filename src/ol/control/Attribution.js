@@ -231,6 +231,13 @@ Attribution.prototype.updateElement_ = function(frameState) {
   }
 
   const attributions = this.getSourceAttributions_(frameState);
+
+  const visible = attributions.length > 0;
+  if (this.renderedVisible_ != visible) {
+    this.element.style.display = visible ? '' : 'none';
+    this.renderedVisible_ = visible;
+  }
+
   if (equals(attributions, this.renderedAttributions_)) {
     return;
   }
@@ -242,13 +249,6 @@ Attribution.prototype.updateElement_ = function(frameState) {
     const element = document.createElement('LI');
     element.innerHTML = attributions[i];
     this.ulElement_.appendChild(element);
-  }
-
-
-  const visible = attributions.length > 0;
-  if (this.renderedVisible_ != visible) {
-    this.element.style.display = visible ? '' : 'none';
-    this.renderedVisible_ = visible;
   }
 
   this.renderedAttributions_ = attributions;
