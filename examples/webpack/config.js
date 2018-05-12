@@ -38,7 +38,6 @@ const main = {
       {from: 'index.html', to: 'index.html'}
     ])
   ],
-  devtool: 'source-map',
   output: {
     filename: '[name].js',
     path: path.join(__dirname, '..', '..', 'build', 'examples')
@@ -47,6 +46,7 @@ const main = {
 
 // configuration specific to the dev environment
 const dev = {
+  devtool: 'source-map',
   plugins: [
     new webpack.EnvironmentPlugin(
       Object.assign({NODE_ENV: 'development'}, process.env)

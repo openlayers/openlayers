@@ -150,6 +150,7 @@ ExampleBuilder.prototype.render = async function(dir, chunk) {
       break;
     }
   }
+  jsSource = jsSource.replace(/'\.\.\/src\//g, '\'');
   if (data.cloak) {
     for (const entry of data.cloak) {
       jsSource = jsSource.replace(new RegExp(entry.key, 'g'), entry.value);
