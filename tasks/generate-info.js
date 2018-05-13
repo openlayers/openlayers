@@ -99,9 +99,6 @@ function parseOutput(output) {
   if (!Array.isArray(info.symbols)) {
     throw new Error('Expected symbols array: ' + output);
   }
-  if (!Array.isArray(info.defines)) {
-    throw new Error('Expected defines array: ' + output);
-  }
 
   return info;
 }

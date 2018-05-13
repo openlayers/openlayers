@@ -1,6 +1,5 @@
 /**
- * @fileoverview Generates JSON output based on exportable symbols (those with
- * an api tag) and boolean defines (with a define tag and a default value).
+ * @fileoverview Generates JSON output based on exportable symbols.
  */
 const assert = require('assert');
 const path = require('path');
@@ -22,7 +21,7 @@ exports.publish = function(data, opts) {
     return types;
   }
 
-  // get all doclets with the "api" property or define (excluding events)
+  // get all doclets with the "api" property
   const classes = {};
   const docs = data(
     [
@@ -34,7 +33,7 @@ exports.publish = function(data, opts) {
             return true;
           }
         }
-        return (typeof this.api == 'boolean' ||
+        return (this.kind === 'module' || typeof this.api == 'boolean' ||
               this.meta && (/[\\\/]externs$/).test(this.meta.path));
       }
     ],
@@ -43,9 +42,9 @@ exports.publish = function(data, opts) {
 
   // get symbols data, filter out those that are members of private classes
   const symbols = [];
-  const defines = [];
   const typedefs = [];
   const externs = [];
+  const modules = [];
   let base = [];
   const augments = {};
   const symbolsByName = {};
@@ -60,12 +59,11 @@ exports.publish = function(data, opts) {
     return include;
   }).forEach(function(doc) {
     const isExterns = (/[\\\/]externs$/).test(doc.meta.path);
-    if (doc.define) {
-      defines.push({
+    if (doc.kind == 'module') {
+      modules.push({
         name: doc.longname,
-        description: doc.description,
-        path: path.join(doc.meta.path, doc.meta.filename),
-        default: doc.define.default
+        exports: doc.exports || null,
+        path: path.join(doc.meta.path, doc.meta.filename)
       });
     } else if (doc.kind == 'typedef' || doc.isEnum === true) {
       typedefs.push({
@@ -155,10 +153,10 @@ exports.publish = function(data, opts) {
     process.stdout.write(
       JSON.stringify({
         symbols: symbols,
-        defines: defines,
         typedefs: typedefs,
         externs: externs,
-        base: base
+        base: base,
+        modules: modules
       }, null, 2));
   });
 

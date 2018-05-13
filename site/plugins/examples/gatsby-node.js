@@ -4,7 +4,6 @@ const rollup = require('rollup');
 const resolve = require('rollup-plugin-node-resolve');
 const common = require('rollup-plugin-commonjs');
 const fse = require('fs-extra');
-const promisify = require('util').promisify;
 const compileTemplate = require('string-template/compile');
 
 let rollupCache;
