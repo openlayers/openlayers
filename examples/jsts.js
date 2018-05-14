@@ -5,7 +5,12 @@ import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
-
+import Point from '../src/ol/geom/Point.js';
+import LineString from '../src/ol/geom/LineString.js';
+import Polygon from '../src/ol/geom/Polygon.js';
+import MultiPoint from '../src/ol/geom/MultiPoint.js';
+import MultiLineString from '../src/ol/geom/MultiLineString.js';
+import MultiPolygon from '../src/ol/geom/MultiPolygon.js';
 
 const source = new VectorSource();
 fetch('data/geojson/roads-seoul.geojson').then(function(response) {
@@ -15,6 +20,7 @@ fetch('data/geojson/roads-seoul.geojson').then(function(response) {
   const features = format.readFeatures(json, {featureProjection: 'EPSG:3857'});
 
   const parser = new jsts.io.OL3Parser();
+  parser.inject(Point, LineString, Polygon, MultiPoint, MultiLineString, MultiPolygon);
 
   for (let i = 0; i < features.length; i++) {
     const feature = features[i];
