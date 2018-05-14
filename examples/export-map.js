@@ -1,5 +1,3 @@
-// NOCOMPILE
-// this example uses FileSaver.js for which we don't have an externs file.
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';

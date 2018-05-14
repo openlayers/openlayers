@@ -1,6 +1,3 @@
-// NOCOMPILE
-// this example uses topolis and toastr for which we don't have an externs file.
-
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';

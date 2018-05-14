@@ -1,5 +1,3 @@
-// NOCOMPILE
-// this example uses JSTS for which we don't have an externs file.
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
