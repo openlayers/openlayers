@@ -177,8 +177,7 @@ MsSource.prototype.msPointerCancel = function(inEvent) {
  * @param {MSPointerEvent} inEvent The in event.
  */
 MsSource.prototype.msLostPointerCapture = function(inEvent) {
-  const e = this.dispatcher.makeEvent('lostpointercapture',
-    inEvent, inEvent);
+  const e = this.dispatcher.makeEvent('lostpointercapture', inEvent, inEvent);
   this.dispatcher.dispatchEvent(e);
 };
 
@@ -189,8 +188,7 @@ MsSource.prototype.msLostPointerCapture = function(inEvent) {
  * @param {MSPointerEvent} inEvent The in event.
  */
 MsSource.prototype.msGotPointerCapture = function(inEvent) {
-  const e = this.dispatcher.makeEvent('gotpointercapture',
-    inEvent, inEvent);
+  const e = this.dispatcher.makeEvent('gotpointercapture', inEvent, inEvent);
   this.dispatcher.dispatchEvent(e);
 };
 export default MsSource;

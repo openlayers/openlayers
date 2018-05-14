@@ -117,8 +117,7 @@ MouseSource.prototype.isEventSimulatedFromTouch_ = function(inEvent) {
     // simulated mouse events will be swallowed near a primary touchend
     const dx = Math.abs(x - t[0]);
     const dy = Math.abs(y - t[1]);
-    if (dx <= DEDUP_DIST &&
-        dy <= DEDUP_DIST) {
+    if (dx <= DEDUP_DIST && dy <= DEDUP_DIST) {
       return true;
     }
   }

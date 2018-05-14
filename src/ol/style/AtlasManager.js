@@ -195,8 +195,7 @@ AtlasManager.prototype.add = function(id, width, height,
   }
 
   /** @type {?module:ol/style/Atlas~AtlasInfo} */
-  const info = this.add_(false,
-    id, width, height, renderCallback, opt_this);
+  const info = this.add_(false, id, width, height, renderCallback, opt_this);
   if (!info) {
     return null;
   }
@@ -227,8 +226,7 @@ AtlasManager.prototype.add = function(id, width, height,
  * @return {?module:ol/style/Atlas~AtlasInfo}  The position and atlas image for the entry,
  *    or `null` if the image is too big.
  */
-AtlasManager.prototype.add_ = function(isHitAtlas, id, width, height,
-  renderCallback, opt_this) {
+AtlasManager.prototype.add_ = function(isHitAtlas, id, width, height, renderCallback, opt_this) {
   const atlases = (isHitAtlas) ? this.hitAtlases_ : this.atlases_;
   let atlas, info, i, ii;
   for (i = 0, ii = atlases.length; i < ii; ++i) {

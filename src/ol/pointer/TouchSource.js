@@ -122,8 +122,7 @@ TouchSource.prototype.isPrimaryTouch_ = function(inTouch) {
  */
 TouchSource.prototype.setPrimaryTouch_ = function(inTouch) {
   const count = Object.keys(this.pointerMap).length;
-  if (count === 0 || (count === 1 &&
-      POINTER_ID.toString() in this.pointerMap)) {
+  if (count === 0 || (count === 1 && POINTER_ID.toString() in this.pointerMap)) {
     this.firstTouchId_ = inTouch.identifier;
     this.cancelResetClickCount_();
   }
@@ -213,8 +212,7 @@ TouchSource.prototype.touchToPointer_ = function(browserEvent, inTouch) {
  * @param {function(Event, Object)} inFunction In function.
  */
 TouchSource.prototype.processTouches_ = function(inEvent, inFunction) {
-  const touches = Array.prototype.slice.call(
-    inEvent.changedTouches);
+  const touches = Array.prototype.slice.call(inEvent.changedTouches);
   const count = touches.length;
   function preventDefault() {
     inEvent.preventDefault();
@@ -271,8 +269,7 @@ TouchSource.prototype.vacuumTouches_ = function(inEvent) {
       // Never remove pointerId == 1, which is mouse.
       // Touch identifiers are 2 smaller than their pointerId, which is the
       // index in pointermap.
-      if (key != POINTER_ID &&
-          !this.findTouch_(touchList, key - 2)) {
+      if (key != POINTER_ID && !this.findTouch_(touchList, key - 2)) {
         d.push(value.out);
       }
     }
