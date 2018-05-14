@@ -219,9 +219,8 @@ TouchSource.prototype.processTouches_ = function(inEvent, inFunction) {
   function preventDefault() {
     inEvent.preventDefault();
   }
-  let i, pointer;
-  for (i = 0; i < count; ++i) {
-    pointer = this.touchToPointer_(inEvent, touches[i]);
+  for (let i = 0; i < count; ++i) {
+    const pointer = this.touchToPointer_(inEvent, touches[i]);
     // forward touch preventDefaults
     pointer.preventDefault = preventDefault;
     inFunction.call(this, inEvent, pointer);
@@ -237,9 +236,8 @@ TouchSource.prototype.processTouches_ = function(inEvent, inFunction) {
  */
 TouchSource.prototype.findTouch_ = function(touchList, searchId) {
   const l = touchList.length;
-  let touch;
   for (let i = 0; i < l; i++) {
-    touch = touchList[i];
+    const touch = touchList[i];
     if (touch.identifier === searchId) {
       return true;
     }
@@ -267,10 +265,9 @@ TouchSource.prototype.vacuumTouches_ = function(inEvent) {
   const count = keys.length;
   if (count >= touchList.length) {
     const d = [];
-    let i, key, value;
-    for (i = 0; i < count; ++i) {
-      key = keys[i];
-      value = this.pointerMap[key];
+    for (let i = 0; i < count; ++i) {
+      const key = keys[i];
+      const value = this.pointerMap[key];
       // Never remove pointerId == 1, which is mouse.
       // Touch identifiers are 2 smaller than their pointerId, which is the
       // index in pointermap.
@@ -279,7 +276,7 @@ TouchSource.prototype.vacuumTouches_ = function(inEvent) {
         d.push(value.out);
       }
     }
-    for (i = 0; i < d.length; ++i) {
+    for (let i = 0; i < d.length; ++i) {
       this.cancelOut_(inEvent, d[i]);
     }
   }
