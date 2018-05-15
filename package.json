@@ -1,6 +1,6 @@
 {
   "name": "openlayers",
-  "version": "4.6.5",
+  "version": "5.0.0-beta.12",
   "description": "Build tools and sources for developing OpenLayers based mapping applications",
   "keywords": [
     "map",
@@ -23,7 +23,7 @@
     "src-closure": "babel -q --out-dir build/src-closure src/",
     "pretypecheck": "npm run src-closure",
     "typecheck": "node tasks/typecheck",
-    "apidoc": "jsdoc config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -d build/apidoc"
+    "apidoc": "jsdoc config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -P package.json -d build/apidoc"
   },
   "main": "src/ol/index.js",
   "repository": {

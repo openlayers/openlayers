@@ -26,18 +26,36 @@ function addDefaultExportPath(obj) {
             const match = lines[i].match(/^export default ([A-Za-z_$][A-Za-z0-9_$]+);$/);
             if (match) {
               // Use variable name if default export is assigned to a variable.
-              obj[index] = name.replace(module, `${module}~${match[1]}`);
+              obj[index] = name = name.replace(module, `${module}~${match[1]}`);
               return;
             }
           }
           if (hasDefaultExport) {
             // Duplicate last part if default export is not assigned to a variable.
-            obj[index] = name.replace(module, `${module}~${module.split('/').pop()}`);
+            obj[index] = name = name.replace(module, `${module}~${module.split('/').pop()}`);
           }
         }
       });
     }
   });
+}
+
+function replaceLinks(comment) {
+  const matches = comment.match(/\{@link [^\} #]+}/g);
+  if (matches) {
+    const modules = matches.map(m => {
+      const mm = m.match(/(module:[^\}]+)}$/);
+      if (mm) {
+        return mm[1];
+      }
+    }).filter(m => !!m);
+    const newModules = modules.concat();
+    addDefaultExportPath(newModules);
+    modules.forEach((module, i) => {
+      comment = comment.replace(module, newModules[i]);
+    });
+  }
+  return comment;
 }
 
 exports.handlers = {
@@ -56,6 +74,17 @@ exports.handlers = {
       const pathArgs = [doclet.meta.path].concat(levelsUp.map(() => '../'));
       moduleRoot = path.resolve.apply(null, pathArgs);
     } else {
+      if (doclet.description) {
+        doclet.description = replaceLinks(doclet.description);
+      }
+      if (doclet.classdesc) {
+        doclet.classdesc = replaceLinks(doclet.classdesc);
+      }
+
+      const module = doclet.longname.split('#').shift();
+      if (module.indexOf('module:') == 0 && module.indexOf('.') !== -1) {
+        doclet.longname = doclet.longname.replace(module, module.replace('.', '~'));
+      }
       if (doclet.augments) {
         addDefaultExportPath(doclet.augments);
       }
@@ -72,14 +101,6 @@ exports.handlers = {
         addDefaultExportPath(doclet.type);
       }
     }
-  },
-
-  /**
-   * Adds `options.*` params for options that match the longname of one of the
-   * collected typedefs.
-   * @param {Object} e Event object.
-   */
-  parseComplete: function(e) {
   }
 
 };
