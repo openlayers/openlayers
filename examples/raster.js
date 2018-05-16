@@ -1,5 +1,3 @@
-// NOCOMPILE
-// this example uses d3 for which we don't have an externs file.
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';

@@ -317,12 +317,11 @@ export function createTransformFromCoordinateTransform(coordTransform) {
       const length = input.length;
       const dimension = opt_dimension !== undefined ? opt_dimension : 2;
       const output = opt_output !== undefined ? opt_output : new Array(length);
-      let point, i, j;
-      for (i = 0; i < length; i += dimension) {
-        point = coordTransform([input[i], input[i + 1]]);
+      for (let i = 0; i < length; i += dimension) {
+        const point = coordTransform([input[i], input[i + 1]]);
         output[i] = point[0];
         output[i + 1] = point[1];
-        for (j = dimension - 1; j >= 2; --j) {
+        for (let j = dimension - 1; j >= 2; --j) {
           output[i + j] = input[i + j];
         }
       }

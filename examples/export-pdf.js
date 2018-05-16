@@ -1,4 +1,3 @@
-// NOCOMPILE
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';

@@ -172,9 +172,8 @@ PointerEventHandler.prototype.registerSource = function(name, source) {
  */
 PointerEventHandler.prototype.register_ = function() {
   const l = this.eventSourceList_.length;
-  let eventSource;
   for (let i = 0; i < l; i++) {
-    eventSource = this.eventSourceList_[i];
+    const eventSource = this.eventSourceList_[i];
     this.addEvents_(eventSource.getEvents());
   }
 };
@@ -186,9 +185,8 @@ PointerEventHandler.prototype.register_ = function() {
  */
 PointerEventHandler.prototype.unregister_ = function() {
   const l = this.eventSourceList_.length;
-  let eventSource;
   for (let i = 0; i < l; i++) {
-    eventSource = this.eventSourceList_[i];
+    const eventSource = this.eventSourceList_[i];
     this.removeEvents_(eventSource.getEvents());
   }
 };

@@ -280,8 +280,7 @@ View.prototype.applyOptions_ = function(options) {
   properties[ViewProperty.CENTER] = options.center !== undefined ?
     options.center : null;
 
-  const resolutionConstraintInfo = createResolutionConstraint(
-    options);
+  const resolutionConstraintInfo = createResolutionConstraint(options);
 
   /**
    * @private
@@ -638,10 +637,8 @@ View.prototype.calculateCenterZoom = function(resolution, anchor) {
   const currentCenter = this.getCenter();
   const currentResolution = this.getResolution();
   if (currentCenter !== undefined && currentResolution !== undefined) {
-    const x = anchor[0] -
-        resolution * (anchor[0] - currentCenter[0]) / currentResolution;
-    const y = anchor[1] -
-        resolution * (anchor[1] - currentCenter[1]) / currentResolution;
+    const x = anchor[0] - resolution * (anchor[0] - currentCenter[0]) / currentResolution;
+    const y = anchor[1] - resolution * (anchor[1] - currentCenter[1]) / currentResolution;
     center = [x, y];
   }
   return center;
@@ -922,8 +919,7 @@ View.prototype.getValueForResolutionFunction = function(opt_power) {
      * @return {number} Value.
      */
     function(resolution) {
-      const value =
-            (Math.log(maxResolution / resolution) / Math.log(power)) / max;
+      const value = (Math.log(maxResolution / resolution) / Math.log(power)) / max;
       return value;
     });
 };

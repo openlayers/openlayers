@@ -27,20 +27,18 @@ const TileQueue = function(tilePriorityFunction, tileChangeCallback) {
   PriorityQueue.call(
     this,
     /**
-       * @param {Array} element Element.
-       * @return {number} Priority.
-       */
+     * @param {Array} element Element.
+     * @return {number} Priority.
+     */
     function(element) {
       return tilePriorityFunction.apply(null, element);
     },
     /**
-       * @param {Array} element Element.
-       * @return {string} Key.
-       */
+     * @param {Array} element Element.
+     * @return {string} Key.
+     */
     function(element) {
-      return (
-        /** @type {module:ol/Tile} */ (element[0]).getKey()
-      );
+      return (/** @type {module:ol/Tile} */ (element[0]).getKey());
     });
 
   /**
@@ -73,8 +71,7 @@ TileQueue.prototype.enqueue = function(element) {
   const added = PriorityQueue.prototype.enqueue.call(this, element);
   if (added) {
     const tile = element[0];
-    listen(tile, EventType.CHANGE,
-      this.handleTileChange, this);
+    listen(tile, EventType.CHANGE, this.handleTileChange, this);
   }
   return added;
 };
@@ -97,8 +94,7 @@ TileQueue.prototype.handleTileChange = function(event) {
   const state = tile.getState();
   if (state === TileState.LOADED || state === TileState.ERROR ||
       state === TileState.EMPTY || state === TileState.ABORT) {
-    unlisten(tile, EventType.CHANGE,
-      this.handleTileChange, this);
+    unlisten(tile, EventType.CHANGE, this.handleTileChange, this);
     const tileKey = tile.getKey();
     if (tileKey in this.tilesLoadingKeys_) {
       delete this.tilesLoadingKeys_[tileKey];

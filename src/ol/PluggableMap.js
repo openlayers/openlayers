@@ -303,12 +303,9 @@ const PluggableMap = function(options) {
    */
   this.keyHandlerKeys_ = null;
 
-  listen(this.viewport_, EventType.CONTEXTMENU,
-    this.handleBrowserEvent, this);
-  listen(this.viewport_, EventType.WHEEL,
-    this.handleBrowserEvent, this);
-  listen(this.viewport_, EventType.MOUSEWHEEL,
-    this.handleBrowserEvent, this);
+  listen(this.viewport_, EventType.CONTEXTMENU, this.handleBrowserEvent, this);
+  listen(this.viewport_, EventType.WHEEL, this.handleBrowserEvent, this);
+  listen(this.viewport_, EventType.MOUSEWHEEL, this.handleBrowserEvent, this);
 
   /**
    * @type {module:ol/Collection.<module:ol/control/Control>}
