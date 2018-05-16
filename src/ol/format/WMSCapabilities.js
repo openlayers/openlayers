@@ -447,12 +447,9 @@ function readCapabilityLayer(node, objectStack) {
  */
 function readLayer(node, objectStack) {
   const parentLayerObject = /**  @type {!Object.<string,*>} */ (objectStack[objectStack.length - 1]);
+  let layerObject = {};
 
-  const layerObject = pushParseAndPop({}, LAYER_PARSERS, node, objectStack);
 
-  if (!layerObject) {
-    return undefined;
-  }
   let queryable = readBooleanString(node.getAttribute('queryable'));
   if (queryable === undefined) {
     queryable = parentLayerObject['queryable'];
@@ -498,6 +495,12 @@ function readLayer(node, objectStack) {
       layerObject[key] = childValue.concat(parentLayerObject[key]);
     }
   });
+
+  layerObject = pushParseAndPop(layerObject, LAYER_PARSERS, node, objectStack);
+
+  if (!layerObject) {
+    return undefined;
+  }
 
   const replaceKeys = ['EX_GeographicBoundingBox', 'BoundingBox', 'Dimension',
     'Attribution', 'MinScaleDenominator', 'MaxScaleDenominator'];
