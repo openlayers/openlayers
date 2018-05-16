@@ -17,7 +17,7 @@
     "serve-examples": "mkdir -p build/examples && webpack --config examples/webpack/config.js --mode development --watch & serve build/examples",
     "build-examples": "webpack --config examples/webpack/config.js --mode production",
     "build-index": "node tasks/generate-index",
-    "build-site": "cd site && npm install && npm run build",
+    "build-site": "node tasks/generate-info.js && cd site && npm install && npm run build",
     "prebuild": "npm run build-index",
     "build": "rollup --config config/rollup.js",
     "presrc-closure": "npm run prebuild",
@@ -40,6 +40,7 @@
     "css/ol.css"
   ],
   "dependencies": {
+    "babel-eslint": "^8.2.3",
     "pbf": "3.1.0",
     "pixelworks": "1.1.0",
     "rbush": "2.0.2"

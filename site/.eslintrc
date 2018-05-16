@@ -1,5 +1,6 @@
 {
   "extends": "openlayers/react",
+  "parser": "babel-eslint",
   "globals": {
     "graphql": false
   }

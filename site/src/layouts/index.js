@@ -29,6 +29,7 @@ const Layout = ({children}) => (
         <Link to="/">OpenLayers</Link>
       </h1>
       <div>
+        <Link to="/docs/">docs</Link>&nbsp;
         <Link to="/examples/">examples</Link>
       </div>
     </Header>
