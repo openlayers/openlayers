@@ -32,7 +32,7 @@ inherits(WMSCapabilities, XML);
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array.<null|string>}
  */
 const NAMESPACE_URIS = [
   null,

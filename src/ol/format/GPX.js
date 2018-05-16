@@ -66,7 +66,7 @@ inherits(GPX, XMLFeature);
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array.<null|string>}
  */
 const NAMESPACE_URIS = [
   null,

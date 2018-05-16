@@ -38,7 +38,7 @@ inherits(OSMXML, XMLFeature);
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array.<null>}
  */
 const NAMESPACE_URIS = [null];
 

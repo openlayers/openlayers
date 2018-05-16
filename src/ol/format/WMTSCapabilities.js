@@ -33,7 +33,7 @@ inherits(WMTSCapabilities, XML);
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array.<null|string>}
  */
 const NAMESPACE_URIS = [
   null,
@@ -43,7 +43,7 @@ const NAMESPACE_URIS = [
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array.<null|string>}
  */
 const OWS_NAMESPACE_URIS = [
   null,

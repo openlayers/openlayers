@@ -20,7 +20,7 @@ inherits(OWS, XML);
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array.<null|string>}
  */
 const NAMESPACE_URIS = [null, 'http://www.opengis.net/ows/1.1'];
 
