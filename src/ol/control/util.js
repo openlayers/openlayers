@@ -36,6 +36,7 @@ import Zoom from './Zoom.js';
  * Defaults options.
  * @return {module:ol/Collection.<module:ol/control/Control>}
  * Controls.
+ * @function module:ol/control.defaults
  * @api
  */
 export function defaults(opt_options) {
