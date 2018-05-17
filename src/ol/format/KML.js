@@ -232,11 +232,6 @@ function createStyleDefaults() {
     zIndex: 0
   });
 
-  /**
-   * @const
-   * @type {Array.<module:ol/style/Style>}
-   * @private
-   */
   DEFAULT_STYLE_ARRAY = [DEFAULT_STYLE];
 
 }

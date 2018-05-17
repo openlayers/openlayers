@@ -151,9 +151,9 @@ const OverviewMap = function(opt_options) {
       /**
        * @param {module:ol/layer/Layer} layer Layer.
        */
-      function(layer) {
+      (function(layer) {
         ovmap.addLayer(layer);
-      }.bind(this));
+      }).bind(this));
   }
 
   const box = document.createElement('DIV');

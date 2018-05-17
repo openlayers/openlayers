@@ -83,12 +83,6 @@ import {add as addTransformFunc, clear as clearTransformFuncs, get as getTransfo
  */
 
 
-/**
- * Meters per unit lookup table.
- * @const
- * @type {Object.<module:ol/proj/Units, number>}
- * @api
- */
 export {METERS_PER_UNIT};
 
 
