@@ -796,7 +796,7 @@ CanvasImmediateRenderer.prototype.setContextTextState_ = function(textState) {
       contextTextState.font = context.font = textState.font;
     }
     if (contextTextState.textAlign != textAlign) {
-      contextTextState.textAlign = textAlign;
+      contextTextState.textAlign = context.textAlign = textAlign;
     }
     if (contextTextState.textBaseline != textState.textBaseline) {
       contextTextState.textBaseline = context.textBaseline =
