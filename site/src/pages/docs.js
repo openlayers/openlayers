@@ -24,12 +24,8 @@ function getModuleName(longname) {
   return longname.slice(7);
 }
 
-function getClassName(longname) {
-  return longname.split('~').pop();
-}
-
-function getFunctionName(longname) {
-  return longname.split('.').pop();
+function getName(longname) {
+  return longname.split(/[~\.]/).pop();
 }
 
 function isMember(symbol) {
@@ -55,6 +51,10 @@ class Docs extends Component {
           {mod.symbols
             .filter(sym => sym.kind === 'function' && !isMember(sym))
             .map(fn => this.renderFunction(fn, mod))}
+          <h2>Constants</h2>
+          {mod.symbols
+            .filter(sym => sym.kind === 'constant' && !isMember(sym))
+            .map(constant => this.renderConstant(constant, mod))}
         </a>
       </section>
     );
@@ -64,7 +64,7 @@ class Docs extends Component {
     return (
       <p key={cls.name}>
         <code>
-          import {getClassName(cls.name)} from &apos;{getModuleName(mod.name)}&apos;;
+          import {getName(cls.name)} from &apos;{getModuleName(mod.name)}&apos;;
         </code>
       </p>
     );
@@ -74,7 +74,19 @@ class Docs extends Component {
     return (
       <p key={fn.name}>
         <code>
-          import &#123;{getFunctionName(fn.name)}&#125; from &apos;{getModuleName(
+          import &#123;{getName(fn.name)}&#125; from &apos;{getModuleName(
+            mod.name
+          )}&apos;;
+        </code>
+      </p>
+    );
+  }
+
+  renderConstant(constant, mod) {
+    return (
+      <p key={constant.name}>
+        <code>
+          import &#123;{getName(constant.name)}&#125; from &apos;{getModuleName(
             mod.name
           )}&apos;;
         </code>
