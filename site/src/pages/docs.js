@@ -28,6 +28,14 @@ function getClassName(longname) {
   return longname.split('~').pop();
 }
 
+function getFunctionName(longname) {
+  return longname.split('.').pop();
+}
+
+function isMember(symbol) {
+  return symbol.name.indexOf('#') !== -1;
+}
+
 function slugify(name) {
   return name.replace(/[#~\.]/g, '-');
 }
@@ -43,6 +51,10 @@ class Docs extends Component {
           {mod.symbols
             .filter(sym => sym.kind === 'class')
             .map(cls => this.renderClass(cls, mod))}
+          <h2>Functions</h2>
+          {mod.symbols
+            .filter(sym => sym.kind === 'function' && !isMember(sym))
+            .map(fn => this.renderFunction(fn, mod))}
         </a>
       </section>
     );
@@ -53,6 +65,18 @@ class Docs extends Component {
       <p key={cls.name}>
         <code>
           import {getClassName(cls.name)} from &apos;{getModuleName(mod.name)}&apos;;
+        </code>
+      </p>
+    );
+  }
+
+  renderFunction(fn, mod) {
+    return (
+      <p key={fn.name}>
+        <code>
+          import &#123;{getFunctionName(fn.name)}&#125; from &apos;{getModuleName(
+            mod.name
+          )}&apos;;
         </code>
       </p>
     );
