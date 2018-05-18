@@ -58,7 +58,6 @@ exports.publish = function(data, opts) {
     }
     return include;
   }).forEach(function(doc) {
-    const isExterns = (/[\\\/]externs$/).test(doc.meta.path);
     if (doc.kind == 'module') {
       modules.push({
         name: doc.longname,
@@ -124,7 +123,7 @@ exports.publish = function(data, opts) {
         });
       }
 
-      const target = isExterns ? externs : (doc.api ? symbols : base);
+      const target = doc.api ? symbols : base;
       const existingSymbol = symbolsByName[symbol.name];
       if (existingSymbol) {
         const idx = target.indexOf(existingSymbol);
