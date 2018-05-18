@@ -14,11 +14,10 @@ info.symbols.forEach(symbol => {
   if (!mod) {
     throw new Error(`No module for symbol ${symbol.name}`);
   }
-  const kind = symbol.kind;
-  if (!mod[kind]) {
-    mod[kind] = [];
+  if (!mod.symbols) {
+    mod.symbols = [];
   }
-  mod[kind].push(symbol);
+  mod.symbols.push(symbol);
 });
 
 function getModuleName(longname) {
@@ -41,7 +40,9 @@ class Docs extends Component {
         <a name={slug} href={`#${slug}`}>
           <h1>{getModuleName(mod.name)}</h1>
           <h2>Classes</h2>
-          {mod.class.map(cls => this.renderClass(cls, mod))}
+          {mod.symbols
+            .filter(sym => sym.kind === 'class')
+            .map(cls => this.renderClass(cls, mod))}
         </a>
       </section>
     );
@@ -59,7 +60,7 @@ class Docs extends Component {
 
   render() {
     return (
-      <div>{modules.filter(mod => !!mod.class).map(this.renderModule)}</div>
+      <div>{modules.filter(mod => !!mod.symbols).map(this.renderModule)}</div>
     );
   }
 }
