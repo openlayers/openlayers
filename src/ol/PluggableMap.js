@@ -390,9 +390,9 @@ const PluggableMap = function(options) {
      * @param {module:ol/control/Control} control Control.
      * @this {module:ol/PluggableMap}
      */
-    function(control) {
+    (function(control) {
       control.setMap(this);
-    }.bind(this));
+    }).bind(this));
 
   listen(this.controls, CollectionEventType.ADD,
     /**
@@ -415,9 +415,9 @@ const PluggableMap = function(options) {
      * @param {module:ol/interaction/Interaction} interaction Interaction.
      * @this {module:ol/PluggableMap}
      */
-    function(interaction) {
+    (function(interaction) {
       interaction.setMap(this);
-    }.bind(this));
+    }).bind(this));
 
   listen(this.interactions, CollectionEventType.ADD,
     /**

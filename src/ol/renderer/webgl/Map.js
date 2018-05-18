@@ -130,14 +130,14 @@ const WebGLMapRenderer = function(map) {
      * @return {number} Priority.
      * @this {module:ol/renderer/webgl/Map}
      */
-    function(element) {
+    (function(element) {
       const tileCenter = /** @type {module:ol/coordinate~Coordinate} */ (element[1]);
       const tileResolution = /** @type {number} */ (element[2]);
       const deltaX = tileCenter[0] - this.focus_[0];
       const deltaY = tileCenter[1] - this.focus_[1];
       return 65536 * Math.log(tileResolution) +
             Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
-    }.bind(this),
+    }).bind(this),
     /**
      * @param {Array.<*>} element Element.
      * @return {string} Key.
