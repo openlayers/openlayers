@@ -14,6 +14,16 @@ info.symbols.forEach(symbol => {
   if (!mod) {
     throw new Error(`No module for symbol ${symbol.name}`);
   }
+  if (symbol.memberof || symbol.kind === 'class') {
+    const name = symbol.memberof || symbol.name;
+    if (!mod.classes) {
+      mod.classes = {};
+    }
+    if (!mod.classes[name]) {
+      mod.classes[name] = {};
+    }
+    mod.classes[name][symbol.name] = symbol;
+  }
   if (!mod.symbols) {
     mod.symbols = [];
   }
@@ -44,17 +54,18 @@ class Docs extends Component {
         <a name={slug} href={`#${slug}`}>
           <h1>{getModuleName(mod.name)}</h1>
           <h2>Classes</h2>
-          {mod.symbols
-            .filter(sym => sym.kind === 'class')
-            .map(cls => this.renderClass(cls, mod))}
+          {mod.classes &&
+            Object.keys(mod.classes).map(cls => this.renderClass(cls, mod))}
           <h2>Functions</h2>
-          {mod.symbols
-            .filter(sym => sym.kind === 'function' && !isMember(sym))
-            .map(fn => this.renderFunction(fn, mod))}
+          {mod.symbols &&
+            mod.symbols
+              .filter(sym => sym.kind === 'function' && !isMember(sym))
+              .map(fn => this.renderFunction(fn, mod))}
           <h2>Constants</h2>
-          {mod.symbols
-            .filter(sym => sym.kind === 'constant' && !isMember(sym))
-            .map(constant => this.renderConstant(constant, mod))}
+          {mod.symbols &&
+            mod.symbols
+              .filter(sym => sym.kind === 'constant' && !isMember(sym))
+              .map(constant => this.renderConstant(constant, mod))}
         </a>
       </section>
     );
@@ -62,9 +73,9 @@ class Docs extends Component {
 
   renderClass(cls, mod) {
     return (
-      <p key={cls.name}>
+      <p key={cls}>
         <code>
-          import {getName(cls.name)} from &apos;{getModuleName(mod.name)}&apos;;
+          import {getName(cls)} from &apos;{getModuleName(mod.name)}&apos;;
         </code>
       </p>
     );
@@ -95,9 +106,7 @@ class Docs extends Component {
   }
 
   render() {
-    return (
-      <div>{modules.filter(mod => !!mod.symbols).map(this.renderModule)}</div>
-    );
+    return <div>{modules.map(this.renderModule)}</div>;
   }
 }
 

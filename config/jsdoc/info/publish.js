@@ -79,6 +79,9 @@ exports.publish = function(data, opts) {
       if (doc.augments) {
         symbol.extends = doc.augments[0];
       }
+      if (doc.memberof) {
+        symbol.memberof = doc.memberof;
+      }
       if (doc.virtual) {
         symbol.virtual = true;
       }
