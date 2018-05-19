@@ -14,8 +14,11 @@ info.symbols.forEach(symbol => {
   if (!mod) {
     throw new Error(`No module for symbol ${symbol.name}`);
   }
-  if (symbol.memberof || symbol.kind === 'class') {
-    const name = symbol.memberof || symbol.name;
+  if (
+    (symbol.memberof && symbol.memberof.indexOf('~') !== -1) ||
+    symbol.kind === 'class'
+  ) {
+    const name = symbol.kind === 'class' ? symbol.name : symbol.memberof;
     if (!mod.classes) {
       mod.classes = {};
     }
@@ -71,38 +74,33 @@ class Docs extends Component {
     );
   };
 
-  renderClass(cls, mod) {
+  renderImport(longname, mod) {
     return (
-      <p key={cls}>
-        <code>
-          import {getName(cls)} from &apos;{getModuleName(mod.name)}&apos;;
-        </code>
-      </p>
+      <code>
+        import {getName(longname)} from &apos;{getModuleName(mod.name)}&apos;;
+      </code>
+    );
+  }
+
+  renderClass(cls, mod) {
+    return cls in mod.classes && cls in mod.classes[cls] ? (
+      <div key={cls}>
+        <p>{this.renderImport(cls, mod)}</p>
+        <h3>new {getName(cls)}()</h3>
+      </div>
+    ) : (
+      <div key={cls}>
+        <h3>{getName(cls)}</h3>
+      </div>
     );
   }
 
   renderFunction(fn, mod) {
-    return (
-      <p key={fn.name}>
-        <code>
-          import &#123;{getName(fn.name)}&#125; from &apos;{getModuleName(
-            mod.name
-          )}&apos;;
-        </code>
-      </p>
-    );
+    return <p key={fn.name}>{this.renderImport(fn.name, mod)}</p>;
   }
 
   renderConstant(constant, mod) {
-    return (
-      <p key={constant.name}>
-        <code>
-          import &#123;{getName(constant.name)}&#125; from &apos;{getModuleName(
-            mod.name
-          )}&apos;;
-        </code>
-      </p>
-    );
+    return <p key={constant.name}>{this.renderImport(constant.name, mod)}</p>;
   }
 
   render() {
