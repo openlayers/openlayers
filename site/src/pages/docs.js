@@ -82,15 +82,22 @@ class Docs extends Component {
     );
   }
 
+  renderConstructor(cls, mod) {
+    if (cls in mod.classes && cls in mod.classes[cls]) {
+      return (
+        <div>
+          <p>{this.renderImport(cls, mod)}</p>
+          <h4>new {getName(cls)}()</h4>
+        </div>
+      );
+    }
+  }
+
   renderClass(cls, mod) {
-    return cls in mod.classes && cls in mod.classes[cls] ? (
-      <div key={cls}>
-        <p>{this.renderImport(cls, mod)}</p>
-        <h3>new {getName(cls)}()</h3>
-      </div>
-    ) : (
+    return (
       <div key={cls}>
         <h3>{getName(cls)}</h3>
+        {this.renderConstructor(cls, mod)}
       </div>
     );
   }
