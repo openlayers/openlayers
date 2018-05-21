@@ -92,7 +92,8 @@ exports.publish = function(data, opts) {
         const params = [];
         doc.params.forEach(function(param) {
           const paramInfo = {
-            name: param.name
+            name: param.name,
+            description: param.description
           };
           params.push(paramInfo);
           paramInfo.types = getTypes(param.type.names);

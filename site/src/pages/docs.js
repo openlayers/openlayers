@@ -82,12 +82,33 @@ class Docs extends Component {
     );
   }
 
+  renderParams(params) {
+    //TODO Render types in a more structured way (like in default template?)
+    //TODO Use markdown for description
+    return (
+      <ul>
+        {params.map(param => (
+          <li key={param.name}>
+            {param.name}: {param.types.join('|')}
+            <br />
+            {param.description}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   renderConstructor(cls, mod) {
     if (cls in mod.classes && cls in mod.classes[cls]) {
+      const params = mod.classes[cls][cls].params;
       return (
         <div>
           <p>{this.renderImport(cls, mod)}</p>
-          <h4>new {getName(cls)}()</h4>
+          <h4>
+            new {getName(cls)}({params.map(p => p.name).join(', ')})
+          </h4>
+          <h5>Parameters</h5>
+          {this.renderParams(params)}
         </div>
       );
     }
