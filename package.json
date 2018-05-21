@@ -44,6 +44,7 @@
     "rbush": "2.0.2"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
     "babel-minify-webpack-plugin": "^0.3.0",
     "babel-plugin-jsdoc-closure": "1.5.1",
     "chaikin-smooth": "1.0.4",
