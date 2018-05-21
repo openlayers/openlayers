@@ -71,7 +71,7 @@
     "karma-sauce-launcher": "1.2.0",
     "karma-webpack": "3.0.0",
     "marked": "0.3.19",
-    "mocha": "5.1.1",
+    "mocha": "5.2.0",
     "mustache": "^2.3.0",
     "pixelmatch": "^4.0.2",
     "proj4": "2.4.4",
