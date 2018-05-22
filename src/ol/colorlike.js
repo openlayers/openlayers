@@ -8,8 +8,9 @@ import {toString} from './color.js';
  * A type accepted by CanvasRenderingContext2D.fillStyle
  * or CanvasRenderingContext2D.strokeStyle.
  * Represents a color, pattern, or gradient. The origin for patterns and
- * gradients as fill style is the top-left corner of the extent of the geometry
- * being filled.
+ * gradients as fill style is an increment of 512 css pixels from map coordinate
+ * `[0, 0]`. For seamless repeat patterns, width and height of the pattern image
+ * must be a factor of two (2, 4, 8, ..., 512).
  *
  * @typedef {string|CanvasPattern|CanvasGradient} ColorLike
  * @api

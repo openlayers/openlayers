@@ -87,9 +87,9 @@ const CanvasReplay = function(tolerance, maxExtent, resolution, pixelRatio, over
 
   /**
    * @private
-   * @type {module:ol/coordinate~Coordinate}
+   * @type {boolean}
    */
-  this.fillOrigin_;
+  this.alignFill_;
 
   /**
    * @private
@@ -191,7 +191,7 @@ CanvasReplay.prototype.replayTextBackground_ = function(context, p1, p2, p3, p4,
   context.lineTo.apply(context, p4);
   context.lineTo.apply(context, p1);
   if (fillInstruction) {
-    this.fillOrigin_ = /** @type {Array.<number>} */ (fillInstruction[2]);
+    this.alignFill_ = /** @type {boolean} */ (fillInstruction[2]);
     this.fill_(context);
   }
   if (strokeInstruction) {
@@ -455,13 +455,14 @@ CanvasReplay.prototype.beginGeometry = function(geometry, feature) {
  * @param {CanvasRenderingContext2D} context Context.
  */
 CanvasReplay.prototype.fill_ = function(context) {
-  if (this.fillOrigin_) {
-    const origin = applyTransform(this.renderedTransform_, this.fillOrigin_.slice());
-    context.translate(origin[0], origin[1]);
+  if (this.alignFill_) {
+    const origin = applyTransform(this.renderedTransform_, [0, 0]);
+    const repeatSize = 512 * this.pixelRatio;
+    context.translate(origin[0] % repeatSize, origin[1] % repeatSize);
     context.rotate(this.viewRotation_);
   }
   context.fill();
-  if (this.fillOrigin_) {
+  if (this.alignFill_) {
     context.setTransform.apply(context, resetTransform);
   }
 };
@@ -794,7 +795,7 @@ CanvasReplay.prototype.replay_ = function(
         break;
       case CanvasInstruction.SET_FILL_STYLE:
         lastFillInstruction = instruction;
-        this.fillOrigin_ = instruction[2];
+        this.alignFill_ = instruction[2];
 
         if (pendingFill) {
           this.fill_(context);
@@ -965,8 +966,8 @@ CanvasReplay.prototype.createFill = function(state, geometry) {
   const fillStyle = state.fillStyle;
   const fillInstruction = [CanvasInstruction.SET_FILL_STYLE, fillStyle];
   if (typeof fillStyle !== 'string') {
-    const fillExtent = geometry.getExtent();
-    fillInstruction.push([fillExtent[0], fillExtent[3]]);
+    // Fill is a pattern or gradient - align it!
+    fillInstruction.push(true);
   }
   return fillInstruction;
 };
