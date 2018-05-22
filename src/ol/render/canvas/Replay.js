@@ -456,8 +456,9 @@ CanvasReplay.prototype.beginGeometry = function(geometry, feature) {
  */
 CanvasReplay.prototype.fill_ = function(context) {
   if (this.fillOrigin_) {
-    const origin = applyTransform(this.renderedTransform_, this.fillOrigin_.slice());
-    context.translate(origin[0], origin[1]);
+    const origin = applyTransform(this.renderedTransform_, [0, 0]);
+    const repeatSize = 512 * this.pixelRatio;
+    context.translate(origin[0] % repeatSize, origin[1] % repeatSize);
     context.rotate(this.viewRotation_);
   }
   context.fill();
