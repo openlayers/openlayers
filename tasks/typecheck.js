@@ -13,6 +13,7 @@ const compiler = new Compiler({
   dependency_mode: 'STRICT',
   checks_only: true,
   jscomp_error: ['newCheckTypes'],
+  compilation_level: 'ADVANCED',
   // Options to make dependencies work
   process_common_js_modules: true,
   hide_warnings_for: 'node_modules'
