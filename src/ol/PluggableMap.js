@@ -535,7 +535,7 @@ PluggableMap.prototype.disposeInternal = function() {
   unlisten(this.viewport_, EventType.WHEEL, this.handleBrowserEvent, this);
   unlisten(this.viewport_, EventType.MOUSEWHEEL, this.handleBrowserEvent, this);
   if (this.handleResize_ !== undefined) {
-    removeEventListener(EventType.RESIZE, this.handleResize_, false);
+    window.removeEventListener(EventType.RESIZE, this.handleResize_, false);
     this.handleResize_ = undefined;
   }
   if (this.animationDelayKey_) {
@@ -1042,7 +1042,7 @@ PluggableMap.prototype.handleTargetChanged_ = function() {
     this.renderer_.removeLayerRenderers();
     removeNode(this.viewport_);
     if (this.handleResize_ !== undefined) {
-      removeEventListener(EventType.RESIZE, this.handleResize_, false);
+      window.removeEventListener(EventType.RESIZE, this.handleResize_, false);
       this.handleResize_ = undefined;
     }
   } else {
@@ -1057,7 +1057,7 @@ PluggableMap.prototype.handleTargetChanged_ = function() {
 
     if (!this.handleResize_) {
       this.handleResize_ = this.updateSize.bind(this);
-      addEventListener(EventType.RESIZE, this.handleResize_, false);
+      window.addEventListener(EventType.RESIZE, this.handleResize_, false);
     }
   }
 
