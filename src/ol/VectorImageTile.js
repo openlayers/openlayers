@@ -79,6 +79,11 @@ const VectorImageTile = function(tileCoord, state, sourceRevision, format,
   this.tileKeys = [];
 
   /**
+   * @type {module:ol/extent~Extent}
+   */
+  this.extent = null;
+
+  /**
    * @type {number}
    */
   this.sourceRevision_ = sourceRevision;
@@ -99,7 +104,7 @@ const VectorImageTile = function(tileCoord, state, sourceRevision, format,
   this.sourceTileListenerKeys_ = [];
 
   if (urlTileCoord) {
-    const extent = tileGrid.getTileCoordExtent(urlTileCoord);
+    const extent = this.extent = tileGrid.getTileCoordExtent(urlTileCoord);
     const resolution = tileGrid.getResolution(tileCoord[0]);
     const sourceZ = sourceTileGrid.getZForResolution(resolution);
     sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {

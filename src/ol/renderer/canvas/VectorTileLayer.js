@@ -169,7 +169,7 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(tile, fram
   const sourceTileGrid = source.getTileGrid();
   const tileGrid = source.getTileGridForProjection(projection);
   const resolution = tileGrid.getResolution(tile.tileCoord[0]);
-  const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
+  const tileExtent = tile.extent;
 
   const zIndexKeys = {};
   for (let t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
@@ -269,16 +269,11 @@ CanvasVectorTileLayerRenderer.prototype.forEachFeatureAtCoordinate = function(co
   /** @type {Array.<module:ol/VectorImageTile>} */
   const renderedTiles = this.renderedTiles;
 
-  const source = /** @type {module:ol/source/VectorTile} */ (layer.getSource());
-  const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
   let bufferedExtent, found;
   let i, ii, replayGroup;
-  let tile, tileCoord, tileExtent;
   for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
-    tile = renderedTiles[i];
-    tileCoord = tile.wrappedTileCoord;
-    tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
-    bufferedExtent = buffer(tileExtent, hitTolerance * resolution, bufferedExtent);
+    const tile = renderedTiles[i];
+    bufferedExtent = buffer(tile.extent, hitTolerance * resolution, bufferedExtent);
     if (!containsCoordinate(bufferedExtent, coordinate)) {
       continue;
     }
@@ -388,8 +383,7 @@ CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameSta
       continue;
     }
     const tileCoord = tile.tileCoord;
-    const worldOffset = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] -
-        tileGrid.getTileCoordExtent(tile.wrappedTileCoord, this.tmpExtent)[0];
+    const worldOffset = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] - tile.extent[0];
     let transform = undefined;
     for (let t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
       const sourceTile = tile.getTile(tile.tileKeys[t]);
