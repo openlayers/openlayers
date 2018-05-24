@@ -191,12 +191,17 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
   const findLoadedTiles = this.createLoadedTileFinder(
     tileSource, projection, tilesToDrawByZ);
 
+  const hints = frameState.viewHints;
+  const animatingOrInteracting = hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING];
+
   const tmpExtent = this.tmpExtent;
   const tmpTileRange = this.tmpTileRange_;
   this.newTiles_ = false;
   let tile, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+      if (Date.now() - frameState.time > 16 && animatingOrInteracting) {
+        continue;
       }
       tile = this.getTile(z, x, y, pixelRatio, projection);
       if (this.isDrawableTile_(tile)) {
@@ -229,8 +234,6 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
   }
 
   const renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
-  const hints = frameState.viewHints;
-  const animatingOrInteracting = hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING];
   if (!(this.renderedResolution && Date.now() - frameState.time > 16 && animatingOrInteracting) && (
     this.newTiles_ ||
         !(this.renderedExtent_ && containsExtent(this.renderedExtent_, extent)) ||
