@@ -46,7 +46,7 @@ const VectorImageTile = function(tileCoord, state, sourceRevision, format,
   tileLoadFunction, urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid,
   sourceTiles, pixelRatio, projection, tileClass, handleTileChange, opt_options) {
 
-  Tile.call(this, tileCoord, state, opt_options);
+  Tile.call(this, tileCoord, state, {transition: 0});
 
   /**
    * @private
