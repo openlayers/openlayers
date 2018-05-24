@@ -129,6 +129,21 @@ CanvasVectorTileLayerRenderer.prototype.disposeInternal = function() {
 /**
  * @inheritDoc
  */
+CanvasVectorTileLayerRenderer.prototype.getTile = function(z, x, y, pixelRatio, projection) {
+  const tile = CanvasTileLayerRenderer.prototype.getTile.call(this, z, x, y, pixelRatio, projection);
+  if (tile.getState() === TileState.LOADED) {
+    this.createReplayGroup_(tile, pixelRatio, projection);
+    if (this.context) {
+      this.renderTileImage_(tile, pixelRatio, projection);
+    }
+  }
+  return tile;
+};
+
+
+/**
+ * @inheritDoc
+ */
 CanvasVectorTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState) {
   const layer = this.getLayer();
   const layerRevision = layer.getRevision();
@@ -149,13 +164,12 @@ CanvasVectorTileLayerRenderer.prototype.prepareFrame = function(frameState, laye
 
 /**
  * @param {module:ol/VectorImageTile} tile Tile.
- * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @private
  */
-CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(tile, frameState) {
+CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(tile, pixelRatio, projection) {
   const layer = this.getLayer();
-  const pixelRatio = frameState.pixelRatio;
-  const projection = frameState.viewState.projection;
   const revision = layer.getRevision();
   const renderOrder = /** @type {module:ol/render~OrderFunction} */ (layer.getRenderOrder()) || null;
 
@@ -238,20 +252,6 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(tile, fram
   }
   replayState.renderedRevision = revision;
   replayState.renderedRenderOrder = renderOrder;
-};
-
-
-/**
- * @inheritDoc
- */
-CanvasVectorTileLayerRenderer.prototype.drawTileImage = function(
-  tile, frameState, layerState, x, y, w, h, gutter, transition) {
-  const vectorImageTile = /** @type {module:ol/VectorImageTile} */ (tile);
-  this.createReplayGroup_(vectorImageTile, frameState);
-  if (this.context) {
-    this.renderTileImage_(vectorImageTile, frameState, layerState);
-    CanvasTileLayerRenderer.prototype.drawTileImage.apply(this, arguments);
-  }
 };
 
 
@@ -466,12 +466,12 @@ CanvasVectorTileLayerRenderer.prototype.renderFeature = function(feature, square
 
 /**
  * @param {module:ol/VectorImageTile} tile Tile.
- * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
- * @param {module:ol/layer/Layer~State} layerState Layer state.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {module:ol/proj/Projection} projection Projection.
  * @private
  */
 CanvasVectorTileLayerRenderer.prototype.renderTileImage_ = function(
-  tile, frameState, layerState) {
+  tile, pixelRatio, projection) {
   const layer = this.getLayer();
   const replayState = tile.getReplayState(layer);
   const revision = layer.getRevision();
@@ -480,12 +480,11 @@ CanvasVectorTileLayerRenderer.prototype.renderTileImage_ = function(
     replayState.renderedTileRevision = revision;
     const tileCoord = tile.wrappedTileCoord;
     const z = tileCoord[0];
-    const pixelRatio = frameState.pixelRatio;
     const source = /** @type {module:ol/source/VectorTile} */ (layer.getSource());
-    const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
+    const tileGrid = source.getTileGridForProjection(projection);
     const resolution = tileGrid.getResolution(z);
     const context = tile.getContext(layer);
-    const size = source.getTilePixelSize(z, pixelRatio, frameState.viewState.projection);
+    const size = source.getTilePixelSize(z, pixelRatio, projection);
     context.canvas.width = size[0];
     context.canvas.height = size[1];
     const tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
@@ -503,4 +502,5 @@ CanvasVectorTileLayerRenderer.prototype.renderTileImage_ = function(
     }
   }
 };
+
 export default CanvasVectorTileLayerRenderer;
