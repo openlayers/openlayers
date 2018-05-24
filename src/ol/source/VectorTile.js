@@ -166,7 +166,7 @@ VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projection) {
       this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
       this.tileGrid, this.getTileGridForProjection(projection),
       this.sourceTiles_, pixelRatio, projection, this.tileClass,
-      this.handleTileChange.bind(this));
+      this.handleTileChange.bind(this), tileCoord[0]);
 
     this.tileCache.set(tileCoordKey, tile);
     return tile;
