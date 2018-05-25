@@ -14,9 +14,12 @@ import IntermediateCanvasRenderer from '../canvas/IntermediateCanvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
 /**
+ * Renderer for {@link module:ol/layer/Image} layers. When a vector renderer is
+ * set with the {@link module:ol/renderer/canvas/ImageLayer#setVectorRenderer}
+ * method, it can also render vector layers to an image.
  * @constructor
  * @extends {module:ol/renderer/canvas/IntermediateCanvas}
- * @param {module:ol/layer/Image} imageLayer Single image layer.
+ * @param {module:ol/layer/Image|module:ol/layer/Vector} imageLayer Image or vector layer.
  * @api
  */
 const CanvasImageLayerRenderer = function(imageLayer) {
@@ -216,7 +219,10 @@ CanvasImageLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordin
 
 
 /**
+ * Sets a vector renderer on this renderer. Call this methond to set up the
+ * renderer for rendering vector layers to an image.
  * @param {module:ol/renderer/canvas/VectorLayer} renderer Vector renderer.
+ * @api
  */
 CanvasImageLayerRenderer.prototype.setVectorRenderer = function(renderer) {
   if (this.vectorRenderer_) {
