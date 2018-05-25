@@ -129,8 +129,9 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
 
   const hints = frameState.viewHints;
 
+  const vectorRenderer = this.vectorRenderer_;
   let renderedExtent = frameState.extent;
-  if (layerState.extent !== undefined) {
+  if (!vectorRenderer && layerState.extent !== undefined) {
     renderedExtent = getIntersection(renderedExtent, layerState.extent);
   }
 
@@ -144,7 +145,6 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
       }
     }
     let skippedFeatures = this.skippedFeatures_;
-    const vectorRenderer = this.vectorRenderer_;
     if (vectorRenderer) {
       const context = vectorRenderer.context;
       const imageFrameState = /** @type {module:ol/PluggableMap~FrameState} */ (assign({}, frameState, {
