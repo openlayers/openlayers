@@ -119,7 +119,6 @@ CanvasVectorLayerRenderer.prototype.disposeInternal = function() {
  * @param {CanvasRenderingContext2D} context Context.
  * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
  * @param {module:ol/layer/Layer~State} layerState Layer state.
- * @param {module:ol/transform~Transform} transform Transform.
  */
 CanvasVectorLayerRenderer.prototype.compose = function(context, frameState, layerState) {
   const extent = frameState.extent;
