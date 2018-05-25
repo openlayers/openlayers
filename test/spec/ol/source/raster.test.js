@@ -1,12 +1,19 @@
 import Map from '../../../../src/ol/Map.js';
 import TileState from '../../../../src/ol/TileState.js';
 import View from '../../../../src/ol/View.js';
+import ImageLayerRenderer from '../../../../src/ol/renderer/canvas/ImageLayer.js';
 import ImageLayer from '../../../../src/ol/layer/Image.js';
+import VectorLayerRenderer from '../../../../src/ol/renderer/canvas/VectorLayer.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import Static from '../../../../src/ol/source/ImageStatic.js';
 import RasterSource from '../../../../src/ol/source/Raster.js';
 import Source from '../../../../src/ol/source/Source.js';
 import TileSource from '../../../../src/ol/source/Tile.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
+import Feature from '../../../../src/ol/Feature.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import {Style, Circle, Fill} from '../../../../src/ol/style.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 
 const red = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +
@@ -14,9 +21,6 @@ const red = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' 
 
 const green = 'data:image/gif;base64,R0lGODlhAQABAPAAAAD/AP///yH5BAAAAAAALAAAA' +
     'AABAAEAAAICRAEAOw==';
-
-const blue = 'data:image/gif;base64,R0lGODlhAQABAPAAAAAA/////yH5BAAAAAAALAAAAA' +
-    'ABAAEAAAICRAEAOw==';
 
 where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
@@ -45,10 +49,18 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       imageExtent: extent
     });
 
-    blueSource = new Static({
-      url: blue,
-      imageExtent: extent
-    });
+    blueSource = new ImageLayerRenderer(new VectorLayer({
+      source: new VectorSource({
+        features: [new Feature(new Point([0, 0]))]
+      }),
+      style: new Style({
+        image: new Circle({
+          radius: 3,
+          fill: new Fill({color: 'blue'})
+        })
+      })
+    }));
+    blueSource.setVectorRenderer(new VectorLayerRenderer(blueSource.getLayer()));
 
     raster = new RasterSource({
       threads: 0,
@@ -89,7 +101,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
   describe('constructor', function() {
 
-    it('returns a tile source', function() {
+    it('returns a raster source', function() {
       const source = new RasterSource({
         threads: 0,
         sources: [new TileSource({})]
