@@ -116,10 +116,12 @@ CanvasVectorLayerRenderer.prototype.disposeInternal = function() {
 
 
 /**
- * @inheritDoc
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+ * @param {module:ol/layer/Layer~State} layerState Layer state.
+ * @param {module:ol/transform~Transform} transform Transform.
  */
-CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerState, context) {
-
+CanvasVectorLayerRenderer.prototype.compose = function(context, frameState, layerState) {
   const extent = frameState.extent;
   const pixelRatio = frameState.pixelRatio;
   const skippedFeatureUids = layerState.managed ?
@@ -131,8 +133,6 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
   const vectorSource = /** @type {module:ol/source/Vector} */ (this.getLayer().getSource());
 
   let transform = this.getTransform(frameState, 0);
-
-  this.preCompose(context, frameState, transform);
 
   // clipped rendering if layer extent is set
   const clipExtent = layerState.extent;
@@ -207,8 +207,6 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
         replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
         startX -= worldWidth;
       }
-      // restore original transform for render and compose events
-      transform = this.getTransform(frameState, 0);
     }
     rotateAtOffset(replayContext, rotation,
       width / 2, height / 2);
@@ -236,8 +234,17 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
   if (clipped) {
     context.restore();
   }
-  this.postCompose(context, frameState, layerState, transform);
+};
 
+
+/**
+ * @inheritDoc
+ */
+CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerState, context) {
+  const transform = this.getTransform(frameState, 0);
+  this.preCompose(context, frameState, transform);
+  this.compose(context, frameState, layerState);
+  this.postCompose(context, frameState, layerState, transform);
 };
 
 

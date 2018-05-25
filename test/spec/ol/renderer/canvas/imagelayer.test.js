@@ -2,6 +2,8 @@ import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
+import Feature from '../../../../../src/ol/Feature.js';
+import Point from '../../../../../src/ol/geom/Point.js';
 import Projection from '../../../../../src/ol/proj/Projection.js';
 import Static from '../../../../../src/ol/source/ImageStatic.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
@@ -106,10 +108,10 @@ describe('ol.renderer.canvas.ImageLayer', function() {
     });
 
     afterEach(function() {
+      layer.dispose();
       vectorRenderer1.dispose();
       vectorRenderer2.dispose();
       imageRenderer.dispose();
-      layer.dispose();
     });
 
     it('cleans up an existing vectorRenderer', function() {
@@ -118,6 +120,54 @@ describe('ol.renderer.canvas.ImageLayer', function() {
       expect(spy.called).to.be(false);
       imageRenderer.setVectorRenderer(vectorRenderer2);
       expect(spy.called).to.be(true);
+    });
+
+  });
+
+  describe('Vector image rendering', function() {
+    let map, div, layer;
+
+    beforeEach(function() {
+      layer = new VectorLayer({
+        renderMode: 'image',
+        source: new VectorSource({
+          features: [new Feature(new Point([0, 0]))]
+        })
+      });
+
+      div = document.createElement('div');
+      div.style.width = div.style.height = '100px';
+      document.body.appendChild(div);
+      map = new Map({
+        target: div,
+        layers: [layer],
+        view: new View({
+          center: [0, 0],
+          zoom: 2
+        })
+      });
+    });
+
+    afterEach(function() {
+      map.setTarget(null);
+      document.body.removeChild(div);
+      map.dispose();
+    });
+
+    it('dispatches precompose and postcompose events on the vector layer', function(done) {
+      let precompose = 0;
+      let postcompose = 0;
+      layer.on('precompose', function() {
+        ++precompose;
+      });
+      layer.on('postcompose', function() {
+        ++postcompose;
+      });
+      map.once('postrender', function() {
+        expect(precompose).to.be(1);
+        expect(postcompose).to.be(1);
+        done();
+      });
     });
   });
 

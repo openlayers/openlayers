@@ -161,7 +161,7 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
           !equals(skippedFeatures, this.skippedFeatures_))) {
         context.canvas.width = imageFrameState.size[0] * pixelRatio;
         context.canvas.height = imageFrameState.size[1] * pixelRatio;
-        vectorRenderer.composeFrame(imageFrameState, layerState, context);
+        vectorRenderer.compose(imageFrameState, layerState, context);
         this.image_ = new ImageCanvas(renderedExtent, viewResolution, pixelRatio, context.canvas);
         this.skippedFeatures_ = skippedFeatures;
       }
