@@ -9,6 +9,7 @@ import {listen, unlistenByKey} from './events.js';
 import {getHeight, getIntersection, getWidth} from './extent.js';
 import EventType from './events/EventType.js';
 import {loadFeaturesXhr} from './featureloader.js';
+import {UNDEFINED} from './functions.js';
 
 
 /**
@@ -40,13 +41,13 @@ import {loadFeaturesXhr} from './featureloader.js';
  *     instantiate for source tiles.
  * @param {function(this: module:ol/source/VectorTile, module:ol/events/Event)} handleTileChange
  *     Function to call when a source tile's state changes.
- * @param {module:ol/Tile~Options=} opt_options Tile options.
+ * @param {number} zoom Integer zoom to render the tile for.
  */
 const VectorImageTile = function(tileCoord, state, sourceRevision, format,
   tileLoadFunction, urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid,
-  sourceTiles, pixelRatio, projection, tileClass, handleTileChange, opt_options) {
+  sourceTiles, pixelRatio, projection, tileClass, handleTileChange, zoom) {
 
-  Tile.call(this, tileCoord, state, opt_options);
+  Tile.call(this, tileCoord, state, {transition: 0});
 
   /**
    * @private
@@ -79,6 +80,11 @@ const VectorImageTile = function(tileCoord, state, sourceRevision, format,
   this.tileKeys = [];
 
   /**
+   * @type {module:ol/extent~Extent}
+   */
+  this.extent = null;
+
+  /**
    * @type {number}
    */
   this.sourceRevision_ = sourceRevision;
@@ -99,9 +105,11 @@ const VectorImageTile = function(tileCoord, state, sourceRevision, format,
   this.sourceTileListenerKeys_ = [];
 
   if (urlTileCoord) {
-    const extent = tileGrid.getTileCoordExtent(urlTileCoord);
-    const resolution = tileGrid.getResolution(tileCoord[0]);
+    const extent = this.extent = tileGrid.getTileCoordExtent(urlTileCoord);
+    const resolution = tileGrid.getResolution(zoom);
     const sourceZ = sourceTileGrid.getZForResolution(resolution);
+    const useLoadedOnly = zoom != tileCoord[0];
+    let loadCount = 0;
     sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
       let sharedExtent = getIntersection(extent,
         sourceTileGrid.getTileCoordExtent(sourceTileCoord));
@@ -112,9 +120,10 @@ const VectorImageTile = function(tileCoord, state, sourceRevision, format,
       if (getWidth(sharedExtent) / resolution >= 0.5 &&
           getHeight(sharedExtent) / resolution >= 0.5) {
         // only include source tile if overlap is at least 1 pixel
+        ++loadCount;
         const sourceTileKey = sourceTileCoord.toString();
         let sourceTile = sourceTiles[sourceTileKey];
-        if (!sourceTile) {
+        if (!sourceTile && !useLoadedOnly) {
           const tileUrl = tileUrlFunction(sourceTileCoord, pixelRatio, projection);
           sourceTile = sourceTiles[sourceTileKey] = new tileClass(sourceTileCoord,
             tileUrl == undefined ? TileState.EMPTY : TileState.IDLE,
@@ -123,10 +132,29 @@ const VectorImageTile = function(tileCoord, state, sourceRevision, format,
           this.sourceTileListenerKeys_.push(
             listen(sourceTile, EventType.CHANGE, handleTileChange));
         }
-        sourceTile.consumers++;
-        this.tileKeys.push(sourceTileKey);
+        if (sourceTile && (!useLoadedOnly || sourceTile.getState() == TileState.LOADED)) {
+          sourceTile.consumers++;
+          this.tileKeys.push(sourceTileKey);
+        }
       }
     }.bind(this));
+
+    if (useLoadedOnly && loadCount == this.tileKeys.length) {
+      this.finishLoading_();
+    }
+
+    if (zoom <= tileCoord[0] && this.state != TileState.LOADED) {
+      while (zoom > tileGrid.getMinZoom()) {
+        const tile = new VectorImageTile(tileCoord, state, sourceRevision,
+          format, tileLoadFunction, urlTileCoord, tileUrlFunction,
+          sourceTileGrid, tileGrid, sourceTiles, pixelRatio, projection,
+          tileClass, UNDEFINED, --zoom);
+        if (tile.state == TileState.LOADED) {
+          this.interimTile = tile;
+          break;
+        }
+      }
+    }
   }
 
 };

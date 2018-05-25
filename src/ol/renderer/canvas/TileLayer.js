@@ -52,6 +52,12 @@ const CanvasTileLayerRenderer = function(tileLayer) {
   this.renderedTiles = [];
 
   /**
+   * @private
+   * @type {boolean}
+   */
+  this.newTiles_ = false;
+
+  /**
    * @protected
    * @type {module:ol/extent~Extent}
    */
@@ -114,6 +120,34 @@ CanvasTileLayerRenderer.prototype.isDrawableTile_ = function(tile) {
       tileState == TileState.ERROR && !useInterimTilesOnError;
 };
 
+
+/**
+ * @param {number} z Tile coordinate z.
+ * @param {number} x Tile coordinate x.
+ * @param {number} y Tile coordinate y.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {module:ol/proj/Projection} projection Projection.
+ * @return {!module:ol/Tile} Tile.
+ */
+CanvasTileLayerRenderer.prototype.getTile = function(z, x, y, pixelRatio, projection) {
+  const layer = this.getLayer();
+  const source = /** @type {module:ol/source/Tile} */ (layer.getSource());
+  let tile = source.getTile(z, x, y, pixelRatio, projection);
+  if (tile.getState() == TileState.ERROR) {
+    if (!layer.getUseInterimTilesOnError()) {
+      // When useInterimTilesOnError is false, we consider the error tile as loaded.
+      tile.setState(TileState.LOADED);
+    } else if (layer.getPreload() > 0) {
+      // Preloaded tiles for lower resolutions might have finished loading.
+      this.newTiles_ = true;
+    }
+  }
+  if (!this.isDrawableTile_(tile)) {
+    tile = tile.getInterimTile();
+  }
+  return tile;
+};
+
 /**
  * @inheritDoc
  */
@@ -157,32 +191,26 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
   const findLoadedTiles = this.createLoadedTileFinder(
     tileSource, projection, tilesToDrawByZ);
 
+  const hints = frameState.viewHints;
+  const animatingOrInteracting = hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING];
+
   const tmpExtent = this.tmpExtent;
   const tmpTileRange = this.tmpTileRange_;
-  let newTiles = false;
+  this.newTiles_ = false;
   let tile, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-      tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-      if (tile.getState() == TileState.ERROR) {
-        if (!tileLayer.getUseInterimTilesOnError()) {
-          // When useInterimTilesOnError is false, we consider the error tile as loaded.
-          tile.setState(TileState.LOADED);
-        } else if (tileLayer.getPreload() > 0) {
-          // Preloaded tiles for lower resolutions might have finished loading.
-          newTiles = true;
-        }
+      if (Date.now() - frameState.time > 16 && animatingOrInteracting) {
+        continue;
       }
-      if (!this.isDrawableTile_(tile)) {
-        tile = tile.getInterimTile();
-      }
+      tile = this.getTile(z, x, y, pixelRatio, projection);
       if (this.isDrawableTile_(tile)) {
         const uid = getUid(this);
         if (tile.getState() == TileState.LOADED) {
           tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
           const inTransition = tile.inTransition(uid);
-          if (!newTiles && (inTransition || this.renderedTiles.indexOf(tile) === -1)) {
-            newTiles = true;
+          if (!this.newTiles_ && (inTransition || this.renderedTiles.indexOf(tile) === -1)) {
+            this.newTiles_ = true;
           }
         }
         if (tile.getAlpha(uid, frameState.time) === 1) {
@@ -206,10 +234,8 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
   }
 
   const renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
-  const hints = frameState.viewHints;
-  const animatingOrInteracting = hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING];
   if (!(this.renderedResolution && Date.now() - frameState.time > 16 && animatingOrInteracting) && (
-    newTiles ||
+    this.newTiles_ ||
         !(this.renderedExtent_ && containsExtent(this.renderedExtent_, extent)) ||
         this.renderedRevision != sourceRevision ||
         oversampling != this.oversampling_ ||

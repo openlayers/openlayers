@@ -2,6 +2,10 @@
 
 ### Next release
 
+#### `transition` option of `ol/source/VectorTile` is ignored
+
+The `transition` option to get an opacity transition to fade in tiles has been  disabled for `ol/source/VectorTile`. Vector tiles are now always rendered without an opacity transition.
+
 #### `ol/style/Fill` with `CanvasGradient` or `CanvasPattern`
 
 The origin for gradients and patterns has changed from the top-left corner of the extent of the geometry being filled to 512 css pixel increments from map coordinate `[0, 0]`. This allows repeat patterns to be aligned properly with vector tiles. For seamless repeat patterns, width and height of the pattern image must be a factor of two (2, 4, 8, ..., 512).
