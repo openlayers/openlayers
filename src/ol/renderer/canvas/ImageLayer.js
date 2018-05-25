@@ -132,8 +132,9 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
 
   const hints = frameState.viewHints;
 
+  const vectorRenderer = this.vectorRenderer_;
   let renderedExtent = frameState.extent;
-  if (layerState.extent !== undefined) {
+  if (!vectorRenderer && layerState.extent !== undefined) {
     renderedExtent = getIntersection(renderedExtent, layerState.extent);
   }
 
@@ -146,7 +147,7 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
         projection = sourceProjection;
       }
     }
-    const vectorRenderer = this.vectorRenderer_;
+    let skippedFeatures = this.skippedFeatures_;
     if (vectorRenderer) {
       const context = vectorRenderer.context;
       const imageFrameState = /** @type {module:ol/PluggableMap~FrameState} */ (assign({}, frameState, {
@@ -158,25 +159,25 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
           rotation: 0
         }))
       }));
-      const skippedFeatures = Object.keys(imageFrameState.skippedFeatureUids).sort();
-      if (vectorRenderer.prepareFrame(imageFrameState, layerState) &&
-          (vectorRenderer.replayGroupChanged ||
-          !equals(skippedFeatures, this.skippedFeatures_))) {
-        context.canvas.width = imageFrameState.size[0] * pixelRatio;
-        context.canvas.height = imageFrameState.size[1] * pixelRatio;
-        vectorRenderer.composeFrame(imageFrameState, layerState, context);
-        this.image_ = new ImageCanvas(renderedExtent, viewResolution, pixelRatio, context.canvas);
-        this.skippedFeatures_ = skippedFeatures;
-      }
+      const newSkippedFeatures = Object.keys(imageFrameState.skippedFeatureUids).sort();
+      image = new ImageCanvas(renderedExtent, viewResolution, pixelRatio, context.canvas, function(callback) {
+        if (vectorRenderer.prepareFrame(imageFrameState, layerState) &&
+            (vectorRenderer.replayGroupChanged ||
+            !equals(skippedFeatures, newSkippedFeatures))) {
+          context.canvas.width = imageFrameState.size[0] * pixelRatio;
+          context.canvas.height = imageFrameState.size[1] * pixelRatio;
+          vectorRenderer.compose(context, imageFrameState, layerState);
+          skippedFeatures = newSkippedFeatures;
+          callback();
+        }
+      });
     } else {
       image = imageSource.getImage(
         renderedExtent, viewResolution, pixelRatio, projection);
-      if (image) {
-        const loaded = this.loadImage(image);
-        if (loaded) {
-          this.image_ = image;
-        }
-      }
+    }
+    if (image && this.loadImage(image)) {
+      this.image_ = image;
+      this.skippedFeatures_ = skippedFeatures;
     }
   }
 
