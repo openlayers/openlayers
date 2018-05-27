@@ -181,7 +181,7 @@ exports.createPages = async (
         frontmatter: markdownNode.frontmatter,
         embedUrl: `/${embedDirName}/${embedName}`,
         html: markdownNode.html,
-        js: source.replace(/'\.\.\/src\/(.*?)\.js/g, "'$1"),
+        js: source.replace(/'\.\.\/\.\.\/\.\.\/src\/(.*?)\.js/g, "'$1"),
         css: exampleCss
       }
     });

@@ -1,9 +1,12 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import GeoJSON from '../src/ol/format/GeoJSON.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {BingMaps, Vector as VectorSource} from '../src/ol/source.js';
-import {Style, Stroke} from '../src/ol/style.js';
+import Map from '../../../src/ol/Map.js';
+import View from '../../../src/ol/View.js';
+import GeoJSON from '../../../src/ol/format/GeoJSON.js';
+import {
+  Tile as TileLayer,
+  Vector as VectorLayer
+} from '../../../src/ol/layer.js';
+import {BingMaps, Vector as VectorSource} from '../../../src/ol/source.js';
+import {Style, Stroke} from '../../../src/ol/style.js';
 
 const map = new Map({
   layers: [
@@ -16,7 +19,8 @@ const map = new Map({
     new VectorLayer({
       source: new VectorSource({
         format: new GeoJSON(),
-        url: 'https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json'
+        url:
+          'https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json'
       }),
       opacity: 0.5,
       style: new Style({
