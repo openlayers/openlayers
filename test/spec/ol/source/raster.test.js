@@ -1,9 +1,7 @@
 import Map from '../../../../src/ol/Map.js';
 import TileState from '../../../../src/ol/TileState.js';
 import View from '../../../../src/ol/View.js';
-import ImageLayerRenderer from '../../../../src/ol/renderer/canvas/ImageLayer.js';
 import ImageLayer from '../../../../src/ol/layer/Image.js';
-import VectorLayerRenderer from '../../../../src/ol/renderer/canvas/VectorLayer.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import Static from '../../../../src/ol/source/ImageStatic.js';
@@ -49,7 +47,8 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       imageExtent: extent
     });
 
-    blueSource = new ImageLayerRenderer(new VectorLayer({
+    blueSource = new VectorLayer({
+      renderMode: 'image',
       source: new VectorSource({
         features: [new Feature(new Point([0, 0]))]
       }),
@@ -59,8 +58,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
           fill: new Fill({color: 'blue'})
         })
       })
-    }));
-    blueSource.setVectorRenderer(new VectorLayerRenderer(blueSource.getLayer()));
+    });
 
     raster = new RasterSource({
       threads: 0,
