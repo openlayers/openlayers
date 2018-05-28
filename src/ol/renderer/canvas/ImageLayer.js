@@ -10,13 +10,11 @@ import {equals} from '../../array.js';
 import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
 import VectorRenderType from '../../layer/VectorRenderType.js';
 import {assign} from '../../obj.js';
+import {layerRendererConstructors} from './Map.js';
 import IntermediateCanvasRenderer from '../canvas/IntermediateCanvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
 /**
- * Renderer for {@link module:ol/layer/Image} layers. When a vector renderer is
- * set with the {@link module:ol/renderer/canvas/ImageLayer#setVectorRenderer}
- * method, it can also render vector layers to an image.
  * @constructor
  * @extends {module:ol/renderer/canvas/IntermediateCanvas}
  * @param {module:ol/layer/Image|module:ol/layer/Vector} imageLayer Image or vector layer.
@@ -49,6 +47,16 @@ const CanvasImageLayerRenderer = function(imageLayer) {
    */
   this.vectorRenderer_ = null;
 
+  if (imageLayer.getType() === LayerType.VECTOR && imageLayer.getRenderMode() === VectorRenderType.IMAGE) {
+    for (let i = 0, ii = layerRendererConstructors.length; i < ii; ++i) {
+      const ctor = layerRendererConstructors[i];
+      if (ctor !== CanvasImageLayerRenderer && ctor['handles'](imageLayer)) {
+        this.vectorRenderer_ = new ctor(imageLayer);
+        break;
+      }
+    }
+  }
+
 };
 
 inherits(CanvasImageLayerRenderer, IntermediateCanvasRenderer);
@@ -73,18 +81,7 @@ CanvasImageLayerRenderer['handles'] = function(layer) {
  * @return {module:ol/renderer/canvas/ImageLayer} The layer renderer.
  */
 CanvasImageLayerRenderer['create'] = function(mapRenderer, layer) {
-  const renderer = new CanvasImageLayerRenderer(/** @type {module:ol/layer/Image} */ (layer));
-  if (layer.getType() === LayerType.VECTOR) {
-    const candidates = mapRenderer.getLayerRendererConstructors();
-    for (let i = 0, ii = candidates.length; i < ii; ++i) {
-      const candidate = /** @type {Object.<string, Function>} */ (candidates[i]);
-      if (candidate !== CanvasImageLayerRenderer && candidate['handles'](layer)) {
-        renderer.setVectorRenderer(candidate['create'](mapRenderer, layer));
-        break;
-      }
-    }
-  }
-  return renderer;
+  return new CanvasImageLayerRenderer(/** @type {module:ol/layer/Image} */ (layer));
 };
 
 
@@ -219,16 +216,4 @@ CanvasImageLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordin
 };
 
 
-/**
- * Sets a vector renderer on this renderer. Call this methond to set up the
- * renderer for rendering vector layers to an image.
- * @param {module:ol/renderer/canvas/VectorLayer} renderer Vector renderer.
- * @api
- */
-CanvasImageLayerRenderer.prototype.setVectorRenderer = function(renderer) {
-  if (this.vectorRenderer_) {
-    this.vectorRenderer_.dispose();
-  }
-  this.vectorRenderer_ = renderer;
-};
 export default CanvasImageLayerRenderer;

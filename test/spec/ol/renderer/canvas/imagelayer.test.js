@@ -23,17 +23,18 @@ describe('ol.renderer.canvas.ImageLayer', function() {
       });
       imageRenderer = new CanvasImageLayerRenderer(layer);
       vectorRenderer = new CanvasVectorLayerRenderer(layer);
+      imageRenderer.vectorRenderer_ = vectorRenderer;
     });
 
     afterEach(function() {
-      vectorRenderer.dispose();
       imageRenderer.dispose();
+      vectorRenderer.dispose();
       layer.dispose();
     });
 
     it('cleans up CanvasVectorRenderer', function() {
+      const vectorRenderer = imageRenderer.vectorRenderer_;
       const spy = sinon.spy(vectorRenderer, 'dispose');
-      imageRenderer.setVectorRenderer(vectorRenderer);
       imageRenderer.dispose();
       expect(spy.called).to.be(true);
     });
@@ -92,36 +93,6 @@ describe('ol.renderer.canvas.ImageLayer', function() {
       map.forEachLayerAtPixel([10, 90], hasLayer);
       expect(has).to.be(false);
     });
-  });
-
-  describe('#setVectorRenderer()', function() {
-    let layer, imageRenderer, vectorRenderer1, vectorRenderer2;
-
-    beforeEach(function() {
-      layer = new VectorLayer({
-        renderMode: 'image',
-        source: new VectorSource()
-      });
-      imageRenderer = new CanvasImageLayerRenderer(layer);
-      vectorRenderer1 = new CanvasVectorLayerRenderer(layer);
-      vectorRenderer2 = new CanvasVectorLayerRenderer(layer);
-    });
-
-    afterEach(function() {
-      layer.dispose();
-      vectorRenderer1.dispose();
-      vectorRenderer2.dispose();
-      imageRenderer.dispose();
-    });
-
-    it('cleans up an existing vectorRenderer', function() {
-      const spy = sinon.spy(vectorRenderer1, 'dispose');
-      imageRenderer.setVectorRenderer(vectorRenderer1);
-      expect(spy.called).to.be(false);
-      imageRenderer.setVectorRenderer(vectorRenderer2);
-      expect(spy.called).to.be(true);
-    });
-
   });
 
   describe('Vector image rendering', function() {

@@ -3,7 +3,7 @@
  */
 import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
 import {inherits} from '../../index.js';
-import {stableSort} from '../../array.js';
+import {includes, stableSort} from '../../array.js';
 import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {visibleAtResolution} from '../../layer/Layer.js';
@@ -13,6 +13,13 @@ import {rotateAtOffset} from '../../render/canvas.js';
 import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
 import MapRenderer, {sortByZIndex} from '../Map.js';
 import SourceState from '../../source/State.js';
+
+
+/**
+ * @type {Array.<module:ol/renderer/Layer>}
+ */
+export const layerRendererConstructors = [];
+
 
 /**
  * @constructor
@@ -202,4 +209,19 @@ CanvasMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, ca
   }
   return undefined;
 };
+
+
+/**
+ * @inheritDoc
+ */
+CanvasMapRenderer.prototype.registerLayerRenderers = function(constructors) {
+  MapRenderer.prototype.registerLayerRenderers.call(this, constructors);
+  for (let i = 0, ii = constructors.length; i < ii; ++i) {
+    const ctor = constructors[i];
+    if (!includes(layerRendererConstructors, ctor)) {
+      layerRendererConstructors.push(ctor);
+    }
+  }
+};
+
 export default CanvasMapRenderer;
