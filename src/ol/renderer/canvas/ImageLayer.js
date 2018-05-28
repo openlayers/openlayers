@@ -47,7 +47,7 @@ const CanvasImageLayerRenderer = function(imageLayer) {
    */
   this.vectorRenderer_ = null;
 
-  if (imageLayer.getType() === LayerType.VECTOR && imageLayer.getRenderMode() === VectorRenderType.IMAGE) {
+  if (imageLayer.getType() === LayerType.VECTOR) {
     for (let i = 0, ii = layerRendererConstructors.length; i < ii; ++i) {
       const ctor = layerRendererConstructors[i];
       if (ctor !== CanvasImageLayerRenderer && ctor['handles'](imageLayer)) {
