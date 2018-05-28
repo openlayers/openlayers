@@ -87,7 +87,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @typedef {Object} MapOptions
  * @property {module:ol/Collection.<module:ol/control/Control>|Array.<module:ol/control/Control>} [controls]
  * Controls initially added to the map. If not specified,
- * {@link module:ol/control~defaults} is used.
+ * {@link module:ol/control/util~defaults} is used.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
  * physical pixels and device-independent pixels (dips) on the device.
  * @property {module:ol/Collection.<module:ol/interaction/Interaction>|Array.<module:ol/interaction/Interaction>} [interactions]
@@ -303,12 +303,9 @@ const PluggableMap = function(options) {
    */
   this.keyHandlerKeys_ = null;
 
-  listen(this.viewport_, EventType.CONTEXTMENU,
-    this.handleBrowserEvent, this);
-  listen(this.viewport_, EventType.WHEEL,
-    this.handleBrowserEvent, this);
-  listen(this.viewport_, EventType.MOUSEWHEEL,
-    this.handleBrowserEvent, this);
+  listen(this.viewport_, EventType.CONTEXTMENU, this.handleBrowserEvent, this);
+  listen(this.viewport_, EventType.WHEEL, this.handleBrowserEvent, this);
+  listen(this.viewport_, EventType.MOUSEWHEEL, this.handleBrowserEvent, this);
 
   /**
    * @type {module:ol/Collection.<module:ol/control/Control>}
@@ -393,9 +390,9 @@ const PluggableMap = function(options) {
      * @param {module:ol/control/Control} control Control.
      * @this {module:ol/PluggableMap}
      */
-    function(control) {
+    (function(control) {
       control.setMap(this);
-    }.bind(this));
+    }).bind(this));
 
   listen(this.controls, CollectionEventType.ADD,
     /**
@@ -418,9 +415,9 @@ const PluggableMap = function(options) {
      * @param {module:ol/interaction/Interaction} interaction Interaction.
      * @this {module:ol/PluggableMap}
      */
-    function(interaction) {
+    (function(interaction) {
       interaction.setMap(this);
-    }.bind(this));
+    }).bind(this));
 
   listen(this.interactions, CollectionEventType.ADD,
     /**

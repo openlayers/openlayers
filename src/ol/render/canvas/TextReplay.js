@@ -7,7 +7,7 @@ import {createCanvasContext2D} from '../../dom.js';
 import {intersects} from '../../extent.js';
 import {matchingChunk} from '../../geom/flat/straightchunk.js';
 import GeometryType from '../../geom/GeometryType.js';
-import {CANVAS_LINE_DASH, SAFARI} from '../../has.js';
+import {CANVAS_LINE_DASH} from '../../has.js';
 import {labelCache, measureTextWidth, defaultTextAlign, measureTextHeight, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from '../canvas/Instruction.js';
 import CanvasReplay from '../canvas/Replay.js';
@@ -314,7 +314,7 @@ CanvasTextReplay.prototype.getImage = function(text, textKey, fillKey, strokeKey
     context.font = textState.font;
     if (strokeKey) {
       context.strokeStyle = strokeState.strokeStyle;
-      context.lineWidth = strokeWidth * (SAFARI ? scale : 1);
+      context.lineWidth = strokeWidth;
       context.lineCap = strokeState.lineCap;
       context.lineJoin = strokeState.lineJoin;
       context.miterLimit = strokeState.miterLimit;

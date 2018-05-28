@@ -1,6 +1,5 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {getWidth} from '../src/ol/extent.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
@@ -16,14 +15,8 @@ const context = canvas.getContext('2d');
 const pixelRatio = DEVICE_PIXEL_RATIO;
 
 // Generate a rainbow gradient
-function gradient(feature, resolution) {
-  const extent = feature.getGeometry().getExtent();
-  // Gradient starts on the left edge of each feature, and ends on the right.
-  // Coordinate origin is the top-left corner of the extent of the geometry, so
-  // we just divide the geometry's extent width by resolution and multiply with
-  // pixelRatio to match the renderer's pixel coordinate system.
-  const grad = context.createLinearGradient(0, 0,
-    getWidth(extent) / resolution * pixelRatio, 0);
+const gradient = (function() {
+  const grad = context.createLinearGradient(0, 0, 512 * pixelRatio, 0);
   grad.addColorStop(0, 'red');
   grad.addColorStop(1 / 6, 'orange');
   grad.addColorStop(2 / 6, 'yellow');
@@ -32,24 +25,24 @@ function gradient(feature, resolution) {
   grad.addColorStop(5 / 6, 'blue');
   grad.addColorStop(1, 'purple');
   return grad;
-}
+})();
 
 // Generate a canvasPattern with two circles on white background
 const pattern = (function() {
-  canvas.width = 11 * pixelRatio;
-  canvas.height = 11 * pixelRatio;
+  canvas.width = 8 * pixelRatio;
+  canvas.height = 8 * pixelRatio;
   // white background
   context.fillStyle = 'white';
   context.fillRect(0, 0, canvas.width, canvas.height);
   // outer circle
   context.fillStyle = 'rgba(102, 0, 102, 0.5)';
   context.beginPath();
-  context.arc(5 * pixelRatio, 5 * pixelRatio, 4 * pixelRatio, 0, 2 * Math.PI);
+  context.arc(4 * pixelRatio, 4 * pixelRatio, 3 * pixelRatio, 0, 2 * Math.PI);
   context.fill();
   // inner circle
   context.fillStyle = 'rgb(55, 0, 170)';
   context.beginPath();
-  context.arc(5 * pixelRatio, 5 * pixelRatio, 2 * pixelRatio, 0, 2 * Math.PI);
+  context.arc(4 * pixelRatio, 4 * pixelRatio, 1.5 * pixelRatio, 0, 2 * Math.PI);
   context.fill();
   return context.createPattern(canvas, 'repeat');
 }());
@@ -69,12 +62,11 @@ const style = new Style({
  * which either contains the aboove gradient or pattern.
  *
  * @param {module:ol/Feature~Feature} feature The feature to style.
- * @param {number} resolution Resolution.
  * @return {module:ol/style/Style} The style to use for the feature.
  */
-const getStackedStyle = function(feature, resolution) {
+const getStackedStyle = function(feature) {
   const id = feature.getId();
-  fill.setColor(id > 'J' ? gradient(feature, resolution) : pattern);
+  fill.setColor(id > 'J' ? gradient : pattern);
   return style;
 };
 
@@ -94,7 +86,7 @@ const map = new Map({
   ],
   target: 'map',
   view: new View({
-    center: fromLonLat([7, 52]),
+    center: fromLonLat([16, 48]),
     zoom: 3
   })
 });

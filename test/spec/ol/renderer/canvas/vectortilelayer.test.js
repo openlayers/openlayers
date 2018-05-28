@@ -251,7 +251,9 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       sourceTile.getImage = function() {
         return document.createElement('canvas');
       };
-      const tile = new VectorImageTile([0, 0, 0]);
+      const tile = new VectorImageTile([0, 0, 0], undefined, undefined, undefined,
+        undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+        undefined, undefined, undefined, 0);
       tile.transition_ = 0;
       tile.wrappedTileCoord = [0, 0, 0];
       tile.setState(TileState.LOADED);
@@ -262,7 +264,6 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         return tile;
       };
       const renderer = new CanvasVectorTileLayerRenderer(layer);
-      renderer.renderTileImage_ = sinon.spy();
       const proj = getProjection('EPSG:3857');
       const frameState = {
         extent: proj.getExtent(),
@@ -279,12 +280,13 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         wantedTiles: {}
       };
       renderer.prepareFrame(frameState, {});
-      expect(renderer.renderTileImage_.getCalls().length).to.be(1);
+      const replayState = renderer.renderedTiles[0].getReplayState(layer);
+      const revision = replayState.renderedTileRevision;
       renderer.prepareFrame(frameState, {});
-      expect(renderer.renderTileImage_.getCalls().length).to.be(1);
+      expect(replayState.renderedTileRevision).to.be(revision);
       layer.changed();
       renderer.prepareFrame(frameState, {});
-      expect(renderer.renderTileImage_.getCalls().length).to.be(2);
+      expect(replayState.renderedTileRevision).to.be(revision + 1);
     });
   });
 
@@ -292,6 +294,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     let layer, renderer, replayGroup;
     const TileClass = function() {
       VectorImageTile.apply(this, arguments);
+      this.extent = [-Infinity, -Infinity, Infinity, Infinity];
       this.setState(TileState.LOADED);
       const sourceTile = new VectorTile([0, 0, 0]);
       sourceTile.setState(TileState.LOADED);

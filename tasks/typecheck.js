@@ -3,6 +3,7 @@ const Compiler = require('google-closure-compiler').compiler;
 const compiler = new Compiler({
   js: [
     './build/src-closure/**.js',
+    // Resolve dependencies
     './node_modules/pbf/package.json', './node_modules/pbf/**.js', './node_modules/ieee754/**.js',
     './node_modules/pixelworks/package.json', './node_modules/pixelworks/**.js',
     './node_modules/rbush/package.json', './node_modules/rbush/**.js', 'node_modules/quickselect/**.js'
@@ -10,11 +11,10 @@ const compiler = new Compiler({
   entry_point: './build/src-closure/index.js',
   module_resolution: 'NODE',
   dependency_mode: 'STRICT',
-  process_common_js_modules: true,
   checks_only: true,
-  //FIXME Change newCheckTypes to jscomp_error when we have path types everywhere
-  jscomp_warning: ['newCheckTypes'],
+  jscomp_error: ['newCheckTypes'],
   // Options to make dependencies work
+  process_common_js_modules: true,
   hide_warnings_for: 'node_modules'
 });
 

@@ -47,8 +47,6 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * When set to `false`, only one world
  * will be rendered. When set to `true`, tiles will be wrapped horizontally to
  * render multiple worlds.
- * @property {number} [transition] Duration of the opacity transition for rendering.
- * To disable the opacity transition, pass `transition: 0`.
  */
 
 
@@ -59,7 +57,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * with vector features from the server, it is not meant for feature editing.
  * Features are optimized for rendering, their geometries are clipped at or near
  * tile boundaries and simplified for a view resolution. See
- * {@link module:ol/source/VectorSource} for vector sources that are suitable for feature
+ * {@link module:ol/source/Vector} for vector sources that are suitable for feature
  * editing.
  *
  * @constructor
@@ -168,8 +166,7 @@ VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projection) {
       this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
       this.tileGrid, this.getTileGridForProjection(projection),
       this.sourceTiles_, pixelRatio, projection, this.tileClass,
-      this.handleTileChange.bind(this),
-      this.tileOptions);
+      this.handleTileChange.bind(this), tileCoord[0]);
 
     this.tileCache.set(tileCoordKey, tile);
     return tile;

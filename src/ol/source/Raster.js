@@ -13,6 +13,7 @@ import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import ImageLayer from '../layer/Image.js';
 import TileLayer from '../layer/Tile.js';
 import {assign} from '../obj.js';
+import CanvasLayerRenderer from '../renderer/canvas/Layer.js';
 import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
 import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
 import ImageSource from '../source/Image.js';
@@ -111,7 +112,7 @@ inherits(RasterSourceEvent, Event);
 
 /**
  * @typedef {Object} Options
- * @property {Array.<module:ol/source/Source>} sources Input sources.
+ * @property {Array.<module:ol/source/Source|module:ol/renderer/canvas/Layer>} sources Input sources.
  * @property {module:ol/source/Raster~Operation} [operation] Raster operation.
  * The operation will be called with data from input sources
  * and the output will be assigned to the raster source.
@@ -487,6 +488,10 @@ function createRenderer(source) {
     renderer = createTileRenderer(source);
   } else if (source instanceof ImageSource) {
     renderer = createImageRenderer(source);
+  } else if (source instanceof TileLayer) {
+    renderer = new CanvasTileLayerRenderer(source);
+  } else if (source instanceof CanvasLayerRenderer) {
+    renderer = source;
   }
   return renderer;
 }

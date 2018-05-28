@@ -35,7 +35,7 @@ import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js'
  *       target: 'map'
  *     });
  *
- * The above snippet creates a map using a {@link module:ol/layer/Tile~Tile} to
+ * The above snippet creates a map using a {@link module:ol/layer/Tile} to
  * display {@link module:ol/source/OSM~OSM} OSM data and render it to a DOM
  * element with the id `map`.
  *
