@@ -59,7 +59,7 @@ const VectorTile = function(tileCoord, state, src, format, tileLoadFunction, opt
    * @private
    * @type {module:ol/proj/Projection}
    */
-  this.projection_;
+  this.projection_ = null;
 
   /**
    * @private
