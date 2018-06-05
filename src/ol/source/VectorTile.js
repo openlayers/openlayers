@@ -31,11 +31,13 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  *   tile.setLoader(function() {
  *     var data = // ... fetch data
  *     var format = tile.getFormat();
+ *     tile.setProjection(format.readProjection(data));
  *     tile.setFeatures(format.readFeatures(data, {
- *       // uncomment the line below for ol/format/MVT only
- *       extent: tile.getExtent(),
+ *       // featureProjection is not required for ol/format/MVT
  *       featureProjection: map.getView().getProjection()
  *     }));
+ *     // the line below is only required for ol/format/MVT
+ *     tile.setExtent(format.getLastExtent());
  *   };
  * });
  * @property {module:ol/Tile~UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
