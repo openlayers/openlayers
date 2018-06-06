@@ -94,6 +94,7 @@ ImageCanvas.prototype.load = function() {
 
 
 /**
+ * @override
  * @return {HTMLCanvasElement} Canvas element.
  */
 ImageCanvas.prototype.getImage = function() {

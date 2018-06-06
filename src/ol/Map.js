@@ -80,6 +80,11 @@ const Map = function(options) {
 
 inherits(Map, PluggableMap);
 
+
+/**
+ * @override
+ * @return {module:ol/renderer/canvas/Map} CanvasMapRenderer.
+ */
 Map.prototype.createRenderer = function() {
   const renderer = new CanvasMapRenderer(this);
   renderer.registerLayerRenderers([

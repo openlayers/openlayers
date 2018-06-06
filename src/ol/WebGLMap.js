@@ -81,6 +81,10 @@ const WebGLMap = function(options) {
 inherits(WebGLMap, PluggableMap);
 
 
+/**
+ * @override
+ * @return {module:ol/renderer/webgl/Map} WebGLMapRenderer.
+ */
 WebGLMap.prototype.createRenderer = function() {
   const renderer = new WebGLMapRenderer(this);
   renderer.registerLayerRenderers([
