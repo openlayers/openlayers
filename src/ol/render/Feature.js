@@ -8,6 +8,7 @@ import GeometryType from '../geom/GeometryType.js';
 import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
 import {getInteriorPointOfArray, getInteriorPointsOfMultiArray} from '../geom/flat/interiorpoint.js';
 import {interpolatePoint} from '../geom/flat/interpolate.js';
+import {get as getProjection} from '../proj.js';
 import {transform2D} from '../geom/flat/transform.js';
 import {create as createTransform, compose as composeTransform} from '../transform.js';
 
@@ -264,6 +265,7 @@ RenderFeature.prototype.getType = function() {
  * @param {module:ol/proj~ProjectionLike} destination The desired projection.
  */
 RenderFeature.prototype.transform = function(source, destination) {
+  source = getProjection(source);
   const pixelExtent = source.getExtent();
   const projectedExtent = source.getWorldExtent();
   const scale = getHeight(projectedExtent) / getHeight(pixelExtent);

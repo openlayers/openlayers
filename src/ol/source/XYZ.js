@@ -18,7 +18,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {number} [maxZoom=18] Optional max zoom level.
- * @property {number} [maxZoom=0] Optional min zoom level.
+ * @property {number} [minZoom=0] Optional min zoom level.
  * @property {module:ol/tilegrid/TileGrid} [tileGrid] Tile grid.
  * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js

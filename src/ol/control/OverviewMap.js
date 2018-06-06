@@ -38,8 +38,8 @@ const MIN_RATIO = 0.1;
 
 /**
  * @typedef {Object} Options
- * @property {boolean} [collapsed=true] Whether the control should start collapsed
- * or not (expanded).
+ * @property {string} [className='ol-overviewmap'] CSS class name.
+ * @property {boolean} [collapsed=true] Whether the control should start collapsed or not (expanded).
  * @property {string|Element} [collapseLabel='«'] Text label to use for the
  * expanded overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {boolean} [collapsible=true] Whether the control can be collapsed or not.

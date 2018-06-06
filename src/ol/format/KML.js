@@ -324,7 +324,7 @@ const GX_NAMESPACE_URIS = [
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array.<null|string>}
  */
 const NAMESPACE_URIS = [
   null,

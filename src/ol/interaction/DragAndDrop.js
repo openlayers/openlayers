@@ -135,7 +135,7 @@ inherits(DragAndDrop, Interaction);
 
 
 /**
- * @param {Event} event Event.
+ * @param {DragEvent} event Event.
  * @this {module:ol/interaction/DragAndDrop}
  */
 function handleDrop(event) {
@@ -150,7 +150,7 @@ function handleDrop(event) {
 
 
 /**
- * @param {Event} event Event.
+ * @param {DragEvent} event Event.
  */
 function handleStop(event) {
   event.stopPropagation();

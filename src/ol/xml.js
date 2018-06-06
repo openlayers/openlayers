@@ -335,10 +335,8 @@ export function makeSimpleNodeFactory(opt_nodeName, opt_namespaceURI) {
       if (nodeName === undefined) {
         nodeName = opt_nodeName;
       }
-      let namespaceURI = opt_namespaceURI;
-      if (opt_namespaceURI === undefined) {
-        namespaceURI = node.namespaceURI;
-      }
+
+      const namespaceURI = opt_namespaceURI !== undefined ? opt_namespaceURI : node.namespaceURI;
       return createElementNS(namespaceURI, /** @type {string} */ (nodeName));
     }
   );
