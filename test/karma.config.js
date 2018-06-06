@@ -54,6 +54,9 @@ module.exports = function(karma) {
       '**/*.js': ['webpack']
     },
     reporters: ['progress'],
+    webpack: {
+      devtool: 'eval'
+    },
     webpackMiddleware: {
       noInfo: true
     }
