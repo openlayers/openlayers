@@ -336,7 +336,7 @@ const PluggableMap = function(options) {
    * @type {module:ol/renderer/Map}
    * @private
    */
-  this.renderer_ = this.createRenderer(this.viewport_, this);
+  this.renderer_ = this.createRenderer();
 
   /**
    * @type {function(Event)|undefined}
