@@ -61,6 +61,10 @@ const INTERVALS = [
  * longitudes. This function is called with the longitude as argument, and
  * should return a formatted string representing the longitude. By default,
  * labels are formatted as degrees, minutes, seconds and hemisphere.
+ * @property {function(number):string} [latLabelFormatter] Label formatter for
+ * latitudes. This function is called with the latitude as argument, and
+ * should return a formatted string representing the latitude. By default,
+ * labels are formatted as degrees, minutes, seconds and hemisphere.
  * @property {number} [lonLabelPosition=0] Longitude label position in fractions
  * (0..1) of view extent. 0 means at the bottom of the viewport, 1 means at the
  * top.
@@ -85,7 +89,7 @@ const INTERVALS = [
  * Note that the default's `textBaseline` configuration will not work well for
  * `lonLabelPosition` configurations that position labels close to the top of
  * the viewport.
- * @param {module:ol/style/Text} [latLabelStyle] Latitude label text style.
+ * @property {module:ol/style/Text} [latLabelStyle] Latitude label text style.
  * If not provided, the following style will be used:
  * ```js
  * new Text({
