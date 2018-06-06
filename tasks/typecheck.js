@@ -8,12 +8,29 @@ const compiler = new Compiler({
     './node_modules/pixelworks/package.json', './node_modules/pixelworks/**.js',
     './node_modules/rbush/package.json', './node_modules/rbush/**.js', 'node_modules/quickselect/**.js'
   ],
+  externs: [
+    './externs/bingmaps.js',
+    './externs/cartodb.js',
+    './externs/closure-compiler.js',
+    './externs/esrijson.js',
+    './externs/geojson.js',
+    './externs/proj4js.js',
+    './externs/tilejson.js',
+    './externs/topojson.js'
+  ],
   entry_point: './build/src-closure/index.js',
   module_resolution: 'NODE',
   dependency_mode: 'STRICT',
   checks_only: true,
-  jscomp_error: ['newCheckTypes'],
+  jscomp_error: ['*'],
+  jscomp_off: [
+    'lintChecks',
+    'analyzerChecks'
+  ],
   compilation_level: 'ADVANCED',
+  extra_annotation_name: [
+    'api', 'observable'
+  ],
   // Options to make dependencies work
   process_common_js_modules: true,
   hide_warnings_for: 'node_modules'

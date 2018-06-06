@@ -11,15 +11,15 @@ var Proj4 = function() {};
 
 
 /**
- * @param {ol.Coordinate} coordinates
- * @return {ol.Coordinate}
+ * @param {Array.<number>} coordinates
+ * @return {Array.<number>}
  */
 Proj4.prototype.forward = function(coordinates) {};
 
 
 /**
- * @param {ol.Coordinate} coordinates
- * @return {ol.Coordinate}
+ * @param {Array.<number>} coordinates
+ * @return {Array.<number>}
  */
 Proj4.prototype.inverse = function(coordinates) {};
 
