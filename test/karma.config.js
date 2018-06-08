@@ -39,21 +39,29 @@ module.exports = function(karma) {
       }, {
         pattern: path.resolve(__dirname, './test-extensions.js')
       }, {
-        pattern: '**/*.test.js'
+        pattern: path.resolve(__dirname, './index_test.js'),
+        watched: false
       }, {
         pattern: '**/*',
         included: false,
         watched: false
       }
     ],
+    exclude: [
+      '**/*.test.js'
+    ],
     proxies: {
       '/rendering/': '/base/rendering/',
       '/spec/': '/base/spec/'
     },
     preprocessors: {
-      '**/*.js': ['webpack']
+      '**/*.js': ['webpack', 'sourcemap']
     },
     reporters: ['progress'],
+    webpack: {
+      devtool: 'inline-source-map',
+      mode: 'development'
+    },
     webpackMiddleware: {
       noInfo: true
     }

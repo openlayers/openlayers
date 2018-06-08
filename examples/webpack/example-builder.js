@@ -5,6 +5,7 @@ const marked = require('marked');
 const path = require('path');
 const pkg = require('../../package.json');
 const promisify = require('util').promisify;
+const RawSource = require('webpack-sources').RawSource;
 
 const readFile = promisify(fs.readFile);
 const isCssRegEx = /\.css$/;
@@ -61,6 +62,28 @@ function createWordIndex(exampleData) {
 }
 
 /**
+ * Gets the source for the chunk that matches the jsPath
+ * @param {Object} chunk Chunk.
+ * @param {string} jsPath Path of the file.
+ * @return {string} The source.
+ */
+function getJsSource(chunk, jsPath) {
+  let jsSource;
+  for (let i = 0, ii = chunk.modules.length; i < ii; ++i) {
+    const module = chunk.modules[i];
+    if (module.modules) {
+      jsSource = getJsSource(module, jsPath);
+      if (jsSource) {
+        return jsSource;
+      }
+    }
+    if (module.identifier == jsPath) {
+      return module.source;
+    }
+  }
+}
+
+/**
  * A webpack plugin that builds the html files for our examples.
  * @param {Object} config Plugin configuration.  Requires a `templates` property
  * with the path to templates and a `common` property with the name of the
@@ -77,7 +100,7 @@ function ExampleBuilder(config) {
  * @param {Object} compiler The webpack compiler.
  */
 ExampleBuilder.prototype.apply = function(compiler) {
-  compiler.plugin('emit', async (compilation, callback) => {
+  compiler.hooks.emit.tapPromise('ExampleBuilder', async (compilation) => {
     const chunks = compilation.getStats().toJson().chunks
       .filter(chunk => chunk.names[0] !== this.common);
 
@@ -94,19 +117,11 @@ ExampleBuilder.prototype.apply = function(compiler) {
       });
 
       for (const file in assets) {
-        compilation.assets[file] = {
-          source: () => assets[file],
-          size: () => assets[file].length
-        };
+        compilation.assets[file] = new RawSource(assets[file]);
       }
     });
 
-    try {
-      await Promise.all(promises);
-    } catch (err) {
-      callback(err);
-      return;
-    }
+    await Promise.all(promises);
 
     const info = {
       examples: exampleData,
@@ -114,12 +129,7 @@ ExampleBuilder.prototype.apply = function(compiler) {
     };
 
     const indexSource = `var info = ${JSON.stringify(info)}`;
-    compilation.assets['index.js'] = {
-      source: () => indexSource,
-      size: () => indexSource.length
-    };
-
-    callback();
+    compilation.assets['index.js'] = new RawSource(indexSource);
   });
 };
 
@@ -142,14 +152,7 @@ ExampleBuilder.prototype.render = async function(dir, chunk) {
   // add in script tag
   const jsName = `${name}.js`;
   const jsPath = path.join(dir, jsName);
-  let jsSource;
-  for (let i = 0, ii = chunk.modules.length; i < ii; ++i) {
-    const module = chunk.modules[i];
-    if (module.identifier == jsPath) {
-      jsSource = module.source;
-      break;
-    }
-  }
+  let jsSource = getJsSource(chunk, jsPath);
   jsSource = jsSource.replace(/'\.\.\/src\//g, '\'');
   if (data.cloak) {
     for (const entry of data.cloak) {
