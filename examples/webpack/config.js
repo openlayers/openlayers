@@ -19,8 +19,12 @@ module.exports = {
   target: 'web',
   entry: entry,
   optimization: {
+    runtimeChunk: {
+      name: 'common'
+    },
     splitChunks: {
-      name: 'common', // TODO: figure out why this isn't working
+      name: 'common',
+      chunks: 'initial',
       minChunks: 2
     }
   },
@@ -37,8 +41,7 @@ module.exports = {
       {from: 'index.html', to: 'index.html'}
     ])
   ],
-  // TODO: figure out why this hangs
-  // devtool: 'source-map',
+  devtool: 'source-map',
   output: {
     filename: '[name].js',
     path: path.join(__dirname, '..', '..', 'build', 'examples')
