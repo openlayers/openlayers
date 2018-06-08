@@ -62,6 +62,28 @@ function createWordIndex(exampleData) {
 }
 
 /**
+ * Gets the source for the chunk that matches the jsPath
+ * @param {Object} chunk Chunk.
+ * @param {string} jsPath Path of the file.
+ * @return {string} The source.
+ */
+function getJsSource(chunk, jsPath) {
+  let jsSource;
+  for (let i = 0, ii = chunk.modules.length; i < ii; ++i) {
+    const module = chunk.modules[i];
+    if (module.modules) {
+      jsSource = getJsSource(module, jsPath);
+      if (jsSource) {
+        return jsSource;
+      }
+    }
+    if (module.identifier == jsPath) {
+      return module.source;
+    }
+  }
+}
+
+/**
  * A webpack plugin that builds the html files for our examples.
  * @param {Object} config Plugin configuration.  Requires a `templates` property
  * with the path to templates and a `common` property with the name of the
@@ -130,14 +152,7 @@ ExampleBuilder.prototype.render = async function(dir, chunk) {
   // add in script tag
   const jsName = `${name}.js`;
   const jsPath = path.join(dir, jsName);
-  let jsSource;
-  for (let i = 0, ii = chunk.modules.length; i < ii; ++i) {
-    const module = chunk.modules[i];
-    if (module.identifier == jsPath) {
-      jsSource = module.source;
-      break;
-    }
-  }
+  let jsSource = getJsSource(chunk, jsPath);
   jsSource = jsSource.replace(/'\.\.\/src\//g, '\'');
   if (data.cloak) {
     for (const entry of data.cloak) {
