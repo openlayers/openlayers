@@ -82,7 +82,7 @@
     "rollup-plugin-sourcemaps": "0.4.2",
     "rollup-plugin-uglify": "4.0.0",
     "serve": "^8.1.1",
-    "sinon": "^5.0.1",
+    "sinon": "^6.0.0",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "url-polyfill": "^1.0.13",
     "walk": "^2.3.9",
