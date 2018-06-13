@@ -56,7 +56,7 @@
     "front-matter": "^2.1.2",
     "fs-extra": "^6.0.0",
     "glob": "^7.1.2",
-    "google-closure-compiler": "20180506.0.0",
+    "google-closure-compiler": "20180610.0.0",
     "handlebars": "4.0.11",
     "istanbul": "0.4.5",
     "jquery": "3.3.1",
