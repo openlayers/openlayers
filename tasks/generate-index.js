@@ -95,6 +95,7 @@ function generateExports(symbols, namespaces, imports) {
   }
   blocks = imports.concat(nsdefs.sort()).concat(blocks.sort());
   blocks.push('');
+  blocks.unshift('/**', '* @fileoverview', '* @suppress {extraRequire}', '*/');
   return blocks.join('\n');
 }
 
