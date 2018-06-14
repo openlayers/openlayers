@@ -301,7 +301,8 @@ MapBrowserEventHandler.prototype.relayEvent_ = function(pointerEvent) {
  * @private
  */
 MapBrowserEventHandler.prototype.isMoving_ = function(pointerEvent) {
-  return Math.abs(pointerEvent.clientX - this.down_.clientX) > this.moveTolerance_ ||
+  return this.dragging_ ||
+      Math.abs(pointerEvent.clientX - this.down_.clientX) > this.moveTolerance_ ||
       Math.abs(pointerEvent.clientY - this.down_.clientY) > this.moveTolerance_;
 };
 
