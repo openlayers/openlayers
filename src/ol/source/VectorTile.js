@@ -40,6 +40,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  *     tile.setExtent(format.getLastExtent());
  *   };
  * });
+ * ```
  * @property {module:ol/Tile~UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
