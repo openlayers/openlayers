@@ -102,10 +102,6 @@ For debugging, rendering of the reprojection edges can be enabled by `ol.source.
 
 # Advanced
 
-### Disabling reprojection
-In case you are creating a custom build of OpenLayers and do not need the reprojection code, you can reduce the build size by setting `ol.ENABLE_RASTER_REPROJECTION` to `false`, which completely disables the reprojection support.
-See [Custom builds](custom-builds.html#defines) tutorial on how to do this.
-
 ### Triangulation precision threshold
 The default [triangulation error threshold](#dynamic-triangulation) in pixels is given by `ERROR_THRESHOLD` (0.5 pixel).
 In case a different threshold needs to be defined for different sources, the `reprojectionErrorThreshold` option can be passed when constructing the tile image source.
