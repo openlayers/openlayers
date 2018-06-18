@@ -23,6 +23,9 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * @property {module:ol/source/State} [state] Source state.
  * @property {module:ol/VectorTile~TileClass} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/VectorTile}.
+ * @property {number} [maxZoom=22] Optional max zoom level.
+ * @property {number} [minZoom] Optional min zoom level.
+ * @property {number|module:ol/size~Size} [tileSize=512] Optional tile size.
  * @property {module:ol/tilegrid/TileGrid} [tileGrid] Tile grid.
  * @property {module:ol/Tile~LoadFunction} [tileLoadFunction]
  * Optional function to load a tile given a URL. Could look like this:
