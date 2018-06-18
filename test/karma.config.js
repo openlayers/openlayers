@@ -77,8 +77,7 @@ module.exports = function(karma) {
     const customLaunchers = {
       SL_Chrome: {
         base: 'SauceLabs',
-        browserName: 'chrome',
-        version: '62.0'
+        browserName: 'chrome'
       },
       SL_Firefox: {
         base: 'SauceLabs',
