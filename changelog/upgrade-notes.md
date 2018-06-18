@@ -2,6 +2,10 @@
 
 ### Next release
 
+#### Renaming of the `defaultDataProjection` in the options and property of the `ol/format/Feature` class and its subclasses
+
+The `defaultDataProjection` option is now named `dataProjection`. The protected property available on the class is also renamed.
+
 #### `transition` option of `ol/source/VectorTile` is ignored
 
 The `transition` option to get an opacity transition to fade in tiles has been  disabled for `ol/source/VectorTile`. Vector tiles are now always rendered without an opacity transition.

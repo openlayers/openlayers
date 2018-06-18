@@ -272,7 +272,7 @@ const KML = function(opt_options) {
   /**
    * @inheritDoc
    */
-  this.defaultDataProjection = getProjection('EPSG:4326');
+  this.dataProjection = getProjection('EPSG:4326');
 
   /**
    * @private

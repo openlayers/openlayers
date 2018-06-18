@@ -122,7 +122,7 @@ inherits(VectorSourceEvent, Event);
  * during parsing. If your remote data source does not advertise its projection
  * properly, this transformation will be incorrect. For some formats, the
  * default projection (usually EPSG:4326) can be overridden by setting the
- * defaultDataProjection constructor option on the format.
+ * dataProjection constructor option on the format.
  * Note that if a source contains non-feature data, such as a GeoJSON geometry
  * or a KML NetworkLink, these will be ignored. Use a custom loader to load these.
  * @property {boolean} [useSpatialIndex=true]

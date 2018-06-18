@@ -111,7 +111,7 @@ TextFeature.prototype.readProjection = function(source) {
  * @return {module:ol/proj/Projection} Projection.
  */
 TextFeature.prototype.readProjectionFromText = function(text) {
-  return this.defaultDataProjection;
+  return this.dataProjection;
 };
 
 
