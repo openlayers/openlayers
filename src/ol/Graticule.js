@@ -245,21 +245,20 @@ const Graticule = function(opt_options) {
   this.parallelsLabels_ = null;
 
   if (options.showLabels == true) {
-    const degreesToString = degreesToStringHDMS;
 
     /**
      * @type {null|function(number):string}
      * @private
      */
     this.lonLabelFormatter_ = options.lonLabelFormatter == undefined ?
-      degreesToString.bind(this, 'EW') : options.lonLabelFormatter;
+      degreesToStringHDMS.bind(this, 'EW') : options.lonLabelFormatter;
 
     /**
      * @type {function(number):string}
      * @private
      */
     this.latLabelFormatter_ = options.latLabelFormatter == undefined ?
-      degreesToString.bind(this, 'NS') : options.latLabelFormatter;
+      degreesToStringHDMS.bind(this, 'NS') : options.latLabelFormatter;
 
     /**
      * Longitude label position in fractions (0..1) of view extent. 0 means
@@ -671,36 +670,24 @@ Graticule.prototype.handlePostCompose_ = function(e) {
 Graticule.prototype.updateProjectionInfo_ = function(projection) {
   const epsg4326Projection = getProjection('EPSG:4326');
 
-  const extent = projection.getExtent();
   const worldExtent = projection.getWorldExtent();
   const worldExtentP = transformExtent(worldExtent, epsg4326Projection, projection);
 
-  const maxLat = worldExtent[3];
-  const maxLon = worldExtent[2];
-  const minLat = worldExtent[1];
-  const minLon = worldExtent[0];
+  this.maxLat_ = worldExtent[3];
+  this.maxLon_ = worldExtent[2];
+  this.minLat_ = worldExtent[1];
+  this.minLon_ = worldExtent[0];
 
-  const maxLatP = worldExtentP[3];
-  const maxLonP = worldExtentP[2];
-  const minLatP = worldExtentP[1];
-  const minLonP = worldExtentP[0];
-
-  this.maxLat_ = maxLat;
-  this.maxLon_ = maxLon;
-  this.minLat_ = minLat;
-  this.minLon_ = minLon;
-
-  this.maxLatP_ = maxLatP;
-  this.maxLonP_ = maxLonP;
-  this.minLatP_ = minLatP;
-  this.minLonP_ = minLonP;
-
+  this.maxLatP_ = worldExtentP[3];
+  this.maxLonP_ = worldExtentP[2];
+  this.minLatP_ = worldExtentP[1];
+  this.minLonP_ = worldExtentP[0];
 
   this.fromLonLatTransform_ = getTransform(epsg4326Projection, projection);
 
   this.toLonLatTransform_ = getTransform(projection, epsg4326Projection);
 
-  this.projectionCenterLonLat_ = this.toLonLatTransform_(getCenter(extent));
+  this.projectionCenterLonLat_ = this.toLonLatTransform_(getCenter(projection.getExtent()));
 
   this.projection_ = projection;
 };
