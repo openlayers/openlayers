@@ -32,7 +32,7 @@ import {containsExtent} from './extent.js';
  * viewport should be stopped. If `true` the overlay is placed in the same
  * container as that of the controls (CSS class name
  * `ol-overlaycontainer-stopevent`); if `false` it is placed in the container
- * with CSS class name `ol-overlaycontainer`.
+ * with CSS class name specified by the `className` property.
  * @property {boolean} [insertFirst=true] Whether the overlay is inserted first
  * in the overlay container, or appended. If the overlay is placed in the same
  * container as that of the controls (see the `stopEvent` option) you will
