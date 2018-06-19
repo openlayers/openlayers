@@ -519,21 +519,20 @@ Graticule.prototype.getInterval_ = function(resolution) {
   const centerLon = this.projectionCenterLonLat_[0];
   const centerLat = this.projectionCenterLonLat_[1];
   let interval = -1;
-  let i, ii, delta, dist;
   const target = Math.pow(this.targetSize_ * resolution, 2);
   /** @type {Array.<number>} **/
   const p1 = [];
   /** @type {Array.<number>} **/
   const p2 = [];
-  for (i = 0, ii = INTERVALS.length; i < ii; ++i) {
-    delta = INTERVALS[i] / 2;
+  for (let i = 0, ii = INTERVALS.length; i < ii; ++i) {
+    const delta = INTERVALS[i] / 2;
     p1[0] = centerLon - delta;
     p1[1] = centerLat - delta;
     p2[0] = centerLon + delta;
     p2[1] = centerLat + delta;
     this.fromLonLatTransform_(p1, p1);
     this.fromLonLatTransform_(p2, p2);
-    dist = Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2);
+    const dist = Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2);
     if (dist <= target) {
       break;
     }
