@@ -3,7 +3,7 @@ import Overlay from '../src/ol/Overlay.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
-import UTFGrid from '../src/ol/source/TileUTFGrid.js';
+import UTFGrid from '../src/ol/source/UTFGrid.js';
 
 const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 

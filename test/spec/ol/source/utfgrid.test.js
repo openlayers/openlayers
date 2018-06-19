@@ -1,12 +1,12 @@
 import {get as getProjection, transformExtent, fromLonLat} from '../../../../src/ol/proj.js';
 import TileSource from '../../../../src/ol/source/Tile.js';
-import UTFGrid, {CustomTile} from '../../../../src/ol/source/TileUTFGrid.js';
+import UTFGrid, {CustomTile} from '../../../../src/ol/source/UTFGrid.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 
-describe('ol.source.TileUTFGrid', function() {
+describe('ol.source.UTFGrid', function() {
 
-  const url = 'spec/ol/data/tileutfgrid.json';
+  const url = 'spec/ol/data/utfgrid.json';
   let tileJson = null;
 
   // Load and parse the UTFGrid fixture
@@ -27,7 +27,7 @@ describe('ol.source.TileUTFGrid', function() {
     tileJson = null;
   });
 
-  function getTileUTFGrid() {
+  function getUTFGrid() {
     return new UTFGrid({
       url: url
     });
@@ -51,7 +51,7 @@ describe('ol.source.TileUTFGrid', function() {
         return new UTFGrid({});
       }).to.throwException();
 
-      expect(getTileUTFGrid()).to.be.an(UTFGrid);
+      expect(getUTFGrid()).to.be.an(UTFGrid);
     });
 
   });
@@ -93,7 +93,7 @@ describe('ol.source.TileUTFGrid', function() {
   describe('#handleTileJSONResponse', function() {
 
     it('sets up a tileGrid', function() {
-      const source = getTileUTFGrid();
+      const source = getUTFGrid();
       expect(source.getTileGrid()).to.be(null);
       // call the handleTileJSONResponse method with our
       // locally available tileJson (from `before`)
@@ -105,7 +105,7 @@ describe('ol.source.TileUTFGrid', function() {
     });
 
     it('sets up a tilegrid with expected extent', function() {
-      const source = getTileUTFGrid();
+      const source = getUTFGrid();
       // call the handleTileJSONResponse method with our
       // locally available tileJson (from `before`)
       source.handleTileJSONResponse(tileJson);
@@ -127,7 +127,7 @@ describe('ol.source.TileUTFGrid', function() {
     });
 
     it('sets up a tilegrid with expected minZoom', function() {
-      const source = getTileUTFGrid();
+      const source = getUTFGrid();
       // call the handleTileJSONResponse method with our
       // locally available tileJson (from `before`)
       source.handleTileJSONResponse(tileJson);
@@ -138,7 +138,7 @@ describe('ol.source.TileUTFGrid', function() {
     });
 
     it('sets up a tilegrid with expected maxZoom', function() {
-      const source = getTileUTFGrid();
+      const source = getUTFGrid();
       // call the handleTileJSONResponse method with our
       // locally available tileJson (from `before`)
       source.handleTileJSONResponse(tileJson);
@@ -149,7 +149,7 @@ describe('ol.source.TileUTFGrid', function() {
     });
 
     it('sets up a template', function() {
-      const source = getTileUTFGrid();
+      const source = getUTFGrid();
       expect(source.getTemplate()).to.be(undefined);
 
       // call the handleTileJSONResponse method with our
@@ -162,7 +162,7 @@ describe('ol.source.TileUTFGrid', function() {
     });
 
     it('sets up correct attribution', function() {
-      const source = getTileUTFGrid();
+      const source = getUTFGrid();
       expect(source.getAttributions()).to.be(null);
 
       // call the handleTileJSONResponse method with our
@@ -175,7 +175,7 @@ describe('ol.source.TileUTFGrid', function() {
     });
 
     it('sets correct state', function() {
-      const source = getTileUTFGrid();
+      const source = getUTFGrid();
       expect(source.getState()).to.be('loading');
 
       // call the handleTileJSONResponse method with our
@@ -215,7 +215,7 @@ describe('ol.source.TileUTFGrid', function() {
     });
 
     beforeEach(function() {
-      source = getTileUTFGrid();
+      source = getUTFGrid();
       // call the handleTileJSONResponse method with our
       // locally available tileJson (from `before`)
       source.handleTileJSONResponse(tileJson);

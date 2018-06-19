@@ -2,6 +2,10 @@
 
 ### Next release
 
+#### Renamed `ol/source/TileUTFGrid` to `ol/source/UTFGrid`
+
+The module name is now `ol/source/UTFGrid` (`ol.source.UTFGrid` in the full build).
+
 #### Renaming of the `defaultDataProjection` in the options and property of the `ol/format/Feature` class and its subclasses
 
 The `defaultDataProjection` option is now named `dataProjection`. The protected property available on the class is also renamed.
