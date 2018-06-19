@@ -1,5 +1,5 @@
 /**
- * @module ol/source/TileUTFGrid
+ * @module ol/source/UTFGrid
  */
 import {inherits} from '../index.js';
 import Tile from '../Tile.js';
@@ -252,7 +252,7 @@ CustomTile.prototype.load = function() {
 /**
  * @typedef {Object} Options
  * @property {boolean} [preemptive=true]
- * If `true` the TileUTFGrid source loads the tiles based on their "visibility".
+ * If `true` the UTFGrid source loads the tiles based on their "visibility".
  * This improves the speed of response, but increases traffic.
  * Note that if set to `false`, you need to pass `true` as `opt_request`
  * to the `forDataAtCoordinateAndResolution` method otherwise no data
@@ -272,7 +272,7 @@ CustomTile.prototype.load = function() {
  *
  * @constructor
  * @extends {module:ol/source/Tile}
- * @param {module:ol/source/TileUTFGrid~Options=} options Source options.
+ * @param {module:ol/source/UTFGrid~Options=} options Source options.
  * @api
  */
 const UTFGrid = function(options) {
@@ -384,7 +384,7 @@ UTFGrid.prototype.forDataAtCoordinateAndResolution = function(
   if (this.tileGrid) {
     const tileCoord = this.tileGrid.getTileCoordForCoordAndResolution(
       coordinate, resolution);
-    const tile = /** @type {!module:ol/source/TileUTFGrid~CustomTile} */(this.getTile(
+    const tile = /** @type {!module:ol/source/UTFGrid~CustomTile} */(this.getTile(
       tileCoord[0], tileCoord[1], tileCoord[2], 1, this.getProjection()));
     tile.forDataAtCoordinate(coordinate, callback, null, opt_request);
   } else {
