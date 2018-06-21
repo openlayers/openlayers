@@ -13,7 +13,7 @@ import {VERSION, inherits} from './index.js';
  */
 const AssertionError = function(code) {
 
-  const path = VERSION ? VERSION.split('-')[0] : 'latest';
+  const path = VERSION.split('-')[0];
 
   /**
    * @type {string}

@@ -1,6 +1,6 @@
 {
   "name": "openlayers",
-  "version": "5.0.0-beta.12",
+  "version": "5.0.0-beta.14",
   "description": "Build tools and sources for developing OpenLayers based mapping applications",
   "keywords": [
     "map",
@@ -13,11 +13,13 @@
     "pretest": "npm run lint",
     "test": "npm run karma -- --single-run",
     "karma": "karma start test/karma.config.js",
-    "serve-examples": "mkdir -p build/examples && webpack --config examples/webpack/config.js --mode development --watch & serve build/examples",
+    "serve-examples": "webpack-dev-server --config examples/webpack/config.js --mode development --watch",
     "build-examples": "webpack --config examples/webpack/config.js --mode production",
     "build-index": "node tasks/generate-index",
-    "prebuild": "npm run build-index",
-    "build": "rollup --config config/rollup.js",
+    "set-version": "node tasks/set-version",
+    "prebuild": "npm run set-version && npm run build-index",
+    "prepare": "npm run set-version",
+    "build": "rollup --config config/rollup.js && cleancss --source-map src/ol/ol.css -o build/ol.css",
     "presrc-closure": "npm run prebuild",
     "src-closure": "node tasks/transform-types",
     "pretypecheck": "npm run src-closure",
@@ -80,13 +82,13 @@
     "rollup-plugin-node-resolve": "3.3.0",
     "rollup-plugin-sourcemaps": "0.4.2",
     "rollup-plugin-uglify": "4.0.0",
-    "serve": "^9.0.0",
     "sinon": "^6.0.0",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "url-polyfill": "^1.0.13",
     "walk": "^2.3.9",
     "webpack": "4.12.0",
-    "webpack-cli": "^3.0.3"
+    "webpack-cli": "^3.0.3",
+    "webpack-dev-server": "^3.1.4"
   },
   "eslintConfig": {
     "extends": "openlayers"
