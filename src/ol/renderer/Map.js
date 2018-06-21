@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/Map
  */
-import {getUid, inherits} from '../index.js';
+import {getUid, inherits} from '../util.js';
 import Disposable from '../Disposable.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';

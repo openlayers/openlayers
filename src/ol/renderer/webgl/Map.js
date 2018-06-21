@@ -2,7 +2,7 @@
  * @module ol/renderer/webgl/Map
  */
 
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import {stableSort} from '../../array.js';
 import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';

@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Draw
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';

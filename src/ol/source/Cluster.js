@@ -2,7 +2,7 @@
  * @module ol/source/Cluster
  */
 
-import {getUid, inherits} from '../index.js';
+import {getUid, inherits} from '../util.js';
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
 import {scale as scaleCoordinate, add as addCoordinate} from '../coordinate.js';

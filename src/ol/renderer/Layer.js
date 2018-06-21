@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/Layer
  */
-import {getUid, inherits} from '../index.js';
+import {getUid, inherits} from '../util.js';
 import ImageState from '../ImageState.js';
 import Observable from '../Observable.js';
 import TileState from '../TileState.js';

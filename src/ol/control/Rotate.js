@@ -7,7 +7,7 @@ import {CLASS_CONTROL, CLASS_HIDDEN, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 
 
 /**

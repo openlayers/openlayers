@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/Replay
  */
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import {getCenter} from '../../extent.js';
 import VectorContext from '../VectorContext.js';
 import {

@@ -1,7 +1,7 @@
 /**
  * @module ol/format/JSONFeature
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import FeatureFormat from '../format/Feature.js';
 import FormatType from '../format/FormatType.js';
 

@@ -1,7 +1,7 @@
 /**
  * @module ol/source/ImageStatic
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import ImageWrapper from '../Image.js';
 import ImageState from '../ImageState.js';
 import {createCanvasContext2D} from '../dom.js';

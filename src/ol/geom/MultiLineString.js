@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/MultiLineString
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';

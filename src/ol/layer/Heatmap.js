@@ -2,7 +2,7 @@
  * @module ol/layer/Heatmap
  */
 import {listen} from '../events.js';
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {getChangeEventType} from '../Object.js';
 import {createCanvasContext2D} from '../dom.js';
 import VectorLayer from '../layer/Vector.js';

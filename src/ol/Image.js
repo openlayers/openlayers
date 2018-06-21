@@ -1,7 +1,7 @@
 /**
  * @module ol/Image
  */
-import {inherits} from './index.js';
+import {inherits} from './util.js';
 import ImageBase from './ImageBase.js';
 import ImageState from './ImageState.js';
 import {listenOnce, unlistenByKey} from './events.js';

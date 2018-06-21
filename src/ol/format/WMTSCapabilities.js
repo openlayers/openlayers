@@ -1,7 +1,7 @@
 /**
  * @module ol/format/WMTSCapabilities
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {boundingExtent} from '../extent.js';
 import OWS from '../format/OWS.js';
 import {readHref} from '../format/XLink.js';

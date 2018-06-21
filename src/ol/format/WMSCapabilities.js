@@ -1,7 +1,7 @@
 /**
  * @module ol/format/WMSCapabilities
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {readHref} from '../format/XLink.js';
 import XML from '../format/XML.js';
 import {readDecimalString, readString, readNonNegativeInteger, readDecimal, readBooleanString, readNonNegativeIntegerString} from '../format/xsd.js';

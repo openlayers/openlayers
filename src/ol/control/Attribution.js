@@ -1,7 +1,7 @@
 /**
  * @module ol/control/Attribution
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {equals} from '../array.js';
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_COLLAPSED} from '../css.js';

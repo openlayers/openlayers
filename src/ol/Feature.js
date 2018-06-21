@@ -4,7 +4,7 @@
 import {assert} from './asserts.js';
 import {listen, unlisten, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
-import {inherits} from './index.js';
+import {inherits} from './util.js';
 import BaseObject, {getChangeEventType} from './Object.js';
 import Geometry from './geom/Geometry.js';
 import Style from './style/Style.js';

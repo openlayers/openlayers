@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/vector
  */
-import {getUid} from '../index.js';
+import {getUid} from '../util.js';
 import ImageState from '../ImageState.js';
 import GeometryType from '../geom/GeometryType.js';
 import ReplayType from '../render/ReplayType.js';

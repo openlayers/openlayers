@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/canvas/Layer
  */
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../../extent.js';
 import {TRUE} from '../../functions.js';
 import RenderEvent from '../../render/Event.js';

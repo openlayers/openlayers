@@ -1,7 +1,7 @@
 /**
  * @module ol/layer/Tile
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import LayerType from '../LayerType.js';
 import Layer from '../layer/Layer.js';
 import TileProperty from '../layer/TileProperty.js';

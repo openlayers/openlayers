@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Translate
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import Collection from '../Collection.js';
 import {getChangeEventType} from '../Object.js';
 import {listen} from '../events.js';

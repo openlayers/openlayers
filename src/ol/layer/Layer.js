@@ -3,7 +3,7 @@
  */
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
-import {getUid, inherits} from '../index.js';
+import {getUid, inherits} from '../util.js';
 import {getChangeEventType} from '../Object.js';
 import BaseLayer from '../layer/Base.js';
 import LayerProperty from '../layer/Property.js';

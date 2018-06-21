@@ -1,7 +1,7 @@
 /**
  * @module ol/control/Control
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {UNDEFINED} from '../functions.js';
 import MapEventType from '../MapEventType.js';
 import BaseObject from '../Object.js';

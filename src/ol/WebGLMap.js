@@ -1,7 +1,7 @@
 /**
  * @module ol/WebGLMap
  */
-import {inherits} from './index.js';
+import {inherits} from './util.js';
 import PluggableMap from './PluggableMap.js';
 import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';

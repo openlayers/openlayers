@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/LessThan
  */
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import ComparisonBinary from '../filter/ComparisonBinary.js';
 
 /**

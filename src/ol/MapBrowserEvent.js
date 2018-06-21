@@ -1,7 +1,7 @@
 /**
  * @module ol/MapBrowserEvent
  */
-import {inherits} from './index.js';
+import {inherits} from './util.js';
 import MapEvent from './MapEvent.js';
 
 /**

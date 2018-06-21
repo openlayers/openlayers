@@ -2,6 +2,7 @@
  * @module ol/webgl
  */
 
+
 /**
  * Constants taken from goog.webgl
  */
@@ -287,3 +288,52 @@ export function getContext(canvas, opt_attributes) {
   }
   return null;
 }
+
+
+/**
+ * Include debuggable shader sources.  Default is `true`. This should be set to
+ * `false` for production builds.
+ * @type {boolean}
+ */
+export const DEBUG = true;
+
+
+/**
+ * The maximum supported WebGL texture size in pixels. If WebGL is not
+ * supported, the value is set to `undefined`.
+ * @type {number|undefined}
+ */
+let MAX_TEXTURE_SIZE; // value is set below
+
+
+/**
+ * List of supported WebGL extensions.
+ * @type {Array.<string>}
+ */
+let EXTENSIONS; // value is set below
+
+
+/**
+ * True if both OpenLayers and browser support WebGL.
+ * @const ol/has.WEBGL
+ * @type {boolean}
+ * @api
+ */
+let HAS = false;
+
+//TODO Remove side effects
+if (typeof window !== 'undefined' && 'WebGLRenderingContext' in window) {
+  try {
+    const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS'));
+    const gl = getContext(canvas, {failIfMajorPerformanceCaveat: true});
+    if (gl) {
+      HAS = true;
+      MAX_TEXTURE_SIZE = /** @type {number} */ (gl.getParameter(gl.MAX_TEXTURE_SIZE));
+      EXTENSIONS = gl.getSupportedExtensions();
+    }
+  } catch (e) {
+    // pass
+  }
+}
+
+export {HAS, MAX_TEXTURE_SIZE, EXTENSIONS};

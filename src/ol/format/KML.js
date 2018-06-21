@@ -1,7 +1,7 @@
 /**
  * @module ol/format/KML
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import {extend, includes} from '../array.js';
 import {assert} from '../asserts.js';

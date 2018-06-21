@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/Geometry
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import BaseObject from '../Object.js';
 import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
 import {FALSE} from '../functions.js';

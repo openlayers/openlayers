@@ -1,7 +1,7 @@
 /**
  * @module ol/events/EventTarget
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import Disposable from '../Disposable.js';
 import {unlistenAll} from '../events.js';
 import {UNDEFINED} from '../functions.js';

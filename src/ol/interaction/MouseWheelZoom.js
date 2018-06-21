@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/MouseWheelZoom
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import ViewHint from '../ViewHint.js';
 import {always} from '../events/condition.js';
 import {easeOut} from '../easing.js';

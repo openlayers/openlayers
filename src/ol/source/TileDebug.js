@@ -1,7 +1,7 @@
 /**
  * @module ol/source/TileDebug
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import Tile from '../Tile.js';
 import TileState from '../TileState.js';
 import {createCanvasContext2D} from '../dom.js';

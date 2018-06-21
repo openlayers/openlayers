@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/Circle
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';

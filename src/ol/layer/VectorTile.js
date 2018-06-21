@@ -1,7 +1,7 @@
 /**
  * @module ol/layer/VectorTile
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import LayerType from '../LayerType.js';
 import {assert} from '../asserts.js';
 import TileProperty from '../layer/TileProperty.js';

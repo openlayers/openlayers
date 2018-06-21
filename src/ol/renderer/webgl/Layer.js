@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/webgl/Layer
  */
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import WebGLImmediateRenderer from '../../render/webgl/Immediate.js';

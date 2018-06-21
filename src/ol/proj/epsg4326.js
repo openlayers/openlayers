@@ -1,7 +1,7 @@
 /**
  * @module ol/proj/epsg4326
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import Projection from '../proj/Projection.js';
 import Units from '../proj/Units.js';
 

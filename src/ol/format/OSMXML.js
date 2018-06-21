@@ -2,7 +2,7 @@
  * @module ol/format/OSMXML
  */
 // FIXME add typedef for stack state objects
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {extend} from '../array.js';
 import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';

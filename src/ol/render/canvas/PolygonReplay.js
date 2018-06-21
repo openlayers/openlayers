@@ -1,7 +1,7 @@
 /**
  * @module ol/render/canvas/PolygonReplay
  */
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import {asString} from '../../color.js';
 import {snap} from '../../geom/flat/simplify.js';
 import {defaultFillStyle} from '../canvas.js';

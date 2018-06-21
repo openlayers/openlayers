@@ -1,7 +1,7 @@
 /**
  * @module ol/Geolocation
  */
-import {inherits} from './index.js';
+import {inherits} from './util.js';
 import GeolocationProperty from './GeolocationProperty.js';
 import BaseObject, {getChangeEventType} from './Object.js';
 import {listen} from './events.js';

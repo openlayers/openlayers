@@ -2,7 +2,7 @@
  * @module ol/View
  */
 import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
-import {inherits, getUid} from './index.js';
+import {getUid, inherits} from './util.js';
 import {UNDEFINED} from './functions.js';
 import {createExtent, none as centerNone} from './centerconstraint.js';
 import BaseObject from './Object.js';

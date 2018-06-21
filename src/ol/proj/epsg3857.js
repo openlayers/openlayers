@@ -1,7 +1,7 @@
 /**
  * @module ol/proj/epsg3857
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {cosh} from '../math.js';
 import Projection from '../proj/Projection.js';
 import Units from '../proj/Units.js';

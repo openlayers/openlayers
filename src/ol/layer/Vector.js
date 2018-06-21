@@ -1,7 +1,7 @@
 /**
  * @module ol/layer/Vector
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import LayerType from '../LayerType.js';
 import Layer from '../layer/Layer.js';
 import VectorRenderType from '../layer/VectorRenderType.js';

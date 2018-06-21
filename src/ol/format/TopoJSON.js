@@ -1,7 +1,7 @@
 /**
  * @module ol/format/TopoJSON
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
 import JSONFeature from '../format/JSONFeature.js';

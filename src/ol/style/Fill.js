@@ -1,7 +1,7 @@
 /**
  * @module ol/style/Fill
  */
-import {getUid} from '../index.js';
+import {getUid} from '../util.js';
 import {asString} from '../color.js';
 
 

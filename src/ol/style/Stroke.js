@@ -1,7 +1,7 @@
 /**
  * @module ol/style/Stroke
  */
-import {getUid} from '../index.js';
+import {getUid} from '../util.js';
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Snap
  */
-import {getUid, inherits} from '../index.js';
+import {getUid, inherits} from '../util.js';
 import {CollectionEvent} from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import {distance as coordinateDistance, squaredDistance as squaredCoordinateDistance, closestOnCircle, closestOnSegment, squaredDistanceToSegment} from '../coordinate.js';

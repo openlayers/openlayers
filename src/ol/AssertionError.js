@@ -1,7 +1,7 @@
 /**
  * @module ol/AssertionError
  */
-import {VERSION, inherits} from './index.js';
+import {VERSION, inherits} from './util.js';
 
 /**
  * Error object thrown when an assertion failed. This is an ECMA-262 Error,

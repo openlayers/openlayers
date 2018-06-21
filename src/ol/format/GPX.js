@@ -1,7 +1,7 @@
 /**
  * @module ol/format/GPX
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import {includes} from '../array.js';
 import {transformWithOptions} from '../format/Feature.js';

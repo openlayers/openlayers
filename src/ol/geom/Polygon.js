@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/Polygon
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY, getCenter} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';

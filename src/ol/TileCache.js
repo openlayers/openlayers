@@ -1,7 +1,7 @@
 /**
  * @module ol/TileCache
  */
-import {inherits} from './index.js';
+import {inherits} from './util.js';
 import LRUCache from './structs/LRUCache.js';
 import {fromKey, getKey} from './tilecoord.js';
 

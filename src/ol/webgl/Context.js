@@ -1,7 +1,8 @@
 /**
  * @module ol/webgl/Context
  */
-import {WEBGL_EXTENSIONS, getUid, inherits} from '../index.js';
+import {getUid, inherits} from '../util.js';
+import {EXTENSIONS as WEBGL_EXTENSIONS} from '../webgl.js';
 import Disposable from '../Disposable.js';
 import {includes} from '../array.js';
 import {listen, unlistenAll} from '../events.js';

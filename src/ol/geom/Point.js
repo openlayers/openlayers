@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/Point
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {createOrUpdateFromCoordinate, containsXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';

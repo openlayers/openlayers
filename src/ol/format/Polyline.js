@@ -1,7 +1,7 @@
 /**
  * @module ol/format/Polyline
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';

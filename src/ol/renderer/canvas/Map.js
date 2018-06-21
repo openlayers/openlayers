@@ -2,7 +2,7 @@
  * @module ol/renderer/canvas/Map
  */
 import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import {includes, stableSort} from '../../array.js';
 import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';

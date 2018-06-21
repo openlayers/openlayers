@@ -1,7 +1,7 @@
 /**
  * @module ol/render/canvas/ImageReplay
  */
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import CanvasInstruction from '../canvas/Instruction.js';
 import CanvasReplay from '../canvas/Replay.js';
 

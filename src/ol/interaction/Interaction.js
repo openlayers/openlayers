@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Interaction
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import BaseObject from '../Object.js';
 import {easeOut, linear} from '../easing.js';
 import InteractionProperty from '../interaction/Property.js';

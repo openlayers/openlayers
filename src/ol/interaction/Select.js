@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Select
  */
-import {getUid, inherits} from '../index.js';
+import {getUid, inherits} from '../util.js';
 import CollectionEventType from '../CollectionEventType.js';
 import {extend, includes} from '../array.js';
 import {listen} from '../events.js';

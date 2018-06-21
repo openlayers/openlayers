@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/canvas/IntermediateCanvas
  */
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import {scale as scaleCoordinate} from '../../coordinate.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, intersects} from '../../extent.js';
