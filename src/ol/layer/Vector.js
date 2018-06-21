@@ -42,7 +42,6 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * means higher priority.
  * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style] Layer style. See
  * {@link module:ol/style} for default style which will be used if this is not defined.
- * @property {number} [maxTilesLoading=16] Maximum number tiles to load simultaneously.
  * @property {boolean} [updateWhileAnimating=false] When set to `true` and `renderMode`
  * is `vector`, feature batches will be recreated during animations. This means that no
  * vectors will be shown clipped, but the setting will have a performance impact for large
