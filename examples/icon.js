@@ -71,9 +71,9 @@ map.on('click', function(evt) {
     const coordinates = feature.getGeometry().getCoordinates();
     popup.setPosition(coordinates);
     $(element).popover({
-      'placement': 'top',
-      'html': true,
-      'content': feature.get('name')
+      placement: 'top',
+      html: true,
+      content: feature.get('name')
     });
     $(element).popover('show');
   } else {
