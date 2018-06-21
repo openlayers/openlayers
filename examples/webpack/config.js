@@ -34,7 +34,7 @@ module.exports = {
       common: 'common'
     }),
     new CopyPlugin([
-      {from: '../css', to: 'css'},
+      {from: '../src/ol/ol.css', to: 'css'},
       {from: 'data', to: 'data'},
       {from: 'resources', to: 'resources'},
       {from: 'Jugl.js', to: 'Jugl.js'},
