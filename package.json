@@ -1,6 +1,6 @@
 {
   "name": "openlayers",
-  "version": "5.0.0-beta.12",
+  "version": "5.0.0-beta.14",
   "description": "Build tools and sources for developing OpenLayers based mapping applications",
   "keywords": [
     "map",
@@ -16,8 +16,10 @@
     "serve-examples": "mkdir -p build/examples && webpack --config examples/webpack/config.js --mode development --watch & serve build/examples",
     "build-examples": "webpack --config examples/webpack/config.js --mode production",
     "build-index": "node tasks/generate-index",
-    "prebuild": "npm run build-index",
-    "build": "rollup --config config/rollup.js",
+    "set-version": "node tasks/set-version",
+    "prebuild": "npm run set-version && npm run build-index",
+    "prepare": "npm run set-version",
+    "build": "rollup --config config/rollup.js && cleancss --source-map src/ol/ol.css -o build/ol.css",
     "presrc-closure": "npm run prebuild",
     "src-closure": "node tasks/transform-types",
     "pretypecheck": "npm run src-closure",

@@ -68,7 +68,7 @@ export {HAS_WEBGL, WEBGL_MAX_TEXTURE_SIZE, WEBGL_EXTENSIONS};
  * OpenLayers version.
  * @type {string}
  */
-export const VERSION = 'v4.6.4';
+export const VERSION = '5.0.0-beta.14';
 
 
 /**
