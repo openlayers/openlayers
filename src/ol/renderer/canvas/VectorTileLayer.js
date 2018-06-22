@@ -357,81 +357,83 @@ CanvasVectorTileLayerRenderer.prototype.handleStyleImageChange_ = function(event
  */
 CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameState, layerState) {
   const layer = this.getLayer();
-  const declutterReplays = layer.getDeclutter() ? {} : null;
-  const source = /** @type {module:ol/source/VectorTile} */ (layer.getSource());
   const renderMode = layer.getRenderMode();
-  const replayTypes = VECTOR_REPLAYS[renderMode];
-  const pixelRatio = frameState.pixelRatio;
-  const rotation = frameState.viewState.rotation;
-  const size = frameState.size;
-  let offsetX, offsetY;
-  if (rotation) {
-    offsetX = Math.round(pixelRatio * size[0] / 2);
-    offsetY = Math.round(pixelRatio * size[1] / 2);
-    rotateAtOffset(context, -rotation, offsetX, offsetY);
-  }
-  if (declutterReplays) {
-    this.declutterTree_.clear();
-  }
-  const tiles = this.renderedTiles;
-  const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
-  const clips = [];
-  const zs = [];
-  for (let i = tiles.length - 1; i >= 0; --i) {
-    const tile = /** @type {module:ol/VectorImageTile} */ (tiles[i]);
-    if (tile.getState() == TileState.ABORT) {
-      continue;
+  if (renderMode != VectorTileRenderType.IMAGE) {
+    const declutterReplays = layer.getDeclutter() ? {} : null;
+    const source = /** @type {module:ol/source/VectorTile} */ (layer.getSource());
+    const replayTypes = VECTOR_REPLAYS[renderMode];
+    const pixelRatio = frameState.pixelRatio;
+    const rotation = frameState.viewState.rotation;
+    const size = frameState.size;
+    let offsetX, offsetY;
+    if (rotation) {
+      offsetX = Math.round(pixelRatio * size[0] / 2);
+      offsetY = Math.round(pixelRatio * size[1] / 2);
+      rotateAtOffset(context, -rotation, offsetX, offsetY);
     }
-    const tileCoord = tile.tileCoord;
-    const worldOffset = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] - tile.extent[0];
-    let transform = undefined;
-    for (let t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
-      const sourceTile = tile.getTile(tile.tileKeys[t]);
-      if (sourceTile.getState() != TileState.LOADED) {
+    if (declutterReplays) {
+      this.declutterTree_.clear();
+    }
+    const tiles = this.renderedTiles;
+    const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
+    const clips = [];
+    const zs = [];
+    for (let i = tiles.length - 1; i >= 0; --i) {
+      const tile = /** @type {module:ol/VectorImageTile} */ (tiles[i]);
+      if (tile.getState() == TileState.ABORT) {
         continue;
       }
-      const replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
-      if (renderMode != VectorTileRenderType.VECTOR && !replayGroup.hasReplays(replayTypes)) {
-        continue;
-      }
-      if (!transform) {
-        transform = this.getTransform(frameState, worldOffset);
-      }
-      const currentZ = sourceTile.tileCoord[0];
-      const currentClip = replayGroup.getClipCoords(transform);
-      context.save();
-      context.globalAlpha = layerState.opacity;
-      // Create a clip mask for regions in this low resolution tile that are
-      // already filled by a higher resolution tile
-      for (let j = 0, jj = clips.length; j < jj; ++j) {
-        const clip = clips[j];
-        if (currentZ < zs[j]) {
-          context.beginPath();
-          // counter-clockwise (outer ring) for current tile
-          context.moveTo(currentClip[0], currentClip[1]);
-          context.lineTo(currentClip[2], currentClip[3]);
-          context.lineTo(currentClip[4], currentClip[5]);
-          context.lineTo(currentClip[6], currentClip[7]);
-          // clockwise (inner ring) for higher resolution tile
-          context.moveTo(clip[6], clip[7]);
-          context.lineTo(clip[4], clip[5]);
-          context.lineTo(clip[2], clip[3]);
-          context.lineTo(clip[0], clip[1]);
-          context.clip();
+      const tileCoord = tile.tileCoord;
+      const worldOffset = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] - tile.extent[0];
+      let transform = undefined;
+      for (let t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
+        const sourceTile = tile.getTile(tile.tileKeys[t]);
+        if (sourceTile.getState() != TileState.LOADED) {
+          continue;
         }
+        const replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
+        if (renderMode != VectorTileRenderType.VECTOR && !replayGroup.hasReplays(replayTypes)) {
+          continue;
+        }
+        if (!transform) {
+          transform = this.getTransform(frameState, worldOffset);
+        }
+        const currentZ = sourceTile.tileCoord[0];
+        const currentClip = replayGroup.getClipCoords(transform);
+        context.save();
+        context.globalAlpha = layerState.opacity;
+        // Create a clip mask for regions in this low resolution tile that are
+        // already filled by a higher resolution tile
+        for (let j = 0, jj = clips.length; j < jj; ++j) {
+          const clip = clips[j];
+          if (currentZ < zs[j]) {
+            context.beginPath();
+            // counter-clockwise (outer ring) for current tile
+            context.moveTo(currentClip[0], currentClip[1]);
+            context.lineTo(currentClip[2], currentClip[3]);
+            context.lineTo(currentClip[4], currentClip[5]);
+            context.lineTo(currentClip[6], currentClip[7]);
+            // clockwise (inner ring) for higher resolution tile
+            context.moveTo(clip[6], clip[7]);
+            context.lineTo(clip[4], clip[5]);
+            context.lineTo(clip[2], clip[3]);
+            context.lineTo(clip[0], clip[1]);
+            context.clip();
+          }
+        }
+        replayGroup.replay(context, transform, rotation, {}, replayTypes, declutterReplays);
+        context.restore();
+        clips.push(currentClip);
+        zs.push(currentZ);
       }
-      replayGroup.replay(context, transform, rotation, {}, replayTypes, declutterReplays);
-      context.restore();
-      clips.push(currentClip);
-      zs.push(currentZ);
     }
-  }
-  if (declutterReplays) {
-    replayDeclutter(declutterReplays, context, rotation);
-  }
-  if (rotation) {
-    rotateAtOffset(context, rotation,
-      /** @type {number} */ (offsetX), /** @type {number} */ (offsetY));
+    if (declutterReplays) {
+      replayDeclutter(declutterReplays, context, rotation);
+    }
+    if (rotation) {
+      rotateAtOffset(context, rotation,
+        /** @type {number} */ (offsetX), /** @type {number} */ (offsetY));
+    }
   }
   CanvasTileLayerRenderer.prototype.postCompose.apply(this, arguments);
 };

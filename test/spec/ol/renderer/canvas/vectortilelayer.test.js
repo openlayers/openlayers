@@ -132,7 +132,6 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     });
 
     it('renders replays with custom renderers as direct replays', function() {
-      layer.renderMode_ = 'image';
       layer.setStyle(new Style({
         renderer: function() {}
       }));
