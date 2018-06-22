@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/GeometryCollection
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {listen, unlisten} from '../events.js';
 import EventType from '../events/EventType.js';
 import {createOrUpdateEmpty, closestSquaredDistanceXY, extend, getCenter} from '../extent.js';

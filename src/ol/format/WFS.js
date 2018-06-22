@@ -1,7 +1,7 @@
 /**
  * @module ol/format/WFS
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {assert} from '../asserts.js';
 import GML2 from '../format/GML2.js';
 import GML3 from '../format/GML3.js';

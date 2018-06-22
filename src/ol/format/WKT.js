@@ -1,7 +1,7 @@
 /**
  * @module ol/format/WKT
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
 import TextFeature from '../format/TextFeature.js';

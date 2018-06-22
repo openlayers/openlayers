@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/webgl/VectorLayer
  */
-import {getUid, inherits} from '../../index.js';
+import {getUid, inherits} from '../../util.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {buffer, containsExtent, createEmpty} from '../../extent.js';

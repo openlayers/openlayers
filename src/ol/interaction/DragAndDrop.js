@@ -3,7 +3,7 @@
  */
 // FIXME should handle all geo-referenced data, not just vector data
 
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {TRUE} from '../functions.js';
 import {listen, unlistenByKey} from '../events.js';
 import Event from '../events/Event.js';

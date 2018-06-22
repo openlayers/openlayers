@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/CircleReplay
  */
-import {getUid, inherits} from '../../index.js';
+import {getUid, inherits} from '../../util.js';
 import {equals} from '../../array.js';
 import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';

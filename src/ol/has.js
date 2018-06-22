@@ -1,7 +1,6 @@
 /**
  * @module ol/has
  */
-import {HAS_WEBGL} from './index.js';
 
 const ua = typeof navigator !== 'undefined' ?
   navigator.userAgent.toLowerCase() : '';
@@ -90,10 +89,4 @@ export const POINTER = 'PointerEvent' in window;
 export const MSPOINTER = !!(navigator.msPointerEnabled);
 
 
-/**
- * True if both OpenLayers and browser support WebGL.
- * @const
- * @type {boolean}
- * @api
- */
-export const WEBGL = HAS_WEBGL;
+export {HAS as WEBGL} from './webgl.js';

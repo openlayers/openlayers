@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/Intersects
  */
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import Spatial from '../filter/Spatial.js';
 
 /**

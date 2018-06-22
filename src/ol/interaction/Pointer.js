@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Pointer
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {FALSE, UNDEFINED} from '../functions.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';

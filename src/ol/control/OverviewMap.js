@@ -1,7 +1,7 @@
 /**
  * @module ol/control/OverviewMap
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import Collection from '../Collection.js';
 import Map from '../Map.js';
 import MapEventType from '../MapEventType.js';

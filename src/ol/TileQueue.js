@@ -1,7 +1,7 @@
 /**
  * @module ol/TileQueue
  */
-import {inherits} from './index.js';
+import {inherits} from './util.js';
 import TileState from './TileState.js';
 import {listen, unlisten} from './events.js';
 import EventType from './events/EventType.js';

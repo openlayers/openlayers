@@ -1,7 +1,7 @@
 /**
  * @module ol/Observable
  */
-import {inherits} from './index.js';
+import {inherits} from './util.js';
 import {listen, unlistenByKey, unlisten, listenOnce} from './events.js';
 import EventTarget from './events/EventTarget.js';
 import EventType from './events/EventType.js';

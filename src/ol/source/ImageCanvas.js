@@ -1,7 +1,7 @@
 /**
  * @module ol/source/ImageCanvas
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import ImageCanvas from '../ImageCanvas.js';
 import {containsExtent, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import ImageSource from '../source/Image.js';

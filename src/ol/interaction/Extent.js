@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Extent
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';

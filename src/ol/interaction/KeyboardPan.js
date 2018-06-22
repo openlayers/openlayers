@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/KeyboardPan
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {rotate as rotateCoordinate} from '../coordinate.js';
 import EventType from '../events/EventType.js';
 import KeyCode from '../events/KeyCode.js';

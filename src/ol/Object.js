@@ -1,7 +1,7 @@
 /**
  * @module ol/Object
  */
-import {getUid, inherits} from './index.js';
+import {getUid, inherits} from './util.js';
 import ObjectEventType from './ObjectEventType.js';
 import Observable from './Observable.js';
 import Event from './events/Event.js';

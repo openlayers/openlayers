@@ -1,7 +1,7 @@
 /**
  * @module ol/source/BingMaps
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {applyTransform, intersects} from '../extent.js';
 import {jsonp as requestJSONP} from '../net.js';

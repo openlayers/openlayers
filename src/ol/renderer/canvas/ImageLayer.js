@@ -2,7 +2,7 @@
  * @module ol/renderer/canvas/ImageLayer
  */
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import ImageCanvas from '../../ImageCanvas.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';

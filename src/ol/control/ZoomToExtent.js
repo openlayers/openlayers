@@ -1,7 +1,7 @@
 /**
  * @module ol/control/ZoomToExtent
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import Control from '../control/Control.js';

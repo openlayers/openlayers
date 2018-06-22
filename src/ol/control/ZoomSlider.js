@@ -1,7 +1,7 @@
 /**
  * @module ol/control/ZoomSlider
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import ViewHint from '../ViewHint.js';
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';

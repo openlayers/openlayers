@@ -1,7 +1,7 @@
 /**
  * @module ol/ImageCanvas
  */
-import {inherits} from './index.js';
+import {inherits} from './util.js';
 import ImageBase from './ImageBase.js';
 import ImageState from './ImageState.js';
 

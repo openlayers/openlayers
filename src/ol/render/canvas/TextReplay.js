@@ -1,7 +1,7 @@
 /**
  * @module ol/render/canvas/TextReplay
  */
-import {getUid, inherits} from '../../index.js';
+import {getUid, inherits} from '../../util.js';
 import {asColorLike} from '../../colorlike.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {intersects} from '../../extent.js';

@@ -1,7 +1,7 @@
 /**
  * @module ol/format/GML3
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {extend} from '../array.js';
 import {createOrUpdate} from '../extent.js';
 import {transformWithOptions} from '../format/Feature.js';

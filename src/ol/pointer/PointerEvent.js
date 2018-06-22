@@ -31,7 +31,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import Event from '../events/Event.js';
 
 /**

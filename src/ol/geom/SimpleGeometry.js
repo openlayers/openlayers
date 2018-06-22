@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/SimpleGeometry
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {FALSE} from '../functions.js';
 import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
 import Geometry from '../geom/Geometry.js';

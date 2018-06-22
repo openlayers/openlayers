@@ -4,7 +4,7 @@
 // TODO: serialize dataProjection as crs member when writing
 // see https://github.com/openlayers/openlayers/issues/2078
 
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';

@@ -1,7 +1,7 @@
 /**
  * @module ol/ImageBase
  */
-import {inherits} from './index.js';
+import {inherits} from './util.js';
 import EventTarget from './events/EventTarget.js';
 import EventType from './events/EventType.js';
 

@@ -1,7 +1,7 @@
 /**
  * @module ol/Tile
  */
-import {inherits} from './index.js';
+import {inherits} from './util.js';
 import TileState from './TileState.js';
 import {easeIn} from './easing.js';
 import EventTarget from './events/EventTarget.js';

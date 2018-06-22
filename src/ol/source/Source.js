@@ -1,7 +1,7 @@
 /**
  * @module ol/source/Source
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {UNDEFINED} from '../functions.js';
 import BaseObject from '../Object.js';
 import {get as getProjection} from '../proj.js';

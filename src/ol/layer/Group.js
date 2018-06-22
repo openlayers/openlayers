@@ -1,7 +1,7 @@
 /**
  * @module ol/layer/Group
  */
-import {getUid, inherits} from '../index.js';
+import {getUid, inherits} from '../util.js';
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import {getChangeEventType} from '../Object.js';

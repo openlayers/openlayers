@@ -1,7 +1,7 @@
 /**
  * @module ol/VectorTile
  */
-import {getUid, inherits} from './index.js';
+import {getUid, inherits} from './util.js';
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 

@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/DragPan
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import ViewHint from '../ViewHint.js';
 import {scale as scaleCoordinate, rotate as rotateCoordinate, add as addCoordinate} from '../coordinate.js';
 import {easeOut} from '../easing.js';

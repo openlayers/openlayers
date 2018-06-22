@@ -1,7 +1,7 @@
 /**
  * @module ol/format/XMLFeature
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {extend} from '../array.js';
 import FeatureFormat from '../format/Feature.js';
 import FormatType from '../format/FormatType.js';

@@ -3,7 +3,7 @@
  */
 // FIXME draw drag box
 import Event from '../events/Event.js';
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {always, mouseOnly, mouseActionButton} from '../events/condition.js';
 import {UNDEFINED} from '../functions.js';
 import PointerInteraction from '../interaction/Pointer.js';

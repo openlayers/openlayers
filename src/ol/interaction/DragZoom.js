@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/DragZoom
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {easeOut} from '../easing.js';
 import {shiftKeyOnly} from '../events/condition.js';
 import {createOrUpdateFromCoordinates, getBottomLeft, getCenter, getTopRight, scaleFromCenter} from '../extent.js';

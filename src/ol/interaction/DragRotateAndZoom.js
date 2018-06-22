@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/DragRotateAndZoom
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {disable} from '../rotationconstraint.js';
 import ViewHint from '../ViewHint.js';
 import {shiftKeyOnly, mouseOnly} from '../events/condition.js';

@@ -1,7 +1,7 @@
 /**
  * @module ol/control/FullScreen
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_UNSUPPORTED} from '../css.js';
 import {replaceNode} from '../dom.js';

@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/And
  */
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import LogicalNary from '../filter/LogicalNary.js';
 
 /**

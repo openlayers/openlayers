@@ -2,7 +2,7 @@
  * @module ol/control/MousePosition
  */
 
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getChangeEventType} from '../Object.js';

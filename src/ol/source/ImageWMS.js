@@ -3,7 +3,7 @@
  */
 
 import {DEFAULT_WMS_VERSION} from './common.js';
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import ImageWrapper from '../Image.js';
 import {assert} from '../asserts.js';
 import {listen} from '../events.js';

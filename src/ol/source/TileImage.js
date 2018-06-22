@@ -2,7 +2,7 @@
  * @module ol/source/TileImage
  */
 import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
-import {getUid, inherits} from '../index.js';
+import {getUid, inherits} from '../util.js';
 import ImageTile from '../ImageTile.js';
 import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';

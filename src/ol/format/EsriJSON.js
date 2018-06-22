@@ -1,7 +1,7 @@
 /**
  * @module ol/format/EsriJSON
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import {assert} from '../asserts.js';
 import {containsExtent} from '../extent.js';

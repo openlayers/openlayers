@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/Bbox
  */
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import Filter from '../filter/Filter.js';
 
 /**

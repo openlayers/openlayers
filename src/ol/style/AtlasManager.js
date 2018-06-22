@@ -1,7 +1,7 @@
 /**
  * @module ol/style/AtlasManager
  */
-import {WEBGL_MAX_TEXTURE_SIZE} from '../index.js';
+import {MAX_TEXTURE_SIZE as WEBGL_MAX_TEXTURE_SIZE} from '../webgl.js';
 import {UNDEFINED} from '../functions.js';
 import Atlas from '../style/Atlas.js';
 
@@ -10,7 +10,7 @@ import Atlas from '../style/Atlas.js';
  * @typedef {Object} Options
  * @property {number} [initialSize=256] The size in pixels of the first atlas image.
  * @property {number} [maxSize] The maximum size in pixels of atlas images. Default is
- * `WEBGL_MAX_TEXTURE_SIZE` or 2048 if WebGL is not supported.
+ * `webgl/MAX_TEXTURE_SIZE` or 2048 if WebGL is not supported.
  * @property {number} [space=1] The space in pixels between images.
  */
 

@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/canvas/VectorLayer
  */
-import {getUid, inherits} from '../../index.js';
+import {getUid, inherits} from '../../util.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';

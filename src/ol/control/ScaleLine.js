@@ -1,7 +1,7 @@
 /**
  * @module ol/control/ScaleLine
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {getChangeEventType} from '../Object.js';
 import {assert} from '../asserts.js';
 import Control from '../control/Control.js';

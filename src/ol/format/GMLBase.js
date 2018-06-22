@@ -4,7 +4,7 @@
 // FIXME Envelopes should not be treated as geometries! readEnvelope_ is part
 // of GEOMETRY_PARSERS_ and methods using GEOMETRY_PARSERS_ do not expect
 // envelopes/extents, only geometries!
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {extend} from '../array.js';
 import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';

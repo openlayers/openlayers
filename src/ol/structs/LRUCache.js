@@ -1,7 +1,7 @@
 /**
  * @module ol/structs/LRUCache
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {assert} from '../asserts.js';
 import EventTarget from '../events/EventTarget.js';
 import EventType from '../events/EventType.js';

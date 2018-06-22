@@ -1,7 +1,7 @@
 /**
  * @module ol/format/WMSGetFeatureInfo
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {extend, includes} from '../array.js';
 import GML2 from '../format/GML2.js';
 import XMLFeature from '../format/XMLFeature.js';

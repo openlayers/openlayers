@@ -1,7 +1,7 @@
 /**
  * @module ol/Overlay
  */
-import {inherits} from './index.js';
+import {inherits} from './util.js';
 import MapEventType from './MapEventType.js';
 import BaseObject, {getChangeEventType} from './Object.js';
 import OverlayPositioning from './OverlayPositioning.js';

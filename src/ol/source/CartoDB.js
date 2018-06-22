@@ -1,7 +1,7 @@
 /**
  * @module ol/source/CartoDB
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {assign} from '../obj.js';
 import SourceState from '../source/State.js';
 import XYZ from '../source/XYZ.js';

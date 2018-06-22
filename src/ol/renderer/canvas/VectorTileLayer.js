@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/canvas/VectorTileLayer
  */
-import {getUid, inherits} from '../../index.js';
+import {getUid, inherits} from '../../util.js';
 import LayerType from '../../LayerType.js';
 import TileState from '../../TileState.js';
 import {createCanvasContext2D} from '../../dom.js';

@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/PinchRotate
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
 import {rotate, rotateWithoutConstraints} from '../interaction/Interaction.js';

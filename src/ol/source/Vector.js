@@ -2,7 +2,7 @@
  * @module ol/source/Vector
  */
 
-import {getUid, inherits} from '../index.js';
+import {getUid, inherits} from '../util.js';
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import ObjectEventType from '../ObjectEventType.js';

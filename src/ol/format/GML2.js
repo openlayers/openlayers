@@ -1,7 +1,7 @@
 /**
  * @module ol/format/GML2
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {createOrUpdate} from '../extent.js';
 import {transformWithOptions} from '../format/Feature.js';
 import GMLBase, {GMLNS} from '../format/GMLBase.js';

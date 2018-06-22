@@ -1,7 +1,7 @@
 /**
  * @module ol/source/OSM
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import XYZ from '../source/XYZ.js';
 
 

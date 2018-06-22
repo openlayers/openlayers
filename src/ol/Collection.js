@@ -1,7 +1,7 @@
 /**
  * @module ol/Collection
  */
-import {inherits} from './index.js';
+import {inherits} from './util.js';
 import AssertionError from './AssertionError.js';
 import CollectionEventType from './CollectionEventType.js';
 import BaseObject from './Object.js';

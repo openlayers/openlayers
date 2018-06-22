@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/canvas/TileLayer
  */
-import {getUid, inherits} from '../../index.js';
+import {getUid, inherits} from '../../util.js';
 import LayerType from '../../LayerType.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';

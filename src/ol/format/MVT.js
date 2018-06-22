@@ -3,7 +3,7 @@
  */
 //FIXME Implement projection handling
 
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {assert} from '../asserts.js';
 import PBF from 'pbf';
 import FeatureFormat, {transformWithOptions} from '../format/Feature.js';

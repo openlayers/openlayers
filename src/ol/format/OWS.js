@@ -1,7 +1,7 @@
 /**
  * @module ol/format/OWS
  */
-import {inherits} from '../index.js';
+import {inherits} from '../util.js';
 import {readHref} from '../format/XLink.js';
 import XML from '../format/XML.js';
 import {readString} from '../format/xsd.js';

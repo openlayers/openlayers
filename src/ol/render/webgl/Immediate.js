@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/Immediate
  */
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import {intersects} from '../../extent.js';
 import GeometryType from '../../geom/GeometryType.js';
 import ReplayType from '../ReplayType.js';

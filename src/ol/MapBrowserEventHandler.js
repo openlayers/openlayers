@@ -1,7 +1,7 @@
 /**
  * @module ol/MapBrowserEventHandler
  */
-import {inherits} from './index.js';
+import {inherits} from './util.js';
 import {DEVICE_PIXEL_RATIO} from './has.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import MapBrowserPointerEvent from './MapBrowserPointerEvent.js';

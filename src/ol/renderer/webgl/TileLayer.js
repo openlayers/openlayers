@@ -4,7 +4,7 @@
 // FIXME large resolutions lead to too large framebuffers :-(
 // FIXME animated shaders! check in redraw
 
-import {inherits} from '../../index.js';
+import {inherits} from '../../util.js';
 import LayerType from '../../LayerType.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
