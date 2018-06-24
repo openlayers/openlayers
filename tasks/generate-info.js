@@ -149,6 +149,7 @@ function spawnJSDoc(paths) {
 /**
  * Writes the info.json file.
  * @param {Object} info The info.
+ * @return {Promise} Resolves on completion.
  */
 async function write(info) {
   await fse.outputJson(infoPath, info, {spaces: 2});
