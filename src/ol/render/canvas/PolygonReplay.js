@@ -61,9 +61,9 @@ CanvasPolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCoordinates, 
     }
     offset = end;
   }
-  this.hitDetectionInstructions.push(fillInstruction);
   if (fill) {
     this.instructions.push(fillInstruction);
+    this.hitDetectionInstructions.push(fillInstruction);
   }
   if (stroke) {
     this.instructions.push(strokeInstruction);
@@ -85,11 +85,12 @@ CanvasPolygonReplay.prototype.drawCircle = function(circleGeometry, feature) {
   }
   this.setFillStrokeStyles_(circleGeometry);
   this.beginGeometry(circleGeometry, feature);
-  // always fill the circle for hit detection
-  this.hitDetectionInstructions.push([
-    CanvasInstruction.SET_FILL_STYLE,
-    asString(defaultFillStyle)
-  ]);
+  if (state.fillStyle !== undefined) {
+    this.hitDetectionInstructions.push([
+      CanvasInstruction.SET_FILL_STYLE,
+      asString(defaultFillStyle)
+    ]);
+  }
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([
       CanvasInstruction.SET_STROKE_STYLE,
@@ -122,13 +123,19 @@ CanvasPolygonReplay.prototype.drawCircle = function(circleGeometry, feature) {
  */
 CanvasPolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
   const state = this.state;
+  const fillStyle = state.fillStyle;
+  const strokeStyle = state.strokeStyle;
+  if (fillStyle === undefined && strokeStyle === undefined) {
+    return;
+  }
   this.setFillStrokeStyles_(polygonGeometry);
   this.beginGeometry(polygonGeometry, feature);
-  // always fill the polygon for hit detection
-  this.hitDetectionInstructions.push([
-    CanvasInstruction.SET_FILL_STYLE,
-    asString(defaultFillStyle)]
-  );
+  if (state.fillStyle !== undefined) {
+    this.hitDetectionInstructions.push([
+      CanvasInstruction.SET_FILL_STYLE,
+      asString(defaultFillStyle)
+    ]);
+  }
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([
       CanvasInstruction.SET_STROKE_STYLE,
@@ -156,11 +163,12 @@ CanvasPolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, 
   }
   this.setFillStrokeStyles_(multiPolygonGeometry);
   this.beginGeometry(multiPolygonGeometry, feature);
-  // always fill the multi-polygon for hit detection
-  this.hitDetectionInstructions.push([
-    CanvasInstruction.SET_FILL_STYLE,
-    asString(defaultFillStyle)
-  ]);
+  if (state.fillStyle !== undefined) {
+    this.hitDetectionInstructions.push([
+      CanvasInstruction.SET_FILL_STYLE,
+      asString(defaultFillStyle)
+    ]);
+  }
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([
       CanvasInstruction.SET_STROKE_STYLE,
