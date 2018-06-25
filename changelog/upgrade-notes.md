@@ -159,13 +159,36 @@ var poly = circularPolygon(center, radius);
 
 #### Removal of optional this arguments.
 
-The following methods did get the optional this (i.e. opt_this) arguments removed. Please use closures, the es6 arrow function or the bind method to achieve this effect (Bind is explained here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
+The optional this (i.e. opt_this) arguments were removed from the following methods. Please use closures, the es6 arrow function or the bind method to achieve this effect (Bind is explained here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
 
 * Collection#forEach
 * geom/LineString#forEachSegment
 * Observable#on, #once, #un
+* Map#forEachLayerAtPixel
 * source/TileUTFGrid#forDataAtCoordinateAndResolution
 * source/Vector#forEachFeature, #forEachFeatureInExtent, #forEachFeatureIntersectingExtent
+
+
+#### `Map#forEachLayerAtPixel` parameters have changed
+ 
+If you are using the layer filter, please note that you now have to pass in the layer filter via an `AtPixelOptions` object. If you are not using the layer filter the usage has not changed.
+
+Old syntax:
+```
+    map.forEachLayerAtPixel(pixel, callback, callbackThis, layerFilterFn, layerFilterThis);
+```
+
+New syntax:
+
+```
+    map.forEachLayerAtPixel(pixel, callback, {
+        layerFilter: layerFilterFn
+    });
+```
+
+To bind a function to a this, please use the bind method of the function (See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
+
+This change is due to the introduction of the `hitTolerance` parameter which can be passed in via this `AtPixelOptions` object, too.
 
 ### v4.6.0
 

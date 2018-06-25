@@ -101,14 +101,15 @@ CanvasLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, fr
 /**
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
+ * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {function(this: S, module:ol/layer/Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-CanvasLayerRenderer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
-  const hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, this);
+CanvasLayerRenderer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+  const hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, TRUE, this);
 
   if (hasFeature) {
     return callback.call(thisArg, this.getLayer(), null);
