@@ -1,6 +1,6 @@
 ## Upgrade notes
 
-### Next release
+### v5.0.0
 
 #### Renamed `ol/source/TileUTFGrid` to `ol/source/UTFGrid`
 

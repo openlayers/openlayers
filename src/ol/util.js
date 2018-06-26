@@ -52,4 +52,4 @@ export function getUid(obj) {
  * OpenLayers version.
  * @type {string}
  */
-export const VERSION = '5.0.0-beta.14';
+export const VERSION = '5.0.0';
