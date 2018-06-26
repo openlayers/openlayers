@@ -1,7 +1,7 @@
 {
   "name": "openlayers",
-  "version": "5.0.0-beta.14",
-  "description": "Build tools and sources for developing OpenLayers based mapping applications",
+  "version": "5.0.0",
+  "description": "OpenLayers mapping library",
   "keywords": [
     "map",
     "mapping",
