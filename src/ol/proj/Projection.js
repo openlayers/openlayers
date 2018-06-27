@@ -45,9 +45,9 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
  *     urn:ogc:def:crs:EPSG:6.18:3:3857,
  *     http://www.opengis.net/gml/srs/epsg.xml#3857
  *
- * If you use proj4js, aliases can be added using `proj4.defs()`; see
- * [documentation](https://github.com/proj4js/proj4js). To set an alternative
- * namespace for proj4, use {@link module:ol/proj~setProj4}.
+ * If you use [proj4js](https://github.com/proj4js/proj4js), aliases can
+ * be added using `proj4.defs()`, after all required projection definitions are
+ * added, call the {@link module:ol/proj/proj4~register} function.
  *
  * @constructor
  * @param {module:ol/proj/Projection~Options} options Projection options.
