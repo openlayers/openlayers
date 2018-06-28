@@ -80,7 +80,7 @@ inherits(CustomTile, Tile);
 
 /**
  * Get the image element for this tile.
- * @return {Image} Image.
+ * @return {HTMLImageElement} Image.
  */
 CustomTile.prototype.getImage = function() {
   return null;

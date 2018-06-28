@@ -44,7 +44,7 @@ const ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction,
 
   /**
    * @private
-   * @type {Image|HTMLCanvasElement}
+   * @type {HTMLImageElement|HTMLCanvasElement}
    */
   this.image_ = new Image();
   if (crossOrigin !== null) {

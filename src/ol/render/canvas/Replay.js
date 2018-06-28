@@ -652,7 +652,7 @@ CanvasReplay.prototype.replay_ = function(
       case CanvasInstruction.DRAW_IMAGE:
         d = /** @type {number} */ (instruction[1]);
         dd = /** @type {number} */ (instruction[2]);
-        image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
+        image =  /** @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} */
             (instruction[3]);
         // Remaining arguments in DRAW_IMAGE are in alphabetical order
         anchorX = /** @type {number} */ (instruction[4]);

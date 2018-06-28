@@ -29,13 +29,13 @@ const CanvasImageReplay = function(
 
   /**
    * @private
-   * @type {HTMLCanvasElement|HTMLVideoElement|Image}
+   * @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement}
    */
   this.hitDetectionImage_ = null;
 
   /**
    * @private
-   * @type {HTMLCanvasElement|HTMLVideoElement|Image}
+   * @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement}
    */
   this.image_ = null;
 
