@@ -84,7 +84,7 @@ function enlargeClipPoint(centroidX, centroidY, x, y) {
  * @param {module:ol/reproj/Triangulation} triangulation
  * Calculated triangulation.
  * @param {Array.<{extent: module:ol/extent~Extent,
- *                 image: (HTMLCanvasElement|Image|HTMLVideoElement)}>} sources
+ *                 image: (HTMLCanvasElement|HTMLImageElement|HTMLVideoElement)}>} sources
  * Array of sources.
  * @param {number} gutter Gutter of the sources.
  * @param {boolean=} opt_renderEdges Render reprojection edges.

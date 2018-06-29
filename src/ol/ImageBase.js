@@ -65,7 +65,7 @@ ImageBase.prototype.getExtent = function() {
 
 /**
  * @abstract
- * @return {HTMLCanvasElement|Image|HTMLVideoElement} Image.
+ * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
  */
 ImageBase.prototype.getImage = function() {};
 

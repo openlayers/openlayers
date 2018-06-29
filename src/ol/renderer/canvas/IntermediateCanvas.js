@@ -83,7 +83,7 @@ IntermediateCanvasRenderer.prototype.composeFrame = function(frameState, layerSt
 
 /**
  * @abstract
- * @return {HTMLCanvasElement|HTMLVideoElement|Image} Canvas.
+ * @return {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} Canvas.
  */
 IntermediateCanvasRenderer.prototype.getImage = function() {};
 

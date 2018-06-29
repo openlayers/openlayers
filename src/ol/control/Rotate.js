@@ -113,7 +113,7 @@ inherits(Rotate, Control);
 
 
 /**
- * @param {Event} event The event to handle
+ * @param {MouseEvent} event The event to handle
  * @private
  */
 Rotate.prototype.handleClick_ = function(event) {

@@ -68,7 +68,7 @@ inherits(ZoomToExtent, Control);
 
 
 /**
- * @param {Event} event The event to handle
+ * @param {MouseEvent} event The event to handle
  * @private
  */
 ZoomToExtent.prototype.handleClick_ = function(event) {

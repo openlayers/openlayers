@@ -15,7 +15,7 @@ import {containsExtent} from './extent.js';
  * @typedef {Object} Options
  * @property {number|string} [id] Set the overlay id. The overlay id can be used
  * with the {@link module:ol/Map~Map#getOverlayById} method.
- * @property {Element} [element] The overlay element.
+ * @property {HTMLElement} [element] The overlay element.
  * @property {Array.<number>} [offset=[0, 0]] Offsets in pixels used when positioning
  * the overlay. The first element in the
  * array is the horizontal offset. A positive value shifts the overlay right.
@@ -129,7 +129,7 @@ const Overlay = function(options) {
 
   /**
    * @protected
-   * @type {Element}
+   * @type {HTMLElement}
    */
   this.element = document.createElement('DIV');
   this.element.className = options.className !== undefined ?
@@ -218,12 +218,12 @@ inherits(Overlay, BaseObject);
 
 /**
  * Get the DOM element of this overlay.
- * @return {Element|undefined} The Element containing the overlay.
+ * @return {HTMLElement|undefined} The Element containing the overlay.
  * @observable
  * @api
  */
 Overlay.prototype.getElement = function() {
-  return /** @type {Element|undefined} */ (this.get(Property.ELEMENT));
+  return /** @type {HTMLElement|undefined} */ (this.get(Property.ELEMENT));
 };
 
 
@@ -364,7 +364,7 @@ Overlay.prototype.handlePositioningChanged = function() {
 
 /**
  * Set the DOM element to be associated with this overlay.
- * @param {Element|undefined} element The Element containing the overlay.
+ * @param {HTMLElement|undefined} element The Element containing the overlay.
  * @observable
  * @api
  */
@@ -422,7 +422,7 @@ Overlay.prototype.panIntoView = function() {
   }
 
   const mapRect = this.getRect(map.getTargetElement(), map.getSize());
-  const element = /** @type {!Element} */ (this.getElement());
+  const element = this.getElement();
   const overlayRect = this.getRect(element, [outerWidth(element), outerHeight(element)]);
 
   const margin = this.autoPanMargin;
@@ -469,7 +469,7 @@ Overlay.prototype.panIntoView = function() {
 
 /**
  * Get the extent of an element relative to the document
- * @param {Element|undefined} element The element.
+ * @param {HTMLElement|undefined} element The element.
  * @param {module:ol/size~Size|undefined} size The size of the element.
  * @return {module:ol/extent~Extent} The extent.
  * @protected

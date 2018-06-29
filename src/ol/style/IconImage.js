@@ -11,7 +11,7 @@ import {shared as iconImageCache} from '../style/IconImageCache.js';
 
 /**
  * @constructor
- * @param {Image|HTMLCanvasElement} image Image.
+ * @param {HTMLImageElement|HTMLCanvasElement} image Image.
  * @param {string|undefined} src Src.
  * @param {module:ol/size~Size} size Size.
  * @param {?string} crossOrigin Cross origin.
@@ -25,13 +25,13 @@ const IconImage = function(image, src, size, crossOrigin, imageState, color) {
 
   /**
    * @private
-   * @type {Image|HTMLCanvasElement}
+   * @type {HTMLImageElement|HTMLCanvasElement}
    */
   this.hitDetectionImage_ = null;
 
   /**
    * @private
-   * @type {Image|HTMLCanvasElement}
+   * @type {HTMLImageElement|HTMLCanvasElement}
    */
   this.image_ = !image ? new Image() : image;
 
@@ -92,7 +92,7 @@ inherits(IconImage, EventTarget);
 
 
 /**
- * @param {Image|HTMLCanvasElement} image Image.
+ * @param {HTMLImageElement|HTMLCanvasElement} image Image.
  * @param {string} src Src.
  * @param {module:ol/size~Size} size Size.
  * @param {?string} crossOrigin Cross origin.
@@ -161,7 +161,7 @@ IconImage.prototype.handleImageLoad_ = function() {
 
 /**
  * @param {number} pixelRatio Pixel ratio.
- * @return {Image|HTMLCanvasElement} Image or Canvas element.
+ * @return {HTMLImageElement|HTMLCanvasElement} Image or Canvas element.
  */
 IconImage.prototype.getImage = function(pixelRatio) {
   return this.canvas_ ? this.canvas_ : this.image_;
@@ -178,7 +178,7 @@ IconImage.prototype.getImageState = function() {
 
 /**
  * @param {number} pixelRatio Pixel ratio.
- * @return {Image|HTMLCanvasElement} Image element.
+ * @return {HTMLImageElement|HTMLCanvasElement} Image element.
  */
 IconImage.prototype.getHitDetectionImage = function(pixelRatio) {
   if (!this.hitDetectionImage_) {

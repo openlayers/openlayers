@@ -25,7 +25,7 @@ export function createCanvasContext2D(opt_width, opt_height) {
  * Get the current computed width for the given element including margin,
  * padding and border.
  * Equivalent to jQuery's `$(el).outerWidth(true)`.
- * @param {!Element} element Element.
+ * @param {!HTMLElement} element Element.
  * @return {number} The width.
  */
 export function outerWidth(element) {
@@ -41,7 +41,7 @@ export function outerWidth(element) {
  * Get the current computed height for the given element including margin,
  * padding and border.
  * Equivalent to jQuery's `$(el).outerHeight(true)`.
- * @param {!Element} element Element.
+ * @param {!HTMLElement} element Element.
  * @return {number} The height.
  */
 export function outerHeight(element) {

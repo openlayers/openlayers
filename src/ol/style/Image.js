@@ -122,7 +122,7 @@ ImageStyle.prototype.getAnchor = function() {};
  * Get the image element for the symbolizer.
  * @abstract
  * @param {number} pixelRatio Pixel ratio.
- * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
+ * @return {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} Image element.
  */
 ImageStyle.prototype.getImage = function(pixelRatio) {};
 
@@ -130,7 +130,7 @@ ImageStyle.prototype.getImage = function(pixelRatio) {};
 /**
  * @abstract
  * @param {number} pixelRatio Pixel ratio.
- * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
+ * @return {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} Image element.
  */
 ImageStyle.prototype.getHitDetectionImage = function(pixelRatio) {};
 

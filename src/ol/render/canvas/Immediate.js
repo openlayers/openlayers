@@ -100,7 +100,7 @@ const CanvasImmediateRenderer = function(context, pixelRatio, extent, transform,
 
   /**
    * @private
-   * @type {HTMLCanvasElement|HTMLVideoElement|Image}
+   * @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement}
    */
   this.image_ = null;
 

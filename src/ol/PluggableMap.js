@@ -76,7 +76,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @typedef {Object} MapOptionsInternal
  * @property {module:ol/Collection.<module:ol/control/Control>} [controls]
  * @property {module:ol/Collection.<module:ol/interaction/Interaction>} [interactions]
- * @property {Element|Document} keyboardEventTarget
+ * @property {HTMLElement|Document} keyboardEventTarget
  * @property {module:ol/Collection.<module:ol/Overlay>} overlays
  * @property {Object.<string, *>} values
  */
@@ -93,7 +93,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {module:ol/Collection.<module:ol/interaction/Interaction>|Array.<module:ol/interaction/Interaction>} [interactions]
  * Interactions that are initially added to the map. If not specified,
  * {@link module:ol/interaction~defaults} is used.
- * @property {Element|Document|string} [keyboardEventTarget] The element to
+ * @property {HTMLElement|Document|string} [keyboardEventTarget] The element to
  * listen to keyboard events on. This determines when the `KeyboardPan` and
  * `KeyboardZoom` interactions trigger. For example, if this option is set to
  * `document` the keyboard interactions will always trigger. If this option is
@@ -120,7 +120,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * Increasing this value can make it easier to click on the map.
  * @property {module:ol/Collection.<module:ol/Overlay>|Array.<module:ol/Overlay>} [overlays]
  * Overlays initially added to the map. By default, no overlays are added.
- * @property {Element|string} [target] The container for the map, either the
+ * @property {HTMLElement|string} [target] The container for the map, either the
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
  * rendered.
@@ -240,7 +240,7 @@ const PluggableMap = function(options) {
 
   /**
    * @private
-   * @type {Element}
+   * @type {!HTMLElement}
    */
   this.viewport_ = document.createElement('DIV');
   this.viewport_.className = 'ol-viewport' + (TOUCH ? ' ol-touch' : '');
@@ -254,7 +254,7 @@ const PluggableMap = function(options) {
 
   /**
    * @private
-   * @type {!Element}
+   * @type {!HTMLElement}
    */
   this.overlayContainer_ = document.createElement('DIV');
   this.overlayContainer_.className = 'ol-overlaycontainer';
@@ -262,7 +262,7 @@ const PluggableMap = function(options) {
 
   /**
    * @private
-   * @type {!Element}
+   * @type {!HTMLElement}
    */
   this.overlayContainerStopEvent_ = document.createElement('DIV');
   this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
@@ -293,7 +293,7 @@ const PluggableMap = function(options) {
 
   /**
    * @private
-   * @type {Element|Document}
+   * @type {HTMLElement|Document}
    */
   this.keyboardEventTarget_ = optionsInternal.keyboardEventTarget;
 
@@ -685,13 +685,13 @@ PluggableMap.prototype.getEventPixel = function(event) {
  * Get the target in which this map is rendered.
  * Note that this returns what is entered as an option or in setTarget:
  * if that was an element, it returns an element; if a string, it returns that.
- * @return {Element|string|undefined} The Element or id of the Element that the
+ * @return {HTMLElement|string|undefined} The Element or id of the Element that the
  *     map is rendered in.
  * @observable
  * @api
  */
 PluggableMap.prototype.getTarget = function() {
-  return /** @type {Element|string|undefined} */ (this.get(MapProperty.TARGET));
+  return /** @type {HTMLElement|string|undefined} */ (this.get(MapProperty.TARGET));
 };
 
 
@@ -699,7 +699,7 @@ PluggableMap.prototype.getTarget = function() {
  * Get the DOM element into which this map is rendered. In contrast to
  * `getTarget` this method always return an `Element`, or `null` if the
  * map has no target.
- * @return {Element} The element that the map is rendered in.
+ * @return {HTMLElement} The element that the map is rendered in.
  * @api
  */
 PluggableMap.prototype.getTargetElement = function() {
@@ -857,7 +857,7 @@ PluggableMap.prototype.getView = function() {
 
 /**
  * Get the element that serves as the map viewport.
- * @return {Element} Viewport.
+ * @return {HTMLElement} Viewport.
  * @api
  */
 PluggableMap.prototype.getViewport = function() {
@@ -870,7 +870,7 @@ PluggableMap.prototype.getViewport = function() {
  * this container will let mousedown and touchstart events through to the map,
  * so clicks and gestures on an overlay will trigger {@link module:ol/MapBrowserEvent~MapBrowserEvent}
  * events.
- * @return {!Element} The map's overlay container.
+ * @return {!HTMLElement} The map's overlay container.
  */
 PluggableMap.prototype.getOverlayContainer = function() {
   return this.overlayContainer_;
@@ -882,7 +882,7 @@ PluggableMap.prototype.getOverlayContainer = function() {
  * event propagation. Elements added to this container won't let mousedown and
  * touchstart events through to the map, so clicks and gestures on an overlay
  * don't trigger any {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
- * @return {!Element} The map's overlay container that stops events.
+ * @return {!HTMLElement} The map's overlay container that stops events.
  */
 PluggableMap.prototype.getOverlayContainerStopEvent = function() {
   return this.overlayContainerStopEvent_;
@@ -1322,7 +1322,7 @@ PluggableMap.prototype.setSize = function(size) {
 
 /**
  * Set the target element to render this map into.
- * @param {Element|string|undefined} target The Element or id of the Element
+ * @param {HTMLElement|string|undefined} target The Element or id of the Element
  *     that the map is rendered in.
  * @observable
  * @api
@@ -1398,7 +1398,7 @@ PluggableMap.prototype.unskipFeature = function(feature) {
 function createOptionsInternal(options) {
 
   /**
-   * @type {Element|Document}
+   * @type {HTMLElement|Document}
    */
   let keyboardEventTarget = null;
   if (options.keyboardEventTarget !== undefined) {

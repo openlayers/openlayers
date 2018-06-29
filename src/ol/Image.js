@@ -50,7 +50,7 @@ const ImageWrapper = function(extent, resolution, pixelRatio, src, crossOrigin, 
 
   /**
    * @private
-   * @type {HTMLCanvasElement|Image|HTMLVideoElement}
+   * @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement}
    */
   this.image_ = new Image();
   if (crossOrigin !== null) {
@@ -139,7 +139,7 @@ ImageWrapper.prototype.load = function() {
 
 
 /**
- * @param {HTMLCanvasElement|Image|HTMLVideoElement} image Image.
+ * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
  */
 ImageWrapper.prototype.setImage = function(image) {
   this.image_ = image;

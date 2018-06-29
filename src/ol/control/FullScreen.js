@@ -136,7 +136,7 @@ inherits(FullScreen, Control);
 
 
 /**
- * @param {Event} event The event to handle
+ * @param {MouseEvent} event The event to handle
  * @private
  */
 FullScreen.prototype.handleClick_ = function(event) {

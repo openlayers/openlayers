@@ -131,7 +131,7 @@ TouchSource.prototype.setPrimaryTouch_ = function(inTouch) {
 
 /**
  * @private
- * @param {Object} inPointer The in pointer object.
+ * @param {PointerEvent} inPointer The in pointer object.
  */
 TouchSource.prototype.removePrimaryPointer_ = function(inPointer) {
   if (inPointer.isPrimary) {
@@ -172,9 +172,9 @@ TouchSource.prototype.cancelResetClickCount_ = function() {
 
 /**
  * @private
- * @param {Event} browserEvent Browser event
+ * @param {TouchEvent} browserEvent Browser event
  * @param {Touch} inTouch Touch event
- * @return {Object} A pointer object.
+ * @return {PointerEvent} A pointer object.
  */
 TouchSource.prototype.touchToPointer_ = function(browserEvent, inTouch) {
   const e = this.dispatcher.cloneEvent(browserEvent, inTouch);
@@ -208,8 +208,8 @@ TouchSource.prototype.touchToPointer_ = function(browserEvent, inTouch) {
 
 /**
  * @private
- * @param {Event} inEvent Touch event
- * @param {function(Event, Object)} inFunction In function.
+ * @param {TouchEvent} inEvent Touch event
+ * @param {function(TouchEvent, PointerEvent)} inFunction In function.
  */
 TouchSource.prototype.processTouches_ = function(inEvent, inFunction) {
   const touches = Array.prototype.slice.call(inEvent.changedTouches);
@@ -253,7 +253,7 @@ TouchSource.prototype.findTouch_ = function(touchList, searchId) {
  * this "abandoned" touch
  *
  * @private
- * @param {Event} inEvent The in event.
+ * @param {TouchEvent} inEvent The in event.
  */
 TouchSource.prototype.vacuumTouches_ = function(inEvent) {
   const touchList = inEvent.touches;
@@ -284,7 +284,7 @@ TouchSource.prototype.vacuumTouches_ = function(inEvent) {
  * Handler for `touchstart`, triggers `pointerover`,
  * `pointerenter` and `pointerdown` events.
  *
- * @param {Event} inEvent The in event.
+ * @param {TouchEvent} inEvent The in event.
  */
 TouchSource.prototype.touchstart = function(inEvent) {
   this.vacuumTouches_(inEvent);
@@ -297,8 +297,8 @@ TouchSource.prototype.touchstart = function(inEvent) {
 
 /**
  * @private
- * @param {Event} browserEvent The event.
- * @param {Object} inPointer The in pointer object.
+ * @param {TouchEvent} browserEvent The event.
+ * @param {PointerEvent} inPointer The in pointer object.
  */
 TouchSource.prototype.overDown_ = function(browserEvent, inPointer) {
   this.pointerMap[inPointer.pointerId] = {
@@ -315,7 +315,7 @@ TouchSource.prototype.overDown_ = function(browserEvent, inPointer) {
 /**
  * Handler for `touchmove`.
  *
- * @param {Event} inEvent The in event.
+ * @param {TouchEvent} inEvent The in event.
  */
 TouchSource.prototype.touchmove = function(inEvent) {
   inEvent.preventDefault();
@@ -325,8 +325,8 @@ TouchSource.prototype.touchmove = function(inEvent) {
 
 /**
  * @private
- * @param {Event} browserEvent The event.
- * @param {Object} inPointer The in pointer.
+ * @param {TouchEvent} browserEvent The event.
+ * @param {PointerEvent} inPointer The in pointer.
  */
 TouchSource.prototype.moveOverOut_ = function(browserEvent, inPointer) {
   const event = inPointer;
@@ -362,7 +362,7 @@ TouchSource.prototype.moveOverOut_ = function(browserEvent, inPointer) {
  * Handler for `touchend`, triggers `pointerup`,
  * `pointerout` and `pointerleave` events.
  *
- * @param {Event} inEvent The event.
+ * @param {TouchEvent} inEvent The event.
  */
 TouchSource.prototype.touchend = function(inEvent) {
   this.dedupSynthMouse_(inEvent);
@@ -372,8 +372,8 @@ TouchSource.prototype.touchend = function(inEvent) {
 
 /**
  * @private
- * @param {Event} browserEvent An event.
- * @param {Object} inPointer The inPointer object.
+ * @param {TouchEvent} browserEvent An event.
+ * @param {PointerEvent} inPointer The inPointer object.
  */
 TouchSource.prototype.upOut_ = function(browserEvent, inPointer) {
   this.dispatcher.up(inPointer, browserEvent);
@@ -387,7 +387,7 @@ TouchSource.prototype.upOut_ = function(browserEvent, inPointer) {
  * Handler for `touchcancel`, triggers `pointercancel`,
  * `pointerout` and `pointerleave` events.
  *
- * @param {Event} inEvent The in event.
+ * @param {TouchEvent} inEvent The in event.
  */
 TouchSource.prototype.touchcancel = function(inEvent) {
   this.processTouches_(inEvent, this.cancelOut_);
@@ -396,8 +396,8 @@ TouchSource.prototype.touchcancel = function(inEvent) {
 
 /**
  * @private
- * @param {Event} browserEvent The event.
- * @param {Object} inPointer The in pointer.
+ * @param {TouchEvent} browserEvent The event.
+ * @param {PointerEvent} inPointer The in pointer.
  */
 TouchSource.prototype.cancelOut_ = function(browserEvent, inPointer) {
   this.dispatcher.cancel(inPointer, browserEvent);
@@ -409,7 +409,7 @@ TouchSource.prototype.cancelOut_ = function(browserEvent, inPointer) {
 
 /**
  * @private
- * @param {Object} inPointer The inPointer object.
+ * @param {PointerEvent} inPointer The inPointer object.
  */
 TouchSource.prototype.cleanUpPointer_ = function(inPointer) {
   delete this.pointerMap[inPointer.pointerId];
@@ -421,7 +421,7 @@ TouchSource.prototype.cleanUpPointer_ = function(inPointer) {
  * Prevent synth mouse events from creating pointer events.
  *
  * @private
- * @param {Event} inEvent The in event.
+ * @param {TouchEvent} inEvent The in event.
  */
 TouchSource.prototype.dedupSynthMouse_ = function(inEvent) {
   const lts = this.mouseSource.lastTouches;
