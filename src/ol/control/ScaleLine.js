@@ -72,14 +72,14 @@ const ScaleLine = function(opt_options) {
 
   /**
    * @private
-   * @type {Element}
+   * @type {HTMLElement}
    */
   this.innerElement_ = document.createElement('DIV');
   this.innerElement_.className = className + '-inner';
 
   /**
    * @private
-   * @type {Element}
+   * @type {HTMLElement}
    */
   this.element_ = document.createElement('DIV');
   this.element_.className = className + ' ' + CLASS_UNSELECTABLE;
