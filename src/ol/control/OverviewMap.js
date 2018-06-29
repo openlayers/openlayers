@@ -498,7 +498,7 @@ OverviewMap.prototype.calculateCoordinateRotate_ = function(
 
 
 /**
- * @param {Event} event The event to handle
+ * @param {MouseEvent} event The event to handle
  * @private
  */
 OverviewMap.prototype.handleClick_ = function(event) {

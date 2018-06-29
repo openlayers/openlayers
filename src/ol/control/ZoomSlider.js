@@ -227,7 +227,7 @@ export function render(mapEvent) {
 
 
 /**
- * @param {Event} event The browser event to handle.
+ * @param {MouseEvent} event The browser event to handle.
  * @private
  */
 ZoomSlider.prototype.handleContainerClick_ = function(event) {

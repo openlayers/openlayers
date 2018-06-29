@@ -256,7 +256,7 @@ Attribution.prototype.updateElement_ = function(frameState) {
 
 
 /**
- * @param {Event} event The event to handle
+ * @param {MouseEvent} event The event to handle
  * @private
  */
 Attribution.prototype.handleClick_ = function(event) {

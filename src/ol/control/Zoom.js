@@ -98,7 +98,7 @@ inherits(Zoom, Control);
 
 /**
  * @param {number} delta Zoom delta.
- * @param {Event} event The event to handle
+ * @param {MouseEvent} event The event to handle
  * @private
  */
 Zoom.prototype.handleClick_ = function(delta, event) {
