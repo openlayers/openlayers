@@ -1,15 +1,15 @@
 const fs = require('fs');
 const pkg = require('../package.json');
 
-const index = require.resolve('../src/ol/index');
+const index = require.resolve('../src/ol/util');
 const lines = fs.readFileSync(index, 'utf-8').split('\n');
 
-const versionRegEx = /const VERSION = '(.*)';$/;
+const versionRegEx = /export const VERSION =/;
 
 for (let i = 0, ii = lines.length; i < ii; ++i) {
   const line = lines[i];
   if (versionRegEx.test(line)) {
-    lines[i] = line.replace(versionRegEx, `const VERSION = '${pkg.version}';`);
+    lines[i] = `export const VERSION = '${pkg.version}';`;
     break;
   }
 }
