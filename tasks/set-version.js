@@ -1,7 +1,7 @@
 const fs = require('fs');
 const pkg = require('../package.json');
 
-const index = require.resolve('../src/ol/util');
+const index = require.resolve('../src/ol/index');
 const lines = fs.readFileSync(index, 'utf-8').split('\n');
 
 const versionRegEx = /export const VERSION =/;
