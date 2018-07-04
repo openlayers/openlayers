@@ -34,11 +34,9 @@ new Map({
 
 See the following examples for more detail on bundling OpenLayers with your application:
 
- * Using [Rollup & Uglify](https://gist.github.com/tschaub/8beb328ea72b36446fc2198d008287de)
+ * Using [Rollup](https://github.com/openlayers/ol-rollup)
  * Using [Rollup & Closure Compiler](https://gist.github.com/tschaub/32a5692bedac5254da24fa3b12072f35)
- * Using [Webpack & Uglify](https://gist.github.com/tschaub/79025aef325cd2837364400a105405b8)
- * Using [Webpack & Closure Compiler](https://gist.github.com/ahocevar/8ceafc6293455ba491dd9be12c15761f)
- * Using [Browserify & Uglify](https://gist.github.com/tschaub/4bfb209a8f809823f1495b2e4436018e)
+ * Using [Webpack](https://github.com/openlayers/ol-webpack)
 
 ## Module Identifiers
 
