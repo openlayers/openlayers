@@ -35,7 +35,6 @@ new Map({
 See the following examples for more detail on bundling OpenLayers with your application:
 
  * Using [Rollup](https://github.com/openlayers/ol-rollup)
- * Using [Rollup & Closure Compiler](https://gist.github.com/tschaub/32a5692bedac5254da24fa3b12072f35)
  * Using [Webpack](https://github.com/openlayers/ol-webpack)
  * Using [Parcel](https://github.com/openlayers/ol-parcel)
 
