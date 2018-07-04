@@ -7,6 +7,9 @@ layout: doc.hbs
 
 This primer shows you how to put a simple map on a web page.
 
+**For production, we strongly recommend bundling the application together with its dependencies, as explained in the [Building an OpenLayers Application](./tutorials/bundle.html) tutorial.**
+
+
 ## Put a map on a page
 
 Below you'll find a complete working example.  Create a new file, copy in the contents below, and open in a browser:
@@ -15,14 +18,14 @@ Below you'll find a complete working example.  Create a new file, copy in the co
 <!doctype html>
 <html lang="en">
   <head>
-    <link rel="stylesheet" href="https://openlayers.org/en/{{ latest }}/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/{{ latest }}/css/ol.css" type="text/css">
     <style>
       .map {
         height: 400px;
         width: 100%;
       }
     </style>
-    <script src="https://openlayers.org/en/{{ latest }}/build/ol.js" type="text/javascript"></script>
+    <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/{{ latest }}/build/ol.js"></script>
     <title>OpenLayers example</title>
   </head>
   <body>
@@ -56,10 +59,8 @@ To include a map a web page you will need 3 things:
 
 ### Include OpenLayers
 
-**Caveat:** In production, it is not recommended to include dependencies as script tag. Instead, we recommend bundling the application together with its dependencies, as explained in the [Building an OpenLayers Application](./tutorials/bundle.html) tutorial.
-
 ```xml
-  <script src="https://openlayers.org/en/{{ latest }}/build/ol.js" type="text/javascript"></script>
+  <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/{{ latest }}/build/ol.js"></script>
 ```
 
 The first part is to include the JavaScript library. For the purpose of this tutorial, here we simply point to the openlayers.org website to get the whole library. In a production environment, we would build a custom version of the library including only the module needed for our application.
