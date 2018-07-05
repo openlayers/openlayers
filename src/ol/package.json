@@ -10,5 +10,5 @@
     "pixelworks": "1.1.0",
     "rbush": "2.0.2"
   },
-  "sideEffects": "false"
+  "sideEffects": false
 }
