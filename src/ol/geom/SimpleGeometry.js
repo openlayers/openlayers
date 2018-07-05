@@ -3,7 +3,7 @@
  */
 import {inherits} from '../util.js';
 import {FALSE} from '../functions.js';
-import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
+import {createOrUpdateFromFlatCoordinates, getCenter, createOrUpdateEmpty} from '../extent.js';
 import Geometry from '../geom/Geometry.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import {rotate, scale, translate, transform2D} from '../geom/flat/transform.js';
@@ -92,6 +92,9 @@ SimpleGeometry.prototype.containsXY = FALSE;
  * @inheritDoc
  */
 SimpleGeometry.prototype.computeExtent = function(extent) {
+  if (!this.flatCoordinates) {
+    return createOrUpdateEmpty();
+  }
   return createOrUpdateFromFlatCoordinates(this.flatCoordinates,
     0, this.flatCoordinates.length, this.stride, extent);
 };
