@@ -12,6 +12,13 @@ describe('ol/geom/Polygon', function() {
     }).not.to.throwException();
   });
 
+  it('can call getExtent with a null geometry', function() {
+    expect(function() {
+      const p = new Polygon(null);
+      p.getExtent();
+    }).not.to.throwException();
+  });
+
   describe('construct empty', function() {
 
     let polygon;
