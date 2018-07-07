@@ -1104,8 +1104,7 @@ function readMultiGeometry(node, objectStack) {
         geometry = geometries[i];
         extend(flatCoordinates, geometry.getFlatCoordinates());
       }
-      multiGeometry = new MultiPoint(null);
-      multiGeometry.setFlatCoordinates(layout, flatCoordinates);
+      multiGeometry = new MultiPoint(flatCoordinates, layout);
       setCommonGeometryProperties(multiGeometry, geometries);
     } else if (type == GeometryType.LINE_STRING) {
       multiGeometry = new MultiLineString(null);

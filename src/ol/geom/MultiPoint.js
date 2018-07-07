@@ -4,7 +4,6 @@
 import {inherits} from '../util.js';
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY, containsXY} from '../extent.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
@@ -18,13 +17,19 @@ import {squaredDistance as squaredDx} from '../math.js';
  *
  * @constructor
  * @extends {module:ol/geom/SimpleGeometry}
- * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
+ * @param {Array.<module:ol/coordinate~Coordinate>|Array.<number>} coordinates
+ * Coordinates. (For internal use, flat coordinates in combination with
+ * `opt_layout` are also accepted)
  * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @api
  */
 const MultiPoint = function(coordinates, opt_layout) {
   SimpleGeometry.call(this);
-  this.setCoordinates(coordinates, opt_layout);
+  if (opt_layout && !Array.isArray(coordinates[0])) {
+    this.setFlatCoordinatesInternal(opt_layout, coordinates);
+  } else {
+    this.setCoordinates(coordinates, opt_layout);
+  }
 };
 
 inherits(MultiPoint, SimpleGeometry);
@@ -52,8 +57,7 @@ MultiPoint.prototype.appendPoint = function(point) {
  * @api
  */
 MultiPoint.prototype.clone = function() {
-  const multiPoint = new MultiPoint(null);
-  multiPoint.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
+  const multiPoint = new MultiPoint(this.flatCoordinates.slice(), this.layout);
   return multiPoint;
 };
 
@@ -158,32 +162,18 @@ MultiPoint.prototype.intersectsExtent = function(extent) {
 
 /**
  * Set the coordinates of the multipoint.
- * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
+ * @param {!Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
  * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @override
  * @api
  */
 MultiPoint.prototype.setCoordinates = function(coordinates, opt_layout) {
-  if (!coordinates) {
-    this.setFlatCoordinates(GeometryLayout.XY, null);
-  } else {
-    this.setLayout(opt_layout, coordinates, 1);
-    if (!this.flatCoordinates) {
-      this.flatCoordinates = [];
-    }
-    this.flatCoordinates.length = deflateCoordinates(
-      this.flatCoordinates, 0, coordinates, this.stride);
-    this.changed();
+  this.setLayout(opt_layout, coordinates, 1);
+  if (!this.flatCoordinates) {
+    this.flatCoordinates = [];
   }
-};
-
-
-/**
- * @param {module:ol/geom/GeometryLayout} layout Layout.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- */
-MultiPoint.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
-  this.setFlatCoordinatesInternal(layout, flatCoordinates);
+  this.flatCoordinates.length = deflateCoordinates(
+    this.flatCoordinates, 0, coordinates, this.stride);
   this.changed();
 };
 export default MultiPoint;

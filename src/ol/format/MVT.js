@@ -342,11 +342,12 @@ MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
       geom = geometryType === GeometryType.POINT ? new Point(flatCoordinates, GeometryLayout.XY) :
         geometryType === GeometryType.LINE_STRING ? new LineString(flatCoordinates, GeometryLayout.XY) :
           geometryType === GeometryType.POLYGON ? new Polygon(flatCoordinates, GeometryLayout.XY, ends) :
-            geometryType === GeometryType.MULTI_POINT ? new MultiPoint (null) :
+            geometryType === GeometryType.MULTI_POINT ? new MultiPoint(flatCoordinates, GeometryLayout.XY) :
               geometryType === GeometryType.MULTI_LINE_STRING ? new MultiLineString(null) :
                 null;
     }
-    if (geometryType !== GeometryType.POLYGON && geometryType !== GeometryType.LINE_STRING && geometryType !== GeometryType.POINT) {
+    if (geometryType !== GeometryType.POLYGON && geometryType !== GeometryType.LINE_STRING &&
+        geometryType !== GeometryType.MULTI_POINT && geometryType !== GeometryType.POINT) {
       geom.setFlatCoordinates(GeometryLayout.XY, flatCoordinates, ends);
     }
     feature = new this.featureClass_();

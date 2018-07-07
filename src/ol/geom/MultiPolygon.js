@@ -225,10 +225,7 @@ MultiPolygon.prototype.getFlatInteriorPoints = function() {
  * @api
  */
 MultiPolygon.prototype.getInteriorPoints = function() {
-  const interiorPoints = new MultiPoint(null);
-  interiorPoints.setFlatCoordinates(GeometryLayout.XYM,
-    this.getFlatInteriorPoints().slice());
-  return interiorPoints;
+  return new MultiPoint(this.getFlatInteriorPoints().slice(), GeometryLayout.XYM);
 };
 
 
