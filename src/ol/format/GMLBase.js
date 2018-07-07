@@ -291,9 +291,7 @@ GMLBase.prototype.readFeatureElement = function(node, objectStack) {
 GMLBase.prototype.readPoint = function(node, objectStack) {
   const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
-    const point = new Point(null);
-    point.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
-    return point;
+    return new Point(flatCoordinates, GeometryLayout.XYZ);
   }
 };
 

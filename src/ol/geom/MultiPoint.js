@@ -105,10 +105,8 @@ MultiPoint.prototype.getPoint = function(index) {
   if (index < 0 || n <= index) {
     return null;
   }
-  const point = new Point(null);
-  point.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
-    index * this.stride, (index + 1) * this.stride));
-  return point;
+  return new Point(this.flatCoordinates.slice(
+    index * this.stride, (index + 1) * this.stride), this.layout);
 };
 
 
@@ -124,8 +122,7 @@ MultiPoint.prototype.getPoints = function() {
   /** @type {Array.<module:ol/geom/Point>} */
   const points = [];
   for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
-    const point = new Point(null);
-    point.setFlatCoordinates(layout, flatCoordinates.slice(i, i + stride));
+    const point = new Point(flatCoordinates.slice(i, i + stride), layout);
     points.push(point);
   }
   return points;

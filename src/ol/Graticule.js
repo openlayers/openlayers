@@ -360,9 +360,13 @@ Graticule.prototype.getMeridianPoint_ = function(lineString, extent, index) {
     extent[1] + Math.abs(extent[1] - extent[3]) * this.lonLabelPosition_,
     clampedBottom, clampedTop);
   const coordinate = [flatCoordinates[0], lat];
-  const point = this.meridiansLabels_[index] !== undefined ?
-    this.meridiansLabels_[index].geom : new Point(null);
-  point.setCoordinates(coordinate);
+  let point;
+  if (index in this.meridiansLabels_) {
+    point = this.meridiansLabels_[index];
+    point.setCoordinates(coordinate);
+  } else {
+    point = new Point(coordinate);
+  }
   return point;
 };
 
@@ -408,9 +412,13 @@ Graticule.prototype.getParallelPoint_ = function(lineString, extent, index) {
     extent[0] + Math.abs(extent[0] - extent[2]) * this.latLabelPosition_,
     clampedLeft, clampedRight);
   const coordinate = [lon, flatCoordinates[1]];
-  const point = this.parallelsLabels_[index] !== undefined ?
-    this.parallelsLabels_[index].geom : new Point(null);
-  point.setCoordinates(coordinate);
+  let point;
+  if (index in this.parallelsLabels_) {
+    point = this.parallelsLabels_[index];
+    point.setCoordinates(coordinate);
+  } else {
+    point = new Point(coordinate);
+  }
   return point;
 };
 

@@ -214,7 +214,7 @@ SimpleGeometry.prototype.setFlatCoordinatesInternal = function(layout, flatCoord
 
 /**
  * @abstract
- * @param {Array} coordinates Coordinates.
+ * @param {!Array} coordinates Coordinates.
  * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  */
 SimpleGeometry.prototype.setCoordinates = function(coordinates, opt_layout) {};

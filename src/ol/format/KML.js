@@ -1144,8 +1144,7 @@ function readPoint(node, objectStack) {
   const flatCoordinates =
       readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const point = new Point(null);
-    point.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
+    const point = new Point(flatCoordinates, GeometryLayout.XYZ);
     point.setProperties(properties);
     return point;
   } else {
