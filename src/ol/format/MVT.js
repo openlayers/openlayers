@@ -343,12 +343,8 @@ MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
         geometryType === GeometryType.LINE_STRING ? new LineString(flatCoordinates, GeometryLayout.XY) :
           geometryType === GeometryType.POLYGON ? new Polygon(flatCoordinates, GeometryLayout.XY, ends) :
             geometryType === GeometryType.MULTI_POINT ? new MultiPoint(flatCoordinates, GeometryLayout.XY) :
-              geometryType === GeometryType.MULTI_LINE_STRING ? new MultiLineString(null) :
+              geometryType === GeometryType.MULTI_LINE_STRING ? new MultiLineString(flatCoordinates, GeometryLayout.XY, ends) :
                 null;
-    }
-    if (geometryType !== GeometryType.POLYGON && geometryType !== GeometryType.LINE_STRING &&
-        geometryType !== GeometryType.MULTI_POINT && geometryType !== GeometryType.POINT) {
-      geom.setFlatCoordinates(GeometryLayout.XY, flatCoordinates, ends);
     }
     feature = new this.featureClass_();
     if (this.geometryName_) {

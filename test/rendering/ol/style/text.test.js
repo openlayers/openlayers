@@ -262,8 +262,7 @@ describe('ol.rendering.style.Text', function() {
     it('renders text along a MultiLineString', function(done) {
       createMap('canvas');
       let line = new LineString(nicePath, 'XY');
-      const geom = new MultiLineString(null);
-      geom.appendLineString(line);
+      const geom = new MultiLineString([line]);
       line = line.clone();
       line.translate(0, 50);
       geom.appendLineString(line);

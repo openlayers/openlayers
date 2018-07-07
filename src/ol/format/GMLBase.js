@@ -323,11 +323,7 @@ GMLBase.prototype.readMultiLineString = function(node, objectStack) {
   const lineStrings = pushParseAndPop([],
     this.MULTILINESTRING_PARSERS_, node, objectStack, this);
   if (lineStrings) {
-    const multiLineString = new MultiLineString(null);
-    multiLineString.setLineStrings(lineStrings);
-    return multiLineString;
-  } else {
-    return undefined;
+    return new MultiLineString(lineStrings);
   }
 };
 

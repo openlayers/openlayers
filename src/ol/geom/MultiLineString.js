@@ -21,11 +21,14 @@ import {douglasPeuckerArray} from '../geom/flat/simplify.js';
  *
  * @constructor
  * @extends {module:ol/geom/SimpleGeometry}
- * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
+ * @param {Array.<Array.<module:ol/coordinate~Coordinate>|module:ol/geom~MultiLineString>|Array.<number>} coordinates
+ * Coordinates or LineString geometries. (For internal use, flat coordinates in
+ * combination with `opt_layout` and `opt_ends` are also accepted.)
  * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+ * @param {Array.<number>} opt_ends Flat coordinate ends for internal use.
  * @api
  */
-const MultiLineString = function(coordinates, opt_layout) {
+const MultiLineString = function(coordinates, opt_layout, opt_ends) {
 
   SimpleGeometry.call(this);
 
@@ -47,7 +50,26 @@ const MultiLineString = function(coordinates, opt_layout) {
    */
   this.maxDeltaRevision_ = -1;
 
-  this.setCoordinates(coordinates, opt_layout);
+  if (Array.isArray(coordinates[0])) {
+    this.setCoordinates(coordinates, opt_layout);
+  } else if (opt_layout !== undefined && opt_ends) {
+    this.setFlatCoordinatesInternal(opt_layout, coordinates);
+    this.ends_ = opt_ends;
+  } else {
+    let layout = this.getLayout();
+    const flatCoordinates = [];
+    const ends = [];
+    for (let i = 0, ii = coordinates.length; i < ii; ++i) {
+      const lineString = coordinates[i];
+      if (i === 0) {
+        layout = lineString.getLayout();
+      }
+      extend(flatCoordinates, lineString.getFlatCoordinates());
+      ends.push(flatCoordinates.length);
+    }
+    this.setFlatCoordinatesInternal(layout, flatCoordinates);
+    this.ends_ = ends;
+  }
 
 };
 
@@ -77,10 +99,7 @@ MultiLineString.prototype.appendLineString = function(lineString) {
  * @api
  */
 MultiLineString.prototype.clone = function() {
-  const multiLineString = new MultiLineString(null);
-  multiLineString.setFlatCoordinates(
-    this.layout, this.flatCoordinates.slice(), this.ends_.slice());
-  return multiLineString;
+  return new MultiLineString(this.flatCoordinates.slice(), this.layout, this.ends_.slice());
 };
 
 
@@ -223,10 +242,7 @@ MultiLineString.prototype.getSimplifiedGeometryInternal = function(squaredTolera
   simplifiedFlatCoordinates.length = douglasPeuckerArray(
     this.flatCoordinates, 0, this.ends_, this.stride, squaredTolerance,
     simplifiedFlatCoordinates, 0, simplifiedEnds);
-  const simplifiedMultiLineString = new MultiLineString(null);
-  simplifiedMultiLineString.setFlatCoordinates(
-    GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEnds);
-  return simplifiedMultiLineString;
+  return new MultiLineString(simplifiedFlatCoordinates, GeometryLayout.XY, simplifiedEnds);
 };
 
 
@@ -251,54 +267,19 @@ MultiLineString.prototype.intersectsExtent = function(extent) {
 
 /**
  * Set the coordinates of the multilinestring.
- * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
+ * @param {!Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
  * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @override
  * @api
  */
 MultiLineString.prototype.setCoordinates = function(coordinates, opt_layout) {
-  if (!coordinates) {
-    this.setFlatCoordinates(GeometryLayout.XY, null, this.ends_);
-  } else {
-    this.setLayout(opt_layout, coordinates, 2);
-    if (!this.flatCoordinates) {
-      this.flatCoordinates = [];
-    }
-    const ends = deflateCoordinatesArray(
-      this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
-    this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
-    this.changed();
+  this.setLayout(opt_layout, coordinates, 2);
+  if (!this.flatCoordinates) {
+    this.flatCoordinates = [];
   }
-};
-
-
-/**
- * @param {module:ol/geom/GeometryLayout} layout Layout.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @param {Array.<number>} ends Ends.
- */
-MultiLineString.prototype.setFlatCoordinates = function(layout, flatCoordinates, ends) {
-  this.setFlatCoordinatesInternal(layout, flatCoordinates);
-  this.ends_ = ends;
+  const ends = deflateCoordinatesArray(
+    this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
+  this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
   this.changed();
-};
-
-
-/**
- * @param {Array.<module:ol/geom/LineString>} lineStrings LineStrings.
- */
-MultiLineString.prototype.setLineStrings = function(lineStrings) {
-  let layout = this.getLayout();
-  const flatCoordinates = [];
-  const ends = [];
-  for (let i = 0, ii = lineStrings.length; i < ii; ++i) {
-    const lineString = lineStrings[i];
-    if (i === 0) {
-      layout = lineString.getLayout();
-    }
-    extend(flatCoordinates, lineString.getFlatCoordinates());
-    ends.push(flatCoordinates.length);
-  }
-  this.setFlatCoordinates(layout, flatCoordinates, ends);
 };
 export default MultiLineString;

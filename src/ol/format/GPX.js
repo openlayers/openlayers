@@ -584,8 +584,7 @@ function readTrk(node, objectStack) {
   const layoutOptions = /** @type {module:ol/format/GPX~LayoutOptions} */ (values['layoutOptions']);
   delete values['layoutOptions'];
   const layout = applyLayoutOptions(layoutOptions, flatCoordinates, ends);
-  const geometry = new MultiLineString(null);
-  geometry.setFlatCoordinates(layout, flatCoordinates, ends);
+  const geometry = new MultiLineString(flatCoordinates, layout, ends);
   transformWithOptions(geometry, false, options);
   const feature = new Feature(geometry);
   feature.setProperties(values);

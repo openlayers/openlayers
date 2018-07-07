@@ -904,9 +904,7 @@ function readGxMultiTrack(node, objectStack) {
   if (!lineStrings) {
     return undefined;
   }
-  const multiLineString = new MultiLineString(null);
-  multiLineString.setLineStrings(lineStrings);
-  return multiLineString;
+  return new MultiLineString(lineStrings);
 }
 
 
@@ -1107,8 +1105,7 @@ function readMultiGeometry(node, objectStack) {
       multiGeometry = new MultiPoint(flatCoordinates, layout);
       setCommonGeometryProperties(multiGeometry, geometries);
     } else if (type == GeometryType.LINE_STRING) {
-      multiGeometry = new MultiLineString(null);
-      multiGeometry.setLineStrings(geometries);
+      multiGeometry = new MultiLineString(geometries);
       setCommonGeometryProperties(multiGeometry, geometries);
     } else if (type == GeometryType.POLYGON) {
       multiGeometry = new MultiPolygon(null);

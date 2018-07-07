@@ -103,8 +103,7 @@ GML3.prototype.readMultiCurve_ = function(node, objectStack) {
   const lineStrings = pushParseAndPop([],
     this.MULTICURVE_PARSERS_, node, objectStack, this);
   if (lineStrings) {
-    const multiLineString = new MultiLineString(null);
-    multiLineString.setLineStrings(lineStrings);
+    const multiLineString = new MultiLineString(lineStrings);
     return multiLineString;
   } else {
     return undefined;
