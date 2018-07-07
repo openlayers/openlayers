@@ -249,10 +249,8 @@ Polygon.prototype.getLinearRing = function(index) {
   if (index < 0 || this.ends_.length <= index) {
     return null;
   }
-  const linearRing = new LinearRing(null);
-  linearRing.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
-    index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]));
-  return linearRing;
+  return new LinearRing(this.flatCoordinates.slice(
+    index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]), this.layout);
 };
 
 
@@ -269,8 +267,7 @@ Polygon.prototype.getLinearRings = function() {
   let offset = 0;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
-    const linearRing = new LinearRing(null);
-    linearRing.setFlatCoordinates(layout, flatCoordinates.slice(offset, end));
+    const linearRing = new LinearRing(flatCoordinates.slice(offset, end), layout);
     linearRings.push(linearRing);
     offset = end;
   }

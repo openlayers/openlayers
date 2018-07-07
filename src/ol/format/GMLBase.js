@@ -418,11 +418,7 @@ GMLBase.prototype.readFlatLinearRing_ = function(node, objectStack) {
 GMLBase.prototype.readLinearRing = function(node, objectStack) {
   const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
-    const ring = new LinearRing(null);
-    ring.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
-    return ring;
-  } else {
-    return undefined;
+    return new LinearRing(flatCoordinates, GeometryLayout.XYZ);
   }
 };
 
