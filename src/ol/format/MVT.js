@@ -311,7 +311,7 @@ MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
   values[this.layerName_] = rawFeature.layer.name;
 
   const flatCoordinates = [];
-  let ends = [];
+  const ends = [];
   this.readRawGeometry_(pbf, rawFeature, flatCoordinates, ends);
 
   const geometryType = getGeometryType(type, ends.length);
@@ -333,8 +333,7 @@ MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
         offset = end;
       }
       if (endss.length > 1) {
-        ends = endss;
-        geom = new MultiPolygon(null);
+        geom = new MultiPolygon(flatCoordinates, GeometryLayout.XY, endss);
       } else {
         geom = new Polygon(flatCoordinates, GeometryLayout.XY, ends);
       }

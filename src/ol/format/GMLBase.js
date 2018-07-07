@@ -337,11 +337,7 @@ GMLBase.prototype.readMultiPolygon = function(node, objectStack) {
   /** @type {Array.<module:ol/geom/Polygon>} */
   const polygons = pushParseAndPop([], this.MULTIPOLYGON_PARSERS_, node, objectStack, this);
   if (polygons) {
-    const multiPolygon = new MultiPolygon(null);
-    multiPolygon.setPolygons(polygons);
-    return multiPolygon;
-  } else {
-    return undefined;
+    return new MultiPolygon(polygons);
   }
 };
 

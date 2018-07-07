@@ -1108,8 +1108,7 @@ function readMultiGeometry(node, objectStack) {
       multiGeometry = new MultiLineString(geometries);
       setCommonGeometryProperties(multiGeometry, geometries);
     } else if (type == GeometryType.POLYGON) {
-      multiGeometry = new MultiPolygon(null);
-      multiGeometry.setPolygons(geometries);
+      multiGeometry = new MultiPolygon(geometries);
       setCommonGeometryProperties(multiGeometry, geometries);
     } else if (type == GeometryType.GEOMETRY_COLLECTION) {
       multiGeometry = new GeometryCollection(geometries);

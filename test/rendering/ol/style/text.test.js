@@ -302,8 +302,7 @@ describe('ol.rendering.style.Text', function() {
     it('renders text along a MultiPolygon', function(done) {
       createMap('canvas');
       let geom = new Polygon(polygon, 'XY', [polygon.length]);
-      const multiPolygon = new MultiPolygon(null);
-      multiPolygon.appendPolygon(geom);
+      const multiPolygon = new MultiPolygon([geom]);
       geom = geom.clone();
       geom.translate(0, 30);
       multiPolygon.appendPolygon(geom);

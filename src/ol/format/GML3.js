@@ -122,11 +122,7 @@ GML3.prototype.readMultiSurface_ = function(node, objectStack) {
   const polygons = pushParseAndPop([],
     this.MULTISURFACE_PARSERS_, node, objectStack, this);
   if (polygons) {
-    const multiPolygon = new MultiPolygon(null);
-    multiPolygon.setPolygons(polygons);
-    return multiPolygon;
-  } else {
-    return undefined;
+    return new MultiPolygon(polygons);
   }
 };
 
