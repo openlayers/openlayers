@@ -571,8 +571,13 @@ Graticule.prototype.getMap = function() {
  */
 Graticule.prototype.getMeridian_ = function(lon, minLat, maxLat, squaredTolerance, index) {
   const flatCoordinates = meridian(lon, minLat, maxLat, this.projection_, squaredTolerance);
-  const lineString = this.meridians_[index] !== undefined ? this.meridians_[index] : new LineString(null);
-  lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
+  let lineString = this.meridians_[index];
+  if (!lineString) {
+    lineString = this.meridians_[index] = new LineString(flatCoordinates, GeometryLayout.XY);
+  } else {
+    lineString.setFlatCoordinatesInternal(GeometryLayout.XY, flatCoordinates);
+    lineString.changed();
+  }
   return lineString;
 };
 
@@ -598,8 +603,13 @@ Graticule.prototype.getMeridians = function() {
  */
 Graticule.prototype.getParallel_ = function(lat, minLon, maxLon, squaredTolerance, index) {
   const flatCoordinates = parallel(lat, minLon, maxLon, this.projection_, squaredTolerance);
-  const lineString = this.parallels_[index] !== undefined ? this.parallels_[index] : new LineString(null);
-  lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
+  let lineString = this.parallels_[index];
+  if (!lineString) {
+    lineString = new LineString(flatCoordinates, GeometryLayout.XY);
+  } else {
+    lineString.setFlatCoordinatesInternal(GeometryLayout.XY, flatCoordinates);
+    lineString.changed();
+  }
   return lineString;
 };
 

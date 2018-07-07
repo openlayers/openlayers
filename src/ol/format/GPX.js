@@ -553,8 +553,7 @@ function readRte(node, objectStack) {
   const layoutOptions = /** @type {module:ol/format/GPX~LayoutOptions} */ (values['layoutOptions']);
   delete values['layoutOptions'];
   const layout = applyLayoutOptions(layoutOptions, flatCoordinates);
-  const geometry = new LineString(null);
-  geometry.setFlatCoordinates(layout, flatCoordinates);
+  const geometry = new LineString(flatCoordinates, layout);
   transformWithOptions(geometry, false, options);
   const feature = new Feature(geometry);
   feature.setProperties(values);

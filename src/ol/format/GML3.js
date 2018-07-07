@@ -272,8 +272,7 @@ GML3.prototype.readCurve_ = function(node, objectStack) {
   const flatCoordinates = pushParseAndPop([null],
     this.CURVE_PARSERS_, node, objectStack, this);
   if (flatCoordinates) {
-    const lineString = new LineString(null);
-    lineString.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
+    const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
     return lineString;
   } else {
     return undefined;

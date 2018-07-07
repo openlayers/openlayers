@@ -167,10 +167,8 @@ MultiLineString.prototype.getLineString = function(index) {
   if (index < 0 || this.ends_.length <= index) {
     return null;
   }
-  const lineString = new LineString(null);
-  lineString.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
-    index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]));
-  return lineString;
+  return new LineString(this.flatCoordinates.slice(
+    index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]), this.layout);
 };
 
 
@@ -188,8 +186,7 @@ MultiLineString.prototype.getLineStrings = function() {
   let offset = 0;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
-    const lineString = new LineString(null);
-    lineString.setFlatCoordinates(layout, flatCoordinates.slice(offset, end));
+    const lineString = new LineString(flatCoordinates.slice(offset, end), layout);
     lineStrings.push(lineString);
     offset = end;
   }

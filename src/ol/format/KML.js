@@ -942,9 +942,7 @@ function readGxTrack(node, objectStack) {
   for (let i = 0, ii = Math.min(flatCoordinates.length, whens.length); i < ii; ++i) {
     flatCoordinates[4 * i + 3] = whens[i];
   }
-  const lineString = new LineString(null);
-  lineString.setFlatCoordinates(GeometryLayout.XYZM, flatCoordinates);
-  return lineString;
+  return new LineString(flatCoordinates, GeometryLayout.XYZM);
 }
 
 
@@ -1025,8 +1023,7 @@ function readLineString(node, objectStack) {
   const flatCoordinates =
       readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const lineString = new LineString(null);
-    lineString.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
+    const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
     lineString.setProperties(properties);
     return lineString;
   } else {

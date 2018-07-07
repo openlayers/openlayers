@@ -177,8 +177,7 @@ OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
         // closed way
         geometry = new Polygon(flatCoordinates, GeometryLayout.XY, [flatCoordinates.length]);
       } else {
-        geometry = new LineString(null);
-        geometry.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
+        geometry = new LineString(flatCoordinates, GeometryLayout.XY);
       }
       transformWithOptions(geometry, false, options);
       const feature = new Feature(geometry);

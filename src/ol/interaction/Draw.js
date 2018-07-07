@@ -733,12 +733,18 @@ Draw.prototype.modifyDrawing_ = function(event) {
   if (geometry instanceof Polygon &&
       this.mode_ !== Mode.POLYGON) {
     if (!this.sketchLine_) {
-      this.sketchLine_ = new Feature(new LineString(null));
+      this.sketchLine_ = new Feature();
     }
     const ring = geometry.getLinearRing(0);
     sketchLineGeom = /** @type {module:ol/geom/LineString} */ (this.sketchLine_.getGeometry());
-    sketchLineGeom.setFlatCoordinates(
-      ring.getLayout(), ring.getFlatCoordinates());
+    if (!sketchLineGeom) {
+      sketchLineGeom = new LineString(ring.getFlatCoordinates(), ring.getLayout());
+      this.sketchLine_.setGeometry(sketchLineGeom);
+    } else {
+      sketchLineGeom.setFlatCoordinatesInternal(
+        ring.getLayout(), ring.getFlatCoordinates());
+      sketchLineGeom.changed();
+    }
   } else if (this.sketchLineCoords_) {
     sketchLineGeom = /** @type {module:ol/geom/LineString} */ (this.sketchLine_.getGeometry());
     sketchLineGeom.setCoordinates(this.sketchLineCoords_);

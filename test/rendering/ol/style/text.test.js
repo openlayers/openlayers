@@ -105,8 +105,7 @@ describe('ol.rendering.style.Text', function() {
     const polygon = [151, 17, 163, 22, 159, 30, 150, 30, 143, 24, 151, 17];
 
     function createLineString(coords, textAlign, maxAngle, strokeColor, strokeWidth, scale) {
-      let geom = new LineString();
-      geom.setFlatCoordinates('XY', coords);
+      let geom = new LineString(coords, 'XY');
       let style = new Style({
         stroke: new Stroke({
           color: 'red'
@@ -262,8 +261,7 @@ describe('ol.rendering.style.Text', function() {
 
     it('renders text along a MultiLineString', function(done) {
       createMap('canvas');
-      let line = new LineString();
-      line.setFlatCoordinates('XY', nicePath);
+      let line = new LineString(nicePath, 'XY');
       const geom = new MultiLineString(null);
       geom.appendLineString(line);
       line = line.clone();

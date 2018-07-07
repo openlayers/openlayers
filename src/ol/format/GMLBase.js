@@ -388,8 +388,7 @@ GMLBase.prototype.polygonMemberParser_ = function(node, objectStack) {
 GMLBase.prototype.readLineString = function(node, objectStack) {
   const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
-    const lineString = new LineString(null);
-    lineString.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
+    const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
     return lineString;
   } else {
     return undefined;
