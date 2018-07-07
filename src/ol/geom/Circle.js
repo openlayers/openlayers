@@ -3,7 +3,6 @@
  */
 import {inherits} from '../util.js';
 import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {deflateCoordinate} from '../geom/flat/deflate.js';
@@ -13,16 +12,22 @@ import {deflateCoordinate} from '../geom/flat/deflate.js';
  * Circle geometry.
  *
  * @constructor
- * @extends {module:ol/geom/SimpleGeometry}
- * @param {module:ol/coordinate~Coordinate} center Center.
+ * @extends {!module:ol/geom/SimpleGeometry}
+ * @param {!module:ol/coordinate~Coordinate} center Center. (For internal use,
+ * flat coordinates in combination with `opt_layout` and no `opt_radius` are
+ * also accepted.)
  * @param {number=} opt_radius Radius.
  * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @api
  */
 const Circle = function(center, opt_radius, opt_layout) {
   SimpleGeometry.call(this);
-  const radius = opt_radius ? opt_radius : 0;
-  this.setCenterAndRadius(center, radius, opt_layout);
+  if (opt_layout !== undefined && opt_radius === undefined) {
+    this.setFlatCoordinatesInternal(opt_layout, center);
+  } else {
+    const radius = opt_radius ? opt_radius : 0;
+    this.setCenterAndRadius(center, radius, opt_layout);
+  }
 };
 
 inherits(Circle, SimpleGeometry);
@@ -35,9 +40,7 @@ inherits(Circle, SimpleGeometry);
  * @api
  */
 Circle.prototype.clone = function() {
-  const circle = new Circle(null);
-  circle.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
-  return circle;
+  return new Circle(this.flatCoordinates.slice(), undefined, this.layout);
 };
 
 
@@ -170,37 +173,34 @@ Circle.prototype.setCenter = function(center) {
   for (let i = 1; i < stride; ++i) {
     flatCoordinates[stride + i] = center[i];
   }
-  this.setFlatCoordinates(this.layout, flatCoordinates);
+  this.setFlatCoordinatesInternal(this.layout, flatCoordinates);
+  this.changed();
 };
 
 
 /**
  * Set the center (as {@link module:ol/coordinate~Coordinate coordinate}) and the radius (as
  * number) of the circle.
- * @param {module:ol/coordinate~Coordinate} center Center.
+ * @param {!module:ol/coordinate~Coordinate} center Center.
  * @param {number} radius Radius.
  * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @api
  */
 Circle.prototype.setCenterAndRadius = function(center, radius, opt_layout) {
-  if (!center) {
-    this.setFlatCoordinates(GeometryLayout.XY, null);
-  } else {
-    this.setLayout(opt_layout, center, 0);
-    if (!this.flatCoordinates) {
-      this.flatCoordinates = [];
-    }
-    /** @type {Array.<number>} */
-    const flatCoordinates = this.flatCoordinates;
-    let offset = deflateCoordinate(
-      flatCoordinates, 0, center, this.stride);
-    flatCoordinates[offset++] = flatCoordinates[0] + radius;
-    for (let i = 1, ii = this.stride; i < ii; ++i) {
-      flatCoordinates[offset++] = flatCoordinates[i];
-    }
-    flatCoordinates.length = offset;
-    this.changed();
+  this.setLayout(opt_layout, center, 0);
+  if (!this.flatCoordinates) {
+    this.flatCoordinates = [];
   }
+  /** @type {Array.<number>} */
+  const flatCoordinates = this.flatCoordinates;
+  let offset = deflateCoordinate(
+    flatCoordinates, 0, center, this.stride);
+  flatCoordinates[offset++] = flatCoordinates[0] + radius;
+  for (let i = 1, ii = this.stride; i < ii; ++i) {
+    flatCoordinates[offset++] = flatCoordinates[i];
+  }
+  flatCoordinates.length = offset;
+  this.changed();
 };
 
 
@@ -214,16 +214,6 @@ Circle.prototype.getCoordinates = function() {};
  * @inheritDoc
  */
 Circle.prototype.setCoordinates = function(coordinates, opt_layout) {};
-
-
-/**
- * @param {module:ol/geom/GeometryLayout} layout Layout.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- */
-Circle.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
-  this.setFlatCoordinatesInternal(layout, flatCoordinates);
-  this.changed();
-};
 
 
 /**

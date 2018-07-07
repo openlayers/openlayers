@@ -173,16 +173,9 @@ describe('ol.geom.Circle', function() {
     describe('#setFlatCoordinates', function() {
 
       it('sets both center and radius', function() {
-        circle.setFlatCoordinates('XY', [1, 2, 4, 2]);
+        circle.setFlatCoordinatesInternal('XY', [1, 2, 4, 2]);
         expect(circle.getCenter()).to.eql([1, 2]);
         expect(circle.getRadius()).to.be(3);
-      });
-
-      it('fires a single change event', function() {
-        const spy = sinon.spy();
-        circle.on('change', spy);
-        circle.setFlatCoordinates('XY', [1, 2, 4, 2]);
-        expect(spy.calledOnce).to.be(true);
       });
 
     });
