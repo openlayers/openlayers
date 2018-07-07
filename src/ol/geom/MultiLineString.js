@@ -53,7 +53,7 @@ const MultiLineString = function(coordinates, opt_layout, opt_ends) {
   if (Array.isArray(coordinates[0])) {
     this.setCoordinates(coordinates, opt_layout);
   } else if (opt_layout !== undefined && opt_ends) {
-    this.setFlatCoordinatesInternal(opt_layout, coordinates);
+    this.setFlatCoordinates(opt_layout, coordinates);
     this.ends_ = opt_ends;
   } else {
     let layout = this.getLayout();
@@ -67,7 +67,7 @@ const MultiLineString = function(coordinates, opt_layout, opt_ends) {
       extend(flatCoordinates, lineString.getFlatCoordinates());
       ends.push(flatCoordinates.length);
     }
-    this.setFlatCoordinatesInternal(layout, flatCoordinates);
+    this.setFlatCoordinates(layout, flatCoordinates);
     this.ends_ = ends;
   }
 

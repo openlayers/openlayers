@@ -741,7 +741,7 @@ Draw.prototype.modifyDrawing_ = function(event) {
       sketchLineGeom = new LineString(ring.getFlatCoordinates(), ring.getLayout());
       this.sketchLine_.setGeometry(sketchLineGeom);
     } else {
-      sketchLineGeom.setFlatCoordinatesInternal(
+      sketchLineGeom.setFlatCoordinates(
         ring.getLayout(), ring.getFlatCoordinates());
       sketchLineGeom.changed();
     }

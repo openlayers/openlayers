@@ -26,7 +26,7 @@ import {squaredDistance as squaredDx} from '../math.js';
 const MultiPoint = function(coordinates, opt_layout) {
   SimpleGeometry.call(this);
   if (opt_layout && !Array.isArray(coordinates[0])) {
-    this.setFlatCoordinatesInternal(opt_layout, coordinates);
+    this.setFlatCoordinates(opt_layout, coordinates);
   } else {
     this.setCoordinates(coordinates, opt_layout);
   }

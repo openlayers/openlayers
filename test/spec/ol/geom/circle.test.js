@@ -173,7 +173,7 @@ describe('ol.geom.Circle', function() {
     describe('#setFlatCoordinates', function() {
 
       it('sets both center and radius', function() {
-        circle.setFlatCoordinatesInternal('XY', [1, 2, 4, 2]);
+        circle.setFlatCoordinates('XY', [1, 2, 4, 2]);
         expect(circle.getCenter()).to.eql([1, 2]);
         expect(circle.getRadius()).to.be(3);
       });

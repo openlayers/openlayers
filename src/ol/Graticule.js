@@ -575,7 +575,7 @@ Graticule.prototype.getMeridian_ = function(lon, minLat, maxLat, squaredToleranc
   if (!lineString) {
     lineString = this.meridians_[index] = new LineString(flatCoordinates, GeometryLayout.XY);
   } else {
-    lineString.setFlatCoordinatesInternal(GeometryLayout.XY, flatCoordinates);
+    lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
     lineString.changed();
   }
   return lineString;
@@ -607,7 +607,7 @@ Graticule.prototype.getParallel_ = function(lat, minLon, maxLon, squaredToleranc
   if (!lineString) {
     lineString = new LineString(flatCoordinates, GeometryLayout.XY);
   } else {
-    lineString.setFlatCoordinatesInternal(GeometryLayout.XY, flatCoordinates);
+    lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
     lineString.changed();
   }
   return lineString;

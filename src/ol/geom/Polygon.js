@@ -86,7 +86,7 @@ const Polygon = function(coordinates, opt_layout, opt_ends) {
   this.orientedFlatCoordinates_ = null;
 
   if (opt_layout !== undefined && opt_ends) {
-    this.setFlatCoordinatesInternal(opt_layout, coordinates);
+    this.setFlatCoordinates(opt_layout, coordinates);
     this.ends_ = opt_ends;
   } else {
     this.setCoordinates(coordinates, opt_layout);

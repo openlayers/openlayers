@@ -23,7 +23,7 @@ import {deflateCoordinate} from '../geom/flat/deflate.js';
 const Circle = function(center, opt_radius, opt_layout) {
   SimpleGeometry.call(this);
   if (opt_layout !== undefined && opt_radius === undefined) {
-    this.setFlatCoordinatesInternal(opt_layout, center);
+    this.setFlatCoordinates(opt_layout, center);
   } else {
     const radius = opt_radius ? opt_radius : 0;
     this.setCenterAndRadius(center, radius, opt_layout);
@@ -173,7 +173,7 @@ Circle.prototype.setCenter = function(center) {
   for (let i = 1; i < stride; ++i) {
     flatCoordinates[stride + i] = center[i];
   }
-  this.setFlatCoordinatesInternal(this.layout, flatCoordinates);
+  this.setFlatCoordinates(this.layout, flatCoordinates);
   this.changed();
 };
 

@@ -102,7 +102,7 @@ const MultiPolygon = function(coordinates, opt_layout, opt_endss) {
     opt_endss = endss;
   }
   if (opt_layout !== undefined && opt_endss) {
-    this.setFlatCoordinatesInternal(opt_layout, coordinates);
+    this.setFlatCoordinates(opt_layout, coordinates);
     this.endss_ = opt_endss;
   } else {
     this.setCoordinates(coordinates, opt_layout);

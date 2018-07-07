@@ -57,7 +57,7 @@ const LineString = function(coordinates, opt_layout) {
   this.maxDeltaRevision_ = -1;
 
   if (opt_layout !== undefined && !Array.isArray(coordinates[0])) {
-    this.setFlatCoordinatesInternal(opt_layout, coordinates);
+    this.setFlatCoordinates(opt_layout, coordinates);
   } else {
     this.setCoordinates(coordinates, opt_layout);
   }
