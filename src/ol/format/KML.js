@@ -1047,9 +1047,7 @@ function readLinearRing(node, objectStack) {
   const flatCoordinates =
       readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const polygon = new Polygon(null);
-    polygon.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates,
-      [flatCoordinates.length]);
+    const polygon = new Polygon(flatCoordinates, GeometryLayout.XYZ, [flatCoordinates.length]);
     polygon.setProperties(properties);
     return polygon;
   } else {
@@ -1179,14 +1177,13 @@ function readPolygon(node, objectStack) {
   const flatLinearRings = pushParseAndPop([null],
     FLAT_LINEAR_RINGS_PARSERS, node, objectStack);
   if (flatLinearRings && flatLinearRings[0]) {
-    const polygon = new Polygon(null);
     const flatCoordinates = flatLinearRings[0];
     const ends = [flatCoordinates.length];
     for (let i = 1, ii = flatLinearRings.length; i < ii; ++i) {
       extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
-    polygon.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates, ends);
+    const polygon = new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
     polygon.setProperties(properties);
     return polygon;
   } else {

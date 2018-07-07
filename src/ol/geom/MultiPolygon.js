@@ -294,10 +294,7 @@ MultiPolygon.prototype.getPolygon = function(index) {
       ends[i] -= offset;
     }
   }
-  const polygon = new Polygon(null);
-  polygon.setFlatCoordinates(
-    this.layout, this.flatCoordinates.slice(offset, end), ends);
-  return polygon;
+  return new Polygon(this.flatCoordinates.slice(offset, end), this.layout, ends);
 };
 
 
@@ -320,9 +317,7 @@ MultiPolygon.prototype.getPolygons = function() {
         ends[j] -= offset;
       }
     }
-    const polygon = new Polygon(null);
-    polygon.setFlatCoordinates(
-      layout, flatCoordinates.slice(offset, end), ends);
+    const polygon = new Polygon(flatCoordinates.slice(offset, end), layout, ends);
     polygons.push(polygon);
     offset = end;
   }

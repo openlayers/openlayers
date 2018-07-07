@@ -287,8 +287,7 @@ describe('ol.rendering.style.Text', function() {
 
     it('renders text along a Polygon', function(done) {
       createMap('canvas');
-      const geom = new Polygon(null);
-      geom.setFlatCoordinates('XY', polygon, [polygon.length]);
+      const geom = new Polygon(polygon, 'XY', [polygon.length]);
       const feature = new Feature(geom);
       feature.setStyle(new Style({
         text: new Text({
@@ -305,8 +304,7 @@ describe('ol.rendering.style.Text', function() {
 
     it('renders text along a MultiPolygon', function(done) {
       createMap('canvas');
-      let geom = new Polygon(null);
-      geom.setFlatCoordinates('XY', polygon, [polygon.length]);
+      let geom = new Polygon(polygon, 'XY', [polygon.length]);
       const multiPolygon = new MultiPolygon(null);
       multiPolygon.appendPolygon(geom);
       geom = geom.clone();

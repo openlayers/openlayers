@@ -175,9 +175,7 @@ OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
       let geometry;
       if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
         // closed way
-        geometry = new Polygon(null);
-        geometry.setFlatCoordinates(GeometryLayout.XY, flatCoordinates,
-          [flatCoordinates.length]);
+        geometry = new Polygon(flatCoordinates, GeometryLayout.XY, [flatCoordinates.length]);
       } else {
         geometry = new LineString(null);
         geometry.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);

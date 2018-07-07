@@ -247,7 +247,6 @@ GML3.prototype.readSurface_ = function(node, objectStack) {
   const flatLinearRings = pushParseAndPop([null],
     this.SURFACE_PARSERS_, node, objectStack, this);
   if (flatLinearRings && flatLinearRings[0]) {
-    const polygon = new Polygon(null);
     const flatCoordinates = flatLinearRings[0];
     const ends = [flatCoordinates.length];
     let i, ii;
@@ -255,9 +254,7 @@ GML3.prototype.readSurface_ = function(node, objectStack) {
       extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
-    polygon.setFlatCoordinates(
-      GeometryLayout.XYZ, flatCoordinates, ends);
-    return polygon;
+    return new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
   } else {
     return undefined;
   }

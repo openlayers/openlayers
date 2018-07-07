@@ -336,17 +336,19 @@ MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
         ends = endss;
         geom = new MultiPolygon(null);
       } else {
-        geom = new Polygon(null);
+        geom = new Polygon(flatCoordinates, GeometryLayout.XY, ends);
       }
     } else {
       geom = geometryType === GeometryType.POINT ? new Point(null) :
         geometryType === GeometryType.LINE_STRING ? new LineString(null) :
-          geometryType === GeometryType.POLYGON ? new Polygon(null) :
+          geometryType === GeometryType.POLYGON ? new Polygon(flatCoordinates, GeometryLayout.XY, ends) :
             geometryType === GeometryType.MULTI_POINT ? new MultiPoint (null) :
               geometryType === GeometryType.MULTI_LINE_STRING ? new MultiLineString(null) :
                 null;
     }
-    geom.setFlatCoordinates(GeometryLayout.XY, flatCoordinates, ends);
+    if (geometryType !== GeometryType.POLYGON) {
+      geom.setFlatCoordinates(GeometryLayout.XY, flatCoordinates, ends);
+    }
     feature = new this.featureClass_();
     if (this.geometryName_) {
       feature.setGeometryName(this.geometryName_);

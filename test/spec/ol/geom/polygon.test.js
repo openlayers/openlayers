@@ -6,10 +6,10 @@ import Polygon, {fromCircle, fromExtent} from '../../../../src/ol/geom/Polygon.j
 
 describe('ol/geom/Polygon', function() {
 
-  it('can be constructed with a null geometry', function() {
+  it('cannot be constructed with a null geometry', function() {
     expect(function() {
       return new Polygon(null);
-    }).not.to.throwException();
+    }).to.throwException();
   });
 
   describe('construct empty', function() {

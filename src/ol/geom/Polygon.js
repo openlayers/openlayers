@@ -27,16 +27,19 @@ import {modulo} from '../math.js';
  *
  * @constructor
  * @extends {module:ol/geom/SimpleGeometry}
- * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Array of linear
- *     rings that define the polygon. The first linear ring of the array
- *     defines the outer-boundary or surface of the polygon. Each subsequent
- *     linear ring defines a hole in the surface of the polygon. A linear ring
- *     is an array of vertices' coordinates where the first coordinate and the
- *     last are equivalent.
+ * @param {!Array.<Array.<module:ol/coordinate~Coordinate>>|!Array.<number>} coordinates
+ * Array of linear rings that define the polygon. The first linear ring of the
+ * array defines the outer-boundary or surface of the polygon. Each subsequent
+ * linear ring defines a hole in the surface of the polygon. A linear ring is
+ * an array of vertices' coordinates where the first coordinate and the last are
+ * equivalent. (For internal use, flat coordinates in combination with
+ * `opt_layout` and `opt_ends` are also accepted.)
  * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+ * @param {Array.<number>=} opt_ends Ends (for internal use with flat
+ * coordinates).
  * @api
  */
-const Polygon = function(coordinates, opt_layout) {
+const Polygon = function(coordinates, opt_layout, opt_ends) {
 
   SimpleGeometry.call(this);
 
@@ -82,7 +85,12 @@ const Polygon = function(coordinates, opt_layout) {
    */
   this.orientedFlatCoordinates_ = null;
 
-  this.setCoordinates(coordinates, opt_layout);
+  if (opt_layout !== undefined && opt_ends) {
+    this.setFlatCoordinatesInternal(opt_layout, coordinates);
+    this.ends_ = opt_ends;
+  } else {
+    this.setCoordinates(coordinates, opt_layout);
+  }
 
 };
 
@@ -112,10 +120,7 @@ Polygon.prototype.appendLinearRing = function(linearRing) {
  * @api
  */
 Polygon.prototype.clone = function() {
-  const polygon = new Polygon(null);
-  polygon.setFlatCoordinates(
-    this.layout, this.flatCoordinates.slice(), this.ends_.slice());
-  return polygon;
+  return new Polygon(this.flatCoordinates.slice(), this.layout, this.ends_.slice());
 };
 
 
@@ -304,10 +309,7 @@ Polygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
     this.flatCoordinates, 0, this.ends_, this.stride,
     Math.sqrt(squaredTolerance),
     simplifiedFlatCoordinates, 0, simplifiedEnds);
-  const simplifiedPolygon = new Polygon(null);
-  simplifiedPolygon.setFlatCoordinates(
-    GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEnds);
-  return simplifiedPolygon;
+  return new Polygon(simplifiedFlatCoordinates, GeometryLayout.XY, simplifiedEnds);
 };
 
 
@@ -332,35 +334,19 @@ Polygon.prototype.intersectsExtent = function(extent) {
 
 /**
  * Set the coordinates of the polygon.
- * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
+ * @param {!Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
  * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @override
  * @api
  */
 Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
-  if (!coordinates) {
-    this.setFlatCoordinates(GeometryLayout.XY, null, this.ends_);
-  } else {
-    this.setLayout(opt_layout, coordinates, 2);
-    if (!this.flatCoordinates) {
-      this.flatCoordinates = [];
-    }
-    const ends = deflateCoordinatesArray(
-      this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
-    this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
-    this.changed();
+  this.setLayout(opt_layout, coordinates, 2);
+  if (!this.flatCoordinates) {
+    this.flatCoordinates = [];
   }
-};
-
-
-/**
- * @param {module:ol/geom/GeometryLayout} layout Layout.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @param {Array.<number>} ends Ends.
- */
-Polygon.prototype.setFlatCoordinates = function(layout, flatCoordinates, ends) {
-  this.setFlatCoordinatesInternal(layout, flatCoordinates);
-  this.ends_ = ends;
+  const ends = deflateCoordinatesArray(
+    this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
+  this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
   this.changed();
 };
 
@@ -387,9 +373,7 @@ export function circular(center, radius, opt_n, opt_sphereRadius) {
     extend(flatCoordinates, sphereOffset(center, radius, 2 * Math.PI * i / n, opt_sphereRadius));
   }
   flatCoordinates.push(flatCoordinates[0], flatCoordinates[1]);
-  const polygon = new Polygon(null);
-  polygon.setFlatCoordinates(GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
-  return polygon;
+  return new Polygon(flatCoordinates, GeometryLayout.XY, [flatCoordinates.length]);
 }
 
 
@@ -406,10 +390,7 @@ export function fromExtent(extent) {
   const maxY = extent[3];
   const flatCoordinates =
       [minX, minY, minX, maxY, maxX, maxY, maxX, minY, minX, minY];
-  const polygon = new Polygon(null);
-  polygon.setFlatCoordinates(
-    GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
-  return polygon;
+  return new Polygon(flatCoordinates, GeometryLayout.XY, [flatCoordinates.length]);
 }
 
 
@@ -426,14 +407,13 @@ export function fromCircle(circle, opt_sides, opt_angle) {
   const sides = opt_sides ? opt_sides : 32;
   const stride = circle.getStride();
   const layout = circle.getLayout();
-  const polygon = new Polygon(null, layout);
   const arrayLength = stride * (sides + 1);
   const flatCoordinates = new Array(arrayLength);
   for (let i = 0; i < arrayLength; i++) {
     flatCoordinates[i] = 0;
   }
   const ends = [flatCoordinates.length];
-  polygon.setFlatCoordinates(layout, flatCoordinates, ends);
+  const polygon = new Polygon(flatCoordinates, layout, ends);
   makeRegular(polygon, circle.getCenter(), circle.getRadius(), opt_angle);
   return polygon;
 }
@@ -449,9 +429,7 @@ export function fromCircle(circle, opt_sides, opt_angle) {
  */
 export function makeRegular(polygon, center, radius, opt_angle) {
   const flatCoordinates = polygon.getFlatCoordinates();
-  const layout = polygon.getLayout();
   const stride = polygon.getStride();
-  const ends = polygon.getEnds();
   const sides = flatCoordinates.length / stride - 1;
   const startAngle = opt_angle ? opt_angle : 0;
   for (let i = 0; i <= sides; ++i) {
@@ -460,5 +438,5 @@ export function makeRegular(polygon, center, radius, opt_angle) {
     flatCoordinates[offset] = center[0] + (radius * Math.cos(angle));
     flatCoordinates[offset + 1] = center[1] + (radius * Math.sin(angle));
   }
-  polygon.setFlatCoordinates(layout, flatCoordinates, ends);
+  polygon.changed();
 }

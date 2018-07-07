@@ -988,14 +988,19 @@ export function createBox() {
   return (
     function(coordinates, opt_geometry) {
       const extent = boundingExtent(coordinates);
-      const geometry = opt_geometry || new Polygon(null);
-      geometry.setCoordinates([[
+      const boxCoordinates = [[
         getBottomLeft(extent),
         getBottomRight(extent),
         getTopRight(extent),
         getTopLeft(extent),
         getBottomLeft(extent)
-      ]]);
+      ]];
+      let geometry = opt_geometry;
+      if (geometry) {
+        geometry.setCoordinates(boxCoordinates);
+      } else {
+        geometry = new Polygon(boxCoordinates);
+      }
       return geometry;
     }
   );
