@@ -35,10 +35,6 @@
   "bugs": {
     "url": "https://github.com/openlayers/openlayers/issues"
   },
-  "browser": "dist/ol.js",
-  "style": [
-    "css/ol.css"
-  ],
   "dependencies": {
     "pbf": "3.1.0",
     "pixelworks": "1.1.0",
