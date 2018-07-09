@@ -904,9 +904,7 @@ function readGxMultiTrack(node, objectStack) {
   if (!lineStrings) {
     return undefined;
   }
-  const multiLineString = new MultiLineString(null);
-  multiLineString.setLineStrings(lineStrings);
-  return multiLineString;
+  return new MultiLineString(lineStrings);
 }
 
 
@@ -942,9 +940,7 @@ function readGxTrack(node, objectStack) {
   for (let i = 0, ii = Math.min(flatCoordinates.length, whens.length); i < ii; ++i) {
     flatCoordinates[4 * i + 3] = whens[i];
   }
-  const lineString = new LineString(null);
-  lineString.setFlatCoordinates(GeometryLayout.XYZM, flatCoordinates);
-  return lineString;
+  return new LineString(flatCoordinates, GeometryLayout.XYZM);
 }
 
 
@@ -1025,8 +1021,7 @@ function readLineString(node, objectStack) {
   const flatCoordinates =
       readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const lineString = new LineString(null);
-    lineString.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
+    const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
     lineString.setProperties(properties);
     return lineString;
   } else {
@@ -1047,9 +1042,7 @@ function readLinearRing(node, objectStack) {
   const flatCoordinates =
       readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const polygon = new Polygon(null);
-    polygon.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates,
-      [flatCoordinates.length]);
+    const polygon = new Polygon(flatCoordinates, GeometryLayout.XYZ, [flatCoordinates.length]);
     polygon.setProperties(properties);
     return polygon;
   } else {
@@ -1109,16 +1102,13 @@ function readMultiGeometry(node, objectStack) {
         geometry = geometries[i];
         extend(flatCoordinates, geometry.getFlatCoordinates());
       }
-      multiGeometry = new MultiPoint(null);
-      multiGeometry.setFlatCoordinates(layout, flatCoordinates);
+      multiGeometry = new MultiPoint(flatCoordinates, layout);
       setCommonGeometryProperties(multiGeometry, geometries);
     } else if (type == GeometryType.LINE_STRING) {
-      multiGeometry = new MultiLineString(null);
-      multiGeometry.setLineStrings(geometries);
+      multiGeometry = new MultiLineString(geometries);
       setCommonGeometryProperties(multiGeometry, geometries);
     } else if (type == GeometryType.POLYGON) {
-      multiGeometry = new MultiPolygon(null);
-      multiGeometry.setPolygons(geometries);
+      multiGeometry = new MultiPolygon(geometries);
       setCommonGeometryProperties(multiGeometry, geometries);
     } else if (type == GeometryType.GEOMETRY_COLLECTION) {
       multiGeometry = new GeometryCollection(geometries);
@@ -1146,8 +1136,7 @@ function readPoint(node, objectStack) {
   const flatCoordinates =
       readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
-    const point = new Point(null);
-    point.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
+    const point = new Point(flatCoordinates, GeometryLayout.XYZ);
     point.setProperties(properties);
     return point;
   } else {
@@ -1179,14 +1168,13 @@ function readPolygon(node, objectStack) {
   const flatLinearRings = pushParseAndPop([null],
     FLAT_LINEAR_RINGS_PARSERS, node, objectStack);
   if (flatLinearRings && flatLinearRings[0]) {
-    const polygon = new Polygon(null);
     const flatCoordinates = flatLinearRings[0];
     const ends = [flatCoordinates.length];
     for (let i = 1, ii = flatLinearRings.length; i < ii; ++i) {
       extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
-    polygon.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates, ends);
+    const polygon = new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
     polygon.setProperties(properties);
     return polygon;
   } else {

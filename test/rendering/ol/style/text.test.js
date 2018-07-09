@@ -105,8 +105,7 @@ describe('ol.rendering.style.Text', function() {
     const polygon = [151, 17, 163, 22, 159, 30, 150, 30, 143, 24, 151, 17];
 
     function createLineString(coords, textAlign, maxAngle, strokeColor, strokeWidth, scale) {
-      let geom = new LineString();
-      geom.setFlatCoordinates('XY', coords);
+      let geom = new LineString(coords, 'XY');
       let style = new Style({
         stroke: new Stroke({
           color: 'red'
@@ -262,10 +261,8 @@ describe('ol.rendering.style.Text', function() {
 
     it('renders text along a MultiLineString', function(done) {
       createMap('canvas');
-      let line = new LineString();
-      line.setFlatCoordinates('XY', nicePath);
-      const geom = new MultiLineString(null);
-      geom.appendLineString(line);
+      let line = new LineString(nicePath, 'XY');
+      const geom = new MultiLineString([line]);
       line = line.clone();
       line.translate(0, 50);
       geom.appendLineString(line);
@@ -287,8 +284,7 @@ describe('ol.rendering.style.Text', function() {
 
     it('renders text along a Polygon', function(done) {
       createMap('canvas');
-      const geom = new Polygon(null);
-      geom.setFlatCoordinates('XY', polygon, [polygon.length]);
+      const geom = new Polygon(polygon, 'XY', [polygon.length]);
       const feature = new Feature(geom);
       feature.setStyle(new Style({
         text: new Text({
@@ -305,10 +301,8 @@ describe('ol.rendering.style.Text', function() {
 
     it('renders text along a MultiPolygon', function(done) {
       createMap('canvas');
-      let geom = new Polygon(null);
-      geom.setFlatCoordinates('XY', polygon, [polygon.length]);
-      const multiPolygon = new MultiPolygon(null);
-      multiPolygon.appendPolygon(geom);
+      let geom = new Polygon(polygon, 'XY', [polygon.length]);
+      const multiPolygon = new MultiPolygon([geom]);
       geom = geom.clone();
       geom.translate(0, 30);
       multiPolygon.appendPolygon(geom);

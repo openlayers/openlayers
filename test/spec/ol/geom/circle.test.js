@@ -178,13 +178,6 @@ describe('ol.geom.Circle', function() {
         expect(circle.getRadius()).to.be(3);
       });
 
-      it('fires a single change event', function() {
-        const spy = sinon.spy();
-        circle.on('change', spy);
-        circle.setFlatCoordinates('XY', [1, 2, 4, 2]);
-        expect(spy.calledOnce).to.be(true);
-      });
-
     });
 
     describe('#setRadius', function() {

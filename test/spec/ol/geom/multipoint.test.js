@@ -5,10 +5,10 @@ import Point from '../../../../src/ol/geom/Point.js';
 
 describe('ol.geom.MultiPoint', function() {
 
-  it('can be constructed with a null geometry', function() {
+  it('cannot be constructed with a null geometry', function() {
     expect(function() {
       return new MultiPoint(null);
-    }).not.to.throwException();
+    }).to.throwException();
   });
 
   describe('construct empty', function() {

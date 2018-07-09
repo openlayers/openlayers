@@ -5,10 +5,10 @@ import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 
 describe('ol.geom.MultiLineString', function() {
 
-  it('can be constructed with a null geometry', function() {
+  it('cannot be constructed with a null geometry', function() {
     expect(function() {
       return new MultiLineString(null);
-    }).not.to.throwException();
+    }).to.throwException();
   });
 
   describe('construct empty', function() {
@@ -343,10 +343,9 @@ describe('ol.geom.MultiLineString', function() {
   describe('#setLineStrings', function() {
 
     it('sets the line strings', function() {
-      const multiLineString = new MultiLineString(null);
       const lineString1 = new LineString([[1, 2], [3, 4]]);
       const lineString2 = new LineString([[5, 6], [7, 8]]);
-      multiLineString.setLineStrings([lineString1, lineString2]);
+      const multiLineString = new MultiLineString([lineString1, lineString2]);
       expect(multiLineString.getFlatCoordinates()).to.eql(
         [1, 2, 3, 4, 5, 6, 7, 8]);
       expect(multiLineString.getEnds()).to.eql([4, 8]);

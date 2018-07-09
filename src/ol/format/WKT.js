@@ -858,7 +858,14 @@ Parser.prototype.parseGeometry_ = function() {
       if (!parser || !ctor) {
         throw new Error('Invalid geometry type: ' + geomType);
       }
-      const coordinates = parser.call(this);
+      let coordinates = parser.call(this);
+      if (!coordinates) {
+        if (ctor === GeometryConstructor[GeometryType.POINT]) {
+          coordinates = [NaN, NaN];
+        } else {
+          coordinates = [];
+        }
+      }
       return new ctor(coordinates, this.layout_);
     }
   }

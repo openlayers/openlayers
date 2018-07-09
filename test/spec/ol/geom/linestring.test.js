@@ -4,10 +4,10 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 
 describe('ol.geom.LineString', function() {
 
-  it('can be constructed with a null geometry', function() {
+  it('cannot be constructed with a null geometry', function() {
     expect(function() {
       return new LineString(null);
-    }).not.to.throwException();
+    }).to.throwException();
   });
 
   describe('construct empty', function() {

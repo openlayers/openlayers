@@ -3,7 +3,6 @@
  */
 import {inherits} from '../util.js';
 import {createOrUpdateFromCoordinate, containsXY} from '../extent.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {deflateCoordinate} from '../geom/flat/deflate.js';
@@ -34,8 +33,7 @@ inherits(Point, SimpleGeometry);
  * @api
  */
 Point.prototype.clone = function() {
-  const point = new Point(null);
-  point.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
+  const point = new Point(this.flatCoordinates.slice(), this.layout);
   return point;
 };
 
@@ -101,26 +99,13 @@ Point.prototype.intersectsExtent = function(extent) {
  * @api
  */
 Point.prototype.setCoordinates = function(coordinates, opt_layout) {
-  if (!coordinates) {
-    this.setFlatCoordinates(GeometryLayout.XY, null);
-  } else {
-    this.setLayout(opt_layout, coordinates, 0);
-    if (!this.flatCoordinates) {
-      this.flatCoordinates = [];
-    }
-    this.flatCoordinates.length = deflateCoordinate(
-      this.flatCoordinates, 0, coordinates, this.stride);
-    this.changed();
+  this.setLayout(opt_layout, coordinates, 0);
+  if (!this.flatCoordinates) {
+    this.flatCoordinates = [];
   }
-};
-
-
-/**
- * @param {module:ol/geom/GeometryLayout} layout Layout.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- */
-Point.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
-  this.setFlatCoordinatesInternal(layout, flatCoordinates);
+  this.flatCoordinates.length = deflateCoordinate(
+    this.flatCoordinates, 0, coordinates, this.stride);
   this.changed();
 };
+
 export default Point;

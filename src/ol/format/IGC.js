@@ -168,9 +168,8 @@ IGC.prototype.readFeatureFromText = function(text, opt_options) {
   if (flatCoordinates.length === 0) {
     return null;
   }
-  const lineString = new LineString(null);
   const layout = altitudeMode == IGCZ.NONE ? GeometryLayout.XYM : GeometryLayout.XYZM;
-  lineString.setFlatCoordinates(layout, flatCoordinates);
+  const lineString = new LineString(flatCoordinates, layout);
   const feature = new Feature(transformWithOptions(lineString, false, opt_options));
   feature.setProperties(properties);
   return feature;

@@ -26,11 +26,15 @@ import {quantizeMultiArray} from '../geom/flat/simplify.js';
  *
  * @constructor
  * @extends {module:ol/geom/SimpleGeometry}
- * @param {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>} coordinates Coordinates.
+ * @param {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>|Array.<number>} coordinates
+ * Coordinates. (For internal use, flat coordinats in combination with
+ * `opt_layout` and `opt_endss` are also accepted).
  * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+ * @param {Array.<number>} opt_endss Array of ends for internal use with flat
+ * coordinates.
  * @api
  */
-const MultiPolygon = function(coordinates, opt_layout) {
+const MultiPolygon = function(coordinates, opt_layout, opt_endss) {
 
   SimpleGeometry.call(this);
 
@@ -76,7 +80,33 @@ const MultiPolygon = function(coordinates, opt_layout) {
    */
   this.orientedFlatCoordinates_ = null;
 
-  this.setCoordinates(coordinates, opt_layout);
+  if (!opt_endss && !Array.isArray(coordinates[0])) {
+    let layout = this.getLayout();
+    const flatCoordinates = [];
+    const endss = [];
+    for (let i = 0, ii = coordinates.length; i < ii; ++i) {
+      const polygon = coordinates[i];
+      if (i === 0) {
+        layout = polygon.getLayout();
+      }
+      const offset = flatCoordinates.length;
+      const ends = polygon.getEnds();
+      for (let j = 0, jj = ends.length; j < jj; ++j) {
+        ends[j] += offset;
+      }
+      extend(flatCoordinates, polygon.getFlatCoordinates());
+      endss.push(ends);
+    }
+    opt_layout = layout;
+    coordinates = flatCoordinates;
+    opt_endss = endss;
+  }
+  if (opt_layout !== undefined && opt_endss) {
+    this.setFlatCoordinates(opt_layout, coordinates);
+    this.endss_ = opt_endss;
+  } else {
+    this.setCoordinates(coordinates, opt_layout);
+  }
 
 };
 
@@ -115,17 +145,14 @@ MultiPolygon.prototype.appendPolygon = function(polygon) {
  * @api
  */
 MultiPolygon.prototype.clone = function() {
-  const multiPolygon = new MultiPolygon(null);
-
   const len = this.endss_.length;
   const newEndss = new Array(len);
   for (let i = 0; i < len; ++i) {
     newEndss[i] = this.endss_[i].slice();
   }
 
-  multiPolygon.setFlatCoordinates(
-    this.layout, this.flatCoordinates.slice(), newEndss);
-  return multiPolygon;
+  return new MultiPolygon(
+    this.flatCoordinates.slice(), this.layout, newEndss);
 };
 
 
@@ -225,10 +252,7 @@ MultiPolygon.prototype.getFlatInteriorPoints = function() {
  * @api
  */
 MultiPolygon.prototype.getInteriorPoints = function() {
-  const interiorPoints = new MultiPoint(null);
-  interiorPoints.setFlatCoordinates(GeometryLayout.XYM,
-    this.getFlatInteriorPoints().slice());
-  return interiorPoints;
+  return new MultiPoint(this.getFlatInteriorPoints().slice(), GeometryLayout.XYM);
 };
 
 
@@ -263,10 +287,7 @@ MultiPolygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance
     this.flatCoordinates, 0, this.endss_, this.stride,
     Math.sqrt(squaredTolerance),
     simplifiedFlatCoordinates, 0, simplifiedEndss);
-  const simplifiedMultiPolygon = new MultiPolygon(null);
-  simplifiedMultiPolygon.setFlatCoordinates(
-    GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEndss);
-  return simplifiedMultiPolygon;
+  return new MultiPolygon(simplifiedFlatCoordinates, GeometryLayout.XY, simplifiedEndss);
 };
 
 
@@ -294,10 +315,7 @@ MultiPolygon.prototype.getPolygon = function(index) {
       ends[i] -= offset;
     }
   }
-  const polygon = new Polygon(null);
-  polygon.setFlatCoordinates(
-    this.layout, this.flatCoordinates.slice(offset, end), ends);
-  return polygon;
+  return new Polygon(this.flatCoordinates.slice(offset, end), this.layout, ends);
 };
 
 
@@ -320,9 +338,7 @@ MultiPolygon.prototype.getPolygons = function() {
         ends[j] -= offset;
       }
     }
-    const polygon = new Polygon(null);
-    polygon.setFlatCoordinates(
-      layout, flatCoordinates.slice(offset, end), ends);
+    const polygon = new Polygon(flatCoordinates.slice(offset, end), layout, ends);
     polygons.push(polygon);
     offset = end;
   }
@@ -351,66 +367,27 @@ MultiPolygon.prototype.intersectsExtent = function(extent) {
 
 /**
  * Set the coordinates of the multipolygon.
- * @param {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>} coordinates Coordinates.
+ * @param {!Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>} coordinates Coordinates.
  * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @override
  * @api
  */
 MultiPolygon.prototype.setCoordinates = function(coordinates, opt_layout) {
-  if (!coordinates) {
-    this.setFlatCoordinates(GeometryLayout.XY, null, this.endss_);
-  } else {
-    this.setLayout(opt_layout, coordinates, 3);
-    if (!this.flatCoordinates) {
-      this.flatCoordinates = [];
-    }
-    const endss = deflateMultiCoordinatesArray(
-      this.flatCoordinates, 0, coordinates, this.stride, this.endss_);
-    if (endss.length === 0) {
-      this.flatCoordinates.length = 0;
-    } else {
-      const lastEnds = endss[endss.length - 1];
-      this.flatCoordinates.length = lastEnds.length === 0 ?
-        0 : lastEnds[lastEnds.length - 1];
-    }
-    this.changed();
+  this.setLayout(opt_layout, coordinates, 3);
+  if (!this.flatCoordinates) {
+    this.flatCoordinates = [];
   }
-};
-
-
-/**
- * @param {module:ol/geom/GeometryLayout} layout Layout.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @param {Array.<Array.<number>>} endss Endss.
- */
-MultiPolygon.prototype.setFlatCoordinates = function(layout, flatCoordinates, endss) {
-  this.setFlatCoordinatesInternal(layout, flatCoordinates);
-  this.endss_ = endss;
+  const endss = deflateMultiCoordinatesArray(
+    this.flatCoordinates, 0, coordinates, this.stride, this.endss_);
+  if (endss.length === 0) {
+    this.flatCoordinates.length = 0;
+  } else {
+    const lastEnds = endss[endss.length - 1];
+    this.flatCoordinates.length = lastEnds.length === 0 ?
+      0 : lastEnds[lastEnds.length - 1];
+  }
   this.changed();
 };
 
-
-/**
- * @param {Array.<module:ol/geom/Polygon>} polygons Polygons.
- */
-MultiPolygon.prototype.setPolygons = function(polygons) {
-  let layout = this.getLayout();
-  const flatCoordinates = [];
-  const endss = [];
-  for (let i = 0, ii = polygons.length; i < ii; ++i) {
-    const polygon = polygons[i];
-    if (i === 0) {
-      layout = polygon.getLayout();
-    }
-    const offset = flatCoordinates.length;
-    const ends = polygon.getEnds();
-    for (let j = 0, jj = ends.length; j < jj; ++j) {
-      ends[j] += offset;
-    }
-    extend(flatCoordinates, polygon.getFlatCoordinates());
-    endss.push(ends);
-  }
-  this.setFlatCoordinates(layout, flatCoordinates, endss);
-};
 
 export default MultiPolygon;

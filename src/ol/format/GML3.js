@@ -103,8 +103,7 @@ GML3.prototype.readMultiCurve_ = function(node, objectStack) {
   const lineStrings = pushParseAndPop([],
     this.MULTICURVE_PARSERS_, node, objectStack, this);
   if (lineStrings) {
-    const multiLineString = new MultiLineString(null);
-    multiLineString.setLineStrings(lineStrings);
+    const multiLineString = new MultiLineString(lineStrings);
     return multiLineString;
   } else {
     return undefined;
@@ -123,11 +122,7 @@ GML3.prototype.readMultiSurface_ = function(node, objectStack) {
   const polygons = pushParseAndPop([],
     this.MULTISURFACE_PARSERS_, node, objectStack, this);
   if (polygons) {
-    const multiPolygon = new MultiPolygon(null);
-    multiPolygon.setPolygons(polygons);
-    return multiPolygon;
-  } else {
-    return undefined;
+    return new MultiPolygon(polygons);
   }
 };
 
@@ -247,7 +242,6 @@ GML3.prototype.readSurface_ = function(node, objectStack) {
   const flatLinearRings = pushParseAndPop([null],
     this.SURFACE_PARSERS_, node, objectStack, this);
   if (flatLinearRings && flatLinearRings[0]) {
-    const polygon = new Polygon(null);
     const flatCoordinates = flatLinearRings[0];
     const ends = [flatCoordinates.length];
     let i, ii;
@@ -255,9 +249,7 @@ GML3.prototype.readSurface_ = function(node, objectStack) {
       extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
-    polygon.setFlatCoordinates(
-      GeometryLayout.XYZ, flatCoordinates, ends);
-    return polygon;
+    return new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
   } else {
     return undefined;
   }
@@ -275,8 +267,7 @@ GML3.prototype.readCurve_ = function(node, objectStack) {
   const flatCoordinates = pushParseAndPop([null],
     this.CURVE_PARSERS_, node, objectStack, this);
   if (flatCoordinates) {
-    const lineString = new LineString(null);
-    lineString.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
+    const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
     return lineString;
   } else {
     return undefined;

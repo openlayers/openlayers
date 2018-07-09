@@ -203,9 +203,8 @@ SimpleGeometry.prototype.getStride = function() {
 /**
  * @param {module:ol/geom/GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @protected
- */
-SimpleGeometry.prototype.setFlatCoordinatesInternal = function(layout, flatCoordinates) {
+  */
+SimpleGeometry.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
   this.stride = getStrideForLayout(layout);
   this.layout = layout;
   this.flatCoordinates = flatCoordinates;
@@ -214,7 +213,7 @@ SimpleGeometry.prototype.setFlatCoordinatesInternal = function(layout, flatCoord
 
 /**
  * @abstract
- * @param {Array} coordinates Coordinates.
+ * @param {!Array} coordinates Coordinates.
  * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  */
 SimpleGeometry.prototype.setCoordinates = function(coordinates, opt_layout) {};

@@ -291,9 +291,7 @@ GMLBase.prototype.readFeatureElement = function(node, objectStack) {
 GMLBase.prototype.readPoint = function(node, objectStack) {
   const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
-    const point = new Point(null);
-    point.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
-    return point;
+    return new Point(flatCoordinates, GeometryLayout.XYZ);
   }
 };
 
@@ -325,11 +323,7 @@ GMLBase.prototype.readMultiLineString = function(node, objectStack) {
   const lineStrings = pushParseAndPop([],
     this.MULTILINESTRING_PARSERS_, node, objectStack, this);
   if (lineStrings) {
-    const multiLineString = new MultiLineString(null);
-    multiLineString.setLineStrings(lineStrings);
-    return multiLineString;
-  } else {
-    return undefined;
+    return new MultiLineString(lineStrings);
   }
 };
 
@@ -343,11 +337,7 @@ GMLBase.prototype.readMultiPolygon = function(node, objectStack) {
   /** @type {Array.<module:ol/geom/Polygon>} */
   const polygons = pushParseAndPop([], this.MULTIPOLYGON_PARSERS_, node, objectStack, this);
   if (polygons) {
-    const multiPolygon = new MultiPolygon(null);
-    multiPolygon.setPolygons(polygons);
-    return multiPolygon;
-  } else {
-    return undefined;
+    return new MultiPolygon(polygons);
   }
 };
 
@@ -390,8 +380,7 @@ GMLBase.prototype.polygonMemberParser_ = function(node, objectStack) {
 GMLBase.prototype.readLineString = function(node, objectStack) {
   const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
-    const lineString = new LineString(null);
-    lineString.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
+    const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
     return lineString;
   } else {
     return undefined;
@@ -425,11 +414,7 @@ GMLBase.prototype.readFlatLinearRing_ = function(node, objectStack) {
 GMLBase.prototype.readLinearRing = function(node, objectStack) {
   const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
-    const ring = new LinearRing(null);
-    ring.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
-    return ring;
-  } else {
-    return undefined;
+    return new LinearRing(flatCoordinates, GeometryLayout.XYZ);
   }
 };
 
@@ -444,7 +429,6 @@ GMLBase.prototype.readPolygon = function(node, objectStack) {
   const flatLinearRings = pushParseAndPop([null],
     this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
   if (flatLinearRings && flatLinearRings[0]) {
-    const polygon = new Polygon(null);
     const flatCoordinates = flatLinearRings[0];
     const ends = [flatCoordinates.length];
     let i, ii;
@@ -452,8 +436,7 @@ GMLBase.prototype.readPolygon = function(node, objectStack) {
       extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
-    polygon.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates, ends);
-    return polygon;
+    return new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
   } else {
     return undefined;
   }

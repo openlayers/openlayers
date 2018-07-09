@@ -3,10 +3,10 @@ import Point from '../../../../src/ol/geom/Point.js';
 
 describe('ol.geom.Point', function() {
 
-  it('can be constructed with a null geometry', function() {
+  it('cannot be constructed with a null geometry', function() {
     expect(function() {
       return new Point(null);
-    }).not.to.throwException();
+    }).to.throwException();
   });
 
   describe('construct with 2D coordinates', function() {

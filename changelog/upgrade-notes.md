@@ -1,5 +1,11 @@
 ## Upgrade notes
 
+### Next release
+
+#### Geometry constructor and `setCoordinates` no longer accept `null` coordinates
+
+Geometries (`ol/geom/*`) now need to be constructed with valid coordinates (center for `ol/geom/Circle`) as first constructor argument. The same applies to the `setCoordinates()` (`setCenter() for `ol/geom/Circle`) method.
+
 ### v5.0.0
 
 #### Renamed `ol/source/TileUTFGrid` to `ol/source/UTFGrid`
@@ -170,7 +176,7 @@ The optional this (i.e. opt_this) arguments were removed from the following meth
 
 
 #### `Map#forEachLayerAtPixel` parameters have changed
- 
+
 If you are using the layer filter, please note that you now have to pass in the layer filter via an `AtPixelOptions` object. If you are not using the layer filter the usage has not changed.
 
 Old syntax:

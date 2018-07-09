@@ -22,7 +22,9 @@ import {douglasPeucker} from '../geom/flat/simplify.js';
  *
  * @constructor
  * @extends {module:ol/geom/SimpleGeometry}
- * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
+ * @param {Array.<module:ol/coordinate~Coordinate>|Array.<number>} coordinates
+ * Coordinates. (For internal use, flat coordinates in combination with
+ * `opt_layout` are also accepted).
  * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @api
  */
@@ -54,7 +56,11 @@ const LineString = function(coordinates, opt_layout) {
    */
   this.maxDeltaRevision_ = -1;
 
-  this.setCoordinates(coordinates, opt_layout);
+  if (opt_layout !== undefined && !Array.isArray(coordinates[0])) {
+    this.setFlatCoordinates(opt_layout, coordinates);
+  } else {
+    this.setCoordinates(coordinates, opt_layout);
+  }
 
 };
 
@@ -83,9 +89,7 @@ LineString.prototype.appendCoordinate = function(coordinate) {
  * @api
  */
 LineString.prototype.clone = function() {
-  const lineString = new LineString(null);
-  lineString.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
-  return lineString;
+  return new LineString(this.flatCoordinates.slice(), this.layout);
 };
 
 
@@ -208,10 +212,7 @@ LineString.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) 
   simplifiedFlatCoordinates.length = douglasPeucker(
     this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
     squaredTolerance, simplifiedFlatCoordinates, 0);
-  const simplifiedLineString = new LineString(null);
-  simplifiedLineString.setFlatCoordinates(
-    GeometryLayout.XY, simplifiedFlatCoordinates);
-  return simplifiedLineString;
+  return new LineString(simplifiedFlatCoordinates, GeometryLayout.XY);
 };
 
 
@@ -237,32 +238,19 @@ LineString.prototype.intersectsExtent = function(extent) {
 
 /**
  * Set the coordinates of the linestring.
- * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
+ * @param {!Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
  * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @override
  * @api
  */
 LineString.prototype.setCoordinates = function(coordinates, opt_layout) {
-  if (!coordinates) {
-    this.setFlatCoordinates(GeometryLayout.XY, null);
-  } else {
-    this.setLayout(opt_layout, coordinates, 1);
-    if (!this.flatCoordinates) {
-      this.flatCoordinates = [];
-    }
-    this.flatCoordinates.length = deflateCoordinates(
-      this.flatCoordinates, 0, coordinates, this.stride);
-    this.changed();
+  this.setLayout(opt_layout, coordinates, 1);
+  if (!this.flatCoordinates) {
+    this.flatCoordinates = [];
   }
-};
-
-
-/**
- * @param {module:ol/geom/GeometryLayout} layout Layout.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- */
-LineString.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
-  this.setFlatCoordinatesInternal(layout, flatCoordinates);
+  this.flatCoordinates.length = deflateCoordinates(
+    this.flatCoordinates, 0, coordinates, this.stride);
   this.changed();
 };
+
 export default LineString;
