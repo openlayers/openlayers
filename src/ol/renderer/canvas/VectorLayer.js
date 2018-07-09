@@ -210,10 +210,10 @@ CanvasVectorLayerRenderer.prototype.compose = function(context, frameState, laye
     rotateAtOffset(replayContext, rotation,
       width / 2, height / 2);
 
+    if (hasRenderListeners) {
+      this.dispatchRenderEvent(replayContext, frameState, transform);
+    }
     if (replayContext != context) {
-      if (hasRenderListeners) {
-        this.dispatchRenderEvent(replayContext, frameState, transform);
-      }
       if (transparentLayer) {
         const mainContextAlpha = context.globalAlpha;
         context.globalAlpha = layerState.opacity;
