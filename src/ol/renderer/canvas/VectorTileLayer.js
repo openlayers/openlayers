@@ -392,7 +392,9 @@ CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameSta
           continue;
         }
         const replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
-        if (renderMode != VectorTileRenderType.VECTOR && !replayGroup.hasReplays(replayTypes)) {
+        if (!replayGroup || !replayGroup.hasReplays(replayTypes)) {
+          // sourceTile was not yet loaded when this.createReplayGroup_() was
+          // called, or it has no replays of the types we want to render
           continue;
         }
         if (!transform) {
