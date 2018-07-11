@@ -83,7 +83,7 @@
     "uglifyjs-webpack-plugin": "^1.2.5",
     "url-polyfill": "^1.0.13",
     "walk": "^2.3.9",
-    "webpack": "4.15.1",
+    "webpack": "4.16.0",
     "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.4"
   },
