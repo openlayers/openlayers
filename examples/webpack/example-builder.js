@@ -64,20 +64,20 @@ function createWordIndex(exampleData) {
 /**
  * Gets the source for the chunk that matches the jsPath
  * @param {Object} chunk Chunk.
- * @param {string} jsPath Path of the file.
+ * @param {string} jsName Name of the file.
  * @return {string} The source.
  */
-function getJsSource(chunk, jsPath) {
+function getJsSource(chunk, jsName) {
   let jsSource;
   for (let i = 0, ii = chunk.modules.length; i < ii; ++i) {
     const module = chunk.modules[i];
     if (module.modules) {
-      jsSource = getJsSource(module, jsPath);
+      jsSource = getJsSource(module, jsName);
       if (jsSource) {
         return jsSource;
       }
     }
-    if (module.identifier == jsPath) {
+    if (module.identifier.endsWith(jsName)) {
       return module.source;
     }
   }
@@ -151,8 +151,7 @@ ExampleBuilder.prototype.render = async function(dir, chunk) {
 
   // add in script tag
   const jsName = `${name}.js`;
-  const jsPath = path.join(dir, jsName);
-  let jsSource = getJsSource(chunk, jsPath);
+  let jsSource = getJsSource(chunk, path.join('.', jsName));
   jsSource = jsSource.replace(/'\.\.\/src\//g, '\'');
   if (data.cloak) {
     for (const entry of data.cloak) {
