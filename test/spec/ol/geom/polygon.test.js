@@ -605,6 +605,14 @@ describe('ol/geom/Polygon', function() {
       expect(coordinates[0][0]).to.roughlyEqual(0, 1e-9);
       expect(coordinates[0][1]).to.roughlyEqual(1, 1e-9);
     });
+
+    it('creates a regular polygon, maintaining ZM values', () => {
+      const circle = new Circle([0, 0, 1, 1], 1, 'XYZM');
+      const polygon = fromCircle(circle);
+      const coordinates = polygon.getLinearRing(0).getCoordinates();
+      expect(coordinates[0][2]).to.eql(1);
+      expect(coordinates[0][3]).to.eql(1);
+    });
   });
 
 });
