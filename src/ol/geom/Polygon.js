@@ -404,14 +404,19 @@ export function fromCircle(circle, opt_sides, opt_angle) {
   const sides = opt_sides ? opt_sides : 32;
   const stride = circle.getStride();
   const layout = circle.getLayout();
+  const center = circle.getCenter();
   const arrayLength = stride * (sides + 1);
   const flatCoordinates = new Array(arrayLength);
-  for (let i = 0; i < arrayLength; i++) {
+  for (let i = 0; i < arrayLength; i += stride) {
     flatCoordinates[i] = 0;
+    flatCoordinates[i + 1] = 0;
+    for (let j = 2; j < stride; j++) {
+      flatCoordinates[i + j] = center[j];
+    }
   }
   const ends = [flatCoordinates.length];
   const polygon = new Polygon(flatCoordinates, layout, ends);
-  makeRegular(polygon, circle.getCenter(), circle.getRadius(), opt_angle);
+  makeRegular(polygon, center, circle.getRadius(), opt_angle);
   return polygon;
 }
 
@@ -434,9 +439,6 @@ export function makeRegular(polygon, center, radius, opt_angle) {
     const angle = startAngle + (modulo(i, sides) * 2 * Math.PI / sides);
     flatCoordinates[offset] = center[0] + (radius * Math.cos(angle));
     flatCoordinates[offset + 1] = center[1] + (radius * Math.sin(angle));
-    for (let j = 2; j < stride; j++) {
-      flatCoordinates[offset + j] = center[j];
-    }
   }
   polygon.changed();
 }
