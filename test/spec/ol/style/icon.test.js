@@ -172,6 +172,20 @@ describe('ol.style.Icon', function() {
     });
   });
 
+  describe('#setAnchor', function() {
+    it('resets the cached anchor', function() {
+      const iconStyle = new Icon({
+        src: 'test.png',
+        size: size,
+        anchor: [0.25, 0.25]
+      });
+      expect(iconStyle.getAnchor()).to.eql([9, 12]);
+
+      iconStyle.setAnchor([0.5, 0.5]);
+      expect(iconStyle.getAnchor()).to.eql([18, 24]);
+    });
+  });
+
   describe('#getOrigin', function() {
     const offset = [16, 20];
     const imageSize = [144, 192];
