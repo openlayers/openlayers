@@ -44,17 +44,23 @@ export const METERS_PER_UNIT = Math.PI * RADIUS / 180;
  * @param {string} code Code.
  * @param {string=} opt_axisOrientation Axis orientation.
  */
-function EPSG4326Projection(code, opt_axisOrientation) {
-  Projection.call(this, {
-    code: code,
-    units: Units.DEGREES,
-    extent: EXTENT,
-    axisOrientation: opt_axisOrientation,
-    global: true,
-    metersPerUnit: METERS_PER_UNIT,
-    worldExtent: EXTENT
-  });
+class EPSG4326Projection {
+
+  constructor(code, opt_axisOrientation) {
+    Projection.call(this, {
+      code: code,
+      units: Units.DEGREES,
+      extent: EXTENT,
+      axisOrientation: opt_axisOrientation,
+      global: true,
+      metersPerUnit: METERS_PER_UNIT,
+      worldExtent: EXTENT
+    });
+
+  }
+
 }
+
 inherits(EPSG4326Projection, Projection);
 
 

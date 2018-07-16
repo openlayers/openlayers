@@ -27,53 +27,57 @@ import {disable} from '../rotationconstraint.js';
  * @param {module:ol/interaction/PinchRotate~Options=} opt_options Options.
  * @api
  */
-const PinchRotate = function(opt_options) {
+class PinchRotate {
 
-  PointerInteraction.call(this, {
-    handleDownEvent: handleDownEvent,
-    handleDragEvent: handleDragEvent,
-    handleUpEvent: handleUpEvent
-  });
+  constructor(opt_options) {
 
-  const options = opt_options || {};
+    PointerInteraction.call(this, {
+      handleDownEvent: handleDownEvent,
+      handleDragEvent: handleDragEvent,
+      handleUpEvent: handleUpEvent
+    });
 
-  /**
-   * @private
-   * @type {module:ol/coordinate~Coordinate}
-   */
-  this.anchor_ = null;
+    const options = opt_options || {};
 
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.lastAngle_ = undefined;
+    /**
+     * @private
+     * @type {module:ol/coordinate~Coordinate}
+     */
+    this.anchor_ = null;
 
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.rotating_ = false;
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.lastAngle_ = undefined;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.rotationDelta_ = 0.0;
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.rotating_ = false;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.threshold_ = options.threshold !== undefined ? options.threshold : 0.3;
+    /**
+     * @private
+     * @type {number}
+     */
+    this.rotationDelta_ = 0.0;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.duration_ = options.duration !== undefined ? options.duration : 250;
+    /**
+     * @private
+     * @type {number}
+     */
+    this.threshold_ = options.threshold !== undefined ? options.threshold : 0.3;
 
-};
+    /**
+     * @private
+     * @type {number}
+     */
+    this.duration_ = options.duration !== undefined ? options.duration : 250;
+
+  }
+
+}
 
 inherits(PinchRotate, PointerInteraction);
 

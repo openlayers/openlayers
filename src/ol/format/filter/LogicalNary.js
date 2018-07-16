@@ -16,16 +16,21 @@ import Filter from '../filter/Filter.js';
  * @param {...module:ol/format/filter/Filter} conditions Conditions.
  * @extends {module:ol/format/filter/Filter}
  */
-const LogicalNary = function(tagName, conditions) {
+class LogicalNary {
 
-  Filter.call(this, tagName);
+  constructor(tagName, conditions) {
 
-  /**
-   * @type {Array.<module:ol/format/filter/Filter>}
-   */
-  this.conditions = Array.prototype.slice.call(arguments, 1);
-  assert(this.conditions.length >= 2, 57); // At least 2 conditions are required.
-};
+    Filter.call(this, tagName);
+
+    /**
+     * @type {Array.<module:ol/format/filter/Filter>}
+     */
+    this.conditions = Array.prototype.slice.call(arguments, 1);
+    assert(this.conditions.length >= 2, 57); // At least 2 conditions are required.
+  }
+
+}
 
 inherits(LogicalNary, Filter);
+
 export default LogicalNary;

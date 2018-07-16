@@ -50,36 +50,40 @@ export const ATTRIBUTION = '&copy; ' +
  * @param {module:ol/source/OSM~Options=} [opt_options] Open Street Map options.
  * @api
  */
-const OSM = function(opt_options) {
+class OSM {
 
-  const options = opt_options || {};
+  constructor(opt_options) {
 
-  let attributions;
-  if (options.attributions !== undefined) {
-    attributions = options.attributions;
-  } else {
-    attributions = [ATTRIBUTION];
+    const options = opt_options || {};
+
+    let attributions;
+    if (options.attributions !== undefined) {
+      attributions = options.attributions;
+    } else {
+      attributions = [ATTRIBUTION];
+    }
+
+    const crossOrigin = options.crossOrigin !== undefined ?
+      options.crossOrigin : 'anonymous';
+
+    const url = options.url !== undefined ?
+      options.url : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+    XYZ.call(this, {
+      attributions: attributions,
+      cacheSize: options.cacheSize,
+      crossOrigin: crossOrigin,
+      opaque: options.opaque !== undefined ? options.opaque : true,
+      maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
+      reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+      tileLoadFunction: options.tileLoadFunction,
+      url: url,
+      wrapX: options.wrapX
+    });
+
   }
 
-  const crossOrigin = options.crossOrigin !== undefined ?
-    options.crossOrigin : 'anonymous';
-
-  const url = options.url !== undefined ?
-    options.url : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-
-  XYZ.call(this, {
-    attributions: attributions,
-    cacheSize: options.cacheSize,
-    crossOrigin: crossOrigin,
-    opaque: options.opaque !== undefined ? options.opaque : true,
-    maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
-    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-    tileLoadFunction: options.tileLoadFunction,
-    url: url,
-    wrapX: options.wrapX
-  });
-
-};
+}
 
 inherits(OSM, XYZ);
 

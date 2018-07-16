@@ -19,25 +19,29 @@ import Filter from '../filter/Filter.js';
  *    set on geometries when this is not provided.
  * @extends {module:ol/format/filter/Filter}
  */
-const Spatial = function(tagName, geometryName, geometry, opt_srsName) {
+class Spatial {
 
-  Filter.call(this, tagName);
+  constructor(tagName, geometryName, geometry, opt_srsName) {
 
-  /**
-   * @type {!string}
-   */
-  this.geometryName = geometryName || 'the_geom';
+    Filter.call(this, tagName);
 
-  /**
-   * @type {module:ol/geom/Geometry}
-   */
-  this.geometry = geometry;
+    /**
+     * @type {!string}
+     */
+    this.geometryName = geometryName || 'the_geom';
 
-  /**
-   * @type {string|undefined}
-   */
-  this.srsName = opt_srsName;
-};
+    /**
+     * @type {module:ol/geom/Geometry}
+     */
+    this.geometry = geometry;
+
+    /**
+     * @type {string|undefined}
+     */
+    this.srsName = opt_srsName;
+  }
+
+}
 
 inherits(Spatial, Filter);
 

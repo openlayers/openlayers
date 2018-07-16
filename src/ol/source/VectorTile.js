@@ -74,66 +74,70 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * @param {module:ol/source/VectorTile~Options=} options Vector tile options.
  * @api
  */
-const VectorTile = function(options) {
-  const projection = options.projection || 'EPSG:3857';
+class VectorTile {
 
-  const extent = options.extent || extentFromProjection(projection);
+  constructor(options) {
+    const projection = options.projection || 'EPSG:3857';
 
-  const tileGrid = options.tileGrid || createXYZ({
-    extent: extent,
-    maxZoom: options.maxZoom || 22,
-    minZoom: options.minZoom,
-    tileSize: options.tileSize || 512
-  });
+    const extent = options.extent || extentFromProjection(projection);
 
-  UrlTile.call(this, {
-    attributions: options.attributions,
-    cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,
-    extent: extent,
-    opaque: false,
-    projection: projection,
-    state: options.state,
-    tileGrid: tileGrid,
-    tileLoadFunction: options.tileLoadFunction ? options.tileLoadFunction : defaultLoadFunction,
-    tileUrlFunction: options.tileUrlFunction,
-    url: options.url,
-    urls: options.urls,
-    wrapX: options.wrapX === undefined ? true : options.wrapX,
-    transition: options.transition
-  });
+    const tileGrid = options.tileGrid || createXYZ({
+      extent: extent,
+      maxZoom: options.maxZoom || 22,
+      minZoom: options.minZoom,
+      tileSize: options.tileSize || 512
+    });
 
-  /**
-   * @private
-   * @type {module:ol/format/Feature}
-   */
-  this.format_ = options.format ? options.format : null;
+    UrlTile.call(this, {
+      attributions: options.attributions,
+      cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,
+      extent: extent,
+      opaque: false,
+      projection: projection,
+      state: options.state,
+      tileGrid: tileGrid,
+      tileLoadFunction: options.tileLoadFunction ? options.tileLoadFunction : defaultLoadFunction,
+      tileUrlFunction: options.tileUrlFunction,
+      url: options.url,
+      urls: options.urls,
+      wrapX: options.wrapX === undefined ? true : options.wrapX,
+      transition: options.transition
+    });
 
-  /**
+    /**
      * @private
-     * @type {Object.<string, module:ol/VectorTile>}
+     * @type {module:ol/format/Feature}
      */
-  this.sourceTiles_ = {};
+    this.format_ = options.format ? options.format : null;
 
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.overlaps_ = options.overlaps == undefined ? true : options.overlaps;
+    /**
+       * @private
+       * @type {Object.<string, module:ol/VectorTile>}
+       */
+    this.sourceTiles_ = {};
 
-  /**
-     * @protected
-     * @type {function(new: module:ol/VectorTile, module:ol/tilecoord~TileCoord, module:ol/TileState, string,
-     *        module:ol/format/Feature, module:ol/Tile~LoadFunction)}
+    /**
+     * @private
+     * @type {boolean}
      */
-  this.tileClass = options.tileClass ? options.tileClass : Tile;
+    this.overlaps_ = options.overlaps == undefined ? true : options.overlaps;
 
-  /**
-   * @private
-   * @type {Object.<string, module:ol/tilegrid/TileGrid>}
-   */
-  this.tileGrids_ = {};
+    /**
+       * @protected
+       * @type {function(new: module:ol/VectorTile, module:ol/tilecoord~TileCoord, module:ol/TileState, string,
+       *        module:ol/format/Feature, module:ol/Tile~LoadFunction)}
+       */
+    this.tileClass = options.tileClass ? options.tileClass : Tile;
 
-};
+    /**
+     * @private
+     * @type {Object.<string, module:ol/tilegrid/TileGrid>}
+     */
+    this.tileGrids_ = {};
+
+  }
+
+}
 
 inherits(VectorTile, UrlTile);
 

@@ -15,19 +15,24 @@ import Comparison from '../filter/Comparison.js';
  * @extends {module:ol/format/filter/Comparison}
  * @api
  */
-const IsBetween = function(propertyName, lowerBoundary, upperBoundary) {
-  Comparison.call(this, 'PropertyIsBetween', propertyName);
+class IsBetween {
 
-  /**
-   * @type {!number}
-   */
-  this.lowerBoundary = lowerBoundary;
+  constructor(propertyName, lowerBoundary, upperBoundary) {
+    Comparison.call(this, 'PropertyIsBetween', propertyName);
 
-  /**
-   * @type {!number}
-   */
-  this.upperBoundary = upperBoundary;
-};
+    /**
+     * @type {!number}
+     */
+    this.lowerBoundary = lowerBoundary;
+
+    /**
+     * @type {!number}
+     */
+    this.upperBoundary = upperBoundary;
+
+  }
+}
 
 inherits(IsBetween, Comparison);
+
 export default IsBetween;

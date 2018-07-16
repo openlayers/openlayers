@@ -118,30 +118,35 @@ const ProviderConfig = {
  * @param {module:ol/source/Stamen~Options=} options Stamen options.
  * @api
  */
-const Stamen = function(options) {
-  const i = options.layer.indexOf('-');
-  const provider = i == -1 ? options.layer : options.layer.slice(0, i);
-  const providerConfig = ProviderConfig[provider];
+class Stamen {
 
-  const layerConfig = LayerConfig[options.layer];
+  constructor(options) {
+    const i = options.layer.indexOf('-');
+    const provider = i == -1 ? options.layer : options.layer.slice(0, i);
+    const providerConfig = ProviderConfig[provider];
 
-  const url = options.url !== undefined ? options.url :
-    'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' + options.layer +
-      '/{z}/{x}/{y}.' + layerConfig.extension;
+    const layerConfig = LayerConfig[options.layer];
 
-  XYZ.call(this, {
-    attributions: ATTRIBUTIONS,
-    cacheSize: options.cacheSize,
-    crossOrigin: 'anonymous',
-    maxZoom: options.maxZoom != undefined ? options.maxZoom : providerConfig.maxZoom,
-    minZoom: options.minZoom != undefined ? options.minZoom : providerConfig.minZoom,
-    opaque: layerConfig.opaque,
-    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-    tileLoadFunction: options.tileLoadFunction,
-    url: url,
-    wrapX: options.wrapX
-  });
-};
+    const url = options.url !== undefined ? options.url :
+      'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' + options.layer +
+        '/{z}/{x}/{y}.' + layerConfig.extension;
+
+    XYZ.call(this, {
+      attributions: ATTRIBUTIONS,
+      cacheSize: options.cacheSize,
+      crossOrigin: 'anonymous',
+      maxZoom: options.maxZoom != undefined ? options.maxZoom : providerConfig.maxZoom,
+      minZoom: options.minZoom != undefined ? options.minZoom : providerConfig.minZoom,
+      opaque: layerConfig.opaque,
+      reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+      tileLoadFunction: options.tileLoadFunction,
+      url: url,
+      wrapX: options.wrapX
+    });
+
+  }
+
+}
 
 inherits(Stamen, XYZ);
 

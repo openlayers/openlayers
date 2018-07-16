@@ -17,25 +17,29 @@ import Filter from '../filter/Filter.js';
  * @extends {module:ol/format/filter/Filter}
  * @api
  */
-const Bbox = function(geometryName, extent, opt_srsName) {
+class Bbox {
 
-  Filter.call(this, 'BBOX');
+  constructor(geometryName, extent, opt_srsName) {
 
-  /**
-   * @type {!string}
-   */
-  this.geometryName = geometryName;
+    Filter.call(this, 'BBOX');
 
-  /**
-   * @type {module:ol/extent~Extent}
-   */
-  this.extent = extent;
+    /**
+     * @type {!string}
+     */
+    this.geometryName = geometryName;
 
-  /**
-   * @type {string|undefined}
-   */
-  this.srsName = opt_srsName;
-};
+    /**
+     * @type {module:ol/extent~Extent}
+     */
+    this.extent = extent;
+
+    /**
+     * @type {string|undefined}
+     */
+    this.srsName = opt_srsName;
+  }
+
+}
 
 inherits(Bbox, Filter);
 

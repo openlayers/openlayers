@@ -51,18 +51,23 @@ const ImageSourceEventType = {
  * @param {string} type Type.
  * @param {module:ol/Image} image The image.
  */
-const ImageSourceEvent = function(type, image) {
+class ImageSourceEvent {
 
-  Event.call(this, type);
+  constructor(type, image) {
 
-  /**
-   * The image related to the event.
-   * @type {module:ol/Image}
-   * @api
-   */
-  this.image = image;
+    Event.call(this, type);
 
-};
+    /**
+     * The image related to the event.
+     * @type {module:ol/Image}
+     * @api
+     */
+    this.image = image;
+
+  }
+
+}
+
 inherits(ImageSourceEvent, Event);
 
 

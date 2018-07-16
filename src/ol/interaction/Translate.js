@@ -63,25 +63,30 @@ const TranslateEventType = {
  * @param {module:ol/Collection.<module:ol/Feature>} features The features translated.
  * @param {module:ol/coordinate~Coordinate} coordinate The event coordinate.
  */
-export const TranslateEvent = function(type, features, coordinate) {
+export class TranslateEvent {
 
-  Event.call(this, type);
+  constructor(type, features, coordinate) {
 
-  /**
-   * The features being translated.
-   * @type {module:ol/Collection.<module:ol/Feature>}
-   * @api
-   */
-  this.features = features;
+    Event.call(this, type);
 
-  /**
-   * The coordinate of the drag event.
-   * @const
-   * @type {module:ol/coordinate~Coordinate}
-   * @api
-   */
-  this.coordinate = coordinate;
-};
+    /**
+     * The features being translated.
+     * @type {module:ol/Collection.<module:ol/Feature>}
+     * @api
+     */
+    this.features = features;
+
+    /**
+     * The coordinate of the drag event.
+     * @const
+     * @type {module:ol/coordinate~Coordinate}
+     * @api
+     */
+    this.coordinate = coordinate;
+
+  }
+
+}
 
 inherits(TranslateEvent, Event);
 

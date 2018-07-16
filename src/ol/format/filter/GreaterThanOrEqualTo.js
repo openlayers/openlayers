@@ -14,9 +14,14 @@ import ComparisonBinary from '../filter/ComparisonBinary.js';
  * @extends {module:ol/format/filter/ComparisonBinary}
  * @api
  */
-const GreaterThanOrEqualTo = function(propertyName, expression) {
-  ComparisonBinary.call(this, 'PropertyIsGreaterThanOrEqualTo', propertyName, expression);
-};
+class GreaterThanOrEqualTo {
+
+  constructor(propertyName, expression) {
+    ComparisonBinary.call(this, 'PropertyIsGreaterThanOrEqualTo', propertyName, expression);
+  }
+
+}
 
 inherits(GreaterThanOrEqualTo, ComparisonBinary);
+
 export default GreaterThanOrEqualTo;

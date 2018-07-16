@@ -13,9 +13,15 @@ import Comparison from '../filter/Comparison.js';
  * @extends {module:ol/format/filter/Comparison}
  * @api
  */
-const IsNull = function(propertyName) {
-  Comparison.call(this, 'PropertyIsNull', propertyName);
-};
+class IsNull {
+
+  constructor(propertyName) {
+    Comparison.call(this, 'PropertyIsNull', propertyName);
+  }
+
+}
+
 
 inherits(IsNull, Comparison);
+
 export default IsNull;

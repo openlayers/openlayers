@@ -15,19 +15,24 @@ import Comparison from '../filter/Comparison.js';
  * @extends {module:ol/format/filter/Comparison}
  * @api
  */
-const During = function(propertyName, begin, end) {
-  Comparison.call(this, 'During', propertyName);
+class During {
 
-  /**
-   * @type {!string}
-   */
-  this.begin = begin;
+  constructor(propertyName, begin, end) {
+    Comparison.call(this, 'During', propertyName);
 
-  /**
-   * @type {!string}
-   */
-  this.end = end;
-};
+    /**
+     * @type {!string}
+     */
+    this.begin = begin;
+
+    /**
+     * @type {!string}
+     */
+    this.end = end;
+  }
+
+}
 
 inherits(During, Comparison);
+
 export default During;

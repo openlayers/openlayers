@@ -134,18 +134,22 @@ const DrawEventType = {
  * @param {module:ol/interaction/Draw~DrawEventType} type Type.
  * @param {module:ol/Feature} feature The feature drawn.
  */
-const DrawEvent = function(type, feature) {
+class DrawEvent {
 
-  Event.call(this, type);
+  constructor(type, feature) {
 
-  /**
-   * The feature being drawn.
-   * @type {module:ol/Feature}
-   * @api
-   */
-  this.feature = feature;
+    Event.call(this, type);
 
-};
+    /**
+     * The feature being drawn.
+     * @type {module:ol/Feature}
+     * @api
+     */
+    this.feature = feature;
+
+  }
+
+}
 
 inherits(DrawEvent, Event);
 

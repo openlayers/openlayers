@@ -35,33 +35,37 @@ import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
  * @extends {module:ol/interaction/Interaction}
  * @api
  */
-const KeyboardZoom = function(opt_options) {
+class KeyboardZoom {
 
-  Interaction.call(this, {
-    handleEvent: handleEvent
-  });
+  constructor(opt_options) {
 
-  const options = opt_options ? opt_options : {};
+    Interaction.call(this, {
+      handleEvent: handleEvent
+    });
 
-  /**
-   * @private
-   * @type {module:ol/events/condition~Condition}
-   */
-  this.condition_ = options.condition ? options.condition : targetNotEditable;
+    const options = opt_options ? opt_options : {};
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.delta_ = options.delta ? options.delta : 1;
+    /**
+     * @private
+     * @type {module:ol/events/condition~Condition}
+     */
+    this.condition_ = options.condition ? options.condition : targetNotEditable;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.duration_ = options.duration !== undefined ? options.duration : 100;
+    /**
+     * @private
+     * @type {number}
+     */
+    this.delta_ = options.delta ? options.delta : 1;
 
-};
+    /**
+     * @private
+     * @type {number}
+     */
+    this.duration_ = options.duration !== undefined ? options.duration : 100;
+
+  }
+
+}
 
 inherits(KeyboardZoom, Interaction);
 

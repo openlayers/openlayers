@@ -28,45 +28,48 @@ import PointerInteraction, {centroid as centroidFromPointers} from '../interacti
  * @param {module:ol/interaction/DragPan~Options=} opt_options Options.
  * @api
  */
-const DragPan = function(opt_options) {
+class DragPan {
+  constructor(opt_options) {
 
-  PointerInteraction.call(this, {
-    handleDownEvent: handleDownEvent,
-    handleDragEvent: handleDragEvent,
-    handleUpEvent: handleUpEvent
-  });
+    PointerInteraction.call(this, {
+      handleDownEvent: handleDownEvent,
+      handleDragEvent: handleDragEvent,
+      handleUpEvent: handleUpEvent
+    });
 
-  const options = opt_options ? opt_options : {};
+    const options = opt_options ? opt_options : {};
 
-  /**
-   * @private
-   * @type {module:ol/Kinetic|undefined}
-   */
-  this.kinetic_ = options.kinetic;
+    /**
+     * @private
+     * @type {module:ol/Kinetic|undefined}
+     */
+    this.kinetic_ = options.kinetic;
 
-  /**
-   * @type {module:ol~Pixel}
-   */
-  this.lastCentroid = null;
+    /**
+     * @type {module:ol~Pixel}
+     */
+    this.lastCentroid = null;
 
-  /**
-   * @type {number}
-   */
-  this.lastPointersCount_;
+    /**
+     * @type {number}
+     */
+    this.lastPointersCount_;
 
-  /**
-   * @private
-   * @type {module:ol/events/condition~Condition}
-   */
-  this.condition_ = options.condition ? options.condition : noModifierKeys;
+    /**
+     * @private
+     * @type {module:ol/events/condition~Condition}
+     */
+    this.condition_ = options.condition ? options.condition : noModifierKeys;
 
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.noKinetic_ = false;
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.noKinetic_ = false;
 
-};
+  }
+
+}
 
 inherits(DragPan, PointerInteraction);
 

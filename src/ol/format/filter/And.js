@@ -13,10 +13,14 @@ import LogicalNary from '../filter/LogicalNary.js';
  * @param {...module:ol/format/filter/Filter} conditions Conditions.
  * @extends {module:ol/format/filter/LogicalNary}
  */
-const And = function(conditions) {
-  const params = ['And'].concat(Array.prototype.slice.call(arguments));
-  LogicalNary.apply(this, params);
-};
+class And {
+
+  constructor(conditions) {
+    const params = ['And'].concat(Array.prototype.slice.call(arguments));
+    LogicalNary.apply(this, params);
+  }
+
+}
 
 inherits(And, LogicalNary);
 

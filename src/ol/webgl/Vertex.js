@@ -11,17 +11,20 @@ import WebGLShader from '../webgl/Shader.js';
  * @param {string} source Source.
  * @struct
  */
-const WebGLVertex = function(source) {
-  WebGLShader.call(this, source);
-};
+class WebGLVertex {
+ constructor(source) {
+   WebGLShader.call(this, source);
+ }
+
+ /**
+  * @inheritDoc
+  */
+ getType() {
+   return VERTEX_SHADER;
+ }
+}
 
 inherits(WebGLVertex, WebGLShader);
 
 
-/**
- * @inheritDoc
- */
-WebGLVertex.prototype.getType = function() {
-  return VERTEX_SHADER;
-};
 export default WebGLVertex;

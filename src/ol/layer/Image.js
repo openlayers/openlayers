@@ -40,18 +40,22 @@ import Layer from '../layer/Layer.js';
  * @param {module:ol/layer/Image~Options=} opt_options Layer options.
  * @api
  */
-const ImageLayer = function(opt_options) {
-  const options = opt_options ? opt_options : {};
-  Layer.call(this,  /** @type {module:ol/layer/Layer~Options} */ (options));
+class ImageLayer {
 
-  /**
-   * The layer type.
-   * @protected
-   * @type {module:ol/LayerType}
-   */
-  this.type = LayerType.IMAGE;
+  constructor(opt_options) {
+    const options = opt_options ? opt_options : {};
+    Layer.call(this,  /** @type {module:ol/layer/Layer~Options} */ (options));
 
-};
+    /**
+     * The layer type.
+     * @protected
+     * @type {module:ol/LayerType}
+     */
+    this.type = LayerType.IMAGE;
+
+  }
+
+}
 
 inherits(ImageLayer, Layer);
 

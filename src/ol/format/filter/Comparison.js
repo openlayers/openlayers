@@ -15,15 +15,19 @@ import Filter from '../filter/Filter.js';
  * @param {!string} propertyName Name of the context property to compare.
  * @extends {module:ol/format/filter/Filter}
  */
-const Comparison = function(tagName, propertyName) {
+class Comparison {
 
-  Filter.call(this, tagName);
+  constructor(tagName, propertyName) {
 
-  /**
-   * @type {!string}
-   */
-  this.propertyName = propertyName;
-};
+    Filter.call(this, tagName);
+
+    /**
+     * @type {!string}
+     */
+    this.propertyName = propertyName;
+  }
+
+}
 
 inherits(Comparison, Filter);
 

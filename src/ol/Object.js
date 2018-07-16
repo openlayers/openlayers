@@ -19,25 +19,30 @@ import {assign} from './obj.js';
  * @extends {module:ol/events/Event}
  * @constructor
  */
-const ObjectEvent = function(type, key, oldValue) {
-  Event.call(this, type);
+class ObjectEvent {
 
-  /**
-   * The name of the property whose value is changing.
-   * @type {string}
-   * @api
-   */
-  this.key = key;
+  constructor(type, key, oldValue) {
+    Event.call(this, type);
 
-  /**
-   * The old value. To get the new value use `e.target.get(e.key)` where
-   * `e` is the event object.
-   * @type {*}
-   * @api
-   */
-  this.oldValue = oldValue;
+    /**
+     * The name of the property whose value is changing.
+     * @type {string}
+     * @api
+     */
+    this.key = key;
 
-};
+    /**
+     * The old value. To get the new value use `e.target.get(e.key)` where
+     * `e` is the event object.
+     * @type {*}
+     * @api
+     */
+    this.oldValue = oldValue;
+
+  }
+
+}
+
 inherits(ObjectEvent, Event);
 
 

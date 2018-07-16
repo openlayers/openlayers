@@ -99,24 +99,29 @@ const ModifyEventType = {
  * @param {module:ol/MapBrowserPointerEvent} mapBrowserPointerEvent
  * Associated {@link module:ol/MapBrowserPointerEvent}.
  */
-export const ModifyEvent = function(type, features, mapBrowserPointerEvent) {
+export class ModifyEvent {
 
-  Event.call(this, type);
+  constructor(type, features, mapBrowserPointerEvent) {
 
-  /**
-   * The features being modified.
-   * @type {module:ol/Collection.<module:ol/Feature>}
-   * @api
-   */
-  this.features = features;
+    Event.call(this, type);
 
-  /**
-   * Associated {@link module:ol/MapBrowserEvent}.
-   * @type {module:ol/MapBrowserEvent}
-   * @api
-   */
-  this.mapBrowserEvent = mapBrowserPointerEvent;
-};
+    /**
+     * The features being modified.
+     * @type {module:ol/Collection.<module:ol/Feature>}
+     * @api
+     */
+    this.features = features;
+
+    /**
+     * Associated {@link module:ol/MapBrowserEvent}.
+     * @type {module:ol/MapBrowserEvent}
+     * @api
+     */
+    this.mapBrowserEvent = mapBrowserPointerEvent;
+
+  }
+
+}
 
 inherits(ModifyEvent, Event);
 

@@ -39,45 +39,49 @@ import Interaction, {pan} from '../interaction/Interaction.js';
  * @param {module:ol/interaction/KeyboardPan~Options=} opt_options Options.
  * @api
  */
-const KeyboardPan = function(opt_options) {
+class KeyboardPan {
 
-  Interaction.call(this, {
-    handleEvent: handleEvent
-  });
+  constructor(opt_options) {
 
-  const options = opt_options || {};
+    Interaction.call(this, {
+      handleEvent: handleEvent
+    });
 
-  /**
-   * @private
-   * @param {module:ol/MapBrowserEvent} mapBrowserEvent Browser event.
-   * @return {boolean} Combined condition result.
-   */
-  this.defaultCondition_ = function(mapBrowserEvent) {
-    return noModifierKeys(mapBrowserEvent) &&
-      targetNotEditable(mapBrowserEvent);
-  };
+    const options = opt_options || {};
 
-  /**
-   * @private
-   * @type {module:ol/events/condition~Condition}
-   */
-  this.condition_ = options.condition !== undefined ?
-    options.condition : this.defaultCondition_;
+    /**
+     * @private
+     * @param {module:ol/MapBrowserEvent} mapBrowserEvent Browser event.
+     * @return {boolean} Combined condition result.
+     */
+    this.defaultCondition_ = function(mapBrowserEvent) {
+      return noModifierKeys(mapBrowserEvent) &&
+        targetNotEditable(mapBrowserEvent);
+    };
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.duration_ = options.duration !== undefined ? options.duration : 100;
+    /**
+     * @private
+     * @type {module:ol/events/condition~Condition}
+     */
+    this.condition_ = options.condition !== undefined ?
+      options.condition : this.defaultCondition_;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.pixelDelta_ = options.pixelDelta !== undefined ?
-    options.pixelDelta : 128;
+    /**
+     * @private
+     * @type {number}
+     */
+    this.duration_ = options.duration !== undefined ? options.duration : 100;
 
-};
+    /**
+     * @private
+     * @type {number}
+     */
+    this.pixelDelta_ = options.pixelDelta !== undefined ?
+      options.pixelDelta : 128;
+
+  }
+
+}
 
 inherits(KeyboardPan, Interaction);
 

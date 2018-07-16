@@ -12,23 +12,28 @@ import {DEBUG as DEBUG_WEBGL} from '../../../../webgl.js';
  * @param {WebGLProgram} program Program.
  * @struct
  */
-const Locations = function(gl, program) {
-{{#uniforms}}
+class Locations {
 
-  /**
-   * @type {WebGLUniformLocation}
-   */
-  this.{{originalName}} = gl.getUniformLocation(
-    program, DEBUG_WEBGL ? '{{originalName}}' : '{{shortName}}');
-{{/uniforms}}
-{{#attributes}}
+  constructor(gl, program) {
+  {{#uniforms}}
 
-  /**
-   * @type {number}
-   */
-  this.{{originalName}} = gl.getAttribLocation(
-    program, DEBUG_WEBGL ? '{{originalName}}' : '{{shortName}}');
-{{/attributes}}
-};
+    /**
+    * @type {WebGLUniformLocation}
+    */
+    this.{{originalName}} = gl.getUniformLocation(
+      program, DEBUG_WEBGL ? '{{originalName}}' : '{{shortName}}');
+  {{/uniforms}}
+  {{#attributes}}
+
+    /**
+    * @type {number}
+    */
+    this.{{originalName}} = gl.getAttribLocation(
+      program, DEBUG_WEBGL ? '{{originalName}}' : '{{shortName}}');
+  {{/attributes}}
+
+  }
+
+}
 
 export default Locations;

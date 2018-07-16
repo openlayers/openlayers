@@ -33,34 +33,39 @@ import PointerInteraction from '../interaction/Pointer.js';
  * @param {module:ol/interaction/DragRotate~Options=} opt_options Options.
  * @api
  */
-const DragRotate = function(opt_options) {
+class DragRotate {
 
-  const options = opt_options ? opt_options : {};
+  constructor(opt_options) {
 
-  PointerInteraction.call(this, {
-    handleDownEvent: handleDownEvent,
-    handleDragEvent: handleDragEvent,
-    handleUpEvent: handleUpEvent
-  });
+    const options = opt_options ? opt_options : {};
 
-  /**
-   * @private
-   * @type {module:ol/events/condition~Condition}
-   */
-  this.condition_ = options.condition ? options.condition : altShiftKeysOnly;
+    PointerInteraction.call(this, {
+      handleDownEvent: handleDownEvent,
+      handleDragEvent: handleDragEvent,
+      handleUpEvent: handleUpEvent
+    });
 
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.lastAngle_ = undefined;
+    /**
+     * @private
+     * @type {module:ol/events/condition~Condition}
+     */
+    this.condition_ = options.condition ? options.condition : altShiftKeysOnly;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.duration_ = options.duration !== undefined ? options.duration : 250;
-};
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.lastAngle_ = undefined;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.duration_ = options.duration !== undefined ? options.duration : 250;
+
+  }
+
+}
 
 inherits(DragRotate, PointerInteraction);
 

@@ -34,47 +34,51 @@ import PointerInteraction from '../interaction/Pointer.js';
  * @param {module:ol/interaction/DragRotateAndZoom~Options=} opt_options Options.
  * @api
  */
-const DragRotateAndZoom = function(opt_options) {
+class DragRotateAndZoom {
 
-  const options = opt_options ? opt_options : {};
+  constructor(opt_options) {
 
-  PointerInteraction.call(this, {
-    handleDownEvent: handleDownEvent,
-    handleDragEvent: handleDragEvent,
-    handleUpEvent: handleUpEvent
-  });
+    const options = opt_options ? opt_options : {};
 
-  /**
-   * @private
-   * @type {module:ol/events/condition~Condition}
-   */
-  this.condition_ = options.condition ? options.condition : shiftKeyOnly;
+    PointerInteraction.call(this, {
+      handleDownEvent: handleDownEvent,
+      handleDragEvent: handleDragEvent,
+      handleUpEvent: handleUpEvent
+    });
 
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.lastAngle_ = undefined;
+    /**
+     * @private
+     * @type {module:ol/events/condition~Condition}
+     */
+    this.condition_ = options.condition ? options.condition : shiftKeyOnly;
 
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.lastMagnitude_ = undefined;
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.lastAngle_ = undefined;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.lastScaleDelta_ = 0;
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.lastMagnitude_ = undefined;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.duration_ = options.duration !== undefined ? options.duration : 400;
+    /**
+     * @private
+     * @type {number}
+     */
+    this.lastScaleDelta_ = 0;
 
-};
+    /**
+     * @private
+     * @type {number}
+     */
+    this.duration_ = options.duration !== undefined ? options.duration : 400;
+
+  }
+
+}
 
 inherits(DragRotateAndZoom, PointerInteraction);
 

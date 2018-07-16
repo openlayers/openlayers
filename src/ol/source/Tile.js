@@ -318,18 +318,23 @@ TileSource.prototype.useTile = UNDEFINED;
  * @param {string} type Type.
  * @param {module:ol/Tile} tile The tile.
  */
-export const TileSourceEvent = function(type, tile) {
+export class TileSourceEvent {
 
-  Event.call(this, type);
+  constructor(type, tile) {
 
-  /**
-   * The tile related to the event.
-   * @type {module:ol/Tile}
-   * @api
-   */
-  this.tile = tile;
+    Event.call(this, type);
 
-};
+    /**
+     * The tile related to the event.
+     * @type {module:ol/Tile}
+     * @api
+     */
+    this.tile = tile;
+
+  }
+
+}
+
 inherits(TileSourceEvent, Event);
 
 export default TileSource;

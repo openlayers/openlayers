@@ -17,11 +17,14 @@ import Spatial from '../filter/Spatial.js';
  * @extends {module:ol/format/filter/Spatial}
  * @api
  */
-const Within = function(geometryName, geometry, opt_srsName) {
+class Within {
 
-  Spatial.call(this, 'Within', geometryName, geometry, opt_srsName);
+  constructor(geometryName, geometry, opt_srsName) {
+    Spatial.call(this, 'Within', geometryName, geometry, opt_srsName);
+  }
 
-};
+}
 
 inherits(Within, Spatial);
+
 export default Within;

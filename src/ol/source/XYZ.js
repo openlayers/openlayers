@@ -66,37 +66,42 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * @param {module:ol/source/XYZ~Options=} opt_options XYZ options.
  * @api
  */
-const XYZ = function(opt_options) {
-  const options = opt_options || {};
-  const projection = options.projection !== undefined ?
-    options.projection : 'EPSG:3857';
+class XYZ {
 
-  const tileGrid = options.tileGrid !== undefined ? options.tileGrid :
-    createXYZ({
-      extent: extentFromProjection(projection),
-      maxZoom: options.maxZoom,
-      minZoom: options.minZoom,
-      tileSize: options.tileSize
+  constructor(opt_options) {
+    const options = opt_options || {};
+    const projection = options.projection !== undefined ?
+      options.projection : 'EPSG:3857';
+
+    const tileGrid = options.tileGrid !== undefined ? options.tileGrid :
+      createXYZ({
+        extent: extentFromProjection(projection),
+        maxZoom: options.maxZoom,
+        minZoom: options.minZoom,
+        tileSize: options.tileSize
+      });
+
+    TileImage.call(this, {
+      attributions: options.attributions,
+      cacheSize: options.cacheSize,
+      crossOrigin: options.crossOrigin,
+      opaque: options.opaque,
+      projection: projection,
+      reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+      tileGrid: tileGrid,
+      tileLoadFunction: options.tileLoadFunction,
+      tilePixelRatio: options.tilePixelRatio,
+      tileUrlFunction: options.tileUrlFunction,
+      url: options.url,
+      urls: options.urls,
+      wrapX: options.wrapX !== undefined ? options.wrapX : true,
+      transition: options.transition
     });
 
-  TileImage.call(this, {
-    attributions: options.attributions,
-    cacheSize: options.cacheSize,
-    crossOrigin: options.crossOrigin,
-    opaque: options.opaque,
-    projection: projection,
-    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-    tileGrid: tileGrid,
-    tileLoadFunction: options.tileLoadFunction,
-    tilePixelRatio: options.tilePixelRatio,
-    tileUrlFunction: options.tileUrlFunction,
-    url: options.url,
-    urls: options.urls,
-    wrapX: options.wrapX !== undefined ? options.wrapX : true,
-    transition: options.transition
-  });
+  }
 
-};
+}
 
 inherits(XYZ, TileImage);
+
 export default XYZ;

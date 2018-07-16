@@ -83,32 +83,37 @@ const RasterOperationType = {
  * @param {module:ol/PluggableMap~FrameState} frameState The frame state.
  * @param {Object} data An object made available to operations.
  */
-const RasterSourceEvent = function(type, frameState, data) {
-  Event.call(this, type);
+class RasterSourceEvent {
 
-  /**
-   * The raster extent.
-   * @type {module:ol/extent~Extent}
-   * @api
-   */
-  this.extent = frameState.extent;
+  constructor(type, frameState, data) {
+    Event.call(this, type);
 
-  /**
-   * The pixel resolution (map units per pixel).
-   * @type {number}
-   * @api
-   */
-  this.resolution = frameState.viewState.resolution / frameState.pixelRatio;
+    /**
+     * The raster extent.
+     * @type {module:ol/extent~Extent}
+     * @api
+     */
+    this.extent = frameState.extent;
 
-  /**
-   * An object made available to all operations.  This can be used by operations
-   * as a storage object (e.g. for calculating statistics).
-   * @type {Object}
-   * @api
-   */
-  this.data = data;
+    /**
+     * The pixel resolution (map units per pixel).
+     * @type {number}
+     * @api
+     */
+    this.resolution = frameState.viewState.resolution / frameState.pixelRatio;
 
-};
+    /**
+     * An object made available to all operations.  This can be used by operations
+     * as a storage object (e.g. for calculating statistics).
+     * @type {Object}
+     * @api
+     */
+    this.data = data;
+
+  }
+
+}
+
 inherits(RasterSourceEvent, Event);
 
 /**

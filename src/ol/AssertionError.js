@@ -11,29 +11,32 @@ import {VERSION, inherits} from './util.js';
  * @extends {Error}
  * @param {number} code Error code.
  */
-const AssertionError = function(code) {
+class AssertionError {
 
-  const path = VERSION.split('-')[0];
+  constructor(code) {
+    const path = VERSION.split('-')[0];
 
-  /**
-   * @type {string}
-   */
-  this.message = 'Assertion failed. See https://openlayers.org/en/' + path +
-      '/doc/errors/#' + code + ' for details.';
+    /**
+     * @type {string}
+     */
+    this.message = 'Assertion failed. See https://openlayers.org/en/' + path +
+        '/doc/errors/#' + code + ' for details.';
 
-  /**
-   * Error code. The meaning of the code can be found on
-   * {@link https://openlayers.org/en/latest/doc/errors/} (replace `latest` with
-   * the version found in the OpenLayers script's header comment if a version
-   * other than the latest is used).
-   * @type {number}
-   * @api
-   */
-  this.code = code;
+    /**
+     * Error code. The meaning of the code can be found on
+     * {@link https://openlayers.org/en/latest/doc/errors/} (replace `latest` with
+     * the version found in the OpenLayers script's header comment if a version
+     * other than the latest is used).
+     * @type {number}
+     * @api
+     */
+    this.code = code;
 
-  this.name = 'AssertionError';
+    this.name = 'AssertionError';
 
-};
+  }
+
+}
 
 inherits(AssertionError, Error);
 

@@ -26,47 +26,51 @@ import PointerInteraction, {centroid as centroidFromPointers} from '../interacti
  * @param {module:ol/interaction/PinchZoom~Options=} opt_options Options.
  * @api
  */
-const PinchZoom = function(opt_options) {
+class PinchZoom {
 
-  PointerInteraction.call(this, {
-    handleDownEvent: handleDownEvent,
-    handleDragEvent: handleDragEvent,
-    handleUpEvent: handleUpEvent
-  });
+  constructor(opt_options) {
 
-  const options = opt_options ? opt_options : {};
+    PointerInteraction.call(this, {
+      handleDownEvent: handleDownEvent,
+      handleDragEvent: handleDragEvent,
+      handleUpEvent: handleUpEvent
+    });
 
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.constrainResolution_ = options.constrainResolution || false;
+    const options = opt_options ? opt_options : {};
 
-  /**
-   * @private
-   * @type {module:ol/coordinate~Coordinate}
-   */
-  this.anchor_ = null;
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.constrainResolution_ = options.constrainResolution || false;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.duration_ = options.duration !== undefined ? options.duration : 400;
+    /**
+     * @private
+     * @type {module:ol/coordinate~Coordinate}
+     */
+    this.anchor_ = null;
 
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.lastDistance_ = undefined;
+    /**
+     * @private
+     * @type {number}
+     */
+    this.duration_ = options.duration !== undefined ? options.duration : 400;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.lastScaleDelta_ = 1;
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.lastDistance_ = undefined;
 
-};
+    /**
+     * @private
+     * @type {number}
+     */
+    this.lastScaleDelta_ = 1;
+
+  }
+
+}
 
 inherits(PinchZoom, PointerInteraction);
 

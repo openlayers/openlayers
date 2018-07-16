@@ -11,17 +11,20 @@ import WebGLShader from '../webgl/Shader.js';
  * @param {string} source Source.
  * @struct
  */
-const WebGLFragment = function(source) {
-  WebGLShader.call(this, source);
-};
+class WebGLFragment {
+ constructor(source) {
+   WebGLShader.call(this, source);
+ }
+
+ /**
+  * @inheritDoc
+  */
+ getType() {
+   return FRAGMENT_SHADER;
+ }
+}
 
 inherits(WebGLFragment, WebGLShader);
 
 
-/**
- * @inheritDoc
- */
-WebGLFragment.prototype.getType = function() {
-  return FRAGMENT_SHADER;
-};
 export default WebGLFragment;

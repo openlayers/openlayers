@@ -65,157 +65,161 @@ import {appendParams} from '../uri.js';
  * @param {module:ol/source/WMTS~Options=} options WMTS options.
  * @api
  */
-const WMTS = function(options) {
+class WMTS {
 
-  // TODO: add support for TileMatrixLimits
+  constructor(options) {
 
-  /**
-   * @private
-   * @type {string}
-   */
-  this.version_ = options.version !== undefined ? options.version : '1.0.0';
+    // TODO: add support for TileMatrixLimits
 
-  /**
-   * @private
-   * @type {string}
-   */
-  this.format_ = options.format !== undefined ? options.format : 'image/jpeg';
+    /**
+     * @private
+     * @type {string}
+     */
+    this.version_ = options.version !== undefined ? options.version : '1.0.0';
 
-  /**
-   * @private
-   * @type {!Object}
-   */
-  this.dimensions_ = options.dimensions !== undefined ? options.dimensions : {};
+    /**
+     * @private
+     * @type {string}
+     */
+    this.format_ = options.format !== undefined ? options.format : 'image/jpeg';
 
-  /**
-   * @private
-   * @type {string}
-   */
-  this.layer_ = options.layer;
+    /**
+     * @private
+     * @type {!Object}
+     */
+    this.dimensions_ = options.dimensions !== undefined ? options.dimensions : {};
 
-  /**
-   * @private
-   * @type {string}
-   */
-  this.matrixSet_ = options.matrixSet;
+    /**
+     * @private
+     * @type {string}
+     */
+    this.layer_ = options.layer;
 
-  /**
-   * @private
-   * @type {string}
-   */
-  this.style_ = options.style;
+    /**
+     * @private
+     * @type {string}
+     */
+    this.matrixSet_ = options.matrixSet;
 
-  let urls = options.urls;
-  if (urls === undefined && options.url !== undefined) {
-    urls = expandUrl(options.url);
-  }
+    /**
+     * @private
+     * @type {string}
+     */
+    this.style_ = options.style;
 
-  // FIXME: should we guess this requestEncoding from options.url(s)
-  //        structure? that would mean KVP only if a template is not provided.
+    let urls = options.urls;
+    if (urls === undefined && options.url !== undefined) {
+      urls = expandUrl(options.url);
+    }
 
-  /**
-   * @private
-   * @type {module:ol/source/WMTSRequestEncoding}
-   */
-  this.requestEncoding_ = options.requestEncoding !== undefined ?
-    /** @type {module:ol/source/WMTSRequestEncoding} */ (options.requestEncoding) :
-    WMTSRequestEncoding.KVP;
+    // FIXME: should we guess this requestEncoding from options.url(s)
+    //        structure? that would mean KVP only if a template is not provided.
 
-  const requestEncoding = this.requestEncoding_;
+    /**
+     * @private
+     * @type {module:ol/source/WMTSRequestEncoding}
+     */
+    this.requestEncoding_ = options.requestEncoding !== undefined ?
+      /** @type {module:ol/source/WMTSRequestEncoding} */ (options.requestEncoding) :
+      WMTSRequestEncoding.KVP;
 
-  // FIXME: should we create a default tileGrid?
-  // we could issue a getCapabilities xhr to retrieve missing configuration
-  const tileGrid = options.tileGrid;
+    const requestEncoding = this.requestEncoding_;
 
-  // context property names are lower case to allow for a case insensitive
-  // replacement as some services use different naming conventions
-  const context = {
-    'layer': this.layer_,
-    'style': this.style_,
-    'tilematrixset': this.matrixSet_
-  };
+    // FIXME: should we create a default tileGrid?
+    // we could issue a getCapabilities xhr to retrieve missing configuration
+    const tileGrid = options.tileGrid;
 
-  if (requestEncoding == WMTSRequestEncoding.KVP) {
-    assign(context, {
-      'Service': 'WMTS',
-      'Request': 'GetTile',
-      'Version': this.version_,
-      'Format': this.format_
-    });
-  }
+    // context property names are lower case to allow for a case insensitive
+    // replacement as some services use different naming conventions
+    const context = {
+      'layer': this.layer_,
+      'style': this.style_,
+      'tilematrixset': this.matrixSet_
+    };
 
-  const dimensions = this.dimensions_;
-
-  /**
-   * @param {string} template Template.
-   * @return {module:ol/Tile~UrlFunction} Tile URL function.
-   * @private
-   */
-  this.createFromWMTSTemplate_ = function(template) {
-
-    // TODO: we may want to create our own appendParams function so that params
-    // order conforms to wmts spec guidance, and so that we can avoid to escape
-    // special template params
-
-    template = (requestEncoding == WMTSRequestEncoding.KVP) ?
-      appendParams(template, context) :
-      template.replace(/\{(\w+?)\}/g, function(m, p) {
-        return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
+    if (requestEncoding == WMTSRequestEncoding.KVP) {
+      assign(context, {
+        'Service': 'WMTS',
+        'Request': 'GetTile',
+        'Version': this.version_,
+        'Format': this.format_
       });
+    }
 
-    return (
-      /**
-       * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
-       * @param {number} pixelRatio Pixel ratio.
-       * @param {module:ol/proj/Projection} projection Projection.
-       * @return {string|undefined} Tile URL.
-       */
-      function(tileCoord, pixelRatio, projection) {
-        if (!tileCoord) {
-          return undefined;
-        } else {
-          const localContext = {
-            'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
-            'TileCol': tileCoord[1],
-            'TileRow': -tileCoord[2] - 1
-          };
-          assign(localContext, dimensions);
-          let url = template;
-          if (requestEncoding == WMTSRequestEncoding.KVP) {
-            url = appendParams(url, localContext);
+    const dimensions = this.dimensions_;
+
+    /**
+     * @param {string} template Template.
+     * @return {module:ol/Tile~UrlFunction} Tile URL function.
+     * @private
+     */
+    this.createFromWMTSTemplate_ = function(template) {
+
+      // TODO: we may want to create our own appendParams function so that params
+      // order conforms to wmts spec guidance, and so that we can avoid to escape
+      // special template params
+
+      template = (requestEncoding == WMTSRequestEncoding.KVP) ?
+        appendParams(template, context) :
+        template.replace(/\{(\w+?)\}/g, function(m, p) {
+          return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
+        });
+
+      return (
+        /**
+         * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+         * @param {number} pixelRatio Pixel ratio.
+         * @param {module:ol/proj/Projection} projection Projection.
+         * @return {string|undefined} Tile URL.
+         */
+        function(tileCoord, pixelRatio, projection) {
+          if (!tileCoord) {
+            return undefined;
           } else {
-            url = url.replace(/\{(\w+?)\}/g, function(m, p) {
-              return localContext[p];
-            });
+            const localContext = {
+              'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
+              'TileCol': tileCoord[1],
+              'TileRow': -tileCoord[2] - 1
+            };
+            assign(localContext, dimensions);
+            let url = template;
+            if (requestEncoding == WMTSRequestEncoding.KVP) {
+              url = appendParams(url, localContext);
+            } else {
+              url = url.replace(/\{(\w+?)\}/g, function(m, p) {
+                return localContext[p];
+              });
+            }
+            return url;
           }
-          return url;
         }
-      }
-    );
-  };
+      );
+    };
 
-  const tileUrlFunction = (urls && urls.length > 0) ?
-    createFromTileUrlFunctions(urls.map(this.createFromWMTSTemplate_)) : nullTileUrlFunction;
+    const tileUrlFunction = (urls && urls.length > 0) ?
+      createFromTileUrlFunctions(urls.map(this.createFromWMTSTemplate_)) : nullTileUrlFunction;
 
-  TileImage.call(this, {
-    attributions: options.attributions,
-    cacheSize: options.cacheSize,
-    crossOrigin: options.crossOrigin,
-    projection: options.projection,
-    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-    tileClass: options.tileClass,
-    tileGrid: tileGrid,
-    tileLoadFunction: options.tileLoadFunction,
-    tilePixelRatio: options.tilePixelRatio,
-    tileUrlFunction: tileUrlFunction,
-    urls: urls,
-    wrapX: options.wrapX !== undefined ? options.wrapX : false,
-    transition: options.transition
-  });
+    TileImage.call(this, {
+      attributions: options.attributions,
+      cacheSize: options.cacheSize,
+      crossOrigin: options.crossOrigin,
+      projection: options.projection,
+      reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+      tileClass: options.tileClass,
+      tileGrid: tileGrid,
+      tileLoadFunction: options.tileLoadFunction,
+      tilePixelRatio: options.tilePixelRatio,
+      tileUrlFunction: tileUrlFunction,
+      urls: urls,
+      wrapX: options.wrapX !== undefined ? options.wrapX : false,
+      transition: options.transition
+    });
 
-  this.setKey(this.getKeyForDimensions_());
+    this.setKey(this.getKeyForDimensions_());
 
-};
+  }
+
+}
 
 inherits(WMTS, TileImage);
 

@@ -17,11 +17,16 @@ import Spatial from '../filter/Spatial.js';
  * @extends {module:ol/format/filter/Spatial}
  * @api
  */
-const Contains = function(geometryName, geometry, opt_srsName) {
+class Contains {
 
-  Spatial.call(this, 'Contains', geometryName, geometry, opt_srsName);
+  constructor(geometryName, geometry, opt_srsName) {
 
-};
+    Spatial.call(this, 'Contains', geometryName, geometry, opt_srsName);
+
+  }
+
+}
 
 inherits(Contains, Spatial);
+
 export default Contains;

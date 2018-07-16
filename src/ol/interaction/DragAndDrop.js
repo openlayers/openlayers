@@ -50,32 +50,37 @@ const DragAndDropEventType = {
  * @param {Array.<module:ol/Feature>=} opt_features Features.
  * @param {module:ol/proj/Projection=} opt_projection Projection.
  */
-const DragAndDropEvent = function(type, file, opt_features, opt_projection) {
+class DragAndDropEvent {
 
-  Event.call(this, type);
+  constructor(type, file, opt_features, opt_projection) {
 
-  /**
-   * The features parsed from dropped data.
-   * @type {Array.<module:ol/Feature>|undefined}
-   * @api
-   */
-  this.features = opt_features;
+    Event.call(this, type);
 
-  /**
-   * The dropped file.
-   * @type {File}
-   * @api
-   */
-  this.file = file;
+    /**
+     * The features parsed from dropped data.
+     * @type {Array.<module:ol/Feature>|undefined}
+     * @api
+     */
+    this.features = opt_features;
 
-  /**
-   * The feature projection.
-   * @type {module:ol/proj/Projection|undefined}
-   * @api
-   */
-  this.projection = opt_projection;
+    /**
+     * The dropped file.
+     * @type {File}
+     * @api
+     */
+    this.file = file;
 
-};
+    /**
+     * The feature projection.
+     * @type {module:ol/proj/Projection|undefined}
+     * @api
+     */
+    this.projection = opt_projection;
+
+  }
+
+}
+
 inherits(DragAndDropEvent, Event);
 
 

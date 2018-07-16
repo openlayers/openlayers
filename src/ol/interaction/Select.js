@@ -110,30 +110,35 @@ const SelectEventType = {
  * @extends {module:ol/events/Event}
  * @constructor
  */
-const SelectEvent = function(type, selected, deselected, mapBrowserEvent) {
-  Event.call(this, type);
+class SelectEvent {
 
-  /**
-   * Selected features array.
-   * @type {Array.<module:ol/Feature>}
-   * @api
-   */
-  this.selected = selected;
+  constructor(type, selected, deselected, mapBrowserEvent) {
+    Event.call(this, type);
 
-  /**
-   * Deselected features array.
-   * @type {Array.<module:ol/Feature>}
-   * @api
-   */
-  this.deselected = deselected;
+    /**
+     * Selected features array.
+     * @type {Array.<module:ol/Feature>}
+     * @api
+     */
+    this.selected = selected;
 
-  /**
-   * Associated {@link module:ol/MapBrowserEvent}.
-   * @type {module:ol/MapBrowserEvent}
-   * @api
-   */
-  this.mapBrowserEvent = mapBrowserEvent;
-};
+    /**
+     * Deselected features array.
+     * @type {Array.<module:ol/Feature>}
+     * @api
+     */
+    this.deselected = deselected;
+
+    /**
+     * Associated {@link module:ol/MapBrowserEvent}.
+     * @type {module:ol/MapBrowserEvent}
+     * @api
+     */
+    this.mapBrowserEvent = mapBrowserEvent;
+
+  }
+
+}
 
 inherits(SelectEvent, Event);
 

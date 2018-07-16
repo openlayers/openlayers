@@ -21,34 +21,39 @@ import Comparison from '../filter/Comparison.js';
  * @extends {module:ol/format/filter/Comparison}
  * @api
  */
-const IsLike = function(propertyName, pattern, opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
-  Comparison.call(this, 'PropertyIsLike', propertyName);
+class IsLike {
 
-  /**
-   * @type {!string}
-   */
-  this.pattern = pattern;
+  constructor(propertyName, pattern, opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
+    Comparison.call(this, 'PropertyIsLike', propertyName);
 
-  /**
-   * @type {!string}
-   */
-  this.wildCard = (opt_wildCard !== undefined) ? opt_wildCard : '*';
+    /**
+     * @type {!string}
+     */
+    this.pattern = pattern;
 
-  /**
-   * @type {!string}
-   */
-  this.singleChar = (opt_singleChar !== undefined) ? opt_singleChar : '.';
+    /**
+     * @type {!string}
+     */
+    this.wildCard = (opt_wildCard !== undefined) ? opt_wildCard : '*';
 
-  /**
-   * @type {!string}
-   */
-  this.escapeChar = (opt_escapeChar !== undefined) ? opt_escapeChar : '!';
+    /**
+     * @type {!string}
+     */
+    this.singleChar = (opt_singleChar !== undefined) ? opt_singleChar : '.';
 
-  /**
-   * @type {boolean|undefined}
-   */
-  this.matchCase = opt_matchCase;
-};
+    /**
+     * @type {!string}
+     */
+    this.escapeChar = (opt_escapeChar !== undefined) ? opt_escapeChar : '!';
+
+    /**
+     * @type {boolean|undefined}
+     */
+    this.matchCase = opt_matchCase;
+
+  }
+}
 
 inherits(IsLike, Comparison);
+
 export default IsLike;

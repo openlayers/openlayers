@@ -17,11 +17,15 @@ import Spatial from '../filter/Spatial.js';
  * @extends {module:ol/format/filter/Spatial}
  * @api
  */
-const Intersects = function(geometryName, geometry, opt_srsName) {
+class Intersects {
 
-  Spatial.call(this, 'Intersects', geometryName, geometry, opt_srsName);
+  constructor(geometryName, geometry, opt_srsName) {
 
-};
+    Spatial.call(this, 'Intersects', geometryName, geometry, opt_srsName);
+  }
+
+}
 
 inherits(Intersects, Spatial);
+
 export default Intersects;

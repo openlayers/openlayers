@@ -48,18 +48,24 @@ export const WORLD_EXTENT = [-180, -85, 180, 85];
  * @extends {module:ol/proj/Projection}
  * @param {string} code Code.
  */
-function EPSG3857Projection(code) {
-  Projection.call(this, {
-    code: code,
-    units: Units.METERS,
-    extent: EXTENT,
-    global: true,
-    worldExtent: WORLD_EXTENT,
-    getPointResolution: function(resolution, point) {
-      return resolution / cosh(point[1] / RADIUS);
-    }
-  });
+class EPSG3857Projection {
+
+  constructor(code) {
+    Projection.call(this, {
+      code: code,
+      units: Units.METERS,
+      extent: EXTENT,
+      global: true,
+      worldExtent: WORLD_EXTENT,
+      getPointResolution: function(resolution, point) {
+        return resolution / cosh(point[1] / RADIUS);
+      }
+    });
+
+  }
+
 }
+
 inherits(EPSG3857Projection, Projection);
 
 

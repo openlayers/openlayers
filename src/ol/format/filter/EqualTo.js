@@ -15,9 +15,14 @@ import ComparisonBinary from '../filter/ComparisonBinary.js';
  * @extends {module:ol/format/filter/ComparisonBinary}
  * @api
  */
-const EqualTo = function(propertyName, expression, opt_matchCase) {
-  ComparisonBinary.call(this, 'PropertyIsEqualTo', propertyName, expression, opt_matchCase);
-};
+class EqualTo {
+
+  constructor(propertyName, expression, opt_matchCase) {
+    ComparisonBinary.call(this, 'PropertyIsEqualTo', propertyName, expression, opt_matchCase);
+  }
+
+}
 
 inherits(EqualTo, ComparisonBinary);
+
 export default EqualTo;

@@ -14,9 +14,14 @@ import ComparisonBinary from '../filter/ComparisonBinary.js';
  * @extends {module:ol/format/filter/ComparisonBinary}
  * @api
  */
-const LessThan = function(propertyName, expression) {
-  ComparisonBinary.call(this, 'PropertyIsLessThan', propertyName, expression);
-};
+class LessThan {
+
+  constructor(propertyName, expression) {
+    ComparisonBinary.call(this, 'PropertyIsLessThan', propertyName, expression);
+  }
+
+}
 
 inherits(LessThan, ComparisonBinary);
+
 export default LessThan;

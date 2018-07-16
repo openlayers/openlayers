@@ -66,29 +66,31 @@ import WebGLVectorLayerRenderer from './renderer/webgl/VectorLayer.js';
  * @fires module:ol/render/Event~RenderEvent#precompose
  * @api
  */
-const WebGLMap = function(options) {
-  options = assign({}, options);
-  if (!options.controls) {
-    options.controls = defaultControls();
-  }
-  if (!options.interactions) {
-    options.interactions = defaultInteractions();
+class WebGLMap {
+  constructor(options) {
+    options = assign({}, options);
+    if (!options.controls) {
+      options.controls = defaultControls();
+    }
+    if (!options.interactions) {
+      options.interactions = defaultInteractions();
+    }
+
+    PluggableMap.call(this, options);
   }
 
-  PluggableMap.call(this, options);
-};
+  createRenderer() {
+    const renderer = new WebGLMapRenderer(this);
+    renderer.registerLayerRenderers([
+      WebGLImageLayerRenderer,
+      WebGLTileLayerRenderer,
+      WebGLVectorLayerRenderer
+    ]);
+    return renderer;
+  }
+}
 
 inherits(WebGLMap, PluggableMap);
 
-
-WebGLMap.prototype.createRenderer = function() {
-  const renderer = new WebGLMapRenderer(this);
-  renderer.registerLayerRenderers([
-    WebGLImageLayerRenderer,
-    WebGLTileLayerRenderer,
-    WebGLVectorLayerRenderer
-  ]);
-  return renderer;
-};
 
 export default WebGLMap;

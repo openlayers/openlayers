@@ -13,15 +13,20 @@ import Filter from '../filter/Filter.js';
  * @extends {module:ol/format/filter/Filter}
  * @api
  */
-const Not = function(condition) {
+class Not {
 
-  Filter.call(this, 'Not');
+  constructor(condition) {
 
-  /**
-   * @type {!module:ol/format/filter/Filter}
-   */
-  this.condition = condition;
-};
+    Filter.call(this, 'Not');
+
+    /**
+     * @type {!module:ol/format/filter/Filter}
+     */
+    this.condition = condition;
+
+  }
+
+}
 
 inherits(Not, Filter);
 export default Not;

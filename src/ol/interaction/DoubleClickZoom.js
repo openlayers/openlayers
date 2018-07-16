@@ -22,27 +22,31 @@ import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
  * @param {module:ol/interaction/DoubleClickZoom~Options=} opt_options Options.
  * @api
  */
-const DoubleClickZoom = function(opt_options) {
+class DoubleClickZoom {
 
-  const options = opt_options ? opt_options : {};
+  constructor(opt_options) {
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.delta_ = options.delta ? options.delta : 1;
+    const options = opt_options ? opt_options : {};
 
-  Interaction.call(this, {
-    handleEvent: handleEvent
-  });
+    /**
+     * @private
+     * @type {number}
+     */
+    this.delta_ = options.delta ? options.delta : 1;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.duration_ = options.duration !== undefined ? options.duration : 250;
+    Interaction.call(this, {
+      handleEvent: handleEvent
+    });
 
-};
+    /**
+     * @private
+     * @type {number}
+     */
+    this.duration_ = options.duration !== undefined ? options.duration : 250;
+
+  }
+
+}
 
 inherits(DoubleClickZoom, Interaction);
 

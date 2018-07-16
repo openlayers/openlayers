@@ -13,10 +13,15 @@ import LogicalNary from '../filter/LogicalNary.js';
  * @extends {module:ol/format/filter/LogicalNary}
  * @api
  */
-const Or = function(conditions) {
-  const params = ['Or'].concat(Array.prototype.slice.call(arguments));
-  LogicalNary.apply(this, params);
-};
+class Or {
+
+  constructor(conditions) {
+    const params = ['Or'].concat(Array.prototype.slice.call(arguments));
+    LogicalNary.apply(this, params);
+  }
+
+}
 
 inherits(Or, LogicalNary);
+
 export default Or;

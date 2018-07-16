@@ -17,20 +17,25 @@ import Comparison from '../filter/Comparison.js';
  * @param {boolean=} opt_matchCase Case-sensitive?
  * @extends {module:ol/format/filter/Comparison}
  */
-const ComparisonBinary = function(tagName, propertyName, expression, opt_matchCase) {
+class ComparisonBinary {
 
-  Comparison.call(this, tagName, propertyName);
+  constructor(tagName, propertyName, expression, opt_matchCase) {
 
-  /**
-   * @type {!(string|number)}
-   */
-  this.expression = expression;
+    Comparison.call(this, tagName, propertyName);
 
-  /**
-   * @type {boolean|undefined}
-   */
-  this.matchCase = opt_matchCase;
-};
+    /**
+     * @type {!(string|number)}
+     */
+    this.expression = expression;
+
+    /**
+     * @type {boolean|undefined}
+     */
+    this.matchCase = opt_matchCase;
+  }
+
+}
 
 inherits(ComparisonBinary, Comparison);
+
 export default ComparisonBinary;

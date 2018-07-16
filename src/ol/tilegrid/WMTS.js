@@ -55,45 +55,46 @@ import TileGrid from '../tilegrid/TileGrid.js';
  * @struct
  * @api
  */
-const WMTSTileGrid = function(options) {
-  /**
-   * @private
-   * @type {!Array.<string>}
-   */
-  this.matrixIds_ = options.matrixIds;
-  // FIXME: should the matrixIds become optional?
+class WMTSTileGrid {
+  constructor(options) {
+    /**
+     * @private
+     * @type {!Array.<string>}
+     */
+    this.matrixIds_ = options.matrixIds;
+    // FIXME: should the matrixIds become optional?
 
-  TileGrid.call(this, {
-    extent: options.extent,
-    origin: options.origin,
-    origins: options.origins,
-    resolutions: options.resolutions,
-    tileSize: options.tileSize,
-    tileSizes: options.tileSizes,
-    sizes: options.sizes
-  });
-};
+    TileGrid.call(this, {
+      extent: options.extent,
+      origin: options.origin,
+      origins: options.origins,
+      resolutions: options.resolutions,
+      tileSize: options.tileSize,
+      tileSizes: options.tileSizes,
+      sizes: options.sizes
+    });
+  }
+
+  /**
+   * @param {number} z Z.
+   * @return {string} MatrixId..
+   */
+  getMatrixId(z) {
+    return this.matrixIds_[z];
+  }
+
+  /**
+   * Get the list of matrix identifiers.
+   * @return {Array.<string>} MatrixIds.
+   * @api
+   */
+  getMatrixIds() {
+    return this.matrixIds_;
+  }
+}
 
 inherits(WMTSTileGrid, TileGrid);
 
-
-/**
- * @param {number} z Z.
- * @return {string} MatrixId..
- */
-WMTSTileGrid.prototype.getMatrixId = function(z) {
-  return this.matrixIds_[z];
-};
-
-
-/**
- * Get the list of matrix identifiers.
- * @return {Array.<string>} MatrixIds.
- * @api
- */
-WMTSTileGrid.prototype.getMatrixIds = function() {
-  return this.matrixIds_;
-};
 
 export default WMTSTileGrid;
 

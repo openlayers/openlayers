@@ -27,18 +27,21 @@ const Property = {
  * @param {module:ol/CollectionEventType} type Type.
  * @param {*=} opt_element Element.
  */
-export const CollectionEvent = function(type, opt_element) {
+export class CollectionEvent {
 
-  Event.call(this, type);
+  constructor(type, opt_element) {
+    Event.call(this, type);
 
-  /**
-   * The element that is added to or removed from the collection.
-   * @type {*}
-   * @api
-   */
-  this.element = opt_element;
+    /**
+     * The element that is added to or removed from the collection.
+     * @type {*}
+     * @api
+     */
+    this.element = opt_element;
 
-};
+  }
+
+}
 
 inherits(CollectionEvent, Event);
 
