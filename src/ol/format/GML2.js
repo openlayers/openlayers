@@ -21,6 +21,18 @@ const schemaLocation = GMLNS + ' http://schemas.opengis.net/gml/2.1.2/feature.xs
 
 
 /**
+ * @const
+ * @type {Object.<string, string>}
+ */
+const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
+  'MultiLineString': 'lineStringMember',
+  'MultiCurve': 'curveMember',
+  'MultiPolygon': 'polygonMember',
+  'MultiSurface': 'surfaceMember'
+};
+
+
+/**
  * @classdesc
  * Feature format for reading and writing data in the GML format,
  * version 2.1.2.
@@ -574,18 +586,6 @@ class GML2 {
 }
 
 inherits(GML2, GMLBase);
-
-
-/**
- * @const
- * @type {Object.<string, string>}
- */
-const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
-  'MultiLineString': 'lineStringMember',
-  'MultiCurve': 'curveMember',
-  'MultiPolygon': 'polygonMember',
-  'MultiSurface': 'surfaceMember'
-};
 
 
 /**

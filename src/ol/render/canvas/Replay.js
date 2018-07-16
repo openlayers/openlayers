@@ -28,6 +28,19 @@ import {
   setFromArray as transformSetFromArray
 } from '../../transform.js';
 
+
+/**
+ * @type {module:ol/extent~Extent}
+ */
+const tmpExtent = createEmpty();
+
+
+/**
+ * @type {!module:ol/transform~Transform}
+ */
+const tmpTransform = createTransform();
+
+
 /**
  * @constructor
  * @extends {module:ol/render/VectorContext}
@@ -1070,18 +1083,6 @@ class CanvasReplay {
 }
 
 inherits(CanvasReplay, VectorContext);
-
-
-/**
- * @type {module:ol/extent~Extent}
- */
-const tmpExtent = createEmpty();
-
-
-/**
- * @type {!module:ol/transform~Transform}
- */
-const tmpTransform = createTransform();
 
 
 /**

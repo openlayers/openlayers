@@ -17,6 +17,14 @@ import WMSServerType from '../source/WMSServerType.js';
 import {compareVersions} from '../string.js';
 import {appendParams} from '../uri.js';
 
+
+/**
+ * @const
+ * @type {module:ol/size~Size}
+ */
+const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
+
+
 /**
  * @typedef {Object} Options
  * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
@@ -378,13 +386,6 @@ class ImageWMS {
 }
 
 inherits(ImageWMS, ImageSource);
-
-
-/**
- * @const
- * @type {module:ol/size~Size}
- */
-const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
 
 
 export default ImageWMS;

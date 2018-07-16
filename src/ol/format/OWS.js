@@ -7,6 +7,26 @@ import XML from '../format/XML.js';
 import {readString} from '../format/xsd.js';
 import {makeObjectPropertyPusher, makeObjectPropertySetter, makeStructureNS, pushParseAndPop} from '../xml.js';
 
+
+/**
+ * @const
+ * @type {Array.<null|string>}
+ */
+const NAMESPACE_URIS = [null, 'http://www.opengis.net/ows/1.1'];
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'ServiceIdentification': makeObjectPropertySetter(readServiceIdentification),
+    'ServiceProvider': makeObjectPropertySetter(readServiceProvider),
+    'OperationsMetadata': makeObjectPropertySetter(readOperationsMetadata)
+  });
+
+
 /**
  * @constructor
  * @extends {module:ol/format/XML}
@@ -39,25 +59,6 @@ class OWS {
 }
 
 inherits(OWS, XML);
-
-
-/**
- * @const
- * @type {Array.<null|string>}
- */
-const NAMESPACE_URIS = [null, 'http://www.opengis.net/ows/1.1'];
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'ServiceIdentification': makeObjectPropertySetter(readServiceIdentification),
-    'ServiceProvider': makeObjectPropertySetter(readServiceProvider),
-    'OperationsMetadata': makeObjectPropertySetter(readOperationsMetadata)
-  });
 
 
 /**

@@ -10,6 +10,39 @@ import {makeArrayPusher, makeObjectPropertyPusher, makeObjectPropertySetter,
 
 
 /**
+ * @const
+ * @type {Array.<null|string>}
+ */
+const NAMESPACE_URIS = [
+  null,
+  'http://www.opengis.net/wms'
+];
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Service': makeObjectPropertySetter(readService),
+    'Capability': makeObjectPropertySetter(readCapability)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const CAPABILITY_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Request': makeObjectPropertySetter(readRequest),
+    'Exception': makeObjectPropertySetter(readException),
+    'Layer': makeObjectPropertySetter(readCapabilityLayer)
+  });
+
+
+/**
  * @classdesc
  * Format for reading WMS capabilities data
  *
@@ -53,39 +86,6 @@ class WMSCapabilities {
 }
 
 inherits(WMSCapabilities, XML);
-
-
-/**
- * @const
- * @type {Array.<null|string>}
- */
-const NAMESPACE_URIS = [
-  null,
-  'http://www.opengis.net/wms'
-];
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'Service': makeObjectPropertySetter(readService),
-    'Capability': makeObjectPropertySetter(readCapability)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const CAPABILITY_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'Request': makeObjectPropertySetter(readRequest),
-    'Exception': makeObjectPropertySetter(readException),
-    'Layer': makeObjectPropertySetter(readCapabilityLayer)
-  });
 
 
 /**

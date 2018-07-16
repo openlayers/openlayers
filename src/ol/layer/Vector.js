@@ -92,152 +92,152 @@ const Property = {
  * @api
  */
 class VectorLayer {
- constructor(opt_options) {
-   const options = opt_options ?
-     opt_options : /** @type {module:ol/layer/Vector~Options} */ ({});
+  constructor(opt_options) {
+    const options = opt_options ?
+      opt_options : /** @type {module:ol/layer/Vector~Options} */ ({});
 
-   const baseOptions = assign({}, options);
+    const baseOptions = assign({}, options);
 
-   delete baseOptions.style;
-   delete baseOptions.renderBuffer;
-   delete baseOptions.updateWhileAnimating;
-   delete baseOptions.updateWhileInteracting;
-   Layer.call(this, /** @type {module:ol/layer/Layer~Options} */ (baseOptions));
+    delete baseOptions.style;
+    delete baseOptions.renderBuffer;
+    delete baseOptions.updateWhileAnimating;
+    delete baseOptions.updateWhileInteracting;
+    Layer.call(this, /** @type {module:ol/layer/Layer~Options} */ (baseOptions));
 
-   /**
+    /**
     * @private
     * @type {boolean}
     */
-   this.declutter_ = options.declutter !== undefined ? options.declutter : false;
+    this.declutter_ = options.declutter !== undefined ? options.declutter : false;
 
-   /**
+    /**
     * @type {number}
     * @private
     */
-   this.renderBuffer_ = options.renderBuffer !== undefined ?
-     options.renderBuffer : 100;
+    this.renderBuffer_ = options.renderBuffer !== undefined ?
+      options.renderBuffer : 100;
 
-   /**
+    /**
     * User provided style.
     * @type {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction}
     * @private
     */
-   this.style_ = null;
+    this.style_ = null;
 
-   /**
+    /**
     * Style function for use within the library.
     * @type {module:ol/style/Style~StyleFunction|undefined}
     * @private
     */
-   this.styleFunction_ = undefined;
+    this.styleFunction_ = undefined;
 
-   this.setStyle(options.style);
+    this.setStyle(options.style);
 
-   /**
+    /**
     * @type {boolean}
     * @private
     */
-   this.updateWhileAnimating_ = options.updateWhileAnimating !== undefined ?
-     options.updateWhileAnimating : false;
+    this.updateWhileAnimating_ = options.updateWhileAnimating !== undefined ?
+      options.updateWhileAnimating : false;
 
-   /**
+    /**
     * @type {boolean}
     * @private
     */
-   this.updateWhileInteracting_ = options.updateWhileInteracting !== undefined ?
-     options.updateWhileInteracting : false;
+    this.updateWhileInteracting_ = options.updateWhileInteracting !== undefined ?
+      options.updateWhileInteracting : false;
 
-   /**
+    /**
     * @private
     * @type {module:ol/layer/VectorTileRenderType|string}
     */
-   this.renderMode_ = options.renderMode || VectorRenderType.VECTOR;
+    this.renderMode_ = options.renderMode || VectorRenderType.VECTOR;
 
-   /**
+    /**
     * The layer type.
     * @protected
     * @type {module:ol/LayerType}
     */
-   this.type = LayerType.VECTOR;
+    this.type = LayerType.VECTOR;
 
- }
+  }
 
- /**
+  /**
   * @return {boolean} Declutter.
   */
- getDeclutter() {
-   return this.declutter_;
- }
+  getDeclutter() {
+    return this.declutter_;
+  }
 
- /**
+  /**
   * @param {boolean} declutter Declutter.
   */
- setDeclutter(declutter) {
-   this.declutter_ = declutter;
- }
+  setDeclutter(declutter) {
+    this.declutter_ = declutter;
+  }
 
- /**
+  /**
   * @return {number|undefined} Render buffer.
   */
- getRenderBuffer() {
-   return this.renderBuffer_;
- }
+  getRenderBuffer() {
+    return this.renderBuffer_;
+  }
 
- /**
+  /**
   * @return {function(module:ol/Feature, module:ol/Feature): number|null|undefined} Render
   *     order.
   */
- getRenderOrder() {
-   return (
-     /** @type {module:ol/render~OrderFunction|null|undefined} */ (this.get(Property.RENDER_ORDER))
-   );
- }
+  getRenderOrder() {
+    return (
+    /** @type {module:ol/render~OrderFunction|null|undefined} */ (this.get(Property.RENDER_ORDER))
+    );
+  }
 
- /**
+  /**
   * Get the style for features.  This returns whatever was passed to the `style`
   * option at construction or to the `setStyle` method.
   * @return {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction}
   *     Layer style.
   * @api
   */
- getStyle() {
-   return this.style_;
- }
+  getStyle() {
+    return this.style_;
+  }
 
- /**
+  /**
   * Get the style function.
   * @return {module:ol/style/Style~StyleFunction|undefined} Layer style function.
   * @api
   */
- getStyleFunction() {
-   return this.styleFunction_;
- }
+  getStyleFunction() {
+    return this.styleFunction_;
+  }
 
- /**
+  /**
   * @return {boolean} Whether the rendered layer should be updated while
   *     animating.
   */
- getUpdateWhileAnimating() {
-   return this.updateWhileAnimating_;
- }
+  getUpdateWhileAnimating() {
+    return this.updateWhileAnimating_;
+  }
 
- /**
+  /**
   * @return {boolean} Whether the rendered layer should be updated while
   *     interacting.
   */
- getUpdateWhileInteracting() {
-   return this.updateWhileInteracting_;
- }
+  getUpdateWhileInteracting() {
+    return this.updateWhileInteracting_;
+  }
 
- /**
+  /**
   * @param {module:ol/render~OrderFunction|null|undefined} renderOrder
   *     Render order.
   */
- setRenderOrder(renderOrder) {
-   this.set(Property.RENDER_ORDER, renderOrder);
- }
+  setRenderOrder(renderOrder) {
+    this.set(Property.RENDER_ORDER, renderOrder);
+  }
 
- /**
+  /**
   * Set the style for features.  This can be a single style object, an array
   * of styles, or a function that takes a feature and resolution and returns
   * an array of styles. If it is `undefined` the default style is used. If
@@ -248,19 +248,19 @@ class VectorLayer {
   *     style Layer style.
   * @api
   */
- setStyle(style) {
-   this.style_ = style !== undefined ? style : createDefaultStyle;
-   this.styleFunction_ = style === null ?
-     undefined : toStyleFunction(this.style_);
-   this.changed();
- }
+  setStyle(style) {
+    this.style_ = style !== undefined ? style : createDefaultStyle;
+    this.styleFunction_ = style === null ?
+      undefined : toStyleFunction(this.style_);
+    this.changed();
+  }
 
- /**
+  /**
   * @return {module:ol/layer/VectorRenderType|string} The render mode.
   */
- getRenderMode() {
-   return this.renderMode_;
- }
+  getRenderMode() {
+    return this.renderMode_;
+  }
 }
 
 inherits(VectorLayer, Layer);

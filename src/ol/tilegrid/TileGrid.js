@@ -12,6 +12,13 @@ import {createOrUpdate as createOrUpdateTileCoord} from '../tilecoord.js';
 
 
 /**
+ * @private
+ * @type {module:ol/tilecoord~TileCoord}
+ */
+const tmpTileCoord = [0, 0, 0];
+
+
+/**
  * @typedef {Object} Options
  * @property {module:ol/extent~Extent} [extent] Extent for the tile grid. No tiles outside this
  * extent will be requested by {@link module:ol/source/Tile} sources. When no `origin` or
@@ -542,13 +549,6 @@ class TileGrid {
     this.fullTileRanges_ = fullTileRanges;
   }
 }
-
-
-/**
- * @private
- * @type {module:ol/tilecoord~TileCoord}
- */
-const tmpTileCoord = [0, 0, 0];
 
 
 export default TileGrid;

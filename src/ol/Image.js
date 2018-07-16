@@ -39,115 +39,115 @@ import {getHeight} from './extent.js';
  * @param {module:ol/Image~LoadFunction} imageLoadFunction Image load function.
  */
 class ImageWrapper {
- constructor(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
+  constructor(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
 
-   ImageBase.call(this, extent, resolution, pixelRatio, ImageState.IDLE);
+    ImageBase.call(this, extent, resolution, pixelRatio, ImageState.IDLE);
 
-   /**
+    /**
     * @private
     * @type {string}
     */
-   this.src_ = src;
+    this.src_ = src;
 
-   /**
+    /**
     * @private
     * @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement}
     */
-   this.image_ = new Image();
-   if (crossOrigin !== null) {
-     this.image_.crossOrigin = crossOrigin;
-   }
+    this.image_ = new Image();
+    if (crossOrigin !== null) {
+      this.image_.crossOrigin = crossOrigin;
+    }
 
-   /**
+    /**
     * @private
     * @type {Array.<module:ol/events~EventsKey>}
     */
-   this.imageListenerKeys_ = null;
+    this.imageListenerKeys_ = null;
 
-   /**
+    /**
     * @protected
     * @type {module:ol/ImageState}
     */
-   this.state = ImageState.IDLE;
+    this.state = ImageState.IDLE;
 
-   /**
+    /**
     * @private
     * @type {module:ol/Image~LoadFunction}
     */
-   this.imageLoadFunction_ = imageLoadFunction;
+    this.imageLoadFunction_ = imageLoadFunction;
 
- }
+  }
 
- /**
+  /**
   * @inheritDoc
   * @api
   */
- getImage() {
-   return this.image_;
- }
+  getImage() {
+    return this.image_;
+  }
 
- /**
+  /**
   * Tracks loading or read errors.
   *
   * @private
   */
- handleImageError_() {
-   this.state = ImageState.ERROR;
-   this.unlistenImage_();
-   this.changed();
- }
+  handleImageError_() {
+    this.state = ImageState.ERROR;
+    this.unlistenImage_();
+    this.changed();
+  }
 
- /**
+  /**
   * Tracks successful image load.
   *
   * @private
   */
- handleImageLoad_() {
-   if (this.resolution === undefined) {
-     this.resolution = getHeight(this.extent) / this.image_.height;
-   }
-   this.state = ImageState.LOADED;
-   this.unlistenImage_();
-   this.changed();
- }
+  handleImageLoad_() {
+    if (this.resolution === undefined) {
+      this.resolution = getHeight(this.extent) / this.image_.height;
+    }
+    this.state = ImageState.LOADED;
+    this.unlistenImage_();
+    this.changed();
+  }
 
- /**
+  /**
   * Load the image or retry if loading previously failed.
   * Loading is taken care of by the tile queue, and calling this method is
   * only needed for preloading or for reloading in case of an error.
   * @override
   * @api
   */
- load() {
-   if (this.state == ImageState.IDLE || this.state == ImageState.ERROR) {
-     this.state = ImageState.LOADING;
-     this.changed();
-     this.imageListenerKeys_ = [
-       listenOnce(this.image_, EventType.ERROR,
-         this.handleImageError_, this),
-       listenOnce(this.image_, EventType.LOAD,
-         this.handleImageLoad_, this)
-     ];
-     this.imageLoadFunction_(this, this.src_);
-   }
- }
+  load() {
+    if (this.state == ImageState.IDLE || this.state == ImageState.ERROR) {
+      this.state = ImageState.LOADING;
+      this.changed();
+      this.imageListenerKeys_ = [
+        listenOnce(this.image_, EventType.ERROR,
+          this.handleImageError_, this),
+        listenOnce(this.image_, EventType.LOAD,
+          this.handleImageLoad_, this)
+      ];
+      this.imageLoadFunction_(this, this.src_);
+    }
+  }
 
- /**
+  /**
   * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
   */
- setImage(image) {
-   this.image_ = image;
- }
+  setImage(image) {
+    this.image_ = image;
+  }
 
- /**
+  /**
   * Discards event handlers which listen for load completion or errors.
   *
   * @private
   */
- unlistenImage_() {
-   this.imageListenerKeys_.forEach(unlistenByKey);
-   this.imageListenerKeys_ = null;
- }
+  unlistenImage_() {
+    this.imageListenerKeys_.forEach(unlistenByKey);
+    this.imageListenerKeys_ = null;
+  }
 }
 
 inherits(ImageWrapper, ImageBase);

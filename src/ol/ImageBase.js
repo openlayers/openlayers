@@ -15,82 +15,82 @@ import EventType from './events/EventType.js';
  * @param {module:ol/ImageState} state State.
  */
 class ImageBase {
- constructor(extent, resolution, pixelRatio, state) {
+  constructor(extent, resolution, pixelRatio, state) {
 
-   EventTarget.call(this);
+    EventTarget.call(this);
 
-   /**
+    /**
     * @protected
     * @type {module:ol/extent~Extent}
     */
-   this.extent = extent;
+    this.extent = extent;
 
-   /**
+    /**
     * @private
     * @type {number}
     */
-   this.pixelRatio_ = pixelRatio;
+    this.pixelRatio_ = pixelRatio;
 
-   /**
+    /**
     * @protected
     * @type {number|undefined}
     */
-   this.resolution = resolution;
+    this.resolution = resolution;
 
-   /**
+    /**
     * @protected
     * @type {module:ol/ImageState}
     */
-   this.state = state;
+    this.state = state;
 
- }
+  }
 
- /**
+  /**
   * @protected
   */
- changed() {
-   this.dispatchEvent(EventType.CHANGE);
- }
+  changed() {
+    this.dispatchEvent(EventType.CHANGE);
+  }
 
- /**
+  /**
   * @return {module:ol/extent~Extent} Extent.
   */
- getExtent() {
-   return this.extent;
- }
+  getExtent() {
+    return this.extent;
+  }
 
- /**
+  /**
   * @abstract
   * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
   */
- getImage() {}
+  getImage() {}
 
- /**
+  /**
   * @return {number} PixelRatio.
   */
- getPixelRatio() {
-   return this.pixelRatio_;
- }
+  getPixelRatio() {
+    return this.pixelRatio_;
+  }
 
- /**
+  /**
   * @return {number} Resolution.
   */
- getResolution() {
-   return /** @type {number} */ (this.resolution);
- }
+  getResolution() {
+    return /** @type {number} */ (this.resolution);
+  }
 
- /**
+  /**
   * @return {module:ol/ImageState} State.
   */
- getState() {
-   return this.state;
- }
+  getState() {
+    return this.state;
+  }
 
- /**
+  /**
   * Load not yet loaded URI.
   * @abstract
   */
- load() {}
+  load() {}
 }
 
 inherits(ImageBase, EventTarget);

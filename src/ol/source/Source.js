@@ -52,129 +52,129 @@ import SourceState from '../source/State.js';
  * @api
  */
 class Source {
- constructor(options) {
+  constructor(options) {
 
-   BaseObject.call(this);
+    BaseObject.call(this);
 
-   /**
+    /**
     * @private
     * @type {module:ol/proj/Projection}
     */
-   this.projection_ = getProjection(options.projection);
+    this.projection_ = getProjection(options.projection);
 
-   /**
+    /**
     * @private
     * @type {?module:ol/source/Source~Attribution}
     */
-   this.attributions_ = this.adaptAttributions_(options.attributions);
+    this.attributions_ = this.adaptAttributions_(options.attributions);
 
-   /**
+    /**
     * @private
     * @type {module:ol/source/State}
     */
-   this.state_ = options.state !== undefined ?
-     options.state : SourceState.READY;
+    this.state_ = options.state !== undefined ?
+      options.state : SourceState.READY;
 
-   /**
+    /**
     * @private
     * @type {boolean}
     */
-   this.wrapX_ = options.wrapX !== undefined ? options.wrapX : false;
+    this.wrapX_ = options.wrapX !== undefined ? options.wrapX : false;
 
- }
+  }
 
- /**
+  /**
   * Turns the attributions option into an attributions function.
   * @param {module:ol/source/Source~AttributionLike|undefined} attributionLike The attribution option.
   * @return {?module:ol/source/Source~Attribution} An attribution function (or null).
   */
- adaptAttributions_(attributionLike) {
-   if (!attributionLike) {
-     return null;
-   }
-   if (Array.isArray(attributionLike)) {
-     return function(frameState) {
-       return attributionLike;
-     };
-   }
+  adaptAttributions_(attributionLike) {
+    if (!attributionLike) {
+      return null;
+    }
+    if (Array.isArray(attributionLike)) {
+      return function(frameState) {
+        return attributionLike;
+      };
+    }
 
-   if (typeof attributionLike === 'function') {
-     return attributionLike;
-   }
+    if (typeof attributionLike === 'function') {
+      return attributionLike;
+    }
 
-   return function(frameState) {
-     return [attributionLike];
-   };
- }
+    return function(frameState) {
+      return [attributionLike];
+    };
+  }
 
- /**
+  /**
   * Get the attribution function for the source.
   * @return {?module:ol/source/Source~Attribution} Attribution function.
   */
- getAttributions() {
-   return this.attributions_;
- }
+  getAttributions() {
+    return this.attributions_;
+  }
 
- /**
+  /**
   * Get the projection of the source.
   * @return {module:ol/proj/Projection} Projection.
   * @api
   */
- getProjection() {
-   return this.projection_;
- }
+  getProjection() {
+    return this.projection_;
+  }
 
- /**
+  /**
   * @abstract
   * @return {Array.<number>|undefined} Resolutions.
   */
- getResolutions() {}
+  getResolutions() {}
 
- /**
+  /**
   * Get the state of the source, see {@link module:ol/source/State~State} for possible states.
   * @return {module:ol/source/State} State.
   * @api
   */
- getState() {
-   return this.state_;
- }
+  getState() {
+    return this.state_;
+  }
 
- /**
+  /**
   * @return {boolean|undefined} Wrap X.
   */
- getWrapX() {
-   return this.wrapX_;
- }
+  getWrapX() {
+    return this.wrapX_;
+  }
 
- /**
+  /**
   * Refreshes the source and finally dispatches a 'change' event.
   * @api
   */
- refresh() {
-   this.changed();
- }
+  refresh() {
+    this.changed();
+  }
 
- /**
+  /**
   * Set the attributions of the source.
   * @param {module:ol/source/Source~AttributionLike|undefined} attributions Attributions.
   *     Can be passed as `string`, `Array<string>`, `{@link module:ol/source/Source~Attribution}`,
   *     or `undefined`.
   * @api
   */
- setAttributions(attributions) {
-   this.attributions_ = this.adaptAttributions_(attributions);
-   this.changed();
- }
+  setAttributions(attributions) {
+    this.attributions_ = this.adaptAttributions_(attributions);
+    this.changed();
+  }
 
- /**
+  /**
   * Set the state of the source.
   * @param {module:ol/source/State} state State.
   * @protected
   */
- setState(state) {
-   this.state_ = state;
-   this.changed();
- }
+  setState(state) {
+    this.state_ = state;
+    this.changed();
+  }
 }
 
 inherits(Source, BaseObject);

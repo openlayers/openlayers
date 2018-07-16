@@ -61,42 +61,42 @@ import {get as getProjection, equivalent as equivalentProjection, transformExten
  * @api
  */
 class FeatureFormat {
- constructor() {
+  constructor() {
 
-   /**
+    /**
     * @protected
     * @type {module:ol/proj/Projection}
     */
-   this.dataProjection = null;
+    this.dataProjection = null;
 
-   /**
+    /**
     * @protected
     * @type {module:ol/proj/Projection}
     */
-   this.defaultFeatureProjection = null;
+    this.defaultFeatureProjection = null;
 
- }
+  }
 
- /**
+  /**
   * Adds the data projection to the read options.
   * @param {Document|Node|Object|string} source Source.
   * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
   * @return {module:ol/format/Feature~ReadOptions|undefined} Options.
   * @protected
   */
- getReadOptions(source, opt_options) {
-   let options;
-   if (opt_options) {
-     options = {
-       dataProjection: opt_options.dataProjection ?
-         opt_options.dataProjection : this.readProjection(source),
-       featureProjection: opt_options.featureProjection
-     };
-   }
-   return this.adaptOptions(options);
- }
+  getReadOptions(source, opt_options) {
+    let options;
+    if (opt_options) {
+      options = {
+        dataProjection: opt_options.dataProjection ?
+          opt_options.dataProjection : this.readProjection(source),
+        featureProjection: opt_options.featureProjection
+      };
+    }
+    return this.adaptOptions(options);
+  }
 
- /**
+  /**
   * Sets the `dataProjection` on the options, if no `dataProjection`
   * is set.
   * @param {module:ol/format/Feature~WriteOptions|module:ol/format/Feature~ReadOptions|undefined} options
@@ -105,28 +105,28 @@ class FeatureFormat {
   * @return {module:ol/format/Feature~WriteOptions|module:ol/format/Feature~ReadOptions|undefined}
   *     Updated options.
   */
- adaptOptions(options) {
-   return assign({
-     dataProjection: this.dataProjection,
-     featureProjection: this.defaultFeatureProjection
-   }, options);
- }
+  adaptOptions(options) {
+    return assign({
+      dataProjection: this.dataProjection,
+      featureProjection: this.defaultFeatureProjection
+    }, options);
+  }
 
- /**
+  /**
   * Get the extent from the source of the last {@link readFeatures} call.
   * @return {module:ol/extent~Extent} Tile extent.
   */
- getLastExtent() {
-   return null;
- }
+  getLastExtent() {
+    return null;
+  }
 
- /**
+  /**
   * @abstract
   * @return {module:ol/format/FormatType} Format.
   */
- getType() {}
+  getType() {}
 
- /**
+  /**
   * Read a single feature from a source.
   *
   * @abstract
@@ -134,9 +134,9 @@ class FeatureFormat {
   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
   * @return {module:ol/Feature} Feature.
   */
- readFeature(source, opt_options) {}
+  readFeature(source, opt_options) {}
 
- /**
+  /**
   * Read all features from a source.
   *
   * @abstract
@@ -144,9 +144,9 @@ class FeatureFormat {
   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
   * @return {Array.<module:ol/Feature>} Features.
   */
- readFeatures(source, opt_options) {}
+  readFeatures(source, opt_options) {}
 
- /**
+  /**
   * Read a single geometry from a source.
   *
   * @abstract
@@ -154,18 +154,18 @@ class FeatureFormat {
   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
   * @return {module:ol/geom/Geometry} Geometry.
   */
- readGeometry(source, opt_options) {}
+  readGeometry(source, opt_options) {}
 
- /**
+  /**
   * Read the projection from a source.
   *
   * @abstract
   * @param {Document|Node|Object|string} source Source.
   * @return {module:ol/proj/Projection} Projection.
   */
- readProjection(source) {}
+  readProjection(source) {}
 
- /**
+  /**
   * Encode a feature in this format.
   *
   * @abstract
@@ -173,9 +173,9 @@ class FeatureFormat {
   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
   * @return {string} Result.
   */
- writeFeature(feature, opt_options) {}
+  writeFeature(feature, opt_options) {}
 
- /**
+  /**
   * Encode an array of features in this format.
   *
   * @abstract
@@ -183,9 +183,9 @@ class FeatureFormat {
   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
   * @return {string} Result.
   */
- writeFeatures(features, opt_options) {}
+  writeFeatures(features, opt_options) {}
 
- /**
+  /**
   * Write a single geometry in this format.
   *
   * @abstract
@@ -193,7 +193,7 @@ class FeatureFormat {
   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
   * @return {string} Result.
   */
- writeGeometry(geometry, opt_options) {}
+  writeGeometry(geometry, opt_options) {}
 }
 
 export default FeatureFormat;

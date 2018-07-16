@@ -38,6 +38,18 @@ import {POINTER_ID} from '../pointer/MouseSource.js';
 
 
 /**
+ * @type {number}
+ */
+const CLICK_COUNT_TIMEOUT = 200;
+
+
+/**
+ * @type {string}
+ */
+const POINTER_TYPE = 'touch';
+
+
+/**
  * @constructor
  * @param {module:ol/pointer/PointerEventHandler} dispatcher The event handler.
  * @param {module:ol/pointer/MouseSource} mouseSource Mouse source.
@@ -410,16 +422,5 @@ class TouchSource {
 
 inherits(TouchSource, EventSource);
 
-
-/**
- * @type {number}
- */
-const CLICK_COUNT_TIMEOUT = 200;
-
-
-/**
- * @type {string}
- */
-const POINTER_TYPE = 'touch';
 
 export default TouchSource;

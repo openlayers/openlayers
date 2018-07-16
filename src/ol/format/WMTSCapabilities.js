@@ -10,6 +10,37 @@ import {readString, readNonNegativeInteger, readDecimal} from '../format/xsd.js'
 import {pushParseAndPop, makeStructureNS,
   makeObjectPropertySetter, makeObjectPropertyPusher, makeArrayPusher} from '../xml.js';
 
+
+/**
+ * @const
+ * @type {Array.<null|string>}
+ */
+const NAMESPACE_URIS = [
+  null,
+  'http://www.opengis.net/wmts/1.0'
+];
+
+
+/**
+ * @const
+ * @type {Array.<null|string>}
+ */
+const OWS_NAMESPACE_URIS = [
+  null,
+  'http://www.opengis.net/ows/1.1'
+];
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Contents': makeObjectPropertySetter(readContents)
+  });
+
+
 /**
  * @classdesc
  * Format for reading WMTS capabilities data.
@@ -57,36 +88,6 @@ class WMTSCapabilities {
 }
 
 inherits(WMTSCapabilities, XML);
-
-
-/**
- * @const
- * @type {Array.<null|string>}
- */
-const NAMESPACE_URIS = [
-  null,
-  'http://www.opengis.net/wmts/1.0'
-];
-
-
-/**
- * @const
- * @type {Array.<null|string>}
- */
-const OWS_NAMESPACE_URIS = [
-  null,
-  'http://www.opengis.net/ows/1.1'
-];
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'Contents': makeObjectPropertySetter(readContents)
-  });
 
 
 /**

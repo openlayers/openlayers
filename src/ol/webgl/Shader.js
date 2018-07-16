@@ -10,28 +10,28 @@ import {FALSE} from '../functions.js';
  * @struct
  */
 class WebGLShader {
- constructor(source) {
+  constructor(source) {
 
-   /**
+    /**
     * @private
     * @type {string}
     */
-   this.source_ = source;
+    this.source_ = source;
 
- }
+  }
 
- /**
+  /**
   * @abstract
   * @return {number} Type.
   */
- getType() {}
+  getType() {}
 
- /**
+  /**
   * @return {string} Source.
   */
- getSource() {
-   return this.source_;
- }
+  getSource() {
+    return this.source_;
+  }
 }
 
 

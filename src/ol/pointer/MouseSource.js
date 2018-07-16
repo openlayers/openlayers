@@ -34,6 +34,27 @@
 import {inherits} from '../util.js';
 import EventSource from '../pointer/EventSource.js';
 
+
+/**
+ * @type {number}
+ */
+export const POINTER_ID = 1;
+
+
+/**
+ * @type {string}
+ */
+export const POINTER_TYPE = 'mouse';
+
+
+/**
+ * Radius around touchend that swallows mouse events.
+ *
+ * @type {number}
+ */
+const DEDUP_DIST = 25;
+
+
 /**
  * @param {module:ol/pointer/PointerEventHandler} dispatcher Event handler.
  * @constructor
@@ -193,26 +214,6 @@ class MouseSource {
 }
 
 inherits(MouseSource, EventSource);
-
-
-/**
- * @type {number}
- */
-export const POINTER_ID = 1;
-
-
-/**
- * @type {string}
- */
-export const POINTER_TYPE = 'mouse';
-
-
-/**
- * Radius around touchend that swallows mouse events.
- *
- * @type {number}
- */
-const DEDUP_DIST = 25;
 
 
 /**

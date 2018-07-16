@@ -19,6 +19,71 @@ import {createElementNS, makeArrayPusher, makeArraySerializer, makeChildAppender
 
 
 /**
+ * @const
+ * @type {Array.<null|string>}
+ */
+const NAMESPACE_URIS = [
+  null,
+  'http://www.topografix.com/GPX/1/0',
+  'http://www.topografix.com/GPX/1/1'
+];
+
+
+/**
+ * @const
+ * @type {string}
+ */
+const SCHEMA_LOCATION = 'http://www.topografix.com/GPX/1/1 ' +
+    'http://www.topografix.com/GPX/1/1/gpx.xsd';
+
+
+/**
+ * @const
+ * @type {Object.<string, function(Node, Array.<*>): (module:ol/Feature|undefined)>}
+ */
+const FEATURE_READER = {
+  'rte': readRte,
+  'trk': readTrk,
+  'wpt': readWpt
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const GPX_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'rte': makeArrayPusher(readRte),
+    'trk': makeArrayPusher(readTrk),
+    'wpt': makeArrayPusher(readWpt)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const LINK_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'text': makeObjectPropertySetter(readString, 'linkText'),
+    'type': makeObjectPropertySetter(readString, 'linkType')
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ */
+const GPX_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'rte': makeChildAppender(writeRte),
+    'trk': makeChildAppender(writeTrk),
+    'wpt': makeChildAppender(writeWpt)
+  });
+
+
+/**
  * @typedef {Object} Options
  * @property {function(module:ol/Feature, Node)} [readExtensions] Callback function
  * to process `extensions` nodes. To prevent memory leaks, this callback function must
@@ -148,59 +213,6 @@ class GPX {
 }
 
 inherits(GPX, XMLFeature);
-
-
-/**
- * @const
- * @type {Array.<null|string>}
- */
-const NAMESPACE_URIS = [
-  null,
-  'http://www.topografix.com/GPX/1/0',
-  'http://www.topografix.com/GPX/1/1'
-];
-
-
-/**
- * @const
- * @type {string}
- */
-const SCHEMA_LOCATION = 'http://www.topografix.com/GPX/1/1 ' +
-    'http://www.topografix.com/GPX/1/1/gpx.xsd';
-
-
-/**
- * @const
- * @type {Object.<string, function(Node, Array.<*>): (module:ol/Feature|undefined)>}
- */
-const FEATURE_READER = {
-  'rte': readRte,
-  'trk': readTrk,
-  'wpt': readWpt
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const GPX_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'rte': makeArrayPusher(readRte),
-    'trk': makeArrayPusher(readTrk),
-    'wpt': makeArrayPusher(readWpt)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const LINK_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'text': makeObjectPropertySetter(readString, 'linkText'),
-    'type': makeObjectPropertySetter(readString, 'linkType')
-  });
 
 
 /**
@@ -464,18 +476,6 @@ function GPX_NODE_FACTORY(value, objectStack, opt_nodeName) {
     }
   }
 }
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
- */
-const GPX_SERIALIZERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'rte': makeChildAppender(writeRte),
-    'trk': makeChildAppender(writeTrk),
-    'wpt': makeChildAppender(writeWpt)
-  });
 
 
 /**

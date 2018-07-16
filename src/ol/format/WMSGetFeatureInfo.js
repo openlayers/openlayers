@@ -16,6 +16,20 @@ import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
 
 
 /**
+ * @const
+ * @type {string}
+ */
+const featureIdentifier = '_feature';
+
+
+/**
+ * @const
+ * @type {string}
+ */
+const layerIdentifier = '_layer';
+
+
+/**
  * @classdesc
  * Format for reading WMSGetFeatureInfo format. It uses
  * {@link module:ol/format/GML2~GML2} to read features.
@@ -157,20 +171,6 @@ class WMSGetFeatureInfo {
 }
 
 inherits(WMSGetFeatureInfo, XMLFeature);
-
-
-/**
- * @const
- * @type {string}
- */
-const featureIdentifier = '_feature';
-
-
-/**
- * @const
- * @type {string}
- */
-const layerIdentifier = '_layer';
 
 
 /**

@@ -48,6 +48,143 @@ import {createElementNS, getAllTextContent, isDocument, isNode, makeArrayExtende
  * @property {Array.<number>} whens
  */
 
+
+/**
+ * @const
+ * @type {Array.<string>}
+ */
+const GX_NAMESPACE_URIS = [
+  'http://www.google.com/kml/ext/2.2'
+];
+
+
+/**
+ * @const
+ * @type {Array.<null|string>}
+ */
+const NAMESPACE_URIS = [
+  null,
+  'http://earth.google.com/kml/2.0',
+  'http://earth.google.com/kml/2.1',
+  'http://earth.google.com/kml/2.2',
+  'http://www.opengis.net/kml/2.2'
+];
+
+
+/**
+ * @const
+ * @type {string}
+ */
+const SCHEMA_LOCATION = 'http://www.opengis.net/kml/2.2 ' +
+    'https://developers.google.com/kml/schema/kml22gx.xsd';
+
+
+/**
+ * @type {Object.<string, module:ol/style/IconAnchorUnits>}
+ */
+const ICON_ANCHOR_UNITS_MAP = {
+  'fraction': IconAnchorUnits.FRACTION,
+  'pixels': IconAnchorUnits.PIXELS,
+  'insetPixels': IconAnchorUnits.PIXELS
+};
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const PLACEMARK_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'ExtendedData': extendedDataParser,
+    'Region': regionParser,
+    'MultiGeometry': makeObjectPropertySetter(
+      readMultiGeometry, 'geometry'),
+    'LineString': makeObjectPropertySetter(
+      readLineString, 'geometry'),
+    'LinearRing': makeObjectPropertySetter(
+      readLinearRing, 'geometry'),
+    'Point': makeObjectPropertySetter(
+      readPoint, 'geometry'),
+    'Polygon': makeObjectPropertySetter(
+      readPolygon, 'geometry'),
+    'Style': makeObjectPropertySetter(readStyle),
+    'StyleMap': placemarkStyleMapParser,
+    'address': makeObjectPropertySetter(readString),
+    'description': makeObjectPropertySetter(readString),
+    'name': makeObjectPropertySetter(readString),
+    'open': makeObjectPropertySetter(readBoolean),
+    'phoneNumber': makeObjectPropertySetter(readString),
+    'styleUrl': makeObjectPropertySetter(readURI),
+    'visibility': makeObjectPropertySetter(readBoolean)
+  }, makeStructureNS(
+    GX_NAMESPACE_URIS, {
+      'MultiTrack': makeObjectPropertySetter(
+        readGxMultiTrack, 'geometry'),
+      'Track': makeObjectPropertySetter(
+        readGxTrack, 'geometry')
+    }
+  ));
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const NETWORK_LINK_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'ExtendedData': extendedDataParser,
+    'Region': regionParser,
+    'Link': linkParser,
+    'address': makeObjectPropertySetter(readString),
+    'description': makeObjectPropertySetter(readString),
+    'name': makeObjectPropertySetter(readString),
+    'open': makeObjectPropertySetter(readBoolean),
+    'phoneNumber': makeObjectPropertySetter(readString),
+    'visibility': makeObjectPropertySetter(readBoolean)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const LINK_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'href': makeObjectPropertySetter(readURI)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const REGION_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'LatLonAltBox': latLonAltBoxParser,
+    'Lod': lodParser
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ */
+const KML_SEQUENCE = makeStructureNS(
+  NAMESPACE_URIS, [
+    'Document', 'Placemark'
+  ]);
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ */
+const KML_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Document': makeChildAppender(writeDocument),
+    'Placemark': makeChildAppender(writePlacemark)
+  });
+
+
 /**
  * @type {module:ol/color~Color}
  */
@@ -711,46 +848,6 @@ class KML {
 }
 
 inherits(KML, XMLFeature);
-
-
-/**
- * @const
- * @type {Array.<string>}
- */
-const GX_NAMESPACE_URIS = [
-  'http://www.google.com/kml/ext/2.2'
-];
-
-
-/**
- * @const
- * @type {Array.<null|string>}
- */
-const NAMESPACE_URIS = [
-  null,
-  'http://earth.google.com/kml/2.0',
-  'http://earth.google.com/kml/2.1',
-  'http://earth.google.com/kml/2.2',
-  'http://www.opengis.net/kml/2.2'
-];
-
-
-/**
- * @const
- * @type {string}
- */
-const SCHEMA_LOCATION = 'http://www.opengis.net/kml/2.2 ' +
-    'https://developers.google.com/kml/schema/kml22gx.xsd';
-
-
-/**
- * @type {Object.<string, module:ol/style/IconAnchorUnits>}
- */
-const ICON_ANCHOR_UNITS_MAP = {
-  'fraction': IconAnchorUnits.FRACTION,
-  'pixels': IconAnchorUnits.PIXELS,
-  'insetPixels': IconAnchorUnits.PIXELS
-};
 
 
 /**
@@ -1724,17 +1821,6 @@ function extendedDataParser(node, objectStack) {
 }
 
 /**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const REGION_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'LatLonAltBox': latLonAltBoxParser,
-    'Lod': lodParser
-  });
-
-
-/**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  */
@@ -1956,34 +2042,6 @@ function outerBoundaryIsParser(node, objectStack) {
 
 
 /**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const NETWORK_LINK_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'ExtendedData': extendedDataParser,
-    'Region': regionParser,
-    'Link': linkParser,
-    'address': makeObjectPropertySetter(readString),
-    'description': makeObjectPropertySetter(readString),
-    'name': makeObjectPropertySetter(readString),
-    'open': makeObjectPropertySetter(readBoolean),
-    'phoneNumber': makeObjectPropertySetter(readString),
-    'visibility': makeObjectPropertySetter(readBoolean)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const LINK_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'href': makeObjectPropertySetter(readURI)
-  });
-
-
-/**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  */
@@ -2004,43 +2062,6 @@ function whenParser(node, objectStack) {
   const when = Date.parse(s);
   whens.push(isNaN(when) ? 0 : when);
 }
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const PLACEMARK_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'ExtendedData': extendedDataParser,
-    'Region': regionParser,
-    'MultiGeometry': makeObjectPropertySetter(
-      readMultiGeometry, 'geometry'),
-    'LineString': makeObjectPropertySetter(
-      readLineString, 'geometry'),
-    'LinearRing': makeObjectPropertySetter(
-      readLinearRing, 'geometry'),
-    'Point': makeObjectPropertySetter(
-      readPoint, 'geometry'),
-    'Polygon': makeObjectPropertySetter(
-      readPolygon, 'geometry'),
-    'Style': makeObjectPropertySetter(readStyle),
-    'StyleMap': placemarkStyleMapParser,
-    'address': makeObjectPropertySetter(readString),
-    'description': makeObjectPropertySetter(readString),
-    'name': makeObjectPropertySetter(readString),
-    'open': makeObjectPropertySetter(readBoolean),
-    'phoneNumber': makeObjectPropertySetter(readString),
-    'styleUrl': makeObjectPropertySetter(readURI),
-    'visibility': makeObjectPropertySetter(readBoolean)
-  }, makeStructureNS(
-    GX_NAMESPACE_URIS, {
-      'MultiTrack': makeObjectPropertySetter(
-        readGxMultiTrack, 'geometry'),
-      'Track': makeObjectPropertySetter(
-        readGxTrack, 'geometry')
-    }
-  ));
 
 
 /**
@@ -2939,27 +2960,6 @@ function writeVec2(node, vec2) {
   node.setAttribute('xunits', vec2.xunits);
   node.setAttribute('yunits', vec2.yunits);
 }
-
-
-/**
- * @const
- * @type {Object.<string, Array.<string>>}
- */
-const KML_SEQUENCE = makeStructureNS(
-  NAMESPACE_URIS, [
-    'Document', 'Placemark'
-  ]);
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
- */
-const KML_SERIALIZERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'Document': makeChildAppender(writeDocument),
-    'Placemark': makeChildAppender(writePlacemark)
-  });
 
 
 /**

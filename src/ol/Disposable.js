@@ -8,15 +8,15 @@ import {UNDEFINED} from './functions.js';
  * @constructor
  */
 class Disposable {
- /**
+  /**
   * Clean up.
   */
- dispose() {
-   if (!this.disposed_) {
-     this.disposed_ = true;
-     this.disposeInternal();
-   }
- }
+  dispose() {
+    if (!this.disposed_) {
+      this.disposed_ = true;
+      this.disposeInternal();
+    }
+  }
 }
 
 /**

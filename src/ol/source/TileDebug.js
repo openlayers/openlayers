@@ -18,59 +18,59 @@ import {getKeyZXY} from '../tilecoord.js';
  * @param {string} text Text.
  */
 class LabeledTile {
- constructor(tileCoord, tileSize, text) {
+  constructor(tileCoord, tileSize, text) {
 
-   Tile.call(this, tileCoord, TileState.LOADED);
+    Tile.call(this, tileCoord, TileState.LOADED);
 
-   /**
+    /**
     * @private
     * @type {module:ol/size~Size}
     */
-   this.tileSize_ = tileSize;
+    this.tileSize_ = tileSize;
 
-   /**
+    /**
     * @private
     * @type {string}
     */
-   this.text_ = text;
+    this.text_ = text;
 
-   /**
+    /**
     * @private
     * @type {HTMLCanvasElement}
     */
-   this.canvas_ = null;
+    this.canvas_ = null;
 
- }
+  }
 
- /**
+  /**
   * Get the image element for this tile.
   * @return {HTMLCanvasElement} Image.
   */
- getImage() {
-   if (this.canvas_) {
-     return this.canvas_;
-   } else {
-     const tileSize = this.tileSize_;
-     const context = createCanvasContext2D(tileSize[0], tileSize[1]);
+  getImage() {
+    if (this.canvas_) {
+      return this.canvas_;
+    } else {
+      const tileSize = this.tileSize_;
+      const context = createCanvasContext2D(tileSize[0], tileSize[1]);
 
-     context.strokeStyle = 'black';
-     context.strokeRect(0.5, 0.5, tileSize[0] + 0.5, tileSize[1] + 0.5);
+      context.strokeStyle = 'black';
+      context.strokeRect(0.5, 0.5, tileSize[0] + 0.5, tileSize[1] + 0.5);
 
-     context.fillStyle = 'black';
-     context.textAlign = 'center';
-     context.textBaseline = 'middle';
-     context.font = '24px sans-serif';
-     context.fillText(this.text_, tileSize[0] / 2, tileSize[1] / 2);
+      context.fillStyle = 'black';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.font = '24px sans-serif';
+      context.fillText(this.text_, tileSize[0] / 2, tileSize[1] / 2);
 
-     this.canvas_ = context.canvas;
-     return context.canvas;
-   }
- }
+      this.canvas_ = context.canvas;
+      return context.canvas;
+    }
+  }
 
- /**
+  /**
   * @override
   */
- load() {}
+  load() {}
 }
 
 inherits(LabeledTile, Tile);
@@ -98,35 +98,35 @@ inherits(LabeledTile, Tile);
  * @api
  */
 class TileDebug {
- constructor(options) {
+  constructor(options) {
 
-   TileSource.call(this, {
-     opaque: false,
-     projection: options.projection,
-     tileGrid: options.tileGrid,
-     wrapX: options.wrapX !== undefined ? options.wrapX : true
-   });
+    TileSource.call(this, {
+      opaque: false,
+      projection: options.projection,
+      tileGrid: options.tileGrid,
+      wrapX: options.wrapX !== undefined ? options.wrapX : true
+    });
 
- }
+  }
 
- /**
+  /**
   * @inheritDoc
   */
- getTile(z, x, y) {
-   const tileCoordKey = getKeyZXY(z, x, y);
-   if (this.tileCache.containsKey(tileCoordKey)) {
-     return /** @type {!module:ol/source/TileDebug~LabeledTile} */ (this.tileCache.get(tileCoordKey));
-   } else {
-     const tileSize = toSize(this.tileGrid.getTileSize(z));
-     const tileCoord = [z, x, y];
-     const textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
-     const text = !textTileCoord ? '' :
-       this.getTileCoordForTileUrlFunction(textTileCoord).toString();
-     const tile = new LabeledTile(tileCoord, tileSize, text);
-     this.tileCache.set(tileCoordKey, tile);
-     return tile;
-   }
- }
+  getTile(z, x, y) {
+    const tileCoordKey = getKeyZXY(z, x, y);
+    if (this.tileCache.containsKey(tileCoordKey)) {
+      return /** @type {!module:ol/source/TileDebug~LabeledTile} */ (this.tileCache.get(tileCoordKey));
+    } else {
+      const tileSize = toSize(this.tileGrid.getTileSize(z));
+      const tileCoord = [z, x, y];
+      const textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
+      const text = !textTileCoord ? '' :
+        this.getTileCoordForTileUrlFunction(textTileCoord).toString();
+      const tile = new LabeledTile(tileCoord, tileSize, text);
+      this.tileCache.set(tileCoordKey, tile);
+      return tile;
+    }
+  }
 }
 
 inherits(TileDebug, TileSource);

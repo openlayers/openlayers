@@ -18,64 +18,64 @@ import MapEvent from './MapEvent.js';
  * @param {?module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
  */
 class MapBrowserEvent {
- constructor(type, map, browserEvent, opt_dragging, opt_frameState) {
+  constructor(type, map, browserEvent, opt_dragging, opt_frameState) {
 
-   MapEvent.call(this, type, map, opt_frameState);
+    MapEvent.call(this, type, map, opt_frameState);
 
-   /**
+    /**
     * The original browser event.
     * @const
     * @type {Event}
     * @api
     */
-   this.originalEvent = browserEvent;
+    this.originalEvent = browserEvent;
 
-   /**
+    /**
     * The map pixel relative to the viewport corresponding to the original browser event.
     * @type {module:ol~Pixel}
     * @api
     */
-   this.pixel = map.getEventPixel(browserEvent);
+    this.pixel = map.getEventPixel(browserEvent);
 
-   /**
+    /**
     * The coordinate in view projection corresponding to the original browser event.
     * @type {module:ol/coordinate~Coordinate}
     * @api
     */
-   this.coordinate = map.getCoordinateFromPixel(this.pixel);
+    this.coordinate = map.getCoordinateFromPixel(this.pixel);
 
-   /**
+    /**
     * Indicates if the map is currently being dragged. Only set for
     * `POINTERDRAG` and `POINTERMOVE` events. Default is `false`.
     *
     * @type {boolean}
     * @api
     */
-   this.dragging = opt_dragging !== undefined ? opt_dragging : false;
+    this.dragging = opt_dragging !== undefined ? opt_dragging : false;
 
- }
+  }
 
- /**
+  /**
   * Prevents the default browser action.
   * @see https://developer.mozilla.org/en-US/docs/Web/API/event.preventDefault
   * @override
   * @api
   */
- preventDefault() {
-   MapEvent.prototype.preventDefault.call(this);
-   this.originalEvent.preventDefault();
- }
+  preventDefault() {
+    MapEvent.prototype.preventDefault.call(this);
+    this.originalEvent.preventDefault();
+  }
 
- /**
+  /**
   * Prevents further propagation of the current event.
   * @see https://developer.mozilla.org/en-US/docs/Web/API/event.stopPropagation
   * @override
   * @api
   */
- stopPropagation() {
-   MapEvent.prototype.stopPropagation.call(this);
-   this.originalEvent.stopPropagation();
- }
+  stopPropagation() {
+    MapEvent.prototype.stopPropagation.call(this);
+    this.originalEvent.stopPropagation();
+  }
 }
 
 inherits(MapBrowserEvent, MapEvent);

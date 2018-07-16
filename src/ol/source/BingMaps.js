@@ -11,6 +11,18 @@ import TileImage from '../source/TileImage.js';
 import {createOrUpdate, quadKey} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
+
+/**
+ * The attribution containing a link to the Microsoft® Bing™ Maps Platform APIs’
+ * Terms Of Use.
+ * @const
+ * @type {string}
+ */
+const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
+      'href="https://www.microsoft.com/maps/product/terms.html">' +
+      'Terms of Use</a>';
+
+
 /**
  * @typedef {Object} Options
  * @property {number} [cacheSize=2048] Cache size.
@@ -212,17 +224,5 @@ class BingMaps {
 }
 
 inherits(BingMaps, TileImage);
-
-
-/**
- * The attribution containing a link to the Microsoft® Bing™ Maps Platform APIs’
- * Terms Of Use.
- * @const
- * @type {string}
- */
-const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
-      'href="https://www.microsoft.com/maps/product/terms.html">' +
-      'Terms of Use</a>';
-
 
 export default BingMaps;

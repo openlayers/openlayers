@@ -19,6 +19,36 @@ const IGCZ = {
   NONE: 'none'
 };
 
+/**
+ * @const
+ * @type {RegExp}
+ */
+const B_RECORD_RE =
+    /^B(\d{2})(\d{2})(\d{2})(\d{2})(\d{5})([NS])(\d{3})(\d{5})([EW])([AV])(\d{5})(\d{5})/;
+
+
+/**
+ * @const
+ * @type {RegExp}
+ */
+const H_RECORD_RE = /^H.([A-Z]{3}).*?:(.*)/;
+
+
+/**
+ * @const
+ * @type {RegExp}
+ */
+const HFDTE_RECORD_RE = /^HFDTE(\d{2})(\d{2})(\d{2})/;
+
+
+/**
+ * A regular expression matching the newline characters `\r\n`, `\r` and `\n`.
+ *
+ * @const
+ * @type {RegExp}
+ */
+const NEWLINE_RE = /\r\n|\r|\n/;
+
 
 /**
  * @typedef {Object} Options
@@ -168,37 +198,6 @@ class IGC {
 }
 
 inherits(IGC, TextFeature);
-
-
-/**
- * @const
- * @type {RegExp}
- */
-const B_RECORD_RE =
-    /^B(\d{2})(\d{2})(\d{2})(\d{2})(\d{5})([NS])(\d{3})(\d{5})([EW])([AV])(\d{5})(\d{5})/;
-
-
-/**
- * @const
- * @type {RegExp}
- */
-const H_RECORD_RE = /^H.([A-Z]{3}).*?:(.*)/;
-
-
-/**
- * @const
- * @type {RegExp}
- */
-const HFDTE_RECORD_RE = /^HFDTE(\d{2})(\d{2})(\d{2})/;
-
-
-/**
- * A regular expression matching the newline characters `\r\n`, `\r` and `\n`.
- *
- * @const
- * @type {RegExp}
- */
-const NEWLINE_RE = /\r\n|\r|\n/;
 
 
 /**

@@ -12,16 +12,16 @@ import WebGLShader from '../webgl/Shader.js';
  * @struct
  */
 class WebGLFragment {
- constructor(source) {
-   WebGLShader.call(this, source);
- }
+  constructor(source) {
+    WebGLShader.call(this, source);
+  }
 
- /**
+  /**
   * @inheritDoc
   */
- getType() {
-   return FRAGMENT_SHADER;
- }
+  getType() {
+    return FRAGMENT_SHADER;
+  }
 }
 
 inherits(WebGLFragment, WebGLShader);

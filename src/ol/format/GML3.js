@@ -31,6 +31,18 @@ const schemaLocation = GMLNS +
 
 
 /**
+ * @const
+ * @type {Object.<string, string>}
+ */
+const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
+  'MultiLineString': 'lineStringMember',
+  'MultiCurve': 'curveMember',
+  'MultiPolygon': 'polygonMember',
+  'MultiSurface': 'surfaceMember'
+};
+
+
+/**
  * @classdesc
  * Feature format for reading and writing data in the GML format
  * version 3.1.1.
@@ -1085,18 +1097,6 @@ GML3.prototype.SEGMENTS_PARSERS_ = {
     'LineStringSegment': makeReplacer(
       GML3.prototype.readLineStringSegment_)
   }
-};
-
-
-/**
- * @const
- * @type {Object.<string, string>}
- */
-const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
-  'MultiLineString': 'lineStringMember',
-  'MultiCurve': 'curveMember',
-  'MultiPolygon': 'polygonMember',
-  'MultiSurface': 'surfaceMember'
 };
 
 

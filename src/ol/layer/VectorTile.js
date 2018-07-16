@@ -100,78 +100,78 @@ export const RenderType = {
  * @api
  */
 class VectorTileLayer {
- constructor(opt_options) {
-   const options = opt_options ? opt_options : {};
+  constructor(opt_options) {
+    const options = opt_options ? opt_options : {};
 
-   let renderMode = options.renderMode || VectorTileRenderType.HYBRID;
-   assert(renderMode == undefined ||
+    let renderMode = options.renderMode || VectorTileRenderType.HYBRID;
+    assert(renderMode == undefined ||
        renderMode == VectorTileRenderType.IMAGE ||
        renderMode == VectorTileRenderType.HYBRID ||
        renderMode == VectorTileRenderType.VECTOR,
-   28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
-   if (options.declutter && renderMode == VectorTileRenderType.IMAGE) {
-     renderMode = VectorTileRenderType.HYBRID;
-   }
-   options.renderMode = renderMode;
+    28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
+    if (options.declutter && renderMode == VectorTileRenderType.IMAGE) {
+      renderMode = VectorTileRenderType.HYBRID;
+    }
+    options.renderMode = renderMode;
 
-   const baseOptions = assign({}, options);
+    const baseOptions = assign({}, options);
 
-   delete baseOptions.preload;
-   delete baseOptions.useInterimTilesOnError;
-   VectorLayer.call(this,  /** @type {module:ol/layer/Vector~Options} */ (baseOptions));
+    delete baseOptions.preload;
+    delete baseOptions.useInterimTilesOnError;
+    VectorLayer.call(this,  /** @type {module:ol/layer/Vector~Options} */ (baseOptions));
 
-   this.setPreload(options.preload ? options.preload : 0);
-   this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
-     options.useInterimTilesOnError : true);
+    this.setPreload(options.preload ? options.preload : 0);
+    this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
+      options.useInterimTilesOnError : true);
 
-   /**
+    /**
     * The layer type.
     * @protected
     * @type {module:ol/LayerType}
     */
-   this.type = LayerType.VECTOR_TILE;
+    this.type = LayerType.VECTOR_TILE;
 
- }
+  }
 
- /**
+  /**
   * Return the level as number to which we will preload tiles up to.
   * @return {number} The level to preload tiles up to.
   * @observable
   * @api
   */
- getPreload() {
-   return /** @type {number} */ (this.get(TileProperty.PRELOAD));
- }
+  getPreload() {
+    return /** @type {number} */ (this.get(TileProperty.PRELOAD));
+  }
 
- /**
+  /**
   * Whether we use interim tiles on error.
   * @return {boolean} Use interim tiles on error.
   * @observable
   * @api
   */
- getUseInterimTilesOnError() {
-   return /** @type {boolean} */ (this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR));
- }
+  getUseInterimTilesOnError() {
+    return /** @type {boolean} */ (this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR));
+  }
 
- /**
+  /**
   * Set the level as number to which we will preload tiles up to.
   * @param {number} preload The level to preload tiles up to.
   * @observable
   * @api
   */
- setPreload(preload) {
-   this.set(TileProperty.PRELOAD, preload);
- }
+  setPreload(preload) {
+    this.set(TileProperty.PRELOAD, preload);
+  }
 
- /**
+  /**
   * Set whether we use interim tiles on error.
   * @param {boolean} useInterimTilesOnError Use interim tiles on error.
   * @observable
   * @api
   */
- setUseInterimTilesOnError(useInterimTilesOnError) {
-   this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
- }
+  setUseInterimTilesOnError(useInterimTilesOnError) {
+    this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+  }
 }
 
 inherits(VectorTileLayer, VectorLayer);

@@ -18,6 +18,69 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
 
 
 /**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const FEATURE_COLLECTION_PARSERS = {
+  'http://www.opengis.net/gml': {
+    'boundedBy': makeObjectPropertySetter(
+      GMLBase.prototype.readGeometryElement, 'bounds')
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const TRANSACTION_SUMMARY_PARSERS = {
+  'http://www.opengis.net/wfs': {
+    'totalInserted': makeObjectPropertySetter(readNonNegativeInteger),
+    'totalUpdated': makeObjectPropertySetter(readNonNegativeInteger),
+    'totalDeleted': makeObjectPropertySetter(readNonNegativeInteger)
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const TRANSACTION_RESPONSE_PARSERS = {
+  'http://www.opengis.net/wfs': {
+    'TransactionSummary': makeObjectPropertySetter(
+      readTransactionSummary, 'transactionSummary'),
+    'InsertResults': makeObjectPropertySetter(
+      readInsertResults, 'insertIds')
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ */
+const QUERY_SERIALIZERS = {
+  'http://www.opengis.net/wfs': {
+    'PropertyName': makeChildAppender(writeStringTextNode)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ */
+const TRANSACTION_SERIALIZERS = {
+  'http://www.opengis.net/wfs': {
+    'Insert': makeChildAppender(writeFeature),
+    'Update': makeChildAppender(writeUpdate),
+    'Delete': makeChildAppender(writeDelete),
+    'Property': makeChildAppender(writeProperty),
+    'Native': makeChildAppender(writeNative)
+  }
+};
+
+
+/**
  * @typedef {Object} Options
  * @property {Object.<string, string>|string} [featureNS] The namespace URI used for features.
  * @property {Array.<string>|string} [featureType] The feature type to parse. Only used for read operations.
@@ -488,31 +551,6 @@ WFS.prototype.readFeatures;
 
 
 /**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const FEATURE_COLLECTION_PARSERS = {
-  'http://www.opengis.net/gml': {
-    'boundedBy': makeObjectPropertySetter(
-      GMLBase.prototype.readGeometryElement, 'bounds')
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const TRANSACTION_SUMMARY_PARSERS = {
-  'http://www.opengis.net/wfs': {
-    'totalInserted': makeObjectPropertySetter(readNonNegativeInteger),
-    'totalUpdated': makeObjectPropertySetter(readNonNegativeInteger),
-    'totalDeleted': makeObjectPropertySetter(readNonNegativeInteger)
-  }
-};
-
-
-/**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Transaction Summary.
@@ -565,30 +603,6 @@ function readInsertResults(node, objectStack) {
   return pushParseAndPop(
     [], INSERT_RESULTS_PARSERS, node, objectStack);
 }
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const TRANSACTION_RESPONSE_PARSERS = {
-  'http://www.opengis.net/wfs': {
-    'TransactionSummary': makeObjectPropertySetter(
-      readTransactionSummary, 'transactionSummary'),
-    'InsertResults': makeObjectPropertySetter(
-      readInsertResults, 'insertIds')
-  }
-};
-
-
-/**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
- */
-const QUERY_SERIALIZERS = {
-  'http://www.opengis.net/wfs': {
-    'PropertyName': makeChildAppender(writeStringTextNode)
-  }
-};
 
 
 /**
@@ -661,20 +675,6 @@ function writeDelete(node, feature, objectStack) {
     writeOgcFidFilter(node, fid, objectStack);
   }
 }
-
-
-/**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
- */
-const TRANSACTION_SERIALIZERS = {
-  'http://www.opengis.net/wfs': {
-    'Insert': makeChildAppender(writeFeature),
-    'Update': makeChildAppender(writeUpdate),
-    'Delete': makeChildAppender(writeDelete),
-    'Property': makeChildAppender(writeProperty),
-    'Native': makeChildAppender(writeNative)
-  }
-};
 
 
 /**

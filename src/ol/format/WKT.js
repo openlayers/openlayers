@@ -18,6 +18,19 @@ import SimpleGeometry from '../geom/SimpleGeometry.js';
 
 
 /**
+ * @enum {function (new:module:ol/geom/Geometry, Array, module:ol/geom/GeometryLayout)}
+ */
+const GeometryConstructor = {
+  'POINT': Point,
+  'LINESTRING': LineString,
+  'POLYGON': Polygon,
+  'MULTIPOINT': MultiPoint,
+  'MULTILINESTRING': MultiLineString,
+  'MULTIPOLYGON': MultiPolygon
+};
+
+
+/**
  * @typedef {Object} Options
  * @property {boolean} [splitCollection=false] Whether to split GeometryCollections into
  * multiple features on reading.
@@ -521,12 +534,42 @@ class Parser {
         const geometries = this.parseGeometryCollectionText_();
         return new GeometryCollection(geometries);
       } else {
-        const parser = GeometryParser[geomType];
         const ctor = GeometryConstructor[geomType];
-        if (!parser || !ctor) {
+        if (!ctor) {
           throw new Error('Invalid geometry type: ' + geomType);
         }
-        let coordinates = parser.call(this);
+
+        let coordinates;
+        switch (geomType) {
+          case GeometryType.POINT: {
+            coordinates = this.parsePointText_();
+            break;
+          }
+          case GeometryType.LINESTRING: {
+            coordinates = this.parseLineStringText_();
+            break;
+          }
+          case GeometryType.POLYGON: {
+            coordinates = Parser.prototype.parsePolygonText_();
+            break;
+          }
+          case GeometryType.MULTIPOINT: {
+            coordinates = Parser.prototype.parseMultiPointText_();
+            break;
+          }
+          case GeometryType.MULTILINESTRING: {
+            coordinates = Parser.prototype.parseMultiLineStringText_();
+            break;
+          }
+          case GeometryType.MULTIPOLYGON: {
+            coordinates = Parser.prototype.parseMultiPolygonText_();
+            break;
+          }
+          default: {
+            throw new Error('Invalid geometry type: ' + geomType);
+          }
+        }
+
         if (!coordinates) {
           if (ctor === GeometryConstructor[GeometryType.POINT]) {
             coordinates = [NaN, NaN];
@@ -540,6 +583,7 @@ class Parser {
     throw new Error(this.formatErrorMessage_());
   }
 }
+
 
 /**
  * @classdesc
@@ -853,32 +897,6 @@ WKT.prototype.readFeatures;
  * @api
  */
 WKT.prototype.readGeometry;
-
-
-/**
- * @enum {function (new:module:ol/geom/Geometry, Array, module:ol/geom/GeometryLayout)}
- */
-const GeometryConstructor = {
-  'POINT': Point,
-  'LINESTRING': LineString,
-  'POLYGON': Polygon,
-  'MULTIPOINT': MultiPoint,
-  'MULTILINESTRING': MultiLineString,
-  'MULTIPOLYGON': MultiPolygon
-};
-
-
-/**
- * @enum {(function(): Array)}
- */
-const GeometryParser = {
-  'POINT': Parser.prototype.parsePointText_,
-  'LINESTRING': Parser.prototype.parseLineStringText_,
-  'POLYGON': Parser.prototype.parsePolygonText_,
-  'MULTIPOINT': Parser.prototype.parseMultiPointText_,
-  'MULTILINESTRING': Parser.prototype.parseMultiLineStringText_,
-  'MULTIPOLYGON': Parser.prototype.parseMultiPolygonText_
-};
 
 
 /**

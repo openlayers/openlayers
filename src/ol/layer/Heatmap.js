@@ -289,9 +289,8 @@ inherits(Heatmap, VectorLayer);
 /**
  * @param {Array.<string>} colors A list of colored.
  * @return {Uint8ClampedArray} An array.
- * @private
  */
-const createGradient = function(colors) {
+function createGradient(colors) {
   const width = 1;
   const height = 256;
   const context = createCanvasContext2D(width, height);
@@ -306,7 +305,7 @@ const createGradient = function(colors) {
   context.fillRect(0, 0, width, height);
 
   return context.getImageData(0, 0, width, height).data;
-};
+}
 
 
 export default Heatmap;

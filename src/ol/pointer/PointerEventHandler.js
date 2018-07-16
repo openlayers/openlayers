@@ -42,6 +42,47 @@ import NativeSource from '../pointer/NativeSource.js';
 import PointerEvent from '../pointer/PointerEvent.js';
 import TouchSource from '../pointer/TouchSource.js';
 
+
+/**
+ * Properties to copy when cloning an event, with default values.
+ * @type {Array.<Array>}
+ */
+const CLONE_PROPS = [
+  // MouseEvent
+  ['bubbles', false],
+  ['cancelable', false],
+  ['view', null],
+  ['detail', null],
+  ['screenX', 0],
+  ['screenY', 0],
+  ['clientX', 0],
+  ['clientY', 0],
+  ['ctrlKey', false],
+  ['altKey', false],
+  ['shiftKey', false],
+  ['metaKey', false],
+  ['button', 0],
+  ['relatedTarget', null],
+  // DOM Level 3
+  ['buttons', 0],
+  // PointerEvent
+  ['pointerId', 0],
+  ['width', 0],
+  ['height', 0],
+  ['pressure', 0],
+  ['tiltX', 0],
+  ['tiltY', 0],
+  ['pointerType', ''],
+  ['hwTimestamp', 0],
+  ['isPrimary', false],
+  // event instance
+  ['type', ''],
+  ['target', null],
+  ['currentTarget', null],
+  ['which', 0]
+];
+
+
 /**
  * @constructor
  * @extends {module:ol/events/EventTarget}
@@ -376,45 +417,5 @@ class PointerEventHandler {
 }
 
 inherits(PointerEventHandler, EventTarget);
-
-/**
- * Properties to copy when cloning an event, with default values.
- * @type {Array.<Array>}
- */
-const CLONE_PROPS = [
-  // MouseEvent
-  ['bubbles', false],
-  ['cancelable', false],
-  ['view', null],
-  ['detail', null],
-  ['screenX', 0],
-  ['screenY', 0],
-  ['clientX', 0],
-  ['clientY', 0],
-  ['ctrlKey', false],
-  ['altKey', false],
-  ['shiftKey', false],
-  ['metaKey', false],
-  ['button', 0],
-  ['relatedTarget', null],
-  // DOM Level 3
-  ['buttons', 0],
-  // PointerEvent
-  ['pointerId', 0],
-  ['width', 0],
-  ['height', 0],
-  ['pressure', 0],
-  ['tiltX', 0],
-  ['tiltY', 0],
-  ['pointerType', ''],
-  ['hwTimestamp', 0],
-  ['isPrimary', false],
-  // event instance
-  ['type', ''],
-  ['target', null],
-  ['currentTarget', null],
-  ['which', 0]
-];
-
 
 export default PointerEventHandler;

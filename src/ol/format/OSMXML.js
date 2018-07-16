@@ -15,6 +15,36 @@ import {isEmpty} from '../obj.js';
 import {get as getProjection} from '../proj.js';
 import {pushParseAndPop, makeStructureNS} from '../xml.js';
 
+
+/**
+ * @const
+ * @type {Array.<null>}
+ */
+const NAMESPACE_URIS = [null];
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const WAY_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'nd': readNd,
+    'tag': readTag
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'node': readNode,
+    'way': readWay
+  });
+
+
 /**
  * @classdesc
  * Feature format for reading data in the
@@ -94,35 +124,6 @@ class OSMXML {
 }
 
 inherits(OSMXML, XMLFeature);
-
-
-/**
- * @const
- * @type {Array.<null>}
- */
-const NAMESPACE_URIS = [null];
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const WAY_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'nd': readNd,
-    'tag': readTag
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'node': readNode,
-    'way': readWay
-  });
 
 
 /**

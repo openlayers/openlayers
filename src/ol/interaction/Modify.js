@@ -25,6 +25,21 @@ import {createEditingStyle} from '../style/Style.js';
 
 
 /**
+ * The segment index assigned to a circle's center when
+ * breaking up a circle into ModifySegmentDataType segments.
+ * @type {number}
+ */
+const CIRCLE_CENTER_INDEX = 0;
+
+/**
+ * The segment index assigned to a circle's circumference when
+ * breaking up a circle into ModifySegmentDataType segments.
+ * @type {number}
+ */
+const CIRCLE_CIRCUMFERENCE_INDEX = 1;
+
+
+/**
  * @enum {string}
  */
 const ModifyEventType = {
@@ -956,21 +971,6 @@ class Modify {
 }
 
 inherits(Modify, PointerInteraction);
-
-
-/**
- * The segment index assigned to a circle's center when
- * breaking up a circle into ModifySegmentDataType segments.
- * @type {number}
- */
-const CIRCLE_CENTER_INDEX = 0;
-
-/**
- * The segment index assigned to a circle's circumference when
- * breaking up a circle into ModifySegmentDataType segments.
- * @type {number}
- */
-const CIRCLE_CIRCUMFERENCE_INDEX = 1;
 
 
 /**

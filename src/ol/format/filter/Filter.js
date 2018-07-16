@@ -14,22 +14,22 @@
  * @struct
  */
 class Filter {
- constructor(tagName) {
+  constructor(tagName) {
 
-   /**
+    /**
     * @private
     * @type {!string}
     */
-   this.tagName_ = tagName;
- }
+    this.tagName_ = tagName;
+  }
 
- /**
+  /**
   * The XML tag name for a filter.
   * @returns {!string} Name.
   */
- getTagName() {
-   return this.tagName_;
- }
+  getTagName() {
+    return this.tagName_;
+  }
 }
 
 export default Filter;

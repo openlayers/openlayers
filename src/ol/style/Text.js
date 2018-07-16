@@ -54,452 +54,452 @@ const DEFAULT_FILL_COLOR = '#333';
  * @api
  */
 class Text {
- constructor(opt_options) {
+  constructor(opt_options) {
 
-   const options = opt_options || {};
+    const options = opt_options || {};
 
-   /**
+    /**
     * @private
     * @type {string|undefined}
     */
-   this.font_ = options.font;
+    this.font_ = options.font;
 
-   /**
+    /**
     * @private
     * @type {number|undefined}
     */
-   this.rotation_ = options.rotation;
+    this.rotation_ = options.rotation;
 
-   /**
+    /**
     * @private
     * @type {boolean|undefined}
     */
-   this.rotateWithView_ = options.rotateWithView;
+    this.rotateWithView_ = options.rotateWithView;
 
-   /**
+    /**
     * @private
     * @type {number|undefined}
     */
-   this.scale_ = options.scale;
+    this.scale_ = options.scale;
 
-   /**
+    /**
     * @private
     * @type {string|undefined}
     */
-   this.text_ = options.text;
+    this.text_ = options.text;
 
-   /**
+    /**
     * @private
     * @type {string|undefined}
     */
-   this.textAlign_ = options.textAlign;
+    this.textAlign_ = options.textAlign;
 
-   /**
+    /**
     * @private
     * @type {string|undefined}
     */
-   this.textBaseline_ = options.textBaseline;
+    this.textBaseline_ = options.textBaseline;
 
-   /**
+    /**
     * @private
     * @type {module:ol/style/Fill}
     */
-   this.fill_ = options.fill !== undefined ? options.fill :
-     new Fill({color: DEFAULT_FILL_COLOR});
+    this.fill_ = options.fill !== undefined ? options.fill :
+      new Fill({color: DEFAULT_FILL_COLOR});
 
-   /**
+    /**
     * @private
     * @type {number}
     */
-   this.maxAngle_ = options.maxAngle !== undefined ? options.maxAngle : Math.PI / 4;
+    this.maxAngle_ = options.maxAngle !== undefined ? options.maxAngle : Math.PI / 4;
 
-   /**
+    /**
     * @private
     * @type {module:ol/style/TextPlacement|string}
     */
-   this.placement_ = options.placement !== undefined ? options.placement : TextPlacement.POINT;
+    this.placement_ = options.placement !== undefined ? options.placement : TextPlacement.POINT;
 
-   /**
+    /**
     * @private
     * @type {boolean}
     */
-   this.overflow_ = !!options.overflow;
+    this.overflow_ = !!options.overflow;
 
-   /**
+    /**
     * @private
     * @type {module:ol/style/Stroke}
     */
-   this.stroke_ = options.stroke !== undefined ? options.stroke : null;
+    this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
-   /**
+    /**
     * @private
     * @type {number}
     */
-   this.offsetX_ = options.offsetX !== undefined ? options.offsetX : 0;
+    this.offsetX_ = options.offsetX !== undefined ? options.offsetX : 0;
 
-   /**
+    /**
     * @private
     * @type {number}
     */
-   this.offsetY_ = options.offsetY !== undefined ? options.offsetY : 0;
+    this.offsetY_ = options.offsetY !== undefined ? options.offsetY : 0;
 
-   /**
+    /**
     * @private
     * @type {module:ol/style/Fill}
     */
-   this.backgroundFill_ = options.backgroundFill ? options.backgroundFill : null;
+    this.backgroundFill_ = options.backgroundFill ? options.backgroundFill : null;
 
-   /**
+    /**
     * @private
     * @type {module:ol/style/Stroke}
     */
-   this.backgroundStroke_ = options.backgroundStroke ? options.backgroundStroke : null;
+    this.backgroundStroke_ = options.backgroundStroke ? options.backgroundStroke : null;
 
-   /**
+    /**
     * @private
     * @type {Array.<number>}
     */
-   this.padding_ = options.padding === undefined ? null : options.padding;
- }
+    this.padding_ = options.padding === undefined ? null : options.padding;
+  }
 
- /**
+  /**
   * Clones the style.
   * @return {module:ol/style/Text} The cloned style.
   * @api
   */
- clone() {
-   return new Text({
-     font: this.getFont(),
-     placement: this.getPlacement(),
-     maxAngle: this.getMaxAngle(),
-     overflow: this.getOverflow(),
-     rotation: this.getRotation(),
-     rotateWithView: this.getRotateWithView(),
-     scale: this.getScale(),
-     text: this.getText(),
-     textAlign: this.getTextAlign(),
-     textBaseline: this.getTextBaseline(),
-     fill: this.getFill() ? this.getFill().clone() : undefined,
-     stroke: this.getStroke() ? this.getStroke().clone() : undefined,
-     offsetX: this.getOffsetX(),
-     offsetY: this.getOffsetY(),
-     backgroundFill: this.getBackgroundFill() ? this.getBackgroundFill().clone() : undefined,
-     backgroundStroke: this.getBackgroundStroke() ? this.getBackgroundStroke().clone() : undefined
-   });
- }
+  clone() {
+    return new Text({
+      font: this.getFont(),
+      placement: this.getPlacement(),
+      maxAngle: this.getMaxAngle(),
+      overflow: this.getOverflow(),
+      rotation: this.getRotation(),
+      rotateWithView: this.getRotateWithView(),
+      scale: this.getScale(),
+      text: this.getText(),
+      textAlign: this.getTextAlign(),
+      textBaseline: this.getTextBaseline(),
+      fill: this.getFill() ? this.getFill().clone() : undefined,
+      stroke: this.getStroke() ? this.getStroke().clone() : undefined,
+      offsetX: this.getOffsetX(),
+      offsetY: this.getOffsetY(),
+      backgroundFill: this.getBackgroundFill() ? this.getBackgroundFill().clone() : undefined,
+      backgroundStroke: this.getBackgroundStroke() ? this.getBackgroundStroke().clone() : undefined
+    });
+  }
 
- /**
+  /**
   * Get the `overflow` configuration.
   * @return {boolean} Let text overflow the length of the path they follow.
   * @api
   */
- getOverflow() {
-   return this.overflow_;
- }
+  getOverflow() {
+    return this.overflow_;
+  }
 
- /**
+  /**
   * Get the font name.
   * @return {string|undefined} Font.
   * @api
   */
- getFont() {
-   return this.font_;
- }
+  getFont() {
+    return this.font_;
+  }
 
- /**
+  /**
   * Get the maximum angle between adjacent characters.
   * @return {number} Angle in radians.
   * @api
   */
- getMaxAngle() {
-   return this.maxAngle_;
- }
+  getMaxAngle() {
+    return this.maxAngle_;
+  }
 
- /**
+  /**
   * Get the label placement.
   * @return {module:ol/style/TextPlacement|string} Text placement.
   * @api
   */
- getPlacement() {
-   return this.placement_;
- }
+  getPlacement() {
+    return this.placement_;
+  }
 
- /**
+  /**
   * Get the x-offset for the text.
   * @return {number} Horizontal text offset.
   * @api
   */
- getOffsetX() {
-   return this.offsetX_;
- }
+  getOffsetX() {
+    return this.offsetX_;
+  }
 
- /**
+  /**
   * Get the y-offset for the text.
   * @return {number} Vertical text offset.
   * @api
   */
- getOffsetY() {
-   return this.offsetY_;
- }
+  getOffsetY() {
+    return this.offsetY_;
+  }
 
- /**
+  /**
   * Get the fill style for the text.
   * @return {module:ol/style/Fill} Fill style.
   * @api
   */
- getFill() {
-   return this.fill_;
- }
+  getFill() {
+    return this.fill_;
+  }
 
- /**
+  /**
   * Determine whether the text rotates with the map.
   * @return {boolean|undefined} Rotate with map.
   * @api
   */
- getRotateWithView() {
-   return this.rotateWithView_;
- }
+  getRotateWithView() {
+    return this.rotateWithView_;
+  }
 
- /**
+  /**
   * Get the text rotation.
   * @return {number|undefined} Rotation.
   * @api
   */
- getRotation() {
-   return this.rotation_;
- }
+  getRotation() {
+    return this.rotation_;
+  }
 
- /**
+  /**
   * Get the text scale.
   * @return {number|undefined} Scale.
   * @api
   */
- getScale() {
-   return this.scale_;
- }
+  getScale() {
+    return this.scale_;
+  }
 
- /**
+  /**
   * Get the stroke style for the text.
   * @return {module:ol/style/Stroke} Stroke style.
   * @api
   */
- getStroke() {
-   return this.stroke_;
- }
+  getStroke() {
+    return this.stroke_;
+  }
 
- /**
+  /**
   * Get the text to be rendered.
   * @return {string|undefined} Text.
   * @api
   */
- getText() {
-   return this.text_;
- }
+  getText() {
+    return this.text_;
+  }
 
- /**
+  /**
   * Get the text alignment.
   * @return {string|undefined} Text align.
   * @api
   */
- getTextAlign() {
-   return this.textAlign_;
- }
+  getTextAlign() {
+    return this.textAlign_;
+  }
 
- /**
+  /**
   * Get the text baseline.
   * @return {string|undefined} Text baseline.
   * @api
   */
- getTextBaseline() {
-   return this.textBaseline_;
- }
+  getTextBaseline() {
+    return this.textBaseline_;
+  }
 
- /**
+  /**
   * Get the background fill style for the text.
   * @return {module:ol/style/Fill} Fill style.
   * @api
   */
- getBackgroundFill() {
-   return this.backgroundFill_;
- }
+  getBackgroundFill() {
+    return this.backgroundFill_;
+  }
 
- /**
+  /**
   * Get the background stroke style for the text.
   * @return {module:ol/style/Stroke} Stroke style.
   * @api
   */
- getBackgroundStroke() {
-   return this.backgroundStroke_;
- }
+  getBackgroundStroke() {
+    return this.backgroundStroke_;
+  }
 
- /**
+  /**
   * Get the padding for the text.
   * @return {Array.<number>} Padding.
   * @api
   */
- getPadding() {
-   return this.padding_;
- }
+  getPadding() {
+    return this.padding_;
+  }
 
- /**
+  /**
   * Set the `overflow` property.
   *
   * @param {boolean} overflow Let text overflow the path that it follows.
   * @api
   */
- setOverflow(overflow) {
-   this.overflow_ = overflow;
- }
+  setOverflow(overflow) {
+    this.overflow_ = overflow;
+  }
 
- /**
+  /**
   * Set the font.
   *
   * @param {string|undefined} font Font.
   * @api
   */
- setFont(font) {
-   this.font_ = font;
- }
+  setFont(font) {
+    this.font_ = font;
+  }
 
- /**
+  /**
   * Set the maximum angle between adjacent characters.
   *
   * @param {number} maxAngle Angle in radians.
   * @api
   */
- setMaxAngle(maxAngle) {
-   this.maxAngle_ = maxAngle;
- }
+  setMaxAngle(maxAngle) {
+    this.maxAngle_ = maxAngle;
+  }
 
- /**
+  /**
   * Set the x offset.
   *
   * @param {number} offsetX Horizontal text offset.
   * @api
   */
- setOffsetX(offsetX) {
-   this.offsetX_ = offsetX;
- }
+  setOffsetX(offsetX) {
+    this.offsetX_ = offsetX;
+  }
 
- /**
+  /**
   * Set the y offset.
   *
   * @param {number} offsetY Vertical text offset.
   * @api
   */
- setOffsetY(offsetY) {
-   this.offsetY_ = offsetY;
- }
+  setOffsetY(offsetY) {
+    this.offsetY_ = offsetY;
+  }
 
- /**
+  /**
   * Set the text placement.
   *
   * @param {module:ol/style/TextPlacement|string} placement Placement.
   * @api
   */
- setPlacement(placement) {
-   this.placement_ = placement;
- }
+  setPlacement(placement) {
+    this.placement_ = placement;
+  }
 
- /**
+  /**
   * Set the fill.
   *
   * @param {module:ol/style/Fill} fill Fill style.
   * @api
   */
- setFill(fill) {
-   this.fill_ = fill;
- }
+  setFill(fill) {
+    this.fill_ = fill;
+  }
 
- /**
+  /**
   * Set the rotation.
   *
   * @param {number|undefined} rotation Rotation.
   * @api
   */
- setRotation(rotation) {
-   this.rotation_ = rotation;
- }
+  setRotation(rotation) {
+    this.rotation_ = rotation;
+  }
 
- /**
+  /**
   * Set the scale.
   *
   * @param {number|undefined} scale Scale.
   * @api
   */
- setScale(scale) {
-   this.scale_ = scale;
- }
+  setScale(scale) {
+    this.scale_ = scale;
+  }
 
- /**
+  /**
   * Set the stroke.
   *
   * @param {module:ol/style/Stroke} stroke Stroke style.
   * @api
   */
- setStroke(stroke) {
-   this.stroke_ = stroke;
- }
+  setStroke(stroke) {
+    this.stroke_ = stroke;
+  }
 
- /**
+  /**
   * Set the text.
   *
   * @param {string|undefined} text Text.
   * @api
   */
- setText(text) {
-   this.text_ = text;
- }
+  setText(text) {
+    this.text_ = text;
+  }
 
- /**
+  /**
   * Set the text alignment.
   *
   * @param {string|undefined} textAlign Text align.
   * @api
   */
- setTextAlign(textAlign) {
-   this.textAlign_ = textAlign;
- }
+  setTextAlign(textAlign) {
+    this.textAlign_ = textAlign;
+  }
 
- /**
+  /**
   * Set the text baseline.
   *
   * @param {string|undefined} textBaseline Text baseline.
   * @api
   */
- setTextBaseline(textBaseline) {
-   this.textBaseline_ = textBaseline;
- }
+  setTextBaseline(textBaseline) {
+    this.textBaseline_ = textBaseline;
+  }
 
- /**
+  /**
   * Set the background fill.
   *
   * @param {module:ol/style/Fill} fill Fill style.
   * @api
   */
- setBackgroundFill(fill) {
-   this.backgroundFill_ = fill;
- }
+  setBackgroundFill(fill) {
+    this.backgroundFill_ = fill;
+  }
 
- /**
+  /**
   * Set the background stroke.
   *
   * @param {module:ol/style/Stroke} stroke Stroke style.
   * @api
   */
- setBackgroundStroke(stroke) {
-   this.backgroundStroke_ = stroke;
- }
+  setBackgroundStroke(stroke) {
+    this.backgroundStroke_ = stroke;
+  }
 
- /**
+  /**
   * Set the padding (`[top, right, bottom, left]`).
   *
   * @param {!Array.<number>} padding Padding.
   * @api
   */
- setPadding(padding) {
-   this.padding_ = padding;
- }
+  setPadding(padding) {
+    this.padding_ = padding;
+  }
 }
 
 export default Text;

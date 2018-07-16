@@ -12,16 +12,16 @@ import WebGLShader from '../webgl/Shader.js';
  * @struct
  */
 class WebGLVertex {
- constructor(source) {
-   WebGLShader.call(this, source);
- }
+  constructor(source) {
+    WebGLShader.call(this, source);
+  }
 
- /**
+  /**
   * @inheritDoc
   */
- getType() {
-   return VERTEX_SHADER;
- }
+  getType() {
+    return VERTEX_SHADER;
+  }
 }
 
 inherits(WebGLVertex, WebGLShader);
