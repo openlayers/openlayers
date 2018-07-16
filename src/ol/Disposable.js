@@ -7,7 +7,17 @@ import {UNDEFINED} from './functions.js';
  * Objects that need to clean up after themselves.
  * @constructor
  */
-const Disposable = function() {};
+class Disposable {
+ /**
+  * Clean up.
+  */
+ dispose() {
+   if (!this.disposed_) {
+     this.disposed_ = true;
+     this.disposeInternal();
+   }
+ }
+}
 
 /**
  * The object has already been disposed.
@@ -15,16 +25,6 @@ const Disposable = function() {};
  * @private
  */
 Disposable.prototype.disposed_ = false;
-
-/**
- * Clean up.
- */
-Disposable.prototype.dispose = function() {
-  if (!this.disposed_) {
-    this.disposed_ = true;
-    this.disposeInternal();
-  }
-};
 
 /**
  * Extension point for disposable objects.

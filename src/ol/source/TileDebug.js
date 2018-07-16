@@ -17,62 +17,63 @@ import {getKeyZXY} from '../tilecoord.js';
  * @param {module:ol/size~Size} tileSize Tile size.
  * @param {string} text Text.
  */
-const LabeledTile = function(tileCoord, tileSize, text) {
+class LabeledTile {
+ constructor(tileCoord, tileSize, text) {
 
-  Tile.call(this, tileCoord, TileState.LOADED);
+   Tile.call(this, tileCoord, TileState.LOADED);
 
-  /**
-   * @private
-   * @type {module:ol/size~Size}
-   */
-  this.tileSize_ = tileSize;
+   /**
+    * @private
+    * @type {module:ol/size~Size}
+    */
+   this.tileSize_ = tileSize;
 
-  /**
-   * @private
-   * @type {string}
-   */
-  this.text_ = text;
+   /**
+    * @private
+    * @type {string}
+    */
+   this.text_ = text;
 
-  /**
-   * @private
-   * @type {HTMLCanvasElement}
-   */
-  this.canvas_ = null;
+   /**
+    * @private
+    * @type {HTMLCanvasElement}
+    */
+   this.canvas_ = null;
 
-};
+ }
+
+ /**
+  * Get the image element for this tile.
+  * @return {HTMLCanvasElement} Image.
+  */
+ getImage() {
+   if (this.canvas_) {
+     return this.canvas_;
+   } else {
+     const tileSize = this.tileSize_;
+     const context = createCanvasContext2D(tileSize[0], tileSize[1]);
+
+     context.strokeStyle = 'black';
+     context.strokeRect(0.5, 0.5, tileSize[0] + 0.5, tileSize[1] + 0.5);
+
+     context.fillStyle = 'black';
+     context.textAlign = 'center';
+     context.textBaseline = 'middle';
+     context.font = '24px sans-serif';
+     context.fillText(this.text_, tileSize[0] / 2, tileSize[1] / 2);
+
+     this.canvas_ = context.canvas;
+     return context.canvas;
+   }
+ }
+
+ /**
+  * @override
+  */
+ load() {}
+}
+
 inherits(LabeledTile, Tile);
-
-
-/**
- * Get the image element for this tile.
- * @return {HTMLCanvasElement} Image.
- */
-LabeledTile.prototype.getImage = function() {
-  if (this.canvas_) {
-    return this.canvas_;
-  } else {
-    const tileSize = this.tileSize_;
-    const context = createCanvasContext2D(tileSize[0], tileSize[1]);
-
-    context.strokeStyle = 'black';
-    context.strokeRect(0.5, 0.5, tileSize[0] + 0.5, tileSize[1] + 0.5);
-
-    context.fillStyle = 'black';
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.font = '24px sans-serif';
-    context.fillText(this.text_, tileSize[0] / 2, tileSize[1] / 2);
-
-    this.canvas_ = context.canvas;
-    return context.canvas;
-  }
-};
-
-
-/**
- * @override
- */
-LabeledTile.prototype.load = function() {};
 
 
 /**
@@ -96,38 +97,39 @@ LabeledTile.prototype.load = function() {};
  * @param {module:ol/source/TileDebug~Options=} options Debug tile options.
  * @api
  */
-const TileDebug = function(options) {
+class TileDebug {
+ constructor(options) {
 
-  TileSource.call(this, {
-    opaque: false,
-    projection: options.projection,
-    tileGrid: options.tileGrid,
-    wrapX: options.wrapX !== undefined ? options.wrapX : true
-  });
+   TileSource.call(this, {
+     opaque: false,
+     projection: options.projection,
+     tileGrid: options.tileGrid,
+     wrapX: options.wrapX !== undefined ? options.wrapX : true
+   });
 
-};
+ }
+
+ /**
+  * @inheritDoc
+  */
+ getTile(z, x, y) {
+   const tileCoordKey = getKeyZXY(z, x, y);
+   if (this.tileCache.containsKey(tileCoordKey)) {
+     return /** @type {!module:ol/source/TileDebug~LabeledTile} */ (this.tileCache.get(tileCoordKey));
+   } else {
+     const tileSize = toSize(this.tileGrid.getTileSize(z));
+     const tileCoord = [z, x, y];
+     const textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
+     const text = !textTileCoord ? '' :
+       this.getTileCoordForTileUrlFunction(textTileCoord).toString();
+     const tile = new LabeledTile(tileCoord, tileSize, text);
+     this.tileCache.set(tileCoordKey, tile);
+     return tile;
+   }
+ }
+}
 
 inherits(TileDebug, TileSource);
-
-
-/**
- * @inheritDoc
- */
-TileDebug.prototype.getTile = function(z, x, y) {
-  const tileCoordKey = getKeyZXY(z, x, y);
-  if (this.tileCache.containsKey(tileCoordKey)) {
-    return /** @type {!module:ol/source/TileDebug~LabeledTile} */ (this.tileCache.get(tileCoordKey));
-  } else {
-    const tileSize = toSize(this.tileGrid.getTileSize(z));
-    const tileCoord = [z, x, y];
-    const textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
-    const text = !textTileCoord ? '' :
-      this.getTileCoordForTileUrlFunction(textTileCoord).toString();
-    const tile = new LabeledTile(tileCoord, tileSize, text);
-    this.tileCache.set(tileCoordKey, tile);
-    return tile;
-  }
-};
 
 
 export default TileDebug;

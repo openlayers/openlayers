@@ -24,14 +24,74 @@ import {pushParseAndPop, makeStructureNS} from '../xml.js';
  * @extends {module:ol/format/XMLFeature}
  * @api
  */
-const OSMXML = function() {
-  XMLFeature.call(this);
+class OSMXML {
+  constructor() {
+    XMLFeature.call(this);
+
+    /**
+     * @inheritDoc
+     */
+    this.dataProjection = getProjection('EPSG:4326');
+  }
 
   /**
    * @inheritDoc
    */
-  this.dataProjection = getProjection('EPSG:4326');
-};
+  readFeaturesFromNode(node, opt_options) {
+    const options = this.getReadOptions(node, opt_options);
+    if (node.localName == 'osm') {
+      const state = pushParseAndPop({
+        nodes: {},
+        ways: [],
+        features: []
+      }, PARSERS, node, [options]);
+      // parse nodes in ways
+      for (let j = 0; j < state.ways.length; j++) {
+        const values = /** @type {Object} */ (state.ways[j]);
+        /** @type {Array.<number>} */
+        const flatCoordinates = [];
+        for (let i = 0, ii = values.ndrefs.length; i < ii; i++) {
+          const point = state.nodes[values.ndrefs[i]];
+          extend(flatCoordinates, point);
+        }
+        let geometry;
+        if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
+          // closed way
+          geometry = new Polygon(flatCoordinates, GeometryLayout.XY, [flatCoordinates.length]);
+        } else {
+          geometry = new LineString(flatCoordinates, GeometryLayout.XY);
+        }
+        transformWithOptions(geometry, false, options);
+        const feature = new Feature(geometry);
+        feature.setId(values.id);
+        feature.setProperties(values.tags);
+        state.features.push(feature);
+      }
+      if (state.features) {
+        return state.features;
+      }
+    }
+    return [];
+  }
+
+  /**
+   * Not implemented.
+   * @inheritDoc
+   */
+  writeFeatureNode(feature, opt_options) {}
+
+  /**
+   * Not implemented.
+   * @inheritDoc
+   */
+  writeFeaturesNode(features, opt_options) {}
+
+  /**
+   * Not implemented.
+   * @inheritDoc
+   */
+  writeGeometryNode(geometry, opt_options) {}
+}
 
 inherits(OSMXML, XMLFeature);
 
@@ -153,47 +213,6 @@ OSMXML.prototype.readFeatures;
 
 
 /**
- * @inheritDoc
- */
-OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
-  const options = this.getReadOptions(node, opt_options);
-  if (node.localName == 'osm') {
-    const state = pushParseAndPop({
-      nodes: {},
-      ways: [],
-      features: []
-    }, PARSERS, node, [options]);
-    // parse nodes in ways
-    for (let j = 0; j < state.ways.length; j++) {
-      const values = /** @type {Object} */ (state.ways[j]);
-      /** @type {Array.<number>} */
-      const flatCoordinates = [];
-      for (let i = 0, ii = values.ndrefs.length; i < ii; i++) {
-        const point = state.nodes[values.ndrefs[i]];
-        extend(flatCoordinates, point);
-      }
-      let geometry;
-      if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
-        // closed way
-        geometry = new Polygon(flatCoordinates, GeometryLayout.XY, [flatCoordinates.length]);
-      } else {
-        geometry = new LineString(flatCoordinates, GeometryLayout.XY);
-      }
-      transformWithOptions(geometry, false, options);
-      const feature = new Feature(geometry);
-      feature.setId(values.id);
-      feature.setProperties(values.tags);
-      state.features.push(feature);
-    }
-    if (state.features) {
-      return state.features;
-    }
-  }
-  return [];
-};
-
-
-/**
  * Read the projection from an OSM source.
  *
  * @function
@@ -204,23 +223,4 @@ OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
 OSMXML.prototype.readProjection;
 
 
-/**
- * Not implemented.
- * @inheritDoc
- */
-OSMXML.prototype.writeFeatureNode = function(feature, opt_options) {};
-
-
-/**
- * Not implemented.
- * @inheritDoc
- */
-OSMXML.prototype.writeFeaturesNode = function(features, opt_options) {};
-
-
-/**
- * Not implemented.
- * @inheritDoc
- */
-OSMXML.prototype.writeGeometryNode = function(geometry, opt_options) {};
 export default OSMXML;

@@ -43,23 +43,109 @@ import {createElementNS, makeArrayPusher, makeArraySerializer, makeChildAppender
  * @param {module:ol/format/GPX~Options=} opt_options Options.
  * @api
  */
-const GPX = function(opt_options) {
+class GPX {
+  constructor(opt_options) {
 
-  const options = opt_options ? opt_options : {};
+    const options = opt_options ? opt_options : {};
 
-  XMLFeature.call(this);
+    XMLFeature.call(this);
+
+    /**
+     * @inheritDoc
+     */
+    this.dataProjection = getProjection('EPSG:4326');
+
+    /**
+     * @type {function(module:ol/Feature, Node)|undefined}
+     * @private
+     */
+    this.readExtensions_ = options.readExtensions;
+  }
+
+  /**
+   * @param {Array.<module:ol/Feature>} features List of features.
+   * @private
+   */
+  handleReadExtensions_(features) {
+    if (!features) {
+      features = [];
+    }
+    for (let i = 0, ii = features.length; i < ii; ++i) {
+      const feature = features[i];
+      if (this.readExtensions_) {
+        const extensionsNode = feature.get('extensionsNode_') || null;
+        this.readExtensions_(feature, extensionsNode);
+      }
+      feature.set('extensionsNode_', undefined);
+    }
+  }
 
   /**
    * @inheritDoc
    */
-  this.dataProjection = getProjection('EPSG:4326');
+  readFeatureFromNode(node, opt_options) {
+    if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
+      return null;
+    }
+    const featureReader = FEATURE_READER[node.localName];
+    if (!featureReader) {
+      return null;
+    }
+    const feature = featureReader(node, [this.getReadOptions(node, opt_options)]);
+    if (!feature) {
+      return null;
+    }
+    this.handleReadExtensions_([feature]);
+    return feature;
+  }
 
   /**
-   * @type {function(module:ol/Feature, Node)|undefined}
-   * @private
+   * @inheritDoc
    */
-  this.readExtensions_ = options.readExtensions;
-};
+  readFeaturesFromNode(node, opt_options) {
+    if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
+      return [];
+    }
+    if (node.localName == 'gpx') {
+      /** @type {Array.<module:ol/Feature>} */
+      const features = pushParseAndPop([], GPX_PARSERS,
+        node, [this.getReadOptions(node, opt_options)]);
+      if (features) {
+        this.handleReadExtensions_(features);
+        return features;
+      } else {
+        return [];
+      }
+    }
+    return [];
+  }
+
+  /**
+   * Encode an array of features in the GPX format as an XML node.
+   * LineString geometries are output as routes (`<rte>`), and MultiLineString
+   * as tracks (`<trk>`).
+   *
+   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
+   * @return {Node} Node.
+   * @override
+   * @api
+   */
+  writeFeaturesNode(features, opt_options) {
+    opt_options = this.adaptOptions(opt_options);
+    //FIXME Serialize metadata
+    const gpx = createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
+    const xmlnsUri = 'http://www.w3.org/2000/xmlns/';
+    gpx.setAttributeNS(xmlnsUri, 'xmlns:xsi', XML_SCHEMA_INSTANCE_URI);
+    gpx.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', SCHEMA_LOCATION);
+    gpx.setAttribute('version', '1.1');
+    gpx.setAttribute('creator', 'OpenLayers');
+
+    pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
+      ({node: gpx}), GPX_SERIALIZERS, GPX_NODE_FACTORY, features, [opt_options]);
+    return gpx;
+  }
+}
 
 inherits(GPX, XMLFeature);
 
@@ -615,25 +701,6 @@ function readWpt(node, objectStack) {
 
 
 /**
- * @param {Array.<module:ol/Feature>} features List of features.
- * @private
- */
-GPX.prototype.handleReadExtensions_ = function(features) {
-  if (!features) {
-    features = [];
-  }
-  for (let i = 0, ii = features.length; i < ii; ++i) {
-    const feature = features[i];
-    if (this.readExtensions_) {
-      const extensionsNode = feature.get('extensionsNode_') || null;
-      this.readExtensions_(feature, extensionsNode);
-    }
-    feature.set('extensionsNode_', undefined);
-  }
-};
-
-
-/**
  * Read the first feature from a GPX source.
  * Routes (`<rte>`) are converted into LineString geometries, and tracks (`<trk>`)
  * into MultiLineString. Any properties on route and track waypoints are ignored.
@@ -648,26 +715,6 @@ GPX.prototype.readFeature;
 
 
 /**
- * @inheritDoc
- */
-GPX.prototype.readFeatureFromNode = function(node, opt_options) {
-  if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
-    return null;
-  }
-  const featureReader = FEATURE_READER[node.localName];
-  if (!featureReader) {
-    return null;
-  }
-  const feature = featureReader(node, [this.getReadOptions(node, opt_options)]);
-  if (!feature) {
-    return null;
-  }
-  this.handleReadExtensions_([feature]);
-  return feature;
-};
-
-
-/**
  * Read all features from a GPX source.
  * Routes (`<rte>`) are converted into LineString geometries, and tracks (`<trk>`)
  * into MultiLineString. Any properties on route and track waypoints are ignored.
@@ -679,28 +726,6 @@ GPX.prototype.readFeatureFromNode = function(node, opt_options) {
  * @api
  */
 GPX.prototype.readFeatures;
-
-
-/**
- * @inheritDoc
- */
-GPX.prototype.readFeaturesFromNode = function(node, opt_options) {
-  if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
-    return [];
-  }
-  if (node.localName == 'gpx') {
-    /** @type {Array.<module:ol/Feature>} */
-    const features = pushParseAndPop([], GPX_PARSERS,
-      node, [this.getReadOptions(node, opt_options)]);
-    if (features) {
-      this.handleReadExtensions_(features);
-      return features;
-    } else {
-      return [];
-    }
-  }
-  return [];
-};
 
 
 /**
@@ -874,29 +899,4 @@ function writeWpt(node, feature, objectStack) {
 GPX.prototype.writeFeatures;
 
 
-/**
- * Encode an array of features in the GPX format as an XML node.
- * LineString geometries are output as routes (`<rte>`), and MultiLineString
- * as tracks (`<trk>`).
- *
- * @param {Array.<module:ol/Feature>} features Features.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
- * @return {Node} Node.
- * @override
- * @api
- */
-GPX.prototype.writeFeaturesNode = function(features, opt_options) {
-  opt_options = this.adaptOptions(opt_options);
-  //FIXME Serialize metadata
-  const gpx = createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
-  const xmlnsUri = 'http://www.w3.org/2000/xmlns/';
-  gpx.setAttributeNS(xmlnsUri, 'xmlns:xsi', XML_SCHEMA_INSTANCE_URI);
-  gpx.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', SCHEMA_LOCATION);
-  gpx.setAttribute('version', '1.1');
-  gpx.setAttribute('creator', 'OpenLayers');
-
-  pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
-    ({node: gpx}), GPX_SERIALIZERS, GPX_NODE_FACTORY, features, [opt_options]);
-  return gpx;
-};
 export default GPX;

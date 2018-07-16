@@ -63,20 +63,148 @@ GEOMETRY_WRITERS[GeometryType.MULTI_POLYGON] = writeMultiPolygonGeometry;
  * @param {module:ol/format/EsriJSON~Options=} opt_options Options.
  * @api
  */
-const EsriJSON = function(opt_options) {
+class EsriJSON {
+  constructor(opt_options) {
 
-  const options = opt_options ? opt_options : {};
+    const options = opt_options ? opt_options : {};
 
-  JSONFeature.call(this);
+    JSONFeature.call(this);
+
+    /**
+     * Name of the geometry attribute for features.
+     * @type {string|undefined}
+     * @private
+     */
+    this.geometryName_ = options.geometryName;
+
+  }
 
   /**
-   * Name of the geometry attribute for features.
-   * @type {string|undefined}
-   * @private
+   * @inheritDoc
    */
-  this.geometryName_ = options.geometryName;
+  readFeatureFromObject(object, opt_options) {
+    const esriJSONFeature = /** @type {EsriJSONFeature} */ (object);
+    const geometry = readGeometry(esriJSONFeature.geometry, opt_options);
+    const feature = new Feature();
+    if (this.geometryName_) {
+      feature.setGeometryName(this.geometryName_);
+    }
+    feature.setGeometry(geometry);
+    if (opt_options && opt_options.idField &&
+      esriJSONFeature.attributes[opt_options.idField]) {
+      feature.setId(/** @type {number} */(esriJSONFeature.attributes[opt_options.idField]));
+    }
+    if (esriJSONFeature.attributes) {
+      feature.setProperties(esriJSONFeature.attributes);
+    }
+    return feature;
+  }
 
-};
+  /**
+   * @inheritDoc
+   */
+  readFeaturesFromObject(object, opt_options) {
+    const esriJSONObject = /** @type {EsriJSONObject} */ (object);
+    const options = opt_options ? opt_options : {};
+    if (esriJSONObject.features) {
+      const esriJSONFeatureCollection = /** @type {EsriJSONFeatureCollection} */ (object);
+      /** @type {Array.<module:ol/Feature>} */
+      const features = [];
+      const esriJSONFeatures = esriJSONFeatureCollection.features;
+      options.idField = object.objectIdFieldName;
+      for (let i = 0, ii = esriJSONFeatures.length; i < ii; ++i) {
+        features.push(this.readFeatureFromObject(esriJSONFeatures[i], options));
+      }
+      return features;
+    } else {
+      return [this.readFeatureFromObject(object, options)];
+    }
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readGeometryFromObject(object, opt_options) {
+    return readGeometry(/** @type {EsriJSONGeometry} */(object), opt_options);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readProjectionFromObject(object) {
+    const esriJSONObject = /** @type {EsriJSONObject} */ (object);
+    if (esriJSONObject.spatialReference && esriJSONObject.spatialReference.wkid) {
+      const crs = esriJSONObject.spatialReference.wkid;
+      return getProjection('EPSG:' + crs);
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Encode a geometry as a EsriJSON object.
+   *
+   * @param {module:ol/geom/Geometry} geometry Geometry.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {EsriJSONGeometry} Object.
+   * @override
+   * @api
+   */
+  writeGeometryObject(geometry, opt_options) {
+    return writeGeometry(geometry, this.adaptOptions(opt_options));
+  }
+
+  /**
+   * Encode a feature as a esriJSON Feature object.
+   *
+   * @param {module:ol/Feature} feature Feature.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {Object} Object.
+   * @override
+   * @api
+   */
+  writeFeatureObject(feature, opt_options) {
+    opt_options = this.adaptOptions(opt_options);
+    const object = {};
+    const geometry = feature.getGeometry();
+    if (geometry) {
+      object['geometry'] = writeGeometry(geometry, opt_options);
+      if (opt_options && opt_options.featureProjection) {
+        object['geometry']['spatialReference'] = /** @type {EsriJSONCRS} */({
+          wkid: getProjection(opt_options.featureProjection).getCode().split(':').pop()
+        });
+      }
+    }
+    const properties = feature.getProperties();
+    delete properties[feature.getGeometryName()];
+    if (!isEmpty(properties)) {
+      object['attributes'] = properties;
+    } else {
+      object['attributes'] = {};
+    }
+    return object;
+  }
+
+  /**
+   * Encode an array of features as a EsriJSON object.
+   *
+   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {Object} EsriJSON Object.
+   * @override
+   * @api
+   */
+  writeFeaturesObject(features, opt_options) {
+    opt_options = this.adaptOptions(opt_options);
+    const objects = [];
+    for (let i = 0, ii = features.length; i < ii; ++i) {
+      objects.push(this.writeFeatureObject(features[i], opt_options));
+    }
+    return /** @type {EsriJSONFeatureCollection} */ ({
+      'features': objects
+    });
+  }
+}
 
 inherits(EsriJSON, JSONFeature);
 
@@ -440,50 +568,6 @@ EsriJSON.prototype.readFeatures;
 
 
 /**
- * @inheritDoc
- */
-EsriJSON.prototype.readFeatureFromObject = function(object, opt_options) {
-  const esriJSONFeature = /** @type {EsriJSONFeature} */ (object);
-  const geometry = readGeometry(esriJSONFeature.geometry, opt_options);
-  const feature = new Feature();
-  if (this.geometryName_) {
-    feature.setGeometryName(this.geometryName_);
-  }
-  feature.setGeometry(geometry);
-  if (opt_options && opt_options.idField &&
-    esriJSONFeature.attributes[opt_options.idField]) {
-    feature.setId(/** @type {number} */(esriJSONFeature.attributes[opt_options.idField]));
-  }
-  if (esriJSONFeature.attributes) {
-    feature.setProperties(esriJSONFeature.attributes);
-  }
-  return feature;
-};
-
-
-/**
- * @inheritDoc
- */
-EsriJSON.prototype.readFeaturesFromObject = function(object, opt_options) {
-  const esriJSONObject = /** @type {EsriJSONObject} */ (object);
-  const options = opt_options ? opt_options : {};
-  if (esriJSONObject.features) {
-    const esriJSONFeatureCollection = /** @type {EsriJSONFeatureCollection} */ (object);
-    /** @type {Array.<module:ol/Feature>} */
-    const features = [];
-    const esriJSONFeatures = esriJSONFeatureCollection.features;
-    options.idField = object.objectIdFieldName;
-    for (let i = 0, ii = esriJSONFeatures.length; i < ii; ++i) {
-      features.push(this.readFeatureFromObject(esriJSONFeatures[i], options));
-    }
-    return features;
-  } else {
-    return [this.readFeatureFromObject(object, options)];
-  }
-};
-
-
-/**
  * Read a geometry from a EsriJSON source.
  *
  * @function
@@ -496,14 +580,6 @@ EsriJSON.prototype.readGeometry;
 
 
 /**
- * @inheritDoc
- */
-EsriJSON.prototype.readGeometryFromObject = function(object, opt_options) {
-  return readGeometry(/** @type {EsriJSONGeometry} */(object), opt_options);
-};
-
-
-/**
  * Read the projection from a EsriJSON source.
  *
  * @function
@@ -512,20 +588,6 @@ EsriJSON.prototype.readGeometryFromObject = function(object, opt_options) {
  * @api
  */
 EsriJSON.prototype.readProjection;
-
-
-/**
- * @inheritDoc
- */
-EsriJSON.prototype.readProjectionFromObject = function(object) {
-  const esriJSONObject = /** @type {EsriJSONObject} */ (object);
-  if (esriJSONObject.spatialReference && esriJSONObject.spatialReference.wkid) {
-    const crs = esriJSONObject.spatialReference.wkid;
-    return getProjection('EPSG:' + crs);
-  } else {
-    return null;
-  }
-};
 
 
 /**
@@ -553,20 +615,6 @@ EsriJSON.prototype.writeGeometry;
 
 
 /**
- * Encode a geometry as a EsriJSON object.
- *
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {EsriJSONGeometry} Object.
- * @override
- * @api
- */
-EsriJSON.prototype.writeGeometryObject = function(geometry, opt_options) {
-  return writeGeometry(geometry, this.adaptOptions(opt_options));
-};
-
-
-/**
  * Encode a feature as a EsriJSON Feature string.
  *
  * @function
@@ -576,38 +624,6 @@ EsriJSON.prototype.writeGeometryObject = function(geometry, opt_options) {
  * @api
  */
 EsriJSON.prototype.writeFeature;
-
-
-/**
- * Encode a feature as a esriJSON Feature object.
- *
- * @param {module:ol/Feature} feature Feature.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {Object} Object.
- * @override
- * @api
- */
-EsriJSON.prototype.writeFeatureObject = function(feature, opt_options) {
-  opt_options = this.adaptOptions(opt_options);
-  const object = {};
-  const geometry = feature.getGeometry();
-  if (geometry) {
-    object['geometry'] = writeGeometry(geometry, opt_options);
-    if (opt_options && opt_options.featureProjection) {
-      object['geometry']['spatialReference'] = /** @type {EsriJSONCRS} */({
-        wkid: getProjection(opt_options.featureProjection).getCode().split(':').pop()
-      });
-    }
-  }
-  const properties = feature.getProperties();
-  delete properties[feature.getGeometryName()];
-  if (!isEmpty(properties)) {
-    object['attributes'] = properties;
-  } else {
-    object['attributes'] = {};
-  }
-  return object;
-};
 
 
 /**
@@ -621,25 +637,5 @@ EsriJSON.prototype.writeFeatureObject = function(feature, opt_options) {
  */
 EsriJSON.prototype.writeFeatures;
 
-
-/**
- * Encode an array of features as a EsriJSON object.
- *
- * @param {Array.<module:ol/Feature>} features Features.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {Object} EsriJSON Object.
- * @override
- * @api
- */
-EsriJSON.prototype.writeFeaturesObject = function(features, opt_options) {
-  opt_options = this.adaptOptions(opt_options);
-  const objects = [];
-  for (let i = 0, ii = features.length; i < ii; ++i) {
-    objects.push(this.writeFeatureObject(features[i], opt_options));
-  }
-  return /** @type {EsriJSONFeatureCollection} */ ({
-    'features': objects
-  });
-};
 
 export default EsriJSON;

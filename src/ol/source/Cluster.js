@@ -47,175 +47,172 @@ import VectorSource from '../source/Vector.js';
  * @extends {module:ol/source/Vector}
  * @api
  */
-const Cluster = function(options) {
-  VectorSource.call(this, {
-    attributions: options.attributions,
-    extent: options.extent,
-    projection: options.projection,
-    wrapX: options.wrapX
-  });
+class Cluster {
+  constructor(options) {
+    VectorSource.call(this, {
+      attributions: options.attributions,
+      extent: options.extent,
+      projection: options.projection,
+      wrapX: options.wrapX
+    });
+
+    /**
+     * @type {number|undefined}
+     * @protected
+     */
+    this.resolution = undefined;
+
+    /**
+     * @type {number}
+     * @protected
+     */
+    this.distance = options.distance !== undefined ? options.distance : 20;
+
+    /**
+     * @type {Array.<module:ol/Feature>}
+     * @protected
+     */
+    this.features = [];
+
+    /**
+     * @param {module:ol/Feature} feature Feature.
+     * @return {module:ol/geom/Point} Cluster calculation point.
+     * @protected
+     */
+    this.geometryFunction = options.geometryFunction || function(feature) {
+      const geometry = /** @type {module:ol/geom/Point} */ (feature.getGeometry());
+      assert(geometry instanceof Point,
+        10); // The default `geometryFunction` can only handle `module:ol/geom/Point~Point` geometries
+      return geometry;
+    };
+
+    /**
+     * @type {module:ol/source/Vector}
+     * @protected
+     */
+    this.source = options.source;
+
+    listen(this.source, EventType.CHANGE, this.refresh, this);
+  }
 
   /**
-   * @type {number|undefined}
-   * @protected
+   * Get the distance in pixels between clusters.
+   * @return {number} Distance.
+   * @api
    */
-  this.resolution = undefined;
+  getDistance() {
+    return this.distance;
+  }
 
   /**
-   * @type {number}
-   * @protected
+   * Get a reference to the wrapped source.
+   * @return {module:ol/source/Vector} Source.
+   * @api
    */
-  this.distance = options.distance !== undefined ? options.distance : 20;
+  getSource() {
+    return this.source;
+  }
 
   /**
-   * @type {Array.<module:ol/Feature>}
-   * @protected
+   * @inheritDoc
    */
-  this.features = [];
+  loadFeatures(extent, resolution, projection) {
+    this.source.loadFeatures(extent, resolution, projection);
+    if (resolution !== this.resolution) {
+      this.clear();
+      this.resolution = resolution;
+      this.cluster();
+      this.addFeatures(this.features);
+    }
+  }
 
   /**
-   * @param {module:ol/Feature} feature Feature.
-   * @return {module:ol/geom/Point} Cluster calculation point.
-   * @protected
+   * Set the distance in pixels between clusters.
+   * @param {number} distance The distance in pixels.
+   * @api
    */
-  this.geometryFunction = options.geometryFunction || function(feature) {
-    const geometry = /** @type {module:ol/geom/Point} */ (feature.getGeometry());
-    assert(geometry instanceof Point,
-      10); // The default `geometryFunction` can only handle `module:ol/geom/Point~Point` geometries
-    return geometry;
-  };
+  setDistance(distance) {
+    this.distance = distance;
+    this.refresh();
+  }
 
   /**
-   * @type {module:ol/source/Vector}
+   * handle the source changing
+   * @override
+   */
+  refresh() {
+    this.clear();
+    this.cluster();
+    this.addFeatures(this.features);
+    VectorSource.prototype.refresh.call(this);
+  }
+
+  /**
    * @protected
    */
-  this.source = options.source;
+  cluster() {
+    if (this.resolution === undefined) {
+      return;
+    }
+    this.features.length = 0;
+    const extent = createEmpty();
+    const mapDistance = this.distance * this.resolution;
+    const features = this.source.getFeatures();
 
-  listen(this.source, EventType.CHANGE, this.refresh, this);
-};
+    /**
+     * @type {!Object.<string, boolean>}
+     */
+    const clustered = {};
+
+    for (let i = 0, ii = features.length; i < ii; i++) {
+      const feature = features[i];
+      if (!(getUid(feature).toString() in clustered)) {
+        const geometry = this.geometryFunction(feature);
+        if (geometry) {
+          const coordinates = geometry.getCoordinates();
+          createOrUpdateFromCoordinate(coordinates, extent);
+          buffer(extent, mapDistance, extent);
+
+          let neighbors = this.source.getFeaturesInExtent(extent);
+          neighbors = neighbors.filter(function(neighbor) {
+            const uid = getUid(neighbor).toString();
+            if (!(uid in clustered)) {
+              clustered[uid] = true;
+              return true;
+            } else {
+              return false;
+            }
+          });
+          this.features.push(this.createCluster(neighbors));
+        }
+      }
+    }
+  }
+
+  /**
+   * @param {Array.<module:ol/Feature>} features Features
+   * @return {module:ol/Feature} The cluster feature.
+   * @protected
+   */
+  createCluster(features) {
+    const centroid = [0, 0];
+    for (let i = features.length - 1; i >= 0; --i) {
+      const geometry = this.geometryFunction(features[i]);
+      if (geometry) {
+        addCoordinate(centroid, geometry.getCoordinates());
+      } else {
+        features.splice(i, 1);
+      }
+    }
+    scaleCoordinate(centroid, 1 / features.length);
+
+    const cluster = new Feature(new Point(centroid));
+    cluster.set('features', features);
+    return cluster;
+  }
+}
 
 inherits(Cluster, VectorSource);
 
 
-/**
- * Get the distance in pixels between clusters.
- * @return {number} Distance.
- * @api
- */
-Cluster.prototype.getDistance = function() {
-  return this.distance;
-};
-
-
-/**
- * Get a reference to the wrapped source.
- * @return {module:ol/source/Vector} Source.
- * @api
- */
-Cluster.prototype.getSource = function() {
-  return this.source;
-};
-
-
-/**
- * @inheritDoc
- */
-Cluster.prototype.loadFeatures = function(extent, resolution, projection) {
-  this.source.loadFeatures(extent, resolution, projection);
-  if (resolution !== this.resolution) {
-    this.clear();
-    this.resolution = resolution;
-    this.cluster();
-    this.addFeatures(this.features);
-  }
-};
-
-
-/**
- * Set the distance in pixels between clusters.
- * @param {number} distance The distance in pixels.
- * @api
- */
-Cluster.prototype.setDistance = function(distance) {
-  this.distance = distance;
-  this.refresh();
-};
-
-
-/**
- * handle the source changing
- * @override
- */
-Cluster.prototype.refresh = function() {
-  this.clear();
-  this.cluster();
-  this.addFeatures(this.features);
-  VectorSource.prototype.refresh.call(this);
-};
-
-
-/**
- * @protected
- */
-Cluster.prototype.cluster = function() {
-  if (this.resolution === undefined) {
-    return;
-  }
-  this.features.length = 0;
-  const extent = createEmpty();
-  const mapDistance = this.distance * this.resolution;
-  const features = this.source.getFeatures();
-
-  /**
-   * @type {!Object.<string, boolean>}
-   */
-  const clustered = {};
-
-  for (let i = 0, ii = features.length; i < ii; i++) {
-    const feature = features[i];
-    if (!(getUid(feature).toString() in clustered)) {
-      const geometry = this.geometryFunction(feature);
-      if (geometry) {
-        const coordinates = geometry.getCoordinates();
-        createOrUpdateFromCoordinate(coordinates, extent);
-        buffer(extent, mapDistance, extent);
-
-        let neighbors = this.source.getFeaturesInExtent(extent);
-        neighbors = neighbors.filter(function(neighbor) {
-          const uid = getUid(neighbor).toString();
-          if (!(uid in clustered)) {
-            clustered[uid] = true;
-            return true;
-          } else {
-            return false;
-          }
-        });
-        this.features.push(this.createCluster(neighbors));
-      }
-    }
-  }
-};
-
-
-/**
- * @param {Array.<module:ol/Feature>} features Features
- * @return {module:ol/Feature} The cluster feature.
- * @protected
- */
-Cluster.prototype.createCluster = function(features) {
-  const centroid = [0, 0];
-  for (let i = features.length - 1; i >= 0; --i) {
-    const geometry = this.geometryFunction(features[i]);
-    if (geometry) {
-      addCoordinate(centroid, geometry.getCoordinates());
-    } else {
-      features.splice(i, 1);
-    }
-  }
-  scaleCoordinate(centroid, 1 / features.length);
-
-  const cluster = new Feature(new Point(centroid));
-  cluster.set('features', features);
-  return cluster;
-};
 export default Cluster;

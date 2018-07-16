@@ -42,150 +42,199 @@ import {appendParams} from '../uri.js';
  * @param {module:ol/source/ImageMapGuide~Options=} options ImageMapGuide options.
  * @api
  */
-const ImageMapGuide = function(options) {
+class ImageMapGuide {
+  constructor(options) {
 
-  ImageSource.call(this, {
-    projection: options.projection,
-    resolutions: options.resolutions
-  });
+    ImageSource.call(this, {
+      projection: options.projection,
+      resolutions: options.resolutions
+    });
+
+    /**
+     * @private
+     * @type {?string}
+     */
+    this.crossOrigin_ =
+        options.crossOrigin !== undefined ? options.crossOrigin : null;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.displayDpi_ = options.displayDpi !== undefined ?
+      options.displayDpi : 96;
+
+    /**
+     * @private
+     * @type {!Object}
+     */
+    this.params_ = options.params || {};
+
+    /**
+     * @private
+     * @type {string|undefined}
+     */
+    this.url_ = options.url;
+
+    /**
+     * @private
+     * @type {module:ol/Image~LoadFunction}
+     */
+    this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
+      options.imageLoadFunction : defaultImageLoadFunction;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.hidpi_ = options.hidpi !== undefined ? options.hidpi : true;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.metersPerUnit_ = options.metersPerUnit !== undefined ?
+      options.metersPerUnit : 1;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.ratio_ = options.ratio !== undefined ? options.ratio : 1;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.useOverlay_ = options.useOverlay !== undefined ?
+      options.useOverlay : false;
+
+    /**
+     * @private
+     * @type {module:ol/Image}
+     */
+    this.image_ = null;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.renderedRevision_ = 0;
+
+  }
 
   /**
-   * @private
-   * @type {?string}
+   * Get the user-provided params, i.e. those passed to the constructor through
+   * the "params" option, and possibly updated using the updateParams method.
+   * @return {Object} Params.
+   * @api
    */
-  this.crossOrigin_ =
-      options.crossOrigin !== undefined ? options.crossOrigin : null;
+  getParams() {
+    return this.params_;
+  }
 
   /**
-   * @private
-   * @type {number}
+   * @inheritDoc
    */
-  this.displayDpi_ = options.displayDpi !== undefined ?
-    options.displayDpi : 96;
+  getImageInternal(extent, resolution, pixelRatio, projection) {
+    resolution = this.findNearestResolution(resolution);
+    pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
-  /**
-   * @private
-   * @type {!Object}
-   */
-  this.params_ = options.params || {};
+    let image = this.image_;
+    if (image &&
+        this.renderedRevision_ == this.getRevision() &&
+        image.getResolution() == resolution &&
+        image.getPixelRatio() == pixelRatio &&
+        containsExtent(image.getExtent(), extent)) {
+      return image;
+    }
 
-  /**
-   * @private
-   * @type {string|undefined}
-   */
-  this.url_ = options.url;
+    if (this.ratio_ != 1) {
+      extent = extent.slice();
+      scaleFromCenter(extent, this.ratio_);
+    }
+    const width = getWidth(extent) / resolution;
+    const height = getHeight(extent) / resolution;
+    const size = [width * pixelRatio, height * pixelRatio];
 
-  /**
-   * @private
-   * @type {module:ol/Image~LoadFunction}
-   */
-  this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
-    options.imageLoadFunction : defaultImageLoadFunction;
+    if (this.url_ !== undefined) {
+      const imageUrl = this.getUrl(this.url_, this.params_, extent, size,
+        projection);
+      image = new ImageWrapper(extent, resolution, pixelRatio,
+        imageUrl, this.crossOrigin_,
+        this.imageLoadFunction_);
+      listen(image, EventType.CHANGE,
+        this.handleImageChange, this);
+    } else {
+      image = null;
+    }
+    this.image_ = image;
+    this.renderedRevision_ = this.getRevision();
 
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.hidpi_ = options.hidpi !== undefined ? options.hidpi : true;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.metersPerUnit_ = options.metersPerUnit !== undefined ?
-    options.metersPerUnit : 1;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.ratio_ = options.ratio !== undefined ? options.ratio : 1;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.useOverlay_ = options.useOverlay !== undefined ?
-    options.useOverlay : false;
-
-  /**
-   * @private
-   * @type {module:ol/Image}
-   */
-  this.image_ = null;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.renderedRevision_ = 0;
-
-};
-
-inherits(ImageMapGuide, ImageSource);
-
-
-/**
- * Get the user-provided params, i.e. those passed to the constructor through
- * the "params" option, and possibly updated using the updateParams method.
- * @return {Object} Params.
- * @api
- */
-ImageMapGuide.prototype.getParams = function() {
-  return this.params_;
-};
-
-
-/**
- * @inheritDoc
- */
-ImageMapGuide.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
-  resolution = this.findNearestResolution(resolution);
-  pixelRatio = this.hidpi_ ? pixelRatio : 1;
-
-  let image = this.image_;
-  if (image &&
-      this.renderedRevision_ == this.getRevision() &&
-      image.getResolution() == resolution &&
-      image.getPixelRatio() == pixelRatio &&
-      containsExtent(image.getExtent(), extent)) {
     return image;
   }
 
-  if (this.ratio_ != 1) {
-    extent = extent.slice();
-    scaleFromCenter(extent, this.ratio_);
+  /**
+   * Return the image load function of the source.
+   * @return {module:ol/Image~LoadFunction} The image load function.
+   * @api
+   */
+  getImageLoadFunction() {
+    return this.imageLoadFunction_;
   }
-  const width = getWidth(extent) / resolution;
-  const height = getHeight(extent) / resolution;
-  const size = [width * pixelRatio, height * pixelRatio];
 
-  if (this.url_ !== undefined) {
-    const imageUrl = this.getUrl(this.url_, this.params_, extent, size,
-      projection);
-    image = new ImageWrapper(extent, resolution, pixelRatio,
-      imageUrl, this.crossOrigin_,
-      this.imageLoadFunction_);
-    listen(image, EventType.CHANGE,
-      this.handleImageChange, this);
-  } else {
-    image = null;
+  /**
+   * Update the user-provided params.
+   * @param {Object} params Params.
+   * @api
+   */
+  updateParams(params) {
+    assign(this.params_, params);
+    this.changed();
   }
-  this.image_ = image;
-  this.renderedRevision_ = this.getRevision();
 
-  return image;
-};
+  /**
+   * @param {string} baseUrl The mapagent url.
+   * @param {Object.<string, string|number>} params Request parameters.
+   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {module:ol/size~Size} size Size.
+   * @param {module:ol/proj/Projection} projection Projection.
+   * @return {string} The mapagent map image request URL.
+   */
+  getUrl(baseUrl, params, extent, size, projection) {
+    const scale = getScale(extent, size,
+      this.metersPerUnit_, this.displayDpi_);
+    const center = getCenter(extent);
+    const baseParams = {
+      'OPERATION': this.useOverlay_ ? 'GETDYNAMICMAPOVERLAYIMAGE' : 'GETMAPIMAGE',
+      'VERSION': '2.0.0',
+      'LOCALE': 'en',
+      'CLIENTAGENT': 'ol/source/ImageMapGuide source',
+      'CLIP': '1',
+      'SETDISPLAYDPI': this.displayDpi_,
+      'SETDISPLAYWIDTH': Math.round(size[0]),
+      'SETDISPLAYHEIGHT': Math.round(size[1]),
+      'SETVIEWSCALE': scale,
+      'SETVIEWCENTERX': center[0],
+      'SETVIEWCENTERY': center[1]
+    };
+    assign(baseParams, params);
+    return appendParams(baseUrl, baseParams);
+  }
 
+  /**
+   * Set the image load function of the MapGuide source.
+   * @param {module:ol/Image~LoadFunction} imageLoadFunction Image load function.
+   * @api
+   */
+  setImageLoadFunction(imageLoadFunction) {
+    this.image_ = null;
+    this.imageLoadFunction_ = imageLoadFunction;
+    this.changed();
+  }
+}
 
-/**
- * Return the image load function of the source.
- * @return {module:ol/Image~LoadFunction} The image load function.
- * @api
- */
-ImageMapGuide.prototype.getImageLoadFunction = function() {
-  return this.imageLoadFunction_;
-};
+inherits(ImageMapGuide, ImageSource);
 
 
 /**
@@ -209,55 +258,4 @@ function getScale(extent, size, metersPerUnit, dpi) {
 }
 
 
-/**
- * Update the user-provided params.
- * @param {Object} params Params.
- * @api
- */
-ImageMapGuide.prototype.updateParams = function(params) {
-  assign(this.params_, params);
-  this.changed();
-};
-
-
-/**
- * @param {string} baseUrl The mapagent url.
- * @param {Object.<string, string|number>} params Request parameters.
- * @param {module:ol/extent~Extent} extent Extent.
- * @param {module:ol/size~Size} size Size.
- * @param {module:ol/proj/Projection} projection Projection.
- * @return {string} The mapagent map image request URL.
- */
-ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, size, projection) {
-  const scale = getScale(extent, size,
-    this.metersPerUnit_, this.displayDpi_);
-  const center = getCenter(extent);
-  const baseParams = {
-    'OPERATION': this.useOverlay_ ? 'GETDYNAMICMAPOVERLAYIMAGE' : 'GETMAPIMAGE',
-    'VERSION': '2.0.0',
-    'LOCALE': 'en',
-    'CLIENTAGENT': 'ol/source/ImageMapGuide source',
-    'CLIP': '1',
-    'SETDISPLAYDPI': this.displayDpi_,
-    'SETDISPLAYWIDTH': Math.round(size[0]),
-    'SETDISPLAYHEIGHT': Math.round(size[1]),
-    'SETVIEWSCALE': scale,
-    'SETVIEWCENTERX': center[0],
-    'SETVIEWCENTERY': center[1]
-  };
-  assign(baseParams, params);
-  return appendParams(baseUrl, baseParams);
-};
-
-
-/**
- * Set the image load function of the MapGuide source.
- * @param {module:ol/Image~LoadFunction} imageLoadFunction Image load function.
- * @api
- */
-ImageMapGuide.prototype.setImageLoadFunction = function(imageLoadFunction) {
-  this.image_ = null;
-  this.imageLoadFunction_ = imageLoadFunction;
-  this.changed();
-};
 export default ImageMapGuide;

@@ -66,29 +66,31 @@ import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js'
  * @fires module:ol/render/Event~RenderEvent#precompose
  * @api
  */
-const Map = function(options) {
-  options = assign({}, options);
-  if (!options.controls) {
-    options.controls = defaultControls();
-  }
-  if (!options.interactions) {
-    options.interactions = defaultInteractions();
+class Map {
+  constructor(options) {
+    options = assign({}, options);
+    if (!options.controls) {
+      options.controls = defaultControls();
+    }
+    if (!options.interactions) {
+      options.interactions = defaultInteractions();
+    }
+
+    PluggableMap.call(this, options);
   }
 
-  PluggableMap.call(this, options);
-};
+  createRenderer() {
+    const renderer = new CanvasMapRenderer(this);
+    renderer.registerLayerRenderers([
+      CanvasImageLayerRenderer,
+      CanvasTileLayerRenderer,
+      CanvasVectorLayerRenderer,
+      CanvasVectorTileLayerRenderer
+    ]);
+    return renderer;
+  }
+}
 
 inherits(Map, PluggableMap);
-
-Map.prototype.createRenderer = function() {
-  const renderer = new CanvasMapRenderer(this);
-  renderer.registerLayerRenderers([
-    CanvasImageLayerRenderer,
-    CanvasTileLayerRenderer,
-    CanvasVectorLayerRenderer,
-    CanvasVectorTileLayerRenderer
-  ]);
-  return renderer;
-};
 
 export default Map;

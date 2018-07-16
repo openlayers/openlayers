@@ -143,55 +143,336 @@ const DEFAULT_VERSION = '1.1.0';
  * @extends {module:ol/format/XMLFeature}
  * @api
  */
-const WFS = function(opt_options) {
-  const options = opt_options ? opt_options : {};
+class WFS {
+  constructor(opt_options) {
+    const options = opt_options ? opt_options : {};
+
+    /**
+     * @private
+     * @type {Array.<string>|string|undefined}
+     */
+    this.featureType_ = options.featureType;
+
+    /**
+     * @private
+     * @type {Object.<string, string>|string|undefined}
+     */
+    this.featureNS_ = options.featureNS;
+
+    /**
+     * @private
+     * @type {module:ol/format/GMLBase}
+     */
+    this.gmlFormat_ = options.gmlFormat ?
+      options.gmlFormat : new GML3();
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.schemaLocation_ = options.schemaLocation ?
+      options.schemaLocation : SCHEMA_LOCATIONS[DEFAULT_VERSION];
+
+    XMLFeature.call(this);
+  }
 
   /**
-   * @private
-   * @type {Array.<string>|string|undefined}
+   * @return {Array.<string>|string|undefined} featureType
    */
-  this.featureType_ = options.featureType;
+  getFeatureType() {
+    return this.featureType_;
+  }
 
   /**
-   * @private
-   * @type {Object.<string, string>|string|undefined}
+   * @param {Array.<string>|string|undefined} featureType Feature type(s) to parse.
    */
-  this.featureNS_ = options.featureNS;
+  setFeatureType(featureType) {
+    this.featureType_ = featureType;
+  }
 
   /**
-   * @private
-   * @type {module:ol/format/GMLBase}
+   * @inheritDoc
    */
-  this.gmlFormat_ = options.gmlFormat ?
-    options.gmlFormat : new GML3();
+  readFeaturesFromNode(node, opt_options) {
+    const context = /** @type {module:ol/xml~NodeStackItem} */ ({
+      'featureType': this.featureType_,
+      'featureNS': this.featureNS_
+    });
+    assign(context, this.getReadOptions(node, opt_options ? opt_options : {}));
+    const objectStack = [context];
+    this.gmlFormat_.FEATURE_COLLECTION_PARSERS[GMLNS][
+      'featureMember'] =
+        makeArrayPusher(GMLBase.prototype.readFeaturesInternal);
+    let features = pushParseAndPop([],
+      this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
+      objectStack, this.gmlFormat_);
+    if (!features) {
+      features = [];
+    }
+    return features;
+  }
 
   /**
-   * @private
-   * @type {string}
+   * Read transaction response of the source.
+   *
+   * @param {Document|Node|Object|string} source Source.
+   * @return {module:ol/format/WFS~TransactionResponse|undefined} Transaction response.
+   * @api
    */
-  this.schemaLocation_ = options.schemaLocation ?
-    options.schemaLocation : SCHEMA_LOCATIONS[DEFAULT_VERSION];
+  readTransactionResponse(source) {
+    if (isDocument(source)) {
+      return this.readTransactionResponseFromDocument(
+        /** @type {Document} */ (source));
+    } else if (isNode(source)) {
+      return this.readTransactionResponseFromNode(/** @type {Node} */ (source));
+    } else if (typeof source === 'string') {
+      const doc = parse(source);
+      return this.readTransactionResponseFromDocument(doc);
+    } else {
+      return undefined;
+    }
+  }
 
-  XMLFeature.call(this);
-};
+  /**
+   * Read feature collection metadata of the source.
+   *
+   * @param {Document|Node|Object|string} source Source.
+   * @return {module:ol/format/WFS~FeatureCollectionMetadata|undefined}
+   *     FeatureCollection metadata.
+   * @api
+   */
+  readFeatureCollectionMetadata(source) {
+    if (isDocument(source)) {
+      return this.readFeatureCollectionMetadataFromDocument(
+        /** @type {Document} */ (source));
+    } else if (isNode(source)) {
+      return this.readFeatureCollectionMetadataFromNode(
+        /** @type {Node} */ (source));
+    } else if (typeof source === 'string') {
+      const doc = parse(source);
+      return this.readFeatureCollectionMetadataFromDocument(doc);
+    } else {
+      return undefined;
+    }
+  }
+
+  /**
+   * @param {Document} doc Document.
+   * @return {module:ol/format/WFS~FeatureCollectionMetadata|undefined}
+   *     FeatureCollection metadata.
+   */
+  readFeatureCollectionMetadataFromDocument(doc) {
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
+      if (n.nodeType == Node.ELEMENT_NODE) {
+        return this.readFeatureCollectionMetadataFromNode(n);
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @return {module:ol/format/WFS~FeatureCollectionMetadata|undefined}
+   *     FeatureCollection metadata.
+   */
+  readFeatureCollectionMetadataFromNode(node) {
+    const result = {};
+    const value = readNonNegativeIntegerString(
+      node.getAttribute('numberOfFeatures'));
+    result['numberOfFeatures'] = value;
+    return pushParseAndPop(
+      /** @type {module:ol/format/WFS~FeatureCollectionMetadata} */ (result),
+      FEATURE_COLLECTION_PARSERS, node, [], this.gmlFormat_);
+  }
+
+  /**
+   * @param {Document} doc Document.
+   * @return {module:ol/format/WFS~TransactionResponse|undefined} Transaction response.
+   */
+  readTransactionResponseFromDocument(doc) {
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
+      if (n.nodeType == Node.ELEMENT_NODE) {
+        return this.readTransactionResponseFromNode(n);
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @return {module:ol/format/WFS~TransactionResponse|undefined} Transaction response.
+   */
+  readTransactionResponseFromNode(node) {
+    return pushParseAndPop(
+      /** @type {module:ol/format/WFS~TransactionResponse} */({}),
+      TRANSACTION_RESPONSE_PARSERS, node, []);
+  }
+
+  /**
+   * Encode format as WFS `GetFeature` and return the Node.
+   *
+   * @param {module:ol/format/WFS~WriteGetFeatureOptions} options Options.
+   * @return {Node} Result.
+   * @api
+   */
+  writeGetFeature(options) {
+    const node = createElementNS(WFSNS, 'GetFeature');
+    node.setAttribute('service', 'WFS');
+    node.setAttribute('version', '1.1.0');
+    let filter;
+    if (options) {
+      if (options.handle) {
+        node.setAttribute('handle', options.handle);
+      }
+      if (options.outputFormat) {
+        node.setAttribute('outputFormat', options.outputFormat);
+      }
+      if (options.maxFeatures !== undefined) {
+        node.setAttribute('maxFeatures', options.maxFeatures);
+      }
+      if (options.resultType) {
+        node.setAttribute('resultType', options.resultType);
+      }
+      if (options.startIndex !== undefined) {
+        node.setAttribute('startIndex', options.startIndex);
+      }
+      if (options.count !== undefined) {
+        node.setAttribute('count', options.count);
+      }
+      filter = options.filter;
+      if (options.bbox) {
+        assert(options.geometryName,
+          12); // `options.geometryName` must also be provided when `options.bbox` is set
+        const bbox = bboxFilter(
+          /** @type {string} */ (options.geometryName), options.bbox, options.srsName);
+        if (filter) {
+          // if bbox and filter are both set, combine the two into a single filter
+          filter = andFilter(filter, bbox);
+        } else {
+          filter = bbox;
+        }
+      }
+    }
+    node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', this.schemaLocation_);
+    /** @type {module:ol/xml~NodeStackItem} */
+    const context = {
+      node: node,
+      'srsName': options.srsName,
+      'featureNS': options.featureNS ? options.featureNS : this.featureNS_,
+      'featurePrefix': options.featurePrefix,
+      'geometryName': options.geometryName,
+      'filter': filter,
+      'propertyNames': options.propertyNames ? options.propertyNames : []
+    };
+    assert(Array.isArray(options.featureTypes),
+      11); // `options.featureTypes` should be an Array
+    writeGetFeature(node, /** @type {!Array.<string>} */ (options.featureTypes), [context]);
+    return node;
+  }
+
+  /**
+   * Encode format as WFS `Transaction` and return the Node.
+   *
+   * @param {Array.<module:ol/Feature>} inserts The features to insert.
+   * @param {Array.<module:ol/Feature>} updates The features to update.
+   * @param {Array.<module:ol/Feature>} deletes The features to delete.
+   * @param {module:ol/format/WFS~WriteTransactionOptions} options Write options.
+   * @return {Node} Result.
+   * @api
+   */
+  writeTransaction(inserts, updates, deletes, options) {
+    const objectStack = [];
+    const node = createElementNS(WFSNS, 'Transaction');
+    const version = options.version ? options.version : DEFAULT_VERSION;
+    const gmlVersion = version === '1.0.0' ? 2 : 3;
+    node.setAttribute('service', 'WFS');
+    node.setAttribute('version', version);
+    let baseObj;
+    /** @type {module:ol/xml~NodeStackItem} */
+    let obj;
+    if (options) {
+      baseObj = options.gmlOptions ? options.gmlOptions : {};
+      if (options.handle) {
+        node.setAttribute('handle', options.handle);
+      }
+    }
+    const schemaLocation = SCHEMA_LOCATIONS[version];
+    node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', schemaLocation);
+    const featurePrefix = options.featurePrefix ? options.featurePrefix : FEATURE_PREFIX;
+    if (inserts) {
+      obj = {node: node, 'featureNS': options.featureNS,
+        'featureType': options.featureType, 'featurePrefix': featurePrefix,
+        'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName};
+      assign(obj, baseObj);
+      pushSerializeAndPop(obj,
+        TRANSACTION_SERIALIZERS,
+        makeSimpleNodeFactory('Insert'), inserts,
+        objectStack);
+    }
+    if (updates) {
+      obj = {node: node, 'featureNS': options.featureNS,
+        'featureType': options.featureType, 'featurePrefix': featurePrefix,
+        'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName};
+      assign(obj, baseObj);
+      pushSerializeAndPop(obj,
+        TRANSACTION_SERIALIZERS,
+        makeSimpleNodeFactory('Update'), updates,
+        objectStack);
+    }
+    if (deletes) {
+      pushSerializeAndPop({node: node, 'featureNS': options.featureNS,
+        'featureType': options.featureType, 'featurePrefix': featurePrefix,
+        'gmlVersion': gmlVersion, 'srsName': options.srsName},
+      TRANSACTION_SERIALIZERS,
+      makeSimpleNodeFactory('Delete'), deletes,
+      objectStack);
+    }
+    if (options.nativeElements) {
+      pushSerializeAndPop({node: node, 'featureNS': options.featureNS,
+        'featureType': options.featureType, 'featurePrefix': featurePrefix,
+        'gmlVersion': gmlVersion, 'srsName': options.srsName},
+      TRANSACTION_SERIALIZERS,
+      makeSimpleNodeFactory('Native'), options.nativeElements,
+      objectStack);
+    }
+    return node;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readProjectionFromDocument(doc) {
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
+      if (n.nodeType == Node.ELEMENT_NODE) {
+        return this.readProjectionFromNode(n);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readProjectionFromNode(node) {
+    if (node.firstElementChild &&
+        node.firstElementChild.firstElementChild) {
+      node = node.firstElementChild.firstElementChild;
+      for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+        if (!(n.childNodes.length === 0 ||
+            (n.childNodes.length === 1 &&
+            n.firstChild.nodeType === 3))) {
+          const objectStack = [{}];
+          this.gmlFormat_.readGeometryElement(n, objectStack);
+          return getProjection(objectStack.pop().srsName);
+        }
+      }
+    }
+
+    return null;
+  }
+}
 
 inherits(WFS, XMLFeature);
-
-
-/**
- * @return {Array.<string>|string|undefined} featureType
- */
-WFS.prototype.getFeatureType = function() {
-  return this.featureType_;
-};
-
-
-/**
- * @param {Array.<string>|string|undefined} featureType Feature type(s) to parse.
- */
-WFS.prototype.setFeatureType = function(featureType) {
-  this.featureType_ = featureType;
-};
 
 
 /**
@@ -207,90 +488,6 @@ WFS.prototype.readFeatures;
 
 
 /**
- * @inheritDoc
- */
-WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
-  const context = /** @type {module:ol/xml~NodeStackItem} */ ({
-    'featureType': this.featureType_,
-    'featureNS': this.featureNS_
-  });
-  assign(context, this.getReadOptions(node, opt_options ? opt_options : {}));
-  const objectStack = [context];
-  this.gmlFormat_.FEATURE_COLLECTION_PARSERS[GMLNS][
-    'featureMember'] =
-      makeArrayPusher(GMLBase.prototype.readFeaturesInternal);
-  let features = pushParseAndPop([],
-    this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
-    objectStack, this.gmlFormat_);
-  if (!features) {
-    features = [];
-  }
-  return features;
-};
-
-
-/**
- * Read transaction response of the source.
- *
- * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/format/WFS~TransactionResponse|undefined} Transaction response.
- * @api
- */
-WFS.prototype.readTransactionResponse = function(source) {
-  if (isDocument(source)) {
-    return this.readTransactionResponseFromDocument(
-      /** @type {Document} */ (source));
-  } else if (isNode(source)) {
-    return this.readTransactionResponseFromNode(/** @type {Node} */ (source));
-  } else if (typeof source === 'string') {
-    const doc = parse(source);
-    return this.readTransactionResponseFromDocument(doc);
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * Read feature collection metadata of the source.
- *
- * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/format/WFS~FeatureCollectionMetadata|undefined}
- *     FeatureCollection metadata.
- * @api
- */
-WFS.prototype.readFeatureCollectionMetadata = function(source) {
-  if (isDocument(source)) {
-    return this.readFeatureCollectionMetadataFromDocument(
-      /** @type {Document} */ (source));
-  } else if (isNode(source)) {
-    return this.readFeatureCollectionMetadataFromNode(
-      /** @type {Node} */ (source));
-  } else if (typeof source === 'string') {
-    const doc = parse(source);
-    return this.readFeatureCollectionMetadataFromDocument(doc);
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @param {Document} doc Document.
- * @return {module:ol/format/WFS~FeatureCollectionMetadata|undefined}
- *     FeatureCollection metadata.
- */
-WFS.prototype.readFeatureCollectionMetadataFromDocument = function(doc) {
-  for (let n = doc.firstChild; n; n = n.nextSibling) {
-    if (n.nodeType == Node.ELEMENT_NODE) {
-      return this.readFeatureCollectionMetadataFromNode(n);
-    }
-  }
-  return undefined;
-};
-
-
-/**
  * @const
  * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
  */
@@ -299,22 +496,6 @@ const FEATURE_COLLECTION_PARSERS = {
     'boundedBy': makeObjectPropertySetter(
       GMLBase.prototype.readGeometryElement, 'bounds')
   }
-};
-
-
-/**
- * @param {Node} node Node.
- * @return {module:ol/format/WFS~FeatureCollectionMetadata|undefined}
- *     FeatureCollection metadata.
- */
-WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
-  const result = {};
-  const value = readNonNegativeIntegerString(
-    node.getAttribute('numberOfFeatures'));
-  result['numberOfFeatures'] = value;
-  return pushParseAndPop(
-    /** @type {module:ol/format/WFS~FeatureCollectionMetadata} */ (result),
-    FEATURE_COLLECTION_PARSERS, node, [], this.gmlFormat_);
 };
 
 
@@ -397,31 +578,6 @@ const TRANSACTION_RESPONSE_PARSERS = {
     'InsertResults': makeObjectPropertySetter(
       readInsertResults, 'insertIds')
   }
-};
-
-
-/**
- * @param {Document} doc Document.
- * @return {module:ol/format/WFS~TransactionResponse|undefined} Transaction response.
- */
-WFS.prototype.readTransactionResponseFromDocument = function(doc) {
-  for (let n = doc.firstChild; n; n = n.nextSibling) {
-    if (n.nodeType == Node.ELEMENT_NODE) {
-      return this.readTransactionResponseFromNode(n);
-    }
-  }
-  return undefined;
-};
-
-
-/**
- * @param {Node} node Node.
- * @return {module:ol/format/WFS~TransactionResponse|undefined} Transaction response.
- */
-WFS.prototype.readTransactionResponseFromNode = function(node) {
-  return pushParseAndPop(
-    /** @type {module:ol/format/WFS~TransactionResponse} */({}),
-    TRANSACTION_RESPONSE_PARSERS, node, []);
 };
 
 
@@ -943,138 +1099,6 @@ function writeGetFeature(node, featureTypes, objectStack) {
 
 
 /**
- * Encode format as WFS `GetFeature` and return the Node.
- *
- * @param {module:ol/format/WFS~WriteGetFeatureOptions} options Options.
- * @return {Node} Result.
- * @api
- */
-WFS.prototype.writeGetFeature = function(options) {
-  const node = createElementNS(WFSNS, 'GetFeature');
-  node.setAttribute('service', 'WFS');
-  node.setAttribute('version', '1.1.0');
-  let filter;
-  if (options) {
-    if (options.handle) {
-      node.setAttribute('handle', options.handle);
-    }
-    if (options.outputFormat) {
-      node.setAttribute('outputFormat', options.outputFormat);
-    }
-    if (options.maxFeatures !== undefined) {
-      node.setAttribute('maxFeatures', options.maxFeatures);
-    }
-    if (options.resultType) {
-      node.setAttribute('resultType', options.resultType);
-    }
-    if (options.startIndex !== undefined) {
-      node.setAttribute('startIndex', options.startIndex);
-    }
-    if (options.count !== undefined) {
-      node.setAttribute('count', options.count);
-    }
-    filter = options.filter;
-    if (options.bbox) {
-      assert(options.geometryName,
-        12); // `options.geometryName` must also be provided when `options.bbox` is set
-      const bbox = bboxFilter(
-        /** @type {string} */ (options.geometryName), options.bbox, options.srsName);
-      if (filter) {
-        // if bbox and filter are both set, combine the two into a single filter
-        filter = andFilter(filter, bbox);
-      } else {
-        filter = bbox;
-      }
-    }
-  }
-  node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', this.schemaLocation_);
-  /** @type {module:ol/xml~NodeStackItem} */
-  const context = {
-    node: node,
-    'srsName': options.srsName,
-    'featureNS': options.featureNS ? options.featureNS : this.featureNS_,
-    'featurePrefix': options.featurePrefix,
-    'geometryName': options.geometryName,
-    'filter': filter,
-    'propertyNames': options.propertyNames ? options.propertyNames : []
-  };
-  assert(Array.isArray(options.featureTypes),
-    11); // `options.featureTypes` should be an Array
-  writeGetFeature(node, /** @type {!Array.<string>} */ (options.featureTypes), [context]);
-  return node;
-};
-
-
-/**
- * Encode format as WFS `Transaction` and return the Node.
- *
- * @param {Array.<module:ol/Feature>} inserts The features to insert.
- * @param {Array.<module:ol/Feature>} updates The features to update.
- * @param {Array.<module:ol/Feature>} deletes The features to delete.
- * @param {module:ol/format/WFS~WriteTransactionOptions} options Write options.
- * @return {Node} Result.
- * @api
- */
-WFS.prototype.writeTransaction = function(inserts, updates, deletes, options) {
-  const objectStack = [];
-  const node = createElementNS(WFSNS, 'Transaction');
-  const version = options.version ? options.version : DEFAULT_VERSION;
-  const gmlVersion = version === '1.0.0' ? 2 : 3;
-  node.setAttribute('service', 'WFS');
-  node.setAttribute('version', version);
-  let baseObj;
-  /** @type {module:ol/xml~NodeStackItem} */
-  let obj;
-  if (options) {
-    baseObj = options.gmlOptions ? options.gmlOptions : {};
-    if (options.handle) {
-      node.setAttribute('handle', options.handle);
-    }
-  }
-  const schemaLocation = SCHEMA_LOCATIONS[version];
-  node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', schemaLocation);
-  const featurePrefix = options.featurePrefix ? options.featurePrefix : FEATURE_PREFIX;
-  if (inserts) {
-    obj = {node: node, 'featureNS': options.featureNS,
-      'featureType': options.featureType, 'featurePrefix': featurePrefix,
-      'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName};
-    assign(obj, baseObj);
-    pushSerializeAndPop(obj,
-      TRANSACTION_SERIALIZERS,
-      makeSimpleNodeFactory('Insert'), inserts,
-      objectStack);
-  }
-  if (updates) {
-    obj = {node: node, 'featureNS': options.featureNS,
-      'featureType': options.featureType, 'featurePrefix': featurePrefix,
-      'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName};
-    assign(obj, baseObj);
-    pushSerializeAndPop(obj,
-      TRANSACTION_SERIALIZERS,
-      makeSimpleNodeFactory('Update'), updates,
-      objectStack);
-  }
-  if (deletes) {
-    pushSerializeAndPop({node: node, 'featureNS': options.featureNS,
-      'featureType': options.featureType, 'featurePrefix': featurePrefix,
-      'gmlVersion': gmlVersion, 'srsName': options.srsName},
-    TRANSACTION_SERIALIZERS,
-    makeSimpleNodeFactory('Delete'), deletes,
-    objectStack);
-  }
-  if (options.nativeElements) {
-    pushSerializeAndPop({node: node, 'featureNS': options.featureNS,
-      'featureType': options.featureType, 'featurePrefix': featurePrefix,
-      'gmlVersion': gmlVersion, 'srsName': options.srsName},
-    TRANSACTION_SERIALIZERS,
-    makeSimpleNodeFactory('Native'), options.nativeElements,
-    objectStack);
-  }
-  return node;
-};
-
-
-/**
  * Read the projection from a WFS source.
  *
  * @function
@@ -1085,37 +1109,4 @@ WFS.prototype.writeTransaction = function(inserts, updates, deletes, options) {
 WFS.prototype.readProjection;
 
 
-/**
- * @inheritDoc
- */
-WFS.prototype.readProjectionFromDocument = function(doc) {
-  for (let n = doc.firstChild; n; n = n.nextSibling) {
-    if (n.nodeType == Node.ELEMENT_NODE) {
-      return this.readProjectionFromNode(n);
-    }
-  }
-  return null;
-};
-
-
-/**
- * @inheritDoc
- */
-WFS.prototype.readProjectionFromNode = function(node) {
-  if (node.firstElementChild &&
-      node.firstElementChild.firstElementChild) {
-    node = node.firstElementChild.firstElementChild;
-    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-      if (!(n.childNodes.length === 0 ||
-          (n.childNodes.length === 1 &&
-          n.firstChild.nodeType === 3))) {
-        const objectStack = [{}];
-        this.gmlFormat_.readGeometryElement(n, objectStack);
-        return getProjection(objectStack.pop().srsName);
-      }
-    }
-  }
-
-  return null;
-};
 export default WFS;

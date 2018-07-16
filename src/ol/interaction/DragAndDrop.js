@@ -89,47 +89,156 @@ inherits(DragAndDropEvent, Event);
  * @param {module:ol/interaction/DragAndDrop~Options=} opt_options Options.
  * @api
  */
-const DragAndDrop = function(opt_options) {
+class DragAndDrop {
+  constructor(opt_options) {
 
-  const options = opt_options ? opt_options : {};
+    const options = opt_options ? opt_options : {};
 
-  Interaction.call(this, {
-    handleEvent: TRUE
-  });
+    Interaction.call(this, {
+      handleEvent: TRUE
+    });
+
+    /**
+     * @private
+     * @type {Array.<function(new: module:ol/format/Feature)>}
+     */
+    this.formatConstructors_ = options.formatConstructors ?
+      options.formatConstructors : [];
+
+    /**
+     * @private
+     * @type {module:ol/proj/Projection}
+     */
+    this.projection_ = options.projection ?
+      getProjection(options.projection) : null;
+
+    /**
+     * @private
+     * @type {Array.<module:ol/events~EventsKey>}
+     */
+    this.dropListenKeys_ = null;
+
+    /**
+     * @private
+     * @type {module:ol/source/Vector}
+     */
+    this.source_ = options.source || null;
+
+    /**
+     * @private
+     * @type {Element}
+     */
+    this.target = options.target ? options.target : null;
+
+  }
+
+  /**
+   * @param {File} file File.
+   * @param {Event} event Load event.
+   * @private
+   */
+  handleResult_(file, event) {
+    const result = event.target.result;
+    const map = this.getMap();
+    let projection = this.projection_;
+    if (!projection) {
+      const view = map.getView();
+      projection = view.getProjection();
+    }
+
+    const formatConstructors = this.formatConstructors_;
+    let features = [];
+    for (let i = 0, ii = formatConstructors.length; i < ii; ++i) {
+      /**
+       * Avoid "cannot instantiate abstract class" error.
+       * @type {Function}
+       */
+      const formatConstructor = formatConstructors[i];
+      /**
+       * @type {module:ol/format/Feature}
+       */
+      const format = new formatConstructor();
+      features = this.tryReadFeatures_(format, result, {
+        featureProjection: projection
+      });
+      if (features && features.length > 0) {
+        break;
+      }
+    }
+    if (this.source_) {
+      this.source_.clear();
+      this.source_.addFeatures(features);
+    }
+    this.dispatchEvent(
+      new DragAndDropEvent(
+        DragAndDropEventType.ADD_FEATURES, file,
+        features, projection));
+  }
 
   /**
    * @private
-   * @type {Array.<function(new: module:ol/format/Feature)>}
    */
-  this.formatConstructors_ = options.formatConstructors ?
-    options.formatConstructors : [];
+  registerListeners_() {
+    const map = this.getMap();
+    if (map) {
+      const dropArea = this.target ? this.target : map.getViewport();
+      this.dropListenKeys_ = [
+        listen(dropArea, EventType.DROP, handleDrop, this),
+        listen(dropArea, EventType.DRAGENTER, handleStop, this),
+        listen(dropArea, EventType.DRAGOVER, handleStop, this),
+        listen(dropArea, EventType.DROP, handleStop, this)
+      ];
+    }
+  }
+
+  /**
+   * @inheritDoc
+   */
+  setActive(active) {
+    Interaction.prototype.setActive.call(this, active);
+    if (active) {
+      this.registerListeners_();
+    } else {
+      this.unregisterListeners_();
+    }
+  }
+
+  /**
+   * @inheritDoc
+   */
+  setMap(map) {
+    this.unregisterListeners_();
+    Interaction.prototype.setMap.call(this, map);
+    if (this.getActive()) {
+      this.registerListeners_();
+    }
+  }
+
+  /**
+   * @param {module:ol/format/Feature} format Format.
+   * @param {string} text Text.
+   * @param {module:ol/format/Feature~ReadOptions} options Read options.
+   * @private
+   * @return {Array.<module:ol/Feature>} Features.
+   */
+  tryReadFeatures_(format, text, options) {
+    try {
+      return format.readFeatures(text, options);
+    } catch (e) {
+      return null;
+    }
+  }
 
   /**
    * @private
-   * @type {module:ol/proj/Projection}
    */
-  this.projection_ = options.projection ?
-    getProjection(options.projection) : null;
-
-  /**
-   * @private
-   * @type {Array.<module:ol/events~EventsKey>}
-   */
-  this.dropListenKeys_ = null;
-
-  /**
-   * @private
-   * @type {module:ol/source/Vector}
-   */
-  this.source_ = options.source || null;
-
-  /**
-   * @private
-   * @type {Element}
-   */
-  this.target = options.target ? options.target : null;
-
-};
+  unregisterListeners_() {
+    if (this.dropListenKeys_) {
+      this.dropListenKeys_.forEach(unlistenByKey);
+      this.dropListenKeys_ = null;
+    }
+  }
+}
 
 inherits(DragAndDrop, Interaction);
 
@@ -157,119 +266,6 @@ function handleStop(event) {
   event.preventDefault();
   event.dataTransfer.dropEffect = 'copy';
 }
-
-
-/**
- * @param {File} file File.
- * @param {Event} event Load event.
- * @private
- */
-DragAndDrop.prototype.handleResult_ = function(file, event) {
-  const result = event.target.result;
-  const map = this.getMap();
-  let projection = this.projection_;
-  if (!projection) {
-    const view = map.getView();
-    projection = view.getProjection();
-  }
-
-  const formatConstructors = this.formatConstructors_;
-  let features = [];
-  for (let i = 0, ii = formatConstructors.length; i < ii; ++i) {
-    /**
-     * Avoid "cannot instantiate abstract class" error.
-     * @type {Function}
-     */
-    const formatConstructor = formatConstructors[i];
-    /**
-     * @type {module:ol/format/Feature}
-     */
-    const format = new formatConstructor();
-    features = this.tryReadFeatures_(format, result, {
-      featureProjection: projection
-    });
-    if (features && features.length > 0) {
-      break;
-    }
-  }
-  if (this.source_) {
-    this.source_.clear();
-    this.source_.addFeatures(features);
-  }
-  this.dispatchEvent(
-    new DragAndDropEvent(
-      DragAndDropEventType.ADD_FEATURES, file,
-      features, projection));
-};
-
-
-/**
- * @private
- */
-DragAndDrop.prototype.registerListeners_ = function() {
-  const map = this.getMap();
-  if (map) {
-    const dropArea = this.target ? this.target : map.getViewport();
-    this.dropListenKeys_ = [
-      listen(dropArea, EventType.DROP, handleDrop, this),
-      listen(dropArea, EventType.DRAGENTER, handleStop, this),
-      listen(dropArea, EventType.DRAGOVER, handleStop, this),
-      listen(dropArea, EventType.DROP, handleStop, this)
-    ];
-  }
-};
-
-
-/**
- * @inheritDoc
- */
-DragAndDrop.prototype.setActive = function(active) {
-  Interaction.prototype.setActive.call(this, active);
-  if (active) {
-    this.registerListeners_();
-  } else {
-    this.unregisterListeners_();
-  }
-};
-
-
-/**
- * @inheritDoc
- */
-DragAndDrop.prototype.setMap = function(map) {
-  this.unregisterListeners_();
-  Interaction.prototype.setMap.call(this, map);
-  if (this.getActive()) {
-    this.registerListeners_();
-  }
-};
-
-
-/**
- * @param {module:ol/format/Feature} format Format.
- * @param {string} text Text.
- * @param {module:ol/format/Feature~ReadOptions} options Read options.
- * @private
- * @return {Array.<module:ol/Feature>} Features.
- */
-DragAndDrop.prototype.tryReadFeatures_ = function(format, text, options) {
-  try {
-    return format.readFeatures(text, options);
-  } catch (e) {
-    return null;
-  }
-};
-
-
-/**
- * @private
- */
-DragAndDrop.prototype.unregisterListeners_ = function() {
-  if (this.dropListenKeys_) {
-    this.dropListenKeys_.forEach(unlistenByKey);
-    this.dropListenKeys_ = null;
-  }
-};
 
 
 export default DragAndDrop;

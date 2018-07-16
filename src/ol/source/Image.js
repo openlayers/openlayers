@@ -88,144 +88,141 @@ inherits(ImageSourceEvent, Event);
  * @param {module:ol/source/Image~Options} options Single image source options.
  * @api
  */
-const ImageSource = function(options) {
-  Source.call(this, {
-    attributions: options.attributions,
-    extent: options.extent,
-    projection: options.projection,
-    state: options.state
-  });
+class ImageSource {
+  constructor(options) {
+    Source.call(this, {
+      attributions: options.attributions,
+      extent: options.extent,
+      projection: options.projection,
+      state: options.state
+    });
+
+    /**
+     * @private
+     * @type {Array.<number>}
+     */
+    this.resolutions_ = options.resolutions !== undefined ?
+      options.resolutions : null;
+
+
+    /**
+     * @private
+     * @type {module:ol/reproj/Image}
+     */
+    this.reprojectedImage_ = null;
+
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.reprojectedRevision_ = 0;
+  }
 
   /**
-   * @private
-   * @type {Array.<number>}
+   * @return {Array.<number>} Resolutions.
+   * @override
    */
-  this.resolutions_ = options.resolutions !== undefined ?
-    options.resolutions : null;
-
+  getResolutions() {
+    return this.resolutions_;
+  }
 
   /**
-   * @private
-   * @type {module:ol/reproj/Image}
+   * @protected
+   * @param {number} resolution Resolution.
+   * @return {number} Resolution.
    */
-  this.reprojectedImage_ = null;
-
+  findNearestResolution(resolution) {
+    if (this.resolutions_) {
+      const idx = linearFindNearest(this.resolutions_, resolution, 0);
+      resolution = this.resolutions_[idx];
+    }
+    return resolution;
+  }
 
   /**
-   * @private
-   * @type {number}
+   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {number} resolution Resolution.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {module:ol/proj/Projection} projection Projection.
+   * @return {module:ol/ImageBase} Single image.
    */
-  this.reprojectedRevision_ = 0;
-};
+  getImage(extent, resolution, pixelRatio, projection) {
+    const sourceProjection = this.getProjection();
+    if (!ENABLE_RASTER_REPROJECTION ||
+        !sourceProjection ||
+        !projection ||
+        equivalent(sourceProjection, projection)) {
+      if (sourceProjection) {
+        projection = sourceProjection;
+      }
+      return this.getImageInternal(extent, resolution, pixelRatio, projection);
+    } else {
+      if (this.reprojectedImage_) {
+        if (this.reprojectedRevision_ == this.getRevision() &&
+            equivalent(
+              this.reprojectedImage_.getProjection(), projection) &&
+            this.reprojectedImage_.getResolution() == resolution &&
+            equals(this.reprojectedImage_.getExtent(), extent)) {
+          return this.reprojectedImage_;
+        }
+        this.reprojectedImage_.dispose();
+        this.reprojectedImage_ = null;
+      }
+
+      this.reprojectedImage_ = new ReprojImage(
+        sourceProjection, projection, extent, resolution, pixelRatio,
+        function(extent, resolution, pixelRatio) {
+          return this.getImageInternal(extent, resolution,
+            pixelRatio, sourceProjection);
+        }.bind(this));
+      this.reprojectedRevision_ = this.getRevision();
+
+      return this.reprojectedImage_;
+    }
+  }
+
+  /**
+   * @abstract
+   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {number} resolution Resolution.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {module:ol/proj/Projection} projection Projection.
+   * @return {module:ol/ImageBase} Single image.
+   * @protected
+   */
+  getImageInternal(extent, resolution, pixelRatio, projection) {}
+
+  /**
+   * Handle image change events.
+   * @param {module:ol/events/Event} event Event.
+   * @protected
+   */
+  handleImageChange(event) {
+    const image = /** @type {module:ol/Image} */ (event.target);
+    switch (image.getState()) {
+      case ImageState.LOADING:
+        this.dispatchEvent(
+          new ImageSourceEvent(ImageSourceEventType.IMAGELOADSTART,
+            image));
+        break;
+      case ImageState.LOADED:
+        this.dispatchEvent(
+          new ImageSourceEvent(ImageSourceEventType.IMAGELOADEND,
+            image));
+        break;
+      case ImageState.ERROR:
+        this.dispatchEvent(
+          new ImageSourceEvent(ImageSourceEventType.IMAGELOADERROR,
+            image));
+        break;
+      default:
+        // pass
+    }
+  }
+}
 
 inherits(ImageSource, Source);
-
-
-/**
- * @return {Array.<number>} Resolutions.
- * @override
- */
-ImageSource.prototype.getResolutions = function() {
-  return this.resolutions_;
-};
-
-
-/**
- * @protected
- * @param {number} resolution Resolution.
- * @return {number} Resolution.
- */
-ImageSource.prototype.findNearestResolution = function(resolution) {
-  if (this.resolutions_) {
-    const idx = linearFindNearest(this.resolutions_, resolution, 0);
-    resolution = this.resolutions_[idx];
-  }
-  return resolution;
-};
-
-
-/**
- * @param {module:ol/extent~Extent} extent Extent.
- * @param {number} resolution Resolution.
- * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/proj/Projection} projection Projection.
- * @return {module:ol/ImageBase} Single image.
- */
-ImageSource.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
-  const sourceProjection = this.getProjection();
-  if (!ENABLE_RASTER_REPROJECTION ||
-      !sourceProjection ||
-      !projection ||
-      equivalent(sourceProjection, projection)) {
-    if (sourceProjection) {
-      projection = sourceProjection;
-    }
-    return this.getImageInternal(extent, resolution, pixelRatio, projection);
-  } else {
-    if (this.reprojectedImage_) {
-      if (this.reprojectedRevision_ == this.getRevision() &&
-          equivalent(
-            this.reprojectedImage_.getProjection(), projection) &&
-          this.reprojectedImage_.getResolution() == resolution &&
-          equals(this.reprojectedImage_.getExtent(), extent)) {
-        return this.reprojectedImage_;
-      }
-      this.reprojectedImage_.dispose();
-      this.reprojectedImage_ = null;
-    }
-
-    this.reprojectedImage_ = new ReprojImage(
-      sourceProjection, projection, extent, resolution, pixelRatio,
-      function(extent, resolution, pixelRatio) {
-        return this.getImageInternal(extent, resolution,
-          pixelRatio, sourceProjection);
-      }.bind(this));
-    this.reprojectedRevision_ = this.getRevision();
-
-    return this.reprojectedImage_;
-  }
-};
-
-
-/**
- * @abstract
- * @param {module:ol/extent~Extent} extent Extent.
- * @param {number} resolution Resolution.
- * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/proj/Projection} projection Projection.
- * @return {module:ol/ImageBase} Single image.
- * @protected
- */
-ImageSource.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {};
-
-
-/**
- * Handle image change events.
- * @param {module:ol/events/Event} event Event.
- * @protected
- */
-ImageSource.prototype.handleImageChange = function(event) {
-  const image = /** @type {module:ol/Image} */ (event.target);
-  switch (image.getState()) {
-    case ImageState.LOADING:
-      this.dispatchEvent(
-        new ImageSourceEvent(ImageSourceEventType.IMAGELOADSTART,
-          image));
-      break;
-    case ImageState.LOADED:
-      this.dispatchEvent(
-        new ImageSourceEvent(ImageSourceEventType.IMAGELOADEND,
-          image));
-      break;
-    case ImageState.ERROR:
-      this.dispatchEvent(
-        new ImageSourceEvent(ImageSourceEventType.IMAGELOADERROR,
-          image));
-      break;
-    default:
-      // pass
-  }
-};
 
 
 /**

@@ -11,9 +11,32 @@ import {makeObjectPropertyPusher, makeObjectPropertySetter, makeStructureNS, pus
  * @constructor
  * @extends {module:ol/format/XML}
  */
-const OWS = function() {
-  XML.call(this);
-};
+class OWS {
+  constructor() {
+    XML.call(this);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readFromDocument(doc) {
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
+      if (n.nodeType == Node.ELEMENT_NODE) {
+        return this.readFromNode(n);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readFromNode(node) {
+    const owsObject = pushParseAndPop({},
+      PARSERS, node, []);
+    return owsObject ? owsObject : null;
+  }
+}
 
 inherits(OWS, XML);
 
@@ -185,29 +208,6 @@ const SERVICE_PROVIDER_PARSERS =
         'ProviderSite': makeObjectPropertySetter(readHref),
         'ServiceContact': makeObjectPropertySetter(readServiceContact)
       });
-
-
-/**
- * @inheritDoc
- */
-OWS.prototype.readFromDocument = function(doc) {
-  for (let n = doc.firstChild; n; n = n.nextSibling) {
-    if (n.nodeType == Node.ELEMENT_NODE) {
-      return this.readFromNode(n);
-    }
-  }
-  return null;
-};
-
-
-/**
- * @inheritDoc
- */
-OWS.prototype.readFromNode = function(node) {
-  const owsObject = pushParseAndPop({},
-    PARSERS, node, []);
-  return owsObject ? owsObject : null;
-};
 
 
 /**

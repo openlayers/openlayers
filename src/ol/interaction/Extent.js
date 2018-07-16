@@ -82,98 +82,233 @@ inherits(ExtentInteractionEvent, Event);
  * @param {module:ol/interaction/Extent~Options=} opt_options Options.
  * @api
  */
-const ExtentInteraction = function(opt_options) {
+class ExtentInteraction {
+  constructor(opt_options) {
 
-  const options = opt_options || {};
+    const options = opt_options || {};
 
-  /**
-   * Extent of the drawn box
-   * @type {module:ol/extent~Extent}
-   * @private
-   */
-  this.extent_ = null;
+    /**
+     * Extent of the drawn box
+     * @type {module:ol/extent~Extent}
+     * @private
+     */
+    this.extent_ = null;
 
-  /**
-   * Handler for pointer move events
-   * @type {function (module:ol/coordinate~Coordinate): module:ol/extent~Extent|null}
-   * @private
-   */
-  this.pointerHandler_ = null;
+    /**
+     * Handler for pointer move events
+     * @type {function (module:ol/coordinate~Coordinate): module:ol/extent~Extent|null}
+     * @private
+     */
+    this.pointerHandler_ = null;
 
-  /**
-   * Pixel threshold to snap to extent
-   * @type {number}
-   * @private
-   */
-  this.pixelTolerance_ = options.pixelTolerance !== undefined ?
-    options.pixelTolerance : 10;
+    /**
+     * Pixel threshold to snap to extent
+     * @type {number}
+     * @private
+     */
+    this.pixelTolerance_ = options.pixelTolerance !== undefined ?
+      options.pixelTolerance : 10;
 
-  /**
-   * Is the pointer snapped to an extent vertex
-   * @type {boolean}
-   * @private
-   */
-  this.snappedToVertex_ = false;
+    /**
+     * Is the pointer snapped to an extent vertex
+     * @type {boolean}
+     * @private
+     */
+    this.snappedToVertex_ = false;
 
-  /**
-   * Feature for displaying the visible extent
-   * @type {module:ol/Feature}
-   * @private
-   */
-  this.extentFeature_ = null;
+    /**
+     * Feature for displaying the visible extent
+     * @type {module:ol/Feature}
+     * @private
+     */
+    this.extentFeature_ = null;
 
-  /**
-   * Feature for displaying the visible pointer
-   * @type {module:ol/Feature}
-   * @private
-   */
-  this.vertexFeature_ = null;
+    /**
+     * Feature for displaying the visible pointer
+     * @type {module:ol/Feature}
+     * @private
+     */
+    this.vertexFeature_ = null;
 
-  if (!opt_options) {
-    opt_options = {};
+    if (!opt_options) {
+      opt_options = {};
+    }
+
+    PointerInteraction.call(this, {
+      handleDownEvent: handleDownEvent,
+      handleDragEvent: handleDragEvent,
+      handleEvent: handleEvent,
+      handleUpEvent: handleUpEvent
+    });
+
+    /**
+     * Layer for the extentFeature
+     * @type {module:ol/layer/Vector}
+     * @private
+     */
+    this.extentOverlay_ = new VectorLayer({
+      source: new VectorSource({
+        useSpatialIndex: false,
+        wrapX: !!opt_options.wrapX
+      }),
+      style: opt_options.boxStyle ? opt_options.boxStyle : getDefaultExtentStyleFunction(),
+      updateWhileAnimating: true,
+      updateWhileInteracting: true
+    });
+
+    /**
+     * Layer for the vertexFeature
+     * @type {module:ol/layer/Vector}
+     * @private
+     */
+    this.vertexOverlay_ = new VectorLayer({
+      source: new VectorSource({
+        useSpatialIndex: false,
+        wrapX: !!opt_options.wrapX
+      }),
+      style: opt_options.pointerStyle ? opt_options.pointerStyle : getDefaultPointerStyleFunction(),
+      updateWhileAnimating: true,
+      updateWhileInteracting: true
+    });
+
+    if (opt_options.extent) {
+      this.setExtent(opt_options.extent);
+    }
   }
 
-  PointerInteraction.call(this, {
-    handleDownEvent: handleDownEvent,
-    handleDragEvent: handleDragEvent,
-    handleEvent: handleEvent,
-    handleUpEvent: handleUpEvent
-  });
-
   /**
-   * Layer for the extentFeature
-   * @type {module:ol/layer/Vector}
+   * @param {module:ol~Pixel} pixel cursor location
+   * @param {module:ol/PluggableMap} map map
+   * @returns {module:ol/coordinate~Coordinate|null} snapped vertex on extent
    * @private
    */
-  this.extentOverlay_ = new VectorLayer({
-    source: new VectorSource({
-      useSpatialIndex: false,
-      wrapX: !!opt_options.wrapX
-    }),
-    style: opt_options.boxStyle ? opt_options.boxStyle : getDefaultExtentStyleFunction(),
-    updateWhileAnimating: true,
-    updateWhileInteracting: true
-  });
+  snapToVertex_(pixel, map) {
+    const pixelCoordinate = map.getCoordinateFromPixel(pixel);
+    const sortByDistance = function(a, b) {
+      return squaredDistanceToSegment(pixelCoordinate, a) -
+          squaredDistanceToSegment(pixelCoordinate, b);
+    };
+    const extent = this.getExtent();
+    if (extent) {
+      //convert extents to line segments and find the segment closest to pixelCoordinate
+      const segments = getSegments(extent);
+      segments.sort(sortByDistance);
+      const closestSegment = segments[0];
 
-  /**
-   * Layer for the vertexFeature
-   * @type {module:ol/layer/Vector}
-   * @private
-   */
-  this.vertexOverlay_ = new VectorLayer({
-    source: new VectorSource({
-      useSpatialIndex: false,
-      wrapX: !!opt_options.wrapX
-    }),
-    style: opt_options.pointerStyle ? opt_options.pointerStyle : getDefaultPointerStyleFunction(),
-    updateWhileAnimating: true,
-    updateWhileInteracting: true
-  });
+      let vertex = (closestOnSegment(pixelCoordinate,
+        closestSegment));
+      const vertexPixel = map.getPixelFromCoordinate(vertex);
 
-  if (opt_options.extent) {
-    this.setExtent(opt_options.extent);
+      //if the distance is within tolerance, snap to the segment
+      if (coordinateDistance(pixel, vertexPixel) <= this.pixelTolerance_) {
+        //test if we should further snap to a vertex
+        const pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
+        const pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
+        const squaredDist1 = squaredCoordinateDistance(vertexPixel, pixel1);
+        const squaredDist2 = squaredCoordinateDistance(vertexPixel, pixel2);
+        const dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
+        this.snappedToVertex_ = dist <= this.pixelTolerance_;
+        if (this.snappedToVertex_) {
+          vertex = squaredDist1 > squaredDist2 ?
+            closestSegment[1] : closestSegment[0];
+        }
+        return vertex;
+      }
+    }
+    return null;
   }
-};
+
+  /**
+   * @param {module:ol/MapBrowserEvent} mapBrowserEvent pointer move event
+   * @private
+   */
+  handlePointerMove_(mapBrowserEvent) {
+    const pixel = mapBrowserEvent.pixel;
+    const map = mapBrowserEvent.map;
+
+    let vertex = this.snapToVertex_(pixel, map);
+    if (!vertex) {
+      vertex = map.getCoordinateFromPixel(pixel);
+    }
+    this.createOrUpdatePointerFeature_(vertex);
+  }
+
+  /**
+   * @param {module:ol/extent~Extent} extent extent
+   * @returns {module:ol/Feature} extent as featrue
+   * @private
+   */
+  createOrUpdateExtentFeature_(extent) {
+    let extentFeature = this.extentFeature_;
+
+    if (!extentFeature) {
+      if (!extent) {
+        extentFeature = new Feature({});
+      } else {
+        extentFeature = new Feature(polygonFromExtent(extent));
+      }
+      this.extentFeature_ = extentFeature;
+      this.extentOverlay_.getSource().addFeature(extentFeature);
+    } else {
+      if (!extent) {
+        extentFeature.setGeometry(undefined);
+      } else {
+        extentFeature.setGeometry(polygonFromExtent(extent));
+      }
+    }
+    return extentFeature;
+  }
+
+  /**
+   * @param {module:ol/coordinate~Coordinate} vertex location of feature
+   * @returns {module:ol/Feature} vertex as feature
+   * @private
+   */
+  createOrUpdatePointerFeature_(vertex) {
+    let vertexFeature = this.vertexFeature_;
+    if (!vertexFeature) {
+      vertexFeature = new Feature(new Point(vertex));
+      this.vertexFeature_ = vertexFeature;
+      this.vertexOverlay_.getSource().addFeature(vertexFeature);
+    } else {
+      const geometry = /** @type {module:ol/geom/Point} */ (vertexFeature.getGeometry());
+      geometry.setCoordinates(vertex);
+    }
+    return vertexFeature;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  setMap(map) {
+    this.extentOverlay_.setMap(map);
+    this.vertexOverlay_.setMap(map);
+    PointerInteraction.prototype.setMap.call(this, map);
+  }
+
+  /**
+   * Returns the current drawn extent in the view projection
+   *
+   * @return {module:ol/extent~Extent} Drawn extent in the view projection.
+   * @api
+   */
+  getExtent() {
+    return this.extent_;
+  }
+
+  /**
+   * Manually sets the drawn extent, using the view projection.
+   *
+   * @param {module:ol/extent~Extent} extent Extent
+   * @api
+   */
+  setExtent(extent) {
+    //Null extent means no bbox
+    this.extent_ = extent ? extent : null;
+    this.createOrUpdateExtentFeature_(extent);
+    this.dispatchEvent(new ExtentInteractionEvent(this.extent_));
+  }
+}
 
 inherits(ExtentInteraction, PointerInteraction);
 
@@ -349,141 +484,6 @@ function getSegments(extent) {
     [[extent[2], extent[1]], [extent[0], extent[1]]]
   ];
 }
-
-/**
- * @param {module:ol~Pixel} pixel cursor location
- * @param {module:ol/PluggableMap} map map
- * @returns {module:ol/coordinate~Coordinate|null} snapped vertex on extent
- * @private
- */
-ExtentInteraction.prototype.snapToVertex_ = function(pixel, map) {
-  const pixelCoordinate = map.getCoordinateFromPixel(pixel);
-  const sortByDistance = function(a, b) {
-    return squaredDistanceToSegment(pixelCoordinate, a) -
-        squaredDistanceToSegment(pixelCoordinate, b);
-  };
-  const extent = this.getExtent();
-  if (extent) {
-    //convert extents to line segments and find the segment closest to pixelCoordinate
-    const segments = getSegments(extent);
-    segments.sort(sortByDistance);
-    const closestSegment = segments[0];
-
-    let vertex = (closestOnSegment(pixelCoordinate,
-      closestSegment));
-    const vertexPixel = map.getPixelFromCoordinate(vertex);
-
-    //if the distance is within tolerance, snap to the segment
-    if (coordinateDistance(pixel, vertexPixel) <= this.pixelTolerance_) {
-      //test if we should further snap to a vertex
-      const pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
-      const pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
-      const squaredDist1 = squaredCoordinateDistance(vertexPixel, pixel1);
-      const squaredDist2 = squaredCoordinateDistance(vertexPixel, pixel2);
-      const dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
-      this.snappedToVertex_ = dist <= this.pixelTolerance_;
-      if (this.snappedToVertex_) {
-        vertex = squaredDist1 > squaredDist2 ?
-          closestSegment[1] : closestSegment[0];
-      }
-      return vertex;
-    }
-  }
-  return null;
-};
-
-/**
- * @param {module:ol/MapBrowserEvent} mapBrowserEvent pointer move event
- * @private
- */
-ExtentInteraction.prototype.handlePointerMove_ = function(mapBrowserEvent) {
-  const pixel = mapBrowserEvent.pixel;
-  const map = mapBrowserEvent.map;
-
-  let vertex = this.snapToVertex_(pixel, map);
-  if (!vertex) {
-    vertex = map.getCoordinateFromPixel(pixel);
-  }
-  this.createOrUpdatePointerFeature_(vertex);
-};
-
-/**
- * @param {module:ol/extent~Extent} extent extent
- * @returns {module:ol/Feature} extent as featrue
- * @private
- */
-ExtentInteraction.prototype.createOrUpdateExtentFeature_ = function(extent) {
-  let extentFeature = this.extentFeature_;
-
-  if (!extentFeature) {
-    if (!extent) {
-      extentFeature = new Feature({});
-    } else {
-      extentFeature = new Feature(polygonFromExtent(extent));
-    }
-    this.extentFeature_ = extentFeature;
-    this.extentOverlay_.getSource().addFeature(extentFeature);
-  } else {
-    if (!extent) {
-      extentFeature.setGeometry(undefined);
-    } else {
-      extentFeature.setGeometry(polygonFromExtent(extent));
-    }
-  }
-  return extentFeature;
-};
-
-
-/**
- * @param {module:ol/coordinate~Coordinate} vertex location of feature
- * @returns {module:ol/Feature} vertex as feature
- * @private
- */
-ExtentInteraction.prototype.createOrUpdatePointerFeature_ = function(vertex) {
-  let vertexFeature = this.vertexFeature_;
-  if (!vertexFeature) {
-    vertexFeature = new Feature(new Point(vertex));
-    this.vertexFeature_ = vertexFeature;
-    this.vertexOverlay_.getSource().addFeature(vertexFeature);
-  } else {
-    const geometry = /** @type {module:ol/geom/Point} */ (vertexFeature.getGeometry());
-    geometry.setCoordinates(vertex);
-  }
-  return vertexFeature;
-};
-
-
-/**
- * @inheritDoc
- */
-ExtentInteraction.prototype.setMap = function(map) {
-  this.extentOverlay_.setMap(map);
-  this.vertexOverlay_.setMap(map);
-  PointerInteraction.prototype.setMap.call(this, map);
-};
-
-/**
- * Returns the current drawn extent in the view projection
- *
- * @return {module:ol/extent~Extent} Drawn extent in the view projection.
- * @api
- */
-ExtentInteraction.prototype.getExtent = function() {
-  return this.extent_;
-};
-
-/**
- * Manually sets the drawn extent, using the view projection.
- *
- * @param {module:ol/extent~Extent} extent Extent
- * @api
- */
-ExtentInteraction.prototype.setExtent = function(extent) {
-  //Null extent means no bbox
-  this.extent_ = extent ? extent : null;
-  this.createOrUpdateExtentFeature_(extent);
-  this.dispatchEvent(new ExtentInteractionEvent(this.extent_));
-};
 
 
 export default ExtentInteraction;

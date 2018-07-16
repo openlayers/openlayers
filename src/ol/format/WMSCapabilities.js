@@ -17,15 +17,40 @@ import {makeArrayPusher, makeObjectPropertyPusher, makeObjectPropertySetter,
  * @extends {module:ol/format/XML}
  * @api
  */
-const WMSCapabilities = function() {
+class WMSCapabilities {
+  constructor() {
 
-  XML.call(this);
+    XML.call(this);
+
+    /**
+     * @type {string|undefined}
+     */
+    this.version = undefined;
+  }
 
   /**
-   * @type {string|undefined}
+   * @inheritDoc
    */
-  this.version = undefined;
-};
+  readFromDocument(doc) {
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
+      if (n.nodeType == Node.ELEMENT_NODE) {
+        return this.readFromNode(n);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readFromNode(node) {
+    this.version = node.getAttribute('version').trim();
+    const wmsCapabilityObject = pushParseAndPop({
+      'version': this.version
+    }, PARSERS, node, []);
+    return wmsCapabilityObject ? wmsCapabilityObject : null;
+  }
+}
 
 inherits(WMSCapabilities, XML);
 
@@ -275,31 +300,6 @@ const KEYWORDLIST_PARSERS = makeStructureNS(
  * @api
  */
 WMSCapabilities.prototype.read;
-
-
-/**
- * @inheritDoc
- */
-WMSCapabilities.prototype.readFromDocument = function(doc) {
-  for (let n = doc.firstChild; n; n = n.nextSibling) {
-    if (n.nodeType == Node.ELEMENT_NODE) {
-      return this.readFromNode(n);
-    }
-  }
-  return null;
-};
-
-
-/**
- * @inheritDoc
- */
-WMSCapabilities.prototype.readFromNode = function(node) {
-  this.version = node.getAttribute('version').trim();
-  const wmsCapabilityObject = pushParseAndPop({
-    'version': this.version
-  }, PARSERS, node, []);
-  return wmsCapabilityObject ? wmsCapabilityObject : null;
-};
 
 
 /**

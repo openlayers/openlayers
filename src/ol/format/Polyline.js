@@ -32,30 +32,98 @@ import {get as getProjection} from '../proj.js';
  * @param {module:ol/format/Polyline~Options=} opt_options Optional configuration object.
  * @api
  */
-const Polyline = function(opt_options) {
+class Polyline {
+  constructor(opt_options) {
 
-  const options = opt_options ? opt_options : {};
+    const options = opt_options ? opt_options : {};
 
-  TextFeature.call(this);
+    TextFeature.call(this);
+
+    /**
+     * @inheritDoc
+     */
+    this.dataProjection = getProjection('EPSG:4326');
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.factor_ = options.factor ? options.factor : 1e5;
+
+    /**
+     * @private
+     * @type {module:ol/geom/GeometryLayout}
+     */
+    this.geometryLayout_ = options.geometryLayout ?
+      options.geometryLayout : GeometryLayout.XY;
+  }
 
   /**
    * @inheritDoc
    */
-  this.dataProjection = getProjection('EPSG:4326');
+  readFeatureFromText(text, opt_options) {
+    const geometry = this.readGeometryFromText(text, opt_options);
+    return new Feature(geometry);
+  }
 
   /**
-   * @private
-   * @type {number}
+   * @inheritDoc
    */
-  this.factor_ = options.factor ? options.factor : 1e5;
+  readFeaturesFromText(text, opt_options) {
+    const feature = this.readFeatureFromText(text, opt_options);
+    return [feature];
+  }
 
   /**
-   * @private
-   * @type {module:ol/geom/GeometryLayout}
+   * @inheritDoc
    */
-  this.geometryLayout_ = options.geometryLayout ?
-    options.geometryLayout : GeometryLayout.XY;
-};
+  readGeometryFromText(text, opt_options) {
+    const stride = getStrideForLayout(this.geometryLayout_);
+    const flatCoordinates = decodeDeltas(text, stride, this.factor_);
+    flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
+    const coordinates = inflateCoordinates(flatCoordinates, 0, flatCoordinates.length, stride);
+
+    return (
+      /** @type {module:ol/geom/Geometry} */ (transformWithOptions(
+        new LineString(coordinates, this.geometryLayout_),
+        false,
+        this.adaptOptions(opt_options)
+      ))
+    );
+  }
+
+  /**
+   * @inheritDoc
+   */
+  writeFeatureText(feature, opt_options) {
+    const geometry = feature.getGeometry();
+    if (geometry) {
+      return this.writeGeometryText(geometry, opt_options);
+    } else {
+      assert(false, 40); // Expected `feature` to have a geometry
+      return '';
+    }
+  }
+
+  /**
+   * @inheritDoc
+   */
+  writeFeaturesText(features, opt_options) {
+    return this.writeFeatureText(features[0], opt_options);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  writeGeometryText(geometry, opt_options) {
+    geometry = /** @type {module:ol/geom/LineString} */
+      (transformWithOptions(geometry, true, this.adaptOptions(opt_options)));
+    const flatCoordinates = geometry.getFlatCoordinates();
+    const stride = geometry.getStride();
+    flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
+    return encodeDeltas(flatCoordinates, stride, this.factor_);
+  }
+}
 
 inherits(Polyline, TextFeature);
 
@@ -278,15 +346,6 @@ Polyline.prototype.readFeature;
 
 
 /**
- * @inheritDoc
- */
-Polyline.prototype.readFeatureFromText = function(text, opt_options) {
-  const geometry = this.readGeometryFromText(text, opt_options);
-  return new Feature(geometry);
-};
-
-
-/**
  * Read the feature from the source. As Polyline sources contain a single
  * feature, this will return the feature in an array.
  *
@@ -297,15 +356,6 @@ Polyline.prototype.readFeatureFromText = function(text, opt_options) {
  * @api
  */
 Polyline.prototype.readFeatures;
-
-
-/**
- * @inheritDoc
- */
-Polyline.prototype.readFeaturesFromText = function(text, opt_options) {
-  const feature = this.readFeatureFromText(text, opt_options);
-  return [feature];
-};
 
 
 /**
@@ -321,25 +371,6 @@ Polyline.prototype.readGeometry;
 
 
 /**
- * @inheritDoc
- */
-Polyline.prototype.readGeometryFromText = function(text, opt_options) {
-  const stride = getStrideForLayout(this.geometryLayout_);
-  const flatCoordinates = decodeDeltas(text, stride, this.factor_);
-  flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
-  const coordinates = inflateCoordinates(flatCoordinates, 0, flatCoordinates.length, stride);
-
-  return (
-    /** @type {module:ol/geom/Geometry} */ (transformWithOptions(
-      new LineString(coordinates, this.geometryLayout_),
-      false,
-      this.adaptOptions(opt_options)
-    ))
-  );
-};
-
-
-/**
  * Read the projection from a Polyline source.
  *
  * @function
@@ -348,28 +379,6 @@ Polyline.prototype.readGeometryFromText = function(text, opt_options) {
  * @api
  */
 Polyline.prototype.readProjection;
-
-
-/**
- * @inheritDoc
- */
-Polyline.prototype.writeFeatureText = function(feature, opt_options) {
-  const geometry = feature.getGeometry();
-  if (geometry) {
-    return this.writeGeometryText(geometry, opt_options);
-  } else {
-    assert(false, 40); // Expected `feature` to have a geometry
-    return '';
-  }
-};
-
-
-/**
- * @inheritDoc
- */
-Polyline.prototype.writeFeaturesText = function(features, opt_options) {
-  return this.writeFeatureText(features[0], opt_options);
-};
 
 
 /**
@@ -384,15 +393,4 @@ Polyline.prototype.writeFeaturesText = function(features, opt_options) {
 Polyline.prototype.writeGeometry;
 
 
-/**
- * @inheritDoc
- */
-Polyline.prototype.writeGeometryText = function(geometry, opt_options) {
-  geometry = /** @type {module:ol/geom/LineString} */
-    (transformWithOptions(geometry, true, this.adaptOptions(opt_options)));
-  const flatCoordinates = geometry.getFlatCoordinates();
-  const stride = geometry.getStride();
-  flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
-  return encodeDeltas(flatCoordinates, stride, this.factor_);
-};
 export default Polyline;

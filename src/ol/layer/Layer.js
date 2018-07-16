@@ -66,42 +66,153 @@ import SourceState from '../source/State.js';
  * @param {module:ol/layer/Layer~Options} options Layer options.
  * @api
  */
-const Layer = function(options) {
+class Layer {
+  constructor(options) {
 
-  const baseOptions = assign({}, options);
-  delete baseOptions.source;
+    const baseOptions = assign({}, options);
+    delete baseOptions.source;
 
-  BaseLayer.call(this, /** @type {module:ol/layer/Base~Options} */ (baseOptions));
+    BaseLayer.call(this, /** @type {module:ol/layer/Base~Options} */ (baseOptions));
 
-  /**
-   * @private
-   * @type {?module:ol/events~EventsKey}
-   */
-  this.mapPrecomposeKey_ = null;
+    /**
+     * @private
+     * @type {?module:ol/events~EventsKey}
+     */
+    this.mapPrecomposeKey_ = null;
 
-  /**
-   * @private
-   * @type {?module:ol/events~EventsKey}
-   */
-  this.mapRenderKey_ = null;
+    /**
+     * @private
+     * @type {?module:ol/events~EventsKey}
+     */
+    this.mapRenderKey_ = null;
 
-  /**
-   * @private
-   * @type {?module:ol/events~EventsKey}
-   */
-  this.sourceChangeKey_ = null;
+    /**
+     * @private
+     * @type {?module:ol/events~EventsKey}
+     */
+    this.sourceChangeKey_ = null;
 
-  if (options.map) {
-    this.setMap(options.map);
+    if (options.map) {
+      this.setMap(options.map);
+    }
+
+    listen(this,
+      getChangeEventType(LayerProperty.SOURCE),
+      this.handleSourcePropertyChange_, this);
+
+    const source = options.source ? options.source : null;
+    this.setSource(source);
   }
 
-  listen(this,
-    getChangeEventType(LayerProperty.SOURCE),
-    this.handleSourcePropertyChange_, this);
+  /**
+   * @inheritDoc
+   */
+  getLayersArray(opt_array) {
+    const array = opt_array ? opt_array : [];
+    array.push(this);
+    return array;
+  }
 
-  const source = options.source ? options.source : null;
-  this.setSource(source);
-};
+  /**
+   * @inheritDoc
+   */
+  getLayerStatesArray(opt_states) {
+    const states = opt_states ? opt_states : [];
+    states.push(this.getLayerState());
+    return states;
+  }
+
+  /**
+   * Get the layer source.
+   * @return {module:ol/source/Source} The layer source (or `null` if not yet set).
+   * @observable
+   * @api
+   */
+  getSource() {
+    const source = this.get(LayerProperty.SOURCE);
+    return (
+      /** @type {module:ol/source/Source} */ (source) || null
+    );
+  }
+
+  /**
+    * @inheritDoc
+    */
+  getSourceState() {
+    const source = this.getSource();
+    return !source ? SourceState.UNDEFINED : source.getState();
+  }
+
+  /**
+   * @private
+   */
+  handleSourceChange_() {
+    this.changed();
+  }
+
+  /**
+   * @private
+   */
+  handleSourcePropertyChange_() {
+    if (this.sourceChangeKey_) {
+      unlistenByKey(this.sourceChangeKey_);
+      this.sourceChangeKey_ = null;
+    }
+    const source = this.getSource();
+    if (source) {
+      this.sourceChangeKey_ = listen(source,
+        EventType.CHANGE, this.handleSourceChange_, this);
+    }
+    this.changed();
+  }
+
+  /**
+   * Sets the layer to be rendered on top of other layers on a map. The map will
+   * not manage this layer in its layers collection, and the callback in
+   * {@link module:ol/Map#forEachLayerAtPixel} will receive `null` as layer. This
+   * is useful for temporary layers. To remove an unmanaged layer from the map,
+   * use `#setMap(null)`.
+   *
+   * To add the layer to a map and have it managed by the map, use
+   * {@link module:ol/Map#addLayer} instead.
+   * @param {module:ol/PluggableMap} map Map.
+   * @api
+   */
+  setMap(map) {
+    if (this.mapPrecomposeKey_) {
+      unlistenByKey(this.mapPrecomposeKey_);
+      this.mapPrecomposeKey_ = null;
+    }
+    if (!map) {
+      this.changed();
+    }
+    if (this.mapRenderKey_) {
+      unlistenByKey(this.mapRenderKey_);
+      this.mapRenderKey_ = null;
+    }
+    if (map) {
+      this.mapPrecomposeKey_ = listen(map, RenderEventType.PRECOMPOSE, function(evt) {
+        const layerState = this.getLayerState();
+        layerState.managed = false;
+        layerState.zIndex = Infinity;
+        evt.frameState.layerStatesArray.push(layerState);
+        evt.frameState.layerStates[getUid(this)] = layerState;
+      }, this);
+      this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
+      this.changed();
+    }
+  }
+
+  /**
+   * Set the layer source.
+   * @param {module:ol/source/Source} source The layer source.
+   * @observable
+   * @api
+   */
+  setSource(source) {
+    this.set(LayerProperty.SOURCE, source);
+  }
+}
 
 inherits(Layer, BaseLayer);
 
@@ -120,119 +231,4 @@ export function visibleAtResolution(layerState, resolution) {
 }
 
 
-/**
- * @inheritDoc
- */
-Layer.prototype.getLayersArray = function(opt_array) {
-  const array = opt_array ? opt_array : [];
-  array.push(this);
-  return array;
-};
-
-
-/**
- * @inheritDoc
- */
-Layer.prototype.getLayerStatesArray = function(opt_states) {
-  const states = opt_states ? opt_states : [];
-  states.push(this.getLayerState());
-  return states;
-};
-
-
-/**
- * Get the layer source.
- * @return {module:ol/source/Source} The layer source (or `null` if not yet set).
- * @observable
- * @api
- */
-Layer.prototype.getSource = function() {
-  const source = this.get(LayerProperty.SOURCE);
-  return (
-    /** @type {module:ol/source/Source} */ (source) || null
-  );
-};
-
-
-/**
-  * @inheritDoc
-  */
-Layer.prototype.getSourceState = function() {
-  const source = this.getSource();
-  return !source ? SourceState.UNDEFINED : source.getState();
-};
-
-
-/**
- * @private
- */
-Layer.prototype.handleSourceChange_ = function() {
-  this.changed();
-};
-
-
-/**
- * @private
- */
-Layer.prototype.handleSourcePropertyChange_ = function() {
-  if (this.sourceChangeKey_) {
-    unlistenByKey(this.sourceChangeKey_);
-    this.sourceChangeKey_ = null;
-  }
-  const source = this.getSource();
-  if (source) {
-    this.sourceChangeKey_ = listen(source,
-      EventType.CHANGE, this.handleSourceChange_, this);
-  }
-  this.changed();
-};
-
-
-/**
- * Sets the layer to be rendered on top of other layers on a map. The map will
- * not manage this layer in its layers collection, and the callback in
- * {@link module:ol/Map#forEachLayerAtPixel} will receive `null` as layer. This
- * is useful for temporary layers. To remove an unmanaged layer from the map,
- * use `#setMap(null)`.
- *
- * To add the layer to a map and have it managed by the map, use
- * {@link module:ol/Map#addLayer} instead.
- * @param {module:ol/PluggableMap} map Map.
- * @api
- */
-Layer.prototype.setMap = function(map) {
-  if (this.mapPrecomposeKey_) {
-    unlistenByKey(this.mapPrecomposeKey_);
-    this.mapPrecomposeKey_ = null;
-  }
-  if (!map) {
-    this.changed();
-  }
-  if (this.mapRenderKey_) {
-    unlistenByKey(this.mapRenderKey_);
-    this.mapRenderKey_ = null;
-  }
-  if (map) {
-    this.mapPrecomposeKey_ = listen(map, RenderEventType.PRECOMPOSE, function(evt) {
-      const layerState = this.getLayerState();
-      layerState.managed = false;
-      layerState.zIndex = Infinity;
-      evt.frameState.layerStatesArray.push(layerState);
-      evt.frameState.layerStates[getUid(this)] = layerState;
-    }, this);
-    this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
-    this.changed();
-  }
-};
-
-
-/**
- * Set the layer source.
- * @param {module:ol/source/Source} source The layer source.
- * @observable
- * @api
- */
-Layer.prototype.setSource = function(source) {
-  this.set(LayerProperty.SOURCE, source);
-};
 export default Layer;

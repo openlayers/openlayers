@@ -13,21 +13,23 @@
  * @param {!string} tagName The XML tag name for this filter.
  * @struct
  */
-const Filter = function(tagName) {
+class Filter {
+ constructor(tagName) {
 
-  /**
-   * @private
-   * @type {!string}
-   */
-  this.tagName_ = tagName;
-};
+   /**
+    * @private
+    * @type {!string}
+    */
+   this.tagName_ = tagName;
+ }
 
-/**
- * The XML tag name for a filter.
- * @returns {!string} Name.
- */
-Filter.prototype.getTagName = function() {
-  return this.tagName_;
-};
+ /**
+  * The XML tag name for a filter.
+  * @returns {!string} Name.
+  */
+ getTagName() {
+   return this.tagName_;
+ }
+}
 
 export default Filter;

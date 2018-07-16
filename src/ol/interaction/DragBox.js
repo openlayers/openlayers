@@ -110,47 +110,58 @@ inherits(DragBoxEvent, Event);
  * @param {module:ol/interaction/DragBox~Options=} opt_options Options.
  * @api
  */
-const DragBox = function(opt_options) {
+class DragBox {
+ constructor(opt_options) {
 
-  PointerInteraction.call(this, {
-    handleDownEvent: handleDownEvent,
-    handleDragEvent: handleDragEvent,
-    handleUpEvent: handleUpEvent
-  });
+   PointerInteraction.call(this, {
+     handleDownEvent: handleDownEvent,
+     handleDragEvent: handleDragEvent,
+     handleUpEvent: handleUpEvent
+   });
 
-  const options = opt_options ? opt_options : {};
+   const options = opt_options ? opt_options : {};
 
-  /**
-   * @type {module:ol/render/Box}
-   * @private
-   */
-  this.box_ = new RenderBox(options.className || 'ol-dragbox');
+   /**
+    * @type {module:ol/render/Box}
+    * @private
+    */
+   this.box_ = new RenderBox(options.className || 'ol-dragbox');
 
-  /**
-   * @type {number}
-   * @private
-   */
-  this.minArea_ = options.minArea !== undefined ? options.minArea : 64;
+   /**
+    * @type {number}
+    * @private
+    */
+   this.minArea_ = options.minArea !== undefined ? options.minArea : 64;
 
-  /**
-   * @type {module:ol~Pixel}
-   * @private
-   */
-  this.startPixel_ = null;
+   /**
+    * @type {module:ol~Pixel}
+    * @private
+    */
+   this.startPixel_ = null;
 
-  /**
-   * @private
-   * @type {module:ol/events/condition~Condition}
-   */
-  this.condition_ = options.condition ? options.condition : always;
+   /**
+    * @private
+    * @type {module:ol/events/condition~Condition}
+    */
+   this.condition_ = options.condition ? options.condition : always;
 
-  /**
-   * @private
-   * @type {module:ol/interaction/DragBox~EndCondition}
-   */
-  this.boxEndCondition_ = options.boxEndCondition ?
-    options.boxEndCondition : defaultBoxEndCondition;
-};
+   /**
+    * @private
+    * @type {module:ol/interaction/DragBox~EndCondition}
+    */
+   this.boxEndCondition_ = options.boxEndCondition ?
+     options.boxEndCondition : defaultBoxEndCondition;
+ }
+
+ /**
+  * Returns geometry of last drawn box.
+  * @return {module:ol/geom/Polygon} Geometry.
+  * @api
+  */
+ getGeometry() {
+   return this.box_.getGeometry();
+ }
+}
 
 inherits(DragBox, PointerInteraction);
 
@@ -186,16 +197,6 @@ function handleDragEvent(mapBrowserEvent) {
   this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXDRAG,
     mapBrowserEvent.coordinate, mapBrowserEvent));
 }
-
-
-/**
- * Returns geometry of last drawn box.
- * @return {module:ol/geom/Polygon} Geometry.
- * @api
- */
-DragBox.prototype.getGeometry = function() {
-  return this.box_.getGeometry();
-};
 
 
 /**

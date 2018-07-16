@@ -36,23 +36,136 @@ const IGCZ = {
  * @param {module:ol/format/IGC~Options=} opt_options Options.
  * @api
  */
-const IGC = function(opt_options) {
+class IGC {
+  constructor(opt_options) {
 
-  const options = opt_options ? opt_options : {};
+    const options = opt_options ? opt_options : {};
 
-  TextFeature.call(this);
+    TextFeature.call(this);
+
+    /**
+     * @inheritDoc
+     */
+    this.dataProjection = getProjection('EPSG:4326');
+
+    /**
+     * @private
+     * @type {IGCZ}
+     */
+    this.altitudeMode_ = options.altitudeMode ? options.altitudeMode : IGCZ.NONE;
+  }
 
   /**
    * @inheritDoc
    */
-  this.dataProjection = getProjection('EPSG:4326');
+  readFeatureFromText(text, opt_options) {
+    const altitudeMode = this.altitudeMode_;
+    const lines = text.split(NEWLINE_RE);
+    /** @type {Object.<string, string>} */
+    const properties = {};
+    const flatCoordinates = [];
+    let year = 2000;
+    let month = 0;
+    let day = 1;
+    let lastDateTime = -1;
+    let i, ii;
+    for (i = 0, ii = lines.length; i < ii; ++i) {
+      const line = lines[i];
+      let m;
+      if (line.charAt(0) == 'B') {
+        m = B_RECORD_RE.exec(line);
+        if (m) {
+          const hour = parseInt(m[1], 10);
+          const minute = parseInt(m[2], 10);
+          const second = parseInt(m[3], 10);
+          let y = parseInt(m[4], 10) + parseInt(m[5], 10) / 60000;
+          if (m[6] == 'S') {
+            y = -y;
+          }
+          let x = parseInt(m[7], 10) + parseInt(m[8], 10) / 60000;
+          if (m[9] == 'W') {
+            x = -x;
+          }
+          flatCoordinates.push(x, y);
+          if (altitudeMode != IGCZ.NONE) {
+            let z;
+            if (altitudeMode == IGCZ.GPS) {
+              z = parseInt(m[11], 10);
+            } else if (altitudeMode == IGCZ.BAROMETRIC) {
+              z = parseInt(m[12], 10);
+            } else {
+              z = 0;
+            }
+            flatCoordinates.push(z);
+          }
+          let dateTime = Date.UTC(year, month, day, hour, minute, second);
+          // Detect UTC midnight wrap around.
+          if (dateTime < lastDateTime) {
+            dateTime = Date.UTC(year, month, day + 1, hour, minute, second);
+          }
+          flatCoordinates.push(dateTime / 1000);
+          lastDateTime = dateTime;
+        }
+      } else if (line.charAt(0) == 'H') {
+        m = HFDTE_RECORD_RE.exec(line);
+        if (m) {
+          day = parseInt(m[1], 10);
+          month = parseInt(m[2], 10) - 1;
+          year = 2000 + parseInt(m[3], 10);
+        } else {
+          m = H_RECORD_RE.exec(line);
+          if (m) {
+            properties[m[1]] = m[2].trim();
+          }
+        }
+      }
+    }
+    if (flatCoordinates.length === 0) {
+      return null;
+    }
+    const layout = altitudeMode == IGCZ.NONE ? GeometryLayout.XYM : GeometryLayout.XYZM;
+    const lineString = new LineString(flatCoordinates, layout);
+    const feature = new Feature(transformWithOptions(lineString, false, opt_options));
+    feature.setProperties(properties);
+    return feature;
+  }
 
   /**
-   * @private
-   * @type {IGCZ}
+   * @inheritDoc
    */
-  this.altitudeMode_ = options.altitudeMode ? options.altitudeMode : IGCZ.NONE;
-};
+  readFeaturesFromText(text, opt_options) {
+    const feature = this.readFeatureFromText(text, opt_options);
+    if (feature) {
+      return [feature];
+    } else {
+      return [];
+    }
+  }
+
+  /**
+   * Not implemented.
+   * @inheritDoc
+   */
+  writeFeatureText(feature, opt_options) {}
+
+  /**
+   * Not implemented.
+   * @inheritDoc
+   */
+  writeFeaturesText(features, opt_options) {}
+
+  /**
+   * Not implemented.
+   * @inheritDoc
+   */
+  writeGeometryText(geometry, opt_options) {}
+
+  /**
+   * Not implemented.
+   * @inheritDoc
+   */
+  readGeometryFromText(text, opt_options) {}
+}
 
 inherits(IGC, TextFeature);
 
@@ -101,82 +214,6 @@ IGC.prototype.readFeature;
 
 
 /**
- * @inheritDoc
- */
-IGC.prototype.readFeatureFromText = function(text, opt_options) {
-  const altitudeMode = this.altitudeMode_;
-  const lines = text.split(NEWLINE_RE);
-  /** @type {Object.<string, string>} */
-  const properties = {};
-  const flatCoordinates = [];
-  let year = 2000;
-  let month = 0;
-  let day = 1;
-  let lastDateTime = -1;
-  let i, ii;
-  for (i = 0, ii = lines.length; i < ii; ++i) {
-    const line = lines[i];
-    let m;
-    if (line.charAt(0) == 'B') {
-      m = B_RECORD_RE.exec(line);
-      if (m) {
-        const hour = parseInt(m[1], 10);
-        const minute = parseInt(m[2], 10);
-        const second = parseInt(m[3], 10);
-        let y = parseInt(m[4], 10) + parseInt(m[5], 10) / 60000;
-        if (m[6] == 'S') {
-          y = -y;
-        }
-        let x = parseInt(m[7], 10) + parseInt(m[8], 10) / 60000;
-        if (m[9] == 'W') {
-          x = -x;
-        }
-        flatCoordinates.push(x, y);
-        if (altitudeMode != IGCZ.NONE) {
-          let z;
-          if (altitudeMode == IGCZ.GPS) {
-            z = parseInt(m[11], 10);
-          } else if (altitudeMode == IGCZ.BAROMETRIC) {
-            z = parseInt(m[12], 10);
-          } else {
-            z = 0;
-          }
-          flatCoordinates.push(z);
-        }
-        let dateTime = Date.UTC(year, month, day, hour, minute, second);
-        // Detect UTC midnight wrap around.
-        if (dateTime < lastDateTime) {
-          dateTime = Date.UTC(year, month, day + 1, hour, minute, second);
-        }
-        flatCoordinates.push(dateTime / 1000);
-        lastDateTime = dateTime;
-      }
-    } else if (line.charAt(0) == 'H') {
-      m = HFDTE_RECORD_RE.exec(line);
-      if (m) {
-        day = parseInt(m[1], 10);
-        month = parseInt(m[2], 10) - 1;
-        year = 2000 + parseInt(m[3], 10);
-      } else {
-        m = H_RECORD_RE.exec(line);
-        if (m) {
-          properties[m[1]] = m[2].trim();
-        }
-      }
-    }
-  }
-  if (flatCoordinates.length === 0) {
-    return null;
-  }
-  const layout = altitudeMode == IGCZ.NONE ? GeometryLayout.XYM : GeometryLayout.XYZM;
-  const lineString = new LineString(flatCoordinates, layout);
-  const feature = new Feature(transformWithOptions(lineString, false, opt_options));
-  feature.setProperties(properties);
-  return feature;
-};
-
-
-/**
  * Read the feature from the source. As IGC sources contain a single
  * feature, this will return the feature in an array.
  *
@@ -190,19 +227,6 @@ IGC.prototype.readFeatures;
 
 
 /**
- * @inheritDoc
- */
-IGC.prototype.readFeaturesFromText = function(text, opt_options) {
-  const feature = this.readFeatureFromText(text, opt_options);
-  if (feature) {
-    return [feature];
-  } else {
-    return [];
-  }
-};
-
-
-/**
  * Read the projection from the IGC source.
  *
  * @function
@@ -213,30 +237,4 @@ IGC.prototype.readFeaturesFromText = function(text, opt_options) {
 IGC.prototype.readProjection;
 
 
-/**
- * Not implemented.
- * @inheritDoc
- */
-IGC.prototype.writeFeatureText = function(feature, opt_options) {};
-
-
-/**
- * Not implemented.
- * @inheritDoc
- */
-IGC.prototype.writeFeaturesText = function(features, opt_options) {};
-
-
-/**
- * Not implemented.
- * @inheritDoc
- */
-IGC.prototype.writeGeometryText = function(geometry, opt_options) {};
-
-
-/**
- * Not implemented.
- * @inheritDoc
- */
-IGC.prototype.readGeometryFromText = function(text, opt_options) {};
 export default IGC;

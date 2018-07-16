@@ -45,40 +45,71 @@ import {assign} from '../obj.js';
  * @param {module:ol/layer/Tile~Options=} opt_options Tile layer options.
  * @api
  */
-const TileLayer = function(opt_options) {
-  const options = opt_options ? opt_options : {};
+class TileLayer {
+ constructor(opt_options) {
+   const options = opt_options ? opt_options : {};
 
-  const baseOptions = assign({}, options);
+   const baseOptions = assign({}, options);
 
-  delete baseOptions.preload;
-  delete baseOptions.useInterimTilesOnError;
-  Layer.call(this,  /** @type {module:ol/layer/Layer~Options} */ (baseOptions));
+   delete baseOptions.preload;
+   delete baseOptions.useInterimTilesOnError;
+   Layer.call(this,  /** @type {module:ol/layer/Layer~Options} */ (baseOptions));
 
-  this.setPreload(options.preload !== undefined ? options.preload : 0);
-  this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
-    options.useInterimTilesOnError : true);
+   this.setPreload(options.preload !== undefined ? options.preload : 0);
+   this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
+     options.useInterimTilesOnError : true);
 
-  /**
-   * The layer type.
-   * @protected
-   * @type {module:ol/LayerType}
-   */
-  this.type = LayerType.TILE;
+   /**
+    * The layer type.
+    * @protected
+    * @type {module:ol/LayerType}
+    */
+   this.type = LayerType.TILE;
 
-};
+ }
+
+ /**
+  * Return the level as number to which we will preload tiles up to.
+  * @return {number} The level to preload tiles up to.
+  * @observable
+  * @api
+  */
+ getPreload() {
+   return /** @type {number} */ (this.get(TileProperty.PRELOAD));
+ }
+
+ /**
+  * Set the level as number to which we will preload tiles up to.
+  * @param {number} preload The level to preload tiles up to.
+  * @observable
+  * @api
+  */
+ setPreload(preload) {
+   this.set(TileProperty.PRELOAD, preload);
+ }
+
+ /**
+  * Whether we use interim tiles on error.
+  * @return {boolean} Use interim tiles on error.
+  * @observable
+  * @api
+  */
+ getUseInterimTilesOnError() {
+   return /** @type {boolean} */ (this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR));
+ }
+
+ /**
+  * Set whether we use interim tiles on error.
+  * @param {boolean} useInterimTilesOnError Use interim tiles on error.
+  * @observable
+  * @api
+  */
+ setUseInterimTilesOnError(useInterimTilesOnError) {
+   this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+ }
+}
 
 inherits(TileLayer, Layer);
-
-
-/**
- * Return the level as number to which we will preload tiles up to.
- * @return {number} The level to preload tiles up to.
- * @observable
- * @api
- */
-TileLayer.prototype.getPreload = function() {
-  return /** @type {number} */ (this.get(TileProperty.PRELOAD));
-};
 
 
 /**
@@ -90,35 +121,4 @@ TileLayer.prototype.getPreload = function() {
 TileLayer.prototype.getSource;
 
 
-/**
- * Set the level as number to which we will preload tiles up to.
- * @param {number} preload The level to preload tiles up to.
- * @observable
- * @api
- */
-TileLayer.prototype.setPreload = function(preload) {
-  this.set(TileProperty.PRELOAD, preload);
-};
-
-
-/**
- * Whether we use interim tiles on error.
- * @return {boolean} Use interim tiles on error.
- * @observable
- * @api
- */
-TileLayer.prototype.getUseInterimTilesOnError = function() {
-  return /** @type {boolean} */ (this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR));
-};
-
-
-/**
- * Set whether we use interim tiles on error.
- * @param {boolean} useInterimTilesOnError Use interim tiles on error.
- * @observable
- * @api
- */
-TileLayer.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
-  this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
-};
 export default TileLayer;

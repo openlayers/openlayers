@@ -75,44 +75,385 @@ export const GMLNS = 'http://www.opengis.net/gml';
  *     Optional configuration object.
  * @extends {module:ol/format/XMLFeature}
  */
-const GMLBase = function(opt_options) {
-  const options = /** @type {module:ol/format/GMLBase~Options} */ (opt_options ? opt_options : {});
+class GMLBase {
+  constructor(opt_options) {
+    const options = /** @type {module:ol/format/GMLBase~Options} */ (opt_options ? opt_options : {});
+
+    /**
+     * @protected
+     * @type {Array.<string>|string|undefined}
+     */
+    this.featureType = options.featureType;
+
+    /**
+     * @protected
+     * @type {Object.<string, string>|string|undefined}
+     */
+    this.featureNS = options.featureNS;
+
+    /**
+     * @protected
+     * @type {string}
+     */
+    this.srsName = options.srsName;
+
+    /**
+     * @protected
+     * @type {string}
+     */
+    this.schemaLocation = '';
+
+    /**
+     * @type {Object.<string, Object.<string, Object>>}
+     */
+    this.FEATURE_COLLECTION_PARSERS = {};
+    this.FEATURE_COLLECTION_PARSERS[GMLNS] = {
+      'featureMember': makeReplacer(GMLBase.prototype.readFeaturesInternal),
+      'featureMembers': makeReplacer(GMLBase.prototype.readFeaturesInternal)
+    };
+
+    XMLFeature.call(this);
+  }
 
   /**
-   * @protected
-   * @type {Array.<string>|string|undefined}
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @return {Array.<module:ol/Feature> | undefined} Features.
    */
-  this.featureType = options.featureType;
+  readFeaturesInternal(node, objectStack) {
+    const localName = node.localName;
+    let features = null;
+    if (localName == 'FeatureCollection') {
+      if (node.namespaceURI === 'http://www.opengis.net/wfs') {
+        features = pushParseAndPop([],
+          this.FEATURE_COLLECTION_PARSERS, node,
+          objectStack, this);
+      } else {
+        features = pushParseAndPop(null,
+          this.FEATURE_COLLECTION_PARSERS, node,
+          objectStack, this);
+      }
+    } else if (localName == 'featureMembers' || localName == 'featureMember') {
+      const context = objectStack[0];
+      let featureType = context['featureType'];
+      let featureNS = context['featureNS'];
+      const prefix = 'p';
+      const defaultPrefix = 'p0';
+      if (!featureType && node.childNodes) {
+        featureType = [], featureNS = {};
+        for (let i = 0, ii = node.childNodes.length; i < ii; ++i) {
+          const child = node.childNodes[i];
+          if (child.nodeType === 1) {
+            const ft = child.nodeName.split(':').pop();
+            if (featureType.indexOf(ft) === -1) {
+              let key = '';
+              let count = 0;
+              const uri = child.namespaceURI;
+              for (const candidate in featureNS) {
+                if (featureNS[candidate] === uri) {
+                  key = candidate;
+                  break;
+                }
+                ++count;
+              }
+              if (!key) {
+                key = prefix + count;
+                featureNS[key] = uri;
+              }
+              featureType.push(key + ':' + ft);
+            }
+          }
+        }
+        if (localName != 'featureMember') {
+          // recheck featureType for each featureMember
+          context['featureType'] = featureType;
+          context['featureNS'] = featureNS;
+        }
+      }
+      if (typeof featureNS === 'string') {
+        const ns = featureNS;
+        featureNS = {};
+        featureNS[defaultPrefix] = ns;
+      }
+      const parsersNS = {};
+      const featureTypes = Array.isArray(featureType) ? featureType : [featureType];
+      for (const p in featureNS) {
+        const parsers = {};
+        for (let i = 0, ii = featureTypes.length; i < ii; ++i) {
+          const featurePrefix = featureTypes[i].indexOf(':') === -1 ?
+            defaultPrefix : featureTypes[i].split(':')[0];
+          if (featurePrefix === p) {
+            parsers[featureTypes[i].split(':').pop()] =
+                (localName == 'featureMembers') ?
+                  makeArrayPusher(this.readFeatureElement, this) :
+                  makeReplacer(this.readFeatureElement, this);
+          }
+        }
+        parsersNS[featureNS[p]] = parsers;
+      }
+      if (localName == 'featureMember') {
+        features = pushParseAndPop(undefined, parsersNS, node, objectStack);
+      } else {
+        features = pushParseAndPop([], parsersNS, node, objectStack);
+      }
+    }
+    if (features === null) {
+      features = [];
+    }
+    return features;
+  }
 
   /**
-   * @protected
-   * @type {Object.<string, string>|string|undefined}
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @return {module:ol/geom/Geometry|undefined} Geometry.
    */
-  this.featureNS = options.featureNS;
+  readGeometryElement(node, objectStack) {
+    const context = /** @type {Object} */ (objectStack[0]);
+    context['srsName'] = node.firstElementChild.getAttribute('srsName');
+    context['srsDimension'] = node.firstElementChild.getAttribute('srsDimension');
+    /** @type {module:ol/geom/Geometry} */
+    const geometry = pushParseAndPop(null, this.GEOMETRY_PARSERS_, node, objectStack, this);
+    if (geometry) {
+      return (
+        /** @type {module:ol/geom/Geometry} */ (transformWithOptions(geometry, false, context))
+      );
+    } else {
+      return undefined;
+    }
+  }
 
   /**
-   * @protected
-   * @type {string}
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @return {module:ol/Feature} Feature.
    */
-  this.srsName = options.srsName;
+  readFeatureElement(node, objectStack) {
+    let n;
+    const fid = node.getAttribute('fid') || getAttributeNS(node, GMLNS, 'id');
+    const values = {};
+    let geometryName;
+    for (n = node.firstElementChild; n; n = n.nextElementSibling) {
+      const localName = n.localName;
+      // Assume attribute elements have one child node and that the child
+      // is a text or CDATA node (to be treated as text).
+      // Otherwise assume it is a geometry node.
+      if (n.childNodes.length === 0 ||
+          (n.childNodes.length === 1 &&
+          (n.firstChild.nodeType === 3 || n.firstChild.nodeType === 4))) {
+        let value = getAllTextContent(n, false);
+        if (ONLY_WHITESPACE_RE.test(value)) {
+          value = undefined;
+        }
+        values[localName] = value;
+      } else {
+        // boundedBy is an extent and must not be considered as a geometry
+        if (localName !== 'boundedBy') {
+          geometryName = localName;
+        }
+        values[localName] = this.readGeometryElement(n, objectStack);
+      }
+    }
+    const feature = new Feature(values);
+    if (geometryName) {
+      feature.setGeometryName(geometryName);
+    }
+    if (fid) {
+      feature.setId(fid);
+    }
+    return feature;
+  }
 
   /**
-   * @protected
-   * @type {string}
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @return {module:ol/geom/Point|undefined} Point.
    */
-  this.schemaLocation = '';
+  readPoint(node, objectStack) {
+    const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
+    if (flatCoordinates) {
+      return new Point(flatCoordinates, GeometryLayout.XYZ);
+    }
+  }
 
   /**
-   * @type {Object.<string, Object.<string, Object>>}
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @return {module:ol/geom/MultiPoint|undefined} MultiPoint.
    */
-  this.FEATURE_COLLECTION_PARSERS = {};
-  this.FEATURE_COLLECTION_PARSERS[GMLNS] = {
-    'featureMember': makeReplacer(GMLBase.prototype.readFeaturesInternal),
-    'featureMembers': makeReplacer(GMLBase.prototype.readFeaturesInternal)
-  };
+  readMultiPoint(node, objectStack) {
+    /** @type {Array.<Array.<number>>} */
+    const coordinates = pushParseAndPop([],
+      this.MULTIPOINT_PARSERS_, node, objectStack, this);
+    if (coordinates) {
+      return new MultiPoint(coordinates);
+    } else {
+      return undefined;
+    }
+  }
 
-  XMLFeature.call(this);
-};
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @return {module:ol/geom/MultiLineString|undefined} MultiLineString.
+   */
+  readMultiLineString(node, objectStack) {
+    /** @type {Array.<module:ol/geom/LineString>} */
+    const lineStrings = pushParseAndPop([],
+      this.MULTILINESTRING_PARSERS_, node, objectStack, this);
+    if (lineStrings) {
+      return new MultiLineString(lineStrings);
+    }
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @return {module:ol/geom/MultiPolygon|undefined} MultiPolygon.
+   */
+  readMultiPolygon(node, objectStack) {
+    /** @type {Array.<module:ol/geom/Polygon>} */
+    const polygons = pushParseAndPop([], this.MULTIPOLYGON_PARSERS_, node, objectStack, this);
+    if (polygons) {
+      return new MultiPolygon(polygons);
+    }
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @private
+   */
+  pointMemberParser_(node, objectStack) {
+    parseNode(this.POINTMEMBER_PARSERS_, node, objectStack, this);
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @private
+   */
+  lineStringMemberParser_(node, objectStack) {
+    parseNode(this.LINESTRINGMEMBER_PARSERS_, node, objectStack, this);
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @private
+   */
+  polygonMemberParser_(node, objectStack) {
+    parseNode(this.POLYGONMEMBER_PARSERS_, node, objectStack, this);
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @return {module:ol/geom/LineString|undefined} LineString.
+   */
+  readLineString(node, objectStack) {
+    const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
+    if (flatCoordinates) {
+      const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
+      return lineString;
+    } else {
+      return undefined;
+    }
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @private
+   * @return {Array.<number>|undefined} LinearRing flat coordinates.
+   */
+  readFlatLinearRing_(node, objectStack) {
+    const ring = pushParseAndPop(null,
+      this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node,
+      objectStack, this);
+    if (ring) {
+      return ring;
+    } else {
+      return undefined;
+    }
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @return {module:ol/geom/LinearRing|undefined} LinearRing.
+   */
+  readLinearRing(node, objectStack) {
+    const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
+    if (flatCoordinates) {
+      return new LinearRing(flatCoordinates, GeometryLayout.XYZ);
+    }
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @return {module:ol/geom/Polygon|undefined} Polygon.
+   */
+  readPolygon(node, objectStack) {
+    /** @type {Array.<Array.<number>>} */
+    const flatLinearRings = pushParseAndPop([null],
+      this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
+    if (flatLinearRings && flatLinearRings[0]) {
+      const flatCoordinates = flatLinearRings[0];
+      const ends = [flatCoordinates.length];
+      let i, ii;
+      for (i = 1, ii = flatLinearRings.length; i < ii; ++i) {
+        extend(flatCoordinates, flatLinearRings[i]);
+        ends.push(flatCoordinates.length);
+      }
+      return new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
+    } else {
+      return undefined;
+    }
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @private
+   * @return {Array.<number>} Flat coordinates.
+   */
+  readFlatCoordinatesFromNode_(node, objectStack) {
+    return pushParseAndPop(null, this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack, this);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readGeometryFromNode(node, opt_options) {
+    const geometry = this.readGeometryElement(node,
+      [this.getReadOptions(node, opt_options ? opt_options : {})]);
+    return geometry ? geometry : null;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readFeaturesFromNode(node, opt_options) {
+    const options = {
+      featureType: this.featureType,
+      featureNS: this.featureNS
+    };
+    if (opt_options) {
+      assign(options, this.getReadOptions(node, opt_options));
+    }
+    const features = this.readFeaturesInternal(node, [options]);
+    return features || [];
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readProjectionFromNode(node) {
+    return getProjection(this.srsName ? this.srsName : node.firstElementChild.getAttribute('srsName'));
+  }
+}
 
 inherits(GMLBase, XMLFeature);
 
@@ -129,329 +470,6 @@ inherits(GMLBase, XMLFeature);
  * @type {RegExp}
  */
 const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {Array.<module:ol/Feature> | undefined} Features.
- */
-GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
-  const localName = node.localName;
-  let features = null;
-  if (localName == 'FeatureCollection') {
-    if (node.namespaceURI === 'http://www.opengis.net/wfs') {
-      features = pushParseAndPop([],
-        this.FEATURE_COLLECTION_PARSERS, node,
-        objectStack, this);
-    } else {
-      features = pushParseAndPop(null,
-        this.FEATURE_COLLECTION_PARSERS, node,
-        objectStack, this);
-    }
-  } else if (localName == 'featureMembers' || localName == 'featureMember') {
-    const context = objectStack[0];
-    let featureType = context['featureType'];
-    let featureNS = context['featureNS'];
-    const prefix = 'p';
-    const defaultPrefix = 'p0';
-    if (!featureType && node.childNodes) {
-      featureType = [], featureNS = {};
-      for (let i = 0, ii = node.childNodes.length; i < ii; ++i) {
-        const child = node.childNodes[i];
-        if (child.nodeType === 1) {
-          const ft = child.nodeName.split(':').pop();
-          if (featureType.indexOf(ft) === -1) {
-            let key = '';
-            let count = 0;
-            const uri = child.namespaceURI;
-            for (const candidate in featureNS) {
-              if (featureNS[candidate] === uri) {
-                key = candidate;
-                break;
-              }
-              ++count;
-            }
-            if (!key) {
-              key = prefix + count;
-              featureNS[key] = uri;
-            }
-            featureType.push(key + ':' + ft);
-          }
-        }
-      }
-      if (localName != 'featureMember') {
-        // recheck featureType for each featureMember
-        context['featureType'] = featureType;
-        context['featureNS'] = featureNS;
-      }
-    }
-    if (typeof featureNS === 'string') {
-      const ns = featureNS;
-      featureNS = {};
-      featureNS[defaultPrefix] = ns;
-    }
-    const parsersNS = {};
-    const featureTypes = Array.isArray(featureType) ? featureType : [featureType];
-    for (const p in featureNS) {
-      const parsers = {};
-      for (let i = 0, ii = featureTypes.length; i < ii; ++i) {
-        const featurePrefix = featureTypes[i].indexOf(':') === -1 ?
-          defaultPrefix : featureTypes[i].split(':')[0];
-        if (featurePrefix === p) {
-          parsers[featureTypes[i].split(':').pop()] =
-              (localName == 'featureMembers') ?
-                makeArrayPusher(this.readFeatureElement, this) :
-                makeReplacer(this.readFeatureElement, this);
-        }
-      }
-      parsersNS[featureNS[p]] = parsers;
-    }
-    if (localName == 'featureMember') {
-      features = pushParseAndPop(undefined, parsersNS, node, objectStack);
-    } else {
-      features = pushParseAndPop([], parsersNS, node, objectStack);
-    }
-  }
-  if (features === null) {
-    features = [];
-  }
-  return features;
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/Geometry|undefined} Geometry.
- */
-GMLBase.prototype.readGeometryElement = function(node, objectStack) {
-  const context = /** @type {Object} */ (objectStack[0]);
-  context['srsName'] = node.firstElementChild.getAttribute('srsName');
-  context['srsDimension'] = node.firstElementChild.getAttribute('srsDimension');
-  /** @type {module:ol/geom/Geometry} */
-  const geometry = pushParseAndPop(null, this.GEOMETRY_PARSERS_, node, objectStack, this);
-  if (geometry) {
-    return (
-      /** @type {module:ol/geom/Geometry} */ (transformWithOptions(geometry, false, context))
-    );
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/Feature} Feature.
- */
-GMLBase.prototype.readFeatureElement = function(node, objectStack) {
-  let n;
-  const fid = node.getAttribute('fid') || getAttributeNS(node, GMLNS, 'id');
-  const values = {};
-  let geometryName;
-  for (n = node.firstElementChild; n; n = n.nextElementSibling) {
-    const localName = n.localName;
-    // Assume attribute elements have one child node and that the child
-    // is a text or CDATA node (to be treated as text).
-    // Otherwise assume it is a geometry node.
-    if (n.childNodes.length === 0 ||
-        (n.childNodes.length === 1 &&
-        (n.firstChild.nodeType === 3 || n.firstChild.nodeType === 4))) {
-      let value = getAllTextContent(n, false);
-      if (ONLY_WHITESPACE_RE.test(value)) {
-        value = undefined;
-      }
-      values[localName] = value;
-    } else {
-      // boundedBy is an extent and must not be considered as a geometry
-      if (localName !== 'boundedBy') {
-        geometryName = localName;
-      }
-      values[localName] = this.readGeometryElement(n, objectStack);
-    }
-  }
-  const feature = new Feature(values);
-  if (geometryName) {
-    feature.setGeometryName(geometryName);
-  }
-  if (fid) {
-    feature.setId(fid);
-  }
-  return feature;
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/Point|undefined} Point.
- */
-GMLBase.prototype.readPoint = function(node, objectStack) {
-  const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
-  if (flatCoordinates) {
-    return new Point(flatCoordinates, GeometryLayout.XYZ);
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/MultiPoint|undefined} MultiPoint.
- */
-GMLBase.prototype.readMultiPoint = function(node, objectStack) {
-  /** @type {Array.<Array.<number>>} */
-  const coordinates = pushParseAndPop([],
-    this.MULTIPOINT_PARSERS_, node, objectStack, this);
-  if (coordinates) {
-    return new MultiPoint(coordinates);
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/MultiLineString|undefined} MultiLineString.
- */
-GMLBase.prototype.readMultiLineString = function(node, objectStack) {
-  /** @type {Array.<module:ol/geom/LineString>} */
-  const lineStrings = pushParseAndPop([],
-    this.MULTILINESTRING_PARSERS_, node, objectStack, this);
-  if (lineStrings) {
-    return new MultiLineString(lineStrings);
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/MultiPolygon|undefined} MultiPolygon.
- */
-GMLBase.prototype.readMultiPolygon = function(node, objectStack) {
-  /** @type {Array.<module:ol/geom/Polygon>} */
-  const polygons = pushParseAndPop([], this.MULTIPOLYGON_PARSERS_, node, objectStack, this);
-  if (polygons) {
-    return new MultiPolygon(polygons);
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- */
-GMLBase.prototype.pointMemberParser_ = function(node, objectStack) {
-  parseNode(this.POINTMEMBER_PARSERS_, node, objectStack, this);
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- */
-GMLBase.prototype.lineStringMemberParser_ = function(node, objectStack) {
-  parseNode(this.LINESTRINGMEMBER_PARSERS_, node, objectStack, this);
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- */
-GMLBase.prototype.polygonMemberParser_ = function(node, objectStack) {
-  parseNode(this.POLYGONMEMBER_PARSERS_, node, objectStack, this);
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/LineString|undefined} LineString.
- */
-GMLBase.prototype.readLineString = function(node, objectStack) {
-  const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
-  if (flatCoordinates) {
-    const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
-    return lineString;
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- * @return {Array.<number>|undefined} LinearRing flat coordinates.
- */
-GMLBase.prototype.readFlatLinearRing_ = function(node, objectStack) {
-  const ring = pushParseAndPop(null,
-    this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node,
-    objectStack, this);
-  if (ring) {
-    return ring;
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/LinearRing|undefined} LinearRing.
- */
-GMLBase.prototype.readLinearRing = function(node, objectStack) {
-  const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
-  if (flatCoordinates) {
-    return new LinearRing(flatCoordinates, GeometryLayout.XYZ);
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/geom/Polygon|undefined} Polygon.
- */
-GMLBase.prototype.readPolygon = function(node, objectStack) {
-  /** @type {Array.<Array.<number>>} */
-  const flatLinearRings = pushParseAndPop([null],
-    this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
-  if (flatLinearRings && flatLinearRings[0]) {
-    const flatCoordinates = flatLinearRings[0];
-    const ends = [flatCoordinates.length];
-    let i, ii;
-    for (i = 1, ii = flatLinearRings.length; i < ii; ++i) {
-      extend(flatCoordinates, flatLinearRings[i]);
-      ends.push(flatCoordinates.length);
-    }
-    return new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- * @return {Array.<number>} Flat coordinates.
- */
-GMLBase.prototype.readFlatCoordinatesFromNode_ = function(node, objectStack) {
-  return pushParseAndPop(null, this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack, this);
-};
 
 
 /**
@@ -542,16 +560,6 @@ GMLBase.prototype.RING_PARSERS = {
 
 
 /**
- * @inheritDoc
- */
-GMLBase.prototype.readGeometryFromNode = function(node, opt_options) {
-  const geometry = this.readGeometryElement(node,
-    [this.getReadOptions(node, opt_options ? opt_options : {})]);
-  return geometry ? geometry : null;
-};
-
-
-/**
  * Read all features from a GML FeatureCollection.
  *
  * @function
@@ -563,26 +571,4 @@ GMLBase.prototype.readGeometryFromNode = function(node, opt_options) {
 GMLBase.prototype.readFeatures;
 
 
-/**
- * @inheritDoc
- */
-GMLBase.prototype.readFeaturesFromNode = function(node, opt_options) {
-  const options = {
-    featureType: this.featureType,
-    featureNS: this.featureNS
-  };
-  if (opt_options) {
-    assign(options, this.getReadOptions(node, opt_options));
-  }
-  const features = this.readFeaturesInternal(node, [options]);
-  return features || [];
-};
-
-
-/**
- * @inheritDoc
- */
-GMLBase.prototype.readProjectionFromNode = function(node) {
-  return getProjection(this.srsName ? this.srsName : node.firstElementChild.getAttribute('srsName'));
-};
 export default GMLBase;

@@ -48,32 +48,112 @@ import {get as getProjection} from '../proj.js';
  * @param {module:ol/format/TopoJSON~Options=} opt_options Options.
  * @api
  */
-const TopoJSON = function(opt_options) {
+class TopoJSON {
+  constructor(opt_options) {
 
-  const options = opt_options ? opt_options : {};
+    const options = opt_options ? opt_options : {};
 
-  JSONFeature.call(this);
+    JSONFeature.call(this);
 
-  /**
-   * @private
-   * @type {string|undefined}
-   */
-  this.layerName_ = options.layerName;
+    /**
+     * @private
+     * @type {string|undefined}
+     */
+    this.layerName_ = options.layerName;
 
-  /**
-   * @private
-   * @type {Array.<string>}
-   */
-  this.layers_ = options.layers ? options.layers : null;
+    /**
+     * @private
+     * @type {Array.<string>}
+     */
+    this.layers_ = options.layers ? options.layers : null;
+
+    /**
+     * @inheritDoc
+     */
+    this.dataProjection = getProjection(
+      options.dataProjection ?
+        options.dataProjection : 'EPSG:4326');
+
+  }
 
   /**
    * @inheritDoc
    */
-  this.dataProjection = getProjection(
-    options.dataProjection ?
-      options.dataProjection : 'EPSG:4326');
+  readFeaturesFromObject(object, opt_options) {
+    if (object.type == 'Topology') {
+      const topoJSONTopology = /** @type {TopoJSONTopology} */ (object);
+      let transform, scale = null, translate = null;
+      if (topoJSONTopology.transform) {
+        transform = topoJSONTopology.transform;
+        scale = transform.scale;
+        translate = transform.translate;
+      }
+      const arcs = topoJSONTopology.arcs;
+      if (transform) {
+        transformArcs(arcs, scale, translate);
+      }
+      /** @type {Array.<module:ol/Feature>} */
+      const features = [];
+      const topoJSONFeatures = topoJSONTopology.objects;
+      const property = this.layerName_;
+      let feature;
+      for (const objectName in topoJSONFeatures) {
+        if (this.layers_ && this.layers_.indexOf(objectName) == -1) {
+          continue;
+        }
+        if (topoJSONFeatures[objectName].type === 'GeometryCollection') {
+          feature = /** @type {TopoJSONGeometryCollection} */ (topoJSONFeatures[objectName]);
+          features.push.apply(features, readFeaturesFromGeometryCollection(
+            feature, arcs, scale, translate, property, objectName, opt_options));
+        } else {
+          feature = /** @type {TopoJSONGeometry} */ (topoJSONFeatures[objectName]);
+          features.push(readFeatureFromGeometry(
+            feature, arcs, scale, translate, property, objectName, opt_options));
+        }
+      }
+      return features;
+    } else {
+      return [];
+    }
+  }
 
-};
+  /**
+   * @inheritDoc
+   */
+  readProjectionFromObject(object) {
+    return this.dataProjection;
+  }
+
+  /**
+   * Not implemented.
+   * @inheritDoc
+   */
+  writeFeatureObject(feature, opt_options) {}
+
+  /**
+   * Not implemented.
+   * @inheritDoc
+   */
+  writeFeaturesObject(features, opt_options) {}
+
+  /**
+   * Not implemented.
+   * @inheritDoc
+   */
+  writeGeometryObject(geometry, opt_options) {}
+
+  /**
+   * Not implemented.
+   * @override
+   */
+  readGeometryFromObject() {}
+
+  /**
+   * Not implemented.
+   * @override
+   */
+  readFeatureFromObject() {}
+}
 
 inherits(TopoJSON, JSONFeature);
 
@@ -310,48 +390,6 @@ TopoJSON.prototype.readFeatures;
 
 
 /**
- * @inheritDoc
- */
-TopoJSON.prototype.readFeaturesFromObject = function(object, opt_options) {
-  if (object.type == 'Topology') {
-    const topoJSONTopology = /** @type {TopoJSONTopology} */ (object);
-    let transform, scale = null, translate = null;
-    if (topoJSONTopology.transform) {
-      transform = topoJSONTopology.transform;
-      scale = transform.scale;
-      translate = transform.translate;
-    }
-    const arcs = topoJSONTopology.arcs;
-    if (transform) {
-      transformArcs(arcs, scale, translate);
-    }
-    /** @type {Array.<module:ol/Feature>} */
-    const features = [];
-    const topoJSONFeatures = topoJSONTopology.objects;
-    const property = this.layerName_;
-    let feature;
-    for (const objectName in topoJSONFeatures) {
-      if (this.layers_ && this.layers_.indexOf(objectName) == -1) {
-        continue;
-      }
-      if (topoJSONFeatures[objectName].type === 'GeometryCollection') {
-        feature = /** @type {TopoJSONGeometryCollection} */ (topoJSONFeatures[objectName]);
-        features.push.apply(features, readFeaturesFromGeometryCollection(
-          feature, arcs, scale, translate, property, objectName, opt_options));
-      } else {
-        feature = /** @type {TopoJSONGeometry} */ (topoJSONFeatures[objectName]);
-        features.push(readFeatureFromGeometry(
-          feature, arcs, scale, translate, property, objectName, opt_options));
-      }
-    }
-    return features;
-  } else {
-    return [];
-  }
-};
-
-
-/**
  * Apply a linear transform to array of arcs.  The provided array of arcs is
  * modified in place.
  *
@@ -412,45 +450,4 @@ function transformVertex(vertex, scale, translate) {
 TopoJSON.prototype.readProjection;
 
 
-/**
- * @inheritDoc
- */
-TopoJSON.prototype.readProjectionFromObject = function(object) {
-  return this.dataProjection;
-};
-
-
-/**
- * Not implemented.
- * @inheritDoc
- */
-TopoJSON.prototype.writeFeatureObject = function(feature, opt_options) {};
-
-
-/**
- * Not implemented.
- * @inheritDoc
- */
-TopoJSON.prototype.writeFeaturesObject = function(features, opt_options) {};
-
-
-/**
- * Not implemented.
- * @inheritDoc
- */
-TopoJSON.prototype.writeGeometryObject = function(geometry, opt_options) {};
-
-
-/**
- * Not implemented.
- * @override
- */
-TopoJSON.prototype.readGeometryFromObject = function() {};
-
-
-/**
- * Not implemented.
- * @override
- */
-TopoJSON.prototype.readFeatureFromObject = function() {};
 export default TopoJSON;

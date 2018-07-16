@@ -42,38 +42,191 @@ import {get as getProjection} from '../proj.js';
  * @param {module:ol/format/GeoJSON~Options=} opt_options Options.
  * @api
  */
-const GeoJSON = function(opt_options) {
+class GeoJSON {
+  constructor(opt_options) {
 
-  const options = opt_options ? opt_options : {};
+    const options = opt_options ? opt_options : {};
 
-  JSONFeature.call(this);
+    JSONFeature.call(this);
+
+    /**
+     * @inheritDoc
+     */
+    this.dataProjection = getProjection(
+      options.dataProjection ?
+        options.dataProjection : 'EPSG:4326');
+
+    if (options.featureProjection) {
+      this.defaultFeatureProjection = getProjection(options.featureProjection);
+    }
+
+    /**
+     * Name of the geometry attribute for features.
+     * @type {string|undefined}
+     * @private
+     */
+    this.geometryName_ = options.geometryName;
+
+    /**
+     * Look for the geometry name in the feature GeoJSON
+     * @type {boolean|undefined}
+     * @private
+     */
+    this.extractGeometryName_ = options.extractGeometryName;
+
+  }
 
   /**
    * @inheritDoc
    */
-  this.dataProjection = getProjection(
-    options.dataProjection ?
-      options.dataProjection : 'EPSG:4326');
+  readFeatureFromObject(object, opt_options) {
+    /**
+     * @type {GeoJSONFeature}
+     */
+    let geoJSONFeature = null;
+    if (object.type === 'Feature') {
+      geoJSONFeature = /** @type {GeoJSONFeature} */ (object);
+    } else {
+      geoJSONFeature = /** @type {GeoJSONFeature} */ ({
+        type: 'Feature',
+        geometry: /** @type {GeoJSONGeometry|GeoJSONGeometryCollection} */ (object)
+      });
+    }
 
-  if (options.featureProjection) {
-    this.defaultFeatureProjection = getProjection(options.featureProjection);
+    const geometry = readGeometry(geoJSONFeature.geometry, opt_options);
+    const feature = new Feature();
+    if (this.geometryName_) {
+      feature.setGeometryName(this.geometryName_);
+    } else if (this.extractGeometryName_ && geoJSONFeature.geometry_name !== undefined) {
+      feature.setGeometryName(geoJSONFeature.geometry_name);
+    }
+    feature.setGeometry(geometry);
+    if (geoJSONFeature.id !== undefined) {
+      feature.setId(geoJSONFeature.id);
+    }
+    if (geoJSONFeature.properties) {
+      feature.setProperties(geoJSONFeature.properties);
+    }
+    return feature;
   }
 
   /**
-   * Name of the geometry attribute for features.
-   * @type {string|undefined}
-   * @private
+   * @inheritDoc
    */
-  this.geometryName_ = options.geometryName;
+  readFeaturesFromObject(object, opt_options) {
+    const geoJSONObject = /** @type {GeoJSONObject} */ (object);
+    /** @type {Array.<module:ol/Feature>} */
+    let features = null;
+    if (geoJSONObject.type === 'FeatureCollection') {
+      const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (object);
+      features = [];
+      const geoJSONFeatures = geoJSONFeatureCollection.features;
+      for (let i = 0, ii = geoJSONFeatures.length; i < ii; ++i) {
+        features.push(this.readFeatureFromObject(geoJSONFeatures[i], opt_options));
+      }
+    } else {
+      features = [this.readFeatureFromObject(object, opt_options)];
+    }
+    return features;
+  }
 
   /**
-   * Look for the geometry name in the feature GeoJSON
-   * @type {boolean|undefined}
-   * @private
+   * @inheritDoc
    */
-  this.extractGeometryName_ = options.extractGeometryName;
+  readGeometryFromObject(object, opt_options) {
+    return readGeometry(/** @type {GeoJSONGeometry} */ (object), opt_options);
+  }
 
-};
+  /**
+   * @inheritDoc
+   */
+  readProjectionFromObject(object) {
+    const geoJSONObject = /** @type {GeoJSONObject} */ (object);
+    const crs = geoJSONObject.crs;
+    let projection;
+    if (crs) {
+      if (crs.type == 'name') {
+        projection = getProjection(crs.properties.name);
+      } else {
+        assert(false, 36); // Unknown SRS type
+      }
+    } else {
+      projection = this.dataProjection;
+    }
+    return (
+      /** @type {module:ol/proj/Projection} */ (projection)
+    );
+  }
+
+  /**
+   * Encode a feature as a GeoJSON Feature object.
+   *
+   * @param {module:ol/Feature} feature Feature.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {GeoJSONFeature} Object.
+   * @override
+   * @api
+   */
+  writeFeatureObject(feature, opt_options) {
+    opt_options = this.adaptOptions(opt_options);
+
+    const object = /** @type {GeoJSONFeature} */ ({
+      'type': 'Feature'
+    });
+    const id = feature.getId();
+    if (id !== undefined) {
+      object.id = id;
+    }
+    const geometry = feature.getGeometry();
+    if (geometry) {
+      object.geometry = writeGeometry(geometry, opt_options);
+    } else {
+      object.geometry = null;
+    }
+    const properties = feature.getProperties();
+    delete properties[feature.getGeometryName()];
+    if (!isEmpty(properties)) {
+      object.properties = properties;
+    } else {
+      object.properties = null;
+    }
+    return object;
+  }
+
+  /**
+   * Encode an array of features as a GeoJSON object.
+   *
+   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {GeoJSONFeatureCollection} GeoJSON Object.
+   * @override
+   * @api
+   */
+  writeFeaturesObject(features, opt_options) {
+    opt_options = this.adaptOptions(opt_options);
+    const objects = [];
+    for (let i = 0, ii = features.length; i < ii; ++i) {
+      objects.push(this.writeFeatureObject(features[i], opt_options));
+    }
+    return /** @type {GeoJSONFeatureCollection} */ ({
+      type: 'FeatureCollection',
+      features: objects
+    });
+  }
+
+  /**
+   * Encode a geometry as a GeoJSON object.
+   *
+   * @param {module:ol/geom/Geometry} geometry Geometry.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {GeoJSONGeometry|GeoJSONGeometryCollection} Object.
+   * @override
+   * @api
+   */
+  writeGeometryObject(geometry, opt_options) {
+    return writeGeometry(geometry, this.adaptOptions(opt_options));
+  }
+}
 
 inherits(GeoJSON, JSONFeature);
 
@@ -355,62 +508,6 @@ GeoJSON.prototype.readFeatures;
 
 
 /**
- * @inheritDoc
- */
-GeoJSON.prototype.readFeatureFromObject = function(object, opt_options) {
-  /**
-   * @type {GeoJSONFeature}
-   */
-  let geoJSONFeature = null;
-  if (object.type === 'Feature') {
-    geoJSONFeature = /** @type {GeoJSONFeature} */ (object);
-  } else {
-    geoJSONFeature = /** @type {GeoJSONFeature} */ ({
-      type: 'Feature',
-      geometry: /** @type {GeoJSONGeometry|GeoJSONGeometryCollection} */ (object)
-    });
-  }
-
-  const geometry = readGeometry(geoJSONFeature.geometry, opt_options);
-  const feature = new Feature();
-  if (this.geometryName_) {
-    feature.setGeometryName(this.geometryName_);
-  } else if (this.extractGeometryName_ && geoJSONFeature.geometry_name !== undefined) {
-    feature.setGeometryName(geoJSONFeature.geometry_name);
-  }
-  feature.setGeometry(geometry);
-  if (geoJSONFeature.id !== undefined) {
-    feature.setId(geoJSONFeature.id);
-  }
-  if (geoJSONFeature.properties) {
-    feature.setProperties(geoJSONFeature.properties);
-  }
-  return feature;
-};
-
-
-/**
- * @inheritDoc
- */
-GeoJSON.prototype.readFeaturesFromObject = function(object, opt_options) {
-  const geoJSONObject = /** @type {GeoJSONObject} */ (object);
-  /** @type {Array.<module:ol/Feature>} */
-  let features = null;
-  if (geoJSONObject.type === 'FeatureCollection') {
-    const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (object);
-    features = [];
-    const geoJSONFeatures = geoJSONFeatureCollection.features;
-    for (let i = 0, ii = geoJSONFeatures.length; i < ii; ++i) {
-      features.push(this.readFeatureFromObject(geoJSONFeatures[i], opt_options));
-    }
-  } else {
-    features = [this.readFeatureFromObject(object, opt_options)];
-  }
-  return features;
-};
-
-
-/**
  * Read a geometry from a GeoJSON source.
  *
  * @function
@@ -423,14 +520,6 @@ GeoJSON.prototype.readGeometry;
 
 
 /**
- * @inheritDoc
- */
-GeoJSON.prototype.readGeometryFromObject = function(object, opt_options) {
-  return readGeometry(/** @type {GeoJSONGeometry} */ (object), opt_options);
-};
-
-
-/**
  * Read the projection from a GeoJSON source.
  *
  * @function
@@ -439,28 +528,6 @@ GeoJSON.prototype.readGeometryFromObject = function(object, opt_options) {
  * @api
  */
 GeoJSON.prototype.readProjection;
-
-
-/**
- * @inheritDoc
- */
-GeoJSON.prototype.readProjectionFromObject = function(object) {
-  const geoJSONObject = /** @type {GeoJSONObject} */ (object);
-  const crs = geoJSONObject.crs;
-  let projection;
-  if (crs) {
-    if (crs.type == 'name') {
-      projection = getProjection(crs.properties.name);
-    } else {
-      assert(false, 36); // Unknown SRS type
-    }
-  } else {
-    projection = this.dataProjection;
-  }
-  return (
-    /** @type {module:ol/proj/Projection} */ (projection)
-  );
-};
 
 
 /**
@@ -477,42 +544,6 @@ GeoJSON.prototype.writeFeature;
 
 
 /**
- * Encode a feature as a GeoJSON Feature object.
- *
- * @param {module:ol/Feature} feature Feature.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {GeoJSONFeature} Object.
- * @override
- * @api
- */
-GeoJSON.prototype.writeFeatureObject = function(feature, opt_options) {
-  opt_options = this.adaptOptions(opt_options);
-
-  const object = /** @type {GeoJSONFeature} */ ({
-    'type': 'Feature'
-  });
-  const id = feature.getId();
-  if (id !== undefined) {
-    object.id = id;
-  }
-  const geometry = feature.getGeometry();
-  if (geometry) {
-    object.geometry = writeGeometry(geometry, opt_options);
-  } else {
-    object.geometry = null;
-  }
-  const properties = feature.getProperties();
-  delete properties[feature.getGeometryName()];
-  if (!isEmpty(properties)) {
-    object.properties = properties;
-  } else {
-    object.properties = null;
-  }
-  return object;
-};
-
-
-/**
  * Encode an array of features as GeoJSON.
  *
  * @function
@@ -522,28 +553,6 @@ GeoJSON.prototype.writeFeatureObject = function(feature, opt_options) {
  * @api
  */
 GeoJSON.prototype.writeFeatures;
-
-
-/**
- * Encode an array of features as a GeoJSON object.
- *
- * @param {Array.<module:ol/Feature>} features Features.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {GeoJSONFeatureCollection} GeoJSON Object.
- * @override
- * @api
- */
-GeoJSON.prototype.writeFeaturesObject = function(features, opt_options) {
-  opt_options = this.adaptOptions(opt_options);
-  const objects = [];
-  for (let i = 0, ii = features.length; i < ii; ++i) {
-    objects.push(this.writeFeatureObject(features[i], opt_options));
-  }
-  return /** @type {GeoJSONFeatureCollection} */ ({
-    type: 'FeatureCollection',
-    features: objects
-  });
-};
 
 
 /**
@@ -558,16 +567,4 @@ GeoJSON.prototype.writeFeaturesObject = function(features, opt_options) {
 GeoJSON.prototype.writeGeometry;
 
 
-/**
- * Encode a geometry as a GeoJSON object.
- *
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {GeoJSONGeometry|GeoJSONGeometryCollection} Object.
- * @override
- * @api
- */
-GeoJSON.prototype.writeGeometryObject = function(geometry, opt_options) {
-  return writeGeometry(geometry, this.adaptOptions(opt_options));
-};
 export default GeoJSON;
