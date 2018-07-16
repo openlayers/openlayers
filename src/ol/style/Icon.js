@@ -285,6 +285,18 @@ Icon.prototype.getAnchor = function() {
   return this.normalizedAnchor_;
 };
 
+/**
+ * Set the anchor point. The anchor determines the center point for the
+ * symbolizer.
+ *
+ * @param {Array.<number>} anchor Anchor.
+ * @api
+ */
+Icon.prototype.setAnchor = function(anchor) {
+  this.anchor_ = anchor;
+  this.normalizedAnchor_ = null;
+};
+
 
 /**
  * Get the icon color.
