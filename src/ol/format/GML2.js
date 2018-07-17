@@ -1,7 +1,6 @@
 /**
  * @module ol/format/GML2
  */
-import {inherits} from '../util.js';
 import {createOrUpdate} from '../extent.js';
 import {transformWithOptions} from '../format/Feature.js';
 import GMLBase, {GMLNS} from '../format/GMLBase.js';
@@ -37,10 +36,9 @@ const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
  * Feature format for reading and writing data in the GML format,
  * version 2.1.2.
  *
- * @extends {module:ol/format/GMLBase}
  * @api
  */
-class GML2 {
+class GML2 extends GMLBase {
 
   /**
    * @param {module:ol/format/GMLBase~Options=} opt_options Optional configuration object.
@@ -49,11 +47,11 @@ class GML2 {
     const options = /** @type {module:ol/format/GMLBase~Options} */
         (opt_options ? opt_options : {});
 
-    GMLBase.call(this, options);
+    super(options);
 
     this.FEATURE_COLLECTION_PARSERS[GMLNS][
       'featureMember'] =
-        makeArrayPusher(GMLBase.prototype.readFeaturesInternal);
+        makeArrayPusher(this.readFeaturesInternal);
 
     /**
      * @inheritDoc
@@ -61,6 +59,156 @@ class GML2 {
     this.schemaLocation = options.schemaLocation ?
       options.schemaLocation : schemaLocation;
 
+    /**
+     * @const
+     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+     * @private
+     */
+    this.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+      'http://www.opengis.net/gml': {
+        'coordinates': makeReplacer(this.readFlatCoordinates_)
+      }
+    };
+
+    /**
+     * @const
+     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+     * @private
+     */
+    this.FLAT_LINEAR_RINGS_PARSERS_ = {
+      'http://www.opengis.net/gml': {
+        'innerBoundaryIs': this.innerBoundaryIsParser_,
+        'outerBoundaryIs': this.outerBoundaryIsParser_
+      }
+    };
+
+    /**
+     * @const
+     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+     * @private
+     */
+    this.BOX_PARSERS_ = {
+      'http://www.opengis.net/gml': {
+        'coordinates': makeArrayPusher(
+          this.readFlatCoordinates_)
+      }
+    };
+
+    /**
+     * @const
+     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+     * @private
+     */
+    this.GEOMETRY_PARSERS_ = {
+      'http://www.opengis.net/gml': {
+        'Point': makeReplacer(this.readPoint),
+        'MultiPoint': makeReplacer(
+          this.readMultiPoint),
+        'LineString': makeReplacer(
+          this.readLineString),
+        'MultiLineString': makeReplacer(
+          this.readMultiLineString),
+        'LinearRing': makeReplacer(
+          this.readLinearRing),
+        'Polygon': makeReplacer(this.readPolygon),
+        'MultiPolygon': makeReplacer(
+          this.readMultiPolygon),
+        'Box': makeReplacer(this.readBox_)
+      }
+    };
+
+    /**
+     * @const
+     * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+     * @private
+     */
+    this.GEOMETRY_SERIALIZERS_ = {
+      'http://www.opengis.net/gml': {
+        'Curve': makeChildAppender(
+          this.writeCurveOrLineString_),
+        'MultiCurve': makeChildAppender(
+          this.writeMultiCurveOrLineString_),
+        'Point': makeChildAppender(this.writePoint_),
+        'MultiPoint': makeChildAppender(
+          this.writeMultiPoint_),
+        'LineString': makeChildAppender(
+          this.writeCurveOrLineString_),
+        'MultiLineString': makeChildAppender(
+          this.writeMultiCurveOrLineString_),
+        'LinearRing': makeChildAppender(
+          this.writeLinearRing_),
+        'Polygon': makeChildAppender(
+          this.writeSurfaceOrPolygon_),
+        'MultiPolygon': makeChildAppender(
+          this.writeMultiSurfaceOrPolygon_),
+        'Surface': makeChildAppender(
+          this.writeSurfaceOrPolygon_),
+        'MultiSurface': makeChildAppender(
+          this.writeMultiSurfaceOrPolygon_),
+        'Envelope': makeChildAppender(
+          this.writeEnvelope)
+      }
+    };
+
+    /**
+     * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+     * @private
+     */
+    this.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
+      'http://www.opengis.net/gml': {
+        'lineStringMember': makeChildAppender(
+          this.writeLineStringOrCurveMember_),
+        'curveMember': makeChildAppender(
+          this.writeLineStringOrCurveMember_)
+      }
+    };
+
+    /**
+     * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+     * @private
+     */
+    this.RING_SERIALIZERS_ = {
+      'http://www.opengis.net/gml': {
+        'outerBoundaryIs': makeChildAppender(this.writeRing_),
+        'innerBoundaryIs': makeChildAppender(this.writeRing_)
+      }
+    };
+
+    /**
+     * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+     * @private
+     */
+    this.POINTMEMBER_SERIALIZERS_ = {
+      'http://www.opengis.net/gml': {
+        'pointMember': makeChildAppender(
+          this.writePointMember_)
+      }
+    };
+
+    /**
+     * @const
+     * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+     * @private
+     */
+    this.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
+      'http://www.opengis.net/gml': {
+        'surfaceMember': makeChildAppender(
+          this.writeSurfaceOrPolygonMember_),
+        'polygonMember': makeChildAppender(
+          this.writeSurfaceOrPolygonMember_)
+      }
+    };
+
+    /**
+     * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+     * @private
+     */
+    this.ENVELOPE_SERIALIZERS_ = {
+      'http://www.opengis.net/gml': {
+        'lowerCorner': makeChildAppender(writeStringTextNode),
+        'upperCorner': makeChildAppender(writeStringTextNode)
+      }
+    };
   }
 
   /**
@@ -586,168 +734,5 @@ class GML2 {
       MULTIGEOMETRY_TO_MEMBER_NODENAME[parentNode.nodeName]);
   }
 }
-
-inherits(GML2, GMLBase);
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- * @private
- */
-GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'coordinates': makeReplacer(GML2.prototype.readFlatCoordinates_)
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- * @private
- */
-GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'innerBoundaryIs': GML2.prototype.innerBoundaryIsParser_,
-    'outerBoundaryIs': GML2.prototype.outerBoundaryIsParser_
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- * @private
- */
-GML2.prototype.BOX_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'coordinates': makeArrayPusher(
-      GML2.prototype.readFlatCoordinates_)
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- * @private
- */
-GML2.prototype.GEOMETRY_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'Point': makeReplacer(GMLBase.prototype.readPoint),
-    'MultiPoint': makeReplacer(
-      GMLBase.prototype.readMultiPoint),
-    'LineString': makeReplacer(
-      GMLBase.prototype.readLineString),
-    'MultiLineString': makeReplacer(
-      GMLBase.prototype.readMultiLineString),
-    'LinearRing': makeReplacer(
-      GMLBase.prototype.readLinearRing),
-    'Polygon': makeReplacer(GMLBase.prototype.readPolygon),
-    'MultiPolygon': makeReplacer(
-      GMLBase.prototype.readMultiPolygon),
-    'Box': makeReplacer(GML2.prototype.readBox_)
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
- * @private
- */
-GML2.prototype.GEOMETRY_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
-    'Curve': makeChildAppender(
-      GML2.prototype.writeCurveOrLineString_),
-    'MultiCurve': makeChildAppender(
-      GML2.prototype.writeMultiCurveOrLineString_),
-    'Point': makeChildAppender(GML2.prototype.writePoint_),
-    'MultiPoint': makeChildAppender(
-      GML2.prototype.writeMultiPoint_),
-    'LineString': makeChildAppender(
-      GML2.prototype.writeCurveOrLineString_),
-    'MultiLineString': makeChildAppender(
-      GML2.prototype.writeMultiCurveOrLineString_),
-    'LinearRing': makeChildAppender(
-      GML2.prototype.writeLinearRing_),
-    'Polygon': makeChildAppender(
-      GML2.prototype.writeSurfaceOrPolygon_),
-    'MultiPolygon': makeChildAppender(
-      GML2.prototype.writeMultiSurfaceOrPolygon_),
-    'Surface': makeChildAppender(
-      GML2.prototype.writeSurfaceOrPolygon_),
-    'MultiSurface': makeChildAppender(
-      GML2.prototype.writeMultiSurfaceOrPolygon_),
-    'Envelope': makeChildAppender(
-      GML2.prototype.writeEnvelope)
-  }
-};
-
-
-/**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
- * @private
- */
-GML2.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
-    'lineStringMember': makeChildAppender(
-      GML2.prototype.writeLineStringOrCurveMember_),
-    'curveMember': makeChildAppender(
-      GML2.prototype.writeLineStringOrCurveMember_)
-  }
-};
-
-
-/**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
- * @private
- */
-GML2.prototype.RING_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
-    'outerBoundaryIs': makeChildAppender(GML2.prototype.writeRing_),
-    'innerBoundaryIs': makeChildAppender(GML2.prototype.writeRing_)
-  }
-};
-
-
-/**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
- * @private
- */
-GML2.prototype.POINTMEMBER_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
-    'pointMember': makeChildAppender(
-      GML2.prototype.writePointMember_)
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
- * @private
- */
-GML2.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
-    'surfaceMember': makeChildAppender(
-      GML2.prototype.writeSurfaceOrPolygonMember_),
-    'polygonMember': makeChildAppender(
-      GML2.prototype.writeSurfaceOrPolygonMember_)
-  }
-};
-
-
-/**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
- * @private
- */
-GML2.prototype.ENVELOPE_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
-    'lowerCorner': makeChildAppender(writeStringTextNode),
-    'upperCorner': makeChildAppender(writeStringTextNode)
-  }
-};
 
 export default GML2;
