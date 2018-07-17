@@ -1,7 +1,6 @@
 /**
  * @module ol/Geolocation
  */
-import {inherits} from './util.js';
 import GeolocationProperty from './GeolocationProperty.js';
 import BaseObject, {getChangeEventType} from './Object.js';
 import {listen} from './events.js';
@@ -44,10 +43,9 @@ import {get as getProjection, getTransformFromProjections, identityTransform} fr
  *     });
  *
  * @fires error
- * @extends {module:ol/Object}
  * @api
  */
-class Geolocation {
+class Geolocation extends BaseObject {
 
   /**
    * @param {module:ol/Geolocation~Options=} opt_options Options.
@@ -100,7 +98,7 @@ class Geolocation {
    */
   disposeInternal() {
     this.setTracking(false);
-    BaseObject.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**
@@ -332,8 +330,6 @@ class Geolocation {
     this.set(GeolocationProperty.TRACKING_OPTIONS, options);
   }
 }
-
-inherits(Geolocation, BaseObject);
 
 
 export default Geolocation;
