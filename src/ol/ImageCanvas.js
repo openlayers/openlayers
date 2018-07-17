@@ -1,7 +1,6 @@
 /**
  * @module ol/ImageCanvas
  */
-import {inherits} from './util.js';
 import ImageBase from './ImageBase.js';
 import ImageState from './ImageState.js';
 
@@ -16,10 +15,7 @@ import ImageState from './ImageState.js';
  */
 
 
-/**
- * @extends {module:ol/ImageBase}
- */
-class ImageCanvas {
+class ImageCanvas extends ImageBase {
 
   /**
    * @param {module:ol/extent~Extent} extent Extent.
@@ -31,16 +27,16 @@ class ImageCanvas {
    */
   constructor(extent, resolution, pixelRatio, canvas, opt_loader) {
 
+    const state = opt_loader !== undefined ? ImageState.IDLE : ImageState.LOADED;
+
+    super(extent, resolution, pixelRatio, state);
+
     /**
      * Optional canvas loader function.
      * @type {?module:ol/ImageCanvas~Loader}
      * @private
      */
     this.loader_ = opt_loader !== undefined ? opt_loader : null;
-
-    const state = opt_loader !== undefined ? ImageState.IDLE : ImageState.LOADED;
-
-    ImageBase.call(this, extent, resolution, pixelRatio, state);
 
     /**
      * @private
@@ -97,8 +93,6 @@ class ImageCanvas {
     return this.canvas_;
   }
 }
-
-inherits(ImageCanvas, ImageBase);
 
 
 export default ImageCanvas;
