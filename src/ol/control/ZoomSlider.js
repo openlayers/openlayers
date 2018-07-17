@@ -1,7 +1,6 @@
 /**
  * @module ol/control/ZoomSlider
  */
-import {inherits} from '../util.js';
 import ViewHint from '../ViewHint.js';
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
@@ -43,14 +42,18 @@ const Direction = {
  *     map.addControl(new ZoomSlider());
  *
  * @constructor
- * @extends {module:ol/control/Control}
  * @param {module:ol/control/ZoomSlider~Options=} opt_options Zoom slider options.
  * @api
  */
-class ZoomSlider {
+class ZoomSlider extends Control {
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};
+
+    super({
+      element: document.createElement('div'),
+      render: options.render || render
+    });
 
     /**
      * Will hold the current resolution of the view.
@@ -124,7 +127,7 @@ class ZoomSlider {
     const thumbElement = document.createElement('button');
     thumbElement.setAttribute('type', 'button');
     thumbElement.className = className + '-thumb ' + CLASS_UNSELECTABLE;
-    const containerElement = document.createElement('div');
+    const containerElement = this.element;
     containerElement.className = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
     containerElement.appendChild(thumbElement);
     /**
@@ -142,11 +145,6 @@ class ZoomSlider {
 
     listen(containerElement, EventType.CLICK, this.handleContainerClick_, this);
     listen(thumbElement, EventType.CLICK, stopPropagation);
-
-    Control.call(this, {
-      element: containerElement,
-      render: options.render || render
-    });
   }
 
   /**
@@ -154,14 +152,14 @@ class ZoomSlider {
    */
   disposeInternal() {
     this.dragger_.dispose();
-    Control.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**
    * @inheritDoc
    */
   setMap(map) {
-    Control.prototype.setMap.call(this, map);
+    super.setMap(map);
     if (map) {
       map.render();
     }
@@ -340,8 +338,6 @@ class ZoomSlider {
     return 1 - fn(res);
   }
 }
-
-inherits(ZoomSlider, Control);
 
 
 /**
