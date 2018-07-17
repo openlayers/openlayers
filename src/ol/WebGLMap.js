@@ -1,7 +1,6 @@
 /**
  * @module ol/WebGLMap
  */
-import {inherits} from './util.js';
 import PluggableMap from './PluggableMap.js';
 import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';
@@ -57,14 +56,13 @@ import WebGLVectorLayerRenderer from './renderer/webgl/VectorLayer.js';
  * {@link module:ol/layer/Base}, so layers entered in the options or added
  * with `addLayer` can be groups, which can contain further groups, and so on.
  *
- * @extends {module:ol/PluggableMap}
  * @fires module:ol/MapBrowserEvent~MapBrowserEvent
  * @fires module:ol/MapEvent~MapEvent
  * @fires module:ol/render/Event~RenderEvent#postcompose
  * @fires module:ol/render/Event~RenderEvent#precompose
  * @api
  */
-class WebGLMap {
+class WebGLMap extends PluggableMap {
 
   /**
    * @param {module:ol/PluggableMap~MapOptions} options Map options.
@@ -78,7 +76,7 @@ class WebGLMap {
       options.interactions = defaultInteractions();
     }
 
-    PluggableMap.call(this, options);
+    super(options);
   }
 
   createRenderer() {
@@ -91,8 +89,6 @@ class WebGLMap {
     return renderer;
   }
 }
-
-inherits(WebGLMap, PluggableMap);
 
 
 export default WebGLMap;
