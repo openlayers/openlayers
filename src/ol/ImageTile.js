@@ -1,7 +1,6 @@
 /**
  * @module ol/ImageTile
  */
-import {inherits} from './util.js';
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
@@ -14,10 +13,7 @@ import EventType from './events/EventType.js';
  * @api
  */
 
-/**
- * @extends {module:ol/Tile}
- */
-class ImageTile {
+class ImageTile extends Tile {
 
   /**
    * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
@@ -29,7 +25,7 @@ class ImageTile {
    */
   constructor(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
-    Tile.call(this, tileCoord, state, opt_options);
+    super(tileCoord, state, opt_options);
 
     /**
      * @private
@@ -81,7 +77,7 @@ class ImageTile {
     }
     this.state = TileState.ABORT;
     this.changed();
-    Tile.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**
@@ -162,8 +158,6 @@ class ImageTile {
     this.imageListenerKeys_ = null;
   }
 }
-
-inherits(ImageTile, Tile);
 
 
 /**
