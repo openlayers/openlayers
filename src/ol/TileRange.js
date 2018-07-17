@@ -16,65 +16,65 @@ class TileRange {
   constructor(minX, maxX, minY, maxY) {
 
     /**
-    * @type {number}
-    */
+     * @type {number}
+     */
     this.minX = minX;
 
     /**
-    * @type {number}
-    */
+     * @type {number}
+     */
     this.maxX = maxX;
 
     /**
-    * @type {number}
-    */
+     * @type {number}
+     */
     this.minY = minY;
 
     /**
-    * @type {number}
-    */
+     * @type {number}
+     */
     this.maxY = maxY;
 
   }
 
   /**
-  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
-  * @return {boolean} Contains tile coordinate.
-  */
+   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+   * @return {boolean} Contains tile coordinate.
+   */
   contains(tileCoord) {
     return this.containsXY(tileCoord[1], tileCoord[2]);
   }
 
   /**
-  * @param {module:ol/TileRange} tileRange Tile range.
-  * @return {boolean} Contains.
-  */
+   * @param {module:ol/TileRange} tileRange Tile range.
+   * @return {boolean} Contains.
+   */
   containsTileRange(tileRange) {
     return this.minX <= tileRange.minX && tileRange.maxX <= this.maxX &&
        this.minY <= tileRange.minY && tileRange.maxY <= this.maxY;
   }
 
   /**
-  * @param {number} x Tile coordinate x.
-  * @param {number} y Tile coordinate y.
-  * @return {boolean} Contains coordinate.
-  */
+   * @param {number} x Tile coordinate x.
+   * @param {number} y Tile coordinate y.
+   * @return {boolean} Contains coordinate.
+   */
   containsXY(x, y) {
     return this.minX <= x && x <= this.maxX && this.minY <= y && y <= this.maxY;
   }
 
   /**
-  * @param {module:ol/TileRange} tileRange Tile range.
-  * @return {boolean} Equals.
-  */
+   * @param {module:ol/TileRange} tileRange Tile range.
+   * @return {boolean} Equals.
+   */
   equals(tileRange) {
     return this.minX == tileRange.minX && this.minY == tileRange.minY &&
        this.maxX == tileRange.maxX && this.maxY == tileRange.maxY;
   }
 
   /**
-  * @param {module:ol/TileRange} tileRange Tile range.
-  */
+   * @param {module:ol/TileRange} tileRange Tile range.
+   */
   extend(tileRange) {
     if (tileRange.minX < this.minX) {
       this.minX = tileRange.minX;

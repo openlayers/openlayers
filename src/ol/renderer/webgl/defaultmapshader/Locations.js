@@ -17,38 +17,38 @@ class Locations {
   constructor(gl, program) {
 
     /**
-    * @type {WebGLUniformLocation}
-    */
+     * @type {WebGLUniformLocation}
+     */
     this.u_texCoordMatrix = gl.getUniformLocation(
       program, DEBUG_WEBGL ? 'u_texCoordMatrix' : 'd');
 
     /**
-    * @type {WebGLUniformLocation}
-    */
+     * @type {WebGLUniformLocation}
+     */
     this.u_projectionMatrix = gl.getUniformLocation(
       program, DEBUG_WEBGL ? 'u_projectionMatrix' : 'e');
 
     /**
-    * @type {WebGLUniformLocation}
-    */
+     * @type {WebGLUniformLocation}
+     */
     this.u_opacity = gl.getUniformLocation(
       program, DEBUG_WEBGL ? 'u_opacity' : 'f');
 
     /**
-    * @type {WebGLUniformLocation}
-    */
+     * @type {WebGLUniformLocation}
+     */
     this.u_texture = gl.getUniformLocation(
       program, DEBUG_WEBGL ? 'u_texture' : 'g');
 
     /**
-    * @type {number}
-    */
+     * @type {number}
+     */
     this.a_position = gl.getAttribLocation(
       program, DEBUG_WEBGL ? 'a_position' : 'b');
 
     /**
-    * @type {number}
-    */
+     * @type {number}
+     */
     this.a_texCoord = gl.getAttribLocation(
       program, DEBUG_WEBGL ? 'a_texCoord' : 'c');
 

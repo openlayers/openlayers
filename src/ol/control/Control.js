@@ -55,32 +55,32 @@ class Control {
     BaseObject.call(this);
 
     /**
-    * @protected
-    * @type {Element}
-    */
+     * @protected
+     * @type {Element}
+     */
     this.element = options.element ? options.element : null;
 
     /**
-    * @private
-    * @type {Element}
-    */
+     * @private
+     * @type {Element}
+     */
     this.target_ = null;
 
     /**
-    * @private
-    * @type {module:ol/PluggableMap}
-    */
+     * @private
+     * @type {module:ol/PluggableMap}
+     */
     this.map_ = null;
 
     /**
-    * @protected
-    * @type {!Array.<module:ol/events~EventsKey>}
-    */
+     * @protected
+     * @type {!Array.<module:ol/events~EventsKey>}
+     */
     this.listenerKeys = [];
 
     /**
-    * @type {function(module:ol/MapEvent)}
-    */
+     * @type {function(module:ol/MapEvent)}
+     */
     this.render = options.render ? options.render : UNDEFINED;
 
     if (options.target) {
@@ -90,29 +90,29 @@ class Control {
   }
 
   /**
-  * @inheritDoc
-  */
+   * @inheritDoc
+   */
   disposeInternal() {
     removeNode(this.element);
     BaseObject.prototype.disposeInternal.call(this);
   }
 
   /**
-  * Get the map associated with this control.
-  * @return {module:ol/PluggableMap} Map.
-  * @api
-  */
+   * Get the map associated with this control.
+   * @return {module:ol/PluggableMap} Map.
+   * @api
+   */
   getMap() {
     return this.map_;
   }
 
   /**
-  * Remove the control from its current map and attach it to the new map.
-  * Subclasses may set up event handlers to get notified about changes to
-  * the map here.
-  * @param {module:ol/PluggableMap} map Map.
-  * @api
-  */
+   * Remove the control from its current map and attach it to the new map.
+   * Subclasses may set up event handlers to get notified about changes to
+   * the map here.
+   * @param {module:ol/PluggableMap} map Map.
+   * @api
+   */
   setMap(map) {
     if (this.map_) {
       removeNode(this.element);
@@ -135,14 +135,14 @@ class Control {
   }
 
   /**
-  * This function is used to set a target element for the control. It has no
-  * effect if it is called after the control has been added to the map (i.e.
-  * after `setMap` is called on the control). If no `target` is set in the
-  * options passed to the control constructor and if `setTarget` is not called
-  * then the control is added to the map's overlay container.
-  * @param {Element|string} target Target.
-  * @api
-  */
+   * This function is used to set a target element for the control. It has no
+   * effect if it is called after the control has been added to the map (i.e.
+   * after `setMap` is called on the control). If no `target` is set in the
+   * options passed to the control constructor and if `setTarget` is not called
+   * then the control is added to the map's overlay container.
+   * @param {Element|string} target Target.
+   * @api
+   */
   setTarget(target) {
     this.target_ = typeof target === 'string' ?
       document.getElementById(target) :

@@ -36,9 +36,9 @@ class ZoomToExtent {
     const options = opt_options ? opt_options : {};
 
     /**
-    * @type {module:ol/extent~Extent}
-    * @protected
-    */
+     * @type {module:ol/extent~Extent}
+     * @protected
+     */
     this.extent = options.extent ? options.extent : null;
 
     const className = options.className !== undefined ? options.className : 'ol-zoom-extent';
@@ -66,17 +66,17 @@ class ZoomToExtent {
   }
 
   /**
-  * @param {MouseEvent} event The event to handle
-  * @private
-  */
+   * @param {MouseEvent} event The event to handle
+   * @private
+   */
   handleClick_(event) {
     event.preventDefault();
     this.handleZoomToExtent();
   }
 
   /**
-  * @protected
-  */
+   * @protected
+   */
   handleZoomToExtent() {
     const map = this.getMap();
     const view = map.getView();

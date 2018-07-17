@@ -17,26 +17,26 @@ class Locations {
   constructor(gl, program) {
 
     /**
-    * @type {WebGLUniformLocation}
-    */
+     * @type {WebGLUniformLocation}
+     */
     this.u_tileOffset = gl.getUniformLocation(
       program, DEBUG_WEBGL ? 'u_tileOffset' : 'd');
 
     /**
-    * @type {WebGLUniformLocation}
-    */
+     * @type {WebGLUniformLocation}
+     */
     this.u_texture = gl.getUniformLocation(
       program, DEBUG_WEBGL ? 'u_texture' : 'e');
 
     /**
-    * @type {number}
-    */
+     * @type {number}
+     */
     this.a_position = gl.getAttribLocation(
       program, DEBUG_WEBGL ? 'a_position' : 'b');
 
     /**
-    * @type {number}
-    */
+     * @type {number}
+     */
     this.a_texCoord = gl.getAttribLocation(
       program, DEBUG_WEBGL ? 'a_texCoord' : 'c');
 

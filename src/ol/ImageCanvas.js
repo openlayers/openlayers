@@ -30,10 +30,10 @@ class ImageCanvas {
   constructor(extent, resolution, pixelRatio, canvas, opt_loader) {
 
     /**
-    * Optional canvas loader function.
-    * @type {?module:ol/ImageCanvas~Loader}
-    * @private
-    */
+     * Optional canvas loader function.
+     * @type {?module:ol/ImageCanvas~Loader}
+     * @private
+     */
     this.loader_ = opt_loader !== undefined ? opt_loader : null;
 
     const state = opt_loader !== undefined ? ImageState.IDLE : ImageState.LOADED;
@@ -41,32 +41,32 @@ class ImageCanvas {
     ImageBase.call(this, extent, resolution, pixelRatio, state);
 
     /**
-    * @private
-    * @type {HTMLCanvasElement}
-    */
+     * @private
+     * @type {HTMLCanvasElement}
+     */
     this.canvas_ = canvas;
 
     /**
-    * @private
-    * @type {Error}
-    */
+     * @private
+     * @type {Error}
+     */
     this.error_ = null;
 
   }
 
   /**
-  * Get any error associated with asynchronous rendering.
-  * @return {Error} Any error that occurred during rendering.
-  */
+   * Get any error associated with asynchronous rendering.
+   * @return {Error} Any error that occurred during rendering.
+   */
   getError() {
     return this.error_;
   }
 
   /**
-  * Handle async drawing complete.
-  * @param {Error} err Any error during drawing.
-  * @private
-  */
+   * Handle async drawing complete.
+   * @param {Error} err Any error during drawing.
+   * @private
+   */
   handleLoad_(err) {
     if (err) {
       this.error_ = err;
@@ -78,8 +78,8 @@ class ImageCanvas {
   }
 
   /**
-  * @inheritDoc
-  */
+   * @inheritDoc
+   */
   load() {
     if (this.state == ImageState.IDLE) {
       this.state = ImageState.LOADING;
@@ -89,8 +89,8 @@ class ImageCanvas {
   }
 
   /**
-  * @return {HTMLCanvasElement} Canvas element.
-  */
+   * @return {HTMLCanvasElement} Canvas element.
+   */
   getImage() {
     return this.canvas_;
   }

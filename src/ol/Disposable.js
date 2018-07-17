@@ -9,8 +9,8 @@ import {UNDEFINED} from './functions.js';
  */
 class Disposable {
   /**
-  * Clean up.
-  */
+   * Clean up.
+   */
   dispose() {
     if (!this.disposed_) {
       this.disposed_ = true;

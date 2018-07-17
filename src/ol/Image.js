@@ -44,53 +44,53 @@ class ImageWrapper {
     ImageBase.call(this, extent, resolution, pixelRatio, ImageState.IDLE);
 
     /**
-    * @private
-    * @type {string}
-    */
+     * @private
+     * @type {string}
+     */
     this.src_ = src;
 
     /**
-    * @private
-    * @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement}
-    */
+     * @private
+     * @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement}
+     */
     this.image_ = new Image();
     if (crossOrigin !== null) {
       this.image_.crossOrigin = crossOrigin;
     }
 
     /**
-    * @private
-    * @type {Array.<module:ol/events~EventsKey>}
-    */
+     * @private
+     * @type {Array.<module:ol/events~EventsKey>}
+     */
     this.imageListenerKeys_ = null;
 
     /**
-    * @protected
-    * @type {module:ol/ImageState}
-    */
+     * @protected
+     * @type {module:ol/ImageState}
+     */
     this.state = ImageState.IDLE;
 
     /**
-    * @private
-    * @type {module:ol/Image~LoadFunction}
-    */
+     * @private
+     * @type {module:ol/Image~LoadFunction}
+     */
     this.imageLoadFunction_ = imageLoadFunction;
 
   }
 
   /**
-  * @inheritDoc
-  * @api
-  */
+   * @inheritDoc
+   * @api
+   */
   getImage() {
     return this.image_;
   }
 
   /**
-  * Tracks loading or read errors.
-  *
-  * @private
-  */
+   * Tracks loading or read errors.
+   *
+   * @private
+   */
   handleImageError_() {
     this.state = ImageState.ERROR;
     this.unlistenImage_();
@@ -98,10 +98,10 @@ class ImageWrapper {
   }
 
   /**
-  * Tracks successful image load.
-  *
-  * @private
-  */
+   * Tracks successful image load.
+   *
+   * @private
+   */
   handleImageLoad_() {
     if (this.resolution === undefined) {
       this.resolution = getHeight(this.extent) / this.image_.height;
@@ -112,38 +112,38 @@ class ImageWrapper {
   }
 
   /**
-  * Load the image or retry if loading previously failed.
-  * Loading is taken care of by the tile queue, and calling this method is
-  * only needed for preloading or for reloading in case of an error.
-  * @override
-  * @api
-  */
+   * Load the image or retry if loading previously failed.
+   * Loading is taken care of by the tile queue, and calling this method is
+   * only needed for preloading or for reloading in case of an error.
+   * @override
+   * @api
+   */
   load() {
     if (this.state == ImageState.IDLE || this.state == ImageState.ERROR) {
       this.state = ImageState.LOADING;
       this.changed();
       this.imageListenerKeys_ = [
         listenOnce(this.image_, EventType.ERROR,
-          this.handleImageError_, this),
+                   this.handleImageError_, this),
         listenOnce(this.image_, EventType.LOAD,
-          this.handleImageLoad_, this)
+                   this.handleImageLoad_, this)
       ];
       this.imageLoadFunction_(this, this.src_);
     }
   }
 
   /**
-  * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
-  */
+   * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
+   */
   setImage(image) {
     this.image_ = image;
   }
 
   /**
-  * Discards event handlers which listen for load completion or errors.
-  *
-  * @private
-  */
+   * Discards event handlers which listen for load completion or errors.
+   *
+   * @private
+   */
   unlistenImage_() {
     this.imageListenerKeys_.forEach(unlistenByKey);
     this.imageListenerKeys_ = null;

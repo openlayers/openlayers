@@ -20,76 +20,76 @@ class ImageBase {
     EventTarget.call(this);
 
     /**
-    * @protected
-    * @type {module:ol/extent~Extent}
-    */
+     * @protected
+     * @type {module:ol/extent~Extent}
+     */
     this.extent = extent;
 
     /**
-    * @private
-    * @type {number}
-    */
+     * @private
+     * @type {number}
+     */
     this.pixelRatio_ = pixelRatio;
 
     /**
-    * @protected
-    * @type {number|undefined}
-    */
+     * @protected
+     * @type {number|undefined}
+     */
     this.resolution = resolution;
 
     /**
-    * @protected
-    * @type {module:ol/ImageState}
-    */
+     * @protected
+     * @type {module:ol/ImageState}
+     */
     this.state = state;
 
   }
 
   /**
-  * @protected
-  */
+   * @protected
+   */
   changed() {
     this.dispatchEvent(EventType.CHANGE);
   }
 
   /**
-  * @return {module:ol/extent~Extent} Extent.
-  */
+   * @return {module:ol/extent~Extent} Extent.
+   */
   getExtent() {
     return this.extent;
   }
 
   /**
-  * @abstract
-  * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
-  */
+   * @abstract
+   * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
+   */
   getImage() {}
 
   /**
-  * @return {number} PixelRatio.
-  */
+   * @return {number} PixelRatio.
+   */
   getPixelRatio() {
     return this.pixelRatio_;
   }
 
   /**
-  * @return {number} Resolution.
-  */
+   * @return {number} Resolution.
+   */
   getResolution() {
     return /** @type {number} */ (this.resolution);
   }
 
   /**
-  * @return {module:ol/ImageState} State.
-  */
+   * @return {module:ol/ImageState} State.
+   */
   getState() {
     return this.state;
   }
 
   /**
-  * Load not yet loaded URI.
-  * @abstract
-  */
+   * Load not yet loaded URI.
+   * @abstract
+   */
   load() {}
 }
 

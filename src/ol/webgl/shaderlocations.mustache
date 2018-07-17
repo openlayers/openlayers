@@ -18,16 +18,16 @@ class Locations {
   {{#uniforms}}
 
     /**
-    * @type {WebGLUniformLocation}
-    */
+     * @type {WebGLUniformLocation}
+     */
     this.{{originalName}} = gl.getUniformLocation(
       program, DEBUG_WEBGL ? '{{originalName}}' : '{{shortName}}');
   {{/uniforms}}
   {{#attributes}}
 
     /**
-    * @type {number}
-    */
+     * @type {number}
+     */
     this.{{originalName}} = gl.getAttribLocation(
       program, DEBUG_WEBGL ? '{{originalName}}' : '{{shortName}}');
   {{/attributes}}

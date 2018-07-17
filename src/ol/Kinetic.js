@@ -18,45 +18,45 @@ class Kinetic {
   constructor(decay, minVelocity, delay) {
 
     /**
-    * @private
-    * @type {number}
-    */
+     * @private
+     * @type {number}
+     */
     this.decay_ = decay;
 
     /**
-    * @private
-    * @type {number}
-    */
+     * @private
+     * @type {number}
+     */
     this.minVelocity_ = minVelocity;
 
     /**
-    * @private
-    * @type {number}
-    */
+     * @private
+     * @type {number}
+     */
     this.delay_ = delay;
 
     /**
-    * @private
-    * @type {Array.<number>}
-    */
+     * @private
+     * @type {Array.<number>}
+     */
     this.points_ = [];
 
     /**
-    * @private
-    * @type {number}
-    */
+     * @private
+     * @type {number}
+     */
     this.angle_ = 0;
 
     /**
-    * @private
-    * @type {number}
-    */
+     * @private
+     * @type {number}
+     */
     this.initialVelocity_ = 0;
   }
 
   /**
-  * FIXME empty description for jsdoc
-  */
+   * FIXME empty description for jsdoc
+   */
   begin() {
     this.points_.length = 0;
     this.angle_ = 0;
@@ -64,16 +64,16 @@ class Kinetic {
   }
 
   /**
-  * @param {number} x X.
-  * @param {number} y Y.
-  */
+   * @param {number} x X.
+   * @param {number} y Y.
+   */
   update(x, y) {
     this.points_.push(x, y, Date.now());
   }
 
   /**
-  * @return {boolean} Whether we should do kinetic animation.
-  */
+   * @return {boolean} Whether we should do kinetic animation.
+   */
   end() {
     if (this.points_.length < 6) {
       // at least 2 points are required (i.e. there must be at least 6 elements
@@ -110,15 +110,15 @@ class Kinetic {
   }
 
   /**
-  * @return {number} Total distance travelled (pixels).
-  */
+   * @return {number} Total distance travelled (pixels).
+   */
   getDistance() {
     return (this.minVelocity_ - this.initialVelocity_) / this.decay_;
   }
 
   /**
-  * @return {number} Angle of the kinetic panning animation (radians).
-  */
+   * @return {number} Angle of the kinetic panning animation (radians).
+   */
   getAngle() {
     return this.angle_;
   }
