@@ -52,7 +52,7 @@ class Geolocation extends BaseObject {
    */
   constructor(opt_options) {
 
-    BaseObject.call(this);
+    super();
 
     const options = opt_options || {};
 
