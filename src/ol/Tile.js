@@ -1,7 +1,6 @@
 /**
  * @module ol/Tile
  */
-import {inherits} from './util.js';
 import TileState from './TileState.js';
 import {easeIn} from './easing.js';
 import EventTarget from './events/EventTarget.js';
@@ -45,9 +44,8 @@ import EventType from './events/EventType.js';
  * Base class for tiles.
  *
  * @abstract
- * @extends {module:ol/events/EventTarget}
- */
-class Tile {
+  */
+class Tile extends EventTarget {
 
   /**
    * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
@@ -55,7 +53,7 @@ class Tile {
    * @param {module:ol/Tile~Options=} opt_options Tile options.
    */
   constructor(tileCoord, state, opt_options) {
-    EventTarget.call(this);
+    super();
 
     const options = opt_options ? opt_options : {};
 
@@ -260,8 +258,6 @@ class Tile {
     }
   }
 }
-
-inherits(Tile, EventTarget);
 
 
 export default Tile;
