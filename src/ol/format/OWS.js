@@ -1,7 +1,6 @@
 /**
  * @module ol/format/OWS
  */
-import {inherits} from '../util.js';
 import {readHref} from '../format/XLink.js';
 import XML from '../format/XML.js';
 import {readString} from '../format/xsd.js';
@@ -27,12 +26,9 @@ const PARSERS = makeStructureNS(
   });
 
 
-/**
- * @extends {module:ol/format/XML}
- */
-class OWS {
+class OWS extends XML {
   constructor() {
-    XML.call(this);
+    super();
   }
 
   /**
@@ -56,8 +52,6 @@ class OWS {
     return owsObject ? owsObject : null;
   }
 }
-
-inherits(OWS, XML);
 
 
 /**
