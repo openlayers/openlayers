@@ -2,5 +2,3 @@
 /coverage/
 /dist/
 node_modules/
-src/index.js
-src/ol/package.json

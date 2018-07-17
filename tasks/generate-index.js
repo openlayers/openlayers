@@ -12,12 +12,6 @@ async function getSymbols() {
   return info.symbols.filter(symbol => symbol.kind != 'member');
 }
 
-const srcPath = path.posix.resolve(__dirname, '../src').replace(/\\/g, '/');
-function getPath(name) {
-  const fullPath = require.resolve(path.resolve('src', name));
-  return './' + path.posix.relative(srcPath, fullPath.replace(/\\/g, '/'));
-}
-
 /**
  * Generate a list of imports.
  * @param {Array.<Object>} symbols List of symbols.
@@ -31,12 +25,12 @@ function getImports(symbols) {
     if (defaultExport.length > 1) {
       const from = defaultExport[0].replace(/^module\:/, './');
       const importName = from.replace(/[.\/]+/g, '$');
-      const defaultImport = `import ${importName} from '${getPath(from)}';`;
+      const defaultImport = `import ${importName} from '${from}';`;
       imports[defaultImport] = true;
     } else if (namedExport.length > 1) {
       const from = namedExport[0].replace(/^module\:/, './');
       const importName = from.replace(/[.\/]+/g, '_');
-      const namedImport = `import * as ${importName} from '${getPath(from)}';`;
+      const namedImport = `import * as ${importName} from '${from}';`;
       imports[namedImport] = true;
     }
   });
@@ -86,14 +80,14 @@ function generateExports(symbols, namespaces, imports) {
       }
     }
   });
-  const nsdefs = ['const ol = window[\'ol\'] = {};'];
+  const nsdefs = [];
   const ns = Object.keys(namespaces).sort();
   for (let i = 0, ii = ns.length; i < ii; ++i) {
     if (namespaces[ns[i]]) {
       nsdefs.push(`${ns[i]} = {};`);
     }
   }
-  blocks = imports.concat(nsdefs.sort()).concat(blocks.sort());
+  blocks = imports.concat('\nvar ol = window[\'ol\'] = {};\n', nsdefs.sort()).concat(blocks.sort());
   blocks.push('');
   return blocks.join('\n');
 }
@@ -116,7 +110,7 @@ async function main() {
  */
 if (require.main === module) {
   main().then(async code => {
-    const filepath = path.join(__dirname, '..', 'src', 'index.js');
+    const filepath = path.join(__dirname, '..', 'build', 'index.js');
     await fse.outputFile(filepath, code);
   }).catch(err => {
     process.stderr.write(`${err.message}\n`, () => process.exit(1));
