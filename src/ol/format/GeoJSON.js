@@ -4,7 +4,6 @@
 // TODO: serialize dataProjection as crs member when writing
 // see https://github.com/openlayers/openlayers/issues/2078
 
-import {inherits} from '../util.js';
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
@@ -37,10 +36,9 @@ import {get as getProjection} from '../proj.js';
  * @classdesc
  * Feature format for reading and writing data in the GeoJSON format.
  *
- * @extends {module:ol/format/JSONFeature}
- * @api
+  * @api
  */
-class GeoJSON {
+class GeoJSON extends JSONFeature {
 
   /**
    * @param {module:ol/format/GeoJSON~Options=} opt_options Options.
@@ -49,7 +47,7 @@ class GeoJSON {
 
     const options = opt_options ? opt_options : {};
 
-    JSONFeature.call(this);
+    super();
 
     /**
      * @inheritDoc
@@ -229,8 +227,6 @@ class GeoJSON {
     return writeGeometry(geometry, this.adaptOptions(opt_options));
   }
 }
-
-inherits(GeoJSON, JSONFeature);
 
 
 /**
@@ -478,95 +474,6 @@ function writePolygonGeometry(geometry, opt_options) {
     coordinates: geometry.getCoordinates(right)
   });
 }
-
-
-/**
- * Read a feature from a GeoJSON Feature source.  Only works for Feature or
- * geometry types.  Use {@link module:ol/format/GeoJSON#readFeatures} to read
- * FeatureCollection source. If feature at source has an id, it will be used
- * as Feature id by calling {@link module:ol/Feature#setId} internally.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature} Feature.
- * @api
- */
-GeoJSON.prototype.readFeature;
-
-
-/**
- * Read all features from a GeoJSON source.  Works for all GeoJSON types.
- * If the source includes only geometries, features will be created with those
- * geometries.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature>} Features.
- * @api
- */
-GeoJSON.prototype.readFeatures;
-
-
-/**
- * Read a geometry from a GeoJSON source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/geom/Geometry} Geometry.
- * @api
- */
-GeoJSON.prototype.readGeometry;
-
-
-/**
- * Read the projection from a GeoJSON source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/proj/Projection} Projection.
- * @api
- */
-GeoJSON.prototype.readProjection;
-
-
-/**
- * Encode a feature as a GeoJSON Feature string.
- *
- * @function
- * @param {module:ol/Feature} feature Feature.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {string} GeoJSON.
- * @override
- * @api
- */
-GeoJSON.prototype.writeFeature;
-
-
-/**
- * Encode an array of features as GeoJSON.
- *
- * @function
- * @param {Array.<module:ol/Feature>} features Features.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {string} GeoJSON.
- * @api
- */
-GeoJSON.prototype.writeFeatures;
-
-
-/**
- * Encode a geometry as a GeoJSON string.
- *
- * @function
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {string} GeoJSON.
- * @api
- */
-GeoJSON.prototype.writeGeometry;
 
 
 export default GeoJSON;
