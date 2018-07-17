@@ -1,7 +1,6 @@
 /**
  * @module ol/events/EventTarget
  */
-import {inherits} from '../util.js';
 import Disposable from '../Disposable.js';
 import {unlistenAll} from '../events.js';
 import {UNDEFINED} from '../functions.js';
@@ -29,12 +28,11 @@ import Event from '../events/Event.js';
  *    returns false.
  *
  * @constructor
- * @extends {module:ol/Disposable}
  */
-class EventTarget {
+class EventTarget extends Disposable {
   constructor() {
 
-    Disposable.call(this);
+    super();
 
     /**
      * @private
@@ -164,8 +162,6 @@ class EventTarget {
     }
   }
 }
-
-inherits(EventTarget, Disposable);
 
 
 export default EventTarget;
