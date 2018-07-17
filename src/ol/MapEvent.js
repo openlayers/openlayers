@@ -1,17 +1,14 @@
 /**
  * @module ol/MapEvent
  */
-import {inherits} from './util.js';
 import Event from './events/Event.js';
 
 /**
  * @classdesc
  * Events emitted as map events are instances of this type.
  * See {@link module:ol/Map~Map} for which events trigger a map event.
- *
- * @extends {module:ol/events/Event}
  */
-class MapEvent {
+class MapEvent extends Event {
 
   /**
    * @param {string} type Event type.
@@ -20,7 +17,7 @@ class MapEvent {
    */
   constructor(type, map, opt_frameState) {
 
-    Event.call(this, type);
+    super(type);
 
     /**
      * The map where the event occurred.
@@ -39,7 +36,5 @@ class MapEvent {
   }
 
 }
-
-inherits(MapEvent, Event);
 
 export default MapEvent;
