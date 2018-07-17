@@ -1,7 +1,6 @@
 /**
  * @module ol/format/TextFeature
  */
-import {inherits} from '../util.js';
 import FeatureFormat from '../format/Feature.js';
 import FormatType from '../format/FormatType.js';
 
@@ -12,11 +11,10 @@ import FormatType from '../format/FormatType.js';
  * Base class for text feature formats.
  *
  * @abstract
- * @extends {module:ol/format/Feature}
  */
-class TextFeature {
+class TextFeature extends FeatureFormat {
   constructor() {
-    FeatureFormat.call(this);
+    super();
   }
 
   /**
@@ -164,8 +162,6 @@ class TextFeature {
    */
   writeGeometryText(geometry, opt_options) {}
 }
-
-inherits(TextFeature, FeatureFormat);
 
 
 /**
