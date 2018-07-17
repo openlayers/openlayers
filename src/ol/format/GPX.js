@@ -1,7 +1,6 @@
 /**
  * @module ol/format/GPX
  */
-import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import {includes} from '../array.js';
 import {transformWithOptions} from '../format/Feature.js';
@@ -103,19 +102,28 @@ const GPX_SERIALIZERS = makeStructureNS(
  * @classdesc
  * Feature format for reading and writing data in the GPX format.
  *
- * @extends {module:ol/format/XMLFeature}
+ * Note that {@link module:ol/format/GPX~GPX#readFeature} only reads the first
+ * feature of the source.
+ *
+ * When reading, routes (`<rte>`) are converted into LineString geometries, and
+ * tracks (`<trk>`) into MultiLineString. Any properties on route and track
+ * waypoints are ignored.
+ *
+ * When writing, LineString geometries are output as routes (`<rte>`), and
+ * MultiLineString as tracks (`<trk>`).
+ *
  * @api
  */
-class GPX {
+class GPX extends XMLFeature {
 
   /**
    * @param {module:ol/format/GPX~Options=} opt_options Options.
    */
   constructor(opt_options) {
+    super();
 
     const options = opt_options ? opt_options : {};
 
-    XMLFeature.call(this);
 
     /**
      * @inheritDoc
@@ -213,8 +221,6 @@ class GPX {
     return gpx;
   }
 }
-
-inherits(GPX, XMLFeature);
 
 
 /**
@@ -703,45 +709,6 @@ function readWpt(node, objectStack) {
 
 
 /**
- * Read the first feature from a GPX source.
- * Routes (`<rte>`) are converted into LineString geometries, and tracks (`<trk>`)
- * into MultiLineString. Any properties on route and track waypoints are ignored.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature} Feature.
- * @api
- */
-GPX.prototype.readFeature;
-
-
-/**
- * Read all features from a GPX source.
- * Routes (`<rte>`) are converted into LineString geometries, and tracks (`<trk>`)
- * into MultiLineString. Any properties on route and track waypoints are ignored.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature>} Features.
- * @api
- */
-GPX.prototype.readFeatures;
-
-
-/**
- * Read the projection from a GPX source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/proj/Projection} Projection.
- * @api
- */
-GPX.prototype.readProjection;
-
-
-/**
  * @param {Node} node Node.
  * @param {string} value Value for the link's `href` attribute.
  * @param {Array.<*>} objectStack Node stack.
@@ -885,20 +852,6 @@ function writeWpt(node, feature, objectStack) {
     writeWptType(node, geometry.getCoordinates(), objectStack);
   }
 }
-
-
-/**
- * Encode an array of features in the GPX format.
- * LineString geometries are output as routes (`<rte>`), and MultiLineString
- * as tracks (`<trk>`).
- *
- * @function
- * @param {Array.<module:ol/Feature>} features Features.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {string} Result.
- * @api
- */
-GPX.prototype.writeFeatures;
 
 
 export default GPX;

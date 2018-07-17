@@ -36,7 +36,12 @@ class XMLFeature {
   }
 
   /**
-   * @inheritDoc
+   * Read a single feature.
+   *
+   * @param {Document|Node|Object|string} source Source.
+   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
+   * @return {module:ol/Feature} Feature.
+   * @api
    */
   readFeature(source, opt_options) {
     if (isDocument(source)) {
@@ -161,7 +166,11 @@ class XMLFeature {
   }
 
   /**
-   * @inheritDoc
+   * Read the projection from the source.
+   *
+   * @param {Document|Node|Object|string} source Source.
+   * @return {module:ol/proj/Projection} Projection.
+   * @api
    */
   readProjection(source) {
     if (isDocument(source)) {
@@ -213,7 +222,12 @@ class XMLFeature {
   }
 
   /**
-   * @inheritDoc
+   * Encode an array of features as string.
+   *
+   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {string} Result.
+   * @api
    */
   writeFeatures(features, opt_options) {
     const node = this.writeFeaturesNode(features, opt_options);
