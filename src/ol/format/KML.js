@@ -1,7 +1,6 @@
 /**
  * @module ol/format/KML
  */
-import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import {extend, includes} from '../array.js';
 import {assert} from '../asserts.js';
@@ -388,22 +387,27 @@ function createStyleDefaults() {
  * @classdesc
  * Feature format for reading and writing data in the KML format.
  *
+ * {@link module:ol/format/KML~KML#readFeature} will read the first feature from
+ * a KML source.
+ *
+ * MultiGeometries are converted into GeometryCollections if they are a mix of
+ * geometry types, and into MultiPoint/MultiLineString/MultiPolygon if they are
+ * all of the same type.
+ *
  * Note that the KML format uses the URL() constructor. Older browsers such as IE
  * which do not support this will need a URL polyfill to be loaded before use.
  *
- * @extends {module:ol/format/XMLFeature}
  * @api
  */
-class KML {
+class KML extends XMLFeature {
 
   /**
    * @param {module:ol/format/KML~Options=} opt_options Options.
    */
   constructor(opt_options) {
+    super();
 
     const options = opt_options ? opt_options : {};
-
-    XMLFeature.call(this);
 
     if (!DEFAULT_STYLE_ARRAY) {
       createStyleDefaults();
@@ -848,8 +852,6 @@ class KML {
     return kml;
   }
 }
-
-inherits(KML, XMLFeature);
 
 
 /**
@@ -2067,45 +2069,6 @@ function whenParser(node, objectStack) {
 
 
 /**
- * Read the first feature from a KML source. MultiGeometries are converted into
- * GeometryCollections if they are a mix of geometry types, and into MultiPoint/
- * MultiLineString/MultiPolygon if they are all of the same type.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature} Feature.
- * @api
- */
-KML.prototype.readFeature;
-
-
-/**
- * Read all features from a KML source. MultiGeometries are converted into
- * GeometryCollections if they are a mix of geometry types, and into MultiPoint/
- * MultiLineString/MultiPolygon if they are all of the same type.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature>} Features.
- * @api
- */
-KML.prototype.readFeatures;
-
-
-/**
- * Read the projection from a KML source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/proj/Projection} Projection.
- * @api
- */
-KML.prototype.readProjection;
-
-
-/**
  * @param {Node} node Node to append a TextNode with the color to.
  * @param {module:ol/color~Color|string} color Color.
  */
@@ -2962,19 +2925,6 @@ function writeVec2(node, vec2) {
   node.setAttribute('xunits', vec2.xunits);
   node.setAttribute('yunits', vec2.yunits);
 }
-
-
-/**
- * Encode an array of features in the KML format. GeometryCollections, MultiPoints,
- * MultiLineStrings, and MultiPolygons are output as MultiGeometries.
- *
- * @function
- * @param {Array.<module:ol/Feature>} features Features.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
- * @return {string} Result.
- * @api
- */
-KML.prototype.writeFeatures;
 
 
 export default KML;
