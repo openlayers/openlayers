@@ -1,21 +1,17 @@
 /**
  * @module ol/TileCache
  */
-import {inherits} from './util.js';
 import LRUCache from './structs/LRUCache.js';
 import {fromKey, getKey} from './tilecoord.js';
 
-/**
- * @extends {module:ol/structs/LRUCache.<module:ol/Tile>}
- */
-class TileCache {
+class TileCache extends LRUCache {
 
   /**
    * @param {number=} opt_highWaterMark High water mark.
    */
   constructor(opt_highWaterMark) {
 
-    LRUCache.call(this, opt_highWaterMark);
+    super(opt_highWaterMark);
 
   }
 
@@ -52,8 +48,6 @@ class TileCache {
     }, this);
   }
 }
-
-inherits(TileCache, LRUCache);
 
 
 export default TileCache;
