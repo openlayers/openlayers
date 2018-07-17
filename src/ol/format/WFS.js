@@ -1,7 +1,6 @@
 /**
  * @module ol/format/WFS
  */
-import {inherits} from '../util.js';
 import {assert} from '../asserts.js';
 import GML2 from '../format/GML2.js';
 import GML3 from '../format/GML3.js';
@@ -201,15 +200,16 @@ const DEFAULT_VERSION = '1.1.0';
  * as option if you want to read a WFS that contains GML2 (WFS 1.0.0).
  * Also see {@link module:ol/format/GMLBase~GMLBase} which is used by this format.
  *
- * @extends {module:ol/format/XMLFeature}
  * @api
  */
-class WFS {
+class WFS extends XMLFeature {
 
   /**
    * @param {module:ol/format/WFS~Options=} opt_options Optional configuration object.
    */
   constructor(opt_options) {
+    super();
+
     const options = opt_options ? opt_options : {};
 
     /**
@@ -237,8 +237,6 @@ class WFS {
      */
     this.schemaLocation_ = options.schemaLocation ?
       options.schemaLocation : SCHEMA_LOCATIONS[DEFAULT_VERSION];
-
-    XMLFeature.call(this);
   }
 
   /**
@@ -536,20 +534,6 @@ class WFS {
     return null;
   }
 }
-
-inherits(WFS, XMLFeature);
-
-
-/**
- * Read all features from a WFS FeatureCollection.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature>} Features.
- * @api
- */
-WFS.prototype.readFeatures;
 
 
 /**
@@ -1098,17 +1082,6 @@ function writeGetFeature(node, featureTypes, objectStack) {
     makeSimpleNodeFactory('Query'), featureTypes,
     objectStack);
 }
-
-
-/**
- * Read the projection from a WFS source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @return {?module:ol/proj/Projection} Projection.
- * @api
- */
-WFS.prototype.readProjection;
 
 
 export default WFS;

@@ -99,292 +99,6 @@ class GML3 extends GMLBase {
     this.hasZ = options.hasZ !== undefined ?
       options.hasZ : false;
 
-    /**
-     * @const
-     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
-     * @private
-     */
-    this.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
-      'http://www.opengis.net/gml': {
-        'pos': makeReplacer(this.readFlatPos_),
-        'posList': makeReplacer(this.readFlatPosList_)
-      }
-    };
-
-
-    /**
-     * @const
-     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
-     * @private
-     */
-    this.FLAT_LINEAR_RINGS_PARSERS_ = {
-      'http://www.opengis.net/gml': {
-        'interior': this.interiorParser_,
-        'exterior': this.exteriorParser_
-      }
-    };
-
-
-    /**
-     * @const
-     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
-     * @private
-     */
-    this.GEOMETRY_PARSERS_ = {
-      'http://www.opengis.net/gml': {
-        'Point': makeReplacer(this.readPoint),
-        'MultiPoint': makeReplacer(
-          this.readMultiPoint),
-        'LineString': makeReplacer(
-          this.readLineString),
-        'MultiLineString': makeReplacer(
-          this.readMultiLineString),
-        'LinearRing': makeReplacer(
-          this.readLinearRing),
-        'Polygon': makeReplacer(this.readPolygon),
-        'MultiPolygon': makeReplacer(
-          this.readMultiPolygon),
-        'Surface': makeReplacer(this.readSurface_),
-        'MultiSurface': makeReplacer(
-          this.readMultiSurface_),
-        'Curve': makeReplacer(this.readCurve_),
-        'MultiCurve': makeReplacer(
-          this.readMultiCurve_),
-        'Envelope': makeReplacer(this.readEnvelope_)
-      }
-    };
-
-
-    /**
-     * @const
-     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
-     * @private
-     */
-    this.MULTICURVE_PARSERS_ = {
-      'http://www.opengis.net/gml': {
-        'curveMember': makeArrayPusher(
-          this.curveMemberParser_),
-        'curveMembers': makeArrayPusher(
-          this.curveMemberParser_)
-      }
-    };
-
-
-    /**
-     * @const
-     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
-     * @private
-     */
-    this.MULTISURFACE_PARSERS_ = {
-      'http://www.opengis.net/gml': {
-        'surfaceMember': makeArrayPusher(
-          this.surfaceMemberParser_),
-        'surfaceMembers': makeArrayPusher(
-          this.surfaceMemberParser_)
-      }
-    };
-
-
-    /**
-     * @const
-     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
-     * @private
-     */
-    this.CURVEMEMBER_PARSERS_ = {
-      'http://www.opengis.net/gml': {
-        'LineString': makeArrayPusher(
-          this.readLineString),
-        'Curve': makeArrayPusher(this.readCurve_)
-      }
-    };
-
-
-    /**
-     * @const
-     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
-     * @private
-     */
-    this.SURFACEMEMBER_PARSERS_ = {
-      'http://www.opengis.net/gml': {
-        'Polygon': makeArrayPusher(this.readPolygon),
-        'Surface': makeArrayPusher(this.readSurface_)
-      }
-    };
-
-
-    /**
-     * @const
-     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
-     * @private
-     */
-    this.SURFACE_PARSERS_ = {
-      'http://www.opengis.net/gml': {
-        'patches': makeReplacer(this.readPatch_)
-      }
-    };
-
-
-    /**
-     * @const
-     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
-     * @private
-     */
-    this.CURVE_PARSERS_ = {
-      'http://www.opengis.net/gml': {
-        'segments': makeReplacer(this.readSegment_)
-      }
-    };
-
-
-    /**
-     * @const
-     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
-     * @private
-     */
-    this.ENVELOPE_PARSERS_ = {
-      'http://www.opengis.net/gml': {
-        'lowerCorner': makeArrayPusher(
-          this.readFlatPosList_),
-        'upperCorner': makeArrayPusher(
-          this.readFlatPosList_)
-      }
-    };
-
-
-    /**
-     * @const
-     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
-     * @private
-     */
-    this.PATCHES_PARSERS_ = {
-      'http://www.opengis.net/gml': {
-        'PolygonPatch': makeReplacer(
-          this.readPolygonPatch_)
-      }
-    };
-
-
-    /**
-     * @const
-     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
-     * @private
-     */
-    this.SEGMENTS_PARSERS_ = {
-      'http://www.opengis.net/gml': {
-        'LineStringSegment': makeReplacer(
-          this.readLineStringSegment_)
-      }
-    };
-
-
-    /**
-     * Encode an array of features in GML 3.1.1 Simple Features.
-     *
-     * @function
-     * @param {Array.<module:ol/Feature>} features Features.
-     * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
-     * @return {string} Result.
-     * @api
-     */
-    this.writeFeatures;
-
-
-    /**
-     * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
-     * @private
-     */
-    this.RING_SERIALIZERS_ = {
-      'http://www.opengis.net/gml': {
-        'exterior': makeChildAppender(this.writeRing_),
-        'interior': makeChildAppender(this.writeRing_)
-      }
-    };
-
-
-    /**
-     * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
-     * @private
-     */
-    this.ENVELOPE_SERIALIZERS_ = {
-      'http://www.opengis.net/gml': {
-        'lowerCorner': makeChildAppender(writeStringTextNode),
-        'upperCorner': makeChildAppender(writeStringTextNode)
-      }
-    };
-
-
-    /**
-     * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
-     * @private
-     */
-    this.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
-      'http://www.opengis.net/gml': {
-        'surfaceMember': makeChildAppender(
-          this.writeSurfaceOrPolygonMember_),
-        'polygonMember': makeChildAppender(
-          this.writeSurfaceOrPolygonMember_)
-      }
-    };
-
-
-    /**
-     * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
-     * @private
-     */
-    this.POINTMEMBER_SERIALIZERS_ = {
-      'http://www.opengis.net/gml': {
-        'pointMember': makeChildAppender(
-          this.writePointMember_)
-      }
-    };
-
-
-    /**
-     * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
-     * @private
-     */
-    this.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
-      'http://www.opengis.net/gml': {
-        'lineStringMember': makeChildAppender(
-          this.writeLineStringOrCurveMember_),
-        'curveMember': makeChildAppender(
-          this.writeLineStringOrCurveMember_)
-      }
-    };
-
-
-    /**
-     * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
-     * @private
-     */
-    this.GEOMETRY_SERIALIZERS_ = {
-      'http://www.opengis.net/gml': {
-        'Curve': makeChildAppender(
-          this.writeCurveOrLineString_),
-        'MultiCurve': makeChildAppender(
-          this.writeMultiCurveOrLineString_),
-        'Point': makeChildAppender(this.writePoint_),
-        'MultiPoint': makeChildAppender(
-          this.writeMultiPoint_),
-        'LineString': makeChildAppender(
-          this.writeCurveOrLineString_),
-        'MultiLineString': makeChildAppender(
-          this.writeMultiCurveOrLineString_),
-        'LinearRing': makeChildAppender(
-          this.writeLinearRing_),
-        'Polygon': makeChildAppender(
-          this.writeSurfaceOrPolygon_),
-        'MultiPolygon': makeChildAppender(
-          this.writeMultiSurfaceOrPolygon_),
-        'Surface': makeChildAppender(
-          this.writeSurfaceOrPolygon_),
-        'MultiSurface': makeChildAppender(
-          this.writeMultiSurfaceOrPolygon_),
-        'Envelope': makeChildAppender(
-          this.writeEnvelope)
-      }
-    };
-
   }
 
   /**
@@ -1203,5 +917,291 @@ class GML3 extends GMLBase {
     return node;
   }
 }
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @private
+ */
+GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'pos': makeReplacer(GML3.prototype.readFlatPos_),
+    'posList': makeReplacer(GML3.prototype.readFlatPosList_)
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @private
+ */
+GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'interior': GML3.prototype.interiorParser_,
+    'exterior': GML3.prototype.exteriorParser_
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @private
+ */
+GML3.prototype.GEOMETRY_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'Point': makeReplacer(GMLBase.prototype.readPoint),
+    'MultiPoint': makeReplacer(
+      GMLBase.prototype.readMultiPoint),
+    'LineString': makeReplacer(
+      GMLBase.prototype.readLineString),
+    'MultiLineString': makeReplacer(
+      GMLBase.prototype.readMultiLineString),
+    'LinearRing': makeReplacer(
+      GMLBase.prototype.readLinearRing),
+    'Polygon': makeReplacer(GMLBase.prototype.readPolygon),
+    'MultiPolygon': makeReplacer(
+      GMLBase.prototype.readMultiPolygon),
+    'Surface': makeReplacer(GML3.prototype.readSurface_),
+    'MultiSurface': makeReplacer(
+      GML3.prototype.readMultiSurface_),
+    'Curve': makeReplacer(GML3.prototype.readCurve_),
+    'MultiCurve': makeReplacer(
+      GML3.prototype.readMultiCurve_),
+    'Envelope': makeReplacer(GML3.prototype.readEnvelope_)
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @private
+ */
+GML3.prototype.MULTICURVE_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'curveMember': makeArrayPusher(
+      GML3.prototype.curveMemberParser_),
+    'curveMembers': makeArrayPusher(
+      GML3.prototype.curveMemberParser_)
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @private
+ */
+GML3.prototype.MULTISURFACE_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'surfaceMember': makeArrayPusher(
+      GML3.prototype.surfaceMemberParser_),
+    'surfaceMembers': makeArrayPusher(
+      GML3.prototype.surfaceMemberParser_)
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @private
+ */
+GML3.prototype.CURVEMEMBER_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'LineString': makeArrayPusher(
+      GMLBase.prototype.readLineString),
+    'Curve': makeArrayPusher(GML3.prototype.readCurve_)
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @private
+ */
+GML3.prototype.SURFACEMEMBER_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'Polygon': makeArrayPusher(GMLBase.prototype.readPolygon),
+    'Surface': makeArrayPusher(GML3.prototype.readSurface_)
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @private
+ */
+GML3.prototype.SURFACE_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'patches': makeReplacer(GML3.prototype.readPatch_)
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @private
+ */
+GML3.prototype.CURVE_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'segments': makeReplacer(GML3.prototype.readSegment_)
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @private
+ */
+GML3.prototype.ENVELOPE_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'lowerCorner': makeArrayPusher(
+      GML3.prototype.readFlatPosList_),
+    'upperCorner': makeArrayPusher(
+      GML3.prototype.readFlatPosList_)
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @private
+ */
+GML3.prototype.PATCHES_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'PolygonPatch': makeReplacer(
+      GML3.prototype.readPolygonPatch_)
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @private
+ */
+GML3.prototype.SEGMENTS_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'LineStringSegment': makeReplacer(
+      GML3.prototype.readLineStringSegment_)
+  }
+};
+
+
+/**
+ * Encode an array of features in GML 3.1.1 Simple Features.
+ *
+ * @function
+ * @param {Array.<module:ol/Feature>} features Features.
+ * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
+ * @return {string} Result.
+ * @api
+ */
+GML3.prototype.writeFeatures;
+
+
+/**
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @private
+ */
+GML3.prototype.RING_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'exterior': makeChildAppender(GML3.prototype.writeRing_),
+    'interior': makeChildAppender(GML3.prototype.writeRing_)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @private
+ */
+GML3.prototype.ENVELOPE_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'lowerCorner': makeChildAppender(writeStringTextNode),
+    'upperCorner': makeChildAppender(writeStringTextNode)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @private
+ */
+GML3.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'surfaceMember': makeChildAppender(
+      GML3.prototype.writeSurfaceOrPolygonMember_),
+    'polygonMember': makeChildAppender(
+      GML3.prototype.writeSurfaceOrPolygonMember_)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @private
+ */
+GML3.prototype.POINTMEMBER_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'pointMember': makeChildAppender(
+      GML3.prototype.writePointMember_)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @private
+ */
+GML3.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'lineStringMember': makeChildAppender(
+      GML3.prototype.writeLineStringOrCurveMember_),
+    'curveMember': makeChildAppender(
+      GML3.prototype.writeLineStringOrCurveMember_)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @private
+ */
+GML3.prototype.GEOMETRY_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'Curve': makeChildAppender(
+      GML3.prototype.writeCurveOrLineString_),
+    'MultiCurve': makeChildAppender(
+      GML3.prototype.writeMultiCurveOrLineString_),
+    'Point': makeChildAppender(GML3.prototype.writePoint_),
+    'MultiPoint': makeChildAppender(
+      GML3.prototype.writeMultiPoint_),
+    'LineString': makeChildAppender(
+      GML3.prototype.writeCurveOrLineString_),
+    'MultiLineString': makeChildAppender(
+      GML3.prototype.writeMultiCurveOrLineString_),
+    'LinearRing': makeChildAppender(
+      GML3.prototype.writeLinearRing_),
+    'Polygon': makeChildAppender(
+      GML3.prototype.writeSurfaceOrPolygon_),
+    'MultiPolygon': makeChildAppender(
+      GML3.prototype.writeMultiSurfaceOrPolygon_),
+    'Surface': makeChildAppender(
+      GML3.prototype.writeSurfaceOrPolygon_),
+    'MultiSurface': makeChildAppender(
+      GML3.prototype.writeMultiSurfaceOrPolygon_),
+    'Envelope': makeChildAppender(
+      GML3.prototype.writeEnvelope)
+  }
+};
 
 export default GML3;
