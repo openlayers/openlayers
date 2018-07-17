@@ -2,7 +2,7 @@
  * @module ol/View
  */
 import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
-import {getUid, inherits} from './util.js';
+import {getUid} from './util.js';
 import {UNDEFINED} from './functions.js';
 import {createExtent, none as centerNone} from './centerconstraint.js';
 import BaseObject from './Object.js';
@@ -224,16 +224,15 @@ const DEFAULT_MIN_ZOOM = 0;
  * The *center constraint* is determined by the `extent` option. By
  * default the center is not constrained at all.
  *
- * @extends {module:ol/Object}
- * @api
+  * @api
  */
-class View {
+class View extends BaseObject {
 
   /**
    * @param {module:ol/View~ViewOptions=} opt_options View options.
    */
   constructor(opt_options) {
-    BaseObject.call(this);
+    super();
 
     const options = assign({}, opt_options);
 
@@ -1180,8 +1179,6 @@ class View {
     this.setResolution(this.getResolutionForZoom(zoom));
   }
 }
-
-inherits(View, BaseObject);
 
 
 /**
