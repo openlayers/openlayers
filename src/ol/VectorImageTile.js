@@ -1,7 +1,7 @@
 /**
  * @module ol/VectorImageTile
  */
-import {getUid, inherits} from './util.js';
+import {getUid} from './util.js';
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
@@ -21,10 +21,7 @@ import {UNDEFINED} from './functions.js';
  */
 
 
-/**
- * @extends {module:ol/Tile}
- */
-class VectorImageTile {
+class VectorImageTile extends Tile {
 
   /**
    * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
@@ -46,25 +43,11 @@ class VectorImageTile {
    *     Function to call when a source tile's state changes.
    * @param {number} zoom Integer zoom to render the tile for.
    */
-  constructor(
-    tileCoord,
-    state,
-    sourceRevision,
-    format,
-    tileLoadFunction,
-    urlTileCoord,
-    tileUrlFunction,
-    sourceTileGrid,
-    tileGrid,
-    sourceTiles,
-    pixelRatio,
-    projection,
-    tileClass,
-    handleTileChange,
-    zoom
-  ) {
+  constructor(tileCoord, state, sourceRevision, format, tileLoadFunction,
+    urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid, sourceTiles,
+    pixelRatio, projection, tileClass, handleTileChange, zoom) {
 
-    Tile.call(this, tileCoord, state, {transition: 0});
+    super(tileCoord, state, {transition: 0});
 
     /**
      * @private
@@ -201,7 +184,7 @@ class VectorImageTile {
     this.loadListenerKeys_.length = 0;
     this.sourceTileListenerKeys_.forEach(unlistenByKey);
     this.sourceTileListenerKeys_.length = 0;
-    Tile.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**
@@ -330,8 +313,6 @@ class VectorImageTile {
     }
   }
 }
-
-inherits(VectorImageTile, Tile);
 
 
 export default VectorImageTile;
