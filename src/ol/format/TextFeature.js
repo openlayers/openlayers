@@ -69,7 +69,12 @@ class TextFeature {
   readFeaturesFromText(text, opt_options) {}
 
   /**
-   * @inheritDoc
+   * Read the geometry from the source.
+   *
+   * @param {Document|Node|Object|string} source Source.
+   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
+   * @return {module:ol/geom/Geometry} Geometry.
+   * @api
    */
   readGeometry(source, opt_options) {
     return this.readGeometryFromText(getText(source), this.adaptOptions(opt_options));
@@ -138,7 +143,13 @@ class TextFeature {
   writeFeaturesText(features, opt_options) {}
 
   /**
-   * @inheritDoc
+   * Write a single geometry in Polyline format.
+   *
+   * @function
+   * @param {module:ol/geom/Geometry} geometry Geometry.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {string} Geometry.
+   * @api
    */
   writeGeometry(geometry, opt_options) {
     return this.writeGeometryText(geometry, this.adaptOptions(opt_options));

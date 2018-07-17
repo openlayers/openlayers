@@ -1,7 +1,6 @@
 /**
  * @module ol/format/Polyline
  */
-import {inherits} from '../util.js';
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
@@ -27,19 +26,25 @@ import {get as getProjection} from '../proj.js';
  * Feature format for reading and writing data in the Encoded
  * Polyline Algorithm Format.
  *
- * @extends {module:ol/format/TextFeature}
+ * When reading features, the coordinates are assumed to be in two dimensions
+ * and in [latitude, longitude] order.
+ *
+ * As Polyline sources contain a single feature,
+ * {@link module:ol/format/Polyline~Polyline#readFeatures} will return the
+ * feature in an array.
+ *
  * @api
  */
-class Polyline {
+class Polyline extends TextFeature {
 
   /**
    * @param {module:ol/format/Polyline~Options=} opt_options Optional configuration object.
    */
   constructor(opt_options) {
+    super();
 
     const options = opt_options ? opt_options : {};
 
-    TextFeature.call(this);
 
     /**
      * @inheritDoc
@@ -126,8 +131,6 @@ class Polyline {
     return encodeDeltas(flatCoordinates, stride, this.factor_);
   }
 }
-
-inherits(Polyline, TextFeature);
 
 
 /**
@@ -332,67 +335,6 @@ export function encodeUnsignedInteger(num) {
   encoded += String.fromCharCode(value);
   return encoded;
 }
-
-
-/**
- * Read the feature from the Polyline source. The coordinates are assumed to be
- * in two dimensions and in latitude, longitude order.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature} Feature.
- * @api
- */
-Polyline.prototype.readFeature;
-
-
-/**
- * Read the feature from the source. As Polyline sources contain a single
- * feature, this will return the feature in an array.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature>} Features.
- * @api
- */
-Polyline.prototype.readFeatures;
-
-
-/**
- * Read the geometry from the source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/geom/Geometry} Geometry.
- * @api
- */
-Polyline.prototype.readGeometry;
-
-
-/**
- * Read the projection from a Polyline source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/proj/Projection} Projection.
- * @api
- */
-Polyline.prototype.readProjection;
-
-
-/**
- * Write a single geometry in Polyline format.
- *
- * @function
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {string} Geometry.
- * @api
- */
-Polyline.prototype.writeGeometry;
 
 
 export default Polyline;
