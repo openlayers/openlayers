@@ -1,7 +1,6 @@
 /**
  * @module ol/control/ScaleLine
  */
-import {inherits} from '../util.js';
 import {getChangeEventType} from '../Object.js';
 import {assert} from '../asserts.js';
 import Control from '../control/Control.js';
@@ -60,16 +59,21 @@ const LEADING_DIGITS = [1, 2, 5];
  * but this can be changed by using the css selector `.ol-scale-line`.
  *
  * @constructor
- * @extends {module:ol/control/Control}
  * @param {module:ol/control/ScaleLine~Options=} opt_options Scale line options.
  * @api
  */
-class ScaleLine {
+class ScaleLine extends Control {
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};
 
     const className = options.className !== undefined ? options.className : 'ol-scale-line';
+
+    super({
+      element: document.createElement('DIV'),
+      render: options.render || render,
+      target: options.target
+    });
 
     /**
      * @private
@@ -78,13 +82,8 @@ class ScaleLine {
     this.innerElement_ = document.createElement('DIV');
     this.innerElement_.className = className + '-inner';
 
-    /**
-     * @private
-     * @type {HTMLElement}
-     */
-    this.element_ = document.createElement('DIV');
-    this.element_.className = className + ' ' + CLASS_UNSELECTABLE;
-    this.element_.appendChild(this.innerElement_);
+    this.element.className = className + ' ' + CLASS_UNSELECTABLE;
+    this.element.appendChild(this.innerElement_);
 
     /**
      * @private
@@ -115,12 +114,6 @@ class ScaleLine {
      * @type {string}
      */
     this.renderedHTML_ = '';
-
-    Control.call(this, {
-      element: this.element_,
-      render: options.render || render,
-      target: options.target
-    });
 
     listen(
       this, getChangeEventType(UNITS_PROP),
@@ -169,7 +162,7 @@ class ScaleLine {
 
     if (!viewState) {
       if (this.renderedVisible_) {
-        this.element_.style.display = 'none';
+        this.element.style.display = 'none';
         this.renderedVisible_ = false;
       }
       return;
@@ -256,7 +249,7 @@ class ScaleLine {
           Math.pow(10, Math.floor(i / 3));
       width = Math.round(count / pointResolution);
       if (isNaN(width)) {
-        this.element_.style.display = 'none';
+        this.element.style.display = 'none';
         this.renderedVisible_ = false;
         return;
       } else if (width >= this.minWidth_) {
@@ -277,14 +270,12 @@ class ScaleLine {
     }
 
     if (!this.renderedVisible_) {
-      this.element_.style.display = '';
+      this.element.style.display = '';
       this.renderedVisible_ = true;
     }
 
   }
 }
-
-inherits(ScaleLine, Control);
 
 
 /**
