@@ -1,7 +1,6 @@
 /**
  * @module ol/format/filter/Bbox
  */
-import {inherits} from '../../util.js';
 import Filter from '../filter/Filter.js';
 
 /**
@@ -9,19 +8,19 @@ import Filter from '../filter/Filter.js';
  * Represents a `<BBOX>` operator to test whether a geometry-valued property
  * intersects a fixed bounding box
  *
- * @constructor
- * @param {!string} geometryName Geometry name to use.
- * @param {!module:ol/extent~Extent} extent Extent.
- * @param {string=} opt_srsName SRS name. No srsName attribute will be
- *    set on geometries when this is not provided.
- * @extends {module:ol/format/filter/Filter}
  * @api
  */
-class Bbox {
+class Bbox extends Filter {
 
+  /**
+   * @param {!string} geometryName Geometry name to use.
+   * @param {!module:ol/extent~Extent} extent Extent.
+   * @param {string=} opt_srsName SRS name. No srsName attribute will be set
+   * on geometries when this is not provided.
+   */
   constructor(geometryName, extent, opt_srsName) {
 
-    Filter.call(this, 'BBOX');
+    super('BBOX');
 
     /**
      * @type {!string}
@@ -40,7 +39,5 @@ class Bbox {
   }
 
 }
-
-inherits(Bbox, Filter);
 
 export default Bbox;
