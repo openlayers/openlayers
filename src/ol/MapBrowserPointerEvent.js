@@ -1,13 +1,9 @@
 /**
  * @module ol/MapBrowserPointerEvent
  */
-import {inherits} from './util.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
 
-/**
- * @extends {module:ol/MapBrowserEvent}
- */
-class MapBrowserPointerEvent {
+class MapBrowserPointerEvent extends MapBrowserEvent {
 
   /**
    * @param {string} type Event type.
@@ -18,8 +14,7 @@ class MapBrowserPointerEvent {
    */
   constructor(type, map, pointerEvent, opt_dragging, opt_frameState) {
 
-    MapBrowserEvent.call(this, type, map, pointerEvent.originalEvent, opt_dragging,
-      opt_frameState);
+    super(type, map, pointerEvent.originalEvent, opt_dragging, opt_frameState);
 
     /**
      * @const
@@ -30,7 +25,5 @@ class MapBrowserPointerEvent {
   }
 
 }
-
-inherits(MapBrowserPointerEvent, MapBrowserEvent);
 
 export default MapBrowserPointerEvent;
