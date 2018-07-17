@@ -1,7 +1,7 @@
 /**
  * @module ol/PluggableMap
  */
-import {getUid, inherits} from './util.js';
+import {getUid} from './util.js';
 import Collection from './Collection.js';
 import CollectionEventType from './CollectionEventType.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
@@ -131,21 +131,20 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 
 /**
- * @extends {module:ol/Object}
  * @fires module:ol/MapBrowserEvent~MapBrowserEvent
  * @fires module:ol/MapEvent~MapEvent
  * @fires module:ol/render/Event~RenderEvent#postcompose
  * @fires module:ol/render/Event~RenderEvent#precompose
  * @api
  */
-class PluggableMap {
+class PluggableMap extends BaseObject {
 
   /**
    * @param {module:ol/PluggableMap~MapOptions} options Map options.
    */
   constructor(options) {
 
-    BaseObject.call(this);
+    super();
 
     const optionsInternal = createOptionsInternal(options);
 
@@ -537,7 +536,7 @@ class PluggableMap {
       this.animationDelayKey_ = undefined;
     }
     this.setTarget(null);
-    BaseObject.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**
@@ -1338,8 +1337,6 @@ class PluggableMap {
     this.render();
   }
 }
-
-inherits(PluggableMap, BaseObject);
 
 
 /**
