@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Snap
  */
-import {getUid, inherits} from '../util.js';
+import {getUid} from '../util.js';
 import {CollectionEvent} from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import {distance as coordinateDistance, squaredDistance as squaredCoordinateDistance, closestOnCircle, closestOnSegment, squaredDistanceToSegment} from '../coordinate.js';
@@ -62,19 +62,19 @@ import RBush from '../structs/RBush.js';
  *     var snap = new Snap({
  *       source: source
  *     });
- *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
- * @param {module:ol/interaction/Snap~Options=} opt_options Options.
- * @api
  */
-class Snap {
+class Snap extends PointerInteraction {
+  /**
+   * @param {module:ol/interaction/Snap~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
 
-    PointerInteraction.call(this, {
+    super({
       handleEvent: handleEvent,
       handleDownEvent: TRUE,
-      handleUpEvent: handleUpEvent
+      handleUpEvent: handleUpEvent,
+      stopDown: FALSE
     });
 
     const options = opt_options ? opt_options : {};
@@ -325,7 +325,7 @@ class Snap {
       keys.length = 0;
       features.forEach(this.forEachFeatureRemove_.bind(this));
     }
-    PointerInteraction.prototype.setMap.call(this, map);
+    super.setMap(map);
 
     if (map) {
       if (this.features_) {
@@ -584,14 +584,6 @@ class Snap {
     }
   }
 }
-
-inherits(Snap, PointerInteraction);
-
-
-/**
- * @inheritDoc
- */
-Snap.prototype.shouldStopEvent = FALSE;
 
 
 /**

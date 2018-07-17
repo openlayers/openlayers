@@ -3,7 +3,6 @@
  */
 // FIXME should handle all geo-referenced data, not just vector data
 
-import {inherits} from '../util.js';
 import {TRUE} from '../functions.js';
 import {listen, unlistenByKey} from '../events.js';
 import Event from '../events/Event.js';
@@ -42,19 +41,18 @@ const DragAndDropEventType = {
  * @classdesc
  * Events emitted by {@link module:ol/interaction/DragAndDrop~DragAndDrop} instances are instances
  * of this type.
- *
- * @constructor
- * @extends {module:ol/events/Event}
- * @param {module:ol/interaction/DragAndDrop~DragAndDropEventType} type Type.
- * @param {File} file File.
- * @param {Array.<module:ol/Feature>=} opt_features Features.
- * @param {module:ol/proj/Projection=} opt_projection Projection.
  */
-class DragAndDropEvent {
+class DragAndDropEvent extends Event {
 
+  /**
+   * @param {module:ol/interaction/DragAndDrop~DragAndDropEventType} type Type.
+   * @param {File} file File.
+   * @param {Array.<module:ol/Feature>=} opt_features Features.
+   * @param {module:ol/proj/Projection=} opt_projection Projection.
+   */
   constructor(type, file, opt_features, opt_projection) {
 
-    Event.call(this, type);
+    super(type);
 
     /**
      * The features parsed from dropped data.
@@ -81,25 +79,23 @@ class DragAndDropEvent {
 
 }
 
-inherits(DragAndDropEvent, Event);
-
 
 /**
  * @classdesc
  * Handles input of vector data by drag and drop.
  *
- * @constructor
- * @extends {module:ol/interaction/Interaction}
  * @fires module:ol/interaction/DragAndDrop~DragAndDropEvent
- * @param {module:ol/interaction/DragAndDrop~Options=} opt_options Options.
- * @api
  */
-class DragAndDrop {
+class DragAndDrop extends Interaction {
+  /**
+   * @param {module:ol/interaction/DragAndDrop~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};
 
-    Interaction.call(this, {
+    super({
       handleEvent: TRUE
     });
 
@@ -200,7 +196,7 @@ class DragAndDrop {
    * @inheritDoc
    */
   setActive(active) {
-    Interaction.prototype.setActive.call(this, active);
+    super.setActive(active);
     if (active) {
       this.registerListeners_();
     } else {
@@ -213,7 +209,7 @@ class DragAndDrop {
    */
   setMap(map) {
     this.unregisterListeners_();
-    Interaction.prototype.setMap.call(this, map);
+    super.setMap(map);
     if (this.getActive()) {
       this.registerListeners_();
     }
@@ -244,8 +240,6 @@ class DragAndDrop {
     }
   }
 }
-
-inherits(DragAndDrop, Interaction);
 
 
 /**

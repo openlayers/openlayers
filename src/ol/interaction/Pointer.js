@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/Pointer
  */
-import {inherits} from '../util.js';
 import {FALSE, UNDEFINED} from '../functions.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
@@ -59,6 +58,9 @@ const handleMoveEvent = UNDEFINED;
  * @property {(function(module:ol/MapBrowserPointerEvent):boolean)} [handleUpEvent]
  *  Function handling "up" events. If the function returns `false` then the
  * current drag sequence is stopped.
+ * @property {function(boolean):boolean} stopDown
+ * Should the down event be propagated to other interactions, or should be
+ * stopped?
  */
 
 
@@ -71,18 +73,17 @@ const handleMoveEvent = UNDEFINED;
  * started. During a drag sequence the `handleDragEvent` user function is
  * called on `move` events. The drag sequence ends when the `handleUpEvent`
  * user function is called and returns `false`.
- *
- * @constructor
- * @param {module:ol/interaction/Pointer~Options=} opt_options Options.
- * @extends {module:ol/interaction/Interaction}
- * @api
  */
-class PointerInteraction {
+class PointerInteraction extends Interaction {
+  /**
+   * @param {module:ol/interaction/Pointer~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};
 
-    Interaction.call(this, {
+    super({
       handleEvent: options.handleEvent || handleEvent
     });
 
@@ -121,6 +122,14 @@ class PointerInteraction {
     this.handlingDownUpSequence = false;
 
     /**
+     * This function is used to determine if "down" events should be propagated
+     * to other interactions or should be stopped.
+     * @type {function(boolean):boolean}
+     * @protected
+     */
+    this.stopDown = options.stopDown ? options.stopDown : stopDown;
+
+    /**
      * @type {!Object.<string, module:ol/pointer/PointerEvent>}
      * @private
      */
@@ -156,25 +165,7 @@ class PointerInteraction {
     }
   }
 
-  /**
-   * This method is used to determine if "down" events should be propagated to
-   * other interactions or should be stopped.
-   *
-   * The method receives the return code of the "handleDownEvent" function.
-   *
-   * By default this function is the "identity" function. It's overridden in
-   * child classes.
-   *
-   * @param {boolean} handled Was the event handled by the interaction?
-   * @return {boolean} Should the event be stopped?
-   * @protected
-   */
-  shouldStopEvent(handled) {
-    return handled;
-  }
 }
-
-inherits(PointerInteraction, Interaction);
 
 
 /**
@@ -233,7 +224,7 @@ export function handleEvent(mapBrowserEvent) {
     if (mapBrowserEvent.type == MapBrowserEventType.POINTERDOWN) {
       const handled = this.handleDownEvent_(mapBrowserEvent);
       this.handlingDownUpSequence = handled;
-      stopEvent = this.shouldStopEvent(handled);
+      stopEvent = this.stopDown(handled);
     } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE) {
       this.handleMoveEvent_(mapBrowserEvent);
     }
@@ -243,3 +234,11 @@ export function handleEvent(mapBrowserEvent) {
 
 
 export default PointerInteraction;
+
+/**
+ * @param {boolean} handled Was the event handled by the interaction?
+ * @return {boolean} Should the `down` event be stopped?
+ */
+function stopDown(handled) {
+  return handled;
+}

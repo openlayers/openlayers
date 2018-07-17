@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/PinchZoom
  */
-import {inherits} from '../util.js';
 import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
 import {zoom, zoomWithoutConstraints} from '../interaction/Interaction.js';
@@ -20,20 +19,19 @@ import PointerInteraction, {centroid as centroidFromPointers} from '../interacti
  * @classdesc
  * Allows the user to zoom the map by pinching with two fingers
  * on a touch screen.
- *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
- * @param {module:ol/interaction/PinchZoom~Options=} opt_options Options.
- * @api
  */
-class PinchZoom {
-
+class PinchZoom extends PointerInteraction {
+  /**
+   * @param {module:ol/interaction/PinchZoom~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
 
-    PointerInteraction.call(this, {
+    super({
       handleDownEvent: handleDownEvent,
       handleDragEvent: handleDragEvent,
-      handleUpEvent: handleUpEvent
+      handleUpEvent: handleUpEvent,
+      stopDown: FALSE
     });
 
     const options = opt_options ? opt_options : {};
@@ -71,8 +69,6 @@ class PinchZoom {
   }
 
 }
-
-inherits(PinchZoom, PointerInteraction);
 
 
 /**
@@ -174,9 +170,4 @@ function handleDownEvent(mapBrowserEvent) {
   }
 }
 
-
-/**
- * @inheritDoc
- */
-PinchZoom.prototype.shouldStopEvent = FALSE;
 export default PinchZoom;

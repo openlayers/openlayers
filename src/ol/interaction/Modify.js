@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Modify
  */
-import {getUid, inherits} from '../util.js';
+import {getUid} from '../util.js';
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import Feature from '../Feature.js';
@@ -105,20 +105,17 @@ const ModifyEventType = {
  * @classdesc
  * Events emitted by {@link module:ol/interaction/Modify~Modify} instances are
  * instances of this type.
- *
- * @constructor
- * @extends {module:ol/events/Event}
- * @param {ModifyEventType} type Type.
- * @param {module:ol/Collection.<module:ol/Feature>} features
- * The features modified.
- * @param {module:ol/MapBrowserPointerEvent} mapBrowserPointerEvent
- * Associated {@link module:ol/MapBrowserPointerEvent}.
  */
-export class ModifyEvent {
-
+export class ModifyEvent extends Event {
+  /**
+   * @param {ModifyEventType} type Type.
+   * @param {module:ol/Collection.<module:ol/Feature>} features
+   * The features modified.
+   * @param {module:ol/MapBrowserPointerEvent} mapBrowserPointerEvent
+   * Associated {@link module:ol/MapBrowserPointerEvent}.
+   */
   constructor(type, features, mapBrowserPointerEvent) {
-
-    Event.call(this, type);
+    super(type);
 
     /**
      * The features being modified.
@@ -138,8 +135,6 @@ export class ModifyEvent {
 
 }
 
-inherits(ModifyEvent, Event);
-
 
 /**
  * @classdesc
@@ -153,17 +148,16 @@ inherits(ModifyEvent, Event);
  * By default, the interaction will allow deletion of vertices when the `alt`
  * key is pressed.  To configure the interaction with a different condition
  * for deletion, use the `deleteCondition` option.
- *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
- * @param {module:ol/interaction/Modify~Options} options Options.
  * @fires module:ol/interaction/Modify~ModifyEvent
- * @api
  */
-class Modify {
+class Modify extends PointerInteraction {
+  /**
+   * @param {module:ol/interaction/Modify~Options} options Options.
+   * @api
+   */
   constructor(options) {
 
-    PointerInteraction.call(this, {
+    super({
       handleDownEvent: handleDownEvent,
       handleDragEvent: handleDragEvent,
       handleEvent: handleEvent,
@@ -417,7 +411,7 @@ class Modify {
       this.overlay_.getSource().removeFeature(this.vertexFeature_);
       this.vertexFeature_ = null;
     }
-    PointerInteraction.prototype.setActive.call(this, active);
+    super.setActive(active);
   }
 
   /**
@@ -425,7 +419,7 @@ class Modify {
    */
   setMap(map) {
     this.overlay_.setMap(map);
-    PointerInteraction.prototype.setMap.call(this, map);
+    super.setMap(this, map);
   }
 
   /**
@@ -969,8 +963,6 @@ class Modify {
     });
   }
 }
-
-inherits(Modify, PointerInteraction);
 
 
 /**

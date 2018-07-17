@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/DoubleClickZoom
  */
-import {inherits} from '../util.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
 
@@ -16,15 +15,17 @@ import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
 /**
  * @classdesc
  * Allows the user to zoom by double-clicking on the map.
- *
- * @constructor
- * @extends {module:ol/interaction/Interaction}
- * @param {module:ol/interaction/DoubleClickZoom~Options=} opt_options Options.
- * @api
  */
-class DoubleClickZoom {
+class DoubleClickZoom extends Interaction {
 
+  /**
+   * @param {module:ol/interaction/DoubleClickZoom~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
+    super({
+      handleEvent: handleEvent
+    });
 
     const options = opt_options ? opt_options : {};
 
@@ -33,10 +34,6 @@ class DoubleClickZoom {
      * @type {number}
      */
     this.delta_ = options.delta ? options.delta : 1;
-
-    Interaction.call(this, {
-      handleEvent: handleEvent
-    });
 
     /**
      * @private
@@ -47,8 +44,6 @@ class DoubleClickZoom {
   }
 
 }
-
-inherits(DoubleClickZoom, Interaction);
 
 
 /**

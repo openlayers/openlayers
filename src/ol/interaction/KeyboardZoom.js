@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/KeyboardZoom
  */
-import {inherits} from '../util.js';
 import EventType from '../events/EventType.js';
 import {targetNotEditable} from '../events/condition.js';
 import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
@@ -29,17 +28,15 @@ import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
  * element, focus will have to be on, and returned to, this element if the keys
  * are to function.
  * See also {@link moudle:ol/interaction/KeyboardPan~KeyboardPan}.
- *
- * @constructor
- * @param {module:ol/interaction/KeyboardZoom~Options=} opt_options Options.
- * @extends {module:ol/interaction/Interaction}
- * @api
  */
-class KeyboardZoom {
-
+class KeyboardZoom extends Interaction {
+  /**
+   * @param {module:ol/interaction/KeyboardZoom~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
 
-    Interaction.call(this, {
+    super({
       handleEvent: handleEvent
     });
 
@@ -66,8 +63,6 @@ class KeyboardZoom {
   }
 
 }
-
-inherits(KeyboardZoom, Interaction);
 
 
 /**

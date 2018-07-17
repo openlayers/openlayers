@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/Draw
  */
-import {inherits} from '../util.js';
 import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
@@ -128,17 +127,15 @@ const DrawEventType = {
  * @classdesc
  * Events emitted by {@link module:ol/interaction/Draw~Draw} instances are
  * instances of this type.
- *
- * @constructor
- * @extends {module:ol/events/Event}
- * @param {module:ol/interaction/Draw~DrawEventType} type Type.
- * @param {module:ol/Feature} feature The feature drawn.
  */
-class DrawEvent {
-
+class DrawEvent extends Event {
+  /**
+   * @param {module:ol/interaction/Draw~DrawEventType} type Type.
+   * @param {module:ol/Feature} feature The feature drawn.
+   */
   constructor(type, feature) {
 
-    Event.call(this, type);
+    super(type);
 
     /**
      * The feature being drawn.
@@ -151,26 +148,25 @@ class DrawEvent {
 
 }
 
-inherits(DrawEvent, Event);
-
 
 /**
  * @classdesc
  * Interaction for drawing feature geometries.
  *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
  * @fires module:ol/interaction/Draw~DrawEvent
- * @param {module:ol/interaction/Draw~Options} options Options.
- * @api
  */
-class Draw {
+class Draw extends PointerInteraction {
+  /**
+   * @param {module:ol/interaction/Draw~Options} options Options.
+   * @api
+   */
   constructor(options) {
 
-    PointerInteraction.call(this, {
+    super({
       handleDownEvent: handleDownEvent,
       handleEvent: handleEvent,
-      handleUpEvent: handleUpEvent
+      handleUpEvent: handleUpEvent,
+      stopDown: FALSE
     });
 
     /**
@@ -441,7 +437,7 @@ class Draw {
    * @inheritDoc
    */
   setMap(map) {
-    PointerInteraction.prototype.setMap.call(this, map);
+    super.setMap(map);
     this.updateState_();
   }
 
@@ -801,8 +797,6 @@ class Draw {
   }
 }
 
-inherits(Draw, PointerInteraction);
-
 
 /**
  * @return {module:ol/style/Style~StyleFunction} Styles.
@@ -939,12 +933,6 @@ function handleUpEvent(event) {
   }
   return pass;
 }
-
-
-/**
- * @inheritDoc
- */
-Draw.prototype.shouldStopEvent = FALSE;
 
 
 /**

@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/DragRotateAndZoom
  */
-import {inherits} from '../util.js';
 import {disable} from '../rotationconstraint.js';
 import ViewHint from '../ViewHint.js';
 import {shiftKeyOnly, mouseOnly} from '../events/condition.js';
@@ -28,19 +27,18 @@ import PointerInteraction from '../interaction/Pointer.js';
  * This interaction is only supported for mouse devices.
  *
  * And this interaction is not included in the default interactions.
- *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
- * @param {module:ol/interaction/DragRotateAndZoom~Options=} opt_options Options.
- * @api
  */
-class DragRotateAndZoom {
+class DragRotateAndZoom extends PointerInteraction {
 
+  /**
+   * @param {module:ol/interaction/DragRotateAndZoom~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};
 
-    PointerInteraction.call(this, {
+    super({
       handleDownEvent: handleDownEvent,
       handleDragEvent: handleDragEvent,
       handleUpEvent: handleUpEvent
@@ -79,8 +77,6 @@ class DragRotateAndZoom {
   }
 
 }
-
-inherits(DragRotateAndZoom, PointerInteraction);
 
 
 /**

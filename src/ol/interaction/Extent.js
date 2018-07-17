@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/Extent
  */
-import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
@@ -51,15 +50,14 @@ const ExtentEventType = {
  * @classdesc
  * Events emitted by {@link module:ol/interaction/Extent~Extent} instances are
  * instances of this type.
- *
- * @constructor
- * @param {module:ol/extent~Extent} extent the new extent
- * @extends {module:ol/events/Event}
  */
-class ExtentInteractionEvent {
+class ExtentInteractionEvent extends Event {
 
+  /**
+   * @param {module:ol/extent~Extent} extent the new extent
+   */
   constructor(extent) {
-    Event.call(this, ExtentEventType.EXTENTCHANGED);
+    super(ExtentEventType.EXTENTCHANGED);
 
     /**
      * The current extent.
@@ -71,8 +69,6 @@ class ExtentInteractionEvent {
 
 }
 
-inherits(ExtentInteractionEvent, Event);
-
 
 /**
  * @classdesc
@@ -80,14 +76,21 @@ inherits(ExtentInteractionEvent, Event);
  * Once drawn, the vector box can be modified by dragging its vertices or edges.
  * This interaction is only supported for mouse devices.
  *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
  * @fires module:ol/interaction/Extent~Event
- * @param {module:ol/interaction/Extent~Options=} opt_options Options.
- * @api
  */
-class ExtentInteraction {
+class ExtentInteraction extends PointerInteraction {
+  /**
+   * @param {module:ol/interaction/Extent~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
+
+    super({
+      handleDownEvent: handleDownEvent,
+      handleDragEvent: handleDragEvent,
+      handleEvent: handleEvent,
+      handleUpEvent: handleUpEvent
+    });
 
     const options = opt_options || {};
 
@@ -137,13 +140,6 @@ class ExtentInteraction {
     if (!opt_options) {
       opt_options = {};
     }
-
-    PointerInteraction.call(this, {
-      handleDownEvent: handleDownEvent,
-      handleDragEvent: handleDragEvent,
-      handleEvent: handleEvent,
-      handleUpEvent: handleUpEvent
-    });
 
     /**
      * Layer for the extentFeature
@@ -287,7 +283,7 @@ class ExtentInteraction {
   setMap(map) {
     this.extentOverlay_.setMap(map);
     this.vertexOverlay_.setMap(map);
-    PointerInteraction.prototype.setMap.call(this, map);
+    super.setMap(map);
   }
 
   /**
@@ -313,8 +309,6 @@ class ExtentInteraction {
     this.dispatchEvent(new ExtentInteractionEvent(this.extent_));
   }
 }
-
-inherits(ExtentInteraction, PointerInteraction);
 
 /**
  * @param {module:ol/MapBrowserEvent} mapBrowserEvent Event.

@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/KeyboardPan
  */
-import {inherits} from '../util.js';
 import {rotate as rotateCoordinate} from '../coordinate.js';
 import EventType from '../events/EventType.js';
 import KeyCode from '../events/KeyCode.js';
@@ -33,17 +32,15 @@ import Interaction, {pan} from '../interaction/Interaction.js';
  * element, focus will have to be on, and returned to, this element if the keys
  * are to function.
  * See also {@link module:ol/interaction/KeyboardZoom~KeyboardZoom}.
- *
- * @constructor
- * @extends {module:ol/interaction/Interaction}
- * @param {module:ol/interaction/KeyboardPan~Options=} opt_options Options.
- * @api
  */
-class KeyboardPan {
-
+class KeyboardPan extends Interaction {
+  /**
+   * @param {module:ol/interaction/KeyboardPan~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
 
-    Interaction.call(this, {
+    super({
       handleEvent: handleEvent
     });
 
@@ -83,7 +80,6 @@ class KeyboardPan {
 
 }
 
-inherits(KeyboardPan, Interaction);
 
 /**
  * Handles the {@link module:ol/MapBrowserEvent map browser event} if it was a

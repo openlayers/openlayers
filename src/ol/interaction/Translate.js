@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/Translate
  */
-import {inherits} from '../util.js';
 import Collection from '../Collection.js';
 import {getChangeEventType} from '../Object.js';
 import {listen} from '../events.js';
@@ -56,18 +55,16 @@ const TranslateEventType = {
  * @classdesc
  * Events emitted by {@link module:ol/interaction/Translate~Translate} instances
  * are instances of this type.
- *
- * @constructor
- * @extends {module:ol/events/Event}
- * @param {module:ol/interaction/Translate~TranslateEventType} type Type.
- * @param {module:ol/Collection.<module:ol/Feature>} features The features translated.
- * @param {module:ol/coordinate~Coordinate} coordinate The event coordinate.
  */
-export class TranslateEvent {
-
+export class TranslateEvent extends Event {
+  /**
+   * @param {module:ol/interaction/Translate~TranslateEventType} type Type.
+   * @param {module:ol/Collection.<module:ol/Feature>} features The features translated.
+   * @param {module:ol/coordinate~Coordinate} coordinate The event coordinate.
+   */
   constructor(type, features, coordinate) {
 
-    Event.call(this, type);
+    super(type);
 
     /**
      * The features being translated.
@@ -88,22 +85,20 @@ export class TranslateEvent {
 
 }
 
-inherits(TranslateEvent, Event);
-
 
 /**
  * @classdesc
  * Interaction for translating (moving) features.
  *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
  * @fires module:ol/interaction/Translate~TranslateEvent
- * @param {module:ol/interaction/Translate~Options=} opt_options Options.
- * @api
  */
-class Translate {
+class Translate extends PointerInteraction {
+  /**
+   * @param {module:ol/interaction/Translate~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
-    PointerInteraction.call(this, {
+    super({
       handleDownEvent: handleDownEvent,
       handleDragEvent: handleDragEvent,
       handleMoveEvent: handleMoveEvent,
@@ -211,7 +206,7 @@ class Translate {
    */
   setMap(map) {
     const oldMap = this.getMap();
-    PointerInteraction.prototype.setMap.call(this, map);
+    super.setMap(map);
     this.updateState_(oldMap);
   }
 
@@ -238,8 +233,6 @@ class Translate {
     }
   }
 }
-
-inherits(Translate, PointerInteraction);
 
 
 /**

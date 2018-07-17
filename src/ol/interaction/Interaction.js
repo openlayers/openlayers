@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/Interaction
  */
-import {inherits} from '../util.js';
 import BaseObject from '../Object.js';
 import {easeOut, linear} from '../easing.js';
 import InteractionProperty from '../interaction/Property.js';
@@ -30,16 +29,14 @@ import {clamp} from '../math.js';
  * by a keyboard event not a button element event.
  * Although interactions do not have a DOM element, some of them do render
  * vectors and so are visible on the screen.
- *
- * @constructor
- * @param {module:ol/interaction/Interaction~InteractionOptions} options Options.
- * @extends {module:ol/Object}
- * @api
  */
-class Interaction {
+class Interaction extends BaseObject {
+  /**
+   * @param {module:ol/interaction/Interaction~InteractionOptions} options Options.
+   * @api
+   */
   constructor(options) {
-
-    BaseObject.call(this);
+    super();
 
     /**
      * @private
@@ -95,8 +92,6 @@ class Interaction {
     this.map_ = map;
   }
 }
-
-inherits(Interaction, BaseObject);
 
 
 /**

@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/DragRotate
  */
-import {inherits} from '../util.js';
 import {disable} from '../rotationconstraint.js';
 import ViewHint from '../ViewHint.js';
 import {altShiftKeysOnly, mouseOnly, mouseActionButton} from '../events/condition.js';
@@ -27,22 +26,22 @@ import PointerInteraction from '../interaction/Pointer.js';
  * it to when the alt and shift keys are held down.
  *
  * This interaction is only supported for mouse devices.
- *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
- * @param {module:ol/interaction/DragRotate~Options=} opt_options Options.
- * @api
  */
-class DragRotate {
+class DragRotate extends PointerInteraction {
 
+  /**
+   * @param {module:ol/interaction/DragRotate~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};
 
-    PointerInteraction.call(this, {
+    super({
       handleDownEvent: handleDownEvent,
       handleDragEvent: handleDragEvent,
-      handleUpEvent: handleUpEvent
+      handleUpEvent: handleUpEvent,
+      stopDown: FALSE
     });
 
     /**
@@ -66,8 +65,6 @@ class DragRotate {
   }
 
 }
-
-inherits(DragRotate, PointerInteraction);
 
 
 /**
@@ -136,9 +133,4 @@ function handleDownEvent(mapBrowserEvent) {
   }
 }
 
-
-/**
- * @inheritDoc
- */
-DragRotate.prototype.shouldStopEvent = FALSE;
 export default DragRotate;

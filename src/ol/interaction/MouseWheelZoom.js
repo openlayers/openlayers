@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/MouseWheelZoom
  */
-import {inherits} from '../util.js';
 import ViewHint from '../ViewHint.js';
 import {always} from '../events/condition.js';
 import {easeOut} from '../easing.js';
@@ -47,16 +46,15 @@ export const Mode = {
 /**
  * @classdesc
  * Allows the user to zoom the map by scrolling the mouse wheel.
- *
- * @constructor
- * @extends {module:ol/interaction/Interaction}
- * @param {module:ol/interaction/MouseWheelZoom~Options=} opt_options Options.
- * @api
  */
-class MouseWheelZoom {
+class MouseWheelZoom extends Interaction {
+  /**
+   * @param {module:ol/interaction/MouseWheelZoom~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
 
-    Interaction.call(this, {
+    super({
       handleEvent: handleEvent
     });
 
@@ -191,8 +189,6 @@ class MouseWheelZoom {
     }
   }
 }
-
-inherits(MouseWheelZoom, Interaction);
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Select
  */
-import {getUid, inherits} from '../util.js';
+import {getUid} from '../util.js';
 import CollectionEventType from '../CollectionEventType.js';
 import {extend, includes} from '../array.js';
 import {listen} from '../events.js';
@@ -101,19 +101,17 @@ const SelectEventType = {
  * @classdesc
  * Events emitted by {@link module:ol/interaction/Select~Select} instances are instances of
  * this type.
- *
- * @param {SelectEventType} type The event type.
- * @param {Array.<module:ol/Feature>} selected Selected features.
- * @param {Array.<module:ol/Feature>} deselected Deselected features.
- * @param {module:ol/MapBrowserEvent} mapBrowserEvent Associated
- *     {@link module:ol/MapBrowserEvent}.
- * @extends {module:ol/events/Event}
- * @constructor
  */
-class SelectEvent {
-
+class SelectEvent extends Event {
+  /**
+   * @param {SelectEventType} type The event type.
+   * @param {Array.<module:ol/Feature>} selected Selected features.
+   * @param {Array.<module:ol/Feature>} deselected Deselected features.
+   * @param {module:ol/MapBrowserEvent} mapBrowserEvent Associated
+   *     {@link module:ol/MapBrowserEvent}.
+   */
   constructor(type, selected, deselected, mapBrowserEvent) {
-    Event.call(this, type);
+    super(type);
 
     /**
      * Selected features array.
@@ -140,8 +138,6 @@ class SelectEvent {
 
 }
 
-inherits(SelectEvent, Event);
-
 
 /**
  * @classdesc
@@ -155,16 +151,16 @@ inherits(SelectEvent, Event);
  *
  * Selected features are added to an internal unmanaged layer.
  *
- * @constructor
- * @extends {module:ol/interaction/Interaction}
- * @param {module:ol/interaction/Select~Options=} opt_options Options.
  * @fires SelectEvent
- * @api
  */
-class Select {
+class Select extends Interaction {
+  /**
+   * @param {module:ol/interaction/Select~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
 
-    Interaction.call(this, {
+    super({
       handleEvent: handleEvent
     });
 
@@ -336,7 +332,7 @@ class Select {
     if (currentMap) {
       selectedFeatures.forEach(currentMap.unskipFeature.bind(currentMap));
     }
-    Interaction.prototype.setMap.call(this, map);
+    super.setMap(map);
     this.featureOverlay_.setMap(map);
     if (map) {
       selectedFeatures.forEach(map.skipFeature.bind(map));
@@ -374,8 +370,6 @@ class Select {
     delete this.featureLayerAssociation_[key];
   }
 }
-
-inherits(Select, Interaction);
 
 
 /**

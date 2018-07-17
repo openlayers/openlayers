@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/DragPan
  */
-import {inherits} from '../util.js';
 import ViewHint from '../ViewHint.js';
 import {scale as scaleCoordinate, rotate as rotateCoordinate, add as addCoordinate} from '../coordinate.js';
 import {easeOut} from '../easing.js';
@@ -22,19 +21,19 @@ import PointerInteraction, {centroid as centroidFromPointers} from '../interacti
 /**
  * @classdesc
  * Allows the user to pan the map by dragging the map.
- *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
- * @param {module:ol/interaction/DragPan~Options=} opt_options Options.
- * @api
  */
-class DragPan {
+class DragPan extends PointerInteraction {
+  /**
+   * @param {module:ol/interaction/DragPan~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
 
-    PointerInteraction.call(this, {
+    super({
       handleDownEvent: handleDownEvent,
       handleDragEvent: handleDragEvent,
-      handleUpEvent: handleUpEvent
+      handleUpEvent: handleUpEvent,
+      stopDown: FALSE
     });
 
     const options = opt_options ? opt_options : {};
@@ -70,8 +69,6 @@ class DragPan {
   }
 
 }
-
-inherits(DragPan, PointerInteraction);
 
 
 /**
@@ -175,8 +172,4 @@ function handleDownEvent(mapBrowserEvent) {
 }
 
 
-/**
- * @inheritDoc
- */
-DragPan.prototype.shouldStopEvent = FALSE;
 export default DragPan;

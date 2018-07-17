@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/PinchRotate
  */
-import {inherits} from '../util.js';
 import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
 import {rotate, rotateWithoutConstraints} from '../interaction/Interaction.js';
@@ -21,20 +20,19 @@ import {disable} from '../rotationconstraint.js';
  * @classdesc
  * Allows the user to rotate the map by twisting with two fingers
  * on a touch screen.
- *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
- * @param {module:ol/interaction/PinchRotate~Options=} opt_options Options.
- * @api
  */
-class PinchRotate {
-
+class PinchRotate extends PointerInteraction {
+  /**
+   * @param {module:ol/interaction/PinchRotate~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
 
-    PointerInteraction.call(this, {
+    super({
       handleDownEvent: handleDownEvent,
       handleDragEvent: handleDragEvent,
-      handleUpEvent: handleUpEvent
+      handleUpEvent: handleUpEvent,
+      stopDown: FALSE
     });
 
     const options = opt_options || {};
@@ -78,8 +76,6 @@ class PinchRotate {
   }
 
 }
-
-inherits(PinchRotate, PointerInteraction);
 
 
 /**
@@ -173,11 +169,5 @@ function handleDownEvent(mapBrowserEvent) {
     return false;
   }
 }
-
-
-/**
- * @inheritDoc
- */
-PinchRotate.prototype.shouldStopEvent = FALSE;
 
 export default PinchRotate;
