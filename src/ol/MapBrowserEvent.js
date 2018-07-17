@@ -1,17 +1,14 @@
 /**
  * @module ol/MapBrowserEvent
  */
-import {inherits} from './util.js';
 import MapEvent from './MapEvent.js';
 
 /**
  * @classdesc
  * Events emitted as map browser events are instances of this type.
  * See {@link module:ol/Map~Map} for which events trigger a map browser event.
- *
- * @extends {module:ol/MapEvent}
  */
-class MapBrowserEvent {
+class MapBrowserEvent extends MapEvent {
 
   /**
    * @param {string} type Event type.
@@ -22,7 +19,7 @@ class MapBrowserEvent {
    */
   constructor(type, map, browserEvent, opt_dragging, opt_frameState) {
 
-    MapEvent.call(this, type, map, opt_frameState);
+    super(type, map, opt_frameState);
 
     /**
      * The original browser event.
@@ -64,7 +61,7 @@ class MapBrowserEvent {
    * @api
    */
   preventDefault() {
-    MapEvent.prototype.preventDefault.call(this);
+    super.preventDefault();
     this.originalEvent.preventDefault();
   }
 
@@ -75,12 +72,10 @@ class MapBrowserEvent {
    * @api
    */
   stopPropagation() {
-    MapEvent.prototype.stopPropagation.call(this);
+    super.stopPropagation();
     this.originalEvent.stopPropagation();
   }
 }
-
-inherits(MapBrowserEvent, MapEvent);
 
 
 export default MapBrowserEvent;
