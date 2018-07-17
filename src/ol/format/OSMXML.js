@@ -2,7 +2,6 @@
  * @module ol/format/OSMXML
  */
 // FIXME add typedef for stack state objects
-import {inherits} from '../util.js';
 import {extend} from '../array.js';
 import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
@@ -50,12 +49,11 @@ const PARSERS = makeStructureNS(
  * Feature format for reading data in the
  * [OSMXML format](http://wiki.openstreetmap.org/wiki/OSM_XML).
  *
- * @extends {module:ol/format/XMLFeature}
  * @api
  */
-class OSMXML {
+class OSMXML extends XMLFeature {
   constructor() {
-    XMLFeature.call(this);
+    super();
 
     /**
      * @inheritDoc
@@ -121,8 +119,6 @@ class OSMXML {
    */
   writeGeometryNode(geometry, opt_options) {}
 }
-
-inherits(OSMXML, XMLFeature);
 
 
 /**
@@ -198,29 +194,6 @@ function readTag(node, objectStack) {
   const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   values.tags[node.getAttribute('k')] = node.getAttribute('v');
 }
-
-
-/**
- * Read all features from an OSM source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature>} Features.
- * @api
- */
-OSMXML.prototype.readFeatures;
-
-
-/**
- * Read the projection from an OSM source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/proj/Projection} Projection.
- * @api
- */
-OSMXML.prototype.readProjection;
 
 
 export default OSMXML;
