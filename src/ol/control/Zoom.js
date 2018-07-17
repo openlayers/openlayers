@@ -1,7 +1,6 @@
 /**
  * @module ol/control/Zoom
  */
-import {inherits} from '../util.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import Control from '../control/Control.js';
@@ -32,14 +31,18 @@ import {easeOut} from '../easing.js';
  * use css selectors `.ol-zoom-in` and `.ol-zoom-out`.
  *
  * @constructor
- * @extends {module:ol/control/Control}
  * @param {module:ol/control/Zoom~Options=} opt_options Zoom options.
  * @api
  */
-class Zoom {
+class Zoom extends Control {
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};
+
+    super({
+      element: document.createElement('div'),
+      target: options.target
+    });
 
     const className = options.className !== undefined ? options.className : 'ol-zoom';
 
@@ -61,8 +64,7 @@ class Zoom {
       typeof zoomInLabel === 'string' ? document.createTextNode(zoomInLabel) : zoomInLabel
     );
 
-    listen(inElement, EventType.CLICK,
-      Zoom.prototype.handleClick_.bind(this, delta));
+    listen(inElement, EventType.CLICK, this.handleClick_.bind(this, delta));
 
     const outElement = document.createElement('button');
     outElement.className = className + '-out';
@@ -72,19 +74,13 @@ class Zoom {
       typeof zoomOutLabel === 'string' ? document.createTextNode(zoomOutLabel) : zoomOutLabel
     );
 
-    listen(outElement, EventType.CLICK,
-      Zoom.prototype.handleClick_.bind(this, -delta));
+    listen(outElement, EventType.CLICK, this.handleClick_.bind(this, -delta));
 
     const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
-    const element = document.createElement('div');
+    const element = this.element;
     element.className = cssClasses;
     element.appendChild(inElement);
     element.appendChild(outElement);
-
-    Control.call(this, {
-      element: element,
-      target: options.target
-    });
 
     /**
      * @type {number}
@@ -134,8 +130,6 @@ class Zoom {
     }
   }
 }
-
-inherits(Zoom, Control);
 
 
 export default Zoom;
