@@ -1,7 +1,6 @@
 /**
  * @module ol/format/TopoJSON
  */
-import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
 import JSONFeature from '../format/JSONFeature.js';
@@ -43,19 +42,17 @@ import {get as getProjection} from '../proj.js';
  * @classdesc
  * Feature format for reading data in the TopoJSON format.
  *
- * @extends {module:ol/format/JSONFeature}
  * @api
  */
-class TopoJSON {
+class TopoJSON extends JSONFeature {
 
   /**
    * @param {module:ol/format/TopoJSON~Options=} opt_options Options.
    */
   constructor(opt_options) {
+    super();
 
     const options = opt_options ? opt_options : {};
-
-    JSONFeature.call(this);
 
     /**
      * @private
@@ -156,8 +153,6 @@ class TopoJSON {
    */
   readFeatureFromObject() {}
 }
-
-inherits(TopoJSON, JSONFeature);
 
 
 /**
@@ -381,17 +376,6 @@ function readFeatureFromGeometry(object, arcs, scale, translate, property, name,
 
 
 /**
- * Read all features from a TopoJSON source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @return {Array.<module:ol/Feature>} Features.
- * @api
- */
-TopoJSON.prototype.readFeatures;
-
-
-/**
  * Apply a linear transform to array of arcs.  The provided array of arcs is
  * modified in place.
  *
@@ -439,17 +423,6 @@ function transformVertex(vertex, scale, translate) {
   vertex[0] = vertex[0] * scale[0] + translate[0];
   vertex[1] = vertex[1] * scale[1] + translate[1];
 }
-
-
-/**
- * Read the projection from a TopoJSON source.
- *
- * @param {Document|Node|Object|string} object Source.
- * @return {module:ol/proj/Projection} Projection.
- * @override
- * @api
- */
-TopoJSON.prototype.readProjection;
 
 
 export default TopoJSON;
