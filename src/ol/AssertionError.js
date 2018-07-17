@@ -1,7 +1,7 @@
 /**
  * @module ol/AssertionError
  */
-import {VERSION, inherits} from './util.js';
+import {VERSION} from './util.js';
 
 /**
  * Error object thrown when an assertion failed. This is an ECMA-262 Error,
@@ -9,7 +9,7 @@ import {VERSION, inherits} from './util.js';
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error}
  * @extends {Error}
  */
-class AssertionError {
+class AssertionError extends Error {
 
   /**
    * @param {number} code Error code.
@@ -41,7 +41,5 @@ class AssertionError {
   }
 
 }
-
-inherits(AssertionError, Error);
 
 export default AssertionError;
