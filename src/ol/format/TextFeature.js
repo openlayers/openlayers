@@ -27,7 +27,12 @@ class TextFeature {
   }
 
   /**
-   * @inheritDoc
+   * Read the feature from the source.
+   *
+   * @param {Document|Node|Object|string} source Source.
+   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
+   * @return {module:ol/Feature} Feature.
+   * @api
    */
   readFeature(source, opt_options) {
     return this.readFeatureFromText(getText(source), this.adaptOptions(opt_options));
@@ -43,7 +48,12 @@ class TextFeature {
   readFeatureFromText(text, opt_options) {}
 
   /**
-   * @inheritDoc
+   * Read the features from the source.
+   *
+   * @param {Document|Node|Object|string} source Source.
+   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
+   * @return {Array.<module:ol/Feature>} Features.
+   * @api
    */
   readFeatures(source, opt_options) {
     return this.readFeaturesFromText(getText(source), this.adaptOptions(opt_options));
@@ -75,7 +85,12 @@ class TextFeature {
   readGeometryFromText(text, opt_options) {}
 
   /**
-   * @inheritDoc
+   * Read the projection from the source.
+   *
+   * @function
+   * @param {Document|Node|Object|string} source Source.
+   * @return {module:ol/proj/Projection} Projection.
+   * @api
    */
   readProjection(source) {
     return this.readProjectionFromText(getText(source));

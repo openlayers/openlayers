@@ -1,7 +1,6 @@
 /**
  * @module ol/format/IGC
  */
-import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
 import TextFeature from '../format/TextFeature.js';
@@ -61,19 +60,21 @@ const NEWLINE_RE = /\r\n|\r|\n/;
  * @classdesc
  * Feature format for `*.igc` flight recording files.
  *
- * @extends {module:ol/format/TextFeature}
+ * As IGC sources contain a single feature,
+ * {@link module:ol/format/IGC~IGC#readFeatures} will return the feature in an
+ * array
+ *
  * @api
  */
-class IGC {
+class IGC extends TextFeature {
 
   /**
    * @param {module:ol/format/IGC~Options=} opt_options Options.
    */
   constructor(opt_options) {
+    super();
 
     const options = opt_options ? opt_options : {};
-
-    TextFeature.call(this);
 
     /**
      * @inheritDoc
@@ -198,44 +199,5 @@ class IGC {
    */
   readGeometryFromText(text, opt_options) {}
 }
-
-inherits(IGC, TextFeature);
-
-
-/**
- * Read the feature from the IGC source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature} Feature.
- * @api
- */
-IGC.prototype.readFeature;
-
-
-/**
- * Read the feature from the source. As IGC sources contain a single
- * feature, this will return the feature in an array.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature>} Features.
- * @api
- */
-IGC.prototype.readFeatures;
-
-
-/**
- * Read the projection from the IGC source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/proj/Projection} Projection.
- * @api
- */
-IGC.prototype.readProjection;
-
 
 export default IGC;
