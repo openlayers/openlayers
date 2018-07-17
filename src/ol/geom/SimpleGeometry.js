@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/SimpleGeometry
  */
-import {inherits} from '../util.js';
 import {FALSE} from '../functions.js';
 import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
 import Geometry from '../geom/Geometry.js';
@@ -14,15 +13,13 @@ import {clear} from '../obj.js';
  * Abstract base class; only used for creating subclasses; do not instantiate
  * in apps, as cannot be rendered.
  *
- * @constructor
  * @abstract
- * @extends {module:ol/geom/Geometry}
  * @api
  */
-class SimpleGeometry {
+class SimpleGeometry extends Geometry {
   constructor() {
 
-    Geometry.call(this);
+    super();
 
     /**
      * @protected
@@ -256,8 +253,6 @@ class SimpleGeometry {
     }
   }
 }
-
-inherits(SimpleGeometry, Geometry);
 
 
 /**

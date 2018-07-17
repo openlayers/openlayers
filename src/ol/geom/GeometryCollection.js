@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/GeometryCollection
  */
-import {inherits} from '../util.js';
 import {listen, unlisten} from '../events.js';
 import EventType from '../events/EventType.js';
 import {createOrUpdateEmpty, closestSquaredDistanceXY, extend, getCenter} from '../extent.js';
@@ -13,15 +12,16 @@ import {clear} from '../obj.js';
  * @classdesc
  * An array of {@link module:ol/geom/Geometry} objects.
  *
- * @constructor
- * @extends {module:ol/geom/Geometry}
- * @param {Array.<module:ol/geom/Geometry>=} opt_geometries Geometries.
  * @api
  */
-class GeometryCollection {
+class GeometryCollection extends Geometry {
+
+  /**
+   * @param {Array.<module:ol/geom/Geometry>=} opt_geometries Geometries.
+   */
   constructor(opt_geometries) {
 
-    Geometry.call(this);
+    super();
 
     /**
      * @private
@@ -280,8 +280,6 @@ class GeometryCollection {
     Geometry.prototype.disposeInternal.call(this);
   }
 }
-
-inherits(GeometryCollection, Geometry);
 
 
 /**

@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/MultiPolygon
  */
-import {inherits} from '../util.js';
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -24,20 +23,19 @@ import {quantizeMultiArray} from '../geom/flat/simplify.js';
  * @classdesc
  * Multi-polygon geometry.
  *
- * @constructor
- * @extends {module:ol/geom/SimpleGeometry}
- * @param {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>|Array.<number>} coordinates
- * Coordinates. (For internal use, flat coordinats in combination with
- * `opt_layout` and `opt_endss` are also accepted).
- * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
- * @param {Array.<number>} opt_endss Array of ends for internal use with flat
- * coordinates.
  * @api
  */
-class MultiPolygon {
+class MultiPolygon extends SimpleGeometry {
+
+  /**
+   * @param {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>|Array.<number>} coordinates Coordinates.
+   *     For internal use, flat coordinats in combination with `opt_layout` and `opt_endss` are also accepted.
+   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {Array.<number>} opt_endss Array of ends for internal use with flat coordinates.
+   */
   constructor(coordinates, opt_layout, opt_endss) {
 
-    SimpleGeometry.call(this);
+    super();
 
     /**
      * @type {Array.<Array.<number>>}
@@ -372,8 +370,6 @@ class MultiPolygon {
     this.changed();
   }
 }
-
-inherits(MultiPolygon, SimpleGeometry);
 
 
 export default MultiPolygon;

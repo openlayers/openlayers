@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/LineString
  */
-import {inherits} from '../util.js';
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -20,18 +19,18 @@ import {douglasPeucker} from '../geom/flat/simplify.js';
  * @classdesc
  * Linestring geometry.
  *
- * @constructor
- * @extends {module:ol/geom/SimpleGeometry}
- * @param {Array.<module:ol/coordinate~Coordinate>|Array.<number>} coordinates
- * Coordinates. (For internal use, flat coordinates in combination with
- * `opt_layout` are also accepted).
- * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @api
  */
-class LineString {
+class LineString extends SimpleGeometry {
+
+  /**
+   * @param {Array.<module:ol/coordinate~Coordinate>|Array.<number>} coordinates Coordinates.
+   *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
+   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   */
   constructor(coordinates, opt_layout) {
 
-    SimpleGeometry.call(this);
+    super();
 
     /**
      * @private
@@ -239,8 +238,6 @@ class LineString {
     this.changed();
   }
 }
-
-inherits(LineString, SimpleGeometry);
 
 
 export default LineString;

@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/Circle
  */
-import {inherits} from '../util.js';
 import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
@@ -11,18 +10,19 @@ import {deflateCoordinate} from '../geom/flat/deflate.js';
  * @classdesc
  * Circle geometry.
  *
- * @constructor
- * @extends {!module:ol/geom/SimpleGeometry}
- * @param {!module:ol/coordinate~Coordinate} center Center. (For internal use,
- * flat coordinates in combination with `opt_layout` and no `opt_radius` are
- * also accepted.)
- * @param {number=} opt_radius Radius.
- * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @api
  */
-class Circle {
+class Circle extends SimpleGeometry {
+
+  /**
+   * @param {!module:ol/coordinate~Coordinate} center Center.
+   *     For internal use, flat coordinates in combination with `opt_layout` and no
+   *     `opt_radius` are also accepted.
+   * @param {number=} opt_radius Radius.
+   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   */
   constructor(center, opt_radius, opt_layout) {
-    SimpleGeometry.call(this);
+    super();
     if (opt_layout !== undefined && opt_radius === undefined) {
       this.setFlatCoordinates(opt_layout, center);
     } else {
@@ -211,8 +211,6 @@ class Circle {
     this.changed();
   }
 }
-
-inherits(Circle, SimpleGeometry);
 
 
 /**

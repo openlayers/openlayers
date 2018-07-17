@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/MultiPoint
  */
-import {inherits} from '../util.js';
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY, containsXY} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -15,17 +14,17 @@ import {squaredDistance as squaredDx} from '../math.js';
  * @classdesc
  * Multi-point geometry.
  *
- * @constructor
- * @extends {module:ol/geom/SimpleGeometry}
- * @param {Array.<module:ol/coordinate~Coordinate>|Array.<number>} coordinates
- * Coordinates. (For internal use, flat coordinates in combination with
- * `opt_layout` are also accepted)
- * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @api
  */
-class MultiPoint {
+class MultiPoint extends SimpleGeometry {
+
+  /**
+   * @param {Array.<module:ol/coordinate~Coordinate>|Array.<number>} coordinates Coordinates.
+   *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
+   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   */
   constructor(coordinates, opt_layout) {
-    SimpleGeometry.call(this);
+    super();
     if (opt_layout && !Array.isArray(coordinates[0])) {
       this.setFlatCoordinates(opt_layout, coordinates);
     } else {
@@ -167,8 +166,6 @@ class MultiPoint {
     this.changed();
   }
 }
-
-inherits(MultiPoint, SimpleGeometry);
 
 
 export default MultiPoint;

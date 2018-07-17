@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/Polygon
  */
-import {inherits} from '../util.js';
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY, getCenter} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -25,24 +24,24 @@ import {modulo} from '../math.js';
  * @classdesc
  * Polygon geometry.
  *
- * @constructor
- * @extends {module:ol/geom/SimpleGeometry}
- * @param {!Array.<Array.<module:ol/coordinate~Coordinate>>|!Array.<number>} coordinates
- * Array of linear rings that define the polygon. The first linear ring of the
- * array defines the outer-boundary or surface of the polygon. Each subsequent
- * linear ring defines a hole in the surface of the polygon. A linear ring is
- * an array of vertices' coordinates where the first coordinate and the last are
- * equivalent. (For internal use, flat coordinates in combination with
- * `opt_layout` and `opt_ends` are also accepted.)
- * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
- * @param {Array.<number>=} opt_ends Ends (for internal use with flat
- * coordinates).
  * @api
  */
-class Polygon {
+class Polygon extends SimpleGeometry {
+
+  /**
+   * @param {!Array.<Array.<module:ol/coordinate~Coordinate>>|!Array.<number>} coordinates
+   *     Array of linear rings that define the polygon. The first linear ring of the
+   *     array defines the outer-boundary or surface of the polygon. Each subsequent
+   *     linear ring defines a hole in the surface of the polygon. A linear ring is
+   *     an array of vertices' coordinates where the first coordinate and the last are
+   *     equivalent. (For internal use, flat coordinates in combination with
+   *     `opt_layout` and `opt_ends` are also accepted.)
+   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {Array.<number>=} opt_ends Ends (for internal use with flat coordinates).
+   */
   constructor(coordinates, opt_layout, opt_ends) {
 
-    SimpleGeometry.call(this);
+    super();
 
     /**
      * @type {Array.<number>}
@@ -329,8 +328,6 @@ class Polygon {
     this.changed();
   }
 }
-
-inherits(Polygon, SimpleGeometry);
 
 
 export default Polygon;

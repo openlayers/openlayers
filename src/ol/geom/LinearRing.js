@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/LinearRing
  */
-import {inherits} from '../util.js';
 import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -17,18 +16,18 @@ import {douglasPeucker} from '../geom/flat/simplify.js';
  * Linear ring geometry. Only used as part of polygon; cannot be rendered
  * on its own.
  *
- * @constructor
- * @extends {module:ol/geom/SimpleGeometry}
- * @param {Array.<module:ol/coordinate~Coordinate>|Array.<number>} coordinates
- * Coordinates. (For internal use, flat coordinates in combination with
- * `opt_layout` are also accepted.)
- * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @api
  */
-class LinearRing {
+class LinearRing extends SimpleGeometry {
+
+  /**
+   * @param {Array.<module:ol/coordinate~Coordinate>|Array.<number>} coordinates Coordinates.
+   *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
+   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   */
   constructor(coordinates, opt_layout) {
 
-    SimpleGeometry.call(this);
+    super();
 
     /**
      * @private
@@ -138,8 +137,6 @@ class LinearRing {
     this.changed();
   }
 }
-
-inherits(LinearRing, SimpleGeometry);
 
 
 export default LinearRing;

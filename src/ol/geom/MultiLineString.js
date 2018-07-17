@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/MultiLineString
  */
-import {inherits} from '../util.js';
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -19,19 +18,20 @@ import {douglasPeuckerArray} from '../geom/flat/simplify.js';
  * @classdesc
  * Multi-linestring geometry.
  *
- * @constructor
- * @extends {module:ol/geom/SimpleGeometry}
- * @param {Array.<Array.<module:ol/coordinate~Coordinate>|module:ol/geom~MultiLineString>|Array.<number>} coordinates
- * Coordinates or LineString geometries. (For internal use, flat coordinates in
- * combination with `opt_layout` and `opt_ends` are also accepted.)
- * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
- * @param {Array.<number>} opt_ends Flat coordinate ends for internal use.
  * @api
  */
-class MultiLineString {
+class MultiLineString extends SimpleGeometry {
+
+  /**
+   * @param {Array.<Array.<module:ol/coordinate~Coordinate>|module:ol/geom~MultiLineString>|Array.<number>} coordinates
+   *     Coordinates or LineString geometries. (For internal use, flat coordinates in
+   *     combination with `opt_layout` and `opt_ends` are also accepted.)
+   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {Array.<number>} opt_ends Flat coordinate ends for internal use.
+   */
   constructor(coordinates, opt_layout, opt_ends) {
 
-    SimpleGeometry.call(this);
+    super();
 
     /**
      * @type {Array.<number>}
@@ -269,8 +269,6 @@ class MultiLineString {
     this.changed();
   }
 }
-
-inherits(MultiLineString, SimpleGeometry);
 
 
 export default MultiLineString;

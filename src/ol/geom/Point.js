@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/Point
  */
-import {inherits} from '../util.js';
 import {createOrUpdateFromCoordinate, containsXY} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
@@ -12,15 +11,16 @@ import {squaredDistance as squaredDx} from '../math.js';
  * @classdesc
  * Point geometry.
  *
- * @constructor
- * @extends {module:ol/geom/SimpleGeometry}
- * @param {module:ol/coordinate~Coordinate} coordinates Coordinates.
- * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
  * @api
  */
-class Point {
+class Point extends SimpleGeometry {
+
+  /**
+   * @param {module:ol/coordinate~Coordinate} coordinates Coordinates.
+   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   */
   constructor(coordinates, opt_layout) {
-    SimpleGeometry.call(this);
+    super();
     this.setCoordinates(coordinates, opt_layout);
   }
 
@@ -100,8 +100,6 @@ class Point {
     this.changed();
   }
 }
-
-inherits(Point, SimpleGeometry);
 
 
 export default Point;
