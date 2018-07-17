@@ -1,7 +1,6 @@
 /**
  * @module ol/MapBrowserEventHandler
  */
-import {inherits} from './util.js';
 import {DEVICE_PIXEL_RATIO} from './has.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import MapBrowserPointerEvent from './MapBrowserPointerEvent.js';
@@ -10,10 +9,7 @@ import EventTarget from './events/EventTarget.js';
 import PointerEventType from './pointer/EventType.js';
 import PointerEventHandler from './pointer/PointerEventHandler.js';
 
-/**
- * @extends {module:ol/events/EventTarget}
- */
-class MapBrowserEventHandler {
+class MapBrowserEventHandler extends EventTarget {
 
   /**
    * @param {module:ol/PluggableMap} map The map with the viewport to listen to events on.
@@ -21,7 +17,7 @@ class MapBrowserEventHandler {
    */
   constructor(map, moveTolerance) {
 
-    EventTarget.call(this);
+    super();
 
     /**
      * This is the element that we will listen to the real events on.
@@ -321,11 +317,9 @@ class MapBrowserEventHandler {
       this.pointerEventHandler_.dispose();
       this.pointerEventHandler_ = null;
     }
-    EventTarget.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 }
-
-inherits(MapBrowserEventHandler, EventTarget);
 
 
 export default MapBrowserEventHandler;
