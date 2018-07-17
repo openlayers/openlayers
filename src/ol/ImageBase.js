@@ -1,15 +1,13 @@
 /**
  * @module ol/ImageBase
  */
-import {inherits} from './util.js';
 import EventTarget from './events/EventTarget.js';
 import EventType from './events/EventType.js';
 
 /**
  * @abstract
- * @extends {module:ol/events/EventTarget}
  */
-class ImageBase {
+class ImageBase extends EventTarget {
 
   /**
    * @param {module:ol/extent~Extent} extent Extent.
@@ -19,7 +17,7 @@ class ImageBase {
    */
   constructor(extent, resolution, pixelRatio, state) {
 
-    EventTarget.call(this);
+    super();
 
     /**
      * @protected
@@ -94,8 +92,6 @@ class ImageBase {
    */
   load() {}
 }
-
-inherits(ImageBase, EventTarget);
 
 
 export default ImageBase;
