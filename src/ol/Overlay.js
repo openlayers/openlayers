@@ -1,7 +1,6 @@
 /**
  * @module ol/Overlay
  */
-import {inherits} from './util.js';
 import MapEventType from './MapEventType.js';
 import BaseObject, {getChangeEventType} from './Object.js';
 import OverlayPositioning from './OverlayPositioning.js';
@@ -93,17 +92,16 @@ const Property = {
  *     popup.setPosition(coordinate);
  *     map.addOverlay(popup);
  *
- * @extends {module:ol/Object}
  * @api
  */
-class Overlay {
+class Overlay extends BaseObject {
 
   /**
    * @param {module:ol/Overlay~Options} options Overlay options.
    */
   constructor(options) {
 
-    BaseObject.call(this);
+    super();
 
     /**
      * @protected
@@ -582,8 +580,6 @@ class Overlay {
     return this.options;
   }
 }
-
-inherits(Overlay, BaseObject);
 
 
 export default Overlay;
