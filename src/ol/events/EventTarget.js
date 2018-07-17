@@ -71,11 +71,17 @@ class EventTarget {
   }
 
   /**
+   * Dispatches an event and calls all listeners listening for events
+   * of this type. The event parameter can either be a string or an
+   * Object with a `type` property.
+   *
    * @param {{type: string,
-   *     target: (EventTarget|module:ol/events/EventTarget|undefined)}|module:ol/events/Event|
-   *     string} event Event or event type.
+   *     target: (EventTarget|module:ol/events/EventTarget|undefined)}|
+   *     module:ol/events/Event|string} event Event object.
    * @return {boolean|undefined} `false` if anyone called preventDefault on the
    *     event object or if any of the listeners returned false.
+   * @function
+   * @api
    */
   dispatchEvent(event) {
     const evt = typeof event === 'string' ? new Event(event) : event;

@@ -1,7 +1,6 @@
 /**
  * @module ol/Observable
  */
-import {inherits} from './util.js';
 import {listen, unlistenByKey, unlisten, listenOnce} from './events.js';
 import EventTarget from './events/EventTarget.js';
 import EventType from './events/EventType.js';
@@ -14,14 +13,13 @@ import EventType from './events/EventType.js';
  * and unregistration. A generic `change` event is always available through
  * {@link module:ol/Observable~Observable#changed}.
  *
- * @extends {module:ol/events/EventTarget}
  * @fires module:ol/events/Event~Event
  * @api
  */
-class Observable {
+class Observable extends EventTarget {
   constructor() {
 
-    EventTarget.call(this);
+    super();
 
     /**
      * @private
@@ -112,8 +110,6 @@ class Observable {
   }
 }
 
-inherits(Observable, EventTarget);
-
 
 /**
  * Removes an event listener using the key returned by `on()` or `once()`.
@@ -130,20 +126,6 @@ export function unByKey(key) {
     unlistenByKey(/** @type {module:ol/events~EventsKey} */ (key));
   }
 }
-
-
-/**
- * Dispatches an event and calls all listeners listening for events
- * of this type. The event parameter can either be a string or an
- * Object with a `type` property.
- *
- * @param {{type: string,
- *     target: (EventTarget|module:ol/events/EventTarget|undefined)}|
- *     module:ol/events/Event|string} event Event object.
- * @function
- * @api
- */
-Observable.prototype.dispatchEvent;
 
 
 export default Observable;
