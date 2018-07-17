@@ -1,7 +1,6 @@
 /**
  * @module ol/Collection
  */
-import {inherits} from './util.js';
 import AssertionError from './AssertionError.js';
 import CollectionEventType from './CollectionEventType.js';
 import BaseObject from './Object.js';
@@ -21,17 +20,15 @@ const Property = {
  * @classdesc
  * Events emitted by {@link module:ol/Collection~Collection} instances are instances of this
  * type.
- *
- * @extends {module:ol/events/Event}
  */
-export class CollectionEvent {
+export class CollectionEvent extends Event {
 
   /**
    * @param {module:ol/CollectionEventType} type Type.
    * @param {*=} opt_element Element.
    */
   constructor(type, opt_element) {
-    Event.call(this, type);
+    super(type);
 
     /**
      * The element that is added to or removed from the collection.
@@ -43,8 +40,6 @@ export class CollectionEvent {
   }
 
 }
-
-inherits(CollectionEvent, Event);
 
 
 /**
@@ -61,10 +56,9 @@ inherits(CollectionEvent, Event);
  * Collection; they trigger events on the appropriate object, not on the
  * Collection as a whole.
  *
- * @extends {module:ol/Object}
  * @api
  */
-class Collection {
+class Collection extends BaseObject {
 
   /**
    * @param {Array.<T>=} opt_array Array.
@@ -73,7 +67,7 @@ class Collection {
    */
   constructor(opt_array, opt_options) {
 
-    BaseObject.call(this);
+    super();
 
     const options = opt_options || {};
 
@@ -287,8 +281,6 @@ class Collection {
     }
   }
 }
-
-inherits(Collection, BaseObject);
 
 
 export default Collection;
