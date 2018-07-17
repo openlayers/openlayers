@@ -4,7 +4,6 @@
 import {assert} from './asserts.js';
 import {listen, unlisten, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
-import {inherits} from './util.js';
 import BaseObject, {getChangeEventType} from './Object.js';
 import Geometry from './geom/Geometry.js';
 import Style from './style/Style.js';
@@ -51,10 +50,9 @@ import Style from './style/Style.js';
  * var point = feature.getGeometry();
  * ```
  *
- * @extends {module:ol/Object}
  * @api
  */
-class Feature {
+class Feature extends BaseObject {
 
   /**
    * @param {module:ol/geom/Geometry|Object.<string, *>=} opt_geometryOrProperties
@@ -64,7 +62,7 @@ class Feature {
    */
   constructor(opt_geometryOrProperties) {
 
-    BaseObject.call(this);
+    super();
 
     /**
      * @private
@@ -270,8 +268,6 @@ class Feature {
     this.handleGeometryChanged_();
   }
 }
-
-inherits(Feature, BaseObject);
 
 
 /**
