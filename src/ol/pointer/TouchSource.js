@@ -1,6 +1,7 @@
 /**
  * @module ol/pointer/TouchSource
  */
+
 // Based on https://github.com/Polymer/PointerEvents
 
 // Copyright (c) 2013 The Polymer Authors. All rights reserved.
@@ -31,7 +32,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {inherits} from '../util.js';
 import {remove} from '../array.js';
 import EventSource from '../pointer/EventSource.js';
 import {POINTER_ID} from '../pointer/MouseSource.js';
@@ -42,28 +42,75 @@ import {POINTER_ID} from '../pointer/MouseSource.js';
  */
 const CLICK_COUNT_TIMEOUT = 200;
 
-
 /**
  * @type {string}
  */
 const POINTER_TYPE = 'touch';
 
+/**
+ * Handler for `touchstart`, triggers `pointerover`,
+ * `pointerenter` and `pointerdown` events.
+ *
+ * @this {module:ol/pointer/TouchSource}
+ * @param {TouchEvent} inEvent The in event.
+ */
+function touchstart(inEvent) {
+  this.vacuumTouches_(inEvent);
+  this.setPrimaryTouch_(inEvent.changedTouches[0]);
+  this.dedupSynthMouse_(inEvent);
+  this.clickCount_++;
+  this.processTouches_(inEvent, this.overDown_);
+}
 
 /**
- * @constructor
- * @param {module:ol/pointer/PointerEventHandler} dispatcher The event handler.
- * @param {module:ol/pointer/MouseSource} mouseSource Mouse source.
- * @extends {module:ol/pointer/EventSource}
+ * Handler for `touchmove`.
+ *
+ * @this {module:ol/pointer/TouchSource}
+ * @param {TouchEvent} inEvent The in event.
  */
-class TouchSource {
+function touchmove(inEvent) {
+  inEvent.preventDefault();
+  this.processTouches_(inEvent, this.moveOverOut_);
+}
+
+/**
+ * Handler for `touchend`, triggers `pointerup`,
+ * `pointerout` and `pointerleave` events.
+ *
+ * @this {module:ol/pointer/TouchSource}
+ * @param {TouchEvent} inEvent The event.
+ */
+function touchend(inEvent) {
+  this.dedupSynthMouse_(inEvent);
+  this.processTouches_(inEvent, this.upOut_);
+}
+
+/**
+ * Handler for `touchcancel`, triggers `pointercancel`,
+ * `pointerout` and `pointerleave` events.
+ *
+ * @this {module:ol/pointer/TouchSource}
+ * @param {TouchEvent} inEvent The in event.
+ */
+function touchcancel(inEvent) {
+  this.processTouches_(inEvent, this.cancelOut_);
+}
+
+
+class TouchSource extends EventSource {
+
+  /**
+   * @param {module:ol/pointer/PointerEventHandler} dispatcher The event handler.
+   * @param {module:ol/pointer/MouseSource} mouseSource Mouse source.
+   */
   constructor(dispatcher, mouseSource) {
     const mapping = {
-      'touchstart': this.touchstart,
-      'touchmove': this.touchmove,
-      'touchend': this.touchend,
-      'touchcancel': this.touchcancel
+      'touchstart': touchstart,
+      'touchmove': touchmove,
+      'touchend': touchend,
+      'touchcancel': touchcancel
     };
-    EventSource.call(this, dispatcher, mapping);
+    super(dispatcher, mapping);
 
     /**
      * @const
@@ -270,20 +317,6 @@ class TouchSource {
   }
 
   /**
-   * Handler for `touchstart`, triggers `pointerover`,
-   * `pointerenter` and `pointerdown` events.
-   *
-   * @param {TouchEvent} inEvent The in event.
-   */
-  touchstart(inEvent) {
-    this.vacuumTouches_(inEvent);
-    this.setPrimaryTouch_(inEvent.changedTouches[0]);
-    this.dedupSynthMouse_(inEvent);
-    this.clickCount_++;
-    this.processTouches_(inEvent, this.overDown_);
-  }
-
-  /**
    * @private
    * @param {TouchEvent} browserEvent The event.
    * @param {PointerEvent} inPointer The in pointer object.
@@ -297,16 +330,6 @@ class TouchSource {
     this.dispatcher.over(inPointer, browserEvent);
     this.dispatcher.enter(inPointer, browserEvent);
     this.dispatcher.down(inPointer, browserEvent);
-  }
-
-  /**
-   * Handler for `touchmove`.
-   *
-   * @param {TouchEvent} inEvent The in event.
-   */
-  touchmove(inEvent) {
-    inEvent.preventDefault();
-    this.processTouches_(inEvent, this.moveOverOut_);
   }
 
   /**
@@ -344,17 +367,6 @@ class TouchSource {
   }
 
   /**
-   * Handler for `touchend`, triggers `pointerup`,
-   * `pointerout` and `pointerleave` events.
-   *
-   * @param {TouchEvent} inEvent The event.
-   */
-  touchend(inEvent) {
-    this.dedupSynthMouse_(inEvent);
-    this.processTouches_(inEvent, this.upOut_);
-  }
-
-  /**
    * @private
    * @param {TouchEvent} browserEvent An event.
    * @param {PointerEvent} inPointer The inPointer object.
@@ -364,16 +376,6 @@ class TouchSource {
     this.dispatcher.out(inPointer, browserEvent);
     this.dispatcher.leave(inPointer, browserEvent);
     this.cleanUpPointer_(inPointer);
-  }
-
-  /**
-   * Handler for `touchcancel`, triggers `pointercancel`,
-   * `pointerout` and `pointerleave` events.
-   *
-   * @param {TouchEvent} inEvent The in event.
-   */
-  touchcancel(inEvent) {
-    this.processTouches_(inEvent, this.cancelOut_);
   }
 
   /**
@@ -419,8 +421,5 @@ class TouchSource {
     }
   }
 }
-
-inherits(TouchSource, EventSource);
-
 
 export default TouchSource;

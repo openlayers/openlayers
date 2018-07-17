@@ -1,6 +1,7 @@
 /**
  * @module ol/pointer/MouseSource
  */
+
 // Based on https://github.com/Polymer/PointerEvents
 
 // Copyright (c) 2013 The Polymer Authors. All rights reserved.
@@ -31,7 +32,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {inherits} from '../util.js';
 import EventSource from '../pointer/EventSource.js';
 
 
@@ -54,22 +54,97 @@ export const POINTER_TYPE = 'mouse';
  */
 const DEDUP_DIST = 25;
 
+/**
+ * Handler for `mousedown`.
+ *
+ * @this {module:ol/pointer/MouseSource}
+ * @param {MouseEvent} inEvent The in event.
+ */
+function mousedown(inEvent) {
+  if (!this.isEventSimulatedFromTouch_(inEvent)) {
+    // TODO(dfreedman) workaround for some elements not sending mouseup
+    // http://crbug/149091
+    if (POINTER_ID.toString() in this.pointerMap) {
+      this.cancel(inEvent);
+    }
+    const e = prepareEvent(inEvent, this.dispatcher);
+    this.pointerMap[POINTER_ID.toString()] = inEvent;
+    this.dispatcher.down(e, inEvent);
+  }
+}
 
 /**
- * @param {module:ol/pointer/PointerEventHandler} dispatcher Event handler.
- * @constructor
- * @extends {module:ol/pointer/EventSource}
+ * Handler for `mousemove`.
+ *
+ * @this {module:ol/pointer/MouseSource}
+ * @param {MouseEvent} inEvent The in event.
  */
-class MouseSource {
+function mousemove(inEvent) {
+  if (!this.isEventSimulatedFromTouch_(inEvent)) {
+    const e = prepareEvent(inEvent, this.dispatcher);
+    this.dispatcher.move(e, inEvent);
+  }
+}
+
+/**
+ * Handler for `mouseup`.
+ *
+ * @this {module:ol/pointer/MouseSource}
+ * @param {MouseEvent} inEvent The in event.
+ */
+function mouseup(inEvent) {
+  if (!this.isEventSimulatedFromTouch_(inEvent)) {
+    const p = this.pointerMap[POINTER_ID.toString()];
+
+    if (p && p.button === inEvent.button) {
+      const e = prepareEvent(inEvent, this.dispatcher);
+      this.dispatcher.up(e, inEvent);
+      this.cleanupMouse();
+    }
+  }
+}
+
+/**
+ * Handler for `mouseover`.
+ *
+ * @this {module:ol/pointer/MouseSource}
+ * @param {MouseEvent} inEvent The in event.
+ */
+function mouseover(inEvent) {
+  if (!this.isEventSimulatedFromTouch_(inEvent)) {
+    const e = prepareEvent(inEvent, this.dispatcher);
+    this.dispatcher.enterOver(e, inEvent);
+  }
+}
+
+/**
+ * Handler for `mouseout`.
+ *
+ * @this {module:ol/pointer/MouseSource}
+ * @param {MouseEvent} inEvent The in event.
+ */
+function mouseout(inEvent) {
+  if (!this.isEventSimulatedFromTouch_(inEvent)) {
+    const e = prepareEvent(inEvent, this.dispatcher);
+    this.dispatcher.leaveOut(e, inEvent);
+  }
+}
+
+
+class MouseSource extends EventSource {
+
+  /**
+   * @param {module:ol/pointer/PointerEventHandler} dispatcher Event handler.
+   */
   constructor(dispatcher) {
     const mapping = {
-      'mousedown': this.mousedown,
-      'mousemove': this.mousemove,
-      'mouseup': this.mouseup,
-      'mouseover': this.mouseover,
-      'mouseout': this.mouseout
+      'mousedown': mousedown,
+      'mousemove': mousemove,
+      'mouseup': mouseup,
+      'mouseover': mouseover,
+      'mouseout': mouseout
     };
-    EventSource.call(this, dispatcher, mapping);
+    super(dispatcher, mapping);
 
     /**
      * @const
@@ -124,77 +199,6 @@ class MouseSource {
   }
 
   /**
-   * Handler for `mousedown`.
-   *
-   * @param {MouseEvent} inEvent The in event.
-   */
-  mousedown(inEvent) {
-    if (!this.isEventSimulatedFromTouch_(inEvent)) {
-      // TODO(dfreedman) workaround for some elements not sending mouseup
-      // http://crbug/149091
-      if (POINTER_ID.toString() in this.pointerMap) {
-        this.cancel(inEvent);
-      }
-      const e = prepareEvent(inEvent, this.dispatcher);
-      this.pointerMap[POINTER_ID.toString()] = inEvent;
-      this.dispatcher.down(e, inEvent);
-    }
-  }
-
-  /**
-   * Handler for `mousemove`.
-   *
-   * @param {MouseEvent} inEvent The in event.
-   */
-  mousemove(inEvent) {
-    if (!this.isEventSimulatedFromTouch_(inEvent)) {
-      const e = prepareEvent(inEvent, this.dispatcher);
-      this.dispatcher.move(e, inEvent);
-    }
-  }
-
-  /**
-   * Handler for `mouseup`.
-   *
-   * @param {MouseEvent} inEvent The in event.
-   */
-  mouseup(inEvent) {
-    if (!this.isEventSimulatedFromTouch_(inEvent)) {
-      const p = this.pointerMap[POINTER_ID.toString()];
-
-      if (p && p.button === inEvent.button) {
-        const e = prepareEvent(inEvent, this.dispatcher);
-        this.dispatcher.up(e, inEvent);
-        this.cleanupMouse();
-      }
-    }
-  }
-
-  /**
-   * Handler for `mouseover`.
-   *
-   * @param {MouseEvent} inEvent The in event.
-   */
-  mouseover(inEvent) {
-    if (!this.isEventSimulatedFromTouch_(inEvent)) {
-      const e = prepareEvent(inEvent, this.dispatcher);
-      this.dispatcher.enterOver(e, inEvent);
-    }
-  }
-
-  /**
-   * Handler for `mouseout`.
-   *
-   * @param {MouseEvent} inEvent The in event.
-   */
-  mouseout(inEvent) {
-    if (!this.isEventSimulatedFromTouch_(inEvent)) {
-      const e = prepareEvent(inEvent, this.dispatcher);
-      this.dispatcher.leaveOut(e, inEvent);
-    }
-  }
-
-  /**
    * Dispatches a `pointercancel` event.
    *
    * @param {Event} inEvent The in event.
@@ -212,8 +216,6 @@ class MouseSource {
     delete this.pointerMap[POINTER_ID.toString()];
   }
 }
-
-inherits(MouseSource, EventSource);
 
 
 /**

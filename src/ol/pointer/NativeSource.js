@@ -1,6 +1,7 @@
 /**
  * @module ol/pointer/NativeSource
  */
+
 // Based on https://github.com/Polymer/PointerEvents
 
 // Copyright (c) 2013 The Polymer Authors. All rights reserved.
@@ -31,103 +32,107 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {inherits} from '../util.js';
 import EventSource from '../pointer/EventSource.js';
 
 /**
- * @param {module:ol/pointer/PointerEventHandler} dispatcher Event handler.
- * @constructor
- * @extends {module:ol/pointer/EventSource}
+ * Handler for `pointerdown`.
+ *
+ * @this {module:ol/pointer/NativeSource}
+ * @param {Event} inEvent The in event.
  */
-class NativeSource {
-  constructor(dispatcher) {
-    const mapping = {
-      'pointerdown': this.pointerDown,
-      'pointermove': this.pointerMove,
-      'pointerup': this.pointerUp,
-      'pointerout': this.pointerOut,
-      'pointerover': this.pointerOver,
-      'pointercancel': this.pointerCancel,
-      'gotpointercapture': this.gotPointerCapture,
-      'lostpointercapture': this.lostPointerCapture
-    };
-    EventSource.call(this, dispatcher, mapping);
-  }
-
-  /**
-  * Handler for `pointerdown`.
-  *
-  * @param {Event} inEvent The in event.
-  */
-  pointerDown(inEvent) {
-    this.dispatcher.fireNativeEvent(inEvent);
-  }
-
-  /**
-  * Handler for `pointermove`.
-  *
-  * @param {Event} inEvent The in event.
-  */
-  pointerMove(inEvent) {
-    this.dispatcher.fireNativeEvent(inEvent);
-  }
-
-  /**
-  * Handler for `pointerup`.
-  *
-  * @param {Event} inEvent The in event.
-  */
-  pointerUp(inEvent) {
-    this.dispatcher.fireNativeEvent(inEvent);
-  }
-
-  /**
-  * Handler for `pointerout`.
-  *
-  * @param {Event} inEvent The in event.
-  */
-  pointerOut(inEvent) {
-    this.dispatcher.fireNativeEvent(inEvent);
-  }
-
-  /**
-  * Handler for `pointerover`.
-  *
-  * @param {Event} inEvent The in event.
-  */
-  pointerOver(inEvent) {
-    this.dispatcher.fireNativeEvent(inEvent);
-  }
-
-  /**
-  * Handler for `pointercancel`.
-  *
-  * @param {Event} inEvent The in event.
-  */
-  pointerCancel(inEvent) {
-    this.dispatcher.fireNativeEvent(inEvent);
-  }
-
-  /**
-  * Handler for `lostpointercapture`.
-  *
-  * @param {Event} inEvent The in event.
-  */
-  lostPointerCapture(inEvent) {
-    this.dispatcher.fireNativeEvent(inEvent);
-  }
-
-  /**
-  * Handler for `gotpointercapture`.
-  *
-  * @param {Event} inEvent The in event.
-  */
-  gotPointerCapture(inEvent) {
-    this.dispatcher.fireNativeEvent(inEvent);
-  }
+function pointerDown(inEvent) {
+  this.dispatcher.fireNativeEvent(inEvent);
 }
 
-inherits(NativeSource, EventSource);
+/**
+ * Handler for `pointermove`.
+ *
+ * @this {module:ol/pointer/NativeSource}
+ * @param {Event} inEvent The in event.
+ */
+function pointerMove(inEvent) {
+  this.dispatcher.fireNativeEvent(inEvent);
+}
 
+/**
+ * Handler for `pointerup`.
+ *
+ * @this {module:ol/pointer/NativeSource}
+ * @param {Event} inEvent The in event.
+ */
+function pointerUp(inEvent) {
+  this.dispatcher.fireNativeEvent(inEvent);
+}
+
+/**
+ * Handler for `pointerout`.
+ *
+ * @this {module:ol/pointer/NativeSource}
+ * @param {Event} inEvent The in event.
+ */
+function pointerOut(inEvent) {
+  this.dispatcher.fireNativeEvent(inEvent);
+}
+
+/**
+ * Handler for `pointerover`.
+ *
+ * @this {module:ol/pointer/NativeSource}
+ * @param {Event} inEvent The in event.
+ */
+function pointerOver(inEvent) {
+  this.dispatcher.fireNativeEvent(inEvent);
+}
+
+/**
+ * Handler for `pointercancel`.
+ *
+ * @this {module:ol/pointer/NativeSource}
+ * @param {Event} inEvent The in event.
+ */
+function pointerCancel(inEvent) {
+  this.dispatcher.fireNativeEvent(inEvent);
+}
+
+/**
+ * Handler for `lostpointercapture`.
+ *
+ * @this {module:ol/pointer/NativeSource}
+ * @param {Event} inEvent The in event.
+ */
+function lostPointerCapture(inEvent) {
+  this.dispatcher.fireNativeEvent(inEvent);
+}
+
+/**
+ * Handler for `gotpointercapture`.
+ *
+ * @this {module:ol/pointer/NativeSource}
+ * @param {Event} inEvent The in event.
+ */
+function gotPointerCapture(inEvent) {
+  this.dispatcher.fireNativeEvent(inEvent);
+}
+
+class NativeSource extends EventSource {
+
+  /**
+   * @param {module:ol/pointer/PointerEventHandler} dispatcher Event handler.
+   */
+  constructor(dispatcher) {
+    const mapping = {
+      'pointerdown': pointerDown,
+      'pointermove': pointerMove,
+      'pointerup': pointerUp,
+      'pointerout': pointerOut,
+      'pointerover': pointerOver,
+      'pointercancel': pointerCancel,
+      'gotpointercapture': gotPointerCapture,
+      'lostpointercapture': lostPointerCapture
+    };
+    super(dispatcher, mapping);
+  }
+
+}
 
 export default NativeSource;
