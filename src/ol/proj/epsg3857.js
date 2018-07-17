@@ -44,12 +44,13 @@ export const WORLD_EXTENT = [-180, -85, 180, 85];
  * @classdesc
  * Projection object for web/spherical Mercator (EPSG:3857).
  *
- * @constructor
  * @extends {module:ol/proj/Projection}
- * @param {string} code Code.
  */
 class EPSG3857Projection {
 
+  /**
+   * @param {string} code Code.
+   */
   constructor(code) {
     Projection.call(this, {
       code: code,

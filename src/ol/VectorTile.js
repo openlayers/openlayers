@@ -19,16 +19,18 @@ const DEFAULT_EXTENT = [0, 0, 4096, 4096];
  */
 
 /**
- * @constructor
  * @extends {module:ol/Tile}
- * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
- * @param {module:ol/TileState} state State.
- * @param {string} src Data source url.
- * @param {module:ol/format/Feature} format Feature format.
- * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
- * @param {module:ol/Tile~Options=} opt_options Tile options.
  */
 class VectorTile {
+
+  /**
+   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+   * @param {module:ol/TileState} state State.
+   * @param {string} src Data source url.
+   * @param {module:ol/format/Feature} format Feature format.
+   * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
+   * @param {module:ol/Tile~Options=} opt_options Tile options.
+   */
   constructor(tileCoord, state, src, format, tileLoadFunction, opt_options) {
 
     Tile.call(this, tileCoord, state, opt_options);

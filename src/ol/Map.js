@@ -57,9 +57,7 @@ import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js'
  * options or added with `addLayer` can be groups, which can contain further
  * groups, and so on.
  *
- * @constructor
  * @extends {module:ol/PluggableMap}
- * @param {module:ol/PluggableMap~MapOptions} options Map options.
  * @fires module:ol/MapBrowserEvent~MapBrowserEvent
  * @fires module:ol/MapEvent~MapEvent
  * @fires module:ol/render/Event~RenderEvent#postcompose
@@ -67,6 +65,10 @@ import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js'
  * @api
  */
 class Map {
+
+  /**
+   * @param {module:ol/PluggableMap~MapOptions} options Map options.
+   */
   constructor(options) {
     options = assign({}, options);
     if (!options.controls) {

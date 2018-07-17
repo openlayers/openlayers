@@ -4,31 +4,32 @@
 import {FALSE} from '../functions.js';
 
 /**
- * @constructor
  * @abstract
- * @param {string} source Source.
- * @struct
  */
 class WebGLShader {
+
+  /**
+   * @param {string} source Source.
+   */
   constructor(source) {
 
     /**
-    * @private
-    * @type {string}
-    */
+     * @private
+     * @type {string}
+     */
     this.source_ = source;
 
   }
 
   /**
-  * @abstract
-  * @return {number} Type.
-  */
+   * @abstract
+   * @return {number} Type.
+   */
   getType() {}
 
   /**
-  * @return {string} Source.
-  */
+   * @return {string} Source.
+   */
   getSource() {
     return this.source_;
   }

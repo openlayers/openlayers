@@ -6,15 +6,16 @@
  * @classdesc
  * Implementation of inertial deceleration for map movement.
  *
- * @constructor
- * @param {number} decay Rate of decay (must be negative).
- * @param {number} minVelocity Minimum velocity (pixels/millisecond).
- * @param {number} delay Delay to consider to calculate the kinetic
- *     initial values (milliseconds).
- * @struct
  * @api
  */
 class Kinetic {
+
+  /**
+   * @param {number} decay Rate of decay (must be negative).
+   * @param {number} minVelocity Minimum velocity (pixels/millisecond).
+   * @param {number} delay Delay to consider to calculate the kinetic
+   *     initial values (milliseconds).
+   */
   constructor(decay, minVelocity, delay) {
 
     /**

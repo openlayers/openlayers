@@ -12,39 +12,39 @@ const BufferUsage = {
   DYNAMIC_DRAW: DYNAMIC_DRAW
 };
 
-/**
- * @constructor
- * @param {Array.<number>=} opt_arr Array.
- * @param {number=} opt_usage Usage.
- * @struct
- */
+
 class WebGLBuffer {
+
+  /**
+   * @param {Array.<number>=} opt_arr Array.
+   * @param {number=} opt_usage Usage.
+   */
   constructor(opt_arr, opt_usage) {
 
     /**
-    * @private
-    * @type {Array.<number>}
-    */
+     * @private
+     * @type {Array.<number>}
+     */
     this.arr_ = opt_arr !== undefined ? opt_arr : [];
 
     /**
-    * @private
-    * @type {number}
-    */
+     * @private
+     * @type {number}
+     */
     this.usage_ = opt_usage !== undefined ? opt_usage : BufferUsage.STATIC_DRAW;
 
   }
 
   /**
-  * @return {Array.<number>} Array.
-  */
+   * @return {Array.<number>} Array.
+   */
   getArray() {
     return this.arr_;
   }
 
   /**
-  * @return {number} Usage.
-  */
+   * @return {number} Usage.
+   */
   getUsage() {
     return this.usage_;
   }

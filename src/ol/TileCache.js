@@ -6,12 +6,13 @@ import LRUCache from './structs/LRUCache.js';
 import {fromKey, getKey} from './tilecoord.js';
 
 /**
- * @constructor
  * @extends {module:ol/structs/LRUCache.<module:ol/Tile>}
- * @param {number=} opt_highWaterMark High water mark.
- * @struct
  */
 class TileCache {
+
+  /**
+   * @param {number=} opt_highWaterMark High water mark.
+   */
   constructor(opt_highWaterMark) {
 
     LRUCache.call(this, opt_highWaterMark);

@@ -51,15 +51,17 @@ import Style from './style/Style.js';
  * var point = feature.getGeometry();
  * ```
  *
- * @constructor
  * @extends {module:ol/Object}
- * @param {module:ol/geom/Geometry|Object.<string, *>=} opt_geometryOrProperties
- * You may pass a Geometry object directly, or an object literal containing
- * properties. If you pass an object literal, you may include a Geometry
- * associated with a `geometry` key.
  * @api
  */
 class Feature {
+
+  /**
+   * @param {module:ol/geom/Geometry|Object.<string, *>=} opt_geometryOrProperties
+   *     You may pass a Geometry object directly, or an object literal containing
+   *     properties. If you pass an object literal, you may include a Geometry
+   *     associated with a `geometry` key.
+   */
   constructor(opt_geometryOrProperties) {
 
     BaseObject.call(this);

@@ -17,16 +17,18 @@ import ImageState from './ImageState.js';
 
 
 /**
- * @constructor
  * @extends {module:ol/ImageBase}
- * @param {module:ol/extent~Extent} extent Extent.
- * @param {number} resolution Resolution.
- * @param {number} pixelRatio Pixel ratio.
- * @param {HTMLCanvasElement} canvas Canvas.
- * @param {module:ol/ImageCanvas~Loader=} opt_loader Optional loader function to
- *     support asynchronous canvas drawing.
  */
 class ImageCanvas {
+
+  /**
+   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {number} resolution Resolution.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {HTMLCanvasElement} canvas Canvas.
+   * @param {module:ol/ImageCanvas~Loader=} opt_loader Optional loader function to
+   *     support asynchronous canvas drawing.
+   */
   constructor(extent, resolution, pixelRatio, canvas, opt_loader) {
 
     /**

@@ -15,16 +15,18 @@ import EventType from './events/EventType.js';
  */
 
 /**
- * @constructor
  * @extends {module:ol/Tile}
- * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
- * @param {module:ol/TileState} state State.
- * @param {string} src Image source URI.
- * @param {?string} crossOrigin Cross origin.
- * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
- * @param {module:ol/Tile~Options=} opt_options Tile options.
  */
 class ImageTile {
+
+  /**
+   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+   * @param {module:ol/TileState} state State.
+   * @param {string} src Image source URI.
+   * @param {?string} crossOrigin Cross origin.
+   * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
+   * @param {module:ol/Tile~Options=} opt_options Tile options.
+   */
   constructor(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
     Tile.call(this, tileCoord, state, opt_options);

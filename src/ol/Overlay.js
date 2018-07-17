@@ -93,12 +93,14 @@ const Property = {
  *     popup.setPosition(coordinate);
  *     map.addOverlay(popup);
  *
- * @constructor
  * @extends {module:ol/Object}
- * @param {module:ol/Overlay~Options} options Overlay options.
  * @api
  */
 class Overlay {
+
+  /**
+   * @param {module:ol/Overlay~Options} options Overlay options.
+   */
   constructor(options) {
 
     BaseObject.call(this);

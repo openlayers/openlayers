@@ -6,15 +6,17 @@ import EventTarget from './events/EventTarget.js';
 import EventType from './events/EventType.js';
 
 /**
- * @constructor
  * @abstract
  * @extends {module:ol/events/EventTarget}
- * @param {module:ol/extent~Extent} extent Extent.
- * @param {number|undefined} resolution Resolution.
- * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/ImageState} state State.
  */
 class ImageBase {
+
+  /**
+   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {number|undefined} resolution Resolution.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {module:ol/ImageState} state State.
+   */
   constructor(extent, resolution, pixelRatio, state) {
 
     EventTarget.call(this);

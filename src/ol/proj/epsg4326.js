@@ -41,11 +41,13 @@ export const METERS_PER_UNIT = Math.PI * RADIUS / 180;
  *
  * @constructor
  * @extends {module:ol/proj/Projection}
- * @param {string} code Code.
- * @param {string=} opt_axisOrientation Axis orientation.
  */
 class EPSG4326Projection {
 
+  /**
+   * @param {string} code Code.
+   * @param {string=} opt_axisOrientation Axis orientation.
+   */
   constructor(code, opt_axisOrientation) {
     Projection.call(this, {
       code: code,

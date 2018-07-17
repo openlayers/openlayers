@@ -14,15 +14,14 @@ import PriorityQueue from './structs/PriorityQueue.js';
 
 
 /**
- * @constructor
  * @extends {module:ol/structs/PriorityQueue.<Array>}
- * @param {module:ol/TileQueue~PriorityFunction} tilePriorityFunction
- *     Tile priority function.
- * @param {function(): ?} tileChangeCallback
- *     Function called on each tile change event.
- * @struct
  */
 class TileQueue {
+
+  /**
+   * @param {module:ol/TileQueue~PriorityFunction} tilePriorityFunction Tile priority function.
+   * @param {function(): ?} tileChangeCallback Function called on each tile change event.
+   */
   constructor(tilePriorityFunction, tileChangeCallback) {
 
     PriorityQueue.call(

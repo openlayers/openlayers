@@ -224,12 +224,14 @@ const DEFAULT_MIN_ZOOM = 0;
  * The *center constraint* is determined by the `extent` option. By
  * default the center is not constrained at all.
  *
- * @constructor
  * @extends {module:ol/Object}
- * @param {module:ol/View~ViewOptions=} opt_options View options.
  * @api
  */
 class View {
+
+  /**
+   * @param {module:ol/View~ViewOptions=} opt_options View options.
+   */
   constructor(opt_options) {
     BaseObject.call(this);
 

@@ -49,222 +49,223 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
  * be added using `proj4.defs()`. After all required projection definitions are
  * added, call the {@link module:ol/proj/proj4~register} function.
  *
- * @constructor
- * @param {module:ol/proj/Projection~Options} options Projection options.
- * @struct
  * @api
  */
 class Projection {
+
+  /**
+   * @param {module:ol/proj/Projection~Options} options Projection options.
+   */
   constructor(options) {
     /**
-    * @private
-    * @type {string}
-    */
+     * @private
+     * @type {string}
+     */
     this.code_ = options.code;
 
     /**
-    * Units of projected coordinates. When set to `TILE_PIXELS`, a
-    * `this.extent_` and `this.worldExtent_` must be configured properly for each
-    * tile.
-    * @private
-    * @type {module:ol/proj/Units}
-    */
+     * Units of projected coordinates. When set to `TILE_PIXELS`, a
+     * `this.extent_` and `this.worldExtent_` must be configured properly for each
+     * tile.
+     * @private
+     * @type {module:ol/proj/Units}
+     */
     this.units_ = /** @type {module:ol/proj/Units} */ (options.units);
 
     /**
-    * Validity extent of the projection in projected coordinates. For projections
-    * with `TILE_PIXELS` units, this is the extent of the tile in
-    * tile pixel space.
-    * @private
-    * @type {module:ol/extent~Extent}
-    */
+     * Validity extent of the projection in projected coordinates. For projections
+     * with `TILE_PIXELS` units, this is the extent of the tile in
+     * tile pixel space.
+     * @private
+     * @type {module:ol/extent~Extent}
+     */
     this.extent_ = options.extent !== undefined ? options.extent : null;
 
     /**
-    * Extent of the world in EPSG:4326. For projections with
-    * `TILE_PIXELS` units, this is the extent of the tile in
-    * projected coordinate space.
-    * @private
-    * @type {module:ol/extent~Extent}
-    */
+     * Extent of the world in EPSG:4326. For projections with
+     * `TILE_PIXELS` units, this is the extent of the tile in
+     * projected coordinate space.
+     * @private
+     * @type {module:ol/extent~Extent}
+     */
     this.worldExtent_ = options.worldExtent !== undefined ?
       options.worldExtent : null;
 
     /**
-    * @private
-    * @type {string}
-    */
+     * @private
+     * @type {string}
+     */
     this.axisOrientation_ = options.axisOrientation !== undefined ?
       options.axisOrientation : 'enu';
 
     /**
-    * @private
-    * @type {boolean}
-    */
+     * @private
+     * @type {boolean}
+     */
     this.global_ = options.global !== undefined ? options.global : false;
 
     /**
-    * @private
-    * @type {boolean}
-    */
+     * @private
+     * @type {boolean}
+     */
     this.canWrapX_ = !!(this.global_ && this.extent_);
 
     /**
-    * @private
-    * @type {function(number, module:ol/coordinate~Coordinate):number|undefined}
-    */
+     * @private
+     * @type {function(number, module:ol/coordinate~Coordinate):number|undefined}
+     */
     this.getPointResolutionFunc_ = options.getPointResolution;
 
     /**
-    * @private
-    * @type {module:ol/tilegrid/TileGrid}
-    */
+     * @private
+     * @type {module:ol/tilegrid/TileGrid}
+     */
     this.defaultTileGrid_ = null;
 
     /**
-    * @private
-    * @type {number|undefined}
-    */
+     * @private
+     * @type {number|undefined}
+     */
     this.metersPerUnit_ = options.metersPerUnit;
   }
 
   /**
-  * @return {boolean} The projection is suitable for wrapping the x-axis
-  */
+   * @return {boolean} The projection is suitable for wrapping the x-axis
+   */
   canWrapX() {
     return this.canWrapX_;
   }
 
   /**
-  * Get the code for this projection, e.g. 'EPSG:4326'.
-  * @return {string} Code.
-  * @api
-  */
+   * Get the code for this projection, e.g. 'EPSG:4326'.
+   * @return {string} Code.
+   * @api
+   */
   getCode() {
     return this.code_;
   }
 
   /**
-  * Get the validity extent for this projection.
-  * @return {module:ol/extent~Extent} Extent.
-  * @api
-  */
+   * Get the validity extent for this projection.
+   * @return {module:ol/extent~Extent} Extent.
+   * @api
+   */
   getExtent() {
     return this.extent_;
   }
 
   /**
-  * Get the units of this projection.
-  * @return {module:ol/proj/Units} Units.
-  * @api
-  */
+   * Get the units of this projection.
+   * @return {module:ol/proj/Units} Units.
+   * @api
+   */
   getUnits() {
     return this.units_;
   }
 
   /**
-  * Get the amount of meters per unit of this projection.  If the projection is
-  * not configured with `metersPerUnit` or a units identifier, the return is
-  * `undefined`.
-  * @return {number|undefined} Meters.
-  * @api
-  */
+   * Get the amount of meters per unit of this projection.  If the projection is
+   * not configured with `metersPerUnit` or a units identifier, the return is
+   * `undefined`.
+   * @return {number|undefined} Meters.
+   * @api
+   */
   getMetersPerUnit() {
     return this.metersPerUnit_ || METERS_PER_UNIT[this.units_];
   }
 
   /**
-  * Get the world extent for this projection.
-  * @return {module:ol/extent~Extent} Extent.
-  * @api
-  */
+   * Get the world extent for this projection.
+   * @return {module:ol/extent~Extent} Extent.
+   * @api
+   */
   getWorldExtent() {
     return this.worldExtent_;
   }
 
   /**
-  * Get the axis orientation of this projection.
-  * Example values are:
-  * enu - the default easting, northing, elevation.
-  * neu - northing, easting, up - useful for "lat/long" geographic coordinates,
-  *     or south orientated transverse mercator.
-  * wnu - westing, northing, up - some planetary coordinate systems have
-  *     "west positive" coordinate systems
-  * @return {string} Axis orientation.
-  * @api
-  */
+   * Get the axis orientation of this projection.
+   * Example values are:
+   * enu - the default easting, northing, elevation.
+   * neu - northing, easting, up - useful for "lat/long" geographic coordinates,
+   *     or south orientated transverse mercator.
+   * wnu - westing, northing, up - some planetary coordinate systems have
+   *     "west positive" coordinate systems
+   * @return {string} Axis orientation.
+   * @api
+   */
   getAxisOrientation() {
     return this.axisOrientation_;
   }
 
   /**
-  * Is this projection a global projection which spans the whole world?
-  * @return {boolean} Whether the projection is global.
-  * @api
-  */
+   * Is this projection a global projection which spans the whole world?
+   * @return {boolean} Whether the projection is global.
+   * @api
+   */
   isGlobal() {
     return this.global_;
   }
 
   /**
- * Set if the projection is a global projection which spans the whole world
- * @param {boolean} global Whether the projection is global.
- * @api
- */
+   * Set if the projection is a global projection which spans the whole world
+   * @param {boolean} global Whether the projection is global.
+   * @api
+   */
   setGlobal(global) {
     this.global_ = global;
     this.canWrapX_ = !!(global && this.extent_);
   }
 
   /**
-  * @return {module:ol/tilegrid/TileGrid} The default tile grid.
-  */
+   * @return {module:ol/tilegrid/TileGrid} The default tile grid.
+   */
   getDefaultTileGrid() {
     return this.defaultTileGrid_;
   }
 
   /**
-  * @param {module:ol/tilegrid/TileGrid} tileGrid The default tile grid.
-  */
+   * @param {module:ol/tilegrid/TileGrid} tileGrid The default tile grid.
+   */
   setDefaultTileGrid(tileGrid) {
     this.defaultTileGrid_ = tileGrid;
   }
 
   /**
-  * Set the validity extent for this projection.
-  * @param {module:ol/extent~Extent} extent Extent.
-  * @api
-  */
+   * Set the validity extent for this projection.
+   * @param {module:ol/extent~Extent} extent Extent.
+   * @api
+   */
   setExtent(extent) {
     this.extent_ = extent;
     this.canWrapX_ = !!(this.global_ && extent);
   }
 
   /**
-  * Set the world extent for this projection.
-  * @param {module:ol/extent~Extent} worldExtent World extent
-  *     [minlon, minlat, maxlon, maxlat].
-  * @api
-  */
+   * Set the world extent for this projection.
+   * @param {module:ol/extent~Extent} worldExtent World extent
+   *     [minlon, minlat, maxlon, maxlat].
+   * @api
+   */
   setWorldExtent(worldExtent) {
     this.worldExtent_ = worldExtent;
   }
 
   /**
-  * Set the getPointResolution function (see {@link module:ol/proj~getPointResolution}
-  * for this projection.
-  * @param {function(number, module:ol/coordinate~Coordinate):number} func Function
-  * @api
-  */
+   * Set the getPointResolution function (see {@link module:ol/proj~getPointResolution}
+   * for this projection.
+   * @param {function(number, module:ol/coordinate~Coordinate):number} func Function
+   * @api
+   */
   setGetPointResolution(func) {
     this.getPointResolutionFunc_ = func;
   }
 
   /**
-  * Get the custom point resolution function for this projection (if set).
-  * @return {function(number, module:ol/coordinate~Coordinate):number|undefined} The custom point
-  * resolution function (if set).
-  */
+   * Get the custom point resolution function for this projection (if set).
+   * @return {function(number, module:ol/coordinate~Coordinate):number|undefined} The custom point
+   * resolution function (if set).
+   */
   getPointResolutionFunc() {
     return this.getPointResolutionFunc_;
   }

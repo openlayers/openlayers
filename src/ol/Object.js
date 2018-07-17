@@ -10,17 +10,16 @@ import {assign} from './obj.js';
 
 /**
  * @classdesc
- * Events emitted by {@link module:ol/Object~BaseObject} instances are instances of
- * this type.
- *
- * @param {string} type The event type.
- * @param {string} key The property name.
- * @param {*} oldValue The old value for `key`.
+ * Events emitted by {@link module:ol/Object~BaseObject} instances are instances of this type.
  * @extends {module:ol/events/Event}
- * @constructor
  */
 class ObjectEvent {
 
+  /**
+   * @param {string} type The event type.
+   * @param {string} key The property name.
+   * @param {*} oldValue The old value for `key`.
+   */
   constructor(type, key, oldValue) {
     Event.call(this, type);
 
@@ -86,13 +85,15 @@ inherits(ObjectEvent, Event);
  * Properties can be deleted by using the unset method. E.g.
  * object.unset('foo').
  *
- * @constructor
  * @extends {module:ol/Observable}
- * @param {Object.<string, *>=} opt_values An object with key-value pairs.
  * @fires module:ol/Object~ObjectEvent
  * @api
  */
 class BaseObject {
+
+  /**
+   * @param {Object.<string, *>=} opt_values An object with key-value pairs.
+   */
   constructor(opt_values) {
     Observable.call(this);
 

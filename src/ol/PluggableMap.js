@@ -131,9 +131,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 
 /**
- * @constructor
  * @extends {module:ol/Object}
- * @param {module:ol/PluggableMap~MapOptions} options Map options.
  * @fires module:ol/MapBrowserEvent~MapBrowserEvent
  * @fires module:ol/MapEvent~MapEvent
  * @fires module:ol/render/Event~RenderEvent#postcompose
@@ -141,6 +139,10 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @api
  */
 class PluggableMap {
+
+  /**
+   * @param {module:ol/PluggableMap~MapOptions} options Map options.
+   */
   constructor(options) {
 
     BaseObject.call(this);

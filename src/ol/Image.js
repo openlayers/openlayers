@@ -29,16 +29,18 @@ import {getHeight} from './extent.js';
 
 
 /**
- * @constructor
  * @extends {module:ol/ImageBase}
- * @param {module:ol/extent~Extent} extent Extent.
- * @param {number|undefined} resolution Resolution.
- * @param {number} pixelRatio Pixel ratio.
- * @param {string} src Image source URI.
- * @param {?string} crossOrigin Cross origin.
- * @param {module:ol/Image~LoadFunction} imageLoadFunction Image load function.
  */
 class ImageWrapper {
+
+  /**
+   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {number|undefined} resolution Resolution.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {string} src Image source URI.
+   * @param {?string} crossOrigin Cross origin.
+   * @param {module:ol/Image~LoadFunction} imageLoadFunction Image load function.
+   */
   constructor(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
 
     ImageBase.call(this, extent, resolution, pixelRatio, ImageState.IDLE);
@@ -124,9 +126,9 @@ class ImageWrapper {
       this.changed();
       this.imageListenerKeys_ = [
         listenOnce(this.image_, EventType.ERROR,
-                   this.handleImageError_, this),
+          this.handleImageError_, this),
         listenOnce(this.image_, EventType.LOAD,
-                   this.handleImageLoad_, this)
+          this.handleImageLoad_, this)
       ];
       this.imageLoadFunction_(this, this.src_);
     }

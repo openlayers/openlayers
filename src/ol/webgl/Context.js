@@ -22,12 +22,14 @@ import ContextEventType from '../webgl/ContextEventType.js';
  * @classdesc
  * A WebGL context for accessing low-level WebGL capabilities.
  *
- * @constructor
  * @extends {module:ol/Disposable}
- * @param {HTMLCanvasElement} canvas Canvas.
- * @param {WebGLRenderingContext} gl GL.
  */
 class WebGLContext {
+
+  /**
+   * @param {HTMLCanvasElement} canvas Canvas.
+   * @param {WebGLRenderingContext} gl GL.
+   */
   constructor(canvas, gl) {
 
     /**

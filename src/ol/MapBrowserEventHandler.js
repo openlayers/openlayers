@@ -11,14 +11,14 @@ import PointerEventType from './pointer/EventType.js';
 import PointerEventHandler from './pointer/PointerEventHandler.js';
 
 /**
- * @param {module:ol/PluggableMap} map The map with the viewport to
- * listen to events on.
- * @param {number=} moveTolerance The minimal distance the pointer must travel
- * to trigger a move.
- * @constructor
  * @extends {module:ol/events/EventTarget}
  */
 class MapBrowserEventHandler {
+
+  /**
+   * @param {module:ol/PluggableMap} map The map with the viewport to listen to events on.
+   * @param {number=} moveTolerance The minimal distance the pointer must travel to trigger a move.
+   */
   constructor(map, moveTolerance) {
 
     EventTarget.call(this);

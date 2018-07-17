@@ -1,18 +1,19 @@
 /**
  * @module ol/TileRange
  */
+
 /**
  * A representation of a contiguous block of tiles.  A tile range is specified
  * by its min/max tile coordinates and is inclusive of coordinates.
- *
- * @constructor
- * @param {number} minX Minimum X.
- * @param {number} maxX Maximum X.
- * @param {number} minY Minimum Y.
- * @param {number} maxY Maximum Y.
- * @struct
  */
 class TileRange {
+
+  /**
+   * @param {number} minX Minimum X.
+   * @param {number} maxX Maximum X.
+   * @param {number} minY Minimum Y.
+   * @param {number} maxY Maximum Y.
+   */
   constructor(minX, maxX, minY, maxY) {
 
     /**

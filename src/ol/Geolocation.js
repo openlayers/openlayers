@@ -44,12 +44,14 @@ import {get as getProjection, getTransformFromProjections, identityTransform} fr
  *     });
  *
  * @fires error
- * @constructor
  * @extends {module:ol/Object}
- * @param {module:ol/Geolocation~Options=} opt_options Options.
  * @api
  */
 class Geolocation {
+
+  /**
+   * @param {module:ol/Geolocation~Options=} opt_options Options.
+   */
   constructor(opt_options) {
 
     BaseObject.call(this);

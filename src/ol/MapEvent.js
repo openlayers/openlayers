@@ -9,14 +9,15 @@ import Event from './events/Event.js';
  * Events emitted as map events are instances of this type.
  * See {@link module:ol/Map~Map} for which events trigger a map event.
  *
- * @constructor
  * @extends {module:ol/events/Event}
- * @param {string} type Event type.
- * @param {module:ol/PluggableMap} map Map.
- * @param {?module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
  */
 class MapEvent {
 
+  /**
+   * @param {string} type Event type.
+   * @param {module:ol/PluggableMap} map Map.
+   * @param {?module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
+   */
   constructor(type, map, opt_frameState) {
 
     Event.call(this, type);

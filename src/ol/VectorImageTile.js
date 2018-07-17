@@ -22,28 +22,30 @@ import {UNDEFINED} from './functions.js';
 
 
 /**
- * @constructor
  * @extends {module:ol/Tile}
- * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
- * @param {module:ol/TileState} state State.
- * @param {number} sourceRevision Source revision.
- * @param {module:ol/format/Feature} format Feature format.
- * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
- * @param {module:ol/tilecoord~TileCoord} urlTileCoord Wrapped tile coordinate for source urls.
- * @param {module:ol/Tile~UrlFunction} tileUrlFunction Tile url function.
- * @param {module:ol/tilegrid/TileGrid} sourceTileGrid Tile grid of the source.
- * @param {module:ol/tilegrid/TileGrid} tileGrid Tile grid of the renderer.
- * @param {Object.<string, module:ol/VectorTile>} sourceTiles Source tiles.
- * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/proj/Projection} projection Projection.
- * @param {function(new: module:ol/VectorTile, module:ol/tilecoord~TileCoord, module:ol/TileState, string,
- *     module:ol/format/Feature, module:ol/Tile~LoadFunction)} tileClass Class to
- *     instantiate for source tiles.
- * @param {function(this: module:ol/source/VectorTile, module:ol/events/Event)} handleTileChange
- *     Function to call when a source tile's state changes.
- * @param {number} zoom Integer zoom to render the tile for.
  */
 class VectorImageTile {
+
+  /**
+   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+   * @param {module:ol/TileState} state State.
+   * @param {number} sourceRevision Source revision.
+   * @param {module:ol/format/Feature} format Feature format.
+   * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
+   * @param {module:ol/tilecoord~TileCoord} urlTileCoord Wrapped tile coordinate for source urls.
+   * @param {module:ol/Tile~UrlFunction} tileUrlFunction Tile url function.
+   * @param {module:ol/tilegrid/TileGrid} sourceTileGrid Tile grid of the source.
+   * @param {module:ol/tilegrid/TileGrid} tileGrid Tile grid of the renderer.
+   * @param {Object.<string, module:ol/VectorTile>} sourceTiles Source tiles.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {module:ol/proj/Projection} projection Projection.
+   * @param {function(new: module:ol/VectorTile, module:ol/tilecoord~TileCoord, module:ol/TileState, string,
+   *     module:ol/format/Feature, module:ol/Tile~LoadFunction)} tileClass Class to
+   *     instantiate for source tiles.
+   * @param {function(this: module:ol/source/VectorTile, module:ol/events/Event)} handleTileChange
+   *     Function to call when a source tile's state changes.
+   * @param {number} zoom Integer zoom to render the tile for.
+   */
   constructor(
     tileCoord,
     state,

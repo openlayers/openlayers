@@ -44,14 +44,16 @@ import EventType from './events/EventType.js';
  * @classdesc
  * Base class for tiles.
  *
- * @constructor
  * @abstract
  * @extends {module:ol/events/EventTarget}
- * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
- * @param {module:ol/TileState} state State.
- * @param {module:ol/Tile~Options=} opt_options Tile options.
  */
 class Tile {
+
+  /**
+   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+   * @param {module:ol/TileState} state State.
+   * @param {module:ol/Tile~Options=} opt_options Tile options.
+   */
   constructor(tileCoord, state, opt_options) {
     EventTarget.call(this);
 

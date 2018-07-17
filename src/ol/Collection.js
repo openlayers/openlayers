@@ -22,13 +22,14 @@ const Property = {
  * Events emitted by {@link module:ol/Collection~Collection} instances are instances of this
  * type.
  *
- * @constructor
  * @extends {module:ol/events/Event}
- * @param {module:ol/CollectionEventType} type Type.
- * @param {*=} opt_element Element.
  */
 export class CollectionEvent {
 
+  /**
+   * @param {module:ol/CollectionEventType} type Type.
+   * @param {*=} opt_element Element.
+   */
   constructor(type, opt_element) {
     Event.call(this, type);
 
@@ -60,15 +61,16 @@ inherits(CollectionEvent, Event);
  * Collection; they trigger events on the appropriate object, not on the
  * Collection as a whole.
  *
- * @constructor
  * @extends {module:ol/Object}
- * @fires module:ol/Collection~CollectionEvent
- * @param {Array.<T>=} opt_array Array.
- * @param {module:ol/Collection~Options=} opt_options Collection options.
- * @template T
  * @api
  */
 class Collection {
+
+  /**
+   * @param {Array.<T>=} opt_array Array.
+   * @param {module:ol/Collection~Options=} opt_options Collection options.
+   * @template T
+   */
   constructor(opt_array, opt_options) {
 
     BaseObject.call(this);

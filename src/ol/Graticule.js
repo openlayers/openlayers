@@ -112,11 +112,13 @@ const INTERVALS = [
 
 /**
  * Render a grid for a coordinate system on a map.
- * @constructor
- * @param {module:ol/Graticule~Options=} opt_options Options.
  * @api
  */
 class Graticule {
+
+  /**
+   * @param {module:ol/Graticule~Options=} opt_options Options.
+   */
   constructor(opt_options) {
     const options = opt_options || {};
 
