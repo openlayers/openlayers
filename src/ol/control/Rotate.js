@@ -1,13 +1,11 @@
 /**
  * @module ol/control/Rotate
  */
-
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_HIDDEN, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
-import {inherits} from '../util.js';
 
 
 /**
@@ -34,14 +32,19 @@ import {inherits} from '../util.js';
  * selector is added to the button when the rotation is 0.
  *
  * @constructor
- * @extends {module:ol/control/Control}
  * @param {module:ol/control/Rotate~Options=} opt_options Rotate options.
  * @api
  */
-class Rotate {
+class Rotate extends Control {
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};
+
+    super({
+      element: document.createElement('div'),
+      render: options.render || render,
+      target: options.target
+    });
 
     const className = options.className !== undefined ? options.className : 'ol-rotate';
 
@@ -70,21 +73,14 @@ class Rotate {
     button.title = tipLabel;
     button.appendChild(this.label_);
 
-    listen(button, EventType.CLICK,
-      Rotate.prototype.handleClick_, this);
+    listen(button, EventType.CLICK, this.handleClick_, this);
 
     const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
-    const element = document.createElement('div');
+    const element = this.element;
     element.className = cssClasses;
     element.appendChild(button);
 
     this.callResetNorth_ = options.resetNorth ? options.resetNorth : undefined;
-
-    Control.call(this, {
-      element: element,
-      render: options.render || render,
-      target: options.target
-    });
 
     /**
      * @type {number}
@@ -147,8 +143,6 @@ class Rotate {
     }
   }
 }
-
-inherits(Rotate, Control);
 
 
 /**
