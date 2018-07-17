@@ -1,7 +1,6 @@
 /**
  * @module ol/control/ZoomToExtent
  */
-import {inherits} from '../util.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import Control from '../control/Control.js';
@@ -27,13 +26,17 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
  * extent. To style this control use the css selector `.ol-zoom-extent`.
  *
  * @constructor
- * @extends {module:ol/control/Control}
  * @param {module:ol/control/ZoomToExtent~Options=} opt_options Options.
  * @api
  */
-class ZoomToExtent {
+class ZoomToExtent extends Control {
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
+
+    super({
+      element: document.createElement('div'),
+      target: options.target
+    });
 
     /**
      * @type {module:ol/extent~Extent}
@@ -55,14 +58,9 @@ class ZoomToExtent {
     listen(button, EventType.CLICK, this.handleClick_, this);
 
     const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
-    const element = document.createElement('div');
+    const element = this.element;
     element.className = cssClasses;
     element.appendChild(button);
-
-    Control.call(this, {
-      element: element,
-      target: options.target
-    });
   }
 
   /**
