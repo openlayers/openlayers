@@ -1,7 +1,6 @@
 /**
  * @module ol/Image
  */
-import {inherits} from './util.js';
 import ImageBase from './ImageBase.js';
 import ImageState from './ImageState.js';
 import {listenOnce, unlistenByKey} from './events.js';
@@ -28,10 +27,7 @@ import {getHeight} from './extent.js';
  */
 
 
-/**
- * @extends {module:ol/ImageBase}
- */
-class ImageWrapper {
+class ImageWrapper extends ImageBase {
 
   /**
    * @param {module:ol/extent~Extent} extent Extent.
@@ -43,7 +39,7 @@ class ImageWrapper {
    */
   constructor(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
 
-    ImageBase.call(this, extent, resolution, pixelRatio, ImageState.IDLE);
+    super(extent, resolution, pixelRatio, ImageState.IDLE);
 
     /**
      * @private
@@ -151,8 +147,6 @@ class ImageWrapper {
     this.imageListenerKeys_ = null;
   }
 }
-
-inherits(ImageWrapper, ImageBase);
 
 
 export default ImageWrapper;
