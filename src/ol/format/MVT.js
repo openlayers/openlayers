@@ -3,7 +3,6 @@
  */
 //FIXME Implement projection handling
 
-import {inherits} from '../util.js';
 import {assert} from '../asserts.js';
 import PBF from 'pbf';
 import FeatureFormat, {transformWithOptions} from '../format/Feature.js';
@@ -42,18 +41,16 @@ import RenderFeature from '../render/Feature.js';
  * @classdesc
  * Feature format for reading data in the Mapbox MVT format.
  *
- * @extends {module:ol/format/Feature}
  * @param {module:ol/format/MVT~Options=} opt_options Options.
  * @api
  */
-class MVT {
+class MVT extends FeatureFormat {
 
   /**
    * @param {module:ol/format/MVT~Options=} opt_options Options.
    */
   constructor(opt_options) {
-
-    FeatureFormat.call(this);
+    super();
 
     const options = opt_options ? opt_options : {};
 
@@ -320,8 +317,6 @@ class MVT {
    */
   writeFeatures() {}
 }
-
-inherits(MVT, FeatureFormat);
 
 
 /**
