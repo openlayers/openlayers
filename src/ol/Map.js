@@ -1,7 +1,6 @@
 /**
  * @module ol/Map
  */
-import {inherits} from './util.js';
 import PluggableMap from './PluggableMap.js';
 import {defaults as defaultControls} from './control/util.js';
 import {defaults as defaultInteractions} from './interaction.js';
@@ -57,14 +56,13 @@ import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js'
  * options or added with `addLayer` can be groups, which can contain further
  * groups, and so on.
  *
- * @extends {module:ol/PluggableMap}
  * @fires module:ol/MapBrowserEvent~MapBrowserEvent
  * @fires module:ol/MapEvent~MapEvent
  * @fires module:ol/render/Event~RenderEvent#postcompose
  * @fires module:ol/render/Event~RenderEvent#precompose
  * @api
  */
-class Map {
+class Map extends PluggableMap {
 
   /**
    * @param {module:ol/PluggableMap~MapOptions} options Map options.
@@ -78,7 +76,7 @@ class Map {
       options.interactions = defaultInteractions();
     }
 
-    PluggableMap.call(this, options);
+    super(options);
   }
 
   createRenderer() {
@@ -93,6 +91,5 @@ class Map {
   }
 }
 
-inherits(Map, PluggableMap);
 
 export default Map;
