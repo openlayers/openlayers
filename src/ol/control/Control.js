@@ -1,7 +1,6 @@
 /**
  * @module ol/control/Control
  */
-import {inherits} from '../util.js';
 import {UNDEFINED} from '../functions.js';
 import MapEventType from '../MapEventType.js';
 import BaseObject from '../Object.js';
@@ -45,14 +44,13 @@ import {listen, unlistenByKey} from '../events.js';
  * examples/custom-controls for an example of how to do this.
  *
  * @constructor
- * @extends {module:ol/Object}
  * @param {module:ol/control/Control~Options} options Control options.
  * @api
  */
-class Control {
+class Control extends BaseObject {
   constructor(options) {
 
-    BaseObject.call(this);
+    super();
 
     /**
      * @protected
@@ -94,7 +92,7 @@ class Control {
    */
   disposeInternal() {
     removeNode(this.element);
-    BaseObject.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**
@@ -149,8 +147,6 @@ class Control {
       target;
   }
 }
-
-inherits(Control, BaseObject);
 
 
 export default Control;
