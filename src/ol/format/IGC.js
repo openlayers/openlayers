@@ -61,12 +61,14 @@ const NEWLINE_RE = /\r\n|\r|\n/;
  * @classdesc
  * Feature format for `*.igc` flight recording files.
  *
- * @constructor
  * @extends {module:ol/format/TextFeature}
- * @param {module:ol/format/IGC~Options=} opt_options Options.
  * @api
  */
 class IGC {
+
+  /**
+   * @param {module:ol/format/IGC~Options=} opt_options Options.
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};

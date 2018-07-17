@@ -34,12 +34,14 @@ const layerIdentifier = '_layer';
  * Format for reading WMSGetFeatureInfo format. It uses
  * {@link module:ol/format/GML2~GML2} to read features.
  *
- * @constructor
  * @extends {module:ol/format/XMLFeature}
- * @param {module:ol/format/WMSGetFeatureInfo~Options=} opt_options Options.
  * @api
  */
 class WMSGetFeatureInfo {
+
+  /**
+   * @param {module:ol/format/WMSGetFeatureInfo~Options=} opt_options Options.
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};

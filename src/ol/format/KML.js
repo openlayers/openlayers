@@ -391,12 +391,14 @@ function createStyleDefaults() {
  * Note that the KML format uses the URL() constructor. Older browsers such as IE
  * which do not support this will need a URL polyfill to be loaded before use.
  *
- * @constructor
  * @extends {module:ol/format/XMLFeature}
- * @param {module:ol/format/KML~Options=} opt_options Options.
  * @api
  */
 class KML {
+
+  /**
+   * @param {module:ol/format/KML~Options=} opt_options Options.
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};

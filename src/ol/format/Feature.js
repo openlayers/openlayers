@@ -56,7 +56,6 @@ import {get as getProjection, equivalent as equivalentProjection, transformExten
  * {@link module:ol/Feature~Feature} objects from a variety of commonly used geospatial
  * file formats.  See the documentation for each format for more details.
  *
- * @constructor
  * @abstract
  * @api
  */
@@ -64,26 +63,26 @@ class FeatureFormat {
   constructor() {
 
     /**
-    * @protected
-    * @type {module:ol/proj/Projection}
-    */
+     * @protected
+     * @type {module:ol/proj/Projection}
+     */
     this.dataProjection = null;
 
     /**
-    * @protected
-    * @type {module:ol/proj/Projection}
-    */
+     * @protected
+     * @type {module:ol/proj/Projection}
+     */
     this.defaultFeatureProjection = null;
 
   }
 
   /**
-  * Adds the data projection to the read options.
-  * @param {Document|Node|Object|string} source Source.
-  * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
-  * @return {module:ol/format/Feature~ReadOptions|undefined} Options.
-  * @protected
-  */
+   * Adds the data projection to the read options.
+   * @param {Document|Node|Object|string} source Source.
+   * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
+   * @return {module:ol/format/Feature~ReadOptions|undefined} Options.
+   * @protected
+   */
   getReadOptions(source, opt_options) {
     let options;
     if (opt_options) {
@@ -97,14 +96,14 @@ class FeatureFormat {
   }
 
   /**
-  * Sets the `dataProjection` on the options, if no `dataProjection`
-  * is set.
-  * @param {module:ol/format/Feature~WriteOptions|module:ol/format/Feature~ReadOptions|undefined} options
-  *     Options.
-  * @protected
-  * @return {module:ol/format/Feature~WriteOptions|module:ol/format/Feature~ReadOptions|undefined}
-  *     Updated options.
-  */
+   * Sets the `dataProjection` on the options, if no `dataProjection`
+   * is set.
+   * @param {module:ol/format/Feature~WriteOptions|module:ol/format/Feature~ReadOptions|undefined} options
+   *     Options.
+   * @protected
+   * @return {module:ol/format/Feature~WriteOptions|module:ol/format/Feature~ReadOptions|undefined}
+   *     Updated options.
+   */
   adaptOptions(options) {
     return assign({
       dataProjection: this.dataProjection,
@@ -113,86 +112,86 @@ class FeatureFormat {
   }
 
   /**
-  * Get the extent from the source of the last {@link readFeatures} call.
-  * @return {module:ol/extent~Extent} Tile extent.
-  */
+   * Get the extent from the source of the last {@link readFeatures} call.
+   * @return {module:ol/extent~Extent} Tile extent.
+   */
   getLastExtent() {
     return null;
   }
 
   /**
-  * @abstract
-  * @return {module:ol/format/FormatType} Format.
-  */
+   * @abstract
+   * @return {module:ol/format/FormatType} Format.
+   */
   getType() {}
 
   /**
-  * Read a single feature from a source.
-  *
-  * @abstract
-  * @param {Document|Node|Object|string} source Source.
-  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
-  * @return {module:ol/Feature} Feature.
-  */
+   * Read a single feature from a source.
+   *
+   * @abstract
+   * @param {Document|Node|Object|string} source Source.
+   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
+   * @return {module:ol/Feature} Feature.
+   */
   readFeature(source, opt_options) {}
 
   /**
-  * Read all features from a source.
-  *
-  * @abstract
-  * @param {Document|Node|ArrayBuffer|Object|string} source Source.
-  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
-  * @return {Array.<module:ol/Feature>} Features.
-  */
+   * Read all features from a source.
+   *
+   * @abstract
+   * @param {Document|Node|ArrayBuffer|Object|string} source Source.
+   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
+   * @return {Array.<module:ol/Feature>} Features.
+   */
   readFeatures(source, opt_options) {}
 
   /**
-  * Read a single geometry from a source.
-  *
-  * @abstract
-  * @param {Document|Node|Object|string} source Source.
-  * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
-  * @return {module:ol/geom/Geometry} Geometry.
-  */
+   * Read a single geometry from a source.
+   *
+   * @abstract
+   * @param {Document|Node|Object|string} source Source.
+   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
+   * @return {module:ol/geom/Geometry} Geometry.
+   */
   readGeometry(source, opt_options) {}
 
   /**
-  * Read the projection from a source.
-  *
-  * @abstract
-  * @param {Document|Node|Object|string} source Source.
-  * @return {module:ol/proj/Projection} Projection.
-  */
+   * Read the projection from a source.
+   *
+   * @abstract
+   * @param {Document|Node|Object|string} source Source.
+   * @return {module:ol/proj/Projection} Projection.
+   */
   readProjection(source) {}
 
   /**
-  * Encode a feature in this format.
-  *
-  * @abstract
-  * @param {module:ol/Feature} feature Feature.
-  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
-  * @return {string} Result.
-  */
+   * Encode a feature in this format.
+   *
+   * @abstract
+   * @param {module:ol/Feature} feature Feature.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {string} Result.
+   */
   writeFeature(feature, opt_options) {}
 
   /**
-  * Encode an array of features in this format.
-  *
-  * @abstract
-  * @param {Array.<module:ol/Feature>} features Features.
-  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
-  * @return {string} Result.
-  */
+   * Encode an array of features in this format.
+   *
+   * @abstract
+   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {string} Result.
+   */
   writeFeatures(features, opt_options) {}
 
   /**
-  * Write a single geometry in this format.
-  *
-  * @abstract
-  * @param {module:ol/geom/Geometry} geometry Geometry.
-  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
-  * @return {string} Result.
-  */
+   * Write a single geometry in this format.
+   *
+   * @abstract
+   * @param {module:ol/geom/Geometry} geometry Geometry.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {string} Result.
+   */
   writeGeometry(geometry, opt_options) {}
 }
 

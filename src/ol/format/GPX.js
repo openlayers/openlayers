@@ -103,12 +103,14 @@ const GPX_SERIALIZERS = makeStructureNS(
  * @classdesc
  * Feature format for reading and writing data in the GPX format.
  *
- * @constructor
  * @extends {module:ol/format/XMLFeature}
- * @param {module:ol/format/GPX~Options=} opt_options Options.
  * @api
  */
 class GPX {
+
+  /**
+   * @param {module:ol/format/GPX~Options=} opt_options Options.
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};

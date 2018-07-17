@@ -46,7 +46,6 @@ const CAPABILITY_PARSERS = makeStructureNS(
  * @classdesc
  * Format for reading WMS capabilities data
  *
- * @constructor
  * @extends {module:ol/format/XML}
  * @api
  */

@@ -7,15 +7,13 @@ import {isDocument, isNode, parse} from '../xml.js';
  * @classdesc
  * Generic format for reading non-feature XML data
  *
- * @constructor
  * @abstract
- * @struct
  */
 class XML {
   /**
-  * @param {Document|Node|string} source Source.
-  * @return {Object} The parsed result.
-  */
+   * @param {Document|Node|string} source Source.
+   * @return {Object} The parsed result.
+   */
   read(source) {
     if (isDocument(source)) {
       return this.readFromDocument(/** @type {Document} */ (source));
@@ -30,17 +28,17 @@ class XML {
   }
 
   /**
-  * @abstract
-  * @param {Document} doc Document.
-  * @return {Object} Object
-  */
+   * @abstract
+   * @param {Document} doc Document.
+   * @return {Object} Object
+   */
   readFromDocument(doc) {}
 
   /**
-  * @abstract
-  * @param {Node} node Node.
-  * @return {Object} Object
-  */
+   * @abstract
+   * @param {Node} node Node.
+   * @return {Object} Object
+   */
   readFromNode(node) {}
 }
 

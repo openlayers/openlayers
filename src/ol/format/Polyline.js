@@ -27,12 +27,14 @@ import {get as getProjection} from '../proj.js';
  * Feature format for reading and writing data in the Encoded
  * Polyline Algorithm Format.
  *
- * @constructor
  * @extends {module:ol/format/TextFeature}
- * @param {module:ol/format/Polyline~Options=} opt_options Optional configuration object.
  * @api
  */
 class Polyline {
+
+  /**
+   * @param {module:ol/format/Polyline~Options=} opt_options Optional configuration object.
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};

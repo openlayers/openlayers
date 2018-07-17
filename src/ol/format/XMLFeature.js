@@ -13,7 +13,6 @@ import {isDocument, isNode, parse} from '../xml.js';
  * instantiated in apps.
  * Base class for XML feature formats.
  *
- * @constructor
  * @abstract
  * @extends {module:ol/format/Feature}
  */

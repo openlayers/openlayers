@@ -48,13 +48,14 @@ const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
  * version 3.1.1.
  * Currently only supports GML 3.1.1 Simple Features profile.
  *
- * @constructor
- * @param {module:ol/format/GMLBase~Options=} opt_options
- *     Optional configuration object.
  * @extends {module:ol/format/GMLBase}
  * @api
  */
 class GML3 {
+
+  /**
+   * @param {module:ol/format/GMLBase~Options=} opt_options Optional configuration object.
+   */
   constructor(opt_options) {
     const options = /** @type {module:ol/format/GMLBase~Options} */
         (opt_options ? opt_options : {});

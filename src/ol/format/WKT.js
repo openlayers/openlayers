@@ -87,10 +87,12 @@ const TokenType = {
 
 /**
  * Class to tokenize a WKT string.
- * @param {string} wkt WKT string.
- * @constructor
  */
 class Lexer {
+
+  /**
+   * @param {string} wkt WKT string.
+   */
   constructor(wkt) {
 
     /**
@@ -218,10 +220,12 @@ class Lexer {
 
 /**
  * Class to parse the tokens from the WKT string.
- * @param {module:ol/format/WKT~Lexer} lexer The lexer.
- * @constructor
  */
 class Parser {
+
+  /**
+   * @param {module:ol/format/WKT~Lexer} lexer The lexer.
+   */
   constructor(lexer) {
 
     /**
@@ -590,12 +594,14 @@ class Parser {
  * Geometry format for reading and writing data in the `WellKnownText` (WKT)
  * format.
  *
- * @constructor
  * @extends {module:ol/format/TextFeature}
- * @param {module:ol/format/WKT~Options=} opt_options Options.
  * @api
  */
 class WKT {
+
+  /**
+   * @param {module:ol/format/WKT~Options=} opt_options Options.
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};

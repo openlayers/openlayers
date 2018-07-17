@@ -28,7 +28,6 @@ const PARSERS = makeStructureNS(
 
 
 /**
- * @constructor
  * @extends {module:ol/format/XML}
  */
 class OWS {

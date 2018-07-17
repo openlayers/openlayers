@@ -45,7 +45,6 @@ const PARSERS = makeStructureNS(
  * @classdesc
  * Format for reading WMTS capabilities data.
  *
- * @constructor
  * @extends {module:ol/format/XML}
  * @api
  */

@@ -37,12 +37,14 @@ const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
  * Feature format for reading and writing data in the GML format,
  * version 2.1.2.
  *
- * @constructor
- * @param {module:ol/format/GMLBase~Options=} opt_options Optional configuration object.
  * @extends {module:ol/format/GMLBase}
  * @api
  */
 class GML2 {
+
+  /**
+   * @param {module:ol/format/GMLBase~Options=} opt_options Optional configuration object.
+   */
   constructor(opt_options) {
     const options = /** @type {module:ol/format/GMLBase~Options} */
         (opt_options ? opt_options : {});

@@ -201,12 +201,14 @@ const DEFAULT_VERSION = '1.1.0';
  * as option if you want to read a WFS that contains GML2 (WFS 1.0.0).
  * Also see {@link module:ol/format/GMLBase~GMLBase} which is used by this format.
  *
- * @constructor
- * @param {module:ol/format/WFS~Options=} opt_options Optional configuration object.
  * @extends {module:ol/format/XMLFeature}
  * @api
  */
 class WFS {
+
+  /**
+   * @param {module:ol/format/WFS~Options=} opt_options Optional configuration object.
+   */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
 

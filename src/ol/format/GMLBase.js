@@ -83,13 +83,14 @@ const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
  * This class cannot be instantiated, it contains only base content that
  * is shared with versioned format classes GML2 and GML3.
  *
- * @constructor
  * @abstract
- * @param {module:ol/format/GMLBase~Options=} opt_options
- *     Optional configuration object.
  * @extends {module:ol/format/XMLFeature}
  */
 class GMLBase {
+
+  /**
+   * @param {module:ol/format/GMLBase~Options=} opt_options Optional configuration object.
+   */
   constructor(opt_options) {
     const options = /** @type {module:ol/format/GMLBase~Options} */ (opt_options ? opt_options : {});
 
