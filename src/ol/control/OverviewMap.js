@@ -1,7 +1,6 @@
 /**
  * @module ol/control/OverviewMap
  */
-import {inherits} from '../util.js';
 import Collection from '../Collection.js';
 import Map from '../Map.js';
 import MapEventType from '../MapEventType.js';
@@ -62,14 +61,19 @@ const MIN_RATIO = 0.1;
  * Create a new control with a map acting as an overview map for an other
  * defined map.
  * @constructor
- * @extends {module:ol/control/Control}
  * @param {module:ol/control/OverviewMap~Options=} opt_options OverviewMap options.
  * @api
  */
-class OverviewMap {
+class OverviewMap extends Control {
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};
+
+    super({
+      element: document.createElement('div'),
+      render: options.render || render,
+      target: options.target
+    });
 
     /**
      * @type {boolean}
@@ -175,16 +179,10 @@ class OverviewMap {
     const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL +
         (this.collapsed_ && this.collapsible_ ? ' ' + CLASS_COLLAPSED : '') +
         (this.collapsible_ ? '' : ' ol-uncollapsible');
-    const element = document.createElement('div');
+    const element = this.element;
     element.className = cssClasses;
     element.appendChild(this.ovmapDiv_);
     element.appendChild(button);
-
-    Control.call(this, {
-      element: element,
-      render: options.render || render,
-      target: options.target
-    });
 
     /* Interactive map */
 
@@ -241,7 +239,7 @@ class OverviewMap {
       }
       this.ovmap_.setTarget(null);
     }
-    Control.prototype.setMap.call(this, map);
+    super.setMap(map);
 
     if (map) {
       this.ovmap_.setTarget(this.ovmapDiv_);
@@ -564,8 +562,6 @@ class OverviewMap {
     return this.ovmap_;
   }
 }
-
-inherits(OverviewMap, Control);
 
 
 /**
