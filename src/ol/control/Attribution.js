@@ -1,7 +1,6 @@
 /**
  * @module ol/control/Attribution
  */
-import {inherits} from '../util.js';
 import {equals} from '../array.js';
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_COLLAPSED} from '../css.js';
@@ -43,14 +42,19 @@ import {visibleAtResolution} from '../layer/Layer.js';
  * be changed by using a css selector for `.ol-attribution`.
  *
  * @constructor
- * @extends {module:ol/control/Control}
  * @param {module:ol/control/Attribution~Options=} opt_options Attribution options.
  * @api
  */
-class Attribution {
+class Attribution extends Control {
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};
+
+    super({
+      element: document.createElement('div'),
+      render: options.render || render,
+      target: options.target
+    });
 
     /**
      * @private
@@ -118,16 +122,10 @@ class Attribution {
     const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL +
         (this.collapsed_ && this.collapsible_ ? ' ' + CLASS_COLLAPSED : '') +
         (this.collapsible_ ? '' : ' ol-uncollapsible');
-    const element = document.createElement('div');
+    const element = this.element;
     element.className = cssClasses;
     element.appendChild(this.ulElement_);
     element.appendChild(button);
-
-    Control.call(this, {
-      element: element,
-      render: options.render || render,
-      target: options.target
-    });
 
     /**
      * A list of currently rendered resolutions.
@@ -311,8 +309,6 @@ class Attribution {
     return this.collapsed_;
   }
 }
-
-inherits(Attribution, Control);
 
 
 /**
