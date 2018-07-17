@@ -16,12 +16,10 @@ class AssertionError extends Error {
    */
   constructor(code) {
     const path = VERSION.split('-')[0];
+    const message = 'Assertion failed. See https://openlayers.org/en/' + path +
+    '/doc/errors/#' + code + ' for details.';
 
-    /**
-     * @type {string}
-     */
-    this.message = 'Assertion failed. See https://openlayers.org/en/' + path +
-        '/doc/errors/#' + code + ' for details.';
+    super(message);
 
     /**
      * Error code. The meaning of the code can be found on
