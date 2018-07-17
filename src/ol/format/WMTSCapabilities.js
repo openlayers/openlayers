@@ -1,7 +1,6 @@
 /**
  * @module ol/format/WMTSCapabilities
  */
-import {inherits} from '../util.js';
 import {boundingExtent} from '../extent.js';
 import OWS from '../format/OWS.js';
 import {readHref} from '../format/XLink.js';
@@ -45,12 +44,11 @@ const PARSERS = makeStructureNS(
  * @classdesc
  * Format for reading WMTS capabilities data.
  *
- * @extends {module:ol/format/XML}
- * @api
+  * @api
  */
-class WMTSCapabilities {
+class WMTSCapabilities extends XML {
   constructor() {
-    XML.call(this);
+    super();
 
     /**
      * @type {module:ol/format/OWS}
@@ -85,8 +83,6 @@ class WMTSCapabilities {
     return WMTSCapabilityObject ? WMTSCapabilityObject : null;
   }
 }
-
-inherits(WMTSCapabilities, XML);
 
 
 /**
@@ -219,17 +215,6 @@ const TM_PARSERS = makeStructureNS(
   }, makeStructureNS(OWS_NAMESPACE_URIS, {
     'Identifier': makeObjectPropertySetter(readString)
   }));
-
-
-/**
- * Read a WMTS capabilities document.
- *
- * @function
- * @param {Document|Node|string} source The XML source.
- * @return {Object} An object representing the WMTS capabilities.
- * @api
- */
-WMTSCapabilities.prototype.read;
 
 
 /**
