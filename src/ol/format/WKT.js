@@ -1,7 +1,6 @@
 /**
  * @module ol/format/WKT
  */
-import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
 import TextFeature from '../format/TextFeature.js';
@@ -594,19 +593,18 @@ class Parser {
  * Geometry format for reading and writing data in the `WellKnownText` (WKT)
  * format.
  *
- * @extends {module:ol/format/TextFeature}
  * @api
  */
-class WKT {
+class WKT extends TextFeature {
 
   /**
    * @param {module:ol/format/WKT~Options=} opt_options Options.
    */
   constructor(opt_options) {
+    super();
 
     const options = opt_options ? opt_options : {};
 
-    TextFeature.call(this);
 
     /**
      * Split GeometryCollection into multiple features.
@@ -714,8 +712,6 @@ class WKT {
       transformWithOptions(geometry, true, opt_options)));
   }
 }
-
-inherits(WKT, TextFeature);
 
 
 /**
@@ -867,78 +863,6 @@ function encode(geom) {
   }
   return type + '(' + enc + ')';
 }
-
-
-/**
- * Read a feature from a WKT source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature} Feature.
- * @api
- */
-WKT.prototype.readFeature;
-
-
-/**
- * Read all features from a WKT source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature>} Features.
- * @api
- */
-WKT.prototype.readFeatures;
-
-
-/**
- * Read a single geometry from a WKT source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/geom/Geometry} Geometry.
- * @api
- */
-WKT.prototype.readGeometry;
-
-
-/**
- * Encode a feature as a WKT string.
- *
- * @function
- * @param {module:ol/Feature} feature Feature.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {string} WKT string.
- * @api
- */
-WKT.prototype.writeFeature;
-
-
-/**
- * Encode an array of features as a WKT string.
- *
- * @function
- * @param {Array.<module:ol/Feature>} features Features.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {string} WKT string.
- * @api
- */
-WKT.prototype.writeFeatures;
-
-
-/**
- * Write a single geometry as a WKT string.
- *
- * @function
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {string} WKT string.
- * @api
- */
-WKT.prototype.writeGeometry;
 
 
 export default WKT;

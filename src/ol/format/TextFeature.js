@@ -109,7 +109,13 @@ class TextFeature extends FeatureFormat {
   }
 
   /**
-   * @inheritDoc
+   * Encode a feature as a string.
+   *
+   * @function
+   * @param {module:ol/Feature} feature Feature.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {string} Encoded feature.
+   * @api
    */
   writeFeature(feature, opt_options) {
     return this.writeFeatureText(feature, this.adaptOptions(opt_options));
@@ -125,7 +131,12 @@ class TextFeature extends FeatureFormat {
   writeFeatureText(feature, opt_options) {}
 
   /**
-   * @inheritDoc
+   * Encode an array of features as string.
+   *
+   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {string} Encoded features.
+   * @api
    */
   writeFeatures(features, opt_options) {
     return this.writeFeaturesText(features, this.adaptOptions(opt_options));
@@ -141,7 +152,7 @@ class TextFeature extends FeatureFormat {
   writeFeaturesText(features, opt_options) {}
 
   /**
-   * Write a single geometry in Polyline format.
+   * Write a single geometry.
    *
    * @function
    * @param {module:ol/geom/Geometry} geometry Geometry.
