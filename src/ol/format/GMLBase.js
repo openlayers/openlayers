@@ -4,7 +4,6 @@
 // FIXME Envelopes should not be treated as geometries! readEnvelope_ is part
 // of GEOMETRY_PARSERS_ and methods using GEOMETRY_PARSERS_ do not expect
 // envelopes/extents, only geometries!
-import {inherits} from '../util.js';
 import {extend} from '../array.js';
 import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
@@ -84,14 +83,15 @@ const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
  * is shared with versioned format classes GML2 and GML3.
  *
  * @abstract
- * @extends {module:ol/format/XMLFeature}
  */
-class GMLBase {
+class GMLBase extends XMLFeature {
 
   /**
    * @param {module:ol/format/GMLBase~Options=} opt_options Optional configuration object.
    */
   constructor(opt_options) {
+    super();
+
     const options = /** @type {module:ol/format/GMLBase~Options} */ (opt_options ? opt_options : {});
 
     /**
@@ -123,11 +123,97 @@ class GMLBase {
      */
     this.FEATURE_COLLECTION_PARSERS = {};
     this.FEATURE_COLLECTION_PARSERS[GMLNS] = {
-      'featureMember': makeReplacer(GMLBase.prototype.readFeaturesInternal),
-      'featureMembers': makeReplacer(GMLBase.prototype.readFeaturesInternal)
+      'featureMember': makeReplacer(this.readFeaturesInternal),
+      'featureMembers': makeReplacer(this.readFeaturesInternal)
     };
 
-    XMLFeature.call(this);
+    /**
+     * @const
+     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+     * @private
+     */
+    this.MULTIPOINT_PARSERS_ = {
+      'http://www.opengis.net/gml': {
+        'pointMember': makeArrayPusher(this.pointMemberParser_),
+        'pointMembers': makeArrayPusher(this.pointMemberParser_)
+      }
+    };
+
+
+    /**
+     * @const
+     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+     * @private
+     */
+    this.MULTILINESTRING_PARSERS_ = {
+      'http://www.opengis.net/gml': {
+        'lineStringMember': makeArrayPusher(this.lineStringMemberParser_),
+        'lineStringMembers': makeArrayPusher(this.lineStringMemberParser_)
+      }
+    };
+
+
+    /**
+     * @const
+     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+     * @private
+     */
+    this.MULTIPOLYGON_PARSERS_ = {
+      'http://www.opengis.net/gml': {
+        'polygonMember': makeArrayPusher(this.polygonMemberParser_),
+        'polygonMembers': makeArrayPusher(this.polygonMemberParser_)
+      }
+    };
+
+
+    /**
+     * @const
+     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+     * @private
+     */
+    this.POINTMEMBER_PARSERS_ = {
+      'http://www.opengis.net/gml': {
+        'Point': makeArrayPusher(this.readFlatCoordinatesFromNode_)
+      }
+    };
+
+
+    /**
+     * @const
+     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+     * @private
+     */
+    this.LINESTRINGMEMBER_PARSERS_ = {
+      'http://www.opengis.net/gml': {
+        'LineString': makeArrayPusher(this.readLineString)
+      }
+    };
+
+
+    /**
+     * @const
+     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+     * @private
+     */
+    this.POLYGONMEMBER_PARSERS_ = {
+      'http://www.opengis.net/gml': {
+        'Polygon': makeArrayPusher(this.readPolygon)
+      }
+    };
+
+
+    /**
+     * @const
+     * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+     * @protected
+     */
+    this.RING_PARSERS = {
+      'http://www.opengis.net/gml': {
+        'LinearRing': makeReplacer(this.readFlatLinearRing_)
+      }
+    };
+
+
   }
 
   /**
@@ -469,107 +555,5 @@ class GMLBase {
     return getProjection(this.srsName ? this.srsName : node.firstElementChild.getAttribute('srsName'));
   }
 }
-
-inherits(GMLBase, XMLFeature);
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- * @private
- */
-GMLBase.prototype.MULTIPOINT_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'pointMember': makeArrayPusher(GMLBase.prototype.pointMemberParser_),
-    'pointMembers': makeArrayPusher(GMLBase.prototype.pointMemberParser_)
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- * @private
- */
-GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'lineStringMember': makeArrayPusher(GMLBase.prototype.lineStringMemberParser_),
-    'lineStringMembers': makeArrayPusher(GMLBase.prototype.lineStringMemberParser_)
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- * @private
- */
-GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'polygonMember': makeArrayPusher(GMLBase.prototype.polygonMemberParser_),
-    'polygonMembers': makeArrayPusher(GMLBase.prototype.polygonMemberParser_)
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- * @private
- */
-GMLBase.prototype.POINTMEMBER_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'Point': makeArrayPusher(GMLBase.prototype.readFlatCoordinatesFromNode_)
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- * @private
- */
-GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'LineString': makeArrayPusher(GMLBase.prototype.readLineString)
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- * @private
- */
-GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'Polygon': makeArrayPusher(GMLBase.prototype.readPolygon)
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- * @protected
- */
-GMLBase.prototype.RING_PARSERS = {
-  'http://www.opengis.net/gml': {
-    'LinearRing': makeReplacer(GMLBase.prototype.readFlatLinearRing_)
-  }
-};
-
-
-/**
- * Read all features from a GML FeatureCollection.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
- * @return {Array.<module:ol/Feature>} Features.
- * @api
- */
-GMLBase.prototype.readFeatures;
-
 
 export default GMLBase;

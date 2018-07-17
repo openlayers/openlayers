@@ -75,7 +75,13 @@ class XMLFeature {
   }
 
   /**
-   * @inheritDoc
+   * Read all features from a feature collection.
+   *
+   * @function
+   * @param {Document|Node|Object|string} source Source.
+   * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
+   * @return {Array.<module:ol/Feature>} Features.
+   * @api
    */
   readFeatures(source, opt_options) {
     if (isDocument(source)) {
