@@ -1,7 +1,6 @@
 /**
  * @module ol/control/FullScreen
  */
-import {inherits} from '../util.js';
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_UNSUPPORTED} from '../css.js';
 import {replaceNode} from '../dom.js';
@@ -63,14 +62,18 @@ const getChangeType = (function() {
  *
  *
  * @constructor
- * @extends {module:ol/control/Control}
  * @param {module:ol/control/FullScreen~Options=} opt_options Options.
  * @api
  */
-class FullScreen {
+class FullScreen extends Control {
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};
+
+    super({
+      element: document.createElement('div'),
+      target: options.target
+    });
 
     /**
      * @private
@@ -110,14 +113,9 @@ class FullScreen {
     const cssClasses = this.cssClassName_ + ' ' + CLASS_UNSELECTABLE +
         ' ' + CLASS_CONTROL + ' ' +
         (!isFullScreenSupported() ? CLASS_UNSUPPORTED : '');
-    const element = document.createElement('div');
+    const element = this.element;
     element.className = cssClasses;
     element.appendChild(button);
-
-    Control.call(this, {
-      element: element,
-      target: options.target
-    });
 
     /**
      * @private
@@ -196,7 +194,7 @@ class FullScreen {
    * @api
    */
   setMap(map) {
-    Control.prototype.setMap.call(this, map);
+    super.setMap(map);
     if (map) {
       this.listenerKeys.push(listen(document,
         getChangeType(),
@@ -205,8 +203,6 @@ class FullScreen {
     }
   }
 }
-
-inherits(FullScreen, Control);
 
 
 /**
