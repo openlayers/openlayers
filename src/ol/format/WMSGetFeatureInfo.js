@@ -1,7 +1,6 @@
 /**
  * @module ol/format/WMSGetFeatureInfo
  */
-import {inherits} from '../util.js';
 import {extend, includes} from '../array.js';
 import GML2 from '../format/GML2.js';
 import XMLFeature from '../format/XMLFeature.js';
@@ -34,15 +33,15 @@ const layerIdentifier = '_layer';
  * Format for reading WMSGetFeatureInfo format. It uses
  * {@link module:ol/format/GML2~GML2} to read features.
  *
- * @extends {module:ol/format/XMLFeature}
  * @api
  */
-class WMSGetFeatureInfo {
+class WMSGetFeatureInfo extends XMLFeature {
 
   /**
    * @param {module:ol/format/WMSGetFeatureInfo~Options=} opt_options Options.
    */
   constructor(opt_options) {
+    super();
 
     const options = opt_options ? opt_options : {};
 
@@ -65,8 +64,6 @@ class WMSGetFeatureInfo {
      * @type {Array.<string>}
      */
     this.layers_ = options.layers ? options.layers : null;
-
-    XMLFeature.call(this);
   }
 
   /**
@@ -171,20 +168,6 @@ class WMSGetFeatureInfo {
    */
   writeGeometryNode(geometry, opt_options) {}
 }
-
-inherits(WMSGetFeatureInfo, XMLFeature);
-
-
-/**
- * Read all features from a WMSGetFeatureInfo response.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
- * @return {Array.<module:ol/Feature>} Features.
- * @api
- */
-WMSGetFeatureInfo.prototype.readFeatures;
 
 
 export default WMSGetFeatureInfo;
