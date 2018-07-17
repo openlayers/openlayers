@@ -1,7 +1,6 @@
 /**
  * @module ol/format/JSONFeature
  */
-import {inherits} from '../util.js';
 import FeatureFormat from '../format/Feature.js';
 import FormatType from '../format/FormatType.js';
 
@@ -12,11 +11,10 @@ import FormatType from '../format/FormatType.js';
  * Base class for JSON feature formats.
  *
  * @abstract
- * @extends {module:ol/format/Feature}
  */
-class JSONFeature {
+class JSONFeature extends FeatureFormat {
   constructor() {
-    FeatureFormat.call(this);
+    super();
   }
 
   /**
@@ -173,8 +171,6 @@ class JSONFeature {
    */
   writeGeometryObject(geometry, opt_options) {}
 }
-
-inherits(JSONFeature, FeatureFormat);
 
 
 /**
