@@ -1,7 +1,6 @@
 /**
  * @module ol/TileQueue
  */
-import {inherits} from './util.js';
 import TileState from './TileState.js';
 import {listen, unlisten} from './events.js';
 import EventType from './events/EventType.js';
@@ -13,10 +12,7 @@ import PriorityQueue from './structs/PriorityQueue.js';
  */
 
 
-/**
- * @extends {module:ol/structs/PriorityQueue.<Array>}
- */
-class TileQueue {
+class TileQueue extends PriorityQueue {
 
   /**
    * @param {module:ol/TileQueue~PriorityFunction} tilePriorityFunction Tile priority function.
@@ -24,8 +20,7 @@ class TileQueue {
    */
   constructor(tilePriorityFunction, tileChangeCallback) {
 
-    PriorityQueue.call(
-      this,
+    super(
       /**
        * @param {Array} element Element.
        * @return {number} Priority.
@@ -65,7 +60,7 @@ class TileQueue {
    * @inheritDoc
    */
   enqueue(element) {
-    const added = PriorityQueue.prototype.enqueue.call(this, element);
+    const added = super.enqueue(element);
     if (added) {
       const tile = element[0];
       listen(tile, EventType.CHANGE, this.handleTileChange, this);
@@ -128,8 +123,6 @@ class TileQueue {
     }
   }
 }
-
-inherits(TileQueue, PriorityQueue);
 
 
 export default TileQueue;
