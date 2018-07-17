@@ -85,7 +85,4 @@ class ZoomToExtent extends Control {
   }
 }
 
-inherits(ZoomToExtent, Control);
-
-
 export default ZoomToExtent;
