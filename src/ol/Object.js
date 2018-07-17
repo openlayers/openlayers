@@ -1,7 +1,7 @@
 /**
  * @module ol/Object
  */
-import {getUid, inherits} from './util.js';
+import {getUid} from './util.js';
 import ObjectEventType from './ObjectEventType.js';
 import Observable from './Observable.js';
 import Event from './events/Event.js';
@@ -11,9 +11,8 @@ import {assign} from './obj.js';
 /**
  * @classdesc
  * Events emitted by {@link module:ol/Object~BaseObject} instances are instances of this type.
- * @extends {module:ol/events/Event}
- */
-class ObjectEvent {
+  */
+class ObjectEvent extends Event {
 
   /**
    * @param {string} type The event type.
@@ -21,7 +20,7 @@ class ObjectEvent {
    * @param {*} oldValue The old value for `key`.
    */
   constructor(type, key, oldValue) {
-    Event.call(this, type);
+    super(type);
 
     /**
      * The name of the property whose value is changing.
@@ -41,8 +40,6 @@ class ObjectEvent {
   }
 
 }
-
-inherits(ObjectEvent, Event);
 
 
 /**
@@ -85,17 +82,16 @@ inherits(ObjectEvent, Event);
  * Properties can be deleted by using the unset method. E.g.
  * object.unset('foo').
  *
- * @extends {module:ol/Observable}
  * @fires module:ol/Object~ObjectEvent
  * @api
  */
-class BaseObject {
+class BaseObject extends Observable {
 
   /**
    * @param {Object.<string, *>=} opt_values An object with key-value pairs.
    */
   constructor(opt_values) {
-    Observable.call(this);
+    super();
 
     // Call {@link module:ol~getUid} to ensure that the order of objects' ids is
     // the same as the order in which they were created.  This also helps to
@@ -206,8 +202,6 @@ class BaseObject {
     }
   }
 }
-
-inherits(BaseObject, Observable);
 
 
 /**
