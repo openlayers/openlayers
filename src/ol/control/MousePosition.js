@@ -1,8 +1,6 @@
 /**
  * @module ol/control/MousePosition
  */
-
-import {inherits} from '../util.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getChangeEventType} from '../Object.js';
@@ -47,12 +45,11 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * can be changed by using the css selector `.ol-mouse-position`.
  *
  * @constructor
- * @extends {module:ol/control/Control}
  * @param {module:ol/control/MousePosition~Options=} opt_options Mouse position
  *     options.
  * @api
  */
-class MousePosition {
+class MousePosition extends Control {
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};
@@ -60,7 +57,7 @@ class MousePosition {
     const element = document.createElement('DIV');
     element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
 
-    Control.call(this, {
+    super({
       element: element,
       render: options.render || render,
       target: options.target
@@ -173,7 +170,7 @@ class MousePosition {
    * @api
    */
   setMap(map) {
-    Control.prototype.setMap.call(this, map);
+    super.setMap(map);
     if (map) {
       const viewport = map.getViewport();
       this.listenerKeys.push(
@@ -243,8 +240,6 @@ class MousePosition {
     }
   }
 }
-
-inherits(MousePosition, Control);
 
 
 /**
