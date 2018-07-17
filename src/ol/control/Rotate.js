@@ -31,11 +31,13 @@ import EventType from '../events/EventType.js';
  * To style this control use css selector `.ol-rotate`. A `.ol-hidden` css
  * selector is added to the button when the rotation is 0.
  *
- * @constructor
- * @param {module:ol/control/Rotate~Options=} opt_options Rotate options.
  * @api
  */
 class Rotate extends Control {
+
+  /**
+   * @param {module:ol/control/Rotate~Options=} opt_options Rotate options.
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};

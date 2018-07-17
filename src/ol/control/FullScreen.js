@@ -60,12 +60,13 @@ const getChangeType = (function() {
  * The [Fullscreen API](http://www.w3.org/TR/fullscreen/) is used to
  * toggle the map in full screen mode.
  *
- *
- * @constructor
- * @param {module:ol/control/FullScreen~Options=} opt_options Options.
  * @api
  */
 class FullScreen extends Control {
+
+  /**
+   * @param {module:ol/control/FullScreen~Options=} opt_options Options.
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};

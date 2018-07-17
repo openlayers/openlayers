@@ -43,11 +43,13 @@ import {listen, unlistenByKey} from '../events.js';
  * You can also extend this base for your own control class. See
  * examples/custom-controls for an example of how to do this.
  *
- * @constructor
- * @param {module:ol/control/Control~Options} options Control options.
  * @api
  */
 class Control extends BaseObject {
+
+  /**
+   * @param {module:ol/control/Control~Options} options Control options.
+   */
   constructor(options) {
 
     super();

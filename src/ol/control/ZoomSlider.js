@@ -41,11 +41,13 @@ const Direction = {
  *
  *     map.addControl(new ZoomSlider());
  *
- * @constructor
- * @param {module:ol/control/ZoomSlider~Options=} opt_options Zoom slider options.
  * @api
  */
 class ZoomSlider extends Control {
+
+  /**
+   * @param {module:ol/control/ZoomSlider~Options=} opt_options Zoom slider options.
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};

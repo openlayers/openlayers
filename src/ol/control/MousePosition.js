@@ -44,12 +44,13 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * By default the control is shown in the top right corner of the map, but this
  * can be changed by using the css selector `.ol-mouse-position`.
  *
- * @constructor
- * @param {module:ol/control/MousePosition~Options=} opt_options Mouse position
- *     options.
  * @api
  */
 class MousePosition extends Control {
+
+  /**
+   * @param {module:ol/control/MousePosition~Options=} opt_options Mouse position options.
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};

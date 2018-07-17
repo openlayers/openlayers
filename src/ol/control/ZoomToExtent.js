@@ -25,11 +25,13 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
  * A button control which, when pressed, changes the map view to a specific
  * extent. To style this control use the css selector `.ol-zoom-extent`.
  *
- * @constructor
- * @param {module:ol/control/ZoomToExtent~Options=} opt_options Options.
  * @api
  */
 class ZoomToExtent extends Control {
+
+  /**
+   * @param {module:ol/control/ZoomToExtent~Options=} opt_options Options.
+   */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
 

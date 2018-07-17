@@ -41,11 +41,13 @@ import {visibleAtResolution} from '../layer/Layer.js';
  * By default it will show in the bottom right portion of the map, but this can
  * be changed by using a css selector for `.ol-attribution`.
  *
- * @constructor
- * @param {module:ol/control/Attribution~Options=} opt_options Attribution options.
  * @api
  */
 class Attribution extends Control {
+
+  /**
+   * @param {module:ol/control/Attribution~Options=} opt_options Attribution options.
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};

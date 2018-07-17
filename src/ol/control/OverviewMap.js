@@ -60,11 +60,14 @@ const MIN_RATIO = 0.1;
 /**
  * Create a new control with a map acting as an overview map for an other
  * defined map.
- * @constructor
- * @param {module:ol/control/OverviewMap~Options=} opt_options OverviewMap options.
+ *
  * @api
  */
 class OverviewMap extends Control {
+
+  /**
+   * @param {module:ol/control/OverviewMap~Options=} opt_options OverviewMap options.
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};

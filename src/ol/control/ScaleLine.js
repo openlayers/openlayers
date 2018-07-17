@@ -58,11 +58,13 @@ const LEADING_DIGITS = [1, 2, 5];
  * By default the scale line will show in the bottom left portion of the map,
  * but this can be changed by using the css selector `.ol-scale-line`.
  *
- * @constructor
- * @param {module:ol/control/ScaleLine~Options=} opt_options Scale line options.
  * @api
  */
 class ScaleLine extends Control {
+
+  /**
+   * @param {module:ol/control/ScaleLine~Options=} opt_options Scale line options.
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};

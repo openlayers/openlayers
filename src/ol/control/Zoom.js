@@ -30,11 +30,13 @@ import {easeOut} from '../easing.js';
  * This control is one of the default controls of a map. To style this control
  * use css selectors `.ol-zoom-in` and `.ol-zoom-out`.
  *
- * @constructor
- * @param {module:ol/control/Zoom~Options=} opt_options Zoom options.
  * @api
  */
 class Zoom extends Control {
+
+  /**
+   * @param {module:ol/control/Zoom~Options=} opt_options Zoom options.
+   */
   constructor(opt_options) {
 
     const options = opt_options ? opt_options : {};
