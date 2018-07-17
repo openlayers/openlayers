@@ -1,7 +1,6 @@
 /**
  * @module ol/format/EsriJSON
  */
-import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import {assert} from '../asserts.js';
 import {containsExtent} from '../extent.js';
@@ -58,10 +57,9 @@ GEOMETRY_WRITERS[GeometryType.MULTI_POLYGON] = writeMultiPolygonGeometry;
  * @classdesc
  * Feature format for reading and writing data in the EsriJSON format.
  *
- * @extends {module:ol/format/JSONFeature}
  * @api
  */
-class EsriJSON {
+class EsriJSON extends JSONFeature {
 
   /**
    * @param {module:ol/format/EsriJSON~Options=} opt_options Options.
@@ -70,7 +68,7 @@ class EsriJSON {
 
     const options = opt_options ? opt_options : {};
 
-    JSONFeature.call(this);
+    super();
 
     /**
      * Name of the geometry attribute for features.
@@ -207,8 +205,6 @@ class EsriJSON {
     });
   }
 }
-
-inherits(EsriJSON, JSONFeature);
 
 
 /**
@@ -544,55 +540,6 @@ function writeMultiPolygonGeometry(geometry, opt_options) {
 
 
 /**
- * Read a feature from a EsriJSON Feature source.  Only works for Feature,
- * use `readFeatures` to read FeatureCollection source.
- *
- * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature} Feature.
- * @api
- */
-EsriJSON.prototype.readFeature;
-
-
-/**
- * Read all features from a EsriJSON source.  Works with both Feature and
- * FeatureCollection sources.
- *
- * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature>} Features.
- * @api
- */
-EsriJSON.prototype.readFeatures;
-
-
-/**
- * Read a geometry from a EsriJSON source.
- *
- * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/geom/Geometry} Geometry.
- * @api
- */
-EsriJSON.prototype.readGeometry;
-
-
-/**
- * Read the projection from a EsriJSON source.
- *
- * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
- * @return {module:ol/proj/Projection} Projection.
- * @api
- */
-EsriJSON.prototype.readProjection;
-
-
-/**
  * @param {module:ol/geom/Geometry} geometry Geometry.
  * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
  * @return {EsriJSONGeometry} EsriJSON geometry.
@@ -602,42 +549,6 @@ function writeGeometry(geometry, opt_options) {
   return geometryWriter(/** @type {module:ol/geom/Geometry} */(
     transformWithOptions(geometry, true, opt_options)), opt_options);
 }
-
-
-/**
- * Encode a geometry as a EsriJSON string.
- *
- * @function
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {string} EsriJSON.
- * @api
- */
-EsriJSON.prototype.writeGeometry;
-
-
-/**
- * Encode a feature as a EsriJSON Feature string.
- *
- * @function
- * @param {module:ol/Feature} feature Feature.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {string} EsriJSON.
- * @api
- */
-EsriJSON.prototype.writeFeature;
-
-
-/**
- * Encode an array of features as EsriJSON.
- *
- * @function
- * @param {Array.<module:ol/Feature>} features Features.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {string} EsriJSON.
- * @api
- */
-EsriJSON.prototype.writeFeatures;
 
 
 export default EsriJSON;

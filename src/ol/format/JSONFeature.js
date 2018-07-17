@@ -27,7 +27,13 @@ class JSONFeature {
   }
 
   /**
-   * @inheritDoc
+   * Read a feature.  Only works for a single feature. Use `readFeatures` to
+   * read a feature collection.
+   *
+   * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
+   * @return {module:ol/Feature} Feature.
+   * @api
    */
   readFeature(source, opt_options) {
     return this.readFeatureFromObject(
@@ -35,7 +41,13 @@ class JSONFeature {
   }
 
   /**
-   * @inheritDoc
+   * Read all features.  Works with both a single feature and a feature
+   * collection.
+   *
+   * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
+   * @return {Array.<module:ol/Feature>} Features.
+   * @api
    */
   readFeatures(source, opt_options) {
     return this.readFeaturesFromObject(
@@ -61,7 +73,12 @@ class JSONFeature {
   readFeaturesFromObject(object, opt_options) {}
 
   /**
-   * @inheritDoc
+   * Read a geometry.
+   *
+   * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
+   * @return {module:ol/geom/Geometry} Geometry.
+   * @api
    */
   readGeometry(source, opt_options) {
     return this.readGeometryFromObject(
@@ -78,7 +95,11 @@ class JSONFeature {
   readGeometryFromObject(object, opt_options) {}
 
   /**
-   * @inheritDoc
+   * Read the projection.
+   *
+   * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+   * @return {module:ol/proj/Projection} Projection.
+   * @api
    */
   readProjection(source) {
     return this.readProjectionFromObject(getObject(source));
@@ -93,7 +114,12 @@ class JSONFeature {
   readProjectionFromObject(object) {}
 
   /**
-   * @inheritDoc
+   * Encode a feature as string.
+   *
+   * @param {module:ol/Feature} feature Feature.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {string} Encoded feature.
+   * @api
    */
   writeFeature(feature, opt_options) {
     return JSON.stringify(this.writeFeatureObject(feature, opt_options));
@@ -108,7 +134,12 @@ class JSONFeature {
   writeFeatureObject(feature, opt_options) {}
 
   /**
-   * @inheritDoc
+   * Encode an array of features as string.
+   *
+   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {string} Encoded features.
+   * @api
    */
   writeFeatures(features, opt_options) {
     return JSON.stringify(this.writeFeaturesObject(features, opt_options));
@@ -123,7 +154,12 @@ class JSONFeature {
   writeFeaturesObject(features, opt_options) {}
 
   /**
-   * @inheritDoc
+   * Encode a geometry as string.
+   *
+   * @param {module:ol/geom/Geometry} geometry Geometry.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @return {string} Encoded geometry.
+   * @api
    */
   writeGeometry(geometry, opt_options) {
     return JSON.stringify(this.writeGeometryObject(geometry, opt_options));
