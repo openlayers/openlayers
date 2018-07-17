@@ -1,7 +1,6 @@
 /**
  * @module ol/proj/epsg4326
  */
-import {inherits} from '../util.js';
 import Projection from '../proj/Projection.js';
 import Units from '../proj/Units.js';
 
@@ -38,18 +37,15 @@ export const METERS_PER_UNIT = Math.PI * RADIUS / 180;
  * Note that OpenLayers does not strictly comply with the EPSG definition.
  * The EPSG registry defines 4326 as a CRS for Latitude,Longitude (y,x).
  * OpenLayers treats EPSG:4326 as a pseudo-projection, with x,y coordinates.
- *
- * @constructor
- * @extends {module:ol/proj/Projection}
  */
-class EPSG4326Projection {
+class EPSG4326Projection extends Projection {
 
   /**
    * @param {string} code Code.
    * @param {string=} opt_axisOrientation Axis orientation.
    */
   constructor(code, opt_axisOrientation) {
-    Projection.call(this, {
+    super({
       code: code,
       units: Units.DEGREES,
       extent: EXTENT,
@@ -62,8 +58,6 @@ class EPSG4326Projection {
   }
 
 }
-
-inherits(EPSG4326Projection, Projection);
 
 
 /**
