@@ -11,8 +11,11 @@ import {isDocument, isNode, parse} from '../xml.js';
  */
 class XML {
   /**
-   * @param {Document|Node|string} source Source.
-   * @return {Object} The parsed result.
+   * Read the source document.
+   *
+   * @param {Document|Node|string} source The XML source.
+   * @return {Object} An object representing the source.
+   * @api
    */
   read(source) {
     if (isDocument(source)) {

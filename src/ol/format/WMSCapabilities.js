@@ -1,7 +1,6 @@
 /**
  * @module ol/format/WMSCapabilities
  */
-import {inherits} from '../util.js';
 import {readHref} from '../format/XLink.js';
 import XML from '../format/XML.js';
 import {readDecimalString, readString, readNonNegativeInteger, readDecimal, readBooleanString, readNonNegativeIntegerString} from '../format/xsd.js';
@@ -46,13 +45,11 @@ const CAPABILITY_PARSERS = makeStructureNS(
  * @classdesc
  * Format for reading WMS capabilities data
  *
- * @extends {module:ol/format/XML}
  * @api
  */
-class WMSCapabilities {
+class WMSCapabilities extends XML {
   constructor() {
-
-    XML.call(this);
+    super();
 
     /**
      * @type {string|undefined}
@@ -83,8 +80,6 @@ class WMSCapabilities {
     return wmsCapabilityObject ? wmsCapabilityObject : null;
   }
 }
-
-inherits(WMSCapabilities, XML);
 
 
 /**
@@ -288,17 +283,6 @@ const KEYWORDLIST_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Keyword': makeArrayPusher(readString)
   });
-
-
-/**
- * Read a WMS capabilities document.
- *
- * @function
- * @param {Document|Node|string} source The XML source.
- * @return {Object} An object representing the WMS capabilities.
- * @api
- */
-WMSCapabilities.prototype.read;
 
 
 /**
