@@ -1,7 +1,7 @@
 /**
  * @module ol/VectorTile
  */
-import {getUid, inherits} from './util.js';
+import {getUid} from './util.js';
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 
@@ -18,10 +18,7 @@ const DEFAULT_EXTENT = [0, 0, 4096, 4096];
  * @api
  */
 
-/**
- * @extends {module:ol/Tile}
- */
-class VectorTile {
+class VectorTile extends Tile {
 
   /**
    * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
@@ -33,7 +30,7 @@ class VectorTile {
    */
   constructor(tileCoord, state, src, format, tileLoadFunction, opt_options) {
 
-    Tile.call(this, tileCoord, state, opt_options);
+    super(tileCoord, state, opt_options);
 
     /**
      * @type {number}
@@ -99,7 +96,7 @@ class VectorTile {
     this.replayGroups_ = {};
     this.state = TileState.ABORT;
     this.changed();
-    Tile.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**
@@ -242,7 +239,5 @@ class VectorTile {
     this.loader_ = loader;
   }
 }
-
-inherits(VectorTile, Tile);
 
 export default VectorTile;
