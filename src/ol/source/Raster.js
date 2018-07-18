@@ -145,6 +145,7 @@ class RasterSource extends ImageSource {
    * @api
    */
   constructor(options) {
+    super({});
 
     /**
      * @private
@@ -238,8 +239,6 @@ class RasterSource extends ImageSource {
       viewHints: [],
       wantedTiles: {}
     };
-
-    super({});
 
     if (options.operation !== undefined) {
       this.setOperation(options.operation, options.lib);
