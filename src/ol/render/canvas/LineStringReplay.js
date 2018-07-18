@@ -1,7 +1,6 @@
 /**
  * @module ol/render/canvas/LineStringReplay
  */
-import {inherits} from '../../util.js';
 import CanvasInstruction, {strokeInstruction, beginPathInstruction} from '../canvas/Instruction.js';
 import CanvasReplay from '../canvas/Replay.js';
 

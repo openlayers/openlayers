@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/ImageReplay
  */
-import {getUid, inherits} from '../../util.js';
+import {getUid} from '../../util.js';
 import WebGLTextureReplay from '../webgl/TextureReplay.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 

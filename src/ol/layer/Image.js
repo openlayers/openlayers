@@ -1,7 +1,6 @@
 /**
  * @module ol/layer/Image
  */
-import {inherits} from '../util.js';
 import LayerType from '../LayerType.js';
 import Layer from '../layer/Layer.js';
 

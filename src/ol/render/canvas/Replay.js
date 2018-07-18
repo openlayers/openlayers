@@ -1,7 +1,7 @@
 /**
  * @module ol/render/canvas/Replay
  */
-import {getUid, inherits} from '../../util.js';
+import {getUid} from '../../util.js';
 import {UNDEFINED} from '../../functions.js';
 import {equals, reverseSubArray} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';

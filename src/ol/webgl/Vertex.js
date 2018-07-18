@@ -1,7 +1,7 @@
 /**
  * @module ol/webgl/Vertex
  */
-import {inherits} from '../util.js';
+
 import {VERTEX_SHADER} from '../webgl.js';
 import WebGLShader from '../webgl/Shader.js';
 

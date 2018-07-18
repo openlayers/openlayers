@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/ReplayGroup
  */
-import {inherits} from '../../util.js';
+
 import {numberSafeCompareFunction} from '../../array.js';
 import {buffer, createOrUpdateFromCoordinate} from '../../extent.js';
 import {isEmpty} from '../../obj.js';

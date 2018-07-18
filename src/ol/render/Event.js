@@ -1,7 +1,7 @@
 /**
  * @module ol/render/Event
  */
-import {inherits} from '../util.js';
+
 import Event from '../events/Event.js';
 
 class RenderEvent extends Event {

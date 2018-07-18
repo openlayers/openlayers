@@ -1,7 +1,7 @@
 /**
  * @module ol/style/RegularShape
  */
-import {inherits} from '../util.js';
+
 import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
 import {CANVAS_LINE_DASH} from '../has.js';

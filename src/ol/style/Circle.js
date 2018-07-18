@@ -1,7 +1,7 @@
 /**
  * @module ol/style/Circle
  */
-import {inherits} from '../util.js';
+
 import RegularShape from '../style/RegularShape.js';
 
 

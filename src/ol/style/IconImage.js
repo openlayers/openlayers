@@ -1,7 +1,7 @@
 /**
  * @module ol/style/IconImage
  */
-import {inherits} from '../util.js';
+
 import {createCanvasContext2D} from '../dom.js';
 import {listenOnce, unlistenByKey} from '../events.js';
 import EventTarget from '../events/EventTarget.js';

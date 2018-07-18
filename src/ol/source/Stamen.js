@@ -1,7 +1,7 @@
 /**
  * @module ol/source/Stamen
  */
-import {inherits} from '../util.js';
+
 import {ATTRIBUTION as OSM_ATTRIBUTION} from '../source/OSM.js';
 import XYZ from '../source/XYZ.js';
 

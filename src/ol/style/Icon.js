@@ -1,7 +1,7 @@
 /**
  * @module ol/style/Icon
  */
-import {getUid, inherits} from '../util.js';
+import {getUid} from '../util.js';
 import ImageState from '../ImageState.js';
 import {assert} from '../asserts.js';
 import {asArray} from '../color.js';

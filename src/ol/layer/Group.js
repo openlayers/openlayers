@@ -1,7 +1,7 @@
 /**
  * @module ol/layer/Group
  */
-import {getUid, inherits} from '../util.js';
+import {getUid} from '../util.js';
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import {getChangeEventType} from '../Object.js';
@@ -105,7 +105,7 @@ class LayerGroup extends BaseLayer {
    * @param {module:ol/events/Event} event Event.
    * @private
    */
-  handleLayersChanged_(event) {
+  handleLayersChanged_() {
     this.layersListenerKeys_.forEach(unlistenByKey);
     this.layersListenerKeys_.length = 0;
 

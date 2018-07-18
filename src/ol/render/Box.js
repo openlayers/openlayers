@@ -1,9 +1,7 @@
 /**
  * @module ol/render/Box
  */
-// FIXME add rotation
 
-import {inherits} from '../util.js';
 import Disposable from '../Disposable.js';
 import Polygon from '../geom/Polygon.js';
 

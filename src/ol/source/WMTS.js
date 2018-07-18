@@ -1,7 +1,7 @@
 /**
  * @module ol/source/WMTS
  */
-import {inherits} from '../util.js';
+
 import {expandUrl, createFromTileUrlFunctions, nullTileUrlFunction} from '../tileurlfunction.js';
 import {find, findIndex, includes} from '../array.js';
 import {containsExtent} from '../extent.js';

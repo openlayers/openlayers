@@ -3,7 +3,7 @@
  */
 
 import {DEFAULT_WMS_VERSION} from './common.js';
-import {inherits} from '../util.js';
+
 import {assert} from '../asserts.js';
 import {buffer, createEmpty} from '../extent.js';
 import {assign} from '../obj.js';

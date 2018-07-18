@@ -1,7 +1,7 @@
 /**
  * @module ol/tilegrid/WMTS
  */
-import {inherits} from '../util.js';
+
 import {find} from '../array.js';
 import {get as getProjection} from '../proj.js';
 import TileGrid from '../tilegrid/TileGrid.js';

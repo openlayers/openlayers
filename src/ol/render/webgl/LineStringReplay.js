@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/LineStringReplay
  */
-import {getUid, inherits} from '../../util.js';
+import {getUid} from '../../util.js';
 import {equals} from '../../array.js';
 import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';

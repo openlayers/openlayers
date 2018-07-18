@@ -1,7 +1,7 @@
 /**
  * @module ol/source/TileArcGISRest
  */
-import {inherits} from '../util.js';
+
 import {createEmpty} from '../extent.js';
 import {modulo} from '../math.js';
 import {assign} from '../obj.js';

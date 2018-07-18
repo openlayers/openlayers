@@ -1,7 +1,7 @@
 /**
  * @module ol/source/XYZ
  */
-import {inherits} from '../util.js';
+
 import TileImage from '../source/TileImage.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 

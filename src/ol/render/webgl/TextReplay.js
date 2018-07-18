@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/TextReplay
  */
-import {getUid, inherits} from '../../util.js';
+import {getUid} from '../../util.js';
 import {asColorLike} from '../../colorlike.js';
 import {createCanvasContext2D} from '../../dom.js';
 import GeometryType from '../../geom/GeometryType.js';

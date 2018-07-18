@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/TextureReplay
  */
-import {getUid, inherits} from '../../util.js';
+import {getUid} from '../../util.js';
 import {intersects} from '../../extent.js';
 import {isEmpty} from '../../obj.js';
 import {fragment, vertex} from '../webgl/texturereplay/defaultshader.js';

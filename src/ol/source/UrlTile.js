@@ -1,7 +1,7 @@
 /**
  * @module ol/source/UrlTile
  */
-import {getUid, inherits} from '../util.js';
+import {getUid} from '../util.js';
 import TileState from '../TileState.js';
 import {expandUrl, createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
 import TileSource, {TileSourceEvent} from '../source/Tile.js';

@@ -1,7 +1,7 @@
 /**
  * @module ol/render/canvas/ReplayGroup
  */
-import {inherits} from '../../util.js';
+
 import {numberSafeCompareFunction} from '../../array.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';

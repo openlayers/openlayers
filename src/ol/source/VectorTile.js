@@ -1,7 +1,7 @@
 /**
  * @module ol/source/VectorTile
  */
-import {inherits} from '../util.js';
+
 import TileState from '../TileState.js';
 import VectorImageTile, {defaultLoadFunction} from '../VectorImageTile.js';
 import Tile from '../VectorTile.js';

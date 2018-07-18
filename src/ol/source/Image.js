@@ -2,7 +2,7 @@
  * @module ol/source/Image
  */
 import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
-import {inherits} from '../util.js';
+
 import ImageState from '../ImageState.js';
 import {linearFindNearest} from '../array.js';
 import Event from '../events/Event.js';

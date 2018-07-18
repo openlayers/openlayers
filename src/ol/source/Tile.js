@@ -1,7 +1,7 @@
 /**
  * @module ol/source/Tile
  */
-import {inherits} from '../util.js';
+
 import {UNDEFINED} from '../functions.js';
 import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';

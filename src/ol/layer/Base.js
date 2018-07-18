@@ -1,7 +1,6 @@
 /**
  * @module ol/layer/Base
  */
-import {inherits} from '../util.js';
 import BaseObject from '../Object.js';
 import LayerProperty from '../layer/Property.js';
 import {clamp} from '../math.js';

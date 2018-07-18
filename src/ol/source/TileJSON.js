@@ -7,7 +7,7 @@
  * @see http://mapbox.com/developers/api/
  */
 
-import {inherits} from '../util.js';
+
 import {createFromTemplates} from '../tileurlfunction.js';
 import {assert} from '../asserts.js';
 import {applyTransform, intersects} from '../extent.js';

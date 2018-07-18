@@ -2,7 +2,7 @@
  * @module ol/reproj/Image
  */
 import {ERROR_THRESHOLD} from './common.js';
-import {inherits} from '../util.js';
+
 import ImageBase from '../ImageBase.js';
 import ImageState from '../ImageState.js';
 import {listen, unlistenByKey} from '../events.js';

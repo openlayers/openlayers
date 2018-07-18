@@ -5,7 +5,6 @@
 // FIXME need to handle large thick features (where pixel size matters)
 // FIXME add offset and end to ol/geom/flat/transform~transform2D?
 
-import {inherits} from '../../util.js';
 import {equals} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
 import {intersects} from '../../extent.js';

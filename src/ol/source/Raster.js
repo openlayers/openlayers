@@ -1,7 +1,7 @@
 /**
  * @module ol/source/Raster
  */
-import {getUid, inherits} from '../util.js';
+import {getUid} from '../util.js';
 import ImageCanvas from '../ImageCanvas.js';
 import TileQueue from '../TileQueue.js';
 import {createCanvasContext2D} from '../dom.js';

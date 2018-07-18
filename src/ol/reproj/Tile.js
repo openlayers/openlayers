@@ -2,7 +2,7 @@
  * @module ol/reproj/Tile
  */
 import {ERROR_THRESHOLD} from './common.js';
-import {inherits} from '../util.js';
+
 import Tile from '../Tile.js';
 import TileState from '../TileState.js';
 import {listen, unlistenByKey} from '../events.js';

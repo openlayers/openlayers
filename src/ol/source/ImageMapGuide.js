@@ -1,7 +1,7 @@
 /**
  * @module ol/source/ImageMapGuide
  */
-import {inherits} from '../util.js';
+
 import ImageWrapper from '../Image.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
