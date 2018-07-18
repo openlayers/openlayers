@@ -75,7 +75,7 @@ describe('ol.interaction.DragZoom', function() {
       box.geometry_ = polygonFromExtent(extent);
       interaction.box_ = box;
 
-      interaction.onBoxEnd();
+      interaction.onBoxEnd_();
       setTimeout(function() {
         const view = map.getView();
         const center = view.getCenter();
@@ -99,7 +99,7 @@ describe('ol.interaction.DragZoom', function() {
 
       map.getView().setResolution(0.25);
       setTimeout(function() {
-        interaction.onBoxEnd();
+        interaction.onBoxEnd_();
         setTimeout(function() {
           const view = map.getView();
           const resolution = view.getResolution();
