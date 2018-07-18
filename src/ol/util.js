@@ -22,6 +22,7 @@
  * @param {!Function} childCtor Child constructor.
  * @param {!Function} parentCtor Parent constructor.
  * @function module:ol.inherits
+ * @deprecated
  * @api
  */
 export function inherits(childCtor, parentCtor) {
