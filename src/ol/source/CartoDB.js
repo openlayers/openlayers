@@ -40,6 +40,16 @@ class CartoDB extends XYZ {
    * @api
    */
   constructor(options) {
+    super({
+      attributions: options.attributions,
+      cacheSize: options.cacheSize,
+      crossOrigin: options.crossOrigin,
+      maxZoom: options.maxZoom !== undefined ? options.maxZoom : 18,
+      minZoom: options.minZoom,
+      projection: options.projection,
+      state: SourceState.LOADING,
+      wrapX: options.wrapX
+    });
 
     /**
      * @type {string}
@@ -65,16 +75,6 @@ class CartoDB extends XYZ {
      */
     this.templateCache_ = {};
 
-    super({
-      attributions: options.attributions,
-      cacheSize: options.cacheSize,
-      crossOrigin: options.crossOrigin,
-      maxZoom: options.maxZoom !== undefined ? options.maxZoom : 18,
-      minZoom: options.minZoom,
-      projection: options.projection,
-      state: SourceState.LOADING,
-      wrapX: options.wrapX
-    });
     this.initializeMap_();
   }
 
