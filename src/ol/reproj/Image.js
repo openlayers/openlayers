@@ -31,26 +31,8 @@ class ReprojImage extends ImageBase {
    * @param {module:ol/reproj/Image~FunctionType} getImageFunction
    *     Function returning source images (extent, resolution, pixelRatio).
    */
-  constructor(
-    sourceProj,
-    targetProj,
-    targetExtent,
-    targetResolution,
-    pixelRatio,
-    getImageFunction
-  ) {
-
-    /**
-     * @private
-     * @type {module:ol/proj/Projection}
-     */
-    this.targetProj_ = targetProj;
-
-    /**
-     * @private
-     * @type {module:ol/extent~Extent}
-     */
-    this.maxSourceExtent_ = sourceProj.getExtent();
+  constructor(sourceProj, targetProj, targetExtent, targetResolution, pixelRatio, getImageFunction) {
+    const maxSourceExtent = sourceProj.getExtent();
     const maxTargetExtent = targetProj.getExtent();
 
     const limitedTargetExtent = maxTargetExtent ?
@@ -62,13 +44,37 @@ class ReprojImage extends ImageBase {
 
     const errorThresholdInPixels = ERROR_THRESHOLD;
 
+    const triangulation = new Triangulation(
+      sourceProj, targetProj, limitedTargetExtent, maxSourceExtent,
+      sourceResolution * errorThresholdInPixels);
+
+    const sourceExtent = triangulation.calculateSourceExtent();
+    const sourceImage = getImageFunction(sourceExtent, sourceResolution, pixelRatio);
+    let state = ImageState.LOADED;
+    if (sourceImage) {
+      state = ImageState.IDLE;
+    }
+    const sourcePixelRatio = sourceImage ? sourceImage.getPixelRatio() : 1;
+
+    super(targetExtent, targetResolution, sourcePixelRatio, state);
+
+    /**
+     * @private
+     * @type {module:ol/proj/Projection}
+     */
+    this.targetProj_ = targetProj;
+
+    /**
+     * @private
+     * @type {module:ol/extent~Extent}
+     */
+    this.maxSourceExtent_ = maxSourceExtent;
+
     /**
      * @private
      * @type {!module:ol/reproj/Triangulation}
      */
-    this.triangulation_ = new Triangulation(
-      sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_,
-      sourceResolution * errorThresholdInPixels);
+    this.triangulation_ = triangulation;
 
     /**
      * @private
@@ -82,21 +88,17 @@ class ReprojImage extends ImageBase {
      */
     this.targetExtent_ = targetExtent;
 
-    const sourceExtent = this.triangulation_.calculateSourceExtent();
-
     /**
      * @private
      * @type {module:ol/ImageBase}
      */
-    this.sourceImage_ =
-        getImageFunction(sourceExtent, sourceResolution, pixelRatio);
+    this.sourceImage_ = sourceImage;
 
     /**
      * @private
      * @type {number}
      */
-    this.sourcePixelRatio_ =
-        this.sourceImage_ ? this.sourceImage_.getPixelRatio() : 1;
+    this.sourcePixelRatio_ = sourcePixelRatio;
 
     /**
      * @private
@@ -109,15 +111,6 @@ class ReprojImage extends ImageBase {
      * @type {?module:ol/events~EventsKey}
      */
     this.sourceListenerKey_ = null;
-
-
-    let state = ImageState.LOADED;
-
-    if (this.sourceImage_) {
-      state = ImageState.IDLE;
-    }
-
-    super(targetExtent, targetResolution, this.sourcePixelRatio_, state);
   }
 
   /**
