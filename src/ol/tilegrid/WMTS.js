@@ -55,11 +55,6 @@ class WMTSTileGrid extends TileGrid {
    * @api
    */
   constructor(options) {
-    /**
-     * @private
-     * @type {!Array.<string>}
-     */
-    this.matrixIds_ = options.matrixIds;
     super({
       extent: options.extent,
       origin: options.origin,
@@ -69,6 +64,12 @@ class WMTSTileGrid extends TileGrid {
       tileSizes: options.tileSizes,
       sizes: options.sizes
     });
+
+    /**
+     * @private
+     * @type {!Array.<string>}
+     */
+    this.matrixIds_ = options.matrixIds;
   }
 
   /**
