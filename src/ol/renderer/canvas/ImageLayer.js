@@ -2,7 +2,6 @@
  * @module ol/renderer/canvas/ImageLayer
  */
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
-import {inherits} from '../../util.js';
 import ImageCanvas from '../../ImageCanvas.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
@@ -11,19 +10,20 @@ import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
 import VectorRenderType from '../../layer/VectorRenderType.js';
 import {assign} from '../../obj.js';
 import {layerRendererConstructors} from './Map.js';
-import IntermediateCanvasRenderer from '../canvas/IntermediateCanvas.js';
+import IntermediateCanvasRenderer from './IntermediateCanvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
-/**
- * @constructor
- * @extends {module:ol/renderer/canvas/IntermediateCanvas}
- * @param {module:ol/layer/Image|module:ol/layer/Vector} imageLayer Image or vector layer.
- * @api
- */
-class CanvasImageLayerRenderer {
+class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
+
+  /**
+   * @constructor
+   * @extends {module:ol/renderer/canvas/IntermediateCanvas}
+   * @param {module:ol/layer/Image|module:ol/layer/Vector} imageLayer Image or vector layer.
+   * @api
+   */
   constructor(imageLayer) {
 
-    IntermediateCanvasRenderer.call(this, imageLayer);
+    super(imageLayer);
 
     /**
      * @private
@@ -186,8 +186,6 @@ class CanvasImageLayerRenderer {
     }
   }
 }
-
-inherits(CanvasImageLayerRenderer, IntermediateCanvasRenderer);
 
 
 /**

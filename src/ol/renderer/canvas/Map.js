@@ -2,7 +2,6 @@
  * @module ol/renderer/canvas/Map
  */
 import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
-import {inherits} from '../../util.js';
 import {includes, stableSort} from '../../array.js';
 import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';
@@ -21,15 +20,14 @@ import SourceState from '../../source/State.js';
 export const layerRendererConstructors = [];
 
 
-/**
- * @constructor
- * @extends {module:ol/renderer/Map}
- * @param {module:ol/PluggableMap} map Map.
- * @api
- */
-class CanvasMapRenderer {
+class CanvasMapRenderer extends MapRenderer {
+
+  /**
+   * @param {module:ol/PluggableMap} map Map.
+   * @api
+   */
   constructor(map) {
-    MapRenderer.call(this, map);
+    super(map);
 
     const container = map.getViewport();
 
@@ -217,8 +215,6 @@ class CanvasMapRenderer {
     }
   }
 }
-
-inherits(CanvasMapRenderer, MapRenderer);
 
 
 export default CanvasMapRenderer;

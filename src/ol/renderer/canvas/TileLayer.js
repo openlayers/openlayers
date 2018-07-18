@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/canvas/TileLayer
  */
-import {getUid, inherits} from '../../util.js';
+import {getUid} from '../../util.js';
 import LayerType from '../../LayerType.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
@@ -11,22 +11,22 @@ import {containsExtent, createEmpty, equals, getIntersection, isEmpty} from '../
 import IntermediateCanvasRenderer from '../canvas/IntermediateCanvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
-/**
- * @constructor
- * @extends {module:ol/renderer/canvas/IntermediateCanvas}
- * @param {module:ol/layer/Tile|module:ol/layer/VectorTile} tileLayer Tile layer.
- * @api
- */
-class CanvasTileLayerRenderer {
-  constructor(tileLayer) {
+class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
 
-    IntermediateCanvasRenderer.call(this, tileLayer);
+  /**
+   * @param {module:ol/layer/Tile|module:ol/layer/VectorTile} tileLayer Tile layer.
+   * @param {boolean=} opt_noContext Skip the context creation.
+   * @api
+   */
+  constructor(tileLayer, opt_noContext) {
+
+    super(tileLayer);
 
     /**
      * @protected
      * @type {CanvasRenderingContext2D}
      */
-    this.context = this.context === null ? null : createCanvasContext2D();
+    this.context = opt_noContext ? null : createCanvasContext2D();
 
     /**
      * @private
@@ -350,8 +350,6 @@ class CanvasTileLayerRenderer {
     return this.imageTransform_;
   }
 }
-
-inherits(CanvasTileLayerRenderer, IntermediateCanvasRenderer);
 
 
 /**

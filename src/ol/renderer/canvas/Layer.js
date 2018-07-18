@@ -1,7 +1,6 @@
 /**
  * @module ol/renderer/canvas/Layer
  */
-import {inherits} from '../../util.js';
 import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../../extent.js';
 import {TRUE} from '../../functions.js';
 import RenderEvent from '../../render/Event.js';
@@ -11,16 +10,14 @@ import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
 import LayerRenderer from '../Layer.js';
 import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
 
-/**
- * @constructor
- * @abstract
- * @extends {module:ol/renderer/Layer}
- * @param {module:ol/layer/Layer} layer Layer.
- */
-class CanvasLayerRenderer {
+class CanvasLayerRenderer extends LayerRenderer {
+
+  /**
+   * @param {module:ol/layer/Layer} layer Layer.
+   */
   constructor(layer) {
 
-    LayerRenderer.call(this, layer);
+    super(layer);
 
     /**
      * @protected
@@ -180,8 +177,5 @@ class CanvasLayerRenderer {
    */
   prepareFrame(frameState, layerState) {}
 }
-
-inherits(CanvasLayerRenderer, LayerRenderer);
-
 
 export default CanvasLayerRenderer;

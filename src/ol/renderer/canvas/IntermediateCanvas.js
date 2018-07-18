@@ -1,7 +1,6 @@
 /**
  * @module ol/renderer/canvas/IntermediateCanvas
  */
-import {inherits} from '../../util.js';
 import {scale as scaleCoordinate} from '../../coordinate.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, intersects} from '../../extent.js';
@@ -9,16 +8,14 @@ import {UNDEFINED} from '../../functions.js';
 import CanvasLayerRenderer from '../canvas/Layer.js';
 import {create as createTransform, apply as applyTransform} from '../../transform.js';
 
-/**
- * @constructor
- * @abstract
- * @extends {module:ol/renderer/canvas/Layer}
- * @param {module:ol/layer/Layer} layer Layer.
- */
-class IntermediateCanvasRenderer {
+class IntermediateCanvasRenderer extends CanvasLayerRenderer {
+
+  /**
+   * @param {module:ol/layer/Layer} layer Layer.
+   */
   constructor(layer) {
 
-    CanvasLayerRenderer.call(this, layer);
+    super(layer);
 
     /**
      * @protected
@@ -142,8 +139,6 @@ class IntermediateCanvasRenderer {
     }
   }
 }
-
-inherits(IntermediateCanvasRenderer, CanvasLayerRenderer);
 
 
 export default IntermediateCanvasRenderer;

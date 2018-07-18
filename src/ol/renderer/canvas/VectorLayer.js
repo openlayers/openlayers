@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/canvas/VectorLayer
  */
-import {getUid, inherits} from '../../util.js';
+import {getUid} from '../../util.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
@@ -15,16 +15,15 @@ import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
 import CanvasLayerRenderer from '../canvas/Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 
-/**
- * @constructor
- * @extends {module:ol/renderer/canvas/Layer}
- * @param {module:ol/layer/Vector} vectorLayer Vector layer.
- * @api
- */
-class CanvasVectorLayerRenderer {
+class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
+
+  /**
+   * @param {module:ol/layer/Vector} vectorLayer Vector layer.
+   * @api
+   */
   constructor(vectorLayer) {
 
-    CanvasLayerRenderer.call(this, vectorLayer);
+    super(vectorLayer);
 
     /**
      * Declutter tree.
@@ -406,8 +405,6 @@ class CanvasVectorLayerRenderer {
     return loading;
   }
 }
-
-inherits(CanvasVectorLayerRenderer, CanvasLayerRenderer);
 
 
 /**

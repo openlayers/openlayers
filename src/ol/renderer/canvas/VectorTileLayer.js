@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/canvas/VectorTileLayer
  */
-import {getUid, inherits} from '../../util.js';
+import {getUid} from '../../util.js';
 import LayerType from '../../LayerType.js';
 import TileState from '../../TileState.js';
 import {createCanvasContext2D} from '../../dom.js';
@@ -47,21 +47,17 @@ const VECTOR_REPLAYS = {
 };
 
 
-/**
- * @constructor
- * @extends {module:ol/renderer/canvas/TileLayer}
- * @param {module:ol/layer/VectorTile} layer VectorTile layer.
- * @api
- */
-class CanvasVectorTileLayerRenderer {
+class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
+
+  /**
+   * @constructor
+   * @extends {module:ol/renderer/canvas/TileLayer}
+   * @param {module:ol/layer/VectorTile} layer VectorTile layer.
+   * @api
+   */
   constructor(layer) {
 
-    /**
-     * @type {CanvasRenderingContext2D}
-     */
-    this.context = null;
-
-    CanvasTileLayerRenderer.call(this, layer);
+    super(layer, true);
 
     /**
      * Declutter tree.
@@ -473,8 +469,6 @@ class CanvasVectorTileLayerRenderer {
     }
   }
 }
-
-inherits(CanvasVectorTileLayerRenderer, CanvasTileLayerRenderer);
 
 
 /**
