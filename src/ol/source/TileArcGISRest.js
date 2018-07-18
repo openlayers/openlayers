@@ -60,8 +60,6 @@ class TileArcGISRest extends TileImage {
    * For cached ArcGIS services, better performance is available using the
    * {@link module:ol/source/XYZ~XYZ} data source.
    *
-   * @constructor
-   * @extends {module:ol/source/TileImage}
    * @param {module:ol/source/TileArcGISRest~Options=} opt_options Tile ArcGIS Rest options.
    * @api
    */

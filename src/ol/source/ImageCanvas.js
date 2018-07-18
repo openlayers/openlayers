@@ -47,8 +47,6 @@ class ImageCanvasSource extends ImageSource {
    * @classdesc
    * Base class for image sources where a canvas element is the image.
    *
-   * @constructor
-   * @extends {module:ol/source/Image}
    * @param {module:ol/source/ImageCanvas~Options=} options ImageCanvas options.
    * @api
    */

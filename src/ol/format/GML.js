@@ -9,10 +9,8 @@ import GML3 from '../format/GML3.js';
  * version 3.1.1.
  * Currently only supports GML 3.1.1 Simple Features profile.
  *
- * @constructor
  * @param {module:ol/format/GMLBase~Options=} opt_options
  *     Optional configuration object.
- * @extends {module:ol/format/GMLBase}
  * @api
  */
 const GML = GML3;

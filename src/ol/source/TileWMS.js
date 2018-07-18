@@ -76,8 +76,6 @@ class TileWMS extends TileImage {
    * @classdesc
    * Layer source for tile data from WMS servers.
    *
-   * @constructor
-   * @extends {module:ol/source/TileImage}
    * @param {module:ol/source/TileWMS~Options=} [opt_options] Tile WMS options.
    * @api
    */

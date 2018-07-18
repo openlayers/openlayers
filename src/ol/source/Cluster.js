@@ -43,9 +43,7 @@ class Cluster extends VectorSource {
    * geometries. For other geometry types, or if not all geometries should be
    * considered for clustering, a custom `geometryFunction` can be defined.
    *
-   * @constructor
    * @param {module:ol/source/Cluster~Options=} options Cluster options.
-   * @extends {module:ol/source/Vector}
    * @api
    */
   constructor(options) {

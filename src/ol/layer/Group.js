@@ -47,8 +47,6 @@ class LayerGroup extends BaseLayer {
    *
    * A generic `change` event is triggered when the group/Collection changes.
    *
-   * @constructor
-   * @extends {module:ol/layer/Base}
    * @param {module:ol/layer/Group~Options=} opt_options Layer options.
    * @api
    */

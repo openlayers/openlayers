@@ -49,8 +49,6 @@ class BingMaps extends TileImage {
    * @classdesc
    * Layer source for Bing Maps tile data.
    *
-   * @constructor
-   * @extends {module:ol/source/TileImage}
    * @param {module:ol/source/BingMaps~Options=} options Bing Maps options.
    * @api
    */

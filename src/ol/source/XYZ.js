@@ -63,8 +63,6 @@ class XYZ extends TileImage {
    *    }
    *
    *
-   * @constructor
-   * @extends {module:ol/source/TileImage}
    * @param {module:ol/source/XYZ~Options=} opt_options XYZ options.
    * @api
    */

@@ -10,8 +10,6 @@ import WebGLReplayGroup from '../webgl/ReplayGroup.js';
 
 class WebGLImmediateRenderer extends VectorContext {
   /**
-   * @constructor
-   * @extends {module:ol/render/VectorContext}
    * @param {module:ol/webgl/Context} context Context.
    * @param {module:ol/coordinate~Coordinate} center Center.
    * @param {number} resolution Resolution.

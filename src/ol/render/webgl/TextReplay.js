@@ -24,8 +24,6 @@ import WebGLBuffer from '../../webgl/Buffer.js';
 
 class WebGLTextReplay extends WebGLTextureReplay {
   /**
-   * @constructor
-   * @extends {module:ol/render/webgl/TextureReplay}
    * @param {number} tolerance Tolerance.
    * @param {module:ol/extent~Extent} maxExtent Max extent.
    * @struct

@@ -50,8 +50,6 @@ const VECTOR_REPLAYS = {
 class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
-   * @constructor
-   * @extends {module:ol/renderer/canvas/TileLayer}
    * @param {module:ol/layer/VectorTile} layer VectorTile layer.
    * @api
    */

@@ -24,8 +24,6 @@ const TierSizeCalculation = {
 
 
 /**
- * @constructor
- * @extends {module:ol/ImageTile}
  * @param {module:ol/tilegrid/TileGrid} tileGrid TileGrid that the tile belongs to.
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {module:ol/TileState} state State.
@@ -124,8 +122,6 @@ class Zoomify extends TileImage {
    * Layer source for tile data in Zoomify format (both Zoomify and Internet
    * Imaging Protocol are supported).
    *
-   * @constructor
-   * @extends {module:ol/source/TileImage}
    * @param {module:ol/source/Zoomify~Options=} opt_options Options.
    * @api
    */

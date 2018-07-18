@@ -48,8 +48,6 @@ class ImageSourceEvent extends Event {
    * Events emitted by {@link module:ol/source/Image~ImageSource} instances are instances of this
    * type.
    *
-   * @constructor
-   * @extends {module:ol/events/Event}
    * @param {string} type Type.
    * @param {module:ol/Image} image The image.
    */
@@ -86,9 +84,6 @@ class ImageSource extends Source {
    * instantiated in apps.
    * Base class for sources providing a single image.
    *
-   * @constructor
-   * @abstract
-   * @extends {module:ol/source/Source}
    * @param {module:ol/source/Image~Options} options Single image source options.
    * @api
    */

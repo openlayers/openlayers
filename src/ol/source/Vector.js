@@ -36,8 +36,6 @@ import RBush from '../structs/RBush.js';
  * Events emitted by {@link module:ol/source/Vector} instances are instances of this
  * type.
  *
- * @constructor
- * @extends {module:ol/events/Event}
  * @param {string} type Type.
  * @param {module:ol/Feature=} opt_feature Feature.
  */
@@ -157,8 +155,6 @@ class VectorSource extends Source {
    * by this source are suitable for editing. See {@link module:ol/source/VectorTile~VectorTile} for
    * vector data that is optimized for rendering.
    *
-   * @constructor
-   * @extends {module:ol/source/Source}
    * @fires ol/source/Vector~VectorSourceEvent
    * @param {module:ol/source/Vector~Options=} opt_options Vector source options.
    * @api

@@ -16,8 +16,6 @@ import TextPlacement from '../../style/TextPlacement.js';
 
 class CanvasTextReplay extends CanvasReplay {
   /**
-   * @constructor
-   * @extends {module:ol/render/canvas/Replay}
    * @param {number} tolerance Tolerance.
    * @param {module:ol/extent~Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.

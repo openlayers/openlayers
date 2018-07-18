@@ -60,9 +60,6 @@ class Layer extends BaseLayer {
    *
    * A generic `change` event is fired when the state of the source changes.
    *
-   * @constructor
-   * @abstract
-   * @extends {module:ol/layer/Base}
    * @fires module:ol/render/Event~RenderEvent
    * @param {module:ol/layer/Layer~Options} options Layer options.
    * @api

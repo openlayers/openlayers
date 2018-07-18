@@ -49,8 +49,6 @@ class TileJSON extends TileImage {
    * @classdesc
    * Layer source for tile data in TileJSON format.
    *
-   * @constructor
-   * @extends {module:ol/source/TileImage}
    * @param {module:ol/source/TileJSON~Options=} options TileJSON options.
    * @api
    */

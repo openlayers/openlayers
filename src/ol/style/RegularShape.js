@@ -53,9 +53,7 @@ class RegularShape extends ImageStyle {
    * a regular polygon when `radius` is provided, or a star when `radius1` and
    * `radius2` are provided.
    *
-   * @constructor
    * @param {module:ol/style/RegularShape~Options} options Options.
-   * @extends {module:ol/style/Image}
    * @api
    */
   constructor(options) {

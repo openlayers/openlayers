@@ -12,8 +12,6 @@ import {getKeyZXY} from '../tilecoord.js';
 
 class LabeledTile extends Tile {
   /**
-   * @constructor
-   * @extends {module:ol/Tile}
    * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
    * @param {module:ol/size~Size} tileSize Tile size.
    * @param {string} text Text.
@@ -91,8 +89,6 @@ class TileDebug extends TileSource {
    *
    * Uses Canvas context2d, so requires Canvas support.
    *
-   * @constructor
-   * @extends {module:ol/source/Tile}
    * @param {module:ol/source/TileDebug~Options=} options Debug tile options.
    * @api
    */

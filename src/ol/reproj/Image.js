@@ -23,8 +23,6 @@ class ReprojImage extends ImageBase {
    * Class encapsulating single reprojected image.
    * See {@link module:ol/source/Image~ImageSource}.
    *
-   * @constructor
-   * @extends {module:ol/ImageBase}
    * @param {module:ol/proj/Projection} sourceProj Source projection (of the data).
    * @param {module:ol/proj/Projection} targetProj Target projection.
    * @param {module:ol/extent~Extent} targetExtent Target extent.

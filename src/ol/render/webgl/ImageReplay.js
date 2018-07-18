@@ -7,8 +7,6 @@ import WebGLBuffer from '../../webgl/Buffer.js';
 
 class WebGLImageReplay extends WebGLTextureReplay {
   /**
-   * @constructor
-   * @extends {module:ol/render/webgl/TextureReplay}
    * @param {number} tolerance Tolerance.
    * @param {module:ol/extent~Extent} maxExtent Max extent.
    * @struct

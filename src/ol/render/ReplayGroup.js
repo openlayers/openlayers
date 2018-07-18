@@ -3,22 +3,20 @@
  */
 /**
  * Base class for replay groups.
- * @constructor
- * @abstract
  */
 class ReplayGroup {
   /**
-  * @abstract
-  * @param {number|undefined} zIndex Z index.
-  * @param {module:ol/render/ReplayType} replayType Replay type.
-  * @return {module:ol/render/VectorContext} Replay.
-  */
+   * @abstract
+   * @param {number|undefined} zIndex Z index.
+   * @param {module:ol/render/ReplayType} replayType Replay type.
+   * @return {module:ol/render/VectorContext} Replay.
+   */
   getReplay(zIndex, replayType) {}
 
   /**
-  * @abstract
-  * @return {boolean} Is empty.
-  */
+   * @abstract
+   * @return {boolean} Is empty.
+   */
   isEmpty() {}
 }
 

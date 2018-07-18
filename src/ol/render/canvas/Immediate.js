@@ -26,8 +26,6 @@ class CanvasImmediateRenderer extends VectorContext {
    * {@link module:ol/render/Event~RenderEvent} object associated with postcompose, precompose and
    * render events emitted by layers and maps.
    *
-   * @constructor
-   * @extends {module:ol/render/VectorContext}
    * @param {CanvasRenderingContext2D} context Context.
    * @param {number} pixelRatio Pixel ratio.
    * @param {module:ol/extent~Extent} extent Extent.

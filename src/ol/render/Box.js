@@ -7,8 +7,6 @@ import Polygon from '../geom/Polygon.js';
 
 class RenderBox extends Disposable {
   /**
-   * @constructor
-   * @extends {module:ol/Disposable}
    * @param {string} className CSS class name.
    */
   constructor(className) {

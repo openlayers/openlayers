@@ -21,8 +21,6 @@ import ContextEventType from '../webgl/ContextEventType.js';
 /**
  * @classdesc
  * A WebGL context for accessing low-level WebGL capabilities.
- *
- * @extends {module:ol/Disposable}
  */
 class WebGLContext extends Disposable {
 

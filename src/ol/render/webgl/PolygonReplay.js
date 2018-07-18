@@ -38,8 +38,6 @@ import WebGLBuffer from '../../webgl/Buffer.js';
 
 class WebGLPolygonReplay extends WebGLReplay {
   /**
-   * @constructor
-   * @extends {module:ol/render/webgl/Replay}
    * @param {number} tolerance Tolerance.
    * @param {module:ol/extent~Extent} maxExtent Max extent.
    * @struct

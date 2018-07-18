@@ -16,12 +16,12 @@ import {asString} from '../color.js';
 /**
  * @classdesc
  * Set fill style for vector features.
- *
- * @constructor
- * @param {module:ol/style/Fill~Options=} opt_options Options.
- * @api
  */
 class Fill {
+  /**
+   * @param {module:ol/style/Fill~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options || {};

@@ -35,8 +35,6 @@ const BATCH_CONSTRUCTORS = {
 
 class CanvasReplayGroup extends ReplayGroup {
   /**
-   * @constructor
-   * @extends {module:ol/render/ReplayGroup}
    * @param {number} tolerance Tolerance.
    * @param {module:ol/extent~Extent} maxExtent Max extent.
    * @param {number} resolution Resolution.

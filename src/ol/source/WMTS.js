@@ -62,8 +62,6 @@ class WMTS extends TileImage {
    * @classdesc
    * Layer source for tile data from WMTS servers.
    *
-   * @constructor
-   * @extends {module:ol/source/TileImage}
    * @param {module:ol/source/WMTS~Options=} options WMTS options.
    * @api
    */

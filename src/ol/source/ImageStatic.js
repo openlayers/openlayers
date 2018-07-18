@@ -33,8 +33,6 @@ class Static extends ImageSource {
    * @classdesc
    * A layer source for displaying a single, static image.
    *
-   * @constructor
-   * @extends {module:ol/source/Image}
    * @param {module:ol/source/ImageStatic~Options=} options ImageStatic options.
    * @api
    */

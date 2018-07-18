@@ -56,9 +56,7 @@ class ImageWMS extends ImageSource {
    * @classdesc
    * Source for WMS servers providing single, untiled images.
    *
-   * @constructor
    * @fires ol/source/Image~ImageSourceEvent
-   * @extends {module:ol/source/Image}
    * @param {module:ol/source/ImageWMS~Options=} [opt_options] ImageWMS options.
    * @api
    */

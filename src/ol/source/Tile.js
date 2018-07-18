@@ -34,9 +34,6 @@ class TileSource extends Source {
    * instantiated in apps.
    * Base class for sources providing images divided into a tile grid.
    *
-   * @constructor
-   * @abstract
-   * @extends {module:ol/source/Source}
    * @param {module:ol/source/Tile~Options=} options SourceTile source options.
    * @api
    */
@@ -311,8 +308,6 @@ TileSource.prototype.useTile = UNDEFINED;
  * Events emitted by {@link module:ol/source/Tile~TileSource} instances are instances of this
  * type.
  *
- * @constructor
- * @extends {module:ol/events/Event}
  * @param {string} type Type.
  * @param {module:ol/Tile} tile The tile.
  */

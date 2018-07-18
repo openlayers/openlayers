@@ -46,9 +46,6 @@ class Source extends BaseObject {
    *
    * A generic `change` event is triggered when the state of the source changes.
    *
-   * @constructor
-   * @abstract
-   * @extends {module:ol/Object}
    * @param {module:ol/source/Source~Options} options Source options.
    * @api
    */

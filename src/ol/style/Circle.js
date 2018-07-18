@@ -25,9 +25,7 @@ class CircleStyle extends RegularShape {
    * @classdesc
    * Set circle style for vector features.
    *
-   * @constructor
    * @param {module:ol/style/Circle~Options=} opt_options Options.
-   * @extends {module:ol/style/RegularShape}
    * @api
    */
   constructor(opt_options) {

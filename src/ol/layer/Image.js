@@ -35,8 +35,6 @@ class ImageLayer extends Layer {
    * property on the layer object; for example, setting `title: 'My Title'` in the
    * options means that `title` is observable, and has get/set accessors.
    *
-   * @constructor
-   * @extends {module:ol/layer/Layer}
    * @fires module:ol/render/Event~RenderEvent
    * @param {module:ol/layer/Image~Options=} opt_options Layer options.
    * @api

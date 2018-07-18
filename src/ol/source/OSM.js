@@ -47,8 +47,6 @@ class OSM extends XYZ {
    * @classdesc
    * Layer source for the OpenStreetMap tile server.
    *
-   * @constructor
-   * @extends {module:ol/source/XYZ}
    * @param {module:ol/source/OSM~Options=} [opt_options] Open Street Map options.
    * @api
    */

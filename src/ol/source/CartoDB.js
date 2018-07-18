@@ -36,8 +36,6 @@ class CartoDB extends XYZ {
    * @classdesc
    * Layer source for the CartoDB Maps API.
    *
-   * @constructor
-   * @extends {module:ol/source/XYZ}
    * @param {module:ol/source/CartoDB~Options=} options CartoDB options.
    * @api
    */

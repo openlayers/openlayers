@@ -57,9 +57,7 @@ class Icon extends ImageStyle {
    * @classdesc
    * Set icon style for vector features.
    *
-   * @constructor
    * @param {module:ol/style/Icon~Options=} opt_options Options.
-   * @extends {module:ol/style/Image}
    * @api
    */
   constructor(opt_options) {

@@ -26,8 +26,6 @@ import Event from '../events/Event.js';
  *    `stopPropagation` or `preventDefault` on an event object, it means that no
  *    more listeners after this one will be called. Same as when the listener
  *    returns false.
- *
- * @constructor
  */
 class EventTarget extends Disposable {
   constructor() {

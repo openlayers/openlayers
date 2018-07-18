@@ -43,8 +43,6 @@ const tmpTransform = createTransform();
 
 class CanvasReplay extends VectorContext {
   /**
-   * @constructor
-   * @extends {module:ol/render/VectorContext}
    * @param {number} tolerance Tolerance.
    * @param {module:ol/extent~Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.

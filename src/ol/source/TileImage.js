@@ -59,9 +59,7 @@ class TileImage extends UrlTile {
    * @classdesc
    * Base class for sources providing images divided into a tile grid.
    *
-   * @constructor
    * @fires module:ol/source/Tile~TileSourceEvent
-   * @extends {module:ol/source/UrlTile}
    * @param {module:ol/source/TileImage~Options=} options Image tile options.
    * @api
    */

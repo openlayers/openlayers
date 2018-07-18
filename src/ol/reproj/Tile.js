@@ -24,8 +24,6 @@ class ReprojTile extends Tile {
    * Class encapsulating single reprojected tile.
    * See {@link module:ol/source/TileImage~TileImage}.
    *
-   * @constructor
-   * @extends {module:ol/Tile}
    * @param {module:ol/proj/Projection} sourceProj Source projection.
    * @param {module:ol/tilegrid/TileGrid} sourceTileGrid Source tile grid.
    * @param {module:ol/proj/Projection} targetProj Target projection.

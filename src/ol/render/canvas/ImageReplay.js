@@ -6,8 +6,6 @@ import CanvasReplay from '../canvas/Replay.js';
 
 class CanvasImageReplay extends CanvasReplay {
   /**
-   * @constructor
-   * @extends {module:ol/render/canvas/Replay}
    * @param {number} tolerance Tolerance.
    * @param {module:ol/extent~Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.

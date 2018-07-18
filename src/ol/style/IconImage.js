@@ -11,14 +11,12 @@ import {shared as iconImageCache} from '../style/IconImageCache.js';
 
 class IconImage extends EventTarget {
   /**
-   * @constructor
    * @param {HTMLImageElement|HTMLCanvasElement} image Image.
    * @param {string|undefined} src Src.
    * @param {module:ol/size~Size} size Size.
    * @param {?string} crossOrigin Cross origin.
    * @param {module:ol/ImageState} imageState Image state.
    * @param {module:ol/color~Color} color Color.
-   * @extends {module:ol/events/EventTarget}
    */
   constructor(image, src, size, crossOrigin, imageState, color) {
 

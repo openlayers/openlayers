@@ -11,12 +11,12 @@
  * `stopPropagation` and `preventDefault` methods. It is meant as base class
  * for higher level events defined in the library, and works with
  * {@link module:ol/events/EventTarget~EventTarget}.
- *
- * @constructor
- * @param {string} type Type.
  */
 class Event {
 
+  /**
+   * @param {string} type Type.
+   */
   constructor(type) {
 
     /**

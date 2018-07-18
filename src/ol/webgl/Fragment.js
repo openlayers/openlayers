@@ -5,9 +5,6 @@
 import {FRAGMENT_SHADER} from '../webgl.js';
 import WebGLShader from '../webgl/Shader.js';
 
-/**
- * @extends {module:ol/webgl/Shader}
- */
 class WebGLFragment extends WebGLShader {
 
   /**

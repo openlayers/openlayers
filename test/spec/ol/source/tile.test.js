@@ -13,8 +13,6 @@ import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
  * Tile source for tests that uses a EPSG:4326 based grid with 4 resolutions and
  * 256x256 tiles.
  *
- * @constructor
- * @extends {ol.source.Tile}
  * @param {Object.<string, ol.TileState>} tileStates Lookup of tile key to
  *     tile state.
  */

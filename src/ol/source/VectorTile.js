@@ -70,9 +70,7 @@ class VectorTile extends UrlTile {
    * {@link module:ol/source/Vector} for vector sources that are suitable for feature
    * editing.
    *
-   * @constructor
    * @fires module:ol/source/Tile~TileSourceEvent
-   * @extends {module:ol/source/UrlTile}
    * @param {module:ol/source/VectorTile~Options=} options Vector tile options.
    * @api
    */

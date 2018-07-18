@@ -67,8 +67,6 @@ class Heatmap extends VectorLayer {
    * property on the layer object; for example, setting `title: 'My Title'` in the
    * options means that `title` is observable, and has get/set accessors.
    *
-   * @constructor
-   * @extends {module:ol/layer/Vector}
    * @fires module:ol/render/Event~RenderEvent
    * @param {module:ol/layer/Heatmap~Options=} opt_options Options.
    * @api

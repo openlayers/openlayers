@@ -79,8 +79,6 @@ class RasterSourceEvent extends Event {
    * Events emitted by {@link module:ol/source/Raster} instances are instances of this
    * type.
    *
-   * @constructor
-   * @extends {module:ol/events/Event}
    * @param {string} type Type.
    * @param {module:ol/PluggableMap~FrameState} frameState The frame state.
    * @param {Object} data An object made available to operations.
@@ -142,8 +140,6 @@ class RasterSource extends ImageSource {
    * {@link module:ol/source/Raster~Operation} function to transform input pixel values into
    * output pixel values.
    *
-   * @constructor
-   * @extends {module:ol/source/Image}
    * @fires ol/source/Raster~RasterSourceEvent
    * @param {module:ol/source/Raster~Options=} options Options.
    * @api

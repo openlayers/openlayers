@@ -31,9 +31,6 @@ class BaseLayer extends BaseObject {
    * the options is set as a {@link module:ol/Object} property on the layer object, so
    * is observable, and has get/set accessors.
    *
-   * @constructor
-   * @abstract
-   * @extends {module:ol/Object}
    * @param {module:ol/layer/Base~Options} options Layer options.
    * @api
    */

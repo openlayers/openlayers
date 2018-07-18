@@ -16,8 +16,6 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
 
   /**
-   * @constructor
-   * @extends {module:ol/renderer/canvas/IntermediateCanvas}
    * @param {module:ol/layer/Image|module:ol/layer/Vector} imageLayer Image or vector layer.
    * @api
    */

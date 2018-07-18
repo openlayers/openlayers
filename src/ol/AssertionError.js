@@ -7,7 +7,6 @@ import {VERSION} from './util.js';
  * Error object thrown when an assertion failed. This is an ECMA-262 Error,
  * extended with a `code` property.
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error}
- * @extends {Error}
  */
 class AssertionError extends Error {
 

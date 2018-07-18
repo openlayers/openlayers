@@ -12,9 +12,6 @@ import {createTexture} from '../../webgl/Context.js';
 
 class WebGLTextureReplay extends WebGLReplay {
   /**
-   * @constructor
-   * @abstract
-   * @extends {module:ol/render/webgl/Replay}
    * @param {number} tolerance Tolerance.
    * @param {module:ol/extent~Extent} maxExtent Max extent.
    * @struct

@@ -115,8 +115,6 @@ class Stamen extends XYZ {
    * @classdesc
    * Layer source for the Stamen tile server.
    *
-   * @constructor
-   * @extends {module:ol/source/XYZ}
    * @param {module:ol/source/Stamen~Options=} options Stamen options.
    * @api
    */

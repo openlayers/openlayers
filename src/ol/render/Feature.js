@@ -24,7 +24,6 @@ const tmpTransform = createTransform();
  * structure, optimized for vector tile rendering and styling. Geometry access
  * through the API is limited to getting the type and extent of the geometry.
  *
- * @constructor
  * @param {module:ol/geom/GeometryType} type Geometry type.
  * @param {Array.<number>} flatCoordinates Flat coordinates. These always need
  *     to be right-handed for polygons.

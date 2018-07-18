@@ -17,9 +17,6 @@ import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TRIANGLES,
 
 class WebGLReplay extends VectorContext {
   /**
-   * @constructor
-   * @abstract
-   * @extends {module:ol/render/VectorContext}
    * @param {number} tolerance Tolerance.
    * @param {module:ol/extent~Extent} maxExtent Max extent.
    * @struct

@@ -18,8 +18,6 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 
 /**
- * @constructor
- * @extends {module:ol/Tile}
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {module:ol/TileState} state State.
  * @param {string} src Image source URI.
@@ -275,8 +273,6 @@ class UTFGrid extends TileSource {
    * @classdesc
    * Layer source for UTFGrid interaction data loaded from TileJSON format.
    *
-   * @constructor
-   * @extends {module:ol/source/Tile}
    * @param {module:ol/source/UTFGrid~Options=} options Source options.
    * @api
    */

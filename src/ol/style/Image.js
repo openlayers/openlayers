@@ -18,13 +18,12 @@
  * A base class used for creating subclasses and not instantiated in
  * apps. Base class for {@link module:ol/style/Icon~Icon}, {@link module:ol/style/Circle~CircleStyle} and
  * {@link module:ol/style/RegularShape~RegularShape}.
- *
- * @constructor
- * @abstract
- * @param {module:ol/style/Image~Options} options Options.
- * @api
  */
 class ImageStyle {
+  /**
+   * @param {module:ol/style/Image~Options} options Options.
+   * @api
+   */
   constructor(options) {
 
     /**

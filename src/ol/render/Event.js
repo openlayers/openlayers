@@ -7,8 +7,6 @@ import Event from '../events/Event.js';
 class RenderEvent extends Event {
 
   /**
-   * @constructor
-   * @extends {module:ol/events/Event}
    * @param {module:ol/render/EventType} type Type.
    * @param {module:ol/render/VectorContext=} opt_vectorContext Vector context.
    * @param {module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
