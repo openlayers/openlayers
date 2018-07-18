@@ -31,16 +31,16 @@ import XYZ from '../source/XYZ.js';
  */
 
 
-/**
- * @classdesc
- * Layer source for the CartoDB Maps API.
- *
- * @constructor
- * @extends {module:ol/source/XYZ}
- * @param {module:ol/source/CartoDB~Options=} options CartoDB options.
- * @api
- */
-class CartoDB {
+class CartoDB extends XYZ {
+  /**
+   * @classdesc
+   * Layer source for the CartoDB Maps API.
+   *
+   * @constructor
+   * @extends {module:ol/source/XYZ}
+   * @param {module:ol/source/CartoDB~Options=} options CartoDB options.
+   * @api
+   */
   constructor(options) {
 
     /**
@@ -67,7 +67,7 @@ class CartoDB {
      */
     this.templateCache_ = {};
 
-    XYZ.call(this, {
+    super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
@@ -181,8 +181,6 @@ class CartoDB {
     this.setUrl(tilesUrl);
   }
 }
-
-inherits(CartoDB, XYZ);
 
 
 export default CartoDB;

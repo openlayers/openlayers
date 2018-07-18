@@ -39,27 +39,27 @@ import {appendParams} from '../uri.js';
  */
 
 
-/**
- * @classdesc
- * Source for data from ArcGIS Rest services providing single, untiled images.
- * Useful when underlying map service has labels.
- *
- * If underlying map service is not using labels,
- * take advantage of ol image caching and use
- * {@link module:ol/source/TileArcGISRest} data source.
- *
- * @constructor
- * @fires ol/source/Image~ImageSourceEvent
- * @extends {module:ol/source/Image}
- * @param {module:ol/source/ImageArcGISRest~Options=} opt_options Image ArcGIS Rest Options.
- * @api
- */
-class ImageArcGISRest {
+class ImageArcGISRest extends ImageSource {
+  /**
+   * @classdesc
+   * Source for data from ArcGIS Rest services providing single, untiled images.
+   * Useful when underlying map service has labels.
+   *
+   * If underlying map service is not using labels,
+   * take advantage of ol image caching and use
+   * {@link module:ol/source/TileArcGISRest} data source.
+   *
+   * @constructor
+   * @fires ol/source/Image~ImageSourceEvent
+   * @extends {module:ol/source/Image}
+   * @param {module:ol/source/ImageArcGISRest~Options=} opt_options Image ArcGIS Rest Options.
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options || {};
 
-    ImageSource.call(this, {
+    super({
       attributions: options.attributions,
       projection: options.projection,
       resolutions: options.resolutions
@@ -288,8 +288,6 @@ class ImageArcGISRest {
     this.changed();
   }
 }
-
-inherits(ImageArcGISRest, ImageSource);
 
 
 export default ImageArcGISRest;

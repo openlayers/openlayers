@@ -9,20 +9,20 @@ import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
 
-/**
- * @constructor
- * @param {HTMLImageElement|HTMLCanvasElement} image Image.
- * @param {string|undefined} src Src.
- * @param {module:ol/size~Size} size Size.
- * @param {?string} crossOrigin Cross origin.
- * @param {module:ol/ImageState} imageState Image state.
- * @param {module:ol/color~Color} color Color.
- * @extends {module:ol/events/EventTarget}
- */
-class IconImage {
+class IconImage extends EventTarget {
+  /**
+   * @constructor
+   * @param {HTMLImageElement|HTMLCanvasElement} image Image.
+   * @param {string|undefined} src Src.
+   * @param {module:ol/size~Size} size Size.
+   * @param {?string} crossOrigin Cross origin.
+   * @param {module:ol/ImageState} imageState Image state.
+   * @param {module:ol/color~Color} color Color.
+   * @extends {module:ol/events/EventTarget}
+   */
   constructor(image, src, size, crossOrigin, imageState, color) {
 
-    EventTarget.call(this);
+    super();
 
     /**
      * @private
@@ -240,8 +240,6 @@ class IconImage {
     this.imageListenerKeys_ = null;
   }
 }
-
-inherits(IconImage, EventTarget);
 
 
 /**

@@ -10,17 +10,17 @@ import TileSource from '../source/Tile.js';
 import {getKeyZXY} from '../tilecoord.js';
 
 
-/**
- * @constructor
- * @extends {module:ol/Tile}
- * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
- * @param {module:ol/size~Size} tileSize Tile size.
- * @param {string} text Text.
- */
-class LabeledTile {
+class LabeledTile extends Tile {
+  /**
+   * @constructor
+   * @extends {module:ol/Tile}
+   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+   * @param {module:ol/size~Size} tileSize Tile size.
+   * @param {string} text Text.
+   */
   constructor(tileCoord, tileSize, text) {
 
-    Tile.call(this, tileCoord, TileState.LOADED);
+    super(tileCoord, TileState.LOADED);
 
     /**
     * @private
@@ -73,8 +73,6 @@ class LabeledTile {
   load() {}
 }
 
-inherits(LabeledTile, Tile);
-
 
 /**
  * @typedef {Object} Options
@@ -84,23 +82,23 @@ inherits(LabeledTile, Tile);
  */
 
 
-/**
- * @classdesc
- * A pseudo tile source, which does not fetch tiles from a server, but renders
- * a grid outline for the tile grid/projection along with the coordinates for
- * each tile. See examples/canvas-tiles for an example.
- *
- * Uses Canvas context2d, so requires Canvas support.
- *
- * @constructor
- * @extends {module:ol/source/Tile}
- * @param {module:ol/source/TileDebug~Options=} options Debug tile options.
- * @api
- */
-class TileDebug {
+class TileDebug extends TileSource {
+  /**
+   * @classdesc
+   * A pseudo tile source, which does not fetch tiles from a server, but renders
+   * a grid outline for the tile grid/projection along with the coordinates for
+   * each tile. See examples/canvas-tiles for an example.
+   *
+   * Uses Canvas context2d, so requires Canvas support.
+   *
+   * @constructor
+   * @extends {module:ol/source/Tile}
+   * @param {module:ol/source/TileDebug~Options=} options Debug tile options.
+   * @api
+   */
   constructor(options) {
 
-    TileSource.call(this, {
+    super({
       opaque: false,
       projection: options.projection,
       tileGrid: options.tileGrid,
@@ -128,8 +126,6 @@ class TileDebug {
     }
   }
 }
-
-inherits(TileDebug, TileSource);
 
 
 export default TileDebug;

@@ -41,21 +41,21 @@ const ImageSourceEventType = {
 };
 
 
-/**
- * @classdesc
- * Events emitted by {@link module:ol/source/Image~ImageSource} instances are instances of this
- * type.
- *
- * @constructor
- * @extends {module:ol/events/Event}
- * @param {string} type Type.
- * @param {module:ol/Image} image The image.
- */
-class ImageSourceEvent {
+class ImageSourceEvent extends Event {
 
+  /**
+   * @classdesc
+   * Events emitted by {@link module:ol/source/Image~ImageSource} instances are instances of this
+   * type.
+   *
+   * @constructor
+   * @extends {module:ol/events/Event}
+   * @param {string} type Type.
+   * @param {module:ol/Image} image The image.
+   */
   constructor(type, image) {
 
-    Event.call(this, type);
+    super(type);
 
     /**
      * The image related to the event.
@@ -68,8 +68,6 @@ class ImageSourceEvent {
 
 }
 
-inherits(ImageSourceEvent, Event);
-
 
 /**
  * @typedef {Object} Options
@@ -81,21 +79,21 @@ inherits(ImageSourceEvent, Event);
  */
 
 
-/**
- * @classdesc
- * Abstract base class; normally only used for creating subclasses and not
- * instantiated in apps.
- * Base class for sources providing a single image.
- *
- * @constructor
- * @abstract
- * @extends {module:ol/source/Source}
- * @param {module:ol/source/Image~Options} options Single image source options.
- * @api
- */
-class ImageSource {
+class ImageSource extends Source {
+  /**
+   * @classdesc
+   * Abstract base class; normally only used for creating subclasses and not
+   * instantiated in apps.
+   * Base class for sources providing a single image.
+   *
+   * @constructor
+   * @abstract
+   * @extends {module:ol/source/Source}
+   * @param {module:ol/source/Image~Options} options Single image source options.
+   * @api
+   */
   constructor(options) {
-    Source.call(this, {
+    super({
       attributions: options.attributions,
       extent: options.extent,
       projection: options.projection,
@@ -226,8 +224,6 @@ class ImageSource {
     }
   }
 }
-
-inherits(ImageSource, Source);
 
 
 /**

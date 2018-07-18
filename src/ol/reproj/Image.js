@@ -17,22 +17,22 @@ import Triangulation from '../reproj/Triangulation.js';
  */
 
 
-/**
- * @classdesc
- * Class encapsulating single reprojected image.
- * See {@link module:ol/source/Image~ImageSource}.
- *
- * @constructor
- * @extends {module:ol/ImageBase}
- * @param {module:ol/proj/Projection} sourceProj Source projection (of the data).
- * @param {module:ol/proj/Projection} targetProj Target projection.
- * @param {module:ol/extent~Extent} targetExtent Target extent.
- * @param {number} targetResolution Target resolution.
- * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/reproj/Image~FunctionType} getImageFunction
- *     Function returning source images (extent, resolution, pixelRatio).
- */
-class ReprojImage {
+class ReprojImage extends ImageBase {
+  /**
+   * @classdesc
+   * Class encapsulating single reprojected image.
+   * See {@link module:ol/source/Image~ImageSource}.
+   *
+   * @constructor
+   * @extends {module:ol/ImageBase}
+   * @param {module:ol/proj/Projection} sourceProj Source projection (of the data).
+   * @param {module:ol/proj/Projection} targetProj Target projection.
+   * @param {module:ol/extent~Extent} targetExtent Target extent.
+   * @param {number} targetResolution Target resolution.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {module:ol/reproj/Image~FunctionType} getImageFunction
+   *     Function returning source images (extent, resolution, pixelRatio).
+   */
   constructor(
     sourceProj,
     targetProj,
@@ -119,7 +119,7 @@ class ReprojImage {
       state = ImageState.IDLE;
     }
 
-    ImageBase.call(this, targetExtent, targetResolution, this.sourcePixelRatio_, state);
+    super(targetExtent, targetResolution, this.sourcePixelRatio_, state);
   }
 
   /**
@@ -199,8 +199,6 @@ class ReprojImage {
     this.sourceListenerKey_ = null;
   }
 }
-
-inherits(ReprojImage, ImageBase);
 
 
 export default ReprojImage;

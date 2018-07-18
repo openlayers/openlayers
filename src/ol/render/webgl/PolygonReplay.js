@@ -36,16 +36,16 @@ import WebGLBuffer from '../../webgl/Buffer.js';
  */
 
 
-/**
- * @constructor
- * @extends {module:ol/render/webgl/Replay}
- * @param {number} tolerance Tolerance.
- * @param {module:ol/extent~Extent} maxExtent Max extent.
- * @struct
- */
-class WebGLPolygonReplay {
+class WebGLPolygonReplay extends WebGLReplay {
+  /**
+   * @constructor
+   * @extends {module:ol/render/webgl/Replay}
+   * @param {number} tolerance Tolerance.
+   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @struct
+   */
   constructor(tolerance, maxExtent) {
-    WebGLReplay.call(this, tolerance, maxExtent);
+    super(tolerance, maxExtent);
 
     this.lineStringReplay = new WebGLLineStringReplay(
       tolerance, maxExtent);
@@ -1044,8 +1044,6 @@ class WebGLPolygonReplay {
     }
   }
 }
-
-inherits(WebGLPolygonReplay, WebGLReplay);
 
 
 export default WebGLPolygonReplay;

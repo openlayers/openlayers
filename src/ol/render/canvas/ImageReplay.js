@@ -5,21 +5,20 @@ import {inherits} from '../../util.js';
 import CanvasInstruction from '../canvas/Instruction.js';
 import CanvasReplay from '../canvas/Replay.js';
 
-/**
- * @constructor
- * @extends {module:ol/render/canvas/Replay}
- * @param {number} tolerance Tolerance.
- * @param {module:ol/extent~Extent} maxExtent Maximum extent.
- * @param {number} resolution Resolution.
- * @param {number} pixelRatio Pixel ratio.
- * @param {boolean} overlaps The replay can have overlapping geometries.
- * @param {?} declutterTree Declutter tree.
- * @struct
- */
-class CanvasImageReplay {
+class CanvasImageReplay extends CanvasReplay {
+  /**
+   * @constructor
+   * @extends {module:ol/render/canvas/Replay}
+   * @param {number} tolerance Tolerance.
+   * @param {module:ol/extent~Extent} maxExtent Maximum extent.
+   * @param {number} resolution Resolution.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {boolean} overlaps The replay can have overlapping geometries.
+   * @param {?} declutterTree Declutter tree.
+   * @struct
+   */
   constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-    CanvasReplay.call(this,
-      tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
+    super(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 
     /**
     * @private
@@ -224,8 +223,6 @@ class CanvasImageReplay {
     this.width_ = size[0];
   }
 }
-
-inherits(CanvasImageReplay, CanvasReplay);
 
 
 export default CanvasImageReplay;

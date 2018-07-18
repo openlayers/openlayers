@@ -33,20 +33,20 @@ const BATCH_CONSTRUCTORS = {
 };
 
 
-/**
- * @constructor
- * @extends {module:ol/render/ReplayGroup}
- * @param {number} tolerance Tolerance.
- * @param {module:ol/extent~Extent} maxExtent Max extent.
- * @param {number} resolution Resolution.
- * @param {number} pixelRatio Pixel ratio.
- * @param {boolean} overlaps The replay group can have overlapping geometries.
- * @param {?} declutterTree Declutter tree
- * for declutter processing in postrender.
- * @param {number=} opt_renderBuffer Optional rendering buffer.
- * @struct
- */
-class CanvasReplayGroup {
+class CanvasReplayGroup extends ReplayGroup {
+  /**
+   * @constructor
+   * @extends {module:ol/render/ReplayGroup}
+   * @param {number} tolerance Tolerance.
+   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @param {number} resolution Resolution.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {boolean} overlaps The replay group can have overlapping geometries.
+   * @param {?} declutterTree Declutter tree
+   * for declutter processing in postrender.
+   * @param {number=} opt_renderBuffer Optional rendering buffer.
+   * @struct
+   */
   constructor(
     tolerance,
     maxExtent,
@@ -56,7 +56,7 @@ class CanvasReplayGroup {
     declutterTree,
     opt_renderBuffer
   ) {
-    ReplayGroup.call(this);
+    super();
 
     /**
      * Declutter tree.
@@ -406,8 +406,6 @@ class CanvasReplayGroup {
     context.restore();
   }
 }
-
-inherits(CanvasReplayGroup, ReplayGroup);
 
 
 /**

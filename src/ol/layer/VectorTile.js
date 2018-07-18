@@ -87,19 +87,19 @@ export const RenderType = {
  */
 
 
-/**
- * @classdesc
- * Layer for vector tile data that is rendered client-side.
- * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
- * property on the layer object; for example, setting `title: 'My Title'` in the
- * options means that `title` is observable, and has get/set accessors.
- *
- * @constructor
- * @extends {module:ol/layer/Vector}
- * @param {module:ol/layer/VectorTile~Options=} opt_options Options.
- * @api
- */
-class VectorTileLayer {
+class VectorTileLayer extends VectorLayer {
+  /**
+   * @classdesc
+   * Layer for vector tile data that is rendered client-side.
+   * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
+   * property on the layer object; for example, setting `title: 'My Title'` in the
+   * options means that `title` is observable, and has get/set accessors.
+   *
+   * @constructor
+   * @extends {module:ol/layer/Vector}
+   * @param {module:ol/layer/VectorTile~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
 
@@ -118,7 +118,7 @@ class VectorTileLayer {
 
     delete baseOptions.preload;
     delete baseOptions.useInterimTilesOnError;
-    VectorLayer.call(this,  /** @type {module:ol/layer/Vector~Options} */ (baseOptions));
+    super(baseOptions);
 
     this.setPreload(options.preload ? options.preload : 0);
     this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
@@ -173,8 +173,6 @@ class VectorTileLayer {
     this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
   }
 }
-
-inherits(VectorTileLayer, VectorLayer);
 
 
 /**

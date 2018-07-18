@@ -32,17 +32,17 @@ const BATCH_CONSTRUCTORS = {
 };
 
 
-/**
- * @constructor
- * @extends {module:ol/render/ReplayGroup}
- * @param {number} tolerance Tolerance.
- * @param {module:ol/extent~Extent} maxExtent Max extent.
- * @param {number=} opt_renderBuffer Render buffer.
- * @struct
- */
-class WebGLReplayGroup {
+class WebGLReplayGroup extends ReplayGroup {
+  /**
+   * @constructor
+   * @extends {module:ol/render/ReplayGroup}
+   * @param {number} tolerance Tolerance.
+   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @param {number=} opt_renderBuffer Render buffer.
+   * @struct
+   */
   constructor(tolerance, maxExtent, opt_renderBuffer) {
-    ReplayGroup.call(this);
+    super();
 
     /**
      * @type {module:ol/extent~Extent}
@@ -340,8 +340,6 @@ class WebGLReplayGroup {
     return hasFeature !== undefined;
   }
 }
-
-inherits(WebGLReplayGroup, ReplayGroup);
 
 
 export default WebGLReplayGroup;

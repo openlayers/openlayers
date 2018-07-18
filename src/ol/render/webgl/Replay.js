@@ -15,17 +15,17 @@ import {create, fromTransform} from '../../vec/mat4.js';
 import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TRIANGLES,
   UNSIGNED_INT, UNSIGNED_SHORT} from '../../webgl.js';
 
-/**
- * @constructor
- * @abstract
- * @extends {module:ol/render/VectorContext}
- * @param {number} tolerance Tolerance.
- * @param {module:ol/extent~Extent} maxExtent Max extent.
- * @struct
- */
-class WebGLReplay {
+class WebGLReplay extends VectorContext {
+  /**
+   * @constructor
+   * @abstract
+   * @extends {module:ol/render/VectorContext}
+   * @param {number} tolerance Tolerance.
+   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @struct
+   */
   constructor(tolerance, maxExtent) {
-    VectorContext.call(this);
+    super();
 
     /**
     * @protected
@@ -358,8 +358,6 @@ class WebGLReplay {
     gl.drawElements(TRIANGLES, numItems, elementType, offsetInBytes);
   }
 }
-
-inherits(WebGLReplay, VectorContext);
 
 
 export default WebGLReplay;

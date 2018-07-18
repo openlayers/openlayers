@@ -28,16 +28,16 @@ import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
  */
 
 
-/**
- * @classdesc
- * A layer source for displaying a single, static image.
- *
- * @constructor
- * @extends {module:ol/source/Image}
- * @param {module:ol/source/ImageStatic~Options=} options ImageStatic options.
- * @api
- */
-class Static {
+class Static extends ImageSource {
+  /**
+   * @classdesc
+   * A layer source for displaying a single, static image.
+   *
+   * @constructor
+   * @extends {module:ol/source/Image}
+   * @param {module:ol/source/ImageStatic~Options=} options ImageStatic options.
+   * @api
+   */
   constructor(options) {
     const imageExtent = options.imageExtent;
 
@@ -48,7 +48,7 @@ class Static {
         options.imageLoadFunction !== undefined ?
           options.imageLoadFunction : defaultImageLoadFunction;
 
-    ImageSource.call(this, {
+    super({
       attributions: options.attributions,
       projection: getProjection(options.projection)
     });
@@ -108,8 +108,6 @@ class Static {
     ImageSource.prototype.handleImageChange.call(this, evt);
   }
 }
-
-inherits(Static, ImageSource);
 
 
 export default Static;

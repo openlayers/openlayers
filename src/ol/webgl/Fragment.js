@@ -8,13 +8,13 @@ import WebGLShader from '../webgl/Shader.js';
 /**
  * @extends {module:ol/webgl/Shader}
  */
-class WebGLFragment {
+class WebGLFragment extends WebGLShader {
 
   /**
    * @param {string} source Source.
    */
   constructor(source) {
-    WebGLShader.call(this, source);
+    super(source);
   }
 
   /**
@@ -24,8 +24,6 @@ class WebGLFragment {
     return FRAGMENT_SHADER;
   }
 }
-
-inherits(WebGLFragment, WebGLShader);
 
 
 export default WebGLFragment;

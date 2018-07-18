@@ -109,17 +109,17 @@ const ProviderConfig = {
  */
 
 
-/**
- * @classdesc
- * Layer source for the Stamen tile server.
- *
- * @constructor
- * @extends {module:ol/source/XYZ}
- * @param {module:ol/source/Stamen~Options=} options Stamen options.
- * @api
- */
-class Stamen {
+class Stamen extends XYZ {
 
+  /**
+   * @classdesc
+   * Layer source for the Stamen tile server.
+   *
+   * @constructor
+   * @extends {module:ol/source/XYZ}
+   * @param {module:ol/source/Stamen~Options=} options Stamen options.
+   * @api
+   */
   constructor(options) {
     const i = options.layer.indexOf('-');
     const provider = i == -1 ? options.layer : options.layer.slice(0, i);
@@ -131,7 +131,7 @@ class Stamen {
       'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' + options.layer +
         '/{z}/{x}/{y}.' + layerConfig.extension;
 
-    XYZ.call(this, {
+    super({
       attributions: ATTRIBUTIONS,
       cacheSize: options.cacheSize,
       crossOrigin: 'anonymous',
@@ -147,7 +147,5 @@ class Stamen {
   }
 
 }
-
-inherits(Stamen, XYZ);
 
 export default Stamen;

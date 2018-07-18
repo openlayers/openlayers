@@ -32,20 +32,20 @@ import {appendParams} from '../uri.js';
  */
 
 
-/**
- * @classdesc
- * Source for images from Mapguide servers
- *
- * @constructor
- * @fires ol/source/Image~ImageSourceEvent
- * @extends {module:ol/source/Image}
- * @param {module:ol/source/ImageMapGuide~Options=} options ImageMapGuide options.
- * @api
- */
-class ImageMapGuide {
+class ImageMapGuide extends ImageSource {
+  /**
+   * @classdesc
+   * Source for images from Mapguide servers
+   *
+   * @constructor
+   * @fires ol/source/Image~ImageSourceEvent
+   * @extends {module:ol/source/Image}
+   * @param {module:ol/source/ImageMapGuide~Options=} options ImageMapGuide options.
+   * @api
+   */
   constructor(options) {
 
-    ImageSource.call(this, {
+    super({
       projection: options.projection,
       resolutions: options.resolutions
     });
@@ -233,8 +233,6 @@ class ImageMapGuide {
     this.changed();
   }
 }
-
-inherits(ImageMapGuide, ImageSource);
 
 
 /**

@@ -51,22 +51,22 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  */
 
 
-/**
- * @classdesc
- * Source for WMS servers providing single, untiled images.
- *
- * @constructor
- * @fires ol/source/Image~ImageSourceEvent
- * @extends {module:ol/source/Image}
- * @param {module:ol/source/ImageWMS~Options=} [opt_options] ImageWMS options.
- * @api
- */
-class ImageWMS {
+class ImageWMS extends ImageSource {
+  /**
+   * @classdesc
+   * Source for WMS servers providing single, untiled images.
+   *
+   * @constructor
+   * @fires ol/source/Image~ImageSourceEvent
+   * @extends {module:ol/source/Image}
+   * @param {module:ol/source/ImageWMS~Options=} [opt_options] ImageWMS options.
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options || {};
 
-    ImageSource.call(this, {
+    super({
       attributions: options.attributions,
       projection: options.projection,
       resolutions: options.resolutions
@@ -384,8 +384,6 @@ class ImageWMS {
     this.v13_ = compareVersions(version, '1.3') >= 0;
   }
 }
-
-inherits(ImageWMS, ImageSource);
 
 
 export default ImageWMS;

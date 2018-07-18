@@ -71,16 +71,16 @@ import {appendParams} from '../uri.js';
  */
 
 
-/**
- * @classdesc
- * Layer source for tile data from WMS servers.
- *
- * @constructor
- * @extends {module:ol/source/TileImage}
- * @param {module:ol/source/TileWMS~Options=} [opt_options] Tile WMS options.
- * @api
- */
-class TileWMS {
+class TileWMS extends TileImage {
+  /**
+   * @classdesc
+   * Layer source for tile data from WMS servers.
+   *
+   * @constructor
+   * @extends {module:ol/source/TileImage}
+   * @param {module:ol/source/TileWMS~Options=} [opt_options] Tile WMS options.
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options || {};
@@ -89,7 +89,7 @@ class TileWMS {
 
     const transparent = 'TRANSPARENT' in params ? params['TRANSPARENT'] : true;
 
-    TileImage.call(this, {
+    super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
@@ -387,8 +387,6 @@ class TileWMS {
     this.v13_ = compareVersions(version, '1.3') >= 0;
   }
 }
-
-inherits(TileWMS, TileImage);
 
 
 export default TileWMS;

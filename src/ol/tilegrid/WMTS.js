@@ -45,26 +45,24 @@ import TileGrid from '../tilegrid/TileGrid.js';
  */
 
 
-/**
- * @classdesc
- * Set the grid pattern for sources accessing WMTS tiled-image servers.
- *
- * @constructor
- * @extends {module:ol/tilegrid/TileGrid}
- * @param {module:ol/tilegrid/WMTS~Options} options WMTS options.
- * @struct
- * @api
- */
-class WMTSTileGrid {
+class WMTSTileGrid extends TileGrid {
+  /**
+   * @classdesc
+   * Set the grid pattern for sources accessing WMTS tiled-image servers.
+   *
+   * @constructor
+   * @extends {module:ol/tilegrid/TileGrid}
+   * @param {module:ol/tilegrid/WMTS~Options} options WMTS options.
+   * @struct
+   * @api
+   */
   constructor(options) {
     /**
      * @private
      * @type {!Array.<string>}
      */
     this.matrixIds_ = options.matrixIds;
-    // FIXME: should the matrixIds become optional?
-
-    TileGrid.call(this, {
+    super({
       extent: options.extent,
       origin: options.origin,
       origins: options.origins,
@@ -92,8 +90,6 @@ class WMTSTileGrid {
     return this.matrixIds_;
   }
 }
-
-inherits(WMTSTileGrid, TileGrid);
 
 
 export default WMTSTileGrid;

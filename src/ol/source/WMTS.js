@@ -56,17 +56,17 @@ import {appendParams} from '../uri.js';
  */
 
 
-/**
- * @classdesc
- * Layer source for tile data from WMTS servers.
- *
- * @constructor
- * @extends {module:ol/source/TileImage}
- * @param {module:ol/source/WMTS~Options=} options WMTS options.
- * @api
- */
-class WMTS {
+class WMTS extends TileImage {
 
+  /**
+   * @classdesc
+   * Layer source for tile data from WMTS servers.
+   *
+   * @constructor
+   * @extends {module:ol/source/TileImage}
+   * @param {module:ol/source/WMTS~Options=} options WMTS options.
+   * @api
+   */
   constructor(options) {
 
     // TODO: add support for TileMatrixLimits
@@ -199,7 +199,7 @@ class WMTS {
     const tileUrlFunction = (urls && urls.length > 0) ?
       createFromTileUrlFunctions(urls.map(this.createFromWMTSTemplate_)) : nullTileUrlFunction;
 
-    TileImage.call(this, {
+    super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
@@ -220,8 +220,6 @@ class WMTS {
   }
 
 }
-
-inherits(WMTS, TileImage);
 
 /**
  * Set the URLs to use for requests.

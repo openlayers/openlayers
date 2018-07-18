@@ -8,21 +8,21 @@ import ReplayType from '../ReplayType.js';
 import VectorContext from '../VectorContext.js';
 import WebGLReplayGroup from '../webgl/ReplayGroup.js';
 
-/**
- * @constructor
- * @extends {module:ol/render/VectorContext}
- * @param {module:ol/webgl/Context} context Context.
- * @param {module:ol/coordinate~Coordinate} center Center.
- * @param {number} resolution Resolution.
- * @param {number} rotation Rotation.
- * @param {module:ol/size~Size} size Size.
- * @param {module:ol/extent~Extent} extent Extent.
- * @param {number} pixelRatio Pixel ratio.
- * @struct
- */
-class WebGLImmediateRenderer {
+class WebGLImmediateRenderer extends VectorContext {
+  /**
+   * @constructor
+   * @extends {module:ol/render/VectorContext}
+   * @param {module:ol/webgl/Context} context Context.
+   * @param {module:ol/coordinate~Coordinate} center Center.
+   * @param {number} resolution Resolution.
+   * @param {number} rotation Rotation.
+   * @param {module:ol/size~Size} size Size.
+   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {number} pixelRatio Pixel ratio.
+   * @struct
+   */
   constructor(context, center, resolution, rotation, size, extent, pixelRatio) {
-    VectorContext.call(this);
+    super();
 
     /**
      * @private
@@ -384,8 +384,6 @@ class WebGLImmediateRenderer {
     this.textStyle_ = textStyle;
   }
 }
-
-inherits(WebGLImmediateRenderer, VectorContext);
 
 
 export default WebGLImmediateRenderer;

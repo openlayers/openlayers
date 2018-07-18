@@ -52,16 +52,16 @@ import ImageStyle from '../style/Image.js';
  */
 
 
-/**
- * @classdesc
- * Set icon style for vector features.
- *
- * @constructor
- * @param {module:ol/style/Icon~Options=} opt_options Options.
- * @extends {module:ol/style/Image}
- * @api
- */
-class Icon {
+class Icon extends ImageStyle {
+  /**
+   * @classdesc
+   * Set icon style for vector features.
+   *
+   * @constructor
+   * @param {module:ol/style/Icon~Options=} opt_options Options.
+   * @extends {module:ol/style/Image}
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options || {};
@@ -203,7 +203,7 @@ class Icon {
     const snapToPixel = options.snapToPixel !== undefined ?
       options.snapToPixel : true;
 
-    ImageStyle.call(this, {
+    super({
       opacity: opacity,
       rotation: rotation,
       scale: scale,
@@ -417,8 +417,6 @@ class Icon {
       listener, thisArg);
   }
 }
-
-inherits(Icon, ImageStyle);
 
 
 export default Icon;

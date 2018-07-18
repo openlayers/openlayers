@@ -46,18 +46,18 @@ import ImageStyle from '../style/Image.js';
  */
 
 
-/**
- * @classdesc
- * Set regular shape style for vector features. The resulting shape will be
- * a regular polygon when `radius` is provided, or a star when `radius1` and
- * `radius2` are provided.
- *
- * @constructor
- * @param {module:ol/style/RegularShape~Options} options Options.
- * @extends {module:ol/style/Image}
- * @api
- */
-class RegularShape {
+class RegularShape extends ImageStyle {
+  /**
+   * @classdesc
+   * Set regular shape style for vector features. The resulting shape will be
+   * a regular polygon when `radius` is provided, or a star when `radius1` and
+   * `radius2` are provided.
+   *
+   * @constructor
+   * @param {module:ol/style/RegularShape~Options} options Options.
+   * @extends {module:ol/style/Image}
+   * @api
+   */
   constructor(options) {
     /**
      * @private
@@ -164,7 +164,7 @@ class RegularShape {
     const rotateWithView = options.rotateWithView !== undefined ?
       options.rotateWithView : false;
 
-    ImageStyle.call(this, {
+    super({
       opacity: 1,
       rotateWithView: rotateWithView,
       rotation: options.rotation !== undefined ? options.rotation : 0,
@@ -590,8 +590,6 @@ class RegularShape {
     return this.checksums_[0];
   }
 }
-
-inherits(RegularShape, ImageStyle);
 
 
 export default RegularShape;

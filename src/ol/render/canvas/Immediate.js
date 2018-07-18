@@ -17,27 +17,27 @@ import VectorContext from '../VectorContext.js';
 import {defaultTextAlign, defaultFillStyle, defaultLineCap, defaultLineDash, defaultLineDashOffset, defaultLineJoin, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline, defaultFont} from '../canvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
-/**
- * @classdesc
- * A concrete subclass of {@link module:ol/render/VectorContext} that implements
- * direct rendering of features and geometries to an HTML5 Canvas context.
- * Instances of this class are created internally by the library and
- * provided to application code as vectorContext member of the
- * {@link module:ol/render/Event~RenderEvent} object associated with postcompose, precompose and
- * render events emitted by layers and maps.
- *
- * @constructor
- * @extends {module:ol/render/VectorContext}
- * @param {CanvasRenderingContext2D} context Context.
- * @param {number} pixelRatio Pixel ratio.
- * @param {module:ol/extent~Extent} extent Extent.
- * @param {module:ol/transform~Transform} transform Transform.
- * @param {number} viewRotation View rotation.
- * @struct
- */
-class CanvasImmediateRenderer {
+class CanvasImmediateRenderer extends VectorContext {
+  /**
+   * @classdesc
+   * A concrete subclass of {@link module:ol/render/VectorContext} that implements
+   * direct rendering of features and geometries to an HTML5 Canvas context.
+   * Instances of this class are created internally by the library and
+   * provided to application code as vectorContext member of the
+   * {@link module:ol/render/Event~RenderEvent} object associated with postcompose, precompose and
+   * render events emitted by layers and maps.
+   *
+   * @constructor
+   * @extends {module:ol/render/VectorContext}
+   * @param {CanvasRenderingContext2D} context Context.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {module:ol/transform~Transform} transform Transform.
+   * @param {number} viewRotation View rotation.
+   * @struct
+   */
   constructor(context, pixelRatio, extent, transform, viewRotation) {
-    VectorContext.call(this);
+    super();
 
     /**
      * @private
@@ -942,8 +942,6 @@ class CanvasImmediateRenderer {
     }
   }
 }
-
-inherits(CanvasImmediateRenderer, VectorContext);
 
 
 export default CanvasImmediateRenderer;

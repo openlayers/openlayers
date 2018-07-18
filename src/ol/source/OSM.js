@@ -41,17 +41,17 @@ export const ATTRIBUTION = '&copy; ' +
  */
 
 
-/**
- * @classdesc
- * Layer source for the OpenStreetMap tile server.
- *
- * @constructor
- * @extends {module:ol/source/XYZ}
- * @param {module:ol/source/OSM~Options=} [opt_options] Open Street Map options.
- * @api
- */
-class OSM {
+class OSM extends XYZ {
 
+  /**
+   * @classdesc
+   * Layer source for the OpenStreetMap tile server.
+   *
+   * @constructor
+   * @extends {module:ol/source/XYZ}
+   * @param {module:ol/source/OSM~Options=} [opt_options] Open Street Map options.
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options || {};
@@ -69,7 +69,7 @@ class OSM {
     const url = options.url !== undefined ?
       options.url : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-    XYZ.call(this, {
+    super({
       attributions: attributions,
       cacheSize: options.cacheSize,
       crossOrigin: crossOrigin,
@@ -84,7 +84,5 @@ class OSM {
   }
 
 }
-
-inherits(OSM, XYZ);
 
 export default OSM;

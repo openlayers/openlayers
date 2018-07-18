@@ -42,19 +42,19 @@ import ImageSource from '../source/Image.js';
  */
 
 
-/**
- * @classdesc
- * Base class for image sources where a canvas element is the image.
- *
- * @constructor
- * @extends {module:ol/source/Image}
- * @param {module:ol/source/ImageCanvas~Options=} options ImageCanvas options.
- * @api
- */
-class ImageCanvasSource {
+class ImageCanvasSource extends ImageSource {
+  /**
+   * @classdesc
+   * Base class for image sources where a canvas element is the image.
+   *
+   * @constructor
+   * @extends {module:ol/source/Image}
+   * @param {module:ol/source/ImageCanvas~Options=} options ImageCanvas options.
+   * @api
+   */
   constructor(options) {
 
-    ImageSource.call(this, {
+    super({
       attributions: options.attributions,
       projection: options.projection,
       resolutions: options.resolutions,
@@ -120,8 +120,6 @@ class ImageCanvasSource {
     return canvas;
   }
 }
-
-inherits(ImageCanvasSource, ImageSource);
 
 
 export default ImageCanvasSource;

@@ -78,20 +78,20 @@ const Property = {
 };
 
 
-/**
- * @classdesc
- * Vector data that is rendered client-side.
- * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
- * property on the layer object; for example, setting `title: 'My Title'` in the
- * options means that `title` is observable, and has get/set accessors.
- *
- * @constructor
- * @extends {module:ol/layer/Layer}
- * @fires module:ol/render/Event~RenderEvent
- * @param {module:ol/layer/Vector~Options=} opt_options Options.
- * @api
- */
-class VectorLayer {
+class VectorLayer extends Layer {
+  /**
+   * @classdesc
+   * Vector data that is rendered client-side.
+   * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
+   * property on the layer object; for example, setting `title: 'My Title'` in the
+   * options means that `title` is observable, and has get/set accessors.
+   *
+   * @constructor
+   * @extends {module:ol/layer/Layer}
+   * @fires module:ol/render/Event~RenderEvent
+   * @param {module:ol/layer/Vector~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
     const options = opt_options ?
       opt_options : /** @type {module:ol/layer/Vector~Options} */ ({});
@@ -102,7 +102,7 @@ class VectorLayer {
     delete baseOptions.renderBuffer;
     delete baseOptions.updateWhileAnimating;
     delete baseOptions.updateWhileInteracting;
-    Layer.call(this, /** @type {module:ol/layer/Layer~Options} */ (baseOptions));
+    super(baseOptions);
 
     /**
     * @private
@@ -262,8 +262,6 @@ class VectorLayer {
     return this.renderMode_;
   }
 }
-
-inherits(VectorLayer, Layer);
 
 
 /**

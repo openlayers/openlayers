@@ -23,24 +23,24 @@ import {assign} from '../obj.js';
  */
 
 
-/**
- * @classdesc
- * Abstract base class; normally only used for creating subclasses and not
- * instantiated in apps.
- * Note that with {@link module:ol/layer/Base} and all its subclasses, any property set in
- * the options is set as a {@link module:ol/Object} property on the layer object, so
- * is observable, and has get/set accessors.
- *
- * @constructor
- * @abstract
- * @extends {module:ol/Object}
- * @param {module:ol/layer/Base~Options} options Layer options.
- * @api
- */
-class BaseLayer {
+class BaseLayer extends BaseObject {
+  /**
+   * @classdesc
+   * Abstract base class; normally only used for creating subclasses and not
+   * instantiated in apps.
+   * Note that with {@link module:ol/layer/Base} and all its subclasses, any property set in
+   * the options is set as a {@link module:ol/Object} property on the layer object, so
+   * is observable, and has get/set accessors.
+   *
+   * @constructor
+   * @abstract
+   * @extends {module:ol/Object}
+   * @param {module:ol/layer/Base~Options} options Layer options.
+   * @api
+   */
   constructor(options) {
 
-    BaseObject.call(this);
+    super();
 
     /**
     * @type {Object.<string, *>}
@@ -248,8 +248,6 @@ class BaseLayer {
     this.set(LayerProperty.Z_INDEX, zindex);
   }
 }
-
-inherits(BaseLayer, BaseObject);
 
 
 export default BaseLayer;

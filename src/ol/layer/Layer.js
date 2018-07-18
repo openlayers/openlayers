@@ -44,35 +44,35 @@ import SourceState from '../source/State.js';
  */
 
 
-/**
- * @classdesc
- * Abstract base class; normally only used for creating subclasses and not
- * instantiated in apps.
- * A visual representation of raster or vector map data.
- * Layers group together those properties that pertain to how the data is to be
- * displayed, irrespective of the source of that data.
- *
- * Layers are usually added to a map with {@link module:ol/Map#addLayer}. Components
- * like {@link module:ol/interaction/Select~Select} use unmanaged layers
- * internally. These unmanaged layers are associated with the map using
- * {@link module:ol/layer/Layer~Layer#setMap} instead.
- *
- * A generic `change` event is fired when the state of the source changes.
- *
- * @constructor
- * @abstract
- * @extends {module:ol/layer/Base}
- * @fires module:ol/render/Event~RenderEvent
- * @param {module:ol/layer/Layer~Options} options Layer options.
- * @api
- */
-class Layer {
+class Layer extends BaseLayer {
+  /**
+   * @classdesc
+   * Abstract base class; normally only used for creating subclasses and not
+   * instantiated in apps.
+   * A visual representation of raster or vector map data.
+   * Layers group together those properties that pertain to how the data is to be
+   * displayed, irrespective of the source of that data.
+   *
+   * Layers are usually added to a map with {@link module:ol/Map#addLayer}. Components
+   * like {@link module:ol/interaction/Select~Select} use unmanaged layers
+   * internally. These unmanaged layers are associated with the map using
+   * {@link module:ol/layer/Layer~Layer#setMap} instead.
+   *
+   * A generic `change` event is fired when the state of the source changes.
+   *
+   * @constructor
+   * @abstract
+   * @extends {module:ol/layer/Base}
+   * @fires module:ol/render/Event~RenderEvent
+   * @param {module:ol/layer/Layer~Options} options Layer options.
+   * @api
+   */
   constructor(options) {
 
     const baseOptions = assign({}, options);
     delete baseOptions.source;
 
-    BaseLayer.call(this, /** @type {module:ol/layer/Base~Options} */ (baseOptions));
+    super(baseOptions);
 
     /**
      * @private
@@ -213,8 +213,6 @@ class Layer {
     this.set(LayerProperty.SOURCE, source);
   }
 }
-
-inherits(Layer, BaseLayer);
 
 
 /**

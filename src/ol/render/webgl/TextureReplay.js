@@ -10,17 +10,17 @@ import WebGLReplay from '../webgl/Replay.js';
 import {CLAMP_TO_EDGE, FLOAT, TEXTURE_2D} from '../../webgl.js';
 import {createTexture} from '../../webgl/Context.js';
 
-/**
- * @constructor
- * @abstract
- * @extends {module:ol/render/webgl/Replay}
- * @param {number} tolerance Tolerance.
- * @param {module:ol/extent~Extent} maxExtent Max extent.
- * @struct
- */
-class WebGLTextureReplay {
+class WebGLTextureReplay extends WebGLReplay {
+  /**
+   * @constructor
+   * @abstract
+   * @extends {module:ol/render/webgl/Replay}
+   * @param {number} tolerance Tolerance.
+   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @struct
+   */
   constructor(tolerance, maxExtent) {
-    WebGLReplay.call(this, tolerance, maxExtent);
+    super(tolerance, maxExtent);
 
     /**
      * @type {number|undefined}
@@ -477,8 +477,6 @@ class WebGLTextureReplay {
    */
   getHitDetectionTextures() {}
 }
-
-inherits(WebGLTextureReplay, WebGLReplay);
 
 
 export default WebGLTextureReplay;

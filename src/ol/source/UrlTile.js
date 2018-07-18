@@ -27,20 +27,20 @@ import {getKeyZXY} from '../tilecoord.js';
  */
 
 
-/**
- * @classdesc
- * Base class for sources providing tiles divided into a tile grid over http.
- *
- * @constructor
- * @abstract
- * @fires module:ol/source/TileEvent
- * @extends {module:ol/source/Tile}
- * @param {module:ol/source/UrlTile~Options=} options Image tile options.
- */
-class UrlTile {
+class UrlTile extends TileSource {
+  /**
+   * @classdesc
+   * Base class for sources providing tiles divided into a tile grid over http.
+   *
+   * @constructor
+   * @abstract
+   * @fires module:ol/source/TileEvent
+   * @extends {module:ol/source/Tile}
+   * @param {module:ol/source/UrlTile~Options=} options Image tile options.
+   */
   constructor(options) {
 
-    TileSource.call(this, {
+    super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       extent: options.extent,
@@ -204,8 +204,6 @@ class UrlTile {
     }
   }
 }
-
-inherits(UrlTile, TileSource);
 
 
 /**

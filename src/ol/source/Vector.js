@@ -41,11 +41,11 @@ import RBush from '../structs/RBush.js';
  * @param {string} type Type.
  * @param {module:ol/Feature=} opt_feature Feature.
  */
-export class VectorSourceEvent {
+export class VectorSourceEvent extends Event {
 
   constructor(type, opt_feature) {
 
-    Event.call(this, type);
+    super(type);
 
     /**
      * The feature being added or removed.
@@ -57,8 +57,6 @@ export class VectorSourceEvent {
   }
 
 }
-
-inherits(VectorSourceEvent, Event);
 
 
 /**
@@ -151,25 +149,25 @@ inherits(VectorSourceEvent, Event);
  */
 
 
-/**
- * @classdesc
- * Provides a source of features for vector layers. Vector features provided
- * by this source are suitable for editing. See {@link module:ol/source/VectorTile~VectorTile} for
- * vector data that is optimized for rendering.
- *
- * @constructor
- * @extends {module:ol/source/Source}
- * @fires ol/source/Vector~VectorSourceEvent
- * @param {module:ol/source/Vector~Options=} opt_options Vector source options.
- * @api
- */
-class VectorSource {
+class VectorSource extends Source {
 
+  /**
+   * @classdesc
+   * Provides a source of features for vector layers. Vector features provided
+   * by this source are suitable for editing. See {@link module:ol/source/VectorTile~VectorTile} for
+   * vector data that is optimized for rendering.
+   *
+   * @constructor
+   * @extends {module:ol/source/Source}
+   * @fires ol/source/Vector~VectorSourceEvent
+   * @param {module:ol/source/Vector~Options=} opt_options Vector source options.
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options || {};
 
-    Source.call(this, {
+    super({
       attributions: options.attributions,
       projection: undefined,
       state: SourceState.READY,
@@ -281,8 +279,6 @@ class VectorSource {
   }
 
 }
-
-inherits(VectorSource, Source);
 
 
 /**

@@ -22,16 +22,16 @@ import WebGLBuffer from '../../webgl/Buffer.js';
  */
 
 
-/**
- * @constructor
- * @extends {module:ol/render/webgl/TextureReplay}
- * @param {number} tolerance Tolerance.
- * @param {module:ol/extent~Extent} maxExtent Max extent.
- * @struct
- */
-class WebGLTextReplay {
+class WebGLTextReplay extends WebGLTextureReplay {
+  /**
+   * @constructor
+   * @extends {module:ol/render/webgl/TextureReplay}
+   * @param {number} tolerance Tolerance.
+   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @struct
+   */
   constructor(tolerance, maxExtent) {
-    WebGLTextureReplay.call(this, tolerance, maxExtent);
+    super(tolerance, maxExtent);
 
     /**
      * @private
@@ -456,8 +456,6 @@ class WebGLTextReplay {
     return this.textures_;
   }
 }
-
-inherits(WebGLTextReplay, WebGLTextureReplay);
 
 
 export default WebGLTextReplay;

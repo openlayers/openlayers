@@ -40,18 +40,18 @@ const Property = {
 };
 
 
-/**
- * @classdesc
- * A {@link module:ol/Collection~Collection} of layers that are handled together.
- *
- * A generic `change` event is triggered when the group/Collection changes.
- *
- * @constructor
- * @extends {module:ol/layer/Base}
- * @param {module:ol/layer/Group~Options=} opt_options Layer options.
- * @api
- */
-class LayerGroup {
+class LayerGroup extends BaseLayer {
+  /**
+   * @classdesc
+   * A {@link module:ol/Collection~Collection} of layers that are handled together.
+   *
+   * A generic `change` event is triggered when the group/Collection changes.
+   *
+   * @constructor
+   * @extends {module:ol/layer/Base}
+   * @param {module:ol/layer/Group~Options=} opt_options Layer options.
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options || {};
@@ -60,7 +60,7 @@ class LayerGroup {
 
     let layers = options.layers;
 
-    BaseLayer.call(this, baseOptions);
+    super(baseOptions);
 
     /**
      * @private
@@ -235,8 +235,6 @@ class LayerGroup {
     return SourceState.READY;
   }
 }
-
-inherits(LayerGroup, BaseLayer);
 
 
 export default LayerGroup;

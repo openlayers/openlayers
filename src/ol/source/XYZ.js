@@ -44,30 +44,30 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  */
 
 
-/**
- * @classdesc
- * Layer source for tile data with URLs in a set XYZ format that are
- * defined in a URL template. By default, this follows the widely-used
- * Google grid where `x` 0 and `y` 0 are in the top left. Grids like
- * TMS where `x` 0 and `y` 0 are in the bottom left can be used by
- * using the `{-y}` placeholder in the URL template, so long as the
- * source does not have a custom tile grid. In this case,
- * {@link module:ol/source/TileImage} can be used with a `tileUrlFunction`
- * such as:
- *
- *  tileUrlFunction: function(coordinate) {
- *    return 'http://mapserver.com/' + coordinate[0] + '/' +
- *        coordinate[1] + '/' + coordinate[2] + '.png';
- *    }
- *
- *
- * @constructor
- * @extends {module:ol/source/TileImage}
- * @param {module:ol/source/XYZ~Options=} opt_options XYZ options.
- * @api
- */
-class XYZ {
+class XYZ extends TileImage {
 
+  /**
+   * @classdesc
+   * Layer source for tile data with URLs in a set XYZ format that are
+   * defined in a URL template. By default, this follows the widely-used
+   * Google grid where `x` 0 and `y` 0 are in the top left. Grids like
+   * TMS where `x` 0 and `y` 0 are in the bottom left can be used by
+   * using the `{-y}` placeholder in the URL template, so long as the
+   * source does not have a custom tile grid. In this case,
+   * {@link module:ol/source/TileImage} can be used with a `tileUrlFunction`
+   * such as:
+   *
+   *  tileUrlFunction: function(coordinate) {
+   *    return 'http://mapserver.com/' + coordinate[0] + '/' +
+   *        coordinate[1] + '/' + coordinate[2] + '.png';
+   *    }
+   *
+   *
+   * @constructor
+   * @extends {module:ol/source/TileImage}
+   * @param {module:ol/source/XYZ~Options=} opt_options XYZ options.
+   * @api
+   */
   constructor(opt_options) {
     const options = opt_options || {};
     const projection = options.projection !== undefined ?
@@ -81,7 +81,7 @@ class XYZ {
         tileSize: options.tileSize
       });
 
-    TileImage.call(this, {
+    super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
@@ -101,7 +101,5 @@ class XYZ {
   }
 
 }
-
-inherits(XYZ, TileImage);
 
 export default XYZ;

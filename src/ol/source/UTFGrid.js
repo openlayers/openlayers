@@ -27,11 +27,11 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * @param {boolean} preemptive Load the tile when visible (before it's needed).
  * @param {boolean} jsonp Load the tile as a script.
  */
-export class CustomTile {
+export class CustomTile extends Tile {
 
   constructor(tileCoord, state, src, extent, preemptive, jsonp) {
 
-    Tile.call(this, tileCoord, state);
+    super(tileCoord, state);
 
     /**
      * @private
@@ -79,8 +79,6 @@ export class CustomTile {
   }
 
 }
-
-inherits(CustomTile, Tile);
 
 
 /**
@@ -271,19 +269,19 @@ CustomTile.prototype.load = function() {
  */
 
 
-/**
- * @classdesc
- * Layer source for UTFGrid interaction data loaded from TileJSON format.
- *
- * @constructor
- * @extends {module:ol/source/Tile}
- * @param {module:ol/source/UTFGrid~Options=} options Source options.
- * @api
- */
-class UTFGrid {
+class UTFGrid extends TileSource {
 
+  /**
+   * @classdesc
+   * Layer source for UTFGrid interaction data loaded from TileJSON format.
+   *
+   * @constructor
+   * @extends {module:ol/source/Tile}
+   * @param {module:ol/source/UTFGrid~Options=} options Source options.
+   * @api
+   */
   constructor(options) {
-    TileSource.call(this, {
+    super({
       projection: getProjection('EPSG:3857'),
       state: SourceState.LOADING
     });
@@ -333,8 +331,6 @@ class UTFGrid {
   }
 
 }
-
-inherits(UTFGrid, TileSource);
 
 
 /**

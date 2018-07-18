@@ -24,7 +24,7 @@ import ContextEventType from '../webgl/ContextEventType.js';
  *
  * @extends {module:ol/Disposable}
  */
-class WebGLContext {
+class WebGLContext extends Disposable {
 
   /**
    * @param {HTMLCanvasElement} canvas Canvas.
@@ -304,8 +304,6 @@ class WebGLContext {
     }
   }
 }
-
-inherits(WebGLContext, Disposable);
 
 
 /**

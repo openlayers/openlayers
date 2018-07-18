@@ -41,20 +41,20 @@ const tmpExtent = createEmpty();
 const tmpTransform = createTransform();
 
 
-/**
- * @constructor
- * @extends {module:ol/render/VectorContext}
- * @param {number} tolerance Tolerance.
- * @param {module:ol/extent~Extent} maxExtent Maximum extent.
- * @param {number} resolution Resolution.
- * @param {number} pixelRatio Pixel ratio.
- * @param {boolean} overlaps The replay can have overlapping geometries.
- * @param {?} declutterTree Declutter tree.
- * @struct
- */
-class CanvasReplay {
+class CanvasReplay extends VectorContext {
+  /**
+   * @constructor
+   * @extends {module:ol/render/VectorContext}
+   * @param {number} tolerance Tolerance.
+   * @param {module:ol/extent~Extent} maxExtent Maximum extent.
+   * @param {number} resolution Resolution.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {boolean} overlaps The replay can have overlapping geometries.
+   * @param {?} declutterTree Declutter tree.
+   * @struct
+   */
   constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-    VectorContext.call(this);
+    super();
 
     /**
      * @type {?}
@@ -1081,8 +1081,6 @@ class CanvasReplay {
     return this.bufferedMaxExtent_;
   }
 }
-
-inherits(CanvasReplay, VectorContext);
 
 
 /**

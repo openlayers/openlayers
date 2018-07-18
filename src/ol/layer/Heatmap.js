@@ -60,20 +60,20 @@ const Property = {
 const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
 
 
-/**
- * @classdesc
- * Layer for rendering vector data as a heatmap.
- * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
- * property on the layer object; for example, setting `title: 'My Title'` in the
- * options means that `title` is observable, and has get/set accessors.
- *
- * @constructor
- * @extends {module:ol/layer/Vector}
- * @fires module:ol/render/Event~RenderEvent
- * @param {module:ol/layer/Heatmap~Options=} opt_options Options.
- * @api
- */
-class Heatmap {
+class Heatmap extends VectorLayer {
+  /**
+   * @classdesc
+   * Layer for rendering vector data as a heatmap.
+   * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
+   * property on the layer object; for example, setting `title: 'My Title'` in the
+   * options means that `title` is observable, and has get/set accessors.
+   *
+   * @constructor
+   * @extends {module:ol/layer/Vector}
+   * @fires module:ol/render/Event~RenderEvent
+   * @param {module:ol/layer/Heatmap~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
 
@@ -84,7 +84,7 @@ class Heatmap {
     delete baseOptions.blur;
     delete baseOptions.shadow;
     delete baseOptions.weight;
-    VectorLayer.call(this, /** @type {module:ol/layer/Vector~Options} */ (baseOptions));
+    super(baseOptions);
 
     /**
      * @private
@@ -282,8 +282,6 @@ class Heatmap {
     this.set(Property.RADIUS, radius);
   }
 }
-
-inherits(Heatmap, VectorLayer);
 
 
 /**

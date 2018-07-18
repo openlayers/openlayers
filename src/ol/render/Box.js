@@ -7,12 +7,12 @@ import {inherits} from '../util.js';
 import Disposable from '../Disposable.js';
 import Polygon from '../geom/Polygon.js';
 
-/**
- * @constructor
- * @extends {module:ol/Disposable}
- * @param {string} className CSS class name.
- */
-class RenderBox {
+class RenderBox extends Disposable {
+  /**
+   * @constructor
+   * @extends {module:ol/Disposable}
+   * @param {string} className CSS class name.
+   */
   constructor(className) {
 
     /**
@@ -125,8 +125,6 @@ class RenderBox {
     return this.geometry_;
   }
 }
-
-inherits(RenderBox, Disposable);
 
 
 export default RenderBox;

@@ -8,13 +8,13 @@ import WebGLShader from '../webgl/Shader.js';
 /**
  * @extends {module:ol/webgl/Shader}
  */
-class WebGLVertex {
+class WebGLVertex extends WebGLShader {
 
   /**
    * @param {string} source Source.
    */
   constructor(source) {
-    WebGLShader.call(this, source);
+    super(source);
   }
 
   /**
@@ -24,8 +24,6 @@ class WebGLVertex {
     return VERTEX_SHADER;
   }
 }
-
-inherits(WebGLVertex, WebGLShader);
 
 
 export default WebGLVertex;

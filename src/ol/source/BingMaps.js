@@ -44,16 +44,16 @@ const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
  * To disable the opacity transition, pass `transition: 0`.
  */
 
-/**
- * @classdesc
- * Layer source for Bing Maps tile data.
- *
- * @constructor
- * @extends {module:ol/source/TileImage}
- * @param {module:ol/source/BingMaps~Options=} options Bing Maps options.
- * @api
- */
-class BingMaps {
+class BingMaps extends TileImage {
+  /**
+   * @classdesc
+   * Layer source for Bing Maps tile data.
+   *
+   * @constructor
+   * @extends {module:ol/source/TileImage}
+   * @param {module:ol/source/BingMaps~Options=} options Bing Maps options.
+   * @api
+   */
   constructor(options) {
 
     /**
@@ -62,7 +62,7 @@ class BingMaps {
      */
     this.hidpi_ = options.hidpi !== undefined ? options.hidpi : false;
 
-    TileImage.call(this, {
+    super({
       cacheSize: options.cacheSize,
       crossOrigin: 'anonymous',
       opaque: true,
@@ -222,7 +222,5 @@ class BingMaps {
     this.setState(SourceState.READY);
   }
 }
-
-inherits(BingMaps, TileImage);
 
 export default BingMaps;

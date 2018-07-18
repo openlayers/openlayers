@@ -20,21 +20,21 @@ import RegularShape from '../style/RegularShape.js';
  */
 
 
-/**
- * @classdesc
- * Set circle style for vector features.
- *
- * @constructor
- * @param {module:ol/style/Circle~Options=} opt_options Options.
- * @extends {module:ol/style/RegularShape}
- * @api
- */
-class CircleStyle {
+class CircleStyle extends RegularShape {
+  /**
+   * @classdesc
+   * Set circle style for vector features.
+   *
+   * @constructor
+   * @param {module:ol/style/Circle~Options=} opt_options Options.
+   * @extends {module:ol/style/RegularShape}
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options || {};
 
-    RegularShape.call(this, {
+    super({
       points: Infinity,
       fill: options.fill,
       radius: options.radius,
@@ -75,8 +75,6 @@ class CircleStyle {
     this.render_(this.atlasManager_);
   }
 }
-
-inherits(CircleStyle, RegularShape);
 
 
 export default CircleStyle;

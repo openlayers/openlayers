@@ -34,11 +34,11 @@ const TierSizeCalculation = {
  * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
  * @param {module:ol/Tile~Options=} opt_options Tile options.
  */
-export class CustomTile {
+export class CustomTile extends ImageTile {
 
   constructor(tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
-    ImageTile.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
+    super(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
 
     /**
      * @private
@@ -55,8 +55,6 @@ export class CustomTile {
   }
 
 }
-
-inherits(CustomTile, ImageTile);
 
 
 /**
@@ -119,18 +117,18 @@ CustomTile.prototype.getImage = function() {
  */
 
 
-/**
- * @classdesc
- * Layer source for tile data in Zoomify format (both Zoomify and Internet
- * Imaging Protocol are supported).
- *
- * @constructor
- * @extends {module:ol/source/TileImage}
- * @param {module:ol/source/Zoomify~Options=} opt_options Options.
- * @api
- */
-class Zoomify {
+class Zoomify extends TileImage {
 
+  /**
+   * @classdesc
+   * Layer source for tile data in Zoomify format (both Zoomify and Internet
+   * Imaging Protocol are supported).
+   *
+   * @constructor
+   * @extends {module:ol/source/TileImage}
+   * @param {module:ol/source/Zoomify~Options=} opt_options Options.
+   * @api
+   */
   constructor(opt_options) {
 
     const options = opt_options || {};
@@ -245,7 +243,7 @@ class Zoomify {
 
     const ZoomifyTileClass = CustomTile.bind(null, tileGrid);
 
-    TileImage.call(this, {
+    super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
@@ -260,7 +258,5 @@ class Zoomify {
   }
 
 }
-
-inherits(Zoomify, TileImage);
 
 export default Zoomify;

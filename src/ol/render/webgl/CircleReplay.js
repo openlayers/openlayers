@@ -15,16 +15,16 @@ import {DEFAULT_LINEDASH, DEFAULT_LINEDASHOFFSET, DEFAULT_STROKESTYLE,
 import {FLOAT} from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
-/**
- * @constructor
- * @extends {module:ol/render/webgl/Replay}
- * @param {number} tolerance Tolerance.
- * @param {module:ol/extent~Extent} maxExtent Max extent.
- * @struct
- */
-class WebGLCircleReplay {
+class WebGLCircleReplay extends WebGLReplay {
+  /**
+   * @constructor
+   * @extends {module:ol/render/webgl/Replay}
+   * @param {number} tolerance Tolerance.
+   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @struct
+   */
   constructor(tolerance, maxExtent) {
-    WebGLReplay.call(this, tolerance, maxExtent);
+    super(tolerance, maxExtent);
 
     /**
      * @private
@@ -403,8 +403,6 @@ class WebGLCircleReplay {
     }
   }
 }
-
-inherits(WebGLCircleReplay, WebGLReplay);
 
 
 export default WebGLCircleReplay;
