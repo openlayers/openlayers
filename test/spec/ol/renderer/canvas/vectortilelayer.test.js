@@ -1,4 +1,4 @@
-import {getUid, inherits} from '../../../../../src/ol/index.js';
+import {getUid} from '../../../../../src/ol/index.js';
 import {clear} from '../../../../../src/ol/obj.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
