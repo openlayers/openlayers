@@ -61,8 +61,42 @@ class Icon extends ImageStyle {
    * @api
    */
   constructor(opt_options) {
-
     const options = opt_options || {};
+
+    /**
+     * @type {number}
+     */
+    const opacity = options.opacity !== undefined ? options.opacity : 1;
+
+    /**
+     * @type {number}
+     */
+    const rotation = options.rotation !== undefined ? options.rotation : 0;
+
+    /**
+     * @type {number}
+     */
+    const scale = options.scale !== undefined ? options.scale : 1;
+
+    /**
+     * @type {boolean}
+     */
+    const rotateWithView = options.rotateWithView !== undefined ?
+      options.rotateWithView : false;
+
+    /**
+     * @type {boolean}
+     */
+    const snapToPixel = options.snapToPixel !== undefined ?
+      options.snapToPixel : true;
+
+    super({
+      opacity: opacity,
+      rotation: rotation,
+      scale: scale,
+      snapToPixel: snapToPixel,
+      rotateWithView: rotateWithView
+    });
 
     /**
      * @private
@@ -173,41 +207,6 @@ class Icon extends ImageStyle {
      * @type {module:ol/size~Size}
      */
     this.size_ = options.size !== undefined ? options.size : null;
-
-    /**
-     * @type {number}
-     */
-    const opacity = options.opacity !== undefined ? options.opacity : 1;
-
-    /**
-     * @type {boolean}
-     */
-    const rotateWithView = options.rotateWithView !== undefined ?
-      options.rotateWithView : false;
-
-    /**
-     * @type {number}
-     */
-    const rotation = options.rotation !== undefined ? options.rotation : 0;
-
-    /**
-     * @type {number}
-     */
-    const scale = options.scale !== undefined ? options.scale : 1;
-
-    /**
-     * @type {boolean}
-     */
-    const snapToPixel = options.snapToPixel !== undefined ?
-      options.snapToPixel : true;
-
-    super({
-      opacity: opacity,
-      rotation: rotation,
-      scale: scale,
-      snapToPixel: snapToPixel,
-      rotateWithView: rotateWithView
-    });
 
   }
 
