@@ -660,7 +660,7 @@ class CanvasReplay extends VectorContext {
         case CanvasInstruction.DRAW_IMAGE:
           d = /** @type {number} */ (instruction[1]);
           dd = /** @type {number} */ (instruction[2]);
-          image =  /** @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} */
+          image = /** @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} */
               (instruction[3]);
           // Remaining arguments in DRAW_IMAGE are in alphabetical order
           anchorX = /** @type {number} */ (instruction[4]);
@@ -711,7 +711,7 @@ class CanvasReplay extends VectorContext {
           const measure = /** @type {function(string):number} */ (instruction[8]);
           const offsetY = /** @type {number} */ (instruction[9]);
           const strokeKey = /** @type {string} */ (instruction[10]);
-          const strokeWidth =  /** @type {number} */ (instruction[11]);
+          const strokeWidth = /** @type {number} */ (instruction[11]);
           const text = /** @type {string} */ (instruction[12]);
           const textKey = /** @type {string} */ (instruction[13]);
           const textScale = /** @type {number} */ (instruction[14]);

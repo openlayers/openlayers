@@ -82,7 +82,7 @@ describe('ol.interaction.Snap', function() {
       snapInteraction.setMap(map);
 
       const event = {
-        pixel: [7 + width / 2,  height / 2 - 4],
+        pixel: [7 + width / 2, height / 2 - 4],
         coordinate: [7, 4],
         map: map
       };
@@ -100,7 +100,7 @@ describe('ol.interaction.Snap', function() {
       snapInteraction.setMap(map);
 
       const event = {
-        pixel: [7 + width / 2,  height / 2 - 4],
+        pixel: [7 + width / 2, height / 2 - 4],
         coordinate: [7, 4],
         map: map
       };
@@ -117,7 +117,7 @@ describe('ol.interaction.Snap', function() {
       snapInteraction.setMap(map);
 
       const event = {
-        pixel: [5 + width / 2,  height / 2 - 5],
+        pixel: [5 + width / 2, height / 2 - 5],
         coordinate: [5, 5],
         map: map
       };

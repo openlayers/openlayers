@@ -27,7 +27,7 @@ const map = new Map({
   })
 });
 
-let select = null;  // ref to currently selected interaction
+let select = null; // ref to currently selected interaction
 
 // select interaction working on "singleclick"
 const selectSingleClick = new Select();

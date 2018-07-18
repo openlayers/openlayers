@@ -246,7 +246,7 @@ class LRUCache extends EventTarget {
    * @param {T} value Value.
    */
   replace(key, value) {
-    this.get(key);  // update `newest_`
+    this.get(key); // update `newest_`
     this.entries_[key].value_ = value;
   }
 

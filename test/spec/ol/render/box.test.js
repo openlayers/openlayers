@@ -50,7 +50,7 @@ describe('ol.render.Box', function() {
   });
 
   describe('#setPixels()', function() {
-    it('applies correct styles for a box', function()  {
+    it('applies correct styles for a box', function() {
       box.setPixels([1, 2], [4, 8]);
       expect(box.element_.style.left).to.be('1px');
       expect(box.element_.style.top).to.be('2px');
