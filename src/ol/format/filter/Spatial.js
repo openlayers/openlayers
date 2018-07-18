@@ -1,7 +1,6 @@
 /**
  * @module ol/format/filter/Spatial
  */
-import {inherits} from '../../util.js';
 import Filter from '../filter/Filter.js';
 
 /**
@@ -10,35 +9,37 @@ import Filter from '../filter/Filter.js';
  * Represents a spatial operator to test whether a geometry-valued property
  * relates to a given geometry.
  *
- * @constructor
  * @abstract
- * @param {!string} tagName The XML tag name for this filter.
- * @param {!string} geometryName Geometry name to use.
- * @param {!module:ol/geom/Geometry} geometry Geometry.
- * @param {string=} opt_srsName SRS name. No srsName attribute will be
- *    set on geometries when this is not provided.
- * @extends {module:ol/format/filter/Filter}
  */
-const Spatial = function(tagName, geometryName, geometry, opt_srsName) {
-
-  Filter.call(this, tagName);
+class Spatial extends Filter {
 
   /**
-   * @type {!string}
+   * @param {!string} tagName The XML tag name for this filter.
+   * @param {!string} geometryName Geometry name to use.
+   * @param {!module:ol/geom/Geometry} geometry Geometry.
+   * @param {string=} opt_srsName SRS name. No srsName attribute will be
+   *    set on geometries when this is not provided.
    */
-  this.geometryName = geometryName || 'the_geom';
+  constructor(tagName, geometryName, geometry, opt_srsName) {
 
-  /**
-   * @type {module:ol/geom/Geometry}
-   */
-  this.geometry = geometry;
+    super(tagName);
 
-  /**
-   * @type {string|undefined}
-   */
-  this.srsName = opt_srsName;
-};
+    /**
+     * @type {!string}
+     */
+    this.geometryName = geometryName || 'the_geom';
 
-inherits(Spatial, Filter);
+    /**
+     * @type {module:ol/geom/Geometry}
+     */
+    this.geometry = geometry;
+
+    /**
+     * @type {string|undefined}
+     */
+    this.srsName = opt_srsName;
+  }
+
+}
 
 export default Spatial;

@@ -1,21 +1,22 @@
 /**
  * @module ol/format/filter/IsNull
  */
-import {inherits} from '../../util.js';
 import Comparison from '../filter/Comparison.js';
 
 /**
  * @classdesc
  * Represents a `<PropertyIsNull>` comparison operator.
- *
- * @constructor
- * @param {!string} propertyName Name of the context property to compare.
- * @extends {module:ol/format/filter/Comparison}
- * @api
  */
-const IsNull = function(propertyName) {
-  Comparison.call(this, 'PropertyIsNull', propertyName);
-};
+class IsNull extends Comparison {
 
-inherits(IsNull, Comparison);
+  /**
+   * @param {!string} propertyName Name of the context property to compare.
+   * @api
+   */
+  constructor(propertyName) {
+    super('PropertyIsNull', propertyName);
+  }
+
+}
+
 export default IsNull;

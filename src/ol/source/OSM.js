@@ -1,7 +1,7 @@
 /**
  * @module ol/source/OSM
  */
-import {inherits} from '../util.js';
+
 import XYZ from '../source/XYZ.js';
 
 
@@ -41,46 +41,46 @@ export const ATTRIBUTION = '&copy; ' +
  */
 
 
-/**
- * @classdesc
- * Layer source for the OpenStreetMap tile server.
- *
- * @constructor
- * @extends {module:ol/source/XYZ}
- * @param {module:ol/source/OSM~Options=} [opt_options] Open Street Map options.
- * @api
- */
-const OSM = function(opt_options) {
+class OSM extends XYZ {
 
-  const options = opt_options || {};
+  /**
+   * @classdesc
+   * Layer source for the OpenStreetMap tile server.
+   *
+   * @param {module:ol/source/OSM~Options=} [opt_options] Open Street Map options.
+   * @api
+   */
+  constructor(opt_options) {
 
-  let attributions;
-  if (options.attributions !== undefined) {
-    attributions = options.attributions;
-  } else {
-    attributions = [ATTRIBUTION];
+    const options = opt_options || {};
+
+    let attributions;
+    if (options.attributions !== undefined) {
+      attributions = options.attributions;
+    } else {
+      attributions = [ATTRIBUTION];
+    }
+
+    const crossOrigin = options.crossOrigin !== undefined ?
+      options.crossOrigin : 'anonymous';
+
+    const url = options.url !== undefined ?
+      options.url : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+    super({
+      attributions: attributions,
+      cacheSize: options.cacheSize,
+      crossOrigin: crossOrigin,
+      opaque: options.opaque !== undefined ? options.opaque : true,
+      maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
+      reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+      tileLoadFunction: options.tileLoadFunction,
+      url: url,
+      wrapX: options.wrapX
+    });
+
   }
 
-  const crossOrigin = options.crossOrigin !== undefined ?
-    options.crossOrigin : 'anonymous';
-
-  const url = options.url !== undefined ?
-    options.url : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-
-  XYZ.call(this, {
-    attributions: attributions,
-    cacheSize: options.cacheSize,
-    crossOrigin: crossOrigin,
-    opaque: options.opaque !== undefined ? options.opaque : true,
-    maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
-    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-    tileLoadFunction: options.tileLoadFunction,
-    url: url,
-    wrapX: options.wrapX
-  });
-
-};
-
-inherits(OSM, XYZ);
+}
 
 export default OSM;

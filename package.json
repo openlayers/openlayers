@@ -1,5 +1,5 @@
 {
-  "name": "openlayers",
+  "name": "ol",
   "version": "5.0.3",
   "description": "OpenLayers mapping library",
   "keywords": [
@@ -7,6 +7,7 @@
     "mapping",
     "ol"
   ],
+  "private": true,
   "homepage": "https://openlayers.org/",
   "scripts": {
     "lint": "eslint tasks test src/ol examples config",
@@ -15,18 +16,13 @@
     "karma": "karma start test/karma.config.js",
     "serve-examples": "webpack-dev-server --config examples/webpack/config.js --mode development --watch",
     "build-examples": "webpack --config examples/webpack/config.js --mode production",
-    "build-index": "node tasks/generate-index",
-    "prepare-package": "node tasks/prepare-package",
-    "prebuild": "npm run prepare-package && npm run build-index",
-    "prepare": "npm run prepare-package",
-    "build": "rollup --config config/rollup.js && cleancss --source-map src/ol/ol.css -o build/ol.css",
-    "presrc-closure": "npm run prebuild",
-    "src-closure": "node tasks/transform-types",
-    "pretypecheck": "npm run src-closure",
-    "typecheck": "node tasks/typecheck",
+    "build-package": "npm run transpile && node tasks/prepare-package",
+    "build-index": "npm run build-package && node tasks/generate-index",
+    "build-legacy": "rm -rf build && npm run build-index && rollup --config config/rollup.js && cleancss --source-map src/ol/ol.css -o build/ol.css",
+    "transpile": "rm -rf build/ol && mkdir -p build && buble --input src/ol --output build/ol --no modules --sourcemap",
     "apidoc": "jsdoc config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -P package.json -d build/apidoc"
   },
-  "main": "src/ol/index.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/openlayers/openlayers.git"
@@ -41,20 +37,18 @@
     "rbush": "2.0.2"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-plugin-jsdoc-closure": "1.5.1",
+    "buble": "^0.19.3",
     "buble-loader": "^0.5.1",
     "chaikin-smooth": "^1.0.4",
     "clean-css-cli": "4.1.11",
     "copy-webpack-plugin": "^4.4.1",
     "coveralls": "3.0.1",
     "eslint": "5.0.1",
-    "eslint-config-openlayers": "^9.2.0",
+    "eslint-config-openlayers": "^10.0.0",
     "expect.js": "0.3.1",
     "front-matter": "^2.1.2",
     "fs-extra": "^6.0.0",
     "glob": "^7.1.2",
-    "google-closure-compiler": "20180610.0.2",
     "handlebars": "4.0.11",
     "istanbul": "0.4.5",
     "jquery": "3.3.1",
@@ -72,7 +66,6 @@
     "mustache": "^2.3.0",
     "pixelmatch": "^4.0.2",
     "proj4": "2.4.4",
-    "recast": "0.15.2",
     "rollup": "0.62.0",
     "rollup-plugin-buble": "0.19.2",
     "rollup-plugin-commonjs": "9.1.3",

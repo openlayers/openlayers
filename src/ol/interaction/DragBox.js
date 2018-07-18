@@ -3,7 +3,6 @@
  */
 // FIXME draw drag box
 import Event from '../events/Event.js';
-import {inherits} from '../util.js';
 import {always, mouseOnly, mouseActionButton} from '../events/condition.js';
 import {UNDEFINED} from '../functions.js';
 import PointerInteraction from '../interaction/Pointer.js';
@@ -29,6 +28,8 @@ import RenderBox from '../render/Box.js';
  * @property {module:ol/interaction/DragBox~EndCondition} [boxEndCondition] A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
  * {@link module:ol~Pixel}s to indicate whether a `boxend` event should be fired.
  * Default is `true` if the area of the box is bigger than the `minArea` option.
+ * @property {function(this:module:ol/interaction/DragBox, module:ol/MapBrowserEvent)} onBoxEnd Code to execute just
+ * before `boxend` is fired.
  */
 
 
@@ -63,34 +64,35 @@ const DragBoxEventType = {
  * @classdesc
  * Events emitted by {@link module:ol/interaction/DragBox~DragBox} instances are instances of
  * this type.
- *
- * @param {string} type The event type.
- * @param {module:ol/coordinate~Coordinate} coordinate The event coordinate.
- * @param {module:ol/MapBrowserEvent} mapBrowserEvent Originating event.
- * @extends {module:ol/events/Event}
- * @constructor
  */
-const DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
-  Event.call(this, type);
+class DragBoxEvent extends Event {
 
   /**
-   * The coordinate of the drag event.
-   * @const
-   * @type {module:ol/coordinate~Coordinate}
-   * @api
+   * @param {string} type The event type.
+   * @param {module:ol/coordinate~Coordinate} coordinate The event coordinate.
+   * @param {module:ol/MapBrowserEvent} mapBrowserEvent Originating event.
    */
-  this.coordinate = coordinate;
+  constructor(type, coordinate, mapBrowserEvent) {
+    super(type);
 
-  /**
-   * @const
-   * @type {module:ol/MapBrowserEvent}
-   * @api
-   */
-  this.mapBrowserEvent = mapBrowserEvent;
+    /**
+     * The coordinate of the drag event.
+     * @const
+     * @type {module:ol/coordinate~Coordinate}
+     * @api
+     */
+    this.coordinate = coordinate;
 
-};
+    /**
+     * @const
+     * @type {module:ol/MapBrowserEvent}
+     * @api
+     */
+    this.mapBrowserEvent = mapBrowserEvent;
 
-inherits(DragBoxEvent, Event);
+  }
+
+}
 
 
 /**
@@ -104,55 +106,71 @@ inherits(DragBoxEvent, Event);
  *
  * This interaction is only supported for mouse devices.
  *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
  * @fires module:ol/interaction/DragBox~DragBoxEvent
- * @param {module:ol/interaction/DragBox~Options=} opt_options Options.
- * @api
  */
-const DragBox = function(opt_options) {
+class DragBox extends PointerInteraction {
+  /**
+   * @param {module:ol/interaction/DragBox~Options=} opt_options Options.
+   * @api
+   */
+  constructor(opt_options) {
 
-  PointerInteraction.call(this, {
-    handleDownEvent: handleDownEvent,
-    handleDragEvent: handleDragEvent,
-    handleUpEvent: handleUpEvent
-  });
+    super({
+      handleDownEvent: handleDownEvent,
+      handleDragEvent: handleDragEvent,
+      handleUpEvent: handleUpEvent
+    });
 
-  const options = opt_options ? opt_options : {};
+    const options = opt_options ? opt_options : {};
+
+    /**
+    * @type {module:ol/render/Box}
+    * @private
+    */
+    this.box_ = new RenderBox(options.className || 'ol-dragbox');
+
+    /**
+    * @type {number}
+    * @private
+    */
+    this.minArea_ = options.minArea !== undefined ? options.minArea : 64;
+
+    /**
+     * Function to execute just before `onboxend` is fired
+     * @type {{function(this:module:ol/interaction/DragBox, module:ol/MapBrowserEvent)}}
+     * @private
+     */
+    this.onBoxEnd_ = options.onBoxEnd ? options.onBoxEnd : UNDEFINED;
+
+    /**
+    * @type {module:ol~Pixel}
+    * @private
+    */
+    this.startPixel_ = null;
+
+    /**
+    * @private
+    * @type {module:ol/events/condition~Condition}
+    */
+    this.condition_ = options.condition ? options.condition : always;
+
+    /**
+    * @private
+    * @type {module:ol/interaction/DragBox~EndCondition}
+    */
+    this.boxEndCondition_ = options.boxEndCondition ?
+      options.boxEndCondition : defaultBoxEndCondition;
+  }
 
   /**
-   * @type {module:ol/render/Box}
-   * @private
-   */
-  this.box_ = new RenderBox(options.className || 'ol-dragbox');
-
-  /**
-   * @type {number}
-   * @private
-   */
-  this.minArea_ = options.minArea !== undefined ? options.minArea : 64;
-
-  /**
-   * @type {module:ol~Pixel}
-   * @private
-   */
-  this.startPixel_ = null;
-
-  /**
-   * @private
-   * @type {module:ol/events/condition~Condition}
-   */
-  this.condition_ = options.condition ? options.condition : always;
-
-  /**
-   * @private
-   * @type {module:ol/interaction/DragBox~EndCondition}
-   */
-  this.boxEndCondition_ = options.boxEndCondition ?
-    options.boxEndCondition : defaultBoxEndCondition;
-};
-
-inherits(DragBox, PointerInteraction);
+  * Returns geometry of last drawn box.
+  * @return {module:ol/geom/Polygon} Geometry.
+  * @api
+  */
+  getGeometry() {
+    return this.box_.getGeometry();
+  }
+}
 
 
 /**
@@ -189,25 +207,6 @@ function handleDragEvent(mapBrowserEvent) {
 
 
 /**
- * Returns geometry of last drawn box.
- * @return {module:ol/geom/Polygon} Geometry.
- * @api
- */
-DragBox.prototype.getGeometry = function() {
-  return this.box_.getGeometry();
-};
-
-
-/**
- * To be overridden by child classes.
- * FIXME: use constructor option instead of relying on overriding.
- * @param {module:ol/MapBrowserEvent} mapBrowserEvent Map browser event.
- * @protected
- */
-DragBox.prototype.onBoxEnd = UNDEFINED;
-
-
-/**
  * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
  * @this {module:ol/interaction/DragBox}
@@ -219,9 +218,8 @@ function handleUpEvent(mapBrowserEvent) {
 
   this.box_.setMap(null);
 
-  if (this.boxEndCondition_(mapBrowserEvent,
-    this.startPixel_, mapBrowserEvent.pixel)) {
-    this.onBoxEnd(mapBrowserEvent);
+  if (this.boxEndCondition_(mapBrowserEvent, this.startPixel_, mapBrowserEvent.pixel)) {
+    this.onBoxEnd_(mapBrowserEvent);
     this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXEND,
       mapBrowserEvent.coordinate, mapBrowserEvent));
   }

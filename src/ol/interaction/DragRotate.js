@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/DragRotate
  */
-import {inherits} from '../util.js';
 import {disable} from '../rotationconstraint.js';
 import ViewHint from '../ViewHint.js';
 import {altShiftKeysOnly, mouseOnly, mouseActionButton} from '../events/condition.js';
@@ -27,42 +26,45 @@ import PointerInteraction from '../interaction/Pointer.js';
  * it to when the alt and shift keys are held down.
  *
  * This interaction is only supported for mouse devices.
- *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
- * @param {module:ol/interaction/DragRotate~Options=} opt_options Options.
- * @api
  */
-const DragRotate = function(opt_options) {
-
-  const options = opt_options ? opt_options : {};
-
-  PointerInteraction.call(this, {
-    handleDownEvent: handleDownEvent,
-    handleDragEvent: handleDragEvent,
-    handleUpEvent: handleUpEvent
-  });
+class DragRotate extends PointerInteraction {
 
   /**
-   * @private
-   * @type {module:ol/events/condition~Condition}
+   * @param {module:ol/interaction/DragRotate~Options=} opt_options Options.
+   * @api
    */
-  this.condition_ = options.condition ? options.condition : altShiftKeysOnly;
+  constructor(opt_options) {
 
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.lastAngle_ = undefined;
+    const options = opt_options ? opt_options : {};
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.duration_ = options.duration !== undefined ? options.duration : 250;
-};
+    super({
+      handleDownEvent: handleDownEvent,
+      handleDragEvent: handleDragEvent,
+      handleUpEvent: handleUpEvent,
+      stopDown: FALSE
+    });
 
-inherits(DragRotate, PointerInteraction);
+    /**
+     * @private
+     * @type {module:ol/events/condition~Condition}
+     */
+    this.condition_ = options.condition ? options.condition : altShiftKeysOnly;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.lastAngle_ = undefined;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.duration_ = options.duration !== undefined ? options.duration : 250;
+
+  }
+
+}
 
 
 /**
@@ -131,9 +133,4 @@ function handleDownEvent(mapBrowserEvent) {
   }
 }
 
-
-/**
- * @inheritDoc
- */
-DragRotate.prototype.shouldStopEvent = FALSE;
 export default DragRotate;

@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/DragRotateAndZoom
  */
-import {inherits} from '../util.js';
 import {disable} from '../rotationconstraint.js';
 import ViewHint from '../ViewHint.js';
 import {shiftKeyOnly, mouseOnly} from '../events/condition.js';
@@ -28,55 +27,56 @@ import PointerInteraction from '../interaction/Pointer.js';
  * This interaction is only supported for mouse devices.
  *
  * And this interaction is not included in the default interactions.
- *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
- * @param {module:ol/interaction/DragRotateAndZoom~Options=} opt_options Options.
- * @api
  */
-const DragRotateAndZoom = function(opt_options) {
-
-  const options = opt_options ? opt_options : {};
-
-  PointerInteraction.call(this, {
-    handleDownEvent: handleDownEvent,
-    handleDragEvent: handleDragEvent,
-    handleUpEvent: handleUpEvent
-  });
+class DragRotateAndZoom extends PointerInteraction {
 
   /**
-   * @private
-   * @type {module:ol/events/condition~Condition}
+   * @param {module:ol/interaction/DragRotateAndZoom~Options=} opt_options Options.
+   * @api
    */
-  this.condition_ = options.condition ? options.condition : shiftKeyOnly;
+  constructor(opt_options) {
 
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.lastAngle_ = undefined;
+    const options = opt_options ? opt_options : {};
 
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.lastMagnitude_ = undefined;
+    super({
+      handleDownEvent: handleDownEvent,
+      handleDragEvent: handleDragEvent,
+      handleUpEvent: handleUpEvent
+    });
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.lastScaleDelta_ = 0;
+    /**
+     * @private
+     * @type {module:ol/events/condition~Condition}
+     */
+    this.condition_ = options.condition ? options.condition : shiftKeyOnly;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.duration_ = options.duration !== undefined ? options.duration : 400;
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.lastAngle_ = undefined;
 
-};
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.lastMagnitude_ = undefined;
 
-inherits(DragRotateAndZoom, PointerInteraction);
+    /**
+     * @private
+     * @type {number}
+     */
+    this.lastScaleDelta_ = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.duration_ = options.duration !== undefined ? options.duration : 400;
+
+  }
+
+}
 
 
 /**

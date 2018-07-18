@@ -201,7 +201,7 @@ describe('ol.control.ScaleLine', function() {
         zoom: 0
       }));
       map.once('postrender', function() {
-        metricHtml = ctrl.element_.innerHTML;
+        metricHtml = ctrl.element.innerHTML;
         done();
       });
     });
@@ -215,25 +215,25 @@ describe('ol.control.ScaleLine', function() {
     });
     it('renders a different scaleline for "nautical"', function() {
       ctrl.setUnits('nautical');
-      nauticalHtml = ctrl.element_.innerHTML;
+      nauticalHtml = ctrl.element.innerHTML;
       expect(nauticalHtml).to.not.be(metricHtml);
     });
     it('renders a different scaleline for "degrees"', function() {
       ctrl.setUnits('degrees');
-      degreesHtml = ctrl.element_.innerHTML;
+      degreesHtml = ctrl.element.innerHTML;
       expect(degreesHtml).to.not.be(metricHtml);
       expect(degreesHtml).to.not.be(nauticalHtml);
     });
     it('renders a different scaleline for "imperial"', function() {
       ctrl.setUnits('imperial');
-      imperialHtml = ctrl.element_.innerHTML;
+      imperialHtml = ctrl.element.innerHTML;
       expect(imperialHtml).to.not.be(metricHtml);
       expect(imperialHtml).to.not.be(nauticalHtml);
       expect(imperialHtml).to.not.be(degreesHtml);
     });
     it('renders a different scaleline for "us"', function() {
       ctrl.setUnits('us');
-      usHtml = ctrl.element_.innerHTML;
+      usHtml = ctrl.element.innerHTML;
       expect(usHtml).to.not.be(metricHtml);
       expect(usHtml).to.not.be(nauticalHtml);
       expect(usHtml).to.not.be(degreesHtml);
@@ -252,14 +252,14 @@ describe('ol.control.ScaleLine', function() {
         projection: 'EPSG:3857'
       }));
       map.renderSync();
-      const innerHtml3857 = ctrl.element_.innerHTML;
+      const innerHtml3857 = ctrl.element.innerHTML;
       map.setView(new View({
         center: [7, 52],
         zoom: 2,
         projection: 'EPSG:4326'
       }));
       map.renderSync();
-      const innerHtml4326 = ctrl.element_.innerHTML;
+      const innerHtml4326 = ctrl.element.innerHTML;
       expect(innerHtml4326).to.not.be(innerHtml3857);
     });
 
@@ -281,16 +281,16 @@ describe('ol.control.ScaleLine', function() {
       map.renderSync();
 
       ctrl.setUnits('metric');
-      expect(ctrl.element_.innerText).to.be('100 m');
+      expect(ctrl.element.innerText).to.be('100 m');
 
       ctrl.setUnits('imperial');
-      expect(ctrl.element_.innerText).to.be('500 ft');
+      expect(ctrl.element.innerText).to.be('500 ft');
 
       ctrl.setUnits('nautical');
-      expect(ctrl.element_.innerText).to.be('0.05 nm');
+      expect(ctrl.element.innerText).to.be('0.05 nm');
 
       ctrl.setUnits('us');
-      expect(ctrl.element_.innerText).to.be('500 ft');
+      expect(ctrl.element.innerText).to.be('500 ft');
 
 
       map.setView(new View({
@@ -309,16 +309,16 @@ describe('ol.control.ScaleLine', function() {
       map.renderSync();
 
       ctrl.setUnits('metric');
-      expect(ctrl.element_.innerText).to.be('100 mm');
+      expect(ctrl.element.innerText).to.be('100 mm');
 
       ctrl.setUnits('imperial');
-      expect(ctrl.element_.innerText).to.be('5 in');
+      expect(ctrl.element.innerText).to.be('5 in');
 
       ctrl.setUnits('nautical');
-      expect(ctrl.element_.innerText).to.be('0.00005 nm');
+      expect(ctrl.element.innerText).to.be('0.00005 nm');
 
       ctrl.setUnits('us');
-      expect(ctrl.element_.innerText).to.be('5 in');
+      expect(ctrl.element.innerText).to.be('5 in');
     });
 
     it('Metric display works with Geographic (EPSG:4326) projection', function() {
@@ -330,10 +330,10 @@ describe('ol.control.ScaleLine', function() {
         projection: 'EPSG:4326'
       }));
       map.renderSync();
-      expect(ctrl.element_.innerText).to.be('10000 km');
+      expect(ctrl.element.innerText).to.be('10000 km');
       map.getView().setZoom(28); /* max zoom */
       map.renderSync();
-      expect(ctrl.element_.innerText).to.be('50 mm');
+      expect(ctrl.element.innerText).to.be('50 mm');
     });
   });
 
@@ -348,10 +348,10 @@ describe('ol.control.ScaleLine', function() {
         projection: 'EPSG:4326'
       }));
       map.renderSync();
-      const innerHtml0 = ctrl.element_.innerHTML;
+      const innerHtml0 = ctrl.element.innerHTML;
       map.getView().setCenter([7, 52]);
       map.renderSync();
-      const innerHtml52 = ctrl.element_.innerHTML;
+      const innerHtml52 = ctrl.element.innerHTML;
       expect(innerHtml0).to.not.be(innerHtml52);
     });
 
@@ -366,10 +366,10 @@ describe('ol.control.ScaleLine', function() {
         projection: 'EPSG:4326'
       }));
       map.renderSync();
-      const innerHtml0 = ctrl.element_.innerHTML;
+      const innerHtml0 = ctrl.element.innerHTML;
       map.getView().setCenter([7, 52]);
       map.renderSync();
-      const innerHtml52 = ctrl.element_.innerHTML;
+      const innerHtml52 = ctrl.element.innerHTML;
       expect(innerHtml0).to.be(innerHtml52);
     });
 
@@ -427,11 +427,11 @@ describe('ol.control.ScaleLine', function() {
     it('metric: is rendered differently for different zoomlevels', function() {
       ctrl.setUnits('metric');
       map.renderSync();
-      renderedHtmls[ctrl.element_.innerHTML] = true;
+      renderedHtmls[ctrl.element.innerHTML] = true;
       while (--currentZoom >= 0) {
         mapView.setZoom(currentZoom);
         map.renderSync();
-        const currentHtml = ctrl.element_.innerHTML;
+        const currentHtml = ctrl.element.innerHTML;
         expect(currentHtml in renderedHtmls).to.be(false);
         renderedHtmls[currentHtml] = true;
 
@@ -442,11 +442,11 @@ describe('ol.control.ScaleLine', function() {
     it('degrees: is rendered differently for different zoomlevels', function() {
       ctrl.setUnits('degrees');
       map.renderSync();
-      renderedHtmls[ctrl.element_.innerHTML] = true;
+      renderedHtmls[ctrl.element.innerHTML] = true;
       while (--currentZoom >= 0) {
         mapView.setZoom(currentZoom);
         map.renderSync();
-        const currentHtml = ctrl.element_.innerHTML;
+        const currentHtml = ctrl.element.innerHTML;
         expect(currentHtml in renderedHtmls).to.be(false);
         renderedHtmls[currentHtml] = true;
       }
@@ -454,11 +454,11 @@ describe('ol.control.ScaleLine', function() {
     it('imperial: is rendered differently for different zoomlevels', function() {
       ctrl.setUnits('imperial');
       map.renderSync();
-      renderedHtmls[ctrl.element_.innerHTML] = true;
+      renderedHtmls[ctrl.element.innerHTML] = true;
       while (--currentZoom >= 0) {
         mapView.setZoom(currentZoom);
         map.renderSync();
-        const currentHtml = ctrl.element_.innerHTML;
+        const currentHtml = ctrl.element.innerHTML;
         expect(currentHtml in renderedHtmls).to.be(false);
         renderedHtmls[currentHtml] = true;
 
@@ -469,11 +469,11 @@ describe('ol.control.ScaleLine', function() {
     it('nautical: is rendered differently for different zoomlevels', function() {
       ctrl.setUnits('nautical');
       map.renderSync();
-      renderedHtmls[ctrl.element_.innerHTML] = true;
+      renderedHtmls[ctrl.element.innerHTML] = true;
       while (--currentZoom >= 0) {
         mapView.setZoom(currentZoom);
         map.renderSync();
-        const currentHtml = ctrl.element_.innerHTML;
+        const currentHtml = ctrl.element.innerHTML;
         expect(currentHtml in renderedHtmls).to.be(false);
         renderedHtmls[currentHtml] = true;
       }
@@ -481,11 +481,11 @@ describe('ol.control.ScaleLine', function() {
     it('us: is rendered differently for different zoomlevels', function() {
       ctrl.setUnits('us');
       map.renderSync();
-      renderedHtmls[ctrl.element_.innerHTML] = true;
+      renderedHtmls[ctrl.element.innerHTML] = true;
       while (--currentZoom >= 0) {
         mapView.setZoom(currentZoom);
         map.renderSync();
-        const currentHtml = ctrl.element_.innerHTML;
+        const currentHtml = ctrl.element.innerHTML;
         expect(currentHtml in renderedHtmls).to.be(false);
         renderedHtmls[currentHtml] = true;
       }

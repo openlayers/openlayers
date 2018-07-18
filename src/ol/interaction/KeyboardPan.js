@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/KeyboardPan
  */
-import {inherits} from '../util.js';
 import {rotate as rotateCoordinate} from '../coordinate.js';
 import EventType from '../events/EventType.js';
 import KeyCode from '../events/KeyCode.js';
@@ -33,53 +32,54 @@ import Interaction, {pan} from '../interaction/Interaction.js';
  * element, focus will have to be on, and returned to, this element if the keys
  * are to function.
  * See also {@link module:ol/interaction/KeyboardZoom~KeyboardZoom}.
- *
- * @constructor
- * @extends {module:ol/interaction/Interaction}
- * @param {module:ol/interaction/KeyboardPan~Options=} opt_options Options.
- * @api
  */
-const KeyboardPan = function(opt_options) {
-
-  Interaction.call(this, {
-    handleEvent: handleEvent
-  });
-
-  const options = opt_options || {};
-
+class KeyboardPan extends Interaction {
   /**
-   * @private
-   * @param {module:ol/MapBrowserEvent} mapBrowserEvent Browser event.
-   * @return {boolean} Combined condition result.
+   * @param {module:ol/interaction/KeyboardPan~Options=} opt_options Options.
+   * @api
    */
-  this.defaultCondition_ = function(mapBrowserEvent) {
-    return noModifierKeys(mapBrowserEvent) &&
-      targetNotEditable(mapBrowserEvent);
-  };
+  constructor(opt_options) {
 
-  /**
-   * @private
-   * @type {module:ol/events/condition~Condition}
-   */
-  this.condition_ = options.condition !== undefined ?
-    options.condition : this.defaultCondition_;
+    super({
+      handleEvent: handleEvent
+    });
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.duration_ = options.duration !== undefined ? options.duration : 100;
+    const options = opt_options || {};
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.pixelDelta_ = options.pixelDelta !== undefined ?
-    options.pixelDelta : 128;
+    /**
+     * @private
+     * @param {module:ol/MapBrowserEvent} mapBrowserEvent Browser event.
+     * @return {boolean} Combined condition result.
+     */
+    this.defaultCondition_ = function(mapBrowserEvent) {
+      return noModifierKeys(mapBrowserEvent) &&
+        targetNotEditable(mapBrowserEvent);
+    };
 
-};
+    /**
+     * @private
+     * @type {module:ol/events/condition~Condition}
+     */
+    this.condition_ = options.condition !== undefined ?
+      options.condition : this.defaultCondition_;
 
-inherits(KeyboardPan, Interaction);
+    /**
+     * @private
+     * @type {number}
+     */
+    this.duration_ = options.duration !== undefined ? options.duration : 100;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.pixelDelta_ = options.pixelDelta !== undefined ?
+      options.pixelDelta : 128;
+
+  }
+
+}
+
 
 /**
  * Handles the {@link module:ol/MapBrowserEvent map browser event} if it was a

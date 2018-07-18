@@ -315,7 +315,6 @@ let EXTENSIONS; // value is set below
 
 /**
  * True if both OpenLayers and browser support WebGL.
- * @const ol/has.WEBGL
  * @type {boolean}
  * @api
  */

@@ -1,7 +1,6 @@
 /**
  * @module ol/layer/VectorTile
  */
-import {inherits} from '../util.js';
 import LayerType from '../LayerType.js';
 import {assert} from '../asserts.js';
 import TileProperty from '../layer/TileProperty.js';
@@ -87,96 +86,90 @@ export const RenderType = {
  */
 
 
-/**
- * @classdesc
- * Layer for vector tile data that is rendered client-side.
- * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
- * property on the layer object; for example, setting `title: 'My Title'` in the
- * options means that `title` is observable, and has get/set accessors.
- *
- * @constructor
- * @extends {module:ol/layer/Vector}
- * @param {module:ol/layer/VectorTile~Options=} opt_options Options.
- * @api
- */
-const VectorTileLayer = function(opt_options) {
-  const options = opt_options ? opt_options : {};
+class VectorTileLayer extends VectorLayer {
+  /**
+   * @classdesc
+   * Layer for vector tile data that is rendered client-side.
+   * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
+   * property on the layer object; for example, setting `title: 'My Title'` in the
+   * options means that `title` is observable, and has get/set accessors.
+   *
+   * @param {module:ol/layer/VectorTile~Options=} opt_options Options.
+   * @api
+   */
+  constructor(opt_options) {
+    const options = opt_options ? opt_options : {};
 
-  let renderMode = options.renderMode || VectorTileRenderType.HYBRID;
-  assert(renderMode == undefined ||
-      renderMode == VectorTileRenderType.IMAGE ||
-      renderMode == VectorTileRenderType.HYBRID ||
-      renderMode == VectorTileRenderType.VECTOR,
-  28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
-  if (options.declutter && renderMode == VectorTileRenderType.IMAGE) {
-    renderMode = VectorTileRenderType.HYBRID;
+    let renderMode = options.renderMode || VectorTileRenderType.HYBRID;
+    assert(renderMode == undefined ||
+       renderMode == VectorTileRenderType.IMAGE ||
+       renderMode == VectorTileRenderType.HYBRID ||
+       renderMode == VectorTileRenderType.VECTOR,
+    28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
+    if (options.declutter && renderMode == VectorTileRenderType.IMAGE) {
+      renderMode = VectorTileRenderType.HYBRID;
+    }
+    options.renderMode = renderMode;
+
+    const baseOptions = assign({}, options);
+
+    delete baseOptions.preload;
+    delete baseOptions.useInterimTilesOnError;
+    super(baseOptions);
+
+    this.setPreload(options.preload ? options.preload : 0);
+    this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
+      options.useInterimTilesOnError : true);
+
+    /**
+    * The layer type.
+    * @protected
+    * @type {module:ol/LayerType}
+    */
+    this.type = LayerType.VECTOR_TILE;
+
   }
-  options.renderMode = renderMode;
-
-  const baseOptions = assign({}, options);
-
-  delete baseOptions.preload;
-  delete baseOptions.useInterimTilesOnError;
-  VectorLayer.call(this,  /** @type {module:ol/layer/Vector~Options} */ (baseOptions));
-
-  this.setPreload(options.preload ? options.preload : 0);
-  this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
-    options.useInterimTilesOnError : true);
 
   /**
-   * The layer type.
-   * @protected
-   * @type {module:ol/LayerType}
-   */
-  this.type = LayerType.VECTOR_TILE;
+  * Return the level as number to which we will preload tiles up to.
+  * @return {number} The level to preload tiles up to.
+  * @observable
+  * @api
+  */
+  getPreload() {
+    return /** @type {number} */ (this.get(TileProperty.PRELOAD));
+  }
 
-};
+  /**
+  * Whether we use interim tiles on error.
+  * @return {boolean} Use interim tiles on error.
+  * @observable
+  * @api
+  */
+  getUseInterimTilesOnError() {
+    return /** @type {boolean} */ (this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR));
+  }
 
-inherits(VectorTileLayer, VectorLayer);
+  /**
+  * Set the level as number to which we will preload tiles up to.
+  * @param {number} preload The level to preload tiles up to.
+  * @observable
+  * @api
+  */
+  setPreload(preload) {
+    this.set(TileProperty.PRELOAD, preload);
+  }
 
-
-/**
- * Return the level as number to which we will preload tiles up to.
- * @return {number} The level to preload tiles up to.
- * @observable
- * @api
- */
-VectorTileLayer.prototype.getPreload = function() {
-  return /** @type {number} */ (this.get(TileProperty.PRELOAD));
-};
-
-
-/**
- * Whether we use interim tiles on error.
- * @return {boolean} Use interim tiles on error.
- * @observable
- * @api
- */
-VectorTileLayer.prototype.getUseInterimTilesOnError = function() {
-  return /** @type {boolean} */ (this.get(TileProperty.USE_INTERIM_TILES_ON_ERROR));
-};
-
-
-/**
- * Set the level as number to which we will preload tiles up to.
- * @param {number} preload The level to preload tiles up to.
- * @observable
- * @api
- */
-VectorTileLayer.prototype.setPreload = function(preload) {
-  this.set(TileProperty.PRELOAD, preload);
-};
-
-
-/**
- * Set whether we use interim tiles on error.
- * @param {boolean} useInterimTilesOnError Use interim tiles on error.
- * @observable
- * @api
- */
-VectorTileLayer.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
-  this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
-};
+  /**
+  * Set whether we use interim tiles on error.
+  * @param {boolean} useInterimTilesOnError Use interim tiles on error.
+  * @observable
+  * @api
+  */
+  setUseInterimTilesOnError(useInterimTilesOnError) {
+    this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+  }
+}
 
 
 /**

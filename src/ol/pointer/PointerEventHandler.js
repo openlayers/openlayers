@@ -1,6 +1,7 @@
 /**
  * @module ol/pointer/PointerEventHandler
  */
+
 // Based on https://github.com/Polymer/PointerEvents
 
 // Copyright (c) 2013 The Polymer Authors. All rights reserved.
@@ -31,7 +32,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {inherits} from '../util.js';
 import {listen, unlisten} from '../events.js';
 import EventTarget from '../events/EventTarget.js';
 import {POINTER, MSPOINTER, TOUCH} from '../has.js';
@@ -42,43 +42,6 @@ import NativeSource from '../pointer/NativeSource.js';
 import PointerEvent from '../pointer/PointerEvent.js';
 import TouchSource from '../pointer/TouchSource.js';
 
-/**
- * @constructor
- * @extends {module:ol/events/EventTarget}
- * @param {Element|HTMLDocument} element Viewport element.
- */
-const PointerEventHandler = function(element) {
-  EventTarget.call(this);
-
-  /**
-   * @const
-   * @private
-   * @type {Element|HTMLDocument}
-   */
-  this.element_ = element;
-
-  /**
-   * @const
-   * @type {!Object.<string, Event|Object>}
-   */
-  this.pointerMap = {};
-
-  /**
-   * @type {Object.<string, function(Event)>}
-   * @private
-   */
-  this.eventMap_ = {};
-
-  /**
-   * @type {Array.<module:ol/pointer/EventSource>}
-   * @private
-   */
-  this.eventSourceList_ = [];
-
-  this.registerSources();
-};
-
-inherits(PointerEventHandler, EventTarget);
 
 /**
  * Properties to copy when cloning an event, with default values.
@@ -120,323 +83,336 @@ const CLONE_PROPS = [
 ];
 
 
-/**
- * Set up the event sources (mouse, touch and native pointers)
- * that generate pointer events.
- */
-PointerEventHandler.prototype.registerSources = function() {
-  if (POINTER) {
-    this.registerSource('native', new NativeSource(this));
-  } else if (MSPOINTER) {
-    this.registerSource('ms', new MsSource(this));
-  } else {
-    const mouseSource = new MouseSource(this);
-    this.registerSource('mouse', mouseSource);
+class PointerEventHandler extends EventTarget {
 
-    if (TOUCH) {
-      this.registerSource('touch', new TouchSource(this, mouseSource));
+  /**
+   * @param {Element|HTMLDocument} element Viewport element.
+   */
+  constructor(element) {
+    super();
+
+    /**
+     * @const
+     * @private
+     * @type {Element|HTMLDocument}
+     */
+    this.element_ = element;
+
+    /**
+     * @const
+     * @type {!Object.<string, Event|Object>}
+     */
+    this.pointerMap = {};
+
+    /**
+     * @type {Object.<string, function(Event)>}
+     * @private
+     */
+    this.eventMap_ = {};
+
+    /**
+     * @type {Array.<module:ol/pointer/EventSource>}
+     * @private
+     */
+    this.eventSourceList_ = [];
+
+    this.registerSources();
+  }
+
+  /**
+   * Set up the event sources (mouse, touch and native pointers)
+   * that generate pointer events.
+   */
+  registerSources() {
+    if (POINTER) {
+      this.registerSource('native', new NativeSource(this));
+    } else if (MSPOINTER) {
+      this.registerSource('ms', new MsSource(this));
+    } else {
+      const mouseSource = new MouseSource(this);
+      this.registerSource('mouse', mouseSource);
+
+      if (TOUCH) {
+        this.registerSource('touch', new TouchSource(this, mouseSource));
+      }
+    }
+
+    // register events on the viewport element
+    this.register_();
+  }
+
+  /**
+   * Add a new event source that will generate pointer events.
+   *
+   * @param {string} name A name for the event source
+   * @param {module:ol/pointer/EventSource} source The source event.
+   */
+  registerSource(name, source) {
+    const s = source;
+    const newEvents = s.getEvents();
+
+    if (newEvents) {
+      newEvents.forEach(function(e) {
+        const handler = s.getHandlerForEvent(e);
+
+        if (handler) {
+          this.eventMap_[e] = handler.bind(s);
+        }
+      }.bind(this));
+      this.eventSourceList_.push(s);
     }
   }
 
-  // register events on the viewport element
-  this.register_();
-};
+  /**
+   * Set up the events for all registered event sources.
+   * @private
+   */
+  register_() {
+    const l = this.eventSourceList_.length;
+    for (let i = 0; i < l; i++) {
+      const eventSource = this.eventSourceList_[i];
+      this.addEvents_(eventSource.getEvents());
+    }
+  }
 
+  /**
+   * Remove all registered events.
+   * @private
+   */
+  unregister_() {
+    const l = this.eventSourceList_.length;
+    for (let i = 0; i < l; i++) {
+      const eventSource = this.eventSourceList_[i];
+      this.removeEvents_(eventSource.getEvents());
+    }
+  }
 
-/**
- * Add a new event source that will generate pointer events.
- *
- * @param {string} name A name for the event source
- * @param {module:ol/pointer/EventSource} source The source event.
- */
-PointerEventHandler.prototype.registerSource = function(name, source) {
-  const s = source;
-  const newEvents = s.getEvents();
+  /**
+   * Calls the right handler for a new event.
+   * @private
+   * @param {Event} inEvent Browser event.
+   */
+  eventHandler_(inEvent) {
+    const type = inEvent.type;
+    const handler = this.eventMap_[type];
+    if (handler) {
+      handler(inEvent);
+    }
+  }
 
-  if (newEvents) {
-    newEvents.forEach(function(e) {
-      const handler = s.getHandlerForEvent(e);
-
-      if (handler) {
-        this.eventMap_[e] = handler.bind(s);
-      }
+  /**
+   * Setup listeners for the given events.
+   * @private
+   * @param {Array.<string>} events List of events.
+   */
+  addEvents_(events) {
+    events.forEach(function(eventName) {
+      listen(this.element_, eventName, this.eventHandler_, this);
     }.bind(this));
-    this.eventSourceList_.push(s);
-  }
-};
-
-
-/**
- * Set up the events for all registered event sources.
- * @private
- */
-PointerEventHandler.prototype.register_ = function() {
-  const l = this.eventSourceList_.length;
-  for (let i = 0; i < l; i++) {
-    const eventSource = this.eventSourceList_[i];
-    this.addEvents_(eventSource.getEvents());
-  }
-};
-
-
-/**
- * Remove all registered events.
- * @private
- */
-PointerEventHandler.prototype.unregister_ = function() {
-  const l = this.eventSourceList_.length;
-  for (let i = 0; i < l; i++) {
-    const eventSource = this.eventSourceList_[i];
-    this.removeEvents_(eventSource.getEvents());
-  }
-};
-
-
-/**
- * Calls the right handler for a new event.
- * @private
- * @param {Event} inEvent Browser event.
- */
-PointerEventHandler.prototype.eventHandler_ = function(inEvent) {
-  const type = inEvent.type;
-  const handler = this.eventMap_[type];
-  if (handler) {
-    handler(inEvent);
-  }
-};
-
-
-/**
- * Setup listeners for the given events.
- * @private
- * @param {Array.<string>} events List of events.
- */
-PointerEventHandler.prototype.addEvents_ = function(events) {
-  events.forEach(function(eventName) {
-    listen(this.element_, eventName, this.eventHandler_, this);
-  }.bind(this));
-};
-
-
-/**
- * Unregister listeners for the given events.
- * @private
- * @param {Array.<string>} events List of events.
- */
-PointerEventHandler.prototype.removeEvents_ = function(events) {
-  events.forEach(function(e) {
-    unlisten(this.element_, e, this.eventHandler_, this);
-  }.bind(this));
-};
-
-
-/**
- * Returns a snapshot of inEvent, with writable properties.
- *
- * @param {Event} event Browser event.
- * @param {Event|Touch} inEvent An event that contains
- *    properties to copy.
- * @return {Object} An object containing shallow copies of
- *    `inEvent`'s properties.
- */
-PointerEventHandler.prototype.cloneEvent = function(event, inEvent) {
-  const eventCopy = {};
-  for (let i = 0, ii = CLONE_PROPS.length; i < ii; i++) {
-    const p = CLONE_PROPS[i][0];
-    eventCopy[p] = event[p] || inEvent[p] || CLONE_PROPS[i][1];
   }
 
-  return eventCopy;
-};
-
-
-// EVENTS
-
-
-/**
- * Triggers a 'pointerdown' event.
- * @param {Object} data Pointer event data.
- * @param {Event} event The event.
- */
-PointerEventHandler.prototype.down = function(data, event) {
-  this.fireEvent(PointerEventType.POINTERDOWN, data, event);
-};
-
-
-/**
- * Triggers a 'pointermove' event.
- * @param {Object} data Pointer event data.
- * @param {Event} event The event.
- */
-PointerEventHandler.prototype.move = function(data, event) {
-  this.fireEvent(PointerEventType.POINTERMOVE, data, event);
-};
-
-
-/**
- * Triggers a 'pointerup' event.
- * @param {Object} data Pointer event data.
- * @param {Event} event The event.
- */
-PointerEventHandler.prototype.up = function(data, event) {
-  this.fireEvent(PointerEventType.POINTERUP, data, event);
-};
-
-
-/**
- * Triggers a 'pointerenter' event.
- * @param {Object} data Pointer event data.
- * @param {Event} event The event.
- */
-PointerEventHandler.prototype.enter = function(data, event) {
-  data.bubbles = false;
-  this.fireEvent(PointerEventType.POINTERENTER, data, event);
-};
-
-
-/**
- * Triggers a 'pointerleave' event.
- * @param {Object} data Pointer event data.
- * @param {Event} event The event.
- */
-PointerEventHandler.prototype.leave = function(data, event) {
-  data.bubbles = false;
-  this.fireEvent(PointerEventType.POINTERLEAVE, data, event);
-};
-
-
-/**
- * Triggers a 'pointerover' event.
- * @param {Object} data Pointer event data.
- * @param {Event} event The event.
- */
-PointerEventHandler.prototype.over = function(data, event) {
-  data.bubbles = true;
-  this.fireEvent(PointerEventType.POINTEROVER, data, event);
-};
-
-
-/**
- * Triggers a 'pointerout' event.
- * @param {Object} data Pointer event data.
- * @param {Event} event The event.
- */
-PointerEventHandler.prototype.out = function(data, event) {
-  data.bubbles = true;
-  this.fireEvent(PointerEventType.POINTEROUT, data, event);
-};
-
-
-/**
- * Triggers a 'pointercancel' event.
- * @param {Object} data Pointer event data.
- * @param {Event} event The event.
- */
-PointerEventHandler.prototype.cancel = function(data, event) {
-  this.fireEvent(PointerEventType.POINTERCANCEL, data, event);
-};
-
-
-/**
- * Triggers a combination of 'pointerout' and 'pointerleave' events.
- * @param {Object} data Pointer event data.
- * @param {Event} event The event.
- */
-PointerEventHandler.prototype.leaveOut = function(data, event) {
-  this.out(data, event);
-  if (!this.contains_(data.target, data.relatedTarget)) {
-    this.leave(data, event);
+  /**
+   * Unregister listeners for the given events.
+   * @private
+   * @param {Array.<string>} events List of events.
+   */
+  removeEvents_(events) {
+    events.forEach(function(e) {
+      unlisten(this.element_, e, this.eventHandler_, this);
+    }.bind(this));
   }
-};
 
+  /**
+   * Returns a snapshot of inEvent, with writable properties.
+   *
+   * @param {Event} event Browser event.
+   * @param {Event|Touch} inEvent An event that contains
+   *    properties to copy.
+   * @return {Object} An object containing shallow copies of
+   *    `inEvent`'s properties.
+   */
+  cloneEvent(event, inEvent) {
+    const eventCopy = {};
+    for (let i = 0, ii = CLONE_PROPS.length; i < ii; i++) {
+      const p = CLONE_PROPS[i][0];
+      eventCopy[p] = event[p] || inEvent[p] || CLONE_PROPS[i][1];
+    }
 
-/**
- * Triggers a combination of 'pointerover' and 'pointerevents' events.
- * @param {Object} data Pointer event data.
- * @param {Event} event The event.
- */
-PointerEventHandler.prototype.enterOver = function(data, event) {
-  this.over(data, event);
-  if (!this.contains_(data.target, data.relatedTarget)) {
-    this.enter(data, event);
+    return eventCopy;
   }
-};
+
+  // EVENTS
 
 
-/**
- * @private
- * @param {Element} container The container element.
- * @param {Element} contained The contained element.
- * @return {boolean} Returns true if the container element
- *   contains the other element.
- */
-PointerEventHandler.prototype.contains_ = function(container, contained) {
-  if (!container || !contained) {
-    return false;
+  /**
+   * Triggers a 'pointerdown' event.
+   * @param {Object} data Pointer event data.
+   * @param {Event} event The event.
+   */
+  down(data, event) {
+    this.fireEvent(PointerEventType.POINTERDOWN, data, event);
   }
-  return container.contains(contained);
-};
 
+  /**
+   * Triggers a 'pointermove' event.
+   * @param {Object} data Pointer event data.
+   * @param {Event} event The event.
+   */
+  move(data, event) {
+    this.fireEvent(PointerEventType.POINTERMOVE, data, event);
+  }
 
-// EVENT CREATION AND TRACKING
-/**
- * Creates a new Event of type `inType`, based on the information in
- * `data`.
- *
- * @param {string} inType A string representing the type of event to create.
- * @param {Object} data Pointer event data.
- * @param {Event} event The event.
- * @return {module:ol/pointer/PointerEvent} A PointerEvent of type `inType`.
- */
-PointerEventHandler.prototype.makeEvent = function(inType, data, event) {
-  return new PointerEvent(inType, event, data);
-};
+  /**
+   * Triggers a 'pointerup' event.
+   * @param {Object} data Pointer event data.
+   * @param {Event} event The event.
+   */
+  up(data, event) {
+    this.fireEvent(PointerEventType.POINTERUP, data, event);
+  }
 
+  /**
+   * Triggers a 'pointerenter' event.
+   * @param {Object} data Pointer event data.
+   * @param {Event} event The event.
+   */
+  enter(data, event) {
+    data.bubbles = false;
+    this.fireEvent(PointerEventType.POINTERENTER, data, event);
+  }
 
-/**
- * Make and dispatch an event in one call.
- * @param {string} inType A string representing the type of event.
- * @param {Object} data Pointer event data.
- * @param {Event} event The event.
- */
-PointerEventHandler.prototype.fireEvent = function(inType, data, event) {
-  const e = this.makeEvent(inType, data, event);
-  this.dispatchEvent(e);
-};
+  /**
+   * Triggers a 'pointerleave' event.
+   * @param {Object} data Pointer event data.
+   * @param {Event} event The event.
+   */
+  leave(data, event) {
+    data.bubbles = false;
+    this.fireEvent(PointerEventType.POINTERLEAVE, data, event);
+  }
 
+  /**
+   * Triggers a 'pointerover' event.
+   * @param {Object} data Pointer event data.
+   * @param {Event} event The event.
+   */
+  over(data, event) {
+    data.bubbles = true;
+    this.fireEvent(PointerEventType.POINTEROVER, data, event);
+  }
 
-/**
- * Creates a pointer event from a native pointer event
- * and dispatches this event.
- * @param {Event} event A platform event with a target.
- */
-PointerEventHandler.prototype.fireNativeEvent = function(event) {
-  const e = this.makeEvent(event.type, event, event);
-  this.dispatchEvent(e);
-};
+  /**
+   * Triggers a 'pointerout' event.
+   * @param {Object} data Pointer event data.
+   * @param {Event} event The event.
+   */
+  out(data, event) {
+    data.bubbles = true;
+    this.fireEvent(PointerEventType.POINTEROUT, data, event);
+  }
 
+  /**
+   * Triggers a 'pointercancel' event.
+   * @param {Object} data Pointer event data.
+   * @param {Event} event The event.
+   */
+  cancel(data, event) {
+    this.fireEvent(PointerEventType.POINTERCANCEL, data, event);
+  }
 
-/**
- * Wrap a native mouse event into a pointer event.
- * This proxy method is required for the legacy IE support.
- * @param {string} eventType The pointer event type.
- * @param {Event} event The event.
- * @return {module:ol/pointer/PointerEvent} The wrapped event.
- */
-PointerEventHandler.prototype.wrapMouseEvent = function(eventType, event) {
-  const pointerEvent = this.makeEvent(
-    eventType, MouseSource.prepareEvent(event, this), event);
-  return pointerEvent;
-};
+  /**
+   * Triggers a combination of 'pointerout' and 'pointerleave' events.
+   * @param {Object} data Pointer event data.
+   * @param {Event} event The event.
+   */
+  leaveOut(data, event) {
+    this.out(data, event);
+    if (!this.contains_(data.target, data.relatedTarget)) {
+      this.leave(data, event);
+    }
+  }
 
+  /**
+   * Triggers a combination of 'pointerover' and 'pointerevents' events.
+   * @param {Object} data Pointer event data.
+   * @param {Event} event The event.
+   */
+  enterOver(data, event) {
+    this.over(data, event);
+    if (!this.contains_(data.target, data.relatedTarget)) {
+      this.enter(data, event);
+    }
+  }
 
-/**
- * @inheritDoc
- */
-PointerEventHandler.prototype.disposeInternal = function() {
-  this.unregister_();
-  EventTarget.prototype.disposeInternal.call(this);
-};
+  /**
+   * @private
+   * @param {Element} container The container element.
+   * @param {Element} contained The contained element.
+   * @return {boolean} Returns true if the container element
+   *   contains the other element.
+   */
+  contains_(container, contained) {
+    if (!container || !contained) {
+      return false;
+    }
+    return container.contains(contained);
+  }
 
+  // EVENT CREATION AND TRACKING
+  /**
+   * Creates a new Event of type `inType`, based on the information in
+   * `data`.
+   *
+   * @param {string} inType A string representing the type of event to create.
+   * @param {Object} data Pointer event data.
+   * @param {Event} event The event.
+   * @return {module:ol/pointer/PointerEvent} A PointerEvent of type `inType`.
+   */
+  makeEvent(inType, data, event) {
+    return new PointerEvent(inType, event, data);
+  }
+
+  /**
+   * Make and dispatch an event in one call.
+   * @param {string} inType A string representing the type of event.
+   * @param {Object} data Pointer event data.
+   * @param {Event} event The event.
+   */
+  fireEvent(inType, data, event) {
+    const e = this.makeEvent(inType, data, event);
+    this.dispatchEvent(e);
+  }
+
+  /**
+   * Creates a pointer event from a native pointer event
+   * and dispatches this event.
+   * @param {Event} event A platform event with a target.
+   */
+  fireNativeEvent(event) {
+    const e = this.makeEvent(event.type, event, event);
+    this.dispatchEvent(e);
+  }
+
+  /**
+   * Wrap a native mouse event into a pointer event.
+   * This proxy method is required for the legacy IE support.
+   * @param {string} eventType The pointer event type.
+   * @param {Event} event The event.
+   * @return {module:ol/pointer/PointerEvent} The wrapped event.
+   */
+  wrapMouseEvent(eventType, event) {
+    const pointerEvent = this.makeEvent(
+      eventType, MouseSource.prepareEvent(event, this), event);
+    return pointerEvent;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  disposeInternal() {
+    this.unregister_();
+    EventTarget.prototype.disposeInternal.call(this);
+  }
+}
 
 export default PointerEventHandler;

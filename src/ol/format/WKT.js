@@ -1,7 +1,6 @@
 /**
  * @module ol/format/WKT
  */
-import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
 import TextFeature from '../format/TextFeature.js';
@@ -15,6 +14,19 @@ import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
+
+
+/**
+ * @enum {function (new:module:ol/geom/Geometry, Array, module:ol/geom/GeometryLayout)}
+ */
+const GeometryConstructor = {
+  'POINT': Point,
+  'LINESTRING': LineString,
+  'POLYGON': Polygon,
+  'MULTIPOINT': MultiPoint,
+  'MULTILINESTRING': MultiLineString,
+  'MULTIPOLYGON': MultiPolygon
+};
 
 
 /**
@@ -71,465 +83,518 @@ const TokenType = {
   EOF: 6
 };
 
+/**
+ * @const
+ * @type {Object.<string, string>}
+ */
+const WKTGeometryType = {};
+for (const type in GeometryType) {
+  WKTGeometryType[type] = GeometryType[type].toUpperCase();
+}
+
 
 /**
  * Class to tokenize a WKT string.
- * @param {string} wkt WKT string.
- * @constructor
  */
-const Lexer = function(wkt) {
+class Lexer {
 
   /**
-   * @type {string}
+   * @param {string} wkt WKT string.
    */
-  this.wkt = wkt;
+  constructor(wkt) {
 
-  /**
-   * @type {number}
-   * @private
-   */
-  this.index_ = -1;
-};
+    /**
+     * @type {string}
+     */
+    this.wkt = wkt;
 
-
-/**
- * @param {string} c Character.
- * @return {boolean} Whether the character is alphabetic.
- * @private
- */
-Lexer.prototype.isAlpha_ = function(c) {
-  return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
-};
-
-
-/**
- * @param {string} c Character.
- * @param {boolean=} opt_decimal Whether the string number
- *     contains a dot, i.e. is a decimal number.
- * @return {boolean} Whether the character is numeric.
- * @private
- */
-Lexer.prototype.isNumeric_ = function(c, opt_decimal) {
-  const decimal = opt_decimal !== undefined ? opt_decimal : false;
-  return c >= '0' && c <= '9' || c == '.' && !decimal;
-};
-
-
-/**
- * @param {string} c Character.
- * @return {boolean} Whether the character is whitespace.
- * @private
- */
-Lexer.prototype.isWhiteSpace_ = function(c) {
-  return c == ' ' || c == '\t' || c == '\r' || c == '\n';
-};
-
-
-/**
- * @return {string} Next string character.
- * @private
- */
-Lexer.prototype.nextChar_ = function() {
-  return this.wkt.charAt(++this.index_);
-};
-
-
-/**
- * Fetch and return the next token.
- * @return {!module:ol/format/WKT~Token} Next string token.
- */
-Lexer.prototype.nextToken = function() {
-  const c = this.nextChar_();
-  const token = {position: this.index_, value: c};
-
-  if (c == '(') {
-    token.type = TokenType.LEFT_PAREN;
-  } else if (c == ',') {
-    token.type = TokenType.COMMA;
-  } else if (c == ')') {
-    token.type = TokenType.RIGHT_PAREN;
-  } else if (this.isNumeric_(c) || c == '-') {
-    token.type = TokenType.NUMBER;
-    token.value = this.readNumber_();
-  } else if (this.isAlpha_(c)) {
-    token.type = TokenType.TEXT;
-    token.value = this.readText_();
-  } else if (this.isWhiteSpace_(c)) {
-    return this.nextToken();
-  } else if (c === '') {
-    token.type = TokenType.EOF;
-  } else {
-    throw new Error('Unexpected character: ' + c);
+    /**
+     * @type {number}
+     * @private
+     */
+    this.index_ = -1;
   }
 
-  return token;
-};
+  /**
+   * @param {string} c Character.
+   * @return {boolean} Whether the character is alphabetic.
+   * @private
+   */
+  isAlpha_(c) {
+    return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
+  }
 
+  /**
+   * @param {string} c Character.
+   * @param {boolean=} opt_decimal Whether the string number
+   *     contains a dot, i.e. is a decimal number.
+   * @return {boolean} Whether the character is numeric.
+   * @private
+   */
+  isNumeric_(c, opt_decimal) {
+    const decimal = opt_decimal !== undefined ? opt_decimal : false;
+    return c >= '0' && c <= '9' || c == '.' && !decimal;
+  }
 
-/**
- * @return {number} Numeric token value.
- * @private
- */
-Lexer.prototype.readNumber_ = function() {
-  let c;
-  const index = this.index_;
-  let decimal = false;
-  let scientificNotation = false;
-  do {
-    if (c == '.') {
-      decimal = true;
-    } else if (c == 'e' || c == 'E') {
-      scientificNotation = true;
+  /**
+   * @param {string} c Character.
+   * @return {boolean} Whether the character is whitespace.
+   * @private
+   */
+  isWhiteSpace_(c) {
+    return c == ' ' || c == '\t' || c == '\r' || c == '\n';
+  }
+
+  /**
+   * @return {string} Next string character.
+   * @private
+   */
+  nextChar_() {
+    return this.wkt.charAt(++this.index_);
+  }
+
+  /**
+   * Fetch and return the next token.
+   * @return {!module:ol/format/WKT~Token} Next string token.
+   */
+  nextToken() {
+    const c = this.nextChar_();
+    const token = {position: this.index_, value: c};
+
+    if (c == '(') {
+      token.type = TokenType.LEFT_PAREN;
+    } else if (c == ',') {
+      token.type = TokenType.COMMA;
+    } else if (c == ')') {
+      token.type = TokenType.RIGHT_PAREN;
+    } else if (this.isNumeric_(c) || c == '-') {
+      token.type = TokenType.NUMBER;
+      token.value = this.readNumber_();
+    } else if (this.isAlpha_(c)) {
+      token.type = TokenType.TEXT;
+      token.value = this.readText_();
+    } else if (this.isWhiteSpace_(c)) {
+      return this.nextToken();
+    } else if (c === '') {
+      token.type = TokenType.EOF;
+    } else {
+      throw new Error('Unexpected character: ' + c);
     }
-    c = this.nextChar_();
-  } while (
-    this.isNumeric_(c, decimal) ||
-      // if we haven't detected a scientific number before, 'e' or 'E'
-      // hint that we should continue to read
-      !scientificNotation && (c == 'e' || c == 'E') ||
-      // once we know that we have a scientific number, both '-' and '+'
-      // are allowed
-      scientificNotation && (c == '-' || c == '+')
-  );
-  return parseFloat(this.wkt.substring(index, this.index_--));
-};
 
+    return token;
+  }
 
-/**
- * @return {string} String token value.
- * @private
- */
-Lexer.prototype.readText_ = function() {
-  let c;
-  const index = this.index_;
-  do {
-    c = this.nextChar_();
-  } while (this.isAlpha_(c));
-  return this.wkt.substring(index, this.index_--).toUpperCase();
-};
+  /**
+   * @return {number} Numeric token value.
+   * @private
+   */
+  readNumber_() {
+    let c;
+    const index = this.index_;
+    let decimal = false;
+    let scientificNotation = false;
+    do {
+      if (c == '.') {
+        decimal = true;
+      } else if (c == 'e' || c == 'E') {
+        scientificNotation = true;
+      }
+      c = this.nextChar_();
+    } while (
+      this.isNumeric_(c, decimal) ||
+        // if we haven't detected a scientific number before, 'e' or 'E'
+        // hint that we should continue to read
+        !scientificNotation && (c == 'e' || c == 'E') ||
+        // once we know that we have a scientific number, both '-' and '+'
+        // are allowed
+        scientificNotation && (c == '-' || c == '+')
+    );
+    return parseFloat(this.wkt.substring(index, this.index_--));
+  }
 
+  /**
+   * @return {string} String token value.
+   * @private
+   */
+  readText_() {
+    let c;
+    const index = this.index_;
+    do {
+      c = this.nextChar_();
+    } while (this.isAlpha_(c));
+    return this.wkt.substring(index, this.index_--).toUpperCase();
+  }
+}
 
 /**
  * Class to parse the tokens from the WKT string.
- * @param {module:ol/format/WKT~Lexer} lexer The lexer.
- * @constructor
  */
-const Parser = function(lexer) {
+class Parser {
 
   /**
-   * @type {module:ol/format/WKT~Lexer}
-   * @private
+   * @param {module:ol/format/WKT~Lexer} lexer The lexer.
    */
-  this.lexer_ = lexer;
+  constructor(lexer) {
 
-  /**
-   * @type {module:ol/format/WKT~Token}
-   * @private
-   */
-  this.token_;
+    /**
+     * @type {module:ol/format/WKT~Lexer}
+     * @private
+     */
+    this.lexer_ = lexer;
 
-  /**
-   * @type {module:ol/geom/GeometryLayout}
-   * @private
-   */
-  this.layout_ = GeometryLayout.XY;
-};
+    /**
+     * @type {module:ol/format/WKT~Token}
+     * @private
+     */
+    this.token_;
 
-
-/**
- * Fetch the next token form the lexer and replace the active token.
- * @private
- */
-Parser.prototype.consume_ = function() {
-  this.token_ = this.lexer_.nextToken();
-};
-
-/**
- * Tests if the given type matches the type of the current token.
- * @param {module:ol/format/WKT~TokenType} type Token type.
- * @return {boolean} Whether the token matches the given type.
- */
-Parser.prototype.isTokenType = function(type) {
-  const isMatch = this.token_.type == type;
-  return isMatch;
-};
-
-
-/**
- * If the given type matches the current token, consume it.
- * @param {module:ol/format/WKT~TokenType} type Token type.
- * @return {boolean} Whether the token matches the given type.
- */
-Parser.prototype.match = function(type) {
-  const isMatch = this.isTokenType(type);
-  if (isMatch) {
-    this.consume_();
+    /**
+     * @type {module:ol/geom/GeometryLayout}
+     * @private
+     */
+    this.layout_ = GeometryLayout.XY;
   }
-  return isMatch;
-};
 
+  /**
+   * Fetch the next token form the lexer and replace the active token.
+   * @private
+   */
+  consume_() {
+    this.token_ = this.lexer_.nextToken();
+  }
 
-/**
- * Try to parse the tokens provided by the lexer.
- * @return {module:ol/geom/Geometry} The geometry.
- */
-Parser.prototype.parse = function() {
-  this.consume_();
-  const geometry = this.parseGeometry_();
-  return geometry;
-};
+  /**
+   * Tests if the given type matches the type of the current token.
+   * @param {module:ol/format/WKT~TokenType} type Token type.
+   * @return {boolean} Whether the token matches the given type.
+   */
+  isTokenType(type) {
+    const isMatch = this.token_.type == type;
+    return isMatch;
+  }
 
-
-/**
- * Try to parse the dimensional info.
- * @return {module:ol/geom/GeometryLayout} The layout.
- * @private
- */
-Parser.prototype.parseGeometryLayout_ = function() {
-  let layout = GeometryLayout.XY;
-  const dimToken = this.token_;
-  if (this.isTokenType(TokenType.TEXT)) {
-    const dimInfo = dimToken.value;
-    if (dimInfo === Z) {
-      layout = GeometryLayout.XYZ;
-    } else if (dimInfo === M) {
-      layout = GeometryLayout.XYM;
-    } else if (dimInfo === ZM) {
-      layout = GeometryLayout.XYZM;
-    }
-    if (layout !== GeometryLayout.XY) {
+  /**
+   * If the given type matches the current token, consume it.
+   * @param {module:ol/format/WKT~TokenType} type Token type.
+   * @return {boolean} Whether the token matches the given type.
+   */
+  match(type) {
+    const isMatch = this.isTokenType(type);
+    if (isMatch) {
       this.consume_();
     }
+    return isMatch;
   }
-  return layout;
-};
 
+  /**
+   * Try to parse the tokens provided by the lexer.
+   * @return {module:ol/geom/Geometry} The geometry.
+   */
+  parse() {
+    this.consume_();
+    const geometry = this.parseGeometry_();
+    return geometry;
+  }
 
-/**
- * @return {!Array.<module:ol/geom/Geometry>} A collection of geometries.
- * @private
- */
-Parser.prototype.parseGeometryCollectionText_ = function() {
-  if (this.match(TokenType.LEFT_PAREN)) {
-    const geometries = [];
-    do {
-      geometries.push(this.parseGeometry_());
-    } while (this.match(TokenType.COMMA));
-    if (this.match(TokenType.RIGHT_PAREN)) {
-      return geometries;
+  /**
+   * Try to parse the dimensional info.
+   * @return {module:ol/geom/GeometryLayout} The layout.
+   * @private
+   */
+  parseGeometryLayout_() {
+    let layout = GeometryLayout.XY;
+    const dimToken = this.token_;
+    if (this.isTokenType(TokenType.TEXT)) {
+      const dimInfo = dimToken.value;
+      if (dimInfo === Z) {
+        layout = GeometryLayout.XYZ;
+      } else if (dimInfo === M) {
+        layout = GeometryLayout.XYM;
+      } else if (dimInfo === ZM) {
+        layout = GeometryLayout.XYZM;
+      }
+      if (layout !== GeometryLayout.XY) {
+        this.consume_();
+      }
     }
-  } else if (this.isEmptyGeometry_()) {
-    return [];
+    return layout;
   }
-  throw new Error(this.formatErrorMessage_());
-};
 
+  /**
+   * @return {!Array.<module:ol/geom/Geometry>} A collection of geometries.
+   * @private
+   */
+  parseGeometryCollectionText_() {
+    if (this.match(TokenType.LEFT_PAREN)) {
+      const geometries = [];
+      do {
+        geometries.push(this.parseGeometry_());
+      } while (this.match(TokenType.COMMA));
+      if (this.match(TokenType.RIGHT_PAREN)) {
+        return geometries;
+      }
+    } else if (this.isEmptyGeometry_()) {
+      return [];
+    }
+    throw new Error(this.formatErrorMessage_());
+  }
 
-/**
- * @return {Array.<number>} All values in a point.
- * @private
- */
-Parser.prototype.parsePointText_ = function() {
-  if (this.match(TokenType.LEFT_PAREN)) {
-    const coordinates = this.parsePoint_();
-    if (this.match(TokenType.RIGHT_PAREN)) {
+  /**
+   * @return {Array.<number>} All values in a point.
+   * @private
+   */
+  parsePointText_() {
+    if (this.match(TokenType.LEFT_PAREN)) {
+      const coordinates = this.parsePoint_();
+      if (this.match(TokenType.RIGHT_PAREN)) {
+        return coordinates;
+      }
+    } else if (this.isEmptyGeometry_()) {
+      return null;
+    }
+    throw new Error(this.formatErrorMessage_());
+  }
+
+  /**
+   * @return {!Array.<!Array.<number>>} All points in a linestring.
+   * @private
+   */
+  parseLineStringText_() {
+    if (this.match(TokenType.LEFT_PAREN)) {
+      const coordinates = this.parsePointList_();
+      if (this.match(TokenType.RIGHT_PAREN)) {
+        return coordinates;
+      }
+    } else if (this.isEmptyGeometry_()) {
+      return [];
+    }
+    throw new Error(this.formatErrorMessage_());
+  }
+
+  /**
+   * @return {!Array.<!Array.<number>>} All points in a polygon.
+   * @private
+   */
+  parsePolygonText_() {
+    if (this.match(TokenType.LEFT_PAREN)) {
+      const coordinates = this.parseLineStringTextList_();
+      if (this.match(TokenType.RIGHT_PAREN)) {
+        return coordinates;
+      }
+    } else if (this.isEmptyGeometry_()) {
+      return [];
+    }
+    throw new Error(this.formatErrorMessage_());
+  }
+
+  /**
+   * @return {!Array.<!Array.<number>>} All points in a multipoint.
+   * @private
+   */
+  parseMultiPointText_() {
+    if (this.match(TokenType.LEFT_PAREN)) {
+      let coordinates;
+      if (this.token_.type == TokenType.LEFT_PAREN) {
+        coordinates = this.parsePointTextList_();
+      } else {
+        coordinates = this.parsePointList_();
+      }
+      if (this.match(TokenType.RIGHT_PAREN)) {
+        return coordinates;
+      }
+    } else if (this.isEmptyGeometry_()) {
+      return [];
+    }
+    throw new Error(this.formatErrorMessage_());
+  }
+
+  /**
+   * @return {!Array.<!Array.<number>>} All linestring points
+   *                                        in a multilinestring.
+   * @private
+   */
+  parseMultiLineStringText_() {
+    if (this.match(TokenType.LEFT_PAREN)) {
+      const coordinates = this.parseLineStringTextList_();
+      if (this.match(TokenType.RIGHT_PAREN)) {
+        return coordinates;
+      }
+    } else if (this.isEmptyGeometry_()) {
+      return [];
+    }
+    throw new Error(this.formatErrorMessage_());
+  }
+
+  /**
+   * @return {!Array.<!Array.<number>>} All polygon points in a multipolygon.
+   * @private
+   */
+  parseMultiPolygonText_() {
+    if (this.match(TokenType.LEFT_PAREN)) {
+      const coordinates = this.parsePolygonTextList_();
+      if (this.match(TokenType.RIGHT_PAREN)) {
+        return coordinates;
+      }
+    } else if (this.isEmptyGeometry_()) {
+      return [];
+    }
+    throw new Error(this.formatErrorMessage_());
+  }
+
+  /**
+   * @return {!Array.<number>} A point.
+   * @private
+   */
+  parsePoint_() {
+    const coordinates = [];
+    const dimensions = this.layout_.length;
+    for (let i = 0; i < dimensions; ++i) {
+      const token = this.token_;
+      if (this.match(TokenType.NUMBER)) {
+        coordinates.push(token.value);
+      } else {
+        break;
+      }
+    }
+    if (coordinates.length == dimensions) {
       return coordinates;
     }
-  } else if (this.isEmptyGeometry_()) {
-    return null;
+    throw new Error(this.formatErrorMessage_());
   }
-  throw new Error(this.formatErrorMessage_());
-};
 
-
-/**
- * @return {!Array.<!Array.<number>>} All points in a linestring.
- * @private
- */
-Parser.prototype.parseLineStringText_ = function() {
-  if (this.match(TokenType.LEFT_PAREN)) {
-    const coordinates = this.parsePointList_();
-    if (this.match(TokenType.RIGHT_PAREN)) {
-      return coordinates;
+  /**
+   * @return {!Array.<!Array.<number>>} An array of points.
+   * @private
+   */
+  parsePointList_() {
+    const coordinates = [this.parsePoint_()];
+    while (this.match(TokenType.COMMA)) {
+      coordinates.push(this.parsePoint_());
     }
-  } else if (this.isEmptyGeometry_()) {
-    return [];
-  }
-  throw new Error(this.formatErrorMessage_());
-};
-
-
-/**
- * @return {!Array.<!Array.<number>>} All points in a polygon.
- * @private
- */
-Parser.prototype.parsePolygonText_ = function() {
-  if (this.match(TokenType.LEFT_PAREN)) {
-    const coordinates = this.parseLineStringTextList_();
-    if (this.match(TokenType.RIGHT_PAREN)) {
-      return coordinates;
-    }
-  } else if (this.isEmptyGeometry_()) {
-    return [];
-  }
-  throw new Error(this.formatErrorMessage_());
-};
-
-
-/**
- * @return {!Array.<!Array.<number>>} All points in a multipoint.
- * @private
- */
-Parser.prototype.parseMultiPointText_ = function() {
-  if (this.match(TokenType.LEFT_PAREN)) {
-    let coordinates;
-    if (this.token_.type == TokenType.LEFT_PAREN) {
-      coordinates = this.parsePointTextList_();
-    } else {
-      coordinates = this.parsePointList_();
-    }
-    if (this.match(TokenType.RIGHT_PAREN)) {
-      return coordinates;
-    }
-  } else if (this.isEmptyGeometry_()) {
-    return [];
-  }
-  throw new Error(this.formatErrorMessage_());
-};
-
-
-/**
- * @return {!Array.<!Array.<number>>} All linestring points
- *                                        in a multilinestring.
- * @private
- */
-Parser.prototype.parseMultiLineStringText_ = function() {
-  if (this.match(TokenType.LEFT_PAREN)) {
-    const coordinates = this.parseLineStringTextList_();
-    if (this.match(TokenType.RIGHT_PAREN)) {
-      return coordinates;
-    }
-  } else if (this.isEmptyGeometry_()) {
-    return [];
-  }
-  throw new Error(this.formatErrorMessage_());
-};
-
-
-/**
- * @return {!Array.<!Array.<number>>} All polygon points in a multipolygon.
- * @private
- */
-Parser.prototype.parseMultiPolygonText_ = function() {
-  if (this.match(TokenType.LEFT_PAREN)) {
-    const coordinates = this.parsePolygonTextList_();
-    if (this.match(TokenType.RIGHT_PAREN)) {
-      return coordinates;
-    }
-  } else if (this.isEmptyGeometry_()) {
-    return [];
-  }
-  throw new Error(this.formatErrorMessage_());
-};
-
-
-/**
- * @return {!Array.<number>} A point.
- * @private
- */
-Parser.prototype.parsePoint_ = function() {
-  const coordinates = [];
-  const dimensions = this.layout_.length;
-  for (let i = 0; i < dimensions; ++i) {
-    const token = this.token_;
-    if (this.match(TokenType.NUMBER)) {
-      coordinates.push(token.value);
-    } else {
-      break;
-    }
-  }
-  if (coordinates.length == dimensions) {
     return coordinates;
   }
-  throw new Error(this.formatErrorMessage_());
-};
 
-
-/**
- * @return {!Array.<!Array.<number>>} An array of points.
- * @private
- */
-Parser.prototype.parsePointList_ = function() {
-  const coordinates = [this.parsePoint_()];
-  while (this.match(TokenType.COMMA)) {
-    coordinates.push(this.parsePoint_());
+  /**
+   * @return {!Array.<!Array.<number>>} An array of points.
+   * @private
+   */
+  parsePointTextList_() {
+    const coordinates = [this.parsePointText_()];
+    while (this.match(TokenType.COMMA)) {
+      coordinates.push(this.parsePointText_());
+    }
+    return coordinates;
   }
-  return coordinates;
-};
 
-
-/**
- * @return {!Array.<!Array.<number>>} An array of points.
- * @private
- */
-Parser.prototype.parsePointTextList_ = function() {
-  const coordinates = [this.parsePointText_()];
-  while (this.match(TokenType.COMMA)) {
-    coordinates.push(this.parsePointText_());
+  /**
+   * @return {!Array.<!Array.<number>>} An array of points.
+   * @private
+   */
+  parseLineStringTextList_() {
+    const coordinates = [this.parseLineStringText_()];
+    while (this.match(TokenType.COMMA)) {
+      coordinates.push(this.parseLineStringText_());
+    }
+    return coordinates;
   }
-  return coordinates;
-};
 
-
-/**
- * @return {!Array.<!Array.<number>>} An array of points.
- * @private
- */
-Parser.prototype.parseLineStringTextList_ = function() {
-  const coordinates = [this.parseLineStringText_()];
-  while (this.match(TokenType.COMMA)) {
-    coordinates.push(this.parseLineStringText_());
+  /**
+   * @return {!Array.<!Array.<number>>} An array of points.
+   * @private
+   */
+  parsePolygonTextList_() {
+    const coordinates = [this.parsePolygonText_()];
+    while (this.match(TokenType.COMMA)) {
+      coordinates.push(this.parsePolygonText_());
+    }
+    return coordinates;
   }
-  return coordinates;
-};
 
-
-/**
- * @return {!Array.<!Array.<number>>} An array of points.
- * @private
- */
-Parser.prototype.parsePolygonTextList_ = function() {
-  const coordinates = [this.parsePolygonText_()];
-  while (this.match(TokenType.COMMA)) {
-    coordinates.push(this.parsePolygonText_());
+  /**
+   * @return {boolean} Whether the token implies an empty geometry.
+   * @private
+   */
+  isEmptyGeometry_() {
+    const isEmpty = this.isTokenType(TokenType.TEXT) &&
+        this.token_.value == EMPTY;
+    if (isEmpty) {
+      this.consume_();
+    }
+    return isEmpty;
   }
-  return coordinates;
-};
 
-
-/**
- * @return {boolean} Whether the token implies an empty geometry.
- * @private
- */
-Parser.prototype.isEmptyGeometry_ = function() {
-  const isEmpty = this.isTokenType(TokenType.TEXT) &&
-      this.token_.value == EMPTY;
-  if (isEmpty) {
-    this.consume_();
+  /**
+   * Create an error message for an unexpected token error.
+   * @return {string} Error message.
+   * @private
+   */
+  formatErrorMessage_() {
+    return 'Unexpected `' + this.token_.value + '` at position ' +
+        this.token_.position + ' in `' + this.lexer_.wkt + '`';
   }
-  return isEmpty;
-};
 
+  /**
+   * @return {!module:ol/geom/Geometry} The geometry.
+   * @private
+   */
+  parseGeometry_() {
+    const token = this.token_;
+    if (this.match(TokenType.TEXT)) {
+      const geomType = token.value;
+      this.layout_ = this.parseGeometryLayout_();
+      if (geomType == 'GEOMETRYCOLLECTION') {
+        const geometries = this.parseGeometryCollectionText_();
+        return new GeometryCollection(geometries);
+      } else {
+        const ctor = GeometryConstructor[geomType];
+        if (!ctor) {
+          throw new Error('Invalid geometry type: ' + geomType);
+        }
 
-/**
- * Create an error message for an unexpected token error.
- * @return {string} Error message.
- * @private
- */
-Parser.prototype.formatErrorMessage_ = function() {
-  return 'Unexpected `' + this.token_.value + '` at position ' +
-      this.token_.position + ' in `' + this.lexer_.wkt + '`';
-};
+        let coordinates;
+        switch (geomType) {
+          case 'POINT': {
+            coordinates = this.parsePointText_();
+            break;
+          }
+          case 'LINESTRING': {
+            coordinates = this.parseLineStringText_();
+            break;
+          }
+          case 'POLYGON': {
+            coordinates = this.parsePolygonText_();
+            break;
+          }
+          case 'MULTIPOINT': {
+            coordinates = this.parseMultiPointText_();
+            break;
+          }
+          case 'MULTILINESTRING': {
+            coordinates = this.parseMultiLineStringText_();
+            break;
+          }
+          case 'MULTIPOLYGON': {
+            coordinates = this.parseMultiPolygonText_();
+            break;
+          }
+          default: {
+            throw new Error('Invalid geometry type: ' + geomType);
+          }
+        }
+
+        if (!coordinates) {
+          if (ctor === GeometryConstructor['POINT']) {
+            coordinates = [NaN, NaN];
+          } else {
+            coordinates = [];
+          }
+        }
+        return new ctor(coordinates, this.layout_);
+      }
+    }
+    throw new Error(this.formatErrorMessage_());
+  }
+}
 
 
 /**
@@ -537,28 +602,125 @@ Parser.prototype.formatErrorMessage_ = function() {
  * Geometry format for reading and writing data in the `WellKnownText` (WKT)
  * format.
  *
- * @constructor
- * @extends {module:ol/format/TextFeature}
- * @param {module:ol/format/WKT~Options=} opt_options Options.
  * @api
  */
-const WKT = function(opt_options) {
-
-  const options = opt_options ? opt_options : {};
-
-  TextFeature.call(this);
+class WKT extends TextFeature {
 
   /**
-   * Split GeometryCollection into multiple features.
-   * @type {boolean}
+   * @param {module:ol/format/WKT~Options=} opt_options Options.
+   */
+  constructor(opt_options) {
+    super();
+
+    const options = opt_options ? opt_options : {};
+
+
+    /**
+     * Split GeometryCollection into multiple features.
+     * @type {boolean}
+     * @private
+     */
+    this.splitCollection_ = options.splitCollection !== undefined ?
+      options.splitCollection : false;
+
+  }
+
+  /**
+   * Parse a WKT string.
+   * @param {string} wkt WKT string.
+   * @return {module:ol/geom/Geometry|undefined}
+   *     The geometry created.
    * @private
    */
-  this.splitCollection_ = options.splitCollection !== undefined ?
-    options.splitCollection : false;
+  parse_(wkt) {
+    const lexer = new Lexer(wkt);
+    const parser = new Parser(lexer);
+    return parser.parse();
+  }
 
-};
+  /**
+   * @inheritDoc
+   */
+  readFeatureFromText(text, opt_options) {
+    const geom = this.readGeometryFromText(text, opt_options);
+    if (geom) {
+      const feature = new Feature();
+      feature.setGeometry(geom);
+      return feature;
+    }
+    return null;
+  }
 
-inherits(WKT, TextFeature);
+  /**
+   * @inheritDoc
+   */
+  readFeaturesFromText(text, opt_options) {
+    let geometries = [];
+    const geometry = this.readGeometryFromText(text, opt_options);
+    if (this.splitCollection_ &&
+        geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
+      geometries = (/** @type {module:ol/geom/GeometryCollection} */ (geometry))
+        .getGeometriesArray();
+    } else {
+      geometries = [geometry];
+    }
+    const features = [];
+    for (let i = 0, ii = geometries.length; i < ii; ++i) {
+      const feature = new Feature();
+      feature.setGeometry(geometries[i]);
+      features.push(feature);
+    }
+    return features;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readGeometryFromText(text, opt_options) {
+    const geometry = this.parse_(text);
+    if (geometry) {
+      return (
+        /** @type {module:ol/geom/Geometry} */ (transformWithOptions(geometry, false, opt_options))
+      );
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * @inheritDoc
+   */
+  writeFeatureText(feature, opt_options) {
+    const geometry = feature.getGeometry();
+    if (geometry) {
+      return this.writeGeometryText(geometry, opt_options);
+    }
+    return '';
+  }
+
+  /**
+   * @inheritDoc
+   */
+  writeFeaturesText(features, opt_options) {
+    if (features.length == 1) {
+      return this.writeFeatureText(features[0], opt_options);
+    }
+    const geometries = [];
+    for (let i = 0, ii = features.length; i < ii; ++i) {
+      geometries.push(features[i].getGeometry());
+    }
+    const collection = new GeometryCollection(geometries);
+    return this.writeGeometryText(collection, opt_options);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  writeGeometryText(geometry, opt_options) {
+    return encode(/** @type {module:ol/geom/Geometry} */ (
+      transformWithOptions(geometry, true, opt_options)));
+  }
+}
 
 
 /**
@@ -710,240 +872,6 @@ function encode(geom) {
   }
   return type + '(' + enc + ')';
 }
-
-
-/**
- * Parse a WKT string.
- * @param {string} wkt WKT string.
- * @return {module:ol/geom/Geometry|undefined}
- *     The geometry created.
- * @private
- */
-WKT.prototype.parse_ = function(wkt) {
-  const lexer = new Lexer(wkt);
-  const parser = new Parser(lexer);
-  return parser.parse();
-};
-
-
-/**
- * Read a feature from a WKT source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature} Feature.
- * @api
- */
-WKT.prototype.readFeature;
-
-
-/**
- * @inheritDoc
- */
-WKT.prototype.readFeatureFromText = function(text, opt_options) {
-  const geom = this.readGeometryFromText(text, opt_options);
-  if (geom) {
-    const feature = new Feature();
-    feature.setGeometry(geom);
-    return feature;
-  }
-  return null;
-};
-
-
-/**
- * Read all features from a WKT source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature>} Features.
- * @api
- */
-WKT.prototype.readFeatures;
-
-
-/**
- * @inheritDoc
- */
-WKT.prototype.readFeaturesFromText = function(text, opt_options) {
-  let geometries = [];
-  const geometry = this.readGeometryFromText(text, opt_options);
-  if (this.splitCollection_ &&
-      geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
-    geometries = (/** @type {module:ol/geom/GeometryCollection} */ (geometry))
-      .getGeometriesArray();
-  } else {
-    geometries = [geometry];
-  }
-  const features = [];
-  for (let i = 0, ii = geometries.length; i < ii; ++i) {
-    const feature = new Feature();
-    feature.setGeometry(geometries[i]);
-    features.push(feature);
-  }
-  return features;
-};
-
-
-/**
- * Read a single geometry from a WKT source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/geom/Geometry} Geometry.
- * @api
- */
-WKT.prototype.readGeometry;
-
-
-/**
- * @inheritDoc
- */
-WKT.prototype.readGeometryFromText = function(text, opt_options) {
-  const geometry = this.parse_(text);
-  if (geometry) {
-    return (
-      /** @type {module:ol/geom/Geometry} */ (transformWithOptions(geometry, false, opt_options))
-    );
-  } else {
-    return null;
-  }
-};
-
-
-/**
- * @enum {function (new:module:ol/geom/Geometry, Array, module:ol/geom/GeometryLayout)}
- */
-const GeometryConstructor = {
-  'POINT': Point,
-  'LINESTRING': LineString,
-  'POLYGON': Polygon,
-  'MULTIPOINT': MultiPoint,
-  'MULTILINESTRING': MultiLineString,
-  'MULTIPOLYGON': MultiPolygon
-};
-
-
-/**
- * @enum {(function(): Array)}
- */
-const GeometryParser = {
-  'POINT': Parser.prototype.parsePointText_,
-  'LINESTRING': Parser.prototype.parseLineStringText_,
-  'POLYGON': Parser.prototype.parsePolygonText_,
-  'MULTIPOINT': Parser.prototype.parseMultiPointText_,
-  'MULTILINESTRING': Parser.prototype.parseMultiLineStringText_,
-  'MULTIPOLYGON': Parser.prototype.parseMultiPolygonText_
-};
-
-
-/**
- * @return {!module:ol/geom/Geometry} The geometry.
- * @private
- */
-Parser.prototype.parseGeometry_ = function() {
-  const token = this.token_;
-  if (this.match(TokenType.TEXT)) {
-    const geomType = token.value;
-    this.layout_ = this.parseGeometryLayout_();
-    if (geomType == GeometryType.GEOMETRY_COLLECTION.toUpperCase()) {
-      const geometries = this.parseGeometryCollectionText_();
-      return new GeometryCollection(geometries);
-    } else {
-      const parser = GeometryParser[geomType];
-      const ctor = GeometryConstructor[geomType];
-      if (!parser || !ctor) {
-        throw new Error('Invalid geometry type: ' + geomType);
-      }
-      let coordinates = parser.call(this);
-      if (!coordinates) {
-        if (ctor === GeometryConstructor[GeometryType.POINT]) {
-          coordinates = [NaN, NaN];
-        } else {
-          coordinates = [];
-        }
-      }
-      return new ctor(coordinates, this.layout_);
-    }
-  }
-  throw new Error(this.formatErrorMessage_());
-};
-
-
-/**
- * Encode a feature as a WKT string.
- *
- * @function
- * @param {module:ol/Feature} feature Feature.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {string} WKT string.
- * @api
- */
-WKT.prototype.writeFeature;
-
-
-/**
- * @inheritDoc
- */
-WKT.prototype.writeFeatureText = function(feature, opt_options) {
-  const geometry = feature.getGeometry();
-  if (geometry) {
-    return this.writeGeometryText(geometry, opt_options);
-  }
-  return '';
-};
-
-
-/**
- * Encode an array of features as a WKT string.
- *
- * @function
- * @param {Array.<module:ol/Feature>} features Features.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {string} WKT string.
- * @api
- */
-WKT.prototype.writeFeatures;
-
-
-/**
- * @inheritDoc
- */
-WKT.prototype.writeFeaturesText = function(features, opt_options) {
-  if (features.length == 1) {
-    return this.writeFeatureText(features[0], opt_options);
-  }
-  const geometries = [];
-  for (let i = 0, ii = features.length; i < ii; ++i) {
-    geometries.push(features[i].getGeometry());
-  }
-  const collection = new GeometryCollection(geometries);
-  return this.writeGeometryText(collection, opt_options);
-};
-
-
-/**
- * Write a single geometry as a WKT string.
- *
- * @function
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
- * @return {string} WKT string.
- * @api
- */
-WKT.prototype.writeGeometry;
-
-
-/**
- * @inheritDoc
- */
-WKT.prototype.writeGeometryText = function(geometry, opt_options) {
-  return encode(/** @type {module:ol/geom/Geometry} */ (
-    transformWithOptions(geometry, true, opt_options)));
-};
 
 
 export default WKT;

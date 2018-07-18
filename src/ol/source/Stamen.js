@@ -1,7 +1,7 @@
 /**
  * @module ol/source/Stamen
  */
-import {inherits} from '../util.js';
+
 import {ATTRIBUTION as OSM_ATTRIBUTION} from '../source/OSM.js';
 import XYZ from '../source/XYZ.js';
 
@@ -109,40 +109,41 @@ const ProviderConfig = {
  */
 
 
-/**
- * @classdesc
- * Layer source for the Stamen tile server.
- *
- * @constructor
- * @extends {module:ol/source/XYZ}
- * @param {module:ol/source/Stamen~Options=} options Stamen options.
- * @api
- */
-const Stamen = function(options) {
-  const i = options.layer.indexOf('-');
-  const provider = i == -1 ? options.layer : options.layer.slice(0, i);
-  const providerConfig = ProviderConfig[provider];
+class Stamen extends XYZ {
 
-  const layerConfig = LayerConfig[options.layer];
+  /**
+   * @classdesc
+   * Layer source for the Stamen tile server.
+   *
+   * @param {module:ol/source/Stamen~Options=} options Stamen options.
+   * @api
+   */
+  constructor(options) {
+    const i = options.layer.indexOf('-');
+    const provider = i == -1 ? options.layer : options.layer.slice(0, i);
+    const providerConfig = ProviderConfig[provider];
 
-  const url = options.url !== undefined ? options.url :
-    'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' + options.layer +
-      '/{z}/{x}/{y}.' + layerConfig.extension;
+    const layerConfig = LayerConfig[options.layer];
 
-  XYZ.call(this, {
-    attributions: ATTRIBUTIONS,
-    cacheSize: options.cacheSize,
-    crossOrigin: 'anonymous',
-    maxZoom: options.maxZoom != undefined ? options.maxZoom : providerConfig.maxZoom,
-    minZoom: options.minZoom != undefined ? options.minZoom : providerConfig.minZoom,
-    opaque: layerConfig.opaque,
-    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-    tileLoadFunction: options.tileLoadFunction,
-    url: url,
-    wrapX: options.wrapX
-  });
-};
+    const url = options.url !== undefined ? options.url :
+      'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' + options.layer +
+        '/{z}/{x}/{y}.' + layerConfig.extension;
 
-inherits(Stamen, XYZ);
+    super({
+      attributions: ATTRIBUTIONS,
+      cacheSize: options.cacheSize,
+      crossOrigin: 'anonymous',
+      maxZoom: options.maxZoom != undefined ? options.maxZoom : providerConfig.maxZoom,
+      minZoom: options.minZoom != undefined ? options.minZoom : providerConfig.minZoom,
+      opaque: layerConfig.opaque,
+      reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+      tileLoadFunction: options.tileLoadFunction,
+      url: url,
+      wrapX: options.wrapX
+    });
+
+  }
+
+}
 
 export default Stamen;

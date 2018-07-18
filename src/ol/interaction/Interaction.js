@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/Interaction
  */
-import {inherits} from '../util.js';
 import BaseObject from '../Object.js';
 import {easeOut, linear} from '../easing.js';
 import InteractionProperty from '../interaction/Property.js';
@@ -30,75 +29,69 @@ import {clamp} from '../math.js';
  * by a keyboard event not a button element event.
  * Although interactions do not have a DOM element, some of them do render
  * vectors and so are visible on the screen.
- *
- * @constructor
- * @param {module:ol/interaction/Interaction~InteractionOptions} options Options.
- * @extends {module:ol/Object}
- * @api
  */
-const Interaction = function(options) {
+class Interaction extends BaseObject {
+  /**
+   * @param {module:ol/interaction/Interaction~InteractionOptions} options Options.
+   * @api
+   */
+  constructor(options) {
+    super();
 
-  BaseObject.call(this);
+    /**
+     * @private
+     * @type {module:ol/PluggableMap}
+     */
+    this.map_ = null;
+
+    this.setActive(true);
+
+    /**
+     * @type {function(module:ol/MapBrowserEvent):boolean}
+     */
+    this.handleEvent = options.handleEvent;
+
+  }
 
   /**
-   * @private
-   * @type {module:ol/PluggableMap}
+   * Return whether the interaction is currently active.
+   * @return {boolean} `true` if the interaction is active, `false` otherwise.
+   * @observable
+   * @api
    */
-  this.map_ = null;
-
-  this.setActive(true);
+  getActive() {
+    return /** @type {boolean} */ (this.get(InteractionProperty.ACTIVE));
+  }
 
   /**
-   * @type {function(module:ol/MapBrowserEvent):boolean}
+   * Get the map associated with this interaction.
+   * @return {module:ol/PluggableMap} Map.
+   * @api
    */
-  this.handleEvent = options.handleEvent;
+  getMap() {
+    return this.map_;
+  }
 
-};
+  /**
+   * Activate or deactivate the interaction.
+   * @param {boolean} active Active.
+   * @observable
+   * @api
+   */
+  setActive(active) {
+    this.set(InteractionProperty.ACTIVE, active);
+  }
 
-inherits(Interaction, BaseObject);
-
-
-/**
- * Return whether the interaction is currently active.
- * @return {boolean} `true` if the interaction is active, `false` otherwise.
- * @observable
- * @api
- */
-Interaction.prototype.getActive = function() {
-  return /** @type {boolean} */ (this.get(InteractionProperty.ACTIVE));
-};
-
-
-/**
- * Get the map associated with this interaction.
- * @return {module:ol/PluggableMap} Map.
- * @api
- */
-Interaction.prototype.getMap = function() {
-  return this.map_;
-};
-
-
-/**
- * Activate or deactivate the interaction.
- * @param {boolean} active Active.
- * @observable
- * @api
- */
-Interaction.prototype.setActive = function(active) {
-  this.set(InteractionProperty.ACTIVE, active);
-};
-
-
-/**
- * Remove the interaction from its current map and attach it to the new map.
- * Subclasses may set up event handlers to get notified about changes to
- * the map here.
- * @param {module:ol/PluggableMap} map Map.
- */
-Interaction.prototype.setMap = function(map) {
-  this.map_ = map;
-};
+  /**
+   * Remove the interaction from its current map and attach it to the new map.
+   * Subclasses may set up event handlers to get notified about changes to
+   * the map here.
+   * @param {module:ol/PluggableMap} map Map.
+   */
+  setMap(map) {
+    this.map_ = map;
+  }
+}
 
 
 /**

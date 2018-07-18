@@ -1,7 +1,7 @@
 /**
  * @module ol/source/UTFGrid
  */
-import {inherits} from '../util.js';
+
 import Tile from '../Tile.js';
 import TileState from '../TileState.js';
 import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
@@ -18,8 +18,6 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 
 /**
- * @constructor
- * @extends {module:ol/Tile}
  * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
  * @param {module:ol/TileState} state State.
  * @param {string} src Image source URI.
@@ -27,55 +25,58 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * @param {boolean} preemptive Load the tile when visible (before it's needed).
  * @param {boolean} jsonp Load the tile as a script.
  */
-export const CustomTile = function(tileCoord, state, src, extent, preemptive, jsonp) {
+export class CustomTile extends Tile {
 
-  Tile.call(this, tileCoord, state);
+  constructor(tileCoord, state, src, extent, preemptive, jsonp) {
 
-  /**
-   * @private
-   * @type {string}
-   */
-  this.src_ = src;
+    super(tileCoord, state);
 
-  /**
-   * @private
-   * @type {module:ol/extent~Extent}
-   */
-  this.extent_ = extent;
+    /**
+     * @private
+     * @type {string}
+     */
+    this.src_ = src;
 
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.preemptive_ = preemptive;
+    /**
+     * @private
+     * @type {module:ol/extent~Extent}
+     */
+    this.extent_ = extent;
 
-  /**
-   * @private
-   * @type {Array.<string>}
-   */
-  this.grid_ = null;
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.preemptive_ = preemptive;
 
-  /**
-   * @private
-   * @type {Array.<string>}
-   */
-  this.keys_ = null;
+    /**
+     * @private
+     * @type {Array.<string>}
+     */
+    this.grid_ = null;
 
-  /**
-   * @private
-   * @type {Object.<string, Object>|undefined}
-   */
-  this.data_ = null;
+    /**
+     * @private
+     * @type {Array.<string>}
+     */
+    this.keys_ = null;
+
+    /**
+     * @private
+     * @type {Object.<string, Object>|undefined}
+     */
+    this.data_ = null;
 
 
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.jsonp_ = jsonp;
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.jsonp_ = jsonp;
 
-};
-inherits(CustomTile, Tile);
+  }
+
+}
 
 
 /**
@@ -266,65 +267,66 @@ CustomTile.prototype.load = function() {
  */
 
 
-/**
- * @classdesc
- * Layer source for UTFGrid interaction data loaded from TileJSON format.
- *
- * @constructor
- * @extends {module:ol/source/Tile}
- * @param {module:ol/source/UTFGrid~Options=} options Source options.
- * @api
- */
-const UTFGrid = function(options) {
-  TileSource.call(this, {
-    projection: getProjection('EPSG:3857'),
-    state: SourceState.LOADING
-  });
+class UTFGrid extends TileSource {
 
   /**
-   * @private
-   * @type {boolean}
+   * @classdesc
+   * Layer source for UTFGrid interaction data loaded from TileJSON format.
+   *
+   * @param {module:ol/source/UTFGrid~Options=} options Source options.
+   * @api
    */
-  this.preemptive_ = options.preemptive !== undefined ?
-    options.preemptive : true;
+  constructor(options) {
+    super({
+      projection: getProjection('EPSG:3857'),
+      state: SourceState.LOADING
+    });
 
-  /**
-   * @private
-   * @type {!module:ol/Tile~UrlFunction}
-   */
-  this.tileUrlFunction_ = nullTileUrlFunction;
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.preemptive_ = options.preemptive !== undefined ?
+      options.preemptive : true;
 
-  /**
-   * @private
-   * @type {string|undefined}
-   */
-  this.template_ = undefined;
+    /**
+     * @private
+     * @type {!module:ol/Tile~UrlFunction}
+     */
+    this.tileUrlFunction_ = nullTileUrlFunction;
 
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.jsonp_ = options.jsonp || false;
+    /**
+     * @private
+     * @type {string|undefined}
+     */
+    this.template_ = undefined;
 
-  if (options.url) {
-    if (this.jsonp_) {
-      requestJSONP(options.url, this.handleTileJSONResponse.bind(this),
-        this.handleTileJSONError.bind(this));
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.jsonp_ = options.jsonp || false;
+
+    if (options.url) {
+      if (this.jsonp_) {
+        requestJSONP(options.url, this.handleTileJSONResponse.bind(this),
+          this.handleTileJSONError.bind(this));
+      } else {
+        const client = new XMLHttpRequest();
+        client.addEventListener('load', this.onXHRLoad_.bind(this));
+        client.addEventListener('error', this.onXHRError_.bind(this));
+        client.open('GET', options.url);
+        client.send();
+      }
+    } else if (options.tileJSON) {
+      this.handleTileJSONResponse(options.tileJSON);
     } else {
-      const client = new XMLHttpRequest();
-      client.addEventListener('load', this.onXHRLoad_.bind(this));
-      client.addEventListener('error', this.onXHRError_.bind(this));
-      client.open('GET', options.url);
-      client.send();
+      assert(false, 51); // Either `url` or `tileJSON` options must be provided
     }
-  } else if (options.tileJSON) {
-    this.handleTileJSONResponse(options.tileJSON);
-  } else {
-    assert(false, 51); // Either `url` or `tileJSON` options must be provided
-  }
-};
 
-inherits(UTFGrid, TileSource);
+  }
+
+}
 
 
 /**

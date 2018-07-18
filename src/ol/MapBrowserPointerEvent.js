@@ -1,32 +1,29 @@
 /**
  * @module ol/MapBrowserPointerEvent
  */
-import {inherits} from './util.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
 
-/**
- * @constructor
- * @extends {module:ol/MapBrowserEvent}
- * @param {string} type Event type.
- * @param {module:ol/PluggableMap} map Map.
- * @param {module:ol/pointer/PointerEvent} pointerEvent Pointer
- * event.
- * @param {boolean=} opt_dragging Is the map currently being dragged?
- * @param {?module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
- */
-const MapBrowserPointerEvent = function(type, map, pointerEvent, opt_dragging,
-  opt_frameState) {
-
-  MapBrowserEvent.call(this, type, map, pointerEvent.originalEvent, opt_dragging,
-    opt_frameState);
+class MapBrowserPointerEvent extends MapBrowserEvent {
 
   /**
-   * @const
-   * @type {module:ol/pointer/PointerEvent}
+   * @param {string} type Event type.
+   * @param {module:ol/PluggableMap} map Map.
+   * @param {module:ol/pointer/PointerEvent} pointerEvent Pointer event.
+   * @param {boolean=} opt_dragging Is the map currently being dragged?
+   * @param {?module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
    */
-  this.pointerEvent = pointerEvent;
+  constructor(type, map, pointerEvent, opt_dragging, opt_frameState) {
 
-};
+    super(type, map, pointerEvent.originalEvent, opt_dragging, opt_frameState);
 
-inherits(MapBrowserPointerEvent, MapBrowserEvent);
+    /**
+     * @const
+     * @type {module:ol/pointer/PointerEvent}
+     */
+    this.pointerEvent = pointerEvent;
+
+  }
+
+}
+
 export default MapBrowserPointerEvent;

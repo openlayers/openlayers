@@ -6,37 +6,40 @@
 
 import {DEBUG as DEBUG_WEBGL} from '../../../webgl.js';
 
-/**
- * @constructor
- * @param {WebGLRenderingContext} gl GL.
- * @param {WebGLProgram} program Program.
- * @struct
- */
-const Locations = function(gl, program) {
+class Locations {
 
   /**
-   * @type {WebGLUniformLocation}
+   * @param {WebGLRenderingContext} gl GL.
+   * @param {WebGLProgram} program Program.
    */
-  this.u_tileOffset = gl.getUniformLocation(
-    program, DEBUG_WEBGL ? 'u_tileOffset' : 'd');
+  constructor(gl, program) {
 
-  /**
-   * @type {WebGLUniformLocation}
-   */
-  this.u_texture = gl.getUniformLocation(
-    program, DEBUG_WEBGL ? 'u_texture' : 'e');
+    /**
+     * @type {WebGLUniformLocation}
+     */
+    this.u_tileOffset = gl.getUniformLocation(
+      program, DEBUG_WEBGL ? 'u_tileOffset' : 'd');
 
-  /**
-   * @type {number}
-   */
-  this.a_position = gl.getAttribLocation(
-    program, DEBUG_WEBGL ? 'a_position' : 'b');
+    /**
+     * @type {WebGLUniformLocation}
+     */
+    this.u_texture = gl.getUniformLocation(
+      program, DEBUG_WEBGL ? 'u_texture' : 'e');
 
-  /**
-   * @type {number}
-   */
-  this.a_texCoord = gl.getAttribLocation(
-    program, DEBUG_WEBGL ? 'a_texCoord' : 'c');
-};
+    /**
+     * @type {number}
+     */
+    this.a_position = gl.getAttribLocation(
+      program, DEBUG_WEBGL ? 'a_position' : 'b');
+
+    /**
+     * @type {number}
+     */
+    this.a_texCoord = gl.getAttribLocation(
+      program, DEBUG_WEBGL ? 'a_texCoord' : 'c');
+
+  }
+
+}
 
 export default Locations;

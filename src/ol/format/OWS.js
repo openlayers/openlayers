@@ -1,21 +1,10 @@
 /**
  * @module ol/format/OWS
  */
-import {inherits} from '../util.js';
 import {readHref} from '../format/XLink.js';
 import XML from '../format/XML.js';
 import {readString} from '../format/xsd.js';
 import {makeObjectPropertyPusher, makeObjectPropertySetter, makeStructureNS, pushParseAndPop} from '../xml.js';
-
-/**
- * @constructor
- * @extends {module:ol/format/XML}
- */
-const OWS = function() {
-  XML.call(this);
-};
-
-inherits(OWS, XML);
 
 
 /**
@@ -35,6 +24,34 @@ const PARSERS = makeStructureNS(
     'ServiceProvider': makeObjectPropertySetter(readServiceProvider),
     'OperationsMetadata': makeObjectPropertySetter(readOperationsMetadata)
   });
+
+
+class OWS extends XML {
+  constructor() {
+    super();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readFromDocument(doc) {
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
+      if (n.nodeType == Node.ELEMENT_NODE) {
+        return this.readFromNode(n);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readFromNode(node) {
+    const owsObject = pushParseAndPop({},
+      PARSERS, node, []);
+    return owsObject ? owsObject : null;
+  }
+}
 
 
 /**
@@ -185,29 +202,6 @@ const SERVICE_PROVIDER_PARSERS =
         'ProviderSite': makeObjectPropertySetter(readHref),
         'ServiceContact': makeObjectPropertySetter(readServiceContact)
       });
-
-
-/**
- * @inheritDoc
- */
-OWS.prototype.readFromDocument = function(doc) {
-  for (let n = doc.firstChild; n; n = n.nextSibling) {
-    if (n.nodeType == Node.ELEMENT_NODE) {
-      return this.readFromNode(n);
-    }
-  }
-  return null;
-};
-
-
-/**
- * @inheritDoc
- */
-OWS.prototype.readFromNode = function(node) {
-  const owsObject = pushParseAndPop({},
-    PARSERS, node, []);
-  return owsObject ? owsObject : null;
-};
 
 
 /**

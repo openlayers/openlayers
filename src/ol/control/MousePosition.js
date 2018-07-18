@@ -1,8 +1,6 @@
 /**
  * @module ol/control/MousePosition
  */
-
-import {inherits} from '../util.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getChangeEventType} from '../Object.js';
@@ -46,75 +44,203 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * By default the control is shown in the top right corner of the map, but this
  * can be changed by using the css selector `.ol-mouse-position`.
  *
- * @constructor
- * @extends {module:ol/control/Control}
- * @param {module:ol/control/MousePosition~Options=} opt_options Mouse position
- *     options.
  * @api
  */
-const MousePosition = function(opt_options) {
+class MousePosition extends Control {
 
-  const options = opt_options ? opt_options : {};
+  /**
+   * @param {module:ol/control/MousePosition~Options=} opt_options Mouse position options.
+   */
+  constructor(opt_options) {
 
-  const element = document.createElement('DIV');
-  element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
+    const options = opt_options ? opt_options : {};
 
-  Control.call(this, {
-    element: element,
-    render: options.render || render,
-    target: options.target
-  });
+    const element = document.createElement('DIV');
+    element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
 
-  listen(this,
-    getChangeEventType(PROJECTION),
-    this.handleProjectionChanged_, this);
+    super({
+      element: element,
+      render: options.render || render,
+      target: options.target
+    });
 
-  if (options.coordinateFormat) {
-    this.setCoordinateFormat(options.coordinateFormat);
+    listen(this,
+      getChangeEventType(PROJECTION),
+      this.handleProjectionChanged_, this);
+
+    if (options.coordinateFormat) {
+      this.setCoordinateFormat(options.coordinateFormat);
+    }
+    if (options.projection) {
+      this.setProjection(options.projection);
+    }
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.undefinedHTML_ = 'undefinedHTML' in options ? options.undefinedHTML : '&nbsp;';
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.renderOnMouseOut_ = !!this.undefinedHTML_;
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.renderedHTML_ = element.innerHTML;
+
+    /**
+     * @private
+     * @type {module:ol/proj/Projection}
+     */
+    this.mapProjection_ = null;
+
+    /**
+     * @private
+     * @type {?module:ol/proj~TransformFunction}
+     */
+    this.transform_ = null;
+
+    /**
+     * @private
+     * @type {module:ol~Pixel}
+     */
+    this.lastMouseMovePixel_ = null;
+
   }
-  if (options.projection) {
-    this.setProjection(options.projection);
+
+  /**
+   * @private
+   */
+  handleProjectionChanged_() {
+    this.transform_ = null;
   }
 
   /**
-   * @private
-   * @type {string}
+   * Return the coordinate format type used to render the current position or
+   * undefined.
+   * @return {module:ol/coordinate~CoordinateFormat|undefined} The format to render the current
+   *     position in.
+   * @observable
+   * @api
    */
-  this.undefinedHTML_ = 'undefinedHTML' in options ? options.undefinedHTML : '&nbsp;';
+  getCoordinateFormat() {
+    return (
+      /** @type {module:ol/coordinate~CoordinateFormat|undefined} */ (this.get(COORDINATE_FORMAT))
+    );
+  }
 
   /**
-   * @private
-   * @type {boolean}
+   * Return the projection that is used to report the mouse position.
+   * @return {module:ol/proj/Projection|undefined} The projection to report mouse
+   *     position in.
+   * @observable
+   * @api
    */
-  this.renderOnMouseOut_ = !!this.undefinedHTML_;
+  getProjection() {
+    return (
+      /** @type {module:ol/proj/Projection|undefined} */ (this.get(PROJECTION))
+    );
+  }
 
   /**
-   * @private
-   * @type {string}
+   * @param {Event} event Browser event.
+   * @protected
    */
-  this.renderedHTML_ = element.innerHTML;
+  handleMouseMove(event) {
+    const map = this.getMap();
+    this.lastMouseMovePixel_ = map.getEventPixel(event);
+    this.updateHTML_(this.lastMouseMovePixel_);
+  }
 
   /**
-   * @private
-   * @type {module:ol/proj/Projection}
+   * @param {Event} event Browser event.
+   * @protected
    */
-  this.mapProjection_ = null;
+  handleMouseOut(event) {
+    this.updateHTML_(null);
+    this.lastMouseMovePixel_ = null;
+  }
 
   /**
-   * @private
-   * @type {?module:ol/proj~TransformFunction}
+   * @inheritDoc
+   * @api
    */
-  this.transform_ = null;
+  setMap(map) {
+    super.setMap(map);
+    if (map) {
+      const viewport = map.getViewport();
+      this.listenerKeys.push(
+        listen(viewport, EventType.MOUSEMOVE, this.handleMouseMove, this)
+      );
+      if (this.renderOnMouseOut_) {
+        this.listenerKeys.push(
+          listen(viewport, EventType.MOUSEOUT, this.handleMouseOut, this)
+        );
+      }
+    }
+  }
 
   /**
-   * @private
-   * @type {module:ol~Pixel}
+   * Set the coordinate format type used to render the current position.
+   * @param {module:ol/coordinate~CoordinateFormat} format The format to render the current
+   *     position in.
+   * @observable
+   * @api
    */
-  this.lastMouseMovePixel_ = null;
+  setCoordinateFormat(format) {
+    this.set(COORDINATE_FORMAT, format);
+  }
 
-};
+  /**
+   * Set the projection that is used to report the mouse position.
+   * @param {module:ol/proj~ProjectionLike} projection The projection to report mouse
+   *     position in.
+   * @observable
+   * @api
+   */
+  setProjection(projection) {
+    this.set(PROJECTION, getProjection(projection));
+  }
 
-inherits(MousePosition, Control);
+  /**
+   * @param {?module:ol~Pixel} pixel Pixel.
+   * @private
+   */
+  updateHTML_(pixel) {
+    let html = this.undefinedHTML_;
+    if (pixel && this.mapProjection_) {
+      if (!this.transform_) {
+        const projection = this.getProjection();
+        if (projection) {
+          this.transform_ = getTransformFromProjections(
+            this.mapProjection_, projection);
+        } else {
+          this.transform_ = identityTransform;
+        }
+      }
+      const map = this.getMap();
+      const coordinate = map.getCoordinateFromPixel(pixel);
+      if (coordinate) {
+        this.transform_(coordinate, coordinate);
+        const coordinateFormat = this.getCoordinateFormat();
+        if (coordinateFormat) {
+          html = coordinateFormat(coordinate);
+        } else {
+          html = coordinate.toString();
+        }
+      }
+    }
+    if (!this.renderedHTML_ || html !== this.renderedHTML_) {
+      this.element.innerHTML = html;
+      this.renderedHTML_ = html;
+    }
+  }
+}
 
 
 /**
@@ -135,143 +261,6 @@ export function render(mapEvent) {
   }
   this.updateHTML_(this.lastMouseMovePixel_);
 }
-
-
-/**
- * @private
- */
-MousePosition.prototype.handleProjectionChanged_ = function() {
-  this.transform_ = null;
-};
-
-
-/**
- * Return the coordinate format type used to render the current position or
- * undefined.
- * @return {module:ol/coordinate~CoordinateFormat|undefined} The format to render the current
- *     position in.
- * @observable
- * @api
- */
-MousePosition.prototype.getCoordinateFormat = function() {
-  return (
-    /** @type {module:ol/coordinate~CoordinateFormat|undefined} */ (this.get(COORDINATE_FORMAT))
-  );
-};
-
-
-/**
- * Return the projection that is used to report the mouse position.
- * @return {module:ol/proj/Projection|undefined} The projection to report mouse
- *     position in.
- * @observable
- * @api
- */
-MousePosition.prototype.getProjection = function() {
-  return (
-    /** @type {module:ol/proj/Projection|undefined} */ (this.get(PROJECTION))
-  );
-};
-
-
-/**
- * @param {Event} event Browser event.
- * @protected
- */
-MousePosition.prototype.handleMouseMove = function(event) {
-  const map = this.getMap();
-  this.lastMouseMovePixel_ = map.getEventPixel(event);
-  this.updateHTML_(this.lastMouseMovePixel_);
-};
-
-
-/**
- * @param {Event} event Browser event.
- * @protected
- */
-MousePosition.prototype.handleMouseOut = function(event) {
-  this.updateHTML_(null);
-  this.lastMouseMovePixel_ = null;
-};
-
-
-/**
- * @inheritDoc
- * @api
- */
-MousePosition.prototype.setMap = function(map) {
-  Control.prototype.setMap.call(this, map);
-  if (map) {
-    const viewport = map.getViewport();
-    this.listenerKeys.push(
-      listen(viewport, EventType.MOUSEMOVE, this.handleMouseMove, this)
-    );
-    if (this.renderOnMouseOut_) {
-      this.listenerKeys.push(
-        listen(viewport, EventType.MOUSEOUT, this.handleMouseOut, this)
-      );
-    }
-  }
-};
-
-
-/**
- * Set the coordinate format type used to render the current position.
- * @param {module:ol/coordinate~CoordinateFormat} format The format to render the current
- *     position in.
- * @observable
- * @api
- */
-MousePosition.prototype.setCoordinateFormat = function(format) {
-  this.set(COORDINATE_FORMAT, format);
-};
-
-
-/**
- * Set the projection that is used to report the mouse position.
- * @param {module:ol/proj~ProjectionLike} projection The projection to report mouse
- *     position in.
- * @observable
- * @api
- */
-MousePosition.prototype.setProjection = function(projection) {
-  this.set(PROJECTION, getProjection(projection));
-};
-
-
-/**
- * @param {?module:ol~Pixel} pixel Pixel.
- * @private
- */
-MousePosition.prototype.updateHTML_ = function(pixel) {
-  let html = this.undefinedHTML_;
-  if (pixel && this.mapProjection_) {
-    if (!this.transform_) {
-      const projection = this.getProjection();
-      if (projection) {
-        this.transform_ = getTransformFromProjections(
-          this.mapProjection_, projection);
-      } else {
-        this.transform_ = identityTransform;
-      }
-    }
-    const map = this.getMap();
-    const coordinate = map.getCoordinateFromPixel(pixel);
-    if (coordinate) {
-      this.transform_(coordinate, coordinate);
-      const coordinateFormat = this.getCoordinateFormat();
-      if (coordinateFormat) {
-        html = coordinateFormat(coordinate);
-      } else {
-        html = coordinate.toString();
-      }
-    }
-  }
-  if (!this.renderedHTML_ || html !== this.renderedHTML_) {
-    this.element.innerHTML = html;
-    this.renderedHTML_ = html;
-  }
-};
 
 
 export default MousePosition;

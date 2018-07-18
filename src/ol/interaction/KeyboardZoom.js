@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/KeyboardZoom
  */
-import {inherits} from '../util.js';
 import EventType from '../events/EventType.js';
 import {targetNotEditable} from '../events/condition.js';
 import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
@@ -29,41 +28,41 @@ import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
  * element, focus will have to be on, and returned to, this element if the keys
  * are to function.
  * See also {@link moudle:ol/interaction/KeyboardPan~KeyboardPan}.
- *
- * @constructor
- * @param {module:ol/interaction/KeyboardZoom~Options=} opt_options Options.
- * @extends {module:ol/interaction/Interaction}
- * @api
  */
-const KeyboardZoom = function(opt_options) {
-
-  Interaction.call(this, {
-    handleEvent: handleEvent
-  });
-
-  const options = opt_options ? opt_options : {};
-
+class KeyboardZoom extends Interaction {
   /**
-   * @private
-   * @type {module:ol/events/condition~Condition}
+   * @param {module:ol/interaction/KeyboardZoom~Options=} opt_options Options.
+   * @api
    */
-  this.condition_ = options.condition ? options.condition : targetNotEditable;
+  constructor(opt_options) {
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.delta_ = options.delta ? options.delta : 1;
+    super({
+      handleEvent: handleEvent
+    });
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.duration_ = options.duration !== undefined ? options.duration : 100;
+    const options = opt_options ? opt_options : {};
 
-};
+    /**
+     * @private
+     * @type {module:ol/events/condition~Condition}
+     */
+    this.condition_ = options.condition ? options.condition : targetNotEditable;
 
-inherits(KeyboardZoom, Interaction);
+    /**
+     * @private
+     * @type {number}
+     */
+    this.delta_ = options.delta ? options.delta : 1;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.duration_ = options.duration !== undefined ? options.duration : 100;
+
+  }
+
+}
 
 
 /**

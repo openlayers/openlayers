@@ -1,7 +1,6 @@
 /**
  * @module ol/format/WMTSCapabilities
  */
-import {inherits} from '../util.js';
 import {boundingExtent} from '../extent.js';
 import OWS from '../format/OWS.js';
 import {readHref} from '../format/XLink.js';
@@ -9,26 +8,6 @@ import XML from '../format/XML.js';
 import {readString, readNonNegativeInteger, readDecimal} from '../format/xsd.js';
 import {pushParseAndPop, makeStructureNS,
   makeObjectPropertySetter, makeObjectPropertyPusher, makeArrayPusher} from '../xml.js';
-
-/**
- * @classdesc
- * Format for reading WMTS capabilities data.
- *
- * @constructor
- * @extends {module:ol/format/XML}
- * @api
- */
-const WMTSCapabilities = function() {
-  XML.call(this);
-
-  /**
-   * @type {module:ol/format/OWS}
-   * @private
-   */
-  this.owsParser_ = new OWS();
-};
-
-inherits(WMTSCapabilities, XML);
 
 
 /**
@@ -59,6 +38,51 @@ const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Contents': makeObjectPropertySetter(readContents)
   });
+
+
+/**
+ * @classdesc
+ * Format for reading WMTS capabilities data.
+ *
+  * @api
+ */
+class WMTSCapabilities extends XML {
+  constructor() {
+    super();
+
+    /**
+     * @type {module:ol/format/OWS}
+     * @private
+     */
+    this.owsParser_ = new OWS();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readFromDocument(doc) {
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
+      if (n.nodeType == Node.ELEMENT_NODE) {
+        return this.readFromNode(n);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readFromNode(node) {
+    const version = node.getAttribute('version').trim();
+    let WMTSCapabilityObject = this.owsParser_.readFromNode(node);
+    if (!WMTSCapabilityObject) {
+      return null;
+    }
+    WMTSCapabilityObject['version'] = version;
+    WMTSCapabilityObject = pushParseAndPop(WMTSCapabilityObject, PARSERS, node, []);
+    return WMTSCapabilityObject ? WMTSCapabilityObject : null;
+  }
+}
 
 
 /**
@@ -191,45 +215,6 @@ const TM_PARSERS = makeStructureNS(
   }, makeStructureNS(OWS_NAMESPACE_URIS, {
     'Identifier': makeObjectPropertySetter(readString)
   }));
-
-
-/**
- * Read a WMTS capabilities document.
- *
- * @function
- * @param {Document|Node|string} source The XML source.
- * @return {Object} An object representing the WMTS capabilities.
- * @api
- */
-WMTSCapabilities.prototype.read;
-
-
-/**
- * @inheritDoc
- */
-WMTSCapabilities.prototype.readFromDocument = function(doc) {
-  for (let n = doc.firstChild; n; n = n.nextSibling) {
-    if (n.nodeType == Node.ELEMENT_NODE) {
-      return this.readFromNode(n);
-    }
-  }
-  return null;
-};
-
-
-/**
- * @inheritDoc
- */
-WMTSCapabilities.prototype.readFromNode = function(node) {
-  const version = node.getAttribute('version').trim();
-  let WMTSCapabilityObject = this.owsParser_.readFromNode(node);
-  if (!WMTSCapabilityObject) {
-    return null;
-  }
-  WMTSCapabilityObject['version'] = version;
-  WMTSCapabilityObject = pushParseAndPop(WMTSCapabilityObject, PARSERS, node, []);
-  return WMTSCapabilityObject ? WMTSCapabilityObject : null;
-};
 
 
 /**

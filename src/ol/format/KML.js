@@ -1,7 +1,6 @@
 /**
  * @module ol/format/KML
  */
-import {inherits} from '../util.js';
 import Feature from '../Feature.js';
 import {extend, includes} from '../array.js';
 import {assert} from '../asserts.js';
@@ -47,6 +46,143 @@ import {createElementNS, getAllTextContent, isDocument, isNode, makeArrayExtende
  * @property {Array.<number>} flatCoordinates
  * @property {Array.<number>} whens
  */
+
+
+/**
+ * @const
+ * @type {Array.<string>}
+ */
+const GX_NAMESPACE_URIS = [
+  'http://www.google.com/kml/ext/2.2'
+];
+
+
+/**
+ * @const
+ * @type {Array.<null|string>}
+ */
+const NAMESPACE_URIS = [
+  null,
+  'http://earth.google.com/kml/2.0',
+  'http://earth.google.com/kml/2.1',
+  'http://earth.google.com/kml/2.2',
+  'http://www.opengis.net/kml/2.2'
+];
+
+
+/**
+ * @const
+ * @type {string}
+ */
+const SCHEMA_LOCATION = 'http://www.opengis.net/kml/2.2 ' +
+    'https://developers.google.com/kml/schema/kml22gx.xsd';
+
+
+/**
+ * @type {Object.<string, module:ol/style/IconAnchorUnits>}
+ */
+const ICON_ANCHOR_UNITS_MAP = {
+  'fraction': IconAnchorUnits.FRACTION,
+  'pixels': IconAnchorUnits.PIXELS,
+  'insetPixels': IconAnchorUnits.PIXELS
+};
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const PLACEMARK_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'ExtendedData': extendedDataParser,
+    'Region': regionParser,
+    'MultiGeometry': makeObjectPropertySetter(
+      readMultiGeometry, 'geometry'),
+    'LineString': makeObjectPropertySetter(
+      readLineString, 'geometry'),
+    'LinearRing': makeObjectPropertySetter(
+      readLinearRing, 'geometry'),
+    'Point': makeObjectPropertySetter(
+      readPoint, 'geometry'),
+    'Polygon': makeObjectPropertySetter(
+      readPolygon, 'geometry'),
+    'Style': makeObjectPropertySetter(readStyle),
+    'StyleMap': placemarkStyleMapParser,
+    'address': makeObjectPropertySetter(readString),
+    'description': makeObjectPropertySetter(readString),
+    'name': makeObjectPropertySetter(readString),
+    'open': makeObjectPropertySetter(readBoolean),
+    'phoneNumber': makeObjectPropertySetter(readString),
+    'styleUrl': makeObjectPropertySetter(readURI),
+    'visibility': makeObjectPropertySetter(readBoolean)
+  }, makeStructureNS(
+    GX_NAMESPACE_URIS, {
+      'MultiTrack': makeObjectPropertySetter(
+        readGxMultiTrack, 'geometry'),
+      'Track': makeObjectPropertySetter(
+        readGxTrack, 'geometry')
+    }
+  ));
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const NETWORK_LINK_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'ExtendedData': extendedDataParser,
+    'Region': regionParser,
+    'Link': linkParser,
+    'address': makeObjectPropertySetter(readString),
+    'description': makeObjectPropertySetter(readString),
+    'name': makeObjectPropertySetter(readString),
+    'open': makeObjectPropertySetter(readBoolean),
+    'phoneNumber': makeObjectPropertySetter(readString),
+    'visibility': makeObjectPropertySetter(readBoolean)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const LINK_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'href': makeObjectPropertySetter(readURI)
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ */
+const REGION_PARSERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'LatLonAltBox': latLonAltBoxParser,
+    'Lod': lodParser
+  });
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ */
+const KML_SEQUENCE = makeStructureNS(
+  NAMESPACE_URIS, [
+    'Document', 'Placemark'
+  ]);
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ */
+const KML_SERIALIZERS = makeStructureNS(
+  NAMESPACE_URIS, {
+    'Document': makeChildAppender(writeDocument),
+    'Placemark': makeChildAppender(writePlacemark)
+  });
+
 
 /**
  * @type {module:ol/color~Color}
@@ -251,106 +387,471 @@ function createStyleDefaults() {
  * @classdesc
  * Feature format for reading and writing data in the KML format.
  *
+ * {@link module:ol/format/KML~KML#readFeature} will read the first feature from
+ * a KML source.
+ *
+ * MultiGeometries are converted into GeometryCollections if they are a mix of
+ * geometry types, and into MultiPoint/MultiLineString/MultiPolygon if they are
+ * all of the same type.
+ *
  * Note that the KML format uses the URL() constructor. Older browsers such as IE
  * which do not support this will need a URL polyfill to be loaded before use.
  *
- * @constructor
- * @extends {module:ol/format/XMLFeature}
- * @param {module:ol/format/KML~Options=} opt_options Options.
  * @api
  */
-const KML = function(opt_options) {
+class KML extends XMLFeature {
 
-  const options = opt_options ? opt_options : {};
+  /**
+   * @param {module:ol/format/KML~Options=} opt_options Options.
+   */
+  constructor(opt_options) {
+    super();
 
-  XMLFeature.call(this);
+    const options = opt_options ? opt_options : {};
 
-  if (!DEFAULT_STYLE_ARRAY) {
-    createStyleDefaults();
+    if (!DEFAULT_STYLE_ARRAY) {
+      createStyleDefaults();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    this.dataProjection = getProjection('EPSG:4326');
+
+    /**
+     * @private
+     * @type {Array.<module:ol/style/Style>}
+     */
+    this.defaultStyle_ = options.defaultStyle ?
+      options.defaultStyle : DEFAULT_STYLE_ARRAY;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.extractStyles_ = options.extractStyles !== undefined ?
+      options.extractStyles : true;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.writeStyles_ = options.writeStyles !== undefined ?
+      options.writeStyles : true;
+
+    /**
+     * @private
+     * @type {!Object.<string, (Array.<module:ol/style/Style>|string)>}
+     */
+    this.sharedStyles_ = {};
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.showPointNames_ = options.showPointNames !== undefined ?
+      options.showPointNames : true;
+
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @private
+   * @return {Array.<module:ol/Feature>|undefined} Features.
+   */
+  readDocumentOrFolder_(node, objectStack) {
+    // FIXME use scope somehow
+    const parsersNS = makeStructureNS(
+      NAMESPACE_URIS, {
+        'Document': makeArrayExtender(this.readDocumentOrFolder_, this),
+        'Folder': makeArrayExtender(this.readDocumentOrFolder_, this),
+        'Placemark': makeArrayPusher(this.readPlacemark_, this),
+        'Style': this.readSharedStyle_.bind(this),
+        'StyleMap': this.readSharedStyleMap_.bind(this)
+      });
+    /** @type {Array.<module:ol/Feature>} */
+    const features = pushParseAndPop([], parsersNS, node, objectStack, this);
+    if (features) {
+      return features;
+    } else {
+      return undefined;
+    }
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @private
+   * @return {module:ol/Feature|undefined} Feature.
+   */
+  readPlacemark_(node, objectStack) {
+    const object = pushParseAndPop({'geometry': null},
+      PLACEMARK_PARSERS, node, objectStack);
+    if (!object) {
+      return undefined;
+    }
+    const feature = new Feature();
+    const id = node.getAttribute('id');
+    if (id !== null) {
+      feature.setId(id);
+    }
+    const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
+
+    const geometry = object['geometry'];
+    if (geometry) {
+      transformWithOptions(geometry, false, options);
+    }
+    feature.setGeometry(geometry);
+    delete object['geometry'];
+
+    if (this.extractStyles_) {
+      const style = object['Style'];
+      const styleUrl = object['styleUrl'];
+      const styleFunction = createFeatureStyleFunction(
+        style, styleUrl, this.defaultStyle_, this.sharedStyles_,
+        this.showPointNames_);
+      feature.setStyle(styleFunction);
+    }
+    delete object['Style'];
+    // we do not remove the styleUrl property from the object, so it
+    // gets stored on feature when setProperties is called
+
+    feature.setProperties(object);
+
+    return feature;
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @private
+   */
+  readSharedStyle_(node, objectStack) {
+    const id = node.getAttribute('id');
+    if (id !== null) {
+      const style = readStyle(node, objectStack);
+      if (style) {
+        let styleUri;
+        let baseURI = node.baseURI;
+        if (!baseURI || baseURI == 'about:blank') {
+          baseURI = window.location.href;
+        }
+        if (baseURI) {
+          const url = new URL('#' + id, baseURI);
+          styleUri = url.href;
+        } else {
+          styleUri = '#' + id;
+        }
+        this.sharedStyles_[styleUri] = style;
+      }
+    }
+  }
+
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @private
+   */
+  readSharedStyleMap_(node, objectStack) {
+    const id = node.getAttribute('id');
+    if (id === null) {
+      return;
+    }
+    const styleMapValue = readStyleMapValue(node, objectStack);
+    if (!styleMapValue) {
+      return;
+    }
+    let styleUri;
+    let baseURI = node.baseURI;
+    if (!baseURI || baseURI == 'about:blank') {
+      baseURI = window.location.href;
+    }
+    if (baseURI) {
+      const url = new URL('#' + id, baseURI);
+      styleUri = url.href;
+    } else {
+      styleUri = '#' + id;
+    }
+    this.sharedStyles_[styleUri] = styleMapValue;
   }
 
   /**
    * @inheritDoc
    */
-  this.dataProjection = getProjection('EPSG:4326');
+  readFeatureFromNode(node, opt_options) {
+    if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
+      return null;
+    }
+    const feature = this.readPlacemark_(
+      node, [this.getReadOptions(node, opt_options)]);
+    if (feature) {
+      return feature;
+    } else {
+      return null;
+    }
+  }
 
   /**
-   * @private
-   * @type {Array.<module:ol/style/Style>}
+   * @inheritDoc
    */
-  this.defaultStyle_ = options.defaultStyle ?
-    options.defaultStyle : DEFAULT_STYLE_ARRAY;
+  readFeaturesFromNode(node, opt_options) {
+    if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
+      return [];
+    }
+    let features;
+    const localName = node.localName;
+    if (localName == 'Document' || localName == 'Folder') {
+      features = this.readDocumentOrFolder_(
+        node, [this.getReadOptions(node, opt_options)]);
+      if (features) {
+        return features;
+      } else {
+        return [];
+      }
+    } else if (localName == 'Placemark') {
+      const feature = this.readPlacemark_(
+        node, [this.getReadOptions(node, opt_options)]);
+      if (feature) {
+        return [feature];
+      } else {
+        return [];
+      }
+    } else if (localName == 'kml') {
+      features = [];
+      for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+        const fs = this.readFeaturesFromNode(n, opt_options);
+        if (fs) {
+          extend(features, fs);
+        }
+      }
+      return features;
+    } else {
+      return [];
+    }
+  }
 
   /**
-   * @private
-   * @type {boolean}
+   * Read the name of the KML.
+   *
+   * @param {Document|Node|string} source Source.
+   * @return {string|undefined} Name.
+   * @api
    */
-  this.extractStyles_ = options.extractStyles !== undefined ?
-    options.extractStyles : true;
+  readName(source) {
+    if (isDocument(source)) {
+      return this.readNameFromDocument(/** @type {Document} */ (source));
+    } else if (isNode(source)) {
+      return this.readNameFromNode(/** @type {Node} */ (source));
+    } else if (typeof source === 'string') {
+      const doc = parse(source);
+      return this.readNameFromDocument(doc);
+    } else {
+      return undefined;
+    }
+  }
 
   /**
-   * @private
-   * @type {boolean}
+   * @param {Document} doc Document.
+   * @return {string|undefined} Name.
    */
-  this.writeStyles_ = options.writeStyles !== undefined ?
-    options.writeStyles : true;
+  readNameFromDocument(doc) {
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
+      if (n.nodeType == Node.ELEMENT_NODE) {
+        const name = this.readNameFromNode(n);
+        if (name) {
+          return name;
+        }
+      }
+    }
+    return undefined;
+  }
 
   /**
-   * @private
-   * @type {!Object.<string, (Array.<module:ol/style/Style>|string)>}
+   * @param {Node} node Node.
+   * @return {string|undefined} Name.
    */
-  this.sharedStyles_ = {};
+  readNameFromNode(node) {
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      if (includes(NAMESPACE_URIS, n.namespaceURI) &&
+          n.localName == 'name') {
+        return readString(n);
+      }
+    }
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      const localName = n.localName;
+      if (includes(NAMESPACE_URIS, n.namespaceURI) &&
+          (localName == 'Document' ||
+           localName == 'Folder' ||
+           localName == 'Placemark' ||
+           localName == 'kml')) {
+        const name = this.readNameFromNode(n);
+        if (name) {
+          return name;
+        }
+      }
+    }
+    return undefined;
+  }
 
   /**
-   * @private
-   * @type {boolean}
+   * Read the network links of the KML.
+   *
+   * @param {Document|Node|string} source Source.
+   * @return {Array.<Object>} Network links.
+   * @api
    */
-  this.showPointNames_ = options.showPointNames !== undefined ?
-    options.showPointNames : true;
+  readNetworkLinks(source) {
+    const networkLinks = [];
+    if (isDocument(source)) {
+      extend(networkLinks, this.readNetworkLinksFromDocument(
+        /** @type {Document} */ (source)));
+    } else if (isNode(source)) {
+      extend(networkLinks, this.readNetworkLinksFromNode(
+        /** @type {Node} */ (source)));
+    } else if (typeof source === 'string') {
+      const doc = parse(source);
+      extend(networkLinks, this.readNetworkLinksFromDocument(doc));
+    }
+    return networkLinks;
+  }
 
-};
+  /**
+   * @param {Document} doc Document.
+   * @return {Array.<Object>} Network links.
+   */
+  readNetworkLinksFromDocument(doc) {
+    const networkLinks = [];
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
+      if (n.nodeType == Node.ELEMENT_NODE) {
+        extend(networkLinks, this.readNetworkLinksFromNode(n));
+      }
+    }
+    return networkLinks;
+  }
 
-inherits(KML, XMLFeature);
+  /**
+   * @param {Node} node Node.
+   * @return {Array.<Object>} Network links.
+   */
+  readNetworkLinksFromNode(node) {
+    const networkLinks = [];
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      if (includes(NAMESPACE_URIS, n.namespaceURI) &&
+          n.localName == 'NetworkLink') {
+        const obj = pushParseAndPop({}, NETWORK_LINK_PARSERS,
+          n, []);
+        networkLinks.push(obj);
+      }
+    }
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      const localName = n.localName;
+      if (includes(NAMESPACE_URIS, n.namespaceURI) &&
+          (localName == 'Document' ||
+           localName == 'Folder' ||
+           localName == 'kml')) {
+        extend(networkLinks, this.readNetworkLinksFromNode(n));
+      }
+    }
+    return networkLinks;
+  }
 
+  /**
+   * Read the regions of the KML.
+   *
+   * @param {Document|Node|string} source Source.
+   * @return {Array.<Object>} Regions.
+   * @api
+   */
+  readRegion(source) {
+    const regions = [];
+    if (isDocument(source)) {
+      extend(regions, this.readRegionFromDocument(
+        /** @type {Document} */ (source)));
+    } else if (isNode(source)) {
+      extend(regions, this.readRegionFromNode(
+        /** @type {Node} */ (source)));
+    } else if (typeof source === 'string') {
+      const doc = parse(source);
+      extend(regions, this.readRegionFromDocument(doc));
+    }
+    return regions;
+  }
 
-/**
- * @const
- * @type {Array.<string>}
- */
-const GX_NAMESPACE_URIS = [
-  'http://www.google.com/kml/ext/2.2'
-];
+  /**
+   * @param {Document} doc Document.
+   * @return {Array.<Object>} Region.
+   */
+  readRegionFromDocument(doc) {
+    const regions = [];
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
+      if (n.nodeType == Node.ELEMENT_NODE) {
+        extend(regions, this.readRegionFromNode(n));
+      }
+    }
+    return regions;
+  }
 
+  /**
+   * @param {Node} node Node.
+   * @return {Array.<Object>} Region.
+   * @api
+   */
+  readRegionFromNode(node) {
+    const regions = [];
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      if (includes(NAMESPACE_URIS, n.namespaceURI) &&
+          n.localName == 'Region') {
+        const obj = pushParseAndPop({}, REGION_PARSERS,
+          n, []);
+        regions.push(obj);
+      }
+    }
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      const localName = n.localName;
+      if (includes(NAMESPACE_URIS, n.namespaceURI) &&
+          (localName == 'Document' ||
+           localName == 'Folder' ||
+           localName == 'kml')) {
+        extend(regions, this.readRegionFromNode(n));
+      }
+    }
+    return regions;
+  }
 
-/**
- * @const
- * @type {Array.<null|string>}
- */
-const NAMESPACE_URIS = [
-  null,
-  'http://earth.google.com/kml/2.0',
-  'http://earth.google.com/kml/2.1',
-  'http://earth.google.com/kml/2.2',
-  'http://www.opengis.net/kml/2.2'
-];
+  /**
+   * Encode an array of features in the KML format as an XML node. GeometryCollections,
+   * MultiPoints, MultiLineStrings, and MultiPolygons are output as MultiGeometries.
+   *
+   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
+   * @return {Node} Node.
+   * @override
+   * @api
+   */
+  writeFeaturesNode(features, opt_options) {
+    opt_options = this.adaptOptions(opt_options);
+    const kml = createElementNS(NAMESPACE_URIS[4], 'kml');
+    const xmlnsUri = 'http://www.w3.org/2000/xmlns/';
+    kml.setAttributeNS(xmlnsUri, 'xmlns:gx', GX_NAMESPACE_URIS[0]);
+    kml.setAttributeNS(xmlnsUri, 'xmlns:xsi', XML_SCHEMA_INSTANCE_URI);
+    kml.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', SCHEMA_LOCATION);
 
-
-/**
- * @const
- * @type {string}
- */
-const SCHEMA_LOCATION = 'http://www.opengis.net/kml/2.2 ' +
-    'https://developers.google.com/kml/schema/kml22gx.xsd';
-
-
-/**
- * @type {Object.<string, module:ol/style/IconAnchorUnits>}
- */
-const ICON_ANCHOR_UNITS_MAP = {
-  'fraction': IconAnchorUnits.FRACTION,
-  'pixels': IconAnchorUnits.PIXELS,
-  'insetPixels': IconAnchorUnits.PIXELS
-};
+    const /** @type {module:ol/xml~NodeStackItem} */ context = {node: kml};
+    const properties = {};
+    if (features.length > 1) {
+      properties['Document'] = features;
+    } else if (features.length == 1) {
+      properties['Placemark'] = features[0];
+    }
+    const orderedKeys = KML_SEQUENCE[kml.namespaceURI];
+    const values = makeSequence(properties, orderedKeys);
+    pushSerializeAndPop(context, KML_SERIALIZERS,
+      OBJECT_PROPERTY_NODE_FACTORY, values, [opt_options], orderedKeys,
+      this);
+    return kml;
+  }
+}
 
 
 /**
@@ -1324,17 +1825,6 @@ function extendedDataParser(node, objectStack) {
 }
 
 /**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const REGION_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'LatLonAltBox': latLonAltBoxParser,
-    'Lod': lodParser
-  });
-
-
-/**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  */
@@ -1556,34 +2046,6 @@ function outerBoundaryIsParser(node, objectStack) {
 
 
 /**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const NETWORK_LINK_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'ExtendedData': extendedDataParser,
-    'Region': regionParser,
-    'Link': linkParser,
-    'address': makeObjectPropertySetter(readString),
-    'description': makeObjectPropertySetter(readString),
-    'name': makeObjectPropertySetter(readString),
-    'open': makeObjectPropertySetter(readBoolean),
-    'phoneNumber': makeObjectPropertySetter(readString),
-    'visibility': makeObjectPropertySetter(readBoolean)
-  });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const LINK_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'href': makeObjectPropertySetter(readURI)
-  });
-
-
-/**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  */
@@ -1604,462 +2066,6 @@ function whenParser(node, objectStack) {
   const when = Date.parse(s);
   whens.push(isNaN(when) ? 0 : when);
 }
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
- */
-const PLACEMARK_PARSERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'ExtendedData': extendedDataParser,
-    'Region': regionParser,
-    'MultiGeometry': makeObjectPropertySetter(
-      readMultiGeometry, 'geometry'),
-    'LineString': makeObjectPropertySetter(
-      readLineString, 'geometry'),
-    'LinearRing': makeObjectPropertySetter(
-      readLinearRing, 'geometry'),
-    'Point': makeObjectPropertySetter(
-      readPoint, 'geometry'),
-    'Polygon': makeObjectPropertySetter(
-      readPolygon, 'geometry'),
-    'Style': makeObjectPropertySetter(readStyle),
-    'StyleMap': placemarkStyleMapParser,
-    'address': makeObjectPropertySetter(readString),
-    'description': makeObjectPropertySetter(readString),
-    'name': makeObjectPropertySetter(readString),
-    'open': makeObjectPropertySetter(readBoolean),
-    'phoneNumber': makeObjectPropertySetter(readString),
-    'styleUrl': makeObjectPropertySetter(readURI),
-    'visibility': makeObjectPropertySetter(readBoolean)
-  }, makeStructureNS(
-    GX_NAMESPACE_URIS, {
-      'MultiTrack': makeObjectPropertySetter(
-        readGxMultiTrack, 'geometry'),
-      'Track': makeObjectPropertySetter(
-        readGxTrack, 'geometry')
-    }
-  ));
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- * @return {Array.<module:ol/Feature>|undefined} Features.
- */
-KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
-  // FIXME use scope somehow
-  const parsersNS = makeStructureNS(
-    NAMESPACE_URIS, {
-      'Document': makeArrayExtender(this.readDocumentOrFolder_, this),
-      'Folder': makeArrayExtender(this.readDocumentOrFolder_, this),
-      'Placemark': makeArrayPusher(this.readPlacemark_, this),
-      'Style': this.readSharedStyle_.bind(this),
-      'StyleMap': this.readSharedStyleMap_.bind(this)
-    });
-  /** @type {Array.<module:ol/Feature>} */
-  const features = pushParseAndPop([], parsersNS, node, objectStack, this);
-  if (features) {
-    return features;
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- * @return {module:ol/Feature|undefined} Feature.
- */
-KML.prototype.readPlacemark_ = function(node, objectStack) {
-  const object = pushParseAndPop({'geometry': null},
-    PLACEMARK_PARSERS, node, objectStack);
-  if (!object) {
-    return undefined;
-  }
-  const feature = new Feature();
-  const id = node.getAttribute('id');
-  if (id !== null) {
-    feature.setId(id);
-  }
-  const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
-
-  const geometry = object['geometry'];
-  if (geometry) {
-    transformWithOptions(geometry, false, options);
-  }
-  feature.setGeometry(geometry);
-  delete object['geometry'];
-
-  if (this.extractStyles_) {
-    const style = object['Style'];
-    const styleUrl = object['styleUrl'];
-    const styleFunction = createFeatureStyleFunction(
-      style, styleUrl, this.defaultStyle_, this.sharedStyles_,
-      this.showPointNames_);
-    feature.setStyle(styleFunction);
-  }
-  delete object['Style'];
-  // we do not remove the styleUrl property from the object, so it
-  // gets stored on feature when setProperties is called
-
-  feature.setProperties(object);
-
-  return feature;
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- */
-KML.prototype.readSharedStyle_ = function(node, objectStack) {
-  const id = node.getAttribute('id');
-  if (id !== null) {
-    const style = readStyle(node, objectStack);
-    if (style) {
-      let styleUri;
-      let baseURI = node.baseURI;
-      if (!baseURI || baseURI == 'about:blank') {
-        baseURI = window.location.href;
-      }
-      if (baseURI) {
-        const url = new URL('#' + id, baseURI);
-        styleUri = url.href;
-      } else {
-        styleUri = '#' + id;
-      }
-      this.sharedStyles_[styleUri] = style;
-    }
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @private
- */
-KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
-  const id = node.getAttribute('id');
-  if (id === null) {
-    return;
-  }
-  const styleMapValue = readStyleMapValue(node, objectStack);
-  if (!styleMapValue) {
-    return;
-  }
-  let styleUri;
-  let baseURI = node.baseURI;
-  if (!baseURI || baseURI == 'about:blank') {
-    baseURI = window.location.href;
-  }
-  if (baseURI) {
-    const url = new URL('#' + id, baseURI);
-    styleUri = url.href;
-  } else {
-    styleUri = '#' + id;
-  }
-  this.sharedStyles_[styleUri] = styleMapValue;
-};
-
-
-/**
- * Read the first feature from a KML source. MultiGeometries are converted into
- * GeometryCollections if they are a mix of geometry types, and into MultiPoint/
- * MultiLineString/MultiPolygon if they are all of the same type.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature} Feature.
- * @api
- */
-KML.prototype.readFeature;
-
-
-/**
- * @inheritDoc
- */
-KML.prototype.readFeatureFromNode = function(node, opt_options) {
-  if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
-    return null;
-  }
-  const feature = this.readPlacemark_(
-    node, [this.getReadOptions(node, opt_options)]);
-  if (feature) {
-    return feature;
-  } else {
-    return null;
-  }
-};
-
-
-/**
- * Read all features from a KML source. MultiGeometries are converted into
- * GeometryCollections if they are a mix of geometry types, and into MultiPoint/
- * MultiLineString/MultiPolygon if they are all of the same type.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array.<module:ol/Feature>} Features.
- * @api
- */
-KML.prototype.readFeatures;
-
-
-/**
- * @inheritDoc
- */
-KML.prototype.readFeaturesFromNode = function(node, opt_options) {
-  if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
-    return [];
-  }
-  let features;
-  const localName = node.localName;
-  if (localName == 'Document' || localName == 'Folder') {
-    features = this.readDocumentOrFolder_(
-      node, [this.getReadOptions(node, opt_options)]);
-    if (features) {
-      return features;
-    } else {
-      return [];
-    }
-  } else if (localName == 'Placemark') {
-    const feature = this.readPlacemark_(
-      node, [this.getReadOptions(node, opt_options)]);
-    if (feature) {
-      return [feature];
-    } else {
-      return [];
-    }
-  } else if (localName == 'kml') {
-    features = [];
-    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-      const fs = this.readFeaturesFromNode(n, opt_options);
-      if (fs) {
-        extend(features, fs);
-      }
-    }
-    return features;
-  } else {
-    return [];
-  }
-};
-
-
-/**
- * Read the name of the KML.
- *
- * @param {Document|Node|string} source Source.
- * @return {string|undefined} Name.
- * @api
- */
-KML.prototype.readName = function(source) {
-  if (isDocument(source)) {
-    return this.readNameFromDocument(/** @type {Document} */ (source));
-  } else if (isNode(source)) {
-    return this.readNameFromNode(/** @type {Node} */ (source));
-  } else if (typeof source === 'string') {
-    const doc = parse(source);
-    return this.readNameFromDocument(doc);
-  } else {
-    return undefined;
-  }
-};
-
-
-/**
- * @param {Document} doc Document.
- * @return {string|undefined} Name.
- */
-KML.prototype.readNameFromDocument = function(doc) {
-  for (let n = doc.firstChild; n; n = n.nextSibling) {
-    if (n.nodeType == Node.ELEMENT_NODE) {
-      const name = this.readNameFromNode(n);
-      if (name) {
-        return name;
-      }
-    }
-  }
-  return undefined;
-};
-
-
-/**
- * @param {Node} node Node.
- * @return {string|undefined} Name.
- */
-KML.prototype.readNameFromNode = function(node) {
-  for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-    if (includes(NAMESPACE_URIS, n.namespaceURI) &&
-        n.localName == 'name') {
-      return readString(n);
-    }
-  }
-  for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-    const localName = n.localName;
-    if (includes(NAMESPACE_URIS, n.namespaceURI) &&
-        (localName == 'Document' ||
-         localName == 'Folder' ||
-         localName == 'Placemark' ||
-         localName == 'kml')) {
-      const name = this.readNameFromNode(n);
-      if (name) {
-        return name;
-      }
-    }
-  }
-  return undefined;
-};
-
-
-/**
- * Read the network links of the KML.
- *
- * @param {Document|Node|string} source Source.
- * @return {Array.<Object>} Network links.
- * @api
- */
-KML.prototype.readNetworkLinks = function(source) {
-  const networkLinks = [];
-  if (isDocument(source)) {
-    extend(networkLinks, this.readNetworkLinksFromDocument(
-      /** @type {Document} */ (source)));
-  } else if (isNode(source)) {
-    extend(networkLinks, this.readNetworkLinksFromNode(
-      /** @type {Node} */ (source)));
-  } else if (typeof source === 'string') {
-    const doc = parse(source);
-    extend(networkLinks, this.readNetworkLinksFromDocument(doc));
-  }
-  return networkLinks;
-};
-
-
-/**
- * @param {Document} doc Document.
- * @return {Array.<Object>} Network links.
- */
-KML.prototype.readNetworkLinksFromDocument = function(doc) {
-  const networkLinks = [];
-  for (let n = doc.firstChild; n; n = n.nextSibling) {
-    if (n.nodeType == Node.ELEMENT_NODE) {
-      extend(networkLinks, this.readNetworkLinksFromNode(n));
-    }
-  }
-  return networkLinks;
-};
-
-
-/**
- * @param {Node} node Node.
- * @return {Array.<Object>} Network links.
- */
-KML.prototype.readNetworkLinksFromNode = function(node) {
-  const networkLinks = [];
-  for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-    if (includes(NAMESPACE_URIS, n.namespaceURI) &&
-        n.localName == 'NetworkLink') {
-      const obj = pushParseAndPop({}, NETWORK_LINK_PARSERS,
-        n, []);
-      networkLinks.push(obj);
-    }
-  }
-  for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-    const localName = n.localName;
-    if (includes(NAMESPACE_URIS, n.namespaceURI) &&
-        (localName == 'Document' ||
-         localName == 'Folder' ||
-         localName == 'kml')) {
-      extend(networkLinks, this.readNetworkLinksFromNode(n));
-    }
-  }
-  return networkLinks;
-};
-
-
-/**
- * Read the regions of the KML.
- *
- * @param {Document|Node|string} source Source.
- * @return {Array.<Object>} Regions.
- * @api
- */
-KML.prototype.readRegion = function(source) {
-  const regions = [];
-  if (isDocument(source)) {
-    extend(regions, this.readRegionFromDocument(
-      /** @type {Document} */ (source)));
-  } else if (isNode(source)) {
-    extend(regions, this.readRegionFromNode(
-      /** @type {Node} */ (source)));
-  } else if (typeof source === 'string') {
-    const doc = parse(source);
-    extend(regions, this.readRegionFromDocument(doc));
-  }
-  return regions;
-};
-
-
-/**
- * @param {Document} doc Document.
- * @return {Array.<Object>} Region.
- */
-KML.prototype.readRegionFromDocument = function(doc) {
-  const regions = [];
-  for (let n = doc.firstChild; n; n = n.nextSibling) {
-    if (n.nodeType == Node.ELEMENT_NODE) {
-      extend(regions, this.readRegionFromNode(n));
-    }
-  }
-  return regions;
-};
-
-
-/**
- * @param {Node} node Node.
- * @return {Array.<Object>} Region.
- * @api
- */
-KML.prototype.readRegionFromNode = function(node) {
-  const regions = [];
-  for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-    if (includes(NAMESPACE_URIS, n.namespaceURI) &&
-        n.localName == 'Region') {
-      const obj = pushParseAndPop({}, REGION_PARSERS,
-        n, []);
-      regions.push(obj);
-    }
-  }
-  for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-    const localName = n.localName;
-    if (includes(NAMESPACE_URIS, n.namespaceURI) &&
-        (localName == 'Document' ||
-         localName == 'Folder' ||
-         localName == 'kml')) {
-      extend(regions, this.readRegionFromNode(n));
-    }
-  }
-  return regions;
-};
-
-
-/**
- * Read the projection from a KML source.
- *
- * @function
- * @param {Document|Node|Object|string} source Source.
- * @return {module:ol/proj/Projection} Projection.
- * @api
- */
-KML.prototype.readProjection;
 
 
 /**
@@ -2920,72 +2926,5 @@ function writeVec2(node, vec2) {
   node.setAttribute('yunits', vec2.yunits);
 }
 
-
-/**
- * @const
- * @type {Object.<string, Array.<string>>}
- */
-const KML_SEQUENCE = makeStructureNS(
-  NAMESPACE_URIS, [
-    'Document', 'Placemark'
-  ]);
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
- */
-const KML_SERIALIZERS = makeStructureNS(
-  NAMESPACE_URIS, {
-    'Document': makeChildAppender(writeDocument),
-    'Placemark': makeChildAppender(writePlacemark)
-  });
-
-
-/**
- * Encode an array of features in the KML format. GeometryCollections, MultiPoints,
- * MultiLineStrings, and MultiPolygons are output as MultiGeometries.
- *
- * @function
- * @param {Array.<module:ol/Feature>} features Features.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
- * @return {string} Result.
- * @api
- */
-KML.prototype.writeFeatures;
-
-
-/**
- * Encode an array of features in the KML format as an XML node. GeometryCollections,
- * MultiPoints, MultiLineStrings, and MultiPolygons are output as MultiGeometries.
- *
- * @param {Array.<module:ol/Feature>} features Features.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
- * @return {Node} Node.
- * @override
- * @api
- */
-KML.prototype.writeFeaturesNode = function(features, opt_options) {
-  opt_options = this.adaptOptions(opt_options);
-  const kml = createElementNS(NAMESPACE_URIS[4], 'kml');
-  const xmlnsUri = 'http://www.w3.org/2000/xmlns/';
-  kml.setAttributeNS(xmlnsUri, 'xmlns:gx', GX_NAMESPACE_URIS[0]);
-  kml.setAttributeNS(xmlnsUri, 'xmlns:xsi', XML_SCHEMA_INSTANCE_URI);
-  kml.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', SCHEMA_LOCATION);
-
-  const /** @type {module:ol/xml~NodeStackItem} */ context = {node: kml};
-  const properties = {};
-  if (features.length > 1) {
-    properties['Document'] = features;
-  } else if (features.length == 1) {
-    properties['Placemark'] = features[0];
-  }
-  const orderedKeys = KML_SEQUENCE[kml.namespaceURI];
-  const values = makeSequence(properties, orderedKeys);
-  pushSerializeAndPop(context, KML_SERIALIZERS,
-    OBJECT_PROPERTY_NODE_FACTORY, values, [opt_options], orderedKeys,
-    this);
-  return kml;
-};
 
 export default KML;

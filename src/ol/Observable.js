@@ -1,7 +1,6 @@
 /**
  * @module ol/Observable
  */
-import {inherits} from './util.js';
 import {listen, unlistenByKey, unlisten, listenOnce} from './events.js';
 import EventTarget from './events/EventTarget.js';
 import EventType from './events/EventType.js';
@@ -14,25 +13,102 @@ import EventType from './events/EventType.js';
  * and unregistration. A generic `change` event is always available through
  * {@link module:ol/Observable~Observable#changed}.
  *
- * @constructor
- * @extends {module:ol/events/EventTarget}
  * @fires module:ol/events/Event~Event
- * @struct
  * @api
  */
-const Observable = function() {
+class Observable extends EventTarget {
+  constructor() {
 
-  EventTarget.call(this);
+    super();
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.revision_ = 0;
+
+  }
 
   /**
-   * @private
-   * @type {number}
+   * Increases the revision counter and dispatches a 'change' event.
+   * @api
    */
-  this.revision_ = 0;
+  changed() {
+    ++this.revision_;
+    this.dispatchEvent(EventType.CHANGE);
+  }
 
-};
+  /**
+   * Get the version number for this object.  Each time the object is modified,
+   * its version number will be incremented.
+   * @return {number} Revision.
+   * @api
+   */
+  getRevision() {
+    return this.revision_;
+  }
 
-inherits(Observable, EventTarget);
+  /**
+   * Listen for a certain type of event.
+   * @param {string|Array.<string>} type The event type or array of event types.
+   * @param {function(?): ?} listener The listener function.
+   * @return {module:ol/events~EventsKey|Array.<module:ol/events~EventsKey>} Unique key for the listener. If
+   *     called with an array of event types as the first argument, the return
+   *     will be an array of keys.
+   * @api
+   */
+  on(type, listener) {
+    if (Array.isArray(type)) {
+      const len = type.length;
+      const keys = new Array(len);
+      for (let i = 0; i < len; ++i) {
+        keys[i] = listen(this, type[i], listener);
+      }
+      return keys;
+    } else {
+      return listen(this, /** @type {string} */ (type), listener);
+    }
+  }
+
+  /**
+   * Listen once for a certain type of event.
+   * @param {string|Array.<string>} type The event type or array of event types.
+   * @param {function(?): ?} listener The listener function.
+   * @return {module:ol/events~EventsKey|Array.<module:ol/events~EventsKey>} Unique key for the listener. If
+   *     called with an array of event types as the first argument, the return
+   *     will be an array of keys.
+   * @api
+   */
+  once(type, listener) {
+    if (Array.isArray(type)) {
+      const len = type.length;
+      const keys = new Array(len);
+      for (let i = 0; i < len; ++i) {
+        keys[i] = listenOnce(this, type[i], listener);
+      }
+      return keys;
+    } else {
+      return listenOnce(this, /** @type {string} */ (type), listener);
+    }
+  }
+
+  /**
+   * Unlisten for a certain type of event.
+   * @param {string|Array.<string>} type The event type or array of event types.
+   * @param {function(?): ?} listener The listener function.
+   * @api
+   */
+  un(type, listener) {
+    if (Array.isArray(type)) {
+      for (let i = 0, ii = type.length; i < ii; ++i) {
+        unlisten(this, type[i], listener);
+      }
+      return;
+    } else {
+      unlisten(this, /** @type {string} */ (type), listener);
+    }
+  }
+}
 
 
 /**
@@ -52,101 +128,4 @@ export function unByKey(key) {
 }
 
 
-/**
- * Increases the revision counter and dispatches a 'change' event.
- * @api
- */
-Observable.prototype.changed = function() {
-  ++this.revision_;
-  this.dispatchEvent(EventType.CHANGE);
-};
-
-
-/**
- * Dispatches an event and calls all listeners listening for events
- * of this type. The event parameter can either be a string or an
- * Object with a `type` property.
- *
- * @param {{type: string,
- *     target: (EventTarget|module:ol/events/EventTarget|undefined)}|
- *     module:ol/events/Event|string} event Event object.
- * @function
- * @api
- */
-Observable.prototype.dispatchEvent;
-
-
-/**
- * Get the version number for this object.  Each time the object is modified,
- * its version number will be incremented.
- * @return {number} Revision.
- * @api
- */
-Observable.prototype.getRevision = function() {
-  return this.revision_;
-};
-
-
-/**
- * Listen for a certain type of event.
- * @param {string|Array.<string>} type The event type or array of event types.
- * @param {function(?): ?} listener The listener function.
- * @return {module:ol/events~EventsKey|Array.<module:ol/events~EventsKey>} Unique key for the listener. If
- *     called with an array of event types as the first argument, the return
- *     will be an array of keys.
- * @api
- */
-Observable.prototype.on = function(type, listener) {
-  if (Array.isArray(type)) {
-    const len = type.length;
-    const keys = new Array(len);
-    for (let i = 0; i < len; ++i) {
-      keys[i] = listen(this, type[i], listener);
-    }
-    return keys;
-  } else {
-    return listen(this, /** @type {string} */ (type), listener);
-  }
-};
-
-
-/**
- * Listen once for a certain type of event.
- * @param {string|Array.<string>} type The event type or array of event types.
- * @param {function(?): ?} listener The listener function.
- * @return {module:ol/events~EventsKey|Array.<module:ol/events~EventsKey>} Unique key for the listener. If
- *     called with an array of event types as the first argument, the return
- *     will be an array of keys.
- * @api
- */
-Observable.prototype.once = function(type, listener) {
-  if (Array.isArray(type)) {
-    const len = type.length;
-    const keys = new Array(len);
-    for (let i = 0; i < len; ++i) {
-      keys[i] = listenOnce(this, type[i], listener);
-    }
-    return keys;
-  } else {
-    return listenOnce(this, /** @type {string} */ (type), listener);
-  }
-};
-
-
-/**
- * Unlisten for a certain type of event.
- * @param {string|Array.<string>} type The event type or array of event types.
- * @param {function(?): ?} listener The listener function.
- * @api
- */
-Observable.prototype.un = function(type, listener) {
-  if (Array.isArray(type)) {
-    for (let i = 0, ii = type.length; i < ii; ++i) {
-      unlisten(this, type[i], listener);
-    }
-    return;
-  } else {
-    unlisten(this, /** @type {string} */ (type), listener);
-  }
-};
 export default Observable;

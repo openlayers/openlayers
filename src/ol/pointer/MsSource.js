@@ -31,35 +31,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {inherits} from '../util.js';
 import EventSource from '../pointer/EventSource.js';
 
-/**
- * @param {module:ol/pointer/PointerEventHandler} dispatcher Event handler.
- * @constructor
- * @extends {module:ol/pointer/EventSource}
- */
-const MsSource = function(dispatcher) {
-  const mapping = {
-    'MSPointerDown': this.msPointerDown,
-    'MSPointerMove': this.msPointerMove,
-    'MSPointerUp': this.msPointerUp,
-    'MSPointerOut': this.msPointerOut,
-    'MSPointerOver': this.msPointerOver,
-    'MSPointerCancel': this.msPointerCancel,
-    'MSGotPointerCapture': this.msGotPointerCapture,
-    'MSLostPointerCapture': this.msLostPointerCapture
-  };
-  EventSource.call(this, dispatcher, mapping);
-
-  /**
-   * @const
-   * @type {!Object.<string, MSPointerEvent|Object>}
-   */
-  this.pointerMap = dispatcher.pointerMap;
-};
-
-inherits(MsSource, EventSource);
 
 /**
  * @const
@@ -73,122 +46,148 @@ const POINTER_TYPES = [
   'mouse'
 ];
 
-
-/**
- * Creates a copy of the original event that will be used
- * for the fake pointer event.
- *
- * @private
- * @param {MSPointerEvent} inEvent The in event.
- * @return {Object} The copied event.
- */
-MsSource.prototype.prepareEvent_ = function(inEvent) {
-  let e = inEvent;
-  if (typeof inEvent.pointerType === 'number') {
-    e = this.dispatcher.cloneEvent(inEvent, inEvent);
-    e.pointerType = POINTER_TYPES[inEvent.pointerType];
-  }
-
-  return e;
-};
-
-
-/**
- * Remove this pointer from the list of active pointers.
- * @param {number} pointerId Pointer identifier.
- */
-MsSource.prototype.cleanup = function(pointerId) {
-  delete this.pointerMap[pointerId.toString()];
-};
-
-
 /**
  * Handler for `msPointerDown`.
  *
+ * @this {module:ol/pointer/MsSource}
  * @param {MSPointerEvent} inEvent The in event.
  */
-MsSource.prototype.msPointerDown = function(inEvent) {
+function msPointerDown(inEvent) {
   this.pointerMap[inEvent.pointerId.toString()] = inEvent;
   const e = this.prepareEvent_(inEvent);
   this.dispatcher.down(e, inEvent);
-};
-
+}
 
 /**
  * Handler for `msPointerMove`.
  *
+ * @this {module:ol/pointer/MsSource}
  * @param {MSPointerEvent} inEvent The in event.
  */
-MsSource.prototype.msPointerMove = function(inEvent) {
+function msPointerMove(inEvent) {
   const e = this.prepareEvent_(inEvent);
   this.dispatcher.move(e, inEvent);
-};
-
+}
 
 /**
  * Handler for `msPointerUp`.
  *
+ * @this {module:ol/pointer/MsSource}
  * @param {MSPointerEvent} inEvent The in event.
  */
-MsSource.prototype.msPointerUp = function(inEvent) {
+function msPointerUp(inEvent) {
   const e = this.prepareEvent_(inEvent);
   this.dispatcher.up(e, inEvent);
   this.cleanup(inEvent.pointerId);
-};
-
+}
 
 /**
  * Handler for `msPointerOut`.
  *
+ * @this {module:ol/pointer/MsSource}
  * @param {MSPointerEvent} inEvent The in event.
  */
-MsSource.prototype.msPointerOut = function(inEvent) {
+function msPointerOut(inEvent) {
   const e = this.prepareEvent_(inEvent);
   this.dispatcher.leaveOut(e, inEvent);
-};
-
+}
 
 /**
  * Handler for `msPointerOver`.
  *
+ * @this {module:ol/pointer/MsSource}
  * @param {MSPointerEvent} inEvent The in event.
  */
-MsSource.prototype.msPointerOver = function(inEvent) {
+function msPointerOver(inEvent) {
   const e = this.prepareEvent_(inEvent);
   this.dispatcher.enterOver(e, inEvent);
-};
-
+}
 
 /**
  * Handler for `msPointerCancel`.
  *
+ * @this {module:ol/pointer/MsSource}
  * @param {MSPointerEvent} inEvent The in event.
  */
-MsSource.prototype.msPointerCancel = function(inEvent) {
+function msPointerCancel(inEvent) {
   const e = this.prepareEvent_(inEvent);
   this.dispatcher.cancel(e, inEvent);
   this.cleanup(inEvent.pointerId);
-};
-
+}
 
 /**
  * Handler for `msLostPointerCapture`.
  *
+ * @this {module:ol/pointer/MsSource}
  * @param {MSPointerEvent} inEvent The in event.
  */
-MsSource.prototype.msLostPointerCapture = function(inEvent) {
+function msLostPointerCapture(inEvent) {
   const e = this.dispatcher.makeEvent('lostpointercapture', inEvent, inEvent);
   this.dispatcher.dispatchEvent(e);
-};
-
+}
 
 /**
  * Handler for `msGotPointerCapture`.
  *
+ * @this {module:ol/pointer/MsSource}
  * @param {MSPointerEvent} inEvent The in event.
  */
-MsSource.prototype.msGotPointerCapture = function(inEvent) {
+function msGotPointerCapture(inEvent) {
   const e = this.dispatcher.makeEvent('gotpointercapture', inEvent, inEvent);
   this.dispatcher.dispatchEvent(e);
-};
+}
+
+class MsSource extends EventSource {
+
+  /**
+   * @param {module:ol/pointer/PointerEventHandler} dispatcher Event handler.
+   */
+  constructor(dispatcher) {
+    const mapping = {
+      'MSPointerDown': msPointerDown,
+      'MSPointerMove': msPointerMove,
+      'MSPointerUp': msPointerUp,
+      'MSPointerOut': msPointerOut,
+      'MSPointerOver': msPointerOver,
+      'MSPointerCancel': msPointerCancel,
+      'MSGotPointerCapture': msGotPointerCapture,
+      'MSLostPointerCapture': msLostPointerCapture
+    };
+    super(dispatcher, mapping);
+
+    /**
+     * @const
+     * @type {!Object.<string, MSPointerEvent|Object>}
+     */
+    this.pointerMap = dispatcher.pointerMap;
+  }
+
+  /**
+   * Creates a copy of the original event that will be used
+   * for the fake pointer event.
+   *
+   * @private
+   * @param {MSPointerEvent} inEvent The in event.
+   * @return {Object} The copied event.
+   */
+  prepareEvent_(inEvent) {
+    let e = inEvent;
+    if (typeof inEvent.pointerType === 'number') {
+      e = this.dispatcher.cloneEvent(inEvent, inEvent);
+      e.pointerType = POINTER_TYPES[inEvent.pointerType];
+    }
+
+    return e;
+  }
+
+  /**
+   * Remove this pointer from the list of active pointers.
+   * @param {number} pointerId Pointer identifier.
+   */
+  cleanup(pointerId) {
+    delete this.pointerMap[pointerId.toString()];
+  }
+
+}
+
 export default MsSource;

@@ -1,6 +1,7 @@
 /**
  * @module ol/events/Event
  */
+
 /**
  * @classdesc
  * Stripped down implementation of the W3C DOM Level 2 Event interface.
@@ -10,49 +11,53 @@
  * `stopPropagation` and `preventDefault` methods. It is meant as base class
  * for higher level events defined in the library, and works with
  * {@link module:ol/events/EventTarget~EventTarget}.
- *
- * @constructor
- * @param {string} type Type.
  */
-const Event = function(type) {
+class Event {
 
   /**
-   * @type {boolean}
+   * @param {string} type Type.
    */
-  this.propagationStopped;
+  constructor(type) {
 
-  /**
-   * The event type.
-   * @type {string}
-   * @api
-   */
-  this.type = type;
+    /**
+     * @type {boolean}
+     */
+    this.propagationStopped;
 
-  /**
-   * The event target.
-   * @type {Object}
-   * @api
-   */
-  this.target = null;
+    /**
+     * The event type.
+     * @type {string}
+     * @api
+     */
+    this.type = type;
 
-};
-
-
-/**
- * Stop event propagation.
- * @function
- * @api
- */
-Event.prototype.preventDefault =
+    /**
+     * The event target.
+     * @type {Object}
+     * @api
+     */
+    this.target = null;
+  }
 
   /**
    * Stop event propagation.
    * @function
    * @api
    */
-  Event.prototype.stopPropagation = function() {
+  preventDefault() {
     this.propagationStopped = true;
-  };
+  }
+
+  /**
+   * Stop event propagation.
+   * @function
+   * @api
+   */
+  stopPropagation() {
+    this.propagationStopped = true;
+  }
+
+}
 
 
 /**

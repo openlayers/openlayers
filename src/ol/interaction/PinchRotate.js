@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/PinchRotate
  */
-import {inherits} from '../util.js';
 import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
 import {rotate, rotateWithoutConstraints} from '../interaction/Interaction.js';
@@ -21,61 +20,62 @@ import {disable} from '../rotationconstraint.js';
  * @classdesc
  * Allows the user to rotate the map by twisting with two fingers
  * on a touch screen.
- *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
- * @param {module:ol/interaction/PinchRotate~Options=} opt_options Options.
- * @api
  */
-const PinchRotate = function(opt_options) {
-
-  PointerInteraction.call(this, {
-    handleDownEvent: handleDownEvent,
-    handleDragEvent: handleDragEvent,
-    handleUpEvent: handleUpEvent
-  });
-
-  const options = opt_options || {};
-
+class PinchRotate extends PointerInteraction {
   /**
-   * @private
-   * @type {module:ol/coordinate~Coordinate}
+   * @param {module:ol/interaction/PinchRotate~Options=} opt_options Options.
+   * @api
    */
-  this.anchor_ = null;
+  constructor(opt_options) {
 
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.lastAngle_ = undefined;
+    super({
+      handleDownEvent: handleDownEvent,
+      handleDragEvent: handleDragEvent,
+      handleUpEvent: handleUpEvent,
+      stopDown: FALSE
+    });
 
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.rotating_ = false;
+    const options = opt_options || {};
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.rotationDelta_ = 0.0;
+    /**
+     * @private
+     * @type {module:ol/coordinate~Coordinate}
+     */
+    this.anchor_ = null;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.threshold_ = options.threshold !== undefined ? options.threshold : 0.3;
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.lastAngle_ = undefined;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.duration_ = options.duration !== undefined ? options.duration : 250;
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.rotating_ = false;
 
-};
+    /**
+     * @private
+     * @type {number}
+     */
+    this.rotationDelta_ = 0.0;
 
-inherits(PinchRotate, PointerInteraction);
+    /**
+     * @private
+     * @type {number}
+     */
+    this.threshold_ = options.threshold !== undefined ? options.threshold : 0.3;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.duration_ = options.duration !== undefined ? options.duration : 250;
+
+  }
+
+}
 
 
 /**
@@ -169,11 +169,5 @@ function handleDownEvent(mapBrowserEvent) {
     return false;
   }
 }
-
-
-/**
- * @inheritDoc
- */
-PinchRotate.prototype.shouldStopEvent = FALSE;
 
 export default PinchRotate;

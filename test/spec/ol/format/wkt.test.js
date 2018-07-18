@@ -710,8 +710,14 @@ describe('ol.format.WKT', function() {
   });
 
   it('Empty geometries read / written correctly', function() {
+    const wkt = 'POINT EMPTY';
+    const geom = format.readGeometry(wkt);
+    const coordinates = geom.getCoordinates();
+    expect(coordinates.length).to.be(2);
+    expect(isNaN(coordinates[0])).to.be(true);
+    expect(isNaN(coordinates[1])).to.be(true);
     const wkts = [
-      'POINT', 'LINESTRING', 'POLYGON', 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON'
+      'LINESTRING', 'POLYGON', 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON'
     ];
     for (let i = 0, ii = wkts.length; i < ii; ++i) {
       const wkt = wkts[i] + ' EMPTY';

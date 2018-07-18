@@ -7,7 +7,7 @@ import buble from 'rollup-plugin-buble';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 
 export default {
-  input: 'src/index.js',
+  input: 'build/index.js',
   output: [
     {file: 'build/ol.js', format: 'iife', sourcemap: true}
   ],

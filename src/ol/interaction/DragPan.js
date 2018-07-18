@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/DragPan
  */
-import {inherits} from '../util.js';
 import ViewHint from '../ViewHint.js';
 import {scale as scaleCoordinate, rotate as rotateCoordinate, add as addCoordinate} from '../coordinate.js';
 import {easeOut} from '../easing.js';
@@ -22,53 +21,54 @@ import PointerInteraction, {centroid as centroidFromPointers} from '../interacti
 /**
  * @classdesc
  * Allows the user to pan the map by dragging the map.
- *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
- * @param {module:ol/interaction/DragPan~Options=} opt_options Options.
- * @api
  */
-const DragPan = function(opt_options) {
-
-  PointerInteraction.call(this, {
-    handleDownEvent: handleDownEvent,
-    handleDragEvent: handleDragEvent,
-    handleUpEvent: handleUpEvent
-  });
-
-  const options = opt_options ? opt_options : {};
-
+class DragPan extends PointerInteraction {
   /**
-   * @private
-   * @type {module:ol/Kinetic|undefined}
+   * @param {module:ol/interaction/DragPan~Options=} opt_options Options.
+   * @api
    */
-  this.kinetic_ = options.kinetic;
+  constructor(opt_options) {
 
-  /**
-   * @type {module:ol~Pixel}
-   */
-  this.lastCentroid = null;
+    super({
+      handleDownEvent: handleDownEvent,
+      handleDragEvent: handleDragEvent,
+      handleUpEvent: handleUpEvent,
+      stopDown: FALSE
+    });
 
-  /**
-   * @type {number}
-   */
-  this.lastPointersCount_;
+    const options = opt_options ? opt_options : {};
 
-  /**
-   * @private
-   * @type {module:ol/events/condition~Condition}
-   */
-  this.condition_ = options.condition ? options.condition : noModifierKeys;
+    /**
+     * @private
+     * @type {module:ol/Kinetic|undefined}
+     */
+    this.kinetic_ = options.kinetic;
 
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.noKinetic_ = false;
+    /**
+     * @type {module:ol~Pixel}
+     */
+    this.lastCentroid = null;
 
-};
+    /**
+     * @type {number}
+     */
+    this.lastPointersCount_;
 
-inherits(DragPan, PointerInteraction);
+    /**
+     * @private
+     * @type {module:ol/events/condition~Condition}
+     */
+    this.condition_ = options.condition ? options.condition : noModifierKeys;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.noKinetic_ = false;
+
+  }
+
+}
 
 
 /**
@@ -172,8 +172,4 @@ function handleDownEvent(mapBrowserEvent) {
 }
 
 
-/**
- * @inheritDoc
- */
-DragPan.prototype.shouldStopEvent = FALSE;
 export default DragPan;

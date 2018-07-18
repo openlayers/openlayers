@@ -1,7 +1,6 @@
 /**
  * @module ol/interaction/PinchZoom
  */
-import {inherits} from '../util.js';
 import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
 import {zoom, zoomWithoutConstraints} from '../interaction/Interaction.js';
@@ -20,55 +19,56 @@ import PointerInteraction, {centroid as centroidFromPointers} from '../interacti
  * @classdesc
  * Allows the user to zoom the map by pinching with two fingers
  * on a touch screen.
- *
- * @constructor
- * @extends {module:ol/interaction/Pointer}
- * @param {module:ol/interaction/PinchZoom~Options=} opt_options Options.
- * @api
  */
-const PinchZoom = function(opt_options) {
-
-  PointerInteraction.call(this, {
-    handleDownEvent: handleDownEvent,
-    handleDragEvent: handleDragEvent,
-    handleUpEvent: handleUpEvent
-  });
-
-  const options = opt_options ? opt_options : {};
-
+class PinchZoom extends PointerInteraction {
   /**
-   * @private
-   * @type {boolean}
+   * @param {module:ol/interaction/PinchZoom~Options=} opt_options Options.
+   * @api
    */
-  this.constrainResolution_ = options.constrainResolution || false;
+  constructor(opt_options) {
 
-  /**
-   * @private
-   * @type {module:ol/coordinate~Coordinate}
-   */
-  this.anchor_ = null;
+    super({
+      handleDownEvent: handleDownEvent,
+      handleDragEvent: handleDragEvent,
+      handleUpEvent: handleUpEvent,
+      stopDown: FALSE
+    });
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.duration_ = options.duration !== undefined ? options.duration : 400;
+    const options = opt_options ? opt_options : {};
 
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.lastDistance_ = undefined;
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.constrainResolution_ = options.constrainResolution || false;
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.lastScaleDelta_ = 1;
+    /**
+     * @private
+     * @type {module:ol/coordinate~Coordinate}
+     */
+    this.anchor_ = null;
 
-};
+    /**
+     * @private
+     * @type {number}
+     */
+    this.duration_ = options.duration !== undefined ? options.duration : 400;
 
-inherits(PinchZoom, PointerInteraction);
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.lastDistance_ = undefined;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.lastScaleDelta_ = 1;
+
+  }
+
+}
 
 
 /**
@@ -170,9 +170,4 @@ function handleDownEvent(mapBrowserEvent) {
   }
 }
 
-
-/**
- * @inheritDoc
- */
-PinchZoom.prototype.shouldStopEvent = FALSE;
 export default PinchZoom;

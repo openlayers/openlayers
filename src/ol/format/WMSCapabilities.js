@@ -1,33 +1,11 @@
 /**
  * @module ol/format/WMSCapabilities
  */
-import {inherits} from '../util.js';
 import {readHref} from '../format/XLink.js';
 import XML from '../format/XML.js';
 import {readDecimalString, readString, readNonNegativeInteger, readDecimal, readBooleanString, readNonNegativeIntegerString} from '../format/xsd.js';
 import {makeArrayPusher, makeObjectPropertyPusher, makeObjectPropertySetter,
   makeStructureNS, pushParseAndPop} from '../xml.js';
-
-
-/**
- * @classdesc
- * Format for reading WMS capabilities data
- *
- * @constructor
- * @extends {module:ol/format/XML}
- * @api
- */
-const WMSCapabilities = function() {
-
-  XML.call(this);
-
-  /**
-   * @type {string|undefined}
-   */
-  this.version = undefined;
-};
-
-inherits(WMSCapabilities, XML);
 
 
 /**
@@ -61,6 +39,47 @@ const CAPABILITY_PARSERS = makeStructureNS(
     'Exception': makeObjectPropertySetter(readException),
     'Layer': makeObjectPropertySetter(readCapabilityLayer)
   });
+
+
+/**
+ * @classdesc
+ * Format for reading WMS capabilities data
+ *
+ * @api
+ */
+class WMSCapabilities extends XML {
+  constructor() {
+    super();
+
+    /**
+     * @type {string|undefined}
+     */
+    this.version = undefined;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readFromDocument(doc) {
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
+      if (n.nodeType == Node.ELEMENT_NODE) {
+        return this.readFromNode(n);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  readFromNode(node) {
+    this.version = node.getAttribute('version').trim();
+    const wmsCapabilityObject = pushParseAndPop({
+      'version': this.version
+    }, PARSERS, node, []);
+    return wmsCapabilityObject ? wmsCapabilityObject : null;
+  }
+}
 
 
 /**
@@ -264,42 +283,6 @@ const KEYWORDLIST_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'Keyword': makeArrayPusher(readString)
   });
-
-
-/**
- * Read a WMS capabilities document.
- *
- * @function
- * @param {Document|Node|string} source The XML source.
- * @return {Object} An object representing the WMS capabilities.
- * @api
- */
-WMSCapabilities.prototype.read;
-
-
-/**
- * @inheritDoc
- */
-WMSCapabilities.prototype.readFromDocument = function(doc) {
-  for (let n = doc.firstChild; n; n = n.nextSibling) {
-    if (n.nodeType == Node.ELEMENT_NODE) {
-      return this.readFromNode(n);
-    }
-  }
-  return null;
-};
-
-
-/**
- * @inheritDoc
- */
-WMSCapabilities.prototype.readFromNode = function(node) {
-  this.version = node.getAttribute('version').trim();
-  const wmsCapabilityObject = pushParseAndPop({
-    'version': this.version
-  }, PARSERS, node, []);
-  return wmsCapabilityObject ? wmsCapabilityObject : null;
-};
 
 
 /**

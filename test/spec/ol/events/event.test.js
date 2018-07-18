@@ -19,9 +19,9 @@ describe('ol.events.Event', function() {
       event.preventDefault();
       expect(event.propagationStopped).to.be(true);
     });
-    it('is the same as #stopPropagation', function() {
+    it('does the same as #stopPropagation', function() {
       const event = new Event('foo');
-      expect(event.stopPropagation).to.equal(event.preventDefault);
+      expect(event.stopPropagation()).to.equal(event.preventDefault());
     });
   });
 

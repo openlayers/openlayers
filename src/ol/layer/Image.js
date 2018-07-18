@@ -1,7 +1,6 @@
 /**
  * @module ol/layer/Image
  */
-import {inherits} from '../util.js';
 import LayerType from '../LayerType.js';
 import Layer from '../layer/Layer.js';
 
@@ -26,34 +25,34 @@ import Layer from '../layer/Layer.js';
  */
 
 
-/**
- * @classdesc
- * Server-rendered images that are available for arbitrary extents and
- * resolutions.
- * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
- * property on the layer object; for example, setting `title: 'My Title'` in the
- * options means that `title` is observable, and has get/set accessors.
- *
- * @constructor
- * @extends {module:ol/layer/Layer}
- * @fires module:ol/render/Event~RenderEvent
- * @param {module:ol/layer/Image~Options=} opt_options Layer options.
- * @api
- */
-const ImageLayer = function(opt_options) {
-  const options = opt_options ? opt_options : {};
-  Layer.call(this,  /** @type {module:ol/layer/Layer~Options} */ (options));
+class ImageLayer extends Layer {
 
   /**
-   * The layer type.
-   * @protected
-   * @type {module:ol/LayerType}
+   * @classdesc
+   * Server-rendered images that are available for arbitrary extents and
+   * resolutions.
+   * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
+   * property on the layer object; for example, setting `title: 'My Title'` in the
+   * options means that `title` is observable, and has get/set accessors.
+   *
+   * @fires module:ol/render/Event~RenderEvent
+   * @param {module:ol/layer/Image~Options=} opt_options Layer options.
+   * @api
    */
-  this.type = LayerType.IMAGE;
+  constructor(opt_options) {
+    const options = opt_options ? opt_options : {};
+    super(options);
 
-};
+    /**
+     * The layer type.
+     * @protected
+     * @type {module:ol/LayerType}
+     */
+    this.type = LayerType.IMAGE;
 
-inherits(ImageLayer, Layer);
+  }
+
+}
 
 
 /**

@@ -22,6 +22,7 @@
  * @param {!Function} childCtor Child constructor.
  * @param {!Function} parentCtor Parent constructor.
  * @function module:ol.inherits
+ * @deprecated
  * @api
  */
 export function inherits(childCtor, parentCtor) {
@@ -52,4 +53,4 @@ export function getUid(obj) {
  * OpenLayers version.
  * @type {string}
  */
-export const VERSION = '5.0.3';
+export const VERSION = 'latest';

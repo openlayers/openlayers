@@ -1,7 +1,6 @@
 /**
  * @module ol/proj/epsg3857
  */
-import {inherits} from '../util.js';
 import {cosh} from '../math.js';
 import Projection from '../proj/Projection.js';
 import Units from '../proj/Units.js';
@@ -43,24 +42,27 @@ export const WORLD_EXTENT = [-180, -85, 180, 85];
 /**
  * @classdesc
  * Projection object for web/spherical Mercator (EPSG:3857).
- *
- * @constructor
- * @extends {module:ol/proj/Projection}
- * @param {string} code Code.
  */
-function EPSG3857Projection(code) {
-  Projection.call(this, {
-    code: code,
-    units: Units.METERS,
-    extent: EXTENT,
-    global: true,
-    worldExtent: WORLD_EXTENT,
-    getPointResolution: function(resolution, point) {
-      return resolution / cosh(point[1] / RADIUS);
-    }
-  });
+class EPSG3857Projection extends Projection {
+
+  /**
+   * @param {string} code Code.
+   */
+  constructor(code) {
+    super({
+      code: code,
+      units: Units.METERS,
+      extent: EXTENT,
+      global: true,
+      worldExtent: WORLD_EXTENT,
+      getPointResolution: function(resolution, point) {
+        return resolution / cosh(point[1] / RADIUS);
+      }
+    });
+
+  }
+
 }
-inherits(EPSG3857Projection, Projection);
 
 
 /**

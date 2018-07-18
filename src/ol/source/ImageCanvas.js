@@ -1,7 +1,7 @@
 /**
  * @module ol/source/ImageCanvas
  */
-import {inherits} from '../util.js';
+
 import ImageCanvas from '../ImageCanvas.js';
 import {containsExtent, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import ImageSource from '../source/Image.js';
@@ -42,83 +42,82 @@ import ImageSource from '../source/Image.js';
  */
 
 
-/**
- * @classdesc
- * Base class for image sources where a canvas element is the image.
- *
- * @constructor
- * @extends {module:ol/source/Image}
- * @param {module:ol/source/ImageCanvas~Options=} options ImageCanvas options.
- * @api
- */
-const ImageCanvasSource = function(options) {
+class ImageCanvasSource extends ImageSource {
+  /**
+   * @classdesc
+   * Base class for image sources where a canvas element is the image.
+   *
+   * @param {module:ol/source/ImageCanvas~Options=} options ImageCanvas options.
+   * @api
+   */
+  constructor(options) {
 
-  ImageSource.call(this, {
-    attributions: options.attributions,
-    projection: options.projection,
-    resolutions: options.resolutions,
-    state: options.state
-  });
+    super({
+      attributions: options.attributions,
+      projection: options.projection,
+      resolutions: options.resolutions,
+      state: options.state
+    });
+
+    /**
+    * @private
+    * @type {module:ol/source/ImageCanvas~FunctionType}
+    */
+    this.canvasFunction_ = options.canvasFunction;
+
+    /**
+    * @private
+    * @type {module:ol/ImageCanvas}
+    */
+    this.canvas_ = null;
+
+    /**
+    * @private
+    * @type {number}
+    */
+    this.renderedRevision_ = 0;
+
+    /**
+    * @private
+    * @type {number}
+    */
+    this.ratio_ = options.ratio !== undefined ?
+      options.ratio : 1.5;
+
+  }
 
   /**
-   * @private
-   * @type {module:ol/source/ImageCanvas~FunctionType}
-   */
-  this.canvasFunction_ = options.canvasFunction;
+  * @inheritDoc
+  */
+  getImageInternal(extent, resolution, pixelRatio, projection) {
+    resolution = this.findNearestResolution(resolution);
 
-  /**
-   * @private
-   * @type {module:ol/ImageCanvas}
-   */
-  this.canvas_ = null;
+    let canvas = this.canvas_;
+    if (canvas &&
+       this.renderedRevision_ == this.getRevision() &&
+       canvas.getResolution() == resolution &&
+       canvas.getPixelRatio() == pixelRatio &&
+       containsExtent(canvas.getExtent(), extent)) {
+      return canvas;
+    }
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.renderedRevision_ = 0;
+    extent = extent.slice();
+    scaleFromCenter(extent, this.ratio_);
+    const width = getWidth(extent) / resolution;
+    const height = getHeight(extent) / resolution;
+    const size = [width * pixelRatio, height * pixelRatio];
 
-  /**
-   * @private
-   * @type {number}
-   */
-  this.ratio_ = options.ratio !== undefined ?
-    options.ratio : 1.5;
+    const canvasElement = this.canvasFunction_(
+      extent, resolution, pixelRatio, size, projection);
+    if (canvasElement) {
+      canvas = new ImageCanvas(extent, resolution, pixelRatio, canvasElement);
+    }
+    this.canvas_ = canvas;
+    this.renderedRevision_ = this.getRevision();
 
-};
-
-inherits(ImageCanvasSource, ImageSource);
-
-
-/**
- * @inheritDoc
- */
-ImageCanvasSource.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
-  resolution = this.findNearestResolution(resolution);
-
-  let canvas = this.canvas_;
-  if (canvas &&
-      this.renderedRevision_ == this.getRevision() &&
-      canvas.getResolution() == resolution &&
-      canvas.getPixelRatio() == pixelRatio &&
-      containsExtent(canvas.getExtent(), extent)) {
     return canvas;
   }
+}
 
-  extent = extent.slice();
-  scaleFromCenter(extent, this.ratio_);
-  const width = getWidth(extent) / resolution;
-  const height = getHeight(extent) / resolution;
-  const size = [width * pixelRatio, height * pixelRatio];
 
-  const canvasElement = this.canvasFunction_(
-    extent, resolution, pixelRatio, size, projection);
-  if (canvasElement) {
-    canvas = new ImageCanvas(extent, resolution, pixelRatio, canvasElement);
-  }
-  this.canvas_ = canvas;
-  this.renderedRevision_ = this.getRevision();
-
-  return canvas;
-};
 export default ImageCanvasSource;
