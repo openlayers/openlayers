@@ -83,6 +83,15 @@ const TokenType = {
   EOF: 6
 };
 
+/**
+ * @const
+ * @type {Object.<string, string>}
+ */
+const WKTGeometryType = {};
+for (const type in GeometryType) {
+  WKTGeometryType[type] = GeometryType[type].toUpperCase();
+}
+
 
 /**
  * Class to tokenize a WKT string.
@@ -533,7 +542,7 @@ class Parser {
     if (this.match(TokenType.TEXT)) {
       const geomType = token.value;
       this.layout_ = this.parseGeometryLayout_();
-      if (geomType == GeometryType.GEOMETRY_COLLECTION.toUpperCase()) {
+      if (geomType == 'GEOMETRYCOLLECTION') {
         const geometries = this.parseGeometryCollectionText_();
         return new GeometryCollection(geometries);
       } else {
@@ -544,28 +553,28 @@ class Parser {
 
         let coordinates;
         switch (geomType) {
-          case GeometryType.POINT: {
+          case 'POINT': {
             coordinates = this.parsePointText_();
             break;
           }
-          case GeometryType.LINESTRING: {
+          case 'LINESTRING': {
             coordinates = this.parseLineStringText_();
             break;
           }
-          case GeometryType.POLYGON: {
-            coordinates = Parser.prototype.parsePolygonText_();
+          case 'POLYGON': {
+            coordinates = this.parsePolygonText_();
             break;
           }
-          case GeometryType.MULTIPOINT: {
-            coordinates = Parser.prototype.parseMultiPointText_();
+          case 'MULTIPOINT': {
+            coordinates = this.parseMultiPointText_();
             break;
           }
-          case GeometryType.MULTILINESTRING: {
-            coordinates = Parser.prototype.parseMultiLineStringText_();
+          case 'MULTILINESTRING': {
+            coordinates = this.parseMultiLineStringText_();
             break;
           }
-          case GeometryType.MULTIPOLYGON: {
-            coordinates = Parser.prototype.parseMultiPolygonText_();
+          case 'MULTIPOLYGON': {
+            coordinates = this.parseMultiPolygonText_();
             break;
           }
           default: {
@@ -574,7 +583,7 @@ class Parser {
         }
 
         if (!coordinates) {
-          if (ctor === GeometryConstructor[GeometryType.POINT]) {
+          if (ctor === GeometryConstructor['POINT']) {
             coordinates = [NaN, NaN];
           } else {
             coordinates = [];
