@@ -57,7 +57,25 @@ class RegularShape extends ImageStyle {
    * @api
    */
   constructor(options) {
-    super();
+    /**
+     * @type {boolean}
+     */
+    const snapToPixel = options.snapToPixel !== undefined ?
+      options.snapToPixel : true;
+
+    /**
+     * @type {boolean}
+     */
+    const rotateWithView = options.rotateWithView !== undefined ?
+      options.rotateWithView : false;
+
+    super({
+      opacity: 1,
+      rotateWithView: rotateWithView,
+      rotation: options.rotation !== undefined ? options.rotation : 0,
+      scale: 1,
+      snapToPixel: snapToPixel
+    });
 
     /**
      * @private
@@ -152,25 +170,6 @@ class RegularShape extends ImageStyle {
 
     this.render_(this.atlasManager_);
 
-    /**
-     * @type {boolean}
-     */
-    const snapToPixel = options.snapToPixel !== undefined ?
-      options.snapToPixel : true;
-
-    /**
-     * @type {boolean}
-     */
-    const rotateWithView = options.rotateWithView !== undefined ?
-      options.rotateWithView : false;
-
-    super({
-      opacity: 1,
-      rotateWithView: rotateWithView,
-      rotation: options.rotation !== undefined ? options.rotation : 0,
-      scale: 1,
-      snapToPixel: snapToPixel
-    });
   }
 
   /**
