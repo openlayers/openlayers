@@ -29,6 +29,7 @@ class WebGLContext extends Disposable {
    * @param {WebGLRenderingContext} gl GL.
    */
   constructor(canvas, gl) {
+    super();
 
     /**
      * @private
