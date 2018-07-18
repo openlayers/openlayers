@@ -35,6 +35,8 @@ class AssertionError extends Error {
      */
     this.name = 'AssertionError';
 
+    // Re-assign message, see https://github.com/Rich-Harris/buble/issues/40
+    this.message = message;
   }
 
 }

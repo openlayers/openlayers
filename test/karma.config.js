@@ -60,7 +60,17 @@ module.exports = function(karma) {
     reporters: ['progress'],
     webpack: {
       devtool: 'inline-source-map',
-      mode: 'development'
+      mode: 'development',
+      module: {
+        rules: [
+          {
+            test: /\.js$/,
+            use: {
+              loader: 'buble-loader'
+            }
+          }
+        ]
+      }
     },
     webpackMiddleware: {
       noInfo: true
