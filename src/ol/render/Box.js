@@ -10,51 +10,52 @@ class RenderBox extends Disposable {
    * @param {string} className CSS class name.
    */
   constructor(className) {
+    super();
 
     /**
-    * @type {module:ol/geom/Polygon}
-    * @private
-    */
+     * @type {module:ol/geom/Polygon}
+     * @private
+     */
     this.geometry_ = null;
 
     /**
-    * @type {HTMLDivElement}
-    * @private
-    */
+     * @type {HTMLDivElement}
+     * @private
+     */
     this.element_ = /** @type {HTMLDivElement} */ (document.createElement('div'));
     this.element_.style.position = 'absolute';
     this.element_.className = 'ol-box ' + className;
 
     /**
-    * @private
-    * @type {module:ol/PluggableMap}
-    */
+     * @private
+     * @type {module:ol/PluggableMap}
+     */
     this.map_ = null;
 
     /**
-    * @private
-    * @type {module:ol~Pixel}
-    */
+     * @private
+     * @type {module:ol~Pixel}
+     */
     this.startPixel_ = null;
 
     /**
-    * @private
-    * @type {module:ol~Pixel}
-    */
+     * @private
+     * @type {module:ol~Pixel}
+     */
     this.endPixel_ = null;
 
   }
 
   /**
-  * @inheritDoc
-  */
+   * @inheritDoc
+   */
   disposeInternal() {
     this.setMap(null);
   }
 
   /**
-  * @private
-  */
+   * @private
+   */
   render_() {
     const startPixel = this.startPixel_;
     const endPixel = this.endPixel_;
@@ -67,8 +68,8 @@ class RenderBox extends Disposable {
   }
 
   /**
-  * @param {module:ol/PluggableMap} map Map.
-  */
+   * @param {module:ol/PluggableMap} map Map.
+   */
   setMap(map) {
     if (this.map_) {
       this.map_.getOverlayContainer().removeChild(this.element_);
@@ -82,9 +83,9 @@ class RenderBox extends Disposable {
   }
 
   /**
-  * @param {module:ol~Pixel} startPixel Start pixel.
-  * @param {module:ol~Pixel} endPixel End pixel.
-  */
+   * @param {module:ol~Pixel} startPixel Start pixel.
+   * @param {module:ol~Pixel} endPixel End pixel.
+   */
   setPixels(startPixel, endPixel) {
     this.startPixel_ = startPixel;
     this.endPixel_ = endPixel;
@@ -93,8 +94,8 @@ class RenderBox extends Disposable {
   }
 
   /**
-  * Creates or updates the cached geometry.
-  */
+   * Creates or updates the cached geometry.
+   */
   createOrUpdateGeometry() {
     const startPixel = this.startPixel_;
     const endPixel = this.endPixel_;
@@ -115,8 +116,8 @@ class RenderBox extends Disposable {
   }
 
   /**
-  * @return {module:ol/geom/Polygon} Geometry.
-  */
+   * @return {module:ol/geom/Polygon} Geometry.
+   */
   getGeometry() {
     return this.geometry_;
   }
