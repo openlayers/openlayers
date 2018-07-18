@@ -296,7 +296,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       expect(renderer.replayGroupChanged).to.be(false);
     });
 
-    it.only('dispatches a render event when rendering to own context', function(done) {
+    it('dispatches a render event when rendering to own context', function(done) {
       const layer = renderer.getLayer();
       layer.getSource().addFeature(new Feature(new Point([0, 0])));
       layer.once('render', function() {
