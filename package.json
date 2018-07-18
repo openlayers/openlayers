@@ -16,9 +16,10 @@
     "karma": "karma start test/karma.config.js",
     "serve-examples": "webpack-dev-server --config examples/webpack/config.js --mode development --watch",
     "build-examples": "webpack --config examples/webpack/config.js --mode production",
-    "build-package": "npm run transpile && node tasks/prepare-package",
+    "build-package": "npm run transpile && npm run copy-css && node tasks/prepare-package",
     "build-index": "npm run build-package && node tasks/generate-index",
     "build-legacy": "rm -rf build && npm run build-index && rollup --config config/rollup.js && cleancss --source-map src/ol/ol.css -o build/ol.css",
+    "copy-css": "cp src/ol/ol.css build/ol/ol.css",
     "transpile": "rm -rf build/ol && mkdir -p build && buble --input src/ol --output build/ol --no modules --sourcemap",
     "apidoc": "jsdoc config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -P package.json -d build/apidoc"
   },
