@@ -266,7 +266,7 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
 
       const imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
       if (imageData[3] > 0) {
-        return callback.call(thisArg, this.getLayer(),  imageData);
+        return callback.call(thisArg, this.getLayer(), imageData);
       } else {
         return undefined;
       }

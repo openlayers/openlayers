@@ -25,7 +25,7 @@ export function clamp(value, min, max) {
  * @param {number} x X.
  * @return {number} Hyperbolic cosine of x.
  */
-export const cosh  = (function() {
+export const cosh = (function() {
   // Wrapped in a iife, to save the overhead of checking for the native
   // implementation on every invocation.
   let cosh;

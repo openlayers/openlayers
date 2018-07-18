@@ -266,7 +266,7 @@ class CanvasTextReplay extends CanvasReplay {
       const textState = this.textStates[textKey] || this.textState_;
       const pixelRatio = this.pixelRatio;
       const scale = textState.scale * pixelRatio;
-      const align =  TEXT_ALIGN[textState.textAlign || defaultTextAlign];
+      const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
       const strokeWidth = strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
       const lines = text.split('\n');

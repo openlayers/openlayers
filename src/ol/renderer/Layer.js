@@ -10,7 +10,7 @@ import EventType from '../events/EventType.js';
 import {FALSE, UNDEFINED} from '../functions.js';
 import SourceState from '../source/State.js';
 
-class LayerRenderer  extends Observable {
+class LayerRenderer extends Observable {
 
   /**
    * @param {module:ol/layer/Layer} layer Layer.

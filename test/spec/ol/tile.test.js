@@ -5,7 +5,7 @@ import TileState from '../../../src/ol/TileState.js';
 
 
 describe('ol.Tile', function() {
-  describe('constructor', function()  {
+  describe('constructor', function() {
     it('sets a default transition', function() {
       const coord = [0, 0, 0];
       const tile = new Tile(coord, TileState.IDLE);
@@ -72,7 +72,7 @@ describe('ol.Tile', function() {
       tail = addToChain(tail, TileState.IDLE); //discard, deprecated by head
       tail = addToChain(tail, TileState.LOADED); //keep, use for rendering
       renderTile = tail; //store this tile for later tests
-      tail = addToChain(tail, TileState.IDLE);  //rest of list outdated by tile above
+      tail = addToChain(tail, TileState.IDLE); //rest of list outdated by tile above
       tail = addToChain(tail, TileState.LOADED);
       tail = addToChain(tail, TileState.LOADING);
       tail = addToChain(tail, TileState.LOADED);

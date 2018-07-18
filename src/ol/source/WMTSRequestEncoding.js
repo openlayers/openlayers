@@ -7,6 +7,6 @@
  * @enum {string}
  */
 export default {
-  KVP: 'KVP',  // see spec §8
+  KVP: 'KVP', // see spec §8
   REST: 'REST' // see spec §10
 };

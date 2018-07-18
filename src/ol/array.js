@@ -26,7 +26,7 @@ export function binarySearch(haystack, needle, opt_comparator) {
     cmp = +comparator(haystack[mid], needle);
 
     if (cmp < 0.0) { /* Too low. */
-      low  = mid + 1;
+      low = mid + 1;
 
     } else { /* Key found or too high */
       high = mid;

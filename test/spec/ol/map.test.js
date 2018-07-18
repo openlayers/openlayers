@@ -251,7 +251,7 @@ describe('ol.Map', function() {
 
   });
 
-  describe('#forEachLayerAtPixel()', function()  {
+  describe('#forEachLayerAtPixel()', function() {
 
     let target, map, original, log;
 

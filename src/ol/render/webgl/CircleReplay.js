@@ -136,7 +136,7 @@ class WebGLCircleReplay extends WebGLReplay {
         this.styles_.pop();
         if (this.styles_.length) {
           const lastState = this.styles_[this.styles_.length - 1];
-          this.state_.fillColor =  /** @type {Array.<number>} */ (lastState[0]);
+          this.state_.fillColor = /** @type {Array.<number>} */ (lastState[0]);
           this.state_.strokeColor = /** @type {Array.<number>} */ (lastState[1]);
           this.state_.lineWidth = /** @type {number} */ (lastState[2]);
           this.state_.changed = false;

@@ -136,7 +136,7 @@ const map = new Map({
   layers: [raster, vector],
   interactions: defaultInteractions().extend([new Select({
     condition: function(evt) {
-      return  evt.type == 'pointermove' ||
+      return evt.type == 'pointermove' ||
           evt.type == 'singleclick';
     },
     style: selectStyleFunction

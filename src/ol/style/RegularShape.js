@@ -185,7 +185,7 @@ class RegularShape extends ImageStyle {
       radius2: this.getRadius2(),
       angle: this.getAngle(),
       snapToPixel: this.getSnapToPixel(),
-      stroke: this.getStroke() ?  this.getStroke().clone() : undefined,
+      stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
       atlasManager: this.atlasManager_

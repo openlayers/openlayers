@@ -112,7 +112,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const clipExtent = layerState.extent;
     const clipped = clipExtent !== undefined;
     if (clipped) {
-      this.clip(context, frameState,  /** @type {module:ol/extent~Extent} */ (clipExtent));
+      this.clip(context, frameState, /** @type {module:ol/extent~Extent} */ (clipExtent));
     }
     const replayGroup = this.replayGroup_;
     if (replayGroup && !replayGroup.isEmpty()) {
