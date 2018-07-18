@@ -83,5 +83,5 @@
   "eslintConfig": {
     "extends": "openlayers"
   },
-  "sideEffects": false
+  "sideEffects": ["ol.css"]
 }
