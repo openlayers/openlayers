@@ -6,8 +6,8 @@ const buildDir = path.resolve(__dirname, '../build/ol');
 
 // update the version number in util.js
 const utilPath = path.join(buildDir, 'util.js');
-const versionRegEx = /const VERSION = '(.*)';/g;
-const utilSrc = fs.readFileSync(utilPath, 'utf-8').replace(versionRegEx, `const VERSION = '${pkg.version}';`);
+const versionRegEx = /var VERSION = '(.*)';/g;
+const utilSrc = fs.readFileSync(utilPath, 'utf-8').replace(versionRegEx, `var VERSION = '${pkg.version}';`);
 fs.writeFileSync(utilPath, utilSrc, 'utf-8');
 
 // write out simplified package.json
