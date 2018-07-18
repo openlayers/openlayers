@@ -57,6 +57,8 @@ class RegularShape extends ImageStyle {
    * @api
    */
   constructor(options) {
+    super();
+
     /**
      * @private
      * @type {Array.<string>}
