@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/webgl/VectorLayer
  */
-import {getUid, inherits} from '../../util.js';
+import {getUid} from '../../util.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {buffer, containsExtent, createEmpty} from '../../extent.js';
@@ -10,17 +10,16 @@ import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, 
 import WebGLLayerRenderer from '../webgl/Layer.js';
 import {apply as applyTransform} from '../../transform.js';
 
-/**
- * @constructor
- * @extends {module:ol/renderer/webgl/Layer}
- * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
- * @param {module:ol/layer/Vector} vectorLayer Vector layer.
- * @api
- */
-class WebGLVectorLayerRenderer {
+class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
+
+  /**
+   * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
+   * @param {module:ol/layer/Vector} vectorLayer Vector layer.
+   * @api
+   */
   constructor(mapRenderer, vectorLayer) {
 
-    WebGLLayerRenderer.call(this, mapRenderer, vectorLayer);
+    super(mapRenderer, vectorLayer);
 
     /**
      * @private
@@ -298,8 +297,6 @@ class WebGLVectorLayerRenderer {
     return loading;
   }
 }
-
-inherits(WebGLVectorLayerRenderer, WebGLLayerRenderer);
 
 
 /**

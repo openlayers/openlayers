@@ -1,7 +1,6 @@
 /**
  * @module ol/renderer/webgl/Layer
  */
-import {inherits} from '../../util.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import WebGLImmediateRenderer from '../../render/webgl/Immediate.js';
@@ -15,17 +14,15 @@ import {ARRAY_BUFFER, FRAMEBUFFER, FLOAT, TEXTURE_2D,
 import WebGLBuffer from '../../webgl/Buffer.js';
 import {createEmptyTexture} from '../../webgl/Context.js';
 
-/**
- * @constructor
- * @abstract
- * @extends {module:ol/renderer/Layer}
- * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
- * @param {module:ol/layer/Layer} layer Layer.
- */
-class WebGLLayerRenderer {
+class WebGLLayerRenderer extends LayerRenderer {
+
+  /**
+   * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
+   * @param {module:ol/layer/Layer} layer Layer.
+   */
   constructor(mapRenderer, layer) {
 
-    LayerRenderer.call(this, layer);
+    super(layer);
 
     /**
      * @protected
@@ -253,8 +250,6 @@ class WebGLLayerRenderer {
    */
   forEachLayerAtPixel(pixel, frameState, callback, thisArg) {}
 }
-
-inherits(WebGLLayerRenderer, LayerRenderer);
 
 
 export default WebGLLayerRenderer;

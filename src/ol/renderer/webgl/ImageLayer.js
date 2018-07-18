@@ -2,7 +2,6 @@
  * @module ol/renderer/webgl/ImageLayer
  */
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
-import {inherits} from '../../util.js';
 import {TRUE, UNDEFINED} from '../../functions.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
@@ -22,17 +21,16 @@ import {
 import {CLAMP_TO_EDGE} from '../../webgl.js';
 import {createTexture} from '../../webgl/Context.js';
 
-/**
- * @constructor
- * @extends {module:ol/renderer/webgl/Layer}
- * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
- * @param {module:ol/layer/Image} imageLayer Tile layer.
- * @api
- */
-class WebGLImageLayerRenderer {
+class WebGLImageLayerRenderer extends WebGLLayerRenderer {
+
+  /**
+   * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
+   * @param {module:ol/layer/Image} imageLayer Tile layer.
+   * @api
+   */
   constructor(mapRenderer, imageLayer) {
 
-    WebGLLayerRenderer.call(this, mapRenderer, imageLayer);
+    super(mapRenderer, imageLayer);
 
     /**
      * The last rendered image.
@@ -309,8 +307,6 @@ class WebGLImageLayerRenderer {
     return transform;
   }
 }
-
-inherits(WebGLImageLayerRenderer, WebGLLayerRenderer);
 
 
 /**

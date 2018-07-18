@@ -2,7 +2,6 @@
  * @module ol/renderer/webgl/Map
  */
 
-import {inherits} from '../../util.js';
 import {stableSort} from '../../array.js';
 import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';
@@ -38,15 +37,14 @@ import ContextEventType from '../../webgl/ContextEventType.js';
 const WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
 
 
-/**
- * @constructor
- * @extends {module:ol/renderer/Map}
- * @param {module:ol/PluggableMap} map Map.
- * @api
- */
-class WebGLMapRenderer {
+class WebGLMapRenderer extends MapRenderer {
+
+  /**
+   * @param {module:ol/PluggableMap} map Map.
+   * @api
+   */
   constructor(map) {
-    MapRenderer.call(this, map);
+    super(map);
 
     const container = map.getViewport();
 
@@ -575,8 +573,6 @@ class WebGLMapRenderer {
     return undefined;
   }
 }
-
-inherits(WebGLMapRenderer, MapRenderer);
 
 
 export default WebGLMapRenderer;

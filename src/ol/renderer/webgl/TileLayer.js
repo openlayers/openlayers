@@ -4,7 +4,6 @@
 // FIXME large resolutions lead to too large framebuffers :-(
 // FIXME animated shaders! check in redraw
 
-import {inherits} from '../../util.js';
 import LayerType from '../../LayerType.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
@@ -25,17 +24,16 @@ import {
 import {COLOR_BUFFER_BIT, BLEND, ARRAY_BUFFER, FLOAT, LINEAR, TRIANGLE_STRIP} from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
-/**
- * @constructor
- * @extends {module:ol/renderer/webgl/Layer}
- * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
- * @param {module:ol/layer/Tile} tileLayer Tile layer.
- * @api
- */
-class WebGLTileLayerRenderer {
+class WebGLTileLayerRenderer extends WebGLLayerRenderer {
+
+  /**
+   * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
+   * @param {module:ol/layer/Tile} tileLayer Tile layer.
+   * @api
+   */
   constructor(mapRenderer, tileLayer) {
 
-    WebGLLayerRenderer.call(this, mapRenderer, tileLayer);
+    super(mapRenderer, tileLayer);
 
     /**
      * @private
@@ -381,8 +379,6 @@ class WebGLTileLayerRenderer {
     }
   }
 }
-
-inherits(WebGLTileLayerRenderer, WebGLLayerRenderer);
 
 
 /**
