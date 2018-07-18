@@ -419,7 +419,7 @@ class Modify extends PointerInteraction {
    */
   setMap(map) {
     this.overlay_.setMap(map);
-    super.setMap(this, map);
+    super.setMap(map);
   }
 
   /**
