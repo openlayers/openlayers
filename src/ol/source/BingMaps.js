@@ -54,11 +54,7 @@ class BingMaps extends TileImage {
    */
   constructor(options) {
 
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.hidpi_ = options.hidpi !== undefined ? options.hidpi : false;
+    const hidpi = options.hidpi !== undefined ? options.hidpi : false;
 
     super({
       cacheSize: options.cacheSize,
@@ -68,10 +64,17 @@ class BingMaps extends TileImage {
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       state: SourceState.LOADING,
       tileLoadFunction: options.tileLoadFunction,
-      tilePixelRatio: this.hidpi_ ? 2 : 1,
+      tilePixelRatio: hidpi ? 2 : 1,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
       transition: options.transition
     });
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.hidpi_ = hidpi;
+
 
     /**
      * @private
