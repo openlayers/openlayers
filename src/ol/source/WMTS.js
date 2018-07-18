@@ -82,9 +82,6 @@ class WMTS extends TileImage {
       urls = expandUrl(options.url);
     }
 
-    const tileUrlFunction = (urls && urls.length > 0) ?
-      createFromTileUrlFunctions(urls.map(createFromWMTSTemplate)) : nullTileUrlFunction;
-
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
@@ -95,7 +92,7 @@ class WMTS extends TileImage {
       tileGrid: tileGrid,
       tileLoadFunction: options.tileLoadFunction,
       tilePixelRatio: options.tilePixelRatio,
-      tileUrlFunction: tileUrlFunction,
+      tileUrlFunction: nullTileUrlFunction,
       urls: urls,
       wrapX: options.wrapX !== undefined ? options.wrapX : false,
       transition: options.transition
@@ -148,6 +145,10 @@ class WMTS extends TileImage {
 
     this.setKey(this.getKeyForDimensions_());
 
+    if (urls && urls.length > 0) {
+      this.tileUrlFunction = createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this)));
+    }
+
   }
 
 }
@@ -162,7 +163,7 @@ WMTS.prototype.setUrls = function(urls) {
   const key = urls.join('\n');
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
     this.fixedTileUrlFunction.bind(this) :
-    createFromTileUrlFunctions(urls.map(this.createFromWMTSTemplate_.bind(this))), key);
+    createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this))), key);
 };
 
 /**
@@ -490,6 +491,8 @@ function createFromWMTSTemplate(template) {
       return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
     });
 
+  const tileGrid = this.tileGrid;
+
   return (
     /**
      * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
@@ -502,7 +505,7 @@ function createFromWMTSTemplate(template) {
         return undefined;
       } else {
         const localContext = {
-          'TileMatrix': this.tileGrid.getMatrixId(tileCoord[0]),
+          'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
           'TileCol': tileCoord[1],
           'TileRow': -tileCoord[2] - 1
         };
