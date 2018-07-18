@@ -53,13 +53,6 @@ class TileJSON extends TileImage {
    * @api
    */
   constructor(options) {
-
-    /**
-     * @type {TileJSON}
-     * @private
-     */
-    this.tileJSON_ = null;
-
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
@@ -71,6 +64,13 @@ class TileJSON extends TileImage {
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
       transition: options.transition
     });
+
+    /**
+     * @type {TileJSON}
+     * @private
+     */
+    this.tileJSON_ = null;
+
 
     if (options.url) {
       if (options.jsonp) {
