@@ -59,14 +59,15 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       feature2 = new Feature(new Point([0, 0]));
       feature3 = new RenderFeature('Point', [1, -1], []);
       feature2.setStyle(featureStyle);
-      const TileClass = function() {
-        VectorTile.apply(this, arguments);
-        this.setState(TileState.LOADED);
-        this.setFeatures([feature1, feature2, feature3]);
-        this.setProjection(getProjection('EPSG:4326'));
-        tileCallback(this);
-      };
-      inherits(TileClass, VectorTile);
+      class TileClass extends VectorTile {
+        constructor() {
+          super(...arguments);
+          this.setState(TileState.LOADED);
+          this.setFeatures([feature1, feature2, feature3]);
+          this.setProjection(getProjection('EPSG:4326'));
+          tileCallback(this);
+        }
+      }
       source = new VectorTileSource({
         format: new MVT(),
         tileClass: TileClass,
@@ -291,23 +292,24 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
   describe('#forEachFeatureAtCoordinate', function() {
     let layer, renderer, replayGroup;
-    const TileClass = function() {
-      VectorImageTile.apply(this, arguments);
-      this.extent = [-Infinity, -Infinity, Infinity, Infinity];
-      this.setState(TileState.LOADED);
-      const sourceTile = new VectorTile([0, 0, 0]);
-      sourceTile.setState(TileState.LOADED);
-      sourceTile.setProjection(getProjection('EPSG:3857'));
-      sourceTile.getReplayGroup = function() {
-        return replayGroup;
-      };
-      const key = sourceTile.tileCoord.toString();
-      this.tileKeys = [key];
-      this.sourceTiles_ = {};
-      this.sourceTiles_[key] = sourceTile;
-      this.wrappedTileCoord = arguments[0];
-    };
-    inherits(TileClass, VectorImageTile);
+    class TileClass extends VectorImageTile {
+      constructor() {
+        super(...arguments);
+        this.extent = [-Infinity, -Infinity, Infinity, Infinity];
+        this.setState(TileState.LOADED);
+        const sourceTile = new VectorTile([0, 0, 0]);
+        sourceTile.setState(TileState.LOADED);
+        sourceTile.setProjection(getProjection('EPSG:3857'));
+        sourceTile.getReplayGroup = function() {
+          return replayGroup;
+        };
+        const key = sourceTile.tileCoord.toString();
+        this.tileKeys = [key];
+        this.sourceTiles_ = {};
+        this.sourceTiles_[key] = sourceTile;
+        this.wrappedTileCoord = arguments[0];
+      }
+    }
 
     beforeEach(function() {
       replayGroup = {};

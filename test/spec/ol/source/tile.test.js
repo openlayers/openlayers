@@ -1,4 +1,3 @@
-import {inherits} from '../../../../src/ol/index.js';
 import Tile from '../../../../src/ol/Tile.js';
 import TileRange from '../../../../src/ol/TileRange.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
@@ -16,24 +15,24 @@ import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
  * @param {Object.<string, ol.TileState>} tileStates Lookup of tile key to
  *     tile state.
  */
-const MockTile = function(tileStates) {
-  const tileGrid = new TileGrid({
-    resolutions: [360 / 256, 180 / 256, 90 / 256, 45 / 256],
-    origin: [-180, -180],
-    tileSize: 256
-  });
+class MockTile extends TileSource {
+  constructor(tileStates) {
+    const tileGrid = new TileGrid({
+      resolutions: [360 / 256, 180 / 256, 90 / 256, 45 / 256],
+      origin: [-180, -180],
+      tileSize: 256
+    });
 
-  TileSource.call(this, {
-    projection: getProjection('EPSG:4326'),
-    tileGrid: tileGrid
-  });
+    super({
+      projection: getProjection('EPSG:4326'),
+      tileGrid: tileGrid
+    });
 
-  for (const key in tileStates) {
-    this.tileCache.set(key, new Tile(key.split('/'), tileStates[key]));
+    for (const key in tileStates) {
+      this.tileCache.set(key, new Tile(key.split('/'), tileStates[key]));
+    }
   }
-
-};
-inherits(MockTile, TileSource);
+}
 
 
 /**
