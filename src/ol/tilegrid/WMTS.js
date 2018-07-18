@@ -51,7 +51,6 @@ class WMTSTileGrid extends TileGrid {
    * Set the grid pattern for sources accessing WMTS tiled-image servers.
    *
    * @param {module:ol/tilegrid/WMTS~Options} options WMTS options.
-   * @struct
    * @api
    */
   constructor(options) {

@@ -24,7 +24,6 @@ class LRUCache extends EventTarget {
    * items from the cache is the responsibility of the user.
    *
    * @fires module:ol/events/Event~Event
-   * @struct
    * @template T
    * @param {number=} opt_highWaterMark High water mark.
    */

@@ -23,7 +23,6 @@ class PriorityQueue {
    *
    * @param {function(T): number} priorityFunction Priority function.
    * @param {function(T): string} keyFunction Key function.
-   * @struct
    * @template T
    */
   constructor(priorityFunction, keyFunction) {

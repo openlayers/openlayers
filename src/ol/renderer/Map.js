@@ -16,7 +16,6 @@ class MapRenderer extends Disposable {
 
   /**
    * @param {module:ol/PluggableMap} map Map.
-   * @struct
    */
   constructor(map) {
     super();

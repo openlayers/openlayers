@@ -19,178 +19,176 @@ class WebGLReplay extends VectorContext {
   /**
    * @param {number} tolerance Tolerance.
    * @param {module:ol/extent~Extent} maxExtent Max extent.
-   * @struct
    */
   constructor(tolerance, maxExtent) {
     super();
 
     /**
-    * @protected
-    * @type {number}
-    */
+     * @protected
+     * @type {number}
+     */
     this.tolerance = tolerance;
 
     /**
-    * @protected
-    * @const
-    * @type {module:ol/extent~Extent}
-    */
+     * @protected
+     * @const
+     * @type {module:ol/extent~Extent}
+     */
     this.maxExtent = maxExtent;
 
     /**
-    * The origin of the coordinate system for the point coordinates sent to
-    * the GPU. To eliminate jitter caused by precision problems in the GPU
-    * we use the "Rendering Relative to Eye" technique described in the "3D
-    * Engine Design for Virtual Globes" book.
-    * @protected
-    * @type {module:ol/coordinate~Coordinate}
-    */
+     * The origin of the coordinate system for the point coordinates sent to
+     * the GPU. To eliminate jitter caused by precision problems in the GPU
+     * we use the "Rendering Relative to Eye" technique described in the "3D
+     * Engine Design for Virtual Globes" book.
+     * @protected
+     * @type {module:ol/coordinate~Coordinate}
+     */
     this.origin = getCenter(maxExtent);
 
     /**
-    * @private
-    * @type {module:ol/transform~Transform}
-    */
+     * @private
+     * @type {module:ol/transform~Transform}
+     */
     this.projectionMatrix_ = createTransform();
 
     /**
-    * @private
-    * @type {module:ol/transform~Transform}
-    */
+     * @private
+     * @type {module:ol/transform~Transform}
+     */
     this.offsetRotateMatrix_ = createTransform();
 
     /**
-    * @private
-    * @type {module:ol/transform~Transform}
-    */
+     * @private
+     * @type {module:ol/transform~Transform}
+     */
     this.offsetScaleMatrix_ = createTransform();
 
     /**
-    * @private
-    * @type {Array.<number>}
-    */
+     * @private
+     * @type {Array.<number>}
+     */
     this.tmpMat4_ = create();
 
     /**
-    * @protected
-    * @type {Array.<number>}
-    */
+     * @protected
+     * @type {Array.<number>}
+     */
     this.indices = [];
 
     /**
-    * @protected
-    * @type {?module:ol/webgl/Buffer}
-    */
+     * @protected
+     * @type {?module:ol/webgl/Buffer}
+     */
     this.indicesBuffer = null;
 
     /**
-    * Start index per feature (the index).
-    * @protected
-    * @type {Array.<number>}
-    */
+     * Start index per feature (the index).
+     * @protected
+     * @type {Array.<number>}
+     */
     this.startIndices = [];
 
     /**
-    * Start index per feature (the feature).
-    * @protected
-    * @type {Array.<module:ol/Feature|module:ol/render/Feature>}
-    */
+     * Start index per feature (the feature).
+     * @protected
+     * @type {Array.<module:ol/Feature|module:ol/render/Feature>}
+     */
     this.startIndicesFeature = [];
 
     /**
-    * @protected
-    * @type {Array.<number>}
-    */
+     * @protected
+     * @type {Array.<number>}
+     */
     this.vertices = [];
 
     /**
-    * @protected
-    * @type {?module:ol/webgl/Buffer}
-    */
+     * @protected
+     * @type {?module:ol/webgl/Buffer}
+     */
     this.verticesBuffer = null;
 
     /**
-    * Optional parameter for PolygonReplay instances.
-    * @protected
-    * @type {module:ol/render/webgl/LineStringReplay|undefined}
-    */
+     * Optional parameter for PolygonReplay instances.
+     * @protected
+     * @type {module:ol/render/webgl/LineStringReplay|undefined}
+     */
     this.lineStringReplay = undefined;
 
   }
 
   /**
-  * @abstract
-  * @param {module:ol/webgl/Context} context WebGL context.
-  * @return {function()} Delete resources function.
-  */
+   * @abstract
+   * @param {module:ol/webgl/Context} context WebGL context.
+   * @return {function()} Delete resources function.
+   */
   getDeleteResourcesFunction(context) {}
 
   /**
-  * @abstract
-  * @param {module:ol/webgl/Context} context Context.
-  */
+   * @abstract
+   * @param {module:ol/webgl/Context} context Context.
+   */
   finish(context) {}
 
   /**
-  * @abstract
-  * @protected
-  * @param {WebGLRenderingContext} gl gl.
-  * @param {module:ol/webgl/Context} context Context.
-  * @param {module:ol/size~Size} size Size.
-  * @param {number} pixelRatio Pixel ratio.
-  * @return {module:ol/render/webgl/circlereplay/defaultshader/Locations|
-             module:ol/render/webgl/linestringreplay/defaultshader/Locations|
-             module:ol/render/webgl/polygonreplay/defaultshader/Locations|
-             module:ol/render/webgl/texturereplay/defaultshader/Locations} Locations.
-  */
+   * @abstract
+   * @protected
+   * @param {WebGLRenderingContext} gl gl.
+   * @param {module:ol/webgl/Context} context Context.
+   * @param {module:ol/size~Size} size Size.
+   * @param {number} pixelRatio Pixel ratio.
+   * @return {module:ol/render/webgl/circlereplay/defaultshader/Locations|
+     module:ol/render/webgl/linestringreplay/defaultshader/Locations|
+     module:ol/render/webgl/polygonreplay/defaultshader/Locations|
+     module:ol/render/webgl/texturereplay/defaultshader/Locations} Locations.
+   */
   setUpProgram(gl, context, size, pixelRatio) {}
 
   /**
-  * @abstract
-  * @protected
-  * @param {WebGLRenderingContext} gl gl.
-  * @param {module:ol/render/webgl/circlereplay/defaultshader/Locations|
-            module:ol/render/webgl/linestringreplay/defaultshader/Locations|
-            module:ol/render/webgl/polygonreplay/defaultshader/Locations|
-            module:ol/render/webgl/texturereplay/defaultshader/Locations} locations Locations.
-  */
+   * @abstract
+   * @protected
+   * @param {WebGLRenderingContext} gl gl.
+   * @param {module:ol/render/webgl/circlereplay/defaultshader/Locations|
+     module:ol/render/webgl/linestringreplay/defaultshader/Locations|
+     module:ol/render/webgl/polygonreplay/defaultshader/Locations|
+     module:ol/render/webgl/texturereplay/defaultshader/Locations} locations Locations.
+   */
   shutDownProgram(gl, locations) {}
 
   /**
-  * @abstract
-  * @protected
-  * @param {WebGLRenderingContext} gl gl.
-  * @param {module:ol/webgl/Context} context Context.
-  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
-  * @param {boolean} hitDetection Hit detection mode.
-  */
+   * @abstract
+   * @protected
+   * @param {WebGLRenderingContext} gl gl.
+   * @param {module:ol/webgl/Context} context Context.
+   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {boolean} hitDetection Hit detection mode.
+   */
   drawReplay(gl, context, skippedFeaturesHash, hitDetection) {}
 
   /**
-  * @abstract
-  * @protected
-  * @param {WebGLRenderingContext} gl gl.
-  * @param {module:ol/webgl/Context} context Context.
-  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
-  * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
-  * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting this extent are checked.
-  * @return {T|undefined} Callback result.
-  * @template T
-  */
+   * @abstract
+   * @protected
+   * @param {WebGLRenderingContext} gl gl.
+   * @param {module:ol/webgl/Context} context Context.
+   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
+   * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting this extent are checked.
+   * @return {T|undefined} Callback result.
+   * @template T
+   */
   drawHitDetectionReplayOneByOne(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {}
 
   /**
-  * @protected
-  * @param {WebGLRenderingContext} gl gl.
-  * @param {module:ol/webgl/Context} context Context.
-  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
-  * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
-  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
-  * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting
-  *  this extent are checked.
-  * @return {T|undefined} Callback result.
-  * @template T
-  */
+   * @protected
+   * @param {WebGLRenderingContext} gl gl.
+   * @param {module:ol/webgl/Context} context Context.
+   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
+   * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
+   * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting this extent are checked.
+   * @return {T|undefined} Callback result.
+   * @template T
+   */
   drawHitDetectionReplay(gl, context, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
     if (!oneByOne) {
       // draw all hit-detection features in "once" (by texture group)
@@ -204,14 +202,14 @@ class WebGLReplay extends VectorContext {
   }
 
   /**
-  * @protected
-  * @param {WebGLRenderingContext} gl gl.
-  * @param {module:ol/webgl/Context} context Context.
-  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
-  * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
-  * @return {T|undefined} Callback result.
-  * @template T
-  */
+   * @protected
+   * @param {WebGLRenderingContext} gl gl.
+   * @param {module:ol/webgl/Context} context Context.
+   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
+   * @return {T|undefined} Callback result.
+   * @template T
+   */
   drawHitDetectionReplayAll(gl, context, skippedFeaturesHash, featureCallback) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     this.drawReplay(gl, context, skippedFeaturesHash, true);
@@ -225,21 +223,20 @@ class WebGLReplay extends VectorContext {
   }
 
   /**
-  * @param {module:ol/webgl/Context} context Context.
-  * @param {module:ol/coordinate~Coordinate} center Center.
-  * @param {number} resolution Resolution.
-  * @param {number} rotation Rotation.
-  * @param {module:ol/size~Size} size Size.
-  * @param {number} pixelRatio Pixel ratio.
-  * @param {number} opacity Global opacity.
-  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
-  * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
-  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
-  * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting
-  *  this extent are checked.
-  * @return {T|undefined} Callback result.
-  * @template T
-  */
+   * @param {module:ol/webgl/Context} context Context.
+   * @param {module:ol/coordinate~Coordinate} center Center.
+   * @param {number} resolution Resolution.
+   * @param {number} rotation Rotation.
+   * @param {module:ol/size~Size} size Size.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {number} opacity Global opacity.
+   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
+   * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
+   * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting this extent are checked.
+   * @return {T|undefined} Callback result.
+   * @template T
+   */
   replay(
     context,
     center,
@@ -339,12 +336,12 @@ class WebGLReplay extends VectorContext {
   }
 
   /**
-  * @protected
-  * @param {WebGLRenderingContext} gl gl.
-  * @param {module:ol/webgl/Context} context Context.
-  * @param {number} start Start index.
-  * @param {number} end End index.
-  */
+   * @protected
+   * @param {WebGLRenderingContext} gl gl.
+   * @param {module:ol/webgl/Context} context Context.
+   * @param {number} start Start index.
+   * @param {number} end End index.
+   */
   drawElements(gl, context, start, end) {
     const elementType = context.hasOESElementIndexUint ?
       UNSIGNED_INT : UNSIGNED_SHORT;

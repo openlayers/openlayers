@@ -9,7 +9,6 @@
  * Base class for WFS GetFeature filters.
  *
  * @abstract
- * @struct
  */
 class Filter {
   /**
@@ -18,16 +17,16 @@ class Filter {
   constructor(tagName) {
 
     /**
-    * @private
-    * @type {!string}
-    */
+     * @private
+     * @type {!string}
+     */
     this.tagName_ = tagName;
   }
 
   /**
-  * The XML tag name for a filter.
-  * @returns {!string} Name.
-  */
+   * The XML tag name for a filter.
+   * @returns {!string} Name.
+   */
   getTagName() {
     return this.tagName_;
   }

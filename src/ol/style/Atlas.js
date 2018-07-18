@@ -31,7 +31,6 @@ class Atlas {
    * managed with the bin packing algorithm described in:
    * http://www.blackpawn.com/texts/lightmaps/
    *
-   * @struct
    * @param {number} size The size in pixels of the sprite image.
    * @param {number} space The space in pixels between images.
    *    Because texture coordinates are float values, the edges of

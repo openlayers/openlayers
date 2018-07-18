@@ -54,7 +54,6 @@ class AtlasManager {
    * If an application uses many images or very large images, it is recommended
    * to set a higher `size` value to avoid the creation of too many atlases.
    *
-   * @struct
    * @api
    * @param {module:ol/style/AtlasManager~Options=} opt_options Options.
    */

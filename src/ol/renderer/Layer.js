@@ -14,7 +14,6 @@ class LayerRenderer  extends Observable {
 
   /**
    * @param {module:ol/layer/Layer} layer Layer.
-   * @struct
    */
   constructor(layer) {
 

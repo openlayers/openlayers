@@ -22,7 +22,6 @@ class RBush {
    *
    * @param {number=} opt_maxEntries Max entries.
    * @see https://github.com/mourner/rbush
-   * @struct
    * @template T
    */
   constructor(opt_maxEntries) {

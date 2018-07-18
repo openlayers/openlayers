@@ -31,7 +31,6 @@ class CanvasImmediateRenderer extends VectorContext {
    * @param {module:ol/extent~Extent} extent Extent.
    * @param {module:ol/transform~Transform} transform Transform.
    * @param {number} viewRotation View rotation.
-   * @struct
    */
   constructor(context, pixelRatio, extent, transform, viewRotation) {
     super();

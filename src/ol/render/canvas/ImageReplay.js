@@ -12,112 +12,111 @@ class CanvasImageReplay extends CanvasReplay {
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
    * @param {?} declutterTree Declutter tree.
-   * @struct
    */
   constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
     super(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 
     /**
-    * @private
-    * @type {module:ol/render/canvas~DeclutterGroup}
-    */
+     * @private
+     * @type {module:ol/render/canvas~DeclutterGroup}
+     */
     this.declutterGroup_ = null;
 
     /**
-    * @private
-    * @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement}
-    */
+     * @private
+     * @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement}
+     */
     this.hitDetectionImage_ = null;
 
     /**
-    * @private
-    * @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement}
-    */
+     * @private
+     * @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement}
+     */
     this.image_ = null;
 
     /**
-    * @private
-    * @type {number|undefined}
-    */
+     * @private
+     * @type {number|undefined}
+     */
     this.anchorX_ = undefined;
 
     /**
-    * @private
-    * @type {number|undefined}
-    */
+     * @private
+     * @type {number|undefined}
+     */
     this.anchorY_ = undefined;
 
     /**
-    * @private
-    * @type {number|undefined}
-    */
+     * @private
+     * @type {number|undefined}
+     */
     this.height_ = undefined;
 
     /**
-    * @private
-    * @type {number|undefined}
-    */
+     * @private
+     * @type {number|undefined}
+     */
     this.opacity_ = undefined;
 
     /**
-    * @private
-    * @type {number|undefined}
-    */
+     * @private
+     * @type {number|undefined}
+     */
     this.originX_ = undefined;
 
     /**
-    * @private
-    * @type {number|undefined}
-    */
+     * @private
+     * @type {number|undefined}
+     */
     this.originY_ = undefined;
 
     /**
-    * @private
-    * @type {boolean|undefined}
-    */
+     * @private
+     * @type {boolean|undefined}
+     */
     this.rotateWithView_ = undefined;
 
     /**
-    * @private
-    * @type {number|undefined}
-    */
+     * @private
+     * @type {number|undefined}
+     */
     this.rotation_ = undefined;
 
     /**
-    * @private
-    * @type {number|undefined}
-    */
+     * @private
+     * @type {number|undefined}
+     */
     this.scale_ = undefined;
 
     /**
-    * @private
-    * @type {boolean|undefined}
-    */
+     * @private
+     * @type {boolean|undefined}
+     */
     this.snapToPixel_ = undefined;
 
     /**
-    * @private
-    * @type {number|undefined}
-    */
+     * @private
+     * @type {number|undefined}
+     */
     this.width_ = undefined;
 
   }
 
   /**
-  * @param {Array.<number>} flatCoordinates Flat coordinates.
-  * @param {number} offset Offset.
-  * @param {number} end End.
-  * @param {number} stride Stride.
-  * @private
-  * @return {number} My end.
-  */
+   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {number} end End.
+   * @param {number} stride Stride.
+   * @private
+   * @return {number} My end.
+   */
   drawCoordinates_(flatCoordinates, offset, end, stride) {
     return this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false, false);
   }
 
   /**
-  * @inheritDoc
-  */
+   * @inheritDoc
+   */
   drawPoint(pointGeometry, feature) {
     if (!this.image_) {
       return;
@@ -145,8 +144,8 @@ class CanvasImageReplay extends CanvasReplay {
   }
 
   /**
-  * @inheritDoc
-  */
+   * @inheritDoc
+   */
   drawMultiPoint(multiPointGeometry, feature) {
     if (!this.image_) {
       return;
@@ -175,8 +174,8 @@ class CanvasImageReplay extends CanvasReplay {
   }
 
   /**
-  * @inheritDoc
-  */
+   * @inheritDoc
+   */
   finish() {
     this.reverseHitDetectionInstructions();
     // FIXME this doesn't really protect us against further calls to draw*Geometry
@@ -196,8 +195,8 @@ class CanvasImageReplay extends CanvasReplay {
   }
 
   /**
-  * @inheritDoc
-  */
+   * @inheritDoc
+   */
   setImageStyle(imageStyle, declutterGroup) {
     const anchor = imageStyle.getAnchor();
     const size = imageStyle.getSize();

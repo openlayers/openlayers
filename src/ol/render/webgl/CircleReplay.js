@@ -19,7 +19,6 @@ class WebGLCircleReplay extends WebGLReplay {
   /**
    * @param {number} tolerance Tolerance.
    * @param {module:ol/extent~Extent} maxExtent Max extent.
-   * @struct
    */
   constructor(tolerance, maxExtent) {
     super(tolerance, maxExtent);
