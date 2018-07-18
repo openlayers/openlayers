@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/Layer
  */
-import {getUid, inherits} from '../util.js';
+import {getUid} from '../util.js';
 import ImageState from '../ImageState.js';
 import Observable from '../Observable.js';
 import TileState from '../TileState.js';
@@ -10,23 +10,21 @@ import EventType from '../events/EventType.js';
 import {FALSE, UNDEFINED} from '../functions.js';
 import SourceState from '../source/State.js';
 
-/**
- * @constructor
- * @extends {module:ol/Observable}
- * @param {module:ol/layer/Layer} layer Layer.
- * @struct
- */
-class LayerRenderer {
+class LayerRenderer  extends Observable {
+
+  /**
+   * @param {module:ol/layer/Layer} layer Layer.
+   * @struct
+   */
   constructor(layer) {
 
-    Observable.call(this);
+    super();
 
     /**
      * @private
      * @type {module:ol/layer/Layer}
      */
     this.layer_ = layer;
-
 
   }
 
@@ -220,8 +218,6 @@ class LayerRenderer {
     }
   }
 }
-
-inherits(LayerRenderer, Observable);
 
 
 /**

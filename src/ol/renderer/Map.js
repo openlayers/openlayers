@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/Map
  */
-import {getUid, inherits} from '../util.js';
+import {getUid} from '../util.js';
 import Disposable from '../Disposable.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
@@ -12,16 +12,14 @@ import {shared as iconImageCache} from '../style/IconImageCache.js';
 import {compose as composeTransform, invert as invertTransform, setFromArray as transformSetFromArray} from '../transform.js';
 
 
-/**
- * @constructor
- * @abstract
- * @extends {module:ol/Disposable}
- * @param {module:ol/PluggableMap} map Map.
- * @struct
- */
-class MapRenderer {
+class MapRenderer extends Disposable {
+
+  /**
+   * @param {module:ol/PluggableMap} map Map.
+   * @struct
+   */
   constructor(map) {
-    Disposable.call(this);
+    super();
 
     /**
      * @private
@@ -317,8 +315,6 @@ class MapRenderer {
     }
   }
 }
-
-inherits(MapRenderer, Disposable);
 
 
 /**
