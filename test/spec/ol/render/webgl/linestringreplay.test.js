@@ -1,4 +1,4 @@
-import {getUid} from '../../../../../src/ol/index.js';
+import {getUid} from '../../../../../src/ol/util.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';

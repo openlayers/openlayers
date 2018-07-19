@@ -11,9 +11,9 @@ import RenderBox from '../render/Box.js';
 
 /**
  * A function that takes a {@link module:ol/MapBrowserEvent} and two
- * {@link module:ol~Pixel}s and returns a `{boolean}`. If the condition is met,
+ * {@link module:ol/pixel~Pixel}s and returns a `{boolean}`. If the condition is met,
  * true should be returned.
- * @typedef {function(this: ?, module:ol/MapBrowserEvent, module:ol~Pixel, module:ol~Pixel):boolean} EndCondition
+ * @typedef {function(this: ?, module:ol/MapBrowserEvent, module:ol/pixel~Pixel, module:ol/pixel~Pixel):boolean} EndCondition
  */
 
 
@@ -26,7 +26,7 @@ import RenderBox from '../render/Box.js';
  * @property {number} [minArea=64] The minimum area of the box in pixel, this value is used by the default
  * `boxEndCondition` function.
  * @property {module:ol/interaction/DragBox~EndCondition} [boxEndCondition] A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
- * {@link module:ol~Pixel}s to indicate whether a `boxend` event should be fired.
+ * {@link module:ol/pixel~Pixel}s to indicate whether a `boxend` event should be fired.
  * Default is `true` if the area of the box is bigger than the `minArea` option.
  * @property {function(this:module:ol/interaction/DragBox, module:ol/MapBrowserEvent)} onBoxEnd Code to execute just
  * before `boxend` is fired.
@@ -143,7 +143,7 @@ class DragBox extends PointerInteraction {
     this.onBoxEnd_ = options.onBoxEnd ? options.onBoxEnd : UNDEFINED;
 
     /**
-    * @type {module:ol~Pixel}
+    * @type {module:ol/pixel~Pixel}
     * @private
     */
     this.startPixel_ = null;
@@ -178,8 +178,8 @@ class DragBox extends PointerInteraction {
  * should fire.
  * @param {module:ol/MapBrowserEvent} mapBrowserEvent The originating MapBrowserEvent
  *     leading to the box end.
- * @param {module:ol~Pixel} startPixel The starting pixel of the box.
- * @param {module:ol~Pixel} endPixel The end pixel of the box.
+ * @param {module:ol/pixel~Pixel} startPixel The starting pixel of the box.
+ * @param {module:ol/pixel~Pixel} endPixel The end pixel of the box.
  * @return {boolean} Whether or not the boxend condition should be fired.
  * @this {module:ol/interaction/DragBox}
  */

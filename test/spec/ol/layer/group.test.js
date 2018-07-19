@@ -1,4 +1,4 @@
-import {getUid} from '../../../../src/ol/index.js';
+import {getUid} from '../../../../src/ol/util.js';
 import {stableSort} from '../../../../src/ol/array.js';
 import Collection from '../../../../src/ol/Collection.js';
 import {getIntersection} from '../../../../src/ol/extent.js';

@@ -176,7 +176,7 @@ class Draw extends PointerInteraction {
     this.shouldHandle_ = false;
 
     /**
-     * @type {module:ol~Pixel}
+     * @type {module:ol/pixel~Pixel}
      * @private
      */
     this.downPx_ = null;

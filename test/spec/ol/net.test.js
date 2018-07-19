@@ -1,4 +1,4 @@
-import {getUid} from '../../../src/ol/index.js';
+import {getUid} from '../../../src/ol/util.js';
 import {jsonp as requestJSONP} from '../../../src/ol/net.js';
 
 describe('ol.net', function() {

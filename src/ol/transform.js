@@ -125,8 +125,8 @@ export function setFromArray(transform1, transform2) {
  * resulting, transformed coordinate. The coordinate will be modified in-place.
  *
  * @param {module:ol/transform~Transform} transform The transformation.
- * @param {module:ol/coordinate~Coordinate|module:ol~Pixel} coordinate The coordinate to transform.
- * @return {module:ol/coordinate~Coordinate|module:ol~Pixel} return coordinate so that operations can be
+ * @param {module:ol/coordinate~Coordinate|module:ol/pixel~Pixel} coordinate The coordinate to transform.
+ * @return {module:ol/coordinate~Coordinate|module:ol/pixel~Pixel} return coordinate so that operations can be
  *     chained together.
  */
 export function apply(transform, coordinate) {

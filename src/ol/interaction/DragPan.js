@@ -45,7 +45,7 @@ class DragPan extends PointerInteraction {
     this.kinetic_ = options.kinetic;
 
     /**
-     * @type {module:ol~Pixel}
+     * @type {module:ol/pixel~Pixel}
      */
     this.lastCentroid = null;
 

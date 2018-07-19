@@ -1,4 +1,4 @@
-import {getUid} from '../../../src/ol/index.js';
+import {getUid} from '../../../src/ol/util.js';
 import ImageTile from '../../../src/ol/ImageTile.js';
 import Tile from '../../../src/ol/Tile.js';
 import TileState from '../../../src/ol/TileState.js';

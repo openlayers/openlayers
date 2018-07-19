@@ -240,7 +240,7 @@ class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * @abstract
-   * @param {module:ol~Pixel} pixel Pixel.
+   * @param {module:ol/pixel~Pixel} pixel Pixel.
    * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
    * @param {function(this: S, module:ol/layer/Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
    *     callback.

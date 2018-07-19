@@ -1,4 +1,4 @@
-import {inherits} from '../src/ol/index.js';
+import {inherits} from '../src/ol/util.js';
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
@@ -29,7 +29,7 @@ app.Drag = function() {
   });
 
   /**
-   * @type {module:ol~Pixel}
+   * @type {module:ol/pixel~Pixel}
    * @private
    */
   this.coordinate_ = null;

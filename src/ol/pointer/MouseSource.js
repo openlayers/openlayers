@@ -154,7 +154,7 @@ class MouseSource extends EventSource {
 
     /**
      * @const
-     * @type {Array.<module:ol~Pixel>}
+     * @type {Array.<module:ol/pixel~Pixel>}
      */
     this.lastTouches = [];
   }

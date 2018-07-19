@@ -1,4 +1,4 @@
-import {getUid} from '../../../../../src/ol/index.js';
+import {getUid} from '../../../../../src/ol/util.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Circle from '../../../../../src/ol/geom/Circle.js';
 import WebGLCircleReplay from '../../../../../src/ol/render/webgl/CircleReplay.js';

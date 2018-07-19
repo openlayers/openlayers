@@ -177,7 +177,7 @@ class ExtentInteraction extends PointerInteraction {
   }
 
   /**
-   * @param {module:ol~Pixel} pixel cursor location
+   * @param {module:ol/pixel~Pixel} pixel cursor location
    * @param {module:ol/PluggableMap} map map
    * @returns {module:ol/coordinate~Coordinate|null} snapped vertex on extent
    * @private

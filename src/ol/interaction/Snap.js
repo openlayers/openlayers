@@ -22,7 +22,7 @@ import RBush from '../structs/RBush.js';
  * @typedef {Object} Result
  * @property {boolean} snapped
  * @property {module:ol/coordinate~Coordinate|null} vertex
- * @property {module:ol~Pixel|null} vertexPixel
+ * @property {module:ol/pixel~Pixel|null} vertexPixel
  */
 
 
@@ -348,7 +348,7 @@ class Snap extends PointerInteraction {
   }
 
   /**
-   * @param {module:ol~Pixel} pixel Pixel
+   * @param {module:ol/pixel~Pixel} pixel Pixel
    * @param {module:ol/coordinate~Coordinate} pixelCoordinate Coordinate
    * @param {module:ol/PluggableMap} map Map.
    * @return {module:ol/interaction/Snap~Result} Snap result

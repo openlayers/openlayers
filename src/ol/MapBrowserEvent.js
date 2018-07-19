@@ -31,7 +31,7 @@ class MapBrowserEvent extends MapEvent {
 
     /**
      * The map pixel relative to the viewport corresponding to the original browser event.
-     * @type {module:ol~Pixel}
+     * @type {module:ol/pixel~Pixel}
      * @api
      */
     this.pixel = map.getEventPixel(browserEvent);

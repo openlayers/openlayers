@@ -1077,7 +1077,7 @@ class View extends BaseObject {
    * Center on coordinate and view position.
    * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
    * @param {module:ol/size~Size} size Box pixel size.
-   * @param {module:ol~Pixel} position Position on the view to center on.
+   * @param {module:ol/pixel~Pixel} position Position on the view to center on.
    * @api
    */
   centerOn(coordinate, size, position) {

@@ -1,4 +1,4 @@
-import {inherits} from '../src/ol/index.js';
+import {inherits} from '../src/ol/util.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultControls, Control} from '../src/ol/control.js';

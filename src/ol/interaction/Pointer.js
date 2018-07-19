@@ -170,7 +170,7 @@ class PointerInteraction extends Interaction {
 
 /**
  * @param {Array.<module:ol/pointer/PointerEvent>} pointerEvents List of events.
- * @return {module:ol~Pixel} Centroid pixel.
+ * @return {module:ol/pixel~Pixel} Centroid pixel.
  */
 export function centroid(pointerEvents) {
   const length = pointerEvents.length;
