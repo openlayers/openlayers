@@ -33,7 +33,7 @@ import Units from './proj/Units.js';
  * @property {number} [sourceResolution]
  * @property {number} [targetResolution]
  * @property {number} [sourceRotation]
- * @property {number} [sourceRotation]
+ * @property {number} [targetRotation]
  * @property {module:ol/coordinate~Coordinate} [anchor]
  * @property {number} start
  * @property {number} duration

@@ -34,16 +34,16 @@ const getChangeType = (function() {
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-full-screen'] CSS class name.
- * @property {string|Element} [label='\u2922'] Text label to use for the button.
+ * @property {string|HTMLElement} [label='\u2922'] Text label to use for the button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|Element} [labelActive='\u00d7'] Text label to use for the
+ * @property {string|HTMLElement} [labelActive='\u00d7'] Text label to use for the
  * button when full-screen is active.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [tipLabel='Toggle full-screen'] Text label to use for the button tip.
  * @property {boolean} [keys=false] Full keyboard access.
- * @property {Element|string} [target] Specify a target if you want the
+ * @property {HTMLElement|string} [target] Specify a target if you want the
  * control to be rendered outside of the map's viewport.
- * @property {Element|string} [source] The element to be displayed
+ * @property {HTMLElement|string} [source] The element to be displayed
  * fullscreen. When not provided, the element containing the map viewport will
  * be displayed fullscreen.
  */
@@ -87,7 +87,7 @@ class FullScreen extends Control {
 
     /**
      * @private
-     * @type {Element}
+     * @type {HTMLElement}
      */
     this.labelNode_ = typeof label === 'string' ?
       document.createTextNode(label) : label;
@@ -96,7 +96,7 @@ class FullScreen extends Control {
 
     /**
      * @private
-     * @type {Element}
+     * @type {HTMLElement}
      */
     this.labelActiveNode_ = typeof labelActive === 'string' ?
       document.createTextNode(labelActive) : labelActive;
@@ -126,7 +126,7 @@ class FullScreen extends Control {
 
     /**
      * @private
-     * @type {Element|string|undefined}
+     * @type {HTMLElement|string|undefined}
      */
     this.source_ = options.source;
 
@@ -231,7 +231,7 @@ function isFullScreen() {
 
 /**
  * Request to fullscreen an element.
- * @param {Element} element Element to request fullscreen
+ * @param {HTMLElement} element Element to request fullscreen
  */
 function requestFullScreen(element) {
   if (element.requestFullscreen) {
@@ -247,7 +247,7 @@ function requestFullScreen(element) {
 
 /**
  * Request to fullscreen an element with keyboard input.
- * @param {Element} element Element to request fullscreen
+ * @param {HTMLElement} element Element to request fullscreen
  */
 function requestFullScreenWithKeys(element) {
   if (element.mozRequestFullScreenWithKeys) {

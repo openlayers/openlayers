@@ -13,7 +13,7 @@ import {visibleAtResolution} from '../layer/Layer.js';
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-attribution'] CSS class name.
- * @property {Element|string} [target] Specify a target if you
+ * @property {HTMLElement|string} [target] Specify a target if you
  * want the control to be rendered outside of the map's
  * viewport.
  * @property {boolean} [collapsible=true] Specify if attributions can
@@ -25,7 +25,7 @@ import {visibleAtResolution} from '../layer/Layer.js';
  * @property {string} [label='i'] Text label to use for the
  * collapsed attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|Element} [collapseLabel='»'] Text label to use
+ * @property {string|HTMLElement} [collapseLabel='»'] Text label to use
  * for the expanded attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {function(module:ol/MapEvent)} [render] Function called when
@@ -60,7 +60,7 @@ class Attribution extends Control {
 
     /**
      * @private
-     * @type {Element}
+     * @type {HTMLElement}
      */
     this.ulElement_ = document.createElement('UL');
 
@@ -90,7 +90,7 @@ class Attribution extends Control {
     if (typeof collapseLabel === 'string') {
       /**
        * @private
-       * @type {Element}
+       * @type {HTMLElement}
        */
       this.collapseLabel_ = document.createElement('span');
       this.collapseLabel_.textContent = collapseLabel;
@@ -103,7 +103,7 @@ class Attribution extends Control {
     if (typeof label === 'string') {
       /**
        * @private
-       * @type {Element}
+       * @type {HTMLElement}
        */
       this.label_ = document.createElement('span');
       this.label_.textContent = label;

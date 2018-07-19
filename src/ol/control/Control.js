@@ -10,13 +10,13 @@ import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @typedef {Object} Options
- * @property {Element} [element] The element is the control's
+ * @property {HTMLElement} [element] The element is the control's
  * container element. This only needs to be specified if you're developing
  * a custom control.
  * @property {function(module:ol/MapEvent)} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
- * @property {Element|string} [target] Specify a target if you want
+ * @property {HTMLElement|string} [target] Specify a target if you want
  * the control to be rendered outside of the map's viewport.
  */
 
@@ -56,13 +56,13 @@ class Control extends BaseObject {
 
     /**
      * @protected
-     * @type {Element}
+     * @type {HTMLElement}
      */
     this.element = options.element ? options.element : null;
 
     /**
      * @private
-     * @type {Element}
+     * @type {HTMLElement}
      */
     this.target_ = null;
 
@@ -140,7 +140,7 @@ class Control extends BaseObject {
    * after `setMap` is called on the control). If no `target` is set in the
    * options passed to the control constructor and if `setTarget` is not called
    * then the control is added to the map's overlay container.
-   * @param {Element|string} target Target.
+   * @param {HTMLElement|string} target Target.
    * @api
    */
   setTarget(target) {

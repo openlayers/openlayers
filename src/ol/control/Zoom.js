@@ -12,14 +12,14 @@ import {easeOut} from '../easing.js';
  * @typedef {Object} Options
  * @property {number} [duration=250] Animation duration in milliseconds.
  * @property {string} [className='ol-zoom'] CSS class name.
- * @property {string|Element} [zoomInLabel='+'] Text label to use for the zoom-in
+ * @property {string|HTMLElement} [zoomInLabel='+'] Text label to use for the zoom-in
  * button. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|Element} [zoomOutLabel='-'] Text label to use for the zoom-out button.
+ * @property {string|HTMLElement} [zoomOutLabel='-'] Text label to use for the zoom-out button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [zoomInTipLabel='Zoom in'] Text label to use for the button tip.
  * @property {string} [zoomOutTipLabel='Zoom out'] Text label to use for the button tip.
  * @property {number} [delta=1] The zoom delta applied on each click.
- * @property {Element|string} [target] Specify a target if you want the control to be
+ * @property {HTMLElement|string} [target] Specify a target if you want the control to be
  * rendered outside of the map's viewport.
  */
 

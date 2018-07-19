@@ -22,7 +22,7 @@ import {appendParams} from '../uri.js';
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
  * @property {module:ol/tilegrid/WMTS} tileGrid Tile grid.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
- * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {module:ol/source/WMTSRequestEncoding|string} [requestEncoding='KVP'] Request encoding.
  * @property {string} layer Layer name as advertised in the WMTS capabilities.

@@ -42,7 +42,7 @@ const LEADING_DIGITS = [1, 2, 5];
  * @property {number} [minWidth=64] Minimum width in pixels.
  * @property {function(module:ol/MapEvent)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
- * @property {Element|string} [target] Specify a target if you want the control
+ * @property {HTMLElement|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
  * @property {module:ol/control/ScaleLine~Units|string} [units='metric'] Units.
  */

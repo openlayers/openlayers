@@ -15,7 +15,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
  * @property {boolean} [opaque=true] Whether the layer is opaque.
  * @property {module:ol/proj~ProjectionLike} [projection='EPSG:3857'] Projection.
- * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {number} [maxZoom=18] Optional max zoom level.
  * @property {number} [minZoom=0] Optional min zoom level.

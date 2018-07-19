@@ -11,7 +11,7 @@ import EventType from '../events/EventType.js';
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-rotate'] CSS class name.
- * @property {string|Element} [label='⇧'] Text label to use for the rotate button.
+ * @property {string|HTMLElement} [label='⇧'] Text label to use for the rotate button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [tipLabel='Reset rotation'] Text label to use for the rotate tip.
  * @property {number} [duration=250] Animation duration in milliseconds.
@@ -20,7 +20,7 @@ import EventType from '../events/EventType.js';
  * be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {function()} [resetNorth] Function called when the control is clicked.
  * This will override the default `resetNorth`.
- * @property {Element|string} [target] Specify a target if you want the control to be
+ * @property {HTMLElement|string} [target] Specify a target if you want the control to be
  * rendered outside of the map's viewport.
  */
 
@@ -53,7 +53,7 @@ class Rotate extends Control {
     const label = options.label !== undefined ? options.label : '\u21E7';
 
     /**
-     * @type {Element}
+     * @type {HTMLElement}
      * @private
      */
     this.label_ = null;

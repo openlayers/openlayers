@@ -39,17 +39,17 @@ const MIN_RATIO = 0.1;
  * @typedef {Object} Options
  * @property {string} [className='ol-overviewmap'] CSS class name.
  * @property {boolean} [collapsed=true] Whether the control should start collapsed or not (expanded).
- * @property {string|Element} [collapseLabel='«'] Text label to use for the
+ * @property {string|HTMLElement} [collapseLabel='«'] Text label to use for the
  * expanded overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {boolean} [collapsible=true] Whether the control can be collapsed or not.
- * @property {string|Element} [label='»'] Text label to use for the collapsed
+ * @property {string|HTMLElement} [label='»'] Text label to use for the collapsed
  * overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {Array.<module:ol/layer/Layer>|module:ol/Collection.<module:ol/layer/Layer>} [layers]
  * Layers for the overview map. If not set, then all main map layers are used
  * instead.
  * @property {function(module:ol/MapEvent)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
- * @property {Element|string} [target] Specify a target if you want the control
+ * @property {HTMLElement|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
  * @property {string} [tipLabel='Overview map'] Text label to use for the button tip.
  * @property {module:ol/View} [view] Custom view for the overview map. If not provided,
@@ -104,7 +104,7 @@ class OverviewMap extends Control {
     if (typeof collapseLabel === 'string') {
       /**
        * @private
-       * @type {Element}
+       * @type {HTMLElement}
        */
       this.collapseLabel_ = document.createElement('span');
       this.collapseLabel_.textContent = collapseLabel;
@@ -118,7 +118,7 @@ class OverviewMap extends Control {
     if (typeof label === 'string') {
       /**
        * @private
-       * @type {Element}
+       * @type {HTMLElement}
        */
       this.label_ = document.createElement('span');
       this.label_.textContent = label;
@@ -137,7 +137,7 @@ class OverviewMap extends Control {
       this.handleClick_, this);
 
     /**
-     * @type {Element}
+     * @type {HTMLElement}
      * @private
      */
     this.ovmapDiv_ = document.createElement('DIV');

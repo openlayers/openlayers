@@ -56,6 +56,7 @@ export class CollectionEvent extends Event {
  * Collection; they trigger events on the appropriate object, not on the
  * Collection as a whole.
  *
+ * @template T
  * @api
  */
 class Collection extends BaseObject {
@@ -63,7 +64,6 @@ class Collection extends BaseObject {
   /**
    * @param {Array.<T>=} opt_array Array.
    * @param {module:ol/Collection~Options=} opt_options Collection options.
-   * @template T
    */
   constructor(opt_array, opt_options) {
 
