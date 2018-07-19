@@ -11,19 +11,22 @@ import {clear} from '../obj.js';
 export const DROP = Infinity;
 
 
+/**
+ * Priority queue.
+ *
+ * The implementation is inspired from the Closure Library's Heap class and
+ * Python's heapq module.
+ *
+ * @see http://closure-library.googlecode.com/svn/docs/closure_goog_structs_heap.js.source.html
+ * @see http://hg.python.org/cpython/file/2.7/Lib/heapq.py
+ *
+ * @template T
+ */
 class PriorityQueue {
+
   /**
-   * Priority queue.
-   *
-   * The implementation is inspired from the Closure Library's Heap class and
-   * Python's heapq module.
-   *
-   * @see http://closure-library.googlecode.com/svn/docs/closure_goog_structs_heap.js.source.html
-   * @see http://hg.python.org/cpython/file/2.7/Lib/heapq.py
-   *
    * @param {function(T): number} priorityFunction Priority function.
    * @param {function(T): string} keyFunction Key function.
-   * @template T
    */
   constructor(priorityFunction, keyFunction) {
 

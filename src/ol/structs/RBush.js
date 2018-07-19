@@ -15,14 +15,16 @@ import {isEmpty} from '../obj.js';
  * @property {Object} [value]
  */
 
+/**
+ * Wrapper around the RBush by Vladimir Agafonkin.
+ *
+ * @see https://github.com/mourner/rbush
+ * @template T
+ */
 class RBush {
 
   /**
-   * Wrapper around the RBush by Vladimir Agafonkin.
-   *
    * @param {number=} opt_maxEntries Max entries.
-   * @see https://github.com/mourner/rbush
-   * @template T
    */
   constructor(opt_maxEntries) {
 
