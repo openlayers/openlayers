@@ -34,13 +34,13 @@ class RenderBox extends Disposable {
 
     /**
      * @private
-     * @type {module:ol~Pixel}
+     * @type {module:ol/pixel~Pixel}
      */
     this.startPixel_ = null;
 
     /**
      * @private
-     * @type {module:ol~Pixel}
+     * @type {module:ol/pixel~Pixel}
      */
     this.endPixel_ = null;
 
@@ -83,8 +83,8 @@ class RenderBox extends Disposable {
   }
 
   /**
-   * @param {module:ol~Pixel} startPixel Start pixel.
-   * @param {module:ol~Pixel} endPixel End pixel.
+   * @param {module:ol/pixel~Pixel} startPixel Start pixel.
+   * @param {module:ol/pixel~Pixel} endPixel End pixel.
    */
   setPixels(startPixel, endPixel) {
     this.startPixel_ = startPixel;

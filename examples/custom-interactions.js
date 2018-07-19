@@ -29,7 +29,7 @@ app.Drag = function() {
   });
 
   /**
-   * @type {module:ol~Pixel}
+   * @type {module:ol/pixel~Pixel}
    * @private
    */
   this.coordinate_ = null;

@@ -209,7 +209,7 @@ class Modify extends PointerInteraction {
     this.vertexSegments_ = null;
 
     /**
-     * @type {module:ol~Pixel}
+     * @type {module:ol/pixel~Pixel}
      * @private
      */
     this.lastPixel_ = [0, 0];
@@ -668,7 +668,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {module:ol~Pixel} pixel Pixel
+   * @param {module:ol/pixel~Pixel} pixel Pixel
    * @param {module:ol/PluggableMap} map Map.
    * @private
    */

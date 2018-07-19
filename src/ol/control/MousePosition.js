@@ -107,7 +107,7 @@ class MousePosition extends Control {
 
     /**
      * @private
-     * @type {module:ol~Pixel}
+     * @type {module:ol/pixel~Pixel}
      */
     this.lastMouseMovePixel_ = null;
 
@@ -208,7 +208,7 @@ class MousePosition extends Control {
   }
 
   /**
-   * @param {?module:ol~Pixel} pixel Pixel.
+   * @param {?module:ol/pixel~Pixel} pixel Pixel.
    * @private
    */
   updateHTML_(pixel) {

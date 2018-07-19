@@ -543,7 +543,7 @@ class PluggableMap extends BaseObject {
    * Detect features that intersect a pixel on the viewport, and execute a
    * callback with each intersecting feature. Layers included in the detection can
    * be configured through the `layerFilter` option in `opt_options`.
-   * @param {module:ol~Pixel} pixel Pixel.
+   * @param {module:ol/pixel~Pixel} pixel Pixel.
    * @param {function(this: S, (module:ol/Feature|module:ol/render/Feature),
    *     module:ol/layer/Layer): T} callback Feature callback. The callback will be
    *     called with two arguments. The first argument is one
@@ -575,7 +575,7 @@ class PluggableMap extends BaseObject {
 
   /**
    * Get all features that intersect a pixel on the viewport.
-   * @param {module:ol~Pixel} pixel Pixel.
+   * @param {module:ol/pixel~Pixel} pixel Pixel.
    * @param {module:ol/PluggableMap~AtPixelOptions=} opt_options Optional options.
    * @return {Array.<module:ol/Feature|module:ol/render/Feature>} The detected features or
    * `null` if none were found.
@@ -596,7 +596,7 @@ class PluggableMap extends BaseObject {
    * Detect layers that have a color value at a pixel on the viewport, and
    * execute a callback with each matching layer. Layers included in the
    * detection can be configured through `opt_layerFilter`.
-   * @param {module:ol~Pixel} pixel Pixel.
+   * @param {module:ol/pixel~Pixel} pixel Pixel.
    * @param {function(this: S, module:ol/layer/Layer, (Uint8ClampedArray|Uint8Array)): T} callback
    *     Layer callback. This callback will receive two arguments: first is the
    *     {@link module:ol/layer/Layer layer}, second argument is an array representing
@@ -624,7 +624,7 @@ class PluggableMap extends BaseObject {
   /**
    * Detect if features intersect a pixel on the viewport. Layers included in the
    * detection can be configured through `opt_layerFilter`.
-   * @param {module:ol~Pixel} pixel Pixel.
+   * @param {module:ol/pixel~Pixel} pixel Pixel.
    * @param {module:ol/PluggableMap~AtPixelOptions=} opt_options Optional options.
    * @return {boolean} Is there a feature at the given pixel?
    * @template U
@@ -656,7 +656,7 @@ class PluggableMap extends BaseObject {
   /**
    * Returns the map pixel position for a browser event relative to the viewport.
    * @param {Event} event Event.
-   * @return {module:ol~Pixel} Pixel.
+   * @return {module:ol/pixel~Pixel} Pixel.
    * @api
    */
   getEventPixel(event) {
@@ -700,7 +700,7 @@ class PluggableMap extends BaseObject {
   /**
    * Get the coordinate for a given pixel.  This returns a coordinate in the
    * map view projection.
-   * @param {module:ol~Pixel} pixel Pixel position in the map viewport.
+   * @param {module:ol/pixel~Pixel} pixel Pixel position in the map viewport.
    * @return {module:ol/coordinate~Coordinate} The coordinate for the pixel position.
    * @api
    */
@@ -784,7 +784,7 @@ class PluggableMap extends BaseObject {
    * Get the pixel for a coordinate.  This takes a coordinate in the map view
    * projection and returns the corresponding pixel.
    * @param {module:ol/coordinate~Coordinate} coordinate A map coordinate.
-   * @return {module:ol~Pixel} A pixel position in the map viewport.
+   * @return {module:ol/pixel~Pixel} A pixel position in the map viewport.
    * @api
    */
   getPixelFromCoordinate(coordinate) {

@@ -508,7 +508,7 @@ class Overlay extends BaseObject {
   }
 
   /**
-   * @param {module:ol~Pixel} pixel The pixel location.
+   * @param {module:ol/pixel~Pixel} pixel The pixel location.
    * @param {module:ol/size~Size|undefined} mapSize The map size.
    * @protected
    */

@@ -163,7 +163,7 @@ class Translate extends PointerInteraction {
   /**
    * Tests to see if the given coordinates intersects any of our selected
    * features.
-   * @param {module:ol~Pixel} pixel Pixel coordinate to test for intersection.
+   * @param {module:ol/pixel~Pixel} pixel Pixel coordinate to test for intersection.
    * @param {module:ol/PluggableMap} map Map to test the intersection on.
    * @return {module:ol/Feature} Returns the feature found at the specified pixel
    * coordinates.

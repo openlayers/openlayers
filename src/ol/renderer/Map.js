@@ -167,7 +167,7 @@ class MapRenderer extends Disposable {
 
   /**
    * @abstract
-   * @param {module:ol~Pixel} pixel Pixel.
+   * @param {module:ol/pixel~Pixel} pixel Pixel.
    * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {function(this: S, module:ol/layer/Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
