@@ -180,7 +180,7 @@ class ZoomSlider extends Control {
       width: container.offsetWidth, height: container.offsetHeight
     };
 
-    const thumb = container.firstElementChild;
+    const thumb = /** @type {HTMLElement} */ (container.firstElementChild);
     const computedStyle = getComputedStyle(thumb);
     const thumbWidth = thumb.offsetWidth +
         parseFloat(computedStyle['marginRight']) +
@@ -242,7 +242,7 @@ class ZoomSlider extends Control {
    */
   handleDraggerDrag_(event) {
     if (this.dragging_) {
-      const element = this.element.firstElementChild;
+      const element = /** @type {HTMLElement} */ (this.element.firstElementChild);
       const deltaX = event.clientX - this.previousX_ + parseInt(element.style.left, 10);
       const deltaY = event.clientY - this.previousY_ + parseInt(element.style.top, 10);
       const relativePosition = this.getRelativePosition_(deltaX, deltaY);
@@ -284,7 +284,7 @@ class ZoomSlider extends Control {
    */
   setThumbPosition_(res) {
     const position = this.getPositionForResolution_(res);
-    const thumb = this.element.firstElementChild;
+    const thumb = /** @type {HTMLElement} */ (this.element.firstElementChild);
 
     if (this.direction_ == Direction.HORIZONTAL) {
       thumb.style.left = this.widthLimit_ * position + 'px';
