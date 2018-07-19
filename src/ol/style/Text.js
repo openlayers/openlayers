@@ -17,7 +17,7 @@ const DEFAULT_FILL_COLOR = '#333';
 /**
  * @typedef {Object} Options
  * @property {string} [font] Font style as CSS 'font' value, see:
- * {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font}. Default is '10px sans-serif'
+ * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font. Default is '10px sans-serif'
  * @property {number} [maxAngle] When `placement` is set to `'line'`, allow a maximum angle between adjacent characters.
  * The expected value is in radians, and the default is 45° (`Math.PI / 4`).
  * @property {number} [offsetX=0] Horizontal text offset in pixels. A positive will shift the text right.

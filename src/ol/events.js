@@ -127,7 +127,7 @@ function removeListeners(target, type) {
 
 /**
  * Registers an event listener on an event target. Inspired by
- * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
+ * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
  *
  * This function efficiently binds a `listener` to a `this` object, and returns
  * a key for use with {@link module:ol/events~unlistenByKey}.
@@ -170,7 +170,7 @@ export function listen(target, type, listener, opt_this, opt_once) {
 
 /**
  * Registers a one-off event listener on an event target. Inspired by
- * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
+ * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
  *
  * This function efficiently binds a `listener` as self-unregistering listener
  * to a `this` object, and returns a key for use with
@@ -195,7 +195,7 @@ export function listenOnce(target, type, listener, opt_this) {
 
 /**
  * Unregisters an event listener on an event target. Inspired by
- * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
+ * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
  *
  * To return a listener, this function needs to be called with the exact same
  * arguments that were used for a previous {@link module:ol/events~listen} call.
@@ -219,7 +219,7 @@ export function unlisten(target, type, listener, opt_this) {
 
 /**
  * Unregisters event listeners on an event target. Inspired by
- * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
+ * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
  *
  * The argument passed to this function is the key returned from
  * {@link module:ol/events~listen} or {@link module:ol/events~listenOnce}.
@@ -246,7 +246,7 @@ export function unlistenByKey(key) {
 
 /**
  * Unregisters all event listeners on an event target. Inspired by
- * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
+ * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
  *
  * @param {module:ol/events/EventTarget~EventTargetLike} target Target.
  */

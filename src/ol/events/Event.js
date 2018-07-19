@@ -5,7 +5,7 @@
 /**
  * @classdesc
  * Stripped down implementation of the W3C DOM Level 2 Event interface.
- * @see {@link https://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-interface}
+ * See https://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-interface.
  *
  * This implementation only provides `type` and `target` properties, and
  * `stopPropagation` and `preventDefault` methods. It is meant as base class

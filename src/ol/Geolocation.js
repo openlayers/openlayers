@@ -16,7 +16,7 @@ import {get as getProjection, getTransformFromProjections, identityTransform} fr
  * @property {boolean} [tracking=false] Start Tracking right after
  * instantiation.
  * @property {PositionOptions} [trackingOptions] Tracking options.
- * See {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}.
+ * See http://www.w3.org/TR/geolocation-API/#position_options_interface.
  * @property {module:ol/proj~ProjectionLike} [projection] The projection the position
  * is reported in.
  */
@@ -285,7 +285,7 @@ class Geolocation extends BaseObject {
 
   /**
    * Get the tracking options.
-   * @see http://www.w3.org/TR/geolocation-API/#position-options
+   * See http://www.w3.org/TR/geolocation-API/#position-options.
    * @return {PositionOptions|undefined} PositionOptions as defined by
    *     the [HTML5 Geolocation spec
    *     ](http://www.w3.org/TR/geolocation-API/#position_options_interface).
@@ -319,7 +319,7 @@ class Geolocation extends BaseObject {
 
   /**
    * Set the tracking options.
-   * @see http://www.w3.org/TR/geolocation-API/#position-options
+   * See http://www.w3.org/TR/geolocation-API/#position-options.
    * @param {PositionOptions} options PositionOptions as defined by the
    *     [HTML5 Geolocation spec
    *     ](http://www.w3.org/TR/geolocation-API/#position_options_interface).

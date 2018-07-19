@@ -237,7 +237,7 @@ export const mouseOnly = function(mapBrowserEvent) {
 /**
  * Return `true` if the event originates from a primary pointer in
  * contact with the surface or if the left mouse button is pressed.
- * @see http://www.w3.org/TR/pointerevents/#button-states
+ * See http://www.w3.org/TR/pointerevents/#button-states.
  *
  * @param {module:ol/MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if the event originates from a primary pointer.

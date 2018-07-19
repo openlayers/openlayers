@@ -171,7 +171,7 @@ class Geometry extends BaseObject {
   /**
    * Create a simplified version of this geometry using the Douglas Peucker
    * algorithm.
-   * @see https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
+   * See https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm.
    * @abstract
    * @param {number} squaredTolerance Squared tolerance.
    * @return {module:ol/geom/Geometry} Simplified geometry.
