@@ -95,7 +95,7 @@ const ProviderConfig = {
  * @property {number} [minZoom] Minimum zoom.
  * @property {number} [maxZoom] Maximum zoom.
  * @property {boolean} [opaque] Whether the layer is opaque.
- * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {module:ol/Tile~LoadFunction} [tileLoadFunction]
  * Optional function to load a tile given a URL. The default is

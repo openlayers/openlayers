@@ -89,7 +89,7 @@ CustomTile.prototype.getImage = function() {
  * access pixel data with the Canvas renderer.  See
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
  * @property {module:ol/proj~ProjectionLike} [projection] Projection.
- * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {string} [url] URL template or base URL of the Zoomify service.
  * A base URL is the fixed part

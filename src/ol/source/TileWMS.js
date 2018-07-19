@@ -41,7 +41,7 @@ import {appendParams} from '../uri.js';
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
- * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {module:ol/ImageTile~TileClass} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/ImageTile~TileClass}.

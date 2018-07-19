@@ -24,7 +24,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
  * @property {boolean} [opaque=true] Whether the layer is opaque.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
- * @property {boolean} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {module:ol/source/State} [state] Source state.
  * @property {module:ol/ImageTile~TileClass} [tileClass] Class used to instantiate image tiles.
