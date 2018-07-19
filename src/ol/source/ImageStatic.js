@@ -17,7 +17,7 @@ import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
- * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {module:ol/extent~Extent} [imageExtent] Extent of the image in map coordinates.
  * This is the [left, bottom, right, top] map coordinates of your image.
  * @property {module:ol/Image~LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.

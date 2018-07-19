@@ -24,7 +24,7 @@ import {appendParams} from '../uri.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
- * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {Object.<string,*>} params WMS request parameters.
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`

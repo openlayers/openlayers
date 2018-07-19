@@ -19,7 +19,7 @@ import {appendParams} from '../uri.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
- * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {module:ol/tilegrid/WMTS} tileGrid Tile grid.
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).

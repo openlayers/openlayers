@@ -16,7 +16,7 @@ import {get as getProjection, getTransformFromProjections, identityTransform} fr
  * @property {boolean} [tracking=false] Start Tracking right after
  * instantiation.
  * @property {PositionOptions} [trackingOptions] Tracking options.
- * See {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}.
+ * See http://www.w3.org/TR/geolocation-API/#position_options_interface.
  * @property {module:ol/proj~ProjectionLike} [projection] The projection the position
  * is reported in.
  */

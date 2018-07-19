@@ -13,19 +13,19 @@ import XYZ from '../source/XYZ.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
- * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image} for more detail.
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {module:ol/proj~ProjectionLike} [projection='EPSG:3857'] Projection.
  * @property {number} [maxZoom=18] Max zoom.
  * @property {number} [minZoom] Minimum zoom.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {Object} [config] If using anonymous maps, the CartoDB config to use. See
- * {@link http://docs.cartodb.com/cartodb-platform/maps-api/anonymous-maps/}
+ * http://docs.cartodb.com/cartodb-platform/maps-api/anonymous-maps/
  * for more detail.
  * If using named maps, a key-value lookup with the template parameters.
- * See {@link http://docs.cartodb.com/cartodb-platform/maps-api/named-maps/}
+ * See http://docs.cartodb.com/cartodb-platform/maps-api/named-maps/
  * for more detail.
  * @property {string} [map] If using named maps, this will be the name of the template to load.
- * See {@link http://docs.cartodb.com/cartodb-platform/maps-api/named-maps/}
+ * See http://docs.cartodb.com/cartodb-platform/maps-api/named-maps/
  * for more detail.
  * @property {string} account If using named maps, this will be the name of the template to load.
  */
