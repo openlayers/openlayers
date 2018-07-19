@@ -1,4 +1,4 @@
-import {getUid} from '../../../../src/ol/index.js';
+import {getUid} from '../../../../src/ol/util.js';
 import {shared as iconImageCache} from '../../../../src/ol/style/IconImageCache.js';
 import Icon from '../../../../src/ol/style/Icon.js';
 import IconImage, {get as getIconImage} from '../../../../src/ol/style/IconImage.js';

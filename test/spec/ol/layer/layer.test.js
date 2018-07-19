@@ -1,4 +1,4 @@
-import {getUid} from '../../../../src/ol/index.js';
+import {getUid} from '../../../../src/ol/util.js';
 import Map from '../../../../src/ol/Map.js';
 import Layer, {visibleAtResolution} from '../../../../src/ol/layer/Layer.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';

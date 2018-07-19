@@ -1,4 +1,4 @@
-import {getUid} from '../../../../../src/ol/index.js';
+import {getUid} from '../../../../../src/ol/util.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
