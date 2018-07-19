@@ -15,7 +15,7 @@ import Event from '../events/Event.js';
 /**
  * @classdesc
  * A simplified implementation of the W3C DOM Level 2 EventTarget interface.
- * @see https://www.w3.org/TR/2000/REC-DOM-Level-2-Events-20001113/events.html#Events-EventTarget
+ * See https://www.w3.org/TR/2000/REC-DOM-Level-2-Events-20001113/events.html#Events-EventTarget.
  *
  * There are two important simplifications compared to the specification:
  *

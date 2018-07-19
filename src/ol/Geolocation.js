@@ -285,7 +285,7 @@ class Geolocation extends BaseObject {
 
   /**
    * Get the tracking options.
-   * @see http://www.w3.org/TR/geolocation-API/#position-options
+   * See http://www.w3.org/TR/geolocation-API/#position-options.
    * @return {PositionOptions|undefined} PositionOptions as defined by
    *     the [HTML5 Geolocation spec
    *     ](http://www.w3.org/TR/geolocation-API/#position_options_interface).
@@ -319,7 +319,7 @@ class Geolocation extends BaseObject {
 
   /**
    * Set the tracking options.
-   * @see http://www.w3.org/TR/geolocation-API/#position-options
+   * See http://www.w3.org/TR/geolocation-API/#position-options.
    * @param {PositionOptions} options PositionOptions as defined by the
    *     [HTML5 Geolocation spec
    *     ](http://www.w3.org/TR/geolocation-API/#position_options_interface).

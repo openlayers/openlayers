@@ -17,8 +17,8 @@ export const DROP = Infinity;
  * The implementation is inspired from the Closure Library's Heap class and
  * Python's heapq module.
  *
- * @see http://closure-library.googlecode.com/svn/docs/closure_goog_structs_heap.js.source.html
- * @see http://hg.python.org/cpython/file/2.7/Lib/heapq.py
+ * See http://closure-library.googlecode.com/svn/docs/closure_goog_structs_heap.js.source.html
+ * and http://hg.python.org/cpython/file/2.7/Lib/heapq.py.
  *
  * @template T
  */

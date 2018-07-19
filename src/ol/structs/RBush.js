@@ -17,8 +17,8 @@ import {isEmpty} from '../obj.js';
 
 /**
  * Wrapper around the RBush by Vladimir Agafonkin.
+ * See https://github.com/mourner/rbush.
  *
- * @see https://github.com/mourner/rbush
  * @template T
  */
 class RBush {

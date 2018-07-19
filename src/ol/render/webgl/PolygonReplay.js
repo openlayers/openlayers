@@ -690,7 +690,7 @@ class WebGLPolygonReplay extends WebGLReplay {
 
   /**
    * Line intersection algorithm by Paul Bourke.
-   * @see http://paulbourke.net/geometry/pointlineplane/
+   * See http://paulbourke.net/geometry/pointlineplane/.
    *
    * @private
    * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p0 First point.

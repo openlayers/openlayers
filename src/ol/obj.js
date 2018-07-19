@@ -6,8 +6,8 @@
 /**
  * Polyfill for Object.assign().  Assigns enumerable and own properties from
  * one or more source objects to a target object.
+ * See https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign.
  *
- * @see https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
  * @param {!Object} target The target object.
  * @param {...Object} var_sources The source object(s).
  * @return {!Object} The modified target object.
