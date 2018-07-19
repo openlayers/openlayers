@@ -15,7 +15,7 @@ import {get as getProjection, getTransformFromProjections, identityTransform} fr
  * @typedef {Object} Options
  * @property {boolean} [tracking=false] Start Tracking right after
  * instantiation.
- * @property {GeolocationPositionOptions} [trackingOptions] Tracking options.
+ * @property {PositionOptions} [trackingOptions] Tracking options.
  * See {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}.
  * @property {module:ol/proj~ProjectionLike} [projection] The projection the position
  * is reported in.
@@ -135,7 +135,7 @@ class Geolocation extends BaseObject {
 
   /**
    * @private
-   * @param {GeolocationPosition} position position event.
+   * @param {Position} position position event.
    */
   positionChange_(position) {
     const coords = position.coords;
@@ -171,7 +171,7 @@ class Geolocation extends BaseObject {
 
   /**
    * @private
-   * @param {GeolocationPositionError} error error object.
+   * @param {PositionError} error error object.
    */
   positionError_(error) {
     error.type = EventType.ERROR;
@@ -286,14 +286,14 @@ class Geolocation extends BaseObject {
   /**
    * Get the tracking options.
    * @see http://www.w3.org/TR/geolocation-API/#position-options
-   * @return {GeolocationPositionOptions|undefined} PositionOptions as defined by
+   * @return {PositionOptions|undefined} PositionOptions as defined by
    *     the [HTML5 Geolocation spec
    *     ](http://www.w3.org/TR/geolocation-API/#position_options_interface).
    * @observable
    * @api
    */
   getTrackingOptions() {
-    return /** @type {GeolocationPositionOptions|undefined} */ (this.get(GeolocationProperty.TRACKING_OPTIONS));
+    return /** @type {PositionOptions|undefined} */ (this.get(GeolocationProperty.TRACKING_OPTIONS));
   }
 
   /**
@@ -320,7 +320,7 @@ class Geolocation extends BaseObject {
   /**
    * Set the tracking options.
    * @see http://www.w3.org/TR/geolocation-API/#position-options
-   * @param {GeolocationPositionOptions} options PositionOptions as defined by the
+   * @param {PositionOptions} options PositionOptions as defined by the
    *     [HTML5 Geolocation spec
    *     ](http://www.w3.org/TR/geolocation-API/#position_options_interface).
    * @observable
