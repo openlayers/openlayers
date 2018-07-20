@@ -39,6 +39,7 @@
     "rbush": "2.0.2"
   },
   "devDependencies": {
+    "@openlayers/eslint-plugin": "^4.0.0-beta.1",
     "buble": "^0.19.3",
     "buble-loader": "^0.5.1",
     "chaikin-smooth": "^1.0.4",
@@ -84,7 +85,19 @@
     "webpack-dev-server": "^3.1.4"
   },
   "eslintConfig": {
-    "extends": "openlayers"
+    "extends": "openlayers",
+    "plugins": [
+      "@openlayers"
+    ],
+    "rules": {
+      "valid-jsdoc": "off",
+      "@openlayers/valid-tsdoc": [
+        "error",
+        {
+          "requireReturn": false
+        }
+      ]
+    }
   },
   "sideEffects": [
     "ol.css"
