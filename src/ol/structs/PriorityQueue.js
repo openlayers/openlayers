@@ -12,6 +12,7 @@ export const DROP = Infinity;
 
 
 /**
+ * @classdesc
  * Priority queue.
  *
  * The implementation is inspired from the Closure Library's Heap class and

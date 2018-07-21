@@ -17,12 +17,13 @@ import Triangulation from '../reproj/Triangulation.js';
  */
 
 
+/**
+ * @classdesc
+ * Class encapsulating single reprojected image.
+ * See {@link module:ol/source/Image~ImageSource}.
+ */
 class ReprojImage extends ImageBase {
   /**
-   * @classdesc
-   * Class encapsulating single reprojected image.
-   * See {@link module:ol/source/Image~ImageSource}.
-   *
    * @param {module:ol/proj/Projection} sourceProj Source projection (of the data).
    * @param {module:ol/proj/Projection} targetProj Target projection.
    * @param {module:ol/extent~Extent} targetExtent Target extent.

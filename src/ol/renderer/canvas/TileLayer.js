@@ -11,12 +11,16 @@ import {containsExtent, createEmpty, equals, getIntersection, isEmpty} from '../
 import IntermediateCanvasRenderer from '../canvas/IntermediateCanvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
+/**
+ * @classdesc
+ * Canvas renderer for tile layers.
+ * @api
+ */
 class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
 
   /**
    * @param {module:ol/layer/Tile|module:ol/layer/VectorTile} tileLayer Tile layer.
    * @param {boolean=} opt_noContext Skip the context creation.
-   * @api
    */
   constructor(tileLayer, opt_noContext) {
 

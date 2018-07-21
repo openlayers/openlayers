@@ -19,11 +19,11 @@ import PointerInteraction, {centroid as centroidFromPointers} from '../interacti
  * @classdesc
  * Allows the user to zoom the map by pinching with two fingers
  * on a touch screen.
+ * @api
  */
 class PinchZoom extends PointerInteraction {
   /**
    * @param {module:ol/interaction/PinchZoom~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

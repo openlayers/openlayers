@@ -27,12 +27,12 @@ import PointerInteraction from '../interaction/Pointer.js';
  * This interaction is only supported for mouse devices.
  *
  * And this interaction is not included in the default interactions.
+ * @api
  */
 class DragRotateAndZoom extends PointerInteraction {
 
   /**
    * @param {module:ol/interaction/DragRotateAndZoom~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

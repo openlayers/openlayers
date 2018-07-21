@@ -41,13 +41,13 @@ const ImageSourceEventType = {
 };
 
 
+/**
+ * @classdesc
+ * Events emitted by {@link module:ol/source/Image~ImageSource} instances are instances of this
+ * type.
+ */
 class ImageSourceEvent extends Event {
-
   /**
-   * @classdesc
-   * Events emitted by {@link module:ol/source/Image~ImageSource} instances are instances of this
-   * type.
-   *
    * @param {string} type Type.
    * @param {module:ol/Image} image The image.
    */
@@ -77,15 +77,16 @@ class ImageSourceEvent extends Event {
  */
 
 
+/**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for sources providing a single image.
+ * @api
+ */
 class ImageSource extends Source {
   /**
-   * @classdesc
-   * Abstract base class; normally only used for creating subclasses and not
-   * instantiated in apps.
-   * Base class for sources providing a single image.
-   *
    * @param {module:ol/source/Image~Options} options Single image source options.
-   * @api
    */
   constructor(options) {
     super({

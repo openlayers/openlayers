@@ -28,11 +28,11 @@ import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
  * element, focus will have to be on, and returned to, this element if the keys
  * are to function.
  * See also {@link moudle:ol/interaction/KeyboardPan~KeyboardPan}.
+ * @api
  */
 class KeyboardZoom extends Interaction {
   /**
    * @param {module:ol/interaction/KeyboardZoom~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

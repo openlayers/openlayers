@@ -19,12 +19,15 @@ import SourceState from '../../source/State.js';
  */
 export const layerRendererConstructors = [];
 
-
+/**
+ * @classdesc
+ * Canvas map renderer.
+ * @api
+ */
 class CanvasMapRenderer extends MapRenderer {
 
   /**
    * @param {module:ol/PluggableMap} map Map.
-   * @api
    */
   constructor(map) {
     super(map);

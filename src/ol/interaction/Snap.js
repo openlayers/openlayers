@@ -62,11 +62,12 @@ import RBush from '../structs/RBush.js';
  *     var snap = new Snap({
  *       source: source
  *     });
+ *
+ * @api
  */
 class Snap extends PointerInteraction {
   /**
    * @param {module:ol/interaction/Snap~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

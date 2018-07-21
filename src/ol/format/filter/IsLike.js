@@ -6,6 +6,7 @@ import Comparison from '../filter/Comparison.js';
 /**
  * @classdesc
  * Represents a `<PropertyIsLike>` comparison operator.
+ * @api
  */
 class IsLike extends Comparison {
 
@@ -20,7 +21,6 @@ class IsLike extends Comparison {
    * @param {string=} opt_escapeChar Escape character which can be used to escape
    *    the pattern characters. Default is '!'.
    * @param {boolean=} opt_matchCase Case-sensitive?
-   * @api
    */
   constructor(propertyName, pattern, opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
     super('PropertyIsLike', propertyName);

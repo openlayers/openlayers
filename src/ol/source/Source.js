@@ -37,17 +37,18 @@ import SourceState from '../source/State.js';
  */
 
 
+/**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for {@link module:ol/layer/Layer~Layer} sources.
+ *
+ * A generic `change` event is triggered when the state of the source changes.
+ * @api
+ */
 class Source extends BaseObject {
   /**
-   * @classdesc
-   * Abstract base class; normally only used for creating subclasses and not
-   * instantiated in apps.
-   * Base class for {@link module:ol/layer/Layer~Layer} sources.
-   *
-   * A generic `change` event is triggered when the state of the source changes.
-   *
    * @param {module:ol/source/Source~Options} options Source options.
-   * @api
    */
   constructor(options) {
 

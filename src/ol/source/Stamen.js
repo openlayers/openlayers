@@ -109,14 +109,14 @@ const ProviderConfig = {
  */
 
 
+/**
+ * @classdesc
+ * Layer source for the Stamen tile server.
+ * @api
+ */
 class Stamen extends XYZ {
-
   /**
-   * @classdesc
-   * Layer source for the Stamen tile server.
-   *
    * @param {module:ol/source/Stamen~Options=} options Stamen options.
-   * @api
    */
   constructor(options) {
     const i = options.layer.indexOf('-');

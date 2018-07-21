@@ -71,13 +71,14 @@ import {appendParams} from '../uri.js';
  */
 
 
+/**
+ * @classdesc
+ * Layer source for tile data from WMS servers.
+ * @api
+ */
 class TileWMS extends TileImage {
   /**
-   * @classdesc
-   * Layer source for tile data from WMS servers.
-   *
    * @param {module:ol/source/TileWMS~Options=} [opt_options] Tile WMS options.
-   * @api
    */
   constructor(opt_options) {
 

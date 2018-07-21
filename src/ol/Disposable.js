@@ -4,6 +4,7 @@
 import {UNDEFINED} from './functions.js';
 
 /**
+ * @classdesc
  * Objects that need to clean up after themselves.
  */
 class Disposable {

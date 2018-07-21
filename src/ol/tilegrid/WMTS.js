@@ -45,13 +45,14 @@ import TileGrid from '../tilegrid/TileGrid.js';
  */
 
 
+/**
+ * @classdesc
+ * Set the grid pattern for sources accessing WMTS tiled-image servers.
+ * @api
+ */
 class WMTSTileGrid extends TileGrid {
   /**
-   * @classdesc
-   * Set the grid pattern for sources accessing WMTS tiled-image servers.
-   *
    * @param {module:ol/tilegrid/WMTS~Options} options WMTS options.
-   * @api
    */
   constructor(options) {
     super({

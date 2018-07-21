@@ -47,11 +47,15 @@ const VECTOR_REPLAYS = {
 };
 
 
+/**
+ * @classdesc
+ * Canvas renderer for vector tile layers.
+ * @api
+ */
 class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {module:ol/layer/VectorTile} layer VectorTile layer.
-   * @api
    */
   constructor(layer) {
 

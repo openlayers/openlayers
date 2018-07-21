@@ -46,15 +46,16 @@ import ImageStyle from '../style/Image.js';
  */
 
 
+/**
+ * @classdesc
+ * Set regular shape style for vector features. The resulting shape will be
+ * a regular polygon when `radius` is provided, or a star when `radius1` and
+ * `radius2` are provided.
+ * @api
+ */
 class RegularShape extends ImageStyle {
   /**
-   * @classdesc
-   * Set regular shape style for vector features. The resulting shape will be
-   * a regular polygon when `radius` is provided, or a star when `radius1` and
-   * `radius2` are provided.
-   *
    * @param {module:ol/style/RegularShape~Options} options Options.
-   * @api
    */
   constructor(options) {
     /**

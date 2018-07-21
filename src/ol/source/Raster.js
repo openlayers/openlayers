@@ -72,13 +72,13 @@ const RasterOperationType = {
 };
 
 
+/**
+ * @classdesc
+ * Events emitted by {@link module:ol/source/Raster} instances are instances of this
+ * type.
+ */
 class RasterSourceEvent extends Event {
-
   /**
-   * @classdesc
-   * Events emitted by {@link module:ol/source/Raster} instances are instances of this
-   * type.
-   *
    * @param {string} type Type.
    * @param {module:ol/PluggableMap~FrameState} frameState The frame state.
    * @param {Object} data An object made available to operations.
@@ -133,16 +133,18 @@ class RasterSourceEvent extends Event {
  */
 
 
+/**
+ * @classdesc
+ * A source that transforms data from any number of input sources using an
+ * {@link module:ol/source/Raster~Operation} function to transform input pixel values into
+ * output pixel values.
+ *
+ * @fires ol/source/Raster~RasterSourceEvent
+ * @api
+ */
 class RasterSource extends ImageSource {
   /**
-   * @classdesc
-   * A source that transforms data from any number of input sources using an
-   * {@link module:ol/source/Raster~Operation} function to transform input pixel values into
-   * output pixel values.
-   *
-   * @fires ol/source/Raster~RasterSourceEvent
    * @param {module:ol/source/Raster~Options=} options Options.
-   * @api
    */
   constructor(options) {
     super({});

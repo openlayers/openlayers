@@ -3,6 +3,7 @@
  */
 
 /**
+ * @classdesc
  * Context for drawing geometries.  A vector context is available on render
  * events and does not need to be constructed directly.
  * @api

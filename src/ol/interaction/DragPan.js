@@ -21,11 +21,11 @@ import PointerInteraction, {centroid as centroidFromPointers} from '../interacti
 /**
  * @classdesc
  * Allows the user to pan the map by dragging the map.
+ * @api
  */
 class DragPan extends PointerInteraction {
   /**
    * @param {module:ol/interaction/DragPan~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

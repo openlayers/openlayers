@@ -149,11 +149,11 @@ export class ModifyEvent extends Event {
  * key is pressed.  To configure the interaction with a different condition
  * for deletion, use the `deleteCondition` option.
  * @fires module:ol/interaction/Modify~ModifyEvent
+ * @api
  */
 class Modify extends PointerInteraction {
   /**
    * @param {module:ol/interaction/Modify~Options} options Options.
-   * @api
    */
   constructor(options) {
 

@@ -6,6 +6,7 @@ import Comparison from '../filter/Comparison.js';
 /**
  * @classdesc
  * Represents a `<During>` comparison operator.
+ * @api
  */
 class During extends Comparison {
 
@@ -13,7 +14,6 @@ class During extends Comparison {
    * @param {!string} propertyName Name of the context property to compare.
    * @param {!string} begin The begin date in ISO-8601 format.
    * @param {!string} end The end date in ISO-8601 format.
-   * @api
    */
   constructor(propertyName, begin, end) {
     super('During', propertyName);

@@ -17,16 +17,16 @@ import {getKeyZXY} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 
-/**
- * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
- * @param {module:ol/TileState} state State.
- * @param {string} src Image source URI.
- * @param {module:ol/extent~Extent} extent Extent of the tile.
- * @param {boolean} preemptive Load the tile when visible (before it's needed).
- * @param {boolean} jsonp Load the tile as a script.
- */
 export class CustomTile extends Tile {
 
+  /**
+   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+   * @param {module:ol/TileState} state State.
+   * @param {string} src Image source URI.
+   * @param {module:ol/extent~Extent} extent Extent of the tile.
+   * @param {boolean} preemptive Load the tile when visible (before it's needed).
+   * @param {boolean} jsonp Load the tile as a script.
+   */
   constructor(tileCoord, state, src, extent, preemptive, jsonp) {
 
     super(tileCoord, state);
@@ -267,14 +267,14 @@ CustomTile.prototype.load = function() {
  */
 
 
+/**
+ * @classdesc
+ * Layer source for UTFGrid interaction data loaded from TileJSON format.
+ * @api
+ */
 class UTFGrid extends TileSource {
-
   /**
-   * @classdesc
-   * Layer source for UTFGrid interaction data loaded from TileJSON format.
-   *
    * @param {module:ol/source/UTFGrid~Options=} options Source options.
-   * @api
    */
   constructor(options) {
     super({

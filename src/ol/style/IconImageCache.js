@@ -4,6 +4,7 @@
 import {asString} from '../color.js';
 
 /**
+ * @classdesc
  * Singleton class. Available through {@link module:ol/style/IconImageCache~shared}.
  */
 class IconImageCache {

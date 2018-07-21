@@ -27,12 +27,14 @@ import {getKeyZXY} from '../tilecoord.js';
  */
 
 
+/**
+ * @classdesc
+ * Base class for sources providing tiles divided into a tile grid over http.
+ *
+ * @fires module:ol/source/TileEvent
+ */
 class UrlTile extends TileSource {
   /**
-   * @classdesc
-   * Base class for sources providing tiles divided into a tile grid over http.
-   *
-   * @fires module:ol/source/TileEvent
    * @param {module:ol/source/UrlTile~Options=} options Image tile options.
    */
   constructor(options) {

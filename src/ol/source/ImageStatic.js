@@ -28,13 +28,14 @@ import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
  */
 
 
+/**
+ * @classdesc
+ * A layer source for displaying a single, static image.
+ * @api
+ */
 class Static extends ImageSource {
   /**
-   * @classdesc
-   * A layer source for displaying a single, static image.
-   *
    * @param {module:ol/source/ImageStatic~Options=} options ImageStatic options.
-   * @api
    */
   constructor(options) {
     const imageExtent = options.imageExtent;

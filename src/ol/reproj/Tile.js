@@ -18,12 +18,14 @@ import Triangulation from '../reproj/Triangulation.js';
  */
 
 
+/**
+ * @classdesc
+ * Class encapsulating single reprojected tile.
+ * See {@link module:ol/source/TileImage~TileImage}.
+ *
+ */
 class ReprojTile extends Tile {
   /**
-   * @classdesc
-   * Class encapsulating single reprojected tile.
-   * See {@link module:ol/source/TileImage~TileImage}.
-   *
    * @param {module:ol/proj/Projection} sourceProj Source projection.
    * @param {module:ol/tilegrid/TileGrid} sourceTileGrid Source tile grid.
    * @param {module:ol/proj/Projection} targetProj Target projection.

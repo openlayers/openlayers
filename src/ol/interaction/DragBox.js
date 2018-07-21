@@ -107,11 +107,11 @@ class DragBoxEvent extends Event {
  * This interaction is only supported for mouse devices.
  *
  * @fires module:ol/interaction/DragBox~DragBoxEvent
+ * @api
  */
 class DragBox extends PointerInteraction {
   /**
    * @param {module:ol/interaction/DragBox~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

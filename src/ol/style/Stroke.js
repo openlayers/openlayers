@@ -26,12 +26,11 @@ import {getUid} from '../util.js';
  * Note that the defaults given are the Canvas defaults, which will be used if
  * option is not defined. The `get` functions return whatever was entered in
  * the options; they will not return the default.
+ * @api
  */
 class Stroke {
-
   /**
    * @param {module:ol/style/Stroke~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

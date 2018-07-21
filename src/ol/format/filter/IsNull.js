@@ -6,12 +6,12 @@ import Comparison from '../filter/Comparison.js';
 /**
  * @classdesc
  * Represents a `<PropertyIsNull>` comparison operator.
+ * @api
  */
 class IsNull extends Comparison {
 
   /**
    * @param {!string} propertyName Name of the context property to compare.
-   * @api
    */
   constructor(propertyName) {
     super('PropertyIsNull', propertyName);

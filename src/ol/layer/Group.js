@@ -40,15 +40,17 @@ const Property = {
 };
 
 
+/**
+ * @classdesc
+ * A {@link module:ol/Collection~Collection} of layers that are handled together.
+ *
+ * A generic `change` event is triggered when the group/Collection changes.
+ *
+ * @api
+ */
 class LayerGroup extends BaseLayer {
   /**
-   * @classdesc
-   * A {@link module:ol/Collection~Collection} of layers that are handled together.
-   *
-   * A generic `change` event is triggered when the group/Collection changes.
-   *
    * @param {module:ol/layer/Group~Options=} opt_options Layer options.
-   * @api
    */
   constructor(opt_options) {
 

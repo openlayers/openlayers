@@ -7,6 +7,7 @@ import Spatial from '../filter/Spatial.js';
  * @classdesc
  * Represents a `<Intersects>` operator to test whether a geometry-valued property
  * intersects a given geometry.
+ * @api
  */
 class Intersects extends Spatial {
 
