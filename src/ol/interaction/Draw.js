@@ -956,19 +956,12 @@ export function createRegularPolygon(opt_sides, opt_angle) {
       squaredCoordinateDistance(center, end));
     const geometry = opt_geometry ? /** @type {module:ol/geom/Polygon} */ (opt_geometry) :
       fromCircle(new Circle(center), opt_sides);
-    let angle = opt_angle ? opt_angle :
-      Math.atan((end[1] - center[1]) / (end[0] - center[0]));
-    let _angle = 180 * angle / Math.PI;
-    if (end[0] - center[0] >= 0 && end[1] - center[1] <= 0) {
-      _angle = _angle + 360;
-    } else if (end[0] - center[0] >= 0 && end[1] - center[1] >= 0) {
-      _angle = _angle;
-    } else if (end[0] - center[0] <= 0 && end[1] - center[1] >= 0) {
-      _angle = _angle + 180;
-    } else if (end[0] - center[0] <= 0 && end[1] - center[1] <= 0) {
-      _angle = _angle + 180;
+    let angle = opt_angle;
+    if (!opt_angle) {
+      const x = end[0] - center[0];
+      const y = end[1] - center[1];
+      angle = Math.atan(y / x) - (x < 0 ? Math.PI : 0);
     }
-    angle = _angle * Math.PI / 180;
     makeRegular(geometry, center, radius, angle);
     return geometry;
   };
