@@ -1,6 +1,6 @@
 {
   "name": "ol",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "description": "OpenLayers mapping library",
   "keywords": [
     "map",
@@ -16,7 +16,7 @@
     "karma": "karma start test/karma.config.js",
     "serve-examples": "webpack-dev-server --config examples/webpack/config.js --mode development --watch",
     "build-examples": "webpack --config examples/webpack/config.js --mode production",
-    "build-package": "npm run transpile && npm run copy-css && node tasks/prepare-package",
+    "build-package": "npm run transpile && npm run copy-css && node tasks/prepare-package && cp README.md build/ol",
     "build-index": "npm run build-package && node tasks/generate-index",
     "build-legacy": "rm -rf build && npm run build-index && rollup --config config/rollup.js && cleancss --source-map src/ol/ol.css -o build/ol.css",
     "copy-css": "cp src/ol/ol.css build/ol/ol.css",

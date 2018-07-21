@@ -1,23 +1,44 @@
 # OpenLayers
 
-[![Travis CI Status](https://secure.travis-ci.org/openlayers/openlayers.svg)](http://travis-ci.org/#!/openlayers/openlayers)
-[![Greenkeeper badge](https://badges.greenkeeper.io/openlayers/openlayers.svg)](https://greenkeeper.io/)
-[![Coverage Status](https://coveralls.io/repos/github/openlayers/openlayers/badge.svg?branch=master)](https://coveralls.io/github/openlayers/openlayers?branch=master)
-[![OSGeo Project](https://img.shields.io/badge/OSGeo-Project-brightgreen.svg)](http://osgeo.org/)
-[![jsDelivr Hits](https://data.jsdelivr.com/v1/package/npm/openlayers/badge?style=rounded)](https://www.jsdelivr.com/package/npm/openlayers)
-
 [OpenLayers](https://openlayers.org/) is a high-performance, feature-packed library for creating interactive maps on the web. It can display map tiles, vector data and markers loaded from any source on any web page. OpenLayers has been developed to further the use of geographic information of all kinds. It is completely free, Open Source JavaScript, released under the 2-clause BSD License (also known as the FreeBSD).
 
 ## Getting Started
 
-Use one of the following methods to use OpenLayers in your project:
+Install the [`ol` package](https://www.npmjs.com/package/ol):
 
-* For use with webpack, Rollup, Browserify, or other module bundlers, install the [`ol` package](https://www.npmjs.com/package/ol):
-    ```
-    npm install ol
-    ```
+```
+npm install ol
+```
 
-* If you just want to add a `<script>` tag to test things out, you can link directly to one of the full builds from [cdnjs](https://cdnjs.com/libraries/openlayers) (not recommended for production)
+Import just what you need for your application:
+
+```js
+import Map from 'ol/Map';
+import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import XYZ from 'ol/source/XYZ';
+
+new Map({
+  target: 'map',
+  layers: [
+    new TileLayer({
+      source: new XYZ({
+        url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+      })
+    })
+  ],
+  view: new View({
+    center: [0, 0],
+    zoom: 2
+  })
+});
+```
+
+See the following examples for more detail on bundling OpenLayers with your application:
+
+ * Using [Rollup](https://github.com/openlayers/ol-rollup)
+ * Using [Webpack](https://github.com/openlayers/ol-webpack)
+ * Using [Parcel](https://github.com/openlayers/ol-parcel)
 
 ## Supported Browsers
 
@@ -39,3 +60,5 @@ Please see our guide on [contributing](CONTRIBUTING.md) if you're interested in 
 
 - Need help? Find it on [Stack Overflow using the tag 'openlayers'](http://stackoverflow.com/questions/tagged/openlayers)
 - Follow [@openlayers](https://twitter.com/openlayers) on Twitter
+
+[![Build Status](https://travis-ci.org/openlayers/openlayers.svg?branch=master)](https://travis-ci.org/openlayers/openlayers)
