@@ -1,6 +1,6 @@
 {
   "name": "ol",
-  "version": "5.0.3",
+  "version": "5.1.0",
   "description": "OpenLayers mapping library",
   "keywords": [
     "map",
@@ -84,5 +84,7 @@
   "eslintConfig": {
     "extends": "openlayers"
   },
-  "sideEffects": ["ol.css"]
+  "sideEffects": [
+    "ol.css"
+  ]
 }
