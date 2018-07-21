@@ -21,12 +21,16 @@ import {
 import {CLAMP_TO_EDGE} from '../../webgl.js';
 import {createTexture} from '../../webgl/Context.js';
 
+/**
+ * @classdesc
+ * WebGL renderer for image layers.
+ * @api
+ */
 class WebGLImageLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
    * @param {module:ol/layer/Image} imageLayer Tile layer.
-   * @api
    */
   constructor(mapRenderer, imageLayer) {
 

@@ -56,14 +56,14 @@ import {appendParams} from '../uri.js';
  */
 
 
+/**
+ * @classdesc
+ * Layer source for tile data from WMTS servers.
+ * @api
+ */
 class WMTS extends TileImage {
-
   /**
-   * @classdesc
-   * Layer source for tile data from WMTS servers.
-   *
    * @param {module:ol/source/WMTS~Options=} options WMTS options.
-   * @api
    */
   constructor(options) {
 

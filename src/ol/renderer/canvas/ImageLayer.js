@@ -13,11 +13,15 @@ import {layerRendererConstructors} from './Map.js';
 import IntermediateCanvasRenderer from './IntermediateCanvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
+/**
+ * @classdesc
+ * Canvas renderer for image layers.
+ * @api
+ */
 class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
 
   /**
    * @param {module:ol/layer/Image|module:ol/layer/Vector} imageLayer Image or vector layer.
-   * @api
    */
   constructor(imageLayer) {
 

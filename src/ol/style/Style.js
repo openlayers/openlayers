@@ -143,12 +143,11 @@ import Stroke from '../style/Stroke.js';
  * Container for vector feature rendering styles. Any changes made to the style
  * or its children through `set*()` methods will not take effect until the
  * feature or layer that uses the style is re-rendered.
+ * @api
  */
 class Style {
-
   /**
    * @param {module:ol/style/Style~Options=} opt_options Style options.
-   * @api
    */
   constructor(opt_options) {
 

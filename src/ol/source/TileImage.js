@@ -54,14 +54,16 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  */
 
 
+/**
+ * @classdesc
+ * Base class for sources providing images divided into a tile grid.
+ *
+ * @fires module:ol/source/Tile~TileSourceEvent
+ * @api
+ */
 class TileImage extends UrlTile {
   /**
-   * @classdesc
-   * Base class for sources providing images divided into a tile grid.
-   *
-   * @fires module:ol/source/Tile~TileSourceEvent
    * @param {module:ol/source/TileImage~Options=} options Image tile options.
-   * @api
    */
   constructor(options) {
 

@@ -32,11 +32,11 @@ import Interaction, {pan} from '../interaction/Interaction.js';
  * element, focus will have to be on, and returned to, this element if the keys
  * are to function.
  * See also {@link module:ol/interaction/KeyboardZoom~KeyboardZoom}.
+ * @api
  */
 class KeyboardPan extends Interaction {
   /**
    * @param {module:ol/interaction/KeyboardPan~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

@@ -26,12 +26,12 @@ import PointerInteraction from '../interaction/Pointer.js';
  * it to when the alt and shift keys are held down.
  *
  * This interaction is only supported for mouse devices.
+ * @api
  */
 class DragRotate extends PointerInteraction {
 
   /**
    * @param {module:ol/interaction/DragRotate~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

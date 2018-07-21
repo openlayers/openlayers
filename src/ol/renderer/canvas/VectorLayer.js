@@ -15,11 +15,15 @@ import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
 import CanvasLayerRenderer from '../canvas/Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 
+/**
+ * @classdesc
+ * Canvas renderer for vector layers.
+ * @api
+ */
 class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * @param {module:ol/layer/Vector} vectorLayer Vector layer.
-   * @api
    */
   constructor(vectorLayer) {
 

@@ -27,15 +27,16 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  */
 
 
+/**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for sources providing images divided into a tile grid.
+ * @api
+ */
 class TileSource extends Source {
   /**
-   * @classdesc
-   * Abstract base class; normally only used for creating subclasses and not
-   * instantiated in apps.
-   * Base class for sources providing images divided into a tile grid.
-   *
    * @param {module:ol/source/Tile~Options=} options SourceTile source options.
-   * @api
    */
   constructor(options) {
 
@@ -307,12 +308,12 @@ TileSource.prototype.useTile = UNDEFINED;
  * @classdesc
  * Events emitted by {@link module:ol/source/Tile~TileSource} instances are instances of this
  * type.
- *
- * @param {string} type Type.
- * @param {module:ol/Tile} tile The tile.
  */
 export class TileSourceEvent extends Event {
-
+  /**
+   * @param {string} type Type.
+   * @param {module:ol/Tile} tile The tile.
+   */
   constructor(type, tile) {
 
     super(type);

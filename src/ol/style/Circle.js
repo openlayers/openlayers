@@ -20,13 +20,14 @@ import RegularShape from '../style/RegularShape.js';
  */
 
 
+/**
+ * @classdesc
+ * Set circle style for vector features.
+ * @api
+ */
 class CircleStyle extends RegularShape {
   /**
-   * @classdesc
-   * Set circle style for vector features.
-   *
    * @param {module:ol/style/Circle~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

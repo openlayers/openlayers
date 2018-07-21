@@ -44,13 +44,15 @@ const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
  * To disable the opacity transition, pass `transition: 0`.
  */
 
+
+/**
+ * @classdesc
+ * Layer source for Bing Maps tile data.
+ * @api
+ */
 class BingMaps extends TileImage {
   /**
-   * @classdesc
-   * Layer source for Bing Maps tile data.
-   *
    * @param {module:ol/source/BingMaps~Options=} options Bing Maps options.
-   * @api
    */
   constructor(options) {
 

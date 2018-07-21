@@ -83,13 +83,13 @@ class DragAndDropEvent extends Event {
 /**
  * @classdesc
  * Handles input of vector data by drag and drop.
+ * @api
  *
  * @fires module:ol/interaction/DragAndDrop~DragAndDropEvent
  */
 class DragAndDrop extends Interaction {
   /**
    * @param {module:ol/interaction/DragAndDrop~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

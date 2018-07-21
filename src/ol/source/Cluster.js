@@ -36,15 +36,16 @@ import VectorSource from '../source/Vector.js';
  */
 
 
+/**
+ * @classdesc
+ * Layer source to cluster vector data. Works out of the box with point
+ * geometries. For other geometry types, or if not all geometries should be
+ * considered for clustering, a custom `geometryFunction` can be defined.
+ * @api
+ */
 class Cluster extends VectorSource {
   /**
-   * @classdesc
-   * Layer source to cluster vector data. Works out of the box with point
-   * geometries. For other geometry types, or if not all geometries should be
-   * considered for clustering, a custom `geometryFunction` can be defined.
-   *
    * @param {module:ol/source/Cluster~Options=} options Cluster options.
-   * @api
    */
   constructor(options) {
     super({

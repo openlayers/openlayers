@@ -41,20 +41,22 @@ const INITIAL_ATLAS_SIZE = 256;
 const MAX_ATLAS_SIZE = -1;
 
 
+/**
+ * @classdesc
+ * Manages the creation of image atlases.
+ *
+ * Images added to this manager will be inserted into an atlas, which
+ * will be used for rendering.
+ * The `size` given in the constructor is the size for the first
+ * atlas. After that, when new atlases are created, they will have
+ * twice the size as the latest atlas (until `maxSize` is reached).
+ *
+ * If an application uses many images or very large images, it is recommended
+ * to set a higher `size` value to avoid the creation of too many atlases.
+ * @api
+ */
 class AtlasManager {
   /**
-   * Manages the creation of image atlases.
-   *
-   * Images added to this manager will be inserted into an atlas, which
-   * will be used for rendering.
-   * The `size` given in the constructor is the size for the first
-   * atlas. After that, when new atlases are created, they will have
-   * twice the size as the latest atlas (until `maxSize` is reached).
-   *
-   * If an application uses many images or very large images, it is recommended
-   * to set a higher `size` value to avoid the creation of too many atlases.
-   *
-   * @api
    * @param {module:ol/style/AtlasManager~Options=} opt_options Options.
    */
   constructor(opt_options) {

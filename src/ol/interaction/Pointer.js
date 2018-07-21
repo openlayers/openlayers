@@ -73,11 +73,11 @@ const handleMoveEvent = UNDEFINED;
  * started. During a drag sequence the `handleDragEvent` user function is
  * called on `move` events. The drag sequence ends when the `handleUpEvent`
  * user function is called and returns `false`.
+ * @api
  */
 class PointerInteraction extends Interaction {
   /**
    * @param {module:ol/interaction/Pointer~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

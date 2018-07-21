@@ -24,12 +24,16 @@ import {
 import {COLOR_BUFFER_BIT, BLEND, ARRAY_BUFFER, FLOAT, LINEAR, TRIANGLE_STRIP} from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
+/**
+ * @classdesc
+ * WebGL renderer for tile layers.
+ * @api
+ */
 class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
    * @param {module:ol/layer/Tile} tileLayer Tile layer.
-   * @api
    */
   constructor(mapRenderer, tileLayer) {
 

@@ -35,12 +35,13 @@ import RBush from '../structs/RBush.js';
  * @classdesc
  * Events emitted by {@link module:ol/source/Vector} instances are instances of this
  * type.
- *
- * @param {string} type Type.
- * @param {module:ol/Feature=} opt_feature Feature.
  */
 export class VectorSourceEvent extends Event {
 
+  /**
+   * @param {string} type Type.
+   * @param {module:ol/Feature=} opt_feature Feature.
+   */
   constructor(type, opt_feature) {
 
     super(type);
@@ -147,17 +148,18 @@ export class VectorSourceEvent extends Event {
  */
 
 
+/**
+ * @classdesc
+ * Provides a source of features for vector layers. Vector features provided
+ * by this source are suitable for editing. See {@link module:ol/source/VectorTile~VectorTile} for
+ * vector data that is optimized for rendering.
+ *
+ * @fires ol/source/Vector~VectorSourceEvent
+ * @api
+ */
 class VectorSource extends Source {
-
   /**
-   * @classdesc
-   * Provides a source of features for vector layers. Vector features provided
-   * by this source are suitable for editing. See {@link module:ol/source/VectorTile~VectorTile} for
-   * vector data that is optimized for rendering.
-   *
-   * @fires ol/source/Vector~VectorSourceEvent
    * @param {module:ol/source/Vector~Options=} opt_options Vector source options.
-   * @api
    */
   constructor(opt_options) {
 

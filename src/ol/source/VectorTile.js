@@ -58,21 +58,22 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  */
 
 
+/**
+ * @classdesc
+ * Class for layer sources providing vector data divided into a tile grid, to be
+ * used with {@link module:ol/layer/VectorTile~VectorTile}. Although this source receives tiles
+ * with vector features from the server, it is not meant for feature editing.
+ * Features are optimized for rendering, their geometries are clipped at or near
+ * tile boundaries and simplified for a view resolution. See
+ * {@link module:ol/source/Vector} for vector sources that are suitable for feature
+ * editing.
+ *
+ * @fires module:ol/source/Tile~TileSourceEvent
+ * @api
+ */
 class VectorTile extends UrlTile {
-
   /**
-   * @classdesc
-   * Class for layer sources providing vector data divided into a tile grid, to be
-   * used with {@link module:ol/layer/VectorTile~VectorTile}. Although this source receives tiles
-   * with vector features from the server, it is not meant for feature editing.
-   * Features are optimized for rendering, their geometries are clipped at or near
-   * tile boundaries and simplified for a view resolution. See
-   * {@link module:ol/source/Vector} for vector sources that are suitable for feature
-   * editing.
-   *
-   * @fires module:ol/source/Tile~TileSourceEvent
    * @param {module:ol/source/VectorTile~Options=} options Vector tile options.
-   * @api
    */
   constructor(options) {
     const projection = options.projection || 'EPSG:3857';

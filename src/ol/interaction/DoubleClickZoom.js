@@ -15,12 +15,12 @@ import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
 /**
  * @classdesc
  * Allows the user to zoom by double-clicking on the map.
+ * @api
  */
 class DoubleClickZoom extends Interaction {
 
   /**
    * @param {module:ol/interaction/DoubleClickZoom~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
     super({

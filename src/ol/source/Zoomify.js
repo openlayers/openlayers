@@ -23,17 +23,17 @@ const TierSizeCalculation = {
 };
 
 
-/**
- * @param {module:ol/tilegrid/TileGrid} tileGrid TileGrid that the tile belongs to.
- * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
- * @param {module:ol/TileState} state State.
- * @param {string} src Image source URI.
- * @param {?string} crossOrigin Cross origin.
- * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
- * @param {module:ol/Tile~Options=} opt_options Tile options.
- */
 export class CustomTile extends ImageTile {
 
+  /**
+   * @param {module:ol/tilegrid/TileGrid} tileGrid TileGrid that the tile belongs to.
+   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+   * @param {module:ol/TileState} state State.
+   * @param {string} src Image source URI.
+   * @param {?string} crossOrigin Cross origin.
+   * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
+   * @param {module:ol/Tile~Options=} opt_options Tile options.
+   */
   constructor(tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
     super(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
@@ -115,15 +115,16 @@ CustomTile.prototype.getImage = function() {
  */
 
 
+/**
+ * @classdesc
+ * Layer source for tile data in Zoomify format (both Zoomify and Internet
+ * Imaging Protocol are supported).
+ * @api
+ */
 class Zoomify extends TileImage {
 
   /**
-   * @classdesc
-   * Layer source for tile data in Zoomify format (both Zoomify and Internet
-   * Imaging Protocol are supported).
-   *
    * @param {module:ol/source/Zoomify~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

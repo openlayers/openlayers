@@ -10,12 +10,13 @@
  * @property {?} data
  */
 
-
+/**
+ * @classdesc
+ * Creates an empty linked list structure.
+ */
 class LinkedList {
 
   /**
-   * Creates an empty linked list structure.
-   *
    * @param {boolean=} opt_circular The last item is connected to the first one,
    * and the first item to the last one. Default is true.
    */

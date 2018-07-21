@@ -28,11 +28,11 @@ import DragBox from '../interaction/DragBox.js';
  *
  * To change the style of the box, use CSS and the `.ol-dragzoom` selector, or
  * your custom one configured with `className`.
+ * @api
  */
 class DragZoom extends DragBox {
   /**
    * @param {module:ol/interaction/DragZoom~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

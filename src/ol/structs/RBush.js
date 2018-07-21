@@ -16,13 +16,13 @@ import {isEmpty} from '../obj.js';
  */
 
 /**
+ * @classdesc
  * Wrapper around the RBush by Vladimir Agafonkin.
  * See https://github.com/mourner/rbush.
  *
  * @template T
  */
 class RBush {
-
   /**
    * @param {number=} opt_maxEntries Max entries.
    */

@@ -52,13 +52,14 @@ import ImageStyle from '../style/Image.js';
  */
 
 
+/**
+ * @classdesc
+ * Set icon style for vector features.
+ * @api
+ */
 class Icon extends ImageStyle {
   /**
-   * @classdesc
-   * Set icon style for vector features.
-   *
    * @param {module:ol/style/Icon~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
     const options = opt_options || {};

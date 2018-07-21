@@ -31,13 +31,14 @@ import XYZ from '../source/XYZ.js';
  */
 
 
+/**
+ * @classdesc
+ * Layer source for the CartoDB Maps API.
+ * @api
+ */
 class CartoDB extends XYZ {
   /**
-   * @classdesc
-   * Layer source for the CartoDB Maps API.
-   *
    * @param {module:ol/source/CartoDB~Options=} options CartoDB options.
-   * @api
    */
   constructor(options) {
     super({

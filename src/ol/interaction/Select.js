@@ -152,11 +152,11 @@ class SelectEvent extends Event {
  * Selected features are added to an internal unmanaged layer.
  *
  * @fires SelectEvent
+ * @api
  */
 class Select extends Interaction {
   /**
    * @param {module:ol/interaction/Select~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

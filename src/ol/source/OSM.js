@@ -41,14 +41,14 @@ export const ATTRIBUTION = '&copy; ' +
  */
 
 
+/**
+ * @classdesc
+ * Layer source for the OpenStreetMap tile server.
+ * @api
+ */
 class OSM extends XYZ {
-
   /**
-   * @classdesc
-   * Layer source for the OpenStreetMap tile server.
-   *
    * @param {module:ol/source/OSM~Options=} [opt_options] Open Street Map options.
-   * @api
    */
   constructor(opt_options) {
 

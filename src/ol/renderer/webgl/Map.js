@@ -37,11 +37,15 @@ import ContextEventType from '../../webgl/ContextEventType.js';
 const WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
 
 
+/**
+ * @classdesc
+ * WebGL map renderer.
+ * @api
+ */
 class WebGLMapRenderer extends MapRenderer {
 
   /**
    * @param {module:ol/PluggableMap} map Map.
-   * @api
    */
   constructor(map) {
     super(map);

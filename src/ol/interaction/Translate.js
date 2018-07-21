@@ -91,11 +91,11 @@ export class TranslateEvent extends Event {
  * Interaction for translating (moving) features.
  *
  * @fires module:ol/interaction/Translate~TranslateEvent
+ * @api
  */
 class Translate extends PointerInteraction {
   /**
    * @param {module:ol/interaction/Translate~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
     super({

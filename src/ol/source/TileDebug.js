@@ -80,17 +80,18 @@ class LabeledTile extends Tile {
  */
 
 
+/**
+ * @classdesc
+ * A pseudo tile source, which does not fetch tiles from a server, but renders
+ * a grid outline for the tile grid/projection along with the coordinates for
+ * each tile. See examples/canvas-tiles for an example.
+ *
+ * Uses Canvas context2d, so requires Canvas support.
+ * @api
+ */
 class TileDebug extends TileSource {
   /**
-   * @classdesc
-   * A pseudo tile source, which does not fetch tiles from a server, but renders
-   * a grid outline for the tile grid/projection along with the coordinates for
-   * each tile. See examples/canvas-tiles for an example.
-   *
-   * Uses Canvas context2d, so requires Canvas support.
-   *
    * @param {module:ol/source/TileDebug~Options=} options Debug tile options.
-   * @api
    */
   constructor(options) {
 

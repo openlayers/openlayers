@@ -29,18 +29,19 @@ import {assign} from '../obj.js';
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  */
 
-
+/**
+ * @classdesc
+ * For layer sources that provide pre-rendered, tiled images in grids that are
+ * organized by zoom levels for specific resolutions.
+ * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
+ * property on the layer object; for example, setting `title: 'My Title'` in the
+ * options means that `title` is observable, and has get/set accessors.
+ *
+ * @api
+ */
 class TileLayer extends Layer {
   /**
-   * @classdesc
-   * For layer sources that provide pre-rendered, tiled images in grids that are
-   * organized by zoom levels for specific resolutions.
-   * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
-   * property on the layer object; for example, setting `title: 'My Title'` in the
-   * options means that `title` is observable, and has get/set accessors.
-   *
    * @param {module:ol/layer/Tile~Options=} opt_options Tile layer options.
-   * @api
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};

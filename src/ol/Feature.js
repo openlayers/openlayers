@@ -53,7 +53,6 @@ import Style from './style/Style.js';
  * @api
  */
 class Feature extends BaseObject {
-
   /**
    * @param {module:ol/geom/Geometry|Object.<string, *>=} opt_geometryOrProperties
    *     You may pass a Geometry object directly, or an object literal containing

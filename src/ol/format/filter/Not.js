@@ -6,12 +6,12 @@ import Filter from '../filter/Filter.js';
 /**
  * @classdesc
  * Represents a logical `<Not>` operator for a filter condition.
+ * @api
  */
 class Not extends Filter {
 
   /**
    * @param {!module:ol/format/filter/Filter} condition Filter condition.
-   * @api
    */
   constructor(condition) {
 

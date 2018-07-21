@@ -77,11 +77,11 @@ class ExtentInteractionEvent extends Event {
  * This interaction is only supported for mouse devices.
  *
  * @fires module:ol/interaction/Extent~Event
+ * @api
  */
 class ExtentInteraction extends PointerInteraction {
   /**
    * @param {module:ol/interaction/Extent~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

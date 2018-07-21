@@ -154,11 +154,11 @@ class DrawEvent extends Event {
  * Interaction for drawing feature geometries.
  *
  * @fires module:ol/interaction/Draw~DrawEvent
+ * @api
  */
 class Draw extends PointerInteraction {
   /**
    * @param {module:ol/interaction/Draw~Options} options Options.
-   * @api
    */
   constructor(options) {
 

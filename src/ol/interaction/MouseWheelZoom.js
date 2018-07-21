@@ -46,11 +46,11 @@ export const Mode = {
 /**
  * @classdesc
  * Allows the user to zoom the map by scrolling the mouse wheel.
+ * @api
  */
 class MouseWheelZoom extends Interaction {
   /**
    * @param {module:ol/interaction/MouseWheelZoom~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

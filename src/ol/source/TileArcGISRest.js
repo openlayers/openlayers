@@ -51,17 +51,18 @@ import {appendParams} from '../uri.js';
  */
 
 
+/**
+ * @classdesc
+ * Layer source for tile data from ArcGIS Rest services. Map and Image
+ * Services are supported.
+ *
+ * For cached ArcGIS services, better performance is available using the
+ * {@link module:ol/source/XYZ~XYZ} data source.
+ * @api
+ */
 class TileArcGISRest extends TileImage {
   /**
-   * @classdesc
-   * Layer source for tile data from ArcGIS Rest services. Map and Image
-   * Services are supported.
-   *
-   * For cached ArcGIS services, better performance is available using the
-   * {@link module:ol/source/XYZ~XYZ} data source.
-   *
    * @param {module:ol/source/TileArcGISRest~Options=} opt_options Tile ArcGIS Rest options.
-   * @api
    */
   constructor(opt_options) {
 

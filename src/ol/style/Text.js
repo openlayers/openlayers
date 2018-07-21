@@ -48,12 +48,11 @@ const DEFAULT_FILL_COLOR = '#333';
 /**
  * @classdesc
  * Set text style for vector features.
+ * @api
  */
 class Text {
-
   /**
    * @param {module:ol/style/Text~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
 

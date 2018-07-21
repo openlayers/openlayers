@@ -10,12 +10,17 @@ import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, 
 import WebGLLayerRenderer from '../webgl/Layer.js';
 import {apply as applyTransform} from '../../transform.js';
 
+
+/**
+ * @classdesc
+ * WebGL renderer for vector layers.
+ * @api
+ */
 class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
    * @param {module:ol/layer/Vector} vectorLayer Vector layer.
-   * @api
    */
   constructor(mapRenderer, vectorLayer) {
 

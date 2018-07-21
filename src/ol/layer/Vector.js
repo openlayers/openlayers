@@ -77,16 +77,18 @@ const Property = {
 };
 
 
+/**
+ * @classdesc
+ * Vector data that is rendered client-side.
+ * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
+ * property on the layer object; for example, setting `title: 'My Title'` in the
+ * options means that `title` is observable, and has get/set accessors.
+ *
+ * @api
+ */
 class VectorLayer extends Layer {
   /**
-   * @classdesc
-   * Vector data that is rendered client-side.
-   * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
-   * property on the layer object; for example, setting `title: 'My Title'` in the
-   * options means that `title` is observable, and has get/set accessors.
-   *
    * @param {module:ol/layer/Vector~Options=} opt_options Options.
-   * @api
    */
   constructor(opt_options) {
     const options = opt_options ?

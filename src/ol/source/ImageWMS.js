@@ -51,14 +51,16 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  */
 
 
+/**
+ * @classdesc
+ * Source for WMS servers providing single, untiled images.
+ *
+ * @fires ol/source/Image~ImageSourceEvent
+ * @api
+ */
 class ImageWMS extends ImageSource {
   /**
-   * @classdesc
-   * Source for WMS servers providing single, untiled images.
-   *
-   * @fires ol/source/Image~ImageSourceEvent
    * @param {module:ol/source/ImageWMS~Options=} [opt_options] ImageWMS options.
-   * @api
    */
   constructor(opt_options) {
 
