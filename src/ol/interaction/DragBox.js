@@ -137,7 +137,7 @@ class DragBox extends PointerInteraction {
 
     /**
      * Function to execute just before `onboxend` is fired
-     * @type {{function(this:module:ol/interaction/DragBox, module:ol/MapBrowserEvent)}}
+     * @type {function(this:module:ol/interaction/DragBox, module:ol/MapBrowserEvent)}
      * @private
      */
     this.onBoxEnd_ = options.onBoxEnd ? options.onBoxEnd : UNDEFINED;
