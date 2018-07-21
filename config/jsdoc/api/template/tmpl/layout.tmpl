@@ -4,6 +4,13 @@ var version = obj.packageInfo.version;
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-2577926-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-2577926-1');
+    </script>
     <meta charset="utf-8">
     <title>OpenLayers v<?js= version ?> API - <?js= title ?></title>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch"></script>

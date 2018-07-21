@@ -12,9 +12,9 @@ The view in any Proj4js supported coordinate reference system is possible and pr
 # Usage
 The API usage is very simple. Just specify proper projection (e.g. using [EPSG](https://epsg.io) code) on `ol/View`:
 ```js
-import {Map, View} from `ol`;
-import TileLayer from `ol/layer/Tile`;
-import TileWMS from `ol/source/TileWMS`;
+import {Map, View} from 'ol';
+import TileLayer from 'ol/layer/Tile';
+import TileWMS from 'ol/source/TileWMS';
 
 var map = new Map({
   target: 'map',
