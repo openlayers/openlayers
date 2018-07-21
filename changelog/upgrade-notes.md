@@ -1,6 +1,6 @@
 ## Upgrade notes
 
-### Next release
+### v5.1.0
 
 #### Geometry constructor and `setCoordinates` no longer accept `null` coordinates
 

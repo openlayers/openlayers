@@ -8,15 +8,9 @@
 set -o errexit
 
 #
-# All profiles to be built.  Must correspond to .json files in the config
-# directory.
+# Destination directory for the package.
 #
-PROFILES="ol ol-debug"
-
-#
-# Destination directory for builds.
-#
-BUILDS=dist
+BUILT_PACKAGE=build/ol
 
 #
 # URL for canonical repo.
@@ -62,21 +56,6 @@ assert_version_match() {
 }
 
 #
-# Build all of the distribution profiles.
-#
-build_js() {
-  for p in ${@}; do
-    echo building ${BUILDS}/${p}.js
-    node ./tasks/build.js config/${p}.json ${BUILDS}/${p}.js
-  done
-}
-
-build_css() {
-  ./node_modules/.bin/cleancss css/ol.css -o ${BUILDS}/ol.css
-  cp css/ol.css ${BUILDS}/ol-debug.css
-}
-
-#
 # Check out the provided tag.  This ensures that the tag has been pushed to
 # the canonical remote.
 #
@@ -86,7 +65,7 @@ checkout_tag() {
 }
 
 #
-# Build all profiles and publish.
+# Build the package and publish.
 #
 main() {
   root=$(cd -P -- "$(dirname -- "${0}")" && pwd -P)/..
@@ -94,10 +73,9 @@ main() {
   assert_clean
   checkout_tag ${1}
   assert_version_match ${1}
-  rm -rf ${BUILDS}
   npm install
-  build_js ${PROFILES}
-  build_css
+  npm run build-package
+  cd ${BUILT_PACKAGE}
   npm publish
 }
 

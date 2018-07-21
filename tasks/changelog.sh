@@ -62,8 +62,12 @@ main() {
 
     if [ -n "$greenkeeper_output" ]; then
       echo
-      echo "Additionally a number of updates where made to our dependencies:"
+      echo "<details>"
+      echo "  <summary>Dependency Updates</summary>"
+      echo
       echo -e "$greenkeeper_output"
+      echo
+      echo "</details>"
     fi
   }
 }
