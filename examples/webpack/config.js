@@ -1,3 +1,4 @@
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const ExampleBuilder = require('./example-builder');
 const fs = require('fs');
@@ -31,6 +32,16 @@ module.exports = {
     }]
   },
   optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        sourceMap: true,
+        uglifyOptions: {
+          mangle: {
+            keep_fnames: true
+          }
+        }
+      })
+    ],
     runtimeChunk: {
       name: 'common'
     },
