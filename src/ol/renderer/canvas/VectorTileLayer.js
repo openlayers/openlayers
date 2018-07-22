@@ -410,7 +410,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
    * @param {number} squaredTolerance Squared tolerance.
-   * @param {(module:ol/style/Style|Array.<module:ol/style/Style>)} styles The style or array of styles.
+   * @param {module:ol/style/Style|Array.<module:ol/style/Style>} styles The style or array of styles.
    * @param {module:ol/render/canvas/ReplayGroup} replayGroup Replay group.
    * @return {boolean} `true` if an image is loading.
    */

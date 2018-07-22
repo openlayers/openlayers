@@ -276,7 +276,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @param {module:ol/Feature} feature Feature.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {(module:ol/style/Style|Array.<module:ol/style/Style>)} styles The style or array of
+   * @param {module:ol/style/Style|Array.<module:ol/style/Style>} styles The style or array of
    *     styles.
    * @param {module:ol/render/webgl/ReplayGroup} replayGroup Replay group.
    * @return {boolean} `true` if an image is loading.

@@ -40,22 +40,22 @@ const handleMoveEvent = UNDEFINED;
 
 /**
  * @typedef {Object} Options
- * @property {(function(module:ol/MapBrowserPointerEvent):boolean)} [handleDownEvent]
+ * @property {function(module:ol/MapBrowserPointerEvent):boolean} [handleDownEvent]
  * Function handling "down" events. If the function returns `true` then a drag
  * sequence is started.
- * @property {(function(module:ol/MapBrowserPointerEvent))} [handleDragEvent]
+ * @property {function(module:ol/MapBrowserPointerEvent)} [handleDragEvent]
  * Function handling "drag" events. This function is called on "move" events
  * during a drag sequence.
- * @property {(function(module:ol/MapBrowserEvent):boolean)} [handleEvent]
+ * @property {function(module:ol/MapBrowserEvent):boolean} [handleEvent]
  * Method called by the map to notify the interaction that a browser event was
  * dispatched to the map. The function may return `false` to prevent the
  * propagation of the event to other interactions in the map's interactions
  * chain.
- * @property {(function(module:ol/MapBrowserPointerEvent))} [handleMoveEvent]
+ * @property {function(module:ol/MapBrowserPointerEvent)} [handleMoveEvent]
  * Function handling "move" events. This function is called on "move" events,
  * also during a drag sequence (so during a drag sequence both the
  * `handleDragEvent` function and this function are called).
- * @property {(function(module:ol/MapBrowserPointerEvent):boolean)} [handleUpEvent]
+ * @property {function(module:ol/MapBrowserPointerEvent):boolean} [handleUpEvent]
  *  Function handling "up" events. If the function returns `false` then the
  * current drag sequence is stopped.
  * @property {function(boolean):boolean} stopDown
