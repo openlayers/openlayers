@@ -200,7 +200,7 @@ export default FeatureFormat;
 /**
  * @param {module:ol/geom/Geometry|module:ol/extent~Extent} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
- * @param {module:ol/format/Feature~WriteOptions=|module:ol/format/Feature~ReadOptions=} opt_options
+ * @param {module:ol/format/Feature~WriteOptions|module:ol/format/Feature~ReadOptions|undefined} opt_options
  *     Options.
  * @return {module:ol/geom/Geometry|module:ol/extent~Extent} Transformed geometry.
  */
