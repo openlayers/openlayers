@@ -62,6 +62,7 @@ describe('ol.interaction.Draw', function() {
    * @param {number} x Horizontal offset from map center.
    * @param {number} y Vertical offset from map center.
    * @param {boolean=} opt_shiftKey Shift key is pressed.
+   * @return {module:ol/MapBrowserPointerEvent} The simulated event.
    */
   function simulateEvent(type, x, y, opt_shiftKey) {
     const viewport = map.getViewport();
@@ -72,8 +73,12 @@ describe('ol.interaction.Draw', function() {
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
       shiftKey: shiftKey
+    }, {
+      pointerType: 'mouse'
     });
-    map.handleMapBrowserEvent(new MapBrowserPointerEvent(type, map, event));
+    const simulatedEvent = new MapBrowserPointerEvent(type, map, event);
+    map.handleMapBrowserEvent(simulatedEvent);
+    return simulatedEvent;
   }
 
   describe('constructor', function() {
@@ -1059,8 +1064,7 @@ describe('ol.interaction.Draw', function() {
       const draw = new Draw({
         source: source,
         type: 'Circle',
-        geometryFunction:
-            createRegularPolygon(4, Math.PI / 4)
+        geometryFunction: createRegularPolygon(4, Math.PI / 4)
       });
       map.addInteraction(draw);
 
@@ -1081,6 +1085,52 @@ describe('ol.interaction.Draw', function() {
       expect(coordinates[0].length).to.eql(5);
       expect(coordinates[0][0][0]).to.roughlyEqual(20, 1e-9);
       expect(coordinates[0][0][1]).to.roughlyEqual(20, 1e-9);
+    });
+
+    it('sketch start point always matches the mouse point', function() {
+      const draw = new Draw({
+        source: source,
+        type: 'Circle',
+        geometryFunction: createRegularPolygon(3)
+      });
+      map.addInteraction(draw);
+
+      // regular polygon center point
+      simulateEvent('pointermove', 60, 60);
+      simulateEvent('pointerdown', 60, 60);
+      simulateEvent('pointerup', 60, 60);
+
+      // move to first quadrant
+      simulateEvent('pointermove', 79, 80);
+      let event = simulateEvent('pointermove', 80, 80);
+      let coordinate = event.coordinate;
+      const firstQuadrantCoordinate = draw.sketchFeature_.getGeometry().getFirstCoordinate();
+      expect(firstQuadrantCoordinate[0]).to.roughlyEqual(coordinate[0], 1e-9);
+      expect(firstQuadrantCoordinate[1]).to.roughlyEqual(coordinate[1], 1e-9);
+
+      // move to second quadrant
+      simulateEvent('pointermove', 41, 80);
+      event = simulateEvent('pointermove', 40, 80);
+      coordinate = event.coordinate;
+      const secondQuadrantCoordinate = draw.sketchFeature_.getGeometry().getFirstCoordinate();
+      expect(secondQuadrantCoordinate[0]).to.roughlyEqual(coordinate[0], 1e-9);
+      expect(secondQuadrantCoordinate[1]).to.roughlyEqual(coordinate[1], 1e-9);
+
+      // move to third quadrant
+      simulateEvent('pointermove', 40, 41);
+      event = simulateEvent('pointermove', 40, 40);
+      coordinate = event.coordinate;
+      const thirdQuadrantCoordinate = draw.sketchFeature_.getGeometry().getFirstCoordinate();
+      expect(thirdQuadrantCoordinate[0]).to.roughlyEqual(coordinate[0], 1e-9);
+      expect(thirdQuadrantCoordinate[1]).to.roughlyEqual(coordinate[1], 1e-9);
+
+      // move to fourth quadrant
+      simulateEvent('pointermove', 79, 40);
+      event = simulateEvent('pointermove', 80, 40);
+      coordinate = event.coordinate;
+      const fourthQuadrantCoordinate = draw.sketchFeature_.getGeometry().getFirstCoordinate();
+      expect(fourthQuadrantCoordinate[0]).to.roughlyEqual(coordinate[0], 1e-9);
+      expect(fourthQuadrantCoordinate[1]).to.roughlyEqual(coordinate[1], 1e-9);
     });
   });
 
