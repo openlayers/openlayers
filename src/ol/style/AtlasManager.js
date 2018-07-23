@@ -176,8 +176,7 @@ class AtlasManager {
    * @param {number} height The height.
    * @param {function(CanvasRenderingContext2D, number, number)} renderCallback
    *    Called to render the new image onto an atlas image.
-   * @param {function(CanvasRenderingContext2D, number, number)=}
-   *    opt_renderHitCallback Called to render a hit-detection image onto a hit
+   * @param {function(CanvasRenderingContext2D, number, number)=} opt_renderHitCallback Called to render a hit-detection image onto a hit
    *    detection atlas image.
    * @param {Object=} opt_this Value to use as `this` when executing
    *    `renderCallback` and `renderHitCallback`.

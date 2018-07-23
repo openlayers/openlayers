@@ -242,8 +242,7 @@ class VectorLayer extends Layer {
   * it is `null` the layer has no style (a `null` style), so only features
   * that have their own styles will be rendered in the layer. See
   * {@link module:ol/style} for information on the default style.
-  * @param {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction|null|undefined}
-  *     style Layer style.
+  * @param {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction|null|undefined} style Layer style.
   * @api
   */
   setStyle(style) {

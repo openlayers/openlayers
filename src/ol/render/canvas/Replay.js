@@ -533,8 +533,7 @@ class CanvasReplay extends VectorContext {
    * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
    *     to skip.
    * @param {Array.<*>} instructions Instructions array.
-   * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined}
-   *     featureCallback Feature callback.
+   * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
    * @param {module:ol/extent~Extent=} opt_hitExtent Only check features that intersect this
    *     extent.
    * @return {T|undefined} Callback result.
