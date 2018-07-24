@@ -734,8 +734,7 @@ function writeProperty(node, pair, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {{vendorId: string, safeToIgnore: boolean, value: string}}
- *     nativeElement The native element.
+ * @param {{vendorId: string, safeToIgnore: boolean, value: string}} nativeElement The native element.
  * @param {Array.<*>} objectStack Node stack.
  */
 function writeNative(node, nativeElement, objectStack) {

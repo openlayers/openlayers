@@ -1745,8 +1745,7 @@ function readStyle(node, objectStack) {
 /**
  * Reads an array of geometries and creates arrays for common geometry
  * properties. Then sets them to the multi geometry.
- * @param {module:ol/geom/MultiPoint|module:ol/geom/MultiLineString|module:ol/geom/MultiPolygon}
- *     multiGeometry A multi-geometry.
+ * @param {module:ol/geom/MultiPoint|module:ol/geom/MultiLineString|module:ol/geom/MultiPolygon} multiGeometry A multi-geometry.
  * @param {Array.<module:ol/geom/Geometry>} geometries List of geometries.
  */
 function setCommonGeometryProperties(multiGeometry, geometries) {
