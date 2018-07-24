@@ -162,7 +162,7 @@ class ImageMapGuide extends ImageSource {
         projection);
       image = new ImageWrapper(extent, resolution, pixelRatio,
         imageUrl, this.crossOrigin_,
-        this.imageLoadFunction_);
+        this.getImageLoadFunction());
       listen(image, EventType.CHANGE,
         this.handleImageChange, this);
     } else {
@@ -180,7 +180,7 @@ class ImageMapGuide extends ImageSource {
    * @api
    */
   getImageLoadFunction() {
-    return this.imageLoadFunction_;
+    return this.imageLoadFunction_.bind(this);
   }
 
   /**

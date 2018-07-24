@@ -194,7 +194,7 @@ class ImageArcGISRest extends ImageSource {
       projection, params);
 
     this.image_ = new ImageWrapper(extent, resolution, pixelRatio,
-      url, this.crossOrigin_, this.imageLoadFunction_);
+      url, this.crossOrigin_, this.getImageLoadFunction());
 
     this.renderedRevision_ = this.getRevision();
 
@@ -211,7 +211,7 @@ class ImageArcGISRest extends ImageSource {
    * @api
    */
   getImageLoadFunction() {
-    return this.imageLoadFunction_;
+    return this.imageLoadFunction_.bind(this);
   }
 
   /**

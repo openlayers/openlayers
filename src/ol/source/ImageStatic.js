@@ -56,7 +56,7 @@ class Static extends ImageSource {
      * @private
      * @type {module:ol/Image}
      */
-    this.image_ = new ImageWrapper(imageExtent, undefined, 1, options.url, crossOrigin, imageLoadFunction);
+    this.image_ = new ImageWrapper(imageExtent, undefined, 1, options.url, crossOrigin, imageLoadFunction.bind(this));
 
     /**
      * @private

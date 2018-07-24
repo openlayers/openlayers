@@ -116,6 +116,12 @@ class ImageSource extends Source {
      * @type {number}
      */
     this.reprojectedRevision_ = 0;
+
+    /**
+     * @private
+     * @type {HTMLImageElement}
+     */
+    this.previousImageElement = new Image();
   }
 
   /**
@@ -229,7 +235,10 @@ class ImageSource extends Source {
  * @param {string} src Source.
  */
 export function defaultImageLoadFunction(image, src) {
-  image.getImage().src = src;
+  this.previousImageElement.onload = () => {
+    image.getImage().src = this.previousImageElement.src;
+  };
+  this.previousImageElement.src = src;
 }
 
 
