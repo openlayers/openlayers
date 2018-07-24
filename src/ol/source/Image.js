@@ -235,10 +235,14 @@ class ImageSource extends Source {
  * @param {string} src Source.
  */
 export function defaultImageLoadFunction(image, src) {
-  this.previousImageElement.onload = () => {
-    image.getImage().src = this.previousImageElement.src;
-  };
-  this.previousImageElement.src = src;
+  if(this.previousImageElement){
+    this.previousImageElement.onload = () => {
+      image.getImage().src = this.previousImageElement.src;
+    };
+    this.previousImageElement.src = src;
+  } else {
+    image.getImage().src = src;
+  }
 }
 
 
