@@ -162,7 +162,7 @@ class ImageMapGuide extends ImageSource {
         projection);
       image = new ImageWrapper(extent, resolution, pixelRatio,
         imageUrl, this.crossOrigin_,
-        this.imageLoadFunction_);
+        this.imageLoadFunction_, this.image_ ? this.image_.abort() : undefined);
       listen(image, EventType.CHANGE,
         this.handleImageChange, this);
     } else {
