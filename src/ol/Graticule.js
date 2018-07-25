@@ -364,7 +364,7 @@ class Graticule {
     const coordinate = [flatCoordinates[0], lat];
     let point;
     if (index in this.meridiansLabels_) {
-      point = this.meridiansLabels_[index];
+      point = this.meridiansLabels_[index].geom;
       point.setCoordinates(coordinate);
     } else {
       point = new Point(coordinate);
@@ -414,7 +414,7 @@ class Graticule {
     const coordinate = [lon, flatCoordinates[1]];
     let point;
     if (index in this.parallelsLabels_) {
-      point = this.parallelsLabels_[index];
+      point = this.parallelsLabels_[index].geom;
       point.setCoordinates(coordinate);
     } else {
       point = new Point(coordinate);
