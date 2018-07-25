@@ -36,8 +36,9 @@ class ImageWrapper extends ImageBase {
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
    * @param {module:ol/Image~LoadFunction} imageLoadFunction Image load function.
+   * @param {HTMLImageElement=} opt_image Image element
    */
-  constructor(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
+  constructor(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction, opt_image) {
 
     super(extent, resolution, pixelRatio, ImageState.IDLE);
 
@@ -51,9 +52,12 @@ class ImageWrapper extends ImageBase {
      * @private
      * @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement}
      */
-    this.image_ = new Image();
-    if (crossOrigin !== null) {
-      this.image_.crossOrigin = crossOrigin;
+    this.image_ = opt_image;
+    if (!opt_image) {
+      this.image_ = new Image();
+      if (crossOrigin !== null) {
+        this.image_.crossOrigin = crossOrigin;
+      }
     }
 
     /**
@@ -128,6 +132,22 @@ class ImageWrapper extends ImageBase {
       ];
       this.imageLoadFunction_(this, this.src_);
     }
+  }
+
+  /**
+   * Aborts an image request
+   * @return {HTMLImageElement} The image element if loading was aborted, or
+   * null if the image had a different state.
+   */
+  abort() {
+    if (this.state == ImageState.LOADING) {
+      this.unlistenImage_();
+      this.state = ImageState.ABORT;
+      this.changed();
+      this.image_ = null;
+      return this.image_;
+    }
+    return null;
   }
 
   /**

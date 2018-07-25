@@ -206,6 +206,7 @@ class ImageSource extends Source {
             image));
         break;
       case ImageState.LOADED:
+      case ImageState.ABORT:
         this.dispatchEvent(
           new ImageSourceEvent(ImageSourceEventType.IMAGELOADEND,
             image));

@@ -254,7 +254,8 @@ class ImageWMS extends ImageSource {
       projection, params);
 
     this.image_ = new ImageWrapper(requestExtent, resolution, pixelRatio,
-      url, this.crossOrigin_, this.imageLoadFunction_);
+      url, this.crossOrigin_, this.imageLoadFunction_,
+      this.image_ ? this.image_.abort() : undefined);
 
     this.renderedRevision_ = this.getRevision();
 
