@@ -71,6 +71,9 @@ const INTERVALS = [
  * @property {number} [latLabelPosition=1] Latitude label position in fractions
  * (0..1) of view extent. 0 means at the left of the viewport, 1 means at the
  * right.
+ * @property {function(module:ol/extent~Extent):module:ol/extent~Extent} [getExtent] An optional function
+ * that returns the extent where the graticule will be displayed.
+ * The function receives the view extent as argument.
  * @property {module:ol/style/Text} [lonLabelStyle] Longitude label text
  * style. If not provided, the following style will be used:
  * ```js
@@ -280,6 +283,12 @@ class Graticule {
        */
       this.latLabelPosition_ = options.latLabelPosition == undefined ? 1 :
         options.latLabelPosition;
+
+      /**
+       * @type {undefined|function(module:ol/extent~Extent):module:ol/extent~Extent}
+       * @private
+       */
+      this.getExtent_ = options.getExtent;
 
       /**
        * @type {module:ol/style/Text}
@@ -623,7 +632,7 @@ class Graticule {
   handlePostCompose_(e) {
     const vectorContext = e.vectorContext;
     const frameState = e.frameState;
-    const extent = frameState.extent;
+    const extent = this.getExtent_ ? this.getExtent_(frameState.extent) : frameState.extent;
     const viewState = frameState.viewState;
     const center = viewState.center;
     const projection = viewState.projection;

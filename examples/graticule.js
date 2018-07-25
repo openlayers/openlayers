@@ -5,6 +5,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
 import Stroke from '../src/ol/style/Stroke.js';
+import {getWidth} from '../src/ol/extent.js';
 
 
 const map = new Map({
@@ -22,8 +23,21 @@ const map = new Map({
   })
 });
 
+const swipe = document.getElementById('swipe');
+swipe.addEventListener('input', function() {
+  map.render();
+}, false);
+
+const getExtent = function(viewExtent) {
+  const extent = viewExtent.slice();
+  const ratio = swipe.value / 100;
+  extent[2] = extent[0] + (getWidth(viewExtent) * ratio);
+  return extent;
+};
+
 // Create the graticule component
 const graticule = new Graticule({
+  getExtent: getExtent,
   // the style to use for the lines, optional.
   strokeStyle: new Stroke({
     color: 'rgba(255,120,0,0.9)',
