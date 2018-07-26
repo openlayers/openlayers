@@ -15,7 +15,7 @@ import {containsExtent} from './extent.js';
  * @property {number|string} [id] Set the overlay id. The overlay id can be used
  * with the {@link module:ol/Map~Map#getOverlayById} method.
  * @property {HTMLElement} [element] The overlay element.
- * @property {Array.<number>} [offset=[0, 0]] Offsets in pixels used when positioning
+ * @property {Array<number>} [offset=[0, 0]] Offsets in pixels used when positioning
  * the overlay. The first element in the
  * array is the horizontal offset. A positive value shifts the overlay right.
  * The second element in the array is the vertical offset. A positive value
@@ -248,12 +248,12 @@ class Overlay extends BaseObject {
 
   /**
    * Get the offset of this overlay.
-   * @return {Array.<number>} The offset.
+   * @return {Array<number>} The offset.
    * @observable
    * @api
    */
   getOffset() {
-    return /** @type {Array.<number>} */ (this.get(Property.OFFSET));
+    return /** @type {Array<number>} */ (this.get(Property.OFFSET));
   }
 
   /**
@@ -371,7 +371,7 @@ class Overlay extends BaseObject {
 
   /**
    * Set the offset for this overlay.
-   * @param {Array.<number>} offset Offset.
+   * @param {Array<number>} offset Offset.
    * @observable
    * @api
    */

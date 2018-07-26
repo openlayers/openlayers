@@ -44,7 +44,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
- * @property {Array.<string>} [urls] An array of URL templates.
+ * @property {Array<string>} [urls] An array of URL templates.
  * @property {boolean} [wrapX] Whether to wrap the world horizontally. The default, is to
  * request out-of-bounds tiles from the server. When set to `false`, only one
  * world will be rendered. When set to `true`, tiles will be requested for one
@@ -102,13 +102,13 @@ class TileImage extends UrlTile {
 
     /**
      * @protected
-     * @type {!Object.<string, module:ol/TileCache>}
+     * @type {!Object<string, module:ol/TileCache>}
      */
     this.tileCacheForProjection = {};
 
     /**
      * @protected
-     * @type {!Object.<string, module:ol/tilegrid/TileGrid>}
+     * @type {!Object<string, module:ol/tilegrid/TileGrid>}
      */
     this.tileGridForProjection = {};
 

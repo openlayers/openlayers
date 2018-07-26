@@ -58,13 +58,13 @@ class Atlas {
 
     /**
      * @private
-     * @type {Array.<module:ol/style/Atlas~AtlasBlock>}
+     * @type {Array<module:ol/style/Atlas~AtlasBlock>}
      */
     this.emptyBlocks_ = [{x: 0, y: 0, width: size, height: size}];
 
     /**
      * @private
-     * @type {Object.<string, module:ol/style/Atlas~AtlasInfo>}
+     * @type {Object<string, module:ol/style/Atlas~AtlasInfo>}
      */
     this.entries_ = {};
 

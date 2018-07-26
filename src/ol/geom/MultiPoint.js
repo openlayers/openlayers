@@ -19,7 +19,7 @@ import {squaredDistance as squaredDx} from '../math.js';
 class MultiPoint extends SimpleGeometry {
 
   /**
-   * @param {Array.<module:ol/coordinate~Coordinate>|Array.<number>} coordinates Coordinates.
+   * @param {Array<module:ol/coordinate~Coordinate>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
    * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
    */
@@ -82,7 +82,7 @@ class MultiPoint extends SimpleGeometry {
 
   /**
    * Return the coordinates of the multipoint.
-   * @return {Array.<module:ol/coordinate~Coordinate>} Coordinates.
+   * @return {Array<module:ol/coordinate~Coordinate>} Coordinates.
    * @override
    * @api
    */
@@ -108,14 +108,14 @@ class MultiPoint extends SimpleGeometry {
 
   /**
    * Return the points of this multipoint.
-   * @return {Array.<module:ol/geom/Point>} Points.
+   * @return {Array<module:ol/geom/Point>} Points.
    * @api
    */
   getPoints() {
     const flatCoordinates = this.flatCoordinates;
     const layout = this.layout;
     const stride = this.stride;
-    /** @type {Array.<module:ol/geom/Point>} */
+    /** @type {Array<module:ol/geom/Point>} */
     const points = [];
     for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
       const point = new Point(flatCoordinates.slice(i, i + stride), layout);
@@ -151,7 +151,7 @@ class MultiPoint extends SimpleGeometry {
 
   /**
    * Set the coordinates of the multipoint.
-   * @param {!Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
+   * @param {!Array<module:ol/coordinate~Coordinate>} coordinates Coordinates.
    * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
    * @override
    * @api

@@ -55,13 +55,13 @@ const SelectEventType = {
  * feature removes all from the selection.
  * See `toggle`, `add`, `remove` options for adding/removing extra features to/
  * from the selection.
- * @property {Array.<module:ol/layer/Layer>|function(module:ol/layer/Layer): boolean} [layers]
+ * @property {Array<module:ol/layer/Layer>|function(module:ol/layer/Layer): boolean} [layers]
  * A list of layers from which features should be selected. Alternatively, a
  * filter function can be provided. The function will be called for each layer
  * in the map and should return `true` for layers that you want to be
  * selectable. If the option is absent, all visible layers will be considered
  * selectable.
- * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style]
+ * @property {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style]
  * Style for the selected features. By default the default edit style is used
  * (see {@link module:ol/style}).
  * @property {module:ol/events/condition~Condition} [removeCondition] A function
@@ -80,7 +80,7 @@ const SelectEventType = {
  * @property {boolean} [multi=false] A boolean that determines if the default
  * behaviour should select only single features or all (overlapping) features at
  * the clicked map position. The default of `false` means single select.
- * @property {module:ol/Collection.<module:ol/Feature>} [features]
+ * @property {module:ol/Collection<module:ol/Feature>} [features]
  * Collection where the interaction will place selected features. Optional. If
  * not set the interaction will create a collection. In any case the collection
  * used by the interaction is returned by
@@ -105,8 +105,8 @@ const SelectEventType = {
 class SelectEvent extends Event {
   /**
    * @param {SelectEventType} type The event type.
-   * @param {Array.<module:ol/Feature>} selected Selected features.
-   * @param {Array.<module:ol/Feature>} deselected Deselected features.
+   * @param {Array<module:ol/Feature>} selected Selected features.
+   * @param {Array<module:ol/Feature>} deselected Deselected features.
    * @param {module:ol/MapBrowserEvent} mapBrowserEvent Associated
    *     {@link module:ol/MapBrowserEvent}.
    */
@@ -115,14 +115,14 @@ class SelectEvent extends Event {
 
     /**
      * Selected features array.
-     * @type {Array.<module:ol/Feature>}
+     * @type {Array<module:ol/Feature>}
      * @api
      */
     this.selected = selected;
 
     /**
      * Deselected features array.
-     * @type {Array.<module:ol/Feature>}
+     * @type {Array<module:ol/Feature>}
      * @api
      */
     this.deselected = deselected;
@@ -251,7 +251,7 @@ class Select extends Interaction {
      * An association between selected feature (key)
      * and layer (value)
      * @private
-     * @type {Object.<number, module:ol/layer/Layer>}
+     * @type {Object<number, module:ol/layer/Layer>}
      */
     this.featureLayerAssociation_ = {};
 
@@ -275,7 +275,7 @@ class Select extends Interaction {
 
   /**
    * Get the selected features.
-   * @return {module:ol/Collection.<module:ol/Feature>} Features collection.
+   * @return {module:ol/Collection<module:ol/Feature>} Features collection.
    * @api
    */
   getFeatures() {

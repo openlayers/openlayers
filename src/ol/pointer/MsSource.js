@@ -36,7 +36,7 @@ import EventSource from '../pointer/EventSource.js';
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array<string>}
  */
 const POINTER_TYPES = [
   '',
@@ -157,7 +157,7 @@ class MsSource extends EventSource {
 
     /**
      * @const
-     * @type {!Object.<string, MSPointerEvent|Object>}
+     * @type {!Object<string, MSPointerEvent|Object>}
      */
     this.pointerMap = dispatcher.pointerMap;
   }

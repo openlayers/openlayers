@@ -29,7 +29,7 @@ import {modulo} from '../math.js';
 class Polygon extends SimpleGeometry {
 
   /**
-   * @param {!Array.<Array.<module:ol/coordinate~Coordinate>>|!Array.<number>} coordinates
+   * @param {!Array<Array<module:ol/coordinate~Coordinate>>|!Array<number>} coordinates
    *     Array of linear rings that define the polygon. The first linear ring of the
    *     array defines the outer-boundary or surface of the polygon. Each subsequent
    *     linear ring defines a hole in the surface of the polygon. A linear ring is
@@ -37,14 +37,14 @@ class Polygon extends SimpleGeometry {
    *     equivalent. (For internal use, flat coordinates in combination with
    *     `opt_layout` and `opt_ends` are also accepted.)
    * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
-   * @param {Array.<number>=} opt_ends Ends (for internal use with flat coordinates).
+   * @param {Array<number>=} opt_ends Ends (for internal use with flat coordinates).
    */
   constructor(coordinates, opt_layout, opt_ends) {
 
     super();
 
     /**
-     * @type {Array.<number>}
+     * @type {Array<number>}
      * @private
      */
     this.ends_ = [];
@@ -81,7 +81,7 @@ class Polygon extends SimpleGeometry {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.orientedFlatCoordinates_ = null;
 
@@ -162,7 +162,7 @@ class Polygon extends SimpleGeometry {
    *     (clockwise for exterior and counter-clockwise for interior rings).
    *     By default, coordinate orientation will depend on how the geometry was
    *     constructed.
-   * @return {Array.<Array.<module:ol/coordinate~Coordinate>>} Coordinates.
+   * @return {Array<Array<module:ol/coordinate~Coordinate>>} Coordinates.
    * @override
    * @api
    */
@@ -181,14 +181,14 @@ class Polygon extends SimpleGeometry {
   }
 
   /**
-   * @return {Array.<number>} Ends.
+   * @return {Array<number>} Ends.
    */
   getEnds() {
     return this.ends_;
   }
 
   /**
-   * @return {Array.<number>} Interior point.
+   * @return {Array<number>} Interior point.
    */
   getFlatInteriorPoint() {
     if (this.flatInteriorPointRevision_ != this.getRevision()) {
@@ -242,7 +242,7 @@ class Polygon extends SimpleGeometry {
 
   /**
    * Return the linear rings of the polygon.
-   * @return {Array.<module:ol/geom/LinearRing>} Linear rings.
+   * @return {Array<module:ol/geom/LinearRing>} Linear rings.
    * @api
    */
   getLinearRings() {
@@ -261,7 +261,7 @@ class Polygon extends SimpleGeometry {
   }
 
   /**
-   * @return {Array.<number>} Oriented flat coordinates.
+   * @return {Array<number>} Oriented flat coordinates.
    */
   getOrientedFlatCoordinates() {
     if (this.orientedRevision_ != this.getRevision()) {
@@ -312,7 +312,7 @@ class Polygon extends SimpleGeometry {
 
   /**
    * Set the coordinates of the polygon.
-   * @param {!Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
+   * @param {!Array<Array<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
    * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
    * @override
    * @api
@@ -347,7 +347,7 @@ export default Polygon;
  */
 export function circular(center, radius, opt_n, opt_sphereRadius) {
   const n = opt_n ? opt_n : 32;
-  /** @type {Array.<number>} */
+  /** @type {Array<number>} */
   const flatCoordinates = [];
   for (let i = 0; i < n; ++i) {
     extend(flatCoordinates, sphereOffset(center, radius, 2 * Math.PI * i / n, opt_sphereRadius));

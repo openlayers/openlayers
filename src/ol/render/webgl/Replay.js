@@ -66,13 +66,13 @@ class WebGLReplay extends VectorContext {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.tmpMat4_ = create();
 
     /**
      * @protected
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.indices = [];
 
@@ -85,20 +85,20 @@ class WebGLReplay extends VectorContext {
     /**
      * Start index per feature (the index).
      * @protected
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.startIndices = [];
 
     /**
      * Start index per feature (the feature).
      * @protected
-     * @type {Array.<module:ol/Feature|module:ol/render/Feature>}
+     * @type {Array<module:ol/Feature|module:ol/render/Feature>}
      */
     this.startIndicesFeature = [];
 
     /**
      * @protected
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.vertices = [];
 
@@ -160,7 +160,7 @@ class WebGLReplay extends VectorContext {
    * @protected
    * @param {WebGLRenderingContext} gl gl.
    * @param {module:ol/webgl/Context} context Context.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {boolean} hitDetection Hit detection mode.
    */
   drawReplay(gl, context, skippedFeaturesHash, hitDetection) {}
@@ -170,7 +170,7 @@ class WebGLReplay extends VectorContext {
    * @protected
    * @param {WebGLRenderingContext} gl gl.
    * @param {module:ol/webgl/Context} context Context.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
    * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting this extent are checked.
    * @return {T|undefined} Callback result.
@@ -182,7 +182,7 @@ class WebGLReplay extends VectorContext {
    * @protected
    * @param {WebGLRenderingContext} gl gl.
    * @param {module:ol/webgl/Context} context Context.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
    * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
    * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting this extent are checked.
@@ -205,7 +205,7 @@ class WebGLReplay extends VectorContext {
    * @protected
    * @param {WebGLRenderingContext} gl gl.
    * @param {module:ol/webgl/Context} context Context.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
    * @return {T|undefined} Callback result.
    * @template T
@@ -230,7 +230,7 @@ class WebGLReplay extends VectorContext {
    * @param {module:ol/size~Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
    * @param {number} opacity Global opacity.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
    * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
    * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting this extent are checked.

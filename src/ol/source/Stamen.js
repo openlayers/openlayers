@@ -8,7 +8,7 @@ import XYZ from '../source/XYZ.js';
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array<string>}
  */
 const ATTRIBUTIONS = [
   'Map tiles by <a href="https://stamen.com/">Stamen Design</a>, ' +
@@ -19,7 +19,7 @@ const ATTRIBUTIONS = [
 
 
 /**
- * @type {Object.<string, {extension: string, opaque: boolean}>}
+ * @type {Object<string, {extension: string, opaque: boolean}>}
  */
 const LayerConfig = {
   'terrain': {
@@ -70,7 +70,7 @@ const LayerConfig = {
 
 
 /**
- * @type {Object.<string, {minZoom: number, maxZoom: number}>}
+ * @type {Object<string, {minZoom: number, maxZoom: number}>}
  */
 const ProviderConfig = {
   'terrain': {

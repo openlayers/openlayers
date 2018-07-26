@@ -4,13 +4,13 @@
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {module:ol/transform~Transform} transform Transform.
- * @param {Array.<number>=} opt_dest Destination.
- * @return {Array.<number>} Transformed coordinates.
+ * @param {Array<number>=} opt_dest Destination.
+ * @return {Array<number>} Transformed coordinates.
  */
 export function transform2D(flatCoordinates, offset, end, stride, transform, opt_dest) {
   const dest = opt_dest ? opt_dest : [];
@@ -29,14 +29,14 @@ export function transform2D(flatCoordinates, offset, end, stride, transform, opt
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {number} angle Angle.
- * @param {Array.<number>} anchor Rotation anchor point.
- * @param {Array.<number>=} opt_dest Destination.
- * @return {Array.<number>} Transformed coordinates.
+ * @param {Array<number>} anchor Rotation anchor point.
+ * @param {Array<number>=} opt_dest Destination.
+ * @return {Array<number>} Transformed coordinates.
  */
 export function rotate(flatCoordinates, offset, end, stride, angle, anchor, opt_dest) {
   const dest = opt_dest ? opt_dest : [];
@@ -63,15 +63,15 @@ export function rotate(flatCoordinates, offset, end, stride, angle, anchor, opt_
 
 /**
  * Scale the coordinates.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {number} sx Scale factor in the x-direction.
  * @param {number} sy Scale factor in the y-direction.
- * @param {Array.<number>} anchor Scale anchor point.
- * @param {Array.<number>=} opt_dest Destination.
- * @return {Array.<number>} Transformed coordinates.
+ * @param {Array<number>} anchor Scale anchor point.
+ * @param {Array<number>=} opt_dest Destination.
+ * @return {Array<number>} Transformed coordinates.
  */
 export function scale(flatCoordinates, offset, end, stride, sx, sy, anchor, opt_dest) {
   const dest = opt_dest ? opt_dest : [];
@@ -95,14 +95,14 @@ export function scale(flatCoordinates, offset, end, stride, sx, sy, anchor, opt_
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {number} deltaX Delta X.
  * @param {number} deltaY Delta Y.
- * @param {Array.<number>=} opt_dest Destination.
- * @return {Array.<number>} Transformed coordinates.
+ * @param {Array<number>=} opt_dest Destination.
+ * @return {Array<number>} Transformed coordinates.
  */
 export function translate(flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest) {
   const dest = opt_dest ? opt_dest : [];

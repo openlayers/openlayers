@@ -16,17 +16,17 @@ import TileGrid from '../tilegrid/TileGrid.js';
  * @property {module:ol/coordinate~Coordinate} [origin] The tile grid origin, i.e.
  * where the `x` and `y` axes meet (`[z, 0, 0]`). Tile coordinates increase left
  * to right and upwards. If not specified, `extent` or `origins` must be provided.
- * @property {Array.<module:ol/coordinate~Coordinate>} [origins] Tile grid origins,
+ * @property {Array<module:ol/coordinate~Coordinate>} [origins] Tile grid origins,
  * i.e. where the `x` and `y` axes meet (`[z, 0, 0]`), for each zoom level. If
  * given, the array length should match the length of the `resolutions` array, i.e.
  * each resolution can have a different origin. Tile coordinates increase left to
  * right and upwards. If not specified, `extent` or `origin` must be provided.
- * @property {!Array.<number>} resolutions Resolutions. The array index of each
+ * @property {!Array<number>} resolutions Resolutions. The array index of each
  * resolution needs to match the zoom level. This means that even if a `minZoom`
  * is configured, the resolutions array will have a length of `maxZoom + 1`
- * @property {!Array.<string>} matrixIds matrix IDs. The length of this array needs
+ * @property {!Array<string>} matrixIds matrix IDs. The length of this array needs
  * to match the length of the `resolutions` array.
- * @property {Array.<module:ol/size~Size>} [sizes] Number of tile rows and columns
+ * @property {Array<module:ol/size~Size>} [sizes] Number of tile rows and columns
  * of the grid for each zoom level. The values here are the `TileMatrixWidth` and
  * `TileMatrixHeight` advertised in the GetCapabilities response of the WMTS, and
  * define the grid's extent together with the `origin`.
@@ -35,9 +35,9 @@ import TileGrid from '../tilegrid/TileGrid.js';
  * the `extent` is used as `origin` or `origins`, then the `y` value must be
  * negative because OpenLayers tile coordinates increase upwards.
  * @property {number|module:ol/size~Size} [tileSize] Tile size.
- * @property {Array.<module:ol/size~Size>} [tileSizes] Tile sizes. The length of
+ * @property {Array<module:ol/size~Size>} [tileSizes] Tile sizes. The length of
  * this array needs to match the length of the `resolutions` array.
- * @property {Array.<number>} [widths] Number of tile columns that cover the grid's
+ * @property {Array<number>} [widths] Number of tile columns that cover the grid's
  * extent for each zoom level. Only required when used with a source that has `wrapX`
  * set to `true`, and only when the grid's origin differs from the one of the
  * projection's extent. The array length has to match the length of the `resolutions`
@@ -67,7 +67,7 @@ class WMTSTileGrid extends TileGrid {
 
     /**
      * @private
-     * @type {!Array.<string>}
+     * @type {!Array<string>}
      */
     this.matrixIds_ = options.matrixIds;
   }
@@ -82,7 +82,7 @@ class WMTSTileGrid extends TileGrid {
 
   /**
    * Get the list of matrix identifiers.
-   * @return {Array.<string>} MatrixIds.
+   * @return {Array<string>} MatrixIds.
    * @api
    */
   getMatrixIds() {
@@ -100,22 +100,22 @@ export default WMTSTileGrid;
  *     capabilities document.
  * @param {module:ol/extent~Extent=} opt_extent An optional extent to restrict the tile
  *     ranges the server provides.
- * @param {Array.<Object>=} opt_matrixLimits An optional object representing
+ * @param {Array<Object>=} opt_matrixLimits An optional object representing
  *     the available matrices for tileGrid.
  * @return {module:ol/tilegrid/WMTS} WMTS tileGrid instance.
  * @api
  */
 export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matrixLimits) {
 
-  /** @type {!Array.<number>} */
+  /** @type {!Array<number>} */
   const resolutions = [];
-  /** @type {!Array.<string>} */
+  /** @type {!Array<string>} */
   const matrixIds = [];
-  /** @type {!Array.<module:ol/coordinate~Coordinate>} */
+  /** @type {!Array<module:ol/coordinate~Coordinate>} */
   const origins = [];
-  /** @type {!Array.<module:ol/size~Size>} */
+  /** @type {!Array<module:ol/size~Size>} */
   const tileSizes = [];
-  /** @type {!Array.<module:ol/size~Size>} */
+  /** @type {!Array<module:ol/size~Size>} */
   const sizes = [];
 
   const matrixLimits = opt_matrixLimits !== undefined ? opt_matrixLimits : [];

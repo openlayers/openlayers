@@ -23,7 +23,7 @@ import {appendParams} from '../uri.js';
  * the remote server.
  * @property {module:ol/Image~LoadFunction} [imageLoadFunction] Optional function to load an image given
  * a URL.
- * @property {Object.<string,*>} params ArcGIS Rest parameters. This field is optional. Service
+ * @property {Object<string,*>} params ArcGIS Rest parameters. This field is optional. Service
  * defaults will be used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is
  * `IMAGE` by default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`, and `IMAGESR`
  * will be set dynamically. Set `LAYERS` to override the default service layer visibility. See
@@ -32,7 +32,7 @@ import {appendParams} from '../uri.js';
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport,
  * `2` means twice the size of the map viewport, and so on.
- * @property {Array.<number>} [resolutions] Resolutions. If specified, requests will be made for
+ * @property {Array<number>} [resolutions] Resolutions. If specified, requests will be made for
  * these resolutions only.
  * @property {string} [url] ArcGIS Rest service URL for a Map Service or Image Service. The url
  * should include /MapServer or /ImageServer.

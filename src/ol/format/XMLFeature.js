@@ -82,7 +82,7 @@ class XMLFeature extends FeatureFormat {
    * @function
    * @param {Document|Node|Object|string} source Source.
    * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
-   * @return {Array.<module:ol/Feature>} Features.
+   * @return {Array<module:ol/Feature>} Features.
    * @api
    */
   readFeatures(source, opt_options) {
@@ -103,10 +103,10 @@ class XMLFeature extends FeatureFormat {
    * @param {Document} doc Document.
    * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
    * @protected
-   * @return {Array.<module:ol/Feature>} Features.
+   * @return {Array<module:ol/Feature>} Features.
    */
   readFeaturesFromDocument(doc, opt_options) {
-    /** @type {Array.<module:ol/Feature>} */
+    /** @type {Array<module:ol/Feature>} */
     const features = [];
     for (let n = doc.firstChild; n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
@@ -121,7 +121,7 @@ class XMLFeature extends FeatureFormat {
    * @param {Node} node Node.
    * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
    * @protected
-   * @return {Array.<module:ol/Feature>} Features.
+   * @return {Array<module:ol/Feature>} Features.
    */
   readFeaturesFromNode(node, opt_options) {}
 
@@ -221,7 +221,7 @@ class XMLFeature extends FeatureFormat {
   /**
    * Encode an array of features as string.
    *
-   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {Array<module:ol/Feature>} features Features.
    * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
    * @return {string} Result.
    * @api
@@ -232,7 +232,7 @@ class XMLFeature extends FeatureFormat {
   }
 
   /**
-   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {Array<module:ol/Feature>} features Features.
    * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
    * @return {Node} Node.
    */

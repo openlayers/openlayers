@@ -12,7 +12,7 @@ import {pushParseAndPop, makeStructureNS,
 
 /**
  * @const
- * @type {Array.<null|string>}
+ * @type {Array<null|string>}
  */
 const NAMESPACE_URIS = [
   null,
@@ -22,7 +22,7 @@ const NAMESPACE_URIS = [
 
 /**
  * @const
- * @type {Array.<null|string>}
+ * @type {Array<null|string>}
  */
 const OWS_NAMESPACE_URIS = [
   null,
@@ -32,7 +32,7 @@ const OWS_NAMESPACE_URIS = [
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -87,7 +87,7 @@ class WMTSCapabilities extends XML {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const CONTENTS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -98,7 +98,7 @@ const CONTENTS_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const LAYER_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -117,7 +117,7 @@ const LAYER_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -130,7 +130,7 @@ const STYLE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const TMS_LINKS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -140,7 +140,7 @@ const TMS_LINKS_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const TMS_LIMITS_LIST_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -150,7 +150,7 @@ const TMS_LIMITS_LIST_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const TMS_LIMITS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -164,7 +164,7 @@ const TMS_LIMITS_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const DIMENSION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -177,7 +177,7 @@ const DIMENSION_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const WGS84_BBOX_READERS = makeStructureNS(
   OWS_NAMESPACE_URIS, {
@@ -188,7 +188,7 @@ const WGS84_BBOX_READERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const TMS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -202,7 +202,7 @@ const TMS_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const TM_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -219,7 +219,7 @@ const TM_PARSERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Attribution object.
  */
 function readContents(node, objectStack) {
@@ -229,7 +229,7 @@ function readContents(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Layers object.
  */
 function readLayer(node, objectStack) {
@@ -239,7 +239,7 @@ function readLayer(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Tile Matrix Set object.
  */
 function readTileMatrixSet(node, objectStack) {
@@ -249,7 +249,7 @@ function readTileMatrixSet(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Style object.
  */
 function readStyle(node, objectStack) {
@@ -266,7 +266,7 @@ function readStyle(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Tile Matrix Set Link object.
  */
 function readTileMatrixSetLink(node, objectStack) {
@@ -276,7 +276,7 @@ function readTileMatrixSetLink(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Dimension object.
  */
 function readDimensions(node, objectStack) {
@@ -286,7 +286,7 @@ function readDimensions(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Resource URL object.
  */
 function readResourceUrl(node, objectStack) {
@@ -309,7 +309,7 @@ function readResourceUrl(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} WGS84 BBox object.
  */
 function readWgs84BoundingBox(node, objectStack) {
@@ -323,7 +323,7 @@ function readWgs84BoundingBox(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Legend object.
  */
 function readLegendUrl(node, objectStack) {
@@ -336,7 +336,7 @@ function readLegendUrl(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Coordinates object.
  */
 function readCoordinates(node, objectStack) {
@@ -355,7 +355,7 @@ function readCoordinates(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} TileMatrix object.
  */
 function readTileMatrix(node, objectStack) {
@@ -365,7 +365,7 @@ function readTileMatrix(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} TileMatrixSetLimits Object.
  */
 function readTileMatrixLimitsList(node, objectStack) {
@@ -375,7 +375,7 @@ function readTileMatrixLimitsList(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} TileMatrixLimits Array.
  */
 function readTileMatrixLimits(node, objectStack) {

@@ -44,7 +44,7 @@ class JSONFeature extends FeatureFormat {
    *
    * @param {ArrayBuffer|Document|Node|Object|string} source Source.
    * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
-   * @return {Array.<module:ol/Feature>} Features.
+   * @return {Array<module:ol/Feature>} Features.
    * @api
    */
   readFeatures(source, opt_options) {
@@ -66,7 +66,7 @@ class JSONFeature extends FeatureFormat {
    * @param {Object} object Object.
    * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
    * @protected
-   * @return {Array.<module:ol/Feature>} Features.
+   * @return {Array<module:ol/Feature>} Features.
    */
   readFeaturesFromObject(object, opt_options) {}
 
@@ -134,7 +134,7 @@ class JSONFeature extends FeatureFormat {
   /**
    * Encode an array of features as string.
    *
-   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {Array<module:ol/Feature>} features Features.
    * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
    * @return {string} Encoded features.
    * @api
@@ -145,7 +145,7 @@ class JSONFeature extends FeatureFormat {
 
   /**
    * @abstract
-   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {Array<module:ol/Feature>} features Features.
    * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
    * @return {Object} Object.
    */

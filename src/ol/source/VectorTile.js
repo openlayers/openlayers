@@ -50,7 +50,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * used instead of defining each one separately in the `urls` option.
  * @property {number} [transition] A duration for tile opacity
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
- * @property {Array.<string>} [urls] An array of URL templates.
+ * @property {Array<string>} [urls] An array of URL templates.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * When set to `false`, only one world
  * will be rendered. When set to `true`, tiles will be wrapped horizontally to
@@ -111,7 +111,7 @@ class VectorTile extends UrlTile {
 
     /**
        * @private
-       * @type {Object.<string, module:ol/VectorTile>}
+       * @type {Object<string, module:ol/VectorTile>}
        */
     this.sourceTiles_ = {};
 
@@ -130,7 +130,7 @@ class VectorTile extends UrlTile {
 
     /**
      * @private
-     * @type {Object.<string, module:ol/tilegrid/TileGrid>}
+     * @type {Object<string, module:ol/tilegrid/TileGrid>}
      */
     this.tileGrids_ = {};
 

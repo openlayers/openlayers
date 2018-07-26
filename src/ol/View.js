@@ -56,7 +56,7 @@ import Units from './proj/Units.js';
  * @property {module:ol/size~Size} [size] The size in pixels of the box to fit
  * the extent into. Default is the current size of the first map in the DOM that
  * uses this view, or `[100, 100]` if no such map is found.
- * @property {!Array.<number>} [padding=[0, 0, 0, 0]] Padding (in pixels) to be
+ * @property {!Array<number>} [padding=[0, 0, 0, 0]] Padding (in pixels) to be
  * cleared inside the view. Values in the array are top, right, bottom and left
  * padding.
  * @property {boolean} [constrainResolution=true] Constrain the resolution.
@@ -121,7 +121,7 @@ import Units from './proj/Units.js';
  * alternative to setting this is to set `zoom`. Layer sources will not be
  * fetched if neither this nor `zoom` are defined, but they can be set later
  * with {@link #setZoom} or {@link #setResolution}.
- * @property {Array.<number>} [resolutions] Resolutions to determine the
+ * @property {Array<number>} [resolutions] Resolutions to determine the
  * resolution constraint. If set the `maxResolution`, `minResolution`,
  * `minZoom`, `maxZoom`, and `zoomFactor` options are ignored.
  * @property {number} [rotation=0] The initial rotation for the view in radians
@@ -238,13 +238,13 @@ class View extends BaseObject {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.hints_ = [0, 0];
 
     /**
      * @private
-     * @type {Array.<Array.<module:ol/View~Animation>>}
+     * @type {Array<Array<module:ol/View~Animation>>}
      */
     this.animations_ = [];
 
@@ -273,7 +273,7 @@ class View extends BaseObject {
   applyOptions_(options) {
 
     /**
-     * @type {Object.<string, *>}
+     * @type {Object<string, *>}
      */
     const properties = {};
     properties[ViewProperty.CENTER] = options.center !== undefined ?
@@ -301,7 +301,7 @@ class View extends BaseObject {
 
     /**
      * @private
-     * @type {Array.<number>|undefined}
+     * @type {Array<number>|undefined}
      */
     this.resolutions_ = options.resolutions;
 
@@ -710,8 +710,8 @@ class View extends BaseObject {
   }
 
   /**
-   * @param {Array.<number>=} opt_hints Destination array.
-   * @return {Array.<number>} Hint.
+   * @param {Array<number>=} opt_hints Destination array.
+   * @return {Array<number>} Hint.
    */
   getHints(opt_hints) {
     if (opt_hints !== undefined) {
@@ -821,7 +821,7 @@ class View extends BaseObject {
   /**
    * Get the resolutions for the view. This returns the array of resolutions
    * passed to the constructor of the View, or undefined if none were given.
-   * @return {Array.<number>|undefined} The resolutions of the view.
+   * @return {Array<number>|undefined} The resolutions of the view.
    * @api
    */
   getResolutions() {

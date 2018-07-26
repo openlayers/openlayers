@@ -52,7 +52,7 @@ class PointerEvent extends Event {
    *
    * @param {string} type The type of the event to create.
    * @param {Event} originalEvent The event.
-   * @param {Object.<string, ?>=} opt_eventDict An optional dictionary of
+   * @param {Object<string, ?>=} opt_eventDict An optional dictionary of
    *    initial event properties.
    */
   constructor(type, originalEvent, opt_eventDict) {
@@ -202,7 +202,7 @@ class PointerEvent extends Event {
 
   /**
    * @private
-   * @param {Object.<string, ?>} eventDict The event dictionary.
+   * @param {Object<string, ?>} eventDict The event dictionary.
    * @return {number} Button indicator.
    */
   getButtons_(eventDict) {
@@ -243,7 +243,7 @@ class PointerEvent extends Event {
 
   /**
    * @private
-   * @param {Object.<string, ?>} eventDict The event dictionary.
+   * @param {Object<string, ?>} eventDict The event dictionary.
    * @param {number} buttons Button indicator.
    * @return {number} The pressure.
    */

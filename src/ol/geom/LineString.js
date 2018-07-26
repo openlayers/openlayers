@@ -24,7 +24,7 @@ import {douglasPeucker} from '../geom/flat/simplify.js';
 class LineString extends SimpleGeometry {
 
   /**
-   * @param {Array.<module:ol/coordinate~Coordinate>|Array.<number>} coordinates Coordinates.
+   * @param {Array<module:ol/coordinate~Coordinate>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
    * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
    */
@@ -146,7 +146,7 @@ class LineString extends SimpleGeometry {
 
   /**
    * Return the coordinates of the linestring.
-   * @return {Array.<module:ol/coordinate~Coordinate>} Coordinates.
+   * @return {Array<module:ol/coordinate~Coordinate>} Coordinates.
    * @override
    * @api
    */
@@ -182,7 +182,7 @@ class LineString extends SimpleGeometry {
   }
 
   /**
-   * @return {Array.<number>} Flat midpoint.
+   * @return {Array<number>} Flat midpoint.
    */
   getFlatMidpoint() {
     if (this.flatMidpointRevision_ != this.getRevision()) {
@@ -223,7 +223,7 @@ class LineString extends SimpleGeometry {
 
   /**
    * Set the coordinates of the linestring.
-   * @param {!Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
+   * @param {!Array<module:ol/coordinate~Coordinate>} coordinates Coordinates.
    * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
    * @override
    * @api

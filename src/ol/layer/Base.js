@@ -41,7 +41,7 @@ class BaseLayer extends BaseObject {
     super();
 
     /**
-    * @type {Object.<string, *>}
+    * @type {Object<string, *>}
     */
     const properties = assign({}, options);
     properties[LayerProperty.OPACITY] =
@@ -100,17 +100,17 @@ class BaseLayer extends BaseObject {
 
   /**
   * @abstract
-  * @param {Array.<module:ol/layer/Layer>=} opt_array Array of layers (to be
+  * @param {Array<module:ol/layer/Layer>=} opt_array Array of layers (to be
   *     modified in place).
-  * @return {Array.<module:ol/layer/Layer>} Array of layers.
+  * @return {Array<module:ol/layer/Layer>} Array of layers.
   */
   getLayersArray(opt_array) {}
 
   /**
   * @abstract
-  * @param {Array.<module:ol/layer/Layer~State>=} opt_states Optional list of layer
+  * @param {Array<module:ol/layer/Layer~State>=} opt_states Optional list of layer
   *     states (to be modified in place).
-  * @return {Array.<module:ol/layer/Layer~State>} List of layer states.
+  * @return {Array<module:ol/layer/Layer~State>} List of layer states.
   */
   getLayerStatesArray(opt_states) {}
 

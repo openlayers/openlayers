@@ -77,7 +77,7 @@ export {default as Translate} from './interaction/Translate.js';
  *
  * @param {module:ol/interaction/Interaction~DefaultsOptions=} opt_options
  * Defaults options.
- * @return {module:ol/Collection.<module:ol/interaction/Interaction>}
+ * @return {module:ol/Collection<module:ol/interaction/Interaction>}
  * A collection of interactions to be used with the {@link module:ol/Map~Map}
  * constructor's `interactions` option.
  * @api

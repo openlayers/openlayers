@@ -148,13 +148,13 @@ class MouseSource extends EventSource {
 
     /**
      * @const
-     * @type {!Object.<string, Event|Object>}
+     * @type {!Object<string, Event|Object>}
      */
     this.pointerMap = dispatcher.pointerMap;
 
     /**
      * @const
-     * @type {Array.<module:ol/pixel~Pixel>}
+     * @type {Array<module:ol/pixel~Pixel>}
      */
     this.lastTouches = [];
   }

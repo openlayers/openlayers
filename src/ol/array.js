@@ -7,7 +7,7 @@
  * Performs a binary search on the provided sorted list and returns the index of the item if found. If it can't be found it'll return -1.
  * https://github.com/darkskyapp/binary-search
  *
- * @param {Array.<*>} haystack Items to search through.
+ * @param {Array<*>} haystack Items to search through.
  * @param {*} needle The item to look for.
  * @param {Function=} opt_comparator Comparator function.
  * @return {number} The index of the item if found, -1 if not.
@@ -53,7 +53,7 @@ export function numberSafeCompareFunction(a, b) {
 
 /**
  * Whether the array contains the given object.
- * @param {Array.<*>} arr The array to test for the presence of the element.
+ * @param {Array<*>} arr The array to test for the presence of the element.
  * @param {*} obj The object for which to test.
  * @return {boolean} The object is in the array.
  */
@@ -63,7 +63,7 @@ export function includes(arr, obj) {
 
 
 /**
- * @param {Array.<number>} arr Array.
+ * @param {Array<number>} arr Array.
  * @param {number} target Target.
  * @param {number} direction 0 means return the nearest, > 0
  *    means return the largest nearest, < 0 means return the
@@ -109,7 +109,7 @@ export function linearFindNearest(arr, target, direction) {
 
 
 /**
- * @param {Array.<*>} arr Array.
+ * @param {Array<*>} arr Array.
  * @param {number} begin Begin index.
  * @param {number} end End index.
  */
@@ -125,8 +125,8 @@ export function reverseSubArray(arr, begin, end) {
 
 
 /**
- * @param {Array.<VALUE>} arr The array to modify.
- * @param {!Array.<VALUE>|VALUE} data The elements or arrays of elements to add to arr.
+ * @param {Array<VALUE>} arr The array to modify.
+ * @param {!Array<VALUE>|VALUE} data The elements or arrays of elements to add to arr.
  * @template VALUE
  */
 export function extend(arr, data) {
@@ -139,7 +139,7 @@ export function extend(arr, data) {
 
 
 /**
- * @param {Array.<VALUE>} arr The array to modify.
+ * @param {Array<VALUE>} arr The array to modify.
  * @param {VALUE} obj The element to remove.
  * @template VALUE
  * @return {boolean} If the element was removed.
@@ -155,7 +155,7 @@ export function remove(arr, obj) {
 
 
 /**
- * @param {Array.<VALUE>} arr The array to search in.
+ * @param {Array<VALUE>} arr The array to search in.
  * @param {function(VALUE, number, ?) : boolean} func The function to compare.
  * @template VALUE
  * @return {VALUE|null} The element found or null.
@@ -194,7 +194,7 @@ export function equals(arr1, arr2) {
 
 
 /**
- * @param {Array.<*>} arr The array to sort (modifies original).
+ * @param {Array<*>} arr The array to sort (modifies original).
  * @param {Function} compareFnc Comparison function.
  */
 export function stableSort(arr, compareFnc) {
@@ -214,7 +214,7 @@ export function stableSort(arr, compareFnc) {
 
 
 /**
- * @param {Array.<*>} arr The array to search in.
+ * @param {Array<*>} arr The array to search in.
  * @param {Function} func Comparison function.
  * @return {number} Return index.
  */
@@ -229,7 +229,7 @@ export function findIndex(arr, func) {
 
 
 /**
- * @param {Array.<*>} arr The array to test.
+ * @param {Array<*>} arr The array to test.
  * @param {Function=} opt_func Comparison function.
  * @param {boolean=} opt_strict Strictly sorted (default false).
  * @return {boolean} Return index.

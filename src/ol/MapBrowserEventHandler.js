@@ -39,7 +39,7 @@ class MapBrowserEventHandler extends EventTarget {
     this.dragging_ = false;
 
     /**
-     * @type {!Array.<module:ol/events~EventsKey>}
+     * @type {!Array<module:ol/events~EventsKey>}
      * @private
      */
     this.dragListenerKeys_ = [];
@@ -68,7 +68,7 @@ class MapBrowserEventHandler extends EventTarget {
     this.activePointers_ = 0;
 
     /**
-     * @type {!Object.<number, boolean>}
+     * @type {!Object<number, boolean>}
      * @private
      */
     this.trackedTouches_ = {};

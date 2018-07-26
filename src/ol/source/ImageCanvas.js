@@ -36,7 +36,7 @@ import ImageSource from '../source/Image.js';
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {number} [ratio=1.5] Ratio. 1 means canvases are the size of the map viewport, 2 means twice the
  * width and height of the map viewport, and so on. Must be `1` or higher.
- * @property {Array.<number>} [resolutions] Resolutions.
+ * @property {Array<number>} [resolutions] Resolutions.
  * If specified, new canvases will be created for these resolutions
  * @property {module:ol/source/State} [state] Source state.
  */

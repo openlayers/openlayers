@@ -115,7 +115,7 @@ class GeoJSON extends JSONFeature {
    */
   readFeaturesFromObject(object, opt_options) {
     const geoJSONObject = /** @type {GeoJSONObject} */ (object);
-    /** @type {Array.<module:ol/Feature>} */
+    /** @type {Array<module:ol/Feature>} */
     let features = null;
     if (geoJSONObject.type === 'FeatureCollection') {
       const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (object);
@@ -196,7 +196,7 @@ class GeoJSON extends JSONFeature {
   /**
    * Encode an array of features as a GeoJSON object.
    *
-   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {Array<module:ol/Feature>} features Features.
    * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
    * @return {GeoJSONFeatureCollection} GeoJSON Object.
    * @override
@@ -231,7 +231,7 @@ class GeoJSON extends JSONFeature {
 
 /**
  * @const
- * @type {Object.<string, function(GeoJSONObject): module:ol/geom/Geometry>}
+ * @type {Object<string, function(GeoJSONObject): module:ol/geom/Geometry>}
  */
 const GEOMETRY_READERS = {
   'Point': readPointGeometry,
@@ -246,7 +246,7 @@ const GEOMETRY_READERS = {
 
 /**
  * @const
- * @type {Object.<string, function(module:ol/geom/Geometry, module:ol/format/Feature~WriteOptions=): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
+ * @type {Object<string, function(module:ol/geom/Geometry, module:ol/format/Feature~WriteOptions=): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
  */
 const GEOMETRY_WRITERS = {
   'Point': writePointGeometry,

@@ -18,7 +18,7 @@ class CanvasLineStringReplay extends CanvasReplay {
   }
 
   /**
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.

@@ -71,7 +71,7 @@ class CartoDB extends XYZ {
     this.config_ = options.config || {};
 
     /**
-     * @type {!Object.<string, CartoDBLayerInfo>}
+     * @type {!Object<string, CartoDBLayerInfo>}
      * @private
      */
     this.templateCache_ = {};

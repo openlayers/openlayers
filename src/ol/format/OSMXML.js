@@ -17,14 +17,14 @@ import {pushParseAndPop, makeStructureNS} from '../xml.js';
 
 /**
  * @const
- * @type {Array.<null>}
+ * @type {Array<null>}
  */
 const NAMESPACE_URIS = [null];
 
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const WAY_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -35,7 +35,7 @@ const WAY_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -75,7 +75,7 @@ class OSMXML extends XMLFeature {
       // parse nodes in ways
       for (let j = 0; j < state.ways.length; j++) {
         const values = /** @type {Object} */ (state.ways[j]);
-        /** @type {Array.<number>} */
+        /** @type {Array<number>} */
         const flatCoordinates = [];
         for (let i = 0, ii = values.ndrefs.length; i < ii; i++) {
           const point = state.nodes[values.ndrefs[i]];
@@ -123,7 +123,7 @@ class OSMXML extends XMLFeature {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const NODE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -133,7 +133,7 @@ const NODE_PARSERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  */
 function readNode(node, objectStack) {
   const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
@@ -162,7 +162,7 @@ function readNode(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  */
 function readWay(node, objectStack) {
   const id = node.getAttribute('id');
@@ -178,7 +178,7 @@ function readWay(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  */
 function readNd(node, objectStack) {
   const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
@@ -188,7 +188,7 @@ function readNd(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  */
 function readTag(node, objectStack) {
   const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);

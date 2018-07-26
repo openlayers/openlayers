@@ -224,7 +224,7 @@ class CanvasImmediateRenderer extends VectorContext {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.pixelCoordinates_ = [];
 
@@ -237,7 +237,7 @@ class CanvasImmediateRenderer extends VectorContext {
   }
 
   /**
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
@@ -290,7 +290,7 @@ class CanvasImmediateRenderer extends VectorContext {
   }
 
   /**
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
@@ -339,7 +339,7 @@ class CanvasImmediateRenderer extends VectorContext {
   }
 
   /**
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
@@ -367,9 +367,9 @@ class CanvasImmediateRenderer extends VectorContext {
   }
 
   /**
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
-   * @param {Array.<number>} ends Ends.
+   * @param {Array<number>} ends Ends.
    * @param {number} stride Stride.
    * @private
    * @return {number} End.

@@ -72,7 +72,7 @@ class ImageSourceEvent extends Event {
  * @property {module:ol/source/Source~AttributionLike} [attributions]
  * @property {module:ol/extent~Extent} [extent]
  * @property {module:ol/proj~ProjectionLike} projection
- * @property {Array.<number>} [resolutions]
+ * @property {Array<number>} [resolutions]
  * @property {module:ol/source/State} [state]
  */
 
@@ -98,7 +98,7 @@ class ImageSource extends Source {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.resolutions_ = options.resolutions !== undefined ?
       options.resolutions : null;
@@ -119,7 +119,7 @@ class ImageSource extends Source {
   }
 
   /**
-   * @return {Array.<number>} Resolutions.
+   * @return {Array<number>} Resolutions.
    * @override
    */
   getResolutions() {

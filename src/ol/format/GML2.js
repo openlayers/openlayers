@@ -21,7 +21,7 @@ const schemaLocation = GMLNS + ' http://schemas.opengis.net/gml/2.1.2/feature.xs
 
 /**
  * @const
- * @type {Object.<string, string>}
+ * @type {Object<string, string>}
  */
 const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
   'MultiLineString': 'lineStringMember',
@@ -63,9 +63,9 @@ class GML2 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {Array.<number>|undefined} Flat coordinates.
+   * @return {Array<number>|undefined} Flat coordinates.
    */
   readFlatCoordinates_(node, objectStack) {
     const s = getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
@@ -96,12 +96,12 @@ class GML2 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @private
    * @return {module:ol/extent~Extent|undefined} Envelope.
    */
   readBox_(node, objectStack) {
-    /** @type {Array.<number>} */
+    /** @type {Array<number>} */
     const flatCoordinates = pushParseAndPop([null],
       this.BOX_PARSERS_, node, objectStack, this);
     return createOrUpdate(flatCoordinates[1][0],
@@ -111,15 +111,15 @@ class GML2 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @private
    */
   innerBoundaryIsParser_(node, objectStack) {
-    /** @type {Array.<number>|undefined} */
+    /** @type {Array<number>|undefined} */
     const flatLinearRing = pushParseAndPop(undefined,
       this.RING_PARSERS, node, objectStack, this);
     if (flatLinearRing) {
-      const flatLinearRings = /** @type {Array.<Array.<number>>} */
+      const flatLinearRings = /** @type {Array<Array<number>>} */
           (objectStack[objectStack.length - 1]);
       flatLinearRings.push(flatLinearRing);
     }
@@ -127,15 +127,15 @@ class GML2 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @private
    */
   outerBoundaryIsParser_(node, objectStack) {
-    /** @type {Array.<number>|undefined} */
+    /** @type {Array<number>|undefined} */
     const flatLinearRing = pushParseAndPop(undefined,
       this.RING_PARSERS, node, objectStack, this);
     if (flatLinearRing) {
-      const flatLinearRings = /** @type {Array.<Array.<number>>} */
+      const flatLinearRings = /** @type {Array<Array<number>>} */
           (objectStack[objectStack.length - 1]);
       flatLinearRings[0] = flatLinearRing;
     }
@@ -144,7 +144,7 @@ class GML2 extends GMLBase {
   /**
    * @const
    * @param {*} value Value.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @param {string=} opt_nodeName Node name.
    * @return {Node|undefined} Node.
    * @private
@@ -174,7 +174,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/Feature} feature Feature.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    */
   writeFeatureElement(node, feature, objectStack) {
     const fid = feature.getId();
@@ -220,7 +220,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/LineString} geometry LineString geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writeCurveOrLineString_(node, geometry, objectStack) {
@@ -245,7 +245,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/LineString} line LineString geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writeLineStringOrCurveMember_(node, line, objectStack) {
@@ -259,7 +259,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/MultiLineString} geometry MultiLineString geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writeMultiCurveOrLineString_(node, geometry, objectStack) {
@@ -280,7 +280,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/Geometry|module:ol/extent~Extent} geometry Geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    */
   writeGeometryElement(node, geometry, objectStack) {
     const context = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[objectStack.length - 1]);
@@ -320,7 +320,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/LineString|module:ol/geom/LinearRing} value Geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writeCoordinates_(node, value, objectStack) {
@@ -341,7 +341,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/LineString} line LineString geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writeCurveSegments_(node, line, objectStack) {
@@ -353,7 +353,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/Polygon} geometry Polygon geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writeSurfaceOrPolygon_(node, geometry, objectStack) {
@@ -380,7 +380,7 @@ class GML2 extends GMLBase {
 
   /**
    * @param {*} value Value.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @param {string=} opt_nodeName Node name.
    * @return {Node} Node.
    * @private
@@ -399,7 +399,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/Polygon} polygon Polygon geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writeSurfacePatches_(node, polygon, objectStack) {
@@ -411,7 +411,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/LinearRing} ring LinearRing geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writeRing_(node, ring, objectStack) {
@@ -421,7 +421,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Array.<number>} point Point geometry.
+   * @param {Array<number>} point Point geometry.
    * @param {string=} opt_srsName Optional srsName
    * @param {boolean=} opt_hasZ whether the geometry has a Z coordinate (is 3D) or not.
    * @return {string} The coords string.
@@ -447,7 +447,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/Point} geometry Point geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writePoint_(node, geometry, objectStack) {
@@ -467,7 +467,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/MultiPoint} geometry MultiPoint geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writeMultiPoint_(node, geometry, objectStack) {
@@ -487,7 +487,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/Point} point Point geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writePointMember_(node, point, objectStack) {
@@ -499,7 +499,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/LinearRing} geometry LinearRing geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writeLinearRing_(node, geometry, objectStack) {
@@ -516,7 +516,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/MultiPolygon} geometry MultiPolygon geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writeMultiSurfaceOrPolygon_(node, geometry, objectStack) {
@@ -537,7 +537,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/geom/Polygon} polygon Polygon geometry.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writeSurfaceOrPolygonMember_(node, polygon, objectStack) {
@@ -552,7 +552,7 @@ class GML2 extends GMLBase {
   /**
    * @param {Node} node Node.
    * @param {module:ol/extent~Extent} extent Extent.
-   * @param {Array.<*>} objectStack Node stack.
+   * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writeEnvelope(node, extent, objectStack) {
@@ -573,7 +573,7 @@ class GML2 extends GMLBase {
   /**
    * @const
    * @param {*} value Value.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @param {string=} opt_nodeName Node name.
    * @return {Node|undefined} Node.
    * @private
@@ -587,7 +587,7 @@ class GML2 extends GMLBase {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
@@ -598,7 +598,7 @@ GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
@@ -610,7 +610,7 @@ GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML2.prototype.BOX_PARSERS_ = {
@@ -622,7 +622,7 @@ GML2.prototype.BOX_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML2.prototype.GEOMETRY_PARSERS_ = {
@@ -645,7 +645,7 @@ GML2.prototype.GEOMETRY_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.GEOMETRY_SERIALIZERS_ = {
@@ -677,7 +677,7 @@ GML2.prototype.GEOMETRY_SERIALIZERS_ = {
 };
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
@@ -690,7 +690,7 @@ GML2.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
 };
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.RING_SERIALIZERS_ = {
@@ -701,7 +701,7 @@ GML2.prototype.RING_SERIALIZERS_ = {
 };
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.POINTMEMBER_SERIALIZERS_ = {
@@ -713,7 +713,7 @@ GML2.prototype.POINTMEMBER_SERIALIZERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
@@ -726,7 +726,7 @@ GML2.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
 };
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.ENVELOPE_SERIALIZERS_ = {

@@ -113,7 +113,7 @@ class WebGLMapRenderer extends MapRenderer {
 
     /**
      * @private
-     * @type {module:ol/structs/LRUCache.<module:ol/renderer/webgl/Map~TextureCacheEntry|null>}
+     * @type {module:ol/structs/LRUCache<module:ol/renderer/webgl/Map~TextureCacheEntry|null>}
      */
     this.textureCache_ = new LRUCache();
 
@@ -125,11 +125,11 @@ class WebGLMapRenderer extends MapRenderer {
 
     /**
      * @private
-     * @type {module:ol/structs/PriorityQueue.<Array>}
+     * @type {module:ol/structs/PriorityQueue<Array>}
      */
     this.tileTextureQueue_ = new PriorityQueue(
       /**
-       * @param {Array.<*>} element Element.
+       * @param {Array<*>} element Element.
        * @return {number} Priority.
        * @this {module:ol/renderer/webgl/Map}
        */
@@ -142,7 +142,7 @@ class WebGLMapRenderer extends MapRenderer {
               Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
       }).bind(this),
       /**
-       * @param {Array.<*>} element Element.
+       * @param {Array<*>} element Element.
        * @return {string} Key.
        */
       function(element) {
@@ -333,7 +333,7 @@ class WebGLMapRenderer extends MapRenderer {
   }
 
   /**
-   * @return {module:ol/structs/PriorityQueue.<Array>} Tile texture queue.
+   * @return {module:ol/structs/PriorityQueue<Array>} Tile texture queue.
    */
   getTileTextureQueue() {
     return this.tileTextureQueue_;
@@ -413,7 +413,7 @@ class WebGLMapRenderer extends MapRenderer {
 
     this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, frameState);
 
-    /** @type {Array.<module:ol/layer/Layer~State>} */
+    /** @type {Array<module:ol/layer/Layer~State>} */
     const layerStatesToDraw = [];
     const layerStatesArray = frameState.layerStatesArray;
     stableSort(layerStatesArray, sortByZIndex);

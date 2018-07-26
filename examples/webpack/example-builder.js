@@ -26,7 +26,7 @@ handlebars.registerHelper('indent', (text, options) => {
  * Create an inverted index of keywords from examples.  Property names are
  * lowercased words.  Property values are objects mapping example index to word
  * count.
- * @param {Array.<Object>} exampleData Array of example data objects.
+ * @param {Array<Object>} exampleData Array of example data objects.
  * @return {Object} Word index.
  */
 function createWordIndex(exampleData) {

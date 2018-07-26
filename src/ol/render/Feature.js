@@ -25,10 +25,10 @@ const tmpTransform = createTransform();
  * through the API is limited to getting the type and extent of the geometry.
  *
  * @param {module:ol/geom/GeometryType} type Geometry type.
- * @param {Array.<number>} flatCoordinates Flat coordinates. These always need
+ * @param {Array<number>} flatCoordinates Flat coordinates. These always need
  *     to be right-handed for polygons.
- * @param {Array.<number>|Array.<Array.<number>>} ends Ends or Endss.
- * @param {Object.<string, *>} properties Properties.
+ * @param {Array<number>|Array<Array<number>>} ends Ends or Endss.
+ * @param {Object<string, *>} properties Properties.
  * @param {number|string|undefined} id Feature id.
  */
 class RenderFeature {
@@ -53,31 +53,31 @@ class RenderFeature {
 
     /**
     * @private
-    * @type {Array.<number>}
+    * @type {Array<number>}
     */
     this.flatCoordinates_ = flatCoordinates;
 
     /**
     * @private
-    * @type {Array.<number>}
+    * @type {Array<number>}
     */
     this.flatInteriorPoints_ = null;
 
     /**
     * @private
-    * @type {Array.<number>}
+    * @type {Array<number>}
     */
     this.flatMidpoints_ = null;
 
     /**
     * @private
-    * @type {Array.<number>|Array.<Array.<number>>}
+    * @type {Array<number>|Array<Array<number>>}
     */
     this.ends_ = ends;
 
     /**
     * @private
-    * @type {Object.<string, *>}
+    * @type {Object<string, *>}
     */
     this.properties_ = properties;
 
@@ -110,7 +110,7 @@ class RenderFeature {
   }
 
   /**
-  * @return {Array.<number>} Flat interior points.
+  * @return {Array<number>} Flat interior points.
   */
   getFlatInteriorPoint() {
     if (!this.flatInteriorPoints_) {
@@ -122,7 +122,7 @@ class RenderFeature {
   }
 
   /**
-  * @return {Array.<number>} Flat interior points.
+  * @return {Array<number>} Flat interior points.
   */
   getFlatInteriorPoints() {
     if (!this.flatInteriorPoints_) {
@@ -135,7 +135,7 @@ class RenderFeature {
   }
 
   /**
-  * @return {Array.<number>} Flat midpoint.
+  * @return {Array<number>} Flat midpoint.
   */
   getFlatMidpoint() {
     if (!this.flatMidpoints_) {
@@ -146,7 +146,7 @@ class RenderFeature {
   }
 
   /**
-  * @return {Array.<number>} Flat midpoints.
+  * @return {Array<number>} Flat midpoints.
   */
   getFlatMidpoints() {
     if (!this.flatMidpoints_) {
@@ -176,7 +176,7 @@ class RenderFeature {
   }
 
   /**
-  * @return {Array.<number>} Flat coordinates.
+  * @return {Array<number>} Flat coordinates.
   */
   getOrientedFlatCoordinates() {
     return this.flatCoordinates_;
@@ -194,7 +194,7 @@ class RenderFeature {
 
   /**
   * Get the feature properties.
-  * @return {Object.<string, *>} Feature properties.
+  * @return {Object<string, *>} Feature properties.
   * @api
   */
   getProperties() {
@@ -240,7 +240,7 @@ class RenderFeature {
 
 
 /**
- * @return {Array.<number>|Array.<Array.<number>>} Ends or endss.
+ * @return {Array<number>|Array<Array<number>>} Ends or endss.
  */
 RenderFeature.prototype.getEnds =
 RenderFeature.prototype.getEndss = function() {
@@ -249,7 +249,7 @@ RenderFeature.prototype.getEndss = function() {
 
 
 /**
- * @return {Array.<number>} Flat coordinates.
+ * @return {Array<number>} Flat coordinates.
  */
 RenderFeature.prototype.getFlatCoordinates =
     RenderFeature.prototype.getOrientedFlatCoordinates;

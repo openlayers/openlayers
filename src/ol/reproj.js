@@ -83,7 +83,7 @@ function enlargeClipPoint(centroidX, centroidY, x, y) {
  * @param {module:ol/extent~Extent} targetExtent Target extent.
  * @param {module:ol/reproj/Triangulation} triangulation
  * Calculated triangulation.
- * @param {Array.<{extent: module:ol/extent~Extent,
+ * @param {Array<{extent: module:ol/extent~Extent,
  *                 image: (HTMLCanvasElement|HTMLImageElement|HTMLVideoElement)}>} sources
  * Array of sources.
  * @param {number} gutter Gutter of the sources.

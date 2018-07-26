@@ -20,12 +20,12 @@ import {createEditingStyle} from '../style/Style.js';
  * @typedef {Object} Options
  * @property {module:ol/extent~Extent} [extent] Initial extent. Defaults to no
  * initial extent.
- * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [boxStyle]
+ * @property {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [boxStyle]
  * Style for the drawn extent box. Defaults to
  * {@link module:ol/style/Style~createEditing()['Polygon']}
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
- * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [pointerStyle]
+ * @property {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [pointerStyle]
  * Style for the cursor used to draw the extent. Defaults to
  * {@link module:ol/style/Style~createEditing()['Point']}
  * @property {boolean} [wrapX=false] Wrap the drawn extent across multiple maps

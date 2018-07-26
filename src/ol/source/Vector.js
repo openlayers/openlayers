@@ -26,7 +26,7 @@ import RBush from '../structs/RBush.js';
  * returns an array of {@link module:ol/extent~Extent} with the extents to load. Usually this
  * is one of the standard {@link module:ol/loadingstrategy} strategies.
  *
- * @typedef {function(module:ol/extent~Extent, number): Array.<module:ol/extent~Extent>} LoadingStrategy
+ * @typedef {function(module:ol/extent~Extent, number): Array<module:ol/extent~Extent>} LoadingStrategy
  * @api
  */
 
@@ -61,7 +61,7 @@ export class VectorSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
- * @property {Array.<module:ol/Feature>|module:ol/Collection.<module:ol/Feature>} [features]
+ * @property {Array<module:ol/Feature>|module:ol/Collection<module:ol/Feature>} [features]
  * Features. If provided as {@link module:ol/Collection}, the features in the source
  * and the collection will stay in sync.
  * @property {module:ol/format/Feature} [format] The feature format used by the XHR
@@ -215,45 +215,45 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {module:ol/structs/RBush.<module:ol/Feature>}
+     * @type {module:ol/structs/RBush<module:ol/Feature>}
      */
     this.featuresRtree_ = useSpatialIndex ? new RBush() : null;
 
     /**
      * @private
-     * @type {module:ol/structs/RBush.<{extent: module:ol/extent~Extent}>}
+     * @type {module:ol/structs/RBush<{extent: module:ol/extent~Extent}>}
      */
     this.loadedExtentsRtree_ = new RBush();
 
     /**
      * @private
-     * @type {!Object.<string, module:ol/Feature>}
+     * @type {!Object<string, module:ol/Feature>}
      */
     this.nullGeometryFeatures_ = {};
 
     /**
      * A lookup of features by id (the return from feature.getId()).
      * @private
-     * @type {!Object.<string, module:ol/Feature>}
+     * @type {!Object<string, module:ol/Feature>}
      */
     this.idIndex_ = {};
 
     /**
      * A lookup of features without id (keyed by getUid(feature)).
      * @private
-     * @type {!Object.<string, module:ol/Feature>}
+     * @type {!Object<string, module:ol/Feature>}
      */
     this.undefIdIndex_ = {};
 
     /**
      * @private
-     * @type {Object.<string, Array.<module:ol/events~EventsKey>>}
+     * @type {Object<string, Array<module:ol/events~EventsKey>>}
      */
     this.featureChangeKeys_ = {};
 
     /**
      * @private
-     * @type {module:ol/Collection.<module:ol/Feature>}
+     * @type {module:ol/Collection<module:ol/Feature>}
      */
     this.featuresCollection_ = null;
 
@@ -365,7 +365,7 @@ VectorSource.prototype.addToIndex_ = function(featureKey, feature) {
 
 /**
  * Add a batch of features to the source.
- * @param {Array.<module:ol/Feature>} features Features to add.
+ * @param {Array<module:ol/Feature>} features Features to add.
  * @api
  */
 VectorSource.prototype.addFeatures = function(features) {
@@ -376,7 +376,7 @@ VectorSource.prototype.addFeatures = function(features) {
 
 /**
  * Add features without firing a `change` event.
- * @param {Array.<module:ol/Feature>} features Features.
+ * @param {Array<module:ol/Feature>} features Features.
  * @protected
  */
 VectorSource.prototype.addFeaturesInternal = function(features) {
@@ -417,7 +417,7 @@ VectorSource.prototype.addFeaturesInternal = function(features) {
 
 
 /**
- * @param {!module:ol/Collection.<module:ol/Feature>} collection Collection.
+ * @param {!module:ol/Collection<module:ol/Feature>} collection Collection.
  * @private
  */
 VectorSource.prototype.bindFeaturesCollection_ = function(collection) {
@@ -610,7 +610,7 @@ VectorSource.prototype.forEachFeatureIntersectingExtent = function(extent, callb
  * Get the features collection associated with this source. Will be `null`
  * unless the source was configured with `useSpatialIndex` set to `false`, or
  * with an {@link module:ol/Collection} as `features`.
- * @return {module:ol/Collection.<module:ol/Feature>} The collection of features.
+ * @return {module:ol/Collection<module:ol/Feature>} The collection of features.
  * @api
  */
 VectorSource.prototype.getFeaturesCollection = function() {
@@ -620,7 +620,7 @@ VectorSource.prototype.getFeaturesCollection = function() {
 
 /**
  * Get all features on the source in random order.
- * @return {Array.<module:ol/Feature>} Features.
+ * @return {Array<module:ol/Feature>} Features.
  * @api
  */
 VectorSource.prototype.getFeatures = function() {
@@ -634,7 +634,7 @@ VectorSource.prototype.getFeatures = function() {
     }
   }
   return (
-    /** @type {Array.<module:ol/Feature>} */ (features)
+    /** @type {Array<module:ol/Feature>} */ (features)
   );
 };
 
@@ -642,7 +642,7 @@ VectorSource.prototype.getFeatures = function() {
 /**
  * Get all features whose geometry intersects the provided coordinate.
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
- * @return {Array.<module:ol/Feature>} Features.
+ * @return {Array<module:ol/Feature>} Features.
  * @api
  */
 VectorSource.prototype.getFeaturesAtCoordinate = function(coordinate) {
@@ -662,7 +662,7 @@ VectorSource.prototype.getFeaturesAtCoordinate = function(coordinate) {
  * This method is not available when the source is configured with
  * `useSpatialIndex` set to `false`.
  * @param {module:ol/extent~Extent} extent Extent.
- * @return {Array.<module:ol/Feature>} Features.
+ * @return {Array<module:ol/Feature>} Features.
  * @api
  */
 VectorSource.prototype.getFeaturesInExtent = function(extent) {

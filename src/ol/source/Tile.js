@@ -102,7 +102,7 @@ class TileSource extends Source {
 
   /**
    * @param {module:ol/proj/Projection} projection Projection.
-   * @param {!Object.<string, module:ol/TileRange>} usedTiles Used tiles.
+   * @param {!Object<string, module:ol/TileRange>} usedTiles Used tiles.
    */
   expireCache(projection, usedTiles) {
     const tileCache = this.getTileCacheForProjection(projection);

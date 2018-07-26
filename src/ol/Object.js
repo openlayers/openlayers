@@ -88,7 +88,7 @@ class ObjectEvent extends Event {
 class BaseObject extends Observable {
 
   /**
-   * @param {Object.<string, *>=} opt_values An object with key-value pairs.
+   * @param {Object<string, *>=} opt_values An object with key-value pairs.
    */
   constructor(opt_values) {
     super();
@@ -101,7 +101,7 @@ class BaseObject extends Observable {
 
     /**
      * @private
-     * @type {!Object.<string, *>}
+     * @type {!Object<string, *>}
      */
     this.values_ = {};
 
@@ -126,7 +126,7 @@ class BaseObject extends Observable {
 
   /**
    * Get a list of object property names.
-   * @return {Array.<string>} List of property names.
+   * @return {Array<string>} List of property names.
    * @api
    */
   getKeys() {
@@ -135,7 +135,7 @@ class BaseObject extends Observable {
 
   /**
    * Get an object of all property names and values.
-   * @return {Object.<string, *>} Object.
+   * @return {Object<string, *>} Object.
    * @api
    */
   getProperties() {
@@ -176,7 +176,7 @@ class BaseObject extends Observable {
   /**
    * Sets a collection of key-value pairs.  Note that this changes any existing
    * properties and adds new ones (it does not remove any existing properties).
-   * @param {Object.<string, *>} values Values.
+   * @param {Object<string, *>} values Values.
    * @param {boolean=} opt_silent Update without triggering an event.
    * @api
    */
@@ -205,7 +205,7 @@ class BaseObject extends Observable {
 
 
 /**
- * @type {Object.<string, string>}
+ * @type {Object<string, string>}
  */
 const changeEventTypeCache = {};
 

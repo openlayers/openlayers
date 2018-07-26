@@ -234,7 +234,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const resolution = frameState.viewState.resolution;
       const rotation = frameState.viewState.rotation;
       const layer = /** @type {module:ol/layer/Vector} */ (this.getLayer());
-      /** @type {!Object.<string, boolean>} */
+      /** @type {!Object<string, boolean>} */
       const features = {};
       const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
         /**
@@ -352,7 +352,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       }
     }.bind(this);
     if (vectorLayerRenderOrder) {
-      /** @type {Array.<module:ol/Feature>} */
+      /** @type {Array<module:ol/Feature>} */
       const features = [];
       vectorSource.forEachFeatureInExtent(extent,
         /**
@@ -384,7 +384,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {module:ol/Feature} feature Feature.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/style/Style|Array.<module:ol/style/Style>} styles The style or array of styles.
+   * @param {module:ol/style/Style|Array<module:ol/style/Style>} styles The style or array of styles.
    * @param {module:ol/render/canvas/ReplayGroup} replayGroup Replay group.
    * @return {boolean} `true` if an image is loading.
    */

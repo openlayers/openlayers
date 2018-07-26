@@ -14,25 +14,25 @@ class WebGLImageReplay extends WebGLTextureReplay {
     super(tolerance, maxExtent);
 
     /**
-     * @type {Array.<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>}
+     * @type {Array<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>}
      * @protected
      */
     this.images_ = [];
 
     /**
-     * @type {Array.<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>}
+     * @type {Array<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>}
      * @protected
      */
     this.hitDetectionImages_ = [];
 
     /**
-     * @type {Array.<WebGLTexture>}
+     * @type {Array<WebGLTexture>}
      * @private
      */
     this.textures_ = [];
 
     /**
-     * @type {Array.<WebGLTexture>}
+     * @type {Array<WebGLTexture>}
      * @private
      */
     this.hitDetectionTextures_ = [];
@@ -81,7 +81,7 @@ class WebGLImageReplay extends WebGLTextureReplay {
     this.indicesBuffer = new WebGLBuffer(indices);
 
     // create textures
-    /** @type {Object.<string, WebGLTexture>} */
+    /** @type {Object<string, WebGLTexture>} */
     const texturePerImage = {};
 
     this.createTextures(this.textures_, this.images_, texturePerImage, gl);

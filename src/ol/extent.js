@@ -8,14 +8,14 @@ import Relationship from './extent/Relationship.js';
 
 /**
  * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.
- * @typedef {Array.<number>} Extent
+ * @typedef {Array<number>} Extent
  * @api
  */
 
 /**
  * Build an extent that includes all given coordinates.
  *
- * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
+ * @param {Array<module:ol/coordinate~Coordinate>} coordinates Coordinates.
  * @return {module:ol/extent~Extent} Bounding extent.
  * @api
  */
@@ -29,8 +29,8 @@ export function boundingExtent(coordinates) {
 
 
 /**
- * @param {Array.<number>} xs Xs.
- * @param {Array.<number>} ys Ys.
+ * @param {Array<number>} xs Xs.
+ * @param {Array<number>} ys Ys.
  * @param {module:ol/extent~Extent=} opt_extent Destination extent.
  * @private
  * @return {module:ol/extent~Extent} Extent.
@@ -249,7 +249,7 @@ export function createOrUpdateFromCoordinate(coordinate, opt_extent) {
 
 
 /**
- * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
+ * @param {Array<module:ol/coordinate~Coordinate>} coordinates Coordinates.
  * @param {module:ol/extent~Extent=} opt_extent Extent.
  * @return {module:ol/extent~Extent} Extent.
  */
@@ -260,7 +260,7 @@ export function createOrUpdateFromCoordinates(coordinates, opt_extent) {
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
@@ -273,7 +273,7 @@ export function createOrUpdateFromFlatCoordinates(flatCoordinates, offset, end, 
 }
 
 /**
- * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} rings Rings.
+ * @param {Array<Array<module:ol/coordinate~Coordinate>>} rings Rings.
  * @param {module:ol/extent~Extent=} opt_extent Extent.
  * @return {module:ol/extent~Extent} Extent.
  */
@@ -342,7 +342,7 @@ export function extendCoordinate(extent, coordinate) {
 
 /**
  * @param {module:ol/extent~Extent} extent Extent.
- * @param {Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
+ * @param {Array<module:ol/coordinate~Coordinate>} coordinates Coordinates.
  * @return {module:ol/extent~Extent} Extent.
  */
 export function extendCoordinates(extent, coordinates) {
@@ -355,7 +355,7 @@ export function extendCoordinates(extent, coordinates) {
 
 /**
  * @param {module:ol/extent~Extent} extent Extent.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
@@ -371,7 +371,7 @@ export function extendFlatCoordinates(extent, flatCoordinates, offset, end, stri
 
 /**
  * @param {module:ol/extent~Extent} extent Extent.
- * @param {Array.<Array.<module:ol/coordinate~Coordinate>>} rings Rings.
+ * @param {Array<Array<module:ol/coordinate~Coordinate>>} rings Rings.
  * @return {module:ol/extent~Extent} Extent.
  */
 export function extendRings(extent, rings) {

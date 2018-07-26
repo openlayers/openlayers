@@ -40,7 +40,7 @@ const DEFAULT_FILL_COLOR = '#333';
  * `'point'`. Default is no fill.
  * @property {module:ol/style/Stroke} [backgroundStroke] Stroke style for the text background  when `placement`
  * is `'point'`. Default is no stroke.
- * @property {Array.<number>} [padding=[0, 0, 0, 0]] Padding in pixels around the text for decluttering and background. The order of
+ * @property {Array<number>} [padding=[0, 0, 0, 0]] Padding in pixels around the text for decluttering and background. The order of
  * values in the array is `[top, right, bottom, left]`.
  */
 
@@ -157,7 +157,7 @@ class Text {
 
     /**
     * @private
-    * @type {Array.<number>}
+    * @type {Array<number>}
     */
     this.padding_ = options.padding === undefined ? null : options.padding;
   }
@@ -334,7 +334,7 @@ class Text {
 
   /**
   * Get the padding for the text.
-  * @return {Array.<number>} Padding.
+  * @return {Array<number>} Padding.
   * @api
   */
   getPadding() {
@@ -494,7 +494,7 @@ class Text {
   /**
   * Set the padding (`[top, right, bottom, left]`).
   *
-  * @param {!Array.<number>} padding Padding.
+  * @param {!Array<number>} padding Padding.
   * @api
   */
   setPadding(padding) {

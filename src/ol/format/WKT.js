@@ -85,7 +85,7 @@ const TokenType = {
 
 /**
  * @const
- * @type {Object.<string, string>}
+ * @type {Object<string, string>}
  */
 const WKTGeometryType = {};
 for (const type in GeometryType) {
@@ -321,7 +321,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array.<module:ol/geom/Geometry>} A collection of geometries.
+   * @return {!Array<module:ol/geom/Geometry>} A collection of geometries.
    * @private
    */
   parseGeometryCollectionText_() {
@@ -340,7 +340,7 @@ class Parser {
   }
 
   /**
-   * @return {Array.<number>} All values in a point.
+   * @return {Array<number>} All values in a point.
    * @private
    */
   parsePointText_() {
@@ -356,7 +356,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array.<!Array.<number>>} All points in a linestring.
+   * @return {!Array<!Array<number>>} All points in a linestring.
    * @private
    */
   parseLineStringText_() {
@@ -372,7 +372,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array.<!Array.<number>>} All points in a polygon.
+   * @return {!Array<!Array<number>>} All points in a polygon.
    * @private
    */
   parsePolygonText_() {
@@ -388,7 +388,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array.<!Array.<number>>} All points in a multipoint.
+   * @return {!Array<!Array<number>>} All points in a multipoint.
    * @private
    */
   parseMultiPointText_() {
@@ -409,7 +409,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array.<!Array.<number>>} All linestring points
+   * @return {!Array<!Array<number>>} All linestring points
    *                                        in a multilinestring.
    * @private
    */
@@ -426,7 +426,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array.<!Array.<number>>} All polygon points in a multipolygon.
+   * @return {!Array<!Array<number>>} All polygon points in a multipolygon.
    * @private
    */
   parseMultiPolygonText_() {
@@ -442,7 +442,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array.<number>} A point.
+   * @return {!Array<number>} A point.
    * @private
    */
   parsePoint_() {
@@ -463,7 +463,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array.<!Array.<number>>} An array of points.
+   * @return {!Array<!Array<number>>} An array of points.
    * @private
    */
   parsePointList_() {
@@ -475,7 +475,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array.<!Array.<number>>} An array of points.
+   * @return {!Array<!Array<number>>} An array of points.
    * @private
    */
   parsePointTextList_() {
@@ -487,7 +487,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array.<!Array.<number>>} An array of points.
+   * @return {!Array<!Array<number>>} An array of points.
    * @private
    */
   parseLineStringTextList_() {
@@ -499,7 +499,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array.<!Array.<number>>} An array of points.
+   * @return {!Array<!Array<number>>} An array of points.
    * @private
    */
   parsePolygonTextList_() {
@@ -838,7 +838,7 @@ function encodeGeometryLayout(geom) {
 
 /**
  * @const
- * @type {Object.<string, function(module:ol/geom/Geometry): string>}
+ * @type {Object<string, function(module:ol/geom/Geometry): string>}
  */
 const GeometryEncoder = {
   'Point': encodePointGeometry,

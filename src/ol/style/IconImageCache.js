@@ -11,7 +11,7 @@ class IconImageCache {
   constructor() {
 
     /**
-    * @type {!Object.<string, module:ol/style/IconImage>}
+    * @type {!Object<string, module:ol/style/IconImage>}
     * @private
     */
     this.cache_ = {};

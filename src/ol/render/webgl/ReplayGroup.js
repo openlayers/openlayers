@@ -14,12 +14,12 @@ import WebGLPolygonReplay from '../webgl/PolygonReplay.js';
 import WebGLTextReplay from '../webgl/TextReplay.js';
 
 /**
- * @type {Array.<number>}
+ * @type {Array<number>}
  */
 const HIT_DETECTION_SIZE = [1, 1];
 
 /**
- * @type {Object.<module:ol/render/ReplayType,
+ * @type {Object<module:ol/render/ReplayType,
  *                function(new: module:ol/render/webgl/Replay, number,
  *                module:ol/extent~Extent)>}
  */
@@ -61,8 +61,8 @@ class WebGLReplayGroup extends ReplayGroup {
 
     /**
      * @private
-     * @type {!Object.<string,
-     *        Object.<module:ol/render/ReplayType, module:ol/render/webgl/Replay>>}
+     * @type {!Object<string,
+     *        Object<module:ol/render/ReplayType, module:ol/render/webgl/Replay>>}
      */
     this.replaysByZIndex_ = {};
 
@@ -148,7 +148,7 @@ class WebGLReplayGroup extends ReplayGroup {
    * @param {module:ol/size~Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
    * @param {number} opacity Global opacity.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    */
   replay(
     context,
@@ -160,7 +160,7 @@ class WebGLReplayGroup extends ReplayGroup {
     opacity,
     skippedFeaturesHash
   ) {
-    /** @type {Array.<number>} */
+    /** @type {Array<number>} */
     const zs = Object.keys(this.replaysByZIndex_).map(Number);
     zs.sort(numberSafeCompareFunction);
 
@@ -188,7 +188,7 @@ class WebGLReplayGroup extends ReplayGroup {
    * @param {module:ol/size~Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
    * @param {number} opacity Global opacity.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
    * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
    * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting
@@ -209,7 +209,7 @@ class WebGLReplayGroup extends ReplayGroup {
     oneByOne,
     opt_hitExtent
   ) {
-    /** @type {Array.<number>} */
+    /** @type {Array<number>} */
     const zs = Object.keys(this.replaysByZIndex_).map(Number);
     zs.sort(function(a, b) {
       return b - a;
@@ -242,7 +242,7 @@ class WebGLReplayGroup extends ReplayGroup {
    * @param {module:ol/size~Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
    * @param {number} opacity Global opacity.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} callback Feature callback.
    * @return {T|undefined} Callback result.
    * @template T
@@ -303,7 +303,7 @@ class WebGLReplayGroup extends ReplayGroup {
    * @param {module:ol/size~Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
    * @param {number} opacity Global opacity.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @return {boolean} Is there a feature at the given coordinate?
    */
   hasFeatureAtCoordinate(

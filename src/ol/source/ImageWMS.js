@@ -37,7 +37,7 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * @property {module:ol/source/WMSServerType|string} [serverType] The type of
  * the remote WMS server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
  * @property {module:ol/Image~LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
- * @property {Object.<string,*>} params WMS request parameters.
+ * @property {Object<string,*>} params WMS request parameters.
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
@@ -45,7 +45,7 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or
  * higher.
- * @property {Array.<number>} [resolutions] Resolutions.
+ * @property {Array<number>} [resolutions] Resolutions.
  * If specified, requests will be made for these resolutions only.
  * @property {string} url WMS service URL.
  */

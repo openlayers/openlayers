@@ -10,13 +10,13 @@ import {get as getProjection, getTransform} from '../../proj.js';
  * @param {module:ol/proj~TransformFunction} transform Transform from longitude/latitude to
  *     projected coordinates.
  * @param {number} squaredTolerance Squared tolerance.
- * @return {Array.<number>} Flat coordinates.
+ * @return {Array<number>} Flat coordinates.
  */
 function line(interpolate, transform, squaredTolerance) {
   // FIXME reduce garbage generation
   // FIXME optimize stack operations
 
-  /** @type {Array.<number>} */
+  /** @type {Array<number>} */
   const flatCoordinates = [];
 
   let geoA = interpolate(0);
@@ -25,14 +25,14 @@ function line(interpolate, transform, squaredTolerance) {
   let a = transform(geoA);
   let b = transform(geoB);
 
-  /** @type {Array.<module:ol/coordinate~Coordinate>} */
+  /** @type {Array<module:ol/coordinate~Coordinate>} */
   const geoStack = [geoB, geoA];
-  /** @type {Array.<module:ol/coordinate~Coordinate>} */
+  /** @type {Array<module:ol/coordinate~Coordinate>} */
   const stack = [b, a];
-  /** @type {Array.<number>} */
+  /** @type {Array<number>} */
   const fractionStack = [1, 0];
 
-  /** @type {!Object.<string, boolean>} */
+  /** @type {!Object<string, boolean>} */
   const fractions = {};
 
   let maxIterations = 1e5;
@@ -86,7 +86,7 @@ function line(interpolate, transform, squaredTolerance) {
  * @param {number} lat2 Latitude 2 in degrees.
  * @param {module:ol/proj/Projection} projection Projection.
  * @param {number} squaredTolerance Squared tolerance.
- * @return {Array.<number>} Flat coordinates.
+ * @return {Array<number>} Flat coordinates.
  */
 export function greatCircleArc(lon1, lat1, lon2, lat2, projection, squaredTolerance) {
   const geoProjection = getProjection('EPSG:4326');
@@ -130,7 +130,7 @@ export function greatCircleArc(lon1, lat1, lon2, lat2, projection, squaredTolera
  * @param {number} lat2 Latitude 2.
  * @param {module:ol/proj/Projection} projection Projection.
  * @param {number} squaredTolerance Squared tolerance.
- * @return {Array.<number>} Flat coordinates.
+ * @return {Array<number>} Flat coordinates.
  */
 export function meridian(lon, lat1, lat2, projection, squaredTolerance) {
   const epsg4326Projection = getProjection('EPSG:4326');
@@ -153,7 +153,7 @@ export function meridian(lon, lat1, lat2, projection, squaredTolerance) {
  * @param {number} lon2 Longitude 2.
  * @param {module:ol/proj/Projection} projection Projection.
  * @param {number} squaredTolerance Squared tolerance.
- * @return {Array.<number>} Flat coordinates.
+ * @return {Array<number>} Flat coordinates.
  */
 export function parallel(lat, lon1, lon2, projection, squaredTolerance) {
   const epsg4326Projection = getProjection('EPSG:4326');

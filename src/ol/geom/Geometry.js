@@ -47,7 +47,7 @@ class Geometry extends BaseObject {
 
     /**
      * @protected
-     * @type {Object.<string, module:ol/geom/Geometry>}
+     * @type {Object<string, module:ol/geom/Geometry>}
      */
     this.simplifiedGeometryCache = {};
 

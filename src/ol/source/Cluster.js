@@ -68,7 +68,7 @@ class Cluster extends VectorSource {
     this.distance = options.distance !== undefined ? options.distance : 20;
 
     /**
-     * @type {Array.<module:ol/Feature>}
+     * @type {Array<module:ol/Feature>}
      * @protected
      */
     this.features = [];
@@ -159,7 +159,7 @@ class Cluster extends VectorSource {
     const features = this.source.getFeatures();
 
     /**
-     * @type {!Object.<string, boolean>}
+     * @type {!Object<string, boolean>}
      */
     const clustered = {};
 
@@ -189,7 +189,7 @@ class Cluster extends VectorSource {
   }
 
   /**
-   * @param {Array.<module:ol/Feature>} features Features
+   * @param {Array<module:ol/Feature>} features Features
    * @return {module:ol/Feature} The cluster feature.
    * @protected
    */

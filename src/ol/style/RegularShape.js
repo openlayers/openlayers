@@ -39,7 +39,7 @@ import ImageStyle from '../style/Image.js';
  * @property {number} strokeWidth
  * @property {number} size
  * @property {string} lineCap
- * @property {Array.<number>} lineDash
+ * @property {Array<number>} lineDash
  * @property {number} lineDashOffset
  * @property {string} lineJoin
  * @property {number} miterLimit
@@ -80,7 +80,7 @@ class RegularShape extends ImageStyle {
 
     /**
      * @private
-     * @type {Array.<string>}
+     * @type {Array<string>}
      */
     this.checksums_ = null;
 
@@ -104,7 +104,7 @@ class RegularShape extends ImageStyle {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.origin_ = [0, 0];
 
@@ -141,7 +141,7 @@ class RegularShape extends ImageStyle {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.anchor_ = null;
 

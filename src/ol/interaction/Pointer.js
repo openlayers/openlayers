@@ -130,13 +130,13 @@ class PointerInteraction extends Interaction {
     this.stopDown = options.stopDown ? options.stopDown : stopDown;
 
     /**
-     * @type {!Object.<string, module:ol/pointer/PointerEvent>}
+     * @type {!Object<string, module:ol/pointer/PointerEvent>}
      * @private
      */
     this.trackedPointers_ = {};
 
     /**
-     * @type {Array.<module:ol/pointer/PointerEvent>}
+     * @type {Array<module:ol/pointer/PointerEvent>}
      * @protected
      */
     this.targetPointers = [];
@@ -169,7 +169,7 @@ class PointerInteraction extends Interaction {
 
 
 /**
- * @param {Array.<module:ol/pointer/PointerEvent>} pointerEvents List of events.
+ * @param {Array<module:ol/pointer/PointerEvent>} pointerEvents List of events.
  * @return {module:ol/pixel~Pixel} Centroid pixel.
  */
 export function centroid(pointerEvents) {

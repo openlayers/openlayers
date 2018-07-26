@@ -28,19 +28,19 @@ class MapRenderer extends Disposable {
 
     /**
      * @private
-     * @type {!Object.<string, module:ol/renderer/Layer>}
+     * @type {!Object<string, module:ol/renderer/Layer>}
      */
     this.layerRenderers_ = {};
 
     /**
      * @private
-     * @type {Object.<string, module:ol/events~EventsKey>}
+     * @type {Object<string, module:ol/events~EventsKey>}
      */
     this.layerRendererListeners_ = {};
 
     /**
      * @private
-     * @type {Array.<module:ol/renderer/Layer>}
+     * @type {Array<module:ol/renderer/Layer>}
      */
     this.layerRendererConstructors_ = [];
 
@@ -48,7 +48,7 @@ class MapRenderer extends Disposable {
 
   /**
    * Register layer renderer constructors.
-   * @param {Array.<module:ol/renderer/Layer>} constructors Layer renderers.
+   * @param {Array<module:ol/renderer/Layer>} constructors Layer renderers.
    */
   registerLayerRenderers(constructors) {
     this.layerRendererConstructors_.push.apply(this.layerRendererConstructors_, constructors);
@@ -56,7 +56,7 @@ class MapRenderer extends Disposable {
 
   /**
    * Get the registered layer renderer constructors.
-   * @return {Array.<module:ol/renderer/Layer>} Registered layer renderers.
+   * @return {Array<module:ol/renderer/Layer>} Registered layer renderers.
    */
   getLayerRendererConstructors() {
     return this.layerRendererConstructors_;
@@ -242,7 +242,7 @@ class MapRenderer extends Disposable {
 
   /**
    * @protected
-   * @return {Object.<string, module:ol/renderer/Layer>} Layer renderers.
+   * @return {Object<string, module:ol/renderer/Layer>} Layer renderers.
    */
   getLayerRenderers() {
     return this.layerRenderers_;

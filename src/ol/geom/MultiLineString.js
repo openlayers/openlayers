@@ -23,18 +23,18 @@ import {douglasPeuckerArray} from '../geom/flat/simplify.js';
 class MultiLineString extends SimpleGeometry {
 
   /**
-   * @param {Array.<Array.<module:ol/coordinate~Coordinate>|module:ol/geom~MultiLineString>|Array.<number>} coordinates
+   * @param {Array<Array<module:ol/coordinate~Coordinate>|module:ol/geom~MultiLineString>|Array<number>} coordinates
    *     Coordinates or LineString geometries. (For internal use, flat coordinates in
    *     combination with `opt_layout` and `opt_ends` are also accepted.)
    * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
-   * @param {Array.<number>} opt_ends Flat coordinate ends for internal use.
+   * @param {Array<number>} opt_ends Flat coordinate ends for internal use.
    */
   constructor(coordinates, opt_layout, opt_ends) {
 
     super();
 
     /**
-     * @type {Array.<number>}
+     * @type {Array<number>}
      * @private
      */
     this.ends_ = [];
@@ -152,7 +152,7 @@ class MultiLineString extends SimpleGeometry {
 
   /**
    * Return the coordinates of the multilinestring.
-   * @return {Array.<Array.<module:ol/coordinate~Coordinate>>} Coordinates.
+   * @return {Array<Array<module:ol/coordinate~Coordinate>>} Coordinates.
    * @override
    * @api
    */
@@ -162,7 +162,7 @@ class MultiLineString extends SimpleGeometry {
   }
 
   /**
-   * @return {Array.<number>} Ends.
+   * @return {Array<number>} Ends.
    */
   getEnds() {
     return this.ends_;
@@ -184,14 +184,14 @@ class MultiLineString extends SimpleGeometry {
 
   /**
    * Return the linestrings of this multilinestring.
-   * @return {Array.<module:ol/geom/LineString>} LineStrings.
+   * @return {Array<module:ol/geom/LineString>} LineStrings.
    * @api
    */
   getLineStrings() {
     const flatCoordinates = this.flatCoordinates;
     const ends = this.ends_;
     const layout = this.layout;
-    /** @type {Array.<module:ol/geom/LineString>} */
+    /** @type {Array<module:ol/geom/LineString>} */
     const lineStrings = [];
     let offset = 0;
     for (let i = 0, ii = ends.length; i < ii; ++i) {
@@ -204,7 +204,7 @@ class MultiLineString extends SimpleGeometry {
   }
 
   /**
-   * @return {Array.<number>} Flat midpoints.
+   * @return {Array<number>} Flat midpoints.
    */
   getFlatMidpoints() {
     const midpoints = [];
@@ -253,7 +253,7 @@ class MultiLineString extends SimpleGeometry {
 
   /**
    * Set the coordinates of the multilinestring.
-   * @param {!Array.<Array.<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
+   * @param {!Array<Array<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
    * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
    * @override
    * @api

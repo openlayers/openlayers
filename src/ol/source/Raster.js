@@ -37,8 +37,8 @@ import {create as createTransform} from '../transform.js';
  * data object is accessible from raster events, where it can be initialized in
  * "beforeoperations" and accessed again in "afteroperations".
  *
- * @typedef {function((Array.<Array.<number>>|Array.<ImageData>), Object):
- *     (Array.<number>|ImageData)} Operation
+ * @typedef {function((Array<Array<number>>|Array<ImageData>), Object):
+ *     (Array<number>|ImageData)} Operation
  */
 
 
@@ -114,7 +114,7 @@ class RasterSourceEvent extends Event {
 
 /**
  * @typedef {Object} Options
- * @property {Array.<module:ol/source/Source|module:ol/layer/Layer>} sources Input
+ * @property {Array<module:ol/source/Source|module:ol/layer/Layer>} sources Input
  * sources or layers. Vector layers must be configured with `renderMode: 'image'`.
  * @property {module:ol/source/Raster~Operation} [operation] Raster operation.
  * The operation will be called with data from input sources
@@ -170,7 +170,7 @@ class RasterSource extends ImageSource {
 
     /**
      * @private
-     * @type {Array.<module:ol/renderer/canvas/Layer>}
+     * @type {Array<module:ol/renderer/canvas/Layer>}
      */
     this.renderers_ = createRenderers(options.sources);
 
@@ -455,8 +455,8 @@ function getImageData(renderer, frameState, layerState) {
 
 /**
  * Get a list of layer states from a list of renderers.
- * @param {Array.<module:ol/renderer/canvas/Layer>} renderers Layer renderers.
- * @return {Array.<module:ol/layer/Layer~State>} The layer states.
+ * @param {Array<module:ol/renderer/canvas/Layer>} renderers Layer renderers.
+ * @return {Array<module:ol/layer/Layer~State>} The layer states.
  */
 function getLayerStatesArray(renderers) {
   return renderers.map(function(renderer) {
@@ -467,8 +467,8 @@ function getLayerStatesArray(renderers) {
 
 /**
  * Create renderers for all sources.
- * @param {Array.<module:ol/source/Source>} sources The sources.
- * @return {Array.<module:ol/renderer/canvas/Layer>} Array of layer renderers.
+ * @param {Array<module:ol/source/Source>} sources The sources.
+ * @return {Array<module:ol/renderer/canvas/Layer>} Array of layer renderers.
  */
 function createRenderers(sources) {
   const len = sources.length;

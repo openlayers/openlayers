@@ -68,7 +68,7 @@ export const RenderType = {
  * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
  * means higher priority. When set to `true`, a `renderMode` of `'image'` will be overridden with
  * `'hybrid'`.
- * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style] Layer style. See
+ * @property {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style] Layer style. See
  * {@link module:ol/style} for default style which will be used if this is not defined.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
  * recreated during animations. This means that no vectors will be shown clipped, but the setting
@@ -80,7 +80,7 @@ export const RenderType = {
  * means no preloading.
  * @property {module:ol/render~OrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created.
- * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style] Layer style. See
+ * @property {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style] Layer style. See
  * {@link module:ol/style} for default style which will be used if this is not defined.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  */

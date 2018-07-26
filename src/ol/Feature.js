@@ -54,7 +54,7 @@ import Style from './style/Style.js';
  */
 class Feature extends BaseObject {
   /**
-   * @param {module:ol/geom/Geometry|Object.<string, *>=} opt_geometryOrProperties
+   * @param {module:ol/geom/Geometry|Object<string, *>=} opt_geometryOrProperties
    *     You may pass a Geometry object directly, or an object literal containing
    *     properties. If you pass an object literal, you may include a Geometry
    *     associated with a `geometry` key.
@@ -78,7 +78,7 @@ class Feature extends BaseObject {
     /**
      * User provided style.
      * @private
-     * @type {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction}
+     * @type {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction}
      */
     this.style_ = null;
 
@@ -104,7 +104,7 @@ class Feature extends BaseObject {
         const geometry = opt_geometryOrProperties;
         this.setGeometry(geometry);
       } else {
-        /** @type {Object.<string, *>} */
+        /** @type {Object<string, *>} */
         const properties = opt_geometryOrProperties;
         this.setProperties(properties);
       }
@@ -170,7 +170,7 @@ class Feature extends BaseObject {
   /**
    * Get the feature's style. Will return what was provided to the
    * {@link module:ol/Feature~Feature#setStyle} method.
-   * @return {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} The feature style.
+   * @return {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction} The feature style.
    * @api
    */
   getStyle() {
@@ -225,7 +225,7 @@ class Feature extends BaseObject {
    * Set the style for the feature.  This can be a single style object, an array
    * of styles, or a function that takes a resolution and returns an array of
    * styles. If it is `null` the feature has no style (a `null` style).
-   * @param {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} style Style for this feature.
+   * @param {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction} style Style for this feature.
    * @api
    * @fires module:ol/events/Event~Event#event:change
    */
@@ -273,7 +273,7 @@ class Feature extends BaseObject {
  * Convert the provided object into a feature style function.  Functions passed
  * through unchanged.  Arrays of module:ol/style/Style or single style objects wrapped
  * in a new feature style function.
- * @param {module:ol/style/Style~StyleFunction|!Array.<module:ol/style/Style>|!module:ol/style/Style} obj
+ * @param {module:ol/style/Style~StyleFunction|!Array<module:ol/style/Style>|!module:ol/style/Style} obj
  *     A feature style function, a single style, or an array of styles.
  * @return {module:ol/style/Style~StyleFunction} A style function.
  */
@@ -282,7 +282,7 @@ export function createStyleFunction(obj) {
     return obj;
   } else {
     /**
-     * @type {Array.<module:ol/style/Style>}
+     * @type {Array<module:ol/style/Style>}
      */
     let styles;
     if (Array.isArray(obj)) {

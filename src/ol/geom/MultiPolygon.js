@@ -28,17 +28,17 @@ import {quantizeMultiArray} from '../geom/flat/simplify.js';
 class MultiPolygon extends SimpleGeometry {
 
   /**
-   * @param {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>|Array.<number>} coordinates Coordinates.
+   * @param {Array<Array<Array<module:ol/coordinate~Coordinate>>>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinats in combination with `opt_layout` and `opt_endss` are also accepted.
    * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
-   * @param {Array.<number>} opt_endss Array of ends for internal use with flat coordinates.
+   * @param {Array<number>} opt_endss Array of ends for internal use with flat coordinates.
    */
   constructor(coordinates, opt_layout, opt_endss) {
 
     super();
 
     /**
-     * @type {Array.<Array.<number>>}
+     * @type {Array<Array<number>>}
      * @private
      */
     this.endss_ = [];
@@ -51,7 +51,7 @@ class MultiPolygon extends SimpleGeometry {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.flatInteriorPoints_ = null;
 
@@ -75,7 +75,7 @@ class MultiPolygon extends SimpleGeometry {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.orientedFlatCoordinates_ = null;
 
@@ -115,7 +115,7 @@ class MultiPolygon extends SimpleGeometry {
    * @api
    */
   appendPolygon(polygon) {
-    /** @type {Array.<number>} */
+    /** @type {Array<number>} */
     let ends;
     if (!this.flatCoordinates) {
       this.flatCoordinates = polygon.getFlatCoordinates().slice();
@@ -193,7 +193,7 @@ class MultiPolygon extends SimpleGeometry {
    *     (clockwise for exterior and counter-clockwise for interior rings).
    *     By default, coordinate orientation will depend on how the geometry was
    *     constructed.
-   * @return {Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>} Coordinates.
+   * @return {Array<Array<Array<module:ol/coordinate~Coordinate>>>} Coordinates.
    * @override
    * @api
    */
@@ -212,14 +212,14 @@ class MultiPolygon extends SimpleGeometry {
   }
 
   /**
-   * @return {Array.<Array.<number>>} Endss.
+   * @return {Array<Array<number>>} Endss.
    */
   getEndss() {
     return this.endss_;
   }
 
   /**
-   * @return {Array.<number>} Flat interior points.
+   * @return {Array<number>} Flat interior points.
    */
   getFlatInteriorPoints() {
     if (this.flatInteriorPointsRevision_ != this.getRevision()) {
@@ -244,7 +244,7 @@ class MultiPolygon extends SimpleGeometry {
   }
 
   /**
-   * @return {Array.<number>} Oriented flat coordinates.
+   * @return {Array<number>} Oriented flat coordinates.
    */
   getOrientedFlatCoordinates() {
     if (this.orientedRevision_ != this.getRevision()) {
@@ -305,7 +305,7 @@ class MultiPolygon extends SimpleGeometry {
 
   /**
    * Return the polygons of this multipolygon.
-   * @return {Array.<module:ol/geom/Polygon>} Polygons.
+   * @return {Array<module:ol/geom/Polygon>} Polygons.
    * @api
    */
   getPolygons() {
@@ -348,7 +348,7 @@ class MultiPolygon extends SimpleGeometry {
 
   /**
    * Set the coordinates of the multipolygon.
-   * @param {!Array.<Array.<Array.<module:ol/coordinate~Coordinate>>>} coordinates Coordinates.
+   * @param {!Array<Array<Array<module:ol/coordinate~Coordinate>>>} coordinates Coordinates.
    * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
    * @override
    * @api

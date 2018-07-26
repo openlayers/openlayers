@@ -5,7 +5,7 @@
 
 /**
  * An array of numbers representing a size: `[width, height]`.
- * @typedef {Array.<number>} Size
+ * @typedef {Array<number>} Size
  * @api
  */
 

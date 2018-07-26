@@ -52,7 +52,7 @@ class ImageTile extends Tile {
 
     /**
      * @private
-     * @type {Array.<module:ol/events~EventsKey>}
+     * @type {Array<module:ol/events~EventsKey>}
      */
     this.imageListenerKeys_ = null;
 

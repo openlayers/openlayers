@@ -12,7 +12,7 @@ import SourceState from '../source/State.js';
  * A function that returns a string or an array of strings representing source
  * attributions.
  *
- * @typedef {function(module:ol/PluggableMap~FrameState): (string|Array.<string>)} Attribution
+ * @typedef {function(module:ol/PluggableMap~FrameState): (string|Array<string>)} Attribution
  */
 
 
@@ -24,7 +24,7 @@ import SourceState from '../source/State.js';
  * * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`)
  * * a function that returns a string or array of strings (`{@link module:ol/source/Source~Attribution}`)
  *
- * @typedef {string|Array.<string>|module:ol/source/Source~Attribution} AttributionLike
+ * @typedef {string|Array<string>|module:ol/source/Source~Attribution} AttributionLike
  */
 
 
@@ -124,7 +124,7 @@ class Source extends BaseObject {
 
   /**
   * @abstract
-  * @return {Array.<number>|undefined} Resolutions.
+  * @return {Array<number>|undefined} Resolutions.
   */
   getResolutions() {}
 
@@ -180,7 +180,7 @@ class Source extends BaseObject {
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
+ * @param {Object<string, boolean>} skippedFeatureUids Skipped feature uids.
  * @param {function((module:ol/Feature|module:ol/render/Feature)): T} callback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T

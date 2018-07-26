@@ -51,19 +51,19 @@ export class CustomTile extends Tile {
 
     /**
      * @private
-     * @type {Array.<string>}
+     * @type {Array<string>}
      */
     this.grid_ = null;
 
     /**
      * @private
-     * @type {Array.<string>}
+     * @type {Array<string>}
      */
     this.keys_ = null;
 
     /**
      * @private
-     * @type {Object.<string, Object>|undefined}
+     * @type {Object<string, Object>|undefined}
      */
     this.data_ = null;
 

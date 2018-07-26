@@ -10,7 +10,7 @@ import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
 
 /**
  * @typedef {Object} Options
- * @property {Array.<string>} [layers] If set, only features of the given layers will be returned by the format when read.
+ * @property {Array<string>} [layers] If set, only features of the given layers will be returned by the format when read.
  */
 
 
@@ -61,20 +61,20 @@ class WMSGetFeatureInfo extends XMLFeature {
 
     /**
      * @private
-     * @type {Array.<string>}
+     * @type {Array<string>}
      */
     this.layers_ = options.layers ? options.layers : null;
   }
 
   /**
-   * @return {Array.<string>} layers
+   * @return {Array<string>} layers
    */
   getLayers() {
     return this.layers_;
   }
 
   /**
-   * @param {Array.<string>} layers Layers to parse.
+   * @param {Array<string>} layers Layers to parse.
    */
   setLayers(layers) {
     this.layers_ = layers;
@@ -82,14 +82,14 @@ class WMSGetFeatureInfo extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
-   * @return {Array.<module:ol/Feature>} Features.
+   * @param {Array<*>} objectStack Object stack.
+   * @return {Array<module:ol/Feature>} Features.
    * @private
    */
   readFeatures_(node, objectStack) {
     node.setAttribute('namespaceURI', this.featureNS_);
     const localName = node.localName;
-    /** @type {Array.<module:ol/Feature>} */
+    /** @type {Array<module:ol/Feature>} */
     let features = [];
     if (node.childNodes.length === 0) {
       return features;

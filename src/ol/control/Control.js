@@ -74,7 +74,7 @@ class Control extends BaseObject {
 
     /**
      * @protected
-     * @type {!Array.<module:ol/events~EventsKey>}
+     * @type {!Array<module:ol/events~EventsKey>}
      */
     this.listenerKeys = [];
 

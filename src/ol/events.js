@@ -75,7 +75,7 @@ export function findListener(listeners, listener, opt_this, opt_setDeleteIndex) 
 /**
  * @param {module:ol/events/EventTarget~EventTargetLike} target Target.
  * @param {string} type Type.
- * @return {Array.<module:ol/events~EventsKey>|undefined} Listeners.
+ * @return {Array<module:ol/events~EventsKey>|undefined} Listeners.
  */
 export function getListeners(target, type) {
   const listenerMap = target.ol_lm;
@@ -87,7 +87,7 @@ export function getListeners(target, type) {
  * Get the lookup of listeners.  If one does not exist on the target, it is
  * created.
  * @param {module:ol/events/EventTarget~EventTargetLike} target Target.
- * @return {!Object.<string, Array.<module:ol/events~EventsKey>>} Map of
+ * @return {!Object<string, Array<module:ol/events~EventsKey>>} Map of
  *     listeners by event type.
  */
 function getListenerMap(target) {

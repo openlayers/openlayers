@@ -38,7 +38,7 @@ class Kinetic {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.points_ = [];
 

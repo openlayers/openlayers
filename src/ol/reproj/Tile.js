@@ -98,13 +98,13 @@ class ReprojTile extends Tile {
 
     /**
      * @private
-     * @type {!Array.<module:ol/Tile>}
+     * @type {!Array<module:ol/Tile>}
      */
     this.sourceTiles_ = [];
 
     /**
      * @private
-     * @type {Array.<module:ol/events~EventsKey>}
+     * @type {Array<module:ol/events~EventsKey>}
      */
     this.sourcesListenerKeys_ = null;
 

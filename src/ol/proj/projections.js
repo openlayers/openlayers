@@ -4,7 +4,7 @@
 
 
 /**
- * @type {Object.<string, module:ol/proj/Projection>}
+ * @type {Object<string, module:ol/proj/Projection>}
  */
 let cache = {};
 

@@ -23,7 +23,7 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @const
- * @type {Object.<module:ol/geom/GeometryType, function(EsriJSONGeometry): module:ol/geom/Geometry>}
+ * @type {Object<module:ol/geom/GeometryType, function(EsriJSONGeometry): module:ol/geom/Geometry>}
  */
 const GEOMETRY_READERS = {};
 GEOMETRY_READERS[GeometryType.POINT] = readPointGeometry;
@@ -36,7 +36,7 @@ GEOMETRY_READERS[GeometryType.MULTI_POLYGON] = readMultiPolygonGeometry;
 
 /**
  * @const
- * @type {Object.<string, function(module:ol/geom/Geometry, module:ol/format/Feature~WriteOptions=): (EsriJSONGeometry)>}
+ * @type {Object<string, function(module:ol/geom/Geometry, module:ol/format/Feature~WriteOptions=): (EsriJSONGeometry)>}
  */
 const GEOMETRY_WRITERS = {};
 GEOMETRY_WRITERS[GeometryType.POINT] = writePointGeometry;
@@ -108,7 +108,7 @@ class EsriJSON extends JSONFeature {
     const options = opt_options ? opt_options : {};
     if (esriJSONObject.features) {
       const esriJSONFeatureCollection = /** @type {EsriJSONFeatureCollection} */ (object);
-      /** @type {Array.<module:ol/Feature>} */
+      /** @type {Array<module:ol/Feature>} */
       const features = [];
       const esriJSONFeatures = esriJSONFeatureCollection.features;
       options.idField = object.objectIdFieldName;
@@ -188,7 +188,7 @@ class EsriJSON extends JSONFeature {
   /**
    * Encode an array of features as a EsriJSON object.
    *
-   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {Array<module:ol/Feature>} features Features.
    * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
    * @return {Object} EsriJSON Object.
    * @override
@@ -252,9 +252,9 @@ function readGeometry(object, opt_options) {
  * Checks if any polygons in this array contain any other polygons in this
  * array. It is used for checking for holes.
  * Logic inspired by: https://github.com/Esri/terraformer-arcgis-parser
- * @param {Array.<!Array.<!Array.<number>>>} rings Rings.
+ * @param {Array<!Array<!Array<number>>>} rings Rings.
  * @param {module:ol/geom/GeometryLayout} layout Geometry layout.
- * @return {Array.<!Array.<!Array.<number>>>} Transformed rings.
+ * @return {Array<!Array<!Array<number>>>} Transformed rings.
  */
 function convertRings(rings, layout) {
   const flatRing = [];
@@ -376,7 +376,7 @@ function readMultiPointGeometry(object) {
 function readMultiPolygonGeometry(object) {
   const layout = getGeometryLayout(object);
   return new MultiPolygon(
-    /** @type {Array.<Array.<Array.<Array.<number>>>>} */(object.rings),
+    /** @type {Array<Array<Array<Array<number>>>>} */(object.rings),
     layout);
 }
 

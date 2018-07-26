@@ -101,7 +101,7 @@ imagery.on('postcompose', function(event) {
  * Apply a convolution kernel to canvas.  This works for any size kernel, but
  * performance starts degrading above 3 x 3.
  * @param {CanvasRenderingContext2D} context Canvas 2d context.
- * @param {Array.<number>} kernel Kernel.
+ * @param {Array<number>} kernel Kernel.
  */
 function convolve(context, kernel) {
   const canvas = context.canvas;

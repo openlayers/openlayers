@@ -23,7 +23,7 @@ import RenderFeature from '../render/Feature.js';
 
 /**
  * @typedef {Object} Options
- * @property {function((module:ol/geom/Geometry|Object.<string,*>)=)|function(module:ol/geom/GeometryType,Array.<number>,(Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)} [featureClass]
+ * @property {function((module:ol/geom/Geometry|Object<string,*>)=)|function(module:ol/geom/GeometryType,Array<number>,(Array<number>|Array<Array<number>>),Object<string,*>,number)} [featureClass]
  * Class for features returned by {@link module:ol/format/MVT#readFeatures}. Set to
  * {@link module:ol/Feature~Feature} to get full editing and geometry support at the cost of
  * decreased rendering performance. The default is {@link module:ol/render/Feature~RenderFeature},
@@ -32,7 +32,7 @@ import RenderFeature from '../render/Feature.js';
  * features.
  * @property {string} [layerName='layer'] Name of the feature attribute that
  * holds the layer name.
- * @property {Array.<string>} [layers] Layers to read features from. If not
+ * @property {Array<string>} [layers] Layers to read features from. If not
  * provided, features will be read from all layers.
  */
 
@@ -64,9 +64,9 @@ class MVT extends FeatureFormat {
 
     /**
      * @private
-     * @type {function((module:ol/geom/Geometry|Object.<string,*>)=)|
-     *     function(module:ol/geom/GeometryType,Array.<number>,
-     *         (Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)}
+     * @type {function((module:ol/geom/Geometry|Object<string,*>)=)|
+     *     function(module:ol/geom/GeometryType,Array<number>,
+     *         (Array<number>|Array<Array<number>>),Object<string,*>,number)}
      */
     this.featureClass_ = options.featureClass ?
       options.featureClass : RenderFeature;
@@ -85,7 +85,7 @@ class MVT extends FeatureFormat {
 
     /**
      * @private
-     * @type {Array.<string>}
+     * @type {Array<string>}
      */
     this.layers_ = options.layers ? options.layers : null;
 
@@ -103,8 +103,8 @@ class MVT extends FeatureFormat {
    * @suppress {missingProperties}
    * @param {Object} pbf PBF.
    * @param {Object} feature Raw feature.
-   * @param {Array.<number>} flatCoordinates Array to store flat coordinates in.
-   * @param {Array.<number>} ends Array to store ends in.
+   * @param {Array<number>} flatCoordinates Array to store flat coordinates in.
+   * @param {Array<number>} ends Array to store ends in.
    * @private
    */
   readRawGeometry_(pbf, feature, flatCoordinates, ends) {
@@ -252,7 +252,7 @@ class MVT extends FeatureFormat {
 
     const pbf = new PBF(/** @type {ArrayBuffer} */ (source));
     const pbfLayers = pbf.readFields(layersPBFReader, {});
-    /** @type {Array.<module:ol/Feature|module:ol/render/Feature>} */
+    /** @type {Array<module:ol/Feature|module:ol/render/Feature>} */
     const features = [];
     for (const name in pbfLayers) {
       if (layers && layers.indexOf(name) == -1) {
@@ -280,7 +280,7 @@ class MVT extends FeatureFormat {
 
   /**
    * Sets the layers that features will be read from.
-   * @param {Array.<string>} layers Layers.
+   * @param {Array<string>} layers Layers.
    * @api
    */
   setLayers(layers) {

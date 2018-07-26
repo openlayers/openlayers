@@ -78,7 +78,7 @@ import {add as addTransformFunc, clear as clearTransformFuncs, get as getTransfo
  * transforms the input coordinate values, populates the output array, and
  * returns the output array.
  *
- * @typedef {function(Array.<number>, Array.<number>=, number=): Array.<number>} TransformFunction
+ * @typedef {function(Array<number>, Array<number>=, number=): Array<number>} TransformFunction
  * @api
  */
 
@@ -87,10 +87,10 @@ export {METERS_PER_UNIT};
 
 
 /**
- * @param {Array.<number>} input Input coordinate array.
- * @param {Array.<number>=} opt_output Output array of coordinate values.
+ * @param {Array<number>} input Input coordinate array.
+ * @param {Array<number>=} opt_output Output array of coordinate values.
  * @param {number=} opt_dimension Dimension.
- * @return {Array.<number>} Output coordinate array (new array, same coordinate
+ * @return {Array<number>} Output coordinate array (new array, same coordinate
  *     values).
  */
 export function cloneTransform(input, opt_output, opt_dimension) {
@@ -108,10 +108,10 @@ export function cloneTransform(input, opt_output, opt_dimension) {
 
 
 /**
- * @param {Array.<number>} input Input coordinate array.
- * @param {Array.<number>=} opt_output Output array of coordinate values.
+ * @param {Array<number>} input Input coordinate array.
+ * @param {Array<number>=} opt_output Output array of coordinate values.
  * @param {number=} opt_dimension Dimension.
- * @return {Array.<number>} Input coordinate array (same array as input).
+ * @return {Array<number>} Input coordinate array (same array as input).
  */
 export function identityTransform(input, opt_output, opt_dimension) {
   if (opt_output !== undefined && input !== opt_output) {
@@ -138,7 +138,7 @@ export function addProjection(projection) {
 
 
 /**
- * @param {Array.<module:ol/proj/Projection>} projections Projections.
+ * @param {Array<module:ol/proj/Projection>} projections Projections.
  */
 export function addProjections(projections) {
   projections.forEach(addProjection);
@@ -227,7 +227,7 @@ export function getPointResolution(projection, resolution, point, opt_units) {
  * Registers transformation functions that don't alter coordinates. Those allow
  * to transform between projections with equal meaning.
  *
- * @param {Array.<module:ol/proj/Projection>} projections Projections.
+ * @param {Array<module:ol/proj/Projection>} projections Projections.
  * @api
  */
 export function addEquivalentProjections(projections) {
@@ -246,9 +246,9 @@ export function addEquivalentProjections(projections) {
  * Registers transformation functions to convert coordinates in any projection
  * in projection1 to any projection in projection2.
  *
- * @param {Array.<module:ol/proj/Projection>} projections1 Projections with equal
+ * @param {Array<module:ol/proj/Projection>} projections1 Projections with equal
  *     meaning.
- * @param {Array.<module:ol/proj/Projection>} projections2 Projections with equal
+ * @param {Array<module:ol/proj/Projection>} projections2 Projections with equal
  *     meaning.
  * @param {module:ol/proj~TransformFunction} forwardTransform Transformation from any
  *   projection in projection1 to any projection in projection2.
@@ -302,10 +302,10 @@ export function createProjection(projection, defaultCode) {
 export function createTransformFromCoordinateTransform(coordTransform) {
   return (
     /**
-     * @param {Array.<number>} input Input.
-     * @param {Array.<number>=} opt_output Output.
+     * @param {Array<number>} input Input.
+     * @param {Array<number>=} opt_output Output.
      * @param {number=} opt_dimension Dimension.
-     * @return {Array.<number>} Output.
+     * @return {Array<number>} Output.
      */
     function(input, opt_output, opt_dimension) {
       const length = input.length;

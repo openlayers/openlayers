@@ -143,7 +143,7 @@ export function getLength(geometry, opt_options) {
  * Polygons on a Sphere", JPL Publication 07-03, Jet Propulsion
  * Laboratory, Pasadena, CA, June 2007
  *
- * @param {Array.<module:ol/coordinate~Coordinate>} coordinates List of coordinates of a linear
+ * @param {Array<module:ol/coordinate~Coordinate>} coordinates List of coordinates of a linear
  * ring. If the ring is oriented clockwise, the area will be positive,
  * otherwise it will be negative.
  * @param {number} radius The sphere radius.

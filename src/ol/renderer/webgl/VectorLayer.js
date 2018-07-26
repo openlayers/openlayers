@@ -117,7 +117,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       const viewState = frameState.viewState;
       const layer = this.getLayer();
       const layerState = this.layerState_;
-      /** @type {!Object.<string, boolean>} */
+      /** @type {!Object<string, boolean>} */
       const features = {};
       return this.replayGroup_.forEachFeatureAtCoordinate(coordinate,
         context, viewState.center, viewState.resolution, viewState.rotation,
@@ -247,7 +247,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       }
     };
     if (vectorLayerRenderOrder) {
-      /** @type {Array.<module:ol/Feature>} */
+      /** @type {Array<module:ol/Feature>} */
       const features = [];
       vectorSource.forEachFeatureInExtent(extent,
         /**
@@ -276,7 +276,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @param {module:ol/Feature} feature Feature.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/style/Style|Array.<module:ol/style/Style>} styles The style or array of
+   * @param {module:ol/style/Style|Array<module:ol/style/Style>} styles The style or array of
    *     styles.
    * @param {module:ol/render/webgl/ReplayGroup} replayGroup Replay group.
    * @return {boolean} `true` if an image is loading.

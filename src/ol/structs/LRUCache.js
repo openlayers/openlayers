@@ -47,7 +47,7 @@ class LRUCache extends EventTarget {
 
     /**
      * @private
-     * @type {!Object.<string, module:ol/structs/LRUCache~Entry>}
+     * @type {!Object<string, module:ol/structs/LRUCache~Entry>}
      */
     this.entries_ = {};
 
@@ -174,7 +174,7 @@ class LRUCache extends EventTarget {
 
 
   /**
-   * @return {Array.<string>} Keys.
+   * @return {Array<string>} Keys.
    */
   getKeys() {
     const keys = new Array(this.count_);
@@ -188,7 +188,7 @@ class LRUCache extends EventTarget {
 
 
   /**
-   * @return {Array.<T>} Values.
+   * @return {Array<T>} Values.
    */
   getValues() {
     const values = new Array(this.count_);
