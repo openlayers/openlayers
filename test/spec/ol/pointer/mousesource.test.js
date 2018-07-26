@@ -1,5 +1,5 @@
 import {listen} from '../../../../src/ol/events.js';
-import EventTarget from '../../../../src/ol/events/EventTarget.js';
+import EventTarget from '../../../../src/ol/events/Target.js';
 import PointerEventHandler from '../../../../src/ol/pointer/PointerEventHandler.js';
 import TouchSource from '../../../../src/ol/pointer/TouchSource.js';
 import MouseSource from '../../../../src/ol/pointer/MouseSource.js';

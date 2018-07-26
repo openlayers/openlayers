@@ -1,6 +1,6 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import EventTarget from '../../../../src/ol/events/EventTarget.js';
+import EventTarget from '../../../../src/ol/events/Target.js';
 import Interaction, {zoomByDelta} from '../../../../src/ol/interaction/Interaction.js';
 
 describe('ol.interaction.Interaction', function() {

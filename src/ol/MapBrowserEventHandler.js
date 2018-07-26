@@ -5,7 +5,7 @@ import {DEVICE_PIXEL_RATIO} from './has.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import MapBrowserPointerEvent from './MapBrowserPointerEvent.js';
 import {listen, unlistenByKey} from './events.js';
-import EventTarget from './events/EventTarget.js';
+import EventTarget from './events/Target.js';
 import PointerEventType from './pointer/EventType.js';
 import PointerEventHandler from './pointer/PointerEventHandler.js';
 

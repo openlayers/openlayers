@@ -1,5 +1,5 @@
 /**
- * @module ol/events/EventTarget
+ * @module ol/events/Target
  */
 import Disposable from '../Disposable.js';
 import {unlistenAll} from '../events.js';
@@ -8,7 +8,7 @@ import Event from '../events/Event.js';
 
 
 /**
- * @typedef {EventTarget|module:ol/events/EventTarget} EventTargetLike
+ * @typedef {EventTarget|module:ol/events/Target} EventTargetLike
  */
 
 
@@ -27,7 +27,7 @@ import Event from '../events/Event.js';
  *    more listeners after this one will be called. Same as when the listener
  *    returns false.
  */
-class EventTarget extends Disposable {
+class Target extends Disposable {
   constructor() {
 
     super();
@@ -72,7 +72,7 @@ class EventTarget extends Disposable {
    * Object with a `type` property.
    *
    * @param {{type: string,
-   *     target: (EventTarget|module:ol/events/EventTarget|undefined)}|
+   *     target: (module:ol/events/Target~EventTargetLike|undefined)}|
    *     module:ol/events/Event|string} event Event object.
    * @return {boolean|undefined} `false` if anyone called preventDefault on the
    *     event object or if any of the listeners returned false.
@@ -130,7 +130,7 @@ class EventTarget extends Disposable {
 
   /**
    * @param {string=} opt_type Type. If not provided,
-   *     `true` will be returned if this EventTarget has any listeners.
+   *     `true` will be returned if this event target has any listeners.
    * @return {boolean} Has listeners.
    */
   hasListener(opt_type) {
@@ -162,4 +162,4 @@ class EventTarget extends Disposable {
 }
 
 
-export default EventTarget;
+export default Target;

@@ -1,4 +1,4 @@
-import EventTarget from '../../../src/ol/events/EventTarget.js';
+import EventTarget from '../../../src/ol/events/Target.js';
 import Observable, {unByKey} from '../../../src/ol/Observable.js';
 
 
