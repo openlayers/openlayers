@@ -61,7 +61,7 @@ export class VectorSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
- * @property {Array<module:ol/Feature>|module:ol/Collection.<module:ol/Feature>} [features]
+ * @property {Array<module:ol/Feature>|module:ol/Collection<module:ol/Feature>} [features]
  * Features. If provided as {@link module:ol/Collection}, the features in the source
  * and the collection will stay in sync.
  * @property {module:ol/format/Feature} [format] The feature format used by the XHR
@@ -215,13 +215,13 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {module:ol/structs/RBush.<module:ol/Feature>}
+     * @type {module:ol/structs/RBush<module:ol/Feature>}
      */
     this.featuresRtree_ = useSpatialIndex ? new RBush() : null;
 
     /**
      * @private
-     * @type {module:ol/structs/RBush.<{extent: module:ol/extent~Extent}>}
+     * @type {module:ol/structs/RBush<{extent: module:ol/extent~Extent}>}
      */
     this.loadedExtentsRtree_ = new RBush();
 
@@ -253,7 +253,7 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {module:ol/Collection.<module:ol/Feature>}
+     * @type {module:ol/Collection<module:ol/Feature>}
      */
     this.featuresCollection_ = null;
 
@@ -417,7 +417,7 @@ VectorSource.prototype.addFeaturesInternal = function(features) {
 
 
 /**
- * @param {!module:ol/Collection.<module:ol/Feature>} collection Collection.
+ * @param {!module:ol/Collection<module:ol/Feature>} collection Collection.
  * @private
  */
 VectorSource.prototype.bindFeaturesCollection_ = function(collection) {
@@ -610,7 +610,7 @@ VectorSource.prototype.forEachFeatureIntersectingExtent = function(extent, callb
  * Get the features collection associated with this source. Will be `null`
  * unless the source was configured with `useSpatialIndex` set to `false`, or
  * with an {@link module:ol/Collection} as `features`.
- * @return {module:ol/Collection.<module:ol/Feature>} The collection of features.
+ * @return {module:ol/Collection<module:ol/Feature>} The collection of features.
  * @api
  */
 VectorSource.prototype.getFeaturesCollection = function() {

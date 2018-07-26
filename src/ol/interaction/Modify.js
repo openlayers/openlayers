@@ -93,7 +93,7 @@ const ModifyEventType = {
  * @property {module:ol/source/Vector} [source] The vector source with
  * features to modify.  If a vector source is not provided, a feature collection
  * must be provided with the features option.
- * @property {module:ol/Collection.<module:ol/Feature>} [features]
+ * @property {module:ol/Collection<module:ol/Feature>} [features]
  * The features the interaction works on.  If a feature collection is not
  * provided, a vector source must be provided with the source option.
  * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
@@ -109,7 +109,7 @@ const ModifyEventType = {
 export class ModifyEvent extends Event {
   /**
    * @param {ModifyEventType} type Type.
-   * @param {module:ol/Collection.<module:ol/Feature>} features
+   * @param {module:ol/Collection<module:ol/Feature>} features
    * The features modified.
    * @param {module:ol/MapBrowserPointerEvent} mapBrowserPointerEvent
    * Associated {@link module:ol/MapBrowserPointerEvent}.
@@ -119,7 +119,7 @@ export class ModifyEvent extends Event {
 
     /**
      * The features being modified.
-     * @type {module:ol/Collection.<module:ol/Feature>}
+     * @type {module:ol/Collection<module:ol/Feature>}
      * @api
      */
     this.features = features;
@@ -230,7 +230,7 @@ class Modify extends PointerInteraction {
 
     /**
      * Segment RTree for each layer
-     * @type {module:ol/structs/RBush.<module:ol/interaction/Modify~SegmentData>}
+     * @type {module:ol/structs/RBush<module:ol/interaction/Modify~SegmentData>}
      * @private
      */
     this.rBush_ = new RBush();
@@ -318,7 +318,7 @@ class Modify extends PointerInteraction {
     }
 
     /**
-     * @type {module:ol/Collection.<module:ol/Feature>}
+     * @type {module:ol/Collection<module:ol/Feature>}
      * @private
      */
     this.features_ = features;

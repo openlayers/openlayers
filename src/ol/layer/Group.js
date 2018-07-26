@@ -27,7 +27,7 @@ import SourceState from '../source/State.js';
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {Array<module:ol/layer/Base>|module:ol/Collection.<module:ol/layer/Base>} [layers] Child layers.
+ * @property {Array<module:ol/layer/Base>|module:ol/Collection<module:ol/layer/Base>} [layers] Child layers.
  */
 
 
@@ -161,21 +161,21 @@ class LayerGroup extends BaseLayer {
   /**
    * Returns the {@link module:ol/Collection collection} of {@link module:ol/layer/Layer~Layer layers}
    * in this group.
-   * @return {!module:ol/Collection.<module:ol/layer/Base>} Collection of
+   * @return {!module:ol/Collection<module:ol/layer/Base>} Collection of
    *   {@link module:ol/layer/Base layers} that are part of this group.
    * @observable
    * @api
    */
   getLayers() {
     return (
-      /** @type {!module:ol/Collection.<module:ol/layer/Base>} */ (this.get(Property.LAYERS))
+      /** @type {!module:ol/Collection<module:ol/layer/Base>} */ (this.get(Property.LAYERS))
     );
   }
 
   /**
    * Set the {@link module:ol/Collection collection} of {@link module:ol/layer/Layer~Layer layers}
    * in this group.
-   * @param {!module:ol/Collection.<module:ol/layer/Base>} layers Collection of
+   * @param {!module:ol/Collection<module:ol/layer/Base>} layers Collection of
    *   {@link module:ol/layer/Base layers} that are part of this group.
    * @observable
    * @api

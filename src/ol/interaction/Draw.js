@@ -37,7 +37,7 @@ import {createEditingStyle} from '../style/Style.js';
  * actually add a point/vertex to the geometry being drawn.  The default of `6`
  * was chosen for the draw interaction to behave correctly on mouse as well as
  * on touch devices.
- * @property {module:ol/Collection.<module:ol/Feature>} [features]
+ * @property {module:ol/Collection<module:ol/Feature>} [features]
  * Destination collection for the drawn features.
  * @property {module:ol/source/Vector} [source] Destination source for
  * the drawn features.
@@ -208,7 +208,7 @@ class Draw extends PointerInteraction {
 
     /**
      * Target collection for drawn features.
-     * @type {module:ol/Collection.<module:ol/Feature>}
+     * @type {module:ol/Collection<module:ol/Feature>}
      * @private
      */
     this.features_ = options.features ? options.features : null;

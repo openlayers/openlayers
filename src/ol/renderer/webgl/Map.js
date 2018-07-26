@@ -113,7 +113,7 @@ class WebGLMapRenderer extends MapRenderer {
 
     /**
      * @private
-     * @type {module:ol/structs/LRUCache.<module:ol/renderer/webgl/Map~TextureCacheEntry|null>}
+     * @type {module:ol/structs/LRUCache<module:ol/renderer/webgl/Map~TextureCacheEntry|null>}
      */
     this.textureCache_ = new LRUCache();
 
@@ -125,7 +125,7 @@ class WebGLMapRenderer extends MapRenderer {
 
     /**
      * @private
-     * @type {module:ol/structs/PriorityQueue.<Array>}
+     * @type {module:ol/structs/PriorityQueue<Array>}
      */
     this.tileTextureQueue_ = new PriorityQueue(
       /**
@@ -333,7 +333,7 @@ class WebGLMapRenderer extends MapRenderer {
   }
 
   /**
-   * @return {module:ol/structs/PriorityQueue.<Array>} Tile texture queue.
+   * @return {module:ol/structs/PriorityQueue<Array>} Tile texture queue.
    */
   getTileTextureQueue() {
     return this.tileTextureQueue_;

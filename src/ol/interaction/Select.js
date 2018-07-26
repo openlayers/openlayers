@@ -80,7 +80,7 @@ const SelectEventType = {
  * @property {boolean} [multi=false] A boolean that determines if the default
  * behaviour should select only single features or all (overlapping) features at
  * the clicked map position. The default of `false` means single select.
- * @property {module:ol/Collection.<module:ol/Feature>} [features]
+ * @property {module:ol/Collection<module:ol/Feature>} [features]
  * Collection where the interaction will place selected features. Optional. If
  * not set the interaction will create a collection. In any case the collection
  * used by the interaction is returned by
@@ -275,7 +275,7 @@ class Select extends Interaction {
 
   /**
    * Get the selected features.
-   * @return {module:ol/Collection.<module:ol/Feature>} Features collection.
+   * @return {module:ol/Collection<module:ol/Feature>} Features collection.
    * @api
    */
   getFeatures() {

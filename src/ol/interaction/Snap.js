@@ -35,7 +35,7 @@ import RBush from '../structs/RBush.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/Collection.<module:ol/Feature>} [features] Snap to these features. Either this option or source should be provided.
+ * @property {module:ol/Collection<module:ol/Feature>} [features] Snap to these features. Either this option or source should be provided.
  * @property {boolean} [edge=true] Snap to edges.
  * @property {boolean} [vertex=true] Snap to vertices.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the pointer close enough to a segment or
@@ -99,7 +99,7 @@ class Snap extends PointerInteraction {
     this.edge_ = options.edge !== undefined ? options.edge : true;
 
     /**
-     * @type {module:ol/Collection.<module:ol/Feature>}
+     * @type {module:ol/Collection<module:ol/Feature>}
      * @private
      */
     this.features_ = options.features ? options.features : null;
@@ -156,7 +156,7 @@ class Snap extends PointerInteraction {
 
     /**
     * Segment RTree for each layer
-    * @type {module:ol/structs/RBush.<module:ol/interaction/Snap~SegmentData>}
+    * @type {module:ol/structs/RBush<module:ol/interaction/Snap~SegmentData>}
     * @private
     */
     this.rBush_ = new RBush();
@@ -224,7 +224,7 @@ class Snap extends PointerInteraction {
   }
 
   /**
-   * @return {module:ol/Collection.<module:ol/Feature>|Array<module:ol/Feature>} Features.
+   * @return {module:ol/Collection<module:ol/Feature>|Array<module:ol/Feature>} Features.
    * @private
    */
   getFeatures_() {
@@ -235,7 +235,7 @@ class Snap extends PointerInteraction {
       features = this.source_.getFeatures();
     }
     return (
-      /** @type {!Array<module:ol/Feature>|!module:ol/Collection.<module:ol/Feature>} */ (features)
+      /** @type {!Array<module:ol/Feature>|!module:ol/Collection<module:ol/Feature>} */ (features)
     );
   }
 

@@ -74,10 +74,10 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 /**
  * @typedef {Object} MapOptionsInternal
- * @property {module:ol/Collection.<module:ol/control/Control>} [controls]
- * @property {module:ol/Collection.<module:ol/interaction/Interaction>} [interactions]
+ * @property {module:ol/Collection<module:ol/control/Control>} [controls]
+ * @property {module:ol/Collection<module:ol/interaction/Interaction>} [interactions]
  * @property {HTMLElement|Document} keyboardEventTarget
- * @property {module:ol/Collection.<module:ol/Overlay>} overlays
+ * @property {module:ol/Collection<module:ol/Overlay>} overlays
  * @property {Object<string, *>} values
  */
 
@@ -85,12 +85,12 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 /**
  * Object literal with config options for the map.
  * @typedef {Object} MapOptions
- * @property {module:ol/Collection.<module:ol/control/Control>|Array<module:ol/control/Control>} [controls]
+ * @property {module:ol/Collection<module:ol/control/Control>|Array<module:ol/control/Control>} [controls]
  * Controls initially added to the map. If not specified,
  * {@link module:ol/control/util~defaults} is used.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
  * physical pixels and device-independent pixels (dips) on the device.
- * @property {module:ol/Collection.<module:ol/interaction/Interaction>|Array<module:ol/interaction/Interaction>} [interactions]
+ * @property {module:ol/Collection<module:ol/interaction/Interaction>|Array<module:ol/interaction/Interaction>} [interactions]
  * Interactions that are initially added to the map. If not specified,
  * {@link module:ol/interaction~defaults} is used.
  * @property {HTMLElement|Document|string} [keyboardEventTarget] The element to
@@ -101,7 +101,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * map target (i.e. the user-provided div for the map). If this is not
  * `document`, the target element needs to be focused for key events to be
  * emitted, requiring that the target element has a `tabindex` attribute.
- * @property {Array<module:ol/layer/Base>|module:ol/Collection.<module:ol/layer/Base>} [layers]
+ * @property {Array<module:ol/layer/Base>|module:ol/Collection<module:ol/layer/Base>} [layers]
  * Layers. If this is not defined, a map with no layers will be rendered. Note
  * that layers are rendered in the order supplied, so if you want, for example,
  * a vector layer to appear on top of a tile layer, it must come after the tile
@@ -118,7 +118,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {number} [moveTolerance=1] The minimum distance in pixels the
  * cursor must move to be detected as a map move event instead of a click.
  * Increasing this value can make it easier to click on the map.
- * @property {module:ol/Collection.<module:ol/Overlay>|Array<module:ol/Overlay>} [overlays]
+ * @property {module:ol/Collection<module:ol/Overlay>|Array<module:ol/Overlay>} [overlays]
  * Overlays initially added to the map. By default, no overlays are added.
  * @property {HTMLElement|string} [target] The container for the map, either the
  * element itself or the `id` of the element. If not specified at construction
@@ -310,19 +310,19 @@ class PluggableMap extends BaseObject {
     listen(this.viewport_, EventType.MOUSEWHEEL, this.handleBrowserEvent, this);
 
     /**
-     * @type {module:ol/Collection.<module:ol/control/Control>}
+     * @type {module:ol/Collection<module:ol/control/Control>}
      * @protected
      */
     this.controls = optionsInternal.controls || new Collection();
 
     /**
-     * @type {module:ol/Collection.<module:ol/interaction/Interaction>}
+     * @type {module:ol/Collection<module:ol/interaction/Interaction>}
      * @protected
      */
     this.interactions = optionsInternal.interactions || new Collection();
 
     /**
-     * @type {module:ol/Collection.<module:ol/Overlay>}
+     * @type {module:ol/Collection<module:ol/Overlay>}
      * @private
      */
     this.overlays_ = optionsInternal.overlays;
@@ -716,7 +716,7 @@ class PluggableMap extends BaseObject {
   /**
    * Get the map controls. Modifying this collection changes the controls
    * associated with the map.
-   * @return {module:ol/Collection.<module:ol/control/Control>} Controls.
+   * @return {module:ol/Collection<module:ol/control/Control>} Controls.
    * @api
    */
   getControls() {
@@ -726,7 +726,7 @@ class PluggableMap extends BaseObject {
   /**
    * Get the map overlays. Modifying this collection changes the overlays
    * associated with the map.
-   * @return {module:ol/Collection.<module:ol/Overlay>} Overlays.
+   * @return {module:ol/Collection<module:ol/Overlay>} Overlays.
    * @api
    */
   getOverlays() {
@@ -751,7 +751,7 @@ class PluggableMap extends BaseObject {
    * associated with the map.
    *
    * Interactions are used for e.g. pan, zoom and rotate.
-   * @return {module:ol/Collection.<module:ol/interaction/Interaction>} Interactions.
+   * @return {module:ol/Collection<module:ol/interaction/Interaction>} Interactions.
    * @api
    */
   getInteractions() {
@@ -772,7 +772,7 @@ class PluggableMap extends BaseObject {
 
   /**
    * Get the collection of layers associated with this map.
-   * @return {!module:ol/Collection.<module:ol/layer/Base>} Layers.
+   * @return {!module:ol/Collection<module:ol/layer/Base>} Layers.
    * @api
    */
   getLayers() {
