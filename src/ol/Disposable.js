@@ -1,7 +1,7 @@
 /**
  * @module ol/Disposable
  */
-import {UNDEFINED} from './functions.js';
+import {VOID} from './functions.js';
 
 /**
  * @classdesc
@@ -30,5 +30,6 @@ Disposable.prototype.disposed_ = false;
  * Extension point for disposable objects.
  * @protected
  */
-Disposable.prototype.disposeInternal = UNDEFINED;
+Disposable.prototype.disposeInternal = VOID;
+
 export default Disposable;

@@ -3,7 +3,7 @@
  */
 import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 import {getUid} from './util.js';
-import {UNDEFINED} from './functions.js';
+import {VOID} from './functions.js';
 import {createExtent, none as centerNone} from './centerconstraint.js';
 import BaseObject from './Object.js';
 import {createSnapToResolutions, createSnapToPower} from './resolutionconstraint.js';
@@ -1057,7 +1057,7 @@ class View extends BaseObject {
     const centerX = centerRotX * cosAngle - centerRotY * sinAngle;
     const centerY = centerRotY * cosAngle + centerRotX * sinAngle;
     const center = [centerX, centerY];
-    const callback = options.callback ? options.callback : UNDEFINED;
+    const callback = options.callback ? options.callback : VOID;
 
     if (options.duration !== undefined) {
       this.animate({

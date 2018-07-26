@@ -2,7 +2,7 @@
  * @module ol/source/Source
  */
 
-import {UNDEFINED} from '../functions.js';
+import {VOID} from '../functions.js';
 import BaseObject from '../Object.js';
 import {get as getProjection} from '../proj.js';
 import SourceState from '../source/State.js';
@@ -182,10 +182,10 @@ class Source extends BaseObject {
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {Object<string, boolean>} skippedFeatureUids Skipped feature uids.
  * @param {function((module:ol/Feature|module:ol/render/Feature)): T} callback Feature callback.
- * @return {T|undefined} Callback result.
+ * @return {T|void} Callback result.
  * @template T
  */
-Source.prototype.forEachFeatureAtCoordinate = UNDEFINED;
+Source.prototype.forEachFeatureAtCoordinate = VOID;
 
 
 export default Source;

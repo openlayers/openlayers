@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Pointer
  */
-import {FALSE, UNDEFINED} from '../functions.js';
+import {FALSE, VOID} from '../functions.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import Interaction from '../interaction/Interaction.js';
@@ -12,7 +12,7 @@ import {getValues} from '../obj.js';
  * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {module:ol/interaction/Pointer}
  */
-const handleDragEvent = UNDEFINED;
+const handleDragEvent = VOID;
 
 
 /**
@@ -35,7 +35,7 @@ const handleDownEvent = FALSE;
  * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {module:ol/interaction/Pointer}
  */
-const handleMoveEvent = UNDEFINED;
+const handleMoveEvent = VOID;
 
 
 /**

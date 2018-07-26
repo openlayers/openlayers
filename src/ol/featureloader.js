@@ -1,7 +1,7 @@
 /**
  * @module ol/featureloader
  */
-import {UNDEFINED} from './functions.js';
+import {VOID} from './functions.js';
 import FormatType from './format/FormatType.js';
 
 
@@ -125,5 +125,5 @@ export function xhr(url, format) {
      */
     function(features, dataProjection) {
       this.addFeatures(features);
-    }, /* FIXME handle error */ UNDEFINED);
+    }, /* FIXME handle error */ VOID);
 }

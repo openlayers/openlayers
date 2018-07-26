@@ -13,7 +13,7 @@ import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, equals} from '../extent.js';
 import {xhr} from '../featureloader.js';
-import {TRUE, UNDEFINED} from '../functions.js';
+import {TRUE, VOID} from '../functions.js';
 import {all as allStrategy} from '../loadingstrategy.js';
 import {isEmpty, getValues} from '../obj.js';
 import Source from '../source/Source.js';
@@ -176,7 +176,7 @@ class VectorSource extends Source {
      * @private
      * @type {module:ol/featureloader~FeatureLoader}
      */
-    this.loader_ = UNDEFINED;
+    this.loader_ = VOID;
 
     /**
      * @private

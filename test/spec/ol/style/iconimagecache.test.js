@@ -1,4 +1,4 @@
-import {UNDEFINED} from '../../../../src/ol/functions.js';
+import {VOID} from '../../../../src/ol/functions.js';
 import {listen} from '../../../../src/ol/events.js';
 import {shared as iconImageCache} from '../../../../src/ol/style/IconImageCache.js';
 import IconImage from '../../../../src/ol/style/IconImage.js';
@@ -42,13 +42,13 @@ describe('ol.style.IconImageCache', function() {
 
       src = '0';
       iconImage = new IconImage(null, src);
-      listen(iconImage, 'change', UNDEFINED, false);
+      listen(iconImage, 'change', VOID, false);
       iconImageCache.set(src, null, null, iconImage);
       expect(iconImageCache.cacheSize_).to.eql(4);
 
       src = '4';
       iconImage = new IconImage(null, src);
-      listen(iconImage, 'change', UNDEFINED, false);
+      listen(iconImage, 'change', VOID, false);
       iconImageCache.set(src, null, null, iconImage);
       expect(iconImageCache.cacheSize_).to.eql(5);
 
