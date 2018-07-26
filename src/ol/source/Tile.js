@@ -2,7 +2,7 @@
  * @module ol/source/Tile
  */
 
-import {UNDEFINED} from '../functions.js';
+import {VOID} from '../functions.js';
 import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import Event from '../events/Event.js';
@@ -301,7 +301,7 @@ class TileSource extends Source {
  * @param {number} y Tile coordinate y.
  * @param {module:ol/proj/Projection} projection Projection.
  */
-TileSource.prototype.useTile = UNDEFINED;
+TileSource.prototype.useTile = VOID;
 
 
 /**

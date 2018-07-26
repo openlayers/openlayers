@@ -2,7 +2,7 @@
  * @module ol/style/AtlasManager
  */
 import {MAX_TEXTURE_SIZE as WEBGL_MAX_TEXTURE_SIZE} from '../webgl.js';
-import {UNDEFINED} from '../functions.js';
+import {VOID} from '../functions.js';
 import Atlas from '../style/Atlas.js';
 
 
@@ -199,7 +199,7 @@ class AtlasManager {
     // the hit-detection atlas, to make sure that the offset is the same for
     // the original image and the hit-detection image.
     const renderHitCallback = opt_renderHitCallback !== undefined ?
-      opt_renderHitCallback : UNDEFINED;
+      opt_renderHitCallback : VOID;
 
     const hitInfo = /** @type {module:ol/style/Atlas~AtlasInfo} */ (this.add_(true,
       id, width, height, renderHitCallback, opt_this));

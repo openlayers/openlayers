@@ -4,7 +4,7 @@
 import {scale as scaleCoordinate} from '../../coordinate.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, intersects} from '../../extent.js';
-import {UNDEFINED} from '../../functions.js';
+import {VOID} from '../../functions.js';
 import CanvasLayerRenderer from '../canvas/Layer.js';
 import {create as createTransform, apply as applyTransform} from '../../transform.js';
 
@@ -115,7 +115,7 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
       return undefined;
     }
 
-    if (this.getLayer().getSource().forEachFeatureAtCoordinate !== UNDEFINED) {
+    if (this.getLayer().getSource().forEachFeatureAtCoordinate !== VOID) {
       // for ImageCanvas sources use the original hit-detection logic,
       // so that for example also transparent polygons are detected
       return CanvasLayerRenderer.prototype.forEachLayerAtCoordinate.apply(this, arguments);

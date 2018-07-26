@@ -3,7 +3,7 @@
  */
 import Disposable from '../Disposable.js';
 import {unlistenAll} from '../events.js';
-import {UNDEFINED} from '../functions.js';
+import {VOID} from '../functions.js';
 import Event from '../events/Event.js';
 
 
@@ -102,7 +102,7 @@ class Target extends Disposable {
         let pendingRemovals = this.pendingRemovals_[type];
         delete this.pendingRemovals_[type];
         while (pendingRemovals--) {
-          this.removeEventListener(type, UNDEFINED);
+          this.removeEventListener(type, VOID);
         }
         delete this.dispatching_[type];
       }
@@ -149,7 +149,7 @@ class Target extends Disposable {
       const index = listeners.indexOf(listener);
       if (type in this.pendingRemovals_) {
         // make listener a no-op, and remove later in #dispatchEvent()
-        listeners[index] = UNDEFINED;
+        listeners[index] = VOID;
         ++this.pendingRemovals_[type];
       } else {
         listeners.splice(index, 1);

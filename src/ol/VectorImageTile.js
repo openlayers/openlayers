@@ -9,7 +9,7 @@ import {listen, unlistenByKey} from './events.js';
 import {getHeight, getIntersection, getWidth} from './extent.js';
 import EventType from './events/EventType.js';
 import {loadFeaturesXhr} from './featureloader.js';
-import {UNDEFINED} from './functions.js';
+import {VOID} from './functions.js';
 
 
 /**
@@ -148,7 +148,7 @@ class VectorImageTile extends Tile {
           const tile = new VectorImageTile(tileCoord, state, sourceRevision,
             format, tileLoadFunction, urlTileCoord, tileUrlFunction,
             sourceTileGrid, tileGrid, sourceTiles, pixelRatio, projection,
-            tileClass, UNDEFINED, --zoom);
+            tileClass, VOID, --zoom);
           if (tile.state == TileState.LOADED) {
             this.interimTile = tile;
             break;

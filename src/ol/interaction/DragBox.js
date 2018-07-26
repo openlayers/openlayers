@@ -4,7 +4,7 @@
 // FIXME draw drag box
 import Event from '../events/Event.js';
 import {always, mouseOnly, mouseActionButton} from '../events/condition.js';
-import {UNDEFINED} from '../functions.js';
+import {VOID} from '../functions.js';
 import PointerInteraction from '../interaction/Pointer.js';
 import RenderBox from '../render/Box.js';
 
@@ -140,7 +140,7 @@ class DragBox extends PointerInteraction {
      * @type {function(this:module:ol/interaction/DragBox, module:ol/MapBrowserEvent)}
      * @private
      */
-    this.onBoxEnd_ = options.onBoxEnd ? options.onBoxEnd : UNDEFINED;
+    this.onBoxEnd_ = options.onBoxEnd ? options.onBoxEnd : VOID;
 
     /**
     * @type {module:ol/pixel~Pixel}

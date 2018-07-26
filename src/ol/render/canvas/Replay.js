@@ -2,7 +2,7 @@
  * @module ol/render/canvas/Replay
  */
 import {getUid} from '../../util.js';
-import {UNDEFINED} from '../../functions.js';
+import {VOID} from '../../functions.js';
 import {equals, reverseSubArray} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
 import {buffer, clone, coordinateRelationship, createEmpty, createOrUpdate,
@@ -1082,7 +1082,7 @@ class CanvasReplay extends VectorContext {
 /**
  * FIXME empty description for jsdoc
  */
-CanvasReplay.prototype.finish = UNDEFINED;
+CanvasReplay.prototype.finish = VOID;
 
 
 export default CanvasReplay;

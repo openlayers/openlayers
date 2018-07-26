@@ -21,6 +21,6 @@ export function FALSE() {
 /**
  * A reusable function, used e.g. as a default for callbacks.
  *
- * @return {undefined} Nothing.
+ * @return {void} Nothing.
  */
-export function UNDEFINED() {}
+export function VOID() {}

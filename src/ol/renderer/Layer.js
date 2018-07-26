@@ -7,7 +7,7 @@ import Observable from '../Observable.js';
 import TileState from '../TileState.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
-import {FALSE, UNDEFINED} from '../functions.js';
+import {FALSE, VOID} from '../functions.js';
 import SourceState from '../source/State.js';
 
 class LayerRenderer extends Observable {
@@ -225,10 +225,10 @@ class LayerRenderer extends Observable {
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {function(this: S, (module:ol/Feature|module:ol/render/Feature), module:ol/layer/Layer): T} callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
- * @return {T|undefined} Callback result.
+ * @return {T|void} Callback result.
  * @template S,T
  */
-LayerRenderer.prototype.forEachFeatureAtCoordinate = UNDEFINED;
+LayerRenderer.prototype.forEachFeatureAtCoordinate = VOID;
 
 
 /**
