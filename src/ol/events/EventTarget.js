@@ -34,19 +34,19 @@ class EventTarget extends Disposable {
 
     /**
      * @private
-     * @type {!Object.<string, number>}
+     * @type {!Object<string, number>}
      */
     this.pendingRemovals_ = {};
 
     /**
      * @private
-     * @type {!Object.<string, number>}
+     * @type {!Object<string, number>}
      */
     this.dispatching_ = {};
 
     /**
      * @private
-     * @type {!Object.<string, Array<module:ol/events~ListenerFunction>>}
+     * @type {!Object<string, Array<module:ol/events~ListenerFunction>>}
      */
     this.listeners_ = {};
 

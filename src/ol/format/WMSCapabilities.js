@@ -20,7 +20,7 @@ const NAMESPACE_URIS = [
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -31,7 +31,7 @@ const PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const CAPABILITY_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -84,7 +84,7 @@ class WMSCapabilities extends XML {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const SERVICE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -104,7 +104,7 @@ const SERVICE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const CONTACT_INFORMATION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -119,7 +119,7 @@ const CONTACT_INFORMATION_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const CONTACT_PERSON_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -130,7 +130,7 @@ const CONTACT_PERSON_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const CONTACT_ADDRESS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -145,7 +145,7 @@ const CONTACT_ADDRESS_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const EXCEPTION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -155,7 +155,7 @@ const EXCEPTION_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const LAYER_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -182,7 +182,7 @@ const LAYER_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const ATTRIBUTION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -194,7 +194,7 @@ const ATTRIBUTION_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS =
     makeStructureNS(NAMESPACE_URIS, {
@@ -207,7 +207,7 @@ const EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS =
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const REQUEST_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -219,7 +219,7 @@ const REQUEST_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const OPERATIONTYPE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -230,7 +230,7 @@ const OPERATIONTYPE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const DCPTYPE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -240,7 +240,7 @@ const DCPTYPE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const HTTP_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -251,7 +251,7 @@ const HTTP_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -266,7 +266,7 @@ const STYLE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const FORMAT_ONLINERESOURCE_PARSERS =
     makeStructureNS(NAMESPACE_URIS, {
@@ -277,7 +277,7 @@ const FORMAT_ONLINERESOURCE_PARSERS =
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const KEYWORDLIST_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -429,7 +429,7 @@ function readCapabilityLayer(node, objectStack) {
  * @return {Object|undefined} Layer object.
  */
 function readLayer(node, objectStack) {
-  const parentLayerObject = /**  @type {!Object.<string,*>} */ (objectStack[objectStack.length - 1]);
+  const parentLayerObject = /**  @type {!Object<string,*>} */ (objectStack[objectStack.length - 1]);
 
   const layerObject = pushParseAndPop({}, LAYER_PARSERS, node, objectStack);
 

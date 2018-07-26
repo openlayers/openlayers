@@ -68,7 +68,7 @@ class MapBrowserEventHandler extends EventTarget {
     this.activePointers_ = 0;
 
     /**
-     * @type {!Object.<number, boolean>}
+     * @type {!Object<number, boolean>}
      * @private
      */
     this.trackedTouches_ = {};

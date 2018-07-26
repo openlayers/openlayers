@@ -47,7 +47,7 @@ class LRUCache extends EventTarget {
 
     /**
      * @private
-     * @type {!Object.<string, module:ol/structs/LRUCache~Entry>}
+     * @type {!Object<string, module:ol/structs/LRUCache~Entry>}
      */
     this.entries_ = {};
 

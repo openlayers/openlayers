@@ -23,7 +23,7 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @const
- * @type {Object.<module:ol/geom/GeometryType, function(EsriJSONGeometry): module:ol/geom/Geometry>}
+ * @type {Object<module:ol/geom/GeometryType, function(EsriJSONGeometry): module:ol/geom/Geometry>}
  */
 const GEOMETRY_READERS = {};
 GEOMETRY_READERS[GeometryType.POINT] = readPointGeometry;
@@ -36,7 +36,7 @@ GEOMETRY_READERS[GeometryType.MULTI_POLYGON] = readMultiPolygonGeometry;
 
 /**
  * @const
- * @type {Object.<string, function(module:ol/geom/Geometry, module:ol/format/Feature~WriteOptions=): (EsriJSONGeometry)>}
+ * @type {Object<string, function(module:ol/geom/Geometry, module:ol/format/Feature~WriteOptions=): (EsriJSONGeometry)>}
  */
 const GEOMETRY_WRITERS = {};
 GEOMETRY_WRITERS[GeometryType.POINT] = writePointGeometry;

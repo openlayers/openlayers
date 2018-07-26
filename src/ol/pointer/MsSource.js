@@ -157,7 +157,7 @@ class MsSource extends EventSource {
 
     /**
      * @const
-     * @type {!Object.<string, MSPointerEvent|Object>}
+     * @type {!Object<string, MSPointerEvent|Object>}
      */
     this.pointerMap = dispatcher.pointerMap;
   }

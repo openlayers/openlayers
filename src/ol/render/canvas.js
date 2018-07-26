@@ -163,7 +163,7 @@ export const labelCache = new LRUCache();
 
 
 /**
- * @type {!Object.<string, number>}
+ * @type {!Object<string, number>}
  */
 export const checkedFonts = {};
 
@@ -175,7 +175,7 @@ let measureContext = null;
 
 
 /**
- * @type {!Object.<string, number>}
+ * @type {!Object<string, number>}
  */
 export const textHeights = {};
 

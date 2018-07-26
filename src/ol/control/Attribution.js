@@ -153,7 +153,7 @@ class Attribution extends Control {
   getSourceAttributions_(frameState) {
     /**
      * Used to determine if an attribution already exists.
-     * @type {!Object.<string, boolean>}
+     * @type {!Object<string, boolean>}
      */
     const lookup = {};
 

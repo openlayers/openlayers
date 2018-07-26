@@ -23,7 +23,7 @@ import {appendParams} from '../uri.js';
  * the remote server.
  * @property {module:ol/Image~LoadFunction} [imageLoadFunction] Optional function to load an image given
  * a URL.
- * @property {Object.<string,*>} params ArcGIS Rest parameters. This field is optional. Service
+ * @property {Object<string,*>} params ArcGIS Rest parameters. This field is optional. Service
  * defaults will be used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is
  * `IMAGE` by default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`, and `IMAGESR`
  * will be set dynamically. Set `LAYERS` to override the default service layer visibility. See

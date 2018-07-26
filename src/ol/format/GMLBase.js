@@ -44,7 +44,7 @@ const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
 
 /**
  * @typedef {Object} Options
- * @property {Object.<string, string>|string} [featureNS] Feature
+ * @property {Object<string, string>|string} [featureNS] Feature
  * namespace. If not defined will be derived from GML. If multiple
  * feature types have been configured which come from different feature
  * namespaces, this will be an object with the keys being the prefixes used
@@ -102,7 +102,7 @@ class GMLBase extends XMLFeature {
 
     /**
      * @protected
-     * @type {Object.<string, string>|string|undefined}
+     * @type {Object<string, string>|string|undefined}
      */
     this.featureNS = options.featureNS;
 
@@ -119,7 +119,7 @@ class GMLBase extends XMLFeature {
     this.schemaLocation = '';
 
     /**
-     * @type {Object.<string, Object.<string, Object>>}
+     * @type {Object<string, Object<string, Object>>}
      */
     this.FEATURE_COLLECTION_PARSERS = {};
     this.FEATURE_COLLECTION_PARSERS[GMLNS] = {
@@ -471,7 +471,7 @@ class GMLBase extends XMLFeature {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GMLBase.prototype.MULTIPOINT_PARSERS_ = {
@@ -484,7 +484,7 @@ GMLBase.prototype.MULTIPOINT_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
@@ -497,7 +497,7 @@ GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
@@ -510,7 +510,7 @@ GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GMLBase.prototype.POINTMEMBER_PARSERS_ = {
@@ -522,7 +522,7 @@ GMLBase.prototype.POINTMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
@@ -534,7 +534,7 @@ GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
@@ -546,7 +546,7 @@ GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @protected
  */
 GMLBase.prototype.RING_PARSERS = {

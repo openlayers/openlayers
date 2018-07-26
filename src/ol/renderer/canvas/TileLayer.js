@@ -163,7 +163,7 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
     const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
 
     /**
-     * @type {Object.<number, Object.<string, module:ol/Tile>>}
+     * @type {Object<number, Object<string, module:ol/Tile>>}
      */
     const tilesToDrawByZ = {};
     tilesToDrawByZ[z] = {};

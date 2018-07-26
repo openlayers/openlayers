@@ -180,7 +180,7 @@ class Source extends BaseObject {
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
+ * @param {Object<string, boolean>} skippedFeatureUids Skipped feature uids.
  * @param {function((module:ol/Feature|module:ol/render/Feature)): T} callback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T

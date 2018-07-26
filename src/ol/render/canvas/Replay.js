@@ -134,7 +134,7 @@ class CanvasReplay extends VectorContext {
 
     /**
      * @private
-     * @type {!Object.<number,module:ol/coordinate~Coordinate|Array<module:ol/coordinate~Coordinate>|Array<Array<module:ol/coordinate~Coordinate>>>}
+     * @type {!Object<number,module:ol/coordinate~Coordinate|Array<module:ol/coordinate~Coordinate>|Array<Array<module:ol/coordinate~Coordinate>>>}
      */
     this.coordinateCache_ = {};
 
@@ -530,7 +530,7 @@ class CanvasReplay extends VectorContext {
    * @private
    * @param {CanvasRenderingContext2D} context Context.
    * @param {module:ol/transform~Transform} transform Transform.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
    *     to skip.
    * @param {Array<*>} instructions Instructions array.
    * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
@@ -851,7 +851,7 @@ class CanvasReplay extends VectorContext {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {module:ol/transform~Transform} transform Transform.
    * @param {number} viewRotation View rotation.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
    *     to skip.
    */
   replay(context, transform, viewRotation, skippedFeaturesHash) {
@@ -864,7 +864,7 @@ class CanvasReplay extends VectorContext {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {module:ol/transform~Transform} transform Transform.
    * @param {number} viewRotation View rotation.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
    *     to skip.
    * @param {function((module:ol/Feature|module:ol/render/Feature)): T=} opt_featureCallback
    *     Feature callback.

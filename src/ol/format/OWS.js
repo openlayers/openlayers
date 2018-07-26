@@ -16,7 +16,7 @@ const NAMESPACE_URIS = [null, 'http://www.opengis.net/ows/1.1'];
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -56,7 +56,7 @@ class OWS extends XML {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const ADDRESS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -71,7 +71,7 @@ const ADDRESS_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const ALLOWED_VALUES_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -81,7 +81,7 @@ const ALLOWED_VALUES_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const CONSTRAINT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -91,7 +91,7 @@ const CONSTRAINT_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const CONTACT_INFO_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -102,7 +102,7 @@ const CONTACT_INFO_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const DCP_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -112,7 +112,7 @@ const DCP_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const HTTP_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -123,7 +123,7 @@ const HTTP_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const OPERATION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -133,7 +133,7 @@ const OPERATION_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const OPERATIONS_METADATA_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -143,7 +143,7 @@ const OPERATIONS_METADATA_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const PHONE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -154,7 +154,7 @@ const PHONE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const REQUEST_METHOD_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -164,7 +164,7 @@ const REQUEST_METHOD_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const SERVICE_CONTACT_PARSERS =
     makeStructureNS(
@@ -177,7 +177,7 @@ const SERVICE_CONTACT_PARSERS =
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const SERVICE_IDENTIFICATION_PARSERS =
     makeStructureNS(
@@ -193,7 +193,7 @@ const SERVICE_IDENTIFICATION_PARSERS =
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const SERVICE_PROVIDER_PARSERS =
     makeStructureNS(

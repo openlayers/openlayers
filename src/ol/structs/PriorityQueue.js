@@ -56,7 +56,7 @@ class PriorityQueue {
     this.priorities_ = [];
 
     /**
-     * @type {!Object.<string, boolean>}
+     * @type {!Object<string, boolean>}
      * @private
      */
     this.queuedElements_ = {};

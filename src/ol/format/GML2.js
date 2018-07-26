@@ -21,7 +21,7 @@ const schemaLocation = GMLNS + ' http://schemas.opengis.net/gml/2.1.2/feature.xs
 
 /**
  * @const
- * @type {Object.<string, string>}
+ * @type {Object<string, string>}
  */
 const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
   'MultiLineString': 'lineStringMember',
@@ -587,7 +587,7 @@ class GML2 extends GMLBase {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
@@ -598,7 +598,7 @@ GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
@@ -610,7 +610,7 @@ GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML2.prototype.BOX_PARSERS_ = {
@@ -622,7 +622,7 @@ GML2.prototype.BOX_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML2.prototype.GEOMETRY_PARSERS_ = {
@@ -645,7 +645,7 @@ GML2.prototype.GEOMETRY_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.GEOMETRY_SERIALIZERS_ = {
@@ -677,7 +677,7 @@ GML2.prototype.GEOMETRY_SERIALIZERS_ = {
 };
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
@@ -690,7 +690,7 @@ GML2.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
 };
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.RING_SERIALIZERS_ = {
@@ -701,7 +701,7 @@ GML2.prototype.RING_SERIALIZERS_ = {
 };
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.POINTMEMBER_SERIALIZERS_ = {
@@ -713,7 +713,7 @@ GML2.prototype.POINTMEMBER_SERIALIZERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
@@ -726,7 +726,7 @@ GML2.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
 };
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML2.prototype.ENVELOPE_SERIALIZERS_ = {

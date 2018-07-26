@@ -234,7 +234,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const resolution = frameState.viewState.resolution;
       const rotation = frameState.viewState.rotation;
       const layer = /** @type {module:ol/layer/Vector} */ (this.getLayer());
-      /** @type {!Object.<string, boolean>} */
+      /** @type {!Object<string, boolean>} */
       const features = {};
       const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
         /**

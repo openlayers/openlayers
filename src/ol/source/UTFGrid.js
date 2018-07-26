@@ -63,7 +63,7 @@ export class CustomTile extends Tile {
 
     /**
      * @private
-     * @type {Object.<string, Object>|undefined}
+     * @type {Object<string, Object>|undefined}
      */
     this.data_ = null;
 

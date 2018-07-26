@@ -157,7 +157,7 @@ class TopoJSON extends JSONFeature {
 
 /**
  * @const
- * @type {Object.<string, function(TopoJSONGeometry, Array, ...Array): module:ol/geom/Geometry>}
+ * @type {Object<string, function(TopoJSONGeometry, Array, ...Array): module:ol/geom/Geometry>}
  */
 const GEOMETRY_READERS = {
   'Point': readPointGeometry,

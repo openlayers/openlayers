@@ -50,7 +50,7 @@ class TileQueue extends PriorityQueue {
 
     /**
      * @private
-     * @type {!Object.<string,boolean>}
+     * @type {!Object<string,boolean>}
      */
     this.tilesLoadingKeys_ = {};
 

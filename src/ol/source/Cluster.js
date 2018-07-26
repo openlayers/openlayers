@@ -159,7 +159,7 @@ class Cluster extends VectorSource {
     const features = this.source.getFeatures();
 
     /**
-     * @type {!Object.<string, boolean>}
+     * @type {!Object<string, boolean>}
      */
     const clustered = {};
 

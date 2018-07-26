@@ -24,7 +24,7 @@ const NAMESPACE_URIS = [null];
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const WAY_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -35,7 +35,7 @@ const WAY_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -123,7 +123,7 @@ class OSMXML extends XMLFeature {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const NODE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {

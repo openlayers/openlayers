@@ -227,27 +227,27 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {!Object.<string, module:ol/Feature>}
+     * @type {!Object<string, module:ol/Feature>}
      */
     this.nullGeometryFeatures_ = {};
 
     /**
      * A lookup of features by id (the return from feature.getId()).
      * @private
-     * @type {!Object.<string, module:ol/Feature>}
+     * @type {!Object<string, module:ol/Feature>}
      */
     this.idIndex_ = {};
 
     /**
      * A lookup of features without id (keyed by getUid(feature)).
      * @private
-     * @type {!Object.<string, module:ol/Feature>}
+     * @type {!Object<string, module:ol/Feature>}
      */
     this.undefIdIndex_ = {};
 
     /**
      * @private
-     * @type {Object.<string, Array<module:ol/events~EventsKey>>}
+     * @type {Object<string, Array<module:ol/events~EventsKey>>}
      */
     this.featureChangeKeys_ = {};
 

@@ -81,7 +81,7 @@ class WebGLImageReplay extends WebGLTextureReplay {
     this.indicesBuffer = new WebGLBuffer(indices);
 
     // create textures
-    /** @type {Object.<string, WebGLTexture>} */
+    /** @type {Object<string, WebGLTexture>} */
     const texturePerImage = {};
 
     this.createTextures(this.textures_, this.images_, texturePerImage, gl);

@@ -231,7 +231,7 @@ class GeoJSON extends JSONFeature {
 
 /**
  * @const
- * @type {Object.<string, function(GeoJSONObject): module:ol/geom/Geometry>}
+ * @type {Object<string, function(GeoJSONObject): module:ol/geom/Geometry>}
  */
 const GEOMETRY_READERS = {
   'Point': readPointGeometry,
@@ -246,7 +246,7 @@ const GEOMETRY_READERS = {
 
 /**
  * @const
- * @type {Object.<string, function(module:ol/geom/Geometry, module:ol/format/Feature~WriteOptions=): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
+ * @type {Object<string, function(module:ol/geom/Geometry, module:ol/format/Feature~WriteOptions=): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
  */
 const GEOMETRY_WRITERS = {
   'Point': writePointGeometry,

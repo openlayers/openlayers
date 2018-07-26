@@ -37,7 +37,7 @@ class RBush {
      * A mapping between the objects added to this rbush wrapper
      * and the objects that are actually added to the internal rbush.
      * @private
-     * @type {Object.<number, module:ol/structs/RBush~Entry>}
+     * @type {Object<number, module:ol/structs/RBush~Entry>}
      */
     this.items_ = {};
 

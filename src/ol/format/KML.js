@@ -79,7 +79,7 @@ const SCHEMA_LOCATION = 'http://www.opengis.net/kml/2.2 ' +
 
 
 /**
- * @type {Object.<string, module:ol/style/IconAnchorUnits>}
+ * @type {Object<string, module:ol/style/IconAnchorUnits>}
  */
 const ICON_ANCHOR_UNITS_MAP = {
   'fraction': IconAnchorUnits.FRACTION,
@@ -89,7 +89,7 @@ const ICON_ANCHOR_UNITS_MAP = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const PLACEMARK_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -126,7 +126,7 @@ const PLACEMARK_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const NETWORK_LINK_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -144,7 +144,7 @@ const NETWORK_LINK_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const LINK_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -154,7 +154,7 @@ const LINK_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const REGION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -165,7 +165,7 @@ const REGION_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Array<string>>}
+ * @type {Object<string, Array<string>>}
  */
 const KML_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
@@ -175,7 +175,7 @@ const KML_SEQUENCE = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const KML_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -441,7 +441,7 @@ class KML extends XMLFeature {
 
     /**
      * @private
-     * @type {!Object.<string, (Array<module:ol/style/Style>|string)>}
+     * @type {!Object<string, (Array<module:ol/style/Style>|string)>}
      */
     this.sharedStyles_ = {};
 
@@ -905,7 +905,7 @@ function createNameStyleFunction(foundStyle, name) {
  * @param {Array<module:ol/style/Style>|undefined} style Style.
  * @param {string} styleUrl Style URL.
  * @param {Array<module:ol/style/Style>} defaultStyle Default style.
- * @param {!Object.<string, (Array<module:ol/style/Style>|string)>} sharedStyles Shared styles.
+ * @param {!Object<string, (Array<module:ol/style/Style>|string)>} sharedStyles Shared styles.
  * @param {boolean|undefined} showPointNames true to show names for point placemarks.
  * @return {module:ol/style/Style~StyleFunction} Feature style function.
  */
@@ -962,7 +962,7 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
 /**
  * @param {Array<module:ol/style/Style>|string|undefined} styleValue Style value.
  * @param {Array<module:ol/style/Style>} defaultStyle Default style.
- * @param {!Object.<string, (Array<module:ol/style/Style>|string)>} sharedStyles
+ * @param {!Object<string, (Array<module:ol/style/Style>|string)>} sharedStyles
  * Shared styles.
  * @return {Array<module:ol/style/Style>} Style.
  */
@@ -1094,7 +1094,7 @@ function readScale(node) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const STYLE_MAP_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1115,7 +1115,7 @@ function readStyleMapValue(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const ICON_STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1231,7 +1231,7 @@ function iconStyleParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const LABEL_STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1266,7 +1266,7 @@ function labelStyleParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const LINE_STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1302,7 +1302,7 @@ function lineStyleParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const POLY_STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1342,7 +1342,7 @@ function polyStyleParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const FLAT_LINEAR_RING_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1386,7 +1386,7 @@ function gxCoordParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const GX_MULTITRACK_GEOMETRY_PARSERS = makeStructureNS(
   GX_NAMESPACE_URIS, {
@@ -1411,7 +1411,7 @@ function readGxMultiTrack(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const GX_TRACK_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1447,7 +1447,7 @@ function readGxTrack(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const ICON_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1479,7 +1479,7 @@ function readIcon(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const GEOMETRY_FLAT_COORDINATES_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1500,7 +1500,7 @@ function readFlatCoordinatesFromNode(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const EXTRUDE_AND_ALTITUDE_MODE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1554,7 +1554,7 @@ function readLinearRing(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const MULTI_GEOMETRY_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1648,7 +1648,7 @@ function readPoint(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const FLAT_LINEAR_RINGS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1686,7 +1686,7 @@ function readPolygon(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1778,7 +1778,7 @@ function setCommonGeometryProperties(multiGeometry, geometries) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const DATA_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1806,7 +1806,7 @@ function dataParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const EXTENDED_DATA_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1833,7 +1833,7 @@ function regionParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const PAIR_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1892,7 +1892,7 @@ function placemarkStyleMapParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const SCHEMA_DATA_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1925,7 +1925,7 @@ function simpleDataParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const LAT_LON_ALT_BOX_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1964,7 +1964,7 @@ function latLonAltBoxParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const LOD_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -1994,7 +1994,7 @@ function lodParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const INNER_BOUNDARY_IS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -2020,7 +2020,7 @@ function innerBoundaryIsParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const OUTER_BOUNDARY_IS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -2125,7 +2125,7 @@ function writeCoordinatesTextNode(node, coordinates, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const EXTENDEDDATA_NODE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -2182,7 +2182,7 @@ function writeDataNodeValue(node, value) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const DOCUMENT_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -2245,7 +2245,7 @@ function writeExtendedData(node, namesAndValues, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Array<string>>}
+ * @type {Object<string, Array<string>>}
  */
 const ICON_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
@@ -2258,7 +2258,7 @@ const ICON_SEQUENCE = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const ICON_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -2308,7 +2308,7 @@ function writeIcon(node, icon, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Array<string>>}
+ * @type {Object<string, Array<string>>}
  */
 const ICON_STYLE_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
@@ -2318,7 +2318,7 @@ const ICON_STYLE_SEQUENCE = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const ICON_STYLE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -2388,7 +2388,7 @@ function writeIconStyle(node, style, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Array<string>>}
+ * @type {Object<string, Array<string>>}
  */
 const LABEL_STYLE_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
@@ -2398,7 +2398,7 @@ const LABEL_STYLE_SEQUENCE = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const LABEL_STYLE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -2434,7 +2434,7 @@ function writeLabelStyle(node, style, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Array<string>>}
+ * @type {Object<string, Array<string>>}
  */
 const LINE_STYLE_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
@@ -2444,7 +2444,7 @@ const LINE_STYLE_SEQUENCE = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const LINE_STYLE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -2474,7 +2474,7 @@ function writeLineStyle(node, style, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, string>}
+ * @type {Object<string, string>}
  */
 const GEOMETRY_TYPE_TO_NODENAME = {
   'Point': 'Point',
@@ -2538,7 +2538,7 @@ const POLYGON_NODE_FACTORY = makeSimpleNodeFactory('Polygon');
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const MULTI_GEOMETRY_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -2590,7 +2590,7 @@ function writeMultiGeometry(node, geometry, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const BOUNDARY_IS_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -2614,7 +2614,7 @@ function writeBoundaryIs(node, linearRing, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const PLACEMARK_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -2637,7 +2637,7 @@ const PLACEMARK_SERIALIZERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Array<string>>}
+ * @type {Object<string, Array<string>>}
  */
 const PLACEMARK_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
@@ -2723,7 +2723,7 @@ function writePlacemark(node, feature, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Array<string>>}
+ * @type {Object<string, Array<string>>}
  */
 const PRIMITIVE_GEOMETRY_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
@@ -2733,7 +2733,7 @@ const PRIMITIVE_GEOMETRY_SEQUENCE = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const PRIMITIVE_GEOMETRY_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -2769,7 +2769,7 @@ function writePrimitiveGeometry(node, geometry, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const POLYGON_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -2820,7 +2820,7 @@ function writePolygon(node, polygon, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const POLY_STYLE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -2861,7 +2861,7 @@ function writeScaleTextNode(node, scale) {
 
 /**
  * @const
- * @type {Object.<string, Array<string>>}
+ * @type {Object<string, Array<string>>}
  */
 const STYLE_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
@@ -2871,7 +2871,7 @@ const STYLE_SEQUENCE = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const STYLE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {

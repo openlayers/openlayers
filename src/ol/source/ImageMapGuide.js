@@ -195,7 +195,7 @@ class ImageMapGuide extends ImageSource {
 
   /**
    * @param {string} baseUrl The mapagent url.
-   * @param {Object.<string, string|number>} params Request parameters.
+   * @param {Object<string, string|number>} params Request parameters.
    * @param {module:ol/extent~Extent} extent Extent.
    * @param {module:ol/size~Size} size Size.
    * @param {module:ol/proj/Projection} projection Projection.

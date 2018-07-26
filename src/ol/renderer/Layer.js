@@ -31,7 +31,7 @@ class LayerRenderer extends Observable {
    * Create a function that adds loaded tiles to the tile lookup.
    * @param {module:ol/source/Tile} source Tile source.
    * @param {module:ol/proj/Projection} projection Projection of the tiles.
-   * @param {Object.<number, Object.<string, module:ol/Tile>>} tiles Lookup of loaded tiles by zoom level.
+   * @param {Object<number, Object<string, module:ol/Tile>>} tiles Lookup of loaded tiles by zoom level.
    * @return {function(number, module:ol/TileRange):boolean} A function that can be
    *     called with a zoom level and a tile range to add loaded tiles to the lookup.
    * @protected
@@ -130,7 +130,7 @@ class LayerRenderer extends Observable {
   }
 
   /**
-   * @param {!Object.<string, !Object.<string, module:ol/TileRange>>} usedTiles Used tiles.
+   * @param {!Object<string, !Object<string, module:ol/TileRange>>} usedTiles Used tiles.
    * @param {module:ol/source/Tile} tileSource Tile source.
    * @param {number} z Z.
    * @param {module:ol/TileRange} tileRange Tile range.

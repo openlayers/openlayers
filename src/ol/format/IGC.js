@@ -94,7 +94,7 @@ class IGC extends TextFeature {
   readFeatureFromText(text, opt_options) {
     const altitudeMode = this.altitudeMode_;
     const lines = text.split(NEWLINE_RE);
-    /** @type {Object.<string, string>} */
+    /** @type {Object<string, string>} */
     const properties = {};
     const flatCoordinates = [];
     let year = 2000;

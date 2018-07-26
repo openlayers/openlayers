@@ -251,7 +251,7 @@ class Select extends Interaction {
      * An association between selected feature (key)
      * and layer (value)
      * @private
-     * @type {Object.<number, module:ol/layer/Layer>}
+     * @type {Object<number, module:ol/layer/Layer>}
      */
     this.featureLayerAssociation_ = {};
 

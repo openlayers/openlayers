@@ -111,7 +111,7 @@ class VectorTile extends UrlTile {
 
     /**
        * @private
-       * @type {Object.<string, module:ol/VectorTile>}
+       * @type {Object<string, module:ol/VectorTile>}
        */
     this.sourceTiles_ = {};
 
@@ -130,7 +130,7 @@ class VectorTile extends UrlTile {
 
     /**
      * @private
-     * @type {Object.<string, module:ol/tilegrid/TileGrid>}
+     * @type {Object<string, module:ol/tilegrid/TileGrid>}
      */
     this.tileGrids_ = {};
 

@@ -31,7 +31,7 @@ const schemaLocation = GMLNS +
 
 /**
  * @const
- * @type {Object.<string, string>}
+ * @type {Object<string, string>}
  */
 const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
   'MultiLineString': 'lineStringMember',
@@ -920,7 +920,7 @@ class GML3 extends GMLBase {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
@@ -933,7 +933,7 @@ GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
@@ -946,7 +946,7 @@ GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML3.prototype.GEOMETRY_PARSERS_ = {
@@ -976,7 +976,7 @@ GML3.prototype.GEOMETRY_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML3.prototype.MULTICURVE_PARSERS_ = {
@@ -991,7 +991,7 @@ GML3.prototype.MULTICURVE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML3.prototype.MULTISURFACE_PARSERS_ = {
@@ -1006,7 +1006,7 @@ GML3.prototype.MULTISURFACE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML3.prototype.CURVEMEMBER_PARSERS_ = {
@@ -1020,7 +1020,7 @@ GML3.prototype.CURVEMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML3.prototype.SURFACEMEMBER_PARSERS_ = {
@@ -1033,7 +1033,7 @@ GML3.prototype.SURFACEMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML3.prototype.SURFACE_PARSERS_ = {
@@ -1045,7 +1045,7 @@ GML3.prototype.SURFACE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML3.prototype.CURVE_PARSERS_ = {
@@ -1057,7 +1057,7 @@ GML3.prototype.CURVE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML3.prototype.ENVELOPE_PARSERS_ = {
@@ -1072,7 +1072,7 @@ GML3.prototype.ENVELOPE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML3.prototype.PATCHES_PARSERS_ = {
@@ -1085,7 +1085,7 @@ GML3.prototype.PATCHES_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  * @private
  */
 GML3.prototype.SEGMENTS_PARSERS_ = {
@@ -1109,7 +1109,7 @@ GML3.prototype.writeFeatures;
 
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML3.prototype.RING_SERIALIZERS_ = {
@@ -1121,7 +1121,7 @@ GML3.prototype.RING_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML3.prototype.ENVELOPE_SERIALIZERS_ = {
@@ -1133,7 +1133,7 @@ GML3.prototype.ENVELOPE_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML3.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
@@ -1147,7 +1147,7 @@ GML3.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML3.prototype.POINTMEMBER_SERIALIZERS_ = {
@@ -1159,7 +1159,7 @@ GML3.prototype.POINTMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML3.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
@@ -1173,7 +1173,7 @@ GML3.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  * @private
  */
 GML3.prototype.GEOMETRY_SERIALIZERS_ = {

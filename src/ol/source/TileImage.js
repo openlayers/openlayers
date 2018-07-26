@@ -102,13 +102,13 @@ class TileImage extends UrlTile {
 
     /**
      * @protected
-     * @type {!Object.<string, module:ol/TileCache>}
+     * @type {!Object<string, module:ol/TileCache>}
      */
     this.tileCacheForProjection = {};
 
     /**
      * @protected
-     * @type {!Object.<string, module:ol/tilegrid/TileGrid>}
+     * @type {!Object<string, module:ol/tilegrid/TileGrid>}
      */
     this.tileGridForProjection = {};
 

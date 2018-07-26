@@ -19,7 +19,7 @@ import {appendParams} from '../uri.js';
  * or if you want to access pixel data with the Canvas renderer.  See
  * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
  * for more detail.
- * @property {Object.<string,*>} [params] ArcGIS Rest parameters. This field is optional. Service defaults will be
+ * @property {Object<string,*>} [params] ArcGIS Rest parameters. This field is optional. Service defaults will be
  * used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is `IMAGE` by
  * default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`,
  * and `IMAGESR` will be set dynamically. Set `LAYERS` to

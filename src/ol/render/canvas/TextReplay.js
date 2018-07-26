@@ -75,7 +75,7 @@ class CanvasTextReplay extends CanvasReplay {
     this.textFillState_ = null;
 
     /**
-     * @type {!Object.<string, module:ol/render/canvas~FillState>}
+     * @type {!Object<string, module:ol/render/canvas~FillState>}
      */
     this.fillStates = {};
 
@@ -86,7 +86,7 @@ class CanvasTextReplay extends CanvasReplay {
     this.textStrokeState_ = null;
 
     /**
-     * @type {!Object.<string, module:ol/render/canvas~StrokeState>}
+     * @type {!Object<string, module:ol/render/canvas~StrokeState>}
      */
     this.strokeStates = {};
 
@@ -97,7 +97,7 @@ class CanvasTextReplay extends CanvasReplay {
     this.textState_ = /** @type {module:ol/render/canvas~TextState} */ ({});
 
     /**
-     * @type {!Object.<string, module:ol/render/canvas~TextState>}
+     * @type {!Object<string, module:ol/render/canvas~TextState>}
      */
     this.textStates = {};
 
@@ -121,7 +121,7 @@ class CanvasTextReplay extends CanvasReplay {
 
     /**
      * @private
-     * @type {Object.<string, Object.<string, number>>}
+     * @type {Object<string, Object<string, number>>}
      */
     this.widths_ = {};
 

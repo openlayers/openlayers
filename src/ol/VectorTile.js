@@ -70,7 +70,7 @@ class VectorTile extends Tile {
 
     /**
      * @private
-     * @type {Object.<string, module:ol/render/ReplayGroup>}
+     * @type {Object<string, module:ol/render/ReplayGroup>}
      */
     this.replayGroups_ = {};
 

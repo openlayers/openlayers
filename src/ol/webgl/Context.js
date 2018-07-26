@@ -45,19 +45,19 @@ class WebGLContext extends Disposable {
 
     /**
      * @private
-     * @type {!Object.<string, module:ol/webgl/Context~BufferCacheEntry>}
+     * @type {!Object<string, module:ol/webgl/Context~BufferCacheEntry>}
      */
     this.bufferCache_ = {};
 
     /**
      * @private
-     * @type {!Object.<string, WebGLShader>}
+     * @type {!Object<string, WebGLShader>}
      */
     this.shaderCache_ = {};
 
     /**
      * @private
-     * @type {!Object.<string, WebGLProgram>}
+     * @type {!Object<string, WebGLProgram>}
      */
     this.programCache_ = {};
 

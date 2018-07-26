@@ -235,7 +235,7 @@ class WebGLTextureReplay extends WebGLReplay {
    * @protected
    * @param {Array<WebGLTexture>} textures Textures.
    * @param {Array<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>} images Images.
-   * @param {!Object.<string, WebGLTexture>} texturePerImage Texture cache.
+   * @param {!Object<string, WebGLTexture>} texturePerImage Texture cache.
    * @param {WebGLRenderingContext} gl Gl.
    */
   createTextures(textures, images, texturePerImage, gl) {
@@ -351,7 +351,7 @@ class WebGLTextureReplay extends WebGLReplay {
    * @protected
    * @param {WebGLRenderingContext} gl gl.
    * @param {module:ol/webgl/Context} context Context.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
    *  to skip.
    * @param {Array<WebGLTexture>} textures Textures.
    * @param {Array<number>} groupIndices Texture group indices.

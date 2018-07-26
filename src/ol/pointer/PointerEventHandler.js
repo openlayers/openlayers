@@ -100,12 +100,12 @@ class PointerEventHandler extends EventTarget {
 
     /**
      * @const
-     * @type {!Object.<string, Event|Object>}
+     * @type {!Object<string, Event|Object>}
      */
     this.pointerMap = {};
 
     /**
-     * @type {Object.<string, function(Event)>}
+     * @type {Object<string, function(Event)>}
      * @private
      */
     this.eventMap_ = {};

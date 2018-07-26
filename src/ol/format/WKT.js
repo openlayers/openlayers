@@ -85,7 +85,7 @@ const TokenType = {
 
 /**
  * @const
- * @type {Object.<string, string>}
+ * @type {Object<string, string>}
  */
 const WKTGeometryType = {};
 for (const type in GeometryType) {
@@ -838,7 +838,7 @@ function encodeGeometryLayout(geom) {
 
 /**
  * @const
- * @type {Object.<string, function(module:ol/geom/Geometry): string>}
+ * @type {Object<string, function(module:ol/geom/Geometry): string>}
  */
 const GeometryEncoder = {
   'Point': encodePointGeometry,

@@ -130,7 +130,7 @@ class PointerInteraction extends Interaction {
     this.stopDown = options.stopDown ? options.stopDown : stopDown;
 
     /**
-     * @type {!Object.<string, module:ol/pointer/PointerEvent>}
+     * @type {!Object<string, module:ol/pointer/PointerEvent>}
      * @private
      */
     this.trackedPointers_ = {};

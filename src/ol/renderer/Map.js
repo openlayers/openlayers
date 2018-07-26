@@ -28,13 +28,13 @@ class MapRenderer extends Disposable {
 
     /**
      * @private
-     * @type {!Object.<string, module:ol/renderer/Layer>}
+     * @type {!Object<string, module:ol/renderer/Layer>}
      */
     this.layerRenderers_ = {};
 
     /**
      * @private
-     * @type {Object.<string, module:ol/events~EventsKey>}
+     * @type {Object<string, module:ol/events~EventsKey>}
      */
     this.layerRendererListeners_ = {};
 
@@ -242,7 +242,7 @@ class MapRenderer extends Disposable {
 
   /**
    * @protected
-   * @return {Object.<string, module:ol/renderer/Layer>} Layer renderers.
+   * @return {Object<string, module:ol/renderer/Layer>} Layer renderers.
    */
   getLayerRenderers() {
     return this.layerRenderers_;

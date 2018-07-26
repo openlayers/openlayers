@@ -18,7 +18,7 @@ import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const FEATURE_COLLECTION_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -30,7 +30,7 @@ const FEATURE_COLLECTION_PARSERS = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const TRANSACTION_SUMMARY_PARSERS = {
   'http://www.opengis.net/wfs': {
@@ -43,7 +43,7 @@ const TRANSACTION_SUMMARY_PARSERS = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const TRANSACTION_RESPONSE_PARSERS = {
   'http://www.opengis.net/wfs': {
@@ -56,7 +56,7 @@ const TRANSACTION_RESPONSE_PARSERS = {
 
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const QUERY_SERIALIZERS = {
   'http://www.opengis.net/wfs': {
@@ -66,7 +66,7 @@ const QUERY_SERIALIZERS = {
 
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const TRANSACTION_SERIALIZERS = {
   'http://www.opengis.net/wfs': {
@@ -81,7 +81,7 @@ const TRANSACTION_SERIALIZERS = {
 
 /**
  * @typedef {Object} Options
- * @property {Object.<string, string>|string} [featureNS] The namespace URI used for features.
+ * @property {Object<string, string>|string} [featureNS] The namespace URI used for features.
  * @property {Array<string>|string} [featureType] The feature type to parse. Only used for read operations.
  * @property {module:ol/format/GMLBase} [gmlFormat] The GML format to use to parse the response. Default is `ol/format/GML3`.
  * @property {string} [schemaLocation] Optional schemaLocation to use for serialization, this will override the default.
@@ -178,7 +178,7 @@ const FESNS = 'http://www.opengis.net/fes';
 
 
 /**
- * @type {Object.<string, string>}
+ * @type {Object<string, string>}
  */
 const SCHEMA_LOCATIONS = {
   '1.1.0': 'http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd',
@@ -220,7 +220,7 @@ class WFS extends XMLFeature {
 
     /**
      * @private
-     * @type {Object.<string, string>|string|undefined}
+     * @type {Object<string, string>|string|undefined}
      */
     this.featureNS_ = options.featureNS;
 
@@ -549,7 +549,7 @@ function readTransactionSummary(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const OGC_FID_PARSERS = {
   'http://www.opengis.net/ogc': {
@@ -571,7 +571,7 @@ function fidParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, module:ol/xml~Parser>>}
  */
 const INSERT_RESULTS_PARSERS = {
   'http://www.opengis.net/wfs': {
@@ -751,7 +751,7 @@ function writeNative(node, nativeElement, objectStack) {
 
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
  */
 const GETFEATURE_SERIALIZERS = {
   'http://www.opengis.net/wfs': {

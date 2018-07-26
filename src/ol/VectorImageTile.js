@@ -33,7 +33,7 @@ class VectorImageTile extends Tile {
    * @param {module:ol/Tile~UrlFunction} tileUrlFunction Tile url function.
    * @param {module:ol/tilegrid/TileGrid} sourceTileGrid Tile grid of the source.
    * @param {module:ol/tilegrid/TileGrid} tileGrid Tile grid of the renderer.
-   * @param {Object.<string, module:ol/VectorTile>} sourceTiles Source tiles.
+   * @param {Object<string, module:ol/VectorTile>} sourceTiles Source tiles.
    * @param {number} pixelRatio Pixel ratio.
    * @param {module:ol/proj/Projection} projection Projection.
    * @param {function(new: module:ol/VectorTile, module:ol/tilecoord~TileCoord, module:ol/TileState, string,
@@ -51,7 +51,7 @@ class VectorImageTile extends Tile {
 
     /**
      * @private
-     * @type {!Object.<string, CanvasRenderingContext2D>}
+     * @type {!Object<string, CanvasRenderingContext2D>}
      */
     this.context_ = {};
 
@@ -63,13 +63,13 @@ class VectorImageTile extends Tile {
 
     /**
      * @private
-     * @type {!Object.<string, module:ol/VectorImageTile~ReplayState>}
+     * @type {!Object<string, module:ol/VectorImageTile~ReplayState>}
      */
     this.replayState_ = {};
 
     /**
      * @private
-     * @type {Object.<string, module:ol/VectorTile>}
+     * @type {Object<string, module:ol/VectorTile>}
      */
     this.sourceTiles_ = sourceTiles;
 

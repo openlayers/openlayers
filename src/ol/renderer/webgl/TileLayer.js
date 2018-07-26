@@ -214,7 +214,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
       gl.uniform1i(this.locations_.u_texture, 0);
 
       /**
-       * @type {Object.<number, Object.<string, module:ol/Tile>>}
+       * @type {Object<number, Object<string, module:ol/Tile>>}
        */
       const tilesToDrawByZ = {};
       tilesToDrawByZ[z] = {};

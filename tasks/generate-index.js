@@ -41,7 +41,7 @@ function getImports(symbols) {
 /**
  * Generate code to export a named symbol.
  * @param {string} name Symbol name.
- * @param {Object.<string, string>} namespaces Already defined namespaces.
+ * @param {Object<string, string>} namespaces Already defined namespaces.
  * @return {string} Export code.
  */
 function formatSymbolExport(name, namespaces) {
@@ -65,7 +65,7 @@ function formatSymbolExport(name, namespaces) {
 /**
  * Generate export code given a list symbol names.
  * @param {Array<Object>} symbols List of symbols.
- * @param {Object.<string, string>} namespaces Already defined namespaces.
+ * @param {Object<string, string>} namespaces Already defined namespaces.
  * @param {Array<string>} imports List of all imports.
  * @return {string} Export code.
  */

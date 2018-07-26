@@ -17,7 +17,7 @@ import WebGLBuffer from '../../webgl/Buffer.js';
 /**
  * @typedef {Object} GlyphAtlas
  * @property {module:ol/style/AtlasManager} atlas
- * @property {Object.<string, number>} width
+ * @property {Object<string, number>} width
  * @property {number} height
  */
 
@@ -106,7 +106,7 @@ class WebGLTextReplay extends WebGLTextureReplay {
 
     /**
      * @private
-     * @type {Object.<string, module:ol/render/webgl/TextReplay~GlyphAtlas>}
+     * @type {Object<string, module:ol/render/webgl/TextReplay~GlyphAtlas>}
      */
     this.atlases_ = {};
 
@@ -313,7 +313,7 @@ class WebGLTextReplay extends WebGLTextureReplay {
     this.indicesBuffer = new WebGLBuffer(this.indices);
 
     // create textures
-    /** @type {Object.<string, WebGLTexture>} */
+    /** @type {Object<string, WebGLTexture>} */
     const texturePerImage = {};
 
     this.createTextures(this.textures_, this.images_, texturePerImage, gl);

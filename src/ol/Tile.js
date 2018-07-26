@@ -93,7 +93,7 @@ class Tile extends EventTarget {
     /**
      * Lookup of start times for rendering transitions.  If the start time is
      * equal to -1, the transition is complete.
-     * @type {Object.<number, number>}
+     * @type {Object<number, number>}
      */
     this.transitionStarts_ = {};
 

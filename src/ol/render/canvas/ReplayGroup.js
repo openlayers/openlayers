@@ -19,7 +19,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 
 
 /**
- * @type {Object.<module:ol/render/ReplayType,
+ * @type {Object<module:ol/render/ReplayType,
  *                function(new: module:ol/render/canvas/Replay, number, module:ol/extent~Extent,
  *                number, number, boolean, Array<module:ol/render/canvas~DeclutterGroup>)>}
  */
@@ -104,7 +104,7 @@ class CanvasReplayGroup extends ReplayGroup {
 
     /**
      * @private
-     * @type {!Object.<string, !Object.<module:ol/render/ReplayType, module:ol/render/canvas/Replay>>}
+     * @type {!Object<string, !Object<module:ol/render/ReplayType, module:ol/render/canvas/Replay>>}
      */
     this.replaysByZIndex_ = {};
 
@@ -186,9 +186,9 @@ class CanvasReplayGroup extends ReplayGroup {
    * @param {number} resolution Resolution.
    * @param {number} rotation Rotation.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {function((module:ol/Feature|module:ol/render/Feature)): T} callback Feature callback.
-   * @param {Object.<string, module:ol/render/canvas~DeclutterGroup>} declutterReplays Declutter replays.
+   * @param {Object<string, module:ol/render/canvas~DeclutterGroup>} declutterReplays Declutter replays.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -335,7 +335,7 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @return {Object.<string, Object.<module:ol/render/ReplayType, module:ol/render/canvas/Replay>>} Replays.
+   * @return {Object<string, Object<module:ol/render/ReplayType, module:ol/render/canvas/Replay>>} Replays.
    */
   getReplays() {
     return this.replaysByZIndex_;
@@ -352,10 +352,10 @@ class CanvasReplayGroup extends ReplayGroup {
    * @param {CanvasRenderingContext2D} context Context.
    * @param {module:ol/transform~Transform} transform Transform.
    * @param {number} viewRotation View rotation.
-   * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {Array<module:ol/render/ReplayType>=} opt_replayTypes Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
-   * @param {Object.<string, module:ol/render/canvas~DeclutterGroup>=} opt_declutterReplays Declutter replays.
+   * @param {Object<string, module:ol/render/canvas~DeclutterGroup>=} opt_declutterReplays Declutter replays.
    */
   replay(
     context,
@@ -407,7 +407,7 @@ class CanvasReplayGroup extends ReplayGroup {
 /**
  * This cache is used for storing calculated pixel circles for increasing performance.
  * It is a static property to allow each Replaygroup to access it.
- * @type {Object.<number, Array<Array<(boolean|undefined)>>>}
+ * @type {Object<number, Array<Array<(boolean|undefined)>>>}
  */
 const circleArrayCache = {
   0: [[true]]
@@ -483,7 +483,7 @@ export function getCircleArray(radius) {
 
 
 /**
- * @param {!Object.<string, Array<*>>} declutterReplays Declutter replays.
+ * @param {!Object<string, Array<*>>} declutterReplays Declutter replays.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} rotation Rotation.
  */

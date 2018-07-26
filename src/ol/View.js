@@ -273,7 +273,7 @@ class View extends BaseObject {
   applyOptions_(options) {
 
     /**
-     * @type {Object.<string, *>}
+     * @type {Object<string, *>}
      */
     const properties = {};
     properties[ViewProperty.CENTER] = options.center !== undefined ?

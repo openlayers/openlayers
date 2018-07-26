@@ -28,7 +28,7 @@ import {
 
 
 /**
- * @type {!Object.<string, Array<module:ol/render/ReplayType>>}
+ * @type {!Object<string, Array<module:ol/render/ReplayType>>}
  */
 const IMAGE_REPLAYS = {
   'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
@@ -38,7 +38,7 @@ const IMAGE_REPLAYS = {
 
 
 /**
- * @type {!Object.<string, Array<module:ol/render/ReplayType>>}
+ * @type {!Object<string, Array<module:ol/render/ReplayType>>}
  */
 const VECTOR_REPLAYS = {
   'image': [ReplayType.DEFAULT],
@@ -234,7 +234,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const rotation = frameState.viewState.rotation;
     hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
     const layer = this.getLayer();
-    /** @type {!Object.<string, boolean>} */
+    /** @type {!Object<string, boolean>} */
     const features = {};
 
     /** @type {Array<module:ol/VectorImageTile>} */

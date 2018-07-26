@@ -28,7 +28,7 @@ const tmpTransform = createTransform();
  * @param {Array<number>} flatCoordinates Flat coordinates. These always need
  *     to be right-handed for polygons.
  * @param {Array<number>|Array<Array<number>>} ends Ends or Endss.
- * @param {Object.<string, *>} properties Properties.
+ * @param {Object<string, *>} properties Properties.
  * @param {number|string|undefined} id Feature id.
  */
 class RenderFeature {
@@ -77,7 +77,7 @@ class RenderFeature {
 
     /**
     * @private
-    * @type {Object.<string, *>}
+    * @type {Object<string, *>}
     */
     this.properties_ = properties;
 
@@ -194,7 +194,7 @@ class RenderFeature {
 
   /**
   * Get the feature properties.
-  * @return {Object.<string, *>} Feature properties.
+  * @return {Object<string, *>} Feature properties.
   * @api
   */
   getProperties() {

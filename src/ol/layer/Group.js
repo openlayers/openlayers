@@ -70,7 +70,7 @@ class LayerGroup extends BaseLayer {
 
     /**
      * @private
-     * @type {Object.<string, Array<module:ol/events~EventsKey>>}
+     * @type {Object<string, Array<module:ol/events~EventsKey>>}
      */
     this.listenerKeys_ = {};
 

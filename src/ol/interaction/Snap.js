@@ -111,7 +111,7 @@ class Snap extends PointerInteraction {
     this.featuresListenerKeys_ = [];
 
     /**
-     * @type {Object.<number, module:ol/events~EventsKey>}
+     * @type {Object<number, module:ol/events~EventsKey>}
      * @private
      */
     this.featureChangeListenerKeys_ = {};
@@ -119,7 +119,7 @@ class Snap extends PointerInteraction {
     /**
      * Extents are preserved so indexed segment can be quickly removed
      * when its feature geometry changes
-     * @type {Object.<number, module:ol/extent~Extent>}
+     * @type {Object<number, module:ol/extent~Extent>}
      * @private
      */
     this.indexedFeaturesExtents_ = {};
@@ -128,7 +128,7 @@ class Snap extends PointerInteraction {
      * If a feature geometry changes while a pointer drag|move event occurs, the
      * feature doesn't get updated right away.  It will be at the next 'pointerup'
      * event fired.
-     * @type {!Object.<number, module:ol/Feature>}
+     * @type {!Object<number, module:ol/Feature>}
      * @private
      */
     this.pendingFeatures_ = {};
@@ -165,7 +165,7 @@ class Snap extends PointerInteraction {
     /**
     * @const
     * @private
-    * @type {Object.<string, function(module:ol/Feature, module:ol/geom/Geometry)>}
+    * @type {Object<string, function(module:ol/Feature, module:ol/geom/Geometry)>}
     */
     this.SEGMENT_WRITERS_ = {
       'Point': this.writePointGeometry_,

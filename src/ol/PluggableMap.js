@@ -41,16 +41,16 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {null|module:ol/extent~Extent} extent
  * @property {module:ol/coordinate~Coordinate} focus
  * @property {number} index
- * @property {Object.<number, module:ol/layer/Layer~State>} layerStates
+ * @property {Object<number, module:ol/layer/Layer~State>} layerStates
  * @property {Array<module:ol/layer/Layer~State>} layerStatesArray
  * @property {module:ol/transform~Transform} pixelToCoordinateTransform
  * @property {Array<module:ol/PluggableMap~PostRenderFunction>} postRenderFunctions
  * @property {module:ol/size~Size} size
- * @property {!Object.<string, boolean>} skippedFeatureUids
+ * @property {!Object<string, boolean>} skippedFeatureUids
  * @property {module:ol/TileQueue} tileQueue
- * @property {Object.<string, Object.<string, module:ol/TileRange>>} usedTiles
+ * @property {Object<string, Object<string, module:ol/TileRange>>} usedTiles
  * @property {Array<number>} viewHints
- * @property {!Object.<string, Object.<string, boolean>>} wantedTiles
+ * @property {!Object<string, Object<string, boolean>>} wantedTiles
  */
 
 
@@ -78,7 +78,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {module:ol/Collection.<module:ol/interaction/Interaction>} [interactions]
  * @property {HTMLElement|Document} keyboardEventTarget
  * @property {module:ol/Collection.<module:ol/Overlay>} overlays
- * @property {Object.<string, *>} values
+ * @property {Object<string, *>} values
  */
 
 
@@ -330,7 +330,7 @@ class PluggableMap extends BaseObject {
     /**
      * A lookup of overlays by id.
      * @private
-     * @type {Object.<string, module:ol/Overlay>}
+     * @type {Object<string, module:ol/Overlay>}
      */
     this.overlayIdIndex_ = {};
 
@@ -368,7 +368,7 @@ class PluggableMap extends BaseObject {
 
     /**
      * Uids of features to skip at rendering time.
-     * @type {Object.<string, boolean>}
+     * @type {Object<string, boolean>}
      * @private
      */
     this.skippedFeatureUids_ = {};
@@ -1356,7 +1356,7 @@ function createOptionsInternal(options) {
   }
 
   /**
-   * @type {Object.<string, *>}
+   * @type {Object<string, *>}
    */
   const values = {};
 

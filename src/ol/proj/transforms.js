@@ -6,7 +6,7 @@ import {isEmpty} from '../obj.js';
 
 /**
  * @private
- * @type {!Object.<string, Object.<string, module:ol/proj~TransformFunction>>}
+ * @type {!Object<string, Object<string, module:ol/proj~TransformFunction>>}
  */
 let transforms = {};
 

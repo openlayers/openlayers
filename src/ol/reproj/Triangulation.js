@@ -64,7 +64,7 @@ class Triangulation {
      */
     this.targetProj_ = targetProj;
 
-    /** @type {!Object.<string, module:ol/coordinate~Coordinate>} */
+    /** @type {!Object<string, module:ol/coordinate~Coordinate>} */
     let transformInvCache = {};
     const transformInv = getTransform(this.targetProj_, this.sourceProj_);
 

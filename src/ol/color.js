@@ -84,7 +84,7 @@ export const fromString = (
     const MAX_CACHE_SIZE = 1024;
 
     /**
-     * @type {Object.<string, module:ol/color~Color>}
+     * @type {Object<string, module:ol/color~Color>}
      */
     const cache = {};
 

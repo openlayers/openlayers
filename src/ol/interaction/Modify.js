@@ -203,7 +203,7 @@ class Modify extends PointerInteraction {
 
     /**
      * Segments intersecting {@link this.vertexFeature_} by segment uid.
-     * @type {Object.<string, boolean>}
+     * @type {Object<string, boolean>}
      * @private
      */
     this.vertexSegments_ = null;
@@ -281,7 +281,7 @@ class Modify extends PointerInteraction {
     /**
      * @const
      * @private
-     * @type {!Object.<string, function(module:ol/Feature, module:ol/geom/Geometry)>}
+     * @type {!Object<string, function(module:ol/Feature, module:ol/geom/Geometry)>}
      */
     this.SEGMENT_WRITERS_ = {
       'Point': this.writePointGeometry_,

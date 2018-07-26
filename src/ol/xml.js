@@ -354,7 +354,7 @@ export const OBJECT_PROPERTY_NODE_FACTORY = makeSimpleNodeFactory();
  * Create an array of `values` to be used with {@link module:ol/xml~serialize} or
  * {@link module:ol/xml~pushSerializeAndPop}, where `orderedKeys` has to be provided as
  * `opt_key` argument.
- * @param {Object.<string, V>} object Key-value pairs for the sequence. Keys can
+ * @param {Object<string, V>} object Key-value pairs for the sequence. Keys can
  *     be a subset of the `orderedKeys`.
  * @param {Array<string>} orderedKeys Keys in the order of the sequence.
  * @return {Array<V>} Values in the order of the sequence. The resulting array
@@ -378,13 +378,13 @@ export function makeSequence(object, orderedKeys) {
  * values are version specific.
  * @param {Array<string>} namespaceURIs Namespace URIs.
  * @param {T} structure Structure.
- * @param {Object.<string, T>=} opt_structureNS Namespaced structure to add to.
- * @return {Object.<string, T>} Namespaced structure.
+ * @param {Object<string, T>=} opt_structureNS Namespaced structure to add to.
+ * @return {Object<string, T>} Namespaced structure.
  * @template T
  */
 export function makeStructureNS(namespaceURIs, structure, opt_structureNS) {
   /**
-   * @type {Object.<string, T>}
+   * @type {Object<string, T>}
    */
   const structureNS = opt_structureNS !== undefined ? opt_structureNS : {};
   let i, ii;
@@ -397,7 +397,7 @@ export function makeStructureNS(namespaceURIs, structure, opt_structureNS) {
 
 /**
  * Parse a node using the parsers and object stack.
- * @param {Object.<string, Object.<string, module:ol/xml~Parser>>} parsersNS
+ * @param {Object<string, Object<string, module:ol/xml~Parser>>} parsersNS
  *     Parsers by namespace.
  * @param {Node} node Node.
  * @param {Array<*>} objectStack Object stack.
@@ -420,7 +420,7 @@ export function parseNode(parsersNS, node, objectStack, opt_this) {
 /**
  * Push an object on top of the stack, parse and return the popped object.
  * @param {T} object Object.
- * @param {Object.<string, Object.<string, module:ol/xml~Parser>>} parsersNS
+ * @param {Object<string, Object<string, module:ol/xml~Parser>>} parsersNS
  *     Parsers by namespace.
  * @param {Node} node Node.
  * @param {Array<*>} objectStack Object stack.
@@ -437,7 +437,7 @@ export function pushParseAndPop(object, parsersNS, node, objectStack, opt_this) 
 
 /**
  * Walk through an array of `values` and call a serializer for each value.
- * @param {Object.<string, Object.<string, module:ol/xml~Serializer>>} serializersNS
+ * @param {Object<string, Object<string, module:ol/xml~Serializer>>} serializersNS
  *     Namespaced serializers.
  * @param {function(this: T, *, Array<*>, (string|undefined)): (Node|undefined)} nodeFactory
  *     Node factory. The `nodeFactory` creates the node whose namespace and name
@@ -477,7 +477,7 @@ export function serialize(
 
 /**
  * @param {O} object Object.
- * @param {Object.<string, Object.<string, module:ol/xml~Serializer>>} serializersNS
+ * @param {Object<string, Object<string, module:ol/xml~Serializer>>} serializersNS
  *     Namespaced serializers.
  * @param {function(this: T, *, Array<*>, (string|undefined)): (Node|undefined)} nodeFactory
  *     Node factory. The `nodeFactory` creates the node whose namespace and name

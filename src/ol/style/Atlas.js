@@ -64,7 +64,7 @@ class Atlas {
 
     /**
      * @private
-     * @type {Object.<string, module:ol/style/Atlas~AtlasInfo>}
+     * @type {Object<string, module:ol/style/Atlas~AtlasInfo>}
      */
     this.entries_ = {};
 

@@ -41,7 +41,7 @@ class BaseLayer extends BaseObject {
     super();
 
     /**
-    * @type {Object.<string, *>}
+    * @type {Object<string, *>}
     */
     const properties = assign({}, options);
     properties[LayerProperty.OPACITY] =

@@ -23,7 +23,7 @@ import RenderFeature from '../render/Feature.js';
 
 /**
  * @typedef {Object} Options
- * @property {function((module:ol/geom/Geometry|Object.<string,*>)=)|function(module:ol/geom/GeometryType,Array<number>,(Array<number>|Array<Array<number>>),Object.<string,*>,number)} [featureClass]
+ * @property {function((module:ol/geom/Geometry|Object<string,*>)=)|function(module:ol/geom/GeometryType,Array<number>,(Array<number>|Array<Array<number>>),Object<string,*>,number)} [featureClass]
  * Class for features returned by {@link module:ol/format/MVT#readFeatures}. Set to
  * {@link module:ol/Feature~Feature} to get full editing and geometry support at the cost of
  * decreased rendering performance. The default is {@link module:ol/render/Feature~RenderFeature},
@@ -64,9 +64,9 @@ class MVT extends FeatureFormat {
 
     /**
      * @private
-     * @type {function((module:ol/geom/Geometry|Object.<string,*>)=)|
+     * @type {function((module:ol/geom/Geometry|Object<string,*>)=)|
      *     function(module:ol/geom/GeometryType,Array<number>,
-     *         (Array<number>|Array<Array<number>>),Object.<string,*>,number)}
+     *         (Array<number>|Array<Array<number>>),Object<string,*>,number)}
      */
     this.featureClass_ = options.featureClass ?
       options.featureClass : RenderFeature;
