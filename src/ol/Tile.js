@@ -3,7 +3,7 @@
  */
 import TileState from './TileState.js';
 import {easeIn} from './easing.js';
-import EventTarget from './events/EventTarget.js';
+import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
 
 

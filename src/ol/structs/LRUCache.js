@@ -3,7 +3,7 @@
  */
 
 import {assert} from '../asserts.js';
-import EventTarget from '../events/EventTarget.js';
+import EventTarget from '../events/Target.js';
 import EventType from '../events/EventType.js';
 
 

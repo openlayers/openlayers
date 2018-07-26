@@ -12,7 +12,7 @@ import {clear} from './obj.js';
  * @property {boolean} callOnce
  * @property {number} [deleteIndex]
  * @property {module:ol/events~ListenerFunction} listener
- * @property {EventTarget|module:ol/events/EventTarget} target
+ * @property {module:ol/events/Target~EventTargetLike} target
  * @property {string} type
  * @api
  */
@@ -73,7 +73,7 @@ export function findListener(listeners, listener, opt_this, opt_setDeleteIndex) 
 
 
 /**
- * @param {module:ol/events/EventTarget~EventTargetLike} target Target.
+ * @param {module:ol/events/Target~EventTargetLike} target Target.
  * @param {string} type Type.
  * @return {Array<module:ol/events~EventsKey>|undefined} Listeners.
  */
@@ -86,7 +86,7 @@ export function getListeners(target, type) {
 /**
  * Get the lookup of listeners.  If one does not exist on the target, it is
  * created.
- * @param {module:ol/events/EventTarget~EventTargetLike} target Target.
+ * @param {module:ol/events/Target~EventTargetLike} target Target.
  * @return {!Object<string, Array<module:ol/events~EventsKey>>} Map of
  *     listeners by event type.
  */
@@ -103,7 +103,7 @@ function getListenerMap(target) {
  * Clean up all listener objects of the given type.  All properties on the
  * listener objects will be removed, and if no listeners remain in the listener
  * map, it will be removed from the target.
- * @param {module:ol/events/EventTarget~EventTargetLike} target Target.
+ * @param {module:ol/events/Target~EventTargetLike} target Target.
  * @param {string} type Type.
  */
 function removeListeners(target, type) {
@@ -132,7 +132,7 @@ function removeListeners(target, type) {
  * This function efficiently binds a `listener` to a `this` object, and returns
  * a key for use with {@link module:ol/events~unlistenByKey}.
  *
- * @param {module:ol/events/EventTarget~EventTargetLike} target Event target.
+ * @param {module:ol/events/Target~EventTargetLike} target Event target.
  * @param {string} type Event type.
  * @param {module:ol/events~ListenerFunction} listener Listener.
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
@@ -181,7 +181,7 @@ export function listen(target, type, listener, opt_this, opt_once) {
  * function, the self-unregistering listener will be turned into a permanent
  * listener.
  *
- * @param {module:ol/events/EventTarget~EventTargetLike} target Event target.
+ * @param {module:ol/events/Target~EventTargetLike} target Event target.
  * @param {string} type Event type.
  * @param {module:ol/events~ListenerFunction} listener Listener.
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
@@ -200,7 +200,7 @@ export function listenOnce(target, type, listener, opt_this) {
  * To return a listener, this function needs to be called with the exact same
  * arguments that were used for a previous {@link module:ol/events~listen} call.
  *
- * @param {module:ol/events/EventTarget~EventTargetLike} target Event target.
+ * @param {module:ol/events/Target~EventTargetLike} target Event target.
  * @param {string} type Event type.
  * @param {module:ol/events~ListenerFunction} listener Listener.
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
@@ -248,7 +248,7 @@ export function unlistenByKey(key) {
  * Unregisters all event listeners on an event target. Inspired by
  * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
  *
- * @param {module:ol/events/EventTarget~EventTargetLike} target Target.
+ * @param {module:ol/events/Target~EventTargetLike} target Target.
  */
 export function unlistenAll(target) {
   const listenerMap = getListenerMap(target);

@@ -1,6 +1,6 @@
 import View from '../../../../src/ol/View.js';
 import Event from '../../../../src/ol/events/Event.js';
-import EventTarget from '../../../../src/ol/events/EventTarget.js';
+import EventTarget from '../../../../src/ol/events/Target.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import DragAndDrop from '../../../../src/ol/interaction/DragAndDrop.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';

@@ -33,7 +33,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import {listen, unlisten} from '../events.js';
-import EventTarget from '../events/EventTarget.js';
+import EventTarget from '../events/Target.js';
 import {POINTER, MSPOINTER, TOUCH} from '../has.js';
 import PointerEventType from '../pointer/EventType.js';
 import MouseSource from '../pointer/MouseSource.js';

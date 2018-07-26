@@ -4,7 +4,7 @@
 
 import {createCanvasContext2D} from '../dom.js';
 import {listenOnce, unlistenByKey} from '../events.js';
-import EventTarget from '../events/EventTarget.js';
+import EventTarget from '../events/Target.js';
 import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
