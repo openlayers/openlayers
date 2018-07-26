@@ -14,7 +14,7 @@ async function getSymbols() {
 
 /**
  * Generate a list of imports.
- * @param {Array.<Object>} symbols List of symbols.
+ * @param {Array<Object>} symbols List of symbols.
  * @return {Promise<Array>} A list of imports sorted by export name.
  */
 function getImports(symbols) {
@@ -64,9 +64,9 @@ function formatSymbolExport(name, namespaces) {
 
 /**
  * Generate export code given a list symbol names.
- * @param {Array.<Object>} symbols List of symbols.
+ * @param {Array<Object>} symbols List of symbols.
  * @param {Object.<string, string>} namespaces Already defined namespaces.
- * @param {Array.<string>} imports List of all imports.
+ * @param {Array<string>} imports List of all imports.
  * @return {string} Export code.
  */
 function generateExports(symbols, namespaces, imports) {

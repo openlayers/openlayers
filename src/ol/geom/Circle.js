@@ -179,7 +179,7 @@ class Circle extends SimpleGeometry {
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
-    /** @type {Array.<number>} */
+    /** @type {Array<number>} */
     const flatCoordinates = this.flatCoordinates;
     let offset = deflateCoordinate(
       flatCoordinates, 0, center, this.stride);

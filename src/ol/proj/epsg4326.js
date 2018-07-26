@@ -64,7 +64,7 @@ class EPSG4326Projection extends Projection {
  * Projections equal to EPSG:4326.
  *
  * @const
- * @type {Array.<module:ol/proj/Projection>}
+ * @type {Array<module:ol/proj/Projection>}
  */
 export const PROJECTIONS = [
   new EPSG4326Projection('CRS:84'),

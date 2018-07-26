@@ -131,7 +131,7 @@ class Attribution extends Control {
 
     /**
      * A list of currently rendered resolutions.
-     * @type {Array.<string>}
+     * @type {Array<string>}
      * @private
      */
     this.renderedAttributions_ = [];
@@ -147,7 +147,7 @@ class Attribution extends Control {
   /**
    * Get a list of visible attributions.
    * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @return {Array.<string>} Attributions.
+   * @return {Array<string>} Attributions.
    * @private
    */
   getSourceAttributions_(frameState) {
@@ -159,7 +159,7 @@ class Attribution extends Control {
 
     /**
      * A list of visible attributions.
-     * @type {Array.<string>}
+     * @type {Array<string>}
      */
     const visibleAttributions = [];
 

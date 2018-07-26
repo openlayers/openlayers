@@ -35,7 +35,7 @@ class SimpleGeometry extends Geometry {
 
     /**
      * @protected
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.flatCoordinates = null;
 
@@ -65,7 +65,7 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
-   * @return {Array.<number>} Flat coordinates.
+   * @return {Array<number>} Flat coordinates.
    */
   getFlatCoordinates() {
     return this.flatCoordinates;
@@ -146,7 +146,7 @@ class SimpleGeometry extends Geometry {
 
   /**
    * @param {module:ol/geom/GeometryLayout} layout Layout.
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
     */
   setFlatCoordinates(layout, flatCoordinates) {
     this.stride = getStrideForLayout(layout);
@@ -300,8 +300,8 @@ SimpleGeometry.prototype.containsXY = FALSE;
 /**
  * @param {module:ol/geom/SimpleGeometry} simpleGeometry Simple geometry.
  * @param {module:ol/transform~Transform} transform Transform.
- * @param {Array.<number>=} opt_dest Destination.
- * @return {Array.<number>} Transformed flat coordinates.
+ * @param {Array<number>=} opt_dest Destination.
+ * @return {Array<number>} Transformed flat coordinates.
  */
 export function transformGeom2D(simpleGeometry, transform, opt_dest) {
   const flatCoordinates = simpleGeometry.getFlatCoordinates();

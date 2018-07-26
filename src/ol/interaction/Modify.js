@@ -60,12 +60,12 @@ const ModifyEventType = {
 
 /**
  * @typedef {Object} SegmentData
- * @property {Array.<number>} [depth]
+ * @property {Array<number>} [depth]
  * @property {module:ol/Feature} feature
  * @property {module:ol/geom/SimpleGeometry} geometry
  * @property {number} index
- * @property {Array.<module:ol/extent~Extent>} segment
- * @property {Array.<module:ol/interaction/Modify~SegmentData>} [featureSegments]
+ * @property {Array<module:ol/extent~Extent>} segment
+ * @property {Array<module:ol/interaction/Modify~SegmentData>} [featureSegments]
  */
 
 
@@ -87,7 +87,7 @@ const ModifyEventType = {
  * features. Default is {@link module:ol/events/condition~always}.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
- * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style]
+ * @property {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style]
  * Style used for the features being modified. By default the default edit
  * style is used (see {@link module:ol/style}).
  * @property {module:ol/source/Vector} [source] The vector source with
@@ -388,7 +388,7 @@ class Modify extends PointerInteraction {
    */
   removeFeatureSegmentData_(feature) {
     const rBush = this.rBush_;
-    const /** @type {Array.<module:ol/interaction/Modify~SegmentData>} */ nodesToRemove = [];
+    const /** @type {Array<module:ol/interaction/Modify~SegmentData>} */ nodesToRemove = [];
     rBush.forEach(
       /**
        * @param {module:ol/interaction/Modify~SegmentData} node RTree node.
@@ -948,7 +948,7 @@ class Modify extends PointerInteraction {
   /**
    * @param {module:ol/geom/SimpleGeometry} geometry Geometry.
    * @param {number} index Index.
-   * @param {Array.<number>|undefined} depth Depth.
+   * @param {Array<number>|undefined} depth Depth.
    * @param {number} delta Delta (1 or -1).
    * @private
    */

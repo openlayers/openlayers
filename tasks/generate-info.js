@@ -109,7 +109,7 @@ function parseOutput(output) {
 
 /**
  * Spawn JSDoc.
- * @param {Array.<string>} paths Paths to source files.
+ * @param {Array<string>} paths Paths to source files.
  * @return {Promise<string>} Resolves with the JSDoc output (new metadata).
  *     If provided with an empty list of paths, resolves with null.
  */

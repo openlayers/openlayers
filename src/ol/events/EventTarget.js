@@ -46,7 +46,7 @@ class EventTarget extends Disposable {
 
     /**
      * @private
-     * @type {!Object.<string, Array.<module:ol/events~ListenerFunction>>}
+     * @type {!Object.<string, Array<module:ol/events~ListenerFunction>>}
      */
     this.listeners_ = {};
 
@@ -122,7 +122,7 @@ class EventTarget extends Disposable {
    * order that they will be called in.
    *
    * @param {string} type Type.
-   * @return {Array.<module:ol/events~ListenerFunction>} Listeners.
+   * @return {Array<module:ol/events~ListenerFunction>} Listeners.
    */
   getListeners(type) {
     return this.listeners_[type];

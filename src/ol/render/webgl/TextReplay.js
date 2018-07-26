@@ -32,13 +32,13 @@ class WebGLTextReplay extends WebGLTextureReplay {
 
     /**
      * @private
-     * @type {Array.<HTMLCanvasElement>}
+     * @type {Array<HTMLCanvasElement>}
      */
     this.images_ = [];
 
     /**
      * @private
-     * @type {Array.<WebGLTexture>}
+     * @type {Array<WebGLTexture>}
      */
     this.textures_ = [];
 
@@ -52,7 +52,7 @@ class WebGLTextReplay extends WebGLTextureReplay {
      * @private
      * @type {{strokeColor: (module:ol/colorlike~ColorLike|null),
      *         lineCap: (string|undefined),
-     *         lineDash: Array.<number>,
+     *         lineDash: Array<number>,
      *         lineDashOffset: (number|undefined),
      *         lineJoin: (string|undefined),
      *         lineWidth: number,
@@ -209,8 +209,8 @@ class WebGLTextReplay extends WebGLTextureReplay {
 
   /**
    * @private
-   * @param {Array.<string>} lines Label to draw split to lines.
-   * @return {Array.<number>} Size of the label in pixels.
+   * @param {Array<string>} lines Label to draw split to lines.
+   * @return {Array<number>} Size of the label in pixels.
    */
   getTextSize_(lines) {
     const self = this;
@@ -236,7 +236,7 @@ class WebGLTextReplay extends WebGLTextureReplay {
 
   /**
    * @private
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
@@ -427,7 +427,7 @@ class WebGLTextReplay extends WebGLTextureReplay {
 
   /**
    * @private
-   * @param {Array.<string|number>} params Array of parameters.
+   * @param {Array<string|number>} params Array of parameters.
    * @return {string} Hash string.
    */
   calculateHash_(params) {

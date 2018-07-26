@@ -40,7 +40,7 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
     this.imageTransform_ = createTransform();
 
     /**
-     * @type {!Array.<string>}
+     * @type {!Array<string>}
      */
     this.skippedFeatures_ = [];
 

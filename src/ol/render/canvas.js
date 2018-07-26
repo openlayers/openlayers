@@ -19,7 +19,7 @@ import {create as createTransform} from '../transform.js';
  * @property {module:ol/colorlike~ColorLike} [currentFillStyle]
  * @property {module:ol/colorlike~ColorLike} [currentStrokeStyle]
  * @property {string} [currentLineCap]
- * @property {Array.<number>} currentLineDash
+ * @property {Array<number>} currentLineDash
  * @property {number} [currentLineDashOffset]
  * @property {string} [currentLineJoin]
  * @property {number} [currentLineWidth]
@@ -28,7 +28,7 @@ import {create as createTransform} from '../transform.js';
  * @property {module:ol/colorlike~ColorLike} [fillStyle]
  * @property {module:ol/colorlike~ColorLike} [strokeStyle]
  * @property {string} [lineCap]
- * @property {Array.<number>} lineDash
+ * @property {Array<number>} lineDash
  * @property {number} [lineDashOffset]
  * @property {string} [lineJoin]
  * @property {number} [lineWidth]
@@ -39,7 +39,7 @@ import {create as createTransform} from '../transform.js';
 /**
  * @typedef {Object} StrokeState
  * @property {string} lineCap
- * @property {Array.<number>} lineDash
+ * @property {Array<number>} lineDash
  * @property {number} lineDashOffset
  * @property {string} lineJoin
  * @property {number} lineWidth
@@ -65,7 +65,7 @@ import {create as createTransform} from '../transform.js';
  * in the group, i.e. 2 when an image and a text are grouped, or 1 otherwise.
  * In addition to these four elements, declutter instruction arrays (i.e. the
  * arguments to {@link module:ol/render/canvas~drawImage} are appended to the array.
- * @typedef {Array.<*>} DeclutterGroup
+ * @typedef {Array<*>} DeclutterGroup
  */
 
 
@@ -92,7 +92,7 @@ export const defaultLineCap = 'round';
 
 /**
  * @const
- * @type {Array.<number>}
+ * @type {Array<number>}
  */
 export const defaultLineDash = [];
 
@@ -141,7 +141,7 @@ export const defaultTextBaseline = 'middle';
 
 /**
  * @const
- * @type {Array.<number>}
+ * @type {Array<number>}
  */
 export const defaultPadding = [0, 0, 0, 0];
 

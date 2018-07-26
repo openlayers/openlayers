@@ -29,7 +29,7 @@ import RBush from '../structs/RBush.js';
 /**
  * @typedef {Object} SegmentData
  * @property {module:ol/Feature} feature
- * @property {Array.<module:ol/coordinate~Coordinate>} segment
+ * @property {Array<module:ol/coordinate~Coordinate>} segment
  */
 
 
@@ -105,7 +105,7 @@ class Snap extends PointerInteraction {
     this.features_ = options.features ? options.features : null;
 
     /**
-     * @type {Array.<module:ol/events~EventsKey>}
+     * @type {Array<module:ol/events~EventsKey>}
      * @private
      */
     this.featuresListenerKeys_ = [];
@@ -224,7 +224,7 @@ class Snap extends PointerInteraction {
   }
 
   /**
-   * @return {module:ol/Collection.<module:ol/Feature>|Array.<module:ol/Feature>} Features.
+   * @return {module:ol/Collection.<module:ol/Feature>|Array<module:ol/Feature>} Features.
    * @private
    */
   getFeatures_() {
@@ -235,7 +235,7 @@ class Snap extends PointerInteraction {
       features = this.source_.getFeatures();
     }
     return (
-      /** @type {!Array.<module:ol/Feature>|!module:ol/Collection.<module:ol/Feature>} */ (features)
+      /** @type {!Array<module:ol/Feature>|!module:ol/Collection.<module:ol/Feature>} */ (features)
     );
   }
 

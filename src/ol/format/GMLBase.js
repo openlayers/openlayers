@@ -52,7 +52,7 @@ const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
  * feature namespaces themselves. So for instance there might be a featureType
  * item `topp:states` in the `featureType` array and then there will be a key
  * `topp` in the featureNS object with value `http://www.openplans.org/topp`.
- * @property {Array.<string>|string} [featureType] Feature type(s) to parse.
+ * @property {Array<string>|string} [featureType] Feature type(s) to parse.
  * If multiple feature types need to be configured
  * which come from different feature namespaces, `featureNS` will be an object
  * with the keys being the prefixes used in the entries of featureType array.
@@ -96,7 +96,7 @@ class GMLBase extends XMLFeature {
 
     /**
      * @protected
-     * @type {Array.<string>|string|undefined}
+     * @type {Array<string>|string|undefined}
      */
     this.featureType = options.featureType;
 
@@ -131,8 +131,8 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
-   * @return {Array.<module:ol/Feature> | undefined} Features.
+   * @param {Array<*>} objectStack Object stack.
+   * @return {Array<module:ol/Feature> | undefined} Features.
    */
   readFeaturesInternal(node, objectStack) {
     const localName = node.localName;
@@ -219,7 +219,7 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/Geometry|undefined} Geometry.
    */
   readGeometryElement(node, objectStack) {
@@ -239,7 +239,7 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/Feature} Feature.
    */
   readFeatureElement(node, objectStack) {
@@ -280,7 +280,7 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/Point|undefined} Point.
    */
   readPoint(node, objectStack) {
@@ -292,11 +292,11 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/MultiPoint|undefined} MultiPoint.
    */
   readMultiPoint(node, objectStack) {
-    /** @type {Array.<Array.<number>>} */
+    /** @type {Array<Array<number>>} */
     const coordinates = pushParseAndPop([],
       this.MULTIPOINT_PARSERS_, node, objectStack, this);
     if (coordinates) {
@@ -308,11 +308,11 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/MultiLineString|undefined} MultiLineString.
    */
   readMultiLineString(node, objectStack) {
-    /** @type {Array.<module:ol/geom/LineString>} */
+    /** @type {Array<module:ol/geom/LineString>} */
     const lineStrings = pushParseAndPop([],
       this.MULTILINESTRING_PARSERS_, node, objectStack, this);
     if (lineStrings) {
@@ -322,11 +322,11 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/MultiPolygon|undefined} MultiPolygon.
    */
   readMultiPolygon(node, objectStack) {
-    /** @type {Array.<module:ol/geom/Polygon>} */
+    /** @type {Array<module:ol/geom/Polygon>} */
     const polygons = pushParseAndPop([], this.MULTIPOLYGON_PARSERS_, node, objectStack, this);
     if (polygons) {
       return new MultiPolygon(polygons);
@@ -335,7 +335,7 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @private
    */
   pointMemberParser_(node, objectStack) {
@@ -344,7 +344,7 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @private
    */
   lineStringMemberParser_(node, objectStack) {
@@ -353,7 +353,7 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @private
    */
   polygonMemberParser_(node, objectStack) {
@@ -362,7 +362,7 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/LineString|undefined} LineString.
    */
   readLineString(node, objectStack) {
@@ -377,9 +377,9 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {Array.<number>|undefined} LinearRing flat coordinates.
+   * @return {Array<number>|undefined} LinearRing flat coordinates.
    */
   readFlatLinearRing_(node, objectStack) {
     const ring = pushParseAndPop(null,
@@ -394,7 +394,7 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/LinearRing|undefined} LinearRing.
    */
   readLinearRing(node, objectStack) {
@@ -406,11 +406,11 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/Polygon|undefined} Polygon.
    */
   readPolygon(node, objectStack) {
-    /** @type {Array.<Array.<number>>} */
+    /** @type {Array<Array<number>>} */
     const flatLinearRings = pushParseAndPop([null],
       this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
     if (flatLinearRings && flatLinearRings[0]) {
@@ -429,9 +429,9 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
+   * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {Array.<number>} Flat coordinates.
+   * @return {Array<number>} Flat coordinates.
    */
   readFlatCoordinatesFromNode_(node, objectStack) {
     return pushParseAndPop(null, this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack, this);

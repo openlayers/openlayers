@@ -36,7 +36,7 @@ import EventSource from '../pointer/EventSource.js';
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array<string>}
  */
 const POINTER_TYPES = [
   '',

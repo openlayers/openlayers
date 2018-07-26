@@ -20,8 +20,8 @@ const twoPi = 2 * Math.PI;
 
 /**
  * Convert an RGB pixel into an HCL pixel.
- * @param {Array.<number>} pixel A pixel in RGB space.
- * @return {Array.<number>} A pixel in HCL space.
+ * @param {Array<number>} pixel A pixel in RGB space.
+ * @return {Array<number>} A pixel in HCL space.
  */
 function rgb2hcl(pixel) {
   const red = rgb2xyz(pixel[0]);
@@ -55,8 +55,8 @@ function rgb2hcl(pixel) {
 
 /**
  * Convert an HCL pixel into an RGB pixel.
- * @param {Array.<number>} pixel A pixel in HCL space.
- * @return {Array.<number>} A pixel in RGB space.
+ * @param {Array<number>} pixel A pixel in HCL space.
+ * @return {Array<number>} A pixel in RGB space.
  */
 function hcl2rgb(pixel) {
   const h = pixel[0];

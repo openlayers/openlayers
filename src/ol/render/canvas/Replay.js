@@ -104,13 +104,13 @@ class CanvasReplay extends VectorContext {
 
     /**
      * @private
-     * @type {Array.<*>}
+     * @type {Array<*>}
      */
     this.beginGeometryInstruction1_ = null;
 
     /**
      * @private
-     * @type {Array.<*>}
+     * @type {Array<*>}
      */
     this.beginGeometryInstruction2_ = null;
 
@@ -122,19 +122,19 @@ class CanvasReplay extends VectorContext {
 
     /**
      * @protected
-     * @type {Array.<*>}
+     * @type {Array<*>}
      */
     this.instructions = [];
 
     /**
      * @protected
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.coordinates = [];
 
     /**
      * @private
-     * @type {!Object.<number,module:ol/coordinate~Coordinate|Array.<module:ol/coordinate~Coordinate>|Array.<Array.<module:ol/coordinate~Coordinate>>>}
+     * @type {!Object.<number,module:ol/coordinate~Coordinate|Array<module:ol/coordinate~Coordinate>|Array<Array<module:ol/coordinate~Coordinate>>>}
      */
     this.coordinateCache_ = {};
 
@@ -146,13 +146,13 @@ class CanvasReplay extends VectorContext {
 
     /**
      * @protected
-     * @type {Array.<*>}
+     * @type {Array<*>}
      */
     this.hitDetectionInstructions = [];
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.pixelCoordinates_ = null;
 
@@ -176,8 +176,8 @@ class CanvasReplay extends VectorContext {
    * @param {module:ol/coordinate~Coordinate} p2 2nd point of the background box.
    * @param {module:ol/coordinate~Coordinate} p3 3rd point of the background box.
    * @param {module:ol/coordinate~Coordinate} p4 4th point of the background box.
-   * @param {Array.<*>} fillInstruction Fill instruction.
-   * @param {Array.<*>} strokeInstruction Stroke instruction.
+   * @param {Array<*>} fillInstruction Fill instruction.
+   * @param {Array<*>} strokeInstruction Stroke instruction.
    */
   replayTextBackground_(context, p1, p2, p3, p4, fillInstruction, strokeInstruction) {
     context.beginPath();
@@ -191,7 +191,7 @@ class CanvasReplay extends VectorContext {
       this.fill_(context);
     }
     if (strokeInstruction) {
-      this.setStrokeStyle_(context, /** @type {Array.<*>} */ (strokeInstruction));
+      this.setStrokeStyle_(context, /** @type {Array<*>} */ (strokeInstruction));
       context.stroke();
     }
   }
@@ -212,9 +212,9 @@ class CanvasReplay extends VectorContext {
    * @param {number} scale Scale.
    * @param {boolean} snapToPixel Snap to pixel.
    * @param {number} width Width.
-   * @param {Array.<number>} padding Padding.
-   * @param {Array.<*>} fillInstruction Fill instruction.
-   * @param {Array.<*>} strokeInstruction Stroke instruction.
+   * @param {Array<number>} padding Padding.
+   * @param {Array<*>} fillInstruction Fill instruction.
+   * @param {Array<*>} strokeInstruction Stroke instruction.
    */
   replayImage_(
     context,
@@ -304,8 +304,8 @@ class CanvasReplay extends VectorContext {
     } else if (intersects) {
       if (fillStroke) {
         this.replayTextBackground_(context, p1, p2, p3, p4,
-          /** @type {Array.<*>} */ (fillInstruction),
-          /** @type {Array.<*>} */ (strokeInstruction));
+          /** @type {Array<*>} */ (fillInstruction),
+          /** @type {Array<*>} */ (strokeInstruction));
       }
       drawImage(context, transform, opacity, image, originX, originY, w, h, x, y, scale);
     }
@@ -313,8 +313,8 @@ class CanvasReplay extends VectorContext {
 
   /**
    * @protected
-   * @param {Array.<number>} dashArray Dash array.
-   * @return {Array.<number>} Dash array with pixel ratio applied
+   * @param {Array<number>} dashArray Dash array.
+   * @return {Array<number>} Dash array with pixel ratio applied
    */
   applyPixelRatio(dashArray) {
     const pixelRatio = this.pixelRatio;
@@ -324,7 +324,7 @@ class CanvasReplay extends VectorContext {
   }
 
   /**
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
@@ -378,11 +378,11 @@ class CanvasReplay extends VectorContext {
   }
 
   /**
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
-   * @param {Array.<number>} ends Ends.
+   * @param {Array<number>} ends Ends.
    * @param {number} stride Stride.
-   * @param {Array.<number>} replayEnds Replay ends.
+   * @param {Array<number>} replayEnds Replay ends.
    * @return {number} Offset.
    */
   drawCustomCoordinates_(flatCoordinates, offset, ends, stride, replayEnds) {
@@ -476,7 +476,7 @@ class CanvasReplay extends VectorContext {
   /**
    * @private
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {Array.<*>} instruction Instruction.
+   * @param {Array<*>} instruction Instruction.
    */
   setStrokeStyle_(context, instruction) {
     context.strokeStyle = /** @type {module:ol/colorlike~ColorLike} */ (instruction[1]);
@@ -486,7 +486,7 @@ class CanvasReplay extends VectorContext {
     context.miterLimit = /** @type {number} */ (instruction[5]);
     if (CANVAS_LINE_DASH) {
       context.lineDashOffset = /** @type {number} */ (instruction[7]);
-      context.setLineDash(/** @type {Array.<number>} */ (instruction[6]));
+      context.setLineDash(/** @type {Array<number>} */ (instruction[6]));
     }
   }
 
@@ -532,7 +532,7 @@ class CanvasReplay extends VectorContext {
    * @param {module:ol/transform~Transform} transform Transform.
    * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
    *     to skip.
-   * @param {Array.<*>} instructions Instructions array.
+   * @param {Array<*>} instructions Instructions array.
    * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
    * @param {module:ol/extent~Extent=} opt_hitExtent Only check features that intersect this
    *     extent.
@@ -547,7 +547,7 @@ class CanvasReplay extends VectorContext {
     featureCallback,
     opt_hitExtent
   ) {
-    /** @type {Array.<number>} */
+    /** @type {Array<number>} */
     let pixelCoordinates;
     if (this.pixelCoordinates_ && equals(transform, this.renderedTransform_)) {
       pixelCoordinates = this.pixelCoordinates_;
@@ -677,7 +677,7 @@ class CanvasReplay extends VectorContext {
 
           let padding, backgroundFill, backgroundStroke;
           if (instruction.length > 16) {
-            padding = /** @type {Array.<number>} */ (instruction[16]);
+            padding = /** @type {Array<number>} */ (instruction[16]);
             backgroundFill = /** @type {boolean} */ (instruction[17]);
             backgroundStroke = /** @type {boolean} */ (instruction[18]);
           } else {
@@ -693,8 +693,8 @@ class CanvasReplay extends VectorContext {
               pixelCoordinates[d], pixelCoordinates[d + 1], image, anchorX, anchorY,
               declutterGroup, height, opacity, originX, originY, rotation, scale,
               snapToPixel, width, padding,
-              backgroundFill ? /** @type {Array.<*>} */ (lastFillInstruction) : null,
-              backgroundStroke ? /** @type {Array.<*>} */ (lastStrokeInstruction) : null);
+              backgroundFill ? /** @type {Array<*>} */ (lastFillInstruction) : null,
+              backgroundStroke ? /** @type {Array<*>} */ (lastStrokeInstruction) : null);
           }
           this.renderDeclutter_(declutterGroup, feature);
           ++i;
@@ -822,7 +822,7 @@ class CanvasReplay extends VectorContext {
             context.stroke();
             pendingStroke = 0;
           }
-          this.setStrokeStyle_(context, /** @type {Array.<*>} */ (instruction));
+          this.setStrokeStyle_(context, /** @type {Array<*>} */ (instruction));
           ++i;
           break;
         case CanvasInstruction.STROKE:
@@ -966,7 +966,7 @@ class CanvasReplay extends VectorContext {
   /**
    * @param {module:ol/render/canvas~FillStrokeState} state State.
    * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry Geometry.
-   * @return {Array.<*>} Fill instruction.
+   * @return {Array<*>} Fill instruction.
    */
   createFill(state, geometry) {
     const fillStyle = state.fillStyle;
@@ -987,7 +987,7 @@ class CanvasReplay extends VectorContext {
 
   /**
    * @param {module:ol/render/canvas~FillStrokeState} state State.
-   * @return {Array.<*>} Stroke instruction.
+   * @return {Array<*>} Stroke instruction.
    */
   createStroke(state) {
     return [
@@ -1000,7 +1000,7 @@ class CanvasReplay extends VectorContext {
 
   /**
    * @param {module:ol/render/canvas~FillStrokeState} state State.
-   * @param {function(this:module:ol/render/canvas/Replay, module:ol/render/canvas~FillStrokeState, (module:ol/geom/Geometry|module:ol/render/Feature)):Array.<*>} createFill Create fill.
+   * @param {function(this:module:ol/render/canvas/Replay, module:ol/render/canvas~FillStrokeState, (module:ol/geom/Geometry|module:ol/render/Feature)):Array<*>} createFill Create fill.
    * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry Geometry.
    */
   updateFillStyle(state, createFill, geometry) {

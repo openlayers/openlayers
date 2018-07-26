@@ -5,7 +5,7 @@ import {linearRing as linearRingArea} from '../flat/area.js';
 
 /**
  * Check if the linestring is a boundary.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.

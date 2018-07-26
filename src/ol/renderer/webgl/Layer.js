@@ -72,7 +72,7 @@ class WebGLLayerRenderer extends LayerRenderer {
     this.projectionMatrix = createTransform();
 
     /**
-     * @type {Array.<number>}
+     * @type {Array<number>}
      * @private
      */
     this.tmpMat4_ = create();

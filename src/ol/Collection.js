@@ -62,7 +62,7 @@ export class CollectionEvent extends Event {
 class Collection extends BaseObject {
 
   /**
-   * @param {Array.<T>=} opt_array Array.
+   * @param {Array<T>=} opt_array Array.
    * @param {module:ol/Collection~Options=} opt_options Collection options.
    */
   constructor(opt_array, opt_options) {
@@ -79,7 +79,7 @@ class Collection extends BaseObject {
 
     /**
      * @private
-     * @type {!Array.<T>}
+     * @type {!Array<T>}
      */
     this.array_ = opt_array ? opt_array : [];
 
@@ -106,7 +106,7 @@ class Collection extends BaseObject {
   /**
    * Add elements to the collection.  This pushes each item in the provided array
    * to the end of the collection.
-   * @param {!Array.<T>} arr Array.
+   * @param {!Array<T>} arr Array.
    * @return {module:ol/Collection.<T>} This collection.
    * @api
    */
@@ -119,7 +119,7 @@ class Collection extends BaseObject {
 
   /**
    * Iterate over each element, calling the provided callback.
-   * @param {function(T, number, Array.<T>): *} f The function to call
+   * @param {function(T, number, Array<T>): *} f The function to call
    *     for every element. This function takes 3 arguments (the element, the
    *     index and the array). The return value is ignored.
    * @api
@@ -136,7 +136,7 @@ class Collection extends BaseObject {
    * is mutated, no events will be dispatched by the collection, and the
    * collection's "length" property won't be in sync with the actual length
    * of the array.
-   * @return {!Array.<T>} Array.
+   * @return {!Array<T>} Array.
    * @api
    */
   getArray() {

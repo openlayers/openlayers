@@ -40,7 +40,7 @@ const TranslateEventType = {
  * @typedef {Object} Options
  * @property {module:ol/Collection.<module:ol/Feature>} [features] Only features contained in this collection will be able to be translated. If
  * not specified, all features on the map will be able to be translated.
- * @property {Array.<module:ol/layer/Layer>|function(module:ol/layer/Layer): boolean} [layers] A list of layers from which features should be
+ * @property {Array<module:ol/layer/Layer>|function(module:ol/layer/Layer): boolean} [layers] A list of layers from which features should be
  * translated. Alternatively, a filter function can be provided. The
  * function will be called for each layer in the map and should return
  * `true` for layers that you want to be translatable. If the option is

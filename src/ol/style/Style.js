@@ -100,7 +100,7 @@ import Stroke from '../style/Stroke.js';
  * vector layer can be styled.
  *
  * @typedef {function((module:ol/Feature|module:ol/render/Feature), number):
- *     (module:ol/style/Style|Array.<module:ol/style/Style>)} StyleFunction
+ *     (module:ol/style/Style|Array<module:ol/style/Style>)} StyleFunction
  */
 
 
@@ -119,7 +119,7 @@ import Stroke from '../style/Stroke.js';
  * 1. The pixel coordinates of the geometry in GeoJSON notation.
  * 2. The {@link module:ol/render~State} of the layer renderer.
  *
- * @typedef {function((module:ol/coordinate~Coordinate|Array<module:ol/coordinate~Coordinate>|Array.<Array.<module:ol/coordinate~Coordinate>>),module:ol/render~State)}
+ * @typedef {function((module:ol/coordinate~Coordinate|Array<module:ol/coordinate~Coordinate>|Array<Array<module:ol/coordinate~Coordinate>>),module:ol/render~State)}
  * RenderFunction
  */
 
@@ -394,7 +394,7 @@ class Style {
  * Convert the provided object into a style function.  Functions passed through
  * unchanged.  Arrays of module:ol/style/Style or single style objects wrapped in a
  * new style function.
- * @param {module:ol/style/Style~StyleFunction|Array.<module:ol/style/Style>|module:ol/style/Style} obj
+ * @param {module:ol/style/Style~StyleFunction|Array<module:ol/style/Style>|module:ol/style/Style} obj
  *     A style function, a single style, or an array of styles.
  * @return {module:ol/style/Style~StyleFunction} A style function.
  */
@@ -405,7 +405,7 @@ export function toFunction(obj) {
     styleFunction = obj;
   } else {
     /**
-     * @type {Array.<module:ol/style/Style>}
+     * @type {Array<module:ol/style/Style>}
      */
     let styles;
     if (Array.isArray(obj)) {
@@ -424,7 +424,7 @@ export function toFunction(obj) {
 
 
 /**
- * @type {Array.<module:ol/style/Style>}
+ * @type {Array<module:ol/style/Style>}
  */
 let defaultStyles = null;
 
@@ -432,7 +432,7 @@ let defaultStyles = null;
 /**
  * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
  * @param {number} resolution Resolution.
- * @return {Array.<module:ol/style/Style>} Style.
+ * @return {Array<module:ol/style/Style>} Style.
  */
 export function createDefaultStyle(feature, resolution) {
   // We don't use an immediately-invoked function
@@ -466,10 +466,10 @@ export function createDefaultStyle(feature, resolution) {
 
 /**
  * Default styles for editing features.
- * @return {Object.<module:ol/geom/GeometryType, Array.<module:ol/style/Style>>} Styles
+ * @return {Object.<module:ol/geom/GeometryType, Array<module:ol/style/Style>>} Styles
  */
 export function createEditingStyle() {
-  /** @type {Object.<module:ol/geom/GeometryType, Array.<module:ol/style/Style>>} */
+  /** @type {Object.<module:ol/geom/GeometryType, Array<module:ol/style/Style>>} */
   const styles = {};
   const white = [255, 255, 255, 1];
   const blue = [0, 153, 255, 1];

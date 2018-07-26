@@ -75,7 +75,7 @@ class VectorImageTile extends Tile {
 
     /**
      * Keys of source tiles used by this tile. Use with {@link #getTile}.
-     * @type {Array.<string>}
+     * @type {Array<string>}
      */
     this.tileKeys = [];
 
@@ -95,12 +95,12 @@ class VectorImageTile extends Tile {
     this.wrappedTileCoord = urlTileCoord;
 
     /**
-     * @type {Array.<module:ol/events~EventsKey>}
+     * @type {Array<module:ol/events~EventsKey>}
      */
     this.loadListenerKeys_ = [];
 
     /**
-     * @type {Array.<module:ol/events~EventsKey>}
+     * @type {Array<module:ol/events~EventsKey>}
      */
     this.sourceTileListenerKeys_ = [];
 

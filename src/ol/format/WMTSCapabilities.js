@@ -12,7 +12,7 @@ import {pushParseAndPop, makeStructureNS,
 
 /**
  * @const
- * @type {Array.<null|string>}
+ * @type {Array<null|string>}
  */
 const NAMESPACE_URIS = [
   null,
@@ -22,7 +22,7 @@ const NAMESPACE_URIS = [
 
 /**
  * @const
- * @type {Array.<null|string>}
+ * @type {Array<null|string>}
  */
 const OWS_NAMESPACE_URIS = [
   null,
@@ -219,7 +219,7 @@ const TM_PARSERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Attribution object.
  */
 function readContents(node, objectStack) {
@@ -229,7 +229,7 @@ function readContents(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Layers object.
  */
 function readLayer(node, objectStack) {
@@ -239,7 +239,7 @@ function readLayer(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Tile Matrix Set object.
  */
 function readTileMatrixSet(node, objectStack) {
@@ -249,7 +249,7 @@ function readTileMatrixSet(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Style object.
  */
 function readStyle(node, objectStack) {
@@ -266,7 +266,7 @@ function readStyle(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Tile Matrix Set Link object.
  */
 function readTileMatrixSetLink(node, objectStack) {
@@ -276,7 +276,7 @@ function readTileMatrixSetLink(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Dimension object.
  */
 function readDimensions(node, objectStack) {
@@ -286,7 +286,7 @@ function readDimensions(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Resource URL object.
  */
 function readResourceUrl(node, objectStack) {
@@ -309,7 +309,7 @@ function readResourceUrl(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} WGS84 BBox object.
  */
 function readWgs84BoundingBox(node, objectStack) {
@@ -323,7 +323,7 @@ function readWgs84BoundingBox(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Legend object.
  */
 function readLegendUrl(node, objectStack) {
@@ -336,7 +336,7 @@ function readLegendUrl(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Coordinates object.
  */
 function readCoordinates(node, objectStack) {
@@ -355,7 +355,7 @@ function readCoordinates(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} TileMatrix object.
  */
 function readTileMatrix(node, objectStack) {
@@ -365,7 +365,7 @@ function readTileMatrix(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} TileMatrixSetLimits Object.
  */
 function readTileMatrixLimitsList(node, objectStack) {
@@ -375,7 +375,7 @@ function readTileMatrixLimitsList(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} TileMatrixLimits Array.
  */
 function readTileMatrixLimits(node, objectStack) {

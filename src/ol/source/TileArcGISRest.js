@@ -46,7 +46,7 @@ import {appendParams} from '../uri.js';
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.  To disable the opacity
  * transition, pass `transition: 0`.
- * @property {Array.<string>} urls ArcGIS Rest service urls. Use this instead of `url` when the ArcGIS
+ * @property {Array<string>} urls ArcGIS Rest service urls. Use this instead of `url` when the ArcGIS
  * Service supports multiple urls for export requests.
  */
 

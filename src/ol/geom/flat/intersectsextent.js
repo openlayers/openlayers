@@ -7,7 +7,7 @@ import {forEach as forEachSegment} from '../flat/segments.js';
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
@@ -45,9 +45,9 @@ export function intersectsLineString(flatCoordinates, offset, end, stride, exten
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<number>} ends Ends.
+ * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
  * @param {module:ol/extent~Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
@@ -65,7 +65,7 @@ export function intersectsLineStringArray(flatCoordinates, offset, ends, stride,
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
@@ -94,9 +94,9 @@ export function intersectsLinearRing(flatCoordinates, offset, end, stride, exten
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<number>} ends Ends.
+ * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
  * @param {module:ol/extent~Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
@@ -119,9 +119,9 @@ export function intersectsLinearRingArray(flatCoordinates, offset, ends, stride,
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<Array.<number>>} endss Endss.
+ * @param {Array<Array<number>>} endss Endss.
  * @param {number} stride Stride.
  * @param {module:ol/extent~Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.

@@ -42,14 +42,14 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {module:ol/coordinate~Coordinate} focus
  * @property {number} index
  * @property {Object.<number, module:ol/layer/Layer~State>} layerStates
- * @property {Array.<module:ol/layer/Layer~State>} layerStatesArray
+ * @property {Array<module:ol/layer/Layer~State>} layerStatesArray
  * @property {module:ol/transform~Transform} pixelToCoordinateTransform
- * @property {Array.<module:ol/PluggableMap~PostRenderFunction>} postRenderFunctions
+ * @property {Array<module:ol/PluggableMap~PostRenderFunction>} postRenderFunctions
  * @property {module:ol/size~Size} size
  * @property {!Object.<string, boolean>} skippedFeatureUids
  * @property {module:ol/TileQueue} tileQueue
  * @property {Object.<string, Object.<string, module:ol/TileRange>>} usedTiles
- * @property {Array.<number>} viewHints
+ * @property {Array<number>} viewHints
  * @property {!Object.<string, Object.<string, boolean>>} wantedTiles
  */
 
@@ -85,12 +85,12 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 /**
  * Object literal with config options for the map.
  * @typedef {Object} MapOptions
- * @property {module:ol/Collection.<module:ol/control/Control>|Array.<module:ol/control/Control>} [controls]
+ * @property {module:ol/Collection.<module:ol/control/Control>|Array<module:ol/control/Control>} [controls]
  * Controls initially added to the map. If not specified,
  * {@link module:ol/control/util~defaults} is used.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
  * physical pixels and device-independent pixels (dips) on the device.
- * @property {module:ol/Collection.<module:ol/interaction/Interaction>|Array.<module:ol/interaction/Interaction>} [interactions]
+ * @property {module:ol/Collection.<module:ol/interaction/Interaction>|Array<module:ol/interaction/Interaction>} [interactions]
  * Interactions that are initially added to the map. If not specified,
  * {@link module:ol/interaction~defaults} is used.
  * @property {HTMLElement|Document|string} [keyboardEventTarget] The element to
@@ -101,7 +101,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * map target (i.e. the user-provided div for the map). If this is not
  * `document`, the target element needs to be focused for key events to be
  * emitted, requiring that the target element has a `tabindex` attribute.
- * @property {Array.<module:ol/layer/Base>|module:ol/Collection.<module:ol/layer/Base>} [layers]
+ * @property {Array<module:ol/layer/Base>|module:ol/Collection.<module:ol/layer/Base>} [layers]
  * Layers. If this is not defined, a map with no layers will be rendered. Note
  * that layers are rendered in the order supplied, so if you want, for example,
  * a vector layer to appear on top of a tile layer, it must come after the tile
@@ -118,7 +118,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {number} [moveTolerance=1] The minimum distance in pixels the
  * cursor must move to be detected as a map move event instead of a click.
  * Increasing this value can make it easier to click on the map.
- * @property {module:ol/Collection.<module:ol/Overlay>|Array.<module:ol/Overlay>} [overlays]
+ * @property {module:ol/Collection.<module:ol/Overlay>|Array<module:ol/Overlay>} [overlays]
  * Overlays initially added to the map. By default, no overlays are added.
  * @property {HTMLElement|string} [target] The container for the map, either the
  * element itself or the `id` of the element. If not specified at construction
@@ -236,7 +236,7 @@ class PluggableMap extends BaseObject {
 
     /**
      * @private
-     * @type {Array.<module:ol/events~EventsKey>}
+     * @type {Array<module:ol/events~EventsKey>}
      */
     this.layerGroupPropertyListenerKeys_ = null;
 
@@ -301,7 +301,7 @@ class PluggableMap extends BaseObject {
 
     /**
      * @private
-     * @type {Array.<module:ol/events~EventsKey>}
+     * @type {Array<module:ol/events~EventsKey>}
      */
     this.keyHandlerKeys_ = null;
 
@@ -354,7 +354,7 @@ class PluggableMap extends BaseObject {
 
     /**
      * @private
-     * @type {!Array.<module:ol/PluggableMap~PostRenderFunction>}
+     * @type {!Array<module:ol/PluggableMap~PostRenderFunction>}
      */
     this.postRenderFunctions_ = [];
 
@@ -577,7 +577,7 @@ class PluggableMap extends BaseObject {
    * Get all features that intersect a pixel on the viewport.
    * @param {module:ol/pixel~Pixel} pixel Pixel.
    * @param {module:ol/PluggableMap~AtPixelOptions=} opt_options Optional options.
-   * @return {Array.<module:ol/Feature|module:ol/render/Feature>} The detected features or
+   * @return {Array<module:ol/Feature|module:ol/render/Feature>} The detected features or
    * `null` if none were found.
    * @api
    */

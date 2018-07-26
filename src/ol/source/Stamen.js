@@ -8,7 +8,7 @@ import XYZ from '../source/XYZ.js';
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array<string>}
  */
 const ATTRIBUTIONS = [
   'Map tiles by <a href="https://stamen.com/">Stamen Design</a>, ' +

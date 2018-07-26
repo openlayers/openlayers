@@ -31,7 +31,7 @@ export const Units = {
 
 /**
  * @const
- * @type {Array.<number>}
+ * @type {Array<number>}
  */
 const LEADING_DIGITS = [1, 2, 5];
 

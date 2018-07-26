@@ -5,7 +5,7 @@ import {lerp} from '../../math.js';
 
 
 /**
- * @param {Array.<number>} flatCoordinates Path to put text on.
+ * @param {Array<number>} flatCoordinates Path to put text on.
  * @param {number} offset Start offset of the `flatCoordinates`.
  * @param {number} end End offset of the `flatCoordinates`.
  * @param {number} stride Stride.
@@ -14,7 +14,7 @@ import {lerp} from '../../math.js';
  * width of the character passed as 1st argument.
  * @param {number} startM m along the path where the text starts.
  * @param {number} maxAngle Max angle between adjacent chars in radians.
- * @return {Array.<Array.<*>>} The result array of null if `maxAngle` was
+ * @return {Array<Array<*>>} The result array of null if `maxAngle` was
  * exceeded. Entries of the array are x, y, anchorX, angle, chunk.
  */
 export function drawTextOnPath(

@@ -51,7 +51,7 @@ class VectorTile extends Tile {
 
     /**
      * @private
-     * @type {Array.<module:ol/Feature>}
+     * @type {Array<module:ol/Feature>}
      */
     this.features_ = null;
 
@@ -120,7 +120,7 @@ class VectorTile extends Tile {
   /**
    * Get the features for this tile. Geometries will be in the projection returned
    * by {@link module:ol/VectorTile~VectorTile#getProjection}.
-   * @return {Array.<module:ol/Feature|module:ol/render/Feature>} Features.
+   * @return {Array<module:ol/Feature|module:ol/render/Feature>} Features.
    * @api
    */
   getFeatures() {
@@ -166,7 +166,7 @@ class VectorTile extends Tile {
 
   /**
    * Handler for successful tile load.
-   * @param {Array.<module:ol/Feature>} features The loaded features.
+   * @param {Array<module:ol/Feature>} features The loaded features.
    * @param {module:ol/proj/Projection} dataProjection Data projection.
    * @param {module:ol/extent~Extent} extent Extent.
    */
@@ -202,7 +202,7 @@ class VectorTile extends Tile {
   /**
    * Function for use in an {@link module:ol/source/VectorTile~VectorTile}'s `tileLoadFunction`.
    * Sets the features for the tile.
-   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {Array<module:ol/Feature>} features Features.
    * @api
    */
   setFeatures(features) {

@@ -37,7 +37,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`,
  * and `{z}` placeholders. A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`,
  * may be used instead of defining each one separately in the `urls` option.
- * @property {Array.<string>} [urls] An array of URL templates.
+ * @property {Array<string>} [urls] An array of URL templates.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.

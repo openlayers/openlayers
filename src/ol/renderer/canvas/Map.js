@@ -15,7 +15,7 @@ import SourceState from '../../source/State.js';
 
 
 /**
- * @type {Array.<module:ol/renderer/Layer>}
+ * @type {Array<module:ol/renderer/Layer>}
  */
 export const layerRendererConstructors = [];
 

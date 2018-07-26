@@ -24,7 +24,7 @@ import Style from '../style/Style.js';
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {Array.<string>} [gradient=['#00f', '#0ff', '#0f0', '#ff0', '#f00']] The color gradient
+ * @property {Array<string>} [gradient=['#00f', '#0ff', '#0f0', '#ff0', '#f00']] The color gradient
  * of the heatmap, specified as an array of CSS color strings.
  * @property {number} [radius=8] Radius size in pixels.
  * @property {number} [blur=15] Blur size in pixels.
@@ -54,7 +54,7 @@ const Property = {
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array<string>}
  */
 const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
 
@@ -105,7 +105,7 @@ class Heatmap extends VectorLayer {
 
     /**
      * @private
-     * @type {Array.<Array.<module:ol/style/Style>>}
+     * @type {Array<Array<module:ol/style/Style>>}
      */
     this.styleCache_ = null;
 
@@ -197,12 +197,12 @@ class Heatmap extends VectorLayer {
 
   /**
    * Return the gradient colors as array of strings.
-   * @return {Array.<string>} Colors.
+   * @return {Array<string>} Colors.
    * @api
    * @observable
    */
   getGradient() {
-    return /** @type {Array.<string>} */ (this.get(Property.GRADIENT));
+    return /** @type {Array<string>} */ (this.get(Property.GRADIENT));
   }
 
   /**
@@ -263,7 +263,7 @@ class Heatmap extends VectorLayer {
 
   /**
    * Set the gradient colors as array of strings.
-   * @param {Array.<string>} colors Gradient.
+   * @param {Array<string>} colors Gradient.
    * @api
    * @observable
    */
@@ -284,7 +284,7 @@ class Heatmap extends VectorLayer {
 
 
 /**
- * @param {Array.<string>} colors A list of colored.
+ * @param {Array<string>} colors A list of colored.
  * @return {Uint8ClampedArray} An array.
  */
 function createGradient(colors) {

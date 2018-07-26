@@ -7,7 +7,7 @@
  * Strategy function for loading all features with a single request.
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} resolution Resolution.
- * @return {Array.<module:ol/extent~Extent>} Extents.
+ * @return {Array<module:ol/extent~Extent>} Extents.
  * @api
  */
 export function all(extent, resolution) {
@@ -20,7 +20,7 @@ export function all(extent, resolution) {
  * resolution.
  * @param {module:ol/extent~Extent} extent Extent.
  * @param {number} resolution Resolution.
- * @return {Array.<module:ol/extent~Extent>} Extents.
+ * @return {Array<module:ol/extent~Extent>} Extents.
  * @api
  */
 export function bbox(extent, resolution) {
@@ -31,7 +31,7 @@ export function bbox(extent, resolution) {
 /**
  * Creates a strategy function for loading features based on a tile grid.
  * @param {module:ol/tilegrid/TileGrid} tileGrid Tile grid.
- * @return {function(module:ol/extent~Extent, number): Array.<module:ol/extent~Extent>} Loading strategy.
+ * @return {function(module:ol/extent~Extent, number): Array<module:ol/extent~Extent>} Loading strategy.
  * @api
  */
 export function tile(tileGrid) {
@@ -39,12 +39,12 @@ export function tile(tileGrid) {
     /**
      * @param {module:ol/extent~Extent} extent Extent.
      * @param {number} resolution Resolution.
-     * @return {Array.<module:ol/extent~Extent>} Extents.
+     * @return {Array<module:ol/extent~Extent>} Extents.
      */
     function(extent, resolution) {
       const z = tileGrid.getZForResolution(resolution);
       const tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
-      /** @type {Array.<module:ol/extent~Extent>} */
+      /** @type {Array<module:ol/extent~Extent>} */
       const extents = [];
       /** @type {module:ol/tilecoord~TileCoord} */
       const tileCoord = [z, 0, 0];

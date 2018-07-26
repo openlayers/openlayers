@@ -55,19 +55,19 @@ class WebGLPolygonReplay extends WebGLReplay {
 
     /**
      * @private
-     * @type {Array.<Array.<number>>}
+     * @type {Array<Array<number>>}
      */
     this.styles_ = [];
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.styleIndices_ = [];
 
     /**
      * @private
-     * @type {{fillColor: (Array.<number>|null),
+     * @type {{fillColor: (Array<number>|null),
      *         changed: boolean}|null}
      */
     this.state_ = {
@@ -79,8 +79,8 @@ class WebGLPolygonReplay extends WebGLReplay {
 
   /**
    * Draw one polygon.
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
-   * @param {Array.<Array.<number>>} holeFlatCoordinates Hole flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {Array<Array<number>>} holeFlatCoordinates Hole flat coordinates.
    * @param {number} stride Stride.
    * @private
    */
@@ -141,7 +141,7 @@ class WebGLPolygonReplay extends WebGLReplay {
   /**
    * Inserts flat coordinates in a linked list and adds them to the vertex buffer.
    * @private
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} stride Stride.
    * @param {module:ol/structs/LinkedList} list Linked list.
    * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
@@ -195,7 +195,7 @@ class WebGLPolygonReplay extends WebGLReplay {
    * Returns the rightmost coordinates of a polygon on the X axis.
    * @private
    * @param {module:ol/structs/LinkedList} list Polygons ring.
-   * @return {Array.<number>} Max X coordinates.
+   * @return {Array<number>} Max X coordinates.
    */
   getMaxCoords_(list) {
     const start = list.firstItem();
@@ -643,7 +643,7 @@ class WebGLPolygonReplay extends WebGLReplay {
    * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p2 Third point.
    * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
    * @param {boolean=} opt_reflex Only include reflex points.
-   * @return {Array.<module:ol/render/webgl/PolygonReplay~PolygonVertex>} Points in the triangle.
+   * @return {Array<module:ol/render/webgl/PolygonReplay~PolygonVertex>} Points in the triangle.
    */
   getPointsInTriangle_(p0, p1, p2, rtree, opt_reflex) {
     const result = [];
@@ -670,7 +670,7 @@ class WebGLPolygonReplay extends WebGLReplay {
    * @param {module:ol/render/webgl/PolygonReplay~PolygonSegment} segment Segment.
    * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
    * @param {boolean=} opt_touch Touching segments should be considered an intersection.
-   * @return {Array.<module:ol/render/webgl/PolygonReplay~PolygonSegment>} Intersecting segments.
+   * @return {Array<module:ol/render/webgl/PolygonReplay~PolygonSegment>} Intersecting segments.
    */
   getIntersections_(segment, rtree, opt_touch) {
     const p0 = segment.p0;
@@ -698,7 +698,7 @@ class WebGLPolygonReplay extends WebGLReplay {
    * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p2 Third point.
    * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p3 Fourth point.
    * @param {boolean=} opt_touch Touching segments should be considered an intersection.
-   * @return {Array.<number>|undefined} Intersection coordinates.
+   * @return {Array<number>|undefined} Intersection coordinates.
    */
   calculateIntersection_(p0, p1, p2, p3, opt_touch) {
     const denom = (p3.y - p2.y) * (p1.x - p0.x) - (p3.x - p2.x) * (p1.y - p0.y);
@@ -1005,7 +1005,7 @@ class WebGLPolygonReplay extends WebGLReplay {
   /**
    * @private
    * @param {WebGLRenderingContext} gl gl.
-   * @param {Array.<number>} color Color.
+   * @param {Array<number>} color Color.
    */
   setFillStyle_(gl, color) {
     gl.uniform4fv(this.defaultLocations_.u_color, color);

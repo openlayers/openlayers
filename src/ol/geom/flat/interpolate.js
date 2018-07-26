@@ -6,13 +6,13 @@ import {lerp} from '../../math.js';
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {number} fraction Fraction.
- * @param {Array.<number>=} opt_dest Destination.
- * @return {Array.<number>} Destination.
+ * @param {Array<number>=} opt_dest Destination.
+ * @return {Array<number>} Destination.
  */
 export function interpolatePoint(flatCoordinates, offset, end, stride, fraction, opt_dest) {
   let pointX = NaN;
@@ -65,7 +65,7 @@ export function interpolatePoint(flatCoordinates, offset, end, stride, fraction,
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
@@ -126,9 +126,9 @@ export function lineStringCoordinateAtM(flatCoordinates, offset, end, stride, m,
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<number>} ends Ends.
+ * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
  * @param {number} m M.
  * @param {boolean} extrapolate Extrapolate.

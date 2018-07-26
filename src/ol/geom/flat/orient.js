@@ -5,7 +5,7 @@ import {coordinates as reverseCoordinates} from '../flat/reverse.js';
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
@@ -33,9 +33,9 @@ export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
  * is tested (first ring must be clockwise, remaining rings counter-clockwise).
  * To test for right-hand orientation, use the `opt_right` argument.
  *
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<number>} ends Array of end indexes.
+ * @param {Array<number>} ends Array of end indexes.
  * @param {number} stride Stride.
  * @param {boolean=} opt_right Test for right-hand orientation
  *     (counter-clockwise exterior ring and clockwise interior rings).
@@ -67,9 +67,9 @@ export function linearRingIsOriented(flatCoordinates, offset, ends, stride, opt_
  * is tested (first ring must be clockwise, remaining rings counter-clockwise).
  * To test for right-hand orientation, use the `opt_right` argument.
  *
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<Array.<number>>} endss Array of array of end indexes.
+ * @param {Array<Array<number>>} endss Array of array of end indexes.
  * @param {number} stride Stride.
  * @param {boolean=} opt_right Test for right-hand orientation
  *     (counter-clockwise exterior ring and clockwise interior rings).
@@ -92,9 +92,9 @@ export function linearRingsAreOriented(flatCoordinates, offset, endss, stride, o
  * counter-clockwise for interior rings).  To orient according to the
  * right-hand rule, use the `opt_right` argument.
  *
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<number>} ends Ends.
+ * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
  * @param {boolean=} opt_right Follow the right-hand rule for orientation.
  * @return {number} End.
@@ -123,9 +123,9 @@ export function orientLinearRings(flatCoordinates, offset, ends, stride, opt_rig
  * counter-clockwise for interior rings).  To orient according to the
  * right-hand rule, use the `opt_right` argument.
  *
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<Array.<number>>} endss Array of array of end indexes.
+ * @param {Array<Array<number>>} endss Array of array of end indexes.
  * @param {number} stride Stride.
  * @param {boolean=} opt_right Follow the right-hand rule for orientation.
  * @return {number} End.

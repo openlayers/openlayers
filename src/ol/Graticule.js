@@ -27,7 +27,7 @@ const DEFAULT_STROKE_STYLE = new Stroke({
 
 /**
  * TODO can be configurable
- * @type {Array.<number>}
+ * @type {Array<number>}
  * @private
  */
 const INTERVALS = [
@@ -200,13 +200,13 @@ class Graticule {
     this.maxLines_ = options.maxLines !== undefined ? options.maxLines : 100;
 
     /**
-     * @type {Array.<module:ol/geom/LineString>}
+     * @type {Array<module:ol/geom/LineString>}
      * @private
      */
     this.meridians_ = [];
 
     /**
-     * @type {Array.<module:ol/geom/LineString>}
+     * @type {Array<module:ol/geom/LineString>}
      * @private
      */
     this.parallels_ = [];
@@ -236,13 +236,13 @@ class Graticule {
     this.projectionCenterLonLat_ = null;
 
     /**
-     * @type {Array.<module:ol/Graticule~GraticuleLabelDataType>}
+     * @type {Array<module:ol/Graticule~GraticuleLabelDataType>}
      * @private
      */
     this.meridiansLabels_ = null;
 
     /**
-     * @type {Array.<module:ol/Graticule~GraticuleLabelDataType>}
+     * @type {Array<module:ol/Graticule~GraticuleLabelDataType>}
      * @private
      */
     this.parallelsLabels_ = null;
@@ -526,9 +526,9 @@ class Graticule {
     const centerLat = this.projectionCenterLonLat_[1];
     let interval = -1;
     const target = Math.pow(this.targetSize_ * resolution, 2);
-    /** @type {Array.<number>} **/
+    /** @type {Array<number>} **/
     const p1 = [];
-    /** @type {Array.<number>} **/
+    /** @type {Array<number>} **/
     const p2 = [];
     for (let i = 0, ii = INTERVALS.length; i < ii; ++i) {
       const delta = INTERVALS[i] / 2;
@@ -579,7 +579,7 @@ class Graticule {
 
   /**
    * Get the list of meridians.  Meridians are lines of equal longitude.
-   * @return {Array.<module:ol/geom/LineString>} The meridians.
+   * @return {Array<module:ol/geom/LineString>} The meridians.
    * @api
    */
   getMeridians() {
@@ -609,7 +609,7 @@ class Graticule {
 
   /**
    * Get the list of parallels.  Parallels are lines of equal latitude.
-   * @return {Array.<module:ol/geom/LineString>} The parallels.
+   * @return {Array<module:ol/geom/LineString>} The parallels.
    * @api
    */
   getParallels() {

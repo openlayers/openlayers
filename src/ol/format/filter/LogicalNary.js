@@ -22,7 +22,7 @@ class LogicalNary extends Filter {
     super(tagName);
 
     /**
-     * @type {Array.<module:ol/format/filter/Filter>}
+     * @type {Array<module:ol/format/filter/Filter>}
      */
     this.conditions = Array.prototype.slice.call(arguments, 1);
     assert(this.conditions.length >= 2, 57); // At least 2 conditions are required.

@@ -66,13 +66,13 @@ class WebGLReplay extends VectorContext {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.tmpMat4_ = create();
 
     /**
      * @protected
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.indices = [];
 
@@ -85,20 +85,20 @@ class WebGLReplay extends VectorContext {
     /**
      * Start index per feature (the index).
      * @protected
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.startIndices = [];
 
     /**
      * Start index per feature (the feature).
      * @protected
-     * @type {Array.<module:ol/Feature|module:ol/render/Feature>}
+     * @type {Array<module:ol/Feature|module:ol/render/Feature>}
      */
     this.startIndicesFeature = [];
 
     /**
      * @protected
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.vertices = [];
 

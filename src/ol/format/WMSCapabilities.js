@@ -10,7 +10,7 @@ import {makeArrayPusher, makeObjectPropertyPusher, makeObjectPropertySetter,
 
 /**
  * @const
- * @type {Array.<null|string>}
+ * @type {Array<null|string>}
  */
 const NAMESPACE_URIS = [
   null,
@@ -287,7 +287,7 @@ const KEYWORDLIST_PARSERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Attribution object.
  */
 function readAttribution(node, objectStack) {
@@ -297,7 +297,7 @@ function readAttribution(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object} Bounding box object.
  */
 function readBoundingBox(node, objectStack) {
@@ -323,7 +323,7 @@ function readBoundingBox(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {module:ol/extent~Extent|undefined} Bounding box object.
  */
 function readEXGeographicBoundingBox(node, objectStack) {
@@ -355,7 +355,7 @@ function readEXGeographicBoundingBox(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Capability object.
  */
 function readCapability(node, objectStack) {
@@ -365,7 +365,7 @@ function readCapability(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Service object.
  */
 function readService(node, objectStack) {
@@ -375,7 +375,7 @@ function readService(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Contact information object.
  */
 function readContactInformation(node, objectStack) {
@@ -385,7 +385,7 @@ function readContactInformation(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Contact person object.
  */
 function readContactPersonPrimary(node, objectStack) {
@@ -395,7 +395,7 @@ function readContactPersonPrimary(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Contact address object.
  */
 function readContactAddress(node, objectStack) {
@@ -405,8 +405,8 @@ function readContactAddress(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {Array.<string>|undefined} Format array.
+ * @param {Array<*>} objectStack Object stack.
+ * @return {Array<string>|undefined} Format array.
  */
 function readException(node, objectStack) {
   return pushParseAndPop([], EXCEPTION_PARSERS, node, objectStack);
@@ -415,7 +415,7 @@ function readException(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Layer object.
  */
 function readCapabilityLayer(node, objectStack) {
@@ -425,7 +425,7 @@ function readCapabilityLayer(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Layer object.
  */
 function readLayer(node, objectStack) {
@@ -497,7 +497,7 @@ function readLayer(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object} Dimension object.
  */
 function readDimension(node, objectStack) {
@@ -517,7 +517,7 @@ function readDimension(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Online resource object.
  */
 function readFormatOnlineresource(node, objectStack) {
@@ -527,7 +527,7 @@ function readFormatOnlineresource(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Request object.
  */
 function readRequest(node, objectStack) {
@@ -537,7 +537,7 @@ function readRequest(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} DCP type object.
  */
 function readDCPType(node, objectStack) {
@@ -547,7 +547,7 @@ function readDCPType(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} HTTP object.
  */
 function readHTTP(node, objectStack) {
@@ -557,7 +557,7 @@ function readHTTP(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Operation type object.
  */
 function readOperationType(node, objectStack) {
@@ -567,7 +567,7 @@ function readOperationType(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Online resource object.
  */
 function readSizedFormatOnlineresource(node, objectStack) {
@@ -586,7 +586,7 @@ function readSizedFormatOnlineresource(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Authority URL object.
  */
 function readAuthorityURL(node, objectStack) {
@@ -601,7 +601,7 @@ function readAuthorityURL(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Metadata URL object.
  */
 function readMetadataURL(node, objectStack) {
@@ -616,7 +616,7 @@ function readMetadataURL(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Style object.
  */
 function readStyle(node, objectStack) {
@@ -626,8 +626,8 @@ function readStyle(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {Array.<string>|undefined} Keyword list.
+ * @param {Array<*>} objectStack Object stack.
+ * @return {Array<string>|undefined} Keyword list.
  */
 function readKeywordList(node, objectStack) {
   return pushParseAndPop([], KEYWORDLIST_PARSERS, node, objectStack);

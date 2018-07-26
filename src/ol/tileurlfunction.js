@@ -47,7 +47,7 @@ export function createFromTemplate(template, tileGrid) {
 
 
 /**
- * @param {Array.<string>} templates Templates.
+ * @param {Array<string>} templates Templates.
  * @param {module:ol/tilegrid/TileGrid} tileGrid Tile grid.
  * @return {module:ol/Tile~UrlFunction} Tile URL function.
  */
@@ -62,7 +62,7 @@ export function createFromTemplates(templates, tileGrid) {
 
 
 /**
- * @param {Array.<module:ol/Tile~UrlFunction>} tileUrlFunctions Tile URL Functions.
+ * @param {Array<module:ol/Tile~UrlFunction>} tileUrlFunctions Tile URL Functions.
  * @return {module:ol/Tile~UrlFunction} Tile URL function.
  */
 export function createFromTileUrlFunctions(tileUrlFunctions) {
@@ -102,7 +102,7 @@ export function nullTileUrlFunction(tileCoord, pixelRatio, projection) {
 
 /**
  * @param {string} url URL.
- * @return {Array.<string>} Array of urls.
+ * @return {Array<string>} Array of urls.
  */
 export function expandUrl(url) {
   const urls = [];

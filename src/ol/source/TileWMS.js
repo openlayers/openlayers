@@ -60,7 +60,7 @@ import {appendParams} from '../uri.js';
  * };
  * ```
  * @property {string} [url] WMS service URL.
- * @property {Array.<string>} [urls] WMS service urls.
+ * @property {Array<string>} [urls] WMS service urls.
  * Use this instead of `url` when the WMS supports multiple urls for GetMap requests.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * When set to `false`, only one world

@@ -115,7 +115,7 @@ class GeoJSON extends JSONFeature {
    */
   readFeaturesFromObject(object, opt_options) {
     const geoJSONObject = /** @type {GeoJSONObject} */ (object);
-    /** @type {Array.<module:ol/Feature>} */
+    /** @type {Array<module:ol/Feature>} */
     let features = null;
     if (geoJSONObject.type === 'FeatureCollection') {
       const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (object);
@@ -196,7 +196,7 @@ class GeoJSON extends JSONFeature {
   /**
    * Encode an array of features as a GeoJSON object.
    *
-   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {Array<module:ol/Feature>} features Features.
    * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
    * @return {GeoJSONFeatureCollection} GeoJSON Object.
    * @override

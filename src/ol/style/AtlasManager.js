@@ -90,7 +90,7 @@ class AtlasManager {
 
     /**
      * @private
-     * @type {Array.<module:ol/style/Atlas>}
+     * @type {Array<module:ol/style/Atlas>}
      */
     this.atlases_ = [new Atlas(this.currentSize_, this.space_)];
 
@@ -103,7 +103,7 @@ class AtlasManager {
 
     /**
      * @private
-     * @type {Array.<module:ol/style/Atlas>}
+     * @type {Array<module:ol/style/Atlas>}
      */
     this.hitAtlases_ = [new Atlas(this.currentHitSize_, this.space_)];
   }
@@ -127,7 +127,7 @@ class AtlasManager {
 
   /**
    * @private
-   * @param {Array.<module:ol/style/Atlas>} atlases The atlases to search.
+   * @param {Array<module:ol/style/Atlas>} atlases The atlases to search.
    * @param {string} id The identifier of the entry to check.
    * @return {?module:ol/style/Atlas~AtlasInfo} The position and atlas image for the entry,
    *    or `null` if the entry is not part of the atlases.

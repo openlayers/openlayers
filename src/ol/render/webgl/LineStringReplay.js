@@ -51,21 +51,21 @@ class WebGLLineStringReplay extends WebGLReplay {
 
     /**
      * @private
-     * @type {Array.<Array.<?>>}
+     * @type {Array<Array<?>>}
      */
     this.styles_ = [];
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.styleIndices_ = [];
 
     /**
      * @private
-     * @type {{strokeColor: (Array.<number>|null),
+     * @type {{strokeColor: (Array<number>|null),
      *         lineCap: (string|undefined),
-     *         lineDash: Array.<number>,
+     *         lineDash: Array<number>,
      *         lineDashOffset: (number|undefined),
      *         lineJoin: (string|undefined),
      *         lineWidth: (number|undefined),
@@ -88,7 +88,7 @@ class WebGLLineStringReplay extends WebGLReplay {
   /**
    * Draw one segment.
    * @private
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
@@ -269,9 +269,9 @@ class WebGLLineStringReplay extends WebGLReplay {
   }
 
   /**
-   * @param {Array.<number>} p0 Last coordinates.
-   * @param {Array.<number>} p1 Current coordinates.
-   * @param {Array.<number>} p2 Next coordinates.
+   * @param {Array<number>} p0 Last coordinates.
+   * @param {Array<number>} p1 Current coordinates.
+   * @param {Array<number>} p2 Next coordinates.
    * @param {number} product Sign, instruction, and rounding product.
    * @param {number} numVertices Vertex counter.
    * @return {number} Vertex counter.
@@ -291,7 +291,7 @@ class WebGLLineStringReplay extends WebGLReplay {
 
   /**
    * Check if the linestring can be drawn (i. e. valid).
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
@@ -362,8 +362,8 @@ class WebGLLineStringReplay extends WebGLReplay {
   }
 
   /**
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
-   * @param {Array.<Array.<number>>} holeFlatCoordinates Hole flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {Array<Array<number>>} holeFlatCoordinates Hole flat coordinates.
    * @param {number} stride Stride.
    */
   drawPolygonCoordinates(flatCoordinates, holeFlatCoordinates, stride) {
@@ -611,7 +611,7 @@ class WebGLLineStringReplay extends WebGLReplay {
   /**
    * @private
    * @param {WebGLRenderingContext} gl gl.
-   * @param {Array.<number>} color Color.
+   * @param {Array<number>} color Color.
    * @param {number} lineWidth Line width.
    * @param {number} miterLimit Miter limit.
    */

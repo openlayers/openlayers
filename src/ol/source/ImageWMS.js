@@ -45,7 +45,7 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or
  * higher.
- * @property {Array.<number>} [resolutions] Resolutions.
+ * @property {Array<number>} [resolutions] Resolutions.
  * If specified, requests will be made for these resolutions only.
  * @property {string} url WMS service URL.
  */

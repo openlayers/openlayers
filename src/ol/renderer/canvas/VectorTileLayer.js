@@ -28,7 +28,7 @@ import {
 
 
 /**
- * @type {!Object.<string, Array.<module:ol/render/ReplayType>>}
+ * @type {!Object.<string, Array<module:ol/render/ReplayType>>}
  */
 const IMAGE_REPLAYS = {
   'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
@@ -38,7 +38,7 @@ const IMAGE_REPLAYS = {
 
 
 /**
- * @type {!Object.<string, Array.<module:ol/render/ReplayType>>}
+ * @type {!Object.<string, Array<module:ol/render/ReplayType>>}
  */
 const VECTOR_REPLAYS = {
   'image': [ReplayType.DEFAULT],
@@ -237,7 +237,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     /** @type {!Object.<string, boolean>} */
     const features = {};
 
-    /** @type {Array.<module:ol/VectorImageTile>} */
+    /** @type {Array<module:ol/VectorImageTile>} */
     const renderedTiles = this.renderedTiles;
 
     let bufferedExtent, found;
@@ -410,7 +410,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
    * @param {number} squaredTolerance Squared tolerance.
-   * @param {module:ol/style/Style|Array.<module:ol/style/Style>} styles The style or array of styles.
+   * @param {module:ol/style/Style|Array<module:ol/style/Style>} styles The style or array of styles.
    * @param {module:ol/render/canvas/ReplayGroup} replayGroup Replay group.
    * @return {boolean} `true` if an image is loading.
    */

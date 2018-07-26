@@ -56,7 +56,7 @@ import {createEditingStyle} from '../style/Style.js';
  * @property {module:ol/events/condition~Condition} [finishCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether the drawing can be finished.
- * @property {module:ol/style/Style|Array.<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style]
+ * @property {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style]
  * Style for sketch features.
  * @property {module:ol/interaction/Draw~GeometryFunction} [geometryFunction]
  * Function that is called when a geometry's coordinates are updated.
@@ -86,7 +86,7 @@ import {createEditingStyle} from '../style/Style.js';
  * arguments, and returns a geometry. The optional existing geometry is the
  * geometry that is returned when the function is called without a second
  * argument.
- * @typedef {function(!Array.<module:ol/coordinate~Coordinate>, module:ol/geom/SimpleGeometry=):
+ * @typedef {function(!Array<module:ol/coordinate~Coordinate>, module:ol/geom/SimpleGeometry=):
  *     module:ol/geom/SimpleGeometry} GeometryFunction
  */
 
@@ -272,7 +272,7 @@ class Draw extends PointerInteraction {
     if (!geometryFunction) {
       if (this.type_ === GeometryType.CIRCLE) {
         /**
-         * @param {!Array.<module:ol/coordinate~Coordinate>} coordinates
+         * @param {!Array<module:ol/coordinate~Coordinate>} coordinates
          *     The coordinates.
          * @param {module:ol/geom/SimpleGeometry=} opt_geometry Optional geometry.
          * @return {module:ol/geom/SimpleGeometry} A geometry.
@@ -296,7 +296,7 @@ class Draw extends PointerInteraction {
           Constructor = Polygon;
         }
         /**
-         * @param {!Array.<module:ol/coordinate~Coordinate>} coordinates
+         * @param {!Array<module:ol/coordinate~Coordinate>} coordinates
          *     The coordinates.
          * @param {module:ol/geom/SimpleGeometry=} opt_geometry Optional geometry.
          * @return {module:ol/geom/SimpleGeometry} A geometry.
@@ -358,7 +358,7 @@ class Draw extends PointerInteraction {
 
     /**
      * Sketch coordinates. Used when drawing a line or polygon.
-     * @type {module:ol/coordinate~Coordinate|Array.<module:ol/coordinate~Coordinate>|Array.<Array.<module:ol/coordinate~Coordinate>>}
+     * @type {module:ol/coordinate~Coordinate|Array<module:ol/coordinate~Coordinate>|Array<Array<module:ol/coordinate~Coordinate>>}
      * @private
      */
     this.sketchCoords_ = null;
@@ -372,7 +372,7 @@ class Draw extends PointerInteraction {
 
     /**
      * Sketch line coordinates. Used when drawing a polygon or circle.
-     * @type {Array.<module:ol/coordinate~Coordinate>}
+     * @type {Array<module:ol/coordinate~Coordinate>}
      * @private
      */
     this.sketchLineCoords_ = null;
@@ -580,7 +580,7 @@ class Draw extends PointerInteraction {
     }
     last[0] = coordinate[0];
     last[1] = coordinate[1];
-    this.geometryFunction_(/** @type {!Array.<module:ol/coordinate~Coordinate>} */ (this.sketchCoords_), geometry);
+    this.geometryFunction_(/** @type {!Array<module:ol/coordinate~Coordinate>} */ (this.sketchCoords_), geometry);
     if (this.sketchPoint_) {
       const sketchPointGeom = /** @type {module:ol/geom/Point} */ (this.sketchPoint_.getGeometry());
       sketchPointGeom.setCoordinates(coordinate);

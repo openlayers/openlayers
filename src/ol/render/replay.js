@@ -6,7 +6,7 @@ import ReplayType from '../render/ReplayType.js';
 
 /**
  * @const
- * @type {Array.<module:ol/render/ReplayType>}
+ * @type {Array<module:ol/render/ReplayType>}
  */
 export const ORDER = [
   ReplayType.POLYGON,

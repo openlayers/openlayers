@@ -10,8 +10,8 @@ import {getTransform} from '../proj.js';
 /**
  * Single triangle; consists of 3 source points and 3 target points.
  * @typedef {Object} Triangle
- * @property {Array.<module:ol/coordinate~Coordinate>} source
- * @property {Array.<module:ol/coordinate~Coordinate>} target
+ * @property {Array<module:ol/coordinate~Coordinate>} source
+ * @property {Array<module:ol/coordinate~Coordinate>} target
  */
 
 
@@ -94,7 +94,7 @@ class Triangulation {
     this.errorThresholdSquared_ = errorThreshold * errorThreshold;
 
     /**
-     * @type {Array.<module:ol/reproj/Triangulation~Triangle>}
+     * @type {Array<module:ol/reproj/Triangulation~Triangle>}
      * @private
      */
     this.triangles_ = [];
@@ -343,7 +343,7 @@ class Triangulation {
   }
 
   /**
-   * @return {Array.<module:ol/reproj/Triangulation~Triangle>} Array of the calculated triangles.
+   * @return {Array<module:ol/reproj/Triangulation~Triangle>} Array of the calculated triangles.
    */
   getTriangles() {
     return this.triangles_;

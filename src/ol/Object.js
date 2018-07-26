@@ -126,7 +126,7 @@ class BaseObject extends Observable {
 
   /**
    * Get a list of object property names.
-   * @return {Array.<string>} List of property names.
+   * @return {Array<string>} List of property names.
    * @api
    */
   getKeys() {

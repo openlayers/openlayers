@@ -34,7 +34,7 @@ class CanvasTextReplay extends CanvasReplay {
 
     /**
      * @private
-     * @type {Array.<HTMLCanvasElement>}
+     * @type {Array<HTMLCanvasElement>}
      */
     this.labels_ = null;
 
@@ -520,8 +520,8 @@ class CanvasTextReplay extends CanvasReplay {
 
 /**
  * @param {string} font Font to use for measuring.
- * @param {Array.<string>} lines Lines to measure.
- * @param {Array.<number>} widths Array will be populated with the widths of
+ * @param {Array<string>} lines Lines to measure.
+ * @param {Array<number>} widths Array will be populated with the widths of
  * each line.
  * @return {number} Width of the whole text.
  */

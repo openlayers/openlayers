@@ -45,7 +45,7 @@ import TouchSource from '../pointer/TouchSource.js';
 
 /**
  * Properties to copy when cloning an event, with default values.
- * @type {Array.<Array>}
+ * @type {Array<Array>}
  */
 const CLONE_PROPS = [
   // MouseEvent
@@ -111,7 +111,7 @@ class PointerEventHandler extends EventTarget {
     this.eventMap_ = {};
 
     /**
-     * @type {Array.<module:ol/pointer/EventSource>}
+     * @type {Array<module:ol/pointer/EventSource>}
      * @private
      */
     this.eventSourceList_ = [];
@@ -203,7 +203,7 @@ class PointerEventHandler extends EventTarget {
   /**
    * Setup listeners for the given events.
    * @private
-   * @param {Array.<string>} events List of events.
+   * @param {Array<string>} events List of events.
    */
   addEvents_(events) {
     events.forEach(function(eventName) {
@@ -214,7 +214,7 @@ class PointerEventHandler extends EventTarget {
   /**
    * Unregister listeners for the given events.
    * @private
-   * @param {Array.<string>} events List of events.
+   * @param {Array<string>} events List of events.
    */
   removeEvents_(events) {
     events.forEach(function(e) {

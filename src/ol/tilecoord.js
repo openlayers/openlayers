@@ -6,7 +6,7 @@
 /**
  * An array of three numbers representing the location of a tile in a tile
  * grid. The order is `z`, `x`, and `y`. `z` is the zoom level.
- * @typedef {Array.<number>} TileCoord
+ * @typedef {Array<number>} TileCoord
  * @api
  */
 

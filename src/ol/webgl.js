@@ -259,7 +259,7 @@ export const FRAMEBUFFER = 0x8D40;
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array<string>}
  */
 const CONTEXT_IDS = [
   'experimental-webgl',
@@ -308,7 +308,7 @@ let MAX_TEXTURE_SIZE; // value is set below
 
 /**
  * List of supported WebGL extensions.
- * @type {Array.<string>}
+ * @type {Array<string>}
  */
 let EXTENSIONS; // value is set below
 

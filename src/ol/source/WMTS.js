@@ -48,7 +48,7 @@ import {appendParams} from '../uri.js';
  *   imageTile.getImage().src = src;
  * };
  * ```
- * @property {Array.<string>} [urls] An array of URLs.
+ * @property {Array<string>} [urls] An array of URLs.
  * Requests will be distributed among the URLs in this array.
  * @property {boolean} [wrapX=false] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
@@ -328,7 +328,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   }
   const matrixSet = /** @type {string} */
     (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
-  const matrixLimits = /** @type {Array.<Object>} */
+  const matrixLimits = /** @type {Array<Object>} */
     (l['TileMatrixSetLink'][idx]['TileMatrixSetLimits']);
 
   let format = /** @type {string} */ (l['Format'][0]);
@@ -399,7 +399,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
 
   const tileGrid = createFromCapabilitiesMatrixSet(matrixSetObj, extent, matrixLimits);
 
-  /** @type {!Array.<string>} */
+  /** @type {!Array<string>} */
   const urls = [];
   let requestEncoding = config['requestEncoding'];
   requestEncoding = requestEncoding !== undefined ? requestEncoding : '';

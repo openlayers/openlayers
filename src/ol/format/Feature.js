@@ -141,7 +141,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Node|ArrayBuffer|Object|string} source Source.
    * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
-   * @return {Array.<module:ol/Feature>} Features.
+   * @return {Array<module:ol/Feature>} Features.
    */
   readFeatures(source, opt_options) {}
 
@@ -178,7 +178,7 @@ class FeatureFormat {
    * Encode an array of features in this format.
    *
    * @abstract
-   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {Array<module:ol/Feature>} features Features.
    * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
    * @return {string} Result.
    */
@@ -234,8 +234,8 @@ export function transformWithOptions(geometry, write, opt_options) {
     const power = Math.pow(10, opt_options.decimals);
     // if decimals option on write, round each coordinate appropriately
     /**
-     * @param {Array.<number>} coordinates Coordinates.
-     * @return {Array.<number>} Transformed coordinates.
+     * @param {Array<number>} coordinates Coordinates.
+     * @return {Array<number>} Transformed coordinates.
      */
     const transform = function(coordinates) {
       for (let i = 0, ii = coordinates.length; i < ii; ++i) {

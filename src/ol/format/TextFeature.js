@@ -50,7 +50,7 @@ class TextFeature extends FeatureFormat {
    *
    * @param {Document|Node|Object|string} source Source.
    * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
-   * @return {Array.<module:ol/Feature>} Features.
+   * @return {Array<module:ol/Feature>} Features.
    * @api
    */
   readFeatures(source, opt_options) {
@@ -62,7 +62,7 @@ class TextFeature extends FeatureFormat {
    * @param {string} text Text.
    * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
    * @protected
-   * @return {Array.<module:ol/Feature>} Features.
+   * @return {Array<module:ol/Feature>} Features.
    */
   readFeaturesFromText(text, opt_options) {}
 
@@ -133,7 +133,7 @@ class TextFeature extends FeatureFormat {
   /**
    * Encode an array of features as string.
    *
-   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {Array<module:ol/Feature>} features Features.
    * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
    * @return {string} Encoded features.
    * @api
@@ -144,7 +144,7 @@ class TextFeature extends FeatureFormat {
 
   /**
    * @abstract
-   * @param {Array.<module:ol/Feature>} features Features.
+   * @param {Array<module:ol/Feature>} features Features.
    * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
    * @protected
    * @return {string} Text.

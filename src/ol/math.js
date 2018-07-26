@@ -99,9 +99,9 @@ export function squaredDistance(x1, y1, x2, y2) {
 /**
  * Solves system of linear equations using Gaussian elimination method.
  *
- * @param {Array.<Array.<number>>} mat Augmented matrix (n x n + 1 column)
+ * @param {Array<Array<number>>} mat Augmented matrix (n x n + 1 column)
  *                                     in row-major order.
- * @return {Array.<number>} The resulting vector.
+ * @return {Array<number>} The resulting vector.
  */
 export function solveLinearSystem(mat) {
   const n = mat.length;

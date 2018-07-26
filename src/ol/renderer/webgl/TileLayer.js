@@ -273,7 +273,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
       }
 
-      /** @type {Array.<number>} */
+      /** @type {Array<number>} */
       const zs = Object.keys(tilesToDrawByZ).map(Number);
       zs.sort(numberSafeCompareFunction);
       const u_tileOffset = new Float32Array(4);

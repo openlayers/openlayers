@@ -21,7 +21,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 /**
  * @type {Object.<module:ol/render/ReplayType,
  *                function(new: module:ol/render/canvas/Replay, number, module:ol/extent~Extent,
- *                number, number, boolean, Array.<module:ol/render/canvas~DeclutterGroup>)>}
+ *                number, number, boolean, Array<module:ol/render/canvas~DeclutterGroup>)>}
  */
 const BATCH_CONSTRUCTORS = {
   'Circle': CanvasPolygonReplay,
@@ -154,7 +154,7 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @param {Array.<module:ol/render/ReplayType>} replays Replays.
+   * @param {Array<module:ol/render/ReplayType>} replays Replays.
    * @return {boolean} Has replays of the provided types.
    */
   hasReplays(replays) {
@@ -265,7 +265,7 @@ class CanvasReplayGroup extends ReplayGroup {
       }
     }
 
-    /** @type {Array.<number>} */
+    /** @type {Array<number>} */
     const zs = Object.keys(this.replaysByZIndex_).map(Number);
     zs.sort(numberSafeCompareFunction);
 
@@ -300,7 +300,7 @@ class CanvasReplayGroup extends ReplayGroup {
 
   /**
    * @param {module:ol/transform~Transform} transform Transform.
-   * @return {Array.<number>} Clip coordinates.
+   * @return {Array<number>} Clip coordinates.
    */
   getClipCoords(transform) {
     const maxExtent = this.maxExtent_;
@@ -353,7 +353,7 @@ class CanvasReplayGroup extends ReplayGroup {
    * @param {module:ol/transform~Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features to skip.
-   * @param {Array.<module:ol/render/ReplayType>=} opt_replayTypes Ordered replay types to replay.
+   * @param {Array<module:ol/render/ReplayType>=} opt_replayTypes Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
    * @param {Object.<string, module:ol/render/canvas~DeclutterGroup>=} opt_declutterReplays Declutter replays.
    */
@@ -366,7 +366,7 @@ class CanvasReplayGroup extends ReplayGroup {
     opt_declutterReplays
   ) {
 
-    /** @type {Array.<number>} */
+    /** @type {Array<number>} */
     const zs = Object.keys(this.replaysByZIndex_).map(Number);
     zs.sort(numberSafeCompareFunction);
 
@@ -407,7 +407,7 @@ class CanvasReplayGroup extends ReplayGroup {
 /**
  * This cache is used for storing calculated pixel circles for increasing performance.
  * It is a static property to allow each Replaygroup to access it.
- * @type {Object.<number, Array.<Array.<(boolean|undefined)>>>}
+ * @type {Object.<number, Array<Array<(boolean|undefined)>>>}
  */
 const circleArrayCache = {
   0: [[true]]
@@ -417,7 +417,7 @@ const circleArrayCache = {
 /**
  * This method fills a row in the array from the given coordinate to the
  * middle with `true`.
- * @param {Array.<Array.<(boolean|undefined)>>} array The array that will be altered.
+ * @param {Array<Array<(boolean|undefined)>>} array The array that will be altered.
  * @param {number} x X coordinate.
  * @param {number} y Y coordinate.
  */
@@ -442,7 +442,7 @@ function fillCircleArrayRowToMiddle(array, x, y) {
  * It uses the midpoint circle algorithm.
  * A cache is used to increase performance.
  * @param {number} radius Radius.
- * @returns {Array.<Array.<(boolean|undefined)>>} An array with marked circle points.
+ * @returns {Array<Array<(boolean|undefined)>>} An array with marked circle points.
  */
 export function getCircleArray(radius) {
   if (circleArrayCache[radius] !== undefined) {
@@ -483,7 +483,7 @@ export function getCircleArray(radius) {
 
 
 /**
- * @param {!Object.<string, Array.<*>>} declutterReplays Declutter replays.
+ * @param {!Object.<string, Array<*>>} declutterReplays Declutter replays.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} rotation Rotation.
  */

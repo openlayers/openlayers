@@ -15,7 +15,7 @@ import ImageStyle from '../style/Image.js';
 
 /**
  * @typedef {Object} Options
- * @property {Array.<number>} [anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
+ * @property {Array<number>} [anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
  * @property {module:ol/style/IconOrigin} [anchorOrigin] Origin of the anchor: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`. Default is `top-left`.
  * @property {module:ol/style/IconAnchorUnits} [anchorXUnits] Units in which the anchor x value is
@@ -32,7 +32,7 @@ import ImageStyle from '../style/Image.js';
  * @property {HTMLImageElement|HTMLCanvasElement} [img] Image object for the icon. If the `src` option is not provided then the
  * provided image must already be loaded. And in that case, it is required
  * to provide the size of the image, with the `imgSize` option.
- * @property {Array.<number>} [offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
+ * @property {Array<number>} [offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
  * sub-rectangle to use from the original icon image.
  * @property {module:ol/style/IconOrigin} [offsetOrigin] Origin of the offset: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`. Default is `top-left`.
@@ -101,13 +101,13 @@ class Icon extends ImageStyle {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.anchor_ = options.anchor !== undefined ? options.anchor : [0.5, 0.5];
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.normalizedAnchor_ = null;
 
@@ -186,7 +186,7 @@ class Icon extends ImageStyle {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.offset_ = options.offset !== undefined ? options.offset : [0, 0];
 
@@ -199,7 +199,7 @@ class Icon extends ImageStyle {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.origin_ = null;
 
@@ -284,7 +284,7 @@ class Icon extends ImageStyle {
    * Set the anchor point. The anchor determines the center point for the
    * symbolizer.
    *
-   * @param {Array.<number>} anchor Anchor.
+   * @param {Array<number>} anchor Anchor.
    * @api
    */
   setAnchor(anchor) {

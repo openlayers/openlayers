@@ -31,13 +31,13 @@ class WebGLCircleReplay extends WebGLReplay {
 
     /**
      * @private
-     * @type {Array.<Array.<Array.<number>|number>>}
+     * @type {Array<Array<Array<number>|number>>}
      */
     this.styles_ = [];
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.styleIndices_ = [];
 
@@ -49,9 +49,9 @@ class WebGLCircleReplay extends WebGLReplay {
 
     /**
      * @private
-     * @type {{fillColor: (Array.<number>|null),
-     *         strokeColor: (Array.<number>|null),
-     *         lineDash: Array.<number>,
+     * @type {{fillColor: (Array<number>|null),
+     *         strokeColor: (Array<number>|null),
+     *         lineDash: Array<number>,
      *         lineDashOffset: (number|undefined),
      *         lineWidth: (number|undefined),
      *         changed: boolean}|null}
@@ -69,7 +69,7 @@ class WebGLCircleReplay extends WebGLReplay {
 
   /**
    * @private
-   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
@@ -136,8 +136,8 @@ class WebGLCircleReplay extends WebGLReplay {
         this.styles_.pop();
         if (this.styles_.length) {
           const lastState = this.styles_[this.styles_.length - 1];
-          this.state_.fillColor = /** @type {Array.<number>} */ (lastState[0]);
-          this.state_.strokeColor = /** @type {Array.<number>} */ (lastState[1]);
+          this.state_.fillColor = /** @type {Array<number>} */ (lastState[0]);
+          this.state_.strokeColor = /** @type {Array<number>} */ (lastState[1]);
           this.state_.lineWidth = /** @type {number} */ (lastState[2]);
           this.state_.changed = false;
         }
@@ -242,8 +242,8 @@ class WebGLCircleReplay extends WebGLReplay {
       for (i = this.styleIndices_.length - 1; i >= 0; --i) {
         start = this.styleIndices_[i];
         nextStyle = this.styles_[i];
-        this.setFillStyle_(gl, /** @type {Array.<number>} */ (nextStyle[0]));
-        this.setStrokeStyle_(gl, /** @type {Array.<number>} */ (nextStyle[1]),
+        this.setFillStyle_(gl, /** @type {Array<number>} */ (nextStyle[0]));
+        this.setStrokeStyle_(gl, /** @type {Array<number>} */ (nextStyle[1]),
           /** @type {number} */ (nextStyle[2]));
         this.drawElements(gl, context, start, end);
         end = start;
@@ -260,8 +260,8 @@ class WebGLCircleReplay extends WebGLReplay {
     end = this.startIndices[featureIndex + 1];
     for (i = this.styleIndices_.length - 1; i >= 0; --i) {
       nextStyle = this.styles_[i];
-      this.setFillStyle_(gl, /** @type {Array.<number>} */ (nextStyle[0]));
-      this.setStrokeStyle_(gl, /** @type {Array.<number>} */ (nextStyle[1]),
+      this.setFillStyle_(gl, /** @type {Array<number>} */ (nextStyle[0]));
+      this.setStrokeStyle_(gl, /** @type {Array<number>} */ (nextStyle[1]),
         /** @type {number} */ (nextStyle[2]));
       groupStart = this.styleIndices_[i];
 
@@ -305,8 +305,8 @@ class WebGLCircleReplay extends WebGLReplay {
     end = start = this.startIndices[featureIndex + 1];
     for (i = this.styleIndices_.length - 1; i >= 0; --i) {
       nextStyle = this.styles_[i];
-      this.setFillStyle_(gl, /** @type {Array.<number>} */ (nextStyle[0]));
-      this.setStrokeStyle_(gl, /** @type {Array.<number>} */ (nextStyle[1]),
+      this.setFillStyle_(gl, /** @type {Array<number>} */ (nextStyle[0]));
+      this.setStrokeStyle_(gl, /** @type {Array<number>} */ (nextStyle[1]),
         /** @type {number} */ (nextStyle[2]));
       groupStart = this.styleIndices_[i];
 
@@ -335,7 +335,7 @@ class WebGLCircleReplay extends WebGLReplay {
   /**
    * @private
    * @param {WebGLRenderingContext} gl gl.
-   * @param {Array.<number>} color Color.
+   * @param {Array<number>} color Color.
    */
   setFillStyle_(gl, color) {
     gl.uniform4fv(this.defaultLocations_.u_fillColor, color);
@@ -344,7 +344,7 @@ class WebGLCircleReplay extends WebGLReplay {
   /**
    * @private
    * @param {WebGLRenderingContext} gl gl.
-   * @param {Array.<number>} color Color.
+   * @param {Array<number>} color Color.
    * @param {number} lineWidth Line width.
    */
   setStrokeStyle_(gl, color, lineWidth) {

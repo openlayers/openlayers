@@ -11,7 +11,7 @@ import {clamp} from './math.js';
 
 
 /**
- * @param {Array.<number>} resolutions Resolutions.
+ * @param {Array<number>} resolutions Resolutions.
  * @return {module:ol/resolutionconstraint~Type} Zoom function.
  */
 export function createSnapToResolutions(resolutions) {

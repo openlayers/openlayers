@@ -14,7 +14,7 @@ import WebGLPolygonReplay from '../webgl/PolygonReplay.js';
 import WebGLTextReplay from '../webgl/TextReplay.js';
 
 /**
- * @type {Array.<number>}
+ * @type {Array<number>}
  */
 const HIT_DETECTION_SIZE = [1, 1];
 
@@ -160,7 +160,7 @@ class WebGLReplayGroup extends ReplayGroup {
     opacity,
     skippedFeaturesHash
   ) {
-    /** @type {Array.<number>} */
+    /** @type {Array<number>} */
     const zs = Object.keys(this.replaysByZIndex_).map(Number);
     zs.sort(numberSafeCompareFunction);
 
@@ -209,7 +209,7 @@ class WebGLReplayGroup extends ReplayGroup {
     oneByOne,
     opt_hitExtent
   ) {
-    /** @type {Array.<number>} */
+    /** @type {Array<number>} */
     const zs = Object.keys(this.replaysByZIndex_).map(Number);
     zs.sort(function(a, b) {
       return b - a;

@@ -54,7 +54,7 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {Array.<module:ol/events~EventsKey>}
+     * @type {Array<module:ol/events~EventsKey>}
      */
     this.imageListenerKeys_ = null;
 

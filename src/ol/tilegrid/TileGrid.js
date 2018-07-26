@@ -27,18 +27,18 @@ const tmpTileCoord = [0, 0, 0];
  * @property {module:ol/coordinate~Coordinate} [origin] The tile grid origin, i.e. where the `x`
  * and `y` axes meet (`[z, 0, 0]`). Tile coordinates increase left to right and upwards. If not
  * specified, `extent` or `origins` must be provided.
- * @property {Array.<module:ol/coordinate~Coordinate>} [origins] Tile grid origins, i.e. where
+ * @property {Array<module:ol/coordinate~Coordinate>} [origins] Tile grid origins, i.e. where
  * the `x` and `y` axes meet (`[z, 0, 0]`), for each zoom level. If given, the array length
  * should match the length of the `resolutions` array, i.e. each resolution can have a different
  * origin. Tile coordinates increase left to right and upwards. If not specified, `extent` or
  * `origin` must be provided.
- * @property {!Array.<number>} resolutions Resolutions. The array index of each resolution needs
+ * @property {!Array<number>} resolutions Resolutions. The array index of each resolution needs
  * to match the zoom level. This means that even if a `minZoom` is configured, the resolutions
  * array will have a length of `maxZoom + 1`.
- * @property {Array.<module:ol/size~Size>} [sizes] Sizes.
+ * @property {Array<module:ol/size~Size>} [sizes] Sizes.
  * @property {number|module:ol/size~Size} [tileSize] Tile size.
  * Default is `[256, 256]`.
- * @property {Array.<module:ol/size~Size>} [tileSizes] Tile sizes. If given, the array length
+ * @property {Array<module:ol/size~Size>} [tileSizes] Tile sizes. If given, the array length
  * should match the length of the `resolutions` array, i.e. each resolution can have a different
  * tile size.
  */
@@ -64,7 +64,7 @@ class TileGrid {
 
     /**
      * @private
-     * @type {!Array.<number>}
+     * @type {!Array<number>}
      */
     this.resolutions_ = options.resolutions;
     assert(isSorted(this.resolutions_, function(a, b) {
@@ -109,7 +109,7 @@ class TileGrid {
 
     /**
      * @private
-     * @type {Array.<module:ol/coordinate~Coordinate>}
+     * @type {Array<module:ol/coordinate~Coordinate>}
      */
     this.origins_ = null;
     if (options.origins !== undefined) {
@@ -131,7 +131,7 @@ class TileGrid {
 
     /**
      * @private
-     * @type {Array.<number|module:ol/size~Size>}
+     * @type {Array<number|module:ol/size~Size>}
      */
     this.tileSizes_ = null;
     if (options.tileSizes !== undefined) {
@@ -161,7 +161,7 @@ class TileGrid {
 
     /**
      * @private
-     * @type {Array.<module:ol/TileRange>}
+     * @type {Array<module:ol/TileRange>}
      */
     this.fullTileRanges_ = null;
 
@@ -288,7 +288,7 @@ class TileGrid {
 
   /**
    * Get the list of resolutions for the tile grid.
-   * @return {Array.<number>} Resolutions.
+   * @return {Array<number>} Resolutions.
    * @api
    */
   getResolutions() {

@@ -9,7 +9,7 @@ import {makeObjectPropertyPusher, makeObjectPropertySetter, makeStructureNS, pus
 
 /**
  * @const
- * @type {Array.<null|string>}
+ * @type {Array<null|string>}
  */
 const NAMESPACE_URIS = [null, 'http://www.opengis.net/ows/1.1'];
 
@@ -206,7 +206,7 @@ const SERVICE_PROVIDER_PARSERS =
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The address.
  */
 function readAddress(node, objectStack) {
@@ -217,7 +217,7 @@ function readAddress(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The values.
  */
 function readAllowedValues(node, objectStack) {
@@ -228,7 +228,7 @@ function readAllowedValues(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The constraint.
  */
 function readConstraint(node, objectStack) {
@@ -244,7 +244,7 @@ function readConstraint(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The contact info.
  */
 function readContactInfo(node, objectStack) {
@@ -255,7 +255,7 @@ function readContactInfo(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The DCP.
  */
 function readDcp(node, objectStack) {
@@ -266,7 +266,7 @@ function readDcp(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The GET object.
  */
 function readGet(node, objectStack) {
@@ -281,7 +281,7 @@ function readGet(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The HTTP object.
  */
 function readHttp(node, objectStack) {
@@ -291,7 +291,7 @@ function readHttp(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The operation.
  */
 function readOperation(node, objectStack) {
@@ -309,7 +309,7 @@ function readOperation(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The operations metadata.
  */
 function readOperationsMetadata(node, objectStack) {
@@ -321,7 +321,7 @@ function readOperationsMetadata(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The phone.
  */
 function readPhone(node, objectStack) {
@@ -332,7 +332,7 @@ function readPhone(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The service identification.
  */
 function readServiceIdentification(node, objectStack) {
@@ -344,7 +344,7 @@ function readServiceIdentification(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The service contact.
  */
 function readServiceContact(node, objectStack) {
@@ -356,7 +356,7 @@ function readServiceContact(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The service provider.
  */
 function readServiceProvider(node, objectStack) {
@@ -368,7 +368,7 @@ function readServiceProvider(node, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Array<*>} objectStack Object stack.
  * @return {string|undefined} The value.
  */
 function readValue(node, objectStack) {

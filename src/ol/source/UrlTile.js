@@ -21,7 +21,7 @@ import {getKeyZXY} from '../tilecoord.js';
  * @property {number} [tilePixelRatio]
  * @property {module:ol/Tile~UrlFunction} [tileUrlFunction]
  * @property {string} [url]
- * @property {Array.<string>} [urls]
+ * @property {Array<string>} [urls]
  * @property {boolean} [wrapX=true]
  * @property {number} [transition]
  */
@@ -67,7 +67,7 @@ class UrlTile extends TileSource {
 
     /**
      * @protected
-     * @type {!Array.<string>|null}
+     * @type {!Array<string>|null}
      */
     this.urls = null;
 
@@ -110,7 +110,7 @@ class UrlTile extends TileSource {
    * Return the URLs used for this source.
    * When a tileUrlFunction is used instead of url or urls,
    * null will be returned.
-   * @return {!Array.<string>|null} URLs.
+   * @return {!Array<string>|null} URLs.
    * @api
    */
   getUrls() {
@@ -182,7 +182,7 @@ class UrlTile extends TileSource {
 
   /**
    * Set the URLs to use for requests.
-   * @param {Array.<string>} urls URLs.
+   * @param {Array<string>} urls URLs.
    * @api
    */
   setUrls(urls) {

@@ -13,7 +13,7 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {Array.<function(new: module:ol/format/Feature)>} [formatConstructors] Format constructors.
+ * @property {Array<function(new: module:ol/format/Feature)>} [formatConstructors] Format constructors.
  * @property {module:ol/source/Vector} [source] Optional vector source where features will be added.  If a source is provided
  * all existing features will be removed and new features will be added when
  * they are dropped on the target.  If you want to add features to a vector
@@ -47,7 +47,7 @@ class DragAndDropEvent extends Event {
   /**
    * @param {module:ol/interaction/DragAndDrop~DragAndDropEventType} type Type.
    * @param {File} file File.
-   * @param {Array.<module:ol/Feature>=} opt_features Features.
+   * @param {Array<module:ol/Feature>=} opt_features Features.
    * @param {module:ol/proj/Projection=} opt_projection Projection.
    */
   constructor(type, file, opt_features, opt_projection) {
@@ -56,7 +56,7 @@ class DragAndDropEvent extends Event {
 
     /**
      * The features parsed from dropped data.
-     * @type {Array.<module:ol/Feature>|undefined}
+     * @type {Array<module:ol/Feature>|undefined}
      * @api
      */
     this.features = opt_features;
@@ -101,7 +101,7 @@ class DragAndDrop extends Interaction {
 
     /**
      * @private
-     * @type {Array.<function(new: module:ol/format/Feature)>}
+     * @type {Array<function(new: module:ol/format/Feature)>}
      */
     this.formatConstructors_ = options.formatConstructors ?
       options.formatConstructors : [];
@@ -115,7 +115,7 @@ class DragAndDrop extends Interaction {
 
     /**
      * @private
-     * @type {Array.<module:ol/events~EventsKey>}
+     * @type {Array<module:ol/events~EventsKey>}
      */
     this.dropListenKeys_ = null;
 
@@ -220,7 +220,7 @@ class DragAndDrop extends Interaction {
    * @param {string} text Text.
    * @param {module:ol/format/Feature~ReadOptions} options Read options.
    * @private
-   * @return {Array.<module:ol/Feature>} Features.
+   * @return {Array<module:ol/Feature>} Features.
    */
   tryReadFeatures_(format, text, options) {
     try {

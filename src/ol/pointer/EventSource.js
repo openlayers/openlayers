@@ -25,7 +25,7 @@ class EventSource {
 
   /**
    * List of events supported by this source.
-   * @return {Array.<string>} Event names
+   * @return {Array<string>} Event names
    */
   getEvents() {
     return Object.keys(this.mapping_);

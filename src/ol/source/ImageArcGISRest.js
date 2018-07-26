@@ -32,7 +32,7 @@ import {appendParams} from '../uri.js';
  * @property {module:ol/proj~ProjectionLike} projection Projection.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport,
  * `2` means twice the size of the map viewport, and so on.
- * @property {Array.<number>} [resolutions] Resolutions. If specified, requests will be made for
+ * @property {Array<number>} [resolutions] Resolutions. If specified, requests will be made for
  * these resolutions only.
  * @property {string} [url] ArcGIS Rest service URL for a Map Service or Image Service. The url
  * should include /MapServer or /ImageServer.

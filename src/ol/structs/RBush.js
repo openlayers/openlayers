@@ -65,8 +65,8 @@ class RBush {
 
   /**
    * Bulk-insert values into the RBush.
-   * @param {Array.<module:ol/extent~Extent>} extents Extents.
-   * @param {Array.<T>} values Values.
+   * @param {Array<module:ol/extent~Extent>} extents Extents.
+   * @param {Array<T>} values Values.
    */
   load(extents, values) {
     const items = new Array(values.length);
@@ -122,7 +122,7 @@ class RBush {
 
   /**
    * Return all values in the RBush.
-   * @return {Array.<T>} All.
+   * @return {Array<T>} All.
    */
   getAll() {
     const items = this.rbush_.all();
@@ -135,7 +135,7 @@ class RBush {
   /**
    * Return all values in the given extent.
    * @param {module:ol/extent~Extent} extent Extent.
-   * @return {Array.<T>} All in extent.
+   * @return {Array<T>} All in extent.
    */
   getInExtent(extent) {
     /** @type {module:ol/structs/RBush~Entry} */
@@ -180,7 +180,7 @@ class RBush {
 
 
   /**
-   * @param {Array.<T>} values Values.
+   * @param {Array<T>} values Values.
    * @param {function(this: S, T): *} callback Callback.
    * @param {S=} opt_this The object to use as `this` in `callback`.
    * @private

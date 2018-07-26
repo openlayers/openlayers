@@ -107,7 +107,7 @@ class ImageStyle {
   * Get the anchor point in pixels. The anchor determines the center point for the
   * symbolizer.
   * @abstract
-  * @return {Array.<number>} Anchor.
+  * @return {Array<number>} Anchor.
   */
   getAnchor() {}
 
@@ -147,7 +147,7 @@ class ImageStyle {
   /**
   * Get the origin of the symbolizer.
   * @abstract
-  * @return {Array.<number>} Origin.
+  * @return {Array<number>} Origin.
   */
   getOrigin() {}
 

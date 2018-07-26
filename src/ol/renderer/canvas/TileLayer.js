@@ -52,7 +52,7 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
 
     /**
      * @protected
-     * @type {!Array.<module:ol/Tile>}
+     * @type {!Array<module:ol/Tile>}
      */
     this.renderedTiles = [];
 
@@ -241,7 +241,7 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
       }
 
       this.renderedTiles.length = 0;
-      /** @type {Array.<number>} */
+      /** @type {Array<number>} */
       const zs = Object.keys(tilesToDrawByZ).map(Number);
       zs.sort(function(a, b) {
         if (a === z) {

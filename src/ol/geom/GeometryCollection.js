@@ -17,7 +17,7 @@ import {clear} from '../obj.js';
 class GeometryCollection extends Geometry {
 
   /**
-   * @param {Array.<module:ol/geom/Geometry>=} opt_geometries Geometries.
+   * @param {Array<module:ol/geom/Geometry>=} opt_geometries Geometries.
    */
   constructor(opt_geometries) {
 
@@ -25,7 +25,7 @@ class GeometryCollection extends Geometry {
 
     /**
      * @private
-     * @type {Array.<module:ol/geom/Geometry>}
+     * @type {Array<module:ol/geom/Geometry>}
      */
     this.geometries_ = opt_geometries ? opt_geometries : null;
 
@@ -114,7 +114,7 @@ class GeometryCollection extends Geometry {
 
   /**
    * Return the geometries that make up this geometry collection.
-   * @return {Array.<module:ol/geom/Geometry>} Geometries.
+   * @return {Array<module:ol/geom/Geometry>} Geometries.
    * @api
    */
   getGeometries() {
@@ -122,7 +122,7 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @return {Array.<module:ol/geom/Geometry>} Geometries.
+   * @return {Array<module:ol/geom/Geometry>} Geometries.
    */
   getGeometriesArray() {
     return this.geometries_;
@@ -228,7 +228,7 @@ class GeometryCollection extends Geometry {
 
   /**
    * Set the geometries that make up this geometry collection.
-   * @param {Array.<module:ol/geom/Geometry>} geometries Geometries.
+   * @param {Array<module:ol/geom/Geometry>} geometries Geometries.
    * @api
    */
   setGeometries(geometries) {
@@ -236,7 +236,7 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @param {Array.<module:ol/geom/Geometry>} geometries Geometries.
+   * @param {Array<module:ol/geom/Geometry>} geometries Geometries.
    */
   setGeometriesArray(geometries) {
     this.unlistenGeometriesChange_();
@@ -283,8 +283,8 @@ class GeometryCollection extends Geometry {
 
 
 /**
- * @param {Array.<module:ol/geom/Geometry>} geometries Geometries.
- * @return {Array.<module:ol/geom/Geometry>} Cloned geometries.
+ * @param {Array<module:ol/geom/Geometry>} geometries Geometries.
+ * @return {Array<module:ol/geom/Geometry>} Cloned geometries.
  */
 function cloneGeometries(geometries) {
   const clonedGeometries = [];

@@ -7,7 +7,7 @@ import {padNumber} from './string.js';
 
 /**
  * An array of numbers representing an xy coordinate. Example: `[16, 48]`.
- * @typedef {Array.<number>} Coordinate
+ * @typedef {Array<number>} Coordinate
  * @api
  */
 
@@ -82,7 +82,7 @@ export function closestOnCircle(coordinate, circle) {
  * is outside the segment.
  *
  * @param {module:ol/coordinate~Coordinate} coordinate The coordinate.
- * @param {Array.<module:ol/coordinate~Coordinate>} segment The two coordinates
+ * @param {Array<module:ol/coordinate~Coordinate>} segment The two coordinates
  * of the segment.
  * @return {module:ol/coordinate~Coordinate} The foot of the perpendicular of
  * the coordinate to the segment.
@@ -328,7 +328,7 @@ export function distance(coord1, coord2) {
  * Calculate the squared distance from a coordinate to a line segment.
  *
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate of the point.
- * @param {Array.<module:ol/coordinate~Coordinate>} segment Line segment (2
+ * @param {Array<module:ol/coordinate~Coordinate>} segment Line segment (2
  * coordinates).
  * @return {number} Squared distance from the point to the line segment.
  */

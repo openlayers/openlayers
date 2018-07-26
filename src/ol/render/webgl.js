@@ -26,7 +26,7 @@ export const DEFAULT_LINECAP = 'round';
 
 /**
  * @const
- * @type {Array.<number>}
+ * @type {Array<number>}
  */
 export const DEFAULT_LINEDASH = [];
 

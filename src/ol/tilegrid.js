@@ -110,7 +110,7 @@ export function createXYZ(opt_options) {
  *     DEFAULT_MAX_ZOOM).
  * @param {number|module:ol/size~Size=} opt_tileSize Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @return {!Array.<number>} Resolutions array.
+ * @return {!Array<number>} Resolutions array.
  */
 function resolutionsFromExtent(extent, opt_maxZoom, opt_tileSize) {
   const maxZoom = opt_maxZoom !== undefined ?

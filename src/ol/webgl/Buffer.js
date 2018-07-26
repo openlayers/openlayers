@@ -16,14 +16,14 @@ const BufferUsage = {
 class WebGLBuffer {
 
   /**
-   * @param {Array.<number>=} opt_arr Array.
+   * @param {Array<number>=} opt_arr Array.
    * @param {number=} opt_usage Usage.
    */
   constructor(opt_arr, opt_usage) {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.arr_ = opt_arr !== undefined ? opt_arr : [];
 
@@ -36,7 +36,7 @@ class WebGLBuffer {
   }
 
   /**
-   * @return {Array.<number>} Array.
+   * @return {Array<number>} Array.
    */
   getArray() {
     return this.arr_;
