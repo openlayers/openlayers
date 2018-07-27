@@ -175,29 +175,6 @@ class IGC extends TextFeature {
     }
   }
 
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeFeatureText(feature, opt_options) {}
-
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeFeaturesText(features, opt_options) {}
-
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeGeometryText(geometry, opt_options) {}
-
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  readGeometryFromText(text, opt_options) {}
 }
 
 export default IGC;

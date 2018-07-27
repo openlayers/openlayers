@@ -101,23 +101,6 @@ class OSMXML extends XMLFeature {
     return [];
   }
 
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeFeatureNode(feature, opt_options) {}
-
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeFeaturesNode(features, opt_options) {}
-
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeGeometryNode(geometry, opt_options) {}
 }
 
 

@@ -123,35 +123,6 @@ class TopoJSON extends JSONFeature {
     return this.dataProjection;
   }
 
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeFeatureObject(feature, opt_options) {}
-
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeFeaturesObject(features, opt_options) {}
-
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeGeometryObject(geometry, opt_options) {}
-
-  /**
-   * Not implemented.
-   * @override
-   */
-  readGeometryFromObject() {}
-
-  /**
-   * Not implemented.
-   * @override
-   */
-  readFeatureFromObject() {}
 }
 
 

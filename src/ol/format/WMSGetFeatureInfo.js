@@ -150,23 +150,6 @@ class WMSGetFeatureInfo extends XMLFeature {
     return this.readFeatures_(node, [options]);
   }
 
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeFeatureNode(feature, opt_options) {}
-
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeFeaturesNode(features, opt_options) {}
-
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeGeometryNode(geometry, opt_options) {}
 }
 
 

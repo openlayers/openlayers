@@ -287,35 +287,6 @@ class MVT extends FeatureFormat {
     this.layers_ = layers;
   }
 
-  /**
-   * Not implemented.
-   * @override
-   */
-  readFeature() {}
-
-  /**
-   * Not implemented.
-   * @override
-   */
-  readGeometry() {}
-
-  /**
-   * Not implemented.
-   * @override
-   */
-  writeFeature() {}
-
-  /**
-   * Not implemented.
-   * @override
-   */
-  writeGeometry() {}
-
-  /**
-   * Not implemented.
-   * @override
-   */
-  writeFeatures() {}
 }
 
 
