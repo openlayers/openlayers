@@ -123,7 +123,7 @@ class GMLBase extends XMLFeature {
      * @type {Object<string, Object<string, Object>>}
      */
     this.FEATURE_COLLECTION_PARSERS = {};
-    this.FEATURE_COLLECTION_PARSERS[GMLNS] = {
+    this.FEATURE_COLLECTION_PARSERS[this.namespace] = {
       'featureMember': makeArrayPusher(this.readFeaturesInternal),
       'featureMembers': makeReplacer(this.readFeaturesInternal)
     };
@@ -464,6 +464,9 @@ class GMLBase extends XMLFeature {
     return getProjection(this.srsName ? this.srsName : node.firstElementChild.getAttribute('srsName'));
   }
 }
+
+
+GMLBase.prototype.namespace = GMLNS;
 
 
 /**
