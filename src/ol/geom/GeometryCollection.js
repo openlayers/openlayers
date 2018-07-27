@@ -258,10 +258,7 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * Translate the geometry.
-   * @param {number} deltaX Delta X.
-   * @param {number} deltaY Delta Y.
-   * @override
+   * @inheritDoc
    * @api
    */
   translate(deltaX, deltaY) {

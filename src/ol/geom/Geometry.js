@@ -153,15 +153,6 @@ class Geometry extends BaseObject {
   scale(sx, opt_sy, opt_anchor) {}
 
   /**
-   * Translate the geometry. This modifies the geometry coordinates in place.
-   * @abstract
-   * @param {number} deltaX Delta X.
-   * @param {number} deltaY Delta Y.
-   * @api
-   */
-  translate(deltaX, deltaY) {}
-
-  /**
    * Create a simplified version of this geometry.  For linestrings, this uses
    * the the {@link
    * https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
@@ -218,6 +209,7 @@ class Geometry extends BaseObject {
    * @abstract
    * @param {number} deltaX Delta X.
    * @param {number} deltaY Delta Y.
+   * @api
    */
   translate(deltaX, deltaY) {}
 
