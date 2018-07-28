@@ -45,7 +45,7 @@ const map = new Map({
 });
 ```
 
-You will also need an `ìndex.html` file that will use your bundle. Here is a simple example:
+You will also need an `index.html` file that will use your bundle. Here is a simple example:
 
 ```html
 <!DOCTYPE html>
