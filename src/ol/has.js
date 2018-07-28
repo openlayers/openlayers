@@ -2,7 +2,7 @@
  * @module ol/has
  */
 
-const ua = typeof navigator !== 'undefined' ?
+const ua = typeof navigator !== 'undefined' && typeof navigator.userAgent !== 'undefined' ?
   navigator.userAgent.toLowerCase() : '';
 
 /**
