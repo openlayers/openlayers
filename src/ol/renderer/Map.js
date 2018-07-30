@@ -28,6 +28,12 @@ class MapRenderer extends Disposable {
 
     /**
      * @private
+     * @type {!Object.<string, module:ol/layer/Layer>}
+     */
+    this.layerListeners_ = {};
+
+    /**
+     * @private
      * @type {!Object<string, module:ol/renderer/Layer>}
      */
     this.layerRenderers_ = {};
@@ -224,6 +230,9 @@ class MapRenderer extends Disposable {
         this.layerRenderers_[layerKey] = renderer;
         this.layerRendererListeners_[layerKey] = listen(renderer,
           EventType.CHANGE, this.handleLayerRendererChange_, this);
+
+        this.layerListeners_[layerKey] = listen(layer,
+          EventType.CHANGE, this.handleLayerRenderModeChange_, this);
       } else {
         throw new Error('Unable to create renderer for layer: ' + layer.getType());
       }
@@ -264,6 +273,19 @@ class MapRenderer extends Disposable {
   }
 
   /**
+   * Handle changes of layer.renderMode.
+   * @param {ol.events.Event} event Event.
+   * @private
+   */
+  handleLayerRenderModeChange_(event) {
+    this.removeLayerRendererByKey_(getUid(event.target).toString());
+    this.getLayerRenderer(event.target);
+
+    this.handleLayerRendererChange_();
+  }
+
+
+  /**
    * @param {string} layerKey Layer key.
    * @return {module:ol/renderer/Layer} Layer renderer.
    * @private
@@ -274,6 +296,9 @@ class MapRenderer extends Disposable {
 
     unlistenByKey(this.layerRendererListeners_[layerKey]);
     delete this.layerRendererListeners_[layerKey];
+
+    unlistenByKey(this.layerListeners_[layerKey]);
+    delete this.layerListeners_[layerKey];
 
     return layerRenderer;
   }
