@@ -258,6 +258,19 @@ class VectorLayer extends Layer {
   getRenderMode() {
     return this.renderMode_;
   }
+
+  /**
+   * @param {module:ol/layer/VectorRenderType|string} renderMode The render mode.
+   */
+  setRenderMode(renderMode) {
+    if (renderMode === this.renderMode_) {
+      return;
+    }
+
+    this.renderMode_ = renderMode;
+
+    this.changed();
+  }
 }
 
 
