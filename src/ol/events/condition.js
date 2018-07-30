@@ -245,5 +245,5 @@ export const mouseOnly = function(mapBrowserEvent) {
  */
 export const primaryAction = function(mapBrowserEvent) {
   const pointerEvent = mapBrowserEvent.pointerEvent;
-  return pointerEvent.isPrimary && pointerEvent.button === 0;
+  return pointerEvent !== undefined && pointerEvent.isPrimary && pointerEvent.button === 0;
 };
