@@ -72,7 +72,8 @@ describe('ol.interaction.Draw', function() {
     const event = new PointerEvent(type, {
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
-      shiftKey: shiftKey
+      shiftKey: shiftKey,
+      preventDefault: function() {}
     }, {
       pointerType: 'mouse'
     });

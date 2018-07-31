@@ -55,7 +55,8 @@ describe('ol.interaction.Extent', function() {
       button: button,
       clientX: position.left + x + width / 2,
       clientY: position.top - y + height / 2,
-      shiftKey: shiftKey
+      shiftKey: shiftKey,
+      preventDefault: function() {}
     });
     const event = new MapBrowserPointerEvent(type, map, pointerEvent);
     event.pointerEvent.pointerId = 1;

@@ -86,7 +86,8 @@ describe('ol.interaction.Modify', function() {
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
       shiftKey: modifiers.shift || false,
-      altKey: modifiers.alt || false
+      altKey: modifiers.alt || false,
+      preventDefault: function() {}
     }, {
       button: button,
       isPrimary: true
