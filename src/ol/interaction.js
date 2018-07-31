@@ -12,6 +12,7 @@ import KeyboardZoom from './interaction/KeyboardZoom.js';
 import MouseWheelZoom from './interaction/MouseWheelZoom.js';
 import PinchRotate from './interaction/PinchRotate.js';
 import PinchZoom from './interaction/PinchZoom.js';
+import {focus} from './events/condition.js';
 
 export {default as DoubleClickZoom} from './interaction/DoubleClickZoom.js';
 export {default as DragAndDrop} from './interaction/DragAndDrop.js';
@@ -39,6 +40,10 @@ export {default as Translate} from './interaction/Translate.js';
  * @typedef {Object} DefaultsOptions
  * @property {boolean} [altShiftDragRotate=true] Whether Alt-Shift-drag rotate is
  * desired.
+ * @property {boolean} [onFocusOnly=false] Interact only when the map has the
+ * focus. This affects the `MouseWheelZoom` and `DragPan` interactions and is
+ * useful when page scroll is desired for maps that do not have the browser's
+ * focus.
  * @property {boolean} [constrainResolution=false] Zoom to the closest integer
  * zoom level after the wheel/trackpad or pinch gesture ends.
  * @property {boolean} [doubleClickZoom=true] Whether double click zoom is
@@ -108,6 +113,7 @@ export function defaults(opt_options) {
   const dragPan = options.dragPan !== undefined ? options.dragPan : true;
   if (dragPan) {
     interactions.push(new DragPan({
+      condition: options.onFocusOnly ? focus : undefined,
       kinetic: kinetic
     }));
   }
@@ -139,6 +145,7 @@ export function defaults(opt_options) {
     options.mouseWheelZoom : true;
   if (mouseWheelZoom) {
     interactions.push(new MouseWheelZoom({
+      condition: options.onFocusOnly ? focus : undefined,
       constrainResolution: options.constrainResolution,
       duration: options.zoomDuration
     }));
