@@ -69,7 +69,6 @@ function touchstart(inEvent) {
  * @param {TouchEvent} inEvent The in event.
  */
 function touchmove(inEvent) {
-  inEvent.preventDefault();
   this.processTouches_(inEvent, this.moveOverOut_);
 }
 

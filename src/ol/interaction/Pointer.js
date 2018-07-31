@@ -223,6 +223,9 @@ export function handleEvent(mapBrowserEvent) {
   } else {
     if (mapBrowserEvent.type == MapBrowserEventType.POINTERDOWN) {
       const handled = this.handleDownEvent_(mapBrowserEvent);
+      if (handled) {
+        mapBrowserEvent.preventDefault();
+      }
       this.handlingDownUpSequence = handled;
       stopEvent = this.stopDown(handled);
     } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE) {
