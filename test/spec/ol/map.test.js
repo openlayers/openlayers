@@ -5,7 +5,9 @@ import Overlay from '../../../src/ol/Overlay.js';
 import View from '../../../src/ol/View.js';
 import LineString from '../../../src/ol/geom/LineString.js';
 import {TOUCH} from '../../../src/ol/has.js';
+import {focus} from '../../../src/ol/events/condition.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
+import DragPan from '../../../src/ol/interaction/DragPan.js';
 import DoubleClickZoom from '../../../src/ol/interaction/DoubleClickZoom.js';
 import Interaction from '../../../src/ol/interaction/Interaction.js';
 import MouseWheelZoom from '../../../src/ol/interaction/MouseWheelZoom.js';
@@ -501,6 +503,29 @@ describe('ol.Map', function() {
         expect(interactions.item(0).useAnchor_).to.eql(true);
         interactions.item(0).setMouseAnchor(false);
         expect(interactions.item(0).useAnchor_).to.eql(false);
+        expect(interactions.item(0).condition_).to.not.be(focus);
+      });
+      it('uses the focus condition when onFocusOnly option is set', function() {
+        options.onFocusOnly = true;
+        options.mouseWheelZoom = true;
+        const interactions = defaultInteractions(options);
+        expect(interactions.item(0).condition_).to.be(focus);
+      });
+    });
+
+    describe('create dragpan interaction', function() {
+      it('creates dragpan interaction', function() {
+        options.dragPan = true;
+        const interactions = defaultInteractions(options);
+        expect(interactions.getLength()).to.eql(1);
+        expect(interactions.item(0)).to.be.a(DragPan);
+        expect(interactions.item(0).condition_).to.not.be(focus);
+      });
+      it('uses the focus condition when onFocusOnly option is set', function() {
+        options.onFocusOnly = true;
+        options.dragPan = true;
+        const interactions = defaultInteractions(options);
+        expect(interactions.item(0).condition_).to.be(focus);
       });
     });
 
