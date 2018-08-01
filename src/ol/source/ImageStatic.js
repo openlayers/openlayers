@@ -38,8 +38,6 @@ class Static extends ImageSource {
    * @param {module:ol/source/ImageStatic~Options=} options ImageStatic options.
    */
   constructor(options) {
-    const imageExtent = options.imageExtent;
-
     const crossOrigin = options.crossOrigin !== undefined ?
       options.crossOrigin : null;
 
@@ -54,9 +52,21 @@ class Static extends ImageSource {
 
     /**
      * @private
+     * @type {string}
+     */
+    this.url_ = options.url;
+
+    /**
+     * @private
+     * @type {module:ol/extent~Extent}
+     */
+    this.imageExtent_ = options.imageExtent;
+
+    /**
+     * @private
      * @type {module:ol/Image}
      */
-    this.image_ = new ImageWrapper(imageExtent, undefined, 1, options.url, crossOrigin, imageLoadFunction);
+    this.image_ = new ImageWrapper(this.imageExtent_, undefined, 1, options.url, crossOrigin, imageLoadFunction);
 
     /**
      * @private
@@ -70,6 +80,15 @@ class Static extends ImageSource {
   }
 
   /**
+   * Returns the image extent
+   * @return {module:ol/extent~Extent} image extent.
+   * @api
+   */
+  getImageExtent() {
+    return this.imageExtent_;
+  }
+
+  /**
    * @inheritDoc
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
@@ -77,6 +96,15 @@ class Static extends ImageSource {
       return this.image_;
     }
     return null;
+  }
+
+  /**
+   * Return the URL used for this image source.
+   * @return {string} URL.
+   * @api
+   */
+  getUrl() {
+    return this.url_;
   }
 
   /**
