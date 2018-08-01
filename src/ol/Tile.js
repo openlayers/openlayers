@@ -11,6 +11,26 @@ import EventType from './events/EventType.js';
  * A function that takes an {@link module:ol/Tile} for the tile and a
  * `{string}` for the url as arguments.
  *
+ *
+ * ```
+ * function (imageTile, src) {
+ *   var xhr = new XMLHttpRequest();
+ *   xhr.responseType = "blob";
+ *   xhr.addEventListener("loadend", function (evt) {
+ *     var data = this.response;
+ *     if (typeof data !== "undefined") {
+ *       imageTile.getImage().src = window.URL.createObjectURL(data);
+ *     }
+ *   });
+ *   xhr.addEventListener('error', function () {
+ *     // be sure to set the tile state to ERROR her or the tile will remain in the queue
+ *     imageTile.setState(3);
+ *   });
+ *   xhr.open("GET", src);
+ *   xhr.send();
+ * }
+ * ```
+ *
  * @typedef {function(module:ol/Tile, string)} LoadFunction
  * @api
  */
@@ -44,7 +64,7 @@ import EventType from './events/EventType.js';
  * Base class for tiles.
  *
  * @abstract
-  */
+ */
 class Tile extends EventTarget {
 
   /**
@@ -192,7 +212,10 @@ class Tile extends EventTarget {
   }
 
   /**
+   * Sets the state of this tile. If you write your own tileLoadFunction,
+   * it is important to set the state correctly to {@link module:ol/TileState.ERROR} in order for the tile to be removed from the queue.
    * @param {module:ol/TileState} state State.
+   * @api
    */
   setState(state) {
     this.state = state;

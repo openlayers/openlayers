@@ -5,7 +5,7 @@
 /**
  * @enum {number}
  */
-export default {
+const states = {
   IDLE: 0,
   LOADING: 1,
   LOADED: 2,
@@ -13,3 +13,4 @@ export default {
   EMPTY: 4,
   ABORT: 5
 };
+export default states;
