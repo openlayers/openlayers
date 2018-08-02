@@ -214,7 +214,7 @@ class TileWMS extends TileImage {
   /**
    * @inheritDoc
    */
-  getGutterInternal() {
+  getGutter() {
     return this.gutter_;
   }
 

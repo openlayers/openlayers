@@ -151,7 +151,7 @@ class TileSource extends Source {
    * @param {module:ol/proj/Projection} projection Projection.
    * @return {number} Gutter.
    */
-  getGutter(projection) {
+  getGutterForProjection(projection) {
     return 0;
   }
 
