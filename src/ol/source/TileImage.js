@@ -164,20 +164,19 @@ class TileImage extends UrlTile {
   /**
    * @inheritDoc
    */
-  getGutter(projection) {
+  getGutterForProjection(projection) {
     if (ENABLE_RASTER_REPROJECTION &&
         this.getProjection() && projection && !equivalent(this.getProjection(), projection)) {
       return 0;
     } else {
-      return this.getGutterInternal();
+      return this.getGutter();
     }
   }
 
   /**
-   * @protected
    * @return {number} Gutter.
    */
-  getGutterInternal() {
+  getGutter() {
     return 0;
   }
 
@@ -289,7 +288,7 @@ class TileImage extends UrlTile {
           sourceProjection, sourceTileGrid,
           projection, targetTileGrid,
           tileCoord, wrappedTileCoord, this.getTilePixelRatio(pixelRatio),
-          this.getGutterInternal(),
+          this.getGutter(),
           function(z, x, y, pixelRatio) {
             return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
           }.bind(this), this.reprojectionErrorThreshold_,

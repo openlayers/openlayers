@@ -161,7 +161,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     const pixelRatio = tilePixelSize[0] /
         toSize(tileGrid.getTileSize(z), this.tmpSize_)[0];
     const tilePixelResolution = tileResolution / pixelRatio;
-    const tileGutter = tileSource.getTilePixelRatio(pixelRatio) * tileSource.getGutter(projection);
+    const tileGutter = tileSource.getTilePixelRatio(pixelRatio) * tileSource.getGutterForProjection(projection);
 
     const center = viewState.center;
     const extent = frameState.extent;

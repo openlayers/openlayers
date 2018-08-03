@@ -259,7 +259,7 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
         currentTilePixelSize = tileSource.getTilePixelSize(currentZ, pixelRatio, projection);
         currentResolution = tileGrid.getResolution(currentZ);
         currentScale = currentResolution / tileResolution;
-        tileGutter = tilePixelRatio * tileSource.getGutter(projection);
+        tileGutter = tilePixelRatio * tileSource.getGutterForProjection(projection);
         tilesToDraw = tilesToDrawByZ[currentZ];
         for (const tileCoordKey in tilesToDraw) {
           tile = tilesToDraw[tileCoordKey];
