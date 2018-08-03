@@ -9,26 +9,35 @@ import EventType from './events/EventType.js';
 
 /**
  * A function that takes an {@link module:ol/Tile} for the tile and a
- * `{string}` for the url as arguments.
- *
- *
+ * `{string}` for the url as arguments. The default is
+ * ```js
+ * source.setTileLoadFunction(function(tile, src) {
+ *   tile.getImage().src = src;
+ * });
  * ```
- * function (imageTile, src) {
+ * For more fine grained control, the load function can use fetch or XMLHttpRequest and involve
+ * error handling:
+ *
+ * ```js
+ * import TileState from 'ol/TileState';
+ *
+ * source.setTileLoadFunction(function(tile, src) {
  *   var xhr = new XMLHttpRequest();
- *   xhr.responseType = "blob";
- *   xhr.addEventListener("loadend", function (evt) {
+ *   xhr.responseType = 'blob';
+ *   xhr.addEventListener('loadend', function (evt) {
  *     var data = this.response;
- *     if (typeof data !== "undefined") {
- *       imageTile.getImage().src = window.URL.createObjectURL(data);
+ *     if (data !== undefined) {
+ *       tile.getImage().src = URL.createObjectURL(data);
+ *     } else {
+ *       tile.setState(TileState.ERROR);
  *     }
  *   });
  *   xhr.addEventListener('error', function () {
- *     // be sure to set the tile state to ERROR her or the tile will remain in the queue
- *     imageTile.setState(3);
+ *     tile.setState(TileState.ERROR);
  *   });
- *   xhr.open("GET", src);
+ *   xhr.open('GET', src);
  *   xhr.send();
- * }
+ * });
  * ```
  *
  * @typedef {function(module:ol/Tile, string)} LoadFunction
@@ -212,8 +221,10 @@ class Tile extends EventTarget {
   }
 
   /**
-   * Sets the state of this tile. If you write your own tileLoadFunction,
-   * it is important to set the state correctly to {@link module:ol/TileState.ERROR} in order for the tile to be removed from the queue.
+   * Sets the state of this tile. If you write your own {@link module:ol/Tile~LoadFunction tileLoadFunction} ,
+   * it is important to set the state correctly to {@link module:ol/TileState~ERROR}
+   * when the tile cannot be loaded. Otherwise the tile cannot be removed from
+   * the tile queue and will block other requests.
    * @param {module:ol/TileState} state State.
    * @api
    */
