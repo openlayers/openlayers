@@ -143,7 +143,7 @@ class Cluster extends VectorSource {
     this.clear();
     this.cluster();
     this.addFeatures(this.features);
-    VectorSource.prototype.refresh.call(this);
+    super.refresh();
   }
 
   /**

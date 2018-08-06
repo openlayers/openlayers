@@ -91,7 +91,7 @@ class WebGLImageReplay extends WebGLTextureReplay {
 
     this.images_ = null;
     this.hitDetectionImages_ = null;
-    WebGLTextureReplay.prototype.finish.call(this, context);
+    super.finish(context);
   }
 
   /**

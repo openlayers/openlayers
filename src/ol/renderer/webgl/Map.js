@@ -291,7 +291,7 @@ class WebGLMapRenderer extends MapRenderer {
         });
     }
     this.context_.dispose();
-    MapRenderer.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**

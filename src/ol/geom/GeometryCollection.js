@@ -274,7 +274,7 @@ class GeometryCollection extends Geometry {
    */
   disposeInternal() {
     this.unlistenGeometriesChange_();
-    Geometry.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 }
 

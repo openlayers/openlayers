@@ -69,7 +69,7 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
     if (this.vectorRenderer_) {
       this.vectorRenderer_.dispose();
     }
-    IntermediateCanvasRenderer.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**
@@ -184,7 +184,7 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
     if (this.vectorRenderer_) {
       return this.vectorRenderer_.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
     } else {
-      return IntermediateCanvasRenderer.prototype.forEachFeatureAtCoordinate.call(this, coordinate, frameState, hitTolerance, callback, thisArg);
+      return super.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
     }
   }
 }

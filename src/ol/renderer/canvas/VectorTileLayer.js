@@ -97,14 +97,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   disposeInternal() {
     unlisten(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
-    CanvasTileLayerRenderer.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**
    * @inheritDoc
    */
   getTile(z, x, y, pixelRatio, projection) {
-    const tile = CanvasTileLayerRenderer.prototype.getTile.call(this, z, x, y, pixelRatio, projection);
+    const tile = super.getTile(z, x, y, pixelRatio, projection);
     if (tile.getState() === TileState.LOADED) {
       this.createReplayGroup_(tile, pixelRatio, projection);
       if (this.context) {
@@ -131,7 +131,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
     }
     this.renderedLayerRevision_ = layerRevision;
-    return CanvasTileLayerRenderer.prototype.prepareFrame.apply(this, arguments);
+    return super.prepareFrame(frameState, layerState);
   }
 
   /**
@@ -404,7 +404,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           /** @type {number} */ (offsetX), /** @type {number} */ (offsetY));
       }
     }
-    CanvasTileLayerRenderer.prototype.postCompose.apply(this, arguments);
+    super.postCompose(context, frameState, layerState);
   }
 
   /**

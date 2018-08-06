@@ -130,7 +130,7 @@ class TileImage extends UrlTile {
    */
   canExpireCache() {
     if (!ENABLE_RASTER_REPROJECTION) {
-      return UrlTile.prototype.canExpireCache.call(this);
+      return super.canExpireCache();
     }
     if (this.tileCache.canExpireCache()) {
       return true;
@@ -149,7 +149,7 @@ class TileImage extends UrlTile {
    */
   expireCache(projection, usedTiles) {
     if (!ENABLE_RASTER_REPROJECTION) {
-      UrlTile.prototype.expireCache.call(this, projection, usedTiles);
+      super.expireCache(projection, usedTiles);
       return;
     }
     const usedTileCache = this.getTileCacheForProjection(projection);
@@ -188,7 +188,7 @@ class TileImage extends UrlTile {
         this.getProjection() && projection && !equivalent(this.getProjection(), projection)) {
       return false;
     } else {
-      return UrlTile.prototype.getOpaque.call(this, projection);
+      return super.getOpaque(projection);
     }
   }
 
