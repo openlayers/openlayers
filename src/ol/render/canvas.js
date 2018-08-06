@@ -195,20 +195,31 @@ export const checkFont = (function() {
 
   function isAvailable(font) {
     const context = getMeasureContext();
-    let available = true;
-    for (let i = 0; i < len; ++i) {
-      const referenceFont = referenceFonts[i];
-      context.font = size + referenceFont;
-      referenceWidth = context.measureText(text).width;
-      if (font != referenceFont) {
-        context.font = size + font + ',' + referenceFont;
-        const width = context.measureText(text).width;
-        // If width and referenceWidth are the same, then the fallback was used
-        // instead of the font we wanted, so the font is not available.
-        available = available && width != referenceWidth;
+    // Check weight ranges according to
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights
+    for (let weight = 100; weight <= 700; weight += 300) {
+      const fontWeight = weight + ' ';
+      let available = true;
+      for (let i = 0; i < len; ++i) {
+        const referenceFont = referenceFonts[i];
+        context.font = fontWeight + size + referenceFont;
+        referenceWidth = context.measureText(text).width;
+        if (font != referenceFont) {
+          context.font = fontWeight + size + font + ',' + referenceFont;
+          const width = context.measureText(text).width;
+          // If width and referenceWidth are the same, then the fallback was used
+          // instead of the font we wanted, so the font is not available.
+          available = available && width != referenceWidth;
+        }
+      }
+      if (available) {
+        // Consider font available when it is available in one weight range.
+        //FIXME With this we miss rare corner cases, so we should consider
+        //FIXME checking availability for each requested weight range.
+        return true;
       }
     }
-    return available;
+    return false;
   }
 
   function check() {
