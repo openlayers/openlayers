@@ -108,7 +108,7 @@ class CanvasLineStringReplay extends CanvasReplay {
       state.lastStroke = this.coordinates.length;
     }
     state.lastStroke = 0;
-    CanvasReplay.prototype.applyStroke.call(this, state);
+    super.applyStroke(state);
     this.instructions.push(beginPathInstruction);
   }
 }

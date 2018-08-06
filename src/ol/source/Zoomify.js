@@ -52,32 +52,31 @@ export class CustomTile extends ImageTile {
 
   }
 
-}
-
-
-/**
- * @inheritDoc
- */
-CustomTile.prototype.getImage = function() {
-  if (this.zoomifyImage_) {
-    return this.zoomifyImage_;
-  }
-  const image = ImageTile.prototype.getImage.call(this);
-  if (this.state == TileState.LOADED) {
-    const tileSize = this.tileSize_;
-    if (image.width == tileSize[0] && image.height == tileSize[1]) {
-      this.zoomifyImage_ = image;
-      return image;
-    } else {
-      const context = createCanvasContext2D(tileSize[0], tileSize[1]);
-      context.drawImage(image, 0, 0);
-      this.zoomifyImage_ = context.canvas;
-      return context.canvas;
+  /**
+   * @inheritDoc
+   */
+  getImage() {
+    if (this.zoomifyImage_) {
+      return this.zoomifyImage_;
     }
-  } else {
-    return image;
+    const image = super.getImage();
+    if (this.state == TileState.LOADED) {
+      const tileSize = this.tileSize_;
+      if (image.width == tileSize[0] && image.height == tileSize[1]) {
+        this.zoomifyImage_ = image;
+        return image;
+      } else {
+        const context = createCanvasContext2D(tileSize[0], tileSize[1]);
+        context.drawImage(image, 0, 0);
+        this.zoomifyImage_ = context.canvas;
+        return context.canvas;
+      }
+    } else {
+      return image;
+    }
   }
-};
+
+}
 
 
 /**

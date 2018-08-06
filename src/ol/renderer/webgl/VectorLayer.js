@@ -103,7 +103,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       replayGroup.getDeleteResourcesFunction(context)();
       this.replayGroup_ = null;
     }
-    WebGLLayerRenderer.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**

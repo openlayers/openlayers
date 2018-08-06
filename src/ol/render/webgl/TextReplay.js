@@ -338,7 +338,7 @@ class WebGLTextReplay extends WebGLTextureReplay {
     this.images_ = null;
     this.atlases_ = {};
     this.currAtlas_ = undefined;
-    WebGLTextureReplay.prototype.finish.call(this, context);
+    super.finish(context);
   }
 
   /**

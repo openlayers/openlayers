@@ -209,7 +209,7 @@ class CanvasMapRenderer extends MapRenderer {
    * @inheritDoc
    */
   registerLayerRenderers(constructors) {
-    MapRenderer.prototype.registerLayerRenderers.call(this, constructors);
+    super.registerLayerRenderers(constructors);
     for (let i = 0, ii = constructors.length; i < ii; ++i) {
       const ctor = constructors[i];
       if (!includes(layerRendererConstructors, ctor)) {

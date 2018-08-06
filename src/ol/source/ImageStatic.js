@@ -132,7 +132,7 @@ class Static extends ImageSource {
         this.image_.setImage(canvas);
       }
     }
-    ImageSource.prototype.handleImageChange.call(this, evt);
+    super.handleImageChange(evt);
   }
 }
 

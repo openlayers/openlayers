@@ -100,7 +100,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
   disposeInternal() {
     const context = this.mapRenderer.getContext();
     context.deleteBuffer(this.renderArrayBuffer_);
-    WebGLLayerRenderer.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**
@@ -135,7 +135,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
    * @inheritDoc
    */
   handleWebGLContextLost() {
-    WebGLLayerRenderer.prototype.handleWebGLContextLost.call(this);
+    super.handleWebGLContextLost();
     this.locations_ = null;
   }
 

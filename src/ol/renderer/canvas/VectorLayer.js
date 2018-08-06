@@ -91,7 +91,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    */
   disposeInternal() {
     unlisten(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
-    CanvasLayerRenderer.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**

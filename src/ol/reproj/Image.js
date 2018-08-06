@@ -121,7 +121,7 @@ class ReprojImage extends ImageBase {
     if (this.state == ImageState.LOADING) {
       this.unlistenSource_();
     }
-    ImageBase.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**

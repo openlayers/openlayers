@@ -210,7 +210,7 @@ class ReprojTile extends Tile {
     if (this.state == TileState.LOADING) {
       this.unlistenSources_();
     }
-    Tile.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**

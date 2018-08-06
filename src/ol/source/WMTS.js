@@ -151,117 +151,118 @@ class WMTS extends TileImage {
 
   }
 
+  /**
+   * Set the URLs to use for requests.
+   * URLs may contain OCG conform URL Template Variables: {TileMatrix}, {TileRow}, {TileCol}.
+   * @override
+   */
+  setUrls(urls) {
+    this.urls = urls;
+    const key = urls.join('\n');
+    this.setTileUrlFunction(this.fixedTileUrlFunction ?
+      this.fixedTileUrlFunction.bind(this) :
+      createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this))), key);
+  }
+
+  /**
+   * Get the dimensions, i.e. those passed to the constructor through the
+   * "dimensions" option, and possibly updated using the updateDimensions
+   * method.
+   * @return {!Object} Dimensions.
+   * @api
+   */
+  getDimensions() {
+    return this.dimensions_;
+  }
+
+
+  /**
+   * Return the image format of the WMTS source.
+   * @return {string} Format.
+   * @api
+   */
+  getFormat() {
+    return this.format_;
+  }
+
+
+  /**
+   * Return the layer of the WMTS source.
+   * @return {string} Layer.
+   * @api
+   */
+  getLayer() {
+    return this.layer_;
+  }
+
+
+  /**
+   * Return the matrix set of the WMTS source.
+   * @return {string} MatrixSet.
+   * @api
+   */
+  getMatrixSet() {
+    return this.matrixSet_;
+  }
+
+
+  /**
+   * Return the request encoding, either "KVP" or "REST".
+   * @return {module:ol/source/WMTSRequestEncoding} Request encoding.
+   * @api
+   */
+  getRequestEncoding() {
+    return this.requestEncoding_;
+  }
+
+
+  /**
+   * Return the style of the WMTS source.
+   * @return {string} Style.
+   * @api
+   */
+  getStyle() {
+    return this.style_;
+  }
+
+
+  /**
+   * Return the version of the WMTS source.
+   * @return {string} Version.
+   * @api
+   */
+  getVersion() {
+    return this.version_;
+  }
+
+
+  /**
+   * @private
+   * @return {string} The key for the current dimensions.
+   */
+  getKeyForDimensions_() {
+    let i = 0;
+    const res = [];
+    for (const key in this.dimensions_) {
+      res[i++] = key + '-' + this.dimensions_[key];
+    }
+    return res.join('/');
+  }
+
+
+  /**
+   * Update the dimensions.
+   * @param {Object} dimensions Dimensions.
+   * @api
+   */
+  updateDimensions(dimensions) {
+    assign(this.dimensions_, dimensions);
+    this.setKey(this.getKeyForDimensions_());
+  }
+
 }
 
-/**
- * Set the URLs to use for requests.
- * URLs may contain OCG conform URL Template Variables: {TileMatrix}, {TileRow}, {TileCol}.
- * @override
- */
-WMTS.prototype.setUrls = function(urls) {
-  this.urls = urls;
-  const key = urls.join('\n');
-  this.setTileUrlFunction(this.fixedTileUrlFunction ?
-    this.fixedTileUrlFunction.bind(this) :
-    createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this))), key);
-};
-
-/**
- * Get the dimensions, i.e. those passed to the constructor through the
- * "dimensions" option, and possibly updated using the updateDimensions
- * method.
- * @return {!Object} Dimensions.
- * @api
- */
-WMTS.prototype.getDimensions = function() {
-  return this.dimensions_;
-};
-
-
-/**
- * Return the image format of the WMTS source.
- * @return {string} Format.
- * @api
- */
-WMTS.prototype.getFormat = function() {
-  return this.format_;
-};
-
-
-/**
- * Return the layer of the WMTS source.
- * @return {string} Layer.
- * @api
- */
-WMTS.prototype.getLayer = function() {
-  return this.layer_;
-};
-
-
-/**
- * Return the matrix set of the WMTS source.
- * @return {string} MatrixSet.
- * @api
- */
-WMTS.prototype.getMatrixSet = function() {
-  return this.matrixSet_;
-};
-
-
-/**
- * Return the request encoding, either "KVP" or "REST".
- * @return {module:ol/source/WMTSRequestEncoding} Request encoding.
- * @api
- */
-WMTS.prototype.getRequestEncoding = function() {
-  return this.requestEncoding_;
-};
-
-
-/**
- * Return the style of the WMTS source.
- * @return {string} Style.
- * @api
- */
-WMTS.prototype.getStyle = function() {
-  return this.style_;
-};
-
-
-/**
- * Return the version of the WMTS source.
- * @return {string} Version.
- * @api
- */
-WMTS.prototype.getVersion = function() {
-  return this.version_;
-};
-
-
-/**
- * @private
- * @return {string} The key for the current dimensions.
- */
-WMTS.prototype.getKeyForDimensions_ = function() {
-  let i = 0;
-  const res = [];
-  for (const key in this.dimensions_) {
-    res[i++] = key + '-' + this.dimensions_[key];
-  }
-  return res.join('/');
-};
-
-
-/**
- * Update the dimensions.
- * @param {Object} dimensions Dimensions.
- * @api
- */
-WMTS.prototype.updateDimensions = function(dimensions) {
-  assign(this.dimensions_, dimensions);
-  this.setKey(this.getKeyForDimensions_());
-};
-
+export default WMTS;
 
 /**
  * Generate source options from a capabilities object.
@@ -523,6 +524,3 @@ function createFromWMTSTemplate(template) {
     }
   );
 }
-
-
-export default WMTS;

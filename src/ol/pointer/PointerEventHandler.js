@@ -411,7 +411,7 @@ class PointerEventHandler extends EventTarget {
    */
   disposeInternal() {
     this.unregister_();
-    EventTarget.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 }
 
