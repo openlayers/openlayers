@@ -41,7 +41,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  *     }));
  *     // the line below is only required for ol/format/MVT
  *     tile.setExtent(format.getLastExtent());
- *   };
+ *   }
  * });
  * ```
  * @property {module:ol/Tile~UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
@@ -136,84 +136,84 @@ class VectorTile extends UrlTile {
 
   }
 
+  /**
+   * @return {boolean} The source can have overlapping geometries.
+   */
+  getOverlaps() {
+    return this.overlaps_;
+  }
+
+  /**
+   * clear {@link module:ol/TileCache~TileCache} and delete all source tiles
+   * @api
+   */
+  clear() {
+    this.tileCache.clear();
+    this.sourceTiles_ = {};
+  }
+
+  /**
+   * @inheritDoc
+   */
+  getTile(z, x, y, pixelRatio, projection) {
+    const tileCoordKey = getKeyZXY(z, x, y);
+    if (this.tileCache.containsKey(tileCoordKey)) {
+      return (
+        /** @type {!module:ol/Tile} */ (this.tileCache.get(tileCoordKey))
+      );
+    } else {
+      const tileCoord = [z, x, y];
+      const urlTileCoord = this.getTileCoordForTileUrlFunction(
+        tileCoord, projection);
+      const tile = new VectorImageTile(
+        tileCoord,
+        urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
+        this.getRevision(),
+        this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
+        this.tileGrid, this.getTileGridForProjection(projection),
+        this.sourceTiles_, pixelRatio, projection, this.tileClass,
+        this.handleTileChange.bind(this), tileCoord[0]);
+
+      this.tileCache.set(tileCoordKey, tile);
+      return tile;
+    }
+  }
+
+
+  /**
+   * @inheritDoc
+   */
+  getTileGridForProjection(projection) {
+    const code = projection.getCode();
+    let tileGrid = this.tileGrids_[code];
+    if (!tileGrid) {
+      // A tile grid that matches the tile size of the source tile grid is more
+      // likely to have 1:1 relationships between source tiles and rendered tiles.
+      const sourceTileGrid = this.tileGrid;
+      tileGrid = this.tileGrids_[code] = createForProjection(projection, undefined,
+        sourceTileGrid ? sourceTileGrid.getTileSize(sourceTileGrid.getMinZoom()) : undefined);
+    }
+    return tileGrid;
+  }
+
+
+  /**
+   * @inheritDoc
+   */
+  getTilePixelRatio(pixelRatio) {
+    return pixelRatio;
+  }
+
+
+  /**
+   * @inheritDoc
+   */
+  getTilePixelSize(z, pixelRatio, projection) {
+    const tileGrid = this.getTileGridForProjection(projection);
+    const tileSize = toSize(tileGrid.getTileSize(z), this.tmpSize);
+    return [Math.round(tileSize[0] * pixelRatio), Math.round(tileSize[1] * pixelRatio)];
+  }
 }
 
 
-/**
- * @return {boolean} The source can have overlapping geometries.
- */
-VectorTile.prototype.getOverlaps = function() {
-  return this.overlaps_;
-};
-
-/**
- * clear {@link module:ol/TileCache~TileCache} and delete all source tiles
- * @api
- */
-VectorTile.prototype.clear = function() {
-  this.tileCache.clear();
-  this.sourceTiles_ = {};
-};
-
-/**
- * @inheritDoc
- */
-VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projection) {
-  const tileCoordKey = getKeyZXY(z, x, y);
-  if (this.tileCache.containsKey(tileCoordKey)) {
-    return (
-      /** @type {!module:ol/Tile} */ (this.tileCache.get(tileCoordKey))
-    );
-  } else {
-    const tileCoord = [z, x, y];
-    const urlTileCoord = this.getTileCoordForTileUrlFunction(
-      tileCoord, projection);
-    const tile = new VectorImageTile(
-      tileCoord,
-      urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
-      this.getRevision(),
-      this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
-      this.tileGrid, this.getTileGridForProjection(projection),
-      this.sourceTiles_, pixelRatio, projection, this.tileClass,
-      this.handleTileChange.bind(this), tileCoord[0]);
-
-    this.tileCache.set(tileCoordKey, tile);
-    return tile;
-  }
-};
-
-
-/**
- * @inheritDoc
- */
-VectorTile.prototype.getTileGridForProjection = function(projection) {
-  const code = projection.getCode();
-  let tileGrid = this.tileGrids_[code];
-  if (!tileGrid) {
-    // A tile grid that matches the tile size of the source tile grid is more
-    // likely to have 1:1 relationships between source tiles and rendered tiles.
-    const sourceTileGrid = this.tileGrid;
-    tileGrid = this.tileGrids_[code] = createForProjection(projection, undefined,
-      sourceTileGrid ? sourceTileGrid.getTileSize(sourceTileGrid.getMinZoom()) : undefined);
-  }
-  return tileGrid;
-};
-
-
-/**
- * @inheritDoc
- */
-VectorTile.prototype.getTilePixelRatio = function(pixelRatio) {
-  return pixelRatio;
-};
-
-
-/**
- * @inheritDoc
- */
-VectorTile.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
-  const tileGrid = this.getTileGridForProjection(projection);
-  const tileSize = toSize(tileGrid.getTileSize(z), this.tmpSize);
-  return [Math.round(tileSize[0] * pixelRatio), Math.round(tileSize[1] * pixelRatio)];
-};
 export default VectorTile;
