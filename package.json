@@ -67,7 +67,7 @@
     "mustache": "^2.3.0",
     "pixelmatch": "^4.0.2",
     "proj4": "2.4.4",
-    "rollup": "0.64.0",
+    "rollup": "0.64.1",
     "rollup-plugin-buble": "0.19.2",
     "rollup-plugin-commonjs": "9.1.4",
     "rollup-plugin-node-resolve": "3.3.0",
