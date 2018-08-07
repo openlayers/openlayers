@@ -340,7 +340,7 @@ function readLegendUrl(node, objectStack) {
  * @return {Object|undefined} Coordinates object.
  */
 function readCoordinates(node, objectStack) {
-  const coordinates = readString(node).replace(/\s\s+/g, ' ').split(' ');
+  const coordinates = readString(node).split(/\s+/g);
   if (!coordinates || coordinates.length != 2) {
     return undefined;
   }
