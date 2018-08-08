@@ -208,7 +208,11 @@ class Select extends Interaction {
      */
     this.hitTolerance_ = options.hitTolerance ? options.hitTolerance : 0;
 
-    const featureOverlay = new VectorLayer({
+    /**
+     * @private
+     * @type {module:ol/layer/Vector}
+     */
+    this.featureOverlay_ = options.featureOverlay ? options.featureOverlay : new VectorLayer({
       source: new VectorSource({
         useSpatialIndex: false,
         features: options.features,
@@ -219,12 +223,6 @@ class Select extends Interaction {
       updateWhileAnimating: true,
       updateWhileInteracting: true
     });
-
-    /**
-     * @private
-     * @type {module:ol/layer/Vector}
-     */
-    this.featureOverlay_ = featureOverlay;
 
     /** @type {function(module:ol/layer/Layer): boolean} */
     let layerFilter;
