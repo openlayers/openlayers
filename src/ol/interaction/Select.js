@@ -61,6 +61,10 @@ const SelectEventType = {
  * in the map and should return `true` for layers that you want to be
  * selectable. If the option is absent, all visible layers will be considered
  * selectable.
+ * @property {ol/layer/Layer} [featureOverlay] A layer where selected features
+ * will be added. This is useful for adding special styling for highlighting.
+ * This allows passing in managed layers. If absent, an internal unmanaged layer
+ * will be used.
  * @property {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style]
  * Style for the selected features. By default the default edit style is used
  * (see {@link module:ol/style}).
@@ -149,7 +153,8 @@ class SelectEvent extends Event {
  * `toggle`, `add`/`remove`, and `multi` options; a `layers` filter; and a
  * further feature filter using the `filter` option.
  *
- * Selected features are added to an internal unmanaged layer.
+ * Selected features are added to the `featureOverlay` layer if specified,
+ * otherwise to an internal unmanaged layer.
  *
  * @fires SelectEvent
  * @api
