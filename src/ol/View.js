@@ -894,16 +894,21 @@ class View extends BaseObject {
   }
 
   /**
+   * @param {number} pixelRatio Pixel ratio for center rounding.
    * @return {module:ol/View~State} View state.
    */
-  getState() {
+  getState(pixelRatio) {
     const center = /** @type {module:ol/coordinate~Coordinate} */ (this.getCenter());
     const projection = this.getProjection();
     const resolution = /** @type {number} */ (this.getResolution());
+    const pixelResolution = resolution / pixelRatio;
     const rotation = this.getRotation();
     return (
       /** @type {module:ol/View~State} */ ({
-        center: center.slice(),
+        center: [
+          Math.round(center[0] / pixelResolution) * pixelResolution,
+          Math.round(center[1] / pixelResolution) * pixelResolution
+        ],
         projection: projection !== undefined ? projection : null,
         resolution: resolution,
         rotation: rotation,

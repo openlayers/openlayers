@@ -1179,19 +1179,12 @@ class PluggableMap extends BaseObject {
       for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
         layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
       }
-      viewState = view.getState();
-      let focus = this.focus_;
-      if (!focus) {
-        focus = viewState.center;
-        const pixelResolution = viewState.resolution / this.pixelRatio_;
-        focus[0] = Math.round(focus[0] / pixelResolution) * pixelResolution;
-        focus[1] = Math.round(focus[1] / pixelResolution) * pixelResolution;
-      }
+      viewState = view.getState(this.pixelRatio_);
       frameState = /** @type {module:ol/PluggableMap~FrameState} */ ({
         animate: false,
         coordinateToPixelTransform: this.coordinateToPixelTransform_,
         extent: extent,
-        focus: focus,
+        focus: this.focus_ ? this.focus_ : viewState.center,
         index: this.frameIndex_++,
         layerStates: layerStates,
         layerStatesArray: layerStatesArray,
