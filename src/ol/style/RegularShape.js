@@ -20,10 +20,6 @@ import ImageStyle from '../style/Image.js';
  * @property {number} [radius1] Outer radius of a star.
  * @property {number} [radius2] Inner radius of a star.
  * @property {number} [angle=0] Shape's angle in radians. A value of 0 will have one of the shape's point facing up.
- * @property {boolean} [snapToPixel=true] If `true` integral numbers of pixels are used as the X and Y pixel coordinate
- * when drawing the shape in the output canvas. If `false` fractional numbers may be used. Using `true` allows for
- * "sharp" rendering (no blur), while using `false` allows for "accurate" rendering. Note that accuracy is important if
- * the shape's position is animated. Without it, the shape may jitter noticeably.
  * @property {module:ol/style/Stroke} [stroke] Stroke style.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
@@ -61,12 +57,6 @@ class RegularShape extends ImageStyle {
     /**
      * @type {boolean}
      */
-    const snapToPixel = options.snapToPixel !== undefined ?
-      options.snapToPixel : true;
-
-    /**
-     * @type {boolean}
-     */
     const rotateWithView = options.rotateWithView !== undefined ?
       options.rotateWithView : false;
 
@@ -74,8 +64,7 @@ class RegularShape extends ImageStyle {
       opacity: 1,
       rotateWithView: rotateWithView,
       rotation: options.rotation !== undefined ? options.rotation : 0,
-      scale: 1,
-      snapToPixel: snapToPixel
+      scale: 1
     });
 
     /**
@@ -185,7 +174,6 @@ class RegularShape extends ImageStyle {
       radius: this.getRadius(),
       radius2: this.getRadius2(),
       angle: this.getAngle(),
-      snapToPixel: this.getSnapToPixel(),
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),

@@ -65,7 +65,6 @@ function flash(feature) {
     const style = new Style({
       image: new CircleStyle({
         radius: radius,
-        snapToPixel: false,
         stroke: new Stroke({
           color: 'rgba(255, 0, 0, ' + opacity + ')',
           width: 0.25 + opacity

@@ -94,7 +94,6 @@ const styles = {
   'geoMarker': new Style({
     image: new CircleStyle({
       radius: 7,
-      snapToPixel: false,
       fill: new Fill({color: 'black'}),
       stroke: new Stroke({
         color: 'white', width: 2

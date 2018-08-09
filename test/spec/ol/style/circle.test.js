@@ -91,8 +91,7 @@ describe('ol.style.Circle', function() {
         stroke: new Stroke({
           color: '#319FD3'
         }),
-        radius: 5,
-        snapToPixel: false
+        radius: 5
       });
       original.setOpacity(0.5);
       original.setScale(1.5);
@@ -101,7 +100,6 @@ describe('ol.style.Circle', function() {
       expect(original.getOpacity()).to.eql(clone.getOpacity());
       expect(original.getRadius()).to.eql(clone.getRadius());
       expect(original.getScale()).to.eql(clone.getScale());
-      expect(original.getSnapToPixel()).to.eql(clone.getSnapToPixel());
       expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
     });
 

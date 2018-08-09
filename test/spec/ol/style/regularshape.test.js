@@ -121,7 +121,6 @@ describe('ol.style.RegularShape', function() {
         radius: 4,
         radius2: 6,
         angle: 1,
-        snapToPixel: false,
         stroke: new Stroke({
           color: '#319FD3'
         }),
@@ -140,7 +139,6 @@ describe('ol.style.RegularShape', function() {
       expect(original.getRotation()).to.eql(clone.getRotation());
       expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
       expect(original.getScale()).to.eql(clone.getScale());
-      expect(original.getSnapToPixel()).to.eql(clone.getSnapToPixel());
       expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
     });
 

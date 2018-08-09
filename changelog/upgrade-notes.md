@@ -1,5 +1,15 @@
 ## Upgrade notes
 
+### Next version
+
+#### Removal of the `snapToPixel` option for `ol/style/Image` subclasses
+
+The `snapToPixel` option has been removed, and the `getSnapToPixel` and `setSnapToPixel` methods are deprecated.
+
+The renderer now snaps to integer pixels when no interaction or animation is running to get crisp rendering. During interaction or animation, it does not snap to integer pixels to avoid jitter.
+
+When rendering with the Immediate API, symbols will no longer be snapped to integer pixels. To get crisp images, set `context.imageSmoothingEnabled = false` before rendering with the Immediate API, and `context.imageSmoothingEnabled = true` afterwards.
+
 ### v5.1.0
 
 #### Geometry constructor and `setCoordinates` no longer accept `null` coordinates
