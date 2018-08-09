@@ -4,6 +4,7 @@
 import {getUid} from '../../util.js';
 import LayerType from '../../LayerType.js';
 import TileState from '../../TileState.js';
+import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {listen, unlisten} from '../../events.js';
 import EventType from '../../events/EventType.js';
@@ -341,6 +342,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       if (declutterReplays) {
         this.declutterTree_.clear();
       }
+      const viewHints = frameState.viewHints;
+      const snapToPixel = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
       const tiles = this.renderedTiles;
       const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
       const clips = [];
@@ -390,14 +393,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
               context.clip();
             }
           }
-          replayGroup.replay(context, transform, rotation, {}, replayTypes, declutterReplays);
+          replayGroup.replay(context, transform, rotation, {}, snapToPixel, replayTypes, declutterReplays);
           context.restore();
           clips.push(currentClip);
           zs.push(currentZ);
         }
       }
       if (declutterReplays) {
-        replayDeclutter(declutterReplays, context, rotation);
+        replayDeclutter(declutterReplays, context, rotation, snapToPixel);
       }
       if (rotation) {
         rotateAtOffset(context, rotation,
@@ -466,7 +469,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         scaleTransform(transform, pixelScale, -pixelScale);
         translateTransform(transform, -tileExtent[0], -tileExtent[3]);
         const replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
-        replayGroup.replay(context, transform, 0, {}, replays);
+        replayGroup.replay(context, transform, 0, {}, true, replays);
       }
     }
   }

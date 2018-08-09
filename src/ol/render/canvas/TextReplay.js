@@ -337,7 +337,7 @@ class CanvasTextReplay extends CanvasReplay {
     this.instructions.push([CanvasInstruction.DRAW_IMAGE, begin, end,
       label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
       this.declutterGroup_, label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
-      1, true, label.width,
+      1, label.width,
       textState.padding == defaultPadding ?
         defaultPadding : textState.padding.map(function(p) {
           return p * pixelRatio;
@@ -347,7 +347,7 @@ class CanvasTextReplay extends CanvasReplay {
     this.hitDetectionInstructions.push([CanvasInstruction.DRAW_IMAGE, begin, end,
       label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
       this.declutterGroup_, label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
-      1 / pixelRatio, true, label.width, textState.padding,
+      1 / pixelRatio, label.width, textState.padding,
       !!textState.backgroundFill, !!textState.backgroundStroke
     ]);
   }

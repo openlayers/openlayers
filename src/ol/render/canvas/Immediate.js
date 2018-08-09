@@ -158,12 +158,6 @@ class CanvasImmediateRenderer extends VectorContext {
 
     /**
      * @private
-     * @type {boolean}
-     */
-    this.imageSnapToPixel_ = false;
-
-    /**
-     * @private
      * @type {number}
      */
     this.imageWidth_ = 0;
@@ -261,12 +255,8 @@ class CanvasImmediateRenderer extends VectorContext {
       rotation += this.viewRotation_;
     }
     for (let i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
-      let x = pixelCoordinates[i] - this.imageAnchorX_;
-      let y = pixelCoordinates[i + 1] - this.imageAnchorY_;
-      if (this.imageSnapToPixel_) {
-        x = Math.round(x);
-        y = Math.round(y);
-      }
+      const x = pixelCoordinates[i] - this.imageAnchorX_;
+      const y = pixelCoordinates[i + 1] - this.imageAnchorY_;
       if (rotation !== 0 || this.imageScale_ != 1) {
         const centerX = x + this.imageAnchorX_;
         const centerY = y + this.imageAnchorY_;
@@ -856,7 +846,6 @@ class CanvasImmediateRenderer extends VectorContext {
       this.imageRotateWithView_ = imageStyle.getRotateWithView();
       this.imageRotation_ = imageStyle.getRotation();
       this.imageScale_ = imageStyle.getScale() * this.pixelRatio_;
-      this.imageSnapToPixel_ = imageStyle.getSnapToPixel();
       this.imageWidth_ = imageSize[0];
     }
   }
