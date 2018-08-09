@@ -428,9 +428,7 @@ class View extends BaseObject {
         this.setRotation(state.rotation);
       }
       if (callback) {
-        setTimeout(function() {
-          callback(true);
-        }, 0);
+        animationCallback(callback, true);
       }
       return;
     }
@@ -517,7 +515,7 @@ class View extends BaseObject {
     for (let i = 0, ii = this.animations_.length; i < ii; ++i) {
       const series = this.animations_[i];
       if (series[0].callback) {
-        series[0].callback(false);
+        animationCallback(series[0].callback, false);
       }
     }
     this.animations_.length = 0;
@@ -592,9 +590,7 @@ class View extends BaseObject {
         this.setHint(ViewHint.ANIMATING, -1);
         const callback = series[0].callback;
         if (callback) {
-          setTimeout(function() {
-            callback(true);
-          }, 0);
+          animationCallback(callback, true);
         }
       }
     }
@@ -1069,7 +1065,7 @@ class View extends BaseObject {
     } else {
       this.setResolution(resolution);
       this.setCenter(center);
-      setTimeout(callback.bind(undefined, true), 0);
+      animationCallback(callback, true);
     }
   }
 
@@ -1178,6 +1174,17 @@ class View extends BaseObject {
   setZoom(zoom) {
     this.setResolution(this.getResolutionForZoom(zoom));
   }
+}
+
+
+/**
+ * @param {Function} callback Callback.
+ * @param {*} returnValue Return value.
+ */
+function animationCallback(callback, returnValue) {
+  setTimeout(function() {
+    callback(returnValue);
+  }, 0);
 }
 
 
