@@ -215,9 +215,16 @@ class Select extends Interaction {
 
     /**
      * @private
+     * @type {boolean}
+     */
+    this.userSpecifiedFeatureOverlay_ = typeof options.featureOverlay !== 'undefined' &&
+      options.featureOverlay !== null;
+
+    /**
+     * @private
      * @type {module:ol/layer/Vector}
      */
-    this.featureOverlay_ = options.featureOverlay ? options.featureOverlay : new VectorLayer({
+    this.featureOverlay_ = this.userSpecifiedFeatureOverlay_ ? options.featureOverlay : new VectorLayer({
       source: new VectorSource({
         useSpatialIndex: false,
         features: options.features,
@@ -258,11 +265,13 @@ class Select extends Interaction {
      */
     this.featureLayerAssociation_ = {};
 
-    const features = this.featureOverlay_.getSource().getFeaturesCollection();
-    listen(features, CollectionEventType.ADD,
-      this.addFeature_, this);
-    listen(features, CollectionEventType.REMOVE,
-      this.removeFeature_, this);
+    if (!this.userSpecifiedFeatureOverlay_) {
+      const features = this.featureOverlay_.getSource().getFeaturesCollection();
+      listen(features, CollectionEventType.ADD,
+        this.addFeature_, this);
+      listen(features, CollectionEventType.REMOVE,
+        this.removeFeature_, this);
+    }
 
   }
 
@@ -324,11 +333,17 @@ class Select extends Interaction {
   /**
    * Remove the interaction from its current map, if any,  and attach it to a new
    * map, if any. Pass `null` to just remove the interaction from the current map.
+   * If user has specified a feature overlay, this is effectively a no-op, since
+   * they are managing the selection layer directly.
    * @param {module:ol/PluggableMap} map Map.
    * @override
    * @api
    */
   setMap(map) {
+    if (this.userSpecifiedFeatureOverlay_) {
+      return;
+    }
+
     const currentMap = this.getMap();
     const selectedFeatures =
         this.featureOverlay_.getSource().getFeaturesCollection();
