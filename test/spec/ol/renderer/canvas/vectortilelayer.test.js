@@ -97,13 +97,13 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     });
 
     it('uses lower resolution for pure vector rendering', function() {
-      layer.renderMode_ = 'vector';
+      layer.setRenderMode('vector');
       const renderer = new CanvasVectorTileLayerRenderer(layer);
       expect(renderer.zDirection).to.be(1);
     });
 
     it('does not render images for pure vector rendering', function() {
-      layer.renderMode_ = 'vector';
+      layer.setRenderMode('vector');
       const spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
         'renderTileImage_');
       map.renderSync();
@@ -112,7 +112,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     });
 
     it('does not render replays for pure image rendering', function() {
-      layer.renderMode_ = 'image';
+      layer.setRenderMode('image');
       const spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
         'getTransform');
       map.renderSync();
