@@ -232,7 +232,7 @@ class MapRenderer extends Disposable {
           EventType.CHANGE, this.handleLayerRendererChange_, this);
 
         this.layerListeners_[layerKey] = listen(layer,
-          EventType.CHANGE, this.handleLayerRenderModeChange_, this);
+          'change:renderMode', this.handleLayerRenderModeChange_, this);
       } else {
         throw new Error('Unable to create renderer for layer: ' + layer.getType());
       }
@@ -274,6 +274,7 @@ class MapRenderer extends Disposable {
 
   /**
    * Handle changes of layer.renderMode.
+   * For the layer, the current renderer is removed and a new one immediately created.
    * @param {ol.events.Event} event Event.
    * @private
    */
