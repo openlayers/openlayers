@@ -73,7 +73,8 @@ export const RenderType = {
  * @private
  */
 const Property = {
-  RENDER_ORDER: 'renderOrder'
+  RENDER_ORDER: 'renderOrder',
+  RENDER_MODE: 'renderMode'
 };
 
 
@@ -145,11 +146,7 @@ class VectorLayer extends Layer {
     this.updateWhileInteracting_ = options.updateWhileInteracting !== undefined ?
       options.updateWhileInteracting : false;
 
-    /**
-    * @private
-    * @type {module:ol/layer/VectorTileRenderType|string}
-    */
-    this.renderMode_ = options.renderMode || VectorRenderType.VECTOR;
+    this.setRenderMode(options.renderMode || VectorRenderType.VECTOR);
 
     /**
     * The layer type.
@@ -256,7 +253,19 @@ class VectorLayer extends Layer {
   * @return {module:ol/layer/VectorRenderType|string} The render mode.
   */
   getRenderMode() {
-    return this.renderMode_;
+    return (
+    /** @type {module:ol/render~OrderFunction|null|undefined} */ (this.get(Property.RENDER_MODE))
+    );
+  }
+
+  /**
+   * @param {module:ol/layer/VectorRenderType|string} renderMode The render mode.
+   */
+
+  setRenderMode(renderMode) {
+    if (renderMode === VectorRenderType.VECTOR || renderMode === VectorRenderType.Image) {
+      this.set(Property.RENDER_MODE, renderMode);
+    }
   }
 }
 
