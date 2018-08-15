@@ -217,14 +217,13 @@ class Select extends Interaction {
      * @private
      * @type {boolean}
      */
-    this.userSpecifiedFeatureOverlay_ = typeof options.featureOverlay !== 'undefined' &&
-      options.featureOverlay !== null;
+    this.userLayer_ = options.featureOverlay !== undefined;
 
     /**
      * @private
      * @type {module:ol/layer/Vector}
      */
-    this.featureOverlay_ = this.userSpecifiedFeatureOverlay_ ? options.featureOverlay : new VectorLayer({
+    this.featureOverlay_ = this.userLayer_ ? options.featureOverlay : new VectorLayer({
       source: new VectorSource({
         useSpatialIndex: false,
         features: options.features,
@@ -265,7 +264,7 @@ class Select extends Interaction {
      */
     this.featureLayerAssociation_ = {};
 
-    if (!this.userSpecifiedFeatureOverlay_) {
+    if (!this.userLayer_) {
       const features = this.featureOverlay_.getSource().getFeaturesCollection();
       listen(features, CollectionEventType.ADD,
         this.addFeature_, this);
@@ -340,7 +339,7 @@ class Select extends Interaction {
    * @api
    */
   setMap(map) {
-    if (this.userSpecifiedFeatureOverlay_) {
+    if (this.userLayer_) {
       return;
     }
 
