@@ -423,6 +423,15 @@ class Modify extends PointerInteraction {
   }
 
   /**
+   * Get the overlay layer that this interaction renders sketch features to.
+   * @return {module:ol/layer/Vector} Overlay layer.
+   * @api
+   */
+  getOverlay() {
+    return this.overlay_;
+  }
+
+  /**
    * @param {module:ol/source/Vector~VectorSourceEvent} event Event.
    * @private
    */

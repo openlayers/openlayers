@@ -712,4 +712,13 @@ describe('ol.interaction.Modify', function() {
     });
   });
 
+  describe('#getOverlay', function() {
+    it('returns the feature overlay layer', function() {
+      const modify = new Modify({
+        features: new Collection()
+      });
+      expect (modify.getOverlay()).to.eql(modify.overlay_);
+    });
+  });
+
 });

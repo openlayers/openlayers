@@ -1060,6 +1060,13 @@ describe('ol.interaction.Draw', function() {
     });
   });
 
+  describe('#getOverlay', function() {
+    it('returns the feature overlay layer', function() {
+      const draw = new Draw({});
+      expect (draw.getOverlay()).to.eql(draw.overlay_);
+    });
+  });
+
   describe('createRegularPolygon', function() {
     it('creates a regular polygon in Circle mode', function() {
       const draw = new Draw({

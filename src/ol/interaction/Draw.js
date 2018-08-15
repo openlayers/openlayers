@@ -442,6 +442,15 @@ class Draw extends PointerInteraction {
   }
 
   /**
+   * Get the overlay layer that this interaction renders sketch features to.
+   * @return {module:ol/layer/Vector} Overlay layer.
+   * @api
+   */
+  getOverlay() {
+    return this.overlay_;
+  }
+
+  /**
    * Handle move events.
    * @param {module:ol/MapBrowserEvent} event A move event.
    * @return {boolean} Pass the event to other interactions.
