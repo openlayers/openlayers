@@ -255,11 +255,13 @@ class Select extends Interaction {
      */
     this.featureLayerAssociation_ = {};
 
-    const features = this.featureOverlay_.getSource().getFeaturesCollection();
-    listen(features, CollectionEventType.ADD,
-      this.addFeature_, this);
-    listen(features, CollectionEventType.REMOVE,
-      this.removeFeature_, this);
+    if (this.featureOverlay_) {
+      const features = this.featureOverlay_.getSource().getFeaturesCollection();
+      listen(features, CollectionEventType.ADD,
+        this.addFeature_, this);
+      listen(features, CollectionEventType.REMOVE,
+        this.removeFeature_, this);
+    }
 
   }
 
@@ -305,6 +307,15 @@ class Select extends Interaction {
     return (
       /** @type {module:ol/layer/Vector} */ (this.featureLayerAssociation_[key])
     );
+  }
+
+  /**
+   * Get the overlay layer that this interaction renders selected features to.
+   * @return {module:ol/layer/Vector} Overlay layer.
+   * @api
+   */
+  getOverlay() {
+    return this.featureOverlay_;
   }
 
   /**
