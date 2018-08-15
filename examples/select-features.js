@@ -6,9 +6,30 @@ import Select from '../src/ol/interaction/Select.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 const raster = new TileLayer({
   source: new OSM()
+});
+
+const selection = new VectorLayer({
+  style: new Style({
+    fill: new Fill({
+      color: [255, 255, 255, 0.5]
+    }),
+    stroke: new Stroke({
+      color: [255, 153, 0, 1],
+      width: 3
+    })
+  }),
+  source: new VectorSource({
+    useSpatialIndex: false,
+    features: null
+  }),
+  updateWhileAnimating: true,
+  updateWhileInteracting: true
 });
 
 const vector = new VectorLayer({
@@ -19,7 +40,7 @@ const vector = new VectorLayer({
 });
 
 const map = new Map({
-  layers: [raster, vector],
+  layers: [raster, selection, vector],
   target: 'map',
   view: new View({
     center: [0, 0],
@@ -48,6 +69,10 @@ const selectAltClick = new Select({
   }
 });
 
+const selectFeatureOverlay = new Select({
+  featureOverlay: selection
+});
+
 const selectElement = document.getElementById('type');
 
 const changeInteraction = function() {
@@ -63,6 +88,8 @@ const changeInteraction = function() {
     select = selectPointerMove;
   } else if (value == 'altclick') {
     select = selectAltClick;
+  } else if (value == 'featureoverlay') {
+    select = selectFeatureOverlay;
   } else {
     select = null;
   }

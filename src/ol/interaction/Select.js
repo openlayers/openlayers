@@ -2,7 +2,6 @@
  * @module ol/interaction/Select
  */
 import {getUid} from '../util.js';
-import CollectionEventType from '../CollectionEventType.js';
 import {extend, includes} from '../array.js';
 import {listen} from '../events.js';
 import Event from '../events/Event.js';
@@ -13,6 +12,7 @@ import Interaction from '../interaction/Interaction.js';
 import VectorLayer from '../layer/Vector.js';
 import {clear} from '../obj.js';
 import VectorSource from '../source/Vector.js';
+import VectorEventType from '../source/VectorEventType.js';
 import {createEditingStyle} from '../style/Style.js';
 
 
@@ -61,6 +61,10 @@ const SelectEventType = {
  * in the map and should return `true` for layers that you want to be
  * selectable. If the option is absent, all visible layers will be considered
  * selectable.
+ * @property {module:ol/layer/Layer} [featureOverlay] A layer where selected
+ * features will be added. This is useful for adding special styling for
+ * highlighting. This allows passing in managed layers. If absent, an internal
+ * unmanaged layer will be used.
  * @property {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style]
  * Style for the selected features. By default the default edit style is used
  * (see {@link module:ol/style}).
@@ -149,7 +153,8 @@ class SelectEvent extends Event {
  * `toggle`, `add`/`remove`, and `multi` options; a `layers` filter; and a
  * further feature filter using the `filter` option.
  *
- * Selected features are added to an internal unmanaged layer.
+ * Selected features are added to the `featureOverlay` layer if specified,
+ * otherwise to an internal unmanaged layer.
  *
  * @fires SelectEvent
  * @api
@@ -208,7 +213,17 @@ class Select extends Interaction {
      */
     this.hitTolerance_ = options.hitTolerance ? options.hitTolerance : 0;
 
-    const featureOverlay = new VectorLayer({
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.userLayer_ = options.featureOverlay !== undefined;
+
+    /**
+     * @private
+     * @type {module:ol/layer/Vector}
+     */
+    this.featureOverlay_ = this.userLayer_ ? options.featureOverlay : new VectorLayer({
       source: new VectorSource({
         useSpatialIndex: false,
         features: options.features,
@@ -219,12 +234,6 @@ class Select extends Interaction {
       updateWhileAnimating: true,
       updateWhileInteracting: true
     });
-
-    /**
-     * @private
-     * @type {module:ol/layer/Vector}
-     */
-    this.featureOverlay_ = featureOverlay;
 
     /** @type {function(module:ol/layer/Layer): boolean} */
     let layerFilter;
@@ -255,11 +264,9 @@ class Select extends Interaction {
      */
     this.featureLayerAssociation_ = {};
 
-    const features = this.featureOverlay_.getSource().getFeaturesCollection();
-    listen(features, CollectionEventType.ADD,
-      this.addFeature_, this);
-    listen(features, CollectionEventType.REMOVE,
-      this.removeFeature_, this);
+    const source = this.featureOverlay_.getSource();
+    listen(source, VectorEventType.ADDFEATURE, this.addFeature_, this);
+    listen(source, VectorEventType.REMOVEFEATURE, this.removeFeature_, this);
 
   }
 
@@ -333,31 +340,33 @@ class Select extends Interaction {
       selectedFeatures.forEach(currentMap.unskipFeature.bind(currentMap));
     }
     super.setMap(map);
-    this.featureOverlay_.setMap(map);
+    if (!this.userLayer_) {
+      this.featureOverlay_.setMap(map);
+    }
     if (map) {
       selectedFeatures.forEach(map.skipFeature.bind(map));
     }
   }
 
   /**
-   * @param {module:ol/Collection~CollectionEvent} evt Event.
+   * @param {module:ol/source/Vector~VectorSourceEvent} evt Event.
    * @private
    */
   addFeature_(evt) {
     const map = this.getMap();
     if (map) {
-      map.skipFeature(/** @type {module:ol/Feature} */ (evt.element));
+      map.skipFeature(/** @type {module:ol/Feature} */ (evt.feature));
     }
   }
 
   /**
-   * @param {module:ol/Collection~CollectionEvent} evt Event.
+   * @param {module:ol/source/Vector~VectorSourceEvent} evt Event.
    * @private
    */
   removeFeature_(evt) {
     const map = this.getMap();
     if (map) {
-      map.unskipFeature(/** @type {module:ol/Feature} */ (evt.element));
+      map.unskipFeature(/** @type {module:ol/Feature} */ (evt.feature));
     }
   }
 
