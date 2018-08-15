@@ -1282,6 +1282,39 @@ describe('ol.format.GML3', function() {
 
   });
 
+  describe('when parsing TOPP states GML with multiple featureMember tags', function() {
+
+    let features, gmlFormat;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/topp-states-gml-featureMember.xml', function(xml) {
+        try {
+          const schemaLoc = 'http://www.openplans.org/topp ' +
+               'http://demo.opengeo.org/geoserver/wfs?service=WFS&version=' +
+               '1.1.0&request=DescribeFeatureType&typeName=topp:states ' +
+               'http://www.opengis.net/gml ' +
+               'http://schemas.opengis.net/gml/3.2.1/gml.xsd';
+          const config = {
+            'featureNS': 'http://www.openplans.org/topp',
+            'featureType': 'states',
+            'multiSurface': true,
+            'srsName': 'urn:x-ogc:def:crs:EPSG:4326',
+            'schemaLocation': schemaLoc
+          };
+          gmlFormat = new GML(config);
+          features = gmlFormat.readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates 3 features', function() {
+      expect(features).to.have.length(3);
+    });
+
+  });
+
   describe('when parsing TOPP states GML from WFS', function() {
 
     let features, feature;

@@ -124,7 +124,7 @@ class GMLBase extends XMLFeature {
      */
     this.FEATURE_COLLECTION_PARSERS = {};
     this.FEATURE_COLLECTION_PARSERS[GMLNS] = {
-      'featureMember': makeReplacer(this.readFeaturesInternal),
+      'featureMember': makeArrayPusher(this.readFeaturesInternal),
       'featureMembers': makeReplacer(this.readFeaturesInternal)
     };
   }
@@ -138,15 +138,9 @@ class GMLBase extends XMLFeature {
     const localName = node.localName;
     let features = null;
     if (localName == 'FeatureCollection') {
-      if (node.namespaceURI === 'http://www.opengis.net/wfs') {
-        features = pushParseAndPop([],
-          this.FEATURE_COLLECTION_PARSERS, node,
-          objectStack, this);
-      } else {
-        features = pushParseAndPop(null,
-          this.FEATURE_COLLECTION_PARSERS, node,
-          objectStack, this);
-      }
+      features = pushParseAndPop([],
+        this.FEATURE_COLLECTION_PARSERS, node,
+        objectStack, this);
     } else if (localName == 'featureMembers' || localName == 'featureMember') {
       const context = objectStack[0];
       let featureType = context['featureType'];
