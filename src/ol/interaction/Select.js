@@ -332,17 +332,11 @@ class Select extends Interaction {
   /**
    * Remove the interaction from its current map, if any,  and attach it to a new
    * map, if any. Pass `null` to just remove the interaction from the current map.
-   * If user has specified a feature overlay, this is effectively a no-op, since
-   * they are managing the selection layer directly.
    * @param {module:ol/PluggableMap} map Map.
    * @override
    * @api
    */
   setMap(map) {
-    if (this.userLayer_) {
-      return;
-    }
-
     const currentMap = this.getMap();
     const selectedFeatures =
         this.featureOverlay_.getSource().getFeaturesCollection();
@@ -350,7 +344,9 @@ class Select extends Interaction {
       selectedFeatures.forEach(currentMap.unskipFeature.bind(currentMap));
     }
     super.setMap(map);
-    this.featureOverlay_.setMap(map);
+    if (!this.userLayer_) {
+      this.featureOverlay_.setMap(map);
+    }
     if (map) {
       selectedFeatures.forEach(map.skipFeature.bind(map));
     }
