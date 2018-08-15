@@ -434,6 +434,41 @@ describe('ol.layer.Layer', function() {
 
     });
 
+    describe('zIndex for unmanaged layers', function() {
+
+      let frameState, layer;
+
+      beforeEach(function() {
+        layer = new Layer({
+          map: map
+        });
+        frameState = {
+          layerStatesArray: [],
+          layerStates: {}
+        };
+      });
+
+      afterEach(function() {
+        layer.setMap(null);
+      });
+
+      it('has Infinity as zIndex when not configured otherwise', function() {
+        map.dispatchEvent(new RenderEvent('precompose', null,
+          frameState, null, null));
+        const layerState = frameState.layerStatesArray[0];
+        expect(layerState.zIndex).to.be(Infinity);
+      });
+
+      it('respects the configured zIndex', function() {
+        layer.setZIndex(42);
+        map.dispatchEvent(new RenderEvent('precompose', null,
+          frameState, null, null));
+        const layerState = frameState.layerStatesArray[0];
+        expect(layerState.zIndex).to.be(42);
+      });
+
+    });
+
   });
 
 });

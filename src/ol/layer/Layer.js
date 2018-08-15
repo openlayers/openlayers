@@ -191,7 +191,9 @@ class Layer extends BaseLayer {
       this.mapPrecomposeKey_ = listen(map, RenderEventType.PRECOMPOSE, function(evt) {
         const layerState = this.getLayerState();
         layerState.managed = false;
-        layerState.zIndex = Infinity;
+        if (this.getZIndex() === undefined) {
+          layerState.zIndex = Infinity;
+        }
         evt.frameState.layerStatesArray.push(layerState);
         evt.frameState.layerStates[getUid(this)] = layerState;
       }, this);

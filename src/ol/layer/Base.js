@@ -13,8 +13,8 @@ import {assign} from '../obj.js';
  * @property {boolean} [visible=true] Visibility.
  * @property {module:ol/extent~Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
- * @property {number} [zIndex=0] The z-index for layer rendering.  At rendering time, the layers
- * will be ordered, first by Z-index and then by position.
+ * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
+ * will be ordered, first by Z-index and then by position. When undefined, a zIndex of 0 is assumed.
  * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
@@ -48,8 +48,7 @@ class BaseLayer extends BaseObject {
        options.opacity !== undefined ? options.opacity : 1;
     properties[LayerProperty.VISIBLE] =
        options.visible !== undefined ? options.visible : true;
-    properties[LayerProperty.Z_INDEX] =
-       options.zIndex !== undefined ? options.zIndex : 0;
+    properties[LayerProperty.Z_INDEX] = options.zIndex;
     properties[LayerProperty.MAX_RESOLUTION] =
        options.maxResolution !== undefined ? options.maxResolution : Infinity;
     properties[LayerProperty.MIN_RESOLUTION] =
@@ -91,7 +90,7 @@ class BaseLayer extends BaseObject {
     this.state_.sourceState = this.getSourceState();
     this.state_.visible = this.getVisible();
     this.state_.extent = this.getExtent();
-    this.state_.zIndex = this.getZIndex();
+    this.state_.zIndex = this.getZIndex() || 0;
     this.state_.maxResolution = this.getMaxResolution();
     this.state_.minResolution = Math.max(this.getMinResolution(), 0);
 
