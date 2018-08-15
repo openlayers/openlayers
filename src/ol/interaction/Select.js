@@ -2,7 +2,6 @@
  * @module ol/interaction/Select
  */
 import {getUid} from '../util.js';
-import CollectionEventType from '../CollectionEventType.js';
 import {extend, includes} from '../array.js';
 import {listen} from '../events.js';
 import Event from '../events/Event.js';
@@ -13,6 +12,7 @@ import Interaction from '../interaction/Interaction.js';
 import VectorLayer from '../layer/Vector.js';
 import {clear} from '../obj.js';
 import VectorSource from '../source/Vector.js';
+import VectorEventType from '../source/VectorEventType.js';
 import {createEditingStyle} from '../style/Style.js';
 
 
@@ -264,13 +264,9 @@ class Select extends Interaction {
      */
     this.featureLayerAssociation_ = {};
 
-    if (!this.userLayer_) {
-      const features = this.featureOverlay_.getSource().getFeaturesCollection();
-      listen(features, CollectionEventType.ADD,
-        this.addFeature_, this);
-      listen(features, CollectionEventType.REMOVE,
-        this.removeFeature_, this);
-    }
+    const source = this.featureOverlay_.getSource();
+    listen(source, VectorEventType.ADDFEATURE, this.addFeature_, this);
+    listen(source, VectorEventType.REMOVEFEATURE, this.removeFeature_, this);
 
   }
 
@@ -353,24 +349,24 @@ class Select extends Interaction {
   }
 
   /**
-   * @param {module:ol/Collection~CollectionEvent} evt Event.
+   * @param {module:ol/source/Vector~VectorSourceEvent} evt Event.
    * @private
    */
   addFeature_(evt) {
     const map = this.getMap();
     if (map) {
-      map.skipFeature(/** @type {module:ol/Feature} */ (evt.element));
+      map.skipFeature(/** @type {module:ol/Feature} */ (evt.feature));
     }
   }
 
   /**
-   * @param {module:ol/Collection~CollectionEvent} evt Event.
+   * @param {module:ol/source/Vector~VectorSourceEvent} evt Event.
    * @private
    */
   removeFeature_(evt) {
     const map = this.getMap();
     if (map) {
-      map.unskipFeature(/** @type {module:ol/Feature} */ (evt.element));
+      map.unskipFeature(/** @type {module:ol/Feature} */ (evt.feature));
     }
   }
 
