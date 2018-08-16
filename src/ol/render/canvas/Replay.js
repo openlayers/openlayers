@@ -533,6 +533,7 @@ class CanvasReplay extends VectorContext {
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
    *     to skip.
    * @param {Array<*>} instructions Instructions array.
+   * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
    * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
    * @param {module:ol/extent~Extent=} opt_hitExtent Only check features that intersect this
    *     extent.
@@ -544,6 +545,7 @@ class CanvasReplay extends VectorContext {
     transform,
     skippedFeaturesHash,
     instructions,
+    snapToPixel,
     featureCallback,
     opt_hitExtent
   ) {
@@ -672,14 +674,13 @@ class CanvasReplay extends VectorContext {
           const rotateWithView = /** @type {boolean} */ (instruction[11]);
           let rotation = /** @type {number} */ (instruction[12]);
           const scale = /** @type {number} */ (instruction[13]);
-          const snapToPixel = /** @type {boolean} */ (instruction[14]);
-          const width = /** @type {number} */ (instruction[15]);
+          const width = /** @type {number} */ (instruction[14]);
 
           let padding, backgroundFill, backgroundStroke;
           if (instruction.length > 16) {
-            padding = /** @type {Array<number>} */ (instruction[16]);
-            backgroundFill = /** @type {boolean} */ (instruction[17]);
-            backgroundStroke = /** @type {boolean} */ (instruction[18]);
+            padding = /** @type {Array<number>} */ (instruction[15]);
+            backgroundFill = /** @type {boolean} */ (instruction[16]);
+            backgroundStroke = /** @type {boolean} */ (instruction[17]);
           } else {
             padding = defaultPadding;
             backgroundFill = backgroundStroke = false;
@@ -853,11 +854,12 @@ class CanvasReplay extends VectorContext {
    * @param {number} viewRotation View rotation.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
    *     to skip.
+   * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
    */
-  replay(context, transform, viewRotation, skippedFeaturesHash) {
+  replay(context, transform, viewRotation, skippedFeaturesHash, snapToPixel) {
     this.viewRotation_ = viewRotation;
     this.replay_(context, transform,
-      skippedFeaturesHash, this.instructions, undefined, undefined);
+      skippedFeaturesHash, this.instructions, snapToPixel, undefined, undefined);
   }
 
   /**
@@ -883,7 +885,7 @@ class CanvasReplay extends VectorContext {
   ) {
     this.viewRotation_ = viewRotation;
     return this.replay_(context, transform, skippedFeaturesHash,
-      this.hitDetectionInstructions, opt_featureCallback, opt_hitExtent);
+      this.hitDetectionInstructions, true, opt_featureCallback, opt_hitExtent);
   }
 
   /**

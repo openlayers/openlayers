@@ -90,12 +90,6 @@ class CanvasImageReplay extends CanvasReplay {
 
     /**
      * @private
-     * @type {boolean|undefined}
-     */
-    this.snapToPixel_ = undefined;
-
-    /**
-     * @private
      * @type {number|undefined}
      */
     this.width_ = undefined;
@@ -131,14 +125,14 @@ class CanvasImageReplay extends CanvasReplay {
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
       this.anchorX_, this.anchorY_, this.declutterGroup_, this.height_, this.opacity_,
       this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
-      this.scale_ * this.pixelRatio, this.snapToPixel_, this.width_
+      this.scale_ * this.pixelRatio, this.width_
     ]);
     this.hitDetectionInstructions.push([
       CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.hitDetectionImage_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
       this.anchorX_, this.anchorY_, this.declutterGroup_, this.height_, this.opacity_,
       this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
-      this.scale_, this.snapToPixel_, this.width_
+      this.scale_, this.width_
     ]);
     this.endGeometry(pointGeometry, feature);
   }
@@ -161,14 +155,14 @@ class CanvasImageReplay extends CanvasReplay {
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
       this.anchorX_, this.anchorY_, this.declutterGroup_, this.height_, this.opacity_,
       this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
-      this.scale_ * this.pixelRatio, this.snapToPixel_, this.width_
+      this.scale_ * this.pixelRatio, this.width_
     ]);
     this.hitDetectionInstructions.push([
       CanvasInstruction.DRAW_IMAGE, myBegin, myEnd, this.hitDetectionImage_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
       this.anchorX_, this.anchorY_, this.declutterGroup_, this.height_, this.opacity_,
       this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
-      this.scale_, this.snapToPixel_, this.width_
+      this.scale_, this.width_
     ]);
     this.endGeometry(multiPointGeometry, feature);
   }
@@ -190,7 +184,6 @@ class CanvasImageReplay extends CanvasReplay {
     this.originY_ = undefined;
     this.rotateWithView_ = undefined;
     this.rotation_ = undefined;
-    this.snapToPixel_ = undefined;
     this.width_ = undefined;
   }
 
@@ -215,7 +208,6 @@ class CanvasImageReplay extends CanvasReplay {
     this.rotateWithView_ = imageStyle.getRotateWithView();
     this.rotation_ = imageStyle.getRotation();
     this.scale_ = imageStyle.getScale();
-    this.snapToPixel_ = imageStyle.getSnapToPixel();
     this.width_ = size[0];
   }
 }

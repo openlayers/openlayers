@@ -353,6 +353,7 @@ class CanvasReplayGroup extends ReplayGroup {
    * @param {module:ol/transform~Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
+   * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
    * @param {Array<module:ol/render/ReplayType>=} opt_replayTypes Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
    * @param {Object<string, module:ol/render/canvas~DeclutterGroup>=} opt_declutterReplays Declutter replays.
@@ -362,6 +363,7 @@ class CanvasReplayGroup extends ReplayGroup {
     transform,
     viewRotation,
     skippedFeaturesHash,
+    snapToPixel,
     opt_replayTypes,
     opt_declutterReplays
   ) {
@@ -393,7 +395,7 @@ class CanvasReplayGroup extends ReplayGroup {
               declutter.push(replay, transform.slice(0));
             }
           } else {
-            replay.replay(context, transform, viewRotation, skippedFeaturesHash);
+            replay.replay(context, transform, viewRotation, skippedFeaturesHash, snapToPixel);
           }
         }
       }
@@ -486,8 +488,9 @@ export function getCircleArray(radius) {
  * @param {!Object<string, Array<*>>} declutterReplays Declutter replays.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} rotation Rotation.
+ * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
  */
-export function replayDeclutter(declutterReplays, context, rotation) {
+export function replayDeclutter(declutterReplays, context, rotation, snapToPixel) {
   const zs = Object.keys(declutterReplays).map(Number).sort(numberSafeCompareFunction);
   const skippedFeatureUids = {};
   for (let z = 0, zz = zs.length; z < zz; ++z) {
@@ -495,7 +498,7 @@ export function replayDeclutter(declutterReplays, context, rotation) {
     for (let i = 0, ii = replayData.length; i < ii;) {
       const replay = replayData[i++];
       const transform = replayData[i++];
-      replay.replay(context, transform, rotation, skippedFeatureUids);
+      replay.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
     }
   }
 }

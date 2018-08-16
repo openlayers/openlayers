@@ -55,6 +55,11 @@ class DragPan extends PointerInteraction {
     this.lastPointersCount_;
 
     /**
+     * @type {boolean}
+     */
+    this.panning_ = false;
+
+    /**
      * @private
      * @type {module:ol/events/condition~Condition}
      */
@@ -76,6 +81,10 @@ class DragPan extends PointerInteraction {
  * @this {module:ol/interaction/DragPan}
  */
 function handleDragEvent(mapBrowserEvent) {
+  if (!this.panning_) {
+    this.panning_ = true;
+    this.getMap().getView().setHint(ViewHint.INTERACTING, 1);
+  }
   const targetPointers = this.targetPointers;
   const centroid = centroidFromPointers(targetPointers);
   if (targetPointers.length == this.lastPointersCount_) {
@@ -128,7 +137,10 @@ function handleUpEvent(mapBrowserEvent) {
         easing: easeOut
       });
     }
-    view.setHint(ViewHint.INTERACTING, -1);
+    if (this.panning_) {
+      this.panning_ = false;
+      view.setHint(ViewHint.INTERACTING, -1);
+    }
     return false;
   } else {
     if (this.kinetic_) {
@@ -152,9 +164,6 @@ function handleDownEvent(mapBrowserEvent) {
     const map = mapBrowserEvent.map;
     const view = map.getView();
     this.lastCentroid = null;
-    if (!this.handlingDownUpSequence) {
-      view.setHint(ViewHint.INTERACTING, 1);
-    }
     // stop any current animation
     if (view.getAnimating()) {
       view.setCenter(mapBrowserEvent.frameState.viewState.center);

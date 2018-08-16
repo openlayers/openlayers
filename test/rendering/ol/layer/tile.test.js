@@ -280,7 +280,6 @@ describe('ol.rendering.layer.Tile', function() {
         evt.element.on('render', function(e) {
           e.vectorContext.setImageStyle(new CircleStyle({
             radius: 5,
-            snapToPixel: false,
             fill: new Fill({color: 'yellow'}),
             stroke: new Stroke({color: 'red', width: 1})
           }));

@@ -22,7 +22,6 @@ const map = new Map({
 const imageStyle = new Style({
   image: new CircleStyle({
     radius: 5,
-    snapToPixel: false,
     fill: new Fill({color: 'yellow'}),
     stroke: new Stroke({color: 'red', width: 1})
   })
@@ -31,7 +30,6 @@ const imageStyle = new Style({
 const headInnerImageStyle = new Style({
   image: new CircleStyle({
     radius: 2,
-    snapToPixel: false,
     fill: new Fill({color: 'blue'})
   })
 });
@@ -39,7 +37,6 @@ const headInnerImageStyle = new Style({
 const headOuterImageStyle = new Style({
   image: new CircleStyle({
     radius: 5,
-    snapToPixel: false,
     fill: new Fill({color: 'black'})
   })
 });

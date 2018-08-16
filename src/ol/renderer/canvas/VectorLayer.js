@@ -158,11 +158,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         replayContext.translate(drawOffsetX, drawOffsetY);
       }
 
+      const viewHints = frameState.viewHints;
+      const snapToPixel = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
       const width = frameState.size[0] * pixelRatio;
       const height = frameState.size[1] * pixelRatio;
       rotateAtOffset(replayContext, -rotation,
         width / 2, height / 2);
-      replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
+      replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
       if (vectorSource.getWrapX() && projection.canWrapX() &&
           !containsExtent(projectionExtent, extent)) {
         let startX = extent[0];
@@ -173,7 +175,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           --world;
           offsetX = worldWidth * world;
           transform = this.getTransform(frameState, offsetX);
-          replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
+          replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
           startX += worldWidth;
         }
         world = 0;
@@ -182,7 +184,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           ++world;
           offsetX = worldWidth * world;
           transform = this.getTransform(frameState, offsetX);
-          replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
+          replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
           startX -= worldWidth;
         }
       }

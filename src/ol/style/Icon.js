@@ -38,10 +38,6 @@ import ImageStyle from '../style/Image.js';
  * `top-left` or `top-right`. Default is `top-left`.
  * @property {number} [opacity=1] Opacity of the icon.
  * @property {number} [scale=1] Scale.
- * @property {boolean} [snapToPixel=true] If `true` integral numbers of pixels are used as the X and Y pixel coordinate
- * when drawing the icon in the output canvas. If `false` fractional numbers may be used. Using `true` allows for
- * "sharp" rendering (no blur), while using `false` allows for "accurate" rendering. Note that accuracy is important if
- * the icon's position is animated. Without it, the icon may jitter noticeably.
  * @property {boolean} [rotateWithView=false] Whether to rotate the icon with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {module:ol/size~Size} [size] Icon size in pixel. Can be used together with `offset` to define the
@@ -85,17 +81,10 @@ class Icon extends ImageStyle {
     const rotateWithView = options.rotateWithView !== undefined ?
       options.rotateWithView : false;
 
-    /**
-     * @type {boolean}
-     */
-    const snapToPixel = options.snapToPixel !== undefined ?
-      options.snapToPixel : true;
-
     super({
       opacity: opacity,
       rotation: rotation,
       scale: scale,
-      snapToPixel: snapToPixel,
       rotateWithView: rotateWithView
     });
 
@@ -230,7 +219,6 @@ class Icon extends ImageStyle {
       size: this.size_ !== null ? this.size_.slice() : undefined,
       opacity: this.getOpacity(),
       scale: this.getScale(),
-      snapToPixel: this.getSnapToPixel(),
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView()
     });
