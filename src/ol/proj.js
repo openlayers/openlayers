@@ -85,6 +85,7 @@ import {add as addTransformFunc, clear as clearTransformFuncs, get as getTransfo
 
 export {METERS_PER_UNIT};
 
+export {Projection};
 
 /**
  * @param {Array<number>} input Input coordinate array.
