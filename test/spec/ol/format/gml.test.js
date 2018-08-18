@@ -14,7 +14,7 @@ import {createElementNS, parse} from '../../../../src/ol/xml.js';
 const readGeometry = function(format, text, opt_options) {
   const doc = parse(text);
   // we need an intermediate node for testing purposes
-  const node = document.createElement('PRE');
+  const node = document.createElement('pre');
   node.appendChild(doc.documentElement);
   return format.readGeometryFromNode(node, opt_options);
 };

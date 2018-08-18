@@ -132,7 +132,7 @@ class Overlay extends BaseObject {
      * @protected
      * @type {HTMLElement}
      */
-    this.element = document.createElement('DIV');
+    this.element = document.createElement('div');
     this.element.className = options.className !== undefined ?
       options.className : 'ol-overlay-container ' + CLASS_SELECTABLE;
     this.element.style.position = 'absolute';

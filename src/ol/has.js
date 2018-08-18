@@ -47,7 +47,7 @@ export const DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
 export const CANVAS_LINE_DASH = function() {
   let has = false;
   try {
-    has = !!document.createElement('CANVAS').getContext('2d').setLineDash;
+    has = !!document.createElement('canvas').getContext('2d').setLineDash;
   } catch (e) {
     // pass
   }

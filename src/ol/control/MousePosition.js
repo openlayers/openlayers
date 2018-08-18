@@ -55,7 +55,7 @@ class MousePosition extends Control {
 
     const options = opt_options ? opt_options : {};
 
-    const element = document.createElement('DIV');
+    const element = document.createElement('div');
     element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
 
     super({

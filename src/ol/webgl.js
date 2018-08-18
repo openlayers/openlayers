@@ -323,7 +323,7 @@ let HAS = false;
 //TODO Remove side effects
 if (typeof window !== 'undefined' && 'WebGLRenderingContext' in window) {
   try {
-    const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS'));
+    const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     const gl = getContext(canvas, {failIfMajorPerformanceCaveat: true});
     if (gl) {
       HAS = true;

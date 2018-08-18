@@ -140,7 +140,7 @@ class OverviewMap extends Control {
      * @type {HTMLElement}
      * @private
      */
-    this.ovmapDiv_ = document.createElement('DIV');
+    this.ovmapDiv_ = document.createElement('div');
     this.ovmapDiv_.className = 'ol-overviewmap-map';
 
     /**
@@ -164,7 +164,7 @@ class OverviewMap extends Control {
         }).bind(this));
     }
 
-    const box = document.createElement('DIV');
+    const box = document.createElement('div');
     box.className = 'ol-overviewmap-box';
     box.style.boxSizing = 'border-box';
 
