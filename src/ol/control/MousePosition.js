@@ -29,9 +29,9 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * callback.
  * @property {Element|string} [target] Specify a target if you want the
  * control to be rendered outside of the map's viewport.
- * @property {string} [undefinedHTML='&nbsp;'] Markup to show when coordinates are not
+ * @property {string} [undefinedHTML='&#160;'] Markup to show when coordinates are not
  * available (e.g. when the pointer leaves the map viewport).  By default, the last position
- * will be replaced with `'&nbsp;'` when the pointer leaves the viewport.  To
+ * will be replaced with `'&#160;'` (`&nbsp;`) when the pointer leaves the viewport.  To
  * retain the last rendered position, set this option to something falsey (like an empty
  * string `''`).
  */
@@ -79,7 +79,7 @@ class MousePosition extends Control {
      * @private
      * @type {string}
      */
-    this.undefinedHTML_ = 'undefinedHTML' in options ? options.undefinedHTML : '&nbsp;';
+    this.undefinedHTML_ = 'undefinedHTML' in options ? options.undefinedHTML : '&#160;';
 
     /**
      * @private
