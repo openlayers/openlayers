@@ -6,7 +6,7 @@ import MapEvent from './MapEvent.js';
 /**
  * @classdesc
  * Events emitted as map browser events are instances of this type.
- * See {@link module:ol/Map~Map} for which events trigger a map browser event.
+ * See {@link module:ol/PluggableMap~PluggableMap} for which events trigger a map browser event.
  */
 class MapBrowserEvent extends MapEvent {
 
