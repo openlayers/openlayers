@@ -871,6 +871,7 @@ class VectorSource extends Source {
   loadFeatures(extent, resolution, projection) {
     const loadedExtentsRtree = this.loadedExtentsRtree_;
     const extentsToLoad = this.strategy_(extent, resolution);
+    this.loading = false;
     for (let i = 0, ii = extentsToLoad.length; i < ii; ++i) {
       const extentToLoad = extentsToLoad[i];
       const alreadyLoaded = loadedExtentsRtree.forEachInExtent(extentToLoad,
@@ -884,6 +885,7 @@ class VectorSource extends Source {
       if (!alreadyLoaded) {
         this.loader_.call(this, extentToLoad, resolution, projection);
         loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
+        this.loading = true;
       }
     }
   }

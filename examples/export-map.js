@@ -30,7 +30,7 @@ const map = new Map({
 });
 
 document.getElementById('export-png').addEventListener('click', function() {
-  map.once('postcompose', function(event) {
+  map.once('rendercomplete', function(event) {
     const canvas = event.context.canvas;
     if (navigator.msSaveBlob) {
       navigator.msSaveBlob(canvas.msToBlob(), 'map.png');

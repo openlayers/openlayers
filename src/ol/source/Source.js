@@ -67,6 +67,13 @@ class Source extends BaseObject {
     this.attributions_ = this.adaptAttributions_(options.attributions);
 
     /**
+     * This source is currently loading data. Sources that defer loading to the
+     * map's tile queue never set this to `true`.
+     * @type {boolean}
+     */
+    this.loading = false;
+
+    /**
     * @private
     * @type {module:ol/source/State}
     */

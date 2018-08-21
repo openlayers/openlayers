@@ -1,4 +1,5 @@
 import Feature from '../../../src/ol/Feature.js';
+import ImageState from '../../../src/ol/ImageState.js';
 import Map from '../../../src/ol/Map.js';
 import MapEvent from '../../../src/ol/MapEvent.js';
 import Overlay from '../../../src/ol/Overlay.js';
@@ -7,14 +8,18 @@ import LineString from '../../../src/ol/geom/LineString.js';
 import {TOUCH} from '../../../src/ol/has.js';
 import {focus} from '../../../src/ol/events/condition.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
+import {get as getProjection} from '../../../src/ol/proj.js';
+import GeoJSON from '../../../src/ol/format/GeoJSON.js';
 import DragPan from '../../../src/ol/interaction/DragPan.js';
 import DoubleClickZoom from '../../../src/ol/interaction/DoubleClickZoom.js';
 import Interaction from '../../../src/ol/interaction/Interaction.js';
 import MouseWheelZoom from '../../../src/ol/interaction/MouseWheelZoom.js';
 import PinchZoom from '../../../src/ol/interaction/PinchZoom.js';
+import ImageLayer from '../../../src/ol/layer/Image.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../src/ol/layer/Vector.js';
 import IntermediateCanvasRenderer from '../../../src/ol/renderer/canvas/IntermediateCanvas.js';
+import ImageStatic from '../../../src/ol/source/ImageStatic.js';
 import VectorSource from '../../../src/ol/source/Vector.js';
 import XYZ from '../../../src/ol/source/XYZ.js';
 
@@ -184,6 +189,60 @@ describe('ol.Map', function() {
 
       view.setCenter(center);
       view.setZoom(zoom);
+    });
+
+  });
+
+  describe('rendercomplete event', function() {
+
+    let map;
+    beforeEach(function() {
+      const target = document.createElement('div');
+      target.style.width = target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new Map({
+        target: target,
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'spec/ol/data/osm-{z}-{x}-{y}.png'
+            })
+          }),
+          new ImageLayer({
+            source: new ImageStatic({
+              url: 'spec/ol/data/osm-0-0-0.png',
+              imageExtent: getProjection('EPSG:3857').getExtent(),
+              projection: 'EPSG:3857'
+            })
+          }),
+          new VectorLayer({
+            source: new VectorSource({
+              url: 'spec/ol/data/point.json',
+              format: new GeoJSON()
+            })
+          })
+        ]
+      });
+    });
+
+    afterEach(function() {
+      document.body.removeChild(map.getTargetElement());
+      map.setTarget(null);
+      map.dispose();
+    });
+
+    it('triggers when all tiles and sources are loaded and faded in', function(done) {
+      map.once('rendercomplete', function() {
+        const layers = map.getLayers().getArray();
+        expect(map.tileQueue_.getTilesLoading()).to.be(0);
+        expect(layers[1].getSource().image_.getState()).to.be(ImageState.LOADED);
+        expect(layers[2].getSource().getFeatures().length).to.be(1);
+        done();
+      });
+      map.setView(new View({
+        center: [0, 0],
+        zoom: 0
+      }));
     });
 
   });

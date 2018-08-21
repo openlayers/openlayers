@@ -249,9 +249,8 @@ class WebGLMapRenderer extends MapRenderer {
   /**
    * @param {module:ol/render/EventType} type Event type.
    * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @private
    */
-  dispatchComposeEvent_(type, frameState) {
+  dispatchRenderEvent(type, frameState) {
     const map = this.getMap();
     if (map.hasListener(type)) {
       const context = this.context_;
@@ -411,7 +410,7 @@ class WebGLMapRenderer extends MapRenderer {
     this.textureCache_.set((-frameState.index).toString(), null);
     ++this.textureCacheFrameMarkerCount_;
 
-    this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, frameState);
+    this.dispatchRenderEvent(RenderEventType.PRECOMPOSE, frameState);
 
     /** @type {Array<module:ol/layer/Layer~State>} */
     const layerStatesToDraw = [];
@@ -470,7 +469,7 @@ class WebGLMapRenderer extends MapRenderer {
       frameState.animate = true;
     }
 
-    this.dispatchComposeEvent_(RenderEventType.POSTCOMPOSE, frameState);
+    this.dispatchRenderEvent(RenderEventType.POSTCOMPOSE, frameState);
 
     this.scheduleRemoveUnusedLayerRenderers(frameState);
     this.scheduleExpireIconCache(frameState);

@@ -333,6 +333,13 @@ MapRenderer.prototype.renderFrame = VOID;
 
 
 /**
+ * @param {module:ol/render/EventType} type Event type.
+ * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+ */
+MapRenderer.prototype.dispatchRenderEvent = VOID;
+
+
+/**
  * @param {module:ol/layer/Layer~State} state1 First layer state.
  * @param {module:ol/layer/Layer~State} state2 Second layer state.
  * @return {number} The zIndex difference.

@@ -10,6 +10,7 @@ import MapBrowserEventType from './MapBrowserEventType.js';
 import MapEvent from './MapEvent.js';
 import MapEventType from './MapEventType.js';
 import MapProperty from './MapProperty.js';
+import RenderEventType from './render/EventType.js';
 import BaseObject, {getChangeEventType} from './Object.js';
 import ObjectEventType from './ObjectEventType.js';
 import TileQueue from './TileQueue.js';
@@ -135,6 +136,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @fires module:ol/MapEvent~MapEvent
  * @fires module:ol/render/Event~RenderEvent#postcompose
  * @fires module:ol/render/Event~RenderEvent#precompose
+ * @fires module:ol/render/Event~RenderEvent#rendercomplete
  * @api
  */
 class PluggableMap extends BaseObject {
@@ -961,6 +963,10 @@ class PluggableMap extends BaseObject {
         tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
       }
     }
+    if (frameState && this.hasListener(MapEventType.RENDERCOMPLETE) && !frameState.animate &&
+        !this.tileQueue_.getTilesLoading() && !getLoading(this.getLayers().getArray())) {
+      this.renderer_.dispatchRenderEvent(RenderEventType.RENDERCOMPLETE, frameState);
+    }
 
     const postRenderFunctions = this.postRenderFunctions_;
     for (let i = 0, ii = postRenderFunctions.length; i < ii; ++i) {
@@ -1407,3 +1413,21 @@ function createOptionsInternal(options) {
 
 }
 export default PluggableMap;
+
+/**
+ * @param  {Array<module:ol/layer/Base>} layers Layers.
+ * @return {boolean} Layers have sources that are still loading.
+ */
+function getLoading(layers) {
+  for (let i = 0, ii = layers.length; i < ii; ++i) {
+    const layer = layers[i];
+    if (layer instanceof LayerGroup) {
+      return getLoading(layer.getLayers().getArray());
+    }
+    const source = layers[i].getSource();
+    if (source && source.loading) {
+      return true;
+    }
+  }
+  return false;
+}
