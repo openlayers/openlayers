@@ -177,31 +177,29 @@ describe('ol.source.WMTS', function() {
   });
 
   describe('when creating tileUrlFunction', function() {
+    const defaultTileGrid = new WMTSTileGrid({
+      origin: [-20037508.342789244, 20037508.342789244],
+      resolutions: [559082264.029 * 0.28E-3,
+        279541132.015 * 0.28E-3,
+        139770566.007 * 0.28E-3],
+      matrixIds: [0, 1, 2]
+    });
 
     it('can replace lowercase REST parameters',
       function() {
         const source = new WMTS({
           layer: 'layer',
           style: 'default',
-          urls: ['http://www.example.com/wmts/coastlines/{layer}/{style}/' +
-             '{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg'],
+          urls: ['http://host/{layer}/{style}/{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg'],
           matrixSet: 'EPSG:3857',
           requestEncoding: 'REST',
-          tileGrid: new WMTSTileGrid({
-            origin: [-20037508.342789244, 20037508.342789244],
-            resolutions: [559082264.029 * 0.28E-3,
-              279541132.015 * 0.28E-3,
-              139770566.007 * 0.28E-3],
-            matrixIds: [0, 1, 2]
-          })
+          tileGrid: defaultTileGrid
         });
 
         const projection = getProjection('EPSG:3857');
         const url = source.tileUrlFunction(
           source.getTileCoordForTileUrlFunction([1, 1, -2]), 1, projection);
-        expect(url).to.be.eql('http://www.example.com/wmts/coastlines/' +
-             'layer/default/EPSG:3857/1/1/1.jpg');
-
+        expect(url).to.be.eql('http://host/layer/default/EPSG:3857/1/1/1.jpg');
       });
 
     it('can replace camelcase REST parameters',
@@ -209,25 +207,34 @@ describe('ol.source.WMTS', function() {
         const source = new WMTS({
           layer: 'layer',
           style: 'default',
-          urls: ['http://www.example.com/wmts/coastlines/{Layer}/{Style}/' +
-             '{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg'],
+          urls: ['http://host/{Layer}/{Style}/{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg'],
           matrixSet: 'EPSG:3857',
           requestEncoding: 'REST',
-          tileGrid: new WMTSTileGrid({
-            origin: [-20037508.342789244, 20037508.342789244],
-            resolutions: [559082264.029 * 0.28E-3,
-              279541132.015 * 0.28E-3,
-              139770566.007 * 0.28E-3],
-            matrixIds: [0, 1, 2]
-          })
+          tileGrid: defaultTileGrid
         });
 
         const projection = getProjection('EPSG:3857');
         const url = source.tileUrlFunction(
           source.getTileCoordForTileUrlFunction([1, 1, -2]), 1, projection);
-        expect(url).to.be.eql('http://www.example.com/wmts/coastlines/' +
-             'layer/default/EPSG:3857/1/1/1.jpg');
+        expect(url).to.be.eql('http://host/layer/default/EPSG:3857/1/1/1.jpg');
+      });
 
+    it('can replace dimensions',
+      function() {
+        const source = new WMTS({
+          layer: 'layer',
+          style: 'default',
+          dimensions: {'Time': 42},
+          urls: ['http://host/{Layer}/{Style}/{Time}/{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg'],
+          matrixSet: 'EPSG:3857',
+          requestEncoding: 'REST',
+          tileGrid: defaultTileGrid
+        });
+
+        const projection = getProjection('EPSG:3857');
+        const url = source.tileUrlFunction(
+          source.getTileCoordForTileUrlFunction([1, 1, -2]), 1, projection);
+        expect(url).to.be.eql('http://host/layer/default/42/EPSG:3857/1/1/1.jpg');
       });
   });
 

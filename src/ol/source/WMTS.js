@@ -493,6 +493,7 @@ function createFromWMTSTemplate(template) {
     });
 
   const tileGrid = this.tileGrid;
+  const dimensions = this.dimensions_;
 
   return (
     /**
@@ -510,7 +511,7 @@ function createFromWMTSTemplate(template) {
           'TileCol': tileCoord[1],
           'TileRow': -tileCoord[2] - 1
         };
-        assign(localContext, this.dimensions_);
+        assign(localContext, dimensions);
         let url = template;
         if (requestEncoding == WMTSRequestEncoding.KVP) {
           url = appendParams(url, localContext);
