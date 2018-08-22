@@ -201,16 +201,19 @@ class ImageSource extends Source {
     const image = /** @type {module:ol/Image} */ (event.target);
     switch (image.getState()) {
       case ImageState.LOADING:
+        this.loading = true;
         this.dispatchEvent(
           new ImageSourceEvent(ImageSourceEventType.IMAGELOADSTART,
             image));
         break;
       case ImageState.LOADED:
+        this.loading = false;
         this.dispatchEvent(
           new ImageSourceEvent(ImageSourceEventType.IMAGELOADEND,
             image));
         break;
       case ImageState.ERROR:
+        this.loading = false;
         this.dispatchEvent(
           new ImageSourceEvent(ImageSourceEventType.IMAGELOADERROR,
             image));

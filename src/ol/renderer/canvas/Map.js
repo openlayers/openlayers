@@ -69,9 +69,8 @@ class CanvasMapRenderer extends MapRenderer {
   /**
    * @param {module:ol/render/EventType} type Event type.
    * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @private
    */
-  dispatchComposeEvent_(type, frameState) {
+  dispatchRenderEvent(type, frameState) {
     const map = this.getMap();
     const context = this.context_;
     if (map.hasListener(type)) {
@@ -135,7 +134,7 @@ class CanvasMapRenderer extends MapRenderer {
 
     this.calculateMatrices2D(frameState);
 
-    this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, frameState);
+    this.dispatchRenderEvent(RenderEventType.PRECOMPOSE, frameState);
 
     const layerStatesArray = frameState.layerStatesArray;
     stableSort(layerStatesArray, sortByZIndex);
@@ -164,7 +163,7 @@ class CanvasMapRenderer extends MapRenderer {
       context.restore();
     }
 
-    this.dispatchComposeEvent_(RenderEventType.POSTCOMPOSE, frameState);
+    this.dispatchRenderEvent(RenderEventType.POSTCOMPOSE, frameState);
 
     if (!this.renderedVisible_) {
       this.canvas_.style.display = '';
