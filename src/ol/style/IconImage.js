@@ -43,7 +43,7 @@ class IconImage extends EventTarget {
      * @type {HTMLCanvasElement}
      */
     this.canvas_ = color ?
-      /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS')) :
+      /** @type {HTMLCanvasElement} */ (document.createElement('canvas')) :
       null;
 
     /**

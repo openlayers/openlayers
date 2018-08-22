@@ -57,7 +57,7 @@ class WebGLMapRenderer extends MapRenderer {
      * @type {HTMLCanvasElement}
      */
     this.canvas_ = /** @type {HTMLCanvasElement} */
-      (document.createElement('CANVAS'));
+      (document.createElement('canvas'));
     this.canvas_.style.width = '100%';
     this.canvas_.style.height = '100%';
     this.canvas_.style.display = 'block';

@@ -62,7 +62,7 @@ class Attribution extends Control {
      * @private
      * @type {HTMLElement}
      */
-    this.ulElement_ = document.createElement('UL');
+    this.ulElement_ = document.createElement('ul');
 
     /**
      * @private
@@ -232,7 +232,7 @@ class Attribution extends Control {
 
     // append the attributions
     for (let i = 0, ii = attributions.length; i < ii; ++i) {
-      const element = document.createElement('LI');
+      const element = document.createElement('li');
       element.innerHTML = attributions[i];
       this.ulElement_.appendChild(element);
     }

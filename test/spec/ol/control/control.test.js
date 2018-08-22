@@ -8,7 +8,7 @@ describe('ol.control.Control', function() {
     map = new Map({
       target: document.createElement('div')
     });
-    const element = document.createElement('DIV');
+    const element = document.createElement('div');
     control = new Control({element: element});
     control.setMap(map);
   });

@@ -72,7 +72,7 @@ class ScaleLine extends Control {
     const className = options.className !== undefined ? options.className : 'ol-scale-line';
 
     super({
-      element: document.createElement('DIV'),
+      element: document.createElement('div'),
       render: options.render || render,
       target: options.target
     });
@@ -81,7 +81,7 @@ class ScaleLine extends Control {
      * @private
      * @type {HTMLElement}
      */
-    this.innerElement_ = document.createElement('DIV');
+    this.innerElement_ = document.createElement('div');
     this.innerElement_.className = className + '-inner';
 
     this.element.className = className + ' ' + CLASS_UNSELECTABLE;

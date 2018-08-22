@@ -397,7 +397,7 @@ import {WEBGL} from '../src/ol/has.js';
     image.addEventListener('load', function() {
       expect(image.width).to.be(width);
       expect(image.height).to.be(height);
-      const referenceCanvas = document.createElement('CANVAS');
+      const referenceCanvas = document.createElement('canvas');
       referenceCanvas.width = image.width;
       referenceCanvas.height = image.height;
       const referenceContext = referenceCanvas.getContext('2d');

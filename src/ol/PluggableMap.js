@@ -246,7 +246,7 @@ class PluggableMap extends BaseObject {
      * @private
      * @type {!HTMLElement}
      */
-    this.viewport_ = document.createElement('DIV');
+    this.viewport_ = document.createElement('div');
     this.viewport_.className = 'ol-viewport' + (TOUCH ? ' ol-touch' : '');
     this.viewport_.style.position = 'relative';
     this.viewport_.style.overflow = 'hidden';
@@ -260,7 +260,7 @@ class PluggableMap extends BaseObject {
      * @private
      * @type {!HTMLElement}
      */
-    this.overlayContainer_ = document.createElement('DIV');
+    this.overlayContainer_ = document.createElement('div');
     this.overlayContainer_.className = 'ol-overlaycontainer';
     this.viewport_.appendChild(this.overlayContainer_);
 
@@ -268,7 +268,7 @@ class PluggableMap extends BaseObject {
      * @private
      * @type {!HTMLElement}
      */
-    this.overlayContainerStopEvent_ = document.createElement('DIV');
+    this.overlayContainerStopEvent_ = document.createElement('div');
     this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
     const overlayEvents = [
       EventType.CLICK,
