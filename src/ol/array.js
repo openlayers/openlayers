@@ -194,8 +194,11 @@ export function equals(arr1, arr2) {
 
 
 /**
+ * Sort the passed array such that the relative order of equal elements is preverved.
+ * See https://en.wikipedia.org/wiki/Sorting_algorithm#Stability for details.
  * @param {Array<*>} arr The array to sort (modifies original).
- * @param {Function} compareFnc Comparison function.
+ * @param {!function(*, *): number} compareFnc Comparison function.
+ * @api
  */
 export function stableSort(arr, compareFnc) {
   const length = arr.length;
