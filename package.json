@@ -66,7 +66,7 @@
     "mocha": "5.2.0",
     "mustache": "^2.3.0",
     "pixelmatch": "^4.0.2",
-    "proj4": "2.4.4",
+    "proj4": "2.5.0",
     "rollup": "0.64.1",
     "rollup-plugin-buble": "0.19.2",
     "rollup-plugin-commonjs": "9.1.6",
