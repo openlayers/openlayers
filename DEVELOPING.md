@@ -30,7 +30,7 @@ To run the examples you first need to start the dev server:
 
     $ npm run serve-examples
 
-Then, load <http://localhost:5000/> in your browser.
+Then, load <http://localhost:8080/> in your browser.
 
 ## Running tests
 
