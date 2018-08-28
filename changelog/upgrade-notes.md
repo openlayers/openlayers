@@ -2,6 +2,8 @@
 
 ### Next version
 
+### v5.2.0
+
 #### Removal of the `snapToPixel` option for `ol/style/Image` subclasses
 
 The `snapToPixel` option has been removed, and the `getSnapToPixel` and `setSnapToPixel` methods are deprecated.
