@@ -35,11 +35,8 @@ module.exports = {
     minimizer: [
       new UglifyJsPlugin({
         sourceMap: true,
-        uglifyOptions: {
-          mangle: {
-            keep_fnames: true
-          }
-        }
+        // Do not minify examples that inject code into workers
+        exclude: [/(color-manipulation|region-growing|raster)\.js/]
       })
     ],
     runtimeChunk: {
