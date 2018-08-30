@@ -177,7 +177,7 @@ class ScaleLine extends Control {
       ProjUnits.DEGREES :
       ProjUnits.METERS;
     let pointResolution =
-        getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
+        getPointResolution(projection.getCode(), viewState.resolution, center, pointResolutionUnits);
     if (projection.getUnits() != ProjUnits.DEGREES && projection.getMetersPerUnit()
       && pointResolutionUnits == ProjUnits.METERS) {
       pointResolution *= projection.getMetersPerUnit();
