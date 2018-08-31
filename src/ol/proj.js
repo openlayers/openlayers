@@ -156,14 +156,9 @@ export function addProjections(projections) {
  * @api
  */
 export function get(projectionLike) {
-  let projection = null;
-  if (projectionLike instanceof Projection) {
-    projection = projectionLike;
-  } else if (typeof projectionLike === 'string') {
-    const code = projectionLike;
-    projection = projections.get(code);
-  }
-  return projection;
+  return typeof projectionLike === 'string' ?
+    projections.get(/** @type {string} */ (projectionLike)) :
+    (/** @type {module:ol/proj/Projection} */ (projectionLike) || null);
 }
 
 
