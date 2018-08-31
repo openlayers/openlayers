@@ -278,7 +278,7 @@ class WFS extends XMLFeature {
   /**
    * Read transaction response of the source.
    *
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @return {module:ol/format/WFS~TransactionResponse|undefined} Transaction response.
    * @api
    */
@@ -287,7 +287,7 @@ class WFS extends XMLFeature {
       return this.readTransactionResponseFromDocument(
         /** @type {Document} */ (source));
     } else if (isNode(source)) {
-      return this.readTransactionResponseFromNode(/** @type {Node} */ (source));
+      return this.readTransactionResponseFromNode(/** @type {Element} */ (source));
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readTransactionResponseFromDocument(doc);
@@ -299,7 +299,7 @@ class WFS extends XMLFeature {
   /**
    * Read feature collection metadata of the source.
    *
-   * @param {Document|Node|Object|string} source Source.
+   * @param {Document|Element|Object|string} source Source.
    * @return {module:ol/format/WFS~FeatureCollectionMetadata|undefined}
    *     FeatureCollection metadata.
    * @api
@@ -310,7 +310,7 @@ class WFS extends XMLFeature {
         /** @type {Document} */ (source));
     } else if (isNode(source)) {
       return this.readFeatureCollectionMetadataFromNode(
-        /** @type {Node} */ (source));
+        /** @type {Element} */ (source));
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readFeatureCollectionMetadataFromDocument(doc);
@@ -327,14 +327,14 @@ class WFS extends XMLFeature {
   readFeatureCollectionMetadataFromDocument(doc) {
     for (let n = doc.firstChild; n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
-        return this.readFeatureCollectionMetadataFromNode(n);
+        return this.readFeatureCollectionMetadataFromNode(/** @type {Element} */ (n));
       }
     }
     return undefined;
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @return {module:ol/format/WFS~FeatureCollectionMetadata|undefined}
    *     FeatureCollection metadata.
    */
@@ -355,14 +355,14 @@ class WFS extends XMLFeature {
   readTransactionResponseFromDocument(doc) {
     for (let n = doc.firstChild; n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
-        return this.readTransactionResponseFromNode(n);
+        return this.readTransactionResponseFromNode(/** @type {Element} */ (n));
       }
     }
     return undefined;
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @return {module:ol/format/WFS~TransactionResponse|undefined} Transaction response.
    */
   readTransactionResponseFromNode(node) {
@@ -537,7 +537,7 @@ class WFS extends XMLFeature {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Transaction Summary.
  */
@@ -561,7 +561,7 @@ const OGC_FID_PARSERS = {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function fidParser(node, objectStack) {
@@ -581,7 +581,7 @@ const INSERT_RESULTS_PARSERS = {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Array<string>|undefined} Insert results.
  */
@@ -592,7 +592,7 @@ function readInsertResults(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {module:ol/Feature} feature Feature.
  * @param {Array<*>} objectStack Node stack.
  */
@@ -643,7 +643,7 @@ function getTypeName(featurePrefix, featureType) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {module:ol/Feature} feature Feature.
  * @param {Array<*>} objectStack Node stack.
  */
@@ -664,7 +664,7 @@ function writeDelete(node, feature, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {module:ol/Feature} feature Feature.
  * @param {Array<*>} objectStack Node stack.
  */
@@ -733,7 +733,7 @@ function writeProperty(node, pair, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {{vendorId: string, safeToIgnore: boolean, value: string}} nativeElement The native element.
  * @param {Array<*>} objectStack Node stack.
  */
@@ -780,7 +780,7 @@ const GETFEATURE_SERIALIZERS = {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {string} featureType Feature type.
  * @param {Array<*>} objectStack Node stack.
  */
@@ -951,7 +951,7 @@ function writeNotFilter(node, filter, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {module:ol/format/filter/ComparisonBinary} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
@@ -993,7 +993,7 @@ function writeIsBetweenFilter(node, filter, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {module:ol/format/filter/IsLike} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */

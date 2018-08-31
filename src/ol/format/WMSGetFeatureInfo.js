@@ -81,7 +81,7 @@ class WMSGetFeatureInfo extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @return {Array<module:ol/Feature>} Features.
    * @private

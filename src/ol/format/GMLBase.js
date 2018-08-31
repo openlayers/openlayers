@@ -130,7 +130,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @return {Array<module:ol/Feature> | undefined} Features.
    */
@@ -218,7 +218,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/Geometry|undefined} Geometry.
    */
@@ -238,7 +238,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/Feature} Feature.
    */
@@ -279,7 +279,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/Point|undefined} Point.
    */
@@ -291,7 +291,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/MultiPoint|undefined} MultiPoint.
    */
@@ -307,7 +307,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/MultiLineString|undefined} MultiLineString.
    */
@@ -321,7 +321,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/MultiPolygon|undefined} MultiPolygon.
    */
@@ -334,7 +334,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    */
@@ -343,7 +343,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    */
@@ -352,7 +352,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    */
@@ -361,7 +361,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/LineString|undefined} LineString.
    */
@@ -376,7 +376,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    * @return {Array<number>|undefined} LinearRing flat coordinates.
@@ -393,7 +393,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/LinearRing|undefined} LinearRing.
    */
@@ -405,7 +405,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @return {module:ol/geom/Polygon|undefined} Polygon.
    */
@@ -428,7 +428,7 @@ class GMLBase extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    * @return {Array<number>} Flat coordinates.
