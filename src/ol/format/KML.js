@@ -480,7 +480,7 @@ class KML extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    * @return {module:ol/Feature|undefined} Feature.
@@ -523,7 +523,7 @@ class KML extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    */
@@ -549,7 +549,7 @@ class KML extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    */
@@ -634,7 +634,7 @@ class KML extends XMLFeature {
   /**
    * Read the name of the KML.
    *
-   * @param {Document|Node|string} source Source.
+   * @param {Document|Element|string} source Source.
    * @return {string|undefined} Name.
    * @api
    */
@@ -642,7 +642,7 @@ class KML extends XMLFeature {
     if (isDocument(source)) {
       return this.readNameFromDocument(/** @type {Document} */ (source));
     } else if (isNode(source)) {
-      return this.readNameFromNode(/** @type {Node} */ (source));
+      return this.readNameFromNode(/** @type {Element} */ (source));
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readNameFromDocument(doc);
@@ -658,7 +658,7 @@ class KML extends XMLFeature {
   readNameFromDocument(doc) {
     for (let n = doc.firstChild; n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
-        const name = this.readNameFromNode(n);
+        const name = this.readNameFromNode(/** @type {Element} */ (n));
         if (name) {
           return name;
         }
@@ -668,7 +668,7 @@ class KML extends XMLFeature {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @return {string|undefined} Name.
    */
   readNameFromNode(node) {
@@ -697,7 +697,7 @@ class KML extends XMLFeature {
   /**
    * Read the network links of the KML.
    *
-   * @param {Document|Node|string} source Source.
+   * @param {Document|Element|string} source Source.
    * @return {Array<Object>} Network links.
    * @api
    */
@@ -708,7 +708,7 @@ class KML extends XMLFeature {
         /** @type {Document} */ (source)));
     } else if (isNode(source)) {
       extend(networkLinks, this.readNetworkLinksFromNode(
-        /** @type {Node} */ (source)));
+        /** @type {Element} */ (source)));
     } else if (typeof source === 'string') {
       const doc = parse(source);
       extend(networkLinks, this.readNetworkLinksFromDocument(doc));
@@ -724,14 +724,14 @@ class KML extends XMLFeature {
     const networkLinks = [];
     for (let n = doc.firstChild; n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
-        extend(networkLinks, this.readNetworkLinksFromNode(n));
+        extend(networkLinks, this.readNetworkLinksFromNode(/** @type {Element} */ (n)));
       }
     }
     return networkLinks;
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @return {Array<Object>} Network links.
    */
   readNetworkLinksFromNode(node) {
@@ -759,7 +759,7 @@ class KML extends XMLFeature {
   /**
    * Read the regions of the KML.
    *
-   * @param {Document|Node|string} source Source.
+   * @param {Document|Element|string} source Source.
    * @return {Array<Object>} Regions.
    * @api
    */
@@ -770,7 +770,7 @@ class KML extends XMLFeature {
         /** @type {Document} */ (source)));
     } else if (isNode(source)) {
       extend(regions, this.readRegionFromNode(
-        /** @type {Node} */ (source)));
+        /** @type {Element} */ (source)));
     } else if (typeof source === 'string') {
       const doc = parse(source);
       extend(regions, this.readRegionFromDocument(doc));
@@ -786,14 +786,14 @@ class KML extends XMLFeature {
     const regions = [];
     for (let n = doc.firstChild; n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
-        extend(regions, this.readRegionFromNode(n));
+        extend(regions, this.readRegionFromNode(/** @type {Element} */ (n)));
       }
     }
     return regions;
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @return {Array<Object>} Region.
    * @api
    */
@@ -1053,7 +1053,7 @@ function readURI(node) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @return {module:ol/format/KML~Vec2} Vec2.
  */
 function readVec2(node) {
@@ -1103,7 +1103,7 @@ const STYLE_MAP_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Array<module:ol/style/Style>|string|undefined} StyleMap.
  */
@@ -1127,7 +1127,7 @@ const ICON_STYLE_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function iconStyleParser(node, objectStack) {
@@ -1241,7 +1241,7 @@ const LABEL_STYLE_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function labelStyleParser(node, objectStack) {
@@ -1276,7 +1276,7 @@ const LINE_STYLE_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function lineStyleParser(node, objectStack) {
@@ -1313,7 +1313,7 @@ const POLY_STYLE_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function polyStyleParser(node, objectStack) {
@@ -1351,7 +1351,7 @@ const FLAT_LINEAR_RING_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Array<number>} LinearRing flat coordinates.
  */
@@ -1395,7 +1395,7 @@ const GX_MULTITRACK_GEOMETRY_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {module:ol/geom/MultiLineString|undefined} MultiLineString.
  */
@@ -1423,7 +1423,7 @@ const GX_TRACK_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {module:ol/geom/LineString|undefined} LineString.
  */
@@ -1462,7 +1462,7 @@ const ICON_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object} Icon object.
  */
@@ -1488,7 +1488,7 @@ const GEOMETRY_FLAT_COORDINATES_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Array<number>} Flat coordinates.
  */
@@ -1511,7 +1511,7 @@ const EXTRUDE_AND_ALTITUDE_MODE_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {module:ol/geom/LineString|undefined} LineString.
  */
@@ -1532,7 +1532,7 @@ function readLineString(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {module:ol/geom/Polygon|undefined} Polygon.
  */
@@ -1567,7 +1567,7 @@ const MULTI_GEOMETRY_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {module:ol/geom/Geometry} Geometry.
  */
@@ -1626,7 +1626,7 @@ function readMultiGeometry(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {module:ol/geom/Point|undefined} Point.
  */
@@ -1658,7 +1658,7 @@ const FLAT_LINEAR_RINGS_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {module:ol/geom/Polygon|undefined} Polygon.
  */
@@ -1698,7 +1698,7 @@ const STYLE_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Array<module:ol/style/Style>} Style.
  */
@@ -1788,7 +1788,7 @@ const DATA_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function dataParser(node, objectStack) {
@@ -1816,7 +1816,7 @@ const EXTENDED_DATA_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function extendedDataParser(node, objectStack) {
@@ -1824,7 +1824,7 @@ function extendedDataParser(node, objectStack) {
 }
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function regionParser(node, objectStack) {
@@ -1844,7 +1844,7 @@ const PAIR_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function pairDataParser(node, objectStack) {
@@ -1871,7 +1871,7 @@ function pairDataParser(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function placemarkStyleMapParser(node, objectStack) {
@@ -1901,7 +1901,7 @@ const SCHEMA_DATA_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function schemaDataParser(node, objectStack) {
@@ -1910,7 +1910,7 @@ function schemaDataParser(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function simpleDataParser(node, objectStack) {
@@ -1940,7 +1940,7 @@ const LAT_LON_ALT_BOX_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function latLonAltBoxParser(node, objectStack) {
@@ -1976,7 +1976,7 @@ const LOD_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function lodParser(node, objectStack) {
@@ -2003,7 +2003,7 @@ const INNER_BOUNDARY_IS_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function innerBoundaryIsParser(node, objectStack) {
@@ -2029,7 +2029,7 @@ const OUTER_BOUNDARY_IS_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function outerBoundaryIsParser(node, objectStack) {
@@ -2045,7 +2045,7 @@ function outerBoundaryIsParser(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function linkParser(node, objectStack) {
@@ -2136,7 +2136,7 @@ const EXTENDEDDATA_NODE_SERIALIZERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {{name: *, value: *}} pair Name value pair.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -2657,7 +2657,7 @@ const EXTENDEDDATA_NODE_FACTORY = makeSimpleNodeFactory('ExtendedData');
 /**
  * FIXME currently we do serialize arbitrary/custom feature properties
  * (ExtendedData).
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {module:ol/Feature} feature Feature.
  * @param {Array<*>} objectStack Object stack.
  * @this {module:ol/format/KML}
@@ -2915,7 +2915,7 @@ function writeStyle(node, style, objectStack) {
 
 
 /**
- * @param {Node} node Node to append a TextNode with the Vec2 to.
+ * @param {Element} node Node to append a TextNode with the Vec2 to.
  * @param {module:ol/format/KML~Vec2} vec2 Vec2.
  */
 function writeVec2(node, vec2) {

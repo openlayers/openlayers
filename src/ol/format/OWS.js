@@ -205,7 +205,7 @@ const SERVICE_PROVIDER_PARSERS =
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The address.
  */
@@ -216,7 +216,7 @@ function readAddress(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The values.
  */
@@ -227,7 +227,7 @@ function readAllowedValues(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The constraint.
  */
@@ -243,7 +243,7 @@ function readConstraint(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The contact info.
  */
@@ -254,7 +254,7 @@ function readContactInfo(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The DCP.
  */
@@ -265,7 +265,7 @@ function readDcp(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The GET object.
  */
@@ -280,7 +280,7 @@ function readGet(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The HTTP object.
  */
@@ -290,7 +290,7 @@ function readHttp(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The operation.
  */
@@ -308,7 +308,7 @@ function readOperation(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The operations metadata.
  */
@@ -320,7 +320,7 @@ function readOperationsMetadata(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The phone.
  */
@@ -331,7 +331,7 @@ function readPhone(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The service identification.
  */
@@ -343,7 +343,7 @@ function readServiceIdentification(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The service contact.
  */
@@ -355,7 +355,7 @@ function readServiceContact(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The service provider.
  */

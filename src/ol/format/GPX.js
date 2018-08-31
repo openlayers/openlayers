@@ -489,7 +489,7 @@ function GPX_NODE_FACTORY(value, objectStack, opt_nodeName) {
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {module:ol/format/GPX~LayoutOptions} layoutOptions Layout options.
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {!Object} values Values.
  * @return {Array<number>} Flat coordinates.
  */
@@ -560,7 +560,7 @@ function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function parseLink(node, objectStack) {
@@ -584,7 +584,7 @@ function parseExtensions(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function parseRtePt(node, objectStack) {
@@ -599,7 +599,7 @@ function parseRtePt(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function parseTrkPt(node, objectStack) {
@@ -614,7 +614,7 @@ function parseTrkPt(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function parseTrkSeg(node, objectStack) {
@@ -628,7 +628,7 @@ function parseTrkSeg(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {module:ol/Feature|undefined} Track.
  */
@@ -656,7 +656,7 @@ function readRte(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {module:ol/Feature|undefined} Track.
  */
@@ -687,7 +687,7 @@ function readTrk(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {module:ol/Feature|undefined} Waypoint.
  */
@@ -709,7 +709,7 @@ function readWpt(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {string} value Value for the link's `href` attribute.
  * @param {Array<*>} objectStack Node stack.
  */
@@ -728,7 +728,7 @@ function writeLink(node, value, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
  * @param {Array<*>} objectStack Object stack.
  */
@@ -836,7 +836,7 @@ function writeTrkSeg(node, lineString, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {module:ol/Feature} feature Feature.
  * @param {Array<*>} objectStack Object stack.
  */

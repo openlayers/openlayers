@@ -95,7 +95,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    * @return {module:ol/extent~Extent|undefined} Envelope.
@@ -110,7 +110,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    */
@@ -126,7 +126,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    */
@@ -146,7 +146,7 @@ class GML2 extends GMLBase {
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
    * @param {string=} opt_nodeName Node name.
-   * @return {Node|undefined} Node.
+   * @return {Element|undefined} Node.
    * @private
    */
   GEOMETRY_NODE_FACTORY_(value, objectStack, opt_nodeName) {
@@ -172,7 +172,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {module:ol/Feature} feature Feature.
    * @param {Array<*>} objectStack Node stack.
    */
@@ -218,7 +218,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {module:ol/geom/LineString} geometry LineString geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
@@ -243,7 +243,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {module:ol/geom/LineString} line LineString geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
@@ -257,7 +257,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {module:ol/geom/MultiLineString} geometry MultiLineString geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
@@ -305,7 +305,7 @@ class GML2 extends GMLBase {
 
   /**
    * @param {string} namespaceURI XML namespace.
-   * @returns {Node} coordinates node.
+   * @returns {Element} coordinates node.
    * @private
    */
   createCoordinatesNode_(namespaceURI) {
@@ -351,7 +351,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {module:ol/geom/Polygon} geometry Polygon geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
@@ -445,7 +445,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {module:ol/geom/Point} geometry Point geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
@@ -465,7 +465,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {module:ol/geom/MultiPoint} geometry MultiPoint geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
@@ -497,7 +497,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {module:ol/geom/LinearRing} geometry LinearRing geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
@@ -514,7 +514,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {module:ol/geom/MultiPolygon} geometry MultiPolygon geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
@@ -550,7 +550,7 @@ class GML2 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {module:ol/extent~Extent} extent Extent.
    * @param {Array<*>} objectStack Node stack.
    * @private

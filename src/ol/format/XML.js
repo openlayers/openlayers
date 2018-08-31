@@ -13,7 +13,7 @@ class XML {
   /**
    * Read the source document.
    *
-   * @param {Document|Node|string} source The XML source.
+   * @param {Document|Element|string} source The XML source.
    * @return {Object} An object representing the source.
    * @api
    */
@@ -21,7 +21,7 @@ class XML {
     if (isDocument(source)) {
       return this.readFromDocument(/** @type {Document} */ (source));
     } else if (isNode(source)) {
-      return this.readFromNode(/** @type {Node} */ (source));
+      return this.readFromNode(/** @type {Element} */ (source));
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readFromDocument(doc);
@@ -39,7 +39,7 @@ class XML {
 
   /**
    * @abstract
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @return {Object} Object
    */
   readFromNode(node) {}

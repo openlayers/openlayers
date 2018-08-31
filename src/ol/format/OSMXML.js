@@ -115,7 +115,7 @@ const NODE_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function readNode(node, objectStack) {
@@ -144,7 +144,7 @@ function readNode(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function readWay(node, objectStack) {
@@ -160,7 +160,7 @@ function readWay(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function readNd(node, objectStack) {
@@ -170,7 +170,7 @@ function readNd(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function readTag(node, objectStack) {
