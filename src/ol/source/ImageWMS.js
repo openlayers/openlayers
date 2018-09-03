@@ -64,7 +64,7 @@ class ImageWMS extends ImageSource {
    */
   constructor(opt_options) {
 
-    const options = opt_options || {};
+    const options = opt_options || /** @type {module:ol/source/ImageWMS~Options} */ ({});
 
     super({
       attributions: options.attributions,

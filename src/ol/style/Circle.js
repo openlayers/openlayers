@@ -27,7 +27,7 @@ class CircleStyle extends RegularShape {
    */
   constructor(opt_options) {
 
-    const options = opt_options || {};
+    const options = opt_options || /** @type {module:ol/style/Circle~Options} */ ({});
 
     super({
       points: Infinity,
