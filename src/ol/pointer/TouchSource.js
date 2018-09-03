@@ -305,7 +305,7 @@ class TouchSource extends EventSource {
         // Never remove pointerId == 1, which is mouse.
         // Touch identifiers are 2 smaller than their pointerId, which is the
         // index in pointermap.
-        if (key != POINTER_ID && !this.findTouch_(touchList, key - 2)) {
+        if (key != /** @type {string} */ (POINTER_ID) && !this.findTouch_(touchList, key - 2)) {
           d.push(value.out);
         }
       }
