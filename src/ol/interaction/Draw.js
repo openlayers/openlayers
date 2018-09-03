@@ -834,7 +834,7 @@ export function handleEvent(event) {
   this.freehand_ = this.mode_ !== Mode.POINT && this.freehandCondition_(event);
   let move = event.type === MapBrowserEventType.POINTERMOVE;
   let pass = true;
-  if (this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
+  if (!this.freehand_ && this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
     const now = Date.now();
     if (now - this.lastDragTime_ >= this.dragVertexDelay_) {
       this.downPx_ = event.pixel;
