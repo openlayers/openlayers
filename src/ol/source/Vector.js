@@ -112,11 +112,11 @@ export class VectorSourceEvent extends Event {
  * @property {module:ol/source/Vector~LoadingStrategy} [strategy] The loading strategy to use.
  * By default an {@link module:ol/loadingstrategy~all}
  * strategy is used, a one-off strategy which loads all features at once.
- * @property {string|module:ol/featureloader~FeatureUrlfunction} [url]
+ * @property {string|module:ol/featureloader~FeatureUrlFunction} [url]
  * Setting this option instructs the source to load features using an XHR loader
  * (see {@link module:ol/featureloader~xhr}). Use a `string` and an
  * {@link module:ol/loadingstrategy~all} for a one-off download of all features from
- * the given URL. Use a {@link module:ol/featureloader~FeatureUrlfunction} to generate the url with
+ * the given URL. Use a {@link module:ol/featureloader~FeatureUrlFunction} to generate the url with
  * other loading strategies.
  * Requires `format` to be set as well.
  * When default XHR feature loader is provided, the features will

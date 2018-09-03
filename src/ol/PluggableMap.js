@@ -615,7 +615,7 @@ class PluggableMap extends BaseObject {
     if (!this.frameState_) {
       return;
     }
-    const options = opt_options || {};
+    const options = opt_options || /** @type {module:ol/PluggableMap~AtPixelOptions} */ ({});
     const hitTolerance = options.hitTolerance !== undefined ?
       opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
     const layerFilter = options.layerFilter || TRUE;
