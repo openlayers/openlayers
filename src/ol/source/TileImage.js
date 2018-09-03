@@ -18,6 +18,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * @typedef {Object} Options
  * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize=2048] Cache size.
+ * @property {module:ol/extent~Extent} [extent]
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
@@ -63,7 +64,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  */
 class TileImage extends UrlTile {
   /**
-   * @param {module:ol/source/TileImage~Options=} options Image tile options.
+   * @param {!module:ol/source/TileImage~Options} options Image tile options.
    */
   constructor(options) {
 
