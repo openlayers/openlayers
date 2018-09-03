@@ -79,7 +79,7 @@ class MousePosition extends Control {
      * @private
      * @type {string}
      */
-    this.undefinedHTML_ = 'undefinedHTML' in options ? options.undefinedHTML : '&#160;';
+    this.undefinedHTML_ = options.undefinedHTML !== undefined ? options.undefinedHTML : '&#160;';
 
     /**
      * @private
