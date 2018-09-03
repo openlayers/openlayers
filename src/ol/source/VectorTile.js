@@ -14,6 +14,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * @typedef {Object} Options
  * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize=128] Cache size.
+ * @property {module:ol/extent~Extent} [extent]
  * @property {module:ol/format/Feature} [format] Feature format for tiles. Used and required by the default.
  * @property {boolean} [overlaps=true] This source may have overlapping geometries. Setting this
  * to `false` (e.g. for sources with polygons that represent administrative
@@ -73,7 +74,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  */
 class VectorTile extends UrlTile {
   /**
-   * @param {module:ol/source/VectorTile~Options=} options Vector tile options.
+   * @param {!module:ol/source/VectorTile~Options} options Vector tile options.
    */
   constructor(options) {
     const projection = options.projection || 'EPSG:3857';
