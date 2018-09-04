@@ -48,7 +48,7 @@ const ExtentEventType = {
 
 /**
  * @classdesc
- * Events emitted by {@link module:ol/interaction/Extent~Extent} instances are
+ * Events emitted by {@link module:ol/interaction/Extent~ExtentInteraction} instances are
  * instances of this type.
  */
 class ExtentInteractionEvent extends Event {
@@ -313,7 +313,7 @@ class ExtentInteraction extends PointerInteraction {
 /**
  * @param {module:ol/MapBrowserEvent} mapBrowserEvent Event.
  * @return {boolean} Propagate event?
- * @this {module:ol/interaction/Extent~Extent}
+ * @this {module:ol/interaction/Extent~ExtentInteraction}
  */
 function handleEvent(mapBrowserEvent) {
   if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
@@ -332,7 +332,7 @@ function handleEvent(mapBrowserEvent) {
 /**
  * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Event handled?
- * @this {module:ol/interaction/Extent~Extent}
+ * @this {module:ol/interaction/Extent~ExtentInteraction}
  */
 function handleDownEvent(mapBrowserEvent) {
   const pixel = mapBrowserEvent.pixel;
@@ -391,7 +391,7 @@ function handleDownEvent(mapBrowserEvent) {
 /**
  * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Event handled?
- * @this {module:ol/interaction/Extent~Extent}
+ * @this {module:ol/interaction/Extent~ExtentInteraction}
  */
 function handleDragEvent(mapBrowserEvent) {
   if (this.pointerHandler_) {
@@ -405,7 +405,7 @@ function handleDragEvent(mapBrowserEvent) {
 /**
  * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {module:ol/interaction/Extent~Extent}
+ * @this {module:ol/interaction/Extent~ExtentInteraction}
  */
 function handleUpEvent(mapBrowserEvent) {
   this.pointerHandler_ = null;
