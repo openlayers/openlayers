@@ -69,7 +69,7 @@ class RegularShape extends ImageStyle {
 
     /**
      * @private
-     * @type {Array<string>}
+     * @type {Array<string|number>}
      */
     this.checksums_ = null;
 
