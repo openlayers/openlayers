@@ -13,16 +13,16 @@ import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
  * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {module:ol/extent~Extent} [imageExtent] Extent of the image in map coordinates.
+ * @property {import("../extent.js").Extent} [imageExtent] Extent of the image in map coordinates.
  * This is the [left, bottom, right, top] map coordinates of your image.
- * @property {module:ol/Image~LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
- * @property {module:ol/proj~ProjectionLike} projection Projection.
- * @property {module:ol/size~Size} [imageSize] Size of the image in pixels. Usually the image size is auto-detected, so this
+ * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {import("../proj.js").ProjectionLike} projection Projection.
+ * @property {import("../size.js").Size} [imageSize] Size of the image in pixels. Usually the image size is auto-detected, so this
  * only needs to be set if auto-detection fails for some reason.
  * @property {string} url Image URL.
  */
@@ -35,13 +35,13 @@ import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
  */
 class Static extends ImageSource {
   /**
-   * @param {module:ol/source/ImageStatic~Options=} options ImageStatic options.
+   * @param {Options=} options ImageStatic options.
    */
   constructor(options) {
     const crossOrigin = options.crossOrigin !== undefined ?
       options.crossOrigin : null;
 
-    const /** @type {module:ol/Image~LoadFunction} */ imageLoadFunction =
+    const /** @type {import("../Image.js").LoadFunction} */ imageLoadFunction =
         options.imageLoadFunction !== undefined ?
           options.imageLoadFunction : defaultImageLoadFunction;
 
@@ -58,19 +58,19 @@ class Static extends ImageSource {
 
     /**
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../extent.js").Extent}
      */
     this.imageExtent_ = options.imageExtent;
 
     /**
      * @private
-     * @type {module:ol/Image}
+     * @type {import("../Image.js").default}
      */
     this.image_ = new ImageWrapper(this.imageExtent_, undefined, 1, this.url_, crossOrigin, imageLoadFunction);
 
     /**
      * @private
-     * @type {module:ol/size~Size}
+     * @type {import("../size.js").Size}
      */
     this.imageSize_ = options.imageSize ? options.imageSize : null;
 
@@ -81,7 +81,7 @@ class Static extends ImageSource {
 
   /**
    * Returns the image extent
-   * @return {module:ol/extent~Extent} image extent.
+   * @return {import("../extent.js").Extent} image extent.
    * @api
    */
   getImageExtent() {

@@ -87,12 +87,12 @@ const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
 class GMLBase extends XMLFeature {
 
   /**
-   * @param {module:ol/format/GMLBase~Options=} opt_options Optional configuration object.
+   * @param {Options=} opt_options Optional configuration object.
    */
   constructor(opt_options) {
     super();
 
-    const options = /** @type {module:ol/format/GMLBase~Options} */ (opt_options ? opt_options : {});
+    const options = /** @type {Options} */ (opt_options ? opt_options : {});
 
     /**
      * @protected
@@ -132,7 +132,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<module:ol/Feature> | undefined} Features.
+   * @return {Array<import("../Feature.js").default> | undefined} Features.
    */
   readFeaturesInternal(node, objectStack) {
     const localName = node.localName;
@@ -220,17 +220,17 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {module:ol/geom/Geometry|undefined} Geometry.
+   * @return {import("../geom/Geometry.js").default|undefined} Geometry.
    */
   readGeometryElement(node, objectStack) {
     const context = /** @type {Object} */ (objectStack[0]);
     context['srsName'] = node.firstElementChild.getAttribute('srsName');
     context['srsDimension'] = node.firstElementChild.getAttribute('srsDimension');
-    /** @type {module:ol/geom/Geometry} */
+    /** @type {import("../geom/Geometry.js").default} */
     const geometry = pushParseAndPop(null, this.GEOMETRY_PARSERS_, node, objectStack, this);
     if (geometry) {
       return (
-        /** @type {module:ol/geom/Geometry} */ (transformWithOptions(geometry, false, context))
+        /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, false, context))
       );
     } else {
       return undefined;
@@ -240,7 +240,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {module:ol/Feature} Feature.
+   * @return {import("../Feature.js").default} Feature.
    */
   readFeatureElement(node, objectStack) {
     let n;
@@ -281,7 +281,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {module:ol/geom/Point|undefined} Point.
+   * @return {import("../geom/Point.js").default|undefined} Point.
    */
   readPoint(node, objectStack) {
     const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
@@ -293,7 +293,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {module:ol/geom/MultiPoint|undefined} MultiPoint.
+   * @return {import("../geom/MultiPoint.js").default|undefined} MultiPoint.
    */
   readMultiPoint(node, objectStack) {
     /** @type {Array<Array<number>>} */
@@ -309,10 +309,10 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {module:ol/geom/MultiLineString|undefined} MultiLineString.
+   * @return {import("../geom/MultiLineString.js").default|undefined} MultiLineString.
    */
   readMultiLineString(node, objectStack) {
-    /** @type {Array<module:ol/geom/LineString>} */
+    /** @type {Array<import("../geom/LineString.js").default>} */
     const lineStrings = pushParseAndPop([],
       this.MULTILINESTRING_PARSERS_, node, objectStack, this);
     if (lineStrings) {
@@ -323,10 +323,10 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {module:ol/geom/MultiPolygon|undefined} MultiPolygon.
+   * @return {import("../geom/MultiPolygon.js").default|undefined} MultiPolygon.
    */
   readMultiPolygon(node, objectStack) {
-    /** @type {Array<module:ol/geom/Polygon>} */
+    /** @type {Array<import("../geom/Polygon.js").default>} */
     const polygons = pushParseAndPop([], this.MULTIPOLYGON_PARSERS_, node, objectStack, this);
     if (polygons) {
       return new MultiPolygon(polygons);
@@ -363,7 +363,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {module:ol/geom/LineString|undefined} LineString.
+   * @return {import("../geom/LineString.js").default|undefined} LineString.
    */
   readLineString(node, objectStack) {
     const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
@@ -395,7 +395,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {module:ol/geom/LinearRing|undefined} LinearRing.
+   * @return {import("../geom/LinearRing.js").default|undefined} LinearRing.
    */
   readLinearRing(node, objectStack) {
     const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
@@ -407,7 +407,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {module:ol/geom/Polygon|undefined} Polygon.
+   * @return {import("../geom/Polygon.js").default|undefined} Polygon.
    */
   readPolygon(node, objectStack) {
     /** @type {Array<Array<number>>} */
@@ -471,7 +471,7 @@ class GMLBase extends XMLFeature {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GMLBase.prototype.MULTIPOINT_PARSERS_ = {
@@ -484,7 +484,7 @@ GMLBase.prototype.MULTIPOINT_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
@@ -497,7 +497,7 @@ GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
@@ -510,7 +510,7 @@ GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GMLBase.prototype.POINTMEMBER_PARSERS_ = {
@@ -522,7 +522,7 @@ GMLBase.prototype.POINTMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
@@ -534,7 +534,7 @@ GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
@@ -546,7 +546,7 @@ GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
 GMLBase.prototype.RING_PARSERS = {

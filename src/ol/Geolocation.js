@@ -17,7 +17,7 @@ import {get as getProjection, getTransformFromProjections, identityTransform} fr
  * instantiation.
  * @property {PositionOptions} [trackingOptions] Tracking options.
  * See http://www.w3.org/TR/geolocation-API/#position_options_interface.
- * @property {module:ol/proj~ProjectionLike} [projection] The projection the position
+ * @property {import("./proj.js").ProjectionLike} [projection] The projection the position
  * is reported in.
  */
 
@@ -48,7 +48,7 @@ import {get as getProjection, getTransformFromProjections, identityTransform} fr
 class Geolocation extends BaseObject {
 
   /**
-   * @param {module:ol/Geolocation~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
@@ -59,13 +59,13 @@ class Geolocation extends BaseObject {
     /**
      * The unprojected (EPSG:4326) device position.
      * @private
-     * @type {module:ol/coordinate~Coordinate}
+     * @type {import("./coordinate.js").Coordinate}
      */
     this.position_ = null;
 
     /**
      * @private
-     * @type {module:ol/proj~TransformFunction}
+     * @type {import("./proj.js").TransformFunction}
      */
     this.transform_ = identityTransform;
 
@@ -192,13 +192,13 @@ class Geolocation extends BaseObject {
 
   /**
    * Get a geometry of the position accuracy.
-   * @return {?module:ol/geom/Polygon} A geometry of the position accuracy.
+   * @return {?import("./geom/Polygon.js").default} A geometry of the position accuracy.
    * @observable
    * @api
    */
   getAccuracyGeometry() {
     return (
-      /** @type {?module:ol/geom/Polygon} */ (this.get(GeolocationProperty.ACCURACY_GEOMETRY) || null)
+      /** @type {?import("./geom/Polygon.js").default} */ (this.get(GeolocationProperty.ACCURACY_GEOMETRY) || null)
     );
   }
 
@@ -238,27 +238,27 @@ class Geolocation extends BaseObject {
 
   /**
    * Get the position of the device.
-   * @return {module:ol/coordinate~Coordinate|undefined} The current position of the device reported
+   * @return {import("./coordinate.js").Coordinate|undefined} The current position of the device reported
    *     in the current projection.
    * @observable
    * @api
    */
   getPosition() {
     return (
-      /** @type {module:ol/coordinate~Coordinate|undefined} */ (this.get(GeolocationProperty.POSITION))
+      /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(GeolocationProperty.POSITION))
     );
   }
 
   /**
    * Get the projection associated with the position.
-   * @return {module:ol/proj/Projection|undefined} The projection the position is
+   * @return {import("./proj/Projection.js").default|undefined} The projection the position is
    *     reported in.
    * @observable
    * @api
    */
   getProjection() {
     return (
-      /** @type {module:ol/proj/Projection|undefined} */ (this.get(GeolocationProperty.PROJECTION))
+      /** @type {import("./proj/Projection.js").default|undefined} */ (this.get(GeolocationProperty.PROJECTION))
     );
   }
 
@@ -298,7 +298,7 @@ class Geolocation extends BaseObject {
 
   /**
    * Set the projection to use for transforming the coordinates.
-   * @param {module:ol/proj~ProjectionLike} projection The projection the position is
+   * @param {import("./proj.js").ProjectionLike} projection The projection the position is
    *     reported in.
    * @observable
    * @api

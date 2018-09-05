@@ -29,8 +29,8 @@ class CanvasImmediateRenderer extends VectorContext {
   /**
    * @param {CanvasRenderingContext2D} context Context.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/extent~Extent} extent Extent.
-   * @param {module:ol/transform~Transform} transform Transform.
+   * @param {import("../../extent.js").Extent} extent Extent.
+   * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    */
   constructor(context, pixelRatio, extent, transform, viewRotation) {
@@ -50,13 +50,13 @@ class CanvasImmediateRenderer extends VectorContext {
 
     /**
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../../extent.js").Extent}
      */
     this.extent_ = extent;
 
     /**
      * @private
-     * @type {module:ol/transform~Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.transform_ = transform;
 
@@ -68,31 +68,31 @@ class CanvasImmediateRenderer extends VectorContext {
 
     /**
      * @private
-     * @type {?module:ol/render/canvas~FillState}
+     * @type {?import("../canvas.js").FillState}
      */
     this.contextFillState_ = null;
 
     /**
      * @private
-     * @type {?module:ol/render/canvas~StrokeState}
+     * @type {?import("../canvas.js").StrokeState}
      */
     this.contextStrokeState_ = null;
 
     /**
      * @private
-     * @type {?module:ol/render/canvas~TextState}
+     * @type {?import("../canvas.js").TextState}
      */
     this.contextTextState_ = null;
 
     /**
      * @private
-     * @type {?module:ol/render/canvas~FillState}
+     * @type {?import("../canvas.js").FillState}
      */
     this.fillState_ = null;
 
     /**
      * @private
-     * @type {?module:ol/render/canvas~StrokeState}
+     * @type {?import("../canvas.js").StrokeState}
      */
     this.strokeState_ = null;
 
@@ -200,19 +200,19 @@ class CanvasImmediateRenderer extends VectorContext {
 
     /**
      * @private
-     * @type {?module:ol/render/canvas~FillState}
+     * @type {?import("../canvas.js").FillState}
      */
     this.textFillState_ = null;
 
     /**
      * @private
-     * @type {?module:ol/render/canvas~StrokeState}
+     * @type {?import("../canvas.js").StrokeState}
      */
     this.textStrokeState_ = null;
 
     /**
      * @private
-     * @type {?module:ol/render/canvas~TextState}
+     * @type {?import("../canvas.js").TextState}
      */
     this.textState_ = null;
 
@@ -224,7 +224,7 @@ class CanvasImmediateRenderer extends VectorContext {
 
     /**
      * @private
-     * @type {module:ol/transform~Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.tmpLocalTransform_ = createTransform();
 
@@ -375,7 +375,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a circle geometry into the canvas.  Rendering is immediate and uses
    * the current fill and stroke styles.
    *
-   * @param {module:ol/geom/Circle} geometry Circle geometry.
+   * @param {import("../../geom/Circle.js").default} geometry Circle geometry.
    * @override
    * @api
    */
@@ -415,7 +415,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Set the rendering style.  Note that since this is an immediate rendering API,
    * any `zIndex` on the provided style will be ignored.
    *
-   * @param {module:ol/style/Style} style The rendering style.
+   * @param {import("../../style/Style.js").default} style The rendering style.
    * @override
    * @api
    */
@@ -429,7 +429,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a geometry into the canvas.  Call
    * {@link module:ol/render/canvas/Immediate#setStyle} first to set the rendering style.
    *
-   * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry The geometry to render.
+   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry The geometry to render.
    * @override
    * @api
    */
@@ -437,28 +437,28 @@ class CanvasImmediateRenderer extends VectorContext {
     const type = geometry.getType();
     switch (type) {
       case GeometryType.POINT:
-        this.drawPoint(/** @type {module:ol/geom/Point} */ (geometry));
+        this.drawPoint(/** @type {import("../../geom/Point.js").default} */ (geometry));
         break;
       case GeometryType.LINE_STRING:
-        this.drawLineString(/** @type {module:ol/geom/LineString} */ (geometry));
+        this.drawLineString(/** @type {import("../../geom/LineString.js").default} */ (geometry));
         break;
       case GeometryType.POLYGON:
-        this.drawPolygon(/** @type {module:ol/geom/Polygon} */ (geometry));
+        this.drawPolygon(/** @type {import("../../geom/Polygon.js").default} */ (geometry));
         break;
       case GeometryType.MULTI_POINT:
-        this.drawMultiPoint(/** @type {module:ol/geom/MultiPoint} */ (geometry));
+        this.drawMultiPoint(/** @type {import("../../geom/MultiPoint.js").default} */ (geometry));
         break;
       case GeometryType.MULTI_LINE_STRING:
-        this.drawMultiLineString(/** @type {module:ol/geom/MultiLineString} */ (geometry));
+        this.drawMultiLineString(/** @type {import("../../geom/MultiLineString.js").default} */ (geometry));
         break;
       case GeometryType.MULTI_POLYGON:
-        this.drawMultiPolygon(/** @type {module:ol/geom/MultiPolygon} */ (geometry));
+        this.drawMultiPolygon(/** @type {import("../../geom/MultiPolygon.js").default} */ (geometry));
         break;
       case GeometryType.GEOMETRY_COLLECTION:
-        this.drawGeometryCollection(/** @type {module:ol/geom/GeometryCollection} */ (geometry));
+        this.drawGeometryCollection(/** @type {import("../../geom/GeometryCollection.js").default} */ (geometry));
         break;
       case GeometryType.CIRCLE:
-        this.drawCircle(/** @type {module:ol/geom/Circle} */ (geometry));
+        this.drawCircle(/** @type {import("../../geom/Circle.js").default} */ (geometry));
         break;
       default:
     }
@@ -470,8 +470,8 @@ class CanvasImmediateRenderer extends VectorContext {
    * this method is called.  If you need `zIndex` support, you should be using an
    * {@link module:ol/layer/Vector~VectorLayer} instead.
    *
-   * @param {module:ol/Feature} feature Feature.
-   * @param {module:ol/style/Style} style Style.
+   * @param {import("../../Feature.js").default} feature Feature.
+   * @param {import("../../style/Style.js").default} style Style.
    * @override
    * @api
    */
@@ -488,7 +488,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a GeometryCollection to the canvas.  Rendering is immediate and
    * uses the current styles appropriate for each geometry in the collection.
    *
-   * @param {module:ol/geom/GeometryCollection} geometry Geometry collection.
+   * @param {import("../../geom/GeometryCollection.js").default} geometry Geometry collection.
    * @override
    */
   drawGeometryCollection(geometry) {
@@ -502,7 +502,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a Point geometry into the canvas.  Rendering is immediate and uses
    * the current style.
    *
-   * @param {module:ol/geom/Point|module:ol/render/Feature} geometry Point geometry.
+   * @param {import("../../geom/Point.js").default|import("../Feature.js").default} geometry Point geometry.
    * @override
    */
   drawPoint(geometry) {
@@ -520,7 +520,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a MultiPoint geometry  into the canvas.  Rendering is immediate and
    * uses the current style.
    *
-   * @param {module:ol/geom/MultiPoint|module:ol/render/Feature} geometry MultiPoint geometry.
+   * @param {import("../../geom/MultiPoint.js").default|import("../Feature.js").default} geometry MultiPoint geometry.
    * @override
    */
   drawMultiPoint(geometry) {
@@ -538,7 +538,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a LineString into the canvas.  Rendering is immediate and uses
    * the current style.
    *
-   * @param {module:ol/geom/LineString|module:ol/render/Feature} geometry LineString geometry.
+   * @param {import("../../geom/LineString.js").default|import("../Feature.js").default} geometry LineString geometry.
    * @override
    */
   drawLineString(geometry) {
@@ -564,7 +564,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a MultiLineString geometry into the canvas.  Rendering is immediate
    * and uses the current style.
    *
-   * @param {module:ol/geom/MultiLineString|module:ol/render/Feature} geometry MultiLineString geometry.
+   * @param {import("../../geom/MultiLineString.js").default|import("../Feature.js").default} geometry MultiLineString geometry.
    * @override
    */
   drawMultiLineString(geometry) {
@@ -595,7 +595,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Render a Polygon geometry into the canvas.  Rendering is immediate and uses
    * the current style.
    *
-   * @param {module:ol/geom/Polygon|module:ol/render/Feature} geometry Polygon geometry.
+   * @param {import("../../geom/Polygon.js").default|import("../Feature.js").default} geometry Polygon geometry.
    * @override
    */
   drawPolygon(geometry) {
@@ -629,7 +629,7 @@ class CanvasImmediateRenderer extends VectorContext {
   /**
    * Render MultiPolygon geometry into the canvas.  Rendering is immediate and
    * uses the current style.
-   * @param {module:ol/geom/MultiPolygon} geometry MultiPolygon geometry.
+   * @param {import("../../geom/MultiPolygon.js").default} geometry MultiPolygon geometry.
    * @override
    */
   drawMultiPolygon(geometry) {
@@ -667,7 +667,7 @@ class CanvasImmediateRenderer extends VectorContext {
   }
 
   /**
-   * @param {module:ol/render/canvas~FillState} fillState Fill state.
+   * @param {import("../canvas.js").FillState} fillState Fill state.
    * @private
    */
   setContextFillState_(fillState) {
@@ -686,7 +686,7 @@ class CanvasImmediateRenderer extends VectorContext {
   }
 
   /**
-   * @param {module:ol/render/canvas~StrokeState} strokeState Stroke state.
+   * @param {import("../canvas.js").StrokeState} strokeState Stroke state.
    * @private
    */
   setContextStrokeState_(strokeState) {
@@ -742,7 +742,7 @@ class CanvasImmediateRenderer extends VectorContext {
   }
 
   /**
-   * @param {module:ol/render/canvas~TextState} textState Text state.
+   * @param {import("../canvas.js").TextState} textState Text state.
    * @private
    */
   setContextTextState_(textState) {
@@ -777,8 +777,8 @@ class CanvasImmediateRenderer extends VectorContext {
    * Set the fill and stroke style for subsequent draw operations.  To clear
    * either fill or stroke styles, pass null for the appropriate parameter.
    *
-   * @param {module:ol/style/Fill} fillStyle Fill style.
-   * @param {module:ol/style/Stroke} strokeStyle Stroke style.
+   * @param {import("../../style/Fill.js").default} fillStyle Fill style.
+   * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
    * @override
    */
   setFillStrokeStyle(fillStyle, strokeStyle) {
@@ -824,7 +824,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Set the image style for subsequent draw operations.  Pass null to remove
    * the image style.
    *
-   * @param {module:ol/style/Image} imageStyle Image style.
+   * @param {import("../../style/Image.js").default} imageStyle Image style.
    * @override
    */
   setImageStyle(imageStyle) {
@@ -854,7 +854,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Set the text style for subsequent draw operations.  Pass null to
    * remove the text style.
    *
-   * @param {module:ol/style/Text} textStyle Text style.
+   * @param {import("../../style/Text.js").default} textStyle Text style.
    * @override
    */
   setTextStyle(textStyle) {

@@ -133,7 +133,7 @@ export function parse(xml) {
  * object stack.
  * @param {function(this: T, Node, Array<*>): (Array<*>|undefined)} valueReader Value reader.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
- * @return {module:ol/xml~Parser} Parser.
+ * @return {Parser} Parser.
  * @template T
  */
 export function makeArrayExtender(valueReader, opt_this) {
@@ -158,7 +158,7 @@ export function makeArrayExtender(valueReader, opt_this) {
  * object stack.
  * @param {function(this: T, Element, Array<*>): *} valueReader Value reader.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
- * @return {module:ol/xml~Parser} Parser.
+ * @return {Parser} Parser.
  * @template T
  */
 export function makeArrayPusher(valueReader, opt_this) {
@@ -182,7 +182,7 @@ export function makeArrayPusher(valueReader, opt_this) {
  * top of the stack.
  * @param {function(this: T, Node, Array<*>): *} valueReader Value reader.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
- * @return {module:ol/xml~Parser} Parser.
+ * @return {Parser} Parser.
  * @template T
  */
 export function makeReplacer(valueReader, opt_this) {
@@ -206,7 +206,7 @@ export function makeReplacer(valueReader, opt_this) {
  * @param {function(this: T, Element, Array<*>): *} valueReader Value reader.
  * @param {string=} opt_property Property.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
- * @return {module:ol/xml~Parser} Parser.
+ * @return {Parser} Parser.
  * @template T
  */
 export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
@@ -237,7 +237,7 @@ export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
  * @param {function(this: T, Element, Array<*>): *} valueReader Value reader.
  * @param {string=} opt_property Property.
  * @param {T=} opt_this The object to use as `this` in `valueReader`.
- * @return {module:ol/xml~Parser} Parser.
+ * @return {Parser} Parser.
  * @template T
  */
 export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
@@ -263,13 +263,13 @@ export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
  * {@link module:ol/xml~NodeStackItem} at the top of the `objectStack`.
  * @param {function(this: T, Node, V, Array<*>)} nodeWriter Node writer.
  * @param {T=} opt_this The object to use as `this` in `nodeWriter`.
- * @return {module:ol/xml~Serializer} Serializer.
+ * @return {Serializer} Serializer.
  * @template T, V
  */
 export function makeChildAppender(nodeWriter, opt_this) {
   return function(node, value, objectStack) {
     nodeWriter.call(opt_this !== undefined ? opt_this : this, node, value, objectStack);
-    const parent = /** @type {module:ol/xml~NodeStackItem} */ (objectStack[objectStack.length - 1]);
+    const parent = /** @type {NodeStackItem} */ (objectStack[objectStack.length - 1]);
     const parentNode = parent.node;
     parentNode.appendChild(node);
   };
@@ -285,7 +285,7 @@ export function makeChildAppender(nodeWriter, opt_this) {
  * geometries.
  * @param {function(this: T, Element, V, Array<*>)} nodeWriter Node writer.
  * @param {T=} opt_this The object to use as `this` in `nodeWriter`.
- * @return {module:ol/xml~Serializer} Serializer.
+ * @return {Serializer} Serializer.
  * @template T, V
  */
 export function makeArraySerializer(nodeWriter, opt_this) {
@@ -326,7 +326,7 @@ export function makeSimpleNodeFactory(opt_nodeName, opt_namespaceURI) {
      * @return {Node} Node.
      */
     function(value, objectStack, opt_nodeName) {
-      const context = /** @type {module:ol/xml~NodeStackItem} */ (objectStack[objectStack.length - 1]);
+      const context = /** @type {NodeStackItem} */ (objectStack[objectStack.length - 1]);
       const node = context.node;
       let nodeName = fixedNodeName;
       if (nodeName === undefined) {
@@ -397,7 +397,7 @@ export function makeStructureNS(namespaceURIs, structure, opt_structureNS) {
 
 /**
  * Parse a node using the parsers and object stack.
- * @param {Object<string, Object<string, module:ol/xml~Parser>>} parsersNS
+ * @param {Object<string, Object<string, Parser>>} parsersNS
  *     Parsers by namespace.
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
@@ -420,7 +420,7 @@ export function parseNode(parsersNS, node, objectStack, opt_this) {
 /**
  * Push an object on top of the stack, parse and return the popped object.
  * @param {T} object Object.
- * @param {Object<string, Object<string, module:ol/xml~Parser>>} parsersNS
+ * @param {Object<string, Object<string, Parser>>} parsersNS
  *     Parsers by namespace.
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
@@ -437,7 +437,7 @@ export function pushParseAndPop(object, parsersNS, node, objectStack, opt_this) 
 
 /**
  * Walk through an array of `values` and call a serializer for each value.
- * @param {Object<string, Object<string, module:ol/xml~Serializer>>} serializersNS
+ * @param {Object<string, Object<string, Serializer>>} serializersNS
  *     Namespaced serializers.
  * @param {function(this: T, *, Array<*>, (string|undefined)): (Node|undefined)} nodeFactory
  *     Node factory. The `nodeFactory` creates the node whose namespace and name
@@ -477,7 +477,7 @@ export function serialize(
 
 /**
  * @param {O} object Object.
- * @param {Object<string, Object<string, module:ol/xml~Serializer>>} serializersNS
+ * @param {Object<string, Object<string, Serializer>>} serializersNS
  *     Namespaced serializers.
  * @param {function(this: T, *, Array<*>, (string|undefined)): (Node|undefined)} nodeFactory
  *     Node factory. The `nodeFactory` creates the node whose namespace and name

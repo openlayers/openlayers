@@ -26,14 +26,14 @@ import {assert} from './asserts.js';
 
 /**
  * @private
- * @type {module:ol/transform~Transform}
+ * @type {Transform}
  */
 const tmp_ = new Array(6);
 
 
 /**
  * Create an identity transform.
- * @return {!module:ol/transform~Transform} Identity transform.
+ * @return {!Transform} Identity transform.
  */
 export function create() {
   return [1, 0, 0, 1, 0, 0];
@@ -42,8 +42,8 @@ export function create() {
 
 /**
  * Resets the given transform to an identity transform.
- * @param {!module:ol/transform~Transform} transform Transform.
- * @return {!module:ol/transform~Transform} Transform.
+ * @param {!Transform} transform Transform.
+ * @return {!Transform} Transform.
  */
 export function reset(transform) {
   return set(transform, 1, 0, 0, 1, 0, 0);
@@ -53,9 +53,9 @@ export function reset(transform) {
 /**
  * Multiply the underlying matrices of two transforms and return the result in
  * the first transform.
- * @param {!module:ol/transform~Transform} transform1 Transform parameters of matrix 1.
- * @param {!module:ol/transform~Transform} transform2 Transform parameters of matrix 2.
- * @return {!module:ol/transform~Transform} transform1 multiplied with transform2.
+ * @param {!Transform} transform1 Transform parameters of matrix 1.
+ * @param {!Transform} transform2 Transform parameters of matrix 2.
+ * @return {!Transform} transform1 multiplied with transform2.
  */
 export function multiply(transform1, transform2) {
   const a1 = transform1[0];
@@ -83,14 +83,14 @@ export function multiply(transform1, transform2) {
 
 /**
  * Set the transform components a-f on a given transform.
- * @param {!module:ol/transform~Transform} transform Transform.
+ * @param {!Transform} transform Transform.
  * @param {number} a The a component of the transform.
  * @param {number} b The b component of the transform.
  * @param {number} c The c component of the transform.
  * @param {number} d The d component of the transform.
  * @param {number} e The e component of the transform.
  * @param {number} f The f component of the transform.
- * @return {!module:ol/transform~Transform} Matrix with transform applied.
+ * @return {!Transform} Matrix with transform applied.
  */
 export function set(transform, a, b, c, d, e, f) {
   transform[0] = a;
@@ -105,9 +105,9 @@ export function set(transform, a, b, c, d, e, f) {
 
 /**
  * Set transform on one matrix from another matrix.
- * @param {!module:ol/transform~Transform} transform1 Matrix to set transform to.
- * @param {!module:ol/transform~Transform} transform2 Matrix to set transform from.
- * @return {!module:ol/transform~Transform} transform1 with transform from transform2 applied.
+ * @param {!Transform} transform1 Matrix to set transform to.
+ * @param {!Transform} transform2 Matrix to set transform from.
+ * @return {!Transform} transform1 with transform from transform2 applied.
  */
 export function setFromArray(transform1, transform2) {
   transform1[0] = transform2[0];
@@ -124,9 +124,9 @@ export function setFromArray(transform1, transform2) {
  * Transforms the given coordinate with the given transform returning the
  * resulting, transformed coordinate. The coordinate will be modified in-place.
  *
- * @param {module:ol/transform~Transform} transform The transformation.
- * @param {module:ol/coordinate~Coordinate|module:ol/pixel~Pixel} coordinate The coordinate to transform.
- * @return {module:ol/coordinate~Coordinate|module:ol/pixel~Pixel} return coordinate so that operations can be
+ * @param {Transform} transform The transformation.
+ * @param {import("./coordinate.js").Coordinate|import("./pixel.js").Pixel} coordinate The coordinate to transform.
+ * @return {import("./coordinate.js").Coordinate|import("./pixel.js").Pixel} return coordinate so that operations can be
  *     chained together.
  */
 export function apply(transform, coordinate) {
@@ -140,9 +140,9 @@ export function apply(transform, coordinate) {
 
 /**
  * Applies rotation to the given transform.
- * @param {!module:ol/transform~Transform} transform Transform.
+ * @param {!Transform} transform Transform.
  * @param {number} angle Angle in radians.
- * @return {!module:ol/transform~Transform} The rotated transform.
+ * @return {!Transform} The rotated transform.
  */
 export function rotate(transform, angle) {
   const cos = Math.cos(angle);
@@ -153,10 +153,10 @@ export function rotate(transform, angle) {
 
 /**
  * Applies scale to a given transform.
- * @param {!module:ol/transform~Transform} transform Transform.
+ * @param {!Transform} transform Transform.
  * @param {number} x Scale factor x.
  * @param {number} y Scale factor y.
- * @return {!module:ol/transform~Transform} The scaled transform.
+ * @return {!Transform} The scaled transform.
  */
 export function scale(transform, x, y) {
   return multiply(transform, set(tmp_, x, 0, 0, y, 0, 0));
@@ -165,10 +165,10 @@ export function scale(transform, x, y) {
 
 /**
  * Applies translation to the given transform.
- * @param {!module:ol/transform~Transform} transform Transform.
+ * @param {!Transform} transform Transform.
  * @param {number} dx Translation x.
  * @param {number} dy Translation y.
- * @return {!module:ol/transform~Transform} The translated transform.
+ * @return {!Transform} The translated transform.
  */
 export function translate(transform, dx, dy) {
   return multiply(transform, set(tmp_, 1, 0, 0, 1, dx, dy));
@@ -178,7 +178,7 @@ export function translate(transform, dx, dy) {
 /**
  * Creates a composite transform given an initial translation, scale, rotation, and
  * final translation (in that order only, not commutative).
- * @param {!module:ol/transform~Transform} transform The transform (will be modified in place).
+ * @param {!Transform} transform The transform (will be modified in place).
  * @param {number} dx1 Initial translation x.
  * @param {number} dy1 Initial translation y.
  * @param {number} sx Scale factor x.
@@ -186,7 +186,7 @@ export function translate(transform, dx, dy) {
  * @param {number} angle Rotation (in counter-clockwise radians).
  * @param {number} dx2 Final translation x.
  * @param {number} dy2 Final translation y.
- * @return {!module:ol/transform~Transform} The composite transform.
+ * @return {!Transform} The composite transform.
  */
 export function compose(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
   const sin = Math.sin(angle);
@@ -203,8 +203,8 @@ export function compose(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
 
 /**
  * Invert the given transform.
- * @param {!module:ol/transform~Transform} transform Transform.
- * @return {!module:ol/transform~Transform} Inverse of the transform.
+ * @param {!Transform} transform Transform.
+ * @return {!Transform} Inverse of the transform.
  */
 export function invert(transform) {
   const det = determinant(transform);
@@ -230,7 +230,7 @@ export function invert(transform) {
 
 /**
  * Returns the determinant of the given matrix.
- * @param {!module:ol/transform~Transform} mat Matrix.
+ * @param {!Transform} mat Matrix.
  * @return {number} Determinant.
  */
 export function determinant(mat) {

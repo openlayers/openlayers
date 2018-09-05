@@ -13,7 +13,7 @@ import SourceState from '../source/State.js';
 class LayerRenderer extends Observable {
 
   /**
-   * @param {module:ol/layer/Layer} layer Layer.
+   * @param {import("../layer/Layer.js").default} layer Layer.
    */
   constructor(layer) {
 
@@ -21,7 +21,7 @@ class LayerRenderer extends Observable {
 
     /**
      * @private
-     * @type {module:ol/layer/Layer}
+     * @type {import("../layer/Layer.js").default}
      */
     this.layer_ = layer;
 
@@ -29,10 +29,10 @@ class LayerRenderer extends Observable {
 
   /**
    * Create a function that adds loaded tiles to the tile lookup.
-   * @param {module:ol/source/Tile} source Tile source.
-   * @param {module:ol/proj/Projection} projection Projection of the tiles.
-   * @param {Object<number, Object<string, module:ol/Tile>>} tiles Lookup of loaded tiles by zoom level.
-   * @return {function(number, module:ol/TileRange):boolean} A function that can be
+   * @param {import("../source/Tile.js").default} source Tile source.
+   * @param {import("../proj/Projection.js").default} projection Projection of the tiles.
+   * @param {Object<number, Object<string, import("../Tile.js").default>>} tiles Lookup of loaded tiles by zoom level.
+   * @return {function(number, import("../TileRange.js").default):boolean} A function that can be
    *     called with a zoom level and a tile range to add loaded tiles to the lookup.
    * @protected
    */
@@ -40,7 +40,7 @@ class LayerRenderer extends Observable {
     return (
       /**
        * @param {number} zoom Zoom level.
-       * @param {module:ol/TileRange} tileRange Tile range.
+       * @param {import("../TileRange.js").default} tileRange Tile range.
        * @return {boolean} The tile range is fully loaded.
        */
       function(zoom, tileRange) {
@@ -56,7 +56,7 @@ class LayerRenderer extends Observable {
   }
 
   /**
-   * @return {module:ol/layer/Layer} Layer.
+   * @return {import("../layer/Layer.js").default} Layer.
    */
   getLayer() {
     return this.layer_;
@@ -64,11 +64,11 @@ class LayerRenderer extends Observable {
 
   /**
    * Handle changes in image state.
-   * @param {module:ol/events/Event} event Image change event.
+   * @param {import("../events/Event.js").default} event Image change event.
    * @private
    */
   handleImageChange_(event) {
-    const image = /** @type {module:ol/Image} */ (event.target);
+    const image = /** @type {import("../Image.js").default} */ (event.target);
     if (image.getState() === ImageState.LOADED) {
       this.renderIfReadyAndVisible();
     }
@@ -77,7 +77,7 @@ class LayerRenderer extends Observable {
   /**
    * Load the image if not already loaded, and register the image change
    * listener if needed.
-   * @param {module:ol/ImageBase} image Image.
+   * @param {import("../ImageBase.js").default} image Image.
    * @return {boolean} `true` if the image is already loaded, `false` otherwise.
    * @protected
    */
@@ -104,16 +104,16 @@ class LayerRenderer extends Observable {
   }
 
   /**
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @param {module:ol/source/Tile} tileSource Tile source.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../source/Tile.js").default} tileSource Tile source.
    * @protected
    */
   scheduleExpireCache(frameState, tileSource) {
     if (tileSource.canExpireCache()) {
       /**
-       * @param {module:ol/source/Tile} tileSource Tile source.
-       * @param {module:ol/PluggableMap} map Map.
-       * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+       * @param {import("../source/Tile.js").default} tileSource Tile source.
+       * @param {import("../PluggableMap.js").default} map Map.
+       * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
        */
       const postRenderFunction = function(tileSource, map, frameState) {
         const tileSourceKey = getUid(tileSource).toString();
@@ -124,16 +124,16 @@ class LayerRenderer extends Observable {
       }.bind(null, tileSource);
 
       frameState.postRenderFunctions.push(
-        /** @type {module:ol/PluggableMap~PostRenderFunction} */ (postRenderFunction)
+        /** @type {import("../PluggableMap.js").PostRenderFunction} */ (postRenderFunction)
       );
     }
   }
 
   /**
-   * @param {!Object<string, !Object<string, module:ol/TileRange>>} usedTiles Used tiles.
-   * @param {module:ol/source/Tile} tileSource Tile source.
+   * @param {!Object<string, !Object<string, import("../TileRange.js").default>>} usedTiles Used tiles.
+   * @param {import("../source/Tile.js").default} tileSource Tile source.
    * @param {number} z Z.
-   * @param {module:ol/TileRange} tileRange Tile range.
+   * @param {import("../TileRange.js").default} tileRange Tile range.
    * @protected
    */
   updateUsedTiles(usedTiles, tileSource, z, tileRange) {
@@ -159,15 +159,15 @@ class LayerRenderer extends Observable {
    * - registers idle tiles in frameState.wantedTiles so that they are not
    *   discarded by the tile queue
    * - enqueues missing tiles
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @param {module:ol/source/Tile} tileSource Tile source.
-   * @param {module:ol/tilegrid/TileGrid} tileGrid Tile grid.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../source/Tile.js").default} tileSource Tile source.
+   * @param {import("../tilegrid/TileGrid.js").default} tileGrid Tile grid.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/proj/Projection} projection Projection.
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} currentZ Current Z.
    * @param {number} preload Load low resolution tiles up to 'preload' levels.
-   * @param {function(this: T, module:ol/Tile)=} opt_tileCallback Tile callback.
+   * @param {function(this: T, import("../Tile.js").default)=} opt_tileCallback Tile callback.
    * @param {T=} opt_this Object to use as `this` in `opt_tileCallback`.
    * @protected
    * @template T
@@ -220,10 +220,10 @@ class LayerRenderer extends Observable {
 
 
 /**
- * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
- * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+ * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
+ * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
  * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {function(this: S, (module:ol/Feature|module:ol/render/Feature), module:ol/layer/Layer): T} callback Feature callback.
+ * @param {function(this: S, (import("../Feature.js").default|import("../render/Feature.js").default), import("../layer/Layer.js").default): T} callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @return {T|void} Callback result.
  * @template S,T
@@ -232,8 +232,8 @@ LayerRenderer.prototype.forEachFeatureAtCoordinate = VOID;
 
 
 /**
- * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
- * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+ * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
+ * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
  * @return {boolean} Is there a feature at the given coordinate?
  */
 LayerRenderer.prototype.hasFeatureAtCoordinate = FALSE;

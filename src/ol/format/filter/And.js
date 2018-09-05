@@ -12,7 +12,7 @@ import LogicalNary from '../filter/LogicalNary.js';
 class And extends LogicalNary {
 
   /**
-   * @param {...module:ol/format/filter/Filter} conditions Conditions.
+   * @param {...import("./Filter.js").default} conditions Conditions.
    */
   constructor(conditions) {
     const params = ['And'].concat(Array.prototype.slice.call(arguments));

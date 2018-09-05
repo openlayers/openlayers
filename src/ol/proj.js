@@ -67,7 +67,7 @@ import {add as addTransformFunc, clear as clearTransformFuncs, get as getTransfo
 /**
  * A projection as {@link module:ol/proj/Projection}, SRS identifier
  * string or undefined.
- * @typedef {module:ol/proj/Projection|string|undefined} ProjectionLike
+ * @typedef {import("./proj/Projection.js").default|string|undefined} ProjectionLike
  * @api
  */
 
@@ -129,7 +129,7 @@ export function identityTransform(input, opt_output, opt_dimension) {
  * Add a Projection object to the list of supported projections that can be
  * looked up by their code.
  *
- * @param {module:ol/proj/Projection} projection Projection instance.
+ * @param {import("./proj/Projection.js").default} projection Projection instance.
  * @api
  */
 export function addProjection(projection) {
@@ -139,7 +139,7 @@ export function addProjection(projection) {
 
 
 /**
- * @param {Array<module:ol/proj/Projection>} projections Projections.
+ * @param {Array<import("./proj/Projection.js").default>} projections Projections.
  */
 export function addProjections(projections) {
   projections.forEach(addProjection);
@@ -149,16 +149,16 @@ export function addProjections(projections) {
 /**
  * Fetches a Projection object for the code specified.
  *
- * @param {module:ol/proj~ProjectionLike} projectionLike Either a code string which is
+ * @param {ProjectionLike} projectionLike Either a code string which is
  *     a combination of authority and identifier such as "EPSG:4326", or an
  *     existing projection object, or undefined.
- * @return {module:ol/proj/Projection} Projection object, or null if not in list.
+ * @return {import("./proj/Projection.js").default} Projection object, or null if not in list.
  * @api
  */
 export function get(projectionLike) {
   return typeof projectionLike === 'string' ?
     projections.get(/** @type {string} */ (projectionLike)) :
-    (/** @type {module:ol/proj/Projection} */ (projectionLike) || null);
+    (/** @type {import("./proj/Projection.js").default} */ (projectionLike) || null);
 }
 
 
@@ -174,10 +174,10 @@ export function get(projectionLike) {
  * {@link module:ol/proj/Projection~Projection} constructor or by using
  * {@link module:ol/proj/Projection~Projection#setGetPointResolution} to change an existing
  * projection object.
- * @param {module:ol/proj~ProjectionLike} projection The projection.
+ * @param {ProjectionLike} projection The projection.
  * @param {number} resolution Nominal resolution in projection units.
- * @param {module:ol/coordinate~Coordinate} point Point to find adjusted resolution at.
- * @param {module:ol/proj/Units=} opt_units Units to get the point resolution in.
+ * @param {import("./coordinate.js").Coordinate} point Point to find adjusted resolution at.
+ * @param {import("./proj/Units.js").default=} opt_units Units to get the point resolution in.
  * Default is the projection's units.
  * @return {number} Point resolution.
  * @api
@@ -223,7 +223,7 @@ export function getPointResolution(projection, resolution, point, opt_units) {
  * Registers transformation functions that don't alter coordinates. Those allow
  * to transform between projections with equal meaning.
  *
- * @param {Array<module:ol/proj/Projection>} projections Projections.
+ * @param {Array<import("./proj/Projection.js").default>} projections Projections.
  * @api
  */
 export function addEquivalentProjections(projections) {
@@ -242,13 +242,13 @@ export function addEquivalentProjections(projections) {
  * Registers transformation functions to convert coordinates in any projection
  * in projection1 to any projection in projection2.
  *
- * @param {Array<module:ol/proj/Projection>} projections1 Projections with equal
+ * @param {Array<import("./proj/Projection.js").default>} projections1 Projections with equal
  *     meaning.
- * @param {Array<module:ol/proj/Projection>} projections2 Projections with equal
+ * @param {Array<import("./proj/Projection.js").default>} projections2 Projections with equal
  *     meaning.
- * @param {module:ol/proj~TransformFunction} forwardTransform Transformation from any
+ * @param {TransformFunction} forwardTransform Transformation from any
  *   projection in projection1 to any projection in projection2.
- * @param {module:ol/proj~TransformFunction} inverseTransform Transform from any projection
+ * @param {TransformFunction} inverseTransform Transform from any projection
  *   in projection2 to any projection in projection1..
  */
 export function addEquivalentTransforms(projections1, projections2, forwardTransform, inverseTransform) {
@@ -271,9 +271,9 @@ export function clearAllProjections() {
 
 
 /**
- * @param {module:ol/proj/Projection|string|undefined} projection Projection.
+ * @param {import("./proj/Projection.js").default|string|undefined} projection Projection.
  * @param {string} defaultCode Default code.
- * @return {module:ol/proj/Projection} Projection.
+ * @return {import("./proj/Projection.js").default} Projection.
  */
 export function createProjection(projection, defaultCode) {
   if (!projection) {
@@ -282,7 +282,7 @@ export function createProjection(projection, defaultCode) {
     return get(projection);
   } else {
     return (
-      /** @type {module:ol/proj/Projection} */ (projection)
+      /** @type {import("./proj/Projection.js").default} */ (projection)
     );
   }
 }
@@ -291,9 +291,9 @@ export function createProjection(projection, defaultCode) {
 /**
  * Creates a {@link module:ol/proj~TransformFunction} from a simple 2D coordinate transform
  * function.
- * @param {function(module:ol/coordinate~Coordinate): module:ol/coordinate~Coordinate} coordTransform Coordinate
+ * @param {function(import("./coordinate.js").Coordinate): import("./coordinate.js").Coordinate} coordTransform Coordinate
  *     transform.
- * @return {module:ol/proj~TransformFunction} Transform function.
+ * @return {TransformFunction} Transform function.
  */
 export function createTransformFromCoordinateTransform(coordTransform) {
   return (
@@ -327,13 +327,13 @@ export function createTransformFromCoordinateTransform(coordTransform) {
  * converts these into the functions used internally which also handle
  * extents and coordinate arrays.
  *
- * @param {module:ol/proj~ProjectionLike} source Source projection.
- * @param {module:ol/proj~ProjectionLike} destination Destination projection.
- * @param {function(module:ol/coordinate~Coordinate): module:ol/coordinate~Coordinate} forward The forward transform
+ * @param {ProjectionLike} source Source projection.
+ * @param {ProjectionLike} destination Destination projection.
+ * @param {function(import("./coordinate.js").Coordinate): import("./coordinate.js").Coordinate} forward The forward transform
  *     function (that is, from the source projection to the destination
  *     projection) that takes a {@link module:ol/coordinate~Coordinate} as argument and returns
  *     the transformed {@link module:ol/coordinate~Coordinate}.
- * @param {function(module:ol/coordinate~Coordinate): module:ol/coordinate~Coordinate} inverse The inverse transform
+ * @param {function(import("./coordinate.js").Coordinate): import("./coordinate.js").Coordinate} inverse The inverse transform
  *     function (that is, from the destination projection to the source
  *     projection) that takes a {@link module:ol/coordinate~Coordinate} as argument and returns
  *     the transformed {@link module:ol/coordinate~Coordinate}.
@@ -349,11 +349,11 @@ export function addCoordinateTransforms(source, destination, forward, inverse) {
 
 /**
  * Transforms a coordinate from longitude/latitude to a different projection.
- * @param {module:ol/coordinate~Coordinate} coordinate Coordinate as longitude and latitude, i.e.
+ * @param {import("./coordinate.js").Coordinate} coordinate Coordinate as longitude and latitude, i.e.
  *     an array with longitude as 1st and latitude as 2nd element.
- * @param {module:ol/proj~ProjectionLike=} opt_projection Target projection. The
+ * @param {ProjectionLike=} opt_projection Target projection. The
  *     default is Web Mercator, i.e. 'EPSG:3857'.
- * @return {module:ol/coordinate~Coordinate} Coordinate projected to the target projection.
+ * @return {import("./coordinate.js").Coordinate} Coordinate projected to the target projection.
  * @api
  */
 export function fromLonLat(coordinate, opt_projection) {
@@ -364,10 +364,10 @@ export function fromLonLat(coordinate, opt_projection) {
 
 /**
  * Transforms a coordinate to longitude/latitude.
- * @param {module:ol/coordinate~Coordinate} coordinate Projected coordinate.
- * @param {module:ol/proj~ProjectionLike=} opt_projection Projection of the coordinate.
+ * @param {import("./coordinate.js").Coordinate} coordinate Projected coordinate.
+ * @param {ProjectionLike=} opt_projection Projection of the coordinate.
  *     The default is Web Mercator, i.e. 'EPSG:3857'.
- * @return {module:ol/coordinate~Coordinate} Coordinate as longitude and latitude, i.e. an array
+ * @return {import("./coordinate.js").Coordinate} Coordinate as longitude and latitude, i.e. an array
  *     with longitude as 1st and latitude as 2nd element.
  * @api
  */
@@ -387,8 +387,8 @@ export function toLonLat(coordinate, opt_projection) {
  * projection does represent the same geographic point as the same coordinate in
  * the other projection.
  *
- * @param {module:ol/proj/Projection} projection1 Projection 1.
- * @param {module:ol/proj/Projection} projection2 Projection 2.
+ * @param {import("./proj/Projection.js").default} projection1 Projection 1.
+ * @param {import("./proj/Projection.js").default} projection2 Projection 2.
  * @return {boolean} Equivalent.
  * @api
  */
@@ -410,10 +410,10 @@ export function equivalent(projection1, projection2) {
  * Searches in the list of transform functions for the function for converting
  * coordinates from the source projection to the destination projection.
  *
- * @param {module:ol/proj/Projection} sourceProjection Source Projection object.
- * @param {module:ol/proj/Projection} destinationProjection Destination Projection
+ * @param {import("./proj/Projection.js").default} sourceProjection Source Projection object.
+ * @param {import("./proj/Projection.js").default} destinationProjection Destination Projection
  *     object.
- * @return {module:ol/proj~TransformFunction} Transform function.
+ * @return {TransformFunction} Transform function.
  */
 export function getTransformFromProjections(sourceProjection, destinationProjection) {
   const sourceCode = sourceProjection.getCode();
@@ -431,9 +431,9 @@ export function getTransformFromProjections(sourceProjection, destinationProject
  * function to convert a coordinates array from the source projection to the
  * destination projection.
  *
- * @param {module:ol/proj~ProjectionLike} source Source.
- * @param {module:ol/proj~ProjectionLike} destination Destination.
- * @return {module:ol/proj~TransformFunction} Transform function.
+ * @param {ProjectionLike} source Source.
+ * @param {ProjectionLike} destination Destination.
+ * @return {TransformFunction} Transform function.
  * @api
  */
 export function getTransform(source, destination) {
@@ -451,10 +451,10 @@ export function getTransform(source, destination) {
  * See the transform method of {@link module:ol/geom/Geometry~Geometry} and its
  * subclasses for geometry transforms.
  *
- * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
- * @param {module:ol/proj~ProjectionLike} source Source projection-like.
- * @param {module:ol/proj~ProjectionLike} destination Destination projection-like.
- * @return {module:ol/coordinate~Coordinate} Coordinate.
+ * @param {import("./coordinate.js").Coordinate} coordinate Coordinate.
+ * @param {ProjectionLike} source Source projection-like.
+ * @param {ProjectionLike} destination Destination projection-like.
+ * @return {import("./coordinate.js").Coordinate} Coordinate.
  * @api
  */
 export function transform(coordinate, source, destination) {
@@ -467,10 +467,10 @@ export function transform(coordinate, source, destination) {
  * Transforms an extent from source projection to destination projection.  This
  * returns a new extent (and does not modify the original).
  *
- * @param {module:ol/extent~Extent} extent The extent to transform.
- * @param {module:ol/proj~ProjectionLike} source Source projection-like.
- * @param {module:ol/proj~ProjectionLike} destination Destination projection-like.
- * @return {module:ol/extent~Extent} The transformed extent.
+ * @param {import("./extent.js").Extent} extent The extent to transform.
+ * @param {ProjectionLike} source Source projection-like.
+ * @param {ProjectionLike} destination Destination projection-like.
+ * @return {import("./extent.js").Extent} The transformed extent.
  * @api
  */
 export function transformExtent(extent, source, destination) {
@@ -482,10 +482,10 @@ export function transformExtent(extent, source, destination) {
 /**
  * Transforms the given point to the destination projection.
  *
- * @param {module:ol/coordinate~Coordinate} point Point.
- * @param {module:ol/proj/Projection} sourceProjection Source projection.
- * @param {module:ol/proj/Projection} destinationProjection Destination projection.
- * @return {module:ol/coordinate~Coordinate} Point.
+ * @param {import("./coordinate.js").Coordinate} point Point.
+ * @param {import("./proj/Projection.js").default} sourceProjection Source projection.
+ * @param {import("./proj/Projection.js").default} destinationProjection Destination projection.
+ * @return {import("./coordinate.js").Coordinate} Point.
  */
 export function transformWithProjections(point, sourceProjection, destinationProjection) {
   const transformFunc = getTransformFromProjections(sourceProjection, destinationProjection);

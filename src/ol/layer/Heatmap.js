@@ -16,7 +16,7 @@ import Style from '../style/Style.js';
  * @typedef {Object} Options
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
- * @property {module:ol/extent~Extent} [extent] The bounding extent for layer rendering.  The layer will not be
+ * @property {import("../extent.js").Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
  * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
@@ -31,15 +31,15 @@ import Style from '../style/Style.js';
  * @property {number} [radius=8] Radius size in pixels.
  * @property {number} [blur=15] Blur size in pixels.
  * @property {number} [shadow=250] Shadow size in pixels.
- * @property {string|function(module:ol/Feature):number} [weight='weight'] The feature
+ * @property {string|function(import("../Feature.js").default):number} [weight='weight'] The feature
  * attribute to use for the weight or a function that returns a weight from a feature. Weight values
  * should range from 0 to 1 (and values outside will be clamped to that range).
- * @property {module:ol/layer/VectorRenderType|string} [renderMode='vector'] Render mode for vector layers:
+ * @property {import("./VectorRenderType.js").default|string} [renderMode='vector'] Render mode for vector layers:
  *  * `'image'`: Vector layers are rendered as images. Great performance, but point symbols and
  *    texts are always rotated with the view and pixels are scaled during zoom animations.
  *  * `'vector'`: Vector layers are rendered as vectors. Most accurate rendering even during
  *    animations, but slower performance.
- * @property {module:ol/source/Vector} [source] Source.
+ * @property {import("../source/Vector.js").default} [source] Source.
  */
 
 
@@ -68,12 +68,12 @@ const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @fires module:ol/render/Event~RenderEvent
+ * @fires import("../render/Event.js").RenderEvent
  * @api
  */
 class Heatmap extends VectorLayer {
   /**
-   * @param {module:ol/layer/Heatmap~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
@@ -107,7 +107,7 @@ class Heatmap extends VectorLayer {
 
     /**
      * @private
-     * @type {Array<Array<module:ol/style/Style>>}
+     * @type {Array<Array<import("../style/Style.js").default>>}
      */
     this.styleCache_ = null;
 
@@ -234,7 +234,7 @@ class Heatmap extends VectorLayer {
   }
 
   /**
-   * @param {module:ol/render/Event} event Post compose event
+   * @param {import("../render/Event.js").default} event Post compose event
    * @private
    */
   handleRender_(event) {

@@ -29,8 +29,8 @@ import {createTexture} from '../../webgl/Context.js';
 class WebGLImageLayerRenderer extends WebGLLayerRenderer {
 
   /**
-   * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
-   * @param {module:ol/layer/Image} imageLayer Tile layer.
+   * @param {import("./Map.js").default} mapRenderer Map renderer.
+   * @param {import("../../layer/Image.js").default} imageLayer Tile layer.
    */
   constructor(mapRenderer, imageLayer) {
 
@@ -39,7 +39,7 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
     /**
      * The last rendered image.
      * @private
-     * @type {?module:ol/ImageBase}
+     * @type {?import("../../ImageBase.js").default}
      */
     this.image_ = null;
 
@@ -51,14 +51,14 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
 
     /**
      * @private
-     * @type {?module:ol/transform~Transform}
+     * @type {?import("../../transform.js").Transform}
      */
     this.hitTransformationMatrix_ = null;
 
   }
 
   /**
-   * @param {module:ol/ImageBase} image Image.
+   * @param {import("../../ImageBase.js").default} image Image.
    * @private
    * @return {WebGLTexture} Texture.
    */
@@ -88,7 +88,7 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
       coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
 
       /**
-       * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+       * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {
@@ -111,7 +111,7 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
 
     let image = this.image_;
     let texture = this.texture;
-    const imageLayer = /** @type {module:ol/layer/Image} */ (this.getLayer());
+    const imageLayer = /** @type {import("../../layer/Image.js").default} */ (this.getLayer());
     const imageSource = imageLayer.getSource();
 
     const hints = frameState.viewHints;
@@ -147,7 +147,7 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
               }
             }.bind(null, gl, this.texture);
             frameState.postRenderFunctions.push(
-              /** @type {module:ol/PluggableMap~PostRenderFunction} */ (postRenderFunction)
+              /** @type {import("../../PluggableMap.js").PostRenderFunction} */ (postRenderFunction)
             );
           }
         }
@@ -179,10 +179,10 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
    * @param {number} canvasWidth Canvas width.
    * @param {number} canvasHeight Canvas height.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/coordinate~Coordinate} viewCenter View center.
+   * @param {import("../../coordinate.js").Coordinate} viewCenter View center.
    * @param {number} viewResolution View resolution.
    * @param {number} viewRotation View rotation.
-   * @param {module:ol/extent~Extent} imageExtent Image extent.
+   * @param {import("../../extent.js").Extent} imageExtent Image extent.
    * @private
    */
   updateProjectionMatrix_(
@@ -280,9 +280,9 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
   /**
    * The transformation matrix to get the pixel on the image for a
    * pixel on the map.
-   * @param {module:ol/size~Size} mapSize The map size.
-   * @param {module:ol/size~Size} imageSize The image size.
-   * @return {module:ol/transform~Transform} The transformation matrix.
+   * @param {import("../../size.js").Size} mapSize The map size.
+   * @param {import("../../size.js").Size} imageSize The image size.
+   * @return {import("../../transform.js").Transform} The transformation matrix.
    * @private
    */
   getHitTransformationMatrix_(mapSize, imageSize) {
@@ -315,7 +315,7 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {module:ol/layer/Layer} layer The candidate layer.
+ * @param {import("../../layer/Layer.js").default} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
 WebGLImageLayerRenderer['handles'] = function(layer) {
@@ -325,14 +325,14 @@ WebGLImageLayerRenderer['handles'] = function(layer) {
 
 /**
  * Create a layer renderer.
- * @param {module:ol/renderer/Map} mapRenderer The map renderer.
- * @param {module:ol/layer/Layer} layer The layer to be rendererd.
- * @return {module:ol/renderer/webgl/ImageLayer} The layer renderer.
+ * @param {import("../Map.js").default} mapRenderer The map renderer.
+ * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
+ * @return {import("./ImageLayer.js").default} The layer renderer.
  */
 WebGLImageLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLImageLayerRenderer(
-    /** @type {module:ol/renderer/webgl/Map} */ (mapRenderer),
-    /** @type {module:ol/layer/Image} */ (layer)
+    /** @type {import("./Map.js").default} */ (mapRenderer),
+    /** @type {import("../../layer/Image.js").default} */ (layer)
   );
 };
 

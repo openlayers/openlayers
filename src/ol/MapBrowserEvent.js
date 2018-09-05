@@ -12,10 +12,10 @@ class MapBrowserEvent extends MapEvent {
 
   /**
    * @param {string} type Event type.
-   * @param {module:ol/PluggableMap} map Map.
+   * @param {import("./PluggableMap.js").default} map Map.
    * @param {Event} browserEvent Browser event.
    * @param {boolean=} opt_dragging Is the map currently being dragged?
-   * @param {?module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
+   * @param {?import("./PluggableMap.js").FrameState=} opt_frameState Frame state.
    */
   constructor(type, map, browserEvent, opt_dragging, opt_frameState) {
 
@@ -31,14 +31,14 @@ class MapBrowserEvent extends MapEvent {
 
     /**
      * The map pixel relative to the viewport corresponding to the original browser event.
-     * @type {module:ol/pixel~Pixel}
+     * @type {import("./pixel.js").Pixel}
      * @api
      */
     this.pixel = map.getEventPixel(browserEvent);
 
     /**
      * The coordinate in view projection corresponding to the original browser event.
-     * @type {module:ol/coordinate~Coordinate}
+     * @type {import("./coordinate.js").Coordinate}
      * @api
      */
     this.coordinate = map.getCoordinateFromPixel(this.pixel);

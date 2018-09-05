@@ -21,7 +21,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
 
   /**
-   * @param {module:ol/layer/Image|module:ol/layer/Vector} imageLayer Image or vector layer.
+   * @param {import("../../layer/Image.js").default|import("../../layer/Vector.js").default} imageLayer Image or vector layer.
    */
   constructor(imageLayer) {
 
@@ -29,13 +29,13 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
 
     /**
      * @private
-     * @type {?module:ol/ImageBase}
+     * @type {?import("../../ImageBase.js").default}
      */
     this.image_ = null;
 
     /**
      * @private
-     * @type {module:ol/transform~Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.imageTransform_ = createTransform();
 
@@ -46,7 +46,7 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
 
     /**
      * @private
-     * @type {module:ol/renderer/canvas/VectorLayer}
+     * @type {import("./VectorLayer.js").default}
      */
     this.vectorRenderer_ = null;
 
@@ -98,7 +98,7 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
     const viewResolution = viewState.resolution;
 
     let image;
-    const imageLayer = /** @type {module:ol/layer/Image} */ (this.getLayer());
+    const imageLayer = /** @type {import("../../layer/Image.js").default} */ (this.getLayer());
     const imageSource = imageLayer.getSource();
 
     const hints = frameState.viewHints;
@@ -121,12 +121,12 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
       let skippedFeatures = this.skippedFeatures_;
       if (vectorRenderer) {
         const context = vectorRenderer.context;
-        const imageFrameState = /** @type {module:ol/PluggableMap~FrameState} */ (assign({}, frameState, {
+        const imageFrameState = /** @type {import("../../PluggableMap.js").FrameState} */ (assign({}, frameState, {
           size: [
             getWidth(renderedExtent) / viewResolution,
             getHeight(renderedExtent) / viewResolution
           ],
-          viewState: /** @type {module:ol/View~State} */ (assign({}, frameState.viewState, {
+          viewState: /** @type {import("../../View.js").State} */ (assign({}, frameState.viewState, {
             rotation: 0
           }))
         }));
@@ -192,24 +192,24 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {module:ol/layer/Layer} layer The candidate layer.
+ * @param {import("../../layer/Layer.js").default} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
 CanvasImageLayerRenderer['handles'] = function(layer) {
   return layer.getType() === LayerType.IMAGE ||
     layer.getType() === LayerType.VECTOR &&
-    /** @type {module:ol/layer/Vector} */ (layer).getRenderMode() === VectorRenderType.IMAGE;
+    /** @type {import("../../layer/Vector.js").default} */ (layer).getRenderMode() === VectorRenderType.IMAGE;
 };
 
 
 /**
  * Create a layer renderer.
- * @param {module:ol/renderer/Map} mapRenderer The map renderer.
- * @param {module:ol/layer/Layer} layer The layer to be rendererd.
- * @return {module:ol/renderer/canvas/ImageLayer} The layer renderer.
+ * @param {import("../Map.js").default} mapRenderer The map renderer.
+ * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
+ * @return {import("./ImageLayer.js").default} The layer renderer.
  */
 CanvasImageLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasImageLayerRenderer(/** @type {module:ol/layer/Image} */ (layer));
+  return new CanvasImageLayerRenderer(/** @type {import("../../layer/Image.js").default} */ (layer));
 };
 
 

@@ -10,14 +10,14 @@ import {create as createTransform} from '../transform.js';
 
 /**
  * @typedef {Object} FillState
- * @property {module:ol/colorlike~ColorLike} fillStyle
+ * @property {import("../colorlike.js").ColorLike} fillStyle
  */
 
 
 /**
  * @typedef {Object} FillStrokeState
- * @property {module:ol/colorlike~ColorLike} [currentFillStyle]
- * @property {module:ol/colorlike~ColorLike} [currentStrokeStyle]
+ * @property {import("../colorlike.js").ColorLike} [currentFillStyle]
+ * @property {import("../colorlike.js").ColorLike} [currentStrokeStyle]
  * @property {string} [currentLineCap]
  * @property {Array<number>} currentLineDash
  * @property {number} [currentLineDashOffset]
@@ -25,8 +25,8 @@ import {create as createTransform} from '../transform.js';
  * @property {number} [currentLineWidth]
  * @property {number} [currentMiterLimit]
  * @property {number} [lastStroke]
- * @property {module:ol/colorlike~ColorLike} [fillStyle]
- * @property {module:ol/colorlike~ColorLike} [strokeStyle]
+ * @property {import("../colorlike.js").ColorLike} [fillStyle]
+ * @property {import("../colorlike.js").ColorLike} [strokeStyle]
  * @property {string} [lineCap]
  * @property {Array<number>} lineDash
  * @property {number} [lineDashOffset]
@@ -44,7 +44,7 @@ import {create as createTransform} from '../transform.js';
  * @property {string} lineJoin
  * @property {number} lineWidth
  * @property {number} miterLimit
- * @property {module:ol/colorlike~ColorLike} strokeStyle
+ * @property {import("../colorlike.js").ColorLike} strokeStyle
  */
 
 
@@ -78,7 +78,7 @@ export const defaultFont = '10px sans-serif';
 
 /**
  * @const
- * @type {module:ol/color~Color}
+ * @type {import("../color.js").Color}
  */
 export const defaultFillStyle = [0, 0, 0, 1];
 
@@ -120,7 +120,7 @@ export const defaultMiterLimit = 10;
 
 /**
  * @const
- * @type {module:ol/color~Color}
+ * @type {import("../color.js").Color}
  */
 export const defaultStrokeStyle = [0, 0, 0, 1];
 
@@ -156,7 +156,7 @@ export const defaultLineWidth = 1;
 /**
  * The label cache for text rendering. To change the default cache size of 2048
  * entries, use {@link module:ol/structs/LRUCache#setSize}.
- * @type {module:ol/structs/LRUCache<HTMLCanvasElement>}
+ * @type {import("../structs/LRUCache.js").default<HTMLCanvasElement>}
  * @api
  */
 export const labelCache = new LRUCache();
@@ -278,7 +278,7 @@ function getMeasureContext() {
 
 /**
  * @param {string} font Font to use for measuring.
- * @return {module:ol/size~Size} Measurement.
+ * @return {import("../size.js").Size} Measurement.
  */
 export const measureTextHeight = (function() {
   let span;
@@ -337,7 +337,7 @@ export const resetTransform = createTransform();
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {module:ol/transform~Transform|null} transform Transform.
+ * @param {import("../transform.js").Transform|null} transform Transform.
  * @param {number} opacity Opacity.
  * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image Image.
  * @param {number} originX Origin X.

@@ -15,7 +15,7 @@ import SourceState from '../../source/State.js';
 
 
 /**
- * @type {Array<module:ol/renderer/Layer>}
+ * @type {Array<import("../Layer.js").default>}
  */
 export const layerRendererConstructors = [];
 
@@ -27,7 +27,7 @@ export const layerRendererConstructors = [];
 class CanvasMapRenderer extends MapRenderer {
 
   /**
-   * @param {module:ol/PluggableMap} map Map.
+   * @param {import("../../PluggableMap.js").default} map Map.
    */
   constructor(map) {
     super(map);
@@ -60,15 +60,15 @@ class CanvasMapRenderer extends MapRenderer {
 
     /**
      * @private
-     * @type {module:ol/transform~Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.transform_ = createTransform();
 
   }
 
   /**
-   * @param {module:ol/render/EventType} type Event type.
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+   * @param {import("../../render/EventType.js").default} type Event type.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    */
   dispatchRenderEvent(type, frameState) {
     const map = this.getMap();
@@ -90,9 +90,9 @@ class CanvasMapRenderer extends MapRenderer {
   }
 
   /**
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @protected
-   * @return {!module:ol/transform~Transform} Transform.
+   * @return {!import("../../transform.js").Transform} Transform.
    */
   getTransform(frameState) {
     const viewState = frameState.viewState;
@@ -149,7 +149,7 @@ class CanvasMapRenderer extends MapRenderer {
     for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       layerState = layerStatesArray[i];
       layer = layerState.layer;
-      layerRenderer = /** @type {module:ol/renderer/canvas/Layer} */ (this.getLayerRenderer(layer));
+      layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layer));
       if (!visibleAtResolution(layerState, viewResolution) ||
           layerState.sourceState != SourceState.READY) {
         continue;
@@ -193,7 +193,7 @@ class CanvasMapRenderer extends MapRenderer {
       const layerState = layerStates[i];
       const layer = layerState.layer;
       if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
-        const layerRenderer = /** @type {module:ol/renderer/canvas/Layer} */ (this.getLayerRenderer(layer));
+        const layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layer));
         result = layerRenderer.forEachLayerAtCoordinate(
           coordinate, frameState, hitTolerance, callback, thisArg);
         if (result) {

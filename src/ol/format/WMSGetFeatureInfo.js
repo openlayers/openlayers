@@ -38,7 +38,7 @@ const layerIdentifier = '_layer';
 class WMSGetFeatureInfo extends XMLFeature {
 
   /**
-   * @param {module:ol/format/WMSGetFeatureInfo~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     super();
@@ -54,7 +54,7 @@ class WMSGetFeatureInfo extends XMLFeature {
 
     /**
      * @private
-     * @type {module:ol/format/GML2}
+     * @type {import("./GML2.js").default}
      */
     this.gmlFormat_ = new GML2();
 
@@ -83,13 +83,13 @@ class WMSGetFeatureInfo extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<module:ol/Feature>} Features.
+   * @return {Array<import("../Feature.js").default>} Features.
    * @private
    */
   readFeatures_(node, objectStack) {
     node.setAttribute('namespaceURI', this.featureNS_);
     const localName = node.localName;
-    /** @type {Array<module:ol/Feature>} */
+    /** @type {Array<import("../Feature.js").default>} */
     let features = [];
     if (node.childNodes.length === 0) {
       return features;

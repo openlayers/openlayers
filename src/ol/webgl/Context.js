@@ -13,7 +13,7 @@ import ContextEventType from '../webgl/ContextEventType.js';
 
 /**
  * @typedef {Object} BufferCacheEntry
- * @property {module:ol/webgl/Buffer} buf
+ * @property {import("./Buffer.js").default} buf
  * @property {WebGLBuffer} buffer
  */
 
@@ -45,7 +45,7 @@ class WebGLContext extends Disposable {
 
     /**
      * @private
-     * @type {!Object<string, module:ol/webgl/Context~BufferCacheEntry>}
+     * @type {!Object<string, BufferCacheEntry>}
      */
     this.bufferCache_ = {};
 
@@ -107,7 +107,7 @@ class WebGLContext extends Disposable {
    * the WebGL buffer, bind it, populate it, and add an entry to
    * the cache.
    * @param {number} target Target.
-   * @param {module:ol/webgl/Buffer} buf Buffer.
+   * @param {import("./Buffer.js").default} buf Buffer.
    */
   bindBuffer(target, buf) {
     const gl = this.getGL();
@@ -135,7 +135,7 @@ class WebGLContext extends Disposable {
   }
 
   /**
-   * @param {module:ol/webgl/Buffer} buf Buffer.
+   * @param {import("./Buffer.js").default} buf Buffer.
    */
   deleteBuffer(buf) {
     const gl = this.getGL();
@@ -200,7 +200,7 @@ class WebGLContext extends Disposable {
   /**
    * Get shader from the cache if it's in the cache. Otherwise, create
    * the WebGL shader, compile it, and add entry to cache.
-   * @param {module:ol/webgl/Shader} shaderObject Shader object.
+   * @param {import("./Shader.js").default} shaderObject Shader object.
    * @return {WebGLShader} Shader.
    */
   getShader(shaderObject) {
@@ -221,8 +221,8 @@ class WebGLContext extends Disposable {
    * Get the program from the cache if it's in the cache. Otherwise create
    * the WebGL program, attach the shaders to it, and add an entry to the
    * cache.
-   * @param {module:ol/webgl/Fragment} fragmentShaderObject Fragment shader.
-   * @param {module:ol/webgl/Vertex} vertexShaderObject Vertex shader.
+   * @param {import("./Fragment.js").default} fragmentShaderObject Fragment shader.
+   * @param {import("./Vertex.js").default} vertexShaderObject Vertex shader.
    * @return {WebGLProgram} Program.
    */
   getProgram(fragmentShaderObject, vertexShaderObject) {

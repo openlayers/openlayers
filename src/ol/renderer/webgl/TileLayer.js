@@ -32,8 +32,8 @@ import WebGLBuffer from '../../webgl/Buffer.js';
 class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
   /**
-   * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
-   * @param {module:ol/layer/Tile} tileLayer Tile layer.
+   * @param {import("./Map.js").default} mapRenderer Map renderer.
+   * @param {import("../../layer/Tile.js").default} tileLayer Tile layer.
    */
   constructor(mapRenderer, tileLayer) {
 
@@ -41,25 +41,25 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
     /**
      * @private
-     * @type {module:ol/webgl/Fragment}
+     * @type {import("../../webgl/Fragment.js").default}
      */
     this.fragmentShader_ = fragment;
 
     /**
      * @private
-     * @type {module:ol/webgl/Vertex}
+     * @type {import("../../webgl/Vertex.js").default}
      */
     this.vertexShader_ = vertex;
 
     /**
      * @private
-     * @type {module:ol/renderer/webgl/tilelayershader/Locations}
+     * @type {import("./tilelayershader/Locations.js").default}
      */
     this.locations_ = null;
 
     /**
      * @private
-     * @type {module:ol/webgl/Buffer}
+     * @type {import("../../webgl/Buffer.js").default}
      */
     this.renderArrayBuffer_ = new WebGLBuffer([
       0, 0, 0, 1,
@@ -70,13 +70,13 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
     /**
      * @private
-     * @type {module:ol/TileRange}
+     * @type {import("../../TileRange.js").default}
      */
     this.renderedTileRange_ = null;
 
     /**
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../../extent.js").Extent}
      */
     this.renderedFramebufferExtent_ = null;
 
@@ -88,7 +88,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
     /**
      * @private
-     * @type {module:ol/size~Size}
+     * @type {import("../../size.js").Size}
      */
     this.tmpSize_ = [0, 0];
 
@@ -112,7 +112,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     return (
       /**
        * @param {number} zoom Zoom level.
-       * @param {module:ol/TileRange} tileRange Tile range.
+       * @param {import("../../TileRange.js").default} tileRange Tile range.
        * @return {boolean} The tile range is fully loaded.
        */
       function(zoom, tileRange) {
@@ -150,7 +150,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     const viewState = frameState.viewState;
     const projection = viewState.projection;
 
-    const tileLayer = /** @type {module:ol/layer/Tile} */ (this.getLayer());
+    const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
     const tileSource = tileLayer.getSource();
     const tileGrid = tileSource.getTileGridForProjection(projection);
     const z = tileGrid.getZForResolution(viewState.resolution);
@@ -214,7 +214,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
       gl.uniform1i(this.locations_.u_texture, 0);
 
       /**
-       * @type {Object<number, Object<string, module:ol/Tile>>}
+       * @type {Object<number, Object<string, import("../../Tile.js").default>>}
        */
       const tilesToDrawByZ = {};
       tilesToDrawByZ[z] = {};
@@ -316,7 +316,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
       frameState, tileSource, tileGrid, pixelRatio, projection, extent, z,
       tileLayer.getPreload(),
       /**
-       * @param {module:ol/Tile} tile Tile.
+       * @param {import("../../Tile.js").default} tile Tile.
        */
       function(tile) {
         if (tile.getState() == TileState.LOADED &&
@@ -387,7 +387,7 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {module:ol/layer/Layer} layer The candidate layer.
+ * @param {import("../../layer/Layer.js").default} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
 WebGLTileLayerRenderer['handles'] = function(layer) {
@@ -397,14 +397,14 @@ WebGLTileLayerRenderer['handles'] = function(layer) {
 
 /**
  * Create a layer renderer.
- * @param {module:ol/renderer/Map} mapRenderer The map renderer.
- * @param {module:ol/layer/Layer} layer The layer to be rendererd.
- * @return {module:ol/renderer/webgl/TileLayer} The layer renderer.
+ * @param {import("../Map.js").default} mapRenderer The map renderer.
+ * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
+ * @return {import("./TileLayer.js").default} The layer renderer.
  */
 WebGLTileLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLTileLayerRenderer(
-    /** @type {module:ol/renderer/webgl/Map} */ (mapRenderer),
-    /** @type {module:ol/layer/Tile} */ (layer)
+    /** @type {import("./Map.js").default} */ (mapRenderer),
+    /** @type {import("../../layer/Tile.js").default} */ (layer)
   );
 };
 

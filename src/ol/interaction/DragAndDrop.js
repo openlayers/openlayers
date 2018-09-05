@@ -13,13 +13,13 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {Array<function(new: module:ol/format/Feature)>} [formatConstructors] Format constructors.
- * @property {module:ol/source/Vector} [source] Optional vector source where features will be added.  If a source is provided
+ * @property {Array<function(new: import("../format/Feature.js").default)>} [formatConstructors] Format constructors.
+ * @property {import("../source/Vector.js").default} [source] Optional vector source where features will be added.  If a source is provided
  * all existing features will be removed and new features will be added when
  * they are dropped on the target.  If you want to add features to a vector
  * source without removing the existing features (append only), instead of
  * providing the source option listen for the "addfeatures" event.
- * @property {module:ol/proj~ProjectionLike} [projection] Target projection. By default, the map's view's projection is used.
+ * @property {import("../proj.js").ProjectionLike} [projection] Target projection. By default, the map's view's projection is used.
  * @property {Element} [target] The element that is used as the drop target, default is the viewport element.
  */
 
@@ -30,7 +30,7 @@ import {get as getProjection} from '../proj.js';
 const DragAndDropEventType = {
   /**
    * Triggered when features are added
-   * @event module:ol/interaction/DragAndDrop~DragAndDropEvent#addfeatures
+   * @event DragAndDropEvent#addfeatures
    * @api
    */
   ADD_FEATURES: 'addfeatures'
@@ -45,10 +45,10 @@ const DragAndDropEventType = {
 class DragAndDropEvent extends Event {
 
   /**
-   * @param {module:ol/interaction/DragAndDrop~DragAndDropEventType} type Type.
+   * @param {DragAndDropEventType} type Type.
    * @param {File} file File.
-   * @param {Array<module:ol/Feature>=} opt_features Features.
-   * @param {module:ol/proj/Projection=} opt_projection Projection.
+   * @param {Array<import("../Feature.js").default>=} opt_features Features.
+   * @param {import("../proj/Projection.js").default=} opt_projection Projection.
    */
   constructor(type, file, opt_features, opt_projection) {
 
@@ -56,7 +56,7 @@ class DragAndDropEvent extends Event {
 
     /**
      * The features parsed from dropped data.
-     * @type {Array<module:ol/Feature>|undefined}
+     * @type {Array<import("../Feature.js").default>|undefined}
      * @api
      */
     this.features = opt_features;
@@ -70,7 +70,7 @@ class DragAndDropEvent extends Event {
 
     /**
      * The feature projection.
-     * @type {module:ol/proj/Projection|undefined}
+     * @type {import("../proj/Projection.js").default|undefined}
      * @api
      */
     this.projection = opt_projection;
@@ -85,11 +85,11 @@ class DragAndDropEvent extends Event {
  * Handles input of vector data by drag and drop.
  * @api
  *
- * @fires module:ol/interaction/DragAndDrop~DragAndDropEvent
+ * @fires DragAndDropEvent
  */
 class DragAndDrop extends Interaction {
   /**
-   * @param {module:ol/interaction/DragAndDrop~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
@@ -101,27 +101,27 @@ class DragAndDrop extends Interaction {
 
     /**
      * @private
-     * @type {Array<function(new: module:ol/format/Feature)>}
+     * @type {Array<function(new: import("../format/Feature.js").default)>}
      */
     this.formatConstructors_ = options.formatConstructors ?
       options.formatConstructors : [];
 
     /**
      * @private
-     * @type {module:ol/proj/Projection}
+     * @type {import("../proj/Projection.js").default}
      */
     this.projection_ = options.projection ?
       getProjection(options.projection) : null;
 
     /**
      * @private
-     * @type {Array<module:ol/events~EventsKey>}
+     * @type {Array<import("../events.js").EventsKey>}
      */
     this.dropListenKeys_ = null;
 
     /**
      * @private
-     * @type {module:ol/source/Vector}
+     * @type {import("../source/Vector.js").default}
      */
     this.source_ = options.source || null;
 
@@ -156,7 +156,7 @@ class DragAndDrop extends Interaction {
        */
       const formatConstructor = formatConstructors[i];
       /**
-       * @type {module:ol/format/Feature}
+       * @type {import("../format/Feature.js").default}
        */
       const format = new formatConstructor();
       features = this.tryReadFeatures_(format, result, {
@@ -216,11 +216,11 @@ class DragAndDrop extends Interaction {
   }
 
   /**
-   * @param {module:ol/format/Feature} format Format.
+   * @param {import("../format/Feature.js").default} format Format.
    * @param {string} text Text.
-   * @param {module:ol/format/Feature~ReadOptions} options Read options.
+   * @param {import("../format/Feature.js").ReadOptions} options Read options.
    * @private
-   * @return {Array<module:ol/Feature>} Features.
+   * @return {Array<import("../Feature.js").default>} Features.
    */
   tryReadFeatures_(format, text, options) {
     try {
@@ -244,7 +244,7 @@ class DragAndDrop extends Interaction {
 
 /**
  * @param {DragEvent} event Event.
- * @this {module:ol/interaction/DragAndDrop}
+ * @this {import("./DragAndDrop.js").default}
  */
 function handleDrop(event) {
   const files = event.dataTransfer.files;

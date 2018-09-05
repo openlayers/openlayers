@@ -51,7 +51,7 @@ const POINTER_TYPE = 'touch';
  * Handler for `touchstart`, triggers `pointerover`,
  * `pointerenter` and `pointerdown` events.
  *
- * @this {module:ol/pointer/TouchSource}
+ * @this {import("./TouchSource.js").default}
  * @param {TouchEvent} inEvent The in event.
  */
 function touchstart(inEvent) {
@@ -65,7 +65,7 @@ function touchstart(inEvent) {
 /**
  * Handler for `touchmove`.
  *
- * @this {module:ol/pointer/TouchSource}
+ * @this {import("./TouchSource.js").default}
  * @param {TouchEvent} inEvent The in event.
  */
 function touchmove(inEvent) {
@@ -76,7 +76,7 @@ function touchmove(inEvent) {
  * Handler for `touchend`, triggers `pointerup`,
  * `pointerout` and `pointerleave` events.
  *
- * @this {module:ol/pointer/TouchSource}
+ * @this {import("./TouchSource.js").default}
  * @param {TouchEvent} inEvent The event.
  */
 function touchend(inEvent) {
@@ -88,7 +88,7 @@ function touchend(inEvent) {
  * Handler for `touchcancel`, triggers `pointercancel`,
  * `pointerout` and `pointerleave` events.
  *
- * @this {module:ol/pointer/TouchSource}
+ * @this {import("./TouchSource.js").default}
  * @param {TouchEvent} inEvent The in event.
  */
 function touchcancel(inEvent) {
@@ -99,8 +99,8 @@ function touchcancel(inEvent) {
 class TouchSource extends EventSource {
 
   /**
-   * @param {module:ol/pointer/PointerEventHandler} dispatcher The event handler.
-   * @param {module:ol/pointer/MouseSource} mouseSource Mouse source.
+   * @param {import("./PointerEventHandler.js").default} dispatcher The event handler.
+   * @param {import("./MouseSource.js").default} mouseSource Mouse source.
    */
   constructor(dispatcher, mouseSource) {
     const mapping = {
@@ -119,7 +119,7 @@ class TouchSource extends EventSource {
 
     /**
      * @const
-     * @type {module:ol/pointer/MouseSource}
+     * @type {import("./MouseSource.js").default}
      */
     this.mouseSource = mouseSource;
 

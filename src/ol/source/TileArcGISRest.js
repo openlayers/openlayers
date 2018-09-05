@@ -12,7 +12,7 @@ import {appendParams} from '../uri.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize=2048] Cache size.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.
  * Note that you must provide a `crossOrigin` value if you are using the WebGL renderer
@@ -26,15 +26,15 @@ import {appendParams} from '../uri.js';
  * override the default service layer visibility. See
  * http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/
  * for further reference.
- * @property {module:ol/tilegrid/TileGrid} [tileGrid] Tile grid. Base this on the resolutions,
+ * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid. Base this on the resolutions,
  * tilesize and extent supported by the server.
  * If this is not defined, a default grid will be used: if there is a projection
  * extent, the grid will be based on that; if not, a grid based on a global
  * extent with origin at 0,0 will be used.
- * @property {module:ol/proj~ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} projection Projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL.
+ * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL.
  * The default is
  * ```js
  * function(imageTile, src) {
@@ -62,7 +62,7 @@ import {appendParams} from '../uri.js';
  */
 class TileArcGISRest extends TileImage {
   /**
-   * @param {module:ol/source/TileArcGISRest~Options=} opt_options Tile ArcGIS Rest options.
+   * @param {Options=} opt_options Tile ArcGIS Rest options.
    */
   constructor(opt_options) {
 
@@ -90,7 +90,7 @@ class TileArcGISRest extends TileImage {
 
     /**
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../extent.js").Extent}
      */
     this.tmpExtent_ = createEmpty();
 
@@ -121,11 +121,11 @@ class TileArcGISRest extends TileImage {
   }
 
   /**
-   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
-   * @param {module:ol/size~Size} tileSize Tile size.
-   * @param {module:ol/extent~Extent} tileExtent Tile extent.
+   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {import("../size.js").Size} tileSize Tile size.
+   * @param {import("../extent.js").Extent} tileExtent Tile extent.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/proj/Projection} projection Projection.
+   * @param {import("../proj/Projection.js").default} projection Projection.
    * @param {Object} params Params.
    * @return {string|undefined} Request URL.
    * @private

@@ -35,7 +35,7 @@ const NAMED_COLOR_RE_ = /^([a-z]*)$/i;
 
 /**
  * Return the color as an rgba string.
- * @param {module:ol/color~Color|string} color Color.
+ * @param {Color|string} color Color.
  * @return {string} Rgba string.
  * @api
  */
@@ -68,7 +68,7 @@ function fromNamed(color) {
 
 /**
  * @param {string} s String.
- * @return {module:ol/color~Color} Color.
+ * @return {Color} Color.
  */
 export const fromString = (
   function() {
@@ -84,7 +84,7 @@ export const fromString = (
     const MAX_CACHE_SIZE = 1024;
 
     /**
-     * @type {Object<string, module:ol/color~Color>}
+     * @type {Object<string, Color>}
      */
     const cache = {};
 
@@ -96,7 +96,7 @@ export const fromString = (
     return (
       /**
        * @param {string} s String.
-       * @return {module:ol/color~Color} Color.
+       * @return {Color} Color.
        */
       function(s) {
         let color;
@@ -125,8 +125,8 @@ export const fromString = (
 /**
  * Return the color as an array. This function maintains a cache of calculated
  * arrays which means the result should not be modified.
- * @param {module:ol/color~Color|string} color Color.
- * @return {module:ol/color~Color} Color.
+ * @param {Color|string} color Color.
+ * @return {Color} Color.
  * @api
  */
 export function asArray(color) {
@@ -140,7 +140,7 @@ export function asArray(color) {
 /**
  * @param {string} s String.
  * @private
- * @return {module:ol/color~Color} Color.
+ * @return {Color} Color.
  */
 function fromStringInternal_(s) {
   let r, g, b, a, color;
@@ -186,15 +186,15 @@ function fromStringInternal_(s) {
     assert(false, 14); // Invalid color
   }
   return (
-    /** @type {module:ol/color~Color} */ (color)
+    /** @type {Color} */ (color)
   );
 }
 
 
 /**
  * TODO this function is only used in the test, we probably shouldn't export it
- * @param {module:ol/color~Color} color Color.
- * @return {module:ol/color~Color} Clamped color.
+ * @param {Color} color Color.
+ * @return {Color} Clamped color.
  */
 export function normalize(color) {
   color[0] = clamp((color[0] + 0.5) | 0, 0, 255);
@@ -206,7 +206,7 @@ export function normalize(color) {
 
 
 /**
- * @param {module:ol/color~Color} color Color.
+ * @param {Color} color Color.
  * @return {string} String.
  */
 export function toString(color) {

@@ -7,26 +7,26 @@ import TileState from './TileState.js';
 
 /**
  * @const
- * @type {module:ol/extent~Extent}
+ * @type {import("./extent.js").Extent}
  */
 const DEFAULT_EXTENT = [0, 0, 4096, 4096];
 
 
 /**
- * @typedef {function(new: module:ol/VectorTile, module:ol/tilecoord~TileCoord,
- * module:ol/TileState, string, ?string, module:ol/Tile~LoadFunction)} TileClass
+ * @typedef {function(new: import("./VectorTile.js").default, import("./tilecoord.js").TileCoord,
+ * import("./TileState.js").default, string, ?string, import("./Tile.js").LoadFunction)} TileClass
  * @api
  */
 
 class VectorTile extends Tile {
 
   /**
-   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
-   * @param {module:ol/TileState} state State.
+   * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {import("./TileState.js").default} state State.
    * @param {string} src Data source url.
-   * @param {module:ol/format/Feature} format Feature format.
-   * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
-   * @param {module:ol/Tile~Options=} opt_options Tile options.
+   * @param {import("./format/Feature.js").default} format Feature format.
+   * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.
+   * @param {import("./Tile.js").Options=} opt_options Tile options.
    */
   constructor(tileCoord, state, src, format, tileLoadFunction, opt_options) {
 
@@ -39,44 +39,44 @@ class VectorTile extends Tile {
 
     /**
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("./extent.js").Extent}
      */
     this.extent_ = null;
 
     /**
      * @private
-     * @type {module:ol/format/Feature}
+     * @type {import("./format/Feature.js").default}
      */
     this.format_ = format;
 
     /**
      * @private
-     * @type {Array<module:ol/Feature>}
+     * @type {Array<import("./Feature.js").default>}
      */
     this.features_ = null;
 
     /**
      * @private
-     * @type {module:ol/featureloader~FeatureLoader}
+     * @type {import("./featureloader.js").FeatureLoader}
      */
     this.loader_;
 
     /**
      * Data projection
      * @private
-     * @type {module:ol/proj/Projection}
+     * @type {import("./proj/Projection.js").default}
      */
     this.projection_ = null;
 
     /**
      * @private
-     * @type {Object<string, module:ol/render/ReplayGroup>}
+     * @type {Object<string, import("./render/ReplayGroup.js").default>}
      */
     this.replayGroups_ = {};
 
     /**
      * @private
-     * @type {module:ol/Tile~LoadFunction}
+     * @type {import("./Tile.js").LoadFunction}
      */
     this.tileLoadFunction_ = tileLoadFunction;
 
@@ -101,7 +101,7 @@ class VectorTile extends Tile {
 
   /**
    * Gets the extent of the vector tile.
-   * @return {module:ol/extent~Extent} The extent.
+   * @return {import("./extent.js").Extent} The extent.
    * @api
    */
   getExtent() {
@@ -110,7 +110,7 @@ class VectorTile extends Tile {
 
   /**
    * Get the feature format assigned for reading this tile's features.
-   * @return {module:ol/format/Feature} Feature format.
+   * @return {import("./format/Feature.js").default} Feature format.
    * @api
    */
   getFormat() {
@@ -120,7 +120,7 @@ class VectorTile extends Tile {
   /**
    * Get the features for this tile. Geometries will be in the projection returned
    * by {@link module:ol/VectorTile~VectorTile#getProjection}.
-   * @return {Array<module:ol/Feature|module:ol/render/Feature>} Features.
+   * @return {Array<import("./Feature.js").default|import("./render/Feature.js").default>} Features.
    * @api
    */
   getFeatures() {
@@ -137,7 +137,7 @@ class VectorTile extends Tile {
   /**
    * Get the feature projection of features returned by
    * {@link module:ol/VectorTile~VectorTile#getFeatures}.
-   * @return {module:ol/proj/Projection} Feature projection.
+   * @return {import("./proj/Projection.js").default} Feature projection.
    * @api
    */
   getProjection() {
@@ -145,9 +145,9 @@ class VectorTile extends Tile {
   }
 
   /**
-   * @param {module:ol/layer/Layer} layer Layer.
+   * @param {import("./layer/Layer.js").default} layer Layer.
    * @param {string} key Key.
-   * @return {module:ol/render/ReplayGroup} Replay group.
+   * @return {import("./render/ReplayGroup.js").default} Replay group.
    */
   getReplayGroup(layer, key) {
     return this.replayGroups_[getUid(layer) + ',' + key];
@@ -166,9 +166,9 @@ class VectorTile extends Tile {
 
   /**
    * Handler for successful tile load.
-   * @param {Array<module:ol/Feature>} features The loaded features.
-   * @param {module:ol/proj/Projection} dataProjection Data projection.
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {Array<import("./Feature.js").default>} features The loaded features.
+   * @param {import("./proj/Projection.js").default} dataProjection Data projection.
+   * @param {import("./extent.js").Extent} extent Extent.
    */
   onLoad(features, dataProjection, extent) {
     this.setProjection(dataProjection);
@@ -192,7 +192,7 @@ class VectorTile extends Tile {
    * sources using {@link module:ol/format/MVT~MVT} as feature format, the
    * {@link module:ol/format/MVT~MVT#getLastExtent} method will return the correct
    * extent. The default is `[0, 0, 4096, 4096]`.
-   * @param {module:ol/extent~Extent} extent The extent.
+   * @param {import("./extent.js").Extent} extent The extent.
    * @api
    */
   setExtent(extent) {
@@ -202,7 +202,7 @@ class VectorTile extends Tile {
   /**
    * Function for use in an {@link module:ol/source/VectorTile~VectorTile}'s `tileLoadFunction`.
    * Sets the features for the tile.
-   * @param {Array<module:ol/Feature>} features Features.
+   * @param {Array<import("./Feature.js").default>} features Features.
    * @api
    */
   setFeatures(features) {
@@ -214,7 +214,7 @@ class VectorTile extends Tile {
    * Function for use in an {@link module:ol/source/VectorTile~VectorTile}'s `tileLoadFunction`.
    * Sets the projection of the features that were added with
    * {@link module:ol/VectorTile~VectorTile#setFeatures}.
-   * @param {module:ol/proj/Projection} projection Feature projection.
+   * @param {import("./proj/Projection.js").default} projection Feature projection.
    * @api
    */
   setProjection(projection) {
@@ -222,9 +222,9 @@ class VectorTile extends Tile {
   }
 
   /**
-   * @param {module:ol/layer/Layer} layer Layer.
+   * @param {import("./layer/Layer.js").default} layer Layer.
    * @param {string} key Key.
-   * @param {module:ol/render/ReplayGroup} replayGroup Replay group.
+   * @param {import("./render/ReplayGroup.js").default} replayGroup Replay group.
    */
   setReplayGroup(layer, key, replayGroup) {
     this.replayGroups_[getUid(layer) + ',' + key] = replayGroup;
@@ -232,7 +232,7 @@ class VectorTile extends Tile {
 
   /**
    * Set the feature loader for reading this tile's features.
-   * @param {module:ol/featureloader~FeatureLoader} loader Feature loader.
+   * @param {import("./featureloader.js").FeatureLoader} loader Feature loader.
    * @api
    */
   setLoader(loader) {

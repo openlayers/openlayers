@@ -12,8 +12,8 @@ class VectorContext {
   /**
    * Render a geometry with a custom renderer.
    *
-   * @param {module:ol/geom/SimpleGeometry} geometry Geometry.
-   * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+   * @param {import("../geom/SimpleGeometry.js").default} geometry Geometry.
+   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
    * @param {Function} renderer Renderer.
    */
   drawCustom(geometry, feature, renderer) {}
@@ -21,92 +21,92 @@ class VectorContext {
   /**
    * Render a geometry.
    *
-   * @param {module:ol/geom/Geometry} geometry The geometry to render.
+   * @param {import("../geom/Geometry.js").default} geometry The geometry to render.
    */
   drawGeometry(geometry) {}
 
   /**
    * Set the rendering style.
    *
-   * @param {module:ol/style/Style} style The rendering style.
+   * @param {import("../style/Style.js").default} style The rendering style.
    */
   setStyle(style) {}
 
   /**
-   * @param {module:ol/geom/Circle} circleGeometry Circle geometry.
-   * @param {module:ol/Feature} feature Feature.
+   * @param {import("../geom/Circle.js").default} circleGeometry Circle geometry.
+   * @param {import("../Feature.js").default} feature Feature.
    */
   drawCircle(circleGeometry, feature) {}
 
   /**
-   * @param {module:ol/Feature} feature Feature.
-   * @param {module:ol/style/Style} style Style.
+   * @param {import("../Feature.js").default} feature Feature.
+   * @param {import("../style/Style.js").default} style Style.
    */
   drawFeature(feature, style) {}
 
   /**
-   * @param {module:ol/geom/GeometryCollection} geometryCollectionGeometry Geometry collection.
-   * @param {module:ol/Feature} feature Feature.
+   * @param {import("../geom/GeometryCollection.js").default} geometryCollectionGeometry Geometry collection.
+   * @param {import("../Feature.js").default} feature Feature.
    */
   drawGeometryCollection(geometryCollectionGeometry, feature) {}
 
   /**
-   * @param {module:ol/geom/LineString|module:ol/render/Feature} lineStringGeometry Line string geometry.
-   * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+   * @param {import("../geom/LineString.js").default|import("./Feature.js").default} lineStringGeometry Line string geometry.
+   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
    */
   drawLineString(lineStringGeometry, feature) {}
 
   /**
-   * @param {module:ol/geom/MultiLineString|module:ol/render/Feature} multiLineStringGeometry MultiLineString geometry.
-   * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+   * @param {import("../geom/MultiLineString.js").default|import("./Feature.js").default} multiLineStringGeometry MultiLineString geometry.
+   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
    */
   drawMultiLineString(multiLineStringGeometry, feature) {}
 
   /**
-   * @param {module:ol/geom/MultiPoint|module:ol/render/Feature} multiPointGeometry MultiPoint geometry.
-   * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+   * @param {import("../geom/MultiPoint.js").default|import("./Feature.js").default} multiPointGeometry MultiPoint geometry.
+   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
    */
   drawMultiPoint(multiPointGeometry, feature) {}
 
   /**
-   * @param {module:ol/geom/MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
-   * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+   * @param {import("../geom/MultiPolygon.js").default} multiPolygonGeometry MultiPolygon geometry.
+   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
    */
   drawMultiPolygon(multiPolygonGeometry, feature) {}
 
   /**
-   * @param {module:ol/geom/Point|module:ol/render/Feature} pointGeometry Point geometry.
-   * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+   * @param {import("../geom/Point.js").default|import("./Feature.js").default} pointGeometry Point geometry.
+   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
    */
   drawPoint(pointGeometry, feature) {}
 
   /**
-   * @param {module:ol/geom/Polygon|module:ol/render/Feature} polygonGeometry Polygon geometry.
-   * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+   * @param {import("../geom/Polygon.js").default|import("./Feature.js").default} polygonGeometry Polygon geometry.
+   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
    */
   drawPolygon(polygonGeometry, feature) {}
 
   /**
-   * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry Geometry.
-   * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+   * @param {import("../geom/Geometry.js").default|import("./Feature.js").default} geometry Geometry.
+   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
    */
   drawText(geometry, feature) {}
 
   /**
-   * @param {module:ol/style/Fill} fillStyle Fill style.
-   * @param {module:ol/style/Stroke} strokeStyle Stroke style.
+   * @param {import("../style/Fill.js").default} fillStyle Fill style.
+   * @param {import("../style/Stroke.js").default} strokeStyle Stroke style.
    */
   setFillStrokeStyle(fillStyle, strokeStyle) {}
 
   /**
-   * @param {module:ol/style/Image} imageStyle Image style.
-   * @param {module:ol/render/canvas~DeclutterGroup=} opt_declutterGroup Declutter.
+   * @param {import("../style/Image.js").default} imageStyle Image style.
+   * @param {import("./canvas.js").DeclutterGroup=} opt_declutterGroup Declutter.
    */
   setImageStyle(imageStyle, opt_declutterGroup) {}
 
   /**
-   * @param {module:ol/style/Text} textStyle Text style.
-   * @param {module:ol/render/canvas~DeclutterGroup=} opt_declutterGroup Declutter.
+   * @param {import("../style/Text.js").default} textStyle Text style.
+   * @param {import("./canvas.js").DeclutterGroup=} opt_declutterGroup Declutter.
    */
   setTextStyle(textStyle, opt_declutterGroup) {}
 }

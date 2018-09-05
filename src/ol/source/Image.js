@@ -49,7 +49,7 @@ const ImageSourceEventType = {
 class ImageSourceEvent extends Event {
   /**
    * @param {string} type Type.
-   * @param {module:ol/Image} image The image.
+   * @param {import("../Image.js").default} image The image.
    */
   constructor(type, image) {
 
@@ -57,7 +57,7 @@ class ImageSourceEvent extends Event {
 
     /**
      * The image related to the event.
-     * @type {module:ol/Image}
+     * @type {import("../Image.js").default}
      * @api
      */
     this.image = image;
@@ -69,11 +69,11 @@ class ImageSourceEvent extends Event {
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions]
- * @property {module:ol/extent~Extent} [extent]
- * @property {module:ol/proj~ProjectionLike} projection
+ * @property {import("./Source.js").AttributionLike} [attributions]
+ * @property {import("../extent.js").Extent} [extent]
+ * @property {import("../proj.js").ProjectionLike} projection
  * @property {Array<number>} [resolutions]
- * @property {module:ol/source/State} [state]
+ * @property {import("./State.js").default} [state]
  */
 
 
@@ -86,7 +86,7 @@ class ImageSourceEvent extends Event {
  */
 class ImageSource extends Source {
   /**
-   * @param {module:ol/source/Image~Options} options Single image source options.
+   * @param {Options} options Single image source options.
    */
   constructor(options) {
     super({
@@ -106,7 +106,7 @@ class ImageSource extends Source {
 
     /**
      * @private
-     * @type {module:ol/reproj/Image}
+     * @type {import("../reproj/Image.js").default}
      */
     this.reprojectedImage_ = null;
 
@@ -140,11 +140,11 @@ class ImageSource extends Source {
   }
 
   /**
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/proj/Projection} projection Projection.
-   * @return {module:ol/ImageBase} Single image.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {import("../ImageBase.js").default} Single image.
    */
   getImage(extent, resolution, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
@@ -183,22 +183,22 @@ class ImageSource extends Source {
 
   /**
    * @abstract
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/proj/Projection} projection Projection.
-   * @return {module:ol/ImageBase} Single image.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @return {import("../ImageBase.js").default} Single image.
    * @protected
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {}
 
   /**
    * Handle image change events.
-   * @param {module:ol/events/Event} event Event.
+   * @param {import("../events/Event.js").default} event Event.
    * @protected
    */
   handleImageChange(event) {
-    const image = /** @type {module:ol/Image} */ (event.target);
+    const image = /** @type {import("../Image.js").default} */ (event.target);
     switch (image.getState()) {
       case ImageState.LOADING:
         this.loading = true;
@@ -226,9 +226,9 @@ class ImageSource extends Source {
 
 
 /**
- * Default image load function for image sources that use module:ol/Image~Image image
+ * Default image load function for image sources that use import("../Image.js").Image image
  * instances.
- * @param {module:ol/Image} image Image.
+ * @param {import("../Image.js").default} image Image.
  * @param {string} src Source.
  */
 export function defaultImageLoadFunction(image, src) {

@@ -16,7 +16,7 @@ class Spatial extends Filter {
   /**
    * @param {!string} tagName The XML tag name for this filter.
    * @param {!string} geometryName Geometry name to use.
-   * @param {!module:ol/geom/Geometry} geometry Geometry.
+   * @param {!import("../../geom/Geometry.js").default} geometry Geometry.
    * @param {string=} opt_srsName SRS name. No srsName attribute will be
    *    set on geometries when this is not provided.
    */
@@ -30,7 +30,7 @@ class Spatial extends Filter {
     this.geometryName = geometryName || 'the_geom';
 
     /**
-     * @type {module:ol/geom/Geometry}
+     * @type {import("../../geom/Geometry.js").default}
      */
     this.geometry = geometry;
 

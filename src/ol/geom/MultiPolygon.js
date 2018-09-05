@@ -28,9 +28,9 @@ import {quantizeMultiArray} from '../geom/flat/simplify.js';
 class MultiPolygon extends SimpleGeometry {
 
   /**
-   * @param {Array<Array<Array<module:ol/coordinate~Coordinate>>>|Array<number>} coordinates Coordinates.
+   * @param {Array<Array<Array<import("../coordinate.js").Coordinate>>>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinats in combination with `opt_layout` and `opt_endss` are also accepted.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    * @param {Array<number>} opt_endss Array of ends for internal use with flat coordinates.
    */
   constructor(coordinates, opt_layout, opt_endss) {
@@ -111,7 +111,7 @@ class MultiPolygon extends SimpleGeometry {
 
   /**
    * Append the passed polygon to this multipolygon.
-   * @param {module:ol/geom/Polygon} polygon Polygon.
+   * @param {import("./Polygon.js").default} polygon Polygon.
    * @api
    */
   appendPolygon(polygon) {
@@ -135,7 +135,7 @@ class MultiPolygon extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!module:ol/geom/MultiPolygon} Clone.
+   * @return {!import("./MultiPolygon.js").default} Clone.
    * @override
    * @api
    */
@@ -193,7 +193,7 @@ class MultiPolygon extends SimpleGeometry {
    *     (clockwise for exterior and counter-clockwise for interior rings).
    *     By default, coordinate orientation will depend on how the geometry was
    *     constructed.
-   * @return {Array<Array<Array<module:ol/coordinate~Coordinate>>>} Coordinates.
+   * @return {Array<Array<Array<import("../coordinate.js").Coordinate>>>} Coordinates.
    * @override
    * @api
    */
@@ -235,7 +235,7 @@ class MultiPolygon extends SimpleGeometry {
 
   /**
    * Return the interior points as {@link module:ol/geom/MultiPoint multipoint}.
-   * @return {module:ol/geom/MultiPoint} Interior points as XYM coordinates, where M is
+   * @return {import("./MultiPoint.js").default} Interior points as XYM coordinates, where M is
    * the length of the horizontal intersection that the point belongs to.
    * @api
    */
@@ -279,7 +279,7 @@ class MultiPolygon extends SimpleGeometry {
   /**
    * Return the polygon at the specified index.
    * @param {number} index Index.
-   * @return {module:ol/geom/Polygon} Polygon.
+   * @return {import("./Polygon.js").default} Polygon.
    * @api
    */
   getPolygon(index) {
@@ -305,7 +305,7 @@ class MultiPolygon extends SimpleGeometry {
 
   /**
    * Return the polygons of this multipolygon.
-   * @return {Array<module:ol/geom/Polygon>} Polygons.
+   * @return {Array<import("./Polygon.js").default>} Polygons.
    * @api
    */
   getPolygons() {
@@ -348,8 +348,8 @@ class MultiPolygon extends SimpleGeometry {
 
   /**
    * Set the coordinates of the multipolygon.
-   * @param {!Array<Array<Array<module:ol/coordinate~Coordinate>>>} coordinates Coordinates.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {!Array<Array<Array<import("../coordinate.js").Coordinate>>>} coordinates Coordinates.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    * @override
    * @api
    */

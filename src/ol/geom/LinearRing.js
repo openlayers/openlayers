@@ -21,9 +21,9 @@ import {douglasPeucker} from '../geom/flat/simplify.js';
 class LinearRing extends SimpleGeometry {
 
   /**
-   * @param {Array<module:ol/coordinate~Coordinate>|Array<number>} coordinates Coordinates.
+   * @param {Array<import("../coordinate.js").Coordinate>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    */
   constructor(coordinates, opt_layout) {
 
@@ -51,7 +51,7 @@ class LinearRing extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!module:ol/geom/LinearRing} Clone.
+   * @return {!import("./LinearRing.js").default} Clone.
    * @override
    * @api
    */
@@ -87,7 +87,7 @@ class LinearRing extends SimpleGeometry {
 
   /**
    * Return the coordinates of the linear ring.
-   * @return {Array<module:ol/coordinate~Coordinate>} Coordinates.
+   * @return {Array<import("../coordinate.js").Coordinate>} Coordinates.
    * @override
    * @api
    */
@@ -122,8 +122,8 @@ class LinearRing extends SimpleGeometry {
 
   /**
    * Set the coordinates of the linear ring.
-   * @param {!Array<module:ol/coordinate~Coordinate>} coordinates Coordinates.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    * @override
    * @api
    */

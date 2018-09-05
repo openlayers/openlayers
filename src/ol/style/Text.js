@@ -24,7 +24,7 @@ const DEFAULT_FILL_COLOR = '#333';
  * @property {number} [offsetY=0] Vertical text offset in pixels. A positive will shift the text down.
  * @property {boolean} [overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
  * the width of the polygon at the label position or the length of the path that it follows.
- * @property {module:ol/style/TextPlacement|string} [placement] Text placement.
+ * @property {import("./TextPlacement.js").default|string} [placement] Text placement.
  * @property {number} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
@@ -34,11 +34,11 @@ const DEFAULT_FILL_COLOR = '#333';
  * placement where `maxAngle` is not exceeded.
  * @property {string} [textBaseline='middle'] Text base line. Possible values: 'bottom', 'top', 'middle', 'alphabetic',
  * 'hanging', 'ideographic'.
- * @property {module:ol/style/Fill} [fill] Fill style. If none is provided, we'll use a dark fill-style (#333).
- * @property {module:ol/style/Stroke} [stroke] Stroke style.
- * @property {module:ol/style/Fill} [backgroundFill] Fill style for the text background when `placement` is
+ * @property {import("./Fill.js").default} [fill] Fill style. If none is provided, we'll use a dark fill-style (#333).
+ * @property {import("./Stroke.js").default} [stroke] Stroke style.
+ * @property {import("./Fill.js").default} [backgroundFill] Fill style for the text background when `placement` is
  * `'point'`. Default is no fill.
- * @property {module:ol/style/Stroke} [backgroundStroke] Stroke style for the text background  when `placement`
+ * @property {import("./Stroke.js").default} [backgroundStroke] Stroke style for the text background  when `placement`
  * is `'point'`. Default is no stroke.
  * @property {Array<number>} [padding=[0, 0, 0, 0]] Padding in pixels around the text for decluttering and background. The order of
  * values in the array is `[top, right, bottom, left]`.
@@ -52,7 +52,7 @@ const DEFAULT_FILL_COLOR = '#333';
  */
 class Text {
   /**
-   * @param {module:ol/style/Text~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
@@ -102,7 +102,7 @@ class Text {
 
     /**
     * @private
-    * @type {module:ol/style/Fill}
+    * @type {import("./Fill.js").default}
     */
     this.fill_ = options.fill !== undefined ? options.fill :
       new Fill({color: DEFAULT_FILL_COLOR});
@@ -115,7 +115,7 @@ class Text {
 
     /**
     * @private
-    * @type {module:ol/style/TextPlacement|string}
+    * @type {import("./TextPlacement.js").default|string}
     */
     this.placement_ = options.placement !== undefined ? options.placement : TextPlacement.POINT;
 
@@ -127,7 +127,7 @@ class Text {
 
     /**
     * @private
-    * @type {module:ol/style/Stroke}
+    * @type {import("./Stroke.js").default}
     */
     this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
@@ -145,13 +145,13 @@ class Text {
 
     /**
     * @private
-    * @type {module:ol/style/Fill}
+    * @type {import("./Fill.js").default}
     */
     this.backgroundFill_ = options.backgroundFill ? options.backgroundFill : null;
 
     /**
     * @private
-    * @type {module:ol/style/Stroke}
+    * @type {import("./Stroke.js").default}
     */
     this.backgroundStroke_ = options.backgroundStroke ? options.backgroundStroke : null;
 
@@ -164,7 +164,7 @@ class Text {
 
   /**
   * Clones the style.
-  * @return {module:ol/style/Text} The cloned style.
+  * @return {import("./Text.js").default} The cloned style.
   * @api
   */
   clone() {
@@ -217,7 +217,7 @@ class Text {
 
   /**
   * Get the label placement.
-  * @return {module:ol/style/TextPlacement|string} Text placement.
+  * @return {import("./TextPlacement.js").default|string} Text placement.
   * @api
   */
   getPlacement() {
@@ -244,7 +244,7 @@ class Text {
 
   /**
   * Get the fill style for the text.
-  * @return {module:ol/style/Fill} Fill style.
+  * @return {import("./Fill.js").default} Fill style.
   * @api
   */
   getFill() {
@@ -280,7 +280,7 @@ class Text {
 
   /**
   * Get the stroke style for the text.
-  * @return {module:ol/style/Stroke} Stroke style.
+  * @return {import("./Stroke.js").default} Stroke style.
   * @api
   */
   getStroke() {
@@ -316,7 +316,7 @@ class Text {
 
   /**
   * Get the background fill style for the text.
-  * @return {module:ol/style/Fill} Fill style.
+  * @return {import("./Fill.js").default} Fill style.
   * @api
   */
   getBackgroundFill() {
@@ -325,7 +325,7 @@ class Text {
 
   /**
   * Get the background stroke style for the text.
-  * @return {module:ol/style/Stroke} Stroke style.
+  * @return {import("./Stroke.js").default} Stroke style.
   * @api
   */
   getBackgroundStroke() {
@@ -394,7 +394,7 @@ class Text {
   /**
   * Set the text placement.
   *
-  * @param {module:ol/style/TextPlacement|string} placement Placement.
+  * @param {import("./TextPlacement.js").default|string} placement Placement.
   * @api
   */
   setPlacement(placement) {
@@ -404,7 +404,7 @@ class Text {
   /**
   * Set the fill.
   *
-  * @param {module:ol/style/Fill} fill Fill style.
+  * @param {import("./Fill.js").default} fill Fill style.
   * @api
   */
   setFill(fill) {
@@ -434,7 +434,7 @@ class Text {
   /**
   * Set the stroke.
   *
-  * @param {module:ol/style/Stroke} stroke Stroke style.
+  * @param {import("./Stroke.js").default} stroke Stroke style.
   * @api
   */
   setStroke(stroke) {
@@ -474,7 +474,7 @@ class Text {
   /**
   * Set the background fill.
   *
-  * @param {module:ol/style/Fill} fill Fill style.
+  * @param {import("./Fill.js").default} fill Fill style.
   * @api
   */
   setBackgroundFill(fill) {
@@ -484,7 +484,7 @@ class Text {
   /**
   * Set the background stroke.
   *
-  * @param {module:ol/style/Stroke} stroke Stroke style.
+  * @param {import("./Stroke.js").default} stroke Stroke style.
   * @api
   */
   setBackgroundStroke(stroke) {

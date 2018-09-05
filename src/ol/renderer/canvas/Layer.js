@@ -13,7 +13,7 @@ import {create as createTransform, apply as applyTransform, compose as composeTr
 class CanvasLayerRenderer extends LayerRenderer {
 
   /**
-   * @param {module:ol/layer/Layer} layer Layer.
+   * @param {import("../../layer/Layer.js").default} layer Layer.
    */
   constructor(layer) {
 
@@ -27,7 +27,7 @@ class CanvasLayerRenderer extends LayerRenderer {
 
     /**
      * @private
-     * @type {module:ol/transform~Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.transform_ = createTransform();
 
@@ -35,8 +35,8 @@ class CanvasLayerRenderer extends LayerRenderer {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @param {module:ol/extent~Extent} extent Clip extent.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../extent.js").Extent} extent Clip extent.
    * @protected
    */
   clip(context, frameState, extent) {
@@ -44,10 +44,10 @@ class CanvasLayerRenderer extends LayerRenderer {
     const width = frameState.size[0] * pixelRatio;
     const height = frameState.size[1] * pixelRatio;
     const rotation = frameState.viewState.rotation;
-    const topLeft = getTopLeft(/** @type {module:ol/extent~Extent} */ (extent));
-    const topRight = getTopRight(/** @type {module:ol/extent~Extent} */ (extent));
-    const bottomRight = getBottomRight(/** @type {module:ol/extent~Extent} */ (extent));
-    const bottomLeft = getBottomLeft(/** @type {module:ol/extent~Extent} */ (extent));
+    const topLeft = getTopLeft(/** @type {import("../../extent.js").Extent} */ (extent));
+    const topRight = getTopRight(/** @type {import("../../extent.js").Extent} */ (extent));
+    const bottomRight = getBottomRight(/** @type {import("../../extent.js").Extent} */ (extent));
+    const bottomLeft = getBottomLeft(/** @type {import("../../extent.js").Extent} */ (extent));
 
     applyTransform(frameState.coordinateToPixelTransform, topLeft);
     applyTransform(frameState.coordinateToPixelTransform, topRight);
@@ -66,10 +66,10 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {module:ol/render/EventType} type Event type.
+   * @param {import("../../render/EventType.js").default} type Event type.
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @param {module:ol/transform~Transform=} opt_transform Transform.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../transform.js").Transform=} opt_transform Transform.
    * @private
    */
   dispatchComposeEvent_(type, context, frameState, opt_transform) {
@@ -92,10 +92,10 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
-   * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
+   * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(this: S, module:ol/layer/Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
+   * @param {function(this: S, import("../../layer/Layer.js").default, (Uint8ClampedArray|Uint8Array)): T} callback Layer
    *     callback.
    * @param {S} thisArg Value to use as `this` when executing `callback`.
    * @return {T|undefined} Callback result.
@@ -113,9 +113,9 @@ class CanvasLayerRenderer extends LayerRenderer {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @param {module:ol/layer/Layer~State} layerState Layer state.
-   * @param {module:ol/transform~Transform=} opt_transform Transform.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../layer/Layer.js").State} layerState Layer state.
+   * @param {import("../../transform.js").Transform=} opt_transform Transform.
    * @protected
    */
   postCompose(context, frameState, layerState, opt_transform) {
@@ -124,8 +124,8 @@ class CanvasLayerRenderer extends LayerRenderer {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @param {module:ol/transform~Transform=} opt_transform Transform.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../transform.js").Transform=} opt_transform Transform.
    * @protected
    */
   preCompose(context, frameState, opt_transform) {
@@ -134,8 +134,8 @@ class CanvasLayerRenderer extends LayerRenderer {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @param {module:ol/transform~Transform=} opt_transform Transform.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../transform.js").Transform=} opt_transform Transform.
    * @protected
    */
   dispatchRenderEvent(context, frameState, opt_transform) {
@@ -143,10 +143,10 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} offsetX Offset on the x-axis in view coordinates.
    * @protected
-   * @return {!module:ol/transform~Transform} Transform.
+   * @return {!import("../../transform.js").Transform} Transform.
    */
   getTransform(frameState, offsetX) {
     const viewState = frameState.viewState;
@@ -163,16 +163,16 @@ class CanvasLayerRenderer extends LayerRenderer {
 
   /**
    * @abstract
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @param {module:ol/layer/Layer~State} layerState Layer state.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../layer/Layer.js").State} layerState Layer state.
    * @param {CanvasRenderingContext2D} context Context.
    */
   composeFrame(frameState, layerState, context) {}
 
   /**
    * @abstract
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @param {module:ol/layer/Layer~State} layerState Layer state.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../layer/Layer.js").State} layerState Layer state.
    * @return {boolean} whether composeFrame should be called.
    */
   prepareFrame(frameState, layerState) {}

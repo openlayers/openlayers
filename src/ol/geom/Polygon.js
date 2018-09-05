@@ -29,14 +29,14 @@ import {modulo} from '../math.js';
 class Polygon extends SimpleGeometry {
 
   /**
-   * @param {!Array<Array<module:ol/coordinate~Coordinate>>|!Array<number>} coordinates
+   * @param {!Array<Array<import("../coordinate.js").Coordinate>>|!Array<number>} coordinates
    *     Array of linear rings that define the polygon. The first linear ring of the
    *     array defines the outer-boundary or surface of the polygon. Each subsequent
    *     linear ring defines a hole in the surface of the polygon. A linear ring is
    *     an array of vertices' coordinates where the first coordinate and the last are
    *     equivalent. (For internal use, flat coordinates in combination with
    *     `opt_layout` and `opt_ends` are also accepted.)
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    * @param {Array<number>=} opt_ends Ends (for internal use with flat coordinates).
    */
   constructor(coordinates, opt_layout, opt_ends) {
@@ -57,7 +57,7 @@ class Polygon extends SimpleGeometry {
 
     /**
      * @private
-     * @type {module:ol/coordinate~Coordinate}
+     * @type {import("../coordinate.js").Coordinate}
      */
     this.flatInteriorPoint_ = null;
 
@@ -96,7 +96,7 @@ class Polygon extends SimpleGeometry {
 
   /**
    * Append the passed linear ring to this polygon.
-   * @param {module:ol/geom/LinearRing} linearRing Linear ring.
+   * @param {import("./LinearRing.js").default} linearRing Linear ring.
    * @api
    */
   appendLinearRing(linearRing) {
@@ -111,7 +111,7 @@ class Polygon extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!module:ol/geom/Polygon} Clone.
+   * @return {!import("./Polygon.js").default} Clone.
    * @override
    * @api
    */
@@ -162,7 +162,7 @@ class Polygon extends SimpleGeometry {
    *     (clockwise for exterior and counter-clockwise for interior rings).
    *     By default, coordinate orientation will depend on how the geometry was
    *     constructed.
-   * @return {Array<Array<module:ol/coordinate~Coordinate>>} Coordinates.
+   * @return {Array<Array<import("../coordinate.js").Coordinate>>} Coordinates.
    * @override
    * @api
    */
@@ -203,7 +203,7 @@ class Polygon extends SimpleGeometry {
 
   /**
    * Return an interior point of the polygon.
-   * @return {module:ol/geom/Point} Interior point as XYM coordinate, where M is the
+   * @return {import("./Point.js").default} Interior point as XYM coordinate, where M is the
    * length of the horizontal intersection that the point belongs to.
    * @api
    */
@@ -229,7 +229,7 @@ class Polygon extends SimpleGeometry {
    * at index `1` and beyond.
    *
    * @param {number} index Index.
-   * @return {module:ol/geom/LinearRing} Linear ring.
+   * @return {import("./LinearRing.js").default} Linear ring.
    * @api
    */
   getLinearRing(index) {
@@ -242,7 +242,7 @@ class Polygon extends SimpleGeometry {
 
   /**
    * Return the linear rings of the polygon.
-   * @return {Array<module:ol/geom/LinearRing>} Linear rings.
+   * @return {Array<import("./LinearRing.js").default>} Linear rings.
    * @api
    */
   getLinearRings() {
@@ -312,8 +312,8 @@ class Polygon extends SimpleGeometry {
 
   /**
    * Set the coordinates of the polygon.
-   * @param {!Array<Array<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {!Array<Array<import("../coordinate.js").Coordinate>>} coordinates Coordinates.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    * @override
    * @api
    */
@@ -335,14 +335,14 @@ export default Polygon;
 
 /**
  * Create an approximation of a circle on the surface of a sphere.
- * @param {module:ol/coordinate~Coordinate} center Center (`[lon, lat]` in degrees).
+ * @param {import("../coordinate.js").Coordinate} center Center (`[lon, lat]` in degrees).
  * @param {number} radius The great-circle distance from the center to
  *     the polygon vertices.
  * @param {number=} opt_n Optional number of vertices for the resulting
  *     polygon. Default is `32`.
  * @param {number=} opt_sphereRadius Optional radius for the sphere (defaults to
  *     the Earth's mean radius using the WGS84 ellipsoid).
- * @return {module:ol/geom/Polygon} The "circular" polygon.
+ * @return {import("./Polygon.js").default} The "circular" polygon.
  * @api
  */
 export function circular(center, radius, opt_n, opt_sphereRadius) {
@@ -359,8 +359,8 @@ export function circular(center, radius, opt_n, opt_sphereRadius) {
 
 /**
  * Create a polygon from an extent. The layout used is `XY`.
- * @param {module:ol/extent~Extent} extent The extent.
- * @return {module:ol/geom/Polygon} The polygon.
+ * @param {import("../extent.js").Extent} extent The extent.
+ * @return {import("./Polygon.js").default} The polygon.
  * @api
  */
 export function fromExtent(extent) {
@@ -376,11 +376,11 @@ export function fromExtent(extent) {
 
 /**
  * Create a regular polygon from a circle.
- * @param {module:ol/geom/Circle} circle Circle geometry.
+ * @param {import("./Circle.js").default} circle Circle geometry.
  * @param {number=} opt_sides Number of sides of the polygon. Default is 32.
  * @param {number=} opt_angle Start angle for the first vertex of the polygon in
  *     radians. Default is 0.
- * @return {module:ol/geom/Polygon} Polygon geometry.
+ * @return {import("./Polygon.js").default} Polygon geometry.
  * @api
  */
 export function fromCircle(circle, opt_sides, opt_angle) {
@@ -406,8 +406,8 @@ export function fromCircle(circle, opt_sides, opt_angle) {
 
 /**
  * Modify the coordinates of a polygon to make it a regular polygon.
- * @param {module:ol/geom/Polygon} polygon Polygon geometry.
- * @param {module:ol/coordinate~Coordinate} center Center of the regular polygon.
+ * @param {import("./Polygon.js").default} polygon Polygon geometry.
+ * @param {import("../coordinate.js").Coordinate} center Center of the regular polygon.
  * @param {number} radius Radius of the regular polygon.
  * @param {number=} opt_angle Start angle for the first vertex of the polygon in
  *     radians. Default is 0.

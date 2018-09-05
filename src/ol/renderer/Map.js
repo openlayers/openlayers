@@ -15,32 +15,32 @@ import {compose as composeTransform, invert as invertTransform, setFromArray as 
 class MapRenderer extends Disposable {
 
   /**
-   * @param {module:ol/PluggableMap} map Map.
+   * @param {import("../PluggableMap.js").default} map Map.
    */
   constructor(map) {
     super();
 
     /**
      * @private
-     * @type {module:ol/PluggableMap}
+     * @type {import("../PluggableMap.js").default}
      */
     this.map_ = map;
 
     /**
      * @private
-     * @type {!Object<string, module:ol/renderer/Layer>}
+     * @type {!Object<string, import("./Layer.js").default>}
      */
     this.layerRenderers_ = {};
 
     /**
      * @private
-     * @type {Object<string, module:ol/events~EventsKey>}
+     * @type {Object<string, import("../events.js").EventsKey>}
      */
     this.layerRendererListeners_ = {};
 
     /**
      * @private
-     * @type {Array<module:ol/renderer/Layer>}
+     * @type {Array<import("./Layer.js").default>}
      */
     this.layerRendererConstructors_ = [];
 
@@ -48,7 +48,7 @@ class MapRenderer extends Disposable {
 
   /**
    * Register layer renderer constructors.
-   * @param {Array<module:ol/renderer/Layer>} constructors Layer renderers.
+   * @param {Array<import("./Layer.js").default>} constructors Layer renderers.
    */
   registerLayerRenderers(constructors) {
     this.layerRendererConstructors_.push.apply(this.layerRendererConstructors_, constructors);
@@ -56,14 +56,14 @@ class MapRenderer extends Disposable {
 
   /**
    * Get the registered layer renderer constructors.
-   * @return {Array<module:ol/renderer/Layer>} Registered layer renderers.
+   * @return {Array<import("./Layer.js").default>} Registered layer renderers.
    */
   getLayerRendererConstructors() {
     return this.layerRendererConstructors_;
   }
 
   /**
-   * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
+   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @protected
    */
   calculateMatrices2D(frameState) {
@@ -91,13 +91,13 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
-   * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(this: S, (module:ol/Feature|module:ol/render/Feature),
-   *     module:ol/layer/Layer): T} callback Feature callback.
+   * @param {function(this: S, (import("../Feature.js").default|import("../render/Feature.js").default),
+   *     import("../layer/Layer.js").default): T} callback Feature callback.
    * @param {S} thisArg Value to use as `this` when executing `callback`.
-   * @param {function(this: U, module:ol/layer/Layer): boolean} layerFilter Layer filter
+   * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
    *     function, only layers which are visible and for which this function
    *     returns `true` will be tested for features.  By default, all visible
    *     layers will be tested.
@@ -119,8 +119,8 @@ class MapRenderer extends Disposable {
     const viewResolution = viewState.resolution;
 
     /**
-     * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
-     * @param {module:ol/layer/Layer} layer Layer.
+     * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+     * @param {import("../layer/Layer.js").default} layer Layer.
      * @return {?} Callback result.
      */
     function forEachFeatureAtCoordinate(feature, layer) {
@@ -167,13 +167,13 @@ class MapRenderer extends Disposable {
 
   /**
    * @abstract
-   * @param {module:ol/pixel~Pixel} pixel Pixel.
-   * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(this: S, module:ol/layer/Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
+   * @param {function(this: S, import("../layer/Layer.js").default, (Uint8ClampedArray|Uint8Array)): T} callback Layer
    *     callback.
    * @param {S} thisArg Value to use as `this` when executing `callback`.
-   * @param {function(this: U, module:ol/layer/Layer): boolean} layerFilter Layer filter
+   * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
    *     function, only layers which are visible and for which this function
    *     returns `true` will be tested for features.  By default, all visible
    *     layers will be tested.
@@ -184,10 +184,10 @@ class MapRenderer extends Disposable {
   forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, thisArg, layerFilter, thisArg2) {}
 
   /**
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
-   * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(this: U, module:ol/layer/Layer): boolean} layerFilter Layer filter
+   * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
    *     function, only layers which are visible and for which this function
    *     returns `true` will be tested for features.  By default, all visible
    *     layers will be tested.
@@ -203,9 +203,9 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @param {module:ol/layer/Layer} layer Layer.
+   * @param {import("../layer/Layer.js").default} layer Layer.
    * @protected
-   * @return {module:ol/renderer/Layer} Layer renderer.
+   * @return {import("./Layer.js").default} Layer renderer.
    */
   getLayerRenderer(layer) {
     const layerKey = getUid(layer).toString();
@@ -234,7 +234,7 @@ class MapRenderer extends Disposable {
   /**
    * @param {string} layerKey Layer key.
    * @protected
-   * @return {module:ol/renderer/Layer} Layer renderer.
+   * @return {import("./Layer.js").default} Layer renderer.
    */
   getLayerRendererByKey(layerKey) {
     return this.layerRenderers_[layerKey];
@@ -242,14 +242,14 @@ class MapRenderer extends Disposable {
 
   /**
    * @protected
-   * @return {Object<string, module:ol/renderer/Layer>} Layer renderers.
+   * @return {Object<string, import("./Layer.js").default>} Layer renderers.
    */
   getLayerRenderers() {
     return this.layerRenderers_;
   }
 
   /**
-   * @return {module:ol/PluggableMap} Map.
+   * @return {import("../PluggableMap.js").default} Map.
    */
   getMap() {
     return this.map_;
@@ -265,7 +265,7 @@ class MapRenderer extends Disposable {
 
   /**
    * @param {string} layerKey Layer key.
-   * @return {module:ol/renderer/Layer} Layer renderer.
+   * @return {import("./Layer.js").default} Layer renderer.
    * @private
    */
   removeLayerRendererByKey_(layerKey) {
@@ -279,8 +279,8 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @param {module:ol/PluggableMap} map Map.
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+   * @param {import("../PluggableMap.js").default} map Map.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    * @private
    */
   removeUnusedLayerRenderers_(map, frameState) {
@@ -292,22 +292,22 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    * @protected
    */
   scheduleExpireIconCache(frameState) {
-    frameState.postRenderFunctions.push(/** @type {module:ol/PluggableMap~PostRenderFunction} */ (expireIconCache));
+    frameState.postRenderFunctions.push(/** @type {import("../PluggableMap.js").PostRenderFunction} */ (expireIconCache));
   }
 
   /**
-   * @param {!module:ol/PluggableMap~FrameState} frameState Frame state.
+   * @param {!import("../PluggableMap.js").FrameState} frameState Frame state.
    * @protected
    */
   scheduleRemoveUnusedLayerRenderers(frameState) {
     for (const layerKey in this.layerRenderers_) {
       if (!(layerKey in frameState.layerStates)) {
         frameState.postRenderFunctions.push(
-          /** @type {module:ol/PluggableMap~PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
+          /** @type {import("../PluggableMap.js").PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
         );
         return;
       }
@@ -317,8 +317,8 @@ class MapRenderer extends Disposable {
 
 
 /**
- * @param {module:ol/PluggableMap} map Map.
- * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+ * @param {import("../PluggableMap.js").default} map Map.
+ * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
  */
 function expireIconCache(map, frameState) {
   iconImageCache.expire();
@@ -327,21 +327,21 @@ function expireIconCache(map, frameState) {
 
 /**
  * Render.
- * @param {?module:ol/PluggableMap~FrameState} frameState Frame state.
+ * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
  */
 MapRenderer.prototype.renderFrame = VOID;
 
 
 /**
- * @param {module:ol/render/EventType} type Event type.
- * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+ * @param {import("../render/EventType.js").default} type Event type.
+ * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
  */
 MapRenderer.prototype.dispatchRenderEvent = VOID;
 
 
 /**
- * @param {module:ol/layer/Layer~State} state1 First layer state.
- * @param {module:ol/layer/Layer~State} state2 Second layer state.
+ * @param {import("../layer/Layer.js").State} state1 First layer state.
+ * @param {import("../layer/Layer.js").State} state2 Second layer state.
  * @return {number} The zIndex difference.
  */
 export function sortByZIndex(state1, state2) {

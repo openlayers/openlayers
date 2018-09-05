@@ -28,7 +28,7 @@ import {visibleAtResolution} from '../layer/Layer.js';
  * @property {string|HTMLElement} [collapseLabel='»'] Text label to use
  * for the expanded attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {function(module:ol/MapEvent)} [render] Function called when
+ * @property {function(import("../MapEvent.js").default)} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  */
@@ -46,7 +46,7 @@ import {visibleAtResolution} from '../layer/Layer.js';
 class Attribution extends Control {
 
   /**
-   * @param {module:ol/control/Attribution~Options=} opt_options Attribution options.
+   * @param {Options=} opt_options Attribution options.
    */
   constructor(opt_options) {
 
@@ -146,7 +146,7 @@ class Attribution extends Control {
 
   /**
    * Get a list of visible attributions.
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    * @return {Array<string>} Attributions.
    * @private
    */
@@ -205,7 +205,7 @@ class Attribution extends Control {
 
   /**
    * @private
-   * @param {?module:ol/PluggableMap~FrameState} frameState Frame state.
+   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
    */
   updateElement_(frameState) {
     if (!frameState) {
@@ -315,8 +315,8 @@ class Attribution extends Control {
 
 /**
  * Update the attribution element.
- * @param {module:ol/MapEvent} mapEvent Map event.
- * @this {module:ol/control/Attribution}
+ * @param {import("../MapEvent.js").default} mapEvent Map event.
+ * @this {import("./Attribution.js").default}
  * @api
  */
 export function render(mapEvent) {

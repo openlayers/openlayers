@@ -13,7 +13,7 @@ class Contains extends Spatial {
 
   /**
    * @param {!string} geometryName Geometry name to use.
-   * @param {!module:ol/geom/Geometry} geometry Geometry.
+   * @param {!import("../../geom/Geometry.js").default} geometry Geometry.
    * @param {string=} opt_srsName SRS name. No srsName attribute will be
    *    set on geometries when this is not provided.
    */

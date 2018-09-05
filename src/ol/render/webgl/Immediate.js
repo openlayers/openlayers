@@ -10,12 +10,12 @@ import WebGLReplayGroup from '../webgl/ReplayGroup.js';
 
 class WebGLImmediateRenderer extends VectorContext {
   /**
-   * @param {module:ol/webgl/Context} context Context.
-   * @param {module:ol/coordinate~Coordinate} center Center.
+   * @param {import("../../webgl/Context.js").default} context Context.
+   * @param {import("../../coordinate.js").Coordinate} center Center.
    * @param {number} resolution Resolution.
    * @param {number} rotation Rotation.
-   * @param {module:ol/size~Size} size Size.
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("../../size.js").Size} size Size.
+   * @param {import("../../extent.js").Extent} extent Extent.
    * @param {number} pixelRatio Pixel ratio.
    */
   constructor(context, center, resolution, rotation, size, extent, pixelRatio) {
@@ -58,38 +58,38 @@ class WebGLImmediateRenderer extends VectorContext {
 
     /**
      * @private
-     * @type {module:ol/style/Image}
+     * @type {import("../../style/Image.js").default}
      */
     this.imageStyle_ = null;
 
     /**
      * @private
-     * @type {module:ol/style/Fill}
+     * @type {import("../../style/Fill.js").default}
      */
     this.fillStyle_ = null;
 
     /**
      * @private
-     * @type {module:ol/style/Stroke}
+     * @type {import("../../style/Stroke.js").default}
      */
     this.strokeStyle_ = null;
 
     /**
      * @private
-     * @type {module:ol/style/Text}
+     * @type {import("../../style/Text.js").default}
      */
     this.textStyle_ = null;
 
   }
 
   /**
-   * @param {module:ol/render/webgl/ReplayGroup} replayGroup Replay group.
-   * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry Geometry.
+   * @param {import("./ReplayGroup.js").default} replayGroup Replay group.
+   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    * @private
    */
   drawText_(replayGroup, geometry) {
     const context = this.context_;
-    const replay = /** @type {module:ol/render/webgl/TextReplay} */ (
+    const replay = /** @type {import("./TextReplay.js").default} */ (
       replayGroup.getReplay(0, ReplayType.TEXT));
     replay.setTextStyle(this.textStyle_);
     replay.drawText(geometry, null);
@@ -109,7 +109,7 @@ class WebGLImmediateRenderer extends VectorContext {
    * Set the rendering style.  Note that since this is an immediate rendering API,
    * any `zIndex` on the provided style will be ignored.
    *
-   * @param {module:ol/style/Style} style The rendering style.
+   * @param {import("../../style/Style.js").default} style The rendering style.
    * @override
    * @api
    */
@@ -123,7 +123,7 @@ class WebGLImmediateRenderer extends VectorContext {
    * Render a geometry into the canvas.  Call
    * {@link ol/render/webgl/Immediate#setStyle} first to set the rendering style.
    *
-   * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry The geometry to render.
+   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry The geometry to render.
    * @override
    * @api
    */
@@ -131,28 +131,28 @@ class WebGLImmediateRenderer extends VectorContext {
     const type = geometry.getType();
     switch (type) {
       case GeometryType.POINT:
-        this.drawPoint(/** @type {module:ol/geom/Point} */ (geometry), null);
+        this.drawPoint(/** @type {import("../../geom/Point.js").default} */ (geometry), null);
         break;
       case GeometryType.LINE_STRING:
-        this.drawLineString(/** @type {module:ol/geom/LineString} */ (geometry), null);
+        this.drawLineString(/** @type {import("../../geom/LineString.js").default} */ (geometry), null);
         break;
       case GeometryType.POLYGON:
-        this.drawPolygon(/** @type {module:ol/geom/Polygon} */ (geometry), null);
+        this.drawPolygon(/** @type {import("../../geom/Polygon.js").default} */ (geometry), null);
         break;
       case GeometryType.MULTI_POINT:
-        this.drawMultiPoint(/** @type {module:ol/geom/MultiPoint} */ (geometry), null);
+        this.drawMultiPoint(/** @type {import("../../geom/MultiPoint.js").default} */ (geometry), null);
         break;
       case GeometryType.MULTI_LINE_STRING:
-        this.drawMultiLineString(/** @type {module:ol/geom/MultiLineString} */ (geometry), null);
+        this.drawMultiLineString(/** @type {import("../../geom/MultiLineString.js").default} */ (geometry), null);
         break;
       case GeometryType.MULTI_POLYGON:
-        this.drawMultiPolygon(/** @type {module:ol/geom/MultiPolygon} */ (geometry), null);
+        this.drawMultiPolygon(/** @type {import("../../geom/MultiPolygon.js").default} */ (geometry), null);
         break;
       case GeometryType.GEOMETRY_COLLECTION:
-        this.drawGeometryCollection(/** @type {module:ol/geom/GeometryCollection} */ (geometry), null);
+        this.drawGeometryCollection(/** @type {import("../../geom/GeometryCollection.js").default} */ (geometry), null);
         break;
       case GeometryType.CIRCLE:
-        this.drawCircle(/** @type {module:ol/geom/Circle} */ (geometry), null);
+        this.drawCircle(/** @type {import("../../geom/Circle.js").default} */ (geometry), null);
         break;
       default:
         // pass
@@ -189,7 +189,7 @@ class WebGLImmediateRenderer extends VectorContext {
   drawPoint(geometry, data) {
     const context = this.context_;
     const replayGroup = new WebGLReplayGroup(1, this.extent_);
-    const replay = /** @type {module:ol/render/webgl/ImageReplay} */ (
+    const replay = /** @type {import("./ImageReplay.js").default} */ (
       replayGroup.getReplay(0, ReplayType.IMAGE));
     replay.setImageStyle(this.imageStyle_);
     replay.drawPoint(geometry, data);
@@ -215,7 +215,7 @@ class WebGLImmediateRenderer extends VectorContext {
   drawMultiPoint(geometry, data) {
     const context = this.context_;
     const replayGroup = new WebGLReplayGroup(1, this.extent_);
-    const replay = /** @type {module:ol/render/webgl/ImageReplay} */ (
+    const replay = /** @type {import("./ImageReplay.js").default} */ (
       replayGroup.getReplay(0, ReplayType.IMAGE));
     replay.setImageStyle(this.imageStyle_);
     replay.drawMultiPoint(geometry, data);
@@ -240,7 +240,7 @@ class WebGLImmediateRenderer extends VectorContext {
   drawLineString(geometry, data) {
     const context = this.context_;
     const replayGroup = new WebGLReplayGroup(1, this.extent_);
-    const replay = /** @type {module:ol/render/webgl/LineStringReplay} */ (
+    const replay = /** @type {import("./LineStringReplay.js").default} */ (
       replayGroup.getReplay(0, ReplayType.LINE_STRING));
     replay.setFillStrokeStyle(null, this.strokeStyle_);
     replay.drawLineString(geometry, data);
@@ -265,7 +265,7 @@ class WebGLImmediateRenderer extends VectorContext {
   drawMultiLineString(geometry, data) {
     const context = this.context_;
     const replayGroup = new WebGLReplayGroup(1, this.extent_);
-    const replay = /** @type {module:ol/render/webgl/LineStringReplay} */ (
+    const replay = /** @type {import("./LineStringReplay.js").default} */ (
       replayGroup.getReplay(0, ReplayType.LINE_STRING));
     replay.setFillStrokeStyle(null, this.strokeStyle_);
     replay.drawMultiLineString(geometry, data);
@@ -290,7 +290,7 @@ class WebGLImmediateRenderer extends VectorContext {
   drawPolygon(geometry, data) {
     const context = this.context_;
     const replayGroup = new WebGLReplayGroup(1, this.extent_);
-    const replay = /** @type {module:ol/render/webgl/PolygonReplay} */ (
+    const replay = /** @type {import("./PolygonReplay.js").default} */ (
       replayGroup.getReplay(0, ReplayType.POLYGON));
     replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
     replay.drawPolygon(geometry, data);
@@ -315,7 +315,7 @@ class WebGLImmediateRenderer extends VectorContext {
   drawMultiPolygon(geometry, data) {
     const context = this.context_;
     const replayGroup = new WebGLReplayGroup(1, this.extent_);
-    const replay = /** @type {module:ol/render/webgl/PolygonReplay} */ (
+    const replay = /** @type {import("./PolygonReplay.js").default} */ (
       replayGroup.getReplay(0, ReplayType.POLYGON));
     replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
     replay.drawMultiPolygon(geometry, data);
@@ -340,7 +340,7 @@ class WebGLImmediateRenderer extends VectorContext {
   drawCircle(geometry, data) {
     const context = this.context_;
     const replayGroup = new WebGLReplayGroup(1, this.extent_);
-    const replay = /** @type {module:ol/render/webgl/CircleReplay} */ (
+    const replay = /** @type {import("./CircleReplay.js").default} */ (
       replayGroup.getReplay(0, ReplayType.CIRCLE));
     replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
     replay.drawCircle(geometry, data);

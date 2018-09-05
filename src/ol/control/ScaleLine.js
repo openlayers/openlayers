@@ -40,11 +40,11 @@ const LEADING_DIGITS = [1, 2, 5];
  * @typedef {Object} Options
  * @property {string} [className='ol-scale-line'] CSS Class name.
  * @property {number} [minWidth=64] Minimum width in pixels.
- * @property {function(module:ol/MapEvent)} [render] Function called when the control
+ * @property {function(import("../MapEvent.js").default)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
- * @property {module:ol/control/ScaleLine~Units|string} [units='metric'] Units.
+ * @property {Units|string} [units='metric'] Units.
  */
 
 
@@ -63,7 +63,7 @@ const LEADING_DIGITS = [1, 2, 5];
 class ScaleLine extends Control {
 
   /**
-   * @param {module:ol/control/ScaleLine~Options=} opt_options Scale line options.
+   * @param {Options=} opt_options Scale line options.
    */
   constructor(opt_options) {
 
@@ -89,7 +89,7 @@ class ScaleLine extends Control {
 
     /**
      * @private
-     * @type {?module:ol/View~State}
+     * @type {?import("../View.js").State}
      */
     this.viewState_ = null;
 
@@ -121,21 +121,21 @@ class ScaleLine extends Control {
       this, getChangeEventType(UNITS_PROP),
       this.handleUnitsChanged_, this);
 
-    this.setUnits(/** @type {module:ol/control/ScaleLine~Units} */ (options.units) ||
+    this.setUnits(/** @type {Units} */ (options.units) ||
         Units.METRIC);
 
   }
 
   /**
    * Return the units to use in the scale line.
-   * @return {module:ol/control/ScaleLine~Units|undefined} The units
+   * @return {Units|undefined} The units
    * to use in the scale line.
    * @observable
    * @api
    */
   getUnits() {
     return (
-      /** @type {module:ol/control/ScaleLine~Units|undefined} */ (this.get(UNITS_PROP))
+      /** @type {Units|undefined} */ (this.get(UNITS_PROP))
     );
   }
 
@@ -148,7 +148,7 @@ class ScaleLine extends Control {
 
   /**
    * Set the units to use in the scale line.
-   * @param {module:ol/control/ScaleLine~Units} units The units to use in the scale line.
+   * @param {Units} units The units to use in the scale line.
    * @observable
    * @api
    */
@@ -282,8 +282,8 @@ class ScaleLine extends Control {
 
 /**
  * Update the scale line element.
- * @param {module:ol/MapEvent} mapEvent Map event.
- * @this {module:ol/control/ScaleLine}
+ * @param {import("../MapEvent.js").default} mapEvent Map event.
+ * @this {import("./ScaleLine.js").default}
  * @api
  */
 export function render(mapEvent) {

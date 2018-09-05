@@ -9,8 +9,8 @@ import CanvasImmediateRenderer from './render/canvas/Immediate.js';
 /**
  * @typedef {Object} State
  * @property {CanvasRenderingContext2D} context Canvas context that the layer is being rendered to.
- * @property {module:ol/Feature|module:ol/render/Feature} feature
- * @property {module:ol/geom/SimpleGeometry} geometry
+ * @property {import("./Feature.js").default|import("./render/Feature.js").default} feature
+ * @property {import("./geom/SimpleGeometry.js").default} geometry
  * @property {number} pixelRatio Pixel ratio used by the layer renderer.
  * @property {number} resolution Resolution that the render batch was created and optimized for.
  * This is not the view's resolution that is being rendered.
@@ -23,14 +23,14 @@ import CanvasImmediateRenderer from './render/canvas/Immediate.js';
  * It takes two instances of {@link module:ol/Feature} or
  * {@link module:ol/render/Feature} and returns a `{number}`.
  *
- * @typedef {function((module:ol/Feature|module:ol/render/Feature),
- *           (module:ol/Feature|module:ol/render/Feature)):number} OrderFunction
+ * @typedef {function((import("./Feature.js").default|import("./render/Feature.js").default),
+ *           (import("./Feature.js").default|import("./render/Feature.js").default)):number} OrderFunction
  */
 
 
 /**
  * @typedef {Object} ToContextOptions
- * @property {module:ol/size~Size} [size] Desired size of the canvas in css
+ * @property {import("./size.js").Size} [size] Desired size of the canvas in css
  * pixels. When provided, both canvas and css size will be set according to the
  * `pixelRatio`. If not provided, the current canvas and css sizes will not be
  * altered.
@@ -59,8 +59,8 @@ import CanvasImmediateRenderer from './render/canvas/Immediate.js';
  * ```
  *
  * @param {CanvasRenderingContext2D} context Canvas context.
- * @param {module:ol/render~ToContextOptions=} opt_options Options.
- * @return {module:ol/render/canvas/Immediate} Canvas Immediate.
+ * @param {ToContextOptions=} opt_options Options.
+ * @return {import("./render/canvas/Immediate.js").default} Canvas Immediate.
  * @api
  */
 export function toContext(context, opt_options) {

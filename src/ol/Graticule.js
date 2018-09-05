@@ -17,7 +17,7 @@ import Text from './style/Text.js';
 
 
 /**
- * @type {module:ol/style/Stroke}
+ * @type {import("./style/Stroke.js").default}
  * @private
  * @const
  */
@@ -36,13 +36,13 @@ const INTERVALS = [
 
 /**
  * @typedef {Object} GraticuleLabelDataType
- * @property {module:ol/geom/Point} geom
+ * @property {import("./geom/Point.js").default} geom
  * @property {string} text
  */
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/PluggableMap} [map] Reference to an
+ * @property {import("./PluggableMap.js").default} [map] Reference to an
  * {@link module:ol/Map~Map} object.
  * @property {number} [maxLines=100] The maximum number of meridians and
  * parallels from the center of the map. The default value of 100 means that at
@@ -50,7 +50,7 @@ const INTERVALS = [
  * appropriate for conformal projections like Spherical Mercator. If you
  * increase the value, more lines will be drawn and the drawing performance will
  * decrease.
- * @property {module:ol/style/Stroke} [strokeStyle='rgba(0,0,0,0.2)'] The
+ * @property {import("./style/Stroke.js").default} [strokeStyle='rgba(0,0,0,0.2)'] The
  * stroke style to use for drawing the graticule. If not provided, a not fully
  * opaque black will be used.
  * @property {number} [targetSize=100] The target size of the graticule cells,
@@ -71,7 +71,7 @@ const INTERVALS = [
  * @property {number} [latLabelPosition=1] Latitude label position in fractions
  * (0..1) of view extent. 0 means at the left of the viewport, 1 means at the
  * right.
- * @property {module:ol/style/Text} [lonLabelStyle] Longitude label text
+ * @property {import("./style/Text.js").default} [lonLabelStyle] Longitude label text
  * style. If not provided, the following style will be used:
  * ```js
  * new Text({
@@ -89,7 +89,7 @@ const INTERVALS = [
  * Note that the default's `textBaseline` configuration will not work well for
  * `lonLabelPosition` configurations that position labels close to the top of
  * the viewport.
- * @property {module:ol/style/Text} [latLabelStyle] Latitude label text style.
+ * @property {import("./style/Text.js").default} [latLabelStyle] Latitude label text style.
  * If not provided, the following style will be used:
  * ```js
  * new Text({
@@ -117,25 +117,25 @@ const INTERVALS = [
 class Graticule {
 
   /**
-   * @param {module:ol/Graticule~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     const options = opt_options || {};
 
     /**
-     * @type {module:ol/PluggableMap}
+     * @type {import("./PluggableMap.js").default}
      * @private
      */
     this.map_ = null;
 
     /**
-     * @type {?module:ol/events~EventsKey}
+     * @type {?import("./events.js").EventsKey}
      * @private
      */
     this.postcomposeListenerKey_ = null;
 
     /**
-     * @type {module:ol/proj/Projection}
+     * @type {import("./proj/Projection.js").default}
      */
     this.projection_ = null;
 
@@ -200,49 +200,49 @@ class Graticule {
     this.maxLines_ = options.maxLines !== undefined ? options.maxLines : 100;
 
     /**
-     * @type {Array<module:ol/geom/LineString>}
+     * @type {Array<import("./geom/LineString.js").default>}
      * @private
      */
     this.meridians_ = [];
 
     /**
-     * @type {Array<module:ol/geom/LineString>}
+     * @type {Array<import("./geom/LineString.js").default>}
      * @private
      */
     this.parallels_ = [];
 
     /**
-     * @type {module:ol/style/Stroke}
+     * @type {import("./style/Stroke.js").default}
      * @private
      */
     this.strokeStyle_ = options.strokeStyle !== undefined ? options.strokeStyle : DEFAULT_STROKE_STYLE;
 
     /**
-     * @type {module:ol/proj~TransformFunction|undefined}
+     * @type {import("./proj.js").TransformFunction|undefined}
      * @private
      */
     this.fromLonLatTransform_ = undefined;
 
     /**
-     * @type {module:ol/proj~TransformFunction|undefined}
+     * @type {import("./proj.js").TransformFunction|undefined}
      * @private
      */
     this.toLonLatTransform_ = undefined;
 
     /**
-     * @type {module:ol/coordinate~Coordinate}
+     * @type {import("./coordinate.js").Coordinate}
      * @private
      */
     this.projectionCenterLonLat_ = null;
 
     /**
-     * @type {Array<module:ol/Graticule~GraticuleLabelDataType>}
+     * @type {Array<GraticuleLabelDataType>}
      * @private
      */
     this.meridiansLabels_ = null;
 
     /**
-     * @type {Array<module:ol/Graticule~GraticuleLabelDataType>}
+     * @type {Array<GraticuleLabelDataType>}
      * @private
      */
     this.parallelsLabels_ = null;
@@ -282,7 +282,7 @@ class Graticule {
         options.latLabelPosition;
 
       /**
-       * @type {module:ol/style/Text}
+       * @type {import("./style/Text.js").default}
        * @private
        */
       this.lonLabelStyle_ = options.lonLabelStyle !== undefined ? options.lonLabelStyle :
@@ -299,7 +299,7 @@ class Graticule {
         });
 
       /**
-       * @type {module:ol/style/Text}
+       * @type {import("./style/Text.js").default}
        * @private
        */
       this.latLabelStyle_ = options.latLabelStyle !== undefined ? options.latLabelStyle :
@@ -327,7 +327,7 @@ class Graticule {
    * @param {number} minLat Minimal latitude.
    * @param {number} maxLat Maximal latitude.
    * @param {number} squaredTolerance Squared tolerance.
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("./extent.js").Extent} extent Extent.
    * @param {number} index Index.
    * @return {number} Index.
    * @private
@@ -348,10 +348,10 @@ class Graticule {
   }
 
   /**
-   * @param {module:ol/geom/LineString} lineString Meridian
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("./geom/LineString.js").default} lineString Meridian
+   * @param {import("./extent.js").Extent} extent Extent.
    * @param {number} index Index.
-   * @return {module:ol/geom/Point} Meridian point.
+   * @return {import("./geom/Point.js").default} Meridian point.
    * @private
    */
   getMeridianPoint_(lineString, extent, index) {
@@ -377,7 +377,7 @@ class Graticule {
    * @param {number} minLon Minimal longitude.
    * @param {number} maxLon Maximal longitude.
    * @param {number} squaredTolerance Squared tolerance.
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("./extent.js").Extent} extent Extent.
    * @param {number} index Index.
    * @return {number} Index.
    * @private
@@ -398,10 +398,10 @@ class Graticule {
   }
 
   /**
-   * @param {module:ol/geom/LineString} lineString Parallels.
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("./geom/LineString.js").default} lineString Parallels.
+   * @param {import("./extent.js").Extent} extent Extent.
    * @param {number} index Index.
-   * @return {module:ol/geom/Point} Parallel point.
+   * @return {import("./geom/Point.js").default} Parallel point.
    * @private
    */
   getParallelPoint_(lineString, extent, index) {
@@ -423,8 +423,8 @@ class Graticule {
   }
 
   /**
-   * @param {module:ol/extent~Extent} extent Extent.
-   * @param {module:ol/coordinate~Coordinate} center Center.
+   * @param {import("./extent.js").Extent} extent Extent.
+   * @param {import("./coordinate.js").Coordinate} center Center.
    * @param {number} resolution Resolution.
    * @param {number} squaredTolerance Squared tolerance.
    * @private
@@ -549,7 +549,7 @@ class Graticule {
 
   /**
    * Get the map associated with this graticule.
-   * @return {module:ol/PluggableMap} The map.
+   * @return {import("./PluggableMap.js").default} The map.
    * @api
    */
   getMap() {
@@ -561,7 +561,7 @@ class Graticule {
    * @param {number} minLat Minimal latitude.
    * @param {number} maxLat Maximal latitude.
    * @param {number} squaredTolerance Squared tolerance.
-   * @return {module:ol/geom/LineString} The meridian line string.
+   * @return {import("./geom/LineString.js").default} The meridian line string.
    * @param {number} index Index.
    * @private
    */
@@ -579,7 +579,7 @@ class Graticule {
 
   /**
    * Get the list of meridians.  Meridians are lines of equal longitude.
-   * @return {Array<module:ol/geom/LineString>} The meridians.
+   * @return {Array<import("./geom/LineString.js").default>} The meridians.
    * @api
    */
   getMeridians() {
@@ -591,7 +591,7 @@ class Graticule {
    * @param {number} minLon Minimal longitude.
    * @param {number} maxLon Maximal longitude.
    * @param {number} squaredTolerance Squared tolerance.
-   * @return {module:ol/geom/LineString} The parallel line string.
+   * @return {import("./geom/LineString.js").default} The parallel line string.
    * @param {number} index Index.
    * @private
    */
@@ -609,7 +609,7 @@ class Graticule {
 
   /**
    * Get the list of parallels.  Parallels are lines of equal latitude.
-   * @return {Array<module:ol/geom/LineString>} The parallels.
+   * @return {Array<import("./geom/LineString.js").default>} The parallels.
    * @api
    */
   getParallels() {
@@ -617,7 +617,7 @@ class Graticule {
   }
 
   /**
-   * @param {module:ol/render/Event} e Event.
+   * @param {import("./render/Event.js").default} e Event.
    * @private
    */
   handlePostCompose_(e) {
@@ -672,7 +672,7 @@ class Graticule {
   }
 
   /**
-   * @param {module:ol/proj/Projection} projection Projection.
+   * @param {import("./proj/Projection.js").default} projection Projection.
    * @private
    */
   updateProjectionInfo_(projection) {
@@ -703,7 +703,7 @@ class Graticule {
   /**
    * Set the map for this graticule.  The graticule will be rendered on the
    * provided map.
-   * @param {module:ol/PluggableMap} map Map.
+   * @param {import("./PluggableMap.js").default} map Map.
    * @api
    */
   setMap(map) {

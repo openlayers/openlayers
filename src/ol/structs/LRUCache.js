@@ -22,7 +22,7 @@ import EventType from '../events/EventType.js';
  * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
  * items from the cache is the responsibility of the user.
  *
- * @fires module:ol/events/Event~Event
+ * @fires import("../events/Event.js").Event
  * @template T
  */
 class LRUCache extends EventTarget {
@@ -47,19 +47,19 @@ class LRUCache extends EventTarget {
 
     /**
      * @private
-     * @type {!Object<string, module:ol/structs/LRUCache~Entry>}
+     * @type {!Object<string, Entry>}
      */
     this.entries_ = {};
 
     /**
      * @private
-     * @type {?module:ol/structs/LRUCache~Entry}
+     * @type {?Entry}
      */
     this.oldest_ = null;
 
     /**
      * @private
-     * @type {?module:ol/structs/LRUCache~Entry}
+     * @type {?Entry}
      */
     this.newest_ = null;
 
@@ -96,7 +96,7 @@ class LRUCache extends EventTarget {
 
 
   /**
-   * @param {function(this: S, T, string, module:ol/structs/LRUCache): ?} f The function
+   * @param {function(this: S, T, string, import("./LRUCache.js").default): ?} f The function
    *     to call for every entry from the oldest to the newer. This function takes
    *     3 arguments (the entry value, the entry key and the LRUCache object).
    *     The return value is ignored.
@@ -123,7 +123,7 @@ class LRUCache extends EventTarget {
     if (entry === this.newest_) {
       return entry.value_;
     } else if (entry === this.oldest_) {
-      this.oldest_ = /** @type {module:ol/structs/LRUCache~Entry} */ (this.oldest_.newer);
+      this.oldest_ = /** @type {Entry} */ (this.oldest_.newer);
       this.oldest_.older = null;
     } else {
       entry.newer.older = entry.older;
@@ -146,12 +146,12 @@ class LRUCache extends EventTarget {
     const entry = this.entries_[key];
     assert(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
     if (entry === this.newest_) {
-      this.newest_ = /** @type {module:ol/structs/LRUCache~Entry} */ (entry.older);
+      this.newest_ = /** @type {Entry} */ (entry.older);
       if (this.newest_) {
         this.newest_.newer = null;
       }
     } else if (entry === this.oldest_) {
-      this.oldest_ = /** @type {module:ol/structs/LRUCache~Entry} */ (entry.newer);
+      this.oldest_ = /** @type {Entry} */ (entry.newer);
       if (this.oldest_) {
         this.oldest_.older = null;
       }
@@ -235,7 +235,7 @@ class LRUCache extends EventTarget {
     if (entry.newer) {
       entry.newer.older = null;
     }
-    this.oldest_ = /** @type {module:ol/structs/LRUCache~Entry} */ (entry.newer);
+    this.oldest_ = /** @type {Entry} */ (entry.newer);
     if (!this.oldest_) {
       this.newest_ = null;
     }
@@ -261,7 +261,7 @@ class LRUCache extends EventTarget {
   set(key, value) {
     assert(!(key in this.entries_),
       16); // Tried to set a value for a key that is used already
-    const entry = /** @type {module:ol/structs/LRUCache~Entry} */ ({
+    const entry = /** @type {Entry} */ ({
       key_: key,
       newer: null,
       older: this.newest_,

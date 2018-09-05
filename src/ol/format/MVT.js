@@ -23,7 +23,7 @@ import RenderFeature from '../render/Feature.js';
 
 /**
  * @typedef {Object} Options
- * @property {function((module:ol/geom/Geometry|Object<string,*>)=)|function(module:ol/geom/GeometryType,Array<number>,(Array<number>|Array<Array<number>>),Object<string,*>,number)} [featureClass]
+ * @property {function((import("../geom/Geometry.js").default|Object<string,*>)=)|function(import("../geom/GeometryType.js").default,Array<number>,(Array<number>|Array<Array<number>>),Object<string,*>,number)} [featureClass]
  * Class for features returned by {@link module:ol/format/MVT#readFeatures}. Set to
  * {@link module:ol/Feature~Feature} to get full editing and geometry support at the cost of
  * decreased rendering performance. The default is {@link module:ol/render/Feature~RenderFeature},
@@ -41,13 +41,13 @@ import RenderFeature from '../render/Feature.js';
  * @classdesc
  * Feature format for reading data in the Mapbox MVT format.
  *
- * @param {module:ol/format/MVT~Options=} opt_options Options.
+ * @param {Options=} opt_options Options.
  * @api
  */
 class MVT extends FeatureFormat {
 
   /**
-   * @param {module:ol/format/MVT~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     super();
@@ -55,7 +55,7 @@ class MVT extends FeatureFormat {
     const options = opt_options ? opt_options : {};
 
     /**
-     * @type {module:ol/proj/Projection}
+     * @type {import("../proj/Projection.js").default}
      */
     this.dataProjection = new Projection({
       code: '',
@@ -64,8 +64,8 @@ class MVT extends FeatureFormat {
 
     /**
      * @private
-     * @type {function((module:ol/geom/Geometry|Object<string,*>)=)|
-     *     function(module:ol/geom/GeometryType,Array<number>,
+     * @type {function((import("../geom/Geometry.js").default|Object<string,*>)=)|
+     *     function(import("../geom/GeometryType.js").default,Array<number>,
      *         (Array<number>|Array<Array<number>>),Object<string,*>,number)}
      */
     this.featureClass_ = options.featureClass ?
@@ -91,7 +91,7 @@ class MVT extends FeatureFormat {
 
     /**
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../extent.js").Extent}
      */
     this.extent_ = null;
 
@@ -166,8 +166,8 @@ class MVT extends FeatureFormat {
    * @private
    * @param {Object} pbf PBF
    * @param {Object} rawFeature Raw Mapbox feature.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
-   * @return {module:ol/Feature|module:ol/render/Feature} Feature.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @return {import("../Feature.js").default|import("../render/Feature.js").default} Feature.
    */
   createFeature_(pbf, rawFeature, opt_options) {
     const type = rawFeature.type;
@@ -252,7 +252,7 @@ class MVT extends FeatureFormat {
 
     const pbf = new PBF(/** @type {ArrayBuffer} */ (source));
     const pbfLayers = pbf.readFields(layersPBFReader, {});
-    /** @type {Array<module:ol/Feature|module:ol/render/Feature>} */
+    /** @type {Array<import("../Feature.js").default|import("../render/Feature.js").default>} */
     const features = [];
     for (const name in pbfLayers) {
       if (layers && layers.indexOf(name) == -1) {
@@ -397,10 +397,10 @@ function readRawFeature(pbf, layer, i) {
  * @param {number} type The raw feature's geometry type
  * @param {number} numEnds Number of ends of the flat coordinates of the
  * geometry.
- * @return {module:ol/geom/GeometryType} The geometry type.
+ * @return {import("../geom/GeometryType.js").default} The geometry type.
  */
 function getGeometryType(type, numEnds) {
-  /** @type {module:ol/geom/GeometryType} */
+  /** @type {import("../geom/GeometryType.js").default} */
   let geometryType;
   if (type === 1) {
     geometryType = numEnds === 1 ?

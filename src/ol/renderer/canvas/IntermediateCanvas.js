@@ -11,7 +11,7 @@ import {create as createTransform, apply as applyTransform} from '../../transfor
 class IntermediateCanvasRenderer extends CanvasLayerRenderer {
 
   /**
-   * @param {module:ol/layer/Layer} layer Layer.
+   * @param {import("../../layer/Layer.js").default} layer Layer.
    */
   constructor(layer) {
 
@@ -19,7 +19,7 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
 
     /**
      * @protected
-     * @type {module:ol/transform~Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.coordinateToCanvasPixelTransform = createTransform();
 
@@ -47,7 +47,7 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
           !containsExtent(extent, frameState.extent) &&
           intersects(extent, frameState.extent);
       if (clipped) {
-        this.clip(context, frameState, /** @type {module:ol/extent~Extent} */ (extent));
+        this.clip(context, frameState, /** @type {import("../../extent.js").Extent} */ (extent));
       }
 
       const imageTransform = this.getImageTransform();
@@ -83,7 +83,7 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
 
   /**
    * @abstract
-   * @return {!module:ol/transform~Transform} Image transform.
+   * @return {!import("../../transform.js").Transform} Image transform.
    */
   getImageTransform() {}
 
@@ -99,7 +99,7 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
     return source.forEachFeatureAtCoordinate(
       coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
       /**
-       * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+       * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {

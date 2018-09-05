@@ -15,14 +15,14 @@ class LogicalNary extends Filter {
 
   /**
    * @param {!string} tagName The XML tag name for this filter.
-   * @param {...module:ol/format/filter/Filter} conditions Conditions.
+   * @param {...import("./Filter.js").default} conditions Conditions.
    */
   constructor(tagName, conditions) {
 
     super(tagName);
 
     /**
-     * @type {Array<module:ol/format/filter/Filter>}
+     * @type {Array<import("./Filter.js").default>}
      */
     this.conditions = Array.prototype.slice.call(arguments, 1);
     assert(this.conditions.length >= 2, 57); // At least 2 conditions are required.

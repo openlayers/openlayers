@@ -65,7 +65,7 @@ const getChangeType = (function() {
 class FullScreen extends Control {
 
   /**
-   * @param {module:ol/control/FullScreen~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 

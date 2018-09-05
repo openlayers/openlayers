@@ -33,7 +33,7 @@ const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
  * @property {number} [maxZoom=21] Max zoom. Default is what's advertized by the BingMaps service.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
@@ -52,7 +52,7 @@ const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
  */
 class BingMaps extends TileImage {
   /**
-   * @param {module:ol/source/BingMaps~Options=} options Bing Maps options.
+   * @param {Options=} options Bing Maps options.
    */
   constructor(options) {
 
@@ -170,9 +170,9 @@ class BingMaps extends TileImage {
           .replace('{culture}', culture);
         return (
           /**
-           * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+           * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
            * @param {number} pixelRatio Pixel ratio.
-           * @param {module:ol/proj/Projection} projection Projection.
+           * @param {import("../proj/Projection.js").default} projection Projection.
            * @return {string|undefined} Tile URL.
            */
           function(tileCoord, pixelRatio, projection) {

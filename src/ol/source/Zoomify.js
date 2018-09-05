@@ -26,13 +26,13 @@ const TierSizeCalculation = {
 export class CustomTile extends ImageTile {
 
   /**
-   * @param {module:ol/tilegrid/TileGrid} tileGrid TileGrid that the tile belongs to.
-   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
-   * @param {module:ol/TileState} state State.
+   * @param {import("../tilegrid/TileGrid.js").default} tileGrid TileGrid that the tile belongs to.
+   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {import("../TileState.js").default} state State.
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
-   * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
-   * @param {module:ol/Tile~Options=} opt_options Tile options.
+   * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
+   * @param {import("../Tile.js").Options=} opt_options Tile options.
    */
   constructor(tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
@@ -46,7 +46,7 @@ export class CustomTile extends ImageTile {
 
     /**
      * @private
-     * @type {module:ol/size~Size}
+     * @type {import("../size.js").Size}
      */
     this.tileSize_ = toSize(tileGrid.getTileSize(tileCoord[0]));
 
@@ -81,13 +81,13 @@ export class CustomTile extends ImageTile {
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize=2048] Cache size.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
  * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {module:ol/proj~ProjectionLike} [projection] Projection.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {string} [url] URL template or base URL of the Zoomify service.
@@ -102,8 +102,8 @@ export class CustomTile extends ImageTile {
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
  * @property {string} [tierSizeCalculation] Tier size calculation method: `default` or `truncated`.
- * @property {module:ol/size~Size} [size] Size of the image.
- * @property {module:ol/extent~Extent} [extent] Extent for the TileGrid that is created.
+ * @property {import("../size.js").Size} [size] Size of the image.
+ * @property {import("../extent.js").Extent} [extent] Extent for the TileGrid that is created.
  * Default sets the TileGrid in the
  * fourth quadrant, meaning extent is `[0, -height, width, 0]`. To change the
  * extent to the first quadrant (the default for OpenLayers 2) set the extent
@@ -123,7 +123,7 @@ export class CustomTile extends ImageTile {
 class Zoomify extends TileImage {
 
   /**
-   * @param {module:ol/source/Zoomify~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
@@ -197,15 +197,15 @@ class Zoomify extends TileImage {
 
     /**
      * @param {string} template Template.
-     * @return {module:ol/Tile~UrlFunction} Tile URL function.
+     * @return {import("../Tile.js").UrlFunction} Tile URL function.
      */
     function createFromTemplate(template) {
 
       return (
         /**
-         * @param {module:ol/tilecoord~TileCoord} tileCoord Tile Coordinate.
+         * @param {import("../tilecoord.js").TileCoord} tileCoord Tile Coordinate.
          * @param {number} pixelRatio Pixel ratio.
-         * @param {module:ol/proj/Projection} projection Projection.
+         * @param {import("../proj/Projection.js").default} projection Projection.
          * @return {string|undefined} Tile URL.
          */
         function(tileCoord, pixelRatio, projection) {

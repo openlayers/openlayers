@@ -19,7 +19,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize=2048] Cache size.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
@@ -31,7 +31,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {tileJSON} [tileJSON] TileJSON configuration for this source.
  * If not provided, `url` must be configured.
- * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
@@ -51,7 +51,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  */
 class TileJSON extends TileImage {
   /**
-   * @param {module:ol/source/TileJSON~Options=} options TileJSON options.
+   * @param {Options=} options TileJSON options.
    */
   constructor(options) {
     super({

@@ -7,11 +7,11 @@ import Event from '../events/Event.js';
 class RenderEvent extends Event {
 
   /**
-   * @param {module:ol/render/EventType} type Type.
-   * @param {module:ol/render/VectorContext=} opt_vectorContext Vector context.
-   * @param {module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
+   * @param {import("./EventType.js").default} type Type.
+   * @param {import("./VectorContext.js").default=} opt_vectorContext Vector context.
+   * @param {import("../PluggableMap.js").FrameState=} opt_frameState Frame state.
    * @param {?CanvasRenderingContext2D=} opt_context Context.
-   * @param {?module:ol/webgl/Context=} opt_glContext WebGL Context.
+   * @param {?import("../webgl/Context.js").default=} opt_glContext WebGL Context.
    */
   constructor(type, opt_vectorContext, opt_frameState, opt_context, opt_glContext) {
 
@@ -19,14 +19,14 @@ class RenderEvent extends Event {
 
     /**
      * For canvas, this is an instance of {@link module:ol/render/canvas/Immediate}.
-     * @type {module:ol/render/VectorContext|undefined}
+     * @type {import("./VectorContext.js").default|undefined}
      * @api
      */
     this.vectorContext = opt_vectorContext;
 
     /**
      * An object representing the current render frame state.
-     * @type {module:ol/PluggableMap~FrameState|undefined}
+     * @type {import("../PluggableMap.js").FrameState|undefined}
      * @api
      */
     this.frameState = opt_frameState;
@@ -42,7 +42,7 @@ class RenderEvent extends Event {
     /**
      * WebGL context. Only available when a WebGL renderer is used, null
      * otherwise.
-     * @type {module:ol/webgl/Context|null|undefined}
+     * @type {import("../webgl/Context.js").default|null|undefined}
      * @api
      */
     this.glContext = opt_glContext;

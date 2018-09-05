@@ -21,7 +21,7 @@
  */
 class ImageStyle {
   /**
-   * @param {module:ol/style/Image~Options} options Options.
+   * @param {Options} options Options.
    */
   constructor(options) {
 
@@ -122,19 +122,19 @@ class ImageStyle {
 
   /**
    * @abstract
-   * @return {module:ol/ImageState} Image state.
+   * @return {import("../ImageState.js").default} Image state.
    */
   getImageState() {}
 
   /**
    * @abstract
-   * @return {module:ol/size~Size} Image size.
+   * @return {import("../size.js").Size} Image size.
    */
   getImageSize() {}
 
   /**
    * @abstract
-   * @return {module:ol/size~Size} Size of the hit-detection image.
+   * @return {import("../size.js").Size} Size of the hit-detection image.
    */
   getHitDetectionImageSize() {}
 
@@ -148,7 +148,7 @@ class ImageStyle {
   /**
    * Get the size of the symbolizer (in pixels).
    * @abstract
-   * @return {module:ol/size~Size} Size.
+   * @return {import("../size.js").Size} Size.
    */
   getSize() {}
 
@@ -201,9 +201,9 @@ class ImageStyle {
 
   /**
    * @abstract
-   * @param {function(this: T, module:ol/events/Event)} listener Listener function.
+   * @param {function(this: T, import("../events/Event.js").default)} listener Listener function.
    * @param {T} thisArg Value to use as `this` when executing `listener`.
-   * @return {module:ol/events~EventsKey|undefined} Listener key.
+   * @return {import("../events.js").EventsKey|undefined} Listener key.
    * @template T
    */
   listenImageChange(listener, thisArg) {}
@@ -216,7 +216,7 @@ class ImageStyle {
 
   /**
    * @abstract
-   * @param {function(this: T, module:ol/events/Event)} listener Listener function.
+   * @param {function(this: T, import("../events/Event.js").default)} listener Listener function.
    * @param {T} thisArg Value to use as `this` when executing `listener`.
    * @template T
    */

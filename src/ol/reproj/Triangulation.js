@@ -10,8 +10,8 @@ import {getTransform} from '../proj.js';
 /**
  * Single triangle; consists of 3 source points and 3 target points.
  * @typedef {Object} Triangle
- * @property {Array<module:ol/coordinate~Coordinate>} source
- * @property {Array<module:ol/coordinate~Coordinate>} target
+ * @property {Array<import("../coordinate.js").Coordinate>} source
+ * @property {Array<import("../coordinate.js").Coordinate>} target
  */
 
 
@@ -44,33 +44,33 @@ const MAX_TRIANGLE_WIDTH = 0.25;
 class Triangulation {
 
   /**
-   * @param {module:ol/proj/Projection} sourceProj Source projection.
-   * @param {module:ol/proj/Projection} targetProj Target projection.
-   * @param {module:ol/extent~Extent} targetExtent Target extent to triangulate.
-   * @param {module:ol/extent~Extent} maxSourceExtent Maximal source extent that can be used.
+   * @param {import("../proj/Projection.js").default} sourceProj Source projection.
+   * @param {import("../proj/Projection.js").default} targetProj Target projection.
+   * @param {import("../extent.js").Extent} targetExtent Target extent to triangulate.
+   * @param {import("../extent.js").Extent} maxSourceExtent Maximal source extent that can be used.
    * @param {number} errorThreshold Acceptable error (in source units).
    */
   constructor(sourceProj, targetProj, targetExtent, maxSourceExtent, errorThreshold) {
 
     /**
-     * @type {module:ol/proj/Projection}
+     * @type {import("../proj/Projection.js").default}
      * @private
      */
     this.sourceProj_ = sourceProj;
 
     /**
-     * @type {module:ol/proj/Projection}
+     * @type {import("../proj/Projection.js").default}
      * @private
      */
     this.targetProj_ = targetProj;
 
-    /** @type {!Object<string, module:ol/coordinate~Coordinate>} */
+    /** @type {!Object<string, import("../coordinate.js").Coordinate>} */
     let transformInvCache = {};
     const transformInv = getTransform(this.targetProj_, this.sourceProj_);
 
     /**
-     * @param {module:ol/coordinate~Coordinate} c A coordinate.
-     * @return {module:ol/coordinate~Coordinate} Transformed coordinate.
+     * @param {import("../coordinate.js").Coordinate} c A coordinate.
+     * @return {import("../coordinate.js").Coordinate} Transformed coordinate.
      * @private
      */
     this.transformInv_ = function(c) {
@@ -82,7 +82,7 @@ class Triangulation {
     };
 
     /**
-     * @type {module:ol/extent~Extent}
+     * @type {import("../extent.js").Extent}
      * @private
      */
     this.maxSourceExtent_ = maxSourceExtent;
@@ -94,7 +94,7 @@ class Triangulation {
     this.errorThresholdSquared_ = errorThreshold * errorThreshold;
 
     /**
-     * @type {Array<module:ol/reproj/Triangulation~Triangle>}
+     * @type {Array<Triangle>}
      * @private
      */
     this.triangles_ = [];
@@ -188,12 +188,12 @@ class Triangulation {
 
   /**
    * Adds triangle to the triangulation.
-   * @param {module:ol/coordinate~Coordinate} a The target a coordinate.
-   * @param {module:ol/coordinate~Coordinate} b The target b coordinate.
-   * @param {module:ol/coordinate~Coordinate} c The target c coordinate.
-   * @param {module:ol/coordinate~Coordinate} aSrc The source a coordinate.
-   * @param {module:ol/coordinate~Coordinate} bSrc The source b coordinate.
-   * @param {module:ol/coordinate~Coordinate} cSrc The source c coordinate.
+   * @param {import("../coordinate.js").Coordinate} a The target a coordinate.
+   * @param {import("../coordinate.js").Coordinate} b The target b coordinate.
+   * @param {import("../coordinate.js").Coordinate} c The target c coordinate.
+   * @param {import("../coordinate.js").Coordinate} aSrc The source a coordinate.
+   * @param {import("../coordinate.js").Coordinate} bSrc The source b coordinate.
+   * @param {import("../coordinate.js").Coordinate} cSrc The source c coordinate.
    * @private
    */
   addTriangle_(a, b, c, aSrc, bSrc, cSrc) {
@@ -208,14 +208,14 @@ class Triangulation {
    * (and reprojects the vertices) if valid.
    * Performs quad subdivision if needed to increase precision.
    *
-   * @param {module:ol/coordinate~Coordinate} a The target a coordinate.
-   * @param {module:ol/coordinate~Coordinate} b The target b coordinate.
-   * @param {module:ol/coordinate~Coordinate} c The target c coordinate.
-   * @param {module:ol/coordinate~Coordinate} d The target d coordinate.
-   * @param {module:ol/coordinate~Coordinate} aSrc The source a coordinate.
-   * @param {module:ol/coordinate~Coordinate} bSrc The source b coordinate.
-   * @param {module:ol/coordinate~Coordinate} cSrc The source c coordinate.
-   * @param {module:ol/coordinate~Coordinate} dSrc The source d coordinate.
+   * @param {import("../coordinate.js").Coordinate} a The target a coordinate.
+   * @param {import("../coordinate.js").Coordinate} b The target b coordinate.
+   * @param {import("../coordinate.js").Coordinate} c The target c coordinate.
+   * @param {import("../coordinate.js").Coordinate} d The target d coordinate.
+   * @param {import("../coordinate.js").Coordinate} aSrc The source a coordinate.
+   * @param {import("../coordinate.js").Coordinate} bSrc The source b coordinate.
+   * @param {import("../coordinate.js").Coordinate} cSrc The source c coordinate.
+   * @param {import("../coordinate.js").Coordinate} dSrc The source d coordinate.
    * @param {number} maxSubdivision Maximal allowed subdivision of the quad.
    * @private
    */
@@ -327,7 +327,7 @@ class Triangulation {
   /**
    * Calculates extent of the 'source' coordinates from all the triangles.
    *
-   * @return {module:ol/extent~Extent} Calculated extent.
+   * @return {import("../extent.js").Extent} Calculated extent.
    */
   calculateSourceExtent() {
     const extent = createEmpty();
@@ -343,7 +343,7 @@ class Triangulation {
   }
 
   /**
-   * @return {Array<module:ol/reproj/Triangulation~Triangle>} Array of the calculated triangles.
+   * @return {Array<Triangle>} Array of the calculated triangles.
    */
   getTriangles() {
     return this.triangles_;

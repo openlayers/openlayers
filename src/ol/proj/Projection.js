@@ -7,18 +7,18 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
 /**
  * @typedef {Object} Options
  * @property {string} code The SRS identifier code, e.g. `EPSG:4326`.
- * @property {module:ol/proj/Units|string} [units] Units. Required unless a
+ * @property {import("./Units.js").default|string} [units] Units. Required unless a
  * proj4 projection is defined for `code`.
- * @property {module:ol/extent~Extent} [extent] The validity extent for the SRS.
+ * @property {import("../extent.js").Extent} [extent] The validity extent for the SRS.
  * @property {string} [axisOrientation='enu'] The axis orientation as specified in Proj4.
  * @property {boolean} [global=false] Whether the projection is valid for the whole globe.
  * @property {number} [metersPerUnit] The meters per unit for the SRS.
  * If not provided, the `units` are used to get the meters per unit from the {@link module:ol/proj/Units~METERS_PER_UNIT}
  * lookup table.
- * @property {module:ol/extent~Extent} [worldExtent] The world extent for the SRS.
- * @property {function(number, module:ol/coordinate~Coordinate):number} [getPointResolution]
+ * @property {import("../extent.js").Extent} [worldExtent] The world extent for the SRS.
+ * @property {function(number, import("../coordinate.js").Coordinate):number} [getPointResolution]
  * Function to determine resolution at a point. The function is called with a
- * `{number}` view resolution and an `{module:ol/coordinate~Coordinate}` as arguments, and returns
+ * `{number}` view resolution and an `{import("../coordinate.js").Coordinate}` as arguments, and returns
  * the `{number}` resolution at the passed coordinate. If this is `undefined`,
  * the default {@link module:ol/proj#getPointResolution} function will be used.
  */
@@ -54,7 +54,7 @@ import {METERS_PER_UNIT} from '../proj/Units.js';
 class Projection {
 
   /**
-   * @param {module:ol/proj/Projection~Options} options Projection options.
+   * @param {Options} options Projection options.
    */
   constructor(options) {
     /**
@@ -68,16 +68,16 @@ class Projection {
      * `this.extent_` and `this.worldExtent_` must be configured properly for each
      * tile.
      * @private
-     * @type {module:ol/proj/Units}
+     * @type {import("./Units.js").default}
      */
-    this.units_ = /** @type {module:ol/proj/Units} */ (options.units);
+    this.units_ = /** @type {import("./Units.js").default} */ (options.units);
 
     /**
      * Validity extent of the projection in projected coordinates. For projections
      * with `TILE_PIXELS` units, this is the extent of the tile in
      * tile pixel space.
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../extent.js").Extent}
      */
     this.extent_ = options.extent !== undefined ? options.extent : null;
 
@@ -86,7 +86,7 @@ class Projection {
      * `TILE_PIXELS` units, this is the extent of the tile in
      * projected coordinate space.
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../extent.js").Extent}
      */
     this.worldExtent_ = options.worldExtent !== undefined ?
       options.worldExtent : null;
@@ -112,13 +112,13 @@ class Projection {
 
     /**
      * @private
-     * @type {function(number, module:ol/coordinate~Coordinate):number|undefined}
+     * @type {function(number, import("../coordinate.js").Coordinate):number|undefined}
      */
     this.getPointResolutionFunc_ = options.getPointResolution;
 
     /**
      * @private
-     * @type {module:ol/tilegrid/TileGrid}
+     * @type {import("../tilegrid/TileGrid.js").default}
      */
     this.defaultTileGrid_ = null;
 
@@ -147,7 +147,7 @@ class Projection {
 
   /**
    * Get the validity extent for this projection.
-   * @return {module:ol/extent~Extent} Extent.
+   * @return {import("../extent.js").Extent} Extent.
    * @api
    */
   getExtent() {
@@ -156,7 +156,7 @@ class Projection {
 
   /**
    * Get the units of this projection.
-   * @return {module:ol/proj/Units} Units.
+   * @return {import("./Units.js").default} Units.
    * @api
    */
   getUnits() {
@@ -176,7 +176,7 @@ class Projection {
 
   /**
    * Get the world extent for this projection.
-   * @return {module:ol/extent~Extent} Extent.
+   * @return {import("../extent.js").Extent} Extent.
    * @api
    */
   getWorldExtent() {
@@ -218,14 +218,14 @@ class Projection {
   }
 
   /**
-   * @return {module:ol/tilegrid/TileGrid} The default tile grid.
+   * @return {import("../tilegrid/TileGrid.js").default} The default tile grid.
    */
   getDefaultTileGrid() {
     return this.defaultTileGrid_;
   }
 
   /**
-   * @param {module:ol/tilegrid/TileGrid} tileGrid The default tile grid.
+   * @param {import("../tilegrid/TileGrid.js").default} tileGrid The default tile grid.
    */
   setDefaultTileGrid(tileGrid) {
     this.defaultTileGrid_ = tileGrid;
@@ -233,7 +233,7 @@ class Projection {
 
   /**
    * Set the validity extent for this projection.
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @api
    */
   setExtent(extent) {
@@ -243,7 +243,7 @@ class Projection {
 
   /**
    * Set the world extent for this projection.
-   * @param {module:ol/extent~Extent} worldExtent World extent
+   * @param {import("../extent.js").Extent} worldExtent World extent
    *     [minlon, minlat, maxlon, maxlat].
    * @api
    */
@@ -254,7 +254,7 @@ class Projection {
   /**
    * Set the getPointResolution function (see {@link module:ol/proj~getPointResolution}
    * for this projection.
-   * @param {function(number, module:ol/coordinate~Coordinate):number} func Function
+   * @param {function(number, import("../coordinate.js").Coordinate):number} func Function
    * @api
    */
   setGetPointResolution(func) {
@@ -263,7 +263,7 @@ class Projection {
 
   /**
    * Get the custom point resolution function for this projection (if set).
-   * @return {function(number, module:ol/coordinate~Coordinate):number|undefined} The custom point
+   * @return {function(number, import("../coordinate.js").Coordinate):number|undefined} The custom point
    * resolution function (if set).
    */
   getPointResolutionFunc() {

@@ -24,7 +24,7 @@ const Property = {
 export class CollectionEvent extends Event {
 
   /**
-   * @param {module:ol/CollectionEventType} type Type.
+   * @param {import("./CollectionEventType.js").default} type Type.
    * @param {*=} opt_element Element.
    */
   constructor(type, opt_element) {
@@ -63,7 +63,7 @@ class Collection extends BaseObject {
 
   /**
    * @param {Array<T>=} opt_array Array.
-   * @param {module:ol/Collection~Options=} opt_options Collection options.
+   * @param {Options=} opt_options Collection options.
    */
   constructor(opt_array, opt_options) {
 
@@ -107,7 +107,7 @@ class Collection extends BaseObject {
    * Add elements to the collection.  This pushes each item in the provided array
    * to the end of the collection.
    * @param {!Array<T>} arr Array.
-   * @return {module:ol/Collection<T>} This collection.
+   * @return {import("./Collection.js").default<T>} This collection.
    * @api
    */
   extend(arr) {

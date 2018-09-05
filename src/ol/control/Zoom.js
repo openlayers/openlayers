@@ -35,7 +35,7 @@ import {easeOut} from '../easing.js';
 class Zoom extends Control {
 
   /**
-   * @param {module:ol/control/Zoom~Options=} opt_options Zoom options.
+   * @param {Options=} opt_options Zoom options.
    */
   constructor(opt_options) {
 

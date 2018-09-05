@@ -39,7 +39,7 @@ class TileRange {
   }
 
   /**
-   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+   * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @return {boolean} Contains tile coordinate.
    */
   contains(tileCoord) {
@@ -47,7 +47,7 @@ class TileRange {
   }
 
   /**
-   * @param {module:ol/TileRange} tileRange Tile range.
+   * @param {import("./TileRange.js").default} tileRange Tile range.
    * @return {boolean} Contains.
    */
   containsTileRange(tileRange) {
@@ -65,7 +65,7 @@ class TileRange {
   }
 
   /**
-   * @param {module:ol/TileRange} tileRange Tile range.
+   * @param {import("./TileRange.js").default} tileRange Tile range.
    * @return {boolean} Equals.
    */
   equals(tileRange) {
@@ -74,7 +74,7 @@ class TileRange {
   }
 
   /**
-   * @param {module:ol/TileRange} tileRange Tile range.
+   * @param {import("./TileRange.js").default} tileRange Tile range.
    */
   extend(tileRange) {
     if (tileRange.minX < this.minX) {
@@ -99,7 +99,7 @@ class TileRange {
   }
 
   /**
-  * @return {module:ol/size~Size} Size.
+  * @return {import("./size.js").Size} Size.
   */
   getSize() {
     return [this.getWidth(), this.getHeight()];
@@ -113,7 +113,7 @@ class TileRange {
   }
 
   /**
-  * @param {module:ol/TileRange} tileRange Tile range.
+  * @param {import("./TileRange.js").default} tileRange Tile range.
   * @return {boolean} Intersects.
   */
   intersects(tileRange) {
@@ -130,8 +130,8 @@ class TileRange {
  * @param {number} maxX Maximum X.
  * @param {number} minY Minimum Y.
  * @param {number} maxY Maximum Y.
- * @param {module:ol/TileRange=} tileRange TileRange.
- * @return {module:ol/TileRange} Tile range.
+ * @param {import("./TileRange.js").default=} tileRange TileRange.
+ * @return {import("./TileRange.js").default} Tile range.
  */
 export function createOrUpdate(minX, maxX, minY, maxY, tileRange) {
   if (tileRange !== undefined) {

@@ -17,8 +17,8 @@ import {createEmptyTexture} from '../../webgl/Context.js';
 class WebGLLayerRenderer extends LayerRenderer {
 
   /**
-   * @param {module:ol/renderer/webgl/Map} mapRenderer Map renderer.
-   * @param {module:ol/layer/Layer} layer Layer.
+   * @param {import("./Map.js").default} mapRenderer Map renderer.
+   * @param {import("../../layer/Layer.js").default} layer Layer.
    */
   constructor(mapRenderer, layer) {
 
@@ -26,13 +26,13 @@ class WebGLLayerRenderer extends LayerRenderer {
 
     /**
      * @protected
-     * @type {module:ol/renderer/webgl/Map}
+     * @type {import("./Map.js").default}
      */
     this.mapRenderer = mapRenderer;
 
     /**
      * @private
-     * @type {module:ol/webgl/Buffer}
+     * @type {import("../../webgl/Buffer.js").default}
      */
     this.arrayBuffer_ = new WebGLBuffer([
       -1, -1, 0, 0,
@@ -61,13 +61,13 @@ class WebGLLayerRenderer extends LayerRenderer {
 
     /**
      * @protected
-     * @type {module:ol/transform~Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.texCoordMatrix = createTransform();
 
     /**
      * @protected
-     * @type {module:ol/transform~Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.projectionMatrix = createTransform();
 
@@ -79,14 +79,14 @@ class WebGLLayerRenderer extends LayerRenderer {
 
     /**
      * @private
-     * @type {module:ol/renderer/webgl/defaultmapshader/Locations}
+     * @type {import("./defaultmapshader/Locations.js").default}
      */
     this.defaultLocations_ = null;
 
   }
 
   /**
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} framebufferDimension Framebuffer dimension.
    * @protected
    */
@@ -109,7 +109,7 @@ class WebGLLayerRenderer extends LayerRenderer {
       }.bind(null, gl, this.framebuffer, this.texture);
 
       frameState.postRenderFunctions.push(
-        /** @type {module:ol/PluggableMap~PostRenderFunction} */ (postRenderFunction)
+        /** @type {import("../../PluggableMap.js").PostRenderFunction} */ (postRenderFunction)
       );
 
       const texture = createEmptyTexture(
@@ -131,9 +131,9 @@ class WebGLLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @param {module:ol/layer/Layer~State} layerState Layer state.
-   * @param {module:ol/webgl/Context} context Context.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../layer/Layer.js").State} layerState Layer state.
+   * @param {import("../../webgl/Context.js").default} context Context.
    */
   composeFrame(frameState, layerState, context) {
 
@@ -175,9 +175,9 @@ class WebGLLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {module:ol/render/EventType} type Event type.
-   * @param {module:ol/webgl/Context} context WebGL context.
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+   * @param {import("../../render/EventType.js").default} type Event type.
+   * @param {import("../../webgl/Context.js").default} context WebGL context.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @private
    */
   dispatchComposeEvent_(type, context, frameState) {
@@ -200,7 +200,7 @@ class WebGLLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @return {!module:ol/transform~Transform} Matrix.
+   * @return {!import("../../transform.js").Transform} Matrix.
    */
   getTexCoordMatrix() {
     return this.texCoordMatrix;
@@ -214,7 +214,7 @@ class WebGLLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @return {!module:ol/transform~Transform} Matrix.
+   * @return {!import("../../transform.js").Transform} Matrix.
    */
   getProjectionMatrix() {
     return this.projectionMatrix;
@@ -231,18 +231,18 @@ class WebGLLayerRenderer extends LayerRenderer {
 
   /**
    * @abstract
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @param {module:ol/layer/Layer~State} layerState Layer state.
-   * @param {module:ol/webgl/Context} context Context.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../layer/Layer.js").State} layerState Layer state.
+   * @param {import("../../webgl/Context.js").default} context Context.
    * @return {boolean} whether composeFrame should be called.
    */
   prepareFrame(frameState, layerState, context) {}
 
   /**
    * @abstract
-   * @param {module:ol/pixel~Pixel} pixel Pixel.
-   * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
-   * @param {function(this: S, module:ol/layer/Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
+   * @param {import("../../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../../PluggableMap.js").FrameState} frameState FrameState.
+   * @param {function(this: S, import("../../layer/Layer.js").default, (Uint8ClampedArray|Uint8Array)): T} callback Layer
    *     callback.
    * @param {S} thisArg Value to use as `this` when executing `callback`.
    * @return {T|undefined} Callback result.

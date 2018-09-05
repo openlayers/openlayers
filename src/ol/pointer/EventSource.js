@@ -5,13 +5,13 @@
 class EventSource {
 
   /**
-   * @param {module:ol/pointer/PointerEventHandler} dispatcher Event handler.
+   * @param {import("./PointerEventHandler.js").default} dispatcher Event handler.
    * @param {!Object<string, function(Event)>} mapping Event mapping.
    */
   constructor(dispatcher, mapping) {
 
     /**
-     * @type {module:ol/pointer/PointerEventHandler}
+     * @type {import("./PointerEventHandler.js").default}
      */
     this.dispatcher = dispatcher;
 

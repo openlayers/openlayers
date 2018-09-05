@@ -80,7 +80,7 @@ const RasterOperationType = {
 class RasterSourceEvent extends Event {
   /**
    * @param {string} type Type.
-   * @param {module:ol/PluggableMap~FrameState} frameState The frame state.
+   * @param {import("../PluggableMap.js").FrameState} frameState The frame state.
    * @param {Object} data An object made available to operations.
    */
   constructor(type, frameState, data) {
@@ -88,7 +88,7 @@ class RasterSourceEvent extends Event {
 
     /**
      * The raster extent.
-     * @type {module:ol/extent~Extent}
+     * @type {import("../extent.js").Extent}
      * @api
      */
     this.extent = frameState.extent;
@@ -114,9 +114,9 @@ class RasterSourceEvent extends Event {
 
 /**
  * @typedef {Object} Options
- * @property {Array<module:ol/source/Source|module:ol/layer/Layer>} sources Input
+ * @property {Array<import("./Source.js").default|import("../layer/Layer.js").default>} sources Input
  * sources or layers. Vector layers must be configured with `renderMode: 'image'`.
- * @property {module:ol/source/Raster~Operation} [operation] Raster operation.
+ * @property {Operation} [operation] Raster operation.
  * The operation will be called with data from input sources
  * and the output will be assigned to the raster source.
  * @property {Object} [lib] Functions that will be made available to operations run in a worker.
@@ -125,7 +125,7 @@ class RasterSourceEvent extends Event {
  * be run in multiple worker threads.  Note that there is additional overhead in
  * transferring data to multiple workers, and that depending on the user's
  * system, it may not be possible to parallelize the work.
- * @property {module:ol/source/Raster~RasterOperationType} [operationType='pixel'] Operation type.
+ * @property {RasterOperationType} [operationType='pixel'] Operation type.
  * Supported values are `'pixel'` and `'image'`.  By default,
  * `'pixel'` operations are assumed, and operations will be called with an
  * array of pixels from input sources.  If set to `'image'`, operations will
@@ -144,7 +144,7 @@ class RasterSourceEvent extends Event {
  */
 class RasterSource extends ImageSource {
   /**
-   * @param {module:ol/source/Raster~Options=} options Options.
+   * @param {Options=} options Options.
    */
   constructor(options) {
     super({});
@@ -157,7 +157,7 @@ class RasterSource extends ImageSource {
 
     /**
      * @private
-     * @type {module:ol/source/Raster~RasterOperationType}
+     * @type {RasterOperationType}
      */
     this.operationType_ = options.operationType !== undefined ?
       options.operationType : RasterOperationType.PIXEL;
@@ -170,7 +170,7 @@ class RasterSource extends ImageSource {
 
     /**
      * @private
-     * @type {Array<module:ol/renderer/canvas/Layer>}
+     * @type {Array<import("../renderer/canvas/Layer.js").default>}
      */
     this.renderers_ = createRenderers(options.sources);
 
@@ -181,7 +181,7 @@ class RasterSource extends ImageSource {
 
     /**
      * @private
-     * @type {module:ol/TileQueue}
+     * @type {import("../TileQueue.js").default}
      */
     this.tileQueue_ = new TileQueue(
       function() {
@@ -197,14 +197,14 @@ class RasterSource extends ImageSource {
 
     /**
      * The most recently requested frame state.
-     * @type {module:ol/PluggableMap~FrameState}
+     * @type {import("../PluggableMap.js").FrameState}
      * @private
      */
     this.requestedFrameState_;
 
     /**
      * The most recently rendered image canvas.
-     * @type {module:ol/ImageCanvas}
+     * @type {import("../ImageCanvas.js").default}
      * @private
      */
     this.renderedImageCanvas_ = null;
@@ -217,7 +217,7 @@ class RasterSource extends ImageSource {
 
     /**
      * @private
-     * @type {module:ol/PluggableMap~FrameState}
+     * @type {import("../PluggableMap.js").FrameState}
      */
     this.frameState_ = {
       animate: false,
@@ -235,7 +235,7 @@ class RasterSource extends ImageSource {
       tileQueue: this.tileQueue_,
       time: Date.now(),
       usedTiles: {},
-      viewState: /** @type {module:ol/View~State} */ ({
+      viewState: /** @type {import("../View.js").State} */ ({
         rotation: 0
       }),
       viewHints: [],
@@ -250,7 +250,7 @@ class RasterSource extends ImageSource {
 
   /**
    * Set the operation.
-   * @param {module:ol/source/Raster~Operation} operation New operation.
+   * @param {Operation} operation New operation.
    * @param {Object=} opt_lib Functions that will be available to operations run
    *     in a worker.
    * @api
@@ -268,17 +268,17 @@ class RasterSource extends ImageSource {
 
   /**
    * Update the stored frame state.
-   * @param {module:ol/extent~Extent} extent The view extent (in map units).
+   * @param {import("../extent.js").Extent} extent The view extent (in map units).
    * @param {number} resolution The view resolution.
-   * @param {module:ol/proj/Projection} projection The view projection.
-   * @return {module:ol/PluggableMap~FrameState} The updated frame state.
+   * @param {import("../proj/Projection.js").default} projection The view projection.
+   * @return {import("../PluggableMap.js").FrameState} The updated frame state.
    * @private
    */
   updateFrameState_(extent, resolution, projection) {
 
-    const frameState = /** @type {module:ol/PluggableMap~FrameState} */ (assign({}, this.frameState_));
+    const frameState = /** @type {import("../PluggableMap.js").FrameState} */ (assign({}, this.frameState_));
 
-    frameState.viewState = /** @type {module:ol/View~State} */ (assign({}, frameState.viewState));
+    frameState.viewState = /** @type {import("../View.js").State} */ (assign({}, frameState.viewState));
 
     const center = getCenter(extent);
 
@@ -372,7 +372,7 @@ class RasterSource extends ImageSource {
 
   /**
    * Called when pixel processing is complete.
-   * @param {module:ol/PluggableMap~FrameState} frameState The frame state.
+   * @param {import("../PluggableMap.js").FrameState} frameState The frame state.
    * @param {Error} err Any error during processing.
    * @param {ImageData} output The output image data.
    * @param {Object} data The user data.
@@ -427,9 +427,9 @@ let sharedContext = null;
 
 /**
  * Get image data from a renderer.
- * @param {module:ol/renderer/canvas/Layer} renderer Layer renderer.
- * @param {module:ol/PluggableMap~FrameState} frameState The frame state.
- * @param {module:ol/layer/Layer~State} layerState The layer state.
+ * @param {import("../renderer/canvas/Layer.js").default} renderer Layer renderer.
+ * @param {import("../PluggableMap.js").FrameState} frameState The frame state.
+ * @param {import("../layer/Layer.js").State} layerState The layer state.
  * @return {ImageData} The image data.
  */
 function getImageData(renderer, frameState, layerState) {
@@ -455,8 +455,8 @@ function getImageData(renderer, frameState, layerState) {
 
 /**
  * Get a list of layer states from a list of renderers.
- * @param {Array<module:ol/renderer/canvas/Layer>} renderers Layer renderers.
- * @return {Array<module:ol/layer/Layer~State>} The layer states.
+ * @param {Array<import("../renderer/canvas/Layer.js").default>} renderers Layer renderers.
+ * @return {Array<import("../layer/Layer.js").State>} The layer states.
  */
 function getLayerStatesArray(renderers) {
   return renderers.map(function(renderer) {
@@ -467,8 +467,8 @@ function getLayerStatesArray(renderers) {
 
 /**
  * Create renderers for all sources.
- * @param {Array<module:ol/source/Source>} sources The sources.
- * @return {Array<module:ol/renderer/canvas/Layer>} Array of layer renderers.
+ * @param {Array<import("./Source.js").default>} sources The sources.
+ * @return {Array<import("../renderer/canvas/Layer.js").default>} Array of layer renderers.
  */
 function createRenderers(sources) {
   const len = sources.length;
@@ -482,8 +482,8 @@ function createRenderers(sources) {
 
 /**
  * Create a renderer for the provided source.
- * @param {module:ol/source/Source} source The source.
- * @return {module:ol/renderer/canvas/Layer} The renderer.
+ * @param {import("./Source.js").default} source The source.
+ * @return {import("../renderer/canvas/Layer.js").default} The renderer.
  */
 function createRenderer(source) {
   let renderer = null;
@@ -503,8 +503,8 @@ function createRenderer(source) {
 
 /**
  * Create an image renderer for the provided source.
- * @param {module:ol/source/Image} source The source.
- * @return {module:ol/renderer/canvas/Layer} The renderer.
+ * @param {import("./Image.js").default} source The source.
+ * @return {import("../renderer/canvas/Layer.js").default} The renderer.
  */
 function createImageRenderer(source) {
   const layer = new ImageLayer({source: source});
@@ -514,8 +514,8 @@ function createImageRenderer(source) {
 
 /**
  * Create a tile renderer for the provided source.
- * @param {module:ol/source/Tile} source The source.
- * @return {module:ol/renderer/canvas/Layer} The renderer.
+ * @param {import("./Tile.js").default} source The source.
+ * @return {import("../renderer/canvas/Layer.js").default} The renderer.
  */
 function createTileRenderer(source) {
   const layer = new TileLayer({source: source});

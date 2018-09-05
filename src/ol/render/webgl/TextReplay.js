@@ -16,7 +16,7 @@ import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
  * @typedef {Object} GlyphAtlas
- * @property {module:ol/style/AtlasManager} atlas
+ * @property {import("../../style/AtlasManager.js").default} atlas
  * @property {Object<string, number>} width
  * @property {number} height
  */
@@ -25,7 +25,7 @@ import WebGLBuffer from '../../webgl/Buffer.js';
 class WebGLTextReplay extends WebGLTextureReplay {
   /**
    * @param {number} tolerance Tolerance.
-   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @param {import("../../extent.js").Extent} maxExtent Max extent.
    */
   constructor(tolerance, maxExtent) {
     super(tolerance, maxExtent);
@@ -50,14 +50,14 @@ class WebGLTextReplay extends WebGLTextureReplay {
 
     /**
      * @private
-     * @type {{strokeColor: (module:ol/colorlike~ColorLike|null),
+     * @type {{strokeColor: (import("../../colorlike.js").ColorLike|null),
      *         lineCap: (string|undefined),
      *         lineDash: Array<number>,
      *         lineDashOffset: (number|undefined),
      *         lineJoin: (string|undefined),
      *         lineWidth: number,
      *         miterLimit: (number|undefined),
-     *         fillColor: (module:ol/colorlike~ColorLike|null),
+     *         fillColor: (import("../../colorlike.js").ColorLike|null),
      *         font: (string|undefined),
      *         scale: (number|undefined)}}
      */
@@ -106,13 +106,13 @@ class WebGLTextReplay extends WebGLTextureReplay {
 
     /**
      * @private
-     * @type {Object<string, module:ol/render/webgl/TextReplay~GlyphAtlas>}
+     * @type {Object<string, GlyphAtlas>}
      */
     this.atlases_ = {};
 
     /**
      * @private
-     * @type {module:ol/render/webgl/TextReplay~GlyphAtlas|undefined}
+     * @type {GlyphAtlas|undefined}
      */
     this.currAtlas_ = undefined;
 
@@ -139,20 +139,20 @@ class WebGLTextReplay extends WebGLTextureReplay {
           stride = geometry.getStride();
           break;
         case GeometryType.CIRCLE:
-          flatCoordinates = /** @type {module:ol/geom/Circle} */ (geometry).getCenter();
+          flatCoordinates = /** @type {import("../../geom/Circle.js").default} */ (geometry).getCenter();
           break;
         case GeometryType.LINE_STRING:
-          flatCoordinates = /** @type {module:ol/geom/LineString} */ (geometry).getFlatMidpoint();
+          flatCoordinates = /** @type {import("../../geom/LineString.js").default} */ (geometry).getFlatMidpoint();
           break;
         case GeometryType.MULTI_LINE_STRING:
-          flatCoordinates = /** @type {module:ol/geom/MultiLineString} */ (geometry).getFlatMidpoints();
+          flatCoordinates = /** @type {import("../../geom/MultiLineString.js").default} */ (geometry).getFlatMidpoints();
           end = flatCoordinates.length;
           break;
         case GeometryType.POLYGON:
-          flatCoordinates = /** @type {module:ol/geom/Polygon} */ (geometry).getFlatInteriorPoint();
+          flatCoordinates = /** @type {import("../../geom/Polygon.js").default} */ (geometry).getFlatInteriorPoint();
           break;
         case GeometryType.MULTI_POLYGON:
-          flatCoordinates = /** @type {module:ol/geom/MultiPolygon} */ (geometry).getFlatInteriorPoints();
+          flatCoordinates = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getFlatInteriorPoints();
           end = flatCoordinates.length;
           break;
         default:
@@ -394,7 +394,7 @@ class WebGLTextReplay extends WebGLTextureReplay {
   /**
    * @private
    * @param {Object} state Font attributes.
-   * @return {module:ol/render/webgl/TextReplay~GlyphAtlas} Glyph atlas.
+   * @return {GlyphAtlas} Glyph atlas.
    */
   getAtlas_(state) {
     let params = [];

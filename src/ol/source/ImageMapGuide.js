@@ -22,12 +22,12 @@ import {appendParams} from '../uri.js';
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {boolean} [useOverlay] If `true`, will use `GETDYNAMICMAPOVERLAYIMAGE`.
- * @property {module:ol/proj~ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} projection Projection.
  * @property {number} [ratio=1] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {Array<number>} [resolutions] Resolutions.
  * If specified, requests will be made for these resolutions only.
- * @property {module:ol/Image~LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
  * @property {Object} [params] Additional parameters.
  */
 
@@ -41,7 +41,7 @@ import {appendParams} from '../uri.js';
  */
 class ImageMapGuide extends ImageSource {
   /**
-   * @param {module:ol/source/ImageMapGuide~Options=} options ImageMapGuide options.
+   * @param {Options=} options ImageMapGuide options.
    */
   constructor(options) {
 
@@ -78,7 +78,7 @@ class ImageMapGuide extends ImageSource {
 
     /**
      * @private
-     * @type {module:ol/Image~LoadFunction}
+     * @type {import("../Image.js").LoadFunction}
      */
     this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
       options.imageLoadFunction : defaultImageLoadFunction;
@@ -111,7 +111,7 @@ class ImageMapGuide extends ImageSource {
 
     /**
      * @private
-     * @type {module:ol/Image}
+     * @type {import("../Image.js").default}
      */
     this.image_ = null;
 
@@ -176,7 +176,7 @@ class ImageMapGuide extends ImageSource {
 
   /**
    * Return the image load function of the source.
-   * @return {module:ol/Image~LoadFunction} The image load function.
+   * @return {import("../Image.js").LoadFunction} The image load function.
    * @api
    */
   getImageLoadFunction() {
@@ -196,9 +196,9 @@ class ImageMapGuide extends ImageSource {
   /**
    * @param {string} baseUrl The mapagent url.
    * @param {Object<string, string|number>} params Request parameters.
-   * @param {module:ol/extent~Extent} extent Extent.
-   * @param {module:ol/size~Size} size Size.
-   * @param {module:ol/proj/Projection} projection Projection.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {import("../size.js").Size} size Size.
+   * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {string} The mapagent map image request URL.
    */
   getUrl(baseUrl, params, extent, size, projection) {
@@ -224,7 +224,7 @@ class ImageMapGuide extends ImageSource {
 
   /**
    * Set the image load function of the MapGuide source.
-   * @param {module:ol/Image~LoadFunction} imageLoadFunction Image load function.
+   * @param {import("../Image.js").LoadFunction} imageLoadFunction Image load function.
    * @api
    */
   setImageLoadFunction(imageLoadFunction) {
@@ -236,8 +236,8 @@ class ImageMapGuide extends ImageSource {
 
 
 /**
- * @param {module:ol/extent~Extent} extent The map extents.
- * @param {module:ol/size~Size} size The viewport size.
+ * @param {import("../extent.js").Extent} extent The map extents.
+ * @param {import("../size.js").Size} size The viewport size.
  * @param {number} metersPerUnit The meters-per-unit value.
  * @param {number} dpi The display resolution.
  * @return {number} The computed map scale.
