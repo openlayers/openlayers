@@ -58,13 +58,13 @@ class Atlas {
 
     /**
      * @private
-     * @type {Array<module:ol/style/Atlas~AtlasBlock>}
+     * @type {Array<AtlasBlock>}
      */
     this.emptyBlocks_ = [{x: 0, y: 0, width: size, height: size}];
 
     /**
      * @private
-     * @type {Object<string, module:ol/style/Atlas~AtlasInfo>}
+     * @type {Object<string, AtlasInfo>}
      */
     this.entries_ = {};
 
@@ -83,7 +83,7 @@ class Atlas {
 
   /**
    * @param {string} id The identifier of the entry to check.
-   * @return {?module:ol/style/Atlas~AtlasInfo} The atlas info.
+   * @return {?AtlasInfo} The atlas info.
    */
   get(id) {
     return this.entries_[id] || null;
@@ -97,7 +97,7 @@ class Atlas {
    *    Called to render the new image onto an atlas image.
    * @param {Object=} opt_this Value to use as `this` when executing
    *    `renderCallback`.
-   * @return {?module:ol/style/Atlas~AtlasInfo} The position and atlas image for the entry.
+   * @return {?AtlasInfo} The position and atlas image for the entry.
    */
   add(id, width, height, renderCallback, opt_this) {
     for (let i = 0, ii = this.emptyBlocks_.length; i < ii; ++i) {
@@ -130,7 +130,7 @@ class Atlas {
   /**
    * @private
    * @param {number} index The index of the block.
-   * @param {module:ol/style/Atlas~AtlasBlock} block The block to split.
+   * @param {AtlasBlock} block The block to split.
    * @param {number} width The width of the entry to insert.
    * @param {number} height The height of the entry to insert.
    */
@@ -138,9 +138,9 @@ class Atlas {
     const deltaWidth = block.width - width;
     const deltaHeight = block.height - height;
 
-    /** @type {module:ol/style/Atlas~AtlasBlock} */
+    /** @type {AtlasBlock} */
     let newBlock1;
-    /** @type {module:ol/style/Atlas~AtlasBlock} */
+    /** @type {AtlasBlock} */
     let newBlock2;
 
     if (deltaWidth > deltaHeight) {
@@ -188,8 +188,8 @@ class Atlas {
    * blocks (that are potentially smaller) are filled first.
    * @private
    * @param {number} index The index of the block to remove.
-   * @param {module:ol/style/Atlas~AtlasBlock} newBlock1 The 1st block to add.
-   * @param {module:ol/style/Atlas~AtlasBlock} newBlock2 The 2nd block to add.
+   * @param {AtlasBlock} newBlock1 The 1st block to add.
+   * @param {AtlasBlock} newBlock2 The 2nd block to add.
    */
   updateBlocks_(index, newBlock1, newBlock2) {
     const args = [index, 1];

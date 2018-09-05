@@ -12,7 +12,7 @@ import PointerEventHandler from './pointer/PointerEventHandler.js';
 class MapBrowserEventHandler extends EventTarget {
 
   /**
-   * @param {module:ol/PluggableMap} map The map with the viewport to listen to events on.
+   * @param {import("./PluggableMap.js").default} map The map with the viewport to listen to events on.
    * @param {number=} moveTolerance The minimal distance the pointer must travel to trigger a move.
    */
   constructor(map, moveTolerance) {
@@ -21,7 +21,7 @@ class MapBrowserEventHandler extends EventTarget {
 
     /**
      * This is the element that we will listen to the real events on.
-     * @type {module:ol/PluggableMap}
+     * @type {import("./PluggableMap.js").default}
      * @private
      */
     this.map_ = map;
@@ -39,7 +39,7 @@ class MapBrowserEventHandler extends EventTarget {
     this.dragging_ = false;
 
     /**
-     * @type {!Array<module:ol/events~EventsKey>}
+     * @type {!Array<import("./events.js").EventsKey>}
      * @private
      */
     this.dragListenerKeys_ = [];
@@ -54,7 +54,7 @@ class MapBrowserEventHandler extends EventTarget {
     /**
      * The most recent "down" type event (or null if none have occurred).
      * Set on pointerdown.
-     * @type {module:ol/pointer/PointerEvent}
+     * @type {import("./pointer/PointerEvent.js").default}
      * @private
      */
     this.down_ = null;
@@ -77,7 +77,7 @@ class MapBrowserEventHandler extends EventTarget {
      * Event handler which generates pointer events for
      * the viewport element.
      *
-     * @type {module:ol/pointer/PointerEventHandler}
+     * @type {import("./pointer/PointerEventHandler.js").default}
      * @private
      */
     this.pointerEventHandler_ = new PointerEventHandler(element);
@@ -86,13 +86,13 @@ class MapBrowserEventHandler extends EventTarget {
      * Event handler which generates pointer events for
      * the document (used when dragging).
      *
-     * @type {module:ol/pointer/PointerEventHandler}
+     * @type {import("./pointer/PointerEventHandler.js").default}
      * @private
      */
     this.documentPointerEventHandler_ = null;
 
     /**
-     * @type {?module:ol/events~EventsKey}
+     * @type {?import("./events.js").EventsKey}
      * @private
      */
     this.pointerdownListenerKey_ = listen(this.pointerEventHandler_,
@@ -100,7 +100,7 @@ class MapBrowserEventHandler extends EventTarget {
       this.handlePointerDown_, this);
 
     /**
-     * @type {?module:ol/events~EventsKey}
+     * @type {?import("./events.js").EventsKey}
      * @private
      */
     this.relayedListenerKey_ = listen(this.pointerEventHandler_,
@@ -110,7 +110,7 @@ class MapBrowserEventHandler extends EventTarget {
   }
 
   /**
-   * @param {module:ol/pointer/PointerEvent} pointerEvent Pointer
+   * @param {import("./pointer/PointerEvent.js").default} pointerEvent Pointer
    * event.
    * @private
    */
@@ -139,7 +139,7 @@ class MapBrowserEventHandler extends EventTarget {
   /**
    * Keeps track on how many pointers are currently active.
    *
-   * @param {module:ol/pointer/PointerEvent} pointerEvent Pointer
+   * @param {import("./pointer/PointerEvent.js").default} pointerEvent Pointer
    * event.
    * @private
    */
@@ -156,7 +156,7 @@ class MapBrowserEventHandler extends EventTarget {
   }
 
   /**
-   * @param {module:ol/pointer/PointerEvent} pointerEvent Pointer
+   * @param {import("./pointer/PointerEvent.js").default} pointerEvent Pointer
    * event.
    * @private
    */
@@ -187,7 +187,7 @@ class MapBrowserEventHandler extends EventTarget {
   }
 
   /**
-   * @param {module:ol/pointer/PointerEvent} pointerEvent Pointer
+   * @param {import("./pointer/PointerEvent.js").default} pointerEvent Pointer
    * event.
    * @return {boolean} If the left mouse button was pressed.
    * @private
@@ -197,7 +197,7 @@ class MapBrowserEventHandler extends EventTarget {
   }
 
   /**
-   * @param {module:ol/pointer/PointerEvent} pointerEvent Pointer
+   * @param {import("./pointer/PointerEvent.js").default} pointerEvent Pointer
    * event.
    * @private
    */
@@ -245,7 +245,7 @@ class MapBrowserEventHandler extends EventTarget {
   }
 
   /**
-   * @param {module:ol/pointer/PointerEvent} pointerEvent Pointer
+   * @param {import("./pointer/PointerEvent.js").default} pointerEvent Pointer
    * event.
    * @private
    */
@@ -271,7 +271,7 @@ class MapBrowserEventHandler extends EventTarget {
   /**
    * Wrap and relay a pointer event.  Note that this requires that the type
    * string for the MapBrowserPointerEvent matches the PointerEvent type.
-   * @param {module:ol/pointer/PointerEvent} pointerEvent Pointer
+   * @param {import("./pointer/PointerEvent.js").default} pointerEvent Pointer
    * event.
    * @private
    */
@@ -282,7 +282,7 @@ class MapBrowserEventHandler extends EventTarget {
   }
 
   /**
-   * @param {module:ol/pointer/PointerEvent} pointerEvent Pointer
+   * @param {import("./pointer/PointerEvent.js").default} pointerEvent Pointer
    * event.
    * @return {boolean} Is moving.
    * @private

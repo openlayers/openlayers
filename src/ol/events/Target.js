@@ -8,7 +8,7 @@ import Event from '../events/Event.js';
 
 
 /**
- * @typedef {EventTarget|module:ol/events/Target} EventTargetLike
+ * @typedef {EventTarget|import("./Target.js").default} EventTargetLike
  */
 
 
@@ -46,7 +46,7 @@ class Target extends Disposable {
 
     /**
      * @private
-     * @type {!Object<string, Array<module:ol/events~ListenerFunction>>}
+     * @type {!Object<string, Array<import("../events.js").ListenerFunction>>}
      */
     this.listeners_ = {};
 
@@ -54,7 +54,7 @@ class Target extends Disposable {
 
   /**
    * @param {string} type Type.
-   * @param {module:ol/events~ListenerFunction} listener Listener.
+   * @param {import("../events.js").ListenerFunction} listener Listener.
    */
   addEventListener(type, listener) {
     let listeners = this.listeners_[type];
@@ -72,8 +72,8 @@ class Target extends Disposable {
    * Object with a `type` property.
    *
    * @param {{type: string,
-   *     target: (module:ol/events/Target~EventTargetLike|undefined)}|
-   *     module:ol/events/Event|string} event Event object.
+   *     target: (EventTargetLike|undefined)}|
+   *     import("./Event.js").default|string} event Event object.
    * @return {boolean|undefined} `false` if anyone called preventDefault on the
    *     event object or if any of the listeners returned false.
    * @function
@@ -122,7 +122,7 @@ class Target extends Disposable {
    * order that they will be called in.
    *
    * @param {string} type Type.
-   * @return {Array<module:ol/events~ListenerFunction>} Listeners.
+   * @return {Array<import("../events.js").ListenerFunction>} Listeners.
    */
   getListeners(type) {
     return this.listeners_[type];
@@ -141,7 +141,7 @@ class Target extends Disposable {
 
   /**
    * @param {string} type Type.
-   * @param {module:ol/events~ListenerFunction} listener Listener.
+   * @param {import("../events.js").ListenerFunction} listener Listener.
    */
   removeEventListener(type, listener) {
     const listeners = this.listeners_[type];

@@ -21,8 +21,8 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/proj~ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
- * @property {module:ol/proj~ProjectionLike} [featureProjection] Projection for features read or
+ * @property {import("../proj.js").ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
+ * @property {import("../proj.js").ProjectionLike} [featureProjection] Projection for features read or
  * written by the format.  Options passed to read or write methods will take precedence.
  * @property {string} [geometryName] Geometry name to use when creating features.
  * @property {boolean} [extractGeometryName=false] Certain GeoJSON providers include
@@ -41,7 +41,7 @@ import {get as getProjection} from '../proj.js';
 class GeoJSON extends JSONFeature {
 
   /**
-   * @param {module:ol/format/GeoJSON~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
@@ -115,7 +115,7 @@ class GeoJSON extends JSONFeature {
    */
   readFeaturesFromObject(object, opt_options) {
     const geoJSONObject = /** @type {GeoJSONObject} */ (object);
-    /** @type {Array<module:ol/Feature>} */
+    /** @type {Array<import("../Feature.js").default>} */
     let features = null;
     if (geoJSONObject.type === 'FeatureCollection') {
       const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (object);
@@ -154,15 +154,15 @@ class GeoJSON extends JSONFeature {
       projection = this.dataProjection;
     }
     return (
-      /** @type {module:ol/proj/Projection} */ (projection)
+      /** @type {import("../proj/Projection.js").default} */ (projection)
     );
   }
 
   /**
    * Encode a feature as a GeoJSON Feature object.
    *
-   * @param {module:ol/Feature} feature Feature.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @param {import("../Feature.js").default} feature Feature.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {GeoJSONFeature} Object.
    * @override
    * @api
@@ -196,8 +196,8 @@ class GeoJSON extends JSONFeature {
   /**
    * Encode an array of features as a GeoJSON object.
    *
-   * @param {Array<module:ol/Feature>} features Features.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {GeoJSONFeatureCollection} GeoJSON Object.
    * @override
    * @api
@@ -217,8 +217,8 @@ class GeoJSON extends JSONFeature {
   /**
    * Encode a geometry as a GeoJSON object.
    *
-   * @param {module:ol/geom/Geometry} geometry Geometry.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @param {import("../geom/Geometry.js").default} geometry Geometry.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {GeoJSONGeometry|GeoJSONGeometryCollection} Object.
    * @override
    * @api
@@ -231,7 +231,7 @@ class GeoJSON extends JSONFeature {
 
 /**
  * @const
- * @type {Object<string, function(GeoJSONObject): module:ol/geom/Geometry>}
+ * @type {Object<string, function(GeoJSONObject): import("../geom/Geometry.js").default>}
  */
 const GEOMETRY_READERS = {
   'Point': readPointGeometry,
@@ -246,7 +246,7 @@ const GEOMETRY_READERS = {
 
 /**
  * @const
- * @type {Object<string, function(module:ol/geom/Geometry, module:ol/format/Feature~WriteOptions=): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
+ * @type {Object<string, function(import("../geom/Geometry.js").default, import("./Feature.js").WriteOptions=): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
  */
 const GEOMETRY_WRITERS = {
   'Point': writePointGeometry,
@@ -262,8 +262,8 @@ const GEOMETRY_WRITERS = {
 
 /**
  * @param {GeoJSONGeometry|GeoJSONGeometryCollection} object Object.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/geom/Geometry} Geometry.
+ * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+ * @return {import("../geom/Geometry.js").default} Geometry.
  */
 function readGeometry(object, opt_options) {
   if (!object) {
@@ -271,21 +271,21 @@ function readGeometry(object, opt_options) {
   }
   const geometryReader = GEOMETRY_READERS[object.type];
   return (
-    /** @type {module:ol/geom/Geometry} */ (transformWithOptions(geometryReader(object), false, opt_options))
+    /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometryReader(object), false, opt_options))
   );
 }
 
 
 /**
  * @param {GeoJSONGeometryCollection} object Object.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/geom/GeometryCollection} Geometry collection.
+ * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+ * @return {import("../geom/GeometryCollection.js").default} Geometry collection.
  */
 function readGeometryCollectionGeometry(object, opt_options) {
   const geometries = object.geometries.map(
     /**
      * @param {GeoJSONGeometry} geometry Geometry.
-     * @return {module:ol/geom/Geometry} geometry Geometry.
+     * @return {import("../geom/Geometry.js").default} geometry Geometry.
      */
     function(geometry) {
       return readGeometry(geometry, opt_options);
@@ -296,7 +296,7 @@ function readGeometryCollectionGeometry(object, opt_options) {
 
 /**
  * @param {GeoJSONGeometry} object Object.
- * @return {module:ol/geom/Point} Point.
+ * @return {import("../geom/Point.js").default} Point.
  */
 function readPointGeometry(object) {
   return new Point(object.coordinates);
@@ -305,7 +305,7 @@ function readPointGeometry(object) {
 
 /**
  * @param {GeoJSONGeometry} object Object.
- * @return {module:ol/geom/LineString} LineString.
+ * @return {import("../geom/LineString.js").default} LineString.
  */
 function readLineStringGeometry(object) {
   return new LineString(object.coordinates);
@@ -314,7 +314,7 @@ function readLineStringGeometry(object) {
 
 /**
  * @param {GeoJSONGeometry} object Object.
- * @return {module:ol/geom/MultiLineString} MultiLineString.
+ * @return {import("../geom/MultiLineString.js").default} MultiLineString.
  */
 function readMultiLineStringGeometry(object) {
   return new MultiLineString(object.coordinates);
@@ -323,7 +323,7 @@ function readMultiLineStringGeometry(object) {
 
 /**
  * @param {GeoJSONGeometry} object Object.
- * @return {module:ol/geom/MultiPoint} MultiPoint.
+ * @return {import("../geom/MultiPoint.js").default} MultiPoint.
  */
 function readMultiPointGeometry(object) {
   return new MultiPoint(object.coordinates);
@@ -332,7 +332,7 @@ function readMultiPointGeometry(object) {
 
 /**
  * @param {GeoJSONGeometry} object Object.
- * @return {module:ol/geom/MultiPolygon} MultiPolygon.
+ * @return {import("../geom/MultiPolygon.js").default} MultiPolygon.
  */
 function readMultiPolygonGeometry(object) {
   return new MultiPolygon(object.coordinates);
@@ -341,7 +341,7 @@ function readMultiPolygonGeometry(object) {
 
 /**
  * @param {GeoJSONGeometry} object Object.
- * @return {module:ol/geom/Polygon} Polygon.
+ * @return {import("../geom/Polygon.js").default} Polygon.
  */
 function readPolygonGeometry(object) {
   return new Polygon(object.coordinates);
@@ -349,19 +349,19 @@ function readPolygonGeometry(object) {
 
 
 /**
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry|GeoJSONGeometryCollection} GeoJSON geometry.
  */
 function writeGeometry(geometry, opt_options) {
   const geometryWriter = GEOMETRY_WRITERS[geometry.getType()];
-  return geometryWriter(/** @type {module:ol/geom/Geometry} */ (
+  return geometryWriter(/** @type {import("../geom/Geometry.js").default} */ (
     transformWithOptions(geometry, true, opt_options)), opt_options);
 }
 
 
 /**
- * @param {module:ol/geom/Geometry} geometry Geometry.
+ * @param {import("../geom/Geometry.js").default} geometry Geometry.
  * @return {GeoJSONGeometryCollection} Empty GeoJSON geometry collection.
  */
 function writeEmptyGeometryCollectionGeometry(geometry) {
@@ -373,8 +373,8 @@ function writeEmptyGeometryCollectionGeometry(geometry) {
 
 
 /**
- * @param {module:ol/geom/GeometryCollection} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/GeometryCollection.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometryCollection} GeoJSON geometry collection.
  */
 function writeGeometryCollectionGeometry(geometry, opt_options) {
@@ -391,8 +391,8 @@ function writeGeometryCollectionGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/LineString} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/LineString.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeLineStringGeometry(geometry, opt_options) {
@@ -404,8 +404,8 @@ function writeLineStringGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/MultiLineString} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/MultiLineString.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeMultiLineStringGeometry(geometry, opt_options) {
@@ -417,8 +417,8 @@ function writeMultiLineStringGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/MultiPoint} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/MultiPoint.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeMultiPointGeometry(geometry, opt_options) {
@@ -430,8 +430,8 @@ function writeMultiPointGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/MultiPolygon} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeMultiPolygonGeometry(geometry, opt_options) {
@@ -447,8 +447,8 @@ function writeMultiPolygonGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/Point} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/Point.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writePointGeometry(geometry, opt_options) {
@@ -460,8 +460,8 @@ function writePointGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/Polygon} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/Polygon.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writePolygonGeometry(geometry, opt_options) {

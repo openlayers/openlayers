@@ -111,7 +111,7 @@ class PointerEventHandler extends EventTarget {
     this.eventMap_ = {};
 
     /**
-     * @type {Array<module:ol/pointer/EventSource>}
+     * @type {Array<import("./EventSource.js").default>}
      * @private
      */
     this.eventSourceList_ = [];
@@ -145,7 +145,7 @@ class PointerEventHandler extends EventTarget {
    * Add a new event source that will generate pointer events.
    *
    * @param {string} name A name for the event source
-   * @param {module:ol/pointer/EventSource} source The source event.
+   * @param {import("./EventSource.js").default} source The source event.
    */
   registerSource(name, source) {
     const s = source;
@@ -366,7 +366,7 @@ class PointerEventHandler extends EventTarget {
    * @param {string} inType A string representing the type of event to create.
    * @param {Object} data Pointer event data.
    * @param {Event} event The event.
-   * @return {module:ol/pointer/PointerEvent} A PointerEvent of type `inType`.
+   * @return {import("./PointerEvent.js").default} A PointerEvent of type `inType`.
    */
   makeEvent(inType, data, event) {
     return new PointerEvent(inType, event, data);
@@ -398,7 +398,7 @@ class PointerEventHandler extends EventTarget {
    * This proxy method is required for the legacy IE support.
    * @param {string} eventType The pointer event type.
    * @param {Event} event The event.
-   * @return {module:ol/pointer/PointerEvent} The wrapped event.
+   * @return {import("./PointerEvent.js").default} The wrapped event.
    */
   wrapMouseEvent(eventType, event) {
     const pointerEvent = this.makeEvent(

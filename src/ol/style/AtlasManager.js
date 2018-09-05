@@ -57,7 +57,7 @@ const MAX_ATLAS_SIZE = -1;
  */
 class AtlasManager {
   /**
-   * @param {module:ol/style/AtlasManager~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
@@ -90,7 +90,7 @@ class AtlasManager {
 
     /**
      * @private
-     * @type {Array<module:ol/style/Atlas>}
+     * @type {Array<import("./Atlas.js").default>}
      */
     this.atlases_ = [new Atlas(this.currentSize_, this.space_)];
 
@@ -103,33 +103,33 @@ class AtlasManager {
 
     /**
      * @private
-     * @type {Array<module:ol/style/Atlas>}
+     * @type {Array<import("./Atlas.js").default>}
      */
     this.hitAtlases_ = [new Atlas(this.currentHitSize_, this.space_)];
   }
 
   /**
    * @param {string} id The identifier of the entry to check.
-   * @return {?module:ol/style/AtlasManager~AtlasManagerInfo} The position and atlas image for the
+   * @return {?AtlasManagerInfo} The position and atlas image for the
    *    entry, or `null` if the entry is not part of the atlas manager.
    */
   getInfo(id) {
-    /** @type {?module:ol/style/Atlas~AtlasInfo} */
+    /** @type {?import("./Atlas.js").AtlasInfo} */
     const info = this.getInfo_(this.atlases_, id);
 
     if (!info) {
       return null;
     }
-    const hitInfo = /** @type {module:ol/style/Atlas~AtlasInfo} */ (this.getInfo_(this.hitAtlases_, id));
+    const hitInfo = /** @type {import("./Atlas.js").AtlasInfo} */ (this.getInfo_(this.hitAtlases_, id));
 
     return this.mergeInfos_(info, hitInfo);
   }
 
   /**
    * @private
-   * @param {Array<module:ol/style/Atlas>} atlases The atlases to search.
+   * @param {Array<import("./Atlas.js").default>} atlases The atlases to search.
    * @param {string} id The identifier of the entry to check.
-   * @return {?module:ol/style/Atlas~AtlasInfo} The position and atlas image for the entry,
+   * @return {?import("./Atlas.js").AtlasInfo} The position and atlas image for the entry,
    *    or `null` if the entry is not part of the atlases.
    */
   getInfo_(atlases, id) {
@@ -145,15 +145,15 @@ class AtlasManager {
 
   /**
    * @private
-   * @param {module:ol/style/Atlas~AtlasInfo} info The info for the real image.
-   * @param {module:ol/style/Atlas~AtlasInfo} hitInfo The info for the hit-detection
+   * @param {import("./Atlas.js").AtlasInfo} info The info for the real image.
+   * @param {import("./Atlas.js").AtlasInfo} hitInfo The info for the hit-detection
    *    image.
-   * @return {?module:ol/style/AtlasManager~AtlasManagerInfo} The position and atlas image for the
+   * @return {?AtlasManagerInfo} The position and atlas image for the
    *    entry, or `null` if the entry is not part of the atlases.
    */
   mergeInfos_(info, hitInfo) {
     return (
-      /** @type {module:ol/style/AtlasManager~AtlasManagerInfo} */ ({
+      /** @type {AtlasManagerInfo} */ ({
         offsetX: info.offsetX,
         offsetY: info.offsetY,
         image: info.image,
@@ -180,7 +180,7 @@ class AtlasManager {
    *    detection atlas image.
    * @param {Object=} opt_this Value to use as `this` when executing
    *    `renderCallback` and `renderHitCallback`.
-   * @return {?module:ol/style/AtlasManager~AtlasManagerInfo}  The position and atlas image for the
+   * @return {?AtlasManagerInfo}  The position and atlas image for the
    *    entry, or `null` if the image is too big.
    */
   add(id, width, height, renderCallback, opt_renderHitCallback, opt_this) {
@@ -189,7 +189,7 @@ class AtlasManager {
       return null;
     }
 
-    /** @type {?module:ol/style/Atlas~AtlasInfo} */
+    /** @type {?import("./Atlas.js").AtlasInfo} */
     const info = this.add_(false, id, width, height, renderCallback, opt_this);
     if (!info) {
       return null;
@@ -201,7 +201,7 @@ class AtlasManager {
     const renderHitCallback = opt_renderHitCallback !== undefined ?
       opt_renderHitCallback : VOID;
 
-    const hitInfo = /** @type {module:ol/style/Atlas~AtlasInfo} */ (this.add_(true,
+    const hitInfo = /** @type {import("./Atlas.js").AtlasInfo} */ (this.add_(true,
       id, width, height, renderHitCallback, opt_this));
 
     return this.mergeInfos_(info, hitInfo);
@@ -217,7 +217,7 @@ class AtlasManager {
    *    Called to render the new image onto an atlas image.
    * @param {Object=} opt_this Value to use as `this` when executing
    *    `renderCallback` and `renderHitCallback`.
-   * @return {?module:ol/style/Atlas~AtlasInfo}  The position and atlas image for the entry,
+   * @return {?import("./Atlas.js").AtlasInfo}  The position and atlas image for the entry,
    *    or `null` if the image is too big.
    */
   add_(isHitAtlas, id, width, height, renderCallback, opt_this) {

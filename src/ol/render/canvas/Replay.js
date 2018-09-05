@@ -30,13 +30,13 @@ import {
 
 
 /**
- * @type {module:ol/extent~Extent}
+ * @type {import("../../extent.js").Extent}
  */
 const tmpExtent = createEmpty();
 
 
 /**
- * @type {!module:ol/transform~Transform}
+ * @type {!import("../../transform.js").Transform}
  */
 const tmpTransform = createTransform();
 
@@ -44,7 +44,7 @@ const tmpTransform = createTransform();
 class CanvasReplay extends VectorContext {
   /**
    * @param {number} tolerance Tolerance.
-   * @param {module:ol/extent~Extent} maxExtent Maximum extent.
+   * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
@@ -67,7 +67,7 @@ class CanvasReplay extends VectorContext {
     /**
      * @protected
      * @const
-     * @type {module:ol/extent~Extent}
+     * @type {import("../../extent.js").Extent}
      */
     this.maxExtent = maxExtent;
 
@@ -116,7 +116,7 @@ class CanvasReplay extends VectorContext {
 
     /**
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../../extent.js").Extent}
      */
     this.bufferedMaxExtent_ = null;
 
@@ -134,13 +134,13 @@ class CanvasReplay extends VectorContext {
 
     /**
      * @private
-     * @type {!Object<number,module:ol/coordinate~Coordinate|Array<module:ol/coordinate~Coordinate>|Array<Array<module:ol/coordinate~Coordinate>>>}
+     * @type {!Object<number,import("../../coordinate.js").Coordinate|Array<import("../../coordinate.js").Coordinate>|Array<Array<import("../../coordinate.js").Coordinate>>>}
      */
     this.coordinateCache_ = {};
 
     /**
      * @private
-     * @type {!module:ol/transform~Transform}
+     * @type {!import("../../transform.js").Transform}
      */
     this.renderedTransform_ = createTransform();
 
@@ -158,9 +158,9 @@ class CanvasReplay extends VectorContext {
 
     /**
      * @protected
-     * @type {module:ol/render/canvas~FillStrokeState}
+     * @type {import("../canvas.js").FillStrokeState}
      */
-    this.state = /** @type {module:ol/render/canvas~FillStrokeState} */ ({});
+    this.state = /** @type {import("../canvas.js").FillStrokeState} */ ({});
 
     /**
      * @private
@@ -172,10 +172,10 @@ class CanvasReplay extends VectorContext {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {module:ol/coordinate~Coordinate} p1 1st point of the background box.
-   * @param {module:ol/coordinate~Coordinate} p2 2nd point of the background box.
-   * @param {module:ol/coordinate~Coordinate} p3 3rd point of the background box.
-   * @param {module:ol/coordinate~Coordinate} p4 4th point of the background box.
+   * @param {import("../../coordinate.js").Coordinate} p1 1st point of the background box.
+   * @param {import("../../coordinate.js").Coordinate} p2 2nd point of the background box.
+   * @param {import("../../coordinate.js").Coordinate} p3 3rd point of the background box.
+   * @param {import("../../coordinate.js").Coordinate} p4 4th point of the background box.
    * @param {Array<*>} fillInstruction Fill instruction.
    * @param {Array<*>} strokeInstruction Stroke instruction.
    */
@@ -203,7 +203,7 @@ class CanvasReplay extends VectorContext {
    * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image Image.
    * @param {number} anchorX Anchor X.
    * @param {number} anchorY Anchor Y.
-   * @param {module:ol/render/canvas~DeclutterGroup} declutterGroup Declutter group.
+   * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
    * @param {number} height Height.
    * @param {number} opacity Opacity.
    * @param {number} originX Origin X.
@@ -249,13 +249,13 @@ class CanvasReplay extends VectorContext {
     const boxX = x - padding[3];
     const boxY = y - padding[0];
 
-    /** @type {module:ol/coordinate~Coordinate} */
+    /** @type {import("../../coordinate.js").Coordinate} */
     let p1;
-    /** @type {module:ol/coordinate~Coordinate} */
+    /** @type {import("../../coordinate.js").Coordinate} */
     let p2;
-    /** @type {module:ol/coordinate~Coordinate} */
+    /** @type {import("../../coordinate.js").Coordinate} */
     let p3;
-    /** @type {module:ol/coordinate~Coordinate} */
+    /** @type {import("../../coordinate.js").Coordinate} */
     let p4;
     if (fillStroke || rotation !== 0) {
       p1 = [boxX, boxY];
@@ -406,7 +406,7 @@ class CanvasReplay extends VectorContext {
     let flatCoordinates, replayEnd, replayEnds, replayEndss;
     let offset;
     if (type == GeometryType.MULTI_POLYGON) {
-      geometry = /** @type {module:ol/geom/MultiPolygon} */ (geometry);
+      geometry = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry);
       flatCoordinates = geometry.getOrientedFlatCoordinates();
       replayEndss = [];
       const endss = geometry.getEndss();
@@ -421,10 +421,10 @@ class CanvasReplay extends VectorContext {
     } else if (type == GeometryType.POLYGON || type == GeometryType.MULTI_LINE_STRING) {
       replayEnds = [];
       flatCoordinates = (type == GeometryType.POLYGON) ?
-        /** @type {module:ol/geom/Polygon} */ (geometry).getOrientedFlatCoordinates() :
+        /** @type {import("../../geom/Polygon.js").default} */ (geometry).getOrientedFlatCoordinates() :
         geometry.getFlatCoordinates();
       offset = this.drawCustomCoordinates_(flatCoordinates, 0,
-        /** @type {module:ol/geom/Polygon|module:ol/geom/MultiLineString} */ (geometry).getEnds(),
+        /** @type {import("../../geom/Polygon.js").default|import("../../geom/MultiLineString.js").default} */ (geometry).getEnds(),
         stride, replayEnds);
       this.instructions.push([CanvasInstruction.CUSTOM,
         replayBegin, replayEnds, geometry, renderer, inflateCoordinatesArray]);
@@ -446,8 +446,8 @@ class CanvasReplay extends VectorContext {
 
   /**
    * @protected
-   * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry Geometry.
-   * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
+   * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
    */
   beginGeometry(geometry, feature) {
     this.beginGeometryInstruction1_ = [CanvasInstruction.BEGIN_GEOMETRY, feature, 0];
@@ -479,7 +479,7 @@ class CanvasReplay extends VectorContext {
    * @param {Array<*>} instruction Instruction.
    */
   setStrokeStyle_(context, instruction) {
-    context.strokeStyle = /** @type {module:ol/colorlike~ColorLike} */ (instruction[1]);
+    context.strokeStyle = /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
     context.lineWidth = /** @type {number} */ (instruction[2]);
     context.lineCap = /** @type {string} */ (instruction[3]);
     context.lineJoin = /** @type {string} */ (instruction[4]);
@@ -491,14 +491,14 @@ class CanvasReplay extends VectorContext {
   }
 
   /**
-   * @param {module:ol/render/canvas~DeclutterGroup} declutterGroup Declutter group.
-   * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+   * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
+   * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
    */
   renderDeclutter_(declutterGroup, feature) {
     if (declutterGroup && declutterGroup.length > 5) {
       const groupCount = declutterGroup[4];
       if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
-        /** @type {module:ol/structs/RBush~Entry} */
+        /** @type {import("../../structs/RBush.js").Entry} */
         const box = {
           minX: /** @type {number} */ (declutterGroup[0]),
           minY: /** @type {number} */ (declutterGroup[1]),
@@ -529,13 +529,13 @@ class CanvasReplay extends VectorContext {
   /**
    * @private
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {module:ol/transform~Transform} transform Transform.
+   * @param {import("../../transform.js").Transform} transform Transform.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
    *     to skip.
    * @param {Array<*>} instructions Instructions array.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
-   * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
-   * @param {module:ol/extent~Extent=} opt_hitExtent Only check features that intersect this
+   * @param {function((import("../../Feature.js").default|import("../Feature.js").default)): T|undefined} featureCallback Feature callback.
+   * @param {import("../../extent.js").Extent=} opt_hitExtent Only check features that intersect this
    *     extent.
    * @return {T|undefined} Callback result.
    * @template T
@@ -575,7 +575,7 @@ class CanvasReplay extends VectorContext {
     const coordinateCache = this.coordinateCache_;
     const viewRotation = this.viewRotation_;
 
-    const state = /** @type {module:ol/render~State} */ ({
+    const state = /** @type {import("../../render.js").State} */ ({
       context: context,
       pixelRatio: this.pixelRatio,
       resolution: this.resolution,
@@ -585,14 +585,14 @@ class CanvasReplay extends VectorContext {
     // When the batch size gets too big, performance decreases. 200 is a good
     // balance between batch size and number of fill/stroke instructions.
     const batchSize = this.instructions != instructions || this.overlaps ? 0 : 200;
-    let /** @type {module:ol/Feature|module:ol/render/Feature} */ feature;
+    let /** @type {import("../../Feature.js").default|import("../Feature.js").default} */ feature;
     let x, y;
     while (i < ii) {
       const instruction = instructions[i];
-      const type = /** @type {module:ol/render/canvas/Instruction} */ (instruction[0]);
+      const type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
-          feature = /** @type {module:ol/Feature|module:ol/render/Feature} */ (instruction[1]);
+          feature = /** @type {import("../../Feature.js").default|import("../Feature.js").default} */ (instruction[1]);
           if ((skipFeatures &&
               skippedFeaturesHash[getUid(feature).toString()]) ||
               !feature.getGeometry()) {
@@ -639,7 +639,7 @@ class CanvasReplay extends VectorContext {
         case CanvasInstruction.CUSTOM:
           d = /** @type {number} */ (instruction[1]);
           dd = instruction[2];
-          const geometry = /** @type {module:ol/geom/SimpleGeometry} */ (instruction[3]);
+          const geometry = /** @type {import("../../geom/SimpleGeometry.js").default} */ (instruction[3]);
           const renderer = instruction[4];
           const fn = instruction.length == 6 ? instruction[5] : undefined;
           state.geometry = geometry;
@@ -666,7 +666,7 @@ class CanvasReplay extends VectorContext {
           // Remaining arguments in DRAW_IMAGE are in alphabetical order
           anchorX = /** @type {number} */ (instruction[4]);
           anchorY = /** @type {number} */ (instruction[5]);
-          declutterGroup = featureCallback ? null : /** @type {module:ol/render/canvas~DeclutterGroup} */ (instruction[6]);
+          declutterGroup = featureCallback ? null : /** @type {import("../canvas.js").DeclutterGroup} */ (instruction[6]);
           const height = /** @type {number} */ (instruction[7]);
           const opacity = /** @type {number} */ (instruction[8]);
           const originX = /** @type {number} */ (instruction[9]);
@@ -704,7 +704,7 @@ class CanvasReplay extends VectorContext {
           const begin = /** @type {number} */ (instruction[1]);
           const end = /** @type {number} */ (instruction[2]);
           const baseline = /** @type {number} */ (instruction[3]);
-          declutterGroup = featureCallback ? null : /** @type {module:ol/render/canvas~DeclutterGroup} */ (instruction[4]);
+          declutterGroup = featureCallback ? null : /** @type {import("../canvas.js").DeclutterGroup} */ (instruction[4]);
           const overflow = /** @type {number} */ (instruction[5]);
           const fillKey = /** @type {string} */ (instruction[6]);
           const maxAngle = /** @type {number} */ (instruction[7]);
@@ -760,7 +760,7 @@ class CanvasReplay extends VectorContext {
           break;
         case CanvasInstruction.END_GEOMETRY:
           if (featureCallback !== undefined) {
-            feature = /** @type {module:ol/Feature|module:ol/render/Feature} */ (instruction[1]);
+            feature = /** @type {import("../../Feature.js").default|import("../Feature.js").default} */ (instruction[1]);
             const result = featureCallback(feature);
             if (result) {
               return result;
@@ -814,7 +814,7 @@ class CanvasReplay extends VectorContext {
             }
           }
 
-          context.fillStyle = /** @type {module:ol/colorlike~ColorLike} */ (instruction[1]);
+          context.fillStyle = /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
           ++i;
           break;
         case CanvasInstruction.SET_STROKE_STYLE:
@@ -850,7 +850,7 @@ class CanvasReplay extends VectorContext {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {module:ol/transform~Transform} transform Transform.
+   * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
    *     to skip.
@@ -864,13 +864,13 @@ class CanvasReplay extends VectorContext {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {module:ol/transform~Transform} transform Transform.
+   * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
    *     to skip.
-   * @param {function((module:ol/Feature|module:ol/render/Feature)): T=} opt_featureCallback
+   * @param {function((import("../../Feature.js").default|import("../Feature.js").default)): T=} opt_featureCallback
    *     Feature callback.
-   * @param {module:ol/extent~Extent=} opt_hitExtent Only check features that intersect this
+   * @param {import("../../extent.js").Extent=} opt_hitExtent Only check features that intersect this
    *     extent.
    * @return {T|undefined} Callback result.
    * @template T
@@ -903,7 +903,7 @@ class CanvasReplay extends VectorContext {
     let begin = -1;
     for (i = 0; i < n; ++i) {
       instruction = hitDetectionInstructions[i];
-      type = /** @type {module:ol/render/canvas/Instruction} */ (instruction[0]);
+      type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
       if (type == CanvasInstruction.END_GEOMETRY) {
         begin = i;
       } else if (type == CanvasInstruction.BEGIN_GEOMETRY) {
@@ -966,8 +966,8 @@ class CanvasReplay extends VectorContext {
   }
 
   /**
-   * @param {module:ol/render/canvas~FillStrokeState} state State.
-   * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry Geometry.
+   * @param {import("../canvas.js").FillStrokeState} state State.
+   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    * @return {Array<*>} Fill instruction.
    */
   createFill(state, geometry) {
@@ -981,14 +981,14 @@ class CanvasReplay extends VectorContext {
   }
 
   /**
-   * @param {module:ol/render/canvas~FillStrokeState} state State.
+   * @param {import("../canvas.js").FillStrokeState} state State.
    */
   applyStroke(state) {
     this.instructions.push(this.createStroke(state));
   }
 
   /**
-   * @param {module:ol/render/canvas~FillStrokeState} state State.
+   * @param {import("../canvas.js").FillStrokeState} state State.
    * @return {Array<*>} Stroke instruction.
    */
   createStroke(state) {
@@ -1001,9 +1001,9 @@ class CanvasReplay extends VectorContext {
   }
 
   /**
-   * @param {module:ol/render/canvas~FillStrokeState} state State.
-   * @param {function(this:module:ol/render/canvas/Replay, module:ol/render/canvas~FillStrokeState, (module:ol/geom/Geometry|module:ol/render/Feature)):Array<*>} createFill Create fill.
-   * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry Geometry.
+   * @param {import("../canvas.js").FillStrokeState} state State.
+   * @param {function(this:import("./Replay.js").default, import("../canvas.js").FillStrokeState, (import("../../geom/Geometry.js").default|import("../Feature.js").default)):Array<*>} createFill Create fill.
+   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    */
   updateFillStyle(state, createFill, geometry) {
     const fillStyle = state.fillStyle;
@@ -1016,8 +1016,8 @@ class CanvasReplay extends VectorContext {
   }
 
   /**
-   * @param {module:ol/render/canvas~FillStrokeState} state State.
-   * @param {function(this:module:ol/render/canvas/Replay, module:ol/render/canvas~FillStrokeState)} applyStroke Apply stroke.
+   * @param {import("../canvas.js").FillStrokeState} state State.
+   * @param {function(this:import("./Replay.js").default, import("../canvas.js").FillStrokeState)} applyStroke Apply stroke.
    */
   updateStrokeStyle(state, applyStroke) {
     const strokeStyle = state.strokeStyle;
@@ -1048,8 +1048,8 @@ class CanvasReplay extends VectorContext {
   }
 
   /**
-   * @param {module:ol/geom/Geometry|module:ol/render/Feature} geometry Geometry.
-   * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
+   * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
    */
   endGeometry(geometry, feature) {
     this.beginGeometryInstruction1_[2] = this.instructions.length;
@@ -1065,7 +1065,7 @@ class CanvasReplay extends VectorContext {
    * Get the buffered rendering extent.  Rendering will be clipped to the extent
    * provided to the constructor.  To account for symbolizers that may intersect
    * this extent, we calculate a buffered extent (e.g. based on stroke width).
-   * @return {module:ol/extent~Extent} The buffered rendering extent.
+   * @return {import("../../extent.js").Extent} The buffered rendering extent.
    * @protected
    */
   getBufferedMaxExtent() {

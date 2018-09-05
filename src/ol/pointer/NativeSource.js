@@ -37,7 +37,7 @@ import EventSource from '../pointer/EventSource.js';
 /**
  * Handler for `pointerdown`.
  *
- * @this {module:ol/pointer/NativeSource}
+ * @this {import("./NativeSource.js").default}
  * @param {Event} inEvent The in event.
  */
 function pointerDown(inEvent) {
@@ -47,7 +47,7 @@ function pointerDown(inEvent) {
 /**
  * Handler for `pointermove`.
  *
- * @this {module:ol/pointer/NativeSource}
+ * @this {import("./NativeSource.js").default}
  * @param {Event} inEvent The in event.
  */
 function pointerMove(inEvent) {
@@ -57,7 +57,7 @@ function pointerMove(inEvent) {
 /**
  * Handler for `pointerup`.
  *
- * @this {module:ol/pointer/NativeSource}
+ * @this {import("./NativeSource.js").default}
  * @param {Event} inEvent The in event.
  */
 function pointerUp(inEvent) {
@@ -67,7 +67,7 @@ function pointerUp(inEvent) {
 /**
  * Handler for `pointerout`.
  *
- * @this {module:ol/pointer/NativeSource}
+ * @this {import("./NativeSource.js").default}
  * @param {Event} inEvent The in event.
  */
 function pointerOut(inEvent) {
@@ -77,7 +77,7 @@ function pointerOut(inEvent) {
 /**
  * Handler for `pointerover`.
  *
- * @this {module:ol/pointer/NativeSource}
+ * @this {import("./NativeSource.js").default}
  * @param {Event} inEvent The in event.
  */
 function pointerOver(inEvent) {
@@ -87,7 +87,7 @@ function pointerOver(inEvent) {
 /**
  * Handler for `pointercancel`.
  *
- * @this {module:ol/pointer/NativeSource}
+ * @this {import("./NativeSource.js").default}
  * @param {Event} inEvent The in event.
  */
 function pointerCancel(inEvent) {
@@ -97,7 +97,7 @@ function pointerCancel(inEvent) {
 /**
  * Handler for `lostpointercapture`.
  *
- * @this {module:ol/pointer/NativeSource}
+ * @this {import("./NativeSource.js").default}
  * @param {Event} inEvent The in event.
  */
 function lostPointerCapture(inEvent) {
@@ -107,7 +107,7 @@ function lostPointerCapture(inEvent) {
 /**
  * Handler for `gotpointercapture`.
  *
- * @this {module:ol/pointer/NativeSource}
+ * @this {import("./NativeSource.js").default}
  * @param {Event} inEvent The in event.
  */
 function gotPointerCapture(inEvent) {
@@ -117,7 +117,7 @@ function gotPointerCapture(inEvent) {
 class NativeSource extends EventSource {
 
   /**
-   * @param {module:ol/pointer/PointerEventHandler} dispatcher Event handler.
+   * @param {import("./PointerEventHandler.js").default} dispatcher Event handler.
    */
   constructor(dispatcher) {
     const mapping = {

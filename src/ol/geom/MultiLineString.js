@@ -23,10 +23,10 @@ import {douglasPeuckerArray} from '../geom/flat/simplify.js';
 class MultiLineString extends SimpleGeometry {
 
   /**
-   * @param {Array<Array<module:ol/coordinate~Coordinate>|module:ol/geom~MultiLineString>|Array<number>} coordinates
+   * @param {Array<Array<import("../coordinate.js").Coordinate>|import("../geom.js").MultiLineString>|Array<number>} coordinates
    *     Coordinates or LineString geometries. (For internal use, flat coordinates in
    *     combination with `opt_layout` and `opt_ends` are also accepted.)
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    * @param {Array<number>} opt_ends Flat coordinate ends for internal use.
    */
   constructor(coordinates, opt_layout, opt_ends) {
@@ -76,7 +76,7 @@ class MultiLineString extends SimpleGeometry {
 
   /**
    * Append the passed linestring to the multilinestring.
-   * @param {module:ol/geom/LineString} lineString LineString.
+   * @param {import("./LineString.js").default} lineString LineString.
    * @api
    */
   appendLineString(lineString) {
@@ -91,7 +91,7 @@ class MultiLineString extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!module:ol/geom/MultiLineString} Clone.
+   * @return {!import("./MultiLineString.js").default} Clone.
    * @override
    * @api
    */
@@ -135,7 +135,7 @@ class MultiLineString extends SimpleGeometry {
    * @param {number} m M.
    * @param {boolean=} opt_extrapolate Extrapolate. Default is `false`.
    * @param {boolean=} opt_interpolate Interpolate. Default is `false`.
-   * @return {module:ol/coordinate~Coordinate} Coordinate.
+   * @return {import("../coordinate.js").Coordinate} Coordinate.
    * @api
    */
   getCoordinateAtM(m, opt_extrapolate, opt_interpolate) {
@@ -152,7 +152,7 @@ class MultiLineString extends SimpleGeometry {
 
   /**
    * Return the coordinates of the multilinestring.
-   * @return {Array<Array<module:ol/coordinate~Coordinate>>} Coordinates.
+   * @return {Array<Array<import("../coordinate.js").Coordinate>>} Coordinates.
    * @override
    * @api
    */
@@ -171,7 +171,7 @@ class MultiLineString extends SimpleGeometry {
   /**
    * Return the linestring at the specified index.
    * @param {number} index Index.
-   * @return {module:ol/geom/LineString} LineString.
+   * @return {import("./LineString.js").default} LineString.
    * @api
    */
   getLineString(index) {
@@ -184,14 +184,14 @@ class MultiLineString extends SimpleGeometry {
 
   /**
    * Return the linestrings of this multilinestring.
-   * @return {Array<module:ol/geom/LineString>} LineStrings.
+   * @return {Array<import("./LineString.js").default>} LineStrings.
    * @api
    */
   getLineStrings() {
     const flatCoordinates = this.flatCoordinates;
     const ends = this.ends_;
     const layout = this.layout;
-    /** @type {Array<module:ol/geom/LineString>} */
+    /** @type {Array<import("./LineString.js").default>} */
     const lineStrings = [];
     let offset = 0;
     for (let i = 0, ii = ends.length; i < ii; ++i) {
@@ -253,8 +253,8 @@ class MultiLineString extends SimpleGeometry {
 
   /**
    * Set the coordinates of the multilinestring.
-   * @param {!Array<Array<module:ol/coordinate~Coordinate>>} coordinates Coordinates.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {!Array<Array<import("../coordinate.js").Coordinate>>} coordinates Coordinates.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    * @override
    * @api
    */

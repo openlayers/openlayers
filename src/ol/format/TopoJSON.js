@@ -15,7 +15,7 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/proj~ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
+ * @property {import("../proj.js").ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
  * @property {string} [layerName] Set the name of the TopoJSON topology
  * `objects`'s children as feature property with the specified name. This means
  * that when set to `'layer'`, a topology like
@@ -47,7 +47,7 @@ import {get as getProjection} from '../proj.js';
 class TopoJSON extends JSONFeature {
 
   /**
-   * @param {module:ol/format/TopoJSON~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     super();
@@ -91,7 +91,7 @@ class TopoJSON extends JSONFeature {
       if (transform) {
         transformArcs(arcs, scale, translate);
       }
-      /** @type {Array<module:ol/Feature>} */
+      /** @type {Array<import("../Feature.js").default>} */
       const features = [];
       const topoJSONFeatures = topoJSONTopology.objects;
       const property = this.layerName_;
@@ -128,7 +128,7 @@ class TopoJSON extends JSONFeature {
 
 /**
  * @const
- * @type {Object<string, function(TopoJSONGeometry, Array, ...Array): module:ol/geom/Geometry>}
+ * @type {Object<string, function(TopoJSONGeometry, Array, ...Array): import("../geom/Geometry.js").default>}
  */
 const GEOMETRY_READERS = {
   'Point': readPointGeometry,
@@ -144,12 +144,12 @@ const GEOMETRY_READERS = {
  * Concatenate arcs into a coordinate array.
  * @param {Array<number>} indices Indices of arcs to concatenate.  Negative
  *     values indicate arcs need to be reversed.
- * @param {Array<Array<module:ol/coordinate~Coordinate>>} arcs Array of arcs (already
+ * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs (already
  *     transformed).
- * @return {Array<module:ol/coordinate~Coordinate>} Coordinates array.
+ * @return {Array<import("../coordinate.js").Coordinate>} Coordinates array.
  */
 function concatenateArcs(indices, arcs) {
-  /** @type {Array<module:ol/coordinate~Coordinate>} */
+  /** @type {Array<import("../coordinate.js").Coordinate>} */
   const coordinates = [];
   let index, arc;
   for (let i = 0, ii = indices.length; i < ii; ++i) {
@@ -181,7 +181,7 @@ function concatenateArcs(indices, arcs) {
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array<number>} scale Scale for each dimension.
  * @param {Array<number>} translate Translation for each dimension.
- * @return {module:ol/geom/Point} Geometry.
+ * @return {import("../geom/Point.js").default} Geometry.
  */
 function readPointGeometry(object, scale, translate) {
   const coordinates = object.coordinates;
@@ -198,7 +198,7 @@ function readPointGeometry(object, scale, translate) {
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array<number>} scale Scale for each dimension.
  * @param {Array<number>} translate Translation for each dimension.
- * @return {module:ol/geom/MultiPoint} Geometry.
+ * @return {import("../geom/MultiPoint.js").default} Geometry.
  */
 function readMultiPointGeometry(object, scale, translate) {
   const coordinates = object.coordinates;
@@ -215,8 +215,8 @@ function readMultiPointGeometry(object, scale, translate) {
  * Create a linestring from a TopoJSON geometry object.
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
- * @param {Array<Array<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
- * @return {module:ol/geom/LineString} Geometry.
+ * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
+ * @return {import("../geom/LineString.js").default} Geometry.
  */
 function readLineStringGeometry(object, arcs) {
   const coordinates = concatenateArcs(object.arcs, arcs);
@@ -228,8 +228,8 @@ function readLineStringGeometry(object, arcs) {
  * Create a multi-linestring from a TopoJSON geometry object.
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
- * @param {Array<Array<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
- * @return {module:ol/geom/MultiLineString} Geometry.
+ * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
+ * @return {import("../geom/MultiLineString.js").default} Geometry.
  */
 function readMultiLineStringGeometry(object, arcs) {
   const coordinates = [];
@@ -244,8 +244,8 @@ function readMultiLineStringGeometry(object, arcs) {
  * Create a polygon from a TopoJSON geometry object.
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
- * @param {Array<Array<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
- * @return {module:ol/geom/Polygon} Geometry.
+ * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
+ * @return {import("../geom/Polygon.js").default} Geometry.
  */
 function readPolygonGeometry(object, arcs) {
   const coordinates = [];
@@ -260,8 +260,8 @@ function readPolygonGeometry(object, arcs) {
  * Create a multi-polygon from a TopoJSON geometry object.
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
- * @param {Array<Array<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
- * @return {module:ol/geom/MultiPolygon} Geometry.
+ * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
+ * @return {import("../geom/MultiPolygon.js").default} Geometry.
  */
 function readMultiPolygonGeometry(object, arcs) {
   const coordinates = [];
@@ -284,14 +284,14 @@ function readMultiPolygonGeometry(object, arcs) {
  *
  * @param {TopoJSONGeometryCollection} collection TopoJSON Geometry
  *     object.
- * @param {Array<Array<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
+ * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
  * @param {Array<number>} scale Scale for each dimension.
  * @param {Array<number>} translate Translation for each dimension.
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {Array<module:ol/Feature>} Array of features.
+ * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+ * @return {Array<import("../Feature.js").default>} Array of features.
  */
 function readFeaturesFromGeometryCollection(collection, arcs, scale, translate, property, name, opt_options) {
   const geometries = collection.geometries;
@@ -308,14 +308,14 @@ function readFeaturesFromGeometryCollection(collection, arcs, scale, translate, 
  * Create a feature from a TopoJSON geometry object.
  *
  * @param {TopoJSONGeometry} object TopoJSON geometry object.
- * @param {Array<Array<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
+ * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
  * @param {Array<number>} scale Scale for each dimension.
  * @param {Array<number>} translate Translation for each dimension.
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/Feature} Feature.
+ * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+ * @return {import("../Feature.js").default} Feature.
  */
 function readFeatureFromGeometry(object, arcs, scale, translate, property, name, opt_options) {
   let geometry;
@@ -327,7 +327,7 @@ function readFeatureFromGeometry(object, arcs, scale, translate, property, name,
     geometry = geometryReader(object, arcs);
   }
   const feature = new Feature();
-  feature.setGeometry(/** @type {module:ol/geom/Geometry} */ (
+  feature.setGeometry(/** @type {import("../geom/Geometry.js").default} */ (
     transformWithOptions(geometry, false, opt_options)));
   if (object.id !== undefined) {
     feature.setId(object.id);
@@ -350,7 +350,7 @@ function readFeatureFromGeometry(object, arcs, scale, translate, property, name,
  * Apply a linear transform to array of arcs.  The provided array of arcs is
  * modified in place.
  *
- * @param {Array<Array<module:ol/coordinate~Coordinate>>} arcs Array of arcs.
+ * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
  * @param {Array<number>} scale Scale for each dimension.
  * @param {Array<number>} translate Translation for each dimension.
  */
@@ -364,7 +364,7 @@ function transformArcs(arcs, scale, translate) {
 /**
  * Apply a linear transform to an arc.  The provided arc is modified in place.
  *
- * @param {Array<module:ol/coordinate~Coordinate>} arc Arc.
+ * @param {Array<import("../coordinate.js").Coordinate>} arc Arc.
  * @param {Array<number>} scale Scale for each dimension.
  * @param {Array<number>} translate Translation for each dimension.
  */
@@ -386,7 +386,7 @@ function transformArc(arc, scale, translate) {
  * Apply a linear transform to a vertex.  The provided vertex is modified in
  * place.
  *
- * @param {module:ol/coordinate~Coordinate} vertex Vertex.
+ * @param {import("../coordinate.js").Coordinate} vertex Vertex.
  * @param {Array<number>} scale Scale for each dimension.
  * @param {Array<number>} translate Translation for each dimension.
  */

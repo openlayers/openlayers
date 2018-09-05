@@ -28,7 +28,7 @@ export const Mode = {
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/events/condition~Condition} [condition] A function that
+ * @property {import("../events/condition.js").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. Default is
  * {@link module:ol/events/condition~always}.
@@ -50,7 +50,7 @@ export const Mode = {
  */
 class MouseWheelZoom extends Interaction {
   /**
-   * @param {module:ol/interaction/MouseWheelZoom~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
@@ -92,13 +92,13 @@ class MouseWheelZoom extends Interaction {
 
     /**
      * @private
-     * @type {module:ol/events/condition~Condition}
+     * @type {import("../events/condition.js").Condition}
      */
     this.condition_ = options.condition ? options.condition : always;
 
     /**
      * @private
-     * @type {?module:ol/coordinate~Coordinate}
+     * @type {?import("../coordinate.js").Coordinate}
      */
     this.lastAnchor_ = null;
 
@@ -116,7 +116,7 @@ class MouseWheelZoom extends Interaction {
 
     /**
      * @private
-     * @type {module:ol/interaction/MouseWheelZoom~Mode|undefined}
+     * @type {Mode|undefined}
      */
     this.mode_ = undefined;
 
@@ -159,7 +159,7 @@ class MouseWheelZoom extends Interaction {
 
   /**
    * @private
-   * @param {module:ol/PluggableMap} map Map.
+   * @param {import("../PluggableMap.js").default} map Map.
    */
   handleWheelZoom_(map) {
     const view = map.getView();
@@ -194,9 +194,9 @@ class MouseWheelZoom extends Interaction {
 /**
  * Handles the {@link module:ol/MapBrowserEvent map browser event} (if it was a
  * mousewheel-event) and eventually zooms the map.
- * @param {module:ol/MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} Allow event propagation.
- * @this {module:ol/interaction/MouseWheelZoom}
+ * @this {import("./MouseWheelZoom.js").default}
  */
 function handleEvent(mapBrowserEvent) {
   if (!this.condition_(mapBrowserEvent)) {

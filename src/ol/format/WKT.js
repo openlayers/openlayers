@@ -17,7 +17,7 @@ import SimpleGeometry from '../geom/SimpleGeometry.js';
 
 
 /**
- * @enum {function (new:module:ol/geom/Geometry, Array, module:ol/geom/GeometryLayout)}
+ * @enum {function (new:import("../geom/Geometry.js").default, Array, import("../geom/GeometryLayout.js").default)}
  */
 const GeometryConstructor = {
   'POINT': Point,
@@ -155,7 +155,7 @@ class Lexer {
 
   /**
    * Fetch and return the next token.
-   * @return {!module:ol/format/WKT~Token} Next string token.
+   * @return {!Token} Next string token.
    */
   nextToken() {
     const c = this.nextChar_();
@@ -232,24 +232,24 @@ class Lexer {
 class Parser {
 
   /**
-   * @param {module:ol/format/WKT~Lexer} lexer The lexer.
+   * @param {Lexer} lexer The lexer.
    */
   constructor(lexer) {
 
     /**
-     * @type {module:ol/format/WKT~Lexer}
+     * @type {Lexer}
      * @private
      */
     this.lexer_ = lexer;
 
     /**
-     * @type {module:ol/format/WKT~Token}
+     * @type {Token}
      * @private
      */
     this.token_;
 
     /**
-     * @type {module:ol/geom/GeometryLayout}
+     * @type {import("../geom/GeometryLayout.js").default}
      * @private
      */
     this.layout_ = GeometryLayout.XY;
@@ -265,7 +265,7 @@ class Parser {
 
   /**
    * Tests if the given type matches the type of the current token.
-   * @param {module:ol/format/WKT~TokenType} type Token type.
+   * @param {TokenType} type Token type.
    * @return {boolean} Whether the token matches the given type.
    */
   isTokenType(type) {
@@ -275,7 +275,7 @@ class Parser {
 
   /**
    * If the given type matches the current token, consume it.
-   * @param {module:ol/format/WKT~TokenType} type Token type.
+   * @param {TokenType} type Token type.
    * @return {boolean} Whether the token matches the given type.
    */
   match(type) {
@@ -288,7 +288,7 @@ class Parser {
 
   /**
    * Try to parse the tokens provided by the lexer.
-   * @return {module:ol/geom/Geometry} The geometry.
+   * @return {import("../geom/Geometry.js").default} The geometry.
    */
   parse() {
     this.consume_();
@@ -298,7 +298,7 @@ class Parser {
 
   /**
    * Try to parse the dimensional info.
-   * @return {module:ol/geom/GeometryLayout} The layout.
+   * @return {import("../geom/GeometryLayout.js").default} The layout.
    * @private
    */
   parseGeometryLayout_() {
@@ -321,7 +321,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<module:ol/geom/Geometry>} A collection of geometries.
+   * @return {!Array<import("../geom/Geometry.js").default>} A collection of geometries.
    * @private
    */
   parseGeometryCollectionText_() {
@@ -534,7 +534,7 @@ class Parser {
   }
 
   /**
-   * @return {!module:ol/geom/Geometry} The geometry.
+   * @return {!import("../geom/Geometry.js").default} The geometry.
    * @private
    */
   parseGeometry_() {
@@ -607,7 +607,7 @@ class Parser {
 class WKT extends TextFeature {
 
   /**
-   * @param {module:ol/format/WKT~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     super();
@@ -628,7 +628,7 @@ class WKT extends TextFeature {
   /**
    * Parse a WKT string.
    * @param {string} wkt WKT string.
-   * @return {module:ol/geom/Geometry|undefined}
+   * @return {import("../geom/Geometry.js").default|undefined}
    *     The geometry created.
    * @private
    */
@@ -659,7 +659,7 @@ class WKT extends TextFeature {
     const geometry = this.readGeometryFromText(text, opt_options);
     if (this.splitCollection_ &&
         geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
-      geometries = (/** @type {module:ol/geom/GeometryCollection} */ (geometry))
+      geometries = (/** @type {import("../geom/GeometryCollection.js").default} */ (geometry))
         .getGeometriesArray();
     } else {
       geometries = [geometry];
@@ -680,7 +680,7 @@ class WKT extends TextFeature {
     const geometry = this.parse_(text);
     if (geometry) {
       return (
-        /** @type {module:ol/geom/Geometry} */ (transformWithOptions(geometry, false, opt_options))
+        /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, false, opt_options))
       );
     } else {
       return null;
@@ -717,14 +717,14 @@ class WKT extends TextFeature {
    * @inheritDoc
    */
   writeGeometryText(geometry, opt_options) {
-    return encode(/** @type {module:ol/geom/Geometry} */ (
+    return encode(/** @type {import("../geom/Geometry.js").default} */ (
       transformWithOptions(geometry, true, opt_options)));
   }
 }
 
 
 /**
- * @param {module:ol/geom/Point} geom Point geometry.
+ * @param {import("../geom/Point.js").default} geom Point geometry.
  * @return {string} Coordinates part of Point as WKT.
  */
 function encodePointGeometry(geom) {
@@ -737,7 +737,7 @@ function encodePointGeometry(geom) {
 
 
 /**
- * @param {module:ol/geom/MultiPoint} geom MultiPoint geometry.
+ * @param {import("../geom/MultiPoint.js").default} geom MultiPoint geometry.
  * @return {string} Coordinates part of MultiPoint as WKT.
  */
 function encodeMultiPointGeometry(geom) {
@@ -751,7 +751,7 @@ function encodeMultiPointGeometry(geom) {
 
 
 /**
- * @param {module:ol/geom/GeometryCollection} geom GeometryCollection geometry.
+ * @param {import("../geom/GeometryCollection.js").default} geom GeometryCollection geometry.
  * @return {string} Coordinates part of GeometryCollection as WKT.
  */
 function encodeGeometryCollectionGeometry(geom) {
@@ -765,7 +765,7 @@ function encodeGeometryCollectionGeometry(geom) {
 
 
 /**
- * @param {module:ol/geom/LineString|module:ol/geom/LinearRing} geom LineString geometry.
+ * @param {import("../geom/LineString.js").default|import("../geom/LinearRing.js").default} geom LineString geometry.
  * @return {string} Coordinates part of LineString as WKT.
  */
 function encodeLineStringGeometry(geom) {
@@ -779,7 +779,7 @@ function encodeLineStringGeometry(geom) {
 
 
 /**
- * @param {module:ol/geom/MultiLineString} geom MultiLineString geometry.
+ * @param {import("../geom/MultiLineString.js").default} geom MultiLineString geometry.
  * @return {string} Coordinates part of MultiLineString as WKT.
  */
 function encodeMultiLineStringGeometry(geom) {
@@ -793,7 +793,7 @@ function encodeMultiLineStringGeometry(geom) {
 
 
 /**
- * @param {module:ol/geom/Polygon} geom Polygon geometry.
+ * @param {import("../geom/Polygon.js").default} geom Polygon geometry.
  * @return {string} Coordinates part of Polygon as WKT.
  */
 function encodePolygonGeometry(geom) {
@@ -807,7 +807,7 @@ function encodePolygonGeometry(geom) {
 
 
 /**
- * @param {module:ol/geom/MultiPolygon} geom MultiPolygon geometry.
+ * @param {import("../geom/MultiPolygon.js").default} geom MultiPolygon geometry.
  * @return {string} Coordinates part of MultiPolygon as WKT.
  */
 function encodeMultiPolygonGeometry(geom) {
@@ -820,7 +820,7 @@ function encodeMultiPolygonGeometry(geom) {
 }
 
 /**
- * @param {module:ol/geom/SimpleGeometry} geom SimpleGeometry geometry.
+ * @param {import("../geom/SimpleGeometry.js").default} geom SimpleGeometry geometry.
  * @return {string} Potential dimensional information for WKT type.
  */
 function encodeGeometryLayout(geom) {
@@ -838,7 +838,7 @@ function encodeGeometryLayout(geom) {
 
 /**
  * @const
- * @type {Object<string, function(module:ol/geom/Geometry): string>}
+ * @type {Object<string, function(import("../geom/Geometry.js").default): string>}
  */
 const GeometryEncoder = {
   'Point': encodePointGeometry,
@@ -853,7 +853,7 @@ const GeometryEncoder = {
 
 /**
  * Encode a geometry as WKT.
- * @param {module:ol/geom/Geometry} geom The geometry to encode.
+ * @param {import("../geom/Geometry.js").default} geom The geometry to encode.
  * @return {string} WKT string for the geometry.
  */
 function encode(geom) {

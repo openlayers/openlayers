@@ -29,7 +29,7 @@ import {
 
 
 /**
- * @type {!Object<string, Array<module:ol/render/ReplayType>>}
+ * @type {!Object<string, Array<import("../../render/ReplayType.js").default>>}
  */
 const IMAGE_REPLAYS = {
   'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
@@ -39,7 +39,7 @@ const IMAGE_REPLAYS = {
 
 
 /**
- * @type {!Object<string, Array<module:ol/render/ReplayType>>}
+ * @type {!Object<string, Array<import("../../render/ReplayType.js").default>>}
  */
 const VECTOR_REPLAYS = {
   'image': [ReplayType.DEFAULT],
@@ -56,7 +56,7 @@ const VECTOR_REPLAYS = {
 class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
-   * @param {module:ol/layer/VectorTile} layer VectorTile layer.
+   * @param {import("../../layer/VectorTile.js").default} layer VectorTile layer.
    */
   constructor(layer) {
 
@@ -82,7 +82,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     /**
      * @private
-     * @type {module:ol/transform~Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.tmpTransform_ = createTransform();
 
@@ -136,15 +136,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {module:ol/VectorImageTile} tile Tile.
+   * @param {import("../../VectorImageTile.js").default} tile Tile.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/proj/Projection} projection Projection.
+   * @param {import("../../proj/Projection.js").default} projection Projection.
    * @private
    */
   createReplayGroup_(tile, pixelRatio, projection) {
     const layer = this.getLayer();
     const revision = layer.getRevision();
-    const renderOrder = /** @type {module:ol/render~OrderFunction} */ (layer.getRenderOrder()) || null;
+    const renderOrder = /** @type {import("../../render.js").OrderFunction} */ (layer.getRenderOrder()) || null;
 
     const replayState = tile.getReplayState(layer);
     if (!replayState.dirty && replayState.renderedRevision == revision &&
@@ -152,7 +152,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       return;
     }
 
-    const source = /** @type {module:ol/source/VectorTile} */ (layer.getSource());
+    const source = /** @type {import("../../source/VectorTile.js").default} */ (layer.getSource());
     const sourceTileGrid = source.getTileGrid();
     const tileGrid = source.getTileGridForProjection(projection);
     const resolution = tileGrid.getResolution(tile.tileCoord[0]);
@@ -182,8 +182,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
       /**
-       * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
-       * @this {module:ol/renderer/canvas/VectorTileLayer}
+       * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
+       * @this {import("./VectorTileLayer.js").default}
        */
       const render = function(feature) {
         let styles;
@@ -238,7 +238,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     /** @type {!Object<string, boolean>} */
     const features = {};
 
-    /** @type {Array<module:ol/VectorImageTile>} */
+    /** @type {Array<import("../../VectorImageTile.js").default>} */
     const renderedTiles = this.renderedTiles;
 
     let bufferedExtent, found;
@@ -257,7 +257,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
         found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
           /**
-           * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+           * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
            * @return {?} Callback result.
            */
           function(feature) {
@@ -273,14 +273,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {module:ol/VectorTile} tile Tile.
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @return {module:ol/transform~Transform} transform Transform.
+   * @param {import("../../VectorTile.js").default} tile Tile.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @return {import("../../transform.js").Transform} transform Transform.
    * @private
    */
   getReplayTransform_(tile, frameState) {
     const layer = this.getLayer();
-    const source = /** @type {module:ol/source/VectorTile} */ (layer.getSource());
+    const source = /** @type {import("../../source/VectorTile.js").default} */ (layer.getSource());
     const tileGrid = source.getTileGrid();
     const tileCoord = tile.tileCoord;
     const tileResolution = tileGrid.getResolution(tileCoord[0]);
@@ -302,7 +302,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {module:ol/events/Event} event Event.
+   * @param {import("../../events/Event.js").default} event Event.
    */
   handleFontsChanged_(event) {
     const layer = this.getLayer();
@@ -313,7 +313,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * Handle changes in image style state.
-   * @param {module:ol/events/Event} event Image style change event.
+   * @param {import("../../events/Event.js").default} event Image style change event.
    * @private
    */
   handleStyleImageChange_(event) {
@@ -328,7 +328,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const renderMode = layer.getRenderMode();
     if (renderMode != VectorTileRenderType.IMAGE) {
       const declutterReplays = layer.getDeclutter() ? {} : null;
-      const source = /** @type {module:ol/source/VectorTile} */ (layer.getSource());
+      const source = /** @type {import("../../source/VectorTile.js").default} */ (layer.getSource());
       const replayTypes = VECTOR_REPLAYS[renderMode];
       const pixelRatio = frameState.pixelRatio;
       const rotation = frameState.viewState.rotation;
@@ -349,7 +349,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const clips = [];
       const zs = [];
       for (let i = tiles.length - 1; i >= 0; --i) {
-        const tile = /** @type {module:ol/VectorImageTile} */ (tiles[i]);
+        const tile = /** @type {import("../../VectorImageTile.js").default} */ (tiles[i]);
         if (tile.getState() == TileState.ABORT) {
           continue;
         }
@@ -411,10 +411,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+   * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
    * @param {number} squaredTolerance Squared tolerance.
-   * @param {module:ol/style/Style|Array<module:ol/style/Style>} styles The style or array of styles.
-   * @param {module:ol/render/canvas/ReplayGroup} replayGroup Replay group.
+   * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
+   * @param {import("../../render/canvas/ReplayGroup.js").default} replayGroup Replay group.
    * @return {boolean} `true` if an image is loading.
    */
   renderFeature(feature, squaredTolerance, styles, replayGroup) {
@@ -437,9 +437,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {module:ol/VectorImageTile} tile Tile.
+   * @param {import("../../VectorImageTile.js").default} tile Tile.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/proj/Projection} projection Projection.
+   * @param {import("../../proj/Projection.js").default} projection Projection.
    * @private
    */
   renderTileImage_(tile, pixelRatio, projection) {
@@ -451,7 +451,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       replayState.renderedTileRevision = revision;
       const tileCoord = tile.wrappedTileCoord;
       const z = tileCoord[0];
-      const source = /** @type {module:ol/source/VectorTile} */ (layer.getSource());
+      const source = /** @type {import("../../source/VectorTile.js").default} */ (layer.getSource());
       const tileGrid = source.getTileGridForProjection(projection);
       const resolution = tileGrid.getResolution(z);
       const context = tile.getContext(layer);
@@ -478,7 +478,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {module:ol/layer/Layer} layer The candidate layer.
+ * @param {import("../../layer/Layer.js").default} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
 CanvasVectorTileLayerRenderer['handles'] = function(layer) {
@@ -488,12 +488,12 @@ CanvasVectorTileLayerRenderer['handles'] = function(layer) {
 
 /**
  * Create a layer renderer.
- * @param {module:ol/renderer/Map} mapRenderer The map renderer.
- * @param {module:ol/layer/Layer} layer The layer to be rendererd.
- * @return {module:ol/renderer/canvas/VectorTileLayer} The layer renderer.
+ * @param {import("../Map.js").default} mapRenderer The map renderer.
+ * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
+ * @return {import("./VectorTileLayer.js").default} The layer renderer.
  */
 CanvasVectorTileLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasVectorTileLayerRenderer(/** @type {module:ol/layer/VectorTile} */ (layer));
+  return new CanvasVectorTileLayerRenderer(/** @type {import("../../layer/VectorTile.js").default} */ (layer));
 };
 
 

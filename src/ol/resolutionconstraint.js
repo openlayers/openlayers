@@ -12,7 +12,7 @@ import {clamp} from './math.js';
 
 /**
  * @param {Array<number>} resolutions Resolutions.
- * @return {module:ol/resolutionconstraint~Type} Zoom function.
+ * @return {Type} Zoom function.
  */
 export function createSnapToResolutions(resolutions) {
   return (
@@ -45,7 +45,7 @@ export function createSnapToResolutions(resolutions) {
  * @param {number} power Power.
  * @param {number} maxResolution Maximum resolution.
  * @param {number=} opt_maxLevel Maximum level.
- * @return {module:ol/resolutionconstraint~Type} Zoom function.
+ * @return {Type} Zoom function.
  */
 export function createSnapToPower(power, maxResolution, opt_maxLevel) {
   return (

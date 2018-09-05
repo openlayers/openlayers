@@ -16,15 +16,15 @@ import ImageStyle from '../style/Image.js';
 /**
  * @typedef {Object} Options
  * @property {Array<number>} [anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
- * @property {module:ol/style/IconOrigin} [anchorOrigin] Origin of the anchor: `bottom-left`, `bottom-right`,
+ * @property {import("./IconOrigin.js").default} [anchorOrigin] Origin of the anchor: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`. Default is `top-left`.
- * @property {module:ol/style/IconAnchorUnits} [anchorXUnits] Units in which the anchor x value is
+ * @property {import("./IconAnchorUnits.js").default} [anchorXUnits] Units in which the anchor x value is
  * specified. A value of `'fraction'` indicates the x value is a fraction of the icon. A value of `'pixels'` indicates
  * the x value in pixels. Default is `'fraction'`.
- * @property {module:ol/style/IconAnchorUnits} [anchorYUnits] Units in which the anchor y value is
+ * @property {import("./IconAnchorUnits.js").default} [anchorYUnits] Units in which the anchor y value is
  * specified. A value of `'fraction'` indicates the y value is a fraction of the icon. A value of `'pixels'` indicates
  * the y value in pixels. Default is `'fraction'`.
- * @property {module:ol/color~Color|string} [color] Color to tint the icon. If not specified,
+ * @property {import("../color.js").Color|string} [color] Color to tint the icon. If not specified,
  * the icon will be left as is.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images. Note that you must provide a
  * `crossOrigin` value if you are using the WebGL renderer or if you want to access pixel data with the Canvas renderer.
@@ -34,15 +34,15 @@ import ImageStyle from '../style/Image.js';
  * to provide the size of the image, with the `imgSize` option.
  * @property {Array<number>} [offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
  * sub-rectangle to use from the original icon image.
- * @property {module:ol/style/IconOrigin} [offsetOrigin] Origin of the offset: `bottom-left`, `bottom-right`,
+ * @property {import("./IconOrigin.js").default} [offsetOrigin] Origin of the offset: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`. Default is `top-left`.
  * @property {number} [opacity=1] Opacity of the icon.
  * @property {number} [scale=1] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the icon with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
- * @property {module:ol/size~Size} [size] Icon size in pixel. Can be used together with `offset` to define the
+ * @property {import("../size.js").Size} [size] Icon size in pixel. Can be used together with `offset` to define the
  * sub-rectangle to use from the origin (sprite) icon image.
- * @property {module:ol/size~Size} [imgSize] Image size in pixels. Only required if `img` is set and `src` is not, and
+ * @property {import("../size.js").Size} [imgSize] Image size in pixels. Only required if `img` is set and `src` is not, and
  * for SVG images in Internet Explorer 11. The provided `imgSize` needs to match the actual size of the image.
  * @property {string} [src] Image source URI.
  */
@@ -55,7 +55,7 @@ import ImageStyle from '../style/Image.js';
  */
 class Icon extends ImageStyle {
   /**
-   * @param {module:ol/style/Icon~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     const options = opt_options || {};
@@ -102,21 +102,21 @@ class Icon extends ImageStyle {
 
     /**
      * @private
-     * @type {module:ol/style/IconOrigin}
+     * @type {import("./IconOrigin.js").default}
      */
     this.anchorOrigin_ = options.anchorOrigin !== undefined ?
       options.anchorOrigin : IconOrigin.TOP_LEFT;
 
     /**
      * @private
-     * @type {module:ol/style/IconAnchorUnits}
+     * @type {import("./IconAnchorUnits.js").default}
      */
     this.anchorXUnits_ = options.anchorXUnits !== undefined ?
       options.anchorXUnits : IconAnchorUnits.FRACTION;
 
     /**
      * @private
-     * @type {module:ol/style/IconAnchorUnits}
+     * @type {import("./IconAnchorUnits.js").default}
      */
     this.anchorYUnits_ = options.anchorYUnits !== undefined ?
       options.anchorYUnits : IconAnchorUnits.FRACTION;
@@ -134,7 +134,7 @@ class Icon extends ImageStyle {
     const image = options.img !== undefined ? options.img : null;
 
     /**
-     * @type {module:ol/size~Size}
+     * @type {import("../size.js").Size}
      */
     const imgSize = options.imgSize !== undefined ? options.imgSize : null;
 
@@ -155,20 +155,20 @@ class Icon extends ImageStyle {
       6); // A defined and non-empty `src` or `image` must be provided
 
     /**
-     * @type {module:ol/ImageState}
+     * @type {import("../ImageState.js").default}
      */
     const imageState = options.src !== undefined ?
       ImageState.IDLE : ImageState.LOADED;
 
     /**
      * @private
-     * @type {module:ol/color~Color}
+     * @type {import("../color.js").Color}
      */
     this.color_ = options.color !== undefined ? asArray(options.color) : null;
 
     /**
      * @private
-     * @type {module:ol/style/IconImage}
+     * @type {import("./IconImage.js").default}
      */
     this.iconImage_ = getIconImage(
       image, /** @type {string} */ (src), imgSize, this.crossOrigin_, imageState, this.color_);
@@ -181,7 +181,7 @@ class Icon extends ImageStyle {
 
     /**
      * @private
-     * @type {module:ol/style/IconOrigin}
+     * @type {import("./IconOrigin.js").default}
      */
     this.offsetOrigin_ = options.offsetOrigin !== undefined ?
       options.offsetOrigin : IconOrigin.TOP_LEFT;
@@ -194,7 +194,7 @@ class Icon extends ImageStyle {
 
     /**
      * @private
-     * @type {module:ol/size~Size}
+     * @type {import("../size.js").Size}
      */
     this.size_ = options.size !== undefined ? options.size : null;
 
@@ -202,7 +202,7 @@ class Icon extends ImageStyle {
 
   /**
    * Clones the style. The underlying Image/HTMLCanvasElement is not cloned.
-   * @return {module:ol/style/Icon} The cloned style.
+   * @return {import("./Icon.js").default} The cloned style.
    * @api
    */
   clone() {
@@ -282,7 +282,7 @@ class Icon extends ImageStyle {
 
   /**
    * Get the icon color.
-   * @return {module:ol/color~Color} Color.
+   * @return {import("../color.js").Color} Color.
    * @api
    */
   getColor() {

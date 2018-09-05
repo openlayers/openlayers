@@ -17,7 +17,7 @@ import TextPlacement from '../../style/TextPlacement.js';
 class CanvasTextReplay extends CanvasReplay {
   /**
    * @param {number} tolerance Tolerance.
-   * @param {module:ol/extent~Extent} maxExtent Maximum extent.
+   * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
@@ -28,7 +28,7 @@ class CanvasTextReplay extends CanvasReplay {
 
     /**
      * @private
-     * @type {module:ol/render/canvas~DeclutterGroup}
+     * @type {import("../canvas.js").DeclutterGroup}
      */
     this.declutterGroup_;
 
@@ -70,34 +70,34 @@ class CanvasTextReplay extends CanvasReplay {
 
     /**
      * @private
-     * @type {?module:ol/render/canvas~FillState}
+     * @type {?import("../canvas.js").FillState}
      */
     this.textFillState_ = null;
 
     /**
-     * @type {!Object<string, module:ol/render/canvas~FillState>}
+     * @type {!Object<string, import("../canvas.js").FillState>}
      */
     this.fillStates = {};
 
     /**
      * @private
-     * @type {?module:ol/render/canvas~StrokeState}
+     * @type {?import("../canvas.js").StrokeState}
      */
     this.textStrokeState_ = null;
 
     /**
-     * @type {!Object<string, module:ol/render/canvas~StrokeState>}
+     * @type {!Object<string, import("../canvas.js").StrokeState>}
      */
     this.strokeStates = {};
 
     /**
      * @private
-     * @type {module:ol/render/canvas~TextState}
+     * @type {import("../canvas.js").TextState}
      */
-    this.textState_ = /** @type {module:ol/render/canvas~TextState} */ ({});
+    this.textState_ = /** @type {import("../canvas.js").TextState} */ ({});
 
     /**
-     * @type {!Object<string, module:ol/render/canvas~TextState>}
+     * @type {!Object<string, import("../canvas.js").TextState>}
      */
     this.textStates = {};
 
@@ -200,24 +200,24 @@ class CanvasTextReplay extends CanvasReplay {
           end = flatCoordinates.length;
           break;
         case GeometryType.LINE_STRING:
-          flatCoordinates = /** @type {module:ol/geom/LineString} */ (geometry).getFlatMidpoint();
+          flatCoordinates = /** @type {import("../../geom/LineString.js").default} */ (geometry).getFlatMidpoint();
           break;
         case GeometryType.CIRCLE:
-          flatCoordinates = /** @type {module:ol/geom/Circle} */ (geometry).getCenter();
+          flatCoordinates = /** @type {import("../../geom/Circle.js").default} */ (geometry).getCenter();
           break;
         case GeometryType.MULTI_LINE_STRING:
-          flatCoordinates = /** @type {module:ol/geom/MultiLineString} */ (geometry).getFlatMidpoints();
+          flatCoordinates = /** @type {import("../../geom/MultiLineString.js").default} */ (geometry).getFlatMidpoints();
           end = flatCoordinates.length;
           break;
         case GeometryType.POLYGON:
-          flatCoordinates = /** @type {module:ol/geom/Polygon} */ (geometry).getFlatInteriorPoint();
+          flatCoordinates = /** @type {import("../../geom/Polygon.js").default} */ (geometry).getFlatInteriorPoint();
           if (!textState.overflow && flatCoordinates[2] / this.resolution < width) {
             return;
           }
           stride = 3;
           break;
         case GeometryType.MULTI_POLYGON:
-          const interiorPoints = /** @type {module:ol/geom/MultiPolygon} */ (geometry).getFlatInteriorPoints();
+          const interiorPoints = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getFlatInteriorPoints();
           flatCoordinates = [];
           for (i = 0, ii = interiorPoints.length; i < ii; i += 3) {
             if (textState.overflow || interiorPoints[i + 2] / this.resolution >= width) {
@@ -356,7 +356,7 @@ class CanvasTextReplay extends CanvasReplay {
    * @private
    * @param {number} begin Begin.
    * @param {number} end End.
-   * @param {module:ol/render/canvas~DeclutterGroup} declutterGroup Declutter group.
+   * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
    */
   drawChars_(begin, end, declutterGroup) {
     const strokeState = this.textStrokeState_;
@@ -366,7 +366,7 @@ class CanvasTextReplay extends CanvasReplay {
     const strokeKey = this.strokeKey_;
     if (strokeState) {
       if (!(strokeKey in this.strokeStates)) {
-        this.strokeStates[strokeKey] = /** @type {module:ol/render/canvas~StrokeState} */ ({
+        this.strokeStates[strokeKey] = /** @type {import("../canvas.js").StrokeState} */ ({
           strokeStyle: strokeState.strokeStyle,
           lineCap: strokeState.lineCap,
           lineDashOffset: strokeState.lineDashOffset,
@@ -379,7 +379,7 @@ class CanvasTextReplay extends CanvasReplay {
     }
     const textKey = this.textKey_;
     if (!(this.textKey_ in this.textStates)) {
-      this.textStates[this.textKey_] = /** @type {module:ol/render/canvas~TextState} */ ({
+      this.textStates[this.textKey_] = /** @type {import("../canvas.js").TextState} */ ({
         font: textState.font,
         textAlign: textState.textAlign || defaultTextAlign,
         scale: textState.scale
@@ -388,7 +388,7 @@ class CanvasTextReplay extends CanvasReplay {
     const fillKey = this.fillKey_;
     if (fillState) {
       if (!(fillKey in this.fillStates)) {
-        this.fillStates[fillKey] = /** @type {module:ol/render/canvas~FillState} */ ({
+        this.fillStates[fillKey] = /** @type {import("../canvas.js").FillState} */ ({
           fillStyle: fillState.fillStyle
         });
       }
@@ -440,7 +440,7 @@ class CanvasTextReplay extends CanvasReplay {
     if (!textStyle) {
       this.text_ = '';
     } else {
-      this.declutterGroup_ = /** @type {module:ol/render/canvas~DeclutterGroup} */ (declutterGroup);
+      this.declutterGroup_ = /** @type {import("../canvas.js").DeclutterGroup} */ (declutterGroup);
 
       const textFillStyle = textStyle.getFill();
       if (!textFillStyle) {
@@ -448,7 +448,7 @@ class CanvasTextReplay extends CanvasReplay {
       } else {
         fillState = this.textFillState_;
         if (!fillState) {
-          fillState = this.textFillState_ = /** @type {module:ol/render/canvas~FillState} */ ({});
+          fillState = this.textFillState_ = /** @type {import("../canvas.js").FillState} */ ({});
         }
         fillState.fillStyle = asColorLike(
           textFillStyle.getColor() || defaultFillStyle);
@@ -460,7 +460,7 @@ class CanvasTextReplay extends CanvasReplay {
       } else {
         strokeState = this.textStrokeState_;
         if (!strokeState) {
-          strokeState = this.textStrokeState_ = /** @type {module:ol/render/canvas~StrokeState} */ ({});
+          strokeState = this.textStrokeState_ = /** @type {import("../canvas.js").StrokeState} */ ({});
         }
         const lineDash = textStrokeStyle.getLineDash();
         const lineDashOffset = textStrokeStyle.getLineDashOffset();

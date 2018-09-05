@@ -18,15 +18,15 @@ import {toString} from './color.js';
 
 
 /**
- * @param {module:ol/color~Color|module:ol/colorlike~ColorLike} color Color.
- * @return {module:ol/colorlike~ColorLike} The color as an {@link ol/colorlike~ColorLike}.
+ * @param {import("./color.js").Color|ColorLike} color Color.
+ * @return {ColorLike} The color as an {@link ol/colorlike~ColorLike}.
  * @api
  */
 export function asColorLike(color) {
   if (isColorLike(color)) {
     return /** @type {string|CanvasPattern|CanvasGradient} */ (color);
   } else {
-    return toString(/** @type {module:ol/color~Color} */ (color));
+    return toString(/** @type {import("./color.js").Color} */ (color));
   }
 }
 

@@ -38,14 +38,14 @@ const Instruction = {
 class WebGLLineStringReplay extends WebGLReplay {
   /**
    * @param {number} tolerance Tolerance.
-   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @param {import("../../extent.js").Extent} maxExtent Max extent.
    */
   constructor(tolerance, maxExtent) {
     super(tolerance, maxExtent);
 
     /**
      * @private
-     * @type {module:ol/render/webgl/linestringreplay/defaultshader/Locations}
+     * @type {import("./linestringreplay/defaultshader/Locations.js").default}
      */
     this.defaultLocations_ = null;
 
@@ -386,7 +386,7 @@ class WebGLLineStringReplay extends WebGLReplay {
   }
 
   /**
-   * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+   * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
    * @param {number=} opt_index Index count.
    */
   setPolygonStyle(feature, opt_index) {
@@ -532,7 +532,7 @@ class WebGLLineStringReplay extends WebGLReplay {
   /**
    * @private
    * @param {WebGLRenderingContext} gl gl.
-   * @param {module:ol/webgl/Context} context Context.
+   * @param {import("../../webgl/Context.js").default} context Context.
    * @param {Object} skippedFeaturesHash Ids of features to skip.
    */
   drawReplaySkipping_(gl, context, skippedFeaturesHash) {

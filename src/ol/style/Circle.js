@@ -7,10 +7,10 @@ import RegularShape from '../style/RegularShape.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/style/Fill} [fill] Fill style.
+ * @property {import("./Fill.js").default} [fill] Fill style.
  * @property {number} radius Circle radius.
- * @property {module:ol/style/Stroke} [stroke] Stroke style.
- * @property {module:ol/style/AtlasManager} [atlasManager] The atlas manager to use for this circle.
+ * @property {import("./Stroke.js").default} [stroke] Stroke style.
+ * @property {import("./AtlasManager.js").default} [atlasManager] The atlas manager to use for this circle.
  * When using WebGL it is recommended to use an atlas manager to avoid texture switching. If an atlas manager is given,
  * the circle is added to an atlas. By default no atlas manager is used.
  */
@@ -23,11 +23,11 @@ import RegularShape from '../style/RegularShape.js';
  */
 class CircleStyle extends RegularShape {
   /**
-   * @param {module:ol/style/Circle~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
-    const options = opt_options || /** @type {module:ol/style/Circle~Options} */ ({});
+    const options = opt_options || /** @type {Options} */ ({});
 
     super({
       points: Infinity,
@@ -41,7 +41,7 @@ class CircleStyle extends RegularShape {
 
   /**
   * Clones the style.  If an atlasmanager was provided to the original style it will be used in the cloned style, too.
-  * @return {module:ol/style/Circle} The cloned style.
+  * @return {import("./Circle.js").default} The cloned style.
   * @override
   * @api
   */

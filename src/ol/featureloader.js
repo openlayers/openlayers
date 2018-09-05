@@ -17,8 +17,8 @@ import FormatType from './format/FormatType.js';
  *
  * The function is responsible for loading the features and adding them to the
  * source.
- * @typedef {function(this:module:ol/source/Vector, module:ol/extent~Extent, number,
- *                    module:ol/proj/Projection)} FeatureLoader
+ * @typedef {function(this:import("./source/Vector.js").default, import("./extent.js").Extent, number,
+ *                    import("./proj/Projection.js").default)} FeatureLoader
  * @api
  */
 
@@ -31,29 +31,29 @@ import FormatType from './format/FormatType.js';
  * to be loaded, a `{number}` representing the resolution (map units per pixel)
  * and an {@link module:ol/proj/Projection} for the projection  as
  * arguments and returns a `{string}` representing the URL.
- * @typedef {function(module:ol/extent~Extent, number, module:ol/proj/Projection): string} FeatureUrlFunction
+ * @typedef {function(import("./extent.js").Extent, number, import("./proj/Projection.js").default): string} FeatureUrlFunction
  * @api
  */
 
 
 /**
- * @param {string|module:ol/featureloader~FeatureUrlFunction} url Feature URL service.
- * @param {module:ol/format/Feature} format Feature format.
- * @param {function(this:module:ol/VectorTile, Array<module:ol/Feature>, module:ol/proj/Projection, module:ol/extent~Extent)|function(this:module:ol/source/Vector, Array<module:ol/Feature>)} success
+ * @param {string|FeatureUrlFunction} url Feature URL service.
+ * @param {import("./format/Feature.js").default} format Feature format.
+ * @param {function(this:import("./VectorTile.js").default, Array<import("./Feature.js").default>, import("./proj/Projection.js").default, import("./extent.js").Extent)|function(this:import("./source/Vector.js").default, Array<import("./Feature.js").default>)} success
  *     Function called with the loaded features and optionally with the data
  *     projection. Called with the vector tile or source as `this`.
- * @param {function(this:module:ol/VectorTile)|function(this:module:ol/source/Vector)} failure
+ * @param {function(this:import("./VectorTile.js").default)|function(this:import("./source/Vector.js").default)} failure
  *     Function called when loading failed. Called with the vector tile or
  *     source as `this`.
- * @return {module:ol/featureloader~FeatureLoader} The feature loader.
+ * @return {FeatureLoader} The feature loader.
  */
 export function loadFeaturesXhr(url, format, success, failure) {
   return (
     /**
-     * @param {module:ol/extent~Extent} extent Extent.
+     * @param {import("./extent.js").Extent} extent Extent.
      * @param {number} resolution Resolution.
-     * @param {module:ol/proj/Projection} projection Projection.
-     * @this {module:ol/source/Vector|module:ol/VectorTile}
+     * @param {import("./proj/Projection.js").default} projection Projection.
+     * @this {import("./source/Vector.js").default|import("./VectorTile.js").default}
      */
     function(extent, resolution, projection) {
       const xhr = new XMLHttpRequest();
@@ -110,18 +110,18 @@ export function loadFeaturesXhr(url, format, success, failure) {
  * Create an XHR feature loader for a `url` and `format`. The feature loader
  * loads features (with XHR), parses the features, and adds them to the
  * vector source.
- * @param {string|module:ol/featureloader~FeatureUrlFunction} url Feature URL service.
- * @param {module:ol/format/Feature} format Feature format.
- * @return {module:ol/featureloader~FeatureLoader} The feature loader.
+ * @param {string|FeatureUrlFunction} url Feature URL service.
+ * @param {import("./format/Feature.js").default} format Feature format.
+ * @return {FeatureLoader} The feature loader.
  * @api
  */
 export function xhr(url, format) {
   return loadFeaturesXhr(url, format,
     /**
-     * @param {Array<module:ol/Feature>} features The loaded features.
-     * @param {module:ol/proj/Projection} dataProjection Data
+     * @param {Array<import("./Feature.js").default>} features The loaded features.
+     * @param {import("./proj/Projection.js").default} dataProjection Data
      * projection.
-     * @this {module:ol/source/Vector}
+     * @this {import("./source/Vector.js").default}
      */
     function(features, dataProjection) {
       this.addFeatures(features);

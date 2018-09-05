@@ -10,7 +10,7 @@ import Interaction, {pan} from '../interaction/Interaction.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/events/condition~Condition} [condition] A function that
+ * @property {import("../events/condition.js").Condition} [condition] A function that
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. Default is
  * {@link module:ol/events/condition~noModifierKeys} and
@@ -36,7 +36,7 @@ import Interaction, {pan} from '../interaction/Interaction.js';
  */
 class KeyboardPan extends Interaction {
   /**
-   * @param {module:ol/interaction/KeyboardPan~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
@@ -48,7 +48,7 @@ class KeyboardPan extends Interaction {
 
     /**
      * @private
-     * @param {module:ol/MapBrowserEvent} mapBrowserEvent Browser event.
+     * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Browser event.
      * @return {boolean} Combined condition result.
      */
     this.defaultCondition_ = function(mapBrowserEvent) {
@@ -58,7 +58,7 @@ class KeyboardPan extends Interaction {
 
     /**
      * @private
-     * @type {module:ol/events/condition~Condition}
+     * @type {import("../events/condition.js").Condition}
      */
     this.condition_ = options.condition !== undefined ?
       options.condition : this.defaultCondition_;
@@ -85,9 +85,9 @@ class KeyboardPan extends Interaction {
  * Handles the {@link module:ol/MapBrowserEvent map browser event} if it was a
  * `KeyEvent`, and decides the direction to pan to (if an arrow key was
  * pressed).
- * @param {module:ol/MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {module:ol/interaction/KeyboardPan}
+ * @this {import("./KeyboardPan.js").default}
  */
 function handleEvent(mapBrowserEvent) {
   let stopEvent = false;

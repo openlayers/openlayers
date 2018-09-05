@@ -37,7 +37,7 @@ class RBush {
      * A mapping between the objects added to this rbush wrapper
      * and the objects that are actually added to the internal rbush.
      * @private
-     * @type {Object<number, module:ol/structs/RBush~Entry>}
+     * @type {Object<number, Entry>}
      */
     this.items_ = {};
 
@@ -45,11 +45,11 @@ class RBush {
 
   /**
    * Insert a value into the RBush.
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @param {T} value Value.
    */
   insert(extent, value) {
-    /** @type {module:ol/structs/RBush~Entry} */
+    /** @type {Entry} */
     const item = {
       minX: extent[0],
       minY: extent[1],
@@ -65,7 +65,7 @@ class RBush {
 
   /**
    * Bulk-insert values into the RBush.
-   * @param {Array<module:ol/extent~Extent>} extents Extents.
+   * @param {Array<import("../extent.js").Extent>} extents Extents.
    * @param {Array<T>} values Values.
    */
   load(extents, values) {
@@ -74,7 +74,7 @@ class RBush {
       const extent = extents[i];
       const value = values[i];
 
-      /** @type {module:ol/structs/RBush~Entry} */
+      /** @type {Entry} */
       const item = {
         minX: extent[0],
         minY: extent[1],
@@ -107,7 +107,7 @@ class RBush {
 
   /**
    * Update the extent of a value in the RBush.
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @param {T} value Value.
    */
   update(extent, value) {
@@ -134,11 +134,11 @@ class RBush {
 
   /**
    * Return all values in the given extent.
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @return {Array<T>} All in extent.
    */
   getInExtent(extent) {
-    /** @type {module:ol/structs/RBush~Entry} */
+    /** @type {Entry} */
     const bbox = {
       minX: extent[0],
       minY: extent[1],
@@ -168,7 +168,7 @@ class RBush {
 
   /**
    * Calls a callback function with each value in the provided extent.
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @param {function(this: S, T): *} callback Callback.
    * @param {S=} opt_this The object to use as `this` in `callback`.
    * @return {*} Callback return value.
@@ -217,8 +217,8 @@ class RBush {
 
 
   /**
-   * @param {module:ol/extent~Extent=} opt_extent Extent.
-   * @return {module:ol/extent~Extent} Extent.
+   * @param {import("../extent.js").Extent=} opt_extent Extent.
+   * @return {import("../extent.js").Extent} Extent.
    */
   getExtent(opt_extent) {
     // FIXME add getExtent() to rbush
@@ -228,7 +228,7 @@ class RBush {
 
 
   /**
-   * @param {module:ol/structs/RBush} rbush R-Tree.
+   * @param {import("./RBush.js").default} rbush R-Tree.
    */
   concat(rbush) {
     this.rbush_.load(rbush.rbush_.all());

@@ -8,13 +8,13 @@ import XYZ from '../source/XYZ.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize=2048] Cache size.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
  * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {module:ol/proj~ProjectionLike} [projection='EPSG:3857'] Projection.
+ * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection.
  * @property {number} [maxZoom=18] Max zoom.
  * @property {number} [minZoom] Minimum zoom.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
@@ -38,7 +38,7 @@ import XYZ from '../source/XYZ.js';
  */
 class CartoDB extends XYZ {
   /**
-   * @param {module:ol/source/CartoDB~Options=} options CartoDB options.
+   * @param {Options=} options CartoDB options.
    */
   constructor(options) {
     super({

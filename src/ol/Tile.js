@@ -40,7 +40,7 @@ import EventType from './events/EventType.js';
  * });
  * ```
  *
- * @typedef {function(module:ol/Tile, string)} LoadFunction
+ * @typedef {function(import("./Tile.js").default, string)} LoadFunction
  * @api
  */
 
@@ -54,8 +54,8 @@ import EventType from './events/EventType.js';
  * and returns a `{string}` representing the tile URL, or undefined if no tile
  * should be requested for the passed tile coordinate.
  *
- * @typedef {function(module:ol/tilecoord~TileCoord, number,
- *           module:ol/proj/Projection): (string|undefined)} UrlFunction
+ * @typedef {function(import("./tilecoord.js").TileCoord, number,
+ *           import("./proj/Projection.js").default): (string|undefined)} UrlFunction
  * @api
  */
 
@@ -77,9 +77,9 @@ import EventType from './events/EventType.js';
 class Tile extends EventTarget {
 
   /**
-   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
-   * @param {module:ol/TileState} state State.
-   * @param {module:ol/Tile~Options=} opt_options Tile options.
+   * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {import("./TileState.js").default} state State.
+   * @param {Options=} opt_options Tile options.
    */
   constructor(tileCoord, state, opt_options) {
     super();
@@ -87,13 +87,13 @@ class Tile extends EventTarget {
     const options = opt_options ? opt_options : {};
 
     /**
-     * @type {module:ol/tilecoord~TileCoord}
+     * @type {import("./tilecoord.js").TileCoord}
      */
     this.tileCoord = tileCoord;
 
     /**
      * @protected
-     * @type {module:ol/TileState}
+     * @type {import("./TileState.js").default}
      */
     this.state = state;
 
@@ -101,7 +101,7 @@ class Tile extends EventTarget {
      * An "interim" tile for this tile. The interim tile may be used while this
      * one is loading, for "smooth" transitions when changing params/dimensions
      * on the source.
-     * @type {module:ol/Tile}
+     * @type {import("./Tile.js").default}
      */
     this.interimTile = null;
 
@@ -146,7 +146,7 @@ class Tile extends EventTarget {
    * Get the interim tile most suitable for rendering using the chain of interim
    * tiles. This corresponds to the  most recent tile that has been loaded, if no
    * such tile exists, the original tile is returned.
-   * @return {!module:ol/Tile} Best tile for rendering.
+   * @return {!import("./Tile.js").default} Best tile for rendering.
    */
   getInterimTile() {
     if (!this.interimTile) {
@@ -206,7 +206,7 @@ class Tile extends EventTarget {
 
   /**
    * Get the tile coordinate for this tile.
-   * @return {module:ol/tilecoord~TileCoord} The tile coordinate.
+   * @return {import("./tilecoord.js").TileCoord} The tile coordinate.
    * @api
    */
   getTileCoord() {
@@ -214,7 +214,7 @@ class Tile extends EventTarget {
   }
 
   /**
-   * @return {module:ol/TileState} State.
+   * @return {import("./TileState.js").default} State.
    */
   getState() {
     return this.state;
@@ -225,7 +225,7 @@ class Tile extends EventTarget {
    * it is important to set the state correctly to {@link module:ol/TileState~ERROR}
    * when the tile cannot be loaded. Otherwise the tile cannot be removed from
    * the tile queue and will block other requests.
-   * @param {module:ol/TileState} state State.
+   * @param {import("./TileState.js").default} state State.
    * @api
    */
   setState(state) {

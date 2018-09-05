@@ -12,8 +12,8 @@ import {getKeyZXY} from '../tilecoord.js';
 
 class LabeledTile extends Tile {
   /**
-   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
-   * @param {module:ol/size~Size} tileSize Tile size.
+   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {import("../size.js").Size} tileSize Tile size.
    * @param {string} text Text.
    */
   constructor(tileCoord, tileSize, text) {
@@ -22,7 +22,7 @@ class LabeledTile extends Tile {
 
     /**
     * @private
-    * @type {module:ol/size~Size}
+    * @type {import("../size.js").Size}
     */
     this.tileSize_ = tileSize;
 
@@ -74,8 +74,8 @@ class LabeledTile extends Tile {
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/proj~ProjectionLike} projection Projection.
- * @property {module:ol/tilegrid/TileGrid} [tileGrid] Tile grid.
+ * @property {import("../proj.js").ProjectionLike} projection Projection.
+ * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
 
@@ -91,7 +91,7 @@ class LabeledTile extends Tile {
  */
 class TileDebug extends TileSource {
   /**
-   * @param {module:ol/source/TileDebug~Options=} options Debug tile options.
+   * @param {Options=} options Debug tile options.
    */
   constructor(options) {
 
@@ -110,7 +110,7 @@ class TileDebug extends TileSource {
   getTile(z, x, y) {
     const tileCoordKey = getKeyZXY(z, x, y);
     if (this.tileCache.containsKey(tileCoordKey)) {
-      return /** @type {!module:ol/source/TileDebug~LabeledTile} */ (this.tileCache.get(tileCoordKey));
+      return /** @type {!LabeledTile} */ (this.tileCache.get(tileCoordKey));
     } else {
       const tileSize = toSize(this.tileGrid.getTileSize(z));
       const tileCoord = [z, x, y];

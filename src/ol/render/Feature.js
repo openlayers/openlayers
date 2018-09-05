@@ -14,7 +14,7 @@ import {create as createTransform, compose as composeTransform} from '../transfo
 
 
 /**
- * @type {module:ol/transform~Transform}
+ * @type {import("../transform.js").Transform}
  */
 const tmpTransform = createTransform();
 
@@ -24,7 +24,7 @@ const tmpTransform = createTransform();
  * structure, optimized for vector tile rendering and styling. Geometry access
  * through the API is limited to getting the type and extent of the geometry.
  *
- * @param {module:ol/geom/GeometryType} type Geometry type.
+ * @param {import("../geom/GeometryType.js").default} type Geometry type.
  * @param {Array<number>} flatCoordinates Flat coordinates. These always need
  *     to be right-handed for polygons.
  * @param {Array<number>|Array<Array<number>>} ends Ends or Endss.
@@ -35,7 +35,7 @@ class RenderFeature {
   constructor(type, flatCoordinates, ends, properties, id) {
     /**
     * @private
-    * @type {module:ol/extent~Extent|undefined}
+    * @type {import("../extent.js").Extent|undefined}
     */
     this.extent_;
 
@@ -47,7 +47,7 @@ class RenderFeature {
 
     /**
     * @private
-    * @type {module:ol/geom/GeometryType}
+    * @type {import("../geom/GeometryType.js").default}
     */
     this.type_ = type;
 
@@ -95,7 +95,7 @@ class RenderFeature {
 
   /**
   * Get the extent of this feature's geometry.
-  * @return {module:ol/extent~Extent} Extent.
+  * @return {import("../extent.js").Extent} Extent.
   * @api
   */
   getExtent() {
@@ -185,7 +185,7 @@ class RenderFeature {
   /**
   * For API compatibility with {@link module:ol/Feature~Feature}, this method is useful when
   * determining the geometry type in style function (see {@link #getType}).
-  * @return {module:ol/render/Feature} Feature.
+  * @return {import("./Feature.js").default} Feature.
   * @api
   */
   getGeometry() {
@@ -210,7 +210,7 @@ class RenderFeature {
 
   /**
   * Get the type of this feature's geometry.
-  * @return {module:ol/geom/GeometryType} Geometry type.
+  * @return {import("../geom/GeometryType.js").default} Geometry type.
   * @api
   */
   getType() {
@@ -221,8 +221,8 @@ class RenderFeature {
   * Transform geometry coordinates from tile pixel space to projected.
   * The SRS of the source and destination are expected to be the same.
   *
-  * @param {module:ol/proj~ProjectionLike} source The current projection
-  * @param {module:ol/proj~ProjectionLike} destination The desired projection.
+  * @param {import("../proj.js").ProjectionLike} source The current projection
+  * @param {import("../proj.js").ProjectionLike} destination The desired projection.
   */
   transform(source, destination) {
     source = getProjection(source);
@@ -257,7 +257,7 @@ RenderFeature.prototype.getFlatCoordinates =
 
 /**
  * Get the feature for working with its geometry.
- * @return {module:ol/render/Feature} Feature.
+ * @return {import("./Feature.js").default} Feature.
  */
 RenderFeature.prototype.getSimplifiedGeometry =
     RenderFeature.prototype.getGeometry;

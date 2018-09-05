@@ -11,14 +11,14 @@ import Zoom from './Zoom.js';
  * @typedef {Object} DefaultsOptions
  * @property {boolean} [attribution=true] Include
  * {@link module:ol/control/Attribution~Attribution}.
- * @property {module:ol/control/Attribution~Options} [attributionOptions]
+ * @property {import("./Attribution.js").Options} [attributionOptions]
  * Options for {@link module:ol/control/Attribution~Attribution}.
  * @property {boolean} [rotate=true] Include
  * {@link module:ol/control/Rotate~Rotate}.
- * @property {module:ol/control/Rotate~Options} [rotateOptions] Options
+ * @property {import("./Rotate.js").Options} [rotateOptions] Options
  * for {@link module:ol/control/Rotate~Rotate}.
  * @property {boolean} [zoom] Include {@link module:ol/control/Zoom~Zoom}.
- * @property {module:ol/control/Zoom~Options} [zoomOptions] Options for
+ * @property {import("./Zoom.js").Options} [zoomOptions] Options for
  * {@link module:ol/control/Zoom~Zoom}.
  * @api
  */
@@ -32,9 +32,9 @@ import Zoom from './Zoom.js';
  * * {@link module:ol/control/Rotate~Rotate}
  * * {@link module:ol/control/Attribution~Attribution}
  *
- * @param {module:ol/control/util~DefaultsOptions=} opt_options
+ * @param {DefaultsOptions=} opt_options
  * Defaults options.
- * @return {module:ol/Collection<module:ol/control/Control>}
+ * @return {import("../Collection.js").default<import("./Control.js").default>}
  * Controls.
  * @function module:ol/control.defaults
  * @api

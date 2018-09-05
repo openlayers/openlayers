@@ -20,28 +20,28 @@ import {appendParams} from '../uri.js';
 
 /**
  * @const
- * @type {module:ol/size~Size}
+ * @type {import("../size.js").Size}
  */
 const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
 
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
  * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
- * @property {module:ol/source/WMSServerType|string} [serverType] The type of
+ * @property {import("./WMSServerType.js").default|string} [serverType] The type of
  * the remote WMS server: `mapserver`, `geoserver` or `qgis`. Only needed if `hidpi` is `true`.
- * @property {module:ol/Image~LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
+ * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
  * @property {Object<string,*>} params WMS request parameters.
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
- * @property {module:ol/proj~ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} projection Projection.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or
  * higher.
@@ -60,11 +60,11 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  */
 class ImageWMS extends ImageSource {
   /**
-   * @param {module:ol/source/ImageWMS~Options=} [opt_options] ImageWMS options.
+   * @param {Options=} [opt_options] ImageWMS options.
    */
   constructor(opt_options) {
 
-    const options = opt_options || /** @type {module:ol/source/ImageWMS~Options} */ ({});
+    const options = opt_options || /** @type {Options} */ ({});
 
     super({
       attributions: options.attributions,
@@ -87,7 +87,7 @@ class ImageWMS extends ImageSource {
 
     /**
      * @private
-     * @type {module:ol/Image~LoadFunction}
+     * @type {import("../Image.js").LoadFunction}
      */
     this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
       options.imageLoadFunction : defaultImageLoadFunction;
@@ -107,9 +107,9 @@ class ImageWMS extends ImageSource {
 
     /**
      * @private
-     * @type {module:ol/source/WMSServerType|undefined}
+     * @type {import("./WMSServerType.js").default|undefined}
      */
-    this.serverType_ = /** @type {module:ol/source/WMSServerType|undefined} */ (options.serverType);
+    this.serverType_ = /** @type {import("./WMSServerType.js").default|undefined} */ (options.serverType);
 
     /**
      * @private
@@ -119,13 +119,13 @@ class ImageWMS extends ImageSource {
 
     /**
      * @private
-     * @type {module:ol/Image}
+     * @type {import("../Image.js").default}
      */
     this.image_ = null;
 
     /**
      * @private
-     * @type {module:ol/size~Size}
+     * @type {import("../size.js").Size}
      */
     this.imageSize_ = [0, 0];
 
@@ -147,9 +147,9 @@ class ImageWMS extends ImageSource {
    * Return the GetFeatureInfo URL for the passed coordinate, resolution, and
    * projection. Return `undefined` if the GetFeatureInfo URL cannot be
    * constructed.
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {number} resolution Resolution.
-   * @param {module:ol/proj~ProjectionLike} projection Projection.
+   * @param {import("../proj.js").ProjectionLike} projection Projection.
    * @param {!Object} params GetFeatureInfo params. `INFO_FORMAT` at least should
    *     be provided. If `QUERY_LAYERS` is not provided then the layers specified
    *     in the `LAYERS` parameter will be used. `VERSION` should not be
@@ -267,7 +267,7 @@ class ImageWMS extends ImageSource {
 
   /**
    * Return the image load function of the source.
-   * @return {module:ol/Image~LoadFunction} The image load function.
+   * @return {import("../Image.js").LoadFunction} The image load function.
    * @api
    */
   getImageLoadFunction() {
@@ -275,10 +275,10 @@ class ImageWMS extends ImageSource {
   }
 
   /**
-   * @param {module:ol/extent~Extent} extent Extent.
-   * @param {module:ol/size~Size} size Size.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {import("../size.js").Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/proj/Projection} projection Projection.
+   * @param {import("../proj/Projection.js").default} projection Projection.
    * @param {Object} params Params.
    * @return {string} Request URL.
    * @private
@@ -342,7 +342,7 @@ class ImageWMS extends ImageSource {
 
   /**
    * Set the image load function of the source.
-   * @param {module:ol/Image~LoadFunction} imageLoadFunction Image load function.
+   * @param {import("../Image.js").LoadFunction} imageLoadFunction Image load function.
    * @api
    */
   setImageLoadFunction(imageLoadFunction) {

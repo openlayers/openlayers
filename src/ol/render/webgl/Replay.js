@@ -18,7 +18,7 @@ import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TRIANGLES,
 class WebGLReplay extends VectorContext {
   /**
    * @param {number} tolerance Tolerance.
-   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @param {import("../../extent.js").Extent} maxExtent Max extent.
    */
   constructor(tolerance, maxExtent) {
     super();
@@ -32,7 +32,7 @@ class WebGLReplay extends VectorContext {
     /**
      * @protected
      * @const
-     * @type {module:ol/extent~Extent}
+     * @type {import("../../extent.js").Extent}
      */
     this.maxExtent = maxExtent;
 
@@ -42,25 +42,25 @@ class WebGLReplay extends VectorContext {
      * we use the "Rendering Relative to Eye" technique described in the "3D
      * Engine Design for Virtual Globes" book.
      * @protected
-     * @type {module:ol/coordinate~Coordinate}
+     * @type {import("../../coordinate.js").Coordinate}
      */
     this.origin = getCenter(maxExtent);
 
     /**
      * @private
-     * @type {module:ol/transform~Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.projectionMatrix_ = createTransform();
 
     /**
      * @private
-     * @type {module:ol/transform~Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.offsetRotateMatrix_ = createTransform();
 
     /**
      * @private
-     * @type {module:ol/transform~Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.offsetScaleMatrix_ = createTransform();
 
@@ -78,7 +78,7 @@ class WebGLReplay extends VectorContext {
 
     /**
      * @protected
-     * @type {?module:ol/webgl/Buffer}
+     * @type {?import("../../webgl/Buffer.js").default}
      */
     this.indicesBuffer = null;
 
@@ -92,7 +92,7 @@ class WebGLReplay extends VectorContext {
     /**
      * Start index per feature (the feature).
      * @protected
-     * @type {Array<module:ol/Feature|module:ol/render/Feature>}
+     * @type {Array<import("../../Feature.js").default|import("../Feature.js").default>}
      */
     this.startIndicesFeature = [];
 
@@ -104,14 +104,14 @@ class WebGLReplay extends VectorContext {
 
     /**
      * @protected
-     * @type {?module:ol/webgl/Buffer}
+     * @type {?import("../../webgl/Buffer.js").default}
      */
     this.verticesBuffer = null;
 
     /**
      * Optional parameter for PolygonReplay instances.
      * @protected
-     * @type {module:ol/render/webgl/LineStringReplay|undefined}
+     * @type {import("./LineStringReplay.js").default|undefined}
      */
     this.lineStringReplay = undefined;
 
@@ -119,14 +119,14 @@ class WebGLReplay extends VectorContext {
 
   /**
    * @abstract
-   * @param {module:ol/webgl/Context} context WebGL context.
+   * @param {import("../../webgl/Context.js").default} context WebGL context.
    * @return {function()} Delete resources function.
    */
   getDeleteResourcesFunction(context) {}
 
   /**
    * @abstract
-   * @param {module:ol/webgl/Context} context Context.
+   * @param {import("../../webgl/Context.js").default} context Context.
    */
   finish(context) {}
 
@@ -134,13 +134,13 @@ class WebGLReplay extends VectorContext {
    * @abstract
    * @protected
    * @param {WebGLRenderingContext} gl gl.
-   * @param {module:ol/webgl/Context} context Context.
-   * @param {module:ol/size~Size} size Size.
+   * @param {import("../../webgl/Context.js").default} context Context.
+   * @param {import("../../size.js").Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
-   * @return {module:ol/render/webgl/circlereplay/defaultshader/Locations|
-     module:ol/render/webgl/linestringreplay/defaultshader/Locations|
-     module:ol/render/webgl/polygonreplay/defaultshader/Locations|
-     module:ol/render/webgl/texturereplay/defaultshader/Locations} Locations.
+   * @return {import("./circlereplay/defaultshader/Locations.js").default|
+     import("./linestringreplay/defaultshader/Locations.js").default|
+     import("./polygonreplay/defaultshader/Locations.js").default|
+     import("./texturereplay/defaultshader/Locations.js").default} Locations.
    */
   setUpProgram(gl, context, size, pixelRatio) {}
 
@@ -148,10 +148,10 @@ class WebGLReplay extends VectorContext {
    * @abstract
    * @protected
    * @param {WebGLRenderingContext} gl gl.
-   * @param {module:ol/render/webgl/circlereplay/defaultshader/Locations|
-     module:ol/render/webgl/linestringreplay/defaultshader/Locations|
-     module:ol/render/webgl/polygonreplay/defaultshader/Locations|
-     module:ol/render/webgl/texturereplay/defaultshader/Locations} locations Locations.
+   * @param {import("./circlereplay/defaultshader/Locations.js").default|
+     import("./linestringreplay/defaultshader/Locations.js").default|
+     import("./polygonreplay/defaultshader/Locations.js").default|
+     import("./texturereplay/defaultshader/Locations.js").default} locations Locations.
    */
   shutDownProgram(gl, locations) {}
 
@@ -159,7 +159,7 @@ class WebGLReplay extends VectorContext {
    * @abstract
    * @protected
    * @param {WebGLRenderingContext} gl gl.
-   * @param {module:ol/webgl/Context} context Context.
+   * @param {import("../../webgl/Context.js").default} context Context.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {boolean} hitDetection Hit detection mode.
    */
@@ -169,10 +169,10 @@ class WebGLReplay extends VectorContext {
    * @abstract
    * @protected
    * @param {WebGLRenderingContext} gl gl.
-   * @param {module:ol/webgl/Context} context Context.
+   * @param {import("../../webgl/Context.js").default} context Context.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
-   * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
-   * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting this extent are checked.
+   * @param {function((import("../../Feature.js").default|import("../Feature.js").default)): T|undefined} featureCallback Feature callback.
+   * @param {import("../../extent.js").Extent=} opt_hitExtent Hit extent: Only features intersecting this extent are checked.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -181,11 +181,11 @@ class WebGLReplay extends VectorContext {
   /**
    * @protected
    * @param {WebGLRenderingContext} gl gl.
-   * @param {module:ol/webgl/Context} context Context.
+   * @param {import("../../webgl/Context.js").default} context Context.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
-   * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
+   * @param {function((import("../../Feature.js").default|import("../Feature.js").default)): T|undefined} featureCallback Feature callback.
    * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
-   * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting this extent are checked.
+   * @param {import("../../extent.js").Extent=} opt_hitExtent Hit extent: Only features intersecting this extent are checked.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -204,9 +204,9 @@ class WebGLReplay extends VectorContext {
   /**
    * @protected
    * @param {WebGLRenderingContext} gl gl.
-   * @param {module:ol/webgl/Context} context Context.
+   * @param {import("../../webgl/Context.js").default} context Context.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
-   * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
+   * @param {function((import("../../Feature.js").default|import("../Feature.js").default)): T|undefined} featureCallback Feature callback.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -223,17 +223,17 @@ class WebGLReplay extends VectorContext {
   }
 
   /**
-   * @param {module:ol/webgl/Context} context Context.
-   * @param {module:ol/coordinate~Coordinate} center Center.
+   * @param {import("../../webgl/Context.js").default} context Context.
+   * @param {import("../../coordinate.js").Coordinate} center Center.
    * @param {number} resolution Resolution.
    * @param {number} rotation Rotation.
-   * @param {module:ol/size~Size} size Size.
+   * @param {import("../../size.js").Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
    * @param {number} opacity Global opacity.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
-   * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
+   * @param {function((import("../../Feature.js").default|import("../Feature.js").default)): T|undefined} featureCallback Feature callback.
    * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
-   * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting this extent are checked.
+   * @param {import("../../extent.js").Extent=} opt_hitExtent Hit extent: Only features intersecting this extent are checked.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -338,7 +338,7 @@ class WebGLReplay extends VectorContext {
   /**
    * @protected
    * @param {WebGLRenderingContext} gl gl.
-   * @param {module:ol/webgl/Context} context Context.
+   * @param {import("../../webgl/Context.js").default} context Context.
    * @param {number} start Start index.
    * @param {number} end End index.
    */

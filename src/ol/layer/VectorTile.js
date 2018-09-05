@@ -33,7 +33,7 @@ export const RenderType = {
  * @typedef {Object} Options
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
- * @property {module:ol/extent~Extent} [extent] The bounding extent for layer rendering.  The layer will not be
+ * @property {import("../extent.js").Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
  * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
@@ -43,7 +43,7 @@ export const RenderType = {
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {module:ol/render~OrderFunction} [renderOrder] Render order. Function to be used when sorting
+ * @property {import("../render.js").OrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created. Use
  * `null` to avoid the sort, but get an undefined draw order.
  * @property {number} [renderBuffer=100] The buffer in pixels around the tile extent used by the
@@ -51,7 +51,7 @@ export const RenderType = {
  * Recommended value: Vector tiles are usually generated with a buffer, so this value should match
  * the largest possible buffer of the used tiles. It should be at least the size of the largest
  * point symbol or line width.
- * @property {module:ol/layer/VectorTileRenderType|string} [renderMode='hybrid'] Render mode for vector tiles:
+ * @property {import("./VectorTileRenderType.js").default|string} [renderMode='hybrid'] Render mode for vector tiles:
  *  * `'image'`: Vector tiles are rendered as images. Great performance, but point symbols and texts
  *    are always rotated with the view and pixels are scaled during zoom animations.
  *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom
@@ -61,8 +61,8 @@ export const RenderType = {
  *    animations, but slower performance than the other options.
  *
  * When `declutter` is set to `true`, `'hybrid'` will be used instead of `'image'`.
- * @property {module:ol/source/VectorTile} [source] Source.
- * @property {module:ol/PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {import("../source/VectorTile.js").default} [source] Source.
+ * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link module:ol/Map#addLayer}.
@@ -70,7 +70,7 @@ export const RenderType = {
  * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
  * means higher priority. When set to `true`, a `renderMode` of `'image'` will be overridden with
  * `'hybrid'`.
- * @property {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style] Layer style. See
+ * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style] Layer style. See
  * {@link module:ol/style} for default style which will be used if this is not defined.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
  * recreated during animations. This means that no vectors will be shown clipped, but the setting
@@ -80,9 +80,9 @@ export const RenderType = {
  * recreated during interactions. See also `updateWhileAnimating`.
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
- * @property {module:ol/render~OrderFunction} [renderOrder] Render order. Function to be used when sorting
+ * @property {import("../render.js").OrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created.
- * @property {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style] Layer style. See
+ * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style] Layer style. See
  * {@link module:ol/style} for default style which will be used if this is not defined.
  * @property {boolean} [useInterimTilesOnError=true] Use interim tiles on error.
  */
@@ -95,12 +95,12 @@ export const RenderType = {
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @param {module:ol/layer/VectorTile~Options=} opt_options Options.
+ * @param {Options=} opt_options Options.
  * @api
  */
 class VectorTileLayer extends VectorLayer {
   /**
-   * @param {module:ol/layer/VectorTile~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
@@ -129,7 +129,7 @@ class VectorTileLayer extends VectorLayer {
     /**
     * The layer type.
     * @protected
-    * @type {module:ol/LayerType}
+    * @type {import("../LayerType.js").default}
     */
     this.type = LayerType.VECTOR_TILE;
 
@@ -180,7 +180,7 @@ class VectorTileLayer extends VectorLayer {
 /**
  * Return the associated {@link module:ol/source/VectorTile vectortilesource} of the layer.
  * @function
- * @return {module:ol/source/VectorTile} Source.
+ * @return {import("../source/VectorTile.js").default} Source.
  * @api
  */
 VectorTileLayer.prototype.getSource;

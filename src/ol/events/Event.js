@@ -61,7 +61,7 @@ class Event {
 
 
 /**
- * @param {Event|module:ol/events/Event} evt Event
+ * @param {Event|import("./Event.js").default} evt Event
  */
 export function stopPropagation(evt) {
   evt.stopPropagation();
@@ -69,7 +69,7 @@ export function stopPropagation(evt) {
 
 
 /**
- * @param {Event|module:ol/events/Event} evt Event
+ * @param {Event|import("./Event.js").default} evt Event
  */
 export function preventDefault(evt) {
   evt.preventDefault();

@@ -13,7 +13,7 @@ import {createTexture} from '../../webgl/Context.js';
 class WebGLTextureReplay extends WebGLReplay {
   /**
    * @param {number} tolerance Tolerance.
-   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @param {import("../../extent.js").Extent} maxExtent Max extent.
    */
   constructor(tolerance, maxExtent) {
     super(tolerance, maxExtent);
@@ -62,7 +62,7 @@ class WebGLTextureReplay extends WebGLReplay {
 
     /**
      * @protected
-     * @type {module:ol/render/webgl/texturereplay/defaultshader/Locations}
+     * @type {import("./texturereplay/defaultshader/Locations.js").default}
      */
     this.defaultLocations = null;
 
@@ -350,7 +350,7 @@ class WebGLTextureReplay extends WebGLReplay {
    *
    * @protected
    * @param {WebGLRenderingContext} gl gl.
-   * @param {module:ol/webgl/Context} context Context.
+   * @param {import("../../webgl/Context.js").default} context Context.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
    *  to skip.
    * @param {Array<WebGLTexture>} textures Textures.

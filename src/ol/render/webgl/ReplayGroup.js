@@ -19,9 +19,9 @@ import WebGLTextReplay from '../webgl/TextReplay.js';
 const HIT_DETECTION_SIZE = [1, 1];
 
 /**
- * @type {Object<module:ol/render/ReplayType,
- *                function(new: module:ol/render/webgl/Replay, number,
- *                module:ol/extent~Extent)>}
+ * @type {Object<import("../ReplayType.js").default,
+ *                function(new: import("./Replay.js").default, number,
+ *                import("../../extent.js").Extent)>}
  */
 const BATCH_CONSTRUCTORS = {
   'Circle': WebGLCircleReplay,
@@ -35,14 +35,14 @@ const BATCH_CONSTRUCTORS = {
 class WebGLReplayGroup extends ReplayGroup {
   /**
    * @param {number} tolerance Tolerance.
-   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @param {import("../../extent.js").Extent} maxExtent Max extent.
    * @param {number=} opt_renderBuffer Render buffer.
    */
   constructor(tolerance, maxExtent, opt_renderBuffer) {
     super();
 
     /**
-     * @type {module:ol/extent~Extent}
+     * @type {import("../../extent.js").Extent}
      * @private
      */
     this.maxExtent_ = maxExtent;
@@ -62,20 +62,20 @@ class WebGLReplayGroup extends ReplayGroup {
     /**
      * @private
      * @type {!Object<string,
-     *        Object<module:ol/render/ReplayType, module:ol/render/webgl/Replay>>}
+     *        Object<import("../ReplayType.js").default, import("./Replay.js").default>>}
      */
     this.replaysByZIndex_ = {};
 
   }
 
   /**
-   * @param {module:ol/style/Style} style Style.
+   * @param {import("../../style/Style.js").default} style Style.
    * @param {boolean} group Group with previous replay.
    */
   addDeclutter(style, group) {}
 
   /**
-   * @param {module:ol/webgl/Context} context WebGL context.
+   * @param {import("../../webgl/Context.js").default} context WebGL context.
    * @return {function()} Delete resources function.
    */
   getDeleteResourcesFunction(context) {
@@ -99,7 +99,7 @@ class WebGLReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @param {module:ol/webgl/Context} context Context.
+   * @param {import("../../webgl/Context.js").default} context Context.
    */
   finish(context) {
     let zKey;
@@ -141,11 +141,11 @@ class WebGLReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @param {module:ol/webgl/Context} context Context.
-   * @param {module:ol/coordinate~Coordinate} center Center.
+   * @param {import("../../webgl/Context.js").default} context Context.
+   * @param {import("../../coordinate.js").Coordinate} center Center.
    * @param {number} resolution Resolution.
    * @param {number} rotation Rotation.
-   * @param {module:ol/size~Size} size Size.
+   * @param {import("../../size.js").Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
    * @param {number} opacity Global opacity.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
@@ -181,17 +181,17 @@ class WebGLReplayGroup extends ReplayGroup {
 
   /**
    * @private
-   * @param {module:ol/webgl/Context} context Context.
-   * @param {module:ol/coordinate~Coordinate} center Center.
+   * @param {import("../../webgl/Context.js").default} context Context.
+   * @param {import("../../coordinate.js").Coordinate} center Center.
    * @param {number} resolution Resolution.
    * @param {number} rotation Rotation.
-   * @param {module:ol/size~Size} size Size.
+   * @param {import("../../size.js").Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
    * @param {number} opacity Global opacity.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
-   * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} featureCallback Feature callback.
+   * @param {function((import("../../Feature.js").default|import("../Feature.js").default)): T|undefined} featureCallback Feature callback.
    * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
-   * @param {module:ol/extent~Extent=} opt_hitExtent Hit extent: Only features intersecting
+   * @param {import("../../extent.js").Extent=} opt_hitExtent Hit extent: Only features intersecting
    *  this extent are checked.
    * @return {T|undefined} Callback result.
    * @template T
@@ -234,16 +234,16 @@ class WebGLReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
-   * @param {module:ol/webgl/Context} context Context.
-   * @param {module:ol/coordinate~Coordinate} center Center.
+   * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../../webgl/Context.js").default} context Context.
+   * @param {import("../../coordinate.js").Coordinate} center Center.
    * @param {number} resolution Resolution.
    * @param {number} rotation Rotation.
-   * @param {module:ol/size~Size} size Size.
+   * @param {import("../../size.js").Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
    * @param {number} opacity Global opacity.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
-   * @param {function((module:ol/Feature|module:ol/render/Feature)): T|undefined} callback Feature callback.
+   * @param {function((import("../../Feature.js").default|import("../Feature.js").default)): T|undefined} callback Feature callback.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -265,7 +265,7 @@ class WebGLReplayGroup extends ReplayGroup {
 
 
     /**
-     * @type {module:ol/extent~Extent}
+     * @type {import("../../extent.js").Extent}
      */
     let hitExtent;
     if (this.renderBuffer_ !== undefined) {
@@ -278,7 +278,7 @@ class WebGLReplayGroup extends ReplayGroup {
       coordinate, resolution, rotation, HIT_DETECTION_SIZE,
       pixelRatio, opacity, skippedFeaturesHash,
       /**
-       * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+       * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {
@@ -295,12 +295,12 @@ class WebGLReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
-   * @param {module:ol/webgl/Context} context Context.
-   * @param {module:ol/coordinate~Coordinate} center Center.
+   * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../../webgl/Context.js").default} context Context.
+   * @param {import("../../coordinate.js").Coordinate} center Center.
    * @param {number} resolution Resolution.
    * @param {number} rotation Rotation.
-   * @param {module:ol/size~Size} size Size.
+   * @param {import("../../size.js").Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
    * @param {number} opacity Global opacity.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
@@ -325,7 +325,7 @@ class WebGLReplayGroup extends ReplayGroup {
       coordinate, resolution, rotation, HIT_DETECTION_SIZE,
       pixelRatio, opacity, skippedFeaturesHash,
       /**
-       * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+       * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
        * @return {boolean} Is there a feature?
        */
       function(feature) {

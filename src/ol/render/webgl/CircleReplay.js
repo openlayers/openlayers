@@ -18,14 +18,14 @@ import WebGLBuffer from '../../webgl/Buffer.js';
 class WebGLCircleReplay extends WebGLReplay {
   /**
    * @param {number} tolerance Tolerance.
-   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @param {import("../../extent.js").Extent} maxExtent Max extent.
    */
   constructor(tolerance, maxExtent) {
     super(tolerance, maxExtent);
 
     /**
      * @private
-     * @type {module:ol/render/webgl/circlereplay/defaultshader/Locations}
+     * @type {import("./circlereplay/defaultshader/Locations.js").default}
      */
     this.defaultLocations_ = null;
 
@@ -172,7 +172,7 @@ class WebGLCircleReplay extends WebGLReplay {
   getDeleteResourcesFunction(context) {
     // We only delete our stuff here. The shaders and the program may
     // be used by other CircleReplay instances (for other layers). And
-    // they will be deleted when disposing of the module:ol/webgl/Context~WebGLContext
+    // they will be deleted when disposing of the import("../../webgl/Context.js").WebGLContext
     // object.
     const verticesBuffer = this.verticesBuffer;
     const indicesBuffer = this.indicesBuffer;
@@ -296,7 +296,7 @@ class WebGLCircleReplay extends WebGLReplay {
   /**
    * @private
    * @param {WebGLRenderingContext} gl gl.
-   * @param {module:ol/webgl/Context} context Context.
+   * @param {import("../../webgl/Context.js").default} context Context.
    * @param {Object} skippedFeaturesHash Ids of features to skip.
    */
   drawReplaySkipping_(gl, context, skippedFeaturesHash) {

@@ -6,7 +6,7 @@
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
+ * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
  * @param {number} stride Stride.
  * @return {number} offset Offset.
  */
@@ -21,7 +21,7 @@ export function deflateCoordinate(flatCoordinates, offset, coordinate, stride) {
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array<module:ol/coordinate~Coordinate>} coordinates Coordinates.
+ * @param {Array<import("../../coordinate.js").Coordinate>} coordinates Coordinates.
  * @param {number} stride Stride.
  * @return {number} offset Offset.
  */
@@ -39,7 +39,7 @@ export function deflateCoordinates(flatCoordinates, offset, coordinates, stride)
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array<Array<module:ol/coordinate~Coordinate>>} coordinatess Coordinatess.
+ * @param {Array<Array<import("../../coordinate.js").Coordinate>>} coordinatess Coordinatess.
  * @param {number} stride Stride.
  * @param {Array<number>=} opt_ends Ends.
  * @return {Array<number>} Ends.
@@ -61,7 +61,7 @@ export function deflateCoordinatesArray(flatCoordinates, offset, coordinatess, s
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array<Array<Array<module:ol/coordinate~Coordinate>>>} coordinatesss Coordinatesss.
+ * @param {Array<Array<Array<import("../../coordinate.js").Coordinate>>>} coordinatesss Coordinatesss.
  * @param {number} stride Stride.
  * @param {Array<Array<number>>=} opt_endss Endss.
  * @return {Array<Array<number>>} Endss.

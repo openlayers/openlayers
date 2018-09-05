@@ -13,7 +13,7 @@ export function create() {
 
 /**
  * @param {Array<number>} mat4 Flattened 4x4 matrix receiving the result.
- * @param {module:ol/transform~Transform} transform Transformation matrix.
+ * @param {import("../transform.js").Transform} transform Transformation matrix.
  * @return {Array<number>} 2D transformation matrix as flattened 4x4 matrix.
  */
 export function fromTransform(mat4, transform) {

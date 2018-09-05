@@ -8,20 +8,20 @@ import {listenOnce, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 
 /**
- * @typedef {function(new: module:ol/ImageTile, module:ol/tilecoord~TileCoord,
- * module:ol/TileState, string, ?string, module:ol/Tile~LoadFunction)} TileClass
+ * @typedef {function(new: import("./ImageTile.js").default, import("./tilecoord.js").TileCoord,
+ * import("./TileState.js").default, string, ?string, import("./Tile.js").LoadFunction)} TileClass
  * @api
  */
 
 class ImageTile extends Tile {
 
   /**
-   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
-   * @param {module:ol/TileState} state State.
+   * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {import("./TileState.js").default} state State.
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
-   * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
-   * @param {module:ol/Tile~Options=} opt_options Tile options.
+   * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.
+   * @param {import("./Tile.js").Options=} opt_options Tile options.
    */
   constructor(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
@@ -52,13 +52,13 @@ class ImageTile extends Tile {
 
     /**
      * @private
-     * @type {Array<module:ol/events~EventsKey>}
+     * @type {Array<import("./events.js").EventsKey>}
      */
     this.imageListenerKeys_ = null;
 
     /**
      * @private
-     * @type {module:ol/Tile~LoadFunction}
+     * @type {import("./Tile.js").LoadFunction}
      */
     this.tileLoadFunction_ = tileLoadFunction;
 

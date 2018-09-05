@@ -16,9 +16,9 @@ const SIMPLIFY_TOLERANCE = 0.5;
 
 /**
  * @const
- * @type {Object<module:ol/geom/GeometryType,
- *                function(module:ol/render/ReplayGroup, module:ol/geom/Geometry,
- *                         module:ol/style/Style, Object)>}
+ * @type {Object<import("../geom/GeometryType.js").default,
+ *                function(import("../render/ReplayGroup.js").default, import("../geom/Geometry.js").default,
+ *                         import("../style/Style.js").default, Object)>}
  */
 const GEOMETRY_RENDERERS = {
   'Point': renderPointGeometry,
@@ -33,8 +33,8 @@ const GEOMETRY_RENDERERS = {
 
 
 /**
- * @param {module:ol/Feature|module:ol/render/Feature} feature1 Feature 1.
- * @param {module:ol/Feature|module:ol/render/Feature} feature2 Feature 2.
+ * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature1 Feature 1.
+ * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature2 Feature 2.
  * @return {number} Order.
  */
 export function defaultOrder(feature1, feature2) {
@@ -64,10 +64,10 @@ export function getTolerance(resolution, pixelRatio) {
 
 
 /**
- * @param {module:ol/render/ReplayGroup} replayGroup Replay group.
- * @param {module:ol/geom/Circle} geometry Geometry.
- * @param {module:ol/style/Style} style Style.
- * @param {module:ol/Feature} feature Feature.
+ * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
+ * @param {import("../geom/Circle.js").default} geometry Geometry.
+ * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../Feature.js").default} feature Feature.
  */
 function renderCircleGeometry(replayGroup, geometry, style, feature) {
   const fillStyle = style.getFill();
@@ -87,11 +87,11 @@ function renderCircleGeometry(replayGroup, geometry, style, feature) {
 
 
 /**
- * @param {module:ol/render/ReplayGroup} replayGroup Replay group.
- * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
- * @param {module:ol/style/Style} style Style.
+ * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
+ * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+ * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {function(this: T, module:ol/events/Event)} listener Listener function.
+ * @param {function(this: T, import("../events/Event.js").default)} listener Listener function.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
  * @return {boolean} `true` if style is loading.
  * @template T
@@ -119,9 +119,9 @@ export function renderFeature(replayGroup, feature, style, squaredTolerance, lis
 
 
 /**
- * @param {module:ol/render/ReplayGroup} replayGroup Replay group.
- * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
- * @param {module:ol/style/Style} style Style.
+ * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
+ * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+ * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  */
 function renderFeatureInternal(replayGroup, feature, style, squaredTolerance) {
@@ -141,29 +141,29 @@ function renderFeatureInternal(replayGroup, feature, style, squaredTolerance) {
 
 
 /**
- * @param {module:ol/render/ReplayGroup} replayGroup Replay group.
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/style/Style} style Style.
- * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+ * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
+ * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
  */
 function renderGeometry(replayGroup, geometry, style, feature) {
   if (geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
-    const geometries = /** @type {module:ol/geom/GeometryCollection} */ (geometry).getGeometries();
+    const geometries = /** @type {import("../geom/GeometryCollection.js").default} */ (geometry).getGeometries();
     for (let i = 0, ii = geometries.length; i < ii; ++i) {
       renderGeometry(replayGroup, geometries[i], style, feature);
     }
     return;
   }
   const replay = replayGroup.getReplay(style.getZIndex(), ReplayType.DEFAULT);
-  replay.drawCustom(/** @type {module:ol/geom/SimpleGeometry} */ (geometry), feature, style.getRenderer());
+  replay.drawCustom(/** @type {import("../geom/SimpleGeometry.js").default} */ (geometry), feature, style.getRenderer());
 }
 
 
 /**
- * @param {module:ol/render/ReplayGroup} replayGroup Replay group.
- * @param {module:ol/geom/GeometryCollection} geometry Geometry.
- * @param {module:ol/style/Style} style Style.
- * @param {module:ol/Feature} feature Feature.
+ * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
+ * @param {import("../geom/GeometryCollection.js").default} geometry Geometry.
+ * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../Feature.js").default} feature Feature.
  */
 function renderGeometryCollectionGeometry(replayGroup, geometry, style, feature) {
   const geometries = geometry.getGeometriesArray();
@@ -177,10 +177,10 @@ function renderGeometryCollectionGeometry(replayGroup, geometry, style, feature)
 
 
 /**
- * @param {module:ol/render/ReplayGroup} replayGroup Replay group.
- * @param {module:ol/geom/LineString|module:ol/render/Feature} geometry Geometry.
- * @param {module:ol/style/Style} style Style.
- * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+ * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
+ * @param {import("../geom/LineString.js").default|import("../render/Feature.js").default} geometry Geometry.
+ * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
  */
 function renderLineStringGeometry(replayGroup, geometry, style, feature) {
   const strokeStyle = style.getStroke();
@@ -199,10 +199,10 @@ function renderLineStringGeometry(replayGroup, geometry, style, feature) {
 
 
 /**
- * @param {module:ol/render/ReplayGroup} replayGroup Replay group.
- * @param {module:ol/geom/MultiLineString|module:ol/render/Feature} geometry Geometry.
- * @param {module:ol/style/Style} style Style.
- * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+ * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
+ * @param {import("../geom/MultiLineString.js").default|import("../render/Feature.js").default} geometry Geometry.
+ * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
  */
 function renderMultiLineStringGeometry(replayGroup, geometry, style, feature) {
   const strokeStyle = style.getStroke();
@@ -221,10 +221,10 @@ function renderMultiLineStringGeometry(replayGroup, geometry, style, feature) {
 
 
 /**
- * @param {module:ol/render/ReplayGroup} replayGroup Replay group.
- * @param {module:ol/geom/MultiPolygon} geometry Geometry.
- * @param {module:ol/style/Style} style Style.
- * @param {module:ol/Feature} feature Feature.
+ * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
+ * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
+ * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../Feature.js").default} feature Feature.
  */
 function renderMultiPolygonGeometry(replayGroup, geometry, style, feature) {
   const fillStyle = style.getFill();
@@ -244,10 +244,10 @@ function renderMultiPolygonGeometry(replayGroup, geometry, style, feature) {
 
 
 /**
- * @param {module:ol/render/ReplayGroup} replayGroup Replay group.
- * @param {module:ol/geom/Point|module:ol/render/Feature} geometry Geometry.
- * @param {module:ol/style/Style} style Style.
- * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+ * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
+ * @param {import("../geom/Point.js").default|import("../render/Feature.js").default} geometry Geometry.
+ * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
  */
 function renderPointGeometry(replayGroup, geometry, style, feature) {
   const imageStyle = style.getImage();
@@ -269,10 +269,10 @@ function renderPointGeometry(replayGroup, geometry, style, feature) {
 
 
 /**
- * @param {module:ol/render/ReplayGroup} replayGroup Replay group.
- * @param {module:ol/geom/MultiPoint|module:ol/render/Feature} geometry Geometry.
- * @param {module:ol/style/Style} style Style.
- * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+ * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
+ * @param {import("../geom/MultiPoint.js").default|import("../render/Feature.js").default} geometry Geometry.
+ * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
  */
 function renderMultiPointGeometry(replayGroup, geometry, style, feature) {
   const imageStyle = style.getImage();
@@ -294,10 +294,10 @@ function renderMultiPointGeometry(replayGroup, geometry, style, feature) {
 
 
 /**
- * @param {module:ol/render/ReplayGroup} replayGroup Replay group.
- * @param {module:ol/geom/Polygon|module:ol/render/Feature} geometry Geometry.
- * @param {module:ol/style/Style} style Style.
- * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+ * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
+ * @param {import("../geom/Polygon.js").default|import("../render/Feature.js").default} geometry Geometry.
+ * @param {import("../style/Style.js").default} style Style.
+ * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
  */
 function renderPolygonGeometry(replayGroup, geometry, style, feature) {
   const fillStyle = style.getFill();

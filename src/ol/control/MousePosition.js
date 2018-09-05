@@ -22,9 +22,9 @@ const COORDINATE_FORMAT = 'coordinateFormat';
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-mouse-position'] CSS class name.
- * @property {module:ol/coordinate~CoordinateFormat} [coordinateFormat] Coordinate format.
- * @property {module:ol/proj~ProjectionLike} projection Projection.
- * @property {function(module:ol/MapEvent)} [render] Function called when the
+ * @property {import("../coordinate.js").CoordinateFormat} [coordinateFormat] Coordinate format.
+ * @property {import("../proj.js").ProjectionLike} projection Projection.
+ * @property {function(import("../MapEvent.js").default)} [render] Function called when the
  * control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  * @property {Element|string} [target] Specify a target if you want the
@@ -49,7 +49,7 @@ const COORDINATE_FORMAT = 'coordinateFormat';
 class MousePosition extends Control {
 
   /**
-   * @param {module:ol/control/MousePosition~Options=} opt_options Mouse position options.
+   * @param {Options=} opt_options Mouse position options.
    */
   constructor(opt_options) {
 
@@ -95,19 +95,19 @@ class MousePosition extends Control {
 
     /**
      * @private
-     * @type {module:ol/proj/Projection}
+     * @type {import("../proj/Projection.js").default}
      */
     this.mapProjection_ = null;
 
     /**
      * @private
-     * @type {?module:ol/proj~TransformFunction}
+     * @type {?import("../proj.js").TransformFunction}
      */
     this.transform_ = null;
 
     /**
      * @private
-     * @type {module:ol/pixel~Pixel}
+     * @type {import("../pixel.js").Pixel}
      */
     this.lastMouseMovePixel_ = null;
 
@@ -123,27 +123,27 @@ class MousePosition extends Control {
   /**
    * Return the coordinate format type used to render the current position or
    * undefined.
-   * @return {module:ol/coordinate~CoordinateFormat|undefined} The format to render the current
+   * @return {import("../coordinate.js").CoordinateFormat|undefined} The format to render the current
    *     position in.
    * @observable
    * @api
    */
   getCoordinateFormat() {
     return (
-      /** @type {module:ol/coordinate~CoordinateFormat|undefined} */ (this.get(COORDINATE_FORMAT))
+      /** @type {import("../coordinate.js").CoordinateFormat|undefined} */ (this.get(COORDINATE_FORMAT))
     );
   }
 
   /**
    * Return the projection that is used to report the mouse position.
-   * @return {module:ol/proj/Projection|undefined} The projection to report mouse
+   * @return {import("../proj/Projection.js").default|undefined} The projection to report mouse
    *     position in.
    * @observable
    * @api
    */
   getProjection() {
     return (
-      /** @type {module:ol/proj/Projection|undefined} */ (this.get(PROJECTION))
+      /** @type {import("../proj/Projection.js").default|undefined} */ (this.get(PROJECTION))
     );
   }
 
@@ -187,7 +187,7 @@ class MousePosition extends Control {
 
   /**
    * Set the coordinate format type used to render the current position.
-   * @param {module:ol/coordinate~CoordinateFormat} format The format to render the current
+   * @param {import("../coordinate.js").CoordinateFormat} format The format to render the current
    *     position in.
    * @observable
    * @api
@@ -198,7 +198,7 @@ class MousePosition extends Control {
 
   /**
    * Set the projection that is used to report the mouse position.
-   * @param {module:ol/proj~ProjectionLike} projection The projection to report mouse
+   * @param {import("../proj.js").ProjectionLike} projection The projection to report mouse
    *     position in.
    * @observable
    * @api
@@ -208,7 +208,7 @@ class MousePosition extends Control {
   }
 
   /**
-   * @param {?module:ol/pixel~Pixel} pixel Pixel.
+   * @param {?import("../pixel.js").Pixel} pixel Pixel.
    * @private
    */
   updateHTML_(pixel) {
@@ -245,8 +245,8 @@ class MousePosition extends Control {
 
 /**
  * Update the mouseposition element.
- * @param {module:ol/MapEvent} mapEvent Map event.
- * @this {module:ol/control/MousePosition}
+ * @param {import("../MapEvent.js").default} mapEvent Map event.
+ * @this {import("./MousePosition.js").default}
  * @api
  */
 export function render(mapEvent) {

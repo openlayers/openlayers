@@ -11,7 +11,7 @@ import {create as createTransform, compose as composeTransform} from '../transfo
 
 
 /**
- * @type {module:ol/transform~Transform}
+ * @type {import("../transform.js").Transform}
  */
 const tmpTransform = createTransform();
 
@@ -35,7 +35,7 @@ class Geometry extends BaseObject {
 
     /**
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../extent.js").Extent}
      */
     this.extent_ = createEmpty();
 
@@ -47,7 +47,7 @@ class Geometry extends BaseObject {
 
     /**
      * @protected
-     * @type {Object<string, module:ol/geom/Geometry>}
+     * @type {Object<string, import("./Geometry.js").default>}
      */
     this.simplifiedGeometryCache = {};
 
@@ -68,7 +68,7 @@ class Geometry extends BaseObject {
   /**
    * Make a complete copy of the geometry.
    * @abstract
-   * @return {!module:ol/geom/Geometry} Clone.
+   * @return {!import("./Geometry.js").default} Clone.
    */
   clone() {}
 
@@ -76,7 +76,7 @@ class Geometry extends BaseObject {
    * @abstract
    * @param {number} x X.
    * @param {number} y Y.
-   * @param {module:ol/coordinate~Coordinate} closestPoint Closest point.
+   * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
    * @param {number} minSquaredDistance Minimum squared distance.
    * @return {number} Minimum squared distance.
    */
@@ -85,9 +85,9 @@ class Geometry extends BaseObject {
   /**
    * Return the closest point of the geometry to the passed point as
    * {@link module:ol/coordinate~Coordinate coordinate}.
-   * @param {module:ol/coordinate~Coordinate} point Point.
-   * @param {module:ol/coordinate~Coordinate=} opt_closestPoint Closest point.
-   * @return {module:ol/coordinate~Coordinate} Closest point.
+   * @param {import("../coordinate.js").Coordinate} point Point.
+   * @param {import("../coordinate.js").Coordinate=} opt_closestPoint Closest point.
+   * @return {import("../coordinate.js").Coordinate} Closest point.
    * @api
    */
   getClosestPoint(point, opt_closestPoint) {
@@ -99,7 +99,7 @@ class Geometry extends BaseObject {
   /**
    * Returns true if this geometry includes the specified coordinate. If the
    * coordinate is on the boundary of the geometry, returns false.
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @return {boolean} Contains coordinate.
    * @api
    */
@@ -109,16 +109,16 @@ class Geometry extends BaseObject {
 
   /**
    * @abstract
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @protected
-   * @return {module:ol/extent~Extent} extent Extent.
+   * @return {import("../extent.js").Extent} extent Extent.
    */
   computeExtent(extent) {}
 
   /**
    * Get the extent of the geometry.
-   * @param {module:ol/extent~Extent=} opt_extent Extent.
-   * @return {module:ol/extent~Extent} extent Extent.
+   * @param {import("../extent.js").Extent=} opt_extent Extent.
+   * @return {import("../extent.js").Extent} extent Extent.
    * @api
    */
   getExtent(opt_extent) {
@@ -134,7 +134,7 @@ class Geometry extends BaseObject {
    * coordinates in place.
    * @abstract
    * @param {number} angle Rotation angle in radians.
-   * @param {module:ol/coordinate~Coordinate} anchor The rotation center.
+   * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
    * @api
    */
   rotate(angle, anchor) {}
@@ -146,7 +146,7 @@ class Geometry extends BaseObject {
    * @param {number} sx The scaling factor in the x-direction.
    * @param {number=} opt_sy The scaling factor in the y-direction (defaults to
    *     sx).
-   * @param {module:ol/coordinate~Coordinate=} opt_anchor The scale origin (defaults to the center
+   * @param {import("../coordinate.js").Coordinate=} opt_anchor The scale origin (defaults to the center
    *     of the geometry extent).
    * @api
    */
@@ -160,7 +160,7 @@ class Geometry extends BaseObject {
    * simplification is used to preserve topology.
    * @function
    * @param {number} tolerance The tolerance distance for simplification.
-   * @return {module:ol/geom/Geometry} A new, simplified version of the original
+   * @return {import("./Geometry.js").default} A new, simplified version of the original
    *     geometry.
    * @api
    */
@@ -174,14 +174,14 @@ class Geometry extends BaseObject {
    * See https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm.
    * @abstract
    * @param {number} squaredTolerance Squared tolerance.
-   * @return {module:ol/geom/Geometry} Simplified geometry.
+   * @return {import("./Geometry.js").default} Simplified geometry.
    */
   getSimplifiedGeometry(squaredTolerance) {}
 
   /**
    * Get the type of this geometry.
    * @abstract
-   * @return {module:ol/geom/GeometryType} Geometry type.
+   * @return {import("./GeometryType.js").default} Geometry type.
    */
   getType() {}
 
@@ -191,14 +191,14 @@ class Geometry extends BaseObject {
    * If you do not want the geometry modified in place, first `clone()` it and
    * then use this function on the clone.
    * @abstract
-   * @param {module:ol/proj~TransformFunction} transformFn Transform.
+   * @param {import("../proj.js").TransformFunction} transformFn Transform.
    */
   applyTransform(transformFn) {}
 
   /**
    * Test if the geometry and the passed extent intersect.
    * @abstract
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    */
   intersectsExtent(extent) {}
@@ -220,11 +220,11 @@ class Geometry extends BaseObject {
    * If you do not want the geometry modified in place, first `clone()` it and
    * then use this function on the clone.
    *
-   * @param {module:ol/proj~ProjectionLike} source The current projection.  Can be a
+   * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
    *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
-   * @param {module:ol/proj~ProjectionLike} destination The desired projection.  Can be a
+   * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
    *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
-   * @return {module:ol/geom/Geometry} This geometry.  Note that original geometry is
+   * @return {import("./Geometry.js").default} This geometry.  Note that original geometry is
    *     modified in place.
    * @api
    */

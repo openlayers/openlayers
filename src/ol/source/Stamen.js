@@ -97,7 +97,7 @@ const ProviderConfig = {
  * @property {boolean} [opaque] Whether the layer is opaque.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {module:ol/Tile~LoadFunction} [tileLoadFunction]
+ * @property {import("../Tile.js").LoadFunction} [tileLoadFunction]
  * Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
@@ -116,7 +116,7 @@ const ProviderConfig = {
  */
 class Stamen extends XYZ {
   /**
-   * @param {module:ol/source/Stamen~Options=} options Stamen options.
+   * @param {Options=} options Stamen options.
    */
   constructor(options) {
     const i = options.layer.indexOf('-');

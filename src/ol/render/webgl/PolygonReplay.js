@@ -31,15 +31,15 @@ import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
  * @typedef {Object} PolygonSegment
- * @property {module:ol/render/webgl/PolygonReplay~PolygonVertex} p0
- * @property {module:ol/render/webgl/PolygonReplay~PolygonVertex} p1
+ * @property {PolygonVertex} p0
+ * @property {PolygonVertex} p1
  */
 
 
 class WebGLPolygonReplay extends WebGLReplay {
   /**
    * @param {number} tolerance Tolerance.
-   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @param {import("../../extent.js").Extent} maxExtent Max extent.
    */
   constructor(tolerance, maxExtent) {
     super(tolerance, maxExtent);
@@ -49,7 +49,7 @@ class WebGLPolygonReplay extends WebGLReplay {
 
     /**
      * @private
-     * @type {module:ol/render/webgl/polygonreplay/defaultshader/Locations}
+     * @type {import("./polygonreplay/defaultshader/Locations.js").default}
      */
     this.defaultLocations_ = null;
 
@@ -143,8 +143,8 @@ class WebGLPolygonReplay extends WebGLReplay {
    * @private
    * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} stride Stride.
-   * @param {module:ol/structs/LinkedList} list Linked list.
-   * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
+   * @param {import("../../structs/LinkedList.js").default} list Linked list.
+   * @param {import("../../structs/RBush.js").default} rtree R-Tree of the polygon.
    * @param {boolean} clockwise Coordinate order should be clockwise.
    */
   processFlatCoordinates_(flatCoordinates, stride, list, rtree, clockwise) {
@@ -152,11 +152,11 @@ class WebGLPolygonReplay extends WebGLReplay {
       0, flatCoordinates.length, stride);
     let i, ii;
     let n = this.vertices.length / 2;
-    /** @type {module:ol/render/webgl/PolygonReplay~PolygonVertex} */
+    /** @type {PolygonVertex} */
     let start;
-    /** @type {module:ol/render/webgl/PolygonReplay~PolygonVertex} */
+    /** @type {PolygonVertex} */
     let p0;
-    /** @type {module:ol/render/webgl/PolygonReplay~PolygonVertex} */
+    /** @type {PolygonVertex} */
     let p1;
     const extents = [];
     const segments = [];
@@ -194,7 +194,7 @@ class WebGLPolygonReplay extends WebGLReplay {
   /**
    * Returns the rightmost coordinates of a polygon on the X axis.
    * @private
-   * @param {module:ol/structs/LinkedList} list Polygons ring.
+   * @param {import("../../structs/LinkedList.js").default} list Polygons ring.
    * @return {Array<number>} Max X coordinates.
    */
   getMaxCoords_(list) {
@@ -215,8 +215,8 @@ class WebGLPolygonReplay extends WebGLReplay {
   /**
    * Classifies the points of a polygon list as convex, reflex. Removes collinear vertices.
    * @private
-   * @param {module:ol/structs/LinkedList} list Polygon ring.
-   * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
+   * @param {import("../../structs/LinkedList.js").default} list Polygon ring.
+   * @param {import("../../structs/RBush.js").default} rtree R-Tree of the polygon.
    * @param {boolean} ccw The orientation of the polygon is counter-clockwise.
    * @return {boolean} There were reclassified points.
    */
@@ -250,11 +250,11 @@ class WebGLPolygonReplay extends WebGLReplay {
 
   /**
    * @private
-   * @param {module:ol/structs/LinkedList} hole Linked list of the hole.
+   * @param {import("../../structs/LinkedList.js").default} hole Linked list of the hole.
    * @param {number} holeMaxX Maximum X value of the hole.
-   * @param {module:ol/structs/LinkedList} list Linked list of the polygon.
+   * @param {import("../../structs/LinkedList.js").default} list Linked list of the polygon.
    * @param {number} listMaxX Maximum X value of the polygon.
-   * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
+   * @param {import("../../structs/RBush.js").default} rtree R-Tree of the polygon.
    * @return {boolean} Bridging was successful.
    */
   bridgeHole_(hole, holeMaxX, list, listMaxX, rtree) {
@@ -264,11 +264,11 @@ class WebGLPolygonReplay extends WebGLReplay {
     }
 
     const p1 = seg.p1;
-    /** @type {module:ol/render/webgl/PolygonReplay~PolygonVertex} */
+    /** @type {PolygonVertex} */
     const p2 = {x: listMaxX, y: p1.y, i: -1};
     let minDist = Infinity;
     let i, ii, bestPoint;
-    /** @type {module:ol/render/webgl/PolygonReplay~PolygonVertex} */
+    /** @type {PolygonVertex} */
     let p5;
 
     const intersectingSegments = this.getIntersections_({p0: p1, p1: p2}, rtree, true);
@@ -325,8 +325,8 @@ class WebGLPolygonReplay extends WebGLReplay {
 
   /**
    * @private
-   * @param {module:ol/structs/LinkedList} list Linked list of the polygon.
-   * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
+   * @param {import("../../structs/LinkedList.js").default} list Linked list of the polygon.
+   * @param {import("../../structs/RBush.js").default} rtree R-Tree of the polygon.
    */
   triangulate_(list, rtree) {
     let ccw = false;
@@ -374,8 +374,8 @@ class WebGLPolygonReplay extends WebGLReplay {
 
   /**
    * @private
-   * @param {module:ol/structs/LinkedList} list Linked list of the polygon.
-   * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
+   * @param {import("../../structs/LinkedList.js").default} list Linked list of the polygon.
+   * @param {import("../../structs/RBush.js").default} rtree R-Tree of the polygon.
    * @param {boolean} simple The polygon is simple.
    * @param {boolean} ccw Orientation of the polygon is counter-clockwise.
    * @return {boolean} There were processed ears.
@@ -432,8 +432,8 @@ class WebGLPolygonReplay extends WebGLReplay {
 
   /**
    * @private
-   * @param {module:ol/structs/LinkedList} list Linked list of the polygon.
-   * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
+   * @param {import("../../structs/LinkedList.js").default} list Linked list of the polygon.
+   * @param {import("../../structs/RBush.js").default} rtree R-Tree of the polygon.
    * @param {boolean=} opt_touch Resolve touching segments.
    * @return {boolean} There were resolved intersections.
   */
@@ -499,8 +499,8 @@ class WebGLPolygonReplay extends WebGLReplay {
 
   /**
    * @private
-   * @param {module:ol/structs/LinkedList} list Linked list of the polygon.
-   * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
+   * @param {import("../../structs/LinkedList.js").default} list Linked list of the polygon.
+   * @param {import("../../structs/RBush.js").default} rtree R-Tree of the polygon.
    * @return {boolean} The polygon is simple.
    */
   isSimple_(list, rtree) {
@@ -517,7 +517,7 @@ class WebGLPolygonReplay extends WebGLReplay {
 
   /**
    * @private
-   * @param {module:ol/structs/LinkedList} list Linked list of the polygon.
+   * @param {import("../../structs/LinkedList.js").default} list Linked list of the polygon.
    * @return {boolean} Orientation is clockwise.
    */
   isClockwise_(list) {
@@ -536,8 +536,8 @@ class WebGLPolygonReplay extends WebGLReplay {
 
   /**
    * @private
-   * @param {module:ol/structs/LinkedList} list Linked list of the polygon.
-   * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
+   * @param {import("../../structs/LinkedList.js").default} list Linked list of the polygon.
+   * @param {import("../../structs/RBush.js").default} rtree R-Tree of the polygon.
    */
   splitPolygon_(list, rtree) {
     const start = list.firstItem();
@@ -582,13 +582,13 @@ class WebGLPolygonReplay extends WebGLReplay {
    * @param {number} x X coordinate.
    * @param {number} y Y coordinate.
    * @param {number} i Index.
-   * @return {module:ol/render/webgl/PolygonReplay~PolygonVertex} List item.
+   * @return {PolygonVertex} List item.
    */
   createPoint_(x, y, i) {
     let numVertices = this.vertices.length;
     this.vertices[numVertices++] = x;
     this.vertices[numVertices++] = y;
-    /** @type {module:ol/render/webgl/PolygonReplay~PolygonVertex} */
+    /** @type {PolygonVertex} */
     const p = {
       x: x,
       y: y,
@@ -600,11 +600,11 @@ class WebGLPolygonReplay extends WebGLReplay {
 
   /**
    * @private
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p0 First point of segment.
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p1 Second point of segment.
-   * @param {module:ol/structs/LinkedList} list Polygon ring.
-   * @param {module:ol/structs/RBush=} opt_rtree Insert the segment into the R-Tree.
-   * @return {module:ol/render/webgl/PolygonReplay~PolygonSegment} segment.
+   * @param {PolygonVertex} p0 First point of segment.
+   * @param {PolygonVertex} p1 Second point of segment.
+   * @param {import("../../structs/LinkedList.js").default} list Polygon ring.
+   * @param {import("../../structs/RBush.js").default=} opt_rtree Insert the segment into the R-Tree.
+   * @return {PolygonSegment} segment.
    */
   insertItem_(p0, p1, list, opt_rtree) {
     const seg = {
@@ -621,10 +621,10 @@ class WebGLPolygonReplay extends WebGLReplay {
 
   /**
     * @private
-    * @param {module:ol/render/webgl/PolygonReplay~PolygonSegment} s0 Segment before the remove candidate.
-    * @param {module:ol/render/webgl/PolygonReplay~PolygonSegment} s1 Remove candidate segment.
-    * @param {module:ol/structs/LinkedList} list Polygon ring.
-    * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
+    * @param {PolygonSegment} s0 Segment before the remove candidate.
+    * @param {PolygonSegment} s1 Remove candidate segment.
+    * @param {import("../../structs/LinkedList.js").default} list Polygon ring.
+    * @param {import("../../structs/RBush.js").default} rtree R-Tree of the polygon.
     */
   removeItem_(s0, s1, list, rtree) {
     if (list.getCurrItem() === s1) {
@@ -638,12 +638,12 @@ class WebGLPolygonReplay extends WebGLReplay {
 
   /**
    * @private
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p0 First point.
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p1 Second point.
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p2 Third point.
-   * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
+   * @param {PolygonVertex} p0 First point.
+   * @param {PolygonVertex} p1 Second point.
+   * @param {PolygonVertex} p2 Third point.
+   * @param {import("../../structs/RBush.js").default} rtree R-Tree of the polygon.
    * @param {boolean=} opt_reflex Only include reflex points.
-   * @return {Array<module:ol/render/webgl/PolygonReplay~PolygonVertex>} Points in the triangle.
+   * @return {Array<PolygonVertex>} Points in the triangle.
    */
   getPointsInTriangle_(p0, p1, p2, rtree, opt_reflex) {
     const result = [];
@@ -667,10 +667,10 @@ class WebGLPolygonReplay extends WebGLReplay {
 
   /**
    * @private
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonSegment} segment Segment.
-   * @param {module:ol/structs/RBush} rtree R-Tree of the polygon.
+   * @param {PolygonSegment} segment Segment.
+   * @param {import("../../structs/RBush.js").default} rtree R-Tree of the polygon.
    * @param {boolean=} opt_touch Touching segments should be considered an intersection.
-   * @return {Array<module:ol/render/webgl/PolygonReplay~PolygonSegment>} Intersecting segments.
+   * @return {Array<PolygonSegment>} Intersecting segments.
    */
   getIntersections_(segment, rtree, opt_touch) {
     const p0 = segment.p0;
@@ -693,10 +693,10 @@ class WebGLPolygonReplay extends WebGLReplay {
    * See http://paulbourke.net/geometry/pointlineplane/.
    *
    * @private
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p0 First point.
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p1 Second point.
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p2 Third point.
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p3 Fourth point.
+   * @param {PolygonVertex} p0 First point.
+   * @param {PolygonVertex} p1 Second point.
+   * @param {PolygonVertex} p2 Third point.
+   * @param {PolygonVertex} p3 Fourth point.
    * @param {boolean=} opt_touch Touching segments should be considered an intersection.
    * @return {Array<number>|undefined} Intersection coordinates.
    */
@@ -716,11 +716,11 @@ class WebGLPolygonReplay extends WebGLReplay {
 
   /**
    * @private
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p0 Point before the start of the diagonal.
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p1 Start point of the diagonal.
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p2 Ear candidate.
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p3 End point of the diagonal.
-   * @param {module:ol/render/webgl/PolygonReplay~PolygonVertex} p4 Point after the end of the diagonal.
+   * @param {PolygonVertex} p0 Point before the start of the diagonal.
+   * @param {PolygonVertex} p1 Start point of the diagonal.
+   * @param {PolygonVertex} p2 Ear candidate.
+   * @param {PolygonVertex} p3 End point of the diagonal.
+   * @param {PolygonVertex} p4 Point after the end of the diagonal.
    * @return {boolean} Diagonal is inside the polygon.
    */
   diagonalIsInside_(p0, p1, p2, p3, p4) {
@@ -966,7 +966,7 @@ class WebGLPolygonReplay extends WebGLReplay {
   /**
    * @private
    * @param {WebGLRenderingContext} gl gl.
-   * @param {module:ol/webgl/Context} context Context.
+   * @param {import("../../webgl/Context.js").default} context Context.
    * @param {Object} skippedFeaturesHash Ids of features to skip.
    */
   drawReplaySkipping_(gl, context, skippedFeaturesHash) {

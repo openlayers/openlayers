@@ -24,7 +24,7 @@ export const HALF_SIZE = Math.PI * RADIUS;
 
 /**
  * @const
- * @type {module:ol/extent~Extent}
+ * @type {import("../extent.js").Extent}
  */
 export const EXTENT = [
   -HALF_SIZE, -HALF_SIZE,
@@ -34,7 +34,7 @@ export const EXTENT = [
 
 /**
  * @const
- * @type {module:ol/extent~Extent}
+ * @type {import("../extent.js").Extent}
  */
 export const WORLD_EXTENT = [-180, -85, 180, 85];
 
@@ -69,7 +69,7 @@ class EPSG3857Projection extends Projection {
  * Projections equal to EPSG:3857.
  *
  * @const
- * @type {Array<module:ol/proj/Projection>}
+ * @type {Array<import("./Projection.js").default>}
  */
 export const PROJECTIONS = [
   new EPSG3857Projection('EPSG:3857'),

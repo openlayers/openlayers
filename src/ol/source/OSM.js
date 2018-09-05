@@ -19,7 +19,7 @@ export const ATTRIBUTION = '&#169; ' +
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize=2048] Cache size.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
@@ -29,7 +29,7 @@ export const ATTRIBUTION = '&#169; ' +
  * @property {boolean} [opaque=true] Whether the layer is opaque.
  * @property {number} [reprojectionErrorThreshold=1.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
@@ -48,7 +48,7 @@ export const ATTRIBUTION = '&#169; ' +
  */
 class OSM extends XYZ {
   /**
-   * @param {module:ol/source/OSM~Options=} [opt_options] Open Street Map options.
+   * @param {Options=} [opt_options] Open Street Map options.
    */
   constructor(opt_options) {
 

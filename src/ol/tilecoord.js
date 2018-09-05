@@ -15,8 +15,8 @@
  * @param {number} z Z.
  * @param {number} x X.
  * @param {number} y Y.
- * @param {module:ol/tilecoord~TileCoord=} opt_tileCoord Tile coordinate.
- * @return {module:ol/tilecoord~TileCoord} Tile coordinate.
+ * @param {TileCoord=} opt_tileCoord Tile coordinate.
+ * @return {TileCoord} Tile coordinate.
  */
 export function createOrUpdate(z, x, y, opt_tileCoord) {
   if (opt_tileCoord !== undefined) {
@@ -43,7 +43,7 @@ export function getKeyZXY(z, x, y) {
 
 /**
  * Get the key for a tile coord.
- * @param {module:ol/tilecoord~TileCoord} tileCoord The tile coord.
+ * @param {TileCoord} tileCoord The tile coord.
  * @return {string} Key.
  */
 export function getKey(tileCoord) {
@@ -54,7 +54,7 @@ export function getKey(tileCoord) {
 /**
  * Get a tile coord given a key.
  * @param {string} key The tile coord key.
- * @return {module:ol/tilecoord~TileCoord} The tile coord.
+ * @return {TileCoord} The tile coord.
  */
 export function fromKey(key) {
   return key.split('/').map(Number);
@@ -62,7 +62,7 @@ export function fromKey(key) {
 
 
 /**
- * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coord.
+ * @param {TileCoord} tileCoord Tile coord.
  * @return {number} Hash.
  */
 export function hash(tileCoord) {
@@ -71,7 +71,7 @@ export function hash(tileCoord) {
 
 
 /**
- * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coord.
+ * @param {TileCoord} tileCoord Tile coord.
  * @return {string} Quad key.
  */
 export function quadKey(tileCoord) {
@@ -96,8 +96,8 @@ export function quadKey(tileCoord) {
 
 
 /**
- * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
- * @param {!module:ol/tilegrid/TileGrid} tileGrid Tile grid.
+ * @param {TileCoord} tileCoord Tile coordinate.
+ * @param {!import("./tilegrid/TileGrid.js").default} tileGrid Tile grid.
  * @return {boolean} Tile coordinate is within extent and zoom level range.
  */
 export function withinExtentAndZ(tileCoord, tileGrid) {

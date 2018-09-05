@@ -18,7 +18,7 @@ export const RADIUS = 6378137;
  * Extent of the EPSG:4326 projection which is the whole world.
  *
  * @const
- * @type {module:ol/extent~Extent}
+ * @type {import("../extent.js").Extent}
  */
 export const EXTENT = [-180, -90, 180, 90];
 
@@ -64,7 +64,7 @@ class EPSG4326Projection extends Projection {
  * Projections equal to EPSG:4326.
  *
  * @const
- * @type {Array<module:ol/proj/Projection>}
+ * @type {Array<import("./Projection.js").default>}
  */
 export const PROJECTIONS = [
   new EPSG4326Projection('CRS:84'),

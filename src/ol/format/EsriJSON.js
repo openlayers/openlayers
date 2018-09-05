@@ -23,7 +23,7 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @const
- * @type {Object<module:ol/geom/GeometryType, function(EsriJSONGeometry): module:ol/geom/Geometry>}
+ * @type {Object<import("../geom/GeometryType.js").default, function(EsriJSONGeometry): import("../geom/Geometry.js").default>}
  */
 const GEOMETRY_READERS = {};
 GEOMETRY_READERS[GeometryType.POINT] = readPointGeometry;
@@ -36,7 +36,7 @@ GEOMETRY_READERS[GeometryType.MULTI_POLYGON] = readMultiPolygonGeometry;
 
 /**
  * @const
- * @type {Object<string, function(module:ol/geom/Geometry, module:ol/format/Feature~WriteOptions=): (EsriJSONGeometry)>}
+ * @type {Object<string, function(import("../geom/Geometry.js").default, import("./Feature.js").WriteOptions=): (EsriJSONGeometry)>}
  */
 const GEOMETRY_WRITERS = {};
 GEOMETRY_WRITERS[GeometryType.POINT] = writePointGeometry;
@@ -62,7 +62,7 @@ GEOMETRY_WRITERS[GeometryType.MULTI_POLYGON] = writeMultiPolygonGeometry;
 class EsriJSON extends JSONFeature {
 
   /**
-   * @param {module:ol/format/EsriJSON~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
@@ -108,7 +108,7 @@ class EsriJSON extends JSONFeature {
     const options = opt_options ? opt_options : {};
     if (esriJSONObject.features) {
       const esriJSONFeatureCollection = /** @type {EsriJSONFeatureCollection} */ (object);
-      /** @type {Array<module:ol/Feature>} */
+      /** @type {Array<import("../Feature.js").default>} */
       const features = [];
       const esriJSONFeatures = esriJSONFeatureCollection.features;
       options.idField = object.objectIdFieldName;
@@ -144,8 +144,8 @@ class EsriJSON extends JSONFeature {
   /**
    * Encode a geometry as a EsriJSON object.
    *
-   * @param {module:ol/geom/Geometry} geometry Geometry.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @param {import("../geom/Geometry.js").default} geometry Geometry.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {EsriJSONGeometry} Object.
    * @override
    * @api
@@ -157,8 +157,8 @@ class EsriJSON extends JSONFeature {
   /**
    * Encode a feature as a esriJSON Feature object.
    *
-   * @param {module:ol/Feature} feature Feature.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @param {import("../Feature.js").default} feature Feature.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {Object} Object.
    * @override
    * @api
@@ -188,8 +188,8 @@ class EsriJSON extends JSONFeature {
   /**
    * Encode an array of features as a EsriJSON object.
    *
-   * @param {Array<module:ol/Feature>} features Features.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {Object} EsriJSON Object.
    * @override
    * @api
@@ -209,14 +209,14 @@ class EsriJSON extends JSONFeature {
 
 /**
  * @param {EsriJSONGeometry} object Object.
- * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
- * @return {module:ol/geom/Geometry} Geometry.
+ * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+ * @return {import("../geom/Geometry.js").default} Geometry.
  */
 function readGeometry(object, opt_options) {
   if (!object) {
     return null;
   }
-  /** @type {module:ol/geom/GeometryType} */
+  /** @type {import("../geom/GeometryType.js").default} */
   let type;
   if (typeof object.x === 'number' && typeof object.y === 'number') {
     type = GeometryType.POINT;
@@ -242,7 +242,7 @@ function readGeometry(object, opt_options) {
   }
   const geometryReader = GEOMETRY_READERS[type];
   return (
-    /** @type {module:ol/geom/Geometry} */ (transformWithOptions(geometryReader(object), false, opt_options))
+    /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometryReader(object), false, opt_options))
   );
 }
 
@@ -253,7 +253,7 @@ function readGeometry(object, opt_options) {
  * array. It is used for checking for holes.
  * Logic inspired by: https://github.com/Esri/terraformer-arcgis-parser
  * @param {Array<!Array<!Array<number>>>} rings Rings.
- * @param {module:ol/geom/GeometryLayout} layout Geometry layout.
+ * @param {import("../geom/GeometryLayout.js").default} layout Geometry layout.
  * @return {Array<!Array<!Array<number>>>} Transformed rings.
  */
 function convertRings(rings, layout) {
@@ -302,7 +302,7 @@ function convertRings(rings, layout) {
 
 /**
  * @param {EsriJSONGeometry} object Object.
- * @return {module:ol/geom/Geometry} Point.
+ * @return {import("../geom/Geometry.js").default} Point.
  */
 function readPointGeometry(object) {
   let point;
@@ -324,7 +324,7 @@ function readPointGeometry(object) {
 
 /**
  * @param {EsriJSONGeometry} object Object.
- * @return {module:ol/geom/Geometry} LineString.
+ * @return {import("../geom/Geometry.js").default} LineString.
  */
 function readLineStringGeometry(object) {
   const layout = getGeometryLayout(object);
@@ -334,7 +334,7 @@ function readLineStringGeometry(object) {
 
 /**
  * @param {EsriJSONGeometry} object Object.
- * @return {module:ol/geom/Geometry} MultiLineString.
+ * @return {import("../geom/Geometry.js").default} MultiLineString.
  */
 function readMultiLineStringGeometry(object) {
   const layout = getGeometryLayout(object);
@@ -344,7 +344,7 @@ function readMultiLineStringGeometry(object) {
 
 /**
  * @param {EsriJSONGeometry} object Object.
- * @return {module:ol/geom/GeometryLayout} The geometry layout to use.
+ * @return {import("../geom/GeometryLayout.js").default} The geometry layout to use.
  */
 function getGeometryLayout(object) {
   let layout = GeometryLayout.XY;
@@ -361,7 +361,7 @@ function getGeometryLayout(object) {
 
 /**
  * @param {EsriJSONGeometry} object Object.
- * @return {module:ol/geom/Geometry} MultiPoint.
+ * @return {import("../geom/Geometry.js").default} MultiPoint.
  */
 function readMultiPointGeometry(object) {
   const layout = getGeometryLayout(object);
@@ -371,7 +371,7 @@ function readMultiPointGeometry(object) {
 
 /**
  * @param {EsriJSONGeometry} object Object.
- * @return {module:ol/geom/Geometry} MultiPolygon.
+ * @return {import("../geom/Geometry.js").default} MultiPolygon.
  */
 function readMultiPolygonGeometry(object) {
   const layout = getGeometryLayout(object);
@@ -383,7 +383,7 @@ function readMultiPolygonGeometry(object) {
 
 /**
  * @param {EsriJSONGeometry} object Object.
- * @return {module:ol/geom/Geometry} Polygon.
+ * @return {import("../geom/Geometry.js").default} Polygon.
  */
 function readPolygonGeometry(object) {
   const layout = getGeometryLayout(object);
@@ -392,14 +392,14 @@ function readPolygonGeometry(object) {
 
 
 /**
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {EsriJSONGeometry} EsriJSON geometry.
  */
 function writePointGeometry(geometry, opt_options) {
-  const coordinates = /** @type {module:ol/geom/Point} */ (geometry).getCoordinates();
+  const coordinates = /** @type {import("../geom/Point.js").default} */ (geometry).getCoordinates();
   let esriJSON;
-  const layout = /** @type {module:ol/geom/Point} */ (geometry).getLayout();
+  const layout = /** @type {import("../geom/Point.js").default} */ (geometry).getLayout();
   if (layout === GeometryLayout.XYZ) {
     esriJSON = /** @type {EsriJSONPoint} */ ({
       x: coordinates[0],
@@ -432,7 +432,7 @@ function writePointGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/SimpleGeometry} geometry Geometry.
+ * @param {import("../geom/SimpleGeometry.js").default} geometry Geometry.
  * @return {Object} Object with boolean hasZ and hasM keys.
  */
 function getHasZM(geometry) {
@@ -447,18 +447,18 @@ function getHasZM(geometry) {
 
 
 /**
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
 function writeLineStringGeometry(geometry, opt_options) {
-  const hasZM = getHasZM(/** @type {module:ol/geom/LineString} */(geometry));
+  const hasZM = getHasZM(/** @type {import("../geom/LineString.js").default} */(geometry));
   return (
     /** @type {EsriJSONPolyline} */ {
       hasZ: hasZM.hasZ,
       hasM: hasZM.hasM,
       paths: [
-        /** @type {module:ol/geom/LineString} */ (geometry).getCoordinates()
+        /** @type {import("../geom/LineString.js").default} */ (geometry).getCoordinates()
       ]
     }
   );
@@ -466,65 +466,65 @@ function writeLineStringGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {EsriJSONPolygon} EsriJSON geometry.
  */
 function writePolygonGeometry(geometry, opt_options) {
   // Esri geometries use the left-hand rule
-  const hasZM = getHasZM(/** @type {module:ol/geom/Polygon} */(geometry));
+  const hasZM = getHasZM(/** @type {import("../geom/Polygon.js").default} */(geometry));
   return (
     /** @type {EsriJSONPolygon} */ {
       hasZ: hasZM.hasZ,
       hasM: hasZM.hasM,
-      rings: /** @type {module:ol/geom/Polygon} */ (geometry).getCoordinates(false)
+      rings: /** @type {import("../geom/Polygon.js").default} */ (geometry).getCoordinates(false)
     }
   );
 }
 
 
 /**
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
 function writeMultiLineStringGeometry(geometry, opt_options) {
-  const hasZM = getHasZM(/** @type {module:ol/geom/MultiLineString} */(geometry));
+  const hasZM = getHasZM(/** @type {import("../geom/MultiLineString.js").default} */(geometry));
   return (
     /** @type {EsriJSONPolyline} */ {
       hasZ: hasZM.hasZ,
       hasM: hasZM.hasM,
-      paths: /** @type {module:ol/geom/MultiLineString} */ (geometry).getCoordinates()
+      paths: /** @type {import("../geom/MultiLineString.js").default} */ (geometry).getCoordinates()
     }
   );
 }
 
 
 /**
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {EsriJSONMultipoint} EsriJSON geometry.
  */
 function writeMultiPointGeometry(geometry, opt_options) {
-  const hasZM = getHasZM(/** @type {module:ol/geom/MultiPoint} */(geometry));
+  const hasZM = getHasZM(/** @type {import("../geom/MultiPoint.js").default} */(geometry));
   return (
     /** @type {EsriJSONMultipoint} */ {
       hasZ: hasZM.hasZ,
       hasM: hasZM.hasM,
-      points: /** @type {module:ol/geom/MultiPoint} */ (geometry).getCoordinates()
+      points: /** @type {import("../geom/MultiPoint.js").default} */ (geometry).getCoordinates()
     }
   );
 }
 
 
 /**
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {EsriJSONPolygon} EsriJSON geometry.
  */
 function writeMultiPolygonGeometry(geometry, opt_options) {
-  const hasZM = getHasZM(/** @type {module:ol/geom/MultiPolygon} */(geometry));
-  const coordinates = /** @type {module:ol/geom/MultiPolygon} */ (geometry).getCoordinates(false);
+  const hasZM = getHasZM(/** @type {import("../geom/MultiPolygon.js").default} */(geometry));
+  const coordinates = /** @type {import("../geom/MultiPolygon.js").default} */ (geometry).getCoordinates(false);
   const output = [];
   for (let i = 0; i < coordinates.length; i++) {
     for (let x = coordinates[i].length - 1; x >= 0; x--) {
@@ -540,13 +540,13 @@ function writeMultiPolygonGeometry(geometry, opt_options) {
 
 
 /**
- * @param {module:ol/geom/Geometry} geometry Geometry.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+ * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {EsriJSONGeometry} EsriJSON geometry.
  */
 function writeGeometry(geometry, opt_options) {
   const geometryWriter = GEOMETRY_WRITERS[geometry.getType()];
-  return geometryWriter(/** @type {module:ol/geom/Geometry} */(
+  return geometryWriter(/** @type {import("../geom/Geometry.js").default} */(
     transformWithOptions(geometry, true, opt_options)), opt_options);
 }
 

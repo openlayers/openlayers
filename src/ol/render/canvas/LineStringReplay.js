@@ -7,7 +7,7 @@ import CanvasReplay from '../canvas/Replay.js';
 class CanvasLineStringReplay extends CanvasReplay {
   /**
    * @param {number} tolerance Tolerance.
-   * @param {module:ol/extent~Extent} maxExtent Maximum extent.
+   * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.

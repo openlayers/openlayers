@@ -32,7 +32,7 @@ const OWS_NAMESPACE_URIS = [
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -51,7 +51,7 @@ class WMTSCapabilities extends XML {
     super();
 
     /**
-     * @type {module:ol/format/OWS}
+     * @type {import("./OWS.js").default}
      * @private
      */
     this.owsParser_ = new OWS();
@@ -87,7 +87,7 @@ class WMTSCapabilities extends XML {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const CONTENTS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -98,7 +98,7 @@ const CONTENTS_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const LAYER_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -117,7 +117,7 @@ const LAYER_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -130,7 +130,7 @@ const STYLE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const TMS_LINKS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -140,7 +140,7 @@ const TMS_LINKS_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const TMS_LIMITS_LIST_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -150,7 +150,7 @@ const TMS_LIMITS_LIST_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const TMS_LIMITS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -164,7 +164,7 @@ const TMS_LIMITS_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const DIMENSION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -177,7 +177,7 @@ const DIMENSION_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const WGS84_BBOX_READERS = makeStructureNS(
   OWS_NAMESPACE_URIS, {
@@ -188,7 +188,7 @@ const WGS84_BBOX_READERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const TMS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -202,7 +202,7 @@ const TMS_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const TM_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {

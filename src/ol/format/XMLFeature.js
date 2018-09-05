@@ -36,8 +36,8 @@ class XMLFeature extends FeatureFormat {
    * Read a single feature.
    *
    * @param {Document|Node|Object|string} source Source.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
-   * @return {module:ol/Feature} Feature.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @return {import("../Feature.js").default} Feature.
    * @api
    */
   readFeature(source, opt_options) {
@@ -55,8 +55,8 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @param {Document} doc Document.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
-   * @return {module:ol/Feature} Feature.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromDocument(doc, opt_options) {
     const features = this.readFeaturesFromDocument(doc, opt_options);
@@ -69,8 +69,8 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @param {Node} node Node.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
-   * @return {module:ol/Feature} Feature.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @return {import("../Feature.js").default} Feature.
    */
   readFeatureFromNode(node, opt_options) {
     return null; // not implemented
@@ -81,8 +81,8 @@ class XMLFeature extends FeatureFormat {
    *
    * @function
    * @param {Document|Node|Object|string} source Source.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
-   * @return {Array<module:ol/Feature>} Features.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
+   * @return {Array<import("../Feature.js").default>} Features.
    * @api
    */
   readFeatures(source, opt_options) {
@@ -101,12 +101,12 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @param {Document} doc Document.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
    * @protected
-   * @return {Array<module:ol/Feature>} Features.
+   * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromDocument(doc, opt_options) {
-    /** @type {Array<module:ol/Feature>} */
+    /** @type {Array<import("../Feature.js").default>} */
     const features = [];
     for (let n = doc.firstChild; n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
@@ -119,9 +119,9 @@ class XMLFeature extends FeatureFormat {
   /**
    * @abstract
    * @param {Node} node Node.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
    * @protected
-   * @return {Array<module:ol/Feature>} Features.
+   * @return {Array<import("../Feature.js").default>} Features.
    */
   readFeaturesFromNode(node, opt_options) {}
 
@@ -144,9 +144,9 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @param {Document} doc Document.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
    * @protected
-   * @return {module:ol/geom/Geometry} Geometry.
+   * @return {import("../geom/Geometry.js").default} Geometry.
    */
   readGeometryFromDocument(doc, opt_options) {
     return null; // not implemented
@@ -154,9 +154,9 @@ class XMLFeature extends FeatureFormat {
 
   /**
    * @param {Node} node Node.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Options.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Options.
    * @protected
-   * @return {module:ol/geom/Geometry} Geometry.
+   * @return {import("../geom/Geometry.js").default} Geometry.
    */
   readGeometryFromNode(node, opt_options) {
     return null; // not implemented
@@ -166,7 +166,7 @@ class XMLFeature extends FeatureFormat {
    * Read the projection from the source.
    *
    * @param {Document|Node|Object|string} source Source.
-   * @return {module:ol/proj/Projection} Projection.
+   * @return {import("../proj/Projection.js").default} Projection.
    * @api
    */
   readProjection(source) {
@@ -185,7 +185,7 @@ class XMLFeature extends FeatureFormat {
   /**
    * @param {Document} doc Document.
    * @protected
-   * @return {module:ol/proj/Projection} Projection.
+   * @return {import("../proj/Projection.js").default} Projection.
    */
   readProjectionFromDocument(doc) {
     return this.dataProjection;
@@ -194,7 +194,7 @@ class XMLFeature extends FeatureFormat {
   /**
    * @param {Node} node Node.
    * @protected
-   * @return {module:ol/proj/Projection} Projection.
+   * @return {import("../proj/Projection.js").default} Projection.
    */
   readProjectionFromNode(node) {
     return this.dataProjection;
@@ -209,8 +209,8 @@ class XMLFeature extends FeatureFormat {
   }
 
   /**
-   * @param {module:ol/Feature} feature Feature.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
+   * @param {import("../Feature.js").default} feature Feature.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Options.
    * @protected
    * @return {Node} Node.
    */
@@ -221,8 +221,8 @@ class XMLFeature extends FeatureFormat {
   /**
    * Encode an array of features as string.
    *
-   * @param {Array<module:ol/Feature>} features Features.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {string} Result.
    * @api
    */
@@ -232,8 +232,8 @@ class XMLFeature extends FeatureFormat {
   }
 
   /**
-   * @param {Array<module:ol/Feature>} features Features.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
+   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Options.
    * @return {Node} Node.
    */
   writeFeaturesNode(features, opt_options) {
@@ -249,8 +249,8 @@ class XMLFeature extends FeatureFormat {
   }
 
   /**
-   * @param {module:ol/geom/Geometry} geometry Geometry.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
+   * @param {import("../geom/Geometry.js").default} geometry Geometry.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Options.
    * @return {Node} Node.
    */
   writeGeometryNode(geometry, opt_options) {

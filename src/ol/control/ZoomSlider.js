@@ -28,7 +28,7 @@ const Direction = {
  * @typedef {Object} Options
  * @property {string} [className='ol-zoomslider'] CSS class name.
  * @property {number} [duration=200] Animation duration in milliseconds.
- * @property {function(module:ol/MapEvent)} [render] Function called when the control
+ * @property {function(import("../MapEvent.js").default)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  */
 
@@ -46,7 +46,7 @@ const Direction = {
 class ZoomSlider extends Control {
 
   /**
-   * @param {module:ol/control/ZoomSlider~Options=} opt_options Zoom slider options.
+   * @param {Options=} opt_options Zoom slider options.
    */
   constructor(opt_options) {
 
@@ -107,7 +107,7 @@ class ZoomSlider extends Control {
     /**
      * The calculated thumb size (border box plus margins).  Set when initSlider_
      * is called.
-     * @type {module:ol/size~Size}
+     * @type {import("../size.js").Size}
      * @private
      */
     this.thumbSize_ = null;
@@ -133,7 +133,7 @@ class ZoomSlider extends Control {
     containerElement.className = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
     containerElement.appendChild(thumbElement);
     /**
-     * @type {module:ol/pointer/PointerEventHandler}
+     * @type {import("../pointer/PointerEventHandler.js").default}
      * @private
      */
     this.dragger_ = new PointerEventHandler(containerElement);
@@ -222,7 +222,7 @@ class ZoomSlider extends Control {
 
   /**
    * Handle dragger start events.
-   * @param {module:ol/pointer/PointerEvent} event The drag event.
+   * @param {import("../pointer/PointerEvent.js").default} event The drag event.
    * @private
    */
   handleDraggerStart_(event) {
@@ -237,7 +237,7 @@ class ZoomSlider extends Control {
   /**
    * Handle dragger drag events.
    *
-   * @param {module:ol/pointer/PointerEvent|Event} event The drag event.
+   * @param {import("../pointer/PointerEvent.js").default|Event} event The drag event.
    * @private
    */
   handleDraggerDrag_(event) {
@@ -256,7 +256,7 @@ class ZoomSlider extends Control {
 
   /**
    * Handle dragger end events.
-   * @param {module:ol/pointer/PointerEvent|Event} event The drag event.
+   * @param {import("../pointer/PointerEvent.js").default|Event} event The drag event.
    * @private
    */
   handleDraggerEnd_(event) {
@@ -344,8 +344,8 @@ class ZoomSlider extends Control {
 
 /**
  * Update the zoomslider element.
- * @param {module:ol/MapEvent} mapEvent Map event.
- * @this {module:ol/control/ZoomSlider}
+ * @param {import("../MapEvent.js").default} mapEvent Map event.
+ * @this {import("./ZoomSlider.js").default}
  * @api
  */
 export function render(mapEvent) {

@@ -20,9 +20,9 @@ import {containsExtent} from './extent.js';
  * array is the horizontal offset. A positive value shifts the overlay right.
  * The second element in the array is the vertical offset. A positive value
  * shifts the overlay down.
- * @property {module:ol/coordinate~Coordinate} [position] The overlay position
+ * @property {import("./coordinate.js").Coordinate} [position] The overlay position
  * in map projection.
- * @property {module:ol/OverlayPositioning} [positioning='top-left'] Defines how
+ * @property {import("./OverlayPositioning.js").default} [positioning='top-left'] Defines how
  * the overlay is actually positioned with respect to its `position` property.
  * Possible values are `'bottom-left'`, `'bottom-center'`, `'bottom-right'`,
  * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
@@ -40,7 +40,7 @@ import {containsExtent} from './extent.js';
  * @property {boolean} [autoPan=false] If set to `true` the map is panned when
  * calling `setPosition`, so that the overlay is entirely visible in the current
  * viewport.
- * @property {module:ol/Overlay~PanOptions} [autoPanAnimation] The
+ * @property {PanOptions} [autoPanAnimation] The
  * animation options used to pan the overlay into view. This animation is only
  * used when `autoPan` is enabled. A `duration` and `easing` may be provided to
  * customize the animation.
@@ -97,7 +97,7 @@ const Property = {
 class Overlay extends BaseObject {
 
   /**
-   * @param {module:ol/Overlay~Options} options Overlay options.
+   * @param {Options} options Overlay options.
    */
   constructor(options) {
 
@@ -105,7 +105,7 @@ class Overlay extends BaseObject {
 
     /**
      * @protected
-     * @type {module:ol/Overlay~Options}
+     * @type {Options}
      */
     this.options = options;
 
@@ -145,9 +145,9 @@ class Overlay extends BaseObject {
 
     /**
      * @protected
-     * @type {module:ol/Overlay~PanOptions}
+     * @type {PanOptions}
      */
-    this.autoPanAnimation = options.autoPanAnimation || /** @type {module:ol/Overlay~PanOptions} */ ({});
+    this.autoPanAnimation = options.autoPanAnimation || /** @type {PanOptions} */ ({});
 
     /**
      * @protected
@@ -174,7 +174,7 @@ class Overlay extends BaseObject {
 
     /**
      * @protected
-     * @type {?module:ol/events~EventsKey}
+     * @type {?import("./events.js").EventsKey}
      */
     this.mapPostrenderListenerKey = null;
 
@@ -205,7 +205,7 @@ class Overlay extends BaseObject {
     this.setOffset(options.offset !== undefined ? options.offset : [0, 0]);
 
     this.setPositioning(options.positioning !== undefined ?
-      /** @type {module:ol/OverlayPositioning} */ (options.positioning) :
+      /** @type {import("./OverlayPositioning.js").default} */ (options.positioning) :
       OverlayPositioning.TOP_LEFT);
 
     if (options.position !== undefined) {
@@ -235,14 +235,14 @@ class Overlay extends BaseObject {
 
   /**
    * Get the map associated with this overlay.
-   * @return {module:ol/PluggableMap|undefined} The map that the
+   * @return {import("./PluggableMap.js").default|undefined} The map that the
    * overlay is part of.
    * @observable
    * @api
    */
   getMap() {
     return (
-      /** @type {module:ol/PluggableMap|undefined} */ (this.get(Property.MAP))
+      /** @type {import("./PluggableMap.js").default|undefined} */ (this.get(Property.MAP))
     );
   }
 
@@ -258,27 +258,27 @@ class Overlay extends BaseObject {
 
   /**
    * Get the current position of this overlay.
-   * @return {module:ol/coordinate~Coordinate|undefined} The spatial point that the overlay is
+   * @return {import("./coordinate.js").Coordinate|undefined} The spatial point that the overlay is
    *     anchored at.
    * @observable
    * @api
    */
   getPosition() {
     return (
-      /** @type {module:ol/coordinate~Coordinate|undefined} */ (this.get(Property.POSITION))
+      /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(Property.POSITION))
     );
   }
 
   /**
    * Get the current positioning of this overlay.
-   * @return {module:ol/OverlayPositioning} How the overlay is positioned
+   * @return {import("./OverlayPositioning.js").default} How the overlay is positioned
    *     relative to its point on the map.
    * @observable
    * @api
    */
   getPositioning() {
     return (
-      /** @type {module:ol/OverlayPositioning} */ (this.get(Property.POSITIONING))
+      /** @type {import("./OverlayPositioning.js").default} */ (this.get(Property.POSITIONING))
     );
   }
 
@@ -360,7 +360,7 @@ class Overlay extends BaseObject {
 
   /**
    * Set the map to be associated with this overlay.
-   * @param {module:ol/PluggableMap|undefined} map The map that the
+   * @param {import("./PluggableMap.js").default|undefined} map The map that the
    * overlay is part of.
    * @observable
    * @api
@@ -382,7 +382,7 @@ class Overlay extends BaseObject {
   /**
    * Set the position for this overlay. If the position is `undefined` the
    * overlay is hidden.
-   * @param {module:ol/coordinate~Coordinate|undefined} position The spatial point that the overlay
+   * @param {import("./coordinate.js").Coordinate|undefined} position The spatial point that the overlay
    *     is anchored at.
    * @observable
    * @api
@@ -432,7 +432,7 @@ class Overlay extends BaseObject {
       }
 
       if (delta[0] !== 0 || delta[1] !== 0) {
-        const center = /** @type {module:ol/coordinate~Coordinate} */ (map.getView().getCenter());
+        const center = /** @type {import("./coordinate.js").Coordinate} */ (map.getView().getCenter());
         const centerPx = map.getPixelFromCoordinate(center);
         const newCenterPx = [
           centerPx[0] + delta[0],
@@ -451,8 +451,8 @@ class Overlay extends BaseObject {
   /**
    * Get the extent of an element relative to the document
    * @param {HTMLElement|undefined} element The element.
-   * @param {module:ol/size~Size|undefined} size The size of the element.
-   * @return {module:ol/extent~Extent} The extent.
+   * @param {import("./size.js").Size|undefined} size The size of the element.
+   * @return {import("./extent.js").Extent} The extent.
    * @protected
    */
   getRect(element, size) {
@@ -469,7 +469,7 @@ class Overlay extends BaseObject {
 
   /**
    * Set the positioning for this overlay.
-   * @param {module:ol/OverlayPositioning} positioning how the overlay is
+   * @param {import("./OverlayPositioning.js").default} positioning how the overlay is
    *     positioned relative to its point on the map.
    * @observable
    * @api
@@ -508,8 +508,8 @@ class Overlay extends BaseObject {
   }
 
   /**
-   * @param {module:ol/pixel~Pixel} pixel The pixel location.
-   * @param {module:ol/size~Size|undefined} mapSize The map size.
+   * @param {import("./pixel.js").Pixel} pixel The pixel location.
+   * @param {import("./size.js").Size|undefined} mapSize The map size.
    * @protected
    */
   updateRenderedPosition(pixel, mapSize) {
@@ -574,7 +574,7 @@ class Overlay extends BaseObject {
 
   /**
    * returns the options this Overlay has been created with
-   * @return {module:ol/Overlay~Options} overlay options
+   * @return {Options} overlay options
    */
   getOptions() {
     return this.options;

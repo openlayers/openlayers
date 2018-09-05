@@ -13,10 +13,10 @@ class IconImage extends EventTarget {
   /**
    * @param {HTMLImageElement|HTMLCanvasElement} image Image.
    * @param {string|undefined} src Src.
-   * @param {module:ol/size~Size} size Size.
+   * @param {import("../size.js").Size} size Size.
    * @param {?string} crossOrigin Cross origin.
-   * @param {module:ol/ImageState} imageState Image state.
-   * @param {module:ol/color~Color} color Color.
+   * @param {import("../ImageState.js").default} imageState Image state.
+   * @param {import("../color.js").Color} color Color.
    */
   constructor(image, src, size, crossOrigin, imageState, color) {
 
@@ -48,25 +48,25 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {module:ol/color~Color}
+     * @type {import("../color.js").Color}
      */
     this.color_ = color;
 
     /**
      * @private
-     * @type {Array<module:ol/events~EventsKey>}
+     * @type {Array<import("../events.js").EventsKey>}
      */
     this.imageListenerKeys_ = null;
 
     /**
      * @private
-     * @type {module:ol/ImageState}
+     * @type {import("../ImageState.js").default}
      */
     this.imageState_ = imageState;
 
     /**
      * @private
-     * @type {module:ol/size~Size}
+     * @type {import("../size.js").Size}
      */
     this.size_ = size;
 
@@ -141,7 +141,7 @@ class IconImage extends EventTarget {
   }
 
   /**
-   * @return {module:ol/ImageState} Image state.
+   * @return {import("../ImageState.js").default} Image state.
    */
   getImageState() {
     return this.imageState_;
@@ -167,7 +167,7 @@ class IconImage extends EventTarget {
   }
 
   /**
-   * @return {module:ol/size~Size} Image size.
+   * @return {import("../size.js").Size} Image size.
    */
   getSize() {
     return this.size_;
@@ -243,11 +243,11 @@ class IconImage extends EventTarget {
 /**
  * @param {HTMLImageElement|HTMLCanvasElement} image Image.
  * @param {string} src Src.
- * @param {module:ol/size~Size} size Size.
+ * @param {import("../size.js").Size} size Size.
  * @param {?string} crossOrigin Cross origin.
- * @param {module:ol/ImageState} imageState Image state.
- * @param {module:ol/color~Color} color Color.
- * @return {module:ol/style/IconImage} Icon image.
+ * @param {import("../ImageState.js").default} imageState Image state.
+ * @param {import("../color.js").Color} color Color.
+ * @return {import("./IconImage.js").default} Icon image.
  */
 export function get(image, src, size, crossOrigin, imageState, color) {
   let iconImage = iconImageCache.get(src, crossOrigin, color);

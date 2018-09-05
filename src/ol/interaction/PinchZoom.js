@@ -23,7 +23,7 @@ import PointerInteraction, {centroid as centroidFromPointers} from '../interacti
  */
 class PinchZoom extends PointerInteraction {
   /**
-   * @param {module:ol/interaction/PinchZoom~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
@@ -44,7 +44,7 @@ class PinchZoom extends PointerInteraction {
 
     /**
      * @private
-     * @type {module:ol/coordinate~Coordinate}
+     * @type {import("../coordinate.js").Coordinate}
      */
     this.anchor_ = null;
 
@@ -72,8 +72,8 @@ class PinchZoom extends PointerInteraction {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {module:ol/interaction/PinchZoom}
+ * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+ * @this {import("./PinchZoom.js").default}
  */
 function handleDragEvent(mapBrowserEvent) {
   let scaleDelta = 1.0;
@@ -124,9 +124,9 @@ function handleDragEvent(mapBrowserEvent) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {module:ol/interaction/PinchZoom}
+ * @this {import("./PinchZoom.js").default}
  */
 function handleUpEvent(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
@@ -151,9 +151,9 @@ function handleUpEvent(mapBrowserEvent) {
 
 
 /**
- * @param {module:ol/MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {module:ol/interaction/PinchZoom}
+ * @this {import("./PinchZoom.js").default}
  */
 function handleDownEvent(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {

@@ -7,7 +7,7 @@ import CanvasReplay from '../canvas/Replay.js';
 class CanvasImageReplay extends CanvasReplay {
   /**
    * @param {number} tolerance Tolerance.
-   * @param {module:ol/extent~Extent} maxExtent Maximum extent.
+   * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
@@ -18,7 +18,7 @@ class CanvasImageReplay extends CanvasReplay {
 
     /**
      * @private
-     * @type {module:ol/render/canvas~DeclutterGroup}
+     * @type {import("../canvas.js").DeclutterGroup}
      */
     this.declutterGroup_ = null;
 
@@ -198,7 +198,7 @@ class CanvasImageReplay extends CanvasReplay {
     const origin = imageStyle.getOrigin();
     this.anchorX_ = anchor[0];
     this.anchorY_ = anchor[1];
-    this.declutterGroup_ = /** @type {module:ol/render/canvas~DeclutterGroup} */ (declutterGroup);
+    this.declutterGroup_ = /** @type {import("../canvas.js").DeclutterGroup} */ (declutterGroup);
     this.hitDetectionImage_ = hitDetectionImage;
     this.image_ = image;
     this.height_ = size[1];

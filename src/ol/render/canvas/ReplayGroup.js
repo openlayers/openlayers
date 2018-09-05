@@ -19,9 +19,9 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 
 
 /**
- * @type {Object<module:ol/render/ReplayType,
- *                function(new: module:ol/render/canvas/Replay, number, module:ol/extent~Extent,
- *                number, number, boolean, Array<module:ol/render/canvas~DeclutterGroup>)>}
+ * @type {Object<import("../ReplayType.js").default,
+ *                function(new: import("./Replay.js").default, number, import("../../extent.js").Extent,
+ *                number, number, boolean, Array<import("../canvas.js").DeclutterGroup>)>}
  */
 const BATCH_CONSTRUCTORS = {
   'Circle': CanvasPolygonReplay,
@@ -36,7 +36,7 @@ const BATCH_CONSTRUCTORS = {
 class CanvasReplayGroup extends ReplayGroup {
   /**
    * @param {number} tolerance Tolerance.
-   * @param {module:ol/extent~Extent} maxExtent Max extent.
+   * @param {import("../../extent.js").Extent} maxExtent Max extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay group can have overlapping geometries.
@@ -61,7 +61,7 @@ class CanvasReplayGroup extends ReplayGroup {
     this.declutterTree_ = declutterTree;
 
     /**
-     * @type {module:ol/render/canvas~DeclutterGroup}
+     * @type {import("../canvas.js").DeclutterGroup}
      * @private
      */
     this.declutterGroup_ = null;
@@ -74,7 +74,7 @@ class CanvasReplayGroup extends ReplayGroup {
 
     /**
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../../extent.js").Extent}
      */
     this.maxExtent_ = maxExtent;
 
@@ -104,7 +104,7 @@ class CanvasReplayGroup extends ReplayGroup {
 
     /**
      * @private
-     * @type {!Object<string, !Object<module:ol/render/ReplayType, module:ol/render/canvas/Replay>>}
+     * @type {!Object<string, !Object<import("../ReplayType.js").default, import("./Replay.js").default>>}
      */
     this.replaysByZIndex_ = {};
 
@@ -116,14 +116,14 @@ class CanvasReplayGroup extends ReplayGroup {
 
     /**
      * @private
-     * @type {module:ol/transform~Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.hitDetectionTransform_ = createTransform();
   }
 
   /**
    * @param {boolean} group Group with previous replay.
-   * @return {module:ol/render/canvas~DeclutterGroup} Declutter instruction group.
+   * @return {import("../canvas.js").DeclutterGroup} Declutter instruction group.
    */
   addDeclutter(group) {
     let declutter = null;
@@ -141,7 +141,7 @@ class CanvasReplayGroup extends ReplayGroup {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {module:ol/transform~Transform} transform Transform.
+   * @param {import("../../transform.js").Transform} transform Transform.
    */
   clip(context, transform) {
     const flatClipCoords = this.getClipCoords(transform);
@@ -154,7 +154,7 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @param {Array<module:ol/render/ReplayType>} replays Replays.
+   * @param {Array<import("../ReplayType.js").default>} replays Replays.
    * @return {boolean} Has replays of the provided types.
    */
   hasReplays(replays) {
@@ -182,13 +182,13 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
+   * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {number} resolution Resolution.
    * @param {number} rotation Rotation.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
-   * @param {function((module:ol/Feature|module:ol/render/Feature)): T} callback Feature callback.
-   * @param {Object<string, module:ol/render/canvas~DeclutterGroup>} declutterReplays Declutter replays.
+   * @param {function((import("../../Feature.js").default|import("../Feature.js").default)): T} callback Feature callback.
+   * @param {Object<string, import("../canvas.js").DeclutterGroup>} declutterReplays Declutter replays.
    * @return {T|undefined} Callback result.
    * @template T
    */
@@ -219,7 +219,7 @@ class CanvasReplayGroup extends ReplayGroup {
     }
 
     /**
-     * @type {module:ol/extent~Extent}
+     * @type {import("../../extent.js").Extent}
      */
     let hitExtent;
     if (this.renderBuffer_ !== undefined) {
@@ -239,7 +239,7 @@ class CanvasReplayGroup extends ReplayGroup {
     let replayType;
 
     /**
-     * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
+     * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
      * @return {?} Callback result.
      */
     function featureCallback(feature) {
@@ -299,7 +299,7 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @param {module:ol/transform~Transform} transform Transform.
+   * @param {import("../../transform.js").Transform} transform Transform.
    * @return {Array<number>} Clip coordinates.
    */
   getClipCoords(transform) {
@@ -335,7 +335,7 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @return {Object<string, Object<module:ol/render/ReplayType, module:ol/render/canvas/Replay>>} Replays.
+   * @return {Object<string, Object<import("../ReplayType.js").default, import("./Replay.js").default>>} Replays.
    */
   getReplays() {
     return this.replaysByZIndex_;
@@ -350,13 +350,13 @@ class CanvasReplayGroup extends ReplayGroup {
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
-   * @param {module:ol/transform~Transform} transform Transform.
+   * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
-   * @param {Array<module:ol/render/ReplayType>=} opt_replayTypes Ordered replay types to replay.
+   * @param {Array<import("../ReplayType.js").default>=} opt_replayTypes Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
-   * @param {Object<string, module:ol/render/canvas~DeclutterGroup>=} opt_declutterReplays Declutter replays.
+   * @param {Object<string, import("../canvas.js").DeclutterGroup>=} opt_declutterReplays Declutter replays.
    */
   replay(
     context,

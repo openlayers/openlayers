@@ -12,7 +12,7 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * @typedef {Object} Options
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
- * @property {module:ol/extent~Extent} [extent] The bounding extent for layer rendering.  The layer will not be
+ * @property {import("../extent.js").Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
  * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
  * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
@@ -22,26 +22,26 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {module:ol/render~OrderFunction} [renderOrder] Render order. Function to be used when sorting
+ * @property {import("../render.js").OrderFunction} [renderOrder] Render order. Function to be used when sorting
  * features before rendering. By default features are drawn in the order that they are created. Use
  * `null` to avoid the sort, but get an undefined draw order.
  * @property {number} [renderBuffer=100] The buffer in pixels around the viewport extent used by the
  * renderer when getting features from the vector source for the rendering or hit-detection.
  * Recommended value: the size of the largest symbol, line width or label.
- * @property {module:ol/layer/VectorRenderType|string} [renderMode='vector'] Render mode for vector layers:
+ * @property {import("./VectorRenderType.js").default|string} [renderMode='vector'] Render mode for vector layers:
  *  * `'image'`: Vector layers are rendered as images. Great performance, but point symbols and
  *    texts are always rotated with the view and pixels are scaled during zoom animations.
  *  * `'vector'`: Vector layers are rendered as vectors. Most accurate rendering even during
  *    animations, but slower performance.
- * @property {module:ol/source/Vector} [source] Source.
- * @property {module:ol/PluggableMap} [map] Sets the layer as overlay on a map. The map will not manage
+ * @property {import("../source/Vector.js").default} [source] Source.
+ * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link module:ol/Map#addLayer}.
  * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
  * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
  * means higher priority.
- * @property {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction} [style] Layer style. See
+ * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style] Layer style. See
  * {@link module:ol/style} for default style which will be used if this is not defined.
  * @property {boolean} [updateWhileAnimating=false] When set to `true` and `renderMode`
  * is `vector`, feature batches will be recreated during animations. This means that no
@@ -90,11 +90,11 @@ const Property = {
  */
 class VectorLayer extends Layer {
   /**
-   * @param {module:ol/layer/Vector~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     const options = opt_options ?
-      opt_options : /** @type {module:ol/layer/Vector~Options} */ ({});
+      opt_options : /** @type {Options} */ ({});
 
     const baseOptions = assign({}, options);
 
@@ -119,14 +119,14 @@ class VectorLayer extends Layer {
 
     /**
     * User provided style.
-    * @type {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction}
+    * @type {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction}
     * @private
     */
     this.style_ = null;
 
     /**
     * Style function for use within the library.
-    * @type {module:ol/style/Style~StyleFunction|undefined}
+    * @type {import("../style/Style.js").StyleFunction|undefined}
     * @private
     */
     this.styleFunction_ = undefined;
@@ -149,14 +149,14 @@ class VectorLayer extends Layer {
 
     /**
     * @private
-    * @type {module:ol/layer/VectorTileRenderType|string}
+    * @type {import("./VectorTileRenderType.js").default|string}
     */
     this.renderMode_ = options.renderMode || VectorRenderType.VECTOR;
 
     /**
     * The layer type.
     * @protected
-    * @type {module:ol/LayerType}
+    * @type {import("../LayerType.js").default}
     */
     this.type = LayerType.VECTOR;
 
@@ -184,19 +184,19 @@ class VectorLayer extends Layer {
   }
 
   /**
-  * @return {function(module:ol/Feature, module:ol/Feature): number|null|undefined} Render
+  * @return {function(import("../Feature.js").default, import("../Feature.js").default): number|null|undefined} Render
   *     order.
   */
   getRenderOrder() {
     return (
-    /** @type {module:ol/render~OrderFunction|null|undefined} */ (this.get(Property.RENDER_ORDER))
+    /** @type {import("../render.js").OrderFunction|null|undefined} */ (this.get(Property.RENDER_ORDER))
     );
   }
 
   /**
   * Get the style for features.  This returns whatever was passed to the `style`
   * option at construction or to the `setStyle` method.
-  * @return {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction}
+  * @return {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction}
   *     Layer style.
   * @api
   */
@@ -206,7 +206,7 @@ class VectorLayer extends Layer {
 
   /**
   * Get the style function.
-  * @return {module:ol/style/Style~StyleFunction|undefined} Layer style function.
+  * @return {import("../style/Style.js").StyleFunction|undefined} Layer style function.
   * @api
   */
   getStyleFunction() {
@@ -230,7 +230,7 @@ class VectorLayer extends Layer {
   }
 
   /**
-  * @param {module:ol/render~OrderFunction|null|undefined} renderOrder
+  * @param {import("../render.js").OrderFunction|null|undefined} renderOrder
   *     Render order.
   */
   setRenderOrder(renderOrder) {
@@ -244,7 +244,7 @@ class VectorLayer extends Layer {
   * it is `null` the layer has no style (a `null` style), so only features
   * that have their own styles will be rendered in the layer. See
   * {@link module:ol/style} for information on the default style.
-  * @param {module:ol/style/Style|Array<module:ol/style/Style>|module:ol/style/Style~StyleFunction|null|undefined} style Layer style.
+  * @param {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction|null|undefined} style Layer style.
   * @api
   */
   setStyle(style) {
@@ -255,7 +255,7 @@ class VectorLayer extends Layer {
   }
 
   /**
-  * @return {module:ol/layer/VectorRenderType|string} The render mode.
+  * @return {import("./VectorRenderType.js").default|string} The render mode.
   */
   getRenderMode() {
     return this.renderMode_;
@@ -266,7 +266,7 @@ class VectorLayer extends Layer {
 /**
  * Return the associated {@link module:ol/source/Vector vectorsource} of the layer.
  * @function
- * @return {module:ol/source/Vector} Source.
+ * @return {import("../source/Vector.js").default} Source.
  * @api
  */
 VectorLayer.prototype.getSource;

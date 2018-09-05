@@ -16,8 +16,8 @@ import {squaredDistance as squaredDx} from '../math.js';
 class Point extends SimpleGeometry {
 
   /**
-   * @param {module:ol/coordinate~Coordinate} coordinates Coordinates.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {import("../coordinate.js").Coordinate} coordinates Coordinates.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    */
   constructor(coordinates, opt_layout) {
     super();
@@ -26,7 +26,7 @@ class Point extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!module:ol/geom/Point} Clone.
+   * @return {!import("./Point.js").default} Clone.
    * @override
    * @api
    */
@@ -55,7 +55,7 @@ class Point extends SimpleGeometry {
 
   /**
    * Return the coordinate of the point.
-   * @return {module:ol/coordinate~Coordinate} Coordinates.
+   * @return {import("../coordinate.js").Coordinate} Coordinates.
    * @override
    * @api
    */

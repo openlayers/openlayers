@@ -24,9 +24,9 @@ import {douglasPeucker} from '../geom/flat/simplify.js';
 class LineString extends SimpleGeometry {
 
   /**
-   * @param {Array<module:ol/coordinate~Coordinate>|Array<number>} coordinates Coordinates.
+   * @param {Array<import("../coordinate.js").Coordinate>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    */
   constructor(coordinates, opt_layout) {
 
@@ -34,7 +34,7 @@ class LineString extends SimpleGeometry {
 
     /**
      * @private
-     * @type {module:ol/coordinate~Coordinate}
+     * @type {import("../coordinate.js").Coordinate}
      */
     this.flatMidpoint_ = null;
 
@@ -66,7 +66,7 @@ class LineString extends SimpleGeometry {
 
   /**
    * Append the passed coordinate to the coordinates of the linestring.
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @api
    */
   appendCoordinate(coordinate) {
@@ -80,7 +80,7 @@ class LineString extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!module:ol/geom/LineString} Clone.
+   * @return {!import("./LineString.js").default} Clone.
    * @override
    * @api
    */
@@ -110,7 +110,7 @@ class LineString extends SimpleGeometry {
    * If the callback returns a truthy value the function returns that
    * value immediately. Otherwise the function returns `false`.
    *
-   * @param {function(this: S, module:ol/coordinate~Coordinate, module:ol/coordinate~Coordinate): T} callback Function
+   * @param {function(this: S, import("../coordinate.js").Coordinate, import("../coordinate.js").Coordinate): T} callback Function
    *     called for each segment.
    * @return {T|boolean} Value.
    * @template T,S
@@ -131,7 +131,7 @@ class LineString extends SimpleGeometry {
    *
    * @param {number} m M.
    * @param {boolean=} opt_extrapolate Extrapolate. Default is `false`.
-   * @return {module:ol/coordinate~Coordinate} Coordinate.
+   * @return {import("../coordinate.js").Coordinate} Coordinate.
    * @api
    */
   getCoordinateAtM(m, opt_extrapolate) {
@@ -146,7 +146,7 @@ class LineString extends SimpleGeometry {
 
   /**
    * Return the coordinates of the linestring.
-   * @return {Array<module:ol/coordinate~Coordinate>} Coordinates.
+   * @return {Array<import("../coordinate.js").Coordinate>} Coordinates.
    * @override
    * @api
    */
@@ -160,9 +160,9 @@ class LineString extends SimpleGeometry {
    * The `fraction` is a number between 0 and 1, where 0 is the start of the
    * linestring and 1 is the end.
    * @param {number} fraction Fraction.
-   * @param {module:ol/coordinate~Coordinate=} opt_dest Optional coordinate whose values will
+   * @param {import("../coordinate.js").Coordinate=} opt_dest Optional coordinate whose values will
    *     be modified. If not provided, a new coordinate will be returned.
-   * @return {module:ol/coordinate~Coordinate} Coordinate of the interpolated point.
+   * @return {import("../coordinate.js").Coordinate} Coordinate of the interpolated point.
    * @api
    */
   getCoordinateAt(fraction, opt_dest) {
@@ -223,8 +223,8 @@ class LineString extends SimpleGeometry {
 
   /**
    * Set the coordinates of the linestring.
-   * @param {!Array<module:ol/coordinate~Coordinate>} coordinates Coordinates.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    * @override
    * @api
    */

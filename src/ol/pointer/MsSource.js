@@ -49,7 +49,7 @@ const POINTER_TYPES = [
 /**
  * Handler for `msPointerDown`.
  *
- * @this {module:ol/pointer/MsSource}
+ * @this {import("./MsSource.js").default}
  * @param {MSPointerEvent} inEvent The in event.
  */
 function msPointerDown(inEvent) {
@@ -61,7 +61,7 @@ function msPointerDown(inEvent) {
 /**
  * Handler for `msPointerMove`.
  *
- * @this {module:ol/pointer/MsSource}
+ * @this {import("./MsSource.js").default}
  * @param {MSPointerEvent} inEvent The in event.
  */
 function msPointerMove(inEvent) {
@@ -72,7 +72,7 @@ function msPointerMove(inEvent) {
 /**
  * Handler for `msPointerUp`.
  *
- * @this {module:ol/pointer/MsSource}
+ * @this {import("./MsSource.js").default}
  * @param {MSPointerEvent} inEvent The in event.
  */
 function msPointerUp(inEvent) {
@@ -84,7 +84,7 @@ function msPointerUp(inEvent) {
 /**
  * Handler for `msPointerOut`.
  *
- * @this {module:ol/pointer/MsSource}
+ * @this {import("./MsSource.js").default}
  * @param {MSPointerEvent} inEvent The in event.
  */
 function msPointerOut(inEvent) {
@@ -95,7 +95,7 @@ function msPointerOut(inEvent) {
 /**
  * Handler for `msPointerOver`.
  *
- * @this {module:ol/pointer/MsSource}
+ * @this {import("./MsSource.js").default}
  * @param {MSPointerEvent} inEvent The in event.
  */
 function msPointerOver(inEvent) {
@@ -106,7 +106,7 @@ function msPointerOver(inEvent) {
 /**
  * Handler for `msPointerCancel`.
  *
- * @this {module:ol/pointer/MsSource}
+ * @this {import("./MsSource.js").default}
  * @param {MSPointerEvent} inEvent The in event.
  */
 function msPointerCancel(inEvent) {
@@ -118,7 +118,7 @@ function msPointerCancel(inEvent) {
 /**
  * Handler for `msLostPointerCapture`.
  *
- * @this {module:ol/pointer/MsSource}
+ * @this {import("./MsSource.js").default}
  * @param {MSPointerEvent} inEvent The in event.
  */
 function msLostPointerCapture(inEvent) {
@@ -129,7 +129,7 @@ function msLostPointerCapture(inEvent) {
 /**
  * Handler for `msGotPointerCapture`.
  *
- * @this {module:ol/pointer/MsSource}
+ * @this {import("./MsSource.js").default}
  * @param {MSPointerEvent} inEvent The in event.
  */
 function msGotPointerCapture(inEvent) {
@@ -140,7 +140,7 @@ function msGotPointerCapture(inEvent) {
 class MsSource extends EventSource {
 
   /**
-   * @param {module:ol/pointer/PointerEventHandler} dispatcher Event handler.
+   * @param {import("./PointerEventHandler.js").default} dispatcher Event handler.
    */
   constructor(dispatcher) {
     const mapping = {

@@ -38,7 +38,7 @@ const SCHEMA_LOCATION = 'http://www.topografix.com/GPX/1/1 ' +
 
 /**
  * @const
- * @type {Object<string, function(Node, Array<*>): (module:ol/Feature|undefined)>}
+ * @type {Object<string, function(Node, Array<*>): (import("../Feature.js").default|undefined)>}
  */
 const FEATURE_READER = {
   'rte': readRte,
@@ -49,7 +49,7 @@ const FEATURE_READER = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const GPX_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -61,7 +61,7 @@ const GPX_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const LINK_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -72,7 +72,7 @@ const LINK_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
 const GPX_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -84,7 +84,7 @@ const GPX_SERIALIZERS = makeStructureNS(
 
 /**
  * @typedef {Object} Options
- * @property {function(module:ol/Feature, Node)} [readExtensions] Callback function
+ * @property {function(import("../Feature.js").default, Node)} [readExtensions] Callback function
  * to process `extensions` nodes. To prevent memory leaks, this callback function must
  * not store any references to the node. Note that the `extensions`
  * node is not allowed in GPX 1.0. Moreover, only `extensions`
@@ -117,7 +117,7 @@ const GPX_SERIALIZERS = makeStructureNS(
 class GPX extends XMLFeature {
 
   /**
-   * @param {module:ol/format/GPX~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     super();
@@ -131,14 +131,14 @@ class GPX extends XMLFeature {
     this.dataProjection = getProjection('EPSG:4326');
 
     /**
-     * @type {function(module:ol/Feature, Node)|undefined}
+     * @type {function(import("../Feature.js").default, Node)|undefined}
      * @private
      */
     this.readExtensions_ = options.readExtensions;
   }
 
   /**
-   * @param {Array<module:ol/Feature>} features List of features.
+   * @param {Array<import("../Feature.js").default>} features List of features.
    * @private
    */
   handleReadExtensions_(features) {
@@ -182,7 +182,7 @@ class GPX extends XMLFeature {
       return [];
     }
     if (node.localName == 'gpx') {
-      /** @type {Array<module:ol/Feature>} */
+      /** @type {Array<import("../Feature.js").default>} */
       const features = pushParseAndPop([], GPX_PARSERS,
         node, [this.getReadOptions(node, opt_options)]);
       if (features) {
@@ -200,8 +200,8 @@ class GPX extends XMLFeature {
    * LineString geometries are output as routes (`<rte>`), and MultiLineString
    * as tracks (`<trk>`).
    *
-   * @param {Array<module:ol/Feature>} features Features.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
+   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Options.
    * @return {Node} Node.
    * @override
    * @api
@@ -216,7 +216,7 @@ class GPX extends XMLFeature {
     gpx.setAttribute('version', '1.1');
     gpx.setAttribute('creator', 'OpenLayers');
 
-    pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
+    pushSerializeAndPop(/** @type {import("../xml.js").NodeStackItem} */
       ({node: gpx}), GPX_SERIALIZERS, GPX_NODE_FACTORY, features, [opt_options]);
     return gpx;
   }
@@ -225,7 +225,7 @@ class GPX extends XMLFeature {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const RTE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -243,7 +243,7 @@ const RTE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const RTEPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -254,7 +254,7 @@ const RTEPT_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const TRK_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -272,7 +272,7 @@ const TRK_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const TRKSEG_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -282,7 +282,7 @@ const TRKSEG_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const TRKPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -293,7 +293,7 @@ const TRKPT_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const WPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -328,7 +328,7 @@ const LINK_SEQUENCE = ['text', 'type'];
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
 const LINK_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -349,7 +349,7 @@ const RTE_SEQUENCE = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
 const RTE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -386,7 +386,7 @@ const TRK_SEQUENCE = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
 const TRK_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -410,7 +410,7 @@ const TRKSEG_NODE_FACTORY = makeSimpleNodeFactory('trkpt');
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
 const TRKSEG_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -432,7 +432,7 @@ const WPT_TYPE_SEQUENCE = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
 const WPT_TYPE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -475,7 +475,7 @@ const GEOMETRY_TYPE_TO_NODENAME = {
  * @return {Node|undefined} Node.
  */
 function GPX_NODE_FACTORY(value, objectStack, opt_nodeName) {
-  const geometry = /** @type {module:ol/Feature} */ (value).getGeometry();
+  const geometry = /** @type {import("../Feature.js").default} */ (value).getGeometry();
   if (geometry) {
     const nodeName = GEOMETRY_TYPE_TO_NODENAME[geometry.getType()];
     if (nodeName) {
@@ -488,7 +488,7 @@ function GPX_NODE_FACTORY(value, objectStack, opt_nodeName) {
 
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
- * @param {module:ol/format/GPX~LayoutOptions} layoutOptions Layout options.
+ * @param {LayoutOptions} layoutOptions Layout options.
  * @param {Element} node Node.
  * @param {!Object} values Values.
  * @return {Array<number>} Flat coordinates.
@@ -519,10 +519,10 @@ function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
  * Choose GeometryLayout based on flags in layoutOptions and adjust flatCoordinates
  * and ends arrays by shrinking them accordingly (removing unused zero entries).
  *
- * @param {module:ol/format/GPX~LayoutOptions} layoutOptions Layout options.
+ * @param {LayoutOptions} layoutOptions Layout options.
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {Array<number>=} ends Ends.
- * @return {module:ol/geom/GeometryLayout} Layout.
+ * @return {import("../geom/GeometryLayout.js").default} Layout.
  */
 function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
   let layout = GeometryLayout.XY;
@@ -592,7 +592,7 @@ function parseRtePt(node, objectStack) {
   if (values) {
     const rteValues = /** @type {!Object} */ (objectStack[objectStack.length - 1]);
     const flatCoordinates = /** @type {Array<number>} */ (rteValues['flatCoordinates']);
-    const layoutOptions = /** @type {module:ol/format/GPX~LayoutOptions} */ (rteValues['layoutOptions']);
+    const layoutOptions = /** @type {LayoutOptions} */ (rteValues['layoutOptions']);
     appendCoordinate(flatCoordinates, layoutOptions, node, values);
   }
 }
@@ -607,7 +607,7 @@ function parseTrkPt(node, objectStack) {
   if (values) {
     const trkValues = /** @type {!Object} */ (objectStack[objectStack.length - 1]);
     const flatCoordinates = /** @type {Array<number>} */ (trkValues['flatCoordinates']);
-    const layoutOptions = /** @type {module:ol/format/GPX~LayoutOptions} */ (trkValues['layoutOptions']);
+    const layoutOptions = /** @type {LayoutOptions} */ (trkValues['layoutOptions']);
     appendCoordinate(flatCoordinates, layoutOptions, node, values);
   }
 }
@@ -630,10 +630,10 @@ function parseTrkSeg(node, objectStack) {
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {module:ol/Feature|undefined} Track.
+ * @return {import("../Feature.js").default|undefined} Track.
  */
 function readRte(node, objectStack) {
-  const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").ReadOptions} */ (objectStack[0]);
   const values = pushParseAndPop({
     'flatCoordinates': [],
     'layoutOptions': {}
@@ -644,7 +644,7 @@ function readRte(node, objectStack) {
   const flatCoordinates = /** @type {Array<number>} */
       (values['flatCoordinates']);
   delete values['flatCoordinates'];
-  const layoutOptions = /** @type {module:ol/format/GPX~LayoutOptions} */ (values['layoutOptions']);
+  const layoutOptions = /** @type {LayoutOptions} */ (values['layoutOptions']);
   delete values['layoutOptions'];
   const layout = applyLayoutOptions(layoutOptions, flatCoordinates);
   const geometry = new LineString(flatCoordinates, layout);
@@ -658,10 +658,10 @@ function readRte(node, objectStack) {
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {module:ol/Feature|undefined} Track.
+ * @return {import("../Feature.js").default|undefined} Track.
  */
 function readTrk(node, objectStack) {
-  const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").ReadOptions} */ (objectStack[0]);
   const values = pushParseAndPop({
     'flatCoordinates': [],
     'ends': [],
@@ -675,7 +675,7 @@ function readTrk(node, objectStack) {
   delete values['flatCoordinates'];
   const ends = /** @type {Array<number>} */ (values['ends']);
   delete values['ends'];
-  const layoutOptions = /** @type {module:ol/format/GPX~LayoutOptions} */ (values['layoutOptions']);
+  const layoutOptions = /** @type {LayoutOptions} */ (values['layoutOptions']);
   delete values['layoutOptions'];
   const layout = applyLayoutOptions(layoutOptions, flatCoordinates, ends);
   const geometry = new MultiLineString(flatCoordinates, layout, ends);
@@ -689,15 +689,15 @@ function readTrk(node, objectStack) {
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {module:ol/Feature|undefined} Waypoint.
+ * @return {import("../Feature.js").default|undefined} Waypoint.
  */
 function readWpt(node, objectStack) {
-  const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").ReadOptions} */ (objectStack[0]);
   const values = pushParseAndPop({}, WPT_PARSERS, node, objectStack);
   if (!values) {
     return undefined;
   }
-  const layoutOptions = /** @type {module:ol/format/GPX~LayoutOptions} */ ({});
+  const layoutOptions = /** @type {LayoutOptions} */ ({});
   const coordinates = appendCoordinate([], layoutOptions, node, values);
   const layout = applyLayoutOptions(layoutOptions, coordinates);
   const geometry = new Point(coordinates, layout);
@@ -721,7 +721,7 @@ function writeLink(node, value, objectStack) {
     properties['linkText'],
     properties['linkType']
   ];
-  pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */ ({node: node}),
+  pushSerializeAndPop(/** @type {import("../xml.js").NodeStackItem} */ ({node: node}),
     LINK_SERIALIZERS, OBJECT_PROPERTY_NODE_FACTORY,
     link, objectStack, LINK_SEQUENCE);
 }
@@ -729,7 +729,7 @@ function writeLink(node, value, objectStack) {
 
 /**
  * @param {Element} node Node.
- * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
+ * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
  * @param {Array<*>} objectStack Object stack.
  */
 function writeWptType(node, coordinate, objectStack) {
@@ -764,7 +764,7 @@ function writeWptType(node, coordinate, objectStack) {
     RTEPT_TYPE_SEQUENCE[namespaceURI] :
     WPT_TYPE_SEQUENCE[namespaceURI];
   const values = makeSequence(properties, orderedKeys);
-  pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
+  pushSerializeAndPop(/** @type {import("../xml.js").NodeStackItem} */
     ({node: node, 'properties': properties}),
     WPT_TYPE_SERIALIZERS, OBJECT_PROPERTY_NODE_FACTORY,
     values, objectStack, orderedKeys);
@@ -773,16 +773,16 @@ function writeWptType(node, coordinate, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/Feature} feature Feature.
+ * @param {import("../Feature.js").default} feature Feature.
  * @param {Array<*>} objectStack Object stack.
  */
 function writeRte(node, feature, objectStack) {
-  const options = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
   const properties = feature.getProperties();
   const context = {node: node, 'properties': properties};
   let geometry = feature.getGeometry();
   if (geometry) {
-    geometry = /** @type {module:ol/geom/LineString} */ (transformWithOptions(geometry, true, options));
+    geometry = /** @type {import("../geom/LineString.js").default} */ (transformWithOptions(geometry, true, options));
     context['geometryLayout'] = geometry.getLayout();
     properties['rtept'] = geometry.getCoordinates();
   }
@@ -797,17 +797,17 @@ function writeRte(node, feature, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/Feature} feature Feature.
+ * @param {import("../Feature.js").default} feature Feature.
  * @param {Array<*>} objectStack Object stack.
  */
 function writeTrk(node, feature, objectStack) {
-  const options = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
   const properties = feature.getProperties();
-  /** @type {module:ol/xml~NodeStackItem} */
+  /** @type {import("../xml.js").NodeStackItem} */
   const context = {node: node, 'properties': properties};
   let geometry = feature.getGeometry();
   if (geometry) {
-    geometry = /** @type {module:ol/geom/MultiLineString} */
+    geometry = /** @type {import("../geom/MultiLineString.js").default} */
       (transformWithOptions(geometry, true, options));
     properties['trkseg'] = geometry.getLineStrings();
   }
@@ -822,11 +822,11 @@ function writeTrk(node, feature, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/geom/LineString} lineString LineString.
+ * @param {import("../geom/LineString.js").default} lineString LineString.
  * @param {Array<*>} objectStack Object stack.
  */
 function writeTrkSeg(node, lineString, objectStack) {
-  /** @type {module:ol/xml~NodeStackItem} */
+  /** @type {import("../xml.js").NodeStackItem} */
   const context = {node: node, 'geometryLayout': lineString.getLayout(),
     'properties': {}};
   pushSerializeAndPop(context,
@@ -837,16 +837,16 @@ function writeTrkSeg(node, lineString, objectStack) {
 
 /**
  * @param {Element} node Node.
- * @param {module:ol/Feature} feature Feature.
+ * @param {import("../Feature.js").default} feature Feature.
  * @param {Array<*>} objectStack Object stack.
  */
 function writeWpt(node, feature, objectStack) {
-  const options = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
   const context = objectStack[objectStack.length - 1];
   context['properties'] = feature.getProperties();
   let geometry = feature.getGeometry();
   if (geometry) {
-    geometry = /** @type {module:ol/geom/Point} */
+    geometry = /** @type {import("../geom/Point.js").default} */
       (transformWithOptions(geometry, true, options));
     context['geometryLayout'] = geometry.getLayout();
     writeWptType(node, geometry.getCoordinates(), objectStack);

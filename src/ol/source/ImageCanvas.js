@@ -16,29 +16,29 @@ import ImageSource from '../source/Image.js';
  * this function is cached by the source. The this keyword inside the function
  * references the {@link module:ol/source/ImageCanvas}.
  *
- * @typedef {function(this:module:ol/ImageCanvas, module:ol/extent~Extent, number,
- *     number, module:ol/size~Size, module:ol/proj/Projection): HTMLCanvasElement} FunctionType
+ * @typedef {function(this:import("../ImageCanvas.js").default, import("../extent.js").Extent, number,
+ *     number, import("../size.js").Size, import("../proj/Projection.js").default): HTMLCanvasElement} FunctionType
  */
 
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
- * @property {module:ol/source/ImageCanvas~FunctionType} [canvasFunction] Canvas function.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {FunctionType} [canvasFunction] Canvas function.
  * The function returning the canvas element used by the source
- * as an image. The arguments passed to the function are: `{module:ol/extent~Extent}` the
+ * as an image. The arguments passed to the function are: `{import("../extent.js").Extent}` the
  * image extent, `{number}` the image resolution, `{number}` the device pixel
- * ratio, `{module:ol/size~Size}` the image size, and `{module:ol/proj/Projection~Projection}` the image
+ * ratio, `{import("../size.js").Size}` the image size, and `{import("../proj/Projection.js").Projection}` the image
  * projection. The canvas returned by this function is cached by the source. If
  * the value returned by the function is later changed then
  * `changed` should be called on the source for the source to
  * invalidate the current cached image. See @link: {@link module:ol/Observable~Observable#changed}
- * @property {module:ol/proj~ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} projection Projection.
  * @property {number} [ratio=1.5] Ratio. 1 means canvases are the size of the map viewport, 2 means twice the
  * width and height of the map viewport, and so on. Must be `1` or higher.
  * @property {Array<number>} [resolutions] Resolutions.
  * If specified, new canvases will be created for these resolutions
- * @property {module:ol/source/State} [state] Source state.
+ * @property {import("./State.js").default} [state] Source state.
  */
 
 
@@ -49,7 +49,7 @@ import ImageSource from '../source/Image.js';
  */
 class ImageCanvasSource extends ImageSource {
   /**
-   * @param {module:ol/source/ImageCanvas~Options=} options ImageCanvas options.
+   * @param {Options=} options ImageCanvas options.
    */
   constructor(options) {
 
@@ -62,13 +62,13 @@ class ImageCanvasSource extends ImageSource {
 
     /**
     * @private
-    * @type {module:ol/source/ImageCanvas~FunctionType}
+    * @type {FunctionType}
     */
     this.canvasFunction_ = options.canvasFunction;
 
     /**
     * @private
-    * @type {module:ol/ImageCanvas}
+    * @type {import("../ImageCanvas.js").default}
     */
     this.canvas_ = null;
 

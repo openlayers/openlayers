@@ -69,7 +69,7 @@ const NEWLINE_RE = /\r\n|\r|\n/;
 class IGC extends TextFeature {
 
   /**
-   * @param {module:ol/format/IGC~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     super();

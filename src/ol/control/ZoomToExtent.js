@@ -15,7 +15,7 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
  * @property {string|HTMLElement} [label='E'] Text label to use for the button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [tipLabel='Fit to extent'] Text label to use for the button tip.
- * @property {module:ol/extent~Extent} [extent] The extent to zoom to. If undefined the validity
+ * @property {import("../extent.js").Extent} [extent] The extent to zoom to. If undefined the validity
  * extent of the view projection is used.
  */
 
@@ -30,7 +30,7 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 class ZoomToExtent extends Control {
 
   /**
-   * @param {module:ol/control/ZoomToExtent~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
@@ -41,7 +41,7 @@ class ZoomToExtent extends Control {
     });
 
     /**
-     * @type {module:ol/extent~Extent}
+     * @type {import("../extent.js").Extent}
      * @protected
      */
     this.extent = options.extent ? options.extent : null;

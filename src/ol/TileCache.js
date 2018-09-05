@@ -16,7 +16,7 @@ class TileCache extends LRUCache {
   }
 
   /**
-   * @param {!Object<string, module:ol/TileRange>} usedTiles Used tiles.
+   * @param {!Object<string, import("./TileRange.js").default>} usedTiles Used tiles.
    */
   expireCache(usedTiles) {
     while (this.canExpireCache()) {

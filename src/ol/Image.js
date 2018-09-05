@@ -22,7 +22,7 @@ import {getHeight} from './extent.js';
  * post requests or - in general - through XHR requests, where the src of the
  * image element would be set to a data URI when the content is loaded.
  *
- * @typedef {function(module:ol/Image, string)} LoadFunction
+ * @typedef {function(import("./Image.js").default, string)} LoadFunction
  * @api
  */
 
@@ -30,12 +30,12 @@ import {getHeight} from './extent.js';
 class ImageWrapper extends ImageBase {
 
   /**
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("./extent.js").Extent} extent Extent.
    * @param {number|undefined} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
-   * @param {module:ol/Image~LoadFunction} imageLoadFunction Image load function.
+   * @param {LoadFunction} imageLoadFunction Image load function.
    */
   constructor(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
 
@@ -58,19 +58,19 @@ class ImageWrapper extends ImageBase {
 
     /**
      * @private
-     * @type {Array<module:ol/events~EventsKey>}
+     * @type {Array<import("./events.js").EventsKey>}
      */
     this.imageListenerKeys_ = null;
 
     /**
      * @protected
-     * @type {module:ol/ImageState}
+     * @type {import("./ImageState.js").default}
      */
     this.state = ImageState.IDLE;
 
     /**
      * @private
-     * @type {module:ol/Image~LoadFunction}
+     * @type {LoadFunction}
      */
     this.imageLoadFunction_ = imageLoadFunction;
 

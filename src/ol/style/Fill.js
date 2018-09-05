@@ -7,7 +7,7 @@ import {asString} from '../color.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/color~Color|module:ol/colorlike~ColorLike} [color] A color, gradient or pattern.
+ * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color] A color, gradient or pattern.
  * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
  * Default null; if null, the Canvas/renderer default black will be used.
  */
@@ -20,7 +20,7 @@ import {asString} from '../color.js';
  */
 class Fill {
   /**
-   * @param {module:ol/style/Fill~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
@@ -28,7 +28,7 @@ class Fill {
 
     /**
      * @private
-     * @type {module:ol/color~Color|module:ol/colorlike~ColorLike}
+     * @type {import("../color.js").Color|import("../colorlike.js").ColorLike}
      */
     this.color_ = options.color !== undefined ? options.color : null;
 
@@ -41,7 +41,7 @@ class Fill {
 
   /**
    * Clones the style. The color is not cloned if it is an {@link module:ol/colorlike~ColorLike}.
-   * @return {module:ol/style/Fill} The cloned style.
+   * @return {import("./Fill.js").default} The cloned style.
    * @api
    */
   clone() {
@@ -53,7 +53,7 @@ class Fill {
 
   /**
    * Get the fill color.
-   * @return {module:ol/color~Color|module:ol/colorlike~ColorLike} Color.
+   * @return {import("../color.js").Color|import("../colorlike.js").ColorLike} Color.
    * @api
    */
   getColor() {
@@ -63,7 +63,7 @@ class Fill {
   /**
    * Set the color.
    *
-   * @param {module:ol/color~Color|module:ol/colorlike~ColorLike} color Color.
+   * @param {import("../color.js").Color|import("../colorlike.js").ColorLike} color Color.
    * @api
    */
   setColor(color) {

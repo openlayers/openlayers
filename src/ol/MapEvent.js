@@ -12,8 +12,8 @@ class MapEvent extends Event {
 
   /**
    * @param {string} type Event type.
-   * @param {module:ol/PluggableMap} map Map.
-   * @param {?module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
+   * @param {import("./PluggableMap.js").default} map Map.
+   * @param {?import("./PluggableMap.js").FrameState=} opt_frameState Frame state.
    */
   constructor(type, map, opt_frameState) {
 
@@ -21,14 +21,14 @@ class MapEvent extends Event {
 
     /**
      * The map where the event occurred.
-     * @type {module:ol/PluggableMap}
+     * @type {import("./PluggableMap.js").default}
      * @api
      */
     this.map = map;
 
     /**
      * The frame state at the time of the event.
-     * @type {?module:ol/PluggableMap~FrameState}
+     * @type {?import("./PluggableMap.js").FrameState}
      * @api
      */
     this.frameState = opt_frameState !== undefined ? opt_frameState : null;

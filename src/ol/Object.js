@@ -82,7 +82,7 @@ class ObjectEvent extends Event {
  * Properties can be deleted by using the unset method. E.g.
  * object.unset('foo').
  *
- * @fires module:ol/Object~ObjectEvent
+ * @fires ObjectEvent
  * @api
  */
 class BaseObject extends Observable {

@@ -19,7 +19,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
 
   /**
-   * @param {module:ol/layer/Tile|module:ol/layer/VectorTile} tileLayer Tile layer.
+   * @param {import("../../layer/Tile.js").default|import("../../layer/VectorTile.js").default} tileLayer Tile layer.
    * @param {boolean=} opt_noContext Skip the context creation.
    */
   constructor(tileLayer, opt_noContext) {
@@ -40,7 +40,7 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
 
     /**
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../../extent.js").Extent}
      */
     this.renderedExtent_ = null;
 
@@ -52,7 +52,7 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
 
     /**
      * @protected
-     * @type {!Array<module:ol/Tile>}
+     * @type {!Array<import("../../Tile.js").default>}
      */
     this.renderedTiles = [];
 
@@ -64,19 +64,19 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
 
     /**
      * @protected
-     * @type {module:ol/extent~Extent}
+     * @type {import("../../extent.js").Extent}
      */
     this.tmpExtent = createEmpty();
 
     /**
      * @private
-     * @type {module:ol/TileRange}
+     * @type {import("../../TileRange.js").default}
      */
     this.tmpTileRange_ = new TileRange(0, 0, 0, 0);
 
     /**
      * @private
-     * @type {module:ol/transform~Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.imageTransform_ = createTransform();
 
@@ -90,7 +90,7 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
 
   /**
    * @private
-   * @param {module:ol/Tile} tile Tile.
+   * @param {import("../../Tile.js").default} tile Tile.
    * @return {boolean} Tile is drawable.
    */
   isDrawableTile_(tile) {
@@ -106,12 +106,12 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/proj/Projection} projection Projection.
-   * @return {!module:ol/Tile} Tile.
+   * @param {import("../../proj/Projection.js").default} projection Projection.
+   * @return {!import("../../Tile.js").default} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
     const layer = this.getLayer();
-    const source = /** @type {module:ol/source/Tile} */ (layer.getSource());
+    const source = /** @type {import("../../source/Tile.js").default} */ (layer.getSource());
     let tile = source.getTile(z, x, y, pixelRatio, projection);
     if (tile.getState() == TileState.ERROR) {
       if (!layer.getUseInterimTilesOnError()) {
@@ -141,7 +141,7 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
     const viewCenter = viewState.center;
 
     const tileLayer = this.getLayer();
-    const tileSource = /** @type {module:ol/source/Tile} */ (tileLayer.getSource());
+    const tileSource = /** @type {import("../../source/Tile.js").default} */ (tileLayer.getSource());
     const sourceRevision = tileSource.getRevision();
     const tileGrid = tileSource.getTileGridForProjection(projection);
     const z = tileGrid.getZForResolution(viewResolution, this.zDirection);
@@ -163,7 +163,7 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
     const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
 
     /**
-     * @type {Object<number, Object<string, module:ol/Tile>>}
+     * @type {Object<number, Object<string, import("../../Tile.js").default>>}
      */
     const tilesToDrawByZ = {};
     tilesToDrawByZ[z] = {};
@@ -301,9 +301,9 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
   }
 
   /**
-   * @param {module:ol/Tile} tile Tile.
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @param {module:ol/layer/Layer~State} layerState Layer state.
+   * @param {import("../../Tile.js").default} tile Tile.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../layer/Layer.js").State} layerState Layer state.
    * @param {number} x Left of the tile.
    * @param {number} y Top of the tile.
    * @param {number} w Width of the tile.
@@ -358,7 +358,7 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
 
 /**
  * Determine if this renderer handles the provided layer.
- * @param {module:ol/layer/Layer} layer The candidate layer.
+ * @param {import("../../layer/Layer.js").default} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
 CanvasTileLayerRenderer['handles'] = function(layer) {
@@ -368,18 +368,18 @@ CanvasTileLayerRenderer['handles'] = function(layer) {
 
 /**
  * Create a layer renderer.
- * @param {module:ol/renderer/Map} mapRenderer The map renderer.
- * @param {module:ol/layer/Layer} layer The layer to be rendererd.
- * @return {module:ol/renderer/canvas/TileLayer} The layer renderer.
+ * @param {import("../Map.js").default} mapRenderer The map renderer.
+ * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
+ * @return {import("./TileLayer.js").default} The layer renderer.
  */
 CanvasTileLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasTileLayerRenderer(/** @type {module:ol/layer/Tile} */ (layer));
+  return new CanvasTileLayerRenderer(/** @type {import("../../layer/Tile.js").default} */ (layer));
 };
 
 
 /**
  * @function
- * @return {module:ol/layer/Tile|module:ol/layer/VectorTile}
+ * @return {import("../../layer/Tile.js").default|import("../../layer/VectorTile.js").default}
  */
 CanvasTileLayerRenderer.prototype.getLayer;
 
