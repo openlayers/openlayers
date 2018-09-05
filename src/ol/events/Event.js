@@ -41,7 +41,6 @@ class Event {
 
   /**
    * Stop event propagation.
-   * @function
    * @api
    */
   preventDefault() {
@@ -50,7 +49,6 @@ class Event {
 
   /**
    * Stop event propagation.
-   * @function
    * @api
    */
   stopPropagation() {

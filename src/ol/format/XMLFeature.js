@@ -79,7 +79,6 @@ class XMLFeature extends FeatureFormat {
   /**
    * Read all features from a feature collection.
    *
-   * @function
    * @param {Document|Node|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Options.
    * @return {Array<import("../Feature.js").default>} Features.

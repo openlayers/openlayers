@@ -158,10 +158,8 @@ class Geometry extends BaseObject {
    * https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
    * Douglas Peucker} algorithm.  For polygons, a quantization-based
    * simplification is used to preserve topology.
-   * @function
    * @param {number} tolerance The tolerance distance for simplification.
-   * @return {import("./Geometry.js").default} A new, simplified version of the original
-   *     geometry.
+   * @return {import("./Geometry.js").default} A new, simplified version of the original geometry.
    * @api
    */
   simplify(tolerance) {
