@@ -4,3 +4,5 @@
  * @typedef {Array<number>} Pixel
  * @api
  */
+
+export let nothing;
