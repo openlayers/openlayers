@@ -5,7 +5,6 @@ import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 import {toSize} from './size.js';
 import {containsCoordinate, createOrUpdate, getCorner, getHeight, getWidth} from './extent.js';
 import Corner from './extent/Corner.js';
-import {assign} from './obj.js';
 import {get as getProjection, METERS_PER_UNIT} from './proj.js';
 import Units from './proj/Units.js';
 import TileGrid from './tilegrid/TileGrid.js';
@@ -89,17 +88,23 @@ export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
  * @api
  */
 export function createXYZ(opt_options) {
-  const options = /** @type {import("./tilegrid/TileGrid.js").Options} */ ({});
-  assign(options, opt_options !== undefined ?
-    opt_options : /** @type {XYZOptions} */ ({}));
-  if (options.extent === undefined) {
-    options.extent = getProjection('EPSG:3857').getExtent();
-  }
-  options.resolutions = resolutionsFromExtent(
-    options.extent, options.maxZoom, options.tileSize);
-  delete options.maxZoom;
+  /** @type {XYZOptions} */
+  const xyzOptions = opt_options || {};
 
-  return new TileGrid(options);
+  const extent = xyzOptions.extent || getProjection('EPSG:3857').getExtent();
+
+  /** @type {import("./tilegrid/TileGrid.js").Options} */
+  const gridOptions = {
+    extent: extent,
+    minZoom: xyzOptions.minZoom,
+    tileSize: xyzOptions.tileSize,
+    resolutions: resolutionsFromExtent(
+      extent,
+      xyzOptions.maxZoom,
+      xyzOptions.tileSize
+    )
+  };
+  return new TileGrid(gridOptions);
 }
 
 
