@@ -77,7 +77,7 @@ function handleEvent(mapBrowserEvent) {
   let stopEvent = false;
   if (mapBrowserEvent.type == EventType.KEYDOWN ||
       mapBrowserEvent.type == EventType.KEYPRESS) {
-    const keyEvent = mapBrowserEvent.originalEvent;
+    const keyEvent = /** @type {KeyboardEvent} */ (mapBrowserEvent.originalEvent);
     const charCode = keyEvent.charCode;
     if (this.condition_(mapBrowserEvent) &&
         (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0))) {
