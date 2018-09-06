@@ -107,7 +107,7 @@ class Collection extends BaseObject {
    * Add elements to the collection.  This pushes each item in the provided array
    * to the end of the collection.
    * @param {!Array<T>} arr Array.
-   * @return {import("./Collection.js").default<T>} This collection.
+   * @return {Collection<T>} This collection.
    * @api
    */
   extend(arr) {

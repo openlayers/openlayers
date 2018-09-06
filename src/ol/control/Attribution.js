@@ -316,7 +316,7 @@ class Attribution extends Control {
 /**
  * Update the attribution element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {import("./Attribution.js").default}
+ * @this {Attribution}
  * @api
  */
 export function render(mapEvent) {

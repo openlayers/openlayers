@@ -41,7 +41,7 @@ class Fill {
 
   /**
    * Clones the style. The color is not cloned if it is an {@link module:ol/colorlike~ColorLike}.
-   * @return {import("./Fill.js").default} The cloned style.
+   * @return {Fill} The cloned style.
    * @api
    */
   clone() {

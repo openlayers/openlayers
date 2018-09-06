@@ -339,7 +339,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     vectorSource.loadFeatures(extent, resolution, projection);
     /**
      * @param {import("../../Feature.js").default} feature Feature.
-     * @this {import("./VectorLayer.js").default}
+     * @this {CanvasVectorLayerRenderer}
      */
     const render = function(feature) {
       let styles;
@@ -427,7 +427,7 @@ CanvasVectorLayerRenderer['handles'] = function(layer) {
  * Create a layer renderer.
  * @param {import("../Map.js").default} mapRenderer The map renderer.
  * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
- * @return {import("./VectorLayer.js").default} The layer renderer.
+ * @return {CanvasVectorLayerRenderer} The layer renderer.
  */
 CanvasVectorLayerRenderer['create'] = function(mapRenderer, layer) {
   return new CanvasVectorLayerRenderer(/** @type {import("../../layer/Vector.js").default} */ (layer));

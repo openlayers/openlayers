@@ -10,7 +10,7 @@ import {getValues} from '../obj.js';
 
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @this {import("./Pointer.js").default}
+ * @this {PointerInteraction}
  */
 const handleDragEvent = VOID;
 
@@ -18,7 +18,7 @@ const handleDragEvent = VOID;
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
  * @return {boolean} Capture dragging.
- * @this {import("./Pointer.js").default}
+ * @this {PointerInteraction}
  */
 const handleUpEvent = FALSE;
 
@@ -26,14 +26,14 @@ const handleUpEvent = FALSE;
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
  * @return {boolean} Capture dragging.
- * @this {import("./Pointer.js").default}
+ * @this {PointerInteraction}
  */
 const handleDownEvent = FALSE;
 
 
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @this {import("./Pointer.js").default}
+ * @this {PointerInteraction}
  */
 const handleMoveEvent = VOID;
 
@@ -203,7 +203,7 @@ function isPointerDraggingEvent(mapBrowserEvent) {
  * detected.
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {import("./Pointer.js").default}
+ * @this {PointerInteraction}
  * @api
  */
 export function handleEvent(mapBrowserEvent) {

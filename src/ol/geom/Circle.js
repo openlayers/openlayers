@@ -33,7 +33,7 @@ class Circle extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!import("./Circle.js").default} Clone.
+   * @return {!Circle} Clone.
    * @override
    * @api
    */
@@ -230,7 +230,7 @@ class Circle extends SimpleGeometry {
  *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
  * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
  *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
- * @return {import("./Circle.js").default} This geometry.  Note that original geometry is
+ * @return {Circle} This geometry.  Note that original geometry is
  *     modified in place.
  * @function
  * @api

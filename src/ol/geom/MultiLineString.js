@@ -91,7 +91,7 @@ class MultiLineString extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!import("./MultiLineString.js").default} Clone.
+   * @return {!MultiLineString} Clone.
    * @override
    * @api
    */

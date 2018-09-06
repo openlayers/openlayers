@@ -47,7 +47,7 @@ class Geometry extends BaseObject {
 
     /**
      * @protected
-     * @type {Object<string, import("./Geometry.js").default>}
+     * @type {Object<string, Geometry>}
      */
     this.simplifiedGeometryCache = {};
 
@@ -68,7 +68,7 @@ class Geometry extends BaseObject {
   /**
    * Make a complete copy of the geometry.
    * @abstract
-   * @return {!import("./Geometry.js").default} Clone.
+   * @return {!Geometry} Clone.
    */
   clone() {}
 
@@ -159,7 +159,7 @@ class Geometry extends BaseObject {
    * Douglas Peucker} algorithm.  For polygons, a quantization-based
    * simplification is used to preserve topology.
    * @param {number} tolerance The tolerance distance for simplification.
-   * @return {import("./Geometry.js").default} A new, simplified version of the original geometry.
+   * @return {Geometry} A new, simplified version of the original geometry.
    * @api
    */
   simplify(tolerance) {
@@ -172,7 +172,7 @@ class Geometry extends BaseObject {
    * See https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm.
    * @abstract
    * @param {number} squaredTolerance Squared tolerance.
-   * @return {import("./Geometry.js").default} Simplified geometry.
+   * @return {Geometry} Simplified geometry.
    */
   getSimplifiedGeometry(squaredTolerance) {}
 
@@ -222,7 +222,7 @@ class Geometry extends BaseObject {
    *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
    * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
    *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
-   * @return {import("./Geometry.js").default} This geometry.  Note that original geometry is
+   * @return {Geometry} This geometry.  Note that original geometry is
    *     modified in place.
    * @api
    */

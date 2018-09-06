@@ -40,7 +40,7 @@ import EventType from './events/EventType.js';
  * });
  * ```
  *
- * @typedef {function(import("./Tile.js").default, string)} LoadFunction
+ * @typedef {function(Tile, string)} LoadFunction
  * @api
  */
 
@@ -101,7 +101,7 @@ class Tile extends EventTarget {
      * An "interim" tile for this tile. The interim tile may be used while this
      * one is loading, for "smooth" transitions when changing params/dimensions
      * on the source.
-     * @type {import("./Tile.js").default}
+     * @type {Tile}
      */
     this.interimTile = null;
 
@@ -146,7 +146,7 @@ class Tile extends EventTarget {
    * Get the interim tile most suitable for rendering using the chain of interim
    * tiles. This corresponds to the  most recent tile that has been loaded, if no
    * such tile exists, the original tile is returned.
-   * @return {!import("./Tile.js").default} Best tile for rendering.
+   * @return {!Tile} Best tile for rendering.
    */
   getInterimTile() {
     if (!this.interimTile) {

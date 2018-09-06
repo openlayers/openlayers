@@ -87,7 +87,7 @@ class Stroke {
 
   /**
    * Clones the style.
-   * @return {import("./Stroke.js").default} The cloned style.
+   * @return {Stroke} The cloned style.
    * @api
    */
   clone() {

@@ -28,7 +28,7 @@ import RenderBox from '../render/Box.js';
  * @property {EndCondition} [boxEndCondition] A function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and two
  * {@link module:ol/pixel~Pixel}s to indicate whether a `boxend` event should be fired.
  * Default is `true` if the area of the box is bigger than the `minArea` option.
- * @property {function(this:import("./DragBox.js").default, import("../MapBrowserEvent.js").default)} onBoxEnd Code to execute just
+ * @property {function(this:DragBox, import("../MapBrowserEvent.js").default)} onBoxEnd Code to execute just
  * before `boxend` is fired.
  */
 
@@ -137,7 +137,7 @@ class DragBox extends PointerInteraction {
 
     /**
      * Function to execute just before `onboxend` is fired
-     * @type {function(this:import("./DragBox.js").default, import("../MapBrowserEvent.js").default)}
+     * @type {function(this:DragBox, import("../MapBrowserEvent.js").default)}
      * @private
      */
     this.onBoxEnd_ = options.onBoxEnd ? options.onBoxEnd : VOID;
@@ -181,7 +181,7 @@ class DragBox extends PointerInteraction {
  * @param {import("../pixel.js").Pixel} startPixel The starting pixel of the box.
  * @param {import("../pixel.js").Pixel} endPixel The end pixel of the box.
  * @return {boolean} Whether or not the boxend condition should be fired.
- * @this {import("./DragBox.js").default}
+ * @this {DragBox}
  */
 function defaultBoxEndCondition(mapBrowserEvent, startPixel, endPixel) {
   const width = endPixel[0] - startPixel[0];
@@ -192,7 +192,7 @@ function defaultBoxEndCondition(mapBrowserEvent, startPixel, endPixel) {
 
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @this {import("./DragBox.js").default}
+ * @this {DragBox}
  */
 function handleDragEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
@@ -209,7 +209,7 @@ function handleDragEvent(mapBrowserEvent) {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {import("./DragBox.js").default}
+ * @this {DragBox}
  */
 function handleUpEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
@@ -230,7 +230,7 @@ function handleUpEvent(mapBrowserEvent) {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {import("./DragBox.js").default}
+ * @this {DragBox}
  */
 function handleDownEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {

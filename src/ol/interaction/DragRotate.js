@@ -69,7 +69,7 @@ class DragRotate extends PointerInteraction {
 
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @this {import("./DragRotate.js").default}
+ * @this {DragRotate}
  */
 function handleDragEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
@@ -97,7 +97,7 @@ function handleDragEvent(mapBrowserEvent) {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {import("./DragRotate.js").default}
+ * @this {DragRotate}
  */
 function handleUpEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {
@@ -116,7 +116,7 @@ function handleUpEvent(mapBrowserEvent) {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {import("./DragRotate.js").default}
+ * @this {DragRotate}
  */
 function handleDownEvent(mapBrowserEvent) {
   if (!mouseOnly(mapBrowserEvent)) {

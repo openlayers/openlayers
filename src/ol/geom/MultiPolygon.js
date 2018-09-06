@@ -135,7 +135,7 @@ class MultiPolygon extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!import("./MultiPolygon.js").default} Clone.
+   * @return {!MultiPolygon} Clone.
    * @override
    * @api
    */

@@ -56,7 +56,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 
 /**
- * @typedef {function(import("./PluggableMap.js").default, ?FrameState): boolean} PostRenderFunction
+ * @typedef {function(PluggableMap, ?FrameState): boolean} PostRenderFunction
  */
 
 
@@ -392,7 +392,7 @@ class PluggableMap extends BaseObject {
     this.controls.forEach(
       /**
        * @param {import("./control/Control.js").default} control Control.
-       * @this {import("./PluggableMap.js").default}
+       * @this {PluggableMap}
        */
       (function(control) {
         control.setMap(this);
@@ -417,7 +417,7 @@ class PluggableMap extends BaseObject {
     this.interactions.forEach(
       /**
        * @param {import("./interaction/Interaction.js").default} interaction Interaction.
-       * @this {import("./PluggableMap.js").default}
+       * @this {PluggableMap}
        */
       (function(interaction) {
         interaction.setMap(this);

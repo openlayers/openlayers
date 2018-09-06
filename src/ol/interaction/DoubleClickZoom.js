@@ -51,7 +51,7 @@ class DoubleClickZoom extends Interaction {
  * doubleclick) and eventually zooms the map.
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {import("./DoubleClickZoom.js").default}
+ * @this {DoubleClickZoom}
  */
 function handleEvent(mapBrowserEvent) {
   let stopEvent = false;

@@ -987,7 +987,7 @@ function compareIndexes(a, b) {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} evt Event.
  * @return {boolean} Start drag sequence?
- * @this {import("./Modify.js").default}
+ * @this {Modify}
  */
 function handleDownEvent(evt) {
   if (!this.condition_(evt)) {
@@ -1062,7 +1062,7 @@ function handleDownEvent(evt) {
 
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} evt Event.
- * @this {import("./Modify.js").default}
+ * @this {Modify}
  */
 function handleDragEvent(evt) {
   this.ignoreNextSingleClick_ = false;
@@ -1139,7 +1139,7 @@ function handleDragEvent(evt) {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} evt Event.
  * @return {boolean} Stop drag sequence?
- * @this {import("./Modify.js").default}
+ * @this {Modify}
  */
 function handleUpEvent(evt) {
   for (let i = this.dragSegments_.length - 1; i >= 0; --i) {
@@ -1171,7 +1171,7 @@ function handleUpEvent(evt) {
  * geometry.
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {import("./Modify.js").default}
+ * @this {Modify}
  */
 function handleEvent(mapBrowserEvent) {
   if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {

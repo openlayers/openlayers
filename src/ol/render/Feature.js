@@ -185,7 +185,7 @@ class RenderFeature {
   /**
   * For API compatibility with {@link module:ol/Feature~Feature}, this method is useful when
   * determining the geometry type in style function (see {@link #getType}).
-  * @return {import("./Feature.js").default} Feature.
+  * @return {RenderFeature} Feature.
   * @api
   */
   getGeometry() {
@@ -257,7 +257,7 @@ RenderFeature.prototype.getFlatCoordinates =
 
 /**
  * Get the feature for working with its geometry.
- * @return {import("./Feature.js").default} Feature.
+ * @return {RenderFeature} Feature.
  */
 RenderFeature.prototype.getSimplifiedGeometry =
     RenderFeature.prototype.getGeometry;

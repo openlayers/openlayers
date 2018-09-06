@@ -102,7 +102,7 @@ export default WMTSTileGrid;
  *     ranges the server provides.
  * @param {Array<Object>=} opt_matrixLimits An optional object representing
  *     the available matrices for tileGrid.
- * @return {import("./WMTS.js").default} WMTS tileGrid instance.
+ * @return {WMTSTileGrid} WMTS tileGrid instance.
  * @api
  */
 export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matrixLimits) {

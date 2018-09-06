@@ -1002,7 +1002,7 @@ class CanvasReplay extends VectorContext {
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:import("./Replay.js").default, import("../canvas.js").FillStrokeState, (import("../../geom/Geometry.js").default|import("../Feature.js").default)):Array<*>} createFill Create fill.
+   * @param {function(this:CanvasReplay, import("../canvas.js").FillStrokeState, (import("../../geom/Geometry.js").default|import("../Feature.js").default)):Array<*>} createFill Create fill.
    * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    */
   updateFillStyle(state, createFill, geometry) {
@@ -1017,7 +1017,7 @@ class CanvasReplay extends VectorContext {
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:import("./Replay.js").default, import("../canvas.js").FillStrokeState)} applyStroke Apply stroke.
+   * @param {function(this:CanvasReplay, import("../canvas.js").FillStrokeState)} applyStroke Apply stroke.
    */
   updateStrokeStyle(state, applyStroke) {
     const strokeStyle = state.strokeStyle;

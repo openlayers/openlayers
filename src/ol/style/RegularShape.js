@@ -164,7 +164,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * Clones the style. If an atlasmanager was provided to the original style it will be used in the cloned style, too.
-   * @return {import("./RegularShape.js").default} The cloned style.
+   * @return {RegularShape} The cloned style.
    * @api
    */
   clone() {

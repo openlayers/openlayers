@@ -20,7 +20,7 @@ const Units = {
 /**
  * Meters per unit lookup table.
  * @const
- * @type {Object<import("./Units.js").default, number>}
+ * @type {Object<Units, number>}
  * @api
  */
 export const METERS_PER_UNIT = {};

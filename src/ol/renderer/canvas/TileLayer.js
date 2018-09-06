@@ -370,7 +370,7 @@ CanvasTileLayerRenderer['handles'] = function(layer) {
  * Create a layer renderer.
  * @param {import("../Map.js").default} mapRenderer The map renderer.
  * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
- * @return {import("./TileLayer.js").default} The layer renderer.
+ * @return {CanvasTileLayerRenderer} The layer renderer.
  */
 CanvasTileLayerRenderer['create'] = function(mapRenderer, layer) {
   return new CanvasTileLayerRenderer(/** @type {import("../../layer/Tile.js").default} */ (layer));

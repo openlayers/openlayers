@@ -114,7 +114,7 @@ class Feature extends BaseObject {
   /**
    * Clone this feature. If the original feature has a geometry it
    * is also cloned. The feature id is not set in the clone.
-   * @return {import("./Feature.js").default} The clone.
+   * @return {Feature} The clone.
    * @api
    */
   clone() {

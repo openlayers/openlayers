@@ -80,7 +80,7 @@ class LineString extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!import("./LineString.js").default} Clone.
+   * @return {!LineString} Clone.
    * @override
    * @api
    */

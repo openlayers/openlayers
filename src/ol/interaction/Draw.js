@@ -823,7 +823,7 @@ function getDefaultStyleFunction() {
  * draw or finish the drawing.
  * @param {import("../MapBrowserEvent.js").default} event Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {import("./Draw.js").default}
+ * @this {Draw}
  * @api
  */
 export function handleEvent(event) {
@@ -875,7 +875,7 @@ export function handleEvent(event) {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} event Event.
  * @return {boolean} Start drag sequence?
- * @this {import("./Draw.js").default}
+ * @this {Draw}
  */
 function handleDownEvent(event) {
   this.shouldHandle_ = !this.freehand_;
@@ -903,7 +903,7 @@ function handleDownEvent(event) {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} event Event.
  * @return {boolean} Stop drag sequence?
- * @this {import("./Draw.js").default}
+ * @this {Draw}
  */
 function handleUpEvent(event) {
   let pass = true;
