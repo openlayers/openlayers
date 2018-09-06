@@ -91,7 +91,7 @@ class TopoJSON extends JSONFeature {
       if (transform) {
         transformArcs(arcs, scale, translate);
       }
-      /** @type {Array<import("../Feature.js").default>} */
+      /** @type {Array<Feature>} */
       const features = [];
       const topoJSONFeatures = topoJSONTopology.objects;
       const property = this.layerName_;
@@ -181,7 +181,7 @@ function concatenateArcs(indices, arcs) {
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array<number>} scale Scale for each dimension.
  * @param {Array<number>} translate Translation for each dimension.
- * @return {import("../geom/Point.js").default} Geometry.
+ * @return {Point} Geometry.
  */
 function readPointGeometry(object, scale, translate) {
   const coordinates = object.coordinates;
@@ -198,7 +198,7 @@ function readPointGeometry(object, scale, translate) {
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array<number>} scale Scale for each dimension.
  * @param {Array<number>} translate Translation for each dimension.
- * @return {import("../geom/MultiPoint.js").default} Geometry.
+ * @return {MultiPoint} Geometry.
  */
 function readMultiPointGeometry(object, scale, translate) {
   const coordinates = object.coordinates;
@@ -216,7 +216,7 @@ function readMultiPointGeometry(object, scale, translate) {
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
- * @return {import("../geom/LineString.js").default} Geometry.
+ * @return {LineString} Geometry.
  */
 function readLineStringGeometry(object, arcs) {
   const coordinates = concatenateArcs(object.arcs, arcs);
@@ -229,7 +229,7 @@ function readLineStringGeometry(object, arcs) {
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
- * @return {import("../geom/MultiLineString.js").default} Geometry.
+ * @return {MultiLineString} Geometry.
  */
 function readMultiLineStringGeometry(object, arcs) {
   const coordinates = [];
@@ -245,7 +245,7 @@ function readMultiLineStringGeometry(object, arcs) {
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
- * @return {import("../geom/Polygon.js").default} Geometry.
+ * @return {Polygon} Geometry.
  */
 function readPolygonGeometry(object, arcs) {
   const coordinates = [];
@@ -261,7 +261,7 @@ function readPolygonGeometry(object, arcs) {
  *
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
- * @return {import("../geom/MultiPolygon.js").default} Geometry.
+ * @return {MultiPolygon} Geometry.
  */
 function readMultiPolygonGeometry(object, arcs) {
   const coordinates = [];
@@ -291,7 +291,7 @@ function readMultiPolygonGeometry(object, arcs) {
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
  * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
- * @return {Array<import("../Feature.js").default>} Array of features.
+ * @return {Array<Feature>} Array of features.
  */
 function readFeaturesFromGeometryCollection(collection, arcs, scale, translate, property, name, opt_options) {
   const geometries = collection.geometries;
@@ -315,7 +315,7 @@ function readFeaturesFromGeometryCollection(collection, arcs, scale, translate, 
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
  * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
- * @return {import("../Feature.js").default} Feature.
+ * @return {Feature} Feature.
  */
 function readFeatureFromGeometry(object, arcs, scale, translate, property, name, opt_options) {
   let geometry;

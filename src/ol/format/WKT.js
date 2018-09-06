@@ -17,7 +17,7 @@ import SimpleGeometry from '../geom/SimpleGeometry.js';
 
 
 /**
- * @enum {function (new:import("../geom/Geometry.js").default, Array, import("../geom/GeometryLayout.js").default)}
+ * @enum {function (new:import("../geom/Geometry.js").default, Array, GeometryLayout)}
  */
 const GeometryConstructor = {
   'POINT': Point,
@@ -249,7 +249,7 @@ class Parser {
     this.token_;
 
     /**
-     * @type {import("../geom/GeometryLayout.js").default}
+     * @type {GeometryLayout}
      * @private
      */
     this.layout_ = GeometryLayout.XY;
@@ -298,7 +298,7 @@ class Parser {
 
   /**
    * Try to parse the dimensional info.
-   * @return {import("../geom/GeometryLayout.js").default} The layout.
+   * @return {GeometryLayout} The layout.
    * @private
    */
   parseGeometryLayout_() {
@@ -659,7 +659,7 @@ class WKT extends TextFeature {
     const geometry = this.readGeometryFromText(text, opt_options);
     if (this.splitCollection_ &&
         geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
-      geometries = (/** @type {import("../geom/GeometryCollection.js").default} */ (geometry))
+      geometries = (/** @type {GeometryCollection} */ (geometry))
         .getGeometriesArray();
     } else {
       geometries = [geometry];
@@ -724,7 +724,7 @@ class WKT extends TextFeature {
 
 
 /**
- * @param {import("../geom/Point.js").default} geom Point geometry.
+ * @param {Point} geom Point geometry.
  * @return {string} Coordinates part of Point as WKT.
  */
 function encodePointGeometry(geom) {
@@ -737,7 +737,7 @@ function encodePointGeometry(geom) {
 
 
 /**
- * @param {import("../geom/MultiPoint.js").default} geom MultiPoint geometry.
+ * @param {MultiPoint} geom MultiPoint geometry.
  * @return {string} Coordinates part of MultiPoint as WKT.
  */
 function encodeMultiPointGeometry(geom) {
@@ -751,7 +751,7 @@ function encodeMultiPointGeometry(geom) {
 
 
 /**
- * @param {import("../geom/GeometryCollection.js").default} geom GeometryCollection geometry.
+ * @param {GeometryCollection} geom GeometryCollection geometry.
  * @return {string} Coordinates part of GeometryCollection as WKT.
  */
 function encodeGeometryCollectionGeometry(geom) {
@@ -765,7 +765,7 @@ function encodeGeometryCollectionGeometry(geom) {
 
 
 /**
- * @param {import("../geom/LineString.js").default|import("../geom/LinearRing.js").default} geom LineString geometry.
+ * @param {LineString|import("../geom/LinearRing.js").default} geom LineString geometry.
  * @return {string} Coordinates part of LineString as WKT.
  */
 function encodeLineStringGeometry(geom) {
@@ -779,7 +779,7 @@ function encodeLineStringGeometry(geom) {
 
 
 /**
- * @param {import("../geom/MultiLineString.js").default} geom MultiLineString geometry.
+ * @param {MultiLineString} geom MultiLineString geometry.
  * @return {string} Coordinates part of MultiLineString as WKT.
  */
 function encodeMultiLineStringGeometry(geom) {
@@ -793,7 +793,7 @@ function encodeMultiLineStringGeometry(geom) {
 
 
 /**
- * @param {import("../geom/Polygon.js").default} geom Polygon geometry.
+ * @param {Polygon} geom Polygon geometry.
  * @return {string} Coordinates part of Polygon as WKT.
  */
 function encodePolygonGeometry(geom) {
@@ -807,7 +807,7 @@ function encodePolygonGeometry(geom) {
 
 
 /**
- * @param {import("../geom/MultiPolygon.js").default} geom MultiPolygon geometry.
+ * @param {MultiPolygon} geom MultiPolygon geometry.
  * @return {string} Coordinates part of MultiPolygon as WKT.
  */
 function encodeMultiPolygonGeometry(geom) {
@@ -820,7 +820,7 @@ function encodeMultiPolygonGeometry(geom) {
 }
 
 /**
- * @param {import("../geom/SimpleGeometry.js").default} geom SimpleGeometry geometry.
+ * @param {SimpleGeometry} geom SimpleGeometry geometry.
  * @return {string} Potential dimensional information for WKT type.
  */
 function encodeGeometryLayout(geom) {

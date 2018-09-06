@@ -83,7 +83,7 @@ const TRANSACTION_SERIALIZERS = {
  * @typedef {Object} Options
  * @property {Object<string, string>|string} [featureNS] The namespace URI used for features.
  * @property {Array<string>|string} [featureType] The feature type to parse. Only used for read operations.
- * @property {import("./GMLBase.js").default} [gmlFormat] The GML format to use to parse the response. Default is `ol/format/GML3`.
+ * @property {GMLBase} [gmlFormat] The GML format to use to parse the response. Default is `ol/format/GML3`.
  * @property {string} [schemaLocation] Optional schemaLocation to use for serialization, this will override the default.
  */
 
@@ -226,7 +226,7 @@ class WFS extends XMLFeature {
 
     /**
      * @private
-     * @type {import("./GMLBase.js").default}
+     * @type {GMLBase}
      */
     this.gmlFormat_ = options.gmlFormat ?
       options.gmlFormat : new GML3();

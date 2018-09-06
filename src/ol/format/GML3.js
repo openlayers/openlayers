@@ -105,10 +105,10 @@ class GML3 extends GMLBase {
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {import("../geom/MultiLineString.js").default|undefined} MultiLineString.
+   * @return {MultiLineString|undefined} MultiLineString.
    */
   readMultiCurve_(node, objectStack) {
-    /** @type {Array<import("../geom/LineString.js").default>} */
+    /** @type {Array<LineString>} */
     const lineStrings = pushParseAndPop([],
       this.MULTICURVE_PARSERS_, node, objectStack, this);
     if (lineStrings) {
@@ -123,10 +123,10 @@ class GML3 extends GMLBase {
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {import("../geom/MultiPolygon.js").default|undefined} MultiPolygon.
+   * @return {MultiPolygon|undefined} MultiPolygon.
    */
   readMultiSurface_(node, objectStack) {
-    /** @type {Array<import("../geom/Polygon.js").default>} */
+    /** @type {Array<Polygon>} */
     const polygons = pushParseAndPop([],
       this.MULTISURFACE_PARSERS_, node, objectStack, this);
     if (polygons) {
@@ -234,7 +234,7 @@ class GML3 extends GMLBase {
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {import("../geom/Polygon.js").default|undefined} Polygon.
+   * @return {Polygon|undefined} Polygon.
    */
   readSurface_(node, objectStack) {
     /** @type {Array<Array<number>>} */
@@ -258,7 +258,7 @@ class GML3 extends GMLBase {
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {import("../geom/LineString.js").default|undefined} LineString.
+   * @return {LineString|undefined} LineString.
    */
   readCurve_(node, objectStack) {
     /** @type {Array<number>} */
@@ -436,7 +436,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Element} node Node.
-   * @param {import("../geom/LineString.js").default|import("../geom/LinearRing.js").default} value Geometry.
+   * @param {LineString|import("../geom/LinearRing.js").default} value Geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -532,7 +532,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Element} node Node.
-   * @param {import("../geom/Polygon.js").default} geometry Polygon geometry.
+   * @param {Polygon} geometry Polygon geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -560,7 +560,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Element} node Node.
-   * @param {import("../geom/LineString.js").default} geometry LineString geometry.
+   * @param {LineString} geometry LineString geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -585,7 +585,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Element} node Node.
-   * @param {import("../geom/MultiPolygon.js").default} geometry MultiPolygon geometry.
+   * @param {MultiPolygon} geometry MultiPolygon geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -626,7 +626,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Element} node Node.
-   * @param {import("../geom/MultiLineString.js").default} geometry MultiLineString geometry.
+   * @param {MultiLineString} geometry MultiLineString geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -659,7 +659,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {import("../geom/Polygon.js").default} polygon Polygon geometry.
+   * @param {Polygon} polygon Polygon geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -686,7 +686,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {import("../geom/LineString.js").default} line LineString geometry.
+   * @param {LineString} line LineString geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -700,7 +700,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {import("../geom/Polygon.js").default} polygon Polygon geometry.
+   * @param {Polygon} polygon Polygon geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -712,7 +712,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {import("../geom/LineString.js").default} line LineString geometry.
+   * @param {LineString} line LineString geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
