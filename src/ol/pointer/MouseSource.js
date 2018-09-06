@@ -57,7 +57,7 @@ const DEDUP_DIST = 25;
 /**
  * Handler for `mousedown`.
  *
- * @this {import("./MouseSource.js").default}
+ * @this {MouseSource}
  * @param {MouseEvent} inEvent The in event.
  */
 function mousedown(inEvent) {
@@ -76,7 +76,7 @@ function mousedown(inEvent) {
 /**
  * Handler for `mousemove`.
  *
- * @this {import("./MouseSource.js").default}
+ * @this {MouseSource}
  * @param {MouseEvent} inEvent The in event.
  */
 function mousemove(inEvent) {
@@ -89,7 +89,7 @@ function mousemove(inEvent) {
 /**
  * Handler for `mouseup`.
  *
- * @this {import("./MouseSource.js").default}
+ * @this {MouseSource}
  * @param {MouseEvent} inEvent The in event.
  */
 function mouseup(inEvent) {
@@ -107,7 +107,7 @@ function mouseup(inEvent) {
 /**
  * Handler for `mouseover`.
  *
- * @this {import("./MouseSource.js").default}
+ * @this {MouseSource}
  * @param {MouseEvent} inEvent The in event.
  */
 function mouseover(inEvent) {
@@ -120,7 +120,7 @@ function mouseover(inEvent) {
 /**
  * Handler for `mouseout`.
  *
- * @this {import("./MouseSource.js").default}
+ * @this {MouseSource}
  * @param {MouseEvent} inEvent The in event.
  */
 function mouseout(inEvent) {

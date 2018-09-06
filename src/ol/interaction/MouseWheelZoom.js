@@ -196,7 +196,7 @@ class MouseWheelZoom extends Interaction {
  * mousewheel-event) and eventually zooms the map.
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} Allow event propagation.
- * @this {import("./MouseWheelZoom.js").default}
+ * @this {MouseWheelZoom}
  */
 function handleEvent(mapBrowserEvent) {
   if (!this.condition_(mapBrowserEvent)) {

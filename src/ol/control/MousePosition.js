@@ -246,7 +246,7 @@ class MousePosition extends Control {
 /**
  * Update the mouseposition element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {import("./MousePosition.js").default}
+ * @this {MousePosition}
  * @api
  */
 export function render(mapEvent) {

@@ -41,7 +41,7 @@ class CircleStyle extends RegularShape {
 
   /**
   * Clones the style.  If an atlasmanager was provided to the original style it will be used in the cloned style, too.
-  * @return {import("./Circle.js").default} The cloned style.
+  * @return {CircleStyle} The cloned style.
   * @override
   * @api
   */

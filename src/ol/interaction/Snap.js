@@ -591,7 +591,7 @@ class Snap extends PointerInteraction {
  * Handle all pointer events events.
  * @param {import("../MapBrowserEvent.js").default} evt A move event.
  * @return {boolean} Pass the event to other interactions.
- * @this {import("./Snap.js").default}
+ * @this {Snap}
  */
 export function handleEvent(evt) {
   const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
@@ -606,7 +606,7 @@ export function handleEvent(evt) {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} evt Event.
  * @return {boolean} Stop drag sequence?
- * @this {import("./Snap.js").default}
+ * @this {Snap}
  */
 function handleUpEvent(evt) {
   const featuresToUpdate = getValues(this.pendingFeatures_);
@@ -623,7 +623,7 @@ function handleUpEvent(evt) {
  * @param {SegmentData} a The first segment data.
  * @param {SegmentData} b The second segment data.
  * @return {number} The difference in distance.
- * @this {import("./Snap.js").default}
+ * @this {Snap}
  */
 function sortByDistance(a, b) {
   const deltaA = squaredDistanceToSegment(this.pixelCoordinate_, a.segment);

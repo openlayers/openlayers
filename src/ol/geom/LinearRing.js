@@ -51,7 +51,7 @@ class LinearRing extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!import("./LinearRing.js").default} Clone.
+   * @return {!LinearRing} Clone.
    * @override
    * @api
    */

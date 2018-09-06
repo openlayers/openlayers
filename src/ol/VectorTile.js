@@ -13,7 +13,7 @@ const DEFAULT_EXTENT = [0, 0, 4096, 4096];
 
 
 /**
- * @typedef {function(new: import("./VectorTile.js").default, import("./tilecoord.js").TileCoord,
+ * @typedef {function(new: VectorTile, import("./tilecoord.js").TileCoord,
  * import("./TileState.js").default, string, ?string, import("./Tile.js").LoadFunction)} TileClass
  * @api
  */

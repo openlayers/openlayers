@@ -202,7 +202,7 @@ class Icon extends ImageStyle {
 
   /**
    * Clones the style. The underlying Image/HTMLCanvasElement is not cloned.
-   * @return {import("./Icon.js").default} The cloned style.
+   * @return {Icon} The cloned style.
    * @api
    */
   clone() {

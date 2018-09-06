@@ -48,7 +48,7 @@ class MultiPoint extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!import("./MultiPoint.js").default} Clone.
+   * @return {!MultiPoint} Clone.
    * @override
    * @api
    */

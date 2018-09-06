@@ -62,7 +62,7 @@ class GeometryCollection extends Geometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!import("./GeometryCollection.js").default} Clone.
+   * @return {!GeometryCollection} Clone.
    * @override
    * @api
    */

@@ -2207,7 +2207,7 @@ const DOCUMENT_NODE_FACTORY = function(value, objectStack, opt_nodeName) {
  * @param {Node} node Node.
  * @param {Array<import("../Feature.js").default>} features Features.
  * @param {Array<*>} objectStack Object stack.
- * @this {import("./KML.js").default}
+ * @this {KML}
  */
 function writeDocument(node, features, objectStack) {
   const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
@@ -2660,7 +2660,7 @@ const EXTENDEDDATA_NODE_FACTORY = makeSimpleNodeFactory('ExtendedData');
  * @param {Element} node Node.
  * @param {import("../Feature.js").default} feature Feature.
  * @param {Array<*>} objectStack Object stack.
- * @this {import("./KML.js").default}
+ * @this {KML}
  */
 function writePlacemark(node, feature, objectStack) {
   const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};

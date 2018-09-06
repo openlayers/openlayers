@@ -238,7 +238,7 @@ class Translate extends PointerInteraction {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} event Event.
  * @return {boolean} Start drag sequence?
- * @this {import("./Translate.js").default}
+ * @this {Translate}
  */
 function handleDownEvent(event) {
   this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
@@ -261,7 +261,7 @@ function handleDownEvent(event) {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} event Event.
  * @return {boolean} Stop drag sequence?
- * @this {import("./Translate.js").default}
+ * @this {Translate}
  */
 function handleUpEvent(event) {
   if (this.lastCoordinate_) {
@@ -282,7 +282,7 @@ function handleUpEvent(event) {
 
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} event Event.
- * @this {import("./Translate.js").default}
+ * @this {Translate}
  */
 function handleDragEvent(event) {
   if (this.lastCoordinate_) {
@@ -309,7 +309,7 @@ function handleDragEvent(event) {
 
 /**
  * @param {import("../MapBrowserEvent.js").default} event Event.
- * @this {import("./Translate.js").default}
+ * @this {Translate}
  */
 function handleMoveEvent(event) {
   const elem = event.map.getViewport();

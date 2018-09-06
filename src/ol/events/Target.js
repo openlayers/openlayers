@@ -8,7 +8,7 @@ import Event from '../events/Event.js';
 
 
 /**
- * @typedef {EventTarget|import("./Target.js").default} EventTargetLike
+ * @typedef {EventTarget|Target} EventTargetLike
  */
 
 

@@ -100,7 +100,7 @@ import Stroke from '../style/Stroke.js';
  * vector layer can be styled.
  *
  * @typedef {function((import("../Feature.js").default|import("../render/Feature.js").default), number):
- *     (import("./Style.js").default|Array<import("./Style.js").default>)} StyleFunction
+ *     (Style|Array<Style>)} StyleFunction
  */
 
 
@@ -209,7 +209,7 @@ class Style {
 
   /**
    * Clones the style.
-   * @return {import("./Style.js").default} The cloned style.
+   * @return {Style} The cloned style.
    * @api
    */
   clone() {
@@ -392,9 +392,9 @@ class Style {
 
 /**
  * Convert the provided object into a style function.  Functions passed through
- * unchanged.  Arrays of import("./Style.js").default or single style objects wrapped in a
+ * unchanged.  Arrays of Style or single style objects wrapped in a
  * new style function.
- * @param {StyleFunction|Array<import("./Style.js").default>|import("./Style.js").default} obj
+ * @param {StyleFunction|Array<Style>|Style} obj
  *     A style function, a single style, or an array of styles.
  * @return {StyleFunction} A style function.
  */
@@ -405,7 +405,7 @@ export function toFunction(obj) {
     styleFunction = obj;
   } else {
     /**
-     * @type {Array<import("./Style.js").default>}
+     * @type {Array<Style>}
      */
     let styles;
     if (Array.isArray(obj)) {
@@ -424,7 +424,7 @@ export function toFunction(obj) {
 
 
 /**
- * @type {Array<import("./Style.js").default>}
+ * @type {Array<Style>}
  */
 let defaultStyles = null;
 
@@ -432,7 +432,7 @@ let defaultStyles = null;
 /**
  * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
  * @param {number} resolution Resolution.
- * @return {Array<import("./Style.js").default>} Style.
+ * @return {Array<Style>} Style.
  */
 export function createDefaultStyle(feature, resolution) {
   // We don't use an immediately-invoked function
@@ -466,10 +466,10 @@ export function createDefaultStyle(feature, resolution) {
 
 /**
  * Default styles for editing features.
- * @return {Object<import("../geom/GeometryType.js").default, Array<import("./Style.js").default>>} Styles
+ * @return {Object<import("../geom/GeometryType.js").default, Array<Style>>} Styles
  */
 export function createEditingStyle() {
-  /** @type {Object<import("../geom/GeometryType.js").default, Array<import("./Style.js").default>>} */
+  /** @type {Object<import("../geom/GeometryType.js").default, Array<Style>>} */
   const styles = {};
   const white = [255, 255, 255, 1];
   const blue = [0, 153, 255, 1];

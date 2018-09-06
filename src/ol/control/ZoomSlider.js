@@ -345,7 +345,7 @@ class ZoomSlider extends Control {
 /**
  * Update the zoomslider element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {import("./ZoomSlider.js").default}
+ * @this {ZoomSlider}
  * @api
  */
 export function render(mapEvent) {

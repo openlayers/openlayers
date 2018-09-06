@@ -96,7 +96,7 @@ class LRUCache extends EventTarget {
 
 
   /**
-   * @param {function(this: S, T, string, import("./LRUCache.js").default): ?} f The function
+   * @param {function(this: S, T, string, LRUCache): ?} f The function
    *     to call for every entry from the oldest to the newer. This function takes
    *     3 arguments (the entry value, the entry key and the LRUCache object).
    *     The return value is ignored.

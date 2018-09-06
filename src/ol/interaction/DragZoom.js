@@ -61,7 +61,7 @@ class DragZoom extends DragBox {
 
 
 /**
- * @this {import("./DragZoom.js").default}
+ * @this {DragZoom}
  */
 function onBoxEnd() {
   const map = this.getMap();

@@ -47,7 +47,7 @@ class TileRange {
   }
 
   /**
-   * @param {import("./TileRange.js").default} tileRange Tile range.
+   * @param {TileRange} tileRange Tile range.
    * @return {boolean} Contains.
    */
   containsTileRange(tileRange) {
@@ -65,7 +65,7 @@ class TileRange {
   }
 
   /**
-   * @param {import("./TileRange.js").default} tileRange Tile range.
+   * @param {TileRange} tileRange Tile range.
    * @return {boolean} Equals.
    */
   equals(tileRange) {
@@ -74,7 +74,7 @@ class TileRange {
   }
 
   /**
-   * @param {import("./TileRange.js").default} tileRange Tile range.
+   * @param {TileRange} tileRange Tile range.
    */
   extend(tileRange) {
     if (tileRange.minX < this.minX) {
@@ -113,7 +113,7 @@ class TileRange {
   }
 
   /**
-  * @param {import("./TileRange.js").default} tileRange Tile range.
+  * @param {TileRange} tileRange Tile range.
   * @return {boolean} Intersects.
   */
   intersects(tileRange) {
@@ -130,8 +130,8 @@ class TileRange {
  * @param {number} maxX Maximum X.
  * @param {number} minY Minimum Y.
  * @param {number} maxY Maximum Y.
- * @param {import("./TileRange.js").default=} tileRange TileRange.
- * @return {import("./TileRange.js").default} Tile range.
+ * @param {TileRange=} tileRange TileRange.
+ * @return {TileRange} Tile range.
  */
 export function createOrUpdate(minX, maxX, minY, maxY, tileRange) {
   if (tileRange !== undefined) {

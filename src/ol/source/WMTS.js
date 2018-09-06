@@ -460,7 +460,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
 /**
  * @param {string} template Template.
  * @return {import("../Tile.js").UrlFunction} Tile URL function.
- * @this {import("./WMTS.js").default}
+ * @this {WMTS}
  */
 function createFromWMTSTemplate(template) {
   const requestEncoding = this.requestEncoding_;

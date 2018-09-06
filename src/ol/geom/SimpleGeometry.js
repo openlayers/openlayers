@@ -130,7 +130,7 @@ class SimpleGeometry extends Geometry {
 
   /**
    * @param {number} squaredTolerance Squared tolerance.
-   * @return {import("./SimpleGeometry.js").default} Simplified geometry.
+   * @return {SimpleGeometry} Simplified geometry.
    * @protected
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
@@ -298,7 +298,7 @@ SimpleGeometry.prototype.containsXY = FALSE;
 
 
 /**
- * @param {import("./SimpleGeometry.js").default} simpleGeometry Simple geometry.
+ * @param {SimpleGeometry} simpleGeometry Simple geometry.
  * @param {import("../transform.js").Transform} transform Transform.
  * @param {Array<number>=} opt_dest Destination.
  * @return {Array<number>} Transformed flat coordinates.

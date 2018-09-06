@@ -183,7 +183,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
       /**
        * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
-       * @this {import("./VectorTileLayer.js").default}
+       * @this {CanvasVectorTileLayerRenderer}
        */
       const render = function(feature) {
         let styles;
@@ -490,7 +490,7 @@ CanvasVectorTileLayerRenderer['handles'] = function(layer) {
  * Create a layer renderer.
  * @param {import("../Map.js").default} mapRenderer The map renderer.
  * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
- * @return {import("./VectorTileLayer.js").default} The layer renderer.
+ * @return {CanvasVectorTileLayerRenderer} The layer renderer.
  */
 CanvasVectorTileLayerRenderer['create'] = function(mapRenderer, layer) {
   return new CanvasVectorTileLayerRenderer(/** @type {import("../../layer/VectorTile.js").default} */ (layer));

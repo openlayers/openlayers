@@ -327,7 +327,7 @@ WebGLImageLayerRenderer['handles'] = function(layer) {
  * Create a layer renderer.
  * @param {import("../Map.js").default} mapRenderer The map renderer.
  * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
- * @return {import("./ImageLayer.js").default} The layer renderer.
+ * @return {WebGLImageLayerRenderer} The layer renderer.
  */
 WebGLImageLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLImageLayerRenderer(

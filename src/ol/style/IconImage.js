@@ -247,7 +247,7 @@ class IconImage extends EventTarget {
  * @param {?string} crossOrigin Cross origin.
  * @param {import("../ImageState.js").default} imageState Image state.
  * @param {import("../color.js").Color} color Color.
- * @return {import("./IconImage.js").default} Icon image.
+ * @return {IconImage} Icon image.
  */
 export function get(image, src, size, crossOrigin, imageState, color) {
   let iconImage = iconImageCache.get(src, crossOrigin, color);
