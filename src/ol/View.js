@@ -136,15 +136,15 @@ import Units from './proj/Units.js';
 
 /**
  * @typedef {Object} AnimationOptions
- * @property {import("./coordinate.js").Coordinate|undefined} center The center of the view at the end of
+ * @property {import("./coordinate.js").Coordinate=} center The center of the view at the end of
  * the animation.
- * @property {number|undefined} zoom The zoom level of the view at the end of the
+ * @property {number=} zoom The zoom level of the view at the end of the
  * animation. This takes precedence over `resolution`.
- * @property {number|undefined} resolution The resolution of the view at the end
+ * @property {number=} resolution The resolution of the view at the end
  * of the animation.  If `zoom` is also provided, this option will be ignored.
- * @property {number|undefined} rotation The rotation of the view at the end of
+ * @property {number=} rotation The rotation of the view at the end of
  * the animation.
- * @property {import("./coordinate.js").Coordinate|undefined} anchor Optional anchor to remained fixed
+ * @property {import("./coordinate.js").Coordinate=} anchor Optional anchor to remained fixed
  * during a rotation or resolution animation.
  * @property {number} [duration=1000] The duration of the animation in milliseconds.
  * @property {function(number):number} [easing] The easing function used
