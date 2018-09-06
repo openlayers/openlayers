@@ -53,6 +53,13 @@ import {create as createTransform} from '../transform.js';
  * @property {string} font
  * @property {string} [textAlign]
  * @property {string} textBaseline
+ * @property {string} [placement]
+ * @property {number} [maxAngle]
+ * @property {boolean} [overflow]
+ * @property {import("./Fill.js").default} [backgroundFill]
+ * @property {import("./Stroke.js").default} [backgroundStroke]
+ * @property {number} [scale]
+ * @property {Array<number>} [padding]
  */
 
 
