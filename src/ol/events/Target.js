@@ -76,7 +76,6 @@ class Target extends Disposable {
    *     import("./Event.js").default|string} event Event object.
    * @return {boolean|undefined} `false` if anyone called preventDefault on the
    *     event object or if any of the listeners returned false.
-   * @function
    * @api
    */
   dispatchEvent(event) {

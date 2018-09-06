@@ -90,7 +90,6 @@ class TextFeature extends FeatureFormat {
   /**
    * Read the projection from the source.
    *
-   * @function
    * @param {Document|Node|Object|string} source Source.
    * @return {import("../proj/Projection.js").default} Projection.
    * @api
@@ -111,7 +110,6 @@ class TextFeature extends FeatureFormat {
   /**
    * Encode a feature as a string.
    *
-   * @function
    * @param {import("../Feature.js").default} feature Feature.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {string} Encoded feature.
@@ -154,7 +152,6 @@ class TextFeature extends FeatureFormat {
   /**
    * Write a single geometry.
    *
-   * @function
    * @param {import("../geom/Geometry.js").default} geometry Geometry.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {string} Geometry.
