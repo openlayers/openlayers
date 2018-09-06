@@ -17,6 +17,25 @@ import SourceState from '../source/State.js';
 import TileImage from '../source/TileImage.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
+
+/**
+ * @typedef {Object} Config
+ * @property {string} [name] The name.
+ * @property {string} [description] The description.
+ * @property {string} [version] The version.
+ * @property {string} [attribution] The attribution.
+ * @property {string} [template] The template.
+ * @property {string} [legend] The legend.
+ * @property {string} [scheme] The scheme.
+ * @property {Array<string>} tiles The tile URL templates.
+ * @property {Array<string>} [grids] Optional grids.
+ * @property {number} [minzoom] Minimum zoom level.
+ * @property {number} [maxzoom] Maximum zoom level.
+ * @property {Array<number>} [bounds] Optional bounds.
+ * @property {Array<number>} [center] Optional center.
+ */
+
+
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
@@ -29,7 +48,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * Useful when the server does not support CORS..
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {tileJSON} [tileJSON] TileJSON configuration for this source.
+ * @property {Config} [tileJSON] TileJSON configuration for this source.
  * If not provided, `url` must be configured.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
@@ -67,7 +86,7 @@ class TileJSON extends TileImage {
     });
 
     /**
-     * @type {TileJSON}
+     * @type {Config}
      * @private
      */
     this.tileJSON_ = null;
@@ -122,7 +141,7 @@ class TileJSON extends TileImage {
   }
 
   /**
-   * @return {TileJSON} The tilejson object.
+   * @return {Config} The tilejson object.
    * @api
    */
   getTileJSON() {
@@ -131,7 +150,7 @@ class TileJSON extends TileImage {
 
   /**
    * @protected
-   * @param {TileJSON} tileJSON Tile JSON.
+   * @param {Config} tileJSON Tile JSON.
    */
   handleTileJSONResponse(tileJSON) {
 
@@ -139,14 +158,14 @@ class TileJSON extends TileImage {
 
     const sourceProjection = this.getProjection();
     let extent;
-    if (tileJSON.bounds !== undefined) {
+    if (tileJSON['bounds'] !== undefined) {
       const transform = getTransformFromProjections(
         epsg4326Projection, sourceProjection);
-      extent = applyTransform(tileJSON.bounds, transform);
+      extent = applyTransform(tileJSON['bounds'], transform);
     }
 
-    const minZoom = tileJSON.minzoom || 0;
-    const maxZoom = tileJSON.maxzoom || 22;
+    const minZoom = tileJSON['minzoom'] || 0;
+    const maxZoom = tileJSON['maxzoom'] || 22;
     const tileGrid = createXYZ({
       extent: extentFromProjection(sourceProjection),
       maxZoom: maxZoom,
@@ -154,15 +173,15 @@ class TileJSON extends TileImage {
     });
     this.tileGrid = tileGrid;
 
-    this.tileUrlFunction = createFromTemplates(tileJSON.tiles, tileGrid);
+    this.tileUrlFunction = createFromTemplates(tileJSON['tiles'], tileGrid);
 
-    if (tileJSON.attribution !== undefined && !this.getAttributions()) {
+    if (tileJSON['attribution'] !== undefined && !this.getAttributions()) {
       const attributionExtent = extent !== undefined ?
         extent : epsg4326Projection.getExtent();
 
       this.setAttributions(function(frameState) {
         if (intersects(attributionExtent, frameState.extent)) {
-          return [tileJSON.attribution];
+          return [tileJSON['attribution']];
         }
         return null;
       });
