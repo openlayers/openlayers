@@ -200,8 +200,7 @@ export default FeatureFormat;
 /**
  * @param {import("../geom/Geometry.js").default|import("../extent.js").Extent} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
- * @param {WriteOptions|ReadOptions|undefined} opt_options
- *     Options.
+ * @param {(WriteOptions|ReadOptions)=} opt_options Options.
  * @return {import("../geom/Geometry.js").default|import("../extent.js").Extent} Transformed geometry.
  */
 export function transformWithOptions(geometry, write, opt_options) {
