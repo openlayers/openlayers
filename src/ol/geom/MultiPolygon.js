@@ -31,7 +31,7 @@ class MultiPolygon extends SimpleGeometry {
    * @param {Array<Array<Array<import("../coordinate.js").Coordinate>>>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinats in combination with `opt_layout` and `opt_endss` are also accepted.
    * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
-   * @param {Array<number>} opt_endss Array of ends for internal use with flat coordinates.
+   * @param {Array<number>=} opt_endss Array of ends for internal use with flat coordinates.
    */
   constructor(coordinates, opt_layout, opt_endss) {
 
