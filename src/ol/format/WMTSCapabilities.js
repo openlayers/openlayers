@@ -51,7 +51,7 @@ class WMTSCapabilities extends XML {
     super();
 
     /**
-     * @type {import("./OWS.js").default}
+     * @type {OWS}
      * @private
      */
     this.owsParser_ = new OWS();

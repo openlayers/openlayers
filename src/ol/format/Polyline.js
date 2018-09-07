@@ -16,7 +16,7 @@ import {get as getProjection} from '../proj.js';
 /**
  * @typedef {Object} Options
  * @property {number} [factor=1e5] The factor by which the coordinates values will be scaled.
- * @property {import("../geom/GeometryLayout.js").default} [geometryLayout='XY'] Layout of the
+ * @property {GeometryLayout} [geometryLayout='XY'] Layout of the
  * feature geometries created by the format reader.
  */
 
@@ -59,7 +59,7 @@ class Polyline extends TextFeature {
 
     /**
      * @private
-     * @type {import("../geom/GeometryLayout.js").default}
+     * @type {GeometryLayout}
      */
     this.geometryLayout_ = options.geometryLayout ?
       options.geometryLayout : GeometryLayout.XY;
@@ -123,7 +123,7 @@ class Polyline extends TextFeature {
    * @inheritDoc
    */
   writeGeometryText(geometry, opt_options) {
-    geometry = /** @type {import("../geom/LineString.js").default} */
+    geometry = /** @type {LineString} */
       (transformWithOptions(geometry, true, this.adaptOptions(opt_options)));
     const flatCoordinates = geometry.getFlatCoordinates();
     const stride = geometry.getStride();

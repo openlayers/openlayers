@@ -132,7 +132,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Array<import("../Feature.js").default> | undefined} Features.
+   * @return {Array<Feature> | undefined} Features.
    */
   readFeaturesInternal(node, objectStack) {
     const localName = node.localName;
@@ -240,7 +240,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {import("../Feature.js").default} Feature.
+   * @return {Feature} Feature.
    */
   readFeatureElement(node, objectStack) {
     let n;
@@ -281,7 +281,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {import("../geom/Point.js").default|undefined} Point.
+   * @return {Point|undefined} Point.
    */
   readPoint(node, objectStack) {
     const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
@@ -293,7 +293,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {import("../geom/MultiPoint.js").default|undefined} MultiPoint.
+   * @return {MultiPoint|undefined} MultiPoint.
    */
   readMultiPoint(node, objectStack) {
     /** @type {Array<Array<number>>} */
@@ -309,10 +309,10 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {import("../geom/MultiLineString.js").default|undefined} MultiLineString.
+   * @return {MultiLineString|undefined} MultiLineString.
    */
   readMultiLineString(node, objectStack) {
-    /** @type {Array<import("../geom/LineString.js").default>} */
+    /** @type {Array<LineString>} */
     const lineStrings = pushParseAndPop([],
       this.MULTILINESTRING_PARSERS_, node, objectStack, this);
     if (lineStrings) {
@@ -323,10 +323,10 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {import("../geom/MultiPolygon.js").default|undefined} MultiPolygon.
+   * @return {MultiPolygon|undefined} MultiPolygon.
    */
   readMultiPolygon(node, objectStack) {
-    /** @type {Array<import("../geom/Polygon.js").default>} */
+    /** @type {Array<Polygon>} */
     const polygons = pushParseAndPop([], this.MULTIPOLYGON_PARSERS_, node, objectStack, this);
     if (polygons) {
       return new MultiPolygon(polygons);
@@ -363,7 +363,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {import("../geom/LineString.js").default|undefined} LineString.
+   * @return {LineString|undefined} LineString.
    */
   readLineString(node, objectStack) {
     const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
@@ -395,7 +395,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {import("../geom/LinearRing.js").default|undefined} LinearRing.
+   * @return {LinearRing|undefined} LinearRing.
    */
   readLinearRing(node, objectStack) {
     const flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
@@ -407,7 +407,7 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {import("../geom/Polygon.js").default|undefined} Polygon.
+   * @return {Polygon|undefined} Polygon.
    */
   readPolygon(node, objectStack) {
     /** @type {Array<Array<number>>} */

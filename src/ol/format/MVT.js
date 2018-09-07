@@ -23,7 +23,7 @@ import RenderFeature from '../render/Feature.js';
 
 /**
  * @typedef {Object} Options
- * @property {function((import("../geom/Geometry.js").default|Object<string,*>)=)|function(import("../geom/GeometryType.js").default,Array<number>,(Array<number>|Array<Array<number>>),Object<string,*>,number)} [featureClass]
+ * @property {function((import("../geom/Geometry.js").default|Object<string,*>)=)|function(GeometryType,Array<number>,(Array<number>|Array<Array<number>>),Object<string,*>,number)} [featureClass]
  * Class for features returned by {@link module:ol/format/MVT#readFeatures}. Set to
  * {@link module:ol/Feature~Feature} to get full editing and geometry support at the cost of
  * decreased rendering performance. The default is {@link module:ol/render/Feature~RenderFeature},
@@ -55,7 +55,7 @@ class MVT extends FeatureFormat {
     const options = opt_options ? opt_options : {};
 
     /**
-     * @type {import("../proj/Projection.js").default}
+     * @type {Projection}
      */
     this.dataProjection = new Projection({
       code: '',
@@ -65,7 +65,7 @@ class MVT extends FeatureFormat {
     /**
      * @private
      * @type {function((import("../geom/Geometry.js").default|Object<string,*>)=)|
-     *     function(import("../geom/GeometryType.js").default,Array<number>,
+     *     function(GeometryType,Array<number>,
      *         (Array<number>|Array<Array<number>>),Object<string,*>,number)}
      */
     this.featureClass_ = options.featureClass ?
@@ -167,7 +167,7 @@ class MVT extends FeatureFormat {
    * @param {Object} pbf PBF
    * @param {Object} rawFeature Raw Mapbox feature.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
-   * @return {import("../Feature.js").default|import("../render/Feature.js").default} Feature.
+   * @return {import("../Feature.js").default|RenderFeature} Feature.
    */
   createFeature_(pbf, rawFeature, opt_options) {
     const type = rawFeature.type;
@@ -252,7 +252,7 @@ class MVT extends FeatureFormat {
 
     const pbf = new PBF(/** @type {ArrayBuffer} */ (source));
     const pbfLayers = pbf.readFields(layersPBFReader, {});
-    /** @type {Array<import("../Feature.js").default|import("../render/Feature.js").default>} */
+    /** @type {Array<import("../Feature.js").default|RenderFeature>} */
     const features = [];
     for (const name in pbfLayers) {
       if (layers && layers.indexOf(name) == -1) {
@@ -397,10 +397,10 @@ function readRawFeature(pbf, layer, i) {
  * @param {number} type The raw feature's geometry type
  * @param {number} numEnds Number of ends of the flat coordinates of the
  * geometry.
- * @return {import("../geom/GeometryType.js").default} The geometry type.
+ * @return {GeometryType} The geometry type.
  */
 function getGeometryType(type, numEnds) {
-  /** @type {import("../geom/GeometryType.js").default} */
+  /** @type {GeometryType} */
   let geometryType;
   if (type === 1) {
     geometryType = numEnds === 1 ?
