@@ -22,7 +22,7 @@ import {clear} from './obj.js';
  * Listener function. This function is called with an event object as argument.
  * When the function returns `false`, event propagation will stop.
  *
- * @typedef {function(import("./events/Event.js").default)|function(import("./events/Event.js").default): boolean} ListenerFunction
+ * @typedef {function(import("./events/Event.js").default): (void|boolean)} ListenerFunction
  * @api
  */
 
