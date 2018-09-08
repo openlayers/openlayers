@@ -23,7 +23,7 @@ class SimpleGeometry extends Geometry {
 
     /**
      * @protected
-     * @type {import("./GeometryLayout.js").default}
+     * @type {GeometryLayout}
      */
     this.layout = GeometryLayout.XY;
 
@@ -82,7 +82,7 @@ class SimpleGeometry extends Geometry {
 
   /**
    * Return the {@link module:ol/geom/GeometryLayout~GeometryLayout layout} of the geometry.
-   * @return {import("./GeometryLayout.js").default} Layout.
+   * @return {GeometryLayout} Layout.
    * @api
    */
   getLayout() {
@@ -145,7 +145,7 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
-   * @param {import("./GeometryLayout.js").default} layout Layout.
+   * @param {GeometryLayout} layout Layout.
    * @param {Array<number>} flatCoordinates Flat coordinates.
     */
   setFlatCoordinates(layout, flatCoordinates) {
@@ -157,12 +157,12 @@ class SimpleGeometry extends Geometry {
   /**
    * @abstract
    * @param {!Array} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {GeometryLayout=} opt_layout Layout.
    */
   setCoordinates(coordinates, opt_layout) {}
 
   /**
-   * @param {import("./GeometryLayout.js").default|undefined} layout Layout.
+   * @param {GeometryLayout|undefined} layout Layout.
    * @param {Array} coordinates Coordinates.
    * @param {number} nesting Nesting.
    * @protected
@@ -257,7 +257,7 @@ class SimpleGeometry extends Geometry {
 
 /**
  * @param {number} stride Stride.
- * @return {import("./GeometryLayout.js").default} layout Layout.
+ * @return {GeometryLayout} layout Layout.
  */
 function getLayoutForStride(stride) {
   let layout;
@@ -269,13 +269,13 @@ function getLayoutForStride(stride) {
     layout = GeometryLayout.XYZM;
   }
   return (
-    /** @type {import("./GeometryLayout.js").default} */ (layout)
+    /** @type {GeometryLayout} */ (layout)
   );
 }
 
 
 /**
- * @param {import("./GeometryLayout.js").default} layout Layout.
+ * @param {GeometryLayout} layout Layout.
  * @return {number} Stride.
  */
 export function getStrideForLayout(layout) {

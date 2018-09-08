@@ -125,14 +125,14 @@ class ExtentInteraction extends PointerInteraction {
 
     /**
      * Feature for displaying the visible extent
-     * @type {import("../Feature.js").default}
+     * @type {Feature}
      * @private
      */
     this.extentFeature_ = null;
 
     /**
      * Feature for displaying the visible pointer
-     * @type {import("../Feature.js").default}
+     * @type {Feature}
      * @private
      */
     this.vertexFeature_ = null;
@@ -143,7 +143,7 @@ class ExtentInteraction extends PointerInteraction {
 
     /**
      * Layer for the extentFeature
-     * @type {import("../layer/Vector.js").default}
+     * @type {VectorLayer}
      * @private
      */
     this.extentOverlay_ = new VectorLayer({
@@ -158,7 +158,7 @@ class ExtentInteraction extends PointerInteraction {
 
     /**
      * Layer for the vertexFeature
-     * @type {import("../layer/Vector.js").default}
+     * @type {VectorLayer}
      * @private
      */
     this.vertexOverlay_ = new VectorLayer({
@@ -235,7 +235,7 @@ class ExtentInteraction extends PointerInteraction {
 
   /**
    * @param {import("../extent.js").Extent} extent extent
-   * @returns {import("../Feature.js").default} extent as featrue
+   * @returns {Feature} extent as featrue
    * @private
    */
   createOrUpdateExtentFeature_(extent) {
@@ -261,7 +261,7 @@ class ExtentInteraction extends PointerInteraction {
 
   /**
    * @param {import("../coordinate.js").Coordinate} vertex location of feature
-   * @returns {import("../Feature.js").default} vertex as feature
+   * @returns {Feature} vertex as feature
    * @private
    */
   createOrUpdatePointerFeature_(vertex) {
@@ -271,7 +271,7 @@ class ExtentInteraction extends PointerInteraction {
       this.vertexFeature_ = vertexFeature;
       this.vertexOverlay_.getSource().addFeature(vertexFeature);
     } else {
-      const geometry = /** @type {import("../geom/Point.js").default} */ (vertexFeature.getGeometry());
+      const geometry = /** @type {Point} */ (vertexFeature.getGeometry());
       geometry.setCoordinates(vertex);
     }
     return vertexFeature;

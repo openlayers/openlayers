@@ -151,7 +151,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Node|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
-   * @return {import("../geom/Geometry.js").default} Geometry.
+   * @return {Geometry} Geometry.
    */
   readGeometry(source, opt_options) {}
 
@@ -188,7 +188,7 @@ class FeatureFormat {
    * Write a single geometry in this format.
    *
    * @abstract
-   * @param {import("../geom/Geometry.js").default} geometry Geometry.
+   * @param {Geometry} geometry Geometry.
    * @param {WriteOptions=} opt_options Write options.
    * @return {string} Result.
    */
@@ -198,10 +198,10 @@ class FeatureFormat {
 export default FeatureFormat;
 
 /**
- * @param {import("../geom/Geometry.js").default|import("../extent.js").Extent} geometry Geometry.
+ * @param {Geometry|import("../extent.js").Extent} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
  * @param {(WriteOptions|ReadOptions)=} opt_options Options.
- * @return {import("../geom/Geometry.js").default|import("../extent.js").Extent} Transformed geometry.
+ * @return {Geometry|import("../extent.js").Extent} Transformed geometry.
  */
 export function transformWithOptions(geometry, write, opt_options) {
   const featureProjection = opt_options ?
@@ -209,7 +209,7 @@ export function transformWithOptions(geometry, write, opt_options) {
   const dataProjection = opt_options ?
     getProjection(opt_options.dataProjection) : null;
   /**
-   * @type {import("../geom/Geometry.js").default|import("../extent.js").Extent}
+   * @type {Geometry|import("../extent.js").Extent}
    */
   let transformed;
   if (featureProjection && dataProjection &&

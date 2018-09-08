@@ -23,7 +23,7 @@ class LinearRing extends SimpleGeometry {
   /**
    * @param {Array<import("../coordinate.js").Coordinate>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {GeometryLayout=} opt_layout Layout.
    */
   constructor(coordinates, opt_layout) {
 
@@ -123,7 +123,7 @@ class LinearRing extends SimpleGeometry {
   /**
    * Set the coordinates of the linear ring.
    * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {GeometryLayout=} opt_layout Layout.
    * @override
    * @api
    */

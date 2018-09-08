@@ -48,7 +48,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {Array<PostRenderFunction>} postRenderFunctions
  * @property {import("./size.js").Size} size
  * @property {!Object<string, boolean>} skippedFeatureUids
- * @property {import("./TileQueue.js").default} tileQueue
+ * @property {TileQueue} tileQueue
  * @property {Object<string, Object<string, import("./TileRange.js").default>>} usedTiles
  * @property {Array<number>} viewHints
  * @property {!Object<string, Object<string, boolean>>} wantedTiles
@@ -75,10 +75,10 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 /**
  * @typedef {Object} MapOptionsInternal
- * @property {import("./Collection.js").default<import("./control/Control.js").default>} [controls]
- * @property {import("./Collection.js").default<import("./interaction/Interaction.js").default>} [interactions]
+ * @property {Collection<import("./control/Control.js").default>} [controls]
+ * @property {Collection<import("./interaction/Interaction.js").default>} [interactions]
  * @property {HTMLElement|Document} keyboardEventTarget
- * @property {import("./Collection.js").default<import("./Overlay.js").default>} overlays
+ * @property {Collection<import("./Overlay.js").default>} overlays
  * @property {Object<string, *>} values
  */
 
@@ -86,12 +86,12 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 /**
  * Object literal with config options for the map.
  * @typedef {Object} MapOptions
- * @property {import("./Collection.js").default<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
+ * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
  * Controls initially added to the map. If not specified,
  * {@link module:ol/control/util~defaults} is used.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
  * physical pixels and device-independent pixels (dips) on the device.
- * @property {import("./Collection.js").default<import("./interaction/Interaction.js").default>|Array<import("./interaction/Interaction.js").default>} [interactions]
+ * @property {Collection<import("./interaction/Interaction.js").default>|Array<import("./interaction/Interaction.js").default>} [interactions]
  * Interactions that are initially added to the map. If not specified,
  * {@link module:ol/interaction~defaults} is used.
  * @property {HTMLElement|Document|string} [keyboardEventTarget] The element to
@@ -102,7 +102,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * map target (i.e. the user-provided div for the map). If this is not
  * `document`, the target element needs to be focused for key events to be
  * emitted, requiring that the target element has a `tabindex` attribute.
- * @property {Array<import("./layer/Base.js").default>|import("./Collection.js").default<import("./layer/Base.js").default>} [layers]
+ * @property {Array<import("./layer/Base.js").default>|Collection<import("./layer/Base.js").default>} [layers]
  * Layers. If this is not defined, a map with no layers will be rendered. Note
  * that layers are rendered in the order supplied, so if you want, for example,
  * a vector layer to appear on top of a tile layer, it must come after the tile
@@ -119,13 +119,13 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {number} [moveTolerance=1] The minimum distance in pixels the
  * cursor must move to be detected as a map move event instead of a click.
  * Increasing this value can make it easier to click on the map.
- * @property {import("./Collection.js").default<import("./Overlay.js").default>|Array<import("./Overlay.js").default>} [overlays]
+ * @property {Collection<import("./Overlay.js").default>|Array<import("./Overlay.js").default>} [overlays]
  * Overlays initially added to the map. By default, no overlays are added.
  * @property {HTMLElement|string} [target] The container for the map, either the
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
  * rendered.
- * @property {import("./View.js").default} [view] The map's view.  No layer sources will be
+ * @property {View} [view] The map's view.  No layer sources will be
  * fetched unless this is specified at construction time or through
  * {@link module:ol/Map~Map#setView}.
  */
@@ -287,7 +287,7 @@ class PluggableMap extends BaseObject {
 
     /**
      * @private
-     * @type {import("./MapBrowserEventHandler.js").default}
+     * @type {MapBrowserEventHandler}
      */
     this.mapBrowserEventHandler_ = new MapBrowserEventHandler(this, options.moveTolerance);
     for (const key in MapBrowserEventType) {
@@ -312,19 +312,19 @@ class PluggableMap extends BaseObject {
     listen(this.viewport_, EventType.MOUSEWHEEL, this.handleBrowserEvent, this);
 
     /**
-     * @type {import("./Collection.js").default<import("./control/Control.js").default>}
+     * @type {Collection<import("./control/Control.js").default>}
      * @protected
      */
     this.controls = optionsInternal.controls || new Collection();
 
     /**
-     * @type {import("./Collection.js").default<import("./interaction/Interaction.js").default>}
+     * @type {Collection<import("./interaction/Interaction.js").default>}
      * @protected
      */
     this.interactions = optionsInternal.interactions || new Collection();
 
     /**
-     * @type {import("./Collection.js").default<import("./Overlay.js").default>}
+     * @type {Collection<import("./Overlay.js").default>}
      * @private
      */
     this.overlays_ = optionsInternal.overlays;
@@ -362,7 +362,7 @@ class PluggableMap extends BaseObject {
 
     /**
      * @private
-     * @type {import("./TileQueue.js").default}
+     * @type {TileQueue}
      */
     this.tileQueue_ = new TileQueue(
       this.getTilePriority.bind(this),
@@ -718,7 +718,7 @@ class PluggableMap extends BaseObject {
   /**
    * Get the map controls. Modifying this collection changes the controls
    * associated with the map.
-   * @return {import("./Collection.js").default<import("./control/Control.js").default>} Controls.
+   * @return {Collection<import("./control/Control.js").default>} Controls.
    * @api
    */
   getControls() {
@@ -728,7 +728,7 @@ class PluggableMap extends BaseObject {
   /**
    * Get the map overlays. Modifying this collection changes the overlays
    * associated with the map.
-   * @return {import("./Collection.js").default<import("./Overlay.js").default>} Overlays.
+   * @return {Collection<import("./Overlay.js").default>} Overlays.
    * @api
    */
   getOverlays() {
@@ -753,7 +753,7 @@ class PluggableMap extends BaseObject {
    * associated with the map.
    *
    * Interactions are used for e.g. pan, zoom and rotate.
-   * @return {import("./Collection.js").default<import("./interaction/Interaction.js").default>} Interactions.
+   * @return {Collection<import("./interaction/Interaction.js").default>} Interactions.
    * @api
    */
   getInteractions() {
@@ -762,19 +762,19 @@ class PluggableMap extends BaseObject {
 
   /**
    * Get the layergroup associated with this map.
-   * @return {import("./layer/Group.js").default} A layer group containing the layers in this map.
+   * @return {LayerGroup} A layer group containing the layers in this map.
    * @observable
    * @api
    */
   getLayerGroup() {
     return (
-      /** @type {import("./layer/Group.js").default} */ (this.get(MapProperty.LAYERGROUP))
+      /** @type {LayerGroup} */ (this.get(MapProperty.LAYERGROUP))
     );
   }
 
   /**
    * Get the collection of layers associated with this map.
-   * @return {!import("./Collection.js").default<import("./layer/Base.js").default>} Layers.
+   * @return {!Collection<import("./layer/Base.js").default>} Layers.
    * @api
    */
   getLayers() {
@@ -821,13 +821,13 @@ class PluggableMap extends BaseObject {
   /**
    * Get the view associated with this map. A view manages properties such as
    * center and resolution.
-   * @return {import("./View.js").default} The view that controls this map.
+   * @return {View} The view that controls this map.
    * @observable
    * @api
    */
   getView() {
     return (
-      /** @type {import("./View.js").default} */ (this.get(MapProperty.VIEW))
+      /** @type {View} */ (this.get(MapProperty.VIEW))
     );
   }
 
@@ -902,7 +902,7 @@ class PluggableMap extends BaseObject {
   }
 
   /**
-   * @param {import("./MapBrowserEvent.js").default} mapBrowserEvent The event to handle.
+   * @param {MapBrowserEvent} mapBrowserEvent The event to handle.
    */
   handleMapBrowserEvent(mapBrowserEvent) {
     if (!this.frameState_) {
@@ -1252,7 +1252,7 @@ class PluggableMap extends BaseObject {
 
   /**
    * Sets the layergroup of this map.
-   * @param {import("./layer/Group.js").default} layerGroup A layer group containing the layers in this map.
+   * @param {LayerGroup} layerGroup A layer group containing the layers in this map.
    * @observable
    * @api
    */
@@ -1283,7 +1283,7 @@ class PluggableMap extends BaseObject {
 
   /**
    * Set the view for this map.
-   * @param {import("./View.js").default} view The view that controls this map.
+   * @param {View} view The view that controls this map.
    * @observable
    * @api
    */
