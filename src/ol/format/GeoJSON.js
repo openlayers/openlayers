@@ -17,6 +17,21 @@ import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import {assign, isEmpty} from '../obj.js';
 import {get as getProjection} from '../proj.js';
+import GeometryType from '../geom/GeometryType.js';
+
+/**
+ * @typedef {import("geojson").GeoJSON} GeoJSONObject
+ * @typedef {import("geojson").Feature} GeoJSONFeature
+ * @typedef {import("geojson").FeatureCollection} GeoJSONFeatureCollection
+ * @typedef {import("geojson").Geometry} GeoJSONGeometry
+ * @typedef {import("geojson").Point} GeoJSONPoint
+ * @typedef {import("geojson").LineString} GeoJSONLineString
+ * @typedef {import("geojson").Polygon} GeoJSONPolygon
+ * @typedef {import("geojson").MultiPoint} GeoJSONMultiPoint
+ * @typedef {import("geojson").MultiLineString} GeoJSONMultiLineString
+ * @typedef {import("geojson").MultiPolygon} GeoJSONMultiPolygon
+ * @typedef {import("geojson").GeometryCollection} GeoJSONGeometryCollection
+ */
 
 
 /**
@@ -84,28 +99,28 @@ class GeoJSON extends JSONFeature {
      * @type {GeoJSONFeature}
      */
     let geoJSONFeature = null;
-    if (object.type === 'Feature') {
+    if (object['type'] === 'Feature') {
       geoJSONFeature = /** @type {GeoJSONFeature} */ (object);
     } else {
       geoJSONFeature = /** @type {GeoJSONFeature} */ ({
         type: 'Feature',
-        geometry: /** @type {GeoJSONGeometry|GeoJSONGeometryCollection} */ (object)
+        geometry: /** @type {GeoJSONGeometry} */ (object)
       });
     }
 
-    const geometry = readGeometry(geoJSONFeature.geometry, opt_options);
+    const geometry = readGeometry(geoJSONFeature['geometry'], opt_options);
     const feature = new Feature();
     if (this.geometryName_) {
       feature.setGeometryName(this.geometryName_);
-    } else if (this.extractGeometryName_ && geoJSONFeature.geometry_name !== undefined) {
-      feature.setGeometryName(geoJSONFeature.geometry_name);
+    } else if (this.extractGeometryName_ && 'geometry_name' in geoJSONFeature !== undefined) {
+      feature.setGeometryName(geoJSONFeature['geometry_name']);
     }
     feature.setGeometry(geometry);
-    if (geoJSONFeature.id !== undefined) {
-      feature.setId(geoJSONFeature.id);
+    if ('id' in geoJSONFeature) {
+      feature.setId(geoJSONFeature['id']);
     }
-    if (geoJSONFeature.properties) {
-      feature.setProperties(geoJSONFeature.properties);
+    if ('properties' in geoJSONFeature) {
+      feature.setProperties(geoJSONFeature['properties']);
     }
     return feature;
   }
@@ -117,10 +132,10 @@ class GeoJSON extends JSONFeature {
     const geoJSONObject = /** @type {GeoJSONObject} */ (object);
     /** @type {Array<import("../Feature.js").default>} */
     let features = null;
-    if (geoJSONObject.type === 'FeatureCollection') {
+    if (geoJSONObject['type'] === 'FeatureCollection') {
       const geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */ (object);
       features = [];
-      const geoJSONFeatures = geoJSONFeatureCollection.features;
+      const geoJSONFeatures = geoJSONFeatureCollection['features'];
       for (let i = 0, ii = geoJSONFeatures.length; i < ii; ++i) {
         features.push(this.readFeatureFromObject(geoJSONFeatures[i], opt_options));
       }
@@ -141,12 +156,11 @@ class GeoJSON extends JSONFeature {
    * @inheritDoc
    */
   readProjectionFromObject(object) {
-    const geoJSONObject = /** @type {GeoJSONObject} */ (object);
-    const crs = geoJSONObject.crs;
+    const crs = object['crs'];
     let projection;
     if (crs) {
-      if (crs.type == 'name') {
-        projection = getProjection(crs.properties.name);
+      if (crs['type'] == 'name') {
+        projection = getProjection(crs['properties']['name']);
       } else {
         assert(false, 36); // Unknown SRS type
       }
@@ -230,37 +244,6 @@ class GeoJSON extends JSONFeature {
 
 
 /**
- * @const
- * @type {Object<string, function(GeoJSONObject): import("../geom/Geometry.js").default>}
- */
-const GEOMETRY_READERS = {
-  'Point': readPointGeometry,
-  'LineString': readLineStringGeometry,
-  'Polygon': readPolygonGeometry,
-  'MultiPoint': readMultiPointGeometry,
-  'MultiLineString': readMultiLineStringGeometry,
-  'MultiPolygon': readMultiPolygonGeometry,
-  'GeometryCollection': readGeometryCollectionGeometry
-};
-
-
-/**
- * @const
- * @type {Object<string, function(import("../geom/Geometry.js").default, import("./Feature.js").WriteOptions=): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
- */
-const GEOMETRY_WRITERS = {
-  'Point': writePointGeometry,
-  'LineString': writeLineStringGeometry,
-  'Polygon': writePolygonGeometry,
-  'MultiPoint': writeMultiPointGeometry,
-  'MultiLineString': writeMultiLineStringGeometry,
-  'MultiPolygon': writeMultiPolygonGeometry,
-  'GeometryCollection': writeGeometryCollectionGeometry,
-  'Circle': writeEmptyGeometryCollectionGeometry
-};
-
-
-/**
  * @param {GeoJSONGeometry|GeoJSONGeometryCollection} object Object.
  * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
  * @return {import("../geom/Geometry.js").default} Geometry.
@@ -269,10 +252,45 @@ function readGeometry(object, opt_options) {
   if (!object) {
     return null;
   }
-  const geometryReader = GEOMETRY_READERS[object.type];
-  return (
-    /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometryReader(object), false, opt_options))
-  );
+
+  /**
+   * @type {import("../geom/Geometry.js").default}
+   */
+  let geometry;
+  switch (object['type']) {
+    case GeometryType.POINT: {
+      geometry = readPointGeometry(/** @type {GeoJSONPoint} */ (object));
+      break;
+    }
+    case GeometryType.LINE_STRING: {
+      geometry = readLineStringGeometry(/** @type {GeoJSONLineString} */ (object));
+      break;
+    }
+    case GeometryType.POLYGON: {
+      geometry = readPolygonGeometry(/** @type {GeoJSONPolygon} */ (object));
+      break;
+    }
+    case GeometryType.MULTI_POINT: {
+      geometry = readMultiPointGeometry(/** @type {GeoJSONMultiPoint} */ (object));
+      break;
+    }
+    case GeometryType.MULTI_LINE_STRING: {
+      geometry = readMultiLineStringGeometry(/** @type {GeoJSONMultiLineString} */ (object));
+      break;
+    }
+    case GeometryType.MULTI_POLYGON: {
+      geometry = readMultiPolygonGeometry(/** @type {GeoJSONMultiPolygon} */ (object));
+      break;
+    }
+    case GeometryType.GEOMETRY_COLLECTION: {
+      geometry = readGeometryCollectionGeometry(/** @type {GeoJSONGeometryCollection} */ (object));
+      break;
+    }
+    default: {
+      throw new Error('Unsupported GeoJSON type: ' + object.type);
+    }
+  }
+  return transformWithOptions(geometry, false, opt_options);
 }
 
 
@@ -282,7 +300,7 @@ function readGeometry(object, opt_options) {
  * @return {import("../geom/GeometryCollection.js").default} Geometry collection.
  */
 function readGeometryCollectionGeometry(object, opt_options) {
-  const geometries = object.geometries.map(
+  const geometries = object['geometries'].map(
     /**
      * @param {GeoJSONGeometry} geometry Geometry.
      * @return {import("../geom/Geometry.js").default} geometry Geometry.
@@ -295,80 +313,104 @@ function readGeometryCollectionGeometry(object, opt_options) {
 
 
 /**
- * @param {GeoJSONGeometry} object Object.
+ * @param {GeoJSONPoint} object Object.
  * @return {import("../geom/Point.js").default} Point.
  */
 function readPointGeometry(object) {
-  return new Point(object.coordinates);
+  return new Point(object['coordinates']);
 }
 
 
 /**
- * @param {GeoJSONGeometry} object Object.
+ * @param {GeoJSONLineString} object Object.
  * @return {import("../geom/LineString.js").default} LineString.
  */
 function readLineStringGeometry(object) {
-  return new LineString(object.coordinates);
+  return new LineString(object['coordinates']);
 }
 
 
 /**
- * @param {GeoJSONGeometry} object Object.
+ * @param {GeoJSONMultiLineString} object Object.
  * @return {import("../geom/MultiLineString.js").default} MultiLineString.
  */
 function readMultiLineStringGeometry(object) {
-  return new MultiLineString(object.coordinates);
+  return new MultiLineString(object['coordinates']);
 }
 
 
 /**
- * @param {GeoJSONGeometry} object Object.
+ * @param {GeoJSONMultiPoint} object Object.
  * @return {import("../geom/MultiPoint.js").default} MultiPoint.
  */
 function readMultiPointGeometry(object) {
-  return new MultiPoint(object.coordinates);
+  return new MultiPoint(object['coordinates']);
 }
 
 
 /**
- * @param {GeoJSONGeometry} object Object.
+ * @param {GeoJSONMultiPolygon} object Object.
  * @return {import("../geom/MultiPolygon.js").default} MultiPolygon.
  */
 function readMultiPolygonGeometry(object) {
-  return new MultiPolygon(object.coordinates);
+  return new MultiPolygon(object['coordinates']);
 }
 
 
 /**
- * @param {GeoJSONGeometry} object Object.
+ * @param {GeoJSONPolygon} object Object.
  * @return {import("../geom/Polygon.js").default} Polygon.
  */
 function readPolygonGeometry(object) {
-  return new Polygon(object.coordinates);
+  return new Polygon(object['coordinates']);
 }
 
 
 /**
  * @param {import("../geom/Geometry.js").default} geometry Geometry.
  * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
- * @return {GeoJSONGeometry|GeoJSONGeometryCollection} GeoJSON geometry.
+ * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeGeometry(geometry, opt_options) {
-  const geometryWriter = GEOMETRY_WRITERS[geometry.getType()];
-  return geometryWriter(/** @type {import("../geom/Geometry.js").default} */ (
-    transformWithOptions(geometry, true, opt_options)), opt_options);
-}
+  geometry = transformWithOptions(geometry, true, opt_options);
+  const type = geometry.getType();
 
-
-/**
- * @param {import("../geom/Geometry.js").default} geometry Geometry.
- * @return {GeoJSONGeometryCollection} Empty GeoJSON geometry collection.
- */
-function writeEmptyGeometryCollectionGeometry(geometry) {
-  return /** @type {GeoJSONGeometryCollection} */ ({
-    type: 'GeometryCollection',
-    geometries: []
-  });
+  /** @type {GeoJSONGeometry} */
+  let geoJSON;
+  switch (type) {
+    case GeometryType.POINT: {
+      geoJSON = writePointGeometry(/** @type {import("../geom/Point.js").default} */ (geometry), opt_options);
+      break;
+    }
+    case GeometryType.LINE_STRING: {
+      geoJSON = writeLineStringGeometry(/** @type {import("../geom/LineString.js").default} */ (geometry), opt_options);
+      break;
+    }
+    case GeometryType.POLYGON: {
+      geoJSON = writePolygonGeometry(/** @type {import("../geom/Polygon.js").default} */ (geometry), opt_options);
+      break;
+    }
+    case GeometryType.MULTI_POINT: {
+      geoJSON = writeMultiPointGeometry(/** @type {import("../geom/MultiPoint.js").default} */ (geometry), opt_options);
+      break;
+    }
+    case GeometryType.MULTI_LINE_STRING: {
+      geoJSON = writeMultiLineStringGeometry(/** @type {import("../geom/MultiLineString.js").default} */ (geometry), opt_options);
+      break;
+    }
+    case GeometryType.MULTI_POLYGON: {
+      geoJSON = writeMultiPolygonGeometry(/** @type {import("../geom/MultiPolygon.js").default} */ (geometry), opt_options);
+      break;
+    }
+    case GeometryType.GEOMETRY_COLLECTION: {
+      geoJSON = writeGeometryCollectionGeometry(/** @type {import("../geom/GeometryCollection.js").default} */ (geometry), opt_options);
+      break;
+    }
+    default: {
+      throw new Error('Unsupported geometry type: ' + type);
+    }
+  }
+  return geoJSON;
 }
 
 

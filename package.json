@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "@openlayers/eslint-plugin": "^4.0.0-beta.1",
+    "@types/geojson": "^7946.0.4",
     "buble": "^0.19.3",
     "buble-loader": "^0.5.1",
     "chaikin-smooth": "^1.0.4",
