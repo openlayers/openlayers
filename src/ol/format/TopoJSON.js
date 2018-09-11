@@ -12,6 +12,17 @@ import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import {get as getProjection} from '../proj.js';
 
+/**
+ * @typedef {import("topojson-specification").Topology} TopoJSONTopology
+ * @typedef {import("topojson-specification").GeometryCollection} TopoJSONGeometryCollection
+ * @typedef {import("topojson-specification").GeometryObject} TopoJSONGeometry
+ * @typedef {import("topojson-specification").Point} TopoJSONPoint
+ * @typedef {import("topojson-specification").MultiPoint} TopoJSONMultiPoint
+ * @typedef {import("topojson-specification").LineString} TopoJSONLineString
+ * @typedef {import("topojson-specification").MultiLineString} TopoJSONMultiLineString
+ * @typedef {import("topojson-specification").Polygon} TopoJSONPolygon
+ * @typedef {import("topojson-specification").MultiPolygon} TopoJSONMultiPolygon
+ */
 
 /**
  * @typedef {Object} Options
@@ -178,7 +189,7 @@ function concatenateArcs(indices, arcs) {
 /**
  * Create a point from a TopoJSON geometry object.
  *
- * @param {TopoJSONGeometry} object TopoJSON object.
+ * @param {TopoJSONPoint} object TopoJSON object.
  * @param {Array<number>} scale Scale for each dimension.
  * @param {Array<number>} translate Translation for each dimension.
  * @return {Point} Geometry.
@@ -195,7 +206,7 @@ function readPointGeometry(object, scale, translate) {
 /**
  * Create a multi-point from a TopoJSON geometry object.
  *
- * @param {TopoJSONGeometry} object TopoJSON object.
+ * @param {TopoJSONMultiPoint} object TopoJSON object.
  * @param {Array<number>} scale Scale for each dimension.
  * @param {Array<number>} translate Translation for each dimension.
  * @return {MultiPoint} Geometry.
@@ -214,7 +225,7 @@ function readMultiPointGeometry(object, scale, translate) {
 /**
  * Create a linestring from a TopoJSON geometry object.
  *
- * @param {TopoJSONGeometry} object TopoJSON object.
+ * @param {TopoJSONLineString} object TopoJSON object.
  * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
  * @return {LineString} Geometry.
  */
@@ -227,7 +238,7 @@ function readLineStringGeometry(object, arcs) {
 /**
  * Create a multi-linestring from a TopoJSON geometry object.
  *
- * @param {TopoJSONGeometry} object TopoJSON object.
+ * @param {TopoJSONMultiLineString} object TopoJSON object.
  * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
  * @return {MultiLineString} Geometry.
  */
@@ -243,7 +254,7 @@ function readMultiLineStringGeometry(object, arcs) {
 /**
  * Create a polygon from a TopoJSON geometry object.
  *
- * @param {TopoJSONGeometry} object TopoJSON object.
+ * @param {TopoJSONPolygon} object TopoJSON object.
  * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
  * @return {Polygon} Geometry.
  */
@@ -259,7 +270,7 @@ function readPolygonGeometry(object, arcs) {
 /**
  * Create a multi-polygon from a TopoJSON geometry object.
  *
- * @param {TopoJSONGeometry} object TopoJSON object.
+ * @param {TopoJSONMultiPolygon} object TopoJSON object.
  * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
  * @return {MultiPolygon} Geometry.
  */
