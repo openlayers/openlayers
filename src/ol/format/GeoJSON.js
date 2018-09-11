@@ -1,8 +1,6 @@
 /**
  * @module ol/format/GeoJSON
  */
-// TODO: serialize dataProjection as crs member when writing
-// see https://github.com/openlayers/openlayers/issues/2078
 
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
@@ -102,10 +100,11 @@ class GeoJSON extends JSONFeature {
     if (object['type'] === 'Feature') {
       geoJSONFeature = /** @type {GeoJSONFeature} */ (object);
     } else {
-      geoJSONFeature = /** @type {GeoJSONFeature} */ ({
-        type: 'Feature',
-        geometry: /** @type {GeoJSONGeometry} */ (object)
-      });
+      geoJSONFeature = {
+        'type': 'Feature',
+        'geometry': /** @type {GeoJSONGeometry} */ (object),
+        'properties': null
+      };
     }
 
     const geometry = readGeometry(geoJSONFeature['geometry'], opt_options);
@@ -116,10 +115,12 @@ class GeoJSON extends JSONFeature {
       feature.setGeometryName(geoJSONFeature['geometry_name']);
     }
     feature.setGeometry(geometry);
+
     if ('id' in geoJSONFeature) {
       feature.setId(geoJSONFeature['id']);
     }
-    if ('properties' in geoJSONFeature) {
+
+    if (geoJSONFeature['properties']) {
       feature.setProperties(geoJSONFeature['properties']);
     }
     return feature;
@@ -184,25 +185,27 @@ class GeoJSON extends JSONFeature {
   writeFeatureObject(feature, opt_options) {
     opt_options = this.adaptOptions(opt_options);
 
-    const object = /** @type {GeoJSONFeature} */ ({
-      'type': 'Feature'
-    });
+    /** @type {GeoJSONFeature} */
+    const object = {
+      'type': 'Feature',
+      geometry: null,
+      properties: null
+    };
+
     const id = feature.getId();
     if (id !== undefined) {
       object.id = id;
     }
+
     const geometry = feature.getGeometry();
     if (geometry) {
       object.geometry = writeGeometry(geometry, opt_options);
-    } else {
-      object.geometry = null;
     }
+
     const properties = feature.getProperties();
     delete properties[feature.getGeometryName()];
     if (!isEmpty(properties)) {
       object.properties = properties;
-    } else {
-      object.properties = null;
     }
     return object;
   }
@@ -222,10 +225,10 @@ class GeoJSON extends JSONFeature {
     for (let i = 0, ii = features.length; i < ii; ++i) {
       objects.push(this.writeFeatureObject(features[i], opt_options));
     }
-    return /** @type {GeoJSONFeatureCollection} */ ({
+    return {
       type: 'FeatureCollection',
       features: objects
-    });
+    };
   }
 
   /**
@@ -432,10 +435,10 @@ function writeGeometryCollectionGeometry(geometry, opt_options) {
     delete options.featureProjection;
     return writeGeometry(geometry, options);
   });
-  return /** @type {GeoJSONGeometryCollection} */ ({
+  return {
     type: 'GeometryCollection',
     geometries: geometries
-  });
+  };
 }
 
 
@@ -445,10 +448,10 @@ function writeGeometryCollectionGeometry(geometry, opt_options) {
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeLineStringGeometry(geometry, opt_options) {
-  return /** @type {GeoJSONGeometry} */ ({
+  return {
     type: 'LineString',
     coordinates: geometry.getCoordinates()
-  });
+  };
 }
 
 
@@ -458,10 +461,10 @@ function writeLineStringGeometry(geometry, opt_options) {
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeMultiLineStringGeometry(geometry, opt_options) {
-  return /** @type {GeoJSONGeometry} */ ({
+  return {
     type: 'MultiLineString',
     coordinates: geometry.getCoordinates()
-  });
+  };
 }
 
 
@@ -471,10 +474,10 @@ function writeMultiLineStringGeometry(geometry, opt_options) {
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeMultiPointGeometry(geometry, opt_options) {
-  return /** @type {GeoJSONGeometry} */ ({
+  return {
     type: 'MultiPoint',
     coordinates: geometry.getCoordinates()
-  });
+  };
 }
 
 
@@ -488,10 +491,10 @@ function writeMultiPolygonGeometry(geometry, opt_options) {
   if (opt_options) {
     right = opt_options.rightHanded;
   }
-  return /** @type {GeoJSONGeometry} */ ({
+  return {
     type: 'MultiPolygon',
     coordinates: geometry.getCoordinates(right)
-  });
+  };
 }
 
 
@@ -501,10 +504,10 @@ function writeMultiPolygonGeometry(geometry, opt_options) {
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writePointGeometry(geometry, opt_options) {
-  return /** @type {GeoJSONGeometry} */ ({
+  return {
     type: 'Point',
     coordinates: geometry.getCoordinates()
-  });
+  };
 }
 
 
@@ -518,10 +521,10 @@ function writePolygonGeometry(geometry, opt_options) {
   if (opt_options) {
     right = opt_options.rightHanded;
   }
-  return /** @type {GeoJSONGeometry} */ ({
+  return {
     type: 'Polygon',
     coordinates: geometry.getCoordinates(right)
-  });
+  };
 }
 
 
