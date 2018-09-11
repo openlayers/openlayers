@@ -55,14 +55,6 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * Get the registered layer renderer constructors.
-   * @return {Array<import("./Layer.js").default>} Registered layer renderers.
-   */
-  getLayerRendererConstructors() {
-    return this.layerRendererConstructors_;
-  }
-
-  /**
    * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @protected
    */
