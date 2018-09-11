@@ -14,7 +14,7 @@ const DEFAULT_EXTENT = [0, 0, 4096, 4096];
 
 /**
  * @typedef {function(new: VectorTile, import("./tilecoord.js").TileCoord,
- * import("./TileState.js").default, string, ?string, import("./Tile.js").LoadFunction)} TileClass
+ * TileState, string, ?string, import("./Tile.js").LoadFunction)} TileClass
  * @api
  */
 
@@ -22,7 +22,7 @@ class VectorTile extends Tile {
 
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("./TileState.js").default} state State.
+   * @param {TileState} state State.
    * @param {string} src Data source url.
    * @param {import("./format/Feature.js").default} format Feature format.
    * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.

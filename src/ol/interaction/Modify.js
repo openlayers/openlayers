@@ -61,7 +61,7 @@ const ModifyEventType = {
 /**
  * @typedef {Object} SegmentData
  * @property {Array<number>} [depth]
- * @property {import("../Feature.js").default} feature
+ * @property {Feature} feature
  * @property {import("../geom/SimpleGeometry.js").default} geometry
  * @property {number} index
  * @property {Array<import("../extent.js").Extent>} segment
@@ -90,10 +90,10 @@ const ModifyEventType = {
  * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style]
  * Style used for the features being modified. By default the default edit
  * style is used (see {@link module:ol/style}).
- * @property {import("../source/Vector.js").default} [source] The vector source with
+ * @property {VectorSource} [source] The vector source with
  * features to modify.  If a vector source is not provided, a feature collection
  * must be provided with the features option.
- * @property {import("../Collection.js").default<import("../Feature.js").default>} [features]
+ * @property {Collection<Feature>} [features]
  * The features the interaction works on.  If a feature collection is not
  * provided, a vector source must be provided with the source option.
  * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
@@ -109,9 +109,9 @@ const ModifyEventType = {
 export class ModifyEvent extends Event {
   /**
    * @param {ModifyEventType} type Type.
-   * @param {import("../Collection.js").default<import("../Feature.js").default>} features
+   * @param {Collection<Feature>} features
    * The features modified.
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserPointerEvent
+   * @param {MapBrowserPointerEvent} mapBrowserPointerEvent
    * Associated {@link module:ol/MapBrowserPointerEvent}.
    */
   constructor(type, features, mapBrowserPointerEvent) {
@@ -119,7 +119,7 @@ export class ModifyEvent extends Event {
 
     /**
      * The features being modified.
-     * @type {import("../Collection.js").default<import("../Feature.js").default>}
+     * @type {Collection<Feature>}
      * @api
      */
     this.features = features;
@@ -196,7 +196,7 @@ class Modify extends PointerInteraction {
 
     /**
      * Editing vertex.
-     * @type {import("../Feature.js").default}
+     * @type {Feature}
      * @private
      */
     this.vertexFeature_ = null;
@@ -230,7 +230,7 @@ class Modify extends PointerInteraction {
 
     /**
      * Segment RTree for each layer
-     * @type {import("../structs/RBush.js").default<SegmentData>}
+     * @type {RBush<SegmentData>}
      * @private
      */
     this.rBush_ = new RBush();
@@ -264,7 +264,7 @@ class Modify extends PointerInteraction {
 
     /**
      * Draw overlay where sketch features are drawn.
-     * @type {import("../layer/Vector.js").default}
+     * @type {VectorLayer}
      * @private
      */
     this.overlay_ = new VectorLayer({
@@ -281,7 +281,7 @@ class Modify extends PointerInteraction {
     /**
      * @const
      * @private
-     * @type {!Object<string, function(import("../Feature.js").default, import("../geom/Geometry.js").default)>}
+     * @type {!Object<string, function(Feature, import("../geom/Geometry.js").default)>}
      */
     this.SEGMENT_WRITERS_ = {
       'Point': this.writePointGeometry_,
@@ -297,7 +297,7 @@ class Modify extends PointerInteraction {
 
 
     /**
-     * @type {import("../source/Vector.js").default}
+     * @type {VectorSource}
      * @private
      */
     this.source_ = null;
@@ -318,7 +318,7 @@ class Modify extends PointerInteraction {
     }
 
     /**
-     * @type {import("../Collection.js").default<import("../Feature.js").default>}
+     * @type {Collection<Feature>}
      * @private
      */
     this.features_ = features;
@@ -330,7 +330,7 @@ class Modify extends PointerInteraction {
       this.handleFeatureRemove_, this);
 
     /**
-     * @type {import("../MapBrowserPointerEvent.js").default}
+     * @type {MapBrowserPointerEvent}
      * @private
      */
     this.lastPointerEvent_ = null;
@@ -338,7 +338,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature.
+   * @param {Feature} feature Feature.
    * @private
    */
   addFeature_(feature) {
@@ -355,7 +355,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../MapBrowserPointerEvent.js").default} evt Map browser event
+   * @param {MapBrowserPointerEvent} evt Map browser event
    * @private
    */
   willModifyFeatures_(evt) {
@@ -367,7 +367,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature.
+   * @param {Feature} feature Feature.
    * @private
    */
   removeFeature_(feature) {
@@ -383,7 +383,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature.
+   * @param {Feature} feature Feature.
    * @private
    */
   removeFeatureSegmentData_(feature) {
@@ -424,7 +424,7 @@ class Modify extends PointerInteraction {
 
   /**
    * Get the overlay layer that this interaction renders sketch features to.
-   * @return {import("../layer/Vector.js").default} Overlay layer.
+   * @return {VectorLayer} Overlay layer.
    * @api
    */
   getOverlay() {
@@ -456,7 +456,7 @@ class Modify extends PointerInteraction {
    * @private
    */
   handleFeatureAdd_(evt) {
-    this.addFeature_(/** @type {import("../Feature.js").default} */ (evt.element));
+    this.addFeature_(/** @type {Feature} */ (evt.element));
   }
 
   /**
@@ -465,7 +465,7 @@ class Modify extends PointerInteraction {
    */
   handleFeatureChange_(evt) {
     if (!this.changingFeature_) {
-      const feature = /** @type {import("../Feature.js").default} */ (evt.target);
+      const feature = /** @type {Feature} */ (evt.target);
       this.removeFeature_(feature);
       this.addFeature_(feature);
     }
@@ -476,13 +476,13 @@ class Modify extends PointerInteraction {
    * @private
    */
   handleFeatureRemove_(evt) {
-    const feature = /** @type {import("../Feature.js").default} */ (evt.element);
+    const feature = /** @type {Feature} */ (evt.element);
     this.removeFeature_(feature);
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
-   * @param {import("../geom/Point.js").default} geometry Geometry.
+   * @param {Feature} feature Feature
+   * @param {Point} geometry Geometry.
    * @private
    */
   writePointGeometry_(feature, geometry) {
@@ -496,7 +496,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Feature} feature Feature
    * @param {import("../geom/MultiPoint.js").default} geometry Geometry.
    * @private
    */
@@ -516,7 +516,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Feature} feature Feature
    * @param {import("../geom/LineString.js").default} geometry Geometry.
    * @private
    */
@@ -535,7 +535,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Feature} feature Feature
    * @param {import("../geom/MultiLineString.js").default} geometry Geometry.
    * @private
    */
@@ -558,7 +558,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Feature} feature Feature
    * @param {import("../geom/Polygon.js").default} geometry Geometry.
    * @private
    */
@@ -581,7 +581,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Feature} feature Feature
    * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
    * @private
    */
@@ -613,7 +613,7 @@ class Modify extends PointerInteraction {
    * {@link CIRCLE_CIRCUMFERENCE_INDEX} is
    * the circumference, and is not a line segment.
    *
-   * @param {import("../Feature.js").default} feature Feature.
+   * @param {Feature} feature Feature.
    * @param {import("../geom/Circle.js").default} geometry Geometry.
    * @private
    */
@@ -638,7 +638,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Feature.js").default} feature Feature
+   * @param {Feature} feature Feature
    * @param {import("../geom/GeometryCollection.js").default} geometry Geometry.
    * @private
    */
@@ -651,7 +651,7 @@ class Modify extends PointerInteraction {
 
   /**
    * @param {import("../coordinate.js").Coordinate} coordinates Coordinates.
-   * @return {import("../Feature.js").default} Vertex feature.
+   * @return {Feature} Vertex feature.
    * @private
    */
   createOrUpdateVertexFeature_(coordinates) {
@@ -661,7 +661,7 @@ class Modify extends PointerInteraction {
       this.vertexFeature_ = vertexFeature;
       this.overlay_.getSource().addFeature(vertexFeature);
     } else {
-      const geometry = /** @type {import("../geom/Point.js").default} */ (vertexFeature.getGeometry());
+      const geometry = /** @type {Point} */ (vertexFeature.getGeometry());
       geometry.setCoordinates(coordinates);
     }
     return vertexFeature;
@@ -985,7 +985,7 @@ function compareIndexes(a, b) {
 
 
 /**
- * @param {import("../MapBrowserPointerEvent.js").default} evt Event.
+ * @param {MapBrowserPointerEvent} evt Event.
  * @return {boolean} Start drag sequence?
  * @this {Modify}
  */
@@ -1000,7 +1000,7 @@ function handleDownEvent(evt) {
   const vertexFeature = this.vertexFeature_;
   if (vertexFeature) {
     const insertVertices = [];
-    const geometry = /** @type {import("../geom/Point.js").default} */ (vertexFeature.getGeometry());
+    const geometry = /** @type {Point} */ (vertexFeature.getGeometry());
     const vertex = geometry.getCoordinates();
     const vertexExtent = boundingExtent([vertex]);
     const segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
@@ -1061,7 +1061,7 @@ function handleDownEvent(evt) {
 
 
 /**
- * @param {import("../MapBrowserPointerEvent.js").default} evt Event.
+ * @param {MapBrowserPointerEvent} evt Event.
  * @this {Modify}
  */
 function handleDragEvent(evt) {
@@ -1137,7 +1137,7 @@ function handleDragEvent(evt) {
 
 
 /**
- * @param {import("../MapBrowserPointerEvent.js").default} evt Event.
+ * @param {MapBrowserPointerEvent} evt Event.
  * @return {boolean} Stop drag sequence?
  * @this {Modify}
  */

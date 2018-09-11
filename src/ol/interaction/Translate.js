@@ -38,7 +38,7 @@ const TranslateEventType = {
 
 /**
  * @typedef {Object} Options
- * @property {import("../Collection.js").default<import("../Feature.js").default>} [features] Only features contained in this collection will be able to be translated. If
+ * @property {Collection<import("../Feature.js").default>} [features] Only features contained in this collection will be able to be translated. If
  * not specified, all features on the map will be able to be translated.
  * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default): boolean} [layers] A list of layers from which features should be
  * translated. Alternatively, a filter function can be provided. The
@@ -59,7 +59,7 @@ const TranslateEventType = {
 export class TranslateEvent extends Event {
   /**
    * @param {TranslateEventType} type Type.
-   * @param {import("../Collection.js").default<import("../Feature.js").default>} features The features translated.
+   * @param {Collection<import("../Feature.js").default>} features The features translated.
    * @param {import("../coordinate.js").Coordinate} coordinate The event coordinate.
    */
   constructor(type, features, coordinate) {
@@ -68,7 +68,7 @@ export class TranslateEvent extends Event {
 
     /**
      * The features being translated.
-     * @type {import("../Collection.js").default<import("../Feature.js").default>}
+     * @type {Collection<import("../Feature.js").default>}
      * @api
      */
     this.features = features;
@@ -116,7 +116,7 @@ class Translate extends PointerInteraction {
 
 
     /**
-     * @type {import("../Collection.js").default<import("../Feature.js").default>}
+     * @type {Collection<import("../Feature.js").default>}
      * @private
      */
     this.features_ = options.features !== undefined ? options.features : null;

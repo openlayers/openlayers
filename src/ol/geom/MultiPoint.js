@@ -34,7 +34,7 @@ class MultiPoint extends SimpleGeometry {
 
   /**
    * Append the passed point to this multipoint.
-   * @param {import("./Point.js").default} point Point.
+   * @param {Point} point Point.
    * @api
    */
   appendPoint(point) {
@@ -94,7 +94,7 @@ class MultiPoint extends SimpleGeometry {
   /**
    * Return the point at the specified index.
    * @param {number} index Index.
-   * @return {import("./Point.js").default} Point.
+   * @return {Point} Point.
    * @api
    */
   getPoint(index) {
@@ -108,14 +108,14 @@ class MultiPoint extends SimpleGeometry {
 
   /**
    * Return the points of this multipoint.
-   * @return {Array<import("./Point.js").default>} Points.
+   * @return {Array<Point>} Points.
    * @api
    */
   getPoints() {
     const flatCoordinates = this.flatCoordinates;
     const layout = this.layout;
     const stride = this.stride;
-    /** @type {Array<import("./Point.js").default>} */
+    /** @type {Array<Point>} */
     const points = [];
     for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
       const point = new Point(flatCoordinates.slice(i, i + stride), layout);

@@ -77,7 +77,7 @@ class MapBrowserEventHandler extends EventTarget {
      * Event handler which generates pointer events for
      * the viewport element.
      *
-     * @type {import("./pointer/PointerEventHandler.js").default}
+     * @type {PointerEventHandler}
      * @private
      */
     this.pointerEventHandler_ = new PointerEventHandler(element);
@@ -86,7 +86,7 @@ class MapBrowserEventHandler extends EventTarget {
      * Event handler which generates pointer events for
      * the document (used when dragging).
      *
-     * @type {import("./pointer/PointerEventHandler.js").default}
+     * @type {PointerEventHandler}
      * @private
      */
     this.documentPointerEventHandler_ = null;
