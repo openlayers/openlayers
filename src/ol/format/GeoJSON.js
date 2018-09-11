@@ -406,6 +406,13 @@ function writeGeometry(geometry, opt_options) {
       geoJSON = writeGeometryCollectionGeometry(/** @type {import("../geom/GeometryCollection.js").default} */ (geometry), opt_options);
       break;
     }
+    case GeometryType.CIRCLE: {
+      geoJSON = {
+        type: 'GeometryCollection',
+        geometries: []
+      };
+      break;
+    }
     default: {
       throw new Error('Unsupported geometry type: ' + type);
     }
