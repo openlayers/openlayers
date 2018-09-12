@@ -56,8 +56,8 @@ import {create as createTransform} from '../transform.js';
  * @property {string} [placement]
  * @property {number} [maxAngle]
  * @property {boolean} [overflow]
- * @property {import("./Fill.js").default} [backgroundFill]
- * @property {import("./Stroke.js").default} [backgroundStroke]
+ * @property {import("../style/Fill.js").default} [backgroundFill]
+ * @property {import("../style/Stroke.js").default} [backgroundStroke]
  * @property {number} [scale]
  * @property {Array<number>} [padding]
  */
