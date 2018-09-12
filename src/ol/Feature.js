@@ -101,6 +101,7 @@ class Feature extends BaseObject {
     if (opt_geometryOrProperties !== undefined) {
       if (opt_geometryOrProperties instanceof Geometry ||
           !opt_geometryOrProperties) {
+        /** @type {?Geometry} */
         const geometry = opt_geometryOrProperties;
         this.setGeometry(geometry);
       } else {
