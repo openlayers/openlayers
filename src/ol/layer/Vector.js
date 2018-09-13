@@ -33,6 +33,8 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  *    texts are always rotated with the view and pixels are scaled during zoom animations.
  *  * `'vector'`: Vector layers are rendered as vectors. Most accurate rendering even during
  *    animations, but slower performance.
+ * @property {number} [imageDrawBuffer=0] The buffer in pixels around the viewport extent to draw the rendered
+ * image for image layer. Usefull to avoid clip effect, but slower performances.
  * @property {import("../source/Vector.js").default} [source] Source.
  * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
@@ -100,6 +102,7 @@ class VectorLayer extends Layer {
 
     delete baseOptions.style;
     delete baseOptions.renderBuffer;
+    delete baseOptions.imageDrawBuffer;
     delete baseOptions.updateWhileAnimating;
     delete baseOptions.updateWhileInteracting;
     super(baseOptions);
@@ -148,6 +151,16 @@ class VectorLayer extends Layer {
       options.updateWhileInteracting : false;
 
     /**
+    * @type {number}
+    * @private
+    */
+    this.imageDrawBuffer_ = options.imageDrawBuffer !== undefined ?
+      options.imageDrawBuffer : 0;
+    if (this.renderBuffer_ < this.imageDrawBuffer_) {
+      this.renderBuffer_ = this.imageDrawBuffer_;
+    }
+
+    /**
     * @private
     * @type {import("./VectorTileRenderType.js").default|string}
     */
@@ -181,6 +194,13 @@ class VectorLayer extends Layer {
   */
   getRenderBuffer() {
     return this.renderBuffer_;
+  }
+
+  /**
+  * @return {number|undefined} Image draw buffer.
+  */
+  getImageDrawBuffer() {
+    return this.imageDrawBuffer_;
   }
 
   /**

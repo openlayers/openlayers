@@ -6,7 +6,7 @@ import ImageCanvas from '../../ImageCanvas.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {equals} from '../../array.js';
-import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
+import {buffer, getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
 import VectorRenderType from '../../layer/VectorRenderType.js';
 import {assign} from '../../obj.js';
 import {layerRendererConstructors} from './Map.js';
@@ -104,7 +104,8 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
     const hints = frameState.viewHints;
 
     const vectorRenderer = this.vectorRenderer_;
-    let renderedExtent = frameState.extent;
+    let renderedExtent = buffer(frameState.extent, layerState.layer.getImageDrawBuffer() * viewResolution);
+
     if (!vectorRenderer && layerState.extent !== undefined) {
       renderedExtent = getIntersection(renderedExtent, layerState.extent);
     }
