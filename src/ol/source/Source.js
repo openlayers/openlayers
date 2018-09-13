@@ -5,7 +5,7 @@
 import {VOID} from '../functions.js';
 import BaseObject from '../Object.js';
 import {get as getProjection} from '../proj.js';
-import SourceState from '../source/State.js';
+import SourceState from './State.js';
 
 
 /**
@@ -32,7 +32,7 @@ import SourceState from '../source/State.js';
  * @typedef {Object} Options
  * @property {AttributionLike} [attributions]
  * @property {import("../proj.js").ProjectionLike} projection
- * @property {import("./State.js").default} [state]
+ * @property {SourceState} [state]
  * @property {boolean} [wrapX]
  */
 
@@ -75,7 +75,7 @@ class Source extends BaseObject {
 
     /**
     * @private
-    * @type {import("./State.js").default}
+    * @type {SourceState}
     */
     this.state_ = options.state !== undefined ?
       options.state : SourceState.READY;
@@ -137,7 +137,7 @@ class Source extends BaseObject {
 
   /**
   * Get the state of the source, see {@link module:ol/source/State~State} for possible states.
-  * @return {import("./State.js").default} State.
+  * @return {SourceState} State.
   * @api
   */
   getState() {
@@ -173,7 +173,7 @@ class Source extends BaseObject {
 
   /**
   * Set the state of the source.
-  * @param {import("./State.js").default} state State.
+  * @param {SourceState} state State.
   * @protected
   */
   setState(state) {

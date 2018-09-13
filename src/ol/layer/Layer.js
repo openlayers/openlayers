@@ -37,7 +37,7 @@ import SourceState from '../source/State.js';
  * @typedef {Object} State
  * @property {import("./Layer.js").default} layer
  * @property {number} opacity
- * @property {import("../source/Source.js").State} sourceState
+ * @property {SourceState} sourceState
  * @property {boolean} visible
  * @property {boolean} managed
  * @property {import("../extent.js").Extent} [extent]
