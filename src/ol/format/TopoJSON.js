@@ -93,18 +93,18 @@ class TopoJSON extends JSONFeature {
     if (object.type == 'Topology') {
       const topoJSONTopology = /** @type {TopoJSONTopology} */ (object);
       let transform, scale = null, translate = null;
-      if (topoJSONTopology.transform) {
-        transform = topoJSONTopology.transform;
-        scale = transform.scale;
-        translate = transform.translate;
+      if (topoJSONTopology['transform']) {
+        transform = topoJSONTopology['transform'];
+        scale = transform['scale'];
+        translate = transform['translate'];
       }
-      const arcs = topoJSONTopology.arcs;
+      const arcs = topoJSONTopology['arcs'];
       if (transform) {
         transformArcs(arcs, scale, translate);
       }
       /** @type {Array<Feature>} */
       const features = [];
-      const topoJSONFeatures = topoJSONTopology.objects;
+      const topoJSONFeatures = topoJSONTopology['objects'];
       const property = this.layerName_;
       let feature;
       for (const objectName in topoJSONFeatures) {
@@ -195,7 +195,7 @@ function concatenateArcs(indices, arcs) {
  * @return {Point} Geometry.
  */
 function readPointGeometry(object, scale, translate) {
-  const coordinates = object.coordinates;
+  const coordinates = object['coordinates'];
   if (scale && translate) {
     transformVertex(coordinates, scale, translate);
   }
@@ -212,7 +212,7 @@ function readPointGeometry(object, scale, translate) {
  * @return {MultiPoint} Geometry.
  */
 function readMultiPointGeometry(object, scale, translate) {
-  const coordinates = object.coordinates;
+  const coordinates = object['coordinates'];
   if (scale && translate) {
     for (let i = 0, ii = coordinates.length; i < ii; ++i) {
       transformVertex(coordinates[i], scale, translate);
@@ -230,7 +230,7 @@ function readMultiPointGeometry(object, scale, translate) {
  * @return {LineString} Geometry.
  */
 function readLineStringGeometry(object, arcs) {
-  const coordinates = concatenateArcs(object.arcs, arcs);
+  const coordinates = concatenateArcs(object['arcs'], arcs);
   return new LineString(coordinates);
 }
 
@@ -244,8 +244,8 @@ function readLineStringGeometry(object, arcs) {
  */
 function readMultiLineStringGeometry(object, arcs) {
   const coordinates = [];
-  for (let i = 0, ii = object.arcs.length; i < ii; ++i) {
-    coordinates[i] = concatenateArcs(object.arcs[i], arcs);
+  for (let i = 0, ii = object['arcs'].length; i < ii; ++i) {
+    coordinates[i] = concatenateArcs(object['arcs'][i], arcs);
   }
   return new MultiLineString(coordinates);
 }
@@ -260,8 +260,8 @@ function readMultiLineStringGeometry(object, arcs) {
  */
 function readPolygonGeometry(object, arcs) {
   const coordinates = [];
-  for (let i = 0, ii = object.arcs.length; i < ii; ++i) {
-    coordinates[i] = concatenateArcs(object.arcs[i], arcs);
+  for (let i = 0, ii = object['arcs'].length; i < ii; ++i) {
+    coordinates[i] = concatenateArcs(object['arcs'][i], arcs);
   }
   return new Polygon(coordinates);
 }
@@ -276,9 +276,9 @@ function readPolygonGeometry(object, arcs) {
  */
 function readMultiPolygonGeometry(object, arcs) {
   const coordinates = [];
-  for (let i = 0, ii = object.arcs.length; i < ii; ++i) {
+  for (let i = 0, ii = object['arcs'].length; i < ii; ++i) {
     // for each polygon
-    const polyArray = object.arcs[i];
+    const polyArray = object['arcs'][i];
     const ringCoords = [];
     for (let j = 0, jj = polyArray.length; j < jj; ++j) {
       // for each ring
@@ -305,7 +305,7 @@ function readMultiPolygonGeometry(object, arcs) {
  * @return {Array<Feature>} Array of features.
  */
 function readFeaturesFromGeometryCollection(collection, arcs, scale, translate, property, name, opt_options) {
-  const geometries = collection.geometries;
+  const geometries = collection['geometries'];
   const features = [];
   for (let i = 0, ii = geometries.length; i < ii; ++i) {
     features[i] = readFeatureFromGeometry(
