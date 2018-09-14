@@ -1580,7 +1580,6 @@ function readMultiGeometry(node, objectStack) {
   if (geometries.length === 0) {
     return new GeometryCollection(geometries);
   }
-  /** @type {import("../geom/Geometry.js").default} */
   let multiGeometry;
   let homogeneous = true;
   const type = geometries[0].getType();
