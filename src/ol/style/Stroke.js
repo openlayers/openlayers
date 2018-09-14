@@ -93,7 +93,7 @@ class Stroke {
   clone() {
     const color = this.getColor();
     return new Stroke({
-      color: (color && color.slice) ? color.slice() : color || undefined,
+      color: Array.isArray(color) ? color.slice() : color || undefined,
       lineCap: this.getLineCap(),
       lineDash: this.getLineDash() ? this.getLineDash().slice() : undefined,
       lineDashOffset: this.getLineDashOffset(),

@@ -52,6 +52,20 @@ class ImageStyle {
   }
 
   /**
+   * Clones the style.
+   * @return {ImageStyle} The cloned style.
+   * @api
+   */
+  clone() {
+    return new ImageStyle({
+      opacity: this.getOpacity(),
+      scale: this.getScale(),
+      rotation: this.getRotation(),
+      rotateWithView: this.getRotateWithView()
+    });
+  }
+
+  /**
    * Get the symbolizer opacity.
    * @return {number} Opacity.
    * @api
