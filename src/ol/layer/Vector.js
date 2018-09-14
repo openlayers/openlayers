@@ -156,6 +156,7 @@ class VectorLayer extends Layer {
     */
     this.imageDrawBuffer_ = options.imageDrawBuffer !== undefined ?
       options.imageDrawBuffer : 0;
+    // If we increase the render zone, we need to get these extra features
     if (this.renderBuffer_ < this.imageDrawBuffer_) {
       this.renderBuffer_ = this.imageDrawBuffer_;
     }

@@ -104,8 +104,11 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
     const hints = frameState.viewHints;
 
     const vectorRenderer = this.vectorRenderer_;
-    let renderedExtent = buffer(frameState.extent, layerState.layer.getImageDrawBuffer() * viewResolution);
+    let renderedExtent = frameState.extent;
 
+    if (layerState.layer.getType() === LayerType.VECTOR) {
+      renderedExtent = buffer(frameState.extent, layerState.layer.getImageDrawBuffer() * viewResolution);
+    }
     if (!vectorRenderer && layerState.extent !== undefined) {
       renderedExtent = getIntersection(renderedExtent, layerState.extent);
     }
