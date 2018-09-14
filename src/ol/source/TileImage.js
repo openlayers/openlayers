@@ -84,7 +84,7 @@ class TileImage extends UrlTile {
       urls: options.urls,
       wrapX: options.wrapX,
       transition: options.transition,
-      opt_key: options.opt_key,
+      opt_key: options.opt_key
     });
 
     /**
