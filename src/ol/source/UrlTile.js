@@ -64,6 +64,7 @@ class UrlTile extends TileSource {
      */
     this.tileUrlFunction = this.fixedTileUrlFunction ?
       this.fixedTileUrlFunction.bind(this) : nullTileUrlFunction;
+    this.key_ = options.opt_key || this.key_;
 
     /**
      * @protected
@@ -77,7 +78,7 @@ class UrlTile extends TileSource {
       this.setUrl(options.url);
     }
     if (options.tileUrlFunction) {
-      this.setTileUrlFunction(options.tileUrlFunction);
+      this.setTileUrlFunction(options.tileUrlFunction, options.opt_key);
     }
 
     /**
