@@ -963,7 +963,7 @@ class PluggableMap extends BaseObject {
         tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
       }
     }
-    if (frameState && this.hasListener(MapEventType.RENDERCOMPLETE) && !frameState.animate &&
+    if (frameState && this.hasListener(RenderEventType.RENDERCOMPLETE) && !frameState.animate &&
         !this.tileQueue_.getTilesLoading() && !getLoading(this.getLayers().getArray())) {
       this.renderer_.dispatchRenderEvent(RenderEventType.RENDERCOMPLETE, frameState);
     }
