@@ -892,6 +892,15 @@ class PluggableMap extends BaseObject {
   }
 
   /**
+   * Get the pixel ratio of the frame.
+   * @return {number}
+   * @api
+   */
+  getPixelRatio() {
+    return this.pixelRatio_;
+  }
+
+  /**
    * @param {Event} browserEvent Browser event.
    * @param {string=} opt_type Type.
    */

@@ -150,7 +150,8 @@ class OverviewMap extends Control {
     this.ovmap_ = new Map({
       controls: new Collection(),
       interactions: new Collection(),
-      view: options.view
+      view: options.view,
+      pixelRatio: this.getMap().getPixelRatio()
     });
     const ovmap = this.ovmap_;
 
