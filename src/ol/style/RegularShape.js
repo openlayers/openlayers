@@ -2,6 +2,7 @@
  * @module ol/style/RegularShape
  */
 
+import {asString} from '../color.js';
 import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
 import {CANVAS_LINE_DASH} from '../has.js';
@@ -301,7 +302,9 @@ class RegularShape extends ImageStyle {
   /**
    * @inheritDoc
    */
-  listenImageChange(listener, thisArg) {}
+  listenImageChange(listener, thisArg) {
+    return undefined;
+  }
 
   /**
    * @inheritDoc
@@ -471,8 +474,8 @@ class RegularShape extends ImageStyle {
         context.setLineDash(renderOptions.lineDash);
         context.lineDashOffset = renderOptions.lineDashOffset;
       }
-      context.lineCap = renderOptions.lineCap;
-      context.lineJoin = renderOptions.lineJoin;
+      context.lineCap = /** @type {CanvasLineCap} */ (renderOptions.lineCap);
+      context.lineJoin = /** @type {CanvasLineJoin} */ (renderOptions.lineJoin);
       context.miterLimit = renderOptions.miterLimit;
       context.stroke();
     }
@@ -534,7 +537,7 @@ class RegularShape extends ImageStyle {
       }
     }
 
-    context.fillStyle = defaultFillStyle;
+    context.fillStyle = asString(defaultFillStyle);
     context.fill();
     if (this.stroke_) {
       context.strokeStyle = renderOptions.strokeStyle;
@@ -575,7 +578,7 @@ class RegularShape extends ImageStyle {
         this.radius_, this.radius2_, this.angle_, this.points_];
     }
 
-    return this.checksums_[0];
+    return /** @type {string} */ (this.checksums_[0]);
   }
 }
 

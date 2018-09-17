@@ -47,7 +47,7 @@ class Fill {
   clone() {
     const color = this.getColor();
     return new Fill({
-      color: (color && color.slice) ? color.slice() : color || undefined
+      color: Array.isArray(color) ? color.slice() : color || undefined
     });
   }
 

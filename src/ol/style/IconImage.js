@@ -34,7 +34,7 @@ class IconImage extends EventTarget {
      */
     this.image_ = !image ? new Image() : image;
 
-    if (crossOrigin !== null) {
+    if (crossOrigin !== null && this.image_ instanceof HTMLImageElement) {
       this.image_.crossOrigin = crossOrigin;
     }
 
@@ -194,7 +194,7 @@ class IconImage extends EventTarget {
           this.handleImageLoad_, this)
       ];
       try {
-        this.image_.src = this.src_;
+        /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
       } catch (e) {
         this.handleImageError_();
       }

@@ -87,6 +87,7 @@
  * ```
  */
 import {assert} from '../asserts.js';
+import Geometry from '../geom/Geometry.js';
 import GeometryType from '../geom/GeometryType.js';
 import CircleStyle from '../style/Circle.js';
 import Fill from '../style/Fill.js';
@@ -214,7 +215,7 @@ class Style {
    */
   clone() {
     let geometry = this.getGeometry();
-    if (geometry && geometry.clone) {
+    if (geometry instanceof Geometry) {
       geometry = geometry.clone();
     }
     return new Style({
