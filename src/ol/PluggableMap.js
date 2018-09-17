@@ -893,7 +893,7 @@ class PluggableMap extends BaseObject {
 
   /**
    * Get the pixel ratio of the frame.
-   * @return {number}
+   * @return {number} The ratio between physical pixels and device-independent pixels (dips) on the device.
    * @api
    */
   getPixelRatio() {
