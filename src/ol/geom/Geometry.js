@@ -235,11 +235,12 @@ class Geometry extends BaseObject {
    * @api
    */
   transform(source, destination) {
-    source = getProjection(source);
-    const transformFn = source.getUnits() == Units.TILE_PIXELS ?
+    /** @type {import("../proj/Projection.js").default} */
+    const sourceProj =  getProjection(source);
+    const transformFn = sourceProj.getUnits() == Units.TILE_PIXELS ?
       function(inCoordinates, outCoordinates, stride) {
-        const pixelExtent = source.getExtent();
-        const projectedExtent = source.getWorldExtent();
+        const pixelExtent = sourceProj.getExtent();
+        const projectedExtent = sourceProj.getWorldExtent();
         const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
         composeTransform(tmpTransform,
           projectedExtent[0], projectedExtent[3],
