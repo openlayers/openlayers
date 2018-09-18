@@ -78,7 +78,7 @@ class Feature extends BaseObject {
     /**
      * User provided style.
      * @private
-     * @type {import("./style/Style.js").default|Array<import("./style/Style.js").default>|import("./style/Style.js").StyleFunction}
+     * @type {Style|Array<Style>|import("./style/Style.js").StyleFunction}
      */
     this.style_ = null;
 
@@ -171,7 +171,7 @@ class Feature extends BaseObject {
   /**
    * Get the feature's style. Will return what was provided to the
    * {@link module:ol/Feature~Feature#setStyle} method.
-   * @return {import("./style/Style.js").default|Array<import("./style/Style.js").default>|import("./style/Style.js").StyleFunction} The feature style.
+   * @return {Style|Array<Style>|import("./style/Style.js").StyleFunction} The feature style.
    * @api
    */
   getStyle() {
@@ -226,7 +226,7 @@ class Feature extends BaseObject {
    * Set the style for the feature.  This can be a single style object, an array
    * of styles, or a function that takes a resolution and returns an array of
    * styles. If it is `null` the feature has no style (a `null` style).
-   * @param {import("./style/Style.js").default|Array<import("./style/Style.js").default>|import("./style/Style.js").StyleFunction} style Style for this feature.
+   * @param {Style|Array<Style>|import("./style/Style.js").StyleFunction} style Style for this feature.
    * @api
    * @fires module:ol/events/Event~Event#event:change
    */
@@ -272,9 +272,9 @@ class Feature extends BaseObject {
 
 /**
  * Convert the provided object into a feature style function.  Functions passed
- * through unchanged.  Arrays of import("./style/Style.js").default or single style objects wrapped
+ * through unchanged.  Arrays of Style or single style objects wrapped
  * in a new feature style function.
- * @param {import("./style/Style.js").StyleFunction|!Array<import("./style/Style.js").default>|!import("./style/Style.js").default} obj
+ * @param {import("./style/Style.js").StyleFunction|!Array<Style>|!Style} obj
  *     A feature style function, a single style, or an array of styles.
  * @return {import("./style/Style.js").StyleFunction} A style function.
  */
@@ -283,7 +283,7 @@ export function createStyleFunction(obj) {
     return obj;
   } else {
     /**
-     * @type {Array<import("./style/Style.js").default>}
+     * @type {Array<Style>}
      */
     let styles;
     if (Array.isArray(obj)) {
