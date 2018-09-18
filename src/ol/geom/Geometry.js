@@ -247,12 +247,20 @@ class Geometry extends BaseObject {
           0, 0);
         transform2D(inCoordinates, 0, inCoordinates.length, stride,
           tmpTransform, outCoordinates);
-        return getTransform(source, destination)(inCoordinates, outCoordinates, stride);
+        return getTransform(sourceProj, destination)(inCoordinates, outCoordinates, stride);
       } :
-      getTransform(source, destination);
+      getTransform(sourceProj, destination);
     this.applyTransform(transformFn);
     return this;
   }
+
+  /**
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @return {boolean} Contains (x, y).
+   */
+  containsXY = function(x, y) { return false};
+
 }
 
 
