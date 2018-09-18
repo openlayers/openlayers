@@ -236,7 +236,7 @@ class Geometry extends BaseObject {
    */
   transform(source, destination) {
     /** @type {import("../proj/Projection.js").default} */
-    const sourceProj =  getProjection(source);
+    const sourceProj = getProjection(source);
     const transformFn = sourceProj.getUnits() == Units.TILE_PIXELS ?
       function(inCoordinates, outCoordinates, stride) {
         const pixelExtent = sourceProj.getExtent();
@@ -260,7 +260,9 @@ class Geometry extends BaseObject {
    * @param {number} y Y.
    * @return {boolean} Contains (x, y).
    */
-  containsXY = function(x, y) { return false};
+  containsXY(x, y) {
+    return false;
+  }
 
 }
 
