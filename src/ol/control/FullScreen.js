@@ -34,9 +34,9 @@ const getChangeType = (function() {
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-full-screen'] CSS class name.
- * @property {string|HTMLElement} [label='\u2922'] Text label to use for the button.
+ * @property {string|Text} [label='\u2922'] Text label to use for the button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|HTMLElement} [labelActive='\u00d7'] Text label to use for the
+ * @property {string|Text} [labelActive='\u00d7'] Text label to use for the
  * button when full-screen is active.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [tipLabel='Toggle full-screen'] Text label to use for the button tip.
@@ -46,6 +46,14 @@ const getChangeType = (function() {
  * @property {HTMLElement|string} [source] The element to be displayed
  * fullscreen. When not provided, the element containing the map viewport will
  * be displayed fullscreen.
+ */
+
+
+/**
+ * TypeScript does not define Element.ALLOW_KEYBOARD_INPUT in the var declaration, and does not support extending those
+ * declarations. This is a workaround to provide the type.
+ * @typedef {Object} WebkitElement
+ * @property {number} [ALLOW_KEYBOARD_INPUT] If keyboard input should be allowed by the Fullscreen API.
  */
 
 
@@ -87,7 +95,7 @@ class FullScreen extends Control {
 
     /**
      * @private
-     * @type {HTMLElement}
+     * @type {Text}
      */
     this.labelNode_ = typeof label === 'string' ?
       document.createTextNode(label) : label;
@@ -96,7 +104,7 @@ class FullScreen extends Control {
 
     /**
      * @private
-     * @type {HTMLElement}
+     * @type {Text}
      */
     this.labelActiveNode_ = typeof labelActive === 'string' ?
       document.createTextNode(labelActive) : labelActive;
@@ -253,7 +261,7 @@ function requestFullScreenWithKeys(element) {
   if (element.mozRequestFullScreenWithKeys) {
     element.mozRequestFullScreenWithKeys();
   } else if (element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    element.webkitRequestFullscreen(/** @type {WebkitElement} */ (Element).ALLOW_KEYBOARD_INPUT);
   } else {
     requestFullScreen(element);
   }
