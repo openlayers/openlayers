@@ -589,7 +589,7 @@ class CanvasReplay extends VectorContext {
     let x, y;
     while (i < ii) {
       const instruction = instructions[i];
-      const type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
+      const type = /** @type {CanvasInstruction} */ (instruction[0]);
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
           feature = /** @type {import("../../Feature.js").default|import("../Feature.js").default} */ (instruction[1]);
@@ -903,7 +903,7 @@ class CanvasReplay extends VectorContext {
     let begin = -1;
     for (i = 0; i < n; ++i) {
       instruction = hitDetectionInstructions[i];
-      type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
+      type = /** @type {CanvasInstruction} */ (instruction[0]);
       if (type == CanvasInstruction.END_GEOMETRY) {
         begin = i;
       } else if (type == CanvasInstruction.BEGIN_GEOMETRY) {
