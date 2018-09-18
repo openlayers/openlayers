@@ -2,7 +2,6 @@
  * @module ol/source/Tile
  */
 
-import {VOID} from '../functions.js';
 import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import Event from '../events/Event.js';
@@ -291,17 +290,18 @@ class TileSource extends Source {
     this.tileCache.clear();
     this.changed();
   }
+
+  /**
+   * @abstract
+   * Marks a tile coord as being used, without triggering a load.
+   * @param {number} z Tile coordinate z.
+   * @param {number} x Tile coordinate x.
+   * @param {number} y Tile coordinate y.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   */
+  useTile(z, x, y, projection) {}
+
 }
-
-
-/**
- * Marks a tile coord as being used, without triggering a load.
- * @param {number} z Tile coordinate z.
- * @param {number} x Tile coordinate x.
- * @param {number} y Tile coordinate y.
- * @param {import("../proj/Projection.js").default} projection Projection.
- */
-TileSource.prototype.useTile = VOID;
 
 
 /**
