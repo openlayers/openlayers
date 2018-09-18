@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/SimpleGeometry
  */
-import {FALSE} from '../functions.js';
 import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
 import Geometry from '../geom/Geometry.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -289,12 +288,6 @@ export function getStrideForLayout(layout) {
   }
   return /** @type {number} */ (stride);
 }
-
-
-/**
- * @inheritDoc
- */
-SimpleGeometry.prototype.containsXY = FALSE;
 
 
 /**
