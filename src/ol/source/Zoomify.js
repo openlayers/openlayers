@@ -219,7 +219,8 @@ class Zoomify extends TileImage {
                 tileCoordX +
                 tileCoordY * tierSizeInTiles[tileCoordZ][0];
             const tileSize = tileGrid.getTileSize(tileCoordZ);
-            const tileGroup = ((tileIndex + tileCountUpToTier[tileCoordZ]) / tileSize) | 0;
+            const tileWidth = Array.isArray(tileSize) ? tileSize[0] : tileSize;
+            const tileGroup = ((tileIndex + tileCountUpToTier[tileCoordZ]) / tileWidth) | 0;
             const localContext = {
               'z': tileCoordZ,
               'x': tileCoordX,
