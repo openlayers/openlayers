@@ -3,7 +3,7 @@
  */
 import {VOID} from './functions.js';
 import FormatType from './format/FormatType.js';
-
+import VectorSource from './source/Vector';
 
 /**
  * {@link module:ol/source/Vector} sources use a function of this type to
@@ -17,7 +17,7 @@ import FormatType from './format/FormatType.js';
  *
  * The function is responsible for loading the features and adding them to the
  * source.
- * @typedef {function(this:import("./source/Vector.js").default, import("./extent.js").Extent, number,
+ * @typedef {function(this:(VectorSource|import("./VectorTile.js").default), import("./extent.js").Extent, number,
  *                    import("./proj/Projection.js").default)} FeatureLoader
  * @api
  */
@@ -39,10 +39,10 @@ import FormatType from './format/FormatType.js';
 /**
  * @param {string|FeatureUrlFunction} url Feature URL service.
  * @param {import("./format/Feature.js").default} format Feature format.
- * @param {function(this:import("./VectorTile.js").default, Array<import("./Feature.js").default>, import("./proj/Projection.js").default, import("./extent.js").Extent)|function(this:import("./source/Vector.js").default, Array<import("./Feature.js").default>)} success
+ * @param {function(this:import("./VectorTile.js").default, Array<import("./Feature.js").default>, import("./proj/Projection.js").default, import("./extent.js").Extent)|function(this:VectorSource, Array<import("./Feature.js").default>)} success
  *     Function called with the loaded features and optionally with the data
  *     projection. Called with the vector tile or source as `this`.
- * @param {function(this:import("./VectorTile.js").default)|function(this:import("./source/Vector.js").default)} failure
+ * @param {function(this:import("./VectorTile.js").default)|function(this:VectorSource)} failure
  *     Function called when loading failed. Called with the vector tile or
  *     source as `this`.
  * @return {FeatureLoader} The feature loader.
@@ -53,7 +53,7 @@ export function loadFeaturesXhr(url, format, success, failure) {
      * @param {import("./extent.js").Extent} extent Extent.
      * @param {number} resolution Resolution.
      * @param {import("./proj/Projection.js").default} projection Projection.
-     * @this {import("./source/Vector.js").default|import("./VectorTile.js").default}
+     * @this {VectorSource|import("./VectorTile.js").default}
      */
     function(extent, resolution, projection) {
       const xhr = new XMLHttpRequest();
@@ -121,9 +121,11 @@ export function xhr(url, format) {
      * @param {Array<import("./Feature.js").default>} features The loaded features.
      * @param {import("./proj/Projection.js").default} dataProjection Data
      * projection.
-     * @this {import("./source/Vector.js").default}
+     * @this {VectorSource|import("./VectorTile.js").default}
      */
     function(features, dataProjection) {
-      this.addFeatures(features);
+      if (this instanceof VectorSource) {
+        this.addFeatures(features);
+      }
     }, /* FIXME handle error */ VOID);
 }
