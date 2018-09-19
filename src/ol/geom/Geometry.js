@@ -3,7 +3,6 @@
  */
 import BaseObject from '../Object.js';
 import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
-import {FALSE} from '../functions.js';
 import {transform2D} from '../geom/flat/transform.js';
 import {get as getProjection, getTransform} from '../proj.js';
 import Units from '../proj/Units.js';
@@ -81,6 +80,15 @@ class Geometry extends BaseObject {
    * @return {number} Minimum squared distance.
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {}
+
+  /**
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @return {boolean} Contains (x, y).
+   */
+  containsXY(x, y) {
+    return false;
+  }
 
   /**
    * Return the closest point of the geometry to the passed point as
@@ -246,14 +254,6 @@ class Geometry extends BaseObject {
     return this;
   }
 }
-
-
-/**
- * @param {number} x X.
- * @param {number} y Y.
- * @return {boolean} Contains (x, y).
- */
-Geometry.prototype.containsXY = FALSE;
 
 
 export default Geometry;

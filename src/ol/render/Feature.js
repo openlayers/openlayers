@@ -1,7 +1,6 @@
 /**
  * @module ol/render/Feature
  */
-import {VOID} from '../functions.js';
 import {extend} from '../array.js';
 import {createOrUpdateFromCoordinate, createOrUpdateFromFlatCoordinates, getCenter, getHeight} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -209,6 +208,13 @@ class RenderFeature {
   }
 
   /**
+   * @return {undefined}
+   */
+  getStyleFunction() {
+    return undefined;
+  }
+
+  /**
   * Get the type of this feature's geometry.
   * @return {import("../geom/GeometryType.js").default} Geometry type.
   * @api
@@ -261,12 +267,6 @@ RenderFeature.prototype.getFlatCoordinates =
  */
 RenderFeature.prototype.getSimplifiedGeometry =
     RenderFeature.prototype.getGeometry;
-
-
-/**
- * @return {undefined}
- */
-RenderFeature.prototype.getStyleFunction = VOID;
 
 
 export default RenderFeature;

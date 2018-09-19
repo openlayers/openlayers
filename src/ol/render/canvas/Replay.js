@@ -2,7 +2,6 @@
  * @module ol/render/canvas/Replay
  */
 import {getUid} from '../../util.js';
-import {VOID} from '../../functions.js';
 import {equals, reverseSubArray} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
 import {buffer, clone, coordinateRelationship, createEmpty, createOrUpdate,
@@ -455,6 +454,11 @@ class CanvasReplay extends VectorContext {
     this.beginGeometryInstruction2_ = [CanvasInstruction.BEGIN_GEOMETRY, feature, 0];
     this.hitDetectionInstructions.push(this.beginGeometryInstruction2_);
   }
+
+  /**
+   * FIXME empty description for jsdoc
+   */
+  finish() {}
 
   /**
    * @private
@@ -1079,12 +1083,6 @@ class CanvasReplay extends VectorContext {
     return this.bufferedMaxExtent_;
   }
 }
-
-
-/**
- * FIXME empty description for jsdoc
- */
-CanvasReplay.prototype.finish = VOID;
 
 
 export default CanvasReplay;
