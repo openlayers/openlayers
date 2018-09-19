@@ -32,7 +32,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import Event from '../events/Event.js';
+import _Event from '../events/Event.js';
 
 
 /**
@@ -42,7 +42,7 @@ import Event from '../events/Event.js';
 let HAS_BUTTONS = false;
 
 
-class PointerEvent extends Event {
+class PointerEvent extends _Event {
 
   /**
    * A class for pointer events.

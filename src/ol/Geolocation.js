@@ -174,9 +174,12 @@ class Geolocation extends BaseObject {
    * @param {PositionError} error error object.
    */
   positionError_(error) {
-    error.type = EventType.ERROR;
+    const event = {
+      type: EventType.ERROR,
+      target: undefined
+    };
     this.setTracking(false);
-    this.dispatchEvent(/** @type {{type: string, target: undefined}} */ (error));
+    this.dispatchEvent(event);
   }
 
   /**

@@ -54,7 +54,7 @@ import Style from './style/Style.js';
  */
 class Feature extends BaseObject {
   /**
-   * @param {import("./geom/Geometry.js").default|Object<string, *>=} opt_geometryOrProperties
+   * @param {Geometry|Object<string, *>=} opt_geometryOrProperties
    *     You may pass a Geometry object directly, or an object literal containing
    *     properties. If you pass an object literal, you may include a Geometry
    *     associated with a `geometry` key.
@@ -78,7 +78,7 @@ class Feature extends BaseObject {
     /**
      * User provided style.
      * @private
-     * @type {import("./style/Style.js").default|Array<import("./style/Style.js").default>|import("./style/Style.js").StyleFunction}
+     * @type {Style|Array<Style>|import("./style/Style.js").StyleFunction}
      */
     this.style_ = null;
 
@@ -99,10 +99,9 @@ class Feature extends BaseObject {
       this.handleGeometryChanged_, this);
 
     if (opt_geometryOrProperties !== undefined) {
-      if (opt_geometryOrProperties instanceof Geometry ||
-          !opt_geometryOrProperties) {
-        /** @type {?Geometry} */
-        const geometry = opt_geometryOrProperties;
+      if (opt_geometryOrProperties instanceof Geometry) {
+
+        const geometry = /** @type {Geometry} */ (opt_geometryOrProperties);
         this.setGeometry(geometry);
       } else {
         /** @type {Object<string, *>} */
@@ -136,13 +135,13 @@ class Feature extends BaseObject {
    * Get the feature's default geometry.  A feature may have any number of named
    * geometries.  The "default" geometry (the one that is rendered by default) is
    * set when calling {@link module:ol/Feature~Feature#setGeometry}.
-   * @return {import("./geom/Geometry.js").default|undefined} The default geometry for the feature.
+   * @return {Geometry|undefined} The default geometry for the feature.
    * @api
    * @observable
    */
   getGeometry() {
     return (
-      /** @type {import("./geom/Geometry.js").default|undefined} */ (this.get(this.geometryName_))
+      /** @type {Geometry|undefined} */ (this.get(this.geometryName_))
     );
   }
 
@@ -171,7 +170,7 @@ class Feature extends BaseObject {
   /**
    * Get the feature's style. Will return what was provided to the
    * {@link module:ol/Feature~Feature#setStyle} method.
-   * @return {import("./style/Style.js").default|Array<import("./style/Style.js").default>|import("./style/Style.js").StyleFunction} The feature style.
+   * @return {Style|Array<Style>|import("./style/Style.js").StyleFunction} The feature style.
    * @api
    */
   getStyle() {
@@ -214,7 +213,7 @@ class Feature extends BaseObject {
   /**
    * Set the default geometry for the feature.  This will update the property
    * with the name returned by {@link module:ol/Feature~Feature#getGeometryName}.
-   * @param {import("./geom/Geometry.js").default|undefined} geometry The new geometry.
+   * @param {Geometry|undefined} geometry The new geometry.
    * @api
    * @observable
    */
@@ -226,7 +225,7 @@ class Feature extends BaseObject {
    * Set the style for the feature.  This can be a single style object, an array
    * of styles, or a function that takes a resolution and returns an array of
    * styles. If it is `null` the feature has no style (a `null` style).
-   * @param {import("./style/Style.js").default|Array<import("./style/Style.js").default>|import("./style/Style.js").StyleFunction} style Style for this feature.
+   * @param {Style|Array<Style>|import("./style/Style.js").StyleFunction} style Style for this feature.
    * @api
    * @fires module:ol/events/Event~Event#event:change
    */
@@ -272,9 +271,9 @@ class Feature extends BaseObject {
 
 /**
  * Convert the provided object into a feature style function.  Functions passed
- * through unchanged.  Arrays of import("./style/Style.js").default or single style objects wrapped
+ * through unchanged.  Arrays of Style or single style objects wrapped
  * in a new feature style function.
- * @param {import("./style/Style.js").StyleFunction|!Array<import("./style/Style.js").default>|!import("./style/Style.js").default} obj
+ * @param {import("./style/Style.js").StyleFunction|!Array<Style>|!Style} obj
  *     A feature style function, a single style, or an array of styles.
  * @return {import("./style/Style.js").StyleFunction} A style function.
  */
@@ -283,7 +282,7 @@ export function createStyleFunction(obj) {
     return obj;
   } else {
     /**
-     * @type {Array<import("./style/Style.js").default>}
+     * @type {Array<Style>}
      */
     let styles;
     if (Array.isArray(obj)) {

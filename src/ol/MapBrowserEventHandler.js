@@ -127,7 +127,7 @@ class MapBrowserEventHandler extends EventTarget {
       this.dispatchEvent(newEvent);
     } else {
       // click
-      this.clickTimeoutId_ = setTimeout(function() {
+      this.clickTimeoutId_ = window.setTimeout(function() {
         this.clickTimeoutId_ = 0;
         const newEvent = new MapBrowserPointerEvent(
           MapBrowserEventType.SINGLECLICK, this.map_, pointerEvent);
