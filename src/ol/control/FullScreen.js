@@ -50,14 +50,6 @@ const getChangeType = (function() {
 
 
 /**
- * TypeScript does not define Element.ALLOW_KEYBOARD_INPUT in the var declaration, and does not support extending those
- * declarations. This is a workaround to provide the type.
- * @typedef {Object} WebkitElement
- * @property {number} [ALLOW_KEYBOARD_INPUT] If keyboard input should be allowed by the Fullscreen API.
- */
-
-
-/**
  * @classdesc
  * Provides a button that when clicked fills up the full screen with the map.
  * The full screen source element is by default the element containing the map viewport unless
@@ -261,7 +253,7 @@ function requestFullScreenWithKeys(element) {
   if (element.mozRequestFullScreenWithKeys) {
     element.mozRequestFullScreenWithKeys();
   } else if (element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen(/** @type {WebkitElement} */ (Element).ALLOW_KEYBOARD_INPUT);
+    element.webkitRequestFullscreen();
   } else {
     requestFullScreen(element);
   }
