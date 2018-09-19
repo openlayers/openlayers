@@ -19,8 +19,8 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 
 
 /**
- * @type {Object<import("../ReplayType.js").default,
- *                function(new: import("./Replay.js").default, number, import("../../extent.js").Extent,
+ * @type {Object<ReplayType,
+ *                function(new: CanvasReplay, number, import("../../extent.js").Extent,
  *                number, number, boolean, Array<import("../canvas.js").DeclutterGroup>)>}
  */
 const BATCH_CONSTRUCTORS = {
@@ -104,7 +104,7 @@ class CanvasReplayGroup extends ReplayGroup {
 
     /**
      * @private
-     * @type {!Object<string, !Object<import("../ReplayType.js").default, import("./Replay.js").default>>}
+     * @type {!Object<string, !Object<ReplayType, CanvasReplay>>}
      */
     this.replaysByZIndex_ = {};
 
@@ -154,7 +154,7 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @param {Array<import("../ReplayType.js").default>} replays Replays.
+   * @param {Array<ReplayType>} replays Replays.
    * @return {boolean} Has replays of the provided types.
    */
   hasReplays(replays) {
@@ -335,7 +335,7 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @return {Object<string, Object<import("../ReplayType.js").default, import("./Replay.js").default>>} Replays.
+   * @return {Object<string, Object<ReplayType, CanvasReplay>>} Replays.
    */
   getReplays() {
     return this.replaysByZIndex_;
@@ -354,7 +354,7 @@ class CanvasReplayGroup extends ReplayGroup {
    * @param {number} viewRotation View rotation.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
-   * @param {Array<import("../ReplayType.js").default>=} opt_replayTypes Ordered replay types to replay.
+   * @param {Array<ReplayType>=} opt_replayTypes Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
    * @param {Object<string, import("../canvas.js").DeclutterGroup>=} opt_declutterReplays Declutter replays.
    */

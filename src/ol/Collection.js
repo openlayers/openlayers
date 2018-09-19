@@ -24,7 +24,7 @@ const Property = {
 export class CollectionEvent extends Event {
 
   /**
-   * @param {import("./CollectionEventType.js").default} type Type.
+   * @param {CollectionEventType} type Type.
    * @param {*=} opt_element Element.
    */
   constructor(type, opt_element) {

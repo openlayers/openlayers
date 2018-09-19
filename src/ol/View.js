@@ -974,7 +974,7 @@ class View extends BaseObject {
    * The size is pixel dimensions of the box to fit the extent into.
    * In most cases you will want to use the map size, that is `map.getSize()`.
    * Takes care of the map angle.
-   * @param {import("./geom/SimpleGeometry.js").default|import("./extent.js").Extent} geometryOrExtent The geometry or
+   * @param {SimpleGeometry|import("./extent.js").Extent} geometryOrExtent The geometry or
    *     extent to fit the view to.
    * @param {FitOptions=} opt_options Options.
    * @api
@@ -985,7 +985,7 @@ class View extends BaseObject {
     if (!size) {
       size = this.getSizeFromViewport_();
     }
-    /** @type {import("./geom/SimpleGeometry.js").default} */
+    /** @type {SimpleGeometry} */
     let geometry;
     if (!(geometryOrExtent instanceof SimpleGeometry)) {
       assert(Array.isArray(geometryOrExtent),
@@ -1135,7 +1135,7 @@ class View extends BaseObject {
   }
 
   /**
-   * @param {import("./ViewHint.js").default} hint Hint.
+   * @param {ViewHint} hint Hint.
    * @param {number} delta Delta.
    * @return {number} New value.
    */

@@ -17,7 +17,7 @@ import Text from './style/Text.js';
 
 
 /**
- * @type {import("./style/Stroke.js").default}
+ * @type {Stroke}
  * @private
  * @const
  */
@@ -36,7 +36,7 @@ const INTERVALS = [
 
 /**
  * @typedef {Object} GraticuleLabelDataType
- * @property {import("./geom/Point.js").default} geom
+ * @property {Point} geom
  * @property {string} text
  */
 
@@ -50,7 +50,7 @@ const INTERVALS = [
  * appropriate for conformal projections like Spherical Mercator. If you
  * increase the value, more lines will be drawn and the drawing performance will
  * decrease.
- * @property {import("./style/Stroke.js").default} [strokeStyle='rgba(0,0,0,0.2)'] The
+ * @property {Stroke} [strokeStyle='rgba(0,0,0,0.2)'] The
  * stroke style to use for drawing the graticule. If not provided, a not fully
  * opaque black will be used.
  * @property {number} [targetSize=100] The target size of the graticule cells,
@@ -71,7 +71,7 @@ const INTERVALS = [
  * @property {number} [latLabelPosition=1] Latitude label position in fractions
  * (0..1) of view extent. 0 means at the left of the viewport, 1 means at the
  * right.
- * @property {import("./style/Text.js").default} [lonLabelStyle] Longitude label text
+ * @property {Text} [lonLabelStyle] Longitude label text
  * style. If not provided, the following style will be used:
  * ```js
  * new Text({
@@ -89,7 +89,7 @@ const INTERVALS = [
  * Note that the default's `textBaseline` configuration will not work well for
  * `lonLabelPosition` configurations that position labels close to the top of
  * the viewport.
- * @property {import("./style/Text.js").default} [latLabelStyle] Latitude label text style.
+ * @property {Text} [latLabelStyle] Latitude label text style.
  * If not provided, the following style will be used:
  * ```js
  * new Text({
@@ -200,19 +200,19 @@ class Graticule {
     this.maxLines_ = options.maxLines !== undefined ? options.maxLines : 100;
 
     /**
-     * @type {Array<import("./geom/LineString.js").default>}
+     * @type {Array<LineString>}
      * @private
      */
     this.meridians_ = [];
 
     /**
-     * @type {Array<import("./geom/LineString.js").default>}
+     * @type {Array<LineString>}
      * @private
      */
     this.parallels_ = [];
 
     /**
-     * @type {import("./style/Stroke.js").default}
+     * @type {Stroke}
      * @private
      */
     this.strokeStyle_ = options.strokeStyle !== undefined ? options.strokeStyle : DEFAULT_STROKE_STYLE;
@@ -282,7 +282,7 @@ class Graticule {
         options.latLabelPosition;
 
       /**
-       * @type {import("./style/Text.js").default}
+       * @type {Text}
        * @private
        */
       this.lonLabelStyle_ = options.lonLabelStyle !== undefined ? options.lonLabelStyle :
@@ -299,7 +299,7 @@ class Graticule {
         });
 
       /**
-       * @type {import("./style/Text.js").default}
+       * @type {Text}
        * @private
        */
       this.latLabelStyle_ = options.latLabelStyle !== undefined ? options.latLabelStyle :
@@ -348,10 +348,10 @@ class Graticule {
   }
 
   /**
-   * @param {import("./geom/LineString.js").default} lineString Meridian
+   * @param {LineString} lineString Meridian
    * @param {import("./extent.js").Extent} extent Extent.
    * @param {number} index Index.
-   * @return {import("./geom/Point.js").default} Meridian point.
+   * @return {Point} Meridian point.
    * @private
    */
   getMeridianPoint_(lineString, extent, index) {
@@ -398,10 +398,10 @@ class Graticule {
   }
 
   /**
-   * @param {import("./geom/LineString.js").default} lineString Parallels.
+   * @param {LineString} lineString Parallels.
    * @param {import("./extent.js").Extent} extent Extent.
    * @param {number} index Index.
-   * @return {import("./geom/Point.js").default} Parallel point.
+   * @return {Point} Parallel point.
    * @private
    */
   getParallelPoint_(lineString, extent, index) {
@@ -561,7 +561,7 @@ class Graticule {
    * @param {number} minLat Minimal latitude.
    * @param {number} maxLat Maximal latitude.
    * @param {number} squaredTolerance Squared tolerance.
-   * @return {import("./geom/LineString.js").default} The meridian line string.
+   * @return {LineString} The meridian line string.
    * @param {number} index Index.
    * @private
    */
@@ -579,7 +579,7 @@ class Graticule {
 
   /**
    * Get the list of meridians.  Meridians are lines of equal longitude.
-   * @return {Array<import("./geom/LineString.js").default>} The meridians.
+   * @return {Array<LineString>} The meridians.
    * @api
    */
   getMeridians() {
@@ -591,7 +591,7 @@ class Graticule {
    * @param {number} minLon Minimal longitude.
    * @param {number} maxLon Maximal longitude.
    * @param {number} squaredTolerance Squared tolerance.
-   * @return {import("./geom/LineString.js").default} The parallel line string.
+   * @return {LineString} The parallel line string.
    * @param {number} index Index.
    * @private
    */
@@ -609,7 +609,7 @@ class Graticule {
 
   /**
    * Get the list of parallels.  Parallels are lines of equal latitude.
-   * @return {Array<import("./geom/LineString.js").default>} The parallels.
+   * @return {Array<LineString>} The parallels.
    * @api
    */
   getParallels() {

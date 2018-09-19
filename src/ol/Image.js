@@ -64,7 +64,7 @@ class ImageWrapper extends ImageBase {
 
     /**
      * @protected
-     * @type {import("./ImageState.js").default}
+     * @type {ImageState}
      */
     this.state = ImageState.IDLE;
 
