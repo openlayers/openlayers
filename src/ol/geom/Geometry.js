@@ -255,15 +255,6 @@ class Geometry extends BaseObject {
     return this;
   }
 
-  /**
-   * @param {number} x X.
-   * @param {number} y Y.
-   * @return {boolean} Contains (x, y).
-   */
-  containsXY(x, y) {
-    return false;
-  }
-
 }
 
 
