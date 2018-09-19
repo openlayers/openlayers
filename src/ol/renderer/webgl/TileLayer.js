@@ -5,6 +5,7 @@
 // FIXME animated shaders! check in redraw
 
 import LayerType from '../../LayerType.js';
+import ImageTile from '../../ImageTile.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import TileSource from '../../source/Tile.js';
@@ -286,6 +287,11 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         const tilesToDraw = tilesToDrawByZ[zs[i]];
         for (const tileKey in tilesToDraw) {
           tile = tilesToDraw[tileKey];
+
+          if (!(tile instanceof ImageTile)) {
+            continue;
+          }
+
           tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
           u_tileOffset[0] = 2 * (tileExtent[2] - tileExtent[0]) /
               framebufferExtentDimension;
