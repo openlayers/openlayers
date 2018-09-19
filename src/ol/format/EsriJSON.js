@@ -104,9 +104,8 @@ class EsriJSON extends JSONFeature {
    * @inheritDoc
    */
   readFeaturesFromObject(object, opt_options) {
-    const esriJSONObject = /** @type {EsriJSONObject} */ (object);
     const options = opt_options ? opt_options : {};
-    if (esriJSONObject.features) {
+    if ('features' in object) {
       const esriJSONFeatureCollection = /** @type {EsriJSONFeatureCollection} */ (object);
       /** @type {Array<import("../Feature.js").default>} */
       const features = [];
@@ -171,7 +170,7 @@ class EsriJSON extends JSONFeature {
       object['geometry'] = writeGeometry(geometry, opt_options);
       if (opt_options && opt_options.featureProjection) {
         object['geometry']['spatialReference'] = /** @type {EsriJSONCRS} */({
-          wkid: getProjection(opt_options.featureProjection).getCode().split(':').pop()
+          wkid: Number(getProjection(opt_options.featureProjection).getCode().split(':').pop())
         });
       }
     }
@@ -208,7 +207,7 @@ class EsriJSON extends JSONFeature {
 
 
 /**
- * @param {EsriJSONGeometry} object Object.
+ * @param {Object} object Object.
  * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
  * @return {import("../geom/Geometry.js").default} Geometry.
  */
@@ -218,20 +217,20 @@ function readGeometry(object, opt_options) {
   }
   /** @type {import("../geom/GeometryType.js").default} */
   let type;
-  if (typeof object.x === 'number' && typeof object.y === 'number') {
+  if (typeof object['x'] === 'number' && typeof object['y'] === 'number') {
     type = GeometryType.POINT;
-  } else if (object.points) {
+  } else if (object['points']) {
     type = GeometryType.MULTI_POINT;
-  } else if (object.paths) {
-    if (object.paths.length === 1) {
+  } else if (object['paths']) {
+    if (object['paths'].length === 1) {
       type = GeometryType.LINE_STRING;
     } else {
       type = GeometryType.MULTI_LINE_STRING;
     }
-  } else if (object.rings) {
+  } else if (object['rings']) {
     const layout = getGeometryLayout(object);
-    const rings = convertRings(object.rings, layout);
-    object = /** @type {EsriJSONGeometry} */(assign({}, object));
+    const rings = convertRings(object['rings'], layout);
+    object = /** @type {EsriJSONPolygon} */ (assign({}, object));
     if (rings.length === 1) {
       type = GeometryType.POLYGON;
       object.rings = rings[0];
@@ -254,7 +253,7 @@ function readGeometry(object, opt_options) {
  * Logic inspired by: https://github.com/Esri/terraformer-arcgis-parser
  * @param {Array<!Array<!Array<number>>>} rings Rings.
  * @param {import("../geom/GeometryLayout.js").default} layout Geometry layout.
- * @return {Array<!Array<!Array<number>>>} Transformed rings.
+ * @return {Array<!Array<!Array<!Array<number>>>>} Transformed rings.
  */
 function convertRings(rings, layout) {
   const flatRing = [];
@@ -301,7 +300,7 @@ function convertRings(rings, layout) {
 
 
 /**
- * @param {EsriJSONGeometry} object Object.
+ * @param {EsriJSONPoint} object Object.
  * @return {import("../geom/Geometry.js").default} Point.
  */
 function readPointGeometry(object) {
@@ -323,7 +322,7 @@ function readPointGeometry(object) {
 
 
 /**
- * @param {EsriJSONGeometry} object Object.
+ * @param {EsriJSONPolyline} object Object.
  * @return {import("../geom/Geometry.js").default} LineString.
  */
 function readLineStringGeometry(object) {
@@ -333,7 +332,7 @@ function readLineStringGeometry(object) {
 
 
 /**
- * @param {EsriJSONGeometry} object Object.
+ * @param {EsriJSONPolyline} object Object.
  * @return {import("../geom/Geometry.js").default} MultiLineString.
  */
 function readMultiLineStringGeometry(object) {
@@ -343,7 +342,7 @@ function readMultiLineStringGeometry(object) {
 
 
 /**
- * @param {EsriJSONGeometry} object Object.
+ * @param {ESRIJSONVariableLayout} object Object.
  * @return {import("../geom/GeometryLayout.js").default} The geometry layout to use.
  */
 function getGeometryLayout(object) {
@@ -360,7 +359,7 @@ function getGeometryLayout(object) {
 
 
 /**
- * @param {EsriJSONGeometry} object Object.
+ * @param {EsriJSONMultipoint} object Object.
  * @return {import("../geom/Geometry.js").default} MultiPoint.
  */
 function readMultiPointGeometry(object) {
@@ -370,19 +369,17 @@ function readMultiPointGeometry(object) {
 
 
 /**
- * @param {EsriJSONGeometry} object Object.
+ * @param {EsriJSONMultiPolygon} object Object.
  * @return {import("../geom/Geometry.js").default} MultiPolygon.
  */
 function readMultiPolygonGeometry(object) {
   const layout = getGeometryLayout(object);
-  return new MultiPolygon(
-    /** @type {Array<Array<Array<Array<number>>>>} */(object.rings),
-    layout);
+  return new MultiPolygon(object.rings, layout);
 }
 
 
 /**
- * @param {EsriJSONGeometry} object Object.
+ * @param {EsriJSONPolygon} object Object.
  * @return {import("../geom/Geometry.js").default} Polygon.
  */
 function readPolygonGeometry(object) {
@@ -394,40 +391,40 @@ function readPolygonGeometry(object) {
 /**
  * @param {import("../geom/Geometry.js").default} geometry Geometry.
  * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
- * @return {EsriJSONGeometry} EsriJSON geometry.
+ * @return {EsriJSONPoint} EsriJSON geometry.
  */
 function writePointGeometry(geometry, opt_options) {
   const coordinates = /** @type {import("../geom/Point.js").default} */ (geometry).getCoordinates();
   let esriJSON;
   const layout = /** @type {import("../geom/Point.js").default} */ (geometry).getLayout();
   if (layout === GeometryLayout.XYZ) {
-    esriJSON = /** @type {EsriJSONPoint} */ ({
+    esriJSON = {
       x: coordinates[0],
       y: coordinates[1],
       z: coordinates[2]
-    });
+    };
   } else if (layout === GeometryLayout.XYM) {
-    esriJSON = /** @type {EsriJSONPoint} */ ({
+    esriJSON = {
       x: coordinates[0],
       y: coordinates[1],
       m: coordinates[2]
-    });
+    };
   } else if (layout === GeometryLayout.XYZM) {
-    esriJSON = /** @type {EsriJSONPoint} */ ({
+    esriJSON = {
       x: coordinates[0],
       y: coordinates[1],
       z: coordinates[2],
       m: coordinates[3]
-    });
+    };
   } else if (layout === GeometryLayout.XY) {
-    esriJSON = /** @type {EsriJSONPoint} */ ({
+    esriJSON = {
       x: coordinates[0],
       y: coordinates[1]
-    });
+    };
   } else {
     assert(false, 34); // Invalid geometry layout
   }
-  return /** @type {EsriJSONGeometry} */ (esriJSON);
+  return esriJSON;
 }
 
 
