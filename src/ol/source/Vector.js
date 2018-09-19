@@ -420,6 +420,9 @@ class VectorSource extends Source {
   bindFeaturesCollection_(collection) {
     let modifyingCollection = false;
     listen(this, VectorEventType.ADDFEATURE,
+      /**
+       * @param {VectorSourceEvent} evt The vector source event
+       */
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
@@ -428,6 +431,9 @@ class VectorSource extends Source {
         }
       });
     listen(this, VectorEventType.REMOVEFEATURE,
+      /**
+       * @param {VectorSourceEvent} evt The vector source event
+       */
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
@@ -436,6 +442,9 @@ class VectorSource extends Source {
         }
       });
     listen(collection, CollectionEventType.ADD,
+      /**
+       * @param {import("../Collection.js").CollectionEvent} evt The collection event
+       */
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
@@ -444,6 +453,9 @@ class VectorSource extends Source {
         }
       }, this);
     listen(collection, CollectionEventType.REMOVE,
+      /**
+       * @param {import("../Collection.js").CollectionEvent} evt The collection event
+       */
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
@@ -511,7 +523,7 @@ class VectorSource extends Source {
     if (this.featuresRtree_) {
       return this.featuresRtree_.forEach(callback);
     } else if (this.featuresCollection_) {
-      return this.featuresCollection_.forEach(callback);
+      this.featuresCollection_.forEach(callback);
     }
   }
 
@@ -564,7 +576,7 @@ class VectorSource extends Source {
     if (this.featuresRtree_) {
       return this.featuresRtree_.forEachInExtent(extent, callback);
     } else if (this.featuresCollection_) {
-      return this.featuresCollection_.forEach(callback);
+      this.featuresCollection_.forEach(callback);
     }
   }
 
@@ -589,7 +601,6 @@ class VectorSource extends Source {
       /**
        * @param {import("../Feature.js").default} feature Feature.
        * @return {T|undefined} The return value from the last call to the callback.
-       * @template T
        */
       function(feature) {
         const geometry = feature.getGeometry();
