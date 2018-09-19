@@ -78,24 +78,33 @@ export function findListener(listeners, listener, opt_this, opt_setDeleteIndex) 
  * @return {Array<EventsKey>|undefined} Listeners.
  */
 export function getListeners(target, type) {
-  const listenerMap = target.ol_lm;
+  const listenerMap = getListenerMap(target);
   return listenerMap ? listenerMap[type] : undefined;
 }
 
 
 /**
- * Get the lookup of listeners.  If one does not exist on the target, it is
- * created.
- * @param {import("./events/Target.js").EventTargetLike} target Target.
+ * Get the lookup of listeners.
+ * @param {Object} target Target.
+ * @param {boolean=} opt_create If a map should be created if it doesn't exist.
  * @return {!Object<string, Array<EventsKey>>} Map of
  *     listeners by event type.
  */
-function getListenerMap(target) {
+function getListenerMap(target, opt_create) {
   let listenerMap = target.ol_lm;
-  if (!listenerMap) {
+  if (!listenerMap && opt_create) {
     listenerMap = target.ol_lm = {};
   }
   return listenerMap;
+}
+
+
+/**
+ * Remove the listener map from a target.
+ * @param {Object} target Target.
+ */
+function removeListenerMap(target) {
+  delete target.ol_lm;
 }
 
 
@@ -114,11 +123,11 @@ function removeListeners(target, type) {
       clear(listeners[i]);
     }
     listeners.length = 0;
-    const listenerMap = target.ol_lm;
+    const listenerMap = getListenerMap(target);
     if (listenerMap) {
       delete listenerMap[type];
       if (Object.keys(listenerMap).length === 0) {
-        delete target.ol_lm;
+        removeListenerMap(target);
       }
     }
   }
@@ -141,7 +150,7 @@ function removeListeners(target, type) {
  * @return {EventsKey} Unique key for the listener.
  */
 export function listen(target, type, listener, opt_this, opt_once) {
-  const listenerMap = getListenerMap(target);
+  const listenerMap = getListenerMap(target, true);
   let listeners = listenerMap[type];
   if (!listeners) {
     listeners = listenerMap[type] = [];
@@ -252,7 +261,9 @@ export function unlistenByKey(key) {
  */
 export function unlistenAll(target) {
   const listenerMap = getListenerMap(target);
-  for (const type in listenerMap) {
-    removeListeners(target, type);
+  if (listenerMap) {
+    for (const type in listenerMap) {
+      removeListeners(target, type);
+    }
   }
 }
