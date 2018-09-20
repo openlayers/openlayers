@@ -46,6 +46,47 @@ const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
 
 
 /**
+ * @typedef {Object} BingMapsImageryMetadataResponse
+ * @property {number} statusCode The response status code
+ * @property {string} statusDescription The response status description
+ * @property {string} authenticationResultCode The authentication result code
+ * @property {Array<ResourceSet>} resourceSets The array of resource sets
+ */
+
+
+/**
+ * @typedef {Object} ResourceSet
+ * @property {Array<Resource>} resources
+ */
+
+
+/**
+ * @typedef {Object} Resource
+ * @property {number} imageHeight The image height
+ * @property {number} imageWidth The image width
+ * @property {number} zoomMin The minimum zoom level
+ * @property {string} imageUrl The image URL
+ * @property {Array<string>} imageUrlSubdomains The image URL subdomains for rotation
+ * @property {Array<ImageryProvider>} [imageryProviders] The array of ImageryProviders
+ */
+
+
+/**
+ * @typedef {Object} ImageryProvider
+ * @property {Array<CoverageArea>} coverageAreas The coverage areas
+ * @property {string} [attribution] The attribution
+ */
+
+
+/**
+ * @typedef {Object} CoverageArea
+ * @property {number} zoomMin The minimum zoom
+ * @property {number} zoomMax The maximum zoom
+ * @property {Array<number>} bbox The coverage bounding box
+ */
+
+
+/**
  * @classdesc
  * Layer source for Bing Maps tile data.
  * @api
