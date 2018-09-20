@@ -395,7 +395,10 @@ class TileImage extends UrlTile {
  * @param {string} src Source.
  */
 function defaultTileLoadFunction(imageTile, src) {
-  imageTile.getImage().src = src;
+  const image = imageTile.getImage();
+  if (image instanceof HTMLImageElement || image instanceof HTMLVideoElement) {
+    image.src = src;
+  }
 }
 
 export default TileImage;
