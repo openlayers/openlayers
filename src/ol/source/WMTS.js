@@ -492,7 +492,8 @@ function createFromWMTSTemplate(template) {
       return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
     });
 
-  const tileGrid = this.tileGrid;
+  const tileGrid = /** @type {import("../tilegrid/WMTS.js").default} */ (
+    this.tileGrid);
   const dimensions = this.dimensions_;
 
   return (
