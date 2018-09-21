@@ -91,7 +91,6 @@ class ImageSource extends Source {
   constructor(options) {
     super({
       attributions: options.attributions,
-      extent: options.extent,
       projection: options.projection,
       state: options.state
     });
@@ -232,7 +231,10 @@ class ImageSource extends Source {
  * @param {string} src Source.
  */
 export function defaultImageLoadFunction(image, src) {
-  image.getImage().src = src;
+  const img = image.getImage();
+  if (img instanceof HTMLImageElement || img instanceof HTMLVideoElement) {
+    img.src = src;
+  }
 }
 
 
