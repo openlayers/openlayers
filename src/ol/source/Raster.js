@@ -467,7 +467,7 @@ function getLayerStatesArray(renderers) {
 
 /**
  * Create renderers for all sources.
- * @param {Array<import("./Source.js").default>} sources The sources.
+ * @param {Array<import("./Source.js").default|import("../layer/Layer.js").default>} sources The sources.
  * @return {Array<import("../renderer/canvas/Layer.js").default>} Array of layer renderers.
  */
 function createRenderers(sources) {
@@ -482,7 +482,7 @@ function createRenderers(sources) {
 
 /**
  * Create a renderer for the provided source.
- * @param {import("./Source.js").default} source The source.
+ * @param {import("./Source.js").default|import("../layer/Layer.js").default} source The source.
  * @return {import("../renderer/canvas/Layer.js").default} The renderer.
  */
 function createRenderer(source) {
