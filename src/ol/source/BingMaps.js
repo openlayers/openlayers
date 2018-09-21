@@ -65,6 +65,7 @@ const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
  * @property {number} imageHeight The image height
  * @property {number} imageWidth The image width
  * @property {number} zoomMin The minimum zoom level
+ * @property {number} zoomMax The maximum zoom level
  * @property {string} imageUrl The image URL
  * @property {Array<string>} imageUrlSubdomains The image URL subdomains for rotation
  * @property {Array<ImageryProvider>} [imageryProviders] The array of ImageryProviders
@@ -191,13 +192,16 @@ class BingMaps extends TileImage {
 
     const sourceProjection = this.getProjection();
     const extent = extentFromProjection(sourceProjection);
+    const scale = this.hidpi_ ? 2 : 1;
     const tileSize = resource.imageWidth == resource.imageHeight ?
-      resource.imageWidth : [resource.imageWidth, resource.imageHeight];
+      resource.imageWidth / scale :
+      [resource.imageWidth / scale, resource.imageHeight / scale];
+
     const tileGrid = createXYZ({
       extent: extent,
       minZoom: resource.zoomMin,
       maxZoom: maxZoom,
-      tileSize: tileSize / (this.hidpi_ ? 2 : 1)
+      tileSize: tileSize
     });
     this.tileGrid = tileGrid;
 
