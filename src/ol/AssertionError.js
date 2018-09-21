@@ -14,7 +14,7 @@ class AssertionError extends Error {
    * @param {number} code Error code.
    */
   constructor(code) {
-    const path = VERSION.split('-')[0];
+    const path = VERSION === 'latest' ? VERSION : 'v' + VERSION.split('-')[0];
     const message = 'Assertion failed. See https://openlayers.org/en/' + path +
     '/doc/errors/#' + code + ' for details.';
 
