@@ -50,8 +50,6 @@ class Cluster extends VectorSource {
   constructor(options) {
     super({
       attributions: options.attributions,
-      extent: options.extent,
-      projection: options.projection,
       wrapX: options.wrapX
     });
 
