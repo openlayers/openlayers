@@ -237,7 +237,7 @@ class ZoomSlider extends Control {
   /**
    * Handle dragger drag events.
    *
-   * @param {import("../pointer/PointerEvent.js").default|Event} event The drag event.
+   * @param {import("../pointer/PointerEvent.js").default} event The drag event.
    * @private
    */
   handleDraggerDrag_(event) {
@@ -256,7 +256,7 @@ class ZoomSlider extends Control {
 
   /**
    * Handle dragger end events.
-   * @param {import("../pointer/PointerEvent.js").default|Event} event The drag event.
+   * @param {import("../pointer/PointerEvent.js").default} event The drag event.
    * @private
    */
   handleDraggerEnd_(event) {
