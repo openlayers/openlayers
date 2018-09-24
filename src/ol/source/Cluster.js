@@ -16,7 +16,6 @@ import VectorSource from '../source/Vector.js';
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {number} [distance=20] Minimum distance in pixels between clusters.
- * @property {import("../extent.js").Extent} [extent] Extent.
  * @property {function(import("../Feature.js").default):import("../geom/Point.js").default} [geometryFunction]
  * Function that takes an {@link module:ol/Feature} as argument and returns an
  * {@link module:ol/geom/Point} as cluster calculation point for the feature. When a
@@ -30,7 +29,6 @@ import VectorSource from '../source/Vector.js';
  * ```
  * See {@link module:ol/geom/Polygon~Polygon#getInteriorPoint} for a way to get a cluster
  * calculation point for polygons.
- * @property {import("../proj.js").ProjectionLike} projection Projection.
  * @property {import("./Vector.js").default} source Source.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
@@ -45,7 +43,7 @@ import VectorSource from '../source/Vector.js';
  */
 class Cluster extends VectorSource {
   /**
-   * @param {Options=} options Cluster options.
+   * @param {Options} options Cluster options.
    */
   constructor(options) {
     super({
