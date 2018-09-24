@@ -243,10 +243,8 @@ class ZoomSlider extends Control {
         const end = this.handleDraggerEnd_;
         this.dragListenerKeys_.push(
           listen(document, EventType.MOUSEMOVE, drag, this),
-          listen(document, EventType.TOUCHMOVE, drag, this),
           listen(document, PointerEventType.POINTERMOVE, drag, this),
           listen(document, EventType.MOUSEUP, end, this),
-          listen(document, EventType.TOUCHEND, end, this),
           listen(document, PointerEventType.POINTERUP, end, this)
         );
       }
