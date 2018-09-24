@@ -61,7 +61,7 @@ export class VectorSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {Array<import("../Feature.js").default>|import("../Collection.js").default<import("../Feature.js").default>} [features]
+ * @property {Array<import("../Feature.js").default>|Collection<import("../Feature.js").default>} [features]
  * Features. If provided as {@link module:ol/Collection}, the features in the source
  * and the collection will stay in sync.
  * @property {import("../format/Feature.js").default} [format] The feature format used by the XHR
@@ -215,13 +215,13 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {import("../structs/RBush.js").default<import("../Feature.js").default>}
+     * @type {RBush<import("../Feature.js").default>}
      */
     this.featuresRtree_ = useSpatialIndex ? new RBush() : null;
 
     /**
      * @private
-     * @type {import("../structs/RBush.js").default<{extent: import("../extent.js").Extent}>}
+     * @type {RBush<{extent: import("../extent.js").Extent}>}
      */
     this.loadedExtentsRtree_ = new RBush();
 
@@ -253,7 +253,7 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {import("../Collection.js").default<import("../Feature.js").default>}
+     * @type {Collection<import("../Feature.js").default>}
      */
     this.featuresCollection_ = null;
 
@@ -414,7 +414,7 @@ class VectorSource extends Source {
 
 
   /**
-   * @param {!import("../Collection.js").default<import("../Feature.js").default>} collection Collection.
+   * @param {!Collection<import("../Feature.js").default>} collection Collection.
    * @private
    */
   bindFeaturesCollection_(collection) {
@@ -618,7 +618,7 @@ class VectorSource extends Source {
    * Get the features collection associated with this source. Will be `null`
    * unless the source was configured with `useSpatialIndex` set to `false`, or
    * with an {@link module:ol/Collection} as `features`.
-   * @return {import("../Collection.js").default<import("../Feature.js").default>} The collection of features.
+   * @return {Collection<import("../Feature.js").default>} The collection of features.
    * @api
    */
   getFeaturesCollection() {
@@ -800,7 +800,7 @@ class VectorSource extends Source {
 
 
   /**
-   * @param {import("../events/Event.js").default} event Event.
+   * @param {Event} event Event.
    * @private
    */
   handleFeatureChange_(event) {

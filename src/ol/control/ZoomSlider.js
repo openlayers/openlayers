@@ -133,7 +133,7 @@ class ZoomSlider extends Control {
     containerElement.className = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
     containerElement.appendChild(thumbElement);
     /**
-     * @type {import("../pointer/PointerEventHandler.js").default}
+     * @type {PointerEventHandler}
      * @private
      */
     this.dragger_ = new PointerEventHandler(containerElement);
