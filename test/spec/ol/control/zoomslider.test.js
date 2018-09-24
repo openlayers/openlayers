@@ -119,6 +119,7 @@ describe('ol.control.ZoomSlider', function() {
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(16);
       expect(control.dragging_).to.be(true);
+      expect(control.dragListenerKeys_.length).to.be(4);
       event.type = 'pointermove';
       event.clientX = 6 * control.widthLimit_ / 8;
       event.clientY = 0;
@@ -131,7 +132,43 @@ describe('ol.control.ZoomSlider', function() {
       event.type = 'pointerup';
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(1);
+      expect(control.dragListenerKeys_.length).to.be(0);
       expect(control.dragging_).to.be(false);
+    });
+    it('[horizontal] handles a drag sequence ending outside its bounds', function() {
+      const control = new ZoomSlider();
+      map.addControl(control);
+      map.getView().setZoom(0);
+      control.element.style.width = '500px';
+      control.element.style.height = '10px';
+      control.element.firstChild.style.width = '100px';
+      control.element.firstChild.style.height = '10px';
+      map.renderSync();
+      const dragger = control.dragger_;
+      const event = new PointerEvent('pointerdown', {
+        target: control.element.firstElementChild
+      });
+      event.clientX = control.widthLimit_;
+      event.clientY = 0;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(16);
+      expect(control.dragging_).to.be(true);
+      expect(control.dragListenerKeys_.length).to.be(4);
+      event.type = 'pointermove';
+      event.clientX = 6 * control.widthLimit_ / 8;
+      event.clientY = 0;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(4);
+      event.type = 'pointermove';
+      event.clientX = 12 * control.widthLimit_ / 8;
+      event.clientY = 0;
+      dragger.dispatchEvent(event);
+      event.type = 'pointerup';
+      event.target = 'document';
+      dragger.dispatchEvent(event);
+      expect(control.dragListenerKeys_.length).to.be(0);
+      expect(control.dragging_).to.be(false);
+      expect(control.currentResolution_).to.be(16);
     });
     it('[vertical] handles a drag sequence', function() {
       const control = new ZoomSlider();
@@ -151,6 +188,7 @@ describe('ol.control.ZoomSlider', function() {
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(0.0625);
       expect(control.dragging_).to.be(true);
+      expect(control.dragListenerKeys_.length).to.be(4);
       event.type = 'pointermove';
       event.clientX = 0;
       event.clientY = 2 * control.heightLimit_ / 8;
@@ -163,6 +201,41 @@ describe('ol.control.ZoomSlider', function() {
       event.type = 'pointerup';
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(1);
+      expect(control.dragListenerKeys_.length).to.be(0);
+      expect(control.dragging_).to.be(false);
+    });
+    it('[vertical] handles a drag sequence ending outside its bounds', function() {
+      const control = new ZoomSlider();
+      control.element.style.width = '10px';
+      control.element.style.height = '100px';
+      control.element.firstChild.style.width = '10px';
+      control.element.firstChild.style.height = '20px';
+      map.addControl(control);
+      map.getView().setZoom(8);
+      map.renderSync();
+      const dragger = control.dragger_;
+      const event = new PointerEvent('pointerdown', {
+        target: control.element.firstElementChild
+      });
+      event.clientX = 0;
+      event.clientY = 0;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(0.0625);
+      expect(control.dragging_).to.be(true);
+      expect(control.dragListenerKeys_.length).to.be(4);
+      event.type = 'pointermove';
+      event.clientX = 0;
+      event.clientY = 2 * control.heightLimit_ / 8;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(0.25);
+      event.type = 'pointermove';
+      event.clientX = 0;
+      event.clientY = 12 * control.heightLimit_ / 8;
+      dragger.dispatchEvent(event);
+      event.type = 'pointerup';
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(16);
+      expect(control.dragListenerKeys_.length).to.be(0);
       expect(control.dragging_).to.be(false);
     });
   });
