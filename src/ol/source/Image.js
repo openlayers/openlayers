@@ -70,7 +70,6 @@ class ImageSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions]
- * @property {import("../extent.js").Extent} [extent]
  * @property {import("../proj.js").ProjectionLike} projection
  * @property {Array<number>} [resolutions]
  * @property {import("./State.js").default} [state]
