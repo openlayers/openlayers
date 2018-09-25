@@ -293,7 +293,7 @@ function readGeometry(object, opt_options) {
       throw new Error('Unsupported GeoJSON type: ' + object.type);
     }
   }
-  return transformWithOptions(geometry, false, opt_options);
+  return /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, false, opt_options));
 }
 
 
@@ -375,7 +375,7 @@ function readPolygonGeometry(object) {
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeGeometry(geometry, opt_options) {
-  geometry = transformWithOptions(geometry, true, opt_options);
+  geometry = /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, true, opt_options));
   const type = geometry.getType();
 
   /** @type {GeoJSONGeometry} */
