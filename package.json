@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "@openlayers/eslint-plugin": "^4.0.0-beta.1",
+    "@types/arcgis-rest-api": "^10.4.3",
     "@types/geojson": "^7946.0.4",
     "@types/topojson-specification": "^1.0.0",
     "buble": "^0.19.3",
