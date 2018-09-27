@@ -15,7 +15,6 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions]
  * @property {number} [cacheSize]
- * @property {import("../extent.js").Extent} [extent]
  * @property {boolean} [opaque]
  * @property {number} [tilePixelRatio]
  * @property {import("../proj.js").ProjectionLike} [projection]
@@ -41,7 +40,6 @@ class TileSource extends Source {
 
     super({
       attributions: options.attributions,
-      extent: options.extent,
       projection: options.projection,
       state: options.state,
       wrapX: options.wrapX
