@@ -4,11 +4,36 @@
 import GeolocationProperty from './GeolocationProperty.js';
 import BaseObject, {getChangeEventType} from './Object.js';
 import {listen} from './events.js';
+import Event from './events/Event.js';
 import EventType from './events/EventType.js';
 import {circular as circularPolygon} from './geom/Polygon.js';
 import {GEOLOCATION} from './has.js';
 import {toRadians} from './math.js';
 import {get as getProjection, getTransformFromProjections, identityTransform} from './proj.js';
+
+
+/**
+ * @classdesc
+ * Events emitted on Geolocation error.
+ */
+class GeolocationError extends Event {
+  /**
+   * @param {PositionError} error error object.
+   */
+  constructor(error) {
+    super(EventType.ERROR);
+
+    /**
+     * @type {number}
+     */
+    this.code = error.code;
+
+    /**
+     * @type {string}
+     */
+    this.message = error.message;
+  }
+}
 
 
 /**
@@ -174,12 +199,8 @@ class Geolocation extends BaseObject {
    * @param {PositionError} error error object.
    */
   positionError_(error) {
-    const event = {
-      type: EventType.ERROR,
-      target: undefined
-    };
     this.setTracking(false);
-    this.dispatchEvent(event);
+    this.dispatchEvent(new GeolocationError(error));
   }
 
   /**
