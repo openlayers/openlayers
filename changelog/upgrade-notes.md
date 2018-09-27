@@ -16,7 +16,7 @@ When rendering with the Immediate API, symbols will no longer be snapped to inte
 
 #### Geometry constructor and `setCoordinates` no longer accept `null` coordinates
 
-Geometries (`ol/geom/*`) now need to be constructed with valid coordinates (center for `ol/geom/Circle`) as first constructor argument. The same applies to the `setCoordinates()` (`setCenter() for `ol/geom/Circle`) method.
+Geometries (`ol/geom/*`) now need to be constructed with valid coordinates (center for `ol/geom/Circle`) as first constructor argument. The same applies to the `setCoordinates()` (`setCenter()` for `ol/geom/Circle`) method.
 
 ### v5.0.0
 
