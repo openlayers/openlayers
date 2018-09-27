@@ -95,7 +95,7 @@ class TileImage extends UrlTile {
 
     /**
      * @protected
-     * @type {function(new: import("../ImageTile.js").default, import("../tilecoord.js").TileCoord, import("../TileState.js").default, string,
+     * @type {function(new: ImageTile, import("../tilecoord.js").TileCoord, TileState, string,
      *        ?string, import("../Tile.js").LoadFunction, import("../Tile.js").Options=)}
      */
     this.tileClass = options.tileClass !== undefined ?
@@ -103,7 +103,7 @@ class TileImage extends UrlTile {
 
     /**
      * @protected
-     * @type {!Object<string, import("../TileCache.js").default>}
+     * @type {!Object<string, TileCache>}
      */
     this.tileCacheForProjection = {};
 
@@ -391,7 +391,7 @@ class TileImage extends UrlTile {
 
 
 /**
- * @param {import("../ImageTile.js").default} imageTile Image tile.
+ * @param {ImageTile} imageTile Image tile.
  * @param {string} src Source.
  */
 function defaultTileLoadFunction(imageTile, src) {

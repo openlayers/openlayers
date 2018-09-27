@@ -112,7 +112,7 @@ class VectorTile extends UrlTile {
 
     /**
        * @private
-       * @type {Object<string, import("../VectorTile.js").default>}
+       * @type {Object<string, Tile>}
        */
     this.sourceTiles_ = {};
 
@@ -124,7 +124,7 @@ class VectorTile extends UrlTile {
 
     /**
        * @protected
-       * @type {function(new: import("../VectorTile.js").default, import("../tilecoord.js").TileCoord, import("../TileState.js").default, string,
+       * @type {function(new: Tile, import("../tilecoord.js").TileCoord, TileState, string,
        *        import("../format/Feature.js").default, import("../Tile.js").LoadFunction)}
        */
     this.tileClass = options.tileClass ? options.tileClass : Tile;

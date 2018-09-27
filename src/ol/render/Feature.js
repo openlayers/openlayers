@@ -23,7 +23,7 @@ const tmpTransform = createTransform();
  * structure, optimized for vector tile rendering and styling. Geometry access
  * through the API is limited to getting the type and extent of the geometry.
  *
- * @param {import("../geom/GeometryType.js").default} type Geometry type.
+ * @param {GeometryType} type Geometry type.
  * @param {Array<number>} flatCoordinates Flat coordinates. These always need
  *     to be right-handed for polygons.
  * @param {Array<number>|Array<Array<number>>} ends Ends or Endss.
@@ -46,7 +46,7 @@ class RenderFeature {
 
     /**
     * @private
-    * @type {import("../geom/GeometryType.js").default}
+    * @type {GeometryType}
     */
     this.type_ = type;
 
@@ -216,7 +216,7 @@ class RenderFeature {
 
   /**
   * Get the type of this feature's geometry.
-  * @return {import("../geom/GeometryType.js").default} Geometry type.
+  * @return {GeometryType} Geometry type.
   * @api
   */
   getType() {

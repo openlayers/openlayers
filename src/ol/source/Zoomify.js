@@ -28,7 +28,7 @@ export class CustomTile extends ImageTile {
   /**
    * @param {import("../tilegrid/TileGrid.js").default} tileGrid TileGrid that the tile belongs to.
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("../TileState.js").default} state State.
+   * @param {TileState} state State.
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
