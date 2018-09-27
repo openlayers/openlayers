@@ -102,7 +102,7 @@ const SelectEventType = {
  * Events emitted by {@link module:ol/interaction/Select~Select} instances are instances of
  * this type.
  */
-class SelectEvent extends Event {
+export class SelectEvent extends Event {
   /**
    * @param {SelectEventType} type The event type.
    * @param {Array<import("../Feature.js").default>} selected Selected features.
