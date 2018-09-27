@@ -63,7 +63,7 @@ import {appendParams} from '../uri.js';
  */
 class WMTS extends TileImage {
   /**
-   * @param {Options=} options WMTS options.
+   * @param {Options} options WMTS options.
    */
   constructor(options) {
 

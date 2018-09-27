@@ -91,10 +91,9 @@ const ProviderConfig = {
 /**
  * @typedef {Object} Options
  * @property {number} [cacheSize=2048] Cache size.
- * @property {string} [layer] Layer.
+ * @property {string} layer Layer name.
  * @property {number} [minZoom] Minimum zoom.
  * @property {number} [maxZoom] Maximum zoom.
- * @property {boolean} [opaque] Whether the layer is opaque.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction]
@@ -116,7 +115,7 @@ const ProviderConfig = {
  */
 class Stamen extends XYZ {
   /**
-   * @param {Options=} options Stamen options.
+   * @param {Options} options Stamen options.
    */
   constructor(options) {
     const i = options.layer.indexOf('-');
