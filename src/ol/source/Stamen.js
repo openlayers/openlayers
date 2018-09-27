@@ -116,7 +116,7 @@ const ProviderConfig = {
  */
 class Stamen extends XYZ {
   /**
-   * @param {Options=} options Stamen options.
+   * @param {Options} options Stamen options.
    */
   constructor(options) {
     const i = options.layer.indexOf('-');

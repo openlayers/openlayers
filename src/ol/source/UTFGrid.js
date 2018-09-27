@@ -279,7 +279,7 @@ export class CustomTile extends Tile {
  */
 class UTFGrid extends TileSource {
   /**
-   * @param {Options=} options Source options.
+   * @param {Options} options Source options.
    */
   constructor(options) {
     super({

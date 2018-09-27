@@ -94,7 +94,7 @@ const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
  */
 class BingMaps extends TileImage {
   /**
-   * @param {Options=} options Bing Maps options.
+   * @param {Options} options Bing Maps options.
    */
   constructor(options) {
 

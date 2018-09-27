@@ -144,7 +144,7 @@ class RasterSourceEvent extends Event {
  */
 class RasterSource extends ImageSource {
   /**
-   * @param {Options=} options Options.
+   * @param {Options} options Options.
    */
   constructor(options) {
     super({});

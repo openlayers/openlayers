@@ -35,7 +35,7 @@ import {getKeyZXY} from '../tilecoord.js';
  */
 class UrlTile extends TileSource {
   /**
-   * @param {Options=} options Image tile options.
+   * @param {Options} options Image tile options.
    */
   constructor(options) {
 

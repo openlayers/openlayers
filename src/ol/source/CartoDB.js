@@ -44,7 +44,7 @@ import XYZ from '../source/XYZ.js';
  */
 class CartoDB extends XYZ {
   /**
-   * @param {Options=} options CartoDB options.
+   * @param {Options} options CartoDB options.
    */
   constructor(options) {
     super({
