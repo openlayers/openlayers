@@ -506,7 +506,7 @@ class WebGLMapRenderer extends MapRenderer {
           layerFilter.call(thisArg2, layer)) {
         const layerRenderer = this.getLayerRenderer(layer);
         result = layerRenderer.forEachFeatureAtCoordinate(
-          coordinate, frameState, hitTolerance, callback, thisArg);
+          coordinate, frameState, hitTolerance, callback);
         if (result) {
           return result;
         }

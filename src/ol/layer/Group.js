@@ -104,7 +104,6 @@ class LayerGroup extends BaseLayer {
   }
 
   /**
-   * @param {import("../events/Event.js").default} event Event.
    * @private
    */
   handleLayersChanged_() {

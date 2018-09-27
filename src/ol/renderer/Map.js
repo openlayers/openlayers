@@ -154,7 +154,7 @@ class MapRenderer extends Disposable {
         if (layer.getSource()) {
           result = layerRenderer.forEachFeatureAtCoordinate(
             layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
-            frameState, hitTolerance, forEachFeatureAtCoordinate, thisArg);
+            frameState, hitTolerance, forEachFeatureAtCoordinate);
         }
         if (result) {
           return result;

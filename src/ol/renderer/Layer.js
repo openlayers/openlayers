@@ -59,10 +59,9 @@ class LayerRenderer extends Observable {
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(this: S, (import("../Feature.js").default|import("../render/Feature.js").default), import("../layer/Layer.js").default): T} callback Feature callback.
-   * @param {S} thisArg Value to use as `this` when executing `callback`.
+   * @param {function((import("../Feature.js").default|import("../render/Feature.js").default), import("../layer/Layer.js").default): T} callback Feature callback.
    * @return {T|void} Callback result.
-   * @template S,T
+   * @template T
    */
   forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {}
 
