@@ -1035,7 +1035,7 @@ class WebGLPolygonReplay extends WebGLReplay {
     } else {
       const nullStrokeStyle = new Stroke({
         color: [0, 0, 0, 0],
-        lineWidth: 0
+        width: 0
       });
       this.lineStringReplay.setFillStrokeStyle(null, nullStrokeStyle);
     }
