@@ -22,7 +22,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * stroke operations.
  * @property {import("../proj.js").ProjectionLike} projection Projection.
  * @property {import("./State.js").default} [state] Source state.
- * @property {import("../VectorTile.js").TileClass} [tileClass] Class used to instantiate image tiles.
+ * @property {typeof import("../VectorTile.js").default} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/VectorTile}.
  * @property {number} [maxZoom=22] Optional max zoom level.
  * @property {number} [minZoom] Optional min zoom level.
@@ -123,10 +123,9 @@ class VectorTile extends UrlTile {
     this.overlaps_ = options.overlaps == undefined ? true : options.overlaps;
 
     /**
-       * @protected
-       * @type {function(new: Tile, import("../tilecoord.js").TileCoord, TileState, string,
-       *        import("../format/Feature.js").default, import("../Tile.js").LoadFunction)}
-       */
+     * @protected
+     * @type {typeof import("../VectorTile.js").default}
+     */
     this.tileClass = options.tileClass ? options.tileClass : Tile;
 
     /**
