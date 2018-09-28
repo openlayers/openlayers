@@ -159,29 +159,32 @@ class Lexer {
    */
   nextToken() {
     const c = this.nextChar_();
-    const token = {position: this.index_, value: c};
+    const position = this.index_;
+    /** @type {number|string} */
+    let value = c;
+    let type;
 
     if (c == '(') {
-      token.type = TokenType.LEFT_PAREN;
+      type = TokenType.LEFT_PAREN;
     } else if (c == ',') {
-      token.type = TokenType.COMMA;
+      type = TokenType.COMMA;
     } else if (c == ')') {
-      token.type = TokenType.RIGHT_PAREN;
+      type = TokenType.RIGHT_PAREN;
     } else if (this.isNumeric_(c) || c == '-') {
-      token.type = TokenType.NUMBER;
-      token.value = this.readNumber_();
+      type = TokenType.NUMBER;
+      value = this.readNumber_();
     } else if (this.isAlpha_(c)) {
-      token.type = TokenType.TEXT;
-      token.value = this.readText_();
+      type = TokenType.TEXT;
+      value = this.readText_();
     } else if (this.isWhiteSpace_(c)) {
       return this.nextToken();
     } else if (c === '') {
-      token.type = TokenType.EOF;
+      type = TokenType.EOF;
     } else {
       throw new Error('Unexpected character: ' + c);
     }
 
-    return token;
+    return {position: position, value: value, type: type};
   }
 
   /**
@@ -372,7 +375,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} All points in a polygon.
+   * @return {!Array<!Array<!Array<number>>>} All points in a polygon.
    * @private
    */
   parsePolygonText_() {
@@ -409,8 +412,8 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} All linestring points
-   *                                        in a multilinestring.
+   * @return {!Array<!Array<!Array<number>>>} All linestring points
+   *                                          in a multilinestring.
    * @private
    */
   parseMultiLineStringText_() {
@@ -426,7 +429,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} All polygon points in a multipolygon.
+   * @return {!Array<!Array<!Array<!Array<number>>>>} All polygon points in a multipolygon.
    * @private
    */
   parseMultiPolygonText_() {
@@ -451,7 +454,7 @@ class Parser {
     for (let i = 0; i < dimensions; ++i) {
       const token = this.token_;
       if (this.match(TokenType.NUMBER)) {
-        coordinates.push(token.value);
+        coordinates.push(/** @type {number} */ (token.value));
       } else {
         break;
       }
@@ -487,7 +490,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} An array of points.
+   * @return {!Array<!Array<!Array<number>>>} An array of points.
    * @private
    */
   parseLineStringTextList_() {
@@ -499,7 +502,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} An array of points.
+   * @return {!Array<!Array<!Array<!Array<number>>>>} An array of points.
    * @private
    */
   parsePolygonTextList_() {
