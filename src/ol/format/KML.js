@@ -656,7 +656,7 @@ class KML extends XMLFeature {
    * @return {string|undefined} Name.
    */
   readNameFromDocument(doc) {
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         const name = this.readNameFromNode(/** @type {Element} */ (n));
         if (name) {
@@ -722,7 +722,7 @@ class KML extends XMLFeature {
    */
   readNetworkLinksFromDocument(doc) {
     const networkLinks = [];
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         extend(networkLinks, this.readNetworkLinksFromNode(/** @type {Element} */ (n)));
       }
@@ -784,7 +784,7 @@ class KML extends XMLFeature {
    */
   readRegionFromDocument(doc) {
     const regions = [];
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         extend(regions, this.readRegionFromNode(/** @type {Element} */ (n)));
       }
@@ -838,6 +838,7 @@ class KML extends XMLFeature {
     kml.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', SCHEMA_LOCATION);
 
     const /** @type {import("../xml.js").NodeStackItem} */ context = {node: kml};
+    /** @type {!Object<string, (Array<Feature>|Feature|undefined)>} */
     const properties = {};
     if (features.length > 1) {
       properties['Document'] = features;
@@ -931,7 +932,7 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
 
       if (drawName) {
         name = /** @type {string} */ (feature.get('name'));
-        drawName = drawName && name;
+        drawName = drawName && !!name;
       }
 
       if (style) {
@@ -1714,11 +1715,13 @@ function readStyle(node, objectStack) {
   if (fill !== undefined && !fill) {
     fillStyle = null;
   }
-  let imageStyle = /** @type {import("../style/Image.js").default} */
-      ('imageStyle' in styleObject ?
-        styleObject['imageStyle'] : DEFAULT_IMAGE_STYLE);
-  if (imageStyle == DEFAULT_NO_IMAGE_STYLE) {
-    imageStyle = undefined;
+  let imageStyle;
+  if ('imageStyle' in styleObject) {
+    if (styleObject['imageStyle'] != DEFAULT_NO_IMAGE_STYLE) {
+      imageStyle = styleObject['imageStyle'];
+    }
+  } else {
+    imageStyle = DEFAULT_IMAGE_STYLE;
   }
   const textStyle = /** @type {Text} */
       ('textStyle' in styleObject ?
@@ -2666,7 +2669,7 @@ function writePlacemark(node, feature, objectStack) {
 
   // set id
   if (feature.getId()) {
-    node.setAttribute('id', feature.getId());
+    node.setAttribute('id', /** @type {string} */ (feature.getId()));
   }
 
   // serialize properties (properties unknown to KML are not serialized)
@@ -2713,7 +2716,7 @@ function writePlacemark(node, feature, objectStack) {
   const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
   let geometry = feature.getGeometry();
   if (geometry) {
-    geometry = transformWithOptions(geometry, true, options);
+    geometry = /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, true, options));
   }
   pushSerializeAndPop(context, PLACEMARK_SERIALIZERS,
     GEOMETRY_NODE_FACTORY, [geometry], objectStack);
@@ -2918,8 +2921,8 @@ function writeStyle(node, style, objectStack) {
  * @param {Vec2} vec2 Vec2.
  */
 function writeVec2(node, vec2) {
-  node.setAttribute('x', vec2.x);
-  node.setAttribute('y', vec2.y);
+  node.setAttribute('x', String(vec2.x));
+  node.setAttribute('y', String(vec2.y));
   node.setAttribute('xunits', vec2.xunits);
   node.setAttribute('yunits', vec2.yunits);
 }
