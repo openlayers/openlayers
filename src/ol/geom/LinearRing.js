@@ -42,9 +42,9 @@ class LinearRing extends SimpleGeometry {
     this.maxDeltaRevision_ = -1;
 
     if (opt_layout !== undefined && !Array.isArray(coordinates[0])) {
-      this.setFlatCoordinates(opt_layout, coordinates);
+      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
     } else {
-      this.setCoordinates(coordinates, opt_layout);
+      this.setCoordinates(/** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates), opt_layout);
     }
 
   }
@@ -118,7 +118,9 @@ class LinearRing extends SimpleGeometry {
   /**
    * @inheritDoc
    */
-  intersectsExtent(extent) {}
+  intersectsExtent(extent) {
+    return false;
+  }
 
   /**
    * Set the coordinates of the linear ring.

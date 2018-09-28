@@ -52,16 +52,17 @@ class MultiLineString extends SimpleGeometry {
     this.maxDeltaRevision_ = -1;
 
     if (Array.isArray(coordinates[0])) {
-      this.setCoordinates(coordinates, opt_layout);
+      this.setCoordinates(/** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (coordinates), opt_layout);
     } else if (opt_layout !== undefined && opt_ends) {
-      this.setFlatCoordinates(opt_layout, coordinates);
+      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
       this.ends_ = opt_ends;
     } else {
       let layout = this.getLayout();
+      const lineStrings = /** @type {Array<import("../geom.js").MultiLineString>} */ (coordinates);
       const flatCoordinates = [];
       const ends = [];
-      for (let i = 0, ii = coordinates.length; i < ii; ++i) {
-        const lineString = coordinates[i];
+      for (let i = 0, ii = lineStrings.length; i < ii; ++i) {
+        const lineString = lineStrings[i];
         if (i === 0) {
           layout = lineString.getLayout();
         }
