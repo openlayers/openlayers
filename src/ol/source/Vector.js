@@ -783,12 +783,6 @@ class VectorSource extends Source {
 
 
   /**
-   * @override
-   */
-  getResolutions() {}
-
-
-  /**
    * Get the url associated with this source.
    *
    * @return {string|import("../featureloader.js").FeatureUrlFunction|undefined} The url.
