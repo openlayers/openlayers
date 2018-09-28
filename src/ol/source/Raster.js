@@ -147,7 +147,9 @@ class RasterSource extends ImageSource {
    * @param {Options} options Options.
    */
   constructor(options) {
-    super({});
+    super({
+      projection: null
+    });
 
     /**
      * @private
@@ -190,6 +192,10 @@ class RasterSource extends ImageSource {
       this.changed.bind(this));
 
     const layerStatesArray = getLayerStatesArray(this.renderers_);
+
+    /**
+     * @type {Object<number, import("../layer/Layer.js").State>}
+     */
     const layerStates = {};
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
