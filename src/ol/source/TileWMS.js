@@ -18,6 +18,56 @@ import {compareVersions} from '../string.js';
 import {appendParams} from '../uri.js';
 
 /**
+ * @param {import("../tilecoord.js").TileCoord} tileCoord The tile coordinate
+ * @param {number} pixelRatio The pixel ratio
+ * @param {import("../proj/Projection.js").default} projection The projection
+ * @return {string|undefined} The tile URL
+ * @this {TileWMS}
+ */
+const fixedTileUrlFunction = function(tileCoord, pixelRatio, projection) {
+
+  let tileGrid = this.getTileGrid();
+  if (!tileGrid) {
+    tileGrid = this.getTileGridForProjection(projection);
+  }
+
+  if (tileGrid.getResolutions().length <= tileCoord[0]) {
+    return undefined;
+  }
+
+  if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
+    pixelRatio = 1;
+  }
+
+  const tileResolution = tileGrid.getResolution(tileCoord[0]);
+  let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
+  let tileSize = toSize(
+    tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+
+  const gutter = this.gutter_;
+  if (gutter !== 0) {
+    tileSize = bufferSize(tileSize, gutter, this.tmpSize);
+    tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
+  }
+
+  if (pixelRatio != 1) {
+    tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
+  }
+
+  const baseParams = {
+    'SERVICE': 'WMS',
+    'VERSION': DEFAULT_WMS_VERSION,
+    'REQUEST': 'GetMap',
+    'FORMAT': 'image/png',
+    'TRANSPARENT': true
+  };
+  assign(baseParams, this.params_);
+
+  return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
+    pixelRatio, projection, baseParams);
+};
+
+/**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize=2048] Cache size.
@@ -103,6 +153,8 @@ class TileWMS extends TileImage {
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
       transition: options.transition
     });
+
+    this.setTileUrlFunction(fixedTileUrlFunction.bind(this));
 
     /**
      * @private
@@ -319,52 +371,6 @@ class TileWMS extends TileImage {
       res[i++] = key + '-' + this.params_[key];
     }
     return res.join('/');
-  }
-
-  /**
-   * @inheritDoc
-   */
-  fixedTileUrlFunction(tileCoord, pixelRatio, projection) {
-
-    let tileGrid = this.getTileGrid();
-    if (!tileGrid) {
-      tileGrid = this.getTileGridForProjection(projection);
-    }
-
-    if (tileGrid.getResolutions().length <= tileCoord[0]) {
-      return undefined;
-    }
-
-    if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
-      pixelRatio = 1;
-    }
-
-    const tileResolution = tileGrid.getResolution(tileCoord[0]);
-    let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-    let tileSize = toSize(
-      tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
-
-    const gutter = this.gutter_;
-    if (gutter !== 0) {
-      tileSize = bufferSize(tileSize, gutter, this.tmpSize);
-      tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
-    }
-
-    if (pixelRatio != 1) {
-      tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
-    }
-
-    const baseParams = {
-      'SERVICE': 'WMS',
-      'VERSION': DEFAULT_WMS_VERSION,
-      'REQUEST': 'GetMap',
-      'FORMAT': 'image/png',
-      'TRANSPARENT': true
-    };
-    assign(baseParams, this.params_);
-
-    return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      pixelRatio, projection, baseParams);
   }
 
   /**
