@@ -107,7 +107,7 @@ class XMLFeature extends FeatureFormat {
   readFeaturesFromDocument(doc, opt_options) {
     /** @type {Array<import("../Feature.js").default>} */
     const features = [];
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         extend(features, this.readFeaturesFromNode(n, opt_options));
       }
