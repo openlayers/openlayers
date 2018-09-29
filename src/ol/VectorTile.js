@@ -12,12 +12,6 @@ import TileState from './TileState.js';
 const DEFAULT_EXTENT = [0, 0, 4096, 4096];
 
 
-/**
- * @typedef {function(new: VectorTile, import("./tilecoord.js").TileCoord,
- * TileState, string, ?string, import("./Tile.js").LoadFunction)} TileClass
- * @api
- */
-
 class VectorTile extends Tile {
 
   /**
