@@ -8,8 +8,7 @@ import {listenOnce, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 
 /**
- * @typedef {function(new: ImageTile, import("./tilecoord.js").TileCoord,
- * TileState, string, ?string, import("./Tile.js").LoadFunction)} TileClass
+ * @typedef {typeof ImageTile} TileClass
  * @api
  */
 

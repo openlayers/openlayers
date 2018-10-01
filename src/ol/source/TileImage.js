@@ -93,8 +93,7 @@ class TileImage extends UrlTile {
 
     /**
      * @protected
-     * @type {function(new: ImageTile, import("../tilecoord.js").TileCoord, TileState, string,
-     *        ?string, import("../Tile.js").LoadFunction, import("../Tile.js").Options=)}
+     * @type {typeof ImageTile}
      */
     this.tileClass = options.tileClass !== undefined ?
       options.tileClass : ImageTile;

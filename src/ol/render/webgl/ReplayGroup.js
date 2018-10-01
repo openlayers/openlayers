@@ -19,9 +19,7 @@ import WebGLTextReplay from '../webgl/TextReplay.js';
 const HIT_DETECTION_SIZE = [1, 1];
 
 /**
- * @type {Object<import("../ReplayType.js").default,
- *                function(new: import("./Replay.js").default, number,
- *                import("../../extent.js").Extent)>}
+ * @type {Object<import("../ReplayType.js").default, typeof import("./Replay.js").default>}
  */
 const BATCH_CONSTRUCTORS = {
   'Circle': WebGLCircleReplay,

@@ -13,7 +13,7 @@ import {get as getProjection} from '../proj.js';
 
 /**
  * @typedef {Object} Options
- * @property {Array<function(new: import("../format/Feature.js").default)>} [formatConstructors] Format constructors.
+ * @property {Array<typeof import("../format/Feature.js").default>} [formatConstructors] Format constructors.
  * @property {import("../source/Vector.js").default} [source] Optional vector source where features will be added.  If a source is provided
  * all existing features will be removed and new features will be added when
  * they are dropped on the target.  If you want to add features to a vector
@@ -101,7 +101,7 @@ class DragAndDrop extends Interaction {
 
     /**
      * @private
-     * @type {Array<function(new: import("../format/Feature.js").default)>}
+     * @type {Array<typeof import("../format/Feature.js").default>}
      */
     this.formatConstructors_ = options.formatConstructors ?
       options.formatConstructors : [];
