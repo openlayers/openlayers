@@ -131,7 +131,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Node|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
-   * @return {import("../Feature.js").default} Feature.
+   * @return {import("../Feature.js").FeatureLike} Feature.
    */
   readFeature(source, opt_options) {}
 
@@ -141,7 +141,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Node|ArrayBuffer|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<import("../Feature.js").FeatureLike>} Features.
    */
   readFeatures(source, opt_options) {}
 

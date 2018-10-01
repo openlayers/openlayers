@@ -9,6 +9,14 @@ import Geometry from './geom/Geometry.js';
 import Style from './style/Style.js';
 
 /**
+ * @typedef {typeof Feature|typeof import("./render/Feature.js").default} FeatureClass
+ */
+
+/**
+ * @typedef {Feature|import("./render/Feature.js").default} FeatureLike
+ */
+
+/**
  * @classdesc
  * A vector object for geographic features with a geometry and other
  * attribute properties, similar to the features in vector file formats like
