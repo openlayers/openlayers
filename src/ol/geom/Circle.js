@@ -194,7 +194,9 @@ class Circle extends SimpleGeometry {
   /**
    * @inheritDoc
    */
-  getCoordinates() {}
+  getCoordinates() {
+    return null;
+  }
 
   /**
    * @inheritDoc
