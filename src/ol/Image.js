@@ -22,7 +22,7 @@ import {getHeight} from './extent.js';
  * post requests or - in general - through XHR requests, where the src of the
  * image element would be set to a data URI when the content is loaded.
  *
- * @typedef {function(import("./Image.js").default, string)} LoadFunction
+ * @typedef {function(ImageWrapper, string)} LoadFunction
  * @api
  */
 
@@ -64,7 +64,7 @@ class ImageWrapper extends ImageBase {
 
     /**
      * @protected
-     * @type {import("./ImageState.js").default}
+     * @type {ImageState}
      */
     this.state = ImageState.IDLE;
 

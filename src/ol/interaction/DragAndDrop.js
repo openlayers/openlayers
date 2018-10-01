@@ -244,7 +244,7 @@ class DragAndDrop extends Interaction {
 
 /**
  * @param {DragEvent} event Event.
- * @this {import("./DragAndDrop.js").default}
+ * @this {DragAndDrop}
  */
 function handleDrop(event) {
   const files = event.dataTransfer.files;

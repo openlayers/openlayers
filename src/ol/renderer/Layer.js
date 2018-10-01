@@ -7,7 +7,6 @@ import Observable from '../Observable.js';
 import TileState from '../TileState.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
-import {FALSE, VOID} from '../functions.js';
 import SourceState from '../source/State.js';
 
 class LayerRenderer extends Observable {
@@ -56,6 +55,17 @@ class LayerRenderer extends Observable {
   }
 
   /**
+   * @abstract
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param {function((import("../Feature.js").default|import("../render/Feature.js").default), import("../layer/Layer.js").default): T} callback Feature callback.
+   * @return {T|void} Callback result.
+   * @template T
+   */
+  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {}
+
+  /**
    * @return {import("../layer/Layer.js").default} Layer.
    */
   getLayer() {
@@ -72,6 +82,15 @@ class LayerRenderer extends Observable {
     if (image.getState() === ImageState.LOADED) {
       this.renderIfReadyAndVisible();
     }
+  }
+
+  /**
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @return {boolean} Is there a feature at the given coordinate?
+   */
+  hasFeatureAtCoordinate(coordinate, frameState) {
+    return false;
   }
 
   /**
@@ -217,26 +236,5 @@ class LayerRenderer extends Observable {
     }
   }
 }
-
-
-/**
- * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
- * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
- * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {function(this: S, (import("../Feature.js").default|import("../render/Feature.js").default), import("../layer/Layer.js").default): T} callback Feature callback.
- * @param {S} thisArg Value to use as `this` when executing `callback`.
- * @return {T|void} Callback result.
- * @template S,T
- */
-LayerRenderer.prototype.forEachFeatureAtCoordinate = VOID;
-
-
-/**
- * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
- * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
- * @return {boolean} Is there a feature at the given coordinate?
- */
-LayerRenderer.prototype.hasFeatureAtCoordinate = FALSE;
-
 
 export default LayerRenderer;

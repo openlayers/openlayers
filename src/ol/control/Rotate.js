@@ -150,7 +150,7 @@ class Rotate extends Control {
 /**
  * Update the rotate control element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {import("./Rotate.js").default}
+ * @this {Rotate}
  * @api
  */
 export function render(mapEvent) {

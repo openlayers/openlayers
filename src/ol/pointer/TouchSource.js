@@ -51,7 +51,7 @@ const POINTER_TYPE = 'touch';
  * Handler for `touchstart`, triggers `pointerover`,
  * `pointerenter` and `pointerdown` events.
  *
- * @this {import("./TouchSource.js").default}
+ * @this {TouchSource}
  * @param {TouchEvent} inEvent The in event.
  */
 function touchstart(inEvent) {
@@ -65,7 +65,7 @@ function touchstart(inEvent) {
 /**
  * Handler for `touchmove`.
  *
- * @this {import("./TouchSource.js").default}
+ * @this {TouchSource}
  * @param {TouchEvent} inEvent The in event.
  */
 function touchmove(inEvent) {
@@ -76,7 +76,7 @@ function touchmove(inEvent) {
  * Handler for `touchend`, triggers `pointerup`,
  * `pointerout` and `pointerleave` events.
  *
- * @this {import("./TouchSource.js").default}
+ * @this {TouchSource}
  * @param {TouchEvent} inEvent The event.
  */
 function touchend(inEvent) {
@@ -88,7 +88,7 @@ function touchend(inEvent) {
  * Handler for `touchcancel`, triggers `pointercancel`,
  * `pointerout` and `pointerleave` events.
  *
- * @this {import("./TouchSource.js").default}
+ * @this {TouchSource}
  * @param {TouchEvent} inEvent The in event.
  */
 function touchcancel(inEvent) {
@@ -228,9 +228,9 @@ class TouchSource extends EventSource {
     e.detail = this.clickCount_;
     e.button = 0;
     e.buttons = 1;
-    e.width = inTouch.webkitRadiusX || inTouch.radiusX || 0;
-    e.height = inTouch.webkitRadiusY || inTouch.radiusY || 0;
-    e.pressure = inTouch.webkitForce || inTouch.force || 0.5;
+    e.width = inTouch.radiusX || 0;
+    e.height = inTouch.radiusY || 0;
+    e.pressure = inTouch.force || 0.5;
     e.isPrimary = this.isPrimaryTouch_(inTouch);
     e.pointerType = POINTER_TYPE;
 

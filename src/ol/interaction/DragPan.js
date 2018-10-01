@@ -78,7 +78,7 @@ class DragPan extends PointerInteraction {
 
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @this {import("./DragPan.js").default}
+ * @this {DragPan}
  */
 function handleDragEvent(mapBrowserEvent) {
   if (!this.panning_) {
@@ -116,7 +116,7 @@ function handleDragEvent(mapBrowserEvent) {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {import("./DragPan.js").default}
+ * @this {DragPan}
  */
 function handleUpEvent(mapBrowserEvent) {
   const map = mapBrowserEvent.map;
@@ -157,7 +157,7 @@ function handleUpEvent(mapBrowserEvent) {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {import("./DragPan.js").default}
+ * @this {DragPan}
  */
 function handleDownEvent(mapBrowserEvent) {
   if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {

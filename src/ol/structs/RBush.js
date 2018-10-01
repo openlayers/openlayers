@@ -228,12 +228,12 @@ class RBush {
 
 
   /**
-   * @param {import("./RBush.js").default} rbush R-Tree.
+   * @param {RBush} rbush R-Tree.
    */
   concat(rbush) {
     this.rbush_.load(rbush.rbush_.all());
     for (const i in rbush.items_) {
-      this.items_[i | 0] = rbush.items_[i | 0];
+      this.items_[i] = rbush.items_[i];
     }
   }
 

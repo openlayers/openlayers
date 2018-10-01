@@ -9,41 +9,41 @@ import {getValues} from '../obj.js';
 
 
 /**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @this {import("./Pointer.js").default}
+ * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {PointerInteraction}
  */
 const handleDragEvent = VOID;
 
 
 /**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+ * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Capture dragging.
- * @this {import("./Pointer.js").default}
+ * @this {PointerInteraction}
  */
 const handleUpEvent = FALSE;
 
 
 /**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+ * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Capture dragging.
- * @this {import("./Pointer.js").default}
+ * @this {PointerInteraction}
  */
 const handleDownEvent = FALSE;
 
 
 /**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @this {import("./Pointer.js").default}
+ * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
+ * @this {PointerInteraction}
  */
 const handleMoveEvent = VOID;
 
 
 /**
  * @typedef {Object} Options
- * @property {function(import("../MapBrowserPointerEvent.js").default):boolean} [handleDownEvent]
+ * @property {function(MapBrowserPointerEvent):boolean} [handleDownEvent]
  * Function handling "down" events. If the function returns `true` then a drag
  * sequence is started.
- * @property {function(import("../MapBrowserPointerEvent.js").default)} [handleDragEvent]
+ * @property {function(MapBrowserPointerEvent)} [handleDragEvent]
  * Function handling "drag" events. This function is called on "move" events
  * during a drag sequence.
  * @property {function(import("../MapBrowserEvent.js").default):boolean} [handleEvent]
@@ -51,11 +51,11 @@ const handleMoveEvent = VOID;
  * dispatched to the map. The function may return `false` to prevent the
  * propagation of the event to other interactions in the map's interactions
  * chain.
- * @property {function(import("../MapBrowserPointerEvent.js").default)} [handleMoveEvent]
+ * @property {function(MapBrowserPointerEvent)} [handleMoveEvent]
  * Function handling "move" events. This function is called on "move" events,
  * also during a drag sequence (so during a drag sequence both the
  * `handleDragEvent` function and this function are called).
- * @property {function(import("../MapBrowserPointerEvent.js").default):boolean} [handleUpEvent]
+ * @property {function(MapBrowserPointerEvent):boolean} [handleUpEvent]
  *  Function handling "up" events. If the function returns `false` then the
  * current drag sequence is stopped.
  * @property {function(boolean):boolean} stopDown
@@ -88,28 +88,28 @@ class PointerInteraction extends Interaction {
     });
 
     /**
-     * @type {function(import("../MapBrowserPointerEvent.js").default):boolean}
+     * @type {function(MapBrowserPointerEvent):boolean}
      * @private
      */
     this.handleDownEvent_ = options.handleDownEvent ?
       options.handleDownEvent : handleDownEvent;
 
     /**
-     * @type {function(import("../MapBrowserPointerEvent.js").default)}
+     * @type {function(MapBrowserPointerEvent)}
      * @private
      */
     this.handleDragEvent_ = options.handleDragEvent ?
       options.handleDragEvent : handleDragEvent;
 
     /**
-     * @type {function(import("../MapBrowserPointerEvent.js").default)}
+     * @type {function(MapBrowserPointerEvent)}
      * @private
      */
     this.handleMoveEvent_ = options.handleMoveEvent ?
       options.handleMoveEvent : handleMoveEvent;
 
     /**
-     * @type {function(import("../MapBrowserPointerEvent.js").default):boolean}
+     * @type {function(MapBrowserPointerEvent):boolean}
      * @private
      */
     this.handleUpEvent_ = options.handleUpEvent ?
@@ -144,7 +144,7 @@ class PointerInteraction extends Interaction {
   }
 
   /**
-   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+   * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
    * @private
    */
   updateTrackedPointers_(mapBrowserEvent) {
@@ -185,7 +185,7 @@ export function centroid(pointerEvents) {
 
 
 /**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
+ * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Whether the event is a pointerdown, pointerdrag
  *     or pointerup event.
  */
@@ -203,7 +203,7 @@ function isPointerDraggingEvent(mapBrowserEvent) {
  * detected.
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {import("./Pointer.js").default}
+ * @this {PointerInteraction}
  * @api
  */
 export function handleEvent(mapBrowserEvent) {

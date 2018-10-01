@@ -63,7 +63,7 @@ import {appendParams} from '../uri.js';
  */
 class WMTS extends TileImage {
   /**
-   * @param {Options=} options WMTS options.
+   * @param {Options} options WMTS options.
    */
   constructor(options) {
 
@@ -460,7 +460,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
 /**
  * @param {string} template Template.
  * @return {import("../Tile.js").UrlFunction} Tile URL function.
- * @this {import("./WMTS.js").default}
+ * @this {WMTS}
  */
 function createFromWMTSTemplate(template) {
   const requestEncoding = this.requestEncoding_;
@@ -492,7 +492,8 @@ function createFromWMTSTemplate(template) {
       return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
     });
 
-  const tileGrid = this.tileGrid;
+  const tileGrid = /** @type {import("../tilegrid/WMTS.js").default} */ (
+    this.tileGrid);
   const dimensions = this.dimensions_;
 
   return (

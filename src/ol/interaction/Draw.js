@@ -30,16 +30,16 @@ import {createEditingStyle} from '../style/Style.js';
 
 /**
  * @typedef {Object} Options
- * @property {import("../geom/GeometryType.js").default} type Geometry type of
+ * @property {GeometryType} type Geometry type of
  * the geometries being drawn with this instance.
  * @property {number} [clickTolerance=6] The maximum distance in pixels between
  * "down" and "up" for a "up" event to be considered a "click" event and
  * actually add a point/vertex to the geometry being drawn.  The default of `6`
  * was chosen for the draw interaction to behave correctly on mouse as well as
  * on touch devices.
- * @property {import("../Collection.js").default<import("../Feature.js").default>} [features]
+ * @property {import("../Collection.js").default<Feature>} [features]
  * Destination collection for the drawn features.
- * @property {import("../source/Vector.js").default} [source] Destination source for
+ * @property {VectorSource} [source] Destination source for
  * the drawn features.
  * @property {number} [dragVertexDelay=500] Delay in milliseconds after pointerdown
  * before the current vertex can be dragged to its exact position.
@@ -131,7 +131,7 @@ const DrawEventType = {
 class DrawEvent extends Event {
   /**
    * @param {DrawEventType} type Type.
-   * @param {import("../Feature.js").default} feature The feature drawn.
+   * @param {Feature} feature The feature drawn.
    */
   constructor(type, feature) {
 
@@ -139,7 +139,7 @@ class DrawEvent extends Event {
 
     /**
      * The feature being drawn.
-     * @type {import("../Feature.js").default}
+     * @type {Feature}
      * @api
      */
     this.feature = feature;
@@ -201,14 +201,14 @@ class Draw extends PointerInteraction {
 
     /**
      * Target source for drawn features.
-     * @type {import("../source/Vector.js").default}
+     * @type {VectorSource}
      * @private
      */
     this.source_ = options.source ? options.source : null;
 
     /**
      * Target collection for drawn features.
-     * @type {import("../Collection.js").default<import("../Feature.js").default>}
+     * @type {import("../Collection.js").default<Feature>}
      * @private
      */
     this.features_ = options.features ? options.features : null;
@@ -222,10 +222,10 @@ class Draw extends PointerInteraction {
 
     /**
      * Geometry type.
-     * @type {import("../geom/GeometryType.js").default}
+     * @type {GeometryType}
      * @private
      */
-    this.type_ = /** @type {import("../geom/GeometryType.js").default} */ (options.type);
+    this.type_ = /** @type {GeometryType} */ (options.type);
 
     /**
      * Drawing mode (derived from geometry type.
@@ -278,7 +278,7 @@ class Draw extends PointerInteraction {
          * @return {import("../geom/SimpleGeometry.js").default} A geometry.
          */
         geometryFunction = function(coordinates, opt_geometry) {
-          const circle = opt_geometry ? /** @type {import("../geom/Circle.js").default} */ (opt_geometry) :
+          const circle = opt_geometry ? /** @type {Circle} */ (opt_geometry) :
             new Circle([NaN, NaN]);
           const squaredLength = squaredCoordinateDistance(
             coordinates[0], coordinates[1]);
@@ -344,14 +344,14 @@ class Draw extends PointerInteraction {
 
     /**
      * Sketch feature.
-     * @type {import("../Feature.js").default}
+     * @type {Feature}
      * @private
      */
     this.sketchFeature_ = null;
 
     /**
      * Sketch point.
-     * @type {import("../Feature.js").default}
+     * @type {Feature}
      * @private
      */
     this.sketchPoint_ = null;
@@ -365,7 +365,7 @@ class Draw extends PointerInteraction {
 
     /**
      * Sketch line. Used when drawing polygon.
-     * @type {import("../Feature.js").default}
+     * @type {Feature}
      * @private
      */
     this.sketchLine_ = null;
@@ -389,7 +389,7 @@ class Draw extends PointerInteraction {
 
     /**
      * Draw overlay where our sketch features are drawn.
-     * @type {import("../layer/Vector.js").default}
+     * @type {VectorLayer}
      * @private
      */
     this.overlay_ = new VectorLayer({
@@ -443,7 +443,7 @@ class Draw extends PointerInteraction {
 
   /**
    * Get the overlay layer that this interaction renders sketch features to.
-   * @return {import("../layer/Vector.js").default} Overlay layer.
+   * @return {VectorLayer} Overlay layer.
    * @api
    */
   getOverlay() {
@@ -530,7 +530,7 @@ class Draw extends PointerInteraction {
       this.sketchPoint_ = new Feature(new Point(coordinates));
       this.updateSketchFeatures_();
     } else {
-      const sketchPointGeom = /** @type {import("../geom/Point.js").default} */ (this.sketchPoint_.getGeometry());
+      const sketchPointGeom = /** @type {Point} */ (this.sketchPoint_.getGeometry());
       sketchPointGeom.setCoordinates(coordinates);
     }
   }
@@ -591,7 +591,7 @@ class Draw extends PointerInteraction {
     last[1] = coordinate[1];
     this.geometryFunction_(/** @type {!Array<import("../coordinate.js").Coordinate>} */ (this.sketchCoords_), geometry);
     if (this.sketchPoint_) {
-      const sketchPointGeom = /** @type {import("../geom/Point.js").default} */ (this.sketchPoint_.getGeometry());
+      const sketchPointGeom = /** @type {Point} */ (this.sketchPoint_.getGeometry());
       sketchPointGeom.setCoordinates(coordinate);
     }
     let sketchLineGeom;
@@ -601,7 +601,7 @@ class Draw extends PointerInteraction {
         this.sketchLine_ = new Feature();
       }
       const ring = geometry.getLinearRing(0);
-      sketchLineGeom = /** @type {import("../geom/LineString.js").default} */ (this.sketchLine_.getGeometry());
+      sketchLineGeom = /** @type {LineString} */ (this.sketchLine_.getGeometry());
       if (!sketchLineGeom) {
         sketchLineGeom = new LineString(ring.getFlatCoordinates(), ring.getLayout());
         this.sketchLine_.setGeometry(sketchLineGeom);
@@ -611,7 +611,7 @@ class Draw extends PointerInteraction {
         sketchLineGeom.changed();
       }
     } else if (this.sketchLineCoords_) {
-      sketchLineGeom = /** @type {import("../geom/LineString.js").default} */ (this.sketchLine_.getGeometry());
+      sketchLineGeom = /** @type {LineString} */ (this.sketchLine_.getGeometry());
       sketchLineGeom.setCoordinates(this.sketchLineCoords_);
     }
     this.updateSketchFeatures_();
@@ -680,7 +680,7 @@ class Draw extends PointerInteraction {
     } else if (this.mode_ === Mode.POLYGON) {
       coordinates = this.sketchCoords_[0];
       coordinates.splice(-2, 1);
-      sketchLineGeom = /** @type {import("../geom/LineString.js").default} */ (this.sketchLine_.getGeometry());
+      sketchLineGeom = /** @type {LineString} */ (this.sketchLine_.getGeometry());
       sketchLineGeom.setCoordinates(coordinates);
       this.geometryFunction_(this.sketchCoords_, geometry);
     }
@@ -739,7 +739,7 @@ class Draw extends PointerInteraction {
 
   /**
    * Stop drawing without adding the sketch feature to the target layer.
-   * @return {import("../Feature.js").default} The sketch feature (or null if none).
+   * @return {Feature} The sketch feature (or null if none).
    * @private
    */
   abortDrawing_() {
@@ -758,12 +758,12 @@ class Draw extends PointerInteraction {
    * Extend an existing geometry by adding additional points. This only works
    * on features with `LineString` geometries, where the interaction will
    * extend lines by adding points to the end of the coordinates array.
-   * @param {!import("../Feature.js").default} feature Feature to be extended.
+   * @param {!Feature} feature Feature to be extended.
    * @api
    */
   extend(feature) {
     const geometry = feature.getGeometry();
-    const lineString = /** @type {import("../geom/LineString.js").default} */ (geometry);
+    const lineString = /** @type {LineString} */ (geometry);
     this.sketchFeature_ = feature;
     this.sketchCoords_ = lineString.getCoordinates();
     const last = this.sketchCoords_[this.sketchCoords_.length - 1];
@@ -823,7 +823,7 @@ function getDefaultStyleFunction() {
  * draw or finish the drawing.
  * @param {import("../MapBrowserEvent.js").default} event Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {import("./Draw.js").default}
+ * @this {Draw}
  * @api
  */
 export function handleEvent(event) {
@@ -873,9 +873,9 @@ export function handleEvent(event) {
 
 
 /**
- * @param {import("../MapBrowserPointerEvent.js").default} event Event.
+ * @param {MapBrowserPointerEvent} event Event.
  * @return {boolean} Start drag sequence?
- * @this {import("./Draw.js").default}
+ * @this {Draw}
  */
 function handleDownEvent(event) {
   this.shouldHandle_ = !this.freehand_;
@@ -901,9 +901,9 @@ function handleDownEvent(event) {
 
 
 /**
- * @param {import("../MapBrowserPointerEvent.js").default} event Event.
+ * @param {MapBrowserPointerEvent} event Event.
  * @return {boolean} Stop drag sequence?
- * @this {import("./Draw.js").default}
+ * @this {Draw}
  */
 function handleUpEvent(event) {
   let pass = true;
@@ -963,7 +963,7 @@ export function createRegularPolygon(opt_sides, opt_angle) {
     const end = coordinates[1];
     const radius = Math.sqrt(
       squaredCoordinateDistance(center, end));
-    const geometry = opt_geometry ? /** @type {import("../geom/Polygon.js").default} */ (opt_geometry) :
+    const geometry = opt_geometry ? /** @type {Polygon} */ (opt_geometry) :
       fromCircle(new Circle(center), opt_sides);
     let angle = opt_angle;
     if (!opt_angle) {
@@ -1010,7 +1010,7 @@ export function createBox() {
 /**
  * Get the drawing mode.  The mode for mult-part geometries is the same as for
  * their single-part cousins.
- * @param {import("../geom/GeometryType.js").default} type Geometry type.
+ * @param {GeometryType} type Geometry type.
  * @return {Mode} Drawing mode.
  */
 function getMode(type) {

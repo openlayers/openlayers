@@ -35,7 +35,7 @@ import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
  */
 class Static extends ImageSource {
   /**
-   * @param {Options=} options ImageStatic options.
+   * @param {Options} options ImageStatic options.
    */
   constructor(options) {
     const crossOrigin = options.crossOrigin !== undefined ?

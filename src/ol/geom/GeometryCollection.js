@@ -17,7 +17,7 @@ import {clear} from '../obj.js';
 class GeometryCollection extends Geometry {
 
   /**
-   * @param {Array<import("./Geometry.js").default>=} opt_geometries Geometries.
+   * @param {Array<Geometry>=} opt_geometries Geometries.
    */
   constructor(opt_geometries) {
 
@@ -25,7 +25,7 @@ class GeometryCollection extends Geometry {
 
     /**
      * @private
-     * @type {Array<import("./Geometry.js").default>}
+     * @type {Array<Geometry>}
      */
     this.geometries_ = opt_geometries ? opt_geometries : null;
 
@@ -62,7 +62,7 @@ class GeometryCollection extends Geometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!import("./GeometryCollection.js").default} Clone.
+   * @return {!GeometryCollection} Clone.
    * @override
    * @api
    */
@@ -114,7 +114,7 @@ class GeometryCollection extends Geometry {
 
   /**
    * Return the geometries that make up this geometry collection.
-   * @return {Array<import("./Geometry.js").default>} Geometries.
+   * @return {Array<Geometry>} Geometries.
    * @api
    */
   getGeometries() {
@@ -122,7 +122,7 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @return {Array<import("./Geometry.js").default>} Geometries.
+   * @return {Array<Geometry>} Geometries.
    */
   getGeometriesArray() {
     return this.geometries_;
@@ -228,7 +228,7 @@ class GeometryCollection extends Geometry {
 
   /**
    * Set the geometries that make up this geometry collection.
-   * @param {Array<import("./Geometry.js").default>} geometries Geometries.
+   * @param {Array<Geometry>} geometries Geometries.
    * @api
    */
   setGeometries(geometries) {
@@ -236,7 +236,7 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @param {Array<import("./Geometry.js").default>} geometries Geometries.
+   * @param {Array<Geometry>} geometries Geometries.
    */
   setGeometriesArray(geometries) {
     this.unlistenGeometriesChange_();
@@ -280,8 +280,8 @@ class GeometryCollection extends Geometry {
 
 
 /**
- * @param {Array<import("./Geometry.js").default>} geometries Geometries.
- * @return {Array<import("./Geometry.js").default>} Cloned geometries.
+ * @param {Array<Geometry>} geometries Geometries.
+ * @return {Array<Geometry>} Cloned geometries.
  */
 function cloneGeometries(geometries) {
   const clonedGeometries = [];

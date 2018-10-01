@@ -44,6 +44,9 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * By default the control is shown in the top right corner of the map, but this
  * can be changed by using the css selector `.ol-mouse-position`.
  *
+ * On touch devices, which usually do not have a mouse cursor, the coordinates
+ * of the currently touched position are shown.
+ *
  * @api
  */
 class MousePosition extends Control {
@@ -175,11 +178,13 @@ class MousePosition extends Control {
     if (map) {
       const viewport = map.getViewport();
       this.listenerKeys.push(
-        listen(viewport, EventType.MOUSEMOVE, this.handleMouseMove, this)
+        listen(viewport, EventType.MOUSEMOVE, this.handleMouseMove, this),
+        listen(viewport, EventType.TOUCHSTART, this.handleMouseMove, this)
       );
       if (this.renderOnMouseOut_) {
         this.listenerKeys.push(
-          listen(viewport, EventType.MOUSEOUT, this.handleMouseOut, this)
+          listen(viewport, EventType.MOUSEOUT, this.handleMouseOut, this),
+          listen(viewport, EventType.TOUCHEND, this.handleMouseOut, this)
         );
       }
     }
@@ -244,9 +249,10 @@ class MousePosition extends Control {
 
 
 /**
- * Update the mouseposition element.
+ * Update the projection. Rendering of the coordinates is done in
+ * `handleMouseMove` and `handleMouseUp`.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {import("./MousePosition.js").default}
+ * @this {MousePosition}
  * @api
  */
 export function render(mapEvent) {
@@ -259,7 +265,6 @@ export function render(mapEvent) {
       this.transform_ = null;
     }
   }
-  this.updateHTML_(this.lastMouseMovePixel_);
 }
 
 

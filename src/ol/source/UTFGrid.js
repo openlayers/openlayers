@@ -16,12 +16,19 @@ import TileSource from '../source/Tile.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
+/**
+ * @typedef {Object} UTFGridJSON
+ * @property {Array<string>} grid The grid.
+ * @property {Array<string>} keys The keys.
+ * @property {Object<string, Object>} [data] Optional data.
+ */
+
 
 export class CustomTile extends Tile {
 
   /**
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("../TileState.js").default} state State.
+   * @param {TileState} state State.
    * @param {string} src Image source URI.
    * @param {import("../extent.js").Extent} extent Extent of the tile.
    * @param {boolean} preemptive Load the tile when visible (before it's needed).
@@ -177,9 +184,9 @@ export class CustomTile extends Tile {
    * @private
    */
   handleLoad_(json) {
-    this.grid_ = json.grid;
-    this.keys_ = json.keys;
-    this.data_ = json.data;
+    this.grid_ = json['grid'];
+    this.keys_ = json['keys'];
+    this.data_ = json['data'];
 
     this.state = TileState.EMPTY;
     this.changed();
@@ -258,7 +265,7 @@ export class CustomTile extends Tile {
  * will ever be loaded.
  * @property {boolean} [jsonp=false] Use JSONP with callback to load the TileJSON.
  * Useful when the server does not support CORS..
- * @property {tileJSON} [tileJSON] TileJSON configuration for this source.
+ * @property {import("./TileJSON.js").Config} [tileJSON] TileJSON configuration for this source.
  * If not provided, `url` must be configured.
  * @property {string} [url] TileJSON endpoint that provides the configuration for this source.
  * Request will be made through JSONP. If not provided, `tileJSON` must be configured.
@@ -272,7 +279,7 @@ export class CustomTile extends Tile {
  */
 class UTFGrid extends TileSource {
   /**
-   * @param {Options=} options Source options.
+   * @param {Options} options Source options.
    */
   constructor(options) {
     super({
@@ -335,7 +342,7 @@ class UTFGrid extends TileSource {
     if (!client.status || client.status >= 200 && client.status < 300) {
       let response;
       try {
-        response = /** @type {TileJSON} */(JSON.parse(client.responseText));
+        response = /** @type {import("./TileJSON.js").Config} */(JSON.parse(client.responseText));
       } catch (err) {
         this.handleTileJSONError();
         return;
@@ -408,7 +415,7 @@ class UTFGrid extends TileSource {
   /**
    * TODO: very similar to ol/source/TileJSON#handleTileJSONResponse
    * @protected
-   * @param {TileJSON} tileJSON Tile JSON.
+   * @param {import("./TileJSON.js").Config} tileJSON Tile JSON.
    */
   handleTileJSONResponse(tileJSON) {
 
@@ -416,14 +423,14 @@ class UTFGrid extends TileSource {
 
     const sourceProjection = this.getProjection();
     let extent;
-    if (tileJSON.bounds !== undefined) {
+    if (tileJSON['bounds'] !== undefined) {
       const transform = getTransformFromProjections(
         epsg4326Projection, sourceProjection);
-      extent = applyTransform(tileJSON.bounds, transform);
+      extent = applyTransform(tileJSON['bounds'], transform);
     }
 
-    const minZoom = tileJSON.minzoom || 0;
-    const maxZoom = tileJSON.maxzoom || 22;
+    const minZoom = tileJSON['minzoom'] || 0;
+    const maxZoom = tileJSON['maxzoom'] || 22;
     const tileGrid = createXYZ({
       extent: extentFromProjection(sourceProjection),
       maxZoom: maxZoom,
@@ -431,9 +438,9 @@ class UTFGrid extends TileSource {
     });
     this.tileGrid = tileGrid;
 
-    this.template_ = tileJSON.template;
+    this.template_ = tileJSON['template'];
 
-    const grids = tileJSON.grids;
+    const grids = tileJSON['grids'];
     if (!grids) {
       this.setState(SourceState.ERROR);
       return;
@@ -441,13 +448,13 @@ class UTFGrid extends TileSource {
 
     this.tileUrlFunction_ = createFromTemplates(grids, tileGrid);
 
-    if (tileJSON.attribution !== undefined) {
+    if (tileJSON['attribution'] !== undefined) {
       const attributionExtent = extent !== undefined ?
         extent : epsg4326Projection.getExtent();
 
       this.setAttributions(function(frameState) {
         if (intersects(attributionExtent, frameState.extent)) {
-          return [tileJSON.attribution];
+          return [tileJSON['attribution']];
         }
         return null;
       });

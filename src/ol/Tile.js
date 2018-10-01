@@ -40,7 +40,7 @@ import EventType from './events/EventType.js';
  * });
  * ```
  *
- * @typedef {function(import("./Tile.js").default, string)} LoadFunction
+ * @typedef {function(Tile, string)} LoadFunction
  * @api
  */
 
@@ -78,7 +78,7 @@ class Tile extends EventTarget {
 
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("./TileState.js").default} state State.
+   * @param {TileState} state State.
    * @param {Options=} opt_options Tile options.
    */
   constructor(tileCoord, state, opt_options) {
@@ -93,7 +93,7 @@ class Tile extends EventTarget {
 
     /**
      * @protected
-     * @type {import("./TileState.js").default}
+     * @type {TileState}
      */
     this.state = state;
 
@@ -101,7 +101,7 @@ class Tile extends EventTarget {
      * An "interim" tile for this tile. The interim tile may be used while this
      * one is loading, for "smooth" transitions when changing params/dimensions
      * on the source.
-     * @type {import("./Tile.js").default}
+     * @type {Tile}
      */
     this.interimTile = null;
 
@@ -146,7 +146,7 @@ class Tile extends EventTarget {
    * Get the interim tile most suitable for rendering using the chain of interim
    * tiles. This corresponds to the  most recent tile that has been loaded, if no
    * such tile exists, the original tile is returned.
-   * @return {!import("./Tile.js").default} Best tile for rendering.
+   * @return {!Tile} Best tile for rendering.
    */
   getInterimTile() {
     if (!this.interimTile) {
@@ -180,7 +180,7 @@ class Tile extends EventTarget {
     }
 
     let tile = this.interimTile;
-    let prev = this;
+    let prev = /** @type {Tile} */ (this);
 
     do {
       if (tile.getState() == TileState.LOADED) {
@@ -214,7 +214,7 @@ class Tile extends EventTarget {
   }
 
   /**
-   * @return {import("./TileState.js").default} State.
+   * @return {TileState} State.
    */
   getState() {
     return this.state;
@@ -225,7 +225,7 @@ class Tile extends EventTarget {
    * it is important to set the state correctly to {@link module:ol/TileState~ERROR}
    * when the tile cannot be loaded. Otherwise the tile cannot be removed from
    * the tile queue and will block other requests.
-   * @param {import("./TileState.js").default} state State.
+   * @param {TileState} state State.
    * @api
    */
   setState(state) {

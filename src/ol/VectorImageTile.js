@@ -25,7 +25,7 @@ class VectorImageTile extends Tile {
 
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("./TileState.js").default} state State.
+   * @param {TileState} state State.
    * @param {number} sourceRevision Source revision.
    * @param {import("./format/Feature.js").default} format Feature format.
    * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.
@@ -36,8 +36,7 @@ class VectorImageTile extends Tile {
    * @param {Object<string, import("./VectorTile.js").default>} sourceTiles Source tiles.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("./proj/Projection.js").default} projection Projection.
-   * @param {function(new: import("./VectorTile.js").default, import("./tilecoord.js").TileCoord, import("./TileState.js").default, string,
-   *     import("./format/Feature.js").default, import("./Tile.js").LoadFunction)} tileClass Class to
+   * @param {typeof import("./VectorTile.js").default} tileClass Class to
    *     instantiate for source tiles.
    * @param {function(this: import("./source/VectorTile.js").default, import("./events/Event.js").default)} handleTileChange
    *     Function to call when a source tile's state changes.

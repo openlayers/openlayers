@@ -35,10 +35,10 @@ import {createElementNS, getAllTextContent, isDocument, isNode, makeArrayExtende
 /**
  * @typedef {Object} Vec2
  * @property {number} x
- * @property {import("../style/IconAnchorUnits.js").default} xunits
+ * @property {IconAnchorUnits} xunits
  * @property {number} y
- * @property {import("../style/IconAnchorUnits.js").default} yunits
- * @property {import("../style/IconOrigin.js").default} origin
+ * @property {IconAnchorUnits} yunits
+ * @property {IconOrigin} origin
  */
 
 /**
@@ -79,7 +79,7 @@ const SCHEMA_LOCATION = 'http://www.opengis.net/kml/2.2 ' +
 
 
 /**
- * @type {Object<string, import("../style/IconAnchorUnits.js").default>}
+ * @type {Object<string, IconAnchorUnits>}
  */
 const ICON_ANCHOR_UNITS_MAP = {
   'fraction': IconAnchorUnits.FRACTION,
@@ -190,13 +190,13 @@ const KML_SERIALIZERS = makeStructureNS(
 let DEFAULT_COLOR;
 
 /**
- * @type {import("../style/Fill.js").default}
+ * @type {Fill}
  */
 let DEFAULT_FILL_STYLE = null;
 
 /**
  * Get the default fill style (or null if not yet set).
- * @return {import("../style/Fill.js").default} The default fill style.
+ * @return {Fill} The default fill style.
  */
 export function getDefaultFillStyle() {
   return DEFAULT_FILL_STYLE;
@@ -208,12 +208,12 @@ export function getDefaultFillStyle() {
 let DEFAULT_IMAGE_STYLE_ANCHOR;
 
 /**
- * @type {import("../style/IconAnchorUnits.js").default}
+ * @type {IconAnchorUnits}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS;
 
 /**
- * @type {import("../style/IconAnchorUnits.js").default}
+ * @type {IconAnchorUnits}
  */
 let DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS;
 
@@ -251,57 +251,57 @@ export function getDefaultImageStyle() {
 let DEFAULT_NO_IMAGE_STYLE;
 
 /**
- * @type {import("../style/Stroke.js").default}
+ * @type {Stroke}
  */
 let DEFAULT_STROKE_STYLE = null;
 
 /**
  * Get the default stroke style (or null if not yet set).
- * @return {import("../style/Stroke.js").default} The default stroke style.
+ * @return {Stroke} The default stroke style.
  */
 export function getDefaultStrokeStyle() {
   return DEFAULT_STROKE_STYLE;
 }
 
 /**
- * @type {import("../style/Stroke.js").default}
+ * @type {Stroke}
  */
 let DEFAULT_TEXT_STROKE_STYLE;
 
 /**
- * @type {import("../style/Text.js").default}
+ * @type {Text}
  */
 let DEFAULT_TEXT_STYLE = null;
 
 /**
  * Get the default text style (or null if not yet set).
- * @return {import("../style/Text.js").default} The default text style.
+ * @return {Text} The default text style.
  */
 export function getDefaultTextStyle() {
   return DEFAULT_TEXT_STYLE;
 }
 
 /**
- * @type {import("../style/Style.js").default}
+ * @type {Style}
  */
 let DEFAULT_STYLE = null;
 
 /**
  * Get the default style (or null if not yet set).
- * @return {import("../style/Style.js").default} The default style.
+ * @return {Style} The default style.
  */
 export function getDefaultStyle() {
   return DEFAULT_STYLE;
 }
 
 /**
- * @type {Array<import("../style/Style.js").default>}
+ * @type {Array<Style>}
  */
 let DEFAULT_STYLE_ARRAY = null;
 
 /**
  * Get the default style array (or null if not yet set).
- * @return {Array<import("../style/Style.js").default>} The default style.
+ * @return {Array<Style>} The default style.
  */
 export function getDefaultStyleArray() {
   return DEFAULT_STYLE_ARRAY;
@@ -377,7 +377,7 @@ function createStyleDefaults() {
  * @typedef {Object} Options
  * @property {boolean} [extractStyles=true] Extract styles from the KML.
  * @property {boolean} [showPointNames=true] Show names as labels for placemarks which contain points.
- * @property {Array<import("../style/Style.js").default>} [defaultStyle] Default style. The
+ * @property {Array<Style>} [defaultStyle] Default style. The
  * default default style is the same as Google Earth.
  * @property {boolean} [writeStyles=true] Write styles into KML.
  */
@@ -420,7 +420,7 @@ class KML extends XMLFeature {
 
     /**
      * @private
-     * @type {Array<import("../style/Style.js").default>}
+     * @type {Array<Style>}
      */
     this.defaultStyle_ = options.defaultStyle ?
       options.defaultStyle : DEFAULT_STYLE_ARRAY;
@@ -441,7 +441,7 @@ class KML extends XMLFeature {
 
     /**
      * @private
-     * @type {!Object<string, (Array<import("../style/Style.js").default>|string)>}
+     * @type {!Object<string, (Array<Style>|string)>}
      */
     this.sharedStyles_ = {};
 
@@ -458,7 +458,7 @@ class KML extends XMLFeature {
    * @param {Node} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {Array<import("../Feature.js").default>|undefined} Features.
+   * @return {Array<Feature>|undefined} Features.
    */
   readDocumentOrFolder_(node, objectStack) {
     // FIXME use scope somehow
@@ -470,7 +470,7 @@ class KML extends XMLFeature {
         'Style': this.readSharedStyle_.bind(this),
         'StyleMap': this.readSharedStyleMap_.bind(this)
       });
-    /** @type {Array<import("../Feature.js").default>} */
+    /** @type {Array<Feature>} */
     const features = pushParseAndPop([], parsersNS, node, objectStack, this);
     if (features) {
       return features;
@@ -483,7 +483,7 @@ class KML extends XMLFeature {
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {import("../Feature.js").default|undefined} Feature.
+   * @return {Feature|undefined} Feature.
    */
   readPlacemark_(node, objectStack) {
     const object = pushParseAndPop({'geometry': null},
@@ -656,7 +656,7 @@ class KML extends XMLFeature {
    * @return {string|undefined} Name.
    */
   readNameFromDocument(doc) {
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         const name = this.readNameFromNode(/** @type {Element} */ (n));
         if (name) {
@@ -722,7 +722,7 @@ class KML extends XMLFeature {
    */
   readNetworkLinksFromDocument(doc) {
     const networkLinks = [];
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         extend(networkLinks, this.readNetworkLinksFromNode(/** @type {Element} */ (n)));
       }
@@ -784,7 +784,7 @@ class KML extends XMLFeature {
    */
   readRegionFromDocument(doc) {
     const regions = [];
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         extend(regions, this.readRegionFromNode(/** @type {Element} */ (n)));
       }
@@ -823,7 +823,7 @@ class KML extends XMLFeature {
    * Encode an array of features in the KML format as an XML node. GeometryCollections,
    * MultiPoints, MultiLineStrings, and MultiPolygons are output as MultiGeometries.
    *
-   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {Array<Feature>} features Features.
    * @param {import("./Feature.js").WriteOptions=} opt_options Options.
    * @return {Node} Node.
    * @override
@@ -838,6 +838,7 @@ class KML extends XMLFeature {
     kml.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', SCHEMA_LOCATION);
 
     const /** @type {import("../xml.js").NodeStackItem} */ context = {node: kml};
+    /** @type {!Object<string, (Array<Feature>|Feature|undefined)>} */
     const properties = {};
     if (features.length > 1) {
       properties['Document'] = features;
@@ -855,9 +856,9 @@ class KML extends XMLFeature {
 
 
 /**
- * @param {import("../style/Style.js").default|undefined} foundStyle Style.
+ * @param {Style|undefined} foundStyle Style.
  * @param {string} name Name.
- * @return {import("../style/Style.js").default} style Style.
+ * @return {Style} style Style.
  */
 function createNameStyleFunction(foundStyle, name) {
   let textStyle = null;
@@ -902,10 +903,10 @@ function createNameStyleFunction(foundStyle, name) {
 
 
 /**
- * @param {Array<import("../style/Style.js").default>|undefined} style Style.
+ * @param {Array<Style>|undefined} style Style.
  * @param {string} styleUrl Style URL.
- * @param {Array<import("../style/Style.js").default>} defaultStyle Default style.
- * @param {!Object<string, (Array<import("../style/Style.js").default>|string)>} sharedStyles Shared styles.
+ * @param {Array<Style>} defaultStyle Default style.
+ * @param {!Object<string, (Array<Style>|string)>} sharedStyles Shared styles.
  * @param {boolean|undefined} showPointNames true to show names for point placemarks.
  * @return {import("../style/Style.js").StyleFunction} Feature style function.
  */
@@ -913,13 +914,13 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
 
   return (
     /**
-     * @param {import("../Feature.js").default} feature feature.
+     * @param {Feature} feature feature.
      * @param {number} resolution Resolution.
-     * @return {Array<import("../style/Style.js").default>} Style.
+     * @return {Array<Style>} Style.
      */
     function(feature, resolution) {
       let drawName = showPointNames;
-      /** @type {import("../style/Style.js").default|undefined} */
+      /** @type {Style|undefined} */
       let nameStyle;
       let name = '';
       if (drawName) {
@@ -931,7 +932,7 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
 
       if (drawName) {
         name = /** @type {string} */ (feature.get('name'));
-        drawName = drawName && name;
+        drawName = drawName && !!name;
       }
 
       if (style) {
@@ -960,11 +961,11 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
 
 
 /**
- * @param {Array<import("../style/Style.js").default>|string|undefined} styleValue Style value.
- * @param {Array<import("../style/Style.js").default>} defaultStyle Default style.
- * @param {!Object<string, (Array<import("../style/Style.js").default>|string)>} sharedStyles
+ * @param {Array<Style>|string|undefined} styleValue Style value.
+ * @param {Array<Style>} defaultStyle Default style.
+ * @param {!Object<string, (Array<Style>|string)>} sharedStyles
  * Shared styles.
- * @return {Array<import("../style/Style.js").default>} Style.
+ * @return {Array<Style>} Style.
  */
 function findStyle(styleValue, defaultStyle, sharedStyles) {
   if (Array.isArray(styleValue)) {
@@ -1105,7 +1106,7 @@ const STYLE_MAP_PARSERS = makeStructureNS(
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {Array<import("../style/Style.js").default>|string|undefined} StyleMap.
+ * @return {Array<Style>|string|undefined} StyleMap.
  */
 function readStyleMapValue(node, objectStack) {
   return pushParseAndPop(undefined,
@@ -1397,7 +1398,7 @@ const GX_MULTITRACK_GEOMETRY_PARSERS = makeStructureNS(
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {import("../geom/MultiLineString.js").default|undefined} MultiLineString.
+ * @return {MultiLineString|undefined} MultiLineString.
  */
 function readGxMultiTrack(node, objectStack) {
   const lineStrings = pushParseAndPop([],
@@ -1425,7 +1426,7 @@ const GX_TRACK_PARSERS = makeStructureNS(
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {import("../geom/LineString.js").default|undefined} LineString.
+ * @return {LineString|undefined} LineString.
  */
 function readGxTrack(node, objectStack) {
   const gxTrackObject = pushParseAndPop(
@@ -1513,7 +1514,7 @@ const EXTRUDE_AND_ALTITUDE_MODE_PARSERS = makeStructureNS(
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {import("../geom/LineString.js").default|undefined} LineString.
+ * @return {LineString|undefined} LineString.
  */
 function readLineString(node, objectStack) {
   const properties = pushParseAndPop({},
@@ -1534,7 +1535,7 @@ function readLineString(node, objectStack) {
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {import("../geom/Polygon.js").default|undefined} Polygon.
+ * @return {Polygon|undefined} Polygon.
  */
 function readLinearRing(node, objectStack) {
   const properties = pushParseAndPop({},
@@ -1580,7 +1581,6 @@ function readMultiGeometry(node, objectStack) {
   if (geometries.length === 0) {
     return new GeometryCollection(geometries);
   }
-  /** @type {import("../geom/Geometry.js").default} */
   let multiGeometry;
   let homogeneous = true;
   const type = geometries[0].getType();
@@ -1628,7 +1628,7 @@ function readMultiGeometry(node, objectStack) {
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {import("../geom/Point.js").default|undefined} Point.
+ * @return {Point|undefined} Point.
  */
 function readPoint(node, objectStack) {
   const properties = pushParseAndPop({},
@@ -1660,7 +1660,7 @@ const FLAT_LINEAR_RINGS_PARSERS = makeStructureNS(
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {import("../geom/Polygon.js").default|undefined} Polygon.
+ * @return {Polygon|undefined} Polygon.
  */
 function readPolygon(node, objectStack) {
   const properties = pushParseAndPop(/** @type {Object<string,*>} */ ({}),
@@ -1700,7 +1700,7 @@ const STYLE_PARSERS = makeStructureNS(
 /**
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
- * @return {Array<import("../style/Style.js").default>} Style.
+ * @return {Array<Style>} Style.
  */
 function readStyle(node, objectStack) {
   const styleObject = pushParseAndPop(
@@ -1708,23 +1708,25 @@ function readStyle(node, objectStack) {
   if (!styleObject) {
     return null;
   }
-  let fillStyle = /** @type {import("../style/Fill.js").default} */
+  let fillStyle = /** @type {Fill} */
       ('fillStyle' in styleObject ?
         styleObject['fillStyle'] : DEFAULT_FILL_STYLE);
   const fill = /** @type {boolean|undefined} */ (styleObject['fill']);
   if (fill !== undefined && !fill) {
     fillStyle = null;
   }
-  let imageStyle = /** @type {import("../style/Image.js").default} */
-      ('imageStyle' in styleObject ?
-        styleObject['imageStyle'] : DEFAULT_IMAGE_STYLE);
-  if (imageStyle == DEFAULT_NO_IMAGE_STYLE) {
-    imageStyle = undefined;
+  let imageStyle;
+  if ('imageStyle' in styleObject) {
+    if (styleObject['imageStyle'] != DEFAULT_NO_IMAGE_STYLE) {
+      imageStyle = styleObject['imageStyle'];
+    }
+  } else {
+    imageStyle = DEFAULT_IMAGE_STYLE;
   }
-  const textStyle = /** @type {import("../style/Text.js").default} */
+  const textStyle = /** @type {Text} */
       ('textStyle' in styleObject ?
         styleObject['textStyle'] : DEFAULT_TEXT_STYLE);
-  let strokeStyle = /** @type {import("../style/Stroke.js").default} */
+  let strokeStyle = /** @type {Stroke} */
       ('strokeStyle' in styleObject ?
         styleObject['strokeStyle'] : DEFAULT_STROKE_STYLE);
   const outline = /** @type {boolean|undefined} */
@@ -1745,7 +1747,7 @@ function readStyle(node, objectStack) {
 /**
  * Reads an array of geometries and creates arrays for common geometry
  * properties. Then sets them to the multi geometry.
- * @param {import("../geom/MultiPoint.js").default|import("../geom/MultiLineString.js").default|import("../geom/MultiPolygon.js").default} multiGeometry A multi-geometry.
+ * @param {MultiPoint|MultiLineString|MultiPolygon} multiGeometry A multi-geometry.
  * @param {Array<import("../geom/Geometry.js").default>} geometries List of geometries.
  */
 function setCommonGeometryProperties(multiGeometry, geometries) {
@@ -1861,10 +1863,10 @@ function pairDataParser(node, objectStack) {
     if (styleUrl) {
       objectStack[objectStack.length - 1] = styleUrl;
     }
-    const Style = /** @type {import("../style/Style.js").default} */
+    const style = /** @type {Style} */
         (pairObject['Style']);
-    if (Style) {
-      objectStack[objectStack.length - 1] = Style;
+    if (style) {
+      objectStack[objectStack.length - 1] = style;
     }
   }
 }
@@ -2205,9 +2207,9 @@ const DOCUMENT_NODE_FACTORY = function(value, objectStack, opt_nodeName) {
 
 /**
  * @param {Node} node Node.
- * @param {Array<import("../Feature.js").default>} features Features.
+ * @param {Array<Feature>} features Features.
  * @param {Array<*>} objectStack Object stack.
- * @this {import("./KML.js").default}
+ * @this {KML}
  */
 function writeDocument(node, features, objectStack) {
   const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
@@ -2409,7 +2411,7 @@ const LABEL_STYLE_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {import("../style/Text.js").default} style style.
+ * @param {Text} style style.
  * @param {Array<*>} objectStack Object stack.
  */
 function writeLabelStyle(node, style, objectStack) {
@@ -2455,7 +2457,7 @@ const LINE_STYLE_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {import("../style/Stroke.js").default} style style.
+ * @param {Stroke} style style.
  * @param {Array<*>} objectStack Object stack.
  */
 function writeLineStyle(node, style, objectStack) {
@@ -2566,18 +2568,18 @@ function writeMultiGeometry(node, geometry, objectStack) {
   /** @type {function(*, Array<*>, string=): (Node|undefined)} */
   let factory;
   if (type == GeometryType.GEOMETRY_COLLECTION) {
-    geometries = /** @type {import("../geom/GeometryCollection.js").default} */ (geometry).getGeometries();
+    geometries = /** @type {GeometryCollection} */ (geometry).getGeometries();
     factory = GEOMETRY_NODE_FACTORY;
   } else if (type == GeometryType.MULTI_POINT) {
-    geometries = /** @type {import("../geom/MultiPoint.js").default} */ (geometry).getPoints();
+    geometries = /** @type {MultiPoint} */ (geometry).getPoints();
     factory = POINT_NODE_FACTORY;
   } else if (type == GeometryType.MULTI_LINE_STRING) {
     geometries =
-        (/** @type {import("../geom/MultiLineString.js").default} */ (geometry)).getLineStrings();
+        (/** @type {MultiLineString} */ (geometry)).getLineStrings();
     factory = LINE_STRING_NODE_FACTORY;
   } else if (type == GeometryType.MULTI_POLYGON) {
     geometries =
-        (/** @type {import("../geom/MultiPolygon.js").default} */ (geometry)).getPolygons();
+        (/** @type {MultiPolygon} */ (geometry)).getPolygons();
     factory = POLYGON_NODE_FACTORY;
   } else {
     assert(false, 39); // Unknown geometry type
@@ -2658,16 +2660,16 @@ const EXTENDEDDATA_NODE_FACTORY = makeSimpleNodeFactory('ExtendedData');
  * FIXME currently we do serialize arbitrary/custom feature properties
  * (ExtendedData).
  * @param {Element} node Node.
- * @param {import("../Feature.js").default} feature Feature.
+ * @param {Feature} feature Feature.
  * @param {Array<*>} objectStack Object stack.
- * @this {import("./KML.js").default}
+ * @this {KML}
  */
 function writePlacemark(node, feature, objectStack) {
   const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
 
   // set id
   if (feature.getId()) {
-    node.setAttribute('id', feature.getId());
+    node.setAttribute('id', /** @type {string} */ (feature.getId()));
   }
 
   // serialize properties (properties unknown to KML are not serialized)
@@ -2714,7 +2716,7 @@ function writePlacemark(node, feature, objectStack) {
   const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
   let geometry = feature.getGeometry();
   if (geometry) {
-    geometry = transformWithOptions(geometry, true, options);
+    geometry = /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, true, options));
   }
   pushSerializeAndPop(context, PLACEMARK_SERIALIZERS,
     GEOMETRY_NODE_FACTORY, [geometry], objectStack);
@@ -2798,7 +2800,7 @@ const OUTER_BOUNDARY_NODE_FACTORY = makeSimpleNodeFactory('outerBoundaryIs');
 
 /**
  * @param {Node} node Node.
- * @param {import("../geom/Polygon.js").default} polygon Polygon.
+ * @param {Polygon} polygon Polygon.
  * @param {Array<*>} objectStack Object stack.
  */
 function writePolygon(node, polygon, objectStack) {
@@ -2838,7 +2840,7 @@ const COLOR_NODE_FACTORY = makeSimpleNodeFactory('color');
 
 /**
  * @param {Node} node Node.
- * @param {import("../style/Fill.js").default} style Style.
+ * @param {Fill} style Style.
  * @param {Array<*>} objectStack Object stack.
  */
 function writePolyStyle(node, style, objectStack) {
@@ -2884,7 +2886,7 @@ const STYLE_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {import("../style/Style.js").default} style Style.
+ * @param {Style} style Style.
  * @param {Array<*>} objectStack Object stack.
  */
 function writeStyle(node, style, objectStack) {
@@ -2919,8 +2921,8 @@ function writeStyle(node, style, objectStack) {
  * @param {Vec2} vec2 Vec2.
  */
 function writeVec2(node, vec2) {
-  node.setAttribute('x', vec2.x);
-  node.setAttribute('y', vec2.y);
+  node.setAttribute('x', String(vec2.x));
+  node.setAttribute('y', String(vec2.y));
   node.setAttribute('xunits', vec2.xunits);
   node.setAttribute('yunits', vec2.yunits);
 }

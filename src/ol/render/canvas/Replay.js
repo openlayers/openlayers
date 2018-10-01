@@ -2,7 +2,6 @@
  * @module ol/render/canvas/Replay
  */
 import {getUid} from '../../util.js';
-import {VOID} from '../../functions.js';
 import {equals, reverseSubArray} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
 import {buffer, clone, coordinateRelationship, createEmpty, createOrUpdate,
@@ -457,6 +456,11 @@ class CanvasReplay extends VectorContext {
   }
 
   /**
+   * FIXME empty description for jsdoc
+   */
+  finish() {}
+
+  /**
    * @private
    * @param {CanvasRenderingContext2D} context Context.
    */
@@ -589,7 +593,7 @@ class CanvasReplay extends VectorContext {
     let x, y;
     while (i < ii) {
       const instruction = instructions[i];
-      const type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
+      const type = /** @type {CanvasInstruction} */ (instruction[0]);
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
           feature = /** @type {import("../../Feature.js").default|import("../Feature.js").default} */ (instruction[1]);
@@ -903,7 +907,7 @@ class CanvasReplay extends VectorContext {
     let begin = -1;
     for (i = 0; i < n; ++i) {
       instruction = hitDetectionInstructions[i];
-      type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
+      type = /** @type {CanvasInstruction} */ (instruction[0]);
       if (type == CanvasInstruction.END_GEOMETRY) {
         begin = i;
       } else if (type == CanvasInstruction.BEGIN_GEOMETRY) {
@@ -1002,7 +1006,7 @@ class CanvasReplay extends VectorContext {
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:import("./Replay.js").default, import("../canvas.js").FillStrokeState, (import("../../geom/Geometry.js").default|import("../Feature.js").default)):Array<*>} createFill Create fill.
+   * @param {function(this:CanvasReplay, import("../canvas.js").FillStrokeState, (import("../../geom/Geometry.js").default|import("../Feature.js").default)):Array<*>} createFill Create fill.
    * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    */
   updateFillStyle(state, createFill, geometry) {
@@ -1017,7 +1021,7 @@ class CanvasReplay extends VectorContext {
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:import("./Replay.js").default, import("../canvas.js").FillStrokeState)} applyStroke Apply stroke.
+   * @param {function(this:CanvasReplay, import("../canvas.js").FillStrokeState)} applyStroke Apply stroke.
    */
   updateStrokeStyle(state, applyStroke) {
     const strokeStyle = state.strokeStyle;
@@ -1079,12 +1083,6 @@ class CanvasReplay extends VectorContext {
     return this.bufferedMaxExtent_;
   }
 }
-
-
-/**
- * FIXME empty description for jsdoc
- */
-CanvasReplay.prototype.finish = VOID;
 
 
 export default CanvasReplay;

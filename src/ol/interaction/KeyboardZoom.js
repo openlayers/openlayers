@@ -71,13 +71,13 @@ class KeyboardZoom extends Interaction {
  * key pressed was '+' or '-').
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {import("./KeyboardZoom.js").default}
+ * @this {KeyboardZoom}
  */
 function handleEvent(mapBrowserEvent) {
   let stopEvent = false;
   if (mapBrowserEvent.type == EventType.KEYDOWN ||
       mapBrowserEvent.type == EventType.KEYPRESS) {
-    const keyEvent = mapBrowserEvent.originalEvent;
+    const keyEvent = /** @type {KeyboardEvent} */ (mapBrowserEvent.originalEvent);
     const charCode = keyEvent.charCode;
     if (this.condition_(mapBrowserEvent) &&
         (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0))) {

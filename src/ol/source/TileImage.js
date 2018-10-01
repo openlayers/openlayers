@@ -18,7 +18,6 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize=2048] Cache size.
- * @property {import("../extent.js").Extent} [extent]
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
@@ -71,7 +70,6 @@ class TileImage extends UrlTile {
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
-      extent: options.extent,
       opaque: options.opaque,
       projection: options.projection,
       state: options.state,
@@ -95,7 +93,7 @@ class TileImage extends UrlTile {
 
     /**
      * @protected
-     * @type {function(new: import("../ImageTile.js").default, import("../tilecoord.js").TileCoord, import("../TileState.js").default, string,
+     * @type {function(new: ImageTile, import("../tilecoord.js").TileCoord, TileState, string,
      *        ?string, import("../Tile.js").LoadFunction, import("../Tile.js").Options=)}
      */
     this.tileClass = options.tileClass !== undefined ?
@@ -103,7 +101,7 @@ class TileImage extends UrlTile {
 
     /**
      * @protected
-     * @type {!Object<string, import("../TileCache.js").default>}
+     * @type {!Object<string, TileCache>}
      */
     this.tileCacheForProjection = {};
 
@@ -391,11 +389,14 @@ class TileImage extends UrlTile {
 
 
 /**
- * @param {import("../ImageTile.js").default} imageTile Image tile.
+ * @param {ImageTile} imageTile Image tile.
  * @param {string} src Source.
  */
 function defaultTileLoadFunction(imageTile, src) {
-  imageTile.getImage().src = src;
+  const image = imageTile.getImage();
+  if (image instanceof HTMLImageElement || image instanceof HTMLVideoElement) {
+    image.src = src;
+  }
 }
 
 export default TileImage;

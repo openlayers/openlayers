@@ -87,12 +87,12 @@ class KeyboardPan extends Interaction {
  * pressed).
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {import("./KeyboardPan.js").default}
+ * @this {KeyboardPan}
  */
 function handleEvent(mapBrowserEvent) {
   let stopEvent = false;
   if (mapBrowserEvent.type == EventType.KEYDOWN) {
-    const keyEvent = mapBrowserEvent.originalEvent;
+    const keyEvent = /** @type {KeyboardEvent} */ (mapBrowserEvent.originalEvent);
     const keyCode = keyEvent.keyCode;
     if (this.condition_(mapBrowserEvent) &&
         (keyCode == KeyCode.DOWN ||

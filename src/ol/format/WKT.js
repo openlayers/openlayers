@@ -17,7 +17,7 @@ import SimpleGeometry from '../geom/SimpleGeometry.js';
 
 
 /**
- * @enum {function (new:import("../geom/Geometry.js").default, Array, import("../geom/GeometryLayout.js").default)}
+ * @enum {function (new:import("../geom/Geometry.js").default, Array, GeometryLayout)}
  */
 const GeometryConstructor = {
   'POINT': Point,
@@ -159,29 +159,32 @@ class Lexer {
    */
   nextToken() {
     const c = this.nextChar_();
-    const token = {position: this.index_, value: c};
+    const position = this.index_;
+    /** @type {number|string} */
+    let value = c;
+    let type;
 
     if (c == '(') {
-      token.type = TokenType.LEFT_PAREN;
+      type = TokenType.LEFT_PAREN;
     } else if (c == ',') {
-      token.type = TokenType.COMMA;
+      type = TokenType.COMMA;
     } else if (c == ')') {
-      token.type = TokenType.RIGHT_PAREN;
+      type = TokenType.RIGHT_PAREN;
     } else if (this.isNumeric_(c) || c == '-') {
-      token.type = TokenType.NUMBER;
-      token.value = this.readNumber_();
+      type = TokenType.NUMBER;
+      value = this.readNumber_();
     } else if (this.isAlpha_(c)) {
-      token.type = TokenType.TEXT;
-      token.value = this.readText_();
+      type = TokenType.TEXT;
+      value = this.readText_();
     } else if (this.isWhiteSpace_(c)) {
       return this.nextToken();
     } else if (c === '') {
-      token.type = TokenType.EOF;
+      type = TokenType.EOF;
     } else {
       throw new Error('Unexpected character: ' + c);
     }
 
-    return token;
+    return {position: position, value: value, type: type};
   }
 
   /**
@@ -249,7 +252,7 @@ class Parser {
     this.token_;
 
     /**
-     * @type {import("../geom/GeometryLayout.js").default}
+     * @type {GeometryLayout}
      * @private
      */
     this.layout_ = GeometryLayout.XY;
@@ -298,7 +301,7 @@ class Parser {
 
   /**
    * Try to parse the dimensional info.
-   * @return {import("../geom/GeometryLayout.js").default} The layout.
+   * @return {GeometryLayout} The layout.
    * @private
    */
   parseGeometryLayout_() {
@@ -372,7 +375,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} All points in a polygon.
+   * @return {!Array<!Array<!Array<number>>>} All points in a polygon.
    * @private
    */
   parsePolygonText_() {
@@ -409,8 +412,8 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} All linestring points
-   *                                        in a multilinestring.
+   * @return {!Array<!Array<!Array<number>>>} All linestring points
+   *                                          in a multilinestring.
    * @private
    */
   parseMultiLineStringText_() {
@@ -426,7 +429,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} All polygon points in a multipolygon.
+   * @return {!Array<!Array<!Array<!Array<number>>>>} All polygon points in a multipolygon.
    * @private
    */
   parseMultiPolygonText_() {
@@ -451,7 +454,7 @@ class Parser {
     for (let i = 0; i < dimensions; ++i) {
       const token = this.token_;
       if (this.match(TokenType.NUMBER)) {
-        coordinates.push(token.value);
+        coordinates.push(/** @type {number} */ (token.value));
       } else {
         break;
       }
@@ -487,7 +490,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} An array of points.
+   * @return {!Array<!Array<!Array<number>>>} An array of points.
    * @private
    */
   parseLineStringTextList_() {
@@ -499,7 +502,7 @@ class Parser {
   }
 
   /**
-   * @return {!Array<!Array<number>>} An array of points.
+   * @return {!Array<!Array<!Array<!Array<number>>>>} An array of points.
    * @private
    */
   parsePolygonTextList_() {
@@ -659,7 +662,7 @@ class WKT extends TextFeature {
     const geometry = this.readGeometryFromText(text, opt_options);
     if (this.splitCollection_ &&
         geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
-      geometries = (/** @type {import("../geom/GeometryCollection.js").default} */ (geometry))
+      geometries = (/** @type {GeometryCollection} */ (geometry))
         .getGeometriesArray();
     } else {
       geometries = [geometry];
@@ -724,7 +727,7 @@ class WKT extends TextFeature {
 
 
 /**
- * @param {import("../geom/Point.js").default} geom Point geometry.
+ * @param {Point} geom Point geometry.
  * @return {string} Coordinates part of Point as WKT.
  */
 function encodePointGeometry(geom) {
@@ -737,7 +740,7 @@ function encodePointGeometry(geom) {
 
 
 /**
- * @param {import("../geom/MultiPoint.js").default} geom MultiPoint geometry.
+ * @param {MultiPoint} geom MultiPoint geometry.
  * @return {string} Coordinates part of MultiPoint as WKT.
  */
 function encodeMultiPointGeometry(geom) {
@@ -751,7 +754,7 @@ function encodeMultiPointGeometry(geom) {
 
 
 /**
- * @param {import("../geom/GeometryCollection.js").default} geom GeometryCollection geometry.
+ * @param {GeometryCollection} geom GeometryCollection geometry.
  * @return {string} Coordinates part of GeometryCollection as WKT.
  */
 function encodeGeometryCollectionGeometry(geom) {
@@ -765,7 +768,7 @@ function encodeGeometryCollectionGeometry(geom) {
 
 
 /**
- * @param {import("../geom/LineString.js").default|import("../geom/LinearRing.js").default} geom LineString geometry.
+ * @param {LineString|import("../geom/LinearRing.js").default} geom LineString geometry.
  * @return {string} Coordinates part of LineString as WKT.
  */
 function encodeLineStringGeometry(geom) {
@@ -779,7 +782,7 @@ function encodeLineStringGeometry(geom) {
 
 
 /**
- * @param {import("../geom/MultiLineString.js").default} geom MultiLineString geometry.
+ * @param {MultiLineString} geom MultiLineString geometry.
  * @return {string} Coordinates part of MultiLineString as WKT.
  */
 function encodeMultiLineStringGeometry(geom) {
@@ -793,7 +796,7 @@ function encodeMultiLineStringGeometry(geom) {
 
 
 /**
- * @param {import("../geom/Polygon.js").default} geom Polygon geometry.
+ * @param {Polygon} geom Polygon geometry.
  * @return {string} Coordinates part of Polygon as WKT.
  */
 function encodePolygonGeometry(geom) {
@@ -807,7 +810,7 @@ function encodePolygonGeometry(geom) {
 
 
 /**
- * @param {import("../geom/MultiPolygon.js").default} geom MultiPolygon geometry.
+ * @param {MultiPolygon} geom MultiPolygon geometry.
  * @return {string} Coordinates part of MultiPolygon as WKT.
  */
 function encodeMultiPolygonGeometry(geom) {
@@ -820,7 +823,7 @@ function encodeMultiPolygonGeometry(geom) {
 }
 
 /**
- * @param {import("../geom/SimpleGeometry.js").default} geom SimpleGeometry geometry.
+ * @param {SimpleGeometry} geom SimpleGeometry geometry.
  * @return {string} Potential dimensional information for WKT type.
  */
 function encodeGeometryLayout(geom) {

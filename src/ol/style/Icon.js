@@ -149,7 +149,7 @@ class Icon extends ImageStyle {
       5); // `imgSize` must be set when `image` is provided
 
     if ((src === undefined || src.length === 0) && image) {
-      src = image.src || getUid(image).toString();
+      src = image instanceof HTMLImageElement && image.src || getUid(image).toString();
     }
     assert(src !== undefined && src.length > 0,
       6); // A defined and non-empty `src` or `image` must be provided
@@ -202,7 +202,7 @@ class Icon extends ImageStyle {
 
   /**
    * Clones the style. The underlying Image/HTMLCanvasElement is not cloned.
-   * @return {import("./Icon.js").default} The cloned style.
+   * @return {Icon} The cloned style.
    * @api
    */
   clone() {

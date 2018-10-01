@@ -165,7 +165,7 @@ export function containsXY(extent, x, y) {
  * Get the relationship between a coordinate and extent.
  * @param {Extent} extent The extent.
  * @param {import("./coordinate.js").Coordinate} coordinate The coordinate.
- * @return {import("./extent/Relationship.js").default} The relationship (bitwise compare with
+ * @return {Relationship} The relationship (bitwise compare with
  *     import("./extent/Relationship.js").Relationship).
  */
 export function coordinateRelationship(extent, coordinate) {
@@ -478,7 +478,7 @@ export function getCenter(extent) {
 /**
  * Get a corner coordinate of an extent.
  * @param {Extent} extent Extent.
- * @param {import("./extent/Corner.js").default} corner Corner.
+ * @param {Corner} corner Corner.
  * @return {import("./coordinate.js").Coordinate} Corner coordinate.
  */
 export function getCorner(extent, corner) {

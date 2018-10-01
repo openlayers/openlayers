@@ -102,7 +102,7 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @template S,T,U
    */
   forEachLayerAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
-    const hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, TRUE, this);
+    const hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, TRUE);
 
     if (hasFeature) {
       return callback.call(thisArg, this.getLayer(), null);

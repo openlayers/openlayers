@@ -227,7 +227,7 @@ class LinkedList {
 
   /**
    * Concatenates two lists.
-   * @param {import("./LinkedList.js").default} list List to merge into the current list.
+   * @param {LinkedList} list List to merge into the current list.
    */
   concat(list) {
     if (list.head_) {

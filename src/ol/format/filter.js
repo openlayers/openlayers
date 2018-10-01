@@ -24,7 +24,7 @@ import Within from '../format/filter/Within.js';
  * Create a logical `<And>` operator between two or more filter conditions.
  *
  * @param {...import("./filter/Filter.js").default} conditions Filter conditions.
- * @returns {!import("./filter/And.js").default} `<And>` operator.
+ * @returns {!And} `<And>` operator.
  * @api
  */
 export function and(conditions) {
@@ -37,7 +37,7 @@ export function and(conditions) {
  * Create a logical `<Or>` operator between two or more filter conditions.
  *
  * @param {...import("./filter/Filter.js").default} conditions Filter conditions.
- * @returns {!import("./filter/Or.js").default} `<Or>` operator.
+ * @returns {!Or} `<Or>` operator.
  * @api
  */
 export function or(conditions) {
@@ -50,7 +50,7 @@ export function or(conditions) {
  * Represents a logical `<Not>` operator for a filter condition.
  *
  * @param {!import("./filter/Filter.js").default} condition Filter condition.
- * @returns {!import("./filter/Not.js").default} `<Not>` operator.
+ * @returns {!Not} `<Not>` operator.
  * @api
  */
 export function not(condition) {
@@ -66,7 +66,7 @@ export function not(condition) {
  * @param {!import("../extent.js").Extent} extent Extent.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @returns {!import("./filter/Bbox.js").default} `<BBOX>` operator.
+ * @returns {!Bbox} `<BBOX>` operator.
  * @api
  */
 export function bbox(geometryName, extent, opt_srsName) {
@@ -81,7 +81,7 @@ export function bbox(geometryName, extent, opt_srsName) {
  * @param {!import("../geom/Geometry.js").default} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @returns {!import("./filter/Contains.js").default} `<Contains>` operator.
+ * @returns {!Contains} `<Contains>` operator.
  * @api
  */
 export function contains(geometryName, geometry, opt_srsName) {
@@ -96,7 +96,7 @@ export function contains(geometryName, geometry, opt_srsName) {
  * @param {!import("../geom/Geometry.js").default} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @returns {!import("./filter/Intersects.js").default} `<Intersects>` operator.
+ * @returns {!Intersects} `<Intersects>` operator.
  * @api
  */
 export function intersects(geometryName, geometry, opt_srsName) {
@@ -111,7 +111,7 @@ export function intersects(geometryName, geometry, opt_srsName) {
  * @param {!import("../geom/Geometry.js").default} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @returns {!import("./filter/Within.js").default} `<Within>` operator.
+ * @returns {!Within} `<Within>` operator.
  * @api
  */
 export function within(geometryName, geometry, opt_srsName) {
@@ -125,7 +125,7 @@ export function within(geometryName, geometry, opt_srsName) {
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!(string|number)} expression The value to compare.
  * @param {boolean=} opt_matchCase Case-sensitive?
- * @returns {!import("./filter/EqualTo.js").default} `<PropertyIsEqualTo>` operator.
+ * @returns {!EqualTo} `<PropertyIsEqualTo>` operator.
  * @api
  */
 export function equalTo(propertyName, expression, opt_matchCase) {
@@ -139,7 +139,7 @@ export function equalTo(propertyName, expression, opt_matchCase) {
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!(string|number)} expression The value to compare.
  * @param {boolean=} opt_matchCase Case-sensitive?
- * @returns {!import("./filter/NotEqualTo.js").default} `<PropertyIsNotEqualTo>` operator.
+ * @returns {!NotEqualTo} `<PropertyIsNotEqualTo>` operator.
  * @api
  */
 export function notEqualTo(propertyName, expression, opt_matchCase) {
@@ -152,7 +152,7 @@ export function notEqualTo(propertyName, expression, opt_matchCase) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} expression The value to compare.
- * @returns {!import("./filter/LessThan.js").default} `<PropertyIsLessThan>` operator.
+ * @returns {!LessThan} `<PropertyIsLessThan>` operator.
  * @api
  */
 export function lessThan(propertyName, expression) {
@@ -165,7 +165,7 @@ export function lessThan(propertyName, expression) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} expression The value to compare.
- * @returns {!import("./filter/LessThanOrEqualTo.js").default} `<PropertyIsLessThanOrEqualTo>` operator.
+ * @returns {!LessThanOrEqualTo} `<PropertyIsLessThanOrEqualTo>` operator.
  * @api
  */
 export function lessThanOrEqualTo(propertyName, expression) {
@@ -178,7 +178,7 @@ export function lessThanOrEqualTo(propertyName, expression) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} expression The value to compare.
- * @returns {!import("./filter/GreaterThan.js").default} `<PropertyIsGreaterThan>` operator.
+ * @returns {!GreaterThan} `<PropertyIsGreaterThan>` operator.
  * @api
  */
 export function greaterThan(propertyName, expression) {
@@ -191,7 +191,7 @@ export function greaterThan(propertyName, expression) {
  *
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} expression The value to compare.
- * @returns {!import("./filter/GreaterThanOrEqualTo.js").default} `<PropertyIsGreaterThanOrEqualTo>` operator.
+ * @returns {!GreaterThanOrEqualTo} `<PropertyIsGreaterThanOrEqualTo>` operator.
  * @api
  */
 export function greaterThanOrEqualTo(propertyName, expression) {
@@ -204,7 +204,7 @@ export function greaterThanOrEqualTo(propertyName, expression) {
  * is null.
  *
  * @param {!string} propertyName Name of the context property to compare.
- * @returns {!import("./filter/IsNull.js").default} `<PropertyIsNull>` operator.
+ * @returns {!IsNull} `<PropertyIsNull>` operator.
  * @api
  */
 export function isNull(propertyName) {
@@ -219,7 +219,7 @@ export function isNull(propertyName) {
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} lowerBoundary The lower bound of the range.
  * @param {!number} upperBoundary The upper bound of the range.
- * @returns {!import("./filter/IsBetween.js").default} `<PropertyIsBetween>` operator.
+ * @returns {!IsBetween} `<PropertyIsBetween>` operator.
  * @api
  */
 export function between(propertyName, lowerBoundary, upperBoundary) {
@@ -240,7 +240,7 @@ export function between(propertyName, lowerBoundary, upperBoundary) {
  * @param {string=} opt_escapeChar Escape character which can be used to escape
  *    the pattern characters. Default is '!'.
  * @param {boolean=} opt_matchCase Case-sensitive?
- * @returns {!import("./filter/IsLike.js").default} `<PropertyIsLike>` operator.
+ * @returns {!IsLike} `<PropertyIsLike>` operator.
  * @api
  */
 export function like(propertyName, pattern,
@@ -256,7 +256,7 @@ export function like(propertyName, pattern,
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!string} begin The begin date in ISO-8601 format.
  * @param {!string} end The end date in ISO-8601 format.
- * @returns {!import("./filter/During.js").default} `<During>` operator.
+ * @returns {!During} `<During>` operator.
  * @api
  */
 export function during(propertyName, begin, end) {

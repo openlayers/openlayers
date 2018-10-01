@@ -102,7 +102,7 @@ describe('ol.Feature', function() {
 
     it('returns null for null geometry (constructor)', function() {
       const feature = new Feature(null);
-      expect(feature.getGeometry()).to.be(null);
+      expect(feature.getGeometry()).to.be(undefined);
     });
 
     it('returns null for null geometry (setGeometry())', function() {

@@ -1,7 +1,6 @@
 /**
  * @module ol/render/Feature
  */
-import {VOID} from '../functions.js';
 import {extend} from '../array.js';
 import {createOrUpdateFromCoordinate, createOrUpdateFromFlatCoordinates, getCenter, getHeight} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -24,7 +23,7 @@ const tmpTransform = createTransform();
  * structure, optimized for vector tile rendering and styling. Geometry access
  * through the API is limited to getting the type and extent of the geometry.
  *
- * @param {import("../geom/GeometryType.js").default} type Geometry type.
+ * @param {GeometryType} type Geometry type.
  * @param {Array<number>} flatCoordinates Flat coordinates. These always need
  *     to be right-handed for polygons.
  * @param {Array<number>|Array<Array<number>>} ends Ends or Endss.
@@ -47,7 +46,7 @@ class RenderFeature {
 
     /**
     * @private
-    * @type {import("../geom/GeometryType.js").default}
+    * @type {GeometryType}
     */
     this.type_ = type;
 
@@ -185,7 +184,7 @@ class RenderFeature {
   /**
   * For API compatibility with {@link module:ol/Feature~Feature}, this method is useful when
   * determining the geometry type in style function (see {@link #getType}).
-  * @return {import("./Feature.js").default} Feature.
+  * @return {RenderFeature} Feature.
   * @api
   */
   getGeometry() {
@@ -209,8 +208,15 @@ class RenderFeature {
   }
 
   /**
+   * @return {undefined}
+   */
+  getStyleFunction() {
+    return undefined;
+  }
+
+  /**
   * Get the type of this feature's geometry.
-  * @return {import("../geom/GeometryType.js").default} Geometry type.
+  * @return {GeometryType} Geometry type.
   * @api
   */
   getType() {
@@ -257,16 +263,10 @@ RenderFeature.prototype.getFlatCoordinates =
 
 /**
  * Get the feature for working with its geometry.
- * @return {import("./Feature.js").default} Feature.
+ * @return {RenderFeature} Feature.
  */
 RenderFeature.prototype.getSimplifiedGeometry =
     RenderFeature.prototype.getGeometry;
-
-
-/**
- * @return {undefined}
- */
-RenderFeature.prototype.getStyleFunction = VOID;
 
 
 export default RenderFeature;

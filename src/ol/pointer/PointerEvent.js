@@ -32,7 +32,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import Event from '../events/Event.js';
+import _Event from '../events/Event.js';
 
 
 /**
@@ -42,7 +42,7 @@ import Event from '../events/Event.js';
 let HAS_BUTTONS = false;
 
 
-class PointerEvent extends Event {
+class PointerEvent extends _Event {
 
   /**
    * A class for pointer events.
@@ -69,12 +69,12 @@ class PointerEvent extends Event {
     /**
      * @type {number}
      */
-    this.buttons = this.getButtons_(eventDict);
+    this.buttons = getButtons(eventDict);
 
     /**
      * @type {number}
      */
-    this.pressure = this.getPressure_(eventDict, this.buttons);
+    this.pressure = getPressure(eventDict, this.buttons);
 
     // MouseEvent related properties
 
@@ -200,64 +200,65 @@ class PointerEvent extends Event {
     }
   }
 
-  /**
-   * @private
-   * @param {Object<string, ?>} eventDict The event dictionary.
-   * @return {number} Button indicator.
-   */
-  getButtons_(eventDict) {
-    // According to the w3c spec,
-    // http://www.w3.org/TR/DOM-Level-3-Events/#events-MouseEvent-button
-    // MouseEvent.button == 0 can mean either no mouse button depressed, or the
-    // left mouse button depressed.
-    //
-    // As of now, the only way to distinguish between the two states of
-    // MouseEvent.button is by using the deprecated MouseEvent.which property, as
-    // this maps mouse buttons to positive integers > 0, and uses 0 to mean that
-    // no mouse button is held.
-    //
-    // MouseEvent.which is derived from MouseEvent.button at MouseEvent creation,
-    // but initMouseEvent does not expose an argument with which to set
-    // MouseEvent.which. Calling initMouseEvent with a buttonArg of 0 will set
-    // MouseEvent.button == 0 and MouseEvent.which == 1, breaking the expectations
-    // of app developers.
-    //
-    // The only way to propagate the correct state of MouseEvent.which and
-    // MouseEvent.button to a new MouseEvent.button == 0 and MouseEvent.which == 0
-    // is to call initMouseEvent with a buttonArg value of -1.
-    //
-    // This is fixed with DOM Level 4's use of buttons
-    let buttons;
-    if (eventDict.buttons || HAS_BUTTONS) {
-      buttons = eventDict.buttons;
-    } else {
-      switch (eventDict.which) {
-        case 1: buttons = 1; break;
-        case 2: buttons = 4; break;
-        case 3: buttons = 2; break;
-        default: buttons = 0;
-      }
-    }
-    return buttons;
-  }
+}
 
-  /**
-   * @private
-   * @param {Object<string, ?>} eventDict The event dictionary.
-   * @param {number} buttons Button indicator.
-   * @return {number} The pressure.
-   */
-  getPressure_(eventDict, buttons) {
-    // Spec requires that pointers without pressure specified use 0.5 for down
-    // state and 0 for up state.
-    let pressure = 0;
-    if (eventDict.pressure) {
-      pressure = eventDict.pressure;
-    } else {
-      pressure = buttons ? 0.5 : 0;
+
+/**
+ * @param {Object<string, ?>} eventDict The event dictionary.
+ * @return {number} Button indicator.
+ */
+function getButtons(eventDict) {
+  // According to the w3c spec,
+  // http://www.w3.org/TR/DOM-Level-3-Events/#events-MouseEvent-button
+  // MouseEvent.button == 0 can mean either no mouse button depressed, or the
+  // left mouse button depressed.
+  //
+  // As of now, the only way to distinguish between the two states of
+  // MouseEvent.button is by using the deprecated MouseEvent.which property, as
+  // this maps mouse buttons to positive integers > 0, and uses 0 to mean that
+  // no mouse button is held.
+  //
+  // MouseEvent.which is derived from MouseEvent.button at MouseEvent creation,
+  // but initMouseEvent does not expose an argument with which to set
+  // MouseEvent.which. Calling initMouseEvent with a buttonArg of 0 will set
+  // MouseEvent.button == 0 and MouseEvent.which == 1, breaking the expectations
+  // of app developers.
+  //
+  // The only way to propagate the correct state of MouseEvent.which and
+  // MouseEvent.button to a new MouseEvent.button == 0 and MouseEvent.which == 0
+  // is to call initMouseEvent with a buttonArg value of -1.
+  //
+  // This is fixed with DOM Level 4's use of buttons
+  let buttons;
+  if (eventDict.buttons || HAS_BUTTONS) {
+    buttons = eventDict.buttons;
+  } else {
+    switch (eventDict.which) {
+      case 1: buttons = 1; break;
+      case 2: buttons = 4; break;
+      case 3: buttons = 2; break;
+      default: buttons = 0;
     }
-    return pressure;
   }
+  return buttons;
+}
+
+
+/**
+ * @param {Object<string, ?>} eventDict The event dictionary.
+ * @param {number} buttons Button indicator.
+ * @return {number} The pressure.
+ */
+function getPressure(eventDict, buttons) {
+  // Spec requires that pointers without pressure specified use 0.5 for down
+  // state and 0 for up state.
+  let pressure = 0;
+  if (eventDict.pressure) {
+    pressure = eventDict.pressure;
+  } else {
+    pressure = buttons ? 0.5 : 0;
+  }
+  return pressure;
 }
 
 

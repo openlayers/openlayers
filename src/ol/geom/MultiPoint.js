@@ -26,15 +26,15 @@ class MultiPoint extends SimpleGeometry {
   constructor(coordinates, opt_layout) {
     super();
     if (opt_layout && !Array.isArray(coordinates[0])) {
-      this.setFlatCoordinates(opt_layout, coordinates);
+      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
     } else {
-      this.setCoordinates(coordinates, opt_layout);
+      this.setCoordinates(/** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates), opt_layout);
     }
   }
 
   /**
    * Append the passed point to this multipoint.
-   * @param {import("./Point.js").default} point Point.
+   * @param {Point} point Point.
    * @api
    */
   appendPoint(point) {
@@ -48,7 +48,7 @@ class MultiPoint extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!import("./MultiPoint.js").default} Clone.
+   * @return {!MultiPoint} Clone.
    * @override
    * @api
    */
@@ -94,7 +94,7 @@ class MultiPoint extends SimpleGeometry {
   /**
    * Return the point at the specified index.
    * @param {number} index Index.
-   * @return {import("./Point.js").default} Point.
+   * @return {Point} Point.
    * @api
    */
   getPoint(index) {
@@ -108,14 +108,14 @@ class MultiPoint extends SimpleGeometry {
 
   /**
    * Return the points of this multipoint.
-   * @return {Array<import("./Point.js").default>} Points.
+   * @return {Array<Point>} Points.
    * @api
    */
   getPoints() {
     const flatCoordinates = this.flatCoordinates;
     const layout = this.layout;
     const stride = this.stride;
-    /** @type {Array<import("./Point.js").default>} */
+    /** @type {Array<Point>} */
     const points = [];
     for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
       const point = new Point(flatCoordinates.slice(i, i + stride), layout);

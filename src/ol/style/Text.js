@@ -164,7 +164,7 @@ class Text {
 
   /**
   * Clones the style.
-  * @return {import("./Text.js").default} The cloned style.
+  * @return {Text} The cloned style.
   * @api
   */
   clone() {

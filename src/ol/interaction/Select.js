@@ -222,7 +222,7 @@ class Select extends Interaction {
 
     /**
      * @private
-     * @type {import("../layer/Vector.js").default}
+     * @type {VectorLayer}
      */
     this.featureOverlay_ = featureOverlay;
 
@@ -296,19 +296,19 @@ class Select extends Interaction {
    * programmatic method like pushing features to
    * {@link module:ol/interaction/Select~Select#getFeatures collection}.
    * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature
-   * @return {import("../layer/Vector.js").default} Layer.
+   * @return {VectorLayer} Layer.
    * @api
    */
   getLayer(feature) {
     const key = getUid(feature);
     return (
-      /** @type {import("../layer/Vector.js").default} */ (this.featureLayerAssociation_[key])
+      /** @type {VectorLayer} */ (this.featureLayerAssociation_[key])
     );
   }
 
   /**
    * Get the overlay layer that this interaction renders selected features to.
-   * @return {import("../layer/Vector.js").default} Overlay layer.
+   * @return {VectorLayer} Overlay layer.
    * @api
    */
   getOverlay() {
@@ -385,7 +385,7 @@ class Select extends Interaction {
  * selected state of features.
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {import("./Select.js").default}
+ * @this {Select}
  */
 function handleEvent(mapBrowserEvent) {
   if (!this.condition_(mapBrowserEvent)) {

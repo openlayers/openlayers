@@ -34,7 +34,7 @@ class IconImage extends EventTarget {
      */
     this.image_ = !image ? new Image() : image;
 
-    if (crossOrigin !== null) {
+    if (crossOrigin !== null && this.image_ instanceof HTMLImageElement) {
       this.image_.crossOrigin = crossOrigin;
     }
 
@@ -78,26 +78,28 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {boolean}
+     * @type {boolean|undefined}
      */
-    this.tainting_ = false;
-    if (this.imageState_ == ImageState.LOADED) {
-      this.determineTainting_();
-    }
+    this.tainted_;
 
   }
 
   /**
    * @private
+   * @return {boolean} The image canvas is tainted.
    */
-  determineTainting_() {
-    const context = createCanvasContext2D(1, 1);
-    try {
-      context.drawImage(this.image_, 0, 0);
-      context.getImageData(0, 0, 1, 1);
-    } catch (e) {
-      this.tainting_ = true;
+  isTainted_() {
+    if (this.tainted_ === undefined && this.imageState_ === ImageState.LOADED) {
+      this.tainted_ = false;
+      const context = createCanvasContext2D(1, 1);
+      try {
+        context.drawImage(this.image_, 0, 0);
+        context.getImageData(0, 0, 1, 1);
+      } catch (e) {
+        this.tainted_ = true;
+      }
     }
+    return this.tainted_ === true;
   }
 
   /**
@@ -127,7 +129,6 @@ class IconImage extends EventTarget {
     }
     this.size_ = [this.image_.width, this.image_.height];
     this.unlistenImage_();
-    this.determineTainting_();
     this.replaceColor_();
     this.dispatchChangeEvent_();
   }
@@ -153,7 +154,7 @@ class IconImage extends EventTarget {
    */
   getHitDetectionImage(pixelRatio) {
     if (!this.hitDetectionImage_) {
-      if (this.tainting_) {
+      if (this.isTainted_()) {
         const width = this.size_[0];
         const height = this.size_[1];
         const context = createCanvasContext2D(width, height);
@@ -193,7 +194,7 @@ class IconImage extends EventTarget {
           this.handleImageLoad_, this)
       ];
       try {
-        this.image_.src = this.src_;
+        /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
       } catch (e) {
         this.handleImageError_();
       }
@@ -204,7 +205,7 @@ class IconImage extends EventTarget {
    * @private
    */
   replaceColor_() {
-    if (this.tainting_ || this.color_ === null) {
+    if (!this.color_ || this.isTainted_()) {
       return;
     }
 
@@ -247,7 +248,7 @@ class IconImage extends EventTarget {
  * @param {?string} crossOrigin Cross origin.
  * @param {import("../ImageState.js").default} imageState Image state.
  * @param {import("../color.js").Color} color Color.
- * @return {import("./IconImage.js").default} Icon image.
+ * @return {IconImage} Icon image.
  */
 export function get(image, src, size, crossOrigin, imageState, color) {
   let iconImage = iconImageCache.get(src, crossOrigin, color);

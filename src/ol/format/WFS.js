@@ -83,7 +83,7 @@ const TRANSACTION_SERIALIZERS = {
  * @typedef {Object} Options
  * @property {Object<string, string>|string} [featureNS] The namespace URI used for features.
  * @property {Array<string>|string} [featureType] The feature type to parse. Only used for read operations.
- * @property {import("./GMLBase.js").default} [gmlFormat] The GML format to use to parse the response. Default is `ol/format/GML3`.
+ * @property {GMLBase} [gmlFormat] The GML format to use to parse the response. Default is `ol/format/GML3`.
  * @property {string} [schemaLocation] Optional schemaLocation to use for serialization, this will override the default.
  */
 
@@ -226,7 +226,7 @@ class WFS extends XMLFeature {
 
     /**
      * @private
-     * @type {import("./GMLBase.js").default}
+     * @type {GMLBase}
      */
     this.gmlFormat_ = options.gmlFormat ?
       options.gmlFormat : new GML3();
@@ -257,10 +257,15 @@ class WFS extends XMLFeature {
    * @inheritDoc
    */
   readFeaturesFromNode(node, opt_options) {
-    const context = /** @type {import("../xml.js").NodeStackItem} */ ({
+    /** @type {import("../xml.js").NodeStackItem} */
+    const context = {
+      node: node
+    };
+    assign(context, {
       'featureType': this.featureType_,
       'featureNS': this.featureNS_
     });
+
     assign(context, this.getReadOptions(node, opt_options ? opt_options : {}));
     const objectStack = [context];
     this.gmlFormat_.FEATURE_COLLECTION_PARSERS[GMLNS][
@@ -325,7 +330,7 @@ class WFS extends XMLFeature {
    *     FeatureCollection metadata.
    */
   readFeatureCollectionMetadataFromDocument(doc) {
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         return this.readFeatureCollectionMetadataFromNode(/** @type {Element} */ (n));
       }
@@ -353,7 +358,7 @@ class WFS extends XMLFeature {
    * @return {TransactionResponse|undefined} Transaction response.
    */
   readTransactionResponseFromDocument(doc) {
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         return this.readTransactionResponseFromNode(/** @type {Element} */ (n));
       }
@@ -391,16 +396,16 @@ class WFS extends XMLFeature {
         node.setAttribute('outputFormat', options.outputFormat);
       }
       if (options.maxFeatures !== undefined) {
-        node.setAttribute('maxFeatures', options.maxFeatures);
+        node.setAttribute('maxFeatures', String(options.maxFeatures));
       }
       if (options.resultType) {
         node.setAttribute('resultType', options.resultType);
       }
       if (options.startIndex !== undefined) {
-        node.setAttribute('startIndex', options.startIndex);
+        node.setAttribute('startIndex', String(options.startIndex));
       }
       if (options.count !== undefined) {
-        node.setAttribute('count', options.count);
+        node.setAttribute('count', String(options.count));
       }
       filter = options.filter;
       if (options.bbox) {
@@ -419,14 +424,17 @@ class WFS extends XMLFeature {
     node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', this.schemaLocation_);
     /** @type {import("../xml.js").NodeStackItem} */
     const context = {
-      node: node,
+      node: node
+    };
+    assign(context, {
       'srsName': options.srsName,
       'featureNS': options.featureNS ? options.featureNS : this.featureNS_,
       'featurePrefix': options.featurePrefix,
       'geometryName': options.geometryName,
       'filter': filter,
       'propertyNames': options.propertyNames ? options.propertyNames : []
-    };
+    });
+
     assert(Array.isArray(options.featureTypes),
       11); // `options.featureTypes` should be an Array
     writeGetFeature(node, /** @type {!Array<string>} */ (options.featureTypes), [context]);
@@ -463,9 +471,9 @@ class WFS extends XMLFeature {
     node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', schemaLocation);
     const featurePrefix = options.featurePrefix ? options.featurePrefix : FEATURE_PREFIX;
     if (inserts) {
-      obj = {node: node, 'featureNS': options.featureNS,
+      obj = assign({node: node}, {'featureNS': options.featureNS,
         'featureType': options.featureType, 'featurePrefix': featurePrefix,
-        'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName};
+        'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName});
       assign(obj, baseObj);
       pushSerializeAndPop(obj,
         TRANSACTION_SERIALIZERS,
@@ -473,9 +481,9 @@ class WFS extends XMLFeature {
         objectStack);
     }
     if (updates) {
-      obj = {node: node, 'featureNS': options.featureNS,
+      obj = assign({node: node}, {'featureNS': options.featureNS,
         'featureType': options.featureType, 'featurePrefix': featurePrefix,
-        'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName};
+        'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName});
       assign(obj, baseObj);
       pushSerializeAndPop(obj,
         TRANSACTION_SERIALIZERS,
@@ -505,7 +513,7 @@ class WFS extends XMLFeature {
    * @inheritDoc
    */
   readProjectionFromDocument(doc) {
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         return this.readProjectionFromNode(n);
       }
@@ -620,7 +628,7 @@ function writeOgcFidFilter(node, fid, objectStack) {
   const filter = createElementNS(OGCNS, 'Filter');
   const child = createElementNS(OGCNS, 'FeatureId');
   filter.appendChild(child);
-  child.setAttribute('fid', fid);
+  child.setAttribute('fid', /** @type {string} */ (fid));
   node.appendChild(filter);
 }
 
@@ -742,7 +750,7 @@ function writeNative(node, nativeElement, objectStack) {
     node.setAttribute('vendorId', nativeElement.vendorId);
   }
   if (nativeElement.safeToIgnore !== undefined) {
-    node.setAttribute('safeToIgnore', nativeElement.safeToIgnore);
+    node.setAttribute('safeToIgnore', String(nativeElement.safeToIgnore));
   }
   if (nativeElement.value !== undefined) {
     writeStringTextNode(node, nativeElement.value);

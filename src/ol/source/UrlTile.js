@@ -12,7 +12,6 @@ import {getKeyZXY} from '../tilecoord.js';
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions]
  * @property {number} [cacheSize]
- * @property {import("../extent.js").Extent} [extent]
  * @property {boolean} [opaque]
  * @property {import("../proj.js").ProjectionLike} [projection]
  * @property {import("./State.js").default} [state]
@@ -35,14 +34,13 @@ import {getKeyZXY} from '../tilecoord.js';
  */
 class UrlTile extends TileSource {
   /**
-   * @param {Options=} options Image tile options.
+   * @param {Options} options Image tile options.
    */
   constructor(options) {
 
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
-      extent: options.extent,
       opaque: options.opaque,
       projection: options.projection,
       state: options.state,

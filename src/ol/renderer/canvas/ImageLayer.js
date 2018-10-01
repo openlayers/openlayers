@@ -210,7 +210,7 @@ CanvasImageLayerRenderer['handles'] = function(layer) {
  * Create a layer renderer.
  * @param {import("../Map.js").default} mapRenderer The map renderer.
  * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
- * @return {import("./ImageLayer.js").default} The layer renderer.
+ * @return {CanvasImageLayerRenderer} The layer renderer.
  */
 CanvasImageLayerRenderer['create'] = function(mapRenderer, layer) {
   return new CanvasImageLayerRenderer(/** @type {import("../../layer/Image.js").default} */ (layer));

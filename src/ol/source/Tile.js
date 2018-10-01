@@ -2,7 +2,6 @@
  * @module ol/source/Tile
  */
 
-import {VOID} from '../functions.js';
 import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import Event from '../events/Event.js';
@@ -16,7 +15,6 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions]
  * @property {number} [cacheSize]
- * @property {import("../extent.js").Extent} [extent]
  * @property {boolean} [opaque]
  * @property {number} [tilePixelRatio]
  * @property {import("../proj.js").ProjectionLike} [projection]
@@ -36,13 +34,12 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  */
 class TileSource extends Source {
   /**
-   * @param {Options=} options SourceTile source options.
+   * @param {Options} options SourceTile source options.
    */
   constructor(options) {
 
     super({
       attributions: options.attributions,
-      extent: options.extent,
       projection: options.projection,
       state: options.state,
       wrapX: options.wrapX
@@ -291,17 +288,18 @@ class TileSource extends Source {
     this.tileCache.clear();
     this.changed();
   }
+
+  /**
+   * @abstract
+   * Marks a tile coord as being used, without triggering a load.
+   * @param {number} z Tile coordinate z.
+   * @param {number} x Tile coordinate x.
+   * @param {number} y Tile coordinate y.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   */
+  useTile(z, x, y, projection) {}
+
 }
-
-
-/**
- * Marks a tile coord as being used, without triggering a load.
- * @param {number} z Tile coordinate z.
- * @param {number} x Tile coordinate x.
- * @param {number} y Tile coordinate y.
- * @param {import("../proj/Projection.js").default} projection Projection.
- */
-TileSource.prototype.useTile = VOID;
 
 
 /**

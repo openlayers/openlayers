@@ -26,7 +26,7 @@ class Point extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!import("./Point.js").default} Clone.
+   * @return {!Point} Clone.
    * @override
    * @api
    */

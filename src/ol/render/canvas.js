@@ -53,6 +53,13 @@ import {create as createTransform} from '../transform.js';
  * @property {string} font
  * @property {string} [textAlign]
  * @property {string} textBaseline
+ * @property {string} [placement]
+ * @property {number} [maxAngle]
+ * @property {boolean} [overflow]
+ * @property {import("../style/Fill.js").default} [backgroundFill]
+ * @property {import("../style/Stroke.js").default} [backgroundStroke]
+ * @property {number} [scale]
+ * @property {Array<number>} [padding]
  */
 
 
@@ -156,7 +163,7 @@ export const defaultLineWidth = 1;
 /**
  * The label cache for text rendering. To change the default cache size of 2048
  * entries, use {@link module:ol/structs/LRUCache#setSize}.
- * @type {import("../structs/LRUCache.js").default<HTMLCanvasElement>}
+ * @type {LRUCache<HTMLCanvasElement>}
  * @api
  */
 export const labelCache = new LRUCache();

@@ -144,10 +144,12 @@ class RasterSourceEvent extends Event {
  */
 class RasterSource extends ImageSource {
   /**
-   * @param {Options=} options Options.
+   * @param {Options} options Options.
    */
   constructor(options) {
-    super({});
+    super({
+      projection: null
+    });
 
     /**
      * @private
@@ -190,6 +192,10 @@ class RasterSource extends ImageSource {
       this.changed.bind(this));
 
     const layerStatesArray = getLayerStatesArray(this.renderers_);
+
+    /**
+     * @type {Object<number, import("../layer/Layer.js").State>}
+     */
     const layerStates = {};
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
@@ -467,7 +473,7 @@ function getLayerStatesArray(renderers) {
 
 /**
  * Create renderers for all sources.
- * @param {Array<import("./Source.js").default>} sources The sources.
+ * @param {Array<import("./Source.js").default|import("../layer/Layer.js").default>} sources The sources.
  * @return {Array<import("../renderer/canvas/Layer.js").default>} Array of layer renderers.
  */
 function createRenderers(sources) {
@@ -482,7 +488,7 @@ function createRenderers(sources) {
 
 /**
  * Create a renderer for the provided source.
- * @param {import("./Source.js").default} source The source.
+ * @param {import("./Source.js").default|import("../layer/Layer.js").default} source The source.
  * @return {import("../renderer/canvas/Layer.js").default} The renderer.
  */
 function createRenderer(source) {

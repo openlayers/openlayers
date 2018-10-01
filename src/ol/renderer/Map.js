@@ -6,7 +6,7 @@ import Disposable from '../Disposable.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getWidth} from '../extent.js';
-import {TRUE, VOID} from '../functions.js';
+import {TRUE} from '../functions.js';
 import {visibleAtResolution} from '../layer/Layer.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
 import {compose as composeTransform, invert as invertTransform, setFromArray as transformSetFromArray} from '../transform.js';
@@ -47,19 +47,18 @@ class MapRenderer extends Disposable {
   }
 
   /**
+   * @abstract
+   * @param {import("../render/EventType.js").default} type Event type.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   */
+  dispatchRenderEvent(type, frameState) {}
+
+  /**
    * Register layer renderer constructors.
    * @param {Array<import("./Layer.js").default>} constructors Layer renderers.
    */
   registerLayerRenderers(constructors) {
     this.layerRendererConstructors_.push.apply(this.layerRendererConstructors_, constructors);
-  }
-
-  /**
-   * Get the registered layer renderer constructors.
-   * @return {Array<import("./Layer.js").default>} Registered layer renderers.
-   */
-  getLayerRendererConstructors() {
-    return this.layerRendererConstructors_;
   }
 
   /**
@@ -155,7 +154,7 @@ class MapRenderer extends Disposable {
         if (layer.getSource()) {
           result = layerRenderer.forEachFeatureAtCoordinate(
             layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
-            frameState, hitTolerance, forEachFeatureAtCoordinate, thisArg);
+            frameState, hitTolerance, forEachFeatureAtCoordinate);
         }
         if (result) {
           return result;
@@ -292,6 +291,13 @@ class MapRenderer extends Disposable {
   }
 
   /**
+   * @abstract
+   * Render.
+   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
+   */
+  renderFrame(frameState) {}
+
+  /**
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    * @protected
    */
@@ -323,20 +329,6 @@ class MapRenderer extends Disposable {
 function expireIconCache(map, frameState) {
   iconImageCache.expire();
 }
-
-
-/**
- * Render.
- * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
- */
-MapRenderer.prototype.renderFrame = VOID;
-
-
-/**
- * @param {import("../render/EventType.js").default} type Event type.
- * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
- */
-MapRenderer.prototype.dispatchRenderEvent = VOID;
 
 
 /**

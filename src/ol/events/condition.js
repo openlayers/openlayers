@@ -67,7 +67,6 @@ export const focus = function(event) {
  *
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} True.
- * @function
  * @api
  */
 export const always = TRUE;
@@ -106,7 +105,6 @@ export const mouseActionButton = function(mapBrowserEvent) {
  *
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} False.
- * @function
  * @api
  */
 export const never = FALSE;

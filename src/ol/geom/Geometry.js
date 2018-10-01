@@ -3,7 +3,6 @@
  */
 import BaseObject from '../Object.js';
 import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
-import {FALSE} from '../functions.js';
 import {transform2D} from '../geom/flat/transform.js';
 import {get as getProjection, getTransform} from '../proj.js';
 import Units from '../proj/Units.js';
@@ -47,7 +46,7 @@ class Geometry extends BaseObject {
 
     /**
      * @protected
-     * @type {Object<string, import("./Geometry.js").default>}
+     * @type {Object<string, Geometry>}
      */
     this.simplifiedGeometryCache = {};
 
@@ -68,7 +67,7 @@ class Geometry extends BaseObject {
   /**
    * Make a complete copy of the geometry.
    * @abstract
-   * @return {!import("./Geometry.js").default} Clone.
+   * @return {!Geometry} Clone.
    */
   clone() {}
 
@@ -81,6 +80,15 @@ class Geometry extends BaseObject {
    * @return {number} Minimum squared distance.
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {}
+
+  /**
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @return {boolean} Contains (x, y).
+   */
+  containsXY(x, y) {
+    return false;
+  }
 
   /**
    * Return the closest point of the geometry to the passed point as
@@ -158,10 +166,8 @@ class Geometry extends BaseObject {
    * https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
    * Douglas Peucker} algorithm.  For polygons, a quantization-based
    * simplification is used to preserve topology.
-   * @function
    * @param {number} tolerance The tolerance distance for simplification.
-   * @return {import("./Geometry.js").default} A new, simplified version of the original
-   *     geometry.
+   * @return {Geometry} A new, simplified version of the original geometry.
    * @api
    */
   simplify(tolerance) {
@@ -174,7 +180,7 @@ class Geometry extends BaseObject {
    * See https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm.
    * @abstract
    * @param {number} squaredTolerance Squared tolerance.
-   * @return {import("./Geometry.js").default} Simplified geometry.
+   * @return {Geometry} Simplified geometry.
    */
   getSimplifiedGeometry(squaredTolerance) {}
 
@@ -224,16 +230,17 @@ class Geometry extends BaseObject {
    *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
    * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
    *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
-   * @return {import("./Geometry.js").default} This geometry.  Note that original geometry is
+   * @return {Geometry} This geometry.  Note that original geometry is
    *     modified in place.
    * @api
    */
   transform(source, destination) {
-    source = getProjection(source);
-    const transformFn = source.getUnits() == Units.TILE_PIXELS ?
+    /** @type {import("../proj/Projection.js").default} */
+    const sourceProj = getProjection(source);
+    const transformFn = sourceProj.getUnits() == Units.TILE_PIXELS ?
       function(inCoordinates, outCoordinates, stride) {
-        const pixelExtent = source.getExtent();
-        const projectedExtent = source.getWorldExtent();
+        const pixelExtent = sourceProj.getExtent();
+        const projectedExtent = sourceProj.getWorldExtent();
         const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
         composeTransform(tmpTransform,
           projectedExtent[0], projectedExtent[3],
@@ -241,21 +248,14 @@ class Geometry extends BaseObject {
           0, 0);
         transform2D(inCoordinates, 0, inCoordinates.length, stride,
           tmpTransform, outCoordinates);
-        return getTransform(source, destination)(inCoordinates, outCoordinates, stride);
+        return getTransform(sourceProj, destination)(inCoordinates, outCoordinates, stride);
       } :
-      getTransform(source, destination);
+      getTransform(sourceProj, destination);
     this.applyTransform(transformFn);
     return this;
   }
+
 }
-
-
-/**
- * @param {number} x X.
- * @param {number} y Y.
- * @return {boolean} Contains (x, y).
- */
-Geometry.prototype.containsXY = FALSE;
 
 
 export default Geometry;

@@ -54,7 +54,7 @@ class WMSGetFeatureInfo extends XMLFeature {
 
     /**
      * @private
-     * @type {import("./GML2.js").default}
+     * @type {GML2}
      */
     this.gmlFormat_ = new GML2();
 

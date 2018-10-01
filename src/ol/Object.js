@@ -11,8 +11,8 @@ import {assign} from './obj.js';
 /**
  * @classdesc
  * Events emitted by {@link module:ol/Object~BaseObject} instances are instances of this type.
-  */
-class ObjectEvent extends Event {
+ */
+export class ObjectEvent extends Event {
 
   /**
    * @param {string} type The event type.

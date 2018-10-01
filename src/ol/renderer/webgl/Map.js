@@ -131,7 +131,7 @@ class WebGLMapRenderer extends MapRenderer {
       /**
        * @param {Array<*>} element Element.
        * @return {number} Priority.
-       * @this {import("./Map.js").default}
+       * @this {WebGLMapRenderer}
        */
       (function(element) {
         const tileCenter = /** @type {import("../../coordinate.js").Coordinate} */ (element[1]);
@@ -156,7 +156,7 @@ class WebGLMapRenderer extends MapRenderer {
      * @param {import("../../PluggableMap.js").default} map Map.
      * @param {?import("../../PluggableMap.js").FrameState} frameState Frame state.
      * @return {boolean} false.
-     * @this {import("./Map.js").default}
+     * @this {WebGLMapRenderer}
      */
     this.loadNextTileTexture_ =
         function(map, frameState) {
@@ -506,7 +506,7 @@ class WebGLMapRenderer extends MapRenderer {
           layerFilter.call(thisArg2, layer)) {
         const layerRenderer = this.getLayerRenderer(layer);
         result = layerRenderer.forEachFeatureAtCoordinate(
-          coordinate, frameState, hitTolerance, callback, thisArg);
+          coordinate, frameState, hitTolerance, callback);
         if (result) {
           return result;
         }

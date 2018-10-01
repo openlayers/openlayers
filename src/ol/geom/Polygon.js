@@ -36,7 +36,7 @@ class Polygon extends SimpleGeometry {
    *     an array of vertices' coordinates where the first coordinate and the last are
    *     equivalent. (For internal use, flat coordinates in combination with
    *     `opt_layout` and `opt_ends` are also accepted.)
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {GeometryLayout=} opt_layout Layout.
    * @param {Array<number>=} opt_ends Ends (for internal use with flat coordinates).
    */
   constructor(coordinates, opt_layout, opt_ends) {
@@ -86,17 +86,17 @@ class Polygon extends SimpleGeometry {
     this.orientedFlatCoordinates_ = null;
 
     if (opt_layout !== undefined && opt_ends) {
-      this.setFlatCoordinates(opt_layout, coordinates);
+      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
       this.ends_ = opt_ends;
     } else {
-      this.setCoordinates(coordinates, opt_layout);
+      this.setCoordinates(/** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (coordinates), opt_layout);
     }
 
   }
 
   /**
    * Append the passed linear ring to this polygon.
-   * @param {import("./LinearRing.js").default} linearRing Linear ring.
+   * @param {LinearRing} linearRing Linear ring.
    * @api
    */
   appendLinearRing(linearRing) {
@@ -111,7 +111,7 @@ class Polygon extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!import("./Polygon.js").default} Clone.
+   * @return {!Polygon} Clone.
    * @override
    * @api
    */
@@ -203,7 +203,7 @@ class Polygon extends SimpleGeometry {
 
   /**
    * Return an interior point of the polygon.
-   * @return {import("./Point.js").default} Interior point as XYM coordinate, where M is the
+   * @return {Point} Interior point as XYM coordinate, where M is the
    * length of the horizontal intersection that the point belongs to.
    * @api
    */
@@ -229,7 +229,7 @@ class Polygon extends SimpleGeometry {
    * at index `1` and beyond.
    *
    * @param {number} index Index.
-   * @return {import("./LinearRing.js").default} Linear ring.
+   * @return {LinearRing} Linear ring.
    * @api
    */
   getLinearRing(index) {
@@ -242,7 +242,7 @@ class Polygon extends SimpleGeometry {
 
   /**
    * Return the linear rings of the polygon.
-   * @return {Array<import("./LinearRing.js").default>} Linear rings.
+   * @return {Array<LinearRing>} Linear rings.
    * @api
    */
   getLinearRings() {
@@ -313,7 +313,7 @@ class Polygon extends SimpleGeometry {
   /**
    * Set the coordinates of the polygon.
    * @param {!Array<Array<import("../coordinate.js").Coordinate>>} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {GeometryLayout=} opt_layout Layout.
    * @override
    * @api
    */
@@ -342,7 +342,7 @@ export default Polygon;
  *     polygon. Default is `32`.
  * @param {number=} opt_sphereRadius Optional radius for the sphere (defaults to
  *     the Earth's mean radius using the WGS84 ellipsoid).
- * @return {import("./Polygon.js").default} The "circular" polygon.
+ * @return {Polygon} The "circular" polygon.
  * @api
  */
 export function circular(center, radius, opt_n, opt_sphereRadius) {
@@ -360,7 +360,7 @@ export function circular(center, radius, opt_n, opt_sphereRadius) {
 /**
  * Create a polygon from an extent. The layout used is `XY`.
  * @param {import("../extent.js").Extent} extent The extent.
- * @return {import("./Polygon.js").default} The polygon.
+ * @return {Polygon} The polygon.
  * @api
  */
 export function fromExtent(extent) {
@@ -380,7 +380,7 @@ export function fromExtent(extent) {
  * @param {number=} opt_sides Number of sides of the polygon. Default is 32.
  * @param {number=} opt_angle Start angle for the first vertex of the polygon in
  *     radians. Default is 0.
- * @return {import("./Polygon.js").default} Polygon geometry.
+ * @return {Polygon} Polygon geometry.
  * @api
  */
 export function fromCircle(circle, opt_sides, opt_angle) {
@@ -406,7 +406,7 @@ export function fromCircle(circle, opt_sides, opt_angle) {
 
 /**
  * Modify the coordinates of a polygon to make it a regular polygon.
- * @param {import("./Polygon.js").default} polygon Polygon geometry.
+ * @param {Polygon} polygon Polygon geometry.
  * @param {import("../coordinate.js").Coordinate} center Center of the regular polygon.
  * @param {number} radius Radius of the regular polygon.
  * @param {number=} opt_angle Start angle for the first vertex of the polygon in

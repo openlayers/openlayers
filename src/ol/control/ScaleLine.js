@@ -283,7 +283,7 @@ class ScaleLine extends Control {
 /**
  * Update the scale line element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {import("./ScaleLine.js").default}
+ * @this {ScaleLine}
  * @api
  */
 export function render(mapEvent) {

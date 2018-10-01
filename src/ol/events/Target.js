@@ -8,7 +8,7 @@ import Event from '../events/Event.js';
 
 
 /**
- * @typedef {EventTarget|import("./Target.js").default} EventTargetLike
+ * @typedef {EventTarget|Target} EventTargetLike
  */
 
 
@@ -72,11 +72,11 @@ class Target extends Disposable {
    * Object with a `type` property.
    *
    * @param {{type: string,
-   *     target: (EventTargetLike|undefined)}|
+   *     target: (EventTargetLike|undefined),
+   *     propagationStopped: (boolean|undefined)}|
    *     import("./Event.js").default|string} event Event object.
    * @return {boolean|undefined} `false` if anyone called preventDefault on the
    *     event object or if any of the listeners returned false.
-   * @function
    * @api
    */
   dispatchEvent(event) {

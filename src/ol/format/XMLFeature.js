@@ -79,7 +79,6 @@ class XMLFeature extends FeatureFormat {
   /**
    * Read all features from a feature collection.
    *
-   * @function
    * @param {Document|Node|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions=} opt_options Options.
    * @return {Array<import("../Feature.js").default>} Features.
@@ -108,7 +107,7 @@ class XMLFeature extends FeatureFormat {
   readFeaturesFromDocument(doc, opt_options) {
     /** @type {Array<import("../Feature.js").default>} */
     const features = [];
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         extend(features, this.readFeaturesFromNode(n, opt_options));
       }

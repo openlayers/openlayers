@@ -363,7 +363,7 @@ describe('ol.rendering.style.Text', function() {
       it('renders text along a linestring with `textAlign: \'center\'`', function(done) {
         createMap('canvas');
         createLineString(uglyPath, 'center');
-        expectResemble(map, 'rendering/ol/style/expected/text-linestring-center.png', 3.6, done);
+        expectResemble(map, 'rendering/ol/style/expected/text-linestring-center.png', 3.63, done);
       });
 
       it('omits text along a linestring with `textAlign: \'left\'` when > maxAngle', function(done) {

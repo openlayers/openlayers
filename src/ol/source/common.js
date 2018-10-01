@@ -1,4 +1,8 @@
 /**
+ * @module ol/source/common
+ */
+
+/**
  * Default WMS version.
  * @type {string}
  */

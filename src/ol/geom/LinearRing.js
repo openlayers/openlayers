@@ -23,7 +23,7 @@ class LinearRing extends SimpleGeometry {
   /**
    * @param {Array<import("../coordinate.js").Coordinate>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {GeometryLayout=} opt_layout Layout.
    */
   constructor(coordinates, opt_layout) {
 
@@ -42,16 +42,16 @@ class LinearRing extends SimpleGeometry {
     this.maxDeltaRevision_ = -1;
 
     if (opt_layout !== undefined && !Array.isArray(coordinates[0])) {
-      this.setFlatCoordinates(opt_layout, coordinates);
+      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
     } else {
-      this.setCoordinates(coordinates, opt_layout);
+      this.setCoordinates(/** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates), opt_layout);
     }
 
   }
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!import("./LinearRing.js").default} Clone.
+   * @return {!LinearRing} Clone.
    * @override
    * @api
    */
@@ -118,12 +118,14 @@ class LinearRing extends SimpleGeometry {
   /**
    * @inheritDoc
    */
-  intersectsExtent(extent) {}
+  intersectsExtent(extent) {
+    return false;
+  }
 
   /**
    * Set the coordinates of the linear ring.
    * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
-   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
+   * @param {GeometryLayout=} opt_layout Layout.
    * @override
    * @api
    */

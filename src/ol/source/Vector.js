@@ -61,7 +61,7 @@ export class VectorSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
- * @property {Array<import("../Feature.js").default>|import("../Collection.js").default<import("../Feature.js").default>} [features]
+ * @property {Array<import("../Feature.js").default>|Collection<import("../Feature.js").default>} [features]
  * Features. If provided as {@link module:ol/Collection}, the features in the source
  * and the collection will stay in sync.
  * @property {import("../format/Feature.js").default} [format] The feature format used by the XHR
@@ -215,13 +215,13 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {import("../structs/RBush.js").default<import("../Feature.js").default>}
+     * @type {RBush<import("../Feature.js").default>}
      */
     this.featuresRtree_ = useSpatialIndex ? new RBush() : null;
 
     /**
      * @private
-     * @type {import("../structs/RBush.js").default<{extent: import("../extent.js").Extent}>}
+     * @type {RBush<{extent: import("../extent.js").Extent}>}
      */
     this.loadedExtentsRtree_ = new RBush();
 
@@ -253,7 +253,7 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {import("../Collection.js").default<import("../Feature.js").default>}
+     * @type {Collection<import("../Feature.js").default>}
      */
     this.featuresCollection_ = null;
 
@@ -414,12 +414,15 @@ class VectorSource extends Source {
 
 
   /**
-   * @param {!import("../Collection.js").default<import("../Feature.js").default>} collection Collection.
+   * @param {!Collection<import("../Feature.js").default>} collection Collection.
    * @private
    */
   bindFeaturesCollection_(collection) {
     let modifyingCollection = false;
     listen(this, VectorEventType.ADDFEATURE,
+      /**
+       * @param {VectorSourceEvent} evt The vector source event
+       */
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
@@ -428,6 +431,9 @@ class VectorSource extends Source {
         }
       });
     listen(this, VectorEventType.REMOVEFEATURE,
+      /**
+       * @param {VectorSourceEvent} evt The vector source event
+       */
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
@@ -436,6 +442,9 @@ class VectorSource extends Source {
         }
       });
     listen(collection, CollectionEventType.ADD,
+      /**
+       * @param {import("../Collection.js").CollectionEvent} evt The collection event
+       */
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
@@ -444,6 +453,9 @@ class VectorSource extends Source {
         }
       }, this);
     listen(collection, CollectionEventType.REMOVE,
+      /**
+       * @param {import("../Collection.js").CollectionEvent} evt The collection event
+       */
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
@@ -511,7 +523,7 @@ class VectorSource extends Source {
     if (this.featuresRtree_) {
       return this.featuresRtree_.forEach(callback);
     } else if (this.featuresCollection_) {
-      return this.featuresCollection_.forEach(callback);
+      this.featuresCollection_.forEach(callback);
     }
   }
 
@@ -564,7 +576,7 @@ class VectorSource extends Source {
     if (this.featuresRtree_) {
       return this.featuresRtree_.forEachInExtent(extent, callback);
     } else if (this.featuresCollection_) {
-      return this.featuresCollection_.forEach(callback);
+      this.featuresCollection_.forEach(callback);
     }
   }
 
@@ -589,7 +601,6 @@ class VectorSource extends Source {
       /**
        * @param {import("../Feature.js").default} feature Feature.
        * @return {T|undefined} The return value from the last call to the callback.
-       * @template T
        */
       function(feature) {
         const geometry = feature.getGeometry();
@@ -607,7 +618,7 @@ class VectorSource extends Source {
    * Get the features collection associated with this source. Will be `null`
    * unless the source was configured with `useSpatialIndex` set to `false`, or
    * with an {@link module:ol/Collection} as `features`.
-   * @return {import("../Collection.js").default<import("../Feature.js").default>} The collection of features.
+   * @return {Collection<import("../Feature.js").default>} The collection of features.
    * @api
    */
   getFeaturesCollection() {
@@ -772,12 +783,6 @@ class VectorSource extends Source {
 
 
   /**
-   * @override
-   */
-  getResolutions() {}
-
-
-  /**
    * Get the url associated with this source.
    *
    * @return {string|import("../featureloader.js").FeatureUrlFunction|undefined} The url.
@@ -789,7 +794,7 @@ class VectorSource extends Source {
 
 
   /**
-   * @param {import("../events/Event.js").default} event Event.
+   * @param {Event} event Event.
    * @private
    */
   handleFeatureChange_(event) {

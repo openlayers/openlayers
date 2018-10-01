@@ -570,7 +570,7 @@ class OverviewMap extends Control {
 /**
  * Update the overview map element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {import("./OverviewMap.js").default}
+ * @this {OverviewMap}
  * @api
  */
 export function render(mapEvent) {

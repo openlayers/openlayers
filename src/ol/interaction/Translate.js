@@ -38,7 +38,7 @@ const TranslateEventType = {
 
 /**
  * @typedef {Object} Options
- * @property {import("../Collection.js").default<import("../Feature.js").default>} [features] Only features contained in this collection will be able to be translated. If
+ * @property {Collection<import("../Feature.js").default>} [features] Only features contained in this collection will be able to be translated. If
  * not specified, all features on the map will be able to be translated.
  * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default): boolean} [layers] A list of layers from which features should be
  * translated. Alternatively, a filter function can be provided. The
@@ -59,7 +59,7 @@ const TranslateEventType = {
 export class TranslateEvent extends Event {
   /**
    * @param {TranslateEventType} type Type.
-   * @param {import("../Collection.js").default<import("../Feature.js").default>} features The features translated.
+   * @param {Collection<import("../Feature.js").default>} features The features translated.
    * @param {import("../coordinate.js").Coordinate} coordinate The event coordinate.
    */
   constructor(type, features, coordinate) {
@@ -68,7 +68,7 @@ export class TranslateEvent extends Event {
 
     /**
      * The features being translated.
-     * @type {import("../Collection.js").default<import("../Feature.js").default>}
+     * @type {Collection<import("../Feature.js").default>}
      * @api
      */
     this.features = features;
@@ -116,7 +116,7 @@ class Translate extends PointerInteraction {
 
 
     /**
-     * @type {import("../Collection.js").default<import("../Feature.js").default>}
+     * @type {Collection<import("../Feature.js").default>}
      * @private
      */
     this.features_ = options.features !== undefined ? options.features : null;
@@ -238,7 +238,7 @@ class Translate extends PointerInteraction {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} event Event.
  * @return {boolean} Start drag sequence?
- * @this {import("./Translate.js").default}
+ * @this {Translate}
  */
 function handleDownEvent(event) {
   this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
@@ -261,7 +261,7 @@ function handleDownEvent(event) {
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} event Event.
  * @return {boolean} Stop drag sequence?
- * @this {import("./Translate.js").default}
+ * @this {Translate}
  */
 function handleUpEvent(event) {
   if (this.lastCoordinate_) {
@@ -282,7 +282,7 @@ function handleUpEvent(event) {
 
 /**
  * @param {import("../MapBrowserPointerEvent.js").default} event Event.
- * @this {import("./Translate.js").default}
+ * @this {Translate}
  */
 function handleDragEvent(event) {
   if (this.lastCoordinate_) {
@@ -309,7 +309,7 @@ function handleDragEvent(event) {
 
 /**
  * @param {import("../MapBrowserEvent.js").default} event Event.
- * @this {import("./Translate.js").default}
+ * @this {Translate}
  */
 function handleMoveEvent(event) {
   const elem = event.map.getViewport();

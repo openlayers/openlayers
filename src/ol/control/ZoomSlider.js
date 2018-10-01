@@ -5,7 +5,7 @@ import ViewHint from '../ViewHint.js';
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
-import {listen} from '../events.js';
+import {listen, unlistenByKey} from '../events.js';
 import {stopPropagation} from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {clamp} from '../math.js';
@@ -56,6 +56,12 @@ class ZoomSlider extends Control {
       element: document.createElement('div'),
       render: options.render || render
     });
+
+    /**
+      * @type {!Array.<import("../events.js").EventsKey>}
+      * @private
+      */
+    this.dragListenerKeys_ = [];
 
     /**
      * Will hold the current resolution of the view.
@@ -133,7 +139,7 @@ class ZoomSlider extends Control {
     containerElement.className = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
     containerElement.appendChild(thumbElement);
     /**
-     * @type {import("../pointer/PointerEventHandler.js").default}
+     * @type {PointerEventHandler}
      * @private
      */
     this.dragger_ = new PointerEventHandler(containerElement);
@@ -231,13 +237,24 @@ class ZoomSlider extends Control {
       this.previousX_ = event.clientX;
       this.previousY_ = event.clientY;
       this.dragging_ = true;
+
+      if (this.dragListenerKeys_.length === 0) {
+        const drag = this.handleDraggerDrag_;
+        const end = this.handleDraggerEnd_;
+        this.dragListenerKeys_.push(
+          listen(document, EventType.MOUSEMOVE, drag, this),
+          listen(document, PointerEventType.POINTERMOVE, drag, this),
+          listen(document, EventType.MOUSEUP, end, this),
+          listen(document, PointerEventType.POINTERUP, end, this)
+        );
+      }
     }
   }
 
   /**
    * Handle dragger drag events.
    *
-   * @param {import("../pointer/PointerEvent.js").default|Event} event The drag event.
+   * @param {import("../pointer/PointerEvent.js").default} event The drag event.
    * @private
    */
   handleDraggerDrag_(event) {
@@ -256,7 +273,7 @@ class ZoomSlider extends Control {
 
   /**
    * Handle dragger end events.
-   * @param {import("../pointer/PointerEvent.js").default|Event} event The drag event.
+   * @param {import("../pointer/PointerEvent.js").default} event The drag event.
    * @private
    */
   handleDraggerEnd_(event) {
@@ -273,6 +290,8 @@ class ZoomSlider extends Control {
       this.dragging_ = false;
       this.previousX_ = undefined;
       this.previousY_ = undefined;
+      this.dragListenerKeys_.forEach(unlistenByKey);
+      this.dragListenerKeys_.length = 0;
     }
   }
 
@@ -345,7 +364,7 @@ class ZoomSlider extends Control {
 /**
  * Update the zoomslider element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {import("./ZoomSlider.js").default}
+ * @this {ZoomSlider}
  * @api
  */
 export function render(mapEvent) {

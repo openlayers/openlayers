@@ -70,7 +70,6 @@ class ImageSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions]
- * @property {import("../extent.js").Extent} [extent]
  * @property {import("../proj.js").ProjectionLike} projection
  * @property {Array<number>} [resolutions]
  * @property {import("./State.js").default} [state]
@@ -91,7 +90,6 @@ class ImageSource extends Source {
   constructor(options) {
     super({
       attributions: options.attributions,
-      extent: options.extent,
       projection: options.projection,
       state: options.state
     });
@@ -232,7 +230,10 @@ class ImageSource extends Source {
  * @param {string} src Source.
  */
 export function defaultImageLoadFunction(image, src) {
-  image.getImage().src = src;
+  const img = image.getImage();
+  if (img instanceof HTMLImageElement || img instanceof HTMLVideoElement) {
+    img.src = src;
+  }
 }
 
 
