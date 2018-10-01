@@ -229,8 +229,9 @@ export function transformWithOptions(geometry, write, opt_options) {
   } else {
     transformed = geometry;
   }
-  if (write && opt_options && opt_options.decimals !== undefined) {
-    const power = Math.pow(10, opt_options.decimals);
+  if (write && opt_options && /** @type {WriteOptions} */ (opt_options).decimals !== undefined &&
+    transformed instanceof Geometry) {
+    const power = Math.pow(10, /** @type {WriteOptions} */ (opt_options).decimals);
     // if decimals option on write, round each coordinate appropriately
     /**
      * @param {Array<number>} coordinates Coordinates.
