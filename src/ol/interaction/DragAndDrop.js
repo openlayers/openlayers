@@ -150,15 +150,7 @@ class DragAndDrop extends Interaction {
     const formatConstructors = this.formatConstructors_;
     let features = [];
     for (let i = 0, ii = formatConstructors.length; i < ii; ++i) {
-      /**
-       * Avoid "cannot instantiate abstract class" error.
-       * @type {Function}
-       */
-      const formatConstructor = formatConstructors[i];
-      /**
-       * @type {import("../format/Feature.js").default}
-       */
-      const format = new formatConstructor();
+      const format = new formatConstructors[i]();
       features = this.tryReadFeatures_(format, result, {
         featureProjection: projection
       });
