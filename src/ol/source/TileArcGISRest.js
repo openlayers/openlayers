@@ -11,6 +11,45 @@ import {hash as tileCoordHash} from '../tilecoord.js';
 import {appendParams} from '../uri.js';
 
 /**
+ * @param {import("../tilecoord.js").TileCoord} tileCoord The tile coordinate
+ * @param {number} pixelRatio The pixel ratio
+ * @param {import("../proj/Projection.js").default} projection The projection
+ * @return {string|undefined} The tile URL
+ * @this {TileArcGISRest}
+ */
+const fixedTileUrlFunction = function(tileCoord, pixelRatio, projection) {
+
+  let tileGrid = this.getTileGrid();
+  if (!tileGrid) {
+    tileGrid = this.getTileGridForProjection(projection);
+  }
+
+  if (tileGrid.getResolutions().length <= tileCoord[0]) {
+    return undefined;
+  }
+
+  const tileExtent = tileGrid.getTileCoordExtent(
+    tileCoord, this.tmpExtent_);
+  let tileSize = toSize(
+    tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+
+  if (pixelRatio != 1) {
+    tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
+  }
+
+  // Apply default params and override with user specified values.
+  const baseParams = {
+    'F': 'image',
+    'FORMAT': 'PNG32',
+    'TRANSPARENT': true
+  };
+  assign(baseParams, this.params_);
+
+  return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
+    pixelRatio, projection, baseParams);
+};
+
+/**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize=2048] Cache size.
@@ -81,6 +120,8 @@ class TileArcGISRest extends TileImage {
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
       transition: options.transition
     });
+
+    this.setTileUrlFunction(fixedTileUrlFunction.bind(this));
 
     /**
      * @private
@@ -167,41 +208,6 @@ class TileArcGISRest extends TileImage {
    */
   getTilePixelRatio(pixelRatio) {
     return /** @type {number} */ (pixelRatio);
-  }
-
-  /**
-   * @inheritDoc
-   */
-  fixedTileUrlFunction(tileCoord, pixelRatio, projection) {
-
-    let tileGrid = this.getTileGrid();
-    if (!tileGrid) {
-      tileGrid = this.getTileGridForProjection(projection);
-    }
-
-    if (tileGrid.getResolutions().length <= tileCoord[0]) {
-      return undefined;
-    }
-
-    const tileExtent = tileGrid.getTileCoordExtent(
-      tileCoord, this.tmpExtent_);
-    let tileSize = toSize(
-      tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
-
-    if (pixelRatio != 1) {
-      tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
-    }
-
-    // Apply default params and override with user specified values.
-    const baseParams = {
-      'F': 'image',
-      'FORMAT': 'PNG32',
-      'TRANSPARENT': true
-    };
-    assign(baseParams, this.params_);
-
-    return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      pixelRatio, projection, baseParams);
   }
 
   /**
