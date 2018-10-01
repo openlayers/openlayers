@@ -912,7 +912,7 @@ function handleDownEvent(event) {
     return true;
   } else if (this.condition_(event)) {
     this.lastDragTime_ = Date.now();
-    this.downTimeout_ = setTimeout(function() {
+    this.downTimeout_ = window.setTimeout(function() {
       this.handlePointerMove_(new MapBrowserPointerEvent(
         MapBrowserEventType.POINTERMOVE, event.map, event.pointerEvent, false, event.frameState));
     }.bind(this), this.dragVertexDelay_);

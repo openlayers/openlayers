@@ -187,7 +187,7 @@ class TouchSource extends EventSource {
    * @private
    */
   resetClickCount_() {
-    this.resetId_ = setTimeout(
+    this.resetId_ = window.setTimeout(
       this.resetClickCountHandler_.bind(this),
       CLICK_COUNT_TIMEOUT);
   }
