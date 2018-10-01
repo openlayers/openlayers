@@ -1,41 +1,10 @@
 /**
  * @module ol/interaction/Pointer
  */
-import {FALSE, VOID} from '../functions.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import Interaction from '../interaction/Interaction.js';
 import {getValues} from '../obj.js';
-
-
-/**
- * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {PointerInteraction}
- */
-const handleDragEvent = VOID;
-
-
-/**
- * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
- * @return {boolean} Capture dragging.
- * @this {PointerInteraction}
- */
-const handleUpEvent = FALSE;
-
-
-/**
- * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
- * @return {boolean} Capture dragging.
- * @this {PointerInteraction}
- */
-const handleDownEvent = FALSE;
-
-
-/**
- * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {PointerInteraction}
- */
-const handleMoveEvent = VOID;
 
 
 /**
@@ -58,7 +27,7 @@ const handleMoveEvent = VOID;
  * @property {function(MapBrowserPointerEvent):boolean} [handleUpEvent]
  *  Function handling "up" events. If the function returns `false` then the
  * current drag sequence is stopped.
- * @property {function(boolean):boolean} stopDown
+ * @property {function(boolean):boolean} [stopDown]
  * Should the down event be propagated to other interactions, or should be
  * stopped?
  */
@@ -92,28 +61,28 @@ class PointerInteraction extends Interaction {
      * @private
      */
     this.handleDownEvent_ = options.handleDownEvent ?
-      options.handleDownEvent : handleDownEvent;
+      options.handleDownEvent : this.handleDownEvent;
 
     /**
      * @type {function(MapBrowserPointerEvent)}
      * @private
      */
     this.handleDragEvent_ = options.handleDragEvent ?
-      options.handleDragEvent : handleDragEvent;
+      options.handleDragEvent : this.handleDragEvent;
 
     /**
      * @type {function(MapBrowserPointerEvent)}
      * @private
      */
     this.handleMoveEvent_ = options.handleMoveEvent ?
-      options.handleMoveEvent : handleMoveEvent;
+      options.handleMoveEvent : this.handleMoveEvent;
 
     /**
      * @type {function(MapBrowserPointerEvent):boolean}
      * @private
      */
     this.handleUpEvent_ = options.handleUpEvent ?
-      options.handleUpEvent : handleUpEvent;
+      options.handleUpEvent : this.handleUpEvent;
 
     /**
      * @type {boolean}
@@ -141,6 +110,40 @@ class PointerInteraction extends Interaction {
      */
     this.targetPointers = [];
 
+  }
+
+  /**
+   * Handle pointer down events.
+   * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
+   * @return {boolean} If the event was consumed.
+   * @protected
+   */
+  handleDownEvent(mapBrowserEvent) {
+    return false;
+  }
+
+  /**
+   * Handle pointer drag events.
+   * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
+   * @protected
+   */
+  handleDragEvent(mapBrowserEvent) {}
+
+  /**
+   * Handle pointer move events.
+   * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
+   * @protected
+   */
+  handleMoveEvent(mapBrowserEvent) {}
+
+  /**
+   * Handle pointer up events.
+   * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
+   * @return {boolean} If the event was consumed.
+   * @protected
+   */
+  handleUpEvent(mapBrowserEvent) {
+    return false;
   }
 
   /**
