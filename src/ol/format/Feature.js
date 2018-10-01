@@ -7,6 +7,16 @@ import {get as getProjection, equivalent as equivalentProjection, transformExten
 
 
 /**
+ * @typedef {typeof import("../Feature.js").default|typeof import("../render/Feature.js").default} FeatureClass
+ */
+
+
+/**
+ * @typedef {import("../Feature.js").default|import("../render/Feature.js").default} FeatureLike
+ */
+
+
+/**
  * @typedef {Object} ReadOptions
  * @property {import("../proj.js").ProjectionLike} [dataProjection] Projection of the data we are reading.
  * If not provided, the projection will be derived from the data (where possible) or
@@ -131,7 +141,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Node|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
-   * @return {import("../Feature.js").default} Feature.
+   * @return {FeatureLike} Feature.
    */
   readFeature(source, opt_options) {}
 
@@ -141,7 +151,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Node|ArrayBuffer|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<FeatureLike>} Features.
    */
   readFeatures(source, opt_options) {}
 

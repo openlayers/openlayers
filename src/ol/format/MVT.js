@@ -5,8 +5,8 @@
 
 import {assert} from '../asserts.js';
 import PBF from 'pbf';
-import FeatureFormat, {transformWithOptions} from '../format/Feature.js';
-import FormatType from '../format/FormatType.js';
+import FeatureFormat, {transformWithOptions} from './Feature.js';
+import FormatType from './FormatType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
@@ -23,17 +23,14 @@ import RenderFeature from '../render/Feature.js';
 
 /**
  * @typedef {Object} Options
- * @property {function((import("../geom/Geometry.js").default|Object<string,*>)=)|function(GeometryType,Array<number>,(Array<number>|Array<Array<number>>),Object<string,*>,number)} [featureClass]
- * Class for features returned by {@link module:ol/format/MVT#readFeatures}. Set to
- * {@link module:ol/Feature~Feature} to get full editing and geometry support at the cost of
- * decreased rendering performance. The default is {@link module:ol/render/Feature~RenderFeature},
- * which is optimized for rendering and hit detection.
- * @property {string} [geometryName='geometry'] Geometry name to use when creating
- * features.
- * @property {string} [layerName='layer'] Name of the feature attribute that
- * holds the layer name.
- * @property {Array<string>} [layers] Layers to read features from. If not
- * provided, features will be read from all layers.
+ * @property {import("./Feature.js").FeatureClass} [featureClass] Class for features returned by
+ * {@link module:ol/format/MVT#readFeatures}. Set to {@link module:ol/Feature~Feature} to get full editing and geometry
+ * support at the cost of decreased rendering performance. The default is
+ * {@link module:ol/render/Feature~RenderFeature}, which is optimized for rendering and hit detection.
+ * @property {string} [geometryName='geometry'] Geometry name to use when creating features.
+ * @property {string} [layerName='layer'] Name of the feature attribute that holds the layer name.
+ * @property {Array<string>} [layers] Layers to read features from. If not provided, features will be read from all
+ * layers.
  */
 
 
@@ -64,12 +61,9 @@ class MVT extends FeatureFormat {
 
     /**
      * @private
-     * @type {function((import("../geom/Geometry.js").default|Object<string,*>)=)|
-     *     function(GeometryType,Array<number>,
-     *         (Array<number>|Array<Array<number>>),Object<string,*>,number)}
+     * @type {import("./Feature.js").FeatureClass}
      */
-    this.featureClass_ = options.featureClass ?
-      options.featureClass : RenderFeature;
+    this.featureClass_ = options.featureClass ? options.featureClass : RenderFeature;
 
     /**
      * @private

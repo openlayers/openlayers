@@ -56,7 +56,7 @@ class DragAndDropEvent extends Event {
 
     /**
      * The features parsed from dropped data.
-     * @type {Array<import("../Feature.js").default>|undefined}
+     * @type {Array<import("../format/Feature.js").FeatureLike>|undefined}
      * @api
      */
     this.features = opt_features;
@@ -220,7 +220,7 @@ class DragAndDrop extends Interaction {
    * @param {string} text Text.
    * @param {import("../format/Feature.js").ReadOptions} options Read options.
    * @private
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<import("../format/Feature.js").FeatureLike>} Features.
    */
   tryReadFeatures_(format, text, options) {
     try {
