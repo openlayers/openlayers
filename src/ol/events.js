@@ -119,7 +119,8 @@ function removeListeners(target, type) {
   const listeners = getListeners(target, type);
   if (listeners) {
     for (let i = 0, ii = listeners.length; i < ii; ++i) {
-      target.removeEventListener(type, listeners[i].boundListener);
+      /** @type {import("./events/Target.js").default} */ (target).
+        removeEventListener(type, listeners[i].boundListener);
       clear(listeners[i]);
     }
     listeners.length = 0;
@@ -169,7 +170,8 @@ export function listen(target, type, listener, opt_this, opt_once) {
       target: target,
       type: type
     });
-    target.addEventListener(type, bindListener(listenerObj));
+    /** @type {import("./events/Target.js").default} */ (target).
+      addEventListener(type, bindListener(listenerObj));
     listeners.push(listenerObj);
   }
 
@@ -237,7 +239,8 @@ export function unlisten(target, type, listener, opt_this) {
  */
 export function unlistenByKey(key) {
   if (key && key.target) {
-    key.target.removeEventListener(key.type, key.boundListener);
+    /** @type {import("./events/Target.js").default} */ (key.target).
+      removeEventListener(key.type, key.boundListener);
     const listeners = getListeners(key.target, key.type);
     if (listeners) {
       const i = 'deleteIndex' in key ? key.deleteIndex : listeners.indexOf(key);
