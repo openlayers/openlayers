@@ -27,7 +27,7 @@ import {appendParams} from '../uri.js';
  * @property {import("./WMTSRequestEncoding.js").default|string} [requestEncoding='KVP'] Request encoding.
  * @property {string} layer Layer name as advertised in the WMTS capabilities.
  * @property {string} style Style name as advertised in the WMTS capabilities.
- * @property {import("../ImageTile.js").TileClass} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
+ * @property {typeof import("../ImageTile.js").default} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
  * @property {number} [tilePixelRatio=1] The pixel ratio used by the tile service.
  * For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`

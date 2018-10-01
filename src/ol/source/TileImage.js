@@ -27,7 +27,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("./State.js").default} [state] Source state.
- * @property {import("../ImageTile.js").TileClass} [tileClass] Class used to instantiate image tiles.
+ * @property {typeof import("../ImageTile.js").default} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/ImageTile~ImageTile}.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
@@ -93,8 +93,7 @@ class TileImage extends UrlTile {
 
     /**
      * @protected
-     * @type {function(new: ImageTile, import("../tilecoord.js").TileCoord, TileState, string,
-     *        ?string, import("../Tile.js").LoadFunction, import("../Tile.js").Options=)}
+     * @type {typeof ImageTile}
      */
     this.tileClass = options.tileClass !== undefined ?
       options.tileClass : ImageTile;
