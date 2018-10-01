@@ -7,10 +7,6 @@ import {createCanvasContext2D} from './dom.js';
 import {listenOnce, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 
-/**
- * @typedef {typeof ImageTile} TileClass
- * @api
- */
 
 class ImageTile extends Tile {
 
