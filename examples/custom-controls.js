@@ -1,16 +1,8 @@
-import {inherits} from '../src/ol/util.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultControls, Control} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
-
-
-/**
- * Define a namespace for the application.
- */
-window.app = {};
-const app = window.app;
 
 
 //
@@ -23,32 +15,31 @@ const app = window.app;
  * @extends {module:ol/control/Control~Control}
  * @param {Object=} opt_options Control options.
  */
-app.RotateNorthControl = function(opt_options) {
+class RotateNorthControl extends Control {
 
-  const options = opt_options || {};
+  constructor(opt_options) {
+    const options = opt_options || {};
 
-  const button = document.createElement('button');
-  button.innerHTML = 'N';
+    const button = document.createElement('button');
+    button.innerHTML = 'N';
 
-  const this_ = this;
-  const handleRotateNorth = function() {
-    this_.getMap().getView().setRotation(0);
-  };
+    const element = document.createElement('div');
+    element.className = 'rotate-north ol-unselectable ol-control';
+    element.appendChild(button);
 
-  button.addEventListener('click', handleRotateNorth, false);
-  button.addEventListener('touchstart', handleRotateNorth, false);
+    super({
+      element: element,
+      target: options.target
+    });
 
-  const element = document.createElement('div');
-  element.className = 'rotate-north ol-unselectable ol-control';
-  element.appendChild(button);
+    button.addEventListener('click', this.handleRotateNorth.bind(this), false);
+  }
 
-  Control.call(this, {
-    element: element,
-    target: options.target
-  });
+  handleRotateNorth() {
+    this.getMap().getView().setRotation(0);
+  }
 
-};
-inherits(app.RotateNorthControl, Control);
+}
 
 
 //
@@ -62,7 +53,7 @@ const map = new Map({
       collapsible: false
     }
   }).extend([
-    new app.RotateNorthControl()
+    new RotateNorthControl()
   ]),
   layers: [
     new TileLayer({
