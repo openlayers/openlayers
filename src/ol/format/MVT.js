@@ -23,7 +23,7 @@ import RenderFeature from '../render/Feature.js';
 
 /**
  * @typedef {Object} Options
- * @property {import("./Feature.js").FeatureClass} [featureClass] Class for features returned by
+ * @property {import("../Feature.js").FeatureClass} [featureClass] Class for features returned by
  * {@link module:ol/format/MVT#readFeatures}. Set to {@link module:ol/Feature~Feature} to get full editing and geometry
  * support at the cost of decreased rendering performance. The default is
  * {@link module:ol/render/Feature~RenderFeature}, which is optimized for rendering and hit detection.
@@ -61,7 +61,7 @@ class MVT extends FeatureFormat {
 
     /**
      * @private
-     * @type {import("./Feature.js").FeatureClass}
+     * @type {import("../Feature.js").FeatureClass}
      */
     this.featureClass_ = options.featureClass ? options.featureClass : RenderFeature;
 
