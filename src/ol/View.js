@@ -775,12 +775,30 @@ class View extends BaseObject {
   }
 
   /**
+   * Set the maximum resolution of the view.
+   * @param {number} maxResolution The maximum resolution of the view.
+   * @api
+   */
+  setMaxResolution(maxResolution) {
+    this.applyOptions_(this.getUpdatedOptions_({maxResolution}));
+  }
+
+  /**
    * Get the minimum resolution of the view.
    * @return {number} The minimum resolution of the view.
    * @api
    */
   getMinResolution() {
     return this.minResolution_;
+  }
+
+  /**
+   * Set the minimum resolution of the view.
+   * @param {number} minResolution The minimum resolution of the view.
+   * @api
+   */
+  setMinResolution(minResolution) {
+    this.applyOptions_(this.getUpdatedOptions_({minResolution}));
   }
 
   /**
@@ -835,6 +853,15 @@ class View extends BaseObject {
    */
   getProjection() {
     return this.projection_;
+  }
+
+  /**
+   * Set the view projection.
+   * @param {import("./proj/Projection.js").default} projection The projection of the view.
+   * @api
+   */
+  setProjection(projection) {
+    this.applyOptions_(this.getUpdatedOptions_({projection}));
   }
 
   /**
@@ -1205,6 +1232,27 @@ class View extends BaseObject {
   }
 
   /**
+   * Sets the rotational constraints on the current view.
+   * @param {boolean|number} constrainRotation Rotation constraint. `false` means no constraint. `true` means no
+   * constraint, but snap to zero near zero. A number constrains the rotation to that number of values. For example, `4`
+   * will constrain the rotation to 0, 90, 180, and 270 degrees.
+   * @api
+   */
+  setConstrainRotation(constrainRotation) {
+    this.applyOptions_(this.getUpdatedOptions_({constrainRotation}));
+  }
+
+  /**
+   * Set the extent of the current view.
+   * @param {import("./extent.js").Extent} extent The extent that constrains the center, in other words, center cannot
+   * be set outside this extent.
+   * @api
+   */
+  setExtent(extent) {
+    this.applyOptions_(this.getUpdatedOptions_({extent}));
+  }
+
+  /**
    * @param {ViewHint} hint Hint.
    * @param {number} delta Delta.
    * @return {number} New value.
@@ -1389,8 +1437,24 @@ class View extends BaseObject {
 
     return this.constraints_.resolution(targetResolution, direction, size);
   }
-}
 
+  /**
+   * Enable rotation.
+   * @api
+   */
+  enableRotation() {
+    this.applyOptions_(this.getUpdatedOptions_({enableRotation: true}));
+  }
+
+  /**
+   * Disable rotation. A rotation constraint that always sets the rotation to zero is used. The `constrainRotation`
+   * option has no effect.
+   * @api
+   */
+  disableRotation() {
+    this.applyOptions_(this.getUpdatedOptions_({enableRotation: false}));
+  }
+}
 
 /**
  * @param {Function} callback Callback.
