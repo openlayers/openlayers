@@ -159,9 +159,7 @@ class WMTS extends TileImage {
   setUrls(urls) {
     this.urls = urls;
     const key = urls.join('\n');
-    this.setTileUrlFunction(this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) :
-      createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this))), key);
+    this.setTileUrlFunction(createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this))), key);
   }
 
   /**
