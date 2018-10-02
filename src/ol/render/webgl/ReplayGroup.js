@@ -121,9 +121,6 @@ class WebGLReplayGroup extends ReplayGroup {
     }
     let replay = replays[replayType];
     if (replay === undefined) {
-      /**
-       * @type {Function}
-       */
       const Constructor = BATCH_CONSTRUCTORS[replayType];
       replay = new Constructor(this.tolerance_, this.maxExtent_);
       replays[replayType] = replay;
