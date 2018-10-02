@@ -15,7 +15,7 @@ import SourceState from '../../source/State.js';
 
 
 /**
- * @type {Array<import("../Layer.js").default>}
+ * @type {Array<typeof import("../Layer.js").default>}
  */
 export const layerRendererConstructors = [];
 

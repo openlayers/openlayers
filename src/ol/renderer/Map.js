@@ -40,7 +40,7 @@ class MapRenderer extends Disposable {
 
     /**
      * @private
-     * @type {Array<import("./Layer.js").default>}
+     * @type {Array<typeof import("./Layer.js").default>}
      */
     this.layerRendererConstructors_ = [];
 
@@ -55,7 +55,7 @@ class MapRenderer extends Disposable {
 
   /**
    * Register layer renderer constructors.
-   * @param {Array<import("./Layer.js").default>} constructors Layer renderers.
+   * @param {Array<typeof import("./Layer.js").default>} constructors Layer renderers.
    */
   registerLayerRenderers(constructors) {
     this.layerRendererConstructors_.push.apply(this.layerRendererConstructors_, constructors);
