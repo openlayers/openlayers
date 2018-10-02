@@ -188,7 +188,7 @@ class Source extends BaseObject {
  * @param {number} rotation Rotation.
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {Object<string, boolean>} skippedFeatureUids Skipped feature uids.
- * @param {function((import("../Feature.js").default|import("../render/Feature.js").default)): T} callback Feature callback.
+ * @param {function(import("../Feature.js").FeatureLike): T} callback Feature callback.
  * @return {T|void} Callback result.
  * @template T
  */

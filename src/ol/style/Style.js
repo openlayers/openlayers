@@ -100,8 +100,7 @@ import Stroke from '../style/Stroke.js';
  * {@link module:ol/style/Style} or an array of them. This way e.g. a
  * vector layer can be styled.
  *
- * @typedef {function((import("../Feature.js").default|import("../render/Feature.js").default), number):
- *     (Style|Array<Style>)} StyleFunction
+ * @typedef {function(import("../Feature.js").FeatureLike, number):(Style|Array<Style>)} StyleFunction
  */
 
 
@@ -109,7 +108,7 @@ import Stroke from '../style/Stroke.js';
  * A function that takes an {@link module:ol/Feature} as argument and returns an
  * {@link module:ol/geom/Geometry} that will be rendered and styled for the feature.
  *
- * @typedef {function((import("../Feature.js").default|import("../render/Feature.js").default)):
+ * @typedef {function(import("../Feature.js").FeatureLike):
  *     (import("../geom/Geometry.js").default|import("../render/Feature.js").default|undefined)} GeometryFunction
  */
 
@@ -431,7 +430,7 @@ let defaultStyles = null;
 
 
 /**
- * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+ * @param {import("../Feature.js").FeatureLike} feature Feature.
  * @param {number} resolution Resolution.
  * @return {Array<Style>} Style.
  */
@@ -538,7 +537,7 @@ export function createEditingStyle() {
 
 /**
  * Function that is called with a feature and returns its default geometry.
- * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature to get the geometry for.
+ * @param {import("../Feature.js").FeatureLike} feature Feature to get the geometry for.
  * @return {import("../geom/Geometry.js").default|import("../render/Feature.js").default|undefined} Geometry to render.
  */
 function defaultGeometryFunction(feature) {

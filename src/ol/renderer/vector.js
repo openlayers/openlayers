@@ -33,8 +33,8 @@ const GEOMETRY_RENDERERS = {
 
 
 /**
- * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature1 Feature 1.
- * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature2 Feature 2.
+ * @param {import("../Feature.js").FeatureLike} feature1 Feature 1.
+ * @param {import("../Feature.js").FeatureLike} feature2 Feature 2.
  * @return {number} Order.
  */
 export function defaultOrder(feature1, feature2) {
@@ -88,7 +88,7 @@ function renderCircleGeometry(replayGroup, geometry, style, feature) {
 
 /**
  * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
- * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+ * @param {import("../Feature.js").FeatureLike} feature Feature.
  * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {function(this: T, import("../events/Event.js").default)} listener Listener function.
@@ -120,7 +120,7 @@ export function renderFeature(replayGroup, feature, style, squaredTolerance, lis
 
 /**
  * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
- * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+ * @param {import("../Feature.js").FeatureLike} feature Feature.
  * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  */
@@ -144,7 +144,7 @@ function renderFeatureInternal(replayGroup, feature, style, squaredTolerance) {
  * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
  * @param {import("../geom/Geometry.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+ * @param {import("../Feature.js").FeatureLike} feature Feature.
  */
 function renderGeometry(replayGroup, geometry, style, feature) {
   if (geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
@@ -180,7 +180,7 @@ function renderGeometryCollectionGeometry(replayGroup, geometry, style, feature)
  * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
  * @param {import("../geom/LineString.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+ * @param {import("../Feature.js").FeatureLike} feature Feature.
  */
 function renderLineStringGeometry(replayGroup, geometry, style, feature) {
   const strokeStyle = style.getStroke();
@@ -202,7 +202,7 @@ function renderLineStringGeometry(replayGroup, geometry, style, feature) {
  * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
  * @param {import("../geom/MultiLineString.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+ * @param {import("../Feature.js").FeatureLike} feature Feature.
  */
 function renderMultiLineStringGeometry(replayGroup, geometry, style, feature) {
   const strokeStyle = style.getStroke();
@@ -247,7 +247,7 @@ function renderMultiPolygonGeometry(replayGroup, geometry, style, feature) {
  * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
  * @param {import("../geom/Point.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+ * @param {import("../Feature.js").FeatureLike} feature Feature.
  */
 function renderPointGeometry(replayGroup, geometry, style, feature) {
   const imageStyle = style.getImage();
@@ -272,7 +272,7 @@ function renderPointGeometry(replayGroup, geometry, style, feature) {
  * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
  * @param {import("../geom/MultiPoint.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+ * @param {import("../Feature.js").FeatureLike} feature Feature.
  */
 function renderMultiPointGeometry(replayGroup, geometry, style, feature) {
   const imageStyle = style.getImage();
@@ -297,7 +297,7 @@ function renderMultiPointGeometry(replayGroup, geometry, style, feature) {
  * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
  * @param {import("../geom/Polygon.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
- * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+ * @param {import("../Feature.js").FeatureLike} feature Feature.
  */
 function renderPolygonGeometry(replayGroup, geometry, style, feature) {
   const fillStyle = style.getFill();
