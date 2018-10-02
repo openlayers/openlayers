@@ -145,11 +145,11 @@ class CanvasMapRenderer extends MapRenderer {
     }
 
     const viewResolution = frameState.viewState.resolution;
-    let i, ii, layer, layerRenderer, layerState;
+    let i, ii;
     for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-      layerState = layerStatesArray[i];
-      layer = layerState.layer;
-      layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layer));
+      const layerState = layerStatesArray[i];
+      const layer = layerState.layer;
+      const layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layer));
       if (!visibleAtResolution(layerState, viewResolution) ||
           layerState.sourceState != SourceState.READY) {
         continue;
