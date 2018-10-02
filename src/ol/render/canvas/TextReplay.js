@@ -288,8 +288,8 @@ class CanvasTextReplay extends CanvasReplay {
       if (strokeKey) {
         context.strokeStyle = strokeState.strokeStyle;
         context.lineWidth = strokeWidth;
-        context.lineCap = strokeState.lineCap;
-        context.lineJoin = strokeState.lineJoin;
+        context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
+        context.lineJoin = /** @type {CanvasLineJoin} */ (strokeState.lineJoin);
         context.miterLimit = strokeState.miterLimit;
         if (CANVAS_LINE_DASH && strokeState.lineDash.length) {
           context.setLineDash(strokeState.lineDash);
