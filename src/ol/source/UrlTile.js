@@ -51,6 +51,12 @@ class UrlTile extends TileSource {
     });
 
     /**
+     * @private
+     * @type {boolean}
+     */
+    this.generateTileUrlFunction_ = !options.tileUrlFunction;
+
+    /**
      * @protected
      * @type {import("../Tile.js").LoadFunction}
      */
@@ -60,8 +66,7 @@ class UrlTile extends TileSource {
      * @protected
      * @type {import("../Tile.js").UrlFunction}
      */
-    this.tileUrlFunction = this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) : nullTileUrlFunction;
+    this.tileUrlFunction = options.tileUrlFunction ? options.tileUrlFunction.bind(this) : nullTileUrlFunction;
 
     /**
      * @protected
@@ -73,9 +78,6 @@ class UrlTile extends TileSource {
       this.setUrls(options.urls);
     } else if (options.url) {
       this.setUrl(options.url);
-    }
-    if (options.tileUrlFunction) {
-      this.setTileUrlFunction(options.tileUrlFunction);
     }
 
     /**
@@ -173,9 +175,7 @@ class UrlTile extends TileSource {
    */
   setUrl(url) {
     const urls = this.urls = expandUrl(url);
-    this.setTileUrlFunction(this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) :
-      createFromTemplates(urls, this.tileGrid), url);
+    this.setUrls(urls);
   }
 
   /**
@@ -186,9 +186,11 @@ class UrlTile extends TileSource {
   setUrls(urls) {
     this.urls = urls;
     const key = urls.join('\n');
-    this.setTileUrlFunction(this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) :
-      createFromTemplates(urls, this.tileGrid), key);
+    if (this.generateTileUrlFunction_) {
+      this.setTileUrlFunction(createFromTemplates(urls, this.tileGrid), key);
+    } else {
+      this.setKey(key);
+    }
   }
 
   /**
@@ -202,11 +204,5 @@ class UrlTile extends TileSource {
   }
 }
 
-
-/**
- * @type {import("../Tile.js").UrlFunction|undefined}
- * @protected
- */
-UrlTile.prototype.fixedTileUrlFunction;
 
 export default UrlTile;
