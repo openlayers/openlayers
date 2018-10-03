@@ -17,7 +17,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
 
   });
 
-  describe('#handleDragEvent_()', function() {
+  describe('#handleDragEvent()', function() {
 
     let target, map, interaction;
 
@@ -64,7 +64,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
 
       let view = map.getView();
       let spy = sinon.spy(view, 'rotate');
-      interaction.handleDragEvent_(event);
+      interaction.handleDragEvent(event);
       expect(spy.callCount).to.be(1);
       expect(interaction.lastAngle_).to.be(-0.8308214428190254);
       view.rotate.restore();
@@ -82,7 +82,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
         true);
 
       spy = sinon.spy(view, 'rotate');
-      interaction.handleDragEvent_(event);
+      interaction.handleDragEvent(event);
       expect(spy.callCount).to.be(0);
       view.rotate.restore();
     });

@@ -56,33 +56,21 @@ class PointerInteraction extends Interaction {
       handleEvent: options.handleEvent || handleEvent
     });
 
-    /**
-     * @type {function(MapBrowserPointerEvent):boolean}
-     * @private
-     */
-    this.handleDownEvent_ = options.handleDownEvent ?
-      options.handleDownEvent : this.handleDownEvent;
+    if (options.handleDownEvent) {
+      this.handleDownEvent = options.handleDownEvent;
+    }
 
-    /**
-     * @type {function(MapBrowserPointerEvent)}
-     * @private
-     */
-    this.handleDragEvent_ = options.handleDragEvent ?
-      options.handleDragEvent : this.handleDragEvent;
+    if (options.handleDragEvent) {
+      this.handleDragEvent = options.handleDragEvent;
+    }
 
-    /**
-     * @type {function(MapBrowserPointerEvent)}
-     * @private
-     */
-    this.handleMoveEvent_ = options.handleMoveEvent ?
-      options.handleMoveEvent : this.handleMoveEvent;
+    if (options.handleMoveEvent) {
+      this.handleMoveEvent = options.handleMoveEvent;
+    }
 
-    /**
-     * @type {function(MapBrowserPointerEvent):boolean}
-     * @private
-     */
-    this.handleUpEvent_ = options.handleUpEvent ?
-      options.handleUpEvent : this.handleUpEvent;
+    if (options.handleUpEvent) {
+      this.handleUpEvent = options.handleUpEvent;
+    }
 
     /**
      * @type {boolean}
@@ -218,21 +206,21 @@ export function handleEvent(mapBrowserEvent) {
   this.updateTrackedPointers_(mapBrowserEvent);
   if (this.handlingDownUpSequence) {
     if (mapBrowserEvent.type == MapBrowserEventType.POINTERDRAG) {
-      this.handleDragEvent_(mapBrowserEvent);
+      this.handleDragEvent(mapBrowserEvent);
     } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERUP) {
-      const handledUp = this.handleUpEvent_(mapBrowserEvent);
+      const handledUp = this.handleUpEvent(mapBrowserEvent);
       this.handlingDownUpSequence = handledUp && this.targetPointers.length > 0;
     }
   } else {
     if (mapBrowserEvent.type == MapBrowserEventType.POINTERDOWN) {
-      const handled = this.handleDownEvent_(mapBrowserEvent);
+      const handled = this.handleDownEvent(mapBrowserEvent);
       if (handled) {
         mapBrowserEvent.preventDefault();
       }
       this.handlingDownUpSequence = handled;
       stopEvent = this.stopDown(handled);
     } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE) {
-      this.handleMoveEvent_(mapBrowserEvent);
+      this.handleMoveEvent(mapBrowserEvent);
     }
   }
   return !stopEvent;
