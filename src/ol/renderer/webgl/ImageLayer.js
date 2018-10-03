@@ -112,7 +112,7 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
     let image = this.image_;
     let texture = this.texture;
     const imageLayer = /** @type {import("../../layer/Image.js").default} */ (this.getLayer());
-    const imageSource = imageLayer.getSource();
+    const imageSource = /** @type {import("../../source/Image.js").default} */ (imageLayer.getSource());
 
     const hints = frameState.viewHints;
 
