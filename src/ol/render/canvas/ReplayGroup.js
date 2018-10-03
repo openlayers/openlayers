@@ -120,8 +120,7 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @param {boolean} group Group with previous replay.
-   * @return {import("../canvas.js").DeclutterGroup} Declutter instruction group.
+   * @inheritDoc
    */
   addDeclutter(group) {
     let declutter = null;
