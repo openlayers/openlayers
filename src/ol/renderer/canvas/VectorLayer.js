@@ -240,7 +240,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const features = {};
       const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
         /**
-         * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
+         * @param {import("../../Feature.js").FeatureLike} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {

@@ -182,7 +182,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
       /**
-       * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
+       * @param {import("../../Feature.js").FeatureLike} feature Feature.
        * @this {CanvasVectorTileLayerRenderer}
        */
       const render = function(feature) {
@@ -257,7 +257,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
         found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
           /**
-           * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
+           * @param {import("../../Feature.js").FeatureLike} feature Feature.
            * @return {?} Callback result.
            */
           function(feature) {
@@ -411,7 +411,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
    * @param {number} squaredTolerance Squared tolerance.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
    * @param {import("../../render/canvas/ReplayGroup.js").default} replayGroup Replay group.

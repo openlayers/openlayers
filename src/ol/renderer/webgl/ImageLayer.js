@@ -88,7 +88,7 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
       coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
 
       /**
-       * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
+       * @param {import("../../Feature.js").FeatureLike} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {

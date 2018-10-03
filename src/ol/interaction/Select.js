@@ -34,8 +34,7 @@ const SelectEventType = {
  * {@link module:ol/render/Feature} and an
  * {@link module:ol/layer/Layer} and returns `true` if the feature may be
  * selected or `false` otherwise.
- * @typedef {function((import("../Feature.js").default|import("../render/Feature.js").default), import("../layer/Layer.js").default):
- *     boolean} FilterFunction
+ * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default):boolean} FilterFunction
  */
 
 
@@ -263,7 +262,7 @@ class Select extends Interaction {
   }
 
   /**
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    * @param {import("../layer/Layer.js").default} layer Layer.
    * @private
    */
@@ -295,7 +294,7 @@ class Select extends Interaction {
    * the (last) selected feature. Note that this will not work with any
    * programmatic method like pushing features to
    * {@link module:ol/interaction/Select~Select#getFeatures collection}.
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature
+   * @param {import("../Feature.js").FeatureLike} feature Feature
    * @return {VectorLayer} Layer.
    * @api
    */
@@ -370,7 +369,7 @@ class Select extends Interaction {
   }
 
   /**
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    * @private
    */
   removeFeatureLayerAssociation_(feature) {
@@ -407,7 +406,7 @@ function handleEvent(mapBrowserEvent) {
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
       (
         /**
-         * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+         * @param {import("../Feature.js").FeatureLike} feature Feature.
          * @param {import("../layer/Layer.js").default} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
          */
@@ -440,7 +439,7 @@ function handleEvent(mapBrowserEvent) {
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
       (
         /**
-         * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+         * @param {import("../Feature.js").FeatureLike} feature Feature.
          * @param {import("../layer/Layer.js").default} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
          */

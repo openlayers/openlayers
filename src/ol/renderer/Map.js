@@ -93,7 +93,7 @@ class MapRenderer extends Disposable {
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(this: S, (import("../Feature.js").default|import("../render/Feature.js").default),
+   * @param {function(this: S, import("../Feature.js").FeatureLike,
    *     import("../layer/Layer.js").default): T} callback Feature callback.
    * @param {S} thisArg Value to use as `this` when executing `callback`.
    * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
@@ -118,7 +118,7 @@ class MapRenderer extends Disposable {
     const viewResolution = viewState.resolution;
 
     /**
-     * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+     * @param {import("../Feature.js").FeatureLike} feature Feature.
      * @param {import("../layer/Layer.js").default} layer Layer.
      * @return {?} Callback result.
      */

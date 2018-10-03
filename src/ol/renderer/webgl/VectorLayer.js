@@ -124,7 +124,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         frameState.size, frameState.pixelRatio, layerState.opacity,
         {},
         /**
-         * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
+         * @param {import("../../Feature.js").FeatureLike} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {
