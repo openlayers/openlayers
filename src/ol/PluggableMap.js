@@ -464,6 +464,10 @@ class PluggableMap extends BaseObject {
 
   }
 
+  /**
+   * @abstract
+   * @return {import("./renderer/Map.js").default} The map renderer
+   */
   createRenderer() {
     throw new Error('Use a map type that has a createRenderer method');
   }
@@ -565,7 +569,8 @@ class PluggableMap extends BaseObject {
       return;
     }
     const coordinate = this.getCoordinateFromPixel(pixel);
-    opt_options = opt_options !== undefined ? opt_options : {};
+    opt_options = opt_options !== undefined ? opt_options :
+      /** @type {AtPixelOptions} */ ({});
     const hitTolerance = opt_options.hitTolerance !== undefined ?
       opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
     const layerFilter = opt_options.layerFilter !== undefined ?
@@ -637,7 +642,8 @@ class PluggableMap extends BaseObject {
       return false;
     }
     const coordinate = this.getCoordinateFromPixel(pixel);
-    opt_options = opt_options !== undefined ? opt_options : {};
+    opt_options = opt_options !== undefined ? opt_options :
+      /** @type {AtPixelOptions} */ ({});
     const layerFilter = opt_options.layerFilter !== undefined ? opt_options.layerFilter : TRUE;
     const hitTolerance = opt_options.hitTolerance !== undefined ?
       opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
@@ -663,7 +669,10 @@ class PluggableMap extends BaseObject {
    */
   getEventPixel(event) {
     const viewportPosition = this.viewport_.getBoundingClientRect();
-    const eventPosition = event.changedTouches ? event.changedTouches[0] : event;
+    const eventPosition = 'changedTouches' in event ?
+      /** @type {TouchEvent} */ (event).changedTouches[0] :
+      /** @type {MouseEvent} */ (event);
+
     return [
       eventPosition.clientX - viewportPosition.left,
       eventPosition.clientY - viewportPosition.top
@@ -1059,7 +1068,7 @@ class PluggableMap extends BaseObject {
     }
     const view = this.getView();
     if (view) {
-      this.viewport_.setAttribute('data-view', getUid(view));
+      this.viewport_.setAttribute('data-view', getUid(view).toString());
       this.viewPropertyListenerKey_ = listen(
         view, ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, this);
@@ -1423,10 +1432,12 @@ function getLoading(layers) {
     const layer = layers[i];
     if (layer instanceof LayerGroup) {
       return getLoading(layer.getLayers().getArray());
-    }
-    const source = layers[i].getSource();
-    if (source && source.loading) {
-      return true;
+    } else {
+      const source = /** @type {import("./layer/Layer.js").default} */ (
+        layer).getSource();
+      if (source && source.loading) {
+        return true;
+      }
     }
   }
   return false;
