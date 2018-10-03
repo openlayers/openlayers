@@ -87,6 +87,13 @@ class UrlTile extends TileSource {
   }
 
   /**
+   * @type {import("../Tile.js").UrlFunction|undefined}
+   * @abstract
+   * @protected
+   */
+  fixedTileUrlFunction(tileCoord, pixelRatio, projection) {}
+
+  /**
    * Return the tile load function of the source.
    * @return {import("../Tile.js").LoadFunction} TileLoadFunction
    * @api
@@ -201,12 +208,5 @@ class UrlTile extends TileSource {
     }
   }
 }
-
-
-/**
- * @type {import("../Tile.js").UrlFunction|undefined}
- * @protected
- */
-UrlTile.prototype.fixedTileUrlFunction;
 
 export default UrlTile;
