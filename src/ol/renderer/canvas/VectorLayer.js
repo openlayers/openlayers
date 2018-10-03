@@ -278,7 +278,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    */
   prepareFrame(frameState, layerState) {
     const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
-    const vectorSource = vectorLayer.getSource();
+    const vectorSource = /** @type {import("../../source/Vector.js").default} */ (vectorLayer.getSource());
 
     const animating = frameState.viewHints[ViewHint.ANIMATING];
     const interacting = frameState.viewHints[ViewHint.INTERACTING];
@@ -362,13 +362,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
          */
         function(feature) {
           features.push(feature);
-        }, this);
+        });
       features.sort(vectorLayerRenderOrder);
       for (let i = 0, ii = features.length; i < ii; ++i) {
         render(features[i]);
       }
     } else {
-      vectorSource.forEachFeatureInExtent(extent, render, this);
+      vectorSource.forEachFeatureInExtent(extent, render);
     }
     replayGroup.finish();
 

@@ -107,9 +107,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   getTile(z, x, y, pixelRatio, projection) {
     const tile = super.getTile(z, x, y, pixelRatio, projection);
     if (tile.getState() === TileState.LOADED) {
-      this.createReplayGroup_(tile, pixelRatio, projection);
+      this.createReplayGroup_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
       if (this.context) {
-        this.renderTileImage_(tile, pixelRatio, projection);
+        this.renderTileImage_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
       }
     }
     return tile;
@@ -118,8 +118,16 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * @inheritDoc
    */
+  getTileImage(tile) {
+    const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
+    return /** @type {import("../../VectorImageTile.js").default} */ (tile).getImage(tileLayer);
+  }
+
+  /**
+   * @inheritDoc
+   */
   prepareFrame(frameState, layerState) {
-    const layer = this.getLayer();
+    const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const layerRevision = layer.getRevision();
     if (this.renderedLayerRevision_ != layerRevision) {
       this.renderedTiles.length = 0;
@@ -142,7 +150,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @private
    */
   createReplayGroup_(tile, pixelRatio, projection) {
-    const layer = this.getLayer();
+    const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const revision = layer.getRevision();
     const renderOrder = /** @type {import("../../render.js").OrderFunction} */ (layer.getRenderOrder()) || null;
 
@@ -238,11 +246,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     /** @type {!Object<string, boolean>} */
     const features = {};
 
-    /** @type {Array<import("../../VectorImageTile.js").default>} */
-    const renderedTiles = this.renderedTiles;
+    const renderedTiles = /** @type {Array<import("../../VectorImageTile.js").default>} */ (this.renderedTiles);
 
     let bufferedExtent, found;
-    let i, ii, replayGroup;
+    let i, ii;
     for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
       const tile = renderedTiles[i];
       bufferedExtent = buffer(tile.extent, hitTolerance * resolution, bufferedExtent);
@@ -254,7 +261,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         if (sourceTile.getState() != TileState.LOADED) {
           continue;
         }
-        replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
+        const replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer,
+          tile.tileCoord.toString()));
         found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
           /**
            * @param {import("../../Feature.js").FeatureLike} feature Feature.
@@ -324,7 +332,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   postCompose(context, frameState, layerState) {
-    const layer = this.getLayer();
+    const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const renderMode = layer.getRenderMode();
     if (renderMode != VectorTileRenderType.IMAGE) {
       const declutterReplays = layer.getDeclutter() ? {} : null;
@@ -361,7 +369,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           if (sourceTile.getState() != TileState.LOADED) {
             continue;
           }
-          const replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
+          const replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer, tileCoord.toString()));
           if (!replayGroup || !replayGroup.hasReplays(replayTypes)) {
             // sourceTile was not yet loaded when this.createReplayGroup_() was
             // called, or it has no replays of the types we want to render
@@ -443,7 +451,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @private
    */
   renderTileImage_(tile, pixelRatio, projection) {
-    const layer = this.getLayer();
+    const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const replayState = tile.getReplayState(layer);
     const revision = layer.getRevision();
     const replays = IMAGE_REPLAYS[layer.getRenderMode()];
@@ -468,7 +476,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         const transform = resetTransform(this.tmpTransform_);
         scaleTransform(transform, pixelScale, -pixelScale);
         translateTransform(transform, -tileExtent[0], -tileExtent[3]);
-        const replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
+        const replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer,
+          tile.tileCoord.toString()));
         replayGroup.replay(context, transform, 0, {}, true, replays);
       }
     }
