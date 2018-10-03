@@ -254,7 +254,7 @@ class Select extends Interaction {
      */
     this.featureLayerAssociation_ = {};
 
-    const features = this.featureOverlay_.getSource().getFeaturesCollection();
+    const features = this.getFeatures();
     listen(features, CollectionEventType.ADD,
       this.addFeature_, this);
     listen(features, CollectionEventType.REMOVE,
@@ -277,7 +277,7 @@ class Select extends Interaction {
    * @api
    */
   getFeatures() {
-    return this.featureOverlay_.getSource().getFeaturesCollection();
+    return /** @type {VectorSource} */ (this.featureOverlay_.getSource()).getFeaturesCollection();
   }
 
   /**
@@ -334,8 +334,7 @@ class Select extends Interaction {
    */
   setMap(map) {
     const currentMap = this.getMap();
-    const selectedFeatures =
-        this.featureOverlay_.getSource().getFeaturesCollection();
+    const selectedFeatures = this.getFeatures();
     if (currentMap) {
       selectedFeatures.forEach(currentMap.unskipFeature.bind(currentMap));
     }
@@ -395,7 +394,7 @@ function handleEvent(mapBrowserEvent) {
   const toggle = this.toggleCondition_(mapBrowserEvent);
   const set = !add && !remove && !toggle;
   const map = mapBrowserEvent.map;
-  const features = this.featureOverlay_.getSource().getFeaturesCollection();
+  const features = this.getFeatures();
   const deselected = [];
   const selected = [];
   if (set) {
