@@ -52,9 +52,7 @@ class PointerInteraction extends Interaction {
 
     const options = opt_options ? opt_options : {};
 
-    super({
-      handleEvent: options.handleEvent || handleEvent
-    });
+    super(/** @type {import("./Interaction.js").InteractionOptions} */ (options));
 
     if (options.handleDownEvent) {
       this.handleDownEvent = options.handleDownEvent;
@@ -72,19 +70,15 @@ class PointerInteraction extends Interaction {
       this.handleUpEvent = options.handleUpEvent;
     }
 
+    if (options.stopDown) {
+      this.stopDown = options.stopDown;
+    }
+
     /**
      * @type {boolean}
      * @protected
      */
     this.handlingDownUpSequence = false;
-
-    /**
-     * This function is used to determine if "down" events should be propagated
-     * to other interactions or should be stopped.
-     * @type {function(boolean):boolean}
-     * @protected
-     */
-    this.stopDown = options.stopDown ? options.stopDown : stopDown;
 
     /**
      * @type {!Object<string, import("../pointer/PointerEvent.js").default>}
@@ -118,6 +112,42 @@ class PointerInteraction extends Interaction {
   handleDragEvent(mapBrowserEvent) {}
 
   /**
+   * Handles the {@link module:ol/MapBrowserEvent map browser event} and may call into
+   * other functions, if event sequences like e.g. 'drag' or 'down-up' etc. are
+   * detected.
+   * @override
+   * @api
+   */
+  handleEvent(mapBrowserEvent) {
+    if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
+      return true;
+    }
+
+    let stopEvent = false;
+    this.updateTrackedPointers_(mapBrowserEvent);
+    if (this.handlingDownUpSequence) {
+      if (mapBrowserEvent.type == MapBrowserEventType.POINTERDRAG) {
+        this.handleDragEvent(mapBrowserEvent);
+      } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERUP) {
+        const handledUp = this.handleUpEvent(mapBrowserEvent);
+        this.handlingDownUpSequence = handledUp && this.targetPointers.length > 0;
+      }
+    } else {
+      if (mapBrowserEvent.type == MapBrowserEventType.POINTERDOWN) {
+        const handled = this.handleDownEvent(mapBrowserEvent);
+        if (handled) {
+          mapBrowserEvent.preventDefault();
+        }
+        this.handlingDownUpSequence = handled;
+        stopEvent = this.stopDown(handled);
+      } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE) {
+        this.handleMoveEvent(mapBrowserEvent);
+      }
+    }
+    return !stopEvent;
+  }
+
+  /**
    * Handle pointer move events.
    * @param {MapBrowserPointerEvent} mapBrowserEvent Event.
    * @protected
@@ -132,6 +162,16 @@ class PointerInteraction extends Interaction {
    */
   handleUpEvent(mapBrowserEvent) {
     return false;
+  }
+
+  /**
+   * This function is used to determine if "down" events should be propagated
+   * to other interactions or should be stopped.
+   * @param {boolean} handled Was the event handled by the interaction?
+   * @return {boolean} Should the `down` event be stopped?
+   */
+  stopDown(handled) {
+    return handled;
   }
 
   /**
@@ -188,51 +228,4 @@ function isPointerDraggingEvent(mapBrowserEvent) {
 }
 
 
-/**
- * Handles the {@link module:ol/MapBrowserEvent map browser event} and may call into
- * other functions, if event sequences like e.g. 'drag' or 'down-up' etc. are
- * detected.
- * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
- * @return {boolean} `false` to stop event propagation.
- * @this {PointerInteraction}
- * @api
- */
-export function handleEvent(mapBrowserEvent) {
-  if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
-    return true;
-  }
-
-  let stopEvent = false;
-  this.updateTrackedPointers_(mapBrowserEvent);
-  if (this.handlingDownUpSequence) {
-    if (mapBrowserEvent.type == MapBrowserEventType.POINTERDRAG) {
-      this.handleDragEvent(mapBrowserEvent);
-    } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERUP) {
-      const handledUp = this.handleUpEvent(mapBrowserEvent);
-      this.handlingDownUpSequence = handledUp && this.targetPointers.length > 0;
-    }
-  } else {
-    if (mapBrowserEvent.type == MapBrowserEventType.POINTERDOWN) {
-      const handled = this.handleDownEvent(mapBrowserEvent);
-      if (handled) {
-        mapBrowserEvent.preventDefault();
-      }
-      this.handlingDownUpSequence = handled;
-      stopEvent = this.stopDown(handled);
-    } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE) {
-      this.handleMoveEvent(mapBrowserEvent);
-    }
-  }
-  return !stopEvent;
-}
-
-
 export default PointerInteraction;
-
-/**
- * @param {boolean} handled Was the event handled by the interaction?
- * @return {boolean} Should the `down` event be stopped?
- */
-function stopDown(handled) {
-  return handled;
-}

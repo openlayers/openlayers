@@ -38,7 +38,7 @@ class DragRotateAndZoom extends PointerInteraction {
 
     const options = opt_options ? opt_options : {};
 
-    super(options);
+    super(/** @type {import("./Pointer.js").Options} */ (options));
 
     /**
      * @private
