@@ -116,11 +116,11 @@ class VectorTileLayer extends VectorLayer {
     }
     options.renderMode = renderMode;
 
-    const baseOptions = assign({}, options);
-
+    const baseOptions = /** @type {Object} */ (assign({}, options));
     delete baseOptions.preload;
     delete baseOptions.useInterimTilesOnError;
-    super(baseOptions);
+
+    super(/** @type {import("./Vector.js").Options} */ (baseOptions));
 
     this.setPreload(options.preload ? options.preload : 0);
     this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?

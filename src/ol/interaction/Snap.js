@@ -239,9 +239,7 @@ class Snap extends PointerInteraction {
     } else if (this.source_) {
       features = this.source_.getFeatures();
     }
-    return (
-      /** @type {!Array<import("../Feature.js").default>|!import("../Collection.js").default<import("../Feature.js").default>} */ (features)
-    );
+    return features;
   }
 
   /**
@@ -257,7 +255,7 @@ class Snap extends PointerInteraction {
   }
 
   /**
-   * @param {import("../source/Vector.js").default|import("../Collection.js").CollectionEvent} evt Event.
+   * @param {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent} evt Event.
    * @private
    */
   handleFeatureAdd_(evt) {
@@ -265,13 +263,13 @@ class Snap extends PointerInteraction {
     if (evt instanceof VectorSourceEvent) {
       feature = evt.feature;
     } else if (evt instanceof CollectionEvent) {
-      feature = evt.element;
+      feature = /** @type {import("../Feature.js").default} */ (evt.element);
     }
-    this.addFeature(/** @type {import("../Feature.js").default} */ (feature));
+    this.addFeature(feature);
   }
 
   /**
-   * @param {import("../source/Vector.js").default|import("../Collection.js").CollectionEvent} evt Event.
+   * @param {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent} evt Event.
    * @private
    */
   handleFeatureRemove_(evt) {
@@ -279,9 +277,9 @@ class Snap extends PointerInteraction {
     if (evt instanceof VectorSourceEvent) {
       feature = evt.feature;
     } else if (evt instanceof CollectionEvent) {
-      feature = evt.element;
+      feature = /** @type {import("../Feature.js").default} */ (evt.element);
     }
-    this.removeFeature(/** @type {import("../Feature.js").default} */ (feature));
+    this.removeFeature(feature);
   }
 
   /**
@@ -348,7 +346,7 @@ class Snap extends PointerInteraction {
   setMap(map) {
     const currentMap = this.getMap();
     const keys = this.featuresListenerKeys_;
-    const features = this.getFeatures_();
+    const features = /** @type {Array<import("../Feature.js").default>} */ (this.getFeatures_());
 
     if (currentMap) {
       keys.forEach(unlistenByKey);

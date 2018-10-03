@@ -209,11 +209,13 @@ class MVT extends FeatureFormat {
                 geometryType === GeometryType.MULTI_LINE_STRING ? new MultiLineString(flatCoordinates, GeometryLayout.XY, ends) :
                   null;
       }
-      feature = new this.featureClass_();
+      const ctor = /** @type {typeof import("../Feature.js").default} */ (this.featureClass_);
+      feature = new ctor();
       if (this.geometryName_) {
         feature.setGeometryName(this.geometryName_);
       }
-      const geometry = transformWithOptions(geom, false, this.adaptOptions(opt_options));
+      const geometry = /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geom, false,
+        this.adaptOptions(opt_options)));
       feature.setGeometry(geometry);
       feature.setId(id);
       feature.setProperties(values);
