@@ -110,9 +110,9 @@ class MouseWheelZoom extends Interaction {
 
     /**
      * @private
-     * @type {number|undefined}
+     * @type {any}
      */
-    this.timeoutId_ = undefined;
+    this.timeoutId_;
 
     /**
      * @private
@@ -128,9 +128,9 @@ class MouseWheelZoom extends Interaction {
     this.trackpadEventGap_ = 400;
 
     /**
-     * @type {number|undefined}
+     * @type {any}
      */
-    this.trackpadTimeoutId_ = undefined;
+    this.trackpadTimeoutId_;
 
     /**
      * The number of delta values per zoom level

@@ -137,9 +137,9 @@ class TouchSource extends EventSource {
 
     /**
      * @private
-     * @type {number|undefined}
+     * @type {any}
      */
-    this.resetId_ = undefined;
+    this.resetId_;
 
     /**
      * Mouse event timeout: This should be long enough to
