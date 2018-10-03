@@ -10,7 +10,7 @@ import {boundingExtent, getArea} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
-import PointerInteraction, {handleEvent as handlePointerEvent} from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import {createEditingStyle} from '../style/Style.js';
@@ -85,14 +85,9 @@ class ExtentInteraction extends PointerInteraction {
    */
   constructor(opt_options) {
 
-    super({
-      handleDownEvent: handleDownEvent,
-      handleDragEvent: handleDragEvent,
-      handleEvent: handleEvent,
-      handleUpEvent: handleUpEvent
-    });
-
     const options = opt_options || {};
+
+    super(/** @type {import("./Pointer.js").Options} */ (options));
 
     /**
      * Extent of the drawn box
@@ -248,7 +243,7 @@ class ExtentInteraction extends PointerInteraction {
         extentFeature = new Feature(polygonFromExtent(extent));
       }
       this.extentFeature_ = extentFeature;
-      this.extentOverlay_.getSource().addFeature(extentFeature);
+      /** @type {VectorSource} */ (this.extentOverlay_.getSource()).addFeature(extentFeature);
     } else {
       if (!extent) {
         extentFeature.setGeometry(undefined);
@@ -269,12 +264,111 @@ class ExtentInteraction extends PointerInteraction {
     if (!vertexFeature) {
       vertexFeature = new Feature(new Point(vertex));
       this.vertexFeature_ = vertexFeature;
-      this.vertexOverlay_.getSource().addFeature(vertexFeature);
+      /** @type {VectorSource} */ (this.vertexOverlay_.getSource()).addFeature(vertexFeature);
     } else {
       const geometry = /** @type {Point} */ (vertexFeature.getGeometry());
       geometry.setCoordinates(vertex);
     }
     return vertexFeature;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  handleEvent(mapBrowserEvent) {
+    if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
+      return true;
+    }
+    //display pointer (if not dragging)
+    if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE && !this.handlingDownUpSequence) {
+      this.handlePointerMove_(mapBrowserEvent);
+    }
+    //call pointer to determine up/down/drag
+    super.handleEvent(mapBrowserEvent);
+    //return false to stop propagation
+    return false;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  handleDownEvent(mapBrowserEvent) {
+    const pixel = mapBrowserEvent.pixel;
+    const map = mapBrowserEvent.map;
+
+    const extent = this.getExtent();
+    let vertex = this.snapToVertex_(pixel, map);
+
+    //find the extent corner opposite the passed corner
+    const getOpposingPoint = function(point) {
+      let x_ = null;
+      let y_ = null;
+      if (point[0] == extent[0]) {
+        x_ = extent[2];
+      } else if (point[0] == extent[2]) {
+        x_ = extent[0];
+      }
+      if (point[1] == extent[1]) {
+        y_ = extent[3];
+      } else if (point[1] == extent[3]) {
+        y_ = extent[1];
+      }
+      if (x_ !== null && y_ !== null) {
+        return [x_, y_];
+      }
+      return null;
+    };
+    if (vertex && extent) {
+      const x = (vertex[0] == extent[0] || vertex[0] == extent[2]) ? vertex[0] : null;
+      const y = (vertex[1] == extent[1] || vertex[1] == extent[3]) ? vertex[1] : null;
+
+      //snap to point
+      if (x !== null && y !== null) {
+        this.pointerHandler_ = getPointHandler(getOpposingPoint(vertex));
+      //snap to edge
+      } else if (x !== null) {
+        this.pointerHandler_ = getEdgeHandler(
+          getOpposingPoint([x, extent[1]]),
+          getOpposingPoint([x, extent[3]])
+        );
+      } else if (y !== null) {
+        this.pointerHandler_ = getEdgeHandler(
+          getOpposingPoint([extent[0], y]),
+          getOpposingPoint([extent[2], y])
+        );
+      }
+    //no snap - new bbox
+    } else {
+      vertex = map.getCoordinateFromPixel(pixel);
+      this.setExtent([vertex[0], vertex[1], vertex[0], vertex[1]]);
+      this.pointerHandler_ = getPointHandler(vertex);
+    }
+    return true; //event handled; start downup sequence
+  }
+
+  /**
+   * @inheritDoc
+   */
+  handleDragEvent(mapBrowserEvent) {
+    if (this.pointerHandler_) {
+      const pixelCoordinate = mapBrowserEvent.coordinate;
+      this.setExtent(this.pointerHandler_(pixelCoordinate));
+      this.createOrUpdatePointerFeature_(pixelCoordinate);
+    }
+    return true;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  handleUpEvent(mapBrowserEvent) {
+    this.pointerHandler_ = null;
+    //If bbox is zero area, set to null;
+    const extent = this.getExtent();
+    if (!extent || getArea(extent) === 0) {
+      this.setExtent(null);
+    }
+    return false; //Stop handling downup sequence
   }
 
   /**
@@ -308,113 +402,6 @@ class ExtentInteraction extends PointerInteraction {
     this.createOrUpdateExtentFeature_(extent);
     this.dispatchEvent(new ExtentInteractionEvent(this.extent_));
   }
-}
-
-/**
- * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
- * @return {boolean} Propagate event?
- * @this {ExtentInteraction}
- */
-function handleEvent(mapBrowserEvent) {
-  if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
-    return true;
-  }
-  //display pointer (if not dragging)
-  if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE && !this.handlingDownUpSequence) {
-    this.handlePointerMove_(mapBrowserEvent);
-  }
-  //call pointer to determine up/down/drag
-  handlePointerEvent.call(this, mapBrowserEvent);
-  //return false to stop propagation
-  return false;
-}
-
-/**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @return {boolean} Event handled?
- * @this {ExtentInteraction}
- */
-function handleDownEvent(mapBrowserEvent) {
-  const pixel = mapBrowserEvent.pixel;
-  const map = mapBrowserEvent.map;
-
-  const extent = this.getExtent();
-  let vertex = this.snapToVertex_(pixel, map);
-
-  //find the extent corner opposite the passed corner
-  const getOpposingPoint = function(point) {
-    let x_ = null;
-    let y_ = null;
-    if (point[0] == extent[0]) {
-      x_ = extent[2];
-    } else if (point[0] == extent[2]) {
-      x_ = extent[0];
-    }
-    if (point[1] == extent[1]) {
-      y_ = extent[3];
-    } else if (point[1] == extent[3]) {
-      y_ = extent[1];
-    }
-    if (x_ !== null && y_ !== null) {
-      return [x_, y_];
-    }
-    return null;
-  };
-  if (vertex && extent) {
-    const x = (vertex[0] == extent[0] || vertex[0] == extent[2]) ? vertex[0] : null;
-    const y = (vertex[1] == extent[1] || vertex[1] == extent[3]) ? vertex[1] : null;
-
-    //snap to point
-    if (x !== null && y !== null) {
-      this.pointerHandler_ = getPointHandler(getOpposingPoint(vertex));
-    //snap to edge
-    } else if (x !== null) {
-      this.pointerHandler_ = getEdgeHandler(
-        getOpposingPoint([x, extent[1]]),
-        getOpposingPoint([x, extent[3]])
-      );
-    } else if (y !== null) {
-      this.pointerHandler_ = getEdgeHandler(
-        getOpposingPoint([extent[0], y]),
-        getOpposingPoint([extent[2], y])
-      );
-    }
-  //no snap - new bbox
-  } else {
-    vertex = map.getCoordinateFromPixel(pixel);
-    this.setExtent([vertex[0], vertex[1], vertex[0], vertex[1]]);
-    this.pointerHandler_ = getPointHandler(vertex);
-  }
-  return true; //event handled; start downup sequence
-}
-
-/**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @return {boolean} Event handled?
- * @this {ExtentInteraction}
- */
-function handleDragEvent(mapBrowserEvent) {
-  if (this.pointerHandler_) {
-    const pixelCoordinate = mapBrowserEvent.coordinate;
-    this.setExtent(this.pointerHandler_(pixelCoordinate));
-    this.createOrUpdatePointerFeature_(pixelCoordinate);
-  }
-  return true;
-}
-
-/**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @return {boolean} Stop drag sequence?
- * @this {ExtentInteraction}
- */
-function handleUpEvent(mapBrowserEvent) {
-  this.pointerHandler_ = null;
-  //If bbox is zero area, set to null;
-  const extent = this.getExtent();
-  if (!extent || getArea(extent) === 0) {
-    this.setExtent(null);
-  }
-  return false; //Stop handling downup sequence
 }
 
 /**

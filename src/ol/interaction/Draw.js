@@ -21,7 +21,7 @@ import MultiPolygon from '../geom/MultiPolygon.js';
 import {POINTER_TYPE} from '../pointer/MouseSource.js';
 import Point from '../geom/Point.js';
 import Polygon, {fromCircle, makeRegular} from '../geom/Polygon.js';
-import PointerInteraction, {handleEvent as handlePointerEvent} from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 import InteractionProperty from '../interaction/Property.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
@@ -186,12 +186,12 @@ class Draw extends PointerInteraction {
    */
   constructor(options) {
 
-    super({
-      handleDownEvent: handleDownEvent,
-      handleEvent: handleEvent,
-      handleUpEvent: handleUpEvent,
-      stopDown: FALSE
-    });
+    const pointerOptions = /** @type {import("./Pointer.js").Options} */ (options);
+    if (!pointerOptions.stopDown) {
+      pointerOptions.stopDown = FALSE;
+    }
+
+    super(pointerOptions);
 
     /**
      * @type {boolean}
@@ -470,6 +470,123 @@ class Draw extends PointerInteraction {
    */
   getOverlay() {
     return this.overlay_;
+  }
+
+  /**
+   * Handles the {@link module:ol/MapBrowserEvent map browser event} and may actually draw or finish the drawing.
+   * @override
+   * @api
+   */
+  handleEvent(event) {
+    if (event.originalEvent.type === EventType.CONTEXTMENU) {
+      // Avoid context menu for long taps when drawing on mobile
+      event.preventDefault();
+    }
+    this.freehand_ = this.mode_ !== Mode.POINT && this.freehandCondition_(event);
+    let move = event.type === MapBrowserEventType.POINTERMOVE;
+    let pass = true;
+    if (!this.freehand_ && this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
+      const now = Date.now();
+      if (now - this.lastDragTime_ >= this.dragVertexDelay_) {
+        this.downPx_ = event.pixel;
+        this.shouldHandle_ = !this.freehand_;
+        move = true;
+      } else {
+        this.lastDragTime_ = undefined;
+      }
+      if (this.shouldHandle_ && this.downTimeout_ !== undefined) {
+        clearTimeout(this.downTimeout_);
+        this.downTimeout_ = undefined;
+      }
+    }
+    if (this.freehand_ &&
+        event.type === MapBrowserEventType.POINTERDRAG &&
+        this.sketchFeature_ !== null) {
+      this.addToDrawing_(event);
+      pass = false;
+    } else if (this.freehand_ &&
+        event.type === MapBrowserEventType.POINTERDOWN) {
+      pass = false;
+    } else if (move) {
+      pass = event.type === MapBrowserEventType.POINTERMOVE;
+      if (pass && this.freehand_) {
+        pass = this.handlePointerMove_(event);
+      } else if (/** @type {MapBrowserPointerEvent} */ (event).pointerEvent.pointerType == POINTER_TYPE ||
+          (event.type === MapBrowserEventType.POINTERDRAG && this.downTimeout_ === undefined)) {
+        this.handlePointerMove_(event);
+      }
+    } else if (event.type === MapBrowserEventType.DBLCLICK) {
+      pass = false;
+    }
+
+    return super.handleEvent(event) && pass;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  handleDownEvent(event) {
+    this.shouldHandle_ = !this.freehand_;
+
+    if (this.freehand_) {
+      this.downPx_ = event.pixel;
+      if (!this.finishCoordinate_) {
+        this.startDrawing_(event);
+      }
+      return true;
+    } else if (this.condition_(event)) {
+      this.lastDragTime_ = Date.now();
+      this.downTimeout_ = setTimeout(function() {
+        this.handlePointerMove_(new MapBrowserPointerEvent(
+          MapBrowserEventType.POINTERMOVE, event.map, event.pointerEvent, false, event.frameState));
+      }.bind(this), this.dragVertexDelay_);
+      this.downPx_ = event.pixel;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+  /**
+   * @inheritDoc
+   */
+  handleUpEvent(event) {
+    let pass = true;
+
+    if (this.downTimeout_) {
+      clearTimeout(this.downTimeout_);
+      this.downTimeout_ = undefined;
+    }
+
+    this.handlePointerMove_(event);
+
+    const circleMode = this.mode_ === Mode.CIRCLE;
+
+    if (this.shouldHandle_) {
+      if (!this.finishCoordinate_) {
+        this.startDrawing_(event);
+        if (this.mode_ === Mode.POINT) {
+          this.finishDrawing();
+        }
+      } else if (this.freehand_ || circleMode) {
+        this.finishDrawing();
+      } else if (this.atFinish_(event)) {
+        if (this.finishCondition_(event)) {
+          this.finishDrawing();
+        }
+      } else {
+        this.addToDrawing_(event);
+      }
+      pass = false;
+    } else if (this.freehand_) {
+      this.finishCoordinate_ = null;
+      this.abortDrawing_();
+    }
+    if (!pass && this.stopClick_) {
+      event.stopPropagation();
+    }
+    return pass;
   }
 
   /**
@@ -839,132 +956,6 @@ function getDefaultStyleFunction() {
   return function(feature, resolution) {
     return styles[feature.getGeometry().getType()];
   };
-}
-
-
-/**
- * Handles the {@link module:ol/MapBrowserEvent map browser event} and may actually
- * draw or finish the drawing.
- * @param {import("../MapBrowserEvent.js").default} event Map browser event.
- * @return {boolean} `false` to stop event propagation.
- * @this {Draw}
- * @api
- */
-export function handleEvent(event) {
-  if (event.originalEvent.type === EventType.CONTEXTMENU) {
-    // Avoid context menu for long taps when drawing on mobile
-    event.preventDefault();
-  }
-  this.freehand_ = this.mode_ !== Mode.POINT && this.freehandCondition_(event);
-  let move = event.type === MapBrowserEventType.POINTERMOVE;
-  let pass = true;
-  if (!this.freehand_ && this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
-    const now = Date.now();
-    if (now - this.lastDragTime_ >= this.dragVertexDelay_) {
-      this.downPx_ = event.pixel;
-      this.shouldHandle_ = !this.freehand_;
-      move = true;
-    } else {
-      this.lastDragTime_ = undefined;
-    }
-    if (this.shouldHandle_ && this.downTimeout_ !== undefined) {
-      clearTimeout(this.downTimeout_);
-      this.downTimeout_ = undefined;
-    }
-  }
-  if (this.freehand_ &&
-      event.type === MapBrowserEventType.POINTERDRAG &&
-      this.sketchFeature_ !== null) {
-    this.addToDrawing_(event);
-    pass = false;
-  } else if (this.freehand_ &&
-      event.type === MapBrowserEventType.POINTERDOWN) {
-    pass = false;
-  } else if (move) {
-    pass = event.type === MapBrowserEventType.POINTERMOVE;
-    if (pass && this.freehand_) {
-      pass = this.handlePointerMove_(event);
-    } else if (/** @type {MapBrowserPointerEvent} */ (event).pointerEvent.pointerType == POINTER_TYPE ||
-        (event.type === MapBrowserEventType.POINTERDRAG && this.downTimeout_ === undefined)) {
-      this.handlePointerMove_(event);
-    }
-  } else if (event.type === MapBrowserEventType.DBLCLICK) {
-    pass = false;
-  }
-
-  return handlePointerEvent.call(this, event) && pass;
-}
-
-
-/**
- * @param {MapBrowserPointerEvent} event Event.
- * @return {boolean} Start drag sequence?
- * @this {Draw}
- */
-function handleDownEvent(event) {
-  this.shouldHandle_ = !this.freehand_;
-
-  if (this.freehand_) {
-    this.downPx_ = event.pixel;
-    if (!this.finishCoordinate_) {
-      this.startDrawing_(event);
-    }
-    return true;
-  } else if (this.condition_(event)) {
-    this.lastDragTime_ = Date.now();
-    this.downTimeout_ = setTimeout(function() {
-      this.handlePointerMove_(new MapBrowserPointerEvent(
-        MapBrowserEventType.POINTERMOVE, event.map, event.pointerEvent, false, event.frameState));
-    }.bind(this), this.dragVertexDelay_);
-    this.downPx_ = event.pixel;
-    return true;
-  } else {
-    return false;
-  }
-}
-
-
-/**
- * @param {MapBrowserPointerEvent} event Event.
- * @return {boolean} Stop drag sequence?
- * @this {Draw}
- */
-function handleUpEvent(event) {
-  let pass = true;
-
-  if (this.downTimeout_) {
-    clearTimeout(this.downTimeout_);
-    this.downTimeout_ = undefined;
-  }
-
-  this.handlePointerMove_(event);
-
-  const circleMode = this.mode_ === Mode.CIRCLE;
-
-  if (this.shouldHandle_) {
-    if (!this.finishCoordinate_) {
-      this.startDrawing_(event);
-      if (this.mode_ === Mode.POINT) {
-        this.finishDrawing();
-      }
-    } else if (this.freehand_ || circleMode) {
-      this.finishDrawing();
-    } else if (this.atFinish_(event)) {
-      if (this.finishCondition_(event)) {
-        this.finishDrawing();
-      }
-    } else {
-      this.addToDrawing_(event);
-    }
-    pass = false;
-  } else if (this.freehand_) {
-    this.finishCoordinate_ = null;
-    this.abortDrawing_();
-  }
-  if (!pass && this.stopClick_) {
-    event.stopPropagation();
-  }
-  return pass;
 }
 
 

@@ -11,7 +11,7 @@ import {boundingExtent, createEmpty} from '../extent.js';
 import {TRUE, FALSE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
 import {fromCircle} from '../geom/Polygon.js';
-import PointerInteraction, {handleEvent as handlePointerEvent} from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 import {getValues} from '../obj.js';
 import {VectorSourceEvent} from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
@@ -71,14 +71,19 @@ class Snap extends PointerInteraction {
    */
   constructor(opt_options) {
 
-    super({
-      handleEvent: handleEvent,
-      handleDownEvent: TRUE,
-      handleUpEvent: handleUpEvent,
-      stopDown: FALSE
-    });
-
     const options = opt_options ? opt_options : {};
+
+    const pointerOptions = /** @type {import("./Pointer.js").Options} */ (options);
+
+    if (!pointerOptions.handleDownEvent) {
+      pointerOptions.handleDownEvent = TRUE;
+    }
+
+    if (!pointerOptions.stopDown) {
+      pointerOptions.stopDown = FALSE;
+    }
+
+    super(pointerOptions);
 
     /**
      * @type {import("../source/Vector.js").default}
@@ -240,6 +245,18 @@ class Snap extends PointerInteraction {
   }
 
   /**
+   * @inheritDoc
+   */
+  handleEvent(evt) {
+    const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
+    if (result.snapped) {
+      evt.coordinate = result.vertex.slice(0, 2);
+      evt.pixel = result.vertexPixel;
+    }
+    return super.handleEvent(evt);
+  }
+
+  /**
    * @param {import("../source/Vector.js").default|import("../Collection.js").CollectionEvent} evt Event.
    * @private
    */
@@ -281,6 +298,18 @@ class Snap extends PointerInteraction {
     } else {
       this.updateFeature_(feature);
     }
+  }
+
+  /**
+   * @inheritDoc
+   */
+  handleUpEvent(evt) {
+    const featuresToUpdate = getValues(this.pendingFeatures_);
+    if (featuresToUpdate.length) {
+      featuresToUpdate.forEach(this.updateFeature_.bind(this));
+      this.pendingFeatures_ = {};
+    }
+    return false;
   }
 
   /**
@@ -584,37 +613,6 @@ class Snap extends PointerInteraction {
       }
     }
   }
-}
-
-
-/**
- * Handle all pointer events events.
- * @param {import("../MapBrowserEvent.js").default} evt A move event.
- * @return {boolean} Pass the event to other interactions.
- * @this {Snap}
- */
-export function handleEvent(evt) {
-  const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
-  if (result.snapped) {
-    evt.coordinate = result.vertex.slice(0, 2);
-    evt.pixel = result.vertexPixel;
-  }
-  return handlePointerEvent.call(this, evt);
-}
-
-
-/**
- * @param {import("../MapBrowserPointerEvent.js").default} evt Event.
- * @return {boolean} Stop drag sequence?
- * @this {Snap}
- */
-function handleUpEvent(evt) {
-  const featuresToUpdate = getValues(this.pendingFeatures_);
-  if (featuresToUpdate.length) {
-    featuresToUpdate.forEach(this.updateFeature_.bind(this));
-    this.pendingFeatures_ = {};
-  }
-  return false;
 }
 
 
