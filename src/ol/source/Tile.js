@@ -112,7 +112,7 @@ class TileSource extends Source {
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @param {number} z Zoom level.
    * @param {import("../TileRange.js").default} tileRange Tile range.
-   * @param {function(import("../Tile.js").default):(boolean|undefined)} callback Called with each
+   * @param {function(import("../Tile.js").default):(boolean|void)} callback Called with each
    *     loaded tile.  If the callback returns `false`, the tile will not be
    *     considered loaded.
    * @return {boolean} The tile range is fully covered with loaded tiles.
