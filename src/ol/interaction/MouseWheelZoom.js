@@ -110,9 +110,9 @@ class MouseWheelZoom extends Interaction {
 
     /**
      * @private
-     * @type {number|undefined}
+     * @type {any}
      */
-    this.timeoutId_ = undefined;
+    this.timeoutId_;
 
     /**
      * @private
@@ -128,9 +128,9 @@ class MouseWheelZoom extends Interaction {
     this.trackpadEventGap_ = 400;
 
     /**
-     * @type {number|undefined}
+     * @type {any}
      */
-    this.trackpadTimeoutId_ = undefined;
+    this.trackpadTimeoutId_;
 
     /**
      * The number of delta values per zoom level
@@ -258,7 +258,7 @@ function handleEvent(mapBrowserEvent) {
     } else {
       view.setHint(ViewHint.INTERACTING, 1);
     }
-    this.trackpadTimeoutId_ = window.setTimeout(this.decrementInteractingHint_.bind(this), this.trackpadEventGap_);
+    this.trackpadTimeoutId_ = setTimeout(this.decrementInteractingHint_.bind(this), this.trackpadEventGap_);
     let resolution = view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
     const minResolution = view.getMinResolution();
     const maxResolution = view.getMaxResolution();
@@ -309,7 +309,7 @@ function handleEvent(mapBrowserEvent) {
   const timeLeft = Math.max(this.timeout_ - (now - this.startTime_), 0);
 
   clearTimeout(this.timeoutId_);
-  this.timeoutId_ = window.setTimeout(this.handleWheelZoom_.bind(this, map), timeLeft);
+  this.timeoutId_ = setTimeout(this.handleWheelZoom_.bind(this, map), timeLeft);
 
   return false;
 }
