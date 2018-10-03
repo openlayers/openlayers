@@ -485,8 +485,8 @@ class CanvasReplay extends VectorContext {
   setStrokeStyle_(context, instruction) {
     context.strokeStyle = /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
     context.lineWidth = /** @type {number} */ (instruction[2]);
-    context.lineCap = /** @type {string} */ (instruction[3]);
-    context.lineJoin = /** @type {string} */ (instruction[4]);
+    context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
+    context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
     context.miterLimit = /** @type {number} */ (instruction[5]);
     if (CANVAS_LINE_DASH) {
       context.lineDashOffset = /** @type {number} */ (instruction[7]);
@@ -723,7 +723,8 @@ class CanvasReplay extends VectorContext {
           const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
           const textLength = measure(text);
           if (overflow || textLength <= pathLength) {
-            const textAlign = /** @type {module:ol~render} */ (this).textStates[textKey].textAlign;
+            const textReplay = /** @type {import("./TextReplay.js").default} */ (this);
+            const textAlign = textReplay.textStates[textKey].textAlign;
             const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
             const parts = drawTextOnPath(
               pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
@@ -733,7 +734,7 @@ class CanvasReplay extends VectorContext {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
-                  label = /** @type {module:ol~render} */ (this).getImage(chars, textKey, '', strokeKey);
+                  label = textReplay.getImage(chars, textKey, '', strokeKey);
                   anchorX = /** @type {number} */ (part[2]) + strokeWidth;
                   anchorY = baseline * label.height + (0.5 - baseline) * 2 * strokeWidth - offsetY;
                   this.replayImage_(context,
@@ -747,7 +748,7 @@ class CanvasReplay extends VectorContext {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
-                  label = /** @type {module:ol~render} */ (this).getImage(chars, textKey, fillKey, '');
+                  label = textReplay.getImage(chars, textKey, fillKey, '');
                   anchorX = /** @type {number} */ (part[2]);
                   anchorY = baseline * label.height - offsetY;
                   this.replayImage_(context,
@@ -976,6 +977,7 @@ class CanvasReplay extends VectorContext {
    */
   createFill(state, geometry) {
     const fillStyle = state.fillStyle;
+    /** @type {Array<*>} */
     const fillInstruction = [CanvasInstruction.SET_FILL_STYLE, fillStyle];
     if (typeof fillStyle !== 'string') {
       // Fill is a pattern or gradient - align it!
