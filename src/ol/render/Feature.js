@@ -192,6 +192,14 @@ class RenderFeature {
   }
 
   /**
+   * @param {number} squaredTolerance Squared tolerance.
+   * @return {RenderFeature} Simplified geometry.
+   */
+  getSimplifiedGeometry(squaredTolerance) {
+    return this;
+  }
+
+  /**
   * Get the feature properties.
   * @return {Object<string, *>} Feature properties.
   * @api
@@ -259,14 +267,6 @@ RenderFeature.prototype.getEndss = function() {
  */
 RenderFeature.prototype.getFlatCoordinates =
     RenderFeature.prototype.getOrientedFlatCoordinates;
-
-
-/**
- * Get the feature for working with its geometry.
- * @return {RenderFeature} Feature.
- */
-RenderFeature.prototype.getSimplifiedGeometry =
-    RenderFeature.prototype.getGeometry;
 
 
 export default RenderFeature;
