@@ -63,7 +63,7 @@ const ModifyEventType = {
  * @property {Array<number>} [depth]
  * @property {Feature} feature
  * @property {import("../geom/SimpleGeometry.js").default} geometry
- * @property {number} index
+ * @property {number} [index]
  * @property {Array<import("../extent.js").Extent>} segment
  * @property {Array<SegmentData>} [featureSegments]
  */
@@ -375,7 +375,7 @@ class Modify extends PointerInteraction {
     // Remove the vertex feature if the collection of canditate features
     // is empty.
     if (this.vertexFeature_ && this.features_.getLength() === 0) {
-      this.overlay_.getSource().removeFeature(this.vertexFeature_);
+      /** @type {VectorSource} */ (this.overlay_.getSource()).removeFeature(this.vertexFeature_);
       this.vertexFeature_ = null;
     }
     unlisten(feature, EventType.CHANGE,
@@ -408,7 +408,7 @@ class Modify extends PointerInteraction {
    */
   setActive(active) {
     if (this.vertexFeature_ && !active) {
-      this.overlay_.getSource().removeFeature(this.vertexFeature_);
+      /** @type {VectorSource} */ (this.overlay_.getSource()).removeFeature(this.vertexFeature_);
       this.vertexFeature_ = null;
     }
     super.setActive(active);
@@ -659,7 +659,7 @@ class Modify extends PointerInteraction {
     if (!vertexFeature) {
       vertexFeature = new Feature(new Point(coordinates));
       this.vertexFeature_ = vertexFeature;
-      this.overlay_.getSource().addFeature(vertexFeature);
+      /** @type {VectorSource} */ (this.overlay_.getSource()).addFeature(vertexFeature);
     } else {
       const geometry = /** @type {Point} */ (vertexFeature.getGeometry());
       geometry.setCoordinates(coordinates);
@@ -701,6 +701,7 @@ class Modify extends PointerInteraction {
       const vertexPixel = map.getPixelFromCoordinate(vertex);
       let dist = coordinateDistance(pixel, vertexPixel);
       if (dist <= this.pixelTolerance_) {
+        /** @type {Object<string, boolean>} */
         const vertexSegments = {};
 
         if (node.geometry.getType() === GeometryType.CIRCLE &&
@@ -738,7 +739,7 @@ class Modify extends PointerInteraction {
       }
     }
     if (this.vertexFeature_) {
-      this.overlay_.getSource().removeFeature(this.vertexFeature_);
+      /** @type {VectorSource} */ (this.overlay_.getSource()).removeFeature(this.vertexFeature_);
       this.vertexFeature_ = null;
     }
   }
@@ -839,7 +840,7 @@ class Modify extends PointerInteraction {
     for (i = dragSegments.length - 1; i >= 0; --i) {
       dragSegment = dragSegments[i];
       segmentData = dragSegment[0];
-      uid = getUid(segmentData.feature);
+      uid = String(getUid(segmentData.feature));
       if (segmentData.depth) {
         // separate feature components
         uid += '-' + segmentData.depth.join('-');
@@ -933,7 +934,7 @@ class Modify extends PointerInteraction {
         }
         this.updateSegmentIndices_(geometry, index, segmentData.depth, -1);
         if (this.vertexFeature_) {
-          this.overlay_.getSource().removeFeature(this.vertexFeature_);
+          /** @type {VectorSource} */ (this.overlay_.getSource()).removeFeature(this.vertexFeature_);
           this.vertexFeature_ = null;
         }
         dragSegments.length = 0;
@@ -1009,7 +1010,7 @@ function handleDownEvent(evt) {
     for (let i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
       const segmentDataMatch = segmentDataMatches[i];
       const segment = segmentDataMatch.segment;
-      let uid = getUid(segmentDataMatch.feature);
+      let uid = String(getUid(segmentDataMatch.feature));
       const depth = segmentDataMatch.depth;
       if (depth) {
         uid += '-' + depth.join('-'); // separate feature components
