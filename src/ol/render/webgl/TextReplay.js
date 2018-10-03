@@ -266,8 +266,8 @@ class WebGLTextReplay extends WebGLTextureReplay {
           ctx.fillStyle = state.fillColor;
           ctx.strokeStyle = state.strokeColor;
           ctx.lineWidth = state.lineWidth;
-          ctx.lineCap = /*** @type {string} */ (state.lineCap);
-          ctx.lineJoin = /** @type {string} */ (state.lineJoin);
+          ctx.lineCap = /** @type {CanvasLineCap} */ (state.lineCap);
+          ctx.lineJoin = /** @type {CanvasLineJoin} */ (state.lineJoin);
           ctx.miterLimit = /** @type {number} */ (state.miterLimit);
           ctx.textAlign = 'left';
           ctx.textBaseline = 'top';
