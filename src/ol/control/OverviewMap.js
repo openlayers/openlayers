@@ -155,7 +155,7 @@ class OverviewMap extends Control {
     const ovmap = this.ovmap_;
 
     if (options.layers) {
-      options.layers.forEach(
+      /** @type {Array<import("../layer/Layer.js").default>} */ (options.layers).forEach(
         /**
          * @param {import("../layer/Layer.js").default} layer Layer.
          */
