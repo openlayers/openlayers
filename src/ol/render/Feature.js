@@ -115,7 +115,7 @@ class RenderFeature {
     if (!this.flatInteriorPoints_) {
       const flatCenter = getCenter(this.getExtent());
       this.flatInteriorPoints_ = getInteriorPointOfArray(
-        this.flatCoordinates_, 0, this.ends_, 2, flatCenter, 0);
+        this.flatCoordinates_, 0, /** @type {Array<number>} */ (this.ends_), 2, flatCenter, 0);
     }
     return this.flatInteriorPoints_;
   }
@@ -126,9 +126,9 @@ class RenderFeature {
   getFlatInteriorPoints() {
     if (!this.flatInteriorPoints_) {
       const flatCenters = linearRingssCenter(
-        this.flatCoordinates_, 0, this.ends_, 2);
+        this.flatCoordinates_, 0, /** @type {Array<Array<number>>} */ (this.ends_), 2);
       this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
-        this.flatCoordinates_, 0, this.ends_, 2, flatCenters);
+        this.flatCoordinates_, 0, /** @type {Array<Array<number>>} */ (this.ends_), 2, flatCenters);
     }
     return this.flatInteriorPoints_;
   }
@@ -152,7 +152,7 @@ class RenderFeature {
       this.flatMidpoints_ = [];
       const flatCoordinates = this.flatCoordinates_;
       let offset = 0;
-      const ends = this.ends_;
+      const ends = /** @type {Array<number>} */ (this.ends_);
       for (let i = 0, ii = ends.length; i < ii; ++i) {
         const end = ends[i];
         const midpoint = interpolatePoint(

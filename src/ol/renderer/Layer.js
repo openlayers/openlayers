@@ -43,6 +43,9 @@ class LayerRenderer extends Observable {
        * @return {boolean} The tile range is fully loaded.
        */
       function(zoom, tileRange) {
+        /**
+         * @param {import("../Tile.js").default} tile Tile.
+         */
         function callback(tile) {
           if (!tiles[zoom]) {
             tiles[zoom] = {};
