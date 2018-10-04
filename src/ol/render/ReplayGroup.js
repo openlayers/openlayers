@@ -18,6 +18,13 @@ class ReplayGroup {
    * @return {boolean} Is empty.
    */
   isEmpty() {}
+
+  /**
+   * @abstract
+   * @param {boolean} group Group with previous replay
+   * @return {Array<*>} The resulting instruction group
+   */
+  addDeclutter(group) {}
 }
 
 export default ReplayGroup;

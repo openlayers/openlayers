@@ -67,10 +67,11 @@ class WebGLReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @param {import("../../style/Style.js").default} style Style.
-   * @param {boolean} group Group with previous replay.
+   * @inheritDoc
    */
-  addDeclutter(style, group) {}
+  addDeclutter(group) {
+    return [];
+  }
 
   /**
    * @param {import("../../webgl/Context.js").default} context WebGL context.
