@@ -7,6 +7,7 @@ import {transformWithOptions} from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
 import {readString, readDecimal, readNonNegativeInteger, readDateTime, writeStringTextNode, writeNonNegativeIntegerTextNode, writeDecimalTextNode, writeDateTimeTextNode} from '../format/xsd.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
+import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import Point from '../geom/Point.js';
@@ -782,7 +783,7 @@ function writeRte(node, feature, objectStack) {
   const context = {node: node};
   context['properties'] = properties;
   const geometry = feature.getGeometry();
-  if (geometry instanceof LineString) {
+  if (geometry.getType() == GeometryType.LINE_STRING) {
     const lineString = /** @type {LineString} */ (transformWithOptions(geometry, true, options));
     context['geometryLayout'] = lineString.getLayout();
     properties['rtept'] = lineString.getCoordinates();
@@ -808,7 +809,7 @@ function writeTrk(node, feature, objectStack) {
   const context = {node: node};
   context['properties'] = properties;
   const geometry = feature.getGeometry();
-  if (geometry instanceof MultiLineString) {
+  if (geometry.getType() == GeometryType.MULTI_LINE_STRING) {
     const multiLineString = /** @type {MultiLineString} */ (transformWithOptions(geometry, true, options));
     properties['trkseg'] = multiLineString.getLineStrings();
   }
@@ -847,7 +848,7 @@ function writeWpt(node, feature, objectStack) {
   const context = objectStack[objectStack.length - 1];
   context['properties'] = feature.getProperties();
   const geometry = feature.getGeometry();
-  if (geometry instanceof Point) {
+  if (geometry.getType() == GeometryType.POINT) {
     const point = /** @type {Point} */ (transformWithOptions(geometry, true, options));
     context['geometryLayout'] = point.getLayout();
     writeWptType(node, point.getCoordinates(), objectStack);

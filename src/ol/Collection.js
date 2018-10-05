@@ -160,7 +160,7 @@ class Collection extends BaseObject {
    * @api
    */
   getLength() {
-    return /** @type {number} */ (this.get(Property.LENGTH));
+    return this.get(Property.LENGTH);
   }
 
   /**

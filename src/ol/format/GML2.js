@@ -5,7 +5,6 @@ import {createOrUpdate} from '../extent.js';
 import {transformWithOptions} from '../format/Feature.js';
 import GMLBase, {GMLNS} from '../format/GMLBase.js';
 import {writeStringTextNode} from '../format/xsd.js';
-import Geometry from '../geom/Geometry.js';
 import {assign} from '../obj.js';
 import {get as getProjection, transformExtent} from '../proj.js';
 import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
@@ -196,7 +195,7 @@ class GML2 extends GMLBase {
       if (value !== null) {
         keys.push(key);
         values.push(value);
-        if (key == geometryName || value instanceof Geometry) {
+        if (key == geometryName || typeof /** @type {?} */ (value).getSimplifiedGeometry === 'function') {
           if (!(key in context.serializers[featureNS])) {
             context.serializers[featureNS][key] = makeChildAppender(
               this.writeGeometryElement, this);

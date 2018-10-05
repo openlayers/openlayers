@@ -17,7 +17,6 @@ import {inAndOut} from './easing.js';
 import {getForViewAndSize, getCenter, getHeight, getWidth, isEmpty} from './extent.js';
 import GeometryType from './geom/GeometryType.js';
 import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
-import SimpleGeometry from './geom/SimpleGeometry.js';
 import {clamp, modulo} from './math.js';
 import {assign} from './obj.js';
 import {createProjection, METERS_PER_UNIT} from './proj.js';
@@ -974,7 +973,7 @@ class View extends BaseObject {
    * The size is pixel dimensions of the box to fit the extent into.
    * In most cases you will want to use the map size, that is `map.getSize()`.
    * Takes care of the map angle.
-   * @param {SimpleGeometry|import("./extent.js").Extent} geometryOrExtent The geometry or
+   * @param {import("./geom/SimpleGeometry.js").default|import("./extent.js").Extent} geometryOrExtent The geometry or
    *     extent to fit the view to.
    * @param {FitOptions=} opt_options Options.
    * @api
@@ -985,11 +984,11 @@ class View extends BaseObject {
     if (!size) {
       size = this.getSizeFromViewport_();
     }
-    /** @type {SimpleGeometry} */
+    /** @type {import("./geom/SimpleGeometry.js").default} */
     let geometry;
-    if (!(geometryOrExtent instanceof SimpleGeometry)) {
-      assert(Array.isArray(geometryOrExtent),
-        24); // Invalid extent or geometry provided as `geometry`
+    assert(Array.isArray(geometryOrExtent) || typeof /** @type {?} */ (geometryOrExtent).getSimplifiedGeometry === 'function',
+      24); // Invalid extent or geometry provided as `geometry`
+    if (Array.isArray(geometryOrExtent)) {
       assert(!isEmpty(geometryOrExtent),
         25); // Cannot fit empty extent provided as `geometry`
       geometry = polygonFromExtent(geometryOrExtent);

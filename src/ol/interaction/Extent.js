@@ -3,7 +3,6 @@
  */
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import {squaredDistanceToSegment, closestOnSegment, distance as coordinateDistance, squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
 import Event from '../events/Event.js';
 import {boundingExtent, getArea} from '../extent.js';
@@ -20,12 +19,12 @@ import {createEditingStyle} from '../style/Style.js';
  * @typedef {Object} Options
  * @property {import("../extent.js").Extent} [extent] Initial extent. Defaults to no
  * initial extent.
- * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [boxStyle]
+ * @property {import("../style/Style.js").StyleLike} [boxStyle]
  * Style for the drawn extent box. Defaults to
  * {@link module:ol/style/Style~createEditing()['Polygon']}
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
- * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [pointerStyle]
+ * @property {import("../style/Style.js").StyleLike} [pointerStyle]
  * Style for the cursor used to draw the extent. Defaults to
  * {@link module:ol/style/Style~createEditing()['Point']}
  * @property {boolean} [wrapX=false] Wrap the drawn extent across multiple maps
@@ -276,7 +275,7 @@ class ExtentInteraction extends PointerInteraction {
    * @inheritDoc
    */
   handleEvent(mapBrowserEvent) {
-    if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
+    if (!(/** @type {import("../MapBrowserPointerEvent.js").default} */ (mapBrowserEvent).pointerEvent)) {
       return true;
     }
     //display pointer (if not dragging)

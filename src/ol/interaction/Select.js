@@ -60,7 +60,7 @@ const SelectEventType = {
  * in the map and should return `true` for layers that you want to be
  * selectable. If the option is absent, all visible layers will be considered
  * selectable.
- * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style]
+ * @property {import("../style/Style.js").StyleLike} [style]
  * Style for the selected features. By default the default edit style is used
  * (see {@link module:ol/style}).
  * @property {import("../events/condition.js").Condition} [removeCondition] A function

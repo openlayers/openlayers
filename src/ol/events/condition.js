@@ -2,7 +2,6 @@
  * @module ol/events/condition
  */
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import {assert} from '../asserts.js';
 import {TRUE, FALSE} from '../functions.js';
 import {WEBKIT, MAC} from '../has.js';
@@ -225,9 +224,10 @@ export const targetNotEditable = function(mapBrowserEvent) {
  * @api
  */
 export const mouseOnly = function(mapBrowserEvent) {
-  assert(mapBrowserEvent instanceof MapBrowserPointerEvent, 56); // mapBrowserEvent must originate from a pointer event
+  const pointerEvent = /** @type {import("../MapBrowserPointerEvent").default} */ (mapBrowserEvent).pointerEvent;
+  assert(pointerEvent !== undefined, 56); // mapBrowserEvent must originate from a pointer event
   // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
-  return /** @type {MapBrowserPointerEvent} */ (mapBrowserEvent).pointerEvent.pointerType == 'mouse';
+  return pointerEvent.pointerType == 'mouse';
 };
 
 
@@ -241,7 +241,7 @@ export const mouseOnly = function(mapBrowserEvent) {
  * @api
  */
 export const primaryAction = function(mapBrowserEvent) {
-  assert(mapBrowserEvent instanceof MapBrowserPointerEvent, 56); // mapBrowserEvent must originate from a pointer event
-  const pointerEvent = /** @type {MapBrowserPointerEvent} */ (mapBrowserEvent).pointerEvent;
+  const pointerEvent = /** @type {import("../MapBrowserPointerEvent").default} */ (mapBrowserEvent).pointerEvent;
+  assert(pointerEvent !== undefined, 56); // mapBrowserEvent must originate from a pointer event
   return pointerEvent.isPrimary && pointerEvent.button === 0;
 };

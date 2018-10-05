@@ -1,7 +1,6 @@
 /**
  * @module ol/format/Feature
  */
-import Geometry from '../geom/Geometry.js';
 import {assign} from '../obj.js';
 import {get as getProjection, equivalent as equivalentProjection, transformExtent} from '../proj.js';
 
@@ -151,7 +150,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Node|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
-   * @return {Geometry} Geometry.
+   * @return {import("../geom/Geometry.js").default} Geometry.
    */
   readGeometry(source, opt_options) {}
 
@@ -188,7 +187,7 @@ class FeatureFormat {
    * Write a single geometry in this format.
    *
    * @abstract
-   * @param {Geometry} geometry Geometry.
+   * @param {import("../geom/Geometry.js").default} geometry Geometry.
    * @param {WriteOptions=} opt_options Write options.
    * @return {string} Result.
    */
@@ -198,10 +197,10 @@ class FeatureFormat {
 export default FeatureFormat;
 
 /**
- * @param {Geometry|import("../extent.js").Extent} geometry Geometry.
+ * @param {import("../geom/Geometry.js").default|import("../extent.js").Extent} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
  * @param {(WriteOptions|ReadOptions)=} opt_options Options.
- * @return {Geometry|import("../extent.js").Extent} Transformed geometry.
+ * @return {import("../geom/Geometry.js").default|import("../extent.js").Extent} Transformed geometry.
  */
 export function transformWithOptions(geometry, write, opt_options) {
   const featureProjection = opt_options ?
@@ -209,28 +208,28 @@ export function transformWithOptions(geometry, write, opt_options) {
   const dataProjection = opt_options ?
     getProjection(opt_options.dataProjection) : null;
   /**
-   * @type {Geometry|import("../extent.js").Extent}
+   * @type {import("../geom/Geometry.js").default|import("../extent.js").Extent}
    */
   let transformed;
   if (featureProjection && dataProjection &&
       !equivalentProjection(featureProjection, dataProjection)) {
-    if (geometry instanceof Geometry) {
-      transformed = (write ? geometry.clone() : geometry).transform(
-        write ? featureProjection : dataProjection,
-        write ? dataProjection : featureProjection);
-    } else {
+    if (Array.isArray(geometry)) {
       // FIXME this is necessary because GML treats extents
       // as geometries
       transformed = transformExtent(
         geometry,
         dataProjection,
         featureProjection);
+    } else {
+      transformed = (write ? /** @type {import("../geom/Geometry").default} */ (geometry).clone() : geometry).transform(
+        write ? featureProjection : dataProjection,
+        write ? dataProjection : featureProjection);
     }
   } else {
     transformed = geometry;
   }
   if (write && opt_options && /** @type {WriteOptions} */ (opt_options).decimals !== undefined &&
-    transformed instanceof Geometry) {
+    !Array.isArray(transformed)) {
     const power = Math.pow(10, /** @type {WriteOptions} */ (opt_options).decimals);
     // if decimals option on write, round each coordinate appropriately
     /**
@@ -244,7 +243,7 @@ export function transformWithOptions(geometry, write, opt_options) {
       return coordinates;
     };
     if (transformed === geometry) {
-      transformed = transformed.clone();
+      transformed = /** @type {import("../geom/Geometry").default} */ (geometry).clone();
     }
     transformed.applyTransform(transform);
   }

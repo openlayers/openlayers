@@ -26,7 +26,7 @@ import IconOrigin from '../style/IconOrigin.js';
 import Stroke from '../style/Stroke.js';
 import Style from '../style/Style.js';
 import Text from '../style/Text.js';
-import {createElementNS, getAllTextContent, isDocument, isNode, makeArrayExtender,
+import {createElementNS, getAllTextContent, isDocument, makeArrayExtender,
   makeArrayPusher, makeChildAppender, makeObjectPropertySetter,
   makeReplacer, makeSequence, makeSimpleNodeFactory, makeStructureNS,
   OBJECT_PROPERTY_NODE_FACTORY, parse, parseNode, pushParseAndPop,
@@ -639,15 +639,15 @@ class KML extends XMLFeature {
    * @api
    */
   readName(source) {
-    if (isDocument(source)) {
-      return this.readNameFromDocument(/** @type {Document} */ (source));
-    } else if (isNode(source)) {
-      return this.readNameFromNode(/** @type {Element} */ (source));
+    if (!source) {
+      return undefined;
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readNameFromDocument(doc);
+    } else if (isDocument(source)) {
+      return this.readNameFromDocument(/** @type {Document} */ (source));
     } else {
-      return undefined;
+      return this.readNameFromNode(/** @type {Element} */ (source));
     }
   }
 
@@ -703,15 +703,15 @@ class KML extends XMLFeature {
    */
   readNetworkLinks(source) {
     const networkLinks = [];
-    if (isDocument(source)) {
-      extend(networkLinks, this.readNetworkLinksFromDocument(
-        /** @type {Document} */ (source)));
-    } else if (isNode(source)) {
-      extend(networkLinks, this.readNetworkLinksFromNode(
-        /** @type {Element} */ (source)));
-    } else if (typeof source === 'string') {
+    if (typeof source === 'string') {
       const doc = parse(source);
       extend(networkLinks, this.readNetworkLinksFromDocument(doc));
+    } else if (isDocument(source)) {
+      extend(networkLinks, this.readNetworkLinksFromDocument(
+        /** @type {Document} */ (source)));
+    } else {
+      extend(networkLinks, this.readNetworkLinksFromNode(
+        /** @type {Element} */ (source)));
     }
     return networkLinks;
   }
@@ -765,15 +765,15 @@ class KML extends XMLFeature {
    */
   readRegion(source) {
     const regions = [];
-    if (isDocument(source)) {
-      extend(regions, this.readRegionFromDocument(
-        /** @type {Document} */ (source)));
-    } else if (isNode(source)) {
-      extend(regions, this.readRegionFromNode(
-        /** @type {Element} */ (source)));
-    } else if (typeof source === 'string') {
+    if (typeof source === 'string') {
       const doc = parse(source);
       extend(regions, this.readRegionFromDocument(doc));
+    } else if (isDocument(source)) {
+      extend(regions, this.readRegionFromDocument(
+        /** @type {Document} */ (source)));
+    } else {
+      extend(regions, this.readRegionFromNode(
+        /** @type {Element} */ (source)));
     }
     return regions;
   }
@@ -2897,7 +2897,7 @@ function writeStyle(node, style, objectStack) {
   const strokeStyle = style.getStroke();
   const imageStyle = style.getImage();
   const textStyle = style.getText();
-  if (imageStyle instanceof Icon) {
+  if (imageStyle && typeof /** @type {?} */ (imageStyle).getSrc === 'function') {
     properties['IconStyle'] = imageStyle;
   }
   if (textStyle) {

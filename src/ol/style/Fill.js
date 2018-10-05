@@ -76,13 +76,15 @@ class Fill {
    */
   getChecksum() {
     if (this.checksum_ === undefined) {
-      if (
-        this.color_ instanceof CanvasPattern ||
-          this.color_ instanceof CanvasGradient
-      ) {
-        this.checksum_ = getUid(this.color_).toString();
+      const color = this.color_;
+      if (color) {
+        if (Array.isArray(color) || typeof color == 'string') {
+          this.checksum_ = 'f' + asString(/** @type {import("../Color.js").Color|string} */ (color));
+        } else {
+          this.checksum_ = getUid(this.color_).toString();
+        }
       } else {
-        this.checksum_ = 'f' + (this.color_ ? asString(this.color_) : '-');
+        this.checksum_ = 'f-';
       }
     }
 

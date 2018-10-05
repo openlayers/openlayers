@@ -8,10 +8,9 @@ import GMLBase, {GMLNS} from '../format/GMLBase.js';
 import {and as andFilter, bbox as bboxFilter} from '../format/filter.js';
 import XMLFeature from '../format/XMLFeature.js';
 import {readNonNegativeIntegerString, readNonNegativeInteger, writeStringTextNode} from '../format/xsd.js';
-import Geometry from '../geom/Geometry.js';
 import {assign} from '../obj.js';
 import {get as getProjection} from '../proj.js';
-import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
+import {createElementNS, isDocument, makeArrayPusher, makeChildAppender,
   makeObjectPropertySetter, makeSimpleNodeFactory, parse, parseNode,
   pushParseAndPop, pushSerializeAndPop, XML_SCHEMA_INSTANCE_URI} from '../xml.js';
 
@@ -288,16 +287,16 @@ class WFS extends XMLFeature {
    * @api
    */
   readTransactionResponse(source) {
-    if (isDocument(source)) {
-      return this.readTransactionResponseFromDocument(
-        /** @type {Document} */ (source));
-    } else if (isNode(source)) {
-      return this.readTransactionResponseFromNode(/** @type {Element} */ (source));
+    if (!source) {
+      return undefined;
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readTransactionResponseFromDocument(doc);
+    } else if (isDocument(source)) {
+      return this.readTransactionResponseFromDocument(
+        /** @type {Document} */ (source));
     } else {
-      return undefined;
+      return this.readTransactionResponseFromNode(/** @type {Element} */ (source));
     }
   }
 
@@ -310,17 +309,17 @@ class WFS extends XMLFeature {
    * @api
    */
   readFeatureCollectionMetadata(source) {
-    if (isDocument(source)) {
-      return this.readFeatureCollectionMetadataFromDocument(
-        /** @type {Document} */ (source));
-    } else if (isNode(source)) {
-      return this.readFeatureCollectionMetadataFromNode(
-        /** @type {Element} */ (source));
+    if (!source) {
+      return undefined;
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readFeatureCollectionMetadataFromDocument(doc);
+    } else if (isDocument(source)) {
+      return this.readFeatureCollectionMetadataFromDocument(
+        /** @type {Document} */ (source));
     } else {
-      return undefined;
+      return this.readFeatureCollectionMetadataFromNode(
+        /** @type {Element} */ (source));
     }
   }
 
@@ -694,7 +693,7 @@ function writeUpdate(node, feature, objectStack) {
       const value = feature.get(keys[i]);
       if (value !== undefined) {
         let name = keys[i];
-        if (value instanceof Geometry) {
+        if (value && typeof /** @type {?} */ (value).getSimplifiedGeometry === 'function') {
           name = geometryName;
         }
         values.push({name: name, value: value});
@@ -725,7 +724,7 @@ function writeProperty(node, pair, objectStack) {
   if (pair.value !== undefined && pair.value !== null) {
     const value = createElementNS(WFSNS, 'Value');
     node.appendChild(value);
-    if (pair.value instanceof Geometry) {
+    if (pair.value && typeof /** @type {?} */ (pair.value).getSimplifiedGeometry === 'function') {
       if (gmlVersion === 2) {
         GML2.prototype.writeGeometryElement(value,
           pair.value, objectStack);

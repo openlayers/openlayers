@@ -87,7 +87,6 @@
  * ```
  */
 import {assert} from '../asserts.js';
-import Geometry from '../geom/Geometry.js';
 import GeometryType from '../geom/GeometryType.js';
 import CircleStyle from '../style/Circle.js';
 import Fill from '../style/Fill.js';
@@ -103,6 +102,10 @@ import Stroke from '../style/Stroke.js';
  * @typedef {function(import("../Feature.js").FeatureLike, number):(Style|Array<Style>)} StyleFunction
  */
 
+/**
+ * A {@link Style}, an array of {@link Style}, or a {@link StyleFunction}.
+ * @typedef {Style|Array<Style>|StyleFunction} StyleLike
+ */
 
 /**
  * A function that takes an {@link module:ol/Feature} as argument and returns an
@@ -136,7 +139,6 @@ import Stroke from '../style/Stroke.js';
  * @property {import("./Text.js").default} [text] Text style.
  * @property {number} [zIndex] Z index.
  */
-
 
 /**
  * @classdesc
@@ -214,8 +216,8 @@ class Style {
    */
   clone() {
     let geometry = this.getGeometry();
-    if (geometry instanceof Geometry) {
-      geometry = geometry.clone();
+    if (geometry && typeof geometry === 'object') {
+      geometry = /** @type {import("../geom/Geometry.js").default} */ (geometry).clone();
     }
     return new Style({
       geometry: geometry,
@@ -411,9 +413,10 @@ export function toFunction(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      assert(obj instanceof Style,
+      assert(typeof /** @type {?} */ (obj).getZIndex === 'function',
         41); // Expected an `Style` or an array of `Style`
-      styles = [obj];
+      const style = /** @type {Style} */ (obj);
+      styles = [style];
     }
     styleFunction = function() {
       return styles;

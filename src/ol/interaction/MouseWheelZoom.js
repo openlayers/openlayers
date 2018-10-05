@@ -108,7 +108,7 @@ class MouseWheelZoom extends Interaction {
 
     /**
      * @private
-     * @type {any}
+     * @type {?}
      */
     this.timeoutId_;
 
@@ -126,7 +126,7 @@ class MouseWheelZoom extends Interaction {
     this.trackpadEventGap_ = 400;
 
     /**
-     * @type {any}
+     * @type {?}
      */
     this.trackpadTimeoutId_;
 
