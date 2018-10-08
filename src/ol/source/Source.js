@@ -32,8 +32,8 @@ import SourceState from './State.js';
  * @typedef {Object} Options
  * @property {AttributionLike} [attributions]
  * @property {import("../proj.js").ProjectionLike} projection
- * @property {SourceState} [state]
- * @property {boolean} [wrapX]
+ * @property {SourceState} [state='ready']
+ * @property {boolean} [wrapX=false]
  */
 
 
@@ -64,7 +64,7 @@ class Source extends BaseObject {
      * @private
      * @type {?Attribution}
      */
-    this.attributions_ = this.adaptAttributions_(options.attributions);
+    this.attributions_ = adaptAttributions(options.attributions);
 
     /**
      * This source is currently loading data. Sources that defer loading to the
@@ -86,30 +86,6 @@ class Source extends BaseObject {
      */
     this.wrapX_ = options.wrapX !== undefined ? options.wrapX : false;
 
-  }
-
-  /**
-   * Turns the attributions option into an attributions function.
-   * @param {AttributionLike|undefined} attributionLike The attribution option.
-   * @return {?Attribution} An attribution function (or null).
-   */
-  adaptAttributions_(attributionLike) {
-    if (!attributionLike) {
-      return null;
-    }
-    if (Array.isArray(attributionLike)) {
-      return function(frameState) {
-        return attributionLike;
-      };
-    }
-
-    if (typeof attributionLike === 'function') {
-      return attributionLike;
-    }
-
-    return function(frameState) {
-      return [attributionLike];
-    };
   }
 
   /**
@@ -167,7 +143,7 @@ class Source extends BaseObject {
    * @api
    */
   setAttributions(attributions) {
-    this.attributions_ = this.adaptAttributions_(attributions);
+    this.attributions_ = adaptAttributions(attributions);
     this.changed();
   }
 
@@ -193,6 +169,31 @@ class Source extends BaseObject {
  * @template T
  */
 Source.prototype.forEachFeatureAtCoordinate = VOID;
+
+
+/**
+ * Turns the attributions option into an attributions function.
+ * @param {AttributionLike|undefined} attributionLike The attribution option.
+ * @return {?Attribution} An attribution function (or null).
+ */
+function adaptAttributions(attributionLike) {
+  if (!attributionLike) {
+    return null;
+  }
+  if (Array.isArray(attributionLike)) {
+    return function(frameState) {
+      return attributionLike;
+    };
+  }
+
+  if (typeof attributionLike === 'function') {
+    return attributionLike;
+  }
+
+  return function(frameState) {
+    return [attributionLike];
+  };
+}
 
 
 export default Source;
