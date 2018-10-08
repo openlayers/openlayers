@@ -146,7 +146,7 @@ class SimpleGeometry extends Geometry {
   /**
    * @param {GeometryLayout} layout Layout.
    * @param {Array<number>} flatCoordinates Flat coordinates.
-    */
+   */
   setFlatCoordinates(layout, flatCoordinates) {
     this.stride = getStrideForLayout(layout);
     this.layout = layout;

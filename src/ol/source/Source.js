@@ -55,15 +55,15 @@ class Source extends BaseObject {
     super();
 
     /**
-    * @private
-    * @type {import("../proj/Projection.js").default}
-    */
+     * @private
+     * @type {import("../proj/Projection.js").default}
+     */
     this.projection_ = getProjection(options.projection);
 
     /**
-    * @private
-    * @type {?Attribution}
-    */
+     * @private
+     * @type {?Attribution}
+     */
     this.attributions_ = this.adaptAttributions_(options.attributions);
 
     /**
@@ -74,25 +74,25 @@ class Source extends BaseObject {
     this.loading = false;
 
     /**
-    * @private
-    * @type {SourceState}
-    */
+     * @private
+     * @type {SourceState}
+     */
     this.state_ = options.state !== undefined ?
       options.state : SourceState.READY;
 
     /**
-    * @private
-    * @type {boolean}
-    */
+     * @private
+     * @type {boolean}
+     */
     this.wrapX_ = options.wrapX !== undefined ? options.wrapX : false;
 
   }
 
   /**
-  * Turns the attributions option into an attributions function.
-  * @param {AttributionLike|undefined} attributionLike The attribution option.
-  * @return {?Attribution} An attribution function (or null).
-  */
+   * Turns the attributions option into an attributions function.
+   * @param {AttributionLike|undefined} attributionLike The attribution option.
+   * @return {?Attribution} An attribution function (or null).
+   */
   adaptAttributions_(attributionLike) {
     if (!attributionLike) {
       return null;
@@ -113,69 +113,69 @@ class Source extends BaseObject {
   }
 
   /**
-  * Get the attribution function for the source.
-  * @return {?Attribution} Attribution function.
-  */
+   * Get the attribution function for the source.
+   * @return {?Attribution} Attribution function.
+   */
   getAttributions() {
     return this.attributions_;
   }
 
   /**
-  * Get the projection of the source.
-  * @return {import("../proj/Projection.js").default} Projection.
-  * @api
-  */
+   * Get the projection of the source.
+   * @return {import("../proj/Projection.js").default} Projection.
+   * @api
+   */
   getProjection() {
     return this.projection_;
   }
 
   /**
-  * @abstract
-  * @return {Array<number>|undefined} Resolutions.
-  */
+   * @abstract
+   * @return {Array<number>|undefined} Resolutions.
+   */
   getResolutions() {}
 
   /**
-  * Get the state of the source, see {@link module:ol/source/State~State} for possible states.
-  * @return {SourceState} State.
-  * @api
-  */
+   * Get the state of the source, see {@link module:ol/source/State~State} for possible states.
+   * @return {SourceState} State.
+   * @api
+   */
   getState() {
     return this.state_;
   }
 
   /**
-  * @return {boolean|undefined} Wrap X.
-  */
+   * @return {boolean|undefined} Wrap X.
+   */
   getWrapX() {
     return this.wrapX_;
   }
 
   /**
-  * Refreshes the source and finally dispatches a 'change' event.
-  * @api
-  */
+   * Refreshes the source and finally dispatches a 'change' event.
+   * @api
+   */
   refresh() {
     this.changed();
   }
 
   /**
-  * Set the attributions of the source.
-  * @param {AttributionLike|undefined} attributions Attributions.
-  *     Can be passed as `string`, `Array<string>`, `{@link module:ol/source/Source~Attribution}`,
-  *     or `undefined`.
-  * @api
-  */
+   * Set the attributions of the source.
+   * @param {AttributionLike|undefined} attributions Attributions.
+   *     Can be passed as `string`, `Array<string>`, `{@link module:ol/source/Source~Attribution}`,
+   *     or `undefined`.
+   * @api
+   */
   setAttributions(attributions) {
     this.attributions_ = this.adaptAttributions_(attributions);
     this.changed();
   }
 
   /**
-  * Set the state of the source.
-  * @param {SourceState} state State.
-  * @protected
-  */
+   * Set the state of the source.
+   * @param {SourceState} state State.
+   * @protected
+   */
   setState(state) {
     this.state_ = state;
     this.changed();
