@@ -194,6 +194,11 @@ export function equals(arr1, arr2) {
 
 
 /**
+ * @type {Array<*>}
+ */
+const tmpArray = [];
+
+/**
  * Sort the passed array such that the relative order of equal elements is preverved.
  * See https://en.wikipedia.org/wiki/Sorting_algorithm#Stability for details.
  * @param {Array<*>} arr The array to sort (modifies original).
@@ -202,16 +207,16 @@ export function equals(arr1, arr2) {
  */
 export function stableSort(arr, compareFnc) {
   const length = arr.length;
-  const tmp = Array(arr.length);
+  tmpArray.length = length;
   let i;
   for (i = 0; i < length; i++) {
-    tmp[i] = {index: i, value: arr[i]};
+    tmpArray[i] = {index: i, value: arr[i]};
   }
-  tmp.sort(function(a, b) {
+  tmpArray.sort(function(a, b) {
     return compareFnc(a.value, b.value) || a.index - b.index;
   });
   for (i = 0; i < arr.length; i++) {
-    arr[i] = tmp[i].value;
+    arr[i] = tmpArray[i].value;
   }
 }
 
