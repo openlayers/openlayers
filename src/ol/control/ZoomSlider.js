@@ -260,8 +260,8 @@ class ZoomSlider extends Control {
   handleDraggerDrag_(event) {
     if (this.dragging_) {
       const element = /** @type {HTMLElement} */ (this.element.firstElementChild);
-      const deltaX = event.clientX - this.previousX_ + parseFloat(element.style.left, 10);
-      const deltaY = event.clientY - this.previousY_ + parseFloat(element.style.top, 10);
+      const deltaX = event.clientX - this.previousX_ + parseFloat(element.style.left);
+      const deltaY = event.clientY - this.previousY_ + parseFloat(element.style.top);
       const relativePosition = this.getRelativePosition_(deltaX, deltaY);
       this.currentResolution_ = this.getResolutionForPosition_(relativePosition);
       this.getMap().getView().setResolution(this.currentResolution_);
