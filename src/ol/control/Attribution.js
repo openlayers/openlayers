@@ -186,6 +186,11 @@ class Attribution extends Control {
         continue;
       }
 
+      const collapsible = source.getAttributionsCollapsible();
+      if (collapsible !== undefined && !collapsible) {
+        this.setCollapsible(collapsible);
+      }
+
       if (Array.isArray(attributions)) {
         for (let j = 0, jj = attributions.length; j < jj; ++j) {
           if (!(attributions[j] in lookup)) {

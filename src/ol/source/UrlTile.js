@@ -11,6 +11,7 @@ import {getKeyZXY} from '../tilecoord.js';
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions]
+ * @property {boolean} [attributionsCollapsible] Whether attributions should be collapsible.
  * @property {number} [cacheSize]
  * @property {boolean} [opaque]
  * @property {import("../proj.js").ProjectionLike} [projection]
@@ -47,7 +48,8 @@ class UrlTile extends TileSource {
       tileGrid: options.tileGrid,
       tilePixelRatio: options.tilePixelRatio,
       wrapX: options.wrapX,
-      transition: options.transition
+      transition: options.transition,
+      attributionsCollapsible: options.attributionsCollapsible
     });
 
     /**

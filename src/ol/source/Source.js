@@ -31,6 +31,7 @@ import SourceState from './State.js';
 /**
  * @typedef {Object} Options
  * @property {AttributionLike} [attributions]
+ * @property {boolean} [attributionsCollapsible] Whether attributions should be collapsible.
  * @property {import("../proj.js").ProjectionLike} projection
  * @property {SourceState} [state]
  * @property {boolean} [wrapX]
@@ -65,6 +66,13 @@ class Source extends BaseObject {
      * @type {?Attribution}
      */
     this.attributions_ = this.adaptAttributions_(options.attributions);
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.attributionsCollapsible_ = options.attributionsCollapsible !== undefined ?
+      options.attributionsCollapsible : true;
 
     /**
      * This source is currently loading data. Sources that defer loading to the
@@ -118,6 +126,13 @@ class Source extends BaseObject {
    */
   getAttributions() {
     return this.attributions_;
+  }
+
+  /**
+   * @return {boolean} Should the attributions be collapsible or not.
+   */
+  getAttributionsCollapsible() {
+    return this.attributionsCollapsible_;
   }
 
   /**

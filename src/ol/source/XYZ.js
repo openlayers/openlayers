@@ -8,6 +8,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {boolean} [attributionsCollapsible] Whether attributions should be collapsible.
  * @property {number} [cacheSize=2048] Cache size.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
@@ -93,7 +94,8 @@ class XYZ extends TileImage {
       url: options.url,
       urls: options.urls,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
-      transition: options.transition
+      transition: options.transition,
+      attributionsCollapsible: options.attributionsCollapsible
     });
 
   }
