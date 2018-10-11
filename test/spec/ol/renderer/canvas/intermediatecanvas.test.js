@@ -1,4 +1,4 @@
-import {create as createTransform} from '../../../../../src/ol/transform.js';
+import {create as createTransform, scale} from '../../../../../src/ol/transform.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
 import MapRenderer from '../../../../../src/ol/renderer/Map.js';
 import IntermediateCanvasRenderer from '../../../../../src/ol/renderer/canvas/IntermediateCanvas.js';
@@ -92,6 +92,17 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
       expect(context.drawImage.firstCall.args).to.eql(
         [renderer.getImage(), 0, 0, 3, 3, 0, 0, 3, 3]);
       expect(context.restore.callCount).to.be(0);
+    });
+
+    it('does not draw image with width or height < 0.5', function() {
+      frameState.extent = [10, 20, 30, 40];
+      renderer.getImageTransform = function() {
+        return scale(createTransform(), 0.1, 0.1);
+      };
+
+      renderer.composeFrame(frameState, layerState, context);
+
+      expect(context.drawImage.notCalled).to.be(true);
     });
 
   });

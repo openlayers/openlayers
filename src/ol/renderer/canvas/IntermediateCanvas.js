@@ -63,8 +63,10 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
       const dy = imageTransform[5];
       const dw = image.width * imageTransform[0];
       const dh = image.height * imageTransform[3];
-      context.drawImage(image, 0, 0, +image.width, +image.height,
-        Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
+      if (dw >= 0.5 && dh >= 0.5) {
+        context.drawImage(image, 0, 0, +image.width, +image.height,
+          Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
+      }
       context.globalAlpha = alpha;
 
       if (clipped) {
