@@ -6,7 +6,7 @@ import {intersects} from '../../extent.js';
 import GeometryType from '../../geom/GeometryType.js';
 import ReplayType from '../ReplayType.js';
 import VectorContext from '../VectorContext.js';
-import WebGLReplayGroup from '../webgl/ReplayGroup.js';
+import WebGLReplayGroup from './ReplayGroup.js';
 
 class WebGLImmediateRenderer extends VectorContext {
   /**

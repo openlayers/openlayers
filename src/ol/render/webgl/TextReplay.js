@@ -10,7 +10,7 @@ import {TEXT_ALIGN} from '../replay.js';
 import {DEFAULT_FILLSTYLE, DEFAULT_FONT, DEFAULT_LINECAP, DEFAULT_LINEDASH,
   DEFAULT_LINEDASHOFFSET, DEFAULT_LINEJOIN, DEFAULT_LINEWIDTH, DEFAULT_MITERLIMIT,
   DEFAULT_STROKESTYLE, DEFAULT_TEXTALIGN, DEFAULT_TEXTBASELINE} from '../webgl.js';
-import WebGLTextureReplay from '../webgl/TextureReplay.js';
+import WebGLTextureReplay from './TextureReplay.js';
 import AtlasManager from '../../style/AtlasManager.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 

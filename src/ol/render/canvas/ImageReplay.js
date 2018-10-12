@@ -1,8 +1,8 @@
 /**
  * @module ol/render/canvas/ImageReplay
  */
-import CanvasInstruction from '../canvas/Instruction.js';
-import CanvasReplay from '../canvas/Replay.js';
+import CanvasInstruction from './Instruction.js';
+import CanvasReplay from './Replay.js';
 
 class CanvasImageReplay extends CanvasReplay {
   /**
