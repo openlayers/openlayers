@@ -1,23 +1,23 @@
 /**
  * @module ol/format/filter
  */
-import And from '../format/filter/And.js';
-import Bbox from '../format/filter/Bbox.js';
-import Contains from '../format/filter/Contains.js';
-import During from '../format/filter/During.js';
-import EqualTo from '../format/filter/EqualTo.js';
-import GreaterThan from '../format/filter/GreaterThan.js';
-import GreaterThanOrEqualTo from '../format/filter/GreaterThanOrEqualTo.js';
-import Intersects from '../format/filter/Intersects.js';
-import IsBetween from '../format/filter/IsBetween.js';
-import IsLike from '../format/filter/IsLike.js';
-import IsNull from '../format/filter/IsNull.js';
-import LessThan from '../format/filter/LessThan.js';
-import LessThanOrEqualTo from '../format/filter/LessThanOrEqualTo.js';
-import Not from '../format/filter/Not.js';
-import NotEqualTo from '../format/filter/NotEqualTo.js';
-import Or from '../format/filter/Or.js';
-import Within from '../format/filter/Within.js';
+import And from './filter/And.js';
+import Bbox from './filter/Bbox.js';
+import Contains from './filter/Contains.js';
+import During from './filter/During.js';
+import EqualTo from './filter/EqualTo.js';
+import GreaterThan from './filter/GreaterThan.js';
+import GreaterThanOrEqualTo from './filter/GreaterThanOrEqualTo.js';
+import Intersects from './filter/Intersects.js';
+import IsBetween from './filter/IsBetween.js';
+import IsLike from './filter/IsLike.js';
+import IsNull from './filter/IsNull.js';
+import LessThan from './filter/LessThan.js';
+import LessThanOrEqualTo from './filter/LessThanOrEqualTo.js';
+import Not from './filter/Not.js';
+import NotEqualTo from './filter/NotEqualTo.js';
+import Or from './filter/Or.js';
+import Within from './filter/Within.js';
 
 
 /**

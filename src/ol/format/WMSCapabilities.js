@@ -1,9 +1,9 @@
 /**
  * @module ol/format/WMSCapabilities
  */
-import {readHref} from '../format/XLink.js';
-import XML from '../format/XML.js';
-import {readDecimalString, readString, readNonNegativeInteger, readDecimal, readBooleanString, readNonNegativeIntegerString} from '../format/xsd.js';
+import {readHref} from './XLink.js';
+import XML from './XML.js';
+import {readDecimalString, readString, readNonNegativeInteger, readDecimal, readBooleanString, readNonNegativeIntegerString} from './xsd.js';
 import {makeArrayPusher, makeObjectPropertyPusher, makeObjectPropertySetter,
   makeStructureNS, pushParseAndPop} from '../xml.js';
 

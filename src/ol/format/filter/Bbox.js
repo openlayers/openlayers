@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/Bbox
  */
-import Filter from '../filter/Filter.js';
+import Filter from './Filter.js';
 
 /**
  * @classdesc
