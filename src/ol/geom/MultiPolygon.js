@@ -3,21 +3,21 @@
  */
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
-import MultiPoint from '../geom/MultiPoint.js';
-import Polygon from '../geom/Polygon.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
-import {linearRingss as linearRingssArea} from '../geom/flat/area.js';
-import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
-import {assignClosestMultiArrayPoint, multiArrayMaxSquaredDelta} from '../geom/flat/closest.js';
-import {linearRingssContainsXY} from '../geom/flat/contains.js';
-import {deflateMultiCoordinatesArray} from '../geom/flat/deflate.js';
-import {inflateMultiCoordinatesArray} from '../geom/flat/inflate.js';
-import {getInteriorPointsOfMultiArray} from '../geom/flat/interiorpoint.js';
-import {intersectsLinearRingMultiArray} from '../geom/flat/intersectsextent.js';
-import {linearRingsAreOriented, orientLinearRingsArray} from '../geom/flat/orient.js';
-import {quantizeMultiArray} from '../geom/flat/simplify.js';
+import GeometryLayout from './GeometryLayout.js';
+import GeometryType from './GeometryType.js';
+import MultiPoint from './MultiPoint.js';
+import Polygon from './Polygon.js';
+import SimpleGeometry from './SimpleGeometry.js';
+import {linearRingss as linearRingssArea} from './flat/area.js';
+import {linearRingss as linearRingssCenter} from './flat/center.js';
+import {assignClosestMultiArrayPoint, multiArrayMaxSquaredDelta} from './flat/closest.js';
+import {linearRingssContainsXY} from './flat/contains.js';
+import {deflateMultiCoordinatesArray} from './flat/deflate.js';
+import {inflateMultiCoordinatesArray} from './flat/inflate.js';
+import {getInteriorPointsOfMultiArray} from './flat/interiorpoint.js';
+import {intersectsLinearRingMultiArray} from './flat/intersectsextent.js';
+import {linearRingsAreOriented, orientLinearRingsArray} from './flat/orient.js';
+import {quantizeMultiArray} from './flat/simplify.js';
 
 /**
  * @classdesc

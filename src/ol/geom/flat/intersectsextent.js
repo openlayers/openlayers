@@ -2,8 +2,8 @@
  * @module ol/geom/flat/intersectsextent
  */
 import {containsExtent, createEmpty, extendFlatCoordinates, intersects, intersectsSegment} from '../../extent.js';
-import {linearRingContainsXY, linearRingContainsExtent} from '../flat/contains.js';
-import {forEach as forEachSegment} from '../flat/segments.js';
+import {linearRingContainsXY, linearRingContainsExtent} from './contains.js';
+import {forEach as forEachSegment} from './segments.js';
 
 
 /**

@@ -3,9 +3,9 @@
  */
 import {abstract} from '../util.js';
 import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
-import Geometry from '../geom/Geometry.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import {rotate, scale, translate, transform2D} from '../geom/flat/transform.js';
+import Geometry from './Geometry.js';
+import GeometryLayout from './GeometryLayout.js';
+import {rotate, scale, translate, transform2D} from './flat/transform.js';
 import {clear} from '../obj.js';
 
 /**

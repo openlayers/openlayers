@@ -4,7 +4,7 @@
 import {abstract} from '../util.js';
 import BaseObject from '../Object.js';
 import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
-import {transform2D} from '../geom/flat/transform.js';
+import {transform2D} from './flat/transform.js';
 import {get as getProjection, getTransform} from '../proj.js';
 import Units from '../proj/Units.js';
 import {create as createTransform, compose as composeTransform} from '../transform.js';
