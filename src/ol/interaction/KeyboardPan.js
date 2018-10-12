@@ -5,7 +5,7 @@ import {rotate as rotateCoordinate} from '../coordinate.js';
 import EventType from '../events/EventType.js';
 import KeyCode from '../events/KeyCode.js';
 import {noModifierKeys, targetNotEditable} from '../events/condition.js';
-import Interaction, {pan} from '../interaction/Interaction.js';
+import Interaction, {pan} from './Interaction.js';
 
 
 /**

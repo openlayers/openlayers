@@ -6,7 +6,7 @@ import {always} from '../events/condition.js';
 import {easeOut} from '../easing.js';
 import EventType from '../events/EventType.js';
 import {DEVICE_PIXEL_RATIO, FIREFOX, SAFARI} from '../has.js';
-import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
+import Interaction, {zoomByDelta} from './Interaction.js';
 import {clamp} from '../math.js';
 
 
