@@ -2,7 +2,7 @@
  * @module ol/geom/flat/interiorpoint
  */
 import {numberSafeCompareFunction} from '../../array.js';
-import {linearRingsContainsXY} from '../flat/contains.js';
+import {linearRingsContainsXY} from './contains.js';
 
 
 /**

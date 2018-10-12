@@ -3,11 +3,11 @@
  */
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY, containsXY} from '../extent.js';
-import GeometryType from '../geom/GeometryType.js';
-import Point from '../geom/Point.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
-import {deflateCoordinates} from '../geom/flat/deflate.js';
-import {inflateCoordinates} from '../geom/flat/inflate.js';
+import GeometryType from './GeometryType.js';
+import Point from './Point.js';
+import SimpleGeometry from './SimpleGeometry.js';
+import {deflateCoordinates} from './flat/deflate.js';
+import {inflateCoordinates} from './flat/inflate.js';
 import {squaredDistance as squaredDx} from '../math.js';
 
 /**
