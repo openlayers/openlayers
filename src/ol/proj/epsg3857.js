@@ -2,8 +2,8 @@
  * @module ol/proj/epsg3857
  */
 import {cosh} from '../math.js';
-import Projection from '../proj/Projection.js';
-import Units from '../proj/Units.js';
+import Projection from './Projection.js';
+import Units from './Units.js';
 
 
 /**
