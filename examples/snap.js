@@ -53,7 +53,9 @@ const ExampleModify = {
     const selectedFeatures = this.select.getFeatures();
 
     this.select.on('change:active', function() {
-      selectedFeatures.forEach(selectedFeatures.remove, selectedFeatures);
+      selectedFeatures.forEach(function(each) {
+        selectedFeatures.remove(each);
+      });
     });
   },
   setActive: function(active) {
