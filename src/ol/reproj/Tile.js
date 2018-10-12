@@ -10,7 +10,7 @@ import EventType from '../events/EventType.js';
 import {getArea, getCenter, getIntersection} from '../extent.js';
 import {clamp} from '../math.js';
 import {calculateSourceResolution, render as renderReprojected} from '../reproj.js';
-import Triangulation from '../reproj/Triangulation.js';
+import Triangulation from './Triangulation.js';
 
 
 /**
