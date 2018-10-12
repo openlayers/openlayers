@@ -9,7 +9,7 @@ import Event from '../events/Event.js';
 import {equals} from '../extent.js';
 import {equivalent} from '../proj.js';
 import ReprojImage from '../reproj/Image.js';
-import Source from '../source/Source.js';
+import Source from './Source.js';
 
 
 /**

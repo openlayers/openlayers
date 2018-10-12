@@ -6,7 +6,7 @@ import {createEmpty} from '../extent.js';
 import {modulo} from '../math.js';
 import {assign} from '../obj.js';
 import {toSize, scale as scaleSize} from '../size.js';
-import TileImage from '../source/TileImage.js';
+import TileImage from './TileImage.js';
 import {hash as tileCoordHash} from '../tilecoord.js';
 import {appendParams} from '../uri.js';
 

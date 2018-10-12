@@ -2,7 +2,7 @@
  * @module ol/source/XYZ
  */
 
-import TileImage from '../source/TileImage.js';
+import TileImage from './TileImage.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 /**

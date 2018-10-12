@@ -16,9 +16,9 @@ import {xhr} from '../featureloader.js';
 import {TRUE, VOID} from '../functions.js';
 import {all as allStrategy} from '../loadingstrategy.js';
 import {isEmpty, getValues} from '../obj.js';
-import Source from '../source/Source.js';
-import SourceState from '../source/State.js';
-import VectorEventType from '../source/VectorEventType.js';
+import Source from './Source.js';
+import SourceState from './State.js';
+import VectorEventType from './VectorEventType.js';
 import RBush from '../structs/RBush.js';
 
 /**

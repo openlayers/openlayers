@@ -7,8 +7,8 @@ import {find, findIndex, includes} from '../array.js';
 import {containsExtent} from '../extent.js';
 import {assign} from '../obj.js';
 import {get as getProjection, equivalent, transformExtent} from '../proj.js';
-import TileImage from '../source/TileImage.js';
-import WMTSRequestEncoding from '../source/WMTSRequestEncoding.js';
+import TileImage from './TileImage.js';
+import WMTSRequestEncoding from './WMTSRequestEncoding.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {appendParams} from '../uri.js';
 

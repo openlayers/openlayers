@@ -3,8 +3,8 @@
  */
 
 import {assign} from '../obj.js';
-import SourceState from '../source/State.js';
-import XYZ from '../source/XYZ.js';
+import SourceState from './State.js';
+import XYZ from './XYZ.js';
 
 /**
  * @typedef {Object} Options

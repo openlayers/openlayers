@@ -7,7 +7,7 @@ import TileState from '../TileState.js';
 import Event from '../events/Event.js';
 import {equivalent} from '../proj.js';
 import {toSize, scale as scaleSize} from '../size.js';
-import Source from '../source/Source.js';
+import Source from './Source.js';
 import {getKeyZXY, withinExtentAndZ} from '../tilecoord.js';
 import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.js';
 

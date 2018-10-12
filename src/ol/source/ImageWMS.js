@@ -12,8 +12,8 @@ import {containsExtent, getCenter, getForViewAndSize, getHeight, getWidth} from 
 import {assign} from '../obj.js';
 import {get as getProjection, transform} from '../proj.js';
 import {calculateSourceResolution} from '../reproj.js';
-import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
-import WMSServerType from '../source/WMSServerType.js';
+import ImageSource, {defaultImageLoadFunction} from './Image.js';
+import WMSServerType from './WMSServerType.js';
 import {compareVersions} from '../string.js';
 import {appendParams} from '../uri.js';
 

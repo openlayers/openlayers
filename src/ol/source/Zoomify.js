@@ -10,7 +10,7 @@ import {assert} from '../asserts.js';
 import {createCanvasContext2D} from '../dom.js';
 import {getTopLeft} from '../extent.js';
 import {toSize} from '../size.js';
-import TileImage from '../source/TileImage.js';
+import TileImage from './TileImage.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 
 
