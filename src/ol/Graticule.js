@@ -107,8 +107,8 @@ const INTERVALS = [
  * Note that the default's `textAlign` configuration will not work well for
  * `latLabelPosition` configurations that position labels close to the left of
  * the viewport.
- * @property {Array<number>} [intervals] Intervals (in degrees) for the graticule.
- * Example to limit graticules to 30 and 10 degrees intervals:
+ * @property {Array<number>} [intervals=[90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.01, 0.005, 0.002, 0.001]]
+ * Intervals (in degrees) for the graticule. Example to limit graticules to 30 and 10 degrees intervals:
  * ```js
  * [30, 10]
  * ```
