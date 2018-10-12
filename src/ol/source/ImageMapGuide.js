@@ -7,7 +7,7 @@ import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getCenter, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import {assign} from '../obj.js';
-import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
+import ImageSource, {defaultImageLoadFunction} from './Image.js';
 import {appendParams} from '../uri.js';
 
 /**

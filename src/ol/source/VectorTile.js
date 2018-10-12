@@ -6,7 +6,7 @@ import TileState from '../TileState.js';
 import VectorImageTile, {defaultLoadFunction} from '../VectorImageTile.js';
 import Tile from '../VectorTile.js';
 import {toSize} from '../size.js';
-import UrlTile from '../source/UrlTile.js';
+import UrlTile from './UrlTile.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.js';
 

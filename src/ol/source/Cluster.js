@@ -11,7 +11,7 @@ import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
 import Point from '../geom/Point.js';
-import VectorSource from '../source/Vector.js';
+import VectorSource from './Vector.js';
 
 /**
  * @typedef {Object} Options

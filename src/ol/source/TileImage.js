@@ -10,7 +10,7 @@ import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {equivalent, get as getProjection} from '../proj.js';
 import ReprojTile from '../reproj/Tile.js';
-import UrlTile from '../source/UrlTile.js';
+import UrlTile from './UrlTile.js';
 import {getKey, getKeyZXY} from '../tilecoord.js';
 import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
 

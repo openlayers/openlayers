@@ -4,7 +4,7 @@
 
 import ImageCanvas from '../ImageCanvas.js';
 import {containsExtent, getHeight, getWidth, scaleFromCenter} from '../extent.js';
-import ImageSource from '../source/Image.js';
+import ImageSource from './Image.js';
 
 
 /**
