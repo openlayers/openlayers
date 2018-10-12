@@ -107,6 +107,11 @@ const INTERVALS = [
  * Note that the default's `textAlign` configuration will not work well for
  * `latLabelPosition` configurations that position labels close to the left of
  * the viewport.
+ * @property {Array<number>} [intervals=[90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.01, 0.005, 0.002, 0.001]]
+ * Intervals (in degrees) for the graticule. Example to limit graticules to 30 and 10 degrees intervals:
+ * ```js
+ * [30, 10]
+ * ```
  */
 
 
@@ -319,6 +324,12 @@ class Graticule {
       this.parallelsLabels_ = [];
     }
 
+    /**
+     * @type {Array<number>}
+     * @private
+     */
+    this.intervals_ = options.intervals !== undefined ? options.intervals : INTERVALS;
+
     this.setMap(options.map !== undefined ? options.map : null);
   }
 
@@ -530,8 +541,8 @@ class Graticule {
     const p1 = [];
     /** @type {Array<number>} **/
     const p2 = [];
-    for (let i = 0, ii = INTERVALS.length; i < ii; ++i) {
-      const delta = INTERVALS[i] / 2;
+    for (let i = 0, ii = this.intervals_.length; i < ii; ++i) {
+      const delta = this.intervals_[i] / 2;
       p1[0] = centerLon - delta;
       p1[1] = centerLat - delta;
       p2[0] = centerLon + delta;
@@ -542,7 +553,7 @@ class Graticule {
       if (dist <= target) {
         break;
       }
-      interval = INTERVALS[i];
+      interval = this.intervals_[i];
     }
     return interval;
   }
