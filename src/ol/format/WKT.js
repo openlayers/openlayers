@@ -13,7 +13,6 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
 
 
 /**
@@ -823,7 +822,7 @@ function encodeMultiPolygonGeometry(geom) {
 }
 
 /**
- * @param {SimpleGeometry} geom SimpleGeometry geometry.
+ * @param {import("../geom/SimpleGeometry.js").default} geom SimpleGeometry geometry.
  * @return {string} Potential dimensional information for WKT type.
  */
 function encodeGeometryLayout(geom) {
@@ -856,7 +855,7 @@ const GeometryEncoder = {
 
 /**
  * Encode a geometry as WKT.
- * @param {import("../geom/Geometry.js").default} geom The geometry to encode.
+ * @param {!import("../geom/Geometry.js").default} geom The geometry to encode.
  * @return {string} WKT string for the geometry.
  */
 function encode(geom) {
@@ -864,8 +863,8 @@ function encode(geom) {
   const geometryEncoder = GeometryEncoder[type];
   const enc = geometryEncoder(geom);
   type = type.toUpperCase();
-  if (geom instanceof SimpleGeometry) {
-    const dimInfo = encodeGeometryLayout(geom);
+  if (typeof /** @type {?} */ (geom).getFlatCoordinates === 'function') {
+    const dimInfo = encodeGeometryLayout(/** @type {import("../geom/SimpleGeometry.js").default} */ (geom));
     if (dimInfo.length > 0) {
       type += ' ' + dimInfo;
     }

@@ -258,11 +258,11 @@ class VectorSource extends Source {
     this.featuresCollection_ = null;
 
     let collection, features;
-    if (options.features instanceof Collection) {
+    if (Array.isArray(options.features)) {
+      features = options.features;
+    } else if (options.features) {
       collection = options.features;
       features = collection.getArray();
-    } else if (Array.isArray(options.features)) {
-      features = options.features;
     }
     if (!useSpatialIndex && collection === undefined) {
       collection = new Collection(features);

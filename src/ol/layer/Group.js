@@ -84,9 +84,8 @@ class LayerGroup extends BaseLayer {
       if (Array.isArray(layers)) {
         layers = new Collection(layers.slice(), {unique: true});
       } else {
-        assert(layers instanceof Collection,
+        assert(typeof /** @type {?} */ (layers).getArray === 'function',
           43); // Expected `layers` to be an array or a `Collection`
-        layers = layers;
       }
     } else {
       layers = new Collection(undefined, {unique: true});

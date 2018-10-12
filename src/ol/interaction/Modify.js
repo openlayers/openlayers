@@ -6,7 +6,6 @@ import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import {equals} from '../array.js';
 import {equals as coordinatesEqual, distance as coordinateDistance, squaredDistance as squaredCoordinateDistance, squaredDistanceToSegment, closestOnSegment} from '../coordinate.js';
 import {listen, unlisten} from '../events.js';
@@ -87,7 +86,7 @@ const ModifyEventType = {
  * features. Default is {@link module:ol/events/condition~always}.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
- * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style]
+ * @property {import("../style/Style.js").StyleLike} [style]
  * Style used for the features being modified. By default the default edit
  * style is used (see {@link module:ol/style}).
  * @property {VectorSource} [source] The vector source with
@@ -111,7 +110,7 @@ export class ModifyEvent extends Event {
    * @param {ModifyEventType} type Type.
    * @param {Collection<Feature>} features
    * The features modified.
-   * @param {MapBrowserPointerEvent} mapBrowserPointerEvent
+   * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserPointerEvent
    * Associated {@link module:ol/MapBrowserPointerEvent}.
    */
   constructor(type, features, mapBrowserPointerEvent) {
@@ -324,7 +323,7 @@ class Modify extends PointerInteraction {
       this.handleFeatureRemove_, this);
 
     /**
-     * @type {MapBrowserPointerEvent}
+     * @type {import("../MapBrowserPointerEvent.js").default}
      * @private
      */
     this.lastPointerEvent_ = null;
@@ -349,7 +348,7 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * @param {MapBrowserPointerEvent} evt Map browser event
+   * @param {import("../MapBrowserPointerEvent.js").default} evt Map browser event
    * @private
    */
   willModifyFeatures_(evt) {
@@ -666,7 +665,7 @@ class Modify extends PointerInteraction {
    * @override
    */
   handleEvent(mapBrowserEvent) {
-    if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
+    if (!(/** @type {import("../MapBrowserPointerEvent.js").default} */ (mapBrowserEvent).pointerEvent)) {
       return true;
     }
     this.lastPointerEvent_ = mapBrowserEvent;

@@ -2,7 +2,6 @@
  * @module ol/interaction/Snap
  */
 import {getUid} from '../util.js';
-import {CollectionEvent} from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import {distance as coordinateDistance, squaredDistance as squaredCoordinateDistance, closestOnCircle, closestOnSegment, squaredDistanceToSegment} from '../coordinate.js';
 import {listen, unlistenByKey} from '../events.js';
@@ -13,7 +12,6 @@ import GeometryType from '../geom/GeometryType.js';
 import {fromCircle} from '../geom/Polygon.js';
 import PointerInteraction from '../interaction/Pointer.js';
 import {getValues} from '../obj.js';
-import {VectorSourceEvent} from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 
@@ -43,6 +41,19 @@ import RBush from '../structs/RBush.js';
  * @property {import("../source/Vector.js").default} [source] Snap to features from this source. Either this option or features should be provided
  */
 
+
+/**
+ * @param  {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent} evt Event.
+ * @return {import("../Feature.js").default} Feature.
+ */
+function getFeatureFromEvent(evt) {
+  if (/** @type {import("../source/Vector.js").VectorSourceEvent} */ (evt).feature) {
+    return /** @type {import("../source/Vector.js").VectorSourceEvent} */ (evt).feature;
+  } else if (/** @type {import("../Collection.js").CollectionEvent} */ (evt).element) {
+    return /** @type {import("../Feature.js").default} */ (/** @type {import("../Collection.js").CollectionEvent} */ (evt).element);
+  }
+
+}
 
 /**
  * @classdesc
@@ -259,12 +270,7 @@ class Snap extends PointerInteraction {
    * @private
    */
   handleFeatureAdd_(evt) {
-    let feature;
-    if (evt instanceof VectorSourceEvent) {
-      feature = evt.feature;
-    } else if (evt instanceof CollectionEvent) {
-      feature = /** @type {import("../Feature.js").default} */ (evt.element);
-    }
+    const feature = getFeatureFromEvent(evt);
     this.addFeature(feature);
   }
 
@@ -273,12 +279,7 @@ class Snap extends PointerInteraction {
    * @private
    */
   handleFeatureRemove_(evt) {
-    let feature;
-    if (evt instanceof VectorSourceEvent) {
-      feature = evt.feature;
-    } else if (evt instanceof CollectionEvent) {
-      feature = /** @type {import("../Feature.js").default} */ (evt.element);
-    }
+    const feature = getFeatureFromEvent(evt);
     this.removeFeature(feature);
   }
 

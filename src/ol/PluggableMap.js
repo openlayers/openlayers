@@ -102,7 +102,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * map target (i.e. the user-provided div for the map). If this is not
  * `document`, the target element needs to be focused for key events to be
  * emitted, requiring that the target element has a `tabindex` attribute.
- * @property {Array<import("./layer/Base.js").default>|Collection<import("./layer/Base.js").default>} [layers]
+ * @property {Array<import("./layer/Base.js").default>|Collection<import("./layer/Base.js").default>|LayerGroup} [layers]
  * Layers. If this is not defined, a map with no layers will be rendered. Note
  * that layers are rendered in the order supplied, so if you want, for example,
  * a vector layer to appear on top of a tile layer, it must come after the tile
@@ -1368,8 +1368,8 @@ function createOptionsInternal(options) {
    */
   const values = {};
 
-  const layerGroup = (options.layers instanceof LayerGroup) ?
-    options.layers : new LayerGroup({layers: options.layers});
+  const layerGroup = options.layers && typeof /** @type {?} */ (options.layers).getLayers === 'function' ?
+    /** @type {LayerGroup} */ (options.layers) : new LayerGroup({layers: /** @type {Collection} */ (options.layers)});
   values[MapProperty.LAYERGROUP] = layerGroup;
 
   values[MapProperty.TARGET] = options.target;
@@ -1382,9 +1382,9 @@ function createOptionsInternal(options) {
     if (Array.isArray(options.controls)) {
       controls = new Collection(options.controls.slice());
     } else {
-      assert(options.controls instanceof Collection,
+      assert(typeof /** @type {?} */ (options.controls).getArray === 'function',
         47); // Expected `controls` to be an array or an `import("./Collection.js").Collection`
-      controls = options.controls;
+      controls = /** @type {Collection} */ (options.controls);
     }
   }
 
@@ -1393,9 +1393,9 @@ function createOptionsInternal(options) {
     if (Array.isArray(options.interactions)) {
       interactions = new Collection(options.interactions.slice());
     } else {
-      assert(options.interactions instanceof Collection,
+      assert(typeof /** @type {?} */ (options.interactions).getArray === 'function',
         48); // Expected `interactions` to be an array or an `import("./Collection.js").Collection`
-      interactions = options.interactions;
+      interactions = /** @type {Collection} */ (options.interactions);
     }
   }
 
@@ -1404,7 +1404,7 @@ function createOptionsInternal(options) {
     if (Array.isArray(options.overlays)) {
       overlays = new Collection(options.overlays.slice());
     } else {
-      assert(options.overlays instanceof Collection,
+      assert(typeof /** @type {?} */ (options.overlays).getArray === 'function',
         49); // Expected `overlays` to be an array or an `import("./Collection.js").Collection`
       overlays = options.overlays;
     }
@@ -1430,8 +1430,8 @@ export default PluggableMap;
 function getLoading(layers) {
   for (let i = 0, ii = layers.length; i < ii; ++i) {
     const layer = layers[i];
-    if (layer instanceof LayerGroup) {
-      return getLoading(layer.getLayers().getArray());
+    if (typeof /** @type {?} */ (layer).getLayers === 'function') {
+      return getLoading(/** @type {LayerGroup} */ (layer).getLayers().getArray());
     } else {
       const source = /** @type {import("./layer/Layer.js").default} */ (
         layer).getSource();

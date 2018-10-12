@@ -6,7 +6,6 @@ import {createOrUpdate} from '../extent.js';
 import {transformWithOptions} from '../format/Feature.js';
 import GMLBase, {GMLNS} from '../format/GMLBase.js';
 import {readNonNegativeIntegerString, writeStringTextNode} from '../format/xsd.js';
-import Geometry from '../geom/Geometry.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -774,7 +773,7 @@ class GML3 extends GMLBase {
       if (value !== null) {
         keys.push(key);
         values.push(value);
-        if (key == geometryName || value instanceof Geometry) {
+        if (key == geometryName || typeof /** @type {?} */ (value).getSimplifiedGeometry === 'function') {
           if (!(key in context.serializers[featureNS])) {
             context.serializers[featureNS][key] = makeChildAppender(
               this.writeGeometryElement, this);

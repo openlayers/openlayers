@@ -109,8 +109,8 @@ class ImageTile extends Tile {
    * @private
    */
   handleImageLoad_() {
-    if (this.image_ instanceof HTMLImageElement &&
-      this.image_.naturalWidth && this.image_.naturalHeight) {
+    const image = /** @type {HTMLImageElement} */ (this.image_);
+    if (image.naturalWidth && image.naturalHeight) {
       this.state = TileState.LOADED;
     } else {
       this.state = TileState.EMPTY;

@@ -41,7 +41,7 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
  * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
  * means higher priority.
- * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style] Layer style. See
+ * @property {import("../style/Style.js").StyleLike} [style] Layer style. See
  * {@link module:ol/style} for default style which will be used if this is not defined.
  * @property {boolean} [updateWhileAnimating=false] When set to `true` and `renderMode`
  * is `vector`, feature batches will be recreated during animations. This means that no
@@ -119,7 +119,7 @@ class VectorLayer extends Layer {
 
     /**
     * User provided style.
-    * @type {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction}
+    * @type {import("../style/Style.js").StyleLike}
     * @private
     */
     this.style_ = null;
@@ -196,7 +196,7 @@ class VectorLayer extends Layer {
   /**
   * Get the style for features.  This returns whatever was passed to the `style`
   * option at construction or to the `setStyle` method.
-  * @return {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction}
+  * @return {import("../style/Style.js").StyleLike}
   *     Layer style.
   * @api
   */

@@ -137,7 +137,7 @@ class TouchSource extends EventSource {
 
     /**
      * @private
-     * @type {any}
+     * @type {?}
      */
     this.resetId_;
 

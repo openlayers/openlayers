@@ -1,7 +1,7 @@
 /**
  * @module ol/format/XML
  */
-import {isDocument, isNode, parse} from '../xml.js';
+import {isDocument, parse} from '../xml.js';
 
 /**
  * @classdesc
@@ -18,15 +18,15 @@ class XML {
    * @api
    */
   read(source) {
-    if (isDocument(source)) {
-      return this.readFromDocument(/** @type {Document} */ (source));
-    } else if (isNode(source)) {
-      return this.readFromNode(/** @type {Element} */ (source));
+    if (!source) {
+      return null;
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readFromDocument(doc);
+    } else if (isDocument(source)) {
+      return this.readFromDocument(/** @type {Document} */ (source));
     } else {
-      return null;
+      return this.readFromNode(/** @type {Element} */ (source));
     }
   }
 

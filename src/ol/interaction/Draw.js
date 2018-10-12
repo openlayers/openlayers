@@ -56,7 +56,7 @@ import {createEditingStyle} from '../style/Style.js';
  * @property {import("../events/condition.js").Condition} [finishCondition] A function
  * that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether the drawing can be finished.
- * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style]
+ * @property {import("../style/Style.js").StyleLike} [style]
  * Style for sketch features.
  * @property {GeometryFunction} [geometryFunction]
  * Function that is called when a geometry's coordinates are updated.
@@ -206,7 +206,7 @@ class Draw extends PointerInteraction {
     this.downPx_ = null;
 
     /**
-     * @type {any}
+     * @type {?}
      * @private
      */
     this.downTimeout_;
@@ -734,12 +734,12 @@ class Draw extends PointerInteraction {
     }
     /** @type {LineString} */
     let sketchLineGeom;
-    if (geometry instanceof Polygon &&
+    if (geometry.getType() == GeometryType.POLYGON &&
         this.mode_ !== Mode.POLYGON) {
       if (!this.sketchLine_) {
         this.sketchLine_ = new Feature();
       }
-      const ring = geometry.getLinearRing(0);
+      const ring = /** @type {Polygon} */ (geometry).getLinearRing(0);
       sketchLineGeom = /** @type {LineString} */ (this.sketchLine_.getGeometry());
       if (!sketchLineGeom) {
         sketchLineGeom = new LineString(ring.getFlatCoordinates(), ring.getLayout());
