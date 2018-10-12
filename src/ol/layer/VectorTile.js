@@ -3,9 +3,9 @@
  */
 import LayerType from '../LayerType.js';
 import {assert} from '../asserts.js';
-import TileProperty from '../layer/TileProperty.js';
-import VectorLayer from '../layer/Vector.js';
-import VectorTileRenderType from '../layer/VectorTileRenderType.js';
+import TileProperty from './TileProperty.js';
+import VectorLayer from './Vector.js';
+import VectorTileRenderType from './VectorTileRenderType.js';
 import {assign} from '../obj.js';
 
 
