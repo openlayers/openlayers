@@ -92,30 +92,30 @@ class TileRange {
   }
 
   /**
-  * @return {number} Height.
-  */
+   * @return {number} Height.
+   */
   getHeight() {
     return this.maxY - this.minY + 1;
   }
 
   /**
-  * @return {import("./size.js").Size} Size.
-  */
+   * @return {import("./size.js").Size} Size.
+   */
   getSize() {
     return [this.getWidth(), this.getHeight()];
   }
 
   /**
-  * @return {number} Width.
-  */
+   * @return {number} Width.
+   */
   getWidth() {
     return this.maxX - this.minX + 1;
   }
 
   /**
-  * @param {TileRange} tileRange Tile range.
-  * @return {boolean} Intersects.
-  */
+   * @param {TileRange} tileRange Tile range.
+   * @return {boolean} Intersects.
+   */
   intersects(tileRange) {
     return this.minX <= tileRange.maxX &&
        this.maxX >= tileRange.minX &&
