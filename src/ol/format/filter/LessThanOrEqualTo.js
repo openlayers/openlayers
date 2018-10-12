@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/LessThanOrEqualTo
  */
-import ComparisonBinary from '../filter/ComparisonBinary.js';
+import ComparisonBinary from './ComparisonBinary.js';
 
 /**
  * @classdesc

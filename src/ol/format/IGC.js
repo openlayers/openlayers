@@ -2,8 +2,8 @@
  * @module ol/format/IGC
  */
 import Feature from '../Feature.js';
-import {transformWithOptions} from '../format/Feature.js';
-import TextFeature from '../format/TextFeature.js';
+import {transformWithOptions} from './Feature.js';
+import TextFeature from './TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import {get as getProjection} from '../proj.js';

@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/Comparison
  */
-import Filter from '../filter/Filter.js';
+import Filter from './Filter.js';
 
 /**
  * @classdesc

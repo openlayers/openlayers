@@ -2,12 +2,12 @@
  * @module ol/format/WFS
  */
 import {assert} from '../asserts.js';
-import GML2 from '../format/GML2.js';
-import GML3 from '../format/GML3.js';
-import GMLBase, {GMLNS} from '../format/GMLBase.js';
-import {and as andFilter, bbox as bboxFilter} from '../format/filter.js';
-import XMLFeature from '../format/XMLFeature.js';
-import {readNonNegativeIntegerString, readNonNegativeInteger, writeStringTextNode} from '../format/xsd.js';
+import GML2 from './GML2.js';
+import GML3 from './GML3.js';
+import GMLBase, {GMLNS} from './GMLBase.js';
+import {and as andFilter, bbox as bboxFilter} from './filter.js';
+import XMLFeature from './XMLFeature.js';
+import {readNonNegativeIntegerString, readNonNegativeInteger, writeStringTextNode} from './xsd.js';
 import {assign} from '../obj.js';
 import {get as getProjection} from '../proj.js';
 import {createElementNS, isDocument, makeArrayPusher, makeChildAppender,

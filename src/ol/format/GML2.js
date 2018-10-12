@@ -2,9 +2,9 @@
  * @module ol/format/GML2
  */
 import {createOrUpdate} from '../extent.js';
-import {transformWithOptions} from '../format/Feature.js';
-import GMLBase, {GMLNS} from '../format/GMLBase.js';
-import {writeStringTextNode} from '../format/xsd.js';
+import {transformWithOptions} from './Feature.js';
+import GMLBase, {GMLNS} from './GMLBase.js';
+import {writeStringTextNode} from './xsd.js';
 import {assign} from '../obj.js';
 import {get as getProjection, transformExtent} from '../proj.js';
 import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
