@@ -35,12 +35,12 @@
 import {listen, unlisten} from '../events.js';
 import EventTarget from '../events/Target.js';
 import {POINTER, MSPOINTER, TOUCH} from '../has.js';
-import PointerEventType from '../pointer/EventType.js';
-import MouseSource, {prepareEvent as prepareMouseEvent} from '../pointer/MouseSource.js';
-import MsSource from '../pointer/MsSource.js';
-import NativeSource from '../pointer/NativeSource.js';
-import PointerEvent from '../pointer/PointerEvent.js';
-import TouchSource from '../pointer/TouchSource.js';
+import PointerEventType from './EventType.js';
+import MouseSource, {prepareEvent as prepareMouseEvent} from './MouseSource.js';
+import MsSource from './MsSource.js';
+import NativeSource from './NativeSource.js';
+import PointerEvent from './PointerEvent.js';
+import TouchSource from './TouchSource.js';
 
 
 /**
