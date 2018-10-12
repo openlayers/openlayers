@@ -1,7 +1,7 @@
 /**
  * @module ol/proj/Projection
  */
-import {METERS_PER_UNIT} from '../proj/Units.js';
+import {METERS_PER_UNIT} from './Units.js';
 
 
 /**
