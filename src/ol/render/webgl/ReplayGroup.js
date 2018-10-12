@@ -7,11 +7,11 @@ import {buffer, createOrUpdateFromCoordinate} from '../../extent.js';
 import {isEmpty} from '../../obj.js';
 import {ORDER} from '../replay.js';
 import ReplayGroup from '../ReplayGroup.js';
-import WebGLCircleReplay from '../webgl/CircleReplay.js';
-import WebGLImageReplay from '../webgl/ImageReplay.js';
-import WebGLLineStringReplay from '../webgl/LineStringReplay.js';
-import WebGLPolygonReplay from '../webgl/PolygonReplay.js';
-import WebGLTextReplay from '../webgl/TextReplay.js';
+import WebGLCircleReplay from './CircleReplay.js';
+import WebGLImageReplay from './ImageReplay.js';
+import WebGLLineStringReplay from './LineStringReplay.js';
+import WebGLPolygonReplay from './PolygonReplay.js';
+import WebGLTextReplay from './TextReplay.js';
 
 /**
  * @type {Array<number>}

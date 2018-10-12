@@ -6,8 +6,8 @@ import {snap} from '../../geom/flat/simplify.js';
 import {defaultFillStyle} from '../canvas.js';
 import CanvasInstruction, {
   fillInstruction, strokeInstruction, beginPathInstruction, closePathInstruction
-} from '../canvas/Instruction.js';
-import CanvasReplay from '../canvas/Replay.js';
+} from './Instruction.js';
+import CanvasReplay from './Replay.js';
 
 
 class CanvasPolygonReplay extends CanvasReplay {

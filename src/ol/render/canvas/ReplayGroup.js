@@ -9,11 +9,11 @@ import {transform2D} from '../../geom/flat/transform.js';
 import {isEmpty} from '../../obj.js';
 import ReplayGroup from '../ReplayGroup.js';
 import ReplayType from '../ReplayType.js';
-import CanvasReplay from '../canvas/Replay.js';
-import CanvasImageReplay from '../canvas/ImageReplay.js';
-import CanvasLineStringReplay from '../canvas/LineStringReplay.js';
-import CanvasPolygonReplay from '../canvas/PolygonReplay.js';
-import CanvasTextReplay from '../canvas/TextReplay.js';
+import CanvasReplay from './Replay.js';
+import CanvasImageReplay from './ImageReplay.js';
+import CanvasLineStringReplay from './LineStringReplay.js';
+import CanvasPolygonReplay from './PolygonReplay.js';
+import CanvasTextReplay from './TextReplay.js';
 import {ORDER} from '../replay.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 

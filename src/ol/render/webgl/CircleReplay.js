@@ -7,9 +7,9 @@ import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
 import {isEmpty} from '../../obj.js';
 import {translate} from '../../geom/flat/transform.js';
-import {fragment, vertex} from '../webgl/circlereplay/defaultshader.js';
-import Locations from '../webgl/circlereplay/defaultshader/Locations.js';
-import WebGLReplay from '../webgl/Replay.js';
+import {fragment, vertex} from './circlereplay/defaultshader.js';
+import Locations from './circlereplay/defaultshader/Locations.js';
+import WebGLReplay from './Replay.js';
 import {DEFAULT_LINEDASH, DEFAULT_LINEDASHOFFSET, DEFAULT_STROKESTYLE,
   DEFAULT_FILLSTYLE, DEFAULT_LINEWIDTH} from '../webgl.js';
 import {FLOAT} from '../../webgl.js';

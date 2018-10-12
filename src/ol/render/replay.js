@@ -1,7 +1,7 @@
 /**
  * @module ol/render/replay
  */
-import ReplayType from '../render/ReplayType.js';
+import ReplayType from './ReplayType.js';
 
 
 /**
