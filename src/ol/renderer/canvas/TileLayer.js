@@ -8,7 +8,7 @@ import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, createEmpty, equals, getIntersection, isEmpty} from '../../extent.js';
-import IntermediateCanvasRenderer from '../canvas/IntermediateCanvas.js';
+import IntermediateCanvasRenderer from './IntermediateCanvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
 /**

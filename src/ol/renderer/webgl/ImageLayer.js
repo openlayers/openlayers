@@ -6,7 +6,7 @@ import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {getIntersection, isEmpty} from '../../extent.js';
-import WebGLLayerRenderer from '../webgl/Layer.js';
+import WebGLLayerRenderer from './Layer.js';
 import {
   create as createTransform,
   rotate as rotateTransform,
