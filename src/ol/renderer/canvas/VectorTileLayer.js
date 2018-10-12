@@ -17,7 +17,7 @@ import ReplayType from '../../render/ReplayType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
 import CanvasReplayGroup, {replayDeclutter} from '../../render/canvas/ReplayGroup.js';
 import {ORDER} from '../../render/replay.js';
-import CanvasTileLayerRenderer from '../canvas/TileLayer.js';
+import CanvasTileLayerRenderer from './TileLayer.js';
 import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import {
   create as createTransform,

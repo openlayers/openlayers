@@ -7,7 +7,7 @@ import ViewHint from '../../ViewHint.js';
 import {buffer, containsExtent, createEmpty} from '../../extent.js';
 import WebGLReplayGroup from '../../render/webgl/ReplayGroup.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
-import WebGLLayerRenderer from '../webgl/Layer.js';
+import WebGLLayerRenderer from './Layer.js';
 import {apply as applyTransform} from '../../transform.js';
 
 
