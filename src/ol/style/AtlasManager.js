@@ -3,7 +3,7 @@
  */
 import {MAX_TEXTURE_SIZE as WEBGL_MAX_TEXTURE_SIZE} from '../webgl.js';
 import {VOID} from '../functions.js';
-import Atlas from '../style/Atlas.js';
+import Atlas from './Atlas.js';
 
 
 /**

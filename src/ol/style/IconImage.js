@@ -7,7 +7,7 @@ import {listenOnce, unlistenByKey} from '../events.js';
 import EventTarget from '../events/Target.js';
 import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
-import {shared as iconImageCache} from '../style/IconImageCache.js';
+import {shared as iconImageCache} from './IconImageCache.js';
 
 class IconImage extends EventTarget {
   /**

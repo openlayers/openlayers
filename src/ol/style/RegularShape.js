@@ -8,7 +8,7 @@ import {createCanvasContext2D} from '../dom.js';
 import {CANVAS_LINE_DASH} from '../has.js';
 import ImageState from '../ImageState.js';
 import {defaultStrokeStyle, defaultFillStyle, defaultLineCap, defaultLineWidth, defaultLineJoin, defaultMiterLimit} from '../render/canvas.js';
-import ImageStyle from '../style/Image.js';
+import ImageStyle from './Image.js';
 
 
 /**
