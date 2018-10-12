@@ -10,7 +10,7 @@ import {boundingExtent, createEmpty} from '../extent.js';
 import {TRUE, FALSE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
 import {fromCircle} from '../geom/Polygon.js';
-import PointerInteraction from '../interaction/Pointer.js';
+import PointerInteraction from './Pointer.js';
 import {getValues} from '../obj.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';

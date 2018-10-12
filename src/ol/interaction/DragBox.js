@@ -5,7 +5,7 @@
 import Event from '../events/Event.js';
 import {always, mouseOnly, mouseActionButton} from '../events/condition.js';
 import {VOID} from '../functions.js';
-import PointerInteraction from '../interaction/Pointer.js';
+import PointerInteraction from './Pointer.js';
 import RenderBox from '../render/Box.js';
 
 

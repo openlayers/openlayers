@@ -2,7 +2,7 @@
  * @module ol/interaction/Pointer
  */
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import Interaction from '../interaction/Interaction.js';
+import Interaction from './Interaction.js';
 import {getValues} from '../obj.js';
 
 

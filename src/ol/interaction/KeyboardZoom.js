@@ -3,7 +3,7 @@
  */
 import EventType from '../events/EventType.js';
 import {targetNotEditable} from '../events/condition.js';
-import Interaction, {zoomByDelta} from '../interaction/Interaction.js';
+import Interaction, {zoomByDelta} from './Interaction.js';
 
 
 /**
