@@ -10,7 +10,7 @@ import {assert} from '../asserts.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getIntersection} from '../extent.js';
-import BaseLayer from '../layer/Base.js';
+import BaseLayer from './Base.js';
 import {assign, clear} from '../obj.js';
 import SourceState from '../source/State.js';
 
