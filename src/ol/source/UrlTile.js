@@ -11,7 +11,7 @@ import {getKeyZXY} from '../tilecoord.js';
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions]
- * @property {boolean} [attributionsCollapsible] Whether attributions should be collapsible.
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize]
  * @property {boolean} [opaque]
  * @property {import("../proj.js").ProjectionLike} [projection]

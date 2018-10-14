@@ -31,7 +31,7 @@ import SourceState from './State.js';
 /**
  * @typedef {Object} Options
  * @property {AttributionLike} [attributions]
- * @property {boolean} [attributionsCollapsible] Whether attributions should be collapsible.
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {import("../proj.js").ProjectionLike} projection
  * @property {SourceState} [state]
  * @property {boolean} [wrapX]
@@ -129,7 +129,7 @@ class Source extends BaseObject {
   }
 
   /**
-   * @return {boolean} Should the attributions be collapsible or not.
+   * @return {boolean} Aattributions are collapsible.
    */
   getAttributionsCollapsible() {
     return this.attributionsCollapsible_;

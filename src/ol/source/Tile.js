@@ -14,7 +14,7 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions]
- * @property {boolean} [attributionsCollapsible] Whether attributions should be collapsible.
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize]
  * @property {boolean} [opaque]
  * @property {number} [tilePixelRatio]
