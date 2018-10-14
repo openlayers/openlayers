@@ -2,6 +2,12 @@
 
 ### Next version
 
+#### Attributions are not collapsible for `ol/source/OSM`
+
+When a map contains a layer from a `ol/source/OSM` source, the `ol/control/Attribution` control will be shown with the `collapsible: false` behavior.
+
+To get the previous behavior, configure the `ol/control/Attribution` control with `collapsible: true`. 
+
 ### v5.2.0
 
 #### Removal of the `snapToPixel` option for `ol/style/Image` subclasses

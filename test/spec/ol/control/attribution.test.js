@@ -95,4 +95,23 @@ describe('ol.control.Attribution', function() {
     expect(attribution.length).to.be(1);
   });
 
+  it('renders attributions as collapsible if configured with collapsible set to true', function() {
+    map.getControls().clear();
+    map.addControl(new Attribution({collapsible: true}));
+    const source = new TileSource({
+      projection: 'EPSG:3857',
+      tileGrid: createXYZ(),
+      attributions: 'foo',
+      attributionsCollapsible: false
+    });
+    source.getTile = tileLoadFunction;
+    map.addLayer(new TileLayer({
+      source: source
+    }));
+    map.renderSync();
+
+    const attribution = map.getTarget().querySelectorAll('.ol-attribution.ol-uncollapsible');
+    expect(attribution.length).to.be(0);
+  });
+
 });

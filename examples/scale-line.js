@@ -8,11 +8,7 @@ import OSM from '../src/ol/source/OSM.js';
 const scaleLineControl = new ScaleLine();
 
 const map = new Map({
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }).extend([
+  controls: defaultControls().extend([
     scaleLineControl
   ]),
   layers: [

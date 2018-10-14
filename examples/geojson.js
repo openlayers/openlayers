@@ -1,7 +1,6 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Circle from '../src/ol/geom/Circle.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
@@ -174,11 +173,6 @@ const map = new Map({
     vectorLayer
   ],
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: new View({
     center: [0, 0],
     zoom: 2

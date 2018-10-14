@@ -17,11 +17,7 @@ const mousePositionControl = new MousePosition({
 });
 
 const map = new Map({
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }).extend([mousePositionControl]),
+  controls: defaultControls().extend([mousePositionControl]),
   layers: [
     new TileLayer({
       source: new OSM()
