@@ -1,6 +1,5 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -18,11 +17,6 @@ const bing = new TileLayer({
 const map = new Map({
   layers: [osm, bing],
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: new View({
     center: [0, 0],
     zoom: 2

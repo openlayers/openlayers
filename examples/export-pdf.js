@@ -1,6 +1,5 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import WKT from '../src/ol/format/WKT.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
@@ -26,11 +25,6 @@ const vector = new VectorLayer({
 const map = new Map({
   layers: [raster, vector],
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: new View({
     center: [0, 0],
     zoom: 2

@@ -31,6 +31,7 @@ import SourceState from './State.js';
 /**
  * @typedef {Object} Options
  * @property {AttributionLike} [attributions]
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {import("../proj.js").ProjectionLike} projection
  * @property {SourceState} [state='ready']
  * @property {boolean} [wrapX=false]
@@ -67,6 +68,13 @@ class Source extends BaseObject {
     this.attributions_ = adaptAttributions(options.attributions);
 
     /**
+     * @private
+     * @type {boolean}
+     */
+    this.attributionsCollapsible_ = options.attributionsCollapsible !== undefined ?
+      options.attributionsCollapsible : true;
+
+    /**
      * This source is currently loading data. Sources that defer loading to the
      * map's tile queue never set this to `true`.
      * @type {boolean}
@@ -94,6 +102,13 @@ class Source extends BaseObject {
    */
   getAttributions() {
     return this.attributions_;
+  }
+
+  /**
+   * @return {boolean} Aattributions are collapsible.
+   */
+  getAttributionsCollapsible() {
+    return this.attributionsCollapsible_;
   }
 
   /**

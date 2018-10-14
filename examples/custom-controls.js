@@ -48,11 +48,7 @@ class RotateNorthControl extends Control {
 
 
 const map = new Map({
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }).extend([
+  controls: defaultControls().extend([
     new RotateNorthControl()
   ]),
   layers: [

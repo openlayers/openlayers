@@ -1,6 +1,5 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM, {ATTRIBUTION} from '../src/ol/source/OSM.js';
 
@@ -34,11 +33,6 @@ const map = new Map({
     openSeaMapLayer
   ],
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: new View({
     maxZoom: 18,
     center: [-244780.24508882355, 5986452.183179816],

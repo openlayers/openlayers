@@ -2,7 +2,6 @@ import Geolocation from '../src/ol/Geolocation.js';
 import Map from '../src/ol/Map.js';
 import Overlay from '../src/ol/Overlay.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import LineString from '../src/ol/geom/LineString.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
@@ -22,11 +21,6 @@ const map = new Map({
     })
   ],
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: view
 });
 

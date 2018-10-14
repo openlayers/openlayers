@@ -17,6 +17,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize=2048] Cache size.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
@@ -81,7 +82,8 @@ class TileImage extends UrlTile {
       url: options.url,
       urls: options.urls,
       wrapX: options.wrapX,
-      transition: options.transition
+      transition: options.transition,
+      attributionsCollapsible: options.attributionsCollapsible
     });
 
     /**
