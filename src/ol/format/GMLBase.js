@@ -237,7 +237,7 @@ class GMLBase extends XMLFeature {
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @param {boolean} asFeature whether result should be wrapped as a feature.
-   * @return {module:ol/Feature} Feature
+   * @return {Feature} Feature
    */
   readFeatureElementInternal(node, objectStack, asFeature) {
     let geometryName;
@@ -302,8 +302,8 @@ class GMLBase extends XMLFeature {
 
   /**
    * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
-   * @return {module:ol/Feature} Feature.
+   * @param {Array<*>} objectStack Object stack.
+   * @return {Feature} Feature.
    */
   readFeatureElement(node, objectStack) {
     return this.readFeatureElementInternal(node, objectStack, true);

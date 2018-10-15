@@ -2,7 +2,7 @@
  * @module ol/format/GML32
  */
 import GML3 from './GML3.js';
-import GMLBase from './GML3.js';
+import GMLBase from './GMLBase.js';
 import {makeArrayPusher, makeReplacer, makeChildAppender} from '../xml.js';
 import {writeStringTextNode} from '../format/xsd.js';
 
@@ -14,17 +14,16 @@ import {writeStringTextNode} from '../format/xsd.js';
 class GML32 extends GML3 {
 
   /**
-   * @param {module:ol/format/GMLBase~Options=} opt_options Optional configuration object.
+   * @param {import("./GMLBase.js").Options=} opt_options Optional configuration object.
    */
   constructor(opt_options) {
-    const options = /** @type {olx.format.GMLOptions} */
-            (opt_options ? opt_options : {});
+    const options = /** @type {import("./GMLBase.js").Options} */ (opt_options ? opt_options : {});
 
     super(options);
 
     /**
-      * @inheritDoc
-      */
+     * @inheritDoc
+     */
     this.schemaLocation = options.schemaLocation ?
       options.schemaLocation : this.namespace + ' http://schemas.opengis.net/gml/3.2.1/gml.xsd';
 
@@ -290,7 +289,7 @@ GML32.prototype.RING_PARSERS = {
 };
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object.<string, Object.<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML32.prototype.RING_SERIALIZERS_ = {
@@ -302,7 +301,7 @@ GML32.prototype.RING_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object.<string, Object.<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML32.prototype.ENVELOPE_SERIALIZERS_ = {
@@ -314,7 +313,7 @@ GML32.prototype.ENVELOPE_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object.<string, Object.<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML32.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
@@ -328,7 +327,7 @@ GML32.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object.<string, Object.<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML32.prototype.POINTMEMBER_SERIALIZERS_ = {
@@ -340,7 +339,7 @@ GML32.prototype.POINTMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object.<string, Object.<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML32.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
@@ -353,7 +352,7 @@ GML32.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
 };
 
 /**
- * @type {Object.<string, Object.<string, module:ol/xml~Serializer>>}
+ * @type {Object.<string, Object.<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML32.prototype.GEOMETRY_SERIALIZERS_ = {
