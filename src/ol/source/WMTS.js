@@ -32,7 +32,7 @@ import {appendParams} from '../uri.js';
  * For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
  * should be set to `2`.
- * @property {string} [format='image/jpeg'] Image format.
+ * @property {string} [format='image/jpeg'] Image format. Only used when `requestEncoding` is `'KVP'`.
  * @property {string} [version='1.0.0'] WMTS version.
  * @property {string} matrixSet Matrix set.
  * @property {!Object} [dimensions] Additional "dimensions" for tile requests.
