@@ -236,42 +236,77 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {Feature} Feature.
+   * @param {boolean} asFeature whether result should be wrapped as a feature.
+   * @return {module:ol/Feature} Feature
    */
-  readFeatureElement(node, objectStack) {
-    let n;
-    const fid = node.getAttribute('fid') || getAttributeNS(node, GMLNS, 'id');
-    const values = {};
+  readFeatureElementInternal(node, objectStack, asFeature) {
     let geometryName;
-    for (n = node.firstElementChild; n; n = n.nextElementSibling) {
+    const values = {};
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      let value;
       const localName = n.localName;
-      // Assume attribute elements have one child node and that the child
-      // is a text or CDATA node (to be treated as text).
-      // Otherwise assume it is a geometry node.
-      if (n.childNodes.length === 0 ||
-          (n.childNodes.length === 1 &&
-          (n.firstChild.nodeType === 3 || n.firstChild.nodeType === 4))) {
-        let value = getAllTextContent(n, false);
+      // first, check if it is simple attribute
+      if (n.childNodes.length === 0
+              || (n.childNodes.length === 1 && (n.firstChild.nodeType === 3 || n.firstChild.nodeType === 4))) {
+        value = getAllTextContent(n, false);
         if (ONLY_WHITESPACE_RE.test(value)) {
           value = undefined;
         }
-        values[localName] = value;
       } else {
-        // boundedBy is an extent and must not be considered as a geometry
-        if (localName !== 'boundedBy') {
+        if (asFeature) {
+          //if feature, try it as a geometry
+          value = this.readGeometryElement(n, objectStack);
+        }
+        if (!value) { //if not a geometry or not a feature, treat it as a complex attribute
+          value = this.readFeatureElementInternal(n, objectStack, false);
+        } else if (localName !== 'boundedBy') {
+          // boundedBy is an extent and must not be considered as a geometry
           geometryName = localName;
         }
-        values[localName] = this.readGeometryElement(n, objectStack);
+      }
+
+      if (values[localName]) {
+        if (!(values[localName] instanceof Array)) {
+          values[localName] = [values[localName]];
+        }
+        values[localName].push(value);
+      } else {
+        values[localName] = value;
+      }
+
+      const len = n.attributes.length;
+      if (len > 0) {
+        values[localName] = {_content_: values[localName]};
+        for (let i = 0; i < len; i++) {
+          const attName = n.attributes[i].name;
+          values[localName][attName] = n.attributes[i].value;
+        }
       }
     }
-    const feature = new Feature(values);
-    if (geometryName) {
-      feature.setGeometryName(geometryName);
+    if (!asFeature) {
+      return values;
+    } else {
+      const feature = new Feature(values);
+      if (geometryName) {
+        feature.setGeometryName(geometryName);
+      }
+      const fid = node.getAttribute('fid') ||
+           getAttributeNS(node, this.namespace, 'id');
+      if (fid) {
+        feature.setId(fid);
+      }
+      return feature;
     }
-    if (fid) {
-      feature.setId(fid);
-    }
-    return feature;
+  }
+
+
+  /**
+   * @param {Node} node Node.
+   * @param {Array.<*>} objectStack Object stack.
+   * @return {module:ol/Feature} Feature.
+   */
+  readFeatureElement(node, objectStack) {
+    return this.readFeatureElementInternal(node, objectStack, true);
   }
 
   /**

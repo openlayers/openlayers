@@ -1601,6 +1601,41 @@ describe('ol.format.GML3', function() {
 
   });
 
+  describe('when parsing complex', function() {
+
+    let features, gmlFormat;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/gml-complex.xml', function(xml) {
+        try {
+          gmlFormat = new GML();
+          features = gmlFormat.readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates 3 features', function() {
+      expect(features).to.have.length(3);
+    });
+
+    it('creates feature with two names', function() {
+      expect(features[0].values_['name']).to.have.length(2);
+    });
+
+    it('creates nested property', function() {
+      expect(features[0].values_['observationMethod']['CGI_TermValue']['value']['_content_'])
+        .to.eql('urn:ogc:def:nil:OGC:missing');
+    });
+
+    it('creates nested attribute', function() {
+      expect(features[0].values_['observationMethod']['CGI_TermValue']['value']['codeSpace'])
+        .to.eql('urn:ietf:rfc:2141');
+    });
+
+  });
+
 });
 
 
