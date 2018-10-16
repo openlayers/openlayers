@@ -35,9 +35,9 @@ GML32.prototype.namespace = 'http://www.opengis.net/gml/3.2';
 /**
  * @const
  * @type {Object.<string, Object.<string, XmlParser>>}
- * @private
+ * @protected
  */
-GML32.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+GML32.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
     'pos': makeReplacer(GML3.prototype.readFlatPos_),
     'posList': makeReplacer(GML3.prototype.readFlatPosList_)
@@ -47,9 +47,9 @@ GML32.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
 /**
  * @const
  * @type {Object.<string, Object.<string, XmlParser>>}
- * @private
+ * @protected
  */
-GML32.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
+GML32.prototype.FLAT_LINEAR_RINGS_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
     'interior': GML3.prototype.interiorParser_,
     'exterior': GML3.prototype.exteriorParser_
@@ -59,9 +59,9 @@ GML32.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
 /**
  * @const
  * @type {Object.<string, Object.<string, XmlParser>>}
- * @private
+ * @protected
  */
-GML32.prototype.GEOMETRY_PARSERS_ = {
+GML32.prototype.GEOMETRY_PARSERS = {
   'http://www.opengis.net/gml/3.2': {
     'Point': makeReplacer(GMLBase.prototype.readPoint),
     'MultiPoint': makeReplacer(
