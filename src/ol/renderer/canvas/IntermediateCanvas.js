@@ -4,7 +4,6 @@
 import {scale as scaleCoordinate} from '../../coordinate.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, intersects} from '../../extent.js';
-import {VOID} from '../../functions.js';
 import CanvasLayerRenderer from '../canvas/Layer.js';
 import {create as createTransform, apply as applyTransform} from '../../transform.js';
 
@@ -92,52 +91,26 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
   /**
    * @inheritDoc
    */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
-    const layer = this.getLayer();
-    const source = layer.getSource();
-    const resolution = frameState.viewState.resolution;
-    const rotation = frameState.viewState.rotation;
-    const skippedFeatureUids = frameState.skippedFeatureUids;
-    return source.forEachFeatureAtCoordinate(
-      coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
-      /**
-       * @param {import("../../Feature.js").FeatureLike} feature Feature.
-       * @return {?} Callback result.
-       */
-      function(feature) {
-        return callback.call(thisArg, feature, layer);
-      });
-  }
-
-  /**
-   * @inheritDoc
-   */
   forEachLayerAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
     if (!this.getImage()) {
       return undefined;
     }
 
-    if (this.getLayer().getSource().forEachFeatureAtCoordinate !== VOID) {
-      // for ImageCanvas sources use the original hit-detection logic,
-      // so that for example also transparent polygons are detected
-      return super.forEachLayerAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
+    const pixel = applyTransform(this.coordinateToCanvasPixelTransform, coordinate.slice());
+    scaleCoordinate(pixel, frameState.viewState.resolution / this.renderedResolution);
+
+    if (!this.hitCanvasContext_) {
+      this.hitCanvasContext_ = createCanvasContext2D(1, 1);
+    }
+
+    this.hitCanvasContext_.clearRect(0, 0, 1, 1);
+    this.hitCanvasContext_.drawImage(this.getImage(), pixel[0], pixel[1], 1, 1, 0, 0, 1, 1);
+
+    const imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
+    if (imageData[3] > 0) {
+      return callback.call(thisArg, this.getLayer(), imageData);
     } else {
-      const pixel = applyTransform(this.coordinateToCanvasPixelTransform, coordinate.slice());
-      scaleCoordinate(pixel, frameState.viewState.resolution / this.renderedResolution);
-
-      if (!this.hitCanvasContext_) {
-        this.hitCanvasContext_ = createCanvasContext2D(1, 1);
-      }
-
-      this.hitCanvasContext_.clearRect(0, 0, 1, 1);
-      this.hitCanvasContext_.drawImage(this.getImage(), pixel[0], pixel[1], 1, 1, 0, 0, 1, 1);
-
-      const imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
-      if (imageData[3] > 0) {
-        return callback.call(thisArg, this.getLayer(), imageData);
-      } else {
-        return undefined;
-      }
+      return undefined;
     }
   }
 }

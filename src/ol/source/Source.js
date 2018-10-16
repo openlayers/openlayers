@@ -2,7 +2,6 @@
  * @module ol/source/Source
  */
 
-import {VOID} from '../functions.js';
 import BaseObject from '../Object.js';
 import {get as getProjection} from '../proj.js';
 import SourceState from './State.js';
@@ -172,18 +171,6 @@ class Source extends BaseObject {
     this.changed();
   }
 }
-
-/**
- * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
- * @param {number} resolution Resolution.
- * @param {number} rotation Rotation.
- * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {Object<string, boolean>} skippedFeatureUids Skipped feature uids.
- * @param {function(import("../Feature.js").FeatureLike): T} callback Feature callback.
- * @return {T|void} Callback result.
- * @template T
- */
-Source.prototype.forEachFeatureAtCoordinate = VOID;
 
 
 /**
