@@ -182,7 +182,7 @@ class GML3 extends GMLBase {
    */
   readPolygonPatch_(node, objectStack) {
     return pushParseAndPop([null],
-      this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
+      this.FLAT_LINEAR_RINGS_PARSERS, node, objectStack, this);
   }
 
   /**
@@ -193,7 +193,7 @@ class GML3 extends GMLBase {
    */
   readLineStringSegment_(node, objectStack) {
     return pushParseAndPop([null],
-      this.GEOMETRY_FLAT_COORDINATES_PARSERS_,
+      this.GEOMETRY_FLAT_COORDINATES_PARSERS,
       node, objectStack, this);
   }
 
@@ -356,9 +356,9 @@ class GML3 extends GMLBase {
     } else if (node.getAttribute('dimension')) {
       dim = readNonNegativeIntegerString(
         node.getAttribute('dimension'));
-    } else if (node.parentNode.getAttribute('srsDimension')) {
+    } else if (/** @type {Element} */ (node.parentNode).getAttribute('srsDimension')) {
       dim = readNonNegativeIntegerString(
-        node.parentNode.getAttribute('srsDimension'));
+        /** @type {Element} */ (node.parentNode).getAttribute('srsDimension'));
     } else if (contextDimension) {
       dim = readNonNegativeIntegerString(contextDimension);
     }
@@ -386,7 +386,7 @@ class GML3 extends GMLBase {
   writePos_(node, value, objectStack) {
     const context = objectStack[objectStack.length - 1];
     const hasZ = context['hasZ'];
-    const srsDimension = hasZ ? 3 : 2;
+    const srsDimension = hasZ ? '3' : '2';
     node.setAttribute('srsDimension', srsDimension);
     const srsName = context['srsName'];
     let axisOrientation = 'enu';
@@ -442,7 +442,7 @@ class GML3 extends GMLBase {
   writePosList_(node, value, objectStack) {
     const context = objectStack[objectStack.length - 1];
     const hasZ = context['hasZ'];
-    const srsDimension = hasZ ? 3 : 2;
+    const srsDimension = hasZ ? '3' : '2';
     node.setAttribute('srsDimension', srsDimension);
     const srsName = context['srsName'];
     // only 2d for simple features profile
@@ -730,7 +730,7 @@ class GML3 extends GMLBase {
   writeGeometryElement(node, geometry, objectStack) {
     const context = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[objectStack.length - 1]);
     const item = assign({}, context);
-    item.node = node;
+    item['node'] = node;
     let value;
     if (Array.isArray(geometry)) {
       if (context.dataProjection) {
@@ -756,7 +756,7 @@ class GML3 extends GMLBase {
   writeFeatureElement(node, feature, objectStack) {
     const fid = feature.getId();
     if (fid) {
-      node.setAttribute('fid', fid);
+      node.setAttribute('fid', /** @type {string} */ (fid));
     }
     const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     const featureNS = context['featureNS'];
@@ -804,6 +804,7 @@ class GML3 extends GMLBase {
     const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     const featureType = context['featureType'];
     const featureNS = context['featureNS'];
+    /** @type {Object<string, Object<string, import("../xml.js").Serializer>>} */
     const serializers = {};
     serializers[featureNS] = {};
     serializers[featureNS][featureType] = makeChildAppender(
@@ -920,9 +921,9 @@ class GML3 extends GMLBase {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
+ * @protected
  */
-GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml': {
     'pos': makeReplacer(GML3.prototype.readFlatPos_),
     'posList': makeReplacer(GML3.prototype.readFlatPosList_)
@@ -933,9 +934,9 @@ GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
+ * @protected
  */
-GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
+GML3.prototype.FLAT_LINEAR_RINGS_PARSERS = {
   'http://www.opengis.net/gml': {
     'interior': GML3.prototype.interiorParser_,
     'exterior': GML3.prototype.exteriorParser_
@@ -946,9 +947,9 @@ GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- * @private
+ * @protected
  */
-GML3.prototype.GEOMETRY_PARSERS_ = {
+GML3.prototype.GEOMETRY_PARSERS = {
   'http://www.opengis.net/gml': {
     'Point': makeReplacer(GMLBase.prototype.readPoint),
     'MultiPoint': makeReplacer(

@@ -71,6 +71,7 @@ const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
  * gml:MultiPolygon. Since the latter is deprecated in GML 3.
  * @property {string} [schemaLocation] Optional schemaLocation to use when
  * writing out the GML, this will override the default provided.
+ * @property {boolean} [hasZ=false] If coordinates have a Z value.
  */
 
 
@@ -126,7 +127,6 @@ class GMLBase extends XMLFeature {
       'featureMember': makeReplacer(this.readFeaturesInternal),
       'featureMembers': makeReplacer(this.readFeaturesInternal)
     };
-
   }
 
   /**
@@ -189,9 +189,11 @@ class GMLBase extends XMLFeature {
         featureNS = {};
         featureNS[defaultPrefix] = ns;
       }
+      /** @type {Object<string, Object<string, import("../xml.js").Parser>>} */
       const parsersNS = {};
       const featureTypes = Array.isArray(featureType) ? featureType : [featureType];
       for (const p in featureNS) {
+        /** @type {Object<string, import("../xml.js").Parser>} */
         const parsers = {};
         for (let i = 0, ii = featureTypes.length; i < ii; ++i) {
           const featurePrefix = featureTypes[i].indexOf(':') === -1 ?
@@ -227,7 +229,7 @@ class GMLBase extends XMLFeature {
     context['srsName'] = node.firstElementChild.getAttribute('srsName');
     context['srsDimension'] = node.firstElementChild.getAttribute('srsDimension');
     /** @type {import("../geom/Geometry.js").default} */
-    const geometry = pushParseAndPop(null, this.GEOMETRY_PARSERS_, node, objectStack, this);
+    const geometry = pushParseAndPop(null, this.GEOMETRY_PARSERS, node, objectStack, this);
     if (geometry) {
       return (
         /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, false, context))
@@ -383,7 +385,7 @@ class GMLBase extends XMLFeature {
    */
   readFlatLinearRing_(node, objectStack) {
     const ring = pushParseAndPop(null,
-      this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node,
+      this.GEOMETRY_FLAT_COORDINATES_PARSERS, node,
       objectStack, this);
     if (ring) {
       return ring;
@@ -412,7 +414,7 @@ class GMLBase extends XMLFeature {
   readPolygon(node, objectStack) {
     /** @type {Array<Array<number>>} */
     const flatLinearRings = pushParseAndPop([null],
-      this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
+      this.FLAT_LINEAR_RINGS_PARSERS, node, objectStack, this);
     if (flatLinearRings && flatLinearRings[0]) {
       const flatCoordinates = flatLinearRings[0];
       const ends = [flatCoordinates.length];
@@ -434,7 +436,7 @@ class GMLBase extends XMLFeature {
    * @return {Array<number>} Flat coordinates.
    */
   readFlatCoordinatesFromNode_(node, objectStack) {
-    return pushParseAndPop(null, this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack, this);
+    return pushParseAndPop(null, this.GEOMETRY_FLAT_COORDINATES_PARSERS, node, objectStack, this);
   }
 
   /**
@@ -468,6 +470,37 @@ class GMLBase extends XMLFeature {
     return getProjection(this.srsName ? this.srsName : node.firstElementChild.getAttribute('srsName'));
   }
 }
+
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @protected
+ */
+GMLBase.prototype.FLAT_LINEAR_RINGS_PARSERS = {
+  'http://www.opengis.net/gml': {}
+};
+
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @protected
+ */
+GMLBase.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
+  'http://www.opengis.net/gml': {}
+};
+
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @protected
+ */
+GMLBase.prototype.GEOMETRY_PARSERS = {
+  'http://www.opengis.net/gml': {}
+};
+
 
 /**
  * @const
