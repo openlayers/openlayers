@@ -1,4 +1,4 @@
-import {intersectsLinearRing, intersectsLineString} from '../../../../../src/ol/geom/flat/intersectsextent.js';
+import {intersectsLinearRing, intersectsLineString, intersectsLinearRingArray} from '../../../../../src/ol/geom/flat/intersectsextent.js';
 
 
 describe('ol.geom.flat.intersectsextent', function() {
@@ -89,4 +89,30 @@ describe('ol.geom.flat.intersectsextent', function() {
       });
     });
   });
+
+  describe('ol.geom.flat.intersectsextent.intersectsLinearRingArray', function() {
+    let flatCoordinates;
+    let ends;
+    beforeEach(function() {
+      flatCoordinates = [0, 0, 0, 10, 10, 10, 10, 0, 0, 0, /*hole*/2, 2, 8, 2, 8, 4, 5, 5, 8, 6, 8, 8, 2, 8, 2, 2];
+      ends = [10, flatCoordinates.length];
+    });
+    describe('ring with hole where hole contains the extent', function() {
+      it('returns true', function() {
+        const extent = [3, 3, 3.5, 3.5];
+        const r = intersectsLinearRingArray(
+          flatCoordinates, 0, ends, 2, extent);
+        expect(r).to.be(false);
+      });
+    });
+    describe('ring with hole intersects the extent', function() {
+      it('returns true', function() {
+        const extent = [3, 3, 6, 6];
+        const r = intersectsLinearRingArray(
+          flatCoordinates, 0, ends, 2, extent);
+        expect(r).to.be(true);
+      });
+    });
+  });
+
 });
