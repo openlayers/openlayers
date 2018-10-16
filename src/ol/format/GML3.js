@@ -828,7 +828,7 @@ class GML3 extends GMLBase {
    */
   MULTIGEOMETRY_MEMBER_NODE_FACTORY_(value, objectStack, opt_nodeName) {
     const parentNode = objectStack[objectStack.length - 1].node;
-    return createElementNS('http://www.opengis.net/gml',
+    return createElementNS(this.namespace,
       MULTIGEOMETRY_TO_MEMBER_NODENAME[parentNode.nodeName]);
   }
 
@@ -861,7 +861,7 @@ class GML3 extends GMLBase {
     } else {
       nodeName = 'Envelope';
     }
-    return createElementNS('http://www.opengis.net/gml',
+    return createElementNS(this.namespace,
       nodeName);
   }
 
@@ -876,7 +876,7 @@ class GML3 extends GMLBase {
    */
   writeGeometryNode(geometry, opt_options) {
     opt_options = this.adaptOptions(opt_options);
-    const geom = createElementNS('http://www.opengis.net/gml', 'geom');
+    const geom = createElementNS(this.namespace, 'geom');
     const context = {node: geom, hasZ: this.hasZ, srsName: this.srsName,
       curve: this.curve_, surface: this.surface_,
       multiSurface: this.multiSurface_, multiCurve: this.multiCurve_};
@@ -898,7 +898,7 @@ class GML3 extends GMLBase {
    */
   writeFeaturesNode(features, opt_options) {
     opt_options = this.adaptOptions(opt_options);
-    const node = createElementNS('http://www.opengis.net/gml', 'featureMembers');
+    const node = createElementNS(this.namespace, 'featureMembers');
     node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', this.schemaLocation);
     const context = {
       srsName: this.srsName,
