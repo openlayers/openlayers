@@ -103,7 +103,7 @@ class FullScreen extends Control {
 
     const tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
     const button = document.createElement('button');
-    button.className = this.cssClassName_ + '-' + isFullScreen();
+    this.setClassName_(button, isFullScreen());
     button.setAttribute('type', 'button');
     button.title = tipLabel;
     button.appendChild(this.labelNode_);
@@ -179,15 +179,29 @@ class FullScreen extends Control {
     const button = this.element.firstElementChild;
     const map = this.getMap();
     if (isFullScreen()) {
-      button.className = this.cssClassName_ + '-true';
+      this.setClassName_(button, true);
       replaceNode(this.labelActiveNode_, this.labelNode_);
     } else {
-      button.className = this.cssClassName_ + '-false';
+      this.setClassName_(button, false);
       replaceNode(this.labelNode_, this.labelActiveNode_);
     }
     if (map) {
       map.updateSize();
     }
+  }
+
+  /**
+   * @param {HTMLElement} element Target element
+   * @param {boolean} fullscreen True if fullscreen class name should be active
+   * @private
+   */
+  setClassName_(element, fullscreen) {
+    const activeClassName = this.cssClassName_ + '-true';
+    const inactiveClassName = this.cssClassName_ + '-false';
+    const nextClassName = fullscreen ? activeClassName : inactiveClassName;
+    element.classList.remove(activeClassName);
+    element.classList.remove(inactiveClassName);
+    element.classList.add(nextClassName);
   }
 
   /**
