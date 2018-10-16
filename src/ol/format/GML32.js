@@ -34,7 +34,7 @@ GML32.prototype.namespace = 'http://www.opengis.net/gml/3.2';
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
 GML32.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
@@ -46,7 +46,7 @@ GML32.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
 GML32.prototype.FLAT_LINEAR_RINGS_PARSERS = {
@@ -58,7 +58,7 @@ GML32.prototype.FLAT_LINEAR_RINGS_PARSERS = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
 GML32.prototype.GEOMETRY_PARSERS = {
@@ -87,7 +87,7 @@ GML32.prototype.GEOMETRY_PARSERS = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.MULTICURVE_PARSERS_ = {
@@ -101,7 +101,7 @@ GML32.prototype.MULTICURVE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.MULTISURFACE_PARSERS_ = {
@@ -115,7 +115,7 @@ GML32.prototype.MULTISURFACE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.CURVEMEMBER_PARSERS_ = {
@@ -128,7 +128,7 @@ GML32.prototype.CURVEMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.SURFACEMEMBER_PARSERS_ = {
@@ -140,7 +140,7 @@ GML32.prototype.SURFACEMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.SURFACE_PARSERS_ = {
@@ -151,7 +151,7 @@ GML32.prototype.SURFACE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.CURVE_PARSERS_ = {
@@ -162,7 +162,7 @@ GML32.prototype.CURVE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.ENVELOPE_PARSERS_ = {
@@ -176,7 +176,7 @@ GML32.prototype.ENVELOPE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.PATCHES_PARSERS_ = {
@@ -188,7 +188,7 @@ GML32.prototype.PATCHES_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.SEGMENTS_PARSERS_ = {
@@ -200,7 +200,7 @@ GML32.prototype.SEGMENTS_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.MULTIPOINT_PARSERS_ = {
@@ -214,7 +214,7 @@ GML32.prototype.MULTIPOINT_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.MULTILINESTRING_PARSERS_ = {
@@ -228,7 +228,7 @@ GML32.prototype.MULTILINESTRING_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.MULTIPOLYGON_PARSERS_ = {
@@ -242,7 +242,7 @@ GML32.prototype.MULTIPOLYGON_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.POINTMEMBER_PARSERS_ = {
@@ -254,7 +254,7 @@ GML32.prototype.POINTMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.LINESTRINGMEMBER_PARSERS_ = {
@@ -266,7 +266,7 @@ GML32.prototype.LINESTRINGMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML32.prototype.POLYGONMEMBER_PARSERS_ = {
@@ -278,7 +278,7 @@ GML32.prototype.POLYGONMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, XmlParser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
 GML32.prototype.RING_PARSERS = {
@@ -289,7 +289,7 @@ GML32.prototype.RING_PARSERS = {
 };
 
 /**
- * @type {Object.<string, Object.<string, import("../xml.js").Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML32.prototype.RING_SERIALIZERS_ = {
@@ -301,7 +301,7 @@ GML32.prototype.RING_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, import("../xml.js").Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML32.prototype.ENVELOPE_SERIALIZERS_ = {
@@ -313,7 +313,7 @@ GML32.prototype.ENVELOPE_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, import("../xml.js").Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML32.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
@@ -327,7 +327,7 @@ GML32.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, import("../xml.js").Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML32.prototype.POINTMEMBER_SERIALIZERS_ = {
@@ -339,7 +339,7 @@ GML32.prototype.POINTMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, import("../xml.js").Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML32.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
@@ -352,7 +352,7 @@ GML32.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
 };
 
 /**
- * @type {Object.<string, Object.<string, import("../xml.js").Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML32.prototype.GEOMETRY_SERIALIZERS_ = {
