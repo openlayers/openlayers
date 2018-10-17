@@ -127,7 +127,7 @@ class Snap extends PointerInteraction {
     this.featuresListenerKeys_ = [];
 
     /**
-     * @type {Object<number, import("../events.js").EventsKey>}
+     * @type {Object<string, import("../events.js").EventsKey>}
      * @private
      */
     this.featureChangeListenerKeys_ = {};
@@ -135,7 +135,7 @@ class Snap extends PointerInteraction {
     /**
      * Extents are preserved so indexed segment can be quickly removed
      * when its feature geometry changes
-     * @type {Object<number, import("../extent.js").Extent>}
+     * @type {Object<string, import("../extent.js").Extent>}
      * @private
      */
     this.indexedFeaturesExtents_ = {};
@@ -144,7 +144,7 @@ class Snap extends PointerInteraction {
      * If a feature geometry changes while a pointer drag|move event occurs, the
      * feature doesn't get updated right away.  It will be at the next 'pointerup'
      * event fired.
-     * @type {!Object<number, import("../Feature.js").default>}
+     * @type {!Object<string, import("../Feature.js").default>}
      * @private
      */
     this.pendingFeatures_ = {};

@@ -123,7 +123,7 @@ class LayerGroup extends BaseLayer {
     const layersArray = layers.getArray();
     for (let i = 0, ii = layersArray.length; i < ii; i++) {
       const layer = layersArray[i];
-      this.listenerKeys_[getUid(layer).toString()] = [
+      this.listenerKeys_[getUid(layer)] = [
         listen(layer, ObjectEventType.PROPERTYCHANGE, this.handleLayerChange_, this),
         listen(layer, EventType.CHANGE, this.handleLayerChange_, this)
       ];
@@ -138,8 +138,7 @@ class LayerGroup extends BaseLayer {
    */
   handleLayersAdd_(collectionEvent) {
     const layer = /** @type {import("./Base.js").default} */ (collectionEvent.element);
-    const key = getUid(layer).toString();
-    this.listenerKeys_[key] = [
+    this.listenerKeys_[getUid(layer)] = [
       listen(layer, ObjectEventType.PROPERTYCHANGE, this.handleLayerChange_, this),
       listen(layer, EventType.CHANGE, this.handleLayerChange_, this)
     ];
@@ -152,7 +151,7 @@ class LayerGroup extends BaseLayer {
    */
   handleLayersRemove_(collectionEvent) {
     const layer = /** @type {import("./Base.js").default} */ (collectionEvent.element);
-    const key = getUid(layer).toString();
+    const key = getUid(layer);
     this.listenerKeys_[key].forEach(unlistenByKey);
     delete this.listenerKeys_[key];
     this.changed();

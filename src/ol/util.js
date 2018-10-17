@@ -43,11 +43,11 @@ let uidCounter_ = 0;
  * as a strictly increasing sequence. Adapted from goog.getUid.
  *
  * @param {Object} obj The object to get the unique ID for.
- * @return {number} The unique ID for the object.
+ * @return {string} The unique ID for the object.
  * @api
  */
 export function getUid(obj) {
-  return obj.ol_uid || (obj.ol_uid = ++uidCounter_);
+  return obj.ol_uid || (obj.ol_uid = String(++uidCounter_));
 }
 
 /**

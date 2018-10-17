@@ -42,7 +42,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {null|import("./extent.js").Extent} extent
  * @property {import("./coordinate.js").Coordinate} focus
  * @property {number} index
- * @property {Object<number, import("./layer/Layer.js").State>} layerStates
+ * @property {Object<string, import("./layer/Layer.js").State>} layerStates
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray
  * @property {import("./transform.js").Transform} pixelToCoordinateTransform
  * @property {Array<PostRenderFunction>} postRenderFunctions
@@ -1068,7 +1068,7 @@ class PluggableMap extends BaseObject {
     }
     const view = this.getView();
     if (view) {
-      this.viewport_.setAttribute('data-view', getUid(view).toString());
+      this.viewport_.setAttribute('data-view', getUid(view));
       this.viewPropertyListenerKey_ = listen(
         view, ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, this);
@@ -1304,8 +1304,7 @@ class PluggableMap extends BaseObject {
    * @param {import("./Feature.js").default} feature Feature.
    */
   skipFeature(feature) {
-    const featureUid = getUid(feature).toString();
-    this.skippedFeatureUids_[featureUid] = true;
+    this.skippedFeatureUids_[getUid(feature)] = true;
     this.render();
   }
 
@@ -1340,8 +1339,7 @@ class PluggableMap extends BaseObject {
    * @param {import("./Feature.js").default} feature Feature.
    */
   unskipFeature(feature) {
-    const featureUid = getUid(feature).toString();
-    delete this.skippedFeatureUids_[featureUid];
+    delete this.skippedFeatureUids_[getUid(feature)];
     this.render();
   }
 }

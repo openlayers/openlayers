@@ -788,7 +788,7 @@ class Modify extends PointerInteraction {
       for (let i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
         const segmentDataMatch = segmentDataMatches[i];
         const segment = segmentDataMatch.segment;
-        let uid = String(getUid(segmentDataMatch.feature));
+        let uid = getUid(segmentDataMatch.feature);
         const depth = segmentDataMatch.depth;
         if (depth) {
           uid += '-' + depth.join('-'); // separate feature components
@@ -1038,7 +1038,7 @@ class Modify extends PointerInteraction {
     for (i = dragSegments.length - 1; i >= 0; --i) {
       dragSegment = dragSegments[i];
       segmentData = dragSegment[0];
-      uid = String(getUid(segmentData.feature));
+      uid = getUid(segmentData.feature);
       if (segmentData.depth) {
         // separate feature components
         uid += '-' + segmentData.depth.join('-');

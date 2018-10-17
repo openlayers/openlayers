@@ -336,7 +336,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.drawLineString(feature3.getGeometry(), feature3);
       replay.startIndices.push(replay.indices.length);
       const skippedFeatHash = {};
-      skippedFeatHash[getUid(feature2).toString()] = true;
+      skippedFeatHash[getUid(feature2)] = true;
 
       replay.drawReplay(gl, context, skippedFeatHash, false);
       expect(replay.setStrokeStyle_.calledOnce).to.be(true);

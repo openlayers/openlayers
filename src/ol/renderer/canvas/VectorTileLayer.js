@@ -269,7 +269,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
            * @return {?} Callback result.
            */
           function(feature) {
-            const key = getUid(feature).toString();
+            const key = getUid(feature);
             if (!(key in features)) {
               features[key] = true;
               return callback.call(thisArg, feature, layer);

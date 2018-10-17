@@ -162,7 +162,7 @@ class Cluster extends VectorSource {
 
     for (let i = 0, ii = features.length; i < ii; i++) {
       const feature = features[i];
-      if (!(getUid(feature).toString() in clustered)) {
+      if (!(getUid(feature) in clustered)) {
         const geometry = this.geometryFunction(feature);
         if (geometry) {
           const coordinates = geometry.getCoordinates();
@@ -171,7 +171,7 @@ class Cluster extends VectorSource {
 
           let neighbors = this.source.getFeaturesInExtent(extent);
           neighbors = neighbors.filter(function(neighbor) {
-            const uid = getUid(neighbor).toString();
+            const uid = getUid(neighbor);
             if (!(uid in clustered)) {
               clustered[uid] = true;
               return true;

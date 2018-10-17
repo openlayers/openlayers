@@ -81,7 +81,7 @@ class Fill {
         if (Array.isArray(color) || typeof color == 'string') {
           this.checksum_ = 'f' + asString(/** @type {import("../Color.js").Color|string} */ (color));
         } else {
-          this.checksum_ = getUid(this.color_).toString();
+          this.checksum_ = getUid(this.color_);
         }
       } else {
         this.checksum_ = 'f-';
