@@ -23,7 +23,7 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * @typedef {Object} Options
  * @property {string} [className='ol-mouse-position'] CSS class name.
  * @property {import("../coordinate.js").CoordinateFormat} [coordinateFormat] Coordinate format.
- * @property {import("../proj.js").ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {function(import("../MapEvent.js").default)} [render] Function called when the
  * control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
