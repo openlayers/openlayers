@@ -123,9 +123,8 @@ class MapRenderer extends Disposable {
      * @return {?} Callback result.
      */
     function forEachFeatureAtCoordinate(feature, layer) {
-      const key = getUid(feature).toString();
       const managed = frameState.layerStates[getUid(layer)].managed;
-      if (!(key in frameState.skippedFeatureUids && !managed)) {
+      if (!(getUid(feature) in frameState.skippedFeatureUids && !managed)) {
         return callback.call(thisArg, feature, managed ? layer : null);
       }
     }
@@ -207,7 +206,7 @@ class MapRenderer extends Disposable {
    * @return {import("./Layer.js").default} Layer renderer.
    */
   getLayerRenderer(layer) {
-    const layerKey = getUid(layer).toString();
+    const layerKey = getUid(layer);
     if (layerKey in this.layerRenderers_) {
       return this.layerRenderers_[layerKey];
     } else {

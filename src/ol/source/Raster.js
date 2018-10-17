@@ -192,7 +192,7 @@ class RasterSource extends ImageSource {
     const layerStatesArray = getLayerStatesArray(this.renderers_);
 
     /**
-     * @type {Object<number, import("../layer/Layer.js").State>}
+     * @type {Object<string, import("../layer/Layer.js").State>}
      */
     const layerStates = {};
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {

@@ -2,6 +2,10 @@
 
 ### Next version
 
+#### The `getUid` function returns string
+
+The `getUid` function from the `ol/util` module now returns a string instead of a number.
+
 #### Attributions are not collapsible for `ol/source/OSM`
 
 When a map contains a layer from a `ol/source/OSM` source, the `ol/control/Attribution` control will be shown with the `collapsible: false` behavior.

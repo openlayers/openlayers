@@ -259,7 +259,7 @@ class Stroke {
         if (typeof this.color_ === 'string') {
           this.checksum_ += this.color_;
         } else {
-          this.checksum_ += getUid(this.color_).toString();
+          this.checksum_ += getUid(this.color_);
         }
       } else {
         this.checksum_ += '-';

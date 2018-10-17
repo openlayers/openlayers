@@ -112,7 +112,7 @@ class WebGLContext extends Disposable {
   bindBuffer(target, buf) {
     const gl = this.getGL();
     const arr = buf.getArray();
-    const bufferKey = String(getUid(buf));
+    const bufferKey = getUid(buf);
     if (bufferKey in this.bufferCache_) {
       const bufferCacheEntry = this.bufferCache_[bufferKey];
       gl.bindBuffer(target, bufferCacheEntry.buffer);
@@ -139,7 +139,7 @@ class WebGLContext extends Disposable {
    */
   deleteBuffer(buf) {
     const gl = this.getGL();
-    const bufferKey = String(getUid(buf));
+    const bufferKey = getUid(buf);
     const bufferCacheEntry = this.bufferCache_[bufferKey];
     if (!gl.isContextLost()) {
       gl.deleteBuffer(bufferCacheEntry.buffer);
@@ -204,7 +204,7 @@ class WebGLContext extends Disposable {
    * @return {WebGLShader} Shader.
    */
   getShader(shaderObject) {
-    const shaderKey = String(getUid(shaderObject));
+    const shaderKey = getUid(shaderObject);
     if (shaderKey in this.shaderCache_) {
       return this.shaderCache_[shaderKey];
     } else {

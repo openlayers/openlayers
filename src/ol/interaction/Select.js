@@ -250,7 +250,7 @@ class Select extends Interaction {
      * An association between selected feature (key)
      * and layer (value)
      * @private
-     * @type {Object<number, import("../layer/Layer.js").default>}
+     * @type {Object<string, import("../layer/Layer.js").default>}
      */
     this.featureLayerAssociation_ = {};
 
@@ -267,8 +267,7 @@ class Select extends Interaction {
    * @private
    */
   addFeatureLayerAssociation_(feature, layer) {
-    const key = getUid(feature);
-    this.featureLayerAssociation_[key] = layer;
+    this.featureLayerAssociation_[getUid(feature)] = layer;
   }
 
   /**
@@ -299,9 +298,8 @@ class Select extends Interaction {
    * @api
    */
   getLayer(feature) {
-    const key = getUid(feature);
     return (
-      /** @type {VectorLayer} */ (this.featureLayerAssociation_[key])
+      /** @type {VectorLayer} */ (this.featureLayerAssociation_[getUid(feature)])
     );
   }
 
@@ -372,8 +370,7 @@ class Select extends Interaction {
    * @private
    */
   removeFeatureLayerAssociation_(feature) {
-    const key = getUid(feature);
-    delete this.featureLayerAssociation_[key];
+    delete this.featureLayerAssociation_[getUid(feature)];
   }
 }
 

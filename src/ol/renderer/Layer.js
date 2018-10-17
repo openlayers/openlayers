@@ -138,7 +138,7 @@ class LayerRenderer extends Observable {
        * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
        */
       const postRenderFunction = function(tileSource, map, frameState) {
-        const tileSourceKey = getUid(tileSource).toString();
+        const tileSourceKey = getUid(tileSource);
         if (tileSourceKey in frameState.usedTiles) {
           tileSource.expireCache(frameState.viewState.projection,
             frameState.usedTiles[tileSourceKey]);
@@ -160,7 +160,7 @@ class LayerRenderer extends Observable {
    */
   updateUsedTiles(usedTiles, tileSource, z, tileRange) {
     // FIXME should we use tilesToDrawByZ instead?
-    const tileSourceKey = getUid(tileSource).toString();
+    const tileSourceKey = getUid(tileSource);
     const zKey = z.toString();
     if (tileSourceKey in usedTiles) {
       if (zKey in usedTiles[tileSourceKey]) {
@@ -206,7 +206,7 @@ class LayerRenderer extends Observable {
     opt_tileCallback,
     opt_this
   ) {
-    const tileSourceKey = getUid(tileSource).toString();
+    const tileSourceKey = getUid(tileSource);
     if (!(tileSourceKey in frameState.wantedTiles)) {
       frameState.wantedTiles[tileSourceKey] = {};
     }

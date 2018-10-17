@@ -84,7 +84,7 @@ class UrlTile extends TileSource {
 
     /**
      * @private
-     * @type {!Object<number, boolean>}
+     * @type {!Object<string, boolean>}
      */
     this.tileLoadingKeys_ = {};
 

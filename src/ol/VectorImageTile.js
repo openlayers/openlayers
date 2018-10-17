@@ -191,7 +191,7 @@ class VectorImageTile extends Tile {
    * @return {CanvasRenderingContext2D} The rendering context.
    */
   getContext(layer) {
-    const key = getUid(layer).toString();
+    const key = getUid(layer);
     if (!(key in this.context_)) {
       this.context_[key] = createCanvasContext2D();
     }
@@ -213,7 +213,7 @@ class VectorImageTile extends Tile {
    * @return {ReplayState} The replay state.
    */
   getReplayState(layer) {
-    const key = getUid(layer).toString();
+    const key = getUid(layer);
     if (!(key in this.replayState_)) {
       this.replayState_[key] = {
         dirty: false,

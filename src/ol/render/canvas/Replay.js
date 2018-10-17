@@ -597,9 +597,7 @@ class CanvasReplay extends VectorContext {
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
           feature = /** @type {import("../../Feature.js").default|import("../Feature.js").default} */ (instruction[1]);
-          if ((skipFeatures &&
-              skippedFeaturesHash[getUid(feature).toString()]) ||
-              !feature.getGeometry()) {
+          if ((skipFeatures && skippedFeaturesHash[getUid(feature)]) || !feature.getGeometry()) {
             i = /** @type {number} */ (instruction[2]);
           } else if (opt_hitExtent !== undefined && !intersects(
             opt_hitExtent, feature.getGeometry().getExtent())) {

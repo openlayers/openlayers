@@ -203,7 +203,7 @@ class TileImage extends UrlTile {
     if (this.tileGrid && (!thisProj || equivalent(thisProj, projection))) {
       return this.tileGrid;
     } else {
-      const projKey = getUid(projection).toString();
+      const projKey = getUid(projection);
       if (!(projKey in this.tileGridForProjection)) {
         this.tileGridForProjection[projKey] = getTileGridForProjection(projection);
       }
@@ -223,7 +223,7 @@ class TileImage extends UrlTile {
     const thisProj = this.getProjection(); if (!thisProj || equivalent(thisProj, projection)) {
       return this.tileCache;
     } else {
-      const projKey = getUid(projection).toString();
+      const projKey = getUid(projection);
       if (!(projKey in this.tileCacheForProjection)) {
         this.tileCacheForProjection[projKey] = new TileCache(this.tileCache.highWaterMark);
       }
@@ -379,7 +379,7 @@ class TileImage extends UrlTile {
     if (ENABLE_RASTER_REPROJECTION) {
       const proj = getProjection(projection);
       if (proj) {
-        const projKey = getUid(proj).toString();
+        const projKey = getUid(proj);
         if (!(projKey in this.tileGridForProjection)) {
           this.tileGridForProjection[projKey] = tilegrid;
         }
