@@ -2,7 +2,7 @@
  * @module ol/renderer/webgl/ImageLayer
  */
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
-import {TRUE, VOID} from '../../functions.js';
+import {TRUE} from '../../functions.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
@@ -230,50 +230,36 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
       return undefined;
     }
 
-    if (this.getLayer().getSource().forEachFeatureAtCoordinate !== VOID) {
-      // for ImageCanvas sources use the original hit-detection logic,
-      // so that for example also transparent polygons are detected
-      const coordinate = applyTransform(
-        frameState.pixelToCoordinateTransform, pixel.slice());
-      const hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, this);
+    const imageSize =
+        [this.image_.getImage().width, this.image_.getImage().height];
 
-      if (hasFeature) {
-        return callback.call(thisArg, this.getLayer(), null);
-      } else {
-        return undefined;
-      }
+    if (!this.hitTransformationMatrix_) {
+      this.hitTransformationMatrix_ = this.getHitTransformationMatrix_(
+        frameState.size, imageSize);
+    }
+
+    const pixelOnFrameBuffer = applyTransform(
+      this.hitTransformationMatrix_, pixel.slice());
+
+    if (pixelOnFrameBuffer[0] < 0 || pixelOnFrameBuffer[0] > imageSize[0] ||
+        pixelOnFrameBuffer[1] < 0 || pixelOnFrameBuffer[1] > imageSize[1]) {
+      // outside the image, no need to check
+      return undefined;
+    }
+
+    if (!this.hitCanvasContext_) {
+      this.hitCanvasContext_ = createCanvasContext2D(1, 1);
+    }
+
+    this.hitCanvasContext_.clearRect(0, 0, 1, 1);
+    this.hitCanvasContext_.drawImage(this.image_.getImage(),
+      pixelOnFrameBuffer[0], pixelOnFrameBuffer[1], 1, 1, 0, 0, 1, 1);
+
+    const imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
+    if (imageData[3] > 0) {
+      return callback.call(thisArg, this.getLayer(), imageData);
     } else {
-      const imageSize =
-          [this.image_.getImage().width, this.image_.getImage().height];
-
-      if (!this.hitTransformationMatrix_) {
-        this.hitTransformationMatrix_ = this.getHitTransformationMatrix_(
-          frameState.size, imageSize);
-      }
-
-      const pixelOnFrameBuffer = applyTransform(
-        this.hitTransformationMatrix_, pixel.slice());
-
-      if (pixelOnFrameBuffer[0] < 0 || pixelOnFrameBuffer[0] > imageSize[0] ||
-          pixelOnFrameBuffer[1] < 0 || pixelOnFrameBuffer[1] > imageSize[1]) {
-        // outside the image, no need to check
-        return undefined;
-      }
-
-      if (!this.hitCanvasContext_) {
-        this.hitCanvasContext_ = createCanvasContext2D(1, 1);
-      }
-
-      this.hitCanvasContext_.clearRect(0, 0, 1, 1);
-      this.hitCanvasContext_.drawImage(this.image_.getImage(),
-        pixelOnFrameBuffer[0], pixelOnFrameBuffer[1], 1, 1, 0, 0, 1, 1);
-
-      const imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
-      if (imageData[3] > 0) {
-        return callback.call(thisArg, this.getLayer(), imageData);
-      } else {
-        return undefined;
-      }
+      return undefined;
     }
   }
 
