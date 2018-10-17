@@ -78,27 +78,6 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
   /**
    * @inheritDoc
    */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
-    const layer = this.getLayer();
-    const source = layer.getSource();
-    const resolution = frameState.viewState.resolution;
-    const rotation = frameState.viewState.rotation;
-    const skippedFeatureUids = frameState.skippedFeatureUids;
-    return source.forEachFeatureAtCoordinate(
-      coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
-
-      /**
-       * @param {import("../../Feature.js").FeatureLike} feature Feature.
-       * @return {?} Callback result.
-       */
-      function(feature) {
-        return callback.call(thisArg, feature, layer);
-      });
-  }
-
-  /**
-   * @inheritDoc
-   */
   prepareFrame(frameState, layerState, context) {
 
     const gl = this.mapRenderer.getGL();
