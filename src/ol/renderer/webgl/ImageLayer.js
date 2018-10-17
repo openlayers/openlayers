@@ -2,7 +2,6 @@
  * @module ol/renderer/webgl/ImageLayer
  */
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
-import {TRUE} from '../../functions.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
@@ -191,14 +190,6 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
       (imageExtent[3] - imageExtent[1]) / 2);
     translateTransform(projectionMatrix, 1, 1);
 
-  }
-
-  /**
-   * @inheritDoc
-   */
-  hasFeatureAtCoordinate(coordinate, frameState) {
-    const hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, this);
-    return hasFeature !== undefined;
   }
 
   /**
