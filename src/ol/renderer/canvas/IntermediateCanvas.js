@@ -120,7 +120,7 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
     if (this.getLayer().getSource().forEachFeatureAtCoordinate !== VOID) {
       // for ImageCanvas sources use the original hit-detection logic,
       // so that for example also transparent polygons are detected
-      return super.forEachLayerAtCoordinate(arguments);
+      return super.forEachLayerAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
     } else {
       const pixel = applyTransform(this.coordinateToCanvasPixelTransform, coordinate.slice());
       scaleCoordinate(pixel, frameState.viewState.resolution / this.renderedResolution);

@@ -204,7 +204,8 @@ class OverviewMap extends Control {
     };
 
     const move = function(event) {
-      const coordinates = ovmap.getEventCoordinate(computeDesiredMousePosition(event));
+      const position = /** @type {?} */ (computeDesiredMousePosition(event));
+      const coordinates = ovmap.getEventCoordinate(/** @type {Event} */ (position));
 
       overlay.setPosition(coordinates);
     };

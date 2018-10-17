@@ -142,7 +142,7 @@ function renderFeatureInternal(replayGroup, feature, style, squaredTolerance) {
 
 /**
  * @param {import("../render/ReplayGroup.js").default} replayGroup Replay group.
- * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("../geom/Geometry.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").FeatureLike} feature Feature.
  */
