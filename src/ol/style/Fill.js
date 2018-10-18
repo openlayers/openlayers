@@ -79,7 +79,7 @@ class Fill {
       const color = this.color_;
       if (color) {
         if (Array.isArray(color) || typeof color == 'string') {
-          this.checksum_ = 'f' + asString(/** @type {import("../Color.js").Color|string} */ (color));
+          this.checksum_ = 'f' + asString(/** @type {import("../color.js").Color|string} */ (color));
         } else {
           this.checksum_ = getUid(this.color_);
         }
