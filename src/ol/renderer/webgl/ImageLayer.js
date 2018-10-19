@@ -2,7 +2,6 @@
  * @module ol/renderer/webgl/ImageLayer
  */
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
-import {TRUE} from '../../functions.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
@@ -73,27 +72,6 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
 
     return createTexture(
       gl, imageElement, CLAMP_TO_EDGE, CLAMP_TO_EDGE);
-  }
-
-  /**
-   * @inheritDoc
-   */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
-    const layer = this.getLayer();
-    const source = layer.getSource();
-    const resolution = frameState.viewState.resolution;
-    const rotation = frameState.viewState.rotation;
-    const skippedFeatureUids = frameState.skippedFeatureUids;
-    return source.forEachFeatureAtCoordinate(
-      coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
-
-      /**
-       * @param {import("../../Feature.js").FeatureLike} feature Feature.
-       * @return {?} Callback result.
-       */
-      function(feature) {
-        return callback.call(thisArg, feature, layer);
-      });
   }
 
   /**
@@ -212,14 +190,6 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
       (imageExtent[3] - imageExtent[1]) / 2);
     translateTransform(projectionMatrix, 1, 1);
 
-  }
-
-  /**
-   * @inheritDoc
-   */
-  hasFeatureAtCoordinate(coordinate, frameState) {
-    const hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, this);
-    return hasFeature !== undefined;
   }
 
   /**
