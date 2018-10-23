@@ -27,7 +27,7 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  * @property {function(import("../MapEvent.js").default)} [render] Function called when the
  * control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
- * @property {Element|string} [target] Specify a target if you want the
+ * @property {HTMLElement|string} [target] Specify a target if you want the
  * control to be rendered outside of the map's viewport.
  * @property {string} [undefinedHTML='&#160;'] Markup to show when coordinates are not
  * available (e.g. when the pointer leaves the map viewport).  By default, the last position

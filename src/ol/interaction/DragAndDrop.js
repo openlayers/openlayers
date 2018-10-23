@@ -20,7 +20,7 @@ import {get as getProjection} from '../proj.js';
  * source without removing the existing features (append only), instead of
  * providing the source option listen for the "addfeatures" event.
  * @property {import("../proj.js").ProjectionLike} [projection] Target projection. By default, the map's view's projection is used.
- * @property {Element} [target] The element that is used as the drop target, default is the viewport element.
+ * @property {HTMLElement} [target] The element that is used as the drop target, default is the viewport element.
  */
 
 
@@ -127,7 +127,7 @@ class DragAndDrop extends Interaction {
 
     /**
      * @private
-     * @type {Element}
+     * @type {HTMLElement}
      */
     this.target = options.target ? options.target : null;
 
