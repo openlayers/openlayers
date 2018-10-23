@@ -1,8 +1,7 @@
 /**
- * @module ol/layer/Vector
+ * @module ol/layer/WebGLVector
  */
 import BaseVectorLayer from './BaseVector.js';
-import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
 
 
 /**
@@ -19,7 +18,7 @@ import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
  *
  * @api
  */
-class VectorLayer extends BaseVectorLayer {
+class WebGLVectorLayer extends BaseVectorLayer {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -33,9 +32,10 @@ class VectorLayer extends BaseVectorLayer {
    * @protected
    */
   createRenderer() {
-    return new CanvasVectorLayerRenderer(this);
+    // TODO: rework WebGL renderers to share context
+    return null;
   }
 }
 
 
-export default VectorLayer;
+export default WebGLVectorLayer;
