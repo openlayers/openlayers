@@ -5,7 +5,7 @@ exports.handlers = {
 
   newDoclet: function(e) {
     const doclet = e.doclet;
-    if (doclet.kind == 'class') {
+    if (doclet.kind == 'class' && !(doclet.longname in classes)) {
       classes[doclet.longname] = doclet;
     }
   },

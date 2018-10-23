@@ -12,7 +12,7 @@ exports.handlers = {
         events[cls] = [];
       }
       events[cls].push(doclet.longname);
-    } else if (doclet.kind == 'class') {
+    } else if (doclet.kind == 'class' && !(doclet.longname in classes)) {
       classes[doclet.longname] = doclet;
     }
   },
