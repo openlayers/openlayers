@@ -16,6 +16,7 @@ import Polygon from '../geom/Polygon.js';
 
 
 /**
+ * Geometry constructors
  * @enum {function (new:import("../geom/Geometry.js").default, Array, GeometryLayout)}
  */
 const GeometryConstructor = {

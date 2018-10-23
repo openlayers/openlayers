@@ -80,7 +80,7 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
-   * Return the {@link module:ol/geom/GeometryLayout~GeometryLayout layout} of the geometry.
+   * Return the {@link module:ol/geom/GeometryLayout layout} of the geometry.
    * @return {GeometryLayout} Layout.
    * @api
    */

@@ -56,6 +56,8 @@ export class CollectionEvent extends Event {
  * Collection; they trigger events on the appropriate object, not on the
  * Collection as a whole.
  *
+ * @fires CollectionEvent
+ *
  * @template T
  * @api
  */

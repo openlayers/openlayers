@@ -88,7 +88,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @typedef {Object} MapOptions
  * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
  * Controls initially added to the map. If not specified,
- * {@link module:ol/control/util~defaults} is used.
+ * {@link module:ol/control~defaults} is used.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
  * physical pixels and device-independent pixels (dips) on the device.
  * @property {Collection<import("./interaction/Interaction.js").default>|Array<import("./interaction/Interaction.js").default>} [interactions]
