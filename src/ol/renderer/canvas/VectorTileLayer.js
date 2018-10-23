@@ -166,7 +166,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const resolution = tileGrid.getResolution(tile.tileCoord[0]);
     const tileExtent = tile.extent;
 
-    const zIndexKeys = {};
     for (let t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
       const sourceTile = tile.getTile(tile.tileKeys[t]);
       if (sourceTile.getState() != TileState.LOADED) {
@@ -226,9 +225,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         }
       }
       replayGroup.finish();
-      for (const r in replayGroup.getReplays()) {
-        zIndexKeys[r] = true;
-      }
       sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
     }
     replayState.renderedRevision = revision;
