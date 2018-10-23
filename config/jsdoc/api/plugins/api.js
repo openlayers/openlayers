@@ -106,6 +106,9 @@ exports.handlers = {
     if (doclet.kind == 'class') {
       modules[doclet.longname.split('~').shift()] = true;
       classes[doclet.longname] = doclet;
+    if (doclet.name === doclet.longname && !doclet.memberof) {
+      // Make sure anonymous default exports are documented
+      doclet.setMemberof(doclet.longname);
     }
   },
 
