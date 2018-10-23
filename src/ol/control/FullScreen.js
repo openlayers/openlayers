@@ -101,14 +101,19 @@ class FullScreen extends Control {
     this.labelActiveNode_ = typeof labelActive === 'string' ?
       document.createTextNode(labelActive) : labelActive;
 
-    const tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
-    const button = document.createElement('button');
-    this.setClassName_(button, isFullScreen());
-    button.setAttribute('type', 'button');
-    button.title = tipLabel;
-    button.appendChild(this.labelNode_);
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
+    this.button_ = document.createElement('button');
 
-    listen(button, EventType.CLICK,
+    const tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
+    this.setClassName_(this.button_, isFullScreen());
+    this.button_.setAttribute('type', 'button');
+    this.button_.title = tipLabel;
+    this.button_.appendChild(this.labelNode_);
+
+    listen(this.button_, EventType.CLICK,
       this.handleClick_, this);
 
     const cssClasses = this.cssClassName_ + ' ' + CLASS_UNSELECTABLE +
@@ -116,7 +121,7 @@ class FullScreen extends Control {
         (!isFullScreenSupported() ? CLASS_UNSUPPORTED : '');
     const element = this.element;
     element.className = cssClasses;
-    element.appendChild(button);
+    element.appendChild(this.button_);
 
     /**
      * @private
@@ -176,13 +181,12 @@ class FullScreen extends Control {
    * @private
    */
   handleFullScreenChange_() {
-    const button = this.element.firstElementChild;
     const map = this.getMap();
     if (isFullScreen()) {
-      this.setClassName_(button, true);
+      this.setClassName_(this.button_, true);
       replaceNode(this.labelActiveNode_, this.labelNode_);
     } else {
-      this.setClassName_(button, false);
+      this.setClassName_(this.button_, false);
       replaceNode(this.labelNode_, this.labelActiveNode_);
     }
     if (map) {
