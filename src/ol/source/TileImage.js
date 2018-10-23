@@ -197,7 +197,7 @@ class TileImage extends UrlTile {
    */
   getTileGridForProjection(projection) {
     if (!ENABLE_RASTER_REPROJECTION) {
-      return UrlTile.prototype.getTileGridForProjection.call(this, projection);
+      return super.getTileGridForProjection(projection);
     }
     const thisProj = this.getProjection();
     if (this.tileGrid && (!thisProj || equivalent(thisProj, projection))) {
@@ -218,7 +218,7 @@ class TileImage extends UrlTile {
    */
   getTileCacheForProjection(projection) {
     if (!ENABLE_RASTER_REPROJECTION) {
-      return UrlTile.prototype.getTileCacheForProjection.call(this, projection);
+      return super.getTileCacheForProjection(projection);
     }
     const thisProj = this.getProjection(); if (!thisProj || equivalent(thisProj, projection)) {
       return this.tileCache;
