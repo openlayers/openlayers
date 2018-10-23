@@ -30,7 +30,11 @@ $(function () {
     });
 
     // Show an item related a current documentation automatically
-    var filename = $('.page-title').data('filename').replace(/\.[a-z]+$/, '');
+    var filename = $('.page-title').data('filename')
+        .replace(/\.[a-z]+$/, '')
+        .replace('module-', 'module:')
+        .replace(/_/g, '/')
+        .replace(/-/g, '~');
     var $currentItem = $('.navigation .item[data-name*="' + filename + '"]:eq(0)');
 
     if ($currentItem.length) {
@@ -97,7 +101,8 @@ $(function () {
     var anchors = $('.anchor');
     var _onHashChange = function () {
         var activeHash = window.document.location.hash
-            .replace(/\./g, '\\.'); // Escape dot in element id
+            .replace(/\./g, '\\.') // Escape dot in element id
+            .replace(/\~/g, '\\~'); // Escape tilde in element id
 
         anchors.removeClass('highlighted');
 
@@ -108,4 +113,9 @@ $(function () {
 
     $(window).on('hashchange', _onHashChange);
     _onHashChange();
+
+    // Make links that JSDoc forgot clickable
+    $('p').each(function(i, p) {
+      p.innerHTML = anchorme(p.innerHTML);
+    });
 });

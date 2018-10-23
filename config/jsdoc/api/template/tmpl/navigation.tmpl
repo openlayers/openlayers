@@ -1,5 +1,8 @@
 <?js
 var self = this;
+function toShortName(name) {
+  return name.indexOf('module:') === 0 ? name.split('/').pop() : name;
+}
 ?>
 <div class="navigation">
     <div class="search">
@@ -25,7 +28,7 @@ var self = this;
             <?js
                 item.members.forEach(function (v) {
             ?>
-                <li data-name="<?js= v.longname ?>"><?js= self.linkto(v.longname, v.name) ?></li>
+                <li data-name="<?js= v.longname ?>"><?js= self.linkto(v.longname, toShortName(v.name)) ?></li>
             <?js
                 });
             }
@@ -40,7 +43,7 @@ var self = this;
                 item.typedefs.forEach(function (v) {
             ?>
                 <li data-name="<?js= v.longname ?>" class="<?js= (v.stability && v.stability !== 'stable') ? 'unstable' : ''?>">
-                    <?js= self.linkto(v.longname, v.name) ?>
+                    <?js= self.linkto(v.longname, toShortName(v.name)) ?>
                 </li>
             <?js
                 });
@@ -57,7 +60,7 @@ var self = this;
                 item.methods.forEach(function (v) {
             ?>
                 <li data-name="<?js= v.longname ?>" class="<?js= (v.stability && v.stability !== 'stable') ? 'unstable' : ''?>">
-                    <?js= self.linkto(v.longname, v.name) ?>
+                    <?js= self.linkto(v.longname, toShortName(v.name)) ?>
                 </li>
             <?js
                 });
@@ -74,7 +77,7 @@ var self = this;
                     v = self.find({longname: v})[0] || {longname: v, name: v.split(/#?event:/)[1]};
             ?>
                 <li data-name="<?js= v.longname ?>" class="<?js= (v.stability && v.stability != 'stable') ? 'unstable' : '' ?>">
-                    <?js= self.linkto(v.longname, v.name) ?>
+                    <?js= self.linkto(v.longname, toShortName(v.name)) ?>
                 </li>
             <?js
                 });

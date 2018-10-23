@@ -31,7 +31,7 @@ import {getKeyZXY} from '../tilecoord.js';
  * @classdesc
  * Base class for sources providing tiles divided into a tile grid over http.
  *
- * @fires import("./TileEvent.js").default
+ * @fires import("./Tile.js").TileSourceEvent
  */
 class UrlTile extends TileSource {
   /**
