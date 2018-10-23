@@ -92,6 +92,12 @@ class Layer extends BaseLayer {
      */
     this.sourceChangeKey_ = null;
 
+    /**
+     * @private
+     * @type {import("../renderer/Layer.js").default}
+     */
+    this.renderer_ = null;
+
     if (options.map) {
       this.setMap(options.map);
     }
@@ -215,6 +221,27 @@ class Layer extends BaseLayer {
   setSource(source) {
     this.set(LayerProperty.SOURCE, source);
   }
+
+  /**
+   * Get the renderer for this layer.
+   * @return {import("../renderer/Layer.js").default} The layer renderer.
+   */
+  getRenderer() {
+    if (!this.renderer_) {
+      this.renderer_ = this.createRenderer();
+    }
+    return this.renderer_;
+  }
+
+  /**
+   * Create a renderer for this layer.
+   * @return {import("../renderer/Layer.js").default} A layer renderer.
+   * @protected
+   */
+  createRenderer() {
+    return null;
+  }
+
 }
 
 

@@ -217,12 +217,14 @@ class MapRenderer extends Disposable {
     if (layerKey in this.layerRenderers_) {
       return this.layerRenderers_[layerKey];
     } else {
-      let renderer;
-      for (let i = 0, ii = this.layerRendererConstructors_.length; i < ii; ++i) {
-        const candidate = this.layerRendererConstructors_[i];
-        if (candidate['handles'](layer)) {
-          renderer = candidate['create'](this, layer);
-          break;
+      let renderer = layer.getRenderer();
+      if (!renderer) {
+        for (let i = 0, ii = this.layerRendererConstructors_.length; i < ii; ++i) {
+          const candidate = this.layerRendererConstructors_[i];
+          if (candidate['handles'](layer)) {
+            renderer = candidate['create'](this, layer);
+            break;
+          }
         }
       }
       if (renderer) {
