@@ -26,7 +26,6 @@ const DEFAULT_STROKE_STYLE = new Stroke({
 });
 
 /**
- * TODO can be configurable
  * @type {Array<number>}
  * @private
  */
