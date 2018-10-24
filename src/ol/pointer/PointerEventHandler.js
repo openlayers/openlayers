@@ -36,7 +36,7 @@ import {listen, unlisten} from '../events.js';
 import EventTarget from '../events/Target.js';
 import {POINTER, MSPOINTER, TOUCH} from '../has.js';
 import PointerEventType from '../pointer/EventType.js';
-import MouseSource from '../pointer/MouseSource.js';
+import MouseSource, {prepareEvent as prepareMouseEvent} from '../pointer/MouseSource.js';
 import MsSource from '../pointer/MsSource.js';
 import NativeSource from '../pointer/NativeSource.js';
 import PointerEvent from '../pointer/PointerEvent.js';
@@ -402,7 +402,7 @@ class PointerEventHandler extends EventTarget {
    */
   wrapMouseEvent(eventType, event) {
     const pointerEvent = this.makeEvent(
-      eventType, MouseSource.prepareEvent(event, this), event);
+      eventType, prepareMouseEvent(event, this), event);
     return pointerEvent;
   }
 

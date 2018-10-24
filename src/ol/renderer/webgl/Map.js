@@ -207,6 +207,7 @@ class WebGLMapRenderer extends MapRenderer {
       }
     } else {
       const texture = gl.createTexture();
+      const imageTile = /** @type {import("../../ImageTile.js").default} */ (tile);
       gl.bindTexture(TEXTURE_2D, texture);
       if (tileGutter > 0) {
         const clipTileCanvas = this.clipTileContext_.canvas;
@@ -220,7 +221,7 @@ class WebGLMapRenderer extends MapRenderer {
         } else {
           clipTileContext.clearRect(0, 0, tileSize[0], tileSize[1]);
         }
-        clipTileContext.drawImage(tile.getImage(), tileGutter, tileGutter,
+        clipTileContext.drawImage(imageTile.getImage(), tileGutter, tileGutter,
           tileSize[0], tileSize[1], 0, 0, tileSize[0], tileSize[1]);
         gl.texImage2D(TEXTURE_2D, 0,
           RGBA, RGBA,
@@ -228,7 +229,7 @@ class WebGLMapRenderer extends MapRenderer {
       } else {
         gl.texImage2D(TEXTURE_2D, 0,
           RGBA, RGBA,
-          UNSIGNED_BYTE, tile.getImage());
+          UNSIGNED_BYTE, imageTile.getImage());
       }
       gl.texParameteri(
         TEXTURE_2D, TEXTURE_MAG_FILTER, magFilter);
@@ -418,12 +419,12 @@ class WebGLMapRenderer extends MapRenderer {
     stableSort(layerStatesArray, sortByZIndex);
 
     const viewResolution = frameState.viewState.resolution;
-    let i, ii, layerRenderer, layerState;
+    let i, ii;
     for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-      layerState = layerStatesArray[i];
+      const layerState = layerStatesArray[i];
       if (visibleAtResolution(layerState, viewResolution) &&
           layerState.sourceState == SourceState.READY) {
-        layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layerState.layer));
+        const layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layerState.layer));
         if (layerRenderer.prepareFrame(frameState, layerState, context)) {
           layerStatesToDraw.push(layerState);
         }
@@ -445,8 +446,8 @@ class WebGLMapRenderer extends MapRenderer {
     gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
 
     for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
-      layerState = layerStatesToDraw[i];
-      layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layerState.layer));
+      const layerState = layerStatesToDraw[i];
+      const layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layerState.layer));
       layerRenderer.composeFrame(frameState, layerState, context);
     }
 

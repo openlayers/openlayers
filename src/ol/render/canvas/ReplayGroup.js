@@ -19,9 +19,7 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 
 
 /**
- * @type {Object<ReplayType,
- *                function(new: CanvasReplay, number, import("../../extent.js").Extent,
- *                number, number, boolean, Array<import("../canvas.js").DeclutterGroup>)>}
+ * @type {Object<ReplayType, typeof CanvasReplay>}
  */
 const BATCH_CONSTRUCTORS = {
   'Circle': CanvasPolygonReplay,
@@ -122,8 +120,7 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @param {boolean} group Group with previous replay.
-   * @return {import("../canvas.js").DeclutterGroup} Declutter instruction group.
+   * @inheritDoc
    */
   addDeclutter(group) {
     let declutter = null;

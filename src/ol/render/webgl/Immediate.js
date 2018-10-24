@@ -96,6 +96,7 @@ class WebGLImmediateRenderer extends VectorContext {
     replay.finish(context);
     // default colors
     const opacity = 1;
+    /** @type {Object<string, boolean>} */
     const skippedFeatures = {};
     let featureCallback;
     const oneByOne = false;
@@ -196,6 +197,7 @@ class WebGLImmediateRenderer extends VectorContext {
     replay.finish(context);
     // default colors
     const opacity = 1;
+    /** @type {Object<string, boolean>} */
     const skippedFeatures = {};
     let featureCallback;
     const oneByOne = false;
@@ -221,6 +223,7 @@ class WebGLImmediateRenderer extends VectorContext {
     replay.drawMultiPoint(geometry, data);
     replay.finish(context);
     const opacity = 1;
+    /** @type {Object<string, boolean>} */
     const skippedFeatures = {};
     let featureCallback;
     const oneByOne = false;
@@ -246,6 +249,7 @@ class WebGLImmediateRenderer extends VectorContext {
     replay.drawLineString(geometry, data);
     replay.finish(context);
     const opacity = 1;
+    /** @type {Object<string, boolean>} */
     const skippedFeatures = {};
     let featureCallback;
     const oneByOne = false;
@@ -271,6 +275,7 @@ class WebGLImmediateRenderer extends VectorContext {
     replay.drawMultiLineString(geometry, data);
     replay.finish(context);
     const opacity = 1;
+    /** @type {Object<string, boolean>} */
     const skippedFeatures = {};
     let featureCallback;
     const oneByOne = false;
@@ -296,6 +301,7 @@ class WebGLImmediateRenderer extends VectorContext {
     replay.drawPolygon(geometry, data);
     replay.finish(context);
     const opacity = 1;
+    /** @type {Object<string, boolean>} */
     const skippedFeatures = {};
     let featureCallback;
     const oneByOne = false;
@@ -321,6 +327,7 @@ class WebGLImmediateRenderer extends VectorContext {
     replay.drawMultiPolygon(geometry, data);
     replay.finish(context);
     const opacity = 1;
+    /** @type {Object<string, boolean>} */
     const skippedFeatures = {};
     let featureCallback;
     const oneByOne = false;
@@ -346,6 +353,7 @@ class WebGLImmediateRenderer extends VectorContext {
     replay.drawCircle(geometry, data);
     replay.finish(context);
     const opacity = 1;
+    /** @type {Object<string, boolean>} */
     const skippedFeatures = {};
     let featureCallback;
     const oneByOne = false;

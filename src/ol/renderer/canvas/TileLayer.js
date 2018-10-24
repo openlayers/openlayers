@@ -94,8 +94,9 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
    * @return {boolean} Tile is drawable.
    */
   isDrawableTile_(tile) {
+    const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
     const tileState = tile.getState();
-    const useInterimTilesOnError = this.getLayer().getUseInterimTilesOnError();
+    const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
     return tileState == TileState.LOADED ||
         tileState == TileState.EMPTY ||
         tileState == TileState.ERROR && !useInterimTilesOnError;
@@ -110,14 +111,14 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
    * @return {!import("../../Tile.js").default} Tile.
    */
   getTile(z, x, y, pixelRatio, projection) {
-    const layer = this.getLayer();
-    const source = /** @type {import("../../source/Tile.js").default} */ (layer.getSource());
-    let tile = source.getTile(z, x, y, pixelRatio, projection);
+    const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
+    const tileSource = /** @type {import("../../source/Tile.js").default} */ (tileLayer.getSource());
+    let tile = tileSource.getTile(z, x, y, pixelRatio, projection);
     if (tile.getState() == TileState.ERROR) {
-      if (!layer.getUseInterimTilesOnError()) {
+      if (!tileLayer.getUseInterimTilesOnError()) {
         // When useInterimTilesOnError is false, we consider the error tile as loaded.
         tile.setState(TileState.LOADED);
-      } else if (layer.getPreload() > 0) {
+      } else if (tileLayer.getPreload() > 0) {
         // Preloaded tiles for lower resolutions might have finished loading.
         this.newTiles_ = true;
       }
@@ -140,7 +141,7 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
     const viewResolution = viewState.resolution;
     const viewCenter = viewState.center;
 
-    const tileLayer = this.getLayer();
+    const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
     const tileSource = /** @type {import("../../source/Tile.js").default} */ (tileLayer.getSource());
     const sourceRevision = tileSource.getRevision();
     const tileGrid = tileSource.getTileGridForProjection(projection);
@@ -312,13 +313,15 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
    * @param {boolean} transition Apply an alpha transition.
    */
   drawTileImage(tile, frameState, layerState, x, y, w, h, gutter, transition) {
-    const image = tile.getImage(this.getLayer());
+    const image = this.getTileImage(tile);
     if (!image) {
       return;
     }
     const uid = getUid(this);
     const alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
-    if (alpha === 1 && !this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
+    const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
+    const tileSource = /** @type {import("../../source/Tile.js").default} */ (tileLayer.getSource());
+    if (alpha === 1 && !tileSource.getOpaque(frameState.viewState.projection)) {
       this.context.clearRect(x, y, w, h);
     }
     const alphaChanged = alpha !== this.context.globalAlpha;
@@ -352,6 +355,16 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
    */
   getImageTransform() {
     return this.imageTransform_;
+  }
+
+  /**
+   * Get the image from a tile.
+   * @param {import("../../Tile.js").default} tile Tile.
+   * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
+   * @protected
+   */
+  getTileImage(tile) {
+    return /** @type {import("../../ImageTile.js").default} */ (tile).getImage();
   }
 }
 

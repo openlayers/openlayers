@@ -241,7 +241,10 @@ class BingMaps extends TileImage {
 
       this.setAttributions(function(frameState) {
         const attributions = [];
-        const zoom = frameState.viewState.zoom;
+        const viewState = frameState.viewState;
+        const tileGrid = this.getTileGrid();
+        const tileCoord = tileGrid.getTileCoordForCoordAndResolution(viewState.center, viewState.resolution);
+        const zoom = tileCoord[0];
         resource.imageryProviders.map(function(imageryProvider) {
           let intersecting = false;
           const coverageAreas = imageryProvider.coverageAreas;
@@ -264,7 +267,7 @@ class BingMaps extends TileImage {
 
         attributions.push(TOS_ATTRIBUTION);
         return attributions;
-      });
+      }.bind(this));
     }
 
     this.setState(SourceState.READY);

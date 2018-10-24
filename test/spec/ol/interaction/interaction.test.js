@@ -2,6 +2,7 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import EventTarget from '../../../../src/ol/events/Target.js';
 import Interaction, {zoomByDelta} from '../../../../src/ol/interaction/Interaction.js';
+import {FALSE} from '../../../../src/ol/functions.js';
 
 describe('ol.interaction.Interaction', function() {
 
@@ -52,6 +53,36 @@ describe('ol.interaction.Interaction', function() {
       const interaction = new Interaction({});
       interaction.setMap(null);
       expect(interaction.getMap()).to.be(null);
+    });
+
+  });
+
+  describe('#handleEvent()', function() {
+
+    class MockInteraction extends Interaction {
+      constructor() {
+        super(...arguments);
+      }
+      handleEvent(mapBrowserEvent) {
+        return false;
+      }
+    }
+
+    it('has a default event handler', function() {
+      const interaction = new Interaction({});
+      expect(interaction.handleEvent()).to.be(true);
+    });
+
+    it('allows event handler overrides via options', function() {
+      const interaction = new Interaction({
+        handleEvent: FALSE
+      });
+      expect(interaction.handleEvent()).to.be(false);
+    });
+
+    it('allows event handler overrides via class extension', function() {
+      const interaction = new MockInteraction({});
+      expect(interaction.handleEvent()).to.be(false);
     });
 
   });

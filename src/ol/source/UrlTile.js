@@ -11,6 +11,7 @@ import {getKeyZXY} from '../tilecoord.js';
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions]
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize]
  * @property {boolean} [opaque]
  * @property {import("../proj.js").ProjectionLike} [projection]
@@ -30,7 +31,7 @@ import {getKeyZXY} from '../tilecoord.js';
  * @classdesc
  * Base class for sources providing tiles divided into a tile grid over http.
  *
- * @fires import("./TileEvent.js").default
+ * @fires import("./Tile.js").TileSourceEvent
  */
 class UrlTile extends TileSource {
   /**
@@ -47,8 +48,15 @@ class UrlTile extends TileSource {
       tileGrid: options.tileGrid,
       tilePixelRatio: options.tilePixelRatio,
       wrapX: options.wrapX,
-      transition: options.transition
+      transition: options.transition,
+      attributionsCollapsible: options.attributionsCollapsible
     });
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.generateTileUrlFunction_ = !options.tileUrlFunction;
 
     /**
      * @protected
@@ -60,8 +68,7 @@ class UrlTile extends TileSource {
      * @protected
      * @type {import("../Tile.js").UrlFunction}
      */
-    this.tileUrlFunction = this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) : nullTileUrlFunction;
+    this.tileUrlFunction = options.tileUrlFunction ? options.tileUrlFunction.bind(this) : nullTileUrlFunction;
 
     /**
      * @protected
@@ -74,13 +81,10 @@ class UrlTile extends TileSource {
     } else if (options.url) {
       this.setUrl(options.url);
     }
-    if (options.tileUrlFunction) {
-      this.setTileUrlFunction(options.tileUrlFunction);
-    }
 
     /**
      * @private
-     * @type {!Object<number, boolean>}
+     * @type {!Object<string, boolean>}
      */
     this.tileLoadingKeys_ = {};
 
@@ -173,9 +177,7 @@ class UrlTile extends TileSource {
    */
   setUrl(url) {
     const urls = this.urls = expandUrl(url);
-    this.setTileUrlFunction(this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) :
-      createFromTemplates(urls, this.tileGrid), url);
+    this.setUrls(urls);
   }
 
   /**
@@ -186,9 +188,11 @@ class UrlTile extends TileSource {
   setUrls(urls) {
     this.urls = urls;
     const key = urls.join('\n');
-    this.setTileUrlFunction(this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) :
-      createFromTemplates(urls, this.tileGrid), key);
+    if (this.generateTileUrlFunction_) {
+      this.setTileUrlFunction(createFromTemplates(urls, this.tileGrid), key);
+    } else {
+      this.setKey(key);
+    }
   }
 
   /**
@@ -202,11 +206,5 @@ class UrlTile extends TileSource {
   }
 }
 
-
-/**
- * @type {import("../Tile.js").UrlFunction|undefined}
- * @protected
- */
-UrlTile.prototype.fixedTileUrlFunction;
 
 export default UrlTile;

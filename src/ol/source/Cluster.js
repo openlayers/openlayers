@@ -5,6 +5,7 @@
 import {getUid} from '../util.js';
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
+import GeometryType from '../geom/GeometryType.js';
 import {scale as scaleCoordinate, add as addCoordinate} from '../coordinate.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
@@ -76,7 +77,7 @@ class Cluster extends VectorSource {
      */
     this.geometryFunction = options.geometryFunction || function(feature) {
       const geometry = /** @type {Point} */ (feature.getGeometry());
-      assert(geometry instanceof Point,
+      assert(geometry.getType() == GeometryType.POINT,
         10); // The default `geometryFunction` can only handle `Point` geometries
       return geometry;
     };
@@ -161,7 +162,7 @@ class Cluster extends VectorSource {
 
     for (let i = 0, ii = features.length; i < ii; i++) {
       const feature = features[i];
-      if (!(getUid(feature).toString() in clustered)) {
+      if (!(getUid(feature) in clustered)) {
         const geometry = this.geometryFunction(feature);
         if (geometry) {
           const coordinates = geometry.getCoordinates();
@@ -170,7 +171,7 @@ class Cluster extends VectorSource {
 
           let neighbors = this.source.getFeaturesInExtent(extent);
           neighbors = neighbors.filter(function(neighbor) {
-            const uid = getUid(neighbor).toString();
+            const uid = getUid(neighbor);
             if (!(uid in clustered)) {
               clustered[uid] = true;
               return true;

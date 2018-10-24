@@ -230,10 +230,7 @@ class ImageSource extends Source {
  * @param {string} src Source.
  */
 export function defaultImageLoadFunction(image, src) {
-  const img = image.getImage();
-  if (img instanceof HTMLImageElement || img instanceof HTMLVideoElement) {
-    img.src = src;
-  }
+  /** @type {HTMLImageElement|HTMLVideoElement} */ (image.getImage()).src = src;
 }
 
 

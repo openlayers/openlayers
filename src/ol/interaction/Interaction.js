@@ -38,6 +38,10 @@ class Interaction extends BaseObject {
   constructor(options) {
     super();
 
+    if (options.handleEvent) {
+      this.handleEvent = options.handleEvent;
+    }
+
     /**
      * @private
      * @type {import("../PluggableMap.js").default}
@@ -45,12 +49,6 @@ class Interaction extends BaseObject {
     this.map_ = null;
 
     this.setActive(true);
-
-    /**
-     * @type {function(import("../MapBrowserEvent.js").default):boolean}
-     */
-    this.handleEvent = options.handleEvent;
-
   }
 
   /**
@@ -70,6 +68,16 @@ class Interaction extends BaseObject {
    */
   getMap() {
     return this.map_;
+  }
+
+  /**
+   * Handles the {@link module:ol/MapBrowserEvent map browser event}.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+   * @return {boolean} `false` to stop event propagation.
+   * @api
+   */
+  handleEvent(mapBrowserEvent) {
+    return true;
   }
 
   /**

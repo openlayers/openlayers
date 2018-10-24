@@ -124,11 +124,11 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         frameState.size, frameState.pixelRatio, layerState.opacity,
         {},
         /**
-         * @param {import("../../Feature.js").default|import("../../render/Feature.js").default} feature Feature.
+         * @param {import("../../Feature.js").FeatureLike} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {
-          const key = getUid(feature).toString();
+          const key = getUid(feature);
           if (!(key in features)) {
             features[key] = true;
             return callback.call(thisArg, feature, layer);
@@ -183,7 +183,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    */
   prepareFrame(frameState, layerState, context) {
     const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
-    const vectorSource = vectorLayer.getSource();
+    const vectorSource = /** @type {import("../../source/Vector.js").default} */ (vectorLayer.getSource());
 
     const animating = frameState.viewHints[ViewHint.ANIMATING];
     const interacting = frameState.viewHints[ViewHint.INTERACTING];
@@ -245,7 +245,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
           feature, resolution, pixelRatio, styles, replayGroup);
         this.dirty_ = this.dirty_ || dirty;
       }
-    };
+    }.bind(this);
     if (vectorLayerRenderOrder) {
       /** @type {Array<import("../../Feature.js").default>} */
       const features = [];
@@ -255,11 +255,11 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
          */
         function(feature) {
           features.push(feature);
-        }, this);
+        });
       features.sort(vectorLayerRenderOrder);
       features.forEach(render.bind(this));
     } else {
-      vectorSource.forEachFeatureInExtent(extent, render, this);
+      vectorSource.forEachFeatureInExtent(extent, render);
     }
     replayGroup.finish(context);
 

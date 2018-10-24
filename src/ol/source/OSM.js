@@ -76,7 +76,8 @@ class OSM extends XYZ {
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileLoadFunction: options.tileLoadFunction,
       url: url,
-      wrapX: options.wrapX
+      wrapX: options.wrapX,
+      attributionsCollapsible: false
     });
 
   }

@@ -494,9 +494,7 @@ export function getCorner(extent, corner) {
   } else {
     assert(false, 13); // Invalid corner
   }
-  return (
-    /** @type {!import("./coordinate.js").Coordinate} */ (coordinate)
-  );
+  return coordinate;
 }
 
 

@@ -2,7 +2,6 @@ import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import {unByKey} from '../src/ol/Observable.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import {easeOut} from '../src/ol/easing.js';
 import Point from '../src/ol/geom/Point.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
@@ -19,11 +18,6 @@ const map = new Map({
       })
     })
   ],
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   target: 'map',
   view: new View({
     center: [0, 0],

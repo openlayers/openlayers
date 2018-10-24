@@ -1,6 +1,5 @@
 import Map from '../src/ol/WebGLMap.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import {WEBGL} from '../src/ol/has.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -20,11 +19,6 @@ if (!WEBGL) {
   const map = new Map({
     layers: [osm],
     target: 'map',
-    controls: defaultControls({
-      attributionOptions: {
-        collapsible: false
-      }
-    }),
     view: new View({
       center: [0, 0],
       zoom: 2

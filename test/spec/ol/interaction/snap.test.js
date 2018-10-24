@@ -5,7 +5,7 @@ import View from '../../../../src/ol/View.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
-import Snap, {handleEvent} from '../../../../src/ol/interaction/Snap.js';
+import Snap from '../../../../src/ol/interaction/Snap.js';
 
 
 describe('ol.interaction.Snap', function() {
@@ -67,7 +67,7 @@ describe('ol.interaction.Snap', function() {
         coordinate: [0, 0],
         map: map
       };
-      handleEvent.call(snapInteraction, event);
+      snapInteraction.handleEvent(event);
       // check that the coordinate is in XY and not XYZ
       expect(event.coordinate).to.eql([0, 0]);
     });
@@ -86,7 +86,7 @@ describe('ol.interaction.Snap', function() {
         coordinate: [7, 4],
         map: map
       };
-      handleEvent.call(snapInteraction, event);
+      snapInteraction.handleEvent(event);
       expect(event.coordinate).to.eql([7, 0]);
     });
 
@@ -104,7 +104,7 @@ describe('ol.interaction.Snap', function() {
         coordinate: [7, 4],
         map: map
       };
-      handleEvent.call(snapInteraction, event);
+      snapInteraction.handleEvent(event);
       expect(event.coordinate).to.eql([10, 0]);
     });
 
@@ -121,7 +121,7 @@ describe('ol.interaction.Snap', function() {
         coordinate: [5, 5],
         map: map
       };
-      handleEvent.call(snapInteraction, event);
+      snapInteraction.handleEvent(event);
 
       expect(event.coordinate[0]).to.roughlyEqual(Math.sin(Math.PI / 4) * 10, 1e-10);
       expect(event.coordinate[1]).to.roughlyEqual(Math.sin(Math.PI / 4) * 10, 1e-10);
@@ -143,7 +143,7 @@ describe('ol.interaction.Snap', function() {
         coordinate: [7, 4],
         map: map
       };
-      handleEvent.call(snapInteraction, event);
+      snapInteraction.handleEvent(event);
       expect(event.coordinate).to.eql([10, 0]);
     });
 
@@ -163,7 +163,7 @@ describe('ol.interaction.Snap', function() {
         coordinate: [7, 4],
         map: map
       };
-      handleEvent.call(snapInteraction, event);
+      snapInteraction.handleEvent(event);
       expect(event.coordinate).to.eql([10, 0]);
     });
 
@@ -186,7 +186,7 @@ describe('ol.interaction.Snap', function() {
         coordinate: [7, 4],
         map: map
       };
-      handleEvent.call(snapInteraction, event);
+      snapInteraction.handleEvent(event);
       expect(event.coordinate).to.eql([10, 0]);
     });
 

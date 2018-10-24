@@ -7,11 +7,6 @@ import {createCanvasContext2D} from './dom.js';
 import {listenOnce, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 
-/**
- * @typedef {function(new: ImageTile, import("./tilecoord.js").TileCoord,
- * TileState, string, ?string, import("./Tile.js").LoadFunction)} TileClass
- * @api
- */
 
 class ImageTile extends Tile {
 
@@ -114,8 +109,8 @@ class ImageTile extends Tile {
    * @private
    */
   handleImageLoad_() {
-    if (this.image_ instanceof HTMLImageElement &&
-      this.image_.naturalWidth && this.image_.naturalHeight) {
+    const image = /** @type {HTMLImageElement} */ (this.image_);
+    if (image.naturalWidth && image.naturalHeight) {
       this.state = TileState.LOADED;
     } else {
       this.state = TileState.EMPTY;

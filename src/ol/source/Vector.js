@@ -258,11 +258,11 @@ class VectorSource extends Source {
     this.featuresCollection_ = null;
 
     let collection, features;
-    if (options.features instanceof Collection) {
+    if (Array.isArray(options.features)) {
+      features = options.features;
+    } else if (options.features) {
       collection = options.features;
       features = collection.getArray();
-    } else if (Array.isArray(options.features)) {
-      features = options.features;
     }
     if (!useSpatialIndex && collection === undefined) {
       collection = new Collection(features);
@@ -297,7 +297,7 @@ class VectorSource extends Source {
    * @protected
    */
   addFeatureInternal(feature) {
-    const featureKey = getUid(feature).toString();
+    const featureKey = getUid(feature);
 
     if (!this.addToIndex_(featureKey, feature)) {
       return;
@@ -383,7 +383,7 @@ class VectorSource extends Source {
 
     for (let i = 0, length = features.length; i < length; i++) {
       const feature = features[i];
-      const featureKey = getUid(feature).toString();
+      const featureKey = getUid(feature);
       if (this.addToIndex_(featureKey, feature)) {
         newFeatures.push(feature);
       }
@@ -391,7 +391,7 @@ class VectorSource extends Source {
 
     for (let i = 0, length = newFeatures.length; i < length; i++) {
       const feature = newFeatures[i];
-      const featureKey = getUid(feature).toString();
+      const featureKey = getUid(feature);
       this.setupChangeEvents_(featureKey, feature);
 
       const geometry = feature.getGeometry();
@@ -799,7 +799,7 @@ class VectorSource extends Source {
    */
   handleFeatureChange_(event) {
     const feature = /** @type {import("../Feature.js").default} */ (event.target);
-    const featureKey = getUid(feature).toString();
+    const featureKey = getUid(feature);
     const geometry = feature.getGeometry();
     if (!geometry) {
       if (!(featureKey in this.nullGeometryFeatures_)) {
@@ -855,8 +855,7 @@ class VectorSource extends Source {
     if (id !== undefined) {
       return id in this.idIndex_;
     } else {
-      const featureKey = getUid(feature).toString();
-      return featureKey in this.undefIdIndex_;
+      return getUid(feature) in this.undefIdIndex_;
     }
   }
 
@@ -924,7 +923,7 @@ class VectorSource extends Source {
    * @api
    */
   removeFeature(feature) {
-    const featureKey = getUid(feature).toString();
+    const featureKey = getUid(feature);
     if (featureKey in this.nullGeometryFeatures_) {
       delete this.nullGeometryFeatures_[featureKey];
     } else {
@@ -943,7 +942,7 @@ class VectorSource extends Source {
    * @protected
    */
   removeFeatureInternal(feature) {
-    const featureKey = getUid(feature).toString();
+    const featureKey = getUid(feature);
     this.featureChangeKeys_[featureKey].forEach(unlistenByKey);
     delete this.featureChangeKeys_[featureKey];
     const id = feature.getId();

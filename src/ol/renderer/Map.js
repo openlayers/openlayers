@@ -40,7 +40,7 @@ class MapRenderer extends Disposable {
 
     /**
      * @private
-     * @type {Array<import("./Layer.js").default>}
+     * @type {Array<typeof import("./Layer.js").default>}
      */
     this.layerRendererConstructors_ = [];
 
@@ -55,7 +55,7 @@ class MapRenderer extends Disposable {
 
   /**
    * Register layer renderer constructors.
-   * @param {Array<import("./Layer.js").default>} constructors Layer renderers.
+   * @param {Array<typeof import("./Layer.js").default>} constructors Layer renderers.
    */
   registerLayerRenderers(constructors) {
     this.layerRendererConstructors_.push.apply(this.layerRendererConstructors_, constructors);
@@ -93,7 +93,7 @@ class MapRenderer extends Disposable {
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(this: S, (import("../Feature.js").default|import("../render/Feature.js").default),
+   * @param {function(this: S, import("../Feature.js").FeatureLike,
    *     import("../layer/Layer.js").default): T} callback Feature callback.
    * @param {S} thisArg Value to use as `this` when executing `callback`.
    * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
@@ -118,14 +118,13 @@ class MapRenderer extends Disposable {
     const viewResolution = viewState.resolution;
 
     /**
-     * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+     * @param {import("../Feature.js").FeatureLike} feature Feature.
      * @param {import("../layer/Layer.js").default} layer Layer.
      * @return {?} Callback result.
      */
     function forEachFeatureAtCoordinate(feature, layer) {
-      const key = getUid(feature).toString();
       const managed = frameState.layerStates[getUid(layer)].managed;
-      if (!(key in frameState.skippedFeatureUids && !managed)) {
+      if (!(getUid(feature) in frameState.skippedFeatureUids && !managed)) {
         return callback.call(thisArg, feature, managed ? layer : null);
       }
     }
@@ -207,7 +206,7 @@ class MapRenderer extends Disposable {
    * @return {import("./Layer.js").default} Layer renderer.
    */
   getLayerRenderer(layer) {
-    const layerKey = getUid(layer).toString();
+    const layerKey = getUid(layer);
     if (layerKey in this.layerRenderers_) {
       return this.layerRenderers_[layerKey];
     } else {

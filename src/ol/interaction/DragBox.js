@@ -115,11 +115,7 @@ class DragBox extends PointerInteraction {
    */
   constructor(opt_options) {
 
-    super({
-      handleDownEvent: handleDownEvent,
-      handleDragEvent: handleDragEvent,
-      handleUpEvent: handleUpEvent
-    });
+    super();
 
     const options = opt_options ? opt_options : {};
 
@@ -159,7 +155,22 @@ class DragBox extends PointerInteraction {
     * @type {EndCondition}
     */
     this.boxEndCondition_ = options.boxEndCondition ?
-      options.boxEndCondition : defaultBoxEndCondition;
+      options.boxEndCondition : this.defaultBoxEndCondition;
+  }
+
+  /**
+   * The default condition for determining whether the boxend event
+   * should fire.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent The originating MapBrowserEvent
+   *     leading to the box end.
+   * @param {import("../pixel.js").Pixel} startPixel The starting pixel of the box.
+   * @param {import("../pixel.js").Pixel} endPixel The end pixel of the box.
+   * @return {boolean} Whether or not the boxend condition should be fired.
+   */
+  defaultBoxEndCondition(mapBrowserEvent, startPixel, endPixel) {
+    const width = endPixel[0] - startPixel[0];
+    const height = endPixel[1] - startPixel[1];
+    return width * width + height * height >= this.minArea_;
   }
 
   /**
@@ -170,83 +181,58 @@ class DragBox extends PointerInteraction {
   getGeometry() {
     return this.box_.getGeometry();
   }
-}
 
+  /**
+   * @inheritDoc
+   */
+  handleDragEvent(mapBrowserEvent) {
+    if (!mouseOnly(mapBrowserEvent)) {
+      return;
+    }
 
-/**
- * The default condition for determining whether the boxend event
- * should fire.
- * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent The originating MapBrowserEvent
- *     leading to the box end.
- * @param {import("../pixel.js").Pixel} startPixel The starting pixel of the box.
- * @param {import("../pixel.js").Pixel} endPixel The end pixel of the box.
- * @return {boolean} Whether or not the boxend condition should be fired.
- * @this {DragBox}
- */
-function defaultBoxEndCondition(mapBrowserEvent, startPixel, endPixel) {
-  const width = endPixel[0] - startPixel[0];
-  const height = endPixel[1] - startPixel[1];
-  return width * width + height * height >= this.minArea_;
-}
+    this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
-
-/**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @this {DragBox}
- */
-function handleDragEvent(mapBrowserEvent) {
-  if (!mouseOnly(mapBrowserEvent)) {
-    return;
-  }
-
-  this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
-
-  this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXDRAG,
-    mapBrowserEvent.coordinate, mapBrowserEvent));
-}
-
-
-/**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @return {boolean} Stop drag sequence?
- * @this {DragBox}
- */
-function handleUpEvent(mapBrowserEvent) {
-  if (!mouseOnly(mapBrowserEvent)) {
-    return true;
-  }
-
-  this.box_.setMap(null);
-
-  if (this.boxEndCondition_(mapBrowserEvent, this.startPixel_, mapBrowserEvent.pixel)) {
-    this.onBoxEnd_(mapBrowserEvent);
-    this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXEND,
+    this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXDRAG,
       mapBrowserEvent.coordinate, mapBrowserEvent));
   }
-  return false;
-}
 
+  /**
+   * @inheritDoc
+   */
+  handleUpEvent(mapBrowserEvent) {
+    if (!mouseOnly(mapBrowserEvent)) {
+      return true;
+    }
 
-/**
- * @param {import("../MapBrowserPointerEvent.js").default} mapBrowserEvent Event.
- * @return {boolean} Start drag sequence?
- * @this {DragBox}
- */
-function handleDownEvent(mapBrowserEvent) {
-  if (!mouseOnly(mapBrowserEvent)) {
+    this.box_.setMap(null);
+
+    if (this.boxEndCondition_(mapBrowserEvent, this.startPixel_, mapBrowserEvent.pixel)) {
+      this.onBoxEnd_(mapBrowserEvent);
+      this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXEND,
+        mapBrowserEvent.coordinate, mapBrowserEvent));
+    }
     return false;
   }
 
-  if (mouseActionButton(mapBrowserEvent) &&
-      this.condition_(mapBrowserEvent)) {
-    this.startPixel_ = mapBrowserEvent.pixel;
-    this.box_.setMap(mapBrowserEvent.map);
-    this.box_.setPixels(this.startPixel_, this.startPixel_);
-    this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXSTART,
-      mapBrowserEvent.coordinate, mapBrowserEvent));
-    return true;
-  } else {
-    return false;
+  /**
+   * @inheritDoc
+   */
+  handleDownEvent(mapBrowserEvent) {
+    if (!mouseOnly(mapBrowserEvent)) {
+      return false;
+    }
+
+    if (mouseActionButton(mapBrowserEvent) &&
+        this.condition_(mapBrowserEvent)) {
+      this.startPixel_ = mapBrowserEvent.pixel;
+      this.box_.setMap(mapBrowserEvent.map);
+      this.box_.setPixels(this.startPixel_, this.startPixel_);
+      this.dispatchEvent(new DragBoxEvent(DragBoxEventType.BOXSTART,
+        mapBrowserEvent.coordinate, mapBrowserEvent));
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 

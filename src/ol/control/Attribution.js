@@ -16,9 +16,9 @@ import {visibleAtResolution} from '../layer/Layer.js';
  * @property {HTMLElement|string} [target] Specify a target if you
  * want the control to be rendered outside of the map's
  * viewport.
- * @property {boolean} [collapsible=true] Specify if attributions can
- * be collapsed. If you use an OSM source, should be set to `false` — see
- * {@link https://www.openstreetmap.org/copyright OSM Copyright} —
+ * @property {boolean} [collapsible] Specify if attributions can
+ * be collapsed. If not specified, sources control this behavior with their
+ * `attributionsCollapsible` setting.
  * @property {boolean} [collapsed=true] Specify if attributions should
  * be collapsed at startup.
  * @property {string} [tipLabel='Attributions'] Text label to use for the button tip.
@@ -69,6 +69,12 @@ class Attribution extends Control {
      * @type {boolean}
      */
     this.collapsed_ = options.collapsed !== undefined ? options.collapsed : true;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.overrideCollapsible_ = options.collapsible !== undefined;
 
     /**
      * @private
@@ -145,12 +151,12 @@ class Attribution extends Control {
   }
 
   /**
-   * Get a list of visible attributions.
+   * Collect a list of visible attributions and set the collapsible state.
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    * @return {Array<string>} Attributions.
    * @private
    */
-  getSourceAttributions_(frameState) {
+  collectSourceAttributions_(frameState) {
     /**
      * Used to determine if an attribution already exists.
      * @type {!Object<string, boolean>}
@@ -186,6 +192,10 @@ class Attribution extends Control {
         continue;
       }
 
+      if (!this.overrideCollapsible_ && source.getAttributionsCollapsible() === false) {
+        this.setCollapsible(false);
+      }
+
       if (Array.isArray(attributions)) {
         for (let j = 0, jj = attributions.length; j < jj; ++j) {
           if (!(attributions[j] in lookup)) {
@@ -216,7 +226,7 @@ class Attribution extends Control {
       return;
     }
 
-    const attributions = this.getSourceAttributions_(frameState);
+    const attributions = this.collectSourceAttributions_(frameState);
 
     const visible = attributions.length > 0;
     if (this.renderedVisible_ != visible) {

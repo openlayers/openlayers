@@ -229,7 +229,7 @@ describe('ol.render.webgl.CircleReplay', function() {
       replay.drawCircle(feature3.getGeometry(), feature3);
       replay.startIndices.push(replay.indices.length);
       const skippedFeatHash = {};
-      skippedFeatHash[getUid(feature2).toString()] = true;
+      skippedFeatHash[getUid(feature2)] = true;
 
       replay.drawReplay(gl, context, skippedFeatHash, false);
       expect(replay.setFillStyle_.calledOnce).to.be(true);

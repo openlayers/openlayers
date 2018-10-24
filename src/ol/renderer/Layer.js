@@ -43,6 +43,9 @@ class LayerRenderer extends Observable {
        * @return {boolean} The tile range is fully loaded.
        */
       function(zoom, tileRange) {
+        /**
+         * @param {import("../Tile.js").default} tile Tile.
+         */
         function callback(tile) {
           if (!tiles[zoom]) {
             tiles[zoom] = {};
@@ -59,7 +62,7 @@ class LayerRenderer extends Observable {
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function((import("../Feature.js").default|import("../render/Feature.js").default), import("../layer/Layer.js").default): T} callback Feature callback.
+   * @param {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default): T} callback Feature callback.
    * @return {T|void} Callback result.
    * @template T
    */
@@ -135,7 +138,7 @@ class LayerRenderer extends Observable {
        * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
        */
       const postRenderFunction = function(tileSource, map, frameState) {
-        const tileSourceKey = getUid(tileSource).toString();
+        const tileSourceKey = getUid(tileSource);
         if (tileSourceKey in frameState.usedTiles) {
           tileSource.expireCache(frameState.viewState.projection,
             frameState.usedTiles[tileSourceKey]);
@@ -157,7 +160,7 @@ class LayerRenderer extends Observable {
    */
   updateUsedTiles(usedTiles, tileSource, z, tileRange) {
     // FIXME should we use tilesToDrawByZ instead?
-    const tileSourceKey = getUid(tileSource).toString();
+    const tileSourceKey = getUid(tileSource);
     const zKey = z.toString();
     if (tileSourceKey in usedTiles) {
       if (zKey in usedTiles[tileSourceKey]) {
@@ -203,7 +206,7 @@ class LayerRenderer extends Observable {
     opt_tileCallback,
     opt_this
   ) {
-    const tileSourceKey = getUid(tileSource).toString();
+    const tileSourceKey = getUid(tileSource);
     if (!(tileSourceKey in frameState.wantedTiles)) {
       frameState.wantedTiles[tileSourceKey] = {};
     }

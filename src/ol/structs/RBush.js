@@ -37,7 +37,7 @@ class RBush {
      * A mapping between the objects added to this rbush wrapper
      * and the objects that are actually added to the internal rbush.
      * @private
-     * @type {Object<number, Entry>}
+     * @type {Object<string, Entry>}
      */
     this.items_ = {};
 
@@ -221,8 +221,7 @@ class RBush {
    * @return {import("../extent.js").Extent} Extent.
    */
   getExtent(opt_extent) {
-    // FIXME add getExtent() to rbush
-    const data = this.rbush_.data;
+    const data = this.rbush_.toJSON();
     return createOrUpdate(data.minX, data.minY, data.maxX, data.maxY, opt_extent);
   }
 

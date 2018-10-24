@@ -56,6 +56,8 @@ export class CollectionEvent extends Event {
  * Collection; they trigger events on the appropriate object, not on the
  * Collection as a whole.
  *
+ * @fires CollectionEvent
+ *
  * @template T
  * @api
  */
@@ -160,7 +162,7 @@ class Collection extends BaseObject {
    * @api
    */
   getLength() {
-    return /** @type {number} */ (this.get(Property.LENGTH));
+    return this.get(Property.LENGTH);
   }
 
   /**

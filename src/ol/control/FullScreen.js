@@ -101,14 +101,19 @@ class FullScreen extends Control {
     this.labelActiveNode_ = typeof labelActive === 'string' ?
       document.createTextNode(labelActive) : labelActive;
 
-    const tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
-    const button = document.createElement('button');
-    button.className = this.cssClassName_ + '-' + isFullScreen();
-    button.setAttribute('type', 'button');
-    button.title = tipLabel;
-    button.appendChild(this.labelNode_);
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
+    this.button_ = document.createElement('button');
 
-    listen(button, EventType.CLICK,
+    const tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
+    this.setClassName_(this.button_, isFullScreen());
+    this.button_.setAttribute('type', 'button');
+    this.button_.title = tipLabel;
+    this.button_.appendChild(this.labelNode_);
+
+    listen(this.button_, EventType.CLICK,
       this.handleClick_, this);
 
     const cssClasses = this.cssClassName_ + ' ' + CLASS_UNSELECTABLE +
@@ -116,7 +121,7 @@ class FullScreen extends Control {
         (!isFullScreenSupported() ? CLASS_UNSUPPORTED : '');
     const element = this.element;
     element.className = cssClasses;
-    element.appendChild(button);
+    element.appendChild(this.button_);
 
     /**
      * @private
@@ -176,18 +181,31 @@ class FullScreen extends Control {
    * @private
    */
   handleFullScreenChange_() {
-    const button = this.element.firstElementChild;
     const map = this.getMap();
     if (isFullScreen()) {
-      button.className = this.cssClassName_ + '-true';
+      this.setClassName_(this.button_, true);
       replaceNode(this.labelActiveNode_, this.labelNode_);
     } else {
-      button.className = this.cssClassName_ + '-false';
+      this.setClassName_(this.button_, false);
       replaceNode(this.labelNode_, this.labelActiveNode_);
     }
     if (map) {
       map.updateSize();
     }
+  }
+
+  /**
+   * @param {HTMLElement} element Target element
+   * @param {boolean} fullscreen True if fullscreen class name should be active
+   * @private
+   */
+  setClassName_(element, fullscreen) {
+    const activeClassName = this.cssClassName_ + '-true';
+    const inactiveClassName = this.cssClassName_ + '-false';
+    const nextClassName = fullscreen ? activeClassName : inactiveClassName;
+    element.classList.remove(activeClassName);
+    element.classList.remove(inactiveClassName);
+    element.classList.add(nextClassName);
   }
 
   /**

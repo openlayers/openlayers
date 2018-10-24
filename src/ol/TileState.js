@@ -12,7 +12,6 @@ export default {
   /**
    * Indicates that tile loading failed
    * @type {number}
-   * @api
    */
   ERROR: 3,
   EMPTY: 4,

@@ -14,6 +14,7 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions]
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize]
  * @property {boolean} [opaque]
  * @property {number} [tilePixelRatio]
@@ -40,6 +41,7 @@ class TileSource extends Source {
 
     super({
       attributions: options.attributions,
+      attributionsCollapsible: options.attributionsCollapsible,
       projection: options.projection,
       state: options.state,
       wrapX: options.wrapX
@@ -112,7 +114,7 @@ class TileSource extends Source {
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @param {number} z Zoom level.
    * @param {import("../TileRange.js").default} tileRange Tile range.
-   * @param {function(import("../Tile.js").default):(boolean|undefined)} callback Called with each
+   * @param {function(import("../Tile.js").default):(boolean|void)} callback Called with each
    *     loaded tile.  If the callback returns `false`, the tile will not be
    *     considered loaded.
    * @return {boolean} The tile range is fully covered with loaded tiles.
