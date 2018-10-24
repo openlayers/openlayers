@@ -14,7 +14,7 @@
     ]
   },
   "plugins": [
-    "plugins/markdown",
+    "config/jsdoc/api/plugins/markdown",
     "config/jsdoc/api/plugins/convert-types",
     "config/jsdoc/api/plugins/normalize-longnames",
     "config/jsdoc/api/plugins/inline-options",
