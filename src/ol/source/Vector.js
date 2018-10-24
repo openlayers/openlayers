@@ -889,7 +889,7 @@ class VectorSource extends Source {
       if (!alreadyLoaded) {
         this.loader_.call(this, extentToLoad, resolution, projection);
         loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
-        this.loading = true;
+        this.loading = this.loader_ !== VOID;
       }
     }
   }
