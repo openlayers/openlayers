@@ -221,8 +221,7 @@ class RBush {
    * @return {import("../extent.js").Extent} Extent.
    */
   getExtent(opt_extent) {
-    // FIXME add getExtent() to rbush
-    const data = this.rbush_.data;
+    const data = this.rbush_.toJSON();
     return createOrUpdate(data.minX, data.minY, data.maxX, data.maxY, opt_extent);
   }
 
