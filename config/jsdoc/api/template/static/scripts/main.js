@@ -113,9 +113,4 @@ $(function () {
 
     $(window).on('hashchange', _onHashChange);
     _onHashChange();
-
-    // Make links that JSDoc forgot clickable
-    $('p').each(function(i, p) {
-      p.innerHTML = anchorme(p.innerHTML);
-    });
 });
