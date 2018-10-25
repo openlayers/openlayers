@@ -10,6 +10,7 @@
         "includePattern": "\\.js$"
     },
     "plugins": [
+        "config/jsdoc/typescript-plugin",
         "config/jsdoc/info/api-plugin",
         "config/jsdoc/info/define-plugin",
         "config/jsdoc/info/virtual-plugin"
