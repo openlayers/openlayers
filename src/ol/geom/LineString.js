@@ -90,6 +90,16 @@ class LineString extends SimpleGeometry {
 
   /**
    * @inheritDoc
+   * @override
+   * @api
+   */
+  containsXY(x, y) {
+    const coord = this.getClosestPoint([x, y]);
+    return coord[0] === x && coord[1] === y;
+  }
+
+  /**
+   * @inheritDoc
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
