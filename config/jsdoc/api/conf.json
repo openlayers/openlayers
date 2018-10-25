@@ -15,7 +15,7 @@
   },
   "plugins": [
     "config/jsdoc/api/plugins/markdown",
-    "config/jsdoc/api/plugins/convert-types",
+    "config/jsdoc/typescript-plugin",
     "config/jsdoc/api/plugins/normalize-longnames",
     "config/jsdoc/api/plugins/inline-options",
     "config/jsdoc/api/plugins/inheritdoc",
