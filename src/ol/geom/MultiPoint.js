@@ -59,6 +59,17 @@ class MultiPoint extends SimpleGeometry {
 
   /**
    * @inheritDoc
+   * @override
+   * @api
+   */
+  containsXY(x, y) {
+    return this.getCoordinates().some(function(coord) {
+      return coord[0] === x && coord[1] === y;
+    });
+  }
+
+  /**
+   * @inheritDoc
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
