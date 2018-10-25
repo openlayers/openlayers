@@ -443,4 +443,37 @@ describe('ol.geom.LineString', function() {
 
   });
 
+  describe('#containsXY()', function() {
+
+    let lineString;
+    beforeEach(function() {
+      lineString = new LineString([
+        [0, 0, 0, 0],
+        [1, -1, 2, 1],
+        [2, -2, 4, 2],
+        [4, -4, 8, 4],
+        [8, -8, 16, 8],
+        [12, -12, 24, 12],
+        [14, -14, 28, 14],
+        [15, -15, 30, 15],
+        [16, -16, 32, 16],
+        [18, -18, 36, 18],
+        [22, -22, 44, 22]
+      ]);
+    });
+
+    it('does contain XY', function() {
+      expect(lineString.containsXY(1, -1)).to.be(true);
+      expect(lineString.containsXY(16, -16)).to.be(true);
+      expect(lineString.containsXY(3, -3)).to.be(true);
+    });
+
+    it('does not contain XY', function() {
+      expect(lineString.containsXY(1, 3)).to.be(false);
+      expect(lineString.containsXY(2, 2)).to.be(false);
+      expect(lineString.containsXY(2, 3)).to.be(false);
+    });
+
+  });
+
 });
