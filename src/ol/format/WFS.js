@@ -99,6 +99,7 @@ const TRANSACTION_SERIALIZERS = {
  * @property {number} [maxFeatures] Maximum number of features to fetch.
  * @property {string} [geometryName] Geometry name to use in a BBOX filter.
  * @property {Array<string>} [propertyNames] Optional list of property names to serialize.
+ * @property {string} [viewParams] viewParams GeoServer vendor parameter.
  * @property {number} [startIndex] Start index to use for WFS paging. This is a
  * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services.
  * @property {number} [count] Number of features to retrieve when paging. This is a
@@ -405,6 +406,9 @@ class WFS extends XMLFeature {
       }
       if (options.count !== undefined) {
         node.setAttribute('count', String(options.count));
+      }
+      if (options.viewParams !== undefined) {
+        node.setAttribute('viewParams ', options.viewParams);
       }
       filter = options.filter;
       if (options.bbox) {
