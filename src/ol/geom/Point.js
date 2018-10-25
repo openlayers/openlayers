@@ -37,6 +37,16 @@ class Point extends SimpleGeometry {
 
   /**
    * @inheritDoc
+   * @override
+   * @api
+   */
+  containsXY(x, y) {
+    const coord = this.getCoordinates();
+    return coord[0] === x && coord[1] === y;
+  }
+
+  /**
+   * @inheritDoc
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     const flatCoordinates = this.flatCoordinates;
