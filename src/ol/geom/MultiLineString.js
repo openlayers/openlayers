@@ -102,6 +102,17 @@ class MultiLineString extends SimpleGeometry {
 
   /**
    * @inheritDoc
+   * @override
+   * @api
+   */
+  containsXY(x, y) {
+    return this.getLineStrings().some(function(lineString) {
+      return lineString.containsXY(x, y);
+    });
+  }
+
+  /**
+   * @inheritDoc
    */
   closestPointXY(x, y, closestPoint, minSquaredDistance) {
     if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
