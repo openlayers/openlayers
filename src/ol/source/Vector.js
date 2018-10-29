@@ -154,7 +154,7 @@ export class VectorSourceEvent extends Event {
  * by this source are suitable for editing. See {@link module:ol/source/VectorTile~VectorTile} for
  * vector data that is optimized for rendering.
  *
- * @fires ol/source/Vector~VectorSourceEvent
+ * @fires ol/source/Vector.VectorSourceEvent
  * @api
  */
 class VectorSource extends Source {
@@ -469,7 +469,7 @@ class VectorSource extends Source {
 
   /**
    * Remove all features from the source.
-   * @param {boolean=} opt_fast Skip dispatching of {@link module:ol/source/Vector~VectorSourceEvent#removefeature} events.
+   * @param {boolean=} opt_fast Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#removefeature} events.
    * @api
    */
   clear(opt_fast) {
