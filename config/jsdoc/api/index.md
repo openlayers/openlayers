@@ -34,7 +34,7 @@ Interactions for [vector features](module-ol_Feature-Feature.html)
 <tr><th>Projections</th><th>Observable objects</th><th>Other components</th></tr>
 <tr><td><p>All coordinates and extents need to be provided in view projection (default: EPSG:3857). To transform, use [ol/proj#transform()](module-ol_proj.html#.transform) and [ol/proj#transformExtent()](module-ol_proj.html#.transformExtent).</p>
 [ol/proj](module-ol_proj.html)</td>
-<td><p>Changes to all [ol/Object](module-ol_Object-BaseObject.html)s can be observed by calling the [object.on('propertychange')](module-ol_Object-BaseObject.html#on) method.  Listeners receive an [ol/Object~ObjectEvent](module-ol_Object-ObjectEvent.html) with information on the changed property and old value.</p>
+<td><p>Changes to all [ol/Object](module-ol_Object-BaseObject.html)s can be observed by calling the [object.on('propertychange')](module-ol_Object-BaseObject.html#on) method.  Listeners receive an [ol/Object.ObjectEvent](module-ol_Object-ObjectEvent.html) with information on the changed property and old value.</p>
 <td>
 [ol/Geolocation](module-ol_Geolocation.html)<br>
 [ol/Overlay](module-ol_Overlay-Overlay.html)<br></td>
