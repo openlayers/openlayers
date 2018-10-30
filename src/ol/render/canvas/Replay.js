@@ -721,7 +721,8 @@ class CanvasReplay extends VectorContext {
           const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
           const textLength = measure(text);
           if (overflow || textLength <= pathLength) {
-            const textReplay = /** @type {import("./TextReplay.js").default} */ (this);
+            /** @type {import("./TextReplay.js").default} */
+            const textReplay = /** @type {?} */ (this);
             const textAlign = textReplay.textStates[textKey].textAlign;
             const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
             const parts = drawTextOnPath(
