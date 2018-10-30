@@ -4,6 +4,7 @@ describe('ol.render.Replay', function() {
   let replay;
   beforeEach(function() {
     replay = new WebGLReplay(5, [-180, -90, 180, 90]);
+    replay.drawReplay = replay.shutDownProgram = function() {};
   });
 
 

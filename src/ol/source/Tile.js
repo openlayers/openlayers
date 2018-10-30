@@ -1,7 +1,7 @@
 /**
  * @module ol/source/Tile
  */
-
+import {abstract} from '../util.js';
 import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import Event from '../events/Event.js';
@@ -31,6 +31,7 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for sources providing images divided into a tile grid.
+ * @abstract
  * @api
  */
 class TileSource extends Source {
@@ -199,7 +200,9 @@ class TileSource extends Source {
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {!import("../Tile.js").default} Tile.
    */
-  getTile(z, x, y, pixelRatio, projection) {}
+  getTile(z, x, y, pixelRatio, projection) {
+    return abstract();
+  }
 
   /**
    * Return the tile grid of the tile source.
@@ -292,8 +295,8 @@ class TileSource extends Source {
   }
 
   /**
-   * @abstract
    * Marks a tile coord as being used, without triggering a load.
+   * @abstract
    * @param {number} z Tile coordinate z.
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
