@@ -1,6 +1,7 @@
 /**
  * @module ol/layer/Base
  */
+import {abstract} from '../util.js';
 import BaseObject from '../Object.js';
 import LayerProperty from '../layer/Property.js';
 import {clamp} from '../math.js';
@@ -105,7 +106,9 @@ class BaseLayer extends BaseObject {
    *     modified in place).
    * @return {Array<import("./Layer.js").default>} Array of layers.
    */
-  getLayersArray(opt_array) {}
+  getLayersArray(opt_array) {
+    return abstract();
+  }
 
   /**
    * @abstract
@@ -113,7 +116,9 @@ class BaseLayer extends BaseObject {
    *     states (to be modified in place).
    * @return {Array<import("./Layer.js").State>} List of layer states.
    */
-  getLayerStatesArray(opt_states) {}
+  getLayerStatesArray(opt_states) {
+    return abstract();
+  }
 
   /**
    * Return the {@link module:ol/extent~Extent extent} of the layer or `undefined` if it
@@ -162,7 +167,9 @@ class BaseLayer extends BaseObject {
    * @abstract
    * @return {import("../source/State.js").default} Source state.
    */
-  getSourceState() {}
+  getSourceState() {
+    return abstract();
+  }
 
   /**
    * Return the visibility of the layer (`true` or `false`).

@@ -2,6 +2,7 @@
  * @module ol/format/Feature
  */
 import {assign} from '../obj.js';
+import {abstract} from '../util.js';
 import {get as getProjection, equivalent as equivalentProjection, transformExtent} from '../proj.js';
 
 
@@ -122,7 +123,9 @@ class FeatureFormat {
    * @abstract
    * @return {import("./FormatType.js").default} Format.
    */
-  getType() {}
+  getType() {
+    return abstract();
+  }
 
   /**
    * Read a single feature from a source.
@@ -132,7 +135,9 @@ class FeatureFormat {
    * @param {ReadOptions=} opt_options Read options.
    * @return {import("../Feature.js").FeatureLike} Feature.
    */
-  readFeature(source, opt_options) {}
+  readFeature(source, opt_options) {
+    return abstract();
+  }
 
   /**
    * Read all features from a source.
@@ -142,7 +147,9 @@ class FeatureFormat {
    * @param {ReadOptions=} opt_options Read options.
    * @return {Array<import("../Feature.js").FeatureLike>} Features.
    */
-  readFeatures(source, opt_options) {}
+  readFeatures(source, opt_options) {
+    return abstract();
+  }
 
   /**
    * Read a single geometry from a source.
@@ -152,7 +159,9 @@ class FeatureFormat {
    * @param {ReadOptions=} opt_options Read options.
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
-  readGeometry(source, opt_options) {}
+  readGeometry(source, opt_options) {
+    return abstract();
+  }
 
   /**
    * Read the projection from a source.
@@ -161,7 +170,9 @@ class FeatureFormat {
    * @param {Document|Node|Object|string} source Source.
    * @return {import("../proj/Projection.js").default} Projection.
    */
-  readProjection(source) {}
+  readProjection(source) {
+    return abstract();
+  }
 
   /**
    * Encode a feature in this format.
@@ -171,7 +182,9 @@ class FeatureFormat {
    * @param {WriteOptions=} opt_options Write options.
    * @return {string} Result.
    */
-  writeFeature(feature, opt_options) {}
+  writeFeature(feature, opt_options) {
+    return abstract();
+  }
 
   /**
    * Encode an array of features in this format.
@@ -181,7 +194,9 @@ class FeatureFormat {
    * @param {WriteOptions=} opt_options Write options.
    * @return {string} Result.
    */
-  writeFeatures(features, opt_options) {}
+  writeFeatures(features, opt_options) {
+    return abstract();
+  }
 
   /**
    * Write a single geometry in this format.
@@ -191,7 +206,9 @@ class FeatureFormat {
    * @param {WriteOptions=} opt_options Write options.
    * @return {string} Result.
    */
-  writeGeometry(geometry, opt_options) {}
+  writeGeometry(geometry, opt_options) {
+    return abstract();
+  }
 }
 
 export default FeatureFormat;

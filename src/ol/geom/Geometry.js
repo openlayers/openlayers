@@ -1,6 +1,7 @@
 /**
  * @module ol/geom/Geometry
  */
+import {abstract} from '../util.js';
 import BaseObject from '../Object.js';
 import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
 import {transform2D} from '../geom/flat/transform.js';
@@ -69,7 +70,9 @@ class Geometry extends BaseObject {
    * @abstract
    * @return {!Geometry} Clone.
    */
-  clone() {}
+  clone() {
+    return abstract();
+  }
 
   /**
    * @abstract
@@ -79,7 +82,9 @@ class Geometry extends BaseObject {
    * @param {number} minSquaredDistance Minimum squared distance.
    * @return {number} Minimum squared distance.
    */
-  closestPointXY(x, y, closestPoint, minSquaredDistance) {}
+  closestPointXY(x, y, closestPoint, minSquaredDistance) {
+    return abstract();
+  }
 
   /**
    * @param {number} x X.
@@ -122,7 +127,9 @@ class Geometry extends BaseObject {
    * @protected
    * @return {import("../extent.js").Extent} extent Extent.
    */
-  computeExtent(extent) {}
+  computeExtent(extent) {
+    return abstract();
+  }
 
   /**
    * Get the extent of the geometry.
@@ -146,7 +153,9 @@ class Geometry extends BaseObject {
    * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
    * @api
    */
-  rotate(angle, anchor) {}
+  rotate(angle, anchor) {
+    abstract();
+  }
 
   /**
    * Scale the geometry (with an optional origin).  This modifies the geometry
@@ -159,7 +168,9 @@ class Geometry extends BaseObject {
    *     of the geometry extent).
    * @api
    */
-  scale(sx, opt_sy, opt_anchor) {}
+  scale(sx, opt_sy, opt_anchor) {
+    abstract();
+  }
 
   /**
    * Create a simplified version of this geometry.  For linestrings, this uses
@@ -183,14 +194,18 @@ class Geometry extends BaseObject {
    * @param {number} squaredTolerance Squared tolerance.
    * @return {Geometry} Simplified geometry.
    */
-  getSimplifiedGeometry(squaredTolerance) {}
+  getSimplifiedGeometry(squaredTolerance) {
+    return abstract();
+  }
 
   /**
    * Get the type of this geometry.
    * @abstract
    * @return {import("./GeometryType.js").default} Geometry type.
    */
-  getType() {}
+  getType() {
+    return abstract();
+  }
 
   /**
    * Apply a transform function to each coordinate of the geometry.
@@ -200,7 +215,9 @@ class Geometry extends BaseObject {
    * @abstract
    * @param {import("../proj.js").TransformFunction} transformFn Transform.
    */
-  applyTransform(transformFn) {}
+  applyTransform(transformFn) {
+    abstract();
+  }
 
   /**
    * Test if the geometry and the passed extent intersect.
@@ -208,7 +225,9 @@ class Geometry extends BaseObject {
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    */
-  intersectsExtent(extent) {}
+  intersectsExtent(extent) {
+    return abstract();
+  }
 
   /**
    * Translate the geometry.  This modifies the geometry coordinates in place.  If
@@ -218,7 +237,9 @@ class Geometry extends BaseObject {
    * @param {number} deltaY Delta Y.
    * @api
    */
-  translate(deltaX, deltaY) {}
+  translate(deltaX, deltaY) {
+    abstract();
+  }
 
   /**
    * Transform each coordinate of the geometry from one coordinate reference

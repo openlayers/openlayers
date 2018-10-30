@@ -1,6 +1,7 @@
 /**
  * @module ol/ImageBase
  */
+import {abstract} from './util.js';
 import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
 
@@ -63,7 +64,9 @@ class ImageBase extends EventTarget {
    * @abstract
    * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
    */
-  getImage() {}
+  getImage() {
+    return abstract();
+  }
 
   /**
    * @return {number} PixelRatio.
@@ -90,7 +93,9 @@ class ImageBase extends EventTarget {
    * Load not yet loaded URI.
    * @abstract
    */
-  load() {}
+  load() {
+    abstract();
+  }
 }
 
 

@@ -1,6 +1,7 @@
 /**
  * @module ol/format/XMLFeature
  */
+import {abstract} from '../util.js';
 import {extend} from '../array.js';
 import FeatureFormat from '../format/Feature.js';
 import FormatType from '../format/FormatType.js';
@@ -122,7 +123,9 @@ class XMLFeature extends FeatureFormat {
    * @protected
    * @return {Array<import("../Feature.js").default>} Features.
    */
-  readFeaturesFromNode(node, opt_options) {}
+  readFeaturesFromNode(node, opt_options) {
+    return abstract();
+  }
 
   /**
    * @inheritDoc

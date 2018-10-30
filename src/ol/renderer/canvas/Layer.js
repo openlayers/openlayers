@@ -1,6 +1,7 @@
 /**
  * @module ol/renderer/canvas/Layer
  */
+import {abstract} from '../../util.js';
 import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../../extent.js';
 import {TRUE} from '../../functions.js';
 import RenderEvent from '../../render/Event.js';
@@ -10,6 +11,9 @@ import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
 import LayerRenderer from '../Layer.js';
 import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
 
+/**
+ * @abstract
+ */
 class CanvasLayerRenderer extends LayerRenderer {
 
   /**
@@ -167,7 +171,9 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @param {import("../../layer/Layer.js").State} layerState Layer state.
    * @param {CanvasRenderingContext2D} context Context.
    */
-  composeFrame(frameState, layerState, context) {}
+  composeFrame(frameState, layerState, context) {
+    abstract();
+  }
 
   /**
    * @abstract
@@ -175,7 +181,9 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @param {import("../../layer/Layer.js").State} layerState Layer state.
    * @return {boolean} whether composeFrame should be called.
    */
-  prepareFrame(frameState, layerState) {}
+  prepareFrame(frameState, layerState) {
+    return abstract();
+  }
 }
 
 export default CanvasLayerRenderer;

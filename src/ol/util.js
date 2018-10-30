@@ -3,6 +3,15 @@
  */
 
 /**
+ * @return {?} Any return.
+ */
+export function abstract() {
+  return /** @type {?} */ ((function() {
+    throw new Error('Unimplemented abstract method.');
+  })());
+}
+
+/**
  * Inherit the prototype methods from one constructor into another.
  *
  * Usage:
