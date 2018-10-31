@@ -177,7 +177,7 @@ class Attribution extends Control {
         continue;
       }
 
-      const source = layerState.layer.getSource();
+      const source = /** @type {import("../layer/Layer.js").default} */ (layerState.layer).getSource();
       if (!source) {
         continue;
       }

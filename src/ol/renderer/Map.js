@@ -154,9 +154,10 @@ class MapRenderer extends Disposable {
       const layer = layerState.layer;
       if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
         const layerRenderer = this.getLayerRenderer(layer);
-        if (layer.getSource()) {
+        const source = /** @type {import("../layer/Layer.js").default} */ (layer).getSource();
+        if (source) {
           result = layerRenderer.forEachFeatureAtCoordinate(
-            layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
+            source.getWrapX() ? translatedCoordinate : coordinate,
             frameState, hitTolerance, forEachFeatureAtCoordinate);
         }
         if (result) {
@@ -207,7 +208,7 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @param {import("../layer/Layer.js").default} layer Layer.
+   * @param {import("../layer/Base.js").default} layer Layer.
    * @protected
    * @return {import("./Layer.js").default} Layer renderer.
    */

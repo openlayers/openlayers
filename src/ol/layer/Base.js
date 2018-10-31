@@ -63,10 +63,7 @@ class BaseLayer extends BaseObject {
      * @type {import("./Layer.js").State}
      * @private
      */
-    this.state_ = /** @type {import("./Layer.js").State} */ ({
-      layer: /** @type {import("./Layer.js").default} */ (this),
-      managed: true
-    });
+    this.state_ = null;
 
     /**
      * The layer type.
@@ -89,15 +86,21 @@ class BaseLayer extends BaseObject {
    * @return {import("./Layer.js").State} Layer state.
    */
   getLayerState() {
-    this.state_.opacity = clamp(this.getOpacity(), 0, 1);
-    this.state_.sourceState = this.getSourceState();
-    this.state_.visible = this.getVisible();
-    this.state_.extent = this.getExtent();
-    this.state_.zIndex = this.getZIndex() || 0;
-    this.state_.maxResolution = this.getMaxResolution();
-    this.state_.minResolution = Math.max(this.getMinResolution(), 0);
+    /** @type {import("./Layer.js").State} */
+    const state = this.state_ || /** @type {?} */ ({
+      layer: this,
+      managed: true
+    });
+    state.opacity = clamp(this.getOpacity(), 0, 1);
+    state.sourceState = this.getSourceState();
+    state.visible = this.getVisible();
+    state.extent = this.getExtent();
+    state.zIndex = this.getZIndex() || 0;
+    state.maxResolution = this.getMaxResolution();
+    state.minResolution = Math.max(this.getMinResolution(), 0);
+    this.state_ = state;
 
-    return this.state_;
+    return state;
   }
 
   /**
