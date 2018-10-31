@@ -15,16 +15,15 @@
   },
   "plugins": [
     "config/jsdoc/api/plugins/markdown",
-    "config/jsdoc/api/plugins/convert-types",
-    "config/jsdoc/api/plugins/normalize-longnames",
+    "jsdoc-plugin-typescript",
     "config/jsdoc/api/plugins/inline-options",
     "config/jsdoc/api/plugins/inheritdoc",
     "config/jsdoc/api/plugins/events",
     "config/jsdoc/api/plugins/observable",
     "config/jsdoc/api/plugins/api"
   ],
-  "markdown": {
-    "parser": "gfm"
+  "typescript": {
+    "moduleRoot": "src"
   },
   "templates": {
     "cleverLinks": true,
