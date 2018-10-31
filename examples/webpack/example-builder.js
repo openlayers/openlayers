@@ -77,7 +77,7 @@ function getJsSource(chunk, jsName) {
         return jsSource;
       }
     }
-    if (module.identifier.endsWith(jsName)) {
+    if (module.identifier.endsWith(jsName) && module.source) {
       return module.source;
     }
   }
