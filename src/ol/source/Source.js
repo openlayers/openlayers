@@ -1,7 +1,7 @@
 /**
  * @module ol/source/Source
  */
-
+import {abstract} from '../util.js';
 import BaseObject from '../Object.js';
 import {get as getProjection} from '../proj.js';
 import SourceState from './State.js';
@@ -44,6 +44,7 @@ import SourceState from './State.js';
  * Base class for {@link module:ol/layer/Layer~Layer} sources.
  *
  * A generic `change` event is triggered when the state of the source changes.
+ * @abstract
  * @api
  */
 class Source extends BaseObject {
@@ -123,7 +124,9 @@ class Source extends BaseObject {
    * @abstract
    * @return {Array<number>|undefined} Resolutions.
    */
-  getResolutions() {}
+  getResolutions() {
+    return abstract();
+  }
 
   /**
    * Get the state of the source, see {@link module:ol/source/State~State} for possible states.

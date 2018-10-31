@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/Replay
  */
-
+import {abstract} from '../../util.js';
 import {getCenter} from '../../extent.js';
 import VectorContext from '../VectorContext.js';
 import {
@@ -122,13 +122,17 @@ class WebGLReplay extends VectorContext {
    * @param {import("../../webgl/Context.js").default} context WebGL context.
    * @return {function()} Delete resources function.
    */
-  getDeleteResourcesFunction(context) {}
+  getDeleteResourcesFunction(context) {
+    return abstract();
+  }
 
   /**
    * @abstract
    * @param {import("../../webgl/Context.js").default} context Context.
    */
-  finish(context) {}
+  finish(context) {
+    abstract();
+  }
 
   /**
    * @abstract
@@ -142,7 +146,9 @@ class WebGLReplay extends VectorContext {
      import("./polygonreplay/defaultshader/Locations.js").default|
      import("./texturereplay/defaultshader/Locations.js").default} Locations.
    */
-  setUpProgram(gl, context, size, pixelRatio) {}
+  setUpProgram(gl, context, size, pixelRatio) {
+    return abstract();
+  }
 
   /**
    * @abstract
@@ -153,7 +159,9 @@ class WebGLReplay extends VectorContext {
      import("./polygonreplay/defaultshader/Locations.js").default|
      import("./texturereplay/defaultshader/Locations.js").default} locations Locations.
    */
-  shutDownProgram(gl, locations) {}
+  shutDownProgram(gl, locations) {
+    abstract();
+  }
 
   /**
    * @abstract
@@ -163,7 +171,9 @@ class WebGLReplay extends VectorContext {
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {boolean} hitDetection Hit detection mode.
    */
-  drawReplay(gl, context, skippedFeaturesHash, hitDetection) {}
+  drawReplay(gl, context, skippedFeaturesHash, hitDetection) {
+    abstract();
+  }
 
   /**
    * @abstract
@@ -176,7 +186,9 @@ class WebGLReplay extends VectorContext {
    * @return {T|undefined} Callback result.
    * @template T
    */
-  drawHitDetectionReplayOneByOne(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {}
+  drawHitDetectionReplayOneByOne(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
+    return abstract();
+  }
 
   /**
    * @protected

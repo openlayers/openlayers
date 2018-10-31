@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/TextureReplay
  */
-import {getUid} from '../../util.js';
+import {abstract, getUid} from '../../util.js';
 import {intersects} from '../../extent.js';
 import {isEmpty} from '../../obj.js';
 import {fragment, vertex} from '../webgl/texturereplay/defaultshader.js';
@@ -460,16 +460,20 @@ class WebGLTextureReplay extends WebGLReplay {
    * @abstract
    * @protected
    * @param {boolean=} opt_all Return hit detection textures with regular ones.
-   * @returns {Array<WebGLTexture>} Textures.
+   * @return {Array<WebGLTexture>} Textures.
    */
-  getTextures(opt_all) {}
+  getTextures(opt_all) {
+    return abstract();
+  }
 
   /**
    * @abstract
    * @protected
-   * @returns {Array<WebGLTexture>} Textures.
+   * @return {Array<WebGLTexture>} Textures.
    */
-  getHitDetectionTextures() {}
+  getHitDetectionTextures() {
+    return abstract();
+  }
 }
 
 

@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/Map
  */
-import {getUid} from '../util.js';
+import {abstract, getUid} from '../util.js';
 import Disposable from '../Disposable.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
@@ -11,7 +11,9 @@ import {visibleAtResolution} from '../layer/Layer.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
 import {compose as composeTransform, invert as invertTransform, setFromArray as transformSetFromArray} from '../transform.js';
 
-
+/**
+ * @abstract
+ */
 class MapRenderer extends Disposable {
 
   /**
@@ -51,7 +53,9 @@ class MapRenderer extends Disposable {
    * @param {import("../render/EventType.js").default} type Event type.
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    */
-  dispatchRenderEvent(type, frameState) {}
+  dispatchRenderEvent(type, frameState) {
+    abstract();
+  }
 
   /**
    * Register layer renderer constructors.
@@ -179,7 +183,9 @@ class MapRenderer extends Disposable {
    * @return {T|undefined} Callback result.
    * @template S,T,U
    */
-  forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, thisArg, layerFilter, thisArg2) {}
+  forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, thisArg, layerFilter, thisArg2) {
+    return abstract();
+  }
 
   /**
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
@@ -290,11 +296,13 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @abstract
    * Render.
+   * @abstract
    * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
    */
-  renderFrame(frameState) {}
+  renderFrame(frameState) {
+    abstract();
+  }
 
   /**
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.

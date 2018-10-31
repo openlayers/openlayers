@@ -1,6 +1,7 @@
 /**
  * @module ol/renderer/webgl/Layer
  */
+import {abstract} from '../../util.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import WebGLImmediateRenderer from '../../render/webgl/Immediate.js';
@@ -14,6 +15,9 @@ import {ARRAY_BUFFER, FRAMEBUFFER, FLOAT, TEXTURE_2D,
 import WebGLBuffer from '../../webgl/Buffer.js';
 import {createEmptyTexture} from '../../webgl/Context.js';
 
+/**
+ * @abstract
+ */
 class WebGLLayerRenderer extends LayerRenderer {
 
   /**
@@ -236,7 +240,9 @@ class WebGLLayerRenderer extends LayerRenderer {
    * @param {import("../../webgl/Context.js").default} context Context.
    * @return {boolean} whether composeFrame should be called.
    */
-  prepareFrame(frameState, layerState, context) {}
+  prepareFrame(frameState, layerState, context) {
+    return abstract();
+  }
 
   /**
    * @abstract
@@ -248,7 +254,9 @@ class WebGLLayerRenderer extends LayerRenderer {
    * @return {T|undefined} Callback result.
    * @template S,T,U
    */
-  forEachLayerAtPixel(pixel, frameState, callback, thisArg) {}
+  forEachLayerAtPixel(pixel, frameState, callback, thisArg) {
+    return abstract();
+  }
 }
 
 
