@@ -1008,6 +1008,25 @@ class Modify extends PointerInteraction {
   }
 
   /**
+   * Get the features currently modified.
+   * @return {Array<import("../Feature.js").default>} Features.
+   * @api
+   */
+  getModifiedFeatures() {
+    const featuresById = {};
+    let feature, i;
+    this.dragSegments_.forEach(function(s) {
+      feature = s[0].feature;
+      featuresById[getUid(feature)] = feature;
+    });
+    const features = [];
+    for (i in featuresById) {
+      features.push(featuresById[i]);
+    }
+    return features;
+  }
+
+  /**
    * Removes the vertex currently being pointed.
    * @return {boolean} True when a vertex was removed.
    * @api
