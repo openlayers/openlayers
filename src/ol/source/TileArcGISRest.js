@@ -21,7 +21,7 @@ import {appendParams} from '../uri.js';
  * for more detail.
  * @property {Object<string,*>} [params] ArcGIS Rest parameters. This field is optional. Service defaults will be
  * used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is `IMAGE` by
- * default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`,
+ * default. `TRANSPARENT` is `true` by default.  `BBOX`, `SIZE`, `BBOXSR`,
  * and `IMAGESR` will be set dynamically. Set `LAYERS` to
  * override the default service layer visibility. See
  * http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/
@@ -66,7 +66,7 @@ class TileArcGISRest extends TileImage {
    */
   constructor(opt_options) {
 
-    const options = opt_options || {};
+    const options = opt_options || /** @type {Options} */ ({});
 
     super({
       attributions: options.attributions,
@@ -76,6 +76,7 @@ class TileArcGISRest extends TileImage {
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileGrid: options.tileGrid,
       tileLoadFunction: options.tileLoadFunction,
+      tileUrlFunction: tileUrlFunction,
       url: options.url,
       urls: options.urls,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
@@ -170,41 +171,6 @@ class TileArcGISRest extends TileImage {
   }
 
   /**
-   * @inheritDoc
-   */
-  fixedTileUrlFunction(tileCoord, pixelRatio, projection) {
-
-    let tileGrid = this.getTileGrid();
-    if (!tileGrid) {
-      tileGrid = this.getTileGridForProjection(projection);
-    }
-
-    if (tileGrid.getResolutions().length <= tileCoord[0]) {
-      return undefined;
-    }
-
-    const tileExtent = tileGrid.getTileCoordExtent(
-      tileCoord, this.tmpExtent_);
-    let tileSize = toSize(
-      tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
-
-    if (pixelRatio != 1) {
-      tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
-    }
-
-    // Apply default params and override with user specified values.
-    const baseParams = {
-      'F': 'image',
-      'FORMAT': 'PNG32',
-      'TRANSPARENT': true
-    };
-    assign(baseParams, this.params_);
-
-    return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      pixelRatio, projection, baseParams);
-  }
-
-  /**
    * Update the user-provided params.
    * @param {Object} params Params.
    * @api
@@ -213,6 +179,45 @@ class TileArcGISRest extends TileImage {
     assign(this.params_, params);
     this.setKey(this.getKeyForParams_());
   }
+}
+
+/**
+ * @param {import("../tilecoord.js").TileCoord} tileCoord The tile coordinate
+ * @param {number} pixelRatio The pixel ratio
+ * @param {import("../proj/Projection.js").default} projection The projection
+ * @return {string|undefined} The tile URL
+ * @this {TileArcGISRest}
+ */
+function tileUrlFunction(tileCoord, pixelRatio, projection) {
+
+  let tileGrid = this.getTileGrid();
+  if (!tileGrid) {
+    tileGrid = this.getTileGridForProjection(projection);
+  }
+
+  if (tileGrid.getResolutions().length <= tileCoord[0]) {
+    return undefined;
+  }
+
+  const tileExtent = tileGrid.getTileCoordExtent(
+    tileCoord, this.tmpExtent_);
+  let tileSize = toSize(
+    tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+
+  if (pixelRatio != 1) {
+    tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
+  }
+
+  // Apply default params and override with user specified values.
+  const baseParams = {
+    'F': 'image',
+    'FORMAT': 'PNG32',
+    'TRANSPARENT': true
+  };
+  assign(baseParams, this.params_);
+
+  return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
+    pixelRatio, projection, baseParams);
 }
 
 

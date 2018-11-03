@@ -35,7 +35,7 @@ export const cosh = (function() {
   } else {
     // … else, use the reference implementation of MDN:
     cosh = function(x) {
-      const y = Math.exp(x);
+      const y = /** @type {Math} */ (Math).exp(x);
       return (y + 1 / y) / 2;
     };
   }

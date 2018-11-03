@@ -1,8 +1,8 @@
 /**
  * @module ol/format/Feature
  */
-import Geometry from '../geom/Geometry.js';
 import {assign} from '../obj.js';
+import {abstract} from '../util.js';
 import {get as getProjection, equivalent as equivalentProjection, transformExtent} from '../proj.js';
 
 
@@ -123,7 +123,9 @@ class FeatureFormat {
    * @abstract
    * @return {import("./FormatType.js").default} Format.
    */
-  getType() {}
+  getType() {
+    return abstract();
+  }
 
   /**
    * Read a single feature from a source.
@@ -131,9 +133,11 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Node|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
-   * @return {import("../Feature.js").default} Feature.
+   * @return {import("../Feature.js").FeatureLike} Feature.
    */
-  readFeature(source, opt_options) {}
+  readFeature(source, opt_options) {
+    return abstract();
+  }
 
   /**
    * Read all features from a source.
@@ -141,9 +145,11 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Node|ArrayBuffer|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<import("../Feature.js").FeatureLike>} Features.
    */
-  readFeatures(source, opt_options) {}
+  readFeatures(source, opt_options) {
+    return abstract();
+  }
 
   /**
    * Read a single geometry from a source.
@@ -151,9 +157,11 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Node|Object|string} source Source.
    * @param {ReadOptions=} opt_options Read options.
-   * @return {Geometry} Geometry.
+   * @return {import("../geom/Geometry.js").default} Geometry.
    */
-  readGeometry(source, opt_options) {}
+  readGeometry(source, opt_options) {
+    return abstract();
+  }
 
   /**
    * Read the projection from a source.
@@ -162,7 +170,9 @@ class FeatureFormat {
    * @param {Document|Node|Object|string} source Source.
    * @return {import("../proj/Projection.js").default} Projection.
    */
-  readProjection(source) {}
+  readProjection(source) {
+    return abstract();
+  }
 
   /**
    * Encode a feature in this format.
@@ -172,7 +182,9 @@ class FeatureFormat {
    * @param {WriteOptions=} opt_options Write options.
    * @return {string} Result.
    */
-  writeFeature(feature, opt_options) {}
+  writeFeature(feature, opt_options) {
+    return abstract();
+  }
 
   /**
    * Encode an array of features in this format.
@@ -182,26 +194,30 @@ class FeatureFormat {
    * @param {WriteOptions=} opt_options Write options.
    * @return {string} Result.
    */
-  writeFeatures(features, opt_options) {}
+  writeFeatures(features, opt_options) {
+    return abstract();
+  }
 
   /**
    * Write a single geometry in this format.
    *
    * @abstract
-   * @param {Geometry} geometry Geometry.
+   * @param {import("../geom/Geometry.js").default} geometry Geometry.
    * @param {WriteOptions=} opt_options Write options.
    * @return {string} Result.
    */
-  writeGeometry(geometry, opt_options) {}
+  writeGeometry(geometry, opt_options) {
+    return abstract();
+  }
 }
 
 export default FeatureFormat;
 
 /**
- * @param {Geometry|import("../extent.js").Extent} geometry Geometry.
+ * @param {import("../geom/Geometry.js").default|import("../extent.js").Extent} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
  * @param {(WriteOptions|ReadOptions)=} opt_options Options.
- * @return {Geometry|import("../extent.js").Extent} Transformed geometry.
+ * @return {import("../geom/Geometry.js").default|import("../extent.js").Extent} Transformed geometry.
  */
 export function transformWithOptions(geometry, write, opt_options) {
   const featureProjection = opt_options ?
@@ -209,28 +225,29 @@ export function transformWithOptions(geometry, write, opt_options) {
   const dataProjection = opt_options ?
     getProjection(opt_options.dataProjection) : null;
   /**
-   * @type {Geometry|import("../extent.js").Extent}
+   * @type {import("../geom/Geometry.js").default|import("../extent.js").Extent}
    */
   let transformed;
   if (featureProjection && dataProjection &&
       !equivalentProjection(featureProjection, dataProjection)) {
-    if (geometry instanceof Geometry) {
-      transformed = (write ? geometry.clone() : geometry).transform(
-        write ? featureProjection : dataProjection,
-        write ? dataProjection : featureProjection);
-    } else {
+    if (Array.isArray(geometry)) {
       // FIXME this is necessary because GML treats extents
       // as geometries
       transformed = transformExtent(
         geometry,
         dataProjection,
         featureProjection);
+    } else {
+      transformed = (write ? /** @type {import("../geom/Geometry").default} */ (geometry).clone() : geometry).transform(
+        write ? featureProjection : dataProjection,
+        write ? dataProjection : featureProjection);
     }
   } else {
     transformed = geometry;
   }
-  if (write && opt_options && opt_options.decimals !== undefined) {
-    const power = Math.pow(10, opt_options.decimals);
+  if (write && opt_options && /** @type {WriteOptions} */ (opt_options).decimals !== undefined &&
+    !Array.isArray(transformed)) {
+    const power = Math.pow(10, /** @type {WriteOptions} */ (opt_options).decimals);
     // if decimals option on write, round each coordinate appropriately
     /**
      * @param {Array<number>} coordinates Coordinates.
@@ -243,7 +260,7 @@ export function transformWithOptions(geometry, write, opt_options) {
       return coordinates;
     };
     if (transformed === geometry) {
-      transformed = transformed.clone();
+      transformed = /** @type {import("../geom/Geometry").default} */ (geometry).clone();
     }
     transformed.applyTransform(transform);
   }

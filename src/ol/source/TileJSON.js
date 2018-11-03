@@ -70,7 +70,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  */
 class TileJSON extends TileImage {
   /**
-   * @param {Options=} options TileJSON options.
+   * @param {Options} options TileJSON options.
    */
   constructor(options) {
     super({

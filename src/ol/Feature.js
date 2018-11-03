@@ -5,8 +5,14 @@ import {assert} from './asserts.js';
 import {listen, unlisten, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 import BaseObject, {getChangeEventType} from './Object.js';
-import Geometry from './geom/Geometry.js';
-import Style from './style/Style.js';
+
+/**
+ * @typedef {typeof Feature|typeof import("./render/Feature.js").default} FeatureClass
+ */
+
+/**
+ * @typedef {Feature|import("./render/Feature.js").default} FeatureLike
+ */
 
 /**
  * @classdesc
@@ -78,7 +84,7 @@ class Feature extends BaseObject {
     /**
      * User provided style.
      * @private
-     * @type {import("./style/Style.js").default|Array<import("./style/Style.js").default>|import("./style/Style.js").StyleFunction}
+     * @type {import("./style/Style.js").StyleLike}
      */
     this.style_ = null;
 
@@ -98,11 +104,9 @@ class Feature extends BaseObject {
       this, getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, this);
 
-    if (opt_geometryOrProperties !== undefined) {
-      if (opt_geometryOrProperties instanceof Geometry ||
-          !opt_geometryOrProperties) {
-        /** @type {?Geometry} */
-        const geometry = opt_geometryOrProperties;
+    if (opt_geometryOrProperties) {
+      if (typeof /** @type {?} */ (opt_geometryOrProperties).getSimplifiedGeometry === 'function') {
+        const geometry = /** @type {import("./geom/Geometry.js").default} */ (opt_geometryOrProperties);
         this.setGeometry(geometry);
       } else {
         /** @type {Object<string, *>} */
@@ -171,7 +175,7 @@ class Feature extends BaseObject {
   /**
    * Get the feature's style. Will return what was provided to the
    * {@link module:ol/Feature~Feature#setStyle} method.
-   * @return {import("./style/Style.js").default|Array<import("./style/Style.js").default>|import("./style/Style.js").StyleFunction} The feature style.
+   * @return {import("./style/Style.js").StyleLike} The feature style.
    * @api
    */
   getStyle() {
@@ -226,7 +230,7 @@ class Feature extends BaseObject {
    * Set the style for the feature.  This can be a single style object, an array
    * of styles, or a function that takes a resolution and returns an array of
    * styles. If it is `null` the feature has no style (a `null` style).
-   * @param {import("./style/Style.js").default|Array<import("./style/Style.js").default>|import("./style/Style.js").StyleFunction} style Style for this feature.
+   * @param {import("./style/Style.js").StyleLike} style Style for this feature.
    * @api
    * @fires module:ol/events/Event~Event#event:change
    */
@@ -272,9 +276,9 @@ class Feature extends BaseObject {
 
 /**
  * Convert the provided object into a feature style function.  Functions passed
- * through unchanged.  Arrays of import("./style/Style.js").default or single style objects wrapped
+ * through unchanged.  Arrays of Style or single style objects wrapped
  * in a new feature style function.
- * @param {import("./style/Style.js").StyleFunction|!Array<import("./style/Style.js").default>|!import("./style/Style.js").default} obj
+ * @param {!import("./style/Style.js").StyleFunction|!Array<import("./style/Style.js").default>|!import("./style/Style.js").default} obj
  *     A feature style function, a single style, or an array of styles.
  * @return {import("./style/Style.js").StyleFunction} A style function.
  */
@@ -289,9 +293,10 @@ export function createStyleFunction(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      assert(obj instanceof Style,
+      assert(typeof /** @type {?} */ (obj).getZIndex === 'function',
         41); // Expected an `import("./style/Style.js").Style` or an array of `import("./style/Style.js").Style`
-      styles = [obj];
+      const style = /** @type {import("./style/Style.js").default} */ (obj);
+      styles = [style];
     }
     return function() {
       return styles;

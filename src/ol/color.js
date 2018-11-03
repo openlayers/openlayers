@@ -133,7 +133,7 @@ export function asArray(color) {
   if (Array.isArray(color)) {
     return color;
   } else {
-    return fromString(/** @type {string} */ (color));
+    return fromString(color);
   }
 }
 
@@ -185,9 +185,7 @@ function fromStringInternal_(s) {
   } else {
     assert(false, 14); // Invalid color
   }
-  return (
-    /** @type {Color} */ (color)
-  );
+  return color;
 }
 
 

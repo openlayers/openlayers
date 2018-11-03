@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/TextureReplay
  */
-import {getUid} from '../../util.js';
+import {abstract, getUid} from '../../util.js';
 import {intersects} from '../../extent.js';
 import {isEmpty} from '../../obj.js';
 import {fragment, vertex} from '../webgl/texturereplay/defaultshader.js';
@@ -244,7 +244,7 @@ class WebGLTextureReplay extends WebGLReplay {
     for (i = 0; i < ii; ++i) {
       image = images[i];
 
-      uid = getUid(image).toString();
+      uid = getUid(image);
       if (uid in texturePerImage) {
         texture = texturePerImage[uid];
       } else {
@@ -371,8 +371,7 @@ class WebGLTextureReplay extends WebGLReplay {
           this.startIndices[featureIndex] <= groupEnd) {
         const feature = this.startIndicesFeature[featureIndex];
 
-        const featureUid = getUid(feature).toString();
-        if (skippedFeaturesHash[featureUid] !== undefined) {
+        if (skippedFeaturesHash[getUid(feature)] !== undefined) {
           // feature should be skipped
           if (start !== end) {
             // draw the features so far
@@ -402,7 +401,7 @@ class WebGLTextureReplay extends WebGLReplay {
    * @inheritDoc
    */
   drawHitDetectionReplayOneByOne(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-    let i, groupStart, start, end, feature, featureUid;
+    let i, groupStart, start, end, feature;
     let featureIndex = this.startIndices.length - 1;
     const hitDetectionTextures = this.getHitDetectionTextures();
     for (i = hitDetectionTextures.length - 1; i >= 0; --i) {
@@ -415,9 +414,8 @@ class WebGLTextureReplay extends WebGLReplay {
           this.startIndices[featureIndex] >= groupStart) {
         start = this.startIndices[featureIndex];
         feature = this.startIndicesFeature[featureIndex];
-        featureUid = getUid(feature).toString();
 
-        if (skippedFeaturesHash[featureUid] === undefined &&
+        if (skippedFeaturesHash[getUid(feature)] === undefined &&
             feature.getGeometry() &&
             (opt_hitExtent === undefined || intersects(
               /** @type {Array<number>} */ (opt_hitExtent),
@@ -462,16 +460,20 @@ class WebGLTextureReplay extends WebGLReplay {
    * @abstract
    * @protected
    * @param {boolean=} opt_all Return hit detection textures with regular ones.
-   * @returns {Array<WebGLTexture>} Textures.
+   * @return {Array<WebGLTexture>} Textures.
    */
-  getTextures(opt_all) {}
+  getTextures(opt_all) {
+    return abstract();
+  }
 
   /**
    * @abstract
    * @protected
-   * @returns {Array<WebGLTexture>} Textures.
+   * @return {Array<WebGLTexture>} Textures.
    */
-  getHitDetectionTextures() {}
+  getHitDetectionTextures() {
+    return abstract();
+  }
 }
 
 

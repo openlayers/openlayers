@@ -104,6 +104,38 @@ describe('ol.Graticule', function() {
       expect(graticule.latLabelPosition_).to.be(0.1);
     });
 
+    it('can be configured with interval limits', function() {
+      graticule = new Graticule({
+        map: new Map({}),
+        showLabels: true,
+        lonLabelFormatter: function(lon) {
+          return lon.toString();
+        },
+        latLabelFormatter: function(lat) {
+          return lat.toString();
+        },
+        intervals: [10]
+      });
+      const extent = [-25614353.926475704, -7827151.696402049,
+        25614353.926475704, 7827151.696402049];
+      const projection = getProjection('EPSG:3857');
+      const resolution = 4891.96981025128;
+      const squaredTolerance = resolution * resolution / 4.0;
+      graticule.updateProjectionInfo_(projection);
+      graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
+
+      expect(graticule.meridiansLabels_[0].text).to.be('0');
+      expect(graticule.parallelsLabels_[0].text).to.be('0');
+      expect(graticule.meridiansLabels_[1].text).to.be('-10');
+      expect(graticule.parallelsLabels_[1].text).to.be('-10');
+      expect(graticule.meridiansLabels_[2].text).to.be('-20');
+      expect(graticule.parallelsLabels_[2].text).to.be('-20');
+
+      expect(graticule.getMeridians().length).to.be(37);
+      expect(graticule.getParallels().length).to.be(11);
+    });
+
+
   });
 
 });

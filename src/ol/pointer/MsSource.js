@@ -171,6 +171,7 @@ class MsSource extends EventSource {
    * @return {Object} The copied event.
    */
   prepareEvent_(inEvent) {
+    /** @type {MSPointerEvent|Object} */
     let e = inEvent;
     if (typeof inEvent.pointerType === 'number') {
       e = this.dispatcher.cloneEvent(inEvent, inEvent);

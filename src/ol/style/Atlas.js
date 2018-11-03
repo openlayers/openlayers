@@ -192,7 +192,7 @@ class Atlas {
    * @param {AtlasBlock} newBlock2 The 2nd block to add.
    */
   updateBlocks_(index, newBlock1, newBlock2) {
-    const args = [index, 1];
+    const args = /** @type {Array<*>} */ ([index, 1]);
     if (newBlock1.width > 0 && newBlock1.height > 0) {
       args.push(newBlock1);
     }

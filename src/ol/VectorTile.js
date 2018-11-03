@@ -12,12 +12,6 @@ import TileState from './TileState.js';
 const DEFAULT_EXTENT = [0, 0, 4096, 4096];
 
 
-/**
- * @typedef {function(new: VectorTile, import("./tilecoord.js").TileCoord,
- * TileState, string, ?string, import("./Tile.js").LoadFunction)} TileClass
- * @api
- */
-
 class VectorTile extends Tile {
 
   /**
@@ -120,7 +114,7 @@ class VectorTile extends Tile {
   /**
    * Get the features for this tile. Geometries will be in the projection returned
    * by {@link module:ol/VectorTile~VectorTile#getProjection}.
-   * @return {Array<import("./Feature.js").default|import("./render/Feature.js").default>} Features.
+   * @return {Array<import("./Feature.js").FeatureLike>} Features.
    * @api
    */
   getFeatures() {

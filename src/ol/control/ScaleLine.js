@@ -121,22 +121,19 @@ class ScaleLine extends Control {
       this, getChangeEventType(UNITS_PROP),
       this.handleUnitsChanged_, this);
 
-    this.setUnits(/** @type {Units} */ (options.units) ||
-        Units.METRIC);
+    this.setUnits(/** @type {Units} */ (options.units) || Units.METRIC);
 
   }
 
   /**
    * Return the units to use in the scale line.
-   * @return {Units|undefined} The units
+   * @return {Units} The units
    * to use in the scale line.
    * @observable
    * @api
    */
   getUnits() {
-    return (
-      /** @type {Units|undefined} */ (this.get(UNITS_PROP))
-    );
+    return this.get(UNITS_PROP);
   }
 
   /**

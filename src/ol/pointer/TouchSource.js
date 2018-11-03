@@ -137,9 +137,9 @@ class TouchSource extends EventSource {
 
     /**
      * @private
-     * @type {number|undefined}
+     * @type {?}
      */
-    this.resetId_ = undefined;
+    this.resetId_;
 
     /**
      * Mouse event timeout: This should be long enough to
@@ -228,9 +228,9 @@ class TouchSource extends EventSource {
     e.detail = this.clickCount_;
     e.button = 0;
     e.buttons = 1;
-    e.width = inTouch.webkitRadiusX || inTouch.radiusX || 0;
-    e.height = inTouch.webkitRadiusY || inTouch.radiusY || 0;
-    e.pressure = inTouch.webkitForce || inTouch.force || 0.5;
+    e.width = inTouch.radiusX || 0;
+    e.height = inTouch.radiusY || 0;
+    e.pressure = inTouch.force || 0.5;
     e.isPrimary = this.isPrimaryTouch_(inTouch);
     e.pointerType = POINTER_TYPE;
 
@@ -300,12 +300,12 @@ class TouchSource extends EventSource {
     if (count >= touchList.length) {
       const d = [];
       for (let i = 0; i < count; ++i) {
-        const key = keys[i];
+        const key = Number(keys[i]);
         const value = this.pointerMap[key];
         // Never remove pointerId == 1, which is mouse.
         // Touch identifiers are 2 smaller than their pointerId, which is the
         // index in pointermap.
-        if (key != /** @type {string} */ (POINTER_ID) && !this.findTouch_(touchList, key - 2)) {
+        if (key != POINTER_ID && !this.findTouch_(touchList, key - 2)) {
           d.push(value.out);
         }
       }
@@ -348,7 +348,7 @@ class TouchSource extends EventSource {
     this.dispatcher.move(event, browserEvent);
     if (outEvent && outTarget !== event.target) {
       outEvent.relatedTarget = event.target;
-      event.relatedTarget = outTarget;
+      /** @type {Object} */ (event).relatedTarget = outTarget;
       // recover from retargeting by shadow
       outEvent.target = outTarget;
       if (event.target) {
@@ -356,8 +356,8 @@ class TouchSource extends EventSource {
         this.dispatcher.enterOver(event, browserEvent);
       } else {
         // clean up case when finger leaves the screen
-        event.target = outTarget;
-        event.relatedTarget = null;
+        /** @type {Object} */ (event).target = outTarget;
+        /** @type {Object} */ (event).relatedTarget = null;
         this.cancelOut_(browserEvent, event);
       }
     }

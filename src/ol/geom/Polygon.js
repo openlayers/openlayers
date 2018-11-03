@@ -86,10 +86,10 @@ class Polygon extends SimpleGeometry {
     this.orientedFlatCoordinates_ = null;
 
     if (opt_layout !== undefined && opt_ends) {
-      this.setFlatCoordinates(opt_layout, coordinates);
+      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
       this.ends_ = opt_ends;
     } else {
-      this.setCoordinates(coordinates, opt_layout);
+      this.setCoordinates(/** @type {Array<Array<import("../coordinate.js").Coordinate>>} */ (coordinates), opt_layout);
     }
 
   }

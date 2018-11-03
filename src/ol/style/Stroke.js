@@ -93,7 +93,7 @@ class Stroke {
   clone() {
     const color = this.getColor();
     return new Stroke({
-      color: (color && color.slice) ? color.slice() : color || undefined,
+      color: Array.isArray(color) ? color.slice() : color || undefined,
       lineCap: this.getLineCap(),
       lineDash: this.getLineDash() ? this.getLineDash().slice() : undefined,
       lineDashOffset: this.getLineDashOffset(),
@@ -259,7 +259,7 @@ class Stroke {
         if (typeof this.color_ === 'string') {
           this.checksum_ += this.color_;
         } else {
-          this.checksum_ += getUid(this.color_).toString();
+          this.checksum_ += getUid(this.color_);
         }
       } else {
         this.checksum_ += '-';

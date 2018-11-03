@@ -310,7 +310,7 @@ describe('ol.source.TileWMS', function() {
   });
 
   describe('#setUrls()', function() {
-    it ('updates the source key', function() {
+    it('updates the source key', function() {
       const source = new TileWMS({
         urls: ['u1', 'u2']
       });

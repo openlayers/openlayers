@@ -5,8 +5,10 @@
 // FIXME animated shaders! check in redraw
 
 import LayerType from '../../LayerType.js';
+import ImageTile from '../../ImageTile.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
+import TileSource from '../../source/Tile.js';
 import {numberSafeCompareFunction} from '../../array.js';
 import {createEmpty, intersects} from '../../extent.js';
 import {roundUpToPowerOfTwo} from '../../math.js';
@@ -152,6 +154,10 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
 
     const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
     const tileSource = tileLayer.getSource();
+    if (!(tileSource instanceof TileSource)) {
+      return true;
+    }
+
     const tileGrid = tileSource.getTileGridForProjection(projection);
     const z = tileGrid.getZForResolution(viewState.resolution);
     const tileResolution = tileGrid.getResolution(z);
@@ -281,6 +287,11 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
         const tilesToDraw = tilesToDrawByZ[zs[i]];
         for (const tileKey in tilesToDraw) {
           tile = tilesToDraw[tileKey];
+
+          if (!(tile instanceof ImageTile)) {
+            continue;
+          }
+
           tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
           u_tileOffset[0] = 2 * (tileExtent[2] - tileExtent[0]) /
               framebufferExtentDimension;

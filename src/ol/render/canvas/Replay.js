@@ -2,7 +2,6 @@
  * @module ol/render/canvas/Replay
  */
 import {getUid} from '../../util.js';
-import {VOID} from '../../functions.js';
 import {equals, reverseSubArray} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
 import {buffer, clone, coordinateRelationship, createEmpty, createOrUpdate,
@@ -457,6 +456,11 @@ class CanvasReplay extends VectorContext {
   }
 
   /**
+   * FIXME empty description for jsdoc
+   */
+  finish() {}
+
+  /**
    * @private
    * @param {CanvasRenderingContext2D} context Context.
    */
@@ -481,8 +485,8 @@ class CanvasReplay extends VectorContext {
   setStrokeStyle_(context, instruction) {
     context.strokeStyle = /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
     context.lineWidth = /** @type {number} */ (instruction[2]);
-    context.lineCap = /** @type {string} */ (instruction[3]);
-    context.lineJoin = /** @type {string} */ (instruction[4]);
+    context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
+    context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
     context.miterLimit = /** @type {number} */ (instruction[5]);
     if (CANVAS_LINE_DASH) {
       context.lineDashOffset = /** @type {number} */ (instruction[7]);
@@ -589,13 +593,11 @@ class CanvasReplay extends VectorContext {
     let x, y;
     while (i < ii) {
       const instruction = instructions[i];
-      const type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
+      const type = /** @type {CanvasInstruction} */ (instruction[0]);
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
           feature = /** @type {import("../../Feature.js").default|import("../Feature.js").default} */ (instruction[1]);
-          if ((skipFeatures &&
-              skippedFeaturesHash[getUid(feature).toString()]) ||
-              !feature.getGeometry()) {
+          if ((skipFeatures && skippedFeaturesHash[getUid(feature)]) || !feature.getGeometry()) {
             i = /** @type {number} */ (instruction[2]);
           } else if (opt_hitExtent !== undefined && !intersects(
             opt_hitExtent, feature.getGeometry().getExtent())) {
@@ -719,7 +721,9 @@ class CanvasReplay extends VectorContext {
           const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
           const textLength = measure(text);
           if (overflow || textLength <= pathLength) {
-            const textAlign = /** @type {module:ol~render} */ (this).textStates[textKey].textAlign;
+            /** @type {import("./TextReplay.js").default} */
+            const textReplay = /** @type {?} */ (this);
+            const textAlign = textReplay.textStates[textKey].textAlign;
             const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
             const parts = drawTextOnPath(
               pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
@@ -729,7 +733,7 @@ class CanvasReplay extends VectorContext {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
-                  label = /** @type {module:ol~render} */ (this).getImage(chars, textKey, '', strokeKey);
+                  label = textReplay.getImage(chars, textKey, '', strokeKey);
                   anchorX = /** @type {number} */ (part[2]) + strokeWidth;
                   anchorY = baseline * label.height + (0.5 - baseline) * 2 * strokeWidth - offsetY;
                   this.replayImage_(context,
@@ -743,7 +747,7 @@ class CanvasReplay extends VectorContext {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
-                  label = /** @type {module:ol~render} */ (this).getImage(chars, textKey, fillKey, '');
+                  label = textReplay.getImage(chars, textKey, fillKey, '');
                   anchorX = /** @type {number} */ (part[2]);
                   anchorY = baseline * label.height - offsetY;
                   this.replayImage_(context,
@@ -903,7 +907,7 @@ class CanvasReplay extends VectorContext {
     let begin = -1;
     for (i = 0; i < n; ++i) {
       instruction = hitDetectionInstructions[i];
-      type = /** @type {import("./Instruction.js").default} */ (instruction[0]);
+      type = /** @type {CanvasInstruction} */ (instruction[0]);
       if (type == CanvasInstruction.END_GEOMETRY) {
         begin = i;
       } else if (type == CanvasInstruction.BEGIN_GEOMETRY) {
@@ -972,6 +976,7 @@ class CanvasReplay extends VectorContext {
    */
   createFill(state, geometry) {
     const fillStyle = state.fillStyle;
+    /** @type {Array<*>} */
     const fillInstruction = [CanvasInstruction.SET_FILL_STYLE, fillStyle];
     if (typeof fillStyle !== 'string') {
       // Fill is a pattern or gradient - align it!
@@ -1079,12 +1084,6 @@ class CanvasReplay extends VectorContext {
     return this.bufferedMaxExtent_;
   }
 }
-
-
-/**
- * FIXME empty description for jsdoc
- */
-CanvasReplay.prototype.finish = VOID;
 
 
 export default CanvasReplay;

@@ -35,7 +35,7 @@ import SourceState from '../source/State.js';
 
 /**
  * @typedef {Object} State
- * @property {import("./Layer.js").default} layer
+ * @property {import("./Base.js").default} layer
  * @property {number} opacity
  * @property {SourceState} sourceState
  * @property {boolean} visible
@@ -192,13 +192,14 @@ class Layer extends BaseLayer {
     }
     if (map) {
       this.mapPrecomposeKey_ = listen(map, RenderEventType.PRECOMPOSE, function(evt) {
+        const renderEvent = /** @type {import("../render/Event.js").default} */ (evt);
         const layerState = this.getLayerState();
         layerState.managed = false;
         if (this.getZIndex() === undefined) {
           layerState.zIndex = Infinity;
         }
-        evt.frameState.layerStatesArray.push(layerState);
-        evt.frameState.layerStates[getUid(this)] = layerState;
+        renderEvent.frameState.layerStatesArray.push(layerState);
+        renderEvent.frameState.layerStates[getUid(this)] = layerState;
       }, this);
       this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
       this.changed();

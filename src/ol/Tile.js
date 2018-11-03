@@ -122,7 +122,7 @@ class Tile extends EventTarget {
     /**
      * Lookup of start times for rendering transitions.  If the start time is
      * equal to -1, the transition is complete.
-     * @type {Object<number, number>}
+     * @type {Object<string, number>}
      */
     this.transitionStarts_ = {};
 
@@ -180,7 +180,7 @@ class Tile extends EventTarget {
     }
 
     let tile = this.interimTile;
-    let prev = this;
+    let prev = /** @type {Tile} */ (this);
 
     do {
       if (tile.getState() == TileState.LOADED) {
@@ -244,7 +244,7 @@ class Tile extends EventTarget {
 
   /**
    * Get the alpha value for rendering.
-   * @param {number} id An id for the renderer.
+   * @param {string} id An id for the renderer.
    * @param {number} time The render frame time.
    * @return {number} A number between 0 and 1.
    */
@@ -272,7 +272,7 @@ class Tile extends EventTarget {
    * Determine if a tile is in an alpha transition.  A tile is considered in
    * transition if tile.getAlpha() has not yet been called or has been called
    * and returned 1.
-   * @param {number} id An id for the renderer.
+   * @param {string} id An id for the renderer.
    * @return {boolean} The tile is in transition.
    */
   inTransition(id) {
@@ -284,7 +284,7 @@ class Tile extends EventTarget {
 
   /**
    * Mark a transition as complete.
-   * @param {number} id An id for the renderer.
+   * @param {string} id An id for the renderer.
    */
   endTransition(id) {
     if (this.transition_) {

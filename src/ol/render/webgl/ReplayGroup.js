@@ -19,9 +19,7 @@ import WebGLTextReplay from '../webgl/TextReplay.js';
 const HIT_DETECTION_SIZE = [1, 1];
 
 /**
- * @type {Object<import("../ReplayType.js").default,
- *                function(new: import("./Replay.js").default, number,
- *                import("../../extent.js").Extent)>}
+ * @type {Object<import("../ReplayType.js").default, typeof import("./Replay.js").default>}
  */
 const BATCH_CONSTRUCTORS = {
   'Circle': WebGLCircleReplay,
@@ -69,10 +67,11 @@ class WebGLReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @param {import("../../style/Style.js").default} style Style.
-   * @param {boolean} group Group with previous replay.
+   * @inheritDoc
    */
-  addDeclutter(style, group) {}
+  addDeclutter(group) {
+    return [];
+  }
 
   /**
    * @param {import("../../webgl/Context.js").default} context WebGL context.
@@ -123,9 +122,6 @@ class WebGLReplayGroup extends ReplayGroup {
     }
     let replay = replays[replayType];
     if (replay === undefined) {
-      /**
-       * @type {Function}
-       */
       const Constructor = BATCH_CONSTRUCTORS[replayType];
       replay = new Constructor(this.tolerance_, this.maxExtent_);
       replays[replayType] = replay;

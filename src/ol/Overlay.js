@@ -22,7 +22,7 @@ import {containsExtent} from './extent.js';
  * shifts the overlay down.
  * @property {import("./coordinate.js").Coordinate} [position] The overlay position
  * in map projection.
- * @property {import("./OverlayPositioning.js").default} [positioning='top-left'] Defines how
+ * @property {OverlayPositioning} [positioning='top-left'] Defines how
  * the overlay is actually positioned with respect to its `position` property.
  * Possible values are `'bottom-left'`, `'bottom-center'`, `'bottom-right'`,
  * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
@@ -205,7 +205,7 @@ class Overlay extends BaseObject {
     this.setOffset(options.offset !== undefined ? options.offset : [0, 0]);
 
     this.setPositioning(options.positioning !== undefined ?
-      /** @type {import("./OverlayPositioning.js").default} */ (options.positioning) :
+      /** @type {OverlayPositioning} */ (options.positioning) :
       OverlayPositioning.TOP_LEFT);
 
     if (options.position !== undefined) {
@@ -271,14 +271,14 @@ class Overlay extends BaseObject {
 
   /**
    * Get the current positioning of this overlay.
-   * @return {import("./OverlayPositioning.js").default} How the overlay is positioned
+   * @return {OverlayPositioning} How the overlay is positioned
    *     relative to its point on the map.
    * @observable
    * @api
    */
   getPositioning() {
     return (
-      /** @type {import("./OverlayPositioning.js").default} */ (this.get(Property.POSITIONING))
+      /** @type {OverlayPositioning} */ (this.get(Property.POSITIONING))
     );
   }
 
@@ -469,7 +469,7 @@ class Overlay extends BaseObject {
 
   /**
    * Set the positioning for this overlay.
-   * @param {import("./OverlayPositioning.js").default} positioning how the overlay is
+   * @param {OverlayPositioning} positioning how the overlay is
    *     positioned relative to its point on the map.
    * @observable
    * @api

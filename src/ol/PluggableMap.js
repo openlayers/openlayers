@@ -42,7 +42,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {null|import("./extent.js").Extent} extent
  * @property {import("./coordinate.js").Coordinate} focus
  * @property {number} index
- * @property {Object<number, import("./layer/Layer.js").State>} layerStates
+ * @property {Object<string, import("./layer/Layer.js").State>} layerStates
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray
  * @property {import("./transform.js").Transform} pixelToCoordinateTransform
  * @property {Array<PostRenderFunction>} postRenderFunctions
@@ -88,7 +88,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @typedef {Object} MapOptions
  * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
  * Controls initially added to the map. If not specified,
- * {@link module:ol/control/util~defaults} is used.
+ * {@link module:ol/control~defaults} is used.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
  * physical pixels and device-independent pixels (dips) on the device.
  * @property {Collection<import("./interaction/Interaction.js").default>|Array<import("./interaction/Interaction.js").default>} [interactions]
@@ -102,7 +102,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * map target (i.e. the user-provided div for the map). If this is not
  * `document`, the target element needs to be focused for key events to be
  * emitted, requiring that the target element has a `tabindex` attribute.
- * @property {Array<import("./layer/Base.js").default>|Collection<import("./layer/Base.js").default>} [layers]
+ * @property {Array<import("./layer/Base.js").default>|Collection<import("./layer/Base.js").default>|LayerGroup} [layers]
  * Layers. If this is not defined, a map with no layers will be rendered. Note
  * that layers are rendered in the order supplied, so if you want, for example,
  * a vector layer to appear on top of a tile layer, it must come after the tile
@@ -464,6 +464,10 @@ class PluggableMap extends BaseObject {
 
   }
 
+  /**
+   * @abstract
+   * @return {import("./renderer/Map.js").default} The map renderer
+   */
   createRenderer() {
     throw new Error('Use a map type that has a createRenderer method');
   }
@@ -546,7 +550,7 @@ class PluggableMap extends BaseObject {
    * callback with each intersecting feature. Layers included in the detection can
    * be configured through the `layerFilter` option in `opt_options`.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
-   * @param {function(this: S, (import("./Feature.js").default|import("./render/Feature.js").default),
+   * @param {function(this: S, import("./Feature.js").FeatureLike,
    *     import("./layer/Layer.js").default): T} callback Feature callback. The callback will be
    *     called with two arguments. The first argument is one
    *     {@link module:ol/Feature feature} or
@@ -565,7 +569,8 @@ class PluggableMap extends BaseObject {
       return;
     }
     const coordinate = this.getCoordinateFromPixel(pixel);
-    opt_options = opt_options !== undefined ? opt_options : {};
+    opt_options = opt_options !== undefined ? opt_options :
+      /** @type {AtPixelOptions} */ ({});
     const hitTolerance = opt_options.hitTolerance !== undefined ?
       opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
     const layerFilter = opt_options.layerFilter !== undefined ?
@@ -579,7 +584,7 @@ class PluggableMap extends BaseObject {
    * Get all features that intersect a pixel on the viewport.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {AtPixelOptions=} opt_options Optional options.
-   * @return {Array<import("./Feature.js").default|import("./render/Feature.js").default>} The detected features or
+   * @return {Array<import("./Feature.js").FeatureLike>} The detected features or
    * `null` if none were found.
    * @api
    */
@@ -637,7 +642,8 @@ class PluggableMap extends BaseObject {
       return false;
     }
     const coordinate = this.getCoordinateFromPixel(pixel);
-    opt_options = opt_options !== undefined ? opt_options : {};
+    opt_options = opt_options !== undefined ? opt_options :
+      /** @type {AtPixelOptions} */ ({});
     const layerFilter = opt_options.layerFilter !== undefined ? opt_options.layerFilter : TRUE;
     const hitTolerance = opt_options.hitTolerance !== undefined ?
       opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
@@ -657,13 +663,16 @@ class PluggableMap extends BaseObject {
 
   /**
    * Returns the map pixel position for a browser event relative to the viewport.
-   * @param {Event} event Event.
+   * @param {Event|TouchEvent} event Event.
    * @return {import("./pixel.js").Pixel} Pixel.
    * @api
    */
   getEventPixel(event) {
     const viewportPosition = this.viewport_.getBoundingClientRect();
-    const eventPosition = event.changedTouches ? event.changedTouches[0] : event;
+    const eventPosition = 'changedTouches' in event ?
+      /** @type {TouchEvent} */ (event).changedTouches[0] :
+      /** @type {MouseEvent} */ (event);
+
     return [
       eventPosition.clientX - viewportPosition.left,
       eventPosition.clientY - viewportPosition.top
@@ -963,7 +972,7 @@ class PluggableMap extends BaseObject {
         tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
       }
     }
-    if (frameState && this.hasListener(MapEventType.RENDERCOMPLETE) && !frameState.animate &&
+    if (frameState && this.hasListener(RenderEventType.RENDERCOMPLETE) && !frameState.animate &&
         !this.tileQueue_.getTilesLoading() && !getLoading(this.getLayers().getArray())) {
       this.renderer_.dispatchRenderEvent(RenderEventType.RENDERCOMPLETE, frameState);
     }
@@ -1295,8 +1304,7 @@ class PluggableMap extends BaseObject {
    * @param {import("./Feature.js").default} feature Feature.
    */
   skipFeature(feature) {
-    const featureUid = getUid(feature).toString();
-    this.skippedFeatureUids_[featureUid] = true;
+    this.skippedFeatureUids_[getUid(feature)] = true;
     this.render();
   }
 
@@ -1331,8 +1339,7 @@ class PluggableMap extends BaseObject {
    * @param {import("./Feature.js").default} feature Feature.
    */
   unskipFeature(feature) {
-    const featureUid = getUid(feature).toString();
-    delete this.skippedFeatureUids_[featureUid];
+    delete this.skippedFeatureUids_[getUid(feature)];
     this.render();
   }
 }
@@ -1359,8 +1366,8 @@ function createOptionsInternal(options) {
    */
   const values = {};
 
-  const layerGroup = (options.layers instanceof LayerGroup) ?
-    options.layers : new LayerGroup({layers: options.layers});
+  const layerGroup = options.layers && typeof /** @type {?} */ (options.layers).getLayers === 'function' ?
+    /** @type {LayerGroup} */ (options.layers) : new LayerGroup({layers: /** @type {Collection} */ (options.layers)});
   values[MapProperty.LAYERGROUP] = layerGroup;
 
   values[MapProperty.TARGET] = options.target;
@@ -1373,9 +1380,9 @@ function createOptionsInternal(options) {
     if (Array.isArray(options.controls)) {
       controls = new Collection(options.controls.slice());
     } else {
-      assert(options.controls instanceof Collection,
+      assert(typeof /** @type {?} */ (options.controls).getArray === 'function',
         47); // Expected `controls` to be an array or an `import("./Collection.js").Collection`
-      controls = options.controls;
+      controls = /** @type {Collection} */ (options.controls);
     }
   }
 
@@ -1384,9 +1391,9 @@ function createOptionsInternal(options) {
     if (Array.isArray(options.interactions)) {
       interactions = new Collection(options.interactions.slice());
     } else {
-      assert(options.interactions instanceof Collection,
+      assert(typeof /** @type {?} */ (options.interactions).getArray === 'function',
         48); // Expected `interactions` to be an array or an `import("./Collection.js").Collection`
-      interactions = options.interactions;
+      interactions = /** @type {Collection} */ (options.interactions);
     }
   }
 
@@ -1395,7 +1402,7 @@ function createOptionsInternal(options) {
     if (Array.isArray(options.overlays)) {
       overlays = new Collection(options.overlays.slice());
     } else {
-      assert(options.overlays instanceof Collection,
+      assert(typeof /** @type {?} */ (options.overlays).getArray === 'function',
         49); // Expected `overlays` to be an array or an `import("./Collection.js").Collection`
       overlays = options.overlays;
     }
@@ -1421,12 +1428,14 @@ export default PluggableMap;
 function getLoading(layers) {
   for (let i = 0, ii = layers.length; i < ii; ++i) {
     const layer = layers[i];
-    if (layer instanceof LayerGroup) {
-      return getLoading(layer.getLayers().getArray());
-    }
-    const source = layers[i].getSource();
-    if (source && source.loading) {
-      return true;
+    if (typeof /** @type {?} */ (layer).getLayers === 'function') {
+      return getLoading(/** @type {LayerGroup} */ (layer).getLayers().getArray());
+    } else {
+      const source = /** @type {import("./layer/Layer.js").default} */ (
+        layer).getSource();
+      if (source && source.loading) {
+        return true;
+      }
     }
   }
   return false;

@@ -12,7 +12,7 @@ exports.handlers = {
         events[cls] = [];
       }
       events[cls].push(doclet.longname);
-    } else if (doclet.kind == 'class') {
+    } else if (doclet.kind == 'class' && !(doclet.longname in classes)) {
       classes[doclet.longname] = doclet;
     }
   },
@@ -29,7 +29,7 @@ exports.handlers = {
             event = doclet.fires[j].replace('event:', '');
             if (events[event]) {
               fires.push.apply(fires, events[event]);
-            } else {
+            } else if (doclet.fires[j] !== 'event:ObjectEvent') {
               fires.push(doclet.fires[j]);
             }
           }
@@ -40,4 +40,3 @@ exports.handlers = {
   }
 
 };
-

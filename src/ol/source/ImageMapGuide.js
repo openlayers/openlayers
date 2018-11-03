@@ -41,7 +41,7 @@ import {appendParams} from '../uri.js';
  */
 class ImageMapGuide extends ImageSource {
   /**
-   * @param {Options=} options ImageMapGuide options.
+   * @param {Options} options ImageMapGuide options.
    */
   constructor(options) {
 

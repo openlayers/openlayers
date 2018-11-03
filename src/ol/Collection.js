@@ -24,7 +24,7 @@ const Property = {
 export class CollectionEvent extends Event {
 
   /**
-   * @param {import("./CollectionEventType.js").default} type Type.
+   * @param {CollectionEventType} type Type.
    * @param {*=} opt_element Element.
    */
   constructor(type, opt_element) {
@@ -55,6 +55,8 @@ export class CollectionEvent extends Event {
  * event. Note that this does not cover changes to the objects _within_ the
  * Collection; they trigger events on the appropriate object, not on the
  * Collection as a whole.
+ *
+ * @fires CollectionEvent
  *
  * @template T
  * @api
@@ -160,7 +162,7 @@ class Collection extends BaseObject {
    * @api
    */
   getLength() {
-    return /** @type {number} */ (this.get(Property.LENGTH));
+    return this.get(Property.LENGTH);
   }
 
   /**

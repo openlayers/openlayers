@@ -12,7 +12,7 @@ import TileGrid from './tilegrid/TileGrid.js';
 
 /**
  * @param {import("./proj/Projection.js").default} projection Projection.
- * @return {!import("./tilegrid/TileGrid.js").default} Default tile grid for the
+ * @return {!TileGrid} Default tile grid for the
  * passed projection.
  */
 export function getForProjection(projection) {
@@ -26,7 +26,7 @@ export function getForProjection(projection) {
 
 
 /**
- * @param {import("./tilegrid/TileGrid.js").default} tileGrid Tile grid.
+ * @param {TileGrid} tileGrid Tile grid.
  * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
  * @param {import("./proj/Projection.js").default} projection Projection.
  * @return {import("./tilecoord.js").TileCoord} Tile coordinate.
@@ -52,8 +52,8 @@ export function wrapX(tileGrid, tileCoord, projection) {
  *     DEFAULT_MAX_ZOOM).
  * @param {number|import("./size.js").Size=} opt_tileSize Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {import("./extent/Corner.js").default=} opt_corner Extent corner (default is `'top-left'`).
- * @return {!import("./tilegrid/TileGrid.js").default} TileGrid instance.
+ * @param {Corner=} opt_corner Extent corner (default is `'top-left'`).
+ * @return {!TileGrid} TileGrid instance.
  */
 export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
   const corner = opt_corner !== undefined ? opt_corner : Corner.TOP_LEFT;
@@ -84,7 +84,7 @@ export function createForExtent(extent, opt_maxZoom, opt_tileSize, opt_corner) {
 /**
  * Creates a tile grid with a standard XYZ tiling scheme.
  * @param {XYZOptions=} opt_options Tile grid options.
- * @return {!import("./tilegrid/TileGrid.js").default} Tile grid instance.
+ * @return {!TileGrid} Tile grid instance.
  * @api
  */
 export function createXYZ(opt_options) {
@@ -144,8 +144,8 @@ function resolutionsFromExtent(extent, opt_maxZoom, opt_tileSize) {
  *     DEFAULT_MAX_ZOOM).
  * @param {number|import("./size.js").Size=} opt_tileSize Tile size (default uses
  *     DEFAULT_TILE_SIZE).
- * @param {import("./extent/Corner.js").default=} opt_corner Extent corner (default is `'top-left'`).
- * @return {!import("./tilegrid/TileGrid.js").default} TileGrid instance.
+ * @param {Corner=} opt_corner Extent corner (default is `'top-left'`).
+ * @return {!TileGrid} TileGrid instance.
  */
 export function createForProjection(projection, opt_maxZoom, opt_tileSize, opt_corner) {
   const extent = extentFromProjection(projection);

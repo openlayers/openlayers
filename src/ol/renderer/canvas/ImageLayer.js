@@ -54,7 +54,7 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
       for (let i = 0, ii = layerRendererConstructors.length; i < ii; ++i) {
         const ctor = layerRendererConstructors[i];
         if (ctor !== CanvasImageLayerRenderer && ctor['handles'](imageLayer)) {
-          this.vectorRenderer_ = new ctor(imageLayer);
+          this.vectorRenderer_ = /** @type {import("./VectorLayer.js").default} */ (new ctor(imageLayer));
           break;
         }
       }
@@ -99,7 +99,7 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
 
     let image;
     const imageLayer = /** @type {import("../../layer/Image.js").default} */ (this.getLayer());
-    const imageSource = imageLayer.getSource();
+    const imageSource = /** @type {import("../../source/Image.js").default} */ (imageLayer.getSource());
 
     const hints = frameState.viewHints;
 
@@ -180,11 +180,11 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
   /**
    * @inheritDoc
    */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
+  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {
     if (this.vectorRenderer_) {
-      return this.vectorRenderer_.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
+      return this.vectorRenderer_.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback);
     } else {
-      return super.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
+      return super.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback);
     }
   }
 }

@@ -1,9 +1,9 @@
 /**
  * @module ol/geom/Geometry
  */
+import {abstract} from '../util.js';
 import BaseObject from '../Object.js';
 import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
-import {FALSE} from '../functions.js';
 import {transform2D} from '../geom/flat/transform.js';
 import {get as getProjection, getTransform} from '../proj.js';
 import Units from '../proj/Units.js';
@@ -70,7 +70,9 @@ class Geometry extends BaseObject {
    * @abstract
    * @return {!Geometry} Clone.
    */
-  clone() {}
+  clone() {
+    return abstract();
+  }
 
   /**
    * @abstract
@@ -80,7 +82,18 @@ class Geometry extends BaseObject {
    * @param {number} minSquaredDistance Minimum squared distance.
    * @return {number} Minimum squared distance.
    */
-  closestPointXY(x, y, closestPoint, minSquaredDistance) {}
+  closestPointXY(x, y, closestPoint, minSquaredDistance) {
+    return abstract();
+  }
+
+  /**
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @return {boolean} Contains (x, y).
+   */
+  containsXY(x, y) {
+    return false;
+  }
 
   /**
    * Return the closest point of the geometry to the passed point as
@@ -113,7 +126,9 @@ class Geometry extends BaseObject {
    * @protected
    * @return {import("../extent.js").Extent} extent Extent.
    */
-  computeExtent(extent) {}
+  computeExtent(extent) {
+    return abstract();
+  }
 
   /**
    * Get the extent of the geometry.
@@ -137,7 +152,9 @@ class Geometry extends BaseObject {
    * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
    * @api
    */
-  rotate(angle, anchor) {}
+  rotate(angle, anchor) {
+    abstract();
+  }
 
   /**
    * Scale the geometry (with an optional origin).  This modifies the geometry
@@ -150,7 +167,9 @@ class Geometry extends BaseObject {
    *     of the geometry extent).
    * @api
    */
-  scale(sx, opt_sy, opt_anchor) {}
+  scale(sx, opt_sy, opt_anchor) {
+    abstract();
+  }
 
   /**
    * Create a simplified version of this geometry.  For linestrings, this uses
@@ -174,14 +193,18 @@ class Geometry extends BaseObject {
    * @param {number} squaredTolerance Squared tolerance.
    * @return {Geometry} Simplified geometry.
    */
-  getSimplifiedGeometry(squaredTolerance) {}
+  getSimplifiedGeometry(squaredTolerance) {
+    return abstract();
+  }
 
   /**
    * Get the type of this geometry.
    * @abstract
    * @return {import("./GeometryType.js").default} Geometry type.
    */
-  getType() {}
+  getType() {
+    return abstract();
+  }
 
   /**
    * Apply a transform function to each coordinate of the geometry.
@@ -191,7 +214,9 @@ class Geometry extends BaseObject {
    * @abstract
    * @param {import("../proj.js").TransformFunction} transformFn Transform.
    */
-  applyTransform(transformFn) {}
+  applyTransform(transformFn) {
+    abstract();
+  }
 
   /**
    * Test if the geometry and the passed extent intersect.
@@ -199,7 +224,9 @@ class Geometry extends BaseObject {
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    */
-  intersectsExtent(extent) {}
+  intersectsExtent(extent) {
+    return abstract();
+  }
 
   /**
    * Translate the geometry.  This modifies the geometry coordinates in place.  If
@@ -209,7 +236,9 @@ class Geometry extends BaseObject {
    * @param {number} deltaY Delta Y.
    * @api
    */
-  translate(deltaX, deltaY) {}
+  translate(deltaX, deltaY) {
+    abstract();
+  }
 
   /**
    * Transform each coordinate of the geometry from one coordinate reference
@@ -227,11 +256,12 @@ class Geometry extends BaseObject {
    * @api
    */
   transform(source, destination) {
-    source = getProjection(source);
-    const transformFn = source.getUnits() == Units.TILE_PIXELS ?
+    /** @type {import("../proj/Projection.js").default} */
+    const sourceProj = getProjection(source);
+    const transformFn = sourceProj.getUnits() == Units.TILE_PIXELS ?
       function(inCoordinates, outCoordinates, stride) {
-        const pixelExtent = source.getExtent();
-        const projectedExtent = source.getWorldExtent();
+        const pixelExtent = sourceProj.getExtent();
+        const projectedExtent = sourceProj.getWorldExtent();
         const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
         composeTransform(tmpTransform,
           projectedExtent[0], projectedExtent[3],
@@ -239,21 +269,14 @@ class Geometry extends BaseObject {
           0, 0);
         transform2D(inCoordinates, 0, inCoordinates.length, stride,
           tmpTransform, outCoordinates);
-        return getTransform(source, destination)(inCoordinates, outCoordinates, stride);
+        return getTransform(sourceProj, destination)(inCoordinates, outCoordinates, stride);
       } :
-      getTransform(source, destination);
+      getTransform(sourceProj, destination);
     this.applyTransform(transformFn);
     return this;
   }
+
 }
-
-
-/**
- * @param {number} x X.
- * @param {number} y Y.
- * @return {boolean} Contains (x, y).
- */
-Geometry.prototype.containsXY = FALSE;
 
 
 export default Geometry;

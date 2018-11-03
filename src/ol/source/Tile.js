@@ -1,8 +1,7 @@
 /**
  * @module ol/source/Tile
  */
-
-import {VOID} from '../functions.js';
+import {abstract} from '../util.js';
 import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import Event from '../events/Event.js';
@@ -15,8 +14,8 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions]
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize]
- * @property {import("../extent.js").Extent} [extent]
  * @property {boolean} [opaque]
  * @property {number} [tilePixelRatio]
  * @property {import("../proj.js").ProjectionLike} [projection]
@@ -24,6 +23,7 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid]
  * @property {boolean} [wrapX=true]
  * @property {number} [transition]
+ * @property {string} [key]
  */
 
 
@@ -32,17 +32,18 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for sources providing images divided into a tile grid.
+ * @abstract
  * @api
  */
 class TileSource extends Source {
   /**
-   * @param {Options=} options SourceTile source options.
+   * @param {Options} options SourceTile source options.
    */
   constructor(options) {
 
     super({
       attributions: options.attributions,
-      extent: options.extent,
+      attributionsCollapsible: options.attributionsCollapsible,
       projection: options.projection,
       state: options.state,
       wrapX: options.wrapX
@@ -83,7 +84,7 @@ class TileSource extends Source {
      * @private
      * @type {string}
      */
-    this.key_ = '';
+    this.key_ = options.key || '';
 
     /**
      * @protected
@@ -115,7 +116,7 @@ class TileSource extends Source {
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @param {number} z Zoom level.
    * @param {import("../TileRange.js").default} tileRange Tile range.
-   * @param {function(import("../Tile.js").default):(boolean|undefined)} callback Called with each
+   * @param {function(import("../Tile.js").default):(boolean|void)} callback Called with each
    *     loaded tile.  If the callback returns `false`, the tile will not be
    *     considered loaded.
    * @return {boolean} The tile range is fully covered with loaded tiles.
@@ -200,7 +201,9 @@ class TileSource extends Source {
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @return {!import("../Tile.js").default} Tile.
    */
-  getTile(z, x, y, pixelRatio, projection) {}
+  getTile(z, x, y, pixelRatio, projection) {
+    return abstract();
+  }
 
   /**
    * Return the tile grid of the tile source.
@@ -291,17 +294,18 @@ class TileSource extends Source {
     this.tileCache.clear();
     this.changed();
   }
+
+  /**
+   * Marks a tile coord as being used, without triggering a load.
+   * @abstract
+   * @param {number} z Tile coordinate z.
+   * @param {number} x Tile coordinate x.
+   * @param {number} y Tile coordinate y.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   */
+  useTile(z, x, y, projection) {}
+
 }
-
-
-/**
- * Marks a tile coord as being used, without triggering a load.
- * @param {number} z Tile coordinate z.
- * @param {number} x Tile coordinate x.
- * @param {number} y Tile coordinate y.
- * @param {import("../proj/Projection.js").default} projection Projection.
- */
-TileSource.prototype.useTile = VOID;
 
 
 /**

@@ -139,7 +139,7 @@ class TopoJSON extends JSONFeature {
 
 /**
  * @const
- * @type {Object<string, function(TopoJSONGeometry, Array, ...Array): import("../geom/Geometry.js").default>}
+ * @type {Object<string, function(TopoJSONGeometry, Array, ...Array=): import("../geom/Geometry.js").default>}
  */
 const GEOMETRY_READERS = {
   'Point': readPointGeometry,

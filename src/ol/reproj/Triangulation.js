@@ -237,12 +237,12 @@ class Triangulation {
       if (this.targetProj_.isGlobal() && this.targetWorldWidth_) {
         const targetQuadExtent = boundingExtent([a, b, c, d]);
         const targetCoverageX = getWidth(targetQuadExtent) / this.targetWorldWidth_;
-        needsSubdivision |=
-            targetCoverageX > MAX_TRIANGLE_WIDTH;
+        needsSubdivision = targetCoverageX > MAX_TRIANGLE_WIDTH ||
+          needsSubdivision;
       }
       if (!wrapsX && this.sourceProj_.isGlobal() && sourceCoverageX) {
-        needsSubdivision |=
-            sourceCoverageX > MAX_TRIANGLE_WIDTH;
+        needsSubdivision = sourceCoverageX > MAX_TRIANGLE_WIDTH ||
+            needsSubdivision;
       }
     }
 

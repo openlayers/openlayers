@@ -36,7 +36,7 @@ import {listen, unlisten} from '../events.js';
 import EventTarget from '../events/Target.js';
 import {POINTER, MSPOINTER, TOUCH} from '../has.js';
 import PointerEventType from '../pointer/EventType.js';
-import MouseSource from '../pointer/MouseSource.js';
+import MouseSource, {prepareEvent as prepareMouseEvent} from '../pointer/MouseSource.js';
 import MsSource from '../pointer/MsSource.js';
 import NativeSource from '../pointer/NativeSource.js';
 import PointerEvent from '../pointer/PointerEvent.js';
@@ -366,7 +366,7 @@ class PointerEventHandler extends EventTarget {
    * @param {string} inType A string representing the type of event to create.
    * @param {Object} data Pointer event data.
    * @param {Event} event The event.
-   * @return {import("./PointerEvent.js").default} A PointerEvent of type `inType`.
+   * @return {PointerEvent} A PointerEvent of type `inType`.
    */
   makeEvent(inType, data, event) {
     return new PointerEvent(inType, event, data);
@@ -398,11 +398,11 @@ class PointerEventHandler extends EventTarget {
    * This proxy method is required for the legacy IE support.
    * @param {string} eventType The pointer event type.
    * @param {Event} event The event.
-   * @return {import("./PointerEvent.js").default} The wrapped event.
+   * @return {PointerEvent} The wrapped event.
    */
   wrapMouseEvent(eventType, event) {
     const pointerEvent = this.makeEvent(
-      eventType, MouseSource.prepareEvent(event, this), event);
+      eventType, prepareMouseEvent(event, this), event);
     return pointerEvent;
   }
 

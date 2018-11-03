@@ -927,7 +927,7 @@ class WebGLPolygonReplay extends WebGLReplay {
    * @inheritDoc
    */
   drawHitDetectionReplayOneByOne(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-    let i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
+    let i, start, end, nextStyle, groupStart, feature, featureIndex;
     featureIndex = this.startIndices.length - 2;
     end = this.startIndices[featureIndex + 1];
     for (i = this.styleIndices_.length - 1; i >= 0; --i) {
@@ -939,9 +939,8 @@ class WebGLPolygonReplay extends WebGLReplay {
           this.startIndices[featureIndex] >= groupStart) {
         start = this.startIndices[featureIndex];
         feature = this.startIndicesFeature[featureIndex];
-        featureUid = getUid(feature).toString();
 
-        if (skippedFeaturesHash[featureUid] === undefined &&
+        if (skippedFeaturesHash[getUid(feature)] === undefined &&
             feature.getGeometry() &&
             (opt_hitExtent === undefined || intersects(
               /** @type {Array<number>} */ (opt_hitExtent),
@@ -970,7 +969,7 @@ class WebGLPolygonReplay extends WebGLReplay {
    * @param {Object} skippedFeaturesHash Ids of features to skip.
    */
   drawReplaySkipping_(gl, context, skippedFeaturesHash) {
-    let i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
+    let i, start, end, nextStyle, groupStart, feature, featureIndex, featureStart;
     featureIndex = this.startIndices.length - 2;
     end = start = this.startIndices[featureIndex + 1];
     for (i = this.styleIndices_.length - 1; i >= 0; --i) {
@@ -982,9 +981,8 @@ class WebGLPolygonReplay extends WebGLReplay {
           this.startIndices[featureIndex] >= groupStart) {
         featureStart = this.startIndices[featureIndex];
         feature = this.startIndicesFeature[featureIndex];
-        featureUid = getUid(feature).toString();
 
-        if (skippedFeaturesHash[featureUid]) {
+        if (skippedFeaturesHash[getUid(feature)]) {
           if (start !== end) {
             this.drawElements(gl, context, start, end);
             gl.clear(gl.DEPTH_BUFFER_BIT);
@@ -1035,7 +1033,7 @@ class WebGLPolygonReplay extends WebGLReplay {
     } else {
       const nullStrokeStyle = new Stroke({
         color: [0, 0, 0, 0],
-        lineWidth: 0
+        width: 0
       });
       this.lineStringReplay.setFillStrokeStyle(null, nullStrokeStyle);
     }

@@ -26,7 +26,7 @@ import IconOrigin from '../style/IconOrigin.js';
 import Stroke from '../style/Stroke.js';
 import Style from '../style/Style.js';
 import Text from '../style/Text.js';
-import {createElementNS, getAllTextContent, isDocument, isNode, makeArrayExtender,
+import {createElementNS, getAllTextContent, isDocument, makeArrayExtender,
   makeArrayPusher, makeChildAppender, makeObjectPropertySetter,
   makeReplacer, makeSequence, makeSimpleNodeFactory, makeStructureNS,
   OBJECT_PROPERTY_NODE_FACTORY, parse, parseNode, pushParseAndPop,
@@ -639,15 +639,15 @@ class KML extends XMLFeature {
    * @api
    */
   readName(source) {
-    if (isDocument(source)) {
-      return this.readNameFromDocument(/** @type {Document} */ (source));
-    } else if (isNode(source)) {
-      return this.readNameFromNode(/** @type {Element} */ (source));
+    if (!source) {
+      return undefined;
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readNameFromDocument(doc);
+    } else if (isDocument(source)) {
+      return this.readNameFromDocument(/** @type {Document} */ (source));
     } else {
-      return undefined;
+      return this.readNameFromNode(/** @type {Element} */ (source));
     }
   }
 
@@ -656,7 +656,7 @@ class KML extends XMLFeature {
    * @return {string|undefined} Name.
    */
   readNameFromDocument(doc) {
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         const name = this.readNameFromNode(/** @type {Element} */ (n));
         if (name) {
@@ -703,15 +703,15 @@ class KML extends XMLFeature {
    */
   readNetworkLinks(source) {
     const networkLinks = [];
-    if (isDocument(source)) {
-      extend(networkLinks, this.readNetworkLinksFromDocument(
-        /** @type {Document} */ (source)));
-    } else if (isNode(source)) {
-      extend(networkLinks, this.readNetworkLinksFromNode(
-        /** @type {Element} */ (source)));
-    } else if (typeof source === 'string') {
+    if (typeof source === 'string') {
       const doc = parse(source);
       extend(networkLinks, this.readNetworkLinksFromDocument(doc));
+    } else if (isDocument(source)) {
+      extend(networkLinks, this.readNetworkLinksFromDocument(
+        /** @type {Document} */ (source)));
+    } else {
+      extend(networkLinks, this.readNetworkLinksFromNode(
+        /** @type {Element} */ (source)));
     }
     return networkLinks;
   }
@@ -722,7 +722,7 @@ class KML extends XMLFeature {
    */
   readNetworkLinksFromDocument(doc) {
     const networkLinks = [];
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         extend(networkLinks, this.readNetworkLinksFromNode(/** @type {Element} */ (n)));
       }
@@ -765,15 +765,15 @@ class KML extends XMLFeature {
    */
   readRegion(source) {
     const regions = [];
-    if (isDocument(source)) {
-      extend(regions, this.readRegionFromDocument(
-        /** @type {Document} */ (source)));
-    } else if (isNode(source)) {
-      extend(regions, this.readRegionFromNode(
-        /** @type {Element} */ (source)));
-    } else if (typeof source === 'string') {
+    if (typeof source === 'string') {
       const doc = parse(source);
       extend(regions, this.readRegionFromDocument(doc));
+    } else if (isDocument(source)) {
+      extend(regions, this.readRegionFromDocument(
+        /** @type {Document} */ (source)));
+    } else {
+      extend(regions, this.readRegionFromNode(
+        /** @type {Element} */ (source)));
     }
     return regions;
   }
@@ -784,7 +784,7 @@ class KML extends XMLFeature {
    */
   readRegionFromDocument(doc) {
     const regions = [];
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         extend(regions, this.readRegionFromNode(/** @type {Element} */ (n)));
       }
@@ -838,6 +838,7 @@ class KML extends XMLFeature {
     kml.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', SCHEMA_LOCATION);
 
     const /** @type {import("../xml.js").NodeStackItem} */ context = {node: kml};
+    /** @type {!Object<string, (Array<Feature>|Feature|undefined)>} */
     const properties = {};
     if (features.length > 1) {
       properties['Document'] = features;
@@ -931,7 +932,7 @@ function createFeatureStyleFunction(style, styleUrl, defaultStyle, sharedStyles,
 
       if (drawName) {
         name = /** @type {string} */ (feature.get('name'));
-        drawName = drawName && name;
+        drawName = drawName && !!name;
       }
 
       if (style) {
@@ -1714,11 +1715,13 @@ function readStyle(node, objectStack) {
   if (fill !== undefined && !fill) {
     fillStyle = null;
   }
-  let imageStyle = /** @type {import("../style/Image.js").default} */
-      ('imageStyle' in styleObject ?
-        styleObject['imageStyle'] : DEFAULT_IMAGE_STYLE);
-  if (imageStyle == DEFAULT_NO_IMAGE_STYLE) {
-    imageStyle = undefined;
+  let imageStyle;
+  if ('imageStyle' in styleObject) {
+    if (styleObject['imageStyle'] != DEFAULT_NO_IMAGE_STYLE) {
+      imageStyle = styleObject['imageStyle'];
+    }
+  } else {
+    imageStyle = DEFAULT_IMAGE_STYLE;
   }
   const textStyle = /** @type {Text} */
       ('textStyle' in styleObject ?
@@ -2073,9 +2076,10 @@ function whenParser(node, objectStack) {
 function writeColorTextNode(node, color) {
   const rgba = asArray(color);
   const opacity = (rgba.length == 4) ? rgba[3] : 1;
+  /** @type {Array<string|number>} */
   const abgr = [opacity * 255, rgba[2], rgba[1], rgba[0]];
   for (let i = 0; i < 4; ++i) {
-    const hex = parseInt(abgr[i], 10).toString(16);
+    const hex = Math.floor(/** @type {number} */ (abgr[i])).toString(16);
     abgr[i] = (hex.length == 1) ? '0' + hex : hex;
   }
   writeStringTextNode(node, abgr.join(''));
@@ -2666,7 +2670,7 @@ function writePlacemark(node, feature, objectStack) {
 
   // set id
   if (feature.getId()) {
-    node.setAttribute('id', feature.getId());
+    node.setAttribute('id', /** @type {string} */ (feature.getId()));
   }
 
   // serialize properties (properties unknown to KML are not serialized)
@@ -2713,7 +2717,7 @@ function writePlacemark(node, feature, objectStack) {
   const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
   let geometry = feature.getGeometry();
   if (geometry) {
-    geometry = transformWithOptions(geometry, true, options);
+    geometry = /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, true, options));
   }
   pushSerializeAndPop(context, PLACEMARK_SERIALIZERS,
     GEOMETRY_NODE_FACTORY, [geometry], objectStack);
@@ -2893,7 +2897,7 @@ function writeStyle(node, style, objectStack) {
   const strokeStyle = style.getStroke();
   const imageStyle = style.getImage();
   const textStyle = style.getText();
-  if (imageStyle instanceof Icon) {
+  if (imageStyle && typeof /** @type {?} */ (imageStyle).getSrc === 'function') {
     properties['IconStyle'] = imageStyle;
   }
   if (textStyle) {
@@ -2918,8 +2922,8 @@ function writeStyle(node, style, objectStack) {
  * @param {Vec2} vec2 Vec2.
  */
 function writeVec2(node, vec2) {
-  node.setAttribute('x', vec2.x);
-  node.setAttribute('y', vec2.y);
+  node.setAttribute('x', String(vec2.x));
+  node.setAttribute('y', String(vec2.y));
   node.setAttribute('xunits', vec2.xunits);
   node.setAttribute('yunits', vec2.yunits);
 }

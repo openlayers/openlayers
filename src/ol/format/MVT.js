@@ -5,8 +5,8 @@
 
 import {assert} from '../asserts.js';
 import PBF from 'pbf';
-import FeatureFormat, {transformWithOptions} from '../format/Feature.js';
-import FormatType from '../format/FormatType.js';
+import FeatureFormat, {transformWithOptions} from './Feature.js';
+import FormatType from './FormatType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
@@ -23,17 +23,14 @@ import RenderFeature from '../render/Feature.js';
 
 /**
  * @typedef {Object} Options
- * @property {function((import("../geom/Geometry.js").default|Object<string,*>)=)|function(GeometryType,Array<number>,(Array<number>|Array<Array<number>>),Object<string,*>,number)} [featureClass]
- * Class for features returned by {@link module:ol/format/MVT#readFeatures}. Set to
- * {@link module:ol/Feature~Feature} to get full editing and geometry support at the cost of
- * decreased rendering performance. The default is {@link module:ol/render/Feature~RenderFeature},
- * which is optimized for rendering and hit detection.
- * @property {string} [geometryName='geometry'] Geometry name to use when creating
- * features.
- * @property {string} [layerName='layer'] Name of the feature attribute that
- * holds the layer name.
- * @property {Array<string>} [layers] Layers to read features from. If not
- * provided, features will be read from all layers.
+ * @property {import("../Feature.js").FeatureClass} [featureClass] Class for features returned by
+ * {@link module:ol/format/MVT#readFeatures}. Set to {@link module:ol/Feature~Feature} to get full editing and geometry
+ * support at the cost of decreased rendering performance. The default is
+ * {@link module:ol/render/Feature~RenderFeature}, which is optimized for rendering and hit detection.
+ * @property {string} [geometryName='geometry'] Geometry name to use when creating features.
+ * @property {string} [layerName='layer'] Name of the feature attribute that holds the layer name.
+ * @property {Array<string>} [layers] Layers to read features from. If not provided, features will be read from all
+ * layers.
  */
 
 
@@ -64,12 +61,9 @@ class MVT extends FeatureFormat {
 
     /**
      * @private
-     * @type {function((import("../geom/Geometry.js").default|Object<string,*>)=)|
-     *     function(GeometryType,Array<number>,
-     *         (Array<number>|Array<Array<number>>),Object<string,*>,number)}
+     * @type {import("../Feature.js").FeatureClass}
      */
-    this.featureClass_ = options.featureClass ?
-      options.featureClass : RenderFeature;
+    this.featureClass_ = options.featureClass ? options.featureClass : RenderFeature;
 
     /**
      * @private
@@ -167,7 +161,7 @@ class MVT extends FeatureFormat {
    * @param {Object} pbf PBF
    * @param {Object} rawFeature Raw Mapbox feature.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
-   * @return {import("../Feature.js").default|RenderFeature} Feature.
+   * @return {import("../Feature.js").FeatureLike} Feature.
    */
   createFeature_(pbf, rawFeature, opt_options) {
     const type = rawFeature.type;
@@ -215,11 +209,13 @@ class MVT extends FeatureFormat {
                 geometryType === GeometryType.MULTI_LINE_STRING ? new MultiLineString(flatCoordinates, GeometryLayout.XY, ends) :
                   null;
       }
-      feature = new this.featureClass_();
+      const ctor = /** @type {typeof import("../Feature.js").default} */ (this.featureClass_);
+      feature = new ctor();
       if (this.geometryName_) {
         feature.setGeometryName(this.geometryName_);
       }
-      const geometry = transformWithOptions(geom, false, this.adaptOptions(opt_options));
+      const geometry = /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geom, false,
+        this.adaptOptions(opt_options)));
       feature.setGeometry(geometry);
       feature.setId(id);
       feature.setProperties(values);
@@ -252,7 +248,7 @@ class MVT extends FeatureFormat {
 
     const pbf = new PBF(/** @type {ArrayBuffer} */ (source));
     const pbfLayers = pbf.readFields(layersPBFReader, {});
-    /** @type {Array<import("../Feature.js").default|RenderFeature>} */
+    /** @type {Array<import("../Feature.js").FeatureLike>} */
     const features = [];
     for (const name in pbfLayers) {
       if (layers && layers.indexOf(name) == -1) {

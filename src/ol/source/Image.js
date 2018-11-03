@@ -1,8 +1,8 @@
 /**
  * @module ol/source/Image
  */
+import {abstract} from '../util.js';
 import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
-
 import ImageState from '../ImageState.js';
 import {linearFindNearest} from '../array.js';
 import Event from '../events/Event.js';
@@ -70,7 +70,6 @@ class ImageSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions]
- * @property {import("../extent.js").Extent} [extent]
  * @property {import("../proj.js").ProjectionLike} projection
  * @property {Array<number>} [resolutions]
  * @property {import("./State.js").default} [state]
@@ -82,6 +81,7 @@ class ImageSourceEvent extends Event {
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for sources providing a single image.
+ * @abstract
  * @api
  */
 class ImageSource extends Source {
@@ -91,7 +91,6 @@ class ImageSource extends Source {
   constructor(options) {
     super({
       attributions: options.attributions,
-      extent: options.extent,
       projection: options.projection,
       state: options.state
     });
@@ -190,7 +189,9 @@ class ImageSource extends Source {
    * @return {import("../ImageBase.js").default} Single image.
    * @protected
    */
-  getImageInternal(extent, resolution, pixelRatio, projection) {}
+  getImageInternal(extent, resolution, pixelRatio, projection) {
+    return abstract();
+  }
 
   /**
    * Handle image change events.
@@ -232,7 +233,7 @@ class ImageSource extends Source {
  * @param {string} src Source.
  */
 export function defaultImageLoadFunction(image, src) {
-  image.getImage().src = src;
+  /** @type {HTMLImageElement|HTMLVideoElement} */ (image.getImage()).src = src;
 }
 
 

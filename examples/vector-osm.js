@@ -1,6 +1,5 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import OSMXML from '../src/ol/format/OSMXML.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {bbox as bboxStrategy} from '../src/ol/loadingstrategy.js';
@@ -121,11 +120,6 @@ const raster = new TileLayer({
 map = new Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: new View({
     center: [739218, 5906096],
     maxZoom: 19,

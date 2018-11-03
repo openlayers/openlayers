@@ -11,7 +11,6 @@ import EventType from '../events/EventType.js';
 import {Processor} from 'pixelworks/lib/index';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import LayerType from '../LayerType.js';
-import Layer from '../layer/Layer.js';
 import ImageLayer from '../layer/Image.js';
 import TileLayer from '../layer/Tile.js';
 import {assign} from '../obj.js';
@@ -19,7 +18,6 @@ import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
 import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
 import ImageSource from '../source/Image.js';
 import SourceState from '../source/State.js';
-import TileSource from '../source/Tile.js';
 import {create as createTransform} from '../transform.js';
 
 
@@ -144,10 +142,12 @@ class RasterSourceEvent extends Event {
  */
 class RasterSource extends ImageSource {
   /**
-   * @param {Options=} options Options.
+   * @param {Options} options Options.
    */
   constructor(options) {
-    super({});
+    super({
+      projection: null
+    });
 
     /**
      * @private
@@ -190,6 +190,10 @@ class RasterSource extends ImageSource {
       this.changed.bind(this));
 
     const layerStatesArray = getLayerStatesArray(this.renderers_);
+
+    /**
+     * @type {Object<string, import("../layer/Layer.js").State>}
+     */
     const layerStates = {};
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
@@ -467,7 +471,7 @@ function getLayerStatesArray(renderers) {
 
 /**
  * Create renderers for all sources.
- * @param {Array<import("./Source.js").default>} sources The sources.
+ * @param {Array<import("./Source.js").default|import("../layer/Layer.js").default>} sources The sources.
  * @return {Array<import("../renderer/canvas/Layer.js").default>} Array of layer renderers.
  */
 function createRenderers(sources) {
@@ -482,20 +486,22 @@ function createRenderers(sources) {
 
 /**
  * Create a renderer for the provided source.
- * @param {import("./Source.js").default} source The source.
+ * @param {import("./Source.js").default|import("../layer/Layer.js").default} layerOrSource The layer or source.
  * @return {import("../renderer/canvas/Layer.js").default} The renderer.
  */
-function createRenderer(source) {
+function createRenderer(layerOrSource) {
+  const tileSource = /** @type {import("./Tile.js").default} */ (layerOrSource);
+  const imageSource = /** @type {import("./Image.js").default} */ (layerOrSource);
+  const layer = /** @type {import("../layer/Layer.js").default} */ (layerOrSource);
   let renderer = null;
-  if (source instanceof TileSource) {
-    renderer = createTileRenderer(source);
-  } else if (source instanceof ImageSource) {
-    renderer = createImageRenderer(source);
-  } else if (source instanceof TileLayer) {
-    renderer = new CanvasTileLayerRenderer(source);
-  } else if (source instanceof Layer &&
-      (source.getType() == LayerType.IMAGE || source.getType() == LayerType.VECTOR)) {
-    renderer = new CanvasImageLayerRenderer(source);
+  if (typeof tileSource.getTile === 'function') {
+    renderer = createTileRenderer(tileSource);
+  } else if (typeof imageSource.getImage === 'function') {
+    renderer = createImageRenderer(imageSource);
+  } else if (layer.getType() === LayerType.TILE) {
+    renderer = new CanvasTileLayerRenderer(/** @type {import("../layer/Tile.js").default} */ (layer));
+  } else if (layer.getType() == LayerType.IMAGE || layer.getType() == LayerType.VECTOR) {
+    renderer = new CanvasImageLayerRenderer(/** @type {import("../layer/Image.js").default} */ (layer));
   }
   return renderer;
 }

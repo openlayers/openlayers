@@ -32,13 +32,19 @@ import XYZ from '../source/XYZ.js';
 
 
 /**
+ * @typedef {Object} CartoDBLayerInfo
+ * @property {string} layergroupid The layer group ID
+ * @property {{https: string}} cdn_url The CDN URL
+ */
+
+/**
  * @classdesc
  * Layer source for the CartoDB Maps API.
  * @api
  */
 class CartoDB extends XYZ {
   /**
-   * @param {Options=} options CartoDB options.
+   * @param {Options} options CartoDB options.
    */
   constructor(options) {
     super({
@@ -48,7 +54,6 @@ class CartoDB extends XYZ {
       maxZoom: options.maxZoom !== undefined ? options.maxZoom : 18,
       minZoom: options.minZoom,
       projection: options.projection,
-      state: SourceState.LOADING,
       wrapX: options.wrapX
     });
 

@@ -17,8 +17,8 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize=2048] Cache size.
- * @property {import("../extent.js").Extent} [extent]
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
  * access pixel data with the Canvas renderer.  See
@@ -28,7 +28,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("./State.js").default} [state] Source state.
- * @property {import("../ImageTile.js").TileClass} [tileClass] Class used to instantiate image tiles.
+ * @property {typeof import("../ImageTile.js").default} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/ImageTile~ImageTile}.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
@@ -52,6 +52,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * world only, but they will be wrapped horizontally to render multiple worlds.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
+ * @property {string} [key] Optional tile key for proper cache fetching
  */
 
 
@@ -71,7 +72,6 @@ class TileImage extends UrlTile {
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
-      extent: options.extent,
       opaque: options.opaque,
       projection: options.projection,
       state: options.state,
@@ -84,7 +84,8 @@ class TileImage extends UrlTile {
       urls: options.urls,
       wrapX: options.wrapX,
       transition: options.transition,
-      opt_key: options.opt_key
+      key: options.key,
+      attributionsCollapsible: options.attributionsCollapsible
     });
 
     /**
@@ -96,15 +97,14 @@ class TileImage extends UrlTile {
 
     /**
      * @protected
-     * @type {function(new: import("../ImageTile.js").default, import("../tilecoord.js").TileCoord, import("../TileState.js").default, string,
-     *        ?string, import("../Tile.js").LoadFunction, import("../Tile.js").Options=)}
+     * @type {typeof ImageTile}
      */
     this.tileClass = options.tileClass !== undefined ?
       options.tileClass : ImageTile;
 
     /**
      * @protected
-     * @type {!Object<string, import("../TileCache.js").default>}
+     * @type {!Object<string, TileCache>}
      */
     this.tileCacheForProjection = {};
 
@@ -199,13 +199,13 @@ class TileImage extends UrlTile {
    */
   getTileGridForProjection(projection) {
     if (!ENABLE_RASTER_REPROJECTION) {
-      return UrlTile.prototype.getTileGridForProjection.call(this, projection);
+      return super.getTileGridForProjection(projection);
     }
     const thisProj = this.getProjection();
     if (this.tileGrid && (!thisProj || equivalent(thisProj, projection))) {
       return this.tileGrid;
     } else {
-      const projKey = getUid(projection).toString();
+      const projKey = getUid(projection);
       if (!(projKey in this.tileGridForProjection)) {
         this.tileGridForProjection[projKey] = getTileGridForProjection(projection);
       }
@@ -220,12 +220,12 @@ class TileImage extends UrlTile {
    */
   getTileCacheForProjection(projection) {
     if (!ENABLE_RASTER_REPROJECTION) {
-      return UrlTile.prototype.getTileCacheForProjection.call(this, projection);
+      return super.getTileCacheForProjection(projection);
     }
     const thisProj = this.getProjection(); if (!thisProj || equivalent(thisProj, projection)) {
       return this.tileCache;
     } else {
-      const projKey = getUid(projection).toString();
+      const projKey = getUid(projection);
       if (!(projKey in this.tileCacheForProjection)) {
         this.tileCacheForProjection[projKey] = new TileCache(this.tileCache.highWaterMark);
       }
@@ -381,7 +381,7 @@ class TileImage extends UrlTile {
     if (ENABLE_RASTER_REPROJECTION) {
       const proj = getProjection(projection);
       if (proj) {
-        const projKey = getUid(proj).toString();
+        const projKey = getUid(proj);
         if (!(projKey in this.tileGridForProjection)) {
           this.tileGridForProjection[projKey] = tilegrid;
         }
@@ -392,11 +392,11 @@ class TileImage extends UrlTile {
 
 
 /**
- * @param {import("../ImageTile.js").default} imageTile Image tile.
+ * @param {ImageTile} imageTile Image tile.
  * @param {string} src Source.
  */
 function defaultTileLoadFunction(imageTile, src) {
-  imageTile.getImage().src = src;
+  /** @type {HTMLImageElement|HTMLVideoElement} */ (imageTile.getImage()).src = src;
 }
 
 export default TileImage;

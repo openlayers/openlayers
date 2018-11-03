@@ -1,17 +1,19 @@
 /**
  * @module ol/renderer/Map
  */
-import {getUid} from '../util.js';
+import {abstract, getUid} from '../util.js';
 import Disposable from '../Disposable.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getWidth} from '../extent.js';
-import {TRUE, VOID} from '../functions.js';
+import {TRUE} from '../functions.js';
 import {visibleAtResolution} from '../layer/Layer.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
 import {compose as composeTransform, invert as invertTransform, setFromArray as transformSetFromArray} from '../transform.js';
 
-
+/**
+ * @abstract
+ */
 class MapRenderer extends Disposable {
 
   /**
@@ -40,15 +42,24 @@ class MapRenderer extends Disposable {
 
     /**
      * @private
-     * @type {Array<import("./Layer.js").default>}
+     * @type {Array<typeof import("./Layer.js").default>}
      */
     this.layerRendererConstructors_ = [];
 
   }
 
   /**
+   * @abstract
+   * @param {import("../render/EventType.js").default} type Event type.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   */
+  dispatchRenderEvent(type, frameState) {
+    abstract();
+  }
+
+  /**
    * Register layer renderer constructors.
-   * @param {Array<import("./Layer.js").default>} constructors Layer renderers.
+   * @param {Array<typeof import("./Layer.js").default>} constructors Layer renderers.
    */
   registerLayerRenderers(constructors) {
     this.layerRendererConstructors_.push.apply(this.layerRendererConstructors_, constructors);
@@ -86,7 +97,7 @@ class MapRenderer extends Disposable {
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(this: S, (import("../Feature.js").default|import("../render/Feature.js").default),
+   * @param {function(this: S, import("../Feature.js").FeatureLike,
    *     import("../layer/Layer.js").default): T} callback Feature callback.
    * @param {S} thisArg Value to use as `this` when executing `callback`.
    * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
@@ -111,14 +122,13 @@ class MapRenderer extends Disposable {
     const viewResolution = viewState.resolution;
 
     /**
-     * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+     * @param {import("../Feature.js").FeatureLike} feature Feature.
      * @param {import("../layer/Layer.js").default} layer Layer.
      * @return {?} Callback result.
      */
     function forEachFeatureAtCoordinate(feature, layer) {
-      const key = getUid(feature).toString();
       const managed = frameState.layerStates[getUid(layer)].managed;
-      if (!(key in frameState.skippedFeatureUids && !managed)) {
+      if (!(getUid(feature) in frameState.skippedFeatureUids && !managed)) {
         return callback.call(thisArg, feature, managed ? layer : null);
       }
     }
@@ -144,10 +154,11 @@ class MapRenderer extends Disposable {
       const layer = layerState.layer;
       if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
         const layerRenderer = this.getLayerRenderer(layer);
-        if (layer.getSource()) {
+        const source = /** @type {import("../layer/Layer.js").default} */ (layer).getSource();
+        if (source) {
           result = layerRenderer.forEachFeatureAtCoordinate(
-            layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
-            frameState, hitTolerance, forEachFeatureAtCoordinate, thisArg);
+            source.getWrapX() ? translatedCoordinate : coordinate,
+            frameState, hitTolerance, forEachFeatureAtCoordinate);
         }
         if (result) {
           return result;
@@ -173,7 +184,9 @@ class MapRenderer extends Disposable {
    * @return {T|undefined} Callback result.
    * @template S,T,U
    */
-  forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, thisArg, layerFilter, thisArg2) {}
+  forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, thisArg, layerFilter, thisArg2) {
+    return abstract();
+  }
 
   /**
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
@@ -195,12 +208,12 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @param {import("../layer/Layer.js").default} layer Layer.
+   * @param {import("../layer/Base.js").default} layer Layer.
    * @protected
    * @return {import("./Layer.js").default} Layer renderer.
    */
   getLayerRenderer(layer) {
-    const layerKey = getUid(layer).toString();
+    const layerKey = getUid(layer);
     if (layerKey in this.layerRenderers_) {
       return this.layerRenderers_[layerKey];
     } else {
@@ -284,6 +297,15 @@ class MapRenderer extends Disposable {
   }
 
   /**
+   * Render.
+   * @abstract
+   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
+   */
+  renderFrame(frameState) {
+    abstract();
+  }
+
+  /**
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    * @protected
    */
@@ -315,20 +337,6 @@ class MapRenderer extends Disposable {
 function expireIconCache(map, frameState) {
   iconImageCache.expire();
 }
-
-
-/**
- * Render.
- * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
- */
-MapRenderer.prototype.renderFrame = VOID;
-
-
-/**
- * @param {import("../render/EventType.js").default} type Event type.
- * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
- */
-MapRenderer.prototype.dispatchRenderEvent = VOID;
 
 
 /**

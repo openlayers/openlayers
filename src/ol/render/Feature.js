@@ -1,7 +1,6 @@
 /**
  * @module ol/render/Feature
  */
-import {VOID} from '../functions.js';
 import {extend} from '../array.js';
 import {createOrUpdateFromCoordinate, createOrUpdateFromFlatCoordinates, getCenter, getHeight} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -24,7 +23,7 @@ const tmpTransform = createTransform();
  * structure, optimized for vector tile rendering and styling. Geometry access
  * through the API is limited to getting the type and extent of the geometry.
  *
- * @param {import("../geom/GeometryType.js").default} type Geometry type.
+ * @param {GeometryType} type Geometry type.
  * @param {Array<number>} flatCoordinates Flat coordinates. These always need
  *     to be right-handed for polygons.
  * @param {Array<number>|Array<Array<number>>} ends Ends or Endss.
@@ -47,7 +46,7 @@ class RenderFeature {
 
     /**
     * @private
-    * @type {import("../geom/GeometryType.js").default}
+    * @type {GeometryType}
     */
     this.type_ = type;
 
@@ -116,7 +115,7 @@ class RenderFeature {
     if (!this.flatInteriorPoints_) {
       const flatCenter = getCenter(this.getExtent());
       this.flatInteriorPoints_ = getInteriorPointOfArray(
-        this.flatCoordinates_, 0, this.ends_, 2, flatCenter, 0);
+        this.flatCoordinates_, 0, /** @type {Array<number>} */ (this.ends_), 2, flatCenter, 0);
     }
     return this.flatInteriorPoints_;
   }
@@ -127,9 +126,9 @@ class RenderFeature {
   getFlatInteriorPoints() {
     if (!this.flatInteriorPoints_) {
       const flatCenters = linearRingssCenter(
-        this.flatCoordinates_, 0, this.ends_, 2);
+        this.flatCoordinates_, 0, /** @type {Array<Array<number>>} */ (this.ends_), 2);
       this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
-        this.flatCoordinates_, 0, this.ends_, 2, flatCenters);
+        this.flatCoordinates_, 0, /** @type {Array<Array<number>>} */ (this.ends_), 2, flatCenters);
     }
     return this.flatInteriorPoints_;
   }
@@ -153,7 +152,7 @@ class RenderFeature {
       this.flatMidpoints_ = [];
       const flatCoordinates = this.flatCoordinates_;
       let offset = 0;
-      const ends = this.ends_;
+      const ends = /** @type {Array<number>} */ (this.ends_);
       for (let i = 0, ii = ends.length; i < ii; ++i) {
         const end = ends[i];
         const midpoint = interpolatePoint(
@@ -193,6 +192,14 @@ class RenderFeature {
   }
 
   /**
+   * @param {number} squaredTolerance Squared tolerance.
+   * @return {RenderFeature} Simplified geometry.
+   */
+  getSimplifiedGeometry(squaredTolerance) {
+    return this;
+  }
+
+  /**
   * Get the feature properties.
   * @return {Object<string, *>} Feature properties.
   * @api
@@ -209,8 +216,15 @@ class RenderFeature {
   }
 
   /**
+   * @return {undefined}
+   */
+  getStyleFunction() {
+    return undefined;
+  }
+
+  /**
   * Get the type of this feature's geometry.
-  * @return {import("../geom/GeometryType.js").default} Geometry type.
+  * @return {GeometryType} Geometry type.
   * @api
   */
   getType() {
@@ -253,20 +267,6 @@ RenderFeature.prototype.getEndss = function() {
  */
 RenderFeature.prototype.getFlatCoordinates =
     RenderFeature.prototype.getOrientedFlatCoordinates;
-
-
-/**
- * Get the feature for working with its geometry.
- * @return {RenderFeature} Feature.
- */
-RenderFeature.prototype.getSimplifiedGeometry =
-    RenderFeature.prototype.getGeometry;
-
-
-/**
- * @return {undefined}
- */
-RenderFeature.prototype.getStyleFunction = VOID;
 
 
 export default RenderFeature;

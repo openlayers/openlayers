@@ -2,6 +2,16 @@
 
 ### Next version
 
+#### The `getUid` function returns string
+
+The `getUid` function from the `ol/util` module now returns a string instead of a number.
+
+#### Attributions are not collapsible for `ol/source/OSM`
+
+When a map contains a layer from a `ol/source/OSM` source, the `ol/control/Attribution` control will be shown with the `collapsible: false` behavior.
+
+To get the previous behavior, configure the `ol/control/Attribution` control with `collapsible: true`. 
+
 ### v5.2.0
 
 #### Removal of the `snapToPixel` option for `ol/style/Image` subclasses
@@ -16,7 +26,7 @@ When rendering with the Immediate API, symbols will no longer be snapped to inte
 
 #### Geometry constructor and `setCoordinates` no longer accept `null` coordinates
 
-Geometries (`ol/geom/*`) now need to be constructed with valid coordinates (center for `ol/geom/Circle`) as first constructor argument. The same applies to the `setCoordinates()` (`setCenter() for `ol/geom/Circle`) method.
+Geometries (`ol/geom/*`) now need to be constructed with valid coordinates (center for `ol/geom/Circle`) as first constructor argument. The same applies to the `setCoordinates()` (`setCenter()` for `ol/geom/Circle`) method.
 
 ### v5.0.0
 

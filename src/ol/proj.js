@@ -67,7 +67,7 @@ import {add as addTransformFunc, clear as clearTransformFuncs, get as getTransfo
 /**
  * A projection as {@link module:ol/proj/Projection}, SRS identifier
  * string or undefined.
- * @typedef {import("./proj/Projection.js").default|string|undefined} ProjectionLike
+ * @typedef {Projection|string|undefined} ProjectionLike
  * @api
  */
 
@@ -129,7 +129,7 @@ export function identityTransform(input, opt_output, opt_dimension) {
  * Add a Projection object to the list of supported projections that can be
  * looked up by their code.
  *
- * @param {import("./proj/Projection.js").default} projection Projection instance.
+ * @param {Projection} projection Projection instance.
  * @api
  */
 export function addProjection(projection) {
@@ -139,7 +139,7 @@ export function addProjection(projection) {
 
 
 /**
- * @param {Array<import("./proj/Projection.js").default>} projections Projections.
+ * @param {Array<Projection>} projections Projections.
  */
 export function addProjections(projections) {
   projections.forEach(addProjection);
@@ -152,13 +152,13 @@ export function addProjections(projections) {
  * @param {ProjectionLike} projectionLike Either a code string which is
  *     a combination of authority and identifier such as "EPSG:4326", or an
  *     existing projection object, or undefined.
- * @return {import("./proj/Projection.js").default} Projection object, or null if not in list.
+ * @return {Projection} Projection object, or null if not in list.
  * @api
  */
 export function get(projectionLike) {
   return typeof projectionLike === 'string' ?
     projections.get(/** @type {string} */ (projectionLike)) :
-    (/** @type {import("./proj/Projection.js").default} */ (projectionLike) || null);
+    (/** @type {Projection} */ (projectionLike) || null);
 }
 
 
@@ -177,7 +177,7 @@ export function get(projectionLike) {
  * @param {ProjectionLike} projection The projection.
  * @param {number} resolution Nominal resolution in projection units.
  * @param {import("./coordinate.js").Coordinate} point Point to find adjusted resolution at.
- * @param {import("./proj/Units.js").default=} opt_units Units to get the point resolution in.
+ * @param {Units=} opt_units Units to get the point resolution in.
  * Default is the projection's units.
  * @return {number} Point resolution.
  * @api
@@ -223,7 +223,7 @@ export function getPointResolution(projection, resolution, point, opt_units) {
  * Registers transformation functions that don't alter coordinates. Those allow
  * to transform between projections with equal meaning.
  *
- * @param {Array<import("./proj/Projection.js").default>} projections Projections.
+ * @param {Array<Projection>} projections Projections.
  * @api
  */
 export function addEquivalentProjections(projections) {
@@ -242,9 +242,9 @@ export function addEquivalentProjections(projections) {
  * Registers transformation functions to convert coordinates in any projection
  * in projection1 to any projection in projection2.
  *
- * @param {Array<import("./proj/Projection.js").default>} projections1 Projections with equal
+ * @param {Array<Projection>} projections1 Projections with equal
  *     meaning.
- * @param {Array<import("./proj/Projection.js").default>} projections2 Projections with equal
+ * @param {Array<Projection>} projections2 Projections with equal
  *     meaning.
  * @param {TransformFunction} forwardTransform Transformation from any
  *   projection in projection1 to any projection in projection2.
@@ -271,9 +271,9 @@ export function clearAllProjections() {
 
 
 /**
- * @param {import("./proj/Projection.js").default|string|undefined} projection Projection.
+ * @param {Projection|string|undefined} projection Projection.
  * @param {string} defaultCode Default code.
- * @return {import("./proj/Projection.js").default} Projection.
+ * @return {Projection} Projection.
  */
 export function createProjection(projection, defaultCode) {
   if (!projection) {
@@ -282,7 +282,7 @@ export function createProjection(projection, defaultCode) {
     return get(projection);
   } else {
     return (
-      /** @type {import("./proj/Projection.js").default} */ (projection)
+      /** @type {Projection} */ (projection)
     );
   }
 }
@@ -387,8 +387,8 @@ export function toLonLat(coordinate, opt_projection) {
  * projection does represent the same geographic point as the same coordinate in
  * the other projection.
  *
- * @param {import("./proj/Projection.js").default} projection1 Projection 1.
- * @param {import("./proj/Projection.js").default} projection2 Projection 2.
+ * @param {Projection} projection1 Projection 1.
+ * @param {Projection} projection2 Projection 2.
  * @return {boolean} Equivalent.
  * @api
  */
@@ -410,8 +410,8 @@ export function equivalent(projection1, projection2) {
  * Searches in the list of transform functions for the function for converting
  * coordinates from the source projection to the destination projection.
  *
- * @param {import("./proj/Projection.js").default} sourceProjection Source Projection object.
- * @param {import("./proj/Projection.js").default} destinationProjection Destination Projection
+ * @param {Projection} sourceProjection Source Projection object.
+ * @param {Projection} destinationProjection Destination Projection
  *     object.
  * @return {TransformFunction} Transform function.
  */
@@ -483,8 +483,8 @@ export function transformExtent(extent, source, destination) {
  * Transforms the given point to the destination projection.
  *
  * @param {import("./coordinate.js").Coordinate} point Point.
- * @param {import("./proj/Projection.js").default} sourceProjection Source projection.
- * @param {import("./proj/Projection.js").default} destinationProjection Destination projection.
+ * @param {Projection} sourceProjection Source projection.
+ * @param {Projection} destinationProjection Destination projection.
  * @return {import("./coordinate.js").Coordinate} Point.
  */
 export function transformWithProjections(point, sourceProjection, destinationProjection) {

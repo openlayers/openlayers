@@ -34,8 +34,7 @@ const SelectEventType = {
  * {@link module:ol/render/Feature} and an
  * {@link module:ol/layer/Layer} and returns `true` if the feature may be
  * selected or `false` otherwise.
- * @typedef {function((import("../Feature.js").default|import("../render/Feature.js").default), import("../layer/Layer.js").default):
- *     boolean} FilterFunction
+ * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default):boolean} FilterFunction
  */
 
 
@@ -61,7 +60,7 @@ const SelectEventType = {
  * in the map and should return `true` for layers that you want to be
  * selectable. If the option is absent, all visible layers will be considered
  * selectable.
- * @property {import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction} [style]
+ * @property {import("../style/Style.js").StyleLike} [style]
  * Style for the selected features. By default the default edit style is used
  * (see {@link module:ol/style}).
  * @property {import("../events/condition.js").Condition} [removeCondition] A function
@@ -251,11 +250,11 @@ class Select extends Interaction {
      * An association between selected feature (key)
      * and layer (value)
      * @private
-     * @type {Object<number, import("../layer/Layer.js").default>}
+     * @type {Object<string, import("../layer/Layer.js").default>}
      */
     this.featureLayerAssociation_ = {};
 
-    const features = this.featureOverlay_.getSource().getFeaturesCollection();
+    const features = this.getFeatures();
     listen(features, CollectionEventType.ADD,
       this.addFeature_, this);
     listen(features, CollectionEventType.REMOVE,
@@ -263,13 +262,12 @@ class Select extends Interaction {
   }
 
   /**
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    * @param {import("../layer/Layer.js").default} layer Layer.
    * @private
    */
   addFeatureLayerAssociation_(feature, layer) {
-    const key = getUid(feature);
-    this.featureLayerAssociation_[key] = layer;
+    this.featureLayerAssociation_[getUid(feature)] = layer;
   }
 
   /**
@@ -278,7 +276,7 @@ class Select extends Interaction {
    * @api
    */
   getFeatures() {
-    return this.featureOverlay_.getSource().getFeaturesCollection();
+    return /** @type {VectorSource} */ (this.featureOverlay_.getSource()).getFeaturesCollection();
   }
 
   /**
@@ -295,14 +293,13 @@ class Select extends Interaction {
    * the (last) selected feature. Note that this will not work with any
    * programmatic method like pushing features to
    * {@link module:ol/interaction/Select~Select#getFeatures collection}.
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature
+   * @param {import("../Feature.js").FeatureLike} feature Feature
    * @return {VectorLayer} Layer.
    * @api
    */
   getLayer(feature) {
-    const key = getUid(feature);
     return (
-      /** @type {VectorLayer} */ (this.featureLayerAssociation_[key])
+      /** @type {VectorLayer} */ (this.featureLayerAssociation_[getUid(feature)])
     );
   }
 
@@ -335,8 +332,7 @@ class Select extends Interaction {
    */
   setMap(map) {
     const currentMap = this.getMap();
-    const selectedFeatures =
-        this.featureOverlay_.getSource().getFeaturesCollection();
+    const selectedFeatures = this.getFeatures();
     if (currentMap) {
       selectedFeatures.forEach(currentMap.unskipFeature.bind(currentMap));
     }
@@ -370,12 +366,11 @@ class Select extends Interaction {
   }
 
   /**
-   * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    * @private
    */
   removeFeatureLayerAssociation_(feature) {
-    const key = getUid(feature);
-    delete this.featureLayerAssociation_[key];
+    delete this.featureLayerAssociation_[getUid(feature)];
   }
 }
 
@@ -396,7 +391,7 @@ function handleEvent(mapBrowserEvent) {
   const toggle = this.toggleCondition_(mapBrowserEvent);
   const set = !add && !remove && !toggle;
   const map = mapBrowserEvent.map;
-  const features = this.featureOverlay_.getSource().getFeaturesCollection();
+  const features = this.getFeatures();
   const deselected = [];
   const selected = [];
   if (set) {
@@ -407,7 +402,7 @@ function handleEvent(mapBrowserEvent) {
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
       (
         /**
-         * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+         * @param {import("../Feature.js").FeatureLike} feature Feature.
          * @param {import("../layer/Layer.js").default} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
          */
@@ -440,7 +435,7 @@ function handleEvent(mapBrowserEvent) {
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
       (
         /**
-         * @param {import("../Feature.js").default|import("../render/Feature.js").default} feature Feature.
+         * @param {import("../Feature.js").FeatureLike} feature Feature.
          * @param {import("../layer/Layer.js").default} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
          */

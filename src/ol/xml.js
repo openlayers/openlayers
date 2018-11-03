@@ -89,20 +89,11 @@ export function getAllTextContent_(node, normalizeWhitespace, accumulator) {
 
 
 /**
- * @param {?} value Value.
- * @return {boolean} Is document.
+ * @param {Object} object Object.
+ * @return {boolean} Is a document.
  */
-export function isDocument(value) {
-  return value instanceof Document;
-}
-
-
-/**
- * @param {?} value Value.
- * @return {boolean} Is node.
- */
-export function isNode(value) {
-  return value instanceof Node;
+export function isDocument(object) {
+  return 'documentElement' in object;
 }
 
 
