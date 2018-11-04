@@ -1,8 +1,7 @@
 /**
- * @module ol/layer/Image
+ * @module ol/layer/WebGLImage
  */
 import BaseImageLayer from './BaseImage.js';
-import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
 
 
 /**
@@ -21,7 +20,7 @@ import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
  * @fires import("../render/Event.js").RenderEvent
  * @api
  */
-class ImageLayer extends BaseImageLayer {
+class WebGLImageLayer extends BaseImageLayer {
 
   /**
    * @param {Options=} opt_options Layer options.
@@ -36,9 +35,10 @@ class ImageLayer extends BaseImageLayer {
    * @protected
    */
   createRenderer() {
-    return new CanvasImageLayerRenderer(this);
+    // TODO: rework WebGL renderers to share context
+    return null;
   }
 
 }
 
-export default ImageLayer;
+export default WebGLImageLayer;
