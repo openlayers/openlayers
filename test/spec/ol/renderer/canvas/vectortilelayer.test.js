@@ -19,6 +19,7 @@ import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
 import Style from '../../../../../src/ol/style/Style.js';
 import Text from '../../../../../src/ol/style/Text.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
+import VectorTileRenderType from '../../../../../src/ol/layer/VectorTileRenderType.js';
 
 
 describe('ol.renderer.canvas.VectorTileLayer', function() {
@@ -97,13 +98,23 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     });
 
     it('uses lower resolution for pure vector rendering', function() {
-      layer.renderMode_ = 'vector';
-      const renderer = new CanvasVectorTileLayerRenderer(layer);
+      const testLayer = new VectorTileLayer({
+        renderMode: VectorTileRenderType.VECTOR,
+        source: source,
+        style: layerStyle
+      });
+      const renderer = new CanvasVectorTileLayerRenderer(testLayer);
       expect(renderer.zDirection).to.be(1);
     });
 
     it('does not render images for pure vector rendering', function() {
-      layer.renderMode_ = 'vector';
+      const testLayer = new VectorTileLayer({
+        renderMode: VectorTileRenderType.VECTOR,
+        source: source,
+        style: layerStyle
+      });
+      map.removeLayer(layer);
+      map.addLayer(testLayer);
       const spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
         'renderTileImage_');
       map.renderSync();
@@ -112,7 +123,13 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     });
 
     it('does not render replays for pure image rendering', function() {
-      layer.renderMode_ = 'image';
+      const testLayer = new VectorTileLayer({
+        renderMode: VectorTileRenderType.IMAGE,
+        source: source,
+        style: layerStyle
+      });
+      map.removeLayer(layer);
+      map.addLayer(testLayer);
       const spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
         'getTransform');
       map.renderSync();
