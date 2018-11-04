@@ -48,10 +48,10 @@ class CanvasLayerRenderer extends LayerRenderer {
     const width = frameState.size[0] * pixelRatio;
     const height = frameState.size[1] * pixelRatio;
     const rotation = frameState.viewState.rotation;
-    const topLeft = getTopLeft(/** @type {import("../../extent.js").Extent} */ (extent));
-    const topRight = getTopRight(/** @type {import("../../extent.js").Extent} */ (extent));
-    const bottomRight = getBottomRight(/** @type {import("../../extent.js").Extent} */ (extent));
-    const bottomLeft = getBottomLeft(/** @type {import("../../extent.js").Extent} */ (extent));
+    const topLeft = getTopLeft(extent);
+    const topRight = getTopRight(extent);
+    const bottomRight = getBottomRight(extent);
+    const bottomLeft = getBottomLeft(extent);
 
     applyTransform(frameState.coordinateToPixelTransform, topLeft);
     applyTransform(frameState.coordinateToPixelTransform, topRight);
