@@ -4,8 +4,9 @@
 import LayerType from '../LayerType.js';
 import {assert} from '../asserts.js';
 import TileProperty from './TileProperty.js';
-import VectorLayer from './Vector.js';
+import BaseVectorLayer from './BaseVector.js';
 import VectorTileRenderType from './VectorTileRenderType.js';
+import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer.js';
 import {assign} from '../obj.js';
 
 
@@ -78,7 +79,7 @@ import {assign} from '../obj.js';
  * @param {Options=} opt_options Options.
  * @api
  */
-class VectorTileLayer extends VectorLayer {
+class VectorTileLayer extends BaseVectorLayer {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -112,7 +113,15 @@ class VectorTileLayer extends VectorLayer {
     * @type {import("../LayerType.js").default}
     */
     this.type = LayerType.VECTOR_TILE;
+  }
 
+  /**
+   * Create a renderer for this layer.
+   * @return {import("../renderer/Layer.js").default} A layer renderer.
+   * @protected
+   */
+  createRenderer() {
+    return new CanvasVectorTileLayerRenderer(this);
   }
 
   /**
