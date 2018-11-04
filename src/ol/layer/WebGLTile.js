@@ -1,8 +1,7 @@
 /**
- * @module ol/layer/Tile
+ * @module ol/layer/WebGLTile
  */
 import BaseTileLayer from './BaseTile.js';
-import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
 
 
 /**
@@ -20,7 +19,7 @@ import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
  *
  * @api
  */
-class TileLayer extends BaseTileLayer {
+class WebGLTileLayer extends BaseTileLayer {
 
   /**
    * @param {Options=} opt_options Tile layer options.
@@ -35,9 +34,10 @@ class TileLayer extends BaseTileLayer {
    * @protected
    */
   createRenderer() {
-    return new CanvasTileLayerRenderer(this);
+    // TODO: rework WebGL renderers to share context
+    return null;
   }
 
 }
 
-export default TileLayer;
+export default WebGLTileLayer;
