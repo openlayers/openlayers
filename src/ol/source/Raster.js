@@ -10,15 +10,14 @@ import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {Processor} from 'pixelworks/lib/index';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
-import LayerType from '../LayerType.js';
 import ImageLayer from '../layer/Image.js';
 import TileLayer from '../layer/Tile.js';
 import {assign} from '../obj.js';
-import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
-import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
-import ImageSource from './Image.js';
-import SourceState from './State.js';
 import {create as createTransform} from '../transform.js';
+import ImageSource from './Image.js';
+import TileSource from './Tile.js';
+import SourceState from './State.js';
+import Source from './Source.js';
 
 
 /**
@@ -113,7 +112,7 @@ class RasterSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {Array<import("./Source.js").default|import("../layer/Layer.js").default>} sources Input
- * sources or layers. Vector layers must be configured with `renderMode: 'image'`.
+ * sources or layers.  For vector data, use an VectorImage layer.
  * @property {Operation} [operation] Raster operation.
  * The operation will be called with data from input sources
  * and the output will be assigned to the raster source.
@@ -490,42 +489,18 @@ function createRenderers(sources) {
  * @return {import("../renderer/canvas/Layer.js").default} The renderer.
  */
 function createRenderer(layerOrSource) {
-  const tileSource = /** @type {import("./Tile.js").default} */ (layerOrSource);
-  const imageSource = /** @type {import("./Image.js").default} */ (layerOrSource);
-  const layer = /** @type {import("../layer/Layer.js").default} */ (layerOrSource);
-  let renderer = null;
-  if (typeof tileSource.getTile === 'function') {
-    renderer = createTileRenderer(tileSource);
-  } else if (typeof imageSource.getImage === 'function') {
-    renderer = createImageRenderer(imageSource);
-  } else if (layer.getType() === LayerType.TILE) {
-    renderer = new CanvasTileLayerRenderer(/** @type {import("../layer/Tile.js").default} */ (layer));
-  } else if (layer.getType() == LayerType.IMAGE || layer.getType() == LayerType.VECTOR) {
-    renderer = new CanvasImageLayerRenderer(/** @type {import("../layer/Image.js").default} */ (layer));
+  // @type {import("../layer/Layer.js").default}
+  let layer;
+  if (layerOrSource instanceof Source) {
+    if (layerOrSource instanceof TileSource) {
+      layer = new TileLayer({source: layerOrSource});
+    } else if (layerOrSource instanceof ImageSource) {
+      layer = new ImageLayer({source: layerOrSource});
+    }
+  } else {
+    layer = layerOrSource;
   }
-  return renderer;
-}
-
-
-/**
- * Create an image renderer for the provided source.
- * @param {import("./Image.js").default} source The source.
- * @return {import("../renderer/canvas/Layer.js").default} The renderer.
- */
-function createImageRenderer(source) {
-  const layer = new ImageLayer({source: source});
-  return new CanvasImageLayerRenderer(layer);
-}
-
-
-/**
- * Create a tile renderer for the provided source.
- * @param {import("./Tile.js").default} source The source.
- * @return {import("../renderer/canvas/Layer.js").default} The renderer.
- */
-function createTileRenderer(source) {
-  const layer = new TileLayer({source: source});
-  return new CanvasTileLayerRenderer(layer);
+  return layer ? /** @type {import("../renderer/canvas/Layer.js").default} */ (layer.createRenderer()) : null;
 }
 
 

@@ -1,44 +1,15 @@
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
-import VectorLayer from '../../../../../src/ol/layer/Vector.js';
+import VectorImageLayer from '../../../../../src/ol/layer/VectorImage.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Projection from '../../../../../src/ol/proj/Projection.js';
 import Static from '../../../../../src/ol/source/ImageStatic.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
-import CanvasImageLayerRenderer from '../../../../../src/ol/renderer/canvas/ImageLayer.js';
-import CanvasVectorLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorLayer.js';
 
 
 describe('ol.renderer.canvas.ImageLayer', function() {
-
-  describe('#dispose()', function() {
-    let layer, imageRenderer, vectorRenderer;
-
-    beforeEach(function() {
-      layer = new VectorLayer({
-        renderMode: 'image',
-        source: new VectorSource()
-      });
-      imageRenderer = new CanvasImageLayerRenderer(layer);
-      vectorRenderer = new CanvasVectorLayerRenderer(layer);
-      imageRenderer.vectorRenderer_ = vectorRenderer;
-    });
-
-    afterEach(function() {
-      imageRenderer.dispose();
-      vectorRenderer.dispose();
-      layer.dispose();
-    });
-
-    it('cleans up CanvasVectorRenderer', function() {
-      const vectorRenderer = imageRenderer.vectorRenderer_;
-      const spy = sinon.spy(vectorRenderer, 'dispose');
-      imageRenderer.dispose();
-      expect(spy.called).to.be(true);
-    });
-  });
 
   describe('#forEachLayerAtCoordinate', function() {
 
@@ -99,8 +70,7 @@ describe('ol.renderer.canvas.ImageLayer', function() {
     let map, div, layer;
 
     beforeEach(function() {
-      layer = new VectorLayer({
-        renderMode: 'image',
+      layer = new VectorImageLayer({
         source: new VectorSource({
           features: [new Feature(new Point([0, 0]))]
         })

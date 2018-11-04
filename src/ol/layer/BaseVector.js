@@ -3,7 +3,6 @@
  */
 import LayerType from '../LayerType.js';
 import Layer from './Layer.js';
-import VectorRenderType from './VectorRenderType.js';
 import {assign} from '../obj.js';
 import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.js';
 
@@ -28,11 +27,6 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * @property {number} [renderBuffer=100] The buffer in pixels around the viewport extent used by the
  * renderer when getting features from the vector source for the rendering or hit-detection.
  * Recommended value: the size of the largest symbol, line width or label.
- * @property {import("./VectorRenderType.js").default|string} [renderMode='vector'] Render mode for vector layers:
- *  * `'image'`: Vector layers are rendered as images. Great performance, but point symbols and
- *    texts are always rotated with the view and pixels are scaled during zoom animations.
- *  * `'vector'`: Vector layers are rendered as vectors. Most accurate rendering even during
- *    animations, but slower performance.
  * @property {import("../source/Vector.js").default} [source] Source.
  * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
@@ -43,14 +37,12 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * means higher priority.
  * @property {import("../style/Style.js").StyleLike} [style] Layer style. See
  * {@link module:ol/style} for default style which will be used if this is not defined.
- * @property {boolean} [updateWhileAnimating=false] When set to `true` and `renderMode`
- * is `vector`, feature batches will be recreated during animations. This means that no
- * vectors will be shown clipped, but the setting will have a performance impact for large
- * amounts of vector data. When set to `false`, batches will be recreated when no animation
- * is active.
- * @property {boolean} [updateWhileInteracting=false] When set to `true` and `renderMode`
- * is `vector`, feature batches will be recreated during interactions. See also
- * `updateWhileAnimating`.
+ * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will
+ * be recreated during animations. This means that no vectors will be shown clipped, but the
+ * setting will have a performance impact for large amounts of vector data. When set to `false`,
+ * batches will be recreated when no animation is active.
+ * @property {boolean} [updateWhileInteracting=false] When set to `true`, feature batches will
+ * be recreated during interactions. See also `updateWhileAnimating`.
  */
 
 
@@ -130,12 +122,6 @@ class BaseVectorLayer extends Layer {
      */
     this.updateWhileInteracting_ = options.updateWhileInteracting !== undefined ?
       options.updateWhileInteracting : false;
-
-    /**
-     * @private
-     * @type {import("./VectorTileRenderType.js").default|string}
-     */
-    this.renderMode_ = options.renderMode || VectorRenderType.VECTOR;
 
     /**
      * The layer type.
@@ -237,12 +223,6 @@ class BaseVectorLayer extends Layer {
     this.changed();
   }
 
-  /**
-   * @return {import("./VectorRenderType.js").default|string} The render mode.
-   */
-  getRenderMode() {
-    return this.renderMode_;
-  }
 }
 
 

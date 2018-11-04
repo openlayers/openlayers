@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
 import {defaults as defaultInteractions, DragAndDrop} from '../src/ol/interaction.js';
-import {Vector as VectorLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import {VectorImage as VectorImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
 import {BingMaps, Vector as VectorSource} from '../src/ol/source.js';
 
 const dragAndDropInteraction = new DragAndDrop({
@@ -36,8 +36,7 @@ dragAndDropInteraction.on('addfeatures', function(event) {
   const vectorSource = new VectorSource({
     features: event.features
   });
-  map.addLayer(new VectorLayer({
-    renderMode: 'image',
+  map.addLayer(new VectorImageLayer({
     source: vectorSource
   }));
   map.getView().fit(vectorSource.getExtent());

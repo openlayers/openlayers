@@ -134,7 +134,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   prepareFrame(frameState, layerState) {
-    const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const layerRevision = layer.getRevision();
     if (this.renderedLayerRevision_ != layerRevision) {
       this.renderedTiles.length = 0;
@@ -328,7 +328,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   postCompose(context, frameState, layerState) {
-    const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const renderMode = layer.getRenderMode();
     if (renderMode != VectorTileRenderType.IMAGE) {
       const declutterReplays = layer.getDeclutter() ? {} : null;
@@ -447,7 +447,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @private
    */
   renderTileImage_(tile, pixelRatio, projection) {
-    const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const replayState = tile.getReplayState(layer);
     const revision = layer.getRevision();
     const replays = IMAGE_REPLAYS[layer.getRenderMode()];

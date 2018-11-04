@@ -2,14 +2,9 @@
  * @module ol/renderer/canvas/ImageLayer
  */
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
-import ImageCanvas from '../../ImageCanvas.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
-import {equals} from '../../array.js';
-import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
-import VectorRenderType from '../../layer/VectorRenderType.js';
-import {assign} from '../../obj.js';
-import {layerRendererConstructors} from './Map.js';
+import {getIntersection, isEmpty} from '../../extent.js';
 import IntermediateCanvasRenderer from './IntermediateCanvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
@@ -21,55 +16,23 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
 
   /**
-   * @param {import("../../layer/Image.js").default|import("../../layer/Vector.js").default} imageLayer Image or vector layer.
+   * @param {import("../../layer/Image.js").default} imageLayer Image layer.
    */
   constructor(imageLayer) {
-
     super(imageLayer);
 
     /**
-     * @private
+     * @protected
      * @type {?import("../../ImageBase.js").default}
      */
     this.image_ = null;
 
     /**
-     * @private
+     * @protected
      * @type {import("../../transform.js").Transform}
      */
     this.imageTransform_ = createTransform();
 
-    /**
-     * @type {!Array<string>}
-     */
-    this.skippedFeatures_ = [];
-
-    /**
-     * @private
-     * @type {import("./VectorLayer.js").default}
-     */
-    this.vectorRenderer_ = null;
-
-    if (imageLayer.getType() === LayerType.VECTOR) {
-      for (let i = 0, ii = layerRendererConstructors.length; i < ii; ++i) {
-        const ctor = layerRendererConstructors[i];
-        if (ctor !== CanvasImageLayerRenderer && ctor['handles'](imageLayer)) {
-          this.vectorRenderer_ = /** @type {import("./VectorLayer.js").default} */ (new ctor(imageLayer));
-          break;
-        }
-      }
-    }
-
-  }
-
-  /**
-   * @inheritDoc
-   */
-  disposeInternal() {
-    if (this.vectorRenderer_) {
-      this.vectorRenderer_.dispose();
-    }
-    super.disposeInternal();
   }
 
   /**
@@ -103,9 +66,8 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
 
     const hints = frameState.viewHints;
 
-    const vectorRenderer = this.vectorRenderer_;
     let renderedExtent = frameState.extent;
-    if (!vectorRenderer && layerState.extent !== undefined) {
+    if (layerState.extent !== undefined) {
       renderedExtent = getIntersection(renderedExtent, layerState.extent);
     }
 
@@ -118,37 +80,9 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
           projection = sourceProjection;
         }
       }
-      let skippedFeatures = this.skippedFeatures_;
-      if (vectorRenderer) {
-        const context = vectorRenderer.context;
-        const imageFrameState = /** @type {import("../../PluggableMap.js").FrameState} */ (assign({}, frameState, {
-          size: [
-            getWidth(renderedExtent) / viewResolution,
-            getHeight(renderedExtent) / viewResolution
-          ],
-          viewState: /** @type {import("../../View.js").State} */ (assign({}, frameState.viewState, {
-            rotation: 0
-          }))
-        }));
-        const newSkippedFeatures = Object.keys(imageFrameState.skippedFeatureUids).sort();
-        image = new ImageCanvas(renderedExtent, viewResolution, pixelRatio, context.canvas, function(callback) {
-          if (vectorRenderer.prepareFrame(imageFrameState, layerState) &&
-              (vectorRenderer.replayGroupChanged ||
-              !equals(skippedFeatures, newSkippedFeatures))) {
-            context.canvas.width = imageFrameState.size[0] * pixelRatio;
-            context.canvas.height = imageFrameState.size[1] * pixelRatio;
-            vectorRenderer.compose(context, imageFrameState, layerState);
-            skippedFeatures = newSkippedFeatures;
-            callback();
-          }
-        });
-      } else {
-        image = imageSource.getImage(
-          renderedExtent, viewResolution, pixelRatio, projection);
-      }
+      const image = imageSource.getImage(renderedExtent, viewResolution, pixelRatio, projection);
       if (image && this.loadImage(image)) {
         this.image_ = image;
-        this.skippedFeatures_ = skippedFeatures;
       }
     }
 
@@ -177,16 +111,6 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
     return !!this.image_;
   }
 
-  /**
-   * @inheritDoc
-   */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {
-    if (this.vectorRenderer_) {
-      return this.vectorRenderer_.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback);
-    } else {
-      return super.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback);
-    }
-  }
 }
 
 
@@ -196,9 +120,7 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
  * @return {boolean} The renderer can render the layer.
  */
 CanvasImageLayerRenderer['handles'] = function(layer) {
-  return layer.getType() === LayerType.IMAGE ||
-    layer.getType() === LayerType.VECTOR &&
-    /** @type {import("../../layer/Vector.js").default} */ (layer).getRenderMode() === VectorRenderType.IMAGE;
+  return layer.getType() === LayerType.IMAGE;
 };
 
 
