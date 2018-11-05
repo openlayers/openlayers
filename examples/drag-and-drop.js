@@ -4,74 +4,6 @@ import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
 import {defaults as defaultInteractions, DragAndDrop} from '../src/ol/interaction.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {BingMaps, Vector as VectorSource} from '../src/ol/source.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
-
-
-const defaultStyle = {
-  'Point': new Style({
-    image: new CircleStyle({
-      fill: new Fill({
-        color: 'rgba(255,255,0,0.5)'
-      }),
-      radius: 5,
-      stroke: new Stroke({
-        color: '#ff0',
-        width: 1
-      })
-    })
-  }),
-  'LineString': new Style({
-    stroke: new Stroke({
-      color: '#f00',
-      width: 3
-    })
-  }),
-  'Polygon': new Style({
-    fill: new Fill({
-      color: 'rgba(0,255,255,0.5)'
-    }),
-    stroke: new Stroke({
-      color: '#0ff',
-      width: 1
-    })
-  }),
-  'MultiPoint': new Style({
-    image: new CircleStyle({
-      fill: new Fill({
-        color: 'rgba(255,0,255,0.5)'
-      }),
-      radius: 5,
-      stroke: new Stroke({
-        color: '#f0f',
-        width: 1
-      })
-    })
-  }),
-  'MultiLineString': new Style({
-    stroke: new Stroke({
-      color: '#0f0',
-      width: 3
-    })
-  }),
-  'MultiPolygon': new Style({
-    fill: new Fill({
-      color: 'rgba(0,0,255,0.5)'
-    }),
-    stroke: new Stroke({
-      color: '#00f',
-      width: 1
-    })
-  })
-};
-
-const styleFunction = function(feature, resolution) {
-  const featureStyleFunction = feature.getStyleFunction();
-  if (featureStyleFunction) {
-    return featureStyleFunction.call(feature, resolution);
-  } else {
-    return defaultStyle[feature.getGeometry().getType()];
-  }
-};
 
 const dragAndDropInteraction = new DragAndDrop({
   formatConstructors: [
@@ -105,8 +37,7 @@ dragAndDropInteraction.on('addfeatures', function(event) {
     features: event.features
   });
   map.addLayer(new VectorLayer({
-    source: vectorSource,
-    style: styleFunction
+    source: vectorSource
   }));
   map.getView().fit(vectorSource.getExtent());
 });
