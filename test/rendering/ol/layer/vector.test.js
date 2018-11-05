@@ -20,11 +20,10 @@ describe('ol.rendering.layer.Vector', function() {
   const center = [1825927.7316762917, 6143091.089223046];
 
   let map;
-  function createMap(renderer) {
+  function createMap() {
     map = new Map({
       pixelRatio: 1,
       target: createMapDiv(80, 80),
-      renderer: renderer,
       view: new View({
         center: center,
         zoom: 13
@@ -74,7 +73,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('renders opacity correctly with the canvas renderer', function(done) {
-      createMap('canvas');
+      createMap();
       const smallLine = new Feature(new LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
@@ -100,7 +99,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('renders transparent layers correctly with the canvas renderer', function(done) {
-      createMap('canvas');
+      createMap();
       const smallLine = new Feature(new LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
@@ -139,7 +138,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('renders rotation correctly with the canvas renderer', function(done) {
-      createMap('canvas');
+      createMap();
       map.getView().setRotation(Math.PI + Math.PI / 4);
       addPolygon(300);
       addCircle(500);
@@ -159,7 +158,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('renders fill/stroke batches correctly with the canvas renderer', function(done) {
-      createMap('canvas');
+      createMap();
       source = new VectorSource({
         overlaps: false
       });
@@ -185,7 +184,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('renders stroke batches correctly with the canvas renderer', function(done) {
-      createMap('canvas');
+      createMap();
       source = new VectorSource({
         overlaps: false
       });
@@ -209,7 +208,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('interrupts fill/stroke batches correctly with the canvas renderer', function(done) {
-      createMap('canvas');
+      createMap();
       let color;
       function createSource(overlaps) {
         color = '#3399CC';
@@ -262,7 +261,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('interrupts stroke batches correctly with the canvas renderer', function(done) {
-      createMap('canvas');
+      createMap();
       let color;
       function createSource(overlaps) {
         color = '#3399CC';
@@ -469,7 +468,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('declutters text', function(done) {
-      createMap('canvas');
+      createMap();
       const layer = new VectorLayer({
         source: source
       });
@@ -509,7 +508,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('declutters text and respects z-index', function(done) {
-      createMap('canvas');
+      createMap();
       const layer = new VectorLayer({
         source: source
       });
@@ -549,7 +548,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('declutters images', function(done) {
-      createMap('canvas');
+      createMap();
       const layer = new VectorLayer({
         source: source
       });
@@ -588,7 +587,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('declutters images and respects z-index', function(done) {
-      createMap('canvas');
+      createMap();
       const layer = new VectorLayer({
         source: source
       });
@@ -627,7 +626,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('declutters image & text groups', function(done) {
-      createMap('canvas');
+      createMap();
       const layer = new VectorLayer({
         source: source
       });
@@ -671,7 +670,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('declutters text along lines and images', function(done) {
-      createMap('canvas');
+      createMap();
       const layer = new VectorLayer({
         source: source
       });
@@ -714,7 +713,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('declutters text along lines and images with z-index', function(done) {
-      createMap('canvas');
+      createMap();
       const layer = new VectorLayer({
         source: source
       });

@@ -18,12 +18,11 @@ describe('ol.rendering.layer.VectorImage', function() {
   const center = [1825927.7316762917, 6143091.089223046];
 
   let map, source;
-  function createMap(renderer) {
+  function createMap() {
     source = new VectorSource();
     map = new Map({
       pixelRatio: 1,
       target: createMapDiv(80, 80),
-      renderer: renderer,
       view: new View({
         center: center,
         zoom: 13
@@ -55,7 +54,7 @@ describe('ol.rendering.layer.VectorImage', function() {
   }
 
   it('renders opacity correctly', function(done) {
-    createMap('canvas');
+    createMap();
     const smallLine = new Feature(new LineString([
       [center[0], center[1] - 1],
       [center[0], center[1] + 1]
@@ -81,7 +80,7 @@ describe('ol.rendering.layer.VectorImage', function() {
   });
 
   it('renders transparent layers correctly', function(done) {
-    createMap('canvas');
+    createMap();
     const smallLine = new Feature(new LineString([
       [center[0], center[1] - 1],
       [center[0], center[1] + 1]
@@ -120,7 +119,7 @@ describe('ol.rendering.layer.VectorImage', function() {
   });
 
   it('renders rotation correctly', function(done) {
-    createMap('canvas');
+    createMap();
     map.getView().setRotation(Math.PI + Math.PI / 4);
     addPolygon(300);
     addCircle(500);
@@ -140,7 +139,7 @@ describe('ol.rendering.layer.VectorImage', function() {
   });
 
   it('unskips features correctly', function(done) {
-    createMap('canvas');
+    createMap();
     addCircle(500);
     addPolygon(300);
     map.skipFeature(source.getFeatures()[1]);
@@ -165,7 +164,7 @@ describe('ol.rendering.layer.VectorImage', function() {
   });
 
   it('declutters text', function(done) {
-    createMap('canvas');
+    createMap();
     const layer = new VectorImageLayer({
       source: source
     });
@@ -205,7 +204,7 @@ describe('ol.rendering.layer.VectorImage', function() {
   });
 
   it('declutters images', function(done) {
-    createMap('canvas');
+    createMap();
     const layer = new VectorImageLayer({
       source: source
     });
@@ -244,7 +243,7 @@ describe('ol.rendering.layer.VectorImage', function() {
   });
 
   it('declutters text along lines and images', function(done) {
-    createMap('canvas');
+    createMap();
     const layer = new VectorImageLayer({
       source: source
     });

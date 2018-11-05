@@ -5,8 +5,10 @@ import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Map from '../../../../src/ol/Map.js';
+import WebGLMap from '../../../../src/ol/WebGLMap.js';
 import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import WebGLVectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import Text from '../../../../src/ol/style/Text.js';
 import Fill from '../../../../src/ol/style/Fill.js';
@@ -18,16 +20,18 @@ describe('ol.rendering.style.Text', function() {
   let map, vectorSource;
 
   function createMap(renderer, opt_pixelRatio) {
+    const MapConstructor = renderer === 'webgl' ? WebGLMap : Map;
+    const LayerConstructor = renderer === 'webgl' ? WebGLVectorLayer : VectorLayer;
+
     const pixelRatio = opt_pixelRatio || 1;
     vectorSource = new VectorSource();
-    const vectorLayer = new VectorLayer({
+    const vectorLayer = new LayerConstructor({
       source: vectorSource
     });
 
-    map = new Map({
+    map = new MapConstructor({
       pixelRatio: pixelRatio,
       target: createMapDiv(200 / pixelRatio, 200 / pixelRatio),
-      renderer: renderer,
       layers: [vectorLayer],
       view: new View({
         projection: 'EPSG:4326',

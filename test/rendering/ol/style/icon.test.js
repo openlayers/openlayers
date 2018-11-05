@@ -1,8 +1,10 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Map from '../../../../src/ol/Map.js';
+import WebGLMap from '../../../../src/ol/WebGLMap.js';
 import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import WebGLVectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import Icon from '../../../../src/ol/style/Icon.js';
 import Style from '../../../../src/ol/style/Style.js';
@@ -22,15 +24,17 @@ describe('ol.rendering.style.Icon', function() {
   };
 
   function createMap(renderer, width, height) {
+    const MapConstructor = renderer === 'webgl' ? WebGLMap : Map;
+    const LayerConstructor = renderer === 'webgl' ? WebGLVectorLayer : VectorLayer;
+
     vectorSource = new VectorSource();
-    const vectorLayer = new VectorLayer({
+    const vectorLayer = new LayerConstructor({
       source: vectorSource
     });
 
-    map = new Map({
+    map = new MapConstructor({
       pixelRatio: 1,
       target: createMapDiv(width ? width : 50, height ? height : 50),
-      renderer: renderer,
       layers: [vectorLayer],
       view: new View({
         projection: 'EPSG:4326',

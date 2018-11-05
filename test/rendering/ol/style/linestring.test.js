@@ -1,8 +1,10 @@
 import Feature from '../../../../src/ol/Feature.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Map from '../../../../src/ol/Map.js';
+import WebGLMap from '../../../../src/ol/WebGLMap.js';
 import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import WebGLVectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import Style from '../../../../src/ol/style/Style.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
@@ -13,15 +15,17 @@ describe('ol.rendering.style.LineString', function() {
   let map, vectorSource;
 
   function createMap(renderer, opt_pixelRatio) {
+    const MapConstructor = renderer === 'webgl' ? WebGLMap : Map;
+    const LayerConstructor = renderer === 'webgl' ? WebGLVectorLayer : VectorLayer;
+
     vectorSource = new VectorSource();
-    const vectorLayer = new VectorLayer({
+    const vectorLayer = new LayerConstructor({
       source: vectorSource
     });
 
-    map = new Map({
+    map = new MapConstructor({
       pixelRatio: opt_pixelRatio || 1,
       target: createMapDiv(50, 50),
-      renderer: renderer,
       layers: [vectorLayer],
       view: new View({
         projection: 'EPSG:4326',

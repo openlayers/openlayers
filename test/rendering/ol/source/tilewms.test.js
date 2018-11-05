@@ -1,6 +1,8 @@
+import WebGLMap from '../../../../src/ol/WebGLMap.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
+import WebGLTileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import TileWMS from '../../../../src/ol/source/TileWMS.js';
 
 describe('ol.rendering.source.TileWMS', function() {
@@ -25,10 +27,11 @@ describe('ol.rendering.source.TileWMS', function() {
 
   let map;
   function createMap(renderer, pixelRatio) {
-    map = new Map({
+    const MapConstructor = renderer === 'webgl' ? WebGLMap : Map;
+
+    map = new MapConstructor({
       target: createMapDiv(200, 200),
       pixelRatio: pixelRatio,
-      renderer: renderer,
       view: new View({
         center: [0, 0],
         zoom: 5
@@ -74,7 +77,7 @@ describe('ol.rendering.source.TileWMS', function() {
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/0_1.webgl.png', IMAGE_TOLERANCE, done);
       });
-      map.addLayer(new TileLayer({
+      map.addLayer(new WebGLTileLayer({
         source: source
       }));
     });
@@ -99,7 +102,7 @@ describe('ol.rendering.source.TileWMS', function() {
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/0_2.webgl.png', IMAGE_TOLERANCE, done);
       });
-      map.addLayer(new TileLayer({
+      map.addLayer(new WebGLTileLayer({
         source: source
       }));
     });
@@ -125,7 +128,7 @@ describe('ol.rendering.source.TileWMS', function() {
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/20_1.webgl.png', IMAGE_TOLERANCE, done);
       });
-      map.addLayer(new TileLayer({
+      map.addLayer(new WebGLTileLayer({
         source: source
       }));
     });
@@ -150,7 +153,7 @@ describe('ol.rendering.source.TileWMS', function() {
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/20_2.webgl.png', IMAGE_TOLERANCE, done);
       });
-      map.addLayer(new TileLayer({
+      map.addLayer(new WebGLTileLayer({
         source: source
       }));
     });
