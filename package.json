@@ -12,7 +12,7 @@
   "scripts": {
     "lint": "eslint tasks test src/ol examples config",
     "pretest": "npm run lint",
-    "test": "npm run karma -- --single-run",
+    "test": "npm run karma -- --single-run --log-level error",
     "karma": "karma start test/karma.config.js",
     "serve-examples": "webpack-dev-server --config examples/webpack/config.js --mode development --watch",
     "build-examples": "webpack --config examples/webpack/config.js --mode production",
