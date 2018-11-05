@@ -2,6 +2,7 @@
  * @module ol/layer/WebGLImage
  */
 import BaseImageLayer from './BaseImage.js';
+import WebGLImageLayerRenderer from '../renderer/webgl/ImageLayer.js';
 
 
 /**
@@ -31,12 +32,12 @@ class WebGLImageLayer extends BaseImageLayer {
 
   /**
    * Create a renderer for this layer.
+   * @param {import("../renderer/webgl/Map.js").default} mapRenderer The map renderer.
    * @return {import("../renderer/Layer.js").default} A layer renderer.
    * @protected
    */
-  createRenderer() {
-    // TODO: rework WebGL renderers to share context
-    return null;
+  createRenderer(mapRenderer) {
+    return new WebGLImageLayerRenderer(mapRenderer, this);
   }
 
 }

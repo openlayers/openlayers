@@ -2,6 +2,7 @@
  * @module ol/layer/WebGLVector
  */
 import BaseVectorLayer from './BaseVector.js';
+import WebGLVectorLayerRenderer from '../renderer/webgl/VectorLayer.js';
 
 
 /**
@@ -28,12 +29,12 @@ class WebGLVectorLayer extends BaseVectorLayer {
 
   /**
    * Create a renderer for this layer.
+   * @param {import("../renderer/webgl/Map.js").default} mapRenderer The map renderer.
    * @return {import("../renderer/Layer.js").default} A layer renderer.
    * @protected
    */
-  createRenderer() {
-    // TODO: rework WebGL renderers to share context
-    return null;
+  createRenderer(mapRenderer) {
+    return new WebGLVectorLayerRenderer(mapRenderer, this);
   }
 }
 

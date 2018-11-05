@@ -2,7 +2,6 @@
  * @module ol/renderer/webgl/ImageLayer
  */
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
-import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {getIntersection, isEmpty} from '../../extent.js';
@@ -267,30 +266,6 @@ class WebGLImageLayerRenderer extends WebGLLayerRenderer {
     return transform;
   }
 }
-
-
-/**
- * Determine if this renderer handles the provided layer.
- * @param {import("../../layer/Layer.js").default} layer The candidate layer.
- * @return {boolean} The renderer can render the layer.
- */
-WebGLImageLayerRenderer['handles'] = function(layer) {
-  return layer.getType() === LayerType.IMAGE;
-};
-
-
-/**
- * Create a layer renderer.
- * @param {import("../Map.js").default} mapRenderer The map renderer.
- * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
- * @return {WebGLImageLayerRenderer} The layer renderer.
- */
-WebGLImageLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new WebGLImageLayerRenderer(
-    /** @type {import("./Map.js").default} */ (mapRenderer),
-    /** @type {import("../../layer/Image.js").default} */ (layer)
-  );
-};
 
 
 export default WebGLImageLayerRenderer;

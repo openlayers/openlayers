@@ -40,12 +40,6 @@ class MapRenderer extends Disposable {
      */
     this.layerRendererListeners_ = {};
 
-    /**
-     * @private
-     * @type {Array<typeof import("./Layer.js").default>}
-     */
-    this.layerRendererConstructors_ = [];
-
   }
 
   /**
@@ -55,14 +49,6 @@ class MapRenderer extends Disposable {
    */
   dispatchRenderEvent(type, frameState) {
     abstract();
-  }
-
-  /**
-   * Register layer renderer constructors.
-   * @param {Array<typeof import("./Layer.js").default>} constructors Layer renderers.
-   */
-  registerLayerRenderers(constructors) {
-    this.layerRendererConstructors_.push.apply(this.layerRendererConstructors_, constructors);
   }
 
   /**
@@ -151,10 +137,10 @@ class MapRenderer extends Disposable {
     let i;
     for (i = numLayers - 1; i >= 0; --i) {
       const layerState = layerStates[i];
-      const layer = layerState.layer;
+      const layer = /** @type {import("../layer/Layer.js").default} */ (layerState.layer);
       if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
         const layerRenderer = this.getLayerRenderer(layer);
-        const source = /** @type {import("../layer/Layer.js").default} */ (layer).getSource();
+        const source = layer.getSource();
         if (source) {
           result = layerRenderer.forEachFeatureAtCoordinate(
             source.getWrapX() ? translatedCoordinate : coordinate,
@@ -208,7 +194,7 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @param {import("../layer/Base.js").default} layer Layer.
+   * @param {import("../layer/Layer.js").default} layer Layer.
    * @protected
    * @return {import("./Layer.js").default} Layer renderer.
    */
@@ -216,26 +202,16 @@ class MapRenderer extends Disposable {
     const layerKey = getUid(layer);
     if (layerKey in this.layerRenderers_) {
       return this.layerRenderers_[layerKey];
-    } else {
-      let renderer = layer.getRenderer();
-      if (!renderer) {
-        for (let i = 0, ii = this.layerRendererConstructors_.length; i < ii; ++i) {
-          const candidate = this.layerRendererConstructors_[i];
-          if (candidate['handles'](layer)) {
-            renderer = candidate['create'](this, layer);
-            break;
-          }
-        }
-      }
-      if (renderer) {
-        this.layerRenderers_[layerKey] = renderer;
-        this.layerRendererListeners_[layerKey] = listen(renderer,
-          EventType.CHANGE, this.handleLayerRendererChange_, this);
-      } else {
-        throw new Error('Unable to create renderer for layer: ' + layer.getType());
-      }
-      return renderer;
     }
+
+    const renderer = layer.getRenderer(this);
+    if (!renderer) {
+      throw new Error('Unable to create renderer for layer: ' + layer.getType());
+    }
+
+    this.layerRenderers_[layerKey] = renderer;
+    this.layerRendererListeners_[layerKey] = listen(renderer, EventType.CHANGE, this.handleLayerRendererChange_, this);
+    return renderer;
   }
 
   /**

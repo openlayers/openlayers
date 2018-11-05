@@ -2,7 +2,6 @@
  * @module ol/renderer/webgl/VectorLayer
  */
 import {getUid} from '../../util.js';
-import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {buffer, containsExtent, createEmpty} from '../../extent.js';
 import WebGLReplayGroup from '../../render/webgl/ReplayGroup.js';
@@ -302,30 +301,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     return loading;
   }
 }
-
-
-/**
- * Determine if this renderer handles the provided layer.
- * @param {import("../../layer/Layer.js").default} layer The candidate layer.
- * @return {boolean} The renderer can render the layer.
- */
-WebGLVectorLayerRenderer['handles'] = function(layer) {
-  return layer.getType() === LayerType.VECTOR;
-};
-
-
-/**
- * Create a layer renderer.
- * @param {import("../Map.js").default} mapRenderer The map renderer.
- * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
- * @return {WebGLVectorLayerRenderer} The layer renderer.
- */
-WebGLVectorLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new WebGLVectorLayerRenderer(
-    /** @type {import("./Map.js").default} */ (mapRenderer),
-    /** @type {import("../../layer/Vector.js").default} */ (layer)
-  );
-};
 
 
 export default WebGLVectorLayerRenderer;

@@ -2,7 +2,7 @@
  * @module ol/layer/WebGLTile
  */
 import BaseTileLayer from './BaseTile.js';
-
+import WebGLTileLayerRenderer from '../renderer/webgl/TileLayer.js';
 
 /**
  * @typedef {import("./BaseTile.js").Options} Options
@@ -30,12 +30,12 @@ class WebGLTileLayer extends BaseTileLayer {
 
   /**
    * Create a renderer for this layer.
+   * @param {import("../renderer/webgl/Map.js").default} mapRenderer The map renderer.
    * @return {import("../renderer/Layer.js").default} A layer renderer.
    * @protected
    */
-  createRenderer() {
-    // TODO: rework WebGL renderers to share context
-    return null;
+  createRenderer(mapRenderer) {
+    return new WebGLTileLayerRenderer(mapRenderer, this);
   }
 
 }
