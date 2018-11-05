@@ -2,7 +2,6 @@
  * @module ol/renderer/canvas/ImageLayer
  */
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
-import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {getIntersection, isEmpty} from '../../extent.js';
 import IntermediateCanvasRenderer from './IntermediateCanvas.js';
@@ -112,27 +111,6 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
   }
 
 }
-
-
-/**
- * Determine if this renderer handles the provided layer.
- * @param {import("../../layer/Layer.js").default} layer The candidate layer.
- * @return {boolean} The renderer can render the layer.
- */
-CanvasImageLayerRenderer['handles'] = function(layer) {
-  return layer.getType() === LayerType.IMAGE;
-};
-
-
-/**
- * Create a layer renderer.
- * @param {import("../Map.js").default} mapRenderer The map renderer.
- * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
- * @return {CanvasImageLayerRenderer} The layer renderer.
- */
-CanvasImageLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasImageLayerRenderer(/** @type {import("../../layer/Image.js").default} */ (layer));
-};
 
 
 export default CanvasImageLayerRenderer;

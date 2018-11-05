@@ -2,7 +2,6 @@
  * @module ol/renderer/canvas/TileLayer
  */
 import {getUid} from '../../util.js';
-import LayerType from '../../LayerType.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
@@ -367,27 +366,6 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
     return /** @type {import("../../ImageTile.js").default} */ (tile).getImage();
   }
 }
-
-
-/**
- * Determine if this renderer handles the provided layer.
- * @param {import("../../layer/Layer.js").default} layer The candidate layer.
- * @return {boolean} The renderer can render the layer.
- */
-CanvasTileLayerRenderer['handles'] = function(layer) {
-  return layer.getType() === LayerType.TILE;
-};
-
-
-/**
- * Create a layer renderer.
- * @param {import("../Map.js").default} mapRenderer The map renderer.
- * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
- * @return {CanvasTileLayerRenderer} The layer renderer.
- */
-CanvasTileLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasTileLayerRenderer(/** @type {import("../../layer/Tile.js").default} */ (layer));
-};
 
 
 /**

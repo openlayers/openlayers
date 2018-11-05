@@ -2,7 +2,6 @@
  * @module ol/renderer/canvas/VectorLayer
  */
 import {getUid} from '../../util.js';
-import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {listen, unlisten} from '../../events.js';
@@ -411,27 +410,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     return loading;
   }
 }
-
-
-/**
- * Determine if this renderer handles the provided layer.
- * @param {import("../../layer/Layer.js").default} layer The candidate layer.
- * @return {boolean} The renderer can render the layer.
- */
-CanvasVectorLayerRenderer['handles'] = function(layer) {
-  return layer.getType() === LayerType.VECTOR;
-};
-
-
-/**
- * Create a layer renderer.
- * @param {import("../Map.js").default} mapRenderer The map renderer.
- * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
- * @return {CanvasVectorLayerRenderer} The layer renderer.
- */
-CanvasVectorLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasVectorLayerRenderer(/** @type {import("../../layer/Vector.js").default} */ (layer));
-};
 
 
 export default CanvasVectorLayerRenderer;

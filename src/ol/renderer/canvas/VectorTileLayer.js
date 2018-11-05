@@ -2,7 +2,6 @@
  * @module ol/renderer/canvas/VectorTileLayer
  */
 import {getUid} from '../../util.js';
-import LayerType from '../../LayerType.js';
 import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
@@ -479,27 +478,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     }
   }
 }
-
-
-/**
- * Determine if this renderer handles the provided layer.
- * @param {import("../../layer/Layer.js").default} layer The candidate layer.
- * @return {boolean} The renderer can render the layer.
- */
-CanvasVectorTileLayerRenderer['handles'] = function(layer) {
-  return layer.getType() === LayerType.VECTOR_TILE;
-};
-
-
-/**
- * Create a layer renderer.
- * @param {import("../Map.js").default} mapRenderer The map renderer.
- * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
- * @return {CanvasVectorTileLayerRenderer} The layer renderer.
- */
-CanvasVectorTileLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasVectorTileLayerRenderer(/** @type {import("../../layer/VectorTile.js").default} */ (layer));
-};
 
 
 export default CanvasVectorTileLayerRenderer;
