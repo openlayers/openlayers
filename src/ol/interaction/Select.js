@@ -9,7 +9,7 @@ import Event from '../events/Event.js';
 import {singleClick, never, shiftKeyOnly, pointerMove} from '../events/condition.js';
 import {TRUE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
-import Interaction from '../interaction/Interaction.js';
+import Interaction from './Interaction.js';
 import VectorLayer from '../layer/Vector.js';
 import {clear} from '../obj.js';
 import VectorSource from '../source/Vector.js';

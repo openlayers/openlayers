@@ -16,8 +16,8 @@ import TileLayer from '../layer/Tile.js';
 import {assign} from '../obj.js';
 import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
 import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
-import ImageSource from '../source/Image.js';
-import SourceState from '../source/State.js';
+import ImageSource from './Image.js';
+import SourceState from './State.js';
 import {create as createTransform} from '../transform.js';
 
 

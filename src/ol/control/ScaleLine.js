@@ -3,7 +3,7 @@
  */
 import {getChangeEventType} from '../Object.js';
 import {assert} from '../asserts.js';
-import Control from '../control/Control.js';
+import Control from './Control.js';
 import {CLASS_UNSELECTABLE} from '../css.js';
 import {listen} from '../events.js';
 import {getPointResolution, METERS_PER_UNIT} from '../proj.js';

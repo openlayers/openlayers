@@ -2,8 +2,8 @@
  * @module ol/format/TopoJSON
  */
 import Feature from '../Feature.js';
-import {transformWithOptions} from '../format/Feature.js';
-import JSONFeature from '../format/JSONFeature.js';
+import {transformWithOptions} from './Feature.js';
+import JSONFeature from './JSONFeature.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';

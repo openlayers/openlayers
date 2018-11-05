@@ -1,9 +1,9 @@
 /**
  * @module ol/format/OWS
  */
-import {readHref} from '../format/XLink.js';
-import XML from '../format/XML.js';
-import {readString} from '../format/xsd.js';
+import {readHref} from './XLink.js';
+import XML from './XML.js';
+import {readString} from './xsd.js';
 import {makeObjectPropertyPusher, makeObjectPropertySetter, makeStructureNS, pushParseAndPop} from '../xml.js';
 
 

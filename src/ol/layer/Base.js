@@ -3,7 +3,7 @@
  */
 import {abstract} from '../util.js';
 import BaseObject from '../Object.js';
-import LayerProperty from '../layer/Property.js';
+import LayerProperty from './Property.js';
 import {clamp} from '../math.js';
 import {assign} from '../obj.js';
 

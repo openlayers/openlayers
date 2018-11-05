@@ -3,8 +3,8 @@
  */
 import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
-import {zoom, zoomWithoutConstraints} from '../interaction/Interaction.js';
-import PointerInteraction, {centroid as centroidFromPointers} from '../interaction/Pointer.js';
+import {zoom, zoomWithoutConstraints} from './Interaction.js';
+import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js';
 
 
 /**

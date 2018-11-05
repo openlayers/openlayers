@@ -2,7 +2,7 @@
  * @module ol/format/filter/LogicalNary
  */
 import {assert} from '../../asserts.js';
-import Filter from '../filter/Filter.js';
+import Filter from './Filter.js';
 
 /**
  * @classdesc

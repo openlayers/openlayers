@@ -7,7 +7,7 @@ import {TRUE} from '../functions.js';
 import {listen, unlistenByKey} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import Interaction from '../interaction/Interaction.js';
+import Interaction from './Interaction.js';
 import {get as getProjection} from '../proj.js';
 
 

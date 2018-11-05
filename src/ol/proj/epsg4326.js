@@ -1,8 +1,8 @@
 /**
  * @module ol/proj/epsg4326
  */
-import Projection from '../proj/Projection.js';
-import Units from '../proj/Units.js';
+import Projection from './Projection.js';
+import Units from './Units.js';
 
 
 /**

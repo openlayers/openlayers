@@ -2,10 +2,10 @@
  * @module ol/format/WMTSCapabilities
  */
 import {boundingExtent} from '../extent.js';
-import OWS from '../format/OWS.js';
-import {readHref} from '../format/XLink.js';
-import XML from '../format/XML.js';
-import {readString, readNonNegativeInteger, readDecimal} from '../format/xsd.js';
+import OWS from './OWS.js';
+import {readHref} from './XLink.js';
+import XML from './XML.js';
+import {readString, readNonNegativeInteger, readDecimal} from './xsd.js';
 import {pushParseAndPop, makeStructureNS,
   makeObjectPropertySetter, makeObjectPropertyPusher, makeArrayPusher} from '../xml.js';
 

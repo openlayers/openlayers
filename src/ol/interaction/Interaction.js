@@ -3,7 +3,7 @@
  */
 import BaseObject from '../Object.js';
 import {easeOut, linear} from '../easing.js';
-import InteractionProperty from '../interaction/Property.js';
+import InteractionProperty from './Property.js';
 import {clamp} from '../math.js';
 
 

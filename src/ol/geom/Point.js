@@ -2,9 +2,9 @@
  * @module ol/geom/Point
  */
 import {createOrUpdateFromCoordinate, containsXY} from '../extent.js';
-import GeometryType from '../geom/GeometryType.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
-import {deflateCoordinate} from '../geom/flat/deflate.js';
+import GeometryType from './GeometryType.js';
+import SimpleGeometry from './SimpleGeometry.js';
+import {deflateCoordinate} from './flat/deflate.js';
 import {squaredDistance as squaredDx} from '../math.js';
 
 /**

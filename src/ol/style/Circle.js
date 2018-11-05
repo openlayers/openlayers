@@ -2,7 +2,7 @@
  * @module ol/style/Circle
  */
 
-import RegularShape from '../style/RegularShape.js';
+import RegularShape from './RegularShape.js';
 
 
 /**

@@ -2,8 +2,8 @@
  * @module ol/format/WMSGetFeatureInfo
  */
 import {extend, includes} from '../array.js';
-import GML2 from '../format/GML2.js';
-import XMLFeature from '../format/XMLFeature.js';
+import GML2 from './GML2.js';
+import XMLFeature from './XMLFeature.js';
 import {assign} from '../obj.js';
 import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
 

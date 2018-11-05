@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/Intersects
  */
-import Spatial from '../filter/Spatial.js';
+import Spatial from './Spatial.js';
 
 /**
  * @classdesc

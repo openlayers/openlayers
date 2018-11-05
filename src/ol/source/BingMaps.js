@@ -6,8 +6,8 @@ import {createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {applyTransform, intersects} from '../extent.js';
 import {jsonp as requestJSONP} from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
-import SourceState from '../source/State.js';
-import TileImage from '../source/TileImage.js';
+import SourceState from './State.js';
+import TileImage from './TileImage.js';
 import {createOrUpdate, quadKey} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 

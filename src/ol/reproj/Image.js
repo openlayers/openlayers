@@ -9,7 +9,7 @@ import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getCenter, getIntersection, getHeight, getWidth} from '../extent.js';
 import {calculateSourceResolution, render as renderReprojected} from '../reproj.js';
-import Triangulation from '../reproj/Triangulation.js';
+import Triangulation from './Triangulation.js';
 
 
 /**

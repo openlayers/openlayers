@@ -4,7 +4,7 @@
 
 import {find} from '../array.js';
 import {get as getProjection} from '../proj.js';
-import TileGrid from '../tilegrid/TileGrid.js';
+import TileGrid from './TileGrid.js';
 
 
 /**

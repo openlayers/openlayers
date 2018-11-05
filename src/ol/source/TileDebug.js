@@ -6,7 +6,7 @@ import Tile from '../Tile.js';
 import TileState from '../TileState.js';
 import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
-import TileSource from '../source/Tile.js';
+import TileSource from './Tile.js';
 import {getKeyZXY} from '../tilecoord.js';
 
 

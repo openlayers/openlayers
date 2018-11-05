@@ -2,7 +2,7 @@
  * @module ol/layer/Image
  */
 import LayerType from '../LayerType.js';
-import Layer from '../layer/Layer.js';
+import Layer from './Layer.js';
 
 
 /**

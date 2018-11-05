@@ -6,7 +6,7 @@ import {scale as scaleCoordinate, rotate as rotateCoordinate, add as addCoordina
 import {easeOut} from '../easing.js';
 import {noModifierKeys} from '../events/condition.js';
 import {FALSE} from '../functions.js';
-import PointerInteraction, {centroid as centroidFromPointers} from '../interaction/Pointer.js';
+import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js';
 
 
 /**

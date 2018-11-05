@@ -3,9 +3,9 @@
  */
 import {extend} from '../array.js';
 import {createOrUpdate} from '../extent.js';
-import {transformWithOptions} from '../format/Feature.js';
-import GMLBase, {GMLNS} from '../format/GMLBase.js';
-import {readNonNegativeIntegerString, writeStringTextNode} from '../format/xsd.js';
+import {transformWithOptions} from './Feature.js';
+import GMLBase, {GMLNS} from './GMLBase.js';
+import {readNonNegativeIntegerString, writeStringTextNode} from './xsd.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';

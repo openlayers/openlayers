@@ -4,7 +4,7 @@
 import {easeOut} from '../easing.js';
 import {shiftKeyOnly} from '../events/condition.js';
 import {createOrUpdateFromCoordinates, getBottomLeft, getCenter, getTopRight, scaleFromCenter} from '../extent.js';
-import DragBox from '../interaction/DragBox.js';
+import DragBox from './DragBox.js';
 
 
 /**

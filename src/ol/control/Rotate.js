@@ -1,7 +1,7 @@
 /**
  * @module ol/control/Rotate
  */
-import Control from '../control/Control.js';
+import Control from './Control.js';
 import {CLASS_CONTROL, CLASS_HIDDEN, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
 import {listen} from '../events.js';

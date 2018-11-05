@@ -3,21 +3,21 @@
  */
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY, getCenter} from '../extent.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
-import LinearRing from '../geom/LinearRing.js';
-import Point from '../geom/Point.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
+import GeometryLayout from './GeometryLayout.js';
+import GeometryType from './GeometryType.js';
+import LinearRing from './LinearRing.js';
+import Point from './Point.js';
+import SimpleGeometry from './SimpleGeometry.js';
 import {offset as sphereOffset} from '../sphere.js';
-import {linearRings as linearRingsArea} from '../geom/flat/area.js';
-import {assignClosestArrayPoint, arrayMaxSquaredDelta} from '../geom/flat/closest.js';
-import {linearRingsContainsXY} from '../geom/flat/contains.js';
-import {deflateCoordinatesArray} from '../geom/flat/deflate.js';
-import {inflateCoordinatesArray} from '../geom/flat/inflate.js';
-import {getInteriorPointOfArray} from '../geom/flat/interiorpoint.js';
-import {intersectsLinearRingArray} from '../geom/flat/intersectsextent.js';
-import {linearRingIsOriented, orientLinearRings} from '../geom/flat/orient.js';
-import {quantizeArray} from '../geom/flat/simplify.js';
+import {linearRings as linearRingsArea} from './flat/area.js';
+import {assignClosestArrayPoint, arrayMaxSquaredDelta} from './flat/closest.js';
+import {linearRingsContainsXY} from './flat/contains.js';
+import {deflateCoordinatesArray} from './flat/deflate.js';
+import {inflateCoordinatesArray} from './flat/inflate.js';
+import {getInteriorPointOfArray} from './flat/interiorpoint.js';
+import {intersectsLinearRingArray} from './flat/intersectsextent.js';
+import {linearRingIsOriented, orientLinearRings} from './flat/orient.js';
+import {quantizeArray} from './flat/simplify.js';
 import {modulo} from '../math.js';
 
 /**

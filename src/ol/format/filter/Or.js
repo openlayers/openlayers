@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/Or
  */
-import LogicalNary from '../filter/LogicalNary.js';
+import LogicalNary from './LogicalNary.js';
 
 /**
  * @classdesc

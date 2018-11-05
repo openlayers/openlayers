@@ -88,9 +88,9 @@
  */
 import {assert} from '../asserts.js';
 import GeometryType from '../geom/GeometryType.js';
-import CircleStyle from '../style/Circle.js';
-import Fill from '../style/Fill.js';
-import Stroke from '../style/Stroke.js';
+import CircleStyle from './Circle.js';
+import Fill from './Fill.js';
+import Stroke from './Stroke.js';
 
 
 /**

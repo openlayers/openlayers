@@ -18,7 +18,7 @@ import VectorContext from '../VectorContext.js';
 import {drawImage, resetTransform, defaultPadding, defaultFillStyle, defaultStrokeStyle,
   defaultMiterLimit, defaultLineWidth, defaultLineJoin, defaultLineDashOffset,
   defaultLineDash, defaultLineCap} from '../canvas.js';
-import CanvasInstruction from '../canvas/Instruction.js';
+import CanvasInstruction from './Instruction.js';
 import {TEXT_ALIGN} from '../replay.js';
 import {
   create as createTransform,

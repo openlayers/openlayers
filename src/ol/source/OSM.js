@@ -2,7 +2,7 @@
  * @module ol/source/OSM
  */
 
-import XYZ from '../source/XYZ.js';
+import XYZ from './XYZ.js';
 
 
 /**

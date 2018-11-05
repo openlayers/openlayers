@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/IsLike
  */
-import Comparison from '../filter/Comparison.js';
+import Comparison from './Comparison.js';
 
 /**
  * @classdesc
