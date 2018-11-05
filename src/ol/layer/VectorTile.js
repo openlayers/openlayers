@@ -1,7 +1,6 @@
 /**
  * @module ol/layer/VectorTile
  */
-import LayerType from '../LayerType.js';
 import {assert} from '../asserts.js';
 import TileProperty from './TileProperty.js';
 import BaseVectorLayer from './BaseVector.js';
@@ -113,12 +112,6 @@ class VectorTileLayer extends BaseVectorLayer {
     this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
       options.useInterimTilesOnError : true);
 
-    /**
-    * The layer type.
-    * @protected
-    * @type {import("../LayerType.js").default}
-    */
-    this.type = LayerType.VECTOR_TILE;
   }
 
   /**

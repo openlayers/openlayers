@@ -1,7 +1,6 @@
 /**
  * @module ol/layer/BaseVector
  */
-import LayerType from '../LayerType.js';
 import Layer from './Layer.js';
 import {assign} from '../obj.js';
 import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.js';
@@ -123,12 +122,6 @@ class BaseVectorLayer extends Layer {
     this.updateWhileInteracting_ = options.updateWhileInteracting !== undefined ?
       options.updateWhileInteracting : false;
 
-    /**
-     * The layer type.
-     * @protected
-     * @type {import("../LayerType.js").default}
-     */
-    this.type = LayerType.VECTOR;
   }
 
   /**

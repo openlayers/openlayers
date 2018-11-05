@@ -206,7 +206,7 @@ class MapRenderer extends Disposable {
 
     const renderer = layer.getRenderer(this);
     if (!renderer) {
-      throw new Error('Unable to create renderer for layer: ' + layer.getType());
+      throw new Error('Unable to create renderer for layer');
     }
 
     this.layerRenderers_[layerKey] = renderer;

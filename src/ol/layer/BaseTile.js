@@ -1,7 +1,6 @@
 /**
  * @module ol/layer/BaseTile
  */
-import LayerType from '../LayerType.js';
 import Layer from './Layer.js';
 import TileProperty from './TileProperty.js';
 import {assign} from '../obj.js';
@@ -58,13 +57,6 @@ class BaseTileLayer extends Layer {
     this.setPreload(options.preload !== undefined ? options.preload : 0);
     this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
       options.useInterimTilesOnError : true);
-
-    /**
-    * The layer type.
-    * @protected
-    * @type {import("../LayerType.js").default}
-    */
-    this.type = LayerType.TILE;
 
   }
 

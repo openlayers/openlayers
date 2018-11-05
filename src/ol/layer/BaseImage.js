@@ -1,7 +1,6 @@
 /**
  * @module ol/layer/BaseImage
  */
-import LayerType from '../LayerType.js';
 import Layer from './Layer.js';
 
 
@@ -46,14 +45,6 @@ class BaseImageLayer extends Layer {
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
     super(options);
-
-    /**
-     * The layer type.
-     * @protected
-     * @type {import("../LayerType.js").default}
-     */
-    this.type = LayerType.IMAGE;
-
   }
 
 }
