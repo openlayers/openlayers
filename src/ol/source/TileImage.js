@@ -52,6 +52,7 @@ import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
  * world only, but they will be wrapped horizontally to render multiple worlds.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
+ * @property {string} [key] Optional tile key for proper cache fetching
  */
 
 
@@ -83,6 +84,7 @@ class TileImage extends UrlTile {
       urls: options.urls,
       wrapX: options.wrapX,
       transition: options.transition,
+      key: options.key,
       attributionsCollapsible: options.attributionsCollapsible
     });
 

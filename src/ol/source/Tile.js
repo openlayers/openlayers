@@ -23,6 +23,7 @@ import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.j
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid]
  * @property {boolean} [wrapX=true]
  * @property {number} [transition]
+ * @property {string} [key]
  */
 
 
@@ -83,7 +84,7 @@ class TileSource extends Source {
      * @private
      * @type {string}
      */
-    this.key_ = '';
+    this.key_ = options.key || '';
 
     /**
      * @protected
