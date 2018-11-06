@@ -2,8 +2,8 @@
  * @module ol/source/Stamen
  */
 
-import {ATTRIBUTION as OSM_ATTRIBUTION} from '../source/OSM.js';
-import XYZ from '../source/XYZ.js';
+import {ATTRIBUTION as OSM_ATTRIBUTION} from './OSM.js';
+import XYZ from './XYZ.js';
 
 
 /**

@@ -1,8 +1,8 @@
 /**
  * @module ol/style/Text
  */
-import Fill from '../style/Fill.js';
-import TextPlacement from '../style/TextPlacement.js';
+import Fill from './Fill.js';
+import TextPlacement from './TextPlacement.js';
 
 
 /**

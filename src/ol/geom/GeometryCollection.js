@@ -4,8 +4,8 @@
 import {listen, unlisten} from '../events.js';
 import EventType from '../events/EventType.js';
 import {createOrUpdateEmpty, closestSquaredDistanceXY, extend, getCenter} from '../extent.js';
-import Geometry from '../geom/Geometry.js';
-import GeometryType from '../geom/GeometryType.js';
+import Geometry from './Geometry.js';
+import GeometryType from './GeometryType.js';
 import {clear} from '../obj.js';
 
 /**

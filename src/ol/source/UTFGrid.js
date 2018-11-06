@@ -11,8 +11,8 @@ import EventType from '../events/EventType.js';
 import {applyTransform, intersects} from '../extent.js';
 import {jsonp as requestJSONP} from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
-import SourceState from '../source/State.js';
-import TileSource from '../source/Tile.js';
+import SourceState from './State.js';
+import TileSource from './Tile.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 

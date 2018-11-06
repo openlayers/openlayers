@@ -4,7 +4,7 @@
 import Disposable from '../Disposable.js';
 import {unlistenAll} from '../events.js';
 import {VOID} from '../functions.js';
-import Event from '../events/Event.js';
+import Event from './Event.js';
 
 
 /**

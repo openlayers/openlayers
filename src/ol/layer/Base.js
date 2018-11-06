@@ -1,8 +1,9 @@
 /**
  * @module ol/layer/Base
  */
+import {abstract} from '../util.js';
 import BaseObject from '../Object.js';
-import LayerProperty from '../layer/Property.js';
+import LayerProperty from './Property.js';
 import {clamp} from '../math.js';
 import {assign} from '../obj.js';
 
@@ -62,10 +63,7 @@ class BaseLayer extends BaseObject {
      * @type {import("./Layer.js").State}
      * @private
      */
-    this.state_ = /** @type {import("./Layer.js").State} */ ({
-      layer: /** @type {import("./Layer.js").default} */ (this),
-      managed: true
-    });
+    this.state_ = null;
 
     /**
      * The layer type.
@@ -88,15 +86,21 @@ class BaseLayer extends BaseObject {
    * @return {import("./Layer.js").State} Layer state.
    */
   getLayerState() {
-    this.state_.opacity = clamp(this.getOpacity(), 0, 1);
-    this.state_.sourceState = this.getSourceState();
-    this.state_.visible = this.getVisible();
-    this.state_.extent = this.getExtent();
-    this.state_.zIndex = this.getZIndex() || 0;
-    this.state_.maxResolution = this.getMaxResolution();
-    this.state_.minResolution = Math.max(this.getMinResolution(), 0);
+    /** @type {import("./Layer.js").State} */
+    const state = this.state_ || /** @type {?} */ ({
+      layer: this,
+      managed: true
+    });
+    state.opacity = clamp(this.getOpacity(), 0, 1);
+    state.sourceState = this.getSourceState();
+    state.visible = this.getVisible();
+    state.extent = this.getExtent();
+    state.zIndex = this.getZIndex() || 0;
+    state.maxResolution = this.getMaxResolution();
+    state.minResolution = Math.max(this.getMinResolution(), 0);
+    this.state_ = state;
 
-    return this.state_;
+    return state;
   }
 
   /**
@@ -105,7 +109,9 @@ class BaseLayer extends BaseObject {
    *     modified in place).
    * @return {Array<import("./Layer.js").default>} Array of layers.
    */
-  getLayersArray(opt_array) {}
+  getLayersArray(opt_array) {
+    return abstract();
+  }
 
   /**
    * @abstract
@@ -113,7 +119,9 @@ class BaseLayer extends BaseObject {
    *     states (to be modified in place).
    * @return {Array<import("./Layer.js").State>} List of layer states.
    */
-  getLayerStatesArray(opt_states) {}
+  getLayerStatesArray(opt_states) {
+    return abstract();
+  }
 
   /**
    * Return the {@link module:ol/extent~Extent extent} of the layer or `undefined` if it
@@ -162,7 +170,9 @@ class BaseLayer extends BaseObject {
    * @abstract
    * @return {import("../source/State.js").default} Source state.
    */
-  getSourceState() {}
+  getSourceState() {
+    return abstract();
+  }
 
   /**
    * Return the visibility of the layer (`true` or `false`).

@@ -16,9 +16,9 @@ import {xhr} from '../featureloader.js';
 import {TRUE, VOID} from '../functions.js';
 import {all as allStrategy} from '../loadingstrategy.js';
 import {isEmpty, getValues} from '../obj.js';
-import Source from '../source/Source.js';
-import SourceState from '../source/State.js';
-import VectorEventType from '../source/VectorEventType.js';
+import Source from './Source.js';
+import SourceState from './State.js';
+import VectorEventType from './VectorEventType.js';
 import RBush from '../structs/RBush.js';
 
 /**
@@ -154,7 +154,7 @@ export class VectorSourceEvent extends Event {
  * by this source are suitable for editing. See {@link module:ol/source/VectorTile~VectorTile} for
  * vector data that is optimized for rendering.
  *
- * @fires ol/source/Vector~VectorSourceEvent
+ * @fires ol/source/Vector.VectorSourceEvent
  * @api
  */
 class VectorSource extends Source {
@@ -469,7 +469,7 @@ class VectorSource extends Source {
 
   /**
    * Remove all features from the source.
-   * @param {boolean=} opt_fast Skip dispatching of {@link module:ol/source/Vector~VectorSourceEvent#removefeature} events.
+   * @param {boolean=} opt_fast Skip dispatching of {@link module:ol/source/Vector.VectorSourceEvent#removefeature} events.
    * @api
    */
   clear(opt_fast) {
@@ -889,7 +889,7 @@ class VectorSource extends Source {
       if (!alreadyLoaded) {
         this.loader_.call(this, extentToLoad, resolution, projection);
         loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
-        this.loading = true;
+        this.loading = this.loader_ !== VOID;
       }
     }
   }

@@ -3,16 +3,16 @@
  */
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
-import LineString from '../geom/LineString.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
-import {assignClosestArrayPoint, arrayMaxSquaredDelta} from '../geom/flat/closest.js';
-import {deflateCoordinatesArray} from '../geom/flat/deflate.js';
-import {inflateCoordinatesArray} from '../geom/flat/inflate.js';
-import {interpolatePoint, lineStringsCoordinateAtM} from '../geom/flat/interpolate.js';
-import {intersectsLineStringArray} from '../geom/flat/intersectsextent.js';
-import {douglasPeuckerArray} from '../geom/flat/simplify.js';
+import GeometryLayout from './GeometryLayout.js';
+import GeometryType from './GeometryType.js';
+import LineString from './LineString.js';
+import SimpleGeometry from './SimpleGeometry.js';
+import {assignClosestArrayPoint, arrayMaxSquaredDelta} from './flat/closest.js';
+import {deflateCoordinatesArray} from './flat/deflate.js';
+import {inflateCoordinatesArray} from './flat/inflate.js';
+import {interpolatePoint, lineStringsCoordinateAtM} from './flat/interpolate.js';
+import {intersectsLineStringArray} from './flat/intersectsextent.js';
+import {douglasPeuckerArray} from './flat/simplify.js';
 
 /**
  * @classdesc

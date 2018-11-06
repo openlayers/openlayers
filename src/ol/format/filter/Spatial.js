@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/Spatial
  */
-import Filter from '../filter/Filter.js';
+import Filter from './Filter.js';
 
 /**
  * @classdesc

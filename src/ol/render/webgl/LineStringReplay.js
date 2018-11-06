@@ -12,9 +12,9 @@ import {isEmpty} from '../../obj.js';
 import {DEFAULT_LINECAP, DEFAULT_LINEDASH, DEFAULT_LINEDASHOFFSET,
   DEFAULT_LINEJOIN, DEFAULT_LINEWIDTH, DEFAULT_MITERLIMIT, DEFAULT_STROKESTYLE,
   triangleIsCounterClockwise} from '../webgl.js';
-import WebGLReplay from '../webgl/Replay.js';
-import {fragment, vertex} from '../webgl/linestringreplay/defaultshader.js';
-import Locations from '../webgl/linestringreplay/defaultshader/Locations.js';
+import WebGLReplay from './Replay.js';
+import {fragment, vertex} from './linestringreplay/defaultshader.js';
+import Locations from './linestringreplay/defaultshader/Locations.js';
 import {FLOAT} from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 

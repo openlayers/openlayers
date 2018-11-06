@@ -3,9 +3,9 @@
  */
 import Feature from '../Feature.js';
 import {includes} from '../array.js';
-import {transformWithOptions} from '../format/Feature.js';
-import XMLFeature from '../format/XMLFeature.js';
-import {readString, readDecimal, readNonNegativeInteger, readDateTime, writeStringTextNode, writeNonNegativeIntegerTextNode, writeDecimalTextNode, writeDateTimeTextNode} from '../format/xsd.js';
+import {transformWithOptions} from './Feature.js';
+import XMLFeature from './XMLFeature.js';
+import {readString, readDecimal, readNonNegativeInteger, readDateTime, writeStringTextNode, writeNonNegativeIntegerTextNode, writeDecimalTextNode, writeDateTimeTextNode} from './xsd.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';

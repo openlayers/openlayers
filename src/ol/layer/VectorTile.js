@@ -3,30 +3,10 @@
  */
 import LayerType from '../LayerType.js';
 import {assert} from '../asserts.js';
-import TileProperty from '../layer/TileProperty.js';
-import VectorLayer from '../layer/Vector.js';
-import VectorTileRenderType from '../layer/VectorTileRenderType.js';
+import TileProperty from './TileProperty.js';
+import VectorLayer from './Vector.js';
+import VectorTileRenderType from './VectorTileRenderType.js';
 import {assign} from '../obj.js';
-
-
-/**
- * @enum {string}
- * Render mode for vector tiles:
- *  * `'image'`: Vector tiles are rendered as images. Great performance, but
- *    point symbols and texts are always rotated with the view and pixels are
- *    scaled during zoom animations.
- *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels
- *    are scaled during zoom animations. Point symbols and texts are accurately
- *    rendered as vectors and can stay upright on rotated views.
- *  * `'vector'`: Vector tiles are rendered as vectors. Most accurate rendering
- *    even during animations, but slower performance than the other options.
- * @api
- */
-export const RenderType = {
-  IMAGE: 'image',
-  HYBRID: 'hybrid',
-  VECTOR: 'vector'
-};
 
 
 /**

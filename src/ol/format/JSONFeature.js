@@ -1,8 +1,9 @@
 /**
  * @module ol/format/JSONFeature
  */
-import FeatureFormat from '../format/Feature.js';
-import FormatType from '../format/FormatType.js';
+import {abstract} from '../util.js';
+import FeatureFormat from './Feature.js';
+import FormatType from './FormatType.js';
 
 /**
  * @classdesc
@@ -59,7 +60,9 @@ class JSONFeature extends FeatureFormat {
    * @protected
    * @return {import("../Feature.js").default} Feature.
    */
-  readFeatureFromObject(object, opt_options) {}
+  readFeatureFromObject(object, opt_options) {
+    return abstract();
+  }
 
   /**
    * @abstract
@@ -68,7 +71,9 @@ class JSONFeature extends FeatureFormat {
    * @protected
    * @return {Array<import("../Feature.js").default>} Features.
    */
-  readFeaturesFromObject(object, opt_options) {}
+  readFeaturesFromObject(object, opt_options) {
+    return abstract();
+  }
 
   /**
    * Read a geometry.
@@ -90,7 +95,9 @@ class JSONFeature extends FeatureFormat {
    * @protected
    * @return {import("../geom/Geometry.js").default} Geometry.
    */
-  readGeometryFromObject(object, opt_options) {}
+  readGeometryFromObject(object, opt_options) {
+    return abstract();
+  }
 
   /**
    * Read the projection.
@@ -109,7 +116,9 @@ class JSONFeature extends FeatureFormat {
    * @protected
    * @return {import("../proj/Projection.js").default} Projection.
    */
-  readProjectionFromObject(object) {}
+  readProjectionFromObject(object) {
+    return abstract();
+  }
 
   /**
    * Encode a feature as string.
@@ -129,7 +138,9 @@ class JSONFeature extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {Object} Object.
    */
-  writeFeatureObject(feature, opt_options) {}
+  writeFeatureObject(feature, opt_options) {
+    return abstract();
+  }
 
   /**
    * Encode an array of features as string.
@@ -149,7 +160,9 @@ class JSONFeature extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {Object} Object.
    */
-  writeFeaturesObject(features, opt_options) {}
+  writeFeaturesObject(features, opt_options) {
+    return abstract();
+  }
 
   /**
    * Encode a geometry as string.
@@ -169,7 +182,9 @@ class JSONFeature extends FeatureFormat {
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {Object} Object.
    */
-  writeGeometryObject(geometry, opt_options) {}
+  writeGeometryObject(geometry, opt_options) {
+    return abstract();
+  }
 }
 
 

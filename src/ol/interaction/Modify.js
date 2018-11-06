@@ -15,7 +15,7 @@ import {always, primaryAction, altKeyOnly, singleClick} from '../events/conditio
 import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
-import PointerInteraction from '../interaction/Pointer.js';
+import PointerInteraction from './Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';

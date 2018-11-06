@@ -5,8 +5,8 @@ import {disable} from '../rotationconstraint.js';
 import ViewHint from '../ViewHint.js';
 import {altShiftKeysOnly, mouseOnly, mouseActionButton} from '../events/condition.js';
 import {FALSE} from '../functions.js';
-import {rotate, rotateWithoutConstraints} from '../interaction/Interaction.js';
-import PointerInteraction from '../interaction/Pointer.js';
+import {rotate, rotateWithoutConstraints} from './Interaction.js';
+import PointerInteraction from './Pointer.js';
 
 
 /**

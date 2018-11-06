@@ -12,9 +12,9 @@ import TileSource from '../../source/Tile.js';
 import {numberSafeCompareFunction} from '../../array.js';
 import {createEmpty, intersects} from '../../extent.js';
 import {roundUpToPowerOfTwo} from '../../math.js';
-import WebGLLayerRenderer from '../webgl/Layer.js';
-import {fragment, vertex} from '../webgl/tilelayershader.js';
-import Locations from '../webgl/tilelayershader/Locations.js';
+import WebGLLayerRenderer from './Layer.js';
+import {fragment, vertex} from './tilelayershader.js';
+import Locations from './tilelayershader/Locations.js';
 import {toSize} from '../../size.js';
 import {
   reset as resetTransform,

@@ -1,12 +1,16 @@
 /**
  * @module ol/renderer/canvas/IntermediateCanvas
  */
+import {abstract} from '../../util.js';
 import {scale as scaleCoordinate} from '../../coordinate.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, intersects} from '../../extent.js';
-import CanvasLayerRenderer from '../canvas/Layer.js';
+import CanvasLayerRenderer from './Layer.js';
 import {create as createTransform, apply as applyTransform} from '../../transform.js';
 
+/**
+ * @abstract
+ */
 class IntermediateCanvasRenderer extends CanvasLayerRenderer {
 
   /**
@@ -80,13 +84,17 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
    * @abstract
    * @return {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} Canvas.
    */
-  getImage() {}
+  getImage() {
+    return abstract();
+  }
 
   /**
    * @abstract
    * @return {!import("../../transform.js").Transform} Image transform.
    */
-  getImageTransform() {}
+  getImageTransform() {
+    return abstract();
+  }
 
   /**
    * @inheritDoc

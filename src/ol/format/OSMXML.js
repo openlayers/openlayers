@@ -4,8 +4,8 @@
 // FIXME add typedef for stack state objects
 import {extend} from '../array.js';
 import Feature from '../Feature.js';
-import {transformWithOptions} from '../format/Feature.js';
-import XMLFeature from '../format/XMLFeature.js';
+import {transformWithOptions} from './Feature.js';
+import XMLFeature from './XMLFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import Point from '../geom/Point.js';

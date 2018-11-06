@@ -2,8 +2,8 @@
  * @module ol/layer/Vector
  */
 import LayerType from '../LayerType.js';
-import Layer from '../layer/Layer.js';
-import VectorRenderType from '../layer/VectorRenderType.js';
+import Layer from './Layer.js';
+import VectorRenderType from './VectorRenderType.js';
 import {assign} from '../obj.js';
 import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.js';
 

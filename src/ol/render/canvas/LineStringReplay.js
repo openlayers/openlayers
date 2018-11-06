@@ -1,8 +1,8 @@
 /**
  * @module ol/render/canvas/LineStringReplay
  */
-import CanvasInstruction, {strokeInstruction, beginPathInstruction} from '../canvas/Instruction.js';
-import CanvasReplay from '../canvas/Replay.js';
+import CanvasInstruction, {strokeInstruction, beginPathInstruction} from './Instruction.js';
+import CanvasReplay from './Replay.js';
 
 class CanvasLineStringReplay extends CanvasReplay {
   /**

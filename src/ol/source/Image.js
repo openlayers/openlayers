@@ -1,15 +1,15 @@
 /**
  * @module ol/source/Image
  */
+import {abstract} from '../util.js';
 import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
-
 import ImageState from '../ImageState.js';
 import {linearFindNearest} from '../array.js';
 import Event from '../events/Event.js';
 import {equals} from '../extent.js';
 import {equivalent} from '../proj.js';
 import ReprojImage from '../reproj/Image.js';
-import Source from '../source/Source.js';
+import Source from './Source.js';
 
 
 /**
@@ -81,6 +81,7 @@ class ImageSourceEvent extends Event {
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
  * Base class for sources providing a single image.
+ * @abstract
  * @api
  */
 class ImageSource extends Source {
@@ -188,7 +189,9 @@ class ImageSource extends Source {
    * @return {import("../ImageBase.js").default} Single image.
    * @protected
    */
-  getImageInternal(extent, resolution, pixelRatio, projection) {}
+  getImageInternal(extent, resolution, pixelRatio, projection) {
+    return abstract();
+  }
 
   /**
    * Handle image change events.

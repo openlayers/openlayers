@@ -5,8 +5,8 @@ import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getUid} from '../util.js';
 import {getChangeEventType} from '../Object.js';
-import BaseLayer from '../layer/Base.js';
-import LayerProperty from '../layer/Property.js';
+import BaseLayer from './Base.js';
+import LayerProperty from './Property.js';
 import {assign} from '../obj.js';
 import RenderEventType from '../render/EventType.js';
 import SourceState from '../source/State.js';
@@ -35,7 +35,7 @@ import SourceState from '../source/State.js';
 
 /**
  * @typedef {Object} State
- * @property {import("./Layer.js").default} layer
+ * @property {import("./Base.js").default} layer
  * @property {number} opacity
  * @property {SourceState} sourceState
  * @property {boolean} visible

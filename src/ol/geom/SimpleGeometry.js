@@ -1,10 +1,11 @@
 /**
  * @module ol/geom/SimpleGeometry
  */
+import {abstract} from '../util.js';
 import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
-import Geometry from '../geom/Geometry.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import {rotate, scale, translate, transform2D} from '../geom/flat/transform.js';
+import Geometry from './Geometry.js';
+import GeometryLayout from './GeometryLayout.js';
+import {rotate, scale, translate, transform2D} from './flat/transform.js';
 import {clear} from '../obj.js';
 
 /**
@@ -52,7 +53,9 @@ class SimpleGeometry extends Geometry {
    * @abstract
    * @return {Array} Coordinates.
    */
-  getCoordinates() {}
+  getCoordinates() {
+    return abstract();
+  }
 
   /**
    * Return the first coordinate of the geometry.
@@ -158,7 +161,9 @@ class SimpleGeometry extends Geometry {
    * @param {!Array} coordinates Coordinates.
    * @param {GeometryLayout=} opt_layout Layout.
    */
-  setCoordinates(coordinates, opt_layout) {}
+  setCoordinates(coordinates, opt_layout) {
+    abstract();
+  }
 
   /**
    * @param {GeometryLayout|undefined} layout Layout.

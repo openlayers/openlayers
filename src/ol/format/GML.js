@@ -1,7 +1,7 @@
 /**
  * @module ol/format/GML
  */
-import GML3 from '../format/GML3.js';
+import GML3 from './GML3.js';
 
 /**
  * @classdesc

@@ -185,11 +185,11 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
   /**
    * @inheritDoc
    */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
+  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {
     if (this.vectorRenderer_) {
-      return this.vectorRenderer_.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
+      return this.vectorRenderer_.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback);
     } else {
-      return super.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
+      return super.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback);
     }
   }
 }

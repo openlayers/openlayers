@@ -7,8 +7,8 @@ import {listen} from '../events.js';
 import Event from '../events/Event.js';
 import {TRUE} from '../functions.js';
 import {includes} from '../array.js';
-import PointerInteraction from '../interaction/Pointer.js';
-import InteractionProperty from '../interaction/Property.js';
+import PointerInteraction from './Pointer.js';
+import InteractionProperty from './Property.js';
 
 
 /**

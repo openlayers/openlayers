@@ -18,7 +18,7 @@ import VectorContext from '../VectorContext.js';
 import {drawImage, resetTransform, defaultPadding, defaultFillStyle, defaultStrokeStyle,
   defaultMiterLimit, defaultLineWidth, defaultLineJoin, defaultLineDashOffset,
   defaultLineDash, defaultLineCap} from '../canvas.js';
-import CanvasInstruction from '../canvas/Instruction.js';
+import CanvasInstruction from './Instruction.js';
 import {TEXT_ALIGN} from '../replay.js';
 import {
   create as createTransform,
@@ -721,7 +721,8 @@ class CanvasReplay extends VectorContext {
           const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
           const textLength = measure(text);
           if (overflow || textLength <= pathLength) {
-            const textReplay = /** @type {import("./TextReplay.js").default} */ (this);
+            /** @type {import("./TextReplay.js").default} */
+            const textReplay = /** @type {?} */ (this);
             const textAlign = textReplay.textStates[textKey].textAlign;
             const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
             const parts = drawTextOnPath(

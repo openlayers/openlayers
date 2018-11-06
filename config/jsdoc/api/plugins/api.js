@@ -102,6 +102,8 @@ exports.handlers = {
       modules[doclet.longname.split(/[~\.]/).shift()] = true;
       if (!(doclet.longname in classes)) {
         classes[doclet.longname] = doclet;
+      } else if ('augments' in doclet) {
+        classes[doclet.longname].augments = doclet.augments;
       }
     }
     if (doclet.name === doclet.longname && !doclet.memberof) {

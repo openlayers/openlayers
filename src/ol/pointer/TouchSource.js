@@ -33,8 +33,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import {remove} from '../array.js';
-import EventSource from '../pointer/EventSource.js';
-import {POINTER_ID} from '../pointer/MouseSource.js';
+import EventSource from './EventSource.js';
+import {POINTER_ID} from './MouseSource.js';
 
 
 /**

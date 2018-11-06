@@ -17,7 +17,7 @@ import ReplayType from '../../render/ReplayType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
 import CanvasReplayGroup, {replayDeclutter} from '../../render/canvas/ReplayGroup.js';
 import {ORDER} from '../../render/replay.js';
-import CanvasTileLayerRenderer from '../canvas/TileLayer.js';
+import CanvasTileLayerRenderer from './TileLayer.js';
 import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import {
   create as createTransform,
@@ -86,8 +86,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
      */
     this.tmpTransform_ = createTransform();
 
+    const renderMode = layer.getRenderMode();
+
     // Use lower resolution for pure vector rendering. Closest resolution otherwise.
-    this.zDirection = layer.getRenderMode() == VectorTileRenderType.VECTOR ? 1 : 0;
+    this.zDirection = renderMode === VectorTileRenderType.VECTOR ? 1 : 0;
+
+    if (renderMode !== VectorTileRenderType.VECTOR) {
+      this.context = createCanvasContext2D();
+    }
+
 
     listen(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
 
@@ -131,13 +138,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const layerRevision = layer.getRevision();
     if (this.renderedLayerRevision_ != layerRevision) {
       this.renderedTiles.length = 0;
-      const renderMode = layer.getRenderMode();
-      if (!this.context && renderMode != VectorTileRenderType.VECTOR) {
-        this.context = createCanvasContext2D();
-      }
-      if (this.context && renderMode == VectorTileRenderType.VECTOR) {
-        this.context = null;
-      }
     }
     this.renderedLayerRevision_ = layerRevision;
     return super.prepareFrame(frameState, layerState);

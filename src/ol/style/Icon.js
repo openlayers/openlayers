@@ -7,10 +7,10 @@ import {assert} from '../asserts.js';
 import {asArray} from '../color.js';
 import {listen, unlisten} from '../events.js';
 import EventType from '../events/EventType.js';
-import IconAnchorUnits from '../style/IconAnchorUnits.js';
-import {get as getIconImage} from '../style/IconImage.js';
-import IconOrigin from '../style/IconOrigin.js';
-import ImageStyle from '../style/Image.js';
+import IconAnchorUnits from './IconAnchorUnits.js';
+import {get as getIconImage} from './IconImage.js';
+import IconOrigin from './IconOrigin.js';
+import ImageStyle from './Image.js';
 
 
 /**

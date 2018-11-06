@@ -4,7 +4,7 @@
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getChangeEventType} from '../Object.js';
-import Control from '../control/Control.js';
+import Control from './Control.js';
 import {getTransformFromProjections, identityTransform, get as getProjection} from '../proj.js';
 
 

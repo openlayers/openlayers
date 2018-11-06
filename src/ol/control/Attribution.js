@@ -2,7 +2,7 @@
  * @module ol/control/Attribution
  */
 import {equals} from '../array.js';
-import Control from '../control/Control.js';
+import Control from './Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_COLLAPSED} from '../css.js';
 import {removeChildren, replaceNode} from '../dom.js';
 import {listen} from '../events.js';
@@ -177,7 +177,7 @@ class Attribution extends Control {
         continue;
       }
 
-      const source = layerState.layer.getSource();
+      const source = /** @type {import("../layer/Layer.js").default} */ (layerState.layer).getSource();
       if (!source) {
         continue;
       }

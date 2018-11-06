@@ -2,8 +2,8 @@
  * @module ol/layer/Tile
  */
 import LayerType from '../LayerType.js';
-import Layer from '../layer/Layer.js';
-import TileProperty from '../layer/TileProperty.js';
+import Layer from './Layer.js';
+import TileProperty from './TileProperty.js';
 import {assign} from '../obj.js';
 
 

@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/orient
  */
-import {coordinates as reverseCoordinates} from '../flat/reverse.js';
+import {coordinates as reverseCoordinates} from './reverse.js';
 
 
 /**
