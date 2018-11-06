@@ -108,7 +108,7 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
 
     if (layerState.layer.getType() === LayerType.VECTOR) {
       renderedExtent = buffer(frameState.extent, layerState.layer.getImageDrawBuffer() * viewResolution);
-      frameState.extent = renderedExtent;
+      frameState.imageDrawBufferExtent = renderedExtent;
     }
     if (!vectorRenderer && layerState.extent !== undefined) {
       renderedExtent = getIntersection(renderedExtent, layerState.extent);

@@ -290,7 +290,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       return true;
     }
 
-    const frameStateExtent = frameState.extent;
+    const frameStateExtent = frameState.imageDrawBufferExtent || frameState.extent;
     const viewState = frameState.viewState;
     const projection = viewState.projection;
     const resolution = viewState.resolution;
