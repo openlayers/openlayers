@@ -12,7 +12,8 @@
   "scripts": {
     "lint": "eslint tasks test src/ol examples config",
     "pretest": "npm run lint",
-    "test": "npm run karma -- --single-run --log-level error",
+    "test-rendering": "node rendering/test.js",
+    "test": "npm run karma -- --single-run --log-level error && npm run test-rendering",
     "karma": "karma start test/karma.config.js",
     "serve-examples": "webpack-dev-server --config examples/webpack/config.js --mode development --watch",
     "build-examples": "webpack --config examples/webpack/config.js --mode production",
@@ -72,7 +73,9 @@
     "mocha": "5.2.0",
     "mustache": "^3.0.0",
     "pixelmatch": "^4.0.2",
+    "pngjs": "^3.3.3",
     "proj4": "2.5.0",
+    "puppeteer": "^1.10.0",
     "rollup": "0.66.6",
     "sinon": "^6.0.0",
     "typescript": "^3.1.0-dev.20180905",
@@ -81,7 +84,9 @@
     "walk": "^2.3.9",
     "webpack": "4.25.1",
     "webpack-cli": "^3.0.8",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-middleware": "^3.4.0",
+    "webpack-dev-server": "^3.1.10",
+    "yargs": "^12.0.2"
   },
   "eslintConfig": {
     "extends": "openlayers",
