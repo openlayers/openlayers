@@ -178,7 +178,7 @@ class VectorLayer extends Layer {
   }
 
   /**
-  * @return {number|undefined} Image draw buffer.
+  * @return {number} Image draw buffer.
   */
   getImageDrawBuffer() {
     return this.imageDrawBuffer_;
