@@ -2,6 +2,8 @@
 
 ### Next version
 
+### v5.3.0
+
 #### The `getUid` function returns string
 
 The `getUid` function from the `ol/util` module now returns a string instead of a number.
