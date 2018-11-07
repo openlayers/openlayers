@@ -99,6 +99,7 @@
     }
   },
   "sideEffects": [
+    "proj.js",
     "ol.css"
   ]
 }
