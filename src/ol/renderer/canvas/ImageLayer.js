@@ -6,7 +6,7 @@ import ImageCanvas from '../../ImageCanvas.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {equals} from '../../array.js';
-import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
+import {getHeight, getIntersection, getWidth, isEmpty, scaleFromCenter} from '../../extent.js';
 import VectorRenderType from '../../layer/VectorRenderType.js';
 import {assign} from '../../obj.js';
 import {layerRendererConstructors} from './Map.js';
@@ -105,6 +105,14 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
 
     const vectorRenderer = this.vectorRenderer_;
     let renderedExtent = frameState.extent;
+    if (vectorRenderer) {
+      const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+      const imageRatio = vectorLayer.getImageRatio();
+      if (imageRatio !== 1) {
+        renderedExtent = renderedExtent.slice(0);
+        scaleFromCenter(renderedExtent, imageRatio);
+      }
+    }
     if (!vectorRenderer && layerState.extent !== undefined) {
       renderedExtent = getIntersection(renderedExtent, layerState.extent);
     }
@@ -126,6 +134,7 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
             getWidth(renderedExtent) / viewResolution,
             getHeight(renderedExtent) / viewResolution
           ],
+          extent: renderedExtent,
           viewState: /** @type {import("../../View.js").State} */ (assign({}, frameState.viewState, {
             rotation: 0
           }))

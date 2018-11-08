@@ -51,6 +51,9 @@ import {createDefaultStyle, toFunction as toStyleFunction} from '../style/Style.
  * @property {boolean} [updateWhileInteracting=false] When set to `true` and `renderMode`
  * is `vector`, feature batches will be recreated during interactions. See also
  * `updateWhileAnimating`.
+ * @property {number} [imageRatio=1] Ratio by which the rendered extent should be larger than the
+ * viewport extent when in `'image'` render mode. A larger ratio avoids cut images during panning,
+ * but will cause a decrease in performance.
  */
 
 
@@ -86,6 +89,7 @@ class VectorLayer extends Layer {
     delete baseOptions.renderBuffer;
     delete baseOptions.updateWhileAnimating;
     delete baseOptions.updateWhileInteracting;
+    delete baseOptions.imageRatio;
     super(baseOptions);
 
     /**
@@ -136,6 +140,13 @@ class VectorLayer extends Layer {
     * @type {import("./VectorTileRenderType.js").default|string}
     */
     this.renderMode_ = options.renderMode || VectorRenderType.VECTOR;
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.imageRatio_ = options.imageRatio !== undefined ?
+      options.imageRatio : 1;
 
     /**
     * The layer type.
@@ -236,6 +247,13 @@ class VectorLayer extends Layer {
     this.styleFunction_ = style === null ?
       undefined : toStyleFunction(this.style_);
     this.changed();
+  }
+
+  /**
+   * @return {number} Ratio between rendered extent size and viewport extent size.
+   */
+  getImageRatio() {
+    return this.imageRatio_;
   }
 
   /**
