@@ -262,7 +262,9 @@ async function main(entries, options) {
   try {
     await render(entries, options);
   } finally {
-    done();
+    if (!options.interactive) {
+      done();
+    }
   }
 }
 
@@ -292,6 +294,11 @@ if (require.main === module) {
       type: 'boolean',
       default: false
     }).
+    option('interactive', {
+      describe: 'Run all tests and keep the test server running (this option will be reworked later)',
+      type: 'boolean',
+      default: false
+    }).
     option('log-level', {
       describe: 'The level for logging',
       choices: ['trace', 'debug', 'info', 'warn', 'error', 'silent'],
@@ -306,6 +313,9 @@ if (require.main === module) {
 
   const entries = Object.keys(config.entry).map(key => config.entry[key]);
 
+  if (options.interactive) {
+    options.force = true;
+  }
   options.log = log.create({name: 'rendering', level: options.logLevel});
 
   main(entries, options).catch(err => {
