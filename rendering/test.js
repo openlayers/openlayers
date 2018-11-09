@@ -109,19 +109,25 @@ async function assertScreenshotsMatch(entry) {
   }
 }
 
-function exposeRender(page) {
-  return new Promise((resolve, reject) => {
-    const innerPromise = new Promise(innerResolve => {
-      page.exposeFunction('render', innerResolve).then(() => resolve(() => innerPromise), reject);
-    });
+let handleRender;
+async function exposeRender(page) {
+  await page.exposeFunction('render', () => {
+    if (!handleRender) {
+      throw new Error('No render handler set for current page');
+    }
+    handleRender();
   });
 }
 
 async function renderPage(page, entry, options) {
-  const href = getHref(entry);
-  const renderCalled = await exposeRender(page);
-  await page.goto(`http://localhost:${options.port}${href}`, {waitUntil: 'networkidle2'});
-  await renderCalled();
+  const renderCalled = new Promise(resolve => {
+    handleRender = () => {
+      handleRender = null;
+      resolve();
+    };
+  });
+  await page.goto(`http://localhost:${options.port}${getHref(entry)}`, {waitUntil: 'networkidle0'});
+  await renderCalled;
   await page.screenshot({path: getActualScreenshotPath(entry)});
 }
 
@@ -154,6 +160,7 @@ async function render(entries, options) {
 
   try {
     const page = await browser.newPage();
+    await exposeRender(page);
     await page.setViewport({width: 256, height: 256});
     fail = await renderEach(page, entries, options);
   } finally {
