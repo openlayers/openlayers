@@ -11,6 +11,7 @@ const fse = require('fs-extra');
 const pixelmatch = require('pixelmatch');
 const yargs = require('yargs');
 const log = require('loglevelnext');
+const globby = require('globby');
 
 const compiler = webpack(Object.assign({mode: 'development'}, config));
 
@@ -69,6 +70,10 @@ function getActualScreenshotPath(entry) {
 
 function getExpectedScreenshotPath(entry) {
   return path.join(__dirname, path.dirname(entry), 'expected.png');
+}
+
+function getPassFilePath(entry) {
+  return path.join(__dirname, path.dirname(entry), 'pass');
 }
 
 function parsePNG(filepath) {
@@ -141,10 +146,16 @@ async function renderPage(page, entry, options) {
   await page.screenshot({path: getActualScreenshotPath(entry)});
 }
 
+async function touch(filepath) {
+  const fd = await fse.open(filepath, 'w');
+  await fse.close(fd);
+}
+
 async function copyActualToExpected(entry) {
   const actual = getActualScreenshotPath(entry);
   const expected = getExpectedScreenshotPath(entry);
   await fse.copy(actual, expected);
+  await touch(getPassFilePath(entry));
 }
 
 async function renderEach(page, entries, options) {
@@ -159,7 +170,10 @@ async function renderEach(page, entries, options) {
     if (error) {
       process.stderr.write(`${error.message}\n`);
       fail = true;
+      continue;
     }
+
+    await touch(getPassFilePath(entry));
   }
   return fail;
 }
@@ -200,7 +214,50 @@ async function render(entries, options) {
   }
 }
 
+async function getLatest(patterns) {
+  const stats = await globby(patterns, {stats: true});
+  let latest = 0;
+  for (const stat of stats) {
+    if (stat.mtime > latest) {
+      latest = stat.mtime;
+    }
+  }
+  return latest;
+}
+
+async function getOutdated(entries, options) {
+  const libTime = await getLatest(path.join(__dirname, '..', 'src', 'ol', '**', '*'));
+  options.log.debug('library time', libTime);
+  const outdated = [];
+  for (const entry of entries) {
+    const passPath = getPassFilePath(entry);
+    const passTime = await getLatest(passPath);
+    options.log.debug(entry, 'pass time', passTime);
+    if (passTime < libTime) {
+      outdated.push(entry);
+      continue;
+    }
+
+    const caseTime = await getLatest(path.join(__dirname, path.dirname(entry), '**', '*'));
+    options.log.debug(entry, 'case time', caseTime);
+    if (passTime < caseTime) {
+      outdated.push(entry);
+      continue;
+    }
+
+    options.log.info('skipping', entry);
+  }
+  return outdated;
+}
+
 async function main(entries, options) {
+  if (!options.force) {
+    entries = await getOutdated(entries, options);
+  }
+  if (entries.length === 0) {
+    return;
+  }
+
   const done = await serve(options);
   try {
     await render(entries, options);
@@ -229,6 +286,11 @@ if (require.main === module) {
       describe: 'The timeout for loading pages (in milliseconds)',
       type: 'number',
       default: 60000
+    }).
+    option('force', {
+      describe: 'Run all tests (instead of just outdated tests)',
+      type: 'boolean',
+      default: false
     }).
     option('log-level', {
       describe: 'The level for logging',
