@@ -87,7 +87,8 @@ class Geometry extends BaseObject {
    * @return {boolean} Contains (x, y).
    */
   containsXY(x, y) {
-    return false;
+    const coord = this.getClosestPoint([x, y]);
+    return coord[0] === x && coord[1] === y;
   }
 
   /**
