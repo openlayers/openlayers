@@ -18,8 +18,14 @@ function getHref(entry) {
   return path.dirname(entry).slice(1) + '/';
 }
 
-function notFound(res) {
+function notFound(req, res) {
   return () => {
+    if (req.url === '/favicon.ico') {
+      res.writeHead(204);
+      res.end();
+      return;
+    }
+
     const items = [];
     for (const key in config.entry) {
       const href = getHref(config.entry[key]);
@@ -43,7 +49,7 @@ function serve(options) {
 
   return new Promise((resolve, reject) => {
     const server = http.createServer((req, res) => {
-      handler(req, res, notFound(res));
+      handler(req, res, notFound(req, res));
     });
 
     server.listen(options.port, options.host, err => {
