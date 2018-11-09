@@ -10,13 +10,9 @@ const fs = require('fs');
 const fse = require('fs-extra');
 const pixelmatch = require('pixelmatch');
 const yargs = require('yargs');
+const log = require('loglevelnext');
 
 const compiler = webpack(Object.assign({mode: 'development'}, config));
-
-const handler = middleware(compiler, {
-  lazy: true,
-  logLevel: 'error'
-});
 
 function getHref(entry) {
   return path.dirname(entry).slice(1) + '/';
@@ -38,16 +34,24 @@ function notFound(res) {
   };
 }
 
-function serve(port) {
+function serve(options) {
+  const handler = middleware(compiler, {
+    lazy: true,
+    logger: options.log,
+    stats: 'minimal'
+  });
+
   return new Promise((resolve, reject) => {
     const server = http.createServer((req, res) => {
       handler(req, res, notFound(res));
     });
 
-    server.listen(port, err => {
+    server.listen(options.port, options.host, err => {
       if (err) {
         return reject(err);
       }
+      const address = server.address();
+      options.log.info(`test server listening http://${address.address}:${address.port}/`);
       resolve(() => server.close());
     });
   });
@@ -126,7 +130,7 @@ async function renderPage(page, entry, options) {
       resolve();
     };
   });
-  await page.goto(`http://localhost:${options.port}${getHref(entry)}`, {waitUntil: 'networkidle0'});
+  await page.goto(`http://${options.host}:${options.port}${getHref(entry)}`, {waitUntil: 'networkidle0'});
   await renderCalled;
   await page.screenshot({path: getActualScreenshotPath(entry)});
 }
@@ -155,11 +159,29 @@ async function renderEach(page, entries, options) {
 }
 
 async function render(entries, options) {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: options.puppeteerArgs,
+    headless: !process.env.CI
+  });
+
   let fail = false;
 
   try {
     const page = await browser.newPage();
+    page.on('error', err => {
+      options.log.error('page crash', err);
+    });
+    page.on('pageerror', err => {
+      options.log.error('uncaught exception', err);
+    });
+    page.on('console', message => {
+      const type = message.type();
+      if (options.log[type]) {
+        options.log[type](message.text());
+      }
+    });
+
+    page.setDefaultNavigationTimeout(options.timeout);
     await exposeRender(page);
     await page.setViewport({width: 256, height: 256});
     fail = await renderEach(page, entries, options);
@@ -173,7 +195,7 @@ async function render(entries, options) {
 }
 
 async function main(entries, options) {
-  const done = await serve(options.port);
+  const done = await serve(options);
   try {
     await render(entries, options);
   } finally {
@@ -188,13 +210,38 @@ if (require.main === module) {
       describe: 'Accept all screenshots as accepted',
       default: false
     }).
+    option('host', {
+      describe: 'The host for serving rendering cases',
+      default: '127.0.0.1'
+    }).
     option('port', {
       describe: 'The port for serving rendering cases',
+      type: 'number',
       default: 3000
+    }).
+    option('timeout', {
+      describe: 'The timeout for loading pages (in milliseconds)',
+      type: 'number',
+      default: 60000
+    }).
+    option('log-level', {
+      describe: 'The level for logging',
+      choices: ['trace', 'debug', 'info', 'warn', 'error', 'silent'],
+      default: 'error'
+    }).
+    option('puppeteer-args', {
+      describe: 'Args of for puppeteer.launch()',
+      type: 'array',
+      default: process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox'] : []
     }).
     parse();
 
   const entries = Object.keys(config.entry).map(key => config.entry[key]);
 
-  main(entries, options).catch(err => process.stderr.write(`${err.message}\n`, () => process.exit(1)));
+  options.log = log.create({name: 'rendering', level: options.logLevel});
+
+  main(entries, options).catch(err => {
+    options.log.error(err.message);
+    process.exit(1);
+  });
 }
