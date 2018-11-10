@@ -137,6 +137,25 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../transform.js").Transform=} opt_transform Transform.
+   * @protected
+   */
+  preRender(frameState, opt_transform) {
+    // TODO: pre-render event
+  }
+
+  /**
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../layer/Layer.js").State} layerState Layer state.
+   * @param {import("../../transform.js").Transform=} opt_transform Transform.
+   * @protected
+   */
+  postRender(frameState, layerState, opt_transform) {
+    // TODO: pre-render event
+  }
+
+  /**
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {import("../../transform.js").Transform=} opt_transform Transform.
@@ -175,15 +194,6 @@ class CanvasLayerRenderer extends LayerRenderer {
     abstract();
   }
 
-  /**
-   * @abstract
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../layer/Layer.js").State} layerState Layer state.
-   * @return {boolean} whether composeFrame should be called.
-   */
-  prepareFrame(frameState, layerState) {
-    return abstract();
-  }
 }
 
 export default CanvasLayerRenderer;
