@@ -168,7 +168,7 @@ async function renderEach(page, entries, options) {
     }
     const error = await assertScreenshotsMatch(entry);
     if (error) {
-      process.stderr.write(`${error.message}\n`);
+      options.log.error(error);
       fail = true;
       continue;
     }
