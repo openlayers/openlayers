@@ -181,7 +181,7 @@ async function renderEach(page, entries, options) {
 async function render(entries, options) {
   const browser = await puppeteer.launch({
     args: options.puppeteerArgs,
-    headless: !process.env.CI
+    headless: options.headless
   });
 
   let fail = false;
@@ -304,8 +304,13 @@ if (require.main === module) {
       choices: ['trace', 'debug', 'info', 'warn', 'error', 'silent'],
       default: 'error'
     }).
+    option('headless', {
+      describe: 'Launch Puppeteer in headless mode',
+      type: 'boolean',
+      default: process.env.CI ? false : true
+    }).
     option('puppeteer-args', {
-      describe: 'Args of for puppeteer.launch()',
+      describe: 'Additional args for Puppeteer',
       type: 'array',
       default: process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox'] : []
     }).
