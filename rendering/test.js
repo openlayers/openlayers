@@ -22,19 +22,33 @@ function getHref(entry) {
 
 const staticHandler = serveStatic(__dirname);
 
+const defaultHandler = serveStatic(path.join(__dirname, 'default'));
+
+function indexHandler(req, res) {
+  const items = [];
+  for (const key in config.entry) {
+    const href = getHref(config.entry[key]);
+    items.push(`<li><a href="${href}">${href}</a></li>`);
+  }
+  const markup = `<!DOCTYPE html><body><ul>${items.join('')}</ul></body>`;
+
+  res.writeHead(404, {
+    'Content-Type': 'text/html'
+  });
+  res.end(markup);
+}
+
 function notFound(req, res) {
   return () => {
-    const items = [];
-    for (const key in config.entry) {
-      const href = getHref(config.entry[key]);
-      items.push(`<li><a href="${href}">${href}</a></li>`);
+    // first, try the default directory
+    if (req.url.match(/^\/cases\/[^\/]+\/(index.html)?$/)) {
+      // request for a case index file, and file not found, use default
+      req.url = '/index.html';
+      return defaultHandler(req, res, () => indexHandler(req, res));
     }
-    const markup = `<!DOCTYPE html><body><ul>${items.join('')}</ul></body>`;
 
-    res.writeHead(404, {
-      'Content-Type': 'text/html'
-    });
-    res.end(markup);
+    // fall back to a listing of all cases
+    indexHandler(req, res);
   };
 }
 
