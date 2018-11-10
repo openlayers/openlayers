@@ -2,7 +2,7 @@
 const puppeteer = require('puppeteer');
 const webpack = require('webpack');
 const config = require('./webpack.config');
-const middleware = require('webpack-dev-middleware');
+const webpackMiddleware = require('webpack-dev-middleware');
 const http = require('http');
 const path = require('path');
 const png = require('pngjs');
@@ -12,6 +12,7 @@ const pixelmatch = require('pixelmatch');
 const yargs = require('yargs');
 const log = require('loglevelnext');
 const globby = require('globby');
+const serveStatic = require('serve-static');
 
 const compiler = webpack(Object.assign({mode: 'development'}, config));
 
@@ -19,14 +20,10 @@ function getHref(entry) {
   return path.dirname(entry).slice(1) + '/';
 }
 
+const staticHandler = serveStatic(__dirname);
+
 function notFound(req, res) {
   return () => {
-    if (req.url === '/favicon.ico') {
-      res.writeHead(204);
-      res.end();
-      return;
-    }
-
     const items = [];
     for (const key in config.entry) {
       const href = getHref(config.entry[key]);
@@ -42,7 +39,7 @@ function notFound(req, res) {
 }
 
 function serve(options) {
-  const handler = middleware(compiler, {
+  const webpackHandler = webpackMiddleware(compiler, {
     lazy: true,
     logger: options.log,
     stats: 'minimal'
@@ -50,7 +47,18 @@ function serve(options) {
 
   return new Promise((resolve, reject) => {
     const server = http.createServer((req, res) => {
-      handler(req, res, notFound(req, res));
+      if (req.url === '/favicon.ico') {
+        res.writeHead(204);
+        res.end();
+        return;
+      }
+
+      if (path.extname(req.url) === '.js') {
+        webpackHandler(req, res, notFound(req, res));
+        return;
+      }
+
+      staticHandler(req, res, notFound(req, res));
     });
 
     server.listen(options.port, options.host, err => {
@@ -141,8 +149,10 @@ async function renderPage(page, entry, options) {
       resolve();
     };
   });
+  options.log.debug('navigating', entry);
   await page.goto(`http://${options.host}:${options.port}${getHref(entry)}`, {waitUntil: 'networkidle0'});
   await renderCalled;
+  options.log.debug('screenshot', entry);
   await page.screenshot({path: getActualScreenshotPath(entry)});
 }
 
@@ -232,14 +242,14 @@ async function getOutdated(entries, options) {
   for (const entry of entries) {
     const passPath = getPassFilePath(entry);
     const passTime = await getLatest(passPath);
-    options.log.debug(entry, 'pass time', passTime);
+    options.log.debug('pass time', entry, passTime);
     if (passTime < libTime) {
       outdated.push(entry);
       continue;
     }
 
     const caseTime = await getLatest(path.join(__dirname, path.dirname(entry), '**', '*'));
-    options.log.debug(entry, 'case time', caseTime);
+    options.log.debug('case time', entry, caseTime);
     if (passTime < caseTime) {
       outdated.push(entry);
       continue;
@@ -254,7 +264,7 @@ async function main(entries, options) {
   if (!options.force) {
     entries = await getOutdated(entries, options);
   }
-  if (entries.length === 0) {
+  if (!options.interactive && entries.length === 0) {
     return;
   }
 
@@ -318,9 +328,6 @@ if (require.main === module) {
 
   const entries = Object.keys(config.entry).map(key => config.entry[key]);
 
-  if (options.interactive) {
-    options.force = true;
-  }
   options.log = log.create({name: 'rendering', level: options.logLevel});
 
   main(entries, options).catch(err => {
