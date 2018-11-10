@@ -66,14 +66,6 @@ describe('ol.rendering.style.Icon', function() {
       img.src = src;
     }
 
-    it('tests the canvas renderer', function(done) {
-      createMap('canvas');
-      createFeatures('rendering/ol/data/icon.png', imgInfo, function() {
-        expectResemble(map, 'rendering/ol/style/expected/icon-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
     it('scales svg correctly in the canvas renderer', function(done) {
       createMap('canvas', 512, 512);
       createFeatures('rendering/ol/data/me0.svg', {
