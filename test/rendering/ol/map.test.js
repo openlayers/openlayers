@@ -98,14 +98,6 @@ describe('ol.rendering.Map', function() {
 
   describe('#rotate()', function() {
 
-    it('tests the canvas renderer', function(done) {
-      createMap('canvas');
-      map.getView().setRotation(90);
-      map.getView().setCenter([10, 10]);
-      expectResemble(
-        map, 'rendering/ol/expected/rotate-canvas.png', 2.8, done);
-    });
-
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       createMap('webgl');
@@ -117,14 +109,6 @@ describe('ol.rendering.Map', function() {
   });
 
   describe('#zoom()', function() {
-
-    it('tests the canvas renderer', function(done) {
-      createMap('canvas');
-      map.getView().setCenter([10, 10]);
-      map.getView().setResolution(2);
-      expectResemble(
-        map, 'rendering/ol/expected/zoom-canvas.png', IMAGE_TOLERANCE, done);
-    });
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();

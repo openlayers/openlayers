@@ -127,14 +127,6 @@ describe('ol.rendering.layer.Tile', function() {
       });
     });
 
-    it('tests the canvas renderer', function(done) {
-      createMap('canvas');
-      waitForTiles([source1, source2], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       createMap('webgl');
