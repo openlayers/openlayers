@@ -275,8 +275,12 @@ async function getOutdated(entries, options) {
 }
 
 async function main(entries, options) {
-  if (!options.force) {
+  if (!options.force && !options.match) {
     entries = await getOutdated(entries, options);
+  }
+  if (options.match) {
+    const exp = new RegExp(options.match);
+    entries = entries.filter(entry => exp.test(entry));
   }
   if (!options.interactive && entries.length === 0) {
     return;
@@ -308,10 +312,9 @@ if (require.main === module) {
       type: 'number',
       default: 3000
     }).
-    option('timeout', {
-      describe: 'The timeout for loading pages (in milliseconds)',
-      type: 'number',
-      default: 60000
+    option('match', {
+      describe: 'Only run tests matching the provided string RegExp pattern',
+      type: 'string'
     }).
     option('force', {
       describe: 'Run all tests (instead of just outdated tests)',
@@ -327,6 +330,11 @@ if (require.main === module) {
       describe: 'The level for logging',
       choices: ['trace', 'debug', 'info', 'warn', 'error', 'silent'],
       default: 'error'
+    }).
+    option('timeout', {
+      describe: 'The timeout for loading pages (in milliseconds)',
+      type: 'number',
+      default: 60000
     }).
     option('headless', {
       describe: 'Launch Puppeteer in headless mode',
