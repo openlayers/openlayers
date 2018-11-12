@@ -1,11 +1,11 @@
 /**
- * @module ol/Map
+ * @module ol/CompositeMap
  */
 import PluggableMap from './PluggableMap.js';
 import {defaults as defaultControls} from './control/util.js';
 import {defaults as defaultInteractions} from './interaction.js';
 import {assign} from './obj.js';
-import CanvasMapRenderer from './renderer/canvas/Map.js';
+import CompositeMapRenderer from './renderer/Composite.js';
 
 /**
  * @classdesc
@@ -58,7 +58,7 @@ import CanvasMapRenderer from './renderer/canvas/Map.js';
  * @fires module:ol/render/Event~RenderEvent#precompose
  * @api
  */
-class Map extends PluggableMap {
+class CompositeMap extends PluggableMap {
 
   /**
    * @param {import("./PluggableMap.js").MapOptions} options Map options.
@@ -76,9 +76,9 @@ class Map extends PluggableMap {
   }
 
   createRenderer() {
-    return new CanvasMapRenderer(this);
+    return new CompositeMapRenderer(this);
   }
 }
 
 
-export default Map;
+export default CompositeMap;

@@ -2,7 +2,7 @@ import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/WebGLMap.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
-import VectorLayer from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/WebGLVector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import {AtlasManager, Circle as CircleStyle, Fill, RegularShape, Stroke, Style} from '../src/ol/style.js';
 

@@ -2,7 +2,6 @@
  * @module ol/renderer/canvas/VectorLayer
  */
 import {getUid} from '../../util.js';
-import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {listen, unlisten} from '../../events.js';
@@ -83,7 +82,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.context = createCanvasContext2D();
 
     listen(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
-
   }
 
   /**
@@ -224,6 +222,114 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.preCompose(context, frameState, transform);
     this.compose(context, frameState, layerState);
     this.postCompose(context, frameState, layerState, transform);
+  }
+
+  /**
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../layer/Layer.js").State} layerState Layer state.
+   */
+  render(frameState, layerState) {
+    const replayGroup = this.replayGroup_;
+    if (!replayGroup || replayGroup.isEmpty()) {
+      return;
+    }
+
+    const context = this.context;
+    const canvas = context.canvas;
+
+    const extent = frameState.extent;
+    const pixelRatio = frameState.pixelRatio;
+    const viewState = frameState.viewState;
+    const projection = viewState.projection;
+    const rotation = viewState.rotation;
+    const projectionExtent = projection.getExtent();
+    const vectorSource = /** @type {import("../../source/Vector.js").default} */ (this.getLayer().getSource());
+
+    // clipped rendering if layer extent is set
+    const clipExtent = layerState.extent;
+    const clipped = clipExtent !== undefined;
+    if (clipped) {
+      this.clip(context, frameState, /** @type {import("../../extent.js").Extent} */ (clipExtent));
+    }
+
+    if (this.declutterTree_) {
+      this.declutterTree_.clear();
+    }
+
+    // resize and clear
+    let width = Math.round(frameState.size[0] * pixelRatio);
+    let height = Math.round(frameState.size[1] * pixelRatio);
+    if (rotation) {
+      const size = Math.round(Math.sqrt(width * width + height * height));
+      width = height = size;
+    }
+    if (canvas.width != width || canvas.height != height) {
+      canvas.width = width;
+      canvas.height = height;
+      canvas.style.width = (width / pixelRatio) + 'px';
+      canvas.style.height = (height / pixelRatio) + 'px';
+    } else {
+      context.clearRect(0, 0, width, height);
+    }
+
+    const viewHints = frameState.viewHints;
+    const snapToPixel = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
+
+    // TODO: deal with rotation (this should not be necessary)
+    if (rotation) {
+      rotateAtOffset(context, -rotation, width / 2, height / 2);
+    }
+
+    let transform = this.getTransform(frameState, 0);
+    const skippedFeatureUids = layerState.managed ? frameState.skippedFeatureUids : {};
+    replayGroup.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
+
+    if (vectorSource.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
+      let startX = extent[0];
+      const worldWidth = getWidth(projectionExtent);
+      let world = 0;
+      let offsetX;
+      while (startX < projectionExtent[0]) {
+        --world;
+        offsetX = worldWidth * world;
+        transform = this.getTransform(frameState, offsetX);
+        replayGroup.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
+        startX += worldWidth;
+      }
+      world = 0;
+      startX = extent[2];
+      while (startX > projectionExtent[2]) {
+        ++world;
+        offsetX = worldWidth * world;
+        transform = this.getTransform(frameState, offsetX);
+        replayGroup.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
+        startX -= worldWidth;
+      }
+    }
+
+    // TODO: deal with rotation (this should not be necessary)
+    if (rotation) {
+      rotateAtOffset(context, rotation, width / 2, height / 2);
+    }
+
+    if (this.getLayer().hasListener(RenderEventType.RENDER)) {
+      this.dispatchRenderEvent(context, frameState, transform);
+    }
+
+    if (clipped) {
+      context.restore();
+    }
+  }
+
+  /**
+   * @inheritDoc
+   */
+  renderFrame(frameState, layerState) {
+    const transform = this.getTransform(frameState, 0);
+    this.preRender(frameState, transform);
+    this.render(frameState, layerState);
+    this.postRender(frameState, layerState, transform);
+    return this.context.canvas;
   }
 
   /**
@@ -411,27 +517,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     return loading;
   }
 }
-
-
-/**
- * Determine if this renderer handles the provided layer.
- * @param {import("../../layer/Layer.js").default} layer The candidate layer.
- * @return {boolean} The renderer can render the layer.
- */
-CanvasVectorLayerRenderer['handles'] = function(layer) {
-  return layer.getType() === LayerType.VECTOR;
-};
-
-
-/**
- * Create a layer renderer.
- * @param {import("../Map.js").default} mapRenderer The map renderer.
- * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
- * @return {CanvasVectorLayerRenderer} The layer renderer.
- */
-CanvasVectorLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasVectorLayerRenderer(/** @type {import("../../layer/Vector.js").default} */ (layer));
-};
 
 
 export default CanvasVectorLayerRenderer;

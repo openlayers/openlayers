@@ -1,8 +1,8 @@
 /**
- * @module ol/layer/Vector
+ * @module ol/layer/WebGLVector
  */
 import BaseVectorLayer from './BaseVector.js';
-import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
+import WebGLVectorLayerRenderer from '../renderer/webgl/VectorLayer.js';
 
 
 /**
@@ -19,7 +19,7 @@ import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
  *
  * @api
  */
-class VectorLayer extends BaseVectorLayer {
+class WebGLVectorLayer extends BaseVectorLayer {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -29,14 +29,14 @@ class VectorLayer extends BaseVectorLayer {
 
   /**
    * Create a renderer for this layer.
-   * @param {import("../renderer/Map.js").default} mapRenderer The map renderer.
+   * @param {import("../renderer/webgl/Map.js").default} mapRenderer The map renderer.
    * @return {import("../renderer/Layer.js").default} A layer renderer.
    * @protected
    */
   createRenderer(mapRenderer) {
-    return new CanvasVectorLayerRenderer(this);
+    return new WebGLVectorLayerRenderer(mapRenderer, this);
   }
 }
 
 
-export default VectorLayer;
+export default WebGLVectorLayer;

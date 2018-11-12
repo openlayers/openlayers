@@ -2,7 +2,7 @@ import Map from '../../../../src/ol/Map.js';
 import TileState from '../../../../src/ol/TileState.js';
 import View from '../../../../src/ol/View.js';
 import ImageLayer from '../../../../src/ol/layer/Image.js';
-import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import VectorImageLayer from '../../../../src/ol/layer/VectorImage.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import Static from '../../../../src/ol/source/ImageStatic.js';
 import RasterSource from '../../../../src/ol/source/Raster.js';
@@ -47,8 +47,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       imageExtent: extent
     });
 
-    blueSource = new VectorLayer({
-      renderMode: 'image',
+    blueSource = new VectorImageLayer({
       source: new VectorSource({
         features: [new Feature(new Point([0, 0]))]
       }),

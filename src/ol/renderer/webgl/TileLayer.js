@@ -4,7 +4,6 @@
 // FIXME large resolutions lead to too large framebuffers :-(
 // FIXME animated shaders! check in redraw
 
-import LayerType from '../../LayerType.js';
 import ImageTile from '../../ImageTile.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
@@ -394,30 +393,6 @@ class WebGLTileLayerRenderer extends WebGLLayerRenderer {
     }
   }
 }
-
-
-/**
- * Determine if this renderer handles the provided layer.
- * @param {import("../../layer/Layer.js").default} layer The candidate layer.
- * @return {boolean} The renderer can render the layer.
- */
-WebGLTileLayerRenderer['handles'] = function(layer) {
-  return layer.getType() === LayerType.TILE;
-};
-
-
-/**
- * Create a layer renderer.
- * @param {import("../Map.js").default} mapRenderer The map renderer.
- * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
- * @return {WebGLTileLayerRenderer} The layer renderer.
- */
-WebGLTileLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new WebGLTileLayerRenderer(
-    /** @type {import("./Map.js").default} */ (mapRenderer),
-    /** @type {import("../../layer/Tile.js").default} */ (layer)
-  );
-};
 
 
 export default WebGLTileLayerRenderer;

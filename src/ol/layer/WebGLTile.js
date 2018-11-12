@@ -1,9 +1,8 @@
 /**
- * @module ol/layer/Tile
+ * @module ol/layer/WebGLTile
  */
 import BaseTileLayer from './BaseTile.js';
-import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
-
+import WebGLTileLayerRenderer from '../renderer/webgl/TileLayer.js';
 
 /**
  * @typedef {import("./BaseTile.js").Options} Options
@@ -20,7 +19,7 @@ import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
  *
  * @api
  */
-class TileLayer extends BaseTileLayer {
+class WebGLTileLayer extends BaseTileLayer {
 
   /**
    * @param {Options=} opt_options Tile layer options.
@@ -31,14 +30,14 @@ class TileLayer extends BaseTileLayer {
 
   /**
    * Create a renderer for this layer.
-   * @param {import("../renderer/Map.js").default} mapRenderer The map renderer.
+   * @param {import("../renderer/webgl/Map.js").default} mapRenderer The map renderer.
    * @return {import("../renderer/Layer.js").default} A layer renderer.
    * @protected
    */
   createRenderer(mapRenderer) {
-    return new CanvasTileLayerRenderer(this);
+    return new WebGLTileLayerRenderer(mapRenderer, this);
   }
 
 }
 
-export default TileLayer;
+export default WebGLTileLayer;

@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/Layer
  */
-import {getUid} from '../util.js';
+import {getUid, abstract} from '../util.js';
 import ImageState from '../ImageState.js';
 import Observable from '../Observable.js';
 import TileState from '../TileState.js';
@@ -24,6 +24,28 @@ class LayerRenderer extends Observable {
      */
     this.layer_ = layer;
 
+  }
+
+  /**
+   * Determine whether render should be called.
+   * @abstract
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../layer/Layer.js").State} layerState Layer state.
+   * @return {boolean} Layer is ready to be rendered.
+   */
+  prepareFrame(frameState, layerState) {
+    return abstract();
+  }
+
+  /**
+   * Render the layer.
+   * @abstract
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../layer/Layer.js").State} layerState Layer state.
+   * @return {HTMLElement} The rendered element.
+   */
+  renderFrame(frameState, layerState) {
+    return abstract();
   }
 
   /**
@@ -67,6 +89,21 @@ class LayerRenderer extends Observable {
    * @template T
    */
   forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {}
+
+  /**
+   * @abstract
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param {function(this: S, import("../layer/Layer.js").default, (Uint8ClampedArray|Uint8Array)): T} callback Layer
+   *     callback.
+   * @param {S} thisArg Value to use as `this` when executing `callback`.
+   * @return {T|undefined} Callback result.
+   * @template S,T
+   */
+  forEachLayerAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
+    return abstract();
+  }
 
   /**
    * @return {import("../layer/Layer.js").default} Layer.

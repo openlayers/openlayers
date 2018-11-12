@@ -5,10 +5,7 @@ import PluggableMap from './PluggableMap.js';
 import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';
 import {assign} from './obj.js';
-import WebGLImageLayerRenderer from './renderer/webgl/ImageLayer.js';
 import WebGLMapRenderer from './renderer/webgl/Map.js';
-import WebGLTileLayerRenderer from './renderer/webgl/TileLayer.js';
-import WebGLVectorLayerRenderer from './renderer/webgl/VectorLayer.js';
 
 
 /**
@@ -80,13 +77,7 @@ class WebGLMap extends PluggableMap {
   }
 
   createRenderer() {
-    const renderer = new WebGLMapRenderer(this);
-    renderer.registerLayerRenderers([
-      WebGLImageLayerRenderer,
-      WebGLTileLayerRenderer,
-      WebGLVectorLayerRenderer
-    ]);
-    return renderer;
+    return new WebGLMapRenderer(this);
   }
 }
 

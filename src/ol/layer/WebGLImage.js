@@ -1,8 +1,8 @@
 /**
- * @module ol/layer/Image
+ * @module ol/layer/WebGLImage
  */
 import BaseImageLayer from './BaseImage.js';
-import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
+import WebGLImageLayerRenderer from '../renderer/webgl/ImageLayer.js';
 
 
 /**
@@ -21,7 +21,7 @@ import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
  * @fires import("../render/Event.js").RenderEvent
  * @api
  */
-class ImageLayer extends BaseImageLayer {
+class WebGLImageLayer extends BaseImageLayer {
 
   /**
    * @param {Options=} opt_options Layer options.
@@ -32,14 +32,14 @@ class ImageLayer extends BaseImageLayer {
 
   /**
    * Create a renderer for this layer.
-   * @param {import("../renderer/Map.js").default} mapRenderer The map renderer.
+   * @param {import("../renderer/webgl/Map.js").default} mapRenderer The map renderer.
    * @return {import("../renderer/Layer.js").default} A layer renderer.
    * @protected
    */
   createRenderer(mapRenderer) {
-    return new CanvasImageLayerRenderer(this);
+    return new WebGLImageLayerRenderer(mapRenderer, this);
   }
 
 }
 
-export default ImageLayer;
+export default WebGLImageLayer;

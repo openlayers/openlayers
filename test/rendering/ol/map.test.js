@@ -1,8 +1,10 @@
 import Feature from '../../../src/ol/Feature.js';
 import Point from '../../../src/ol/geom/Point.js';
 import Map from '../../../src/ol/Map.js';
+import WebGLMap from '../../../src/ol/WebGLMap.js';
 import View from '../../../src/ol/View.js';
 import VectorLayer from '../../../src/ol/layer/Vector.js';
+import WebGLVectorLayer from '../../../src/ol/layer/WebGLVector.js';
 import VectorSource from '../../../src/ol/source/Vector.js';
 
 
@@ -10,7 +12,10 @@ describe('ol.rendering.Map', function() {
 
   let map;
   function createMap(renderer) {
-    const vectorLayer = new VectorLayer({
+    const MapConstructor = renderer === 'webgl' ? WebGLMap : Map;
+    const LayerConstructor = renderer === 'webgl' ? WebGLVectorLayer : VectorLayer;
+
+    const vectorLayer = new LayerConstructor({
       source: new VectorSource({
         features: [new Feature({
           geometry: new Point([0, 0])
@@ -18,10 +23,9 @@ describe('ol.rendering.Map', function() {
       })
     });
 
-    map = new Map({
+    map = new MapConstructor({
       pixelRatio: 1,
       target: createMapDiv(50, 50),
-      renderer: renderer,
       layers: [vectorLayer],
       view: new View({
         projection: 'EPSG:4326',

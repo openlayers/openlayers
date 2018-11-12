@@ -1,8 +1,10 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Map from '../../../../src/ol/Map.js';
+import WebGLMap from '../../../../src/ol/WebGLMap.js';
 import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import WebGLVectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Style from '../../../../src/ol/style/Style.js';
@@ -14,17 +16,19 @@ describe('ol.rendering.style.Polygon', function() {
   let map, vectorSource;
 
   function createMap(renderer, opt_size) {
+    const MapConstructor = renderer === 'webgl' ? WebGLMap : Map;
+    const LayerConstructor = renderer === 'webgl' ? WebGLVectorLayer : VectorLayer;
+
     const size = opt_size || 50;
 
     vectorSource = new VectorSource();
-    const vectorLayer = new VectorLayer({
+    const vectorLayer = new LayerConstructor({
       source: vectorSource
     });
 
-    map = new Map({
+    map = new MapConstructor({
       pixelRatio: 1,
       target: createMapDiv(size, size),
-      renderer: renderer,
       layers: [vectorLayer],
       view: new View({
         projection: 'EPSG:4326',

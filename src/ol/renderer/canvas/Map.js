@@ -2,7 +2,7 @@
  * @module ol/renderer/canvas/Map
  */
 import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
-import {includes, stableSort} from '../../array.js';
+import {stableSort} from '../../array.js';
 import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {visibleAtResolution} from '../../layer/Layer.js';
@@ -13,11 +13,6 @@ import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
 import MapRenderer, {sortByZIndex} from '../Map.js';
 import SourceState from '../../source/State.js';
 
-
-/**
- * @type {Array<typeof import("../Layer.js").default>}
- */
-export const layerRendererConstructors = [];
 
 /**
  * @classdesc
@@ -204,18 +199,6 @@ class CanvasMapRenderer extends MapRenderer {
     return undefined;
   }
 
-  /**
-   * @inheritDoc
-   */
-  registerLayerRenderers(constructors) {
-    super.registerLayerRenderers(constructors);
-    for (let i = 0, ii = constructors.length; i < ii; ++i) {
-      const ctor = constructors[i];
-      if (!includes(layerRendererConstructors, ctor)) {
-        layerRendererConstructors.push(ctor);
-      }
-    }
-  }
 }
 
 

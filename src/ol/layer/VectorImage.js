@@ -1,9 +1,8 @@
 /**
- * @module ol/layer/Vector
+ * @module ol/layer/VectorImage
  */
 import BaseVectorLayer from './BaseVector.js';
-import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
-
+import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.js';
 
 /**
  * @typedef {import("./BaseVector.js").Options} Options
@@ -19,7 +18,7 @@ import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
  *
  * @api
  */
-class VectorLayer extends BaseVectorLayer {
+class VectorImageLayer extends BaseVectorLayer {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -34,9 +33,9 @@ class VectorLayer extends BaseVectorLayer {
    * @protected
    */
   createRenderer(mapRenderer) {
-    return new CanvasVectorLayerRenderer(this);
+    return new CanvasVectorImageLayerRenderer(this);
   }
 }
 
 
-export default VectorLayer;
+export default VectorImageLayer;

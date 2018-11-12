@@ -2,7 +2,6 @@
  * @module ol/renderer/canvas/VectorTileLayer
  */
 import {getUid} from '../../util.js';
-import LayerType from '../../LayerType.js';
 import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
@@ -134,7 +133,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   prepareFrame(frameState, layerState) {
-    const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const layerRevision = layer.getRevision();
     if (this.renderedLayerRevision_ != layerRevision) {
       this.renderedTiles.length = 0;
@@ -328,7 +327,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   postCompose(context, frameState, layerState) {
-    const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const renderMode = layer.getRenderMode();
     if (renderMode != VectorTileRenderType.IMAGE) {
       const declutterReplays = layer.getDeclutter() ? {} : null;
@@ -447,7 +446,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @private
    */
   renderTileImage_(tile, pixelRatio, projection) {
-    const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const replayState = tile.getReplayState(layer);
     const revision = layer.getRevision();
     const replays = IMAGE_REPLAYS[layer.getRenderMode()];
@@ -479,27 +478,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     }
   }
 }
-
-
-/**
- * Determine if this renderer handles the provided layer.
- * @param {import("../../layer/Layer.js").default} layer The candidate layer.
- * @return {boolean} The renderer can render the layer.
- */
-CanvasVectorTileLayerRenderer['handles'] = function(layer) {
-  return layer.getType() === LayerType.VECTOR_TILE;
-};
-
-
-/**
- * Create a layer renderer.
- * @param {import("../Map.js").default} mapRenderer The map renderer.
- * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
- * @return {CanvasVectorTileLayerRenderer} The layer renderer.
- */
-CanvasVectorTileLayerRenderer['create'] = function(mapRenderer, layer) {
-  return new CanvasVectorTileLayerRenderer(/** @type {import("../../layer/VectorTile.js").default} */ (layer));
-};
 
 
 export default CanvasVectorTileLayerRenderer;

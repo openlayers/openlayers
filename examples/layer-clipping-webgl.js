@@ -1,7 +1,7 @@
 import Map from '../src/ol/WebGLMap.js';
 import View from '../src/ol/View.js';
 import {WEBGL} from '../src/ol/has.js';
-import TileLayer from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import OSM from '../src/ol/source/OSM.js';
 
 if (!WEBGL) {

@@ -19,12 +19,11 @@ describe('ol.rendering.layer.VectorTile', function() {
 
   let map;
 
-  function createMap(renderer, opt_pixelRatio, opt_size) {
+  function createMap(opt_pixelRatio, opt_size) {
     const size = opt_size || 50;
     map = new Map({
       pixelRatio: opt_pixelRatio || 1,
       target: createMapDiv(size, size),
-      renderer: renderer,
       view: new View({
         center: [1825927.7316762917, 6143091.089223046],
         zoom: 14
@@ -78,7 +77,7 @@ describe('ol.rendering.layer.VectorTile', function() {
     });
 
     it('renders correctly with the canvas renderer', function(done) {
-      createMap('canvas');
+      createMap();
       waitForTiles(source, {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas.png',
           22, done);
@@ -86,7 +85,7 @@ describe('ol.rendering.layer.VectorTile', function() {
     });
 
     it('renders rotated view correctly with the canvas renderer', function(done) {
-      createMap('canvas');
+      createMap();
       map.getView().setRotation(Math.PI / 4);
       waitForTiles(source, {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-rotated.png',
@@ -95,7 +94,7 @@ describe('ol.rendering.layer.VectorTile', function() {
     });
 
     it('renders rotated view correctly with vector layer on top', function(done) {
-      createMap('canvas');
+      createMap();
       const vectorSource = new VectorSource({
         features: [
           new Feature(new Point([1825727.7316762917, 6143091.089223046]))
@@ -121,7 +120,7 @@ describe('ol.rendering.layer.VectorTile', function() {
     });
 
     it('renders correctly with the canvas renderer (HiDPI)', function(done) {
-      createMap('canvas', 2);
+      createMap(2);
       waitForTiles(source, {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-hidpi.png',
           11.3, done);
@@ -129,7 +128,7 @@ describe('ol.rendering.layer.VectorTile', function() {
     });
 
     it('renders rotated view correctly with the canvas renderer (HiDPI)', function(done) {
-      createMap('canvas', 2);
+      createMap(2);
       map.getView().setRotation(Math.PI / 4);
       waitForTiles(source, {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-rotated-hidpi.png',
@@ -138,7 +137,7 @@ describe('ol.rendering.layer.VectorTile', function() {
     });
 
     it('declutters text and images', function(done) {
-      createMap('canvas', 1, 100);
+      createMap(1, 100);
       map.getView().setZoom(13.8);
       const style = function(feature, resolution) {
         const geom = feature.getGeometry();

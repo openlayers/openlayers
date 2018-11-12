@@ -65,21 +65,6 @@ class BaseLayer extends BaseObject {
      */
     this.state_ = null;
 
-    /**
-     * The layer type.
-     * @type {import("../LayerType.js").default}
-     * @protected;
-     */
-    this.type;
-
-  }
-
-  /**
-   * Get the layer type (used when creating a layer renderer).
-   * @return {import("../LayerType.js").default} The layer type.
-   */
-  getType() {
-    return this.type;
   }
 
   /**
