@@ -45,8 +45,8 @@ class CanvasLayerRenderer extends LayerRenderer {
    */
   clip(context, frameState, extent) {
     const pixelRatio = frameState.pixelRatio;
-    const width = frameState.size[0] * pixelRatio;
-    const height = frameState.size[1] * pixelRatio;
+    const halfWidth = (frameState.size[0] * pixelRatio) / 2;
+    const halfHeight = (frameState.size[1] * pixelRatio) / 2;
     const rotation = frameState.viewState.rotation;
     const topLeft = getTopLeft(extent);
     const topRight = getTopRight(extent);
@@ -59,14 +59,14 @@ class CanvasLayerRenderer extends LayerRenderer {
     applyTransform(frameState.coordinateToPixelTransform, bottomLeft);
 
     context.save();
-    rotateAtOffset(context, -rotation, width / 2, height / 2);
+    rotateAtOffset(context, -rotation, halfWidth, halfHeight);
     context.beginPath();
     context.moveTo(topLeft[0] * pixelRatio, topLeft[1] * pixelRatio);
     context.lineTo(topRight[0] * pixelRatio, topRight[1] * pixelRatio);
     context.lineTo(bottomRight[0] * pixelRatio, bottomRight[1] * pixelRatio);
     context.lineTo(bottomLeft[0] * pixelRatio, bottomLeft[1] * pixelRatio);
     context.clip();
-    rotateAtOffset(context, rotation, width / 2, height / 2);
+    rotateAtOffset(context, rotation, halfWidth, halfHeight);
   }
 
   /**
@@ -79,10 +79,10 @@ class CanvasLayerRenderer extends LayerRenderer {
   dispatchComposeEvent_(type, context, frameState, opt_transform) {
     const layer = this.getLayer();
     if (layer.hasListener(type)) {
-      const width = frameState.size[0] * frameState.pixelRatio;
-      const height = frameState.size[1] * frameState.pixelRatio;
+      const halfWidth = (frameState.size[0] * frameState.pixelRatio) / 2;
+      const halfHeight = (frameState.size[1] * frameState.pixelRatio) / 2;
       const rotation = frameState.viewState.rotation;
-      rotateAtOffset(context, -rotation, width / 2, height / 2);
+      rotateAtOffset(context, -rotation, halfWidth, halfHeight);
       const transform = opt_transform !== undefined ?
         opt_transform : this.getTransform(frameState, 0);
       const render = new CanvasImmediateRenderer(
@@ -91,7 +91,7 @@ class CanvasLayerRenderer extends LayerRenderer {
       const composeEvent = new RenderEvent(type, render, frameState,
         context, null);
       layer.dispatchEvent(composeEvent);
-      rotateAtOffset(context, rotation, width / 2, height / 2);
+      rotateAtOffset(context, rotation, halfWidth, halfHeight);
     }
   }
 

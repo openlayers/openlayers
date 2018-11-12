@@ -161,10 +161,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
       const viewHints = frameState.viewHints;
       const snapToPixel = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
-      const width = frameState.size[0] * pixelRatio;
-      const height = frameState.size[1] * pixelRatio;
-      rotateAtOffset(replayContext, -rotation,
-        width / 2, height / 2);
+      const halfWidth = (frameState.size[0] * pixelRatio) / 2;
+      const halfHeight = (frameState.size[1] * pixelRatio) / 2;
+      rotateAtOffset(replayContext, -rotation, halfWidth, halfHeight);
       replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
       if (vectorSource.getWrapX() && projection.canWrapX() &&
           !containsExtent(projectionExtent, extent)) {
@@ -189,8 +188,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           startX -= worldWidth;
         }
       }
-      rotateAtOffset(replayContext, rotation,
-        width / 2, height / 2);
+      rotateAtOffset(replayContext, rotation, halfWidth, halfHeight);
 
       if (hasRenderListeners) {
         this.dispatchRenderEvent(replayContext, frameState, transform);
