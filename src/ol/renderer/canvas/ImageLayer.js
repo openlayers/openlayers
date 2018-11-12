@@ -53,6 +53,7 @@ class CanvasImageLayerRenderer extends IntermediateCanvasRenderer {
    */
   prepareFrame(frameState, layerState) {
 
+    this.clear(frameState);
     const pixelRatio = frameState.pixelRatio;
     const size = frameState.size;
     const viewState = frameState.viewState;

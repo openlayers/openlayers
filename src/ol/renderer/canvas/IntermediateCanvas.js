@@ -121,22 +121,7 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
       const dh = image.height * imageTransform[3];
 
       if (dw >= 0.5 && dh >= 0.5) {
-        const pixelRatio = frameState.pixelRatio;
-        const canvas = this.layerContext.canvas;
-        let width = Math.round(frameState.size[0] * pixelRatio);
-        let height = Math.round(frameState.size[1] * pixelRatio);
-
-        if (canvas.width != width || canvas.height != height) {
-          canvas.width = width;
-          canvas.height = height;
-          canvas.style.width = (width / pixelRatio) + 'px';
-          canvas.style.height = (height / pixelRatio) + 'px';
-        } else {
-          this.layerContext.clearRect(0, 0, width, height);
-        }
-
-
-        // this.clear(this.canvas_.width, this.canvas_.height);
+        this.clear(frameState);
         this.layerContext.drawImage(image, 0, 0, +image.width, +image.height,
           Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
       }
@@ -164,6 +149,25 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
    */
   getImageTransform() {
     return abstract();
+  }
+
+  /**
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   */
+  clear(frameState) {
+    const pixelRatio = frameState.pixelRatio;
+    const canvas = this.layerContext.canvas;
+    const width = Math.round(frameState.size[0] * pixelRatio);
+    const height = Math.round(frameState.size[1] * pixelRatio);
+
+    if (canvas.width != width || canvas.height != height) {
+      canvas.width = width;
+      canvas.height = height;
+      canvas.style.width = (width / pixelRatio) + 'px';
+      canvas.style.height = (height / pixelRatio) + 'px';
+    } else {
+      this.layerContext.clearRect(0, 0, width, height);
+    }
   }
 
   /**
