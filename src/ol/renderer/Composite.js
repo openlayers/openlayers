@@ -85,8 +85,6 @@ class CompositeMapRenderer extends MapRenderer {
     const layerStatesArray = frameState.layerStatesArray;
     stableSort(layerStatesArray, sortByZIndex);
 
-    const rotation = frameState.viewState.rotation;
-
     const viewResolution = frameState.viewState.resolution;
 
     this.children_.length = 0;
@@ -100,17 +98,6 @@ class CompositeMapRenderer extends MapRenderer {
       const layerRenderer = this.getLayerRenderer(layer);
       if (layerRenderer.prepareFrame(frameState, layerState)) {
         const element = layerRenderer.renderFrame(frameState, layerState);
-
-        const opacity = layerState.opacity;
-        if (opacity !== element.style.opacity) {
-          element.style.opacity = opacity;
-        }
-
-        const transform = 'rotate(' + rotation + 'rad)';
-        if (transform !== element.style.transform) {
-          element.style.transform = transform;
-        }
-
         this.children_.push(element);
       }
     }

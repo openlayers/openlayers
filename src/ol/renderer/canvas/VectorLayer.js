@@ -318,11 +318,23 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @inheritDoc
    */
   renderFrame(frameState, layerState) {
-    const transform = this.getTransform(frameState, 0);
-    this.preRender(frameState, transform);
+    this.preRender(frameState);
     this.render(frameState, layerState);
-    this.postRender(frameState, layerState, transform);
-    return this.context.canvas;
+    this.postRender(frameState, layerState);
+    const canvas = this.context.canvas;
+
+    const opacity = layerState.opacity;
+    if (opacity !== canvas.style.opacity) {
+      canvas.style.opacity = opacity;
+    }
+
+    const rotation = frameState.viewState.rotation;
+    const transform = 'rotate(' + rotation + 'rad)';
+    if (transform !== canvas.style.transform) {
+      canvas.style.transform = transform;
+    }
+
+    return canvas;
   }
 
   /**
