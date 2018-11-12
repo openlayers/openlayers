@@ -99,7 +99,10 @@ class CompositeMapRenderer extends MapRenderer {
       const layerRenderer = this.getLayerRenderer(layer);
       if (layerRenderer.prepareFrame(frameState, layerState)) {
         const element = layerRenderer.renderFrame(frameState, layerState);
-        // TODO: deal with opacity
+        const opacity = layerState.opacity;
+        if (opacity !== element.style.opacity) {
+          element.style.opacity = opacity;
+        }
         this.children_.push(element);
       }
     }
