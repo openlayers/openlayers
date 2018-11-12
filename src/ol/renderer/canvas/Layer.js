@@ -185,6 +185,27 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
+   * Creates a transform for rendering to an element that will be rotated after rendering.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {number} width Width of the rendered element (in pixels).
+   * @param {number} height Height of the rendered element (in pixels).
+   * @param {number} offsetX Offset on the x-axis in view coordinates.
+   * @protected
+   * @return {!import("../../transform.js").Transform} Transform.
+   */
+  getRenderTransform(frameState, width, height, offsetX) {
+    const viewState = frameState.viewState;
+    const pixelRatio = frameState.pixelRatio;
+    const dx1 = width / 2;
+    const dy1 = height / 2;
+    const sx = pixelRatio / viewState.resolution;
+    const sy = -sx;
+    const dx2 = -viewState.center[0] + offsetX;
+    const dy2 = -viewState.center[1];
+    return composeTransform(this.transform_, dx1, dy1, sx, sy, 0, dx2, dy2);
+  }
+
+  /**
    * @abstract
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {import("../../layer/Layer.js").State} layerState Layer state.

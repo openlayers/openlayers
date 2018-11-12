@@ -81,6 +81,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
      */
     this.context = createCanvasContext2D();
 
+    const canvas = this.context.canvas;
+    canvas.style.position = 'absolute';
+
     listen(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
   }
 
@@ -275,12 +278,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const viewHints = frameState.viewHints;
     const snapToPixel = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
 
-    // TODO: deal with rotation (this should not be necessary)
-    if (rotation) {
-      rotateAtOffset(context, -rotation, width / 2, height / 2);
-    }
-
-    let transform = this.getTransform(frameState, 0);
+    let transform = this.getRenderTransform(frameState, width, height, 0);
     const skippedFeatureUids = layerState.managed ? frameState.skippedFeatureUids : {};
     replayGroup.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
 
@@ -292,7 +290,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       while (startX < projectionExtent[0]) {
         --world;
         offsetX = worldWidth * world;
-        transform = this.getTransform(frameState, offsetX);
+        transform = this.getRenderTransform(frameState, width, height, offsetX);
         replayGroup.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
         startX += worldWidth;
       }
@@ -301,15 +299,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       while (startX > projectionExtent[2]) {
         ++world;
         offsetX = worldWidth * world;
-        transform = this.getTransform(frameState, offsetX);
+        transform = this.getRenderTransform(frameState, width, height, offsetX);
         replayGroup.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
         startX -= worldWidth;
       }
-    }
-
-    // TODO: deal with rotation (this should not be necessary)
-    if (rotation) {
-      rotateAtOffset(context, rotation, width / 2, height / 2);
     }
 
     if (this.getLayer().hasListener(RenderEventType.RENDER)) {
