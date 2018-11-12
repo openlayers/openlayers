@@ -37,6 +37,7 @@ class CompositeMapRenderer extends MapRenderer {
     style.width = '100%';
     style.height = '100%';
 
+    this.element_.style.position = 'relative';
     this.element_.className = CLASS_UNSELECTABLE;
 
     const container = map.getViewport();
