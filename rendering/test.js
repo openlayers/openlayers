@@ -358,7 +358,7 @@ if (require.main === module) {
     }).
     parse();
 
-  const entries = Object.keys(config.entry).map(key => config.entry[key]);
+  const entries = Object.keys(config.entry).filter(key => key.startsWith('cases')).map(key => config.entry[key]);
 
   options.log = log.create({name: 'rendering', level: options.logLevel});
 
