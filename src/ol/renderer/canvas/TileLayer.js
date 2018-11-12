@@ -5,7 +5,6 @@ import {getUid} from '../../util.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
-import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, createEmpty, equals, getIntersection, isEmpty} from '../../extent.js';
 import IntermediateCanvasRenderer from './IntermediateCanvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
@@ -23,13 +22,7 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
    */
   constructor(tileLayer, opt_noContext) {
 
-    super(tileLayer);
-
-    /**
-     * @protected
-     * @type {CanvasRenderingContext2D}
-     */
-    this.context = opt_noContext ? null : createCanvasContext2D();
+    super(tileLayer, opt_noContext);
 
     /**
      * @private
