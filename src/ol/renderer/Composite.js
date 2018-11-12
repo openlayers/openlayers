@@ -30,9 +30,13 @@ class CompositeMapRenderer extends MapRenderer {
      * @type {HTMLDivElement}
      */
     this.element_ = document.createElement('div');
+    const style = this.element_.style;
+    style.display = 'flex';
+    style.alignItems = 'center';
+    style.justifyContent = 'center';
+    style.width = '100%';
+    style.height = '100%';
 
-    this.element_.style.width = '100%';
-    this.element_.style.height = '100%';
     this.element_.className = CLASS_UNSELECTABLE;
 
     const container = map.getViewport();
@@ -82,9 +86,6 @@ class CompositeMapRenderer extends MapRenderer {
     stableSort(layerStatesArray, sortByZIndex);
 
     const rotation = frameState.viewState.rotation;
-    if (rotation) {
-      // TODO: apply rotation
-    }
 
     const viewResolution = frameState.viewState.resolution;
 
@@ -99,10 +100,17 @@ class CompositeMapRenderer extends MapRenderer {
       const layerRenderer = this.getLayerRenderer(layer);
       if (layerRenderer.prepareFrame(frameState, layerState)) {
         const element = layerRenderer.renderFrame(frameState, layerState);
+
         const opacity = layerState.opacity;
         if (opacity !== element.style.opacity) {
           element.style.opacity = opacity;
         }
+
+        const transform = 'rotate(' + rotation + 'rad)';
+        if (transform !== element.style.transform) {
+          element.style.transform = transform;
+        }
+
         this.children_.push(element);
       }
     }
