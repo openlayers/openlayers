@@ -15,10 +15,17 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
 
   /**
    * @param {import("../../layer/Layer.js").default} layer Layer.
+   * @param {boolean=} opt_noContext Skip the context creation.
    */
-  constructor(layer) {
+  constructor(layer, opt_noContext) {
 
     super(layer);
+
+    /**
+     * @protected
+     * @type {CanvasRenderingContext2D}
+     */
+    this.context = opt_noContext ? null : createCanvasContext2D();
 
     /**
      * @protected

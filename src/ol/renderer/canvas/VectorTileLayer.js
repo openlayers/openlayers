@@ -4,7 +4,6 @@
 import {getUid} from '../../util.js';
 import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
-import {createCanvasContext2D} from '../../dom.js';
 import {listen, unlisten} from '../../events.js';
 import EventType from '../../events/EventType.js';
 import rbush from 'rbush';
@@ -59,7 +58,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   constructor(layer) {
 
-    super(layer, true);
+    const renderMode = layer.getRenderMode();
+    super(layer, renderMode === VectorTileRenderType.VECTOR);
 
     /**
      * Declutter tree.
@@ -85,14 +85,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
      */
     this.tmpTransform_ = createTransform();
 
-    const renderMode = layer.getRenderMode();
-
     // Use lower resolution for pure vector rendering. Closest resolution otherwise.
     this.zDirection = renderMode === VectorTileRenderType.VECTOR ? 1 : 0;
-
-    if (renderMode !== VectorTileRenderType.VECTOR) {
-      this.context = createCanvasContext2D();
-    }
 
 
     listen(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
