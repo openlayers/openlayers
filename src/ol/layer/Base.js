@@ -10,6 +10,7 @@ import {assign} from '../obj.js';
 
 /**
  * @typedef {Object} Options
+ * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
  * @property {import("../extent.js").Extent} [extent] The bounding extent for layer rendering.  The layer will not be
@@ -57,6 +58,13 @@ class BaseLayer extends BaseObject {
     properties[LayerProperty.MIN_RESOLUTION] =
        options.minResolution !== undefined ? options.minResolution : 0;
 
+    /**
+     * @type {string}
+     * @private
+     */
+    this.className_ = properties.className !== undefined ? options.className : 'ol-layer';
+    delete properties.className;
+
     this.setProperties(properties);
 
     /**
@@ -65,6 +73,13 @@ class BaseLayer extends BaseObject {
      */
     this.state_ = null;
 
+  }
+
+  /**
+   * @return {string} CSS class name.
+   */
+  getClassName() {
+    return this.className_;
   }
 
   /**

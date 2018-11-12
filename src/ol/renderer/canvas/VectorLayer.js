@@ -83,6 +83,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const canvas = this.context.canvas;
     canvas.style.position = 'absolute';
+    canvas.className = this.getLayer().getClassName();
 
     listen(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
   }
