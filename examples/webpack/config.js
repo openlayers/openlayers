@@ -1,4 +1,4 @@
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const ExampleBuilder = require('./example-builder');
 const fs = require('fs');
@@ -33,7 +33,7 @@ module.exports = {
   },
   optimization: {
     minimizer: [
-      new UglifyJsPlugin({
+      new TerserPlugin({
         sourceMap: true,
         // Do not minify examples that inject code into workers
         exclude: [/(color-manipulation|region-growing|raster)\.js/]
@@ -65,5 +65,14 @@ module.exports = {
   output: {
     filename: '[name].js',
     path: path.join(__dirname, '..', '..', 'build', 'examples')
+  },
+  node: {
+    fs: 'empty' // required by ol-mapbox-stlye
+  },
+  resolve: {
+    alias: {
+      // allow imports from 'ol/module' instead of specifiying the source path
+      ol: path.join(__dirname, '..', '..', 'src', 'ol')
+    }
   }
 };
