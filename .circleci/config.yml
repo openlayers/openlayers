@@ -38,3 +38,7 @@ jobs:
       - store_artifacts:
           path: build/examples
           destination: examples
+
+      - run:
+          name: Run benchmarks
+          command: npm run benchmarks

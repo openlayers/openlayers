@@ -24,7 +24,8 @@
     "copy-css": "shx cp src/ol/ol.css build/ol/ol.css",
     "transpile": "shx rm -rf build/ol && shx mkdir -p build && buble --input src/ol --output build/ol --no modules --sourcemap",
     "typecheck": "tsc --pretty",
-    "apidoc": "jsdoc config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -P package.json -d build/apidoc"
+    "apidoc": "jsdoc config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -P package.json -d build/apidoc",
+    "benchmarks": "node rendering/benchmark.js --iterations 20 --log-level info"
   },
   "main": "index.js",
   "repository": {
