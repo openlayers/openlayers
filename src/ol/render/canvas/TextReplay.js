@@ -126,7 +126,27 @@ class CanvasTextReplay extends CanvasReplay {
     this.widths_ = {};
 
     labelCache.prune();
+  }
 
+  /**
+   * @inheritdoc
+   */
+  finish() {
+    const instructions = super.finish();
+    instructions.textStates = this.textStates;
+    instructions.fillStates = this.fillStates;
+    instructions.strokeStates = this.strokeStates;
+    return instructions;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  replaceInstructions(instructions) {
+    super.replaceInstructions(instructions);
+    this.textStates = instructions.textStates;
+    this.fillStates = instructions.fillStates;
+    this.strokeStates = instructions.strokeStates;
   }
 
   /**

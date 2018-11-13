@@ -29,6 +29,16 @@ import {
 
 
 /**
+ * @typedef {Object} SerializableInstructions
+ * @property {Array<*>} instructions The rendering instructions.
+ * @property {Array<*>} hitDetectionInstructions The rendering hit detection instructions.
+ * @property {Array<number>} coordinates The array of all coordinates.
+ * @property {!Object<string, import("../canvas.js").TextState>} textStates The text states (decluttering).
+ * @property {!Object<string, import("../canvas.js").FillState>} fillStates The fill states (decluttering).
+ * @property {!Object<string, import("../canvas.js").StrokeState>} strokeStates The stoke states (decluttering).
+ */
+
+/**
  * @type {import("../../extent.js").Extent}
  */
 const tmpExtent = createEmpty();
@@ -167,6 +177,16 @@ class CanvasReplay extends VectorContext {
      */
     this.viewRotation_ = 0;
 
+  }
+
+  /**
+   * Recreate replays and populate them using the provided instructions.
+   * @param {SerializableInstructions} instructions The serializable instructions
+   */
+  replaceInstructions(instructions) {
+    this.instructions = instructions.instructions;
+    this.hitDetectionInstructions = instructions.hitDetectionInstructions;
+    this.coordinates = instructions.coordinates;
   }
 
   /**
@@ -456,9 +476,15 @@ class CanvasReplay extends VectorContext {
   }
 
   /**
-   * FIXME empty description for jsdoc
+   * @return {Object} the serializable instructions.
    */
-  finish() {}
+  finish() {
+    return {
+      instructions: this.instructions,
+      hitDetectionInstructions: this.hitDetectionInstructions,
+      coordinates: this.coordinates
+    };
+  }
 
   /**
    * @private

@@ -192,6 +192,7 @@ class CanvasPolygonReplay extends CanvasReplay {
         coordinates[i] = snap(coordinates[i], tolerance);
       }
     }
+    return super.finish();
   }
 
   /**

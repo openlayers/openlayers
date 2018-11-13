@@ -97,6 +97,7 @@ class CanvasLineStringReplay extends CanvasReplay {
     }
     this.reverseHitDetectionInstructions();
     this.state = null;
+    return super.finish();
   }
 
   /**

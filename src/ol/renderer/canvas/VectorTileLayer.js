@@ -226,8 +226,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           render.call(this, feature);
         }
       }
-      replayGroup.finish();
-      sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
+      const replayGroupInstructions = replayGroup.finish();
+      const renderingReplayGroup = new CanvasReplayGroup(0, sharedExtent, resolution,
+        pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
+      renderingReplayGroup.replaceInstructions(replayGroupInstructions);
+      sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), renderingReplayGroup);
     }
     replayState.renderedRevision = revision;
     replayState.renderedRenderOrder = renderOrder;

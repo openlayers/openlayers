@@ -185,6 +185,7 @@ class CanvasImageReplay extends CanvasReplay {
     this.rotateWithView_ = undefined;
     this.rotation_ = undefined;
     this.width_ = undefined;
+    return super.finish();
   }
 
   /**

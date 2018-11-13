@@ -151,6 +151,22 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
+   * Recreate replays and populate them using the provided instructions.
+   * @param {!Object<string, !Object<ReplayType, import("./Replay.js").SerializableInstructions>>} allInstructions The serializable instructions
+   */
+  replaceInstructions(allInstructions) {
+    this.replaysByZIndex_ = {};
+    for (const zIndex in allInstructions) {
+      const instructionByZindex = allInstructions[zIndex];
+      for (const replayType in instructionByZindex) {
+        const instructions = instructionByZindex[replayType];
+        const replay = this.getReplay(zIndex, replayType);
+        replay.replaceInstructions(instructions);
+      }
+    }
+  }
+
+  /**
    * @param {Array<ReplayType>} replays Replays.
    * @return {boolean} Has replays of the provided types.
    */
@@ -167,15 +183,19 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * FIXME empty description for jsdoc
+   * @return {!Object<string, !Object<ReplayType, import("./Replay.js").SerializableInstructions>>} The serializable instructions
    */
   finish() {
+    const replaysInstructions = {};
     for (const zKey in this.replaysByZIndex_) {
+      replaysInstructions[zKey] = replaysInstructions[zKey] || {};
       const replays = this.replaysByZIndex_[zKey];
       for (const replayKey in replays) {
-        replays[replayKey].finish();
+        const replayInstructions = replays[replayKey].finish();
+        replaysInstructions[zKey][replayKey] = replayInstructions;
       }
     }
+    return replaysInstructions;
   }
 
   /**

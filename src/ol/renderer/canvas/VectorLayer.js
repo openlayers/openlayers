@@ -480,13 +480,18 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     } else {
       vectorSource.forEachFeatureInExtent(extent, render);
     }
-    replayGroup.finish();
+
+    const replayGroupInstructions = replayGroup.finish();
+    const renderingReplayGroup = new CanvasReplayGroup(
+      getRenderTolerance(resolution, pixelRatio), extent, resolution,
+      pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
+    renderingReplayGroup.replaceInstructions(replayGroupInstructions);
 
     this.renderedResolution_ = resolution;
     this.renderedRevision_ = vectorLayerRevision;
     this.renderedRenderOrder_ = vectorLayerRenderOrder;
     this.renderedExtent_ = extent;
-    this.replayGroup_ = replayGroup;
+    this.replayGroup_ = renderingReplayGroup;
 
     this.replayGroupChanged = true;
     return true;
