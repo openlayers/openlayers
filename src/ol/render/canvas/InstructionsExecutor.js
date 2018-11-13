@@ -21,10 +21,8 @@ import {
 } from '../../transform.js';
 
 
-/// Imports copied from TextReplay
-import {asColorLike} from '../../colorlike.js';
 import {createCanvasContext2D} from '../../dom.js';
-import {labelCache, measureTextWidth, measureTextWidths, defaultTextAlign, measureTextHeight, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
+import {labelCache, defaultTextAlign, measureTextHeight, measureTextWidths} from '../canvas.js';
 
 
 /**
@@ -176,44 +174,6 @@ class CanvasInstructionsExecutor {
     this.viewRotation_ = 0;
 
     ////////////// Below is code copied from TextReplay ////////////
-
-
-    /**
-     * @private
-     * @type {Array<HTMLCanvasElement>}
-     */
-    this.labels_ = null;
-
-    /**
-     * @private
-     * @type {string}
-     */
-    this.text_ = '';
-
-    /**
-     * @private
-     * @type {number}
-     */
-    this.textOffsetX_ = 0;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    this.textOffsetY_ = 0;
-
-    /**
-     * @private
-     * @type {boolean|undefined}
-     */
-    this.textRotateWithView_ = undefined;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    this.textRotation_ = 0;
-
     /**
      * @private
      * @type {?import("../canvas.js").FillState}
@@ -246,32 +206,6 @@ class CanvasInstructionsExecutor {
      * @type {!Object<string, import("../canvas.js").TextState>}
      */
     this.textStates = {};
-
-    /**
-     * @private
-     * @type {string}
-     */
-    this.textKey_ = '';
-
-    /**
-     * @private
-     * @type {string}
-     */
-    this.fillKey_ = '';
-
-    /**
-     * @private
-     * @type {string}
-     */
-    this.strokeKey_ = '';
-
-    /**
-     * @private
-     * @type {Object<string, Object<string, number>>}
-     */
-    this.widths_ = {};
-
-    labelCache.prune();
   }
 
 
