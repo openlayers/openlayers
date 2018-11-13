@@ -3,7 +3,6 @@ import View from '../src/ol/View.js';
 import Layer from '../src/ol/layer/Layer';
 import {assign} from '../src/ol/obj';
 import {getTransform} from '../src/ol/proj';
-import mapboxgl from 'mapbox-gl/dist/mapbox-gl-dev';
 import SourceState from '../src/ol/source/State';
 import {Stroke, Style} from '../src/ol/style.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
