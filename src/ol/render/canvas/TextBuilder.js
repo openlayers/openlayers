@@ -8,7 +8,7 @@ import {intersects} from '../../extent.js';
 import {matchingChunk} from '../../geom/flat/straightchunk.js';
 import GeometryType from '../../geom/GeometryType.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
-import {labelCache, measureTextWidth, defaultTextAlign, measureTextHeight, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
+import {labelCache, measureTextWidth, measureTextWidths, defaultTextAlign, measureTextHeight, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
 import CanvasInstructionsBuilder from './InstructionsBuilder.js';
 import {TEXT_ALIGN} from '../replay.js';
@@ -525,25 +525,6 @@ class CanvasTextBuilder extends CanvasInstructionsBuilder {
         '';
     }
   }
-}
-
-
-/**
- * @param {string} font Font to use for measuring.
- * @param {Array<string>} lines Lines to measure.
- * @param {Array<number>} widths Array will be populated with the widths of
- * each line.
- * @return {number} Width of the whole text.
- */
-export function measureTextWidths(font, lines, widths) {
-  const numLines = lines.length;
-  let width = 0;
-  for (let i = 0; i < numLines; ++i) {
-    const currentWidth = measureTextWidth(font, lines[i]);
-    width = Math.max(width, currentWidth);
-    widths.push(currentWidth);
-  }
-  return width;
 }
 
 

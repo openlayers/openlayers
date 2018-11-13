@@ -24,7 +24,7 @@ import {
 /// Imports copied from TextReplay
 import {asColorLike} from '../../colorlike.js';
 import {createCanvasContext2D} from '../../dom.js';
-import {labelCache, measureTextWidth, defaultTextAlign, measureTextHeight, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
+import {labelCache, measureTextWidth, measureTextWidths, defaultTextAlign, measureTextHeight, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
 
 
 /**
@@ -1222,24 +1222,3 @@ class CanvasInstructionsExecutor {
 
 
 export default CanvasInstructionsExecutor;
-
-
-/////////////// Below is code copied from TextReplay /////////////////
-
-/**
- * @param {string} font Font to use for measuring.
- * @param {Array<string>} lines Lines to measure.
- * @param {Array<number>} widths Array will be populated with the widths of
- * each line.
- * @return {number} Width of the whole text.
- */
-export function measureTextWidths(font, lines, widths) {
-  const numLines = lines.length;
-  let width = 0;
-  for (let i = 0; i < numLines; ++i) {
-    const currentWidth = measureTextWidth(font, lines[i]);
-    width = Math.max(width, currentWidth);
-    widths.push(currentWidth);
-  }
-  return width;
-}
