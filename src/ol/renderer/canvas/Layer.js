@@ -1,7 +1,6 @@
 /**
  * @module ol/renderer/canvas/Layer
  */
-import {abstract} from '../../util.js';
 import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../../extent.js';
 import {TRUE} from '../../functions.js';
 import RenderEvent from '../../render/Event.js';
@@ -118,11 +117,10 @@ class CanvasLayerRenderer extends LayerRenderer {
   /**
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../layer/Layer.js").State} layerState Layer state.
    * @param {import("../../transform.js").Transform=} opt_transform Transform.
    * @protected
    */
-  postCompose(context, frameState, layerState, opt_transform) {
+  preRender(context, frameState, opt_transform) {
     this.dispatchComposeEvent_(RenderEventType.POSTCOMPOSE, context, frameState, opt_transform);
   }
 
@@ -132,27 +130,8 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @param {import("../../transform.js").Transform=} opt_transform Transform.
    * @protected
    */
-  preCompose(context, frameState, opt_transform) {
-    this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, context, frameState, opt_transform);
-  }
-
-  /**
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../transform.js").Transform=} opt_transform Transform.
-   * @protected
-   */
-  preRender(frameState, opt_transform) {
-    // TODO: pre-render event
-  }
-
-  /**
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../layer/Layer.js").State} layerState Layer state.
-   * @param {import("../../transform.js").Transform=} opt_transform Transform.
-   * @protected
-   */
-  postRender(frameState, layerState, opt_transform) {
-    // TODO: pre-render event
+  postRender(context, frameState, opt_transform) {
+    this.dispatchComposeEvent_(RenderEventType.POSTCOMPOSE, context, frameState, opt_transform);
   }
 
   /**
@@ -203,16 +182,6 @@ class CanvasLayerRenderer extends LayerRenderer {
     const dx2 = -viewState.center[0] + offsetX;
     const dy2 = -viewState.center[1];
     return composeTransform(this.transform_, dx1, dy1, sx, sy, 0, dx2, dy2);
-  }
-
-  /**
-   * @abstract
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../layer/Layer.js").State} layerState Layer state.
-   * @param {CanvasRenderingContext2D} context Context.
-   */
-  composeFrame(frameState, layerState, context) {
-    abstract();
   }
 
 }

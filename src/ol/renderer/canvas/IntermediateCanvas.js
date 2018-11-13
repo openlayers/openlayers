@@ -53,55 +53,9 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
   /**
    * @inheritDoc
    */
-  composeFrame(frameState, layerState, context) {
-
-    this.preCompose(context, frameState);
-
-    const image = this.getImage();
-    if (image) {
-
-      // clipped rendering if layer extent is set
-      const extent = layerState.extent;
-      const clipped = extent !== undefined &&
-          !containsExtent(extent, frameState.extent) &&
-          intersects(extent, frameState.extent);
-      if (clipped) {
-        this.clip(context, frameState, extent);
-      }
-
-      const imageTransform = this.getImageTransform();
-      // for performance reasons, context.save / context.restore is not used
-      // to save and restore the transformation matrix and the opacity.
-      // see http://jsperf.com/context-save-restore-versus-variable
-      const alpha = context.globalAlpha;
-      context.globalAlpha = layerState.opacity;
-
-      // for performance reasons, context.setTransform is only used
-      // when the view is rotated. see http://jsperf.com/canvas-transform
-      const dx = imageTransform[4];
-      const dy = imageTransform[5];
-      const dw = image.width * imageTransform[0];
-      const dh = image.height * imageTransform[3];
-      if (dw >= 0.5 && dh >= 0.5) {
-        context.drawImage(image, 0, 0, +image.width, +image.height,
-          Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
-      }
-      context.globalAlpha = alpha;
-
-      if (clipped) {
-        context.restore();
-      }
-    }
-
-    this.postCompose(context, frameState, layerState);
-  }
-
-  /**
-   * @inheritDoc
-   */
   renderFrame(frameState, layerState) {
 
-    this.preRender(frameState);
+    this.preRender(this.layerContext, frameState);
     const image = this.getImage();
     if (image) {
 
@@ -134,7 +88,7 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
       }
     }
 
-    this.postRender(frameState, layerState);
+    this.postRender(this.layerContext, frameState, layerState);
     return this.layerContext.canvas;
   }
 
