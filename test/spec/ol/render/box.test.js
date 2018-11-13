@@ -13,6 +13,8 @@ describe('ol.render.Box', function() {
     box = new RenderBox('test-box');
 
     target = document.createElement('div');
+    target.style.height = '256px';
+
     document.body.appendChild(target);
 
     map = new Map({
