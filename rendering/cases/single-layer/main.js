@@ -1,12 +1,14 @@
 import Map from '../../../src/ol/Map.js';
 import View from '../../../src/ol/View.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
-import OSM from '../../../src/ol/source/OSM.js';
+import XYZ from '../../../src/ol/source/XYZ.js';
 
 new Map({
   layers: [
     new TileLayer({
-      source: new OSM()
+      source: new XYZ({
+        url: '/data/tiles/satellite/{z}/{x}/{y}.jpg'
+      })
     })
   ],
   target: 'map',

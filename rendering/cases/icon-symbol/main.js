@@ -1,7 +1,7 @@
 import Map from '../../../src/ol/Map.js';
 import View from '../../../src/ol/View.js';
 import {Vector as VectorLayer, Tile as TileLayer} from '../../../src/ol/layer.js';
-import {Vector as VectorSource, OSM} from '../../../src/ol/source.js';
+import {Vector as VectorSource, XYZ} from '../../../src/ol/source.js';
 import Point from '../../../src/ol/geom/Point.js';
 import Feature from '../../../src/ol/Feature.js';
 import {fromLonLat} from '../../../src/ol/proj.js';
@@ -12,7 +12,9 @@ const center = fromLonLat([8.6, 50.1]);
 new Map({
   layers: [
     new TileLayer({
-      source: new OSM()
+      source: new XYZ({
+        url: '/data/tiles/satellite/{z}/{x}/{y}.jpg'
+      })
     }),
     new VectorLayer({
       style: function() {
