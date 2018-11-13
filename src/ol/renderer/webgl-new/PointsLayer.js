@@ -5,6 +5,49 @@ import LayerRenderer from '../Layer';
 import WebGLBuffer from '../../webgl/Buffer';
 import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER} from '../../webgl';
 import WebGLContext, {DefaultUniform} from '../../webgl/Context';
+import WebGLVertex from "../../webgl/Vertex";
+import WebGLFragment from "../../webgl/Fragment";
+
+const VERTEX_SHADER =
+  'attribute vec2 a_position;' +
+  'attribute vec2 a_texCoord;' +
+  'attribute float a_opacity;' +
+  'attribute float a_rotateWithView;' +
+  '' +
+  'uniform mat4 u_projectionMatrix;' +
+  'uniform mat4 u_offsetScaleMatrix;' +
+  'uniform mat4 u_offsetRotateMatrix;' +
+  '' +
+  'varying vec2 v_texCoord;' +
+  'varying float v_opacity;' +
+  '' +
+  'void main(void) {' +
+  '  mat4 offsetMatrix = u_offsetScaleMatrix;' +
+  '  if (a_rotateWithView == 1.0) {' +
+  '    offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;' +
+  '  }' +
+  '  vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);' +
+  '  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;' +
+  '  v_texCoord = a_texCoord;' +
+  '  v_opacity = a_opacity;' +
+  '}';
+
+const FRAGMENT_SHADER =
+  'uniform float u_opacity;' +
+  'uniform sampler2D u_image;' +
+  '' +
+  'varying vec2 v_texCoord;' +
+  'varying float v_opacity;' +
+  '' +
+  'void main(void) {' +
+  '  vec4 texColor = texture2D(u_image, v_texCoord);' +
+  '  gl_FragColor.rgb = texColor.rgb;' +
+  '  float alpha = texColor.a * v_opacity * u_opacity;' +
+  '  if (alpha == 0.0) {' +
+  '    discard;' +
+  '  }' +
+  '  gl_FragColor.a = alpha;' +
+  '}';
 
 /**
  * @classdesc
@@ -28,8 +71,13 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
 
     this.primitiveCount_ = 0;
 
-    this.verticesBuffer_ = new WebGLBuffer();
-    this.indicesBuffer_ = new WebGLBuffer();
+    this.verticesBuffer_ = new WebGLBuffer([], DYNAMIC_DRAW);
+    this.indicesBuffer_ = new WebGLBuffer([], DYNAMIC_DRAW);
+
+    const vertexShader = new WebGLVertex(VERTEX_SHADER);
+    const fragmentShader = new WebGLFragment(FRAGMENT_SHADER);
+    const program = this.context_.getProgram(fragmentShader, vertexShader);
+    this.context_.useProgram(program);
   }
 
   /**
