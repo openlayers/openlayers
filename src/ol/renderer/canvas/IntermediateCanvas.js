@@ -63,7 +63,7 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
           !containsExtent(extent, frameState.extent) &&
           intersects(extent, frameState.extent);
       if (clipped) {
-        this.clip(context, frameState, /** @type {import("../../extent.js").Extent} */ (extent));
+        this.clip(context, frameState, extent);
       }
 
       const imageTransform = this.getImageTransform();
@@ -108,7 +108,7 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
           !containsExtent(extent, frameState.extent) &&
           intersects(extent, frameState.extent);
       if (clipped) {
-        this.clip(this.layerContext, frameState, /** @type {import("../../extent.js").Extent} */ (extent));
+        this.clip(this.layerContext, frameState, extent);
       }
 
       const imageTransform = this.getImageTransform();
