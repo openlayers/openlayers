@@ -156,13 +156,22 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const source = /** @type {import("../../source/VectorTile.js").default} */ (layer.getSource());
     const sourceTileGrid = source.getTileGrid();
     const tileGrid = source.getTileGridForProjection(projection);
-    const resolution = tileGrid.getResolution(tile.tileCoord[0]);
+    const zoom = tile.tileCoord[0];
+    const resolution = tileGrid.getResolution(zoom);
     const tileExtent = tile.extent;
 
     for (let t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
       const sourceTile = tile.getTile(tile.tileKeys[t]);
       if (sourceTile.getState() != TileState.LOADED) {
         continue;
+      }
+      if (tile.useLoadedOnly) {
+        const lowResReplayGroup = sourceTile.getLowResReplayGroup(layer, zoom, tileExtent);
+        if (lowResReplayGroup) {
+          // reuse existing replay if we're rendering an interim tile
+          sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), lowResReplayGroup);
+          continue;
+        }
       }
 
       const sourceTileCoord = sourceTile.tileCoord;
