@@ -9,6 +9,15 @@ import {listen, unlistenAll} from '../events.js';
 import {clear} from '../obj.js';
 import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TEXTURE_2D, TEXTURE_WRAP_S, TEXTURE_WRAP_T} from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
+import {TRIANGLES, UNSIGNED_INT, UNSIGNED_SHORT} from "../webgl";
+import {
+  create as createTransform,
+  reset as resetTransform,
+  rotate as rotateTransform,
+  scale as scaleTransform,
+  translate as translateTransform
+} from "../transform";
+import {create, fromTransform} from "../vec/mat4";
 
 
 /**
@@ -16,6 +25,13 @@ import ContextEventType from '../webgl/ContextEventType.js';
  * @property {import("./Buffer.js").default} buf
  * @property {WebGLBuffer} buffer
  */
+
+export const DefaultUniform = {
+  PROJECTION_MATRIX: 'u_projectionMatrix',
+  SCALE_MATRIX: 'u_offsetScaleMatrix',
+  OFFSET_ROTATION_MATRIX: 'u_offsetRotateMatrix',
+  OPACITY: 'u_opacity'
+};
 
 
 /**
@@ -26,9 +42,8 @@ class WebGLContext extends Disposable {
 
   /**
    * @param {HTMLCanvasElement} canvas Canvas.
-   * @param {WebGLRenderingContext} gl GL.
    */
-  constructor(canvas, gl) {
+  constructor(canvas) {
     super();
 
     /**
@@ -41,7 +56,7 @@ class WebGLContext extends Disposable {
      * @private
      * @type {WebGLRenderingContext}
      */
-    this.gl_ = gl;
+    this.gl_ = canvas.getContext('webgl');
 
     /**
      * @private
@@ -68,31 +83,13 @@ class WebGLContext extends Disposable {
     this.currentProgram_ = null;
 
     /**
-     * @private
-     * @type {WebGLFramebuffer}
-     */
-    this.hitDetectionFramebuffer_ = null;
-
-    /**
-     * @private
-     * @type {WebGLTexture}
-     */
-    this.hitDetectionTexture_ = null;
-
-    /**
-     * @private
-     * @type {WebGLRenderbuffer}
-     */
-    this.hitDetectionRenderbuffer_ = null;
-
-    /**
      * @type {boolean}
      */
     this.hasOESElementIndexUint = includes(WEBGL_EXTENSIONS, 'OES_element_index_uint');
 
     // use the OES_element_index_uint extension if available
     if (this.hasOESElementIndexUint) {
-      gl.getExtension('OES_element_index_uint');
+      this.gl_.getExtension('OES_element_index_uint');
     }
 
     listen(this.canvas_, ContextEventType.LOST,
@@ -100,12 +97,34 @@ class WebGLContext extends Disposable {
     listen(this.canvas_, ContextEventType.RESTORED,
       this.handleWebGLContextRestored, this);
 
+    /**
+     * @private
+     * @type {import("../transform.js").Transform}
+     */
+    this.projectionMatrix_ = createTransform();
+
+    /**
+     * @private
+     * @type {import("../transform.js").Transform}
+     */
+    this.offsetRotateMatrix_ = createTransform();
+
+    /**
+     * @private
+     * @type {import("../transform.js").Transform}
+     */
+    this.offsetScaleMatrix_ = createTransform();
+
+    this.tmpMat4_ = create();
+
+    this.locations_ = {};
   }
 
   /**
    * Just bind the buffer if it's in the cache. Otherwise create
    * the WebGL buffer, bind it, populate it, and add an entry to
    * the cache.
+   * TODO: improve this, the logic is unclear: we want A/ to bind a buffer and B/ to flush data in it
    * @param {number} target Target.
    * @param {import("./Buffer.js").default} buf Buffer.
    */
@@ -163,11 +182,22 @@ class WebGLContext extends Disposable {
       for (const key in this.shaderCache_) {
         gl.deleteShader(this.shaderCache_[key]);
       }
-      // delete objects for hit-detection
-      gl.deleteFramebuffer(this.hitDetectionFramebuffer_);
-      gl.deleteRenderbuffer(this.hitDetectionRenderbuffer_);
-      gl.deleteTexture(this.hitDetectionTexture_);
     }
+  }
+
+  /**
+   * @protected
+   * @param {number} start Start index.
+   * @param {number} end End index.
+   */
+  drawElements(start, end) {
+    const elementType = this.hasOESElementIndexUint ?
+      UNSIGNED_INT : UNSIGNED_SHORT;
+    const elementSize = this.hasOESElementIndexUint ? 4 : 2;
+
+    const numItems = end - start;
+    const offsetInBytes = start * elementSize;
+    this.getGL().drawElements(TRIANGLES, numItems, elementType, offsetInBytes);
   }
 
   /**
@@ -184,17 +214,6 @@ class WebGLContext extends Disposable {
    */
   getGL() {
     return this.gl_;
-  }
-
-  /**
-   * Get the frame buffer for hit detection.
-   * @return {WebGLFramebuffer} The hit detection frame buffer.
-   */
-  getHitDetectionFramebuffer() {
-    if (!this.hitDetectionFramebuffer_) {
-      this.initHitDetectionFramebuffer_();
-    }
-    return this.hitDetectionFramebuffer_;
   }
 
   /**
@@ -240,6 +259,48 @@ class WebGLContext extends Disposable {
     }
   }
 
+
+  /**
+   * Sets the matrices uniforms for a given frame state
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   */
+  applyFrameState(frameState) {
+    const size = frameState.size;
+    const rotation = frameState.viewState.rotation;
+    const resolution = frameState.viewState.resolution;
+    const center = frameState.viewState.center;
+
+    // set the "uniform" values (coordinates 0,0 are the center of the view
+    const projectionMatrix = resetTransform(this.projectionMatrix_);
+    scaleTransform(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
+    rotateTransform(projectionMatrix, -rotation);
+    translateTransform(projectionMatrix, -center[0], -center[1]);
+
+    const offsetScaleMatrix = resetTransform(this.offsetScaleMatrix_);
+    scaleTransform(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
+
+    const offsetRotateMatrix = resetTransform(this.offsetRotateMatrix_);
+    if (rotation !== 0) {
+      rotateTransform(offsetRotateMatrix, -rotation);
+    }
+
+    this.getGL().uniformMatrix4fv(locations.u_projectionMatrix, false,
+      fromTransform(this.tmpMat4_, projectionMatrix));
+    this.getGL().uniformMatrix4fv(locations.u_offsetScaleMatrix, false,
+      fromTransform(this.tmpMat4_, offsetScaleMatrix));
+    this.getGL().uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
+      fromTransform(this.tmpMat4_, offsetRotateMatrix));
+  }
+
+  /**
+   * Give a value for a standard float uniform
+   * @param {string} uniform Uniform name
+   * @param {number} value Value
+   */
+  setUniformFloatValue(uniform, value) {
+    this.getGL().uniformMatrix4fv(this.locations_[uniform], false, value);
+  }
+
   /**
    * FIXME empty description for jsdoc
    */
@@ -248,42 +309,12 @@ class WebGLContext extends Disposable {
     clear(this.shaderCache_);
     clear(this.programCache_);
     this.currentProgram_ = null;
-    this.hitDetectionFramebuffer_ = null;
-    this.hitDetectionTexture_ = null;
-    this.hitDetectionRenderbuffer_ = null;
   }
 
   /**
    * FIXME empty description for jsdoc
    */
   handleWebGLContextRestored() {
-  }
-
-  /**
-   * Creates a 1x1 pixel framebuffer for the hit-detection.
-   * @private
-   */
-  initHitDetectionFramebuffer_() {
-    const gl = this.gl_;
-    const framebuffer = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-
-    const texture = createEmptyTexture(gl, 1, 1);
-    const renderbuffer = gl.createRenderbuffer();
-    gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 1, 1);
-    gl.framebufferTexture2D(
-      gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT,
-      gl.RENDERBUFFER, renderbuffer);
-
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-    this.hitDetectionFramebuffer_ = framebuffer;
-    this.hitDetectionTexture_ = texture;
-    this.hitDetectionRenderbuffer_ = renderbuffer;
   }
 
   /**
