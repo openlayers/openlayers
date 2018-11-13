@@ -140,16 +140,6 @@ class CanvasTextReplay extends CanvasReplay {
   }
 
   /**
-   * @inheritdoc
-   */
-  replaceInstructions(instructions) {
-    super.replaceInstructions(instructions);
-    this.textStates = instructions.textStates;
-    this.fillStates = instructions.fillStates;
-    this.strokeStates = instructions.strokeStates;
-  }
-
-  /**
    * @inheritDoc
    */
   drawText(geometry, feature) {

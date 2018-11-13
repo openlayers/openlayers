@@ -11,6 +11,7 @@ import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
 import RenderEventType from '../../render/EventType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
 import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
+import InstructionsGroupExecutor from '../../render/canvas/InstructionsGroupExecutor.js';
 import CanvasLayerRenderer from './Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 
@@ -66,7 +67,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../render/canvas/ReplayGroup.js").default}
+     * @type {import("../../render/canvas/InstructionsGroupExecutor").default}
      */
     this.replayGroup_ = null;
 
@@ -482,7 +483,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     const replayGroupInstructions = replayGroup.finish();
-    const renderingReplayGroup = new CanvasReplayGroup(
+    const renderingReplayGroup = new InstructionsGroupExecutor(
       getRenderTolerance(resolution, pixelRatio), extent, resolution,
       pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
     renderingReplayGroup.replaceInstructions(replayGroupInstructions);

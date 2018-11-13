@@ -24,6 +24,7 @@ import {
   scale as scaleTransform,
   translate as translateTransform
 } from '../../transform.js';
+import InstructionsGroupExectuor from '../../render/canvas/InstructionsGroupExecutor.js';
 
 
 /**
@@ -227,7 +228,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         }
       }
       const replayGroupInstructions = replayGroup.finish();
-      const renderingReplayGroup = new CanvasReplayGroup(0, sharedExtent, resolution,
+      const renderingReplayGroup = new InstructionsGroupExectuor(0, sharedExtent, resolution,
         pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
       renderingReplayGroup.replaceInstructions(replayGroupInstructions);
       sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), renderingReplayGroup);
