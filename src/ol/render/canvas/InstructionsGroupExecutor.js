@@ -135,7 +135,7 @@ class InstructionsGroupExectuor extends ReplayGroup {
 
   /**
    * Recreate replays and populate them using the provided instructions.
-   * @param {!Object<string, !Object<ReplayType, import("./Replay.js").SerializableInstructions>>} allInstructions The serializable instructions
+   * @param {!Object<string, !Object<ReplayType, import("./InstructionsBuilder.js").SerializableInstructions>>} allInstructions The serializable instructions
    */
   replaceInstructions(allInstructions) {
     this.replaysByZIndex_ = {};

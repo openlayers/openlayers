@@ -31,7 +31,7 @@ import {
  */
 
 
-class CanvasReplay extends VectorContext {
+class CanvasInstructionsBuilder extends VectorContext {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
@@ -501,7 +501,7 @@ class CanvasReplay extends VectorContext {
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:CanvasReplay, import("../canvas.js").FillStrokeState, (import("../../geom/Geometry.js").default|import("../Feature.js").default)):Array<*>} createFill Create fill.
+   * @param {function(this:CanvasInstructionsBuilder, import("../canvas.js").FillStrokeState, (import("../../geom/Geometry.js").default|import("../Feature.js").default)):Array<*>} createFill Create fill.
    * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    */
   updateFillStyle(state, createFill, geometry) {
@@ -516,7 +516,7 @@ class CanvasReplay extends VectorContext {
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:CanvasReplay, import("../canvas.js").FillStrokeState)} applyStroke Apply stroke.
+   * @param {function(this:CanvasInstructionsBuilder, import("../canvas.js").FillStrokeState)} applyStroke Apply stroke.
    */
   updateStrokeStyle(state, applyStroke) {
     const strokeStyle = state.strokeStyle;
@@ -580,4 +580,4 @@ class CanvasReplay extends VectorContext {
 }
 
 
-export default CanvasReplay;
+export default CanvasInstructionsBuilder;

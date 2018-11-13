@@ -9,7 +9,7 @@ import {transform2D} from '../../geom/flat/transform.js';
 import {isEmpty} from '../../obj.js';
 import ReplayGroup from '../ReplayGroup.js';
 import ReplayType from '../ReplayType.js';
-import CanvasReplay from './Replay.js';
+import CanvasInstructionsBuilder from './InstructionsBuilder.js';
 import CanvasImageReplay from './ImageReplay.js';
 import CanvasLineStringReplay from './LineStringReplay.js';
 import CanvasPolygonReplay from './PolygonReplay.js';
@@ -19,11 +19,11 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 
 
 /**
- * @type {Object<ReplayType, typeof CanvasReplay>}
+ * @type {Object<ReplayType, typeof CanvasInstructionsBuilder>}
  */
 const BATCH_CONSTRUCTORS = {
   'Circle': CanvasPolygonReplay,
-  'Default': CanvasReplay,
+  'Default': CanvasInstructionsBuilder,
   'Image': CanvasImageReplay,
   'LineString': CanvasLineStringReplay,
   'Polygon': CanvasPolygonReplay,
@@ -102,7 +102,7 @@ class CanvasReplayGroup extends ReplayGroup {
 
     /**
      * @private
-     * @type {!Object<string, !Object<ReplayType, CanvasReplay>>}
+     * @type {!Object<string, !Object<ReplayType, CanvasInstructionsBuilder>>}
      */
     this.replaysByZIndex_ = {};
 
@@ -152,7 +152,7 @@ class CanvasReplayGroup extends ReplayGroup {
 
   /**
    * Recreate replays and populate them using the provided instructions.
-   * @param {!Object<string, !Object<ReplayType, import("./Replay.js").SerializableInstructions>>} allInstructions The serializable instructions
+   * @param {!Object<string, !Object<ReplayType, import("./InstructionsBuilder.js").SerializableInstructions>>} allInstructions The serializable instructions
    */
   replaceInstructions(allInstructions) {
     this.replaysByZIndex_ = {};
@@ -183,7 +183,7 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @return {!Object<string, !Object<ReplayType, import("./Replay.js").SerializableInstructions>>} The serializable instructions
+   * @return {!Object<string, !Object<ReplayType, import("./InstructionsBuilder.js").SerializableInstructions>>} The serializable instructions
    */
   finish() {
     const replaysInstructions = {};
@@ -359,7 +359,7 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @return {Object<string, Object<ReplayType, CanvasReplay>>} Replays.
+   * @return {Object<string, Object<ReplayType, CanvasInstructionsBuilder>>} Replays.
    */
   getReplays() {
     return this.replaysByZIndex_;

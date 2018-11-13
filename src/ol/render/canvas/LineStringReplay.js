@@ -2,9 +2,9 @@
  * @module ol/render/canvas/LineStringReplay
  */
 import CanvasInstruction, {strokeInstruction, beginPathInstruction} from './Instruction.js';
-import CanvasReplay from './Replay.js';
+import CanvasInstructionsBuilder from './InstructionsBuilder.js';
 
-class CanvasLineStringReplay extends CanvasReplay {
+class CanvasLineStringReplay extends CanvasInstructionsBuilder {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
