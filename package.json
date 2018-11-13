@@ -36,6 +36,7 @@
     "url": "https://github.com/openlayers/openlayers/issues"
   },
   "dependencies": {
+    "mapbox-gl": "^0.51.0",
     "pbf": "3.1.0",
     "pixelworks": "1.1.0",
     "rbush": "2.0.2"
