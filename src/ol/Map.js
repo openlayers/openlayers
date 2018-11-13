@@ -5,7 +5,7 @@ import PluggableMap from './PluggableMap.js';
 import {defaults as defaultControls} from './control/util.js';
 import {defaults as defaultInteractions} from './interaction.js';
 import {assign} from './obj.js';
-import CanvasMapRenderer from './renderer/canvas/Map.js';
+import CompositeMapRenderer from './renderer/Composite.js';
 
 /**
  * @classdesc
@@ -76,7 +76,7 @@ class Map extends PluggableMap {
   }
 
   createRenderer() {
-    return new CanvasMapRenderer(this);
+    return new CompositeMapRenderer(this);
   }
 }
 
