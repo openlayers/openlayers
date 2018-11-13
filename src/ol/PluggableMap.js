@@ -1177,8 +1177,6 @@ class PluggableMap extends BaseObject {
    * @private
    */
   renderFrame_(time) {
-    window.benchmarking && console.timeStamp('framestart');
-
     let viewState;
 
     const size = this.getSize();
@@ -1216,6 +1214,8 @@ class PluggableMap extends BaseObject {
         wantedTiles: {}
       });
     }
+
+    this.dispatchEvent(new MapEvent(MapEventType.PRERENDER, this, frameState));
 
     if (frameState) {
       frameState.extent = getForViewAndSize(viewState.center,
@@ -1257,7 +1257,6 @@ class PluggableMap extends BaseObject {
 
     setTimeout(this.handlePostRender.bind(this), 0);
 
-    window.benchmarking && console.timeStamp('frameend');
   }
 
   /**

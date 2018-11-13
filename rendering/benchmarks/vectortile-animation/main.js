@@ -332,6 +332,13 @@ const map = new Map({
   })
 });
 
+map.on('prerender', () => {
+  console.timeStamp('framestart');
+});
+map.on('postrender', () => {
+  console.timeStamp('frameend');
+});
+
 const style = createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text);
 
 window.startIteration = () => {

@@ -8,6 +8,13 @@
 export default {
 
   /**
+   * Triggered right before a map frame begins rendering.
+   * @event module:ol/MapEvent~MapEvent#prerender
+   * @api
+   */
+  PRERENDER: 'prerender',
+
+  /**
    * Triggered after a map frame is rendered.
    * @event module:ol/MapEvent~MapEvent#postrender
    * @api
