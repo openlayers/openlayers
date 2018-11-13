@@ -1,7 +1,7 @@
 import Feature from '../../../../../src/ol/Feature.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import CanvasTextReplay from '../../../../../src/ol/render/canvas/TextReplay.js';
+import CanvasTextReplay from '../../../../../src/ol/render/canvas/TextBuilder.js';
 import Text from '../../../../../src/ol/style/Text.js';
 
 describe('ol.render.canvas.TextReplay', function() {

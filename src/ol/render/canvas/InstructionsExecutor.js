@@ -1095,7 +1095,7 @@ class InstructionsExecutor {
           const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
           const textLength = measure(text);
           if (overflow || textLength <= pathLength) {
-            /** @type {import("./TextReplay.js").default} */
+            /** @type {import("./TextBuilder.js").default} */
             const textReplay = /** @type {?} */ (this);
             const textAlign = textReplay.textStates[textKey].textAlign;
             const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];

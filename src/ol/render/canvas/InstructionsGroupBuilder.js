@@ -10,10 +10,10 @@ import {isEmpty} from '../../obj.js';
 import ReplayGroup from '../ReplayGroup.js';
 import ReplayType from '../ReplayType.js';
 import CanvasInstructionsBuilder from './InstructionsBuilder.js';
-import CanvasImageReplay from './ImageReplay.js';
-import CanvasLineStringReplay from './LineStringReplay.js';
-import CanvasPolygonReplay from './PolygonReplay.js';
-import CanvasTextReplay from './TextReplay.js';
+import CanvasImageReplay from './ImageBuilder.js';
+import CanvasLineStringReplay from './LineStringBuilder.js';
+import CanvasPolygonReplay from './PolygonBuilder.js';
+import CanvasTextReplay from './TextBuilder.js';
 import {ORDER} from '../replay.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 

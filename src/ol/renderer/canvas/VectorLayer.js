@@ -10,7 +10,7 @@ import rbush from 'rbush';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
 import RenderEventType from '../../render/EventType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
-import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
+import CanvasReplayGroup from '../../render/canvas/InstructionsGroupBuilder.js';
 import InstructionsGroupExecutor from '../../render/canvas/InstructionsGroupExecutor.js';
 import CanvasLayerRenderer from './Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
@@ -503,7 +503,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
-   * @param {import("../../render/canvas/ReplayGroup.js").default} replayGroup Replay group.
+   * @param {import("../../render/canvas/InstructionsGroupBuilder.js").default} replayGroup Replay group.
    * @return {boolean} `true` if an image is loading.
    */
   renderFeature(feature, resolution, pixelRatio, styles, replayGroup) {

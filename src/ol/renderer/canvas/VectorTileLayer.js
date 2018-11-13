@@ -13,7 +13,7 @@ import {equivalent as equivalentProjection} from '../../proj.js';
 import Units from '../../proj/Units.js';
 import ReplayType from '../../render/ReplayType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
-import CanvasReplayGroup, {replayDeclutter} from '../../render/canvas/ReplayGroup.js';
+import CanvasReplayGroup, {replayDeclutter} from '../../render/canvas/InstructionsGroupBuilder.js';
 import {ORDER} from '../../render/replay.js';
 import CanvasTileLayerRenderer from './TileLayer.js';
 import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
@@ -424,7 +424,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    * @param {number} squaredTolerance Squared tolerance.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
-   * @param {import("../../render/canvas/ReplayGroup.js").default} replayGroup Replay group.
+   * @param {import("../../render/canvas/InstructionsGroupBuilder.js").default} replayGroup Replay group.
    * @return {boolean} `true` if an image is loading.
    */
   renderFeature(feature, squaredTolerance, styles, replayGroup) {
