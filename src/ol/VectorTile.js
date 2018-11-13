@@ -1,6 +1,7 @@
 /**
  * @module ol/VectorTile
  */
+import {containsExtent} from './extent.js';
 import {getUid} from './util.js';
 import Tile from './Tile.js';
 import TileState from './TileState.js';
@@ -145,6 +146,31 @@ class VectorTile extends Tile {
    */
   getReplayGroup(layer, key) {
     return this.replayGroups_[getUid(layer) + ',' + key];
+  }
+
+  /**
+   * Get the best matching lower resolution replay group for a given zoom and extent.
+   * @param {import("./layer/Layer").default} layer Layer.
+   * @param {number} zoom Zoom.
+   * @param {import("./extent").Extent} extent Extent.
+   * @return {import("./render/ReplayGroup.js").default} Replay groups.
+   */
+  getLowResReplayGroup(layer, zoom, extent) {
+    const layerId = getUid(layer);
+    let bestZoom = 0;
+    let replayGroup = null;
+    for (const key in this.replayGroups_) {
+      const keyData = key.split(',');
+      const candidateZoom = Number(keyData[1]);
+      if (keyData[0] === layerId && candidateZoom <= zoom) {
+        const candidate = this.replayGroups_[key];
+        if (containsExtent(candidate.getMaxExtent(), extent) && candidateZoom > bestZoom) {
+          replayGroup = candidate;
+          bestZoom = candidateZoom;
+        }
+      }
+    }
+    return replayGroup;
   }
 
   /**

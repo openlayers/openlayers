@@ -312,6 +312,13 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
+   * @return {import("../../extent.js").Extent} The extent of the replay group.
+   */
+  getMaxExtent() {
+    return this.maxExtent_;
+  }
+
+  /**
    * @inheritDoc
    */
   getReplay(zIndex, replayType) {

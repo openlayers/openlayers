@@ -103,11 +103,17 @@ class VectorImageTile extends Tile {
      */
     this.sourceTileListenerKeys_ = [];
 
+    /**
+     * Use only source tiles that are loaded already
+     * @type {boolean}
+     */
+    this.useLoadedOnly = zoom != tileCoord[0];
+
     if (urlTileCoord) {
       const extent = this.extent = tileGrid.getTileCoordExtent(urlTileCoord);
       const resolution = tileGrid.getResolution(zoom);
       const sourceZ = sourceTileGrid.getZForResolution(resolution);
-      const useLoadedOnly = zoom != tileCoord[0];
+      const useLoadedOnly = this.useLoadedOnly;
       let loadCount = 0;
       sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
         let sharedExtent = getIntersection(extent,
