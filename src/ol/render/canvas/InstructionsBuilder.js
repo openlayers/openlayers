@@ -25,9 +25,9 @@ import {
  * @property {Array<*>} instructions The rendering instructions.
  * @property {Array<*>} hitDetectionInstructions The rendering hit detection instructions.
  * @property {Array<number>} coordinates The array of all coordinates.
- * @property {!Object<string, import("../canvas.js").TextState>} textStates The text states (decluttering).
- * @property {!Object<string, import("../canvas.js").FillState>} fillStates The fill states (decluttering).
- * @property {!Object<string, import("../canvas.js").StrokeState>} strokeStates The stroke states (decluttering).
+ * @property {!Object<string, import("../canvas.js").TextState>} [textStates] The text states (decluttering).
+ * @property {!Object<string, import("../canvas.js").FillState>} [fillStates] The fill states (decluttering).
+ * @property {!Object<string, import("../canvas.js").StrokeState>} [strokeStates] The stroke states (decluttering).
  */
 
 
@@ -306,7 +306,7 @@ class CanvasInstructionsBuilder extends VectorContext {
   }
 
   /**
-   * @return {Object} the serializable instructions.
+   * @return {SerializableInstructions} the serializable instructions.
    */
   finish() {
     return {
