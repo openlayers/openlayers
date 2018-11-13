@@ -37,7 +37,7 @@ class CompositeMapRenderer extends MapRenderer {
     style.width = '100%';
     style.height = '100%';
 
-    this.element_.className = CLASS_UNSELECTABLE;
+    this.element_.className = CLASS_UNSELECTABLE + ' ol-layers';
 
     const container = map.getViewport();
     container.insertBefore(this.element_, container.firstChild || null);
