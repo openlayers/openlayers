@@ -39,6 +39,12 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
      */
     this.hitCanvasContext_ = null;
 
+    /**
+     * @protected
+     * @type {CanvasRenderingContext2D}
+     */
+    this.layerContext = createCanvasContext2D();
+    this.layerContext.canvas.style.position = 'absolute';
   }
 
   /**
@@ -88,6 +94,48 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
   }
 
   /**
+   * @inheritDoc
+   */
+  renderFrame(frameState, layerState) {
+
+    this.preRender(frameState);
+    const image = this.getImage();
+    if (image) {
+
+      // clipped rendering if layer extent is set
+      const extent = layerState.extent;
+      const clipped = extent !== undefined &&
+          !containsExtent(extent, frameState.extent) &&
+          intersects(extent, frameState.extent);
+      if (clipped) {
+        this.clip(this.layerContext, frameState, /** @type {import("../../extent.js").Extent} */ (extent));
+      }
+
+      const imageTransform = this.getImageTransform();
+
+      // for performance reasons, context.setTransform is only used
+      // when the view is rotated. see http://jsperf.com/canvas-transform
+      const dx = imageTransform[4];
+      const dy = imageTransform[5];
+      const dw = image.width * imageTransform[0];
+      const dh = image.height * imageTransform[3];
+
+      if (dw >= 0.5 && dh >= 0.5) {
+        this.clear(frameState);
+        this.layerContext.drawImage(image, 0, 0, +image.width, +image.height,
+          Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
+      }
+
+      if (clipped) {
+        this.layerContext.restore();
+      }
+    }
+
+    this.postRender(frameState, layerState);
+    return this.layerContext.canvas;
+  }
+
+  /**
    * @abstract
    * @return {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} Canvas.
    */
@@ -101,6 +149,25 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
    */
   getImageTransform() {
     return abstract();
+  }
+
+  /**
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   */
+  clear(frameState) {
+    const pixelRatio = frameState.pixelRatio;
+    const canvas = this.layerContext.canvas;
+    const width = Math.round(frameState.size[0] * pixelRatio);
+    const height = Math.round(frameState.size[1] * pixelRatio);
+
+    if (canvas.width != width || canvas.height != height) {
+      canvas.width = width;
+      canvas.height = height;
+      canvas.style.width = (width / pixelRatio) + 'px';
+      canvas.style.height = (height / pixelRatio) + 'px';
+    } else {
+      this.layerContext.clearRect(0, 0, width, height);
+    }
   }
 
   /**
