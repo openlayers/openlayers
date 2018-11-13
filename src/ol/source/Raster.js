@@ -441,6 +441,15 @@ function getImageData(renderer, frameState, layerState) {
   }
   const width = frameState.size[0];
   const height = frameState.size[1];
+  const element = renderer.renderFrame(frameState, layerState);
+  if (!(element instanceof HTMLCanvasElement)) {
+    throw new Error('Unsupported rendered element: ' + element);
+  }
+  if (element.width === width && element.height === height) {
+    const context = element.getContext('2d');
+    return context.getImageData(0, 0, width, height);
+  }
+
   if (!sharedContext) {
     sharedContext = createCanvasContext2D(width, height);
   } else {
@@ -451,7 +460,7 @@ function getImageData(renderer, frameState, layerState) {
       sharedContext.clearRect(0, 0, width, height);
     }
   }
-  renderer.composeFrame(frameState, layerState, sharedContext);
+  sharedContext.drawImage(element, 0, 0, width, height);
   return sharedContext.getImageData(0, 0, width, height);
 }
 
