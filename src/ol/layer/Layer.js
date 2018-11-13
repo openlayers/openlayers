@@ -173,6 +173,20 @@ class Layer extends BaseLayer {
   }
 
   /**
+   * In charge to manage the rendering of the layer. One layer type is
+   * bounded with one layer renderer.
+   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @return {HTMLElement} The rendered element.
+   */
+  render(frameState) {
+    const layerRenderer = this.getRenderer();
+    const layerState = this.getLayerState();
+    if (layerRenderer.prepareFrame(frameState, layerState)) {
+      return layerRenderer.renderFrame(frameState, layerState);
+    }
+  }
+
+  /**
    * Sets the layer to be rendered on top of other layers on a map. The map will
    * not manage this layer in its layers collection, and the callback in
    * {@link module:ol/Map#forEachLayerAtPixel} will receive `null` as layer. This

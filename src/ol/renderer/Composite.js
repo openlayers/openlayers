@@ -96,11 +96,7 @@ class CompositeMapRenderer extends MapRenderer {
       }
 
       const layer = layerState.layer;
-      const layerRenderer = this.getLayerRenderer(layer);
-      if (layerRenderer.prepareFrame(frameState, layerState)) {
-        const element = layerRenderer.renderFrame(frameState, layerState);
-        this.children_.push(element);
-      }
+      this.children_.push(layer.render(frameState));
     }
 
     replaceChildren(this.element_, this.children_);
