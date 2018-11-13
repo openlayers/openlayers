@@ -4,7 +4,7 @@
 import ImageCanvas from '../../ImageCanvas.js';
 import ViewHint from '../../ViewHint.js';
 import {equals} from '../../array.js';
-import {getHeight, getWidth, isEmpty} from '../../extent.js';
+import {getHeight, getWidth, isEmpty, scaleFromCenter} from '../../extent.js';
 import {assign} from '../../obj.js';
 import CanvasImageLayerRenderer from './ImageLayer.js';
 import CanvasVectorLayerRenderer from './VectorLayer.js';
@@ -33,6 +33,12 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
      */
     this.vectorRenderer_ = new CanvasVectorLayerRenderer(layer);
 
+    /**
+     * @private
+     * @type {number}
+     */
+    this.layerImageRatio_ = layer.getImageRatio();
+
   }
 
   /**
@@ -53,7 +59,11 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
 
     const hints = frameState.viewHints;
     const vectorRenderer = this.vectorRenderer_;
-    const renderedExtent = frameState.extent;
+    let renderedExtent = frameState.extent;
+    if (this.layerImageRatio_ !== 1) {
+      renderedExtent = renderedExtent.slice(0);
+      scaleFromCenter(renderedExtent, this.layerImageRatio_);
+    }
 
     if (!hints[ViewHint.ANIMATING] && !hints[ViewHint.INTERACTING] && !isEmpty(renderedExtent)) {
       let skippedFeatures = this.skippedFeatures_;

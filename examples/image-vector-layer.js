@@ -21,6 +21,7 @@ const style = new Style({
 const map = new Map({
   layers: [
     new VectorImageLayer({
+      imageRatio: 2,
       source: new VectorSource({
         url: 'data/geojson/countries.geojson',
         format: new GeoJSON()
