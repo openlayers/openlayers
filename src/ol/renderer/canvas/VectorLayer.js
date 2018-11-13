@@ -117,7 +117,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const clipExtent = layerState.extent;
     const clipped = clipExtent !== undefined;
     if (clipped) {
-      this.clip(context, frameState, /** @type {import("../../extent.js").Extent} */ (clipExtent));
+      this.clip(context, frameState, clipExtent);
     }
     const replayGroup = this.replayGroup_;
     if (replayGroup && !replayGroup.isEmpty()) {
@@ -250,7 +250,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const clipExtent = layerState.extent;
     const clipped = clipExtent !== undefined;
     if (clipped) {
-      this.clip(context, frameState, /** @type {import("../../extent.js").Extent} */ (clipExtent));
+      this.clip(context, frameState, clipExtent);
     }
 
     if (this.declutterTree_) {
