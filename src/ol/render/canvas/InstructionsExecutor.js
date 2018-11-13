@@ -24,10 +24,7 @@ import {
 /// Imports copied from TextReplay
 import {asColorLike} from '../../colorlike.js';
 import {createCanvasContext2D} from '../../dom.js';
-import {matchingChunk} from '../../geom/flat/straightchunk.js';
-import GeometryType from '../../geom/GeometryType.js';
 import {labelCache, measureTextWidth, defaultTextAlign, measureTextHeight, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
-import TextPlacement from '../../style/TextPlacement.js';
 
 
 /**
@@ -277,126 +274,6 @@ class CanvasInstructionsExecutor {
     labelCache.prune();
   }
 
-
-  /**
-   * @inheritDoc
-   */
-  drawText(geometry, feature) {
-    const fillState = this.textFillState_;
-    const strokeState = this.textStrokeState_;
-    const textState = this.textState_;
-    if (this.text_ === '' || !textState || (!fillState && !strokeState)) {
-      return;
-    }
-
-    let begin = this.coordinates.length;
-
-    const geometryType = geometry.getType();
-    let flatCoordinates = null;
-    let end = 2;
-    let stride = 2;
-    let i, ii;
-
-    if (textState.placement === TextPlacement.LINE) {
-      if (!intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
-        return;
-      }
-      let ends;
-      flatCoordinates = geometry.getFlatCoordinates();
-      stride = geometry.getStride();
-      if (geometryType == GeometryType.LINE_STRING) {
-        ends = [flatCoordinates.length];
-      } else if (geometryType == GeometryType.MULTI_LINE_STRING) {
-        ends = geometry.getEnds();
-      } else if (geometryType == GeometryType.POLYGON) {
-        ends = geometry.getEnds().slice(0, 1);
-      } else if (geometryType == GeometryType.MULTI_POLYGON) {
-        const endss = geometry.getEndss();
-        ends = [];
-        for (i = 0, ii = endss.length; i < ii; ++i) {
-          ends.push(endss[i][0]);
-        }
-      }
-      this.beginGeometry(geometry, feature);
-      const textAlign = textState.textAlign;
-      let flatOffset = 0;
-      let flatEnd;
-      for (let o = 0, oo = ends.length; o < oo; ++o) {
-        if (textAlign == undefined) {
-          const range = matchingChunk(textState.maxAngle, flatCoordinates, flatOffset, ends[o], stride);
-          flatOffset = range[0];
-          flatEnd = range[1];
-        } else {
-          flatEnd = ends[o];
-        }
-        for (i = flatOffset; i < flatEnd; i += stride) {
-          this.coordinates.push(flatCoordinates[i], flatCoordinates[i + 1]);
-        }
-        end = this.coordinates.length;
-        flatOffset = ends[o];
-        this.drawChars_(begin, end, this.declutterGroup_);
-        begin = end;
-      }
-      this.endGeometry(geometry, feature);
-
-    } else {
-      const label = this.getImage(this.text_, this.textKey_, this.fillKey_, this.strokeKey_);
-      const width = label.width / this.pixelRatio;
-      switch (geometryType) {
-        case GeometryType.POINT:
-        case GeometryType.MULTI_POINT:
-          flatCoordinates = geometry.getFlatCoordinates();
-          end = flatCoordinates.length;
-          break;
-        case GeometryType.LINE_STRING:
-          flatCoordinates = /** @type {import("../../geom/LineString.js").default} */ (geometry).getFlatMidpoint();
-          break;
-        case GeometryType.CIRCLE:
-          flatCoordinates = /** @type {import("../../geom/Circle.js").default} */ (geometry).getCenter();
-          break;
-        case GeometryType.MULTI_LINE_STRING:
-          flatCoordinates = /** @type {import("../../geom/MultiLineString.js").default} */ (geometry).getFlatMidpoints();
-          end = flatCoordinates.length;
-          break;
-        case GeometryType.POLYGON:
-          flatCoordinates = /** @type {import("../../geom/Polygon.js").default} */ (geometry).getFlatInteriorPoint();
-          if (!textState.overflow && flatCoordinates[2] / this.resolution < width) {
-            return;
-          }
-          stride = 3;
-          break;
-        case GeometryType.MULTI_POLYGON:
-          const interiorPoints = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getFlatInteriorPoints();
-          flatCoordinates = [];
-          for (i = 0, ii = interiorPoints.length; i < ii; i += 3) {
-            if (textState.overflow || interiorPoints[i + 2] / this.resolution >= width) {
-              flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
-            }
-          }
-          end = flatCoordinates.length;
-          if (end == 0) {
-            return;
-          }
-          break;
-        default:
-      }
-      end = this.appendFlatCoordinates(flatCoordinates, 0, end, stride, false, false);
-      if (textState.backgroundFill || textState.backgroundStroke) {
-        this.setFillStrokeStyle(textState.backgroundFill, textState.backgroundStroke);
-        if (textState.backgroundFill) {
-          this.updateFillStyle(this.state, this.createFill, geometry);
-          this.hitDetectionInstructions.push(this.createFill(this.state, geometry));
-        }
-        if (textState.backgroundStroke) {
-          this.updateStrokeStyle(this.state, this.applyStroke);
-          this.hitDetectionInstructions.push(this.createStroke(this.state));
-        }
-      }
-      this.beginGeometry(geometry, feature);
-      this.drawTextImage_(label, begin, end);
-      this.endGeometry(geometry, feature);
-    }
-  }
 
   /**
    * @param {string} text Text.
