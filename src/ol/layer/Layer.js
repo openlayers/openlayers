@@ -224,23 +224,21 @@ class Layer extends BaseLayer {
 
   /**
    * Get the renderer for this layer.
-   * @param {import("../renderer/Map.js").default} mapRenderer The map renderer.
    * @return {import("../renderer/Layer.js").default} The layer renderer.
    */
-  getRenderer(mapRenderer) {
+  getRenderer() {
     if (!this.renderer_) {
-      this.renderer_ = this.createRenderer(mapRenderer);
+      this.renderer_ = this.createRenderer();
     }
     return this.renderer_;
   }
 
   /**
    * Create a renderer for this layer.
-   * @param {import("../renderer/Map.js").default} mapRenderer The map renderer.
    * @return {import("../renderer/Layer.js").default} A layer renderer.
    * @protected
    */
-  createRenderer(mapRenderer) {
+  createRenderer() {
     return null;
   }
 
