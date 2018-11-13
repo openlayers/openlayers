@@ -10,7 +10,7 @@ import rbush from 'rbush';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
 import RenderEventType from '../../render/EventType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
-import CanvasReplayGroup from '../../render/canvas/InstructionsGroupBuilder.js';
+import CanvasInstructionsGroupBuilder from '../../render/canvas/InstructionsGroupBuilder.js';
 import InstructionsGroupExecutor from '../../render/canvas/InstructionsGroupExecutor.js';
 import CanvasLayerRenderer from './Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
@@ -444,7 +444,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     this.dirty_ = false;
 
-    const replayGroup = new CanvasReplayGroup(
+    const replayGroup = new CanvasInstructionsGroupBuilder(
       getRenderTolerance(resolution, pixelRatio), extent, resolution,
       pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
     vectorSource.loadFeatures(extent, resolution, projection);

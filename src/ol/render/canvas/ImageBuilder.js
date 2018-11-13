@@ -1,10 +1,10 @@
 /**
- * @module ol/render/canvas/ImageReplay
+ * @module ol/render/canvas/ImageBuilder
  */
 import CanvasInstruction from './Instruction.js';
 import CanvasInstructionsBuilder from './InstructionsBuilder.js';
 
-class CanvasImageReplay extends CanvasInstructionsBuilder {
+class CanvasImageBuilder extends CanvasInstructionsBuilder {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
@@ -214,4 +214,4 @@ class CanvasImageReplay extends CanvasInstructionsBuilder {
 }
 
 
-export default CanvasImageReplay;
+export default CanvasImageBuilder;

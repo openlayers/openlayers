@@ -1,5 +1,5 @@
 /**
- * @module ol/render/canvas/Replay
+ * @module ol/render/canvas/InstructionsBuilder
  */
 import {equals, reverseSubArray} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';

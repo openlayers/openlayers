@@ -1,5 +1,5 @@
 /**
- * @module ol/render/canvas/PolygonReplay
+ * @module ol/render/canvas/PolygonBuilder
  */
 import {asString} from '../../color.js';
 import {snap} from '../../geom/flat/simplify.js';
@@ -10,7 +10,7 @@ import CanvasInstruction, {
 import CanvasInstructionsBuilder from './InstructionsBuilder.js';
 
 
-class CanvasPolygonReplay extends CanvasInstructionsBuilder {
+class CanvasPolygonBuilder extends CanvasInstructionsBuilder {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
@@ -212,4 +212,4 @@ class CanvasPolygonReplay extends CanvasInstructionsBuilder {
 }
 
 
-export default CanvasPolygonReplay;
+export default CanvasPolygonBuilder;

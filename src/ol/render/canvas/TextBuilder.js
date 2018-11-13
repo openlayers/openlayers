@@ -1,5 +1,5 @@
 /**
- * @module ol/render/canvas/TextReplay
+ * @module ol/render/canvas/TextBuilder
  */
 import {getUid} from '../../util.js';
 import {asColorLike} from '../../colorlike.js';
@@ -14,7 +14,7 @@ import CanvasInstructionsBuilder from './InstructionsBuilder.js';
 import {TEXT_ALIGN} from '../replay.js';
 import TextPlacement from '../../style/TextPlacement.js';
 
-class CanvasTextReplay extends CanvasInstructionsBuilder {
+class CanvasTextBuilder extends CanvasInstructionsBuilder {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
@@ -547,4 +547,4 @@ export function measureTextWidths(font, lines, widths) {
 }
 
 
-export default CanvasTextReplay;
+export default CanvasTextBuilder;

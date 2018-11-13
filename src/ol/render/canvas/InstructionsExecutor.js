@@ -1,5 +1,5 @@
 /**
- * @module ol/render/canvas/Replay
+ * @module ol/render/canvas/InstructionsExecutor
  */
 import {getUid} from '../../util.js';
 import {equals, reverseSubArray} from '../../array.js';
@@ -52,7 +52,7 @@ const tmpExtent = createEmpty();
 const tmpTransform = createTransform();
 
 
-class InstructionsExecutor {
+class CanvasInstructionsExecutor {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
@@ -1344,7 +1344,7 @@ class InstructionsExecutor {
 }
 
 
-export default InstructionsExecutor;
+export default CanvasInstructionsExecutor;
 
 
 /////////////// Below is code copied from TextReplay /////////////////

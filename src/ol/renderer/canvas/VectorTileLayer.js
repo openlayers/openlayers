@@ -13,7 +13,7 @@ import {equivalent as equivalentProjection} from '../../proj.js';
 import Units from '../../proj/Units.js';
 import ReplayType from '../../render/ReplayType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
-import CanvasReplayGroup, {replayDeclutter} from '../../render/canvas/InstructionsGroupBuilder.js';
+import CanvasInstructionsGroupBuilder, {replayDeclutter} from '../../render/canvas/InstructionsGroupBuilder.js';
 import {ORDER} from '../../render/replay.js';
 import CanvasTileLayerRenderer from './TileLayer.js';
 import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
@@ -187,7 +187,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         sourceTile.setProjection(projection);
       }
       replayState.dirty = false;
-      const replayGroup = new CanvasReplayGroup(0, sharedExtent, resolution,
+      const replayGroup = new CanvasInstructionsGroupBuilder(0, sharedExtent, resolution,
         pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
       const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
@@ -263,7 +263,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         if (sourceTile.getState() != TileState.LOADED) {
           continue;
         }
-        const replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer,
+        const replayGroup = /** @type {CanvasInstructionsGroupBuilder} */ (sourceTile.getReplayGroup(layer,
           tile.tileCoord.toString()));
         found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
           /**
@@ -371,7 +371,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           if (sourceTile.getState() != TileState.LOADED) {
             continue;
           }
-          const replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer, tileCoord.toString()));
+          const replayGroup = /** @type {CanvasInstructionsGroupBuilder} */ (sourceTile.getReplayGroup(layer, tileCoord.toString()));
           if (!replayGroup || !replayGroup.hasReplays(replayTypes)) {
             // sourceTile was not yet loaded when this.createReplayGroup_() was
             // called, or it has no replays of the types we want to render
@@ -478,7 +478,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         const transform = resetTransform(this.tmpTransform_);
         scaleTransform(transform, pixelScale, -pixelScale);
         translateTransform(transform, -tileExtent[0], -tileExtent[3]);
-        const replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer,
+        const replayGroup = /** @type {CanvasInstructionsGroupBuilder} */ (sourceTile.getReplayGroup(layer,
           tile.tileCoord.toString()));
         replayGroup.replay(context, transform, 0, {}, true, replays);
       }

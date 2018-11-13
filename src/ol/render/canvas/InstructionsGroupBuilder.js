@@ -1,5 +1,5 @@
 /**
- * @module ol/render/canvas/ReplayGroup
+ * @module ol/render/canvas/InstructionsGroupBuilder
  */
 
 import {numberSafeCompareFunction} from '../../array.js';
@@ -10,10 +10,10 @@ import {isEmpty} from '../../obj.js';
 import ReplayGroup from '../ReplayGroup.js';
 import ReplayType from '../ReplayType.js';
 import CanvasInstructionsBuilder from './InstructionsBuilder.js';
-import CanvasImageReplay from './ImageBuilder.js';
-import CanvasLineStringReplay from './LineStringBuilder.js';
-import CanvasPolygonReplay from './PolygonBuilder.js';
-import CanvasTextReplay from './TextBuilder.js';
+import CanvasImageBuilder from './ImageBuilder.js';
+import CanvasLineStringBuilder from './LineStringBuilder.js';
+import CanvasPolygonBuilder from './PolygonBuilder.js';
+import CanvasTextBuilder from './TextBuilder.js';
 import {ORDER} from '../replay.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
@@ -22,16 +22,16 @@ import {create as createTransform, compose as composeTransform} from '../../tran
  * @type {Object<ReplayType, typeof CanvasInstructionsBuilder>}
  */
 const BATCH_CONSTRUCTORS = {
-  'Circle': CanvasPolygonReplay,
+  'Circle': CanvasPolygonBuilder,
   'Default': CanvasInstructionsBuilder,
-  'Image': CanvasImageReplay,
-  'LineString': CanvasLineStringReplay,
-  'Polygon': CanvasPolygonReplay,
-  'Text': CanvasTextReplay
+  'Image': CanvasImageBuilder,
+  'LineString': CanvasLineStringBuilder,
+  'Polygon': CanvasPolygonBuilder,
+  'Text': CanvasTextBuilder
 };
 
 
-class CanvasReplayGroup extends ReplayGroup {
+class CanvasInstructionsGroupBuilder extends ReplayGroup {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Max extent.
@@ -528,4 +528,4 @@ export function replayDeclutter(declutterReplays, context, rotation, snapToPixel
 }
 
 
-export default CanvasReplayGroup;
+export default CanvasInstructionsGroupBuilder;

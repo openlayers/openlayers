@@ -1,5 +1,5 @@
 /**
- * @module ol/render/canvas/ReplayGroup
+ * @module ol/render/canvas/InstructionsGroupExecutor
  */
 
 import {numberSafeCompareFunction} from '../../array.js';
@@ -11,7 +11,7 @@ import ReplayGroup from '../ReplayGroup.js';
 import ReplayType from '../ReplayType.js';
 import {ORDER} from '../replay.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
-import InstructionsExecutor from './InstructionsExecutor.js';
+import CanvasInstructionsExecutor from './InstructionsExecutor.js';
 
 
 class InstructionsGroupExectuor extends ReplayGroup {
@@ -311,7 +311,7 @@ class InstructionsGroupExectuor extends ReplayGroup {
     }
     let replay = replays[replayType];
     if (replay === undefined) {
-      replay = new InstructionsExecutor(this.tolerance_, this.maxExtent_,
+      replay = new CanvasInstructionsExecutor(this.tolerance_, this.maxExtent_,
         this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
       replays[replayType] = replay;
     }
