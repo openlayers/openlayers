@@ -89,7 +89,20 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
     }
 
     this.postRender(this.layerContext, frameState, layerState);
-    return this.layerContext.canvas;
+
+    const canvas = this.layerContext.canvas;
+    const opacity = layerState.opacity;
+    if (opacity !== canvas.style.opacity) {
+      canvas.style.opacity = opacity;
+    }
+
+    const rotation = frameState.viewState.rotation;
+    const transform = 'rotate(' + rotation + 'rad)';
+    if (transform !== canvas.style.transform) {
+      canvas.style.transform = transform;
+    }
+
+    return canvas;
   }
 
   /**
