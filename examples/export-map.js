@@ -25,7 +25,7 @@ const map = new Map({
 
 document.getElementById('export-png').addEventListener('click', function() {
   map.once('rendercomplete', function() {
-    domtoimage.toPng(map.getViewport())
+    domtoimage.toPng(map.getViewport().querySelector('.ol-layers'))
       .then(function(dataURL) {
         const link = document.getElementById('image-download');
         link.href = dataURL;
