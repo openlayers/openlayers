@@ -78,6 +78,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     style.display = 'flex';
     style.alignItems = 'center';
     style.justifyContent = 'center';
+    style.width = '100%';
+    style.height = '100%';
 
     container.appendChild(baseCanvas);
     container.appendChild(overlayCanvas);
@@ -420,7 +422,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           continue;
         }
         if (!transform) {
-          transform = this.getTransform(frameState, worldOffset);
+          transform = this.getRenderTransform(frameState, width, height, worldOffset);
         }
         const currentZ = sourceTile.tileCoord[0];
         const currentClip = executorGroup.getClipCoords(transform);
