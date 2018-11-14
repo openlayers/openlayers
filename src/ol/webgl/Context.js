@@ -28,7 +28,7 @@ import {create, fromTransform} from "../vec/mat4";
 
 export const DefaultUniform = {
   PROJECTION_MATRIX: 'u_projectionMatrix',
-  SCALE_MATRIX: 'u_offsetScaleMatrix',
+  OFFSET_SCALE_MATRIX: 'u_offsetScaleMatrix',
   OFFSET_ROTATION_MATRIX: 'u_offsetRotateMatrix',
   OPACITY: 'u_opacity'
 };
@@ -115,9 +115,17 @@ class WebGLContext extends Disposable {
      */
     this.offsetScaleMatrix_ = createTransform();
 
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     this.tmpMat4_ = create();
 
-    this.locations_ = {};
+    /**
+     * @private
+     * @type {Object.<string, WebGLUniformLocation>}
+     */
+    this.locations_;
   }
 
   /**
@@ -284,12 +292,21 @@ class WebGLContext extends Disposable {
       rotateTransform(offsetRotateMatrix, -rotation);
     }
 
-    this.getGL().uniformMatrix4fv(locations.u_projectionMatrix, false,
-      fromTransform(this.tmpMat4_, projectionMatrix));
-    this.getGL().uniformMatrix4fv(locations.u_offsetScaleMatrix, false,
-      fromTransform(this.tmpMat4_, offsetScaleMatrix));
-    this.getGL().uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
-      fromTransform(this.tmpMat4_, offsetRotateMatrix));
+    this.setUniformMatrixValue(DefaultUniform.PROJECTION_MATRIX, fromTransform(this.tmpMat4_, projectionMatrix));
+    this.setUniformMatrixValue(DefaultUniform.OFFSET_SCALE_MATRIX, fromTransform(this.tmpMat4_, offsetScaleMatrix));
+    this.setUniformMatrixValue(DefaultUniform.OFFSET_ROTATION_MATRIX, fromTransform(this.tmpMat4_, offsetRotateMatrix));
+  }
+
+  /**
+   * Will get the location from the shader or the cache
+   * @param {string} name Uniform name
+   * @return {WebGLUniformLocation} uniformLocation
+   */
+  getUniformLocation(name) {
+    if (!this.locations_[name]) {
+      this.locations_[name] = this.getGL().getUniformLocation(this.currentProgram_, name);
+    }
+    return this.locations_[name];
   }
 
   /**
@@ -298,7 +315,16 @@ class WebGLContext extends Disposable {
    * @param {number} value Value
    */
   setUniformFloatValue(uniform, value) {
-    this.getGL().uniformMatrix4fv(this.locations_[uniform], false, value);
+    this.getGL().uniform1f(this.getUniformLocation(uniform), value);
+  }
+
+  /**
+   * Give a value for a standard matrix4 uniform
+   * @param {string} uniform Uniform name
+   * @param {Array<number>} value Matrix value
+   */
+  setUniformMatrixValue(uniform, value) {
+    this.getGL().uniformMatrix4fv(this.getUniformLocation(uniform), false, value);
   }
 
   /**
@@ -330,6 +356,7 @@ class WebGLContext extends Disposable {
       const gl = this.getGL();
       gl.useProgram(program);
       this.currentProgram_ = program;
+      this.locations_ = {};
       return true;
     }
   }
