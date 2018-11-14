@@ -174,9 +174,9 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     let width = Math.round(frameState.size[0] * tilePixelRatio);
     let height = Math.round(frameState.size[1] * tilePixelRatio);
     if (tileResolution < viewResolution) {
-      const scale = tileResolution / tileGrid.getResolution(z + 1);
-      width *= scale;
-      height *= scale;
+      // scale canvas so it covers the viewport until new tiles come it
+      width *= 1.5;
+      height *= 1.5;
     }
 
     if (rotation) {
