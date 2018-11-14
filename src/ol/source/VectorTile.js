@@ -9,6 +9,7 @@ import {toSize} from '../size.js';
 import UrlTile from './UrlTile.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.js';
+import {workerfeatureloader} from "../worker/loader";
 
 /**
  * @typedef {Object} Options
@@ -95,7 +96,7 @@ class VectorTile extends UrlTile {
       projection: projection,
       state: options.state,
       tileGrid: tileGrid,
-      tileLoadFunction: options.tileLoadFunction ? options.tileLoadFunction : defaultLoadFunction,
+      tileLoadFunction: options.tileLoadFunction ? options.tileLoadFunction : workerfeatureloader,
       tileUrlFunction: options.tileUrlFunction,
       url: options.url,
       urls: options.urls,
