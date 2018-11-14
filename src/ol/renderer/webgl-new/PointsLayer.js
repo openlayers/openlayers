@@ -3,10 +3,11 @@
  */
 import LayerRenderer from '../Layer';
 import WebGLBuffer from '../../webgl/Buffer';
-import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER} from '../../webgl';
-import WebGLContext, {DefaultUniform} from '../../webgl/Context';
+import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../webgl';
+import WebGLContext, {DefaultAttrib, DefaultUniform} from '../../webgl/Context';
 import WebGLVertex from "../../webgl/Vertex";
 import WebGLFragment from "../../webgl/Fragment";
+import GeometryType from "../../geom/GeometryType";
 
 const VERTEX_SHADER = `
   attribute vec2 a_position;
@@ -111,10 +112,13 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     // loop on features to fill the buffer
     // vectorSource.loadFeatures(extent, resolution, projection);
     vectorSource.forEachFeature((feature) => {
-      let x = 0, y = 0, size = 0;
+      if (!feature.getGeometry() || feature.getGeometry().getType() !== GeometryType.POINT) {
+        return;
+      }
+      const geom = /** @type {import("../../geom/Point").default} */ (feature.getGeometry());
+      const x = geom.getCoordinates()[0], y = geom.getCoordinates()[1], size = 1;
       let baseIndex = this.verticesBuffer_.getArray().length / 3;
 
-      // todo: put data in buffer
       this.verticesBuffer_.getArray().push(
         x - size / 2, y - size / 2,
         x + size / 2, y - size / 2,
@@ -131,6 +135,7 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     // write new data
     this.context_.bindBuffer(ARRAY_BUFFER, this.verticesBuffer_);
     this.context_.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+    this.context_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, 0, 0);
 
     return true;
   }

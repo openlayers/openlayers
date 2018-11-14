@@ -9,7 +9,7 @@ import {listen, unlistenAll} from '../events.js';
 import {clear} from '../obj.js';
 import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TEXTURE_2D, TEXTURE_WRAP_S, TEXTURE_WRAP_T} from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
-import {TRIANGLES, UNSIGNED_INT, UNSIGNED_SHORT} from "../webgl";
+import {FLOAT, TRIANGLES, UNSIGNED_INT, UNSIGNED_SHORT} from "../webgl";
 import {
   create as createTransform,
   reset as resetTransform,
@@ -33,6 +33,12 @@ export const DefaultUniform = {
   OPACITY: 'u_opacity'
 };
 
+export const DefaultAttrib = {
+  POSITION: 'a_position',
+  TEX_COORD: 'a_texCoord',
+  OPACITY: 'a_opacity',
+  ROTATE_WITH_VIEW: 'a_rotateWithView'
+};
 
 /**
  * @classdesc
@@ -125,7 +131,13 @@ class WebGLContext extends Disposable {
      * @private
      * @type {Object.<string, WebGLUniformLocation>}
      */
-    this.locations_;
+    this.uniformLocations_;
+
+    /**
+     * @private
+     * @type {Object.<string, number>}
+     */
+    this.attribLocations_;
   }
 
   /**
@@ -303,10 +315,22 @@ class WebGLContext extends Disposable {
    * @return {WebGLUniformLocation} uniformLocation
    */
   getUniformLocation(name) {
-    if (!this.locations_[name]) {
-      this.locations_[name] = this.getGL().getUniformLocation(this.currentProgram_, name);
+    if (!this.uniformLocations_[name]) {
+      this.uniformLocations_[name] = this.getGL().getUniformLocation(this.currentProgram_, name);
     }
-    return this.locations_[name];
+    return this.uniformLocations_[name];
+  }
+
+  /**
+   * Will get the location from the shader or the cache
+   * @param {string} name Attribute name
+   * @return {number} attribLocation
+   */
+  getAttributeLocation(name) {
+    if (!this.attribLocations_[name]) {
+      this.attribLocations_[name] = this.getGL().getAttribLocation(this.currentProgram_, name);
+    }
+    return this.attribLocations_[name];
   }
 
   /**
@@ -325,6 +349,19 @@ class WebGLContext extends Disposable {
    */
   setUniformMatrixValue(uniform, value) {
     this.getGL().uniformMatrix4fv(this.getUniformLocation(uniform), false, value);
+  }
+
+  /**
+   * Will set the currently bound buffer to an attribute of the shader program
+   * @param {string} attribName
+   * @param {number} size Number of components per attributes
+   * @param {number} type UNSIGNED_INT, UNSIGNED_BYTE, UNSIGNED_SHORT or FLOAT
+   * @param {number} offset Offset in bytes
+   */
+  enableAttributeArray(attribName, size, type, stride, offset) {
+    this.getGL().enableVertexAttribArray(this.getAttributeLocation(attribName));
+    this.getGL().vertexAttribPointer(this.getAttributeLocation(attribName), size, type,
+      false, 0, offset);
   }
 
   /**
@@ -356,7 +393,8 @@ class WebGLContext extends Disposable {
       const gl = this.getGL();
       gl.useProgram(program);
       this.currentProgram_ = program;
-      this.locations_ = {};
+      this.uniformLocations_ = {};
+      this.attribLocations_ = {};
       return true;
     }
   }
