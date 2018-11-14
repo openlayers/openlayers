@@ -80,17 +80,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     this.tmpTileRange_ = new TileRange(0, 0, 0, 0);
 
     /**
-     * @private
-     * @type {import("../../transform.js").Transform}
-     */
-    this.imageTransform_ = createTransform();
-
-    /**
      * @protected
      * @type {number}
      */
     this.zDirection = 0;
-
   }
 
   /**
@@ -293,7 +286,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     // TODO: check where these are used and confirm they are correct
     const transform = composeTransform(
-      this.imageTransform_,
+      this.transform_,
       halfWidth, halfHeight,
       scale, scale,
       rotation,

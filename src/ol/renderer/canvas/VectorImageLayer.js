@@ -95,12 +95,14 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       const imagePixelRatio = image.getPixelRatio();
       const scale = pixelRatio * imageResolution /
           (viewResolution * imagePixelRatio);
-      const transform = composeTransform(this.imageTransform_,
+
+      const transform = composeTransform(this.transform_,
         pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
         scale, scale,
         0,
         imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
         imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
+
       composeTransform(this.coordinateToCanvasPixelTransform,
         pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
         pixelRatio / viewResolution, -pixelRatio / viewResolution,
