@@ -73,34 +73,6 @@ describe('ol.rendering.layer.Tile', function() {
     });
   }
 
-  describe('single tile layer', function() {
-    let source;
-
-    beforeEach(function() {
-      source = new XYZ({
-        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
-        transition: 0
-      });
-    });
-
-    it('tests the canvas renderer', function(done) {
-      createMap('canvas');
-      waitForTiles('canvas', [source], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/osm-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
-    where('WebGL').it('tests the WebGL renderer', function(done) {
-      assertWebGL();
-      createMap('webgl');
-      waitForTiles('webgl', [source], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/osm-webgl.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-  });
-
   describe('two tile layers', function() {
     let source1, source2;
 
