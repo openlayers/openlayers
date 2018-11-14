@@ -121,7 +121,7 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @protected
    */
   preRender(context, frameState, opt_transform) {
-    this.dispatchComposeEvent_(RenderEventType.POSTCOMPOSE, context, frameState, opt_transform);
+    this.dispatchComposeEvent_(RenderEventType.PRERENDER, context, frameState, opt_transform);
   }
 
   /**
@@ -131,7 +131,7 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @protected
    */
   postRender(context, frameState, opt_transform) {
-    this.dispatchComposeEvent_(RenderEventType.POSTCOMPOSE, context, frameState, opt_transform);
+    this.dispatchComposeEvent_(RenderEventType.POSTRENDER, context, frameState, opt_transform);
   }
 
   /**
