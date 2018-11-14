@@ -19,6 +19,8 @@
     "serve-examples": "webpack-dev-server --config examples/webpack/config.js --mode development --watch",
     "build-examples": "webpack --config examples/webpack/config.js --mode production",
     "build-package": "npm run transpile && npm run copy-css && node tasks/prepare-package && cp README.md build/ol",
+    "build-worker": "rollup -c config/rollup-config-worker-build.js && node tasks/prepare-worker",
+    "build-worker-wp": "webpack --config config/webpack-config-worker-build.js && node tasks/prepare-worker",
     "build-index": "npm run build-package && node tasks/generate-index",
     "build-legacy": "rm -rf build && npm run build-index && webpack --config config/webpack-config-legacy-build.js && cleancss --source-map src/ol/ol.css -o build/legacy/ol.css",
     "copy-css": "cp src/ol/ol.css build/ol/ol.css",
@@ -36,6 +38,7 @@
     "url": "https://github.com/openlayers/openlayers/issues"
   },
   "dependencies": {
+    "mapbox-gl": "^0.51.0",
     "pbf": "3.1.0",
     "pixelworks": "1.1.0",
     "rbush": "2.0.2"
