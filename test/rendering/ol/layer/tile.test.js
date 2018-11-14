@@ -103,14 +103,6 @@ describe('ol.rendering.layer.Tile', function() {
       return [c[0] + qw, c[1] + qh, c[2] - qw, c[3] - qh];
     }
 
-    it('tests canvas layer extent clipping', function(done) {
-      createMap('canvas');
-      waitForTiles('canvas', [source1, source2], [{}, {extent: centerExtent(map)}], function() {
-        expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
     it('tests canvas layer extent clipping with rotation', function(done) {
       createMap('canvas');
       map.getView().setRotation(Math.PI / 2);
