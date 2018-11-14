@@ -2,6 +2,8 @@
 
 ### Next version
 
+Breaking change: The `OverviewMap` control now cannot be instantiated without a list of layers. 
+
 ### v5.3.0
 
 #### The `getUid` function returns string

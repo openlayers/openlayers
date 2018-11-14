@@ -44,9 +44,8 @@ const MIN_RATIO = 0.1;
  * @property {boolean} [collapsible=true] Whether the control can be collapsed or not.
  * @property {string|HTMLElement} [label='»'] Text label to use for the collapsed
  * overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {Array<import("../layer/Layer.js").default>|import("../Collection.js").default<import("../layer/Layer.js").default>} [layers]
- * Layers for the overview map. If not set, then all main map layers are used
- * instead.
+ * @property {Array<import("../layer/Layer.js").default>|import("../Collection.js").default<import("../layer/Layer.js").default>} layers
+ * Layers for the overview map (mandatory).
  * @property {function(import("../MapEvent.js").default)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
@@ -250,11 +249,6 @@ class OverviewMap extends Control {
       this.listenerKeys.push(listen(
         map, ObjectEventType.PROPERTYCHANGE,
         this.handleMapPropertyChange_, this));
-
-      // TODO: to really support map switching, this would need to be reworked
-      if (this.ovmap_.getLayers().getLength() === 0) {
-        this.ovmap_.setLayerGroup(map.getLayerGroup());
-      }
 
       const view = map.getView();
       if (view) {
