@@ -267,15 +267,15 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         const currentTilePixelSize = tileSource.getTilePixelSize(currentZ, pixelRatio, projection);
         const currentResolution = tileGrid.getResolution(currentZ);
         const currentScale = currentResolution / tileResolution;
+        const w = currentTilePixelSize[0] * currentScale;
+        const h = currentTilePixelSize[1] * currentScale;
         const tileGutter = tilePixelRatio * tileSource.getGutterForProjection(projection);
         const tilesToDraw = tilesToDrawByZ[currentZ];
         for (const tileCoordKey in tilesToDraw) {
           const tile = tilesToDraw[tileCoordKey];
           const tileExtent = tileGrid.getTileCoordExtent(tile.getTileCoord(), tmpExtent);
-          const x = tilePixelRatio * (tileExtent[0] - canvasExtent[0]) / tileResolution;
-          const y = tilePixelRatio * (canvasExtent[3] - tileExtent[3]) / tileResolution;
-          const w = currentTilePixelSize[0] * currentScale;
-          const h = currentTilePixelSize[1] * currentScale;
+          const x = Math.round(tilePixelRatio * (tileExtent[0] - canvasExtent[0]) / tileResolution);
+          const y = Math.round(tilePixelRatio * (canvasExtent[3] - tileExtent[3]) / tileResolution);
           this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
           this.renderedTiles.push(tile);
         }
