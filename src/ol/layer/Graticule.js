@@ -8,6 +8,17 @@ import Text from "../style/Text";
 import Fill from "../style/Fill";
 import Stroke from "../style/Stroke";
 import LineString from '../geom/LineString.js';
+import VectorSource from "../source/Vector";
+import {equivalent as equivalentProjection, get as getProjection, getTransform, transformExtent} from "../proj";
+import {getCenter, intersects} from '../extent'
+import {clamp} from "../math";
+import Style from "../style/Style";
+import Feature from "../Feature";
+import {all, bbox} from "../loadingstrategy";
+import GeometryCollection from "../geom/GeometryCollection";
+import {meridian, parallel} from "../geom/flat/geodesic";
+import GeometryLayout from "../geom/GeometryLayout";
+import Point from "../geom/Point";
 
 
 /**
@@ -261,7 +272,7 @@ class Graticule extends VectorLayer {
      */
     this.parallelsLabels_ = null;
 
-    if (options.showLabels == true) {
+    if (options.showLabels) {
 
       /**
        * @type {null|function(number):string}
@@ -301,6 +312,7 @@ class Graticule extends VectorLayer {
        */
       this.lonLabelStyle_ = options.lonLabelStyle !== undefined ? options.lonLabelStyle :
         new Text({
+          text: '12345',
           font: '12px Calibri,sans-serif',
           textBaseline: 'bottom',
           fill: new Fill({
@@ -318,6 +330,7 @@ class Graticule extends VectorLayer {
        */
       this.latLabelStyle_ = options.latLabelStyle !== undefined ? options.latLabelStyle :
         new Text({
+          text: '12345',
           font: '12px Calibri,sans-serif',
           textAlign: 'end',
           fill: new Fill({
@@ -331,6 +344,26 @@ class Graticule extends VectorLayer {
 
       this.meridiansLabels_ = [];
       this.parallelsLabels_ = [];
+
+      /**
+       * @type {import("../Feature").default}
+       * @private
+       */
+      this.featureLonLabels_ = new Feature({
+        style: new Style({
+          text: this.lonLabelStyle_
+        })
+      });
+
+      /**
+       * @type {import("../Feature").default}
+       * @private
+       */
+      this.featureLatLabels_ = new Feature({
+        style: new Style({
+          text: this.latLabelStyle_
+        })
+      });
     }
 
     /**
@@ -338,6 +371,387 @@ class Graticule extends VectorLayer {
      * @private
      */
     this.intervals_ = options.intervals !== undefined ? options.intervals : INTERVALS;
+
+    /**
+     * @type {import("../Feature").default}
+     * @private
+     */
+    this.featureLines_ = new Feature({
+      geometry: new GeometryCollection([])
+    });
+    this.featureLines_.setStyle(
+      new Style({
+        stroke: this.strokeStyle_
+      })
+    );
+
+    // use a source with a custom loader for lines & text
+    this.setSource(
+      new VectorSource({
+        loader: this.loaderFunction.bind(this),
+        strategy: bbox
+      })
+    );
+
+    // add three features: one for the lines, one for lon label and one for lat label
+    const source = /** @type import("../source/Vector").default} */ (this.getSource());
+    source.addFeature(this.featureLines_);
+    if (options.showLabels) {
+      source.addFeatures([this.featureLatLabels_, this.featureLonLabels_]);
+    }
+  }
+
+  /**
+   * Update geometries in the source based on current view
+   */
+  loaderFunction(extent, resolution, projection) {
+    // we should not keep track of loaded extents
+    const source = /** @type import("../source/Vector").default} */ (this.getSource());
+    setTimeout(function () {
+      source.removeLoadedExtent(extent);
+    }, 0);
+
+    // update projection info
+    const center = getCenter(extent);
+    const pixelRatio = 1;
+    const squaredTolerance =
+      resolution * resolution / (4 * pixelRatio * pixelRatio);
+
+    const updateProjectionInfo = !this.projection_ ||
+      !equivalentProjection(this.projection_, projection);
+
+    if (updateProjectionInfo) {
+      this.updateProjectionInfo_(projection);
+    }
+
+    this.createGraticule_(extent, center, resolution, squaredTolerance);
+
+    // Draw the lines
+    const lines = [];
+    let i, l;
+    for (i = 0, l = this.meridians_.length; i < l; ++i) {
+      lines.push(this.meridians_[i]);
+    }
+    for (i = 0, l = this.parallels_.length; i < l; ++i) {
+      lines.push(this.parallels_[i]);
+    }
+    const geomCollection =
+      /** @type {import("../geom/GeometryCollection").default} */(this.featureLines_.getGeometry());
+    geomCollection.setGeometries(lines);
+  }
+
+  /**
+   * @param {number} lon Longitude.
+   * @param {number} minLat Minimal latitude.
+   * @param {number} maxLat Maximal latitude.
+   * @param {number} squaredTolerance Squared tolerance.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {number} index Index.
+   * @return {number} Index.
+   * @private
+   */
+  addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, index) {
+    const lineString = this.getMeridian_(lon, minLat, maxLat, squaredTolerance, index);
+    if (intersects(lineString.getExtent(), extent)) {
+      if (this.meridiansLabels_) {
+        const textPoint = this.getMeridianPoint_(lineString, extent, index);
+        this.meridiansLabels_[index] = {
+          geom: textPoint,
+          text: this.lonLabelFormatter_(lon)
+        };
+      }
+      this.meridians_[index++] = lineString;
+    }
+    return index;
+  }
+
+  /**
+   * @param {number} lat Latitude.
+   * @param {number} minLon Minimal longitude.
+   * @param {number} maxLon Maximal longitude.
+   * @param {number} squaredTolerance Squared tolerance.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {number} index Index.
+   * @return {number} Index.
+   * @private
+   */
+  addParallel_(lat, minLon, maxLon, squaredTolerance, extent, index) {
+    const lineString = this.getParallel_(lat, minLon, maxLon, squaredTolerance, index);
+    if (intersects(lineString.getExtent(), extent)) {
+      if (this.parallelsLabels_) {
+        const textPoint = this.getParallelPoint_(lineString, extent, index);
+        this.parallelsLabels_[index] = {
+          geom: textPoint,
+          text: this.latLabelFormatter_(lat)
+        };
+      }
+      this.parallels_[index++] = lineString;
+    }
+    return index;
+  }
+
+  /**
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {import("../coordinate.js").Coordinate} center Center.
+   * @param {number} resolution Resolution.
+   * @param {number} squaredTolerance Squared tolerance.
+   * @private
+   */
+  createGraticule_(extent, center, resolution, squaredTolerance) {
+    const interval = this.getInterval_(resolution);
+    if (interval == -1) {
+      this.meridians_.length = this.parallels_.length = 0;
+      if (this.meridiansLabels_) {
+        this.meridiansLabels_.length = 0;
+      }
+      if (this.parallelsLabels_) {
+        this.parallelsLabels_.length = 0;
+      }
+      return;
+    }
+
+    const centerLonLat = this.toLonLatTransform_(center);
+    let centerLon = centerLonLat[0];
+    let centerLat = centerLonLat[1];
+    const maxLines = this.maxLines_;
+    let cnt, idx, lat, lon;
+
+    let validExtent = [
+      Math.max(extent[0], this.minLonP_),
+      Math.max(extent[1], this.minLatP_),
+      Math.min(extent[2], this.maxLonP_),
+      Math.min(extent[3], this.maxLatP_)
+    ];
+
+    validExtent = transformExtent(validExtent, this.projection_, 'EPSG:4326');
+    const maxLat = validExtent[3];
+    const maxLon = validExtent[2];
+    const minLat = validExtent[1];
+    const minLon = validExtent[0];
+
+    // Create meridians
+
+    centerLon = Math.floor(centerLon / interval) * interval;
+    lon = clamp(centerLon, this.minLon_, this.maxLon_);
+
+    idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, 0);
+
+    cnt = 0;
+    while (lon != this.minLon_ && cnt++ < maxLines) {
+      lon = Math.max(lon - interval, this.minLon_);
+      idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
+    }
+
+    lon = clamp(centerLon, this.minLon_, this.maxLon_);
+
+    cnt = 0;
+    while (lon != this.maxLon_ && cnt++ < maxLines) {
+      lon = Math.min(lon + interval, this.maxLon_);
+      idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
+    }
+
+    this.meridians_.length = idx;
+    if (this.meridiansLabels_) {
+      this.meridiansLabels_.length = idx;
+    }
+
+    // Create parallels
+
+    centerLat = Math.floor(centerLat / interval) * interval;
+    lat = clamp(centerLat, this.minLat_, this.maxLat_);
+
+    idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, 0);
+
+    cnt = 0;
+    while (lat != this.minLat_ && cnt++ < maxLines) {
+      lat = Math.max(lat - interval, this.minLat_);
+      idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
+    }
+
+    lat = clamp(centerLat, this.minLat_, this.maxLat_);
+
+    cnt = 0;
+    while (lat != this.maxLat_ && cnt++ < maxLines) {
+      lat = Math.min(lat + interval, this.maxLat_);
+      idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
+    }
+
+    this.parallels_.length = idx;
+    if (this.parallelsLabels_) {
+      this.parallelsLabels_.length = idx;
+    }
+
+  }
+
+  /**
+   * @param {number} resolution Resolution.
+   * @return {number} The interval in degrees.
+   * @private
+   */
+  getInterval_(resolution) {
+    const centerLon = this.projectionCenterLonLat_[0];
+    const centerLat = this.projectionCenterLonLat_[1];
+    let interval = -1;
+    const target = Math.pow(this.targetSize_ * resolution, 2);
+    /** @type {Array<number>} **/
+    const p1 = [];
+    /** @type {Array<number>} **/
+    const p2 = [];
+    for (let i = 0, ii = this.intervals_.length; i < ii; ++i) {
+      const delta = this.intervals_[i] / 2;
+      p1[0] = centerLon - delta;
+      p1[1] = centerLat - delta;
+      p2[0] = centerLon + delta;
+      p2[1] = centerLat + delta;
+      this.fromLonLatTransform_(p1, p1);
+      this.fromLonLatTransform_(p2, p2);
+      const dist = Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2);
+      if (dist <= target) {
+        break;
+      }
+      interval = this.intervals_[i];
+    }
+    return interval;
+  }
+
+  /**
+   * @param {number} lon Longitude.
+   * @param {number} minLat Minimal latitude.
+   * @param {number} maxLat Maximal latitude.
+   * @param {number} squaredTolerance Squared tolerance.
+   * @return {LineString} The meridian line string.
+   * @param {number} index Index.
+   * @private
+   */
+  getMeridian_(lon, minLat, maxLat, squaredTolerance, index) {
+    const flatCoordinates = meridian(lon, minLat, maxLat, this.projection_, squaredTolerance);
+    let lineString = this.meridians_[index];
+    if (!lineString) {
+      lineString = this.meridians_[index] = new LineString(flatCoordinates, GeometryLayout.XY);
+    } else {
+      lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
+      lineString.changed();
+    }
+    return lineString;
+  }
+
+  /**
+   * @param {LineString} lineString Meridian
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {number} index Index.
+   * @return {Point} Meridian point.
+   * @private
+   */
+  getMeridianPoint_(lineString, extent, index) {
+    const flatCoordinates = lineString.getFlatCoordinates();
+    const clampedBottom = Math.max(extent[1], flatCoordinates[1]);
+    const clampedTop = Math.min(extent[3], flatCoordinates[flatCoordinates.length - 1]);
+    const lat = clamp(
+      extent[1] + Math.abs(extent[1] - extent[3]) * this.lonLabelPosition_,
+      clampedBottom, clampedTop);
+    const coordinate = [flatCoordinates[0], lat];
+    let point;
+    if (index in this.meridiansLabels_) {
+      point = this.meridiansLabels_[index].geom;
+      point.setCoordinates(coordinate);
+    } else {
+      point = new Point(coordinate);
+    }
+    return point;
+  }
+
+  /**
+   * Get the list of meridians.  Meridians are lines of equal longitude.
+   * @return {Array<LineString>} The meridians.
+   * @api
+   */
+  getMeridians() {
+    return this.meridians_;
+  }
+
+  /**
+   * @param {number} lat Latitude.
+   * @param {number} minLon Minimal longitude.
+   * @param {number} maxLon Maximal longitude.
+   * @param {number} squaredTolerance Squared tolerance.
+   * @return {LineString} The parallel line string.
+   * @param {number} index Index.
+   * @private
+   */
+  getParallel_(lat, minLon, maxLon, squaredTolerance, index) {
+    const flatCoordinates = parallel(lat, minLon, maxLon, this.projection_, squaredTolerance);
+    let lineString = this.parallels_[index];
+    if (!lineString) {
+      lineString = new LineString(flatCoordinates, GeometryLayout.XY);
+    } else {
+      lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
+      lineString.changed();
+    }
+    return lineString;
+  }
+
+
+  /**
+   * @param {LineString} lineString Parallels.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {number} index Index.
+   * @return {Point} Parallel point.
+   * @private
+   */
+  getParallelPoint_(lineString, extent, index) {
+    const flatCoordinates = lineString.getFlatCoordinates();
+    const clampedLeft = Math.max(extent[0], flatCoordinates[0]);
+    const clampedRight = Math.min(extent[2], flatCoordinates[flatCoordinates.length - 2]);
+    const lon = clamp(
+      extent[0] + Math.abs(extent[0] - extent[2]) * this.latLabelPosition_,
+      clampedLeft, clampedRight);
+    const coordinate = [lon, flatCoordinates[1]];
+    let point;
+    if (index in this.parallelsLabels_) {
+      point = this.parallelsLabels_[index].geom;
+      point.setCoordinates(coordinate);
+    } else {
+      point = new Point(coordinate);
+    }
+    return point;
+  }
+
+  /**
+   * Get the list of parallels.  Parallels are lines of equal latitude.
+   * @return {Array<LineString>} The parallels.
+   * @api
+   */
+  getParallels() {
+    return this.parallels_;
+  }
+
+  /**
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @private
+   */
+  updateProjectionInfo_(projection) {
+    const epsg4326Projection = getProjection('EPSG:4326');
+
+    const worldExtent = projection.getWorldExtent();
+    const worldExtentP = transformExtent(worldExtent, epsg4326Projection, projection);
+
+    this.maxLat_ = worldExtent[3];
+    this.maxLon_ = worldExtent[2];
+    this.minLat_ = worldExtent[1];
+    this.minLon_ = worldExtent[0];
+
+    this.maxLatP_ = worldExtentP[3];
+    this.maxLonP_ = worldExtentP[2];
+    this.minLatP_ = worldExtentP[1];
+    this.minLonP_ = worldExtentP[0];
+
+    this.fromLonLatTransform_ = getTransform(epsg4326Projection, projection);
+
+    this.toLonLatTransform_ = getTransform(projection, epsg4326Projection);
+
+    this.projectionCenterLonLat_ = this.toLonLatTransform_(getCenter(projection.getExtent()));
+
+    this.projection_ = projection;
   }
 }
 
