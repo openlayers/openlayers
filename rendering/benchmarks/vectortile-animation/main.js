@@ -322,6 +322,8 @@ function createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text) {
 }
 
 const center = fromLonLat([2.272708, 48.8349086]);
+const point1 = fromLonLat([2.1625014, 48.8349086]);
+const point2 = fromLonLat([2.3413726, 48.8349086]);
 
 const map = new Map({
   layers: [],
@@ -354,12 +356,15 @@ window.startIteration = () => {
   }));
 
   setTimeout(() => {
-    map.getView().animate({zoom: 13, duration: 200});
+    map.getView().animate({zoom: 13, duration: 200, center: point1});
   }, 500);
   setTimeout(() => {
-    map.getView().animate({zoom: 12, duration: 200});
+    map.getView().animate({duration: 200, center: point2});
   }, 1000);
   setTimeout(() => {
+    map.getView().animate({zoom: 12, duration: 200, center: center});
+  }, 1500);
+  setTimeout(() => {
     endIteration();
-  }, 1500)
+  }, 2000)
 };
