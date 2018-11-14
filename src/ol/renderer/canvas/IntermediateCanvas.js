@@ -44,7 +44,10 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
      * @type {CanvasRenderingContext2D}
      */
     this.layerContext = createCanvasContext2D();
-    this.layerContext.canvas.style.position = 'absolute';
+
+    const canvas = this.layerContext.canvas;
+    canvas.style.position = 'absolute';
+    canvas.className = this.getLayer().getClassName();
   }
 
   /**
