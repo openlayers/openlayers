@@ -212,6 +212,7 @@ class ImageSource extends Source {
         this.dispatchEvent(
           new ImageSourceEvent(ImageSourceEventType.IMAGELOADEND,
             image));
+        this.changed();
         break;
       case ImageState.ERROR:
         this.loading = false;
