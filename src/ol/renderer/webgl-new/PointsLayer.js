@@ -13,7 +13,6 @@ const VERTEX_SHADER = `
   precision mediump float;
   attribute vec2 a_position;
   attribute vec2 a_texCoord;
-  attribute float a_opacity;
   attribute float a_rotateWithView;
   attribute vec2 a_offsets;
   
@@ -22,7 +21,6 @@ const VERTEX_SHADER = `
   uniform mat4 u_offsetRotateMatrix;
   
   varying vec2 v_texCoord;
-  varying float v_opacity;
   
   void main(void) {
     mat4 offsetMatrix = u_offsetScaleMatrix;
@@ -32,21 +30,17 @@ const VERTEX_SHADER = `
     vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);
     gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
     v_texCoord = a_texCoord;
-    v_opacity = a_opacity;
   }`;
 
 const FRAGMENT_SHADER = `
   precision mediump float;
   uniform float u_opacity;
-  uniform sampler2D u_image;
   
   varying vec2 v_texCoord;
-  varying float v_opacity;
   
   void main(void) {
-    vec4 texColor = texture2D(u_image, v_texCoord);
-    gl_FragColor.rgb = texColor.rgb;
-    float alpha = texColor.a * v_opacity * u_opacity;
+    gl_FragColor.rgb = vec3(1.0, 1.0, 1.0);
+    float alpha = u_opacity;
     if (alpha == 0.0) {
       discard;
     }
@@ -73,8 +67,6 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
 
     this.sourceRevision_ = -1;
 
-    this.primitiveCount_ = 0;
-
     this.verticesBuffer_ = new WebGLBuffer([], DYNAMIC_DRAW);
     this.indicesBuffer_ = new WebGLBuffer([], DYNAMIC_DRAW);
 
@@ -95,9 +87,10 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
    * @inheritDoc
    */
   composeFrame(frameState) {
+    this.context_.prepareDraw();
     this.context_.applyFrameState(frameState);
     this.context_.setUniformFloatValue(DefaultUniform.OPACITY, this.getLayer().getOpacity());
-    this.context_.drawElements(0, this.primitiveCount_ * 3);
+    this.context_.drawElements(0, this.indicesBuffer_.getArray().length);
   }
 
   /**
@@ -107,38 +100,44 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const vectorSource = /** @type {import("../../source/Vector.js").default} */ (vectorLayer.getSource());
 
-    if (this.sourceRevision_ >= vectorSource.getRevision()) {
-      return false;
+    if (this.sourceRevision_ < vectorSource.getRevision()) {
+      this.sourceRevision_ = vectorSource.getRevision();
+
+      const viewState = frameState.viewState;
+      const projection = viewState.projection;
+      const resolution = viewState.resolution;
+
+      // loop on features to fill the buffer
+      vectorSource.loadFeatures([-Infinity, -Infinity, Infinity, Infinity], resolution, projection);
+      vectorSource.forEachFeature((feature) => {
+        if (!feature.getGeometry() || feature.getGeometry().getType() !== GeometryType.POINT) {
+          return;
+        }
+        const geom = /** @type {import("../../geom/Point").default} */ (feature.getGeometry());
+        const x = geom.getCoordinates()[0], y = geom.getCoordinates()[1], size = 20;
+        let stride = 4;
+        let baseIndex = this.verticesBuffer_.getArray().length / stride;
+
+        this.verticesBuffer_.getArray().push(
+          x, y, -size / 2, -size / 2,
+          x, y, +size / 2, -size / 2,
+          x, y, +size / 2, +size / 2,
+          x, y, -size / 2, +size / 2,
+        );
+        this.indicesBuffer_.getArray().push(
+          baseIndex, baseIndex + 1, baseIndex + 3,
+          baseIndex + 1, baseIndex + 2, baseIndex + 3
+        );
+      });
+
+      // write new data
+      this.context_.bindBuffer(ARRAY_BUFFER, this.verticesBuffer_);
+      this.context_.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+
+      let bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
+      this.context_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * 4, 0);
+      this.context_.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * 4, bytesPerFloat * 2);
     }
-    this.sourceRevision_ = vectorSource.getRevision();
-
-    // loop on features to fill the buffer
-    // vectorSource.loadFeatures(extent, resolution, projection);
-    vectorSource.forEachFeature((feature) => {
-      if (!feature.getGeometry() || feature.getGeometry().getType() !== GeometryType.POINT) {
-        return;
-      }
-      const geom = /** @type {import("../../geom/Point").default} */ (feature.getGeometry());
-      const x = geom.getCoordinates()[0], y = geom.getCoordinates()[1], size = 1;
-      let baseIndex = this.verticesBuffer_.getArray().length / 3;
-
-      this.verticesBuffer_.getArray().push(
-        x - size / 2, y - size / 2,
-        x + size / 2, y - size / 2,
-        x + size / 2, y + size / 2,
-        x - size / 2, y + size / 2,
-      );
-      this.indicesBuffer_.getArray().push(
-        baseIndex, baseIndex + 1, baseIndex + 3,
-        baseIndex + 1, baseIndex + 2, baseIndex + 3
-      );
-      this.primitiveCount_++;
-    });
-
-    // write new data
-    this.context_.bindBuffer(ARRAY_BUFFER, this.verticesBuffer_);
-    this.context_.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
-    this.context_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, 0, 0);
 
     return true;
   }

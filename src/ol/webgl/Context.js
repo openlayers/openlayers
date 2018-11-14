@@ -9,7 +9,7 @@ import {listen, unlistenAll} from '../events.js';
 import {clear} from '../obj.js';
 import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TEXTURE_2D, TEXTURE_WRAP_S, TEXTURE_WRAP_T} from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
-import {FLOAT, TRIANGLES, UNSIGNED_INT, UNSIGNED_SHORT} from "../webgl";
+import {COLOR_BUFFER_BIT, FLOAT, TRIANGLES, UNSIGNED_INT, UNSIGNED_SHORT} from "../webgl";
 import {
   create as createTransform,
   reset as resetTransform,
@@ -153,25 +153,23 @@ class WebGLContext extends Disposable {
     const gl = this.getGL();
     const arr = buf.getArray();
     const bufferKey = getUid(buf);
-    if (bufferKey in this.bufferCache_) {
-      const bufferCacheEntry = this.bufferCache_[bufferKey];
-      gl.bindBuffer(target, bufferCacheEntry.buffer);
-    } else {
+    let bufferCache = this.bufferCache_[bufferKey];
+    if (!bufferCache) {
       const buffer = gl.createBuffer();
-      gl.bindBuffer(target, buffer);
-      let /** @type {ArrayBufferView} */ arrayBuffer;
-      if (target == ARRAY_BUFFER) {
-        arrayBuffer = new Float32Array(arr);
-      } else if (target == ELEMENT_ARRAY_BUFFER) {
-        arrayBuffer = this.hasOESElementIndexUint ?
-          new Uint32Array(arr) : new Uint16Array(arr);
-      }
-      gl.bufferData(target, arrayBuffer, buf.getUsage());
-      this.bufferCache_[bufferKey] = {
+      bufferCache = this.bufferCache_[bufferKey] = {
         buf: buf,
         buffer: buffer
       };
     }
+    gl.bindBuffer(target, bufferCache.buffer);
+    let /** @type {ArrayBufferView} */ arrayBuffer;
+    if (target == ARRAY_BUFFER) {
+      arrayBuffer = new Float32Array(arr);
+    } else if (target == ELEMENT_ARRAY_BUFFER) {
+      arrayBuffer = this.hasOESElementIndexUint ?
+        new Uint32Array(arr) : new Uint16Array(arr);
+    }
+    gl.bufferData(target, arrayBuffer, buf.getUsage());
   }
 
   /**
@@ -204,6 +202,15 @@ class WebGLContext extends Disposable {
         gl.deleteShader(this.shaderCache_[key]);
       }
     }
+  }
+
+  /**
+   * Clear the buffer & set the viewport to draw
+   */
+  prepareDraw() {
+    this.getGL().clearColor(0.0, 0.0, 0.0, 0.0);
+    this.getGL().clear(this.getGL().COLOR_BUFFER_BIT);
+    this.getGL().viewport(0, 0, this.canvas_.width, this.canvas_.height);
   }
 
   /**
@@ -359,12 +366,13 @@ class WebGLContext extends Disposable {
    * @param {string} attribName
    * @param {number} size Number of components per attributes
    * @param {number} type UNSIGNED_INT, UNSIGNED_BYTE, UNSIGNED_SHORT or FLOAT
+   * @param {number} stride Stride in bytes (0 means attribs are packed)
    * @param {number} offset Offset in bytes
    */
   enableAttributeArray(attribName, size, type, stride, offset) {
     this.getGL().enableVertexAttribArray(this.getAttributeLocation(attribName));
     this.getGL().vertexAttribPointer(this.getAttributeLocation(attribName), size, type,
-      false, 0, offset);
+      false, stride, offset);
   }
 
   /**
@@ -401,6 +409,8 @@ class WebGLContext extends Disposable {
       return true;
     }
   }
+
+  // TODO: shutdown program
 }
 
 
