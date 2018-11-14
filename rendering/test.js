@@ -67,7 +67,8 @@ function serve(options) {
         return;
       }
 
-      if (path.extname(req.url) === '.js') {
+      const ext = path.extname(req.url);
+      if (ext === '.js' || ext === '.map') {
         webpackHandler(req, res, notFound(req, res));
         return;
       }
