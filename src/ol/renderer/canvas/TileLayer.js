@@ -50,6 +50,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     this.renderedExtent_ = null;
 
     /**
+     * @private
+     * @type {number}
+     */
+    this.renderedPixelRatio_ = 1;
+
+    /**
      * @protected
      * @type {number}
      */
@@ -179,8 +185,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       width = height = size;
     }
 
-    const dx = tileResolution * width / 2;
-    const dy = tileResolution * height / 2;
+    const dx = tileResolution * width / 2 / tilePixelRatio;
+    const dy = tileResolution * height / 2 / tilePixelRatio;
     const canvasExtent = [
       viewCenter[0] - dx,
       viewCenter[1] - dy,
@@ -266,8 +272,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         for (const tileCoordKey in tilesToDraw) {
           const tile = tilesToDraw[tileCoordKey];
           const tileExtent = tileGrid.getTileCoordExtent(tile.getTileCoord(), tmpExtent);
-          const x = (tileExtent[0] - canvasExtent[0]) / tileResolution;
-          const y = (canvasExtent[3] - tileExtent[3]) / tileResolution;
+          const x = tilePixelRatio * (tileExtent[0] - canvasExtent[0]) / tileResolution;
+          const y = tilePixelRatio * (canvasExtent[3] - tileExtent[3]) / tileResolution;
           const w = currentTilePixelSize[0] * currentScale;
           const h = currentTilePixelSize[1] * currentScale;
           this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
@@ -277,6 +283,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
       this.renderedRevision = sourceRevision;
       this.renderedResolution = tileResolution;
+      this.renderedPixelRatio_ = tilePixelRatio;
       this.renderedExtent_ = canvasExtent;
     }
 
@@ -326,7 +333,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     }
 
     const rotation = frameState.viewState.rotation;
-    const scale = this.renderedResolution / frameState.viewState.resolution;
+    const scale = this.renderedResolution / frameState.viewState.resolution / this.renderedPixelRatio_;
 
     const transform = 'rotate(' + rotation + 'rad) scale(' + scale + ')';
     if (transform !== canvas.style.transform) {
