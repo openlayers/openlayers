@@ -37,7 +37,8 @@ export const DefaultAttrib = {
   POSITION: 'a_position',
   TEX_COORD: 'a_texCoord',
   OPACITY: 'a_opacity',
-  ROTATE_WITH_VIEW: 'a_rotateWithView'
+  ROTATE_WITH_VIEW: 'a_rotateWithView',
+  OFFSETS: 'a_offsets'
 };
 
 /**
@@ -237,50 +238,6 @@ class WebGLContext extends Disposable {
   }
 
   /**
-   * Get shader from the cache if it's in the cache. Otherwise, create
-   * the WebGL shader, compile it, and add entry to cache.
-   * @param {import("./Shader.js").default} shaderObject Shader object.
-   * @return {WebGLShader} Shader.
-   */
-  getShader(shaderObject) {
-    const shaderKey = getUid(shaderObject);
-    if (shaderKey in this.shaderCache_) {
-      return this.shaderCache_[shaderKey];
-    } else {
-      const gl = this.getGL();
-      const shader = gl.createShader(shaderObject.getType());
-      gl.shaderSource(shader, shaderObject.getSource());
-      gl.compileShader(shader);
-      this.shaderCache_[shaderKey] = shader;
-      return shader;
-    }
-  }
-
-  /**
-   * Get the program from the cache if it's in the cache. Otherwise create
-   * the WebGL program, attach the shaders to it, and add an entry to the
-   * cache.
-   * @param {import("./Fragment.js").default} fragmentShaderObject Fragment shader.
-   * @param {import("./Vertex.js").default} vertexShaderObject Vertex shader.
-   * @return {WebGLProgram} Program.
-   */
-  getProgram(fragmentShaderObject, vertexShaderObject) {
-    const programKey = getUid(fragmentShaderObject) + '/' + getUid(vertexShaderObject);
-    if (programKey in this.programCache_) {
-      return this.programCache_[programKey];
-    } else {
-      const gl = this.getGL();
-      const program = gl.createProgram();
-      gl.attachShader(program, this.getShader(fragmentShaderObject));
-      gl.attachShader(program, this.getShader(vertexShaderObject));
-      gl.linkProgram(program);
-      this.programCache_[programKey] = program;
-      return program;
-    }
-  }
-
-
-  /**
    * Sets the matrices uniforms for a given frame state
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    */
@@ -307,6 +264,52 @@ class WebGLContext extends Disposable {
     this.setUniformMatrixValue(DefaultUniform.PROJECTION_MATRIX, fromTransform(this.tmpMat4_, projectionMatrix));
     this.setUniformMatrixValue(DefaultUniform.OFFSET_SCALE_MATRIX, fromTransform(this.tmpMat4_, offsetScaleMatrix));
     this.setUniformMatrixValue(DefaultUniform.OFFSET_ROTATION_MATRIX, fromTransform(this.tmpMat4_, offsetRotateMatrix));
+  }
+
+  /**
+   * Get shader from the cache if it's in the cache. Otherwise, create
+   * the WebGL shader, compile it, and add entry to cache.
+   * @param {import("./Shader.js").default} shaderObject Shader object.
+   * @return {WebGLShader} Shader.
+   */
+  getShader(shaderObject) {
+    const shaderKey = getUid(shaderObject);
+    if (shaderKey in this.shaderCache_) {
+      return this.shaderCache_[shaderKey];
+    } else {
+      const gl = this.getGL();
+      const shader = gl.createShader(shaderObject.getType());
+      gl.shaderSource(shader, shaderObject.getSource());
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error(`Shader compilation failed - log:\n${gl.getShaderInfoLog(shader)}`);
+      }
+      this.shaderCache_[shaderKey] = shader;
+      return shader;
+    }
+  }
+
+  /**
+   * Get the program from the cache if it's in the cache. Otherwise create
+   * the WebGL program, attach the shaders to it, and add an entry to the
+   * cache.
+   * @param {import("./Fragment.js").default} fragmentShaderObject Fragment shader.
+   * @param {import("./Vertex.js").default} vertexShaderObject Vertex shader.
+   * @return {WebGLProgram} Program.
+   */
+  getProgram(fragmentShaderObject, vertexShaderObject) {
+    const programKey = getUid(fragmentShaderObject) + '/' + getUid(vertexShaderObject);
+    if (programKey in this.programCache_) {
+      return this.programCache_[programKey];
+    } else {
+      const gl = this.getGL();
+      const program = gl.createProgram();
+      gl.attachShader(program, this.getShader(fragmentShaderObject));
+      gl.attachShader(program, this.getShader(vertexShaderObject));
+      gl.linkProgram(program);
+      this.programCache_[programKey] = program;
+      return program;
+    }
   }
 
   /**

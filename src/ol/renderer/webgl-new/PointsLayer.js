@@ -10,10 +10,12 @@ import WebGLFragment from "../../webgl/Fragment";
 import GeometryType from "../../geom/GeometryType";
 
 const VERTEX_SHADER = `
+  precision mediump float;
   attribute vec2 a_position;
   attribute vec2 a_texCoord;
   attribute float a_opacity;
   attribute float a_rotateWithView;
+  attribute vec2 a_offsets;
   
   uniform mat4 u_projectionMatrix;
   uniform mat4 u_offsetScaleMatrix;
@@ -34,6 +36,7 @@ const VERTEX_SHADER = `
   }`;
 
 const FRAGMENT_SHADER = `
+  precision mediump float;
   uniform float u_opacity;
   uniform sampler2D u_image;
   
