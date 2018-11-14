@@ -73,21 +73,6 @@ describe('ol.rendering.layer.Tile', function() {
     });
   }
 
-  describe('with tile transition', function() {
-    it('renders correctly after the transition', function(done) {
-      createMap('canvas');
-      const source = new XYZ({
-        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
-      });
-      waitForTiles('canvas', [source], {}, function() {
-        setTimeout(function() {
-          expectResemble(map, 'rendering/ol/layer/expected/osm-canvas.png',
-            IMAGE_TOLERANCE, done);
-        }, 500);
-      });
-    });
-  });
-
   describe('single tile layer', function() {
     let source;
 
