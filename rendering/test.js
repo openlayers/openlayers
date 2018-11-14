@@ -130,7 +130,7 @@ async function match(actual, expected) {
   return count / (width * height);
 }
 
-async function assertScreenshotsMatch(entry) {
+async function getScreenshotsMismatch(entry) {
   const actual = getActualScreenshotPath(entry);
   const expected = getExpectedScreenshotPath(entry);
   let mismatch, error;
@@ -139,36 +139,32 @@ async function assertScreenshotsMatch(entry) {
   } catch (err) {
     error = err;
   }
-  if (error) {
-    return error;
-  }
-  if (mismatch) {
-    return new Error(`${entry} mistmatch: ${mismatch}`);
-  }
+  return {error, mismatch};
 }
 
 let handleRender;
 async function exposeRender(page) {
-  await page.exposeFunction('render', () => {
+  await page.exposeFunction('render', (message) => {
     if (!handleRender) {
       throw new Error('No render handler set for current page');
     }
-    handleRender();
+    handleRender(message);
   });
 }
 
 async function renderPage(page, entry, options) {
   const renderCalled = new Promise(resolve => {
-    handleRender = () => {
+    handleRender = (message) => {
       handleRender = null;
-      resolve();
+      resolve(message);
     };
   });
   options.log.debug('navigating', entry);
   await page.goto(`http://${options.host}:${options.port}${getHref(entry)}`, {waitUntil: 'networkidle0'});
-  await renderCalled;
+  const message = await renderCalled;
   options.log.debug('screenshot', entry);
   await page.screenshot({path: getActualScreenshotPath(entry)});
+  return message;
 }
 
 async function touch(filepath) {
@@ -186,19 +182,25 @@ async function copyActualToExpected(entry) {
 async function renderEach(page, entries, options) {
   let fail = false;
   for (const entry of entries) {
-    await renderPage(page, entry, options);
+    let message = await renderPage(page, entry, options);
+    message = message !== undefined ? message : entry;
     if (options.fix) {
       await copyActualToExpected(entry);
       continue;
     }
-    const error = await assertScreenshotsMatch(entry);
+    const {error, mismatch} = await getScreenshotsMismatch(entry);
     if (error) {
       options.log.error(error);
       fail = true;
       continue;
     }
-
-    await touch(getPassFilePath(entry));
+    if (mismatch > 0) {
+      options.log.error(`checking '${message}': mismatch ${mismatch.toFixed(3)}`);
+      fail = true;
+    } else {
+      options.log.info(`checking '${message}': ok`);
+      await touch(getPassFilePath(entry));
+    }
   }
   return fail;
 }
