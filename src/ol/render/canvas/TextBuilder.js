@@ -8,7 +8,7 @@ import {intersects} from '../../extent.js';
 import {matchingChunk} from '../../geom/flat/straightchunk.js';
 import GeometryType from '../../geom/GeometryType.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
-import {labelCache, measureTextWidth, measureTextWidths, defaultTextAlign, measureTextHeight, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
+import {labelCache, measureTextWidths, defaultTextAlign, measureTextHeight, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
 import CanvasInstructionsBuilder from './InstructionsBuilder.js';
 import {TEXT_ALIGN} from '../replay.js';
@@ -118,12 +118,6 @@ class CanvasTextBuilder extends CanvasInstructionsBuilder {
      * @type {string}
      */
     this.strokeKey_ = '';
-
-    /**
-     * @private
-     * @type {Object<string, Object<string, number>>}
-     */
-    this.widths_ = {};
 
     labelCache.prune();
   }
@@ -409,35 +403,19 @@ class CanvasTextBuilder extends CanvasInstructionsBuilder {
 
     const offsetY = this.textOffsetY_ * pixelRatio;
     const text = this.text_;
-    const font = textState.font;
     const textScale = textState.scale;
     const strokeWidth = strokeState ? strokeState.lineWidth * textScale / 2 : 0;
-    let widths = this.widths_[font];
-    if (!widths) {
-      this.widths_[font] = widths = {};
-    }
+
     this.instructions.push([CanvasInstruction.DRAW_CHARS,
       begin, end, baseline, declutterGroup,
       textState.overflow, fillKey, textState.maxAngle,
-      function(text) {
-        let width = widths[text];
-        if (!width) {
-          width = widths[text] = measureTextWidth(font, text);
-        }
-        return width * textScale * pixelRatio;
-      },
+      pixelRatio,
       offsetY, strokeKey, strokeWidth * pixelRatio, text, textKey, 1
     ]);
     this.hitDetectionInstructions.push([CanvasInstruction.DRAW_CHARS,
       begin, end, baseline, declutterGroup,
       textState.overflow, fillKey, textState.maxAngle,
-      function(text) {
-        let width = widths[text];
-        if (!width) {
-          width = widths[text] = measureTextWidth(font, text);
-        }
-        return width * textScale;
-      },
+      1,
       offsetY, strokeKey, strokeWidth, text, textKey, 1 / pixelRatio
     ]);
   }

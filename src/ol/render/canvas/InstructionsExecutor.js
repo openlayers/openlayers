@@ -22,7 +22,7 @@ import {
 
 
 import {createCanvasContext2D} from '../../dom.js';
-import {labelCache, defaultTextAlign, measureTextHeight, measureTextWidths} from '../canvas.js';
+import {labelCache, defaultTextAlign, measureTextHeight, measureTextWidth, measureTextWidths} from '../canvas.js';
 
 
 /**
@@ -206,6 +206,14 @@ class CanvasInstructionsExecutor {
      * @type {!Object<string, import("../canvas.js").TextState>}
      */
     this.textStates = {};
+
+    // Adaptations
+
+    /**
+     * @private
+     * @type {Object<string, Object<string, number>>}
+     */
+    this.widths_ = {};
   }
 
 
@@ -697,19 +705,35 @@ class CanvasInstructionsExecutor {
           const overflow = /** @type {number} */ (instruction[5]);
           const fillKey = /** @type {string} */ (instruction[6]);
           const maxAngle = /** @type {number} */ (instruction[7]);
-          const measure = /** @type {function(string):number} */ (instruction[8]);
+          const measurePixelRatio = /** @type {number} */ (instruction[8]);
           const offsetY = /** @type {number} */ (instruction[9]);
           const strokeKey = /** @type {string} */ (instruction[10]);
           const strokeWidth = /** @type {number} */ (instruction[11]);
           const text = /** @type {string} */ (instruction[12]);
           const textKey = /** @type {string} */ (instruction[13]);
-          const textScale = /** @type {number} */ (instruction[14]);
+          const pixelRatioScale = /** @type {number} */ (instruction[14]);
+
+          const textState = this.textStates[textKey];
+          const font = textState.font;
+          const textScale = textState.scale;
+
+          let widths = this.widths_[font];
+          if (!widths) {
+            this.widths_[font] = widths = {};
+          }
+
+          const measure = function(text) {
+            let width = widths[text];
+            if (!width) {
+              width = widths[text] = measureTextWidth(font, text);
+            }
+            return width * textScale * measurePixelRatio;
+          };
 
           const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
           const textLength = measure(text);
           if (overflow || textLength <= pathLength) {
-            /** @type {import("./TextBuilder.js").default} */
-            const textReplay = /** @type {?} */ (this);
+            const textReplay = this;
             const textAlign = textReplay.textStates[textKey].textAlign;
             const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
             const parts = drawTextOnPath(
@@ -726,7 +750,7 @@ class CanvasInstructionsExecutor {
                   this.replayImage_(context,
                     /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
                     anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
-                    /** @type {number} */ (part[3]), textScale, false, label.width,
+                    /** @type {number} */ (part[3]), pixelRatioScale, false, label.width,
                     defaultPadding, null, null);
                 }
               }
@@ -740,7 +764,7 @@ class CanvasInstructionsExecutor {
                   this.replayImage_(context,
                     /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
                     anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
-                    /** @type {number} */ (part[3]), textScale, false, label.width,
+                    /** @type {number} */ (part[3]), pixelRatioScale, false, label.width,
                     defaultPadding, null, null);
                 }
               }
