@@ -94,9 +94,8 @@ class VectorTileLayer extends BaseVectorLayer {
     let renderMode = options.renderMode || VectorTileRenderType.HYBRID;
     assert(renderMode == undefined ||
        renderMode == VectorTileRenderType.IMAGE ||
-       renderMode == VectorTileRenderType.HYBRID ||
-       renderMode == VectorTileRenderType.VECTOR,
-    28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
+       renderMode == VectorTileRenderType.HYBRID,
+    28); // `renderMode` must be `'image'` or `'hybrid'`
 
     if (options.declutter && renderMode == VectorTileRenderType.IMAGE) {
       renderMode = VectorTileRenderType.HYBRID;
