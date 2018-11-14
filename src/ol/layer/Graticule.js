@@ -10,7 +10,7 @@ import Stroke from "../style/Stroke";
 import LineString from '../geom/LineString.js';
 import VectorSource from "../source/Vector";
 import {equivalent as equivalentProjection, get as getProjection, getTransform, transformExtent} from "../proj";
-import {getCenter, intersects} from '../extent'
+import {getCenter, intersects, equals} from '../extent'
 import {clamp} from "../math";
 import Style from "../style/Style";
 import Feature from "../Feature";
@@ -19,6 +19,7 @@ import GeometryCollection from "../geom/GeometryCollection";
 import {meridian, parallel} from "../geom/flat/geodesic";
 import GeometryLayout from "../geom/GeometryLayout";
 import Point from "../geom/Point";
+import Collection from "../Collection";
 
 
 /**
@@ -307,63 +308,71 @@ class Graticule extends VectorLayer {
         options.latLabelPosition;
 
       /**
-       * @type {Text}
+       * @type {Object.<string,function(Feature):Style>}
        * @private
        */
-      this.lonLabelStyle_ = options.lonLabelStyle !== undefined ? options.lonLabelStyle :
-        new Text({
-          text: '12345',
-          font: '12px Calibri,sans-serif',
-          textBaseline: 'bottom',
-          fill: new Fill({
-            color: 'rgba(0,0,0,1)'
-          }),
-          stroke: new Stroke({
-            color: 'rgba(255,255,255,1)',
-            width: 3
-          })
-        });
+      this.lonLabelStyleCache_ = {};
 
       /**
-       * @type {Text}
+       * @type {function(Feature):Style}
        * @private
        */
-      this.latLabelStyle_ = options.latLabelStyle !== undefined ? options.latLabelStyle :
-        new Text({
-          text: '12345',
-          font: '12px Calibri,sans-serif',
-          textAlign: 'end',
-          fill: new Fill({
-            color: 'rgba(0,0,0,1)'
-          }),
-          stroke: new Stroke({
-            color: 'rgba(255,255,255,1)',
-            width: 3
-          })
-        });
+      this.lonLabelStyle_ = function (feature) {
+        const label = feature.get('graticule_label');
+        if (!this.lonLabelStyleCache_[label]) {
+          this.lonLabelStyleCache_[label] = new Style({
+            text: options.lonLabelStyle !== undefined ? options.lonLabelStyle :
+              new Text({
+                text: label,
+                font: '12px Calibri,sans-serif',
+                textBaseline: 'bottom',
+                fill: new Fill({
+                  color: 'rgba(0,0,0,1)'
+                }),
+                stroke: new Stroke({
+                  color: 'rgba(255,255,255,1)',
+                  width: 3
+                })
+              })
+          });
+        }
+        return this.lonLabelStyleCache_[label];
+      }.bind(this);
+
+      /**
+       * @type {Object.<string,function(Feature):Style>}
+       * @private
+       */
+      this.latLabelStyleCache_ = {};
+
+      /**
+       * @type {function(Feature):Style}
+       * @private
+       */
+      this.latLabelStyle_ = function (feature) {
+        const label = feature.get('graticule_label');
+        if (!this.latLabelStyleCache_[label]) {
+          this.latLabelStyleCache_[label] = new Style({
+            text: options.latLabelStyle !== undefined ? options.latLabelStyle :
+              new Text({
+                text: label,
+                font: '12px Calibri,sans-serif',
+                textAlign: 'right',
+                fill: new Fill({
+                  color: 'rgba(0,0,0,1)'
+                }),
+                stroke: new Stroke({
+                  color: 'rgba(255,255,255,1)',
+                  width: 3
+                })
+              })
+          });
+        }
+        return this.latLabelStyleCache_[label];
+      }.bind(this);
 
       this.meridiansLabels_ = [];
       this.parallelsLabels_ = [];
-
-      /**
-       * @type {import("../Feature").default}
-       * @private
-       */
-      this.featureLonLabels_ = new Feature({
-        style: new Style({
-          text: this.lonLabelStyle_
-        })
-      });
-
-      /**
-       * @type {import("../Feature").default}
-       * @private
-       */
-      this.featureLatLabels_ = new Feature({
-        style: new Style({
-          text: this.latLabelStyle_
-        })
-      });
     }
 
     /**
@@ -372,50 +381,63 @@ class Graticule extends VectorLayer {
      */
     this.intervals_ = options.intervals !== undefined ? options.intervals : INTERVALS;
 
-    /**
-     * @type {import("../Feature").default}
-     * @private
-     */
-    this.featureLines_ = new Feature({
-      geometry: new GeometryCollection([])
-    });
-    this.featureLines_.setStyle(
-      new Style({
-        stroke: this.strokeStyle_
-      })
-    );
-
     // use a source with a custom loader for lines & text
     this.setSource(
       new VectorSource({
         loader: this.loaderFunction.bind(this),
-        strategy: bbox
+        strategy: bbox,
+        features: new Collection(),
+        overlaps: false,
+        useSpatialIndex: false
       })
     );
 
-    // add three features: one for the lines, one for lon label and one for lat label
-    const source = /** @type import("../source/Vector").default} */ (this.getSource());
-    source.addFeature(this.featureLines_);
-    if (options.showLabels) {
-      source.addFeatures([this.featureLatLabels_, this.featureLonLabels_]);
-    }
+    /**
+     * feature pool to use when updating graticule
+     * @type {Array<Feature>}
+     * @private
+     */
+    this.featurePool_ = [];
+
+    /**
+     * @type {Style}
+     * @private
+     */
+    this.lineStyle_ = new Style({
+      stroke: this.strokeStyle_
+    });
+
+    /**
+     * @type {import("../extent.js").Extent}
+     */
+    this.renderedExtent_ = null;
+
+    this.setRenderOrder(null);
+
+    this.renderBuffer_ = 0;
+
+    this.updateWhileAnimating_ = true;
+    this.updateWhileInteracting_ = true;
   }
 
   /**
    * Update geometries in the source based on current view
    */
   loaderFunction(extent, resolution, projection) {
-    // we should not keep track of loaded extents
     const source = /** @type import("../source/Vector").default} */ (this.getSource());
+
+    // we should not keep track of loaded extents
     setTimeout(function () {
       source.removeLoadedExtent(extent);
     }, 0);
 
+    if (this.renderedExtent_ && equals(this.renderedExtent_, extent)) {
+      return;
+    }
+
     // update projection info
     const center = getCenter(extent);
-    const pixelRatio = 1;
-    const squaredTolerance =
-      resolution * resolution / (4 * pixelRatio * pixelRatio);
+    const squaredTolerance = resolution * resolution / 4;
 
     const updateProjectionInfo = !this.projection_ ||
       !equivalentProjection(this.projection_, projection);
@@ -426,18 +448,56 @@ class Graticule extends VectorLayer {
 
     this.createGraticule_(extent, center, resolution, squaredTolerance);
 
-    // Draw the lines
-    const lines = [];
+    // first make sure we have enough features in the pool
+    let featureCount = this.meridians_.length + this.parallels_.length;
+    if (this.meridiansLabels_) { featureCount += this.meridiansLabels_.length; }
+    if (this.parallelsLabels_) { featureCount += this.parallelsLabels_.length; }
+
+    let feature;
+    while (featureCount > this.featurePool_.length) {
+      feature = new Feature();
+      this.featurePool_.push(feature);
+    }
+
+    const featuresColl = source.getFeaturesCollection();
+    featuresColl.clear();
+    let poolIndex = 0;
+
+    // add features for the lines & labels
     let i, l;
     for (i = 0, l = this.meridians_.length; i < l; ++i) {
-      lines.push(this.meridians_[i]);
+      feature = this.featurePool_[poolIndex++];
+      feature.setGeometry(this.meridians_[i]);
+      feature.setStyle(this.lineStyle_);
+      featuresColl.push(feature);
     }
     for (i = 0, l = this.parallels_.length; i < l; ++i) {
-      lines.push(this.parallels_[i]);
+      feature = this.featurePool_[poolIndex++];
+      feature.setGeometry(this.parallels_[i]);
+      feature.setStyle(this.lineStyle_);
+      featuresColl.push(feature);
     }
-    const geomCollection =
-      /** @type {import("../geom/GeometryCollection").default} */(this.featureLines_.getGeometry());
-    geomCollection.setGeometries(lines);
+    let labelData;
+    if (this.meridiansLabels_) {
+      for (i = 0, l = this.meridiansLabels_.length; i < l; ++i) {
+        labelData = this.meridiansLabels_[i];
+        feature = this.featurePool_[poolIndex++];
+        feature.setGeometry(labelData.geom);
+        feature.setStyle(this.lonLabelStyle_);
+        feature.set('graticule_label', labelData.text);
+        featuresColl.push(feature);
+      }
+    }
+    if (this.parallelsLabels_) {
+      for (i = 0, l = this.parallelsLabels_.length; i < l; ++i) {
+        labelData = this.parallelsLabels_[i];
+        feature = this.featurePool_[poolIndex++];
+        feature.setGeometry(labelData.geom);
+        feature.setStyle(this.latLabelStyle_);
+        feature.set('graticule_label', labelData.text);
+        featuresColl.push(feature);
+      }
+    }
   }
 
   /**
