@@ -28,11 +28,10 @@ class VectorImageLayer extends BaseVectorLayer {
 
   /**
    * Create a renderer for this layer.
-   * @param {import("../renderer/Map.js").default} mapRenderer The map renderer.
    * @return {import("../renderer/Layer.js").default} A layer renderer.
    * @protected
    */
-  createRenderer(mapRenderer) {
+  createRenderer() {
     return new CanvasVectorImageLayerRenderer(this);
   }
 }
