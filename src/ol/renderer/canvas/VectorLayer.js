@@ -3,7 +3,6 @@
  */
 import {getUid} from '../../util.js';
 import ViewHint from '../../ViewHint.js';
-import {createCanvasContext2D} from '../../dom.js';
 import {listen, unlisten} from '../../events.js';
 import EventType from '../../events/EventType.js';
 import rbush from 'rbush';
@@ -76,15 +75,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
      * @type {boolean}
      */
     this.replayGroupChanged = true;
-
-    /**
-     * @type {CanvasRenderingContext2D}
-     */
-    this.context = createCanvasContext2D();
-
-    const canvas = this.context.canvas;
-    canvas.style.position = 'absolute';
-    canvas.className = this.getLayer().getClassName();
 
     listen(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
   }

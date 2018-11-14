@@ -2,6 +2,7 @@
  * @module ol/renderer/canvas/Layer
  */
 import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../../extent.js';
+import {createCanvasContext2D} from '../../dom.js';
 import {TRUE} from '../../functions.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
@@ -33,6 +34,16 @@ class CanvasLayerRenderer extends LayerRenderer {
      * @type {import("../../transform.js").Transform}
      */
     this.transform_ = createTransform();
+
+    /**
+     * @protected
+     * @type {CanvasRenderingContext2D}
+     */
+    this.context = createCanvasContext2D();
+
+    const canvas = this.context.canvas;
+    canvas.style.position = 'absolute';
+    canvas.className = this.getLayer().getClassName();
 
   }
 

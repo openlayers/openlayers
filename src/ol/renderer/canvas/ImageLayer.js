@@ -24,15 +24,6 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @protected
-     * @type {CanvasRenderingContext2D}
-     */
-    this.context = createCanvasContext2D();
-
-    const canvas = this.context.canvas;
-    canvas.style.position = 'absolute';
-
-    /**
-     * @protected
      * @type {import("../../transform.js").Transform}
      */
     this.coordinateToCanvasPixelTransform = createTransform();
