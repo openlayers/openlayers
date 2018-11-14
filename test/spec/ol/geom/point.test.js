@@ -215,4 +215,22 @@ describe('ol.geom.Point', function() {
 
   });
 
+  describe('#containsXY()', function() {
+
+    it('does contain XY', function() {
+      const point = new Point([1, 2]);
+
+      expect(point.containsXY(1, 2)).to.be(true);
+    });
+
+    it('does not contain XY', function() {
+      const point = new Point([1, 2]);
+
+      expect(point.containsXY(1, 3)).to.be(false);
+      expect(point.containsXY(2, 2)).to.be(false);
+      expect(point.containsXY(2, 3)).to.be(false);
+    });
+
+  });
+
 });

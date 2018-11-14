@@ -287,4 +287,27 @@ describe('ol.geom.MultiPoint', function() {
 
   });
 
+  describe('#containsXY()', function() {
+
+    it('does contain XY', function() {
+      const multi = new MultiPoint([[1, 2], [10, 20]]);
+
+      expect(multi.containsXY(1, 2)).to.be(true);
+      expect(multi.containsXY(10, 20)).to.be(true);
+    });
+
+    it('does not contain XY', function() {
+      const multi = new MultiPoint([[1, 2], [10, 20]]);
+
+      expect(multi.containsXY(1, 3)).to.be(false);
+      expect(multi.containsXY(2, 2)).to.be(false);
+      expect(multi.containsXY(2, 3)).to.be(false);
+
+      expect(multi.containsXY(10, 30)).to.be(false);
+      expect(multi.containsXY(20, 20)).to.be(false);
+      expect(multi.containsXY(20, 30)).to.be(false);
+    });
+
+  });
+
 });

@@ -355,4 +355,30 @@ describe('ol.geom.MultiLineString', function() {
     });
   });
 
+  describe('#containsXY()', function() {
+
+    let multiLineString;
+    beforeEach(function() {
+      multiLineString = new MultiLineString(
+        [[[1, 2, 3], [4, 5, 6]], [[-1, -1, 9], [2, 2, 12]]]);
+    });
+
+    it('does contain XY', function() {
+      expect(multiLineString.containsXY(1, 2)).to.be(true);
+      expect(multiLineString.containsXY(4, 5)).to.be(true);
+      expect(multiLineString.containsXY(3, 4)).to.be(true);
+
+      expect(multiLineString.containsXY(-1, -1)).to.be(true);
+      expect(multiLineString.containsXY(2, 2)).to.be(true);
+      expect(multiLineString.containsXY(0, 0)).to.be(true);
+    });
+
+    it('does not contain XY', function() {
+      expect(multiLineString.containsXY(1, 3)).to.be(false);
+      expect(multiLineString.containsXY(2, 11)).to.be(false);
+      expect(multiLineString.containsXY(-2, 3)).to.be(false);
+    });
+
+  });
+
 });
