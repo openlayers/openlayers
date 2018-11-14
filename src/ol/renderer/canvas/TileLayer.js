@@ -378,13 +378,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @inheritDoc
-   */
-  getImageTransform() {
-    return this.imageTransform_;
-  }
-
-  /**
    * Get the image from a tile.
    * @param {import("../../Tile.js").default} tile Tile.
    * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
