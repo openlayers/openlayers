@@ -127,8 +127,14 @@ class IntermediateCanvasRenderer extends CanvasLayerRenderer {
   clear(frameState) {
     const pixelRatio = frameState.pixelRatio;
     const canvas = this.layerContext.canvas;
-    const width = Math.round(frameState.size[0] * pixelRatio);
-    const height = Math.round(frameState.size[1] * pixelRatio);
+
+    let width = Math.round(frameState.size[0] * pixelRatio);
+    let height = Math.round(frameState.size[1] * pixelRatio);
+    const rotation = frameState.viewState.rotation;
+    if (rotation) {
+      const size = Math.round(Math.sqrt(width * width + height * height));
+      width = height = size;
+    }
 
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
