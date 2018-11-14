@@ -103,12 +103,15 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    */
   render(frameState, layerState) {
     const replayGroup = this.replayGroup_;
-    if (!replayGroup || replayGroup.isEmpty()) {
-      return;
-    }
-
     const context = this.context;
     const canvas = context.canvas;
+
+    if (!replayGroup || replayGroup.isEmpty()) {
+      if (canvas.width > 0) {
+        canvas.width = 0;
+      }
+      return;
+    }
 
     const extent = frameState.extent;
     const pixelRatio = frameState.pixelRatio;
