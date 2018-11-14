@@ -4,7 +4,7 @@
 import {getUid} from '../../util.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
-import {createEmpty, getIntersection} from '../../extent.js';
+import {createEmpty, getIntersection, getTopLeft} from '../../extent.js';
 import {createCanvasContext2D} from '../../dom.js';
 import CanvasLayerRenderer from './Layer.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
@@ -266,13 +266,17 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       const currentScale = currentResolution / tileResolution;
       const w = currentTilePixelSize[0] * currentScale;
       const h = currentTilePixelSize[1] * currentScale;
+      const originTileCoord = tileGrid.getTileCoordForCoordAndZ(getTopLeft(canvasExtent), currentZ);
+      const originTileExtent = tileGrid.getTileCoordExtent(originTileCoord);
+      const originX = Math.round(tilePixelRatio * (originTileExtent[0] - canvasExtent[0]) / tileResolution);
+      const originY = Math.round(tilePixelRatio * (canvasExtent[3] - originTileExtent[3]) / tileResolution);
       const tileGutter = tilePixelRatio * tileSource.getGutterForProjection(projection);
       const tilesToDraw = tilesToDrawByZ[currentZ];
       for (const tileCoordKey in tilesToDraw) {
         const tile = tilesToDraw[tileCoordKey];
-        const tileExtent = tileGrid.getTileCoordExtent(tile.getTileCoord(), tmpExtent);
-        const x = Math.round(tilePixelRatio * (tileExtent[0] - canvasExtent[0]) / tileResolution);
-        const y = Math.round(tilePixelRatio * (canvasExtent[3] - tileExtent[3]) / tileResolution);
+        const tileCoord = tile.tileCoord;
+        const x = originX - (originTileCoord[1] - tileCoord[1]) * w;
+        const y = originY + (originTileCoord[2] - tileCoord[2]) * h;
         this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
         this.renderedTiles.push(tile);
       }
