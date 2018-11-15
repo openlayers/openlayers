@@ -3,27 +3,27 @@
  */
 import VectorLayer from './Vector.js';
 import {assign} from '../obj.js';
-import {degreesToStringHDMS} from "../coordinate";
-import Text from "../style/Text";
-import Fill from "../style/Fill";
-import Stroke from "../style/Stroke";
+import {degreesToStringHDMS} from '../coordinate';
+import Text from '../style/Text';
+import Fill from '../style/Fill';
+import Stroke from '../style/Stroke';
 import LineString from '../geom/LineString.js';
-import VectorSource from "../source/Vector";
+import VectorSource from '../source/Vector';
 import {
   equivalent as equivalentProjection,
   get as getProjection,
   getTransform,
   transformExtent
-} from "../proj";
-import {getCenter, intersects, equals, getIntersection, isEmpty} from '../extent'
-import {clamp} from "../math";
-import Style from "../style/Style";
-import Feature from "../Feature";
-import {bbox} from "../loadingstrategy";
-import {meridian, parallel} from "../geom/flat/geodesic";
-import GeometryLayout from "../geom/GeometryLayout";
-import Point from "../geom/Point";
-import Collection from "../Collection";
+} from '../proj';
+import {getCenter, intersects, equals, getIntersection, isEmpty} from '../extent';
+import {clamp} from '../math';
+import Style from '../style/Style';
+import Feature from '../Feature';
+import {bbox} from '../loadingstrategy';
+import {meridian, parallel} from '../geom/flat/geodesic';
+import GeometryLayout from '../geom/GeometryLayout';
+import Point from '../geom/Point';
+import Collection from '../Collection';
 
 
 /**
@@ -313,16 +313,17 @@ class Graticule extends VectorLayer {
         options.latLabelPosition;
 
       /**
-       * @type {Object.<string,function(Feature):Style>}
+       * @type {Object.<string,Style>}
        * @private
        */
       this.lonLabelStyleCache_ = {};
 
       /**
-       * @type {function(Feature):Style}
        * @private
+       * @param {import("../Feature").default} feature Feature
+       * @return {Style} style
        */
-      this.lonLabelStyle_ = function (feature) {
+      this.lonLabelStyle_ = function(feature) {
         const label = feature.get('graticule_label');
         if (!this.lonLabelStyleCache_[label]) {
           this.lonLabelStyleCache_[label] = new Style({
@@ -345,16 +346,17 @@ class Graticule extends VectorLayer {
       }.bind(this);
 
       /**
-       * @type {Object.<string,function(Feature):Style>}
+       * @type {Object.<string,Style>}
        * @private
        */
       this.latLabelStyleCache_ = {};
 
       /**
-       * @type {function(Feature):Style}
        * @private
+       * @param {import("../Feature").default} feature Feature
+       * @return {Style} style
        */
-      this.latLabelStyle_ = function (feature) {
+      this.latLabelStyle_ = function(feature) {
         const label = feature.get('graticule_label');
         if (!this.latLabelStyleCache_[label]) {
           this.latLabelStyleCache_[label] = new Style({
@@ -430,6 +432,9 @@ class Graticule extends VectorLayer {
 
   /**
    * Update geometries in the source based on current view
+   * @param {import("../extent").Extent} extent Extent
+   * @param {number} resolution Resolution
+   * @param {import("../proj/Projection.js").default} projection Projection
    */
   loaderFunction(extent, resolution, projection) {
     const source = /** @type import("../source/Vector").default} */ (this.getSource());
@@ -439,7 +444,7 @@ class Graticule extends VectorLayer {
     const renderExtent = getIntersection(layerExtent, extent, this.tmpExtent_);
 
     // we should not keep track of loaded extents
-    setTimeout(function () {
+    setTimeout(function() {
       source.removeLoadedExtent(extent);
     }, 0);
 
