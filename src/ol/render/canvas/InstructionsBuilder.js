@@ -3,14 +3,13 @@
  */
 import {equals, reverseSubArray} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
-import {buffer, clone, coordinateRelationship,
-  createOrUpdateEmpty} from '../../extent.js';
+import {buffer, clone, coordinateRelationship} from '../../extent.js';
 import Relationship from '../../extent/Relationship.js';
 import GeometryType from '../../geom/GeometryType.js';
 import {inflateCoordinates, inflateCoordinatesArray, inflateMultiCoordinatesArray} from '../../geom/flat/inflate.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
 import VectorContext from '../VectorContext.js';
-import {drawImage, resetTransform, defaultFillStyle, defaultStrokeStyle,
+import {resetTransform, defaultFillStyle, defaultStrokeStyle,
   defaultMiterLimit, defaultLineWidth, defaultLineJoin, defaultLineDashOffset,
   defaultLineDash, defaultLineCap} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
@@ -347,42 +346,6 @@ class CanvasInstructionsBuilder extends VectorContext {
     if (CANVAS_LINE_DASH) {
       context.lineDashOffset = /** @type {number} */ (instruction[7]);
       context.setLineDash(/** @type {Array<number>} */ (instruction[6]));
-    }
-  }
-
-  /**
-   * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
-   * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
-   */
-  renderDeclutter_(declutterGroup, feature) {
-    if (declutterGroup && declutterGroup.length > 5) {
-      const groupCount = declutterGroup[4];
-      if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
-        /** @type {import("../../structs/RBush.js").Entry} */
-        const box = {
-          minX: /** @type {number} */ (declutterGroup[0]),
-          minY: /** @type {number} */ (declutterGroup[1]),
-          maxX: /** @type {number} */ (declutterGroup[2]),
-          maxY: /** @type {number} */ (declutterGroup[3]),
-          value: feature
-        };
-        if (!this.declutterTree.collides(box)) {
-          this.declutterTree.insert(box);
-          for (let j = 5, jj = declutterGroup.length; j < jj; ++j) {
-            const declutterData = /** @type {Array} */ (declutterGroup[j]);
-            if (declutterData) {
-              if (declutterData.length > 11) {
-                this.replayTextBackground_(declutterData[0],
-                  declutterData[13], declutterData[14], declutterData[15], declutterData[16],
-                  declutterData[11], declutterData[12]);
-              }
-              drawImage.apply(undefined, declutterData);
-            }
-          }
-        }
-        declutterGroup.length = 5;
-        createOrUpdateEmpty(declutterGroup);
-      }
     }
   }
 
