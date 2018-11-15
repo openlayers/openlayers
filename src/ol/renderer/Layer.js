@@ -158,7 +158,7 @@ class LayerRenderer extends Observable {
   renderIfReadyAndVisible() {
     const layer = this.getLayer();
     if (layer.getVisible() && layer.getSourceState() == SourceState.READY) {
-      this.changed();
+      layer.changed();
     }
   }
 
