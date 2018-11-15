@@ -42,7 +42,7 @@ The `getUid` function from the `ol/util` module now returns a string instead of 
 
 When a map contains a layer from a `ol/source/OSM` source, the `ol/control/Attribution` control will be shown with the `collapsible: false` behavior.
 
-To get the previous behavior, configure the `ol/control/Attribution` control with `collapsible: true`. 
+To get the previous behavior, configure the `ol/control/Attribution` control with `collapsible: true`.
 
 ### v5.2.0
 

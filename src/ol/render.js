@@ -2,7 +2,7 @@
  * @module ol/render
  */
 import {DEVICE_PIXEL_RATIO} from './has.js';
-import {create as createTransform, scale as scaleTransform} from './transform.js';
+import {apply as applyTransform, create as createTransform, scale as scaleTransform} from './transform.js';
 import CanvasImmediateRenderer from './render/canvas/Immediate.js';
 
 
@@ -76,4 +76,28 @@ export function toContext(context, opt_options) {
   const extent = [0, 0, canvas.width, canvas.height];
   const transform = scaleTransform(createTransform(), pixelRatio, pixelRatio);
   return new CanvasImmediateRenderer(context, pixelRatio, extent, transform, 0);
+}
+
+/**
+ * Gets a vector context for drawing to 
+ * @param {import("./render/Event.js").default} event Render event.
+ */
+export function getVectorContext(event) {
+  const frameState = event.frameState;
+  return new CanvasImmediateRenderer(
+    event.context, frameState.pixelRatio, frameState.extent,
+    event.pixelTransform, frameState.viewState.rotation);
+}
+
+/**
+ * Gets the pixel of the event's canvas context from the map viewport's css pixel
+ * @param {import("./render/Event.js").default} event Render event.
+ * @param {import("./pixel.js").Pixel} pixel Css pixel relative to the top-left
+ * corner of the map viewport.
+ * @api
+ */
+export function getPixelFromPixel(event, pixel) {
+  const result = pixel.slice(0);
+  applyTransform(event.pixelTransform, pixel);
+  return result;
 }

@@ -73,6 +73,12 @@ class VectorImageTile extends Tile {
     this.sourceTiles_ = sourceTiles;
 
     /**
+     * @private
+     * @type {boolean}
+     */
+    this.sourceTilesLoaded = false;
+
+    /**
      * Keys of source tiles used by this tile. Use with {@link #getTile}.
      * @type {Array<string>}
      */
@@ -312,7 +318,8 @@ class VectorImageTile extends Tile {
     if (loaded == this.tileKeys.length) {
       this.loadListenerKeys_.forEach(unlistenByKey);
       this.loadListenerKeys_.length = 0;
-      this.setState(TileState.LOADED);
+      this.sourceTilesLoaded = true;
+      this.changed();
     } else {
       this.setState(empty == this.tileKeys.length ? TileState.EMPTY : TileState.ERROR);
     }

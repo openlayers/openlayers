@@ -83,25 +83,21 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @param {import("../../render/EventType.js").default} type Event type.
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../transform.js").Transform=} opt_transform Transform.
+   * @param {import("../../transform.js").Transform} pixelTransform Transform.
    * @private
    */
-  dispatchComposeEvent_(type, context, frameState, opt_transform) {
+  dispatchComposeEvent_(type, context, frameState, pixelTransform) {
     const layer = this.getLayer();
     if (layer.hasListener(type)) {
       const halfWidth = (frameState.size[0] * frameState.pixelRatio) / 2;
       const halfHeight = (frameState.size[1] * frameState.pixelRatio) / 2;
       const rotation = frameState.viewState.rotation;
-      rotateAtOffset(context, -rotation, halfWidth, halfHeight);
-      const transform = opt_transform !== undefined ?
-        opt_transform : this.getTransform(frameState, 0);
       const render = new CanvasImmediateRenderer(
-        context, frameState.pixelRatio, frameState.extent, transform,
+        context, frameState.pixelRatio, frameState.extent, pixelTransform,
         frameState.viewState.rotation);
-      const composeEvent = new RenderEvent(type, render, frameState,
+      const composeEvent = new RenderEvent(type, pixelTransform, frameState,
         context, null);
       layer.dispatchEvent(composeEvent);
-      rotateAtOffset(context, rotation, halfWidth, halfHeight);
     }
   }
 
