@@ -6,7 +6,7 @@ import Text from '../../../../../src/ol/style/Text.js';
 
 describe('ol.render.canvas.TextReplay', function() {
 
-  it('renders polygon labels only when they fit', function() {
+  it('always build rendering instructions for polygon labels', function() {
     const replay = new CanvasTextReplay(1, [-180, -90, 180, 90], 0.02, 1, true);
     const geometry = new Polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]]);
     const feature = new Feature(geometry);
@@ -15,8 +15,9 @@ describe('ol.render.canvas.TextReplay', function() {
       text: 'This is a long text'
     }));
     replay.drawText(geometry, feature);
-    expect(replay.instructions.length).to.be(0);
+    expect(replay.instructions.length).to.be(3);
 
+    replay.instructions.length = 0;
     replay.setTextStyle(new Text({
       text: 'short'
     }));
@@ -24,7 +25,7 @@ describe('ol.render.canvas.TextReplay', function() {
     expect(replay.instructions.length).to.be(3);
   });
 
-  it('renders multipolygon labels only when they fit', function() {
+  it('always build rendering instructinos for multipolygon labels', function() {
     const replay = new CanvasTextReplay(1, [-180, -90, 180, 90], 0.02, 1, true);
     const geometry = new MultiPolygon([
       [[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]],
@@ -36,8 +37,9 @@ describe('ol.render.canvas.TextReplay', function() {
       text: 'This is a long text'
     }));
     replay.drawText(geometry, feature);
-    expect(replay.instructions.length).to.be(0);
+    expect(replay.instructions.length).to.be(3);
 
+    replay.instructions.length = 0;
     replay.setTextStyle(new Text({
       text: 'short'
     }));
