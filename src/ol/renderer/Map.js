@@ -215,15 +215,6 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @param {string} layerKey Layer key.
-   * @protected
-   * @return {import("./Layer.js").default} Layer renderer.
-   */
-  getLayerRendererByKey(layerKey) {
-    return this.layerRenderers_[layerKey];
-  }
-
-  /**
    * @protected
    * @return {Object<string, import("./Layer.js").default>} Layer renderers.
    */
