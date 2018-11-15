@@ -130,6 +130,9 @@ class CompositeMapRenderer extends MapRenderer {
       const layer = layerState.layer;
       if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
         const layerRenderer = this.getLayerRenderer(layer);
+        if (!layerRenderer) {
+          continue;
+        }
         result = layerRenderer.forEachLayerAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
         if (result) {
           return result;
