@@ -11,7 +11,7 @@ import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
 import RenderEventType from '../../render/EventType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
 import CanvasBuilderGroup from '../../render/canvas/InstructionsGroupBuilder.js';
-import InstructionsGroupExecutor from '../../render/canvas/InstructionsGroupExecutor.js';
+import InstructionsGroupExecutor from '../../render/canvas/ExecutorGroup.js';
 import CanvasLayerRenderer from './Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 
@@ -67,7 +67,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../render/canvas/InstructionsGroupExecutor").default}
+     * @type {import("../../render/canvas/ExecutorGroup").default}
      */
     this.replayGroup_ = null;
 

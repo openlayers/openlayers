@@ -11,7 +11,7 @@ import CanvasLineStringBuilder from '../../../../../src/ol/render/canvas/LineStr
 import CanvasPolygonBuilder from '../../../../../src/ol/render/canvas/PolygonBuilder.js';
 import CanvasReplay from '../../../../../src/ol/render/canvas/InstructionsBuilder.js';
 import CanvasInstructionsGroupBuilder from '../../../../../src/ol/render/canvas/InstructionsGroupBuilder.js';
-import CanvasInstructionsGroupExecutor from '../../../../../src/ol/render/canvas/InstructionsGroupExecutor.js';
+import CanvasInstructionsGroupExecutor from '../../../../../src/ol/render/canvas/ExecutorGroup.js';
 import {renderFeature} from '../../../../../src/ol/renderer/vector.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';

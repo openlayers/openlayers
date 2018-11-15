@@ -24,7 +24,7 @@ import {
   scale as scaleTransform,
   translate as translateTransform
 } from '../../transform.js';
-import CanvasGroupExecutor from '../../render/canvas/InstructionsGroupExecutor.js';
+import CanvasGroupExecutor from '../../render/canvas/ExecutorGroup.js';
 
 
 /**

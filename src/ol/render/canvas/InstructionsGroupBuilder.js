@@ -300,13 +300,6 @@ class CanvasBuilderGroup extends BuilderGroup {
   }
 
   /**
-   * @return {import("../../extent.js").Extent} The extent of the replay group.
-   */
-  getMaxExtent() {
-    return this.maxExtent_;
-  }
-
-  /**
    * @inheritDoc
    */
   getBuilder(zIndex, replayType) {

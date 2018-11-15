@@ -1,5 +1,5 @@
 /**
- * @module ol/render/canvas/InstructionsGroupExecutor
+ * @module ol/render/canvas/ExecutorGroup
  */
 
 import {numberSafeCompareFunction} from '../../array.js';
@@ -7,14 +7,14 @@ import {createCanvasContext2D} from '../../dom.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {isEmpty} from '../../obj.js';
-import ExecutorGroup from '../ExecutorGroup.js';
+import BaseExecutorGroup from '../ExecutorGroup.js';
 import ReplayType from '../ReplayType.js';
 import {ORDER} from '../replay.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 import CanvasInstructionsExecutor from './InstructionsExecutor.js';
 
 
-class InstructionsGroupExectuor extends ExecutorGroup {
+class ExecutorGroup extends BaseExecutorGroup {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Max extent.
@@ -85,7 +85,7 @@ class InstructionsGroupExectuor extends ExecutorGroup {
 
     /**
      * @private
-     * @type {!Object<string, !Object<ReplayType, CanvasReplay>>}
+     * @type {!Object<string, !Object<ReplayType, import("./InstructionsExecutor").default>>}
      */
     this.executorsByZIndex_ = {};
 
@@ -100,23 +100,6 @@ class InstructionsGroupExectuor extends ExecutorGroup {
      * @type {import("../../transform.js").Transform}
      */
     this.hitDetectionTransform_ = createTransform();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  addDeclutter(group) {
-    let declutter = null;
-    if (this.declutterTree_) {
-      if (group) {
-        declutter = this.declutterGroup_;
-        /** @type {number} */ (declutter[4])++;
-      } else {
-        declutter = this.declutterGroup_ = createEmpty();
-        declutter.push(1);
-      }
-    }
-    return declutter;
   }
 
   /**
@@ -297,6 +280,13 @@ class InstructionsGroupExectuor extends ExecutorGroup {
     transform2D(
       flatClipCoords, 0, 8, 2, transform, flatClipCoords);
     return flatClipCoords;
+  }
+
+  /**
+   * @return {import("../../extent.js").Extent} The extent of the replay group.
+   */
+  getMaxExtent() {
+    return this.maxExtent_;
   }
 
   /**
@@ -488,4 +478,4 @@ export function replayDeclutter(declutterReplays, context, rotation, snapToPixel
 }
 
 
-export default InstructionsGroupExectuor;
+export default ExecutorGroup;
