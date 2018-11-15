@@ -18,4 +18,4 @@ new Map({
   })
 });
 
-render('A single layer with a XZY source');
+render({message: 'A single layer with a XZY source'});

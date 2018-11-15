@@ -154,17 +154,17 @@ async function exposeRender(page) {
 
 async function renderPage(page, entry, options) {
   const renderCalled = new Promise(resolve => {
-    handleRender = (message) => {
+    handleRender = (config) => {
       handleRender = null;
-      resolve(message);
+      resolve(config || {});
     };
   });
   options.log.debug('navigating', entry);
   await page.goto(`http://${options.host}:${options.port}${getHref(entry)}`, {waitUntil: 'networkidle0'});
-  const message = await renderCalled;
+  const config = await renderCalled;
   options.log.debug('screenshot', entry);
   await page.screenshot({path: getActualScreenshotPath(entry)});
-  return message;
+  return config;
 }
 
 async function touch(filepath) {
@@ -182,8 +182,9 @@ async function copyActualToExpected(entry) {
 async function renderEach(page, entries, options) {
   let fail = false;
   for (const entry of entries) {
-    let message = await renderPage(page, entry, options);
-    message = message !== undefined ? message : entry;
+    const config = await renderPage(page, entry, options);
+    const message = config.message !== undefined ? config.message : entry;
+    const tolerance = config.tolerance !== undefined ? config.tolerance : 0;
     if (options.fix) {
       await copyActualToExpected(entry);
       continue;
@@ -194,7 +195,7 @@ async function renderEach(page, entries, options) {
       fail = true;
       continue;
     }
-    if (mismatch > 0) {
+    if (mismatch > tolerance) {
       options.log.error(`checking '${message}': mismatch ${mismatch.toFixed(3)}`);
       fail = true;
     } else {
