@@ -9,13 +9,17 @@ import Fill from "../style/Fill";
 import Stroke from "../style/Stroke";
 import LineString from '../geom/LineString.js';
 import VectorSource from "../source/Vector";
-import {equivalent as equivalentProjection, get as getProjection, getTransform, transformExtent} from "../proj";
-import {getCenter, intersects, equals} from '../extent'
+import {
+  equivalent as equivalentProjection,
+  get as getProjection,
+  getTransform,
+  transformExtent
+} from "../proj";
+import {getCenter, intersects, equals, getIntersection, isEmpty} from '../extent'
 import {clamp} from "../math";
 import Style from "../style/Style";
 import Feature from "../Feature";
-import {all, bbox} from "../loadingstrategy";
-import GeometryCollection from "../geom/GeometryCollection";
+import {bbox} from "../loadingstrategy";
 import {meridian, parallel} from "../geom/flat/geodesic";
 import GeometryLayout from "../geom/GeometryLayout";
 import Point from "../geom/Point";
@@ -420,6 +424,8 @@ class Graticule extends VectorLayer {
 
     this.updateWhileAnimating_ = true;
     this.updateWhileInteracting_ = true;
+
+    this.tmpExtent_ = null;
   }
 
   /**
@@ -428,17 +434,27 @@ class Graticule extends VectorLayer {
   loaderFunction(extent, resolution, projection) {
     const source = /** @type import("../source/Vector").default} */ (this.getSource());
 
+    // only consider the intersection between our own extent & the requested one
+    const layerExtent = this.getExtent() || [-Infinity, -Infinity, Infinity, Infinity];
+    const renderExtent = getIntersection(layerExtent, extent, this.tmpExtent_);
+
     // we should not keep track of loaded extents
     setTimeout(function () {
       source.removeLoadedExtent(extent);
     }, 0);
 
-    if (this.renderedExtent_ && equals(this.renderedExtent_, extent)) {
+    if (this.renderedExtent_ && equals(this.renderedExtent_, renderExtent)) {
+      return;
+    }
+    this.renderedExtent_ = renderExtent;
+
+    // bail out if nothing to render
+    if (isEmpty(renderExtent)) {
       return;
     }
 
     // update projection info
-    const center = getCenter(extent);
+    const center = getCenter(renderExtent);
     const squaredTolerance = resolution * resolution / 4;
 
     const updateProjectionInfo = !this.projection_ ||
@@ -448,12 +464,16 @@ class Graticule extends VectorLayer {
       this.updateProjectionInfo_(projection);
     }
 
-    this.createGraticule_(extent, center, resolution, squaredTolerance);
+    this.createGraticule_(renderExtent, center, resolution, squaredTolerance);
 
     // first make sure we have enough features in the pool
     let featureCount = this.meridians_.length + this.parallels_.length;
-    if (this.meridiansLabels_) { featureCount += this.meridiansLabels_.length; }
-    if (this.parallelsLabels_) { featureCount += this.parallelsLabels_.length; }
+    if (this.meridiansLabels_) {
+      featureCount += this.meridiansLabels_.length;
+    }
+    if (this.parallelsLabels_) {
+      featureCount += this.parallelsLabels_.length;
+    }
 
     let feature;
     while (featureCount > this.featurePool_.length) {
