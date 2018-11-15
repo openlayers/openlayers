@@ -7,7 +7,6 @@ import {equals} from '../../array.js';
 import {getHeight, getWidth, isEmpty} from '../../extent.js';
 import {assign} from '../../obj.js';
 import CanvasImageLayerRenderer from './ImageLayer.js';
-import {compose as composeTransform} from '../../transform.js';
 import CanvasVectorLayerRenderer from './VectorLayer.js';
 
 /**
@@ -49,9 +48,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
    */
   prepareFrame(frameState, layerState) {
     const pixelRatio = frameState.pixelRatio;
-    const size = frameState.size;
     const viewState = frameState.viewState;
-    const viewCenter = viewState.center;
     const viewResolution = viewState.resolution;
 
     const hints = frameState.viewHints;
@@ -90,25 +87,8 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
 
     if (this.image_) {
       const image = this.image_;
-      const imageExtent = image.getExtent();
       const imageResolution = image.getResolution();
       const imagePixelRatio = image.getPixelRatio();
-      const scale = pixelRatio * imageResolution /
-          (viewResolution * imagePixelRatio);
-
-      const transform = composeTransform(this.transform_,
-        pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
-        scale, scale,
-        0,
-        imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
-        imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
-
-      composeTransform(this.coordinateToCanvasPixelTransform,
-        pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
-        pixelRatio / viewResolution, -pixelRatio / viewResolution,
-        0,
-        -viewCenter[0], -viewCenter[1]);
-
       this.renderedResolution = imageResolution * pixelRatio / imagePixelRatio;
     }
 

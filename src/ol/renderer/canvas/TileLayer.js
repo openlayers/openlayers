@@ -6,7 +6,7 @@ import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import {createEmpty, getIntersection, getTopLeft} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
-import {create as createTransform, compose as composeTransform, toString as transformToString} from '../../transform.js';
+import {compose as composeTransform, toString as transformToString} from '../../transform.js';
 
 /**
  * @classdesc
@@ -20,12 +20,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    */
   constructor(tileLayer) {
     super(tileLayer);
-
-    /**
-     * @protected
-     * @type {import("../../transform.js").Transform}
-     */
-    this.coordinateToCanvasPixelTransform = createTransform();
 
     /**
      * @private

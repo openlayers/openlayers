@@ -6,7 +6,7 @@ import ViewHint from '../../ViewHint.js';
 import {containsExtent, intersects} from '../../extent.js';
 import {getIntersection, isEmpty} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
-import {create as createTransform, compose as composeTransform, toString as transformToString} from '../../transform.js';
+import {compose as composeTransform, toString as transformToString} from '../../transform.js';
 
 /**
  * @classdesc
@@ -20,12 +20,6 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
    */
   constructor(imageLayer) {
     super(imageLayer);
-
-    /**
-     * @protected
-     * @type {import("../../transform.js").Transform}
-     */
-    this.coordinateToCanvasPixelTransform = createTransform();
 
     /**
      * @protected
