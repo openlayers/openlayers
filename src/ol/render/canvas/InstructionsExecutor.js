@@ -722,7 +722,7 @@ class CanvasInstructionsExecutor {
           let widthIndex = 0;
           for (; d < dd; d += 2) {
             if (geometryWidths) {
-              if (geometryWidths[widthIndex++] < width) {
+              if (geometryWidths[widthIndex++] < width / this.pixelRatio) {
                 continue;
               }
             }
