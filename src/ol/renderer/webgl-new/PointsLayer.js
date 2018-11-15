@@ -72,8 +72,8 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
 
     const vertexShader = new WebGLVertex(options.vertexShader || VERTEX_SHADER);
     const fragmentShader = new WebGLFragment(options.fragmentShader || FRAGMENT_SHADER);
-    const program = this.context_.getProgram(fragmentShader, vertexShader);
-    this.context_.useProgram(program);
+    this.program_ = this.context_.getProgram(fragmentShader, vertexShader);
+    this.context_.useProgram(this.program_);
 
     this.sizeCallback_ = options.sizeCallback || function(feature) {
       return 1;
@@ -95,10 +95,10 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
    * @inheritDoc
    */
   renderFrame(frameState, layerState) {
-    this.context_.prepareDraw(frameState.size, frameState.pixelRatio);
     this.context_.applyFrameState(frameState);
     this.context_.setUniformFloatValue(DefaultUniform.OPACITY, layerState.opacity);
     this.context_.drawElements(0, this.indicesBuffer_.getArray().length);
+    this.context_.finalizeDraw();
     return this.context_.getCanvas();
   }
 
@@ -108,6 +108,8 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
   prepareFrame(frameState) {
     const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const vectorSource = /** @type {import("../../source/Vector.js").default} */ (vectorLayer.getSource());
+
+    this.context_.prepareDraw(frameState.size, frameState.pixelRatio);
 
     if (this.sourceRevision_ < vectorSource.getRevision()) {
       this.sourceRevision_ = vectorSource.getRevision();
@@ -140,16 +142,16 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
           baseIndex + 1, baseIndex + 2, baseIndex + 3
         );
       });
-
-      // write new data
-      this.context_.bindBuffer(ARRAY_BUFFER, this.verticesBuffer_);
-      this.context_.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
-
-      let bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
-      this.context_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * 6, 0);
-      this.context_.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 2);
-      this.context_.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 4);
     }
+
+    // write new data
+    this.context_.bindBuffer(ARRAY_BUFFER, this.verticesBuffer_);
+    this.context_.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+
+    let bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
+    this.context_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * 6, 0);
+    this.context_.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 2);
+    this.context_.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 4);
 
     return true;
   }

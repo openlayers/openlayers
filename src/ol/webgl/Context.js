@@ -9,7 +9,6 @@ import {listen, unlistenAll} from '../events.js';
 import {clear} from '../obj.js';
 import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TEXTURE_2D, TEXTURE_WRAP_S, TEXTURE_WRAP_T} from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
-import {BLEND, COLOR_BUFFER_BIT, FLOAT, TRIANGLES, UNSIGNED_INT, UNSIGNED_SHORT} from "../webgl";
 import {
   create as createTransform,
   reset as resetTransform,
@@ -18,6 +17,9 @@ import {
   translate as translateTransform
 } from "../transform";
 import {create, fromTransform} from "../vec/mat4";
+import WebGLBuffer from "./Buffer";
+import WebGLVertex from "./Vertex";
+import WebGLFragment from "./Fragment";
 
 
 /**
@@ -41,9 +43,40 @@ export const DefaultAttrib = {
   OFFSETS: 'a_offsets'
 };
 
+const FRAMEBUFFER_VERTEX_SHADER = `
+  precision mediump float;
+  
+  attribute vec2 a_position;
+  varying vec2 v_texCoord;
+  varying vec2 v_screenCoord;
+  
+  uniform vec2 u_screenSize;
+   
+  void main() {
+    v_texCoord = a_position * 0.5 + 0.5;
+    v_screenCoord = v_texCoord * u_screenSize;
+    gl_Position = vec4(a_position, 0.0, 1.0);
+  }
+`;
+
+const FRAMEBUFFER_FRAGMENT_SHADER = `
+  precision mediump float;
+   
+  uniform sampler2D u_image;
+   
+  varying vec2 v_texCoord;
+  varying vec2 v_screenCoord;
+   
+  void main() {
+    gl_FragColor = texture2D(u_image, v_texCoord);
+  }
+`;
+
 /**
  * @classdesc
  * A WebGL context for accessing low-level WebGL capabilities.
+ * Will handle attributes, uniforms, buffers, textures, frame buffers.
+ * The context will always render to a frame buffer in order to allow post-processing.
  */
 class WebGLContext extends Disposable {
 
@@ -140,6 +173,36 @@ class WebGLContext extends Disposable {
      * @type {Object.<string, number>}
      */
     this.attribLocations_;
+
+
+    const gl = this.getGL();
+
+    this.renderTargetTexture_ = gl.createTexture();
+    this.renderTargetTextureSize_ = null;
+
+    this.frameBuffer_ = gl.createFramebuffer();
+
+
+    // compile the program for the frame buffer
+    const vertexShader = new WebGLVertex(FRAMEBUFFER_VERTEX_SHADER);
+    const fragmentShader = new WebGLFragment(FRAMEBUFFER_FRAGMENT_SHADER);
+    this.renderTargetProgram_ = this.getProgram(fragmentShader, vertexShader);
+
+    // bind the vertices buffer for the frame buffer
+    this.renderTargetVerticesBuffer_ = new WebGLBuffer([
+      -1, -1,
+      1, -1,
+      -1, 1,
+      1, -1,
+      1, 1,
+      -1, 1
+    ], gl.STATIC_DRAW);
+
+    this.renderTargetAttribLocation_ = gl.getAttribLocation(this.renderTargetProgram_, 'a_position');
+    this.renderTargetUniformLocation_ = gl.getUniformLocation(this.renderTargetProgram_, 'u_screenSize');
+    this.renderTargetTextureLocation_ = gl.getUniformLocation(this.renderTargetProgram_, 'u_image');
+
+    this.aa = this.createEmptyTexture(256, 256);
   }
 
   /**
@@ -148,7 +211,7 @@ class WebGLContext extends Disposable {
    * the cache.
    * TODO: improve this, the logic is unclear: we want A/ to bind a buffer and B/ to flush data in it
    * @param {number} target Target.
-   * @param {import("./Buffer.js").default} buf Buffer.
+   * @param {WebGLBuffer} buf Buffer.
    */
   bindBuffer(target, buf) {
     const gl = this.getGL();
@@ -209,13 +272,46 @@ class WebGLContext extends Disposable {
    * Clear the buffer & set the viewport to draw
    */
   prepareDraw(size, pixelRatio) {
-    const canvas = this.getCanvas();
-    canvas.width = size[0] * pixelRatio;
-    canvas.height = size[1] * pixelRatio;
-    canvas.style.width = size[0] + 'px';
-    canvas.style.height = size[1] + 'px';
-
     const gl = this.getGL();
+    const canvas = this.getCanvas();
+
+    gl.useProgram(this.currentProgram_);
+
+    // the initial rendering is done on the buffer
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer_);
+
+    // if size has changed: adjust canvas & render target texture
+    if (!this.renderTargetTextureSize_ ||
+      this.renderTargetTextureSize_[0] !== size[0] || this.renderTargetTextureSize_[1] !== size[1]) {
+      this.renderTargetTextureSize_ = size;
+
+      canvas.width = size[0] * pixelRatio;
+      canvas.height = size[1] * pixelRatio;
+      canvas.style.width = size[0] + 'px';
+      canvas.style.height = size[1] + 'px';
+
+      // create a new texture
+      const level = 0;
+      const internalFormat = gl.RGBA;
+      const border = 0;
+      const format = gl.RGBA;
+      const type = gl.UNSIGNED_BYTE;
+      const data = null;
+      gl.bindTexture(gl.TEXTURE_2D, this.renderTargetTexture_);
+      gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
+        canvas.width, canvas.height, border,
+        format, type, data);
+
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+      // bind the texture to the framebuffer
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.renderTargetTexture_, 0);
+    }
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.enable(gl.BLEND);
@@ -229,13 +325,40 @@ class WebGLContext extends Disposable {
    * @param {number} end End index.
    */
   drawElements(start, end) {
+    const gl = this.getGL();
     const elementType = this.hasOESElementIndexUint ?
-      UNSIGNED_INT : UNSIGNED_SHORT;
+      gl.UNSIGNED_INT : gl.UNSIGNED_SHORT;
     const elementSize = this.hasOESElementIndexUint ? 4 : 2;
 
     const numItems = end - start;
     const offsetInBytes = start * elementSize;
-    this.getGL().drawElements(TRIANGLES, numItems, elementType, offsetInBytes);
+    gl.drawElements(gl.TRIANGLES, numItems, elementType, offsetInBytes);
+  }
+
+  /**
+   * Copy the frame buffer to the canvas
+   */
+  finalizeDraw() {
+    const gl = this.getGL();
+    const canvas = this.getCanvas();
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.bindTexture(gl.TEXTURE_2D, this.renderTargetTexture_);
+
+    // render the frame buffer to the canvas
+    gl.clearColor(0.0, 0.0, 0.0, 0.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.disable(gl.BLEND);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+
+    this.bindBuffer(gl.ARRAY_BUFFER, this.renderTargetVerticesBuffer_);
+
+    gl.useProgram(this.renderTargetProgram_);
+    gl.enableVertexAttribArray(this.renderTargetAttribLocation_);
+    gl.vertexAttribPointer(this.renderTargetAttribLocation_, 2, gl.FLOAT, false, 0, 0);
+    gl.uniform2f(this.renderTargetUniformLocation_, canvas.width, canvas.height);
+    gl.uniform1i(this.renderTargetTextureLocation_, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
 
   /**
@@ -303,6 +426,25 @@ class WebGLContext extends Disposable {
       }
       this.shaderCache_[shaderKey] = shader;
       return shader;
+    }
+  }
+
+  /**
+   * Use a program.  If the program is already in use, this will return `false`.
+   * @param {WebGLProgram} program Program.
+   * @return {boolean} Changed.
+   * @api
+   */
+  useProgram(program) {
+    if (program == this.currentProgram_) {
+      return false;
+    } else {
+      const gl = this.getGL();
+      gl.useProgram(program);
+      this.currentProgram_ = program;
+      this.uniformLocations_ = {};
+      this.attribLocations_ = {};
+      return true;
     }
   }
 
@@ -401,56 +543,70 @@ class WebGLContext extends Disposable {
   handleWebGLContextRestored() {
   }
 
+  // TODO: shutdown program
+
   /**
-   * Use a program.  If the program is already in use, this will return `false`.
-   * @param {WebGLProgram} program Program.
-   * @return {boolean} Changed.
-   * @api
+   * @param {number=} opt_wrapS wrapS.
+   * @param {number=} opt_wrapT wrapT.
+   * @return {WebGLTexture} The texture.
    */
-  useProgram(program) {
-    if (program == this.currentProgram_) {
-      return false;
-    } else {
-      const gl = this.getGL();
-      gl.useProgram(program);
-      this.currentProgram_ = program;
-      this.uniformLocations_ = {};
-      this.attribLocations_ = {};
-      return true;
+  createTextureInternal(opt_wrapS, opt_wrapT) {
+    const gl = this.getGL();
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+    if (opt_wrapS !== undefined) {
+      gl.texParameteri(
+        TEXTURE_2D, TEXTURE_WRAP_S, opt_wrapS);
     }
+    if (opt_wrapT !== undefined) {
+      gl.texParameteri(
+        TEXTURE_2D, TEXTURE_WRAP_T, opt_wrapT);
+    }
+
+    return texture;
   }
 
-  // TODO: shutdown program
+  /**
+   * @param {number} width Width.
+   * @param {number} height Height.
+   * @param {number=} opt_wrapS wrapS.
+   * @param {number=} opt_wrapT wrapT.
+   * @return {WebGLTexture} The texture.
+   */
+  createEmptyTexture(width, height, opt_wrapS, opt_wrapT) {
+    const gl = this.getGL();
+    const texture = this.createTextureInternal( opt_wrapS, opt_wrapT);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    return texture;
+  }
+
+
+  /**
+   * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
+   * @param {number=} opt_wrapS wrapS.
+   * @param {number=} opt_wrapT wrapT.
+   * @return {WebGLTexture} The texture.
+   */
+  createTexture(image, opt_wrapS, opt_wrapT) {
+    const gl = this.getGL();
+    const texture = this.createTextureInternal(opt_wrapS, opt_wrapT);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    return texture;
+  }
 }
 
-
 /**
- * @param {WebGLRenderingContext} gl WebGL rendering context.
  * @param {number=} opt_wrapS wrapS.
  * @param {number=} opt_wrapT wrapT.
  * @return {WebGLTexture} The texture.
  */
-function createTextureInternal(gl, opt_wrapS, opt_wrapT) {
-  const texture = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-
-  if (opt_wrapS !== undefined) {
-    gl.texParameteri(
-      TEXTURE_2D, TEXTURE_WRAP_S, opt_wrapS);
-  }
-  if (opt_wrapT !== undefined) {
-    gl.texParameteri(
-      TEXTURE_2D, TEXTURE_WRAP_T, opt_wrapT);
-  }
-
-  return texture;
+export function createTextureInternal(gl, opt_wrapS, opt_wrapT) {
 }
 
-
 /**
- * @param {WebGLRenderingContext} gl WebGL rendering context.
  * @param {number} width Width.
  * @param {number} height Height.
  * @param {number=} opt_wrapS wrapS.
@@ -458,23 +614,16 @@ function createTextureInternal(gl, opt_wrapS, opt_wrapT) {
  * @return {WebGLTexture} The texture.
  */
 export function createEmptyTexture(gl, width, height, opt_wrapS, opt_wrapT) {
-  const texture = createTextureInternal(gl, opt_wrapS, opt_wrapT);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-  return texture;
 }
 
 
 /**
- * @param {WebGLRenderingContext} gl WebGL rendering context.
  * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
  * @param {number=} opt_wrapS wrapS.
  * @param {number=} opt_wrapT wrapT.
  * @return {WebGLTexture} The texture.
  */
 export function createTexture(gl, image, opt_wrapS, opt_wrapT) {
-  const texture = createTextureInternal(gl, opt_wrapS, opt_wrapT);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-  return texture;
 }
 
 export default WebGLContext;
