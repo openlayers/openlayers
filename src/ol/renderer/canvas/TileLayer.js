@@ -6,7 +6,7 @@ import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import {createEmpty, getIntersection, getTopLeft} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
-import {create as createTransform, compose as composeTransform} from '../../transform.js';
+import {create as createTransform, compose as composeTransform, toString as transformToString} from '../../transform.js';
 
 /**
  * @classdesc
@@ -129,7 +129,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    */
   renderFrame(frameState, layerState) {
     const context = this.context;
-    const size = frameState.size;
     const viewState = frameState.viewState;
     const projection = viewState.projection;
     const viewResolution = viewState.resolution;
@@ -221,13 +220,23 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     }
 
     const canvas = context.canvas;
+    const canvasScale = tileResolution / frameState.viewState.resolution / tilePixelRatio;
+    const pixelTransform = composeTransform(this.transform_,
+      0, 0,
+      canvasScale, canvasScale,
+      rotation,
+      0, 0
+    );
+    const canvasTransform = transformToString(pixelTransform);
+
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
     } else {
       context.clearRect(0, 0, width, height);
     }
-    this.preRender(context, frameState);
+
+    this.preRender(context, frameState, pixelTransform);
 
     this.renderedTiles.length = 0;
     /** @type {Array<number>} */
@@ -270,40 +279,18 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     this.renderedResolution = tileResolution;
     this.renderedExtent_ = canvasExtent;
 
-    const scale = this.renderedResolution / frameState.viewState.resolution;
-    const halfWidth = width / 2;
-    const halfHeight = height / 2;
-
-    // TODO: check where these are used and confirm they are correct
-    const transform = composeTransform(
-      this.transform_,
-      halfWidth, halfHeight,
-      scale, scale,
-      rotation,
-      -halfWidth, -halfHeight
-    );
-
-    composeTransform(this.coordinateToCanvasPixelTransform,
-      pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
-      pixelRatio / viewResolution, -pixelRatio / viewResolution,
-      0,
-      -viewCenter[0], -viewCenter[1]);
-
     this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
     this.manageTilePyramid(frameState, tileSource, tileGrid, pixelRatio,
       projection, extent, z, tileLayer.getPreload());
     this.scheduleExpireCache(frameState, tileSource);
 
-    this.postRender(context, frameState, layerState);
+    this.postRender(context, frameState, pixelTransform);
 
     const opacity = layerState.opacity;
     if (opacity !== canvas.style.opacity) {
       canvas.style.opacity = opacity;
     }
 
-    const canvasScale = this.renderedResolution / frameState.viewState.resolution / tilePixelRatio;
-
-    const canvasTransform = 'rotate(' + rotation + 'rad) scale(' + canvasScale + ')';
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;
     }
