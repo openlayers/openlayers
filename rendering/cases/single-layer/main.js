@@ -18,4 +18,4 @@ new Map({
   })
 });
 
-render();
+render('A single layer with a XZY source');
