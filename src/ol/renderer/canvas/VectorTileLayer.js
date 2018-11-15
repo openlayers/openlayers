@@ -405,7 +405,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
       const tileCoord = tile.tileCoord;
       const worldOffset = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] - tile.extent[0];
-      let transform = undefined;
+      const transform = this.getRenderTransform(frameState, width, height, worldOffset);
       for (let t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
         const sourceTile = tile.getTile(tile.tileKeys[t]);
         if (sourceTile.getState() != TileState.LOADED) {
@@ -416,9 +416,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           // sourceTile was not yet loaded when this.createReplayGroup_() was
           // called, or it has no replays of the types we want to render
           continue;
-        }
-        if (!transform) {
-          transform = this.getRenderTransform(frameState, width, height, worldOffset);
         }
         const currentZ = sourceTile.tileCoord[0];
         const currentClip = executorGroup.getClipCoords(transform);
