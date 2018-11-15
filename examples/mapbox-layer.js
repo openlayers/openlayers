@@ -41,16 +41,18 @@ class Mapbox extends Layer {
     this.zoomLastRender = view.getZoom();
 
     const options = assign(this.baseOptions, {
+      attributionControl: false,
+      boxZoom: false,
       center,
-      scrollZoom: false,
-      interactive: false,
+      container: map.getTargetElement(),
+      doubleClickZoom: false,
       dragPan: false,
       dragRotate: false,
-      boxZoom: false,
+      interactive: false,
       keyboard: false,
-      doubleClickZoom: false,
+      pitchWithRotate: false,
+      scrollZoom: false,
       touchZoomRotate: false,
-      container: map.getTargetElement(),
       zoom: view.getZoom() - 1
     });
 
@@ -81,7 +83,7 @@ class Mapbox extends Layer {
    *
    * @inheritDoc
    */
-  render() {
+  render(frameState) {
     const map = this.map_;
     const view = map.getView();
     const transformToLatLng = getTransform(view.getProjection(), 'EPSG:4326');
@@ -93,6 +95,13 @@ class Mapbox extends Layer {
     this.zoomNextRender = view.getZoom();
     const zoomOffset = Math.pow(2, this.zoomNextRender - this.zoomLastRender);
     this.updateRenderedPosition(centerOffset, zoomOffset);
+
+    const rotation = frameState.viewState.rotation;
+    if (rotation) {
+      this.mbmap.rotateTo(-rotation * 180 / Math.PI, {
+        animate: false
+      });
+    }
 
     // Re-render mbmap
     const center = transformToLatLng(this.centerNextRender);
