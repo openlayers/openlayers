@@ -150,23 +150,6 @@ class CanvasBuilderGroup extends BuilderGroup {
     context.clip();
   }
 
-
-  /**
-   * @param {Array<ReplayType>} builders Builders.
-   * @return {boolean} Has builders of the provided types.
-   */
-  hasBuilders(builders) {
-    for (const zIndex in this.buildersByZIndex_) {
-      const candidates = this.buildersByZIndex_[zIndex];
-      for (let i = 0, ii = builders.length; i < ii; ++i) {
-        if (builders[i] in candidates) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
   /**
    * @return {!Object<string, !Object<ReplayType, import("./InstructionsBuilder.js").SerializableInstructions>>} The serializable instructions
    */
@@ -343,12 +326,6 @@ class CanvasBuilderGroup extends BuilderGroup {
     return replay;
   }
 
-  /**
-   * @return {Object<string, Object<ReplayType, CanvasInstructionsBuilder>>} Replays.
-   */
-  getReplays() {
-    return this.buildersByZIndex_;
-  }
 
   /**
    * @inheritDoc
