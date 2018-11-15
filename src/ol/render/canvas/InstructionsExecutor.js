@@ -173,34 +173,15 @@ class CanvasInstructionsExecutor {
      */
     this.viewRotation_ = 0;
 
-    ////////////// Below is code copied from TextReplay ////////////
-    /**
-     * @private
-     * @type {?import("../canvas.js").FillState}
-     */
-    this.textFillState_ = null;
-
     /**
      * @type {!Object<string, import("../canvas.js").FillState>}
      */
     this.fillStates = {};
 
     /**
-     * @private
-     * @type {?import("../canvas.js").StrokeState}
-     */
-    this.textStrokeState_ = null;
-
-    /**
      * @type {!Object<string, import("../canvas.js").StrokeState>}
      */
     this.strokeStates = {};
-
-    /**
-     * @private
-     * @type {import("../canvas.js").TextState}
-     */
-    this.textState_ = /** @type {import("../canvas.js").TextState} */ ({});
 
     /**
      * @type {!Object<string, import("../canvas.js").TextState>}
@@ -224,14 +205,14 @@ class CanvasInstructionsExecutor {
    * @param {string} strokeKey Stroke style key.
    * @return {HTMLCanvasElement} Image.
    */
-  getImage(text, textKey, fillKey, strokeKey) {
+  getTextImage(text, textKey, fillKey, strokeKey) {
     let label;
     const key = strokeKey + textKey + text + fillKey + this.pixelRatio;
 
     if (!labelCache.containsKey(key)) {
-      const strokeState = strokeKey ? this.strokeStates[strokeKey] || this.textStrokeState_ : null;
-      const fillState = fillKey ? this.fillStates[fillKey] || this.textFillState_ : null;
-      const textState = this.textStates[textKey] || this.textState_;
+      const strokeState = strokeKey ? this.strokeStates[strokeKey] : null;
+      const fillState = fillKey ? this.fillStates[fillKey] : null;
+      const textState = this.textStates[textKey];
       const pixelRatio = this.pixelRatio;
       const scale = textState.scale * pixelRatio;
       const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
@@ -285,8 +266,6 @@ class CanvasInstructionsExecutor {
     }
     return labelCache.get(key);
   }
-
-  ////////////// Above is code from TextReplay //////////////////
 
   /**
    * Recreate replays and populate them using the provided instructions.
@@ -536,7 +515,7 @@ class CanvasInstructionsExecutor {
   drawTextImageWithPointPlacement_(text, textKey, strokeKey, fillKey) {
     const textState = this.textStates[textKey];
 
-    const label = this.getImage(text, textKey, fillKey, strokeKey);
+    const label = this.getTextImage(text, textKey, fillKey, strokeKey);
 
     const strokeState = this.strokeStates[strokeKey]; // FIXME: check if it is correct, was this.textStrokeState_;
     const pixelRatio = this.pixelRatio;
@@ -793,8 +772,7 @@ class CanvasInstructionsExecutor {
           const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
           const textLength = measure(text);
           if (overflow || textLength <= pathLength) {
-            const textReplay = this;
-            const textAlign = textReplay.textStates[textKey].textAlign;
+            const textAlign = this.textStates[textKey].textAlign;
             const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
             const parts = drawTextOnPath(
               pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
@@ -804,7 +782,7 @@ class CanvasInstructionsExecutor {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
-                  label = textReplay.getImage(chars, textKey, '', strokeKey);
+                  label = this.getTextImage(chars, textKey, '', strokeKey);
                   anchorX = /** @type {number} */ (part[2]) + strokeWidth;
                   anchorY = baseline * label.height + (0.5 - baseline) * 2 * strokeWidth - offsetY;
                   this.replayImage_(context,
@@ -818,7 +796,7 @@ class CanvasInstructionsExecutor {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
-                  label = textReplay.getImage(chars, textKey, fillKey, '');
+                  label = this.getTextImage(chars, textKey, fillKey, '');
                   anchorX = /** @type {number} */ (part[2]);
                   anchorY = baseline * label.height - offsetY;
                   this.replayImage_(context,
