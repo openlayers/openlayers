@@ -9,7 +9,7 @@ import {listen, unlistenAll} from '../events.js';
 import {clear} from '../obj.js';
 import {ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, TEXTURE_2D, TEXTURE_WRAP_S, TEXTURE_WRAP_T} from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
-import {COLOR_BUFFER_BIT, FLOAT, TRIANGLES, UNSIGNED_INT, UNSIGNED_SHORT} from "../webgl";
+import {BLEND, COLOR_BUFFER_BIT, FLOAT, TRIANGLES, UNSIGNED_INT, UNSIGNED_SHORT} from "../webgl";
 import {
   create as createTransform,
   reset as resetTransform,
@@ -48,22 +48,23 @@ export const DefaultAttrib = {
 class WebGLContext extends Disposable {
 
   /**
-   * @param {HTMLCanvasElement} canvas Canvas.
    */
-  constructor(canvas) {
+  constructor() {
     super();
 
     /**
      * @private
      * @type {HTMLCanvasElement}
      */
-    this.canvas_ = canvas;
+    this.canvas_ = document.createElement('canvas');
+    this.canvas_.style.position = 'absolute';
+
 
     /**
      * @private
      * @type {WebGLRenderingContext}
      */
-    this.gl_ = canvas.getContext('webgl');
+    this.gl_ = this.canvas_.getContext('webgl');
 
     /**
      * @private
@@ -207,10 +208,19 @@ class WebGLContext extends Disposable {
   /**
    * Clear the buffer & set the viewport to draw
    */
-  prepareDraw() {
-    this.getGL().clearColor(0.0, 0.0, 0.0, 0.0);
-    this.getGL().clear(this.getGL().COLOR_BUFFER_BIT);
-    this.getGL().viewport(0, 0, this.canvas_.width, this.canvas_.height);
+  prepareDraw(size, pixelRatio) {
+    const canvas = this.getCanvas();
+    canvas.width = size[0] * pixelRatio;
+    canvas.height = size[1] * pixelRatio;
+    canvas.style.width = size[0] + 'px';
+    canvas.style.height = size[1] + 'px';
+
+    const gl = this.getGL();
+    gl.clearColor(0.0, 0.0, 0.0, 0.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.viewport(0, 0, canvas.width, canvas.height);
   }
 
   /**
@@ -254,7 +264,7 @@ class WebGLContext extends Disposable {
     const resolution = frameState.viewState.resolution;
     const center = frameState.viewState.center;
 
-    // set the "uniform" values (coordinates 0,0 are the center of the view
+    // set the "uniform" values (coordinates 0,0 are the center of the view)
     const projectionMatrix = resetTransform(this.projectionMatrix_);
     scaleTransform(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
     rotateTransform(projectionMatrix, -rotation);

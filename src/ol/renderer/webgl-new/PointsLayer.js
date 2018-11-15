@@ -58,20 +58,20 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
   /**
    * @param {import("../../layer/Vector.js").default} vectorLayer Vector layer.
    */
-  constructor(vectorLayer) {
+  constructor(vectorLayer, opt_options) {
     super(vectorLayer);
 
-    this.element_ = document.createElement('canvas');
+    const options = opt_options || {};
 
-    this.context_ = new WebGLContext(this.element_);
+    this.context_ = new WebGLContext();
 
     this.sourceRevision_ = -1;
 
     this.verticesBuffer_ = new WebGLBuffer([], DYNAMIC_DRAW);
     this.indicesBuffer_ = new WebGLBuffer([], DYNAMIC_DRAW);
 
-    const vertexShader = new WebGLVertex(VERTEX_SHADER);
-    const fragmentShader = new WebGLFragment(FRAGMENT_SHADER);
+    const vertexShader = new WebGLVertex(options.vertexShader || VERTEX_SHADER);
+    const fragmentShader = new WebGLFragment(options.fragmentShader || FRAGMENT_SHADER);
     const program = this.context_.getProgram(fragmentShader, vertexShader);
     this.context_.useProgram(program);
   }
@@ -86,11 +86,12 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
   /**
    * @inheritDoc
    */
-  composeFrame(frameState) {
-    this.context_.prepareDraw();
+  renderFrame(frameState, layerState) {
+    this.context_.prepareDraw(frameState.size, frameState.pixelRatio);
     this.context_.applyFrameState(frameState);
-    this.context_.setUniformFloatValue(DefaultUniform.OPACITY, this.getLayer().getOpacity());
+    this.context_.setUniformFloatValue(DefaultUniform.OPACITY, layerState.opacity);
     this.context_.drawElements(0, this.indicesBuffer_.getArray().length);
+    return this.context_.getCanvas();
   }
 
   /**
@@ -114,7 +115,7 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
           return;
         }
         const geom = /** @type {import("../../geom/Point").default} */ (feature.getGeometry());
-        const x = geom.getCoordinates()[0], y = geom.getCoordinates()[1], size = 20;
+        const x = geom.getCoordinates()[0], y = geom.getCoordinates()[1], size = 1;
         let stride = 6;
         let baseIndex = this.verticesBuffer_.getArray().length / stride;
 
