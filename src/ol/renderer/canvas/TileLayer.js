@@ -5,7 +5,6 @@ import {getUid} from '../../util.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import {createEmpty, getIntersection, getTopLeft} from '../../extent.js';
-import {createCanvasContext2D} from '../../dom.js';
 import CanvasLayerRenderer from './Layer.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 

@@ -5,7 +5,6 @@ import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
 import ViewHint from '../../ViewHint.js';
 import {containsExtent, intersects} from '../../extent.js';
 import {getIntersection, isEmpty} from '../../extent.js';
-import {createCanvasContext2D} from '../../dom.js';
 import CanvasLayerRenderer from './Layer.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
