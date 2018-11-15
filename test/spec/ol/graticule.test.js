@@ -1,15 +1,17 @@
-import Graticule from '../../../src/ol/Graticule.js';
+import Graticule from '../../../src/ol/layer/Graticule.js';
 import Map from '../../../src/ol/Map.js';
 import {get as getProjection} from '../../../src/ol/proj.js';
 import Stroke from '../../../src/ol/style/Stroke.js';
 import Text from '../../../src/ol/style/Text.js';
+import Feature from '../../../src/ol/Feature';
 
-describe('ol.Graticule', function() {
+describe('ol.layer.Graticule', function() {
   let graticule;
 
   function createGraticule() {
-    graticule = new Graticule({
-      map: new Map({})
+    graticule = new Graticule();
+    new Map({
+      layers: [graticule]
     });
   }
 
@@ -31,8 +33,10 @@ describe('ol.Graticule', function() {
 
     it('creates a graticule with labels', function() {
       graticule = new Graticule({
-        map: new Map({}),
         showLabels: true
+      });
+      new Map({
+        layers: [graticule]
       });
       const extent = [-25614353.926475704, -7827151.696402049,
         25614353.926475704, 7827151.696402049];
@@ -75,6 +79,7 @@ describe('ol.Graticule', function() {
     it('can be configured with label options', function() {
       const latLabelStyle = new Text();
       const lonLabelStyle = new Text();
+      const feature = new Feature();
       graticule = new Graticule({
         map: new Map({}),
         showLabels: true,
@@ -98,15 +103,14 @@ describe('ol.Graticule', function() {
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
       expect(graticule.meridiansLabels_[0].text).to.be('lon: 0');
       expect(graticule.parallelsLabels_[0].text).to.be('lat: 0');
-      expect(graticule.lonLabelStyle_).to.eql(lonLabelStyle);
-      expect(graticule.latLabelStyle_).to.eql(latLabelStyle);
+      expect(graticule.lonLabelStyle_(feature).getText()).to.eql(lonLabelStyle);
+      expect(graticule.latLabelStyle_(feature).getText()).to.eql(latLabelStyle);
       expect(graticule.lonLabelPosition_).to.be(0.9);
       expect(graticule.latLabelPosition_).to.be(0.1);
     });
 
     it('can be configured with interval limits', function() {
       graticule = new Graticule({
-        map: new Map({}),
         showLabels: true,
         lonLabelFormatter: function(lon) {
           return lon.toString();
@@ -115,6 +119,9 @@ describe('ol.Graticule', function() {
           return lat.toString();
         },
         intervals: [10]
+      });
+      new Map({
+        layers: [graticule]
       });
       const extent = [-25614353.926475704, -7827151.696402049,
         25614353.926475704, 7827151.696402049];

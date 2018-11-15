@@ -1,19 +1,29 @@
 /**
- * @module ol/Graticule
+ * @module ol/layer/Graticule
  */
-import {degreesToStringHDMS} from './coordinate.js';
-import {listen, unlistenByKey} from './events.js';
-import {intersects, getCenter} from './extent.js';
-import GeometryLayout from './geom/GeometryLayout.js';
-import LineString from './geom/LineString.js';
-import Point from './geom/Point.js';
-import {meridian, parallel} from './geom/flat/geodesic.js';
-import {clamp} from './math.js';
-import {get as getProjection, equivalent as equivalentProjection, getTransform, transformExtent} from './proj.js';
-import RenderEventType from './render/EventType.js';
-import Fill from './style/Fill.js';
-import Stroke from './style/Stroke.js';
-import Text from './style/Text.js';
+import VectorLayer from './Vector.js';
+import {assign} from '../obj.js';
+import {degreesToStringHDMS} from '../coordinate';
+import Text from '../style/Text';
+import Fill from '../style/Fill';
+import Stroke from '../style/Stroke';
+import LineString from '../geom/LineString.js';
+import VectorSource from '../source/Vector';
+import {
+  equivalent as equivalentProjection,
+  get as getProjection,
+  getTransform,
+  transformExtent
+} from '../proj';
+import {getCenter, intersects, equals, getIntersection, isEmpty} from '../extent';
+import {clamp} from '../math';
+import Style from '../style/Style';
+import Feature from '../Feature';
+import {bbox} from '../loadingstrategy';
+import {meridian, parallel} from '../geom/flat/geodesic';
+import GeometryLayout from '../geom/GeometryLayout';
+import Point from '../geom/Point';
+import Collection from '../Collection';
 
 
 /**
@@ -39,10 +49,21 @@ const INTERVALS = [
  * @property {string} text
  */
 
+
 /**
  * @typedef {Object} Options
- * @property {import("./PluggableMap.js").default} [map] Reference to an
- * {@link module:ol/Map~Map} object.
+ * @property {number} [opacity=1] Opacity (0, 1).
+ * @property {boolean} [visible=true] Visibility.
+ * @property {import("../extent.js").Extent} [extent] The bounding extent for layer rendering.  The layer will not be
+ * rendered outside of this extent.
+ * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
+ * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
+ * for layers that are added to the map's `layers` collection, or `Infinity` when the layer's `setMap()`
+ * method was used.
+ * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
+ * visible.
+ * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
+ * be visible.
  * @property {number} [maxLines=100] The maximum number of meridians and
  * parallels from the center of the map. The default value of 100 means that at
  * most 200 meridians and 200 parallels will be displayed. The default value is
@@ -111,35 +132,41 @@ const INTERVALS = [
  * ```js
  * [30, 10]
  * ```
+ * @property {boolean} [wrapX=true] Whether to repeat the graticule horizontally.
  */
 
 
 /**
- * Render a grid for a coordinate system on a map.
+ * @classdesc
+ * Layer that renders a grid for a coordinate system.
+ *
+ * @fires import("../render/Event.js").RenderEvent
  * @api
  */
-class Graticule {
-
+class Graticule extends VectorLayer {
   /**
    * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
-    const options = opt_options || {};
+    const options = opt_options ? opt_options : {};
+
+    const baseOptions = assign({}, options);
+
+    delete baseOptions.maxLines;
+    delete baseOptions.strokeStyle;
+    delete baseOptions.targetSize;
+    delete baseOptions.showLabels;
+    delete baseOptions.lonLabelFormatter;
+    delete baseOptions.latLabelFormatter;
+    delete baseOptions.lonLabelPosition;
+    delete baseOptions.latLabelPosition;
+    delete baseOptions.lonLabelStyle;
+    delete baseOptions.latLabelStyle;
+    delete baseOptions.intervals;
+    super(baseOptions);
 
     /**
-     * @type {import("./PluggableMap.js").default}
-     * @private
-     */
-    this.map_ = null;
-
-    /**
-     * @type {?import("./events.js").EventsKey}
-     * @private
-     */
-    this.postcomposeListenerKey_ = null;
-
-    /**
-     * @type {import("./proj/Projection.js").default}
+     * @type {import("../proj/Projection.js").default}
      */
     this.projection_ = null;
 
@@ -222,19 +249,19 @@ class Graticule {
     this.strokeStyle_ = options.strokeStyle !== undefined ? options.strokeStyle : DEFAULT_STROKE_STYLE;
 
     /**
-     * @type {import("./proj.js").TransformFunction|undefined}
+     * @type {import("../proj.js").TransformFunction|undefined}
      * @private
      */
     this.fromLonLatTransform_ = undefined;
 
     /**
-     * @type {import("./proj.js").TransformFunction|undefined}
+     * @type {import("../proj.js").TransformFunction|undefined}
      * @private
      */
     this.toLonLatTransform_ = undefined;
 
     /**
-     * @type {import("./coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate}
      * @private
      */
     this.projectionCenterLonLat_ = null;
@@ -251,7 +278,7 @@ class Graticule {
      */
     this.parallelsLabels_ = null;
 
-    if (options.showLabels == true) {
+    if (options.showLabels) {
 
       /**
        * @type {null|function(number):string}
@@ -286,38 +313,70 @@ class Graticule {
         options.latLabelPosition;
 
       /**
-       * @type {Text}
+       * @type {Object.<string,Style>}
        * @private
        */
-      this.lonLabelStyle_ = options.lonLabelStyle !== undefined ? options.lonLabelStyle :
-        new Text({
-          font: '12px Calibri,sans-serif',
-          textBaseline: 'bottom',
-          fill: new Fill({
-            color: 'rgba(0,0,0,1)'
-          }),
-          stroke: new Stroke({
-            color: 'rgba(255,255,255,1)',
-            width: 3
-          })
-        });
+      this.lonLabelStyleCache_ = {};
 
       /**
-       * @type {Text}
+       * @private
+       * @param {import("../Feature").default} feature Feature
+       * @return {Style} style
+       */
+      this.lonLabelStyle_ = function(feature) {
+        const label = feature.get('graticule_label');
+        if (!this.lonLabelStyleCache_[label]) {
+          this.lonLabelStyleCache_[label] = new Style({
+            text: options.lonLabelStyle !== undefined ? options.lonLabelStyle :
+              new Text({
+                text: label,
+                font: '12px Calibri,sans-serif',
+                textBaseline: 'bottom',
+                fill: new Fill({
+                  color: 'rgba(0,0,0,1)'
+                }),
+                stroke: new Stroke({
+                  color: 'rgba(255,255,255,1)',
+                  width: 3
+                })
+              })
+          });
+        }
+        return this.lonLabelStyleCache_[label];
+      }.bind(this);
+
+      /**
+       * @type {Object.<string,Style>}
        * @private
        */
-      this.latLabelStyle_ = options.latLabelStyle !== undefined ? options.latLabelStyle :
-        new Text({
-          font: '12px Calibri,sans-serif',
-          textAlign: 'end',
-          fill: new Fill({
-            color: 'rgba(0,0,0,1)'
-          }),
-          stroke: new Stroke({
-            color: 'rgba(255,255,255,1)',
-            width: 3
-          })
-        });
+      this.latLabelStyleCache_ = {};
+
+      /**
+       * @private
+       * @param {import("../Feature").default} feature Feature
+       * @return {Style} style
+       */
+      this.latLabelStyle_ = function(feature) {
+        const label = feature.get('graticule_label');
+        if (!this.latLabelStyleCache_[label]) {
+          this.latLabelStyleCache_[label] = new Style({
+            text: options.latLabelStyle !== undefined ? options.latLabelStyle :
+              new Text({
+                text: label,
+                font: '12px Calibri,sans-serif',
+                textAlign: 'right',
+                fill: new Fill({
+                  color: 'rgba(0,0,0,1)'
+                }),
+                stroke: new Stroke({
+                  color: 'rgba(255,255,255,1)',
+                  width: 3
+                })
+              })
+          });
+        }
+        return this.latLabelStyleCache_[label];
+      }.bind(this);
 
       this.meridiansLabels_ = [];
       this.parallelsLabels_ = [];
@@ -329,7 +388,143 @@ class Graticule {
      */
     this.intervals_ = options.intervals !== undefined ? options.intervals : INTERVALS;
 
-    this.setMap(options.map !== undefined ? options.map : null);
+    // use a source with a custom loader for lines & text
+    this.setSource(
+      new VectorSource({
+        loader: this.loaderFunction.bind(this),
+        strategy: bbox,
+        features: new Collection(),
+        overlaps: false,
+        useSpatialIndex: false,
+        wrapX: options.wrapX
+      })
+    );
+
+    /**
+     * feature pool to use when updating graticule
+     * @type {Array<Feature>}
+     * @private
+     */
+    this.featurePool_ = [];
+
+    /**
+     * @type {Style}
+     * @private
+     */
+    this.lineStyle_ = new Style({
+      stroke: this.strokeStyle_
+    });
+
+    /**
+     * @type {import("../extent.js").Extent}
+     */
+    this.renderedExtent_ = null;
+
+    this.setRenderOrder(null);
+
+    this.renderBuffer_ = 0;
+
+    this.updateWhileAnimating_ = true;
+    this.updateWhileInteracting_ = true;
+
+    this.tmpExtent_ = null;
+  }
+
+  /**
+   * Update geometries in the source based on current view
+   * @param {import("../extent").Extent} extent Extent
+   * @param {number} resolution Resolution
+   * @param {import("../proj/Projection.js").default} projection Projection
+   */
+  loaderFunction(extent, resolution, projection) {
+    const source = /** @type import("../source/Vector").default} */ (this.getSource());
+
+    // only consider the intersection between our own extent & the requested one
+    const layerExtent = this.getExtent() || [-Infinity, -Infinity, Infinity, Infinity];
+    const renderExtent = getIntersection(layerExtent, extent, this.tmpExtent_);
+
+    // we should not keep track of loaded extents
+    setTimeout(function() {
+      source.removeLoadedExtent(extent);
+    }, 0);
+
+    if (this.renderedExtent_ && equals(this.renderedExtent_, renderExtent)) {
+      return;
+    }
+    this.renderedExtent_ = renderExtent;
+
+    // bail out if nothing to render
+    if (isEmpty(renderExtent)) {
+      return;
+    }
+
+    // update projection info
+    const center = getCenter(renderExtent);
+    const squaredTolerance = resolution * resolution / 4;
+
+    const updateProjectionInfo = !this.projection_ ||
+      !equivalentProjection(this.projection_, projection);
+
+    if (updateProjectionInfo) {
+      this.updateProjectionInfo_(projection);
+    }
+
+    this.createGraticule_(renderExtent, center, resolution, squaredTolerance);
+
+    // first make sure we have enough features in the pool
+    let featureCount = this.meridians_.length + this.parallels_.length;
+    if (this.meridiansLabels_) {
+      featureCount += this.meridiansLabels_.length;
+    }
+    if (this.parallelsLabels_) {
+      featureCount += this.parallelsLabels_.length;
+    }
+
+    let feature;
+    while (featureCount > this.featurePool_.length) {
+      feature = new Feature();
+      this.featurePool_.push(feature);
+    }
+
+    const featuresColl = source.getFeaturesCollection();
+    featuresColl.clear();
+    let poolIndex = 0;
+
+    // add features for the lines & labels
+    let i, l;
+    for (i = 0, l = this.meridians_.length; i < l; ++i) {
+      feature = this.featurePool_[poolIndex++];
+      feature.setGeometry(this.meridians_[i]);
+      feature.setStyle(this.lineStyle_);
+      featuresColl.push(feature);
+    }
+    for (i = 0, l = this.parallels_.length; i < l; ++i) {
+      feature = this.featurePool_[poolIndex++];
+      feature.setGeometry(this.parallels_[i]);
+      feature.setStyle(this.lineStyle_);
+      featuresColl.push(feature);
+    }
+    let labelData;
+    if (this.meridiansLabels_) {
+      for (i = 0, l = this.meridiansLabels_.length; i < l; ++i) {
+        labelData = this.meridiansLabels_[i];
+        feature = this.featurePool_[poolIndex++];
+        feature.setGeometry(labelData.geom);
+        feature.setStyle(this.lonLabelStyle_);
+        feature.set('graticule_label', labelData.text);
+        featuresColl.push(feature);
+      }
+    }
+    if (this.parallelsLabels_) {
+      for (i = 0, l = this.parallelsLabels_.length; i < l; ++i) {
+        labelData = this.parallelsLabels_[i];
+        feature = this.featurePool_[poolIndex++];
+        feature.setGeometry(labelData.geom);
+        feature.setStyle(this.latLabelStyle_);
+        feature.set('graticule_label', labelData.text);
+        featuresColl.push(feature);
+      }
+    }
   }
 
   /**
@@ -337,7 +532,7 @@ class Graticule {
    * @param {number} minLat Minimal latitude.
    * @param {number} maxLat Maximal latitude.
    * @param {number} squaredTolerance Squared tolerance.
-   * @param {import("./extent.js").Extent} extent Extent.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} index Index.
    * @return {number} Index.
    * @private
@@ -358,36 +553,11 @@ class Graticule {
   }
 
   /**
-   * @param {LineString} lineString Meridian
-   * @param {import("./extent.js").Extent} extent Extent.
-   * @param {number} index Index.
-   * @return {Point} Meridian point.
-   * @private
-   */
-  getMeridianPoint_(lineString, extent, index) {
-    const flatCoordinates = lineString.getFlatCoordinates();
-    const clampedBottom = Math.max(extent[1], flatCoordinates[1]);
-    const clampedTop = Math.min(extent[3], flatCoordinates[flatCoordinates.length - 1]);
-    const lat = clamp(
-      extent[1] + Math.abs(extent[1] - extent[3]) * this.lonLabelPosition_,
-      clampedBottom, clampedTop);
-    const coordinate = [flatCoordinates[0], lat];
-    let point;
-    if (index in this.meridiansLabels_) {
-      point = this.meridiansLabels_[index].geom;
-      point.setCoordinates(coordinate);
-    } else {
-      point = new Point(coordinate);
-    }
-    return point;
-  }
-
-  /**
    * @param {number} lat Latitude.
    * @param {number} minLon Minimal longitude.
    * @param {number} maxLon Maximal longitude.
    * @param {number} squaredTolerance Squared tolerance.
-   * @param {import("./extent.js").Extent} extent Extent.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} index Index.
    * @return {number} Index.
    * @private
@@ -408,39 +578,13 @@ class Graticule {
   }
 
   /**
-   * @param {LineString} lineString Parallels.
-   * @param {import("./extent.js").Extent} extent Extent.
-   * @param {number} index Index.
-   * @return {Point} Parallel point.
-   * @private
-   */
-  getParallelPoint_(lineString, extent, index) {
-    const flatCoordinates = lineString.getFlatCoordinates();
-    const clampedLeft = Math.max(extent[0], flatCoordinates[0]);
-    const clampedRight = Math.min(extent[2], flatCoordinates[flatCoordinates.length - 2]);
-    const lon = clamp(
-      extent[0] + Math.abs(extent[0] - extent[2]) * this.latLabelPosition_,
-      clampedLeft, clampedRight);
-    const coordinate = [lon, flatCoordinates[1]];
-    let point;
-    if (index in this.parallelsLabels_) {
-      point = this.parallelsLabels_[index].geom;
-      point.setCoordinates(coordinate);
-    } else {
-      point = new Point(coordinate);
-    }
-    return point;
-  }
-
-  /**
-   * @param {import("./extent.js").Extent} extent Extent.
-   * @param {import("./coordinate.js").Coordinate} center Center.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {import("../coordinate.js").Coordinate} center Center.
    * @param {number} resolution Resolution.
    * @param {number} squaredTolerance Squared tolerance.
    * @private
    */
   createGraticule_(extent, center, resolution, squaredTolerance) {
-
     const interval = this.getInterval_(resolution);
     if (interval == -1) {
       this.meridians_.length = this.parallels_.length = 0;
@@ -558,15 +702,6 @@ class Graticule {
   }
 
   /**
-   * Get the map associated with this graticule.
-   * @return {import("./PluggableMap.js").default} The map.
-   * @api
-   */
-  getMap() {
-    return this.map_;
-  }
-
-  /**
    * @param {number} lon Longitude.
    * @param {number} minLat Minimal latitude.
    * @param {number} maxLat Maximal latitude.
@@ -585,6 +720,31 @@ class Graticule {
       lineString.changed();
     }
     return lineString;
+  }
+
+  /**
+   * @param {LineString} lineString Meridian
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {number} index Index.
+   * @return {Point} Meridian point.
+   * @private
+   */
+  getMeridianPoint_(lineString, extent, index) {
+    const flatCoordinates = lineString.getFlatCoordinates();
+    const clampedBottom = Math.max(extent[1], flatCoordinates[1]);
+    const clampedTop = Math.min(extent[3], flatCoordinates[flatCoordinates.length - 1]);
+    const lat = clamp(
+      extent[1] + Math.abs(extent[1] - extent[3]) * this.lonLabelPosition_,
+      clampedBottom, clampedTop);
+    const coordinate = [flatCoordinates[0], lat];
+    let point;
+    if (index in this.meridiansLabels_) {
+      point = this.meridiansLabels_[index].geom;
+      point.setCoordinates(coordinate);
+    } else {
+      point = new Point(coordinate);
+    }
+    return point;
   }
 
   /**
@@ -617,6 +777,32 @@ class Graticule {
     return lineString;
   }
 
+
+  /**
+   * @param {LineString} lineString Parallels.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {number} index Index.
+   * @return {Point} Parallel point.
+   * @private
+   */
+  getParallelPoint_(lineString, extent, index) {
+    const flatCoordinates = lineString.getFlatCoordinates();
+    const clampedLeft = Math.max(extent[0], flatCoordinates[0]);
+    const clampedRight = Math.min(extent[2], flatCoordinates[flatCoordinates.length - 2]);
+    const lon = clamp(
+      extent[0] + Math.abs(extent[0] - extent[2]) * this.latLabelPosition_,
+      clampedLeft, clampedRight);
+    const coordinate = [lon, flatCoordinates[1]];
+    let point;
+    if (index in this.parallelsLabels_) {
+      point = this.parallelsLabels_[index].geom;
+      point.setCoordinates(coordinate);
+    } else {
+      point = new Point(coordinate);
+    }
+    return point;
+  }
+
   /**
    * Get the list of parallels.  Parallels are lines of equal latitude.
    * @return {Array<LineString>} The parallels.
@@ -627,62 +813,7 @@ class Graticule {
   }
 
   /**
-   * @param {import("./render/Event.js").default} e Event.
-   * @private
-   */
-  handlePostCompose_(e) {
-    const vectorContext = e.vectorContext;
-    const frameState = e.frameState;
-    const extent = frameState.extent;
-    const viewState = frameState.viewState;
-    const center = viewState.center;
-    const projection = viewState.projection;
-    const resolution = viewState.resolution;
-    const pixelRatio = frameState.pixelRatio;
-    const squaredTolerance =
-        resolution * resolution / (4 * pixelRatio * pixelRatio);
-
-    const updateProjectionInfo = !this.projection_ ||
-        !equivalentProjection(this.projection_, projection);
-
-    if (updateProjectionInfo) {
-      this.updateProjectionInfo_(projection);
-    }
-
-    this.createGraticule_(extent, center, resolution, squaredTolerance);
-
-    // Draw the lines
-    vectorContext.setFillStrokeStyle(null, this.strokeStyle_);
-    let i, l, line;
-    for (i = 0, l = this.meridians_.length; i < l; ++i) {
-      line = this.meridians_[i];
-      vectorContext.drawGeometry(line);
-    }
-    for (i = 0, l = this.parallels_.length; i < l; ++i) {
-      line = this.parallels_[i];
-      vectorContext.drawGeometry(line);
-    }
-    let labelData;
-    if (this.meridiansLabels_) {
-      for (i = 0, l = this.meridiansLabels_.length; i < l; ++i) {
-        labelData = this.meridiansLabels_[i];
-        this.lonLabelStyle_.setText(labelData.text);
-        vectorContext.setTextStyle(this.lonLabelStyle_);
-        vectorContext.drawGeometry(labelData.geom);
-      }
-    }
-    if (this.parallelsLabels_) {
-      for (i = 0, l = this.parallelsLabels_.length; i < l; ++i) {
-        labelData = this.parallelsLabels_[i];
-        this.latLabelStyle_.setText(labelData.text);
-        vectorContext.setTextStyle(this.latLabelStyle_);
-        vectorContext.drawGeometry(labelData.geom);
-      }
-    }
-  }
-
-  /**
-   * @param {import("./proj/Projection.js").default} projection Projection.
+   * @param {import("../proj/Projection.js").default} projection Projection.
    * @private
    */
   updateProjectionInfo_(projection) {
@@ -709,25 +840,7 @@ class Graticule {
 
     this.projection_ = projection;
   }
-
-  /**
-   * Set the map for this graticule.  The graticule will be rendered on the
-   * provided map.
-   * @param {import("./PluggableMap.js").default} map Map.
-   * @api
-   */
-  setMap(map) {
-    if (this.map_) {
-      unlistenByKey(this.postcomposeListenerKey_);
-      this.postcomposeListenerKey_ = null;
-      this.map_.render();
-    }
-    if (map) {
-      this.postcomposeListenerKey_ = listen(map, RenderEventType.POSTCOMPOSE, this.handlePostCompose_, this);
-      map.render();
-    }
-    this.map_ = map;
-  }
 }
+
 
 export default Graticule;
