@@ -10,6 +10,7 @@ import {assign} from '../obj.js';
 import RenderEventType from '../render/EventType.js';
 import Icon from '../style/Icon.js';
 import Style from '../style/Style.js';
+import WebGLPointsLayerRenderer from "../renderer/webgl-new/PointsLayer";
 
 
 /**
@@ -135,25 +136,25 @@ class Heatmap extends VectorLayer {
       weightFunction = weight;
     }
 
-    this.setStyle(function(feature, resolution) {
-      const weight = weightFunction(feature);
-      const opacity = weight !== undefined ? clamp(weight, 0, 1) : 1;
-      // cast to 8 bits
-      const index = (255 * opacity) | 0;
-      let style = this.styleCache_[index];
-      if (!style) {
-        style = [
-          new Style({
-            image: new Icon({
-              opacity: opacity,
-              src: this.circleImage_
-            })
-          })
-        ];
-        this.styleCache_[index] = style;
-      }
-      return style;
-    }.bind(this));
+    // this.setStyle(function(feature, resolution) {
+    //   const weight = weightFunction(feature);
+    //   const opacity = weight !== undefined ? clamp(weight, 0, 1) : 1;
+    //   // cast to 8 bits
+    //   const index = (255 * opacity) | 0;
+    //   let style = this.styleCache_[index];
+    //   if (!style) {
+    //     style = [
+    //       new Style({
+    //         image: new Icon({
+    //           opacity: opacity,
+    //           src: this.circleImage_
+    //         })
+    //       })
+    //     ];
+    //     this.styleCache_[index] = style;
+    //   }
+    //   return style;
+    // }.bind(this));
 
     // For performance reasons, don't sort the features before rendering.
     // The render order is not relevant for a heatmap representation.
@@ -167,19 +168,19 @@ class Heatmap extends VectorLayer {
    * @private
    */
   createCircle_() {
-    const radius = this.getRadius();
-    const blur = this.getBlur();
-    const halfSize = radius + blur + 1;
-    const size = 2 * halfSize;
-    const context = createCanvasContext2D(size, size);
-    context.shadowOffsetX = context.shadowOffsetY = this.shadow_;
-    context.shadowBlur = blur;
-    context.shadowColor = '#000';
-    context.beginPath();
-    const center = halfSize - this.shadow_;
-    context.arc(center, center, radius, 0, Math.PI * 2, true);
-    context.fill();
-    return context.canvas.toDataURL();
+    // const radius = this.getRadius();
+    // const blur = this.getBlur();
+    // const halfSize = radius + blur + 1;
+    // const size = 2 * halfSize;
+    // const context = createCanvasContext2D(size, size);
+    // context.shadowOffsetX = context.shadowOffsetY = this.shadow_;
+    // context.shadowBlur = blur;
+    // context.shadowColor = '#000';
+    // context.beginPath();
+    // const center = halfSize - this.shadow_;
+    // context.arc(center, center, radius, 0, Math.PI * 2, true);
+    // context.fill();
+    // return context.canvas.toDataURL();
   }
 
   /**
@@ -233,19 +234,19 @@ class Heatmap extends VectorLayer {
    * @private
    */
   handleRender_(event) {
-    const context = event.context;
-    const canvas = context.canvas;
-    const image = context.getImageData(0, 0, canvas.width, canvas.height);
-    const view8 = image.data;
-    for (let i = 0, ii = view8.length; i < ii; i += 4) {
-      const alpha = view8[i + 3] * 4;
-      if (alpha) {
-        view8[i] = this.gradient_[alpha];
-        view8[i + 1] = this.gradient_[alpha + 1];
-        view8[i + 2] = this.gradient_[alpha + 2];
-      }
-    }
-    context.putImageData(image, 0, 0);
+    // const context = event.context;
+    // const canvas = context.canvas;
+    // const image = context.getImageData(0, 0, canvas.width, canvas.height);
+    // const view8 = image.data;
+    // for (let i = 0, ii = view8.length; i < ii; i += 4) {
+    //   const alpha = view8[i + 3] * 4;
+    //   if (alpha) {
+    //     view8[i] = this.gradient_[alpha];
+    //     view8[i + 1] = this.gradient_[alpha + 1];
+    //     view8[i + 2] = this.gradient_[alpha + 2];
+    //   }
+    // }
+    // context.putImageData(image, 0, 0);
   }
 
   /**
@@ -276,6 +277,46 @@ class Heatmap extends VectorLayer {
    */
   setRadius(radius) {
     this.set(Property.RADIUS, radius);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  createRenderer() {
+    return new WebGLPointsLayerRenderer(this, {
+      fragmentShader: `
+        precision mediump float;
+        uniform float u_opacity;
+        
+        varying vec2 v_texCoord;
+        
+        void main(void) {
+          gl_FragColor.rgb = vec3(1.0, 1.0, 1.0);
+          vec2 texCoord = v_texCoord * 2.0 - vec2(1.0, 1.0);
+          float sqRadius = texCoord.x * texCoord.x + texCoord.y * texCoord.y;
+          float alpha = 1.0 - sqRadius;
+          if (alpha <= 0.0) {
+            discard;
+          }
+          gl_FragColor.a = alpha * 0.1;
+        }`,
+      postProcessingShader: `
+        precision mediump float;
+         
+        uniform sampler2D u_image;
+         
+        varying vec2 v_texCoord;
+        varying vec2 v_screenCoord;
+         
+        void main() {
+          vec4 color = texture2D(u_image, v_texCoord);
+          gl_FragColor.rgb = vec3(color.a, 0.3 + color.a * 0.6, 0.5);
+          gl_FragColor.a = smoothstep(0.0, 0.2, color.a);
+        }`,
+      sizeCallback: function() {
+        return 50;
+      },
+    });
   }
 }
 
