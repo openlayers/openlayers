@@ -37,7 +37,6 @@ const map = new Map({
   view: new View({
     center: [0, 0],
     projection: sphereMollweideProjection,
-    resolutions: [65536, 32768, 16384, 8192, 4096, 2048],
     zoom: 0
   })
 });
