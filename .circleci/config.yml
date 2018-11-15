@@ -14,7 +14,7 @@ jobs:
           - v1-dependencies-{{ checksum "package.json" }}
           - v1-dependencies-
 
-      - run: 
+      - run:
           name: Install Dependencies
           command: npm install
 
@@ -22,19 +22,19 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-        
-      - run: 
+
+      - run:
           name: Run Tests
           command: npm test
 
-      - run: 
+      - store_artifacts:
+          path: rendering/cases/
+          destination: rendering
+
+      - run:
           name: Build Examples
           command: npm run build-examples
 
       - store_artifacts:
           path: build/examples
           destination: examples
-
-      - store_artifacts:
-          path: rendering/cases/
-          destination: rendering
