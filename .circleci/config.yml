@@ -34,3 +34,7 @@ jobs:
       - store_artifacts:
           path: build/examples
           destination: examples
+
+      - store_artifacts:
+          path: rendering/cases/
+          destination: rendering
