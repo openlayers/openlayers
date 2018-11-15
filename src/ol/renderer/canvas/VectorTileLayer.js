@@ -110,12 +110,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     /**
      * @private
-     * @type {Array.<import("../../VectorImageTile.js").default>}
-     */
-    this.tilesToRender_ = [];
-
-    /**
-     * @private
      * @type {import("../../transform.js").Transform}
      */
     this.tmpTransform_ = createTransform();
@@ -140,13 +134,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   getTile(z, x, y, pixelRatio, projection) {
     const tile = super.getTile(z, x, y, pixelRatio, projection);
-    if (tile.getState() === TileState.IDLE) {
-      const key = listen(tile, EventType.CHANGE, function() {
-        if (tile.getState() === TileState.LOADING && tile.sourceTilesLoaded) {
-          this.tilesToRender_.push(tile);
-          unlistenByKey(key);
-        }
-      }.bind(this));
+    if (tile.getState() === TileState.LOADED) {
+      this.createReplayGroup_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
+      if (this.context) {
+        this.renderTileImage_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
+      }
     }
     return tile;
   }
