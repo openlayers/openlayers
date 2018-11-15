@@ -4,7 +4,7 @@
 import LayerRenderer from '../Layer';
 import WebGLBuffer from '../../webgl/Buffer';
 import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../webgl';
-import WebGLContext, {DefaultAttrib, DefaultUniform} from '../../webgl/Context';
+import WebGLHelper, {DefaultAttrib, DefaultUniform} from '../../webgl/Helper';
 import WebGLVertex from "../../webgl/Vertex";
 import WebGLFragment from "../../webgl/Fragment";
 import GeometryType from "../../geom/GeometryType";
@@ -63,7 +63,7 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
 
     const options = opt_options || {};
 
-    this.context_ = new WebGLContext({
+    this.context_ = new WebGLHelper({
       postProcessingShader: options.postProcessingShader
     });
 

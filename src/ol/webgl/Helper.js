@@ -1,5 +1,5 @@
 /**
- * @module ol/webgl/Context
+ * @module ol/webgl/Helper
  */
 import {getUid} from '../util.js';
 import {EXTENSIONS as WEBGL_EXTENSIONS} from '../webgl.js';
@@ -78,7 +78,7 @@ const FRAMEBUFFER_FRAGMENT_SHADER = `
  * Will handle attributes, uniforms, buffers, textures, frame buffers.
  * The context will always render to a frame buffer in order to allow post-processing.
  */
-class WebGLContext extends Disposable {
+class WebGLHelper extends Disposable {
 
   /**
    */
@@ -202,8 +202,6 @@ class WebGLContext extends Disposable {
     this.renderTargetAttribLocation_ = gl.getAttribLocation(this.renderTargetProgram_, 'a_position');
     this.renderTargetUniformLocation_ = gl.getUniformLocation(this.renderTargetProgram_, 'u_screenSize');
     this.renderTargetTextureLocation_ = gl.getUniformLocation(this.renderTargetProgram_, 'u_image');
-
-    this.aa = this.createEmptyTexture(256, 256);
   }
 
   /**
@@ -628,4 +626,4 @@ export function createEmptyTexture(gl, width, height, opt_wrapS, opt_wrapT) {
 export function createTexture(gl, image, opt_wrapS, opt_wrapT) {
 }
 
-export default WebGLContext;
+export default WebGLHelper;
