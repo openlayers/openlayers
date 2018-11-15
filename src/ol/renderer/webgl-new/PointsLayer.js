@@ -63,7 +63,9 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
 
     const options = opt_options || {};
 
-    this.context_ = new WebGLContext();
+    this.context_ = new WebGLContext({
+      postProcessingShader: options.postProcessingShader
+    });
 
     this.sourceRevision_ = -1;
 

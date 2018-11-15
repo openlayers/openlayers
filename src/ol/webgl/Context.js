@@ -82,8 +82,9 @@ class WebGLContext extends Disposable {
 
   /**
    */
-  constructor() {
+  constructor(opt_options) {
     super();
+    const options = opt_options || {};
 
     /**
      * @private
@@ -185,7 +186,7 @@ class WebGLContext extends Disposable {
 
     // compile the program for the frame buffer
     const vertexShader = new WebGLVertex(FRAMEBUFFER_VERTEX_SHADER);
-    const fragmentShader = new WebGLFragment(FRAMEBUFFER_FRAGMENT_SHADER);
+    const fragmentShader = new WebGLFragment(options.postProcessingShader || FRAMEBUFFER_FRAGMENT_SHADER);
     this.renderTargetProgram_ = this.getProgram(fragmentShader, vertexShader);
 
     // bind the vertices buffer for the frame buffer
@@ -315,7 +316,7 @@ class WebGLContext extends Disposable {
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.viewport(0, 0, canvas.width, canvas.height);
   }
 
@@ -348,7 +349,8 @@ class WebGLContext extends Disposable {
     // render the frame buffer to the canvas
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.disable(gl.BLEND);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.viewport(0, 0, canvas.width, canvas.height);
 
     this.bindBuffer(gl.ARRAY_BUFFER, this.renderTargetVerticesBuffer_);
