@@ -294,25 +294,32 @@ class Heatmap extends VectorLayer {
           gl_FragColor.rgb = vec3(1.0, 1.0, 1.0);
           vec2 texCoord = v_texCoord * 2.0 - vec2(1.0, 1.0);
           float sqRadius = texCoord.x * texCoord.x + texCoord.y * texCoord.y;
-          float alpha = 1.0 - sqRadius;
+          float alpha = 1.0 - sqrt(sqRadius);
           if (alpha <= 0.0) {
             discard;
           }
           gl_FragColor.a = alpha * 0.1;
         }`,
-      postProcessingShader: `
-        precision mediump float;
-         
-        uniform sampler2D u_image;
-         
-        varying vec2 v_texCoord;
-        varying vec2 v_screenCoord;
-         
-        void main() {
-          vec4 color = texture2D(u_image, v_texCoord);
-          gl_FragColor.rgb = vec3(color.a, 0.3 + color.a * 0.6, 0.5);
-          gl_FragColor.a = smoothstep(0.0, 0.2, color.a);
-        }`,
+      postProcesses: [
+        {
+          scaleRatio: 0.25
+        },
+        {
+          fragmentShader: `
+            precision mediump float;
+
+            uniform sampler2D u_image;
+
+            varying vec2 v_texCoord;
+            varying vec2 v_screenCoord;
+
+            void main() {
+              vec4 color = texture2D(u_image, v_texCoord);
+              gl_FragColor.rgb = vec3(color.a, 0.3 + color.a * 0.6, 0.5);
+              gl_FragColor.a = smoothstep(0.0, 0.07, color.a);
+            }`
+        }
+      ],
       sizeCallback: function() {
         return 50;
       },
