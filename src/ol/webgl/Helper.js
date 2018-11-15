@@ -20,6 +20,7 @@ import {create, fromTransform} from "../vec/mat4";
 import WebGLBuffer from "./Buffer";
 import WebGLVertex from "./Vertex";
 import WebGLFragment from "./Fragment";
+import WebGLPostProcessingPass from "./PostProcessingPass";
 
 
 /**
@@ -42,35 +43,6 @@ export const DefaultAttrib = {
   ROTATE_WITH_VIEW: 'a_rotateWithView',
   OFFSETS: 'a_offsets'
 };
-
-const FRAMEBUFFER_VERTEX_SHADER = `
-  precision mediump float;
-  
-  attribute vec2 a_position;
-  varying vec2 v_texCoord;
-  varying vec2 v_screenCoord;
-  
-  uniform vec2 u_screenSize;
-   
-  void main() {
-    v_texCoord = a_position * 0.5 + 0.5;
-    v_screenCoord = v_texCoord * u_screenSize;
-    gl_Position = vec4(a_position, 0.0, 1.0);
-  }
-`;
-
-const FRAMEBUFFER_FRAGMENT_SHADER = `
-  precision mediump float;
-   
-  uniform sampler2D u_image;
-   
-  varying vec2 v_texCoord;
-  varying vec2 v_screenCoord;
-   
-  void main() {
-    gl_FragColor = texture2D(u_image, v_texCoord);
-  }
-`;
 
 /**
  * @classdesc
@@ -176,32 +148,17 @@ class WebGLHelper extends Disposable {
     this.attribLocations_;
 
 
+    // initialize post processes from options
+    // if none given, use a default one
     const gl = this.getGL();
-
-    this.renderTargetTexture_ = gl.createTexture();
-    this.renderTargetTextureSize_ = null;
-
-    this.frameBuffer_ = gl.createFramebuffer();
-
-
-    // compile the program for the frame buffer
-    const vertexShader = new WebGLVertex(FRAMEBUFFER_VERTEX_SHADER);
-    const fragmentShader = new WebGLFragment(options.postProcessingShader || FRAMEBUFFER_FRAGMENT_SHADER);
-    this.renderTargetProgram_ = this.getProgram(fragmentShader, vertexShader);
-
-    // bind the vertices buffer for the frame buffer
-    this.renderTargetVerticesBuffer_ = new WebGLBuffer([
-      -1, -1,
-      1, -1,
-      -1, 1,
-      1, -1,
-      1, 1,
-      -1, 1
-    ], gl.STATIC_DRAW);
-
-    this.renderTargetAttribLocation_ = gl.getAttribLocation(this.renderTargetProgram_, 'a_position');
-    this.renderTargetUniformLocation_ = gl.getUniformLocation(this.renderTargetProgram_, 'u_screenSize');
-    this.renderTargetTextureLocation_ = gl.getUniformLocation(this.renderTargetProgram_, 'u_image');
+    this.postProcessPasses = options.postProcesses ? options.postProcesses.map(function(options) {
+      return new WebGLPostProcessingPass({
+        webGlContext: gl,
+        scaleRatio: options.scaleRatio,
+        vertexShader: options.vertexShader,
+        fragmentShader: options.fragmentShader
+      });
+    }) : [new WebGLPostProcessingPass({ webGlContext: gl })];
   }
 
   /**
@@ -274,39 +231,16 @@ class WebGLHelper extends Disposable {
     const gl = this.getGL();
     const canvas = this.getCanvas();
 
+    canvas.width = size[0] * pixelRatio;
+    canvas.height = size[1] * pixelRatio;
+    canvas.style.width = size[0] + 'px';
+    canvas.style.height = size[1] + 'px';
+
     gl.useProgram(this.currentProgram_);
 
-    // the initial rendering is done on the buffer
-    gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer_);
-
-    // if size has changed: adjust canvas & render target texture
-    if (!this.renderTargetTextureSize_ ||
-      this.renderTargetTextureSize_[0] !== size[0] || this.renderTargetTextureSize_[1] !== size[1]) {
-      this.renderTargetTextureSize_ = size;
-
-      canvas.width = size[0] * pixelRatio;
-      canvas.height = size[1] * pixelRatio;
-      canvas.style.width = size[0] + 'px';
-      canvas.style.height = size[1] + 'px';
-
-      // create a new texture
-      const level = 0;
-      const internalFormat = gl.RGBA;
-      const border = 0;
-      const format = gl.RGBA;
-      const type = gl.UNSIGNED_BYTE;
-      const data = null;
-      gl.bindTexture(gl.TEXTURE_2D, this.renderTargetTexture_);
-      gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
-        canvas.width, canvas.height, border,
-        format, type, data);
-
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-      // bind the texture to the framebuffer
-      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.renderTargetTexture_, 0);
+    // loop backwards in post processes list
+    for (let i = this.postProcessPasses.length - 1; i >= 0; i--) {
+      this.postProcessPasses[i].init(size, pixelRatio);
     }
 
     gl.bindTexture(gl.TEXTURE_2D, null);
@@ -315,7 +249,6 @@ class WebGLHelper extends Disposable {
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-    gl.viewport(0, 0, canvas.width, canvas.height);
   }
 
   /**
@@ -338,27 +271,10 @@ class WebGLHelper extends Disposable {
    * Copy the frame buffer to the canvas
    */
   finalizeDraw() {
-    const gl = this.getGL();
-    const canvas = this.getCanvas();
-
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.bindTexture(gl.TEXTURE_2D, this.renderTargetTexture_);
-
-    // render the frame buffer to the canvas
-    gl.clearColor(0.0, 0.0, 0.0, 0.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    gl.viewport(0, 0, canvas.width, canvas.height);
-
-    this.bindBuffer(gl.ARRAY_BUFFER, this.renderTargetVerticesBuffer_);
-
-    gl.useProgram(this.renderTargetProgram_);
-    gl.enableVertexAttribArray(this.renderTargetAttribLocation_);
-    gl.vertexAttribPointer(this.renderTargetAttribLocation_, 2, gl.FLOAT, false, 0, 0);
-    gl.uniform2f(this.renderTargetUniformLocation_, canvas.width, canvas.height);
-    gl.uniform1i(this.renderTargetTextureLocation_, 0);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    // apply post processes using the next one as target
+    for (let i = 0; i < this.postProcessPasses.length; i++) {
+      this.postProcessPasses[i].apply(this.postProcessPasses[i + 1] || null);
+    }
   }
 
   /**
