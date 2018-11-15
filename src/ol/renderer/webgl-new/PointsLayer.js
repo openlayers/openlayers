@@ -74,6 +74,14 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     const fragmentShader = new WebGLFragment(options.fragmentShader || FRAGMENT_SHADER);
     const program = this.context_.getProgram(fragmentShader, vertexShader);
     this.context_.useProgram(program);
+
+    this.sizeCallback_ = options.sizeCallback || function(feature) {
+      return 1;
+    };
+    this.coordCallback_ = options.coordCallback || function(feature, index) {
+      const geom = /** @type {import("../../geom/Point").default} */ (feature.getGeometry());
+      return geom.getCoordinates()[index];
+    }
   }
 
   /**
@@ -115,7 +123,9 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
           return;
         }
         const geom = /** @type {import("../../geom/Point").default} */ (feature.getGeometry());
-        const x = geom.getCoordinates()[0], y = geom.getCoordinates()[1], size = 1;
+        const x = this.coordCallback_(feature, 0);
+        const y = this.coordCallback_(feature, 1);
+        const size = this.sizeCallback_(feature);
         let stride = 6;
         let baseIndex = this.verticesBuffer_.getArray().length / stride;
 
