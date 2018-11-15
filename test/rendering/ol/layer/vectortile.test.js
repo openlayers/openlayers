@@ -76,14 +76,6 @@ describe('ol.rendering.layer.VectorTile', function() {
       });
     });
 
-    it('renders correctly with the canvas renderer', function(done) {
-      createMap();
-      waitForTiles(source, {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas.png',
-          22, done);
-      });
-    });
-
     it('renders rotated view correctly with the canvas renderer', function(done) {
       createMap();
       map.getView().setRotation(Math.PI / 4);
