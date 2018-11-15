@@ -166,7 +166,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const halfWidth = (frameState.size[0] * pixelRatio) / 2;
       const halfHeight = (frameState.size[1] * pixelRatio) / 2;
       rotateAtOffset(replayContext, -rotation, halfWidth, halfHeight);
-      replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
+      replayGroup.execute(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
       if (vectorSource.getWrapX() && projection.canWrapX() &&
           !containsExtent(projectionExtent, extent)) {
         let startX = extent[0];
@@ -177,7 +177,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           --world;
           offsetX = worldWidth * world;
           transform = this.getTransform(frameState, offsetX);
-          replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
+          replayGroup.execute(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
           startX += worldWidth;
         }
         world = 0;
@@ -186,7 +186,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           ++world;
           offsetX = worldWidth * world;
           transform = this.getTransform(frameState, offsetX);
-          replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
+          replayGroup.execute(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
           startX -= worldWidth;
         }
       }
@@ -280,7 +280,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     let transform = this.getRenderTransform(frameState, width, height, 0);
     const skippedFeatureUids = layerState.managed ? frameState.skippedFeatureUids : {};
-    replayGroup.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
+    replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
 
     if (vectorSource.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
       let startX = extent[0];
@@ -291,7 +291,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         --world;
         offsetX = worldWidth * world;
         transform = this.getRenderTransform(frameState, width, height, offsetX);
-        replayGroup.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
+        replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
         startX += worldWidth;
       }
       world = 0;
@@ -300,7 +300,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         ++world;
         offsetX = worldWidth * world;
         transform = this.getRenderTransform(frameState, width, height, offsetX);
-        replayGroup.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
+        replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
         startX -= worldWidth;
       }
     }

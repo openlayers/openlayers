@@ -241,10 +241,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       });
       map.addLayer(layer2);
 
-      const spy1 = sinon.spy(VectorTile.prototype,
-        'getReplayGroup');
-      const spy2 = sinon.spy(VectorTile.prototype,
-        'setReplayGroup');
+      const spy1 = sinon.spy(VectorTile.prototype, 'getExecutorGroup');
+      const spy2 = sinon.spy(VectorTile.prototype, 'setExecutorGroup');
       map.renderSync();
       expect(spy1.callCount).to.be(4);
       expect(spy2.callCount).to.be(2);
@@ -308,7 +306,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
   });
 
   describe('#forEachFeatureAtCoordinate', function() {
-    let layer, renderer, replayGroup;
+    let layer, renderer, executorGroup;
     class TileClass extends VectorImageTile {
       constructor() {
         super(...arguments);
@@ -317,8 +315,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         const sourceTile = new VectorTile([0, 0, 0]);
         sourceTile.setState(TileState.LOADED);
         sourceTile.setProjection(getProjection('EPSG:3857'));
-        sourceTile.getReplayGroup = function() {
-          return replayGroup;
+        sourceTile.getExecutorGroup = function() {
+          return executorGroup;
         };
         const key = sourceTile.tileCoord.toString();
         this.tileKeys = [key];
@@ -329,7 +327,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     }
 
     beforeEach(function() {
-      replayGroup = {};
+      executorGroup = {};
       layer = new VectorTileLayer({
         source: new VectorTileSource({
           tileClass: TileClass,
@@ -337,7 +335,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         })
       });
       renderer = new CanvasVectorTileLayerRenderer(layer);
-      replayGroup.forEachFeatureAtCoordinate = function(coordinate,
+      executorGroup.forEachFeatureAtCoordinate = function(coordinate,
         resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
         const feature = new Feature();
         callback(feature);

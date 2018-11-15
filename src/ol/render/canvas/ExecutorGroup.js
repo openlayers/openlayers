@@ -332,7 +332,7 @@ class ExecutorGroup extends BaseExecutorGroup {
    *     Default is {@link module:ol/render/replay~ORDER}
    * @param {Object<string, import("../canvas.js").DeclutterGroup>=} opt_declutterReplays Declutter replays.
    */
-  replay(
+  execute(
     context,
     transform,
     viewRotation,
@@ -468,11 +468,11 @@ export function replayDeclutter(declutterReplays, context, rotation, snapToPixel
   const zs = Object.keys(declutterReplays).map(Number).sort(numberSafeCompareFunction);
   const skippedFeatureUids = {};
   for (let z = 0, zz = zs.length; z < zz; ++z) {
-    const replayData = declutterReplays[zs[z].toString()];
-    for (let i = 0, ii = replayData.length; i < ii;) {
-      const replay = replayData[i++];
-      const transform = replayData[i++];
-      replay.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
+    const executorData = declutterReplays[zs[z].toString()];
+    for (let i = 0, ii = executorData.length; i < ii;) {
+      const executor = executorData[i++];
+      const transform = executorData[i++];
+      executor.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
     }
   }
 }

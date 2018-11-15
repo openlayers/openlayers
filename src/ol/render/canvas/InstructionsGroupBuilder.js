@@ -406,25 +406,4 @@ export function getCircleArray(radius) {
   return arr;
 }
 
-
-/**
- * @param {!Object<string, Array<*>>} declutterReplays Declutter replays.
- * @param {CanvasRenderingContext2D} context Context.
- * @param {number} rotation Rotation.
- * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
- */
-export function replayDeclutter(declutterReplays, context, rotation, snapToPixel) {
-  const zs = Object.keys(declutterReplays).map(Number).sort(numberSafeCompareFunction);
-  const skippedFeatureUids = {};
-  for (let z = 0, zz = zs.length; z < zz; ++z) {
-    const replayData = declutterReplays[zs[z].toString()];
-    for (let i = 0, ii = replayData.length; i < ii;) {
-      const replay = replayData[i++];
-      const transform = replayData[i++];
-      replay.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
-    }
-  }
-}
-
-
 export default CanvasBuilderGroup;

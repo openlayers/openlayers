@@ -65,7 +65,7 @@ class VectorTile extends Tile {
 
     /**
      * @private
-     * @type {Object<string, import("./render/BuilderGroup.js").default>}
+     * @type {Object<string, import("./render/ExecutorGroup.js").default>}
      */
     this.replayGroups_ = {};
 
@@ -142,9 +142,9 @@ class VectorTile extends Tile {
   /**
    * @param {import("./layer/Layer.js").default} layer Layer.
    * @param {string} key Key.
-   * @return {import("./render/BuilderGroup.js").default} Replay group.
+   * @return {import("./render/ExecutorGroup.js").default} Replay group.
    */
-  getReplayGroup(layer, key) {
+  getExecutorGroup(layer, key) {
     return this.replayGroups_[getUid(layer) + ',' + key];
   }
 
@@ -153,9 +153,9 @@ class VectorTile extends Tile {
    * @param {import("./layer/Layer").default} layer Layer.
    * @param {number} zoom Zoom.
    * @param {import("./extent").Extent} extent Extent.
-   * @return {import("./render/BuilderGroup.js").default} Replay groups.
+   * @return {import("./render/ExecutorGroup.js").default} Replay groups.
    */
-  getLowResReplayGroup(layer, zoom, extent) {
+  getLowResExecutorGroup(layer, zoom, extent) {
     const layerId = getUid(layer);
     let bestZoom = 0;
     let replayGroup = null;
@@ -244,10 +244,10 @@ class VectorTile extends Tile {
   /**
    * @param {import("./layer/Layer.js").default} layer Layer.
    * @param {string} key Key.
-   * @param {import("./render/BuilderGroup.js").default} replayGroup Replay group.
+   * @param {import("./render/ExecutorGroup.js").default} executorGroup Executor group.
    */
-  setReplayGroup(layer, key, replayGroup) {
-    this.replayGroups_[getUid(layer) + ',' + key] = replayGroup;
+  setExecutorGroup(layer, key, executorGroup) {
+    this.replayGroups_[getUid(layer) + ',' + key] = executorGroup;
   }
 
   /**

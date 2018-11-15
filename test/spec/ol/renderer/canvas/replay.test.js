@@ -92,12 +92,12 @@ describe('ol.render.canvas.ReplayGroup', function() {
     it('omits lineTo for repeated coordinates', function() {
       renderFeature(builder, feature0, fill0, 1);
       executor.replaceInstructions(builder.finish());
-      executor.replay(context, transform, 0, {});
+      executor.execute(context, transform, 0, {});
       expect(lineToCount).to.be(4);
       lineToCount = 0;
       scaleTransform(transform, 0.25, 0.25);
       executor.replaceInstructions(builder.finish());
-      executor.replay(context, transform, 0, {});
+      executor.execute(context, transform, 0, {});
       expect(lineToCount).to.be(3);
     });
 
@@ -105,7 +105,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       renderFeature(builder, feature0, fill0, 1);
       renderFeature(builder, feature1, fill1, 1);
       executor.replaceInstructions(builder.finish());
-      executor.replay(context, transform, 0, {});
+      executor.execute(context, transform, 0, {});
       expect(moveToCount).to.be(2);
     });
 
@@ -114,7 +114,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style1, 1);
       executor.replaceInstructions(builder.finish());
-      executor.replay(context, transform, 0, {});
+      executor.execute(context, transform, 0, {});
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
       expect(beginPathCount).to.be(1);
@@ -125,7 +125,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style2, 1);
       executor.replaceInstructions(builder.finish());
-      executor.replay(context, transform, 0, {});
+      executor.execute(context, transform, 0, {});
       expect(fillCount).to.be(2);
       expect(strokeCount).to.be(2);
       expect(beginPathCount).to.be(2);
@@ -136,7 +136,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       renderFeature(builder, feature2, style2, 1);
       renderFeature(builder, feature3, style1, 1);
       executor.replaceInstructions(builder.finish());
-      executor.replay(context, transform, 0, {});
+      executor.execute(context, transform, 0, {});
       expect(fillCount).to.be(3);
       expect(strokeCount).to.be(3);
       expect(beginPathCount).to.be(3);
@@ -149,7 +149,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       const skippedUids = {};
       skippedUids[getUid(feature1)] = true;
       executor.replaceInstructions(builder.finish());
-      executor.replay(context, transform, 0, skippedUids);
+      executor.execute(context, transform, 0, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
       expect(beginPathCount).to.be(1);
@@ -162,7 +162,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       const skippedUids = {};
       skippedUids[getUid(feature3)] = true;
       executor.replaceInstructions(builder.finish());
-      executor.replay(context, transform, 0, skippedUids);
+      executor.execute(context, transform, 0, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
       expect(beginPathCount).to.be(1);
@@ -176,7 +176,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       skippedUids[getUid(feature1)] = true;
       skippedUids[getUid(feature2)] = true;
       executor.replaceInstructions(builder.finish());
-      executor.replay(context, transform, 0, skippedUids);
+      executor.execute(context, transform, 0, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
       expect(beginPathCount).to.be(1);
@@ -189,7 +189,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style1, 1);
       executor.replaceInstructions(builder.finish());
-      executor.replay(context, transform, 0, {});
+      executor.execute(context, transform, 0, {});
       expect(fillCount).to.be(3);
       expect(strokeCount).to.be(3);
       expect(beginPathCount).to.be(3);
@@ -218,7 +218,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       renderFeature(builder, feature1, style2, 1);
       renderFeature(builder, feature2, style2, 1);
       executor.replaceInstructions(builder.finish());
-      executor.replay(context, transform, 0, {});
+      executor.execute(context, transform, 0, {});
 
       expect(lineDashCount).to.be(1);
       expect(style2.getStroke().getLineDash()).to.eql([3, 6]);
@@ -267,7 +267,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       renderFeature(builder, geometrycollection, style, 1);
       scaleTransform(transform, 0.1, 0.1);
       executor.replaceInstructions(builder.finish());
-      executor.replay(context, transform, 0, {});
+      executor.execute(context, transform, 0, {});
       expect(calls.length).to.be(9);
       expect(calls[0].geometry).to.be(point.getGeometry());
       expect(calls[0].feature).to.be(point);
