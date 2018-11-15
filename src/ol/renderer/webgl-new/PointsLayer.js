@@ -115,14 +115,14 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
         }
         const geom = /** @type {import("../../geom/Point").default} */ (feature.getGeometry());
         const x = geom.getCoordinates()[0], y = geom.getCoordinates()[1], size = 20;
-        let stride = 4;
+        let stride = 6;
         let baseIndex = this.verticesBuffer_.getArray().length / stride;
 
         this.verticesBuffer_.getArray().push(
-          x, y, -size / 2, -size / 2,
-          x, y, +size / 2, -size / 2,
-          x, y, +size / 2, +size / 2,
-          x, y, -size / 2, +size / 2,
+          x, y, -size / 2, -size / 2, 0, 0,
+          x, y, +size / 2, -size / 2, 1, 0,
+          x, y, +size / 2, +size / 2, 1, 1,
+          x, y, -size / 2, +size / 2, 0, 1,
         );
         this.indicesBuffer_.getArray().push(
           baseIndex, baseIndex + 1, baseIndex + 3,
@@ -135,8 +135,9 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
       this.context_.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
       let bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
-      this.context_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * 4, 0);
-      this.context_.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * 4, bytesPerFloat * 2);
+      this.context_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * 6, 0);
+      this.context_.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 2);
+      this.context_.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 4);
     }
 
     return true;
