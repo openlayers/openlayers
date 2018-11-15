@@ -194,7 +194,10 @@ class CanvasTextBuilder extends CanvasInstructionsBuilder {
 
     } else {
 
-      const geometryWidths = [];
+      let geometryWidths = null;
+      if (!textState.overflow) {
+        geometryWidths = [];
+      }
       switch (geometryType) {
         case GeometryType.POINT:
         case GeometryType.MULTI_POINT:
@@ -264,8 +267,7 @@ class CanvasTextBuilder extends CanvasInstructionsBuilder {
           }),
         !!textState.backgroundFill, !!textState.backgroundStroke,
         this.text_, this.textKey_, this.strokeKey_, this.fillKey_,
-        this.textOffsetX_, this.textOffsetY_,
-        geometryWidths.length > 0 ? geometryWidths : null
+        this.textOffsetX_, this.textOffsetY_, geometryWidths
       ]);
       this.hitDetectionInstructions.push([CanvasInstruction.DRAW_IMAGE, begin, end,
         null, Infinity, Infinity, this.declutterGroup_, Infinity, 1, 0, 0,
@@ -273,8 +275,7 @@ class CanvasTextBuilder extends CanvasInstructionsBuilder {
         textState.padding,
         !!textState.backgroundFill, !!textState.backgroundStroke,
         this.text_, this.textKey_, this.strokeKey_, this.fillKey_,
-        this.textOffsetX_, this.textOffsetY_,
-        geometryWidths.length > 0 ? geometryWidths : null
+        this.textOffsetX_, this.textOffsetY_, geometryWidths
       ]);
 
       this.endGeometry(geometry, feature);
