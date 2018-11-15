@@ -85,7 +85,7 @@ class Heatmap extends VectorLayer {
 
     /**
      * @private
-     * @type {Uint8ClampedArray}
+     * @type {HTMLCanvasElement}
      */
     this.gradient_ = null;
 
@@ -309,15 +309,20 @@ class Heatmap extends VectorLayer {
             precision mediump float;
 
             uniform sampler2D u_image;
+            uniform sampler2D u_gradientTexture;
 
             varying vec2 v_texCoord;
             varying vec2 v_screenCoord;
 
             void main() {
               vec4 color = texture2D(u_image, v_texCoord);
-              gl_FragColor.rgb = vec3(color.a, 0.3 + color.a * 0.6, 0.5);
+              gl_FragColor.rgb = texture2D(u_gradientTexture, vec2(0.5, color.a)).rgb;
+              // gl_FragColor.rgb = color.rgb;
               gl_FragColor.a = smoothstep(0.0, 0.07, color.a);
-            }`
+            }`,
+          uniforms: {
+            u_gradientTexture: this.gradient_
+          }
         }
       ],
       sizeCallback: function() {
@@ -330,7 +335,7 @@ class Heatmap extends VectorLayer {
 
 /**
  * @param {Array<string>} colors A list of colored.
- * @return {Uint8ClampedArray} An array.
+ * @return {HTMLCanvasElement} canvas with gradient texture.
  */
 function createGradient(colors) {
   const width = 1;
@@ -346,7 +351,7 @@ function createGradient(colors) {
   context.fillStyle = gradient;
   context.fillRect(0, 0, width, height);
 
-  return context.getImageData(0, 0, width, height).data;
+  return context.canvas;
 }
 
 

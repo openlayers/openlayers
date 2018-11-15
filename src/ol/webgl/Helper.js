@@ -156,7 +156,8 @@ class WebGLHelper extends Disposable {
         webGlContext: gl,
         scaleRatio: options.scaleRatio,
         vertexShader: options.vertexShader,
-        fragmentShader: options.fragmentShader
+        fragmentShader: options.fragmentShader,
+        uniforms: options.uniforms
       });
     }) : [new WebGLPostProcessingPass({ webGlContext: gl })];
   }
