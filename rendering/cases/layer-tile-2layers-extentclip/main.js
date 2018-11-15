@@ -1,18 +1,11 @@
 import Map from '../../../src/ol/CompositeMap.js';
 import View from '../../../src/ol/View.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
-import {fromLonLat} from "../../../src/ol/proj";
-import XYZ from "../../../src/ol/source/XYZ";
-import {getSize} from "../../../src/ol/extent";
+import {fromLonLat} from '../../../src/ol/proj';
+import XYZ from '../../../src/ol/source/XYZ';
+import {getSize} from '../../../src/ol/extent';
 
 const center = fromLonLat([8.6, 50.1]);
-
-function centerExtent() {
-  const c = map.getView().calculateExtent([256, 256]);
-  const qw = getSize(c)[0] / 4;
-  const qh = getSize(c)[1] / 4;
-  return [c[0] + qw, c[1] + qh, c[2] - qw, c[3] - qh];
-}
 
 const map = new Map({
   target: 'map',
@@ -43,3 +36,12 @@ map.addLayer(
 );
 
 render();
+
+function centerExtent() {
+  const c = map.getView().calculateExtent([256, 256]);
+  const qw = getSize(c)[0] / 4;
+  const qh = getSize(c)[1] / 4;
+  return [c[0] + qw, c[1] + qh, c[2] - qw, c[3] - qh];
+}
+
+

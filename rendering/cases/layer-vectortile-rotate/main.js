@@ -1,9 +1,9 @@
 import Map from '../../../src/ol/Map.js';
 import View from '../../../src/ol/View.js';
-import VectorTileSource from "../../../src/ol/source/VectorTile";
-import MVT from "../../../src/ol/format/MVT";
-import {createXYZ} from "../../../src/ol/tilegrid";
-import VectorTileLayer from "../../../src/ol/layer/VectorTile";
+import VectorTileSource from '../../../src/ol/source/VectorTile';
+import MVT from '../../../src/ol/format/MVT';
+import {createXYZ} from '../../../src/ol/tilegrid';
+import VectorTileLayer from '../../../src/ol/layer/VectorTile';
 
 const map = new Map({
   layers: [
@@ -23,5 +23,5 @@ const map = new Map({
   })
 });
 
-map.getView().setRotation( Math.PI / 4);
+map.getView().setRotation(Math.PI / 4);
 render({message: 'Vector tile layer rotates'});

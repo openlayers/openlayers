@@ -1,8 +1,8 @@
 import Map from '../../../src/ol/CompositeMap.js';
 import View from '../../../src/ol/View.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
-import {fromLonLat} from "../../../src/ol/proj";
-import XYZ from "../../../src/ol/source/XYZ";
+import {fromLonLat} from '../../../src/ol/proj';
+import XYZ from '../../../src/ol/source/XYZ';
 
 const center = fromLonLat([8.6, 50.1]);
 
