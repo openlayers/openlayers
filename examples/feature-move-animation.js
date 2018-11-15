@@ -7,6 +7,7 @@ import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import {Circle as CircleStyle, Fill, Icon, Stroke, Style} from '../src/ol/style.js';
+import {getVectorContext} from '../src/ol/render.js';
 
 // This long string is placed here due to jsFiddle limitations.
 // It is usually loaded with AJAX.
@@ -142,7 +143,7 @@ const map = new Map({
 });
 
 const moveFeature = function(event) {
-  const vectorContext = event.vectorContext;
+  const vectorContext = getVectorContext(event);
   const frameState = event.frameState;
 
   if (animating) {
@@ -176,7 +177,7 @@ function startAnimation() {
     geoMarker.setStyle(null);
     // just in case you pan somewhere else
     map.getView().setCenter(center);
-    map.on('postcompose', moveFeature);
+    vectorLayer.on('postrender', moveFeature);
     map.render();
   }
 }

@@ -2,7 +2,13 @@
  * @module ol/render
  */
 import {DEVICE_PIXEL_RATIO} from './has.js';
-import {apply as applyTransform, create as createTransform, scale as scaleTransform} from './transform.js';
+import {
+  apply as applyTransform,
+  create as createTransform,
+  invert as invertTransform,
+  multiply as multiplyTransform,
+  scale as scaleTransform
+} from './transform.js';
 import CanvasImmediateRenderer from './render/canvas/Immediate.js';
 
 
@@ -79,14 +85,17 @@ export function toContext(context, opt_options) {
 }
 
 /**
- * Gets a vector context for drawing to 
+ * Gets a vector context for drawing to the event's canvas.
  * @param {import("./render/Event.js").default} event Render event.
+ * @returns {CanvasImmediateRenderer} Vector context.
+ * @api
  */
 export function getVectorContext(event) {
   const frameState = event.frameState;
+  const transform = multiplyTransform(invertTransform(event.pixelTransform.slice()), frameState.coordinateToPixelTransform);
   return new CanvasImmediateRenderer(
-    event.context, frameState.pixelRatio, frameState.extent,
-    event.pixelTransform, frameState.viewState.rotation);
+    event.context, frameState.pixelRatio, frameState.extent, transform,
+    frameState.viewState.rotation);
 }
 
 /**
@@ -94,10 +103,11 @@ export function getVectorContext(event) {
  * @param {import("./render/Event.js").default} event Render event.
  * @param {import("./pixel.js").Pixel} pixel Css pixel relative to the top-left
  * corner of the map viewport.
+ * @returns {import("./pixel.js").Pixel} Pixel on the event's canvas context.
  * @api
  */
 export function getPixelFromPixel(event, pixel) {
   const result = pixel.slice(0);
-  applyTransform(event.pixelTransform, pixel);
+  applyTransform(invertTransform(event.pixelTransform.slice()), result);
   return result;
 }
