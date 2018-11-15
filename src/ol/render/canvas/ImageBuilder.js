@@ -2,9 +2,9 @@
  * @module ol/render/canvas/ImageBuilder
  */
 import CanvasInstruction from './Instruction.js';
-import CanvasInstructionsBuilder from './InstructionsBuilder.js';
+import CanvasBuilder from './Builder.js';
 
-class CanvasImageBuilder extends CanvasInstructionsBuilder {
+class CanvasImageBuilder extends CanvasBuilder {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.

@@ -2,7 +2,7 @@ import Feature from '../../../../../src/ol/Feature.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import CanvasTextReplay from '../../../../../src/ol/render/canvas/TextBuilder.js';
-import InstructionExecutor from '../../../../../src/ol/render/canvas/InstructionsExecutor.js';
+import InstructionExecutor from '../../../../../src/ol/render/canvas/Executor.js';
 import Text from '../../../../../src/ol/style/Text.js';
 import {create as createTransform} from '../../../../../src/ol/transform.js';
 

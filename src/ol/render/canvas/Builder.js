@@ -1,5 +1,5 @@
 /**
- * @module ol/render/canvas/InstructionsBuilder
+ * @module ol/render/canvas/Builder
  */
 import {equals, reverseSubArray} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
@@ -30,7 +30,7 @@ import {
  */
 
 
-class CanvasInstructionsBuilder extends VectorContext {
+class CanvasBuilder extends VectorContext {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
@@ -464,7 +464,7 @@ class CanvasInstructionsBuilder extends VectorContext {
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:CanvasInstructionsBuilder, import("../canvas.js").FillStrokeState, (import("../../geom/Geometry.js").default|import("../Feature.js").default)):Array<*>} createFill Create fill.
+   * @param {function(this:CanvasBuilder, import("../canvas.js").FillStrokeState, (import("../../geom/Geometry.js").default|import("../Feature.js").default)):Array<*>} createFill Create fill.
    * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    */
   updateFillStyle(state, createFill, geometry) {
@@ -479,7 +479,7 @@ class CanvasInstructionsBuilder extends VectorContext {
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:CanvasInstructionsBuilder, import("../canvas.js").FillStrokeState)} applyStroke Apply stroke.
+   * @param {function(this:CanvasBuilder, import("../canvas.js").FillStrokeState)} applyStroke Apply stroke.
    */
   updateStrokeStyle(state, applyStroke) {
     const strokeStyle = state.strokeStyle;
@@ -543,4 +543,4 @@ class CanvasInstructionsBuilder extends VectorContext {
 }
 
 
-export default CanvasInstructionsBuilder;
+export default CanvasBuilder;

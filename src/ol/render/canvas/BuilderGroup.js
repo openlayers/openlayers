@@ -1,5 +1,5 @@
 /**
- * @module ol/render/canvas/InstructionsGroupBuilder
+ * @module ol/render/canvas/BuilderGroup
  */
 
 import {numberSafeCompareFunction} from '../../array.js';
@@ -9,7 +9,7 @@ import {transform2D} from '../../geom/flat/transform.js';
 import {isEmpty} from '../../obj.js';
 import BuilderGroup from '../BuilderGroup.js';
 import ReplayType from '../ReplayType.js';
-import CanvasInstructionsBuilder from './InstructionsBuilder.js';
+import CanvasBuilder from './Builder.js';
 import CanvasImageBuilder from './ImageBuilder.js';
 import CanvasLineStringBuilder from './LineStringBuilder.js';
 import CanvasPolygonBuilder from './PolygonBuilder.js';
@@ -19,11 +19,11 @@ import {create as createTransform, compose as composeTransform} from '../../tran
 
 
 /**
- * @type {Object<ReplayType, typeof CanvasInstructionsBuilder>}
+ * @type {Object<ReplayType, typeof CanvasBuilder>}
  */
 const BATCH_CONSTRUCTORS = {
   'Circle': CanvasPolygonBuilder,
-  'Default': CanvasInstructionsBuilder,
+  'Default': CanvasBuilder,
   'Image': CanvasImageBuilder,
   'LineString': CanvasLineStringBuilder,
   'Polygon': CanvasPolygonBuilder,
@@ -102,7 +102,7 @@ class CanvasBuilderGroup extends BuilderGroup {
 
     /**
      * @private
-     * @type {!Object<string, !Object<ReplayType, CanvasInstructionsBuilder>>}
+     * @type {!Object<string, !Object<ReplayType, CanvasBuilder>>}
      */
     this.buildersByZIndex_ = {};
 
@@ -151,7 +151,7 @@ class CanvasBuilderGroup extends BuilderGroup {
   }
 
   /**
-   * @return {!Object<string, !Object<ReplayType, import("./InstructionsBuilder.js").SerializableInstructions>>} The serializable instructions
+   * @return {!Object<string, !Object<ReplayType, import("./Builder.js").SerializableInstructions>>} The serializable instructions
    */
   finish() {
     const builderInstructions = {};

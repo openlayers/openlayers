@@ -1,5 +1,5 @@
 /**
- * @module ol/render/canvas/InstructionsExecutor
+ * @module ol/render/canvas/Executor
  */
 import {getUid} from '../../util.js';
 import {equals, reverseSubArray} from '../../array.js';
@@ -47,7 +47,7 @@ const tmpExtent = createEmpty();
 const tmpTransform = createTransform();
 
 
-class CanvasInstructionsExecutor {
+class CanvasExecutor {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
@@ -1019,4 +1019,4 @@ class CanvasInstructionsExecutor {
 }
 
 
-export default CanvasInstructionsExecutor;
+export default CanvasExecutor;

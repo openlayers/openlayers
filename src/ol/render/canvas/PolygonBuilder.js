@@ -7,10 +7,10 @@ import {defaultFillStyle} from '../canvas.js';
 import CanvasInstruction, {
   fillInstruction, strokeInstruction, beginPathInstruction, closePathInstruction
 } from './Instruction.js';
-import CanvasInstructionsBuilder from './InstructionsBuilder.js';
+import CanvasBuilder from './Builder.js';
 
 
-class CanvasPolygonBuilder extends CanvasInstructionsBuilder {
+class CanvasPolygonBuilder extends CanvasBuilder {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.

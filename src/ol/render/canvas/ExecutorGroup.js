@@ -11,7 +11,7 @@ import BaseExecutorGroup from '../ExecutorGroup.js';
 import ReplayType from '../ReplayType.js';
 import {ORDER} from '../replay.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
-import CanvasInstructionsExecutor from './InstructionsExecutor.js';
+import CanvasExecutor from './Executor.js';
 
 
 class ExecutorGroup extends BaseExecutorGroup {
@@ -85,7 +85,7 @@ class ExecutorGroup extends BaseExecutorGroup {
 
     /**
      * @private
-     * @type {!Object<string, !Object<ReplayType, import("./InstructionsExecutor").default>>}
+     * @type {!Object<string, !Object<ReplayType, import("./Executor").default>>}
      */
     this.executorsByZIndex_ = {};
 
@@ -118,7 +118,7 @@ class ExecutorGroup extends BaseExecutorGroup {
 
   /**
    * Create executors and populate them using the provided instructions.
-   * @param {!Object<string, !Object<ReplayType, import("./InstructionsBuilder.js").SerializableInstructions>>} allInstructions The serializable instructions
+   * @param {!Object<string, !Object<ReplayType, import("./Builder.js").SerializableInstructions>>} allInstructions The serializable instructions
    */
   replaceInstructions(allInstructions) {
     this.executorsByZIndex_ = {};
@@ -301,7 +301,7 @@ class ExecutorGroup extends BaseExecutorGroup {
     }
     let executor = executors[replayType];
     if (executor === undefined) {
-      executor = new CanvasInstructionsExecutor(this.tolerance_, this.maxExtent_,
+      executor = new CanvasExecutor(this.tolerance_, this.maxExtent_,
         this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
       executors[replayType] = executor;
     }

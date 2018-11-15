@@ -11,7 +11,7 @@ class ExecutorGroup {
    * @abstract
    * @param {number|undefined} zIndex Z index.
    * @param {import("./ReplayType.js").default} replayType Replay type.
-   * @return {import("./VectorContext.js").default} Replay.
+   * @return {import("./VectorContext.js").default} Executor.
    */
   getExecutor(zIndex, replayType) {
     return abstract();
@@ -26,8 +26,15 @@ class ExecutorGroup {
   }
 
   /**
+   * @return {import("../extent.js").Extent} The extent of the group.
+   */
+  getMaxExtent() {
+    return abstract();
+  }
+
+  /**
    * @abstract
-   * @param {boolean} group Group with previous replay
+   * @param {boolean} group Group with previous executor
    * @return {Array<*>} The resulting instruction group
    */
   addDeclutter(group) {

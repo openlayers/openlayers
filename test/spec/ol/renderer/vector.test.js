@@ -6,7 +6,7 @@ import Polygon from '../../../../src/ol/geom/Polygon.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
-import CanvasBuilderGroup from '../../../../src/ol/render/canvas/InstructionsGroupBuilder.js';
+import CanvasBuilderGroup from '../../../../src/ol/render/canvas/BuilderGroup.js';
 import {renderFeature} from '../../../../src/ol/renderer/vector.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Icon from '../../../../src/ol/style/Icon.js';

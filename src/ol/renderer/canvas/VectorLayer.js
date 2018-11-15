@@ -10,7 +10,7 @@ import rbush from 'rbush';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
 import RenderEventType from '../../render/EventType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
-import CanvasBuilderGroup from '../../render/canvas/InstructionsGroupBuilder.js';
+import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import InstructionsGroupExecutor from '../../render/canvas/ExecutorGroup.js';
 import CanvasLayerRenderer from './Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
@@ -483,16 +483,16 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     const replayGroupInstructions = replayGroup.finish();
-    const renderingReplayGroup = new InstructionsGroupExecutor(
+    const renderingExecutorGroup = new InstructionsGroupExecutor(
       getRenderTolerance(resolution, pixelRatio), extent, resolution,
       pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
-    renderingReplayGroup.replaceInstructions(replayGroupInstructions);
+    renderingExecutorGroup.replaceInstructions(replayGroupInstructions);
 
     this.renderedResolution_ = resolution;
     this.renderedRevision_ = vectorLayerRevision;
     this.renderedRenderOrder_ = vectorLayerRenderOrder;
     this.renderedExtent_ = extent;
-    this.replayGroup_ = renderingReplayGroup;
+    this.replayGroup_ = renderingExecutorGroup;
 
     this.replayGroupChanged = true;
     return true;
@@ -503,10 +503,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
-   * @param {import("../../render/canvas/InstructionsGroupBuilder.js").default} replayGroup Replay group.
+   * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
    * @return {boolean} `true` if an image is loading.
    */
-  renderFeature(feature, resolution, pixelRatio, styles, replayGroup) {
+  renderFeature(feature, resolution, pixelRatio, styles, builderGroup) {
     if (!styles) {
       return false;
     }
@@ -514,13 +514,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (Array.isArray(styles)) {
       for (let i = 0, ii = styles.length; i < ii; ++i) {
         loading = renderFeature(
-          replayGroup, feature, styles[i],
+          builderGroup, feature, styles[i],
           getSquaredRenderTolerance(resolution, pixelRatio),
           this.handleStyleImageChange_, this) || loading;
       }
     } else {
       loading = renderFeature(
-        replayGroup, feature, styles,
+        builderGroup, feature, styles,
         getSquaredRenderTolerance(resolution, pixelRatio),
         this.handleStyleImageChange_, this);
     }
