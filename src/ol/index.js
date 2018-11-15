@@ -29,7 +29,6 @@ export {default as TileRange} from './TileRange.js';
 export {default as VectorImageTile} from './VectorImageTile.js';
 export {default as VectorTile} from './VectorTile.js';
 export {default as View} from './View.js';
-export {default as WebGLMap} from './WebGLMap.js';
 
 export {getUid, inherits, VERSION} from './util.js';
 

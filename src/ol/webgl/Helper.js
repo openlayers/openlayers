@@ -598,32 +598,4 @@ class WebGLHelper extends Disposable {
   }
 }
 
-/**
- * @param {number=} opt_wrapS wrapS.
- * @param {number=} opt_wrapT wrapT.
- * @return {WebGLTexture} The texture.
- */
-export function createTextureInternal(gl, opt_wrapS, opt_wrapT) {
-}
-
-/**
- * @param {number} width Width.
- * @param {number} height Height.
- * @param {number=} opt_wrapS wrapS.
- * @param {number=} opt_wrapT wrapT.
- * @return {WebGLTexture} The texture.
- */
-export function createEmptyTexture(gl, width, height, opt_wrapS, opt_wrapT) {
-}
-
-
-/**
- * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
- * @param {number=} opt_wrapS wrapS.
- * @param {number=} opt_wrapT wrapT.
- * @return {WebGLTexture} The texture.
- */
-export function createTexture(gl, image, opt_wrapS, opt_wrapT) {
-}
-
 export default WebGLHelper;
