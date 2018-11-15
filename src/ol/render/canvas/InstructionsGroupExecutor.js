@@ -7,20 +7,20 @@ import {createCanvasContext2D} from '../../dom.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {isEmpty} from '../../obj.js';
-import ReplayGroup from '../ReplayGroup.js';
+import ExecutorGroup from '../ExecutorGroup.js';
 import ReplayType from '../ReplayType.js';
 import {ORDER} from '../replay.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 import CanvasInstructionsExecutor from './InstructionsExecutor.js';
 
 
-class InstructionsGroupExectuor extends ReplayGroup {
+class InstructionsGroupExectuor extends ExecutorGroup {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Max extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {boolean} overlaps The replay group can have overlapping geometries.
+   * @param {boolean} overlaps The executor group can have overlapping geometries.
    * @param {?} declutterTree Declutter tree for declutter processing in postrender.
    * @param {number=} opt_renderBuffer Optional rendering buffer.
    */
@@ -87,7 +87,7 @@ class InstructionsGroupExectuor extends ReplayGroup {
      * @private
      * @type {!Object<string, !Object<ReplayType, CanvasReplay>>}
      */
-    this.replaysByZIndex_ = {};
+    this.executorsByZIndex_ = {};
 
     /**
      * @private
@@ -134,30 +134,30 @@ class InstructionsGroupExectuor extends ReplayGroup {
   }
 
   /**
-   * Recreate replays and populate them using the provided instructions.
+   * Create executors and populate them using the provided instructions.
    * @param {!Object<string, !Object<ReplayType, import("./InstructionsBuilder.js").SerializableInstructions>>} allInstructions The serializable instructions
    */
   replaceInstructions(allInstructions) {
-    this.replaysByZIndex_ = {};
+    this.executorsByZIndex_ = {};
     for (const zIndex in allInstructions) {
       const instructionByZindex = allInstructions[zIndex];
       for (const replayType in instructionByZindex) {
         const instructions = instructionByZindex[replayType];
-        const replay = this.getReplay(zIndex, replayType);
-        replay.replaceInstructions(instructions);
+        const executor = this.getExecutor(zIndex, replayType);
+        executor.replaceInstructions(instructions);
       }
     }
   }
 
   /**
-   * @param {Array<ReplayType>} replays Replays.
-   * @return {boolean} Has replays of the provided types.
+   * @param {Array<ReplayType>} executors Executors.
+   * @return {boolean} Has executors of the provided types.
    */
-  hasReplays(replays) {
-    for (const zIndex in this.replaysByZIndex_) {
-      const candidates = this.replaysByZIndex_[zIndex];
-      for (let i = 0, ii = replays.length; i < ii; ++i) {
-        if (replays[i] in candidates) {
+  hasExecutors(executors) {
+    for (const zIndex in this.executorsByZIndex_) {
+      const candidates = this.executorsByZIndex_[zIndex];
+      for (let i = 0, ii = executors.length; i < ii; ++i) {
+        if (executors[i] in candidates) {
           return true;
         }
       }
@@ -251,27 +251,27 @@ class InstructionsGroupExectuor extends ReplayGroup {
     }
 
     /** @type {Array<number>} */
-    const zs = Object.keys(this.replaysByZIndex_).map(Number);
+    const zs = Object.keys(this.executorsByZIndex_).map(Number);
     zs.sort(numberSafeCompareFunction);
 
-    let i, j, replays, replay, result;
+    let i, j, executors, executor, result;
     for (i = zs.length - 1; i >= 0; --i) {
       const zIndexKey = zs[i].toString();
-      replays = this.replaysByZIndex_[zIndexKey];
+      executors = this.executorsByZIndex_[zIndexKey];
       for (j = ORDER.length - 1; j >= 0; --j) {
         replayType = ORDER[j];
-        replay = replays[replayType];
-        if (replay !== undefined) {
+        executor = executors[replayType];
+        if (executor !== undefined) {
           if (declutterReplays &&
               (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) {
             const declutter = declutterReplays[zIndexKey];
             if (!declutter) {
-              declutterReplays[zIndexKey] = [replay, transform.slice(0)];
+              declutterReplays[zIndexKey] = [executor, transform.slice(0)];
             } else {
-              declutter.push(replay, transform.slice(0));
+              declutter.push(executor, transform.slice(0));
             }
           } else {
-            result = replay.replayHitDetection(context, transform, rotation,
+            result = executor.executeHitDetection(context, transform, rotation,
               skippedFeaturesHash, featureCallback, hitExtent);
             if (result) {
               return result;
@@ -302,34 +302,34 @@ class InstructionsGroupExectuor extends ReplayGroup {
   /**
    * @inheritDoc
    */
-  getReplay(zIndex, replayType) {
+  getExecutor(zIndex, replayType) {
     const zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
-    let replays = this.replaysByZIndex_[zIndexKey];
-    if (replays === undefined) {
-      replays = {};
-      this.replaysByZIndex_[zIndexKey] = replays;
+    let executors = this.executorsByZIndex_[zIndexKey];
+    if (executors === undefined) {
+      executors = {};
+      this.executorsByZIndex_[zIndexKey] = executors;
     }
-    let replay = replays[replayType];
-    if (replay === undefined) {
-      replay = new CanvasInstructionsExecutor(this.tolerance_, this.maxExtent_,
+    let executor = executors[replayType];
+    if (executor === undefined) {
+      executor = new CanvasInstructionsExecutor(this.tolerance_, this.maxExtent_,
         this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
-      replays[replayType] = replay;
+      executors[replayType] = executor;
     }
-    return replay;
+    return executor;
   }
 
   /**
    * @return {Object<string, Object<ReplayType, CanvasReplay>>} Replays.
    */
-  getReplays() {
-    return this.replaysByZIndex_;
+  getExecutors() {
+    return this.executorsByZIndex_;
   }
 
   /**
    * @inheritDoc
    */
   isEmpty() {
-    return isEmpty(this.replaysByZIndex_);
+    return isEmpty(this.executorsByZIndex_);
   }
 
   /**
@@ -353,7 +353,7 @@ class InstructionsGroupExectuor extends ReplayGroup {
   ) {
 
     /** @type {Array<number>} */
-    const zs = Object.keys(this.replaysByZIndex_).map(Number);
+    const zs = Object.keys(this.executorsByZIndex_).map(Number);
     zs.sort(numberSafeCompareFunction);
 
     // setup clipping so that the parts of over-simplified geometries are not
@@ -365,7 +365,7 @@ class InstructionsGroupExectuor extends ReplayGroup {
     let i, ii, j, jj, replays, replay;
     for (i = 0, ii = zs.length; i < ii; ++i) {
       const zIndexKey = zs[i].toString();
-      replays = this.replaysByZIndex_[zIndexKey];
+      replays = this.executorsByZIndex_[zIndexKey];
       for (j = 0, jj = replayTypes.length; j < jj; ++j) {
         const replayType = replayTypes[j];
         replay = replays[replayType];
@@ -379,7 +379,7 @@ class InstructionsGroupExectuor extends ReplayGroup {
               declutter.push(replay, transform.slice(0));
             }
           } else {
-            replay.replay(context, transform, viewRotation, skippedFeaturesHash, snapToPixel);
+            replay.execute(context, transform, viewRotation, skippedFeaturesHash, snapToPixel);
           }
         }
       }
@@ -482,7 +482,7 @@ export function replayDeclutter(declutterReplays, context, rotation, snapToPixel
     for (let i = 0, ii = replayData.length; i < ii;) {
       const replay = replayData[i++];
       const transform = replayData[i++];
-      replay.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
+      replay.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
     }
   }
 }

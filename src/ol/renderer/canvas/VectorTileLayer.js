@@ -13,7 +13,7 @@ import {equivalent as equivalentProjection} from '../../proj.js';
 import Units from '../../proj/Units.js';
 import ReplayType from '../../render/ReplayType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
-import CanvasInstructionsGroupBuilder, {replayDeclutter} from '../../render/canvas/InstructionsGroupBuilder.js';
+import CanvasBuilderGroup, {replayDeclutter} from '../../render/canvas/InstructionsGroupBuilder.js';
 import {ORDER} from '../../render/replay.js';
 import CanvasTileLayerRenderer from './TileLayer.js';
 import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
@@ -24,7 +24,7 @@ import {
   scale as scaleTransform,
   translate as translateTransform
 } from '../../transform.js';
-import InstructionsGroupExectuor from '../../render/canvas/InstructionsGroupExecutor.js';
+import CanvasGroupExecutor from '../../render/canvas/InstructionsGroupExecutor.js';
 
 
 /**
@@ -187,7 +187,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         sourceTile.setProjection(projection);
       }
       replayState.dirty = false;
-      const replayGroup = new CanvasInstructionsGroupBuilder(0, sharedExtent, resolution,
+      const replayGroup = new CanvasBuilderGroup(0, sharedExtent, resolution,
         pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
       const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
@@ -228,7 +228,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         }
       }
       const replayGroupInstructions = replayGroup.finish();
-      const renderingReplayGroup = new InstructionsGroupExectuor(0, sharedExtent, resolution,
+      const renderingReplayGroup = new CanvasGroupExecutor(0, sharedExtent, resolution,
         pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
       renderingReplayGroup.replaceInstructions(replayGroupInstructions);
       sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), renderingReplayGroup);
@@ -263,7 +263,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         if (sourceTile.getState() != TileState.LOADED) {
           continue;
         }
-        const replayGroup = /** @type {CanvasInstructionsGroupBuilder} */ (sourceTile.getReplayGroup(layer,
+        const replayGroup = /** @type {CanvasBuilderGroup} */ (sourceTile.getReplayGroup(layer,
           tile.tileCoord.toString()));
         found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
           /**
@@ -371,8 +371,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           if (sourceTile.getState() != TileState.LOADED) {
             continue;
           }
-          const replayGroup = /** @type {CanvasInstructionsGroupBuilder} */ (sourceTile.getReplayGroup(layer, tileCoord.toString()));
-          if (!replayGroup || !replayGroup.hasReplays(replayTypes)) {
+          const executorGroup = /** @type {CanvasGroupExecutor} */ (sourceTile.getReplayGroup(layer, tileCoord.toString()));
+          if (!executorGroup || !executorGroup.hasExecutors(replayTypes)) {
             // sourceTile was not yet loaded when this.createReplayGroup_() was
             // called, or it has no replays of the types we want to render
             continue;
@@ -381,7 +381,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
             transform = this.getTransform(frameState, worldOffset);
           }
           const currentZ = sourceTile.tileCoord[0];
-          const currentClip = replayGroup.getClipCoords(transform);
+          const currentClip = executorGroup.getClipCoords(transform);
           context.save();
           context.globalAlpha = layerState.opacity;
           // Create a clip mask for regions in this low resolution tile that are
@@ -403,7 +403,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
               context.clip();
             }
           }
-          replayGroup.replay(context, transform, rotation, {}, snapToPixel, replayTypes, declutterReplays);
+          executorGroup.replay(context, transform, rotation, {}, snapToPixel, replayTypes, declutterReplays);
           context.restore();
           clips.push(currentClip);
           zs.push(currentZ);
@@ -478,7 +478,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         const transform = resetTransform(this.tmpTransform_);
         scaleTransform(transform, pixelScale, -pixelScale);
         translateTransform(transform, -tileExtent[0], -tileExtent[3]);
-        const replayGroup = /** @type {CanvasInstructionsGroupBuilder} */ (sourceTile.getReplayGroup(layer,
+        const replayGroup = /** @type {CanvasBuilderGroup} */ (sourceTile.getReplayGroup(layer,
           tile.tileCoord.toString()));
         replayGroup.replay(context, transform, 0, {}, true, replays);
       }

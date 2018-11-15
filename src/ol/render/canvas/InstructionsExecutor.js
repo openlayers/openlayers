@@ -547,7 +547,7 @@ class CanvasInstructionsExecutor {
    * @return {T|undefined} Callback result.
    * @template T
    */
-  replay_(
+  execute_(
     context,
     transform,
     skippedFeaturesHash,
@@ -909,9 +909,9 @@ class CanvasInstructionsExecutor {
    *     to skip.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
    */
-  replay(context, transform, viewRotation, skippedFeaturesHash, snapToPixel) {
+  execute(context, transform, viewRotation, skippedFeaturesHash, snapToPixel) {
     this.viewRotation_ = viewRotation;
-    this.replay_(context, transform,
+    this.execute_(context, transform,
       skippedFeaturesHash, this.instructions, snapToPixel, undefined, undefined);
   }
 
@@ -928,7 +928,7 @@ class CanvasInstructionsExecutor {
    * @return {T|undefined} Callback result.
    * @template T
    */
-  replayHitDetection(
+  executeHitDetection(
     context,
     transform,
     viewRotation,
@@ -937,7 +937,7 @@ class CanvasInstructionsExecutor {
     opt_hitExtent
   ) {
     this.viewRotation_ = viewRotation;
-    return this.replay_(context, transform, skippedFeaturesHash,
+    return this.execute_(context, transform, skippedFeaturesHash,
       this.hitDetectionInstructions, true, opt_featureCallback, opt_hitExtent);
   }
 

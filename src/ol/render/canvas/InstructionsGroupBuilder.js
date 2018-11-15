@@ -7,7 +7,7 @@ import {createCanvasContext2D} from '../../dom.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {isEmpty} from '../../obj.js';
-import ReplayGroup from '../ReplayGroup.js';
+import BuilderGroup from '../BuilderGroup.js';
 import ReplayType from '../ReplayType.js';
 import CanvasInstructionsBuilder from './InstructionsBuilder.js';
 import CanvasImageBuilder from './ImageBuilder.js';
@@ -31,13 +31,13 @@ const BATCH_CONSTRUCTORS = {
 };
 
 
-class CanvasInstructionsGroupBuilder extends ReplayGroup {
+class CanvasBuilderGroup extends BuilderGroup {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Max extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {boolean} overlaps The replay group can have overlapping geometries.
+   * @param {boolean} overlaps The builder group can have overlapping geometries.
    * @param {?} declutterTree Declutter tree for declutter processing in postrender.
    * @param {number=} opt_renderBuffer Optional rendering buffer.
    */
@@ -104,7 +104,7 @@ class CanvasInstructionsGroupBuilder extends ReplayGroup {
      * @private
      * @type {!Object<string, !Object<ReplayType, CanvasInstructionsBuilder>>}
      */
-    this.replaysByZIndex_ = {};
+    this.buildersByZIndex_ = {};
 
     /**
      * @private
@@ -150,31 +150,16 @@ class CanvasInstructionsGroupBuilder extends ReplayGroup {
     context.clip();
   }
 
-  /**
-   * Recreate replays and populate them using the provided instructions.
-   * @param {!Object<string, !Object<ReplayType, import("./InstructionsBuilder.js").SerializableInstructions>>} allInstructions The serializable instructions
-   */
-  replaceInstructions(allInstructions) {
-    this.replaysByZIndex_ = {};
-    for (const zIndex in allInstructions) {
-      const instructionByZindex = allInstructions[zIndex];
-      for (const replayType in instructionByZindex) {
-        const instructions = instructionByZindex[replayType];
-        const replay = this.getReplay(zIndex, replayType);
-        replay.replaceInstructions(instructions);
-      }
-    }
-  }
 
   /**
-   * @param {Array<ReplayType>} replays Replays.
-   * @return {boolean} Has replays of the provided types.
+   * @param {Array<ReplayType>} builders Builders.
+   * @return {boolean} Has builders of the provided types.
    */
-  hasReplays(replays) {
-    for (const zIndex in this.replaysByZIndex_) {
-      const candidates = this.replaysByZIndex_[zIndex];
-      for (let i = 0, ii = replays.length; i < ii; ++i) {
-        if (replays[i] in candidates) {
+  hasBuilders(builders) {
+    for (const zIndex in this.buildersByZIndex_) {
+      const candidates = this.buildersByZIndex_[zIndex];
+      for (let i = 0, ii = builders.length; i < ii; ++i) {
+        if (builders[i] in candidates) {
           return true;
         }
       }
@@ -186,16 +171,16 @@ class CanvasInstructionsGroupBuilder extends ReplayGroup {
    * @return {!Object<string, !Object<ReplayType, import("./InstructionsBuilder.js").SerializableInstructions>>} The serializable instructions
    */
   finish() {
-    const replaysInstructions = {};
-    for (const zKey in this.replaysByZIndex_) {
-      replaysInstructions[zKey] = replaysInstructions[zKey] || {};
-      const replays = this.replaysByZIndex_[zKey];
-      for (const replayKey in replays) {
-        const replayInstructions = replays[replayKey].finish();
-        replaysInstructions[zKey][replayKey] = replayInstructions;
+    const builderInstructions = {};
+    for (const zKey in this.buildersByZIndex_) {
+      builderInstructions[zKey] = builderInstructions[zKey] || {};
+      const builders = this.buildersByZIndex_[zKey];
+      for (const builderKey in builders) {
+        const builderInstruction = builders[builderKey].finish();
+        builderInstructions[zKey][builderKey] = builderInstruction;
       }
     }
-    return replaysInstructions;
+    return builderInstructions;
   }
 
   /**
@@ -283,27 +268,27 @@ class CanvasInstructionsGroupBuilder extends ReplayGroup {
     }
 
     /** @type {Array<number>} */
-    const zs = Object.keys(this.replaysByZIndex_).map(Number);
+    const zs = Object.keys(this.buildersByZIndex_).map(Number);
     zs.sort(numberSafeCompareFunction);
 
-    let i, j, replays, replay, result;
+    let i, j, builders, builder, result;
     for (i = zs.length - 1; i >= 0; --i) {
       const zIndexKey = zs[i].toString();
-      replays = this.replaysByZIndex_[zIndexKey];
+      builders = this.buildersByZIndex_[zIndexKey];
       for (j = ORDER.length - 1; j >= 0; --j) {
         replayType = ORDER[j];
-        replay = replays[replayType];
-        if (replay !== undefined) {
+        builder = builders[replayType];
+        if (builder !== undefined) {
           if (declutterReplays &&
               (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) {
             const declutter = declutterReplays[zIndexKey];
             if (!declutter) {
-              declutterReplays[zIndexKey] = [replay, transform.slice(0)];
+              declutterReplays[zIndexKey] = [builder, transform.slice(0)];
             } else {
-              declutter.push(replay, transform.slice(0));
+              declutter.push(builder, transform.slice(0));
             }
           } else {
-            result = replay.replayHitDetection(context, transform, rotation,
+            result = builder.executeHitDetection(context, transform, rotation,
               skippedFeaturesHash, featureCallback, hitExtent);
             if (result) {
               return result;
@@ -341,12 +326,12 @@ class CanvasInstructionsGroupBuilder extends ReplayGroup {
   /**
    * @inheritDoc
    */
-  getReplay(zIndex, replayType) {
+  getBuilder(zIndex, replayType) {
     const zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
-    let replays = this.replaysByZIndex_[zIndexKey];
+    let replays = this.buildersByZIndex_[zIndexKey];
     if (replays === undefined) {
       replays = {};
-      this.replaysByZIndex_[zIndexKey] = replays;
+      this.buildersByZIndex_[zIndexKey] = replays;
     }
     let replay = replays[replayType];
     if (replay === undefined) {
@@ -362,70 +347,14 @@ class CanvasInstructionsGroupBuilder extends ReplayGroup {
    * @return {Object<string, Object<ReplayType, CanvasInstructionsBuilder>>} Replays.
    */
   getReplays() {
-    return this.replaysByZIndex_;
+    return this.buildersByZIndex_;
   }
 
   /**
    * @inheritDoc
    */
   isEmpty() {
-    return isEmpty(this.replaysByZIndex_);
-  }
-
-  /**
-   * @param {CanvasRenderingContext2D} context Context.
-   * @param {import("../../transform.js").Transform} transform Transform.
-   * @param {number} viewRotation View rotation.
-   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
-   * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
-   * @param {Array<ReplayType>=} opt_replayTypes Ordered replay types to replay.
-   *     Default is {@link module:ol/render/replay~ORDER}
-   * @param {Object<string, import("../canvas.js").DeclutterGroup>=} opt_declutterReplays Declutter replays.
-   */
-  replay(
-    context,
-    transform,
-    viewRotation,
-    skippedFeaturesHash,
-    snapToPixel,
-    opt_replayTypes,
-    opt_declutterReplays
-  ) {
-
-    /** @type {Array<number>} */
-    const zs = Object.keys(this.replaysByZIndex_).map(Number);
-    zs.sort(numberSafeCompareFunction);
-
-    // setup clipping so that the parts of over-simplified geometries are not
-    // visible outside the current extent when panning
-    context.save();
-    this.clip(context, transform);
-
-    const replayTypes = opt_replayTypes ? opt_replayTypes : ORDER;
-    let i, ii, j, jj, replays, replay;
-    for (i = 0, ii = zs.length; i < ii; ++i) {
-      const zIndexKey = zs[i].toString();
-      replays = this.replaysByZIndex_[zIndexKey];
-      for (j = 0, jj = replayTypes.length; j < jj; ++j) {
-        const replayType = replayTypes[j];
-        replay = replays[replayType];
-        if (replay !== undefined) {
-          if (opt_declutterReplays &&
-              (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) {
-            const declutter = opt_declutterReplays[zIndexKey];
-            if (!declutter) {
-              opt_declutterReplays[zIndexKey] = [replay, transform.slice(0)];
-            } else {
-              declutter.push(replay, transform.slice(0));
-            }
-          } else {
-            replay.replay(context, transform, viewRotation, skippedFeaturesHash, snapToPixel);
-          }
-        }
-      }
-    }
-
-    context.restore();
+    return isEmpty(this.buildersByZIndex_);
   }
 }
 
@@ -522,10 +451,10 @@ export function replayDeclutter(declutterReplays, context, rotation, snapToPixel
     for (let i = 0, ii = replayData.length; i < ii;) {
       const replay = replayData[i++];
       const transform = replayData[i++];
-      replay.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
+      replay.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
     }
   }
 }
 
 
-export default CanvasInstructionsGroupBuilder;
+export default CanvasBuilderGroup;

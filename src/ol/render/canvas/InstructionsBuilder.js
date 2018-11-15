@@ -36,7 +36,7 @@ class CanvasInstructionsBuilder extends VectorContext {
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {boolean} overlaps The replay can have overlapping geometries.
+   * @param {boolean} overlaps The builder can have overlapping geometries.
    * @param {?} declutterTree Declutter tree.
    */
   constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
@@ -230,14 +230,14 @@ class CanvasInstructionsBuilder extends VectorContext {
    * @param {number} offset Offset.
    * @param {Array<number>} ends Ends.
    * @param {number} stride Stride.
-   * @param {Array<number>} replayEnds Replay ends.
+   * @param {Array<number>} builderEnds Builder ends.
    * @return {number} Offset.
    */
-  drawCustomCoordinates_(flatCoordinates, offset, ends, stride, replayEnds) {
+  drawCustomCoordinates_(flatCoordinates, offset, ends, stride, builderEnds) {
     for (let i = 0, ii = ends.length; i < ii; ++i) {
       const end = ends[i];
-      const replayEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false, false);
-      replayEnds.push(replayEnd);
+      const builderEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false, false);
+      builderEnds.push(builderEnd);
       offset = end;
     }
     return offset;
@@ -250,44 +250,44 @@ class CanvasInstructionsBuilder extends VectorContext {
     this.beginGeometry(geometry, feature);
     const type = geometry.getType();
     const stride = geometry.getStride();
-    const replayBegin = this.coordinates.length;
-    let flatCoordinates, replayEnd, replayEnds, replayEndss;
+    const builderBegin = this.coordinates.length;
+    let flatCoordinates, builderEnd, builderEnds, builderEndss;
     let offset;
     if (type == GeometryType.MULTI_POLYGON) {
       geometry = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry);
       flatCoordinates = geometry.getOrientedFlatCoordinates();
-      replayEndss = [];
+      builderEndss = [];
       const endss = geometry.getEndss();
       offset = 0;
       for (let i = 0, ii = endss.length; i < ii; ++i) {
         const myEnds = [];
         offset = this.drawCustomCoordinates_(flatCoordinates, offset, endss[i], stride, myEnds);
-        replayEndss.push(myEnds);
+        builderEndss.push(myEnds);
       }
       this.instructions.push([CanvasInstruction.CUSTOM,
-        replayBegin, replayEndss, geometry, renderer, inflateMultiCoordinatesArray]);
+        builderBegin, builderEndss, geometry, renderer, inflateMultiCoordinatesArray]);
     } else if (type == GeometryType.POLYGON || type == GeometryType.MULTI_LINE_STRING) {
-      replayEnds = [];
+      builderEnds = [];
       flatCoordinates = (type == GeometryType.POLYGON) ?
         /** @type {import("../../geom/Polygon.js").default} */ (geometry).getOrientedFlatCoordinates() :
         geometry.getFlatCoordinates();
       offset = this.drawCustomCoordinates_(flatCoordinates, 0,
         /** @type {import("../../geom/Polygon.js").default|import("../../geom/MultiLineString.js").default} */ (geometry).getEnds(),
-        stride, replayEnds);
+        stride, builderEnds);
       this.instructions.push([CanvasInstruction.CUSTOM,
-        replayBegin, replayEnds, geometry, renderer, inflateCoordinatesArray]);
+        builderBegin, builderEnds, geometry, renderer, inflateCoordinatesArray]);
     } else if (type == GeometryType.LINE_STRING || type == GeometryType.MULTI_POINT) {
       flatCoordinates = geometry.getFlatCoordinates();
-      replayEnd = this.appendFlatCoordinates(
+      builderEnd = this.appendFlatCoordinates(
         flatCoordinates, 0, flatCoordinates.length, stride, false, false);
       this.instructions.push([CanvasInstruction.CUSTOM,
-        replayBegin, replayEnd, geometry, renderer, inflateCoordinates]);
+        builderBegin, builderEnd, geometry, renderer, inflateCoordinates]);
     } else if (type == GeometryType.POINT) {
       flatCoordinates = geometry.getFlatCoordinates();
       this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);
-      replayEnd = this.coordinates.length;
+      builderEnd = this.coordinates.length;
       this.instructions.push([CanvasInstruction.CUSTOM,
-        replayBegin, replayEnd, geometry, renderer]);
+        builderBegin, builderEnd, geometry, renderer]);
     }
     this.endGeometry(geometry, feature);
   }
