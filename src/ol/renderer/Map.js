@@ -141,7 +141,7 @@ class MapRenderer extends Disposable {
       if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
         const layerRenderer = this.getLayerRenderer(layer);
         const source = layer.getSource();
-        if (source) {
+        if (layerRenderer && source) {
           result = layerRenderer.forEachFeatureAtCoordinate(
             source.getWrapX() ? translatedCoordinate : coordinate,
             frameState, hitTolerance, forEachFeatureAtCoordinate);
@@ -196,7 +196,7 @@ class MapRenderer extends Disposable {
   /**
    * @param {import("../layer/Layer.js").default} layer Layer.
    * @protected
-   * @return {import("./Layer.js").default} Layer renderer.
+   * @return {import("./Layer.js").default} Layer renderer. May return null.
    */
   getLayerRenderer(layer) {
     const layerKey = getUid(layer);
@@ -204,23 +204,14 @@ class MapRenderer extends Disposable {
       return this.layerRenderers_[layerKey];
     }
 
-    const renderer = layer.getRenderer(this);
+    const renderer = layer.getRenderer();
     if (!renderer) {
-      throw new Error('Unable to create renderer for layer');
+      return null;
     }
 
     this.layerRenderers_[layerKey] = renderer;
     this.layerRendererListeners_[layerKey] = listen(renderer, EventType.CHANGE, this.handleLayerRendererChange_, this);
     return renderer;
-  }
-
-  /**
-   * @param {string} layerKey Layer key.
-   * @protected
-   * @return {import("./Layer.js").default} Layer renderer.
-   */
-  getLayerRendererByKey(layerKey) {
-    return this.layerRenderers_[layerKey];
   }
 
   /**
