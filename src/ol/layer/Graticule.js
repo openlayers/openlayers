@@ -128,6 +128,7 @@ const INTERVALS = [
  * ```js
  * [30, 10]
  * ```
+ * @property {boolean} [wrapX=true] Whether to repeat the graticule horizontally.
  */
 
 
@@ -388,7 +389,8 @@ class Graticule extends VectorLayer {
         strategy: bbox,
         features: new Collection(),
         overlaps: false,
-        useSpatialIndex: false
+        useSpatialIndex: false,
+        wrapX: options.wrapX
       })
     );
 

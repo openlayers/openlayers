@@ -21,7 +21,8 @@ const map = new Map({
         width: 2,
         lineDash: [0.5, 4]
       }),
-      showLabels: true
+      showLabels: true,
+      wrapX: false
     })
   ],
   target: 'map',
