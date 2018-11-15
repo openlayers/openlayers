@@ -10,7 +10,7 @@ import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
 import {isEmpty} from '../../obj.js';
-import {drawImage, resetTransform, defaultPadding} from '../canvas.js';
+import {drawImage, resetTransform, defaultPadding, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
 import {TEXT_ALIGN} from '../replay.js';
 import {
@@ -527,6 +527,35 @@ class CanvasInstructionsExecutor {
 
   /**
    * @private
+   * @param {string} text The text to draw.
+   * @param {string} textKey The key of the text state.
+   * @param {string} strokeKey The key for the stroke state.
+   * @param {string} fillKey The key for the fill state.
+   * @return {{label: HTMLCanvasElement, anchorX: number, anchorY: number}} The text image and its anchor.
+   */
+  drawTextImageWithPointPlacement_(text, textKey, strokeKey, fillKey) {
+    const textState = this.textStates[textKey];
+
+    const label = this.getImage(text, textKey, fillKey, strokeKey);
+
+    const strokeState = this.strokeStates[strokeKey]; // FIXME: check if it is correct, was this.textStrokeState_;
+    const pixelRatio = this.pixelRatio;
+    const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
+    const baseline = TEXT_ALIGN[textState.textBaseline || defaultTextBaseline]; // FIXME: why I need a default now?
+    const strokeWidth = strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
+
+    const anchorX = align * label.width / pixelRatio + 2 * (0.5 - align) * strokeWidth;
+    const anchorY = baseline * label.height / pixelRatio + 2 * (0.5 - baseline) * strokeWidth;
+
+    return {
+      label: label,
+      anchorX: anchorX,
+      anchorY: anchorY
+    };
+  }
+
+  /**
+   * @private
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
@@ -566,7 +595,8 @@ class CanvasInstructionsExecutor {
     const ii = instructions.length; // end of instructions
     let d = 0; // data index
     let dd; // end of per-instruction data
-    let anchorX, anchorY, prevX, prevY, roundX, roundY, declutterGroup, image;
+    let anchorX, anchorY, prevX, prevY, roundX, roundY, declutterGroup, image, text, textKey;
+    let strokeKey, fillKey;
     let pendingFill = 0;
     let pendingStroke = 0;
     let lastFillInstruction = null;
@@ -658,20 +688,44 @@ class CanvasInstructionsExecutor {
         case CanvasInstruction.DRAW_IMAGE:
           d = /** @type {number} */ (instruction[1]);
           dd = /** @type {number} */ (instruction[2]);
-          image = /** @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} */
-              (instruction[3]);
+          image = /** @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} */ (instruction[3]);
+
           // Remaining arguments in DRAW_IMAGE are in alphabetical order
           anchorX = /** @type {number} */ (instruction[4]);
           anchorY = /** @type {number} */ (instruction[5]);
           declutterGroup = featureCallback ? null : /** @type {import("../canvas.js").DeclutterGroup} */ (instruction[6]);
-          const height = /** @type {number} */ (instruction[7]);
+          let height = /** @type {number} */ (instruction[7]);
           const opacity = /** @type {number} */ (instruction[8]);
           const originX = /** @type {number} */ (instruction[9]);
           const originY = /** @type {number} */ (instruction[10]);
           const rotateWithView = /** @type {boolean} */ (instruction[11]);
           let rotation = /** @type {number} */ (instruction[12]);
           const scale = /** @type {number} */ (instruction[13]);
-          const width = /** @type {number} */ (instruction[14]);
+          let width = /** @type {number} */ (instruction[14]);
+
+
+          if (!image) {
+            if (instruction.length < 19 || !instruction[18]) {
+              continue;
+            }
+            text = /** @type {string} */ (instruction[18]);
+            textKey = /** @type {string} */ (instruction[19]);
+            strokeKey = /** @type {string} */ (instruction[20]);
+            fillKey = /** @type {string} */ (instruction[21]);
+            const labelWithAnchor = this.drawTextImageWithPointPlacement_(text, textKey, strokeKey, fillKey);
+            const textOffsetX = /** @type {number} */ (instruction[22]);
+            const textOffsetY = /** @type {number} */ (instruction[23]);
+            image = instruction[3] = labelWithAnchor.label;
+            anchorX = instruction[4] = (labelWithAnchor.anchorX - textOffsetX) * this.pixelRatio;
+            anchorY = instruction[5] = (labelWithAnchor.anchorY - textOffsetY) * this.pixelRatio;
+            height = instruction[8] = image.height;
+            width = instruction[14] = image.width;
+          }
+
+          let geometryWidths;
+          if (instruction.length > 24) {
+            geometryWidths = /** @type {number} */ (instruction[24]);
+          }
 
           let padding, backgroundFill, backgroundStroke;
           if (instruction.length > 16) {
@@ -686,7 +740,13 @@ class CanvasInstructionsExecutor {
           if (rotateWithView) {
             rotation += viewRotation;
           }
+          let widthIndex = 0;
           for (; d < dd; d += 2) {
+            if (geometryWidths) {
+              if (geometryWidths[widthIndex++] < width) {
+                continue;
+              }
+            }
             this.replayImage_(context,
               pixelCoordinates[d], pixelCoordinates[d + 1], image, anchorX, anchorY,
               declutterGroup, height, opacity, originX, originY, rotation, scale,
@@ -703,14 +763,14 @@ class CanvasInstructionsExecutor {
           const baseline = /** @type {number} */ (instruction[3]);
           declutterGroup = featureCallback ? null : /** @type {import("../canvas.js").DeclutterGroup} */ (instruction[4]);
           const overflow = /** @type {number} */ (instruction[5]);
-          const fillKey = /** @type {string} */ (instruction[6]);
+          fillKey = /** @type {string} */ (instruction[6]);
           const maxAngle = /** @type {number} */ (instruction[7]);
           const measurePixelRatio = /** @type {number} */ (instruction[8]);
           const offsetY = /** @type {number} */ (instruction[9]);
-          const strokeKey = /** @type {string} */ (instruction[10]);
+          strokeKey = /** @type {string} */ (instruction[10]);
           const strokeWidth = /** @type {number} */ (instruction[11]);
-          const text = /** @type {string} */ (instruction[12]);
-          const textKey = /** @type {string} */ (instruction[13]);
+          text = /** @type {string} */ (instruction[12]);
+          textKey = /** @type {string} */ (instruction[13]);
           const pixelRatioScale = /** @type {number} */ (instruction[14]);
 
           const textState = this.textStates[textKey];

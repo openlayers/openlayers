@@ -3,12 +3,10 @@
  */
 import {getUid} from '../../util.js';
 import {asColorLike} from '../../colorlike.js';
-import {createCanvasContext2D} from '../../dom.js';
 import {intersects} from '../../extent.js';
 import {matchingChunk} from '../../geom/flat/straightchunk.js';
 import GeometryType from '../../geom/GeometryType.js';
-import {CANVAS_LINE_DASH} from '../../has.js';
-import {labelCache, measureTextWidths, defaultTextAlign, measureTextHeight, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
+import {labelCache, defaultTextAlign, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
 import CanvasInstructionsBuilder from './InstructionsBuilder.js';
 import {TEXT_ALIGN} from '../replay.js';
@@ -195,8 +193,8 @@ class CanvasTextBuilder extends CanvasInstructionsBuilder {
       this.endGeometry(geometry, feature);
 
     } else {
-      const label = this.getImage(this.text_, this.textKey_, this.fillKey_, this.strokeKey_);
-      const width = label.width / this.pixelRatio;
+
+      const geometryWidths = [];
       switch (geometryType) {
         case GeometryType.POINT:
         case GeometryType.MULTI_POINT:
@@ -215,8 +213,8 @@ class CanvasTextBuilder extends CanvasInstructionsBuilder {
           break;
         case GeometryType.POLYGON:
           flatCoordinates = /** @type {import("../../geom/Polygon.js").default} */ (geometry).getFlatInteriorPoint();
-          if (!textState.overflow && flatCoordinates[2] / this.resolution < width) {
-            return;
+          if (!textState.overflow) {
+            geometryWidths.push(flatCoordinates[2] / this.resolution);
           }
           stride = 3;
           break;
@@ -224,9 +222,10 @@ class CanvasTextBuilder extends CanvasInstructionsBuilder {
           const interiorPoints = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getFlatInteriorPoints();
           flatCoordinates = [];
           for (i = 0, ii = interiorPoints.length; i < ii; i += 3) {
-            if (textState.overflow || interiorPoints[i + 2] / this.resolution >= width) {
-              flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
+            if (!textState.overflow) {
+              geometryWidths.push(interiorPoints[i + 2] / this.resolution);
             }
+            flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
           }
           end = flatCoordinates.length;
           if (end == 0) {
@@ -236,6 +235,9 @@ class CanvasTextBuilder extends CanvasInstructionsBuilder {
         default:
       }
       end = this.appendFlatCoordinates(flatCoordinates, 0, end, stride, false, false);
+
+      this.saveTextStates_();
+
       if (textState.backgroundFill || textState.backgroundStroke) {
         this.setFillStrokeStyle(textState.backgroundFill, textState.backgroundStroke);
         if (textState.backgroundFill) {
@@ -247,122 +249,42 @@ class CanvasTextBuilder extends CanvasInstructionsBuilder {
           this.hitDetectionInstructions.push(this.createStroke(this.state));
         }
       }
+
       this.beginGeometry(geometry, feature);
-      this.drawTextImage_(label, begin, end);
+
+      // The image is unknown at this stage so we pass null; it will be computed at render time.
+      // For clarity, we pass Infinity for numerical values that will be computed at render time.
+      const pixelRatio = this.pixelRatio;
+      this.instructions.push([CanvasInstruction.DRAW_IMAGE, begin, end,
+        null, Infinity, Infinity, this.declutterGroup_, Infinity, 1, 0, 0,
+        this.textRotateWithView_, this.textRotation_, 1, Infinity,
+        textState.padding == defaultPadding ?
+          defaultPadding : textState.padding.map(function(p) {
+            return p * pixelRatio;
+          }),
+        !!textState.backgroundFill, !!textState.backgroundStroke,
+        this.text_, this.textKey_, this.strokeKey_, this.fillKey_,
+        this.textOffsetX_, this.textOffsetY_,
+        geometryWidths.length > 0 ? geometryWidths : null
+      ]);
+      this.hitDetectionInstructions.push([CanvasInstruction.DRAW_IMAGE, begin, end,
+        null, Infinity, Infinity, this.declutterGroup_, Infinity, 1, 0, 0,
+        this.textRotateWithView_, this.textRotation_, 1 / this.pixelRatio, Infinity,
+        textState.padding,
+        !!textState.backgroundFill, !!textState.backgroundStroke,
+        this.text_, this.textKey_, this.strokeKey_, this.fillKey_,
+        this.textOffsetX_, this.textOffsetY_,
+        geometryWidths.length > 0 ? geometryWidths : null
+      ]);
+
       this.endGeometry(geometry, feature);
     }
   }
 
   /**
-   * @param {string} text Text.
-   * @param {string} textKey Text style key.
-   * @param {string} fillKey Fill style key.
-   * @param {string} strokeKey Stroke style key.
-   * @return {HTMLCanvasElement} Image.
-   */
-  getImage(text, textKey, fillKey, strokeKey) {
-    let label;
-    const key = strokeKey + textKey + text + fillKey + this.pixelRatio;
-
-    if (!labelCache.containsKey(key)) {
-      const strokeState = strokeKey ? this.strokeStates[strokeKey] || this.textStrokeState_ : null;
-      const fillState = fillKey ? this.fillStates[fillKey] || this.textFillState_ : null;
-      const textState = this.textStates[textKey] || this.textState_;
-      const pixelRatio = this.pixelRatio;
-      const scale = textState.scale * pixelRatio;
-      const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
-      const strokeWidth = strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
-
-      const lines = text.split('\n');
-      const numLines = lines.length;
-      const widths = [];
-      const width = measureTextWidths(textState.font, lines, widths);
-      const lineHeight = measureTextHeight(textState.font);
-      const height = lineHeight * numLines;
-      const renderWidth = (width + strokeWidth);
-      const context = createCanvasContext2D(
-        Math.ceil(renderWidth * scale),
-        Math.ceil((height + strokeWidth) * scale));
-      label = context.canvas;
-      labelCache.set(key, label);
-      if (scale != 1) {
-        context.scale(scale, scale);
-      }
-      context.font = textState.font;
-      if (strokeKey) {
-        context.strokeStyle = strokeState.strokeStyle;
-        context.lineWidth = strokeWidth;
-        context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
-        context.lineJoin = /** @type {CanvasLineJoin} */ (strokeState.lineJoin);
-        context.miterLimit = strokeState.miterLimit;
-        if (CANVAS_LINE_DASH && strokeState.lineDash.length) {
-          context.setLineDash(strokeState.lineDash);
-          context.lineDashOffset = strokeState.lineDashOffset;
-        }
-      }
-      if (fillKey) {
-        context.fillStyle = fillState.fillStyle;
-      }
-      context.textBaseline = 'middle';
-      context.textAlign = 'center';
-      const leftRight = (0.5 - align);
-      const x = align * label.width / scale + leftRight * strokeWidth;
-      let i;
-      if (strokeKey) {
-        for (i = 0; i < numLines; ++i) {
-          context.strokeText(lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight);
-        }
-      }
-      if (fillKey) {
-        for (i = 0; i < numLines; ++i) {
-          context.fillText(lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight);
-        }
-      }
-    }
-    return labelCache.get(key);
-  }
-
-  /**
    * @private
-   * @param {HTMLCanvasElement} label Label.
-   * @param {number} begin Begin.
-   * @param {number} end End.
    */
-  drawTextImage_(label, begin, end) {
-    const textState = this.textState_;
-    const strokeState = this.textStrokeState_;
-    const pixelRatio = this.pixelRatio;
-    const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
-    const baseline = TEXT_ALIGN[textState.textBaseline];
-    const strokeWidth = strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
-
-    const anchorX = align * label.width / pixelRatio + 2 * (0.5 - align) * strokeWidth;
-    const anchorY = baseline * label.height / pixelRatio + 2 * (0.5 - baseline) * strokeWidth;
-    this.instructions.push([CanvasInstruction.DRAW_IMAGE, begin, end,
-      label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
-      this.declutterGroup_, label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
-      1, label.width,
-      textState.padding == defaultPadding ?
-        defaultPadding : textState.padding.map(function(p) {
-          return p * pixelRatio;
-        }),
-      !!textState.backgroundFill, !!textState.backgroundStroke
-    ]);
-    this.hitDetectionInstructions.push([CanvasInstruction.DRAW_IMAGE, begin, end,
-      label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
-      this.declutterGroup_, label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
-      1 / pixelRatio, label.width, textState.padding,
-      !!textState.backgroundFill, !!textState.backgroundStroke
-    ]);
-  }
-
-  /**
-   * @private
-   * @param {number} begin Begin.
-   * @param {number} end End.
-   * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
-   */
-  drawChars_(begin, end, declutterGroup) {
+  saveTextStates_() {
     const strokeState = this.textStrokeState_;
     const textState = this.textState_;
     const fillState = this.textFillState_;
@@ -382,10 +304,11 @@ class CanvasTextBuilder extends CanvasInstructionsBuilder {
       }
     }
     const textKey = this.textKey_;
-    if (!(this.textKey_ in this.textStates)) {
-      this.textStates[this.textKey_] = /** @type {import("../canvas.js").TextState} */ ({
+    if (!(textKey in this.textStates)) {
+      this.textStates[textKey] = /** @type {import("../canvas.js").TextState} */ ({
         font: textState.font,
         textAlign: textState.textAlign || defaultTextAlign,
+        textBaseline: textState.textBaseline || defaultTextBaseline,
         scale: textState.scale
       });
     }
@@ -397,6 +320,23 @@ class CanvasTextBuilder extends CanvasInstructionsBuilder {
         });
       }
     }
+  }
+
+  /**
+   * @private
+   * @param {number} begin Begin.
+   * @param {number} end End.
+   * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
+   */
+  drawChars_(begin, end, declutterGroup) {
+    const strokeState = this.textStrokeState_;
+    const textState = this.textState_;
+
+    const strokeKey = this.strokeKey_;
+    const textKey = this.textKey_;
+    const fillKey = this.fillKey_;
+    this.saveTextStates_();
+
 
     const pixelRatio = this.pixelRatio;
     const baseline = TEXT_ALIGN[textState.textBaseline];
