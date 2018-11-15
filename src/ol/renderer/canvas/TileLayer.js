@@ -215,7 +215,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     const canvas = context.canvas;
     const canvasScale = tileResolution / frameState.viewState.resolution / tilePixelRatio;
-    const pixelTransform = composeTransform(this.transform_,
+    const pixelTransform = composeTransform(this.pixelTransform_,
       frameState.size[0] / 2, frameState.size[1] / 2,
       canvasScale, canvasScale,
       rotation,
@@ -350,6 +350,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   getTileImage(tile) {
     return /** @type {import("../../ImageTile.js").default} */ (tile).getImage();
   }
+
 }
 
 

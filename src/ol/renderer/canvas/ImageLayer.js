@@ -96,12 +96,12 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const context = this.context;
     const canvas = context.canvas;
 
-    const pixelTransform = composeTransform(this.transform_,
+    const pixelTransform = composeTransform(this.pixelTransform_,
       frameState.size[0] / 2, frameState.size[1] / 2,
       1 / pixelRatio, 1 / pixelRatio,
       rotation,
       -width / 2, -height / 2
-    ).slice();
+    );
     const canvasTransform = transformToString(pixelTransform);
 
     if (canvas.width != width || canvas.height != height) {
@@ -122,7 +122,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     const img = image.getImage();
 
-    const transform = composeTransform(this.transform_,
+    const transform = composeTransform(this.tempTransform_,
       width / 2, height / 2,
       scale, scale,
       0,

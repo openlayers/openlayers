@@ -29,10 +29,18 @@ class CanvasLayerRenderer extends LayerRenderer {
     this.renderedResolution;
 
     /**
+     * A temporary transform.
      * @private
      * @type {import("../../transform.js").Transform}
      */
-    this.transform_ = createTransform();
+    this.tempTransform_ = createTransform();
+
+    /**
+     * The transform for rendered pixels to viewport CSS pixels.
+     * @private
+     * @type {import("../../transform.js").Transform}
+     */
+    this.pixelTransform_ = createTransform();
 
     /**
      * @protected
@@ -44,7 +52,6 @@ class CanvasLayerRenderer extends LayerRenderer {
     canvas.style.position = 'absolute';
     canvas.style.transformOrigin = 'top left';
     canvas.className = this.getLayer().getClassName();
-
   }
 
   /**
@@ -146,25 +153,6 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {number} offsetX Offset on the x-axis in view coordinates.
-   * @protected
-   * @return {!import("../../transform.js").Transform} Transform.
-   */
-  getTransform(frameState, offsetX) {
-    const viewState = frameState.viewState;
-    const pixelRatio = frameState.pixelRatio;
-    const dx1 = pixelRatio * frameState.size[0] / 2;
-    const dy1 = pixelRatio * frameState.size[1] / 2;
-    const sx = pixelRatio / viewState.resolution;
-    const sy = -sx;
-    const angle = -viewState.rotation;
-    const dx2 = -viewState.center[0] + offsetX;
-    const dy2 = -viewState.center[1];
-    return composeTransform(this.transform_, dx1, dy1, sx, sy, angle, dx2, dy2);
-  }
-
-  /**
    * Creates a transform for rendering to an element that will be rotated after rendering.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {number} width Width of the rendered element (in pixels).
@@ -182,7 +170,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     const sy = -sx;
     const dx2 = -viewState.center[0] + offsetX;
     const dy2 = -viewState.center[1];
-    return composeTransform(this.transform_, dx1, dy1, sx, sy, -viewState.rotation, dx2, dy2);
+    return composeTransform(this.tempTransform_, dx1, dy1, sx, sy, -viewState.rotation, dx2, dy2);
   }
 
 }
