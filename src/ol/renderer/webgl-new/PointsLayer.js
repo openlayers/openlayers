@@ -64,7 +64,8 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     const options = opt_options || {};
 
     this.context_ = new WebGLHelper({
-      postProcesses: options.postProcesses
+      postProcesses: options.postProcesses,
+      uniforms: options.uniforms
     });
 
     this.sourceRevision_ = -1;

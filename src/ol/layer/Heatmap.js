@@ -117,70 +117,18 @@ class Heatmap extends VectorLayer {
 
     this.setRadius(options.radius !== undefined ? options.radius : 8);
 
-    listen(this,
-      getChangeEventType(Property.BLUR),
-      this.handleStyleChanged_, this);
-    listen(this,
-      getChangeEventType(Property.RADIUS),
-      this.handleStyleChanged_, this);
-
-    this.handleStyleChanged_();
-
     const weight = options.weight ? options.weight : 'weight';
-    let weightFunction;
     if (typeof weight === 'string') {
-      weightFunction = function(feature) {
+      this.weightFunction_ = function(feature) {
         return feature.get(weight);
       };
     } else {
-      weightFunction = weight;
+      this.weightFunction_ = weight;
     }
-
-    // this.setStyle(function(feature, resolution) {
-    //   const weight = weightFunction(feature);
-    //   const opacity = weight !== undefined ? clamp(weight, 0, 1) : 1;
-    //   // cast to 8 bits
-    //   const index = (255 * opacity) | 0;
-    //   let style = this.styleCache_[index];
-    //   if (!style) {
-    //     style = [
-    //       new Style({
-    //         image: new Icon({
-    //           opacity: opacity,
-    //           src: this.circleImage_
-    //         })
-    //       })
-    //     ];
-    //     this.styleCache_[index] = style;
-    //   }
-    //   return style;
-    // }.bind(this));
 
     // For performance reasons, don't sort the features before rendering.
     // The render order is not relevant for a heatmap representation.
     this.setRenderOrder(null);
-
-    listen(this, RenderEventType.RENDER, this.handleRender_, this);
-  }
-
-  /**
-   * @return {string} Data URL for a circle.
-   * @private
-   */
-  createCircle_() {
-    // const radius = this.getRadius();
-    // const blur = this.getBlur();
-    // const halfSize = radius + blur + 1;
-    // const size = 2 * halfSize;
-    // const context = createCanvasContext2D(size, size);
-    // context.shadowOffsetX = context.shadowOffsetY = this.shadow_;
-    // context.shadowBlur = blur;
-    // context.shadowColor = '#000';
-    // context.beginPath();
-    // const center = halfSize - this.shadow_;
-    // context.arc(center, center, radius, 0, Math.PI * 2, true);
-    // context.fill();
-    // return context.canvas.toDataURL();
   }
 
   /**
@@ -221,35 +169,6 @@ class Heatmap extends VectorLayer {
   }
 
   /**
-   * @private
-   */
-  handleStyleChanged_() {
-    this.circleImage_ = this.createCircle_();
-    this.styleCache_ = new Array(256);
-    this.changed();
-  }
-
-  /**
-   * @param {import("../render/Event.js").default} event Post compose event
-   * @private
-   */
-  handleRender_(event) {
-    // const context = event.context;
-    // const canvas = context.canvas;
-    // const image = context.getImageData(0, 0, canvas.width, canvas.height);
-    // const view8 = image.data;
-    // for (let i = 0, ii = view8.length; i < ii; i += 4) {
-    //   const alpha = view8[i + 3] * 4;
-    //   if (alpha) {
-    //     view8[i] = this.gradient_[alpha];
-    //     view8[i + 1] = this.gradient_[alpha + 1];
-    //     view8[i + 2] = this.gradient_[alpha + 2];
-    //   }
-    // }
-    // context.putImageData(image, 0, 0);
-  }
-
-  /**
    * Set the blur size in pixels.
    * @param {number} blur Blur size in pixels.
    * @api
@@ -284,6 +203,29 @@ class Heatmap extends VectorLayer {
    */
   createRenderer() {
     return new WebGLPointsLayerRenderer(this, {
+      vertexShader: `
+        precision mediump float;
+        attribute vec2 a_position;
+        attribute vec2 a_texCoord;
+        attribute float a_rotateWithView;
+        attribute vec2 a_offsets;
+        
+        uniform mat4 u_projectionMatrix;
+        uniform mat4 u_offsetScaleMatrix;
+        uniform mat4 u_offsetRotateMatrix;
+        uniform float u_size;
+        
+        varying vec2 v_texCoord;
+        
+        void main(void) {
+          mat4 offsetMatrix = u_offsetScaleMatrix;
+          if (a_rotateWithView == 1.0) {
+            offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
+          }
+          vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);
+          gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets * u_size;
+          v_texCoord = a_texCoord;
+        }`,
       fragmentShader: `
         precision mediump float;
         uniform float u_opacity;
@@ -300,6 +242,11 @@ class Heatmap extends VectorLayer {
           }
           gl_FragColor.a = alpha * 0.1;
         }`,
+      uniforms: {
+        u_size: function() {
+          return this.get(Property.RADIUS) * 10;
+        }.bind(this)
+      },
       postProcesses: [
         {
           scaleRatio: 0.25
@@ -317,17 +264,16 @@ class Heatmap extends VectorLayer {
             void main() {
               vec4 color = texture2D(u_image, v_texCoord);
               gl_FragColor.rgb = texture2D(u_gradientTexture, vec2(0.5, color.a)).rgb;
-              // gl_FragColor.rgb = color.rgb;
               gl_FragColor.a = smoothstep(0.0, 0.07, color.a);
             }`,
           uniforms: {
-            u_gradientTexture: this.gradient_
+            u_gradientTexture: this.gradient_,
           }
         }
       ],
-      sizeCallback: function() {
-        return 50;
-      },
+      sizeCallback: function(feature) {
+        return this.weightFunction_(feature);
+      }.bind(this),
     });
   }
 }

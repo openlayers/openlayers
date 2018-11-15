@@ -83,7 +83,7 @@ class WebGLPostProcessingPass {
     this.renderTargetTextureLocation_ = gl.getUniformLocation(this.renderTargetProgram_, 'u_image');
 
     /**
-     * Holds info about all the uniforms used in the post processing pass
+     * Holds info about custom uniforms used in the post processing pass
      * @type {Array<{value: *, location: WebGLUniformLocation, texture?: WebGLTexture}>}
      * @private
      */
