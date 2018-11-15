@@ -378,12 +378,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     // resize and clear
     const canvas = context.canvas;
-    let width = Math.round(size[0] * pixelRatio);
-    let height = Math.round(size[1] * pixelRatio);
-    if (rotation) {
-      const size = Math.round(Math.sqrt(width * width + height * height));
-      width = height = size;
-    }
+    const width = Math.round(size[0] * pixelRatio);
+    const height = Math.round(size[1] * pixelRatio);
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
@@ -460,11 +456,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const opacity = layerState.opacity;
     if (opacity !== canvas.style.opacity) {
       canvas.style.opacity = opacity;
-    }
-
-    const canvasTransform = 'rotate(' + rotation + 'rad)';
-    if (canvasTransform !== canvas.style.transform) {
-      canvas.style.transform = canvasTransform;
     }
 
     return this.container_;

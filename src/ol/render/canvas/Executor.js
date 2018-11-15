@@ -700,8 +700,8 @@ class CanvasExecutor {
             backgroundFill = backgroundStroke = false;
           }
 
-          if (!rotateWithView) {
-            rotation -= viewRotation;
+          if (rotateWithView) {
+            rotation += viewRotation;
           }
           let widthIndex = 0;
           for (; d < dd; d += 2) {

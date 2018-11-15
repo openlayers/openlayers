@@ -123,12 +123,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     // resize and clear
-    let width = Math.round(frameState.size[0] * pixelRatio);
-    let height = Math.round(frameState.size[1] * pixelRatio);
-    if (rotation) {
-      const size = Math.round(Math.sqrt(width * width + height * height));
-      width = height = size;
-    }
+    const width = Math.round(frameState.size[0] * pixelRatio);
+    const height = Math.round(frameState.size[1] * pixelRatio);
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
@@ -191,12 +187,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const opacity = layerState.opacity;
     if (opacity !== canvas.style.opacity) {
       canvas.style.opacity = opacity;
-    }
-
-    const rotation = frameState.viewState.rotation;
-    const transform = 'rotate(' + rotation + 'rad)';
-    if (transform !== canvas.style.transform) {
-      canvas.style.transform = transform;
     }
 
     return canvas;

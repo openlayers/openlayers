@@ -192,7 +192,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     const sy = -sx;
     const dx2 = -viewState.center[0] + offsetX;
     const dy2 = -viewState.center[1];
-    return composeTransform(this.transform_, dx1, dy1, sx, sy, 0, dx2, dy2);
+    return composeTransform(this.transform_, dx1, dy1, sx, sy, -viewState.rotation, dx2, dy2);
   }
 
 }
