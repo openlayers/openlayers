@@ -222,10 +222,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const canvas = context.canvas;
     const canvasScale = tileResolution / frameState.viewState.resolution / tilePixelRatio;
     const pixelTransform = composeTransform(this.transform_,
-      0, 0,
+      frameState.size[0] / 2, frameState.size[1] / 2,
       canvasScale, canvasScale,
       rotation,
-      0, 0
+      -width / 2, -height / 2
     );
     const canvasTransform = transformToString(pixelTransform);
 

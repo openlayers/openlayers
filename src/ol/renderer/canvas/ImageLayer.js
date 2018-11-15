@@ -6,7 +6,7 @@ import ViewHint from '../../ViewHint.js';
 import {containsExtent, intersects} from '../../extent.js';
 import {getIntersection, isEmpty} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
-import {create as createTransform, compose as composeTransform} from '../../transform.js';
+import {create as createTransform, compose as composeTransform, toString as transformToString} from '../../transform.js';
 
 /**
  * @classdesc
@@ -99,31 +99,20 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       width = height = size;
     }
 
-    const transform = composeTransform(this.transform_,
-      width / 2, height / 2,
-      scale, scale,
-      0,
-      imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
-      imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
-
-    composeTransform(this.coordinateToCanvasPixelTransform,
-      pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
-      pixelRatio / viewResolution, -pixelRatio / viewResolution,
-      0,
-      -viewCenter[0], -viewCenter[1]);
-
-    this.renderedResolution = imageResolution * pixelRatio / imagePixelRatio;
-
-
     const context = this.context;
     const canvas = context.canvas;
 
+    const pixelTransform = composeTransform(this.transform_,
+      frameState.size[0] / 2, frameState.size[1] / 2,
+      1 / pixelRatio, 1 / pixelRatio,
+      rotation,
+      -width / 2, -height / 2
+    ).slice();
+    const canvasTransform = transformToString(pixelTransform);
 
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
-      canvas.style.width = (width / pixelRatio) + 'px';
-      canvas.style.height = (height / pixelRatio) + 'px';
     } else {
       context.clearRect(0, 0, width, height);
     }
@@ -139,6 +128,15 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     const img = image.getImage();
 
+    const transform = composeTransform(this.transform_,
+      width / 2, height / 2,
+      scale, scale,
+      0,
+      imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
+      imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
+
+    this.renderedResolution = imageResolution * pixelRatio / imagePixelRatio;
+
     const dx = transform[4];
     const dy = transform[5];
     const dw = img.width * transform[0];
@@ -153,7 +151,11 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       context.restore();
     }
 
-    const canvasTransform = 'rotate(' + rotation + 'rad)';
+    const opacity = layerState.opacity;
+    if (opacity !== canvas.style.opacity) {
+      canvas.style.opacity = opacity;
+    }
+
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;
     }

@@ -31,9 +31,6 @@ class CompositeMapRenderer extends MapRenderer {
      */
     this.element_ = document.createElement('div');
     const style = this.element_.style;
-    style.display = 'flex';
-    style.alignItems = 'center';
-    style.justifyContent = 'center';
     style.width = '100%';
     style.height = '100%';
 

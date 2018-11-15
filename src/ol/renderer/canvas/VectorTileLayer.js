@@ -5,7 +5,7 @@ import {getUid} from '../../util.js';
 import {createCanvasContext2D} from '../../dom.js';
 import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
-import {listen, unlisten, unlistenByKey} from '../../events.js';
+import {listen, unlisten} from '../../events.js';
 import EventType from '../../events/EventType.js';
 import rbush from 'rbush';
 import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from '../../extent.js';
@@ -75,9 +75,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const container = document.createElement('div');
     const style = container.style;
     style.position = 'absolute';
-    style.display = 'flex';
-    style.alignItems = 'center';
-    style.justifyContent = 'center';
     style.width = '100%';
     style.height = '100%';
 
