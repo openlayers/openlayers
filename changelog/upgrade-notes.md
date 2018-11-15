@@ -2,7 +2,13 @@
 
 ### Next version
 
+
 Breaking change: The `OverviewMap` control now cannot be instantiated without a list of layers. 
+
+Breaking change: layers can no longer be shared between several `Map` objects.
+
+Breaking change: the `Graticule` control has been replaced by a layer also called `Graticule`, found in `ol/layer/Graticule`.
+The API remains similar.
 
 ### v5.3.0
 
