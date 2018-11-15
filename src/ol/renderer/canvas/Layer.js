@@ -7,7 +7,6 @@ import {TRUE} from '../../functions.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import {rotateAtOffset} from '../../render/canvas.js';
-import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
 import LayerRenderer from '../Layer.js';
 import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
 
@@ -89,12 +88,6 @@ class CanvasLayerRenderer extends LayerRenderer {
   dispatchComposeEvent_(type, context, frameState, pixelTransform) {
     const layer = this.getLayer();
     if (layer.hasListener(type)) {
-      const halfWidth = (frameState.size[0] * frameState.pixelRatio) / 2;
-      const halfHeight = (frameState.size[1] * frameState.pixelRatio) / 2;
-      const rotation = frameState.viewState.rotation;
-      const render = new CanvasImmediateRenderer(
-        context, frameState.pixelRatio, frameState.extent, pixelTransform,
-        frameState.viewState.rotation);
       const composeEvent = new RenderEvent(type, pixelTransform, frameState,
         context, null);
       layer.dispatchEvent(composeEvent);
