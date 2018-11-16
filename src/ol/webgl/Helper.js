@@ -18,8 +18,6 @@ import {
 } from "../transform";
 import {create, fromTransform} from "../vec/mat4";
 import WebGLBuffer from "./Buffer";
-import WebGLVertex from "./Vertex";
-import WebGLFragment from "./Fragment";
 import WebGLPostProcessingPass from "./PostProcessingPass";
 
 
@@ -288,10 +286,10 @@ class WebGLHelper extends Disposable {
   /**
    * Copy the frame buffer to the canvas
    */
-  finalizeDraw() {
+  finalizeDraw(frameState) {
     // apply post processes using the next one as target
     for (let i = 0; i < this.postProcessPasses.length; i++) {
-      this.postProcessPasses[i].apply(this.postProcessPasses[i + 1] || null);
+      this.postProcessPasses[i].apply(frameState, this.postProcessPasses[i + 1] || null);
     }
   }
 

@@ -143,7 +143,7 @@ class WebGLPostProcessingPass {
 
   // todo
   // render to the next postprocessing pass (or to the canvas if final pass)
-  apply(nextPass) {
+  apply(frameState, nextPass) {
     const gl = this.getGL();
     const canvas = gl.canvas;
 
@@ -166,7 +166,7 @@ class WebGLPostProcessingPass {
     gl.uniform2f(this.renderTargetUniformLocation_, canvas.width, canvas.height);
     gl.uniform1i(this.renderTargetTextureLocation_, 0);
 
-    this.applyUniforms();
+    this.applyUniforms(frameState);
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
@@ -177,13 +177,13 @@ class WebGLPostProcessingPass {
   }
 
   // todo
-  applyUniforms() {
+  applyUniforms(frameState) {
     const gl = this.getGL();
 
     let value;
     let textureSlot = 1;
     this.uniforms_.forEach(function(uniform) {
-      value = typeof uniform.value === 'function' ? uniform.value() : uniform.value;
+      value = typeof uniform.value === 'function' ? uniform.value(frameState) : uniform.value;
 
       // apply value based on type
       if (value instanceof HTMLCanvasElement || value instanceof ImageData) {

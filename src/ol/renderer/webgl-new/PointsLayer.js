@@ -100,7 +100,7 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
   renderFrame(frameState, layerState) {
     this.context_.setUniformFloatValue(DefaultUniform.OPACITY, layerState.opacity);
     this.context_.drawElements(0, this.indicesBuffer_.getArray().length);
-    this.context_.finalizeDraw();
+    this.context_.finalizeDraw(frameState);
     return this.context_.getCanvas();
   }
 
