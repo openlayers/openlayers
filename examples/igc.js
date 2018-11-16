@@ -7,7 +7,7 @@ import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import OSM, {ATTRIBUTION} from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
-import {getVectorContext} from '../src/ol/render';
+import {getVectorContext} from '../src/ol/render.js';
 
 
 const colors = {

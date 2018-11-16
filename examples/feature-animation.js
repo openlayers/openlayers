@@ -8,7 +8,7 @@ import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Circle as CircleStyle, Stroke, Style} from '../src/ol/style.js';
-import {getVectorContext} from '../src/ol/render';
+import {getVectorContext} from '../src/ol/render.js';
 
 const tileLayer = new TileLayer({
   source: new OSM({

@@ -4,7 +4,7 @@ import {MultiPoint, Point} from '../src/ol/geom.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
-import {getVectorContext} from '../src/ol/render';
+import {getVectorContext} from '../src/ol/render.js';
 
 const tileLayer = new TileLayer({
   source: new OSM()

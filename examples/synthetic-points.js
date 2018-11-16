@@ -5,7 +5,7 @@ import {LineString, Point} from '../src/ol/geom.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
-import {getVectorContext} from '../src/ol/render';
+import {getVectorContext} from '../src/ol/render.js';
 
 
 const count = 20000;
