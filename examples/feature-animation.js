@@ -8,16 +8,16 @@ import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Circle as CircleStyle, Stroke, Style} from '../src/ol/style.js';
+import {getVectorContext} from '../src/ol/render';
 
+const tileLayer = new TileLayer({
+  source: new OSM({
+    wrapX: false
+  })
+});
 
 const map = new Map({
-  layers: [
-    new TileLayer({
-      source: new OSM({
-        wrapX: false
-      })
-    })
-  ],
+  layers: [tileLayer],
   target: 'map',
   view: new View({
     center: [0, 0],
@@ -44,10 +44,10 @@ function addRandomFeature() {
 const duration = 3000;
 function flash(feature) {
   const start = new Date().getTime();
-  const listenerKey = map.on('postcompose', animate);
+  const listenerKey = tileLayer.on('postrender', animate);
 
   function animate(event) {
-    const vectorContext = event.vectorContext;
+    const vectorContext = getVectorContext(event);
     const frameState = event.frameState;
     const flashGeom = feature.getGeometry().clone();
     const elapsed = frameState.time - start;
