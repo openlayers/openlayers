@@ -243,7 +243,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         return document.createElement('canvas');
       };
       const tile = new VectorImageTile([0, 0, 0], undefined, undefined, undefined,
-        undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+        undefined, [0, 0, 0], undefined, createXYZ(), createXYZ(), undefined, undefined,
         undefined, undefined, undefined, 0);
       tile.transition_ = 0;
       tile.wrappedTileCoord = [0, 0, 0];
@@ -270,13 +270,13 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         usedTiles: {},
         wantedTiles: {}
       };
-      renderer.prepareFrame(frameState, {});
+      renderer.renderFrame(frameState, {});
       const replayState = renderer.renderedTiles[0].getReplayState(layer);
       const revision = replayState.renderedTileRevision;
-      renderer.prepareFrame(frameState, {});
+      renderer.renderFrame(frameState, {});
       expect(replayState.renderedTileRevision).to.be(revision);
       layer.changed();
-      renderer.prepareFrame(frameState, {});
+      renderer.renderFrame(frameState, {});
       expect(replayState.renderedTileRevision).to.be(revision + 1);
     });
   });
