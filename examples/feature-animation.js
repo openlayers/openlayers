@@ -72,7 +72,7 @@ function flash(feature) {
       unByKey(listenerKey);
       return;
     }
-    // tell OpenLayers to continue postcompose animation
+    // tell OpenLayers to continue postrender animation
     map.render();
   }
 }

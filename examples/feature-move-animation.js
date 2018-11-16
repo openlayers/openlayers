@@ -161,7 +161,7 @@ const moveFeature = function(event) {
     const feature = new Feature(currentPoint);
     vectorContext.drawFeature(feature, styles.geoMarker);
   }
-  // tell OpenLayers to continue the postcompose animation
+  // tell OpenLayers to continue the postrender animation
   map.render();
 };
 
