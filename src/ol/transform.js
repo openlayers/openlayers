@@ -236,3 +236,13 @@ export function invert(transform) {
 export function determinant(mat) {
   return mat[0] * mat[3] - mat[1] * mat[2];
 }
+
+/**
+ * A string version of the transform.  This can be used
+ * for CSS transforms.
+ * @param {!Transform} mat Matrix.
+ * @return {string} The transform as a string.
+ */
+export function toString(mat) {
+  return 'matrix(' + mat.join(', ') + ')';
+}

@@ -13,13 +13,13 @@ const view = new View({
   zoom: 19
 });
 
+const tileLayer = new TileLayer({
+  source: new OSM()
+});
+
 // creating the map
 const map = new Map({
-  layers: [
-    new TileLayer({
-      source: new OSM()
-    })
-  ],
+  layers: [tileLayer],
   target: 'map',
   view: view
 });
@@ -155,7 +155,7 @@ const geolocateBtn = document.getElementById('geolocate');
 geolocateBtn.addEventListener('click', function() {
   geolocation.setTracking(true); // Start position tracking
 
-  map.on('postcompose', updateView);
+  tileLayer.on('postrender', updateView);
   map.render();
 
   disableButtons();
@@ -197,7 +197,7 @@ simulateBtn.addEventListener('click', function() {
   }
   geolocate();
 
-  map.on('postcompose', updateView);
+  tileLayer.on('postrender', updateView);
   map.render();
 
   disableButtons();

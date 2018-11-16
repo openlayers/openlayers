@@ -1,4 +1,4 @@
-import Map from '../../../src/ol/CompositeMap.js';
+import Map from '../../../src/ol/Map.js';
 import View from '../../../src/ol/View.js';
 import VectorTileSource from '../../../src/ol/source/VectorTile';
 import MVT from '../../../src/ol/format/MVT';
@@ -23,4 +23,7 @@ new Map({
   })
 });
 
-render({message: 'Vector tile layer renders'});
+render({
+  message: 'Vector tile layer renders',
+  tolerance: 0.02
+});

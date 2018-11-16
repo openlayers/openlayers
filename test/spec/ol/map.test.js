@@ -18,7 +18,7 @@ import PinchZoom from '../../../src/ol/interaction/PinchZoom.js';
 import ImageLayer from '../../../src/ol/layer/Image.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../src/ol/layer/Vector.js';
-import IntermediateCanvasRenderer from '../../../src/ol/renderer/canvas/IntermediateCanvas.js';
+import TileLayerRenderer from '../../../src/ol/renderer/canvas/TileLayer.js';
 import ImageStatic from '../../../src/ol/source/ImageStatic.js';
 import VectorSource from '../../../src/ol/source/Vector.js';
 import XYZ from '../../../src/ol/source/XYZ.js';
@@ -325,9 +325,9 @@ describe('ol.Map', function() {
 
     beforeEach(function(done) {
       log = [];
-      original = IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate;
-      IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = function(coordinate) {
-        log.push(coordinate.slice());
+      original = TileLayerRenderer.prototype.getDataAtPixel;
+      TileLayerRenderer.prototype.getDataAtPixel = function(pixel) {
+        log.push(pixel.slice());
       };
 
       target = document.createElement('div');
@@ -364,13 +364,13 @@ describe('ol.Map', function() {
     });
 
     afterEach(function() {
-      IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = original;
+      TileLayerRenderer.prototype.getDataAtPixel = original;
       map.dispose();
       document.body.removeChild(target);
       log = null;
     });
 
-    it('calls each layer renderer with the same coordinate', function() {
+    it('calls each layer renderer with the same pixel', function() {
       const pixel = [10, 20];
       map.forEachLayerAtPixel(pixel, function() {});
       expect(log.length).to.equal(3);

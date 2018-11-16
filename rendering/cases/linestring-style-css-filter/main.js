@@ -1,4 +1,4 @@
-import Map from '../../../src/ol/CompositeMap.js';
+import Map from '../../../src/ol/Map.js';
 import View from '../../../src/ol/View.js';
 import Feature from '../../../src/ol/Feature.js';
 import LineString from '../../../src/ol/geom/LineString.js';

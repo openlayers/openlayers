@@ -1,4 +1,4 @@
-import Map from '../src/ol/CompositeMap.js';
+import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Layer from '../src/ol/layer/Layer';
 import {assign} from '../src/ol/obj';

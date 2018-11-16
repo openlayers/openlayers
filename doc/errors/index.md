@@ -111,7 +111,7 @@ Features for `updates` must have an id set by the feature reader or `ol.Feature#
 
 ### 28
 
-`renderMode` must be `'image'`, `'hybrid'` or `'vector'`.
+`renderMode` must be `'image'` or `'hybrid'`.
 
 ### 29
 

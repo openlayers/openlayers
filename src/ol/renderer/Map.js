@@ -161,16 +161,14 @@ class MapRenderer extends Disposable {
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {function(this: S, import("../layer/Layer.js").default, (Uint8ClampedArray|Uint8Array)): T} callback Layer
    *     callback.
-   * @param {S} thisArg Value to use as `this` when executing `callback`.
    * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
    *     function, only layers which are visible and for which this function
    *     returns `true` will be tested for features.  By default, all visible
    *     layers will be tested.
-   * @param {U} thisArg2 Value to use as `this` when executing `layerFilter`.
    * @return {T|undefined} Callback result.
    * @template S,T,U
    */
-  forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, thisArg, layerFilter, thisArg2) {
+  forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, layerFilter) {
     return abstract();
   }
 

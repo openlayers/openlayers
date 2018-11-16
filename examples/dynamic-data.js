@@ -4,14 +4,14 @@ import {MultiPoint, Point} from '../src/ol/geom.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
+import {getVectorContext} from '../src/ol/render.js';
 
+const tileLayer = new TileLayer({
+  source: new OSM()
+});
 
 const map = new Map({
-  layers: [
-    new TileLayer({
-      source: new OSM()
-    })
-  ],
+  layers: [tileLayer],
   target: 'map',
   view: new View({
     center: [0, 0],
@@ -46,8 +46,8 @@ const omegaTheta = 30000; // Rotation period in ms
 const R = 7e6;
 const r = 2e6;
 const p = 2e6;
-map.on('postcompose', function(event) {
-  const vectorContext = event.vectorContext;
+tileLayer.on('postrender', function(event) {
+  const vectorContext = getVectorContext(event);
   const frameState = event.frameState;
   const theta = 2 * Math.PI * frameState.time / omegaTheta;
   const coordinates = [];

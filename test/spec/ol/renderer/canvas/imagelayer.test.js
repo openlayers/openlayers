@@ -95,18 +95,18 @@ describe('ol.renderer.canvas.ImageLayer', function() {
       map.dispose();
     });
 
-    it('dispatches precompose and postcompose events on the vector layer', function(done) {
-      let precompose = 0;
-      let postcompose = 0;
-      layer.on('precompose', function() {
-        ++precompose;
+    it('dispatches prerender and postrender events on the vector layer', function(done) {
+      let prerender = 0;
+      let postrender = 0;
+      layer.on('prerender', function() {
+        ++prerender;
       });
-      layer.on('postcompose', function() {
-        ++postcompose;
+      layer.on('postrender', function() {
+        ++postrender;
       });
       map.once('postrender', function() {
-        expect(precompose).to.be(1);
-        expect(postcompose).to.be(1);
+        expect(prerender).to.be(1);
+        expect(postrender).to.be(1);
         done();
       });
     });

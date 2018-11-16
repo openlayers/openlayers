@@ -1,4 +1,4 @@
-import Map from '../src/ol/CompositeMap.js';
+import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {getWidth, getCenter} from '../src/ol/extent.js';
 import {Layer, Tile as TileLayer} from '../src/ol/layer.js';
