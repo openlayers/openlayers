@@ -103,8 +103,6 @@ class VectorImageTile extends Tile {
      */
     this.sourceTileListenerKeys_ = [];
 
-    this.sourceTilesLoaded = false;
-
     /**
      * Use only source tiles that are loaded already
      * @type {boolean}
@@ -150,35 +148,44 @@ class VectorImageTile extends Tile {
         this.finishLoading_();
       }
 
-      if (!this.sourceTilesLoaded && !useLoadedOnly) {
-        let bestZoom = -1;
-        for (const key in sourceTiles) {
-          const sourceTile = sourceTiles[key];
-          if (sourceTile.getState() === TileState.LOADED) {
-            const sourceTileCoord = sourceTile.tileCoord;
-            const sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
-            if (containsExtent(sourceTileExtent, extent) && sourceTileCoord[0] > bestZoom) {
-              bestZoom = sourceTileCoord[0];
+      this.createInterimTile_ = function() {
+        if (this.getState() !== TileState.LOADED && !useLoadedOnly) {
+          let bestZoom = -1;
+          for (const key in sourceTiles) {
+            const sourceTile = sourceTiles[key];
+            if (sourceTile.getState() === TileState.LOADED) {
+              const sourceTileCoord = sourceTile.tileCoord;
+              const sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
+              if (containsExtent(sourceTileExtent, extent) && sourceTileCoord[0] > bestZoom) {
+                bestZoom = sourceTileCoord[0];
+              }
             }
           }
-        }
-        if (bestZoom !== -1) {
-          const tile = new VectorImageTile(tileCoord, state, sourceRevision,
-            format, tileLoadFunction, urlTileCoord, tileUrlFunction,
-            sourceTileGrid, tileGrid, sourceTiles, pixelRatio, projection,
-            tileClass, VOID, bestZoom);
-          this.interimTile = tile;
-        }
+          if (bestZoom !== -1) {
+            const tile = new VectorImageTile(tileCoord, state, sourceRevision,
+              format, tileLoadFunction, urlTileCoord, tileUrlFunction,
+              sourceTileGrid, tileGrid, sourceTiles, pixelRatio, projection,
+              tileClass, VOID, bestZoom);
+            this.interimTile = tile;
+          }
+        }  
       }
     }
 
+  }
+
+  getInterimTile() {
+    if (!this.interimTile) {
+      this.createInterimTile_();
+    }
+    return super.getInterimTile();
   }
 
   /**
    * @inheritDoc
    */
   disposeInternal() {
-    this.getInterimTile = super.getInterimTile;
+    delete this.createInterimTile_;
     this.state = TileState.ABORT;
     this.changed();
     if (this.interimTile) {
