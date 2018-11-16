@@ -1,51 +1,50 @@
 import Map from '../../../src/ol/Map.js';
 import View from '../../../src/ol/View.js';
-import Point from '../../../src/ol/geom/Point.js';
 import {fromLonLat} from '../../../src/ol/proj.js';
 import {Style, Icon} from '../../../src/ol/style.js';
-import VectorTileLayer from "../../../src/ol/layer/VectorTile";
-import VectorTileSource from "../../../src/ol/source/VectorTile";
-import MVT from "../../../src/ol/format/MVT";
-import {Fill, Stroke, Text} from "../../../src/ol/style";
+import VectorTileLayer from '../../../src/ol/layer/VectorTile';
+import VectorTileSource from '../../../src/ol/source/VectorTile';
+import MVT from '../../../src/ol/format/MVT';
+import {Fill, Stroke, Text} from '../../../src/ol/style';
 
 // Styles for the mapbox-streets-v6 vector tile data set. Loosely based on
 // http://a.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6.json
 
 function createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text) {
-  var fill = new Fill({color: ''});
-  var stroke = new Stroke({color: '', width: 1});
-  var polygon = new Style({fill: fill});
-  var strokedPolygon = new Style({fill: fill, stroke: stroke});
-  var line = new Style({stroke: stroke});
-  var text = new Style({text: new Text({
-      text: '', fill: fill, stroke: stroke
-    })});
-  var iconCache = {};
+  const fill = new Fill({color: ''});
+  const stroke = new Stroke({color: '', width: 1});
+  const polygon = new Style({fill: fill});
+  const strokedPolygon = new Style({fill: fill, stroke: stroke});
+  const line = new Style({stroke: stroke});
+  const text = new Style({text: new Text({
+    text: '', fill: fill, stroke: stroke
+  })});
+  const iconCache = {};
   function getIcon(iconName) {
-    var icon = iconCache[iconName];
+    let icon = iconCache[iconName];
     if (!icon) {
       icon = new Style({image: new Icon({
-          src: 'https://unpkg.com/@mapbox/maki@4.0.0/icons/' + iconName + '-15.svg',
-          imgSize: [15, 15],
-          crossOrigin: 'anonymous'
-        })});
+        src: 'https://unpkg.com/@mapbox/maki@4.0.0/icons/' + iconName + '-15.svg',
+        imgSize: [15, 15],
+        crossOrigin: 'anonymous'
+      })});
       iconCache[iconName] = icon;
     }
     return icon;
   }
-  var styles = [];
+  const styles = [];
   return function(feature, resolution) {
-    var length = 0;
-    var layer = feature.get('layer');
-    var cls = feature.get('class');
-    var type = feature.get('type');
-    var scalerank = feature.get('scalerank');
-    var labelrank = feature.get('labelrank');
-    var adminLevel = feature.get('admin_level');
-    var maritime = feature.get('maritime');
-    var disputed = feature.get('disputed');
-    var maki = feature.get('maki');
-    var geom = feature.getGeometry().getType();
+    let length = 0;
+    const layer = feature.get('layer');
+    const cls = feature.get('class');
+    const type = feature.get('type');
+    const scalerank = feature.get('scalerank');
+    const labelrank = feature.get('labelrank');
+    const adminLevel = feature.get('admin_level');
+    const maritime = feature.get('maritime');
+    const disputed = feature.get('disputed');
+    const maki = feature.get('maki');
+    const geom = feature.getGeometry().getType();
     if (layer == 'landuse' && cls == 'park') {
       fill.setColor('#d8e8c8');
       styles[length++] = polygon;
@@ -352,7 +351,7 @@ window.startIteration = () => {
       format: new MVT(),
       url: '/data/tiles/v4/mapbox.mapbox-streets-v6/{z}/{x}/{y}.vector.pbf'
     }),
-    style,
+    style
   }));
 
   setTimeout(() => {
@@ -366,5 +365,5 @@ window.startIteration = () => {
   }, 1500);
   setTimeout(() => {
     endIteration();
-  }, 2000)
+  }, 2000);
 };

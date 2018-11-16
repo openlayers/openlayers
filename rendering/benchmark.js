@@ -53,7 +53,6 @@ function notFound(req, res) {
 
     // check if it's data but missing
     if (req.url.match(/^\/data\//)) {
-      console.log('missing data was requested', req.url);
       res.writeHead(404, {
         'Content-Type': 'text/html'
       });
@@ -106,10 +105,12 @@ async function exposeIterationControls(page) {
     if (iterationResolver) {
       iterationResolver();
     }
-  })
+  });
 }
 
-function printTime(time) { return (time * 1000).toFixed(1); }
+function printTime(time) {
+  return (time * 1000).toFixed(1);
+}
 
 async function renderPage(page, entry, options) {
   options.log.debug('navigating', entry);
@@ -139,12 +140,12 @@ async function renderPage(page, entry, options) {
   });
 
   for (iterationNumber; iterationNumber < options.iterations + 1; iterationNumber++) {
-    let iterationEnd = new Promise(resolve => iterationResolver = resolve);
+    const iterationEnd = new Promise(resolve => iterationResolver = resolve);
     const currentTimes = [];
     frameTimes.push(currentTimes);
 
     await page.evaluate('startIteration()');
-    await iterationEnd
+    await iterationEnd;
 
     if (iterationNumber === 0) {
       continue;
@@ -182,7 +183,7 @@ Average frame time: ${printTime(totalFrameTime / flatFrameTimes.length)}ms
       <li>Total heap: ${(metrics.JSHeapTotalSize / 1024).toFixed(1)}ko</li>
     </ul>
   </body>
-</html>`
+</html>`;
 }
 
 async function renderEach(page, entries, options) {
@@ -257,51 +258,51 @@ async function main(entries, options) {
 if (require.main === module) {
 
   const options = yargs.
-  option('host', {
-    describe: 'The host for serving rendering cases',
-    default: '127.0.0.1'
-  }).
-  option('port', {
-    describe: 'The port for serving rendering cases',
-    type: 'number',
-    default: 3000
-  }).
-  option('timeout', {
-    describe: 'The timeout for loading pages (in milliseconds)',
-    type: 'number',
-    default: 60000
-  }).
-  option('report', {
-    describe: 'Generate an HTML report called benchmark-report.html in the working dir',
-    type: 'boolean',
-    default: false
-  }).
-  option('iterations', {
-    describe: 'Iteration count',
-    type: 'number',
-    default: 10
-  }).
-  option('interactive', {
-    describe: 'Run all tests and keep the test server running (this option will be reworked later)',
-    type: 'boolean',
-    default: false
-  }).
-  option('log-level', {
-    describe: 'The level for logging',
-    choices: ['trace', 'debug', 'info', 'warn', 'error', 'silent'],
-    default: 'error'
-  }).
-  option('headless', {
-    describe: 'Launch Puppeteer in headless mode',
-    type: 'boolean',
-    default: process.env.CI ? false : true
-  }).
-  option('puppeteer-args', {
-    describe: 'Additional args for Puppeteer',
-    type: 'array',
-    default: process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox'] : []
-  }).
-  parse();
+    option('host', {
+      describe: 'The host for serving rendering cases',
+      default: '127.0.0.1'
+    }).
+    option('port', {
+      describe: 'The port for serving rendering cases',
+      type: 'number',
+      default: 3000
+    }).
+    option('timeout', {
+      describe: 'The timeout for loading pages (in milliseconds)',
+      type: 'number',
+      default: 60000
+    }).
+    option('report', {
+      describe: 'Generate an HTML report called benchmark-report.html in the working dir',
+      type: 'boolean',
+      default: false
+    }).
+    option('iterations', {
+      describe: 'Iteration count',
+      type: 'number',
+      default: 10
+    }).
+    option('interactive', {
+      describe: 'Run all tests and keep the test server running (this option will be reworked later)',
+      type: 'boolean',
+      default: false
+    }).
+    option('log-level', {
+      describe: 'The level for logging',
+      choices: ['trace', 'debug', 'info', 'warn', 'error', 'silent'],
+      default: 'error'
+    }).
+    option('headless', {
+      describe: 'Launch Puppeteer in headless mode',
+      type: 'boolean',
+      default: process.env.CI ? false : true
+    }).
+    option('puppeteer-args', {
+      describe: 'Additional args for Puppeteer',
+      type: 'array',
+      default: process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox'] : []
+    }).
+    parse();
 
   const entries = Object.keys(config.entry).filter(key => key.startsWith('benchmarks')).map(key => config.entry[key]);
 

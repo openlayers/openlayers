@@ -8,5 +8,8 @@
   "globals": {
     "render": false,
     "endIteration": false
+  },
+  "rules": {
+    "no-console": ["error", { "allow": ["timeStamp"] }]
   }
 }
