@@ -743,6 +743,7 @@ class CanvasExecutor {
             this.widths_[font] = widths = {};
           }
 
+          //FIXME Do not create this function on every call
           const measure = function(text) {
             let width = widths[text];
             if (!width) {
