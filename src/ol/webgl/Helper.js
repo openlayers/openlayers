@@ -240,9 +240,11 @@ class WebGLHelper extends Disposable {
   /**
    * Clear the buffer & set the viewport to draw
    */
-  prepareDraw(size, pixelRatio) {
+  prepareDraw(frameState) {
     const gl = this.getGL();
     const canvas = this.getCanvas();
+    const size = frameState.size;
+    const pixelRatio = frameState.pixelRatio;
 
     canvas.width = size[0] * pixelRatio;
     canvas.height = size[1] * pixelRatio;
@@ -263,7 +265,8 @@ class WebGLHelper extends Disposable {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
-    this.applyUniforms();
+    this.applyFrameState(frameState)
+    this.applyUniforms(frameState);
   }
 
   /**
@@ -335,6 +338,55 @@ class WebGLHelper extends Disposable {
     this.setUniformMatrixValue(DefaultUniform.PROJECTION_MATRIX, fromTransform(this.tmpMat4_, projectionMatrix));
     this.setUniformMatrixValue(DefaultUniform.OFFSET_SCALE_MATRIX, fromTransform(this.tmpMat4_, offsetScaleMatrix));
     this.setUniformMatrixValue(DefaultUniform.OFFSET_ROTATION_MATRIX, fromTransform(this.tmpMat4_, offsetRotateMatrix));
+  }
+
+  // todo
+  applyUniforms(frameState) {
+    const gl = this.getGL();
+
+    let value;
+    let textureSlot = 0;
+    this.uniforms_.forEach(function(uniform) {
+      value = typeof uniform.value === 'function' ? uniform.value(frameState) : uniform.value;
+
+      // apply value based on type
+      if (value instanceof HTMLCanvasElement || value instanceof ImageData) {
+        // create a texture & put data
+        if (!uniform.texture) {
+          uniform.texture = gl.createTexture();
+        }
+        gl.activeTexture(gl[`TEXTURE${textureSlot}`]);
+        gl.bindTexture(gl.TEXTURE_2D, uniform.texture);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+        if (value instanceof ImageData) {
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, value.width, value.height, 0,
+            gl.UNSIGNED_BYTE, new Uint8Array(value.data));
+        } else {
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, value);
+        }
+
+        // fill texture slots
+        gl.uniform1i(this.getUniformLocation(uniform.name), textureSlot++);
+
+      } else if (Array.isArray(value)) {
+        switch (value.length) {
+          case 2:
+            gl.uniform2f(this.getUniformLocation(uniform.name), value[0], value[1]);
+            return;
+          case 3:
+            gl.uniform3f(this.getUniformLocation(uniform.name), value[0], value[1], value[2]);
+            return;
+          case 4:
+            gl.uniform4f(this.getUniformLocation(uniform.name), value[0], value[1], value[2], value[3]);
+            return;
+        }
+      } else if (typeof value === 'number') {
+        gl.uniform1f(this.getUniformLocation(uniform.name), value);
+      }
+    }.bind(this));
   }
 
   /**
@@ -475,55 +527,6 @@ class WebGLHelper extends Disposable {
   }
 
   // TODO: shutdown program
-
-  // todo
-  applyUniforms() {
-    const gl = this.getGL();
-
-    let value;
-    let textureSlot = 0;
-    this.uniforms_.forEach(function(uniform) {
-      value = typeof uniform.value === 'function' ? uniform.value() : uniform.value;
-
-      // apply value based on type
-      if (value instanceof HTMLCanvasElement || value instanceof ImageData) {
-        // create a texture & put data
-        if (!uniform.texture) {
-          uniform.texture = gl.createTexture();
-        }
-        gl.activeTexture(gl[`TEXTURE${textureSlot}`]);
-        gl.bindTexture(gl.TEXTURE_2D, uniform.texture);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-        if (value instanceof ImageData) {
-          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, value.width, value.height, 0,
-            gl.UNSIGNED_BYTE, new Uint8Array(value.data));
-        } else {
-          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, value);
-        }
-
-        // fill texture slots
-        gl.uniform1i(this.getUniformLocation(uniform.name), textureSlot++);
-
-      } else if (Array.isArray(value)) {
-        switch (value.length) {
-          case 2:
-            gl.uniform2f(this.getUniformLocation(uniform.name), value[0], value[1]);
-            return;
-          case 3:
-            gl.uniform3f(this.getUniformLocation(uniform.name), value[0], value[1], value[2]);
-            return;
-          case 4:
-            gl.uniform4f(this.getUniformLocation(uniform.name), value[0], value[1], value[2], value[3]);
-            return;
-        }
-      } else if (typeof value === 'number') {
-        gl.uniform1f(this.getUniformLocation(uniform.name), value);
-      }
-    }.bind(this));
-  }
 
   /**
    * @param {number=} opt_wrapS wrapS.

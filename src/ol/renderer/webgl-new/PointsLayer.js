@@ -98,7 +98,6 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
    * @inheritDoc
    */
   renderFrame(frameState, layerState) {
-    this.context_.applyFrameState(frameState);
     this.context_.setUniformFloatValue(DefaultUniform.OPACITY, layerState.opacity);
     this.context_.drawElements(0, this.indicesBuffer_.getArray().length);
     this.context_.finalizeDraw();
@@ -112,7 +111,7 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const vectorSource = /** @type {import("../../source/Vector.js").default} */ (vectorLayer.getSource());
 
-    this.context_.prepareDraw(frameState.size, frameState.pixelRatio);
+    this.context_.prepareDraw(frameState);
 
     if (this.sourceRevision_ < vectorSource.getRevision()) {
       this.sourceRevision_ = vectorSource.getRevision();
