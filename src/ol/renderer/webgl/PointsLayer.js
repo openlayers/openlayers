@@ -1,5 +1,5 @@
 /**
- * @module ol/renderer/webgl-new/PointsLayer
+ * @module ol/renderer/webgl/PointsLayer
  */
 import LayerRenderer from '../Layer';
 import WebGLArrayBuffer from '../../webgl/Buffer';

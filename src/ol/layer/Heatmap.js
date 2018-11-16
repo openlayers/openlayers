@@ -6,7 +6,7 @@ import {getChangeEventType} from '../Object.js';
 import {createCanvasContext2D} from '../dom.js';
 import VectorLayer from './Vector.js';
 import {assign} from '../obj.js';
-import WebGLPointsLayerRenderer from '../renderer/webgl-new/PointsLayer';
+import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer';
 
 
 /**
