@@ -7,6 +7,7 @@ import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import OSM, {ATTRIBUTION} from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
+import {getVectorContext} from '../src/ol/render';
 
 
 const colors = {
@@ -73,6 +74,10 @@ vectorSource.on('addfeature', function(event) {
   time.duration = time.stop - time.start;
 });
 
+const vectorLayer = new VectorLayer({
+  source: vectorSource,
+  style: styleFunction
+});
 
 const map = new Map({
   layers: [
@@ -86,10 +91,7 @@ const map = new Map({
             '?apikey=0e6fc415256d4fbb9b5166a718591d71'
       })
     }),
-    new VectorLayer({
-      source: vectorSource,
-      style: styleFunction
-    })
+    vectorLayer
   ],
   target: 'map',
   view: new View({
@@ -153,8 +155,8 @@ const style = new Style({
     stroke: stroke
   })
 });
-map.on('postcompose', function(evt) {
-  const vectorContext = evt.vectorContext;
+vectorLayer.on('postrender', function(evt) {
+  const vectorContext = getVectorContext(evt);
   vectorContext.setStyle(style);
   if (point !== null) {
     vectorContext.drawGeometry(point);
