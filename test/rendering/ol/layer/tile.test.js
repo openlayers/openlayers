@@ -73,49 +73,6 @@ describe('ol.rendering.layer.Tile', function() {
     });
   }
 
-  describe('with tile transition', function() {
-    it('renders correctly after the transition', function(done) {
-      createMap('canvas');
-      const source = new XYZ({
-        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
-      });
-      waitForTiles('canvas', [source], {}, function() {
-        setTimeout(function() {
-          expectResemble(map, 'rendering/ol/layer/expected/osm-canvas.png',
-            IMAGE_TOLERANCE, done);
-        }, 500);
-      });
-    });
-  });
-
-  describe('single tile layer', function() {
-    let source;
-
-    beforeEach(function() {
-      source = new XYZ({
-        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
-        transition: 0
-      });
-    });
-
-    it('tests the canvas renderer', function(done) {
-      createMap('canvas');
-      waitForTiles('canvas', [source], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/osm-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
-    where('WebGL').it('tests the WebGL renderer', function(done) {
-      assertWebGL();
-      createMap('webgl');
-      waitForTiles('webgl', [source], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/osm-webgl.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-  });
-
   describe('two tile layers', function() {
     let source1, source2;
 
@@ -145,14 +102,6 @@ describe('ol.rendering.layer.Tile', function() {
       const qh = getSize(c)[1] / 4;
       return [c[0] + qw, c[1] + qh, c[2] - qw, c[3] - qh];
     }
-
-    it('tests canvas layer extent clipping', function(done) {
-      createMap('canvas');
-      waitForTiles('canvas', [source1, source2], [{}, {extent: centerExtent(map)}], function() {
-        expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
 
     it('tests canvas layer extent clipping with rotation', function(done) {
       createMap('canvas');
