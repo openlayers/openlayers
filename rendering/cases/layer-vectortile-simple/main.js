@@ -23,4 +23,7 @@ new Map({
   })
 });
 
-render({message: 'Vector tile layer renders'});
+render({
+  message: 'Vector tile layer renders',
+  tolerance: 0.02
+});

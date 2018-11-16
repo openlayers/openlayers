@@ -182,24 +182,30 @@ async function copyActualToExpected(entry) {
 async function renderEach(page, entries, options) {
   let fail = false;
   for (const entry of entries) {
-    const config = await renderPage(page, entry, options);
-    const message = config.message !== undefined ? config.message : entry;
-    const tolerance = config.tolerance !== undefined ? config.tolerance : 0;
+    const {tolerance = 0, message = ''} = await renderPage(page, entry, options);
+
     if (options.fix) {
       await copyActualToExpected(entry);
       continue;
     }
+
     const {error, mismatch} = await getScreenshotsMismatch(entry);
     if (error) {
       options.log.error(error);
       fail = true;
       continue;
     }
+
+    let detail = `case ${entry}`;
+    if (message) {
+      detail = `${detail} (${message})`;
+    }
+
     if (mismatch > tolerance) {
-      options.log.error(`checking '${message}': mismatch ${mismatch.toFixed(3)}`);
+      options.log.error(`${detail}': mismatch ${mismatch.toFixed(3)}`);
       fail = true;
     } else {
-      options.log.info(`checking '${message}': ok`);
+      options.log.info(`${detail}': ok`);
       await touch(getPassFilePath(entry));
     }
   }
