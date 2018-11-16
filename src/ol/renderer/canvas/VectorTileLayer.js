@@ -143,7 +143,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   getTile(z, x, y, pixelRatio, projection) {
     const tile = super.getTile(z, x, y, pixelRatio, projection);
     if (tile.getState() === TileState.LOADED) {
-      this.createReplayGroup_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
+      this.createExecutorGroup_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
       if (this.context) {
         this.renderTileImage_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
       }
