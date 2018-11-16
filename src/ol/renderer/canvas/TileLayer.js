@@ -143,11 +143,9 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tileResolution = tileGrid.getResolution(z);
     let extent = frameState.extent;
 
-    if (layerState.extent !== undefined) {
+    if (layerState.extent) {
       extent = getIntersection(extent, layerState.extent);
     }
-
-    // TODO: clip by layer extent
 
     const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
 
@@ -235,6 +233,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       context.clearRect(0, 0, width, height);
     }
 
+    if (layerState.extent) {
+      this.clipUnrotated(context, frameState, layerState.extent);
+    }
+
     this.preRender(context, frameState, pixelTransform);
 
     this.renderedTiles.length = 0;
@@ -284,6 +286,10 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     this.scheduleExpireCache(frameState, tileSource);
 
     this.postRender(context, frameState, pixelTransform);
+
+    if (layerState.extent) {
+      context.restore();
+    }
 
     const opacity = layerState.opacity;
     if (opacity !== canvas.style.opacity) {
