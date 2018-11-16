@@ -707,10 +707,8 @@ class CanvasExecutor {
           }
           let widthIndex = 0;
           for (; d < dd; d += 2) {
-            if (geometryWidths) {
-              if (geometryWidths[widthIndex++] < width / this.pixelRatio) {
-                continue;
-              }
+            if (geometryWidths && geometryWidths[widthIndex++] < width / this.pixelRatio) {
+              continue;
             }
             this.replayImage_(context,
               pixelCoordinates[d], pixelCoordinates[d + 1], image, anchorX, anchorY,
