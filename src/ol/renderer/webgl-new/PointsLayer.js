@@ -5,9 +5,9 @@ import LayerRenderer from '../Layer';
 import WebGLBuffer from '../../webgl/Buffer';
 import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../webgl';
 import WebGLHelper, {DefaultAttrib, DefaultUniform} from '../../webgl/Helper';
-import WebGLVertex from "../../webgl/Vertex";
-import WebGLFragment from "../../webgl/Fragment";
-import GeometryType from "../../geom/GeometryType";
+import WebGLVertex from '../../webgl/Vertex';
+import WebGLFragment from '../../webgl/Fragment';
+import GeometryType from '../../geom/GeometryType';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -48,15 +48,88 @@ const FRAGMENT_SHADER = `
   }`;
 
 /**
+ * @typedef {Object} PostProcessesOptions
+ * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
+ * the main canvas that will then be sampled up (useful for saving resource on blur steps).
+ * @property {string} [vertexShader] Vertex shader source
+ * @property {string} [fragmentShader] Fragment shader source
+ * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
+ */
+
+/**
+ * @typedef {Object} Options
+ * @property {function(import("../../Feature").default):number} [sizeCallback] Will be called on every feature in the
+ * source to compute the size of the quad on screen (in pixels). This only done on source change.
+ * @property {function(import("../../Feature").default, number):number} [coordCallback] Will be called on every feature in the
+ * source to compute the coordinate of the quad center on screen (in pixels). This only done on source change.
+ * The second argument is 0 for `x` component and 1 for `y`.
+ * @property {string} [vertexShader] Vertex shader source
+ * @property {string} [fragmentShader] Fragment shader source
+ * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
+ * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
+ */
+
+/**
  * @classdesc
- * Webgl vector renderer optimized for points.
- * All features will be rendered as points.
+ * WebGL vector renderer optimized for points.
+ * All features will be rendered as quads (two triangles forming a square). New data will be flushed to the GPU
+ * every time the vector source changes.
+ *
+ * Use shaders to customize the final output.
+ *
+ * This uses {@link module:ol/webgl/Helper~WebGLHelper} internally.
+ *
+ * Default shaders are shown hereafter:
+ *
+ * * Vertex shader:
+ *   ```
+ *   precision mediump float;
+ *   attribute vec2 a_position;
+ *   attribute vec2 a_texCoord;
+ *   attribute float a_rotateWithView;
+ *   attribute vec2 a_offsets;
+ *
+ *   uniform mat4 u_projectionMatrix;
+ *   uniform mat4 u_offsetScaleMatrix;
+ *   uniform mat4 u_offsetRotateMatrix;
+ *
+ *   varying vec2 v_texCoord;
+ *
+ *   void main(void) {
+ *     mat4 offsetMatrix = u_offsetScaleMatrix;
+ *     if (a_rotateWithView == 1.0) {
+ *       offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
+ *     }
+ *     vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);
+ *     gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
+ *     v_texCoord = a_texCoord;
+ *   }
+ *   ```
+ *
+ * * Fragment shader:
+ *   ```
+ *   precision mediump float;
+ *   uniform float u_opacity;
+ *
+ *   varying vec2 v_texCoord;
+ *
+ *   void main(void) {
+ *     gl_FragColor.rgb = vec3(1.0, 1.0, 1.0);
+ *     float alpha = u_opacity;
+ *     if (alpha == 0.0) {
+ *       discard;
+ *     }
+ *     gl_FragColor.a = alpha;
+ *   }
+ *   ```
+ *
  * @api
  */
 class WebGLPointsLayerRenderer extends LayerRenderer {
 
   /**
    * @param {import("../../layer/Vector.js").default} vectorLayer Vector layer.
+   * @param {Options=} [opt_options] Options.
    */
   constructor(vectorLayer, opt_options) {
     super(vectorLayer);
@@ -84,7 +157,7 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     this.coordCallback_ = options.coordCallback || function(feature, index) {
       const geom = /** @type {import("../../geom/Point").default} */ (feature.getGeometry());
       return geom.getCoordinates()[index];
-    }
+    };
   }
 
   /**
@@ -126,18 +199,17 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
         if (!feature.getGeometry() || feature.getGeometry().getType() !== GeometryType.POINT) {
           return;
         }
-        const geom = /** @type {import("../../geom/Point").default} */ (feature.getGeometry());
         const x = this.coordCallback_(feature, 0);
         const y = this.coordCallback_(feature, 1);
         const size = this.sizeCallback_(feature);
-        let stride = 6;
-        let baseIndex = this.verticesBuffer_.getArray().length / stride;
+        const stride = 6;
+        const baseIndex = this.verticesBuffer_.getArray().length / stride;
 
         this.verticesBuffer_.getArray().push(
           x, y, -size / 2, -size / 2, 0, 0,
           x, y, +size / 2, -size / 2, 1, 0,
           x, y, +size / 2, +size / 2, 1, 1,
-          x, y, -size / 2, +size / 2, 0, 1,
+          x, y, -size / 2, +size / 2, 0, 1
         );
         this.indicesBuffer_.getArray().push(
           baseIndex, baseIndex + 1, baseIndex + 3,
@@ -150,7 +222,7 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     this.context_.bindBuffer(ARRAY_BUFFER, this.verticesBuffer_);
     this.context_.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
-    let bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
+    const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
     this.context_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * 6, 0);
     this.context_.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 2);
     this.context_.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 4);

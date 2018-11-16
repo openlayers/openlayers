@@ -15,10 +15,10 @@ import {
   rotate as rotateTransform,
   scale as scaleTransform,
   translate as translateTransform
-} from "../transform";
-import {create, fromTransform} from "../vec/mat4";
-import WebGLBuffer from "./Buffer";
-import WebGLPostProcessingPass from "./PostProcessingPass";
+} from '../transform';
+import {create, fromTransform} from '../vec/mat4';
+import WebGLBuffer from './Buffer';
+import WebGLPostProcessingPass from './PostProcessingPass';
 
 
 /**
@@ -27,6 +27,11 @@ import WebGLPostProcessingPass from "./PostProcessingPass";
  * @property {WebGLBuffer} buffer
  */
 
+/**
+ * Uniform names used in the default shaders.
+ * @const
+ * @type {Object.<string,string>}
+ */
 export const DefaultUniform = {
   PROJECTION_MATRIX: 'u_projectionMatrix',
   OFFSET_SCALE_MATRIX: 'u_offsetScaleMatrix',
@@ -34,6 +39,11 @@ export const DefaultUniform = {
   OPACITY: 'u_opacity'
 };
 
+/**
+ * Attribute names used in the default shaders.
+ * @const
+ * @type {Object.<string,string>}
+ */
 export const DefaultAttrib = {
   POSITION: 'a_position',
   TEX_COORD: 'a_texCoord',
@@ -43,14 +53,148 @@ export const DefaultAttrib = {
 };
 
 /**
+ * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} UniformLiteralValue
+ */
+
+/**
+ * Uniform value can be a number, array of numbers (2 to 4), canvas element or a callback returning
+ * one of the previous types.
+ * @typedef {UniformLiteralValue|function(import("../PluggableMap.js").FrameState):UniformLiteralValue} UniformValue
+ */
+
+/**
+ * @typedef {Object} PostProcessesOptions
+ * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
+ * the main canvas that will then be sampled up (useful for saving resource on blur steps).
+ * @property {string} [vertexShader] Vertex shader source
+ * @property {string} [fragmentShader] Fragment shader source
+ * @property {Object.<string,UniformValue>} [uniforms] Uniform definitions for the post process step
+ */
+
+/**
+ * @typedef {Object} Options
+ * @property {Object.<string,UniformValue>} [uniforms] Uniform definitions; property namesmust math the uniform
+ * names in the provided or default shaders.
+ * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
+ */
+
+/**
+ * @typedef {Object} UniformInternalDescription
+ * @property {string} name Name
+ * @property {WebGLTexture} [texture] Texture
+ * @private
+ */
+
+/**
  * @classdesc
- * A WebGL context for accessing low-level WebGL capabilities.
- * Will handle attributes, uniforms, buffers, textures, frame buffers.
- * The context will always render to a frame buffer in order to allow post-processing.
+ * This class is intended to provide low-level functions related to WebGL rendering, so that accessing
+ * directly the WebGL API should not be required anymore.
+ *
+ * Several operations are handled by the `WebGLHelper` class:
+ *
+ * ### Define custom shaders and uniforms
+ *
+ *   *Shaders* are low-level programs executed on the GPU and written in GLSL. There are two types of shaders:
+ *
+ *   Vertex shaders are used to manipulate the position and attribute of *vertices* of rendered primitives (ie. corners of a square).
+ *   Outputs are:
+ *
+ *   * `gl_Position`: position of the vertex in screen space
+ *
+ *   * Varyings usually prefixed with `v_` are passed on to the fragment shader
+ *
+ *   Fragment shaders are used to control the actual color of the pixels rawn on screen. Their only output is `gl_FragColor`.
+ *
+ *   Both shaders can take *uniforms* or *attributes* as input. Attributes are explained later. Uniforms are common, read-only values that
+ *   can be changed at every frame and can be of type float, arrays of float or images.
+ *
+ *   Shaders must be compiled and assembled into a program like so:
+ *   ```js
+ *   // here we simply create two shaders and assemble them in a program which is then used
+ *   // for subsequent rendering calls
+ *   const vertexShader = new WebGLVertex(VERTEX_SHADER);
+ *   const fragmentShader = new WebGLFragment(FRAGMENT_SHADER);
+ *   this.program = this.context.getProgram(fragmentShader, vertexShader);
+ *   this.context.useProgram(this.program);
+ *   ```
+ *
+ *   Uniforms are defined using the `uniforms` option and can either be explicit values or callbacks taking the frame state as argument.
+ *   You can also change their value along the way like so:
+ *   ```js
+ *   this.context.setUniformFloatValue(DefaultUniform.OPACITY, layerState.opacity);
+ *   ```
+ *
+ * ### Defining post processing passes
+ *
+ *   *Post processing* describes the act of rendering primitives to a texture, and then rendering this texture to the final canvas
+ *   while applying special effects in screen space.
+ *   Typical uses are: blurring, color manipulation, depth of field, filtering...
+ *
+ *   The `WebGLHelper` class offers the possibility to define post processes at creation time using the `postProcesses` option.
+ *   A post process step accepts the following options:
+ *
+ *   * `fragmentShader` and `vertexShader`: text literals in GLSL language that will be compiled and used in the post processing step.
+ *   * `uniforms`: uniforms can be defined for the post processing steps just like for the main render.
+ *   * `scaleRatio`: allows using an intermediate texture smaller or higher than the final canvas in the post processing step.
+ *     This is typically used in blur steps to reduce the performance overhead by using an already downsampled texture as input.
+ *
+ *   The {@link module:ol/webgl/PostProcessingPass~WebGLPostProcessingPass} class is used internally, refer to its documentation for more info.
+ *
+ * ### Binding WebGL buffers and flushing data into them:
+ *
+ *   Data that must be passed to the GPU has to be transferred using `WebGLBuffer` objects.
+ *   A buffer has to be created only once, but must be bound everytime the data it holds is changed. Using `WebGLHelper.bindBuffer`
+ *   will bind the buffer and flush the new data to the GPU.
+ *
+ *   For now, the `WebGLHelper` class expects {@link module:ol/webgl/Buffer~WebGLArrayBuffer} objects.
+ *   ```js
+ *   // at initialization phase
+ *   this.verticesBuffer = new WebGLBuffer([], DYNAMIC_DRAW);
+ *   this.indicesBuffer = new WebGLBuffer([], DYNAMIC_DRAW);
+ *
+ *   // at rendering phase
+ *   this.context.bindBuffer(ARRAY_BUFFER, this.verticesBuffer);
+ *   this.context.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+ *   ```
+ *
+ * ### Specifying attributes
+ *
+ *   The GPU only receives the data as arrays of numbers. These numbers must be handled differently depending on what it describes (position, texture coordinate...).
+ *   Attributes are used to specify these uses. Use `WebGLHelper.enableAttributeArray` and either
+ *   the default attribute names in {@link module:ol/webgl/Helper~DefaultAttrib} or custom ones.
+ *
+ *   Please note that you will have to specify the type and offset of the attributes in the data array. You can refer to the documentation of [WebGLRenderingContext.vertexAttribPointer](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/vertexAttribPointer) for more explanation.
+ *   ```js
+ *   // here we indicate that the data array has the following structure:
+ *   // [posX, posY, offsetX, offsetY, texCoordU, texCoordV, posX, posY, ...]
+ *   let bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
+ *   this.context.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * 6, 0);
+ *   this.context.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 2);
+ *   this.context.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 4);
+ *   ```
+ *
+ * ### Rendering primitives
+ *
+ *   Once all the steps above have been achieved, rendering primitives to the screen is done using `WebGLHelper.prepareDraw` `drawElements` and `finalizeDraw`.
+ *   ```js
+ *   // frame preparation step
+ *   this.context.prepareDraw(frameState);
+ *
+ *   // call this for every data array that has to be rendered on screen
+ *   this.context.drawElements(0, this.indicesBuffer.getArray().length);
+ *
+ *   // finalize the rendering by applying post processes
+ *   this.context.finalizeDraw(frameState);
+ *   ```
+ *
+ * For an example usage of this class, refer to {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
+ *
+ *
+ * @api
  */
 class WebGLHelper extends Disposable {
-
   /**
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     super();
@@ -69,6 +213,7 @@ class WebGLHelper extends Disposable {
      * @type {WebGLRenderingContext}
      */
     this.gl_ = this.canvas_.getContext('webgl');
+    const gl = this.getGL();
 
     /**
      * @private
@@ -101,7 +246,7 @@ class WebGLHelper extends Disposable {
 
     // use the OES_element_index_uint extension if available
     if (this.hasOESElementIndexUint) {
-      this.gl_.getExtension('OES_element_index_uint');
+      gl.getExtension('OES_element_index_uint');
     }
 
     listen(this.canvas_, ContextEventType.LOST,
@@ -146,8 +291,9 @@ class WebGLHelper extends Disposable {
     this.attribLocations_;
 
     /**
-     * Holds info about custom uniforms used in the post processing pass
-     * @type {Array<{value: *, texture?: WebGLTexture}>}
+     * Holds info about custom uniforms used in the post processing pass.
+     * If the uniform is a texture, the WebGL Texture object will be stored here.
+     * @type {Array<UniformInternalDescription>}
      * @private
      */
     this.uniforms_ = [];
@@ -158,10 +304,14 @@ class WebGLHelper extends Disposable {
       });
     }.bind(this));
 
-    // initialize post processes from options
-    // if none given, use a default one
-    const gl = this.getGL();
-    this.postProcessPasses = options.postProcesses ? options.postProcesses.map(function(options) {
+    /**
+     * An array of PostProcessingPass objects is kept in this variable, built from the steps provided in the
+     * options. If no post process was given, a default one is used (so as not to have to make an exception to
+     * the frame buffer logic).
+     * @type {Array<WebGLPostProcessingPass>}
+     * @private
+     */
+    this.postProcessPasses_ = options.postProcesses ? options.postProcesses.map(function(options) {
       return new WebGLPostProcessingPass({
         webGlContext: gl,
         scaleRatio: options.scaleRatio,
@@ -169,7 +319,7 @@ class WebGLHelper extends Disposable {
         fragmentShader: options.fragmentShader,
         uniforms: options.uniforms
       });
-    }) : [new WebGLPostProcessingPass({ webGlContext: gl })];
+    }) : [new WebGLPostProcessingPass({webGlContext: gl})];
   }
 
   /**
@@ -178,7 +328,8 @@ class WebGLHelper extends Disposable {
    * the cache.
    * TODO: improve this, the logic is unclear: we want A/ to bind a buffer and B/ to flush data in it
    * @param {number} target Target.
-   * @param {WebGLBuffer} buf Buffer.
+   * @param {import("./Buffer").default} buf Buffer.
+   * @api
    */
   bindBuffer(target, buf) {
     const gl = this.getGL();
@@ -236,7 +387,11 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * Clear the buffer & set the viewport to draw
+   * Clear the buffer & set the viewport to draw.
+   * Post process passes will be initialized here, the first one being bound as a render target for
+   * subsequent draw calls.
+   * @param {import("../PluggableMap.js").FrameState} frameState current frame state
+   * @api
    */
   prepareDraw(frameState) {
     const gl = this.getGL();
@@ -252,8 +407,8 @@ class WebGLHelper extends Disposable {
     gl.useProgram(this.currentProgram_);
 
     // loop backwards in post processes list
-    for (let i = this.postProcessPasses.length - 1; i >= 0; i--) {
-      this.postProcessPasses[i].init(size, pixelRatio);
+    for (let i = this.postProcessPasses_.length - 1; i >= 0; i--) {
+      this.postProcessPasses_[i].init(frameState);
     }
 
     gl.bindTexture(gl.TEXTURE_2D, null);
@@ -263,14 +418,15 @@ class WebGLHelper extends Disposable {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
-    this.applyFrameState(frameState)
+    this.applyFrameState(frameState);
     this.applyUniforms(frameState);
   }
 
   /**
-   * @protected
+   * Execute a draw call based on the currently bound program, texture, buffers, attributes.
    * @param {number} start Start index.
    * @param {number} end End index.
+   * @api
    */
   drawElements(start, end) {
     const gl = this.getGL();
@@ -284,17 +440,20 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * Copy the frame buffer to the canvas
+   * Apply the successive post process passes which will eventually render to the actual canvas.
+   * @param {import("../PluggableMap.js").FrameState} frameState current frame state
+   * @api
    */
   finalizeDraw(frameState) {
     // apply post processes using the next one as target
-    for (let i = 0; i < this.postProcessPasses.length; i++) {
-      this.postProcessPasses[i].apply(frameState, this.postProcessPasses[i + 1] || null);
+    for (let i = 0; i < this.postProcessPasses_.length; i++) {
+      this.postProcessPasses_[i].apply(frameState, this.postProcessPasses_[i + 1] || null);
     }
   }
 
   /**
    * @return {HTMLCanvasElement} Canvas.
+   * @api
    */
   getCanvas() {
     return this.canvas_;
@@ -310,8 +469,9 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * Sets the matrices uniforms for a given frame state
+   * Sets the default matrix uniforms for a given frame state. This is called internally in `prepareDraw`.
    * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @private
    */
   applyFrameState(frameState) {
     const size = frameState.size;
@@ -338,7 +498,11 @@ class WebGLHelper extends Disposable {
     this.setUniformMatrixValue(DefaultUniform.OFFSET_ROTATION_MATRIX, fromTransform(this.tmpMat4_, offsetRotateMatrix));
   }
 
-  // todo
+  /**
+   * Sets the custom uniforms based on what was given in the constructor. This is called internally in `prepareDraw`.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @private
+   */
   applyUniforms(frameState) {
     const gl = this.getGL();
 
@@ -380,6 +544,8 @@ class WebGLHelper extends Disposable {
           case 4:
             gl.uniform4f(this.getUniformLocation(uniform.name), value[0], value[1], value[2], value[3]);
             return;
+          default:
+            return;
         }
       } else if (typeof value === 'number') {
         gl.uniform1f(this.getUniformLocation(uniform.name), value);
@@ -390,8 +556,10 @@ class WebGLHelper extends Disposable {
   /**
    * Get shader from the cache if it's in the cache. Otherwise, create
    * the WebGL shader, compile it, and add entry to cache.
+   * TODO: make compilation errors show up
    * @param {import("./Shader.js").default} shaderObject Shader object.
    * @return {WebGLShader} Shader.
+   * @api
    */
   getShader(shaderObject) {
     const shaderKey = getUid(shaderObject);
@@ -402,9 +570,6 @@ class WebGLHelper extends Disposable {
       const shader = gl.createShader(shaderObject.getType());
       gl.shaderSource(shader, shaderObject.getSource());
       gl.compileShader(shader);
-      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.error(`Shader compilation failed - log:\n${gl.getShaderInfoLog(shader)}`);
-      }
       this.shaderCache_[shaderKey] = shader;
       return shader;
     }
@@ -436,6 +601,7 @@ class WebGLHelper extends Disposable {
    * @param {import("./Fragment.js").default} fragmentShaderObject Fragment shader.
    * @param {import("./Vertex.js").default} vertexShaderObject Vertex shader.
    * @return {WebGLProgram} Program.
+   * @api
    */
   getProgram(fragmentShaderObject, vertexShaderObject) {
     const programKey = getUid(fragmentShaderObject) + '/' + getUid(vertexShaderObject);
@@ -456,6 +622,7 @@ class WebGLHelper extends Disposable {
    * Will get the location from the shader or the cache
    * @param {string} name Uniform name
    * @return {WebGLUniformLocation} uniformLocation
+   * @api
    */
   getUniformLocation(name) {
     if (!this.uniformLocations_[name]) {
@@ -468,6 +635,7 @@ class WebGLHelper extends Disposable {
    * Will get the location from the shader or the cache
    * @param {string} name Attribute name
    * @return {number} attribLocation
+   * @api
    */
   getAttributeLocation(name) {
     if (!this.attribLocations_[name]) {
@@ -480,6 +648,7 @@ class WebGLHelper extends Disposable {
    * Give a value for a standard float uniform
    * @param {string} uniform Uniform name
    * @param {number} value Value
+   * @api
    */
   setUniformFloatValue(uniform, value) {
     this.getGL().uniform1f(this.getUniformLocation(uniform), value);
@@ -489,6 +658,7 @@ class WebGLHelper extends Disposable {
    * Give a value for a standard matrix4 uniform
    * @param {string} uniform Uniform name
    * @param {Array<number>} value Matrix value
+   * @api
    */
   setUniformMatrixValue(uniform, value) {
     this.getGL().uniformMatrix4fv(this.getUniformLocation(uniform), false, value);
@@ -496,11 +666,12 @@ class WebGLHelper extends Disposable {
 
   /**
    * Will set the currently bound buffer to an attribute of the shader program
-   * @param {string} attribName
+   * @param {string} attribName Attribute name
    * @param {number} size Number of components per attributes
    * @param {number} type UNSIGNED_INT, UNSIGNED_BYTE, UNSIGNED_SHORT or FLOAT
    * @param {number} stride Stride in bytes (0 means attribs are packed)
    * @param {number} offset Offset in bytes
+   * @api
    */
   enableAttributeArray(attribName, size, type, stride, offset) {
     this.getGL().enableVertexAttribArray(this.getAttributeLocation(attribName));
@@ -509,7 +680,8 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * FIXME empty description for jsdoc
+   * WebGL context was lost
+   * @private
    */
   handleWebGLContextLost() {
     clear(this.bufferCache_);
@@ -519,7 +691,8 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * FIXME empty description for jsdoc
+   * WebGL context was restored
+   * @private
    */
   handleWebGLContextRestored() {
   }
@@ -527,6 +700,7 @@ class WebGLHelper extends Disposable {
   // TODO: shutdown program
 
   /**
+   * TODO: these are not used and should be reworked
    * @param {number=} opt_wrapS wrapS.
    * @param {number=} opt_wrapT wrapT.
    * @return {WebGLTexture} The texture.
@@ -551,6 +725,7 @@ class WebGLHelper extends Disposable {
   }
 
   /**
+   * TODO: these are not used and should be reworked
    * @param {number} width Width.
    * @param {number} height Height.
    * @param {number=} opt_wrapS wrapS.
@@ -559,13 +734,14 @@ class WebGLHelper extends Disposable {
    */
   createEmptyTexture(width, height, opt_wrapS, opt_wrapT) {
     const gl = this.getGL();
-    const texture = this.createTextureInternal( opt_wrapS, opt_wrapT);
+    const texture = this.createTextureInternal(opt_wrapS, opt_wrapT);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     return texture;
   }
 
 
   /**
+   * TODO: these are not used and should be reworked
    * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
    * @param {number=} opt_wrapS wrapS.
    * @param {number=} opt_wrapT wrapT.

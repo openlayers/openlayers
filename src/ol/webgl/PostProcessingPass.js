@@ -31,10 +31,70 @@ const DEFAULT_FRAGMENT_SHADER = `
   }
 `;
 
+/**
+ * @typedef {Object} Options
+ * @property {WebGLContext} webGlContext WebGL context; mandatory.
+ * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
+ * the main canvas that will then be sampled up (useful for saving resource on blur steps).
+ * @property {string} [vertexShader] Vertex shader source
+ * @property {string} [fragmentShader] Fragment shader source
+ * @property {Object.<string,import("./Helper").UniformValue>} [uniforms] Uniform definitions for the post process step
+ */
+
+/**
+ * @typedef {Object} UniformInternalDescription
+ * @property {UniformValue} value Value
+ * @property {number} location Location
+ * @property {WebGLTexture} [texture] Texture
+ * @private
+ */
+
+/**
+ * @classdesc
+ * This class is used to define Post Processing passes with custom shaders and uniforms.
+ * This is used internally by {@link module:ol/webgl/Helper~WebGLHelper}.
+ *
+ * Default shaders are shown hereafter:
+ *
+ * * Vertex shader:
+ *
+ *   ```
+ *   precision mediump float;
+ *
+ *   attribute vec2 a_position;
+ *   varying vec2 v_texCoord;
+ *   varying vec2 v_screenCoord;
+ *
+ *   uniform vec2 u_screenSize;
+ *
+ *   void main() {
+ *     v_texCoord = a_position * 0.5 + 0.5;
+ *     v_screenCoord = v_texCoord * u_screenSize;
+ *     gl_Position = vec4(a_position, 0.0, 1.0);
+ *   }
+ *   ```
+ *
+ * * Fragment shader:
+ *
+ *   ```
+ *   precision mediump float;
+ *
+ *   uniform sampler2D u_image;
+ *
+ *   varying vec2 v_texCoord;
+ *   varying vec2 v_screenCoord;
+ *
+ *   void main() {
+ *     gl_FragColor = texture2D(u_image, v_texCoord);
+ *   }
+ *   ```
+ *
+ * @api
+ */
 class WebGLPostProcessingPass {
 
   /**
-   * // todo
+   * @param {Options=} options Options.
    */
   constructor(options) {
     this.gl_ = options.webGlContext;
@@ -48,18 +108,13 @@ class WebGLPostProcessingPass {
     this.frameBuffer_ = gl.createFramebuffer();
 
     // compile the program for the frame buffer
+    // TODO: make compilation errors show up
     const vertexShader = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vertexShader, options.vertexShader || DEFAULT_VERTEX_SHADER);
     gl.compileShader(vertexShader);
-    if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
-      console.error(`Shader compilation failed - log:\n${gl.getShaderInfoLog(vertexShader)}`);
-    }
     const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(fragmentShader, options.fragmentShader || DEFAULT_FRAGMENT_SHADER);
     gl.compileShader(fragmentShader);
-    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
-      console.error(`Shader compilation failed - log:\n${gl.getShaderInfoLog(fragmentShader)}`);
-    }
     this.renderTargetProgram_ = gl.createProgram();
     gl.attachShader(this.renderTargetProgram_, vertexShader);
     gl.attachShader(this.renderTargetProgram_, fragmentShader);
@@ -84,7 +139,7 @@ class WebGLPostProcessingPass {
 
     /**
      * Holds info about custom uniforms used in the post processing pass
-     * @type {Array<{value: *, location: WebGLUniformLocation, texture?: WebGLTexture}>}
+     * @type {Array<UniformInternalDescription>}
      * @private
      */
     this.uniforms_ = [];
@@ -105,11 +160,17 @@ class WebGLPostProcessingPass {
     return this.gl_;
   }
 
-  // todo
-  // the last postprocess initialized will be the one where the primitives are drawn
-  init(size) {
+  /**
+   * Initialize the render target texture of the post process, make sure it is at the
+   * right size and bind it as a render target for the next draw calls.
+   * The last step to be initialized will be the one where the primitives are rendered.
+   * @param {import("../PluggableMap.js").FrameState} frameState current frame state
+   * @api
+   */
+  init(frameState) {
     const gl = this.getGL();
     const canvas = gl.canvas;
+    const size = frameState.size;
 
     // rendering goes to my buffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.getFrameBuffer());
@@ -141,8 +202,12 @@ class WebGLPostProcessingPass {
     }
   }
 
-  // todo
-  // render to the next postprocessing pass (or to the canvas if final pass)
+  /**
+   * Render to the next postprocessing pass (or to the canvas if final pass).
+   * @param {import("../PluggableMap.js").FrameState} frameState current frame state
+   * @param {WebGLPostProcessingPass} [nextPass] Next pass, optional
+   * @api
+   */
   apply(frameState, nextPass) {
     const gl = this.getGL();
     const canvas = gl.canvas;
@@ -171,12 +236,19 @@ class WebGLPostProcessingPass {
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
 
-  // todo
+  /**
+   * @returns {WebGLFramebuffer} Frame buffer
+   * @api
+   */
   getFrameBuffer() {
     return this.frameBuffer_;
   }
 
-  // todo
+  /**
+   * Sets the custom uniforms based on what was given in the constructor.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @private
+   */
   applyUniforms(frameState) {
     const gl = this.getGL();
 
@@ -218,6 +290,7 @@ class WebGLPostProcessingPass {
           case 4:
             gl.uniform4f(uniform.location, value[0], value[1], value[2], value[3]);
             return;
+          default: return;
         }
       } else if (typeof value === 'number') {
         gl.uniform1f(uniform.location, value);

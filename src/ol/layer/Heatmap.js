@@ -6,7 +6,7 @@ import {getChangeEventType} from '../Object.js';
 import {createCanvasContext2D} from '../dom.js';
 import VectorLayer from './Vector.js';
 import {assign} from '../obj.js';
-import WebGLPointsLayerRenderer from "../renderer/webgl-new/PointsLayer";
+import WebGLPointsLayerRenderer from '../renderer/webgl-new/PointsLayer';
 
 
 /**
@@ -315,11 +315,11 @@ class Heatmap extends VectorLayer {
             }`,
           scaleRatio: 0.5,
           uniforms: {
-            u_blurSize: function (frameState) {
+            u_blurSize: function(frameState) {
               return [
                 this.get(Property.BLUR) / frameState.size[0],
                 this.get(Property.BLUR) / frameState.size[1]
-              ]
+              ];
             }.bind(this)
           }
         },
@@ -339,13 +339,13 @@ class Heatmap extends VectorLayer {
               gl_FragColor.a = color.a;
             }`,
           uniforms: {
-            u_gradientTexture: this.gradient_,
+            u_gradientTexture: this.gradient_
           }
         }
       ],
       sizeCallback: function(feature) {
         return this.weightFunction_(feature);
-      }.bind(this),
+      }.bind(this)
     });
   }
 }
