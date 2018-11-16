@@ -3,12 +3,11 @@
  */
 import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../../extent.js';
 import {createCanvasContext2D} from '../../dom.js';
-import {TRUE} from '../../functions.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import {rotateAtOffset} from '../../render/canvas.js';
 import LayerRenderer from '../Layer.js';
-import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
+import {invert as invertTransform, create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
 
 /**
  * @abstract
@@ -103,26 +102,6 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {import("../../PluggableMap.js").FrameState} frameState FrameState.
-   * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(this: S, import("../../layer/Layer.js").default, (Uint8ClampedArray|Uint8Array)): T} callback Layer
-   *     callback.
-   * @param {S} thisArg Value to use as `this` when executing `callback`.
-   * @return {T|undefined} Callback result.
-   * @template S,T,U
-   */
-  forEachLayerAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
-    const hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, TRUE);
-
-    if (hasFeature) {
-      return callback.call(thisArg, this.getLayer(), null);
-    } else {
-      return undefined;
-    }
-  }
-
-  /**
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {import("../../transform.js").Transform=} opt_transform Transform.
@@ -171,6 +150,35 @@ class CanvasLayerRenderer extends LayerRenderer {
     const dx2 = -viewState.center[0] + offsetX;
     const dy2 = -viewState.center[1];
     return composeTransform(this.tempTransform_, dx1, dy1, sx, sy, -viewState.rotation, dx2, dy2);
+  }
+
+  /**
+   * @param {import("../../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../../PluggableMap.js").FrameState} frameState FrameState.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @return {Uint8ClampedArray|Uint8Array} The result.  If there is no data at the pixel
+   *    location, null will be returned.  If there is data, but pixel values cannot be
+   *    returned, and empty array will be returned.
+   */
+  getDataAtPixel(pixel, frameState, hitTolerance) {
+    const renderPixel = applyTransform(invertTransform(this.pixelTransform_.slice()), pixel.slice());
+    const context = this.context;
+
+    let data;
+    try {
+      data = context.getImageData(Math.round(renderPixel[0]), Math.round(renderPixel[1]), 1, 1).data;
+    } catch (err) {
+      if (err.name === 'SecurityError') {
+        // tainted canvas, we assume there is data at the given pixel (although there might not be)
+        return new Uint8Array();
+      }
+      return data;
+    }
+
+    if (data[3] === 0) {
+      return null;
+    }
+    return data;
   }
 
 }

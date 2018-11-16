@@ -92,16 +92,14 @@ class LayerRenderer extends Observable {
 
   /**
    * @abstract
-   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
    * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(this: S, import("../layer/Layer.js").default, (Uint8ClampedArray|Uint8Array)): T} callback Layer
-   *     callback.
-   * @param {S} thisArg Value to use as `this` when executing `callback`.
-   * @return {T|undefined} Callback result.
-   * @template S,T
+   * @return {Uint8ClampedArray|Uint8Array} The result.  If there is no data at the pixel
+   *    location, null will be returned.  If there is data, but pixel values cannot be
+   *    returned, and empty array will be returned.
    */
-  forEachLayerAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
+  getDataAtPixel(pixel, frameState, hitTolerance) {
     return abstract();
   }
 

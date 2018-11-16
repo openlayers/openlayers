@@ -1,7 +1,6 @@
 /**
  * @module ol/renderer/canvas/Map
  */
-import {apply as applyTransform} from '../transform.js';
 import {stableSort} from '../array.js';
 import {CLASS_UNSELECTABLE} from '../css.js';
 import {visibleAtResolution} from '../layer/Layer.js';
@@ -111,28 +110,27 @@ class CompositeMapRenderer extends MapRenderer {
   /**
    * @inheritDoc
    */
-  forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, thisArg, layerFilter, thisArg2) {
-    let result;
+  forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, layerFilter) {
     const viewState = frameState.viewState;
     const viewResolution = viewState.resolution;
 
     const layerStates = frameState.layerStatesArray;
     const numLayers = layerStates.length;
 
-    const coordinate = applyTransform(
-      frameState.pixelToCoordinateTransform, pixel.slice());
-
     for (let i = numLayers - 1; i >= 0; --i) {
       const layerState = layerStates[i];
       const layer = layerState.layer;
-      if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
+      if (visibleAtResolution(layerState, viewResolution) && layerFilter(layer)) {
         const layerRenderer = this.getLayerRenderer(layer);
         if (!layerRenderer) {
           continue;
         }
-        result = layerRenderer.forEachLayerAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
-        if (result) {
-          return result;
+        const data = layerRenderer.getDataAtPixel(pixel, frameState, hitTolerance);
+        if (data) {
+          const result = callback(layer, data);
+          if (result) {
+            return result;
+          }
         }
       }
     }

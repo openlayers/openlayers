@@ -19,11 +19,14 @@ import {ORDER} from '../../render/replay.js';
 import CanvasTileLayerRenderer from './TileLayer.js';
 import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import {
+  apply as applyTransform,
   create as createTransform,
   compose as composeTransform,
+  invert as invertTransform,
   reset as resetTransform,
   scale as scaleTransform,
-  translate as translateTransform
+  translate as translateTransform,
+  toString as transformToString
 } from '../../transform.js';
 import CanvasExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
 
@@ -71,6 +74,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     const overlayCanvas = this.overlayContext_.canvas;
     overlayCanvas.style.position = 'absolute';
+    overlayCanvas.style.transformOrigin = 'top left';
 
     const container = document.createElement('div');
     const style = container.style;
@@ -86,6 +90,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
      * @type {HTMLElement}
      */
     this.container_ = container;
+
+    /**
+     * The transform for rendered pixels to viewport CSS pixels for the overlay canvas.
+     * @private
+     * @type {import("../../transform.js").Transform}
+     */
+    this.overlayPixelTransform_ = createTransform();
 
     /**
      * Declutter tree.
@@ -377,11 +388,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const canvas = context.canvas;
     const width = Math.round(size[0] * pixelRatio);
     const height = Math.round(size[1] * pixelRatio);
+    this.overlayPixelTransform_[0] = 1 / pixelRatio;
+    this.overlayPixelTransform_[3] = 1 / pixelRatio;
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
-      canvas.style.width = (width / pixelRatio) + 'px';
-      canvas.style.height = (height / pixelRatio) + 'px';
+      const canvasTransform = transformToString(this.overlayPixelTransform_);
+      if (canvas.style.transform !== canvasTransform) {
+        canvas.style.transform = canvasTransform;
+      }
     } else {
       context.clearRect(0, 0, width, height);
     }
@@ -519,6 +534,35 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
     }
   }
+
+  /**
+   * @inheritdoc
+   */
+  getDataAtPixel(pixel, frameState, hitTolerance) {
+    let data = super.getDataAtPixel(pixel, frameState, hitTolerance);
+    if (data) {
+      return data;
+    }
+
+    const renderPixel = applyTransform(invertTransform(this.overlayPixelTransform_.slice()), pixel.slice());
+    const context = this.overlayContext_;
+
+    try {
+      data = context.getImageData(Math.round(renderPixel[0]), Math.round(renderPixel[1]), 1, 1).data;
+    } catch (err) {
+      if (err.name === 'SecurityError') {
+        // tainted canvas, we assume there is data at the given pixel (although there might not be)
+        return new Uint8Array();
+      }
+      return data;
+    }
+
+    if (data[3] === 0) {
+      return null;
+    }
+    return data;
+  }
+
 }
 
 
