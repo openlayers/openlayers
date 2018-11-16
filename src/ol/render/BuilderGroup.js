@@ -1,19 +1,19 @@
 /**
- * @module ol/render/ReplayGroup
+ * @module ol/render/BuilderGroup
  */
 import {abstract} from '../util.js';
 
 /**
- * Base class for replay groups.
+ * Base class for builder groups.
  */
-class ReplayGroup {
+class BuilderGroup {
   /**
    * @abstract
    * @param {number|undefined} zIndex Z index.
    * @param {import("./ReplayType.js").default} replayType Replay type.
    * @return {import("./VectorContext.js").default} Replay.
    */
-  getReplay(zIndex, replayType) {
+  getBuilder(zIndex, replayType) {
     return abstract();
   }
 
@@ -27,7 +27,7 @@ class ReplayGroup {
 
   /**
    * @abstract
-   * @param {boolean} group Group with previous replay
+   * @param {boolean} group Group with previous builder
    * @return {Array<*>} The resulting instruction group
    */
   addDeclutter(group) {
@@ -35,4 +35,4 @@ class ReplayGroup {
   }
 }
 
-export default ReplayGroup;
+export default BuilderGroup;

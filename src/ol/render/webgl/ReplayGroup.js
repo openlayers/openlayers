@@ -6,7 +6,7 @@ import {numberSafeCompareFunction} from '../../array.js';
 import {buffer, createOrUpdateFromCoordinate} from '../../extent.js';
 import {isEmpty} from '../../obj.js';
 import {ORDER} from '../replay.js';
-import ReplayGroup from '../ReplayGroup.js';
+import ReplayGroup from '../BuilderGroup.js';
 import WebGLCircleReplay from './CircleReplay.js';
 import WebGLImageReplay from './ImageReplay.js';
 import WebGLLineStringReplay from './LineStringReplay.js';
@@ -113,7 +113,7 @@ class WebGLReplayGroup extends ReplayGroup {
   /**
    * @inheritDoc
    */
-  getReplay(zIndex, replayType) {
+  getBuilder(zIndex, replayType) {
     const zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
     let replays = this.replaysByZIndex_[zIndexKey];
     if (replays === undefined) {

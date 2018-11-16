@@ -65,9 +65,9 @@ class VectorTile extends Tile {
 
     /**
      * @private
-     * @type {Object<string, import("./render/ReplayGroup.js").default>}
+     * @type {Object<string, import("./render/ExecutorGroup.js").default>}
      */
-    this.replayGroups_ = {};
+    this.executorGroups_ = {};
 
     /**
      * @private
@@ -88,7 +88,7 @@ class VectorTile extends Tile {
    */
   disposeInternal() {
     this.features_ = null;
-    this.replayGroups_ = {};
+    this.executorGroups_ = {};
     this.state = TileState.ABORT;
     this.changed();
     super.disposeInternal();
@@ -142,10 +142,10 @@ class VectorTile extends Tile {
   /**
    * @param {import("./layer/Layer.js").default} layer Layer.
    * @param {string} key Key.
-   * @return {import("./render/ReplayGroup.js").default} Replay group.
+   * @return {import("./render/ExecutorGroup.js").default} Executor group.
    */
-  getReplayGroup(layer, key) {
-    return this.replayGroups_[getUid(layer) + ',' + key];
+  getExecutorGroup(layer, key) {
+    return this.executorGroups_[getUid(layer) + ',' + key];
   }
 
   /**
@@ -153,17 +153,17 @@ class VectorTile extends Tile {
    * @param {import("./layer/Layer").default} layer Layer.
    * @param {number} zoom Zoom.
    * @param {import("./extent").Extent} extent Extent.
-   * @return {import("./render/ReplayGroup.js").default} Replay groups.
+   * @return {import("./render/ExecutorGroup.js").default} Executor groups.
    */
-  getLowResReplayGroup(layer, zoom, extent) {
+  getLowResExecutorGroup(layer, zoom, extent) {
     const layerId = getUid(layer);
     let bestZoom = 0;
     let replayGroup = null;
-    for (const key in this.replayGroups_) {
+    for (const key in this.executorGroups_) {
       const keyData = key.split(',');
       const candidateZoom = Number(keyData[1]);
       if (keyData[0] === layerId && candidateZoom <= zoom) {
-        const candidate = this.replayGroups_[key];
+        const candidate = this.executorGroups_[key];
         if (containsExtent(candidate.getMaxExtent(), extent) && candidateZoom > bestZoom) {
           replayGroup = candidate;
           bestZoom = candidateZoom;
@@ -244,10 +244,10 @@ class VectorTile extends Tile {
   /**
    * @param {import("./layer/Layer.js").default} layer Layer.
    * @param {string} key Key.
-   * @param {import("./render/ReplayGroup.js").default} replayGroup Replay group.
+   * @param {import("./render/ExecutorGroup.js").default} executorGroup Executor group.
    */
-  setReplayGroup(layer, key, replayGroup) {
-    this.replayGroups_[getUid(layer) + ',' + key] = replayGroup;
+  setExecutorGroup(layer, key, executorGroup) {
+    this.executorGroups_[getUid(layer) + ',' + key] = executorGroup;
   }
 
   /**

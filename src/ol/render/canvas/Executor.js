@@ -1,23 +1,16 @@
 /**
- * @module ol/render/canvas/Replay
+ * @module ol/render/canvas/Executor
  */
 import {getUid} from '../../util.js';
 import {equals, reverseSubArray} from '../../array.js';
-import {asColorLike} from '../../colorlike.js';
-import {buffer, clone, coordinateRelationship, createEmpty, createOrUpdate,
+import {buffer, clone, createEmpty, createOrUpdate,
   createOrUpdateEmpty, extend, extendCoordinate, intersects} from '../../extent.js';
-import Relationship from '../../extent/Relationship.js';
-import GeometryType from '../../geom/GeometryType.js';
-import {inflateCoordinates, inflateCoordinatesArray, inflateMultiCoordinatesArray} from '../../geom/flat/inflate.js';
 import {lineStringLength} from '../../geom/flat/length.js';
 import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
 import {isEmpty} from '../../obj.js';
-import VectorContext from '../VectorContext.js';
-import {drawImage, resetTransform, defaultPadding, defaultFillStyle, defaultStrokeStyle,
-  defaultMiterLimit, defaultLineWidth, defaultLineJoin, defaultLineDashOffset,
-  defaultLineDash, defaultLineCap} from '../canvas.js';
+import {drawImage, resetTransform, defaultPadding, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
 import {TEXT_ALIGN} from '../replay.js';
 import {
@@ -27,6 +20,20 @@ import {
   setFromArray as transformSetFromArray
 } from '../../transform.js';
 
+
+import {createCanvasContext2D} from '../../dom.js';
+import {labelCache, defaultTextAlign, measureTextHeight, measureTextWidth, measureTextWidths} from '../canvas.js';
+
+
+/**
+ * @typedef {Object} SerializableInstructions
+ * @property {Array<*>} instructions The rendering instructions.
+ * @property {Array<*>} hitDetectionInstructions The rendering hit detection instructions.
+ * @property {Array<number>} coordinates The array of all coordinates.
+ * @property {!Object<string, import("../canvas.js").TextState>} textStates The text states (decluttering).
+ * @property {!Object<string, import("../canvas.js").FillState>} fillStates The fill states (decluttering).
+ * @property {!Object<string, import("../canvas.js").StrokeState>} strokeStates The stroke states (decluttering).
+ */
 
 /**
  * @type {import("../../extent.js").Extent}
@@ -40,7 +47,7 @@ const tmpExtent = createEmpty();
 const tmpTransform = createTransform();
 
 
-class CanvasReplay extends VectorContext {
+class CanvasExecutor {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
@@ -48,10 +55,9 @@ class CanvasReplay extends VectorContext {
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
    * @param {?} declutterTree Declutter tree.
+   * @param {SerializableInstructions} instructions The serializable instructions
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-    super();
-
+  constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree, instructions) {
     /**
      * @type {?}
      */
@@ -123,13 +129,13 @@ class CanvasReplay extends VectorContext {
      * @protected
      * @type {Array<*>}
      */
-    this.instructions = [];
+    this.instructions = instructions.instructions;
 
     /**
      * @protected
      * @type {Array<number>}
      */
-    this.coordinates = [];
+    this.coordinates = instructions.coordinates;
 
     /**
      * @private
@@ -147,7 +153,7 @@ class CanvasReplay extends VectorContext {
      * @protected
      * @type {Array<*>}
      */
-    this.hitDetectionInstructions = [];
+    this.hitDetectionInstructions = instructions.hitDetectionInstructions;
 
     /**
      * @private
@@ -167,6 +173,98 @@ class CanvasReplay extends VectorContext {
      */
     this.viewRotation_ = 0;
 
+    /**
+     * @type {!Object<string, import("../canvas.js").FillState>}
+     */
+    this.fillStates = instructions.fillStates || {};
+
+    /**
+     * @type {!Object<string, import("../canvas.js").StrokeState>}
+     */
+    this.strokeStates = instructions.strokeStates || {};
+
+    /**
+     * @type {!Object<string, import("../canvas.js").TextState>}
+     */
+    this.textStates = instructions.textStates || {};
+
+    // Adaptations
+
+    /**
+     * @private
+     * @type {Object<string, Object<string, number>>}
+     */
+    this.widths_ = {};
+  }
+
+
+  /**
+   * @param {string} text Text.
+   * @param {string} textKey Text style key.
+   * @param {string} fillKey Fill style key.
+   * @param {string} strokeKey Stroke style key.
+   * @return {HTMLCanvasElement} Image.
+   */
+  getTextImage(text, textKey, fillKey, strokeKey) {
+    let label;
+    const key = strokeKey + textKey + text + fillKey + this.pixelRatio;
+
+    if (!labelCache.containsKey(key)) {
+      const strokeState = strokeKey ? this.strokeStates[strokeKey] : null;
+      const fillState = fillKey ? this.fillStates[fillKey] : null;
+      const textState = this.textStates[textKey];
+      const pixelRatio = this.pixelRatio;
+      const scale = textState.scale * pixelRatio;
+      const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
+      const strokeWidth = strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
+
+      const lines = text.split('\n');
+      const numLines = lines.length;
+      const widths = [];
+      const width = measureTextWidths(textState.font, lines, widths);
+      const lineHeight = measureTextHeight(textState.font);
+      const height = lineHeight * numLines;
+      const renderWidth = (width + strokeWidth);
+      const context = createCanvasContext2D(
+        Math.ceil(renderWidth * scale),
+        Math.ceil((height + strokeWidth) * scale));
+      label = context.canvas;
+      labelCache.set(key, label);
+      if (scale != 1) {
+        context.scale(scale, scale);
+      }
+      context.font = textState.font;
+      if (strokeKey) {
+        context.strokeStyle = strokeState.strokeStyle;
+        context.lineWidth = strokeWidth;
+        context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
+        context.lineJoin = /** @type {CanvasLineJoin} */ (strokeState.lineJoin);
+        context.miterLimit = strokeState.miterLimit;
+        if (CANVAS_LINE_DASH && strokeState.lineDash.length) {
+          context.setLineDash(strokeState.lineDash);
+          context.lineDashOffset = strokeState.lineDashOffset;
+        }
+      }
+      if (fillKey) {
+        context.fillStyle = fillState.fillStyle;
+      }
+      context.textBaseline = 'middle';
+      context.textAlign = 'center';
+      const leftRight = (0.5 - align);
+      const x = align * label.width / scale + leftRight * strokeWidth;
+      let i;
+      if (strokeKey) {
+        for (i = 0; i < numLines; ++i) {
+          context.strokeText(lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight);
+        }
+      }
+      if (fillKey) {
+        for (i = 0; i < numLines; ++i) {
+          context.fillText(lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight);
+        }
+      }
+    }
+    return labelCache.get(key);
   }
 
   /**
@@ -323,144 +421,6 @@ class CanvasReplay extends VectorContext {
   }
 
   /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {number} end End.
-   * @param {number} stride Stride.
-   * @param {boolean} closed Last input coordinate equals first.
-   * @param {boolean} skipFirst Skip first coordinate.
-   * @protected
-   * @return {number} My end.
-   */
-  appendFlatCoordinates(flatCoordinates, offset, end, stride, closed, skipFirst) {
-
-    let myEnd = this.coordinates.length;
-    const extent = this.getBufferedMaxExtent();
-    if (skipFirst) {
-      offset += stride;
-    }
-    const lastCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
-    const nextCoord = [NaN, NaN];
-    let skipped = true;
-
-    let i, lastRel, nextRel;
-    for (i = offset + stride; i < end; i += stride) {
-      nextCoord[0] = flatCoordinates[i];
-      nextCoord[1] = flatCoordinates[i + 1];
-      nextRel = coordinateRelationship(extent, nextCoord);
-      if (nextRel !== lastRel) {
-        if (skipped) {
-          this.coordinates[myEnd++] = lastCoord[0];
-          this.coordinates[myEnd++] = lastCoord[1];
-        }
-        this.coordinates[myEnd++] = nextCoord[0];
-        this.coordinates[myEnd++] = nextCoord[1];
-        skipped = false;
-      } else if (nextRel === Relationship.INTERSECTING) {
-        this.coordinates[myEnd++] = nextCoord[0];
-        this.coordinates[myEnd++] = nextCoord[1];
-        skipped = false;
-      } else {
-        skipped = true;
-      }
-      lastCoord[0] = nextCoord[0];
-      lastCoord[1] = nextCoord[1];
-      lastRel = nextRel;
-    }
-
-    // Last coordinate equals first or only one point to append:
-    if ((closed && skipped) || i === offset + stride) {
-      this.coordinates[myEnd++] = lastCoord[0];
-      this.coordinates[myEnd++] = lastCoord[1];
-    }
-    return myEnd;
-  }
-
-  /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {Array<number>} ends Ends.
-   * @param {number} stride Stride.
-   * @param {Array<number>} replayEnds Replay ends.
-   * @return {number} Offset.
-   */
-  drawCustomCoordinates_(flatCoordinates, offset, ends, stride, replayEnds) {
-    for (let i = 0, ii = ends.length; i < ii; ++i) {
-      const end = ends[i];
-      const replayEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false, false);
-      replayEnds.push(replayEnd);
-      offset = end;
-    }
-    return offset;
-  }
-
-  /**
-   * @inheritDoc.
-   */
-  drawCustom(geometry, feature, renderer) {
-    this.beginGeometry(geometry, feature);
-    const type = geometry.getType();
-    const stride = geometry.getStride();
-    const replayBegin = this.coordinates.length;
-    let flatCoordinates, replayEnd, replayEnds, replayEndss;
-    let offset;
-    if (type == GeometryType.MULTI_POLYGON) {
-      geometry = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry);
-      flatCoordinates = geometry.getOrientedFlatCoordinates();
-      replayEndss = [];
-      const endss = geometry.getEndss();
-      offset = 0;
-      for (let i = 0, ii = endss.length; i < ii; ++i) {
-        const myEnds = [];
-        offset = this.drawCustomCoordinates_(flatCoordinates, offset, endss[i], stride, myEnds);
-        replayEndss.push(myEnds);
-      }
-      this.instructions.push([CanvasInstruction.CUSTOM,
-        replayBegin, replayEndss, geometry, renderer, inflateMultiCoordinatesArray]);
-    } else if (type == GeometryType.POLYGON || type == GeometryType.MULTI_LINE_STRING) {
-      replayEnds = [];
-      flatCoordinates = (type == GeometryType.POLYGON) ?
-        /** @type {import("../../geom/Polygon.js").default} */ (geometry).getOrientedFlatCoordinates() :
-        geometry.getFlatCoordinates();
-      offset = this.drawCustomCoordinates_(flatCoordinates, 0,
-        /** @type {import("../../geom/Polygon.js").default|import("../../geom/MultiLineString.js").default} */ (geometry).getEnds(),
-        stride, replayEnds);
-      this.instructions.push([CanvasInstruction.CUSTOM,
-        replayBegin, replayEnds, geometry, renderer, inflateCoordinatesArray]);
-    } else if (type == GeometryType.LINE_STRING || type == GeometryType.MULTI_POINT) {
-      flatCoordinates = geometry.getFlatCoordinates();
-      replayEnd = this.appendFlatCoordinates(
-        flatCoordinates, 0, flatCoordinates.length, stride, false, false);
-      this.instructions.push([CanvasInstruction.CUSTOM,
-        replayBegin, replayEnd, geometry, renderer, inflateCoordinates]);
-    } else if (type == GeometryType.POINT) {
-      flatCoordinates = geometry.getFlatCoordinates();
-      this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);
-      replayEnd = this.coordinates.length;
-      this.instructions.push([CanvasInstruction.CUSTOM,
-        replayBegin, replayEnd, geometry, renderer]);
-    }
-    this.endGeometry(geometry, feature);
-  }
-
-  /**
-   * @protected
-   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
-   * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
-   */
-  beginGeometry(geometry, feature) {
-    this.beginGeometryInstruction1_ = [CanvasInstruction.BEGIN_GEOMETRY, feature, 0];
-    this.instructions.push(this.beginGeometryInstruction1_);
-    this.beginGeometryInstruction2_ = [CanvasInstruction.BEGIN_GEOMETRY, feature, 0];
-    this.hitDetectionInstructions.push(this.beginGeometryInstruction2_);
-  }
-
-  /**
-   * FIXME empty description for jsdoc
-   */
-  finish() {}
-
-  /**
    * @private
    * @param {CanvasRenderingContext2D} context Context.
    */
@@ -532,6 +492,35 @@ class CanvasReplay extends VectorContext {
 
   /**
    * @private
+   * @param {string} text The text to draw.
+   * @param {string} textKey The key of the text state.
+   * @param {string} strokeKey The key for the stroke state.
+   * @param {string} fillKey The key for the fill state.
+   * @return {{label: HTMLCanvasElement, anchorX: number, anchorY: number}} The text image and its anchor.
+   */
+  drawTextImageWithPointPlacement_(text, textKey, strokeKey, fillKey) {
+    const textState = this.textStates[textKey];
+
+    const label = this.getTextImage(text, textKey, fillKey, strokeKey);
+
+    const strokeState = this.strokeStates[strokeKey];
+    const pixelRatio = this.pixelRatio;
+    const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
+    const baseline = TEXT_ALIGN[textState.textBaseline || defaultTextBaseline];
+    const strokeWidth = strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
+
+    const anchorX = align * label.width / pixelRatio + 2 * (0.5 - align) * strokeWidth;
+    const anchorY = baseline * label.height / pixelRatio + 2 * (0.5 - baseline) * strokeWidth;
+
+    return {
+      label: label,
+      anchorX: anchorX,
+      anchorY: anchorY
+    };
+  }
+
+  /**
+   * @private
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
@@ -544,7 +533,7 @@ class CanvasReplay extends VectorContext {
    * @return {T|undefined} Callback result.
    * @template T
    */
-  replay_(
+  execute_(
     context,
     transform,
     skippedFeaturesHash,
@@ -571,7 +560,8 @@ class CanvasReplay extends VectorContext {
     const ii = instructions.length; // end of instructions
     let d = 0; // data index
     let dd; // end of per-instruction data
-    let anchorX, anchorY, prevX, prevY, roundX, roundY, declutterGroup, image;
+    let anchorX, anchorY, prevX, prevY, roundX, roundY, declutterGroup, image, text, textKey;
+    let strokeKey, fillKey;
     let pendingFill = 0;
     let pendingStroke = 0;
     let lastFillInstruction = null;
@@ -663,20 +653,42 @@ class CanvasReplay extends VectorContext {
         case CanvasInstruction.DRAW_IMAGE:
           d = /** @type {number} */ (instruction[1]);
           dd = /** @type {number} */ (instruction[2]);
-          image = /** @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} */
-              (instruction[3]);
+          image = /** @type {HTMLCanvasElement|HTMLVideoElement|HTMLImageElement} */ (instruction[3]);
+
           // Remaining arguments in DRAW_IMAGE are in alphabetical order
           anchorX = /** @type {number} */ (instruction[4]);
           anchorY = /** @type {number} */ (instruction[5]);
           declutterGroup = featureCallback ? null : /** @type {import("../canvas.js").DeclutterGroup} */ (instruction[6]);
-          const height = /** @type {number} */ (instruction[7]);
+          let height = /** @type {number} */ (instruction[7]);
           const opacity = /** @type {number} */ (instruction[8]);
           const originX = /** @type {number} */ (instruction[9]);
           const originY = /** @type {number} */ (instruction[10]);
           const rotateWithView = /** @type {boolean} */ (instruction[11]);
           let rotation = /** @type {number} */ (instruction[12]);
           const scale = /** @type {number} */ (instruction[13]);
-          const width = /** @type {number} */ (instruction[14]);
+          let width = /** @type {number} */ (instruction[14]);
+
+
+          if (!image && instruction.length >= 19) {
+            // create label images
+            text = /** @type {string} */ (instruction[18]);
+            textKey = /** @type {string} */ (instruction[19]);
+            strokeKey = /** @type {string} */ (instruction[20]);
+            fillKey = /** @type {string} */ (instruction[21]);
+            const labelWithAnchor = this.drawTextImageWithPointPlacement_(text, textKey, strokeKey, fillKey);
+            image = instruction[3] = labelWithAnchor.label;
+            const textOffsetX = /** @type {number} */ (instruction[22]);
+            anchorX = instruction[4] = (labelWithAnchor.anchorX - textOffsetX) * this.pixelRatio;
+            const textOffsetY = /** @type {number} */ (instruction[23]);
+            anchorY = instruction[5] = (labelWithAnchor.anchorY - textOffsetY) * this.pixelRatio;
+            height = instruction[7] = image.height;
+            width = instruction[14] = image.width;
+          }
+
+          let geometryWidths;
+          if (instruction.length > 24) {
+            geometryWidths = /** @type {number} */ (instruction[24]);
+          }
 
           let padding, backgroundFill, backgroundStroke;
           if (instruction.length > 16) {
@@ -691,7 +703,11 @@ class CanvasReplay extends VectorContext {
           if (rotateWithView) {
             rotation += viewRotation;
           }
+          let widthIndex = 0;
           for (; d < dd; d += 2) {
+            if (geometryWidths && geometryWidths[widthIndex++] < width / this.pixelRatio) {
+              continue;
+            }
             this.replayImage_(context,
               pixelCoordinates[d], pixelCoordinates[d + 1], image, anchorX, anchorY,
               declutterGroup, height, opacity, originX, originY, rotation, scale,
@@ -708,22 +724,38 @@ class CanvasReplay extends VectorContext {
           const baseline = /** @type {number} */ (instruction[3]);
           declutterGroup = featureCallback ? null : /** @type {import("../canvas.js").DeclutterGroup} */ (instruction[4]);
           const overflow = /** @type {number} */ (instruction[5]);
-          const fillKey = /** @type {string} */ (instruction[6]);
+          fillKey = /** @type {string} */ (instruction[6]);
           const maxAngle = /** @type {number} */ (instruction[7]);
-          const measure = /** @type {function(string):number} */ (instruction[8]);
+          const measurePixelRatio = /** @type {number} */ (instruction[8]);
           const offsetY = /** @type {number} */ (instruction[9]);
-          const strokeKey = /** @type {string} */ (instruction[10]);
+          strokeKey = /** @type {string} */ (instruction[10]);
           const strokeWidth = /** @type {number} */ (instruction[11]);
-          const text = /** @type {string} */ (instruction[12]);
-          const textKey = /** @type {string} */ (instruction[13]);
-          const textScale = /** @type {number} */ (instruction[14]);
+          text = /** @type {string} */ (instruction[12]);
+          textKey = /** @type {string} */ (instruction[13]);
+          const pixelRatioScale = /** @type {number} */ (instruction[14]);
+
+          const textState = this.textStates[textKey];
+          const font = textState.font;
+          const textScale = textState.scale;
+
+          let widths = this.widths_[font];
+          if (!widths) {
+            this.widths_[font] = widths = {};
+          }
+
+          //FIXME Do not create this function on every call
+          const measure = function(text) {
+            let width = widths[text];
+            if (!width) {
+              width = widths[text] = measureTextWidth(font, text);
+            }
+            return width * textScale * measurePixelRatio;
+          };
 
           const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
           const textLength = measure(text);
           if (overflow || textLength <= pathLength) {
-            /** @type {import("./TextReplay.js").default} */
-            const textReplay = /** @type {?} */ (this);
-            const textAlign = textReplay.textStates[textKey].textAlign;
+            const textAlign = this.textStates[textKey].textAlign;
             const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
             const parts = drawTextOnPath(
               pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
@@ -733,13 +765,13 @@ class CanvasReplay extends VectorContext {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
-                  label = textReplay.getImage(chars, textKey, '', strokeKey);
+                  label = this.getTextImage(chars, textKey, '', strokeKey);
                   anchorX = /** @type {number} */ (part[2]) + strokeWidth;
                   anchorY = baseline * label.height + (0.5 - baseline) * 2 * strokeWidth - offsetY;
                   this.replayImage_(context,
                     /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
                     anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
-                    /** @type {number} */ (part[3]), textScale, false, label.width,
+                    /** @type {number} */ (part[3]), pixelRatioScale, false, label.width,
                     defaultPadding, null, null);
                 }
               }
@@ -747,13 +779,13 @@ class CanvasReplay extends VectorContext {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
-                  label = textReplay.getImage(chars, textKey, fillKey, '');
+                  label = this.getTextImage(chars, textKey, fillKey, '');
                   anchorX = /** @type {number} */ (part[2]);
                   anchorY = baseline * label.height - offsetY;
                   this.replayImage_(context,
                     /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
                     anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
-                    /** @type {number} */ (part[3]), textScale, false, label.width,
+                    /** @type {number} */ (part[3]), pixelRatioScale, false, label.width,
                     defaultPadding, null, null);
                 }
               }
@@ -860,9 +892,9 @@ class CanvasReplay extends VectorContext {
    *     to skip.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
    */
-  replay(context, transform, viewRotation, skippedFeaturesHash, snapToPixel) {
+  execute(context, transform, viewRotation, skippedFeaturesHash, snapToPixel) {
     this.viewRotation_ = viewRotation;
-    this.replay_(context, transform,
+    this.execute_(context, transform,
       skippedFeaturesHash, this.instructions, snapToPixel, undefined, undefined);
   }
 
@@ -879,7 +911,7 @@ class CanvasReplay extends VectorContext {
    * @return {T|undefined} Callback result.
    * @template T
    */
-  replayHitDetection(
+  executeHitDetection(
     context,
     transform,
     viewRotation,
@@ -888,7 +920,7 @@ class CanvasReplay extends VectorContext {
     opt_hitExtent
   ) {
     this.viewRotation_ = viewRotation;
-    return this.replay_(context, transform, skippedFeaturesHash,
+    return this.execute_(context, transform, skippedFeaturesHash,
       this.hitDetectionInstructions, true, opt_featureCallback, opt_hitExtent);
   }
 
@@ -918,56 +950,6 @@ class CanvasReplay extends VectorContext {
     }
   }
 
-  /**
-   * @inheritDoc
-   */
-  setFillStrokeStyle(fillStyle, strokeStyle) {
-    const state = this.state;
-    if (fillStyle) {
-      const fillStyleColor = fillStyle.getColor();
-      state.fillStyle = asColorLike(fillStyleColor ?
-        fillStyleColor : defaultFillStyle);
-    } else {
-      state.fillStyle = undefined;
-    }
-    if (strokeStyle) {
-      const strokeStyleColor = strokeStyle.getColor();
-      state.strokeStyle = asColorLike(strokeStyleColor ?
-        strokeStyleColor : defaultStrokeStyle);
-      const strokeStyleLineCap = strokeStyle.getLineCap();
-      state.lineCap = strokeStyleLineCap !== undefined ?
-        strokeStyleLineCap : defaultLineCap;
-      const strokeStyleLineDash = strokeStyle.getLineDash();
-      state.lineDash = strokeStyleLineDash ?
-        strokeStyleLineDash.slice() : defaultLineDash;
-      const strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
-      state.lineDashOffset = strokeStyleLineDashOffset ?
-        strokeStyleLineDashOffset : defaultLineDashOffset;
-      const strokeStyleLineJoin = strokeStyle.getLineJoin();
-      state.lineJoin = strokeStyleLineJoin !== undefined ?
-        strokeStyleLineJoin : defaultLineJoin;
-      const strokeStyleWidth = strokeStyle.getWidth();
-      state.lineWidth = strokeStyleWidth !== undefined ?
-        strokeStyleWidth : defaultLineWidth;
-      const strokeStyleMiterLimit = strokeStyle.getMiterLimit();
-      state.miterLimit = strokeStyleMiterLimit !== undefined ?
-        strokeStyleMiterLimit : defaultMiterLimit;
-
-      if (state.lineWidth > this.maxLineWidth) {
-        this.maxLineWidth = state.lineWidth;
-        // invalidate the buffered max extent cache
-        this.bufferedMaxExtent_ = null;
-      }
-    } else {
-      state.strokeStyle = undefined;
-      state.lineCap = undefined;
-      state.lineDash = null;
-      state.lineDashOffset = undefined;
-      state.lineJoin = undefined;
-      state.lineWidth = undefined;
-      state.miterLimit = undefined;
-    }
-  }
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
@@ -985,12 +967,6 @@ class CanvasReplay extends VectorContext {
     return fillInstruction;
   }
 
-  /**
-   * @param {import("../canvas.js").FillStrokeState} state State.
-   */
-  applyStroke(state) {
-    this.instructions.push(this.createStroke(state));
-  }
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
@@ -1005,66 +981,6 @@ class CanvasReplay extends VectorContext {
     ];
   }
 
-  /**
-   * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:CanvasReplay, import("../canvas.js").FillStrokeState, (import("../../geom/Geometry.js").default|import("../Feature.js").default)):Array<*>} createFill Create fill.
-   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
-   */
-  updateFillStyle(state, createFill, geometry) {
-    const fillStyle = state.fillStyle;
-    if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
-      if (fillStyle !== undefined) {
-        this.instructions.push(createFill.call(this, state, geometry));
-      }
-      state.currentFillStyle = fillStyle;
-    }
-  }
-
-  /**
-   * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:CanvasReplay, import("../canvas.js").FillStrokeState)} applyStroke Apply stroke.
-   */
-  updateStrokeStyle(state, applyStroke) {
-    const strokeStyle = state.strokeStyle;
-    const lineCap = state.lineCap;
-    const lineDash = state.lineDash;
-    const lineDashOffset = state.lineDashOffset;
-    const lineJoin = state.lineJoin;
-    const lineWidth = state.lineWidth;
-    const miterLimit = state.miterLimit;
-    if (state.currentStrokeStyle != strokeStyle ||
-        state.currentLineCap != lineCap ||
-        (lineDash != state.currentLineDash && !equals(state.currentLineDash, lineDash)) ||
-        state.currentLineDashOffset != lineDashOffset ||
-        state.currentLineJoin != lineJoin ||
-        state.currentLineWidth != lineWidth ||
-        state.currentMiterLimit != miterLimit) {
-      if (strokeStyle !== undefined) {
-        applyStroke.call(this, state);
-      }
-      state.currentStrokeStyle = strokeStyle;
-      state.currentLineCap = lineCap;
-      state.currentLineDash = lineDash;
-      state.currentLineDashOffset = lineDashOffset;
-      state.currentLineJoin = lineJoin;
-      state.currentLineWidth = lineWidth;
-      state.currentMiterLimit = miterLimit;
-    }
-  }
-
-  /**
-   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
-   * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
-   */
-  endGeometry(geometry, feature) {
-    this.beginGeometryInstruction1_[2] = this.instructions.length;
-    this.beginGeometryInstruction1_ = null;
-    this.beginGeometryInstruction2_[2] = this.hitDetectionInstructions.length;
-    this.beginGeometryInstruction2_ = null;
-    const endGeometryInstruction = [CanvasInstruction.END_GEOMETRY, feature];
-    this.instructions.push(endGeometryInstruction);
-    this.hitDetectionInstructions.push(endGeometryInstruction);
-  }
 
   /**
    * Get the buffered rendering extent.  Rendering will be clipped to the extent
@@ -1086,4 +1002,4 @@ class CanvasReplay extends VectorContext {
 }
 
 
-export default CanvasReplay;
+export default CanvasExecutor;

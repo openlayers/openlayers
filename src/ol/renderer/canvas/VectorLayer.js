@@ -10,7 +10,8 @@ import rbush from 'rbush';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
 import RenderEventType from '../../render/EventType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
-import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
+import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
+import InstructionsGroupExecutor from '../../render/canvas/ExecutorGroup.js';
 import CanvasLayerRenderer from './Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 
@@ -66,7 +67,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../render/canvas/ReplayGroup.js").default}
+     * @type {import("../../render/canvas/ExecutorGroup").default}
      */
     this.replayGroup_ = null;
 
@@ -165,7 +166,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       const halfWidth = (frameState.size[0] * pixelRatio) / 2;
       const halfHeight = (frameState.size[1] * pixelRatio) / 2;
       rotateAtOffset(replayContext, -rotation, halfWidth, halfHeight);
-      replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
+      replayGroup.execute(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
       if (vectorSource.getWrapX() && projection.canWrapX() &&
           !containsExtent(projectionExtent, extent)) {
         let startX = extent[0];
@@ -176,7 +177,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           --world;
           offsetX = worldWidth * world;
           transform = this.getTransform(frameState, offsetX);
-          replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
+          replayGroup.execute(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
           startX += worldWidth;
         }
         world = 0;
@@ -185,7 +186,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           ++world;
           offsetX = worldWidth * world;
           transform = this.getTransform(frameState, offsetX);
-          replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
+          replayGroup.execute(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
           startX -= worldWidth;
         }
       }
@@ -279,7 +280,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     let transform = this.getRenderTransform(frameState, width, height, 0);
     const skippedFeatureUids = layerState.managed ? frameState.skippedFeatureUids : {};
-    replayGroup.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
+    replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
 
     if (vectorSource.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
       let startX = extent[0];
@@ -290,7 +291,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         --world;
         offsetX = worldWidth * world;
         transform = this.getRenderTransform(frameState, width, height, offsetX);
-        replayGroup.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
+        replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
         startX += worldWidth;
       }
       world = 0;
@@ -299,7 +300,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         ++world;
         offsetX = worldWidth * world;
         transform = this.getRenderTransform(frameState, width, height, offsetX);
-        replayGroup.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
+        replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
         startX -= worldWidth;
       }
     }
@@ -443,7 +444,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     this.dirty_ = false;
 
-    const replayGroup = new CanvasReplayGroup(
+    const replayGroup = new CanvasBuilderGroup(
       getRenderTolerance(resolution, pixelRatio), extent, resolution,
       pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
     vectorSource.loadFeatures(extent, resolution, projection);
@@ -480,13 +481,18 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     } else {
       vectorSource.forEachFeatureInExtent(extent, render);
     }
-    replayGroup.finish();
+
+    const replayGroupInstructions = replayGroup.finish();
+    const renderingExecutorGroup = new InstructionsGroupExecutor(
+      getRenderTolerance(resolution, pixelRatio), extent, resolution,
+      pixelRatio, vectorSource.getOverlaps(), this.declutterTree_,
+      replayGroupInstructions, vectorLayer.getRenderBuffer());
 
     this.renderedResolution_ = resolution;
     this.renderedRevision_ = vectorLayerRevision;
     this.renderedRenderOrder_ = vectorLayerRenderOrder;
     this.renderedExtent_ = extent;
-    this.replayGroup_ = replayGroup;
+    this.replayGroup_ = renderingExecutorGroup;
 
     this.replayGroupChanged = true;
     return true;
@@ -497,10 +503,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
-   * @param {import("../../render/canvas/ReplayGroup.js").default} replayGroup Replay group.
+   * @param {import("../../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
    * @return {boolean} `true` if an image is loading.
    */
-  renderFeature(feature, resolution, pixelRatio, styles, replayGroup) {
+  renderFeature(feature, resolution, pixelRatio, styles, builderGroup) {
     if (!styles) {
       return false;
     }
@@ -508,13 +514,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (Array.isArray(styles)) {
       for (let i = 0, ii = styles.length; i < ii; ++i) {
         loading = renderFeature(
-          replayGroup, feature, styles[i],
+          builderGroup, feature, styles[i],
           getSquaredRenderTolerance(resolution, pixelRatio),
           this.handleStyleImageChange_, this) || loading;
       }
     } else {
       loading = renderFeature(
-        replayGroup, feature, styles,
+        builderGroup, feature, styles,
         getSquaredRenderTolerance(resolution, pixelRatio),
         this.handleStyleImageChange_, this);
     }

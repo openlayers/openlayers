@@ -90,7 +90,7 @@ class WebGLImmediateRenderer extends VectorContext {
   drawText_(replayGroup, geometry) {
     const context = this.context_;
     const replay = /** @type {import("./TextReplay.js").default} */ (
-      replayGroup.getReplay(0, ReplayType.TEXT));
+      replayGroup.getBuilder(0, ReplayType.TEXT));
     replay.setTextStyle(this.textStyle_);
     replay.drawText(geometry, null);
     replay.finish(context);
@@ -191,7 +191,7 @@ class WebGLImmediateRenderer extends VectorContext {
     const context = this.context_;
     const replayGroup = new WebGLReplayGroup(1, this.extent_);
     const replay = /** @type {import("./ImageReplay.js").default} */ (
-      replayGroup.getReplay(0, ReplayType.IMAGE));
+      replayGroup.getBuilder(0, ReplayType.IMAGE));
     replay.setImageStyle(this.imageStyle_);
     replay.drawPoint(geometry, data);
     replay.finish(context);
@@ -218,7 +218,7 @@ class WebGLImmediateRenderer extends VectorContext {
     const context = this.context_;
     const replayGroup = new WebGLReplayGroup(1, this.extent_);
     const replay = /** @type {import("./ImageReplay.js").default} */ (
-      replayGroup.getReplay(0, ReplayType.IMAGE));
+      replayGroup.getBuilder(0, ReplayType.IMAGE));
     replay.setImageStyle(this.imageStyle_);
     replay.drawMultiPoint(geometry, data);
     replay.finish(context);
@@ -244,7 +244,7 @@ class WebGLImmediateRenderer extends VectorContext {
     const context = this.context_;
     const replayGroup = new WebGLReplayGroup(1, this.extent_);
     const replay = /** @type {import("./LineStringReplay.js").default} */ (
-      replayGroup.getReplay(0, ReplayType.LINE_STRING));
+      replayGroup.getBuilder(0, ReplayType.LINE_STRING));
     replay.setFillStrokeStyle(null, this.strokeStyle_);
     replay.drawLineString(geometry, data);
     replay.finish(context);
@@ -270,7 +270,7 @@ class WebGLImmediateRenderer extends VectorContext {
     const context = this.context_;
     const replayGroup = new WebGLReplayGroup(1, this.extent_);
     const replay = /** @type {import("./LineStringReplay.js").default} */ (
-      replayGroup.getReplay(0, ReplayType.LINE_STRING));
+      replayGroup.getBuilder(0, ReplayType.LINE_STRING));
     replay.setFillStrokeStyle(null, this.strokeStyle_);
     replay.drawMultiLineString(geometry, data);
     replay.finish(context);
@@ -296,7 +296,7 @@ class WebGLImmediateRenderer extends VectorContext {
     const context = this.context_;
     const replayGroup = new WebGLReplayGroup(1, this.extent_);
     const replay = /** @type {import("./PolygonReplay.js").default} */ (
-      replayGroup.getReplay(0, ReplayType.POLYGON));
+      replayGroup.getBuilder(0, ReplayType.POLYGON));
     replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
     replay.drawPolygon(geometry, data);
     replay.finish(context);
@@ -322,7 +322,7 @@ class WebGLImmediateRenderer extends VectorContext {
     const context = this.context_;
     const replayGroup = new WebGLReplayGroup(1, this.extent_);
     const replay = /** @type {import("./PolygonReplay.js").default} */ (
-      replayGroup.getReplay(0, ReplayType.POLYGON));
+      replayGroup.getBuilder(0, ReplayType.POLYGON));
     replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
     replay.drawMultiPolygon(geometry, data);
     replay.finish(context);
@@ -348,7 +348,7 @@ class WebGLImmediateRenderer extends VectorContext {
     const context = this.context_;
     const replayGroup = new WebGLReplayGroup(1, this.extent_);
     const replay = /** @type {import("./CircleReplay.js").default} */ (
-      replayGroup.getReplay(0, ReplayType.CIRCLE));
+      replayGroup.getBuilder(0, ReplayType.CIRCLE));
     replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
     replay.drawCircle(geometry, data);
     replay.finish(context);

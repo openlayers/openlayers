@@ -1,16 +1,16 @@
 /**
- * @module ol/render/canvas/ImageReplay
+ * @module ol/render/canvas/ImageBuilder
  */
 import CanvasInstruction from './Instruction.js';
-import CanvasReplay from './Replay.js';
+import CanvasBuilder from './Builder.js';
 
-class CanvasImageReplay extends CanvasReplay {
+class CanvasImageBuilder extends CanvasBuilder {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {boolean} overlaps The replay can have overlapping geometries.
+   * @param {boolean} overlaps The builder can have overlapping geometries.
    * @param {?} declutterTree Declutter tree.
    */
   constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
@@ -185,6 +185,7 @@ class CanvasImageReplay extends CanvasReplay {
     this.rotateWithView_ = undefined;
     this.rotation_ = undefined;
     this.width_ = undefined;
+    return super.finish();
   }
 
   /**
@@ -213,4 +214,4 @@ class CanvasImageReplay extends CanvasReplay {
 }
 
 
-export default CanvasImageReplay;
+export default CanvasImageBuilder;

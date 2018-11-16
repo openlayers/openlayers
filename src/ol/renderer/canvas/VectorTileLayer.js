@@ -13,7 +13,7 @@ import {equivalent as equivalentProjection} from '../../proj.js';
 import Units from '../../proj/Units.js';
 import ReplayType from '../../render/ReplayType.js';
 import {labelCache, rotateAtOffset} from '../../render/canvas.js';
-import CanvasReplayGroup, {replayDeclutter} from '../../render/canvas/ReplayGroup.js';
+import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import {ORDER} from '../../render/replay.js';
 import CanvasTileLayerRenderer from './TileLayer.js';
 import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
@@ -24,6 +24,7 @@ import {
   scale as scaleTransform,
   translate as translateTransform
 } from '../../transform.js';
+import CanvasExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
 
 
 /**
@@ -107,7 +108,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   getTile(z, x, y, pixelRatio, projection) {
     const tile = super.getTile(z, x, y, pixelRatio, projection);
     if (tile.getState() === TileState.LOADED) {
-      this.createReplayGroup_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
+      this.createExecutorGroup_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
       if (this.context) {
         this.renderTileImage_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
       }
@@ -142,14 +143,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import("../../proj/Projection.js").default} projection Projection.
    * @private
    */
-  createReplayGroup_(tile, pixelRatio, projection) {
+  createExecutorGroup_(tile, pixelRatio, projection) {
     const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const revision = layer.getRevision();
     const renderOrder = /** @type {import("../../render.js").OrderFunction} */ (layer.getRenderOrder()) || null;
 
-    const replayState = tile.getReplayState(layer);
-    if (!replayState.dirty && replayState.renderedRevision == revision &&
-        replayState.renderedRenderOrder == renderOrder) {
+    const builderState = tile.getReplayState(layer);
+    if (!builderState.dirty && builderState.renderedRevision == revision &&
+        builderState.renderedRenderOrder == renderOrder) {
       return;
     }
 
@@ -166,10 +167,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         continue;
       }
       if (tile.useLoadedOnly) {
-        const lowResReplayGroup = sourceTile.getLowResReplayGroup(layer, zoom, tileExtent);
-        if (lowResReplayGroup) {
+        const lowResExecutorGroup = sourceTile.getLowResExecutorGroup(layer, zoom, tileExtent);
+        if (lowResExecutorGroup) {
           // reuse existing replay if we're rendering an interim tile
-          sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), lowResReplayGroup);
+          sourceTile.setExecutorGroup(layer, tile.tileCoord.toString(), lowResExecutorGroup);
           continue;
         }
       }
@@ -185,8 +186,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         reproject = true;
         sourceTile.setProjection(projection);
       }
-      replayState.dirty = false;
-      const replayGroup = new CanvasReplayGroup(0, sharedExtent, resolution,
+      builderState.dirty = false;
+      const builderGroup = new CanvasBuilderGroup(0, sharedExtent, resolution,
         pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
       const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
@@ -201,14 +202,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           styles = styleFunction(feature, resolution);
         }
         if (styles) {
-          const dirty = this.renderFeature(feature, squaredTolerance, styles, replayGroup);
+          const dirty = this.renderFeature(feature, squaredTolerance, styles, builderGroup);
           this.dirty_ = this.dirty_ || dirty;
-          replayState.dirty = replayState.dirty || dirty;
+          builderState.dirty = builderState.dirty || dirty;
         }
       };
 
       const features = sourceTile.getFeatures();
-      if (renderOrder && renderOrder !== replayState.renderedRenderOrder) {
+      if (renderOrder && renderOrder !== builderState.renderedRenderOrder) {
         features.sort(renderOrder);
       }
       for (let i = 0, ii = features.length; i < ii; ++i) {
@@ -226,11 +227,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           render.call(this, feature);
         }
       }
-      replayGroup.finish();
-      sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
+      const replayGroupInstructions = builderGroup.finish();
+      const renderingReplayGroup = new CanvasExecutorGroup(0, sharedExtent, resolution,
+        pixelRatio, source.getOverlaps(), this.declutterTree_, replayGroupInstructions, layer.getRenderBuffer());
+      sourceTile.setExecutorGroup(layer, tile.tileCoord.toString(), renderingReplayGroup);
     }
-    replayState.renderedRevision = revision;
-    replayState.renderedRenderOrder = renderOrder;
+    builderState.renderedRevision = revision;
+    builderState.renderedRenderOrder = renderOrder;
   }
 
   /**
@@ -259,9 +262,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         if (sourceTile.getState() != TileState.LOADED) {
           continue;
         }
-        const replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer,
+        const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(layer,
           tile.tileCoord.toString()));
-        found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
+        found = found || executorGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
           /**
            * @param {import("../../Feature.js").FeatureLike} feature Feature.
            * @return {?} Callback result.
@@ -367,8 +370,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           if (sourceTile.getState() != TileState.LOADED) {
             continue;
           }
-          const replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer, tileCoord.toString()));
-          if (!replayGroup || !replayGroup.hasReplays(replayTypes)) {
+          const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(layer, tileCoord.toString()));
+          if (!executorGroup || !executorGroup.hasExecutors(replayTypes)) {
             // sourceTile was not yet loaded when this.createReplayGroup_() was
             // called, or it has no replays of the types we want to render
             continue;
@@ -377,7 +380,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
             transform = this.getTransform(frameState, worldOffset);
           }
           const currentZ = sourceTile.tileCoord[0];
-          const currentClip = replayGroup.getClipCoords(transform);
+          const currentClip = executorGroup.getClipCoords(transform);
           context.save();
           context.globalAlpha = layerState.opacity;
           // Create a clip mask for regions in this low resolution tile that are
@@ -399,7 +402,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
               context.clip();
             }
           }
-          replayGroup.replay(context, transform, rotation, {}, snapToPixel, replayTypes, declutterReplays);
+          executorGroup.execute(context, transform, rotation, {}, snapToPixel, replayTypes, declutterReplays);
           context.restore();
           clips.push(currentClip);
           zs.push(currentZ);
@@ -420,7 +423,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    * @param {number} squaredTolerance Squared tolerance.
    * @param {import("../../style/Style.js").default|Array<import("../../style/Style.js").default>} styles The style or array of styles.
-   * @param {import("../../render/canvas/ReplayGroup.js").default} replayGroup Replay group.
+   * @param {import("../../render/canvas/BuilderGroup.js").default} replayGroup Replay group.
    * @return {boolean} `true` if an image is loading.
    */
   renderFeature(feature, squaredTolerance, styles, replayGroup) {
@@ -474,9 +477,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         const transform = resetTransform(this.tmpTransform_);
         scaleTransform(transform, pixelScale, -pixelScale);
         translateTransform(transform, -tileExtent[0], -tileExtent[3]);
-        const replayGroup = /** @type {CanvasReplayGroup} */ (sourceTile.getReplayGroup(layer,
+        const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(layer,
           tile.tileCoord.toString()));
-        replayGroup.replay(context, transform, 0, {}, true, replays);
+        executorGroup.execute(context, transform, 0, {}, true, replays);
       }
     }
   }

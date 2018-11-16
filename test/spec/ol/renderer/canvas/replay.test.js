@@ -7,10 +7,11 @@ import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import CanvasLineStringReplay from '../../../../../src/ol/render/canvas/LineStringReplay.js';
-import CanvasPolygonReplay from '../../../../../src/ol/render/canvas/PolygonReplay.js';
-import CanvasReplay from '../../../../../src/ol/render/canvas/Replay.js';
-import CanvasReplayGroup from '../../../../../src/ol/render/canvas/ReplayGroup.js';
+import CanvasLineStringBuilder from '../../../../../src/ol/render/canvas/LineStringBuilder.js';
+import CanvasPolygonBuilder from '../../../../../src/ol/render/canvas/PolygonBuilder.js';
+import CanvasReplay from '../../../../../src/ol/render/canvas/Builder.js';
+import CanvasInstructionsGroupBuilder from '../../../../../src/ol/render/canvas/BuilderGroup.js';
+import CanvasInstructionsGroupExecutor from '../../../../../src/ol/render/canvas/ExecutorGroup.js';
 import {renderFeature} from '../../../../../src/ol/renderer/vector.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
@@ -21,14 +22,26 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
   describe('#replay', function() {
 
-    let context, replay, fillCount, transform;
+    let context, builder, fillCount, transform;
     let strokeCount, beginPathCount, moveToCount, lineToCount;
     let feature0, feature1, feature2, feature3;
     let fill0, fill1, style1, style2;
 
+    /**
+     * @param {CanvasInstructionsGroupBuilder} builder The builder to get instructions from.
+     * @param {Object=} skippedUids The ids to skip.
+     * @param {number=} pixelRatio The pixel ratio.
+     * @param {boolean=} overlaps Whether there is overlaps.
+     */
+    function execute(builder, skippedUids, pixelRatio, overlaps) {
+      const executor = new CanvasInstructionsGroupExecutor(1, [-180, -90, 180, 90], 1,
+        pixelRatio || 1, !!overlaps, null, builder.finish());
+      executor.execute(context, transform, 0, skippedUids || {});
+    }
+
     beforeEach(function() {
       transform = createTransform();
-      replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 1, false);
+      builder = new CanvasInstructionsGroupBuilder(1, [-180, -90, 180, 90], 1, 1, false);
       feature0 = new Feature(new Polygon(
         [[[-90, 0], [-45, 45], [0, 0], [1, 1], [0, -45], [-90, 0]]]));
       feature1 = new Feature(new Polygon(
@@ -88,95 +101,95 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('omits lineTo for repeated coordinates', function() {
-      renderFeature(replay, feature0, fill0, 1);
-      replay.replay(context, transform, 0, {});
+      renderFeature(builder, feature0, fill0, 1);
+      execute(builder);
       expect(lineToCount).to.be(4);
       lineToCount = 0;
       scaleTransform(transform, 0.25, 0.25);
-      replay.replay(context, transform, 0, {});
+      execute(builder);
       expect(lineToCount).to.be(3);
     });
 
     it('does not omit moveTo for repeated coordinates', function() {
-      renderFeature(replay, feature0, fill0, 1);
-      renderFeature(replay, feature1, fill1, 1);
-      replay.replay(context, transform, 0, {});
+      renderFeature(builder, feature0, fill0, 1);
+      renderFeature(builder, feature1, fill1, 1);
+      execute(builder);
       expect(moveToCount).to.be(2);
     });
 
     it('batches fill and stroke instructions for same style', function() {
-      renderFeature(replay, feature1, style1, 1);
-      renderFeature(replay, feature2, style1, 1);
-      renderFeature(replay, feature3, style1, 1);
-      replay.replay(context, transform, 0, {});
+      renderFeature(builder, feature1, style1, 1);
+      renderFeature(builder, feature2, style1, 1);
+      renderFeature(builder, feature3, style1, 1);
+      execute(builder);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
       expect(beginPathCount).to.be(1);
     });
 
     it('batches fill and stroke instructions for different styles', function() {
-      renderFeature(replay, feature1, style1, 1);
-      renderFeature(replay, feature2, style1, 1);
-      renderFeature(replay, feature3, style2, 1);
-      replay.replay(context, transform, 0, {});
+      renderFeature(builder, feature1, style1, 1);
+      renderFeature(builder, feature2, style1, 1);
+      renderFeature(builder, feature3, style2, 1);
+      execute(builder);
       expect(fillCount).to.be(2);
       expect(strokeCount).to.be(2);
       expect(beginPathCount).to.be(2);
     });
 
     it('batches fill and stroke instructions for changing styles', function() {
-      renderFeature(replay, feature1, style1, 1);
-      renderFeature(replay, feature2, style2, 1);
-      renderFeature(replay, feature3, style1, 1);
-      replay.replay(context, transform, 0, {});
+      renderFeature(builder, feature1, style1, 1);
+      renderFeature(builder, feature2, style2, 1);
+      renderFeature(builder, feature3, style1, 1);
+      execute(builder);
       expect(fillCount).to.be(3);
       expect(strokeCount).to.be(3);
       expect(beginPathCount).to.be(3);
     });
 
     it('batches fill and stroke instructions for skipped feature at the beginning', function() {
-      renderFeature(replay, feature1, style1, 1);
-      renderFeature(replay, feature2, style2, 1);
-      renderFeature(replay, feature3, style2, 1);
+      renderFeature(builder, feature1, style1, 1);
+      renderFeature(builder, feature2, style2, 1);
+      renderFeature(builder, feature3, style2, 1);
       const skippedUids = {};
       skippedUids[getUid(feature1)] = true;
-      replay.replay(context, transform, 0, skippedUids);
+      execute(builder, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
       expect(beginPathCount).to.be(1);
     });
 
     it('batches fill and stroke instructions for skipped feature at the end', function() {
-      renderFeature(replay, feature1, style1, 1);
-      renderFeature(replay, feature2, style1, 1);
-      renderFeature(replay, feature3, style2, 1);
+      renderFeature(builder, feature1, style1, 1);
+      renderFeature(builder, feature2, style1, 1);
+      renderFeature(builder, feature3, style2, 1);
       const skippedUids = {};
       skippedUids[getUid(feature3)] = true;
-      replay.replay(context, transform, 0, skippedUids);
+      execute(builder, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
       expect(beginPathCount).to.be(1);
     });
 
     it('batches fill and stroke instructions for skipped features', function() {
-      renderFeature(replay, feature1, style1, 1);
-      renderFeature(replay, feature2, style1, 1);
-      renderFeature(replay, feature3, style2, 1);
+      renderFeature(builder, feature1, style1, 1);
+      renderFeature(builder, feature2, style1, 1);
+      renderFeature(builder, feature3, style2, 1);
       const skippedUids = {};
       skippedUids[getUid(feature1)] = true;
       skippedUids[getUid(feature2)] = true;
-      replay.replay(context, transform, 0, skippedUids);
+      execute(builder, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
       expect(beginPathCount).to.be(1);
     });
 
     it('does not batch when overlaps is set to true', function() {
-      replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 1, true);
-      renderFeature(replay, feature1, style1, 1);
-      renderFeature(replay, feature2, style1, 1);
-      renderFeature(replay, feature3, style1, 1);
-      replay.replay(context, transform, 0, {});
+      builder = new CanvasInstructionsGroupBuilder(1, [-180, -90, 180, 90], 1, 1, true);
+      renderFeature(builder, feature1, style1, 1);
+      renderFeature(builder, feature2, style1, 1);
+      renderFeature(builder, feature3, style1, 1);
+      execute(builder, {}, 1, true);
       expect(fillCount).to.be(3);
       expect(strokeCount).to.be(3);
       expect(beginPathCount).to.be(3);
@@ -184,7 +197,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
     it('applies the pixelRatio to the linedash array and offset', function() {
       // replay with a pixelRatio of 2
-      replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 2, true);
+      builder = new CanvasInstructionsGroupBuilder(1, [-180, -90, 180, 90], 1, 2, true);
 
       let lineDash, lineDashCount = 0,
           lineDashOffset, lineDashOffsetCount = 0;
@@ -201,9 +214,9 @@ describe('ol.render.canvas.ReplayGroup', function() {
         }
       });
 
-      renderFeature(replay, feature1, style2, 1);
-      renderFeature(replay, feature2, style2, 1);
-      replay.replay(context, transform, 0, {});
+      renderFeature(builder, feature1, style2, 1);
+      renderFeature(builder, feature2, style2, 1);
+      execute(builder, {}, 2, true);
 
       expect(lineDashCount).to.be(1);
       expect(style2.getStroke().getLineDash()).to.eql([3, 6]);
@@ -241,16 +254,16 @@ describe('ol.render.canvas.ReplayGroup', function() {
         [polygon.getGeometry().getCoordinates(), polygon.getGeometry().getCoordinates()]));
       const geometrycollection = new Feature(new GeometryCollection(
         [point.getGeometry(), linestring.getGeometry(), polygon.getGeometry()]));
-      replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 1, true);
-      renderFeature(replay, point, style, 1);
-      renderFeature(replay, multipoint, style, 1);
-      renderFeature(replay, linestring, style, 1);
-      renderFeature(replay, multilinestring, style, 1);
-      renderFeature(replay, polygon, style, 1);
-      renderFeature(replay, multipolygon, style, 1);
-      renderFeature(replay, geometrycollection, style, 1);
+      builder = new CanvasInstructionsGroupBuilder(1, [-180, -90, 180, 90], 1, 1, true);
+      renderFeature(builder, point, style, 1);
+      renderFeature(builder, multipoint, style, 1);
+      renderFeature(builder, linestring, style, 1);
+      renderFeature(builder, multilinestring, style, 1);
+      renderFeature(builder, polygon, style, 1);
+      renderFeature(builder, multipolygon, style, 1);
+      renderFeature(builder, geometrycollection, style, 1);
       scaleTransform(transform, 0.1, 0.1);
-      replay.replay(context, transform, 0, {});
+      execute(builder, {}, 1, true);
       expect(calls.length).to.be(9);
       expect(calls[0].geometry).to.be(point.getGeometry());
       expect(calls[0].feature).to.be(point);
@@ -446,7 +459,7 @@ describe('ol.render.canvas.LineStringReplay', function() {
       const tolerance = 1;
       const extent = [-180, -90, 180, 90];
       const resolution = 10;
-      const replay = new CanvasLineStringReplay(tolerance, extent,
+      const replay = new CanvasLineStringBuilder(tolerance, extent,
         resolution);
       const stroke = new Stroke({
         width: 2
@@ -468,7 +481,7 @@ describe('ol.render.canvas.PolygonReplay', function() {
     const tolerance = 1;
     const extent = [-180, -90, 180, 90];
     const resolution = 10;
-    replay = new CanvasPolygonReplay(tolerance, extent,
+    replay = new CanvasPolygonBuilder(tolerance, extent,
       resolution);
   });
 

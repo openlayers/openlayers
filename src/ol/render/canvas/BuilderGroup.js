@@ -1,5 +1,5 @@
 /**
- * @module ol/render/canvas/ReplayGroup
+ * @module ol/render/canvas/BuilderGroup
  */
 
 import {numberSafeCompareFunction} from '../../array.js';
@@ -7,37 +7,37 @@ import {createCanvasContext2D} from '../../dom.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {isEmpty} from '../../obj.js';
-import ReplayGroup from '../ReplayGroup.js';
+import BuilderGroup from '../BuilderGroup.js';
 import ReplayType from '../ReplayType.js';
-import CanvasReplay from './Replay.js';
-import CanvasImageReplay from './ImageReplay.js';
-import CanvasLineStringReplay from './LineStringReplay.js';
-import CanvasPolygonReplay from './PolygonReplay.js';
-import CanvasTextReplay from './TextReplay.js';
+import CanvasBuilder from './Builder.js';
+import CanvasImageBuilder from './ImageBuilder.js';
+import CanvasLineStringBuilder from './LineStringBuilder.js';
+import CanvasPolygonBuilder from './PolygonBuilder.js';
+import CanvasTextBuilder from './TextBuilder.js';
 import {ORDER} from '../replay.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 
 
 /**
- * @type {Object<ReplayType, typeof CanvasReplay>}
+ * @type {Object<ReplayType, typeof CanvasBuilder>}
  */
 const BATCH_CONSTRUCTORS = {
-  'Circle': CanvasPolygonReplay,
-  'Default': CanvasReplay,
-  'Image': CanvasImageReplay,
-  'LineString': CanvasLineStringReplay,
-  'Polygon': CanvasPolygonReplay,
-  'Text': CanvasTextReplay
+  'Circle': CanvasPolygonBuilder,
+  'Default': CanvasBuilder,
+  'Image': CanvasImageBuilder,
+  'LineString': CanvasLineStringBuilder,
+  'Polygon': CanvasPolygonBuilder,
+  'Text': CanvasTextBuilder
 };
 
 
-class CanvasReplayGroup extends ReplayGroup {
+class CanvasBuilderGroup extends BuilderGroup {
   /**
    * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Max extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {boolean} overlaps The replay group can have overlapping geometries.
+   * @param {boolean} overlaps The builder group can have overlapping geometries.
    * @param {?} declutterTree Declutter tree for declutter processing in postrender.
    * @param {number=} opt_renderBuffer Optional rendering buffer.
    */
@@ -102,9 +102,9 @@ class CanvasReplayGroup extends ReplayGroup {
 
     /**
      * @private
-     * @type {!Object<string, !Object<ReplayType, CanvasReplay>>}
+     * @type {!Object<string, !Object<ReplayType, CanvasBuilder>>}
      */
-    this.replaysByZIndex_ = {};
+    this.buildersByZIndex_ = {};
 
     /**
      * @private
@@ -151,31 +151,19 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @param {Array<ReplayType>} replays Replays.
-   * @return {boolean} Has replays of the provided types.
-   */
-  hasReplays(replays) {
-    for (const zIndex in this.replaysByZIndex_) {
-      const candidates = this.replaysByZIndex_[zIndex];
-      for (let i = 0, ii = replays.length; i < ii; ++i) {
-        if (replays[i] in candidates) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  /**
-   * FIXME empty description for jsdoc
+   * @return {!Object<string, !Object<ReplayType, import("./Builder.js").SerializableInstructions>>} The serializable instructions
    */
   finish() {
-    for (const zKey in this.replaysByZIndex_) {
-      const replays = this.replaysByZIndex_[zKey];
-      for (const replayKey in replays) {
-        replays[replayKey].finish();
+    const builderInstructions = {};
+    for (const zKey in this.buildersByZIndex_) {
+      builderInstructions[zKey] = builderInstructions[zKey] || {};
+      const builders = this.buildersByZIndex_[zKey];
+      for (const builderKey in builders) {
+        const builderInstruction = builders[builderKey].finish();
+        builderInstructions[zKey][builderKey] = builderInstruction;
       }
     }
+    return builderInstructions;
   }
 
   /**
@@ -263,27 +251,27 @@ class CanvasReplayGroup extends ReplayGroup {
     }
 
     /** @type {Array<number>} */
-    const zs = Object.keys(this.replaysByZIndex_).map(Number);
+    const zs = Object.keys(this.buildersByZIndex_).map(Number);
     zs.sort(numberSafeCompareFunction);
 
-    let i, j, replays, replay, result;
+    let i, j, builders, builder, result;
     for (i = zs.length - 1; i >= 0; --i) {
       const zIndexKey = zs[i].toString();
-      replays = this.replaysByZIndex_[zIndexKey];
+      builders = this.buildersByZIndex_[zIndexKey];
       for (j = ORDER.length - 1; j >= 0; --j) {
         replayType = ORDER[j];
-        replay = replays[replayType];
-        if (replay !== undefined) {
+        builder = builders[replayType];
+        if (builder !== undefined) {
           if (declutterReplays &&
               (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) {
             const declutter = declutterReplays[zIndexKey];
             if (!declutter) {
-              declutterReplays[zIndexKey] = [replay, transform.slice(0)];
+              declutterReplays[zIndexKey] = [builder, transform.slice(0)];
             } else {
-              declutter.push(replay, transform.slice(0));
+              declutter.push(builder, transform.slice(0));
             }
           } else {
-            result = replay.replayHitDetection(context, transform, rotation,
+            result = builder.executeHitDetection(context, transform, rotation,
               skippedFeaturesHash, featureCallback, hitExtent);
             if (result) {
               return result;
@@ -312,21 +300,14 @@ class CanvasReplayGroup extends ReplayGroup {
   }
 
   /**
-   * @return {import("../../extent.js").Extent} The extent of the replay group.
-   */
-  getMaxExtent() {
-    return this.maxExtent_;
-  }
-
-  /**
    * @inheritDoc
    */
-  getReplay(zIndex, replayType) {
+  getBuilder(zIndex, replayType) {
     const zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
-    let replays = this.replaysByZIndex_[zIndexKey];
+    let replays = this.buildersByZIndex_[zIndexKey];
     if (replays === undefined) {
       replays = {};
-      this.replaysByZIndex_[zIndexKey] = replays;
+      this.buildersByZIndex_[zIndexKey] = replays;
     }
     let replay = replays[replayType];
     if (replay === undefined) {
@@ -338,74 +319,12 @@ class CanvasReplayGroup extends ReplayGroup {
     return replay;
   }
 
-  /**
-   * @return {Object<string, Object<ReplayType, CanvasReplay>>} Replays.
-   */
-  getReplays() {
-    return this.replaysByZIndex_;
-  }
 
   /**
    * @inheritDoc
    */
   isEmpty() {
-    return isEmpty(this.replaysByZIndex_);
-  }
-
-  /**
-   * @param {CanvasRenderingContext2D} context Context.
-   * @param {import("../../transform.js").Transform} transform Transform.
-   * @param {number} viewRotation View rotation.
-   * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
-   * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
-   * @param {Array<ReplayType>=} opt_replayTypes Ordered replay types to replay.
-   *     Default is {@link module:ol/render/replay~ORDER}
-   * @param {Object<string, import("../canvas.js").DeclutterGroup>=} opt_declutterReplays Declutter replays.
-   */
-  replay(
-    context,
-    transform,
-    viewRotation,
-    skippedFeaturesHash,
-    snapToPixel,
-    opt_replayTypes,
-    opt_declutterReplays
-  ) {
-
-    /** @type {Array<number>} */
-    const zs = Object.keys(this.replaysByZIndex_).map(Number);
-    zs.sort(numberSafeCompareFunction);
-
-    // setup clipping so that the parts of over-simplified geometries are not
-    // visible outside the current extent when panning
-    context.save();
-    this.clip(context, transform);
-
-    const replayTypes = opt_replayTypes ? opt_replayTypes : ORDER;
-    let i, ii, j, jj, replays, replay;
-    for (i = 0, ii = zs.length; i < ii; ++i) {
-      const zIndexKey = zs[i].toString();
-      replays = this.replaysByZIndex_[zIndexKey];
-      for (j = 0, jj = replayTypes.length; j < jj; ++j) {
-        const replayType = replayTypes[j];
-        replay = replays[replayType];
-        if (replay !== undefined) {
-          if (opt_declutterReplays &&
-              (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) {
-            const declutter = opt_declutterReplays[zIndexKey];
-            if (!declutter) {
-              opt_declutterReplays[zIndexKey] = [replay, transform.slice(0)];
-            } else {
-              declutter.push(replay, transform.slice(0));
-            }
-          } else {
-            replay.replay(context, transform, viewRotation, skippedFeaturesHash, snapToPixel);
-          }
-        }
-      }
-    }
-
-    context.restore();
+    return isEmpty(this.buildersByZIndex_);
   }
 }
 
@@ -487,25 +406,4 @@ export function getCircleArray(radius) {
   return arr;
 }
 
-
-/**
- * @param {!Object<string, Array<*>>} declutterReplays Declutter replays.
- * @param {CanvasRenderingContext2D} context Context.
- * @param {number} rotation Rotation.
- * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
- */
-export function replayDeclutter(declutterReplays, context, rotation, snapToPixel) {
-  const zs = Object.keys(declutterReplays).map(Number).sort(numberSafeCompareFunction);
-  const skippedFeatureUids = {};
-  for (let z = 0, zz = zs.length; z < zz; ++z) {
-    const replayData = declutterReplays[zs[z].toString()];
-    for (let i = 0, ii = replayData.length; i < ii;) {
-      const replay = replayData[i++];
-      const transform = replayData[i++];
-      replay.replay(context, transform, rotation, skippedFeatureUids, snapToPixel);
-    }
-  }
-}
-
-
-export default CanvasReplayGroup;
+export default CanvasBuilderGroup;
