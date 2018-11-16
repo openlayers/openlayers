@@ -2,10 +2,8 @@ import Feature from '../../../../src/ol/Feature.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import Map from '../../../../src/ol/Map.js';
-import WebGLMap from '../../../../src/ol/WebGLMap.js';
 import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import WebGLVectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
@@ -18,8 +16,8 @@ describe('ol.rendering.style.Circle', function() {
   let map, vectorSource;
 
   function createMap(renderer) {
-    const MapConstructor = renderer === 'webgl' ? WebGLMap : Map;
-    const LayerConstructor = renderer === 'webgl' ? WebGLVectorLayer : VectorLayer;
+    const MapConstructor = Map;
+    const LayerConstructor = VectorLayer;
 
     vectorSource = new VectorSource();
     const vectorLayer = new LayerConstructor({
@@ -199,14 +197,6 @@ describe('ol.rendering.style.Circle', function() {
       createMap('canvas');
       createFeatures(true);
       expectResemble(map, 'rendering/ol/style/expected/circle-canvas.png',
-        8.0, done);
-    });
-
-    where('WebGL').it('tests the WebGL renderer', function(done) {
-      assertWebGL();
-      createMap('webgl');
-      createFeatures();
-      expectResemble(map, 'rendering/ol/style/expected/circle-webgl.png',
         8.0, done);
     });
   });

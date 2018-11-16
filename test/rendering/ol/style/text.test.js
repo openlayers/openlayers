@@ -5,10 +5,8 @@ import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Map from '../../../../src/ol/Map.js';
-import WebGLMap from '../../../../src/ol/WebGLMap.js';
 import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import WebGLVectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import Text from '../../../../src/ol/style/Text.js';
 import Fill from '../../../../src/ol/style/Fill.js';
@@ -20,8 +18,8 @@ describe('ol.rendering.style.Text', function() {
   let map, vectorSource;
 
   function createMap(renderer, opt_pixelRatio) {
-    const MapConstructor = renderer === 'webgl' ? WebGLMap : Map;
-    const LayerConstructor = renderer === 'webgl' ? WebGLVectorLayer : VectorLayer;
+    const MapConstructor = Map;
+    const LayerConstructor = VectorLayer;
 
     const pixelRatio = opt_pixelRatio || 1;
     vectorSource = new VectorSource();
@@ -444,19 +442,6 @@ describe('ol.rendering.style.Text', function() {
         expectResemble(map, 'rendering/ol/style/expected/text-linestring-left-nice-rotated.png', 4.5, done);
       });
 
-    });
-
-    where('WebGL').it('tests the webgl renderer without rotation', function(done) {
-      createMap('webgl');
-      createFeatures();
-      expectResemble(map, 'rendering/ol/style/expected/text-webgl.png', 1.8, done);
-    });
-
-    where('WebGL').it('tests the webgl renderer with rotation', function(done) {
-      createMap('webgl');
-      createFeatures();
-      map.getView().setRotation(Math.PI / 7);
-      expectResemble(map, 'rendering/ol/style/expected/text-rotated-webgl.png', 1.8, done);
     });
 
   });

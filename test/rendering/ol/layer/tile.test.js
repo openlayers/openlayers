@@ -1,10 +1,8 @@
 import Map from '../../../../src/ol/Map.js';
-import WebGLMap from '../../../../src/ol/WebGLMap.js';
 import View from '../../../../src/ol/View.js';
 import {getSize} from '../../../../src/ol/extent.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
-import WebGLTileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import {assign} from '../../../../src/ol/obj.js';
 import {transform} from '../../../../src/ol/proj.js';
 import TileImage from '../../../../src/ol/source/TileImage.js';
@@ -20,7 +18,7 @@ describe('ol.rendering.layer.Tile', function() {
   let map;
 
   function createMap(renderer, opt_center, opt_size, opt_pixelRatio, opt_resolutions) {
-    const MapConstructor = renderer === 'webgl' ? WebGLMap : Map;
+    const MapConstructor = Map;
     const size = opt_size !== undefined ? opt_size : [50, 50];
 
     map = new MapConstructor({
@@ -43,7 +41,7 @@ describe('ol.rendering.layer.Tile', function() {
   });
 
   function waitForTiles(renderer, sources, layerOptions, onTileLoaded) {
-    const LayerConstructor = renderer === 'webgl' ? WebGLTileLayer : TileLayer;
+    const LayerConstructor = TileLayer;
     let tilesLoading = 0;
     let tileLoaded = 0;
 
@@ -73,6 +71,40 @@ describe('ol.rendering.layer.Tile', function() {
     });
   }
 
+  describe('with tile transition', function() {
+    it('renders correctly after the transition', function(done) {
+      createMap('canvas');
+      const source = new XYZ({
+        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
+      });
+      waitForTiles('canvas', [source], {}, function() {
+        setTimeout(function() {
+          expectResemble(map, 'rendering/ol/layer/expected/osm-canvas.png',
+            IMAGE_TOLERANCE, done);
+        }, 500);
+      });
+    });
+  });
+
+  describe('single tile layer', function() {
+    let source;
+
+    beforeEach(function() {
+      source = new XYZ({
+        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
+        transition: 0
+      });
+    });
+
+    it('tests the canvas renderer', function(done) {
+      createMap('canvas');
+      waitForTiles('canvas', [source], {}, function() {
+        expectResemble(map, 'rendering/ol/layer/expected/osm-canvas.png',
+          IMAGE_TOLERANCE, done);
+      });
+    });
+  });
+
   describe('two tile layers', function() {
     let source1, source2;
 
@@ -84,15 +116,6 @@ describe('ol.rendering.layer.Tile', function() {
       source2 = new XYZ({
         url: 'rendering/ol/data/tiles/stamen-labels/{z}/{x}/{y}.png',
         transition: 0
-      });
-    });
-
-    where('WebGL').it('tests the WebGL renderer', function(done) {
-      assertWebGL();
-      createMap('webgl');
-      waitForTiles('webgl', [source1, source2], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/2-layers-webgl.png',
-          IMAGE_TOLERANCE, done);
       });
     });
 
@@ -148,15 +171,6 @@ describe('ol.rendering.layer.Tile', function() {
           IMAGE_TOLERANCE, done);
       });
     });
-
-    where('WebGL').it('tests the WebGL renderer', function(done) {
-      assertWebGL();
-      createMap('webgl');
-      waitForTiles('webgl', [source], {opacity: 0.2}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/opacity-webgl.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
   });
 
   describe('tile layer with non-square tiles', function() {
@@ -180,33 +194,12 @@ describe('ol.rendering.layer.Tile', function() {
       });
     });
 
-    where('WebGL').it('512x256 renders correcly using the webgl renderer', function(done) {
-      assertWebGL();
-      const source = createSource('512x256');
-      createMap('webgl', [-10997148, 4569099]);
-      waitForTiles('webgl', [source], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/512x256-webgl.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
     it('192x256 renders correcly using the canvas renderer', function(done) {
       const source = createSource('192x256');
       createMap('canvas', [-11271098, 3747248], [100, 100], undefined,
         source.getTileGrid().getResolutions());
       waitForTiles('canvas', [source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/192x256-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
-    where('WebGL').it('192x256 renders correcly using the webgl renderer', function(done) {
-      assertWebGL();
-      const source = createSource('192x256');
-      createMap('webgl', [-11271098, 3747248], [100, 100], undefined,
-        source.getTileGrid().getResolutions());
-      waitForTiles('webgl', [source], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/192x256-webgl.png',
           IMAGE_TOLERANCE, done);
       });
     });
