@@ -1,10 +1,8 @@
 import Feature from '../../../../src/ol/Feature.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Map from '../../../../src/ol/Map.js';
-import WebGLMap from '../../../../src/ol/WebGLMap.js';
 import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import WebGLVectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import Style from '../../../../src/ol/style/Style.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
@@ -15,8 +13,8 @@ describe('ol.rendering.style.LineString', function() {
   let map, vectorSource;
 
   function createMap(renderer, opt_pixelRatio) {
-    const MapConstructor = renderer === 'webgl' ? WebGLMap : Map;
-    const LayerConstructor = renderer === 'webgl' ? WebGLVectorLayer : VectorLayer;
+    const MapConstructor = Map;
+    const LayerConstructor = VectorLayer;
 
     vectorSource = new VectorSource();
     const vectorLayer = new LayerConstructor({
@@ -119,13 +117,6 @@ describe('ol.rendering.style.LineString', function() {
       expectResemble(
         map, 'rendering/ol/style/expected/linestring-strokes-canvas.png',
         3.0, done);
-    });
-    where('WebGL').it('tests the WebGL renderer', function(done) {
-      assertWebGL();
-      createMap('webgl');
-      createFeatures();
-      expectResemble(map, 'rendering/ol/style/expected/linestring-strokes-webgl.png',
-        14.6, done);
     });
 
     it('tests the canvas renderer (HiDPI)', function(done) {

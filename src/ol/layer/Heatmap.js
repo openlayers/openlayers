@@ -5,11 +5,8 @@ import {listen} from '../events.js';
 import {getChangeEventType} from '../Object.js';
 import {createCanvasContext2D} from '../dom.js';
 import VectorLayer from './Vector.js';
-import {clamp} from '../math.js';
 import {assign} from '../obj.js';
-import RenderEventType from '../render/EventType.js';
-import Icon from '../style/Icon.js';
-import Style from '../style/Style.js';
+import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer';
 
 
 /**
@@ -84,7 +81,7 @@ class Heatmap extends VectorLayer {
 
     /**
      * @private
-     * @type {Uint8ClampedArray}
+     * @type {HTMLCanvasElement}
      */
     this.gradient_ = null;
 
@@ -116,70 +113,18 @@ class Heatmap extends VectorLayer {
 
     this.setRadius(options.radius !== undefined ? options.radius : 8);
 
-    listen(this,
-      getChangeEventType(Property.BLUR),
-      this.handleStyleChanged_, this);
-    listen(this,
-      getChangeEventType(Property.RADIUS),
-      this.handleStyleChanged_, this);
-
-    this.handleStyleChanged_();
-
     const weight = options.weight ? options.weight : 'weight';
-    let weightFunction;
     if (typeof weight === 'string') {
-      weightFunction = function(feature) {
+      this.weightFunction_ = function(feature) {
         return feature.get(weight);
       };
     } else {
-      weightFunction = weight;
+      this.weightFunction_ = weight;
     }
-
-    this.setStyle(function(feature, resolution) {
-      const weight = weightFunction(feature);
-      const opacity = weight !== undefined ? clamp(weight, 0, 1) : 1;
-      // cast to 8 bits
-      const index = (255 * opacity) | 0;
-      let style = this.styleCache_[index];
-      if (!style) {
-        style = [
-          new Style({
-            image: new Icon({
-              opacity: opacity,
-              src: this.circleImage_
-            })
-          })
-        ];
-        this.styleCache_[index] = style;
-      }
-      return style;
-    }.bind(this));
 
     // For performance reasons, don't sort the features before rendering.
     // The render order is not relevant for a heatmap representation.
     this.setRenderOrder(null);
-
-    listen(this, RenderEventType.RENDER, this.handleRender_, this);
-  }
-
-  /**
-   * @return {string} Data URL for a circle.
-   * @private
-   */
-  createCircle_() {
-    const radius = this.getRadius();
-    const blur = this.getBlur();
-    const halfSize = radius + blur + 1;
-    const size = 2 * halfSize;
-    const context = createCanvasContext2D(size, size);
-    context.shadowOffsetX = context.shadowOffsetY = this.shadow_;
-    context.shadowBlur = blur;
-    context.shadowColor = '#000';
-    context.beginPath();
-    const center = halfSize - this.shadow_;
-    context.arc(center, center, radius, 0, Math.PI * 2, true);
-    context.fill();
-    return context.canvas.toDataURL();
   }
 
   /**
@@ -220,35 +165,6 @@ class Heatmap extends VectorLayer {
   }
 
   /**
-   * @private
-   */
-  handleStyleChanged_() {
-    this.circleImage_ = this.createCircle_();
-    this.styleCache_ = new Array(256);
-    this.changed();
-  }
-
-  /**
-   * @param {import("../render/Event.js").default} event Post compose event
-   * @private
-   */
-  handleRender_(event) {
-    const context = event.context;
-    const canvas = context.canvas;
-    const image = context.getImageData(0, 0, canvas.width, canvas.height);
-    const view8 = image.data;
-    for (let i = 0, ii = view8.length; i < ii; i += 4) {
-      const alpha = view8[i + 3] * 4;
-      if (alpha) {
-        view8[i] = this.gradient_[alpha];
-        view8[i + 1] = this.gradient_[alpha + 1];
-        view8[i + 2] = this.gradient_[alpha + 2];
-      }
-    }
-    context.putImageData(image, 0, 0);
-  }
-
-  /**
    * Set the blur size in pixels.
    * @param {number} blur Blur size in pixels.
    * @api
@@ -277,12 +193,167 @@ class Heatmap extends VectorLayer {
   setRadius(radius) {
     this.set(Property.RADIUS, radius);
   }
+
+  /**
+   * @inheritDoc
+   */
+  createRenderer() {
+    return new WebGLPointsLayerRenderer(this, {
+      vertexShader: `
+        precision mediump float;
+        attribute vec2 a_position;
+        attribute vec2 a_texCoord;
+        attribute float a_rotateWithView;
+        attribute vec2 a_offsets;
+        
+        uniform mat4 u_projectionMatrix;
+        uniform mat4 u_offsetScaleMatrix;
+        uniform mat4 u_offsetRotateMatrix;
+        uniform float u_size;
+        
+        varying vec2 v_texCoord;
+        
+        void main(void) {
+          mat4 offsetMatrix = u_offsetScaleMatrix;
+          if (a_rotateWithView == 1.0) {
+            offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
+          }
+          vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);
+          gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets * u_size;
+          v_texCoord = a_texCoord;
+        }`,
+      fragmentShader: `
+        precision mediump float;
+        uniform float u_opacity;
+        uniform float u_resolution;
+        uniform float u_blur;
+        
+        varying vec2 v_texCoord;
+        
+        void main(void) {
+          gl_FragColor.rgb = vec3(1.0, 1.0, 1.0);
+          vec2 texCoord = v_texCoord * 2.0 - vec2(1.0, 1.0);
+          float sqRadius = texCoord.x * texCoord.x + texCoord.y * texCoord.y;
+          float alpha = 1.0 - sqRadius * sqRadius;
+          if (alpha <= 0.0) {
+            discard;
+          }
+          gl_FragColor.a = alpha * 0.30 + 1.0 / u_resolution;
+        }`,
+      uniforms: {
+        u_size: function() {
+          return this.get(Property.RADIUS) * 10;
+        }.bind(this),
+        u_resolution: function(frameState) {
+          return frameState.viewState.resolution;
+        }
+      },
+      postProcesses: [
+        {
+          fragmentShader: `
+            precision mediump float;
+
+            uniform sampler2D u_image;
+            uniform sampler2D u_gradientTexture;
+            uniform vec2 u_blurSize;
+
+            varying vec2 v_texCoord;
+            varying vec2 v_screenCoord;
+
+            void main() {
+              float weights[9];
+              weights[0] = weights[8] = 0.05;
+              weights[1] = weights[7] = 0.09;
+              weights[2] = weights[6] = 0.12;
+              weights[3] = weights[5] = 0.15;
+              weights[4] = 0.18;
+              vec4 sum = vec4(0.0);
+              vec2 offset;
+              vec4 center = texture2D(u_image, v_texCoord);
+              
+              // vertical blur
+              offset = vec2(0.0, u_blurSize.y * 1.0);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[0];
+              offset = vec2(0.0, u_blurSize.y * 0.75);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[1];
+              offset = vec2(0.0, u_blurSize.y * 0.5);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[2];
+              offset = vec2(0.0, u_blurSize.y * 0.25);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[3];
+              offset = vec2(0.0, u_blurSize.y * 0.0);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[4];
+              offset = vec2(0.0, u_blurSize.y * -0.25);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[5];
+              offset = vec2(0.0, u_blurSize.y * -0.5);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[6];
+              offset = vec2(0.0, u_blurSize.y * -0.75);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[7];
+              offset = vec2(0.0, u_blurSize.y * -1.0);
+              sum += center * weights[8];
+              
+              // horizontal blur
+              offset = vec2(u_blurSize.x * 1.0, 0.0);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[0];
+              offset = vec2(u_blurSize.x * 0.75, 0.0);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[1];
+              offset = vec2(u_blurSize.x * 0.5, 0.0);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[2];
+              offset = vec2(u_blurSize.x * 0.25, 0.0);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[3];
+              offset = vec2(u_blurSize.x * 0.0, 0.0);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[4];
+              offset = vec2(u_blurSize.x * -0.25, 0.0);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[5];
+              offset = vec2(u_blurSize.x * -0.5, 0.0);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[6];
+              offset = vec2(u_blurSize.x * -0.75, 0.0);
+              sum += texture2D(u_image, v_texCoord + offset) * weights[7];
+              offset = vec2(u_blurSize.x * -1.0, 0.0);
+              sum += center * weights[8];
+              
+              gl_FragColor = sum * 0.5;
+            }`,
+          scaleRatio: 0.5,
+          uniforms: {
+            u_blurSize: function(frameState) {
+              return [
+                this.get(Property.BLUR) / frameState.size[0],
+                this.get(Property.BLUR) / frameState.size[1]
+              ];
+            }.bind(this)
+          }
+        },
+        {
+          fragmentShader: `
+            precision mediump float;
+
+            uniform sampler2D u_image;
+            uniform sampler2D u_gradientTexture;
+
+            varying vec2 v_texCoord;
+            varying vec2 v_screenCoord;
+
+            void main() {
+              vec4 color = texture2D(u_image, v_texCoord);
+              gl_FragColor.rgb = texture2D(u_gradientTexture, vec2(0.5, color.a)).rgb;
+              gl_FragColor.a = color.a;
+            }`,
+          uniforms: {
+            u_gradientTexture: this.gradient_
+          }
+        }
+      ],
+      sizeCallback: function(feature) {
+        return this.weightFunction_(feature);
+      }.bind(this)
+    });
+  }
 }
 
 
 /**
  * @param {Array<string>} colors A list of colored.
- * @return {Uint8ClampedArray} An array.
+ * @return {HTMLCanvasElement} canvas with gradient texture.
  */
 function createGradient(colors) {
   const width = 1;
@@ -298,7 +369,7 @@ function createGradient(colors) {
   context.fillStyle = gradient;
   context.fillRect(0, 0, width, height);
 
-  return context.getImageData(0, 0, width, height).data;
+  return context.canvas;
 }
 
 

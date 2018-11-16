@@ -14,11 +14,9 @@ import {appendParams} from '../uri.js';
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize=2048] Cache size.
- * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.
- * Note that you must provide a `crossOrigin` value if you are using the WebGL renderer
- * or if you want to access pixel data with the Canvas renderer.  See
- * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
- * for more detail.
+ * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
+ * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {Object<string,*>} [params] ArcGIS Rest parameters. This field is optional. Service defaults will be
  * used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is `IMAGE` by
  * default. `TRANSPARENT` is `true` by default.  `BBOX`, `SIZE`, `BBOXSR`,

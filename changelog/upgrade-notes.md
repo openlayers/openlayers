@@ -10,6 +10,28 @@ Breaking change: layers can no longer be shared between several `Map` objects.
 Breaking change: the `Graticule` control has been replaced by a layer also called `Graticule`, found in `ol/layer/Graticule`.
 The API remains similar.
 
+#### Breaking change: drop of support for most of WebGL features
+
+The WebGL map and layers renderers are gone, replaced by a `WebGLHelper` function that provides a lightweight,
+low-level access to the WebGL API. This is implemented in a new `WebGLPointsLayer` which does simple rendering of large number
+of points with custom shaders.
+
+This is now used in the `Heatmap` layer.
+
+The removed classes and components are:
+* `WebGLMap` and `WebGLMapRenderer`
+* `WebGLLayerRenderer`
+* `WebGLImageLayer` and `WebGLImageLayerRenderer`
+* `WebGLTileLayer` and `WebGLTileLayerRenderer`
+* `WebGLVectorLayer` and `WebGLVectorLayerRenderer`
+* `WebGLReplay` and derived classes, along with associated shaders
+* `WebGLReplayGroup`
+* `WebGLImmediateRenderer`
+* `WebGLMap`
+* The shader build process using `mustache` and the `Makefile` at the root
+
+
+
 ### v5.3.0
 
 #### The `getUid` function returns string

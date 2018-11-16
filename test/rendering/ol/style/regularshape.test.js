@@ -1,10 +1,8 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Map from '../../../../src/ol/Map.js';
-import WebGLMap from '../../../../src/ol/WebGLMap.js';
 import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import WebGLVectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import RegularShape from '../../../../src/ol/style/RegularShape.js';
@@ -17,8 +15,8 @@ describe('ol.rendering.style.RegularShape', function() {
   let map, vectorSource;
 
   function createMap(renderer) {
-    const MapConstructor = renderer === 'webgl' ? WebGLMap : Map;
-    const LayerConstructor = renderer === 'webgl' ? WebGLVectorLayer : VectorLayer;
+    const MapConstructor = Map;
+    const LayerConstructor = VectorLayer;
 
     vectorSource = new VectorSource();
     const vectorLayer = new LayerConstructor({
@@ -137,13 +135,6 @@ describe('ol.rendering.style.RegularShape', function() {
       }));
       expectResemble(map, 'rendering/ol/style/expected/regularshape-canvas-linedashoffset.png', 5, done);
     });
-
-    where('WebGL').it('tests the WebGL renderer', function(done) {
-      assertWebGL();
-      createMap('webgl');
-      createFeatures(stroke, fill);
-      expectResemble(map, 'rendering/ol/style/expected/regularshape-webgl.png', 8.2, done);
-    });
   });
 
   describe('uses the default fill and stroke color', function() {
@@ -154,13 +145,6 @@ describe('ol.rendering.style.RegularShape', function() {
       createMap('canvas');
       createFeatures(stroke, fill);
       expectResemble(map, 'rendering/ol/style/expected/regularshape-canvas-default-style.png', 3.0, done);
-    });
-
-    where('WebGL').it('tests the WebGL renderer', function(done) {
-      assertWebGL();
-      createMap('webgl');
-      createFeatures(stroke, fill);
-      expectResemble(map, 'rendering/ol/style/expected/regularshape-webgl-default-style.png', 3.0, done);
     });
   });
 });

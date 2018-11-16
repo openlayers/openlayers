@@ -1,4 +1,4 @@
-import Map from '../src/ol/Map.js';
+import Map from '../src/ol/CompositeMap.js';
 import View from '../src/ol/View.js';
 import KML from '../src/ol/format/KML.js';
 import {Heatmap as HeatmapLayer, Tile as TileLayer} from '../src/ol/layer.js';

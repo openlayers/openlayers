@@ -1,8 +1,6 @@
 import Map from '../../../../src/ol/Map.js';
-import WebGLMap from '../../../../src/ol/WebGLMap.js';
 import View from '../../../../src/ol/View.js';
 import ImageLayer from '../../../../src/ol/layer/Image.js';
-import WebGLImageLayer from '../../../../src/ol/layer/Image.js';
 import {assign} from '../../../../src/ol/obj.js';
 import {get as getProjection, transform, transformExtent} from '../../../../src/ol/proj.js';
 import Static from '../../../../src/ol/source/ImageStatic.js';
@@ -14,7 +12,7 @@ describe('ol.rendering.layer.Image', function() {
   let map;
 
   function createMap(renderer) {
-    const MapConstructor = renderer === 'webgl' ? WebGLMap : Map;
+    const MapConstructor = Map;
     map = new MapConstructor({
       pixelRatio: 1,
       target: createMapDiv(50, 50),
@@ -34,7 +32,7 @@ describe('ol.rendering.layer.Image', function() {
   });
 
   function waitForImages(renderer, sources, layerOptions, onImagesLoaded) {
-    const LayerConstructor = renderer === 'webgl' ? WebGLImageLayer : ImageLayer;
+    const LayerConstructor = ImageLayer;
     let imagesLoading = 0;
     let imagesLoaded = 0;
 
@@ -80,15 +78,6 @@ describe('ol.rendering.layer.Image', function() {
       createMap('canvas');
       waitForImages('canvas', [source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/image-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
-    where('WebGL').it('tests the WebGL renderer', function(done) {
-      assertWebGL();
-      createMap('webgl');
-      waitForImages('webgl', [source], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/image-webgl.png',
           IMAGE_TOLERANCE, done);
       });
     });

@@ -68,8 +68,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * Only layers which are visible and for which this function returns `true`
  * will be tested for features. By default, all visible layers will be tested.
  * @property {number} [hitTolerance=0] Hit-detection tolerance in pixels. Pixels
- * inside the radius around the given position will be checked for features. This only
- * works for the canvas renderer and not for WebGL.
+ * inside the radius around the given position will be checked for features.
  */
 
 

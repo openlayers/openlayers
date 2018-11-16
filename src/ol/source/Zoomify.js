@@ -84,9 +84,8 @@ export class CustomTile extends ImageTile {
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {number} [cacheSize=2048] Cache size.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
- * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
- * access pixel data with the Canvas renderer.  See
- * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * you must provide a `crossOrigin` value  you want to access pixel data with the Canvas renderer.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
