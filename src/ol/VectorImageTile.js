@@ -168,8 +168,8 @@ class VectorImageTile extends Tile {
               tileClass, VOID, bestZoom);
             this.interimTile = tile;
           }
-        }  
-      }
+        }
+      };
     }
 
   }
