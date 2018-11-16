@@ -44,3 +44,8 @@ jobs:
       - run:
           name: Run benchmarks
           command: npm run benchmarks
+
+      - store_artifacts:
+          name: Uploading benchmarks artifacts
+          path: rendering/benchmarks/
+          destination: benchmarks

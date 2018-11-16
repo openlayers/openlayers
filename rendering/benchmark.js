@@ -112,6 +112,10 @@ function printTime(time) {
   return (time * 1000).toFixed(1);
 }
 
+function getReportPath(entry) {
+  return path.join(__dirname, path.dirname(entry), 'benchmark.json');
+}
+
 async function renderPage(page, entry, options) {
   options.log.debug('navigating', entry);
 
@@ -165,10 +169,21 @@ async function renderPage(page, entry, options) {
     return times.reduce((prev, curr) => Math.max(curr, prev), 0) / frameTimes.length + prev;
   }, 0);
 
-  options.log.info(`${entry} - benchmark finished
-Maximum frame time: ${printTime(maximumFrameTime)}ms
-Average frame time: ${printTime(totalFrameTime / flatFrameTimes.length)}ms
-`);
+  options.log.info(`${entry}: Maximum frame time: ${printTime(maximumFrameTime)}ms`);
+  options.log.info(`${entry}: Average frame time: ${printTime(totalFrameTime / flatFrameTimes.length)}ms`);
+
+  const results = {
+    'fps_avg': printTime(totalFrameTime / flatFrameTimes.length),
+    'fps_max': printTime(maximumFrameTime),
+    'fps_total': printTime(totalFrameTime),
+    'heap_used': (metrics.JSHeapUsedSize / 1024).toFixed(1),
+    'heap_total': (metrics.JSHeapTotalSize / 1024).toFixed(1)
+  };
+  fs.writeFile(getReportPath(entry), JSON.stringify(results, null, 2), (err) => {
+    if (err) {
+      options.log.error(err);
+    }
+  });
 
   return `
 <html>
