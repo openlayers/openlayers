@@ -195,7 +195,7 @@ function stopAnimation(ended) {
   /** @type {module:ol/geom/Point~Point} */ (geoMarker.getGeometry())
     .setCoordinates(coord);
   //remove listener
-  map.un('postcompose', moveFeature);
+  vectorLayer.un('postrender', moveFeature);
 }
 
 startButton.addEventListener('click', startAnimation, false);
