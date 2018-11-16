@@ -13,7 +13,7 @@ const BufferUsage = {
 };
 
 
-class WebGLBuffer {
+class WebGLArrayBuffer {
 
   /**
    * @param {Array<number>=} opt_arr Array.
@@ -50,4 +50,4 @@ class WebGLBuffer {
   }
 }
 
-export default WebGLBuffer;
+export default WebGLArrayBuffer;

@@ -2,7 +2,7 @@
  * @module ol/renderer/webgl-new/PointsLayer
  */
 import LayerRenderer from '../Layer';
-import WebGLBuffer from '../../webgl/Buffer';
+import WebGLArrayBuffer from '../../webgl/Buffer';
 import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../webgl';
 import WebGLHelper, {DefaultAttrib, DefaultUniform} from '../../webgl/Helper';
 import WebGLVertex from '../../webgl/Vertex';
@@ -143,8 +143,8 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
 
     this.sourceRevision_ = -1;
 
-    this.verticesBuffer_ = new WebGLBuffer([], DYNAMIC_DRAW);
-    this.indicesBuffer_ = new WebGLBuffer([], DYNAMIC_DRAW);
+    this.verticesBuffer_ = new WebGLArrayBuffer([], DYNAMIC_DRAW);
+    this.indicesBuffer_ = new WebGLArrayBuffer([], DYNAMIC_DRAW);
 
     const vertexShader = new WebGLVertex(options.vertexShader || VERTEX_SHADER);
     const fragmentShader = new WebGLFragment(options.fragmentShader || FRAGMENT_SHADER);

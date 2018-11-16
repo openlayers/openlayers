@@ -17,7 +17,6 @@ import {
   translate as translateTransform
 } from '../transform';
 import {create, fromTransform} from '../vec/mat4';
-import WebGLBuffer from './Buffer';
 import WebGLPostProcessingPass from './PostProcessingPass';
 
 
@@ -142,15 +141,15 @@ export const DefaultAttrib = {
  *
  * ### Binding WebGL buffers and flushing data into them:
  *
- *   Data that must be passed to the GPU has to be transferred using `WebGLBuffer` objects.
+ *   Data that must be passed to the GPU has to be transferred using `WebGLArrayBuffer` objects.
  *   A buffer has to be created only once, but must be bound everytime the data it holds is changed. Using `WebGLHelper.bindBuffer`
  *   will bind the buffer and flush the new data to the GPU.
  *
  *   For now, the `WebGLHelper` class expects {@link module:ol/webgl/Buffer~WebGLArrayBuffer} objects.
  *   ```js
  *   // at initialization phase
- *   this.verticesBuffer = new WebGLBuffer([], DYNAMIC_DRAW);
- *   this.indicesBuffer = new WebGLBuffer([], DYNAMIC_DRAW);
+ *   this.verticesBuffer = new WebGLArrayBuffer([], DYNAMIC_DRAW);
+ *   this.indicesBuffer = new WebGLArrayBuffer([], DYNAMIC_DRAW);
  *
  *   // at rendering phase
  *   this.context.bindBuffer(ARRAY_BUFFER, this.verticesBuffer);
