@@ -503,10 +503,10 @@ class CanvasExecutor {
 
     const label = this.getTextImage(text, textKey, fillKey, strokeKey);
 
-    const strokeState = this.strokeStates[strokeKey]; // FIXME: check if it is correct, was this.textStrokeState_;
+    const strokeState = this.strokeStates[strokeKey];
     const pixelRatio = this.pixelRatio;
     const align = TEXT_ALIGN[textState.textAlign || defaultTextAlign];
-    const baseline = TEXT_ALIGN[textState.textBaseline || defaultTextBaseline]; // FIXME: why I need a default now?
+    const baseline = TEXT_ALIGN[textState.textBaseline || defaultTextBaseline];
     const strokeWidth = strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
     const anchorX = align * label.width / pixelRatio + 2 * (0.5 - align) * strokeWidth;
