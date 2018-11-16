@@ -26,10 +26,13 @@ const Direction = {
 
 /**
  * @typedef {Object} Options
+ * @property {boolean} [constrainResolution=true] Constrain zoom level to an integer.
  * @property {string} [className='ol-zoomslider'] CSS class name.
  * @property {number} [duration=200] Animation duration in milliseconds.
  * @property {function(import("../MapEvent.js").default)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
+ * @property {HTMLElement|string} [target] Specify a target if you want the control
+ * to be rendered outside of the map's viewport.
  */
 
 
@@ -54,7 +57,8 @@ class ZoomSlider extends Control {
 
     super({
       element: document.createElement('div'),
-      render: options.render || render
+      render: options.render || render,
+      target: options.target
     });
 
     /**
@@ -70,6 +74,13 @@ class ZoomSlider extends Control {
      * @private
      */
     this.currentResolution_ = undefined;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.constrainResolution_ = options.constrainResolution !== undefined ?
+      options.constrainResolution : true;
 
     /**
      * The direction of the slider. Will be determined from actual display of the
@@ -220,7 +231,9 @@ class ZoomSlider extends Control {
     const resolution = this.getResolutionForPosition_(relativePosition);
 
     view.animate({
-      resolution: view.constrainResolution(resolution),
+      resolution: this.constrainResolution_ ?
+        view.constrainResolution(resolution) :
+        resolution,
       duration: this.duration_,
       easing: easeOut
     });
@@ -282,7 +295,9 @@ class ZoomSlider extends Control {
       view.setHint(ViewHint.INTERACTING, -1);
 
       view.animate({
-        resolution: view.constrainResolution(this.currentResolution_),
+        resolution: this.constrainResolution_ ?
+          view.constrainResolution(this.currentResolution_) :
+          this.currentResolution_,
         duration: this.duration_,
         easing: easeOut
       });
