@@ -48,7 +48,7 @@ container.addEventListener('mouseout', function() {
 });
 
 // after rendering the layer, show an oversampled version around the pointer
-imagery.on('postcompose', function(event) {
+imagery.on('postrender', function(event) {
   if (mousePosition) {
     const context = event.context;
     const pixelRatio = event.frameState.pixelRatio;
