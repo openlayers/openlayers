@@ -325,9 +325,9 @@ describe('ol.Map', function() {
 
     beforeEach(function(done) {
       log = [];
-      original = TileLayerRenderer.prototype.forEachLayerAtCoordinate;
-      TileLayerRenderer.prototype.forEachLayerAtCoordinate = function(coordinate) {
-        log.push(coordinate.slice());
+      original = TileLayerRenderer.prototype.getDataAtPixel;
+      TileLayerRenderer.prototype.getDataAtPixel = function(pixel) {
+        log.push(pixel.slice());
       };
 
       target = document.createElement('div');
@@ -364,13 +364,13 @@ describe('ol.Map', function() {
     });
 
     afterEach(function() {
-      TileLayerRenderer.prototype.forEachLayerAtCoordinate = original;
+      TileLayerRenderer.prototype.getDataAtPixel = original;
       map.dispose();
       document.body.removeChild(target);
       log = null;
     });
 
-    it('calls each layer renderer with the same coordinate', function() {
+    it('calls each layer renderer with the same pixel', function() {
       const pixel = [10, 20];
       map.forEachLayerAtPixel(pixel, function() {});
       expect(log.length).to.equal(3);
