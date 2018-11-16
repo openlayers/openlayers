@@ -28,6 +28,7 @@ jobs:
           command: npm test
 
       - store_artifacts:
+          name: Uploading rendering artifacts
           path: rendering/cases/
           destination: rendering
 
@@ -36,6 +37,7 @@ jobs:
           command: npm run build-examples
 
       - store_artifacts:
+          name: Uploading examples artifacts
           path: build/examples
           destination: examples
 
