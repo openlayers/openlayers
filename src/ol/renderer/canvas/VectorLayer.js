@@ -485,8 +485,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const replayGroupInstructions = replayGroup.finish();
     const renderingExecutorGroup = new InstructionsGroupExecutor(
       getRenderTolerance(resolution, pixelRatio), extent, resolution,
-      pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
-    renderingExecutorGroup.replaceInstructions(replayGroupInstructions);
+      pixelRatio, vectorSource.getOverlaps(), this.declutterTree_,
+      replayGroupInstructions, vectorLayer.getRenderBuffer());
 
     this.renderedResolution_ = resolution;
     this.renderedRevision_ = vectorLayerRevision;

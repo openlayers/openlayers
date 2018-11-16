@@ -28,10 +28,9 @@ function createContext() {
 function executeInstructions(builder, expectedDrawTextImageCalls, expectedReplayImageCalls) {
   const transform = createTransform();
   const context = createContext();
-  const executor = new InstructionExecutor(1, [-180, -90, 180, 90], 0.02, 1, null);
+  const executor = new InstructionExecutor(1, [-180, -90, 180, 90], 0.02, 1, false, null, builder.finish());
   sinon.spy(executor, 'drawTextImageWithPointPlacement_');
   const replayImageStub = sinon.stub(executor, 'replayImage_');
-  executor.replaceInstructions(builder.finish());
   executor.execute(context, transform);
   expect(executor.drawTextImageWithPointPlacement_.callCount).to.be(expectedDrawTextImageCalls);
   expect(replayImageStub.callCount).to.be(expectedReplayImageCalls);

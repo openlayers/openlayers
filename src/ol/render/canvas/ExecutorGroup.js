@@ -22,6 +22,8 @@ class ExecutorGroup extends BaseExecutorGroup {
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The executor group can have overlapping geometries.
    * @param {?} declutterTree Declutter tree for declutter processing in postrender.
+   * @param {!Object<string, !Object<ReplayType, import("./Builder.js").SerializableInstructions>>} allInstructions
+   * The serializable instructions.
    * @param {number=} opt_renderBuffer Optional rendering buffer.
    */
   constructor(
@@ -31,6 +33,7 @@ class ExecutorGroup extends BaseExecutorGroup {
     pixelRatio,
     overlaps,
     declutterTree,
+    allInstructions,
     opt_renderBuffer
   ) {
     super();
@@ -100,6 +103,8 @@ class ExecutorGroup extends BaseExecutorGroup {
      * @type {import("../../transform.js").Transform}
      */
     this.hitDetectionTransform_ = createTransform();
+
+    this.createExectutors_(allInstructions);
   }
 
   /**
@@ -118,16 +123,20 @@ class ExecutorGroup extends BaseExecutorGroup {
 
   /**
    * Create executors and populate them using the provided instructions.
+   * @private
    * @param {!Object<string, !Object<ReplayType, import("./Builder.js").SerializableInstructions>>} allInstructions The serializable instructions
    */
-  replaceInstructions(allInstructions) {
-    this.executorsByZIndex_ = {};
+  createExectutors_(allInstructions) {
     for (const zIndex in allInstructions) {
+      let executors = this.executorsByZIndex_[zIndex];
+      if (executors === undefined) {
+        this.executorsByZIndex_[zIndex] = executors = {};
+      }
       const instructionByZindex = allInstructions[zIndex];
       for (const replayType in instructionByZindex) {
         const instructions = instructionByZindex[replayType];
-        const executor = this.getExecutor(zIndex, replayType);
-        executor.replaceInstructions(instructions);
+        executors[replayType] = new CanvasExecutor(this.tolerance_, this.maxExtent_,
+          this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_, instructions);
       }
     }
   }
@@ -301,8 +310,14 @@ class ExecutorGroup extends BaseExecutorGroup {
     }
     let executor = executors[replayType];
     if (executor === undefined) {
+      // FIXME: it should not be possible to ask for an executor that does not exist
       executor = new CanvasExecutor(this.tolerance_, this.maxExtent_,
-        this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
+        this.resolution_, this.pixelRatio_, this.overlaps_, {
+          instructions: [],
+          hitDetectionInstructions: [],
+          coordinates: []
+        },
+        this.declutterTree_);
       executors[replayType] = executor;
     }
     return executor;

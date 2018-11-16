@@ -55,9 +55,9 @@ class CanvasExecutor {
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
    * @param {?} declutterTree Declutter tree.
+   * @param {SerializableInstructions} instructions The serializable instructions
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-
+  constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree, instructions) {
     /**
      * @type {?}
      */
@@ -129,13 +129,13 @@ class CanvasExecutor {
      * @protected
      * @type {Array<*>}
      */
-    this.instructions = [];
+    this.instructions = instructions.instructions;
 
     /**
      * @protected
      * @type {Array<number>}
      */
-    this.coordinates = [];
+    this.coordinates = instructions.coordinates;
 
     /**
      * @private
@@ -153,7 +153,7 @@ class CanvasExecutor {
      * @protected
      * @type {Array<*>}
      */
-    this.hitDetectionInstructions = [];
+    this.hitDetectionInstructions = instructions.hitDetectionInstructions;
 
     /**
      * @private
@@ -176,17 +176,17 @@ class CanvasExecutor {
     /**
      * @type {!Object<string, import("../canvas.js").FillState>}
      */
-    this.fillStates = {};
+    this.fillStates = instructions.fillStates || {};
 
     /**
      * @type {!Object<string, import("../canvas.js").StrokeState>}
      */
-    this.strokeStates = {};
+    this.strokeStates = instructions.strokeStates || {};
 
     /**
      * @type {!Object<string, import("../canvas.js").TextState>}
      */
-    this.textStates = {};
+    this.textStates = instructions.textStates || {};
 
     // Adaptations
 
@@ -265,20 +265,6 @@ class CanvasExecutor {
       }
     }
     return labelCache.get(key);
-  }
-
-  /**
-   * Recreate replays and populate them using the provided instructions.
-   * @param {SerializableInstructions} instructions The serializable instructions
-   */
-  replaceInstructions(instructions) {
-    this.instructions = instructions.instructions;
-    this.hitDetectionInstructions = instructions.hitDetectionInstructions;
-    this.coordinates = instructions.coordinates;
-    // Workaround for decluttered text creation / rendering being coupled
-    this.textStates = instructions.textStates;
-    this.fillStates = instructions.fillStates;
-    this.strokeStates = instructions.strokeStates;
   }
 
   /**

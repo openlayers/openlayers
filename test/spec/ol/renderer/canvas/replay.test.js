@@ -22,15 +22,26 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
   describe('#replay', function() {
 
-    let context, builder, executor, fillCount, transform;
+    let context, builder, fillCount, transform;
     let strokeCount, beginPathCount, moveToCount, lineToCount;
     let feature0, feature1, feature2, feature3;
     let fill0, fill1, style1, style2;
 
+    /**
+     * @param {CanvasInstructionsGroupBuilder} builder The builder to get instructions from.
+     * @param {Object=} skippedUids The ids to skip.
+     * @param {number=} pixelRatio The pixel ratio.
+     * @param {boolean=} overlaps Whether there is overlaps.
+     */
+    function execute(builder, skippedUids, pixelRatio, overlaps) {
+      const executor = new CanvasInstructionsGroupExecutor(1, [-180, -90, 180, 90], 1,
+        pixelRatio || 1, !!overlaps, null, builder.finish());
+      executor.execute(context, transform, 0, skippedUids || {});
+    }
+
     beforeEach(function() {
       transform = createTransform();
       builder = new CanvasInstructionsGroupBuilder(1, [-180, -90, 180, 90], 1, 1, false);
-      executor = new CanvasInstructionsGroupExecutor(1, [-180, -90, 180, 90], 1, 1, false);
       feature0 = new Feature(new Polygon(
         [[[-90, 0], [-45, 45], [0, 0], [1, 1], [0, -45], [-90, 0]]]));
       feature1 = new Feature(new Polygon(
@@ -91,21 +102,18 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
     it('omits lineTo for repeated coordinates', function() {
       renderFeature(builder, feature0, fill0, 1);
-      executor.replaceInstructions(builder.finish());
-      executor.execute(context, transform, 0, {});
+      execute(builder);
       expect(lineToCount).to.be(4);
       lineToCount = 0;
       scaleTransform(transform, 0.25, 0.25);
-      executor.replaceInstructions(builder.finish());
-      executor.execute(context, transform, 0, {});
+      execute(builder);
       expect(lineToCount).to.be(3);
     });
 
     it('does not omit moveTo for repeated coordinates', function() {
       renderFeature(builder, feature0, fill0, 1);
       renderFeature(builder, feature1, fill1, 1);
-      executor.replaceInstructions(builder.finish());
-      executor.execute(context, transform, 0, {});
+      execute(builder);
       expect(moveToCount).to.be(2);
     });
 
@@ -113,8 +121,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       renderFeature(builder, feature1, style1, 1);
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style1, 1);
-      executor.replaceInstructions(builder.finish());
-      executor.execute(context, transform, 0, {});
+      execute(builder);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
       expect(beginPathCount).to.be(1);
@@ -124,8 +131,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       renderFeature(builder, feature1, style1, 1);
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style2, 1);
-      executor.replaceInstructions(builder.finish());
-      executor.execute(context, transform, 0, {});
+      execute(builder);
       expect(fillCount).to.be(2);
       expect(strokeCount).to.be(2);
       expect(beginPathCount).to.be(2);
@@ -135,8 +141,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       renderFeature(builder, feature1, style1, 1);
       renderFeature(builder, feature2, style2, 1);
       renderFeature(builder, feature3, style1, 1);
-      executor.replaceInstructions(builder.finish());
-      executor.execute(context, transform, 0, {});
+      execute(builder);
       expect(fillCount).to.be(3);
       expect(strokeCount).to.be(3);
       expect(beginPathCount).to.be(3);
@@ -148,8 +153,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       renderFeature(builder, feature3, style2, 1);
       const skippedUids = {};
       skippedUids[getUid(feature1)] = true;
-      executor.replaceInstructions(builder.finish());
-      executor.execute(context, transform, 0, skippedUids);
+      execute(builder, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
       expect(beginPathCount).to.be(1);
@@ -161,8 +165,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       renderFeature(builder, feature3, style2, 1);
       const skippedUids = {};
       skippedUids[getUid(feature3)] = true;
-      executor.replaceInstructions(builder.finish());
-      executor.execute(context, transform, 0, skippedUids);
+      execute(builder, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
       expect(beginPathCount).to.be(1);
@@ -175,8 +178,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       const skippedUids = {};
       skippedUids[getUid(feature1)] = true;
       skippedUids[getUid(feature2)] = true;
-      executor.replaceInstructions(builder.finish());
-      executor.execute(context, transform, 0, skippedUids);
+      execute(builder, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
       expect(beginPathCount).to.be(1);
@@ -184,12 +186,10 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
     it('does not batch when overlaps is set to true', function() {
       builder = new CanvasInstructionsGroupBuilder(1, [-180, -90, 180, 90], 1, 1, true);
-      executor = new CanvasInstructionsGroupExecutor(1, [-180, -90, 180, 90], 1, 1, true);
       renderFeature(builder, feature1, style1, 1);
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style1, 1);
-      executor.replaceInstructions(builder.finish());
-      executor.execute(context, transform, 0, {});
+      execute(builder, {}, 1, true);
       expect(fillCount).to.be(3);
       expect(strokeCount).to.be(3);
       expect(beginPathCount).to.be(3);
@@ -198,7 +198,6 @@ describe('ol.render.canvas.ReplayGroup', function() {
     it('applies the pixelRatio to the linedash array and offset', function() {
       // replay with a pixelRatio of 2
       builder = new CanvasInstructionsGroupBuilder(1, [-180, -90, 180, 90], 1, 2, true);
-      executor = new CanvasInstructionsGroupExecutor(1, [-180, -90, 180, 90], 1, 2, true);
 
       let lineDash, lineDashCount = 0,
           lineDashOffset, lineDashOffsetCount = 0;
@@ -217,8 +216,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
       renderFeature(builder, feature1, style2, 1);
       renderFeature(builder, feature2, style2, 1);
-      executor.replaceInstructions(builder.finish());
-      executor.execute(context, transform, 0, {});
+      execute(builder, {}, 2, true);
 
       expect(lineDashCount).to.be(1);
       expect(style2.getStroke().getLineDash()).to.eql([3, 6]);
@@ -257,7 +255,6 @@ describe('ol.render.canvas.ReplayGroup', function() {
       const geometrycollection = new Feature(new GeometryCollection(
         [point.getGeometry(), linestring.getGeometry(), polygon.getGeometry()]));
       builder = new CanvasInstructionsGroupBuilder(1, [-180, -90, 180, 90], 1, 1, true);
-      executor = new CanvasInstructionsGroupExecutor(1, [-180, -90, 180, 90], 1, 1, true);
       renderFeature(builder, point, style, 1);
       renderFeature(builder, multipoint, style, 1);
       renderFeature(builder, linestring, style, 1);
@@ -266,8 +263,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       renderFeature(builder, multipolygon, style, 1);
       renderFeature(builder, geometrycollection, style, 1);
       scaleTransform(transform, 0.1, 0.1);
-      executor.replaceInstructions(builder.finish());
-      executor.execute(context, transform, 0, {});
+      execute(builder, {}, 1, true);
       expect(calls.length).to.be(9);
       expect(calls[0].geometry).to.be(point.getGeometry());
       expect(calls[0].feature).to.be(point);
