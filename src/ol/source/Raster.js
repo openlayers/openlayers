@@ -169,26 +169,23 @@ class RasterSource extends ImageSource {
 
     /**
      * @private
-     * @type {Array<import("../renderer/canvas/Layer.js").default>}
+     * @type {Array<import("../layer/Layer.js").default>}
      */
-    this.renderers_ = createRenderers(options.sources);
+    this.layers_ = createLayers(options.sources);
 
-    for (let r = 0, rr = this.renderers_.length; r < rr; ++r) {
-      listen(this.renderers_[r], EventType.CHANGE,
-        this.changed, this);
+    for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
+      listen(this.layers_[i], EventType.CHANGE, this.changed, this);
     }
 
     /**
      * @private
      * @type {import("../TileQueue.js").default}
      */
-    this.tileQueue_ = new TileQueue(
-      function() {
-        return 1;
-      },
-      this.changed.bind(this));
+    this.tileQueue_ = new TileQueue(function() {
+      return 1;
+    }, this.changed.bind(this));
 
-    const layerStatesArray = getLayerStatesArray(this.renderers_);
+    const layerStatesArray = getLayerStatesArray(this.layers_);
 
     /**
      * @type {Object<string, import("../layer/Layer.js").State>}
@@ -307,8 +304,8 @@ class RasterSource extends ImageSource {
   allSourcesReady_() {
     let ready = true;
     let source;
-    for (let i = 0, ii = this.renderers_.length; i < ii; ++i) {
-      source = this.renderers_[i].getLayer().getSource();
+    for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
+      source = this.layers_[i].getSource();
       if (source.getState() !== SourceState.READY) {
         ready = false;
         break;
@@ -356,11 +353,10 @@ class RasterSource extends ImageSource {
    */
   processSources_() {
     const frameState = this.requestedFrameState_;
-    const len = this.renderers_.length;
+    const len = this.layers_.length;
     const imageDatas = new Array(len);
     for (let i = 0; i < len; ++i) {
-      const imageData = getImageData(
-        this.renderers_[i], frameState, frameState.layerStatesArray[i]);
+      const imageData = getImageData(this.layers_[i], frameState, frameState.layerStatesArray[i]);
       if (imageData) {
         imageDatas[i] = imageData;
       } else {
@@ -429,13 +425,18 @@ let sharedContext = null;
 
 
 /**
- * Get image data from a renderer.
- * @param {import("../renderer/canvas/Layer.js").default} renderer Layer renderer.
+ * Get image data from a layer.
+ * @param {import("../layer/Layer.js").default} layer Layer to render.
  * @param {import("../PluggableMap.js").FrameState} frameState The frame state.
  * @param {import("../layer/Layer.js").State} layerState The layer state.
  * @return {ImageData} The image data.
  */
-function getImageData(renderer, frameState, layerState) {
+function getImageData(layer, frameState, layerState) {
+  const renderer = layer.getRenderer();
+  if (!renderer) {
+    throw new Error('Unsupported layer type: ' + layer);
+  }
+
   if (!renderer.prepareFrame(frameState, layerState)) {
     return null;
   }
@@ -466,38 +467,38 @@ function getImageData(renderer, frameState, layerState) {
 
 
 /**
- * Get a list of layer states from a list of renderers.
- * @param {Array<import("../renderer/canvas/Layer.js").default>} renderers Layer renderers.
+ * Get a list of layer states from a list of layers.
+ * @param {Array<import("../layer/Layer.js").default>} layers Layers.
  * @return {Array<import("../layer/Layer.js").State>} The layer states.
  */
-function getLayerStatesArray(renderers) {
-  return renderers.map(function(renderer) {
-    return renderer.getLayer().getLayerState();
+function getLayerStatesArray(layers) {
+  return layers.map(function(layer) {
+    return layer.getLayerState();
   });
 }
 
 
 /**
- * Create renderers for all sources.
+ * Create layers for all sources.
  * @param {Array<import("./Source.js").default|import("../layer/Layer.js").default>} sources The sources.
- * @return {Array<import("../renderer/canvas/Layer.js").default>} Array of layer renderers.
+ * @return {Array<import("../layer/Layer.js").default>} Array of layers.
  */
-function createRenderers(sources) {
+function createLayers(sources) {
   const len = sources.length;
-  const renderers = new Array(len);
+  const layers = new Array(len);
   for (let i = 0; i < len; ++i) {
-    renderers[i] = createRenderer(sources[i]);
+    layers[i] = createLayer(sources[i]);
   }
-  return renderers;
+  return layers;
 }
 
 
 /**
- * Create a renderer for the provided source.
+ * Create a layer for the provided source.
  * @param {import("./Source.js").default|import("../layer/Layer.js").default} layerOrSource The layer or source.
- * @return {import("../renderer/canvas/Layer.js").default} The renderer.
+ * @return {import("../layer/Layer.js").default} The layer.
  */
-function createRenderer(layerOrSource) {
+function createLayer(layerOrSource) {
   // @type {import("../layer/Layer.js").default}
   let layer;
   if (layerOrSource instanceof Source) {
@@ -509,7 +510,7 @@ function createRenderer(layerOrSource) {
   } else {
     layer = layerOrSource;
   }
-  return layer ? /** @type {import("../renderer/canvas/Layer.js").default} */ (layer.createRenderer()) : null;
+  return layer;
 }
 
 
