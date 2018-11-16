@@ -669,21 +669,19 @@ class CanvasExecutor {
           let width = /** @type {number} */ (instruction[14]);
 
 
-          if (!image) {
-            if (instruction.length < 19 || !instruction[18]) {
-              continue;
-            }
+          if (!image && instruction.length >= 19) {
+            // create label images
             text = /** @type {string} */ (instruction[18]);
             textKey = /** @type {string} */ (instruction[19]);
             strokeKey = /** @type {string} */ (instruction[20]);
             fillKey = /** @type {string} */ (instruction[21]);
             const labelWithAnchor = this.drawTextImageWithPointPlacement_(text, textKey, strokeKey, fillKey);
-            const textOffsetX = /** @type {number} */ (instruction[22]);
-            const textOffsetY = /** @type {number} */ (instruction[23]);
             image = instruction[3] = labelWithAnchor.label;
+            const textOffsetX = /** @type {number} */ (instruction[22]);
             anchorX = instruction[4] = (labelWithAnchor.anchorX - textOffsetX) * this.pixelRatio;
+            const textOffsetY = /** @type {number} */ (instruction[23]);
             anchorY = instruction[5] = (labelWithAnchor.anchorY - textOffsetY) * this.pixelRatio;
-            height = instruction[8] = image.height;
+            height = instruction[7] = image.height;
             width = instruction[14] = image.width;
           }
 

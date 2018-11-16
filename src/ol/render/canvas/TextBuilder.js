@@ -256,11 +256,12 @@ class CanvasTextBuilder extends CanvasBuilder {
       this.beginGeometry(geometry, feature);
 
       // The image is unknown at this stage so we pass null; it will be computed at render time.
-      // For clarity, we pass Infinity for numerical values that will be computed at render time.
+      // For clarity, we pass NaN for offsetX, offsetY, width and height, which will be computed at
+      // render time.
       const pixelRatio = this.pixelRatio;
       this.instructions.push([CanvasInstruction.DRAW_IMAGE, begin, end,
-        null, Infinity, Infinity, this.declutterGroup_, Infinity, 1, 0, 0,
-        this.textRotateWithView_, this.textRotation_, 1, Infinity,
+        null, NaN, NaN, this.declutterGroup_, NaN, 1, 0, 0,
+        this.textRotateWithView_, this.textRotation_, 1, NaN,
         textState.padding == defaultPadding ?
           defaultPadding : textState.padding.map(function(p) {
             return p * pixelRatio;
@@ -270,8 +271,8 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textOffsetX_, this.textOffsetY_, geometryWidths
       ]);
       this.hitDetectionInstructions.push([CanvasInstruction.DRAW_IMAGE, begin, end,
-        null, Infinity, Infinity, this.declutterGroup_, Infinity, 1, 0, 0,
-        this.textRotateWithView_, this.textRotation_, 1 / this.pixelRatio, Infinity,
+        null, NaN, NaN, this.declutterGroup_, NaN, 1, 0, 0,
+        this.textRotateWithView_, this.textRotation_, 1 / this.pixelRatio, NaN,
         textState.padding,
         !!textState.backgroundFill, !!textState.backgroundStroke,
         this.text_, this.textKey_, this.strokeKey_, this.fillKey_,
