@@ -2,15 +2,42 @@
 
 ### Next version
 
+#### Backwards incompatible changes
 
-Breaking change: The `OverviewMap` control now cannot be instantiated without a list of layers. 
+##### New `prerender` and `postrender` layer events replace old `precompose` and `postcompose` events
 
-Breaking change: layers can no longer be shared between several `Map` objects.
+If you were previously registering for `precompose` and `postcompose` events, you should now register for `prerender` and `postrender` events on layers.  Layers are no longer composed to a single Canvas element.  Instead, they are added to the map viewport as individual elements.
 
-Breaking change: the `Graticule` control has been replaced by a layer also called `Graticule`, found in `ol/layer/Graticule`.
-The API remains similar.
+##### New `getVectorContext` function provides access to the immediate vector rendering API
 
-#### Breaking change: drop of support for most of WebGL features
+Previously, render events included a `vectorContext` property that allowed you to render features or geometries directly to the map.  This is still possible, but you now have to explicitly create a vector context with the `getVectorContext` function.  This change makes the immediate rendering API an explicit dependency if your application uses it.  If you don't use this API, your application bundle will not include the vector rendering modules (as it did before).
+
+Here is an abbreviated example of how to use the `getVectorContext` function:
+
+```js
+import {getVectorContext} from 'ol/render';
+
+// construct your map and layers as usual
+
+layer.on('postrender', function(event) {
+  const vectorContext = getVectorContext(event);
+  // use any of the drawing methods on the vector context
+});
+```
+
+##### Layers can only be added to a single map
+
+Previously, it was possible to render a single layer in two maps.  Now, each layer can only belong to a single map (in the same way that a single DOM element can only have one parent).
+
+##### The `OverviewMap` requires a list of layers.
+
+Due to the constraint above (layers can only be added to a single map), the overview map needs to be constructed with a list of layers.
+
+##### The `ol/Graticule` has been replaced by `ol/layer/Graticule`
+
+Previously, a graticule was not a layer.  Now it is.  See the graticule example for details on how to add a graticule layer to your map.
+
+##### Drop of support for the experimental WebGL renderer
 
 The WebGL map and layers renderers are gone, replaced by a `WebGLHelper` function that provides a lightweight,
 low-level access to the WebGL API. This is implemented in a new `WebGLPointsLayer` which does simple rendering of large number
@@ -29,7 +56,6 @@ The removed classes and components are:
 * `WebGLImmediateRenderer`
 * `WebGLMap`
 * The shader build process using `mustache` and the `Makefile` at the root
-
 
 
 ### v5.3.0
