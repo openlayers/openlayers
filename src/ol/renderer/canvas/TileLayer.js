@@ -119,7 +119,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
+   * TODO: File a TypeScript issue about inheritDoc not being followed
+   * all the way.  Without this explicit return type, the VectorTileLayer
+   * renderFrame function does not pass.
+   *
    * @inheritDoc
+   * @returns {HTMLElement} The rendered element.
    */
   renderFrame(frameState, layerState) {
     const context = this.context;
