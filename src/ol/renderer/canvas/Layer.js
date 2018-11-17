@@ -132,46 +132,32 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @param {import("../../render/EventType.js").default} type Event type.
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../transform.js").Transform} pixelTransform Transform.
    * @private
    */
-  dispatchComposeEvent_(type, context, frameState, pixelTransform) {
+  dispatchRenderEvent_(type, context, frameState) {
     const layer = this.getLayer();
     if (layer.hasListener(type)) {
-      const composeEvent = new RenderEvent(type, pixelTransform, frameState,
-        context, null);
-      layer.dispatchEvent(composeEvent);
+      const event = new RenderEvent(type, this.inversePixelTransform_, frameState, context, null);
+      layer.dispatchEvent(event);
     }
   }
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../transform.js").Transform=} opt_transform Transform.
    * @protected
    */
-  preRender(context, frameState, opt_transform) {
-    this.dispatchComposeEvent_(RenderEventType.PRERENDER, context, frameState, opt_transform);
+  preRender(context, frameState) {
+    this.dispatchRenderEvent_(RenderEventType.PRERENDER, context, frameState);
   }
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../transform.js").Transform=} opt_transform Transform.
    * @protected
    */
-  postRender(context, frameState, opt_transform) {
-    this.dispatchComposeEvent_(RenderEventType.POSTRENDER, context, frameState, opt_transform);
-  }
-
-  /**
-   * @param {CanvasRenderingContext2D} context Context.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../transform.js").Transform=} opt_transform Transform.
-   * @protected
-   */
-  dispatchRenderEvent(context, frameState, opt_transform) {
-    this.dispatchComposeEvent_(RenderEventType.RENDER, context, frameState, opt_transform);
+  postRender(context, frameState) {
+    this.dispatchRenderEvent_(RenderEventType.POSTRENDER, context, frameState);
   }
 
   /**

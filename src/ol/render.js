@@ -92,7 +92,7 @@ export function toContext(context, opt_options) {
  */
 export function getVectorContext(event) {
   const frameState = event.frameState;
-  const transform = multiplyTransform(invertTransform(event.pixelTransform.slice()), frameState.coordinateToPixelTransform);
+  const transform = multiplyTransform(event.inversePixelTransform.slice(), frameState.coordinateToPixelTransform);
   return new CanvasImmediateRenderer(
     event.context, frameState.pixelRatio, frameState.extent, transform,
     frameState.viewState.rotation);
@@ -108,6 +108,6 @@ export function getVectorContext(event) {
  */
 export function getPixelFromPixel(event, pixel) {
   const result = pixel.slice(0);
-  applyTransform(invertTransform(event.pixelTransform.slice()), result);
+  applyTransform(event.inversePixelTransform.slice(), result);
   return result;
 }

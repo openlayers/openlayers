@@ -123,7 +123,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       context.clearRect(0, 0, width, height);
     }
 
-    this.preRender(context, frameState, pixelTransform);
+    this.preRender(context, frameState);
 
     const extent = frameState.extent;
     const viewState = frameState.viewState;
@@ -174,15 +174,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       }
     }
 
-    if (this.getLayer().hasListener(RenderEventType.RENDER)) {
-      this.dispatchRenderEvent(context, frameState, pixelTransform);
-    }
-
     if (clipped) {
       context.restore();
     }
 
-    this.postRender(context, frameState, pixelTransform);
+    this.postRender(context, frameState);
 
     const opacity = layerState.opacity;
     if (opacity !== canvas.style.opacity) {

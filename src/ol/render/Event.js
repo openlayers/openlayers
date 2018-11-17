@@ -8,22 +8,23 @@ class RenderEvent extends Event {
 
   /**
    * @param {import("./EventType.js").default} type Type.
-   * @param {import("../transform.js").Transform=} opt_pixelTransform Transform.
+   * @param {import("../transform.js").Transform=} opt_inversePixelTransform Transform for
+   *     CSS pixels to rendered pixels.
    * @param {import("../PluggableMap.js").FrameState=} opt_frameState Frame state.
    * @param {?CanvasRenderingContext2D=} opt_context Context.
    * @param {?import("../webgl/Helper.js").default=} opt_glContext WebGL Context.
    */
-  constructor(type, opt_pixelTransform, opt_frameState, opt_context, opt_glContext) {
+  constructor(type, opt_inversePixelTransform, opt_frameState, opt_context, opt_glContext) {
 
     super(type);
 
     /**
-     * Transform from css pixels (relative to the top-left corner of the map viewport)
-     * to render pixel on this event's `context`.
+     * Transform from CSS pixels (relative to the top-left corner of the map viewport)
+     * to rendered pixels on this event's `context`.
      * @type {import("../transform.js").Transform|undefined}
      * @api
      */
-    this.pixelTransform = opt_pixelTransform;
+    this.inversePixelTransform = opt_inversePixelTransform;
 
     /**
      * An object representing the current render frame state.

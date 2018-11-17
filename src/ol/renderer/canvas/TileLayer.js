@@ -246,7 +246,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       this.clipUnrotated(context, frameState, layerState.extent);
     }
 
-    this.preRender(context, frameState, pixelTransform);
+    this.preRender(context, frameState);
 
     this.renderedTiles.length = 0;
     /** @type {Array<number>} */
@@ -294,7 +294,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       projection, extent, z, tileLayer.getPreload());
     this.scheduleExpireCache(frameState, tileSource);
 
-    this.postRender(context, frameState, pixelTransform);
+    this.postRender(context, frameState);
 
     if (layerState.extent) {
       context.restore();
