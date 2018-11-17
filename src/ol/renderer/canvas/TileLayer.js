@@ -6,7 +6,7 @@ import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import {createEmpty, getIntersection, getTopLeft} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
-import {compose as composeTransform, toString as transformToString} from '../../transform.js';
+import {compose as composeTransform, makeInverse, toString as transformToString} from '../../transform.js';
 
 /**
  * @classdesc
@@ -222,15 +222,18 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       }
     }
 
+
     const canvas = context.canvas;
     const canvasScale = tileResolution / frameState.viewState.resolution / tilePixelRatio;
-    const pixelTransform = composeTransform(this.pixelTransform_,
+
+    // set forward and inverse pixel transforms
+    composeTransform(this.pixelTransform_,
       frameState.size[0] / 2, frameState.size[1] / 2,
       canvasScale, canvasScale,
       rotation,
       -width / 2, -height / 2
     );
-    const canvasTransform = transformToString(pixelTransform);
+    makeInverse(this.pixelTransform_, this.inversePixelTransform_);
 
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
@@ -302,6 +305,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       canvas.style.opacity = opacity;
     }
 
+    const canvasTransform = transformToString(this.pixelTransform_);
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;
     }

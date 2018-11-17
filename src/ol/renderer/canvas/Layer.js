@@ -28,18 +28,28 @@ class CanvasLayerRenderer extends LayerRenderer {
     this.renderedResolution;
 
     /**
-     * A temporary transform.
+     * A temporary transform.  The values in this transform should only be used in a
+     * function that sets the values.
      * @private
      * @type {import("../../transform.js").Transform}
      */
     this.tempTransform_ = createTransform();
 
     /**
-     * The transform for rendered pixels to viewport CSS pixels.
+     * The transform for rendered pixels to viewport CSS pixels.  This transform must
+     * be set when rendering a frame and may be used by other functions after rendering.
      * @private
      * @type {import("../../transform.js").Transform}
      */
     this.pixelTransform_ = createTransform();
+
+    /**
+     * The transform for viewport CSS pixels to rendered pixels.  This transform must
+     * be set when rendering a frame and may be used by other functions after rendering.
+     * @private
+     * @type {import("../../transform.js").Transform}
+     */
+    this.inversePixelTransform_ = createTransform();
 
     /**
      * @protected

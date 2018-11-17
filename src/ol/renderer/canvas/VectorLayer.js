@@ -13,7 +13,7 @@ import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import InstructionsGroupExecutor from '../../render/canvas/ExecutorGroup.js';
 import CanvasLayerRenderer from './Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
-import {toString as transformToString} from '../../transform.js';
+import {toString as transformToString, makeScale, makeInverse} from '../../transform.js';
 
 /**
  * @classdesc
@@ -105,8 +105,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const pixelRatio = frameState.pixelRatio;
 
-    // a scale transform (we could add a createScale function in ol/transform)
-    const pixelTransform = [1 / pixelRatio, 0, 0, 1 / pixelRatio, 0, 0];
+    // set forward and inverse pixel transforms
+    makeScale(this.pixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
+    makeInverse(this.pixelTransform_, this.inversePixelTransform_);
 
     // resize and clear
     const width = Math.round(frameState.size[0] * pixelRatio);
@@ -114,7 +115,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
-      const canvasTransform = transformToString(pixelTransform);
+      const canvasTransform = transformToString(this.pixelTransform_);
       if (canvas.style.transform !== canvasTransform) {
         canvas.style.transform = canvasTransform;
       }

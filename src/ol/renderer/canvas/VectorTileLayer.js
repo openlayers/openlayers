@@ -26,7 +26,9 @@ import {
   reset as resetTransform,
   scale as scaleTransform,
   translate as translateTransform,
-  toString as transformToString
+  toString as transformToString,
+  makeScale,
+  makeInverse
 } from '../../transform.js';
 import CanvasExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
 
@@ -97,6 +99,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
      * @type {import("../../transform.js").Transform}
      */
     this.overlayPixelTransform_ = createTransform();
+
+    /**
+     * The transform for viewport CSS pixels to rendered pixels for the overlay canvas.
+     * @private
+     * @type {import("../../transform.js").Transform}
+     */
+    this.inverseOverlayPixelTransform_ = createTransform();
 
     /**
      * Declutter tree.
@@ -384,12 +393,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const rotation = frameState.viewState.rotation;
     const size = frameState.size;
 
+    // set forward and inverse pixel transforms
+    makeScale(this.overlayPixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
+    makeInverse(this.overlayPixelTransform_, this.inverseOverlayPixelTransform_);
+
     // resize and clear
     const canvas = context.canvas;
     const width = Math.round(size[0] * pixelRatio);
     const height = Math.round(size[1] * pixelRatio);
-    this.overlayPixelTransform_[0] = 1 / pixelRatio;
-    this.overlayPixelTransform_[3] = 1 / pixelRatio;
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
