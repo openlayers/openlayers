@@ -1,12 +1,11 @@
 /**
  * @module ol/renderer/canvas/Map
  */
-import {stableSort} from '../array.js';
 import {CLASS_UNSELECTABLE} from '../css.js';
 import {visibleAtResolution} from '../layer/Layer.js';
 import RenderEvent from '../render/Event.js';
 import RenderEventType from '../render/EventType.js';
-import MapRenderer, {sortByZIndex} from './Map.js';
+import MapRenderer from './Map.js';
 import SourceState from '../source/State.js';
 import {replaceChildren} from '../dom.js';
 
@@ -79,8 +78,6 @@ class CompositeMapRenderer extends MapRenderer {
     this.dispatchRenderEvent(RenderEventType.PRECOMPOSE, frameState);
 
     const layerStatesArray = frameState.layerStatesArray;
-    stableSort(layerStatesArray, sortByZIndex);
-
     const viewResolution = frameState.viewState.resolution;
 
     this.children_.length = 0;
@@ -91,7 +88,14 @@ class CompositeMapRenderer extends MapRenderer {
       }
 
       const layer = layerState.layer;
-      this.children_.push(layer.render(frameState));
+      const element = layer.render(frameState);
+      if (element) {
+        const zIndex = layerState.zIndex;
+        if (zIndex !== element.style.zIndex) {
+          element.style.zIndex = zIndex;
+        }
+        this.children_.push(element);
+      }
     }
 
     replaceChildren(this.element_, this.children_);
