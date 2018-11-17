@@ -33,7 +33,7 @@ const DEFAULT_FRAGMENT_SHADER = `
 
 /**
  * @typedef {Object} Options
- * @property {WebGLContext} webGlContext WebGL context; mandatory.
+ * @property {WebGLRenderingContext} webGlContext WebGL context; mandatory.
  * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
  * the main canvas that will then be sampled up (useful for saving resource on blur steps).
  * @property {string} [vertexShader] Vertex shader source
@@ -43,7 +43,7 @@ const DEFAULT_FRAGMENT_SHADER = `
 
 /**
  * @typedef {Object} UniformInternalDescription
- * @property {UniformValue} value Value
+ * @property {import("./Helper").UniformValue} value Value
  * @property {number} location Location
  * @property {WebGLTexture} [texture] Texture
  * @private
