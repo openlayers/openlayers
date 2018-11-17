@@ -5,6 +5,7 @@ import {
   setFromArray,
   translate,
   scale,
+  makeScale,
   rotate,
   multiply,
   compose,
@@ -66,6 +67,20 @@ describe('ol.transform', function() {
       const transform = create();
       expect(scale(transform, 3, 4)).to.eql([3, 0, 0, 4, 0, 0]);
       expect(transform).to.eql([3, 0, 0, 4, 0, 0]);
+    });
+  });
+
+  describe('makeScale()', function() {
+    it('creates a scale transform', function() {
+      const target = create();
+      makeScale(target, 2, 3);
+      expect(target).to.eql([2, 0, 0, 3, 0, 0]);
+    });
+
+    it('returns the target', function() {
+      const target = create();
+      const transform = makeScale(target, 2, 3);
+      expect(transform).to.be(target);
     });
   });
 

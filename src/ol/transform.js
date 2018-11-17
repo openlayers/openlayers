@@ -162,6 +162,16 @@ export function scale(transform, x, y) {
   return multiply(transform, set(tmp_, x, 0, 0, y, 0, 0));
 }
 
+/**
+ * Creates a scale transform.
+ * @param {!Transform} target Transform to overwrite.
+ * @param {number} x Scale factor x.
+ * @param {number} y Scale factor y.
+ * @return {!Transform} The scale transform.
+ */
+export function makeScale(target, x, y) {
+  return set(target, x, 0, 0, y, 0, 0);
+}
 
 /**
  * Applies translation to the given transform.
