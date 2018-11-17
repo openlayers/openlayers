@@ -6,7 +6,7 @@ import ViewHint from '../../ViewHint.js';
 import {containsExtent, intersects} from '../../extent.js';
 import {getIntersection, isEmpty} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
-import {compose as composeTransform, toString as transformToString} from '../../transform.js';
+import {compose as composeTransform, makeInverse, toString as transformToString} from '../../transform.js';
 
 /**
  * @classdesc
@@ -93,16 +93,17 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       width = height = size;
     }
 
-    const context = this.context;
-    const canvas = context.canvas;
-
-    const pixelTransform = composeTransform(this.pixelTransform_,
+    // set forward and inverse pixel transforms
+    composeTransform(this.pixelTransform_,
       frameState.size[0] / 2, frameState.size[1] / 2,
       1 / pixelRatio, 1 / pixelRatio,
       rotation,
       -width / 2, -height / 2
     );
-    const canvasTransform = transformToString(pixelTransform);
+    makeInverse(this.inversePixelTransform_, this.pixelTransform_);
+
+    const context = this.context;
+    const canvas = context.canvas;
 
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
@@ -150,6 +151,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       canvas.style.opacity = opacity;
     }
 
+    const canvasTransform = transformToString(this.pixelTransform_);
     if (canvasTransform !== canvas.style.transform) {
       canvas.style.transform = canvasTransform;
     }

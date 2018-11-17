@@ -7,13 +7,12 @@ import {listen, unlisten} from '../../events.js';
 import EventType from '../../events/EventType.js';
 import rbush from 'rbush';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
-import RenderEventType from '../../render/EventType.js';
 import {labelCache} from '../../render/canvas.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import InstructionsGroupExecutor from '../../render/canvas/ExecutorGroup.js';
 import CanvasLayerRenderer from './Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
-import {toString as transformToString} from '../../transform.js';
+import {toString as transformToString, makeScale, makeInverse} from '../../transform.js';
 
 /**
  * @classdesc
@@ -105,8 +104,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const pixelRatio = frameState.pixelRatio;
 
-    // a scale transform (we could add a createScale function in ol/transform)
-    const pixelTransform = [1 / pixelRatio, 0, 0, 1 / pixelRatio, 0, 0];
+    // set forward and inverse pixel transforms
+    makeScale(this.pixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
+    makeInverse(this.inversePixelTransform_, this.pixelTransform_);
 
     // resize and clear
     const width = Math.round(frameState.size[0] * pixelRatio);
@@ -114,7 +114,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
-      const canvasTransform = transformToString(pixelTransform);
+      const canvasTransform = transformToString(this.pixelTransform_);
       if (canvas.style.transform !== canvasTransform) {
         canvas.style.transform = canvasTransform;
       }
@@ -122,7 +122,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       context.clearRect(0, 0, width, height);
     }
 
-    this.preRender(context, frameState, pixelTransform);
+    this.preRender(context, frameState);
 
     const extent = frameState.extent;
     const viewState = frameState.viewState;
@@ -173,15 +173,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       }
     }
 
-    if (this.getLayer().hasListener(RenderEventType.RENDER)) {
-      this.dispatchRenderEvent(context, frameState, pixelTransform);
-    }
-
     if (clipped) {
       context.restore();
     }
 
-    this.postRender(context, frameState, pixelTransform);
+    this.postRender(context, frameState);
 
     const opacity = layerState.opacity;
     if (opacity !== canvas.style.opacity) {

@@ -9,7 +9,7 @@ import {getWidth} from '../extent.js';
 import {TRUE} from '../functions.js';
 import {visibleAtResolution} from '../layer/Layer.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
-import {compose as composeTransform, invert as invertTransform, setFromArray as transformSetFromArray} from '../transform.js';
+import {compose as composeTransform, makeInverse} from '../transform.js';
 
 /**
  * @abstract
@@ -66,8 +66,7 @@ class MapRenderer extends Disposable {
       -viewState.rotation,
       -viewState.center[0], -viewState.center[1]);
 
-    invertTransform(
-      transformSetFromArray(pixelToCoordinateTransform, coordinateToPixelTransform));
+    makeInverse(pixelToCoordinateTransform, coordinateToPixelTransform);
   }
 
   /**

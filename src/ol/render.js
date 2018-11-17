@@ -5,7 +5,6 @@ import {DEVICE_PIXEL_RATIO} from './has.js';
 import {
   apply as applyTransform,
   create as createTransform,
-  invert as invertTransform,
   multiply as multiplyTransform,
   scale as scaleTransform
 } from './transform.js';
@@ -92,22 +91,22 @@ export function toContext(context, opt_options) {
  */
 export function getVectorContext(event) {
   const frameState = event.frameState;
-  const transform = multiplyTransform(invertTransform(event.pixelTransform.slice()), frameState.coordinateToPixelTransform);
+  const transform = multiplyTransform(event.inversePixelTransform.slice(), frameState.coordinateToPixelTransform);
   return new CanvasImmediateRenderer(
     event.context, frameState.pixelRatio, frameState.extent, transform,
     frameState.viewState.rotation);
 }
 
 /**
- * Gets the pixel of the event's canvas context from the map viewport's css pixel
+ * Gets the pixel of the event's canvas context from the map viewport's CSS pixel.
  * @param {import("./render/Event.js").default} event Render event.
- * @param {import("./pixel.js").Pixel} pixel Css pixel relative to the top-left
+ * @param {import("./pixel.js").Pixel} pixel CSS pixel relative to the top-left
  * corner of the map viewport.
  * @returns {import("./pixel.js").Pixel} Pixel on the event's canvas context.
  * @api
  */
-export function getPixelFromPixel(event, pixel) {
+export function getRenderPixel(event, pixel) {
   const result = pixel.slice(0);
-  applyTransform(invertTransform(event.pixelTransform.slice()), result);
+  applyTransform(event.inversePixelTransform.slice(), result);
   return result;
 }

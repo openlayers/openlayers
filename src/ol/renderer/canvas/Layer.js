@@ -7,7 +7,7 @@ import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import {rotateAtOffset} from '../../render/canvas.js';
 import LayerRenderer from '../Layer.js';
-import {invert as invertTransform, create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
+import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
 
 /**
  * @abstract
@@ -28,18 +28,28 @@ class CanvasLayerRenderer extends LayerRenderer {
     this.renderedResolution;
 
     /**
-     * A temporary transform.
+     * A temporary transform.  The values in this transform should only be used in a
+     * function that sets the values.
      * @private
      * @type {import("../../transform.js").Transform}
      */
     this.tempTransform_ = createTransform();
 
     /**
-     * The transform for rendered pixels to viewport CSS pixels.
+     * The transform for rendered pixels to viewport CSS pixels.  This transform must
+     * be set when rendering a frame and may be used by other functions after rendering.
      * @private
      * @type {import("../../transform.js").Transform}
      */
     this.pixelTransform_ = createTransform();
+
+    /**
+     * The transform for viewport CSS pixels to rendered pixels.  This transform must
+     * be set when rendering a frame and may be used by other functions after rendering.
+     * @private
+     * @type {import("../../transform.js").Transform}
+     */
+    this.inversePixelTransform_ = createTransform();
 
     /**
      * @protected
@@ -102,8 +112,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     applyTransform(frameState.coordinateToPixelTransform, bottomRight);
     applyTransform(frameState.coordinateToPixelTransform, bottomLeft);
 
-    const inverted = invertTransform(this.pixelTransform_.slice());
-
+    const inverted = this.inversePixelTransform_;
     applyTransform(inverted, topLeft);
     applyTransform(inverted, topRight);
     applyTransform(inverted, bottomRight);
@@ -122,46 +131,32 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @param {import("../../render/EventType.js").default} type Event type.
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../transform.js").Transform} pixelTransform Transform.
    * @private
    */
-  dispatchComposeEvent_(type, context, frameState, pixelTransform) {
+  dispatchRenderEvent_(type, context, frameState) {
     const layer = this.getLayer();
     if (layer.hasListener(type)) {
-      const composeEvent = new RenderEvent(type, pixelTransform, frameState,
-        context, null);
-      layer.dispatchEvent(composeEvent);
+      const event = new RenderEvent(type, this.inversePixelTransform_, frameState, context, null);
+      layer.dispatchEvent(event);
     }
   }
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../transform.js").Transform=} opt_transform Transform.
    * @protected
    */
-  preRender(context, frameState, opt_transform) {
-    this.dispatchComposeEvent_(RenderEventType.PRERENDER, context, frameState, opt_transform);
+  preRender(context, frameState) {
+    this.dispatchRenderEvent_(RenderEventType.PRERENDER, context, frameState);
   }
 
   /**
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../transform.js").Transform=} opt_transform Transform.
    * @protected
    */
-  postRender(context, frameState, opt_transform) {
-    this.dispatchComposeEvent_(RenderEventType.POSTRENDER, context, frameState, opt_transform);
-  }
-
-  /**
-   * @param {CanvasRenderingContext2D} context Context.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../transform.js").Transform=} opt_transform Transform.
-   * @protected
-   */
-  dispatchRenderEvent(context, frameState, opt_transform) {
-    this.dispatchComposeEvent_(RenderEventType.RENDER, context, frameState, opt_transform);
+  postRender(context, frameState) {
+    this.dispatchRenderEvent_(RenderEventType.POSTRENDER, context, frameState);
   }
 
   /**
@@ -194,7 +189,7 @@ class CanvasLayerRenderer extends LayerRenderer {
    *    returned, and empty array will be returned.
    */
   getDataAtPixel(pixel, frameState, hitTolerance) {
-    const renderPixel = applyTransform(invertTransform(this.pixelTransform_.slice()), pixel.slice());
+    const renderPixel = applyTransform(this.inversePixelTransform_, pixel.slice());
     const context = this.context;
 
     let data;
