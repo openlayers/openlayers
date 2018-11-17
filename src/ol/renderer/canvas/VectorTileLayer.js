@@ -394,7 +394,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     // set forward and inverse pixel transforms
     makeScale(this.overlayPixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
-    makeInverse(this.overlayPixelTransform_, this.inverseOverlayPixelTransform_);
+    makeInverse(this.inverseOverlayPixelTransform_, this.overlayPixelTransform_);
 
     // resize and clear
     const canvas = context.canvas;

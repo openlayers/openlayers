@@ -222,12 +222,12 @@ export function invert(source) {
 
 /**
  * Invert the given transform.
- * @param {!Transform} source The source transform to invert.
  * @param {!Transform} target Transform to be set as the inverse of
  *     the source transform.
+ * @param {!Transform} source The source transform to invert.
  * @return {!Transform} The inverted (target) transform.
  */
-export function makeInverse(source, target) {
+export function makeInverse(target, source) {
   const det = determinant(source);
   assert(det !== 0, 32); // Transformation matrix cannot be inverted
 

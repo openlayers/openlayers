@@ -149,7 +149,7 @@ describe('ol.transform', function() {
     it('makes the target the inverse of the source', function() {
       const source = [1, 1, 1, 2, 2, 0];
       const target = [1, 0, 0, 1, 0, 0];
-      makeInverse(source, target);
+      makeInverse(target, source);
       expect(source).to.eql([1, 1, 1, 2, 2, 0]);
       expect(target).to.eql([2, -1, -1, 1, -4, 2]);
     });
@@ -157,7 +157,7 @@ describe('ol.transform', function() {
     it('returns the target', function() {
       const source = [1, 1, 1, 2, 2, 0];
       const target = [1, 0, 0, 1, 0, 0];
-      const inverted = makeInverse(source, target);
+      const inverted = makeInverse(target, source);
       expect(target).to.be(inverted);
     });
   });

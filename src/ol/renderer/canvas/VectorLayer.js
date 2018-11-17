@@ -7,7 +7,6 @@ import {listen, unlisten} from '../../events.js';
 import EventType from '../../events/EventType.js';
 import rbush from 'rbush';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
-import RenderEventType from '../../render/EventType.js';
 import {labelCache} from '../../render/canvas.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import InstructionsGroupExecutor from '../../render/canvas/ExecutorGroup.js';
@@ -107,7 +106,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     // set forward and inverse pixel transforms
     makeScale(this.pixelTransform_, 1 / pixelRatio, 1 / pixelRatio);
-    makeInverse(this.pixelTransform_, this.inversePixelTransform_);
+    makeInverse(this.inversePixelTransform_, this.pixelTransform_);
 
     // resize and clear
     const width = Math.round(frameState.size[0] * pixelRatio);

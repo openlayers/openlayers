@@ -66,7 +66,7 @@ class MapRenderer extends Disposable {
       -viewState.rotation,
       -viewState.center[0], -viewState.center[1]);
 
-    makeInverse(coordinateToPixelTransform, pixelToCoordinateTransform);
+    makeInverse(pixelToCoordinateTransform, coordinateToPixelTransform);
   }
 
   /**

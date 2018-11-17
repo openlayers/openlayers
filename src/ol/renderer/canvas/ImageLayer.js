@@ -100,7 +100,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       rotation,
       -width / 2, -height / 2
     );
-    makeInverse(this.pixelTransform_, this.inversePixelTransform_);
+    makeInverse(this.inversePixelTransform_, this.pixelTransform_);
 
     const context = this.context;
     const canvas = context.canvas;

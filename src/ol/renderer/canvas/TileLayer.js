@@ -233,7 +233,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       rotation,
       -width / 2, -height / 2
     );
-    makeInverse(this.pixelTransform_, this.inversePixelTransform_);
+    makeInverse(this.inversePixelTransform_, this.pixelTransform_);
 
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
