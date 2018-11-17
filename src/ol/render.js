@@ -99,14 +99,14 @@ export function getVectorContext(event) {
 }
 
 /**
- * Gets the pixel of the event's canvas context from the map viewport's css pixel
+ * Gets the pixel of the event's canvas context from the map viewport's CSS pixel.
  * @param {import("./render/Event.js").default} event Render event.
- * @param {import("./pixel.js").Pixel} pixel Css pixel relative to the top-left
+ * @param {import("./pixel.js").Pixel} pixel CSS pixel relative to the top-left
  * corner of the map viewport.
  * @returns {import("./pixel.js").Pixel} Pixel on the event's canvas context.
  * @api
  */
-export function getPixelFromPixel(event, pixel) {
+export function getRenderPixel(event, pixel) {
   const result = pixel.slice(0);
   applyTransform(event.inversePixelTransform.slice(), result);
   return result;
