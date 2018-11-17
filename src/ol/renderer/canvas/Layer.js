@@ -7,7 +7,7 @@ import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import {rotateAtOffset} from '../../render/canvas.js';
 import LayerRenderer from '../Layer.js';
-import {invert as invertTransform, create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
+import {create as createTransform, apply as applyTransform, compose as composeTransform} from '../../transform.js';
 
 /**
  * @abstract
@@ -112,8 +112,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     applyTransform(frameState.coordinateToPixelTransform, bottomRight);
     applyTransform(frameState.coordinateToPixelTransform, bottomLeft);
 
-    const inverted = invertTransform(this.pixelTransform_.slice());
-
+    const inverted = this.inversePixelTransform_;
     applyTransform(inverted, topLeft);
     applyTransform(inverted, topRight);
     applyTransform(inverted, bottomRight);
@@ -190,7 +189,7 @@ class CanvasLayerRenderer extends LayerRenderer {
    *    returned, and empty array will be returned.
    */
   getDataAtPixel(pixel, frameState, hitTolerance) {
-    const renderPixel = applyTransform(invertTransform(this.pixelTransform_.slice()), pixel.slice());
+    const renderPixel = applyTransform(this.inversePixelTransform_, pixel.slice());
     const context = this.context;
 
     let data;

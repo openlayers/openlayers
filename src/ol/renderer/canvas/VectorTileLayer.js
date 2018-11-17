@@ -22,7 +22,6 @@ import {
   apply as applyTransform,
   create as createTransform,
   compose as composeTransform,
-  invert as invertTransform,
   reset as resetTransform,
   scale as scaleTransform,
   translate as translateTransform,
@@ -555,7 +554,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       return data;
     }
 
-    const renderPixel = applyTransform(invertTransform(this.overlayPixelTransform_.slice()), pixel.slice());
+    const renderPixel = applyTransform(this.inverseOverlayPixelTransform_, pixel.slice());
     const context = this.overlayContext_;
 
     try {

@@ -5,7 +5,6 @@ import {DEVICE_PIXEL_RATIO} from './has.js';
 import {
   apply as applyTransform,
   create as createTransform,
-  invert as invertTransform,
   multiply as multiplyTransform,
   scale as scaleTransform
 } from './transform.js';
