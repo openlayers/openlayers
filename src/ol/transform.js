@@ -203,30 +203,40 @@ export function compose(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
 
 /**
  * Invert the given transform.
- * @param {!Transform} transform Transform.
- * @return {!Transform} Inverse of the transform.
+ * @param {!Transform} source The source transform to invert.
+ * @return {!Transform} The inverted (source) transform.
  */
-export function invert(transform) {
-  const det = determinant(transform);
-  assert(det !== 0, 32); // Transformation matrix cannot be inverted
-
-  const a = transform[0];
-  const b = transform[1];
-  const c = transform[2];
-  const d = transform[3];
-  const e = transform[4];
-  const f = transform[5];
-
-  transform[0] = d / det;
-  transform[1] = -b / det;
-  transform[2] = -c / det;
-  transform[3] = a / det;
-  transform[4] = (c * f - d * e) / det;
-  transform[5] = -(a * f - b * e) / det;
-
-  return transform;
+export function invert(source) {
+  return makeInverse(source, source);
 }
 
+/**
+ * Invert the given transform.
+ * @param {!Transform} source The source transform to invert.
+ * @param {!Transform} target Transform to be set as the inverse of
+ *     the source transform.
+ * @return {!Transform} The inverted (target) transform.
+ */
+export function makeInverse(source, target) {
+  const det = determinant(source);
+  assert(det !== 0, 32); // Transformation matrix cannot be inverted
+
+  const a = source[0];
+  const b = source[1];
+  const c = source[2];
+  const d = source[3];
+  const e = source[4];
+  const f = source[5];
+
+  target[0] = d / det;
+  target[1] = -b / det;
+  target[2] = -c / det;
+  target[3] = a / det;
+  target[4] = (c * f - d * e) / det;
+  target[5] = -(a * f - b * e) / det;
+
+  return target;
+}
 
 /**
  * Returns the determinant of the given matrix.
