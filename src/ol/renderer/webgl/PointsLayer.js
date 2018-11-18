@@ -5,8 +5,6 @@ import LayerRenderer from '../Layer';
 import WebGLArrayBuffer from '../../webgl/Buffer';
 import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../webgl';
 import WebGLHelper, {DefaultAttrib, DefaultUniform} from '../../webgl/Helper';
-import WebGLVertex from '../../webgl/Vertex';
-import WebGLFragment from '../../webgl/Fragment';
 import GeometryType from '../../geom/GeometryType';
 
 const VERTEX_SHADER = `
@@ -146,9 +144,11 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     this.verticesBuffer_ = new WebGLArrayBuffer([], DYNAMIC_DRAW);
     this.indicesBuffer_ = new WebGLArrayBuffer([], DYNAMIC_DRAW);
 
-    const vertexShader = new WebGLVertex(options.vertexShader || VERTEX_SHADER);
-    const fragmentShader = new WebGLFragment(options.fragmentShader || FRAGMENT_SHADER);
-    this.program_ = this.context_.getProgram(fragmentShader, vertexShader);
+    this.program_ = this.context_.getProgram(
+      options.fragmentShader || FRAGMENT_SHADER,
+      options.vertexShader || VERTEX_SHADER
+    );
+
     this.context_.useProgram(this.program_);
 
     this.sizeCallback_ = options.sizeCallback || function(feature) {
@@ -228,6 +228,15 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     this.context_.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 4);
 
     return true;
+  }
+
+  /**
+   * Will return the last shader compilation errors. If no error happened, will return null;
+   * @return {string|null} Errors, or null if last compilation was successful
+   * @api
+   */
+  getShaderCompileErrors() {
+    return this.context_.getShaderCompileErrors();
   }
 }
 

@@ -27,6 +27,15 @@ import WebGLPostProcessingPass from './PostProcessingPass';
  */
 
 /**
+ * Shader types, either `FRAGMENT_SHADER` or `VERTEX_SHADER`
+ * @enum {number}
+ */
+export const ShaderType = {
+  FRAGMENT_SHADER: 0x8B30,
+  VERTEX_SHADER: 0x8B31
+};
+
+/**
  * Uniform names used in the default shaders.
  * @const
  * @type {Object.<string,string>}
@@ -222,15 +231,15 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {!Object<string, WebGLShader>}
+     * @type {!Array<WebGLShader>}
      */
-    this.shaderCache_ = {};
+    this.shaderCache_ = [];
 
     /**
      * @private
-     * @type {!Object<string, WebGLProgram>}
+     * @type {!Array<WebGLProgram>}
      */
-    this.programCache_ = {};
+    this.programCache_ = [];
 
     /**
      * @private
@@ -319,6 +328,12 @@ class WebGLHelper extends Disposable {
         uniforms: options.uniforms
       });
     }) : [new WebGLPostProcessingPass({webGlContext: gl})];
+
+    /**
+     * @type {string|null}
+     * @private
+     */
+    this.shaderCompileErrors_ = null;
   }
 
   /**
@@ -553,28 +568,6 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * Get shader from the cache if it's in the cache. Otherwise, create
-   * the WebGL shader, compile it, and add entry to cache.
-   * TODO: make compilation errors show up
-   * @param {import("./Shader.js").default} shaderObject Shader object.
-   * @return {WebGLShader} Shader.
-   * @api
-   */
-  getShader(shaderObject) {
-    const shaderKey = getUid(shaderObject);
-    if (shaderKey in this.shaderCache_) {
-      return this.shaderCache_[shaderKey];
-    } else {
-      const gl = this.getGL();
-      const shader = gl.createShader(shaderObject.getType());
-      gl.shaderSource(shader, shaderObject.getSource());
-      gl.compileShader(shader);
-      this.shaderCache_[shaderKey] = shader;
-      return shader;
-    }
-  }
-
-  /**
    * Use a program.  If the program is already in use, this will return `false`.
    * @param {WebGLProgram} program Program.
    * @return {boolean} Changed.
@@ -594,27 +587,62 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * Get the program from the cache if it's in the cache. Otherwise create
-   * the WebGL program, attach the shaders to it, and add an entry to the
-   * cache.
-   * @param {import("./Fragment.js").default} fragmentShaderObject Fragment shader.
-   * @param {import("./Vertex.js").default} vertexShaderObject Vertex shader.
-   * @return {WebGLProgram} Program.
+   * Will attempt to compile a vertex or fragment shader based on source
+   * On error, the shader will be returned but
+   * `gl.getShaderParameter(shader, gl.COMPILE_STATUS)` will return `true`
+   * Use `gl.getShaderInfoLog(shader)` to have details
+   * @param {string} source Shader source
+   * @param {ShaderType} type VERTEX_SHADER or FRAGMENT_SHADER
+   * @return {WebGLShader} Shader object
+   */
+  compileShader(source, type) {
+    const gl = this.getGL();
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    this.shaderCache_.push(shader);
+    return shader;
+  }
+
+  /**
+   * Create a program for a vertex and fragment shader. The shaders compilation may have failed:
+   * use `WebGLHelper.getShaderCompileErrors()`to have details if any.
+   * @param {string} fragmentShaderSource Fragment shader source.
+   * @param {string} vertexShaderSource Vertex shader source.
+   * @return {WebGLProgram} Program
    * @api
    */
-  getProgram(fragmentShaderObject, vertexShaderObject) {
-    const programKey = getUid(fragmentShaderObject) + '/' + getUid(vertexShaderObject);
-    if (programKey in this.programCache_) {
-      return this.programCache_[programKey];
-    } else {
-      const gl = this.getGL();
-      const program = gl.createProgram();
-      gl.attachShader(program, this.getShader(fragmentShaderObject));
-      gl.attachShader(program, this.getShader(vertexShaderObject));
-      gl.linkProgram(program);
-      this.programCache_[programKey] = program;
-      return program;
+  getProgram(fragmentShaderSource, vertexShaderSource) {
+    const gl = this.getGL();
+
+    const fragmentShader = this.compileShader(fragmentShaderSource, gl.FRAGMENT_SHADER);
+    const vertexShader = this.compileShader(vertexShaderSource, gl.VERTEX_SHADER);
+    this.shaderCompileErrors_ = null;
+
+    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+      this.shaderCompileErrors_ =
+        `Fragment shader compilation failed:\n${gl.getShaderInfoLog(fragmentShader)}`;
     }
+    if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
+      this.shaderCompileErrors_ = (this.shaderCompileErrors_ || '') +
+        `Vertex shader compilation failed:\n${gl.getShaderInfoLog(vertexShader)}`;
+    }
+
+    const program = gl.createProgram();
+    gl.attachShader(program, fragmentShader);
+    gl.attachShader(program, vertexShader);
+    gl.linkProgram(program);
+    this.programCache_.push(program);
+    return program;
+  }
+
+  /**
+   * Will return the last shader compilation errors. If no error happened, will return null;
+   * @return {string|null} Errors description, or null if last compilation was successful
+   * @api
+   */
+  getShaderCompileErrors() {
+    return this.shaderCompileErrors_;
   }
 
   /**
@@ -624,7 +652,7 @@ class WebGLHelper extends Disposable {
    * @api
    */
   getUniformLocation(name) {
-    if (!this.uniformLocations_[name]) {
+    if (this.uniformLocations_[name] === undefined) {
       this.uniformLocations_[name] = this.getGL().getUniformLocation(this.currentProgram_, name);
     }
     return this.uniformLocations_[name];
@@ -637,7 +665,7 @@ class WebGLHelper extends Disposable {
    * @api
    */
   getAttributeLocation(name) {
-    if (!this.attribLocations_[name]) {
+    if (this.attribLocations_[name] === undefined) {
       this.attribLocations_[name] = this.getGL().getAttribLocation(this.currentProgram_, name);
     }
     return this.attribLocations_[name];
