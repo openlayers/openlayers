@@ -6,7 +6,7 @@ import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import {createEmpty, getIntersection, getTopLeft} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
-import {compose as composeTransform, makeInverse, toString as transformToString} from '../../transform.js';
+import {apply as applyTransform, compose as composeTransform, makeInverse, toString as transformToString} from '../../transform.js';
 
 /**
  * @classdesc
@@ -20,12 +20,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    */
   constructor(tileLayer) {
     super(tileLayer);
-
-    /**
-     * @private
-     * @type {number}
-     */
-    this.oversampling_;
 
     /**
      * @private
@@ -152,17 +146,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     // desired dimensions of the canvas in pixels
     let width = Math.round(frameState.size[0] * tilePixelRatio);
     let height = Math.round(frameState.size[1] * tilePixelRatio);
-    if (tileResolution < viewResolution) {
-      // scale canvas so it covers the viewport until new tiles come in
-      let scale;
-      if (z <= tileGrid.minZoom) {
-        scale = Math.round(viewResolution / tileResolution);
-      } else {
-        scale = 1.5; // rely on lower z tiles
-      }
-      width *= scale;
-      height *= scale;
-    }
 
     if (rotation) {
       const size = Math.round(Math.sqrt(width * width + height * height));
@@ -178,7 +161,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       viewCenter[1] + dy
     ];
 
-    const tileRange = tileGrid.getTileRangeForExtentAndZ(canvasExtent, z);
+    const tileRange = tileGrid.getTileRangeForExtentAndZ(frameState.extent, z);
 
     /**
      * @type {Object<number, Object<string, import("../../Tile.js").default>>}
@@ -224,16 +207,24 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
 
     const canvas = context.canvas;
-    const canvasScale = tileResolution / frameState.viewState.resolution / tilePixelRatio;
+    const canvasScale = tileResolution / viewResolution;
 
     // set forward and inverse pixel transforms
     composeTransform(this.pixelTransform_,
       frameState.size[0] / 2, frameState.size[1] / 2,
-      canvasScale, canvasScale,
+      1 / tilePixelRatio, 1 / tilePixelRatio,
       rotation,
       -width / 2, -height / 2
     );
     makeInverse(this.inversePixelTransform_, this.pixelTransform_);
+
+    // set scale transform for calculating tile positions on the canvas
+    composeTransform(this.tempTransform_,
+      width / 2, height / 2,
+      canvasScale, canvasScale,
+      0,
+      -width / 2, -height / 2
+    );
 
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
@@ -266,19 +257,30 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       const currentTilePixelSize = tileSource.getTilePixelSize(currentZ, pixelRatio, projection);
       const currentResolution = tileGrid.getResolution(currentZ);
       const currentScale = currentResolution / tileResolution;
-      const w = currentTilePixelSize[0] * currentScale;
-      const h = currentTilePixelSize[1] * currentScale;
+      const dx = currentTilePixelSize[0] * currentScale * canvasScale;
+      const dy = currentTilePixelSize[1] * currentScale * canvasScale;
       const originTileCoord = tileGrid.getTileCoordForCoordAndZ(getTopLeft(canvasExtent), currentZ);
       const originTileExtent = tileGrid.getTileCoordExtent(originTileCoord);
-      const originX = Math.round(tilePixelRatio * (originTileExtent[0] - canvasExtent[0]) / tileResolution);
-      const originY = Math.round(tilePixelRatio * (canvasExtent[3] - originTileExtent[3]) / tileResolution);
+      const origin = applyTransform(this.tempTransform_, [
+        Math.round(tilePixelRatio * (originTileExtent[0] - canvasExtent[0]) / tileResolution),
+        Math.round(tilePixelRatio * (canvasExtent[3] - originTileExtent[3]) / tileResolution)
+      ]);
       const tileGutter = tilePixelRatio * tileSource.getGutterForProjection(projection);
       const tilesToDraw = tilesToDrawByZ[currentZ];
       for (const tileCoordKey in tilesToDraw) {
         const tile = tilesToDraw[tileCoordKey];
         const tileCoord = tile.tileCoord;
-        const x = originX - (originTileCoord[1] - tileCoord[1]) * w;
-        const y = originY + (originTileCoord[2] - tileCoord[2]) * h;
+
+        // Calculate integer positions and sizes so that tiles align
+        const floatX = (origin[0] - (originTileCoord[1] - tileCoord[1]) * dx);
+        const nextX = Math.round(floatX + dx);
+        const floatY = (origin[1] + (originTileCoord[2] - tileCoord[2]) * dy);
+        const nextY = Math.round(floatY + dy);
+        const x = Math.round(floatX);
+        const y = Math.round(floatY);
+        const w = nextX - x;
+        const h = nextY - y;
+
         this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
         this.renderedTiles.push(tile);
       }
