@@ -161,7 +161,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       viewCenter[1] + dy
     ];
 
-    const tileRange = tileGrid.getTileRangeForExtentAndZ(frameState.extent, z);
+    const tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
 
     /**
      * @type {Object<number, Object<string, import("../../Tile.js").default>>}

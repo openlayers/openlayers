@@ -11,7 +11,7 @@ new Map({
       source: new VectorTileSource({
         format: new MVT(),
         tileGrid: createXYZ(),
-        url: '/data/tiles/mvt/{z}-{x}-{y}.vector.pbf',
+        url: '/data/tiles/mapbox-streets-v6/{z}/{x}/{y}.vector.pbf',
         transition: 0
       })
     })
