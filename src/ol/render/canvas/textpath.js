@@ -2,6 +2,7 @@
  * @module ol/geom/flat/textpath
  */
 import {lerp} from '../../math.js';
+import {measureTextWidth} from '../canvas.js';
 
 
 /**
@@ -10,15 +11,18 @@ import {lerp} from '../../math.js';
  * @param {number} end End offset of the `flatCoordinates`.
  * @param {number} stride Stride.
  * @param {string} text Text to place on the path.
- * @param {function(string):number} measure Measure function returning the
- * width of the character passed as 1st argument.
+ * @param {number} textScale The scale of the text.
+ * @param {number} pixelRatio The pixel ratio to use for measuring text width.
+ * @param {string} font The font.
+ * @param {Object<string, number>} widths A cache of measured widths.
  * @param {number} startM m along the path where the text starts.
  * @param {number} maxAngle Max angle between adjacent chars in radians.
  * @return {Array<Array<*>>} The result array of null if `maxAngle` was
  * exceeded. Entries of the array are x, y, anchorX, angle, chunk.
  */
 export function drawTextOnPath(
-  flatCoordinates, offset, end, stride, text, measure, startM, maxAngle) {
+  flatCoordinates, offset, end, stride, text, textScale,
+  pixelRatio, font, widths, startM, maxAngle) {
   const result = [];
 
   // Keep text upright
@@ -41,7 +45,8 @@ export function drawTextOnPath(
     index = reverse ? numChars - i - 1 : i;
     const char = text.charAt(index);
     chunk = reverse ? char + chunk : chunk + char;
-    const charLength = measure(chunk) - chunkLength;
+
+    const charLength = drawTextOnPath.measure_(chunk, textScale, pixelRatio, font, widths) - chunkLength;
     chunkLength += charLength;
     const charM = startM + charLength / 2;
     while (offset < end - stride && segmentM + segmentLength < charM) {
@@ -90,3 +95,20 @@ export function drawTextOnPath(
   }
   return result;
 }
+
+/**
+ * A stubbable measure method.
+ * @param {string} text Thet text to measure.
+ * @param {number} textScale The scale.
+ * @param {number} measurePixelRatio The pixel ratio.
+ * @param {string} font The font.
+ * @param {Object<string, number>} widths Already measured widths.
+ * @return {number} The width of the text.
+ */
+drawTextOnPath.measure_ = function(text, textScale, measurePixelRatio, font, widths) {
+  let width = widths[text];
+  if (!width) {
+    width = widths[text] = measureTextWidth(font, text);
+  }
+  return width * textScale * measurePixelRatio;
+};

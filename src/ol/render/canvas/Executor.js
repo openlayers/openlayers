@@ -6,7 +6,7 @@ import {equals, reverseSubArray} from '../../array.js';
 import {buffer, clone, createEmpty, createOrUpdate,
   createOrUpdateEmpty, extend, extendCoordinate, intersects} from '../../extent.js';
 import {lineStringLength} from '../../geom/flat/length.js';
-import {drawTextOnPath} from '../../geom/flat/textpath.js';
+import {drawTextOnPath} from './textpath.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {CANVAS_LINE_DASH} from '../../has.js';
 import {isEmpty} from '../../obj.js';
@@ -743,22 +743,19 @@ class CanvasExecutor {
             this.widths_[font] = widths = {};
           }
 
-          //FIXME Do not create this function on every call
-          const measure = function(text) {
-            let width = widths[text];
-            if (!width) {
-              width = widths[text] = measureTextWidth(font, text);
-            }
-            return width * textScale * measurePixelRatio;
-          };
+          let textWidth = widths[text];
+          if (!textWidth) {
+            textWidth = widths[text] = measureTextWidth(font, text);
+          }
+          const textLength = textWidth * textScale * measurePixelRatio;
 
           const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
-          const textLength = measure(text);
           if (overflow || textLength <= pathLength) {
             const textAlign = this.textStates[textKey].textAlign;
             const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
             const parts = drawTextOnPath(
-              pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
+              pixelCoordinates, begin, end, 2, text, textScale,
+              measurePixelRatio, font, widths, startM, maxAngle);
             if (parts) {
               let c, cc, chars, label, part;
               if (strokeKey) {
