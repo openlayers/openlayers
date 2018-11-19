@@ -24,6 +24,8 @@ const staticHandler = serveStatic(__dirname);
 
 const defaultHandler = serveStatic(path.join(__dirname, 'default'));
 
+const srcHandler = serveStatic(path.join(__dirname, '..', 'src'));
+
 function indexHandler(req, res) {
   const items = [];
   for (const key in config.entry) {
@@ -47,8 +49,8 @@ function notFound(req, res) {
       return defaultHandler(req, res, () => indexHandler(req, res));
     }
 
-    // fall back to a listing of all cases
-    indexHandler(req, res);
+    // next try the src directory (only needed for ol/ol.css)
+    return srcHandler(req, res, () => indexHandler(req, res));
   };
 }
 

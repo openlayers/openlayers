@@ -29,9 +29,9 @@ class CompositeMapRenderer extends MapRenderer {
      */
     this.element_ = document.createElement('div');
     const style = this.element_.style;
+    style.position = 'absolute';
     style.width = '100%';
     style.height = '100%';
-    style.position = 'relative';
     style.zIndex = '0';
 
     this.element_.className = CLASS_UNSELECTABLE + ' ol-layers';

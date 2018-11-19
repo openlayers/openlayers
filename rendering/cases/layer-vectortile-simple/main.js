@@ -25,5 +25,5 @@ new Map({
 
 render({
   message: 'Vector tile layer renders',
-  tolerance: 0.02
+  tolerance: 0.01
 });
