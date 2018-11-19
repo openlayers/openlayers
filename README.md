@@ -62,4 +62,4 @@ Please see our guide on [contributing](CONTRIBUTING.md) if you're interested in 
 - Need help? Find it on [Stack Overflow using the tag 'openlayers'](http://stackoverflow.com/questions/tagged/openlayers)
 - Follow [@openlayers](https://twitter.com/openlayers) on Twitter
 
-[![Build Status](https://travis-ci.org/openlayers/openlayers.svg?branch=master)](https://travis-ci.org/openlayers/openlayers)
+[![CircleCI](https://circleci.com/gh/openlayers/openlayers/tree/master.svg?style=svg)](https://circleci.com/gh/openlayers/openlayers/tree/master)
