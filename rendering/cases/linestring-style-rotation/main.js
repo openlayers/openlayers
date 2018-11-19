@@ -67,4 +67,4 @@ new Map({
   })
 });
 
-render({tolerance: 0.02});
+render({tolerance: 0.01});

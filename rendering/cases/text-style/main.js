@@ -120,4 +120,4 @@ new Map({
   })
 });
 
-render({tolerance: 0.05});
+render({tolerance: 0.02});
