@@ -22,7 +22,7 @@ import {
 
 
 import {createCanvasContext2D} from '../../dom.js';
-import {labelCache, defaultTextAlign, measureTextHeight, measureTextWidth, measureAndCacheTextWidth, measureTextWidths} from '../canvas.js';
+import {labelCache, defaultTextAlign, measureTextHeight, measureAndCacheTextWidth, measureTextWidths} from '../canvas.js';
 
 
 /**
