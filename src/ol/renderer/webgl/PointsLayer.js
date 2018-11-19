@@ -134,7 +134,7 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
 
     const options = opt_options || {};
 
-    this.context_ = new WebGLHelper({
+    this.helper_ = new WebGLHelper({
       postProcesses: options.postProcesses,
       uniforms: options.uniforms
     });
@@ -144,12 +144,12 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     this.verticesBuffer_ = new WebGLArrayBuffer([], DYNAMIC_DRAW);
     this.indicesBuffer_ = new WebGLArrayBuffer([], DYNAMIC_DRAW);
 
-    this.program_ = this.context_.getProgram(
+    this.program_ = this.helper_.getProgram(
       options.fragmentShader || FRAGMENT_SHADER,
       options.vertexShader || VERTEX_SHADER
     );
 
-    this.context_.useProgram(this.program_);
+    this.helper_.useProgram(this.program_);
 
     this.sizeCallback_ = options.sizeCallback || function(feature) {
       return 1;
@@ -171,10 +171,10 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
    * @inheritDoc
    */
   renderFrame(frameState, layerState) {
-    this.context_.setUniformFloatValue(DefaultUniform.OPACITY, layerState.opacity);
-    this.context_.drawElements(0, this.indicesBuffer_.getArray().length);
-    this.context_.finalizeDraw(frameState);
-    return this.context_.getCanvas();
+    this.helper_.setUniformFloatValue(DefaultUniform.OPACITY, layerState.opacity);
+    this.helper_.drawElements(0, this.indicesBuffer_.getArray().length);
+    this.helper_.finalizeDraw(frameState);
+    return this.helper_.getCanvas();
   }
 
   /**
@@ -184,7 +184,7 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const vectorSource = /** @type {import("../../source/Vector.js").default} */ (vectorLayer.getSource());
 
-    this.context_.prepareDraw(frameState);
+    this.helper_.prepareDraw(frameState);
 
     if (this.sourceRevision_ < vectorSource.getRevision()) {
       this.sourceRevision_ = vectorSource.getRevision();
@@ -219,13 +219,13 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     }
 
     // write new data
-    this.context_.bindBuffer(ARRAY_BUFFER, this.verticesBuffer_);
-    this.context_.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+    this.helper_.bindBuffer(ARRAY_BUFFER, this.verticesBuffer_);
+    this.helper_.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
     const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
-    this.context_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * 6, 0);
-    this.context_.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 2);
-    this.context_.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 4);
+    this.helper_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * 6, 0);
+    this.helper_.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 2);
+    this.helper_.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 4);
 
     return true;
   }
@@ -236,7 +236,7 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
    * @api
    */
   getShaderCompileErrors() {
-    return this.context_.getShaderCompileErrors();
+    return this.helper_.getShaderCompileErrors();
   }
 }
 
