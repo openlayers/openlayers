@@ -19,10 +19,8 @@ import {
   apply as applyTransform,
   setFromArray as transformSetFromArray
 } from '../../transform.js';
-
-
 import {createCanvasContext2D} from '../../dom.js';
-import {labelCache, defaultTextAlign, measureTextHeight, measureTextWidth, measureTextWidths} from '../canvas.js';
+import {labelCache, defaultTextAlign, measureTextHeight, measureAndCacheTextWidth, measureTextWidths} from '../canvas.js';
 
 
 /**
@@ -736,29 +734,22 @@ class CanvasExecutor {
 
           const textState = this.textStates[textKey];
           const font = textState.font;
-          const textScale = textState.scale;
+          const textScale = textState.scale * measurePixelRatio;
 
-          let widths = this.widths_[font];
-          if (!widths) {
-            this.widths_[font] = widths = {};
+          let cachedWidths;
+          if (font in this.widths_) {
+            cachedWidths = this.widths_[font];
+          } else {
+            cachedWidths = this.widths_[font] = {};
           }
 
-          //FIXME Do not create this function on every call
-          const measure = function(text) {
-            let width = widths[text];
-            if (!width) {
-              width = widths[text] = measureTextWidth(font, text);
-            }
-            return width * textScale * measurePixelRatio;
-          };
-
           const pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
-          const textLength = measure(text);
+          const textLength = textScale * measureAndCacheTextWidth(font, text, cachedWidths);
           if (overflow || textLength <= pathLength) {
             const textAlign = this.textStates[textKey].textAlign;
             const startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
             const parts = drawTextOnPath(
-              pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
+              pixelCoordinates, begin, end, 2, text, startM, maxAngle, textScale, measureAndCacheTextWidth, font, cachedWidths);
             if (parts) {
               let c, cc, chars, label, part;
               if (strokeKey) {

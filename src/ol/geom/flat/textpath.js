@@ -10,15 +10,17 @@ import {lerp} from '../../math.js';
  * @param {number} end End offset of the `flatCoordinates`.
  * @param {number} stride Stride.
  * @param {string} text Text to place on the path.
- * @param {function(string):number} measure Measure function returning the
- * width of the character passed as 1st argument.
  * @param {number} startM m along the path where the text starts.
  * @param {number} maxAngle Max angle between adjacent chars in radians.
+ * @param {number} scale The product of the text scale and the device pixel ratio.
+ * @param {function(string, string, Object<string, number>):number} measureAndCacheTextWidth Measure and cache text width.
+ * @param {string} font The font.
+ * @param {Object<string, number>} cache A cache of measured widths.
  * @return {Array<Array<*>>} The result array of null if `maxAngle` was
  * exceeded. Entries of the array are x, y, anchorX, angle, chunk.
  */
 export function drawTextOnPath(
-  flatCoordinates, offset, end, stride, text, measure, startM, maxAngle) {
+  flatCoordinates, offset, end, stride, text, startM, maxAngle, scale, measureAndCacheTextWidth, font, cache) {
   const result = [];
 
   // Keep text upright
@@ -41,7 +43,7 @@ export function drawTextOnPath(
     index = reverse ? numChars - i - 1 : i;
     const char = text.charAt(index);
     chunk = reverse ? char + chunk : chunk + char;
-    const charLength = measure(chunk) - chunkLength;
+    const charLength = scale * measureAndCacheTextWidth(font, chunk, cache) - chunkLength;
     chunkLength += charLength;
     const charM = startM + charLength / 2;
     while (offset < end - stride && segmentM + segmentLength < charM) {

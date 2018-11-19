@@ -325,6 +325,22 @@ export function measureTextWidth(font, text) {
 
 
 /**
+ * Measure text width using a cache.
+ * @param {string} font The font.
+ * @param {string} text The text to measure.
+ * @param {Object<string, number>} cache A lookup of cached widths by text.
+ * @returns {number} The text width.
+ */
+export function measureAndCacheTextWidth(font, text, cache) {
+  if (text in cache) {
+    return cache[text];
+  }
+  const width = cache[text] = measureTextWidth(font, text);
+  return width;
+}
+
+
+/**
  * @param {string} font Font to use for measuring.
  * @param {Array<string>} lines Lines to measure.
  * @param {Array<number>} widths Array will be populated with the widths of
