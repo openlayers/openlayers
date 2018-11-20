@@ -188,7 +188,7 @@ class PluggableMap extends BaseObject {
      */
     this.animationDelay_ = function() {
       this.animationDelayKey_ = undefined;
-      this.renderFrame_.call(this, Date.now());
+      this.renderFrame_(Date.now());
     }.bind(this);
 
     /**
