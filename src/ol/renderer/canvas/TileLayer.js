@@ -100,7 +100,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       }
     }
     if (!this.isDrawableTile_(tile)) {
-      tile = tile.getInterimTile();
+      tile = tile.getInterimTile(tileLayer);
     }
     return tile;
   }

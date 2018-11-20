@@ -5,7 +5,7 @@ import {getUid} from '../../util.js';
 import {createCanvasContext2D} from '../../dom.js';
 import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
-import {listen, unlisten} from '../../events.js';
+import {listen, unlisten, unlistenByKey} from '../../events.js';
 import EventType from '../../events/EventType.js';
 import rbush from 'rbush';
 import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from '../../extent.js';
@@ -147,11 +147,20 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   getTile(z, x, y, pixelRatio, projection) {
-    const tile = super.getTile(z, x, y, pixelRatio, projection);
+    const tile = /** @type {import("../../VectorImageTile.js").default} */ (super.getTile(z, x, y, pixelRatio, projection));
+    if (tile.getState() === TileState.IDLE) {
+      const key = listen(tile, EventType.CHANGE, function() {
+        if (tile.sourceTilesLoaded) {
+          this.createExecutorGroup_(tile, pixelRatio, projection);
+          unlistenByKey(key);
+          tile.setState(TileState.LOADED);
+        }
+      }.bind(this));
+    }
     if (tile.getState() === TileState.LOADED) {
-      this.createExecutorGroup_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
+      this.createExecutorGroup_(tile, pixelRatio, projection);
       if (this.context) {
-        this.renderTileImage_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
+        this.renderTileImage_(tile, pixelRatio, projection);
       }
     }
     return tile;
@@ -162,7 +171,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   getTileImage(tile) {
     const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
-    return /** @type {import("../../VectorImageTile.js").default} */ (tile).getImage(tileLayer);
+    return tile.getImage(tileLayer);
   }
 
   /**
@@ -186,6 +195,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   createExecutorGroup_(tile, pixelRatio, projection) {
     const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+    const layerId = getUid(layer);
     const revision = layer.getRevision();
     const renderOrder = /** @type {import("../../render.js").OrderFunction} */ (layer.getRenderOrder()) || null;
 
@@ -207,13 +217,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       if (sourceTile.getState() != TileState.LOADED) {
         continue;
       }
-      if (tile.useLoadedOnly) {
-        const lowResExecutorGroup = sourceTile.getLowResExecutorGroup(layer, zoom, tileExtent);
-        if (lowResExecutorGroup) {
-          // reuse existing replay if we're rendering an interim tile
-          sourceTile.setExecutorGroup(layer, tile.tileCoord.toString(), lowResExecutorGroup);
-          continue;
-        }
+      if (tile.isInterimTile) {
+        // reuse existing replay if we're rendering an interim tile
+        sourceTile.setExecutorGroup(layerId, tile.tileCoord.toString(),
+          sourceTile.getLowResExecutorGroup(layerId, zoom, tileExtent));
+        continue;
       }
 
       const sourceTileCoord = sourceTile.tileCoord;
@@ -271,7 +279,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const executorGroupInstructions = builderGroup.finish();
       const renderingReplayGroup = new CanvasExecutorGroup(sharedExtent, resolution,
         pixelRatio, source.getOverlaps(), this.declutterTree_, executorGroupInstructions, layer.getRenderBuffer());
-      sourceTile.setExecutorGroup(layer, tile.tileCoord.toString(), renderingReplayGroup);
+      sourceTile.setExecutorGroup(getUid(layer), tile.tileCoord.toString(), renderingReplayGroup);
     }
     builderState.renderedRevision = revision;
     builderState.renderedRenderOrder = renderOrder;
@@ -303,7 +311,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         if (sourceTile.getState() != TileState.LOADED) {
           continue;
         }
-        const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(layer,
+        const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(getUid(layer),
           tile.tileCoord.toString()));
         found = found || executorGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
           /**
@@ -431,7 +439,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         if (sourceTile.getState() != TileState.LOADED) {
           continue;
         }
-        const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(layer, tileCoord.toString()));
+        const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(getUid(layer), tileCoord.toString()));
         if (!executorGroup || !executorGroup.hasExecutors(replayTypes)) {
           // sourceTile was not yet loaded when this.createReplayGroup_() was
           // called, or it has no replays of the types we want to render
@@ -536,7 +544,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         const transform = resetTransform(this.tmpTransform_);
         scaleTransform(transform, pixelScale, -pixelScale);
         translateTransform(transform, -tileExtent[0], -tileExtent[3]);
-        const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(layer,
+        const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(getUid(layer),
           tile.tileCoord.toString()));
         executorGroup.execute(context, transform, 0, {}, true, replays);
       }

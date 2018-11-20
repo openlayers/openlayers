@@ -2,7 +2,6 @@
  * @module ol/VectorTile
  */
 import {containsExtent} from './extent.js';
-import {getUid} from './util.js';
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 
@@ -140,23 +139,22 @@ class VectorTile extends Tile {
   }
 
   /**
-   * @param {import("./layer/Layer.js").default} layer Layer.
+   * @param {string} layerId UID of the layer.
    * @param {string} key Key.
    * @return {import("./render/canvas/ExecutorGroup.js").default} Executor group.
    */
-  getExecutorGroup(layer, key) {
-    return this.executorGroups_[getUid(layer) + ',' + key];
+  getExecutorGroup(layerId, key) {
+    return this.executorGroups_[layerId + ',' + key];
   }
 
   /**
    * Get the best matching lower resolution replay group for a given zoom and extent.
-   * @param {import("./layer/Layer").default} layer Layer.
+   * @param {string} layerId UID of the layer.
    * @param {number} zoom Zoom.
    * @param {import("./extent").Extent} extent Extent.
    * @return {import("./render/canvas/ExecutorGroup.js").default} Executor groups.
    */
-  getLowResExecutorGroup(layer, zoom, extent) {
-    const layerId = getUid(layer);
+  getLowResExecutorGroup(layerId, zoom, extent) {
     let bestZoom = 0;
     let replayGroup = null;
     for (const key in this.executorGroups_) {
@@ -242,12 +240,12 @@ class VectorTile extends Tile {
   }
 
   /**
-   * @param {import("./layer/Layer.js").default} layer Layer.
+   * @param {string} layerId UID of the layer.
    * @param {string} key Key.
    * @param {import("./render/canvas/ExecutorGroup.js").default} executorGroup Executor group.
    */
-  setExecutorGroup(layer, key, executorGroup) {
-    this.executorGroups_[getUid(layer) + ',' + key] = executorGroup;
+  setExecutorGroup(layerId, key, executorGroup) {
+    this.executorGroups_[layerId + ',' + key] = executorGroup;
   }
 
   /**

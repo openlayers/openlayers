@@ -73,6 +73,12 @@ class VectorImageTile extends Tile {
     this.sourceTiles_ = sourceTiles;
 
     /**
+     * @private
+     * @type {boolean}
+     */
+    this.sourceTilesLoaded = false;
+
+    /**
      * Keys of source tiles used by this tile. Use with {@link #getTile}.
      * @type {Array<string>}
      */
@@ -107,13 +113,13 @@ class VectorImageTile extends Tile {
      * Use only source tiles that are loaded already
      * @type {boolean}
      */
-    this.useLoadedOnly = zoom != tileCoord[0];
+    this.isInterimTile = zoom != tileCoord[0];
 
     if (urlTileCoord) {
       const extent = this.extent = tileGrid.getTileCoordExtent(urlTileCoord);
       const resolution = tileGrid.getResolution(zoom);
       const sourceZ = sourceTileGrid.getZForResolution(resolution);
-      const useLoadedOnly = this.useLoadedOnly;
+      const isInterimTile = this.isInterimTile;
       let loadCount = 0;
       sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
         let sharedExtent = getIntersection(extent,
@@ -128,7 +134,7 @@ class VectorImageTile extends Tile {
           ++loadCount;
           const sourceTileKey = sourceTileCoord.toString();
           let sourceTile = sourceTiles[sourceTileKey];
-          if (!sourceTile && !useLoadedOnly) {
+          if (!sourceTile && !isInterimTile) {
             const tileUrl = tileUrlFunction(sourceTileCoord, pixelRatio, projection);
             sourceTile = sourceTiles[sourceTileKey] = new tileClass(sourceTileCoord,
               tileUrl == undefined ? TileState.EMPTY : TileState.IDLE,
@@ -137,19 +143,19 @@ class VectorImageTile extends Tile {
             this.sourceTileListenerKeys_.push(
               listen(sourceTile, EventType.CHANGE, handleTileChange));
           }
-          if (sourceTile && (!useLoadedOnly || sourceTile.getState() == TileState.LOADED)) {
+          if (sourceTile && (!isInterimTile || sourceTile.getState() == TileState.LOADED)) {
             sourceTile.consumers++;
             this.tileKeys.push(sourceTileKey);
           }
         }
       }.bind(this));
 
-      if (useLoadedOnly && loadCount == this.tileKeys.length) {
+      if (isInterimTile && loadCount == this.tileKeys.length) {
         this.finishLoading_();
       }
 
-      this.createInterimTile_ = function() {
-        if (this.getState() !== TileState.LOADED && !useLoadedOnly) {
+      this.createInterimTile_ = function(layerId) {
+        if (this.getState() !== TileState.LOADED && !isInterimTile) {
           let bestZoom = -1;
           for (const key in sourceTiles) {
             const sourceTile = sourceTiles[key];
@@ -157,16 +163,20 @@ class VectorImageTile extends Tile {
               const sourceTileCoord = sourceTile.tileCoord;
               const sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
               if (containsExtent(sourceTileExtent, extent) && sourceTileCoord[0] > bestZoom) {
-                bestZoom = sourceTileCoord[0];
+                const lowResExecutorGroup = sourceTile.getLowResExecutorGroup(layerId, zoom, extent);
+                if (lowResExecutorGroup) {
+                  // reuse existing replay if we're rendering an interim tile
+                  sourceTile.setExecutorGroup(layerId, this.tileCoord.toString(), lowResExecutorGroup);
+                  bestZoom = sourceTileCoord[0];
+                }
               }
             }
           }
           if (bestZoom !== -1) {
-            const tile = new VectorImageTile(tileCoord, state, sourceRevision,
+            this.interimTile = new VectorImageTile(tileCoord, state, sourceRevision,
               format, tileLoadFunction, urlTileCoord, tileUrlFunction,
               sourceTileGrid, tileGrid, sourceTiles, pixelRatio, projection,
               tileClass, VOID, bestZoom);
-            this.interimTile = tile;
           }
         }
       };
@@ -174,11 +184,11 @@ class VectorImageTile extends Tile {
 
   }
 
-  getInterimTile() {
+  getInterimTile(layer) {
     if (!this.interimTile) {
-      this.createInterimTile_();
+      this.createInterimTile_(getUid(layer));
     }
-    return super.getInterimTile();
+    return super.getInterimTile(layer);
   }
 
   /**
@@ -331,7 +341,7 @@ class VectorImageTile extends Tile {
       this.loadListenerKeys_.forEach(unlistenByKey);
       this.loadListenerKeys_.length = 0;
       this.sourceTilesLoaded = true;
-      this.setState(TileState.LOADED);
+      this.changed();
     } else {
       this.setState(empty == this.tileKeys.length ? TileState.EMPTY : TileState.ERROR);
     }
