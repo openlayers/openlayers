@@ -198,7 +198,7 @@ describe('ol.source.WMTS', function() {
 
         const projection = getProjection('EPSG:3857');
         const url = source.tileUrlFunction(
-          source.getTileCoordForTileUrlFunction([1, 1, -2]), 1, projection);
+          source.getTileCoordForTileUrlFunction([1, 1, 1]), 1, projection);
         expect(url).to.be.eql('http://host/layer/default/EPSG:3857/1/1/1.jpg');
       });
 
@@ -215,7 +215,7 @@ describe('ol.source.WMTS', function() {
 
         const projection = getProjection('EPSG:3857');
         const url = source.tileUrlFunction(
-          source.getTileCoordForTileUrlFunction([1, 1, -2]), 1, projection);
+          source.getTileCoordForTileUrlFunction([1, 1, 1]), 1, projection);
         expect(url).to.be.eql('http://host/layer/default/EPSG:3857/1/1/1.jpg');
       });
 
@@ -233,7 +233,7 @@ describe('ol.source.WMTS', function() {
 
         const projection = getProjection('EPSG:3857');
         const url = source.tileUrlFunction(
-          source.getTileCoordForTileUrlFunction([1, 1, -2]), 1, projection);
+          source.getTileCoordForTileUrlFunction([1, 1, 1]), 1, projection);
         expect(url).to.be.eql('http://host/layer/default/42/EPSG:3857/1/1/1.jpg');
       });
   });
@@ -334,7 +334,7 @@ describe('ol.source.WMTS', function() {
         'https://b.example.com/{TileMatrix}/{TileRow}/{TileCol}.jpg'
       ];
       source.setUrls(urls);
-      const tileUrl1 = source.tileUrlFunction([2, 9, 4], 1, projection);
+      const tileUrl1 = source.tileUrlFunction([2, 9, -5], 1, projection);
       expect(tileUrl1).to.match(/https\:\/\/[ab]\.example\.com\/2\/-5\/9\.jpg/);
     });
   });

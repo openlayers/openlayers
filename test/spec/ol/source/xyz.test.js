@@ -93,18 +93,15 @@ describe('ol.source.XYZ', function() {
       it('returns the expected URL', function() {
         const projection = xyzTileSource.getProjection();
         let tileUrl = xyzTileSource.tileUrlFunction(
-          xyzTileSource.getTileCoordForTileUrlFunction(
-            [6, -31, -23], projection));
+          xyzTileSource.getTileCoordForTileUrlFunction([6, -31, 22], projection));
         expect(tileUrl).to.eql('6/33/22');
 
         tileUrl = xyzTileSource.tileUrlFunction(
-          xyzTileSource.getTileCoordForTileUrlFunction(
-            [6, 33, -23], projection));
+          xyzTileSource.getTileCoordForTileUrlFunction([6, 33, 22], projection));
         expect(tileUrl).to.eql('6/33/22');
 
         tileUrl = xyzTileSource.tileUrlFunction(
-          xyzTileSource.getTileCoordForTileUrlFunction(
-            [6, 97, -23], projection));
+          xyzTileSource.getTileCoordForTileUrlFunction([6, 97, 22], projection));
         expect(tileUrl).to.eql('6/33/22');
       });
 
@@ -115,18 +112,15 @@ describe('ol.source.XYZ', function() {
       it('returns the expected URL', function() {
         const projection = xyzTileSource.getProjection();
         let tileUrl = xyzTileSource.tileUrlFunction(
-          xyzTileSource.getTileCoordForTileUrlFunction(
-            [6, 33, 0], projection));
+          xyzTileSource.getTileCoordForTileUrlFunction([6, 33, -1], projection));
         expect(tileUrl).to.be(undefined);
 
         tileUrl = xyzTileSource.tileUrlFunction(
-          xyzTileSource.getTileCoordForTileUrlFunction(
-            [6, 33, -23], projection));
+          xyzTileSource.getTileCoordForTileUrlFunction([6, 33, 22], projection));
         expect(tileUrl).to.eql('6/33/22');
 
         tileUrl = xyzTileSource.tileUrlFunction(
-          xyzTileSource.getTileCoordForTileUrlFunction(
-            [6, 33, -65], projection));
+          xyzTileSource.getTileCoordForTileUrlFunction([6, 33, 64], projection));
         expect(tileUrl).to.be(undefined);
       });
 

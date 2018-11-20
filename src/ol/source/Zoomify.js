@@ -213,7 +213,7 @@ class Zoomify extends TileImage {
           } else {
             const tileCoordZ = tileCoord[0];
             const tileCoordX = tileCoord[1];
-            const tileCoordY = -tileCoord[2] - 1;
+            const tileCoordY = tileCoord[2];
             const tileIndex =
                 tileCoordX +
                 tileCoordY * tierSizeInTiles[tileCoordZ][0];

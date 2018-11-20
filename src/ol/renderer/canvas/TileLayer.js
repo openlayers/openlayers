@@ -274,7 +274,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         // Calculate integer positions and sizes so that tiles align
         const floatX = (origin[0] - (originTileCoord[1] - tileCoord[1]) * dx);
         const nextX = Math.round(floatX + dx);
-        const floatY = (origin[1] + (originTileCoord[2] - tileCoord[2]) * dy);
+        const floatY = (origin[1] - (originTileCoord[2] - tileCoord[2]) * dy);
         const nextY = Math.round(floatY + dy);
         const x = Math.round(floatX);
         const y = Math.round(floatY);

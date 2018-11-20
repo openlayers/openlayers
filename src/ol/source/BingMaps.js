@@ -250,7 +250,7 @@ class BingMaps extends TileImage {
             if (!tileCoord) {
               return undefined;
             } else {
-              createOrUpdate(tileCoord[0], tileCoord[1], -tileCoord[2] - 1, quadKeyTileCoord);
+              createOrUpdate(tileCoord[0], tileCoord[1], tileCoord[2], quadKeyTileCoord);
               let url = imageUrl;
               if (hidpi) {
                 url += '&dpi=d1&device=mobile';
