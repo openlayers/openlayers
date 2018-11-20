@@ -1,9 +1,16 @@
-import BingMaps from '../../../../src/ol/source/BingMaps.js';
-import {quadKey} from '../../../../src/ol/tilecoord.js';
+import BingMaps, {quadKey} from '../../../../src/ol/source/BingMaps.js';
 import {unByKey} from '../../../../src/ol/Observable.js';
 
 
 describe('ol.source.BingMaps', function() {
+
+  describe('quadKey()', function() {
+    it('returns expected string', function() {
+      const tileCoord = [3, 3, 5];
+      const s = quadKey(tileCoord);
+      expect(s).to.eql('213');
+    });
+  });
 
   describe('#tileUrlFunction()', function() {
 

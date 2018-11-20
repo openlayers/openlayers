@@ -1,5 +1,4 @@
 import {
-  quadKey,
   getKey,
   fromKey,
   hash,
@@ -16,14 +15,6 @@ describe('ol.TileCoord', function() {
       expect(tileCoord[0]).to.eql(1);
       expect(tileCoord[1]).to.eql(2);
       expect(tileCoord[2]).to.eql(3);
-    });
-  });
-
-  describe('call quadKey', function() {
-    it('returns expected string', function() {
-      const tileCoord = [3, 3, 5];
-      const s = quadKey(tileCoord);
-      expect(s).to.eql('213');
     });
   });
 
