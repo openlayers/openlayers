@@ -1,6 +1,4 @@
 import WebGLHelper from '../../../../src/ol/webgl/Helper';
-import WebGLVertex from '../../../../src/ol/webgl/Vertex';
-import WebGLFragment from '../../../../src/ol/webgl/Fragment';
 
 
 const VERTEX_SHADER = `
@@ -20,11 +18,15 @@ const VERTEX_SHADER = `
 const INVALID_VERTEX_SHADER = `
   precision mediump float;
   
-  attribute float a_test;
+  uniform mat4 u_projectionMatrix;
+  uniform mat4 u_offsetScaleMatrix;
+  uniform mat4 u_offsetRotateMatrix;
+  
+  bla
   uniform float u_test;
   
   void main(void) {
-    gl_Position = vec4(1, 1, 1, 0);
+    gl_Position = vec4(u_test, a_test, 0.0, 1.0);
   }`;
 
 const FRAGMENT_SHADER = `
@@ -96,9 +98,7 @@ describe('ol.webgl.WebGLHelper', function() {
             u_test3: document.createElement('canvas')
           }
         });
-        const vertexShader = new WebGLVertex(VERTEX_SHADER);
-        const fragmentShader = new WebGLFragment(FRAGMENT_SHADER);
-        h.useProgram(h.getProgram(fragmentShader, vertexShader));
+        h.useProgram(h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER));
         h.prepareDraw({
           pixelRatio: 2,
           size: [50, 80],
@@ -133,14 +133,16 @@ describe('ol.webgl.WebGLHelper', function() {
       beforeEach(function() {
         h = new WebGLHelper();
 
-        const vertexShader = new WebGLVertex(VERTEX_SHADER);
-        const fragmentShader = new WebGLFragment(FRAGMENT_SHADER);
-        p = h.getProgram(fragmentShader, vertexShader);
+        p = h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
         h.useProgram(p);
       });
 
       it('has saved the program', function() {
         expect(h.currentProgram_).to.eql(p);
+      });
+
+      it('has no shader compilation error', function() {
+        expect(h.shaderCompileErrors_).to.eql(null);
       });
 
       it('can find the uniform location', function() {
@@ -162,9 +164,7 @@ describe('ol.webgl.WebGLHelper', function() {
       beforeEach(function() {
         h = new WebGLHelper();
 
-        const vertexShader = new WebGLVertex(INVALID_VERTEX_SHADER);
-        const fragmentShader = new WebGLFragment(FRAGMENT_SHADER);
-        p = h.getProgram(fragmentShader, vertexShader);
+        p = h.getProgram(FRAGMENT_SHADER, INVALID_VERTEX_SHADER);
         h.useProgram(p);
       });
 
@@ -172,12 +172,12 @@ describe('ol.webgl.WebGLHelper', function() {
         expect(h.currentProgram_).to.eql(p);
       });
 
-      it('cannot find the uniform location', function() {
-        expect(h.getUniformLocation('u_test')).to.eql(null);
+      it('has shader compilation errors', function() {
+        expect(h.shaderCompileErrors_).to.not.eql(null);
       });
 
-      it('cannot find the attribute location', function() {
-        expect(h.getAttributeLocation('a_test')).to.eql(-1);
+      it('cannot find the uniform location', function() {
+        expect(h.getUniformLocation('u_test')).to.eql(null);
       });
     });
 

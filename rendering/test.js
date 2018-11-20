@@ -356,7 +356,7 @@ if (require.main === module) {
     option('puppeteer-args', {
       describe: 'Additional args for Puppeteer',
       type: 'array',
-      default: process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox'] : []
+      default: process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox', '--ignore-gpu-blacklist'] : []
     }).
     parse();
 
