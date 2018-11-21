@@ -20,7 +20,7 @@ import {appendParams} from '../uri.js';
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {import("../tilegrid/WMTS.js").default} tileGrid Tile grid.
- * @property {import("../proj.js").ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("./WMTSRequestEncoding.js").default|string} [requestEncoding='KVP'] Request encoding.
