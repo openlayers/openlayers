@@ -3,6 +3,7 @@
  */
 import {getUid} from '../../util.js';
 import {createCanvasContext2D} from '../../dom.js';
+import {getValues} from '../../obj.js';
 import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
 import {listen, unlisten, unlistenByKey} from '../../events.js';
@@ -124,9 +125,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     /**
      * @private
-     * @type {Object<string, import("../../VectorImageTile").default>}
+     * @type {Array<import("../../VectorImageTile.js").default>}
      */
-    this.tilesToPrepare_ = null;
+    this.tilesWithoutImage_ = null;
+
+    /**
+     * @private
+     * @type {Object<string, import("../../events").EventsKey)}
+     */
+    this.tileChangeKeys_ = {};
 
     /**
      * @private
@@ -146,6 +153,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   disposeInternal() {
     unlisten(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
+    getValues(this.tileChangeKeys_).forEach(unlistenByKey);
     super.disposeInternal();
   }
 
@@ -154,28 +162,48 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   getTile(z, x, y, pixelRatio, projection) {
     const tile = /** @type {import("../../VectorImageTile.js").default} */ (super.getTile(z, x, y, pixelRatio, projection));
-    if (tile.getState() === TileState.IDLE) {
-      const key = listen(tile, EventType.CHANGE, function() {
-        if (tile.sourceTilesLoaded) {
-          this.updateExecutorGroup_(tile, pixelRatio, projection);
-          if (!this.tilesToPrepare_) {
-            this.tilesToPrepare_ = {};
+    const uid = getUid(tile);
+    if (!(uid in this.tileChangeKeys_) && tile.getState() === TileState.IDLE) {
+      this.tileChangeKeys_[uid] = listen(tile, EventType.CHANGE, function() {
+        const state = tile.getState();
+        if (state === TileState.ABORT || tile.sourceTilesLoaded) {
+          unlistenByKey(this.tileChangeKeys_[uid]);
+          delete this.tileChangeKeys_[uid];
+          if (tile.sourceTilesLoaded) {
+            this.updateExecutorGroup_(tile, pixelRatio, projection);
+            //FIXME This should be done by the tile, and VectorImage tiles should be layer specific
             tile.setState(TileState.LOADED);
-          } else {
-            const tileId = getUid(tile);
-            if (!(tileId in this.tilesToPrepare_)) {
-              this.tilesToPrepare_[tileId] = [tile, pixelRatio, projection];
-            }
           }
-          unlistenByKey(key);
         }
       }.bind(this));
     }
     if (tile.getState() === TileState.LOADED) {
       this.updateExecutorGroup_(tile, pixelRatio, projection);
-      this.renderTileImage_(tile, pixelRatio, projection);
+      if (tile.hasContext(this.getLayer())) {
+        this.renderTileImage_(tile, pixelRatio, projection);
+      } else {
+        this.tilesWithoutImage_.push(tile);
+      }
     }
     return tile;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  loadedTileCallback(tiles, zoom, tile) {
+    if (!tile.hasContext(this.getLayer())) {
+      this.tilesWithoutImage_.push(tile);
+      return false;
+    }
+    return super.loadedTileCallback(tiles, zoom, tile);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  isDrawableTile(tile) {
+    return super.isDrawableTile(tile) && tile.hasContext(this.getLayer());
   }
 
   /**
@@ -386,11 +414,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   renderFrame(frameState, layerState) {
+    this.tilesWithoutImage_ = [];
     super.renderFrame(frameState, layerState);
 
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
+    const viewHints = frameState.viewHints;
+    const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
     const renderMode = layer.getRenderMode();
     if (renderMode === VectorTileRenderType.IMAGE) {
+      this.renderMissingTileImages_(hifi, frameState);
       return this.container_;
     }
 
@@ -424,8 +456,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (declutterReplays) {
       this.declutterTree_.clear();
     }
-    const viewHints = frameState.viewHints;
-    const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
     const tiles = this.renderedTiles;
     const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
     const clips = [];
@@ -487,28 +517,22 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       canvas.style.opacity = opacity;
     }
 
-    if (this.tilesToPrepare_) {
-      for (const key in this.tilesToPrepare_) {
-        if (!hifi || Date.now() - frameState.time >= 16) {
-          break;
-        }
-        const args = this.tilesToPrepare_[key];
-        delete this.tilesToPrepare_[key];
-        const tile = args[0];
-        if (!tile.disposed) {
-          frameState.animate = true;
-          this.renderTileImage_.apply(this, args);
-          tile.setState(TileState.LOADED);
-        }
-      }
-      if (Object.keys(this.tilesToPrepare_).length > 0) {
-        frameState.animate = true;
-      } else {
-        this.tilesToPrepare_ = null;
-      }
-    }
+    this.renderMissingTileImages_(hifi, frameState);
 
     return this.container_;
+  }
+
+  renderMissingTileImages_(hifi, frameState) {
+    if (hifi) {
+      while (this.tilesWithoutImage_.length && Date.now() - frameState.time < 100) {
+        const tile = this.tilesWithoutImage_.pop();
+        frameState.animate = true;
+        this.renderTileImage_(tile, frameState.pixelRatio, frameState.viewState.projection);
+      }
+    }
+    if (this.tilesWithoutImage_.length) {
+      frameState.animate = true;
+    }
   }
 
   /**

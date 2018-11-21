@@ -75,8 +75,11 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileGrid: createXYZ()
       });
       source.getTile = function() {
-        arguments[1] = TileState.LOADED;
         const tile = VectorTileSource.prototype.getTile.apply(source, arguments);
+        tile.hasContext = function() {
+          return true;
+        };
+        tile.sourceTilesLoaded = true;
         tile.setState(TileState.LOADED);
         return tile;
       };
@@ -242,9 +245,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       sourceTile.getImage = function() {
         return document.createElement('canvas');
       };
-      const tileUrlFunction = function() {};
       const tile = new VectorImageTile([0, 0, 0], undefined, undefined, undefined,
-        undefined, [0, 0, 0], undefined, createXYZ(), createXYZ(), undefined, undefined,
+        undefined, [0, 0, 0], undefined, createXYZ(), createXYZ(), {'0,0,0': sourceTile}, undefined,
         undefined, undefined, undefined);
       tile.transition_ = 0;
       tile.wrappedTileCoord = [0, 0, 0];
@@ -256,6 +258,9 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         return tile;
       };
       const renderer = new CanvasVectorTileLayerRenderer(layer);
+      renderer.isDrawableTile = function() {
+        return true;
+      };
       const proj = getProjection('EPSG:3857');
       const frameState = {
         extent: proj.getExtent(),

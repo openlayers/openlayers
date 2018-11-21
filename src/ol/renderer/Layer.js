@@ -49,6 +49,18 @@ class LayerRenderer extends Observable {
   }
 
   /**
+   * @param {Object<number, Object<string, import("../Tile.js").default>>} tiles Lookup of loaded tiles by zoom level.
+   * @param {number} zoom Zoom level.
+   * @param {import("../Tile.js").default} tile Tile.
+   */
+  loadedTileCallback(tiles, zoom, tile) {
+    if (!tiles[zoom]) {
+      tiles[zoom] = {};
+    }
+    tiles[zoom][tile.tileCoord.toString()] = tile;
+  }
+
+  /**
    * Create a function that adds loaded tiles to the tile lookup.
    * @param {import("../source/Tile.js").default} source Tile source.
    * @param {import("../proj/Projection.js").default} projection Projection of the tiles.
@@ -63,20 +75,13 @@ class LayerRenderer extends Observable {
        * @param {number} zoom Zoom level.
        * @param {import("../TileRange.js").default} tileRange Tile range.
        * @return {boolean} The tile range is fully loaded.
+       * @this {LayerRenderer}
        */
       function(zoom, tileRange) {
-        /**
-         * @param {import("../Tile.js").default} tile Tile.
-         */
-        function callback(tile) {
-          if (!tiles[zoom]) {
-            tiles[zoom] = {};
-          }
-          tiles[zoom][tile.tileCoord.toString()] = tile;
-        }
+        const callback = this.loadedTileCallback.bind(this, tiles, zoom);
         return source.forEachLoadedTile(projection, zoom, tileRange, callback);
       }
-    );
+    ).bind(this);
   }
 
   /**

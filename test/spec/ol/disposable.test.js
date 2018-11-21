@@ -12,17 +12,17 @@ describe('ol.Disposable', function() {
 
   });
 
-  describe('#disposed', function() {
+  describe('#disposed_', function() {
 
     it('is initially false', function() {
       const disposable = new Disposable();
-      expect(disposable.disposed).to.be(false);
+      expect(disposable.disposed_).to.be(false);
     });
 
     it('is true after a call to dispose', function() {
       const disposable = new Disposable();
       disposable.dispose();
-      expect(disposable.disposed).to.be(true);
+      expect(disposable.disposed_).to.be(true);
     });
 
   });

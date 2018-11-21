@@ -65,11 +65,11 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @private
+   * @protected
    * @param {import("../../Tile.js").default} tile Tile.
    * @return {boolean} Tile is drawable.
    */
-  isDrawableTile_(tile) {
+  isDrawableTile(tile) {
     const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
     const tileState = tile.getState();
     const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
@@ -99,7 +99,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         this.newTiles_ = true;
       }
     }
-    if (!this.isDrawableTile_(tile)) {
+    if (!this.isDrawableTile(tile)) {
       tile = tile.getInterimTile();
     }
     return tile;
@@ -177,7 +177,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
         const tile = this.getTile(z, x, y, pixelRatio, projection);
-        if (this.isDrawableTile_(tile)) {
+        if (this.isDrawableTile(tile)) {
           const uid = getUid(this);
           if (tile.getState() == TileState.LOADED) {
             tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;

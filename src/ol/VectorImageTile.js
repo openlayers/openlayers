@@ -143,8 +143,7 @@ class VectorImageTile extends Tile {
    * @inheritDoc
    */
   disposeInternal() {
-    this.state = TileState.ABORT;
-    this.changed();
+    this.setState(TileState.ABORT);
 
     for (let i = 0, ii = this.tileKeys.length; i < ii; ++i) {
       const sourceTileKey = this.tileKeys[i];
@@ -174,6 +173,14 @@ class VectorImageTile extends Tile {
       this.context_[key] = createCanvasContext2D();
     }
     return this.context_[key];
+  }
+
+  /**
+   * @param {import("./layer/Layer.js").default} layer Layer.
+   * @return {boolean} Tile has a rendering context for the given layer.
+   */
+  hasContext(layer) {
+    return getUid(layer) in this.context_;
   }
 
   /**
@@ -262,7 +269,7 @@ class VectorImageTile extends Tile {
       }.bind(this));
     }
     if (leftToLoad - Object.keys(errorSourceTiles).length == 0) {
-      setTimeout(this.finishLoading_.bind(this), 0);
+      setTimeout(this.finishLoading_.bind(this), 16);
     }
   }
 

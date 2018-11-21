@@ -1,7 +1,6 @@
 /**
  * @module ol/VectorTile
  */
-import {containsExtent} from './extent.js';
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 
@@ -145,30 +144,6 @@ class VectorTile extends Tile {
    */
   getExecutorGroup(layerId, key) {
     return this.executorGroups_[layerId + ',' + key];
-  }
-
-  /**
-   * Get the best matching lower resolution replay group for a given zoom and extent.
-   * @param {string} layerId UID of the layer.
-   * @param {number} zoom Zoom.
-   * @param {import("./extent").Extent} extent Extent.
-   * @return {import("./render/canvas/ExecutorGroup.js").default} Executor groups.
-   */
-  getLowResExecutorGroup(layerId, zoom, extent) {
-    let bestZoom = 0;
-    let replayGroup = null;
-    for (const key in this.executorGroups_) {
-      const keyData = key.split(',');
-      const candidateZoom = Number(keyData[1]);
-      if (keyData[0] === layerId && candidateZoom <= zoom) {
-        const candidate = this.executorGroups_[key];
-        if (containsExtent(candidate.getMaxExtent(), extent) && candidateZoom > bestZoom) {
-          replayGroup = candidate;
-          bestZoom = candidateZoom;
-        }
-      }
-    }
-    return replayGroup;
   }
 
   /**
