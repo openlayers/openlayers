@@ -58,7 +58,7 @@ describe('ol.source.VectorTile', function() {
 
   describe('Tile load events', function() {
     it('triggers tileloadstart and tileloadend with ol.VectorTile', function(done) {
-      tile = source.getTile(14, 8938, -5681, 1, getProjection('EPSG:3857'));
+      tile = source.getTile(14, 8938, 5680, 1, getProjection('EPSG:3857'));
       let started = false;
       source.on('tileloadstart', function() {
         started = true;
@@ -82,10 +82,10 @@ describe('ol.source.VectorTile', function() {
       loaded = [];
       requested = 0;
 
-      function tileUrlFunction(tileUrl) {
+      function tileUrlFunction(tileCoord) {
         ++requested;
-        if (tileUrl.toString() == '6,27,55') {
-          return tileUrl.join('/');
+        if (tileCoord.toString() == '6,27,-57') {
+          return tileCoord.join('/');
         }
       }
 
@@ -133,7 +133,7 @@ describe('ol.source.VectorTile', function() {
       map.renderSync();
       setTimeout(function() {
         expect(requested).to.be.greaterThan(1);
-        expect(loaded).to.eql(['6/27/55']);
+        expect(loaded).to.eql(['6/27/-57']);
         done();
       }, 0);
     });

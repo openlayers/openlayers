@@ -4,6 +4,53 @@
 
 #### Backwards incompatible changes
 
+##### New internal tile coordinates
+
+Previously, the internal tile coordinates used in the library had an unusual row order – the origin of the tile coordinate system was at the top left as expected, but the rows increased upwards.  This meant that all tile coordinates within a tile grid's extent had negative `y` values.
+
+Now, the internal tile coordinates used in the library have the same row order as standard (e.g. XYZ) tile coordinates.  The origin is at the top left (as before), and rows or `y` values increase downward.  So the top left tile of a tile grid is now `0, 0`, whereas it was `0, -1` before.
+
+```
+x, y values for tile coordinates
+
+origin
+  *__________________________
+  |        |        |        |
+  |  0, 0  |  1, 0  |  2, 0  |
+  |________|________|________|
+  |        |        |        |
+  |  0, 1  |  1, 1  |  2, 1  |
+  |________|________|________|
+  |        |        |        |
+  |  0, 2  |  1, 2  |  2, 2  |
+  |________|________|________|
+```
+
+This change should only affect you if you were using a custom `tileLoadFunction` or `tileUrlFunction`.  For example, if you used to have a `tileUrlFunction` that looked like this:
+
+```js
+// before
+function tileUrlFunction(tileCoord) {
+  const z = tileCoord[0];
+  const x = tileCoord[1];
+  const y = -tileCoord[2] - 1;
+  // do something with z, x, y
+}
+```
+
+You would now do something like this:
+```js
+// after
+function tileUrlFunction(tileCoord) {
+  const z = tileCoord[0];
+  const x = tileCoord[1];
+  const y = tileCoord[2];
+  // do something with z, x, y
+}
+```
+
+In addition (this should be exceedingly rare), if you previously created a `ol/tilegrid/WMTS` by hand and you were providing an array of `sizes`, you no longer have to provide a negative height if your tile origin is the top-left corner (the common case).  On the other hand, if you are providing a custom array of `sizes` and your origin is the bottom of the grid (this is uncommon), your height values must now be negative.
+
 ##### Removal of the "vector" render mode for vector tile layers
 
 If you were previously using `VectorTile` layers with `renderMode: 'vector'`, you have to remove this configuration option. That mode was removed. `'hybrid'` (default) and `'image'` are still available.

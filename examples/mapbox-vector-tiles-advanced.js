@@ -21,7 +21,7 @@ function tileUrlFunction(tileCoord) {
       '{z}/{x}/{y}.vector.pbf?access_token=' + key)
     .replace('{z}', String(tileCoord[0] * 2 - 1))
     .replace('{x}', String(tileCoord[1]))
-    .replace('{y}', String(-tileCoord[2] - 1))
+    .replace('{y}', String(tileCoord[2]))
     .replace('{a-d}', 'abcd'.substr(
       ((tileCoord[1] << tileCoord[0]) + tileCoord[2]) % 4, 1));
 }

@@ -58,7 +58,9 @@ describe('ol.source.TileJSON', function() {
         tilejson: '2.2.0',
         tiles: [
           'https://a.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png',
-          'https://b.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png'
+          'https://b.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png',
+          'https://c.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png',
+          'https://d.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png'
         ],
         version: '1.0.0',
         webpage: 'https://a.tiles.mapbox.com/v3/mapbox.geography-class/page.html'
@@ -67,7 +69,11 @@ describe('ol.source.TileJSON', function() {
         tileJSON: tileJSON
       });
       expect(source.getState()).to.be('ready');
-      expect(source.getTileUrlFunction()([0, 0, -1])).to.be('https://b.tiles.mapbox.com/v3/mapbox.geography-class/0/0/0.png');
+      expect(source.getTileUrlFunction()([0, 0, 0])).to.be('https://a.tiles.mapbox.com/v3/mapbox.geography-class/0/0/0.png');
+      expect(source.getTileUrlFunction()([1, 0, 0])).to.be('https://a.tiles.mapbox.com/v3/mapbox.geography-class/1/0/0.png');
+      expect(source.getTileUrlFunction()([1, 0, 1])).to.be('https://b.tiles.mapbox.com/v3/mapbox.geography-class/1/0/1.png');
+      expect(source.getTileUrlFunction()([1, 1, 0])).to.be('https://c.tiles.mapbox.com/v3/mapbox.geography-class/1/1/0.png');
+      expect(source.getTileUrlFunction()([1, 1, 1])).to.be('https://d.tiles.mapbox.com/v3/mapbox.geography-class/1/1/1.png');
     });
   });
 

@@ -13,8 +13,8 @@ describe('ol.VectorImageTile', function() {
   it('configures loader that sets features on the source tile', function(done) {
     const format = new GeoJSON();
     const url = 'spec/ol/data/point.json';
-    const tile = new VectorImageTile([0, 0, -1], 0, url, format,
-      defaultLoadFunction, [0, 0, -1], function() {
+    const tile = new VectorImageTile([0, 0, 0], 0, url, format,
+      defaultLoadFunction, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ(), {},
       1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
@@ -38,7 +38,7 @@ describe('ol.VectorImageTile', function() {
       function(tile, url) {
         sourceTile = tile;
         defaultLoadFunction(tile, url);
-      }, [0, 0, -1], function() {
+      }, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ(), {},
       1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
@@ -61,8 +61,8 @@ describe('ol.VectorImageTile', function() {
   it('sets ERROR state when source tiles fail to load', function(done) {
     const format = new GeoJSON();
     const url = 'spec/ol/data/unavailable.json';
-    const tile = new VectorImageTile([0, 0, -1], 0, url, format,
-      defaultLoadFunction, [0, 0, -1], function() {
+    const tile = new VectorImageTile([0, 0, 0], 0, url, format,
+      defaultLoadFunction, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ(), {},
       1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
@@ -78,8 +78,8 @@ describe('ol.VectorImageTile', function() {
   it('sets EMPTY state when tile has only empty source tiles', function(done) {
     const format = new GeoJSON();
     const url = '';
-    const tile = new VectorImageTile([0, 0, -1], 0, url, format,
-      defaultLoadFunction, [0, 0, -1], function() {},
+    const tile = new VectorImageTile([0, 0, 0], 0, url, format,
+      defaultLoadFunction, [0, 0, 0], function() {},
       createXYZ(), createXYZ(), {},
       1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
 
@@ -100,22 +100,22 @@ describe('ol.VectorImageTile', function() {
       extent: [-88, 35, -87, 36]
     });
     const sourceTiles = {};
-    const tile = new VectorImageTile([1, 0, -1], 0, url, format,
-      defaultLoadFunction, [1, 0, -1], function(zxy) {
+    const tile = new VectorImageTile([1, 0, 0], 0, url, format,
+      defaultLoadFunction, [1, 0, 0], function(zxy) {
         return url;
       }, tileGrid,
       createXYZ({extent: [-180, -90, 180, 90], tileSize: 512}),
       sourceTiles, 1, getProjection('EPSG:4326'), VectorTile, function() {}, 1);
     tile.load();
     expect(tile.tileKeys.length).to.be(1);
-    expect(tile.getTile(tile.tileKeys[0]).tileCoord).to.eql([0, 16, -10]);
+    expect(tile.getTile(tile.tileKeys[0]).tileCoord).to.eql([0, 16, 9]);
   });
 
   it('#dispose() while loading', function() {
     const format = new GeoJSON();
     const url = 'spec/ol/data/point.json';
     const tile = new VectorImageTile([0, 0, 0] /* one world away */, 0, url, format,
-      defaultLoadFunction, [0, 0, -1], function() {
+      defaultLoadFunction, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ({tileSize: 512}), {},
       1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
@@ -134,8 +134,8 @@ describe('ol.VectorImageTile', function() {
   it('#dispose() when loaded', function(done) {
     const format = new GeoJSON();
     const url = 'spec/ol/data/point.json';
-    const tile = new VectorImageTile([0, 0, -1], 0, url, format,
-      defaultLoadFunction, [0, 0, -1], function() {
+    const tile = new VectorImageTile([0, 0, 0], 0, url, format,
+      defaultLoadFunction, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ({tileSize: 512}), {},
       1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);

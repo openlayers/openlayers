@@ -507,7 +507,7 @@ function createFromWMTSTemplate(template) {
         const localContext = {
           'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
           'TileCol': tileCoord[1],
-          'TileRow': -tileCoord[2] - 1
+          'TileRow': tileCoord[2]
         };
         assign(localContext, dimensions);
         let url = template;

@@ -121,7 +121,7 @@ class TileDebug extends XYZ {
       const textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
       let text;
       if (textTileCoord) {
-        text = 'z:' + textTileCoord[0] + ' x:' + textTileCoord[1] + ' y:' + (-textTileCoord[2] - 1);
+        text = 'z:' + textTileCoord[0] + ' x:' + textTileCoord[1] + ' y:' + textTileCoord[2];
       } else {
         text = 'none';
       }

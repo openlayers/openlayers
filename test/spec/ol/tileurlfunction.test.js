@@ -51,12 +51,12 @@ describe('ol.TileUrlFunction', function() {
     const tileGrid = createXYZ();
     it('creates expected URL', function() {
       const tileUrl = createFromTemplate('{z}/{x}/{y}', tileGrid);
-      expect(tileUrl([3, 2, -2])).to.eql('3/2/1');
+      expect(tileUrl([3, 2, 1])).to.eql('3/2/1');
       expect(tileUrl(null)).to.be(undefined);
     });
     it('accepts {-y} placeholder', function() {
       const tileUrl = createFromTemplate('{z}/{x}/{-y}', tileGrid);
-      expect(tileUrl([3, 2, -3])).to.eql('3/2/5');
+      expect(tileUrl([3, 2, 2])).to.eql('3/2/5');
     });
     it('returns correct value for {-y} with custom tile grids', function() {
       const customTileGrid = new TileGrid({
@@ -65,11 +65,11 @@ describe('ol.TileUrlFunction', function() {
         resolutions: [360 / 256, 360 / 512, 360 / 1024, 360 / 2048]
       });
       const tileUrl = createFromTemplate('{z}/{x}/{-y}', customTileGrid);
-      expect(tileUrl([3, 2, -3])).to.eql('3/2/1');
+      expect(tileUrl([3, 2, 2])).to.eql('3/2/1');
     });
     it('replaces multiple placeholder occurrences', function() {
       const tileUrl = createFromTemplate('{z}/{z}{x}{y}', tileGrid);
-      expect(tileUrl([3, 2, -2])).to.eql('3/321');
+      expect(tileUrl([3, 2, 1])).to.eql('3/321');
     });
   });
 
@@ -80,7 +80,7 @@ describe('ol.TileUrlFunction', function() {
         'http://tile-1/{z}/{x}/{y}'
       ];
       const tileUrlFunction = createFromTemplates(templates, tileGrid);
-      const tileCoord = [3, 2, -2];
+      const tileCoord = [3, 2, 1];
 
       expect(tileUrlFunction(tileCoord)).to.eql('http://tile-1/3/2/1');
     });
