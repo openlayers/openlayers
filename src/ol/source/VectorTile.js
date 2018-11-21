@@ -20,7 +20,7 @@ import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.
  * to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
  * stroke operations.
- * @property {import("../proj.js").ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {import("./State.js").default} [state] Source state.
  * @property {typeof import("../VectorTile.js").default} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/VectorTile}.

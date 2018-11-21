@@ -40,7 +40,7 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
- * @property {import("../proj.js").ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or
  * higher.

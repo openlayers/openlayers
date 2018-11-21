@@ -31,7 +31,7 @@ import SourceState from './State.js';
  * @typedef {Object} Options
  * @property {AttributionLike} [attributions]
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
- * @property {import("../proj.js").ProjectionLike} projection
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {SourceState} [state='ready']
  * @property {boolean} [wrapX=false]
  */
@@ -105,7 +105,7 @@ class Source extends BaseObject {
   }
 
   /**
-   * @return {boolean} Aattributions are collapsible.
+   * @return {boolean} Attributions are collapsible.
    */
   getAttributionsCollapsible() {
     return this.attributionsCollapsible_;
