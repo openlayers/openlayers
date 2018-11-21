@@ -6,10 +6,9 @@ import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 import {listen, unlistenByKey} from './events.js';
-import {containsExtent, getHeight, getIntersection, getWidth} from './extent.js';
+import {getHeight, getIntersection, getWidth} from './extent.js';
 import EventType from './events/EventType.js';
 import {loadFeaturesXhr} from './featureloader.js';
-import {VOID} from './functions.js';
 
 
 /**
@@ -40,11 +39,10 @@ class VectorImageTile extends Tile {
    *     instantiate for source tiles.
    * @param {function(this: import("./source/VectorTile.js").default, import("./events/Event.js").default)} handleTileChange
    *     Function to call when a source tile's state changes.
-   * @param {number} zoom Integer zoom to render the tile for.
    */
   constructor(tileCoord, state, sourceRevision, format, tileLoadFunction,
     urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid, sourceTiles,
-    pixelRatio, projection, tileClass, handleTileChange, zoom) {
+    pixelRatio, projection, tileClass, handleTileChange) {
 
     super(tileCoord, state, {transition: 0});
 
@@ -109,18 +107,10 @@ class VectorImageTile extends Tile {
      */
     this.sourceTileListenerKeys_ = [];
 
-    /**
-     * Use only source tiles that are loaded already
-     * @type {boolean}
-     */
-    this.isInterimTile = zoom != tileCoord[0];
-
     if (urlTileCoord) {
       const extent = this.extent = tileGrid.getTileCoordExtent(urlTileCoord);
-      const resolution = tileGrid.getResolution(zoom);
+      const resolution = tileGrid.getResolution(urlTileCoord[0]);
       const sourceZ = sourceTileGrid.getZForResolution(resolution);
-      const isInterimTile = this.isInterimTile;
-      let loadCount = 0;
       sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
         let sharedExtent = getIntersection(extent,
           sourceTileGrid.getTileCoordExtent(sourceTileCoord));
@@ -131,10 +121,9 @@ class VectorImageTile extends Tile {
         if (getWidth(sharedExtent) / resolution >= 0.5 &&
             getHeight(sharedExtent) / resolution >= 0.5) {
           // only include source tile if overlap is at least 1 pixel
-          ++loadCount;
           const sourceTileKey = sourceTileCoord.toString();
           let sourceTile = sourceTiles[sourceTileKey];
-          if (!sourceTile && !isInterimTile) {
+          if (!sourceTile) {
             const tileUrl = tileUrlFunction(sourceTileCoord, pixelRatio, projection);
             sourceTile = sourceTiles[sourceTileKey] = new tileClass(sourceTileCoord,
               tileUrl == undefined ? TileState.EMPTY : TileState.IDLE,
@@ -143,64 +132,19 @@ class VectorImageTile extends Tile {
             this.sourceTileListenerKeys_.push(
               listen(sourceTile, EventType.CHANGE, handleTileChange));
           }
-          if (sourceTile && (!isInterimTile || sourceTile.getState() == TileState.LOADED)) {
-            sourceTile.consumers++;
-            this.tileKeys.push(sourceTileKey);
-          }
+          sourceTile.consumers++;
+          this.tileKeys.push(sourceTileKey);
         }
       }.bind(this));
-
-      if (isInterimTile && loadCount == this.tileKeys.length) {
-        this.finishLoading_();
-      }
-
-      this.createInterimTile_ = function(layerId) {
-        if (this.getState() !== TileState.LOADED && !isInterimTile) {
-          let bestZoom = -1;
-          for (const key in sourceTiles) {
-            const sourceTile = sourceTiles[key];
-            if (sourceTile.getState() === TileState.LOADED) {
-              const sourceTileCoord = sourceTile.tileCoord;
-              const sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
-              if (containsExtent(sourceTileExtent, extent) && sourceTileCoord[0] > bestZoom) {
-                const lowResExecutorGroup = sourceTile.getLowResExecutorGroup(layerId, zoom, extent);
-                if (lowResExecutorGroup) {
-                  // reuse existing replay if we're rendering an interim tile
-                  sourceTile.setExecutorGroup(layerId, this.tileCoord.toString(), lowResExecutorGroup);
-                  bestZoom = sourceTileCoord[0];
-                }
-              }
-            }
-          }
-          if (bestZoom !== -1) {
-            this.interimTile = new VectorImageTile(tileCoord, state, sourceRevision,
-              format, tileLoadFunction, urlTileCoord, tileUrlFunction,
-              sourceTileGrid, tileGrid, sourceTiles, pixelRatio, projection,
-              tileClass, VOID, bestZoom);
-          }
-        }
-      };
     }
-
-  }
-
-  getInterimTile(layer) {
-    if (!this.interimTile) {
-      this.createInterimTile_(getUid(layer));
-    }
-    return super.getInterimTile(layer);
   }
 
   /**
    * @inheritDoc
    */
   disposeInternal() {
-    delete this.createInterimTile_;
     this.state = TileState.ABORT;
     this.changed();
-    if (this.interimTile) {
-      this.interimTile.dispose();
-    }
 
     for (let i = 0, ii = this.tileKeys.length; i < ii; ++i) {
       const sourceTileKey = this.tileKeys[i];

@@ -195,7 +195,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   createExecutorGroup_(tile, pixelRatio, projection) {
     const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
-    const layerId = getUid(layer);
     const revision = layer.getRevision();
     const renderOrder = /** @type {import("../../render.js").OrderFunction} */ (layer.getRenderOrder()) || null;
 
@@ -217,13 +216,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       if (sourceTile.getState() != TileState.LOADED) {
         continue;
       }
-      if (tile.isInterimTile) {
-        // reuse existing replay if we're rendering an interim tile
-        sourceTile.setExecutorGroup(layerId, tile.tileCoord.toString(),
-          sourceTile.getLowResExecutorGroup(layerId, zoom, tileExtent));
-        continue;
-      }
-
       const sourceTileCoord = sourceTile.tileCoord;
       const sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
       const sharedExtent = getIntersection(tileExtent, sourceTileExtent);

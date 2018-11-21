@@ -146,10 +146,9 @@ class Tile extends EventTarget {
    * Get the interim tile most suitable for rendering using the chain of interim
    * tiles. This corresponds to the  most recent tile that has been loaded, if no
    * such tile exists, the original tile is returned.
-   * @param {import("./layer/Layer").default} layer Layer.
    * @return {!Tile} Best tile for rendering.
    */
-  getInterimTile(layer) {
+  getInterimTile() {
     if (!this.interimTile) {
       //empty chain
       return this;

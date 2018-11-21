@@ -244,8 +244,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       };
       const tileUrlFunction = function() {};
       const tile = new VectorImageTile([0, 0, 0], undefined, undefined, undefined,
-        undefined, [0, 0, 0], tileUrlFunction, createXYZ(), createXYZ(), {}, undefined,
-        undefined, VectorTile, undefined, 0);
+        undefined, [0, 0, 0], undefined, createXYZ(), createXYZ(), undefined, undefined,
+        undefined, undefined, undefined);
       tile.transition_ = 0;
       tile.wrappedTileCoord = [0, 0, 0];
       tile.setState(TileState.LOADED);

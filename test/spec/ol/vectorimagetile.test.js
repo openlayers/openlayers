@@ -17,7 +17,7 @@ describe('ol.VectorImageTile', function() {
       defaultLoadFunction, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ(), {},
-      1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
+      1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
     const sourceTile = tile.getTile(tile.tileKeys[0]);
@@ -41,7 +41,7 @@ describe('ol.VectorImageTile', function() {
       }, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ(), {},
-      1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
+      1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
     let calls = 0;
@@ -65,7 +65,7 @@ describe('ol.VectorImageTile', function() {
       defaultLoadFunction, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ(), {},
-      1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
+      1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
 
@@ -81,7 +81,7 @@ describe('ol.VectorImageTile', function() {
     const tile = new VectorImageTile([0, 0, 0], 0, url, format,
       defaultLoadFunction, [0, 0, 0], function() {},
       createXYZ(), createXYZ(), {},
-      1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
+      1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
 
@@ -105,7 +105,7 @@ describe('ol.VectorImageTile', function() {
         return url;
       }, tileGrid,
       createXYZ({extent: [-180, -90, 180, 90], tileSize: 512}),
-      sourceTiles, 1, getProjection('EPSG:4326'), VectorTile, function() {}, 1);
+      sourceTiles, 1, getProjection('EPSG:4326'), VectorTile, function() {});
     tile.load();
     expect(tile.tileKeys.length).to.be(1);
     expect(tile.getTile(tile.tileKeys[0]).tileCoord).to.eql([0, 16, 9]);
@@ -118,7 +118,7 @@ describe('ol.VectorImageTile', function() {
       defaultLoadFunction, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ({tileSize: 512}), {},
-      1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
+      1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
     expect(tile.loadListenerKeys_.length).to.be(4);
@@ -138,7 +138,7 @@ describe('ol.VectorImageTile', function() {
       defaultLoadFunction, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ({tileSize: 512}), {},
-      1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
+      1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
     listenOnce(tile, 'change', function() {

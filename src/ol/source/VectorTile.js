@@ -171,7 +171,7 @@ class VectorTile extends UrlTile {
         this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
         this.tileGrid, this.getTileGridForProjection(projection),
         this.sourceTiles_, pixelRatio, projection, this.tileClass,
-        this.handleTileChange.bind(this), tileCoord[0]);
+        this.handleTileChange.bind(this));
 
       this.tileCache.set(tileCoordKey, tile);
       return tile;
