@@ -105,7 +105,7 @@ class Source extends BaseObject {
   }
 
   /**
-   * @return {boolean} Aattributions are collapsible.
+   * @return {boolean} Attributions are collapsible.
    */
   getAttributionsCollapsible() {
     return this.attributionsCollapsible_;
