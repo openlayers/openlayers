@@ -14,15 +14,15 @@ class Disposable {
      * @type {boolean}
      * @private
      */
-    this.disposed_ = false;
+    this.disposed = false;
   }
 
   /**
    * Clean up.
    */
   dispose() {
-    if (!this.disposed_) {
-      this.disposed_ = true;
+    if (!this.disposed) {
+      this.disposed = true;
       this.disposeInternal();
     }
   }

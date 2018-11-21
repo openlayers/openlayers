@@ -124,6 +124,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     /**
      * @private
+     * @type {Object<string, import("../../VectorImageTile").default>}
+     */
+    this.tilesToPrepare_ = null;
+
+    /**
+     * @private
      * @type {import("../../transform.js").Transform}
      */
     this.tmpTransform_ = createTransform();
@@ -151,17 +157,23 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (tile.getState() === TileState.IDLE) {
       const key = listen(tile, EventType.CHANGE, function() {
         if (tile.sourceTilesLoaded) {
-          this.createExecutorGroup_(tile, pixelRatio, projection);
+          this.updateExecutorGroup_(tile, pixelRatio, projection);
+          if (!this.tilesToPrepare_) {
+            this.tilesToPrepare_ = {};
+            tile.setState(TileState.LOADED);
+          } else {
+            const tileId = getUid(tile);
+            if (!(tileId in this.tilesToPrepare_)) {
+              this.tilesToPrepare_[tileId] = [tile, pixelRatio, projection];
+            }
+          }
           unlistenByKey(key);
-          tile.setState(TileState.LOADED);
         }
       }.bind(this));
     }
     if (tile.getState() === TileState.LOADED) {
-      this.createExecutorGroup_(tile, pixelRatio, projection);
-      if (this.context) {
-        this.renderTileImage_(tile, pixelRatio, projection);
-      }
+      this.updateExecutorGroup_(tile, pixelRatio, projection);
+      this.renderTileImage_(tile, pixelRatio, projection);
     }
     return tile;
   }
@@ -193,7 +205,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import("../../proj/Projection.js").default} projection Projection.
    * @private
    */
-  createExecutorGroup_(tile, pixelRatio, projection) {
+  updateExecutorGroup_(tile, pixelRatio, projection) {
     const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const revision = layer.getRevision();
     const renderOrder = /** @type {import("../../render.js").OrderFunction} */ (layer.getRenderOrder()) || null;
@@ -413,7 +425,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       this.declutterTree_.clear();
     }
     const viewHints = frameState.viewHints;
-    const snapToPixel = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
+    const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
     const tiles = this.renderedTiles;
     const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
     const clips = [];
@@ -460,19 +472,40 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
             context.clip();
           }
         }
-        executorGroup.execute(context, transform, rotation, {}, snapToPixel, replayTypes, declutterReplays);
+        executorGroup.execute(context, transform, rotation, {}, hifi, replayTypes, declutterReplays);
         context.restore();
         clips.push(currentClip);
         zs.push(currentZ);
       }
     }
     if (declutterReplays) {
-      replayDeclutter(declutterReplays, context, rotation, snapToPixel);
+      replayDeclutter(declutterReplays, context, rotation, hifi);
     }
 
     const opacity = layerState.opacity;
     if (opacity !== canvas.style.opacity) {
       canvas.style.opacity = opacity;
+    }
+
+    if (this.tilesToPrepare_) {
+      for (const key in this.tilesToPrepare_) {
+        if (!hifi || Date.now() - frameState.time >= 16) {
+          break;
+        }
+        const args = this.tilesToPrepare_[key];
+        delete this.tilesToPrepare_[key];
+        const tile = args[0];
+        if (!tile.disposed) {
+          frameState.animate = true;
+          this.renderTileImage_.apply(this, args);
+          tile.setState(TileState.LOADED);
+        }
+      }
+      if (Object.keys(this.tilesToPrepare_).length > 0) {
+        frameState.animate = true;
+      } else {
+        this.tilesToPrepare_ = null;
+      }
     }
 
     return this.container_;

@@ -30,7 +30,7 @@ describe('ol.VectorImageTile', function() {
     });
   });
 
-  it('sets LOADED state when previously failed source tiles are loaded', function(done) {
+  it('sets sourceTilesLoaded when previously failed source tiles are loaded', function(done) {
     const format = new GeoJSON();
     const url = 'spec/ol/data/unavailable.json';
     let sourceTile;
@@ -47,7 +47,11 @@ describe('ol.VectorImageTile', function() {
     let calls = 0;
     listen(tile, 'change', function(e) {
       ++calls;
-      expect(tile.getState()).to.be(calls == 2 ? TileState.LOADED : TileState.ERROR);
+      if (calls === 1) {
+        expect(tile.sourceTilesLoaded).to.be(false);
+      } else if (calls === 2) {
+        expect(tile.sourceTilesLoaded).to.be(true);
+      }
       if (calls == 2) {
         done();
       } else {
@@ -131,7 +135,7 @@ describe('ol.VectorImageTile', function() {
     expect(tile.getState()).to.be(TileState.ABORT);
   });
 
-  it('#dispose() when loaded', function(done) {
+  it('#dispose() when source tiles are loaded', function(done) {
     const format = new GeoJSON();
     const url = 'spec/ol/data/point.json';
     const tile = new VectorImageTile([0, 0, 0], 0, url, format,
@@ -142,7 +146,8 @@ describe('ol.VectorImageTile', function() {
 
     tile.load();
     listenOnce(tile, 'change', function() {
-      expect(tile.getState()).to.be(TileState.LOADED);
+      expect(tile.getState()).to.be(TileState.LOADING);
+      expect(tile.sourceTilesLoaded).to.be.ok();
       expect(tile.loadListenerKeys_.length).to.be(0);
       expect(tile.tileKeys.length).to.be(4);
       tile.dispose();
