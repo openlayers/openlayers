@@ -1207,7 +1207,7 @@ export function createCenterConstraint(options) {
 
 /**
  * @param {ViewOptions} options View options.
- * @return {{constraint: import("./resolutionconstraint.js").Type, maxResolution: number,
+ * @return {{constraint: import('./resolutionconstraint.js').Type, maxResolution: number,
  *     minResolution: number, minZoom: number, zoomFactor: number}} The constraint.
  */
 export function createResolutionConstraint(options) {
