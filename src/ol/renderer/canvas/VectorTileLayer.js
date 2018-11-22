@@ -15,7 +15,6 @@ import Units from '../../proj/Units.js';
 import ReplayType from '../../render/ReplayType.js';
 import {labelCache} from '../../render/canvas.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
-import {ORDER} from '../../render/replay.js';
 import CanvasTileLayerRenderer from './TileLayer.js';
 import {getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import {
@@ -47,8 +46,7 @@ const IMAGE_REPLAYS = {
  */
 const VECTOR_REPLAYS = {
   'image': [ReplayType.DEFAULT],
-  'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT],
-  'vector': ORDER
+  'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT]
 };
 
 
