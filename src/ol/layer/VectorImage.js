@@ -30,7 +30,7 @@ class VectorImageLayer extends BaseVectorLayer {
 
     const baseOptions = assign({}, options);
     delete baseOptions.imageRatio;
-    super(opt_options);
+    super(baseOptions);
 
     /**
      * @type {number}
