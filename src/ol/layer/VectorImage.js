@@ -8,7 +8,7 @@ import CanvasVectorImageLayerRenderer from '../renderer/canvas/VectorImageLayer.
 /**
  * @typedef {import("./BaseVector.js").Options} Options
  * @property {number} [imageRatio=1] Ratio by which the rendered extent should be larger than the
- * viewport extent A larger ratio avoids cut images during panning, but will cause a decrease in performance.
+ * viewport extent. A larger ratio avoids cut images during panning, but will cause a decrease in performance.
  */
 
 
