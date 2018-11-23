@@ -116,7 +116,8 @@ class Zoom extends Control {
     }
     const currentResolution = view.getResolution();
     if (currentResolution) {
-      const newResolution = view.constrainResolution(currentResolution, delta);
+      const currentZoom = view.getZoomForResolution(currentResolution);
+      const newResolution = view.getResolutionForZoom(currentZoom + delta);
       if (this.duration_ > 0) {
         if (view.getAnimating()) {
           view.cancelAnimations();

@@ -110,8 +110,7 @@ class Interaction extends BaseObject {
 export function pan(view, delta, opt_duration) {
   const currentCenter = view.getCenter();
   if (currentCenter) {
-    const center = view.constrainCenter(
-      [currentCenter[0] + delta[0], currentCenter[1] + delta[1]]);
+    const center = [currentCenter[0] + delta[0], currentCenter[1] + delta[1]];
     if (opt_duration) {
       view.animate({
         duration: opt_duration,
@@ -132,18 +131,6 @@ export function pan(view, delta, opt_duration) {
  * @param {number=} opt_duration Duration.
  */
 export function rotate(view, rotation, opt_anchor, opt_duration) {
-  rotation = view.constrainRotation(rotation, 0);
-  rotateWithoutConstraints(view, rotation, opt_anchor, opt_duration);
-}
-
-
-/**
- * @param {import("../View.js").default} view View.
- * @param {number|undefined} rotation Rotation.
- * @param {import("../coordinate.js").Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- */
-export function rotateWithoutConstraints(view, rotation, opt_anchor, opt_duration) {
   if (rotation !== undefined) {
     const currentRotation = view.getRotation();
     const currentCenter = view.getCenter();
@@ -163,6 +150,28 @@ export function rotateWithoutConstraints(view, rotation, opt_anchor, opt_duratio
 
 /**
  * @param {import("../View.js").default} view View.
+ * @param {number} delta Delta from previous zoom level.
+ * @param {import("../coordinate.js").Coordinate=} opt_anchor Anchor coordinate.
+ * @param {number=} opt_duration Duration.
+ */
+export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
+  const currentZoom = view.getZoom();
+  let resolution = view.getResolutionForZoom(currentZoom + delta);
+
+  if (resolution !== undefined) {
+    const resolutions = view.getResolutions();
+    resolution = clamp(
+      resolution,
+      view.getMinResolution() || resolutions[resolutions.length - 1],
+      view.getMaxResolution() || resolutions[0]);
+  }
+
+  zoom(view, resolution, opt_anchor, opt_duration);
+}
+
+
+/**
+ * @param {import("../View.js").default} view View.
  * @param {number|undefined} resolution Resolution to go to.
  * @param {import("../coordinate.js").Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
@@ -176,56 +185,6 @@ export function rotateWithoutConstraints(view, rotation, opt_anchor, opt_duratio
  *     assumed.
  */
 export function zoom(view, resolution, opt_anchor, opt_duration, opt_direction) {
-  resolution = view.constrainResolution(resolution, 0, opt_direction);
-  zoomWithoutConstraints(view, resolution, opt_anchor, opt_duration);
-}
-
-
-/**
- * @param {import("../View.js").default} view View.
- * @param {number} delta Delta from previous zoom level.
- * @param {import("../coordinate.js").Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- */
-export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
-  const currentResolution = view.getResolution();
-  let resolution = view.constrainResolution(currentResolution, delta, 0);
-
-  if (resolution !== undefined) {
-    const resolutions = view.getResolutions();
-    resolution = clamp(
-      resolution,
-      view.getMinResolution() || resolutions[resolutions.length - 1],
-      view.getMaxResolution() || resolutions[0]);
-  }
-
-  // If we have a constraint on center, we need to change the anchor so that the
-  // new center is within the extent. We first calculate the new center, apply
-  // the constraint to it, and then calculate back the anchor
-  if (opt_anchor && resolution !== undefined && resolution !== currentResolution) {
-    const currentCenter = view.getCenter();
-    let center = view.calculateCenterZoom(resolution, opt_anchor);
-    center = view.constrainCenter(center);
-
-    opt_anchor = [
-      (resolution * currentCenter[0] - currentResolution * center[0]) /
-          (resolution - currentResolution),
-      (resolution * currentCenter[1] - currentResolution * center[1]) /
-          (resolution - currentResolution)
-    ];
-  }
-
-  zoomWithoutConstraints(view, resolution, opt_anchor, opt_duration);
-}
-
-
-/**
- * @param {import("../View.js").default} view View.
- * @param {number|undefined} resolution Resolution to go to.
- * @param {import("../coordinate.js").Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- */
-export function zoomWithoutConstraints(view, resolution, opt_anchor, opt_duration) {
   if (resolution) {
     const currentResolution = view.getResolution();
     const currentCenter = view.getCenter();

@@ -3,7 +3,7 @@
  */
 import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
-import {rotate, rotateWithoutConstraints} from './Interaction.js';
+import {rotate} from './Interaction.js';
 import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js';
 import {disable} from '../rotationconstraint.js';
 
@@ -120,7 +120,7 @@ class PinchRotate extends PointerInteraction {
     if (this.rotating_) {
       const rotation = view.getRotation();
       map.render();
-      rotateWithoutConstraints(view, rotation + rotationDelta, this.anchor_);
+      rotate(view, rotation + rotationDelta, this.anchor_);
     }
   }
 

@@ -126,8 +126,7 @@ import Units from './proj/Units.js';
  * @property {number} [rotation=0] The initial rotation for the view in radians
  * (positive rotation clockwise, 0 means North).
  * @property {number} [zoom] Only used if `resolution` is not defined. Zoom
- * level used to calculate the initial resolution for the view. The initial
- * resolution is determined using the {@link #constrainResolution} method.
+ * level used to calculate the initial resolution for the view.
  * @property {number} [zoomFactor=2] The zoom factor used to determine the
  * resolution constraint.
  */
@@ -327,8 +326,7 @@ class View extends BaseObject {
     if (options.resolution !== undefined) {
       properties[ViewProperty.RESOLUTION] = options.resolution;
     } else if (options.zoom !== undefined) {
-      properties[ViewProperty.RESOLUTION] = this.constrainResolution(
-        this.maxResolution_, options.zoom - this.minZoom_);
+      properties[ViewProperty.RESOLUTION] = this.getResolutionForZoom(options.zoom);
 
       if (this.resolutions_) { // in case map zoom is out of min/max zoom range
         properties[ViewProperty.RESOLUTION] = clamp(
@@ -455,8 +453,7 @@ class View extends BaseObject {
 
       if (options.zoom !== undefined) {
         animation.sourceResolution = resolution;
-        animation.targetResolution = this.constrainResolution(
-          this.maxResolution_, options.zoom - this.minZoom_, 0);
+        animation.targetResolution = this.maxResolution_;
         resolution = animation.targetResolution;
       } else if (options.resolution) {
         animation.sourceResolution = resolution;
@@ -964,8 +961,13 @@ class View extends BaseObject {
    * @api
    */
   getResolutionForZoom(zoom) {
-    return /** @type {number} */ (this.constrainResolution(
-      this.maxResolution_, zoom - this.minZoom_, 0));
+    const offset = this.minZoom_ || 0;
+    let resolution = this.maxResolution_ / Math.pow(this.zoomFactor_, zoom - offset);
+    if (this.resolutions_) {
+      const nearest = linearFindNearest(this.resolutions_, resolution, 0);
+      resolution = this.resolutions_[nearest];
+    }
+    return resolution;
   }
 
   /**
@@ -1008,8 +1010,7 @@ class View extends BaseObject {
     if (options.minResolution !== undefined) {
       minResolution = options.minResolution;
     } else if (options.maxZoom !== undefined) {
-      minResolution = this.constrainResolution(
-        this.maxResolution_, options.maxZoom - this.minZoom_, 0);
+      minResolution = this.maxResolution_;
     } else {
       minResolution = 0;
     }
@@ -1039,14 +1040,6 @@ class View extends BaseObject {
       [size[0] - padding[1] - padding[3], size[1] - padding[0] - padding[2]]);
     resolution = isNaN(resolution) ? minResolution :
       Math.max(resolution, minResolution);
-    if (constrainResolution) {
-      let constrainedResolution = this.constrainResolution(resolution, 0, 0);
-      if (!nearest && constrainedResolution < resolution) {
-        constrainedResolution = this.constrainResolution(
-          constrainedResolution, -1, 0);
-      }
-      resolution = constrainedResolution;
-    }
 
     // calculate center
     sinAngle = -sinAngle; // go back to original rotation

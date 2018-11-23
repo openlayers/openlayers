@@ -220,7 +220,7 @@ class ZoomSlider extends Control {
     const resolution = this.getResolutionForPosition_(relativePosition);
 
     view.animate({
-      resolution: view.constrainResolution(resolution),
+      resolution: resolution,
       duration: this.duration_,
       easing: easeOut
     });
@@ -282,7 +282,7 @@ class ZoomSlider extends Control {
       view.setHint(ViewHint.INTERACTING, -1);
 
       view.animate({
-        resolution: view.constrainResolution(this.currentResolution_),
+        resolution: this.currentResolution_,
         duration: this.duration_,
         easing: easeOut
       });
