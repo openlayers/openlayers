@@ -131,11 +131,7 @@ class PinchZoom extends PointerInteraction {
       if (this.constrainResolution_ ||
           resolution < view.getMinResolution() ||
           resolution > view.getMaxResolution()) {
-        // Zoom to final resolution, with an animation, and provide a
-        // direction not to zoom out/in if user was pinching in/out.
-        // Direction is > 0 if pinching out, and < 0 if pinching in.
-        const direction = this.lastScaleDelta_ - 1;
-        zoom(view, resolution, this.anchor_, this.duration_, direction);
+        view.resolveConstraints(this.duration_);
       }
       return false;
     } else {

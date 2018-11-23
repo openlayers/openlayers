@@ -94,8 +94,7 @@ class DragRotate extends PointerInteraction {
     const map = mapBrowserEvent.map;
     const view = map.getView();
     view.setHint(ViewHint.INTERACTING, -1);
-    const rotation = view.getRotation();
-    rotate(view, rotation, undefined, this.duration_);
+    view.resolveConstraints(this.duration_);
     return false;
   }
 

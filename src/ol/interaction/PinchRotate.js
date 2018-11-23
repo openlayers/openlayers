@@ -133,8 +133,7 @@ class PinchRotate extends PointerInteraction {
       const view = map.getView();
       view.setHint(ViewHint.INTERACTING, -1);
       if (this.rotating_) {
-        const rotation = view.getRotation();
-        rotate(view, rotation, this.anchor_, this.duration_);
+        view.resolveConstraints(this.duration_);
       }
       return false;
     } else {

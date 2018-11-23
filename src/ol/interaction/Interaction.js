@@ -128,22 +128,10 @@ export function pan(view, delta, opt_duration) {
  * @param {import("../View.js").default} view View.
  * @param {number|undefined} rotation Rotation.
  * @param {import("../coordinate.js").Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
  */
-export function rotate(view, rotation, opt_anchor, opt_duration) {
+export function rotate(view, rotation, opt_anchor) {
   if (rotation !== undefined) {
-    const currentRotation = view.getRotation();
-    const currentCenter = view.getCenter();
-    if (currentRotation !== undefined && currentCenter && opt_duration > 0) {
-      view.animate({
-        rotation: rotation,
-        anchor: opt_anchor,
-        duration: opt_duration,
-        easing: easeOut
-      });
-    } else {
-      view.rotate(rotation, opt_anchor);
-    }
+    view.rotate(rotation, opt_anchor);
   }
 }
 

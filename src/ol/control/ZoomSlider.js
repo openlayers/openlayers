@@ -281,11 +281,7 @@ class ZoomSlider extends Control {
       const view = this.getMap().getView();
       view.setHint(ViewHint.INTERACTING, -1);
 
-      view.animate({
-        resolution: this.currentResolution_,
-        duration: this.duration_,
-        easing: easeOut
-      });
+      view.resolveConstraints(this.duration_);
 
       this.dragging_ = false;
       this.previousX_ = undefined;

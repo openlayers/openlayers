@@ -5,16 +5,15 @@ import {toRadians} from './math.js';
 
 
 /**
- * @typedef {function((number|undefined), number): (number|undefined)} Type
+ * @typedef {function((number|undefined), boolean): (number|undefined)} Type
  */
 
 
 /**
  * @param {number|undefined} rotation Rotation.
- * @param {number} delta Delta.
  * @return {number|undefined} Rotation.
  */
-export function disable(rotation, delta) {
+export function disable(rotation) {
   if (rotation !== undefined) {
     return 0;
   } else {
@@ -25,12 +24,11 @@ export function disable(rotation, delta) {
 
 /**
  * @param {number|undefined} rotation Rotation.
- * @param {number} delta Delta.
  * @return {number|undefined} Rotation.
  */
-export function none(rotation, delta) {
+export function none(rotation) {
   if (rotation !== undefined) {
-    return rotation + delta;
+    return rotation;
   } else {
     return undefined;
   }
@@ -46,13 +44,16 @@ export function createSnapToN(n) {
   return (
     /**
      * @param {number|undefined} rotation Rotation.
-     * @param {number} delta Delta.
+     * @param {boolean} whileInteracting Will be true if the constraint is applied
+     * during an interaction.
      * @return {number|undefined} Rotation.
      */
-    function(rotation, delta) {
-      if (rotation !== undefined) {
-        rotation = Math.floor((rotation + delta) / theta + 0.5) * theta;
+    function(rotation, whileInteracting) {
+      if (whileInteracting) {
         return rotation;
+      }
+      if (rotation !== undefined) {
+        return Math.floor(rotation / theta + 0.5) * theta;
       } else {
         return undefined;
       }
@@ -69,15 +70,19 @@ export function createSnapToZero(opt_tolerance) {
   return (
     /**
      * @param {number|undefined} rotation Rotation.
-     * @param {number} delta Delta.
+     * @param {boolean} whileInteracting Will be true if the constraint is applied
+     * during an interaction.
      * @return {number|undefined} Rotation.
      */
-    function(rotation, delta) {
+    function(rotation, whileInteracting) {
+      if (whileInteracting) {
+        return rotation;
+      }
       if (rotation !== undefined) {
-        if (Math.abs(rotation + delta) <= tolerance) {
+        if (Math.abs(rotation) <= tolerance) {
           return 0;
         } else {
-          return rotation + delta;
+          return rotation;
         }
       } else {
         return undefined;
