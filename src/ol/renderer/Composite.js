@@ -1,5 +1,5 @@
 /**
- * @module ol/renderer/canvas/Map
+ * @module ol/renderer/Composite
  */
 import {CLASS_UNSELECTABLE} from '../css.js';
 import {visibleAtResolution} from '../layer/Layer.js';
