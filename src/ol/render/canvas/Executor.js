@@ -2,8 +2,8 @@
  * @module ol/render/canvas/Executor
  */
 import {getUid} from '../../util.js';
-import {equals, reverseSubArray} from '../../array.js';
-import {buffer, clone, createEmpty, createOrUpdate,
+import {equals} from '../../array.js';
+import {createEmpty, createOrUpdate,
   createOrUpdateEmpty, extend, extendCoordinate, intersects} from '../../extent.js';
 import {lineStringLength} from '../../geom/flat/length.js';
 import {drawTextOnPath} from '../../geom/flat/textpath.js';
@@ -12,7 +12,7 @@ import {CANVAS_LINE_DASH} from '../../has.js';
 import {isEmpty} from '../../obj.js';
 import {drawImage, resetTransform, defaultPadding, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
-import {TEXT_ALIGN} from '../replay.js';
+import {TEXT_ALIGN} from './TextBuilder.js';
 import {
   create as createTransform,
   compose as composeTransform,
@@ -45,9 +45,8 @@ const tmpExtent = createEmpty();
 const tmpTransform = createTransform();
 
 
-class CanvasExecutor {
+class Executor {
   /**
-   * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
@@ -55,17 +54,11 @@ class CanvasExecutor {
    * @param {?} declutterTree Declutter tree.
    * @param {SerializableInstructions} instructions The serializable instructions
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree, instructions) {
+  constructor(maxExtent, resolution, pixelRatio, overlaps, declutterTree, instructions) {
     /**
      * @type {?}
      */
     this.declutterTree = declutterTree;
-
-    /**
-     * @protected
-     * @type {number}
-     */
-    this.tolerance = tolerance;
 
     /**
      * @protected
@@ -88,12 +81,6 @@ class CanvasExecutor {
 
     /**
      * @protected
-     * @type {number}
-     */
-    this.maxLineWidth = 0;
-
-    /**
-     * @protected
      * @const
      * @type {number}
      */
@@ -104,24 +91,6 @@ class CanvasExecutor {
      * @type {boolean}
      */
     this.alignFill_;
-
-    /**
-     * @private
-     * @type {Array<*>}
-     */
-    this.beginGeometryInstruction1_ = null;
-
-    /**
-     * @private
-     * @type {Array<*>}
-     */
-    this.beginGeometryInstruction2_ = null;
-
-    /**
-     * @private
-     * @type {import("../../extent.js").Extent}
-     */
-    this.bufferedMaxExtent_ = null;
 
     /**
      * @protected
@@ -160,12 +129,6 @@ class CanvasExecutor {
     this.pixelCoordinates_ = null;
 
     /**
-     * @protected
-     * @type {import("../canvas.js").FillStrokeState}
-     */
-    this.state = /** @type {import("../canvas.js").FillStrokeState} */ ({});
-
-    /**
      * @private
      * @type {number}
      */
@@ -185,8 +148,6 @@ class CanvasExecutor {
      * @type {!Object<string, import("../canvas.js").TextState>}
      */
     this.textStates = instructions.textStates || {};
-
-    // Adaptations
 
     /**
      * @private
@@ -404,18 +365,6 @@ class CanvasExecutor {
       }
       drawImage(context, transform, opacity, image, originX, originY, w, h, x, y, scale);
     }
-  }
-
-  /**
-   * @protected
-   * @param {Array<number>} dashArray Dash array.
-   * @return {Array<number>} Dash array with pixel ratio applied
-   */
-  applyPixelRatio(dashArray) {
-    const pixelRatio = this.pixelRatio;
-    return pixelRatio == 1 ? dashArray : dashArray.map(function(dash) {
-      return dash * pixelRatio;
-    });
   }
 
   /**
@@ -914,83 +863,7 @@ class CanvasExecutor {
     return this.execute_(context, transform, skippedFeaturesHash,
       this.hitDetectionInstructions, true, opt_featureCallback, opt_hitExtent);
   }
-
-  /**
-   * Reverse the hit detection instructions.
-   */
-  reverseHitDetectionInstructions() {
-    const hitDetectionInstructions = this.hitDetectionInstructions;
-    // step 1 - reverse array
-    hitDetectionInstructions.reverse();
-    // step 2 - reverse instructions within geometry blocks
-    let i;
-    const n = hitDetectionInstructions.length;
-    let instruction;
-    let type;
-    let begin = -1;
-    for (i = 0; i < n; ++i) {
-      instruction = hitDetectionInstructions[i];
-      type = /** @type {CanvasInstruction} */ (instruction[0]);
-      if (type == CanvasInstruction.END_GEOMETRY) {
-        begin = i;
-      } else if (type == CanvasInstruction.BEGIN_GEOMETRY) {
-        instruction[2] = i;
-        reverseSubArray(this.hitDetectionInstructions, begin, i);
-        begin = -1;
-      }
-    }
-  }
-
-
-  /**
-   * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
-   * @return {Array<*>} Fill instruction.
-   */
-  createFill(state, geometry) {
-    const fillStyle = state.fillStyle;
-    /** @type {Array<*>} */
-    const fillInstruction = [CanvasInstruction.SET_FILL_STYLE, fillStyle];
-    if (typeof fillStyle !== 'string') {
-      // Fill is a pattern or gradient - align it!
-      fillInstruction.push(true);
-    }
-    return fillInstruction;
-  }
-
-
-  /**
-   * @param {import("../canvas.js").FillStrokeState} state State.
-   * @return {Array<*>} Stroke instruction.
-   */
-  createStroke(state) {
-    return [
-      CanvasInstruction.SET_STROKE_STYLE,
-      state.strokeStyle, state.lineWidth * this.pixelRatio, state.lineCap,
-      state.lineJoin, state.miterLimit,
-      this.applyPixelRatio(state.lineDash), state.lineDashOffset * this.pixelRatio
-    ];
-  }
-
-
-  /**
-   * Get the buffered rendering extent.  Rendering will be clipped to the extent
-   * provided to the constructor.  To account for symbolizers that may intersect
-   * this extent, we calculate a buffered extent (e.g. based on stroke width).
-   * @return {import("../../extent.js").Extent} The buffered rendering extent.
-   * @protected
-   */
-  getBufferedMaxExtent() {
-    if (!this.bufferedMaxExtent_) {
-      this.bufferedMaxExtent_ = clone(this.maxExtent);
-      if (this.maxLineWidth > 0) {
-        const width = this.resolution * (this.maxLineWidth + 1) / 2;
-        buffer(this.bufferedMaxExtent_, width, this.bufferedMaxExtent_);
-      }
-    }
-    return this.bufferedMaxExtent_;
-  }
 }
 
 
-export default CanvasExecutor;
+export default Executor;

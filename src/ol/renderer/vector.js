@@ -4,7 +4,7 @@
 import {getUid} from '../util.js';
 import ImageState from '../ImageState.js';
 import GeometryType from '../geom/GeometryType.js';
-import BuilderType from '../render/ReplayType.js';
+import BuilderType from '../render/canvas/BuilderType.js';
 
 
 /**
@@ -17,7 +17,7 @@ const SIMPLIFY_TOLERANCE = 0.5;
 /**
  * @const
  * @type {Object<import("../geom/GeometryType.js").default,
- *                function(import("../render/BuilderGroup.js").default, import("../geom/Geometry.js").default,
+ *                function(import("../render/canvas/BuilderGroup.js").default, import("../geom/Geometry.js").default,
  *                         import("../style/Style.js").default, Object)>}
  */
 const GEOMETRY_RENDERERS = {
@@ -64,7 +64,7 @@ export function getTolerance(resolution, pixelRatio) {
 
 
 /**
- * @param {import("../render/BuilderGroup.js").default} builderGroup Builder group.
+ * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Builder group.
  * @param {import("../geom/Circle.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").default} feature Feature.
@@ -87,7 +87,7 @@ function renderCircleGeometry(builderGroup, geometry, style, feature) {
 
 
 /**
- * @param {import("../render/BuilderGroup.js").default} replayGroup Replay group.
+ * @param {import("../render/canvas/BuilderGroup.js").default} replayGroup Replay group.
  * @param {import("../Feature.js").FeatureLike} feature Feature.
  * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
@@ -119,7 +119,7 @@ export function renderFeature(replayGroup, feature, style, squaredTolerance, lis
 
 
 /**
- * @param {import("../render/BuilderGroup.js").default} replayGroup Replay group.
+ * @param {import("../render/canvas/BuilderGroup.js").default} replayGroup Replay group.
  * @param {import("../Feature.js").FeatureLike} feature Feature.
  * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
@@ -141,7 +141,7 @@ function renderFeatureInternal(replayGroup, feature, style, squaredTolerance) {
 
 
 /**
- * @param {import("../render/BuilderGroup.js").default} replayGroup Replay group.
+ * @param {import("../render/canvas/BuilderGroup.js").default} replayGroup Replay group.
  * @param {import("../geom/Geometry.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").FeatureLike} feature Feature.
@@ -160,7 +160,7 @@ function renderGeometry(replayGroup, geometry, style, feature) {
 
 
 /**
- * @param {import("../render/BuilderGroup.js").default} replayGroup Replay group.
+ * @param {import("../render/canvas/BuilderGroup.js").default} replayGroup Replay group.
  * @param {import("../geom/GeometryCollection.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").default} feature Feature.
@@ -177,7 +177,7 @@ function renderGeometryCollectionGeometry(replayGroup, geometry, style, feature)
 
 
 /**
- * @param {import("../render/BuilderGroup.js").default} builderGroup Replay group.
+ * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
  * @param {import("../geom/LineString.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").FeatureLike} feature Feature.
@@ -199,7 +199,7 @@ function renderLineStringGeometry(builderGroup, geometry, style, feature) {
 
 
 /**
- * @param {import("../render/BuilderGroup.js").default} builderGroup Replay group.
+ * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
  * @param {import("../geom/MultiLineString.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").FeatureLike} feature Feature.
@@ -221,7 +221,7 @@ function renderMultiLineStringGeometry(builderGroup, geometry, style, feature) {
 
 
 /**
- * @param {import("../render/BuilderGroup.js").default} builderGroup Replay group.
+ * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
  * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").default} feature Feature.
@@ -244,7 +244,7 @@ function renderMultiPolygonGeometry(builderGroup, geometry, style, feature) {
 
 
 /**
- * @param {import("../render/BuilderGroup.js").default} builderGroup Replay group.
+ * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
  * @param {import("../geom/Point.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").FeatureLike} feature Feature.
@@ -269,7 +269,7 @@ function renderPointGeometry(builderGroup, geometry, style, feature) {
 
 
 /**
- * @param {import("../render/BuilderGroup.js").default} builderGroup Replay group.
+ * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
  * @param {import("../geom/MultiPoint.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").FeatureLike} feature Feature.
@@ -294,7 +294,7 @@ function renderMultiPointGeometry(builderGroup, geometry, style, feature) {
 
 
 /**
- * @param {import("../render/BuilderGroup.js").default} builderGroup Replay group.
+ * @param {import("../render/canvas/BuilderGroup.js").default} builderGroup Replay group.
  * @param {import("../geom/Polygon.js").default|import("../render/Feature.js").default} geometry Geometry.
  * @param {import("../style/Style.js").default} style Style.
  * @param {import("../Feature.js").FeatureLike} feature Feature.

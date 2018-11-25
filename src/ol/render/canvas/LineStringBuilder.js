@@ -10,11 +10,9 @@ class CanvasLineStringBuilder extends CanvasBuilder {
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {boolean} overlaps The replay can have overlapping geometries.
-   * @param {?} declutterTree Declutter tree.
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-    super(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
+  constructor(tolerance, maxExtent, resolution, pixelRatio) {
+    super(tolerance, maxExtent, resolution, pixelRatio);
   }
 
   /**

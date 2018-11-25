@@ -9,16 +9,16 @@ import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import CanvasLineStringBuilder from '../../../../../src/ol/render/canvas/LineStringBuilder.js';
 import CanvasPolygonBuilder from '../../../../../src/ol/render/canvas/PolygonBuilder.js';
-import CanvasReplay from '../../../../../src/ol/render/canvas/Builder.js';
-import CanvasInstructionsGroupBuilder from '../../../../../src/ol/render/canvas/BuilderGroup.js';
-import CanvasInstructionsGroupExecutor from '../../../../../src/ol/render/canvas/ExecutorGroup.js';
+import CanvasBuilder from '../../../../../src/ol/render/canvas/Builder.js';
+import BuilderGroup from '../../../../../src/ol/render/canvas/BuilderGroup.js';
+import ExecutorGroup from '../../../../../src/ol/render/canvas/ExecutorGroup.js';
 import {renderFeature} from '../../../../../src/ol/renderer/vector.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../src/ol/style/Style.js';
 import {create as createTransform, scale as scaleTransform} from '../../../../../src/ol/transform.js';
 
-describe('ol.render.canvas.ReplayGroup', function() {
+describe('ol.render.canvas.BuilderGroup', function() {
 
   describe('#replay', function() {
 
@@ -28,20 +28,20 @@ describe('ol.render.canvas.ReplayGroup', function() {
     let fill0, fill1, style1, style2;
 
     /**
-     * @param {CanvasInstructionsGroupBuilder} builder The builder to get instructions from.
+     * @param {BuilderGroup} builder The builder to get instructions from.
      * @param {Object=} skippedUids The ids to skip.
      * @param {number=} pixelRatio The pixel ratio.
      * @param {boolean=} overlaps Whether there is overlaps.
      */
     function execute(builder, skippedUids, pixelRatio, overlaps) {
-      const executor = new CanvasInstructionsGroupExecutor(1, [-180, -90, 180, 90], 1,
+      const executor = new ExecutorGroup([-180, -90, 180, 90], 1,
         pixelRatio || 1, !!overlaps, null, builder.finish());
       executor.execute(context, transform, 0, skippedUids || {});
     }
 
     beforeEach(function() {
       transform = createTransform();
-      builder = new CanvasInstructionsGroupBuilder(1, [-180, -90, 180, 90], 1, 1, false);
+      builder = new BuilderGroup(1, [-180, -90, 180, 90], 1, 1, false);
       feature0 = new Feature(new Polygon(
         [[[-90, 0], [-45, 45], [0, 0], [1, 1], [0, -45], [-90, 0]]]));
       feature1 = new Feature(new Polygon(
@@ -185,7 +185,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('does not batch when overlaps is set to true', function() {
-      builder = new CanvasInstructionsGroupBuilder(1, [-180, -90, 180, 90], 1, 1, true);
+      builder = new BuilderGroup(1, [-180, -90, 180, 90], 1, 1, true);
       renderFeature(builder, feature1, style1, 1);
       renderFeature(builder, feature2, style1, 1);
       renderFeature(builder, feature3, style1, 1);
@@ -197,7 +197,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
     it('applies the pixelRatio to the linedash array and offset', function() {
       // replay with a pixelRatio of 2
-      builder = new CanvasInstructionsGroupBuilder(1, [-180, -90, 180, 90], 1, 2, true);
+      builder = new BuilderGroup(1, [-180, -90, 180, 90], 1, 2, true);
 
       let lineDash, lineDashCount = 0,
           lineDashOffset, lineDashOffsetCount = 0;
@@ -254,7 +254,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
         [polygon.getGeometry().getCoordinates(), polygon.getGeometry().getCoordinates()]));
       const geometrycollection = new Feature(new GeometryCollection(
         [point.getGeometry(), linestring.getGeometry(), polygon.getGeometry()]));
-      builder = new CanvasInstructionsGroupBuilder(1, [-180, -90, 180, 90], 1, 1, true);
+      builder = new BuilderGroup(1, [-180, -90, 180, 90], 1, 1, true);
       renderFeature(builder, point, style, 1);
       renderFeature(builder, multipoint, style, 1);
       renderFeature(builder, linestring, style, 1);
@@ -291,15 +291,15 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
 });
 
-describe('ol.render.canvas.Replay', function() {
+describe('ol.render.canvas.Builder', function() {
 
   describe('constructor', function() {
 
     it('creates a new replay batch', function() {
       const tolerance = 10;
       const extent = [-180, -90, 180, 90];
-      const replay = new CanvasReplay(tolerance, extent, 1, 1, true);
-      expect(replay).to.be.a(CanvasReplay);
+      const replay = new CanvasBuilder(tolerance, extent, 1, 1, true);
+      expect(replay).to.be.a(CanvasBuilder);
     });
 
   });
@@ -308,7 +308,7 @@ describe('ol.render.canvas.Replay', function() {
 
     let replay;
     beforeEach(function() {
-      replay = new CanvasReplay(1, [-180, -90, 180, 90], 1, 1, true);
+      replay = new CanvasBuilder(1, [-180, -90, 180, 90], 1, 1, true);
     });
 
     it('appends coordinates that are within the max extent', function() {
@@ -451,7 +451,7 @@ describe('ol.render.canvas.Replay', function() {
 
 });
 
-describe('ol.render.canvas.LineStringReplay', function() {
+describe('ol.render.canvas.LineStringBuilder', function() {
 
   describe('#getBufferedMaxExtent()', function() {
 
@@ -473,7 +473,7 @@ describe('ol.render.canvas.LineStringReplay', function() {
 
 });
 
-describe('ol.render.canvas.PolygonReplay', function() {
+describe('ol.render.canvas.PolygonBuilder', function() {
 
   let replay;
 

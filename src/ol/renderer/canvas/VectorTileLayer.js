@@ -12,7 +12,7 @@ import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, interse
 import VectorTileRenderType from '../../layer/VectorTileRenderType.js';
 import {equivalent as equivalentProjection} from '../../proj.js';
 import Units from '../../proj/Units.js';
-import ReplayType from '../../render/ReplayType.js';
+import ReplayType from '../../render/canvas/BuilderType.js';
 import {labelCache} from '../../render/canvas.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import CanvasTileLayerRenderer from './TileLayer.js';
@@ -32,7 +32,7 @@ import CanvasExecutorGroup, {replayDeclutter} from '../../render/canvas/Executor
 
 
 /**
- * @type {!Object<string, Array<import("../../render/ReplayType.js").default>>}
+ * @type {!Object<string, Array<import("../../render/canvas/BuilderType.js").default>>}
  */
 const IMAGE_REPLAYS = {
   'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
@@ -42,7 +42,7 @@ const IMAGE_REPLAYS = {
 
 
 /**
- * @type {!Object<string, Array<import("../../render/ReplayType.js").default>>}
+ * @type {!Object<string, Array<import("../../render/canvas/BuilderType.js").default>>}
  */
 const VECTOR_REPLAYS = {
   'image': [ReplayType.DEFAULT],
@@ -229,7 +229,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
       builderState.dirty = false;
       const builderGroup = new CanvasBuilderGroup(0, sharedExtent, resolution,
-        pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
+        pixelRatio, !!this.declutterTree_);
       const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
       /**
@@ -269,7 +269,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         }
       }
       const executorGroupInstructions = builderGroup.finish();
-      const renderingReplayGroup = new CanvasExecutorGroup(0, sharedExtent, resolution,
+      const renderingReplayGroup = new CanvasExecutorGroup(sharedExtent, resolution,
         pixelRatio, source.getOverlaps(), this.declutterTree_, executorGroupInstructions, layer.getRenderBuffer());
       sourceTile.setExecutorGroup(layer, tile.tileCoord.toString(), renderingReplayGroup);
     }

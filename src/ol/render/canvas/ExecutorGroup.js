@@ -7,54 +7,43 @@ import {createCanvasContext2D} from '../../dom.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {isEmpty} from '../../obj.js';
-import BaseExecutorGroup from '../ExecutorGroup.js';
-import ReplayType from '../ReplayType.js';
-import {ORDER} from '../replay.js';
+import BuilderType from './BuilderType.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
-import CanvasExecutor from './Executor.js';
+import Executor from './Executor.js';
+
+/**
+ * @const
+ * @type {Array<BuilderType>}
+ */
+const ORDER = [
+  BuilderType.POLYGON,
+  BuilderType.CIRCLE,
+  BuilderType.LINE_STRING,
+  BuilderType.IMAGE,
+  BuilderType.TEXT,
+  BuilderType.DEFAULT
+];
 
 
-class ExecutorGroup extends BaseExecutorGroup {
+class ExecutorGroup {
   /**
-   * @param {number} tolerance Tolerance.
    * @param {import("../../extent.js").Extent} maxExtent Max extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The executor group can have overlapping geometries.
    * @param {?} declutterTree Declutter tree for declutter processing in postrender.
-   * @param {!Object<string, !Object<ReplayType, import("./Builder.js").SerializableInstructions>>} allInstructions
+   * @param {!Object<string, !Object<BuilderType, import("./Builder.js").SerializableInstructions>>} allInstructions
    * The serializable instructions.
    * @param {number=} opt_renderBuffer Optional rendering buffer.
    */
-  constructor(
-    tolerance,
-    maxExtent,
-    resolution,
-    pixelRatio,
-    overlaps,
-    declutterTree,
-    allInstructions,
-    opt_renderBuffer
-  ) {
-    super();
+  constructor(maxExtent, resolution, pixelRatio, overlaps, declutterTree,
+    allInstructions, opt_renderBuffer) {
 
     /**
      * Declutter tree.
      * @private
      */
     this.declutterTree_ = declutterTree;
-
-    /**
-     * @type {import("../canvas.js").DeclutterGroup}
-     * @private
-     */
-    this.declutterGroup_ = null;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    this.tolerance_ = tolerance;
 
     /**
      * @private
@@ -88,7 +77,7 @@ class ExecutorGroup extends BaseExecutorGroup {
 
     /**
      * @private
-     * @type {!Object<string, !Object<ReplayType, import("./Executor").default>>}
+     * @type {!Object<string, !Object<BuilderType, import("./Executor").default>>}
      */
     this.executorsByZIndex_ = {};
 
@@ -104,7 +93,7 @@ class ExecutorGroup extends BaseExecutorGroup {
      */
     this.hitDetectionTransform_ = createTransform();
 
-    this.createExectutors_(allInstructions);
+    this.createExecutors_(allInstructions);
   }
 
   /**
@@ -124,25 +113,25 @@ class ExecutorGroup extends BaseExecutorGroup {
   /**
    * Create executors and populate them using the provided instructions.
    * @private
-   * @param {!Object<string, !Object<ReplayType, import("./Builder.js").SerializableInstructions>>} allInstructions The serializable instructions
+   * @param {!Object<string, !Object<BuilderType, import("./Builder.js").SerializableInstructions>>} allInstructions The serializable instructions
    */
-  createExectutors_(allInstructions) {
+  createExecutors_(allInstructions) {
     for (const zIndex in allInstructions) {
       let executors = this.executorsByZIndex_[zIndex];
       if (executors === undefined) {
         this.executorsByZIndex_[zIndex] = executors = {};
       }
       const instructionByZindex = allInstructions[zIndex];
-      for (const replayType in instructionByZindex) {
-        const instructions = instructionByZindex[replayType];
-        executors[replayType] = new CanvasExecutor(this.tolerance_, this.maxExtent_,
+      for (const builderType in instructionByZindex) {
+        const instructions = instructionByZindex[builderType];
+        executors[builderType] = new Executor(this.maxExtent_,
           this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_, instructions);
       }
     }
   }
 
   /**
-   * @param {Array<ReplayType>} executors Executors.
+   * @param {Array<BuilderType>} executors Executors.
    * @return {boolean} Has executors of the provided types.
    */
   hasExecutors(executors) {
@@ -213,7 +202,7 @@ class ExecutorGroup extends BaseExecutorGroup {
       });
     }
 
-    let replayType;
+    let builderType;
 
     /**
      * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
@@ -226,7 +215,7 @@ class ExecutorGroup extends BaseExecutorGroup {
           if (mask[i][j]) {
             if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
               let result;
-              if (!(declutteredFeatures && (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) ||
+              if (!(declutteredFeatures && (builderType == BuilderType.IMAGE || builderType == BuilderType.TEXT)) ||
                   declutteredFeatures.indexOf(feature) !== -1) {
                 result = callback(feature);
               }
@@ -251,11 +240,11 @@ class ExecutorGroup extends BaseExecutorGroup {
       const zIndexKey = zs[i].toString();
       executors = this.executorsByZIndex_[zIndexKey];
       for (j = ORDER.length - 1; j >= 0; --j) {
-        replayType = ORDER[j];
-        executor = executors[replayType];
+        builderType = ORDER[j];
+        executor = executors[builderType];
         if (executor !== undefined) {
           if (declutterReplays &&
-              (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) {
+              (builderType == BuilderType.IMAGE || builderType == BuilderType.TEXT)) {
             const declutter = declutterReplays[zIndexKey];
             if (!declutter) {
               declutterReplays[zIndexKey] = [executor, transform.slice(0)];
@@ -299,39 +288,41 @@ class ExecutorGroup extends BaseExecutorGroup {
   }
 
   /**
-   * @inheritDoc
+   * @param {number|undefined} zIndex Z index.
+   * @param {import("./BuilderType.js").default} builderType Builder type.
+   * @return {import("../VectorContext.js").default} Executor.
    */
-  getExecutor(zIndex, replayType) {
+  getExecutor(zIndex, builderType) {
     const zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
     let executors = this.executorsByZIndex_[zIndexKey];
     if (executors === undefined) {
       executors = {};
       this.executorsByZIndex_[zIndexKey] = executors;
     }
-    let executor = executors[replayType];
+    let executor = executors[builderType];
     if (executor === undefined) {
       // FIXME: it should not be possible to ask for an executor that does not exist
-      executor = new CanvasExecutor(this.tolerance_, this.maxExtent_,
+      executor = new Executor(this.maxExtent_,
         this.resolution_, this.pixelRatio_, this.overlaps_, {
           instructions: [],
           hitDetectionInstructions: [],
           coordinates: []
         },
         this.declutterTree_);
-      executors[replayType] = executor;
+      executors[builderType] = executor;
     }
     return executor;
   }
 
   /**
-   * @return {Object<string, Object<ReplayType, CanvasReplay>>} Replays.
+   * @return {Object<string, Object<BuilderType, CanvasReplay>>} Replays.
    */
   getExecutors() {
     return this.executorsByZIndex_;
   }
 
   /**
-   * @inheritDoc
+   * @return {boolean} Is empty.
    */
   isEmpty() {
     return isEmpty(this.executorsByZIndex_);
@@ -343,19 +334,12 @@ class ExecutorGroup extends BaseExecutorGroup {
    * @param {number} viewRotation View rotation.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
    * @param {boolean} snapToPixel Snap point symbols and test to integer pixel.
-   * @param {Array<ReplayType>=} opt_replayTypes Ordered replay types to replay.
+   * @param {Array<BuilderType>=} opt_builderTypes Ordered replay types to replay.
    *     Default is {@link module:ol/render/replay~ORDER}
    * @param {Object<string, import("../canvas.js").DeclutterGroup>=} opt_declutterReplays Declutter replays.
    */
-  execute(
-    context,
-    transform,
-    viewRotation,
-    skippedFeaturesHash,
-    snapToPixel,
-    opt_replayTypes,
-    opt_declutterReplays
-  ) {
+  execute(context, transform, viewRotation, skippedFeaturesHash, snapToPixel, opt_builderTypes,
+    opt_declutterReplays) {
 
     /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
@@ -366,17 +350,17 @@ class ExecutorGroup extends BaseExecutorGroup {
     context.save();
     this.clip(context, transform);
 
-    const replayTypes = opt_replayTypes ? opt_replayTypes : ORDER;
+    const builderTypes = opt_builderTypes ? opt_builderTypes : ORDER;
     let i, ii, j, jj, replays, replay;
     for (i = 0, ii = zs.length; i < ii; ++i) {
       const zIndexKey = zs[i].toString();
       replays = this.executorsByZIndex_[zIndexKey];
-      for (j = 0, jj = replayTypes.length; j < jj; ++j) {
-        const replayType = replayTypes[j];
-        replay = replays[replayType];
+      for (j = 0, jj = builderTypes.length; j < jj; ++j) {
+        const builderType = builderTypes[j];
+        replay = replays[builderType];
         if (replay !== undefined) {
           if (opt_declutterReplays &&
-              (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) {
+              (builderType == BuilderType.IMAGE || builderType == BuilderType.TEXT)) {
             const declutter = opt_declutterReplays[zIndexKey];
             if (!declutter) {
               opt_declutterReplays[zIndexKey] = [replay, transform.slice(0)];
