@@ -1,9 +1,9 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {easeIn, easeOut} from '../src/ol/easing.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import {fromLonLat} from '../src/ol/proj.js';
-import OSM from '../src/ol/source/OSM.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {easeIn, easeOut} from 'ol/easing';
+import TileLayer from 'ol/layer/Tile';
+import {fromLonLat} from 'ol/proj';
+import OSM from 'ol/source/OSM';
 
 const london = fromLonLat([-0.12755, 51.507222]);
 const moscow = fromLonLat([37.6178, 55.7517]);

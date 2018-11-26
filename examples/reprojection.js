@@ -1,13 +1,13 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {getWidth, getCenter} from '../src/ol/extent.js';
-import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import {get as getProjection} from '../src/ol/proj.js';
-import {register} from '../src/ol/proj/proj4.js';
-import {OSM, TileImage, TileWMS, XYZ} from '../src/ol/source.js';
-import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
-import TileGrid from '../src/ol/tilegrid/TileGrid.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {getWidth, getCenter} from 'ol/extent';
+import WMTSCapabilities from 'ol/format/WMTSCapabilities';
+import TileLayer from 'ol/layer/Tile';
+import {get as getProjection} from 'ol/proj';
+import {register} from 'ol/proj/proj4';
+import {OSM, TileImage, TileWMS, XYZ} from 'ol/source';
+import WMTS, {optionsFromCapabilities} from 'ol/source/WMTS';
+import TileGrid from 'ol/tilegrid/TileGrid';
 import proj4 from 'proj4';
 
 

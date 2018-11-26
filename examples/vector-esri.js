@@ -1,13 +1,13 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import EsriJSON from '../src/ol/format/EsriJSON.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {tile as tileStrategy} from '../src/ol/loadingstrategy.js';
-import {fromLonLat} from '../src/ol/proj.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import XYZ from '../src/ol/source/XYZ.js';
-import {Fill, Stroke, Style} from '../src/ol/style.js';
-import {createXYZ} from '../src/ol/tilegrid.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import EsriJSON from 'ol/format/EsriJSON';
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
+import {tile as tileStrategy} from 'ol/loadingstrategy';
+import {fromLonLat} from 'ol/proj';
+import VectorSource from 'ol/source/Vector';
+import XYZ from 'ol/source/XYZ';
+import {Fill, Stroke, Style} from 'ol/style';
+import {createXYZ} from 'ol/tilegrid';
 
 
 const serviceUrl = 'https://sampleserver3.arcgisonline.com/ArcGIS/rest/services/' +

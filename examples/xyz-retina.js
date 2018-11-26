@@ -1,9 +1,9 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import {transform, transformExtent} from '../src/ol/proj.js';
-import OSM from '../src/ol/source/OSM.js';
-import XYZ from '../src/ol/source/XYZ.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import {transform, transformExtent} from 'ol/proj';
+import OSM from 'ol/source/OSM';
+import XYZ from 'ol/source/XYZ';
 
 const mapMinZoom = 1;
 const mapMaxZoom = 15;

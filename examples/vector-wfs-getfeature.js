@@ -1,15 +1,15 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
 import {
   equalTo as equalToFilter,
   like as likeFilter,
   and as andFilter
-} from '../src/ol/format/filter.js';
-import {WFS, GeoJSON} from '../src/ol/format.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import BingMaps from '../src/ol/source/BingMaps.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import {Stroke, Style} from '../src/ol/style.js';
+} from 'ol/format/filter';
+import {WFS, GeoJSON} from 'ol/format';
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
+import BingMaps from 'ol/source/BingMaps';
+import VectorSource from 'ol/source/Vector';
+import {Stroke, Style} from 'ol/style';
 
 
 const vectorSource = new VectorSource();

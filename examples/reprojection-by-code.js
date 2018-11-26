@@ -1,11 +1,11 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {applyTransform} from '../src/ol/extent.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import {get as getProjection, getTransform} from '../src/ol/proj.js';
-import {register} from '../src/ol/proj/proj4.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileImage from '../src/ol/source/TileImage.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {applyTransform} from 'ol/extent';
+import TileLayer from 'ol/layer/Tile';
+import {get as getProjection, getTransform} from 'ol/proj';
+import {register} from 'ol/proj/proj4';
+import OSM from 'ol/source/OSM';
+import TileImage from 'ol/source/TileImage';
 import proj4 from 'proj4';
 
 

@@ -1,8 +1,8 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import Draw from '../src/ol/interaction/Draw.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
+import {OSM, Vector as VectorSource} from 'ol/source';
+import Draw from 'ol/interaction/Draw';
 
 import smooth from 'chaikin-smooth';
 

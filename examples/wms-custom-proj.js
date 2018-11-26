@@ -1,10 +1,10 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {defaults as defaultControls, ScaleLine} from '../src/ol/control.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import {addProjection, addCoordinateTransforms, transform} from '../src/ol/proj.js';
-import Projection from '../src/ol/proj/Projection.js';
-import TileWMS from '../src/ol/source/TileWMS.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {defaults as defaultControls, ScaleLine} from 'ol/control';
+import TileLayer from 'ol/layer/Tile';
+import {addProjection, addCoordinateTransforms, transform} from 'ol/proj';
+import Projection from 'ol/proj/Projection';
+import TileWMS from 'ol/source/TileWMS';
 
 
 // By default OpenLayers does not know about the EPSG:21781 (Swiss) projection.

@@ -1,9 +1,9 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {Group as LayerGroup, Tile as TileLayer} from '../src/ol/layer.js';
-import {fromLonLat} from '../src/ol/proj.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileJSON from '../src/ol/source/TileJSON.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {Group as LayerGroup, Tile as TileLayer} from 'ol/layer';
+import {fromLonLat} from 'ol/proj';
+import OSM from 'ol/source/OSM';
+import TileJSON from 'ol/source/TileJSON';
 
 const map = new Map({
   layers: [

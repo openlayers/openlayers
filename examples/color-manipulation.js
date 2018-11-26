@@ -1,7 +1,7 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import ImageLayer from '../src/ol/layer/Image.js';
-import {Raster as RasterSource, Stamen} from '../src/ol/source.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import ImageLayer from 'ol/layer/Image';
+import {Raster as RasterSource, Stamen} from 'ol/source';
 
 
 /**

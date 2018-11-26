@@ -1,8 +1,8 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {defaults as defaultControls, ScaleLine} from '../src/ol/control.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import TileWMS from '../src/ol/source/TileWMS.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {defaults as defaultControls, ScaleLine} from 'ol/control';
+import TileLayer from 'ol/layer/Tile';
+import TileWMS from 'ol/source/TileWMS';
 
 
 const layers = [

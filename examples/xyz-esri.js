@@ -1,8 +1,8 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import {fromLonLat} from '../src/ol/proj.js';
-import XYZ from '../src/ol/source/XYZ.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import {fromLonLat} from 'ol/proj';
+import XYZ from 'ol/source/XYZ';
 
 
 const map = new Map({

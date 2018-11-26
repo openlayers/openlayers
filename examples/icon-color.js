@@ -1,12 +1,12 @@
-import Feature from '../src/ol/Feature.js';
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import Point from '../src/ol/geom/Point.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {fromLonLat} from '../src/ol/proj.js';
-import TileJSON from '../src/ol/source/TileJSON.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import {Icon, Style} from '../src/ol/style.js';
+import Feature from 'ol/Feature';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import Point from 'ol/geom/Point';
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
+import {fromLonLat} from 'ol/proj';
+import TileJSON from 'ol/source/TileJSON';
+import VectorSource from 'ol/source/Vector';
+import {Icon, Style} from 'ol/style';
 
 
 const rome = new Feature({

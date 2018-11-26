@@ -1,10 +1,10 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {getWidth, getCenter} from '../src/ol/extent.js';
-import {Layer, Tile as TileLayer} from '../src/ol/layer.js';
-import SourceState from '../src/ol/source/State';
-import {fromLonLat, toLonLat} from '../src/ol/proj.js';
-import Stamen from '../src/ol/source/Stamen.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {getWidth, getCenter} from 'ol/extent';
+import {Layer, Tile as TileLayer} from 'ol/layer';
+import SourceState from 'ol/source/State';
+import {fromLonLat, toLonLat} from 'ol/proj';
+import Stamen from 'ol/source/Stamen';
 
 class CanvasLayer extends Layer {
 

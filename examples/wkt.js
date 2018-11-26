@@ -1,8 +1,8 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import WKT from '../src/ol/format/WKT.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import WKT from 'ol/format/WKT';
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
+import {OSM, Vector as VectorSource} from 'ol/source';
 
 const raster = new TileLayer({
   source: new OSM()

@@ -1,10 +1,10 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import TopoJSON from '../src/ol/format/TopoJSON.js';
-import VectorTileLayer from '../src/ol/layer/VectorTile.js';
-import {fromLonLat} from '../src/ol/proj.js';
-import VectorTileSource from '../src/ol/source/VectorTile.js';
-import {Fill, Stroke, Style} from '../src/ol/style.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import TopoJSON from 'ol/format/TopoJSON';
+import VectorTileLayer from 'ol/layer/VectorTile';
+import {fromLonLat} from 'ol/proj';
+import VectorTileSource from 'ol/source/VectorTile';
+import {Fill, Stroke, Style} from 'ol/style';
 
 const key = 'vector-tiles-5eJz6JX';
 

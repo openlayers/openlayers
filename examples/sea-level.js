@@ -1,9 +1,9 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
-import {fromLonLat} from '../src/ol/proj.js';
-import {Raster as RasterSource, TileJSON} from '../src/ol/source.js';
-import XYZ from '../src/ol/source/XYZ.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer';
+import {fromLonLat} from 'ol/proj';
+import {Raster as RasterSource, TileJSON} from 'ol/source';
+import XYZ from 'ol/source/XYZ';
 
 function flood(pixels, data) {
   const pixel = pixels[0];

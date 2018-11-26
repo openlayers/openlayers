@@ -1,14 +1,14 @@
-import Feature from '../src/ol/Feature.js';
-import Map from '../src/ol/Map.js';
-import {unByKey} from '../src/ol/Observable.js';
-import View from '../src/ol/View.js';
-import {easeOut} from '../src/ol/easing.js';
-import Point from '../src/ol/geom/Point.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {fromLonLat} from '../src/ol/proj.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Circle as CircleStyle, Stroke, Style} from '../src/ol/style.js';
-import {getVectorContext} from '../src/ol/render.js';
+import Feature from 'ol/Feature';
+import Map from 'ol/Map';
+import {unByKey} from 'ol/Observable';
+import View from 'ol/View';
+import {easeOut} from 'ol/easing';
+import Point from 'ol/geom/Point';
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
+import {fromLonLat} from 'ol/proj';
+import {OSM, Vector as VectorSource} from 'ol/source';
+import {Circle as CircleStyle, Stroke, Style} from 'ol/style';
+import {getVectorContext} from 'ol/render';
 
 const tileLayer = new TileLayer({
   source: new OSM({

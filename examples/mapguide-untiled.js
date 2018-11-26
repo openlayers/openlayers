@@ -1,7 +1,7 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import ImageLayer from '../src/ol/layer/Image.js';
-import ImageMapGuide from '../src/ol/source/ImageMapGuide.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import ImageLayer from 'ol/layer/Image';
+import ImageMapGuide from 'ol/source/ImageMapGuide';
 
 const mdf = 'Library://Public/Samples/Sheboygan/Maps/Sheboygan.MapDefinition';
 const agentUrl =

@@ -1,11 +1,11 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import GeoJSON from '../src/ol/format/GeoJSON.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {bbox as bboxStrategy} from '../src/ol/loadingstrategy.js';
-import BingMaps from '../src/ol/source/BingMaps.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import {Stroke, Style} from '../src/ol/style.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import GeoJSON from 'ol/format/GeoJSON';
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
+import {bbox as bboxStrategy} from 'ol/loadingstrategy';
+import BingMaps from 'ol/source/BingMaps';
+import VectorSource from 'ol/source/Vector';
+import {Stroke, Style} from 'ol/style';
 
 
 const vectorSource = new VectorSource({
