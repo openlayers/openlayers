@@ -1,5 +1,5 @@
 /**
- * @module ol/render/ReplayType
+ * @module ol/render/BuilderType
  */
 
 /**

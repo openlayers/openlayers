@@ -7,16 +7,11 @@ import {buffer, clone, coordinateRelationship} from '../../extent.js';
 import Relationship from '../../extent/Relationship.js';
 import GeometryType from '../../geom/GeometryType.js';
 import {inflateCoordinates, inflateCoordinatesArray, inflateMultiCoordinatesArray} from '../../geom/flat/inflate.js';
-import {CANVAS_LINE_DASH} from '../../has.js';
 import VectorContext from '../VectorContext.js';
-import {resetTransform, defaultFillStyle, defaultStrokeStyle,
+import {defaultFillStyle, defaultStrokeStyle,
   defaultMiterLimit, defaultLineWidth, defaultLineJoin, defaultLineDashOffset,
   defaultLineDash, defaultLineCap} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
-import {
-  create as createTransform,
-  apply as applyTransform
-} from '../../transform.js';
 
 
 /**
@@ -36,16 +31,9 @@ class CanvasBuilder extends VectorContext {
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {boolean} overlaps The builder can have overlapping geometries.
-   * @param {?} declutterTree Declutter tree.
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
+  constructor(tolerance, maxExtent, resolution, pixelRatio) {
     super();
-
-    /**
-     * @type {?}
-     */
-    this.declutterTree = declutterTree;
 
     /**
      * @protected
@@ -59,12 +47,6 @@ class CanvasBuilder extends VectorContext {
      * @type {import("../../extent.js").Extent}
      */
     this.maxExtent = maxExtent;
-
-    /**
-     * @protected
-     * @type {boolean}
-     */
-    this.overlaps = overlaps;
 
     /**
      * @protected
@@ -84,12 +66,6 @@ class CanvasBuilder extends VectorContext {
      * @type {number}
      */
     this.resolution = resolution;
-
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.alignFill_;
 
     /**
      * @private
@@ -122,40 +98,16 @@ class CanvasBuilder extends VectorContext {
     this.coordinates = [];
 
     /**
-     * @private
-     * @type {!Object<number,import("../../coordinate.js").Coordinate|Array<import("../../coordinate.js").Coordinate>|Array<Array<import("../../coordinate.js").Coordinate>>>}
-     */
-    this.coordinateCache_ = {};
-
-    /**
-     * @private
-     * @type {!import("../../transform.js").Transform}
-     */
-    this.renderedTransform_ = createTransform();
-
-    /**
      * @protected
      * @type {Array<*>}
      */
     this.hitDetectionInstructions = [];
 
     /**
-     * @private
-     * @type {Array<number>}
-     */
-    this.pixelCoordinates_ = null;
-
-    /**
      * @protected
      * @type {import("../canvas.js").FillStrokeState}
      */
     this.state = /** @type {import("../canvas.js").FillStrokeState} */ ({});
-
-    /**
-     * @private
-     * @type {number}
-     */
-    this.viewRotation_ = 0;
 
   }
 
@@ -313,40 +265,6 @@ class CanvasBuilder extends VectorContext {
       hitDetectionInstructions: this.hitDetectionInstructions,
       coordinates: this.coordinates
     };
-  }
-
-  /**
-   * @private
-   * @param {CanvasRenderingContext2D} context Context.
-   */
-  fill_(context) {
-    if (this.alignFill_) {
-      const origin = applyTransform(this.renderedTransform_, [0, 0]);
-      const repeatSize = 512 * this.pixelRatio;
-      context.translate(origin[0] % repeatSize, origin[1] % repeatSize);
-      context.rotate(this.viewRotation_);
-    }
-    context.fill();
-    if (this.alignFill_) {
-      context.setTransform.apply(context, resetTransform);
-    }
-  }
-
-  /**
-   * @private
-   * @param {CanvasRenderingContext2D} context Context.
-   * @param {Array<*>} instruction Instruction.
-   */
-  setStrokeStyle_(context, instruction) {
-    context.strokeStyle = /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
-    context.lineWidth = /** @type {number} */ (instruction[2]);
-    context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
-    context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
-    context.miterLimit = /** @type {number} */ (instruction[5]);
-    if (CANVAS_LINE_DASH) {
-      context.lineDashOffset = /** @type {number} */ (instruction[7]);
-      context.setLineDash(/** @type {Array<number>} */ (instruction[6]));
-    }
   }
 
   /**

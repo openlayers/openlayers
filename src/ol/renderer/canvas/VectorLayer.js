@@ -296,7 +296,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const replayGroup = new CanvasBuilderGroup(
       getRenderTolerance(resolution, pixelRatio), extent, resolution,
-      pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
+      pixelRatio, !!this.declutterTree_);
 
     vectorSource.loadFeatures(extent, resolution, projection);
 
@@ -335,8 +335,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     const replayGroupInstructions = replayGroup.finish();
-    const renderingExecutorGroup = new InstructionsGroupExecutor(
-      getRenderTolerance(resolution, pixelRatio), extent, resolution,
+    const renderingExecutorGroup = new InstructionsGroupExecutor(extent, resolution,
       pixelRatio, vectorSource.getOverlaps(), this.declutterTree_,
       replayGroupInstructions, vectorLayer.getRenderBuffer());
 

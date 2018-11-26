@@ -1,7 +1,7 @@
-import {getCircleArray} from '../../../../../src/ol/render/canvas/BuilderGroup.js';
+import {getCircleArray} from '../../../../../src/ol/render/canvas/ExecutorGroup.js';
 
 
-describe('ol.render.canvas.ReplayGroup', function() {
+describe('ol.render.canvas.ExecutorGroup', function() {
 
   describe('#getCircleArray_', function() {
     it('creates an array with a pixelated circle marked with true', function() {

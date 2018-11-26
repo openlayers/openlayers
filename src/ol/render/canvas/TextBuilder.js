@@ -9,8 +9,24 @@ import GeometryType from '../../geom/GeometryType.js';
 import {labelCache, defaultTextAlign, defaultPadding, defaultLineCap, defaultLineDashOffset, defaultLineDash, defaultLineJoin, defaultFillStyle, checkFont, defaultFont, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
 import CanvasBuilder from './Builder.js';
-import {TEXT_ALIGN} from '../replay.js';
 import TextPlacement from '../../style/TextPlacement.js';
+/**
+ * @const
+ * @enum {number}
+ */
+export const TEXT_ALIGN = {};
+TEXT_ALIGN['left'] = 0;
+TEXT_ALIGN['end'] = 0;
+TEXT_ALIGN['center'] = 0.5;
+TEXT_ALIGN['right'] = 1;
+TEXT_ALIGN['start'] = 1;
+TEXT_ALIGN['top'] = 0;
+TEXT_ALIGN['middle'] = 0.5;
+TEXT_ALIGN['hanging'] = 0.2;
+TEXT_ALIGN['alphabetic'] = 0.8;
+TEXT_ALIGN['ideographic'] = 0.8;
+TEXT_ALIGN['bottom'] = 1;
+
 
 class CanvasTextBuilder extends CanvasBuilder {
   /**
@@ -18,11 +34,9 @@ class CanvasTextBuilder extends CanvasBuilder {
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {boolean} overlaps The replay can have overlapping geometries.
-   * @param {?} declutterTree Declutter tree.
    */
-  constructor(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-    super(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
+  constructor(tolerance, maxExtent, resolution, pixelRatio) {
+    super(tolerance, maxExtent, resolution, pixelRatio);
 
     /**
      * @private

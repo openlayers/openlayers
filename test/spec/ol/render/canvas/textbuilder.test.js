@@ -1,13 +1,13 @@
 import Feature from '../../../../../src/ol/Feature.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import CanvasTextReplay from '../../../../../src/ol/render/canvas/TextBuilder.js';
-import InstructionExecutor from '../../../../../src/ol/render/canvas/Executor.js';
+import TextBuilder from '../../../../../src/ol/render/canvas/TextBuilder.js';
+import Executor from '../../../../../src/ol/render/canvas/Executor.js';
 import Text from '../../../../../src/ol/style/Text.js';
 import {create as createTransform} from '../../../../../src/ol/transform.js';
 
 function createBuilder() {
-  return new CanvasTextReplay(1, [-180, -90, 180, 90], 0.02, 1, true);
+  return new TextBuilder(1, [-180, -90, 180, 90], 0.02, 1, true);
 }
 
 function createContext() {
@@ -25,18 +25,18 @@ function createContext() {
   };
 }
 
-function executeInstructions(builder, expectedDrawTextImageCalls, expectedReplayImageCalls) {
+function executeInstructions(builder, expectedDrawTextImageCalls, expectedBuilderImageCalls) {
   const transform = createTransform();
   const context = createContext();
-  const executor = new InstructionExecutor(1, [-180, -90, 180, 90], 0.02, 1, false, null, builder.finish());
+  const executor = new Executor([-180, -90, 180, 90], 0.02, 1, false, null, builder.finish());
   sinon.spy(executor, 'drawTextImageWithPointPlacement_');
   const replayImageStub = sinon.stub(executor, 'replayImage_');
   executor.execute(context, transform);
   expect(executor.drawTextImageWithPointPlacement_.callCount).to.be(expectedDrawTextImageCalls);
-  expect(replayImageStub.callCount).to.be(expectedReplayImageCalls);
+  expect(replayImageStub.callCount).to.be(expectedBuilderImageCalls);
 }
 
-describe('ol.render.canvas.TextReplay', function() {
+describe('ol.render.canvas.TextBuilder', function() {
 
   it('renders polygon labels only when they fit', function() {
     let builder = createBuilder();
