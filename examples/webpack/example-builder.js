@@ -155,7 +155,9 @@ ExampleBuilder.prototype.render = async function(dir, chunk) {
   if (!jsSource) {
     throw new Error(`No .js source for ${jsName}`);
   }
+  // remove "../src/" prefix and ".js" to have the same import syntax as the documentation
   jsSource = jsSource.replace(/'\.\.\/src\//g, '\'');
+  jsSource = jsSource.replace(/\.js';/g, '\';');
   if (data.cloak) {
     for (const entry of data.cloak) {
       jsSource = jsSource.replace(new RegExp(entry.key, 'g'), entry.value);
