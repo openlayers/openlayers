@@ -1,9 +1,9 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import KML from 'ol/format/KML';
-import {Heatmap as HeatmapLayer, Tile as TileLayer} from 'ol/layer';
-import Stamen from 'ol/source/Stamen';
-import VectorSource from 'ol/source/Vector';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import KML from '../src/ol/format/KML.js';
+import {Heatmap as HeatmapLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import Stamen from '../src/ol/source/Stamen.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 const blur = document.getElementById('blur');
 const radius = document.getElementById('radius');

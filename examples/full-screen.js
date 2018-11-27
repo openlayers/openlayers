@@ -1,8 +1,8 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import {defaults as defaultControls, FullScreen} from 'ol/control';
-import TileLayer from 'ol/layer/Tile';
-import BingMaps from 'ol/source/BingMaps';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {defaults as defaultControls, FullScreen} from '../src/ol/control.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
 
 
 const view = new View({

@@ -1,7 +1,7 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import TileLayer from 'ol/layer/Tile';
-import XYZ from 'ol/source/XYZ';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import XYZ from '../src/ol/source/XYZ.js';
 
 const urls = [
   'https://{a-c}.tiles.mapbox.com/v3/mapbox.blue-marble-topo-jan/{z}/{x}/{y}.png',

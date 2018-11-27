@@ -1,9 +1,9 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import KML from 'ol/format/KML';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import BingMaps from 'ol/source/BingMaps';
-import VectorSource from 'ol/source/Vector';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import KML from '../src/ol/format/KML.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 const raster = new TileLayer({
   source: new BingMaps({

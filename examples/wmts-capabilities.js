@@ -1,4 +1,4 @@
-import WMTSCapabilities from 'ol/format/WMTSCapabilities';
+import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 
 const parser = new WMTSCapabilities();
 

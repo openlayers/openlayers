@@ -1,10 +1,10 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import TopoJSON from 'ol/format/TopoJSON';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import TileJSON from 'ol/source/TileJSON';
-import VectorSource from 'ol/source/Vector';
-import {Fill, Stroke, Style} from 'ol/style';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import TopoJSON from '../src/ol/format/TopoJSON.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import TileJSON from '../src/ol/source/TileJSON.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import {Fill, Stroke, Style} from '../src/ol/style.js';
 
 
 const raster = new TileLayer({

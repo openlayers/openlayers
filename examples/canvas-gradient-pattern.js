@@ -1,11 +1,11 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import GeoJSON from 'ol/format/GeoJSON';
-import {DEVICE_PIXEL_RATIO} from 'ol/has';
-import VectorLayer from 'ol/layer/Vector';
-import {fromLonLat} from 'ol/proj';
-import VectorSource from 'ol/source/Vector';
-import {Fill, Stroke, Style} from 'ol/style';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import {fromLonLat} from '../src/ol/proj.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import {Fill, Stroke, Style} from '../src/ol/style.js';
 
 const canvas = document.createElement('canvas');
 const context = canvas.getContext('2d');

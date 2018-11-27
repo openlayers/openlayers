@@ -1,11 +1,11 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import {getCenter} from 'ol/extent';
-import GeoJSON from 'ol/format/GeoJSON';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import BingMaps from 'ol/source/BingMaps';
-import VectorSource from 'ol/source/Vector';
-import {Fill, Style, Text} from 'ol/style';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {getCenter} from '../src/ol/extent.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import {Fill, Style, Text} from '../src/ol/style.js';
 
 const style = new Style({
   text: new Text({

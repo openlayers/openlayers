@@ -1,9 +1,9 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer';
-import Projection from 'ol/proj/Projection';
-import ImageWMS from 'ol/source/ImageWMS';
-import TileWMS from 'ol/source/TileWMS';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import Projection from '../src/ol/proj/Projection.js';
+import ImageWMS from '../src/ol/source/ImageWMS.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 
 
 const layers = [

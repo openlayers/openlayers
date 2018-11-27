@@ -1,12 +1,12 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import GeoJSON from 'ol/format/GeoJSON';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import {fromLonLat} from 'ol/proj';
-import OSM from 'ol/source/OSM';
-import VectorSource from 'ol/source/Vector';
-import LinearRing from 'ol/geom/LinearRing';
-import {Point, LineString, Polygon, MultiPoint, MultiLineString, MultiPolygon} from 'ol/geom';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {fromLonLat} from '../src/ol/proj.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import LinearRing from '../src/ol/geom/LinearRing.js';
+import {Point, LineString, Polygon, MultiPoint, MultiLineString, MultiPolygon} from '../src/ol/geom.js';
 
 const source = new VectorSource();
 fetch('data/geojson/roads-seoul.geojson').then(function(response) {

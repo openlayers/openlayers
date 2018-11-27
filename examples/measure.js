@@ -1,13 +1,13 @@
-import Map from 'ol/Map';
-import {unByKey} from 'ol/Observable';
-import Overlay from 'ol/Overlay';
-import {getArea, getLength} from 'ol/sphere';
-import View from 'ol/View';
-import {LineString, Polygon} from 'ol/geom';
-import Draw from 'ol/interaction/Draw';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import {OSM, Vector as VectorSource} from 'ol/source';
-import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style';
+import Map from '../src/ol/Map.js';
+import {unByKey} from '../src/ol/Observable.js';
+import Overlay from '../src/ol/Overlay.js';
+import {getArea, getLength} from '../src/ol/sphere.js';
+import View from '../src/ol/View.js';
+import {LineString, Polygon} from '../src/ol/geom.js';
+import Draw from '../src/ol/interaction/Draw.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 
 
 const raster = new TileLayer({

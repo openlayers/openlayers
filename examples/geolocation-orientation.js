@@ -1,11 +1,11 @@
-import Geolocation from 'ol/Geolocation';
-import Map from 'ol/Map';
-import Overlay from 'ol/Overlay';
-import View from 'ol/View';
-import LineString from 'ol/geom/LineString';
-import TileLayer from 'ol/layer/Tile';
-import {fromLonLat} from 'ol/proj';
-import OSM from 'ol/source/OSM';
+import Geolocation from '../src/ol/Geolocation.js';
+import Map from '../src/ol/Map.js';
+import Overlay from '../src/ol/Overlay.js';
+import View from '../src/ol/View.js';
+import LineString from '../src/ol/geom/LineString.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {fromLonLat} from '../src/ol/proj.js';
+import OSM from '../src/ol/source/OSM.js';
 
 // creating the view
 const view = new View({

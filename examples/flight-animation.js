@@ -1,12 +1,12 @@
-import Feature from 'ol/Feature';
-import Map from 'ol/Map';
-import View from 'ol/View';
-import LineString from 'ol/geom/LineString';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import Stamen from 'ol/source/Stamen';
-import VectorSource from 'ol/source/Vector';
-import {Stroke, Style} from 'ol/style';
-import {getVectorContext} from 'ol/render';
+import Feature from '../src/ol/Feature.js';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import LineString from '../src/ol/geom/LineString.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import Stamen from '../src/ol/source/Stamen.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import {Stroke, Style} from '../src/ol/style.js';
+import {getVectorContext} from '../src/ol/render.js';
 
 const tileLayer = new TileLayer({
   source: new Stamen({

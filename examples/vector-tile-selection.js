@@ -1,9 +1,9 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import MVT from 'ol/format/MVT';
-import VectorTileLayer from 'ol/layer/VectorTile';
-import VectorTileSource from 'ol/source/VectorTile';
-import {Fill, Stroke, Style} from 'ol/style';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import MVT from '../src/ol/format/MVT.js';
+import VectorTileLayer from '../src/ol/layer/VectorTile.js';
+import VectorTileSource from '../src/ol/source/VectorTile.js';
+import {Fill, Stroke, Style} from '../src/ol/style.js';
 
 // lookup for selection objects
 let selection = {};

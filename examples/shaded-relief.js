@@ -1,7 +1,7 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer';
-import {OSM, Raster, XYZ} from 'ol/source';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import {OSM, Raster, XYZ} from '../src/ol/source.js';
 
 
 /**

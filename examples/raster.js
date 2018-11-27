@@ -1,8 +1,8 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer';
-import BingMaps from 'ol/source/BingMaps';
-import RasterSource from 'ol/source/Raster';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
+import RasterSource from '../src/ol/source/Raster.js';
 
 const minVgi = 0;
 const maxVgi = 0.25;

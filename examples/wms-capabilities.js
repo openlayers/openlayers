@@ -1,4 +1,4 @@
-import WMSCapabilities from 'ol/format/WMSCapabilities';
+import WMSCapabilities from '../src/ol/format/WMSCapabilities.js';
 
 const parser = new WMSCapabilities();
 

@@ -1,10 +1,10 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import {getCenter} from 'ol/extent';
-import TileLayer from 'ol/layer/Tile';
-import {transformExtent} from 'ol/proj';
-import Stamen from 'ol/source/Stamen';
-import TileWMS from 'ol/source/TileWMS';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {getCenter} from '../src/ol/extent.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {transformExtent} from '../src/ol/proj.js';
+import Stamen from '../src/ol/source/Stamen.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 
 function threeHoursAgo() {
   return new Date(Math.round(Date.now() / 3600000) * 3600000 - 3600000 * 3);
