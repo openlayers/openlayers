@@ -1,9 +1,9 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer';
-import {fromLonLat} from 'ol/proj';
-import BingMaps from 'ol/source/BingMaps';
-import RasterSource from 'ol/source/Raster';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import {fromLonLat} from '../src/ol/proj.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
+import RasterSource from '../src/ol/source/Raster.js';
 
 function growRegion(inputs, data) {
   const image = inputs[0];

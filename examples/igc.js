@@ -1,13 +1,13 @@
-import Feature from 'ol/Feature';
-import Map from 'ol/Map';
-import View from 'ol/View';
-import IGC from 'ol/format/IGC';
-import {LineString, Point} from 'ol/geom';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import OSM, {ATTRIBUTION} from 'ol/source/OSM';
-import VectorSource from 'ol/source/Vector';
-import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style';
-import {getVectorContext} from 'ol/render';
+import Feature from '../src/ol/Feature.js';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import IGC from '../src/ol/format/IGC.js';
+import {LineString, Point} from '../src/ol/geom.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import OSM, {ATTRIBUTION} from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
+import {getVectorContext} from '../src/ol/render.js';
 
 
 const colors = {

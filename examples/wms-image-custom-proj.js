@@ -1,11 +1,11 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import {defaults as defaultControls, ScaleLine} from 'ol/control';
-import ImageLayer from 'ol/layer/Image';
-import {fromLonLat} from 'ol/proj';
-import Projection from 'ol/proj/Projection';
-import ImageWMS from 'ol/source/ImageWMS';
-import {register} from 'ol/proj/proj4';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {defaults as defaultControls, ScaleLine} from '../src/ol/control.js';
+import ImageLayer from '../src/ol/layer/Image.js';
+import {fromLonLat} from '../src/ol/proj.js';
+import Projection from '../src/ol/proj/Projection.js';
+import ImageWMS from '../src/ol/source/ImageWMS.js';
+import {register} from '../src/ol/proj/proj4.js';
 import proj4 from 'proj4';
 
 

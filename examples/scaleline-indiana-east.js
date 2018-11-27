@@ -1,10 +1,10 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import {ScaleLine} from 'ol/control';
-import TileLayer from 'ol/layer/Tile';
-import {fromLonLat, transformExtent} from 'ol/proj';
-import {register} from 'ol/proj/proj4';
-import OSM from 'ol/source/OSM';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {ScaleLine} from '../src/ol/control.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {fromLonLat, transformExtent} from '../src/ol/proj.js';
+import {register} from '../src/ol/proj/proj4.js';
+import OSM from '../src/ol/source/OSM.js';
 import proj4 from 'proj4';
 
 proj4.defs('Indiana-East', 'PROJCS["IN83-EF",GEOGCS["LL83",DATUM["NAD83",' +

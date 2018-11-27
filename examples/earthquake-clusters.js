@@ -1,11 +1,11 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import {createEmpty, getWidth, getHeight, extend} from 'ol/extent';
-import KML from 'ol/format/KML';
-import {defaults as defaultInteractions, Select} from 'ol/interaction';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import {Cluster, Stamen, Vector as VectorSource} from 'ol/source';
-import {Circle as CircleStyle, Fill, RegularShape, Stroke, Style, Text} from 'ol/style';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {createEmpty, getWidth, getHeight, extend} from '../src/ol/extent.js';
+import KML from '../src/ol/format/KML.js';
+import {defaults as defaultInteractions, Select} from '../src/ol/interaction.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {Cluster, Stamen, Vector as VectorSource} from '../src/ol/source.js';
+import {Circle as CircleStyle, Fill, RegularShape, Stroke, Style, Text} from '../src/ol/style.js';
 
 
 const earthquakeFill = new Fill({

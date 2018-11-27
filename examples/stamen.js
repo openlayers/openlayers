@@ -1,8 +1,8 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import TileLayer from 'ol/layer/Tile';
-import {fromLonLat} from 'ol/proj';
-import Stamen from 'ol/source/Stamen';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {fromLonLat} from '../src/ol/proj.js';
+import Stamen from '../src/ol/source/Stamen.js';
 
 
 const map = new Map({

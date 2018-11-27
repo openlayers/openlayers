@@ -1,9 +1,9 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import Polygon from 'ol/geom/Polygon';
-import Draw, {createRegularPolygon, createBox} from 'ol/interaction/Draw';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import {OSM, Vector as VectorSource} from 'ol/source';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import Polygon from '../src/ol/geom/Polygon.js';
+import Draw, {createRegularPolygon, createBox} from '../src/ol/interaction/Draw.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
 const raster = new TileLayer({
   source: new OSM()

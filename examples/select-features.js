@@ -1,11 +1,11 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import {click, pointerMove, altKeyOnly} from 'ol/events/condition';
-import GeoJSON from 'ol/format/GeoJSON';
-import Select from 'ol/interaction/Select';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import OSM from 'ol/source/OSM';
-import VectorSource from 'ol/source/Vector';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {click, pointerMove, altKeyOnly} from '../src/ol/events/condition.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import Select from '../src/ol/interaction/Select.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 const raster = new TileLayer({
   source: new OSM()

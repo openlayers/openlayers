@@ -1,9 +1,9 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import GeoJSON from 'ol/format/GeoJSON';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import {fromLonLat} from 'ol/proj';
-import {OSM, Vector as VectorSource} from 'ol/source';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import {fromLonLat} from '../src/ol/proj.js';
+import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
 
 const source = new VectorSource();

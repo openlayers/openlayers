@@ -1,10 +1,10 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import GPX from 'ol/format/GPX';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import BingMaps from 'ol/source/BingMaps';
-import VectorSource from 'ol/source/Vector';
-import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import GPX from '../src/ol/format/GPX.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 
 const raster = new TileLayer({
   source: new BingMaps({

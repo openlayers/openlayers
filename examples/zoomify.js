@@ -1,7 +1,7 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import TileLayer from 'ol/layer/Tile';
-import Zoomify from 'ol/source/Zoomify';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import Zoomify from '../src/ol/source/Zoomify.js';
 
 const imgWidth = 9911;
 const imgHeight = 6100;

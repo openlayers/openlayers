@@ -1,13 +1,13 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import Layer from 'ol/layer/Layer';
-import {assign} from 'ol/obj';
-import {getTransform} from 'ol/proj';
-import SourceState from 'ol/source/State';
-import {Stroke, Style} from 'ol/style';
-import VectorLayer from 'ol/layer/Vector';
-import VectorSource from 'ol/source/Vector';
-import GeoJSON from 'ol/format/GeoJSON';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import Layer from '../src/ol/layer/Layer';
+import {assign} from '../src/ol/obj';
+import {getTransform} from '../src/ol/proj';
+import SourceState from '../src/ol/source/State';
+import {Stroke, Style} from '../src/ol/style.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 
 class Mapbox extends Layer {
 

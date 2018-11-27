@@ -1,9 +1,9 @@
-import Map from 'ol/Map';
-import View from 'ol/View';
-import WMTSCapabilities from 'ol/format/WMTSCapabilities';
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-import WMTS, {optionsFromCapabilities} from 'ol/source/WMTS';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import OSM from '../src/ol/source/OSM.js';
+import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 
 const parser = new WMTSCapabilities();
 let map;

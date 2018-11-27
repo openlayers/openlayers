@@ -18,7 +18,6 @@
     "turf": false
   },
   "rules": {
-    "import/no-unresolved": 0,
     "no-unused-vars": [2, {"varsIgnorePattern": "^map"}]
   }
 }

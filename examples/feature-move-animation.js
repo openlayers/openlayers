@@ -1,13 +1,13 @@
-import Feature from 'ol/Feature';
-import Map from 'ol/Map';
-import View from 'ol/View';
-import Polyline from 'ol/format/Polyline';
-import Point from 'ol/geom/Point';
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
-import BingMaps from 'ol/source/BingMaps';
-import VectorSource from 'ol/source/Vector';
-import {Circle as CircleStyle, Fill, Icon, Stroke, Style} from 'ol/style';
-import {getVectorContext} from 'ol/render';
+import Feature from '../src/ol/Feature.js';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import Polyline from '../src/ol/format/Polyline.js';
+import Point from '../src/ol/geom/Point.js';
+import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import {Circle as CircleStyle, Fill, Icon, Stroke, Style} from '../src/ol/style.js';
+import {getVectorContext} from '../src/ol/render.js';
 
 // This long string is placed here due to jsFiddle limitations.
 // It is usually loaded with AJAX.
