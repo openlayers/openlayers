@@ -65,7 +65,7 @@ class VectorTile extends Tile {
 
     /**
      * @private
-     * @type {Object<string, import("./render/ExecutorGroup.js").default>}
+     * @type {Object<string, import("./render/canvas/ExecutorGroup.js").default>}
      */
     this.executorGroups_ = {};
 
@@ -142,7 +142,7 @@ class VectorTile extends Tile {
   /**
    * @param {import("./layer/Layer.js").default} layer Layer.
    * @param {string} key Key.
-   * @return {import("./render/ExecutorGroup.js").default} Executor group.
+   * @return {import("./render/canvas/ExecutorGroup.js").default} Executor group.
    */
   getExecutorGroup(layer, key) {
     return this.executorGroups_[getUid(layer) + ',' + key];
@@ -153,7 +153,7 @@ class VectorTile extends Tile {
    * @param {import("./layer/Layer").default} layer Layer.
    * @param {number} zoom Zoom.
    * @param {import("./extent").Extent} extent Extent.
-   * @return {import("./render/ExecutorGroup.js").default} Executor groups.
+   * @return {import("./render/canvas/ExecutorGroup.js").default} Executor groups.
    */
   getLowResExecutorGroup(layer, zoom, extent) {
     const layerId = getUid(layer);
@@ -244,7 +244,7 @@ class VectorTile extends Tile {
   /**
    * @param {import("./layer/Layer.js").default} layer Layer.
    * @param {string} key Key.
-   * @param {import("./render/ExecutorGroup.js").default} executorGroup Executor group.
+   * @param {import("./render/canvas/ExecutorGroup.js").default} executorGroup Executor group.
    */
   setExecutorGroup(layer, key, executorGroup) {
     this.executorGroups_[getUid(layer) + ',' + key] = executorGroup;
