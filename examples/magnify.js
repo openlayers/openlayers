@@ -1,9 +1,9 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import {fromLonLat} from '../src/ol/proj.js';
-import BingMaps from '../src/ol/source/BingMaps.js';
-import {getRenderPixel} from '../src/ol/render.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import {fromLonLat} from 'ol/proj';
+import BingMaps from 'ol/source/BingMaps';
+import {getRenderPixel} from 'ol/render';
 
 const key = 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5';
 

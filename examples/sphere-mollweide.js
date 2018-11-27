@@ -1,11 +1,11 @@
-import Graticule from '../src/ol/layer/Graticule.js';
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import GeoJSON from '../src/ol/format/GeoJSON.js';
-import VectorLayer from '../src/ol/layer/Vector.js';
-import Projection from '../src/ol/proj/Projection.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import {register} from '../src/ol/proj/proj4.js';
+import Graticule from 'ol/layer/Graticule';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import GeoJSON from 'ol/format/GeoJSON';
+import VectorLayer from 'ol/layer/Vector';
+import Projection from 'ol/proj/Projection';
+import VectorSource from 'ol/source/Vector';
+import {register} from 'ol/proj/proj4';
 import proj4 from 'proj4';
 
 

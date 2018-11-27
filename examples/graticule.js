@@ -1,10 +1,10 @@
-import Graticule from '../src/ol/layer/Graticule.js';
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import {fromLonLat} from '../src/ol/proj.js';
-import OSM from '../src/ol/source/OSM.js';
-import Stroke from '../src/ol/style/Stroke.js';
+import Graticule from 'ol/layer/Graticule';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import {fromLonLat} from 'ol/proj';
+import OSM from 'ol/source/OSM';
+import Stroke from 'ol/style/Stroke';
 
 
 const map = new Map({

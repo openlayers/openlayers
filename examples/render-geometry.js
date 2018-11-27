@@ -1,6 +1,6 @@
-import {LineString, Point, Polygon} from '../src/ol/geom.js';
-import {toContext} from '../src/ol/render.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
+import {LineString, Point, Polygon} from 'ol/geom';
+import {toContext} from 'ol/render';
+import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style';
 
 
 const canvas = document.getElementById('canvas');

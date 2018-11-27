@@ -1,10 +1,10 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {getWidth} from '../src/ol/extent.js';
-import GeoJSON from '../src/ol/format/GeoJSON.js';
-import VectorLayer from '../src/ol/layer/Vector.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import {Fill, Stroke, Style, Text} from '../src/ol/style.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {getWidth} from 'ol/extent';
+import GeoJSON from 'ol/format/GeoJSON';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import {Fill, Stroke, Style, Text} from 'ol/style';
 
 const map = new Map({
   target: 'map',

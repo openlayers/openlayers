@@ -1,11 +1,11 @@
-import Feature from '../src/ol/Feature.js';
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {LineString, Point, Polygon} from '../src/ol/geom.js';
-import {defaults as defaultInteractions, Pointer as PointerInteraction} from '../src/ol/interaction.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {TileJSON, Vector as VectorSource} from '../src/ol/source.js';
-import {Fill, Icon, Stroke, Style} from '../src/ol/style.js';
+import Feature from 'ol/Feature';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {LineString, Point, Polygon} from 'ol/geom';
+import {defaults as defaultInteractions, Pointer as PointerInteraction} from 'ol/interaction';
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
+import {TileJSON, Vector as VectorSource} from 'ol/source';
+import {Fill, Icon, Stroke, Style} from 'ol/style';
 
 
 /**

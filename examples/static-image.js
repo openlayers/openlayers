@@ -1,9 +1,9 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {getCenter} from '../src/ol/extent.js';
-import ImageLayer from '../src/ol/layer/Image.js';
-import Projection from '../src/ol/proj/Projection.js';
-import Static from '../src/ol/source/ImageStatic.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {getCenter} from 'ol/extent';
+import ImageLayer from 'ol/layer/Image';
+import Projection from 'ol/proj/Projection';
+import Static from 'ol/source/ImageStatic';
 
 
 // Map views always need a projection.  Here we just want to map image

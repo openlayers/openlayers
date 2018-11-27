@@ -1,10 +1,10 @@
-import Feature from '../src/ol/Feature.js';
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import Point from '../src/ol/geom/Point.js';
-import VectorLayer from '../src/ol/layer/Vector.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import {Fill, RegularShape, Stroke, Style} from '../src/ol/style.js';
+import Feature from 'ol/Feature';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import Point from 'ol/geom/Point';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import {Fill, RegularShape, Stroke, Style} from 'ol/style';
 
 
 const stroke = new Stroke({color: 'black', width: 2});

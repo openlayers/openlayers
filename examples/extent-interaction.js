@@ -1,10 +1,10 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {platformModifierKeyOnly} from '../src/ol/events/condition.js';
-import GeoJSON from '../src/ol/format/GeoJSON.js';
-import ExtentInteraction from '../src/ol/interaction/Extent.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {platformModifierKeyOnly} from 'ol/events/condition';
+import GeoJSON from 'ol/format/GeoJSON';
+import ExtentInteraction from 'ol/interaction/Extent';
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
+import {OSM, Vector as VectorSource} from 'ol/source';
 
 const vectorSource = new VectorSource({
   url: 'data/geojson/countries.geojson',

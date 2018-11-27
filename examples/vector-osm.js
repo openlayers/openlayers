@@ -1,12 +1,12 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import OSMXML from '../src/ol/format/OSMXML.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {bbox as bboxStrategy} from '../src/ol/loadingstrategy.js';
-import {transformExtent} from '../src/ol/proj.js';
-import BingMaps from '../src/ol/source/BingMaps.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import OSMXML from 'ol/format/OSMXML';
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
+import {bbox as bboxStrategy} from 'ol/loadingstrategy';
+import {transformExtent} from 'ol/proj';
+import BingMaps from 'ol/source/BingMaps';
+import VectorSource from 'ol/source/Vector';
+import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style';
 
 let map = null;
 

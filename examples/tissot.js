@@ -1,10 +1,10 @@
-import Feature from '../src/ol/Feature.js';
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {circular as circularPolygon} from '../src/ol/geom/Polygon.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import TileWMS from '../src/ol/source/TileWMS.js';
-import VectorSource from '../src/ol/source/Vector.js';
+import Feature from 'ol/Feature';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {circular as circularPolygon} from 'ol/geom/Polygon';
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
+import TileWMS from 'ol/source/TileWMS';
+import VectorSource from 'ol/source/Vector';
 
 const vectorLayer4326 = new VectorLayer({
   source: new VectorSource()

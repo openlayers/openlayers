@@ -1,7 +1,7 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import XYZ from '../src/ol/source/XYZ.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import XYZ from 'ol/source/XYZ';
 
 const appId = 'kDm0Jq1K4Ak7Bwtn8uvk';
 const appCode = 'xnmvc4dKZrDfGlvQHXSvwQ';

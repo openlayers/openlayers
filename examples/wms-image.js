@@ -1,8 +1,8 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
-import ImageWMS from '../src/ol/source/ImageWMS.js';
-import OSM from '../src/ol/source/OSM.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer';
+import ImageWMS from 'ol/source/ImageWMS';
+import OSM from 'ol/source/OSM';
 
 
 const layers = [

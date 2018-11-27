@@ -1,9 +1,9 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {defaults as defaultControls, OverviewMap} from '../src/ol/control.js';
-import {defaults as defaultInteractions, DragRotateAndZoom} from '../src/ol/interaction.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import OSM from '../src/ol/source/OSM.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {defaults as defaultControls, OverviewMap} from 'ol/control';
+import {defaults as defaultInteractions, DragRotateAndZoom} from 'ol/interaction';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
 
 
 const overviewMapControl = new OverviewMap({

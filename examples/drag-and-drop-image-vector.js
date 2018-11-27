@@ -1,9 +1,9 @@
-import Map from '../src/ol/Map.js';
-import View from '../src/ol/View.js';
-import {GPX, GeoJSON, IGC, KML, TopoJSON} from '../src/ol/format.js';
-import {defaults as defaultInteractions, DragAndDrop} from '../src/ol/interaction.js';
-import {VectorImage as VectorImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
-import {BingMaps, Vector as VectorSource} from '../src/ol/source.js';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {GPX, GeoJSON, IGC, KML, TopoJSON} from 'ol/format';
+import {defaults as defaultInteractions, DragAndDrop} from 'ol/interaction';
+import {VectorImage as VectorImageLayer, Tile as TileLayer} from 'ol/layer';
+import {BingMaps, Vector as VectorSource} from 'ol/source';
 
 const dragAndDropInteraction = new DragAndDrop({
   formatConstructors: [
