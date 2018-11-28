@@ -144,7 +144,6 @@ class VectorImageTile extends Tile {
    */
   disposeInternal() {
     this.setState(TileState.ABORT);
-
     for (let i = 0, ii = this.tileKeys.length; i < ii; ++i) {
       const sourceTileKey = this.tileKeys[i];
       const sourceTile = this.getTile(sourceTileKey);

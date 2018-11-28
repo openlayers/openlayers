@@ -170,6 +170,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           unlistenByKey(this.tileChangeKeys_[uid]);
           delete this.tileChangeKeys_[uid];
           if (tile.sourceTilesLoaded) {
+            // Create render instructions immediately when all source tiles are available.
+            //TODO Make sure no canvas operations are involved in instruction creation.
             this.updateExecutorGroup_(tile, pixelRatio, projection);
             //FIXME This should be done by the tile, and VectorImage tiles should be layer specific
             tile.setState(TileState.LOADED);
@@ -182,6 +184,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       if (tile.hasContext(this.getLayer())) {
         this.renderTileImage_(tile, pixelRatio, projection);
       } else {
+        // Render new tile images after existing tiles have been drawn to the target canvas.
         this.tilesWithoutImage_.push(tile);
       }
     }
@@ -517,13 +520,21 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       canvas.style.opacity = opacity;
     }
 
+    // Now that we have rendered the tiles we have already, let's prepare new tiles for the
+    // next frame
     this.renderMissingTileImages_(hifi, frameState);
 
     return this.container_;
   }
 
+  /**
+   * @param {boolean} hifi We have time to render a high fidelity map image.
+   * @param {import('../../PluggableMap.js').FrameState} frameState Frame state.
+   */
   renderMissingTileImages_(hifi, frameState) {
     if (hifi) {
+      // Do not spend more than 100 ms in this render frame, to avoid delays when the user starts
+      // interacting again with the map.
       while (this.tilesWithoutImage_.length && Date.now() - frameState.time < 100) {
         const tile = this.tilesWithoutImage_.pop();
         frameState.animate = true;
