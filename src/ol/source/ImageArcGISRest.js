@@ -28,7 +28,7 @@ import {appendParams} from '../uri.js';
  * will be set dynamically. Set `LAYERS` to override the default service layer visibility. See
  * {@link http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/}
  * for further reference.
- * @property {import("../proj.js").ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport,
  * `2` means twice the size of the map viewport, and so on.
  * @property {Array<number>} [resolutions] Resolutions. If specified, requests will be made for
