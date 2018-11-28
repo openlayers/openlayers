@@ -45,6 +45,11 @@ const LEADING_DIGITS = [1, 2, 5];
  * @property {HTMLElement|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
  * @property {Units|string} [units='metric'] Units.
+ * @property {boolean} [scaleBar=false] Render scalebars instead of a line.
+ * @property {number} [scaleBarSteps=4] Number of steps the scalebar should use. Use even numbers
+ * for best results. Only useful when `scaleBar` is `true`.
+ * @property {boolean} [scaleBarText=false] Render a scale ontop of the scalebar. Only useful
+ * when `scaleBar` is `true`.
  */
 
 
@@ -57,6 +62,8 @@ const LEADING_DIGITS = [1, 2, 5];
  * viewport center cannot be calculated in the view projection.
  * By default the scale line will show in the bottom left portion of the map,
  * but this can be changed by using the css selector `.ol-scale-line`.
+ * When specifying `scaleBar` as `true`, a scalebar will be rendered instead
+ * of a scaleline.
  *
  * @api
  */
@@ -69,7 +76,8 @@ class ScaleLine extends Control {
 
     const options = opt_options ? opt_options : {};
 
-    const className = options.className !== undefined ? options.className : 'ol-scale-line';
+    const className = options.className !== undefined ? options.className :
+      options.scaleBar !== undefined ? 'ol-scale-bar' : 'ol-scale-line';
 
     super({
       element: document.createElement('div'),
@@ -122,6 +130,24 @@ class ScaleLine extends Control {
       this.handleUnitsChanged_, this);
 
     this.setUnits(/** @type {Units} */ (options.units) || Units.METRIC);
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.scaleBar_ = options.scaleBar || false;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.scaleBarSteps_ = options.scaleBarSteps || 4;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.scaleBarText_ = options.scaleBarText || false;
 
   }
 
@@ -257,7 +283,13 @@ class ScaleLine extends Control {
       ++i;
     }
 
-    const html = count + ' ' + suffix;
+    let html;
+    if (this.scaleBar_) {
+      html = this.createScaleBar(width, count, suffix);
+    } else {
+      html = count + ' ' + suffix;
+    }
+
     if (this.renderedHTML_ != html) {
       this.innerElement_.innerHTML = html;
       this.renderedHTML_ = html;
@@ -274,8 +306,125 @@ class ScaleLine extends Control {
     }
 
   }
-}
 
+  /**
+   * @private
+   * @param {number} width The current width of the scalebar.
+   * @param {number} scale The current scale.
+   * @param {string} suffix The suffix to append to the scale text.
+   * @returns {string} The stringified HTML of the scalebar.
+   */
+  createScaleBar(width, scale, suffix) {
+    let mapScale = Math.round(this.getScaleForResolution());
+    mapScale = '1 : ' + mapScale.toLocaleString().replace(/,/g, '.');
+    const scaleSteps = [];
+    const stepWidth = width / this.scaleBarSteps_;
+    let backgroundColor = '#ffffff';
+    for (let i = 0; i < this.scaleBarSteps_; i++) {
+      if (i === 0) {
+        // create the first marker at position 0
+        scaleSteps.push(this.createMarker('absolute', i));
+      }
+      scaleSteps.push(
+        '<div>' +
+          '<div ' +
+            'class="ol-scale-singlebar" ' +
+            'style=' +
+              '"width: ' + stepWidth + 'px;' +
+              'background-color: ' + backgroundColor + ';"' +
+          '>' +
+          '</div>' +
+          this.createMarker('relative', i) +
+          /*render text every second step, except when only 2 steps */
+          (i % 2 === 0 || this.scaleBarSteps_ === 2 ?
+            this.createStepText(i, width, false, scale, suffix) :
+            ''
+          ) +
+        '</div>'
+      );
+      if (i === this.scaleBarSteps_ - 1) {
+        {/*render text at the end */}
+        scaleSteps.push(this.createStepText(i + 1, width, true, scale, suffix));
+      }
+      // switch colors of steps between black and white
+      if (backgroundColor === '#ffffff') {
+        backgroundColor = '#000000';
+      } else {
+        backgroundColor = '#ffffff';
+      }
+    }
+
+    let scaleBarText;
+    if (this.scaleBarText_) {
+      scaleBarText = '<div ' +
+      'class="ol-scale-text" ' +
+      'style="width: ' + width + 'px;">' +
+      mapScale +
+    '</div>';
+    } else {
+      scaleBarText = '';
+    }
+    const container = '<div ' +
+      'style="display: flex;">' +
+      scaleBarText +
+      scaleSteps.join('') +
+    '</div>';
+    return container;
+  }
+
+  /**
+   * Creates a marker at given position
+   * @param {string} position - The position, absolute or relative
+   * @param {number} i - The iterator
+   * @returns {string} The stringified div containing the marker
+   */
+  createMarker(position, i) {
+    const top = position === 'absolute' ? 3 : -10;
+    return '<div ' +
+        'class="ol-scale-step-marker" ' +
+        'style="position: ' + position + ';' +
+          'top: ' + top + 'px;"' +
+      '></div>';
+  }
+
+  /**
+   * Creates the label for a marker marker at given position
+   * @param {number} i - The iterator
+   * @param {number} width - The width the scalebar will currently use
+   * @param {boolean} isLast - Flag indicating if we add the last step text
+   * @param {number} scale - The current scale for the whole scalebar
+   * @param {string} suffix - The suffix for the scale
+   * @returns {string} The stringified div containing the step text
+   */
+  createStepText(i, width, isLast, scale, suffix) {
+    const length = i === 0 ? 0 : Math.round((scale / this.scaleBarSteps_ * i) * 100) / 100;
+    const lengthString = length + (i === 0 ? '' : ' ' + suffix);
+    const margin = i === 0 ? -3 : width / this.scaleBarSteps_ * -1;
+    const minWidth = i === 0 ? 0 : width / this.scaleBarSteps_ * 2;
+    return '<div ' +
+      'class="ol-scale-step-text" ' +
+      'style="' +
+        'margin-left: ' + margin + 'px;' +
+        'text-align: ' + (i === 0 ? 'left' : 'center') + '; ' +
+        'min-width: ' + minWidth + 'px;' +
+        'left: ' + (isLast ? width + 'px' : 'unset') + ';"' +
+      '>' +
+      lengthString +
+    '</div>';
+  }
+
+  /**
+   * Returns the appropriate scale for the given resolution and units.
+   * @return {number} The appropriate scale.
+   */
+  getScaleForResolution() {
+    const resolution = this.getMap().getView().getResolution();
+    const dpi = 25.4 / 0.28;
+    const mpu = this.viewState_.projection.getMetersPerUnit();
+    const inchesPerMeter = 39.37;
+    return parseFloat(resolution.toString()) * mpu * inchesPerMeter * dpi;
+  }
+}
 
 /**
  * Update the scale line element.
