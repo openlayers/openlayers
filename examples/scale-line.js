@@ -4,6 +4,12 @@ import {defaults as defaultControls, ScaleLine} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
+const unitsSelect = document.getElementById('units');
+const typeSelect = document.getElementById('type');
+const stepsSelect = document.getElementById('steps');
+const scaleTextCheckbox = document.getElementById('showScaleText');
+const showScaleTextDiv = document.getElementById('showScaleTextDiv');
+
 let scaleType = 'scaleline';
 let scaleBarSteps = 4;
 let scaleBarText = true;
@@ -11,14 +17,17 @@ let control;
 
 function scaleControl() {
   if (scaleType === 'scaleline') {
-    control = new ScaleLine();
+    control = new ScaleLine({
+      units: unitsSelect.value
+    });
     return control;
   }
   control = new ScaleLine({
-    scaleBar: true,
-    scaleBarSteps: scaleBarSteps,
-    scaleBarText: scaleBarText,
-    minWidth: 200
+    units: unitsSelect.value,
+    bar: true,
+    steps: scaleBarSteps,
+    text: scaleBarText,
+    minWidth: 140
   });
   return control;
 }
@@ -38,11 +47,6 @@ const map = new Map({
   })
 });
 
-const unitsSelect = document.getElementById('units');
-const typeSelect = document.getElementById('type');
-const stepsSelect = document.getElementById('steps');
-const scaleTextCheckbox = document.getElementById('showScaleText');
-const showScaleTextDiv = document.getElementById('showScaleTextDiv');
 function onChange() {
   control.setUnits(unitsSelect.value);
 }
@@ -74,4 +78,3 @@ unitsSelect.addEventListener('change', onChange);
 typeSelect.addEventListener('change', onChangeType);
 stepsSelect.addEventListener('change', onChangeSteps);
 scaleTextCheckbox.addEventListener('change', onChangeScaleText);
-onChange();

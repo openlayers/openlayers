@@ -45,11 +45,11 @@ const LEADING_DIGITS = [1, 2, 5];
  * @property {HTMLElement|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
  * @property {Units|string} [units='metric'] Units.
- * @property {boolean} [scaleBar=false] Render scalebars instead of a line.
- * @property {number} [scaleBarSteps=4] Number of steps the scalebar should use. Use even numbers
- * for best results. Only useful when `scaleBar` is `true`.
- * @property {boolean} [scaleBarText=false] Render a scale ontop of the scalebar. Only useful
- * when `scaleBar` is `true`.
+ * @property {boolean} [bar=false] Render scalebars instead of a line.
+ * @property {number} [steps=4] Number of steps the scalebar should use. Use even numbers
+ * for best results. Only applies when `bar` is `true`.
+ * @property {boolean} [text=false] Render the text scale above of the scalebar. Only applies
+ * when `bar` is `true`.
  */
 
 
@@ -62,7 +62,7 @@ const LEADING_DIGITS = [1, 2, 5];
  * viewport center cannot be calculated in the view projection.
  * By default the scale line will show in the bottom left portion of the map,
  * but this can be changed by using the css selector `.ol-scale-line`.
- * When specifying `scaleBar` as `true`, a scalebar will be rendered instead
+ * When specifying `bar` as `true`, a scalebar will be rendered instead
  * of a scaleline.
  *
  * @api
@@ -77,7 +77,7 @@ class ScaleLine extends Control {
     const options = opt_options ? opt_options : {};
 
     const className = options.className !== undefined ? options.className :
-      options.scaleBar !== undefined ? 'ol-scale-bar' : 'ol-scale-line';
+      options.bar !== undefined ? 'ol-scale-bar' : 'ol-scale-line';
 
     super({
       element: document.createElement('div'),
@@ -135,19 +135,19 @@ class ScaleLine extends Control {
      * @private
      * @type {boolean}
      */
-    this.scaleBar_ = options.scaleBar || false;
+    this.scaleBar_ = options.bar || false;
 
     /**
      * @private
      * @type {number}
      */
-    this.scaleBarSteps_ = options.scaleBarSteps || 4;
+    this.scaleBarSteps_ = options.steps || 4;
 
     /**
      * @private
      * @type {boolean}
      */
-    this.scaleBarText_ = options.scaleBarText || false;
+    this.scaleBarText_ = options.text || false;
 
   }
 
@@ -315,8 +315,7 @@ class ScaleLine extends Control {
    * @returns {string} The stringified HTML of the scalebar.
    */
   createScaleBar(width, scale, suffix) {
-    let mapScale = Math.round(this.getScaleForResolution());
-    mapScale = '1 : ' + mapScale.toLocaleString().replace(/,/g, '.');
+    const mapScale = '1 : ' + Math.round(this.getScaleForResolution()).toLocaleString();
     const scaleSteps = [];
     const stepWidth = width / this.scaleBarSteps_;
     let backgroundColor = '#ffffff';
