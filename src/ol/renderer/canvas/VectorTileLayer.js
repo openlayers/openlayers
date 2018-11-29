@@ -131,7 +131,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     /**
      * @private
-     * @type {Object<string, import("../../events").EventsKey)}
+     * @type {Object<string, import("../../events").EventsKey>}
      */
     this.tileChangeKeys_ = {};
 
@@ -158,10 +158,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @inheritDoc
+   * Listen to tile changes and mark tile as loaded when source tiles are loaded.
+   * @param {import("../../VectorImageTile").default} tile Tile to listen on.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {number} projection Projection.
+   * @private
    */
-  getTile(z, x, y, pixelRatio, projection) {
-    const tile = /** @type {import("../../VectorImageTile.js").default} */ (super.getTile(z, x, y, pixelRatio, projection));
+  listenTileChange_(tile, pixelRatio, projection) {
     const uid = getUid(tile);
     if (!(uid in this.tileChangeKeys_) && tile.getState() === TileState.IDLE) {
       this.tileChangeKeys_[uid] = listen(tile, EventType.CHANGE, function() {
@@ -179,9 +182,26 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         }
       }.bind(this));
     }
+  }
+
+  /**
+   * @inheritDoc
+   */
+  getTile(z, x, y, pixelRatio, projection) {
+    const tile = /** @type {import("../../VectorImageTile.js").default} */ (super.getTile(z, x, y, pixelRatio, projection));
+    this.listenTileChange_(tile, pixelRatio, projection);
+    if (tile.isInterimTile) {
+      // Register change listener also on the original tile
+      const source = /** @type {import("../../source/VectorTile").default} */ (this.getLayer().getSource());
+      const originalTile = /** @type {import("../../VectorImageTile").default} */ (source.getTile(z, x, y, pixelRatio, projection));
+      this.listenTileChange_(originalTile, pixelRatio, projection);
+    }
     if (tile.getState() === TileState.LOADED) {
+      // Update existing instructions if necessary (e.g. when the style has changed)
       this.updateExecutorGroup_(tile, pixelRatio, projection);
-      if (tile.hasContext(this.getLayer())) {
+      const layer = this.getLayer();
+      if (tile.getReplayState(layer).renderedTileRevision !== -1) {
+        // Update existing tile image if necessary (e.g. when the style has changed)
         this.renderTileImage_(tile, pixelRatio, projection);
       } else {
         // Render new tile images after existing tiles have been drawn to the target canvas.
@@ -532,12 +552,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import('../../PluggableMap.js').FrameState} frameState Frame state.
    */
   renderMissingTileImages_(hifi, frameState) {
-    if (hifi) {
-      // Do not spend more than 100 ms in this render frame, to avoid delays when the user starts
-      // interacting again with the map.
-      while (this.tilesWithoutImage_.length && Date.now() - frameState.time < 100) {
-        const tile = this.tilesWithoutImage_.pop();
-        frameState.animate = true;
+    // Even when we have time to render hifi, do not spend more than 100 ms in this render frame,
+    // to avoid delays when the user starts interacting again with the map.
+    while (this.tilesWithoutImage_.length && Date.now() - frameState.time < 100) {
+      frameState.animate = true;
+      const tile = this.tilesWithoutImage_.pop();
+      // When we don't have time to render hifi, only render interim tiles until we have used up
+      // half of the frame budget of 16 ms
+      if (hifi || (tile.isInterimTile && Date.now() - frameState.time < 8)) {
         this.renderTileImage_(tile, frameState.pixelRatio, frameState.viewState.projection);
       }
     }

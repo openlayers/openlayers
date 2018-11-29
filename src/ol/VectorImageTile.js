@@ -72,6 +72,12 @@ class VectorImageTile extends Tile {
 
     /**
      * @private
+     * @type {import("./tilegrid/TileGrid.js").default}
+     */
+    this.sourceTileGrid_ = sourceTileGrid;
+
+    /**
+     * @private
      * @type {boolean}
      */
     this.sourceTilesLoaded = false;
@@ -103,13 +109,18 @@ class VectorImageTile extends Tile {
     this.loadListenerKeys_ = [];
 
     /**
+     * @type {boolean}
+     */
+    this.isInterimTile = !sourceTileGrid;
+
+    /**
      * @type {Array<import("./events.js").EventsKey>}
      */
     this.sourceTileListenerKeys_ = [];
 
-    if (urlTileCoord) {
+    if (urlTileCoord && sourceTileGrid) {
       const extent = this.extent = tileGrid.getTileCoordExtent(urlTileCoord);
-      const resolution = tileGrid.getResolution(urlTileCoord[0]);
+      const resolution = this.resolution_ = tileGrid.getResolution(urlTileCoord[0]);
       const sourceZ = sourceTileGrid.getZForResolution(resolution);
       sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
         let sharedExtent = getIntersection(extent,
@@ -143,7 +154,13 @@ class VectorImageTile extends Tile {
    * @inheritDoc
    */
   disposeInternal() {
-    this.setState(TileState.ABORT);
+    if (!this.isInterimTile) {
+      this.setState(TileState.ABORT);
+    }
+    if (this.interimTile) {
+      this.interimTile.dispose();
+      this.interimTile = null;
+    }
     for (let i = 0, ii = this.tileKeys.length; i < ii; ++i) {
       const sourceTileKey = this.tileKeys[i];
       const sourceTile = this.getTile(sourceTileKey);
@@ -188,8 +205,51 @@ class VectorImageTile extends Tile {
    * @return {HTMLCanvasElement} Canvas.
    */
   getImage(layer) {
-    return this.getReplayState(layer).renderedTileRevision == -1 ?
-      null : this.getContext(layer).canvas;
+    return this.hasContext(layer) ? this.getContext(layer).canvas : null;
+  }
+
+  /**
+   * @override
+   * @return {VectorImageTile} Interim tile.
+   */
+  getInterimTile() {
+    const sourceTileGrid = this.sourceTileGrid_;
+    const state = this.getState();
+    if (state < TileState.LOADED && !this.interimTile) {
+      let z = this.tileCoord[0];
+      const minZoom = sourceTileGrid.getMinZoom();
+      while (--z > minZoom) {
+        let covered = true;
+        const tileKeys = [];
+        sourceTileGrid.forEachTileCoord(this.extent, z, function(tileCoord) {
+          const key = tileCoord.toString();
+          if (key in this.sourceTiles_ && this.sourceTiles_[key].getState() === TileState.LOADED) {
+            tileKeys.push(key);
+          } else {
+            covered = false;
+          }
+        }.bind(this));
+        if (covered && tileKeys.length) {
+          for (let i = 0, ii = tileKeys.length; i < ii; ++i) {
+            this.sourceTiles_[tileKeys[i]].consumers++;
+          }
+          const tile = new VectorImageTile(this.tileCoord, TileState.IDLE, undefined, null, null,
+            this.wrappedTileCoord, null, null, null, this.sourceTiles_,
+            undefined, null, null, null);
+          tile.extent = this.extent;
+          tile.tileKeys = tileKeys;
+          tile.context_ = this.context_;
+          setTimeout(function() {
+            tile.sourceTilesLoaded = true;
+            tile.changed();
+          }, 16);
+          this.interimTile = tile;
+          break;
+        }
+      }
+    }
+    const interimTile = /** @type {VectorImageTile} */ (this.interimTile);
+    return state === TileState.LOADED ? this : (interimTile || this);
   }
 
   /**
