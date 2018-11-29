@@ -84,10 +84,6 @@ class UrlTile extends TileSource {
       this.setUrl(options.url);
     }
 
-    if (options.tileUrlFunction) {
-      this.setTileUrlFunction(options.tileUrlFunction, this.key_);
-    }
-
     /**
      * @private
      * @type {!Object<string, boolean>}
