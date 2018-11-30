@@ -77,7 +77,12 @@ const FRAGMENT_SHADER = `
  * All features will be rendered as quads (two triangles forming a square). New data will be flushed to the GPU
  * every time the vector source changes.
  *
- * Use shaders to customize the final output.
+ * Use shaders to customize the final output. The following attributes are available:
+ * * `vec2 a_position`
+ * * `vec2 a_texCoord`
+ * * `vec2 a_offsets`
+ * * `float a_rotateWithView`
+ * * `float a_opacity`
  *
  * This uses {@link module:ol/webgl/Helper~WebGLHelper} internally.
  *
@@ -90,12 +95,14 @@ const FRAGMENT_SHADER = `
  *   attribute vec2 a_texCoord;
  *   attribute float a_rotateWithView;
  *   attribute vec2 a_offsets;
+ *   attribute float a_opacity;
  *
  *   uniform mat4 u_projectionMatrix;
  *   uniform mat4 u_offsetScaleMatrix;
  *   uniform mat4 u_offsetRotateMatrix;
  *
  *   varying vec2 v_texCoord;
+ *   varying float v_opacity;
  *
  *   void main(void) {
  *     mat4 offsetMatrix = u_offsetScaleMatrix;
@@ -105,6 +112,7 @@ const FRAGMENT_SHADER = `
  *     vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);
  *     gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
  *     v_texCoord = a_texCoord;
+ *     v_opacity = a_opacity;
  *   }
  *   ```
  *
@@ -114,10 +122,11 @@ const FRAGMENT_SHADER = `
  *   uniform float u_opacity;
  *
  *   varying vec2 v_texCoord;
+ *   varying float v_opacity;
  *
  *   void main(void) {
  *     gl_FragColor.rgb = vec3(1.0, 1.0, 1.0);
- *     float alpha = u_opacity;
+ *     float alpha = u_opacity * v_opacity;
  *     if (alpha == 0.0) {
  *       discard;
  *     }
