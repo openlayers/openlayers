@@ -144,7 +144,7 @@ export function rotate(view, rotation, opt_anchor) {
  */
 export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
   const currentZoom = view.getZoom();
-  let resolution = view.getResolutionForZoom(currentZoom + delta);
+  let resolution = view.constrainResolution(view.getResolutionForZoom(currentZoom + delta));
 
   if (resolution !== undefined) {
     const resolutions = view.getResolutions();

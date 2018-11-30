@@ -238,9 +238,13 @@ class MouseWheelZoom extends Interaction {
       }
       view.setResolution(resolution);
 
+      if (view.getAnimating()) {
+        view.cancelAnimations();
+      }
+
       if (rebound === 0 && this.constrainResolution_) {
         view.animate({
-          resolution: resolution,
+          resolution: view.constrainResolution(resolution),
           easing: easeOut,
           anchor: this.lastAnchor_,
           duration: this.duration_
@@ -249,14 +253,14 @@ class MouseWheelZoom extends Interaction {
 
       if (rebound > 0) {
         view.animate({
-          resolution: minResolution,
+          resolution: view.constrainResolution(minResolution),
           easing: easeOut,
           anchor: this.lastAnchor_,
           duration: 500
         });
       } else if (rebound < 0) {
         view.animate({
-          resolution: maxResolution,
+          resolution: view.constrainResolution(maxResolution),
           easing: easeOut,
           anchor: this.lastAnchor_,
           duration: 500

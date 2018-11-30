@@ -52,11 +52,6 @@ class DragPan extends PointerInteraction {
     this.lastPointersCount_;
 
     /**
-     * @type {boolean}
-     */
-    this.panning_ = false;
-
-    /**
      * @private
      * @type {import("../events/condition.js").Condition}
      */
@@ -74,15 +69,16 @@ class DragPan extends PointerInteraction {
    * @inheritDoc
    */
   handleDragEvent(mapBrowserEvent) {
-    if (!this.panning_) {
-      this.panning_ = true;
-      this.getMap().getView().setHint(ViewHint.INTERACTING, 1);
-    }
     const targetPointers = this.targetPointers;
     const centroid = centroidFromPointers(targetPointers);
+    const map = mapBrowserEvent.map;
+    const view = map.getView();
     if (targetPointers.length == this.lastPointersCount_) {
       if (this.kinetic_) {
         this.kinetic_.update(centroid[0], centroid[1]);
+      }
+      if (view.getAnimating()) {
+        view.cancelAnimations();
       }
       if (this.lastCentroid) {
         const deltaX = this.lastCentroid[0] - centroid[0];
@@ -111,6 +107,7 @@ class DragPan extends PointerInteraction {
     const map = mapBrowserEvent.map;
     const view = map.getView();
     if (this.targetPointers.length === 0) {
+      view.setHint(ViewHint.INTERACTING, -1);
       if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
         const distance = this.kinetic_.getDistance();
         const angle = this.kinetic_.getAngle();
@@ -125,10 +122,8 @@ class DragPan extends PointerInteraction {
           duration: 500,
           easing: easeOut
         });
-      }
-      if (this.panning_) {
-        this.panning_ = false;
-        view.setHint(ViewHint.INTERACTING, -1);
+      } else {
+        view.resolveConstraints();
       }
       return false;
     } else {
@@ -150,10 +145,11 @@ class DragPan extends PointerInteraction {
       const map = mapBrowserEvent.map;
       const view = map.getView();
       this.lastCentroid = null;
+
       // stop any current animation
-      if (view.getAnimating()) {
-        view.setCenter(mapBrowserEvent.frameState.viewState.center);
-      }
+      this.getMap().getView().setHint(ViewHint.INTERACTING, 1);
+      view.setCenter(mapBrowserEvent.frameState.viewState.center);
+
       if (this.kinetic_) {
         this.kinetic_.begin();
       }

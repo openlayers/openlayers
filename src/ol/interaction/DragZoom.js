@@ -84,7 +84,7 @@ function onBoxEnd() {
   const center = getCenter(extent);
 
   view.animate({
-    resolution: resolution,
+    resolution: view.constrainResolution(resolution, false),
     center: center,
     duration: this.duration_,
     easing: easeOut
