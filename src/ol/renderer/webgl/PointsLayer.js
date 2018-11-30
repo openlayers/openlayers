@@ -13,12 +13,14 @@ const VERTEX_SHADER = `
   attribute vec2 a_texCoord;
   attribute float a_rotateWithView;
   attribute vec2 a_offsets;
+  attribute float a_opacity;
   
   uniform mat4 u_projectionMatrix;
   uniform mat4 u_offsetScaleMatrix;
   uniform mat4 u_offsetRotateMatrix;
   
   varying vec2 v_texCoord;
+  varying float v_opacity;
   
   void main(void) {
     mat4 offsetMatrix = u_offsetScaleMatrix;
@@ -28,6 +30,7 @@ const VERTEX_SHADER = `
     vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);
     gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
     v_texCoord = a_texCoord;
+    v_opacity = a_opacity;
   }`;
 
 const FRAGMENT_SHADER = `
@@ -35,10 +38,11 @@ const FRAGMENT_SHADER = `
   uniform float u_opacity;
   
   varying vec2 v_texCoord;
+  varying float v_opacity;
   
   void main(void) {
     gl_FragColor.rgb = vec3(1.0, 1.0, 1.0);
-    float alpha = u_opacity;
+    float alpha = u_opacity * v_opacity;
     if (alpha == 0.0) {
       discard;
     }
@@ -202,14 +206,14 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
         const x = this.coordCallback_(feature, 0);
         const y = this.coordCallback_(feature, 1);
         const size = this.sizeCallback_(feature);
-        const stride = 6;
+        const stride = 8;
         const baseIndex = this.verticesBuffer_.getArray().length / stride;
 
         this.verticesBuffer_.getArray().push(
-          x, y, -size / 2, -size / 2, 0, 0,
-          x, y, +size / 2, -size / 2, 1, 0,
-          x, y, +size / 2, +size / 2, 1, 1,
-          x, y, -size / 2, +size / 2, 0, 1
+          x, y, -size / 2, -size / 2, 0, 0, 1, 1,
+          x, y, +size / 2, -size / 2, 1, 0, 1, 1,
+          x, y, +size / 2, +size / 2, 1, 1, 1, 1,
+          x, y, -size / 2, +size / 2, 0, 1, 1, 1
         );
         this.indicesBuffer_.getArray().push(
           baseIndex, baseIndex + 1, baseIndex + 3,
@@ -223,9 +227,11 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     this.helper_.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
     const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
-    this.helper_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * 6, 0);
-    this.helper_.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 2);
-    this.helper_.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * 6, bytesPerFloat * 4);
+    this.helper_.enableAttributeArray(DefaultAttrib.POSITION, 2, FLOAT, bytesPerFloat * 8, 0);
+    this.helper_.enableAttributeArray(DefaultAttrib.OFFSETS, 2, FLOAT, bytesPerFloat * 8, bytesPerFloat * 2);
+    this.helper_.enableAttributeArray(DefaultAttrib.TEX_COORD, 2, FLOAT, bytesPerFloat * 8, bytesPerFloat * 4);
+    this.helper_.enableAttributeArray(DefaultAttrib.OPACITY, 1, FLOAT, bytesPerFloat * 8, bytesPerFloat * 6);
+    this.helper_.enableAttributeArray(DefaultAttrib.ROTATE_WITH_VIEW, 1, FLOAT, bytesPerFloat * 8, bytesPerFloat * 7);
 
     return true;
   }
