@@ -324,7 +324,7 @@ let HAS = false;
 if (typeof window !== 'undefined' && 'WebGLRenderingContext' in window) {
   try {
     const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-    const gl = getContext(canvas, {failIfMajorPerformanceCaveat: true});
+    const gl = getContext(canvas);
     if (gl) {
       HAS = true;
       MAX_TEXTURE_SIZE = /** @type {number} */ (gl.getParameter(gl.MAX_TEXTURE_SIZE));
