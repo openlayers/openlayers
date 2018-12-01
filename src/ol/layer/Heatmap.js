@@ -205,6 +205,7 @@ class Heatmap extends VectorLayer {
         attribute vec2 a_texCoord;
         attribute float a_rotateWithView;
         attribute vec2 a_offsets;
+        attribute float a_opacity;
         
         uniform mat4 u_projectionMatrix;
         uniform mat4 u_offsetScaleMatrix;
@@ -212,6 +213,7 @@ class Heatmap extends VectorLayer {
         uniform float u_size;
         
         varying vec2 v_texCoord;
+        varying float v_opacity;
         
         void main(void) {
           mat4 offsetMatrix = u_offsetScaleMatrix;
@@ -221,6 +223,7 @@ class Heatmap extends VectorLayer {
           vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);
           gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets * u_size;
           v_texCoord = a_texCoord;
+          v_opacity = a_opacity;
         }`,
       fragmentShader: `
         precision mediump float;
@@ -229,12 +232,13 @@ class Heatmap extends VectorLayer {
         uniform float u_blur;
         
         varying vec2 v_texCoord;
+        varying float v_opacity;
         
         void main(void) {
           gl_FragColor.rgb = vec3(1.0, 1.0, 1.0);
           vec2 texCoord = v_texCoord * 2.0 - vec2(1.0, 1.0);
           float sqRadius = texCoord.x * texCoord.x + texCoord.y * texCoord.y;
-          float alpha = 1.0 - sqRadius * sqRadius;
+          float alpha = 1.0 - sqRadius * sqRadius * v_opacity;
           if (alpha <= 0.0) {
             discard;
           }

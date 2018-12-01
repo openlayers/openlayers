@@ -619,11 +619,11 @@ class WebGLHelper extends Disposable {
     const vertexShader = this.compileShader(vertexShaderSource, gl.VERTEX_SHADER);
     this.shaderCompileErrors_ = null;
 
-    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+    if (gl.getShaderInfoLog(fragmentShader)) {
       this.shaderCompileErrors_ =
         `Fragment shader compilation failed:\n${gl.getShaderInfoLog(fragmentShader)}`;
     }
-    if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
+    if (gl.getShaderInfoLog(vertexShader)) {
       this.shaderCompileErrors_ = (this.shaderCompileErrors_ || '') +
         `Vertex shader compilation failed:\n${gl.getShaderInfoLog(vertexShader)}`;
     }
