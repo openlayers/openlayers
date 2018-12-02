@@ -137,10 +137,12 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const dw = img.width * transform[0];
     const dh = img.height * transform[3];
 
+    this.preRender(context, frameState);
     if (dw >= 0.5 && dh >= 0.5) {
       this.context.drawImage(img, 0, 0, +img.width, +img.height,
         Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
     }
+    this.postRender(context, frameState);
 
     if (clipped) {
       context.restore();

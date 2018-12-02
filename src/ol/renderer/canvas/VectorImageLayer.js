@@ -106,6 +106,16 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   }
 
   /**
+   * @override
+   */
+  preRender() {}
+
+  /**
+   * @override
+   */
+  postRender() {}
+
+  /**
    * @inheritDoc
    */
   forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {
