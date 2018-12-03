@@ -15,12 +15,6 @@ export default {
   PRERENDER: 'prerender',
 
   /**
-   * @event module:ol/render/Event~RenderEvent#render
-   * @api
-   */
-  RENDER: 'render',
-
-  /**
    * Triggered after a layer is rendered.
    * @event module:ol/render/Event~RenderEvent#postrender
    * @api
