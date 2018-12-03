@@ -94,11 +94,6 @@ class VectorImageTile extends Tile {
     this.extent = null;
 
     /**
-     * @type {number}
-     */
-    this.sourceRevision_ = sourceRevision;
-
-    /**
      * @type {import("./tilecoord.js").TileCoord}
      */
     this.wrappedTileCoord = urlTileCoord;
@@ -117,6 +112,8 @@ class VectorImageTile extends Tile {
      * @type {Array<import("./events.js").EventsKey>}
      */
     this.sourceTileListenerKeys_ = [];
+
+    this.key = sourceRevision.toString();
 
     if (urlTileCoord && sourceTileGrid) {
       const extent = this.extent = tileGrid.getTileCoordExtent(urlTileCoord);
@@ -233,7 +230,7 @@ class VectorImageTile extends Tile {
           for (let i = 0, ii = tileKeys.length; i < ii; ++i) {
             this.sourceTiles_[tileKeys[i]].consumers++;
           }
-          const tile = new VectorImageTile(this.tileCoord, TileState.IDLE, undefined, null, null,
+          const tile = new VectorImageTile(this.tileCoord, TileState.IDLE, Number(this.key), null, null,
             this.wrappedTileCoord, null, null, null, this.sourceTiles_,
             undefined, null, null, null);
           tile.extent = this.extent;
@@ -267,13 +264,6 @@ class VectorImageTile extends Tile {
       };
     }
     return this.replayState_[key];
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getKey() {
-    return this.tileKeys.join('/') + '-' + this.sourceRevision_;
   }
 
   /**

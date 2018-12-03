@@ -245,7 +245,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       sourceTile.getImage = function() {
         return document.createElement('canvas');
       };
-      const tile = new VectorImageTile([0, 0, 0], undefined, undefined, undefined,
+      const tile = new VectorImageTile([0, 0, 0], undefined, 1, undefined,
         undefined, [0, 0, 0], undefined, createXYZ(), createXYZ(), {'0,0,0': sourceTile}, undefined,
         undefined, undefined, undefined);
       tile.transition_ = 0;
@@ -338,7 +338,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         }
       };
       frameState.layerStates[getUid(layer)] = {};
-      renderer.renderedTiles = [new TileClass([0, 0, -1])];
+      renderer.renderedTiles = [new TileClass([0, 0, -1], undefined, 1)];
       renderer.forEachFeatureAtCoordinate(
         coordinate, frameState, 0, spy, undefined);
       expect(spy.callCount).to.be(1);
