@@ -544,7 +544,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   getDataAtPixel(pixel, frameState, hitTolerance) {
     let data = super.getDataAtPixel(pixel, frameState, hitTolerance);

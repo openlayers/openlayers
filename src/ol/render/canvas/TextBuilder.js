@@ -135,7 +135,7 @@ class CanvasTextBuilder extends CanvasBuilder {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    */
   finish() {
     const instructions = super.finish();
