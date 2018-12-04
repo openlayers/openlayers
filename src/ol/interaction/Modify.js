@@ -82,7 +82,7 @@ const ModifyEventType = {
  * {@link module:ol/events/condition~altKeyOnly} results in a vertex deletion.
  * @property {import("../events/condition.js").Condition} [insertVertexCondition] A
  * function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
- * returns a boolean to indicate whether a new vertex can be added to the sketch
+ * returns a boolean to indicate whether a new vertex should be added to the sketch
  * features. Default is {@link module:ol/events/condition~always}.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
@@ -823,8 +823,9 @@ class Modify extends PointerInteraction {
 
           this.dragSegments_.push([segmentDataMatch, 1]);
           componentSegments[uid][1] = segmentDataMatch;
-        } else if (this.insertVertexCondition_(evt) && getUid(segment) in this.vertexSegments_ &&
-            (!componentSegments[uid][0] && !componentSegments[uid][1])) {
+        } else if (getUid(segment) in this.vertexSegments_ &&
+            (!componentSegments[uid][0] && !componentSegments[uid][1]) &&
+            this.insertVertexCondition_(evt)) {
           insertVertices.push([segmentDataMatch, vertex]);
         }
       }
