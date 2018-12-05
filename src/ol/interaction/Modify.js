@@ -392,7 +392,13 @@ class Modify extends PointerInteraction {
         }
       });
     for (let i = nodesToRemove.length - 1; i >= 0; --i) {
-      rBush.remove(nodesToRemove[i]);
+      const nodeToRemove = nodesToRemove[i];
+      for (let j = this.dragSegments_.length - 1; j >= 0; --j) {
+        if (this.dragSegments_[j][0] === nodeToRemove) {
+          this.dragSegments_.splice(j, 1);
+        }
+      }
+      rBush.remove(nodeToRemove);
     }
   }
 
