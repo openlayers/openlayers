@@ -3,6 +3,7 @@
  * @module ol/layer
  */
 
+export {default as Base} from './layer/Base.js';
 export {default as Group} from './layer/Group.js';
 export {default as Heatmap} from './layer/Heatmap.js';
 export {default as Image} from './layer/Image.js';
