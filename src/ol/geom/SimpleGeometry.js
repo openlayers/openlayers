@@ -51,7 +51,7 @@ class SimpleGeometry extends Geometry {
 
   /**
    * @abstract
-   * @return {Array} Coordinates.
+   * @return {Array<*>} Coordinates.
    */
   getCoordinates() {
     return abstract();
@@ -158,7 +158,7 @@ class SimpleGeometry extends Geometry {
 
   /**
    * @abstract
-   * @param {!Array} coordinates Coordinates.
+   * @param {!Array<*>} coordinates Coordinates.
    * @param {GeometryLayout=} opt_layout Layout.
    */
   setCoordinates(coordinates, opt_layout) {
@@ -167,7 +167,7 @@ class SimpleGeometry extends Geometry {
 
   /**
    * @param {GeometryLayout|undefined} layout Layout.
-   * @param {Array} coordinates Coordinates.
+   * @param {Array<*>} coordinates Coordinates.
    * @param {number} nesting Nesting.
    * @protected
    */
