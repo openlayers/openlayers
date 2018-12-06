@@ -4,7 +4,7 @@
 import LayerRenderer from '../Layer';
 import WebGLArrayBuffer from '../../webgl/Buffer';
 import {DYNAMIC_DRAW, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, FLOAT} from '../../webgl';
-import WebGLHelper, {DefaultAttrib, DefaultUniform} from '../../webgl/Helper';
+import WebGLHelper, {DefaultAttrib} from '../../webgl/Helper';
 import GeometryType from '../../geom/GeometryType';
 
 const VERTEX_SHADER = `
@@ -35,14 +35,13 @@ const VERTEX_SHADER = `
 
 const FRAGMENT_SHADER = `
   precision mediump float;
-  uniform float u_opacity;
   
   varying vec2 v_texCoord;
   varying float v_opacity;
   
   void main(void) {
     gl_FragColor.rgb = vec3(1.0, 1.0, 1.0);
-    float alpha = u_opacity * v_opacity;
+    float alpha = v_opacity;
     if (alpha == 0.0) {
       discard;
     }
@@ -201,10 +200,16 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
    * @inheritDoc
    */
   renderFrame(frameState, layerState) {
-    this.helper_.setUniformFloatValue(DefaultUniform.OPACITY, layerState.opacity);
     this.helper_.drawElements(0, this.indicesBuffer_.getArray().length);
     this.helper_.finalizeDraw(frameState);
-    return this.helper_.getCanvas();
+    const canvas = this.helper_.getCanvas();
+
+    const opacity = layerState.opacity;
+    if (opacity !== canvas.style.opacity) {
+      canvas.style.opacity = opacity;
+    }
+
+    return canvas;
   }
 
   /**

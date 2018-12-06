@@ -43,8 +43,7 @@ export const ShaderType = {
 export const DefaultUniform = {
   PROJECTION_MATRIX: 'u_projectionMatrix',
   OFFSET_SCALE_MATRIX: 'u_offsetScaleMatrix',
-  OFFSET_ROTATION_MATRIX: 'u_offsetRotateMatrix',
-  OPACITY: 'u_opacity'
+  OFFSET_ROTATION_MATRIX: 'u_offsetRotateMatrix'
 };
 
 /**
@@ -130,7 +129,7 @@ export const DefaultAttrib = {
  *   Uniforms are defined using the `uniforms` option and can either be explicit values or callbacks taking the frame state as argument.
  *   You can also change their value along the way like so:
  *   ```js
- *   this.context.setUniformFloatValue(DefaultUniform.OPACITY, layerState.opacity);
+ *   this.context.setUniformFloatValue('u_value', valueAsNumber);
  *   ```
  *
  * ### Defining post processing passes
