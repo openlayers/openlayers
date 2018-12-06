@@ -18,7 +18,7 @@ const SIMPLIFY_TOLERANCE = 0.5;
  * @const
  * @type {Object<import("../geom/GeometryType.js").default,
  *                function(import("../render/canvas/BuilderGroup.js").default, import("../geom/Geometry.js").default,
- *                         import("../style/Style.js").default, Object)>}
+ *                         import("../style/Style.js").default, Object): void>}
  */
 const GEOMETRY_RENDERERS = {
   'Point': renderPointGeometry,
@@ -91,7 +91,7 @@ function renderCircleGeometry(builderGroup, geometry, style, feature) {
  * @param {import("../Feature.js").FeatureLike} feature Feature.
  * @param {import("../style/Style.js").default} style Style.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {function(this: T, import("../events/Event.js").default)} listener Listener function.
+ * @param {function(this: T, import("../events/Event.js").default): void} listener Listener function.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
  * @return {boolean} `true` if style is loading.
  * @template T

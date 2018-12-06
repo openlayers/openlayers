@@ -336,7 +336,7 @@ class PluggableMap extends BaseObject {
     this.renderer_ = this.createRenderer();
 
     /**
-     * @type {function(Event)|undefined}
+     * @type {function(Event): void|undefined}
      * @private
      */
     this.handleResize_;

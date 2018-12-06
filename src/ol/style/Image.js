@@ -233,7 +233,7 @@ class ImageStyle {
 
   /**
    * @abstract
-   * @param {function(this: T, import("../events/Event.js").default)} listener Listener function.
+   * @param {function(this: T, import("../events/Event.js").default): void} listener Listener function.
    * @param {T} thisArg Value to use as `this` when executing `listener`.
    * @return {import("../events.js").EventsKey|undefined} Listener key.
    * @template T
@@ -252,7 +252,7 @@ class ImageStyle {
 
   /**
    * @abstract
-   * @param {function(this: T, import("../events/Event.js").default)} listener Listener function.
+   * @param {function(this: T, import("../events/Event.js").default): void} listener Listener function.
    * @param {T} thisArg Value to use as `this` when executing `listener`.
    * @template T
    */

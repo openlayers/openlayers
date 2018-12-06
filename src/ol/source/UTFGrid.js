@@ -138,7 +138,7 @@ export class CustomTile extends Tile {
    * Calls the callback (synchronously by default) with the available data
    * for given coordinate (or `null` if not yet loaded).
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-   * @param {function(this: T, *)} callback Callback.
+   * @param {function(this: T, *): void} callback Callback.
    * @param {T=} opt_this The object to use as `this` in the callback.
    * @param {boolean=} opt_request If `true` the callback is always async.
    *                               The tile data is requested if not yet loaded.
@@ -379,7 +379,7 @@ class UTFGrid extends TileSource {
    * in case of an error).
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {number} resolution Resolution.
-   * @param {function(*)} callback Callback.
+   * @param {function(*): void} callback Callback.
    * @param {boolean=} opt_request If `true` the callback is always async.
    *                               The tile data is requested if not yet loaded.
    * @api

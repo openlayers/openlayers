@@ -397,7 +397,7 @@ class CanvasBuilder extends VectorContext {
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:CanvasBuilder, import("../canvas.js").FillStrokeState)} applyStroke Apply stroke.
+   * @param {function(this:CanvasBuilder, import("../canvas.js").FillStrokeState): void} applyStroke Apply stroke.
    */
   updateStrokeStyle(state, applyStroke) {
     const strokeStyle = state.strokeStyle;

@@ -93,7 +93,7 @@ class Atlas {
    * @param {string} id The identifier of the entry to add.
    * @param {number} width The width.
    * @param {number} height The height.
-   * @param {function(CanvasRenderingContext2D, number, number)} renderCallback
+   * @param {function(CanvasRenderingContext2D, number, number): void} renderCallback
    *    Called to render the new image onto an atlas image.
    * @param {Object=} opt_this Value to use as `this` when executing
    *    `renderCallback`.

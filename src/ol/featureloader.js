@@ -17,7 +17,7 @@ import FormatType from './format/FormatType.js';
  * The function is responsible for loading the features and adding them to the
  * source.
  * @typedef {function(this:(import("./source/Vector").default|import("./VectorTile.js").default), import("./extent.js").Extent, number,
- *                    import("./proj/Projection.js").default)} FeatureLoader
+ *                    import("./proj/Projection.js").default): void} FeatureLoader
  * @api
  */
 
@@ -38,10 +38,10 @@ import FormatType from './format/FormatType.js';
 /**
  * @param {string|FeatureUrlFunction} url Feature URL service.
  * @param {import("./format/Feature.js").default} format Feature format.
- * @param {function(this:import("./VectorTile.js").default, Array<import("./Feature.js").default>, import("./proj/Projection.js").default, import("./extent.js").Extent)|function(this:import("./source/Vector").default, Array<import("./Feature.js").default>)} success
+ * @param {function(this:import("./VectorTile.js").default, Array<import("./Feature.js").default>, import("./proj/Projection.js").default, import("./extent.js").Extent): void|function(this:import("./source/Vector").default, Array<import("./Feature.js").default>): void} success
  *     Function called with the loaded features and optionally with the data
  *     projection. Called with the vector tile or source as `this`.
- * @param {function(this:import("./VectorTile.js").default)|function(this:import("./source/Vector").default)} failure
+ * @param {function(this:import("./VectorTile.js").default): void|function(this:import("./source/Vector").default): void} failure
  *     Function called when loading failed. Called with the vector tile or
  *     source as `this`.
  * @return {FeatureLoader} The feature loader.

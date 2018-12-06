@@ -399,7 +399,7 @@ class View extends BaseObject {
    * calling `view.setCenter()`, `view.setResolution()`, or `view.setRotation()`
    * (or another method that calls one of these).
    *
-   * @param {...(AnimationOptions|function(boolean))} var_args Animation
+   * @param {...(AnimationOptions|function(boolean): void)} var_args Animation
    *     options.  Multiple animations can be run in series by passing multiple
    *     options objects.  To run multiple animations in parallel, call the method
    *     multiple times.  An optional callback can be provided as a final

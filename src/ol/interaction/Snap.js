@@ -181,7 +181,7 @@ class Snap extends PointerInteraction {
     /**
     * @const
     * @private
-    * @type {Object<string, function(import("../Feature.js").default, import("../geom/Geometry.js").default)>}
+    * @type {Object<string, function(import("../Feature.js").default, import("../geom/Geometry.js").default): void>}
     */
     this.SEGMENT_WRITERS_ = {
       'Point': this.writePointGeometry_,

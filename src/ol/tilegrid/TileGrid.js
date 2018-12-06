@@ -189,7 +189,7 @@ class TileGrid {
    *
    * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} zoom Integer zoom level.
-   * @param {function(import("../tilecoord.js").TileCoord)} callback Function called with each tile coordinate.
+   * @param {function(import("../tilecoord.js").TileCoord): void} callback Function called with each tile coordinate.
    * @api
    */
   forEachTileCoord(extent, zoom, callback) {

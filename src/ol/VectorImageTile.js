@@ -38,7 +38,7 @@ class VectorImageTile extends Tile {
    * @param {import("./proj/Projection.js").default} projection Projection.
    * @param {typeof import("./VectorTile.js").default} tileClass Class to
    *     instantiate for source tiles.
-   * @param {function(this: import("./source/VectorTile.js").default, import("./events/Event.js").default)} handleTileChange
+   * @param {function(this: import("./source/VectorTile.js").default, import("./events/Event.js").default): void} handleTileChange
    *     Function to call when a source tile's state changes.
    * @param {number} zoom Integer zoom to render the tile for.
    */

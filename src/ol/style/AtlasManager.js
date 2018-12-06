@@ -174,7 +174,7 @@ class AtlasManager {
    * @param {string} id The identifier of the entry to add.
    * @param {number} width The width.
    * @param {number} height The height.
-   * @param {function(CanvasRenderingContext2D, number, number)} renderCallback
+   * @param {function(CanvasRenderingContext2D, number, number): void} renderCallback
    *    Called to render the new image onto an atlas image.
    * @param {function(CanvasRenderingContext2D, number, number)=} opt_renderHitCallback Called to render a hit-detection image onto a hit
    *    detection atlas image.
@@ -213,7 +213,7 @@ class AtlasManager {
    * @param {string} id The identifier of the entry to add.
    * @param {number} width The width.
    * @param {number} height The height.
-   * @param {function(CanvasRenderingContext2D, number, number)} renderCallback
+   * @param {function(CanvasRenderingContext2D, number, number): void} renderCallback
    *    Called to render the new image onto an atlas image.
    * @param {Object=} opt_this Value to use as `this` when executing
    *    `renderCallback` and `renderHitCallback`.

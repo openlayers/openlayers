@@ -6,7 +6,7 @@ class EventSource {
 
   /**
    * @param {import("./PointerEventHandler.js").default} dispatcher Event handler.
-   * @param {!Object<string, function(Event)>} mapping Event mapping.
+   * @param {!Object<string, function(Event): void>} mapping Event mapping.
    */
   constructor(dispatcher, mapping) {
 
@@ -18,7 +18,7 @@ class EventSource {
     /**
      * @private
      * @const
-     * @type {!Object<string, function(Event)>}
+     * @type {!Object<string, function(Event): void>}
      */
     this.mapping_ = mapping;
   }

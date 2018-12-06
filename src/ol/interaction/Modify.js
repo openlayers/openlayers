@@ -274,7 +274,7 @@ class Modify extends PointerInteraction {
     /**
      * @const
      * @private
-     * @type {!Object<string, function(Feature, import("../geom/Geometry.js").default)>}
+     * @type {!Object<string, function(Feature, import("../geom/Geometry.js").default): void>}
      */
     this.SEGMENT_WRITERS_ = {
       'Point': this.writePointGeometry_,

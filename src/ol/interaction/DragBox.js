@@ -133,7 +133,7 @@ class DragBox extends PointerInteraction {
 
     /**
      * Function to execute just before `onboxend` is fired
-     * @type {function(this:DragBox, import("../MapBrowserEvent.js").default)}
+     * @type {function(this:DragBox, import("../MapBrowserEvent.js").default): void}
      * @private
      */
     this.onBoxEnd_ = options.onBoxEnd ? options.onBoxEnd : VOID;
