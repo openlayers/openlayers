@@ -61,10 +61,18 @@ const FRAGMENT_SHADER = `
 /**
  * @typedef {Object} Options
  * @property {function(import("../../Feature").default):number} [sizeCallback] Will be called on every feature in the
- * source to compute the size of the quad on screen (in pixels). This only done on source change.
+ * source to compute the size of the quad on screen (in pixels). This is only done on source change.
  * @property {function(import("../../Feature").default, number):number} [coordCallback] Will be called on every feature in the
- * source to compute the coordinate of the quad center on screen (in pixels). This only done on source change.
+ * source to compute the coordinate of the quad center on screen (in pixels). This is only done on source change.
  * The second argument is 0 for `x` component and 1 for `y`.
+ * @property {function(import("../../Feature").default, number):number} [texCoordCallback] Will be called on every feature in the
+ * source to compute the texture coordinates of each corner of the quad. This is only done on source change.
+ * The second argument is 0 for `u0` component, 1 or `v0`, 2 for `u1`, and 3 for `v1`.
+ * @property {function(import("../../Feature").default):number} [opacityCallback] Will be called on every feature in the
+ * source to compute the opacity of the quad on screen (from 0 to 1). This is only done on source change.
+ * @property {function(import("../../Feature").default):boolean} [rotateWithViewCallback] Will be called on every feature in the
+ * source to compute whether the quad on screen must stay upwards (`false`) or follow the view rotation (`true`).
+ * This is only done on source change.
  * @property {string} [vertexShader] Vertex shader source
  * @property {string} [fragmentShader] Fragment shader source
  * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
@@ -164,12 +172,21 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
 
     this.helper_.useProgram(this.program_);
 
-    this.sizeCallback_ = options.sizeCallback || function(feature) {
+    this.sizeCallback_ = options.sizeCallback || function() {
       return 1;
     };
     this.coordCallback_ = options.coordCallback || function(feature, index) {
       const geom = /** @type {import("../../geom/Point").default} */ (feature.getGeometry());
       return geom.getCoordinates()[index];
+    };
+    this.opacityCallback_ = options.opacityCallback || function() {
+      return 1;
+    };
+    this.texCoordCallback_ = options.texCoordCallback || function(feature, index) {
+      return index < 2 ? 0 : 1;
+    };
+    this.rotateWithViewCallback_ = options.rotateWithViewCallback || function() {
+      return false;
     };
   }
 
@@ -214,15 +231,21 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
         }
         const x = this.coordCallback_(feature, 0);
         const y = this.coordCallback_(feature, 1);
+        const u0 = this.texCoordCallback_(feature, 0);
+        const v0 = this.texCoordCallback_(feature, 1);
+        const u1 = this.texCoordCallback_(feature, 2);
+        const v1 = this.texCoordCallback_(feature, 3);
         const size = this.sizeCallback_(feature);
+        const opacity = this.opacityCallback_(feature);
+        const rotateWithView = this.rotateWithViewCallback_(feature) ? 1 : 0;
         const stride = 8;
         const baseIndex = this.verticesBuffer_.getArray().length / stride;
 
         this.verticesBuffer_.getArray().push(
-          x, y, -size / 2, -size / 2, 0, 0, 1, 1,
-          x, y, +size / 2, -size / 2, 1, 0, 1, 1,
-          x, y, +size / 2, +size / 2, 1, 1, 1, 1,
-          x, y, -size / 2, +size / 2, 0, 1, 1, 1
+          x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView,
+          x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView,
+          x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView,
+          x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView
         );
         this.indicesBuffer_.getArray().push(
           baseIndex, baseIndex + 1, baseIndex + 3,
