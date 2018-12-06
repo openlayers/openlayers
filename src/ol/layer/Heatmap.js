@@ -227,26 +227,25 @@ class Heatmap extends VectorLayer {
         }`,
       fragmentShader: `
         precision mediump float;
-        uniform float u_opacity;
         uniform float u_resolution;
-        uniform float u_blur;
+        uniform float u_blurSlope;
         
         varying vec2 v_texCoord;
         varying float v_opacity;
         
         void main(void) {
-          gl_FragColor.rgb = vec3(1.0, 1.0, 1.0);
           vec2 texCoord = v_texCoord * 2.0 - vec2(1.0, 1.0);
           float sqRadius = texCoord.x * texCoord.x + texCoord.y * texCoord.y;
-          float alpha = 1.0 - sqRadius * sqRadius * v_opacity;
-          if (alpha <= 0.0) {
-            discard;
-          }
-          gl_FragColor.a = alpha * 0.30 + 1.0 / u_resolution;
+          float value = (1.0 - sqrt(sqRadius)) * u_blurSlope;
+          float alpha = smoothstep(0.0, 1.0, value) * v_opacity;
+          gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
         }`,
       uniforms: {
         u_size: function() {
-          return this.get(Property.RADIUS) * 10;
+          return (this.get(Property.RADIUS) + this.get(Property.BLUR)) * 2;
+        }.bind(this),
+        u_blurSlope: function() {
+          return this.get(Property.RADIUS) / Math.max(1, this.get(Property.BLUR));
         }.bind(this),
         u_resolution: function(frameState) {
           return frameState.viewState.resolution;
@@ -259,95 +258,22 @@ class Heatmap extends VectorLayer {
 
             uniform sampler2D u_image;
             uniform sampler2D u_gradientTexture;
-            uniform vec2 u_blurSize;
-
-            varying vec2 v_texCoord;
-            varying vec2 v_screenCoord;
-
-            void main() {
-              float weights[9];
-              weights[0] = weights[8] = 0.05;
-              weights[1] = weights[7] = 0.09;
-              weights[2] = weights[6] = 0.12;
-              weights[3] = weights[5] = 0.15;
-              weights[4] = 0.18;
-              vec4 sum = vec4(0.0);
-              vec2 offset;
-              vec4 center = texture2D(u_image, v_texCoord);
-              
-              // vertical blur
-              offset = vec2(0.0, u_blurSize.y * 1.0);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[0];
-              offset = vec2(0.0, u_blurSize.y * 0.75);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[1];
-              offset = vec2(0.0, u_blurSize.y * 0.5);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[2];
-              offset = vec2(0.0, u_blurSize.y * 0.25);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[3];
-              offset = vec2(0.0, u_blurSize.y * 0.0);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[4];
-              offset = vec2(0.0, u_blurSize.y * -0.25);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[5];
-              offset = vec2(0.0, u_blurSize.y * -0.5);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[6];
-              offset = vec2(0.0, u_blurSize.y * -0.75);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[7];
-              offset = vec2(0.0, u_blurSize.y * -1.0);
-              sum += center * weights[8];
-              
-              // horizontal blur
-              offset = vec2(u_blurSize.x * 1.0, 0.0);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[0];
-              offset = vec2(u_blurSize.x * 0.75, 0.0);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[1];
-              offset = vec2(u_blurSize.x * 0.5, 0.0);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[2];
-              offset = vec2(u_blurSize.x * 0.25, 0.0);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[3];
-              offset = vec2(u_blurSize.x * 0.0, 0.0);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[4];
-              offset = vec2(u_blurSize.x * -0.25, 0.0);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[5];
-              offset = vec2(u_blurSize.x * -0.5, 0.0);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[6];
-              offset = vec2(u_blurSize.x * -0.75, 0.0);
-              sum += texture2D(u_image, v_texCoord + offset) * weights[7];
-              offset = vec2(u_blurSize.x * -1.0, 0.0);
-              sum += center * weights[8];
-              
-              gl_FragColor = sum * 0.5;
-            }`,
-          scaleRatio: 0.5,
-          uniforms: {
-            u_blurSize: function(frameState) {
-              return [
-                this.get(Property.BLUR) / frameState.size[0],
-                this.get(Property.BLUR) / frameState.size[1]
-              ];
-            }.bind(this)
-          }
-        },
-        {
-          fragmentShader: `
-            precision mediump float;
-
-            uniform sampler2D u_image;
-            uniform sampler2D u_gradientTexture;
 
             varying vec2 v_texCoord;
             varying vec2 v_screenCoord;
 
             void main() {
               vec4 color = texture2D(u_image, v_texCoord);
-              gl_FragColor.rgb = texture2D(u_gradientTexture, vec2(0.5, color.a)).rgb;
               gl_FragColor.a = color.a;
+              gl_FragColor.rgb = texture2D(u_gradientTexture, vec2(0.5, color.a)).rgb;
+              gl_FragColor.rgb *= gl_FragColor.a;
             }`,
           uniforms: {
             u_gradientTexture: this.gradient_
           }
         }
       ],
-      sizeCallback: function(feature) {
+      opacityCallback: function(feature) {
         return this.weightFunction_(feature);
       }.bind(this)
     });
