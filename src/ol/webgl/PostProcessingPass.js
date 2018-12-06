@@ -28,6 +28,7 @@ const DEFAULT_FRAGMENT_SHADER = `
    
   void main() {
     gl_FragColor = texture2D(u_image, v_texCoord);
+    gl_FragColor.rgb *= gl_FragColor.a;
   }
 `;
 
@@ -220,7 +221,7 @@ class WebGLPostProcessingPass {
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.viewport(0, 0, canvas.width, canvas.height);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.renderTargetVerticesBuffer_);
