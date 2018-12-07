@@ -281,13 +281,6 @@ class ExecutorGroup {
   }
 
   /**
-   * @return {import("../../extent.js").Extent} The extent of the replay group.
-   */
-  getMaxExtent() {
-    return this.maxExtent_;
-  }
-
-  /**
    * @param {number|undefined} zIndex Z index.
    * @param {import("./BuilderType.js").default} builderType Builder type.
    * @return {import("../VectorContext.js").default} Executor.

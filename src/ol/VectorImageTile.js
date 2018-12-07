@@ -6,10 +6,9 @@ import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 import {listen, unlistenByKey} from './events.js';
-import {containsExtent, getHeight, getIntersection, getWidth} from './extent.js';
+import {getHeight, getIntersection, getWidth} from './extent.js';
 import EventType from './events/EventType.js';
 import {loadFeaturesXhr} from './featureloader.js';
-import {VOID} from './functions.js';
 
 
 /**
@@ -40,11 +39,10 @@ class VectorImageTile extends Tile {
    *     instantiate for source tiles.
    * @param {function(this: import("./source/VectorTile.js").default, import("./events/Event.js").default): void} handleTileChange
    *     Function to call when a source tile's state changes.
-   * @param {number} zoom Integer zoom to render the tile for.
    */
   constructor(tileCoord, state, sourceRevision, format, tileLoadFunction,
     urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid, sourceTiles,
-    pixelRatio, projection, tileClass, handleTileChange, zoom) {
+    pixelRatio, projection, tileClass, handleTileChange) {
 
     super(tileCoord, state, {transition: 0});
 
@@ -73,6 +71,18 @@ class VectorImageTile extends Tile {
     this.sourceTiles_ = sourceTiles;
 
     /**
+     * @private
+     * @type {import("./tilegrid/TileGrid.js").default}
+     */
+    this.sourceTileGrid_ = sourceTileGrid;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.sourceTilesLoaded = false;
+
+    /**
      * Keys of source tiles used by this tile. Use with {@link #getTile}.
      * @type {Array<string>}
      */
@@ -82,11 +92,6 @@ class VectorImageTile extends Tile {
      * @type {import("./extent.js").Extent}
      */
     this.extent = null;
-
-    /**
-     * @type {number}
-     */
-    this.sourceRevision_ = sourceRevision;
 
     /**
      * @type {import("./tilecoord.js").TileCoord}
@@ -99,22 +104,21 @@ class VectorImageTile extends Tile {
     this.loadListenerKeys_ = [];
 
     /**
+     * @type {boolean}
+     */
+    this.isInterimTile = !sourceTileGrid;
+
+    /**
      * @type {Array<import("./events.js").EventsKey>}
      */
     this.sourceTileListenerKeys_ = [];
 
-    /**
-     * Use only source tiles that are loaded already
-     * @type {boolean}
-     */
-    this.useLoadedOnly = zoom != tileCoord[0];
+    this.key = sourceRevision.toString();
 
-    if (urlTileCoord) {
+    if (urlTileCoord && sourceTileGrid) {
       const extent = this.extent = tileGrid.getTileCoordExtent(urlTileCoord);
-      const resolution = tileGrid.getResolution(zoom);
+      const resolution = this.resolution_ = tileGrid.getResolution(urlTileCoord[0]);
       const sourceZ = sourceTileGrid.getZForResolution(resolution);
-      const useLoadedOnly = this.useLoadedOnly;
-      let loadCount = 0;
       sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
         let sharedExtent = getIntersection(extent,
           sourceTileGrid.getTileCoordExtent(sourceTileCoord));
@@ -125,10 +129,9 @@ class VectorImageTile extends Tile {
         if (getWidth(sharedExtent) / resolution >= 0.5 &&
             getHeight(sharedExtent) / resolution >= 0.5) {
           // only include source tile if overlap is at least 1 pixel
-          ++loadCount;
           const sourceTileKey = sourceTileCoord.toString();
           let sourceTile = sourceTiles[sourceTileKey];
-          if (!sourceTile && !useLoadedOnly) {
+          if (!sourceTile) {
             const tileUrl = tileUrlFunction(sourceTileCoord, pixelRatio, projection);
             sourceTile = sourceTiles[sourceTileKey] = new tileClass(sourceTileCoord,
               tileUrl == undefined ? TileState.EMPTY : TileState.IDLE,
@@ -137,61 +140,24 @@ class VectorImageTile extends Tile {
             this.sourceTileListenerKeys_.push(
               listen(sourceTile, EventType.CHANGE, handleTileChange));
           }
-          if (sourceTile && (!useLoadedOnly || sourceTile.getState() == TileState.LOADED)) {
-            sourceTile.consumers++;
-            this.tileKeys.push(sourceTileKey);
-          }
+          sourceTile.consumers++;
+          this.tileKeys.push(sourceTileKey);
         }
       }.bind(this));
-
-      if (useLoadedOnly && loadCount == this.tileKeys.length) {
-        this.finishLoading_();
-      }
-
-      this.createInterimTile_ = function() {
-        if (this.getState() !== TileState.LOADED && !useLoadedOnly) {
-          let bestZoom = -1;
-          for (const key in sourceTiles) {
-            const sourceTile = sourceTiles[key];
-            if (sourceTile.getState() === TileState.LOADED) {
-              const sourceTileCoord = sourceTile.tileCoord;
-              const sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
-              if (containsExtent(sourceTileExtent, extent) && sourceTileCoord[0] > bestZoom) {
-                bestZoom = sourceTileCoord[0];
-              }
-            }
-          }
-          if (bestZoom !== -1) {
-            const tile = new VectorImageTile(tileCoord, state, sourceRevision,
-              format, tileLoadFunction, urlTileCoord, tileUrlFunction,
-              sourceTileGrid, tileGrid, sourceTiles, pixelRatio, projection,
-              tileClass, VOID, bestZoom);
-            this.interimTile = tile;
-          }
-        }
-      };
     }
-
-  }
-
-  getInterimTile() {
-    if (!this.interimTile) {
-      this.createInterimTile_();
-    }
-    return super.getInterimTile();
   }
 
   /**
    * @inheritDoc
    */
   disposeInternal() {
-    delete this.createInterimTile_;
-    this.state = TileState.ABORT;
-    this.changed();
+    if (!this.isInterimTile) {
+      this.setState(TileState.ABORT);
+    }
     if (this.interimTile) {
       this.interimTile.dispose();
+      this.interimTile = null;
     }
-
     for (let i = 0, ii = this.tileKeys.length; i < ii; ++i) {
       const sourceTileKey = this.tileKeys[i];
       const sourceTile = this.getTile(sourceTileKey);
@@ -223,13 +189,64 @@ class VectorImageTile extends Tile {
   }
 
   /**
+   * @param {import("./layer/Layer.js").default} layer Layer.
+   * @return {boolean} Tile has a rendering context for the given layer.
+   */
+  hasContext(layer) {
+    return getUid(layer) in this.context_;
+  }
+
+  /**
    * Get the Canvas for this tile.
    * @param {import("./layer/Layer.js").default} layer Layer.
    * @return {HTMLCanvasElement} Canvas.
    */
   getImage(layer) {
-    return this.getReplayState(layer).renderedTileRevision == -1 ?
-      null : this.getContext(layer).canvas;
+    return this.hasContext(layer) ? this.getContext(layer).canvas : null;
+  }
+
+  /**
+   * @override
+   * @return {VectorImageTile} Interim tile.
+   */
+  getInterimTile() {
+    const sourceTileGrid = this.sourceTileGrid_;
+    const state = this.getState();
+    if (state < TileState.LOADED && !this.interimTile) {
+      let z = this.tileCoord[0];
+      const minZoom = sourceTileGrid.getMinZoom();
+      while (--z > minZoom) {
+        let covered = true;
+        const tileKeys = [];
+        sourceTileGrid.forEachTileCoord(this.extent, z, function(tileCoord) {
+          const key = tileCoord.toString();
+          if (key in this.sourceTiles_ && this.sourceTiles_[key].getState() === TileState.LOADED) {
+            tileKeys.push(key);
+          } else {
+            covered = false;
+          }
+        }.bind(this));
+        if (covered && tileKeys.length) {
+          for (let i = 0, ii = tileKeys.length; i < ii; ++i) {
+            this.sourceTiles_[tileKeys[i]].consumers++;
+          }
+          const tile = new VectorImageTile(this.tileCoord, TileState.IDLE, Number(this.key), null, null,
+            this.wrappedTileCoord, null, null, null, this.sourceTiles_,
+            undefined, null, null, null);
+          tile.extent = this.extent;
+          tile.tileKeys = tileKeys;
+          tile.context_ = this.context_;
+          setTimeout(function() {
+            tile.sourceTilesLoaded = true;
+            tile.changed();
+          }, 16);
+          this.interimTile = tile;
+          break;
+        }
+      }
+    }
+    const interimTile = /** @type {VectorImageTile} */ (this.interimTile);
+    return state === TileState.LOADED ? this : (interimTile || this);
   }
 
   /**
@@ -247,13 +264,6 @@ class VectorImageTile extends Tile {
       };
     }
     return this.replayState_[key];
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getKey() {
-    return this.tileKeys.join('/') + '-' + this.sourceRevision_;
   }
 
   /**
@@ -308,7 +318,7 @@ class VectorImageTile extends Tile {
       }.bind(this));
     }
     if (leftToLoad - Object.keys(errorSourceTiles).length == 0) {
-      setTimeout(this.finishLoading_.bind(this), 0);
+      setTimeout(this.finishLoading_.bind(this), 16);
     }
   }
 
@@ -331,7 +341,7 @@ class VectorImageTile extends Tile {
       this.loadListenerKeys_.forEach(unlistenByKey);
       this.loadListenerKeys_.length = 0;
       this.sourceTilesLoaded = true;
-      this.setState(TileState.LOADED);
+      this.changed();
     } else {
       this.setState(empty == this.tileKeys.length ? TileState.EMPTY : TileState.ERROR);
     }

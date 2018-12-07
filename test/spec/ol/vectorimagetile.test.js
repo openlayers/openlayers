@@ -17,7 +17,7 @@ describe('ol.VectorImageTile', function() {
       defaultLoadFunction, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ(), {},
-      1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
+      1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
     const sourceTile = tile.getTile(tile.tileKeys[0]);
@@ -30,7 +30,7 @@ describe('ol.VectorImageTile', function() {
     });
   });
 
-  it('sets LOADED state when previously failed source tiles are loaded', function(done) {
+  it('sets sourceTilesLoaded when previously failed source tiles are loaded', function(done) {
     const format = new GeoJSON();
     const url = 'spec/ol/data/unavailable.json';
     let sourceTile;
@@ -41,13 +41,17 @@ describe('ol.VectorImageTile', function() {
       }, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ(), {},
-      1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
+      1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
     let calls = 0;
     listen(tile, 'change', function(e) {
       ++calls;
-      expect(tile.getState()).to.be(calls == 2 ? TileState.LOADED : TileState.ERROR);
+      if (calls === 1) {
+        expect(tile.sourceTilesLoaded).to.be(false);
+      } else if (calls === 2) {
+        expect(tile.sourceTilesLoaded).to.be(true);
+      }
       if (calls == 2) {
         done();
       } else {
@@ -65,7 +69,7 @@ describe('ol.VectorImageTile', function() {
       defaultLoadFunction, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ(), {},
-      1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
+      1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
 
@@ -81,7 +85,7 @@ describe('ol.VectorImageTile', function() {
     const tile = new VectorImageTile([0, 0, 0], 0, url, format,
       defaultLoadFunction, [0, 0, 0], function() {},
       createXYZ(), createXYZ(), {},
-      1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
+      1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
 
@@ -105,7 +109,7 @@ describe('ol.VectorImageTile', function() {
         return url;
       }, tileGrid,
       createXYZ({extent: [-180, -90, 180, 90], tileSize: 512}),
-      sourceTiles, 1, getProjection('EPSG:4326'), VectorTile, function() {}, 1);
+      sourceTiles, 1, getProjection('EPSG:4326'), VectorTile, function() {});
     tile.load();
     expect(tile.tileKeys.length).to.be(1);
     expect(tile.getTile(tile.tileKeys[0]).tileCoord).to.eql([0, 16, 9]);
@@ -118,7 +122,7 @@ describe('ol.VectorImageTile', function() {
       defaultLoadFunction, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ({tileSize: 512}), {},
-      1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
+      1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
     expect(tile.loadListenerKeys_.length).to.be(4);
@@ -131,18 +135,19 @@ describe('ol.VectorImageTile', function() {
     expect(tile.getState()).to.be(TileState.ABORT);
   });
 
-  it('#dispose() when loaded', function(done) {
+  it('#dispose() when source tiles are loaded', function(done) {
     const format = new GeoJSON();
     const url = 'spec/ol/data/point.json';
     const tile = new VectorImageTile([0, 0, 0], 0, url, format,
       defaultLoadFunction, [0, 0, 0], function() {
         return url;
       }, createXYZ(), createXYZ({tileSize: 512}), {},
-      1, getProjection('EPSG:3857'), VectorTile, function() {}, 0);
+      1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
     listenOnce(tile, 'change', function() {
-      expect(tile.getState()).to.be(TileState.LOADED);
+      expect(tile.getState()).to.be(TileState.LOADING);
+      expect(tile.sourceTilesLoaded).to.be.ok();
       expect(tile.loadListenerKeys_.length).to.be(0);
       expect(tile.tileKeys.length).to.be(4);
       tile.dispose();

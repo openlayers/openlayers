@@ -3,9 +3,10 @@
  */
 import {getUid} from '../../util.js';
 import {createCanvasContext2D} from '../../dom.js';
+import {getValues} from '../../obj.js';
 import TileState from '../../TileState.js';
 import ViewHint from '../../ViewHint.js';
-import {listen, unlisten} from '../../events.js';
+import {listen, unlisten, unlistenByKey} from '../../events.js';
 import EventType from '../../events/EventType.js';
 import rbush from 'rbush';
 import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from '../../extent.js';
@@ -124,6 +125,18 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     /**
      * @private
+     * @type {Array<import("../../VectorImageTile.js").default>}
+     */
+    this.tilesWithoutImage_ = null;
+
+    /**
+     * @private
+     * @type {Object<string, import("../../events").EventsKey>}
+     */
+    this.tileChangeKeys_ = {};
+
+    /**
+     * @private
      * @type {import("../../transform.js").Transform}
      */
     this.tmpTransform_ = createTransform();
@@ -140,18 +153,59 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   disposeInternal() {
     unlisten(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
+    getValues(this.tileChangeKeys_).forEach(unlistenByKey);
     super.disposeInternal();
+  }
+
+  /**
+   * Listen to tile changes and mark tile as loaded when source tiles are loaded.
+   * @param {import("../../VectorImageTile").default} tile Tile to listen on.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {number} projection Projection.
+   * @private
+   */
+  listenTileChange_(tile, pixelRatio, projection) {
+    const uid = getUid(tile);
+    if (!(uid in this.tileChangeKeys_) && tile.getState() === TileState.IDLE) {
+      this.tileChangeKeys_[uid] = listen(tile, EventType.CHANGE, function() {
+        const state = tile.getState();
+        if (state === TileState.ABORT || tile.sourceTilesLoaded) {
+          unlistenByKey(this.tileChangeKeys_[uid]);
+          delete this.tileChangeKeys_[uid];
+          if (tile.sourceTilesLoaded) {
+            // Create render instructions immediately when all source tiles are available.
+            //TODO Make sure no canvas operations are involved in instruction creation.
+            this.updateExecutorGroup_(tile, pixelRatio, projection);
+            //FIXME This should be done by the tile, and VectorImage tiles should be layer specific
+            tile.setState(TileState.LOADED);
+          }
+        }
+      }.bind(this));
+    }
   }
 
   /**
    * @inheritDoc
    */
   getTile(z, x, y, pixelRatio, projection) {
-    const tile = super.getTile(z, x, y, pixelRatio, projection);
+    const tile = /** @type {import("../../VectorImageTile.js").default} */ (super.getTile(z, x, y, pixelRatio, projection));
+    this.listenTileChange_(tile, pixelRatio, projection);
+    if (tile.isInterimTile) {
+      // Register change listener also on the original tile
+      const source = /** @type {import("../../source/VectorTile").default} */ (this.getLayer().getSource());
+      const originalTile = /** @type {import("../../VectorImageTile").default} */ (source.getTile(z, x, y, pixelRatio, projection));
+      this.listenTileChange_(originalTile, pixelRatio, projection);
+    }
     if (tile.getState() === TileState.LOADED) {
-      this.createExecutorGroup_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
-      if (this.context) {
-        this.renderTileImage_(/** @type {import("../../VectorImageTile.js").default} */ (tile), pixelRatio, projection);
+      // Update existing instructions if necessary (e.g. when the style has changed)
+      this.updateExecutorGroup_(tile, pixelRatio, projection);
+      const layer = this.getLayer();
+      if (tile.getReplayState(layer).renderedTileRevision !== -1) {
+        // Update existing tile image if necessary (e.g. when the style has changed)
+        this.renderTileImage_(tile, pixelRatio, projection);
+      } else {
+        // Render new tile images after existing tiles have been drawn to the target canvas.
+        this.tilesWithoutImage_.push(tile);
       }
     }
     return tile;
@@ -160,9 +214,27 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * @inheritDoc
    */
+  loadedTileCallback(tiles, zoom, tile) {
+    if (!tile.hasContext(this.getLayer())) {
+      this.tilesWithoutImage_.push(tile);
+      return false;
+    }
+    return super.loadedTileCallback(tiles, zoom, tile);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  isDrawableTile(tile) {
+    return super.isDrawableTile(tile) && tile.hasContext(this.getLayer());
+  }
+
+  /**
+   * @inheritDoc
+   */
   getTileImage(tile) {
     const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
-    return /** @type {import("../../VectorImageTile.js").default} */ (tile).getImage(tileLayer);
+    return tile.getImage(tileLayer);
   }
 
   /**
@@ -184,7 +256,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import("../../proj/Projection.js").default} projection Projection.
    * @private
    */
-  createExecutorGroup_(tile, pixelRatio, projection) {
+  updateExecutorGroup_(tile, pixelRatio, projection) {
     const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
     const revision = layer.getRevision();
     const renderOrder = /** @type {import("../../render.js").OrderFunction} */ (layer.getRenderOrder()) || null;
@@ -207,15 +279,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       if (sourceTile.getState() != TileState.LOADED) {
         continue;
       }
-      if (tile.useLoadedOnly) {
-        const lowResExecutorGroup = sourceTile.getLowResExecutorGroup(layer, zoom, tileExtent);
-        if (lowResExecutorGroup) {
-          // reuse existing replay if we're rendering an interim tile
-          sourceTile.setExecutorGroup(layer, tile.tileCoord.toString(), lowResExecutorGroup);
-          continue;
-        }
-      }
-
       const sourceTileCoord = sourceTile.tileCoord;
       const sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
       const sharedExtent = getIntersection(tileExtent, sourceTileExtent);
@@ -271,7 +334,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const executorGroupInstructions = builderGroup.finish();
       const renderingReplayGroup = new CanvasExecutorGroup(sharedExtent, resolution,
         pixelRatio, source.getOverlaps(), this.declutterTree_, executorGroupInstructions, layer.getRenderBuffer());
-      sourceTile.setExecutorGroup(layer, tile.tileCoord.toString(), renderingReplayGroup);
+      sourceTile.setExecutorGroup(getUid(layer), tile.tileCoord.toString(), renderingReplayGroup);
     }
     builderState.renderedRevision = revision;
     builderState.renderedRenderOrder = renderOrder;
@@ -303,7 +366,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         if (sourceTile.getState() != TileState.LOADED) {
           continue;
         }
-        const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(layer,
+        const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(getUid(layer),
           tile.tileCoord.toString()));
         found = found || executorGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {},
           /**
@@ -374,11 +437,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   renderFrame(frameState, layerState) {
+    this.tilesWithoutImage_ = [];
     super.renderFrame(frameState, layerState);
 
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
+    const viewHints = frameState.viewHints;
+    const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
     const renderMode = layer.getRenderMode();
     if (renderMode === VectorTileRenderType.IMAGE) {
+      this.renderMissingTileImages_(hifi, frameState);
       return this.container_;
     }
 
@@ -412,8 +479,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (declutterReplays) {
       this.declutterTree_.clear();
     }
-    const viewHints = frameState.viewHints;
-    const snapToPixel = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
     const tiles = this.renderedTiles;
     const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
     const clips = [];
@@ -431,7 +496,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         if (sourceTile.getState() != TileState.LOADED) {
           continue;
         }
-        const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(layer, tileCoord.toString()));
+        const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(getUid(layer), tileCoord.toString()));
         if (!executorGroup || !executorGroup.hasExecutors(replayTypes)) {
           // sourceTile was not yet loaded when this.createReplayGroup_() was
           // called, or it has no replays of the types we want to render
@@ -460,14 +525,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
             context.clip();
           }
         }
-        executorGroup.execute(context, transform, rotation, {}, snapToPixel, replayTypes, declutterReplays);
+        executorGroup.execute(context, transform, rotation, {}, hifi, replayTypes, declutterReplays);
         context.restore();
         clips.push(currentClip);
         zs.push(currentZ);
       }
     }
     if (declutterReplays) {
-      replayDeclutter(declutterReplays, context, rotation, snapToPixel);
+      replayDeclutter(declutterReplays, context, rotation, hifi);
     }
 
     const opacity = layerState.opacity;
@@ -475,7 +540,32 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       canvas.style.opacity = opacity;
     }
 
+    // Now that we have rendered the tiles we have already, let's prepare new tiles for the
+    // next frame
+    this.renderMissingTileImages_(hifi, frameState);
+
     return this.container_;
+  }
+
+  /**
+   * @param {boolean} hifi We have time to render a high fidelity map image.
+   * @param {import('../../PluggableMap.js').FrameState} frameState Frame state.
+   */
+  renderMissingTileImages_(hifi, frameState) {
+    // Even when we have time to render hifi, do not spend more than 100 ms in this render frame,
+    // to avoid delays when the user starts interacting again with the map.
+    while (this.tilesWithoutImage_.length && Date.now() - frameState.time < 100) {
+      frameState.animate = true;
+      const tile = this.tilesWithoutImage_.pop();
+      // When we don't have time to render hifi, only render interim tiles until we have used up
+      // half of the frame budget of 16 ms
+      if (hifi || (tile.isInterimTile && Date.now() - frameState.time < 8)) {
+        this.renderTileImage_(tile, frameState.pixelRatio, frameState.viewState.projection);
+      }
+    }
+    if (this.tilesWithoutImage_.length) {
+      frameState.animate = true;
+    }
   }
 
   /**
@@ -536,7 +626,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         const transform = resetTransform(this.tmpTransform_);
         scaleTransform(transform, pixelScale, -pixelScale);
         translateTransform(transform, -tileExtent[0], -tileExtent[3]);
-        const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(layer,
+        const executorGroup = /** @type {CanvasExecutorGroup} */ (sourceTile.getExecutorGroup(getUid(layer),
           tile.tileCoord.toString()));
         executorGroup.execute(context, transform, 0, {}, true, replays);
       }
