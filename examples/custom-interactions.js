@@ -8,10 +8,6 @@ import {TileJSON, Vector as VectorSource} from '../src/ol/source.js';
 import {Fill, Icon, Stroke, Style} from '../src/ol/style.js';
 
 
-/**
- * @constructor
- * @extends {module:ol/interaction/Pointer}
- */
 class Drag extends PointerInteraction {
   constructor() {
     super({
@@ -22,7 +18,7 @@ class Drag extends PointerInteraction {
     });
 
     /**
-     * @type {module:ol/pixel~Pixel}
+     * @type {import("../src/ol/coordinate.js").Coordinate}
      * @private
      */
     this.coordinate_ = null;
@@ -34,7 +30,7 @@ class Drag extends PointerInteraction {
     this.cursor_ = 'pointer';
 
     /**
-     * @type {module:ol/Feature~Feature}
+     * @type {Feature}
      * @private
      */
     this.feature_ = null;
@@ -49,7 +45,7 @@ class Drag extends PointerInteraction {
 
 
 /**
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt Map browser event.
+ * @param {import("../src/ol/MapBrowserEvent.js").default} evt Map browser event.
  * @return {boolean} `true` to start the drag sequence.
  */
 function handleDownEvent(evt) {
@@ -70,7 +66,7 @@ function handleDownEvent(evt) {
 
 
 /**
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt Map browser event.
+ * @param {import("../src/ol/MapBrowserEvent.js").default} evt Map browser event.
  */
 function handleDragEvent(evt) {
   const deltaX = evt.coordinate[0] - this.coordinate_[0];
@@ -85,7 +81,7 @@ function handleDragEvent(evt) {
 
 
 /**
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt Event.
+ * @param {import("../src/ol/MapBrowserEvent.js").default} evt Event.
  */
 function handleMoveEvent(evt) {
   if (this.cursor_) {
@@ -141,13 +137,13 @@ const map = new Map({
         features: [pointFeature, lineFeature, polygonFeature]
       }),
       style: new Style({
-        image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
+        image: new Icon({
           anchor: [0.5, 46],
           anchorXUnits: 'fraction',
           anchorYUnits: 'pixels',
           opacity: 0.95,
           src: 'data/icon.png'
-        })),
+        }),
         stroke: new Stroke({
           width: 3,
           color: [255, 0, 0, 1]

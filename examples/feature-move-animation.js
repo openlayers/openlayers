@@ -53,7 +53,7 @@ const polyline = [
   '~@ym@yjA??a@cFd@kBrCgDbAUnAcBhAyAdk@et@??kF}D??OL'
 ].join('');
 
-const route = /** @type {module:ol/geom/LineString~LineString} */ (new Polyline({
+const route = /** @type {import("../src/ol/geom/LineString.js").default} */ (new Polyline({
   factor: 1e6
 }).readGeometry(polyline, {
   dataProjection: 'EPSG:4326',
@@ -192,8 +192,8 @@ function stopAnimation(ended) {
 
   // if animation cancelled set the marker at the beginning
   const coord = ended ? routeCoords[routeLength - 1] : routeCoords[0];
-  /** @type {module:ol/geom/Point~Point} */ (geoMarker.getGeometry())
-    .setCoordinates(coord);
+  const geometry = /** @type {import("../src/ol/geom/Point").default} */ (geoMarker.getGeometry());
+  geometry.setCoordinates(coord);
   //remove listener
   vectorLayer.un('postrender', moveFeature);
 }

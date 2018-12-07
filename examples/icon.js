@@ -17,12 +17,12 @@ const iconFeature = new Feature({
 });
 
 const iconStyle = new Style({
-  image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
+  image: new Icon({
     anchor: [0.5, 46],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
     src: 'data/icon.png'
-  }))
+  })
 });
 
 iconFeature.setStyle(iconStyle);

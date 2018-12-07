@@ -11,13 +11,13 @@ import {Icon, Style} from '../src/ol/style.js';
 
 function createStyle(src, img) {
   return new Style({
-    image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
+    image: new Icon({
       anchor: [0.5, 0.96],
       crossOrigin: 'anonymous',
       src: src,
       img: img,
       imgSize: img ? [img.width, img.height] : undefined
-    }))
+    })
   });
 }
 

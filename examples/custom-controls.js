@@ -9,14 +9,11 @@ import OSM from '../src/ol/source/OSM.js';
 // Define rotate to north control.
 //
 
-
-/**
- * @constructor
- * @extends {module:ol/control/Control~Control}
- * @param {Object=} opt_options Control options.
- */
 class RotateNorthControl extends Control {
 
+  /**
+   * @param {Object=} opt_options Control options.
+   */
   constructor(opt_options) {
     const options = opt_options || {};
 
