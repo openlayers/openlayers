@@ -5,7 +5,6 @@
 import {asString} from '../color.js';
 import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
-import {CANVAS_LINE_DASH} from '../has.js';
 import ImageState from '../ImageState.js';
 import {defaultStrokeStyle, defaultFillStyle, defaultLineCap, defaultLineWidth, defaultLineJoin, defaultMiterLimit} from '../render/canvas.js';
 import ImageStyle from './Image.js';
@@ -342,10 +341,6 @@ class RegularShape extends ImageStyle {
       }
       lineDash = this.stroke_.getLineDash();
       lineDashOffset = this.stroke_.getLineDashOffset();
-      if (!CANVAS_LINE_DASH) {
-        lineDash = null;
-        lineDashOffset = 0;
-      }
       lineJoin = this.stroke_.getLineJoin();
       if (lineJoin === undefined) {
         lineJoin = defaultLineJoin;
@@ -470,7 +465,7 @@ class RegularShape extends ImageStyle {
     if (this.stroke_) {
       context.strokeStyle = renderOptions.strokeStyle;
       context.lineWidth = renderOptions.strokeWidth;
-      if (renderOptions.lineDash) {
+      if (context.setLineDash && renderOptions.lineDash) {
         context.setLineDash(renderOptions.lineDash);
         context.lineDashOffset = renderOptions.lineDashOffset;
       }

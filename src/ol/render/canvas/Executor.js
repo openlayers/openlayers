@@ -8,7 +8,6 @@ import {createEmpty, createOrUpdate,
 import {lineStringLength} from '../../geom/flat/length.js';
 import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {transform2D} from '../../geom/flat/transform.js';
-import {CANVAS_LINE_DASH} from '../../has.js';
 import {isEmpty} from '../../obj.js';
 import {drawImage, resetTransform, defaultPadding, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
@@ -199,7 +198,7 @@ class Executor {
         context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
         context.lineJoin = /** @type {CanvasLineJoin} */ (strokeState.lineJoin);
         context.miterLimit = strokeState.miterLimit;
-        if (CANVAS_LINE_DASH && strokeState.lineDash.length) {
+        if (context.setLineDash && strokeState.lineDash.length) {
           context.setLineDash(strokeState.lineDash);
           context.lineDashOffset = strokeState.lineDashOffset;
         }
@@ -395,7 +394,7 @@ class Executor {
     context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
     context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
     context.miterLimit = /** @type {number} */ (instruction[5]);
-    if (CANVAS_LINE_DASH) {
+    if (context.setLineDash) {
       context.lineDashOffset = /** @type {number} */ (instruction[7]);
       context.setLineDash(/** @type {Array<number>} */ (instruction[6]));
     }

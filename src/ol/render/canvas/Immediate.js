@@ -11,7 +11,6 @@ import {intersects} from '../../extent.js';
 import GeometryType from '../../geom/GeometryType.js';
 import {transformGeom2D} from '../../geom/SimpleGeometry.js';
 import {transform2D} from '../../geom/flat/transform.js';
-import {CANVAS_LINE_DASH} from '../../has.js';
 import VectorContext from '../VectorContext.js';
 import {defaultTextAlign, defaultFillStyle, defaultLineCap, defaultLineDash, defaultLineDashOffset, defaultLineJoin, defaultLineWidth, defaultMiterLimit, defaultStrokeStyle, defaultTextBaseline, defaultFont} from '../canvas.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
@@ -694,7 +693,7 @@ class CanvasImmediateRenderer extends VectorContext {
     const contextStrokeState = this.contextStrokeState_;
     if (!contextStrokeState) {
       context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
-      if (CANVAS_LINE_DASH) {
+      if (context.setLineDash) {
         context.setLineDash(strokeState.lineDash);
         context.lineDashOffset = strokeState.lineDashOffset;
       }
@@ -715,7 +714,7 @@ class CanvasImmediateRenderer extends VectorContext {
       if (contextStrokeState.lineCap != strokeState.lineCap) {
         contextStrokeState.lineCap = context.lineCap = /** @type {CanvasLineCap} */ (strokeState.lineCap);
       }
-      if (CANVAS_LINE_DASH) {
+      if (context.setLineDash) {
         if (!equals(contextStrokeState.lineDash, strokeState.lineDash)) {
           context.setLineDash(contextStrokeState.lineDash = strokeState.lineDash);
         }
