@@ -221,7 +221,7 @@ function addInteraction() {
         measureTooltipElement.innerHTML = output;
         measureTooltip.setPosition(tooltipCoord);
       });
-    }, this);
+    });
 
   draw.on('drawend',
     function() {
@@ -233,7 +233,7 @@ function addInteraction() {
       measureTooltipElement = null;
       createMeasureTooltip();
       unByKey(listener);
-    }, this);
+    });
 }
 
 
