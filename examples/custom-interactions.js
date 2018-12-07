@@ -141,13 +141,13 @@ const map = new Map({
         features: [pointFeature, lineFeature, polygonFeature]
       }),
       style: new Style({
-        image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
+        image: new Icon({
           anchor: [0.5, 46],
           anchorXUnits: 'fraction',
           anchorYUnits: 'pixels',
           opacity: 0.95,
           src: 'data/icon.png'
-        })),
+        }),
         stroke: new Stroke({
           width: 3,
           color: [255, 0, 0, 1]
