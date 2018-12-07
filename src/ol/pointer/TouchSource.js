@@ -247,7 +247,7 @@ class TouchSource extends EventSource {
   /**
    * @private
    * @param {TouchEvent} inEvent Touch event
-   * @param {function(TouchEvent, PointerEvent)} inFunction In function.
+   * @param {function(TouchEvent, PointerEvent): void} inFunction In function.
    */
   processTouches_(inEvent, inFunction) {
     const touches = Array.prototype.slice.call(inEvent.changedTouches);

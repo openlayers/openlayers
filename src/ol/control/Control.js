@@ -79,7 +79,7 @@ class Control extends BaseObject {
     this.listenerKeys = [];
 
     /**
-     * @type {function(import("../MapEvent.js").default)}
+     * @type {function(import("../MapEvent.js").default): void}
      */
     this.render = options.render ? options.render : VOID;
 

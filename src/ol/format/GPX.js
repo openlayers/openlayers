@@ -132,7 +132,7 @@ class GPX extends XMLFeature {
     this.dataProjection = getProjection('EPSG:4326');
 
     /**
-     * @type {function(Feature, Node)|undefined}
+     * @type {function(Feature, Node): void|undefined}
      * @private
      */
     this.readExtensions_ = options.readExtensions;

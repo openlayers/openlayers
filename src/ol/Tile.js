@@ -40,7 +40,7 @@ import EventType from './events/EventType.js';
  * });
  * ```
  *
- * @typedef {function(Tile, string)} LoadFunction
+ * @typedef {function(Tile, string): void} LoadFunction
  * @api
  */
 
