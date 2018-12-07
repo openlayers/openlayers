@@ -126,14 +126,13 @@ const FRAGMENT_SHADER = `
  * * Fragment shader:
  *   ```
  *   precision mediump float;
- *   uniform float u_opacity;
  *
  *   varying vec2 v_texCoord;
  *   varying float v_opacity;
  *
  *   void main(void) {
  *     gl_FragColor.rgb = vec3(1.0, 1.0, 1.0);
- *     float alpha = u_opacity * v_opacity;
+ *     float alpha = v_opacity;
  *     if (alpha == 0.0) {
  *       discard;
  *     }
