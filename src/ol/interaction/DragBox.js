@@ -120,15 +120,15 @@ class DragBox extends PointerInteraction {
     const options = opt_options ? opt_options : {};
 
     /**
-    * @type {import("../render/Box.js").default}
-    * @private
-    */
+     * @type {import("../render/Box.js").default}
+     * @private
+     */
     this.box_ = new RenderBox(options.className || 'ol-dragbox');
 
     /**
-    * @type {number}
-    * @private
-    */
+     * @type {number}
+     * @private
+     */
     this.minArea_ = options.minArea !== undefined ? options.minArea : 64;
 
     /**
@@ -139,21 +139,21 @@ class DragBox extends PointerInteraction {
     this.onBoxEnd_ = options.onBoxEnd ? options.onBoxEnd : VOID;
 
     /**
-    * @type {import("../pixel.js").Pixel}
-    * @private
-    */
+     * @type {import("../pixel.js").Pixel}
+     * @private
+     */
     this.startPixel_ = null;
 
     /**
-    * @private
-    * @type {import("../events/condition.js").Condition}
-    */
+     * @private
+     * @type {import("../events/condition.js").Condition}
+     */
     this.condition_ = options.condition ? options.condition : always;
 
     /**
-    * @private
-    * @type {EndCondition}
-    */
+     * @private
+     * @type {EndCondition}
+     */
     this.boxEndCondition_ = options.boxEndCondition ?
       options.boxEndCondition : this.defaultBoxEndCondition;
   }
@@ -174,10 +174,10 @@ class DragBox extends PointerInteraction {
   }
 
   /**
-  * Returns geometry of last drawn box.
-  * @return {import("../geom/Polygon.js").default} Geometry.
-  * @api
-  */
+   * Returns geometry of last drawn box.
+   * @return {import("../geom/Polygon.js").default} Geometry.
+   * @api
+   */
   getGeometry() {
     return this.box_.getGeometry();
   }
