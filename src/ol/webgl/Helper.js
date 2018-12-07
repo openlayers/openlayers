@@ -43,8 +43,7 @@ export const ShaderType = {
 export const DefaultUniform = {
   PROJECTION_MATRIX: 'u_projectionMatrix',
   OFFSET_SCALE_MATRIX: 'u_offsetScaleMatrix',
-  OFFSET_ROTATION_MATRIX: 'u_offsetRotateMatrix',
-  OPACITY: 'u_opacity'
+  OFFSET_ROTATION_MATRIX: 'u_offsetRotateMatrix'
 };
 
 /**
@@ -89,6 +88,7 @@ export const DefaultAttrib = {
 /**
  * @typedef {Object} UniformInternalDescription
  * @property {string} name Name
+ * @property {UniformLiteralValue=} value Value
  * @property {WebGLTexture} [texture] Texture
  * @private
  */
@@ -129,7 +129,7 @@ export const DefaultAttrib = {
  *   Uniforms are defined using the `uniforms` option and can either be explicit values or callbacks taking the frame state as argument.
  *   You can also change their value along the way like so:
  *   ```js
- *   this.context.setUniformFloatValue(DefaultUniform.OPACITY, layerState.opacity);
+ *   this.context.setUniformFloatValue('u_value', valueAsNumber);
  *   ```
  *
  * ### Defining post processing passes
@@ -290,13 +290,13 @@ class WebGLHelper extends Disposable {
      * @private
      * @type {Object.<string, WebGLUniformLocation>}
      */
-    this.uniformLocations_;
+    this.uniformLocations_ = {};
 
     /**
      * @private
      * @type {Object.<string, number>}
      */
-    this.attribLocations_;
+    this.attribLocations_ = {};
 
     /**
      * Holds info about custom uniforms used in the post processing pass.
@@ -544,7 +544,7 @@ class WebGLHelper extends Disposable {
           gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, value);
         }
 
-        // fill texture slots
+        // fill texture slots by increasing index
         gl.uniform1i(this.getUniformLocation(uniform.name), textureSlot++);
 
       } else if (Array.isArray(value)) {
@@ -701,8 +701,13 @@ class WebGLHelper extends Disposable {
    * @api
    */
   enableAttributeArray(attribName, size, type, stride, offset) {
-    this.getGL().enableVertexAttribArray(this.getAttributeLocation(attribName));
-    this.getGL().vertexAttribPointer(this.getAttributeLocation(attribName), size, type,
+    const location = this.getAttributeLocation(attribName);
+    // the attribute has not been found in the shaders; do not enable it
+    if (location < 0) {
+      return;
+    }
+    this.getGL().enableVertexAttribArray(location);
+    this.getGL().vertexAttribPointer(location, size, type,
       false, stride, offset);
   }
 

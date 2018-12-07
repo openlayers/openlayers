@@ -28,6 +28,7 @@ const DEFAULT_FRAGMENT_SHADER = `
    
   void main() {
     gl_FragColor = texture2D(u_image, v_texCoord);
+    gl_FragColor.rgb *= gl_FragColor.a;
   }
 `;
 
@@ -53,6 +54,10 @@ const DEFAULT_FRAGMENT_SHADER = `
  * @classdesc
  * This class is used to define Post Processing passes with custom shaders and uniforms.
  * This is used internally by {@link module:ol/webgl/Helper~WebGLHelper}.
+ *
+ * Please note that the final output on the DOM canvas is expected to have premultiplied alpha, which means that
+ * a pixel which is 100% red with an opacity of 50% must have a color of (r=0.5, g=0, b=0, a=0.5).
+ * Failing to provide pixel colors with premultiplied alpha will result in render anomalies.
  *
  * Default shaders are shown hereafter:
  *
@@ -86,6 +91,7 @@ const DEFAULT_FRAGMENT_SHADER = `
  *
  *   void main() {
  *     gl_FragColor = texture2D(u_image, v_texCoord);
+ *     gl_FragColor.rgb *= gl_FragColor.a;
  *   }
  *   ```
  *
@@ -220,7 +226,7 @@ class WebGLPostProcessingPass {
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.viewport(0, 0, canvas.width, canvas.height);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.renderTargetVerticesBuffer_);
