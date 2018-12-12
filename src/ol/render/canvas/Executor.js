@@ -402,7 +402,7 @@ class Executor {
 
   /**
    * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
-   * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   renderDeclutter_(declutterGroup, feature) {
     if (declutterGroup && declutterGroup.length > 5) {
@@ -473,7 +473,7 @@ class Executor {
    *     to skip.
    * @param {Array<*>} instructions Instructions array.
    * @param {boolean} snapToPixel Snap point symbols and text to integer pixels.
-   * @param {function((import("../../Feature.js").default|import("../Feature.js").default)): T|undefined} featureCallback Feature callback.
+   * @param {function(import("../../Feature.js").FeatureLike): T|undefined} featureCallback Feature callback.
    * @param {import("../../extent.js").Extent=} opt_hitExtent Only check features that intersect this
    *     extent.
    * @return {T|undefined} Callback result.
@@ -525,14 +525,14 @@ class Executor {
     // When the batch size gets too big, performance decreases. 200 is a good
     // balance between batch size and number of fill/stroke instructions.
     const batchSize = this.instructions != instructions || this.overlaps ? 0 : 200;
-    let /** @type {import("../../Feature.js").default|import("../Feature.js").default} */ feature;
+    let /** @type {import("../../Feature.js").FeatureLike} */ feature;
     let x, y;
     while (i < ii) {
       const instruction = instructions[i];
       const type = /** @type {CanvasInstruction} */ (instruction[0]);
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
-          feature = /** @type {import("../../Feature.js").default|import("../Feature.js").default} */ (instruction[1]);
+          feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);
           if ((skipFeatures && skippedFeaturesHash[getUid(feature)]) || !feature.getGeometry()) {
             i = /** @type {number} */ (instruction[2]);
           } else if (opt_hitExtent !== undefined && !intersects(
@@ -735,7 +735,7 @@ class Executor {
           break;
         case CanvasInstruction.END_GEOMETRY:
           if (featureCallback !== undefined) {
-            feature = /** @type {import("../../Feature.js").default|import("../Feature.js").default} */ (instruction[1]);
+            feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);
             const result = featureCallback(feature);
             if (result) {
               return result;
@@ -843,7 +843,7 @@ class Executor {
    * @param {number} viewRotation View rotation.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features
    *     to skip.
-   * @param {function((import("../../Feature.js").default|import("../Feature.js").default)): T=} opt_featureCallback
+   * @param {function(import("../../Feature.js").FeatureLike): T=} opt_featureCallback
    *     Feature callback.
    * @param {import("../../extent.js").Extent=} opt_hitExtent Only check features that intersect this
    *     extent.
