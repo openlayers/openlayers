@@ -2,11 +2,11 @@
  * @module ol/format/GML2
  */
 import {createOrUpdate} from '../extent.js';
-import {transformWithOptions} from './Feature.js';
+import {transformExtentWithOptions, transformGeometryWithOptions} from './Feature.js';
 import GMLBase, {GMLNS} from './GMLBase.js';
 import {writeStringTextNode} from './xsd.js';
 import {assign} from '../obj.js';
-import {get as getProjection, transformExtent} from '../proj.js';
+import {get as getProjection} from '../proj.js';
 import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
   makeReplacer, makeSimpleNodeFactory, OBJECT_PROPERTY_NODE_FACTORY, pushParseAndPop, pushSerializeAndPop} from '../xml.js';
 
@@ -287,14 +287,9 @@ class GML2 extends GMLBase {
     item['node'] = node;
     let value;
     if (Array.isArray(geometry)) {
-      if (context.dataProjection) {
-        value = transformExtent(
-          geometry, context.featureProjection, context.dataProjection);
-      } else {
-        value = geometry;
-      }
+      value = transformExtentWithOptions(/** @type {import("../extent.js").Extent} */ (geometry), context);
     } else {
-      value = transformWithOptions(/** @type {import("../geom/Geometry.js").default} */ (geometry), true, context);
+      value = transformGeometryWithOptions(/** @type {import("../geom/Geometry.js").default} */ (geometry), true, context);
     }
     pushSerializeAndPop(/** @type {import("../xml.js").NodeStackItem} */
       (item), this.GEOMETRY_SERIALIZERS_,

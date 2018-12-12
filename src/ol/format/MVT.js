@@ -5,7 +5,7 @@
 
 import {assert} from '../asserts.js';
 import PBF from 'pbf';
-import FeatureFormat, {transformWithOptions} from './Feature.js';
+import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
 import FormatType from './FormatType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -214,8 +214,7 @@ class MVT extends FeatureFormat {
       if (this.geometryName_) {
         feature.setGeometryName(this.geometryName_);
       }
-      const geometry = /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geom, false,
-        this.adaptOptions(opt_options)));
+      const geometry = transformGeometryWithOptions(geom, false, this.adaptOptions(opt_options));
       feature.setGeometry(geometry);
       feature.setId(id);
       feature.setProperties(values);

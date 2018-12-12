@@ -4,7 +4,7 @@
 // FIXME add typedef for stack state objects
 import {extend} from '../array.js';
 import Feature from '../Feature.js';
-import {transformWithOptions} from './Feature.js';
+import {transformGeometryWithOptions} from './Feature.js';
 import XMLFeature from './XMLFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
@@ -88,7 +88,7 @@ class OSMXML extends XMLFeature {
         } else {
           geometry = new LineString(flatCoordinates, GeometryLayout.XY);
         }
-        transformWithOptions(geometry, false, options);
+        transformGeometryWithOptions(geometry, false, options);
         const feature = new Feature(geometry);
         feature.setId(values.id);
         feature.setProperties(values.tags);
@@ -134,7 +134,7 @@ function readNode(node, objectStack) {
   }, NODE_PARSERS, node, objectStack);
   if (!isEmpty(values.tags)) {
     const geometry = new Point(coordinates);
-    transformWithOptions(geometry, false, options);
+    transformGeometryWithOptions(geometry, false, options);
     const feature = new Feature(geometry);
     feature.setId(id);
     feature.setProperties(values.tags);

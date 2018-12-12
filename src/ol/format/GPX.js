@@ -3,7 +3,7 @@
  */
 import Feature from '../Feature.js';
 import {includes} from '../array.js';
-import {transformWithOptions} from './Feature.js';
+import {transformGeometryWithOptions} from './Feature.js';
 import XMLFeature from './XMLFeature.js';
 import {readString, readDecimal, readNonNegativeInteger, readDateTime, writeStringTextNode, writeNonNegativeIntegerTextNode, writeDecimalTextNode, writeDateTimeTextNode} from './xsd.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -649,7 +649,7 @@ function readRte(node, objectStack) {
   delete values['layoutOptions'];
   const layout = applyLayoutOptions(layoutOptions, flatCoordinates);
   const geometry = new LineString(flatCoordinates, layout);
-  transformWithOptions(geometry, false, options);
+  transformGeometryWithOptions(geometry, false, options);
   const feature = new Feature(geometry);
   feature.setProperties(values);
   return feature;
@@ -680,7 +680,7 @@ function readTrk(node, objectStack) {
   delete values['layoutOptions'];
   const layout = applyLayoutOptions(layoutOptions, flatCoordinates, ends);
   const geometry = new MultiLineString(flatCoordinates, layout, ends);
-  transformWithOptions(geometry, false, options);
+  transformGeometryWithOptions(geometry, false, options);
   const feature = new Feature(geometry);
   feature.setProperties(values);
   return feature;
@@ -702,7 +702,7 @@ function readWpt(node, objectStack) {
   const coordinates = appendCoordinate([], layoutOptions, node, values);
   const layout = applyLayoutOptions(layoutOptions, coordinates);
   const geometry = new Point(coordinates, layout);
-  transformWithOptions(geometry, false, options);
+  transformGeometryWithOptions(geometry, false, options);
   const feature = new Feature(geometry);
   feature.setProperties(values);
   return feature;
@@ -784,7 +784,7 @@ function writeRte(node, feature, objectStack) {
   context['properties'] = properties;
   const geometry = feature.getGeometry();
   if (geometry.getType() == GeometryType.LINE_STRING) {
-    const lineString = /** @type {LineString} */ (transformWithOptions(geometry, true, options));
+    const lineString = /** @type {LineString} */ (transformGeometryWithOptions(geometry, true, options));
     context['geometryLayout'] = lineString.getLayout();
     properties['rtept'] = lineString.getCoordinates();
   }
@@ -810,7 +810,7 @@ function writeTrk(node, feature, objectStack) {
   context['properties'] = properties;
   const geometry = feature.getGeometry();
   if (geometry.getType() == GeometryType.MULTI_LINE_STRING) {
-    const multiLineString = /** @type {MultiLineString} */ (transformWithOptions(geometry, true, options));
+    const multiLineString = /** @type {MultiLineString} */ (transformGeometryWithOptions(geometry, true, options));
     properties['trkseg'] = multiLineString.getLineStrings();
   }
   const parentNode = objectStack[objectStack.length - 1].node;
@@ -849,7 +849,7 @@ function writeWpt(node, feature, objectStack) {
   context['properties'] = feature.getProperties();
   const geometry = feature.getGeometry();
   if (geometry.getType() == GeometryType.POINT) {
-    const point = /** @type {Point} */ (transformWithOptions(geometry, true, options));
+    const point = /** @type {Point} */ (transformGeometryWithOptions(geometry, true, options));
     context['geometryLayout'] = point.getLayout();
     writeWptType(node, point.getCoordinates(), objectStack);
   }

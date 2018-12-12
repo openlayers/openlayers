@@ -2,7 +2,7 @@
  * @module ol/format/IGC
  */
 import Feature from '../Feature.js';
-import {transformWithOptions} from './Feature.js';
+import {transformGeometryWithOptions} from './Feature.js';
 import TextFeature from './TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
@@ -158,7 +158,7 @@ class IGC extends TextFeature {
     }
     const layout = altitudeMode == IGCZ.NONE ? GeometryLayout.XYM : GeometryLayout.XYZM;
     const lineString = new LineString(flatCoordinates, layout);
-    const feature = new Feature(transformWithOptions(lineString, false, opt_options));
+    const feature = new Feature(transformGeometryWithOptions(lineString, false, opt_options));
     feature.setProperties(properties);
     return feature;
   }

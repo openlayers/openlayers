@@ -4,7 +4,7 @@
 
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
-import {transformWithOptions} from './Feature.js';
+import {transformGeometryWithOptions} from './Feature.js';
 import JSONFeature from './JSONFeature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import LineString from '../geom/LineString.js';
@@ -293,7 +293,7 @@ function readGeometry(object, opt_options) {
       throw new Error('Unsupported GeoJSON type: ' + object.type);
     }
   }
-  return /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, false, opt_options));
+  return transformGeometryWithOptions(geometry, false, opt_options);
 }
 
 
@@ -375,7 +375,7 @@ function readPolygonGeometry(object) {
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
 function writeGeometry(geometry, opt_options) {
-  geometry = /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, true, opt_options));
+  geometry = transformGeometryWithOptions(geometry, true, opt_options);
   const type = geometry.getType();
 
   /** @type {GeoJSONGeometry} */
