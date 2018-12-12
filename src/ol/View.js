@@ -439,13 +439,14 @@ class View extends BaseObject {
     for (let i = 0; i < animationCount; ++i) {
       const options = /** @type {AnimationOptions} */ (arguments[i]);
 
-      const animation = /** @type {Animation} */ ({
+      const animation = {
         start: start,
         complete: false,
         anchor: options.anchor,
         duration: options.duration !== undefined ? options.duration : 1000,
-        easing: options.easing || inAndOut
-      });
+        easing: options.easing || inAndOut,
+        callback: callback
+      };
 
       if (options.center) {
         animation.sourceCenter = center;
@@ -470,8 +471,6 @@ class View extends BaseObject {
         animation.targetRotation = rotation + delta;
         rotation = animation.targetRotation;
       }
-
-      animation.callback = callback;
 
       // check if animation is a no-op
       if (isNoopAnimation(animation)) {
@@ -902,18 +901,16 @@ class View extends BaseObject {
     const resolution = /** @type {number} */ (this.getResolution());
     const pixelResolution = resolution / pixelRatio;
     const rotation = this.getRotation();
-    return (
-      /** @type {State} */ ({
-        center: [
-          Math.round(center[0] / pixelResolution) * pixelResolution,
-          Math.round(center[1] / pixelResolution) * pixelResolution
-        ],
-        projection: projection !== undefined ? projection : null,
-        resolution: resolution,
-        rotation: rotation,
-        zoom: this.getZoom()
-      })
-    );
+    return {
+      center: [
+        Math.round(center[0] / pixelResolution) * pixelResolution,
+        Math.round(center[1] / pixelResolution) * pixelResolution
+      ],
+      projection: projection !== undefined ? projection : null,
+      resolution: resolution,
+      rotation: rotation,
+      zoom: this.getZoom()
+    };
   }
 
   /**
