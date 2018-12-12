@@ -9,6 +9,9 @@ import {toSize} from '../size.js';
 import UrlTile from './UrlTile.js';
 import {getKeyZXY} from '../tilecoord.js';
 import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.js';
+import {getIntersection, getWidth, getHeight} from '../extent.js';
+import {listen} from '../events.js';
+import EventType from '../events/EventType.js';
 
 /**
  * @typedef {Object} Options
@@ -152,6 +155,49 @@ class VectorTile extends UrlTile {
   }
 
   /**
+   * Finds and assigns source tiles for a vector image tile.
+   * @param {VectorImageTile} tile Tile.
+   * @param {number} pixelRatio Pixel ratio.
+   * @param {import("../proj/Projection").default} projection Projection.
+   */
+  assignTiles(tile, pixelRatio, projection) {
+    if (!tile.wrappedTileCoord) {
+      return;
+    }
+    const sourceTileGrid = this.tileGrid;
+    const tileGrid = this.getTileGridForProjection(projection);
+    const urlTileCoord = tile.wrappedTileCoord;
+    const extent = tile.extent = tileGrid.getTileCoordExtent(urlTileCoord);
+    const resolution = this.resolution_ = tileGrid.getResolution(urlTileCoord[0]);
+    const sourceZ = sourceTileGrid.getZForResolution(resolution);
+    sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
+      let sharedExtent = getIntersection(extent,
+        sourceTileGrid.getTileCoordExtent(sourceTileCoord));
+      const sourceExtent = sourceTileGrid.getExtent();
+      if (sourceExtent) {
+        sharedExtent = getIntersection(sharedExtent, sourceExtent, sharedExtent);
+      }
+      if (getWidth(sharedExtent) / resolution >= 0.5 &&
+          getHeight(sharedExtent) / resolution >= 0.5) {
+        // only include source tile if overlap is at least 1 pixel
+        const sourceTileKey = sourceTileCoord.toString();
+        let sourceTile = this.sourceTiles_[sourceTileKey];
+        if (!sourceTile) {
+          const tileUrl = this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
+          sourceTile = this.sourceTiles_[sourceTileKey] = new this.tileClass(sourceTileCoord,
+            tileUrl == undefined ? TileState.EMPTY : TileState.IDLE,
+            tileUrl == undefined ? '' : tileUrl,
+            this.format_, this.tileLoadFunction);
+          tile.sourceTileListenerKeys_.push(
+            listen(sourceTile, EventType.CHANGE, this.handleTileChange.bind(this)));
+        }
+        sourceTile.consumers++;
+        tile.tileKeys.push(sourceTileKey);
+      }
+    }.bind(this));
+  }
+
+  /**
    * @inheritDoc
    */
   getTile(z, x, y, pixelRatio, projection) {
@@ -168,11 +214,11 @@ class VectorTile extends UrlTile {
         tileCoord,
         urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
         this.getRevision(),
-        this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
-        this.tileGrid, this.getTileGridForProjection(projection),
-        this.sourceTiles_, pixelRatio, projection, this.tileClass,
-        this.handleTileChange.bind(this));
+        urlTileCoord,
+        this.tileGrid,
+        this.sourceTiles_);
 
+      this.assignTiles(tile, pixelRatio, projection);
       this.tileCache.set(tileCoordKey, tile);
       return tile;
     }

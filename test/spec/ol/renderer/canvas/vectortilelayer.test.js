@@ -244,11 +244,10 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       sourceTile.getImage = function() {
         return document.createElement('canvas');
       };
-      const tile = new VectorImageTile([0, 0, 0], undefined, 1, undefined,
-        undefined, [0, 0, 0], undefined, createXYZ(), createXYZ(), {'0,0,0': sourceTile}, undefined,
-        undefined, undefined, undefined);
+      const tile = new VectorImageTile([0, 0, 0], undefined, 1, [0, 0, 0], createXYZ(), {'0,0,0': sourceTile});
       tile.transition_ = 0;
-      tile.wrappedTileCoord = [0, 0, 0];
+      tile.tileKeys = ['0,0,0'];
+      tile.extent = getProjection('EPSG:3857').getExtent();
       tile.setState(TileState.LOADED);
       tile.getSourceTile = function() {
         return sourceTile;

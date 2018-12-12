@@ -6,7 +6,6 @@ import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 import {listen, unlistenByKey} from './events.js';
-import {getHeight, getIntersection, getWidth} from './extent.js';
 import EventType from './events/EventType.js';
 import {loadFeaturesXhr} from './featureloader.js';
 
@@ -26,23 +25,11 @@ class VectorImageTile extends Tile {
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {TileState} state State.
    * @param {number} sourceRevision Source revision.
-   * @param {import("./format/Feature.js").default} format Feature format.
-   * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.
    * @param {import("./tilecoord.js").TileCoord} urlTileCoord Wrapped tile coordinate for source urls.
-   * @param {import("./Tile.js").UrlFunction} tileUrlFunction Tile url function.
    * @param {import("./tilegrid/TileGrid.js").default} sourceTileGrid Tile grid of the source.
-   * @param {import("./tilegrid/TileGrid.js").default} tileGrid Tile grid of the renderer.
    * @param {Object<string, import("./VectorTile.js").default>} sourceTiles Source tiles.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {import("./proj/Projection.js").default} projection Projection.
-   * @param {typeof import("./VectorTile.js").default} tileClass Class to
-   *     instantiate for source tiles.
-   * @param {function(this: import("./source/VectorTile.js").default, import("./events/Event.js").default): void} handleTileChange
-   *     Function to call when a source tile's state changes.
    */
-  constructor(tileCoord, state, sourceRevision, format, tileLoadFunction,
-    urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid, sourceTiles,
-    pixelRatio, projection, tileClass, handleTileChange) {
+  constructor(tileCoord, state, sourceRevision, urlTileCoord, sourceTileGrid, sourceTiles) {
 
     super(tileCoord, state, {transition: 0});
 
@@ -114,37 +101,6 @@ class VectorImageTile extends Tile {
     this.sourceTileListenerKeys_ = [];
 
     this.key = sourceRevision.toString();
-
-    if (urlTileCoord && sourceTileGrid) {
-      const extent = this.extent = tileGrid.getTileCoordExtent(urlTileCoord);
-      const resolution = this.resolution_ = tileGrid.getResolution(urlTileCoord[0]);
-      const sourceZ = sourceTileGrid.getZForResolution(resolution);
-      sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
-        let sharedExtent = getIntersection(extent,
-          sourceTileGrid.getTileCoordExtent(sourceTileCoord));
-        const sourceExtent = sourceTileGrid.getExtent();
-        if (sourceExtent) {
-          sharedExtent = getIntersection(sharedExtent, sourceExtent, sharedExtent);
-        }
-        if (getWidth(sharedExtent) / resolution >= 0.5 &&
-            getHeight(sharedExtent) / resolution >= 0.5) {
-          // only include source tile if overlap is at least 1 pixel
-          const sourceTileKey = sourceTileCoord.toString();
-          let sourceTile = sourceTiles[sourceTileKey];
-          if (!sourceTile) {
-            const tileUrl = tileUrlFunction(sourceTileCoord, pixelRatio, projection);
-            sourceTile = sourceTiles[sourceTileKey] = new tileClass(sourceTileCoord,
-              tileUrl == undefined ? TileState.EMPTY : TileState.IDLE,
-              tileUrl == undefined ? '' : tileUrl,
-              format, tileLoadFunction);
-            this.sourceTileListenerKeys_.push(
-              listen(sourceTile, EventType.CHANGE, handleTileChange));
-          }
-          sourceTile.consumers++;
-          this.tileKeys.push(sourceTileKey);
-        }
-      }.bind(this));
-    }
   }
 
   /**
@@ -230,9 +186,8 @@ class VectorImageTile extends Tile {
           for (let i = 0, ii = tileKeys.length; i < ii; ++i) {
             this.sourceTiles_[tileKeys[i]].consumers++;
           }
-          const tile = new VectorImageTile(this.tileCoord, TileState.IDLE, Number(this.key), null, null,
-            this.wrappedTileCoord, null, null, null, this.sourceTiles_,
-            undefined, null, null, null);
+          const tile = new VectorImageTile(this.tileCoord, TileState.IDLE, Number(this.key),
+            this.wrappedTileCoord, null, this.sourceTiles_);
           tile.extent = this.extent;
           tile.tileKeys = tileKeys;
           tile.context_ = this.context_;
