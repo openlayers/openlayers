@@ -211,7 +211,7 @@ class EsriJSON extends JSONFeature {
    *
    * @param {Array<import("../Feature.js").default>} features Features.
    * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
-   * @return {Object} EsriJSON Object.
+   * @return {EsriJSONFeatureSet} EsriJSON Object.
    * @override
    * @api
    */
@@ -221,9 +221,9 @@ class EsriJSON extends JSONFeature {
     for (let i = 0, ii = features.length; i < ii; ++i) {
       objects.push(this.writeFeatureObject(features[i], opt_options));
     }
-    return /** @type {EsriJSONFeatureSet} */ ({
+    return {
       'features': objects
-    });
+    };
   }
 }
 
@@ -414,40 +414,41 @@ function readPolygonGeometry(object) {
 /**
  * @param {import("../geom/Geometry.js").default} geometry Geometry.
  * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
- * @return {EsriJSONGeometry} EsriJSON geometry.
+ * @return {EsriJSONPoint} EsriJSON geometry.
  */
 function writePointGeometry(geometry, opt_options) {
   const coordinates = /** @type {import("../geom/Point.js").default} */ (geometry).getCoordinates();
+  /** @type {EsriJSONPoint} */
   let esriJSON;
   const layout = /** @type {import("../geom/Point.js").default} */ (geometry).getLayout();
   if (layout === GeometryLayout.XYZ) {
-    esriJSON = /** @type {EsriJSONPoint} */ ({
+    esriJSON = {
       x: coordinates[0],
       y: coordinates[1],
       z: coordinates[2]
-    });
+    };
   } else if (layout === GeometryLayout.XYM) {
-    esriJSON = /** @type {EsriJSONPoint} */ ({
+    esriJSON = {
       x: coordinates[0],
       y: coordinates[1],
       m: coordinates[2]
-    });
+    };
   } else if (layout === GeometryLayout.XYZM) {
-    esriJSON = /** @type {EsriJSONPoint} */ ({
+    esriJSON = {
       x: coordinates[0],
       y: coordinates[1],
       z: coordinates[2],
       m: coordinates[3]
-    });
+    };
   } else if (layout === GeometryLayout.XY) {
-    esriJSON = /** @type {EsriJSONPoint} */ ({
+    esriJSON = {
       x: coordinates[0],
       y: coordinates[1]
-    });
+    };
   } else {
     assert(false, 34); // Invalid geometry layout
   }
-  return /** @type {EsriJSONGeometry} */ (esriJSON);
+  return esriJSON;
 }
 
 
@@ -474,15 +475,13 @@ function getHasZM(geometry) {
 function writeLineStringGeometry(geometry, opt_options) {
   const lineString = /** @type {import("../geom/LineString.js").default} */ (geometry);
   const hasZM = getHasZM(lineString);
-  return (
-    /** @type {EsriJSONPolyline} */ {
-      hasZ: hasZM.hasZ,
-      hasM: hasZM.hasM,
-      paths: [
-        /** @type {Array<EsriJSONPosition>} */ (lineString.getCoordinates())
-      ]
-    }
-  );
+  return {
+    hasZ: hasZM.hasZ,
+    hasM: hasZM.hasM,
+    paths: [
+      /** @type {Array<EsriJSONPosition>} */ (lineString.getCoordinates())
+    ]
+  };
 }
 
 
@@ -495,13 +494,11 @@ function writePolygonGeometry(geometry, opt_options) {
   const polygon = /** @type {import("../geom/Polygon.js").default} */ (geometry);
   // Esri geometries use the left-hand rule
   const hasZM = getHasZM(polygon);
-  return (
-    /** @type {EsriJSONPolygon} */ {
-      hasZ: hasZM.hasZ,
-      hasM: hasZM.hasM,
-      rings: /** @type {Array<Array<EsriJSONPosition>>} */ (polygon.getCoordinates(false))
-    }
-  );
+  return {
+    hasZ: hasZM.hasZ,
+    hasM: hasZM.hasM,
+    rings: /** @type {Array<Array<EsriJSONPosition>>} */ (polygon.getCoordinates(false))
+  };
 }
 
 
@@ -513,13 +510,11 @@ function writePolygonGeometry(geometry, opt_options) {
 function writeMultiLineStringGeometry(geometry, opt_options) {
   const multiLineString = /** @type {import("../geom/MultiLineString.js").default} */ (geometry);
   const hasZM = getHasZM(multiLineString);
-  return (
-    /** @type {EsriJSONPolyline} */ {
-      hasZ: hasZM.hasZ,
-      hasM: hasZM.hasM,
-      paths: /** @type {Array<Array<EsriJSONPosition>>} */ (multiLineString.getCoordinates())
-    }
-  );
+  return {
+    hasZ: hasZM.hasZ,
+    hasM: hasZM.hasM,
+    paths: /** @type {Array<Array<EsriJSONPosition>>} */ (multiLineString.getCoordinates())
+  };
 }
 
 
@@ -531,13 +526,11 @@ function writeMultiLineStringGeometry(geometry, opt_options) {
 function writeMultiPointGeometry(geometry, opt_options) {
   const multiPoint = /** @type {import("../geom/MultiPoint.js").default} */ (geometry);
   const hasZM = getHasZM(multiPoint);
-  return (
-    /** @type {EsriJSONMultipoint} */ {
-      hasZ: hasZM.hasZ,
-      hasM: hasZM.hasM,
-      points: /** @type {Array<EsriJSONPosition>} */ (multiPoint.getCoordinates())
-    }
-  );
+  return {
+    hasZ: hasZM.hasZ,
+    hasM: hasZM.hasM,
+    points: /** @type {Array<EsriJSONPosition>} */ (multiPoint.getCoordinates())
+  };
 }
 
 
@@ -555,11 +548,11 @@ function writeMultiPolygonGeometry(geometry, opt_options) {
       output.push(coordinates[i][x]);
     }
   }
-  return /** @type {EsriJSONPolygon} */ ({
+  return {
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
-    rings: output
-  });
+    rings: /** @type {Array<Array<EsriJSONPosition>>} */ (output)
+  };
 }
 
 
