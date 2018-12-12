@@ -261,12 +261,12 @@ class LRUCache extends EventTarget {
   set(key, value) {
     assert(!(key in this.entries_),
       16); // Tried to set a value for a key that is used already
-    const entry = /** @type {Entry} */ ({
+    const entry = {
       key_: key,
       newer: null,
       older: this.newest_,
       value_: value
-    });
+    };
     if (!this.newest_) {
       this.oldest_ = entry;
     } else {
