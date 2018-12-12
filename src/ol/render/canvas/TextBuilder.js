@@ -308,7 +308,7 @@ class CanvasTextBuilder extends CanvasBuilder {
     const strokeKey = this.strokeKey_;
     if (strokeState) {
       if (!(strokeKey in this.strokeStates)) {
-        this.strokeStates[strokeKey] = /** @type {import("../canvas.js").StrokeState} */ ({
+        this.strokeStates[strokeKey] = {
           strokeStyle: strokeState.strokeStyle,
           lineCap: strokeState.lineCap,
           lineDashOffset: strokeState.lineDashOffset,
@@ -316,24 +316,24 @@ class CanvasTextBuilder extends CanvasBuilder {
           lineJoin: strokeState.lineJoin,
           miterLimit: strokeState.miterLimit,
           lineDash: strokeState.lineDash
-        });
+        };
       }
     }
     const textKey = this.textKey_;
     if (!(textKey in this.textStates)) {
-      this.textStates[textKey] = /** @type {import("../canvas.js").TextState} */ ({
+      this.textStates[textKey] = {
         font: textState.font,
         textAlign: textState.textAlign || defaultTextAlign,
         textBaseline: textState.textBaseline || defaultTextBaseline,
         scale: textState.scale
-      });
+      };
     }
     const fillKey = this.fillKey_;
     if (fillState) {
       if (!(fillKey in this.fillStates)) {
-        this.fillStates[fillKey] = /** @type {import("../canvas.js").FillState} */ ({
+        this.fillStates[fillKey] = {
           fillStyle: fillState.fillStyle
-        });
+        };
       }
     }
   }
