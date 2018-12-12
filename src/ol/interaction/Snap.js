@@ -451,13 +451,11 @@ class Snap extends PointerInteraction {
         vertexPixel = [Math.round(vertexPixel[0]), Math.round(vertexPixel[1])];
       }
     }
-    return (
-      /** @type {Result} */ ({
-        snapped: snapped,
-        vertex: vertex,
-        vertexPixel: vertexPixel
-      })
-    );
+    return {
+      snapped: snapped,
+      vertex: vertex,
+      vertexPixel: vertexPixel
+    };
   }
 
   /**
@@ -479,10 +477,10 @@ class Snap extends PointerInteraction {
     const coordinates = polygon.getCoordinates()[0];
     for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       const segment = coordinates.slice(i, i + 2);
-      const segmentData = /** @type {SegmentData} */ ({
+      const segmentData = {
         feature: feature,
         segment: segment
-      });
+      };
       this.rBush_.insert(boundingExtent(segment), segmentData);
     }
   }
@@ -511,10 +509,10 @@ class Snap extends PointerInteraction {
     const coordinates = geometry.getCoordinates();
     for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       const segment = coordinates.slice(i, i + 2);
-      const segmentData = /** @type {SegmentData} */ ({
+      const segmentData = {
         feature: feature,
         segment: segment
-      });
+      };
       this.rBush_.insert(boundingExtent(segment), segmentData);
     }
   }
@@ -530,10 +528,10 @@ class Snap extends PointerInteraction {
       const coordinates = lines[j];
       for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
         const segment = coordinates.slice(i, i + 2);
-        const segmentData = /** @type {SegmentData} */ ({
+        const segmentData = {
           feature: feature,
           segment: segment
-        });
+        };
         this.rBush_.insert(boundingExtent(segment), segmentData);
       }
     }
@@ -548,10 +546,10 @@ class Snap extends PointerInteraction {
     const points = geometry.getCoordinates();
     for (let i = 0, ii = points.length; i < ii; ++i) {
       const coordinates = points[i];
-      const segmentData = /** @type {SegmentData} */ ({
+      const segmentData = {
         feature: feature,
         segment: [coordinates, coordinates]
-      });
+      };
       this.rBush_.insert(geometry.getExtent(), segmentData);
     }
   }
@@ -569,10 +567,10 @@ class Snap extends PointerInteraction {
         const coordinates = rings[j];
         for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
           const segment = coordinates.slice(i, i + 2);
-          const segmentData = /** @type {SegmentData} */ ({
+          const segmentData = {
             feature: feature,
             segment: segment
-          });
+          };
           this.rBush_.insert(boundingExtent(segment), segmentData);
         }
       }
@@ -586,10 +584,10 @@ class Snap extends PointerInteraction {
    */
   writePointGeometry_(feature, geometry) {
     const coordinates = geometry.getCoordinates();
-    const segmentData = /** @type {SegmentData} */ ({
+    const segmentData = {
       feature: feature,
       segment: [coordinates, coordinates]
-    });
+    };
     this.rBush_.insert(geometry.getExtent(), segmentData);
   }
 
@@ -604,10 +602,10 @@ class Snap extends PointerInteraction {
       const coordinates = rings[j];
       for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
         const segment = coordinates.slice(i, i + 2);
-        const segmentData = /** @type {SegmentData} */ ({
+        const segmentData = {
           feature: feature,
           segment: segment
-        });
+        };
         this.rBush_.insert(boundingExtent(segment), segmentData);
       }
     }

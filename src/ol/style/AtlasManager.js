@@ -152,14 +152,12 @@ class AtlasManager {
    *    entry, or `null` if the entry is not part of the atlases.
    */
   mergeInfos_(info, hitInfo) {
-    return (
-      /** @type {AtlasManagerInfo} */ ({
-        offsetX: info.offsetX,
-        offsetY: info.offsetY,
-        image: info.image,
-        hitImage: hitInfo.image
-      })
-    );
+    return {
+      offsetX: info.offsetX,
+      offsetY: info.offsetY,
+      image: info.image,
+      hitImage: hitInfo.image
+    };
   }
 
   /**

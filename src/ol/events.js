@@ -163,13 +163,13 @@ export function listen(target, type, listener, opt_this, opt_once) {
       listenerObj.callOnce = false;
     }
   } else {
-    listenerObj = /** @type {EventsKey} */ ({
+    listenerObj = {
       bindTo: opt_this,
       callOnce: !!opt_once,
       listener: listener,
       target: target,
       type: type
-    });
+    };
     /** @type {import("./events/Target.js").default} */ (target).
       addEventListener(type, bindListener(listenerObj));
     listeners.push(listenerObj);
