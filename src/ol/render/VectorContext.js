@@ -13,7 +13,7 @@ class VectorContext {
    * Render a geometry with a custom renderer.
    *
    * @param {import("../geom/SimpleGeometry.js").default} geometry Geometry.
-   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    * @param {Function} renderer Renderer.
    */
   drawCustom(geometry, feature, renderer) {}
@@ -52,43 +52,43 @@ class VectorContext {
 
   /**
    * @param {import("../geom/LineString.js").default|import("./Feature.js").default} lineStringGeometry Line string geometry.
-   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   drawLineString(lineStringGeometry, feature) {}
 
   /**
    * @param {import("../geom/MultiLineString.js").default|import("./Feature.js").default} multiLineStringGeometry MultiLineString geometry.
-   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   drawMultiLineString(multiLineStringGeometry, feature) {}
 
   /**
    * @param {import("../geom/MultiPoint.js").default|import("./Feature.js").default} multiPointGeometry MultiPoint geometry.
-   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   drawMultiPoint(multiPointGeometry, feature) {}
 
   /**
    * @param {import("../geom/MultiPolygon.js").default} multiPolygonGeometry MultiPolygon geometry.
-   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   drawMultiPolygon(multiPolygonGeometry, feature) {}
 
   /**
    * @param {import("../geom/Point.js").default|import("./Feature.js").default} pointGeometry Point geometry.
-   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   drawPoint(pointGeometry, feature) {}
 
   /**
    * @param {import("../geom/Polygon.js").default|import("./Feature.js").default} polygonGeometry Polygon geometry.
-   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   drawPolygon(polygonGeometry, feature) {}
 
   /**
    * @param {import("../geom/Geometry.js").default|import("./Feature.js").default} geometry Geometry.
-   * @param {import("../Feature.js").default|import("./Feature.js").default} feature Feature.
+   * @param {import("../Feature.js").FeatureLike} feature Feature.
    */
   drawText(geometry, feature) {}
 

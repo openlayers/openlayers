@@ -153,7 +153,7 @@ class ExecutorGroup {
    * @param {number} rotation Rotation.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {Object<string, boolean>} skippedFeaturesHash Ids of features to skip.
-   * @param {function((import("../../Feature.js").default|import("../Feature.js").default)): T} callback Feature callback.
+   * @param {function(import("../../Feature.js").FeatureLike): T} callback Feature callback.
    * @param {Object<string, import("../canvas.js").DeclutterGroup>} declutterReplays Declutter replays.
    * @return {T|undefined} Callback result.
    * @template T
@@ -205,7 +205,7 @@ class ExecutorGroup {
     let builderType;
 
     /**
-     * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
+     * @param {import("../../Feature.js").FeatureLike} feature Feature.
      * @return {?} Callback result.
      */
     function featureCallback(feature) {

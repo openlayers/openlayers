@@ -247,7 +247,7 @@ class CanvasBuilder extends VectorContext {
   /**
    * @protected
    * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
-   * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   beginGeometry(geometry, feature) {
     this.beginGeometryInstruction1_ = [CanvasInstruction.BEGIN_GEOMETRY, feature, 0];
@@ -429,7 +429,7 @@ class CanvasBuilder extends VectorContext {
 
   /**
    * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
-   * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   endGeometry(geometry, feature) {
     this.beginGeometryInstruction1_[2] = this.instructions.length;
