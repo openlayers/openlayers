@@ -24,12 +24,11 @@ class VectorImageTile extends Tile {
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {TileState} state State.
-   * @param {number} sourceRevision Source revision.
    * @param {import("./tilecoord.js").TileCoord} urlTileCoord Wrapped tile coordinate for source urls.
    * @param {import("./tilegrid/TileGrid.js").default} sourceTileGrid Tile grid of the source.
    * @param {Object<string, import("./VectorTile.js").default>} sourceTiles Source tiles.
    */
-  constructor(tileCoord, state, sourceRevision, urlTileCoord, sourceTileGrid, sourceTiles) {
+  constructor(tileCoord, state, urlTileCoord, sourceTileGrid, sourceTiles) {
 
     super(tileCoord, state, {transition: 0});
 
@@ -99,8 +98,6 @@ class VectorImageTile extends Tile {
      * @type {Array<import("./events.js").EventsKey>}
      */
     this.sourceTileListenerKeys_ = [];
-
-    this.key = sourceRevision.toString();
   }
 
   /**
@@ -186,9 +183,10 @@ class VectorImageTile extends Tile {
           for (let i = 0, ii = tileKeys.length; i < ii; ++i) {
             this.sourceTiles_[tileKeys[i]].consumers++;
           }
-          const tile = new VectorImageTile(this.tileCoord, TileState.IDLE, Number(this.key),
+          const tile = new VectorImageTile(this.tileCoord, TileState.IDLE,
             this.wrappedTileCoord, null, this.sourceTiles_);
           tile.extent = this.extent;
+          tile.key = this.key;
           tile.tileKeys = tileKeys;
           tile.context_ = this.context_;
           setTimeout(function() {

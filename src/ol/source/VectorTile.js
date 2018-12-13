@@ -213,11 +213,11 @@ class VectorTile extends UrlTile {
       const tile = new VectorImageTile(
         tileCoord,
         urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
-        this.getRevision(),
         urlTileCoord,
         this.tileGrid,
         this.sourceTiles_);
 
+      tile.key = this.getRevision().toString();
       this.assignTiles(tile, pixelRatio, projection);
       this.tileCache.set(tileCoordKey, tile);
       return tile;

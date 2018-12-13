@@ -244,7 +244,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       sourceTile.getImage = function() {
         return document.createElement('canvas');
       };
-      const tile = new VectorImageTile([0, 0, 0], undefined, 1, [0, 0, 0], createXYZ(), {'0,0,0': sourceTile});
+      const tile = new VectorImageTile([0, 0, 0], 1, [0, 0, 0], createXYZ(), {'0,0,0': sourceTile});
       tile.transition_ = 0;
       tile.tileKeys = ['0,0,0'];
       tile.extent = getProjection('EPSG:3857').getExtent();
