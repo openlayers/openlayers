@@ -2,6 +2,11 @@
 
 ### Next version
 
+##### Removal of the AtlasManager
+
+Following the removal of the experimental WebGL renderer, the AtlasManager has been removed as well. The atlas was only used by this renderer.
+The non API `getChecksum` functions of the style is also removed.
+
 #### Backwards incompatible changes
 
 ##### New internal tile coordinates
