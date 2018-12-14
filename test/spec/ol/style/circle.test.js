@@ -1,4 +1,3 @@
-import AtlasManager from '../../../../src/ol/style/AtlasManager.js';
 import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
@@ -8,7 +7,7 @@ describe('ol.style.Circle', function() {
 
   describe('#constructor', function() {
 
-    it('creates a canvas if no atlas is used (no fill-style)', function() {
+    it('creates a canvas (no fill-style)', function() {
       const style = new CircleStyle({radius: 10});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
       expect(style.getSize()).to.eql([21, 21]);
@@ -21,7 +20,7 @@ describe('ol.style.Circle', function() {
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
     });
 
-    it('creates a canvas if no atlas is used (fill-style)', function() {
+    it('creates a canvas (fill-style)', function() {
       const style = new CircleStyle({
         radius: 10,
         fill: new Fill({
@@ -39,39 +38,6 @@ describe('ol.style.Circle', function() {
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
     });
 
-    it('adds itself to an atlas manager (no fill-style)', function() {
-      const atlasManager = new AtlasManager({initialSize: 512});
-      const style = new CircleStyle({radius: 10, atlasManager: atlasManager});
-      expect(style.getImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getSize()).to.eql([21, 21]);
-      expect(style.getImageSize()).to.eql([512, 512]);
-      expect(style.getOrigin()).to.eql([1, 1]);
-      expect(style.getAnchor()).to.eql([10.5, 10.5]);
-      // hit-detection image is created, because no fill style is set
-      expect(style.getImage()).to.not.be(style.getHitDetectionImage());
-      expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getHitDetectionImageSize()).to.eql([512, 512]);
-    });
-
-    it('adds itself to an atlas manager (fill-style)', function() {
-      const atlasManager = new AtlasManager({initialSize: 512});
-      const style = new CircleStyle({
-        radius: 10,
-        atlasManager: atlasManager,
-        fill: new Fill({
-          color: '#FFFF00'
-        })
-      });
-      expect(style.getImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getSize()).to.eql([21, 21]);
-      expect(style.getImageSize()).to.eql([512, 512]);
-      expect(style.getOrigin()).to.eql([1, 1]);
-      expect(style.getAnchor()).to.eql([10.5, 10.5]);
-      // no hit-detection image is created, because fill style is set
-      expect(style.getImage()).to.be(style.getHitDetectionImage());
-      expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
-      expect(style.getHitDetectionImageSize()).to.eql([512, 512]);
-    });
   });
 
   describe('#clone', function() {

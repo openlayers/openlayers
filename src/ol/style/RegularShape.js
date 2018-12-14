@@ -23,9 +23,6 @@ import ImageStyle from './Image.js';
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
- * @property {import("./AtlasManager.js").default} [atlasManager] The atlas manager to use for this symbol. When
- * using WebGL it is recommended to use an atlas manager to avoid texture switching. If an atlas manager is given, the
- * symbol is added to an atlas. By default no atlas manager is used.
  */
 
 
@@ -152,18 +149,12 @@ class RegularShape extends ImageStyle {
      */
     this.hitDetectionImageSize_ = null;
 
-    /**
-     * @protected
-     * @type {import("./AtlasManager.js").default|undefined}
-     */
-    this.atlasManager_ = options.atlasManager;
-
-    this.render_(this.atlasManager_);
+    this.render_();
 
   }
 
   /**
-   * Clones the style. If an atlasmanager was provided to the original style it will be used in the cloned style, too.
+   * Clones the style.
    * @return {RegularShape} The cloned style.
    * @api
    */
@@ -176,8 +167,7 @@ class RegularShape extends ImageStyle {
       angle: this.getAngle(),
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       rotation: this.getRotation(),
-      rotateWithView: this.getRotateWithView(),
-      atlasManager: this.atlasManager_
+      rotateWithView: this.getRotateWithView()
     });
     style.setOpacity(this.getOpacity());
     style.setScale(this.getScale());
@@ -317,10 +307,8 @@ class RegularShape extends ImageStyle {
 
   /**
    * @protected
-   * @param {import("./AtlasManager.js").default|undefined} atlasManager An atlas manager.
    */
-  render_(atlasManager) {
-    let imageSize;
+  render_() {
     let lineCap = '';
     let lineJoin = '';
     let miterLimit = 0;
@@ -369,48 +357,16 @@ class RegularShape extends ImageStyle {
       miterLimit: miterLimit
     };
 
-    if (atlasManager === undefined) {
-      // no atlas manager is used, create a new canvas
-      const context = createCanvasContext2D(size, size);
-      this.canvas_ = context.canvas;
+    const context = createCanvasContext2D(size, size);
+    this.canvas_ = context.canvas;
 
-      // canvas.width and height are rounded to the closest integer
-      size = this.canvas_.width;
-      imageSize = size;
+    // canvas.width and height are rounded to the closest integer
+    size = this.canvas_.width;
+    const imageSize = size;
 
-      this.draw_(renderOptions, context, 0, 0);
+    this.draw_(renderOptions, context, 0, 0);
 
-      this.createHitDetectionCanvas_(renderOptions);
-    } else {
-      // an atlas manager is used, add the symbol to an atlas
-      size = Math.round(size);
-
-      const hasCustomHitDetectionImage = !this.fill_;
-      let renderHitDetectionCallback;
-      if (hasCustomHitDetectionImage) {
-        // render the hit-detection image into a separate atlas image
-        renderHitDetectionCallback =
-            this.drawHitDetectionCanvas_.bind(this, renderOptions);
-      }
-
-      const id = this.getChecksum();
-      const info = atlasManager.add(
-        id, size, size, this.draw_.bind(this, renderOptions),
-        renderHitDetectionCallback);
-
-      this.canvas_ = info.image;
-      this.origin_ = [info.offsetX, info.offsetY];
-      imageSize = info.image.width;
-
-      if (hasCustomHitDetectionImage) {
-        this.hitDetectionCanvas_ = info.hitImage;
-        this.hitDetectionImageSize_ =
-            [info.hitImage.width, info.hitImage.height];
-      } else {
-        this.hitDetectionCanvas_ = this.canvas_;
-        this.hitDetectionImageSize_ = [imageSize, imageSize];
-      }
-    }
+    this.createHitDetectionCanvas_(renderOptions);
 
     this.anchor_ = [size / 2, size / 2];
     this.size_ = [size, size];
