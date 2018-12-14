@@ -66,12 +66,6 @@ class RegularShape extends ImageStyle {
 
     /**
      * @private
-     * @type {Array<string|number>}
-     */
-    this.checksums_ = null;
-
-    /**
-     * @private
      * @type {HTMLCanvasElement}
      */
     this.canvas_ = null;
@@ -502,35 +496,6 @@ class RegularShape extends ImageStyle {
     context.closePath();
   }
 
-  /**
-   * @return {string} The checksum.
-   */
-  getChecksum() {
-    const strokeChecksum = this.stroke_ ?
-      this.stroke_.getChecksum() : '-';
-    const fillChecksum = this.fill_ ?
-      this.fill_.getChecksum() : '-';
-
-    const recalculate = !this.checksums_ ||
-        (strokeChecksum != this.checksums_[1] ||
-        fillChecksum != this.checksums_[2] ||
-        this.radius_ != this.checksums_[3] ||
-        this.radius2_ != this.checksums_[4] ||
-        this.angle_ != this.checksums_[5] ||
-        this.points_ != this.checksums_[6]);
-
-    if (recalculate) {
-      const checksum = 'r' + strokeChecksum + fillChecksum +
-          (this.radius_ !== undefined ? this.radius_.toString() : '-') +
-          (this.radius2_ !== undefined ? this.radius2_.toString() : '-') +
-          (this.angle_ !== undefined ? this.angle_.toString() : '-') +
-          (this.points_ !== undefined ? this.points_.toString() : '-');
-      this.checksums_ = [checksum, strokeChecksum, fillChecksum,
-        this.radius_, this.radius2_, this.angle_, this.points_];
-    }
-
-    return /** @type {string} */ (this.checksums_[0]);
-  }
 }
 
 

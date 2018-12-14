@@ -29,12 +29,6 @@ class Fill {
      * @type {import("../color.js").Color|import("../colorlike.js").ColorLike}
      */
     this.color_ = options.color !== undefined ? options.color : null;
-
-    /**
-     * @private
-     * @type {string|undefined}
-     */
-    this.checksum_ = undefined;
   }
 
   /**
@@ -66,28 +60,8 @@ class Fill {
    */
   setColor(color) {
     this.color_ = color;
-    this.checksum_ = undefined;
   }
 
-  /**
-   * @return {string} The checksum.
-   */
-  getChecksum() {
-    if (this.checksum_ === undefined) {
-      const color = this.color_;
-      if (color) {
-        if (Array.isArray(color) || typeof color == 'string') {
-          this.checksum_ = 'f' + asString(/** @type {import("../color.js").Color|string} */ (color));
-        } else {
-          this.checksum_ = getUid(this.color_);
-        }
-      } else {
-        this.checksum_ = 'f-';
-      }
-    }
-
-    return this.checksum_;
-  }
 }
 
 export default Fill;

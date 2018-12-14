@@ -76,12 +76,6 @@ class Stroke {
      * @type {number|undefined}
      */
     this.width_ = options.width;
-
-    /**
-     * @private
-     * @type {string|undefined}
-     */
-    this.checksum_ = undefined;
   }
 
   /**
@@ -173,7 +167,6 @@ class Stroke {
    */
   setColor(color) {
     this.color_ = color;
-    this.checksum_ = undefined;
   }
 
   /**
@@ -184,7 +177,6 @@ class Stroke {
    */
   setLineCap(lineCap) {
     this.lineCap_ = lineCap;
-    this.checksum_ = undefined;
   }
 
   /**
@@ -201,7 +193,6 @@ class Stroke {
    */
   setLineDash(lineDash) {
     this.lineDash_ = lineDash;
-    this.checksum_ = undefined;
   }
 
   /**
@@ -212,7 +203,6 @@ class Stroke {
    */
   setLineDashOffset(lineDashOffset) {
     this.lineDashOffset_ = lineDashOffset;
-    this.checksum_ = undefined;
   }
 
   /**
@@ -223,7 +213,6 @@ class Stroke {
    */
   setLineJoin(lineJoin) {
     this.lineJoin_ = lineJoin;
-    this.checksum_ = undefined;
   }
 
   /**
@@ -234,7 +223,6 @@ class Stroke {
    */
   setMiterLimit(miterLimit) {
     this.miterLimit_ = miterLimit;
-    this.checksum_ = undefined;
   }
 
   /**
@@ -245,41 +233,8 @@ class Stroke {
    */
   setWidth(width) {
     this.width_ = width;
-    this.checksum_ = undefined;
   }
 
-  /**
-   * @return {string} The checksum.
-   */
-  getChecksum() {
-    if (this.checksum_ === undefined) {
-      this.checksum_ = 's';
-      if (this.color_) {
-        if (typeof this.color_ === 'string') {
-          this.checksum_ += this.color_;
-        } else {
-          this.checksum_ += getUid(this.color_);
-        }
-      } else {
-        this.checksum_ += '-';
-      }
-      this.checksum_ += ',' +
-          (this.lineCap_ !== undefined ?
-            this.lineCap_.toString() : '-') + ',' +
-          (this.lineDash_ ?
-            this.lineDash_.toString() : '-') + ',' +
-          (this.lineDashOffset_ !== undefined ?
-            this.lineDashOffset_ : '-') + ',' +
-          (this.lineJoin_ !== undefined ?
-            this.lineJoin_ : '-') + ',' +
-          (this.miterLimit_ !== undefined ?
-            this.miterLimit_.toString() : '-') + ',' +
-          (this.width_ !== undefined ?
-            this.width_.toString() : '-');
-    }
-
-    return this.checksum_;
-  }
 }
 
 export default Stroke;
