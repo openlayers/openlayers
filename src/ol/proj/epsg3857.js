@@ -106,7 +106,7 @@ export function fromEPSG4326(input, opt_output, opt_dimension) {
   for (let i = 0; i < length; i += dimension) {
     output[i] = halfSize * input[i] / 180;
     let y = RADIUS *
-        Math.log(Math.tan(Math.PI * (input[i + 1] + 90) / 360));
+        Math.log(Math.tan(Math.PI * (+input[i + 1] + 90) / 360));
     if (y > halfSize) {
       y = halfSize;
     } else if (y < -halfSize) {
