@@ -1,5 +1,5 @@
 /**
- * @module ol/render/BuilderType
+ * @module ol/render/canvas/BuilderType
  */
 
 /**
