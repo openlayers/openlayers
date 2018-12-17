@@ -1016,10 +1016,10 @@ class Modify extends PointerInteraction {
     if (this.lastPointerEvent_ && this.lastPointerEvent_.type != MapBrowserEventType.POINTERDRAG) {
       const evt = this.lastPointerEvent_;
       this.willModifyFeatures_(evt);
-      this.removeVertex_();
+      const removed = this.removeVertex_();
       this.dispatchEvent(new ModifyEvent(ModifyEventType.MODIFYEND, this.features_, evt));
       this.modified_ = false;
-      return true;
+      return removed;
     }
     return false;
   }
