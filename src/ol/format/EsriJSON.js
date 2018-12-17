@@ -4,7 +4,7 @@
 import Feature from '../Feature.js';
 import {assert} from '../asserts.js';
 import {containsExtent} from '../extent.js';
-import {transformWithOptions} from './Feature.js';
+import {transformGeometryWithOptions} from './Feature.js';
 import JSONFeature from './JSONFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -263,9 +263,7 @@ function readGeometry(object, opt_options) {
     }
   }
   const geometryReader = GEOMETRY_READERS[type];
-  return (
-    /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometryReader(object), false, opt_options))
-  );
+  return transformGeometryWithOptions(geometryReader(object), false, opt_options);
 }
 
 
@@ -563,8 +561,7 @@ function writeMultiPolygonGeometry(geometry, opt_options) {
  */
 function writeGeometry(geometry, opt_options) {
   const geometryWriter = GEOMETRY_WRITERS[geometry.getType()];
-  return geometryWriter(/** @type {import("../geom/Geometry.js").default} */(
-    transformWithOptions(geometry, true, opt_options)), opt_options);
+  return geometryWriter(transformGeometryWithOptions(geometry, true, opt_options), opt_options);
 }
 
 

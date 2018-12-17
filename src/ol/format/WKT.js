@@ -2,7 +2,7 @@
  * @module ol/format/WKT
  */
 import Feature from '../Feature.js';
-import {transformWithOptions} from './Feature.js';
+import {transformGeometryWithOptions} from './Feature.js';
 import TextFeature from './TextFeature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -682,9 +682,7 @@ class WKT extends TextFeature {
   readGeometryFromText(text, opt_options) {
     const geometry = this.parse_(text);
     if (geometry) {
-      return (
-        /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, false, opt_options))
-      );
+      return transformGeometryWithOptions(geometry, false, opt_options);
     } else {
       return null;
     }
@@ -721,7 +719,7 @@ class WKT extends TextFeature {
    */
   writeGeometryText(geometry, opt_options) {
     return encode(/** @type {import("../geom/Geometry.js").default} */ (
-      transformWithOptions(geometry, true, opt_options)));
+      transformGeometryWithOptions(geometry, true, opt_options)));
   }
 }
 

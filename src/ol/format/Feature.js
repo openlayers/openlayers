@@ -214,39 +214,24 @@ class FeatureFormat {
 export default FeatureFormat;
 
 /**
- * @param {import("../geom/Geometry.js").default|import("../extent.js").Extent} geometry Geometry.
+ * @param {import("../geom/Geometry.js").default} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
  * @param {(WriteOptions|ReadOptions)=} opt_options Options.
- * @return {import("../geom/Geometry.js").default|import("../extent.js").Extent} Transformed geometry.
+ * @return {import("../geom/Geometry.js").default} Transformed geometry.
  */
-export function transformWithOptions(geometry, write, opt_options) {
-  const featureProjection = opt_options ?
-    getProjection(opt_options.featureProjection) : null;
-  const dataProjection = opt_options ?
-    getProjection(opt_options.dataProjection) : null;
-  /**
-   * @type {import("../geom/Geometry.js").default|import("../extent.js").Extent}
-   */
+export function transformGeometryWithOptions(geometry, write, opt_options) {
+  const featureProjection = opt_options ? getProjection(opt_options.featureProjection) : null;
+  const dataProjection = opt_options ? getProjection(opt_options.dataProjection) : null;
+
   let transformed;
-  if (featureProjection && dataProjection &&
-      !equivalentProjection(featureProjection, dataProjection)) {
-    if (Array.isArray(geometry)) {
-      // FIXME this is necessary because GML treats extents
-      // as geometries
-      transformed = transformExtent(
-        geometry,
-        dataProjection,
-        featureProjection);
-    } else {
-      transformed = (write ? /** @type {import("../geom/Geometry").default} */ (geometry).clone() : geometry).transform(
-        write ? featureProjection : dataProjection,
-        write ? dataProjection : featureProjection);
-    }
+  if (featureProjection && dataProjection && !equivalentProjection(featureProjection, dataProjection)) {
+    transformed = (write ? geometry.clone() : geometry).transform(
+      write ? featureProjection : dataProjection,
+      write ? dataProjection : featureProjection);
   } else {
     transformed = geometry;
   }
-  if (write && opt_options && /** @type {WriteOptions} */ (opt_options).decimals !== undefined &&
-    !Array.isArray(transformed)) {
+  if (write && opt_options && /** @type {WriteOptions} */ (opt_options).decimals !== undefined) {
     const power = Math.pow(10, /** @type {WriteOptions} */ (opt_options).decimals);
     // if decimals option on write, round each coordinate appropriately
     /**
@@ -260,9 +245,26 @@ export function transformWithOptions(geometry, write, opt_options) {
       return coordinates;
     };
     if (transformed === geometry) {
-      transformed = /** @type {import("../geom/Geometry").default} */ (geometry).clone();
+      transformed = geometry.clone();
     }
     transformed.applyTransform(transform);
   }
   return transformed;
+}
+
+
+/**
+ * @param {import("../extent.js").Extent} extent Extent.
+ * @param {ReadOptions=} opt_options Read options.
+ * @return {import("../extent.js").Extent} Transformed extent.
+ */
+export function transformExtentWithOptions(extent, opt_options) {
+  const featureProjection = opt_options ? getProjection(opt_options.featureProjection) : null;
+  const dataProjection = opt_options ? getProjection(opt_options.dataProjection) : null;
+
+  if (featureProjection && dataProjection && !equivalentProjection(featureProjection, dataProjection)) {
+    return transformExtent(extent, dataProjection, featureProjection);
+  } else {
+    return extent;
+  }
 }

@@ -6,7 +6,7 @@
 // envelopes/extents, only geometries!
 import {extend} from '../array.js';
 import Feature from '../Feature.js';
-import {transformWithOptions} from './Feature.js';
+import {transformGeometryWithOptions, transformExtentWithOptions} from './Feature.js';
 import XMLFeature from './XMLFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
@@ -216,18 +216,19 @@ class GMLBase extends XMLFeature {
   /**
    * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
-   * @return {import("../geom/Geometry.js").default|undefined} Geometry.
+   * @return {import("../geom/Geometry.js").default|import("../extent.js").Extent|undefined} Geometry.
    */
   readGeometryElement(node, objectStack) {
     const context = /** @type {Object} */ (objectStack[0]);
     context['srsName'] = node.firstElementChild.getAttribute('srsName');
     context['srsDimension'] = node.firstElementChild.getAttribute('srsDimension');
-    /** @type {import("../geom/Geometry.js").default} */
     const geometry = pushParseAndPop(null, this.GEOMETRY_PARSERS, node, objectStack, this);
     if (geometry) {
-      return (
-        /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, false, context))
-      );
+      if (Array.isArray(geometry)) {
+        return transformExtentWithOptions(/** @type {import("../extent.js").Extent} */ (geometry), context);
+      } else {
+        return transformGeometryWithOptions(/** @type {import("../geom/Geometry.js").default} */ (geometry), false, context);
+      }
     } else {
       return undefined;
     }

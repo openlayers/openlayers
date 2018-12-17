@@ -2,7 +2,7 @@
  * @module ol/format/TopoJSON
  */
 import Feature from '../Feature.js';
-import {transformWithOptions} from './Feature.js';
+import {transformGeometryWithOptions} from './Feature.js';
 import JSONFeature from './JSONFeature.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -338,8 +338,7 @@ function readFeatureFromGeometry(object, arcs, scale, translate, property, name,
     geometry = geometryReader(object, arcs);
   }
   const feature = new Feature();
-  feature.setGeometry(/** @type {import("../geom/Geometry.js").default} */ (
-    transformWithOptions(geometry, false, opt_options)));
+  feature.setGeometry(transformGeometryWithOptions(geometry, false, opt_options));
   if (object.id !== undefined) {
     feature.setId(object.id);
   }

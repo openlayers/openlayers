@@ -5,7 +5,7 @@ import Feature from '../Feature.js';
 import {extend, includes} from '../array.js';
 import {assert} from '../asserts.js';
 import {asArray} from '../color.js';
-import {transformWithOptions} from './Feature.js';
+import {transformGeometryWithOptions} from './Feature.js';
 import XMLFeature from './XMLFeature.js';
 import {readDecimal, readBoolean, readString, writeStringTextNode, writeCDATASection, writeDecimalTextNode, writeBooleanTextNode} from './xsd.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
@@ -500,7 +500,7 @@ class KML extends XMLFeature {
 
     const geometry = object['geometry'];
     if (geometry) {
-      transformWithOptions(geometry, false, options);
+      transformGeometryWithOptions(geometry, false, options);
     }
     feature.setGeometry(geometry);
     delete object['geometry'];
@@ -2717,7 +2717,7 @@ function writePlacemark(node, feature, objectStack) {
   const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
   let geometry = feature.getGeometry();
   if (geometry) {
-    geometry = /** @type {import("../geom/Geometry.js").default} */ (transformWithOptions(geometry, true, options));
+    geometry = transformGeometryWithOptions(geometry, true, options);
   }
   pushSerializeAndPop(context, PLACEMARK_SERIALIZERS,
     GEOMETRY_NODE_FACTORY, [geometry], objectStack);
