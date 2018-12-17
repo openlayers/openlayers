@@ -94,7 +94,6 @@ class MVT extends FeatureFormat {
   /**
    * Read the raw geometry from the pbf offset stored in a raw feature's geometry
    * property.
-   * @suppress {missingProperties}
    * @param {Object} pbf PBF.
    * @param {Object} feature Raw feature.
    * @param {Array<number>} flatCoordinates Array to store flat coordinates in.
@@ -367,7 +366,6 @@ function featurePBFReader(tag, feature, pbf) {
 
 /**
  * Read a raw feature from the pbf offset stored at index `i` in the raw layer.
- * @suppress {missingProperties}
  * @param {Object} pbf PBF.
  * @param {Object} layer Raw layer.
  * @param {number} i Index of the feature in the raw layer's `features` array.
@@ -388,7 +386,6 @@ function readRawFeature(pbf, layer, i) {
 
 
 /**
- * @suppress {missingProperties}
  * @param {number} type The raw feature's geometry type
  * @param {number} numEnds Number of ends of the flat coordinates of the
  * geometry.
