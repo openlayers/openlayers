@@ -185,11 +185,11 @@ export function zoom(view, resolution, opt_anchor, opt_duration, opt_direction) 
         easing: easeOut
       });
     } else {
-      if (opt_anchor) {
-        const center = view.calculateCenterZoom(resolution, opt_anchor);
+      const center = opt_anchor && view.calculateCenterZoom(resolution, opt_anchor);
+      view.setResolution(resolution);
+      if (center) {
         view.setCenter(center);
       }
-      view.setResolution(resolution);
     }
   }
 }

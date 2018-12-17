@@ -32,7 +32,8 @@ describe('ol.interaction.DragZoom', function() {
       view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
-        resolution: 1
+        resolution: 1,
+        maxResolution: 2
       })
     });
     map.once('postrender', function() {

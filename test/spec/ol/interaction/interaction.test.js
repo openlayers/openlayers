@@ -128,12 +128,13 @@ describe('ol.interaction.Interaction', function() {
       expect(view.getCenter()).to.eql([10, 10]);
     });
 
-    it('changes view resolution and center relative to the anchor, while respecting the extent', function() {
+    it('changes view resolution and center relative to the anchor, while respecting the extent (center only)', function() {
       const view = new View({
         center: [0, 0],
         extent: [-2.5, -2.5, 2.5, 2.5],
         resolution: 1,
-        resolutions: [4, 2, 1, 0.5, 0.25]
+        resolutions: [4, 2, 1, 0.5, 0.25],
+        constrainOnlyCenter: true
       });
 
       zoomByDelta(view, 1, [10, 10]);
@@ -147,6 +148,30 @@ describe('ol.interaction.Interaction', function() {
 
       zoomByDelta(view, -2, [0, 0]);
       expect(view.getCenter()).to.eql([2.5, 2.5]);
+    });
+
+    it('changes view resolution and center relative to the anchor, while respecting the extent', function() {
+      const map = new Map({});
+      const view = new View({
+        center: [50, 50],
+        extent: [0, 0, 100, 100],
+        resolution: 1,
+        resolutions: [4, 2, 1, 0.5, 0.25]
+      });
+      map.setView(view);
+
+      zoomByDelta(view, 1, [100, 100]);
+      expect(view.getCenter()).to.eql([75, 75]);
+
+      zoomByDelta(view, -1, [75, 75]);
+      expect(view.getCenter()).to.eql([50, 50]);
+
+      zoomByDelta(view, 2, [100, 100]);
+      expect(view.getCenter()).to.eql([87.5, 87.5]);
+
+      zoomByDelta(view, -3, [0, 0]);
+      expect(view.getCenter()).to.eql([50, 50]);
+      expect(view.getResolution()).to.eql(1);
     });
   });
 
