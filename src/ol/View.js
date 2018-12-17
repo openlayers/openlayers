@@ -196,17 +196,14 @@ const DEFAULT_MIN_ZOOM = 0;
  * ### The constraints
  *
  * `setCenter`, `setResolution` and `setRotation` can be used to change the
- * states of the view. Any value can be passed to the setters. And the value
- * that is passed to a setter will effectively be the value set in the view,
- * and returned by the corresponding getter.
+ * states of the view. The constraints currently active on the view will
+ * be applied to the given values. Please note that some constraints will
+ * behave differently depending on the `ViewHints.ANIMATING` and `INTERACTING`
+ * hints (for example: the resolution constraint will not snap to fixed values
+ * while interacting).
  *
- * But a View object also has a *resolution constraint*, a
- * *rotation constraint* and a *center constraint*.
- *
- * As said above, no constraints are applied when the setters are used to set
- * new states for the view. Applying constraints is done explicitly through
- * the use of the `constrain*` functions (`constrainResolution` and
- * `constrainRotation` and `constrainCenter`).
+ * A View object can have a *resolution constraint*, a *rotation constraint*
+ * and an *extent constraint*.
  *
  * The main users of the constraints are the interactions and the
  * controls. For example, double-clicking on the map changes the view to
@@ -224,10 +221,18 @@ const DEFAULT_MIN_ZOOM = 0;
  * By default the rotation value is snapped to zero when approaching the
  * horizontal.
  *
- * The *center constraint* is determined by the `extent` option. By
- * default the center is not constrained at all.
+ * The *extent constraint* is determined by the `extent` option. By
+ * default the view extent is not constrained at all. When an extent
+ * constraint is given, both the center of the view and its resolution
+ * will be limited to make sure the user will not be able to see content
+ * outside of the given extent.
+ * The `constrainOnlyCenter` option will only apply the extent constraint
+ * on the view center and not limit the view resolution (disabled by default).
  *
-  * @api
+ * Applying constraints can also be done explicitly through
+ * the use of the `constrain*` functions (`constrainResolution`,
+ * `constrainRotation` and `constrainCenter`).
+ * @api
  */
 class View extends BaseObject {
 
@@ -599,7 +604,7 @@ class View extends BaseObject {
         }
 
         // a series has completed: if it was the last, resolve all constraints
-        setTimeout(function () {
+        setTimeout(function() {
           if (!this.getAnimating()) {
             this.resolveConstraints();
           }
@@ -1028,9 +1033,6 @@ class View extends BaseObject {
     }
 
     const padding = options.padding !== undefined ? options.padding : [0, 0, 0, 0];
-    const constrainResolution = options.constrainResolution !== undefined ?
-      options.constrainResolution : true;
-    const nearest = options.nearest !== undefined ? options.nearest : false;
     let minResolution;
     if (options.minResolution !== undefined) {
       minResolution = options.minResolution;
@@ -1130,7 +1132,7 @@ class View extends BaseObject {
    * @param {import("./coordinate.js").Coordinate=} opt_anchor The rotation center.
    * @api
    */
-  rotate(rotation, opt_anchor,) {
+  rotate(rotation, opt_anchor) {
     if (opt_anchor !== undefined) {
       const center = this.calculateCenterRotate(rotation, opt_anchor);
       this.setCenter(center);
@@ -1184,8 +1186,8 @@ class View extends BaseObject {
   }
 
   /**
-   * Apply constraints on current rotation/resolution/center
-   * @observable
+   * Apply constraints on current rotation/resolution/center.
+   * @param {boolean=} opt_doNotCancelAnims If true, running animations will not be cancelled.
    * @api
    */
   applyConstraints(opt_doNotCancelAnims) {

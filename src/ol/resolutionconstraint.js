@@ -2,15 +2,13 @@
  * @module ol/resolutionconstraint
  */
 import {linearFindNearest} from './array.js';
-import {createEmpty, getHeight, getWidth} from './extent';
+import {getHeight, getWidth} from './extent';
 
 
 /**
  * @typedef {function((number|undefined), (import("./size.js").Size), boolean):
  *  (number|undefined)} Type
  */
-
-const tmpExtent = createEmpty();
 
 /**
  * @param {Array<number>} resolutions Resolutions.
