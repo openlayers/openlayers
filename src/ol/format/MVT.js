@@ -94,7 +94,7 @@ class MVT extends FeatureFormat {
   /**
    * Read the raw geometry from the pbf offset stored in a raw feature's geometry
    * property.
-   * @param {Object} pbf PBF.
+   * @param {PBF} pbf PBF.
    * @param {Object} feature Raw feature.
    * @param {Array<number>} flatCoordinates Array to store flat coordinates in.
    * @param {Array<number>} ends Array to store ends in.
@@ -157,7 +157,7 @@ class MVT extends FeatureFormat {
 
   /**
    * @private
-   * @param {Object} pbf PBF
+   * @param {PBF} pbf PBF
    * @param {Object} rawFeature Raw Mapbox feature.
    * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @return {import("../Feature.js").FeatureLike} Feature.
@@ -288,7 +288,7 @@ class MVT extends FeatureFormat {
  * Reader callback for parsing layers.
  * @param {number} tag The tag.
  * @param {Object} layers The layers object.
- * @param {Object} pbf The PBF.
+ * @param {PBF} pbf The PBF.
  */
 function layersPBFReader(tag, layers, pbf) {
   if (tag === 3) {
@@ -310,7 +310,7 @@ function layersPBFReader(tag, layers, pbf) {
  * Reader callback for parsing layer.
  * @param {number} tag The tag.
  * @param {Object} layer The layer object.
- * @param {Object} pbf The PBF.
+ * @param {PBF} pbf The PBF.
  */
 function layerPBFReader(tag, layer, pbf) {
   if (tag === 15) {
@@ -344,7 +344,7 @@ function layerPBFReader(tag, layer, pbf) {
  * Reader callback for parsing feature.
  * @param {number} tag The tag.
  * @param {Object} feature The feature object.
- * @param {Object} pbf The PBF.
+ * @param {PBF} pbf The PBF.
  */
 function featurePBFReader(tag, feature, pbf) {
   if (tag == 1) {
@@ -366,7 +366,7 @@ function featurePBFReader(tag, feature, pbf) {
 
 /**
  * Read a raw feature from the pbf offset stored at index `i` in the raw layer.
- * @param {Object} pbf PBF.
+ * @param {PBF} pbf PBF.
  * @param {Object} layer Raw layer.
  * @param {number} i Index of the feature in the raw layer's `features` array.
  * @return {Object} Raw feature.
