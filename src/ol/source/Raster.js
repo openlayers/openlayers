@@ -1,7 +1,6 @@
 /**
  * @module ol/source/Raster
  */
-import {getUid} from '../util.js';
 import ImageCanvas from '../ImageCanvas.js';
 import TileQueue from '../TileQueue.js';
 import {createCanvasContext2D} from '../dom.js';
@@ -185,16 +184,6 @@ class RasterSource extends ImageSource {
       return 1;
     }, this.changed.bind(this));
 
-    const layerStatesArray = getLayerStatesArray(this.layers_);
-
-    /**
-     * @type {Object<string, import("../layer/Layer.js").State>}
-     */
-    const layerStates = {};
-    for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-      layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
-    }
-
     /**
      * The most recently requested frame state.
      * @type {import("../PluggableMap.js").FrameState}
@@ -225,8 +214,7 @@ class RasterSource extends ImageSource {
       extent: null,
       focus: null,
       index: 0,
-      layerStates: layerStates,
-      layerStatesArray: layerStatesArray,
+      layerStatesArray: getLayerStatesArray(this.layers_),
       pixelRatio: 1,
       pixelToCoordinateTransform: createTransform(),
       postRenderFunctions: [],

@@ -41,7 +41,6 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {null|import("./extent.js").Extent} extent
  * @property {import("./coordinate.js").Coordinate} focus
  * @property {number} index
- * @property {Object<string, import("./layer/Layer.js").State>} layerStates
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray
  * @property {import("./transform.js").Transform} pixelToCoordinateTransform
  * @property {Array<PostRenderFunction>} postRenderFunctions
@@ -1188,11 +1187,6 @@ class PluggableMap extends BaseObject {
     let frameState = null;
     if (size !== undefined && hasArea(size) && view && view.isDef()) {
       const viewHints = view.getHints(this.frameState_ ? this.frameState_.viewHints : undefined);
-      const layerStatesArray = this.getLayerGroup().getLayerStatesArray();
-      const layerStates = {};
-      for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-        layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
-      }
       viewState = view.getState(this.pixelRatio_);
       frameState = /** @type {FrameState} */ ({
         animate: false,
@@ -1200,8 +1194,7 @@ class PluggableMap extends BaseObject {
         extent: extent,
         focus: this.focus_ ? this.focus_ : viewState.center,
         index: this.frameIndex_++,
-        layerStates: layerStates,
-        layerStatesArray: layerStatesArray,
+        layerStatesArray: this.getLayerGroup().getLayerStatesArray(),
         pixelRatio: this.pixelRatio_,
         pixelToCoordinateTransform: this.pixelToCoordinateTransform_,
         postRenderFunctions: [],

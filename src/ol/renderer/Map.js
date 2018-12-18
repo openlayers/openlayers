@@ -1,6 +1,7 @@
 /**
  * @module ol/renderer/Map
  */
+import {includes} from '../array.js';
 import {abstract, getUid} from '../util.js';
 import Disposable from '../Disposable.js';
 import {listen, unlistenByKey} from '../events.js';
@@ -105,6 +106,11 @@ class MapRenderer extends Disposable {
     let result;
     const viewState = frameState.viewState;
     const viewResolution = viewState.resolution;
+    const managedLayers = frameState.layerStatesArray.map(function(state) {
+      if (state.managed) {
+        return getUid(state.layer);
+      }
+    });
 
     /**
      * @param {import("../Feature.js").FeatureLike} feature Feature.
@@ -112,7 +118,7 @@ class MapRenderer extends Disposable {
      * @return {?} Callback result.
      */
     function forEachFeatureAtCoordinate(feature, layer) {
-      const managed = frameState.layerStates[getUid(layer)].managed;
+      const managed = includes(managedLayers, getUid(layer));
       if (!(getUid(feature) in frameState.skippedFeatureUids && !managed)) {
         return callback.call(thisArg, feature, managed ? layer : null);
       }
@@ -255,8 +261,9 @@ class MapRenderer extends Disposable {
    * @private
    */
   removeUnusedLayerRenderers_(map, frameState) {
+    const layersUids = getLayersUids(frameState.layerStatesArray);
     for (const layerKey in this.layerRenderers_) {
-      if (!frameState || !(layerKey in frameState.layerStates)) {
+      if (!frameState || !(includes(layersUids, layerKey))) {
         this.removeLayerRendererByKey_(layerKey).dispose();
       }
     }
@@ -284,8 +291,9 @@ class MapRenderer extends Disposable {
    * @protected
    */
   scheduleRemoveUnusedLayerRenderers(frameState) {
+    const layersUids = getLayersUids(frameState.layerStatesArray);
     for (const layerKey in this.layerRenderers_) {
-      if (!(layerKey in frameState.layerStates)) {
+      if (!(includes(layersUids, layerKey))) {
         frameState.postRenderFunctions.push(
           /** @type {import("../PluggableMap.js").PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
         );
@@ -304,6 +312,15 @@ function expireIconCache(map, frameState) {
   iconImageCache.expire();
 }
 
+/**
+ * @param {Array<import("../layer/Layer.js").State>} layerStatesArray Layer states array.
+ * @return {Array<string>} Layers uid.
+ */
+function getLayersUids(layerStatesArray) {
+  return layerStatesArray.map(function(state) {
+    return getUid(state.layer);
+  });
+}
 
 /**
  * @param {import("../layer/Layer.js").State} state1 First layer state.

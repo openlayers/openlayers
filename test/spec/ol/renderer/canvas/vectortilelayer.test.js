@@ -1,4 +1,3 @@
-import {getUid} from '../../../../../src/ol/util.js';
 import {clear} from '../../../../../src/ol/obj.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
@@ -329,7 +328,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       const spy = sinon.spy();
       const coordinate = [0, 0];
       const frameState = {
-        layerStates: {},
+        layerStatesArray: [{}],
         skippedFeatureUids: {},
         viewState: {
           projection: getProjection('EPSG:3857'),
@@ -337,7 +336,6 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
           rotation: 0
         }
       };
-      frameState.layerStates[getUid(layer)] = {};
       renderer.renderedTiles = [new TileClass([0, 0, -1], undefined, 1)];
       renderer.forEachFeatureAtCoordinate(
         coordinate, frameState, 0, spy, undefined);
