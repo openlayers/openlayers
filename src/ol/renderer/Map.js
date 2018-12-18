@@ -106,19 +106,14 @@ class MapRenderer extends Disposable {
     let result;
     const viewState = frameState.viewState;
     const viewResolution = viewState.resolution;
-    const managedLayers = frameState.layerStatesArray.map(function(state) {
-      if (state.managed) {
-        return getUid(state.layer);
-      }
-    });
 
     /**
+     * @param {boolean} managed Managed layer.
      * @param {import("../Feature.js").FeatureLike} feature Feature.
      * @param {import("../layer/Layer.js").default} layer Layer.
      * @return {?} Callback result.
      */
-    function forEachFeatureAtCoordinate(feature, layer) {
-      const managed = includes(managedLayers, getUid(layer));
+    function forEachFeatureAtCoordinate(managed, feature, layer) {
       if (!(getUid(feature) in frameState.skippedFeatureUids && !managed)) {
         return callback.call(thisArg, feature, managed ? layer : null);
       }
@@ -147,9 +142,10 @@ class MapRenderer extends Disposable {
         const layerRenderer = this.getLayerRenderer(layer);
         const source = layer.getSource();
         if (layerRenderer && source) {
+          const callback = forEachFeatureAtCoordinate.bind(null, layerState.managed);
           result = layerRenderer.forEachFeatureAtCoordinate(
             source.getWrapX() ? translatedCoordinate : coordinate,
-            frameState, hitTolerance, forEachFeatureAtCoordinate);
+            frameState, hitTolerance, callback);
         }
         if (result) {
           return result;
