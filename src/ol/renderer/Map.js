@@ -257,10 +257,12 @@ class MapRenderer extends Disposable {
    * @private
    */
   removeUnusedLayerRenderers_(map, frameState) {
-    const layersUids = getLayersUids(frameState.layerStatesArray);
-    for (const layerKey in this.layerRenderers_) {
-      if (!frameState || !(includes(layersUids, layerKey))) {
-        this.removeLayerRendererByKey_(layerKey).dispose();
+    if (frameState) {
+      const layersUids = getLayersUids(frameState.layerStatesArray);
+      for (const layerKey in this.layerRenderers_) {
+        if (!includes(layersUids, layerKey)) {
+          this.removeLayerRendererByKey_(layerKey).dispose();
+        }
       }
     }
   }
