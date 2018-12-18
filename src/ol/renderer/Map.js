@@ -291,15 +291,7 @@ class MapRenderer extends Disposable {
    * @protected
    */
   scheduleRemoveUnusedLayerRenderers(frameState) {
-    const layersUids = getLayersUids(frameState.layerStatesArray);
-    for (const layerKey in this.layerRenderers_) {
-      if (!(includes(layersUids, layerKey))) {
-        frameState.postRenderFunctions.push(
-          /** @type {import("../PluggableMap.js").PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
-        );
-        return;
-      }
-    }
+    frameState.postRenderFunctions.push(this.removeUnusedLayerRenderers_.bind(this));
   }
 }
 
