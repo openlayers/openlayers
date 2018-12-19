@@ -54,7 +54,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 
 /**
- * @typedef {function(PluggableMap, ?FrameState): boolean} PostRenderFunction
+ * @typedef {function(PluggableMap, ?FrameState): any} PostRenderFunction
  */
 
 

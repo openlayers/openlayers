@@ -38,10 +38,17 @@ class IconImageCache {
   }
 
   /**
+   * @return {boolean} Can expire cache.
+   */
+  canExpireCache() {
+    return this.cacheSize_ > this.maxCacheSize_;
+  }
+
+  /**
   * FIXME empty description for jsdoc
   */
   expire() {
-    if (this.cacheSize_ > this.maxCacheSize_) {
+    if (this.canExpireCache()) {
       let i = 0;
       for (const key in this.cache_) {
         const iconImage = this.cache_[key];

@@ -280,7 +280,9 @@ class MapRenderer extends Disposable {
    * @protected
    */
   scheduleExpireIconCache(frameState) {
-    frameState.postRenderFunctions.push(/** @type {import("../PluggableMap.js").PostRenderFunction} */ (expireIconCache));
+    if (iconImageCache.canExpireCache()) {
+      frameState.postRenderFunctions.push(expireIconCache);
+    }
   }
 
   /**
