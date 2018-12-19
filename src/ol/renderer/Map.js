@@ -1,7 +1,6 @@
 /**
  * @module ol/renderer/Map
  */
-import {includes} from '../array.js';
 import {abstract, getUid} from '../util.js';
 import Disposable from '../Disposable.js';
 import {listen, unlistenByKey} from '../events.js';
@@ -258,9 +257,9 @@ class MapRenderer extends Disposable {
    */
   removeUnusedLayerRenderers_(map, frameState) {
     if (frameState) {
-      const layersUids = getLayersUids(frameState.layerStatesArray);
+      const layerStatesMap = getLayerStatesMap(frameState.layerStatesArray);
       for (const layerKey in this.layerRenderers_) {
-        if (!includes(layersUids, layerKey)) {
+        if (!(layerKey in layerStatesMap)) {
           this.removeLayerRendererByKey_(layerKey).dispose();
         }
       }
@@ -304,12 +303,13 @@ function expireIconCache(map, frameState) {
 
 /**
  * @param {Array<import("../layer/Layer.js").State>} layerStatesArray Layer states array.
- * @return {Array<string>} Layers uid.
+ * @return {Object<string, import("../layer/Layer.js").State>} States mapped by layer uid.
  */
-function getLayersUids(layerStatesArray) {
-  return layerStatesArray.map(function(state) {
-    return getUid(state.layer);
-  });
+function getLayerStatesMap(layerStatesArray) {
+  return layerStatesArray.reduce(function(acc, state) {
+    acc[getUid(state.layer)] = state;
+    return acc;
+  }, {});
 }
 
 /**
