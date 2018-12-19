@@ -252,14 +252,14 @@ function isFullScreen() {
  * @param {HTMLElement} element Element to request fullscreen
  */
 function requestFullScreen(element) {
-  if (element.requestFullscreen) {
-    element.requestFullscreen();
+  if (element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen();
   } else if (element.msRequestFullscreen) {
     element.msRequestFullscreen();
   } else if (element.mozRequestFullScreen) {
     element.mozRequestFullScreen();
-  } else if (element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen();
+  } else if (element.requestFullscreen) {
+    element.requestFullscreen();
   }
 }
 
