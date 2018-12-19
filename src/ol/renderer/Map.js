@@ -251,22 +251,6 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @param {import("../PluggableMap.js").default} map Map.
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
-   * @private
-   */
-  removeUnusedLayerRenderers_(map, frameState) {
-    if (frameState) {
-      const layerStatesMap = getLayerStatesMap(frameState.layerStatesArray);
-      for (const layerKey in this.layerRenderers_) {
-        if (!(layerKey in layerStatesMap)) {
-          this.removeLayerRendererByKey_(layerKey).dispose();
-        }
-      }
-    }
-  }
-
-  /**
    * Render.
    * @abstract
    * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
@@ -290,7 +274,14 @@ class MapRenderer extends Disposable {
    * @protected
    */
   scheduleRemoveUnusedLayerRenderers(frameState) {
-    frameState.postRenderFunctions.push(this.removeUnusedLayerRenderers_.bind(this));
+    const layerStatesMap = getLayerStatesMap(frameState.layerStatesArray);
+    for (const layerKey in this.layerRenderers_) {
+      if (!(layerKey in layerStatesMap)) {
+        frameState.postRenderFunctions.push(function() {
+          this.removeLayerRendererByKey_(layerKey).dispose();
+        }.bind(this));
+      }
+    }
   }
 }
 
