@@ -7,29 +7,7 @@ import {replaceNode} from '../dom.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 
-
-/**
- * @return {string} Change type.
- */
-const getChangeType = (function() {
-  let changeType;
-  return function() {
-    if (!changeType) {
-      const body = document.body;
-      if (body.webkitRequestFullscreen) {
-        changeType = 'webkitfullscreenchange';
-      } else if (body.mozRequestFullScreen) {
-        changeType = 'mozfullscreenchange';
-      } else if (body.msRequestFullscreen) {
-        changeType = 'MSFullscreenChange';
-      } else if (body.requestFullscreen) {
-        changeType = 'fullscreenchange';
-      }
-    }
-    return changeType;
-  };
-})();
-
+const events = ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'];
 
 /**
  * @typedef {Object} Options
@@ -215,10 +193,10 @@ class FullScreen extends Control {
   setMap(map) {
     super.setMap(map);
     if (map) {
-      this.listenerKeys.push(listen(document,
-        getChangeType(),
-        this.handleFullScreenChange_, this)
-      );
+      for (let i = 0, ii = events.length; i < ii; ++i) {
+        this.listenerKeys.push(
+          listen(document, events[i], this.handleFullScreenChange_, this));
+      }
     }
   }
 }
