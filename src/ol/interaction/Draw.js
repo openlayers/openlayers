@@ -543,6 +543,7 @@ class Draw extends PointerInteraction {
       this.downPx_ = event.pixel;
       return true;
     } else {
+      this.lastDragTime_ = undefined;
       return false;
     }
   }
