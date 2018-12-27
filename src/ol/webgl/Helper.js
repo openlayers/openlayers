@@ -56,7 +56,8 @@ export const DefaultAttrib = {
   TEX_COORD: 'a_texCoord',
   OPACITY: 'a_opacity',
   ROTATE_WITH_VIEW: 'a_rotateWithView',
-  OFFSETS: 'a_offsets'
+  OFFSETS: 'a_offsets',
+  COLOR: 'a_color'
 };
 
 /**
