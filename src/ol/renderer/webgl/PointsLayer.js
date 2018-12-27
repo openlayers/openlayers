@@ -39,6 +39,8 @@ const VERTEX_SHADER = `
 const FRAGMENT_SHADER = `
   precision mediump float;
   
+  uniform sampler2D u_texture;
+
   varying vec2 v_texCoord;
   varying float v_opacity;
   varying vec4 v_color;
@@ -47,7 +49,8 @@ const FRAGMENT_SHADER = `
     if (v_opacity == 0.0) {
       discard;
     }
-    gl_FragColor = v_color;
+    vec4 textureColor = texture2D(u_texture, v_texCoord);
+    gl_FragColor = v_color * textureColor;
     gl_FragColor.a *= v_opacity;
     gl_FragColor.rgb *= gl_FragColor.a;
   }`;
@@ -69,7 +72,7 @@ const FRAGMENT_SHADER = `
  * source to compute the coordinate of the quad center on screen (in pixels). This is only done on source change.
  * The second argument is 0 for `x` component and 1 for `y`.
  * @property {function(import("../../Feature").default, number):number} [texCoordCallback] Will be called on every feature in the
- * source to compute the texture coordinates of each corner of the quad. This is only done on source change.
+ * source to compute the texture coordinates of each corner of the quad (without effect if no `texture` option defined). This is only done on source change.
  * The second argument is 0 for `u0` component, 1 for `v0`, 2 for `u1`, and 3 for `v1`.
  * @property {function(import("../../Feature").default, number, number):number} [colorCallback] Will be called on every feature in the
  * source to compute the color of each corner of the quad. This is only done on source change.
@@ -82,9 +85,12 @@ const FRAGMENT_SHADER = `
  * @property {function(import("../../Feature").default):boolean} [rotateWithViewCallback] Will be called on every feature in the
  * source to compute whether the quad on screen must stay upwards (`false`) or follow the view rotation (`true`).
  * This is only done on source change.
+ * @property {HTMLCanvasElement|HTMLImageElement|ImageData} [texture] Texture to use on points. `texCoordCallback` and `sizeCallback`
+ * must be defined for this to have any effect.
  * @property {string} [vertexShader] Vertex shader source
  * @property {string} [fragmentShader] Fragment shader source
  * @property {Object.<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
+ * Please note that `u_texture` is reserved for the main texture slot.
  * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
 
@@ -100,6 +106,25 @@ const FRAGMENT_SHADER = `
  * * `vec2 a_offsets`
  * * `float a_rotateWithView`
  * * `float a_opacity`
+ * * `float a_color`
+ *
+ * The following uniform is used for the main texture: `u_texture`.
+ *
+ * Please note that the main shader output should have premultiplied alpha, otherwise the colors will be blended
+ * additively.
+ *
+ * Points are rendered as quads with the following structure:
+ *
+ *   (u0, v1)      (u1, v1)
+ *  [3]----------[2]
+ *   |`           |
+ *   |  `         |
+ *   |    `       |
+ *   |      `     |
+ *   |        `   |
+ *   |          ` |
+ *  [0]----------[1]
+ *   (u0, v0)      (u1, v0)
  *
  * This uses {@link module:ol/webgl/Helper~WebGLHelper} internally.
  *
@@ -108,11 +133,13 @@ const FRAGMENT_SHADER = `
  * * Vertex shader:
  *   ```
  *   precision mediump float;
+ *
  *   attribute vec2 a_position;
  *   attribute vec2 a_texCoord;
  *   attribute float a_rotateWithView;
  *   attribute vec2 a_offsets;
  *   attribute float a_opacity;
+ *   attribute vec4 a_color;
  *
  *   uniform mat4 u_projectionMatrix;
  *   uniform mat4 u_offsetScaleMatrix;
@@ -120,6 +147,7 @@ const FRAGMENT_SHADER = `
  *
  *   varying vec2 v_texCoord;
  *   varying float v_opacity;
+ *   varying vec4 v_color;
  *
  *   void main(void) {
  *     mat4 offsetMatrix = u_offsetScaleMatrix;
@@ -130,6 +158,7 @@ const FRAGMENT_SHADER = `
  *     gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
  *     v_texCoord = a_texCoord;
  *     v_opacity = a_opacity;
+ *     v_color = a_color;
  *   }
  *   ```
  *
@@ -137,16 +166,20 @@ const FRAGMENT_SHADER = `
  *   ```
  *   precision mediump float;
  *
+ *   uniform sampler2D u_texture;
+ *
  *   varying vec2 v_texCoord;
  *   varying float v_opacity;
+ *   varying vec4 v_color;
  *
  *   void main(void) {
- *     gl_FragColor.rgb = vec3(1.0, 1.0, 1.0);
- *     float alpha = v_opacity;
- *     if (alpha == 0.0) {
+ *     if (v_opacity == 0.0) {
  *       discard;
  *     }
- *     gl_FragColor.a = alpha;
+ *     vec4 textureColor = texture2D(u_texture, v_texCoord);
+ *     gl_FragColor = v_color * textureColor;
+ *     gl_FragColor.a *= v_opacity;
+ *     gl_FragColor.rgb *= gl_FragColor.a;
  *   }
  *   ```
  *
@@ -163,9 +196,11 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
 
     const options = opt_options || {};
 
+    const uniforms = options.uniforms || {};
+    uniforms.u_texture = options.texture || this.getDefaultTexture();
     this.helper_ = new WebGLHelper({
       postProcesses: options.postProcesses,
-      uniforms: options.uniforms
+      uniforms: uniforms
     });
 
     this.sourceRevision_ = -1;
@@ -310,6 +345,18 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
    */
   getShaderCompileErrors() {
     return this.helper_.getShaderCompileErrors();
+  }
+
+  /**
+   * Returns a texture of 1x1 pixel, white
+   * @private
+   * @return {ImageData} Image data.
+   */
+  getDefaultTexture() {
+    const canvas = document.createElement('canvas');
+    const image = canvas.getContext('2d').createImageData(1, 1);
+    image.data[0] = image.data[1] = image.data[2] = image.data[3] = 255;
+    return image;
   }
 }
 
