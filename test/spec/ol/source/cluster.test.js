@@ -40,6 +40,9 @@ describe('ol.source.Cluster', function() {
       expect(source.getFeatures()[0].get('features').length).to.be(2);
     });
     it('clusters with a custom geometryFunction', function() {
+      var feature1 = new ol.Feature(new ol.geom.Point([0, 0]));
+      var feature2 = new ol.Feature(new ol.geom.Polygon([[[-1, -1], [-1, 1], [1, 1], [1, -1], [-1, -1]]]));
+      var feature3 = new ol.Feature(new ol.geom.LineString([[0, 0], [1, 1]]));
       var source = new ol.source.Cluster({
         geometryFunction: function(feature) {
           var geom = feature.getGeometry();
@@ -51,17 +54,13 @@ describe('ol.source.Cluster', function() {
           return null;
         },
         source: new ol.source.Vector({
-          features: [
-            new ol.Feature(new ol.geom.Point([0, 0])),
-            new ol.Feature(new ol.geom.LineString([[0, 0], [1, 1]])),
-            new ol.Feature(new ol.geom.Polygon(
-                [[[-1, -1], [-1, 1], [1, 1], [1, -1], [-1, -1]]]))
-          ]
+          features: [feature1, feature2, feature3]
         })
       });
       source.loadFeatures(extent, 1, projection);
-      expect(source.getFeatures().length).to.be(1);
-      expect(source.getFeatures()[0].get('features').length).to.be(2);
+      expect(source.getFeatures().length).to.be(2);
+      expect(source.getFeatures()[0].get('features')).to.eql([feature1, feature2]);
+      expect(source.getFeatures()[1]).to.equal(feature3);
     });
   });
 

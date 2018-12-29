@@ -142,6 +142,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
   for (var i = 0, ii = features.length; i < ii; i++) {
     var feature = features[i];
     if (!(ol.getUid(feature).toString() in clustered)) {
+      var self = this;
       var geometry = this.geometryFunction_(feature);
       if (geometry) {
         var coordinates = geometry.getCoordinates();
@@ -151,6 +152,8 @@ ol.source.Cluster.prototype.cluster_ = function() {
         var neighbors = this.source_.getFeaturesInExtent(extent);
         ol.DEBUG && console.assert(neighbors.length >= 1, 'at least one neighbor found');
         neighbors = neighbors.filter(function(neighbor) {
+          return self.geometryFunction_(neighbor);
+        }).filter(function(neighbor) {
           var uid = ol.getUid(neighbor).toString();
           if (!(uid in clustered)) {
             clustered[uid] = true;
@@ -160,6 +163,8 @@ ol.source.Cluster.prototype.cluster_ = function() {
           }
         });
         this.features_.push(this.createCluster_(neighbors));
+      } else {
+        this.features_.push(feature);
       }
     }
   }
