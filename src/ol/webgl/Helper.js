@@ -18,6 +18,7 @@ import {
 } from '../transform';
 import {create, fromTransform} from '../vec/mat4';
 import WebGLPostProcessingPass from './PostProcessingPass';
+import {getContext} from '../webgl';
 
 
 /**
@@ -220,7 +221,7 @@ class WebGLHelper extends Disposable {
      * @private
      * @type {WebGLRenderingContext}
      */
-    this.gl_ = this.canvas_.getContext('webgl');
+    this.gl_ = getContext(this.canvas_);
     const gl = this.getGL();
 
     /**
