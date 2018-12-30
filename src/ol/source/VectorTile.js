@@ -3,15 +3,18 @@
  */
 
 import TileState from '../TileState.js';
-import VectorImageTile, {defaultLoadFunction} from '../VectorImageTile.js';
+import VectorImageTile from '../VectorImageTile.js';
 import Tile from '../VectorTile.js';
 import {toSize} from '../size.js';
 import UrlTile from './UrlTile.js';
-import {getKeyZXY} from '../tilecoord.js';
+import {getKeyZXY, getKey} from '../tilecoord.js';
 import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.js';
-import {getIntersection, getWidth, getHeight} from '../extent.js';
-import {listen} from '../events.js';
+import {buffer as bufferExtent, getIntersection} from '../extent.js';
+import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
+import {loadFeaturesXhr} from '../featureloader.js';
+import {isEmpty} from '../obj.js';
+import {equals} from '../array.js';
 
 /**
  * @typedef {Object} Options
@@ -113,10 +116,21 @@ class VectorTile extends UrlTile {
     this.format_ = options.format ? options.format : null;
 
     /**
-       * @private
-       * @type {Object<string, Tile>}
-       */
+     * @type {Object<string, import("./VectorTile").default>}
+     */
+    this.loadingTiles_ = {};
+
+    /**
+     * @private
+     * @type {Object<string, import("../VectorTile.js").default>}
+     */
     this.sourceTiles_ = {};
+
+    /**
+     * @private
+     * @type {Object<string, Array<import("../VectorTile.js").default>>}
+     */
+    this.sourceTilesByTileKey_ = {};
 
     /**
      * @private
@@ -152,49 +166,139 @@ class VectorTile extends UrlTile {
   clear() {
     this.tileCache.clear();
     this.sourceTiles_ = {};
+    this.sourceTilesByTileKey_ = {};
   }
 
   /**
-   * Finds and assigns source tiles for a vector image tile.
-   * @param {VectorImageTile} tile Tile.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
+   * @param {VectorImageTile} tile Vector image tile.
+   * @return {Array<import("../VectorTile").default>} Tile keys.
    */
-  assignTiles(tile, pixelRatio, projection) {
-    if (!tile.wrappedTileCoord) {
-      return;
-    }
-    const sourceTileGrid = this.tileGrid;
-    const tileGrid = this.getTileGridForProjection(projection);
+  getSourceTiles(pixelRatio, projection, tile) {
+    const sourceTiles = [];
     const urlTileCoord = tile.wrappedTileCoord;
-    const extent = tile.extent = tileGrid.getTileCoordExtent(urlTileCoord);
-    const resolution = this.resolution_ = tileGrid.getResolution(urlTileCoord[0]);
-    const sourceZ = sourceTileGrid.getZForResolution(resolution);
-    sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
-      let sharedExtent = getIntersection(extent,
-        sourceTileGrid.getTileCoordExtent(sourceTileCoord));
+    if (urlTileCoord) {
+      const tileGrid = this.getTileGridForProjection(projection);
+      const extent = tileGrid.getTileCoordExtent(urlTileCoord);
+      const z = urlTileCoord[0];
+      const resolution = tileGrid.getResolution(z);
+      // make extent 1 pixel smaller so we don't load tiles for < 0.5 pixel render space
+      bufferExtent(extent, -1 / resolution, extent);
+      const sourceTileGrid = this.tileGrid;
       const sourceExtent = sourceTileGrid.getExtent();
       if (sourceExtent) {
-        sharedExtent = getIntersection(sharedExtent, sourceExtent, sharedExtent);
+        getIntersection(extent, sourceTileGrid.getExtent(), extent);
       }
-      if (getWidth(sharedExtent) / resolution >= 0.5 &&
-          getHeight(sharedExtent) / resolution >= 0.5) {
-        // only include source tile if overlap is at least 1 pixel
-        const sourceTileKey = sourceTileCoord.toString();
-        let sourceTile = this.sourceTiles_[sourceTileKey];
-        if (!sourceTile) {
-          const tileUrl = this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
-          sourceTile = this.sourceTiles_[sourceTileKey] = new this.tileClass(sourceTileCoord,
-            tileUrl == undefined ? TileState.EMPTY : TileState.IDLE,
-            tileUrl == undefined ? '' : tileUrl,
-            this.format_, this.tileLoadFunction);
-          tile.sourceTileListenerKeys_.push(
-            listen(sourceTile, EventType.CHANGE, this.handleTileChange.bind(this)));
+      const sourceZ = sourceTileGrid.getZForResolution(resolution);
+      const minZoom = sourceTileGrid.getMinZoom();
+
+      let loadedZ = sourceZ + 1;
+      let covered, empty;
+      do {
+        --loadedZ;
+        covered = true;
+        empty = true;
+        sourceTileGrid.forEachTileCoord(extent, loadedZ, function(sourceTileCoord) {
+          const tileKey = getKey(sourceTileCoord);
+          let sourceTile;
+          if (tileKey in this.sourceTiles_) {
+            sourceTile = this.sourceTiles_[tileKey];
+            const state = sourceTile.getState();
+            if (state === TileState.LOADED || state === TileState.ERROR || state === TileState.EMPTY) {
+              empty = empty && state === TileState.EMPTY;
+              sourceTiles.push(sourceTile);
+              return;
+            }
+          } else if (loadedZ === sourceZ) {
+            const tileUrl = this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
+            sourceTile = new this.tileClass(sourceTileCoord,
+              tileUrl == undefined ? TileState.EMPTY : TileState.IDLE,
+              tileUrl == undefined ? '' : tileUrl,
+              this.format_, this.tileLoadFunction);
+            this.sourceTiles_[tileKey] = sourceTile;
+            empty = empty && sourceTile.getState() === TileState.EMPTY;
+            listen(sourceTile, EventType.CHANGE, this.handleTileChange, this);
+            sourceTile.load();
+          } else {
+            empty = false;
+          }
+          covered = false;
+          if (!sourceTile) {
+            return;
+          }
+          if (sourceTile.getState() !== TileState.EMPTY && tile.getState() === TileState.IDLE) {
+            tile.loadingSourceTiles++;
+            const key = listen(sourceTile, EventType.CHANGE, function() {
+              const state = sourceTile.getState();
+              const sourceTileKey = getKey(sourceTile.tileCoord);
+              if (state === TileState.LOADED || state === TileState.ERROR) {
+                if (state === TileState.LOADED) {
+                  unlistenByKey(key);
+                  tile.loadingSourceTiles--;
+                  delete tile.errorSourceTileKeys[sourceTileKey];
+                } else if (state === TileState.ERROR) {
+                  tile.errorSourceTileKeys[sourceTileKey] = true;
+                }
+                if (tile.loadingSourceTiles - Object.keys(tile.errorSourceTileKeys).length === 0) {
+                  tile.hifi = true;
+                  tile.sourceZ = sourceZ;
+                  tile.setState(isEmpty(tile.errorSourceTileKeys) ? TileState.LOADED : TileState.ERROR);
+                }
+              }
+            });
+          }
+        }.bind(this));
+        if (!covered) {
+          sourceTiles.length = 0;
         }
-        sourceTile.consumers++;
-        tile.tileKeys.push(sourceTileKey);
+      } while (!covered && loadedZ > minZoom);
+      if (!empty && tile.getState() === TileState.IDLE) {
+        tile.setState(TileState.LOADING);
       }
-    }.bind(this));
+      if (covered || empty) {
+        tile.hifi = sourceZ === loadedZ;
+        tile.sourceZ = loadedZ;
+        const previousSourceTiles = this.sourceTilesByTileKey_[getKey(tile.tileCoord)];
+        if (tile.getState() < TileState.LOADED) {
+          tile.setState(empty ? TileState.EMPTY : TileState.LOADED);
+        } else if (!previousSourceTiles || !equals(sourceTiles, previousSourceTiles)) {
+          this.removeSourceTiles(tile);
+          this.addSourceTiles(tile, sourceTiles);
+        }
+      }
+    }
+    return sourceTiles;
+  }
+
+  /**
+   * @param {VectorImageTile} tile Tile.
+   * @param {Array<import("../VectorTile").default>} sourceTiles Source tiles.
+   */
+  addSourceTiles(tile, sourceTiles) {
+    this.sourceTilesByTileKey_[getKey(tile.tileCoord)] = sourceTiles;
+    for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
+      sourceTiles[i].consumers++;
+    }
+  }
+
+  /**
+   * @param {VectorImageTile} tile Tile.
+   */
+  removeSourceTiles(tile) {
+    const tileKey = getKey(tile.tileCoord);
+    if (tileKey in this.sourceTilesByTileKey_) {
+      const sourceTiles = this.sourceTilesByTileKey_[tileKey];
+      for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
+        const sourceTile = sourceTiles[i];
+        sourceTile.consumers--;
+        if (sourceTile.consumers === 0) {
+          sourceTile.dispose();
+          delete this.sourceTiles_[getKey(sourceTile.tileCoord)];
+        }
+      }
+    }
+    delete this.sourceTilesByTileKey_[tileKey];
   }
 
   /**
@@ -215,15 +319,14 @@ class VectorTile extends UrlTile {
         urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
         urlTileCoord,
         this.tileGrid,
-        this.sourceTiles_);
+        this.getSourceTiles.bind(this, pixelRatio, projection),
+        this.removeSourceTiles.bind(this));
 
       tile.key = this.getRevision().toString();
-      this.assignTiles(tile, pixelRatio, projection);
       this.tileCache.set(tileCoordKey, tile);
       return tile;
     }
   }
-
 
   /**
    * @inheritDoc
@@ -241,14 +344,12 @@ class VectorTile extends UrlTile {
     return tileGrid;
   }
 
-
   /**
    * @inheritDoc
    */
   getTilePixelRatio(pixelRatio) {
     return pixelRatio;
   }
-
 
   /**
    * @inheritDoc
@@ -262,3 +363,14 @@ class VectorTile extends UrlTile {
 
 
 export default VectorTile;
+
+
+/**
+ * Sets the loader for a tile.
+ * @param {import("../VectorTile.js").default} tile Vector tile.
+ * @param {string} url URL.
+ */
+export function defaultLoadFunction(tile, url) {
+  const loader = loadFeaturesXhr(url, tile.getFormat(), tile.onLoad.bind(tile), tile.onError.bind(tile));
+  tile.setLoader(loader);
+}

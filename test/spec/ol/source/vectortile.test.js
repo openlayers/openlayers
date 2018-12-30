@@ -2,12 +2,15 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import VectorImageTile from '../../../../src/ol/VectorImageTile.js';
 import VectorTile from '../../../../src/ol/VectorTile.js';
+import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
+import {listen, unlistenByKey} from '../../../../src/ol/events.js';
+import TileState from '../../../../src/ol/TileState.js';
 
 describe('ol.source.VectorTile', function() {
 
@@ -47,6 +50,24 @@ describe('ol.source.VectorTile', function() {
       expect(source.getTile(0, 0, 0, 1, getProjection('EPSG:3857')))
         .to.equal(tile);
     });
+    it('loads source tiles', function(done) {
+      const source = new VectorTileSource({
+        format: new GeoJSON(),
+        url: 'spec/ol/data/point.json'
+      });
+      const tile = source.getTile(0, 0, 0, 1, source.getProjection());
+
+      tile.load();
+      const key = listen(tile, 'change', function(e) {
+        if (tile.getState() === TileState.LOADED) {
+          const sourceTile = tile.load()[0];
+          expect(sourceTile.getFeatures().length).to.be.greaterThan(0);
+          unlistenByKey(key);
+          done();
+        }
+      });
+    });
+
   });
 
   describe('#getTileGridForProjection', function() {

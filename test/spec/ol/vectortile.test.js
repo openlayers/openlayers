@@ -1,5 +1,5 @@
 import Feature from '../../../src/ol/Feature.js';
-import {defaultLoadFunction} from '../../../src/ol/VectorImageTile.js';
+import {defaultLoadFunction} from '../../../src/ol/source/VectorTile.js';
 import VectorTile from '../../../src/ol/VectorTile.js';
 import {listen} from '../../../src/ol/events.js';
 import TextFeature from '../../../src/ol/format/TextFeature.js';

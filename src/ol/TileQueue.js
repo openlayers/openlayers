@@ -82,7 +82,7 @@ class TileQueue extends PriorityQueue {
   handleTileChange(event) {
     const tile = /** @type {import("./Tile.js").default} */ (event.target);
     const state = tile.getState();
-    if (state === TileState.LOADED || state === TileState.ERROR ||
+    if (tile.hifi && state === TileState.LOADED || state === TileState.ERROR ||
         state === TileState.EMPTY || state === TileState.ABORT) {
       unlisten(tile, EventType.CHANGE, this.handleTileChange, this);
       const tileKey = tile.getKey();

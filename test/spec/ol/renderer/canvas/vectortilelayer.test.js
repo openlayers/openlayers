@@ -62,9 +62,9 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       class TileClass extends VectorTile {
         constructor() {
           super(...arguments);
-          this.setState(TileState.LOADED);
           this.setFeatures([feature1, feature2, feature3]);
           this.setProjection(getProjection('EPSG:4326'));
+          this.setState(TileState.LOADED);
           tileCallback(this);
         }
       }
@@ -73,12 +73,14 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileClass: TileClass,
         tileGrid: createXYZ()
       });
+      source.getSourceTiles = function() {
+        return [new TileClass([0, 0, 0])];
+      };
       source.getTile = function() {
         const tile = VectorTileSource.prototype.getTile.apply(source, arguments);
         tile.hasContext = function() {
           return true;
         };
-        tile.sourceTilesLoaded = true;
         tile.setState(TileState.LOADED);
         return tile;
       };
@@ -219,13 +221,10 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       });
       map.addLayer(layer2);
 
-      const spy1 = sinon.spy(VectorTile.prototype, 'getExecutorGroup');
-      const spy2 = sinon.spy(VectorTile.prototype, 'setExecutorGroup');
       map.renderSync();
-      expect(spy1.callCount).to.be(4);
-      expect(spy2.callCount).to.be(2);
-      spy1.restore();
-      spy2.restore();
+      const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
+      expect(Object.keys(tile.executorGroups)[0]).to.be(getUid(layer));
+      expect(Object.keys(tile.executorGroups)[1]).to.be(getUid(layer2));
     });
 
   });
@@ -244,14 +243,13 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       sourceTile.getImage = function() {
         return document.createElement('canvas');
       };
-      const tile = new VectorImageTile([0, 0, 0], 1, [0, 0, 0], createXYZ(), {'0,0,0': sourceTile});
+      const tile = new VectorImageTile([0, 0, 0], 1, [0, 0, 0], createXYZ(),
+        function() {
+          return sourceTile;
+        },
+        function() {});
       tile.transition_ = 0;
-      tile.tileKeys = ['0,0,0'];
-      tile.extent = getProjection('EPSG:3857').getExtent();
       tile.setState(TileState.LOADED);
-      tile.getSourceTile = function() {
-        return sourceTile;
-      };
       layer.getSource().getTile = function() {
         return tile;
       };
@@ -286,33 +284,37 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
   });
 
   describe('#forEachFeatureAtCoordinate', function() {
-    let layer, renderer, executorGroup;
+    let layer, renderer, executorGroup, source;
     class TileClass extends VectorImageTile {
       constructor() {
         super(...arguments);
-        this.extent = [-Infinity, -Infinity, Infinity, Infinity];
         this.setState(TileState.LOADED);
-        const sourceTile = new VectorTile([0, 0, 0]);
-        sourceTile.setState(TileState.LOADED);
-        sourceTile.setProjection(getProjection('EPSG:3857'));
-        sourceTile.getExecutorGroup = function() {
-          return executorGroup;
-        };
-        const key = sourceTile.tileCoord.toString();
-        this.tileKeys = [key];
-        this.sourceTiles_ = {};
-        this.sourceTiles_[key] = sourceTile;
         this.wrappedTileCoord = arguments[0];
       }
     }
 
     beforeEach(function() {
+      const sourceTile = new VectorTile([0, 0, 0]);
+      sourceTile.setState(TileState.LOADED);
+      sourceTile.setProjection(getProjection('EPSG:3857'));
+      source = new VectorTileSource({
+        tileClass: TileClass,
+        tileGrid: createXYZ()
+      });
+      source.sourceTiles_ = {
+        '0/0/0': sourceTile
+      };
+      source.sourceTilesByTileKey_ = {
+        '0/0/0': [sourceTile]
+      };
       executorGroup = {};
+      source.getTile = function() {
+        const tile = VectorTileSource.prototype.getTile.apply(source, arguments);
+        tile.executorGroups[getUid(layer)] = [executorGroup];
+        return tile;
+      };
       layer = new VectorTileLayer({
-        source: new VectorTileSource({
-          tileClass: TileClass,
-          tileGrid: createXYZ()
-        })
+        source: source
       });
       renderer = new CanvasVectorTileLayerRenderer(layer);
       executorGroup.forEachFeatureAtCoordinate = function(coordinate,
@@ -335,7 +337,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
           rotation: 0
         }
       };
-      renderer.renderedTiles = [new TileClass([0, 0, -1], undefined, 1)];
+      renderer.renderedTiles = [source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'))];
       renderer.forEachFeatureAtCoordinate(
         coordinate, frameState, 0, spy, undefined);
       expect(spy.callCount).to.be(1);
