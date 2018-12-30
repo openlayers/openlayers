@@ -57,11 +57,12 @@ export const DefaultAttrib = {
   TEX_COORD: 'a_texCoord',
   OPACITY: 'a_opacity',
   ROTATE_WITH_VIEW: 'a_rotateWithView',
-  OFFSETS: 'a_offsets'
+  OFFSETS: 'a_offsets',
+  COLOR: 'a_color'
 };
 
 /**
- * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} UniformLiteralValue
+ * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData} UniformLiteralValue
  */
 
 /**
@@ -527,7 +528,7 @@ class WebGLHelper extends Disposable {
       value = typeof uniform.value === 'function' ? uniform.value(frameState) : uniform.value;
 
       // apply value based on type
-      if (value instanceof HTMLCanvasElement || value instanceof ImageData) {
+      if (value instanceof HTMLCanvasElement || value instanceof HTMLImageElement || value instanceof ImageData) {
         // create a texture & put data
         if (!uniform.texture) {
           uniform.texture = gl.createTexture();
@@ -537,13 +538,7 @@ class WebGLHelper extends Disposable {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-        if (value instanceof ImageData) {
-          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, value.width, value.height, 0,
-            gl.UNSIGNED_BYTE, new Uint8Array(value.data));
-        } else {
-          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, value);
-        }
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, value);
 
         // fill texture slots by increasing index
         gl.uniform1i(this.getUniformLocation(uniform.name), textureSlot++);
