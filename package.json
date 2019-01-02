@@ -124,5 +124,8 @@
       "name": "vectortile",
       "browserify": true
     }
-  ]
+  ],
+  "publishConfig": {
+    "registry": "http://artifactory-pr-build.lb.cumuli.be:8081/artifactory/api/npm/acd-npm/"
+  }
 }
