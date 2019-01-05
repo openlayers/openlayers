@@ -262,6 +262,24 @@ class View extends BaseObject {
      */
     this.projection_ = createProjection(options.projection, 'EPSG:3857');
 
+    /**
+     * @private
+     * @type {import("./coordinate.js").Coordinate|undefined}
+     */
+    this.targetCenter_ = null;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.targetResolution_;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.targetRotation_;
+
     this.applyOptions_(options);
   }
 
@@ -275,8 +293,6 @@ class View extends BaseObject {
      * @type {Object<string, *>}
      */
     const properties = {};
-    properties[ViewProperty.CENTER] = options.center !== undefined ?
-      options.center : null;
 
     const resolutionConstraintInfo = createResolutionConstraint(options);
 
@@ -324,19 +340,21 @@ class View extends BaseObject {
       rotation: rotationConstraint
     };
 
+    this.setRotation(options.rotation !== undefined ? options.rotation : 0);
+    this.setCenter(options.center !== undefined ? options.center : null);
     if (options.resolution !== undefined) {
-      properties[ViewProperty.RESOLUTION] = options.resolution;
+      this.setResolution(options.resolution);
     } else if (options.zoom !== undefined) {
-      properties[ViewProperty.RESOLUTION] = this.constrainResolution(
-        this.maxResolution_, options.zoom - this.minZoom_);
+      this.setResolution(this.constrainResolution(
+        this.maxResolution_, options.zoom - this.minZoom_));
 
       if (this.resolutions_) { // in case map zoom is out of min/max zoom range
-        properties[ViewProperty.RESOLUTION] = clamp(
+        this.setResolution(clamp(
           Number(this.getResolution() || properties[ViewProperty.RESOLUTION]),
-          this.minResolution_, this.maxResolution_);
+          this.minResolution_, this.maxResolution_));
       }
     }
-    properties[ViewProperty.ROTATION] = options.rotation !== undefined ? options.rotation : 0;
+
     this.setProperties(properties);
 
     /**
@@ -1124,10 +1142,8 @@ class View extends BaseObject {
    * @api
    */
   setCenter(center) {
-    this.set(ViewProperty.CENTER, center);
-    if (this.getAnimating()) {
-      this.cancelAnimations();
-    }
+    this.targetCenter_ = center;
+    this.applyParameters_();
   }
 
   /**
@@ -1148,10 +1164,8 @@ class View extends BaseObject {
    * @api
    */
   setResolution(resolution) {
-    this.set(ViewProperty.RESOLUTION, resolution);
-    if (this.getAnimating()) {
-      this.cancelAnimations();
-    }
+    this.targetResolution_ = resolution;
+    this.applyParameters_();
   }
 
   /**
@@ -1161,10 +1175,8 @@ class View extends BaseObject {
    * @api
    */
   setRotation(rotation) {
-    this.set(ViewProperty.ROTATION, rotation);
-    if (this.getAnimating()) {
-      this.cancelAnimations();
-    }
+    this.targetRotation_ = rotation;
+    this.applyParameters_();
   }
 
   /**
@@ -1174,6 +1186,20 @@ class View extends BaseObject {
    */
   setZoom(zoom) {
     this.setResolution(this.getResolutionForZoom(zoom));
+  }
+
+  /**
+   * Recompute rotation/resolution/center based on target values.
+   * @private
+   */
+  applyParameters_() {
+    this.set(ViewProperty.ROTATION, this.targetRotation_);
+    this.set(ViewProperty.RESOLUTION, this.targetResolution_);
+    this.set(ViewProperty.CENTER, this.targetCenter_);
+
+    if (this.getAnimating()) {
+      this.cancelAnimations();
+    }
   }
 }
 
