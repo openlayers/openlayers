@@ -189,34 +189,49 @@ export function zoom(view, resolution, opt_anchor, opt_duration, opt_direction) 
  * @param {number=} opt_duration Duration.
  */
 export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
+  const currentZoom = view.getZoom();
   const currentResolution = view.getResolution();
-  let resolution = view.constrainResolution(currentResolution, delta, 0);
 
-  if (resolution !== undefined) {
-    const resolutions = view.getResolutions();
-    resolution = clamp(
-      resolution,
-      view.getMinResolution() || resolutions[resolutions.length - 1],
-      view.getMaxResolution() || resolutions[0]);
+  if (currentZoom === undefined) {
+    return;
   }
+
+  const newZoom = view.getValidZoomLevel(currentZoom + delta);
+  const newResolution = view.getResolutionForZoom(newZoom);
 
   // If we have a constraint on center, we need to change the anchor so that the
   // new center is within the extent. We first calculate the new center, apply
   // the constraint to it, and then calculate back the anchor
-  if (opt_anchor && resolution !== undefined && resolution !== currentResolution) {
+  if (opt_anchor) {
     const currentCenter = view.getCenter();
-    let center = view.calculateCenterZoom(resolution, opt_anchor);
+    let center = view.calculateCenterZoom(newResolution, opt_anchor);
     center = view.constrainCenter(center);
 
     opt_anchor = [
-      (resolution * currentCenter[0] - currentResolution * center[0]) /
-          (resolution - currentResolution),
-      (resolution * currentCenter[1] - currentResolution * center[1]) /
-          (resolution - currentResolution)
+      (newResolution * currentCenter[0] - currentResolution * center[0]) /
+      (newResolution - currentResolution),
+      (newResolution * currentCenter[1] - currentResolution * center[1]) /
+      (newResolution - currentResolution)
     ];
   }
 
-  zoomWithoutConstraints(view, resolution, opt_anchor, opt_duration);
+  if (opt_duration > 0) {
+    if (view.getAnimating()) {
+      view.cancelAnimations();
+    }
+    view.animate({
+      resolution: newResolution,
+      anchor: opt_anchor,
+      duration: opt_duration,
+      easing: easeOut
+    });
+  } else {
+    if (opt_anchor) {
+      const center = view.calculateCenterZoom(newResolution, opt_anchor);
+      view.setCenter(center);
+    }
+    view.setResolution(newResolution);
+  }
 }
 
 

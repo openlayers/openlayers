@@ -1439,6 +1439,35 @@ describe('ol.View', function() {
       expect(view.getHints()[1]).to.be(0);
     });
   });
+
+  describe('#getValidZoomLevel()', function() {
+    let view;
+
+    it('works correctly without constraint', function() {
+      view = new View({
+        zoom: 0
+      });
+      expect(view.getValidZoomLevel(3)).to.be(3);
+    });
+    it('works correctly with resolution constraints', function() {
+      view = new View({
+        zoom: 4,
+        minZoom: 4,
+        maxZoom: 8
+      });
+      expect(view.getValidZoomLevel(3)).to.be(4);
+      expect(view.getValidZoomLevel(10)).to.be(8);
+    });
+    it('works correctly with a specific resolution set', function() {
+      view = new View({
+        zoom: 0,
+        resolutions: [512, 256, 128, 64, 32, 16, 8]
+      });
+      expect(view.getValidZoomLevel(0)).to.be(0);
+      expect(view.getValidZoomLevel(4)).to.be(4);
+      expect(view.getValidZoomLevel(8)).to.be(6);
+    });
+  });
 });
 
 describe('ol.View.isNoopAnimation()', function() {

@@ -1217,6 +1217,23 @@ class View extends BaseObject {
   endInteraction() {
     this.setHint(ViewHint.INTERACTING, -1);
   }
+
+  /**
+   * Get a valid zoom level according to the current view constraints.
+   * @param {number|undefined} targetZoom Target resolution.
+   * @param {number=} opt_direction Direction. Default is `0`. Specify `-1` or `1` to return
+   * the available value respectively lower or greater than the target one. Leaving `0` will simply choose
+   * the nearest available value.
+   * @return {number|undefined} Valid zoom level.
+   * @api
+   */
+  getValidZoomLevel(targetZoom, opt_direction) {
+    const direction = opt_direction || 0;
+    const currentRes = this.getResolution();
+    const currentZoom = this.getZoom();
+    return this.getZoomForResolution(
+      this.constraints_.resolution(currentRes, targetZoom - currentZoom, direction));
+  }
 }
 
 

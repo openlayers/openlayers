@@ -239,8 +239,10 @@ class MouseWheelZoom extends Interaction {
       view.setResolution(resolution);
 
       if (rebound === 0 && this.constrainResolution_) {
+        const zoomDelta = delta > 0 ? -1 : 1;
+        const newZoom = view.getValidZoomLevel(view.getZoom() + zoomDelta);
         view.animate({
-          resolution: view.constrainResolution(resolution, delta > 0 ? -1 : 1),
+          resolution: view.getResolutionForZoom(newZoom),
           easing: easeOut,
           anchor: this.lastAnchor_,
           duration: this.duration_

@@ -80,14 +80,14 @@ function onBoxEnd() {
     extent = mapExtent;
   }
 
-  const resolution = view.constrainResolution(
-    view.getResolutionForExtent(extent, size));
+  const resolution = view.getResolutionForExtent(extent, size);
+  const zoom = view.getValidZoomLevel(view.getZoomForResolution(resolution));
 
   let center = getCenter(extent);
   center = view.constrainCenter(center);
 
   view.animate({
-    resolution: resolution,
+    zoom: zoom,
     center: center,
     duration: this.duration_,
     easing: easeOut
