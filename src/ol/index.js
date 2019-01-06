@@ -26,7 +26,7 @@ export {default as Tile} from './Tile.js';
 export {default as TileCache} from './TileCache.js';
 export {default as TileQueue} from './TileQueue.js';
 export {default as TileRange} from './TileRange.js';
-export {default as VectorImageTile} from './VectorImageTile.js';
+export {default as VectorRenderTile} from './VectorRenderTile.js';
 export {default as VectorTile} from './VectorTile.js';
 export {default as View} from './View.js';
 

@@ -9,7 +9,7 @@ import {getKey} from '../../../src/ol/tilecoord.js';
 import EventType from '../../../src/ol/events/EventType.js';
 
 
-describe('ol.VectorImageTile', function() {
+describe('ol.VectorRenderTile', function() {
 
   it('triggers "change" when previously failed source tiles are loaded', function(done) {
     let sourceTile;

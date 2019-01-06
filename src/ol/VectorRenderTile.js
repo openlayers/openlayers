@@ -1,5 +1,5 @@
 /**
- * @module ol/VectorImageTile
+ * @module ol/VectorRenderTile
  */
 import {getUid} from './util.js';
 import Tile from './Tile.js';
@@ -18,16 +18,16 @@ import {createCanvasContext2D} from './dom.js';
  */
 
 
-class VectorImageTile extends Tile {
+class VectorRenderTile extends Tile {
 
   /**
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {TileState} state State.
    * @param {import("./tilecoord.js").TileCoord} urlTileCoord Wrapped tile coordinate for source urls.
    * @param {import("./tilegrid/TileGrid.js").default} sourceTileGrid Tile grid of the source.
-   * @param {function(VectorImageTile):Array<import("./VectorTile").default>} getSourceTiles Function
+   * @param {function(VectorRenderTile):Array<import("./VectorTile").default>} getSourceTiles Function
    * to get an source tiles for this tile.
-   * @param {function(VectorImageTile):void} removeSourceTiles Function to remove this tile from its
+   * @param {function(VectorRenderTile):void} removeSourceTiles Function to remove this tile from its
    * source tiles's consumer count.
    */
   constructor(tileCoord, state, urlTileCoord, sourceTileGrid, getSourceTiles, removeSourceTiles) {
@@ -65,12 +65,12 @@ class VectorImageTile extends Tile {
     this.replayState_ = {};
 
     /**
-     * @type {!function(import("./VectorImageTile.js").default):Array<import("./VectorTile.js").default>}
+     * @type {!function(import("./VectorRenderTile.js").default):Array<import("./VectorTile.js").default>}
      */
     this.getSourceTiles_ = getSourceTiles;
 
     /**
-     * @type {!function(import("./VectorImageTile.js").default):void}
+     * @type {!function(import("./VectorRenderTile.js").default):void}
      */
     this.removeSourceTiles_ = removeSourceTiles;
 
@@ -165,4 +165,4 @@ class VectorImageTile extends Tile {
 }
 
 
-export default VectorImageTile;
+export default VectorRenderTile;

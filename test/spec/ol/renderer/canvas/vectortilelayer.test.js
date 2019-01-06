@@ -2,7 +2,7 @@ import {clear} from '../../../../../src/ol/obj.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import TileState from '../../../../../src/ol/TileState.js';
-import VectorImageTile from '../../../../../src/ol/VectorImageTile.js';
+import VectorRenderTile from '../../../../../src/ol/VectorRenderTile.js';
 import VectorTile from '../../../../../src/ol/VectorTile.js';
 import View from '../../../../../src/ol/View.js';
 import {getCenter} from '../../../../../src/ol/extent.js';
@@ -243,7 +243,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       sourceTile.getImage = function() {
         return document.createElement('canvas');
       };
-      const tile = new VectorImageTile([0, 0, 0], 1, [0, 0, 0], createXYZ(),
+      const tile = new VectorRenderTile([0, 0, 0], 1, [0, 0, 0], createXYZ(),
         function() {
           return sourceTile;
         },
@@ -285,7 +285,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
   describe('#forEachFeatureAtCoordinate', function() {
     let layer, renderer, executorGroup, source;
-    class TileClass extends VectorImageTile {
+    class TileClass extends VectorRenderTile {
       constructor() {
         super(...arguments);
         this.setState(TileState.LOADED);

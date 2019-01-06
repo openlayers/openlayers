@@ -3,7 +3,7 @@
  */
 
 import TileState from '../TileState.js';
-import VectorImageTile from '../VectorImageTile.js';
+import VectorRenderTile from '../VectorRenderTile.js';
 import Tile from '../VectorTile.js';
 import {toSize} from '../size.js';
 import UrlTile from './UrlTile.js';
@@ -172,7 +172,7 @@ class VectorTile extends UrlTile {
   /**
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
-   * @param {VectorImageTile} tile Vector image tile.
+   * @param {VectorRenderTile} tile Vector image tile.
    * @return {Array<import("../VectorTile").default>} Tile keys.
    */
   getSourceTiles(pixelRatio, projection, tile) {
@@ -272,7 +272,7 @@ class VectorTile extends UrlTile {
   }
 
   /**
-   * @param {VectorImageTile} tile Tile.
+   * @param {VectorRenderTile} tile Tile.
    * @param {Array<import("../VectorTile").default>} sourceTiles Source tiles.
    */
   addSourceTiles(tile, sourceTiles) {
@@ -283,7 +283,7 @@ class VectorTile extends UrlTile {
   }
 
   /**
-   * @param {VectorImageTile} tile Tile.
+   * @param {VectorRenderTile} tile Tile.
    */
   removeSourceTiles(tile) {
     const tileKey = getKey(tile.tileCoord);
@@ -314,7 +314,7 @@ class VectorTile extends UrlTile {
       const tileCoord = [z, x, y];
       const urlTileCoord = this.getTileCoordForTileUrlFunction(
         tileCoord, projection);
-      const tile = new VectorImageTile(
+      const tile = new VectorRenderTile(
         tileCoord,
         urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
         urlTileCoord,

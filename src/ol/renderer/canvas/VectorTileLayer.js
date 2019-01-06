@@ -125,7 +125,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     /**
      * @private
-     * @type {!Object<string, import("../../VectorImageTile.js").default>}
+     * @type {!Object<string, import("../../VectorRenderTile.js").default>}
      */
     this.renderTileImageQueue_ = {};
 
@@ -156,7 +156,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {import("../../VectorImageTile.js").default} tile Tile.
+   * @param {import("../../VectorRenderTile.js").default} tile Tile.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../../proj/Projection").default} projection Projection.
    */
@@ -176,7 +176,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   getTile(z, x, y, pixelRatio, projection) {
-    const tile = /** @type {import("../../VectorImageTile.js").default} */ (super.getTile(z, x, y, pixelRatio, projection));
+    const tile = /** @type {import("../../VectorRenderTile.js").default} */ (super.getTile(z, x, y, pixelRatio, projection));
     this.prepareTile(tile, pixelRatio, projection);
     if (tile.getState() < TileState.LOADED) {
       const tileUid = getUid(tile);
@@ -217,7 +217,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {import("../../VectorImageTile.js").default} tile Tile.
+   * @param {import("../../VectorRenderTile.js").default} tile Tile.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../../proj/Projection.js").default} projection Projection.
    * @private
@@ -323,7 +323,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     /** @type {!Object<string, boolean>} */
     const features = {};
 
-    const renderedTiles = /** @type {Array<import("../../VectorImageTile.js").default>} */ (this.renderedTiles);
+    const renderedTiles = /** @type {Array<import("../../VectorRenderTile.js").default>} */ (this.renderedTiles);
 
     let bufferedExtent, found;
     let i, ii;
@@ -452,7 +452,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const clips = [];
     const zs = [];
     for (let i = tiles.length - 1; i >= 0; --i) {
-      const tile = /** @type {import("../../VectorImageTile.js").default} */ (tiles[i]);
+      const tile = /** @type {import("../../VectorRenderTile.js").default} */ (tiles[i]);
       if (tile.getState() == TileState.ABORT) {
         continue;
       }
@@ -564,7 +564,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {import("../../VectorImageTile.js").default} tile Tile.
+   * @param {import("../../VectorRenderTile.js").default} tile Tile.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../../proj/Projection.js").default} projection Projection.
    * @return {boolean} A new tile image was rendered.
@@ -579,7 +579,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * @param {import("../../VectorImageTile.js").default} tile Tile.
+   * @param {import("../../VectorRenderTile.js").default} tile Tile.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../../proj/Projection.js").default} projection Projection.
    * @private
