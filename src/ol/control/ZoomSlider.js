@@ -233,7 +233,7 @@ class ZoomSlider extends Control {
    */
   handleDraggerStart_(event) {
     if (!this.dragging_ && event.originalEvent.target === this.element.firstElementChild) {
-      this.getMap().getView().setHint(ViewHint.INTERACTING, 1);
+      this.getMap().getView().beginInteraction();
       this.previousX_ = event.clientX;
       this.previousY_ = event.clientY;
       this.dragging_ = true;
@@ -279,7 +279,7 @@ class ZoomSlider extends Control {
   handleDraggerEnd_(event) {
     if (this.dragging_) {
       const view = this.getMap().getView();
-      view.setHint(ViewHint.INTERACTING, -1);
+      view.endInteraction();
 
       view.animate({
         resolution: view.constrainResolution(this.currentResolution_),

@@ -126,7 +126,7 @@ class PinchZoom extends PointerInteraction {
     if (this.targetPointers.length < 2) {
       const map = mapBrowserEvent.map;
       const view = map.getView();
-      view.setHint(ViewHint.INTERACTING, -1);
+      view.endInteraction();
       const resolution = view.getResolution();
       if (this.constrainResolution_ ||
           resolution < view.getMinResolution() ||
@@ -153,7 +153,7 @@ class PinchZoom extends PointerInteraction {
       this.lastDistance_ = undefined;
       this.lastScaleDelta_ = 1;
       if (!this.handlingDownUpSequence) {
-        map.getView().setHint(ViewHint.INTERACTING, 1);
+        map.getView().beginInteraction();
       }
       return true;
     } else {

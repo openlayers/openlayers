@@ -131,7 +131,7 @@ class PinchRotate extends PointerInteraction {
     if (this.targetPointers.length < 2) {
       const map = mapBrowserEvent.map;
       const view = map.getView();
-      view.setHint(ViewHint.INTERACTING, -1);
+      view.endInteraction();
       if (this.rotating_) {
         const rotation = view.getRotation();
         rotate(view, rotation, this.anchor_, this.duration_);
@@ -153,7 +153,7 @@ class PinchRotate extends PointerInteraction {
       this.rotating_ = false;
       this.rotationDelta_ = 0.0;
       if (!this.handlingDownUpSequence) {
-        map.getView().setHint(ViewHint.INTERACTING, 1);
+        map.getView().beginInteraction();
       }
       return true;
     } else {

@@ -1201,6 +1201,22 @@ class View extends BaseObject {
       this.cancelAnimations();
     }
   }
+
+  /**
+   * Notify the View that an interaction has started.
+   * @api
+   */
+  beginInteraction() {
+    this.setHint(ViewHint.INTERACTING, 1);
+  }
+
+  /**
+   * Notify the View that an interaction has ended.
+   * @api
+   */
+  endInteraction() {
+    this.setHint(ViewHint.INTERACTING, -1);
+  }
 }
 
 

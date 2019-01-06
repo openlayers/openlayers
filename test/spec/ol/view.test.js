@@ -1422,6 +1422,23 @@ describe('ol.View', function() {
       expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
     });
   });
+
+  describe('#beginInteraction() and endInteraction()', function() {
+    let view;
+    beforeEach(function() {
+      view = new View()
+    });
+
+    it('correctly changes the view hint', function() {
+      view.beginInteraction();
+      expect(view.getHints()[1]).to.be(1);
+      view.beginInteraction();
+      expect(view.getHints()[1]).to.be(2);
+      view.endInteraction();
+      view.endInteraction();
+      expect(view.getHints()[1]).to.be(0);
+    });
+  });
 });
 
 describe('ol.View.isNoopAnimation()', function() {

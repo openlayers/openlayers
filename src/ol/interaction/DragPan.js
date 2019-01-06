@@ -76,7 +76,7 @@ class DragPan extends PointerInteraction {
   handleDragEvent(mapBrowserEvent) {
     if (!this.panning_) {
       this.panning_ = true;
-      this.getMap().getView().setHint(ViewHint.INTERACTING, 1);
+      this.getMap().getView().beginInteraction();
     }
     const targetPointers = this.targetPointers;
     const centroid = centroidFromPointers(targetPointers);
@@ -129,7 +129,7 @@ class DragPan extends PointerInteraction {
       }
       if (this.panning_) {
         this.panning_ = false;
-        view.setHint(ViewHint.INTERACTING, -1);
+        view.endInteraction();
       }
       return false;
     } else {

@@ -97,7 +97,7 @@ class DragRotate extends PointerInteraction {
 
     const map = mapBrowserEvent.map;
     const view = map.getView();
-    view.setHint(ViewHint.INTERACTING, -1);
+    view.endInteraction();
     const rotation = view.getRotation();
     rotate(view, rotation, undefined, this.duration_);
     return false;
@@ -114,7 +114,7 @@ class DragRotate extends PointerInteraction {
 
     if (mouseActionButton(mapBrowserEvent) && this.condition_(mapBrowserEvent)) {
       const map = mapBrowserEvent.map;
-      map.getView().setHint(ViewHint.INTERACTING, 1);
+      map.getView().beginInteraction();
       this.lastAngle_ = undefined;
       return true;
     } else {

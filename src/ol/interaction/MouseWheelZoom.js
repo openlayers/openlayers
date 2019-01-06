@@ -152,7 +152,7 @@ class MouseWheelZoom extends Interaction {
   decrementInteractingHint_() {
     this.trackpadTimeoutId_ = undefined;
     const view = this.getMap().getView();
-    view.setHint(ViewHint.INTERACTING, -1);
+    view.endInteraction();
   }
 
   /**
@@ -218,7 +218,7 @@ class MouseWheelZoom extends Interaction {
       if (this.trackpadTimeoutId_) {
         clearTimeout(this.trackpadTimeoutId_);
       } else {
-        view.setHint(ViewHint.INTERACTING, 1);
+        view.beginInteraction();
       }
       this.trackpadTimeoutId_ = setTimeout(this.decrementInteractingHint_.bind(this), this.trackpadEventGap_);
       let resolution = view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
