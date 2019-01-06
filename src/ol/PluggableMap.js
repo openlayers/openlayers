@@ -107,13 +107,6 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * layer.
  * @property {number} [maxTilesLoading=16] Maximum number tiles to load
  * simultaneously.
- * @property {boolean} [loadTilesWhileAnimating=false] When set to `true`, tiles
- * will be loaded during animations. This may improve the user experience, but
- * can also make animations stutter on devices with slow memory.
- * @property {boolean} [loadTilesWhileInteracting=false] When set to `true`,
- * tiles will be loaded while interacting with the map. This may improve the
- * user experience, but can also make map panning and zooming choppy on devices
- * with slow memory.
  * @property {number} [moveTolerance=1] The minimum distance in pixels the
  * cursor must move to be detected as a map move event instead of a click.
  * Increasing this value can make it easier to click on the map.
@@ -153,22 +146,6 @@ class PluggableMap extends BaseObject {
      * @private
      */
     this.maxTilesLoading_ = options.maxTilesLoading !== undefined ? options.maxTilesLoading : 16;
-
-    /**
-     * @type {boolean}
-     * @private
-     */
-    this.loadTilesWhileAnimating_ =
-        options.loadTilesWhileAnimating !== undefined ?
-          options.loadTilesWhileAnimating : false;
-
-    /**
-     * @type {boolean}
-     * @private
-     */
-    this.loadTilesWhileInteracting_ =
-        options.loadTilesWhileInteracting !== undefined ?
-          options.loadTilesWhileInteracting : false;
 
     /**
      * @private
@@ -957,12 +934,8 @@ class PluggableMap extends BaseObject {
       let maxNewLoads = maxTotalLoading;
       if (frameState) {
         const hints = frameState.viewHints;
-        if (hints[ViewHint.ANIMATING]) {
-          maxTotalLoading = this.loadTilesWhileAnimating_ ? 8 : 0;
-          maxNewLoads = 2;
-        }
-        if (hints[ViewHint.INTERACTING]) {
-          maxTotalLoading = this.loadTilesWhileInteracting_ ? 8 : 0;
+        if (hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING]) {
+          maxTotalLoading = 8;
           maxNewLoads = 2;
         }
       }

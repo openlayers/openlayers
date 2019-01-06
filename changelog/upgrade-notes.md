@@ -2,11 +2,6 @@
 
 ### Next version
 
-##### Removal of the AtlasManager
-
-Following the removal of the experimental WebGL renderer, the AtlasManager has been removed as well. The atlas was only used by this renderer.
-The non API `getChecksum` functions of the style is also removed.
-
 #### Backwards incompatible changes
 
 ##### New internal tile coordinates
@@ -113,6 +108,16 @@ The removed classes and components are:
 * `WebGLMap`
 * The shader build process using `mustache` and the `Makefile` at the root
 
+##### Removal of the AtlasManager
+
+Following the removal of the experimental WebGL renderer, the AtlasManager has been removed as well. The atlas was only used by this renderer.
+The non API `getChecksum` functions of the style is also removed.
+
+#### Other changes
+
+##### Always load tiles while animating or interacting
+
+`ol/PluggableMap` and subclasses no longer support the `loadTilesWhileAnimating` and `loadTilesWhileInteracting` options. These options were used to enable tile loading during animations and interactions. With the new DOM composition render strategy, it is no longer necessary to postpone tile loading until after animations or interactions.
 
 ### v5.3.0
 
