@@ -124,7 +124,6 @@ const vectorLayer = new VectorLayer({
 const center = [-5639523.95, -3501274.52];
 const map = new Map({
   target: document.getElementById('map'),
-  loadTilesWhileAnimating: true,
   view: new View({
     center: center,
     zoom: 10,
