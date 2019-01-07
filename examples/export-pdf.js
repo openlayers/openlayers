@@ -56,17 +56,17 @@ exportButton.addEventListener('click', function() {
   const size = map.getSize();
   const extent = map.getView().calculateExtent(size);
 
-  map.once('rendercomplete', function(event) {
-    const canvas = event.context.canvas;
-    const data = canvas.toDataURL('image/jpeg');
-    const pdf = new jsPDF('landscape', undefined, format);
-    pdf.addImage(data, 'JPEG', 0, 0, dim[0], dim[1]);
-    pdf.save('map.pdf');
-    // Reset original map size
-    map.setSize(size);
-    map.getView().fit(extent, {size});
-    exportButton.disabled = false;
-    document.body.style.cursor = 'auto';
+  map.once('rendercomplete', function() {
+    domtoimage.toJpeg(map.getViewport().querySelector('.ol-layers')).then(function(dataUrl) {
+      const pdf = new jsPDF('landscape', undefined, format);
+      pdf.addImage(dataUrl, 'JPEG', 0, 0, dim[0], dim[1]);
+      pdf.save('map.pdf');
+      // Reset original map size
+      map.setSize(size);
+      map.getView().fit(extent, {size});
+      exportButton.disabled = false;
+      document.body.style.cursor = 'auto';
+    });
   });
 
   // Set print size
