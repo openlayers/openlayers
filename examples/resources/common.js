@@ -1,6 +1,10 @@
 (function() {
-  var clipboard = new Clipboard('#copy-button');
-  clipboard.on('success', function(e) {
+  var htmlClipboard = new Clipboard('#copy-html-button');
+  htmlClipboard.on('success', function(e) {
+    e.clearSelection();
+  });
+  var jsClipboard = new Clipboard('#copy-js-button');
+  jsClipboard.on('success', function(e) {
     e.clearSelection();
   });
 

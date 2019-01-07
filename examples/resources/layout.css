@@ -91,13 +91,13 @@ pre[class*="language-"] {
   background: #FFFFFF;
 }
 
-#source-controls {
+.source-controls {
   position: absolute;
   margin-top: 20px;
   right: 40px;
 }
 
-#source-controls a {
+.source-controls a {
   margin-left: 15px;
 }
 
