@@ -1,4 +1,3 @@
-import {getUid} from '../../../../src/ol/util.js';
 import Map from '../../../../src/ol/Map.js';
 import Layer, {visibleAtResolution} from '../../../../src/ol/layer/Layer.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
@@ -396,15 +395,12 @@ describe('ol.layer.Layer', function() {
           map: map
         });
         const frameState = {
-          layerStatesArray: [],
-          layerStates: {}
+          layerStatesArray: []
         };
-        map.dispatchEvent(new RenderEvent('precompose', null,
-          frameState, null, null));
+        map.dispatchEvent(new RenderEvent('precompose', null, frameState, null, null));
         expect(frameState.layerStatesArray.length).to.be(1);
         const layerState = frameState.layerStatesArray[0];
         expect(layerState.layer).to.equal(layer);
-        expect(frameState.layerStates[getUid(layer)]).to.equal(layerState);
       });
     });
 

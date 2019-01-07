@@ -1,4 +1,3 @@
-import {getUid} from '../../../../../src/ol/util.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -203,14 +202,13 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       const spy = sinon.spy();
       const coordinate = [0, 0];
       const frameState = {
-        layerStates: {},
+        layerStatesArray: [{}],
         skippedFeatureUids: {},
         viewState: {
           resolution: 1,
           rotation: 0
         }
       };
-      frameState.layerStates[getUid(layer)] = {};
       renderer.forEachFeatureAtCoordinate(
         coordinate, frameState, 0, spy, undefined);
       expect(spy.callCount).to.be(1);

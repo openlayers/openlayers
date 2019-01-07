@@ -107,12 +107,12 @@ class MapRenderer extends Disposable {
     const viewResolution = viewState.resolution;
 
     /**
+     * @param {boolean} managed Managed layer.
      * @param {import("../Feature.js").FeatureLike} feature Feature.
      * @param {import("../layer/Layer.js").default} layer Layer.
      * @return {?} Callback result.
      */
-    function forEachFeatureAtCoordinate(feature, layer) {
-      const managed = frameState.layerStates[getUid(layer)].managed;
+    function forEachFeatureAtCoordinate(managed, feature, layer) {
       if (!(getUid(feature) in frameState.skippedFeatureUids && !managed)) {
         return callback.call(thisArg, feature, managed ? layer : null);
       }
@@ -141,9 +141,10 @@ class MapRenderer extends Disposable {
         const layerRenderer = this.getLayerRenderer(layer);
         const source = layer.getSource();
         if (layerRenderer && source) {
+          const callback = forEachFeatureAtCoordinate.bind(null, layerState.managed);
           result = layerRenderer.forEachFeatureAtCoordinate(
             source.getWrapX() ? translatedCoordinate : coordinate,
-            frameState, hitTolerance, forEachFeatureAtCoordinate);
+            frameState, hitTolerance, callback);
         }
         if (result) {
           return result;
@@ -250,19 +251,6 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @param {import("../PluggableMap.js").default} map Map.
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
-   * @private
-   */
-  removeUnusedLayerRenderers_(map, frameState) {
-    for (const layerKey in this.layerRenderers_) {
-      if (!frameState || !(layerKey in frameState.layerStates)) {
-        this.removeLayerRendererByKey_(layerKey).dispose();
-      }
-    }
-  }
-
-  /**
    * Render.
    * @abstract
    * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
@@ -276,7 +264,9 @@ class MapRenderer extends Disposable {
    * @protected
    */
   scheduleExpireIconCache(frameState) {
-    frameState.postRenderFunctions.push(/** @type {import("../PluggableMap.js").PostRenderFunction} */ (expireIconCache));
+    if (iconImageCache.canExpireCache()) {
+      frameState.postRenderFunctions.push(expireIconCache);
+    }
   }
 
   /**
@@ -284,12 +274,12 @@ class MapRenderer extends Disposable {
    * @protected
    */
   scheduleRemoveUnusedLayerRenderers(frameState) {
+    const layerStatesMap = getLayerStatesMap(frameState.layerStatesArray);
     for (const layerKey in this.layerRenderers_) {
-      if (!(layerKey in frameState.layerStates)) {
-        frameState.postRenderFunctions.push(
-          /** @type {import("../PluggableMap.js").PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
-        );
-        return;
+      if (!(layerKey in layerStatesMap)) {
+        frameState.postRenderFunctions.push(function() {
+          this.removeLayerRendererByKey_(layerKey).dispose();
+        }.bind(this));
       }
     }
   }
@@ -304,6 +294,16 @@ function expireIconCache(map, frameState) {
   iconImageCache.expire();
 }
 
+/**
+ * @param {Array<import("../layer/Layer.js").State>} layerStatesArray Layer states array.
+ * @return {Object<string, import("../layer/Layer.js").State>} States mapped by layer uid.
+ */
+function getLayerStatesMap(layerStatesArray) {
+  return layerStatesArray.reduce(function(acc, state) {
+    acc[getUid(state.layer)] = state;
+    return acc;
+  }, {});
+}
 
 /**
  * @param {import("../layer/Layer.js").State} state1 First layer state.

@@ -3,7 +3,6 @@
  */
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
-import {getUid} from '../util.js';
 import {getChangeEventType} from '../Object.js';
 import BaseLayer from './Base.js';
 import LayerProperty from './Property.js';
@@ -219,7 +218,6 @@ class Layer extends BaseLayer {
           layerState.zIndex = Infinity;
         }
         renderEvent.frameState.layerStatesArray.push(layerState);
-        renderEvent.frameState.layerStates[getUid(this)] = layerState;
       }, this);
       this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
       this.changed();
