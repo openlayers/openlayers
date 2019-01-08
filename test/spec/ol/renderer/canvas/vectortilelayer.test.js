@@ -19,6 +19,7 @@ import Style from '../../../../../src/ol/style/Style.js';
 import Text from '../../../../../src/ol/style/Text.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 import VectorTileRenderType from '../../../../../src/ol/layer/VectorTileRenderType.js';
+import {getUid} from '../../../../../src/ol/util.js';
 
 
 describe('ol.renderer.canvas.VectorTileLayer', function() {
