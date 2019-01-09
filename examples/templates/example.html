@@ -99,6 +99,7 @@
       </div>
 
       <div class="row-fluid">
+        <!-- <a class="codepen-button pull-right"><i class="fa fa-codepen"></i> Edit</a> -->
         <div class="span12">
           <h4 id="title">{{ title }}</h4>
           {{{ contents }}}
@@ -114,29 +115,15 @@
 
       <div class="row-fluid">
         <div class="source-controls">
-          <!-- <a id="codepen-button"><i class="fa fa-codepen"></i> Edit</a> -->
+          <a class="copy-button" id="copy-html-button" data-clipboard-target="#example-html-source"><i class="fa fa-clipboard"></i> Copy</a>
         </div>
-        <form method="POST" id="codepen-form" target="_blank" action="https://codepen.io/pen/define/">
-          <textarea class="hidden" name="title">{{ title }}</textarea>
-          <textarea class="hidden" name="description">{{ shortdesc }}</textarea>
-          <textarea class="hidden" name="js">{{ js.source }}</textarea>
-          <textarea class="hidden" name="css">{{ css.source }}</textarea>
-          <textarea class="hidden" name="html">{{ contents }}</textarea>
-          <input type="hidden" name="data">
-        </form>
-        <hr>
-        <pre>index.html</pre>
-        <div class="source-controls">
-          <a id="copy-html-button" data-clipboard-target="#example-html-source"><i class="fa fa-clipboard"></i> Copy</a>
-        </div>
-        <pre><code id="example-html-source" class="language-markup">&lt;!DOCTYPE html&gt;
+        <pre><legend>index.html</legend><code id="example-html-source" class="language-markup">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
     &lt;title&gt;{{ title }}&lt;/title&gt;
     &lt;link rel="stylesheet" href="https://openlayers.org/en/v{{ olVersion }}/css/ol.css" type="text/css"&gt;
     &lt;!-- The line below is only needed for old environments like Internet Explorer and Android 4.x --&gt;
-    &lt;script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"&gt;&lt;/script&gt;
-    {{#if extraHead.remote}}
+    &lt;script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"&gt;&lt;/script&gt;{{#if extraHead.remote}}
 {{ indent extraHead.remote spaces=4 }}{{/if}}{{#if css.source}}
     &lt;style&gt;
 {{ indent css.source spaces=6 }}    &lt;/style&gt;{{/if}}
@@ -145,12 +132,12 @@
 {{ indent contents spaces=4 }}    &lt;script src="index.js"&gt;&lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-        <br>
-        <pre>index.js</pre>
+      </div>
+      <div class="row-fluid">
         <div class="source-controls">
-          <a id="copy-js-button" data-clipboard-target="#example-js-source"><i class="fa fa-clipboard"></i> Copy</a>
+          <a class="copy-button" id="copy-js-button" data-clipboard-target="#example-js-source"><i class="fa fa-clipboard"></i> Copy</a>
         </div>
-        <pre><code id="example-js-source" class="language-js">{{ js.source }}</code></pre>
+        <pre><legend>index.js</legend><code id="example-js-source" class="language-js">{{ js.source }}</code></pre>
       </div>
     </div>
 

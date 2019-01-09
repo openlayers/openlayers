@@ -8,7 +8,7 @@
     e.clearSelection();
   });
 
-  var codepenButton = document.getElementById('codepen-button');
+  var codepenButton = document.getElementsByClassName('codepen-button')[0];
   if (codepenButton) {
     codepenButton.onclick = function(event) {
       event.preventDefault();
