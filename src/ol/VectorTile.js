@@ -63,12 +63,6 @@ class VectorTile extends Tile {
 
     /**
      * @private
-     * @type {Object<string, import("./render/canvas/ExecutorGroup.js").default>}
-     */
-    this.executorGroups_ = {};
-
-    /**
-     * @private
      * @type {import("./Tile.js").LoadFunction}
      */
     this.tileLoadFunction_ = tileLoadFunction;
@@ -85,10 +79,7 @@ class VectorTile extends Tile {
    * @inheritDoc
    */
   disposeInternal() {
-    this.features_ = null;
-    this.executorGroups_ = {};
-    this.state = TileState.ABORT;
-    this.changed();
+    this.setState(TileState.ABORT);
     super.disposeInternal();
   }
 
@@ -135,15 +126,6 @@ class VectorTile extends Tile {
    */
   getProjection() {
     return this.projection_;
-  }
-
-  /**
-   * @param {string} layerId UID of the layer.
-   * @param {string} key Key.
-   * @return {import("./render/canvas/ExecutorGroup.js").default} Executor group.
-   */
-  getExecutorGroup(layerId, key) {
-    return this.executorGroups_[layerId + ',' + key];
   }
 
   /**
@@ -212,15 +194,6 @@ class VectorTile extends Tile {
    */
   setProjection(projection) {
     this.projection_ = projection;
-  }
-
-  /**
-   * @param {string} layerId UID of the layer.
-   * @param {string} key Key.
-   * @param {import("./render/canvas/ExecutorGroup.js").default} executorGroup Executor group.
-   */
-  setExecutorGroup(layerId, key, executorGroup) {
-    this.executorGroups_[layerId + ',' + key] = executorGroup;
   }
 
   /**

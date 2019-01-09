@@ -5,6 +5,7 @@ import TileState from './TileState.js';
 import {easeIn} from './easing.js';
 import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
+import {abstract} from './util.js';
 
 
 /**
@@ -104,6 +105,14 @@ class Tile extends EventTarget {
      * @type {Tile}
      */
     this.interimTile = null;
+
+    /**
+     * The tile is available at the highest possible resolution. Subclasses can
+     * set this to `false` initially. Tile load listeners will not be
+     * unregistered before this is set to `true` and a `#changed()` is called.
+     * @type {boolean}
+     */
+    this.hifi = true;
 
     /**
      * A key assigned to the tile. This is used by the tile source to determine
@@ -240,7 +249,9 @@ class Tile extends EventTarget {
    * @abstract
    * @api
    */
-  load() {}
+  load() {
+    abstract();
+  }
 
   /**
    * Get the alpha value for rendering.
