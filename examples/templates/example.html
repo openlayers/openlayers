@@ -27,6 +27,7 @@
     </script>
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
+    <script src="https://unpkg.com/lz-string@1.4.4/libs/lz-string.min.js"></script>
     <script>
     window.addEventListener("load", function() {
       window.cookieconsent.initialise({
@@ -99,11 +100,14 @@
       </div>
 
       <div class="row-fluid">
-        <!-- <a class="codepen-button pull-right"><i class="fa fa-codepen"></i> Edit</a> -->
+        <a class="codepen-button pull-right"><i class="fa fa-codepen"></i> Edit</a>
         <div class="span12">
           <h4 id="title">{{ title }}</h4>
           {{{ contents }}}
         </div>
+        <form method="POST" id="codepen-form" target="_blank" action="https://codesandbox.io/api/v1/sandboxes/define">
+          <input id="codesandbox-params" type="hidden" name="parameters">
+        </form>
       </div>
 
       <div class="row-fluid">
