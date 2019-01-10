@@ -4,7 +4,7 @@
 import {disable} from '../rotationconstraint.js';
 import ViewHint from '../ViewHint.js';
 import {shiftKeyOnly, mouseOnly} from '../events/condition.js';
-import {rotate, rotateWithoutConstraints, zoom, zoomWithoutConstraints} from './Interaction.js';
+import {rotate, rotateWithoutConstraints, zoom} from './Interaction.js';
 import PointerInteraction from './Pointer.js';
 
 
@@ -95,7 +95,7 @@ class DragRotateAndZoom extends PointerInteraction {
     this.lastAngle_ = theta;
     if (this.lastMagnitude_ !== undefined) {
       const resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
-      zoomWithoutConstraints(view, resolution);
+      zoom(view, resolution);
     }
     if (this.lastMagnitude_ !== undefined) {
       this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;

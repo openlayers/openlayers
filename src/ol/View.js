@@ -345,13 +345,12 @@ class View extends BaseObject {
     if (options.resolution !== undefined) {
       this.setResolution(options.resolution);
     } else if (options.zoom !== undefined) {
-      this.setResolution(this.constrainResolution(
-        this.maxResolution_, options.zoom - this.minZoom_));
-
       if (this.resolutions_) { // in case map zoom is out of min/max zoom range
-        this.setResolution(clamp(
-          Number(this.getResolution() || properties[ViewProperty.RESOLUTION]),
+        const resolution = this.getResolutionForZoom(options.zoom);
+        this.setResolution(clamp(resolution,
           this.minResolution_, this.maxResolution_));
+      } else {
+        this.setZoom(options.zoom);
       }
     }
 

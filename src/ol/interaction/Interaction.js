@@ -177,8 +177,25 @@ export function rotateWithoutConstraints(view, rotation, opt_anchor, opt_duratio
  *     assumed.
  */
 export function zoom(view, resolution, opt_anchor, opt_duration, opt_direction) {
-  resolution = view.constrainResolution(resolution, 0, opt_direction);
-  zoomWithoutConstraints(view, resolution, opt_anchor, opt_duration);
+  if (resolution) {
+    const currentResolution = view.getResolution();
+    const currentCenter = view.getCenter();
+    if (currentResolution !== undefined && currentCenter &&
+      resolution !== currentResolution && opt_duration) {
+      view.animate({
+        resolution: resolution,
+        anchor: opt_anchor,
+        duration: opt_duration,
+        easing: easeOut
+      });
+    } else {
+      if (opt_anchor) {
+        const center = view.calculateCenterZoom(resolution, opt_anchor);
+        view.setCenter(center);
+      }
+      view.setResolution(resolution);
+    }
+  }
 }
 
 
@@ -231,35 +248,6 @@ export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
       view.setCenter(center);
     }
     view.setResolution(newResolution);
-  }
-}
-
-
-/**
- * @param {import("../View.js").default} view View.
- * @param {number|undefined} resolution Resolution to go to.
- * @param {import("../coordinate.js").Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- */
-export function zoomWithoutConstraints(view, resolution, opt_anchor, opt_duration) {
-  if (resolution) {
-    const currentResolution = view.getResolution();
-    const currentCenter = view.getCenter();
-    if (currentResolution !== undefined && currentCenter &&
-        resolution !== currentResolution && opt_duration) {
-      view.animate({
-        resolution: resolution,
-        anchor: opt_anchor,
-        duration: opt_duration,
-        easing: easeOut
-      });
-    } else {
-      if (opt_anchor) {
-        const center = view.calculateCenterZoom(resolution, opt_anchor);
-        view.setCenter(center);
-      }
-      view.setResolution(resolution);
-    }
   }
 }
 

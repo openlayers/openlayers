@@ -3,7 +3,7 @@
  */
 import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
-import {zoom, zoomWithoutConstraints} from './Interaction.js';
+import {zoom} from './Interaction.js';
 import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js';
 
 
@@ -116,7 +116,7 @@ class PinchZoom extends PointerInteraction {
 
     // scale, bypass the resolution constraint
     map.render();
-    zoomWithoutConstraints(view, newResolution, this.anchor_);
+    zoom(view, newResolution, this.anchor_);
   }
 
   /**
