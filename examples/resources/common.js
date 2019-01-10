@@ -7,6 +7,10 @@
   jsClipboard.on('success', function(e) {
     e.clearSelection();
   });
+  var pkgClipboard = new Clipboard('#copy-pkg-button');
+  pkgClipboard.on('success', function(e) {
+    e.clearSelection();
+  });
 
   var codepenButton = document.getElementsByClassName('codepen-button')[0];
   if (codepenButton) {
