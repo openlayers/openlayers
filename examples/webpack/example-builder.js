@@ -100,7 +100,13 @@ function getDependencies(jsSource) {
     if (importMatch) {
       const imp = importMatch[1];
       if (!imp.startsWith('ol/') && imp != 'ol') {
-        const dep = imp.split('/')[0];
+        const parts = imp.split('/');
+        let dep;
+        if (imp.startsWith('@')) {
+          dep = parts.slice(0, 2).join('/');
+        } else {
+          dep = parts[0];
+        }
         if (dep in pkg.devDependencies) {
           dependencies[dep] = pkg.devDependencies[dep];
         }
