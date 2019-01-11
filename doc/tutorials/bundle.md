@@ -72,10 +72,12 @@ You will also need an `index.html` file that will use your bundle. Here is a sim
 With simple scripts you can introduce the commands `npm run build` and `npm start` to manually build your bundle and watch for changes, respectively. Add the following to the script section in `package.json`:
 
 ```json
-"scripts": {
-  "test": "echo \"Error: no test specified\" && exit 1",
-  "start": "parcel index.html",
-  "build": "parcel build --public-url . index.html"
+{
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel index.html",
+    "build": "parcel build --public-url . index.html"
+  }
 }
 ```
 That's it. Now to run your application, enter
