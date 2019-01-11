@@ -10,6 +10,7 @@ const RawSource = require('webpack-sources').RawSource;
 const readFile = promisify(fs.readFile);
 const isCssRegEx = /\.css$/;
 const isJsRegEx = /\.js(\?.*)?$/;
+const importRegEx = /^import .* from '(.*)';$/;
 
 handlebars.registerHelper('md', str => new handlebars.SafeString(marked(str)));
 
@@ -81,6 +82,38 @@ function getJsSource(chunk, jsName) {
       return module.source;
     }
   }
+}
+
+/**
+ * Gets dependencies from the js source.
+ * @param {string} jsSource Source.
+ * @return {Object<string, string>} dependencies
+ */
+function getDependencies(jsSource) {
+  const lines = jsSource.split('\n');
+  const dependencies = {
+    ol: pkg.version
+  };
+  for (let i = 0, ii = lines.length; i < ii; ++i) {
+    const line = lines[i];
+    const importMatch = line.match(importRegEx);
+    if (importMatch) {
+      const imp = importMatch[1];
+      if (!imp.startsWith('ol/') && imp != 'ol') {
+        const parts = imp.split('/');
+        let dep;
+        if (imp.startsWith('@')) {
+          dep = parts.slice(0, 2).join('/');
+        } else {
+          dep = parts[0];
+        }
+        if (dep in pkg.devDependencies) {
+          dependencies[dep] = pkg.devDependencies[dep];
+        }
+      }
+    }
+  }
+  return dependencies;
 }
 
 /**
@@ -167,6 +200,17 @@ ExampleBuilder.prototype.render = async function(dir, chunk) {
     tag: `<script src="${this.common}.js"></script><script src="${jsName}"></script>`,
     source: jsSource
   };
+  data.pkgJson = JSON.stringify({
+    name: name,
+    dependencies: getDependencies(jsSource),
+    devDependencies: {
+      parcel: '1.11.0'
+    },
+    scripts: {
+      start: 'parcel index.html',
+      build: 'parcel build --experimental-scope-hoisting --public-url . index.html'
+    }
+  }, null, 2);
 
   // check for example css
   const cssName = `${name}.css`;

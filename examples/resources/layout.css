@@ -91,22 +91,27 @@ pre[class*="language-"] {
   background: #FFFFFF;
 }
 
-#source-controls {
+pre>legend {
+  font-size: 100%;
+  font-weight: bold;
+}
+
+.source-controls {
   position: absolute;
-  margin-top: 20px;
+  margin-top: 10px;
   right: 40px;
 }
 
-#source-controls a {
+.source-controls a {
   margin-left: 15px;
 }
 
-#copy-button {
+.copy-button {
   text-decoration: none;
   cursor: pointer;
 }
 
-#codepen-button {
+.codepen-button {
   text-decoration: none;
   cursor: pointer;
 }
