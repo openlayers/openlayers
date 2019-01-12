@@ -244,6 +244,7 @@ class Zoomify extends TileImage {
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
       projection: options.projection,
+      tilePixelRatio: options.tilePixelRatio,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileClass: ZoomifyTileClass,
       tileGrid: tileGrid,
