@@ -365,6 +365,7 @@ describe('ol.View', function() {
     it('applies the current resolution if resolution was originally supplied', function() {
       const view = new View({
         center: [0, 0],
+        maxResolution: 2000,
         resolution: 1000
       });
       view.setResolution(500);

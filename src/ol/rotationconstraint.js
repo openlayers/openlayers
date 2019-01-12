@@ -49,7 +49,11 @@ export function createSnapToN(n) {
      * @param {number} delta Delta.
      * @return {number|undefined} Rotation.
      */
-    function(rotation, delta) {
+    function(rotation, delta, opt_isMoving) {
+      if (opt_isMoving) {
+        return rotation;
+      }
+
       if (rotation !== undefined) {
         rotation = Math.floor((rotation + delta) / theta + 0.5) * theta;
         return rotation;
@@ -72,7 +76,11 @@ export function createSnapToZero(opt_tolerance) {
      * @param {number} delta Delta.
      * @return {number|undefined} Rotation.
      */
-    function(rotation, delta) {
+    function(rotation, delta, opt_isMoving) {
+      if (opt_isMoving) {
+        return rotation;
+      }
+
       if (rotation !== undefined) {
         if (Math.abs(rotation + delta) <= tolerance) {
           return 0;

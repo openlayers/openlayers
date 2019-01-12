@@ -19,7 +19,7 @@ export function createExtent(extent) {
      * @param {import("./coordinate.js").Coordinate=} center Center.
      * @return {import("./coordinate.js").Coordinate|undefined} Center.
      */
-    function(center) {
+    function(center, opt_isMoving) {
       if (center) {
         return [
           clamp(center[0], extent[0], extent[2]),

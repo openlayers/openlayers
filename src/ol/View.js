@@ -449,9 +449,9 @@ class View extends BaseObject {
       return;
     }
     let start = Date.now();
-    let center = this.getCenter().slice();
-    let resolution = this.getResolution();
-    let rotation = this.getRotation();
+    let center = this.targetCenter_.slice();
+    let resolution = this.targetResolution_;
+    let rotation = this.targetRotation_;
     const series = [];
     for (let i = 0; i < animationCount; ++i) {
       const options = /** @type {AnimationOptions} */ (arguments[i]);
@@ -573,28 +573,27 @@ class View extends BaseObject {
           const y1 = animation.targetCenter[1];
           const x = x0 + progress * (x1 - x0);
           const y = y0 + progress * (y1 - y0);
-          this.set(ViewProperty.CENTER, [x, y]);
+          this.targetCenter_ = [x, y];
         }
         if (animation.sourceResolution && animation.targetResolution) {
           const resolution = progress === 1 ?
             animation.targetResolution :
             animation.sourceResolution + progress * (animation.targetResolution - animation.sourceResolution);
           if (animation.anchor) {
-            this.set(ViewProperty.CENTER,
-              this.calculateCenterZoom(resolution, animation.anchor));
+            this.targetCenter_ = this.calculateCenterZoom(resolution, animation.anchor);
           }
-          this.set(ViewProperty.RESOLUTION, resolution);
+          this.targetResolution_ = resolution;
         }
         if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
           const rotation = progress === 1 ?
             modulo(animation.targetRotation + Math.PI, 2 * Math.PI) - Math.PI :
             animation.sourceRotation + progress * (animation.targetRotation - animation.sourceRotation);
           if (animation.anchor) {
-            this.set(ViewProperty.CENTER,
-              this.calculateCenterRotate(rotation, animation.anchor));
+            this.targetCenter_ = this.calculateCenterRotate(rotation, animation.anchor);
           }
-          this.set(ViewProperty.ROTATION, rotation);
+          this.targetRotation_ = rotation;
         }
+        this.applyParameters_(true);
         more = true;
         if (!animation.complete) {
           break;
@@ -623,10 +622,10 @@ class View extends BaseObject {
    */
   calculateCenterRotate(rotation, anchor) {
     let center;
-    const currentCenter = this.getCenter();
+    const currentCenter = this.targetCenter_;
     if (currentCenter !== undefined) {
       center = [currentCenter[0] - anchor[0], currentCenter[1] - anchor[1]];
-      rotateCoordinate(center, rotation - this.getRotation());
+      rotateCoordinate(center, rotation - this.targetRotation_);
       addCoordinate(center, anchor);
     }
     return center;
@@ -639,8 +638,8 @@ class View extends BaseObject {
    */
   calculateCenterZoom(resolution, anchor) {
     let center;
-    const currentCenter = this.getCenter();
-    const currentResolution = this.getResolution();
+    const currentCenter = this.targetCenter_;
+    const currentResolution = this.targetResolution_;
     if (currentCenter !== undefined && currentResolution !== undefined) {
       const x = anchor[0] - resolution * (anchor[0] - currentCenter[0]) / currentResolution;
       const y = anchor[1] - resolution * (anchor[1] - currentCenter[1]) / currentResolution;
@@ -917,7 +916,7 @@ class View extends BaseObject {
    */
   getZoom() {
     let zoom;
-    const resolution = this.getResolution();
+    const resolution = this.targetResolution_;
     if (resolution !== undefined) {
       zoom = this.getZoomForResolution(resolution);
     }
@@ -1059,8 +1058,9 @@ class View extends BaseObject {
         easing: options.easing
       }, callback);
     } else {
-      this.setResolution(resolution);
-      this.setCenter(center);
+      this.targetResolution_ = resolution;
+      this.targetCenter_ = center;
+      this.applyParameters_(false, true);
       animationCallback(callback, true);
     }
   }
@@ -1167,14 +1167,21 @@ class View extends BaseObject {
 
   /**
    * Recompute rotation/resolution/center based on target values.
+   * @param {boolean=} opt_doNotCancelAnims Do not cancel animations.
+   * @param {boolean=} opt_forceMoving Apply constraints as if the view is moving.
    * @private
    */
-  applyParameters_() {
-    this.set(ViewProperty.ROTATION, this.targetRotation_);
-    this.set(ViewProperty.RESOLUTION, this.targetResolution_);
-    this.set(ViewProperty.CENTER, this.targetCenter_);
+  applyParameters_(opt_doNotCancelAnims, opt_forceMoving) {
+    const isMoving = this.getAnimating() || this.getInteracting() || opt_forceMoving;
+    const newRotation = this.constraints_.rotation(this.targetRotation_, 0, isMoving);
+    const newResolution = this.constraints_.resolution(this.targetResolution_, 0, 0, isMoving);
+    const newCenter = this.constraints_.center(this.targetCenter_, isMoving);
 
-    if (this.getAnimating()) {
+    this.set(ViewProperty.ROTATION, newRotation);
+    this.set(ViewProperty.RESOLUTION, newResolution);
+    this.set(ViewProperty.CENTER, newCenter);
+
+    if (this.getAnimating() && !opt_doNotCancelAnims) {
       this.cancelAnimations();
     }
   }

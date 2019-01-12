@@ -22,8 +22,14 @@ export function createSnapToResolutions(resolutions) {
      * @param {number} direction Direction.
      * @return {number|undefined} Resolution.
      */
-    function(resolution, delta, direction) {
+    function(resolution, delta, direction, opt_isMoving) {
       if (resolution !== undefined) {
+        // during interacting or animating, allow intermediary values
+        if (opt_isMoving) {
+          // TODO: actually take delta and direction into account
+          return resolution;
+        }
+
         let z = linearFindNearest(resolutions, resolution, direction);
         z = clamp(z + delta, 0, resolutions.length - 1);
         const index = Math.floor(z);
@@ -55,8 +61,14 @@ export function createSnapToPower(power, maxResolution, opt_maxLevel) {
      * @param {number} direction Direction.
      * @return {number|undefined} Resolution.
      */
-    function(resolution, delta, direction) {
+    function(resolution, delta, direction, opt_isMoving) {
       if (resolution !== undefined) {
+        // during interacting or animating, allow intermediary values
+        if (opt_isMoving) {
+          // TODO: actually take delta and direction into account
+          return resolution;
+        }
+
         const offset = -direction / 2 + 0.5;
         const oldLevel = Math.floor(
           Math.log(maxResolution / resolution) / Math.log(power) + offset);
