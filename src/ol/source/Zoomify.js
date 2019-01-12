@@ -251,6 +251,10 @@ class Zoomify extends TileImage {
       tileUrlFunction: tileUrlFunction,
       transition: options.transition
     });
+    
+    console.log("ollll1",this.tilePixelRatio_)
+    console.log("ollll2",this._tilePixelRatio)
+    console.log("ollll3",this.tilePixelRatio)
 
   }
 
