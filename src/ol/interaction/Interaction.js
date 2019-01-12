@@ -133,18 +133,6 @@ export function pan(view, delta, opt_duration) {
  * @param {number=} opt_duration Duration.
  */
 export function rotate(view, rotation, opt_anchor, opt_duration) {
-  rotation = view.constrainRotation(rotation, 0);
-  rotateWithoutConstraints(view, rotation, opt_anchor, opt_duration);
-}
-
-
-/**
- * @param {import("../View.js").default} view View.
- * @param {number|undefined} rotation Rotation.
- * @param {import("../coordinate.js").Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- */
-export function rotateWithoutConstraints(view, rotation, opt_anchor, opt_duration) {
   if (rotation !== undefined) {
     const currentRotation = view.getRotation();
     const currentCenter = view.getCenter();

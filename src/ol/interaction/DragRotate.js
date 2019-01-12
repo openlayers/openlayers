@@ -5,7 +5,7 @@ import {disable} from '../rotationconstraint.js';
 import ViewHint from '../ViewHint.js';
 import {altShiftKeysOnly, mouseOnly, mouseActionButton} from '../events/condition.js';
 import {FALSE} from '../functions.js';
-import {rotate, rotateWithoutConstraints} from './Interaction.js';
+import {rotate} from './Interaction.js';
 import PointerInteraction from './Pointer.js';
 
 
@@ -81,7 +81,7 @@ class DragRotate extends PointerInteraction {
     if (this.lastAngle_ !== undefined) {
       const delta = theta - this.lastAngle_;
       const rotation = view.getRotation();
-      rotateWithoutConstraints(view, rotation - delta);
+      rotate(view, rotation - delta);
     }
     this.lastAngle_ = theta;
   }

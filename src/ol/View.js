@@ -681,24 +681,12 @@ class View extends BaseObject {
    * @param {number=} opt_delta Delta. Default is `0`.
    * @param {number=} opt_direction Direction. Default is `0`.
    * @return {number|undefined} Constrained resolution.
-   * @api
+   * @private
    */
   constrainResolution(resolution, opt_delta, opt_direction) {
     const delta = opt_delta || 0;
     const direction = opt_direction || 0;
     return this.constraints_.resolution(resolution, delta, direction);
-  }
-
-  /**
-   * Get the constrained rotation of this view.
-   * @param {number|undefined} rotation Rotation.
-   * @param {number=} opt_delta Delta. Default is `0`.
-   * @return {number|undefined} Constrained rotation.
-   * @api
-   */
-  constrainRotation(rotation, opt_delta) {
-    const delta = opt_delta || 0;
-    return this.constraints_.rotation(rotation, delta);
   }
 
   /**
