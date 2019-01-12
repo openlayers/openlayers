@@ -475,7 +475,7 @@ const GEOMETRY_TYPE_TO_NODENAME = {
  * @param {string=} opt_nodeName Node name.
  * @return {Node|undefined} Node.
  */
-function GPX_NODE_FACTORY(value, objectStack, opt_nodeName) {
+export function GPX_NODE_FACTORY(value, objectStack, opt_nodeName) {
   const geometry = /** @type {Feature} */ (value).getGeometry();
   if (geometry) {
     const nodeName = GEOMETRY_TYPE_TO_NODENAME[geometry.getType()];
@@ -494,7 +494,7 @@ function GPX_NODE_FACTORY(value, objectStack, opt_nodeName) {
  * @param {!Object} values Values.
  * @return {Array<number>} Flat coordinates.
  */
-function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
+export function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
   flatCoordinates.push(
     parseFloat(node.getAttribute('lon')),
     parseFloat(node.getAttribute('lat')));
@@ -525,7 +525,7 @@ function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
  * @param {Array<number>=} ends Ends.
  * @return {GeometryLayout} Layout.
  */
-function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
+export function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
   let layout = GeometryLayout.XY;
   let stride = 2;
   if (layoutOptions.hasZ && layoutOptions.hasM) {
@@ -564,7 +564,7 @@ function applyLayoutOptions(layoutOptions, flatCoordinates, ends) {
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
-function parseLink(node, objectStack) {
+export function parseLink(node, objectStack) {
   const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const href = node.getAttribute('href');
   if (href !== null) {
@@ -578,7 +578,7 @@ function parseLink(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
-function parseExtensions(node, objectStack) {
+export function parseExtensions(node, objectStack) {
   const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   values['extensionsNode_'] = node;
 }
@@ -588,7 +588,7 @@ function parseExtensions(node, objectStack) {
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
-function parseRtePt(node, objectStack) {
+export function parseRtePt(node, objectStack) {
   const values = pushParseAndPop({}, RTEPT_PARSERS, node, objectStack);
   if (values) {
     const rteValues = /** @type {!Object} */ (objectStack[objectStack.length - 1]);
@@ -603,7 +603,7 @@ function parseRtePt(node, objectStack) {
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
-function parseTrkPt(node, objectStack) {
+export function parseTrkPt(node, objectStack) {
   const values = pushParseAndPop({}, TRKPT_PARSERS, node, objectStack);
   if (values) {
     const trkValues = /** @type {!Object} */ (objectStack[objectStack.length - 1]);
@@ -618,7 +618,7 @@ function parseTrkPt(node, objectStack) {
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
-function parseTrkSeg(node, objectStack) {
+export function parseTrkSeg(node, objectStack) {
   const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   parseNode(TRKSEG_PARSERS, node, objectStack);
   const flatCoordinates = /** @type {Array<number>} */
@@ -633,7 +633,7 @@ function parseTrkSeg(node, objectStack) {
  * @param {Array<*>} objectStack Object stack.
  * @return {Feature|undefined} Track.
  */
-function readRte(node, objectStack) {
+export function readRte(node, objectStack) {
   const options = /** @type {import("./Feature.js").ReadOptions} */ (objectStack[0]);
   const values = pushParseAndPop({
     'flatCoordinates': [],
@@ -661,7 +661,7 @@ function readRte(node, objectStack) {
  * @param {Array<*>} objectStack Object stack.
  * @return {Feature|undefined} Track.
  */
-function readTrk(node, objectStack) {
+export function readTrk(node, objectStack) {
   const options = /** @type {import("./Feature.js").ReadOptions} */ (objectStack[0]);
   const values = pushParseAndPop({
     'flatCoordinates': [],
@@ -692,7 +692,7 @@ function readTrk(node, objectStack) {
  * @param {Array<*>} objectStack Object stack.
  * @return {Feature|undefined} Waypoint.
  */
-function readWpt(node, objectStack) {
+export function readWpt(node, objectStack) {
   const options = /** @type {import("./Feature.js").ReadOptions} */ (objectStack[0]);
   const values = pushParseAndPop({}, WPT_PARSERS, node, objectStack);
   if (!values) {
@@ -714,7 +714,7 @@ function readWpt(node, objectStack) {
  * @param {string} value Value for the link's `href` attribute.
  * @param {Array<*>} objectStack Node stack.
  */
-function writeLink(node, value, objectStack) {
+export function writeLink(node, value, objectStack) {
   node.setAttribute('href', value);
   const context = objectStack[objectStack.length - 1];
   const properties = context['properties'];
@@ -733,7 +733,7 @@ function writeLink(node, value, objectStack) {
  * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
  * @param {Array<*>} objectStack Object stack.
  */
-function writeWptType(node, coordinate, objectStack) {
+export function writeWptType(node, coordinate, objectStack) {
   const context = objectStack[objectStack.length - 1];
   const parentNode = context.node;
   const namespaceURI = parentNode.namespaceURI;
@@ -777,7 +777,7 @@ function writeWptType(node, coordinate, objectStack) {
  * @param {Feature} feature Feature.
  * @param {Array<*>} objectStack Object stack.
  */
-function writeRte(node, feature, objectStack) {
+export function writeRte(node, feature, objectStack) {
   const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
   const properties = feature.getProperties();
   const context = {node: node};
@@ -802,7 +802,7 @@ function writeRte(node, feature, objectStack) {
  * @param {Feature} feature Feature.
  * @param {Array<*>} objectStack Object stack.
  */
-function writeTrk(node, feature, objectStack) {
+export function writeTrk(node, feature, objectStack) {
   const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
   const properties = feature.getProperties();
   /** @type {import("../xml.js").NodeStackItem} */
@@ -827,7 +827,7 @@ function writeTrk(node, feature, objectStack) {
  * @param {LineString} lineString LineString.
  * @param {Array<*>} objectStack Object stack.
  */
-function writeTrkSeg(node, lineString, objectStack) {
+export function writeTrkSeg(node, lineString, objectStack) {
   /** @type {import("../xml.js").NodeStackItem} */
   const context = {node: node};
   context['geometryLayout'] = lineString.getLayout();
@@ -843,7 +843,7 @@ function writeTrkSeg(node, lineString, objectStack) {
  * @param {Feature} feature Feature.
  * @param {Array<*>} objectStack Object stack.
  */
-function writeWpt(node, feature, objectStack) {
+export function writeWpt(node, feature, objectStack) {
   const options = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[0]);
   const context = objectStack[objectStack.length - 1];
   context['properties'] = feature.getProperties();
