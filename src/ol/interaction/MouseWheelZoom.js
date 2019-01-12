@@ -234,7 +234,7 @@ class MouseWheelZoom extends Interaction {
       }
       if (this.lastAnchor_) {
         const center = view.calculateCenterZoom(resolution, this.lastAnchor_);
-        view.setCenter(view.constrainCenter(center));
+        view.setCenter(center);
       }
       view.setResolution(resolution);
 

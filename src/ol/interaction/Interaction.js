@@ -111,8 +111,7 @@ class Interaction extends BaseObject {
 export function pan(view, delta, opt_duration) {
   const currentCenter = view.getCenter();
   if (currentCenter) {
-    const center = view.constrainCenter(
-      [currentCenter[0] + delta[0], currentCenter[1] + delta[1]]);
+    const center = [currentCenter[0] + delta[0], currentCenter[1] + delta[1]];
     if (opt_duration) {
       view.animate({
         duration: opt_duration,
@@ -209,8 +208,7 @@ export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
   // the constraint to it, and then calculate back the anchor
   if (opt_anchor) {
     const currentCenter = view.getCenter();
-    let center = view.calculateCenterZoom(newResolution, opt_anchor);
-    center = view.constrainCenter(center);
+    const center = view.calculateCenterZoom(newResolution, opt_anchor);
 
     opt_anchor = [
       (newResolution * currentCenter[0] - currentResolution * center[0]) /

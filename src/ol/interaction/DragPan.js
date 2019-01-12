@@ -93,7 +93,6 @@ class DragPan extends PointerInteraction {
         scaleCoordinate(center, view.getResolution());
         rotateCoordinate(center, view.getRotation());
         addCoordinate(center, view.getCenter());
-        center = view.constrainCenter(center);
         view.setCenter(center);
       }
     } else if (this.kinetic_) {
@@ -122,7 +121,7 @@ class DragPan extends PointerInteraction {
           centerpx[1] - distance * Math.sin(angle)
         ]);
         view.animate({
-          center: view.constrainCenter(dest),
+          center: dest,
           duration: 500,
           easing: easeOut
         });

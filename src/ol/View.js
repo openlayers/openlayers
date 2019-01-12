@@ -666,16 +666,6 @@ class View extends BaseObject {
   }
 
   /**
-   * Get the constrained center of this view.
-   * @param {import("./coordinate.js").Coordinate|undefined} center Center.
-   * @return {import("./coordinate.js").Coordinate|undefined} Constrained center.
-   * @api
-   */
-  constrainCenter(center) {
-    return this.constraints_.center(center);
-  }
-
-  /**
    * Get the constrained resolution of this view.
    * @param {number|undefined} resolution Resolution.
    * @param {number=} opt_delta Delta. Default is `0`.

@@ -83,8 +83,7 @@ function onBoxEnd() {
   const resolution = view.getResolutionForExtent(extent, size);
   const zoom = view.getValidZoomLevel(view.getZoomForResolution(resolution));
 
-  let center = getCenter(extent);
-  center = view.constrainCenter(center);
+  const center = getCenter(extent);
 
   view.animate({
     zoom: zoom,
