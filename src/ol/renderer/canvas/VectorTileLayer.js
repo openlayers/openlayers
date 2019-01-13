@@ -162,9 +162,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   prepareTile(tile, pixelRatio, projection) {
     const tileUid = getUid(tile);
-    if (tile.getState() === TileState.LOADED || tile.getState() === TileState.ERROR) {
+    const state = tile.getState();
+    if (((state === TileState.LOADED && tile.hifi) ||
+        state === TileState.ERROR || state === TileState.ABORT) &&
+        tileUid in this.tileListenerKeys_) {
       unlistenByKey(this.tileListenerKeys_[tileUid]);
       delete this.tileListenerKeys_[tileUid];
+    }
+    if (state === TileState.LOADED || state === TileState.ERROR) {
       this.updateExecutorGroup_(tile, pixelRatio, projection);
       if (this.tileImageNeedsRender_(tile, pixelRatio, projection)) {
         this.renderTileImageQueue_[tileUid] = tile;
@@ -177,13 +182,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   getTile(z, x, y, pixelRatio, projection) {
     const tile = /** @type {import("../../VectorRenderTile.js").default} */ (super.getTile(z, x, y, pixelRatio, projection));
-    this.prepareTile(tile, pixelRatio, projection);
     if (tile.getState() < TileState.LOADED) {
       const tileUid = getUid(tile);
       if (!(tileUid in this.tileListenerKeys_)) {
         const listenerKey = listen(tile, EventType.CHANGE, this.prepareTile.bind(this, tile, pixelRatio, projection));
         this.tileListenerKeys_[tileUid] = listenerKey;
       }
+    } else {
+      this.prepareTile(tile, pixelRatio, projection);
     }
     return tile;
   }
