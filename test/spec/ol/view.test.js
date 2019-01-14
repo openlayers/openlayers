@@ -1104,7 +1104,9 @@ describe('ol.View', function() {
       const min = view.getMinZoom();
 
       expect(view.getResolutionForZoom(max)).to.be(view.getMinResolution());
+      expect(view.getResolutionForZoom(max + 1)).to.be(view.getMinResolution());
       expect(view.getResolutionForZoom(min)).to.be(view.getMaxResolution());
+      expect(view.getResolutionForZoom(min - 1)).to.be(view.getMaxResolution());
     });
 
     it('returns correct zoom levels for specifically configured resolutions', function() {
@@ -1112,11 +1114,30 @@ describe('ol.View', function() {
         resolutions: [10, 8, 6, 4, 2]
       });
 
+      expect(view.getResolutionForZoom(-1)).to.be(10);
       expect(view.getResolutionForZoom(0)).to.be(10);
       expect(view.getResolutionForZoom(1)).to.be(8);
       expect(view.getResolutionForZoom(2)).to.be(6);
       expect(view.getResolutionForZoom(3)).to.be(4);
       expect(view.getResolutionForZoom(4)).to.be(2);
+      expect(view.getResolutionForZoom(5)).to.be(2);
+    });
+
+    it('returns correct zoom levels for resolutions with variable zoom levels', function() {
+      const view = new View({
+        resolutions: [50, 10, 5, 2.5, 1.25, 0.625]
+      });
+
+      expect(view.getResolutionForZoom(-1)).to.be(50);
+      expect(view.getResolutionForZoom(0)).to.be(50);
+      expect(view.getResolutionForZoom(0.5)).to.be(50 / Math.pow(5, 0.5));
+      expect(view.getResolutionForZoom(1)).to.be(10);
+      expect(view.getResolutionForZoom(2)).to.be(5);
+      expect(view.getResolutionForZoom(2.75)).to.be(5 / Math.pow(2, 0.75));
+      expect(view.getResolutionForZoom(3)).to.be(2.5);
+      expect(view.getResolutionForZoom(4)).to.be(1.25);
+      expect(view.getResolutionForZoom(5)).to.be(0.625);
+      expect(view.getResolutionForZoom(6)).to.be(0.625);
     });
 
   });
@@ -1468,6 +1489,41 @@ describe('ol.View', function() {
       expect(view.getValidZoomLevel(0)).to.be(0);
       expect(view.getValidZoomLevel(4)).to.be(4);
       expect(view.getValidZoomLevel(8)).to.be(6);
+    });
+  });
+
+  describe('#getValidResolution()', function() {
+    let view;
+    const defaultMaxRes = 156543.03392804097;
+
+    it('works correctly by snapping to power of 2', function() {
+      view = new View();
+      expect(view.getValidResolution(1000000)).to.be(defaultMaxRes);
+      expect(view.getValidResolution(defaultMaxRes / 8)).to.be(defaultMaxRes / 8);
+    });
+    it('works correctly by snapping to a custom zoom factor', function() {
+      view = new View({
+        maxResolution: 2500,
+        zoomFactor: 5,
+        maxZoom: 4
+      });
+      expect(view.getValidResolution(90, 1)).to.be(100);
+      expect(view.getValidResolution(90, -1)).to.be(20);
+      expect(view.getValidResolution(20)).to.be(20);
+      expect(view.getValidResolution(5)).to.be(4);
+      expect(view.getValidResolution(1)).to.be(4);
+    });
+    it('works correctly with a specific resolution set', function() {
+      view = new View({
+        zoom: 0,
+        resolutions: [512, 256, 128, 64, 32, 16, 8]
+      });
+      expect(view.getValidResolution(1000, 1)).to.be(512);
+      expect(view.getValidResolution(260, 1)).to.be(512);
+      expect(view.getValidResolution(260)).to.be(256);
+      expect(view.getValidResolution(30)).to.be(32);
+      expect(view.getValidResolution(30, -1)).to.be(16);
+      expect(view.getValidResolution(4, -1)).to.be(8);
     });
   });
 });

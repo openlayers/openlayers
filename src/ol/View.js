@@ -666,28 +666,6 @@ class View extends BaseObject {
   }
 
   /**
-   * Get the constrained resolution of this view.
-   * @param {number|undefined} resolution Resolution.
-   * @param {number=} opt_delta Delta. Default is `0`.
-   * @param {number=} opt_direction Direction. Default is `0`.
-   * @return {number|undefined} Constrained resolution.
-   * @private
-   */
-  constrainResolution(resolution, opt_delta, opt_direction) {
-    const delta = opt_delta || 0;
-    const direction = opt_direction || 0;
-
-    const size = this.getSizeFromViewport_();
-    const rotation = this.getRotation() || 0;
-    const rotatedSize = [
-      Math.abs(size[0] * Math.cos(rotation)) + Math.abs(size[1] * Math.sin(rotation)),
-      Math.abs(size[0] * Math.sin(rotation)) + Math.abs(size[1] * Math.cos(rotation))
-    ];
-
-    return this.constraints_.resolution(resolution, delta, direction, rotatedSize);
-  }
-
-  /**
    * Get the view center.
    * @return {import("./coordinate.js").Coordinate|undefined} The center of the view.
    * @observable
@@ -964,8 +942,14 @@ class View extends BaseObject {
    * @api
    */
   getResolutionForZoom(zoom) {
-    return /** @type {number} */ (this.constrainResolution(
-      this.maxResolution_, zoom - this.minZoom_, 0));
+    if (this.resolutions_) {
+      const baseLevel = clamp(Math.floor(zoom), 0, this.resolutions_.length - 2);
+      const zoomFactor = this.resolutions_[baseLevel] / this.resolutions_[baseLevel + 1];
+      return this.resolutions_[baseLevel] / Math.pow(zoomFactor, clamp(zoom - baseLevel, 0, 1));
+    } else {
+      return clamp(this.maxResolution_ / Math.pow(this.zoomFactor_, zoom - this.minZoom_),
+        this.minResolution_, this.maxResolution_);
+    }
   }
 
   /**
@@ -1008,8 +992,7 @@ class View extends BaseObject {
     if (options.minResolution !== undefined) {
       minResolution = options.minResolution;
     } else if (options.maxZoom !== undefined) {
-      minResolution = this.constrainResolution(
-        this.maxResolution_, options.maxZoom - this.minZoom_, 0);
+      minResolution = this.getResolutionForZoom(options.maxZoom);
     } else {
       minResolution = 0;
     }
@@ -1040,12 +1023,7 @@ class View extends BaseObject {
     resolution = isNaN(resolution) ? minResolution :
       Math.max(resolution, minResolution);
     if (constrainResolution) {
-      let constrainedResolution = this.constrainResolution(resolution, 0, 0);
-      if (!nearest && constrainedResolution < resolution) {
-        constrainedResolution = this.constrainResolution(
-          constrainedResolution, -1, 0);
-      }
-      resolution = constrainedResolution;
+      resolution = this.getValidResolution(resolution, nearest ? 0 : 1);
     }
 
     // calculate center
@@ -1196,7 +1174,7 @@ class View extends BaseObject {
       Math.abs(size[0] * Math.sin(rotation)) + Math.abs(size[1] * Math.cos(rotation))
     ];
 
-    const newResolution = this.constraints_.resolution(this.targetResolution_, 0, 0, rotatedSize, isMoving);
+    const newResolution = this.constraints_.resolution(this.targetResolution_, 0, rotatedSize, isMoving);
     const newCenter = this.constraints_.center(this.targetCenter_, newResolution, rotatedSize, isMoving);
 
     this.set(ViewProperty.ROTATION, newRotation);
@@ -1226,7 +1204,7 @@ class View extends BaseObject {
 
   /**
    * Get a valid zoom level according to the current view constraints.
-   * @param {number|undefined} targetZoom Target resolution.
+   * @param {number|undefined} targetZoom Target zoom.
    * @param {number=} opt_direction Direction. Default is `0`. Specify `-1` or `1` to return
    * the available value respectively lower or greater than the target one. Leaving `0` will simply choose
    * the nearest available value.
@@ -1234,10 +1212,21 @@ class View extends BaseObject {
    * @api
    */
   getValidZoomLevel(targetZoom, opt_direction) {
-    const direction = opt_direction || 0;
-    const currentRes = this.getResolution();
-    const currentZoom = this.getZoom();
+    const targetRes = this.getResolutionForZoom(targetZoom);
+    return this.getZoomForResolution(this.getValidResolution(targetRes));
+  }
 
+  /**
+   * Get a valid resolution according to the current view constraints.
+   * @param {number|undefined} targetResolution Target resolution.
+   * @param {number=} opt_direction Direction. Default is `0`. Specify `-1` or `1` to return
+   * the available value respectively lower or greater than the target one. Leaving `0` will simply choose
+   * the nearest available value.
+   * @return {number|undefined} Valid resolution.
+   * @api
+   */
+  getValidResolution(targetResolution, opt_direction) {
+    const direction = opt_direction || 0;
     const size = this.getSizeFromViewport_();
     const rotation = this.getRotation() || 0;
     const rotatedSize = [
@@ -1245,8 +1234,7 @@ class View extends BaseObject {
       Math.abs(size[0] * Math.sin(rotation)) + Math.abs(size[1] * Math.cos(rotation))
     ];
 
-    return this.getZoomForResolution(
-      this.constraints_.resolution(currentRes, targetZoom - currentZoom, direction, rotatedSize));
+    return(this.constraints_.resolution(targetResolution, direction, rotatedSize));
   }
 }
 
@@ -1350,7 +1338,7 @@ export function createResolutionConstraint(options) {
     minResolution = maxResolution / Math.pow(zoomFactor, maxZoom - minZoom);
 
     resolutionConstraint = createSnapToPower(
-      zoomFactor, maxResolution, maxZoom - minZoom,
+      zoomFactor, maxResolution, minResolution,
       !options.constrainOnlyCenter && options.extent);
   }
   return {constraint: resolutionConstraint, maxResolution: maxResolution,
