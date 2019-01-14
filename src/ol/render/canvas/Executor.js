@@ -4,7 +4,7 @@
 import {getUid} from '../../util.js';
 import {equals} from '../../array.js';
 import {createEmpty, createOrUpdate,
-  createOrUpdateEmpty, extend, extendCoordinate, intersects} from '../../extent.js';
+  createOrUpdateEmpty, extend, intersects} from '../../extent.js';
 import {lineStringLength} from '../../geom/flat/length.js';
 import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {transform2D} from '../../geom/flat/transform.js';
@@ -37,11 +37,19 @@ import {labelCache, defaultTextAlign, measureTextHeight, measureAndCacheTextWidt
  */
 const tmpExtent = createEmpty();
 
-
 /**
  * @type {!import("../../transform.js").Transform}
  */
 const tmpTransform = createTransform();
+
+/** @type {import("../../coordinate.js").Coordinate} */
+const p1 = [];
+/** @type {import("../../coordinate.js").Coordinate} */
+const p2 = [];
+/** @type {import("../../coordinate.js").Coordinate} */
+const p3 = [];
+/** @type {import("../../coordinate.js").Coordinate} */
+const p4 = [];
 
 
 class Executor {
@@ -304,19 +312,11 @@ class Executor {
     const boxX = x - padding[3];
     const boxY = y - padding[0];
 
-    /** @type {import("../../coordinate.js").Coordinate} */
-    let p1;
-    /** @type {import("../../coordinate.js").Coordinate} */
-    let p2;
-    /** @type {import("../../coordinate.js").Coordinate} */
-    let p3;
-    /** @type {import("../../coordinate.js").Coordinate} */
-    let p4;
     if (fillStroke || rotation !== 0) {
-      p1 = [boxX, boxY];
-      p2 = [boxX + boxW, boxY];
-      p3 = [boxX + boxW, boxY + boxH];
-      p4 = [boxX, boxY + boxH];
+      p1[0] = p4[0] = boxX;
+      p1[1] = p2[1] = boxY;
+      p2[0] = p3[0] = boxX + boxW;
+      p3[1] = p4[1] = boxY + boxH;
     }
 
     let transform = null;
@@ -325,11 +325,17 @@ class Executor {
       const centerY = y + anchorY;
       transform = composeTransform(tmpTransform, centerX, centerY, 1, 1, rotation, -centerX, -centerY);
 
-      createOrUpdateEmpty(tmpExtent);
-      extendCoordinate(tmpExtent, applyTransform(tmpTransform, p1));
-      extendCoordinate(tmpExtent, applyTransform(tmpTransform, p2));
-      extendCoordinate(tmpExtent, applyTransform(tmpTransform, p3));
-      extendCoordinate(tmpExtent, applyTransform(tmpTransform, p4));
+      applyTransform(tmpTransform, p1);
+      applyTransform(tmpTransform, p2);
+      applyTransform(tmpTransform, p3);
+      applyTransform(tmpTransform, p4);
+      createOrUpdate(
+        Math.min(p1[0], p2[0], p3[0], p4[0]),
+        Math.min(p1[1], p2[1], p3[1], p4[1]),
+        Math.max(p1[0], p2[0], p3[0], p4[0]),
+        Math.max(p1[1], p2[1], p3[1], p4[1]),
+        tmpExtent
+      );
     } else {
       createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, tmpExtent);
     }
