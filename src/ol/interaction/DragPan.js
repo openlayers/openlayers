@@ -74,10 +74,6 @@ class DragPan extends PointerInteraction {
    * @inheritDoc
    */
   handleDragEvent(mapBrowserEvent) {
-    if (!this.panning_) {
-      this.panning_ = true;
-      this.getMap().getView().beginInteraction();
-    }
     const targetPointers = this.targetPointers;
     const centroid = centroidFromPointers(targetPointers);
     if (targetPointers.length == this.lastPointersCount_) {
@@ -152,7 +148,11 @@ class DragPan extends PointerInteraction {
       this.lastCentroid = null;
       // stop any current animation
       if (view.getAnimating()) {
-        view.setCenter(mapBrowserEvent.frameState.viewState.center);
+        view.cancelAnimations();
+      }
+      if (!this.panning_) {
+        this.panning_ = true;
+        this.getMap().getView().beginInteraction();
       }
       if (this.kinetic_) {
         this.kinetic_.begin();

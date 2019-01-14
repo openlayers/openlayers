@@ -21,6 +21,8 @@ import {clamp, modulo} from './math.js';
 import {assign} from './obj.js';
 import {createProjection, METERS_PER_UNIT} from './proj.js';
 import Units from './proj/Units.js';
+import {equals} from './coordinate';
+import {easeOut} from './easing';
 
 
 /**
@@ -651,9 +653,10 @@ class View extends BaseObject {
 
   /**
    * @private
+   * @param {number|undefined} opt_rotation
    * @return {import("./size.js").Size} Viewport size or `[100, 100]` when no viewport is found.
    */
-  getSizeFromViewport_() {
+  getSizeFromViewport_(opt_rotation) {
     const size = [100, 100];
     const selector = '.ol-viewport[data-view="' + getUid(this) + '"]';
     const element = document.querySelector(selector);
@@ -661,6 +664,10 @@ class View extends BaseObject {
       const metrics = getComputedStyle(element);
       size[0] = parseInt(metrics.width, 10);
       size[1] = parseInt(metrics.height, 10);
+    }
+    if (opt_rotation) {
+      size[0] = Math.abs(size[0] * Math.cos(opt_rotation)) + Math.abs(size[1] * Math.sin(opt_rotation));
+      size[1] = Math.abs(size[0] * Math.sin(opt_rotation)) + Math.abs(size[1] * Math.cos(opt_rotation));
     }
     return size;
   }
@@ -1164,18 +1171,10 @@ class View extends BaseObject {
     const isMoving = this.getAnimating() || this.getInteracting() || opt_forceMoving;
 
     // compute rotation
-    const newRotation = this.constraints_.rotation(this.targetRotation_, 0, isMoving);
-
-    // compute viewport size with rotation
-    const size = this.getSizeFromViewport_();
-    const rotation = this.getRotation() || 0;
-    const rotatedSize = [
-      Math.abs(size[0] * Math.cos(rotation)) + Math.abs(size[1] * Math.sin(rotation)),
-      Math.abs(size[0] * Math.sin(rotation)) + Math.abs(size[1] * Math.cos(rotation))
-    ];
-
-    const newResolution = this.constraints_.resolution(this.targetResolution_, 0, rotatedSize, isMoving);
-    const newCenter = this.constraints_.center(this.targetCenter_, newResolution, rotatedSize, isMoving);
+    const newRotation = this.constraints_.rotation(this.targetRotation_, isMoving);
+    const size = this.getSizeFromViewport_(newRotation);
+    const newResolution = this.constraints_.resolution(this.targetResolution_, 0, size, isMoving);
+    const newCenter = this.constraints_.center(this.targetCenter_, newResolution, size, isMoving);
 
     this.set(ViewProperty.ROTATION, newRotation);
     this.set(ViewProperty.RESOLUTION, newResolution);
@@ -1183,6 +1182,41 @@ class View extends BaseObject {
 
     if (this.getAnimating() && !opt_doNotCancelAnims) {
       this.cancelAnimations();
+    }
+  }
+
+  /**
+   * If any constraints need to be applied, an animation will be triggered.
+   * This is typically done on interaction end.
+   * @param {number=} opt_duration The animation duration in ms.
+   * @param {number=} opt_resolutionDirection Which direction to zoom.
+   * @observable
+   * @private
+   */
+  resolveConstraints_(opt_duration, opt_resolutionDirection) {
+    const duration = opt_duration || 250;
+    const direction = opt_resolutionDirection || 0;
+
+    const newRotation = this.constraints_.rotation(this.targetRotation_);
+    const size = this.getSizeFromViewport_(newRotation);
+    const newResolution = this.constraints_.resolution(this.targetResolution_, direction, size);
+    const newCenter = this.constraints_.center(this.targetCenter_, newResolution, size);
+
+    if (this.getResolution() !== newResolution ||
+      this.getRotation() !== newRotation ||
+      !equals(this.getCenter(), newCenter)) {
+
+      if (this.getAnimating()) {
+        this.cancelAnimations();
+      }
+
+      this.animate({
+        rotation: newRotation,
+        center: newCenter,
+        resolution: newResolution,
+        duration: duration,
+        easing: easeOut
+      });
     }
   }
 
@@ -1196,10 +1230,14 @@ class View extends BaseObject {
 
   /**
    * Notify the View that an interaction has ended.
+   * @param {number=} opt_duration Animation duration in ms.
+   * @param {number=} opt_resolutionDirection Which direction to zoom.
    * @api
    */
-  endInteraction() {
+  endInteraction(opt_duration, opt_resolutionDirection) {
     this.setHint(ViewHint.INTERACTING, -1);
+
+    this.resolveConstraints_(opt_duration, opt_resolutionDirection);
   }
 
   /**
@@ -1227,14 +1265,9 @@ class View extends BaseObject {
    */
   getValidResolution(targetResolution, opt_direction) {
     const direction = opt_direction || 0;
-    const size = this.getSizeFromViewport_();
-    const rotation = this.getRotation() || 0;
-    const rotatedSize = [
-      Math.abs(size[0] * Math.cos(rotation)) + Math.abs(size[1] * Math.sin(rotation)),
-      Math.abs(size[0] * Math.sin(rotation)) + Math.abs(size[1] * Math.cos(rotation))
-    ];
+    const size = this.getSizeFromViewport_(this.getRotation());
 
-    return(this.constraints_.resolution(targetResolution, direction, rotatedSize));
+    return(this.constraints_.resolution(targetResolution, direction, size));
   }
 }
 

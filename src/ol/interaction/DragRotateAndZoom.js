@@ -113,10 +113,8 @@ class DragRotateAndZoom extends PointerInteraction {
 
     const map = mapBrowserEvent.map;
     const view = map.getView();
-    view.endInteraction();
     const direction = this.lastScaleDelta_ - 1;
-    rotate(view, view.getRotation());
-    zoom(view, view.getResolution(), undefined, this.duration_, direction);
+    view.endInteraction(this.duration_, direction);
     this.lastScaleDelta_ = 0;
     return false;
   }
