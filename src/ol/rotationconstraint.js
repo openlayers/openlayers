@@ -5,7 +5,7 @@ import {toRadians} from './math.js';
 
 
 /**
- * @typedef {function((number|undefined), number): (number|undefined)} Type
+ * @typedef {function((number|undefined), number, boolean=): (number|undefined)} Type
  */
 
 
@@ -47,6 +47,7 @@ export function createSnapToN(n) {
     /**
      * @param {number|undefined} rotation Rotation.
      * @param {number} delta Delta.
+     * @param {boolean=} opt_isMoving True if an interaction or animation is in progress.
      * @return {number|undefined} Rotation.
      */
     function(rotation, delta, opt_isMoving) {

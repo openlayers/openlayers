@@ -45,7 +45,8 @@ describe('ol.View', function() {
       describe('with extent option', function() {
         it('gives a correct center constraint function', function() {
           const options = {
-            extent: [0, 0, 1, 1]
+            extent: [0, 0, 1, 1],
+            constrainOnlyCenter: true
           };
           const fn = createCenterConstraint(options);
           expect(fn([0, 0])).to.eql([0, 0]);

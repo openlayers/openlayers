@@ -132,6 +132,7 @@ describe('ol.interaction.Interaction', function() {
       const view = new View({
         center: [0, 0],
         extent: [-2.5, -2.5, 2.5, 2.5],
+        constrainOnlyCenter: true,
         resolution: 1,
         resolutions: [4, 2, 1, 0.5, 0.25]
       });
