@@ -81,15 +81,15 @@ class DragPan extends PointerInteraction {
         this.kinetic_.update(centroid[0], centroid[1]);
       }
       if (this.lastCentroid) {
-        const deltaX = this.lastCentroid[0] - centroid[0];
-        const deltaY = centroid[1] - this.lastCentroid[1];
+        const delta = [
+          this.lastCentroid[0] - centroid[0],
+          centroid[1] - this.lastCentroid[1]
+        ];
         const map = mapBrowserEvent.map;
         const view = map.getView();
-        let center = [deltaX, deltaY];
-        scaleCoordinate(center, view.getResolution());
-        rotateCoordinate(center, view.getRotation());
-        addCoordinate(center, view.getCenter());
-        view.setCenter(center);
+        scaleCoordinate(delta, view.getResolution());
+        rotateCoordinate(delta, view.getRotation());
+        view.adjustCenter(delta);
       }
     } else if (this.kinetic_) {
       // reset so we don't overestimate the kinetic energy after

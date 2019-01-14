@@ -42,7 +42,7 @@ describe('ol.View', function() {
         });
       });
 
-      describe('with extent option', function() {
+      describe('with extent option and center only', function() {
         it('gives a correct center constraint function', function() {
           const options = {
             extent: [0, 0, 1, 1],
@@ -52,6 +52,26 @@ describe('ol.View', function() {
           expect(fn([0, 0])).to.eql([0, 0]);
           expect(fn([-10, 0])).to.eql([0, 0]);
           expect(fn([100, 100])).to.eql([1, 1]);
+        });
+      });
+
+      describe('with extent option', function() {
+        it('gives a correct center constraint function', function() {
+          const options = {
+            extent: [0, 0, 1, 1]
+          };
+          const fn = createCenterConstraint(options);
+          const res = 1;
+          const size = [0.15, 0.1];
+          expect(fn([0, 0], res, size)).to.eql([0.075, 0.05]);
+          expect(fn([0.5, 0.5], res, size)).to.eql([0.5, 0.5]);
+          expect(fn([10, 10], res, size)).to.eql([0.925, 0.95]);
+
+          const overshootCenter = fn([10, 10], res, size, true);
+          expect(overshootCenter[0] > 0.925).to.eql(true);
+          expect(overshootCenter[1] > 0.95).to.eql(true);
+          expect(overshootCenter[0] < 9).to.eql(true);
+          expect(overshootCenter[1] < 9).to.eql(true);
         });
       });
 

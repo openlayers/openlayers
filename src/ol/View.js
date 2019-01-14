@@ -97,6 +97,9 @@ import {easeOut} from './easing';
  * view, in other words, nothing outside of this extent can be visible on the map
  * @property {boolean} [constrainOnlyCenter] If true, the extent
  * constraint will only apply to the center and not the whole view.
+ * @property {boolean} [smoothExtentConstraint] If true, the extent
+ * constraint will be applied smoothly, i. e. allow the view to go slightly outside
+ * of the given `extent`. Default is true.
  * @property {number} [maxResolution] The maximum resolution used to determine
  * the resolution constraint. It is used together with `minResolution` (or
  * `maxZoom`) and `zoomFactor`. If unspecified it is calculated in such a way
@@ -616,6 +619,10 @@ class View extends BaseObject {
     if (more && this.updateAnimationKey_ === undefined) {
       this.updateAnimationKey_ = requestAnimationFrame(this.updateAnimations_);
     }
+
+    if (!this.getAnimating()) {
+      this.resolveConstraints_();
+    }
   }
 
   /**
@@ -1095,6 +1102,16 @@ class View extends BaseObject {
   }
 
   /**
+   * Adds relative coordinates to the center of the view.
+   * @param {import("./coordinate.js").Coordinate} deltaCoordinates Relative value to add.
+   * @api
+   */
+  adjustCenter(deltaCoordinates) {
+    const center = this.targetCenter_;
+    this.setCenter([center[0] + deltaCoordinates[0], center[1] + deltaCoordinates[1]]);
+  }
+
+  /**
    * Rotate the view around a given coordinate.
    * @param {number} rotation New rotation value for the view.
    * @param {import("./coordinate.js").Coordinate=} opt_anchor The rotation center.
@@ -1196,7 +1213,7 @@ class View extends BaseObject {
    * @private
    */
   resolveConstraints_(opt_duration, opt_resolutionDirection) {
-    const duration = opt_duration || 250;
+    const duration = opt_duration || 200;
     const direction = opt_resolutionDirection || 0;
 
     const newRotation = this.constraints_.rotation(this.targetRotation_);
@@ -1206,6 +1223,7 @@ class View extends BaseObject {
 
     if (this.getResolution() !== newResolution ||
       this.getRotation() !== newRotation ||
+      !this.getCenter() ||
       !equals(this.getCenter(), newCenter)) {
 
       if (this.getAnimating()) {
@@ -1221,7 +1239,7 @@ class View extends BaseObject {
       });
     }
   }
-
+  
   /**
    * Notify the View that an interaction has started.
    * @api
@@ -1291,7 +1309,8 @@ function animationCallback(callback, returnValue) {
  */
 export function createCenterConstraint(options) {
   if (options.extent !== undefined) {
-    return createExtent(options.extent, options.constrainOnlyCenter);
+    return createExtent(options.extent, options.constrainOnlyCenter,
+      options.smoothExtentConstraint !== undefined ? options.smoothExtentConstraint : true);
   } else {
     return centerNone;
   }
