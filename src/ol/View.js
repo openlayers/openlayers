@@ -653,7 +653,7 @@ class View extends BaseObject {
 
   /**
    * @private
-   * @param {number|undefined} opt_rotation
+   * @param {number=} opt_rotation Take into account the rotation of the viewport when giving the size
    * @return {import("./size.js").Size} Viewport size or `[100, 100]` when no viewport is found.
    */
   getSizeFromViewport_(opt_rotation) {
@@ -666,8 +666,10 @@ class View extends BaseObject {
       size[1] = parseInt(metrics.height, 10);
     }
     if (opt_rotation) {
-      size[0] = Math.abs(size[0] * Math.cos(opt_rotation)) + Math.abs(size[1] * Math.sin(opt_rotation));
-      size[1] = Math.abs(size[0] * Math.sin(opt_rotation)) + Math.abs(size[1] * Math.cos(opt_rotation));
+      const w = size[0];
+      const h = size[1];
+      size[0] = Math.abs(w * Math.cos(opt_rotation)) + Math.abs(h * Math.sin(opt_rotation));
+      size[1] = Math.abs(w * Math.sin(opt_rotation)) + Math.abs(h * Math.cos(opt_rotation));
     }
     return size;
   }

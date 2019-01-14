@@ -1269,8 +1269,14 @@ describe('ol.View', function() {
       document.body.removeChild(target);
     });
     it('calculates the size correctly', function() {
-      const size = map.getView().getSizeFromViewport_();
+      let size = map.getView().getSizeFromViewport_();
       expect(size).to.eql([200, 150]);
+      size = map.getView().getSizeFromViewport_(Math.PI / 2);
+      expect(size[0]).to.roughlyEqual(150,1e-9);
+      expect(size[1]).to.roughlyEqual(200, 1e-9);
+      size = map.getView().getSizeFromViewport_(Math.PI);
+      expect(size[0]).to.roughlyEqual(200,1e-9);
+      expect(size[1]).to.roughlyEqual(150, 1e-9);
     });
   });
 

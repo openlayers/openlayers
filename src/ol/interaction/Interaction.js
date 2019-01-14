@@ -4,7 +4,6 @@
 import BaseObject from '../Object.js';
 import {easeOut, linear} from '../easing.js';
 import InteractionProperty from './Property.js';
-import {clamp} from '../math.js';
 
 
 /**
@@ -194,7 +193,6 @@ export function zoom(view, resolution, opt_anchor, opt_duration, opt_direction) 
  */
 export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
   const currentZoom = view.getZoom();
-  const currentResolution = view.getResolution();
 
   if (currentZoom === undefined) {
     return;
@@ -202,21 +200,6 @@ export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
 
   const newZoom = view.getValidZoomLevel(currentZoom + delta);
   const newResolution = view.getResolutionForZoom(newZoom);
-
-  // If we have a constraint on center, we need to change the anchor so that the
-  // new center is within the extent. We first calculate the new center, apply
-  // the constraint to it, and then calculate back the anchor
-  if (opt_anchor) {
-    const currentCenter = view.getCenter();
-    const center = view.calculateCenterZoom(newResolution, opt_anchor);
-
-    opt_anchor = [
-      (newResolution * currentCenter[0] - currentResolution * center[0]) /
-      (newResolution - currentResolution),
-      (newResolution * currentCenter[1] - currentResolution * center[1]) /
-      (newResolution - currentResolution)
-    ];
-  }
 
   if (opt_duration > 0) {
     if (view.getAnimating()) {
