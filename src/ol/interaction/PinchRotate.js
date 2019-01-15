@@ -1,9 +1,7 @@
 /**
  * @module ol/interaction/PinchRotate
  */
-import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
-import {rotate} from './Interaction.js';
 import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js';
 import {disable} from '../rotationconstraint.js';
 

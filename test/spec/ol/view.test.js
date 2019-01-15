@@ -8,7 +8,6 @@ import {createEmpty} from '../../../src/ol/extent.js';
 import Circle from '../../../src/ol/geom/Circle.js';
 import LineString from '../../../src/ol/geom/LineString.js';
 import Point from '../../../src/ol/geom/Point.js';
-import {zoomByDelta} from '../../../src/ol/interaction/Interaction';
 
 describe('ol.View', function() {
 
@@ -989,7 +988,8 @@ describe('ol.View', function() {
     let view;
     beforeEach(function() {
       view = new View({
-        resolutions: [512, 256, 128, 64, 32, 16]
+        resolutions: [1024, 512, 256, 128, 64, 32, 16, 8],
+        smoothResolutionConstraint: false
       });
     });
 
@@ -998,30 +998,31 @@ describe('ol.View', function() {
       expect(view.getZoom()).to.be(undefined);
 
       view.setResolution(513);
-      expect(view.getZoom()).to.roughlyEqual(Math.log(512 / 513) / Math.LN2, 1e-9);
+      expect(view.getZoom()).to.roughlyEqual(Math.log(1024 / 513) / Math.LN2, 1e-9);
 
       view.setResolution(512);
-      expect(view.getZoom()).to.be(0);
+      expect(view.getZoom()).to.be(1);
 
       view.setResolution(100);
-      expect(view.getZoom()).to.roughlyEqual(2.35614, 1e-5);
+      expect(view.getZoom()).to.roughlyEqual(3.35614, 1e-5);
 
       view.setResolution(65);
-      expect(view.getZoom()).to.roughlyEqual(2.97763, 1e-5);
+      expect(view.getZoom()).to.roughlyEqual(3.97763, 1e-5);
 
       view.setResolution(64);
-      expect(view.getZoom()).to.be(3);
+      expect(view.getZoom()).to.be(4);
 
       view.setResolution(16);
-      expect(view.getZoom()).to.be(5);
+      expect(view.getZoom()).to.be(6);
 
       view.setResolution(15);
-      expect(view.getZoom()).to.roughlyEqual(Math.log(512 / 15) / Math.LN2, 1e-9);
+      expect(view.getZoom()).to.roughlyEqual(Math.log(1024 / 15) / Math.LN2, 1e-9);
     });
 
     it('works for resolution arrays with variable zoom factors', function() {
       const view = new View({
-        resolutions: [10, 5, 2, 1]
+        resolutions: [10, 5, 2, 1],
+        smoothResolutionConstraint: false
       });
 
       view.setZoom(1);
@@ -1046,7 +1047,8 @@ describe('ol.View', function() {
     it('returns correct zoom levels', function() {
       const view = new View({
         minZoom: 10,
-        maxZoom: 20
+        maxZoom: 20,
+        smoothResolutionConstraint: false
       });
 
       view.setZoom(5);
@@ -1122,14 +1124,16 @@ describe('ol.View', function() {
   describe('#getResolutionForZoom', function() {
 
     it('returns correct zoom resolution', function() {
-      const view = new View();
+      const view = new View({
+        smoothResolutionConstraint: false
+      });
       const max = view.getMaxZoom();
       const min = view.getMinZoom();
 
       expect(view.getResolutionForZoom(max)).to.be(view.getMinResolution());
-      expect(view.getResolutionForZoom(max + 1)).to.be(view.getMinResolution());
+      expect(view.getResolutionForZoom(max + 1)).to.be(view.getMinResolution() / 2);
       expect(view.getResolutionForZoom(min)).to.be(view.getMaxResolution());
-      expect(view.getResolutionForZoom(min - 1)).to.be(view.getMaxResolution());
+      expect(view.getResolutionForZoom(min - 1)).to.be(view.getMaxResolution() * 2);
     });
 
     it('returns correct zoom levels for specifically configured resolutions', function() {
@@ -1295,10 +1299,10 @@ describe('ol.View', function() {
       let size = map.getView().getSizeFromViewport_();
       expect(size).to.eql([200, 150]);
       size = map.getView().getSizeFromViewport_(Math.PI / 2);
-      expect(size[0]).to.roughlyEqual(150,1e-9);
+      expect(size[0]).to.roughlyEqual(150, 1e-9);
       expect(size[1]).to.roughlyEqual(200, 1e-9);
       size = map.getView().getSizeFromViewport_(Math.PI);
-      expect(size[0]).to.roughlyEqual(200,1e-9);
+      expect(size[0]).to.roughlyEqual(200, 1e-9);
       expect(size[1]).to.roughlyEqual(150, 1e-9);
     });
   });
@@ -1481,7 +1485,7 @@ describe('ol.View', function() {
   describe('#beginInteraction() and endInteraction()', function() {
     let view;
     beforeEach(function() {
-      view = new View()
+      view = new View();
     });
 
     it('correctly changes the view hint', function() {

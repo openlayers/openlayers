@@ -2,10 +2,8 @@
  * @module ol/interaction/DragRotate
  */
 import {disable} from '../rotationconstraint.js';
-import ViewHint from '../ViewHint.js';
 import {altShiftKeysOnly, mouseOnly, mouseActionButton} from '../events/condition.js';
 import {FALSE} from '../functions.js';
-import {rotate} from './Interaction.js';
 import PointerInteraction from './Pointer.js';
 
 

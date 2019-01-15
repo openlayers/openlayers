@@ -244,7 +244,7 @@ describe('ol.resolutionconstraint', function() {
 
     describe('snap to power, smooth constraint on', function() {
       it('returns expected resolution value', function() {
-        let resolutionConstraint = createSnapToPower(2, 128, 16, true);
+        const resolutionConstraint = createSnapToPower(2, 128, 16, true);
 
         expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.greaterThan(128);
         expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.lessThan(150);
@@ -261,7 +261,7 @@ describe('ol.resolutionconstraint', function() {
 
     describe('snap to power, smooth constraint off', function() {
       it('returns expected resolution value', function() {
-        let resolutionConstraint = createSnapToPower(2, 128, 16, false);
+        const resolutionConstraint = createSnapToPower(2, 128, 16, false);
 
         expect(resolutionConstraint(150, 0, [100, 100], true)).to.eql(128);
         expect(resolutionConstraint(130, 0, [100, 100], true)).to.eql(128);
@@ -274,7 +274,7 @@ describe('ol.resolutionconstraint', function() {
 
     describe('snap to resolutions, smooth constraint on', function() {
       it('returns expected resolution value', function() {
-        let resolutionConstraint = createSnapToResolutions([128, 64, 32, 16], true);
+        const resolutionConstraint = createSnapToResolutions([128, 64, 32, 16], true);
 
         expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.greaterThan(128);
         expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.lessThan(150);
@@ -291,7 +291,7 @@ describe('ol.resolutionconstraint', function() {
 
     describe('snap to resolutions, smooth constraint off', function() {
       it('returns expected resolution value', function() {
-        let resolutionConstraint = createSnapToResolutions([128, 64, 32, 16], false);
+        const resolutionConstraint = createSnapToResolutions([128, 64, 32, 16], false);
 
         expect(resolutionConstraint(150, 0, [100, 100], true)).to.eql(128);
         expect(resolutionConstraint(130, 0, [100, 100], true)).to.eql(128);
@@ -304,7 +304,7 @@ describe('ol.resolutionconstraint', function() {
 
     describe('min/max, smooth constraint on', function() {
       it('returns expected resolution value', function() {
-        let resolutionConstraint = createMinMaxResolution(128, 16, true);
+        const resolutionConstraint = createMinMaxResolution(128, 16, true);
 
         expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.greaterThan(128);
         expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.lessThan(150);
@@ -321,7 +321,7 @@ describe('ol.resolutionconstraint', function() {
 
     describe('min/max, smooth constraint off', function() {
       it('returns expected resolution value', function() {
-        let resolutionConstraint = createMinMaxResolution(128, 16, false);
+        const resolutionConstraint = createMinMaxResolution(128, 16, false);
 
         expect(resolutionConstraint(150, 0, [100, 100], true)).to.eql(128);
         expect(resolutionConstraint(130, 0, [100, 100], true)).to.eql(128);

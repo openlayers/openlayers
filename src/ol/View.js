@@ -934,7 +934,7 @@ class View extends BaseObject {
    */
   getZoom() {
     let zoom;
-    const resolution = this.targetResolution_;
+    const resolution = this.getResolution();
     if (resolution !== undefined) {
       zoom = this.getZoomForResolution(resolution);
     }
@@ -1339,7 +1339,7 @@ class View extends BaseObject {
     const direction = opt_direction || 0;
     const size = this.getSizeFromViewport_(this.getRotation());
 
-    return(this.constraints_.resolution(targetResolution, direction, size));
+    return this.constraints_.resolution(targetResolution, direction, size);
   }
 }
 

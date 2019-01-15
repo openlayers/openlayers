@@ -1,9 +1,7 @@
 /**
  * @module ol/interaction/MouseWheelZoom
  */
-import ViewHint from '../ViewHint.js';
 import {always} from '../events/condition.js';
-import {easeOut} from '../easing.js';
 import EventType from '../events/EventType.js';
 import {DEVICE_PIXEL_RATIO, FIREFOX, SAFARI} from '../has.js';
 import Interaction, {zoomByDelta} from './Interaction.js';

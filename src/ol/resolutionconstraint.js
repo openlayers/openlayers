@@ -2,8 +2,8 @@
  * @module ol/resolutionconstraint
  */
 import {linearFindNearest} from './array.js';
-import {clamp} from './math.js';
 import {getHeight, getWidth} from './extent';
+import {clamp} from './math';
 
 
 /**
@@ -123,7 +123,7 @@ export function createSnapToPower(power, maxResolution, opt_minResolution, opt_s
         const capped = Math.min(cappedMaxRes, resolution);
         const zoomLevel = Math.floor(
           Math.log(maxResolution / capped) / Math.log(power) + offset);
-        let newResolution = maxResolution / Math.pow(power, zoomLevel);
+        const newResolution = maxResolution / Math.pow(power, zoomLevel);
         return clamp(newResolution, minResolution, cappedMaxRes);
       } else {
         return undefined;

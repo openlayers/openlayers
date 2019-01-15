@@ -1,7 +1,6 @@
 /**
  * @module ol/control/ZoomSlider
  */
-import ViewHint from '../ViewHint.js';
 import Control from './Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';

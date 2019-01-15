@@ -1,9 +1,7 @@
 /**
  * @module ol/interaction/PinchZoom
  */
-import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
-import {zoom} from './Interaction.js';
 import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js';
 
 
