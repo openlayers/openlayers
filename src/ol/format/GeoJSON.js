@@ -121,7 +121,7 @@ class GeoJSON extends JSONFeature {
     }
 
     if (geoJSONFeature['properties']) {
-      feature.setProperties(geoJSONFeature['properties']);
+      feature.setProperties(geoJSONFeature['properties'], true);
     }
     return feature;
   }
