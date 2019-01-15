@@ -350,7 +350,7 @@ function readFeatureFromGeometry(object, arcs, scale, translate, property, name,
     properties[property] = name;
   }
   if (properties) {
-    feature.setProperties(properties);
+    feature.setProperties(properties, true);
   }
   return feature;
 }
