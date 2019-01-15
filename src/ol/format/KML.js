@@ -517,7 +517,7 @@ class KML extends XMLFeature {
     // we do not remove the styleUrl property from the object, so it
     // gets stored on feature when setProperties is called
 
-    feature.setProperties(object);
+    feature.setProperties(object, true);
 
     return feature;
   }
@@ -1524,7 +1524,7 @@ function readLineString(node, objectStack) {
       readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
     const lineString = new LineString(flatCoordinates, GeometryLayout.XYZ);
-    lineString.setProperties(properties);
+    lineString.setProperties(properties, true);
     return lineString;
   } else {
     return undefined;
@@ -1545,7 +1545,7 @@ function readLinearRing(node, objectStack) {
       readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
     const polygon = new Polygon(flatCoordinates, GeometryLayout.XYZ, [flatCoordinates.length]);
-    polygon.setProperties(properties);
+    polygon.setProperties(properties, true);
     return polygon;
   } else {
     return undefined;
@@ -1638,7 +1638,7 @@ function readPoint(node, objectStack) {
       readFlatCoordinatesFromNode(node, objectStack);
   if (flatCoordinates) {
     const point = new Point(flatCoordinates, GeometryLayout.XYZ);
-    point.setProperties(properties);
+    point.setProperties(properties, true);
     return point;
   } else {
     return undefined;
@@ -1676,7 +1676,7 @@ function readPolygon(node, objectStack) {
       ends.push(flatCoordinates.length);
     }
     const polygon = new Polygon(flatCoordinates, GeometryLayout.XYZ, ends);
-    polygon.setProperties(properties);
+    polygon.setProperties(properties, true);
     return polygon;
   } else {
     return undefined;

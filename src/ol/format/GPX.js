@@ -651,7 +651,7 @@ function readRte(node, objectStack) {
   const geometry = new LineString(flatCoordinates, layout);
   transformGeometryWithOptions(geometry, false, options);
   const feature = new Feature(geometry);
-  feature.setProperties(values);
+  feature.setProperties(values, true);
   return feature;
 }
 
@@ -682,7 +682,7 @@ function readTrk(node, objectStack) {
   const geometry = new MultiLineString(flatCoordinates, layout, ends);
   transformGeometryWithOptions(geometry, false, options);
   const feature = new Feature(geometry);
-  feature.setProperties(values);
+  feature.setProperties(values, true);
   return feature;
 }
 
@@ -704,7 +704,7 @@ function readWpt(node, objectStack) {
   const geometry = new Point(coordinates, layout);
   transformGeometryWithOptions(geometry, false, options);
   const feature = new Feature(geometry);
-  feature.setProperties(values);
+  feature.setProperties(values, true);
   return feature;
 }
 

@@ -117,7 +117,7 @@ class EsriJSON extends JSONFeature {
       feature.setId(/** @type {number} */(esriJSONFeature.attributes[opt_options.idField]));
     }
     if (esriJSONFeature.attributes) {
-      feature.setProperties(esriJSONFeature.attributes);
+      feature.setProperties(esriJSONFeature.attributes, true);
     }
     return feature;
   }
