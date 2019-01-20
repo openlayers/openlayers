@@ -128,19 +128,12 @@ class MouseWheelZoom extends Interaction {
      */
     this.trackpadDeltaPerZoom_ = 300;
 
-    /**
-     * The zoom factor by which scroll zooming is allowed to exceed the limits.
-     * @private
-     * @type {number}
-     */
-    this.trackpadZoomBuffer_ = 1.5;
-
   }
 
   /**
    * @private
    */
-  decrementInteractingHint_() {
+  endInteraction_() {
     this.trackpadTimeoutId_ = undefined;
     const view = this.getMap().getView();
     view.endInteraction();
@@ -211,7 +204,7 @@ class MouseWheelZoom extends Interaction {
       } else {
         view.beginInteraction();
       }
-      this.trackpadTimeoutId_ = setTimeout(this.decrementInteractingHint_.bind(this), this.trackpadEventGap_);
+      this.trackpadTimeoutId_ = setTimeout(this.endInteraction_.bind(this), this.trackpadEventGap_);
       view.adjustZoom(-delta / this.trackpadDeltaPerZoom_, this.lastAnchor_);
       this.startTime_ = now;
       return false;

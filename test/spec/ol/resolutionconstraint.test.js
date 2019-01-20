@@ -1,4 +1,5 @@
 import {createSnapToResolutions, createSnapToPower} from '../../../src/ol/resolutionconstraint.js';
+import {createMinMaxResolution} from '../../../src/ol/resolutionconstraint';
 
 
 describe('ol.resolutionconstraint', function() {
@@ -238,4 +239,98 @@ describe('ol.resolutionconstraint', function() {
       });
     });
   });
+
+  describe('SnapToPower smooth constraint', function() {
+
+    describe('snap to power, smooth constraint on', function() {
+      it('returns expected resolution value', function() {
+        let resolutionConstraint = createSnapToPower(2, 128, 16, true);
+
+        expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.greaterThan(128);
+        expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.lessThan(150);
+        expect(resolutionConstraint(130, 0, [100, 100], true)).to.be.greaterThan(128);
+        expect(resolutionConstraint(130, 0, [100, 100], true)).to.be.lessThan(130);
+        expect(resolutionConstraint(128, 0, [100, 100], true)).to.eql(128);
+        expect(resolutionConstraint(16, 0, [100, 100], true)).to.eql(16);
+        expect(resolutionConstraint(15, 0, [100, 100], true)).to.be.greaterThan(15);
+        expect(resolutionConstraint(15, 0, [100, 100], true)).to.be.lessThan(16);
+        expect(resolutionConstraint(10, 0, [100, 100], true)).to.be.greaterThan(10);
+        expect(resolutionConstraint(10, 0, [100, 100], true)).to.be.lessThan(16);
+      });
+    });
+
+    describe('snap to power, smooth constraint off', function() {
+      it('returns expected resolution value', function() {
+        let resolutionConstraint = createSnapToPower(2, 128, 16, false);
+
+        expect(resolutionConstraint(150, 0, [100, 100], true)).to.eql(128);
+        expect(resolutionConstraint(130, 0, [100, 100], true)).to.eql(128);
+        expect(resolutionConstraint(128, 0, [100, 100], true)).to.eql(128);
+        expect(resolutionConstraint(16, 0, [100, 100], true)).to.eql(16);
+        expect(resolutionConstraint(15, 0, [100, 100], true)).to.eql(16);
+        expect(resolutionConstraint(10, 0, [100, 100], true)).to.eql(16);
+      });
+    });
+
+    describe('snap to resolutions, smooth constraint on', function() {
+      it('returns expected resolution value', function() {
+        let resolutionConstraint = createSnapToResolutions([128, 64, 32, 16], true);
+
+        expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.greaterThan(128);
+        expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.lessThan(150);
+        expect(resolutionConstraint(130, 0, [100, 100], true)).to.be.greaterThan(128);
+        expect(resolutionConstraint(130, 0, [100, 100], true)).to.be.lessThan(130);
+        expect(resolutionConstraint(128, 0, [100, 100], true)).to.eql(128);
+        expect(resolutionConstraint(16, 0, [100, 100], true)).to.eql(16);
+        expect(resolutionConstraint(15, 0, [100, 100], true)).to.be.greaterThan(15);
+        expect(resolutionConstraint(15, 0, [100, 100], true)).to.be.lessThan(16);
+        expect(resolutionConstraint(10, 0, [100, 100], true)).to.be.greaterThan(10);
+        expect(resolutionConstraint(10, 0, [100, 100], true)).to.be.lessThan(16);
+      });
+    });
+
+    describe('snap to resolutions, smooth constraint off', function() {
+      it('returns expected resolution value', function() {
+        let resolutionConstraint = createSnapToResolutions([128, 64, 32, 16], false);
+
+        expect(resolutionConstraint(150, 0, [100, 100], true)).to.eql(128);
+        expect(resolutionConstraint(130, 0, [100, 100], true)).to.eql(128);
+        expect(resolutionConstraint(128, 0, [100, 100], true)).to.eql(128);
+        expect(resolutionConstraint(16, 0, [100, 100], true)).to.eql(16);
+        expect(resolutionConstraint(15, 0, [100, 100], true)).to.eql(16);
+        expect(resolutionConstraint(10, 0, [100, 100], true)).to.eql(16);
+      });
+    });
+
+    describe('min/max, smooth constraint on', function() {
+      it('returns expected resolution value', function() {
+        let resolutionConstraint = createMinMaxResolution(128, 16, true);
+
+        expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.greaterThan(128);
+        expect(resolutionConstraint(150, 0, [100, 100], true)).to.be.lessThan(150);
+        expect(resolutionConstraint(130, 0, [100, 100], true)).to.be.greaterThan(128);
+        expect(resolutionConstraint(130, 0, [100, 100], true)).to.be.lessThan(130);
+        expect(resolutionConstraint(128, 0, [100, 100], true)).to.eql(128);
+        expect(resolutionConstraint(16, 0, [100, 100], true)).to.eql(16);
+        expect(resolutionConstraint(15, 0, [100, 100], true)).to.be.greaterThan(15);
+        expect(resolutionConstraint(15, 0, [100, 100], true)).to.be.lessThan(16);
+        expect(resolutionConstraint(10, 0, [100, 100], true)).to.be.greaterThan(10);
+        expect(resolutionConstraint(10, 0, [100, 100], true)).to.be.lessThan(16);
+      });
+    });
+
+    describe('min/max, smooth constraint off', function() {
+      it('returns expected resolution value', function() {
+        let resolutionConstraint = createMinMaxResolution(128, 16, false);
+
+        expect(resolutionConstraint(150, 0, [100, 100], true)).to.eql(128);
+        expect(resolutionConstraint(130, 0, [100, 100], true)).to.eql(128);
+        expect(resolutionConstraint(128, 0, [100, 100], true)).to.eql(128);
+        expect(resolutionConstraint(16, 0, [100, 100], true)).to.eql(16);
+        expect(resolutionConstraint(15, 0, [100, 100], true)).to.eql(16);
+        expect(resolutionConstraint(10, 0, [100, 100], true)).to.eql(16);
+      });
+    });
+  });
+
 });

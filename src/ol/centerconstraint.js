@@ -33,9 +33,9 @@ export function createExtent(extent, onlyCenter, smooth) {
         const maxX = extent[2] - viewWidth / 2;
         const minY = extent[1] + viewHeight / 2;
         const maxY = extent[3] - viewHeight / 2;
-        let x = clamp(center[0], minX, maxX);
-        let y = clamp(center[1], minY, maxY);
-        let ratio = 30 * resolution;
+        let x = minX > maxX ? (maxX + minX) / 2 : clamp(center[0], minX, maxX);
+        let y = minY > maxY ? (maxY + minY) / 2 : clamp(center[1], minY, maxY);
+        const ratio = 30 * resolution;
 
         // during an interaction, allow some overscroll
         if (opt_isMoving && smooth) {

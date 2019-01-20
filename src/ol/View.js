@@ -123,6 +123,9 @@ import {createMinMaxResolution} from './resolutionconstraint';
  * @property {boolean} [constrainResolution] If true, the view will always
  * animate to the closest zoom level after an interaction; false means
  * intermediary zoom levels are allowed. Default is false.
+ * @property {boolean} [smoothResolutionConstraint] If true, the resolution
+ * min/max values will be applied smoothly, i. e. allow the view to exceed slightly
+ * the given resolution or zoom bounds. Default is true.
  * @property {import("./proj.js").ProjectionLike} [projection='EPSG:3857'] The
  * projection. The default is Spherical Mercator.
  * @property {number} [resolution] The initial resolution for the view. The
@@ -978,8 +981,7 @@ class View extends BaseObject {
       const zoomFactor = this.resolutions_[baseLevel] / this.resolutions_[baseLevel + 1];
       return this.resolutions_[baseLevel] / Math.pow(zoomFactor, clamp(zoom - baseLevel, 0, 1));
     } else {
-      return clamp(this.maxResolution_ / Math.pow(this.zoomFactor_, zoom - this.minZoom_),
-        this.minResolution_, this.maxResolution_);
+      return this.maxResolution_ / Math.pow(this.zoomFactor_, zoom - this.minZoom_);
     }
   }
 
@@ -1203,7 +1205,7 @@ class View extends BaseObject {
   }
 
   /**
-   * Set the rotation for this view.
+   * Set the rotation for this view using an anchor.
    * @param {number} rotation The rotation of the view in radians.
    * @observable
    * @api
@@ -1214,7 +1216,7 @@ class View extends BaseObject {
   }
 
   /**
-   * Zoom to a specific zoom level.
+   * Zoom to a specific zoom level using an anchor
    * @param {number} zoom Zoom level.
    * @api
    */
@@ -1263,7 +1265,7 @@ class View extends BaseObject {
    * @private
    */
   resolveConstraints_(opt_duration, opt_resolutionDirection) {
-    const duration = opt_duration || 200;
+    const duration = opt_duration !== undefined ? opt_duration : 200;
     const direction = opt_resolutionDirection || 0;
 
     const newRotation = this.constraints_.rotation(this.targetRotation_);
@@ -1289,7 +1291,7 @@ class View extends BaseObject {
       });
     }
   }
-  
+
   /**
    * Notify the View that an interaction has started.
    * @api
@@ -1391,6 +1393,9 @@ export function createResolutionConstraint(options) {
   const zoomFactor = options.zoomFactor !== undefined ?
     options.zoomFactor : defaultZoomFactor;
 
+  const smooth =
+      options.smoothResolutionConstraint !== undefined ? options.smoothResolutionConstraint : true;
+
   if (options.resolutions !== undefined) {
     const resolutions = options.resolutions;
     maxResolution = resolutions[minZoom];
@@ -1398,10 +1403,10 @@ export function createResolutionConstraint(options) {
       resolutions[maxZoom] : resolutions[resolutions.length - 1];
 
     if (options.constrainResolution) {
-      resolutionConstraint = createSnapToResolutions(resolutions,
+      resolutionConstraint = createSnapToResolutions(resolutions, smooth,
         !options.constrainOnlyCenter && options.extent);
     } else {
-      resolutionConstraint = createMinMaxResolution(maxResolution, minResolution,
+      resolutionConstraint = createMinMaxResolution(maxResolution, minResolution, smooth,
         !options.constrainOnlyCenter && options.extent);
     }
   } else {
@@ -1449,10 +1454,10 @@ export function createResolutionConstraint(options) {
 
     if (options.constrainResolution) {
       resolutionConstraint = createSnapToPower(
-        zoomFactor, maxResolution, minResolution,
+        zoomFactor, maxResolution, minResolution, smooth,
         !options.constrainOnlyCenter && options.extent);
     } else {
-      resolutionConstraint = createMinMaxResolution(maxResolution, minResolution,
+      resolutionConstraint = createMinMaxResolution(maxResolution, minResolution, smooth,
         !options.constrainOnlyCenter && options.extent);
     }
   }
