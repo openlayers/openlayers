@@ -34,9 +34,6 @@ export const Mode = {
  * {@link module:ol/events/condition~always}.
  * @property {number} [duration=250] Animation duration in milliseconds.
  * @property {number} [timeout=80] Mouse wheel timeout duration in milliseconds.
- * @property {boolean} [constrainResolution=false] When using a trackpad or
- * magic mouse, zoom to the closest integer zoom level after the scroll gesture
- * ends.
  * @property {boolean} [useAnchor=true] Enable zooming using the mouse's
  * location as the anchor. When set to `false`, zooming in and out will zoom to
  * the center of the screen instead of zooming on the mouse's location.
@@ -81,12 +78,6 @@ class MouseWheelZoom extends Interaction {
      * @type {boolean}
      */
     this.useAnchor_ = options.useAnchor !== undefined ? options.useAnchor : true;
-
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.constrainResolution_ = options.constrainResolution || false;
 
     /**
      * @private
@@ -238,7 +229,7 @@ class MouseWheelZoom extends Interaction {
       }
       view.setResolution(resolution);
 
-      if (rebound === 0 && this.constrainResolution_) {
+      if (rebound === 0) {
         const zoomDelta = delta > 0 ? -1 : 1;
         const newZoom = view.getValidZoomLevel(view.getZoom() + zoomDelta);
         view.animate({

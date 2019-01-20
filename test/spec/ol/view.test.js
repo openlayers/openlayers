@@ -239,7 +239,8 @@ describe('ol.View', function() {
         it('works with minResolution and maxResolution', function() {
           const constraint = getConstraint({
             maxResolution: 500,
-            minResolution: 100
+            minResolution: 100,
+            constrainResolution: true
           });
 
           expect(constraint(600, 0, 0)).to.be(500);
@@ -255,7 +256,8 @@ describe('ol.View', function() {
           const constraint = getConstraint({
             maxResolution: 500,
             minResolution: 1,
-            zoomFactor: 10
+            zoomFactor: 10,
+            constrainResolution: true
           });
 
           expect(constraint(1000, 0, 0)).to.be(500);
@@ -1327,13 +1329,39 @@ describe('ol.View', function() {
         zoom: 5
       });
     });
-    it('fits correctly to the geometry', function() {
+    it('fits correctly to the geometry (with unconstrained resolution)', function() {
       view.fit(
         new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
-        {size: [200, 200], padding: [100, 0, 0, 100], constrainResolution: false});
+        {size: [200, 200], padding: [100, 0, 0, 100]});
       expect(view.getResolution()).to.be(11);
       expect(view.getCenter()[0]).to.be(5950);
       expect(view.getCenter()[1]).to.be(47100);
+
+      view.fit(
+        new Circle([6000, 46000], 1000),
+        {size: [200, 200]});
+      expect(view.getResolution()).to.be(10);
+      expect(view.getCenter()[0]).to.be(6000);
+      expect(view.getCenter()[1]).to.be(46000);
+
+      view.setRotation(Math.PI / 8);
+      view.fit(
+        new Circle([6000, 46000], 1000),
+        {size: [200, 200]});
+      expect(view.getResolution()).to.roughlyEqual(10, 1e-9);
+      expect(view.getCenter()[0]).to.roughlyEqual(6000, 1e-9);
+      expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
+
+      view.setRotation(Math.PI / 4);
+      view.fit(
+        new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
+        {size: [200, 200], padding: [100, 0, 0, 100]});
+      expect(view.getResolution()).to.roughlyEqual(14.849242404917458, 1e-9);
+      expect(view.getCenter()[0]).to.roughlyEqual(5200, 1e-9);
+      expect(view.getCenter()[1]).to.roughlyEqual(46300, 1e-9);
+    });
+    it('fits correctly to the geometry', function() {
+      view.setConstrainResolution(true);
 
       view.fit(
         new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
@@ -1363,30 +1391,8 @@ describe('ol.View', function() {
       expect(view.getZoom()).to.be(6);
       expect(view.getCenter()[0]).to.be(5900);
       expect(view.getCenter()[1]).to.be(46100);
-
-      view.fit(
-        new Circle([6000, 46000], 1000),
-        {size: [200, 200], constrainResolution: false});
-      expect(view.getResolution()).to.be(10);
-      expect(view.getCenter()[0]).to.be(6000);
-      expect(view.getCenter()[1]).to.be(46000);
-
-      view.setRotation(Math.PI / 8);
-      view.fit(
-        new Circle([6000, 46000], 1000),
-        {size: [200, 200], constrainResolution: false});
-      expect(view.getResolution()).to.roughlyEqual(10, 1e-9);
-      expect(view.getCenter()[0]).to.roughlyEqual(6000, 1e-9);
-      expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
-
-      view.setRotation(Math.PI / 4);
-      view.fit(
-        new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
-        {size: [200, 200], padding: [100, 0, 0, 100], constrainResolution: false});
-      expect(view.getResolution()).to.roughlyEqual(14.849242404917458, 1e-9);
-      expect(view.getCenter()[0]).to.roughlyEqual(5200, 1e-9);
-      expect(view.getCenter()[1]).to.roughlyEqual(46300, 1e-9);
     });
+
     it('fits correctly to the extent', function() {
       view.fit([1000, 1000, 2000, 2000], {size: [200, 200]});
       expect(view.getResolution()).to.be(5);
@@ -1409,7 +1415,6 @@ describe('ol.View', function() {
         {
           size: [200, 200],
           padding: [100, 0, 0, 100],
-          constrainResolution: false,
           duration: 25
         });
 
@@ -1531,7 +1536,8 @@ describe('ol.View', function() {
       view = new View({
         maxResolution: 2500,
         zoomFactor: 5,
-        maxZoom: 4
+        maxZoom: 4,
+        constrainResolution: true
       });
       expect(view.getValidResolution(90, 1)).to.be(100);
       expect(view.getValidResolution(90, -1)).to.be(20);
@@ -1542,7 +1548,8 @@ describe('ol.View', function() {
     it('works correctly with a specific resolution set', function() {
       view = new View({
         zoom: 0,
-        resolutions: [512, 256, 128, 64, 32, 16, 8]
+        resolutions: [512, 256, 128, 64, 32, 16, 8],
+        constrainResolution: true
       });
       expect(view.getValidResolution(1000, 1)).to.be(512);
       expect(view.getValidResolution(260, 1)).to.be(512);

@@ -10,8 +10,6 @@ import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js
 /**
  * @typedef {Object} Options
  * @property {number} [duration=400] Animation duration in milliseconds.
- * @property {boolean} [constrainResolution=false] Zoom to the closest integer
- * zoom level after the pinch gesture ends.
  */
 
 
@@ -36,12 +34,6 @@ class PinchZoom extends PointerInteraction {
     }
 
     super(pointerOptions);
-
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.constrainResolution_ = options.constrainResolution || false;
 
     /**
      * @private

@@ -7,7 +7,7 @@ import OSM from '../src/ol/source/OSM.js';
 
 const map = new Map({
   interactions: defaultInteractions({
-    constrainResolution: true, onFocusOnly: true
+    onFocusOnly: true
   }),
   layers: [
     new TileLayer({

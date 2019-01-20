@@ -23,6 +23,7 @@ import {createProjection, METERS_PER_UNIT} from './proj.js';
 import Units from './proj/Units.js';
 import {equals} from './coordinate';
 import {easeOut} from './easing';
+import {createMinMaxResolution} from './resolutionconstraint';
 
 
 /**
@@ -60,9 +61,8 @@ import {easeOut} from './easing';
  * @property {!Array<number>} [padding=[0, 0, 0, 0]] Padding (in pixels) to be
  * cleared inside the view. Values in the array are top, right, bottom and left
  * padding.
- * @property {boolean} [constrainResolution=true] Constrain the resolution.
- * @property {boolean} [nearest=false] If `constrainResolution` is `true`, get
- * the nearest extent instead of the closest that actually fits the view.
+ * @property {boolean} [nearest=false] If the view `constrainResolution` option is `true`,
+ * get the nearest extent instead of the closest that actually fits the view.
  * @property {number} [minResolution=0] Minimum resolution that we zoom to.
  * @property {number} [maxZoom] Maximum zoom level that we zoom to. If
  * `minResolution` is given, this property is ignored.
@@ -120,6 +120,9 @@ import {easeOut} from './easing';
  * resolution constraint. It is used together with `maxZoom` (or
  * `minResolution`) and `zoomFactor`.  Note that if `maxResolution` is also
  * provided, it is given precedence over `minZoom`.
+ * @property {boolean} [constrainResolution] If true, the view will always
+ * animate to the closest zoom level after an interaction; false means
+ * intermediary zoom levels are allowed. Default is false.
  * @property {import("./proj.js").ProjectionLike} [projection='EPSG:3857'] The
  * projection. The default is Spherical Mercator.
  * @property {number} [resolution] The initial resolution for the view. The
@@ -621,7 +624,7 @@ class View extends BaseObject {
     }
 
     if (!this.getAnimating()) {
-      this.resolveConstraints_();
+      setTimeout(this.resolveConstraints_.bind(this), 0);
     }
   }
 
@@ -788,6 +791,15 @@ class View extends BaseObject {
    */
   setMinZoom(zoom) {
     this.applyOptions_(this.getUpdatedOptions_({minZoom: zoom}));
+  }
+
+  /**
+   * Set whether the view shoud allow intermediary zoom levels.
+   * @param {boolean} enabled Whether the resolution is constrained.
+   * @api
+   */
+  setConstrainResolution(enabled) {
+    this.applyOptions_(this.getUpdatedOptions_({constrainResolution: enabled}));
   }
 
   /**
@@ -1001,8 +1013,6 @@ class View extends BaseObject {
     }
 
     const padding = options.padding !== undefined ? options.padding : [0, 0, 0, 0];
-    const constrainResolution = options.constrainResolution !== undefined ?
-      options.constrainResolution : true;
     const nearest = options.nearest !== undefined ? options.nearest : false;
     let minResolution;
     if (options.minResolution !== undefined) {
@@ -1038,9 +1048,7 @@ class View extends BaseObject {
       [size[0] - padding[1] - padding[3], size[1] - padding[0] - padding[2]]);
     resolution = isNaN(resolution) ? minResolution :
       Math.max(resolution, minResolution);
-    if (constrainResolution) {
-      resolution = this.getValidResolution(resolution, nearest ? 0 : 1);
-    }
+    resolution = this.getValidResolution(resolution, nearest ? 0 : 1);
 
     // calculate center
     sinAngle = -sinAngle; // go back to original rotation
@@ -1346,8 +1354,14 @@ export function createResolutionConstraint(options) {
     maxResolution = resolutions[minZoom];
     minResolution = resolutions[maxZoom] !== undefined ?
       resolutions[maxZoom] : resolutions[resolutions.length - 1];
-    resolutionConstraint = createSnapToResolutions(resolutions,
-      !options.constrainOnlyCenter && options.extent);
+
+    if (options.constrainResolution) {
+      resolutionConstraint = createSnapToResolutions(resolutions,
+        !options.constrainOnlyCenter && options.extent);
+    } else {
+      resolutionConstraint = createMinMaxResolution(maxResolution, minResolution,
+        !options.constrainOnlyCenter && options.extent);
+    }
   } else {
     // calculate the default min and max resolution
     const projection = createProjection(options.projection, 'EPSG:3857');
@@ -1391,9 +1405,14 @@ export function createResolutionConstraint(options) {
       Math.log(maxResolution / minResolution) / Math.log(zoomFactor));
     minResolution = maxResolution / Math.pow(zoomFactor, maxZoom - minZoom);
 
-    resolutionConstraint = createSnapToPower(
-      zoomFactor, maxResolution, minResolution,
-      !options.constrainOnlyCenter && options.extent);
+    if (options.constrainResolution) {
+      resolutionConstraint = createSnapToPower(
+        zoomFactor, maxResolution, minResolution,
+        !options.constrainOnlyCenter && options.extent);
+    } else {
+      resolutionConstraint = createMinMaxResolution(maxResolution, minResolution,
+        !options.constrainOnlyCenter && options.extent);
+    }
   }
   return {constraint: resolutionConstraint, maxResolution: maxResolution,
     minResolution: minResolution, minZoom: minZoom, zoomFactor: zoomFactor};
