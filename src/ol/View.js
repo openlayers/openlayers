@@ -971,6 +971,9 @@ class View extends BaseObject {
    */
   getResolutionForZoom(zoom) {
     if (this.resolutions_) {
+      if (this.resolutions_.length <= 1) {
+        return 0;
+      }
       const baseLevel = clamp(Math.floor(zoom), 0, this.resolutions_.length - 2);
       const zoomFactor = this.resolutions_[baseLevel] / this.resolutions_[baseLevel + 1];
       return this.resolutions_[baseLevel] / Math.pow(zoomFactor, clamp(zoom - baseLevel, 0, 1));
