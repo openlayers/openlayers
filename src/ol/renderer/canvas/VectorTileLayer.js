@@ -524,12 +524,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import('../../PluggableMap.js').FrameState} frameState Frame state.
    */
   renderTileImages_(hifi, frameState) {
-    // Even when we have time to render hifi, do not spend more than 100 ms in this render frame,
-    // to avoid delays when the user starts interacting again with the map.
-    // When we don't have time to render hifi, only render lowres tiles until we have used up
+    // When we don't have time to render hifi, only render tiles until we have used up
     // half of the frame budget of 16 ms
     for (const uid in this.renderTileImageQueue_) {
-      if (Date.now() - frameState.time > (hifi ? 100 : 8)) {
+      if (!hifi && Date.now() - frameState.time > 8) {
         break;
       }
       const tile = this.renderTileImageQueue_[uid];
