@@ -98,6 +98,12 @@ class CanvasBuilder extends VectorContext {
     this.coordinates = [];
 
     /**
+     * @private
+     * @type {import("../../coordinate.js").Coordinate}
+     */
+    this.tmpCoordinate_ = [];
+
+    /**
      * @protected
      * @type {Array<*>}
      */
@@ -140,8 +146,9 @@ class CanvasBuilder extends VectorContext {
     if (skipFirst) {
       offset += stride;
     }
-    const lastCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
-    const nextCoord = [NaN, NaN];
+    let lastXCoord = flatCoordinates[offset];
+    let lastYCoord = flatCoordinates[offset + 1];
+    const nextCoord = this.tmpCoordinate_;
     let skipped = true;
 
     let i, lastRel, nextRel;
@@ -151,8 +158,8 @@ class CanvasBuilder extends VectorContext {
       nextRel = coordinateRelationship(extent, nextCoord);
       if (nextRel !== lastRel) {
         if (skipped) {
-          this.coordinates[myEnd++] = lastCoord[0];
-          this.coordinates[myEnd++] = lastCoord[1];
+          this.coordinates[myEnd++] = lastXCoord;
+          this.coordinates[myEnd++] = lastYCoord;
         }
         this.coordinates[myEnd++] = nextCoord[0];
         this.coordinates[myEnd++] = nextCoord[1];
@@ -164,15 +171,15 @@ class CanvasBuilder extends VectorContext {
       } else {
         skipped = true;
       }
-      lastCoord[0] = nextCoord[0];
-      lastCoord[1] = nextCoord[1];
+      lastXCoord = nextCoord[0];
+      lastYCoord = nextCoord[1];
       lastRel = nextRel;
     }
 
     // Last coordinate equals first or only one point to append:
     if ((closed && skipped) || i === offset + stride) {
-      this.coordinates[myEnd++] = lastCoord[0];
-      this.coordinates[myEnd++] = lastCoord[1];
+      this.coordinates[myEnd++] = lastXCoord;
+      this.coordinates[myEnd++] = lastYCoord;
     }
     return myEnd;
   }
