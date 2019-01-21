@@ -77,7 +77,7 @@ class ScaleLine extends Control {
     const options = opt_options ? opt_options : {};
 
     const className = options.className !== undefined ? options.className :
-      options.bar !== undefined ? 'ol-scale-bar' : 'ol-scale-line';
+      options.bar ? 'ol-scale-bar' : 'ol-scale-line';
 
     super({
       element: document.createElement('div'),
