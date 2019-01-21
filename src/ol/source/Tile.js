@@ -68,11 +68,23 @@ class TileSource extends Source {
      */
     this.tileGrid = options.tileGrid !== undefined ? options.tileGrid : null;
 
+    let cacheSize = options.cacheSize;
+    if (cacheSize === undefined) {
+      const tileSize = [256, 256];
+      const tileGrid = options.tileGrid;
+      if (tileGrid) {
+        toSize(tileGrid.getTileSize(tileGrid.getMinZoom()), tileSize);
+      }
+      const width = screen ? (screen.availWidth || screen.width) : 1920;
+      const height = screen ? (screen.availHeight || screen.height) : 1080;
+      cacheSize = 2 * Math.ceil(width / tileSize[0]) * Math.ceil(height / tileSize[1]);
+    }
+
     /**
      * @protected
      * @type {import("../TileCache.js").default}
      */
-    this.tileCache = new TileCache(options.cacheSize);
+    this.tileCache = new TileCache(cacheSize);
 
     /**
      * @protected

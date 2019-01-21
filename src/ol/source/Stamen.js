@@ -90,7 +90,7 @@ const ProviderConfig = {
 
 /**
  * @typedef {Object} Options
- * @property {number} [cacheSize=2048] Cache size.
+ * @property {number} [cacheSize] Tile cache size. Default is twice as many tiles as a fullscreen map needs.
  * @property {string} layer Layer name.
  * @property {number} [minZoom] Minimum zoom.
  * @property {number} [maxZoom] Maximum zoom.
