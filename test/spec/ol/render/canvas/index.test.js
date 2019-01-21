@@ -10,6 +10,17 @@ describe('ol.render.canvas', function() {
   font.rel = 'stylesheet';
   const head = document.getElementsByTagName('head')[0];
 
+  it('pruneLabelCache()', function() {
+    const highWaterMark = render.labelCache.highWaterMark;
+    render.labelCache.highWaterMark = 1;
+    render.labelCache.set('foo', document.createElement('canvas'));
+    render.labelCache.set('bar', document.createElement('canvas'));
+    render.pruneLabelCache();
+    expect(render.labelCache.getCount()).to.be(1);
+    render.labelCache.highWaterMark = highWaterMark;
+    render.labelCache.clear();
+  });
+
   describe('ol.render.canvas.checkFont()', function() {
 
     beforeEach(function() {

@@ -103,6 +103,10 @@ class VectorRenderTile extends Tile {
    */
   disposeInternal() {
     this.removeSourceTiles_(this);
+    for (const key in this.context_) {
+      const canvas = this.context_[key].canvas;
+      canvas.width = canvas.height = 0;
+    }
     this.setState(TileState.ABORT);
     super.disposeInternal();
   }
