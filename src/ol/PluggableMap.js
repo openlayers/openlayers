@@ -47,7 +47,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {import("./size.js").Size} size
  * @property {!Object<string, boolean>} skippedFeatureUids
  * @property {TileQueue} tileQueue
- * @property {Object<string, Object<string, import("./TileRange.js").default>>} usedTiles
+ * @property {!Object<string, Object<string, boolean>>} usedTiles
  * @property {Array<number>} viewHints
  * @property {!Object<string, Object<string, boolean>>} wantedTiles
  */
