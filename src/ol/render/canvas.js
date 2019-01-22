@@ -170,6 +170,17 @@ export const labelCache = new LRUCache();
 
 
 /**
+ * Prune the label cache.
+ */
+export function pruneLabelCache() {
+  while (labelCache.canExpireCache()) {
+    const canvas = labelCache.pop();
+    canvas.width = canvas.height = 0;
+  }
+}
+
+
+/**
  * @type {!Object<string, number>}
  */
 export const checkedFonts = {};

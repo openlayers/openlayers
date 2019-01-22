@@ -96,7 +96,7 @@ class VectorTile extends UrlTile {
 
     super({
       attributions: options.attributions,
-      cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,
+      cacheSize: options.cacheSize,
       opaque: false,
       projection: projection,
       state: options.state,

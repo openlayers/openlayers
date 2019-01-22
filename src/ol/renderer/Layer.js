@@ -192,26 +192,18 @@ class LayerRenderer extends Observable {
   }
 
   /**
-   * @param {!Object<string, !Object<string, import("../TileRange.js").default>>} usedTiles Used tiles.
+   * @param {!Object<string, !Object<string, boolean>>} usedTiles Used tiles.
    * @param {import("../source/Tile.js").default} tileSource Tile source.
-   * @param {number} z Z.
-   * @param {import("../TileRange.js").default} tileRange Tile range.
+   * @param {import('../Tile.js').default} tile Tile.
    * @protected
    */
-  updateUsedTiles(usedTiles, tileSource, z, tileRange) {
+  updateUsedTiles(usedTiles, tileSource, tile) {
     // FIXME should we use tilesToDrawByZ instead?
     const tileSourceKey = getUid(tileSource);
-    const zKey = z.toString();
-    if (tileSourceKey in usedTiles) {
-      if (zKey in usedTiles[tileSourceKey]) {
-        usedTiles[tileSourceKey][zKey].extend(tileRange);
-      } else {
-        usedTiles[tileSourceKey][zKey] = tileRange;
-      }
-    } else {
+    if (!(tileSourceKey in usedTiles)) {
       usedTiles[tileSourceKey] = {};
-      usedTiles[tileSourceKey][zKey] = tileRange;
     }
+    usedTiles[tileSourceKey][tile.getKey()] = true;
   }
 
   /**

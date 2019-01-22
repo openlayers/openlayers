@@ -283,6 +283,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
         this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
         this.renderedTiles.push(tile);
+        this.updateUsedTiles(frameState.usedTiles, tileSource, tile);
       }
     }
 
@@ -291,7 +292,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     this.renderedResolution = tileResolution;
     this.renderedExtent_ = canvasExtent;
 
-    this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
     this.manageTilePyramid(frameState, tileSource, tileGrid, pixelRatio,
       projection, extent, z, tileLayer.getPreload());
     this.scheduleExpireCache(frameState, tileSource);

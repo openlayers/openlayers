@@ -287,16 +287,6 @@ class LRUCache extends EventTarget {
     this.highWaterMark = size;
   }
 
-
-  /**
-   * Prune the cache.
-   */
-  prune() {
-    while (this.canExpireCache()) {
-      this.pop();
-    }
-  }
-
 }
 
 export default LRUCache;
