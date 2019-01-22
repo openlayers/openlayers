@@ -35,7 +35,7 @@ import SourceState from '../source/State.js';
 /**
  * @typedef {Object} State
  * @property {import("./Base.js").default} layer
- * @property {number} opacity
+ * @property {number} opacity Opacity, the value is rounded to two digits to appear after the decimal point.
  * @property {SourceState} sourceState
  * @property {boolean} visible
  * @property {boolean} managed
