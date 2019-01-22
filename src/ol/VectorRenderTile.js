@@ -107,6 +107,12 @@ class VectorRenderTile extends Tile {
       const canvas = this.context_[key].canvas;
       canvas.width = canvas.height = 0;
     }
+    for (const key in this.executorGroups) {
+      const executorGroups = this.executorGroups[key];
+      for (let i = 0, ii = executorGroups.length; i < ii; ++i) {
+        executorGroups[i].disposeInternal();
+      }
+    }
     this.setState(TileState.ABORT);
     super.disposeInternal();
   }

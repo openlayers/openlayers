@@ -20,6 +20,7 @@ import {
 } from '../../transform.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {labelCache, defaultTextAlign, measureTextHeight, measureAndCacheTextWidth, measureTextWidths} from '../canvas.js';
+import Disposable from '../../Disposable.js';
 
 
 /**
@@ -52,7 +53,7 @@ const p3 = [];
 const p4 = [];
 
 
-class Executor {
+class Executor extends Disposable {
   /**
    * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
@@ -62,6 +63,7 @@ class Executor {
    * @param {SerializableInstructions} instructions The serializable instructions
    */
   constructor(maxExtent, resolution, pixelRatio, overlaps, declutterTree, instructions) {
+    super();
     /**
      * @type {?}
      */
@@ -163,6 +165,14 @@ class Executor {
     this.widths_ = {};
   }
 
+  /**
+   * @inheritDoc
+   */
+  disposeInternal() {
+    labelCache.release(this);
+    super.disposeInternal();
+  }
+
 
   /**
    * @param {string} text Text.
@@ -230,7 +240,7 @@ class Executor {
         }
       }
     }
-    return labelCache.get(key);
+    return labelCache.get(key, this);
   }
 
   /**
