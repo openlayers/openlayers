@@ -252,7 +252,7 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     const canvas = this.helper_.getCanvas();
 
     const opacity = layerState.opacity;
-    if (opacity !== canvas.style.opacity) {
+    if (opacity !== parseFloat(canvas.style.opacity)) {
       canvas.style.opacity = opacity;
     }
 
