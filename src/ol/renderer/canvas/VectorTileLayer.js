@@ -508,7 +508,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     }
 
     const opacity = layerState.opacity;
-    if (opacity !== canvas.style.opacity) {
+    if (opacity !== parseFloat(canvas.style.opacity)) {
       canvas.style.opacity = opacity;
     }
 

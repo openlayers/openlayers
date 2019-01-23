@@ -162,14 +162,14 @@ describe('ol.layer.Layer', function() {
     });
 
     it('returns a layerState from the properties values', function() {
-      layer.setOpacity(0.3);
+      layer.setOpacity(1 / 3);
       layer.setVisible(false);
       layer.setMaxResolution(500);
       layer.setMinResolution(0.25);
       layer.setZIndex(10);
       expect(layer.getLayerState()).to.eql({
         layer: layer,
-        opacity: 0.3,
+        opacity: 0.33,
         visible: false,
         managed: true,
         sourceState: 'ready',
