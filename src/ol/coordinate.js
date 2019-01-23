@@ -190,6 +190,33 @@ export function degreesToStringHDMS(hemispheres, degrees, opt_fractionDigits) {
 }
 
 
+
+/**
+ * @param {string} hemispheres Hemispheres.
+ * @param {number} degrees Degrees.
+ * @param {number=} opt_fractionDigits The number of digits to include
+ *    after the decimal point. Default is `4`.
+ * @return {string} String.
+ */
+export function degreesToStringHDDM(hemispheres, degrees, opt_fractionDigits) {
+  var normalizedDegrees = modulo(degrees + 180, 360) - 180;
+  var x = Math.abs(3600 * normalizedDegrees);
+  var dflPrecision = opt_fractionDigits || 4;
+  var precision = Math.pow(10, dflPrecision);
+
+  var deg = Math.floor(x / 3600);
+  var min = ((x - deg * 3600) / 60).toFixed(dflPrecision);
+
+  if (min >= 60) {
+    min = 0;
+    deg += 1;
+  }
+
+  return deg + '\u00b0 ' + padNumber(min, 2) + '\u2032 ' +
+    (normalizedDegrees == 0 ? '' : ' ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0));
+}
+
+
 /**
  * Transforms the given {@link module:ol/coordinate~Coordinate} to a string
  * using the given string template. The strings `{x}` and `{y}` in the template
@@ -372,6 +399,44 @@ export function toStringHDMS(coordinate, opt_fractionDigits) {
     return '';
   }
 }
+
+
+
+/**
+ * Format a geographic coordinate with the hemisphere, degrees and decimal minutes
+ *
+ * Example without specifying fractional digits:
+ *
+ *     import {toStringHDDM} from 'ol/coordinate';
+ *
+ *     var coord = [36.9608, 0.3981];
+ *     var out = toStringHDDM(coord);
+ *     // out is now 0° 23.8860′  N 36° 57.6480′  E
+ *
+ * Example explicitly specifying 2 fractional digit:
+ *
+ *     import {toStringHDDM} from 'ol/coordinate';
+ *
+ *     var coord = [36.9608, 0.3981];
+ *     var out = toStringHDDM(coord, 2);
+ *     // out is now 0° 23.88′  N 36° 57.64′  E
+ *
+ * @param {Coordinate} coordinate Coordinate.
+ * @param {number=} opt_fractionDigits The number of digits to include
+ *    after the decimal point. Default is `4`.
+ * @return {string} Hemisphere, degrees and decimal minutes.
+ * @api
+ */
+export function toStringHDDM(coordinate, opt_fractionDigits) {
+  if (coordinate) {
+    return degreesToStringHDDM('NS', coordinate[1], opt_fractionDigits) + ' ' +
+      degreesToStringHDDM('EW', coordinate[0], opt_fractionDigits);
+  }
+  else {
+    return '';
+  }
+}
+
 
 
 /**
