@@ -55,26 +55,18 @@ const p4 = [];
 
 class Executor extends Disposable {
   /**
-   * @param {import("../../extent.js").Extent} maxExtent Maximum extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
    * @param {?} declutterTree Declutter tree.
    * @param {SerializableInstructions} instructions The serializable instructions
    */
-  constructor(maxExtent, resolution, pixelRatio, overlaps, declutterTree, instructions) {
+  constructor(resolution, pixelRatio, overlaps, declutterTree, instructions) {
     super();
     /**
      * @type {?}
      */
     this.declutterTree = declutterTree;
-
-    /**
-     * @protected
-     * @const
-     * @type {import("../../extent.js").Extent}
-     */
-    this.maxExtent = maxExtent;
 
     /**
      * @protected
