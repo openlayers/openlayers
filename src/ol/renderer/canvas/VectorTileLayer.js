@@ -248,6 +248,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     const sourceTiles = tile.load();
     const layerUid = getUid(layer);
+    const executorGroups = tile.executorGroups[layerUid];
+    if (executorGroups) {
+      for (let i = 0, ii = executorGroups.length; i < ii; ++i) {
+        executorGroups[i].dispose();
+      }
+    }
     tile.executorGroups[layerUid] = [];
     for (let t = 0, tt = sourceTiles.length; t < tt; ++t) {
       const sourceTile = sourceTiles[t];

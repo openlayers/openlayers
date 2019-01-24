@@ -114,9 +114,10 @@ class LRUCache extends EventTarget {
 
   /**
    * @param {string} key Key.
+   * @param {*=} opt_options Options (reserverd for subclasses).
    * @return {T} Value.
    */
-  get(key) {
+  get(key, opt_options) {
     const entry = this.entries_[key];
     assert(entry !== undefined,
       15); // Tried to get a value for a key that does not exist in the cache

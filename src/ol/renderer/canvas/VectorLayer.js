@@ -9,7 +9,7 @@ import rbush from 'rbush';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
 import {labelCache} from '../../render/canvas.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
-import InstructionsGroupExecutor from '../../render/canvas/ExecutorGroup.js';
+import ExecutorGroup from '../../render/canvas/ExecutorGroup.js';
 import CanvasLayerRenderer from './Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import {toString as transformToString, makeScale, makeInverse} from '../../transform.js';
@@ -290,6 +290,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       return true;
     }
 
+    if (this.replayGroup_) {
+      this.replayGroup_.dispose();
+    }
     this.replayGroup_ = null;
 
     this.dirty_ = false;
@@ -335,7 +338,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     const replayGroupInstructions = replayGroup.finish();
-    const renderingExecutorGroup = new InstructionsGroupExecutor(extent, resolution,
+    const executorGroup = new ExecutorGroup(extent, resolution,
       pixelRatio, vectorSource.getOverlaps(), this.declutterTree_,
       replayGroupInstructions, vectorLayer.getRenderBuffer());
 
@@ -343,7 +346,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.renderedRevision_ = vectorLayerRevision;
     this.renderedRenderOrder_ = vectorLayerRenderOrder;
     this.renderedExtent_ = extent;
-    this.replayGroup_ = renderingExecutorGroup;
+    this.replayGroup_ = executorGroup;
 
     this.replayGroupChanged = true;
     return true;

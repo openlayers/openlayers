@@ -4,8 +4,8 @@
 import {getFontFamilies} from '../css.js';
 import {createCanvasContext2D} from '../dom.js';
 import {clear} from '../obj.js';
-import LRUCache from '../structs/LRUCache.js';
 import {create as createTransform} from '../transform.js';
+import LabelCache from './canvas/LabelCache.js';
 
 
 /**
@@ -163,21 +163,10 @@ export const defaultLineWidth = 1;
 /**
  * The label cache for text rendering. To change the default cache size of 2048
  * entries, use {@link module:ol/structs/LRUCache#setSize}.
- * @type {LRUCache<HTMLCanvasElement>}
+ * @type {LabelCache}
  * @api
  */
-export const labelCache = new LRUCache();
-
-
-/**
- * Prune the label cache.
- */
-export function pruneLabelCache() {
-  while (labelCache.canExpireCache()) {
-    const canvas = labelCache.pop();
-    canvas.width = canvas.height = 0;
-  }
-}
+export const labelCache = new LabelCache();
 
 
 /**

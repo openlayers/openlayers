@@ -10,6 +10,7 @@ import {isEmpty} from '../../obj.js';
 import BuilderType from './BuilderType.js';
 import {create as createTransform, compose as composeTransform} from '../../transform.js';
 import Executor from './Executor.js';
+import Disposable from '../../Disposable.js';
 
 /**
  * @const
@@ -25,7 +26,7 @@ const ORDER = [
 ];
 
 
-class ExecutorGroup {
+class ExecutorGroup extends Disposable {
   /**
    * @param {import("../../extent.js").Extent} maxExtent Max extent.
    * @param {number} resolution Resolution.
@@ -36,9 +37,8 @@ class ExecutorGroup {
    * The serializable instructions.
    * @param {number=} opt_renderBuffer Optional rendering buffer.
    */
-  constructor(maxExtent, resolution, pixelRatio, overlaps, declutterTree,
-    allInstructions, opt_renderBuffer) {
-
+  constructor(maxExtent, resolution, pixelRatio, overlaps, declutterTree, allInstructions, opt_renderBuffer) {
+    super();
     /**
      * Declutter tree.
      * @private
@@ -128,6 +128,19 @@ class ExecutorGroup {
           this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_, instructions);
       }
     }
+  }
+
+  /**
+   * @inheritDoc
+   */
+  disposeInternal() {
+    for (const z in this.executorsByZIndex_) {
+      const executors = this.executorsByZIndex_[z];
+      for (const key in executors) {
+        executors[key].disposeInternal();
+      }
+    }
+    super.disposeInternal();
   }
 
   /**
