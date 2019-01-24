@@ -33,12 +33,13 @@ import {assign} from '../obj.js';
  * point symbol or line width.
  * @property {import("./VectorTileRenderType.js").default|string} [renderMode='hybrid'] Render mode for vector tiles:
  *  * `'image'`: Vector tiles are rendered as images. Great performance, but point symbols and texts
- *    are always rotated with the view and pixels are scaled during zoom animations.
+ *    are always rotated with the view and pixels are scaled during zoom animations. When `declutter`
+ *    is set to `true`, the decluttering is done per tile resulting in labels and point symbols getting
+ *    cut off at tile boundaries.
  *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom
  *    animations. Point symbols and texts are accurately rendered as vectors and can stay upright on
  *    rotated views.
  *
- * When `declutter` is set to `true`, `'hybrid'` will be used instead of `'image'`.
  * @property {import("../source/VectorTile.js").default} [source] Source.
  * @property {import("../PluggableMap.js").default} [map] Sets the layer as overlay on a map. The map will not manage
  * this layer in its layers collection, and the layer will be rendered on top. This is useful for
@@ -46,8 +47,7 @@ import {assign} from '../obj.js';
  * use {@link module:ol/Map#addLayer}.
  * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
  * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
- * means higher priority. When set to `true`, a `renderMode` of `'image'` will be overridden with
- * `'hybrid'`.
+ * means higher priority.
  * @property {import("../style/Style.js").StyleLike} [style] Layer style. See
  * {@link module:ol/style} for default style which will be used if this is not defined.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
@@ -85,15 +85,11 @@ class VectorTileLayer extends BaseVectorLayer {
 
     super(/** @type {import("./Vector.js").Options} */ (baseOptions));
 
-    let renderMode = options.renderMode || VectorTileRenderType.HYBRID;
+    const renderMode = options.renderMode || VectorTileRenderType.HYBRID;
     assert(renderMode == undefined ||
        renderMode == VectorTileRenderType.IMAGE ||
        renderMode == VectorTileRenderType.HYBRID,
     28); // `renderMode` must be `'image'` or `'hybrid'`
-
-    if (options.declutter && renderMode == VectorTileRenderType.IMAGE) {
-      renderMode = VectorTileRenderType.HYBRID;
-    }
 
     /**
      * @private
