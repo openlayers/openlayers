@@ -28,7 +28,10 @@ const ORDER = [
 
 class ExecutorGroup extends Disposable {
   /**
-   * @param {import("../../extent.js").Extent} maxExtent Max extent.
+   * @param {import("../../extent.js").Extent} maxExtent Max extent for clipping. When a
+   * `maxExtent` was set on the Buillder for this executor group, the same `maxExtent`
+   * should be set here, unless the target context does not exceet that extent (which
+   * can be the case when rendering to tiles).
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The executor group can have overlapping geometries.
@@ -124,7 +127,7 @@ class ExecutorGroup extends Disposable {
       const instructionByZindex = allInstructions[zIndex];
       for (const builderType in instructionByZindex) {
         const instructions = instructionByZindex[builderType];
-        executors[builderType] = new Executor(this.maxExtent_,
+        executors[builderType] = new Executor(
           this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_, instructions);
       }
     }
@@ -283,6 +286,9 @@ class ExecutorGroup extends Disposable {
    */
   getClipCoords(transform) {
     const maxExtent = this.maxExtent_;
+    if (!maxExtent) {
+      return null;
+    }
     const minX = maxExtent[0];
     const minY = maxExtent[1];
     const maxX = maxExtent[2];
@@ -308,7 +314,7 @@ class ExecutorGroup extends Disposable {
     let executor = executors[builderType];
     if (executor === undefined) {
       // FIXME: it should not be possible to ask for an executor that does not exist
-      executor = new Executor(this.maxExtent_,
+      executor = new Executor(
         this.resolution_, this.pixelRatio_, this.overlaps_, {
           instructions: [],
           hitDetectionInstructions: [],
@@ -353,8 +359,10 @@ class ExecutorGroup extends Disposable {
 
     // setup clipping so that the parts of over-simplified geometries are not
     // visible outside the current extent when panning
-    context.save();
-    this.clip(context, transform);
+    if (this.maxExtent_) {
+      context.save();
+      this.clip(context, transform);
+    }
 
     const builderTypes = opt_builderTypes ? opt_builderTypes : ORDER;
     let i, ii, j, jj, replays, replay;
@@ -380,7 +388,9 @@ class ExecutorGroup extends Disposable {
       }
     }
 
-    context.restore();
+    if (this.maxExtent_) {
+      context.restore();
+    }
   }
 }
 

@@ -313,7 +313,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         }
       }
       const executorGroupInstructions = builderGroup.finish();
-      const renderingReplayGroup = new CanvasExecutorGroup(sharedExtent, resolution,
+      // no need to clip when the render tile is covered by a single source tile
+      const replayExtent = layer.getDeclutter() && sourceTiles.length === 1 ?
+        null :
+        sharedExtent;
+      const renderingReplayGroup = new CanvasExecutorGroup(replayExtent, resolution,
         pixelRatio, source.getOverlaps(), this.declutterTree_, executorGroupInstructions, layer.getRenderBuffer());
       tile.executorGroups[layerUid].push(renderingReplayGroup);
     }
@@ -462,7 +466,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const tiles = this.renderedTiles;
     const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
     const clips = [];
-    const zs = [];
     for (let i = tiles.length - 1; i >= 0; --i) {
       const tile = /** @type {import("../../VectorRenderTile.js").default} */ (tiles[i]);
       if (tile.getState() == TileState.ABORT) {
@@ -481,32 +484,38 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           continue;
         }
         const currentZ = tile.tileCoord[0];
-        const currentClip = executorGroup.getClipCoords(transform);
-        context.save();
+        let zs, currentClip;
+        if (!declutterReplays) {
+          zs = [];
+          currentClip = executorGroup.getClipCoords(transform);
+          context.save();
 
-        // Create a clip mask for regions in this low resolution tile that are
-        // already filled by a higher resolution tile
-        for (let j = 0, jj = clips.length; j < jj; ++j) {
-          const clip = clips[j];
-          if (currentZ < zs[j]) {
-            context.beginPath();
-            // counter-clockwise (outer ring) for current tile
-            context.moveTo(currentClip[0], currentClip[1]);
-            context.lineTo(currentClip[2], currentClip[3]);
-            context.lineTo(currentClip[4], currentClip[5]);
-            context.lineTo(currentClip[6], currentClip[7]);
-            // clockwise (inner ring) for higher resolution tile
-            context.moveTo(clip[6], clip[7]);
-            context.lineTo(clip[4], clip[5]);
-            context.lineTo(clip[2], clip[3]);
-            context.lineTo(clip[0], clip[1]);
-            context.clip();
+          // Create a clip mask for regions in this low resolution tile that are
+          // already filled by a higher resolution tile
+          for (let j = 0, jj = clips.length; j < jj; ++j) {
+            const clip = clips[j];
+            if (currentZ < zs[j]) {
+              context.beginPath();
+              // counter-clockwise (outer ring) for current tile
+              context.moveTo(currentClip[0], currentClip[1]);
+              context.lineTo(currentClip[2], currentClip[3]);
+              context.lineTo(currentClip[4], currentClip[5]);
+              context.lineTo(currentClip[6], currentClip[7]);
+              // clockwise (inner ring) for higher resolution tile
+              context.moveTo(clip[6], clip[7]);
+              context.lineTo(clip[4], clip[5]);
+              context.lineTo(clip[2], clip[3]);
+              context.lineTo(clip[0], clip[1]);
+              context.clip();
+            }
           }
         }
         executorGroup.execute(context, transform, rotation, {}, hifi, replayTypes, declutterReplays);
-        context.restore();
-        clips.push(currentClip);
-        zs.push(currentZ);
+        if (!declutterReplays) {
+          context.restore();
+          clips.push(currentClip);
+          zs.push(currentZ);
+        }
       }
     }
     if (declutterReplays) {
