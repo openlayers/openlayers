@@ -934,8 +934,9 @@ class PluggableMap extends BaseObject {
       if (frameState) {
         const hints = frameState.viewHints;
         if (hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING]) {
-          maxTotalLoading = 8;
-          maxNewLoads = 2;
+          const lowOnFrameBudget = Date.now() - frameState.time > 8;
+          maxTotalLoading = lowOnFrameBudget ? 0 : 8;
+          maxNewLoads = lowOnFrameBudget ? 0 : 2;
         }
       }
       if (tileQueue.getTilesLoading() < maxTotalLoading) {
@@ -943,6 +944,7 @@ class PluggableMap extends BaseObject {
         tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
       }
     }
+
     if (frameState && this.hasListener(RenderEventType.RENDERCOMPLETE) && !frameState.animate &&
         !this.tileQueue_.getTilesLoading() && !getLoading(this.getLayers().getArray())) {
       this.renderer_.dispatchRenderEvent(RenderEventType.RENDERCOMPLETE, frameState);

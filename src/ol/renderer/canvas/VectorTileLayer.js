@@ -29,7 +29,7 @@ import {
   makeInverse
 } from '../../transform.js';
 import CanvasExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
-import {isEmpty} from '../../obj.js';
+import {clear} from '../../obj.js';
 
 
 /**
@@ -479,8 +479,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
         const executorGroup = executorGroups[t];
         if (!executorGroup.hasExecutors(replayTypes)) {
-          // sourceTile was not yet loaded when this.createReplayGroup_() was
-          // called, or it has no replays of the types we want to render
+          // sourceTile has no instructions of the types we want to render
           continue;
         }
         const currentZ = tile.tileCoord[0];
@@ -550,10 +549,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       delete this.renderTileImageQueue_[uid];
       this.renderTileImage_(tile, frameState.pixelRatio, frameState.viewState.projection);
     }
-    if (!isEmpty(this.renderTileImageQueue_)) {
-      // If there's items left in the queue, render them in another frame
-      frameState.animate = true;
-    }
+    clear(this.renderTileImageQueue_);
   }
 
   /**
