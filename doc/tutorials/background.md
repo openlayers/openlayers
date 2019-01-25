@@ -44,6 +44,6 @@ import {Tile, Vector} from 'ol/layer';
 In addition to these re-exported classes, modules with lowercase names also provide constants or functions as named exports:
 
 ```js
-import {inherits} from 'ol';
+import {getUid} from 'ol';
 import {fromLonLat} from 'ol/proj';
 ```

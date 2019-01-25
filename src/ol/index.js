@@ -30,5 +30,4 @@ export {default as VectorRenderTile} from './VectorRenderTile.js';
 export {default as VectorTile} from './VectorTile.js';
 export {default as View} from './View.js';
 
-export {getUid, inherits, VERSION} from './util.js';
-
+export {getUid, VERSION} from './util.js';
