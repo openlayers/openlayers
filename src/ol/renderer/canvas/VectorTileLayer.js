@@ -479,8 +479,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
         const executorGroup = executorGroups[t];
         if (!executorGroup.hasExecutors(replayTypes)) {
-          // sourceTile was not yet loaded when this.createReplayGroup_() was
-          // called, or it has no replays of the types we want to render
+          // sourceTile has no instructions of the types we want to render
           continue;
         }
         const currentZ = tile.tileCoord[0];
