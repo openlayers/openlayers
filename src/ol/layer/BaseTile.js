@@ -39,6 +39,7 @@ import {assign} from '../obj.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
+ * @extends {Layer<import("../source/Tile.js").default>}
  * @api
  */
 class BaseTileLayer extends Layer {
@@ -100,15 +101,6 @@ class BaseTileLayer extends Layer {
     this.set(TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
   }
 }
-
-
-/**
- * Return the associated {@link module:ol/source/Tile tilesource} of the layer.
- * @function
- * @return {import("../source/Tile.js").default} Source.
- * @api
- */
-BaseTileLayer.prototype.getSource;
 
 
 export default BaseTileLayer;

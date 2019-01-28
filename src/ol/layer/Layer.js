@@ -62,6 +62,8 @@ import SourceState from '../source/State.js';
  *
  * @fires import("../render/Event.js").RenderEvent#prerender
  * @fires import("../render/Event.js").RenderEvent#postrender
+ *
+ * @template {import("../source/Source.js").default} SourceType
  */
 class Layer extends BaseLayer {
   /**
@@ -106,7 +108,7 @@ class Layer extends BaseLayer {
       getChangeEventType(LayerProperty.SOURCE),
       this.handleSourcePropertyChange_, this);
 
-    const source = options.source ? options.source : null;
+    const source = options.source ? /** @type {SourceType} */ (options.source) : null;
     this.setSource(source);
   }
 
@@ -130,15 +132,12 @@ class Layer extends BaseLayer {
 
   /**
    * Get the layer source.
-   * @return {import("../source/Source.js").default} The layer source (or `null` if not yet set).
+   * @return {SourceType} The layer source (or `null` if not yet set).
    * @observable
    * @api
    */
   getSource() {
-    const source = this.get(LayerProperty.SOURCE);
-    return (
-      /** @type {import("../source/Source.js").default} */ (source) || null
-    );
+    return /** @type {SourceType} */ (this.get(LayerProperty.SOURCE)) || null;
   }
 
   /**
@@ -227,7 +226,7 @@ class Layer extends BaseLayer {
 
   /**
    * Set the layer source.
-   * @param {import("../source/Source.js").default} source The layer source.
+   * @param {SourceType} source The layer source.
    * @observable
    * @api
    */

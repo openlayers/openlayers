@@ -34,6 +34,7 @@ import Layer from './Layer.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
+ * @extends {Layer<import("../source/Image.js").default>}
  * @api
  */
 class BaseImageLayer extends Layer {
@@ -48,12 +49,4 @@ class BaseImageLayer extends Layer {
 
 }
 
-
-/**
- * Return the associated {@link module:ol/source/Image source} of the image layer.
- * @function
- * @return {import("../source/Image.js").default} Source.
- * @api
- */
-BaseImageLayer.prototype.getSource;
 export default BaseImageLayer;
