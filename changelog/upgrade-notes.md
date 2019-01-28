@@ -4,6 +4,11 @@
 
 #### Backwards incompatible changes
 
+##### Removal of the deprecated "inherits" function
+
+The `inherits` function that was used to inherit the prototype methods from one constructor into another has been removed.
+The standard ECMAScript classes should be used instead.
+
 ##### New internal tile coordinates
 
 Previously, the internal tile coordinates used in the library had an unusual row order – the origin of the tile coordinate system was at the top left as expected, but the rows increased upwards.  This meant that all tile coordinates within a tile grid's extent had negative `y` values.
