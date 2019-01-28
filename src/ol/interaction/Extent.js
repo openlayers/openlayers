@@ -242,7 +242,7 @@ class ExtentInteraction extends PointerInteraction {
         extentFeature = new Feature(polygonFromExtent(extent));
       }
       this.extentFeature_ = extentFeature;
-      /** @type {VectorSource} */ (this.extentOverlay_.getSource()).addFeature(extentFeature);
+      this.extentOverlay_.getSource().addFeature(extentFeature);
     } else {
       if (!extent) {
         extentFeature.setGeometry(undefined);
@@ -263,7 +263,7 @@ class ExtentInteraction extends PointerInteraction {
     if (!vertexFeature) {
       vertexFeature = new Feature(new Point(vertex));
       this.vertexFeature_ = vertexFeature;
-      /** @type {VectorSource} */ (this.vertexOverlay_.getSource()).addFeature(vertexFeature);
+      this.vertexOverlay_.getSource().addFeature(vertexFeature);
     } else {
       const geometry = /** @type {Point} */ (vertexFeature.getGeometry());
       geometry.setCoordinates(vertex);

@@ -229,7 +229,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @private
    */
   updateExecutorGroup_(tile, pixelRatio, projection) {
-    const layer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
+    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const revision = layer.getRevision();
     const renderOrder = /** @type {import("../../render.js").OrderFunction} */ (layer.getRenderOrder()) || null;
 
@@ -239,7 +239,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       return;
     }
 
-    const source = /** @type {import("../../source/VectorTile.js").default} */ (layer.getSource());
+    const source = layer.getSource();
     const sourceTileGrid = source.getTileGrid();
     const tileGrid = source.getTileGridForProjection(projection);
     const zoom = tile.tileCoord[0];
@@ -334,7 +334,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const rotation = frameState.viewState.rotation;
     hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
     const layer = this.getLayer();
-    const source = /** @type {import("../../source/VectorTile").default} */ (layer.getSource());
+    const source = layer.getSource();
     const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
     /** @type {!Object<string, boolean>} */
     const features = {};
@@ -378,7 +378,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   getReplayTransform_(tile, frameState) {
     const layer = this.getLayer();
-    const source = /** @type {import("../../source/VectorTile.js").default} */ (layer.getSource());
+    const source = layer.getSource();
     const tileGrid = source.getTileGrid();
     const tileCoord = tile.tileCoord;
     const tileResolution = tileGrid.getResolution(tileCoord[0]);
@@ -435,7 +435,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     const context = this.overlayContext_;
     const declutterReplays = layer.getDeclutter() ? {} : null;
-    const source = /** @type {import("../../source/VectorTile.js").default} */ (layer.getSource());
+    const source = layer.getSource();
     const replayTypes = VECTOR_REPLAYS[renderMode];
     const pixelRatio = frameState.pixelRatio;
     const rotation = frameState.viewState.rotation;
@@ -608,7 +608,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     replayState.renderedTileZ = tile.sourceZ;
     const tileCoord = tile.wrappedTileCoord;
     const z = tileCoord[0];
-    const source = /** @type {import("../../source/VectorTile.js").default} */ (layer.getSource());
+    const source = layer.getSource();
     const tileGrid = source.getTileGridForProjection(projection);
     const resolution = tileGrid.getResolution(z);
     const context = tile.getContext(layer);

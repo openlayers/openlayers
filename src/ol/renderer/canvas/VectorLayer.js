@@ -129,7 +129,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const projection = viewState.projection;
     const rotation = viewState.rotation;
     const projectionExtent = projection.getExtent();
-    const vectorSource = /** @type {import("../../source/Vector.js").default} */ (this.getLayer().getSource());
+    const vectorSource = this.getLayer().getSource();
 
     // clipped rendering if layer extent is set
     const clipExtent = layerState.extent;
@@ -239,7 +239,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    */
   prepareFrame(frameState, layerState) {
     const vectorLayer = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer());
-    const vectorSource = /** @type {import("../../source/Vector.js").default} */ (vectorLayer.getSource());
+    const vectorSource = vectorLayer.getSource();
 
     const animating = frameState.viewHints[ViewHint.ANIMATING];
     const interacting = frameState.viewHints[ViewHint.INTERACTING];

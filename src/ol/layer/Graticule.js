@@ -437,7 +437,7 @@ class Graticule extends VectorLayer {
    * @param {import("../proj/Projection.js").default} projection Projection
    */
   loaderFunction(extent, resolution, projection) {
-    const source = /** @type {import("../source/Vector.js").default} */ (this.getSource());
+    const source = this.getSource();
 
     // only consider the intersection between our own extent & the requested one
     const layerExtent = this.getExtent() || [-Infinity, -Infinity, Infinity, Infinity];

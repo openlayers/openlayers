@@ -88,7 +88,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    */
   getTile(z, x, y, pixelRatio, projection) {
     const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
-    const tileSource = /** @type {import("../../source/Tile.js").default} */ (tileLayer.getSource());
+    const tileSource = tileLayer.getSource();
     let tile = tileSource.getTile(z, x, y, pixelRatio, projection);
     if (tile.getState() == TileState.ERROR) {
       if (!tileLayer.getUseInterimTilesOnError()) {
@@ -130,7 +130,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const pixelRatio = frameState.pixelRatio;
 
     const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
-    const tileSource = /** @type {import("../../source/Tile.js").default} */ (tileLayer.getSource());
+    const tileSource = tileLayer.getSource();
     const sourceRevision = tileSource.getRevision();
     const tileGrid = tileSource.getTileGridForProjection(projection);
     const z = tileGrid.getZForResolution(viewResolution, this.zDirection);
@@ -334,7 +334,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const uid = getUid(this);
     const alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
     const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
-    const tileSource = /** @type {import("../../source/Tile.js").default} */ (tileLayer.getSource());
+    const tileSource = tileLayer.getSource();
     if (alpha === 1 && !tileSource.getOpaque(frameState.viewState.projection)) {
       this.context.clearRect(x, y, w, h);
     }
