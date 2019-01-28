@@ -451,7 +451,11 @@ class PluggableMap extends BaseObject {
   }
 
   /**
-   * Add the given interaction to the map.
+   * Add the given interaction to the map. If you want to add an interaction
+   * at another point of the collection use `getInteraction()` and the methods
+   * available on {@link module:ol/Collection~Collection}. This can be used to
+   * stop the event propagation from the handleEvent function. The interactions
+   * get to handle the events in the reverse order of this collection.
    * @param {import("./interaction/Interaction.js").default} interaction Interaction to add.
    * @api
    */

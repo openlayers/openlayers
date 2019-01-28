@@ -68,8 +68,9 @@ export {default as Translate} from './interaction/Translate.js';
  * a different order for interactions, you will need to create your own
  * {@link module:ol/interaction/Interaction} instances and insert
  * them into a {@link module:ol/Collection} in the order you want
- * before creating your {@link module:ol/Map~Map} instance. The default set of
- * interactions, in sequence, is:
+ * before creating your {@link module:ol/Map~Map} instance. Changing the order can
+ * be of interest if the event propagation needs to be stopped at a point.
+ * The default set of interactions, in sequence, is:
  * * {@link module:ol/interaction/DragRotate~DragRotate}
  * * {@link module:ol/interaction/DoubleClickZoom~DoubleClickZoom}
  * * {@link module:ol/interaction/DragPan~DragPan}

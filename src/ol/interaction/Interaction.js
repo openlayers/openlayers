@@ -14,7 +14,8 @@ import {clamp} from '../math.js';
  * Method called by the map to notify the interaction that a browser event was
  * dispatched to the map. If the function returns a falsy value, propagation of
  * the event to other interactions in the map's interactions chain will be
- * prevented (this includes functions with no explicit return).
+ * prevented (this includes functions with no explicit return). The interactions
+ * are traversed in reverse order of the interactions collection of the map.
  */
 
 
