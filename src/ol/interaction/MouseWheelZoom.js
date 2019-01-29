@@ -212,49 +212,7 @@ class MouseWheelZoom extends Interaction {
         view.beginInteraction();
       }
       this.trackpadTimeoutId_ = setTimeout(this.decrementInteractingHint_.bind(this), this.trackpadEventGap_);
-      let resolution = view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
-      const minResolution = view.getMinResolution();
-      const maxResolution = view.getMaxResolution();
-      let rebound = 0;
-      if (resolution < minResolution) {
-        resolution = Math.max(resolution, minResolution / this.trackpadZoomBuffer_);
-        rebound = 1;
-      } else if (resolution > maxResolution) {
-        resolution = Math.min(resolution, maxResolution * this.trackpadZoomBuffer_);
-        rebound = -1;
-      }
-      if (this.lastAnchor_) {
-        const center = view.calculateCenterZoom(resolution, this.lastAnchor_);
-        view.setCenter(center);
-      }
-      view.setResolution(resolution);
-
-      if (rebound === 0) {
-        const zoomDelta = delta > 0 ? -1 : 1;
-        const newZoom = view.getValidZoomLevel(view.getZoom() + zoomDelta);
-        view.animate({
-          resolution: view.getResolutionForZoom(newZoom),
-          easing: easeOut,
-          anchor: this.lastAnchor_,
-          duration: this.duration_
-        });
-      }
-
-      if (rebound > 0) {
-        view.animate({
-          resolution: minResolution,
-          easing: easeOut,
-          anchor: this.lastAnchor_,
-          duration: 500
-        });
-      } else if (rebound < 0) {
-        view.animate({
-          resolution: maxResolution,
-          easing: easeOut,
-          anchor: this.lastAnchor_,
-          duration: 500
-        });
-      }
+      view.adjustZoom(-delta / this.trackpadDeltaPerZoom_, this.lastAnchor_);
       this.startTime_ = now;
       return false;
     }

@@ -80,8 +80,7 @@ class DragRotate extends PointerInteraction {
         Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
     if (this.lastAngle_ !== undefined) {
       const delta = theta - this.lastAngle_;
-      const rotation = view.getRotation();
-      rotate(view, rotation - delta);
+      view.adjustRotation(-delta);
     }
     this.lastAngle_ = theta;
   }

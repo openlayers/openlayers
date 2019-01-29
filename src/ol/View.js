@@ -635,10 +635,10 @@ class View extends BaseObject {
    */
   calculateCenterRotate(rotation, anchor) {
     let center;
-    const currentCenter = this.targetCenter_;
+    const currentCenter = this.getCenter();
     if (currentCenter !== undefined) {
       center = [currentCenter[0] - anchor[0], currentCenter[1] - anchor[1]];
-      rotateCoordinate(center, rotation - this.targetRotation_);
+      rotateCoordinate(center, rotation - this.getRotation());
       addCoordinate(center, anchor);
     }
     return center;
@@ -651,8 +651,8 @@ class View extends BaseObject {
    */
   calculateCenterZoom(resolution, anchor) {
     let center;
-    const currentCenter = this.targetCenter_;
-    const currentResolution = this.targetResolution_;
+    const currentCenter = this.getCenter();
+    const currentResolution = this.getResolution();
     if (currentCenter !== undefined && currentResolution !== undefined) {
       const x = anchor[0] - resolution * (anchor[0] - currentCenter[0]) / currentResolution;
       const y = anchor[1] - resolution * (anchor[1] - currentCenter[1]) / currentResolution;
@@ -1123,17 +1123,50 @@ class View extends BaseObject {
   }
 
   /**
-   * Rotate the view around a given coordinate.
-   * @param {number} rotation New rotation value for the view.
-   * @param {import("./coordinate.js").Coordinate=} opt_anchor The rotation center.
+   * Multiply the view resolution by a ratio, optionally using an anchor.
+   * @param {number} ratio The ratio to apply on the view resolution.
+   * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
+   * @observable
    * @api
    */
-  rotate(rotation, opt_anchor) {
+  adjustResolution(ratio, opt_anchor) {
+    const isMoving = this.getAnimating() || this.getInteracting();
+    const size = this.getSizeFromViewport_(this.getRotation());
+    const newResolution = this.constraints_.resolution(this.targetResolution_ * ratio, 0, size, isMoving);
+
     if (opt_anchor !== undefined) {
-      const center = this.calculateCenterRotate(rotation, opt_anchor);
-      this.setCenter(center);
+      this.targetCenter_ = this.calculateCenterZoom(newResolution, opt_anchor);
     }
-    this.setRotation(rotation);
+
+    this.targetResolution_ *= ratio;
+    this.applyParameters_();
+  }
+
+  /**
+   * Adds a value to the view zoom level, optionally using an anchor.
+   * @param {number} delta Relative value to add to the zoom level.
+   * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
+   * @api
+   */
+  adjustZoom(delta, opt_anchor) {
+    this.adjustResolution(Math.pow(this.zoomFactor_, -delta), opt_anchor);
+  }
+
+  /**
+   * Adds a value to the view rotation, optionally using an anchor.
+   * @param {number} delta Relative value to add to the zoom rotation, in radians.
+   * @param {import("./coordinate.js").Coordinate=} opt_anchor The rotation center.
+   * @observable
+   * @api
+   */
+  adjustRotation(delta, opt_anchor) {
+    const isMoving = this.getAnimating() || this.getInteracting();
+    const newRotation = this.constraints_.rotation(this.targetRotation_ + delta, isMoving);
+    if (opt_anchor !== undefined) {
+      this.targetCenter_ = this.calculateCenterRotate(newRotation, opt_anchor);
+    }
+    this.targetRotation_ += delta;
+    this.applyParameters_();
   }
 
   /**
@@ -1206,9 +1239,15 @@ class View extends BaseObject {
     const newResolution = this.constraints_.resolution(this.targetResolution_, 0, size, isMoving);
     const newCenter = this.constraints_.center(this.targetCenter_, newResolution, size, isMoving);
 
-    this.set(ViewProperty.ROTATION, newRotation);
-    this.set(ViewProperty.RESOLUTION, newResolution);
-    this.set(ViewProperty.CENTER, newCenter);
+    if (this.get(ViewProperty.ROTATION) !== newRotation) {
+      this.set(ViewProperty.ROTATION, newRotation);
+    }
+    if (this.get(ViewProperty.RESOLUTION) !== newResolution) {
+      this.set(ViewProperty.RESOLUTION, newResolution);
+    }
+    if (!this.get(ViewProperty.CENTER) || !equals(this.get(ViewProperty.CENTER), newCenter)) {
+      this.set(ViewProperty.CENTER, newCenter);
+    }
 
     if (this.getAnimating() && !opt_doNotCancelAnims) {
       this.cancelAnimations();

@@ -4,7 +4,6 @@
 import {disable} from '../rotationconstraint.js';
 import ViewHint from '../ViewHint.js';
 import {shiftKeyOnly, mouseOnly} from '../events/condition.js';
-import {rotate, zoom} from './Interaction.js';
 import PointerInteraction from './Pointer.js';
 
 
@@ -88,14 +87,13 @@ class DragRotateAndZoom extends PointerInteraction {
     const theta = Math.atan2(deltaY, deltaX);
     const magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     const view = map.getView();
-    if (view.getConstraints().rotation !== disable && this.lastAngle_ !== undefined) {
-      const angleDelta = theta - this.lastAngle_;
-      rotate(view, view.getRotation() - angleDelta);
+    if (this.lastAngle_ !== undefined) {
+      const angleDelta = this.lastAngle_ - theta;
+      view.adjustRotation(angleDelta);
     }
     this.lastAngle_ = theta;
     if (this.lastMagnitude_ !== undefined) {
-      const resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
-      zoom(view, resolution);
+      view.adjustResolution(this.lastMagnitude_ / magnitude);
     }
     if (this.lastMagnitude_ !== undefined) {
       this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;

@@ -118,9 +118,8 @@ class PinchRotate extends PointerInteraction {
 
     // rotate
     if (this.rotating_) {
-      const rotation = view.getRotation();
       map.render();
-      rotate(view, rotation + rotationDelta, this.anchor_);
+      view.adjustRotation(rotationDelta, this.anchor_);
     }
   }
 

@@ -8,6 +8,7 @@ import {createEmpty} from '../../../src/ol/extent.js';
 import Circle from '../../../src/ol/geom/Circle.js';
 import LineString from '../../../src/ol/geom/LineString.js';
 import Point from '../../../src/ol/geom/Point.js';
+import {zoomByDelta} from '../../../src/ol/interaction/Interaction';
 
 describe('ol.View', function() {
 
@@ -1557,6 +1558,152 @@ describe('ol.View', function() {
       expect(view.getValidResolution(30)).to.be(32);
       expect(view.getValidResolution(30, -1)).to.be(16);
       expect(view.getValidResolution(4, -1)).to.be(8);
+    });
+  });
+
+  describe('#adjustRotation()', function() {
+    it('changes view rotation with anchor', function() {
+      const view = new View({
+        resolution: 1,
+        center: [0, 0]
+      });
+
+      view.adjustRotation(Math.PI / 2);
+      expect(view.getRotation()).to.be(Math.PI / 2);
+      expect(view.getCenter()).to.eql([0, 0]);
+
+      view.adjustRotation(-Math.PI);
+      expect(view.getRotation()).to.be(-Math.PI / 2);
+      expect(view.getCenter()).to.eql([0, 0]);
+
+      view.adjustRotation(Math.PI / 3, [50, 0]);
+      expect(view.getRotation()).to.roughlyEqual(-Math.PI / 6, 1e-9);
+      expect(view.getCenter()[0]).to.roughlyEqual(50 * (1 - Math.cos(Math.PI / 3)), 1e-9);
+      expect(view.getCenter()[1]).to.roughlyEqual(-50 * Math.sin(Math.PI / 3), 1e-9);
+    });
+
+    it('does not change view parameters if rotation is disabled', function() {
+      const view = new View({
+        resolution: 1,
+        enableRotation: false,
+        center: [0, 0]
+      });
+
+      view.adjustRotation(Math.PI / 2);
+      expect(view.getRotation()).to.be(0);
+      expect(view.getCenter()).to.eql([0, 0]);
+
+      view.adjustRotation(-Math.PI * 3, [-50, 0]);
+      expect(view.getRotation()).to.be(0);
+      expect(view.getCenter()).to.eql([0, 0]);
+    });
+  });
+
+  describe('#adjustZoom()', function() {
+
+    it('changes view resolution', function() {
+      const view = new View({
+        resolution: 1,
+        resolutions: [4, 2, 1, 0.5, 0.25]
+      });
+
+      view.adjustZoom(1);
+      expect(view.getResolution()).to.be(0.5);
+
+      view.adjustZoom(-1);
+      expect(view.getResolution()).to.be(1);
+
+      view.adjustZoom(2);
+      expect(view.getResolution()).to.be(0.25);
+
+      view.adjustZoom(-2);
+      expect(view.getResolution()).to.be(1);
+    });
+
+    it('changes view resolution and center relative to the anchor', function() {
+      const view = new View({
+        center: [0, 0],
+        resolution: 1,
+        resolutions: [4, 2, 1, 0.5, 0.25]
+      });
+
+      view.adjustZoom(1, [10, 10]);
+      expect(view.getCenter()).to.eql([5, 5]);
+
+      view.adjustZoom(-1, [0, 0]);
+      expect(view.getCenter()).to.eql([10, 10]);
+
+      view.adjustZoom(2, [0, 0]);
+      expect(view.getCenter()).to.eql([2.5, 2.5]);
+
+      view.adjustZoom(-2, [0, 0]);
+      expect(view.getCenter()).to.eql([10, 10]);
+    });
+
+    it('changes view resolution and center relative to the anchor, while respecting the extent (center only)', function() {
+      const view = new View({
+        center: [0, 0],
+        extent: [-2.5, -2.5, 2.5, 2.5],
+        constrainOnlyCenter: true,
+        resolution: 1,
+        resolutions: [4, 2, 1, 0.5, 0.25]
+      });
+
+      view.adjustZoom(1, [10, 10]);
+      expect(view.getCenter()).to.eql([2.5, 2.5]);
+
+      view.adjustZoom(-1, [0, 0]);
+      expect(view.getCenter()).to.eql([2.5, 2.5]);
+
+      view.adjustZoom(2, [10, 10]);
+      expect(view.getCenter()).to.eql([2.5, 2.5]);
+
+      view.adjustZoom(-2, [0, 0]);
+      expect(view.getCenter()).to.eql([2.5, 2.5]);
+    });
+
+    it('changes view resolution and center relative to the anchor, while respecting the extent', function() {
+      const map = new Map({});
+      const view = new View({
+        center: [50, 50],
+        extent: [0, 0, 100, 100],
+        resolution: 1,
+        resolutions: [4, 2, 1, 0.5, 0.25, 0.125]
+      });
+      map.setView(view);
+
+      view.adjustZoom(1, [100, 100]);
+      expect(view.getCenter()).to.eql([75, 75]);
+
+      view.adjustZoom(-1, [75, 75]);
+      expect(view.getCenter()).to.eql([50, 50]);
+
+      view.adjustZoom(2, [100, 100]);
+      expect(view.getCenter()).to.eql([87.5, 87.5]);
+
+      view.adjustZoom(-3, [0, 0]);
+      expect(view.getCenter()).to.eql([50, 50]);
+      expect(view.getResolution()).to.eql(1);
+    });
+
+    it('changes view resolution and center relative to the anchor, while respecting the extent (rotated)', function() {
+      const map = new Map({});
+      const view = new View({
+        center: [50, 50],
+        extent: [-100, -100, 100, 100],
+        resolution: 1,
+        resolutions: [2, 1, 0.5, 0.25, 0.125],
+        rotation: Math.PI / 4
+      });
+      map.setView(view);
+      const halfSize = 100 * Math.SQRT1_2;
+
+      view.adjustZoom(1, [100, 100]);
+      expect(view.getCenter()).to.eql([100 - halfSize / 2, 100 - halfSize / 2]);
+
+      view.setCenter([0, 50]);
+      view.adjustZoom(-1, [0, 0]);
+      expect(view.getCenter()).to.eql([0, 100 - halfSize]);
     });
   });
 });

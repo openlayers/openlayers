@@ -111,79 +111,13 @@ export function pan(view, delta, opt_duration) {
   const currentCenter = view.getCenter();
   if (currentCenter) {
     const center = [currentCenter[0] + delta[0], currentCenter[1] + delta[1]];
-    if (opt_duration) {
-      view.animate({
-        duration: opt_duration,
-        easing: linear,
-        center: center
-      });
-    } else {
-      view.setCenter(center);
-    }
+    view.animate({
+      duration: opt_duration !== undefined ? opt_duration : 250,
+      easing: linear,
+      center: center
+    });
   }
 }
-
-
-/**
- * @param {import("../View.js").default} view View.
- * @param {number|undefined} rotation Rotation.
- * @param {import("../coordinate.js").Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- */
-export function rotate(view, rotation, opt_anchor, opt_duration) {
-  if (rotation !== undefined) {
-    const currentRotation = view.getRotation();
-    const currentCenter = view.getCenter();
-    if (currentRotation !== undefined && currentCenter && opt_duration > 0) {
-      view.animate({
-        rotation: rotation,
-        anchor: opt_anchor,
-        duration: opt_duration,
-        easing: easeOut
-      });
-    } else {
-      view.rotate(rotation, opt_anchor);
-    }
-  }
-}
-
-
-/**
- * @param {import("../View.js").default} view View.
- * @param {number|undefined} resolution Resolution to go to.
- * @param {import("../coordinate.js").Coordinate=} opt_anchor Anchor coordinate.
- * @param {number=} opt_duration Duration.
- * @param {number=} opt_direction Zooming direction; > 0 indicates
- *     zooming out, in which case the constraints system will select
- *     the largest nearest resolution; < 0 indicates zooming in, in
- *     which case the constraints system will select the smallest
- *     nearest resolution; == 0 indicates that the zooming direction
- *     is unknown/not relevant, in which case the constraints system
- *     will select the nearest resolution. If not defined 0 is
- *     assumed.
- */
-export function zoom(view, resolution, opt_anchor, opt_duration, opt_direction) {
-  if (resolution) {
-    const currentResolution = view.getResolution();
-    const currentCenter = view.getCenter();
-    if (currentResolution !== undefined && currentCenter &&
-      resolution !== currentResolution && opt_duration) {
-      view.animate({
-        resolution: resolution,
-        anchor: opt_anchor,
-        duration: opt_duration,
-        easing: easeOut
-      });
-    } else {
-      if (opt_anchor) {
-        const center = view.calculateCenterZoom(resolution, opt_anchor);
-        view.setCenter(center);
-      }
-      view.setResolution(resolution);
-    }
-  }
-}
-
 
 /**
  * @param {import("../View.js").default} view View.
@@ -201,23 +135,15 @@ export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
   const newZoom = view.getValidZoomLevel(currentZoom + delta);
   const newResolution = view.getResolutionForZoom(newZoom);
 
-  if (opt_duration > 0) {
-    if (view.getAnimating()) {
-      view.cancelAnimations();
-    }
-    view.animate({
-      resolution: newResolution,
-      anchor: opt_anchor,
-      duration: opt_duration,
-      easing: easeOut
-    });
-  } else {
-    if (opt_anchor) {
-      const center = view.calculateCenterZoom(newResolution, opt_anchor);
-      view.setCenter(center);
-    }
-    view.setResolution(newResolution);
+  if (view.getAnimating()) {
+    view.cancelAnimations();
   }
+  view.animate({
+    resolution: newResolution,
+    anchor: opt_anchor,
+    duration: opt_duration !== undefined ? opt_duration : 250,
+    easing: easeOut
+  });
 }
 
 export default Interaction;

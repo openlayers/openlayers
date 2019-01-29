@@ -83,17 +83,6 @@ class PinchZoom extends PointerInteraction {
 
     const map = mapBrowserEvent.map;
     const view = map.getView();
-    const resolution = view.getResolution();
-    const maxResolution = view.getMaxResolution();
-    const minResolution = view.getMinResolution();
-    let newResolution = resolution * scaleDelta;
-    if (newResolution > maxResolution) {
-      scaleDelta = maxResolution / resolution;
-      newResolution = maxResolution;
-    } else if (newResolution < minResolution) {
-      scaleDelta = minResolution / resolution;
-      newResolution = minResolution;
-    }
 
     if (scaleDelta != 1.0) {
       this.lastScaleDelta_ = scaleDelta;
@@ -108,7 +97,7 @@ class PinchZoom extends PointerInteraction {
 
     // scale, bypass the resolution constraint
     map.render();
-    zoom(view, newResolution, this.anchor_);
+    view.adjustResolution(scaleDelta, this.anchor_);
   }
 
   /**
@@ -118,7 +107,7 @@ class PinchZoom extends PointerInteraction {
     if (this.targetPointers.length < 2) {
       const map = mapBrowserEvent.map;
       const view = map.getView();
-      const direction = this.lastScaleDelta_ - 1;
+      const direction = this.lastScaleDelta_ > 1 ? 1 : -1;
       view.endInteraction(this.duration_, direction);
       return false;
     } else {
