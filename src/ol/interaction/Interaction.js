@@ -114,7 +114,7 @@ export function pan(view, delta, opt_duration) {
     view.animate({
       duration: opt_duration !== undefined ? opt_duration : 250,
       easing: linear,
-      center: center
+      center: view.getValidCenter(center)
     });
   }
 }

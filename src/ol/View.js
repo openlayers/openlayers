@@ -1069,7 +1069,7 @@ class View extends BaseObject {
     if (options.duration !== undefined) {
       this.animate({
         resolution: resolution,
-        center: center,
+        center: this.getValidCenter(center, resolution),
         duration: options.duration,
         easing: options.easing
       }, callback);
@@ -1310,6 +1310,19 @@ class View extends BaseObject {
     this.setHint(ViewHint.INTERACTING, -1);
 
     this.resolveConstraints_(opt_duration, opt_resolutionDirection);
+  }
+
+  /**
+   * Get a valid position for the view center according to the current constraints.
+   * @param {import("./coordinate.js").Coordinate|undefined} targetCenter Target center position.
+   * @param {number=} opt_targetResolution Target resolution. If not supplied, the current one will be used.
+   * This is useful to guess a valid center position at a different zoom level.
+   * @return {import("./coordinate.js").Coordinate|undefined} Valid center position.
+   * @api
+   */
+  getValidCenter(targetCenter, opt_targetResolution) {
+    const size = this.getSizeFromViewport_(this.getRotation());
+    return this.constraints_.center(targetCenter, opt_targetResolution || this.getResolution(), size);
   }
 
   /**
