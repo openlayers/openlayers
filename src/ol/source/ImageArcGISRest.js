@@ -47,7 +47,7 @@ import {appendParams} from '../uri.js';
  * take advantage of ol image caching and use
  * {@link module:ol/source/TileArcGISRest} data source.
  *
- * @fires ol/source/Image~ImageSourceEvent
+ * @fires module:ol/source/Image.ImageSourceEvent
  * @api
  */
 class ImageArcGISRest extends ImageSource {

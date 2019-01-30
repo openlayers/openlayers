@@ -154,7 +154,7 @@ export class VectorSourceEvent extends Event {
  * by this source are suitable for editing. See {@link module:ol/source/VectorTile~VectorTile} for
  * vector data that is optimized for rendering.
  *
- * @fires ol/source/Vector.VectorSourceEvent
+ * @fires VectorSourceEvent
  * @api
  */
 class VectorSource extends Source {

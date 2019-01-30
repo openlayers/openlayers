@@ -44,14 +44,14 @@ import Source from './Source.js';
 const RasterEventType = {
   /**
    * Triggered before operations are run.
-   * @event ol/source/Raster~RasterSourceEvent#beforeoperations
+   * @event module:ol/source/Raster.RasterSourceEvent#beforeoperations
    * @api
    */
   BEFOREOPERATIONS: 'beforeoperations',
 
   /**
    * Triggered after operations are run.
-   * @event ol/source/Raster~RasterSourceEvent#afteroperations
+   * @event module:ol/source/Raster.RasterSourceEvent#afteroperations
    * @api
    */
   AFTEROPERATIONS: 'afteroperations'
@@ -73,7 +73,7 @@ const RasterOperationType = {
  * Events emitted by {@link module:ol/source/Raster} instances are instances of this
  * type.
  */
-class RasterSourceEvent extends Event {
+export class RasterSourceEvent extends Event {
   /**
    * @param {string} type Type.
    * @param {import("../PluggableMap.js").FrameState} frameState The frame state.
@@ -135,7 +135,7 @@ class RasterSourceEvent extends Event {
  * {@link module:ol/source/Raster~Operation} function to transform input pixel values into
  * output pixel values.
  *
- * @fires ol/source/Raster~RasterSourceEvent
+ * @fires module:ol/source/Raster.RasterSourceEvent
  * @api
  */
 class RasterSource extends ImageSource {
