@@ -19,21 +19,21 @@ const ImageSourceEventType = {
 
   /**
    * Triggered when an image starts loading.
-   * @event ol/source/Image~ImageSourceEvent#imageloadstart
+   * @event module:ol/source/Image.ImageSourceEvent#imageloadstart
    * @api
    */
   IMAGELOADSTART: 'imageloadstart',
 
   /**
    * Triggered when an image finishes loading.
-   * @event ol/source/Image~ImageSourceEvent#imageloadend
+   * @event module:ol/source/Image.ImageSourceEvent#imageloadend
    * @api
    */
   IMAGELOADEND: 'imageloadend',
 
   /**
    * Triggered if image loading results in an error.
-   * @event ol/source/Image~ImageSourceEvent#imageloaderror
+   * @event module:ol/source/Image.ImageSourceEvent#imageloaderror
    * @api
    */
   IMAGELOADERROR: 'imageloaderror'
@@ -46,7 +46,7 @@ const ImageSourceEventType = {
  * Events emitted by {@link module:ol/source/Image~ImageSource} instances are instances of this
  * type.
  */
-class ImageSourceEvent extends Event {
+export class ImageSourceEvent extends Event {
   /**
    * @param {string} type Type.
    * @param {import("../Image.js").default} image The image.
@@ -82,6 +82,7 @@ class ImageSourceEvent extends Event {
  * instantiated in apps.
  * Base class for sources providing a single image.
  * @abstract
+ * @fires module:ol/source/Image.ImageSourceEvent
  * @api
  */
 class ImageSource extends Source {
@@ -235,6 +236,5 @@ class ImageSource extends Source {
 export function defaultImageLoadFunction(image, src) {
   /** @type {HTMLImageElement|HTMLVideoElement} */ (image.getImage()).src = src;
 }
-
 
 export default ImageSource;

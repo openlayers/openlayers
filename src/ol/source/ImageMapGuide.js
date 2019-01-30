@@ -35,7 +35,7 @@ import {appendParams} from '../uri.js';
  * @classdesc
  * Source for images from Mapguide servers
  *
- * @fires ol/source/Image~ImageSourceEvent
+ * @fires module:ol/source/Image.ImageSourceEvent
  * @api
  */
 class ImageMapGuide extends ImageSource {

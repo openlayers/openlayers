@@ -21,7 +21,7 @@ import SourceState from './State.js';
  * It represents either
  * * a simple string (e.g. `'© Acme Inc.'`)
  * * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`)
- * * a function that returns a string or array of strings (`{@link module:ol/source/Source~Attribution}`)
+ * * a function that returns a string or array of strings ({@link module:ol/source/Source~Attribution})
  *
  * @typedef {string|Array<string>|Attribution} AttributionLike
  */
@@ -155,7 +155,7 @@ class Source extends BaseObject {
   /**
    * Set the attributions of the source.
    * @param {AttributionLike|undefined} attributions Attributions.
-   *     Can be passed as `string`, `Array<string>`, `{@link module:ol/source/Source~Attribution}`,
+   *     Can be passed as `string`, `Array<string>`, {@link module:ol/source/Source~Attribution},
    *     or `undefined`.
    * @api
    */
