@@ -124,9 +124,9 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 /**
  * @fires import("./MapBrowserEvent.js").MapBrowserEvent
  * @fires import("./MapEvent.js").MapEvent
- * @fires module:ol/render/Event~RenderEvent#postcompose
- * @fires module:ol/render/Event~RenderEvent#precompose
- * @fires module:ol/render/Event~RenderEvent#rendercomplete
+ * @fires import("./render/Event.js").default#precompose
+ * @fires import("./render/Event.js").default#postcompose
+ * @fires import("./render/Event.js").default#rendercomplete
  * @api
  */
 class PluggableMap extends BaseObject {

@@ -34,7 +34,6 @@ import Layer from './Layer.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @fires import("../render/Event.js").RenderEvent
  * @api
  */
 class BaseImageLayer extends Layer {
