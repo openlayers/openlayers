@@ -60,7 +60,8 @@ import SourceState from '../source/State.js';
  *
  * A generic `change` event is fired when the state of the source changes.
  *
- * @fires import("../render/Event.js").RenderEvent
+ * @fires import("../render/Event.js").RenderEvent#prerender
+ * @fires import("../render/Event.js").RenderEvent#postrender
  */
 class Layer extends BaseLayer {
   /**

@@ -52,10 +52,6 @@ import CompositeMapRenderer from './renderer/Composite.js';
  * options or added with `addLayer` can be groups, which can contain further
  * groups, and so on.
  *
- * @fires import("./MapBrowserEvent.js").MapBrowserEvent
- * @fires import("./MapEvent.js").MapEvent
- * @fires module:ol/render/Event~RenderEvent#postcompose
- * @fires module:ol/render/Event~RenderEvent#precompose
  * @api
  */
 class Map extends PluggableMap {
