@@ -4,16 +4,11 @@ title: Interaction Options
 shortdesc: Shows interaction options for custom scroll and zoom behavior.
 docs: >
   This example uses a custom `ol/interaction/defaults` configuration:
-
-   * By default, wheel/trackpad zoom and drag panning is always active, which
-     can be unexpected on pages with a lot of scrollable content and an embedded
-     map. To perform wheel/trackpad zoom and drag-pan actions only when the map
-     has the focus, set `onFocusOnly: true` as option. This requires a map div
-     with a `tabindex` attribute set.
-   * By default, pinch-zoom and wheel/trackpad zoom interactions can leave the
-     map at fractional zoom levels. If instead you want to constrain
-     wheel/trackpad zooming to integer zoom levels, set
-     `constrainResolution: true`.
+  by default, wheel/trackpad zoom and drag panning is always active, which
+  can be unexpected on pages with a lot of scrollable content and an embedded
+  map. To perform wheel/trackpad zoom and drag-pan actions only when the map
+  has the focus, set `onFocusOnly: true` as option. This requires a map div
+  with a `tabindex` attribute set.
 tags: "trackpad, mousewheel, zoom, scroll, interaction, fractional"
 ---
 <div tabindex="1" id="map" class="map"></div>

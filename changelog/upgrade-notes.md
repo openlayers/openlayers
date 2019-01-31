@@ -4,6 +4,24 @@
 
 #### Backwards incompatible changes
 
+##### The `setCenter`, `setZoom`, `setResolution` and `setRotation` methods on `ol/View` do not bypass constraints anymore
+
+Previously, these methods allowed setting values that were inconsistent with the given view constraints.
+This is no longer the case and all changes to the view state now follow the same logic:
+target values are provided and constraints are applied on these to determine the actual values to be used.
+
+##### Removal of the `constrainResolution` option on `View.fit`, `PinchZoom`, `MouseWheelZoom` and `ol/interaction.js`
+
+The `constrainResolution` option is now only supported by the `View` class. A `View.setResolutionConstrained` method was added as well.
+
+Generally, the responsibility of applying center/rotation/resolutions constraints was moved from interactions and controls to the `View` class.
+
+##### The view `extent` option now applies to the whole viewport
+
+Previously, this options only constrained the view *center*. This behaviour can still be obtained by specifying `constrainCenterOnly` in the view options.
+
+As a side effect, the view `rotate` method is gone and has been replaced with `adjustRotation` which takes a delta as input.
+
 ##### Removal of deprecated methods
 
 The `inherits` function that was used to inherit the prototype methods from one constructor into another has been removed.

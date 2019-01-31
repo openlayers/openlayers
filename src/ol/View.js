@@ -94,12 +94,12 @@ import {createMinMaxResolution} from './resolutionconstraint';
  * used. The `constrainRotation` option has no effect if `enableRotation` is
  * `false`.
  * @property {import("./extent.js").Extent} [extent] The extent that constrains the
- * view, in other words, nothing outside of this extent can be visible on the map
- * @property {boolean} [constrainOnlyCenter] If true, the extent
- * constraint will only apply to the center and not the whole view.
- * @property {boolean} [smoothExtentConstraint] If true, the extent
- * constraint will be applied smoothly, i. e. allow the view to go slightly outside
- * of the given `extent`. Default is true.
+ * view, in other words, nothing outside of this extent can be visible on the map.
+ * @property {boolean} [constrainOnlyCenter=false] If true, the extent
+ * constraint will only apply to the view center and not the whole extent.
+ * @property {boolean} [smoothExtentConstraint=true] If true, the extent
+ * constraint will be applied smoothly, i.e. allow the view to go slightly outside
+ * of the given `extent`.
  * @property {number} [maxResolution] The maximum resolution used to determine
  * the resolution constraint. It is used together with `minResolution` (or
  * `maxZoom`) and `zoomFactor`. If unspecified it is calculated in such a way
@@ -120,12 +120,12 @@ import {createMinMaxResolution} from './resolutionconstraint';
  * resolution constraint. It is used together with `maxZoom` (or
  * `minResolution`) and `zoomFactor`.  Note that if `maxResolution` is also
  * provided, it is given precedence over `minZoom`.
- * @property {boolean} [constrainResolution] If true, the view will always
+ * @property {boolean} [constrainResolution=false] If true, the view will always
  * animate to the closest zoom level after an interaction; false means
- * intermediary zoom levels are allowed. Default is false.
- * @property {boolean} [smoothResolutionConstraint] If true, the resolution
+ * intermediary zoom levels are allowed.
+ * @property {boolean} [smoothResolutionConstraint=true] If true, the resolution
  * min/max values will be applied smoothly, i. e. allow the view to exceed slightly
- * the given resolution or zoom bounds. Default is true.
+ * the given resolution or zoom bounds.
  * @property {import("./proj.js").ProjectionLike} [projection='EPSG:3857'] The
  * projection. The default is Spherical Mercator.
  * @property {number} [resolution] The initial resolution for the view. The
@@ -139,10 +139,9 @@ import {createMinMaxResolution} from './resolutionconstraint';
  * @property {number} [rotation=0] The initial rotation for the view in radians
  * (positive rotation clockwise, 0 means North).
  * @property {number} [zoom] Only used if `resolution` is not defined. Zoom
- * level used to calculate the initial resolution for the view. The initial
- * resolution is determined using the {@link #constrainResolution} method.
- * @property {number} [zoomFactor=2] The zoom factor used to determine the
- * resolution constraint.
+ * level used to calculate the initial resolution for the view.
+ * @property {number} [zoomFactor=2] The zoom factor used to compute the
+ * corresponding resolution.
  */
 
 
@@ -156,7 +155,7 @@ import {createMinMaxResolution} from './resolutionconstraint';
  * of the animation.  If `zoom` is also provided, this option will be ignored.
  * @property {number} [rotation] The rotation of the view at the end of
  * the animation.
- * @property {import("./coordinate.js").Coordinate} [anchor] Optional anchor to remained fixed
+ * @property {import("./coordinate.js").Coordinate} [anchor] Optional anchor to remain fixed
  * during a rotation or resolution animation.
  * @property {number} [duration=1000] The duration of the animation in milliseconds.
  * @property {function(number):number} [easing] The easing function used
@@ -197,7 +196,12 @@ const DEFAULT_MIN_ZOOM = 0;
  * and `rotation`. Each state has a corresponding getter and setter, e.g.
  * `getCenter` and `setCenter` for the `center` state.
  *
- * An View has a `projection`. The projection determines the
+ * The `zoom` state is actually not saved on the view: all computations
+ * internally use the `resolution` state. Still, the `setZoom` and `getZoom`
+ * methods are available, as well as `getResolutionForZoom` and
+ * `getZoomForResolution` to switch from one system to the other.
+ *
+ * A View has a `projection`. The projection determines the
  * coordinate system of the center, and its units determine the units of the
  * resolution (projection units per pixel). The default projection is
  * Spherical Mercator (EPSG:3857).
@@ -205,28 +209,19 @@ const DEFAULT_MIN_ZOOM = 0;
  * ### The constraints
  *
  * `setCenter`, `setResolution` and `setRotation` can be used to change the
- * states of the view. Any value can be passed to the setters. And the value
- * that is passed to a setter will effectively be the value set in the view,
- * and returned by the corresponding getter.
+ * states of the view, but any constraint defined in the constructor will
+ * be applied along the way.
  *
- * But a View object also has a *resolution constraint*, a
- * *rotation constraint* and a *center constraint*.
+ * A View object can have a *resolution constraint*, a *rotation constraint*
+ * and a *center constraint*.
  *
- * As said above, no constraints are applied when the setters are used to set
- * new states for the view. Applying constraints is done explicitly through
- * the use of the `constrain*` functions (`constrainResolution` and
- * `constrainRotation` and `constrainCenter`).
- *
- * The main users of the constraints are the interactions and the
- * controls. For example, double-clicking on the map changes the view to
- * the "next" resolution. And releasing the fingers after pinch-zooming
- * snaps to the closest resolution (with an animation).
- *
- * The *resolution constraint* snaps to specific resolutions. It is
- * determined by the following options: `resolutions`, `maxResolution`,
- * `maxZoom`, and `zoomFactor`. If `resolutions` is set, the other three
- * options are ignored. See documentation for each option for more
- * information.
+ * The *resolution constraint* typically restricts min/max values and
+ * snaps to specific resolutions. It is determined by the following
+ * options: `resolutions`, `maxResolution`, `maxZoom`, and `zoomFactor`.
+ * If `resolutions` is set, the other three options are ignored. See
+ * documentation for each option for more information. By default, the view
+ * only has a min/max restriction and allow intermediary zoom levels when
+ * pinch-zooming for example.
  *
  * The *rotation constraint* snaps to specific angles. It is determined
  * by the following options: `enableRotation` and `constrainRotation`.
@@ -234,9 +229,31 @@ const DEFAULT_MIN_ZOOM = 0;
  * horizontal.
  *
  * The *center constraint* is determined by the `extent` option. By
- * default the center is not constrained at all.
+ * default the view center is not constrained at all.
  *
-  * @api
+ * ### Changing the view state
+ *
+ * It is important to note that `setZoom`, `setResolution`, `setCenter` and
+ * `setRotation` are subject to the above mentioned constraints. As such, it
+ * may sometimes not be possible to know in advance the resulting state of the
+ * View. For example, calling `setResolution(10)` does not guarantee that
+ * `getResolution()` will return `10`.
+ *
+ * A consequence of this is that, when applying a delta on the view state, one
+ * should use `adjustCenter`, `adjustRotation`, `adjustZoom` and `adjustResolution`
+ * rather than the corresponding setters. This will let view do its internal
+ * computations. Besides, the `adjust*` methods also take an `opt_anchor`
+ * argument which allows specifying an origin for the transformation.
+ *
+ * ### Interacting with the view
+ *
+ * View constraints are usually only applied when the view is *at rest*, meaning that
+ * no interaction or animation is ongoing. As such, if the user puts the view in a
+ * state that is not equivalent to a constrained one (e.g. rotating the view when
+ * the snap angle is 0), an animation will be triggered at the interaction end to
+ * put back the view to a stable state;
+ *
+ * @api
  */
 class View extends BaseObject {
 
@@ -926,9 +943,9 @@ class View extends BaseObject {
   }
 
   /**
-   * Get the current zoom level.  If you configured your view with a resolutions
-   * array (this is rare), this method may return non-integer zoom levels (so
-   * the zoom level is not safe to use as an index into a resolutions array).
+   * Get the current zoom level. This method may return non-integer zoom levels
+   * if the view does not constrain the resolution, or if an interaction or
+   * animation is underway.
    * @return {number|undefined} Zoom.
    * @api
    */
@@ -1115,7 +1132,7 @@ class View extends BaseObject {
   }
 
   /**
-   * Adds relative coordinates to the center of the view.
+   * Adds relative coordinates to the center of the view. Any extent constraint will apply.
    * @param {import("./coordinate.js").Coordinate} deltaCoordinates Relative value to add.
    * @api
    */
@@ -1125,7 +1142,8 @@ class View extends BaseObject {
   }
 
   /**
-   * Multiply the view resolution by a ratio, optionally using an anchor.
+   * Multiply the view resolution by a ratio, optionally using an anchor. Any resolution
+   * constraint will apply.
    * @param {number} ratio The ratio to apply on the view resolution.
    * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
    * @observable
@@ -1145,7 +1163,8 @@ class View extends BaseObject {
   }
 
   /**
-   * Adds a value to the view zoom level, optionally using an anchor.
+   * Adds a value to the view zoom level, optionally using an anchor. Any resolution
+   * constraint will apply.
    * @param {number} delta Relative value to add to the zoom level.
    * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
    * @api
@@ -1155,7 +1174,8 @@ class View extends BaseObject {
   }
 
   /**
-   * Adds a value to the view rotation, optionally using an anchor.
+   * Adds a value to the view rotation, optionally using an anchor. Any rotation
+   * constraint will apply.
    * @param {number} delta Relative value to add to the zoom rotation, in radians.
    * @param {import("./coordinate.js").Coordinate=} opt_anchor The rotation center.
    * @observable
@@ -1172,7 +1192,7 @@ class View extends BaseObject {
   }
 
   /**
-   * Set the center of the current view.
+   * Set the center of the current view. Any extent constraint will apply.
    * @param {import("./coordinate.js").Coordinate|undefined} center The center of the view.
    * @observable
    * @api
@@ -1194,7 +1214,7 @@ class View extends BaseObject {
   }
 
   /**
-   * Set the resolution for this view.
+   * Set the resolution for this view. Any resolution constraint will apply.
    * @param {number|undefined} resolution The resolution of the view.
    * @observable
    * @api
@@ -1205,7 +1225,7 @@ class View extends BaseObject {
   }
 
   /**
-   * Set the rotation for this view using an anchor.
+   * Set the rotation for this view. Any rotation constraint will apply.
    * @param {number} rotation The rotation of the view in radians.
    * @observable
    * @api
@@ -1216,7 +1236,7 @@ class View extends BaseObject {
   }
 
   /**
-   * Zoom to a specific zoom level using an anchor
+   * Zoom to a specific zoom level. Any resolution constrain will apply.
    * @param {number} zoom Zoom level.
    * @api
    */
@@ -1261,7 +1281,6 @@ class View extends BaseObject {
    * This is typically done on interaction end.
    * @param {number=} opt_duration The animation duration in ms.
    * @param {number=} opt_resolutionDirection Which direction to zoom.
-   * @observable
    * @private
    */
   resolveConstraints_(opt_duration, opt_resolutionDirection) {
@@ -1301,7 +1320,8 @@ class View extends BaseObject {
   }
 
   /**
-   * Notify the View that an interaction has ended.
+   * Notify the View that an interaction has ended. The view state will be resolved
+   * to a stable one if needed (depending on its constraints).
    * @param {number=} opt_duration Animation duration in ms.
    * @param {number=} opt_resolutionDirection Which direction to zoom.
    * @api
