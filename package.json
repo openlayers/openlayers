@@ -79,7 +79,7 @@
     "pixelmatch": "^4.0.2",
     "pngjs": "^3.3.3",
     "proj4": "2.5.0",
-    "puppeteer": "^1.11.0",
+    "puppeteer": "^1.12.1",
     "serve-static": "^1.13.2",
     "shx": "^0.3.2",
     "sinon": "^7.2.3",
