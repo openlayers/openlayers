@@ -41,6 +41,28 @@ See the following examples for more detail on bundling OpenLayers with your appl
  * Using [Parcel](https://github.com/openlayers/ol-parcel)
  * Using [Browserify](https://github.com/openlayers/ol-browserify)
 
+## TypeScript and VS Code IntelliSense support
+
+The `ol` package contains a `src/` folder with JSDoc annotated sources. TypeScript can get type definitions from these sources with a `tsconfig.json` like this:
+```js
+{
+  "compilerOptions": {
+    // Enable JavaScript support
+    "allowJs": true,
+    // Point to the JSDoc typed sources when using modules from the ol package
+    "baseUrl": "./",
+    "paths": {
+      "ol": ["node_modules/ol/src"],
+      "ol/*": ["node_modules/ol/src/*"]
+    }
+  },
+  "include": [
+    // Include JavaScript files from the ol package
+    "node_modules/ol/**/*.js"
+  ]
+}
+```
+
 ## Supported Browsers
 
 OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.whatwg.org/multipage/) and [ECMAScript 5](http://www.ecma-international.org/ecma-262/5.1/). This includes Chrome, Firefox, Safari and Edge. For older browsers and platforms like Internet Explorer (down to version 9) and Android 4.x, [polyfills](http://polyfill.io) for `requestAnimationFrame` and `Element.prototype.classList` are required, and using the KML format requires a polyfill for `URL`.
