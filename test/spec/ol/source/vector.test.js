@@ -259,6 +259,13 @@ describe('ol.source.Vector', function() {
         expect(listener).to.be.called();
       });
 
+      it('fires a removefeature event', function() {
+        const listener = sinon.spy();
+        listen(vectorSource, 'removefeature', listener);
+        vectorSource.removeFeature(features[0]);
+        expect(listener).to.be.called();
+      });
+
     });
 
     describe('modifying a feature\'s geometry', function() {
