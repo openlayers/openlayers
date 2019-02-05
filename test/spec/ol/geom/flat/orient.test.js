@@ -1,5 +1,5 @@
-import {linearRingIsClockwise, linearRingIsOriented,
-  linearRingsAreOriented, orientLinearRings, orientLinearRingsArray} from '../../../../../src/ol/geom/flat/orient.js';
+import {linearRingIsClockwise, linearRingsAreOriented,
+  linearRingssAreOriented, orientLinearRings, orientLinearRingsArray} from '../../../../../src/ol/geom/flat/orient.js';
 
 
 describe('ol.geom.flat.orient', function() {
@@ -22,8 +22,8 @@ describe('ol.geom.flat.orient', function() {
 
   });
 
-  describe('ol.geom.flat.orient.linearRingIsOriented', function() {
-    const oriented = linearRingIsOriented;
+  describe('ol.geom.flat.orient.linearRingsAreOriented', function() {
+    const oriented = linearRingsAreOriented;
 
     const rightCoords = [
       -180, -90, 180, -90, 180, 90, -180, 90, -180, -90,
@@ -49,8 +49,8 @@ describe('ol.geom.flat.orient', function() {
 
   });
 
-  describe('ol.geom.flat.orient.linearRingsAreOriented', function() {
-    const oriented = linearRingsAreOriented;
+  describe('ol.geom.flat.orient.linearRingssAreOriented', function() {
+    const oriented = linearRingssAreOriented;
 
     const rightCoords = [
       -180, -90, 180, -90, 180, 90, -180, 90, -180, -90,

@@ -16,7 +16,7 @@ import {deflateMultiCoordinatesArray} from './flat/deflate.js';
 import {inflateMultiCoordinatesArray} from './flat/inflate.js';
 import {getInteriorPointsOfMultiArray} from './flat/interiorpoint.js';
 import {intersectsLinearRingMultiArray} from './flat/intersectsextent.js';
-import {linearRingsAreOriented, orientLinearRingsArray} from './flat/orient.js';
+import {linearRingssAreOriented, orientLinearRingsArray} from './flat/orient.js';
 import {quantizeMultiArray} from './flat/simplify.js';
 
 /**
@@ -251,7 +251,7 @@ class MultiPolygon extends SimpleGeometry {
   getOrientedFlatCoordinates() {
     if (this.orientedRevision_ != this.getRevision()) {
       const flatCoordinates = this.flatCoordinates;
-      if (linearRingsAreOriented(
+      if (linearRingssAreOriented(
         flatCoordinates, 0, this.endss_, this.stride)) {
         this.orientedFlatCoordinates_ = flatCoordinates;
       } else {
