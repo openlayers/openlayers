@@ -120,6 +120,11 @@ The non API `getChecksum` functions of the style is also removed.
 
 #### Other changes
 
+##### Allow declutter in image render mode
+
+It is now possible to configure vector tile layers with `declutter: true` and `renderMode: 'image'`. However, note that decluttering will be done per tile, resulting in labels and point symbols getting cut off at tile boundaries.
+Until now, using both options forced the render mode to be `hybrid`.
+
 ##### Always load tiles while animating or interacting
 
 `ol/PluggableMap` and subclasses no longer support the `loadTilesWhileAnimating` and `loadTilesWhileInteracting` options. These options were used to enable tile loading during animations and interactions. With the new DOM composition render strategy, it is no longer necessary to postpone tile loading until after animations or interactions.
