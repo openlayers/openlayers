@@ -545,6 +545,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const tile = this.renderTileImageQueue_[uid];
       frameState.animate = true;
       delete this.renderTileImageQueue_[uid];
+      const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
+      if (this.declutterTree_ && layer.getRenderMode() === VectorTileRenderType.IMAGE) {
+        this.declutterTree_.clear();
+      }
       this.renderTileImage_(tile, frameState.pixelRatio, frameState.viewState.projection);
     }
     clear(this.renderTileImageQueue_);
