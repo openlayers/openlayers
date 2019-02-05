@@ -410,15 +410,15 @@ function readPolygonGeometry(object) {
 
 
 /**
- * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("../geom/Point.js").default} geometry Geometry.
  * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {EsriJSONPoint} EsriJSON geometry.
  */
 function writePointGeometry(geometry, opt_options) {
-  const coordinates = /** @type {import("../geom/Point.js").default} */ (geometry).getCoordinates();
+  const coordinates = geometry.getCoordinates();
   /** @type {EsriJSONPoint} */
   let esriJSON;
-  const layout = /** @type {import("../geom/Point.js").default} */ (geometry).getLayout();
+  const layout = geometry.getLayout();
   if (layout === GeometryLayout.XYZ) {
     esriJSON = {
       x: coordinates[0],
@@ -466,12 +466,11 @@ function getHasZM(geometry) {
 
 
 /**
- * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("../geom/LineString.js").default} lineString Geometry.
  * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
-function writeLineStringGeometry(geometry, opt_options) {
-  const lineString = /** @type {import("../geom/LineString.js").default} */ (geometry);
+function writeLineStringGeometry(lineString, opt_options) {
   const hasZM = getHasZM(lineString);
   return {
     hasZ: hasZM.hasZ,
@@ -484,12 +483,11 @@ function writeLineStringGeometry(geometry, opt_options) {
 
 
 /**
- * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("../geom/Polygon.js").default} polygon Geometry.
  * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {EsriJSONPolygon} EsriJSON geometry.
  */
-function writePolygonGeometry(geometry, opt_options) {
-  const polygon = /** @type {import("../geom/Polygon.js").default} */ (geometry);
+function writePolygonGeometry(polygon, opt_options) {
   // Esri geometries use the left-hand rule
   const hasZM = getHasZM(polygon);
   return {
@@ -501,12 +499,11 @@ function writePolygonGeometry(geometry, opt_options) {
 
 
 /**
- * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("../geom/MultiLineString.js").default} multiLineString Geometry.
  * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
-function writeMultiLineStringGeometry(geometry, opt_options) {
-  const multiLineString = /** @type {import("../geom/MultiLineString.js").default} */ (geometry);
+function writeMultiLineStringGeometry(multiLineString, opt_options) {
   const hasZM = getHasZM(multiLineString);
   return {
     hasZ: hasZM.hasZ,
@@ -517,12 +514,11 @@ function writeMultiLineStringGeometry(geometry, opt_options) {
 
 
 /**
- * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("../geom/MultiPoint.js").default} multiPoint Geometry.
  * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {EsriJSONMultipoint} EsriJSON geometry.
  */
-function writeMultiPointGeometry(geometry, opt_options) {
-  const multiPoint = /** @type {import("../geom/MultiPoint.js").default} */ (geometry);
+function writeMultiPointGeometry(multiPoint, opt_options) {
   const hasZM = getHasZM(multiPoint);
   return {
     hasZ: hasZM.hasZ,
@@ -533,13 +529,13 @@ function writeMultiPointGeometry(geometry, opt_options) {
 
 
 /**
- * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
  * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
  * @return {EsriJSONPolygon} EsriJSON geometry.
  */
 function writeMultiPolygonGeometry(geometry, opt_options) {
-  const hasZM = getHasZM(/** @type {import("../geom/MultiPolygon.js").default} */(geometry));
-  const coordinates = /** @type {import("../geom/MultiPolygon.js").default} */ (geometry).getCoordinates(false);
+  const hasZM = getHasZM(geometry);
+  const coordinates = geometry.getCoordinates(false);
   const output = [];
   for (let i = 0; i < coordinates.length; i++) {
     for (let x = coordinates[i].length - 1; x >= 0; x--) {
