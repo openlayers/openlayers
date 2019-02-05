@@ -17,6 +17,7 @@ import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
+ * @extends {BaseVectorLayer<import("../source/Vector.js").default>}
  * @api
  */
 class VectorLayer extends BaseVectorLayer {

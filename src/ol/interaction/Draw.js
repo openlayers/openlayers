@@ -891,7 +891,7 @@ class Draw extends PointerInteraction {
       this.sketchFeature_ = null;
       this.sketchPoint_ = null;
       this.sketchLine_ = null;
-      /** @type {VectorSource} */ (this.overlay_.getSource()).clear(true);
+      this.overlay_.getSource().clear(true);
     }
     return sketchFeature;
   }
@@ -930,7 +930,7 @@ class Draw extends PointerInteraction {
     if (this.sketchPoint_) {
       sketchFeatures.push(this.sketchPoint_);
     }
-    const overlaySource = /** @type {VectorSource} */ (this.overlay_.getSource());
+    const overlaySource = this.overlay_.getSource();
     overlaySource.clear(true);
     overlaySource.addFeatures(sketchFeatures);
   }

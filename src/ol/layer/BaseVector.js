@@ -61,6 +61,8 @@ const Property = {
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
+ * @template {import("../source/Vector.js").default|import("../source/VectorTile.js").default} VectorSourceType
+ * @extends {Layer<VectorSourceType>}
  * @api
  */
 class BaseVectorLayer extends Layer {
@@ -217,15 +219,6 @@ class BaseVectorLayer extends Layer {
   }
 
 }
-
-
-/**
- * Return the associated {@link module:ol/source/Vector vectorsource} of the layer.
- * @function
- * @return {import("../source/Vector.js").default} Source.
- * @api
- */
-BaseVectorLayer.prototype.getSource;
 
 
 export default BaseVectorLayer;

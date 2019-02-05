@@ -70,6 +70,7 @@ import {assign} from '../obj.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @param {Options=} opt_options Options.
+ * @extends {BaseVectorLayer<import("../source/VectorTile.js").default>}
  * @api
  */
 class VectorTileLayer extends BaseVectorLayer {
@@ -165,11 +166,4 @@ class VectorTileLayer extends BaseVectorLayer {
 }
 
 
-/**
- * Return the associated {@link module:ol/source/VectorTile vectortilesource} of the layer.
- * @function
- * @return {import("../source/VectorTile.js").default} Source.
- * @api
- */
-VectorTileLayer.prototype.getSource;
 export default VectorTileLayer;

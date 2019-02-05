@@ -275,7 +275,7 @@ class Select extends Interaction {
    * @api
    */
   getFeatures() {
-    return /** @type {VectorSource} */ (this.featureOverlay_.getSource()).getFeaturesCollection();
+    return this.featureOverlay_.getSource().getFeaturesCollection();
   }
 
   /**
