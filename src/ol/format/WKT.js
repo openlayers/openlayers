@@ -718,8 +718,7 @@ class WKT extends TextFeature {
    * @inheritDoc
    */
   writeGeometryText(geometry, opt_options) {
-    return encode(/** @type {import("../geom/Geometry.js").default} */ (
-      transformGeometryWithOptions(geometry, true, opt_options)));
+    return encode(transformGeometryWithOptions(geometry, true, opt_options));
   }
 }
 
