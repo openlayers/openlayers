@@ -281,7 +281,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         const w = nextX - x;
         const h = nextY - y;
 
-        this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
+        this.drawTileImage(tile, frameState, x, y, w, h, tileGutter, z === currentZ);
         this.renderedTiles.push(tile);
         this.updateUsedTiles(frameState.usedTiles, tileSource, tile);
       }
@@ -318,7 +318,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   /**
    * @param {import("../../Tile.js").default} tile Tile.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../../layer/Layer.js").State} layerState Layer state.
    * @param {number} x Left of the tile.
    * @param {number} y Top of the tile.
    * @param {number} w Width of the tile.
@@ -326,7 +325,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {number} gutter Tile gutter.
    * @param {boolean} transition Apply an alpha transition.
    */
-  drawTileImage(tile, frameState, layerState, x, y, w, h, gutter, transition) {
+  drawTileImage(tile, frameState, x, y, w, h, gutter, transition) {
     const image = this.getTileImage(tile);
     if (!image) {
       return;
