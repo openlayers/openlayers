@@ -188,6 +188,17 @@ describe('ol.geom.MultiPolygon', function() {
 
   });
 
+  describe('#getArea', function() {
+
+    it('works with a clockwise and a counterclockwise Polygon', function() {
+      const multiPolygon = new MultiPolygon([
+        [[[1, 3], [1, 2], [0, 2], [1, 3]]], // clockwise polygon with area 0.5
+        [[[2, 1], [2, 0.5], [3, 1], [2, 1]]] // counterclockwise polygon with area 0.25
+      ]);
+      expect(multiPolygon.getArea()).to.be(0.75);
+    });
+  });
+
   describe('#getInteriorPoints', function() {
 
     it('returns XYM multipoint with intersection width as M', function() {

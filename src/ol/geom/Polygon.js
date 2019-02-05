@@ -16,7 +16,7 @@ import {deflateCoordinatesArray} from './flat/deflate.js';
 import {inflateCoordinatesArray} from './flat/inflate.js';
 import {getInteriorPointOfArray} from './flat/interiorpoint.js';
 import {intersectsLinearRingArray} from './flat/intersectsextent.js';
-import {linearRingIsOriented, orientLinearRings} from './flat/orient.js';
+import {linearRingsAreOriented, orientLinearRings} from './flat/orient.js';
 import {quantizeArray} from './flat/simplify.js';
 import {modulo} from '../math.js';
 
@@ -266,7 +266,7 @@ class Polygon extends SimpleGeometry {
   getOrientedFlatCoordinates() {
     if (this.orientedRevision_ != this.getRevision()) {
       const flatCoordinates = this.flatCoordinates;
-      if (linearRingIsOriented(
+      if (linearRingsAreOriented(
         flatCoordinates, 0, this.ends_, this.stride)) {
         this.orientedFlatCoordinates_ = flatCoordinates;
       } else {
