@@ -57,10 +57,11 @@ import BaseObject, {getChangeEventType} from './Object.js';
  * ```
  *
  * @api
+ * @template {import("./geom/Geometry.js").default} Geometry
  */
 class Feature extends BaseObject {
   /**
-   * @param {import("./geom/Geometry.js").default|Object<string, *>=} opt_geometryOrProperties
+   * @param {Geometry|Object<string, *>=} opt_geometryOrProperties
    *     You may pass a Geometry object directly, or an object literal containing
    *     properties. If you pass an object literal, you may include a Geometry
    *     associated with a `geometry` key.
@@ -106,7 +107,7 @@ class Feature extends BaseObject {
 
     if (opt_geometryOrProperties) {
       if (typeof /** @type {?} */ (opt_geometryOrProperties).getSimplifiedGeometry === 'function') {
-        const geometry = /** @type {import("./geom/Geometry.js").default} */ (opt_geometryOrProperties);
+        const geometry = /** @type {Geometry} */ (opt_geometryOrProperties);
         this.setGeometry(geometry);
       } else {
         /** @type {Object<string, *>} */
@@ -140,13 +141,13 @@ class Feature extends BaseObject {
    * Get the feature's default geometry.  A feature may have any number of named
    * geometries.  The "default" geometry (the one that is rendered by default) is
    * set when calling {@link module:ol/Feature~Feature#setGeometry}.
-   * @return {import("./geom/Geometry.js").default|undefined} The default geometry for the feature.
+   * @return {Geometry|undefined} The default geometry for the feature.
    * @api
    * @observable
    */
   getGeometry() {
     return (
-      /** @type {import("./geom/Geometry.js").default|undefined} */ (this.get(this.geometryName_))
+      /** @type {Geometry|undefined} */ (this.get(this.geometryName_))
     );
   }
 
@@ -218,7 +219,7 @@ class Feature extends BaseObject {
   /**
    * Set the default geometry for the feature.  This will update the property
    * with the name returned by {@link module:ol/Feature~Feature#getGeometryName}.
-   * @param {import("./geom/Geometry.js").default|undefined} geometry The new geometry.
+   * @param {Geometry|undefined} geometry The new geometry.
    * @api
    * @observable
    */
