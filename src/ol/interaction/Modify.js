@@ -660,7 +660,7 @@ class Modify extends PointerInteraction {
       this.vertexFeature_ = vertexFeature;
       this.overlay_.getSource().addFeature(vertexFeature);
     } else {
-      const geometry = /** @type {Point} */ (vertexFeature.getGeometry());
+      const geometry = vertexFeature.getGeometry();
       geometry.setCoordinates(coordinates);
     }
     return vertexFeature;
@@ -785,7 +785,7 @@ class Modify extends PointerInteraction {
     const vertexFeature = this.vertexFeature_;
     if (vertexFeature) {
       const insertVertices = [];
-      const geometry = /** @type {Point} */ (vertexFeature.getGeometry());
+      const geometry = vertexFeature.getGeometry();
       const vertex = geometry.getCoordinates();
       const vertexExtent = boundingExtent([vertex]);
       const segmentDataMatches = this.rBush_.getInExtent(vertexExtent);

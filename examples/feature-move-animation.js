@@ -67,10 +67,10 @@ const routeFeature = new Feature({
   type: 'route',
   geometry: route
 });
-const geoMarker = new Feature({
+const geoMarker = /** @type Feature<import("../src/ol/geom/Point").default> */(new Feature({
   type: 'geoMarker',
   geometry: new Point(routeCoords[0])
-});
+}));
 const startMarker = new Feature({
   type: 'icon',
   geometry: new Point(routeCoords[0])
@@ -191,7 +191,7 @@ function stopAnimation(ended) {
 
   // if animation cancelled set the marker at the beginning
   const coord = ended ? routeCoords[routeLength - 1] : routeCoords[0];
-  const geometry = /** @type {import("../src/ol/geom/Point").default} */ (geoMarker.getGeometry());
+  const geometry = geoMarker.getGeometry();
   geometry.setCoordinates(coord);
   //remove listener
   vectorLayer.un('postrender', moveFeature);

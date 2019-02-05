@@ -5,6 +5,7 @@ import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
 
+/** @type {VectorSource<import("../src/ol/geom/SimpleGeometry.js").default>} */
 const source = new VectorSource({
   url: 'data/geojson/switzerland.geojson',
   format: new GeoJSON()
@@ -51,21 +52,21 @@ const zoomtoswitzerland =
     document.getElementById('zoomtoswitzerland');
 zoomtoswitzerland.addEventListener('click', function() {
   const feature = source.getFeatures()[0];
-  const polygon = /** @type {import("../src/ol/geom/SimpleGeometry.js").default} */ (feature.getGeometry());
+  const polygon = feature.getGeometry();
   view.fit(polygon, {padding: [170, 50, 30, 150]});
 }, false);
 
 const zoomtolausanne = document.getElementById('zoomtolausanne');
 zoomtolausanne.addEventListener('click', function() {
   const feature = source.getFeatures()[1];
-  const point = /** @type {import("../src/ol/geom/SimpleGeometry.js").default} */ (feature.getGeometry());
+  const point = feature.getGeometry();
   view.fit(point, {padding: [170, 50, 30, 150], minResolution: 50});
 }, false);
 
 const centerlausanne = document.getElementById('centerlausanne');
 centerlausanne.addEventListener('click', function() {
   const feature = source.getFeatures()[1];
-  const point = /** @type {import("../src/ol/geom/Point.js").default} */ (feature.getGeometry());
+  const point = feature.getGeometry();
   const size = map.getSize();
   view.centerOn(point.getCoordinates(), size, [570, 500]);
 }, false);

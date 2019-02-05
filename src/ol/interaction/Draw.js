@@ -373,7 +373,7 @@ class Draw extends PointerInteraction {
 
     /**
      * Sketch point.
-     * @type {Feature}
+     * @type {Feature<Point>}
      * @private
      */
     this.sketchPoint_ = null;
@@ -387,7 +387,7 @@ class Draw extends PointerInteraction {
 
     /**
      * Sketch line. Used when drawing polygon.
-     * @type {Feature}
+     * @type {Feature<LineString>}
      * @private
      */
     this.sketchLine_ = null;
@@ -669,7 +669,7 @@ class Draw extends PointerInteraction {
       this.sketchPoint_ = new Feature(new Point(coordinates));
       this.updateSketchFeatures_();
     } else {
-      const sketchPointGeom = /** @type {Point} */ (this.sketchPoint_.getGeometry());
+      const sketchPointGeom = this.sketchPoint_.getGeometry();
       sketchPointGeom.setCoordinates(coordinates);
     }
   }
@@ -711,7 +711,7 @@ class Draw extends PointerInteraction {
    */
   modifyDrawing_(event) {
     let coordinate = event.coordinate;
-    const geometry = /** @type {import("../geom/SimpleGeometry.js").default} */ (this.sketchFeature_.getGeometry());
+    const geometry = this.sketchFeature_.getGeometry();
     let coordinates, last;
     if (this.mode_ === Mode.POINT) {
       last = this.sketchCoords_;
@@ -730,7 +730,7 @@ class Draw extends PointerInteraction {
     last[1] = coordinate[1];
     this.geometryFunction_(/** @type {!LineCoordType} */ (this.sketchCoords_), geometry);
     if (this.sketchPoint_) {
-      const sketchPointGeom = /** @type {Point} */ (this.sketchPoint_.getGeometry());
+      const sketchPointGeom = this.sketchPoint_.getGeometry();
       sketchPointGeom.setCoordinates(coordinate);
     }
     /** @type {LineString} */
@@ -740,8 +740,8 @@ class Draw extends PointerInteraction {
       if (!this.sketchLine_) {
         this.sketchLine_ = new Feature();
       }
-      const ring = /** @type {Polygon} */ (geometry).getLinearRing(0);
-      sketchLineGeom = /** @type {LineString} */ (this.sketchLine_.getGeometry());
+      const ring = geometry.getLinearRing(0);
+      sketchLineGeom = this.sketchLine_.getGeometry();
       if (!sketchLineGeom) {
         sketchLineGeom = new LineString(ring.getFlatCoordinates(), ring.getLayout());
         this.sketchLine_.setGeometry(sketchLineGeom);
@@ -751,7 +751,7 @@ class Draw extends PointerInteraction {
         sketchLineGeom.changed();
       }
     } else if (this.sketchLineCoords_) {
-      sketchLineGeom = /** @type {LineString} */ (this.sketchLine_.getGeometry());
+      sketchLineGeom = this.sketchLine_.getGeometry();
       sketchLineGeom.setCoordinates(this.sketchLineCoords_);
     }
     this.updateSketchFeatures_();
@@ -764,7 +764,7 @@ class Draw extends PointerInteraction {
    */
   addToDrawing_(event) {
     const coordinate = event.coordinate;
-    const geometry = /** @type {import("../geom/SimpleGeometry.js").default} */ (this.sketchFeature_.getGeometry());
+    const geometry = this.sketchFeature_.getGeometry();
     let done;
     let coordinates;
     if (this.mode_ === Mode.LINE_STRING) {
@@ -808,7 +808,7 @@ class Draw extends PointerInteraction {
     if (!this.sketchFeature_) {
       return;
     }
-    const geometry = /** @type {import("../geom/SimpleGeometry.js").default} */ (this.sketchFeature_.getGeometry());
+    const geometry = this.sketchFeature_.getGeometry();
     let coordinates;
     /** @type {LineString} */
     let sketchLineGeom;
@@ -822,7 +822,7 @@ class Draw extends PointerInteraction {
     } else if (this.mode_ === Mode.POLYGON) {
       coordinates = /** @type {PolyCoordType} */ (this.sketchCoords_)[0];
       coordinates.splice(-2, 1);
-      sketchLineGeom = /** @type {LineString} */ (this.sketchLine_.getGeometry());
+      sketchLineGeom = this.sketchLine_.getGeometry();
       sketchLineGeom.setCoordinates(coordinates);
       this.geometryFunction_(this.sketchCoords_, geometry);
     }
@@ -846,7 +846,7 @@ class Draw extends PointerInteraction {
       return;
     }
     let coordinates = this.sketchCoords_;
-    const geometry = /** @type {import("../geom/SimpleGeometry.js").default} */ (sketchFeature.getGeometry());
+    const geometry = sketchFeature.getGeometry();
     if (this.mode_ === Mode.LINE_STRING) {
       // remove the redundant last point
       coordinates.pop();
@@ -900,12 +900,12 @@ class Draw extends PointerInteraction {
    * Extend an existing geometry by adding additional points. This only works
    * on features with `LineString` geometries, where the interaction will
    * extend lines by adding points to the end of the coordinates array.
-   * @param {!Feature} feature Feature to be extended.
+   * @param {!Feature<LineString>} feature Feature to be extended.
    * @api
    */
   extend(feature) {
     const geometry = feature.getGeometry();
-    const lineString = /** @type {LineString} */ (geometry);
+    const lineString = geometry;
     this.sketchFeature_ = feature;
     this.sketchCoords_ = lineString.getCoordinates();
     const last = this.sketchCoords_[this.sketchCoords_.length - 1];
