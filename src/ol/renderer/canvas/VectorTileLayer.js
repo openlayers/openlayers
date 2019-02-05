@@ -205,16 +205,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   getTileImage(tile) {
-    const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
-    return tile.getImage(tileLayer);
+    return tile.getImage(this.getLayer());
   }
 
   /**
    * @inheritDoc
    */
   prepareFrame(frameState, layerState) {
-    const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
-    const layerRevision = layer.getRevision();
+    const layerRevision = this.getLayer().getRevision();
     if (this.renderedLayerRevision_ != layerRevision) {
       this.renderedTiles.length = 0;
     }
@@ -231,7 +229,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   updateExecutorGroup_(tile, pixelRatio, projection) {
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const revision = layer.getRevision();
-    const renderOrder = /** @type {import("../../render.js").OrderFunction} */ (layer.getRenderOrder()) || null;
+    const renderOrder = layer.getRenderOrder() || null;
 
     const builderState = tile.getReplayState(layer);
     if (!builderState.dirty && builderState.renderedRevision == revision &&

@@ -43,8 +43,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const viewState = frameState.viewState;
     const viewResolution = viewState.resolution;
 
-    const imageLayer = /** @type {import("../../layer/Image.js").default} */ (this.getLayer());
-    const imageSource = imageLayer.getSource();
+    const imageSource = this.getLayer().getSource();
 
     const hints = frameState.viewHints;
 
