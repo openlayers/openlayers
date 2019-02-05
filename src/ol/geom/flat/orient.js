@@ -77,9 +77,13 @@ export function linearRingsAreOriented(flatCoordinates, offset, ends, stride, op
  */
 export function linearRingssAreOriented(flatCoordinates, offset, endss, stride, opt_right) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
+    const ends = endss[i];
     if (!linearRingsAreOriented(
-      flatCoordinates, offset, endss[i], stride, opt_right)) {
+      flatCoordinates, offset, ends, stride, opt_right)) {
       return false;
+    }
+    if (ends.length) {
+      offset = ends[ends.length - 1];
     }
   }
   return true;
