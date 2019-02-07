@@ -121,7 +121,7 @@ function failure(messageId, tileId, tile) {
 }
 
 self.onmessage = function(event) {
-  console.log('Received event in worker', event.data);
+  // console.log('Received event in worker', event.data);
   const action = event.data.action;
   if (action === 'prepareTile') {
     const {messageId, tileId, tileCoord, pixelRatio} = event.data;

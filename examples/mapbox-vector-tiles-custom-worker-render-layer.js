@@ -25,11 +25,11 @@ function pushImage(canvas, img) {
 }
 
 function log() {
-  console.log.call(null, arguments);
+  // console.log.call(null, arguments);
 }
 
 function error() {
-  console.error.call(null, arguments);
+  // console.error.call(null, arguments);
 }
 
 /**
