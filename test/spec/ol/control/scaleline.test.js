@@ -344,7 +344,7 @@ describe('ol.control.ScaleLine', function() {
       const ctrl = new ScaleLine();
       ctrl.setMap(map);
       map.setView(new View({
-        center: fromLonLat([7, 0]),
+        center: [7, 0],
         zoom: 2,
         projection: 'EPSG:4326'
       }));
@@ -362,7 +362,7 @@ describe('ol.control.ScaleLine', function() {
       });
       ctrl.setMap(map);
       map.setView(new View({
-        center: fromLonLat([7, 0]),
+        center: [7, 0],
         zoom: 2,
         projection: 'EPSG:4326'
       }));
