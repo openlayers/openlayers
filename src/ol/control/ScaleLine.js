@@ -201,20 +201,12 @@ class ScaleLine extends Control {
       ProjUnits.METERS;
     let pointResolution =
         getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
-    if (projection.getUnits() != ProjUnits.DEGREES && projection.getMetersPerUnit()
-      && pointResolutionUnits == ProjUnits.METERS) {
-      pointResolution *= projection.getMetersPerUnit();
-    }
 
     let nominalCount = this.minWidth_ * pointResolution;
     let suffix = '';
     if (units == Units.DEGREES) {
       const metersPerDegree = METERS_PER_UNIT[ProjUnits.DEGREES];
-      if (projection.getUnits() == ProjUnits.DEGREES) {
-        nominalCount *= metersPerDegree;
-      } else {
-        pointResolution /= metersPerDegree;
-      }
+      nominalCount *= metersPerDegree;
       if (nominalCount < metersPerDegree / 60) {
         suffix = '\u2033'; // seconds
         pointResolution *= 3600;
