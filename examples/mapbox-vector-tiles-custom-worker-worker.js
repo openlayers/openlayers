@@ -61,11 +61,12 @@ function loadImageWithinWorker(src, options) {
   });
 }
 
-setLoadImageHelper(function loadImage(src, options) {
+setLoadImageHelper(function loadImage(src, options, onSuccess, onError) {
   if (typeof Image === 'undefined') {
-    return loadImageWithinWorker(src, options);
+    loadImageWithinWorker(src, options).then(onSuccess, onError);
+  } else {
+    loadImageUsingDom(src, options, onSuccess, onError);
   }
-  return loadImageUsingDom(src, options);
 });
 
 const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';

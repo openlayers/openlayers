@@ -165,22 +165,22 @@ class IconImage extends EventTarget {
     if (this.imageState_ == ImageState.IDLE) {
       this.imageState_ = ImageState.LOADING;
       const that = this;
+      const onSuccess = function(img) {
+        that.imageState_ = ImageState.LOADED;
+        that.image_ = img;
+        that.size_ = [img.width, img.height];
+        that.replaceColor_();
+        that.dispatchChangeEvent_();
+      };
+      const onError = function() {
+        that.imageState_ = ImageState.ERROR;
+        that.dispatchChangeEvent_();
+      };
+
       loadImage(this.src_, {
         crossOrigin: this.crossOrigin_,
         size: this.size_
-      }).then(
-        function(img) {
-          that.imageState_ = ImageState.LOADED;
-          that.image_ = img;
-          that.size_ = [img.width, img.height];
-          that.replaceColor_();
-          that.dispatchChangeEvent_();
-        },
-        function() {
-          that.imageState_ = ImageState.ERROR;
-          that.dispatchChangeEvent_();
-        }
-      );
+      }, onSuccess, onError);
     }
   }
 

@@ -90,17 +90,16 @@ export default class CustomCanvasVectorTileLayerRenderer extends CanvasVectorTil
     } else if (action === 'loadImage') {
       const {src, options, opaqueId} = event.data;
       const worker = this.worker_;
-      const sendContinueMessage = function(img) {
-        worker.postMessage({
-          action: 'continueWorkerImageLoading',
-          opaqueId,
-          image: img
-        },
-        [img]);
-      };
-      loadImageUsingDom(src, options)
-        .then(createImageBitmap)
-        .then(sendContinueMessage);
+      loadImageUsingDom(src, options, function(domImage) {
+        createImageBitmap(domImage).then(function(bmp) {
+          worker.postMessage({
+            action: 'continueWorkerImageLoading',
+            opaqueId: opaqueId,
+            image: bmp
+          },
+          [bmp]);
+        });
+      });
       return;
     }
     delete this.tilesByWorkerMessageId_[messageId];
