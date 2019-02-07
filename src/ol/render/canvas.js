@@ -285,9 +285,9 @@ function getMeasureContext() {
 
 /**
  * @param {string} font Font to use for measuring.
- * @return {import("../size.js").Size} Measurement.
+ * @return {number} Measurement.
  */
-export const measureTextHeight = (function() {
+let measureTextHeightHelper = (function() {
   let span;
   const heights = textHeights;
   return function(font) {
@@ -309,6 +309,16 @@ export const measureTextHeight = (function() {
   };
 })();
 
+export function measureTextHeight(font) {
+  return measureTextHeightHelper(font);
+}
+
+/**
+ * @param {function(string): number} helper An helper function.
+ */
+export function setMeasureTextHeightHelper(helper) {
+  measureTextHeightHelper = helper;
+}
 
 /**
  * @param {string} font Font.

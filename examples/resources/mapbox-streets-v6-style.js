@@ -1,7 +1,7 @@
 // Styles for the mapbox-streets-v6 vector tile data set. Loosely based on
 // http://a.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6.json
 
-function createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text) {
+export function createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text) {
   var fill = new Fill({color: ''});
   var stroke = new Stroke({color: '', width: 1});
   var polygon = new Style({fill: fill});

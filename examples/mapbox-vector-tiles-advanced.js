@@ -6,6 +6,7 @@ import {get as getProjection} from '../src/ol/proj.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import {Fill, Icon, Stroke, Style, Text} from '../src/ol/style.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
+import {createMapboxStreetsV6Style} from './resources/mapbox-streets-v6-style.js';
 
 
 const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';

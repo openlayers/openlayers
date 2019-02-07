@@ -1,0 +1,4 @@
+.map {
+  background: #f8f4f0;
+  height: calc(100vh - 12rem) !important;
+}

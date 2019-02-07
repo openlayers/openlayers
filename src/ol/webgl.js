@@ -1,3 +1,5 @@
+import {createCanvas} from './canvas';
+
 /**
  * @module ol/webgl
  */
@@ -323,7 +325,7 @@ let HAS = false;
 //TODO Remove side effects
 if (typeof window !== 'undefined' && 'WebGLRenderingContext' in window) {
   try {
-    const canvas = document.createElement('canvas');
+    const canvas = createCanvas();
     const gl = getContext(canvas);
     if (gl) {
       HAS = true;

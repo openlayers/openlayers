@@ -2,6 +2,7 @@
  * @module ol/dom
  */
 
+import {createCanvas} from './canvas.js';
 
 /**
  * Create an html canvas element and returns its 2d context.
@@ -10,7 +11,7 @@
  * @return {CanvasRenderingContext2D} The context.
  */
 export function createCanvasContext2D(opt_width, opt_height) {
-  const canvas = document.createElement('canvas');
+  const canvas = createCanvas();
   if (opt_width) {
     canvas.width = opt_width;
   }

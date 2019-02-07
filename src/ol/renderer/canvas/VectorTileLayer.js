@@ -72,18 +72,22 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
      */
     this.overlayContext_ = createCanvasContext2D();
 
+    let container = null;
+
     const overlayCanvas = this.overlayContext_.canvas;
-    overlayCanvas.style.position = 'absolute';
-    overlayCanvas.style.transformOrigin = 'top left';
+    if (overlayCanvas.style) {
+      overlayCanvas.style.position = 'absolute';
+      overlayCanvas.style.transformOrigin = 'top left';
 
-    const container = document.createElement('div');
-    const style = container.style;
-    style.position = 'absolute';
-    style.width = '100%';
-    style.height = '100%';
+      container = document.createElement('div');
+      const style = container.style;
+      style.position = 'absolute';
+      style.width = '100%';
+      style.height = '100%';
 
-    container.appendChild(baseCanvas);
-    container.appendChild(overlayCanvas);
+      container.appendChild(baseCanvas);
+      container.appendChild(overlayCanvas);
+    }
 
     /**
      * @private

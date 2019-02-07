@@ -3,11 +3,12 @@
  */
 
 import {createCanvasContext2D} from '../dom.js';
-import {listenOnce, unlistenByKey} from '../events.js';
+import {loadImage} from '../loadImage.js';
 import EventTarget from '../events/Target.js';
 import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
 import {shared as iconImageCache} from './IconImageCache.js';
+import {createCanvas} from '../canvas.js';
 
 class IconImage extends EventTarget {
   /**
@@ -32,17 +33,19 @@ class IconImage extends EventTarget {
      * @private
      * @type {HTMLImageElement|HTMLCanvasElement}
      */
-    this.image_ = !image ? new Image() : image;
+    this.image_ = image ? image : null;
 
-    if (crossOrigin !== null) {
+    if (this.image_ && crossOrigin !== null) {
       /** @type {HTMLImageElement} */ (this.image_).crossOrigin = crossOrigin;
     }
+
+    this.crossOrigin_ = crossOrigin;
 
     /**
      * @private
      * @type {HTMLCanvasElement}
      */
-    this.canvas_ = color ? document.createElement('canvas') : null;
+    this.canvas_ = color ? createCanvas() : null;
 
     /**
      * @private
@@ -79,7 +82,6 @@ class IconImage extends EventTarget {
      * @type {boolean|undefined}
      */
     this.tainted_;
-
   }
 
   /**
@@ -107,29 +109,6 @@ class IconImage extends EventTarget {
     this.dispatchEvent(EventType.CHANGE);
   }
 
-  /**
-   * @private
-   */
-  handleImageError_() {
-    this.imageState_ = ImageState.ERROR;
-    this.unlistenImage_();
-    this.dispatchChangeEvent_();
-  }
-
-  /**
-   * @private
-   */
-  handleImageLoad_() {
-    this.imageState_ = ImageState.LOADED;
-    if (this.size_) {
-      this.image_.width = this.size_[0];
-      this.image_.height = this.size_[1];
-    }
-    this.size_ = [this.image_.width, this.image_.height];
-    this.unlistenImage_();
-    this.replaceColor_();
-    this.dispatchChangeEvent_();
-  }
 
   /**
    * @param {number} pixelRatio Pixel ratio.
@@ -185,17 +164,23 @@ class IconImage extends EventTarget {
   load() {
     if (this.imageState_ == ImageState.IDLE) {
       this.imageState_ = ImageState.LOADING;
-      this.imageListenerKeys_ = [
-        listenOnce(this.image_, EventType.ERROR,
-          this.handleImageError_, this),
-        listenOnce(this.image_, EventType.LOAD,
-          this.handleImageLoad_, this)
-      ];
-      try {
-        /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
-      } catch (e) {
-        this.handleImageError_();
-      }
+      const that = this;
+      loadImage(this.src_, {
+        crossOrigin: this.crossOrigin_,
+        size: this.size_
+      }).then(
+        function(img) {
+          that.imageState_ = ImageState.LOADED;
+          that.image_ = img;
+          that.size_ = [img.width, img.height];
+          that.replaceColor_();
+          that.dispatchChangeEvent_();
+        },
+        function() {
+          that.imageState_ = ImageState.ERROR;
+          that.dispatchChangeEvent_();
+        }
+      );
     }
   }
 
@@ -225,16 +210,6 @@ class IconImage extends EventTarget {
       data[i + 2] *= b;
     }
     ctx.putImageData(imgData, 0, 0);
-  }
-
-  /**
-   * Discards event handlers which listen for load completion or errors.
-   *
-   * @private
-   */
-  unlistenImage_() {
-    this.imageListenerKeys_.forEach(unlistenByKey);
-    this.imageListenerKeys_ = null;
   }
 }
 

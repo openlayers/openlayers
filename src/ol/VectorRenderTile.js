@@ -119,12 +119,13 @@ class VectorRenderTile extends Tile {
 
   /**
    * @param {import("./layer/Layer.js").default} layer Layer.
+   * @param {CanvasRenderingContext2D=} opt_context The rendering context.
    * @return {CanvasRenderingContext2D} The rendering context.
    */
-  getContext(layer) {
+  getContext(layer, opt_context) {
     const key = getUid(layer);
     if (!(key in this.context_)) {
-      this.context_[key] = createCanvasContext2D();
+      this.context_[key] = opt_context || createCanvasContext2D();
     }
     return this.context_[key];
   }
