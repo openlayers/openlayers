@@ -221,10 +221,8 @@ class LayerRenderer extends Observable {
    * @param {import("../extent.js").Extent} extent Extent.
    * @param {number} currentZ Current Z.
    * @param {number} preload Load low resolution tiles up to 'preload' levels.
-   * @param {function(this: T, import("../Tile.js").default)=} opt_tileCallback Tile callback.
-   * @param {T=} opt_this Object to use as `this` in `opt_tileCallback`.
+   * @param {function(import("../Tile.js").default)=} opt_tileCallback Tile callback.
    * @protected
-   * @template T
    */
   manageTilePyramid(
     frameState,
@@ -235,8 +233,7 @@ class LayerRenderer extends Observable {
     extent,
     currentZ,
     preload,
-    opt_tileCallback,
-    opt_this
+    opt_tileCallback
   ) {
     const tileSourceKey = getUid(tileSource);
     if (!(tileSourceKey in frameState.wantedTiles)) {
@@ -261,7 +258,7 @@ class LayerRenderer extends Observable {
               }
             }
             if (opt_tileCallback !== undefined) {
-              opt_tileCallback.call(opt_this, tile);
+              opt_tileCallback(tile);
             }
           } else {
             tileSource.useTile(z, x, y, projection);
