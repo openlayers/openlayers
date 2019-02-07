@@ -134,7 +134,8 @@ export default class CustomCanvasVectorTileLayerRenderer extends CanvasVectorTil
             that.renderTileImage_(tile, pixelRatio, projection);
             log('prepareTileInWorker loaded after renderTileImage', opaqueTileId, state);
             if (!tile.hifi) {
-              debugger;
+              log('tile', opaqueTileId, 'is not hifi: will not return it!');
+              return;
             }
             tile.removeEventListener('change', listener);
             resolve(tile);

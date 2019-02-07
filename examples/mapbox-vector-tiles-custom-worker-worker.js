@@ -72,7 +72,7 @@ setLoadImageHelper(function loadImage(src, options, onSuccess, onError) {
 const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
 const layer = new CustomVectorTileLayer({
-  declutter: false,
+  declutter: true,
   useInterimTilesOnError: false,
   renderMode: 'image',
   source: new VectorTileSource({
