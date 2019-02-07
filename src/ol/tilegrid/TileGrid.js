@@ -203,14 +203,12 @@ class TileGrid {
 
   /**
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {function(this: T, number, import("../TileRange.js").default): boolean} callback Callback.
-   * @param {T=} opt_this The object to use as `this` in `callback`.
+   * @param {function(number, import("../TileRange.js").default): boolean} callback Callback.
    * @param {import("../TileRange.js").default=} opt_tileRange Temporary import("../TileRange.js").default object.
    * @param {import("../extent.js").Extent=} opt_extent Temporary import("../extent.js").Extent object.
    * @return {boolean} Callback succeeded.
-   * @template T
    */
-  forEachTileCoordParentTileRange(tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
+  forEachTileCoordParentTileRange(tileCoord, callback, opt_tileRange, opt_extent) {
     let tileRange, x, y;
     let tileCoordExtent = null;
     let z = tileCoord[0] - 1;
@@ -228,7 +226,7 @@ class TileGrid {
       } else {
         tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
       }
-      if (callback.call(opt_this, z, tileRange)) {
+      if (callback(z, tileRange)) {
         return true;
       }
       --z;
