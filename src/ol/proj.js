@@ -188,6 +188,12 @@ export function getPointResolution(projection, resolution, point, opt_units) {
   const getter = projection.getPointResolutionFunc();
   if (getter) {
     pointResolution = getter(resolution, point);
+    if (opt_units && opt_units !== projection.getUnits()) {
+      const metersPerUnit = projection.getMetersPerUnit();
+      if (metersPerUnit) {
+        pointResolution = pointResolution * metersPerUnit / METERS_PER_UNIT[opt_units];
+      }
+    }
   } else {
     const units = projection.getUnits();
     if (units == Units.DEGREES && !opt_units || opt_units == Units.DEGREES) {
