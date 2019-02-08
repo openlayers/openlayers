@@ -199,7 +199,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
           covered = findLoadedTiles(z + 1, childTileRange);
         }
         if (!covered) {
-          tileGrid.forEachTileCoordParentTileRange(tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
+          tileGrid.forEachTileCoordParentTileRange(tile.tileCoord, findLoadedTiles, tmpTileRange, tmpExtent);
         }
 
       }

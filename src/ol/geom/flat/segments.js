@@ -11,21 +11,19 @@
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {function(this: S, import("../../coordinate.js").Coordinate, import("../../coordinate.js").Coordinate): T} callback Function
+ * @param {function(import("../../coordinate.js").Coordinate, import("../../coordinate.js").Coordinate): T} callback Function
  *     called for each segment.
- * @param {S=} opt_this The object to be used as the value of 'this'
- *     within callback.
  * @return {T|boolean} Value.
- * @template T,S
+ * @template T
  */
-export function forEach(flatCoordinates, offset, end, stride, callback, opt_this) {
+export function forEach(flatCoordinates, offset, end, stride, callback) {
   const point1 = [flatCoordinates[offset], flatCoordinates[offset + 1]];
   const point2 = [];
   let ret;
   for (; (offset + stride) < end; offset += stride) {
     point2[0] = flatCoordinates[offset + stride];
     point2[1] = flatCoordinates[offset + stride + 1];
-    ret = callback.call(opt_this, point1, point2);
+    ret = callback(point1, point2);
     if (ret) {
       return ret;
     }
