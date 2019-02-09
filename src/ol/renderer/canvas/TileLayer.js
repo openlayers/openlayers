@@ -108,6 +108,16 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   /**
    * @inheritDoc
    */
+  loadedTileCallback(tiles, zoom, tile) {
+    if (this.isDrawableTile(tile)) {
+      return super.loadedTileCallback(tiles, zoom, tile);
+    }
+    return false;
+  }
+
+  /**
+   * @inheritDoc
+   */
   prepareFrame(frameState, layerState) {
     return true;
   }
