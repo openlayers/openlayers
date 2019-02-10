@@ -54,7 +54,11 @@ The `ol` package contains a `src/` folder with JSDoc annotated sources. TypeScri
       "ol": ["node_modules/ol/src"],
       "ol/*": ["node_modules/ol/src/*"]
     }
-  }
+  },
+  "include": [
+    "**/*.js",
+    "node_modules/ol/**/*.js"
+  ]
 }
 ```
 Project template with this configuration: https://gist.github.com/9a7253cb4712e8bf38d75d8ac898e36c.
