@@ -60,6 +60,10 @@ In addition (this should be exceedingly rare), if you previously created a `ol/t
 
 If you were previously using `VectorTile` layers with `renderMode: 'vector'`, you have to remove this configuration option. That mode was removed. `'hybrid'` (default) and `'image'` are still available.
 
+##### Removal of the "renderMode" option for vector layers
+
+If you were previously using `Vector` layers with `renderMode: 'image'`, you have to remove this configuration option. Instead, use the new `ol/layer/VectorImage` layer with your `ol/source/Vector`.
+
 ##### New `prerender` and `postrender` layer events replace old `precompose`, `render` and `postcompose` events
 
 If you were previously registering for `precompose` and `postcompose` events, you should now register for `prerender` and `postrender` events on layers.  Instead of the previous `render` event, you should now listen for `postrender`. Layers are no longer composed to a single Canvas element.  Instead, they are added to the map viewport as individual elements.
