@@ -41,27 +41,25 @@ See the following examples for more detail on bundling OpenLayers with your appl
  * Using [Parcel](https://github.com/openlayers/ol-parcel)
  * Using [Browserify](https://github.com/openlayers/ol-browserify)
 
-## TypeScript and VS Code IntelliSense support
+## IntelliSense support and type checking for VS Code
 
-The `ol` package contains a `src/` folder with JSDoc annotated sources. TypeScript can get type definitions from these sources with a `tsconfig.json` like this:
+The `ol` package contains a `src/` folder with JSDoc annotated sources. TypeScript can get type definitions from these sources with a `jsconfig.json` config file in the project root:
 ```js
 {
   "compilerOptions": {
-    // Enable JavaScript support
-    "allowJs": true,
+    "checkJs": true,
     // Point to the JSDoc typed sources when using modules from the ol package
     "baseUrl": "./",
     "paths": {
       "ol": ["node_modules/ol/src"],
       "ol/*": ["node_modules/ol/src/*"]
     }
-  },
-  "include": [
-    // Include JavaScript files from the ol package
-    "node_modules/ol/**/*.js"
-  ]
+  }
 }
 ```
+Project template with this configuration: https://gist.github.com/9a7253cb4712e8bf38d75d8ac898e36c.
+
+Note that the above only works when authoring in plain JavaScript. For similar configurations with a `tsconfig.json` in TypeScript projects, your mileage may vary.
 
 ## Supported Browsers
 
