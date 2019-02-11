@@ -185,16 +185,16 @@ export default class CustomCanvasVectorTileLayerRenderer extends CanvasVectorTil
     const tileUid = getUid(tile);
     const worker = this.worker_;
     if (this.worker_) {
-      if (tile.getState() === TileState.IDLE && !tile['HACK_DONE']) {
-        const that = this;
+      if (tile.getState() === TileState.IDLE && !tile.hasOwnProperty('load')) {
+        const tilesByWorkerMessageId = this.tilesByWorkerMessageId_;
+        const messageId = ++this.currentWorkerMessageId_;
         tile['load'] = function() {
           if (tile.getState() === TileState.IDLE) {
-            const messageId = ++that.currentWorkerMessageId_;
             tile.setState(TileState.LOADING);
             tile['pixelRatio'] = pixelRatio;
             tile['projection'] = projection;
             const tileCoord = tile.getTileCoord();
-            that.tilesByWorkerMessageId_[messageId] = tile;
+            tilesByWorkerMessageId[messageId] = tile;
             const msg = {
               action: 'prepareTile',
               tileCoord: tileCoord,
@@ -206,7 +206,6 @@ export default class CustomCanvasVectorTileLayerRenderer extends CanvasVectorTil
           }
           return [];
         };
-        tile['HACK_DONE'] = true;
       }
     } else {
       if (tile.getState() < TileState.LOADED) {
