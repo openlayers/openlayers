@@ -8,6 +8,10 @@ import {loadImageUsingDom, setLoadImageHelper} from '../src/ol/loadImage';
 import {setCanvasCreator} from '../src/ol/canvas';
 import {setFontFamiliesHelper} from '../src/ol/css';
 import {setMeasureTextHeightHelper} from '../src/ol/render/canvas';
+import {getUid} from '../src/ol/util';
+
+
+const stopAtInstructionsCreation = false;
 
 // Return offscreen canvases instead of DOM based ones
 setCanvasCreator(function() {
@@ -99,16 +103,24 @@ const epsg3857 = getProjection('EPSG:3857');
 function success(messageId, tileId, tile) {
   // Executors are not yet serializable.
   // So we render up-to a transferable canvas for now.
-  const executorGroup = [];
-  const bitmap = renderer.getTileImage(tile)['transferToImageBitmap']();
+  let executorGroup = [];
+  const images = [];
+  if (!stopAtInstructionsCreation) {
+    const offscreenCanvas = renderer.getTileImage(tile);
+    const bitmap = offscreenCanvas['transferToImageBitmap']();
+    images.push(bitmap);
+  } else {
+    executorGroup = tile.executorGroups[getUid(layer)];
+    executorGroup[0].hitDetectionContext_ = null;
+  }
 
   self.postMessage({
     action: 'preparedTile',
     messageId: messageId,
     tileId: tileId,
-    images: [bitmap],
+    images: images,
     executorGroup: executorGroup
-  }, [bitmap]);
+  }, images);
 }
 
 function failure(messageId, tileId, tile) {
@@ -126,10 +138,10 @@ self.onmessage = function(event) {
   if (action === 'prepareTile') {
     const {messageId, tileId, tileCoord, pixelRatio} = event.data;
     const [z, x, y] = tileCoord;
-    renderer.prepareTileInWorker(z, x, y, pixelRatio, epsg3857, tileId).then(
-      success.bind(null, messageId, tileId),
-      failure.bind(null, messageId, tileId)
-    );
+    const successFn = success.bind(null, messageId, tileId);
+    const errorFn = failure.bind(null, messageId, tileId);
+    renderer.prepareTileInWorker(z, x, y, pixelRatio, epsg3857, tileId,
+      successFn, errorFn, stopAtInstructionsCreation);
   } else if (action === 'continueWorkerImageLoading') {
     const {opaqueId, image} = event.data;
     continueWorkerImageLoading(opaqueId, image);

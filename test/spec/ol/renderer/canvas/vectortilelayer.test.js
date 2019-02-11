@@ -122,7 +122,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       const spy1 = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
         'getRenderTransform');
       const spy2 = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
-        'renderTileImage_');
+        'renderTileImage');
       map.renderSync();
       expect(spy1.callCount).to.be(1);
       expect(spy2.callCount).to.be(1);

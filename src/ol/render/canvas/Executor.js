@@ -21,6 +21,7 @@ import {
 import {createCanvasContext2D} from '../../dom.js';
 import {labelCache, defaultTextAlign, measureTextHeight, measureAndCacheTextWidth, measureTextWidths} from '../canvas.js';
 import Disposable from '../../Disposable.js';
+import RenderFeature from '../Feature.js';
 
 
 /**
@@ -541,6 +542,7 @@ class Executor extends Disposable {
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
           feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);
+          feature.__proto__ = RenderFeature.prototype;
           if ((skipFeatures && skippedFeaturesHash[getUid(feature)]) || !feature.getGeometry()) {
             i = /** @type {number} */ (instruction[2]);
           } else if (opt_hitExtent !== undefined && !intersects(

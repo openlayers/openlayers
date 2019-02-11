@@ -190,121 +190,122 @@ export function createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text) {
       stroke.setColor('#a0c8f0');
       stroke.setWidth(1);
       styles[length++] = line;
-    } else if (layer == 'country_label' && scalerank === 1) {
-      text.getText().setText(feature.get('name_en'));
-      text.getText().setFont('bold 11px "Open Sans", "Arial Unicode MS"');
-      fill.setColor('#334');
-      stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(2);
-      styles[length++] = text;
-    } else if (layer == 'country_label' && scalerank === 2 &&
-        resolution <= 19567.87924100512) {
-      text.getText().setText(feature.get('name_en'));
-      text.getText().setFont('bold 10px "Open Sans", "Arial Unicode MS"');
-      fill.setColor('#334');
-      stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(2);
-      styles[length++] = text;
-    } else if (layer == 'country_label' && scalerank === 3 &&
-        resolution <= 9783.93962050256) {
-      text.getText().setText(feature.get('name_en'));
-      text.getText().setFont('bold 9px "Open Sans", "Arial Unicode MS"');
-      fill.setColor('#334');
-      stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(2);
-      styles[length++] = text;
-    } else if (layer == 'country_label' && scalerank === 4 &&
-        resolution <= 4891.96981025128) {
-      text.getText().setText(feature.get('name_en'));
-      text.getText().setFont('bold 8px "Open Sans", "Arial Unicode MS"');
-      fill.setColor('#334');
-      stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(2);
-      styles[length++] = text;
-    } else if (layer == 'marine_label' && labelrank === 1 &&
-        geom == 'Point') {
-      text.getText().setText(feature.get('name_en'));
-      text.getText().setFont(
-          'italic 11px "Open Sans", "Arial Unicode MS"');
-      fill.setColor('#74aee9');
-      stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(1);
-      styles[length++] = text;
-    } else if (layer == 'marine_label' && labelrank === 2 &&
-        geom == 'Point') {
-      text.getText().setText(feature.get('name_en'));
-      text.getText().setFont(
-          'italic 11px "Open Sans", "Arial Unicode MS"');
-      fill.setColor('#74aee9');
-      stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(1);
-      styles[length++] = text;
-    } else if (layer == 'marine_label' && labelrank === 3 &&
-        geom == 'Point') {
-      text.getText().setText(feature.get('name_en'));
-      text.getText().setFont(
-          'italic 10px "Open Sans", "Arial Unicode MS"');
-      fill.setColor('#74aee9');
-      stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(1);
-      styles[length++] = text;
-    } else if (layer == 'marine_label' && labelrank === 4 &&
-        geom == 'Point') {
-      text.getText().setText(feature.get('name_en'));
-      text.getText().setFont(
-          'italic 9px "Open Sans", "Arial Unicode MS"');
-      fill.setColor('#74aee9');
-      stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(1);
-      styles[length++] = text;
-    } else if (layer == 'place_label' && type == 'city' &&
-        resolution <= 1222.99245256282) {
-      text.getText().setText(feature.get('name_en'));
-      text.getText().setFont('11px "Open Sans", "Arial Unicode MS"');
-      fill.setColor('#333');
-      stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(1);
-      styles[length++] = text;
-    } else if (layer == 'place_label' && type == 'town' &&
-        resolution <= 305.748113140705) {
-      text.getText().setText(feature.get('name_en'));
-      text.getText().setFont('9px "Open Sans", "Arial Unicode MS"');
-      fill.setColor('#333');
-      stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(1);
-      styles[length++] = text;
-    } else if (layer == 'place_label' && type == 'village' &&
-        resolution <= 38.21851414258813) {
-      text.getText().setText(feature.get('name_en'));
-      text.getText().setFont('8px "Open Sans", "Arial Unicode MS"');
-      fill.setColor('#333');
-      stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(1);
-      styles[length++] = text;
-    } else if (layer == 'place_label' &&
-        resolution <= 19.109257071294063 && (type == 'hamlet' ||
-        type == 'suburb' || type == 'neighbourhood')) {
-      text.getText().setText(feature.get('name_en'));
-      text.getText().setFont('bold 9px "Arial Narrow"');
-      fill.setColor('#633');
-      stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(1);
-      styles[length++] = text;
-    } else if (layer == 'poi_label' && resolution <= 19.109257071294063 &&
-        scalerank == 1 && maki !== 'marker') {
-      styles[length++] = getIcon(maki);
-    } else if (layer == 'poi_label' && resolution <= 9.554628535647032 &&
-        scalerank == 2 && maki !== 'marker') {
-      styles[length++] = getIcon(maki);
-    } else if (layer == 'poi_label' && resolution <= 4.777314267823516 &&
-        scalerank == 3 && maki !== 'marker') {
-      styles[length++] = getIcon(maki);
-    } else if (layer == 'poi_label' && resolution <= 2.388657133911758 &&
-        scalerank == 4 && maki !== 'marker') {
-      styles[length++] = getIcon(maki);
-    } else if (layer == 'poi_label' && resolution <= 1.194328566955879 &&
-        scalerank >= 5 && maki !== 'marker') {
-      styles[length++] = getIcon(maki);
+    // } else if (layer == 'country_label' && scalerank === 1) {
+    //   text.getText().setText(feature.get('name_en'));
+    //   text.getText().setFont('bold 11px "Open Sans", "Arial Unicode MS"');
+    //   fill.setColor('#334');
+    //   stroke.setColor('rgba(255,255,255,0.8)');
+    //   stroke.setWidth(2);
+    //   styles[length++] = text;
+    // } else if (layer == 'country_label' && scalerank === 2 &&
+    //     resolution <= 19567.87924100512) {
+    //   text.getText().setText(feature.get('name_en'));
+    //   text.getText().setFont('bold 10px "Open Sans", "Arial Unicode MS"');
+    //   fill.setColor('#334');
+    //   stroke.setColor('rgba(255,255,255,0.8)');
+    //   stroke.setWidth(2);
+    //   styles[length++] = text;
+    // } else if (layer == 'country_label' && scalerank === 3 &&
+    //     resolution <= 9783.93962050256) {
+    //   text.getText().setText(feature.get('name_en'));
+    //   text.getText().setFont('bold 9px "Open Sans", "Arial Unicode MS"');
+    //   fill.setColor('#334');
+    //   stroke.setColor('rgba(255,255,255,0.8)');
+    //   stroke.setWidth(2);
+    //   styles[length++] = text;
+    // } else if (layer == 'country_label' && scalerank === 4 &&
+    //     resolution <= 4891.96981025128) {
+    //   text.getText().setText(feature.get('name_en'));
+    //   text.getText().setFont('bold 8px "Open Sans", "Arial Unicode MS"');
+    //   fill.setColor('#334');
+    //   stroke.setColor('rgba(255,255,255,0.8)');
+    //   stroke.setWidth(2);
+    //   styles[length++] = text;
+    // } else if (layer == 'marine_label' && labelrank === 1 &&
+    //     geom == 'Point') {
+    //   text.getText().setText(feature.get('name_en'));
+    //   text.getText().setFont(
+    //       'italic 11px "Open Sans", "Arial Unicode MS"');
+    //   fill.setColor('#74aee9');
+    //   stroke.setColor('rgba(255,255,255,0.8)');
+    //   stroke.setWidth(1);
+    //   styles[length++] = text;
+    // } else if (layer == 'marine_label' && labelrank === 2 &&
+    //     geom == 'Point') {
+    //   text.getText().setText(feature.get('name_en'));
+    //   text.getText().setFont(
+    //       'italic 11px "Open Sans", "Arial Unicode MS"');
+    //   fill.setColor('#74aee9');
+    //   stroke.setColor('rgba(255,255,255,0.8)');
+    //   stroke.setWidth(1);
+    //   styles[length++] = text;
+    // } else if (layer == 'marine_label' && labelrank === 3 &&
+    //     geom == 'Point') {
+    //   text.getText().setText(feature.get('name_en'));
+    //   text.getText().setFont(
+    //       'italic 10px "Open Sans", "Arial Unicode MS"');
+    //   fill.setColor('#74aee9');
+    //   stroke.setColor('rgba(255,255,255,0.8)');
+    //   stroke.setWidth(1);
+    //   styles[length++] = text;
+    // } else if (layer == 'marine_label' && labelrank === 4 &&
+    //     geom == 'Point') {
+    //   text.getText().setText(feature.get('name_en'));
+    //   text.getText().setFont(
+    //       'italic 9px "Open Sans", "Arial Unicode MS"');
+    //   fill.setColor('#74aee9');
+    //   stroke.setColor('rgba(255,255,255,0.8)');
+    //   stroke.setWidth(1);
+    //   styles[length++] = text;
+    // } else if (layer == 'place_label' && type == 'city' &&
+    //     resolution <= 1222.99245256282) {
+    //   text.getText().setText(feature.get('name_en'));
+    //   text.getText().setFont('11px "Open Sans", "Arial Unicode MS"');
+    //   fill.setColor('#333');
+    //   stroke.setColor('rgba(255,255,255,0.8)');
+    //   stroke.setWidth(1);
+    //   styles[length++] = text;
+    // } else if (layer == 'place_label' && type == 'town' &&
+    //     resolution <= 305.748113140705) {
+    //   text.getText().setText(feature.get('name_en'));
+    //   text.getText().setFont('9px "Open Sans", "Arial Unicode MS"');
+    //   fill.setColor('#333');
+    //   stroke.setColor('rgba(255,255,255,0.8)');
+    //   stroke.setWidth(1);
+    //   styles[length++] = text;
+    // } else if (layer == 'place_label' && type == 'village' &&
+    //     resolution <= 38.21851414258813) {
+    //   text.getText().setText(feature.get('name_en'));
+    //   text.getText().setFont('8px "Open Sans", "Arial Unicode MS"');
+    //   fill.setColor('#333');
+    //   stroke.setColor('rgba(255,255,255,0.8)');
+    //   stroke.setWidth(1);
+    //   styles[length++] = text;
+    // } else if (layer == 'place_label' &&
+    //     resolution <= 19.109257071294063 && (type == 'hamlet' ||
+    //     type == 'suburb' || type == 'neighbourhood')) {
+    //   text.getText().setText(feature.get('name_en'));
+    //   text.getText().setFont('bold 9px "Arial Narrow"');
+    //   fill.setColor('#633');
+    //   stroke.setColor('rgba(255,255,255,0.8)');
+    //   stroke.setWidth(1);
+    //   styles[length++] = text;
+
+    // } else if (layer == 'poi_label' && resolution <= 19.109257071294063 &&
+    //     scalerank == 1 && maki !== 'marker') {
+    //   styles[length++] = getIcon(maki);
+    // } else if (layer == 'poi_label' && resolution <= 9.554628535647032 &&
+    //     scalerank == 2 && maki !== 'marker') {
+    //   styles[length++] = getIcon(maki);
+    // } else if (layer == 'poi_label' && resolution <= 4.777314267823516 &&
+    //     scalerank == 3 && maki !== 'marker') {
+    //   styles[length++] = getIcon(maki);
+    // } else if (layer == 'poi_label' && resolution <= 2.388657133911758 &&
+    //     scalerank == 4 && maki !== 'marker') {
+    //   styles[length++] = getIcon(maki);
+    // } else if (layer == 'poi_label' && resolution <= 1.194328566955879 &&
+    //     scalerank >= 5 && maki !== 'marker') {
+    //   styles[length++] = getIcon(maki);
     }
     styles.length = length;
     return styles;

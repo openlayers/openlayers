@@ -5,8 +5,8 @@ import {loadImageUsingDom} from '../src/ol/loadImage.js';
 import TileState from '../src/ol/TileState.js';
 import {listen} from '../src/ol/events.js';
 import EventType from '../src/ol/events/EventType.js';
-
-const dateByTile = {};
+import ExecutorGroup from '../src/ol/render/canvas/ExecutorGroup.js';
+import Executor from '../src/ol/render/canvas/Executor.js';
 
 function resizeCanvas(canvas, img) {
   if (canvas.width !== img.width) {
@@ -18,18 +18,9 @@ function resizeCanvas(canvas, img) {
 }
 
 function pushImage(canvas, img) {
-  // Most efficient method
   resizeCanvas(canvas, img);
   canvas.getContext('bitmaprenderer').transferFromImageBitmap(img);
   img.close();
-}
-
-function log() {
-  // console.log.call(null, arguments);
-}
-
-function error() {
-  // console.error.call(null, arguments);
 }
 
 /**
@@ -45,48 +36,65 @@ export default class CustomCanvasVectorTileLayerRenderer extends CanvasVectorTil
   constructor(layer) {
     super(layer);
 
-    this.currentWorkerMessageId_ = 0;
     this.tilesByWorkerMessageId_ = {};
-    this.tilesByWorkerMessageIdCount_ = 0;
+    this.currentWorkerMessageId_ = 0;
 
     this.worker_ = layer.getWorker();
-    let previous = 0;
-    const counter = () => {
-      if (this.tilesByWorkerMessageIdCount_ !== previous) {
-        log('count', this.tilesByWorkerMessageIdCount_, Object.values(this.tilesByWorkerMessageId_).map(tile => tile.ol_uid));
-        previous = this.tilesByWorkerMessageIdCount_;
-      }
-      requestAnimationFrame(counter);
-    };
     if (this.worker_) {
-      counter();
       this.worker_.addEventListener('message', this.onWorkerMessageReceived_.bind(this), false);
     }
   }
 
+  logImage(bmp, txt) {
+    const canvases = document.getElementById('canvases');
+    const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    canvas.width = 30;
+    canvas.height = 30;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(bmp, 0, 0, canvas.width, canvas.height);
+    const div = document.createElement('div');
+    div.innerHTML = txt;
+    canvases.appendChild(div);
+    canvases.appendChild(canvas);
+  }
+
   onWorkerMessageReceived_(event) {
-    log('received event in main thread', event.data);
-    const {images, action, messageId, tileId, executorGroup} = event.data;
+    const {images, action, messageId, executorGroup} = event.data;
     if (action === 'preparedTile') {
       const tile = this.tilesByWorkerMessageId_[messageId];
       const pixelRatio = tile['pixelRatio'];
       const projection = tile['projection'];
-      const image = images[0];
-      const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-      tile.getContext(this.getLayer(), canvas.getContext('bitmaprenderer'));
-      pushImage(canvas, image);
+      if (images.length > 0) {
+        const image = images[0];
+        const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+        tile.getContext(this.getLayer(), canvas.getContext('bitmaprenderer'));
+        // this.logImage(image, tile.getTileCoord().toString());
+        pushImage(canvas, image);
+        tile['offscreencanvas'] = true;
+      } else {
+        tile['instructs'] = true;
+      }
       const layerId = getUid(this.getLayer());
+      executorGroup.forEach((g) => {
+        g.__proto__ = ExecutorGroup.prototype;
+        const executors = g.getExecutors();
+        for (const key1 in executors) {
+          const value1 = executors[key1];
+          for (const key2 in value1) {
+            const executor = value1[key2];
+            executor.__proto__ = Executor.prototype;
+          }
+        }
+      });
+      this.updateExecutorGroup(tile, pixelRatio, projection);
       tile.executorGroups[layerId] = executorGroup;
-      this.updateExecutorGroup_(tile, pixelRatio, projection);
       tile.hifi = true;
-      log('main: setting loaded state', tileId);
       tile.setState(TileState.LOADED);
     } else if (action === 'failedTilePreparation') {
       const tile = this.tilesByWorkerMessageId_[messageId];
       const state = event.data.state;
       tile.hifi = true;
       tile.setState(state);
-      log('Failed', messageId);
     } else if (action === 'loadImage') {
       const {src, options, opaqueId} = event.data;
       const worker = this.worker_;
@@ -104,60 +112,69 @@ export default class CustomCanvasVectorTileLayerRenderer extends CanvasVectorTil
     }
     delete this.tilesByWorkerMessageId_[messageId];
     --this.tilesByWorkerMessageIdCount_;
-    delete dateByTile[messageId];
   }
 
-
-  prepareTileInWorker(z, x, y, pixelRatio, projection, opaqueTileId) {
+  /**
+   * @param {number} z .
+   * @param {number} x .
+   * @param {number} y .
+   * @param {number} pixelRatio .
+   * @param {Projection} projection .
+   * @param {any} opaqueTileId .
+   * @param {function(Tile): any} successFn .
+   * @param {function(): any} errorFn .
+   * @param {boolean} stopAtInstructionsCreation .
+   */
+  prepareTileInWorker(z, x, y, pixelRatio, projection, opaqueTileId,
+    successFn, errorFn, stopAtInstructionsCreation) {
     const tile = this.getTile(z, x, y, pixelRatio, projection);
     const state = tile.getState();
     if (state === TileState.LOADING) {
-      error('in worker getTile is loading, no luck', opaqueTileId, tile, state);
-      error('this case results in a never released pending request');
-    }
-    if (state >= TileState.LOADED) {
-      if (state !== TileState.LOADED) {
-        error('in worker getTile already known', opaqueTileId, tile, state);
-      }
-      return new Promise(function(resolve, reject) {
-        state === TileState.LOADED ? resolve(tile) : reject(tile);
-      });
+      // This case is very unlikely. In the main thread:
+      // - there is a cache of tiles;
+      // - a tile is not recreated as long as it is in that cache;
+      // - loading tiles are likely to be in that cache
+      self['console'].error('in worker getTile is loading, no luck', opaqueTileId, tile, state);
+      self['console'].error('this case results in a never released pending request');
+      errorFn();
+      return;
     }
 
     const that = this;
-    const promise = new Promise(function(resolve, reject) {
-      const listener = () => {
-        try {
-          const state = tile.getState();
-          if (state === TileState.LOADED) {
-            log('prepareTileInWorker loaded', opaqueTileId, state);
-            that.renderTileImage_(tile, pixelRatio, projection);
-            log('prepareTileInWorker loaded after renderTileImage', opaqueTileId, state);
+    function listener() {
+      try {
+        const state = tile.getState();
+        if (state === TileState.LOADED) {
+          if (!stopAtInstructionsCreation) {
+            that.renderTileImage(tile, pixelRatio, projection);
             if (!tile.hifi) {
-              log('tile', opaqueTileId, 'is not hifi: will not return it!');
               return;
             }
-            tile.removeEventListener('change', listener);
-            resolve(tile);
-          } else if (state === TileState.ERROR) {
-            error('prepareTileInWorker error', opaqueTileId, state);
-            tile.removeEventListener('change', listener);
-            reject(tile);
-          } else {
-            if (state > TileState.LOADED) {
-              error('other state', opaqueTileId, state);
-            }
           }
-        } catch (e) {
-          error('prepareTileInWorker catch error', opaqueTileId, state);
-          tile.setState(TileState.ERROR);
+          tile.removeEventListener('change', listener);
+          successFn(tile);
+        } else if (state === TileState.ERROR) {
+          tile.removeEventListener('change', listener);
+          errorFn(tile);
         }
-      };
+      } catch (e) {
+        self['console'].error('prepareTileInWorker catch error', opaqueTileId, state);
+        tile.setState(TileState.ERROR);
+      }
+    }
+
+    if (state >= TileState.LOADED) {
+      // If the state was loaded, we want to draw again the tile because we transfer the tile
+      // images to the main thread. Skipping the rendering would return a transparent tile
+      // (see point 4 of the transferToImageBitmap spec). Instructions should be transfered too
+      // so a similar issue will exist.
+      // Ideally, there should be no "cache" in the web worker, eliminating the issue entirely.
+      listener();
+    } else {
       tile.addEventListener('change', listener);
-    });
+    }
+
     tile.load();
-    log('prepareTileInWorker after tile.load()', opaqueTileId, state);
-    return promise;
   }
 
   /**
@@ -178,8 +195,6 @@ export default class CustomCanvasVectorTileLayerRenderer extends CanvasVectorTil
             tile['projection'] = projection;
             const tileCoord = tile.getTileCoord();
             that.tilesByWorkerMessageId_[messageId] = tile;
-            that.tilesByWorkerMessageIdCount_++;
-            dateByTile[tileUid] = Date.now();
             const msg = {
               action: 'prepareTile',
               tileCoord: tileCoord,
@@ -187,7 +202,6 @@ export default class CustomCanvasVectorTileLayerRenderer extends CanvasVectorTil
               tileId: tileUid,
               pixelRatio: pixelRatio
             };
-            log('Sending prepareTile to worker', msg);
             worker.postMessage(msg);
           }
           return [];
