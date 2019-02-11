@@ -15,7 +15,9 @@ const stopAtInstructionsCreation = false;
 
 // Return offscreen canvases instead of DOM based ones
 setCanvasCreator(function() {
-  return new self.OffscreenCanvas(150, 150);
+  const canvas = new self.OffscreenCanvas(150, 150);
+  canvas.style = {};
+  return canvas;
 });
 
 // Disable font families logics as it is not available to workers

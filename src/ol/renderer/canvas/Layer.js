@@ -58,11 +58,9 @@ class CanvasLayerRenderer extends LayerRenderer {
     this.context = createCanvasContext2D();
 
     const canvas = this.context.canvas;
-    if (canvas.style) {
-      canvas.style.position = 'absolute';
-      canvas.style.transformOrigin = 'top left';
-      canvas.className = this.getLayer().getClassName();
-    }
+    canvas.style.position = 'absolute';
+    canvas.style.transformOrigin = 'top left';
+    canvas.className = this.getLayer().getClassName();
   }
 
   /**

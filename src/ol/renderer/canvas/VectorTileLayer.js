@@ -72,28 +72,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
      */
     this.overlayContext_ = createCanvasContext2D();
 
-    let container = null;
-
     const overlayCanvas = this.overlayContext_.canvas;
-    if (overlayCanvas.style) {
-      overlayCanvas.style.position = 'absolute';
-      overlayCanvas.style.transformOrigin = 'top left';
-
-      container = document.createElement('div');
-      const style = container.style;
-      style.position = 'absolute';
-      style.width = '100%';
-      style.height = '100%';
-
-      container.appendChild(baseCanvas);
-      container.appendChild(overlayCanvas);
-    }
 
     /**
      * @private
      * @type {HTMLElement}
      */
-    this.container_ = container;
+    this.container_ = this.createContainer(baseCanvas, overlayCanvas);
 
     /**
      * The transform for rendered pixels to viewport CSS pixels for the overlay canvas.
@@ -148,7 +133,25 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     this.zDirection = 0;
 
     listen(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
+  }
 
+  /**
+   * @protected
+   * @param {HTMLCanvasElement} baseCanvas The base canvas.
+   * @param {HTMLCanvasElement} overlayCanvas The overlay canvas.
+   * @return {HTMLElement} A container element with the two canvases.
+   */
+  createContainer(baseCanvas, overlayCanvas) {
+    const container = document.createElement('div');
+    const style = container.style;
+    style.position = 'absolute';
+    style.width = '100%';
+    style.height = '100%';
+
+    container.appendChild(baseCanvas);
+    container.appendChild(overlayCanvas);
+
+    return container;
   }
 
   /**

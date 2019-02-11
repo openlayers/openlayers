@@ -45,6 +45,16 @@ export default class CustomCanvasVectorTileLayerRenderer extends CanvasVectorTil
     }
   }
 
+  /**
+   * @override
+   */
+  createContainer(baseCanvas, overlayCanvas) {
+    if (self.hasOwnProperty('document')) {
+      return super.createContainer(baseCanvas, overlayCanvas);
+    }
+    return null;
+  }
+
   logImage(bmp, txt) {
     const canvases = document.getElementById('canvases');
     const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
