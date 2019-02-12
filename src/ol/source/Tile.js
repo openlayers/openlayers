@@ -140,6 +140,7 @@ class TileSource extends Source {
       return false;
     }
 
+    const key = this.getKey();
     let covered = true;
     let tile, tileCoordKey, loaded;
     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
@@ -148,9 +149,11 @@ class TileSource extends Source {
         loaded = false;
         if (tileCache.containsKey(tileCoordKey)) {
           tile = /** @type {!import("../Tile.js").default} */ (tileCache.get(tileCoordKey));
-          loaded = tile.getState() === TileState.LOADED;
-          if (loaded) {
-            loaded = (callback(tile) !== false);
+          if (tile.key === key) {
+            loaded = tile.getState() === TileState.LOADED;
+            if (loaded) {
+              loaded = (callback(tile) !== false);
+            }
           }
         }
         if (!loaded) {
