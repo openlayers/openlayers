@@ -19,7 +19,6 @@ import {
 import {create, fromTransform} from '../vec/mat4';
 import WebGLPostProcessingPass from './PostProcessingPass';
 import {getContext} from '../webgl';
-import {createCanvas} from '../canvas.js';
 
 
 /**
@@ -215,7 +214,7 @@ class WebGLHelper extends Disposable {
      * @private
      * @type {HTMLCanvasElement}
      */
-    this.canvas_ = createCanvas();
+    this.canvas_ = document.createElement('canvas');
     this.canvas_.style.position = 'absolute';
 
 

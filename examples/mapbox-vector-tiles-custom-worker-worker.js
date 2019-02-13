@@ -5,7 +5,7 @@ import {createMapboxStreetsV6Style} from './resources/mapbox-streets-v6-style.js
 import {get as getProjection} from '../src/ol/proj.js';
 import {Style, Fill, Stroke, Icon, Text} from '../src/ol/style';
 import {setLoadImageHelper} from '../src/ol/loadImage';
-import {setCanvasCreator} from '../src/ol/canvas';
+import {domFallbacks} from '../src/ol/dom.js';
 import {setFontFamiliesHelper} from '../src/ol/css';
 import {setMeasureTextHeightHelper} from '../src/ol/render/canvas';
 import {getUid} from '../src/ol/util';
@@ -15,11 +15,11 @@ import {loadImageFromWithinWorker, registerMessageListenerForWorker} from './map
 const stopAtInstructionsCreation = false;
 
 // Return offscreen canvases instead of DOM based ones
-setCanvasCreator(function() {
-  const canvas = new self.OffscreenCanvas(150, 150);
+domFallbacks.createCanvas = function(opt_width, opt_height) {
+  const canvas = new self.OffscreenCanvas(opt_width || 300, opt_height || 150);
   canvas.style = {};
   return canvas;
-});
+};
 
 // Disable font families logics as it is not available to workers
 setFontFamiliesHelper(function() {

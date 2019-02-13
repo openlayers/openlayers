@@ -1,8 +1,14 @@
+import {abstract} from './util.js';
+
 /**
  * @module ol/dom
  */
 
-import {createCanvas} from './canvas.js';
+export const domFallbacks = {
+  createCanvas: function(opt_width, opt_height) {
+    return abstract();
+  }
+};
 
 /**
  * Create an html canvas element and returns its 2d context.
@@ -11,12 +17,17 @@ import {createCanvas} from './canvas.js';
  * @return {CanvasRenderingContext2D} The context.
  */
 export function createCanvasContext2D(opt_width, opt_height) {
-  const canvas = createCanvas();
-  if (opt_width) {
-    canvas.width = opt_width;
-  }
-  if (opt_height) {
-    canvas.height = opt_height;
+  let canvas;
+  if ('document' in self) {
+    canvas = document.createElement('canvas');
+    if (opt_width) {
+      canvas.width = opt_width;
+    }
+    if (opt_height) {
+      canvas.height = opt_height;
+    }
+  } else {
+    canvas = domFallbacks.createCanvas(opt_width, opt_height);
   }
   return canvas.getContext('2d');
 }
