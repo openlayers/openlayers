@@ -6,6 +6,7 @@ import {createCanvasContext2D} from '../dom.js';
 import {clear} from '../obj.js';
 import {create as createTransform} from '../transform.js';
 import LabelCache from './canvas/LabelCache.js';
+import {abstract} from '../util.js';
 
 
 /**
@@ -282,12 +283,22 @@ function getMeasureContext() {
   return measureContext;
 }
 
+export const canvasFallbacks = {
+  measureTextHeight: function(font) {
+    abstract();
+  }
+};
 
 /**
  * @param {string} font Font to use for measuring.
  * @return {number} Measurement.
  */
-let measureTextHeightHelper = (function() {
+export const measureTextHeight = (function() {
+  if (!('document' in self)) {
+    return function(font) {
+      return canvasFallbacks.measureTextHeight(font);
+    };
+  }
   let span;
   const heights = textHeights;
   return function(font) {
@@ -308,17 +319,6 @@ let measureTextHeightHelper = (function() {
     return height;
   };
 })();
-
-export function measureTextHeight(font) {
-  return measureTextHeightHelper(font);
-}
-
-/**
- * @param {function(string): number} helper An helper function.
- */
-export function setMeasureTextHeightHelper(helper) {
-  measureTextHeightHelper = helper;
-}
 
 /**
  * @param {string} font Font.

@@ -7,7 +7,7 @@ import {Style, Fill, Stroke, Icon, Text} from '../src/ol/style';
 import {setLoadImageHelper} from '../src/ol/loadImage';
 import {domFallbacks} from '../src/ol/dom.js';
 import {cssFallbacks} from '../src/ol/css';
-import {setMeasureTextHeightHelper} from '../src/ol/render/canvas';
+import {canvasFallbacks} from '../src/ol/render/canvas';
 import {getUid} from '../src/ol/util';
 import {loadImageFromWithinWorker, registerMessageListenerForWorker} from './mapbox-vector-tiles-custom-worker-image';
 
@@ -27,10 +27,10 @@ cssFallbacks.getFontFamilies = function() {
 };
 
 // Disable text height measurement
-// An improvement would to delegate the computation to the main thread
-setMeasureTextHeightHelper(function() {
+// TODO: an improvement would to delegate the computation to the main thread
+canvasFallbacks.measureTextHeight = function() {
   return 12;
-});
+};
 
 // Delegate images loading to the main thread
 setLoadImageHelper(loadImageFromWithinWorker);
