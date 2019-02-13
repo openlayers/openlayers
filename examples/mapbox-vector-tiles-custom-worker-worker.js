@@ -4,11 +4,12 @@ import VectorTileSource from '../src/ol/source/VectorTile.js';
 import {createMapboxStreetsV6Style} from './resources/mapbox-streets-v6-style.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import {Style, Fill, Stroke, Icon, Text} from '../src/ol/style';
-import {loadImageUsingDom, setLoadImageHelper} from '../src/ol/loadImage';
+import {setLoadImageHelper} from '../src/ol/loadImage';
 import {setCanvasCreator} from '../src/ol/canvas';
 import {setFontFamiliesHelper} from '../src/ol/css';
 import {setMeasureTextHeightHelper} from '../src/ol/render/canvas';
 import {getUid} from '../src/ol/util';
+import {loadImageFromWithinWorker, registerMessageListenerForWorker} from './mapbox-vector-tiles-custom-worker-image';
 
 
 const stopAtInstructionsCreation = false;
@@ -31,49 +32,11 @@ setMeasureTextHeightHelper(function() {
   return 12;
 });
 
+// Delegate images loading to the main thread
+setLoadImageHelper(loadImageFromWithinWorker);
 
-const waitingPromisesFunctions = {};
-let counter = 0;
-
-function continueWorkerImageLoading(opaqueId, img) {
-  const functions = waitingPromisesFunctions[opaqueId];
-  delete waitingPromisesFunctions[opaqueId];
-  if (img) {
-    functions.ok(img);
-  } {
-    functions.ko(img);
-  }
-}
-
-
-function loadImageWithinWorker(src, options) {
-  return new Promise(function(resolve, reject) {
-    const opaqueId = ++counter;
-    self.postMessage({
-      action: 'loadImage',
-      opaqueId,
-      src,
-      options
-    });
-    waitingPromisesFunctions[opaqueId] = {
-      ok(img) {
-        resolve(img);
-      },
-      ko() {
-        reject();
-      },
-      src
-    };
-  });
-}
-
-setLoadImageHelper(function loadImage(src, options, onSuccess, onError) {
-  if (typeof Image === 'undefined') {
-    loadImageWithinWorker(src, options).then(onSuccess, onError);
-  } else {
-    loadImageUsingDom(src, options, onSuccess, onError);
-  }
-});
+// Listen for image loading messages from the main thread
+registerMessageListenerForWorker();
 
 const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
@@ -113,7 +76,7 @@ function success(messageId, tileId, tile) {
     images.push(bitmap);
   } else {
     executorGroup = tile.executorGroups[getUid(layer)];
-    executorGroup[0].hitDetectionContext_ = null;
+    executorGroup[0].hitDetectionContext_ = null; // remove non-transferable context
   }
 
   self.postMessage({
@@ -134,8 +97,7 @@ function failure(messageId, tileId, tile) {
   });
 }
 
-self.onmessage = function(event) {
-  // console.log('Received event in worker', event.data);
+addEventListener('message', function(event) {
   const action = event.data.action;
   if (action === 'prepareTile') {
     const {messageId, tileId, tileCoord, pixelRatio} = event.data;
@@ -144,8 +106,5 @@ self.onmessage = function(event) {
     const errorFn = failure.bind(null, messageId, tileId);
     renderer.prepareTileInWorker(z, x, y, pixelRatio, epsg3857, tileId,
       successFn, errorFn, stopAtInstructionsCreation);
-  } else if (action === 'continueWorkerImageLoading') {
-    const {opaqueId, image} = event.data;
-    continueWorkerImageLoading(opaqueId, image);
   }
-};
+});

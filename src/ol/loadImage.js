@@ -1,8 +1,8 @@
 
 /**
  * @typedef {Object} Options
- * @property {string} crossOrigin Cross origin value.
- * @property {number[]} size Size of the image.
+ * @property {string} [crossOrigin] Cross origin value.
+ * @property {number[]} [size] Size of the image.
  */
 
 

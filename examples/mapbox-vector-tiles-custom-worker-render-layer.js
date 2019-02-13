@@ -1,12 +1,12 @@
 import {getUid} from '../src/ol/util.js';
 
 import CanvasVectorTileLayerRenderer from '../src/ol/renderer/canvas/VectorTileLayer.js';
-import {loadImageUsingDom} from '../src/ol/loadImage.js';
 import TileState from '../src/ol/TileState.js';
 import {listen} from '../src/ol/events.js';
 import EventType from '../src/ol/events/EventType.js';
 import ExecutorGroup from '../src/ol/render/canvas/ExecutorGroup.js';
 import Executor from '../src/ol/render/canvas/Executor.js';
+import {registerMessageListenerForMainThread} from './mapbox-vector-tiles-custom-worker-image.js';
 
 function resizeCanvas(canvas, img) {
   if (canvas.width !== img.width) {
@@ -42,6 +42,7 @@ export default class CustomCanvasVectorTileLayerRenderer extends CanvasVectorTil
     this.worker_ = layer.getWorker();
     if (this.worker_) {
       this.worker_.addEventListener('message', this.onWorkerMessageReceived_.bind(this), false);
+      registerMessageListenerForMainThread(this.worker_);
     }
   }
 
@@ -105,19 +106,7 @@ export default class CustomCanvasVectorTileLayerRenderer extends CanvasVectorTil
       const state = event.data.state;
       tile.hifi = true;
       tile.setState(state);
-    } else if (action === 'loadImage') {
-      const {src, options, opaqueId} = event.data;
-      const worker = this.worker_;
-      loadImageUsingDom(src, options, function(domImage) {
-        createImageBitmap(domImage).then(function(bmp) {
-          worker.postMessage({
-            action: 'continueWorkerImageLoading',
-            opaqueId: opaqueId,
-            image: bmp
-          },
-          [bmp]);
-        });
-      });
+    } else {
       return;
     }
     delete this.tilesByWorkerMessageId_[messageId];
