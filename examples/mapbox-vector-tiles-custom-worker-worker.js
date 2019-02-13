@@ -6,7 +6,7 @@ import {get as getProjection} from '../src/ol/proj.js';
 import {Style, Fill, Stroke, Icon, Text} from '../src/ol/style';
 import {setLoadImageHelper} from '../src/ol/loadImage';
 import {domFallbacks} from '../src/ol/dom.js';
-import {setFontFamiliesHelper} from '../src/ol/css';
+import {cssFallbacks} from '../src/ol/css';
 import {setMeasureTextHeightHelper} from '../src/ol/render/canvas';
 import {getUid} from '../src/ol/util';
 import {loadImageFromWithinWorker, registerMessageListenerForWorker} from './mapbox-vector-tiles-custom-worker-image';
@@ -22,9 +22,9 @@ domFallbacks.createCanvas = function(opt_width, opt_height) {
 };
 
 // Disable font families logics as it is not available to workers
-setFontFamiliesHelper(function() {
+cssFallbacks.getFontFamilies = function() {
   return null;
-});
+};
 
 // Disable text height measurement
 // An improvement would to delegate the computation to the main thread

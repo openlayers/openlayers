@@ -1,3 +1,5 @@
+import {abstract} from './util';
+
 /**
  * @module ol/css
  */
@@ -57,14 +59,25 @@ export const CLASS_CONTROL = 'ol-control';
  */
 export const CLASS_COLLAPSED = 'ol-collapsed';
 
+export const cssFallbacks = {
+  getFontFamilies: function(font) {
+    return abstract();
+  }
+};
 
 /**
  * Get the list of font families from a font spec.  Note that this doesn't work
  * for font families that have commas in them.
- * @param {string} The CSS font property.
+ * @param {string} font The CSS font property.
  * @return {Object<string, string>} The font families (or null if the input spec is invalid).
  */
-let fontFamiliesHelper = (function() {
+export const getFontFamilies = (function() {
+  if (!('document' in self)) {
+    return function(font) {
+      return cssFallbacks.getFontFamilies(font);
+    };
+  }
+
   let style;
   const cache = {};
   return function(font) {
@@ -83,18 +96,3 @@ let fontFamiliesHelper = (function() {
     return cache[font];
   };
 })();
-
-
-/**
- * Get the list of font families from a font spec.  Note that this doesn't work
- * for font families that have commas in them.
- * @param {string} font The CSS font property.
- * @return {Object<string, string>} The font families (or null if the input spec is invalid).
- */
-export function getFontFamilies(font) {
-  return fontFamiliesHelper(font);
-}
-
-export function setFontFamiliesHelper(helper) {
-  fontFamiliesHelper = helper;
-}
