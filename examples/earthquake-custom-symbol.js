@@ -26,9 +26,8 @@ const styleFunction = function(feature) {
   scale = size / 10;
   let style = styleCache[size];
   if (!style) {
-    const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-    const vectorContext = toContext(
-      /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d')),
+    const canvas = document.createElement('canvas');
+    const vectorContext = toContext(canvas.getContext('2d'),
       {size: [size, size], pixelRatio: 1});
     vectorContext.setStyle(new Style({
       fill: new Fill({color: 'rgba(255, 153, 0, 0.4)'}),
