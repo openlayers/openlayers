@@ -46,7 +46,7 @@
     "@types/geojson": "^7946.0.6",
     "@types/pbf": "^3.0.1",
     "@types/rbush": "^2.0.2",
-    "@types/topojson-specification": "^1.0.0",
+    "@types/topojson-specification": "^1.0.1",
     "buble": "^0.19.6",
     "buble-loader": "^0.5.1",
     "chaikin-smooth": "^1.0.4",
