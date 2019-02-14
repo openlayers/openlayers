@@ -14,19 +14,23 @@
  * @param {function(any): any} onError Error callback.
  */
 export function loadImageUsingDom(src, options, onSuccess, onError) {
-  const image = new Image();
-  if (options.crossOrigin) {
-    image.crossOrigin = options.crossOrigin;
-  }
-  image.src = src;
-  image.onload = function() {
-    if (options.size) {
-      image.width = options.size[0];
-      image.height = options.size[1];
+  try {
+    const image = new Image();
+    if (options.crossOrigin) {
+      image.crossOrigin = options.crossOrigin;
     }
-    onSuccess(image);
-  };
-  image.onerror = onError;
+    image.onload = function() {
+      if (options.size) {
+        image.width = options.size[0];
+        image.height = options.size[1];
+      }
+      onSuccess(image);
+    };
+    image.onerror = onError;
+    image.src = src;
+  } catch (e) {
+    onError(null);
+  }
 }
 
 let loadImageHelper = loadImageUsingDom;
