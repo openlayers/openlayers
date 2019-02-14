@@ -11,8 +11,11 @@ import {canvasFallbacks} from '../src/ol/render/canvas';
 import {getUid} from '../src/ol/util';
 import {loadImageFromWithinWorker, registerMessageListenerForWorker} from './mapbox-vector-tiles-custom-worker-image';
 
-
-const stopAtInstructionsCreation = false;
+// Important options
+const stopAtInstructionsCreation = false; // false for longest pipeline: transferable offscreen canvas
+const noIconsOrText = false; // true to disable icon and text styles (avoid instanciating canvases)
+const declutter = true;
+const renderMode = 'image'; // only image is supported at the moment
 
 // Return offscreen canvases instead of DOM based ones
 domFallbacks.createCanvas = function(opt_width, opt_height) {
@@ -41,9 +44,9 @@ registerMessageListenerForWorker();
 const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
 const layer = new CustomVectorTileLayer({
-  declutter: true,
+  declutter: declutter,
   useInterimTilesOnError: false,
-  renderMode: 'image',
+  renderMode: renderMode,
   source: new VectorTileSource({
     attributions: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
       '© <a href="https://www.openstreetmap.org/copyright">' +
@@ -52,7 +55,7 @@ const layer = new CustomVectorTileLayer({
     url: 'https://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
         '{z}/{x}/{y}.vector.pbf?access_token=' + key
   }),
-  style: createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text)
+  style: createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text, noIconsOrText)
 });
 
 

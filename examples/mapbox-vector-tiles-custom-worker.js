@@ -7,21 +7,21 @@ import {Style, Fill, Stroke, Icon, Text} from '../src/ol/style.js';
 import {createMapboxStreetsV6Style} from './resources/mapbox-streets-v6-style.js';
 
 
-// eslint-disable-next-line
-// @ts-ignore import/no-unresolved
-
 const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
+// @ts-ignore import/no-unresolved
 // eslint-disable-next-line import/no-unresolved
 const MyWorker = require('worker-loader?name=my_mvt_worker.js!./mapbox-vector-tiles-custom-worker-worker.js');
 const useWorker = true;
+const renderMode = 'image'; // only image is supported at the moment
+const declutter = true;
 
 const map = new Map({
   layers: [
     new CustomVectorTileLayer({
       worker: useWorker ? new MyWorker() : null,
-      renderMode: 'image',
-      declutter: true,
+      renderMode: renderMode,
+      declutter: declutter,
       useInterimTilesOnError: true,
       source: new VectorTileSource({
         attributions: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +

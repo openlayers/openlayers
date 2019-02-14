@@ -1,9 +1,7 @@
 // Styles for the mapbox-streets-v6 vector tile data set. Loosely based on
 // http://a.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6.json
 
-const noIconsOrText = false; // To test rendering without icons or text set this constant to true.
-
-export function createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text) {
+export function createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text, noIconsOrText) {
   var fill = new Fill({color: ''});
   var stroke = new Stroke({color: '', width: 1});
   var polygon = new Style({fill: fill});
