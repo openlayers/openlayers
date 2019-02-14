@@ -21,7 +21,6 @@ import {
 import {createCanvasContext2D} from '../../dom.js';
 import {labelCache, defaultTextAlign, measureTextHeight, measureAndCacheTextWidth, measureTextWidths} from '../canvas.js';
 import Disposable from '../../Disposable.js';
-import RenderFeature from '../Feature.js';
 
 
 /**
@@ -542,7 +541,6 @@ class Executor extends Disposable {
       switch (type) {
         case CanvasInstruction.BEGIN_GEOMETRY:
           feature = /** @type {import("../../Feature.js").FeatureLike} */ (instruction[1]);
-          feature.__proto__ = RenderFeature.prototype;
           if ((skipFeatures && skippedFeaturesHash[getUid(feature)]) || !feature.getGeometry()) {
             i = /** @type {number} */ (instruction[2]);
           } else if (opt_hitExtent !== undefined && !intersects(
@@ -871,6 +869,24 @@ class Executor extends Disposable {
     this.viewRotation_ = viewRotation;
     return this.execute_(context, transform, skippedFeaturesHash,
       this.hitDetectionInstructions, true, opt_featureCallback, opt_hitExtent);
+  }
+
+  /**
+   * Fix the prototype chain of instructions features.
+   * This method must be used after instructions are transfered from a web worker.
+   * @hidden
+   * @param {any} featureCtor A constructor to use for features
+   * @param {?} declutterTree The layer declutter tree.
+   */
+  applyWebworkerFixes(featureCtor, declutterTree) {
+    this.declutterTree = declutterTree;
+    for (let i = 0; i < this.instructions.length; ++i) {
+      const instruction = this.instructions[i];
+      const type = /** @type {CanvasInstruction} */ (instruction[0]);
+      if (type === CanvasInstruction.BEGIN_GEOMETRY) {
+        instruction[1].__proto__ = featureCtor.prototype;
+      }
+    }
   }
 }
 

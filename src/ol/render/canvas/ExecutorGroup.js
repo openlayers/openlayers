@@ -80,7 +80,7 @@ class ExecutorGroup extends Disposable {
 
     /**
      * @private
-     * @type {!Object<string, !Object<BuilderType, import("./Executor").default>>}
+     * @type {!Object<string, !Object<BuilderType, Executor>>}
      */
     this.executorsByZIndex_ = {};
 
@@ -327,7 +327,7 @@ class ExecutorGroup extends Disposable {
   }
 
   /**
-   * @return {Object<string, Object<BuilderType, CanvasReplay>>} Replays.
+   * @return {!Object<string, !Object<BuilderType, import("./Executor.js").default>>} Executors.
    */
   getExecutors() {
     return this.executorsByZIndex_;
@@ -338,6 +338,26 @@ class ExecutorGroup extends Disposable {
    */
   isEmpty() {
     return isEmpty(this.executorsByZIndex_);
+  }
+
+  /**
+   * @hidden
+   * @param {any} featureCtor Constructor for Features.
+   * @param {?} declutterTree The layer declutter tree.
+   */
+  applyWebworkerFixes(featureCtor, declutterTree) {
+    this.declutterTree_ = declutterTree;
+    for (const zIndex in this.executorsByZIndex_) {
+      const executors = this.executorsByZIndex_[zIndex];
+      for (const bType in executors) {
+        /**
+         * @type {Executor}
+         */
+        const executor = executors[bType];
+        executor.__proto__ = Executor.prototype;
+        executor.applyWebworkerFixes(featureCtor, declutterTree);
+      }
+    }
   }
 
   /**

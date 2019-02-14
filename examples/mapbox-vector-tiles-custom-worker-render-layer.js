@@ -5,8 +5,8 @@ import TileState from '../src/ol/TileState.js';
 import {listen} from '../src/ol/events.js';
 import EventType from '../src/ol/events/EventType.js';
 import ExecutorGroup from '../src/ol/render/canvas/ExecutorGroup.js';
-import Executor from '../src/ol/render/canvas/Executor.js';
 import {registerMessageListenerForMainThread} from './mapbox-vector-tiles-custom-worker-image.js';
+import RenderFeature from '../src/ol/render/Feature.js';
 
 function resizeCanvas(canvas, img) {
   if (canvas.width !== img.width) {
@@ -58,7 +58,7 @@ export default class CustomCanvasVectorTileLayerRenderer extends CanvasVectorTil
 
   logImage(bmp, txt) {
     const canvases = document.getElementById('canvases');
-    const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    const canvas = document.createElement('canvas');
     canvas.width = 30;
     canvas.height = 30;
     const ctx = canvas.getContext('2d');
@@ -77,7 +77,7 @@ export default class CustomCanvasVectorTileLayerRenderer extends CanvasVectorTil
       const projection = tile['projection'];
       if (images.length > 0) {
         const image = images[0];
-        const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+        const canvas = document.createElement('canvas');
         tile.getContext(this.getLayer(), canvas.getContext('bitmaprenderer'));
         // this.logImage(image, tile.getTileCoord().toString());
         pushImage(canvas, image);
@@ -86,17 +86,10 @@ export default class CustomCanvasVectorTileLayerRenderer extends CanvasVectorTil
         tile['instructs'] = true;
       }
       const layerId = getUid(this.getLayer());
-      executorGroup.forEach((g) => {
+      executorGroup.forEach(function(g) {
         g.__proto__ = ExecutorGroup.prototype;
-        const executors = g.getExecutors();
-        for (const key1 in executors) {
-          const value1 = executors[key1];
-          for (const key2 in value1) {
-            const executor = value1[key2];
-            executor.__proto__ = Executor.prototype;
-          }
-        }
-      });
+        g.applyWebworkerFixes(RenderFeature, this.declutterTree);
+      }.bind(this));
       this.updateExecutorGroup(tile, pixelRatio, projection);
       tile.executorGroups[layerId] = executorGroup;
       tile.hifi = true;

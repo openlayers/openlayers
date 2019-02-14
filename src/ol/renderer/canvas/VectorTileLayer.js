@@ -96,9 +96,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     /**
      * Declutter tree.
-     * @private
+     * @protected
      */
-    this.declutterTree_ = layer.getDeclutter() ? rbush(9, undefined) : null;
+    this.declutterTree = layer.getDeclutter() ? rbush(9, undefined) : null;
 
     /**
      * @private
@@ -279,7 +279,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
       builderState.dirty = false;
       const builderGroup = new CanvasBuilderGroup(0, sharedExtent, resolution,
-        pixelRatio, !!this.declutterTree_);
+        pixelRatio, !!this.declutterTree);
       const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
 
       /**
@@ -324,7 +324,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         null :
         sharedExtent;
       const renderingReplayGroup = new CanvasExecutorGroup(replayExtent, resolution,
-        pixelRatio, source.getOverlaps(), this.declutterTree_, executorGroupInstructions, layer.getRenderBuffer());
+        pixelRatio, source.getOverlaps(), this.declutterTree, executorGroupInstructions, layer.getRenderBuffer());
       tile.executorGroups[layerUid].push(renderingReplayGroup);
     }
 
@@ -468,7 +468,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     }
 
     if (declutterReplays) {
-      this.declutterTree_.clear();
+      this.declutterTree.clear();
     }
     const tiles = this.renderedTiles;
     const tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
@@ -555,8 +555,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       frameState.animate = true;
       delete this.renderTileImageQueue_[uid];
       const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
-      if (this.declutterTree_ && layer.getRenderMode() === VectorTileRenderType.IMAGE) {
-        this.declutterTree_.clear();
+      if (this.declutterTree && layer.getRenderMode() === VectorTileRenderType.IMAGE) {
+        this.declutterTree.clear();
       }
       this.renderTileImage(tile, frameState.pixelRatio, frameState.viewState.projection);
     }
