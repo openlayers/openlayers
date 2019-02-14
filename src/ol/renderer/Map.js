@@ -305,12 +305,4 @@ function getLayerStatesMap(layerStatesArray) {
   }, {});
 }
 
-/**
- * @param {import("../layer/Layer.js").State} state1 First layer state.
- * @param {import("../layer/Layer.js").State} state2 Second layer state.
- * @return {number} The zIndex difference.
- */
-export function sortByZIndex(state1, state2) {
-  return state1.zIndex - state2.zIndex;
-}
 export default MapRenderer;
