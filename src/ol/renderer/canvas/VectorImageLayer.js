@@ -85,8 +85,6 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         if (vectorRenderer.prepareFrame(imageFrameState, layerState) &&
               (vectorRenderer.replayGroupChanged ||
               !equals(skippedFeatures, newSkippedFeatures))) {
-          context.canvas.width = imageFrameState.size[0] * pixelRatio;
-          context.canvas.height = imageFrameState.size[1] * pixelRatio;
           vectorRenderer.renderFrame(imageFrameState, layerState);
           skippedFeatures = newSkippedFeatures;
           callback();
