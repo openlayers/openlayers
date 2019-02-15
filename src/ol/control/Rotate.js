@@ -169,8 +169,6 @@ export function render(mapEvent) {
         this.element.classList.remove(CLASS_HIDDEN);
       }
     }
-    this.label_.style.msTransform = transform;
-    this.label_.style.webkitTransform = transform;
     this.label_.style.transform = transform;
   }
   this.rotation_ = rotation;
