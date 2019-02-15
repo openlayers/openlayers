@@ -8,6 +8,9 @@ import {getHeight, getWidth, isEmpty, scaleFromCenter} from '../../extent.js';
 import {assign} from '../../obj.js';
 import CanvasImageLayerRenderer from './ImageLayer.js';
 import CanvasVectorLayerRenderer from './VectorLayer.js';
+import {listen} from '../../events.js';
+import EventType from '../../events/EventType.js';
+import ImageState from '../../ImageState.js';
 
 /**
  * @classdesc
@@ -89,10 +92,14 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
           callback();
         }
       });
-      if (this.loadImage(image)) {
-        this.image_ = image;
-        this.skippedFeatures_ = skippedFeatures;
-      }
+
+      listen(image, EventType.CHANGE, function() {
+        if (image.getState() === ImageState.LOADED) {
+          this.image_ = image;
+          this.skippedFeatures_ = skippedFeatures;
+        }
+      }, this);
+      image.load();
     }
 
     if (this.image_) {
