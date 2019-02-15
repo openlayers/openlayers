@@ -1499,14 +1499,14 @@ describe('ol.View', function() {
     });
   });
 
-  describe('#getValidZoomLevel()', function() {
+  describe('#getConstrainedZoom()', function() {
     let view;
 
     it('works correctly without constraint', function() {
       view = new View({
         zoom: 0
       });
-      expect(view.getValidZoomLevel(3)).to.be(3);
+      expect(view.getConstrainedZoom(3)).to.be(3);
     });
     it('works correctly with resolution constraints', function() {
       view = new View({
@@ -1514,28 +1514,28 @@ describe('ol.View', function() {
         minZoom: 4,
         maxZoom: 8
       });
-      expect(view.getValidZoomLevel(3)).to.be(4);
-      expect(view.getValidZoomLevel(10)).to.be(8);
+      expect(view.getConstrainedZoom(3)).to.be(4);
+      expect(view.getConstrainedZoom(10)).to.be(8);
     });
     it('works correctly with a specific resolution set', function() {
       view = new View({
         zoom: 0,
         resolutions: [512, 256, 128, 64, 32, 16, 8]
       });
-      expect(view.getValidZoomLevel(0)).to.be(0);
-      expect(view.getValidZoomLevel(4)).to.be(4);
-      expect(view.getValidZoomLevel(8)).to.be(6);
+      expect(view.getConstrainedZoom(0)).to.be(0);
+      expect(view.getConstrainedZoom(4)).to.be(4);
+      expect(view.getConstrainedZoom(8)).to.be(6);
     });
   });
 
-  describe('#getValidResolution()', function() {
+  describe('#getConstrainedResolution()', function() {
     let view;
     const defaultMaxRes = 156543.03392804097;
 
     it('works correctly by snapping to power of 2', function() {
       view = new View();
-      expect(view.getValidResolution(1000000)).to.be(defaultMaxRes);
-      expect(view.getValidResolution(defaultMaxRes / 8)).to.be(defaultMaxRes / 8);
+      expect(view.getConstrainedResolution(1000000)).to.be(defaultMaxRes);
+      expect(view.getConstrainedResolution(defaultMaxRes / 8)).to.be(defaultMaxRes / 8);
     });
     it('works correctly by snapping to a custom zoom factor', function() {
       view = new View({
@@ -1544,11 +1544,11 @@ describe('ol.View', function() {
         maxZoom: 4,
         constrainResolution: true
       });
-      expect(view.getValidResolution(90, 1)).to.be(100);
-      expect(view.getValidResolution(90, -1)).to.be(20);
-      expect(view.getValidResolution(20)).to.be(20);
-      expect(view.getValidResolution(5)).to.be(4);
-      expect(view.getValidResolution(1)).to.be(4);
+      expect(view.getConstrainedResolution(90, 1)).to.be(100);
+      expect(view.getConstrainedResolution(90, -1)).to.be(20);
+      expect(view.getConstrainedResolution(20)).to.be(20);
+      expect(view.getConstrainedResolution(5)).to.be(4);
+      expect(view.getConstrainedResolution(1)).to.be(4);
     });
     it('works correctly with a specific resolution set', function() {
       view = new View({
@@ -1556,12 +1556,12 @@ describe('ol.View', function() {
         resolutions: [512, 256, 128, 64, 32, 16, 8],
         constrainResolution: true
       });
-      expect(view.getValidResolution(1000, 1)).to.be(512);
-      expect(view.getValidResolution(260, 1)).to.be(512);
-      expect(view.getValidResolution(260)).to.be(256);
-      expect(view.getValidResolution(30)).to.be(32);
-      expect(view.getValidResolution(30, -1)).to.be(16);
-      expect(view.getValidResolution(4, -1)).to.be(8);
+      expect(view.getConstrainedResolution(1000, 1)).to.be(512);
+      expect(view.getConstrainedResolution(260, 1)).to.be(512);
+      expect(view.getConstrainedResolution(260)).to.be(256);
+      expect(view.getConstrainedResolution(30)).to.be(32);
+      expect(view.getConstrainedResolution(30, -1)).to.be(16);
+      expect(view.getConstrainedResolution(4, -1)).to.be(8);
     });
   });
 

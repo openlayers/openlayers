@@ -116,7 +116,7 @@ class DragPan extends PointerInteraction {
           centerpx[1] - distance * Math.sin(angle)
         ]);
         view.animate({
-          center: view.getValidCenter(dest),
+          center: view.getConstrainedCenter(dest),
           duration: 500,
           easing: easeOut
         });

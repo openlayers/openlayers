@@ -80,8 +80,8 @@ function onBoxEnd() {
     extent = mapExtent;
   }
 
-  const resolution = view.getValidResolution(view.getResolutionForExtent(extent, size));
-  const center = view.getValidCenter(getCenter(extent), resolution);
+  const resolution = view.getConstrainedResolution(view.getResolutionForExtent(extent, size));
+  const center = view.getConstrainedCenter(getCenter(extent), resolution);
 
   view.animate({
     resolution: resolution,

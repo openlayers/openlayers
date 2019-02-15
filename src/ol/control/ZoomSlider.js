@@ -217,7 +217,7 @@ class ZoomSlider extends Control {
       event.offsetY - this.thumbSize_[1] / 2);
 
     const resolution = this.getResolutionForPosition_(relativePosition);
-    const zoom = view.getValidZoomLevel(view.getZoomForResolution(resolution));
+    const zoom = view.getConstrainedZoom(view.getZoomForResolution(resolution));
 
     view.animate({
       zoom: zoom,

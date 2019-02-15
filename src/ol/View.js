@@ -622,7 +622,7 @@ class View extends BaseObject {
           }
           this.targetRotation_ = rotation;
         }
-        this.applyParameters_(true);
+        this.applyTargetState_(true);
         more = true;
         if (!animation.complete) {
           break;
@@ -1070,7 +1070,7 @@ class View extends BaseObject {
       [size[0] - padding[1] - padding[3], size[1] - padding[0] - padding[2]]);
     resolution = isNaN(resolution) ? minResolution :
       Math.max(resolution, minResolution);
-    resolution = this.getValidResolution(resolution, nearest ? 0 : 1);
+    resolution = this.getConstrainedResolution(resolution, nearest ? 0 : 1);
 
     // calculate center
     sinAngle = -sinAngle; // go back to original rotation
@@ -1086,14 +1086,14 @@ class View extends BaseObject {
     if (options.duration !== undefined) {
       this.animate({
         resolution: resolution,
-        center: this.getValidCenter(center, resolution),
+        center: this.getConstrainedCenter(center, resolution),
         duration: options.duration,
         easing: options.easing
       }, callback);
     } else {
       this.targetResolution_ = resolution;
       this.targetCenter_ = center;
-      this.applyParameters_(false, true);
+      this.applyTargetState_(false, true);
       animationCallback(callback, true);
     }
   }
@@ -1159,7 +1159,7 @@ class View extends BaseObject {
     }
 
     this.targetResolution_ *= ratio;
-    this.applyParameters_();
+    this.applyTargetState_();
   }
 
   /**
@@ -1188,7 +1188,7 @@ class View extends BaseObject {
       this.targetCenter_ = this.calculateCenterRotate(newRotation, opt_anchor);
     }
     this.targetRotation_ += delta;
-    this.applyParameters_();
+    this.applyTargetState_();
   }
 
   /**
@@ -1199,7 +1199,7 @@ class View extends BaseObject {
    */
   setCenter(center) {
     this.targetCenter_ = center;
-    this.applyParameters_();
+    this.applyTargetState_();
   }
 
   /**
@@ -1221,7 +1221,7 @@ class View extends BaseObject {
    */
   setResolution(resolution) {
     this.targetResolution_ = resolution;
-    this.applyParameters_();
+    this.applyTargetState_();
   }
 
   /**
@@ -1232,7 +1232,7 @@ class View extends BaseObject {
    */
   setRotation(rotation) {
     this.targetRotation_ = rotation;
-    this.applyParameters_();
+    this.applyTargetState_();
   }
 
   /**
@@ -1252,7 +1252,7 @@ class View extends BaseObject {
    * @param {boolean=} opt_forceMoving Apply constraints as if the view is moving.
    * @private
    */
-  applyParameters_(opt_doNotCancelAnims, opt_forceMoving) {
+  applyTargetState_(opt_doNotCancelAnims, opt_forceMoving) {
     const isMoving = this.getAnimating() || this.getInteracting() || opt_forceMoving;
 
     // compute rotation
@@ -1338,9 +1338,8 @@ class View extends BaseObject {
    * @param {number=} opt_targetResolution Target resolution. If not supplied, the current one will be used.
    * This is useful to guess a valid center position at a different zoom level.
    * @return {import("./coordinate.js").Coordinate|undefined} Valid center position.
-   * @api
    */
-  getValidCenter(targetCenter, opt_targetResolution) {
+  getConstrainedCenter(targetCenter, opt_targetResolution) {
     const size = this.getSizeFromViewport_(this.getRotation());
     return this.constraints_.center(targetCenter, opt_targetResolution || this.getResolution(), size);
   }
@@ -1352,11 +1351,10 @@ class View extends BaseObject {
    * the available value respectively lower or greater than the target one. Leaving `0` will simply choose
    * the nearest available value.
    * @return {number|undefined} Valid zoom level.
-   * @api
    */
-  getValidZoomLevel(targetZoom, opt_direction) {
+  getConstrainedZoom(targetZoom, opt_direction) {
     const targetRes = this.getResolutionForZoom(targetZoom);
-    return this.getZoomForResolution(this.getValidResolution(targetRes));
+    return this.getZoomForResolution(this.getConstrainedResolution(targetRes));
   }
 
   /**
@@ -1366,9 +1364,8 @@ class View extends BaseObject {
    * the available value respectively lower or greater than the target one. Leaving `0` will simply choose
    * the nearest available value.
    * @return {number|undefined} Valid resolution.
-   * @api
    */
-  getValidResolution(targetResolution, opt_direction) {
+  getConstrainedResolution(targetResolution, opt_direction) {
     const direction = opt_direction || 0;
     const size = this.getSizeFromViewport_(this.getRotation());
 

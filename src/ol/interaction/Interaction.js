@@ -114,7 +114,7 @@ export function pan(view, delta, opt_duration) {
     view.animate({
       duration: opt_duration !== undefined ? opt_duration : 250,
       easing: linear,
-      center: view.getValidCenter(center)
+      center: view.getConstrainedCenter(center)
     });
   }
 }
@@ -132,7 +132,7 @@ export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
     return;
   }
 
-  const newZoom = view.getValidZoomLevel(currentZoom + delta);
+  const newZoom = view.getConstrainedZoom(currentZoom + delta);
   const newResolution = view.getResolutionForZoom(newZoom);
 
   if (view.getAnimating()) {
