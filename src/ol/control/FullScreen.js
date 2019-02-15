@@ -7,7 +7,7 @@ import {replaceNode} from '../dom.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 
-const events = ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'];
+const events = ['fullscreenchange', 'webkitfullscreenchange', 'MSFullscreenChange'];
 
 /**
  * @typedef {Object} Options
@@ -209,7 +209,6 @@ function isFullScreenSupported() {
   const body = document.body;
   return !!(
     body.webkitRequestFullscreen ||
-    (body.mozRequestFullScreen && document.mozFullScreenEnabled) ||
     (body.msRequestFullscreen && document.msFullscreenEnabled) ||
     (body.requestFullscreen && document.fullscreenEnabled)
   );
@@ -220,8 +219,7 @@ function isFullScreenSupported() {
  */
 function isFullScreen() {
   return !!(
-    document.webkitIsFullScreen || document.mozFullScreen ||
-    document.msFullscreenElement || document.fullscreenElement
+    document.webkitIsFullScreen || document.msFullscreenElement || document.fullscreenElement
   );
 }
 
@@ -234,8 +232,6 @@ function requestFullScreen(element) {
     element.requestFullscreen();
   } else if (element.msRequestFullscreen) {
     element.msRequestFullscreen();
-  } else if (element.mozRequestFullScreen) {
-    element.mozRequestFullScreen();
   } else if (element.webkitRequestFullscreen) {
     element.webkitRequestFullscreen();
   }
@@ -246,9 +242,7 @@ function requestFullScreen(element) {
  * @param {HTMLElement} element Element to request fullscreen
  */
 function requestFullScreenWithKeys(element) {
-  if (element.mozRequestFullScreenWithKeys) {
-    element.mozRequestFullScreenWithKeys();
-  } else if (element.webkitRequestFullscreen) {
+  if (element.webkitRequestFullscreen) {
     element.webkitRequestFullscreen();
   } else {
     requestFullScreen(element);
@@ -263,8 +257,6 @@ function exitFullScreen() {
     document.exitFullscreen();
   } else if (document.msExitFullscreen) {
     document.msExitFullscreen();
-  } else if (document.mozCancelFullScreen) {
-    document.mozCancelFullScreen();
   } else if (document.webkitExitFullscreen) {
     document.webkitExitFullscreen();
   }
