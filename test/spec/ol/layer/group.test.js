@@ -1,11 +1,9 @@
 import {getUid} from '../../../../src/ol/util.js';
-import {stableSort} from '../../../../src/ol/array.js';
 import Collection from '../../../../src/ol/Collection.js';
 import {getIntersection} from '../../../../src/ol/extent.js';
 import LayerGroup from '../../../../src/ol/layer/Group.js';
 import Layer from '../../../../src/ol/layer/Layer.js';
 import {assign} from '../../../../src/ol/obj.js';
-import {sortByZIndex} from '../../../../src/ol/renderer/Map.js';
 import Source from '../../../../src/ol/source/Source.js';
 
 
@@ -331,6 +329,36 @@ describe('ol.layer.Group', function() {
 
   describe('#getLayerStatesArray', function() {
 
+    let layer1, layer2, layer3;
+    beforeEach(function() {
+      layer1 = new Layer({
+        source: new Source({
+          projection: 'EPSG:4326'
+        })
+      });
+      layer2 = new Layer({
+        source: new Source({
+          projection: 'EPSG:4326'
+        }),
+        opacity: 0.5,
+        visible: false,
+        maxResolution: 500,
+        minResolution: 0.25
+      });
+      layer3 = new Layer({
+        source: new Source({
+          projection: 'EPSG:4326'
+        }),
+        extent: [-5, -2, 5, 2]
+      });
+    });
+
+    afterEach(function() {
+      layer1.dispose();
+      layer2.dispose();
+      layer3.dispose();
+    });
+
     it('returns an empty array if no layer', function() {
       const layerGroup = new LayerGroup();
 
@@ -339,27 +367,6 @@ describe('ol.layer.Group', function() {
       expect(layerStatesArray.length).to.be(0);
 
       layerGroup.dispose();
-    });
-
-    const layer1 = new Layer({
-      source: new Source({
-        projection: 'EPSG:4326'
-      })
-    });
-    const layer2 = new Layer({
-      source: new Source({
-        projection: 'EPSG:4326'
-      }),
-      opacity: 0.5,
-      visible: false,
-      maxResolution: 500,
-      minResolution: 0.25
-    });
-    const layer3 = new Layer({
-      source: new Source({
-        projection: 'EPSG:4326'
-      }),
-      extent: [-5, -2, 5, 2]
     });
 
     it('does not transform layerStates by default', function() {
@@ -444,55 +451,6 @@ describe('ol.layer.Group', function() {
       layerGroup.dispose();
     });
 
-    it('let order of layers without Z-index unchanged', function() {
-      const layerGroup = new LayerGroup({
-        layers: [layer1, layer2]
-      });
-
-      const layerStatesArray = layerGroup.getLayerStatesArray();
-      const initialArray = layerStatesArray.slice();
-      stableSort(layerStatesArray, sortByZIndex);
-      expect(layerStatesArray[0]).to.eql(initialArray[0]);
-      expect(layerStatesArray[1]).to.eql(initialArray[1]);
-
-      layerGroup.dispose();
-    });
-
-    it('orders layer with higher Z-index on top', function() {
-      const layer10 = new Layer({
-        source: new Source({
-          projection: 'EPSG:4326'
-        })
-      });
-      layer10.setZIndex(10);
-
-      const layerM1 = new Layer({
-        source: new Source({
-          projection: 'EPSG:4326'
-        })
-      });
-      layerM1.setZIndex(-1);
-
-      const layerGroup = new LayerGroup({
-        layers: [layer1, layer10, layer2, layerM1]
-      });
-
-      const layerStatesArray = layerGroup.getLayerStatesArray();
-      const initialArray = layerStatesArray.slice();
-      stableSort(layerStatesArray, sortByZIndex);
-      expect(layerStatesArray[0]).to.eql(initialArray[3]);
-      expect(layerStatesArray[1]).to.eql(initialArray[0]);
-      expect(layerStatesArray[2]).to.eql(initialArray[2]);
-      expect(layerStatesArray[3]).to.eql(initialArray[1]);
-
-      layer10.dispose();
-      layerM1.dispose();
-      layerGroup.dispose();
-    });
-
-    layer1.dispose();
-    layer2.dispose();
-    layer3.dispose();
   });
 
 });
