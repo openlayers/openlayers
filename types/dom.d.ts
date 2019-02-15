@@ -27,7 +27,3 @@ interface Element {
   msRequestFullscreen(): Promise<void>;
   webkitRequestFullscreen(allowKeyboardInput?: number): Promise<void>;
 }
-
-interface CSSStyleDeclaration {
-  msTransform: string | null;
-}
