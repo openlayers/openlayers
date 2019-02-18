@@ -147,8 +147,8 @@ class VectorTile extends Tile {
    */
   onLoad(features, dataProjection, extent) {
     this.setProjection(dataProjection);
-    this.setFeatures(features);
     this.setExtent(extent);
+    this.setFeatures(features);
   }
 
   /**
