@@ -33,70 +33,70 @@ const tmpTransform = createTransform();
 class RenderFeature {
   constructor(type, flatCoordinates, ends, properties, id) {
     /**
-    * @private
-    * @type {import("../extent.js").Extent|undefined}
-    */
+     * @private
+     * @type {import("../extent.js").Extent|undefined}
+     */
     this.extent_;
 
     /**
-    * @private
-    * @type {number|string|undefined}
-    */
+     * @private
+     * @type {number|string|undefined}
+     */
     this.id_ = id;
 
     /**
-    * @private
-    * @type {GeometryType}
-    */
+     * @private
+     * @type {GeometryType}
+     */
     this.type_ = type;
 
     /**
-    * @private
-    * @type {Array<number>}
-    */
+     * @private
+     * @type {Array<number>}
+     */
     this.flatCoordinates_ = flatCoordinates;
 
     /**
-    * @private
-    * @type {Array<number>}
-    */
+     * @private
+     * @type {Array<number>}
+     */
     this.flatInteriorPoints_ = null;
 
     /**
-    * @private
-    * @type {Array<number>}
-    */
+     * @private
+     * @type {Array<number>}
+     */
     this.flatMidpoints_ = null;
 
     /**
-    * @private
-    * @type {Array<number>|Array<Array<number>>}
-    */
+     * @private
+     * @type {Array<number>|Array<Array<number>>}
+     */
     this.ends_ = ends;
 
     /**
-    * @private
-    * @type {Object<string, *>}
-    */
+     * @private
+     * @type {Object<string, *>}
+     */
     this.properties_ = properties;
 
   }
 
   /**
-  * Get a feature property by its key.
-  * @param {string} key Key
-  * @return {*} Value for the requested key.
-  * @api
-  */
+   * Get a feature property by its key.
+   * @param {string} key Key
+   * @return {*} Value for the requested key.
+   * @api
+   */
   get(key) {
     return this.properties_[key];
   }
 
   /**
-  * Get the extent of this feature's geometry.
-  * @return {import("../extent.js").Extent} Extent.
-  * @api
-  */
+   * Get the extent of this feature's geometry.
+   * @return {import("../extent.js").Extent} Extent.
+   * @api
+   */
   getExtent() {
     if (!this.extent_) {
       this.extent_ = this.type_ === GeometryType.POINT ?
@@ -109,8 +109,8 @@ class RenderFeature {
   }
 
   /**
-  * @return {Array<number>} Flat interior points.
-  */
+   * @return {Array<number>} Flat interior points.
+   */
   getFlatInteriorPoint() {
     if (!this.flatInteriorPoints_) {
       const flatCenter = getCenter(this.getExtent());
@@ -121,8 +121,8 @@ class RenderFeature {
   }
 
   /**
-  * @return {Array<number>} Flat interior points.
-  */
+   * @return {Array<number>} Flat interior points.
+   */
   getFlatInteriorPoints() {
     if (!this.flatInteriorPoints_) {
       const flatCenters = linearRingssCenter(
@@ -134,8 +134,8 @@ class RenderFeature {
   }
 
   /**
-  * @return {Array<number>} Flat midpoint.
-  */
+   * @return {Array<number>} Flat midpoint.
+   */
   getFlatMidpoint() {
     if (!this.flatMidpoints_) {
       this.flatMidpoints_ = interpolatePoint(
@@ -145,8 +145,8 @@ class RenderFeature {
   }
 
   /**
-  * @return {Array<number>} Flat midpoints.
-  */
+   * @return {Array<number>} Flat midpoints.
+   */
   getFlatMidpoints() {
     if (!this.flatMidpoints_) {
       this.flatMidpoints_ = [];
@@ -165,28 +165,28 @@ class RenderFeature {
   }
 
   /**
-  * Get the feature identifier.  This is a stable identifier for the feature and
-  * is set when reading data from a remote source.
-  * @return {number|string|undefined} Id.
-  * @api
-  */
+   * Get the feature identifier.  This is a stable identifier for the feature and
+   * is set when reading data from a remote source.
+   * @return {number|string|undefined} Id.
+   * @api
+   */
   getId() {
     return this.id_;
   }
 
   /**
-  * @return {Array<number>} Flat coordinates.
-  */
+   * @return {Array<number>} Flat coordinates.
+   */
   getOrientedFlatCoordinates() {
     return this.flatCoordinates_;
   }
 
   /**
-  * For API compatibility with {@link module:ol/Feature~Feature}, this method is useful when
-  * determining the geometry type in style function (see {@link #getType}).
-  * @return {RenderFeature} Feature.
-  * @api
-  */
+   * For API compatibility with {@link module:ol/Feature~Feature}, this method is useful when
+   * determining the geometry type in style function (see {@link #getType}).
+   * @return {RenderFeature} Feature.
+   * @api
+   */
   getGeometry() {
     return this;
   }
@@ -200,17 +200,17 @@ class RenderFeature {
   }
 
   /**
-  * Get the feature properties.
-  * @return {Object<string, *>} Feature properties.
-  * @api
-  */
+   * Get the feature properties.
+   * @return {Object<string, *>} Feature properties.
+   * @api
+   */
   getProperties() {
     return this.properties_;
   }
 
   /**
-  * @return {number} Stride.
-  */
+   * @return {number} Stride.
+   */
   getStride() {
     return 2;
   }
@@ -223,21 +223,21 @@ class RenderFeature {
   }
 
   /**
-  * Get the type of this feature's geometry.
-  * @return {GeometryType} Geometry type.
-  * @api
-  */
+   * Get the type of this feature's geometry.
+   * @return {GeometryType} Geometry type.
+   * @api
+   */
   getType() {
     return this.type_;
   }
 
   /**
-  * Transform geometry coordinates from tile pixel space to projected.
-  * The SRS of the source and destination are expected to be the same.
-  *
-  * @param {import("../proj.js").ProjectionLike} source The current projection
-  * @param {import("../proj.js").ProjectionLike} destination The desired projection.
-  */
+   * Transform geometry coordinates from tile pixel space to projected.
+   * The SRS of the source and destination are expected to be the same.
+   *
+   * @param {import("../proj.js").ProjectionLike} source The current projection
+   * @param {import("../proj.js").ProjectionLike} destination The desired projection.
+   */
   transform(source, destination) {
     source = getProjection(source);
     const pixelExtent = source.getExtent();
