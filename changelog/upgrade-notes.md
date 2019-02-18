@@ -4,10 +4,12 @@
 
 #### Backwards incompatible changes
 
-##### Removal of the deprecated "inherits" function
+##### Removal of deprecated methods
 
 The `inherits` function that was used to inherit the prototype methods from one constructor into another has been removed.
 The standard ECMAScript classes should be used instead.
+
+The deprecated `getSnapToPixel` and `setSnapToPixel` functions from the `ImageStyle` class have been removed.
 
 ##### New internal tile coordinates
 
