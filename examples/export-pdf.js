@@ -55,6 +55,7 @@ exportButton.addEventListener('click', function() {
   const height = Math.round(dim[1] * resolution / 25.4);
   const size = map.getSize();
   const extent = map.getView().calculateExtent(size);
+  const zoom = map.getView().getZoom();
 
   map.once('rendercomplete', function() {
     domtoimage.toJpeg(map.getViewport().querySelector('.ol-layers')).then(function(dataUrl) {
@@ -64,6 +65,7 @@ exportButton.addEventListener('click', function() {
       // Reset original map size
       map.setSize(size);
       map.getView().fit(extent, {size});
+      map.getView().setZoom(zoom);
       exportButton.disabled = false;
       document.body.style.cursor = 'auto';
     });
