@@ -4,13 +4,6 @@
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 
-/**
- * @const
- * @type {import("./extent.js").Extent}
- */
-const DEFAULT_EXTENT = [0, 0, 4096, 4096];
-
-
 class VectorTile extends Tile {
 
   /**
@@ -89,7 +82,7 @@ class VectorTile extends Tile {
    * @api
    */
   getExtent() {
-    return this.extent_ || DEFAULT_EXTENT;
+    return this.extent_;
   }
 
   /**
@@ -166,7 +159,7 @@ class VectorTile extends Tile {
    * calculated by multiplying the tile size with the tile pixel ratio. For
    * sources using {@link module:ol/format/MVT~MVT} as feature format, the
    * {@link module:ol/format/MVT~MVT#getLastExtent} method will return the correct
-   * extent. The default is `[0, 0, 4096, 4096]`.
+   * extent.
    * @param {import("./extent.js").Extent} extent The extent.
    * @api
    */

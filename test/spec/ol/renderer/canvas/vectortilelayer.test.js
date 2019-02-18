@@ -203,6 +203,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       let tile;
       tileCallback = function(t) {
         t.setProjection(proj);
+        t.setExtent([0, 0, 4096, 4096]);
         tile = t;
       };
       map.renderSync();

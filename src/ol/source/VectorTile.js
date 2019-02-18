@@ -42,12 +42,11 @@ import {equals} from '../array.js';
  *     var data = // ... fetch data
  *     var format = tile.getFormat();
  *     tile.setProjection(format.readProjection(data));
+ *     tile.setExtent(format.getLastExtent()); // line only required for ol/format/MVT
  *     tile.setFeatures(format.readFeatures(data, {
  *       // featureProjection is not required for ol/format/MVT
  *       featureProjection: map.getView().getProjection()
  *     }));
- *     // the line below is only required for ol/format/MVT
- *     tile.setExtent(format.getLastExtent());
  *   }
  * });
  * ```
