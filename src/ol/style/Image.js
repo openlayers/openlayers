@@ -104,16 +104,6 @@ class ImageStyle {
   }
 
   /**
-   * This method is deprecated and always returns false.
-   * @return {boolean} false.
-   * @deprecated
-   * @api
-   */
-  getSnapToPixel() {
-    return false;
-  }
-
-  /**
    * Get the anchor point in pixels. The anchor determines the center point for the
    * symbolizer.
    * @abstract
@@ -222,14 +212,6 @@ class ImageStyle {
   setScale(scale) {
     this.scale_ = scale;
   }
-
-  /**
-   * This method is deprecated and does nothing.
-   * @param {boolean} snapToPixel Snap to pixel?
-   * @deprecated
-   * @api
-   */
-  setSnapToPixel(snapToPixel) {}
 
   /**
    * @abstract
