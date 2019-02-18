@@ -339,14 +339,17 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     const renderedTiles = /** @type {Array<import("../../VectorRenderTile.js").default>} */ (this.renderedTiles);
 
-    let bufferedExtent, found;
+    let found;
     let i, ii;
     for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
       const tile = renderedTiles[i];
-      const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
-      bufferedExtent = buffer(tileExtent, hitTolerance * resolution, bufferedExtent);
-      if (!containsCoordinate(bufferedExtent, coordinate)) {
-        continue;
+      if (!this.declutterTree_) {
+        // When not decluttering, we only need to consider the tile that contains the given
+        // coordinate, because each feature will be rendered for each tile that contains it.
+        const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
+        if (!containsCoordinate(tileExtent, coordinate)) {
+          continue;
+        }
       }
       const executorGroups = tile.executorGroups[getUid(layer)];
       for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
@@ -357,7 +360,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
            * @return {?} Callback result.
            */
           function(feature) {
-            const key = getUid(feature);
+            let key = feature.getId();
+            if (key === undefined) {
+              key = getUid(feature);
+            }
             if (!(key in features)) {
               features[key] = true;
               return callback.call(thisArg, feature, layer);
