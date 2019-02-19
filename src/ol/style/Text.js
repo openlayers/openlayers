@@ -402,6 +402,16 @@ class Text {
   }
 
   /**
+   * Set whether to rotate the text with the view.
+   *
+   * @param {boolean} rotateWithView Rotate with map.
+   * @api
+   */
+  setRotateWithView(rotateWithView) {
+    this.rotateWithView_ = rotateWithView;
+  }
+
+  /**
    * Set the fill.
    *
    * @param {import("./Fill.js").default} fill Fill style.
