@@ -63,9 +63,10 @@ exportButton.addEventListener('click', function() {
       pdf.save('map.pdf');
       // Reset original map size
       map.setSize(size);
-      map.getView().fit(extent,
-          {size: size,
-          constrainResolution: false});
+      map.getView().fit(extent, {
+        size: size,
+        constrainResolution: false
+      });
       exportButton.disabled = false;
       document.body.style.cursor = 'auto';
     });
