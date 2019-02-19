@@ -97,4 +97,13 @@ describe('ol.style.Text', function() {
 
   });
 
+  describe('#setRotateWithView', function() {
+    it('sets the rotateWithView property', function() {
+      const textStyle = new Text();
+      expect(textStyle.getRotateWithView()).to.eql(undefined);
+      textStyle.setRotateWithView(true);
+      expect(textStyle.getRotateWithView()).to.eql(true);
+    });
+  });
+
 });
