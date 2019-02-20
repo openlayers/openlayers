@@ -498,7 +498,6 @@ class VectorSource extends Source {
     if (this.featuresRtree_) {
       this.featuresRtree_.clear();
     }
-    this.loadedExtentsRtree_.clear();
     this.nullGeometryFeatures_ = {};
 
     const clearEvent = new VectorSourceEvent(VectorEventType.CLEAR);
@@ -892,6 +891,15 @@ class VectorSource extends Source {
         this.loading = this.loader_ !== VOID;
       }
     }
+  }
+
+  /**
+   * @inheritDoc
+   */
+  refresh() {
+    this.clear(true);
+    this.loadedExtentsRtree_.clear();
+    super.refresh();
   }
 
 

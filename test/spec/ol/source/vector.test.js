@@ -9,6 +9,7 @@ import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import {bbox as bboxStrategy} from '../../../../src/ol/loadingstrategy.js';
 import {get as getProjection, transformExtent, fromLonLat} from '../../../../src/ol/proj.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 
 
 describe('ol.source.Vector', function() {
@@ -167,8 +168,6 @@ describe('ol.source.Vector', function() {
     describe('#clear', function() {
 
       it('removes all features using fast path', function() {
-        const changeSpy = sinon.spy();
-        listen(vectorSource, 'change', changeSpy);
         const removeFeatureSpy = sinon.spy();
         listen(vectorSource, 'removefeature', removeFeatureSpy);
         const clearSourceSpy = sinon.spy();
@@ -176,8 +175,6 @@ describe('ol.source.Vector', function() {
         vectorSource.clear(true);
         expect(vectorSource.getFeatures()).to.eql([]);
         expect(vectorSource.isEmpty()).to.be(true);
-        expect(changeSpy).to.be.called();
-        expect(changeSpy.callCount).to.be(1);
         expect(removeFeatureSpy).not.to.be.called();
         expect(removeFeatureSpy.callCount).to.be(0);
         expect(clearSourceSpy).to.be.called();
@@ -185,8 +182,6 @@ describe('ol.source.Vector', function() {
       });
 
       it('removes all features using slow path', function() {
-        const changeSpy = sinon.spy();
-        listen(vectorSource, 'change', changeSpy);
         const removeFeatureSpy = sinon.spy();
         listen(vectorSource, 'removefeature', removeFeatureSpy);
         const clearSourceSpy = sinon.spy();
@@ -194,14 +189,68 @@ describe('ol.source.Vector', function() {
         vectorSource.clear();
         expect(vectorSource.getFeatures()).to.eql([]);
         expect(vectorSource.isEmpty()).to.be(true);
-        expect(changeSpy).to.be.called();
-        expect(changeSpy.callCount).to.be(1);
         expect(removeFeatureSpy).to.be.called();
         expect(removeFeatureSpy.callCount).to.be(features.length);
         expect(clearSourceSpy).to.be.called();
         expect(clearSourceSpy.callCount).to.be(1);
       });
 
+    });
+
+    describe('clear and refresh', function() {
+
+      let map, source, spy;
+      beforeEach(function(done) {
+        source = new VectorSource({
+          format: new GeoJSON(),
+          url: 'spec/ol/source/vectorsource/single-feature.json'
+        });
+        const target = document.createElement('div');
+        target.style.width = target.style.height = '100px';
+        document.body.appendChild(target);
+        map = new Map({
+          target: target,
+          layers: [
+            new VectorLayer({
+              source: source
+            })
+          ],
+          view: new View({
+            center: [0, 0],
+            zoom: 0
+          })
+        });
+        map.once('rendercomplete', function() {
+          spy = sinon.spy(source, 'loader_');
+          done();
+        });
+      });
+
+      afterEach(function() {
+        source.loader_.restore();
+        document.body.removeChild(map.getTargetElement());
+        map.setTarget(null);
+      });
+
+      it('#refresh() reloads from server', function(done) {
+        expect(source.getFeatures()).to.have.length(1);
+        map.once('rendercomplete', function() {
+          expect(source.getFeatures()).to.have.length(1);
+          expect(spy.callCount).to.be(1);
+          done();
+        });
+        source.refresh();
+      });
+
+      it('#clear() removes all features from the source', function(done) {
+        expect(source.getFeatures()).to.have.length(1);
+        map.once('rendercomplete', function() {
+          expect(source.getFeatures()).to.have.length(0);
+          expect(spy.callCount).to.be(0);
+          done();
+        });
+        source.clear();
+      });
     });
 
     describe('#forEachFeatureInExtent', function() {
