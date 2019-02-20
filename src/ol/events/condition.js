@@ -230,6 +230,33 @@ export const mouseOnly = function(mapBrowserEvent) {
   return pointerEvent.pointerType == 'mouse';
 };
 
+/**
+ * Return `true` if the event originates from a touchable device.
+ *
+ * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+ * @return {boolean} True if the event originates from a touchable device.
+ * @api
+ */
+export const touchOnly = function(mapBrowserEvent) {
+  const pointerEvt = /** @type {import("../MapBrowserPointerEvent").default} */ (mapBrowserEvent).pointerEvent;
+  assert(pointerEvt !== undefined, 56); // mapBrowserEvent must originate from a pointer event
+  // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
+  return pointerEvt.pointerType === 'touch';
+};
+
+/**
+ * Return `true` if the event originates from a digital pen.
+ *
+ * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+ * @return {boolean} True if the event originates from a digital pen.
+ * @api
+ */
+export const penOnly = function(mapBrowserEvent) {
+  const pointerEvt = /** @type {import("../MapBrowserPointerEvent").default} */ (mapBrowserEvent).pointerEvent;
+  assert(pointerEvt !== undefined, 56); // mapBrowserEvent must originate from a pointer event
+  // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
+  return pointerEvt.pointerType === 'pen';
+};
 
 /**
  * Return `true` if the event originates from a primary pointer in
