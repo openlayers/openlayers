@@ -991,6 +991,7 @@ class VectorSource extends Source {
    * @api
    */
   setLoader(loader) {
+    this.loadedExtentsRtree_.clear();
     this.loader_ = loader;
   }
 
