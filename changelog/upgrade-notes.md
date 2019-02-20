@@ -124,6 +124,12 @@ The removed classes and components are:
 Following the removal of the experimental WebGL renderer, the AtlasManager has been removed as well. The atlas was only used by this renderer.
 The non API `getChecksum` functions of the style is also removed.
 
+##### Change of the behavior of the vector source's clear() and refresh() methods
+
+The `ol/source/Vector#clear()` method no longer triggers a reload of the data from the server. If you were previously using `clear()` to refetch from the server, you now have to use `refresh()`.
+
+The `ol/source/Vector#refresh()` method now triggers a reload of the data from the server. If you were previously using the `refresh()` method to re-render a vector layer, you should instead call `ol/layer/Vector#changed()`.
+
 #### Other changes
 
 ##### Allow declutter in image render mode
