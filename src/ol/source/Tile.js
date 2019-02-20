@@ -301,11 +301,19 @@ class TileSource extends Source {
   }
 
   /**
+   * Remove all cached tiles from the source. The next render cycle will fetch new tiles.
+   * @api
+   */
+  clear() {
+    this.tileCache.clear();
+  }
+
+  /**
    * @inheritDoc
    */
   refresh() {
-    this.tileCache.clear();
-    this.changed();
+    this.clear();
+    super.refresh();
   }
 
   /**
