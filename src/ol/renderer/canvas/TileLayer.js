@@ -71,9 +71,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    */
   isDrawableTile(tile) {
     const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
+    const tileSource = tileLayer.getSource();
+    const key = tileSource.getKey();
     const tileState = tile.getState();
     const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
-    return tileState == TileState.LOADED ||
+    return (tile.key === key) &&
+        tileState == TileState.LOADED ||
         tileState == TileState.EMPTY ||
         tileState == TileState.ERROR && !useInterimTilesOnError;
   }
