@@ -87,6 +87,7 @@ export class CustomTile extends ImageTile {
  * you must provide a `crossOrigin` value  you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
+ * @property {number} [tilePixelRatio] The pixel ratio used by the tile service. For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px by 512px images (for retina/hidpi devices) then `tilePixelRatio` should be set to `2`
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {string} [url] URL template or base URL of the Zoomify service.
@@ -244,6 +245,7 @@ class Zoomify extends TileImage {
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
       projection: options.projection,
+      tilePixelRatio: options.tilePixelRatio,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileClass: ZoomifyTileClass,
       tileGrid: tileGrid,
