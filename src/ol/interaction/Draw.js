@@ -528,7 +528,7 @@ class Draw extends PointerInteraction {
   handleDownEvent(event) {
     this.shouldHandle_ = !this.freehand_;
 
-    if (this.freehand_) {
+    if (this.freehand_ && ((this.condition_ && this.condition_(event)) || true)) {
       this.downPx_ = event.pixel;
       if (!this.finishCoordinate_) {
         this.startDrawing_(event);
@@ -547,7 +547,6 @@ class Draw extends PointerInteraction {
       return false;
     }
   }
-
 
   /**
    * @inheritDoc
