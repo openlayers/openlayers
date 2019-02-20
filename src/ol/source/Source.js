@@ -145,7 +145,7 @@ class Source extends BaseObject {
   }
 
   /**
-   * Refreshes the source and finally dispatches a 'change' event.
+   * Refreshes the source. Data from the server will be reloaded.
    * @api
    */
   refresh() {
