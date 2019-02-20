@@ -128,7 +128,7 @@ The non API `getChecksum` functions of the style is also removed.
 
 The `ol/source/Vector#clear()` method no longer triggers a reload of the data from the server. If you were previously using `clear()` to refetch from the server, you now have to use `refresh()`.
 
-The `ol/source/Vector#refresh()` method now triggers a reload of the data from the server. If you were previously using the `refresh()` method to re-render a vector layer, you should instead call `ol/layer/Vector#changed()`.
+The `ol/source/Vector#refresh()` method now removes all features from the source and triggers a reload of the data from the server. If you were previously using the `refresh()` method to re-render a vector layer, you should instead call `ol/layer/Vector#changed()`.
 
 #### Other changes
 

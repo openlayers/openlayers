@@ -985,14 +985,23 @@ class VectorSource extends Source {
 
 
   /**
-   * Set the new loader of the source. The next loadFeatures call will use the
+   * Set the new loader of the source. The next render cycle will use the
    * new loader.
    * @param {import("../featureloader.js").FeatureLoader} loader The loader to set.
    * @api
    */
   setLoader(loader) {
-    this.loadedExtentsRtree_.clear();
     this.loader_ = loader;
+  }
+
+  /**
+   * Points the source to a new url. The next render cycle will use the new url.
+   * @param {string|import("../featureloader.js").FeatureUrlFunction} url Url.
+   * @api
+   */
+  setUrl(url) {
+    assert(this.format_, 7); // `format` must be set when `url` is set
+    this.setLoader(xhr(url, this.format_));
   }
 
 }

@@ -145,7 +145,7 @@ class Source extends BaseObject {
   }
 
   /**
-   * Refreshes the source. Data from the server will be reloaded.
+   * Refreshes the source. The source will be cleared, and data from the server will be reloaded.
    * @api
    */
   refresh() {
