@@ -55,6 +55,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  *   imageTile.getImage().src = src;
  * };
  * ```
+ * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The tile size used by the tile service.
  * @property {string} [url] URL to the TileJSON file. If not provided, `tileJSON` must be configured.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
@@ -89,6 +90,12 @@ class TileJSON extends TileImage {
      * @private
      */
     this.tileJSON_ = null;
+
+    /**
+     * @type {number|import("../size.js").Size}
+     * @private
+     */
+    this.tileSize_ = options.tileSize;
 
 
     if (options.url) {
@@ -168,7 +175,8 @@ class TileJSON extends TileImage {
     const tileGrid = createXYZ({
       extent: extentFromProjection(sourceProjection),
       maxZoom: maxZoom,
-      minZoom: minZoom
+      minZoom: minZoom,
+      tileSize: this.tileSize_
     });
     this.tileGrid = tileGrid;
 
