@@ -1,6 +1,10 @@
 import ImageWMS from '../../../../src/ol/source/ImageWMS.js';
+import Image from '../../../../src/ol/layer/Image.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import {getWidth, getHeight} from '../../../../src/ol/extent.js';
+import View from '../../../../src/ol/View.js';
+import Map from '../../../../src/ol/Map.js';
+import ImageState from '../../../../src/ol/ImageState.js';
 
 
 describe('ol.source.ImageWMS', function() {
@@ -324,6 +328,53 @@ describe('ol.source.ImageWMS', function() {
       expect(queryData.get('WIDTH')).to.be('101');
       expect(uri.hash.replace('#', '')).to.be.empty();
     });
+  });
+
+  describe('#refresh()', function() {
+
+    let map, source;
+    let callCount = 0;
+    beforeEach(function(done) {
+      source = new ImageWMS(options);
+      source.setImageLoadFunction(function(image) {
+        ++callCount;
+        image.state = ImageState.LOADED;
+        source.loading = false;
+      });
+      const target = document.createElement('div');
+      target.style.width = target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new Map({
+        target: target,
+        layers: [
+          new Image({
+            source: source
+          })
+        ],
+        view: new View({
+          center: [0, 0],
+          zoom: 0
+        })
+      });
+      map.once('rendercomplete', function() {
+        callCount = 0;
+        done();
+      });
+    });
+
+    afterEach(function() {
+      document.body.removeChild(map.getTargetElement());
+      map.setTarget(null);
+    });
+
+    it('reloads from server', function(done) {
+      map.once('rendercomplete', function() {
+        expect(callCount).to.be(1);
+        done();
+      });
+      source.refresh();
+    });
+
   });
 
 });

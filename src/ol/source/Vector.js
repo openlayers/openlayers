@@ -498,7 +498,6 @@ class VectorSource extends Source {
     if (this.featuresRtree_) {
       this.featuresRtree_.clear();
     }
-    this.loadedExtentsRtree_.clear();
     this.nullGeometryFeatures_ = {};
 
     const clearEvent = new VectorSourceEvent(VectorEventType.CLEAR);
@@ -894,6 +893,15 @@ class VectorSource extends Source {
     }
   }
 
+  /**
+   * @inheritDoc
+   */
+  refresh() {
+    this.clear(true);
+    this.loadedExtentsRtree_.clear();
+    super.refresh();
+  }
+
 
   /**
    * Remove an extent from the list of loaded extents.
@@ -977,13 +985,23 @@ class VectorSource extends Source {
 
 
   /**
-   * Set the new loader of the source. The next loadFeatures call will use the
+   * Set the new loader of the source. The next render cycle will use the
    * new loader.
    * @param {import("../featureloader.js").FeatureLoader} loader The loader to set.
    * @api
    */
   setLoader(loader) {
     this.loader_ = loader;
+  }
+
+  /**
+   * Points the source to a new url. The next render cycle will use the new url.
+   * @param {string|import("../featureloader.js").FeatureUrlFunction} url Url.
+   * @api
+   */
+  setUrl(url) {
+    assert(this.format_, 7); // `format` must be set when `url` is set
+    this.setLoader(xhr(url, this.format_));
   }
 
 }
