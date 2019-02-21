@@ -59,6 +59,10 @@ describe('ol.source.Tile', function() {
       expect(source).to.be.a(Source);
       expect(source).to.be.a(TileSource);
     });
+    it('sets a screen dependent cache size', function() {
+      const source = new TileSource({});
+      expect(source.tileCache.highWaterMark).to.be(4 * Math.ceil(screen.availWidth / 256) * Math.ceil(screen.availHeight / 256));
+    });
     it('sets a custom cache size', function() {
       const projection = getProjection('EPSG:4326');
       const source = new TileSource({
