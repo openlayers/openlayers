@@ -75,7 +75,7 @@ class TileSource extends Source {
       if (tileGrid) {
         toSize(tileGrid.getTileSize(tileGrid.getMinZoom()), tileSize);
       }
-      const canUseScreen = 'screen ' in self;
+      const canUseScreen = 'screen' in self;
       const width = canUseScreen ? (screen.availWidth || screen.width) : 1920;
       const height = canUseScreen ? (screen.availHeight || screen.height) : 1080;
       cacheSize = 4 * Math.ceil(width / tileSize[0]) * Math.ceil(height / tileSize[1]);
