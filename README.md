@@ -43,7 +43,7 @@ See the following examples for more detail on bundling OpenLayers with your appl
 
 ## IntelliSense support and type checking for VS Code
 
-The `ol` package contains a `src/` folder with JSDoc annotated sources. TypeScript can get type definitions from these sources with a `jsconfig.json` config file in the project root:
+The `ol` package version `6.x` contains a `src/` folder with JSDoc annotated sources. TypeScript can get type definitions from these sources with a `jsconfig.json` config file in the project root:
 ```js
 {
   "compilerOptions": {
@@ -63,8 +63,24 @@ The `ol` package contains a `src/` folder with JSDoc annotated sources. TypeScri
 ```
 Project template with this configuration: https://gist.github.com/9a7253cb4712e8bf38d75d8ac898e36c.
 
-Note that the above only works when authoring in plain JavaScript. For similar configurations with a `tsconfig.json` in TypeScript projects, your mileage may vary.
+If you want use `openlayers 5.x`, paths should have instead the following definition: `{ "ol": ["node_modules/ol"], "ol": ["node_modules/ol/*"] }`.
 
+For TypeScript users, **do not install `@types/ol`**, but add following options in your `tsconfig`:
+```js
+  "compilerOptions": {
+    "baseUrl": "./",
+    "allowJs": true,
+    "paths": {
+      "ol": ["node_modules/ol/src"],
+      "ol/*": ["node_modules/ol/src/*"]
+    }
+  },
+  "include": [
+    // "src" is the folder in wich you write your own TypeScript files. Change it if needed accordingly to your project.
+    "src/**/*.ts",
+    "node_modules/ol/**/*.js"
+  ]
+```
 ## Supported Browsers
 
 OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.whatwg.org/multipage/) and [ECMAScript 5](http://www.ecma-international.org/ecma-262/5.1/). This includes Chrome, Firefox, Safari and Edge. For older browsers and platforms like Internet Explorer (down to version 9) and Android 4.x, [polyfills](http://polyfill.io) for `requestAnimationFrame` and `Element.prototype.classList` are required, and using the KML format requires a polyfill for `URL`.
