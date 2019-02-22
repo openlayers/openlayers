@@ -57,7 +57,13 @@ class MouseWheelZoom extends Interaction {
      * @private
      * @type {number}
      */
-    this.delta_ = 0;
+    this.totalDelta_ = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.lastDelta_ = 0;
 
     /**
      * @private
@@ -134,7 +140,7 @@ class MouseWheelZoom extends Interaction {
   endInteraction_() {
     this.trackpadTimeoutId_ = undefined;
     const view = this.getMap().getView();
-    view.endInteraction();
+    view.endInteraction(undefined, Math.sign(this.lastDelta_), this.lastAnchor_);
   }
 
   /**
@@ -181,6 +187,8 @@ class MouseWheelZoom extends Interaction {
 
     if (delta === 0) {
       return false;
+    } else {
+      this.lastDelta_ = delta;
     }
 
     const now = Date.now();
@@ -208,7 +216,7 @@ class MouseWheelZoom extends Interaction {
       return false;
     }
 
-    this.delta_ += delta;
+    this.totalDelta_ += delta;
 
     const timeLeft = Math.max(this.timeout_ - (now - this.startTime_), 0);
 
@@ -228,10 +236,10 @@ class MouseWheelZoom extends Interaction {
       view.cancelAnimations();
     }
     const maxDelta = MAX_DELTA;
-    const delta = clamp(this.delta_, -maxDelta, maxDelta);
+    const delta = clamp(this.totalDelta_, -maxDelta, maxDelta);
     zoomByDelta(view, -delta, this.lastAnchor_, this.duration_);
     this.mode_ = undefined;
-    this.delta_ = 0;
+    this.totalDelta_ = 0;
     this.lastAnchor_ = null;
     this.startTime_ = undefined;
     this.timeoutId_ = undefined;
