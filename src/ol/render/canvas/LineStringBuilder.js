@@ -44,7 +44,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       return;
     }
     this.updateStrokeStyle(state, this.applyStroke);
-    this.beginGeometry(lineStringGeometry, feature);
+    this.beginGeometry(feature);
     this.hitDetectionInstructions.push([
       CanvasInstruction.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
@@ -54,7 +54,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
     const stride = lineStringGeometry.getStride();
     this.drawFlatCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
     this.hitDetectionInstructions.push(strokeInstruction);
-    this.endGeometry(lineStringGeometry, feature);
+    this.endGeometry(feature);
   }
 
   /**
@@ -68,7 +68,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       return;
     }
     this.updateStrokeStyle(state, this.applyStroke);
-    this.beginGeometry(multiLineStringGeometry, feature);
+    this.beginGeometry(feature);
     this.hitDetectionInstructions.push([
       CanvasInstruction.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
@@ -82,7 +82,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       offset = this.drawFlatCoordinates_(flatCoordinates, offset, ends[i], stride);
     }
     this.hitDetectionInstructions.push(strokeInstruction);
-    this.endGeometry(multiLineStringGeometry, feature);
+    this.endGeometry(feature);
   }
 
   /**

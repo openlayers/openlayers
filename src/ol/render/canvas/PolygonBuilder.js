@@ -73,7 +73,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       return;
     }
     this.setFillStrokeStyles_(circleGeometry);
-    this.beginGeometry(circleGeometry, feature);
+    this.beginGeometry(feature);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
@@ -103,7 +103,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       this.instructions.push(strokeInstruction);
       this.hitDetectionInstructions.push(strokeInstruction);
     }
-    this.endGeometry(circleGeometry, feature);
+    this.endGeometry(feature);
   }
 
   /**
@@ -117,7 +117,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       return;
     }
     this.setFillStrokeStyles_(polygonGeometry);
-    this.beginGeometry(polygonGeometry, feature);
+    this.beginGeometry(feature);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
@@ -135,7 +135,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     const flatCoordinates = polygonGeometry.getOrientedFlatCoordinates();
     const stride = polygonGeometry.getStride();
     this.drawFlatCoordinatess_(flatCoordinates, 0, ends, stride);
-    this.endGeometry(polygonGeometry, feature);
+    this.endGeometry(feature);
   }
 
   /**
@@ -149,7 +149,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       return;
     }
     this.setFillStrokeStyles_(multiPolygonGeometry);
-    this.beginGeometry(multiPolygonGeometry, feature);
+    this.beginGeometry(feature);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
@@ -170,7 +170,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     for (let i = 0, ii = endss.length; i < ii; ++i) {
       offset = this.drawFlatCoordinatess_(flatCoordinates, offset, endss[i], stride);
     }
-    this.endGeometry(multiPolygonGeometry, feature);
+    this.endGeometry(feature);
   }
 
   /**

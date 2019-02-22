@@ -184,7 +184,7 @@ class CanvasTextBuilder extends CanvasBuilder {
           ends.push(endss[i][0]);
         }
       }
-      this.beginGeometry(geometry, feature);
+      this.beginGeometry(feature);
       const textAlign = textState.textAlign;
       let flatOffset = 0;
       let flatEnd;
@@ -204,7 +204,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.drawChars_(begin, end, this.declutterGroup_);
         begin = end;
       }
-      this.endGeometry(geometry, feature);
+      this.endGeometry(feature);
 
     } else {
 
@@ -267,7 +267,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         }
       }
 
-      this.beginGeometry(geometry, feature);
+      this.beginGeometry(feature);
 
       // The image is unknown at this stage so we pass null; it will be computed at render time.
       // For clarity, we pass NaN for offsetX, offsetY, width and height, which will be computed at
@@ -293,7 +293,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         this.textOffsetX_, this.textOffsetY_, geometryWidths
       ]);
 
-      this.endGeometry(geometry, feature);
+      this.endGeometry(feature);
     }
   }
 
