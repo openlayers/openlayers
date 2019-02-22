@@ -497,7 +497,7 @@ class View extends BaseObject {
 
       if (options.center) {
         animation.sourceCenter = center;
-        animation.targetCenter = options.center;
+        animation.targetCenter = options.center.slice();
         center = animation.targetCenter;
       }
 
@@ -609,16 +609,20 @@ class View extends BaseObject {
             animation.targetResolution :
             animation.sourceResolution + progress * (animation.targetResolution - animation.sourceResolution);
           if (animation.anchor) {
-            this.targetCenter_ = this.calculateCenterZoom(resolution, animation.anchor);
+            const size = this.getSizeFromViewport_(this.getRotation());
+            const constrainedResolution = this.constraints_.resolution(resolution, 0, size, true);
+            this.targetCenter_ = this.calculateCenterZoom(constrainedResolution, animation.anchor);
           }
           this.targetResolution_ = resolution;
+          this.applyTargetState_(true);
         }
         if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
           const rotation = progress === 1 ?
             modulo(animation.targetRotation + Math.PI, 2 * Math.PI) - Math.PI :
             animation.sourceRotation + progress * (animation.targetRotation - animation.sourceRotation);
           if (animation.anchor) {
-            this.targetCenter_ = this.calculateCenterRotate(rotation, animation.anchor);
+            const constrainedRotation = this.constraints_.rotation(rotation, true);
+            this.targetCenter_ = this.calculateCenterRotate(constrainedRotation, animation.anchor);
           }
           this.targetRotation_ = rotation;
         }
@@ -1281,9 +1285,10 @@ class View extends BaseObject {
    * This is typically done on interaction end.
    * @param {number=} opt_duration The animation duration in ms.
    * @param {number=} opt_resolutionDirection Which direction to zoom.
+   * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
    * @private
    */
-  resolveConstraints_(opt_duration, opt_resolutionDirection) {
+  resolveConstraints_(opt_duration, opt_resolutionDirection, opt_anchor) {
     const duration = opt_duration !== undefined ? opt_duration : 200;
     const direction = opt_resolutionDirection || 0;
 
@@ -1306,7 +1311,8 @@ class View extends BaseObject {
         center: newCenter,
         resolution: newResolution,
         duration: duration,
-        easing: easeOut
+        easing: easeOut,
+        anchor: opt_anchor
       });
     }
   }
@@ -1324,12 +1330,13 @@ class View extends BaseObject {
    * to a stable one if needed (depending on its constraints).
    * @param {number=} opt_duration Animation duration in ms.
    * @param {number=} opt_resolutionDirection Which direction to zoom.
+   * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
    * @api
    */
-  endInteraction(opt_duration, opt_resolutionDirection) {
+  endInteraction(opt_duration, opt_resolutionDirection, opt_anchor) {
     this.setHint(ViewHint.INTERACTING, -1);
 
-    this.resolveConstraints_(opt_duration, opt_resolutionDirection);
+    this.resolveConstraints_(opt_duration, opt_resolutionDirection, opt_anchor);
   }
 
   /**
