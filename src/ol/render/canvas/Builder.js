@@ -352,10 +352,9 @@ class CanvasBuilder extends VectorContext {
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    * @return {Array<*>} Fill instruction.
    */
-  createFill(state, geometry) {
+  createFill(state) {
     const fillStyle = state.fillStyle;
     /** @type {Array<*>} */
     const fillInstruction = [CanvasInstruction.SET_FILL_STYLE, fillStyle];
@@ -388,14 +387,13 @@ class CanvasBuilder extends VectorContext {
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:CanvasBuilder, import("../canvas.js").FillStrokeState, (import("../../geom/Geometry.js").default|import("../Feature.js").default)):Array<*>} createFill Create fill.
-   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
+   * @param {function(this:CanvasBuilder, import("../canvas.js").FillStrokeState):Array<*>} createFill Create fill.
    */
-  updateFillStyle(state, createFill, geometry) {
+  updateFillStyle(state, createFill) {
     const fillStyle = state.fillStyle;
     if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
       if (fillStyle !== undefined) {
-        this.instructions.push(createFill.call(this, state, geometry));
+        this.instructions.push(createFill.call(this, state));
       }
       state.currentFillStyle = fillStyle;
     }

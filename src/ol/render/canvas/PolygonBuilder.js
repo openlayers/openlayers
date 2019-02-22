@@ -72,7 +72,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     if (fillStyle === undefined && strokeStyle === undefined) {
       return;
     }
-    this.setFillStrokeStyles_(circleGeometry);
+    this.setFillStrokeStyles_();
     this.beginGeometry(feature);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
@@ -116,7 +116,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     if (fillStyle === undefined && strokeStyle === undefined) {
       return;
     }
-    this.setFillStrokeStyles_(polygonGeometry);
+    this.setFillStrokeStyles_();
     this.beginGeometry(feature);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
@@ -148,7 +148,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     if (fillStyle === undefined && strokeStyle === undefined) {
       return;
     }
-    this.setFillStrokeStyles_(multiPolygonGeometry);
+    this.setFillStrokeStyles_();
     this.beginGeometry(feature);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
@@ -195,13 +195,12 @@ class CanvasPolygonBuilder extends CanvasBuilder {
 
   /**
    * @private
-   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    */
-  setFillStrokeStyles_(geometry) {
+  setFillStrokeStyles_() {
     const state = this.state;
     const fillStyle = state.fillStyle;
     if (fillStyle !== undefined) {
-      this.updateFillStyle(state, this.createFill, geometry);
+      this.updateFillStyle(state, this.createFill);
     }
     if (state.strokeStyle !== undefined) {
       this.updateStrokeStyle(state, this.applyStroke);

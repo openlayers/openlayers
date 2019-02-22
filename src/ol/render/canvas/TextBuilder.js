@@ -258,8 +258,8 @@ class CanvasTextBuilder extends CanvasBuilder {
       if (textState.backgroundFill || textState.backgroundStroke) {
         this.setFillStrokeStyle(textState.backgroundFill, textState.backgroundStroke);
         if (textState.backgroundFill) {
-          this.updateFillStyle(this.state, this.createFill, geometry);
-          this.hitDetectionInstructions.push(this.createFill(this.state, geometry));
+          this.updateFillStyle(this.state, this.createFill);
+          this.hitDetectionInstructions.push(this.createFill(this.state));
         }
         if (textState.backgroundStroke) {
           this.updateStrokeStyle(this.state, this.applyStroke);
