@@ -57,13 +57,13 @@ The `ol` package version `6.x` contains a `src/` folder with JSDoc annotated sou
   },
   "include": [
     "**/*.js",
-    "node_modules/ol/**/*.js"
+    "node_modules/ol/src/**/*.js"
   ]
 }
 ```
 Project template with this configuration: https://gist.github.com/9a7253cb4712e8bf38d75d8ac898e36c.
 
-If you want use `openlayers 5.x`, paths should have instead the following definition: `{ "ol": ["node_modules/ol"], "ol": ["node_modules/ol/*"] }`.
+If you want use `openlayers 5.x`, paths should have instead the following definition: `{ "ol": ["node_modules/ol"], "ol": ["node_modules/ol/*"] }`, and you must include instead ``"node_modules/ol/**/*.js"``
 
 For TypeScript users, **do not install `@types/ol`**, but add following options in your `tsconfig`:
 ```js
@@ -78,7 +78,7 @@ For TypeScript users, **do not install `@types/ol`**, but add following options 
   "include": [
     // "src" is the folder in wich you write your own TypeScript files. Change it if needed accordingly to your project.
     "src/**/*.ts",
-    "node_modules/ol/**/*.js"
+    "node_modules/ol/src/**/*.js"
   ]
 ```
 ## Supported Browsers
