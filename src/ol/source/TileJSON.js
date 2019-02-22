@@ -56,6 +56,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * };
  * ```
  * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The tile size used by the tile service.
+ * Note: `tileSize` and other non-standard TileJSON properties are currently ignored.
  * @property {string} [url] URL to the TileJSON file. If not provided, `tileJSON` must be configured.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
