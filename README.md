@@ -63,7 +63,7 @@ The `ol` package version `6.x` contains a `src/` folder with JSDoc annotated sou
 ```
 Project template with this configuration: https://gist.github.com/9a7253cb4712e8bf38d75d8ac898e36c.
 
-If you want use `openlayers 5.x`, paths should have instead the following definition: `{ "ol": ["node_modules/ol"], "ol": ["node_modules/ol/*"] }`, and you must include instead ``"node_modules/ol/**/*.js"``
+If you want use `openlayers 5.x`, paths should have instead the following definition: `{ "ol": ["node_modules/ol"], "ol": ["node_modules/ol/*"] }`, and you must include instead ``"node_modules/ol/**/*.js"`` (work better with versions `6.x`).
 
 For TypeScript users, **do not install `@types/ol`**, but add following options in your `tsconfig`:
 ```js
