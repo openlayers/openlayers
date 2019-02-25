@@ -393,7 +393,7 @@ const map = new Map({
 })
 
 const sizeObserver = new ResizeObserver(() => {
-  this.map.updateSize()
+  map.updateSize()
 })
 sizeObserver.observe(mapElement)
 
