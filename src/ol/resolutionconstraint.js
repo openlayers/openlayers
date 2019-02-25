@@ -27,6 +27,10 @@ function getViewportClampedResolution(resolution, maxExtent, viewportSize) {
 /**
  * Returns a modified resolution to be between maxResolution and minResolution while
  * still allowing the value to be slightly out of bounds.
+ * Note: the computation is based on the logarithm function (ln):
+ *  - at 1, ln(x) is 0
+ *  - above 1, ln(x) keeps increasing but at a much slower pace than x
+ * The final result is clamped to prevent getting too far away from bounds.
  * @param {number} resolution Resolution.
  * @param {number} maxResolution Max resolution.
  * @param {number} minResolution Min resolution.
@@ -34,13 +38,14 @@ function getViewportClampedResolution(resolution, maxExtent, viewportSize) {
  */
 function getSmoothClampedResolution(resolution, maxResolution, minResolution) {
   let result = Math.min(resolution, maxResolution);
+  const ratio = 50;
 
-  result *= Math.log(Math.max(1, resolution / maxResolution)) * 0.1 + 1;
+  result *= Math.log(1 + ratio * Math.max(0, resolution / maxResolution - 1)) / ratio + 1;
   if (minResolution) {
     result = Math.max(result, minResolution);
-    result /= Math.log(Math.max(1, minResolution / resolution)) * 0.1 + 1;
+    result /= Math.log(1 + ratio * Math.max(0, minResolution / resolution - 1)) / ratio + 1;
   }
-  return result;
+  return clamp(result, minResolution / 2, maxResolution * 2);
 }
 
 /**
