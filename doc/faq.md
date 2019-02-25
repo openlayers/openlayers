@@ -21,7 +21,7 @@ Table of contents:
 * [Why aren't there any features in my source?](#why-aren-t-there-any-features-in-my-source-)
 * [How do I force a re-render of the map?](#how-do-i-force-a-re-render-of-the-map-)
 * [Why are my features not found?](#why-are-my-features-not-found-)
-
+* [Why is zooming or clicking off, inaccurate?](#user-content-why-is-zooming-or-clicking-off-inaccurate)
 
 ## What projection is OpenLayers using?
 
@@ -371,3 +371,32 @@ const vectorLayer = new VectorLayer({
 ```
 
 The recommended value is the size of the largest symbol, line width or label.
+
+## Why is zooming or clicking off, inaccurate?
+
+OpenLayers does not update the map when the container element is resized. This cas be caused by progressive updates
+to CSS styles or manually resizing the map manually. When that happens, any interaction will become
+inaccurate: the map would zoom in and out not centered on the pointer and any clicking will be
+off, making it hard to select the desired featyre, etc.
+
+There is currently no built-in way to react to element's size changes, as [Resize Observer API](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) is only implemented in Chrome.
+
+There is however an easy to use [polyfill](https://github.com/que-etc/resize-observer-polyfill):
+
+```javascript
+import Map from 'ol/Map';
+import ResizeObserver from 'resize-observer-polyfill';
+
+const mapElement = document.querySelector('#map')
+const map = new Map({
+  target: mapElement
+})
+
+const sizeObserver = new ResizeObserver(() => {
+  map.updateSize()
+})
+sizeObserver.observe(mapElement)
+
+// called when the map is destroyed
+// sizeObserver.disconnect()
+```
