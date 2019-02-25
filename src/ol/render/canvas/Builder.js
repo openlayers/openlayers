@@ -206,7 +206,7 @@ class CanvasBuilder extends VectorContext {
    * @inheritDoc.
    */
   drawCustom(geometry, feature, renderer) {
-    this.beginGeometry(geometry, feature);
+    this.beginGeometry(feature);
     const type = geometry.getType();
     const stride = geometry.getStride();
     const builderBegin = this.coordinates.length;
@@ -248,15 +248,14 @@ class CanvasBuilder extends VectorContext {
       this.instructions.push([CanvasInstruction.CUSTOM,
         builderBegin, builderEnd, geometry, renderer]);
     }
-    this.endGeometry(geometry, feature);
+    this.endGeometry(feature);
   }
 
   /**
    * @protected
-   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
-  beginGeometry(geometry, feature) {
+  beginGeometry(feature) {
     this.beginGeometryInstruction1_ = [CanvasInstruction.BEGIN_GEOMETRY, feature, 0];
     this.instructions.push(this.beginGeometryInstruction1_);
     this.beginGeometryInstruction2_ = [CanvasInstruction.BEGIN_GEOMETRY, feature, 0];
@@ -353,10 +352,9 @@ class CanvasBuilder extends VectorContext {
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    * @return {Array<*>} Fill instruction.
    */
-  createFill(state, geometry) {
+  createFill(state) {
     const fillStyle = state.fillStyle;
     /** @type {Array<*>} */
     const fillInstruction = [CanvasInstruction.SET_FILL_STYLE, fillStyle];
@@ -389,14 +387,13 @@ class CanvasBuilder extends VectorContext {
 
   /**
    * @param {import("../canvas.js").FillStrokeState} state State.
-   * @param {function(this:CanvasBuilder, import("../canvas.js").FillStrokeState, (import("../../geom/Geometry.js").default|import("../Feature.js").default)):Array<*>} createFill Create fill.
-   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
+   * @param {function(this:CanvasBuilder, import("../canvas.js").FillStrokeState):Array<*>} createFill Create fill.
    */
-  updateFillStyle(state, createFill, geometry) {
+  updateFillStyle(state, createFill) {
     const fillStyle = state.fillStyle;
     if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
       if (fillStyle !== undefined) {
-        this.instructions.push(createFill.call(this, state, geometry));
+        this.instructions.push(createFill.call(this, state));
       }
       state.currentFillStyle = fillStyle;
     }
@@ -435,10 +432,9 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry Geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
-  endGeometry(geometry, feature) {
+  endGeometry(feature) {
     this.beginGeometryInstruction1_[2] = this.instructions.length;
     this.beginGeometryInstruction1_ = null;
     this.beginGeometryInstruction2_[2] = this.hitDetectionInstructions.length;

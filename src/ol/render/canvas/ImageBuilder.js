@@ -113,7 +113,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     if (!this.image_) {
       return;
     }
-    this.beginGeometry(pointGeometry, feature);
+    this.beginGeometry(feature);
     const flatCoordinates = pointGeometry.getFlatCoordinates();
     const stride = pointGeometry.getStride();
     const myBegin = this.coordinates.length;
@@ -132,7 +132,7 @@ class CanvasImageBuilder extends CanvasBuilder {
       this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
       this.scale_, this.width_
     ]);
-    this.endGeometry(pointGeometry, feature);
+    this.endGeometry(feature);
   }
 
   /**
@@ -142,7 +142,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     if (!this.image_) {
       return;
     }
-    this.beginGeometry(multiPointGeometry, feature);
+    this.beginGeometry(feature);
     const flatCoordinates = multiPointGeometry.getFlatCoordinates();
     const stride = multiPointGeometry.getStride();
     const myBegin = this.coordinates.length;
@@ -162,7 +162,7 @@ class CanvasImageBuilder extends CanvasBuilder {
       this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
       this.scale_, this.width_
     ]);
-    this.endGeometry(multiPointGeometry, feature);
+    this.endGeometry(feature);
   }
 
   /**
