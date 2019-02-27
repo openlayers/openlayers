@@ -134,13 +134,6 @@ class BaseVectorLayer extends Layer {
   }
 
   /**
-   * @param {boolean} declutter Declutter.
-   */
-  setDeclutter(declutter) {
-    this.declutter_ = declutter;
-  }
-
-  /**
    * @return {number|undefined} Render buffer.
    */
   getRenderBuffer() {

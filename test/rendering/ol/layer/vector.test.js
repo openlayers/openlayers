@@ -470,6 +470,7 @@ describe('ol.rendering.layer.Vector', function() {
     it('declutters text', function(done) {
       createMap();
       const layer = new VectorLayer({
+        declutter: true,
         source: source
       });
       map.addLayer(layer);
@@ -488,7 +489,6 @@ describe('ol.rendering.layer.Vector', function() {
         text: 'east'
       }));
 
-      layer.setDeclutter(true);
       layer.setStyle(function(feature) {
         return new Style({
           text: new Text({
@@ -510,6 +510,7 @@ describe('ol.rendering.layer.Vector', function() {
     it('declutters text and respects z-index', function(done) {
       createMap();
       const layer = new VectorLayer({
+        declutter: true,
         source: source
       });
       map.addLayer(layer);
@@ -530,7 +531,6 @@ describe('ol.rendering.layer.Vector', function() {
         zIndex: 1
       }));
 
-      layer.setDeclutter(true);
       layer.setStyle(function(feature) {
         return new Style({
           zIndex: feature.get('zIndex'),
@@ -550,6 +550,7 @@ describe('ol.rendering.layer.Vector', function() {
     it('declutters images', function(done) {
       createMap();
       const layer = new VectorLayer({
+        declutter: true,
         source: source
       });
       map.addLayer(layer);
@@ -565,7 +566,6 @@ describe('ol.rendering.layer.Vector', function() {
         geometry: new Point([center[0] + 540, center[1]])
       }));
 
-      layer.setDeclutter(true);
       layer.setStyle(function(feature) {
         return new Style({
           image: new CircleStyle({
@@ -589,6 +589,7 @@ describe('ol.rendering.layer.Vector', function() {
     it('declutters images and respects z-index', function(done) {
       createMap();
       const layer = new VectorLayer({
+        declutter: true,
         source: source
       });
       map.addLayer(layer);
@@ -606,7 +607,6 @@ describe('ol.rendering.layer.Vector', function() {
         zIndex: 1
       }));
 
-      layer.setDeclutter(true);
       layer.setStyle(function(feature) {
         return new Style({
           zIndex: feature.get('zIndex'),
@@ -628,6 +628,7 @@ describe('ol.rendering.layer.Vector', function() {
     it('declutters image & text groups', function(done) {
       createMap();
       const layer = new VectorLayer({
+        declutter: true,
         source: source
       });
       map.addLayer(layer);
@@ -645,7 +646,6 @@ describe('ol.rendering.layer.Vector', function() {
         text: 'east'
       }));
 
-      layer.setDeclutter(true);
       layer.setStyle(function(feature) {
         return new Style({
           image: new CircleStyle({
@@ -672,6 +672,7 @@ describe('ol.rendering.layer.Vector', function() {
     it('declutters text along lines and images', function(done) {
       createMap();
       const layer = new VectorLayer({
+        declutter: true,
         source: source
       });
       map.addLayer(layer);
@@ -704,8 +705,6 @@ describe('ol.rendering.layer.Vector', function() {
       source.addFeature(point);
       source.addFeature(line);
 
-      layer.setDeclutter(true);
-
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-line.png',
           IMAGE_TOLERANCE, done);
@@ -715,6 +714,7 @@ describe('ol.rendering.layer.Vector', function() {
     it('declutters text along lines and images with z-index', function(done) {
       createMap();
       const layer = new VectorLayer({
+        declutter: true,
         source: source
       });
       map.addLayer(layer);
@@ -748,8 +748,6 @@ describe('ol.rendering.layer.Vector', function() {
 
       source.addFeature(point);
       source.addFeature(line);
-
-      layer.setDeclutter(true);
 
       map.once('postrender', function() {
         const hitDetected = map.getFeaturesAtPixel([35, 46]);
