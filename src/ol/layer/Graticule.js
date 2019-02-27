@@ -150,7 +150,11 @@ class Graticule extends VectorLayer {
   constructor(opt_options) {
     const options = opt_options ? opt_options : {};
 
-    const baseOptions = assign({}, options);
+    const baseOptions = assign({
+      updateWhileAnimating: true,
+      updateWhileInteracting: true,
+      renderBuffer: 0
+    }, options);
 
     delete baseOptions.maxLines;
     delete baseOptions.strokeStyle;
@@ -421,11 +425,6 @@ class Graticule extends VectorLayer {
     this.renderedExtent_ = null;
 
     this.setRenderOrder(null);
-
-    this.renderBuffer_ = 0;
-
-    this.updateWhileAnimating_ = true;
-    this.updateWhileInteracting_ = true;
 
     this.tmpExtent_ = null;
   }
