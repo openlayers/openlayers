@@ -166,6 +166,7 @@ describe('ol.rendering.layer.VectorImage', function() {
   it('declutters text', function(done) {
     createMap();
     const layer = new VectorImageLayer({
+      declutter: true,
       source: source
     });
     map.addLayer(layer);
@@ -184,7 +185,6 @@ describe('ol.rendering.layer.VectorImage', function() {
       text: 'east'
     }));
 
-    layer.setDeclutter(true);
     layer.setStyle(function(feature) {
       return new Style({
         text: new Text({
@@ -206,6 +206,7 @@ describe('ol.rendering.layer.VectorImage', function() {
   it('declutters images', function(done) {
     createMap();
     const layer = new VectorImageLayer({
+      declutter: true,
       source: source
     });
     map.addLayer(layer);
@@ -221,7 +222,6 @@ describe('ol.rendering.layer.VectorImage', function() {
       geometry: new Point([center[0] + 540, center[1]])
     }));
 
-    layer.setDeclutter(true);
     layer.setStyle(function(feature) {
       return new Style({
         image: new CircleStyle({
@@ -245,6 +245,7 @@ describe('ol.rendering.layer.VectorImage', function() {
   it('declutters text along lines and images', function(done) {
     createMap();
     const layer = new VectorImageLayer({
+      declutter: true,
       source: source
     });
     map.addLayer(layer);
@@ -276,8 +277,6 @@ describe('ol.rendering.layer.VectorImage', function() {
 
     source.addFeature(point);
     source.addFeature(line);
-
-    layer.setDeclutter(true);
 
     map.once('postrender', function() {
       expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-line.png',
