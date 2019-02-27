@@ -6,7 +6,7 @@ import VectorTileSource from '../src/ol/source/VectorTile.js';
 import {Fill, Icon, Stroke, Style, Text} from '../src/ol/style.js';
 
 
-const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
+const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q';
 
 const map = new Map({
   layers: [

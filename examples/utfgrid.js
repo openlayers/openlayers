@@ -5,7 +5,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
 import UTFGrid from '../src/ol/source/UTFGrid.js';
 
-const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
+const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q';
 
 const mapLayer = new TileLayer({
   source: new TileJSON({
