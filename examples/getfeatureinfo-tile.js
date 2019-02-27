@@ -33,8 +33,11 @@ map.on('singleclick', function(evt) {
     evt.coordinate, viewResolution, 'EPSG:3857',
     {'INFO_FORMAT': 'text/html'});
   if (url) {
-    document.getElementById('info').innerHTML =
-        '<iframe seamless src="' + url + '"></iframe>';
+    fetch(url)
+      .then((response) => response.text())
+      .then((html) => {
+        document.getElementById('info').innerHTML = html;
+      });
   }
 });
 
