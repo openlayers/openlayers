@@ -133,7 +133,7 @@ const map = new Map({
   layers: [
     new TileLayer({
       source: new BingMaps({
-        imagerySet: 'AerialWithLabels',
+        imagerySet: 'AerialWithLabelsOnDemand',
         key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
       })
     }),

@@ -5,12 +5,11 @@ import BingMaps from '../src/ol/source/BingMaps.js';
 
 
 const styles = [
-  'Road',
   'RoadOnDemand',
   'Aerial',
-  'AerialWithLabels',
-  'collinsBart',
-  'ordnanceSurvey'
+  'AerialWithLabelsOnDemand',
+  'CanvasDark',
+  'OrdnanceSurvey'
 ];
 const layers = [];
 let i, ii;
