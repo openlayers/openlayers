@@ -29,7 +29,7 @@ const map2 = new Map({
       preload: 0, // default value
       source: new BingMaps({
         key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
-        imagerySet: 'AerialWithLabels'
+        imagerySet: 'AerialWithLabelsOnDemand'
       })
     })
   ],

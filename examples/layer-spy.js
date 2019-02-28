@@ -7,7 +7,7 @@ import BingMaps from '../src/ol/source/BingMaps.js';
 const key = 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5';
 
 const roads = new TileLayer({
-  source: new BingMaps({key: key, imagerySet: 'Road'})
+  source: new BingMaps({key: key, imagerySet: 'RoadOnDemand'})
 });
 
 const imagery = new TileLayer({

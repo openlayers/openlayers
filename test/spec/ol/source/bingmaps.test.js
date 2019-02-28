@@ -18,7 +18,7 @@ describe('ol.source.BingMaps', function() {
 
     beforeEach(function(done) {
       source = new BingMaps({
-        imagerySet: 'AerialWithLabels',
+        imagerySet: 'AerialWithLabelsOnDemand',
         key: ''
       });
 
@@ -39,7 +39,7 @@ describe('ol.source.BingMaps', function() {
     });
 
     it('getImagerySet works correctly', function() {
-      expect(source.getImagerySet()).to.equal('AerialWithLabels');
+      expect(source.getImagerySet()).to.equal('AerialWithLabelsOnDemand');
     });
 
     it('getApiKey works correctly', function() {

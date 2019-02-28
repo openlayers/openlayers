@@ -15,7 +15,7 @@ const map = new Map({
     new TileLayer({
       source: new BingMaps({
         key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
-        imagerySet: 'Road'
+        imagerySet: 'RoadOnDemand'
       })
     })
   ],
