@@ -76,7 +76,7 @@ main() {
   npm install
   npm run build-package
   cd ${BUILT_PACKAGE}
-  npm publish
+  npm publish --tag beta
 }
 
 if test ${#} -ne 1; then
