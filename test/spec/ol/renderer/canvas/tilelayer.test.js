@@ -39,13 +39,18 @@ describe('ol.renderer.canvas.TileLayer', function() {
       document.body.removeChild(target);
     });
 
-    it('properly handles interim tiles', function() {
+    it('properly handles interim tiles', function(done) {
       const layer = map.getLayers().item(0);
+      source.once('tileloadend', function(e) {
+        expect(e.tile.inTransition()).to.be(false);
+        done();
+      });
       source.updateParams({TIME: '1'});
       map.renderSync();
       const tiles = map.getRenderer().getLayerRenderer(layer).renderedTiles;
       expect(tiles.length).to.be(1);
       expect(tiles[0]).to.equal(tile);
+      expect(tile.inTransition()).to.be(true);
     });
   });
 
