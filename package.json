@@ -85,7 +85,7 @@
     "sinon": "^7.2.7",
     "terser-webpack-plugin": "^1.2.3",
     "typescript": "^3.2.2",
-    "url-polyfill": "^1.1.3",
+    "url-polyfill": "^1.1.5",
     "walk": "^2.3.9",
     "webpack": "4.29.6",
     "webpack-cli": "^3.2.3",
