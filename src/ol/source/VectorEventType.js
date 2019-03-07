@@ -8,21 +8,21 @@
 export default {
   /**
    * Triggered when a feature is added to the source.
-   * @event ol/source/Vector~VectorSourceEvent#addfeature
+   * @event module:ol/source/Vector.VectorSourceEvent#addfeature
    * @api
    */
   ADDFEATURE: 'addfeature',
 
   /**
    * Triggered when a feature is updated.
-   * @event ol/source/Vector~VectorSourceEvent#changefeature
+   * @event module:ol/source/Vector.VectorSourceEvent#changefeature
    * @api
    */
   CHANGEFEATURE: 'changefeature',
 
   /**
    * Triggered when the clear method is called on the source.
-   * @event ol/source/Vector~VectorSourceEvent#clear
+   * @event module:ol/source/Vector.VectorSourceEvent#clear
    * @api
    */
   CLEAR: 'clear',
@@ -30,7 +30,7 @@ export default {
   /**
    * Triggered when a feature is removed from the source.
    * See {@link module:ol/source/Vector#clear source.clear()} for exceptions.
-   * @event ol/source/Vector~VectorSourceEvent#removefeature
+   * @event module:ol/source/Vector.VectorSourceEvent#removefeature
    * @api
    */
   REMOVEFEATURE: 'removefeature'

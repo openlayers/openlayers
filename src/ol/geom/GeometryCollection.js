@@ -4,8 +4,8 @@
 import {listen, unlisten} from '../events.js';
 import EventType from '../events/EventType.js';
 import {createOrUpdateEmpty, closestSquaredDistanceXY, extend, getCenter} from '../extent.js';
-import Geometry from '../geom/Geometry.js';
-import GeometryType from '../geom/GeometryType.js';
+import Geometry from './Geometry.js';
+import GeometryType from './GeometryType.js';
 import {clear} from '../obj.js';
 
 /**
@@ -17,7 +17,7 @@ import {clear} from '../obj.js';
 class GeometryCollection extends Geometry {
 
   /**
-   * @param {Array.<module:ol/geom/Geometry>=} opt_geometries Geometries.
+   * @param {Array<Geometry>=} opt_geometries Geometries.
    */
   constructor(opt_geometries) {
 
@@ -25,7 +25,7 @@ class GeometryCollection extends Geometry {
 
     /**
      * @private
-     * @type {Array.<module:ol/geom/Geometry>}
+     * @type {Array<Geometry>}
      */
     this.geometries_ = opt_geometries ? opt_geometries : null;
 
@@ -62,7 +62,7 @@ class GeometryCollection extends Geometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!module:ol/geom/GeometryCollection} Clone.
+   * @return {!GeometryCollection} Clone.
    * @override
    * @api
    */
@@ -114,7 +114,7 @@ class GeometryCollection extends Geometry {
 
   /**
    * Return the geometries that make up this geometry collection.
-   * @return {Array.<module:ol/geom/Geometry>} Geometries.
+   * @return {Array<Geometry>} Geometries.
    * @api
    */
   getGeometries() {
@@ -122,7 +122,7 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @return {Array.<module:ol/geom/Geometry>} Geometries.
+   * @return {Array<Geometry>} Geometries.
    */
   getGeometriesArray() {
     return this.geometries_;
@@ -228,7 +228,7 @@ class GeometryCollection extends Geometry {
 
   /**
    * Set the geometries that make up this geometry collection.
-   * @param {Array.<module:ol/geom/Geometry>} geometries Geometries.
+   * @param {Array<Geometry>} geometries Geometries.
    * @api
    */
   setGeometries(geometries) {
@@ -236,7 +236,7 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * @param {Array.<module:ol/geom/Geometry>} geometries Geometries.
+   * @param {Array<Geometry>} geometries Geometries.
    */
   setGeometriesArray(geometries) {
     this.unlistenGeometriesChange_();
@@ -258,10 +258,7 @@ class GeometryCollection extends Geometry {
   }
 
   /**
-   * Translate the geometry.
-   * @param {number} deltaX Delta X.
-   * @param {number} deltaY Delta Y.
-   * @override
+   * @inheritDoc
    * @api
    */
   translate(deltaX, deltaY) {
@@ -277,14 +274,14 @@ class GeometryCollection extends Geometry {
    */
   disposeInternal() {
     this.unlistenGeometriesChange_();
-    Geometry.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 }
 
 
 /**
- * @param {Array.<module:ol/geom/Geometry>} geometries Geometries.
- * @return {Array.<module:ol/geom/Geometry>} Cloned geometries.
+ * @param {Array<Geometry>} geometries Geometries.
+ * @return {Array<Geometry>} Cloned geometries.
  */
 function cloneGeometries(geometries) {
   const clonedGeometries = [];

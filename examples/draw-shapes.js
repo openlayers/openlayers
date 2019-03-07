@@ -40,9 +40,6 @@ function addInteraction() {
     } else if (value === 'Star') {
       value = 'Circle';
       geometryFunction = function(coordinates, geometry) {
-        if (!geometry) {
-          geometry = new Polygon(null);
-        }
         const center = coordinates[0];
         const last = coordinates[1];
         const dx = center[0] - last[0];
@@ -59,7 +56,11 @@ function addInteraction() {
           newCoordinates.push([center[0] + offsetX, center[1] + offsetY]);
         }
         newCoordinates.push(newCoordinates[0].slice());
-        geometry.setCoordinates([newCoordinates]);
+        if (!geometry) {
+          geometry = new Polygon([newCoordinates]);
+        } else {
+          geometry.setCoordinates([newCoordinates]);
+        }
         return geometry;
       };
     }

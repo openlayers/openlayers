@@ -44,19 +44,19 @@ class PriorityQueue {
     this.keyFunction_ = keyFunction;
 
     /**
-     * @type {Array.<T>}
+     * @type {Array<T>}
      * @private
      */
     this.elements_ = [];
 
     /**
-     * @type {Array.<number>}
+     * @type {Array<number>}
      * @private
      */
     this.priorities_ = [];
 
     /**
-     * @type {!Object.<string, boolean>}
+     * @type {!Object<string, boolean>}
      * @private
      */
     this.queuedElements_ = {};

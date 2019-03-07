@@ -33,19 +33,19 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import {listen, unlisten} from '../events.js';
-import EventTarget from '../events/EventTarget.js';
+import EventTarget from '../events/Target.js';
 import {POINTER, MSPOINTER, TOUCH} from '../has.js';
-import PointerEventType from '../pointer/EventType.js';
-import MouseSource from '../pointer/MouseSource.js';
-import MsSource from '../pointer/MsSource.js';
-import NativeSource from '../pointer/NativeSource.js';
-import PointerEvent from '../pointer/PointerEvent.js';
-import TouchSource from '../pointer/TouchSource.js';
+import PointerEventType from './EventType.js';
+import MouseSource, {prepareEvent as prepareMouseEvent} from './MouseSource.js';
+import MsSource from './MsSource.js';
+import NativeSource from './NativeSource.js';
+import PointerEvent from './PointerEvent.js';
+import TouchSource from './TouchSource.js';
 
 
 /**
  * Properties to copy when cloning an event, with default values.
- * @type {Array.<Array>}
+ * @type {Array<Array>}
  */
 const CLONE_PROPS = [
   // MouseEvent
@@ -100,18 +100,18 @@ class PointerEventHandler extends EventTarget {
 
     /**
      * @const
-     * @type {!Object.<string, Event|Object>}
+     * @type {!Object<string, Event|Object>}
      */
     this.pointerMap = {};
 
     /**
-     * @type {Object.<string, function(Event)>}
+     * @type {Object<string, function(Event): void>}
      * @private
      */
     this.eventMap_ = {};
 
     /**
-     * @type {Array.<module:ol/pointer/EventSource>}
+     * @type {Array<import("./EventSource.js").default>}
      * @private
      */
     this.eventSourceList_ = [];
@@ -145,7 +145,7 @@ class PointerEventHandler extends EventTarget {
    * Add a new event source that will generate pointer events.
    *
    * @param {string} name A name for the event source
-   * @param {module:ol/pointer/EventSource} source The source event.
+   * @param {import("./EventSource.js").default} source The source event.
    */
   registerSource(name, source) {
     const s = source;
@@ -203,7 +203,7 @@ class PointerEventHandler extends EventTarget {
   /**
    * Setup listeners for the given events.
    * @private
-   * @param {Array.<string>} events List of events.
+   * @param {Array<string>} events List of events.
    */
   addEvents_(events) {
     events.forEach(function(eventName) {
@@ -214,7 +214,7 @@ class PointerEventHandler extends EventTarget {
   /**
    * Unregister listeners for the given events.
    * @private
-   * @param {Array.<string>} events List of events.
+   * @param {Array<string>} events List of events.
    */
   removeEvents_(events) {
     events.forEach(function(e) {
@@ -366,7 +366,7 @@ class PointerEventHandler extends EventTarget {
    * @param {string} inType A string representing the type of event to create.
    * @param {Object} data Pointer event data.
    * @param {Event} event The event.
-   * @return {module:ol/pointer/PointerEvent} A PointerEvent of type `inType`.
+   * @return {PointerEvent} A PointerEvent of type `inType`.
    */
   makeEvent(inType, data, event) {
     return new PointerEvent(inType, event, data);
@@ -398,11 +398,11 @@ class PointerEventHandler extends EventTarget {
    * This proxy method is required for the legacy IE support.
    * @param {string} eventType The pointer event type.
    * @param {Event} event The event.
-   * @return {module:ol/pointer/PointerEvent} The wrapped event.
+   * @return {PointerEvent} The wrapped event.
    */
   wrapMouseEvent(eventType, event) {
     const pointerEvent = this.makeEvent(
-      eventType, MouseSource.prepareEvent(event, this), event);
+      eventType, prepareMouseEvent(event, this), event);
     return pointerEvent;
   }
 
@@ -411,7 +411,7 @@ class PointerEventHandler extends EventTarget {
    */
   disposeInternal() {
     this.unregister_();
-    EventTarget.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 }
 

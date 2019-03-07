@@ -1,7 +1,8 @@
 /**
  * @module ol/ImageBase
  */
-import EventTarget from './events/EventTarget.js';
+import {abstract} from './util.js';
+import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
 
 /**
@@ -10,10 +11,10 @@ import EventType from './events/EventType.js';
 class ImageBase extends EventTarget {
 
   /**
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("./extent.js").Extent} extent Extent.
    * @param {number|undefined} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/ImageState} state State.
+   * @param {import("./ImageState.js").default} state State.
    */
   constructor(extent, resolution, pixelRatio, state) {
 
@@ -21,7 +22,7 @@ class ImageBase extends EventTarget {
 
     /**
      * @protected
-     * @type {module:ol/extent~Extent}
+     * @type {import("./extent.js").Extent}
      */
     this.extent = extent;
 
@@ -39,7 +40,7 @@ class ImageBase extends EventTarget {
 
     /**
      * @protected
-     * @type {module:ol/ImageState}
+     * @type {import("./ImageState.js").default}
      */
     this.state = state;
 
@@ -53,7 +54,7 @@ class ImageBase extends EventTarget {
   }
 
   /**
-   * @return {module:ol/extent~Extent} Extent.
+   * @return {import("./extent.js").Extent} Extent.
    */
   getExtent() {
     return this.extent;
@@ -63,7 +64,9 @@ class ImageBase extends EventTarget {
    * @abstract
    * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
    */
-  getImage() {}
+  getImage() {
+    return abstract();
+  }
 
   /**
    * @return {number} PixelRatio.
@@ -80,7 +83,7 @@ class ImageBase extends EventTarget {
   }
 
   /**
-   * @return {module:ol/ImageState} State.
+   * @return {import("./ImageState.js").default} State.
    */
   getState() {
     return this.state;
@@ -90,7 +93,9 @@ class ImageBase extends EventTarget {
    * Load not yet loaded URI.
    * @abstract
    */
-  load() {}
+  load() {
+    abstract();
+  }
 }
 
 

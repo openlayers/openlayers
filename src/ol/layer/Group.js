@@ -10,7 +10,7 @@ import {assert} from '../asserts.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getIntersection} from '../extent.js';
-import BaseLayer from '../layer/Base.js';
+import BaseLayer from './Base.js';
 import {assign, clear} from '../obj.js';
 import SourceState from '../source/State.js';
 
@@ -19,15 +19,17 @@ import SourceState from '../source/State.js';
  * @typedef {Object} Options
  * @property {number} [opacity=1] Opacity (0, 1).
  * @property {boolean} [visible=true] Visibility.
- * @property {module:ol/extent~Extent} [extent] The bounding extent for layer rendering.  The layer will not be
+ * @property {import("../extent.js").Extent} [extent] The bounding extent for layer rendering.  The layer will not be
  * rendered outside of this extent.
- * @property {number} [zIndex=0] The z-index for layer rendering.  At rendering time, the layers
- * will be ordered, first by Z-index and then by position.
+ * @property {number} [zIndex] The z-index for layer rendering.  At rendering time, the layers
+ * will be ordered, first by Z-index and then by position. When `undefined`, a `zIndex` of 0 is assumed
+ * for layers that are added to the map's `layers` collection, or `Infinity` when the layer's `setMap()`
+ * method was used.
  * @property {number} [minResolution] The minimum resolution (inclusive) at which this layer will be
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {Array.<module:ol/layer/Base>|module:ol/Collection.<module:ol/layer/Base>} [layers] Child layers.
+ * @property {Array<import("./Base.js").default>|import("../Collection.js").default<import("./Base.js").default>} [layers] Child layers.
  */
 
 
@@ -50,12 +52,12 @@ const Property = {
  */
 class LayerGroup extends BaseLayer {
   /**
-   * @param {module:ol/layer/Group~Options=} opt_options Layer options.
+   * @param {Options=} opt_options Layer options.
    */
   constructor(opt_options) {
 
     const options = opt_options || {};
-    const baseOptions = /** @type {module:ol/layer/Group~Options} */ (assign({}, options));
+    const baseOptions = /** @type {Options} */ (assign({}, options));
     delete baseOptions.layers;
 
     let layers = options.layers;
@@ -64,13 +66,13 @@ class LayerGroup extends BaseLayer {
 
     /**
      * @private
-     * @type {Array.<module:ol/events~EventsKey>}
+     * @type {Array<import("../events.js").EventsKey>}
      */
     this.layersListenerKeys_ = [];
 
     /**
      * @private
-     * @type {Object.<string, Array.<module:ol/events~EventsKey>>}
+     * @type {Object<string, Array<import("../events.js").EventsKey>>}
      */
     this.listenerKeys_ = {};
 
@@ -82,9 +84,8 @@ class LayerGroup extends BaseLayer {
       if (Array.isArray(layers)) {
         layers = new Collection(layers.slice(), {unique: true});
       } else {
-        assert(layers instanceof Collection,
+        assert(typeof /** @type {?} */ (layers).getArray === 'function',
           43); // Expected `layers` to be an array or a `Collection`
-        layers = layers;
       }
     } else {
       layers = new Collection(undefined, {unique: true});
@@ -102,7 +103,6 @@ class LayerGroup extends BaseLayer {
   }
 
   /**
-   * @param {module:ol/events/Event} event Event.
    * @private
    */
   handleLayersChanged_() {
@@ -123,7 +123,7 @@ class LayerGroup extends BaseLayer {
     const layersArray = layers.getArray();
     for (let i = 0, ii = layersArray.length; i < ii; i++) {
       const layer = layersArray[i];
-      this.listenerKeys_[getUid(layer).toString()] = [
+      this.listenerKeys_[getUid(layer)] = [
         listen(layer, ObjectEventType.PROPERTYCHANGE, this.handleLayerChange_, this),
         listen(layer, EventType.CHANGE, this.handleLayerChange_, this)
       ];
@@ -133,13 +133,12 @@ class LayerGroup extends BaseLayer {
   }
 
   /**
-   * @param {module:ol/Collection~CollectionEvent} collectionEvent CollectionEvent.
+   * @param {import("../Collection.js").CollectionEvent} collectionEvent CollectionEvent.
    * @private
    */
   handleLayersAdd_(collectionEvent) {
-    const layer = /** @type {module:ol/layer/Base} */ (collectionEvent.element);
-    const key = getUid(layer).toString();
-    this.listenerKeys_[key] = [
+    const layer = /** @type {import("./Base.js").default} */ (collectionEvent.element);
+    this.listenerKeys_[getUid(layer)] = [
       listen(layer, ObjectEventType.PROPERTYCHANGE, this.handleLayerChange_, this),
       listen(layer, EventType.CHANGE, this.handleLayerChange_, this)
     ];
@@ -147,12 +146,12 @@ class LayerGroup extends BaseLayer {
   }
 
   /**
-   * @param {module:ol/Collection~CollectionEvent} collectionEvent CollectionEvent.
+   * @param {import("../Collection.js").CollectionEvent} collectionEvent CollectionEvent.
    * @private
    */
   handleLayersRemove_(collectionEvent) {
-    const layer = /** @type {module:ol/layer/Base} */ (collectionEvent.element);
-    const key = getUid(layer).toString();
+    const layer = /** @type {import("./Base.js").default} */ (collectionEvent.element);
+    const key = getUid(layer);
     this.listenerKeys_[key].forEach(unlistenByKey);
     delete this.listenerKeys_[key];
     this.changed();
@@ -161,21 +160,21 @@ class LayerGroup extends BaseLayer {
   /**
    * Returns the {@link module:ol/Collection collection} of {@link module:ol/layer/Layer~Layer layers}
    * in this group.
-   * @return {!module:ol/Collection.<module:ol/layer/Base>} Collection of
+   * @return {!import("../Collection.js").default<import("./Base.js").default>} Collection of
    *   {@link module:ol/layer/Base layers} that are part of this group.
    * @observable
    * @api
    */
   getLayers() {
     return (
-      /** @type {!module:ol/Collection.<module:ol/layer/Base>} */ (this.get(Property.LAYERS))
+      /** @type {!import("../Collection.js").default<import("./Base.js").default>} */ (this.get(Property.LAYERS))
     );
   }
 
   /**
    * Set the {@link module:ol/Collection collection} of {@link module:ol/layer/Layer~Layer layers}
    * in this group.
-   * @param {!module:ol/Collection.<module:ol/layer/Base>} layers Collection of
+   * @param {!import("../Collection.js").default<import("./Base.js").default>} layers Collection of
    *   {@link module:ol/layer/Base layers} that are part of this group.
    * @observable
    * @api

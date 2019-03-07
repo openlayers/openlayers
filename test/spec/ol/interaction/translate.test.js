@@ -70,7 +70,8 @@ describe('ol.interaction.Translate', function() {
       new PointerEvent(type, {
         clientX: position.left + x + width / 2,
         clientY: position.top + y + height / 2,
-        shiftKey: shiftKey
+        shiftKey: shiftKey,
+        preventDefault: function() {}
       }));
     map.handleMapBrowserEvent(event);
   }

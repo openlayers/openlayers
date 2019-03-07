@@ -1,5 +1,5 @@
 import {listen, listenOnce, bindListener, unlisten, unlistenAll, unlistenByKey, findListener, getListeners} from '../../../src/ol/events.js';
-import EventTarget from '../../../src/ol/events/EventTarget.js';
+import EventTarget from '../../../src/ol/events/Target.js';
 
 describe('ol.events', function() {
   let add, remove, target;

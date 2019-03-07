@@ -25,7 +25,7 @@ fetch('data/WMTSCapabilities.xml').then(function(response) {
       }),
       new TileLayer({
         opacity: 1,
-        source: new WMTS(/** @type {!module:ol/source/WMTS~Options} */ (options))
+        source: new WMTS(options)
       })
     ],
     target: 'map',

@@ -77,7 +77,7 @@ fetch(url).then(function(response) {
     tileLoadFunction: function(tile) {
       const format = tile.getFormat();
       const tileCoord = tile.getTileCoord();
-      const data = tileIndex.getTile(tileCoord[0], tileCoord[1], -tileCoord[2] - 1);
+      const data = tileIndex.getTile(tileCoord[0], tileCoord[1], tileCoord[2]);
 
       const features = format.readFeatures(
         JSON.stringify({

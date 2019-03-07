@@ -32,7 +32,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import EventSource from '../pointer/EventSource.js';
+import EventSource from './EventSource.js';
 
 
 /**
@@ -57,7 +57,7 @@ const DEDUP_DIST = 25;
 /**
  * Handler for `mousedown`.
  *
- * @this {module:ol/pointer/MouseSource}
+ * @this {MouseSource}
  * @param {MouseEvent} inEvent The in event.
  */
 function mousedown(inEvent) {
@@ -76,7 +76,7 @@ function mousedown(inEvent) {
 /**
  * Handler for `mousemove`.
  *
- * @this {module:ol/pointer/MouseSource}
+ * @this {MouseSource}
  * @param {MouseEvent} inEvent The in event.
  */
 function mousemove(inEvent) {
@@ -89,7 +89,7 @@ function mousemove(inEvent) {
 /**
  * Handler for `mouseup`.
  *
- * @this {module:ol/pointer/MouseSource}
+ * @this {MouseSource}
  * @param {MouseEvent} inEvent The in event.
  */
 function mouseup(inEvent) {
@@ -107,7 +107,7 @@ function mouseup(inEvent) {
 /**
  * Handler for `mouseover`.
  *
- * @this {module:ol/pointer/MouseSource}
+ * @this {MouseSource}
  * @param {MouseEvent} inEvent The in event.
  */
 function mouseover(inEvent) {
@@ -120,7 +120,7 @@ function mouseover(inEvent) {
 /**
  * Handler for `mouseout`.
  *
- * @this {module:ol/pointer/MouseSource}
+ * @this {MouseSource}
  * @param {MouseEvent} inEvent The in event.
  */
 function mouseout(inEvent) {
@@ -134,7 +134,7 @@ function mouseout(inEvent) {
 class MouseSource extends EventSource {
 
   /**
-   * @param {module:ol/pointer/PointerEventHandler} dispatcher Event handler.
+   * @param {import("./PointerEventHandler.js").default} dispatcher Event handler.
    */
   constructor(dispatcher) {
     const mapping = {
@@ -148,13 +148,13 @@ class MouseSource extends EventSource {
 
     /**
      * @const
-     * @type {!Object.<string, Event|Object>}
+     * @type {!Object<string, Event|Object>}
      */
     this.pointerMap = dispatcher.pointerMap;
 
     /**
      * @const
-     * @type {Array.<module:ol/pixel~Pixel>}
+     * @type {Array<import("../pixel.js").Pixel>}
      */
     this.lastTouches = [];
   }
@@ -223,10 +223,10 @@ class MouseSource extends EventSource {
  * for the fake pointer event.
  *
  * @param {Event} inEvent The in event.
- * @param {module:ol/pointer/PointerEventHandler} dispatcher Event handler.
+ * @param {import("./PointerEventHandler.js").default} dispatcher Event handler.
  * @return {Object} The copied event.
  */
-function prepareEvent(inEvent, dispatcher) {
+export function prepareEvent(inEvent, dispatcher) {
   const e = dispatcher.cloneEvent(inEvent, inEvent);
 
   // forward mouse preventDefault

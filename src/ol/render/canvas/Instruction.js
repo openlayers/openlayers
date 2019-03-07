@@ -23,25 +23,25 @@ const Instruction = {
 
 
 /**
- * @type {Array.<Instruction>}
+ * @type {Array<Instruction>}
  */
 export const fillInstruction = [Instruction.FILL];
 
 
 /**
- * @type {Array.<Instruction>}
+ * @type {Array<Instruction>}
  */
 export const strokeInstruction = [Instruction.STROKE];
 
 
 /**
- * @type {Array.<Instruction>}
+ * @type {Array<Instruction>}
  */
 export const beginPathInstruction = [Instruction.BEGIN_PATH];
 
 
 /**
- * @type {Array.<Instruction>}
+ * @type {Array<Instruction>}
  */
 export const closePathInstruction = [Instruction.CLOSE_PATH];
 

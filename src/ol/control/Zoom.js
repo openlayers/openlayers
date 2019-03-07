@@ -3,7 +3,7 @@
  */
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
-import Control from '../control/Control.js';
+import Control from './Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
 
@@ -35,7 +35,7 @@ import {easeOut} from '../easing.js';
 class Zoom extends Control {
 
   /**
-   * @param {module:ol/control/Zoom~Options=} opt_options Zoom options.
+   * @param {Options=} opt_options Zoom options.
    */
   constructor(opt_options) {
 

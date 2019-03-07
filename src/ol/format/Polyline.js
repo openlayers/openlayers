@@ -3,8 +3,8 @@
  */
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
-import {transformWithOptions} from '../format/Feature.js';
-import TextFeature from '../format/TextFeature.js';
+import {transformGeometryWithOptions} from './Feature.js';
+import TextFeature from './TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import {getStrideForLayout} from '../geom/SimpleGeometry.js';
@@ -16,7 +16,7 @@ import {get as getProjection} from '../proj.js';
 /**
  * @typedef {Object} Options
  * @property {number} [factor=1e5] The factor by which the coordinates values will be scaled.
- * @property {module:ol/geom/GeometryLayout} [geometryLayout='XY'] Layout of the
+ * @property {GeometryLayout} [geometryLayout='XY'] Layout of the
  * feature geometries created by the format reader.
  */
 
@@ -38,7 +38,7 @@ import {get as getProjection} from '../proj.js';
 class Polyline extends TextFeature {
 
   /**
-   * @param {module:ol/format/Polyline~Options=} opt_options Optional configuration object.
+   * @param {Options=} opt_options Optional configuration object.
    */
   constructor(opt_options) {
     super();
@@ -59,7 +59,7 @@ class Polyline extends TextFeature {
 
     /**
      * @private
-     * @type {module:ol/geom/GeometryLayout}
+     * @type {GeometryLayout}
      */
     this.geometryLayout_ = options.geometryLayout ?
       options.geometryLayout : GeometryLayout.XY;
@@ -89,14 +89,9 @@ class Polyline extends TextFeature {
     const flatCoordinates = decodeDeltas(text, stride, this.factor_);
     flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
     const coordinates = inflateCoordinates(flatCoordinates, 0, flatCoordinates.length, stride);
+    const lineString = new LineString(coordinates, this.geometryLayout_);
 
-    return (
-      /** @type {module:ol/geom/Geometry} */ (transformWithOptions(
-        new LineString(coordinates, this.geometryLayout_),
-        false,
-        this.adaptOptions(opt_options)
-      ))
-    );
+    return transformGeometryWithOptions(lineString, false, this.adaptOptions(opt_options));
   }
 
   /**
@@ -123,8 +118,8 @@ class Polyline extends TextFeature {
    * @inheritDoc
    */
   writeGeometryText(geometry, opt_options) {
-    geometry = /** @type {module:ol/geom/LineString} */
-      (transformWithOptions(geometry, true, this.adaptOptions(opt_options)));
+    geometry = /** @type {LineString} */
+      (transformGeometryWithOptions(geometry, true, this.adaptOptions(opt_options)));
     const flatCoordinates = geometry.getFlatCoordinates();
     const stride = geometry.getStride();
     flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
@@ -138,7 +133,7 @@ class Polyline extends TextFeature {
  *
  * Attention: This function will modify the passed array!
  *
- * @param {Array.<number>} numbers A list of n-dimensional points.
+ * @param {Array<number>} numbers A list of n-dimensional points.
  * @param {number} stride The number of dimension of the points in the list.
  * @param {number=} opt_factor The factor by which the numbers will be
  *     multiplied. The remaining decimal places will get rounded away.
@@ -177,14 +172,14 @@ export function encodeDeltas(numbers, stride, opt_factor) {
  *     encoded string.
  * @param {number=} opt_factor The factor by which the resulting numbers will
  *     be divided. Default is `1e5`.
- * @return {Array.<number>} A list of n-dimensional points.
+ * @return {Array<number>} A list of n-dimensional points.
  * @api
  */
 export function decodeDeltas(encoded, stride, opt_factor) {
   const factor = opt_factor ? opt_factor : 1e5;
   let d;
 
-  /** @type {Array.<number>} */
+  /** @type {Array<number>} */
   const lastNumbers = new Array(stride);
   for (d = 0; d < stride; ++d) {
     lastNumbers[d] = 0;
@@ -209,7 +204,7 @@ export function decodeDeltas(encoded, stride, opt_factor) {
  *
  * Attention: This function will modify the passed array!
  *
- * @param {Array.<number>} numbers A list of floating point numbers.
+ * @param {Array<number>} numbers A list of floating point numbers.
  * @param {number=} opt_factor The factor by which the numbers will be
  *     multiplied. The remaining decimal places will get rounded away.
  *     Default is `1e5`.
@@ -232,7 +227,7 @@ export function encodeFloats(numbers, opt_factor) {
  * @param {string} encoded An encoded string.
  * @param {number=} opt_factor The factor by which the result will be divided.
  *     Default is `1e5`.
- * @return {Array.<number>} A list of floating point numbers.
+ * @return {Array<number>} A list of floating point numbers.
  * @api
  */
 export function decodeFloats(encoded, opt_factor) {
@@ -250,7 +245,7 @@ export function decodeFloats(encoded, opt_factor) {
  *
  * Attention: This function will modify the passed array!
  *
- * @param {Array.<number>} numbers A list of signed integers.
+ * @param {Array<number>} numbers A list of signed integers.
  * @return {string} The encoded string.
  */
 export function encodeSignedIntegers(numbers) {
@@ -266,7 +261,7 @@ export function encodeSignedIntegers(numbers) {
  * Decode a list of signed integers from an encoded string
  *
  * @param {string} encoded An encoded string.
- * @return {Array.<number>} A list of signed integers.
+ * @return {Array<number>} A list of signed integers.
  */
 export function decodeSignedIntegers(encoded) {
   const numbers = decodeUnsignedIntegers(encoded);
@@ -281,7 +276,7 @@ export function decodeSignedIntegers(encoded) {
 /**
  * Encode a list of unsigned integers and return an encoded string
  *
- * @param {Array.<number>} numbers A list of unsigned integers.
+ * @param {Array<number>} numbers A list of unsigned integers.
  * @return {string} The encoded string.
  */
 export function encodeUnsignedIntegers(numbers) {
@@ -297,7 +292,7 @@ export function encodeUnsignedIntegers(numbers) {
  * Decode a list of unsigned integers from an encoded string
  *
  * @param {string} encoded An encoded string.
- * @return {Array.<number>} A list of unsigned integers.
+ * @return {Array<number>} A list of unsigned integers.
  */
 export function decodeUnsignedIntegers(encoded) {
   const numbers = [];

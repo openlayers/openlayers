@@ -10,7 +10,7 @@
  * This implementation only provides `type` and `target` properties, and
  * `stopPropagation` and `preventDefault` methods. It is meant as base class
  * for higher level events defined in the library, and works with
- * {@link module:ol/events/EventTarget~EventTarget}.
+ * {@link module:ol/events/Target~Target}.
  */
 class Event {
 
@@ -41,7 +41,6 @@ class Event {
 
   /**
    * Stop event propagation.
-   * @function
    * @api
    */
   preventDefault() {
@@ -50,7 +49,6 @@ class Event {
 
   /**
    * Stop event propagation.
-   * @function
    * @api
    */
   stopPropagation() {
@@ -61,7 +59,7 @@ class Event {
 
 
 /**
- * @param {Event|module:ol/events/Event} evt Event
+ * @param {Event|import("./Event.js").default} evt Event
  */
 export function stopPropagation(evt) {
   evt.stopPropagation();
@@ -69,7 +67,7 @@ export function stopPropagation(evt) {
 
 
 /**
- * @param {Event|module:ol/events/Event} evt Event
+ * @param {Event|import("./Event.js").default} evt Event
  */
 export function preventDefault(evt) {
   evt.preventDefault();

@@ -86,7 +86,8 @@ describe('ol.interaction.Modify', function() {
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
       shiftKey: modifiers.shift || false,
-      altKey: modifiers.alt || false
+      altKey: modifiers.alt || false,
+      preventDefault: function() {}
     }, {
       button: button,
       isPrimary: true
@@ -695,6 +696,24 @@ describe('ol.interaction.Modify', function() {
     });
   });
 
+  describe('handle feature removal during down-up sequence', function() {
+    it('removes segment data of removed features from dragSegments_', function() {
+      const collection = new Collection(features);
+      const modify = new Modify({
+        features: collection
+      });
+      map.addInteraction(modify);
+      simulateEvent('pointermove', 0, 0, null, 0);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointermove', -10, -10, null, 0);
+      simulateEvent('pointerdrag', -10, -10, null, 0);
+      collection.remove(features[0]);
+      expect(function() {
+        simulateEvent('pointerup', -10, -10, null, 0);
+      }).to.not.throwError();
+    });
+  });
+
   describe('#setActive', function() {
     it('removes the vertexFeature of deactivation', function() {
       const modify = new Modify({
@@ -708,6 +727,15 @@ describe('ol.interaction.Modify', function() {
 
       modify.setActive(false);
       expect(modify.vertexFeature_).to.be(null);
+    });
+  });
+
+  describe('#getOverlay', function() {
+    it('returns the feature overlay layer', function() {
+      const modify = new Modify({
+        features: new Collection()
+      });
+      expect (modify.getOverlay()).to.eql(modify.overlay_);
     });
   });
 

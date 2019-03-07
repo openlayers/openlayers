@@ -109,7 +109,7 @@ fetch(url).then(function(response) {
   options.projection = 'EPSG:3413';
   options.wrapX = false;
   layers['wmts3413'] = new TileLayer({
-    source: new WMTS(/** @type {!module:ol/source/WMTS~Options} */ (options))
+    source: new WMTS(options)
   });
 });
 

@@ -4,31 +4,31 @@
 import {getFontFamilies} from '../css.js';
 import {createCanvasContext2D} from '../dom.js';
 import {clear} from '../obj.js';
-import LRUCache from '../structs/LRUCache.js';
 import {create as createTransform} from '../transform.js';
+import LabelCache from './canvas/LabelCache.js';
 
 
 /**
  * @typedef {Object} FillState
- * @property {module:ol/colorlike~ColorLike} fillStyle
+ * @property {import("../colorlike.js").ColorLike} fillStyle
  */
 
 
 /**
  * @typedef {Object} FillStrokeState
- * @property {module:ol/colorlike~ColorLike} [currentFillStyle]
- * @property {module:ol/colorlike~ColorLike} [currentStrokeStyle]
+ * @property {import("../colorlike.js").ColorLike} [currentFillStyle]
+ * @property {import("../colorlike.js").ColorLike} [currentStrokeStyle]
  * @property {string} [currentLineCap]
- * @property {Array.<number>} currentLineDash
+ * @property {Array<number>} currentLineDash
  * @property {number} [currentLineDashOffset]
  * @property {string} [currentLineJoin]
  * @property {number} [currentLineWidth]
  * @property {number} [currentMiterLimit]
  * @property {number} [lastStroke]
- * @property {module:ol/colorlike~ColorLike} [fillStyle]
- * @property {module:ol/colorlike~ColorLike} [strokeStyle]
+ * @property {import("../colorlike.js").ColorLike} [fillStyle]
+ * @property {import("../colorlike.js").ColorLike} [strokeStyle]
  * @property {string} [lineCap]
- * @property {Array.<number>} lineDash
+ * @property {Array<number>} lineDash
  * @property {number} [lineDashOffset]
  * @property {string} [lineJoin]
  * @property {number} [lineWidth]
@@ -39,12 +39,12 @@ import {create as createTransform} from '../transform.js';
 /**
  * @typedef {Object} StrokeState
  * @property {string} lineCap
- * @property {Array.<number>} lineDash
+ * @property {Array<number>} lineDash
  * @property {number} lineDashOffset
  * @property {string} lineJoin
  * @property {number} lineWidth
  * @property {number} miterLimit
- * @property {module:ol/colorlike~ColorLike} strokeStyle
+ * @property {import("../colorlike.js").ColorLike} strokeStyle
  */
 
 
@@ -53,6 +53,13 @@ import {create as createTransform} from '../transform.js';
  * @property {string} font
  * @property {string} [textAlign]
  * @property {string} textBaseline
+ * @property {string} [placement]
+ * @property {number} [maxAngle]
+ * @property {boolean} [overflow]
+ * @property {import("../style/Fill.js").default} [backgroundFill]
+ * @property {import("../style/Stroke.js").default} [backgroundStroke]
+ * @property {number} [scale]
+ * @property {Array<number>} [padding]
  */
 
 
@@ -65,7 +72,7 @@ import {create as createTransform} from '../transform.js';
  * in the group, i.e. 2 when an image and a text are grouped, or 1 otherwise.
  * In addition to these four elements, declutter instruction arrays (i.e. the
  * arguments to {@link module:ol/render/canvas~drawImage} are appended to the array.
- * @typedef {Array.<*>} DeclutterGroup
+ * @typedef {Array<*>} DeclutterGroup
  */
 
 
@@ -78,7 +85,7 @@ export const defaultFont = '10px sans-serif';
 
 /**
  * @const
- * @type {module:ol/color~Color}
+ * @type {import("../color.js").Color}
  */
 export const defaultFillStyle = [0, 0, 0, 1];
 
@@ -92,7 +99,7 @@ export const defaultLineCap = 'round';
 
 /**
  * @const
- * @type {Array.<number>}
+ * @type {Array<number>}
  */
 export const defaultLineDash = [];
 
@@ -120,7 +127,7 @@ export const defaultMiterLimit = 10;
 
 /**
  * @const
- * @type {module:ol/color~Color}
+ * @type {import("../color.js").Color}
  */
 export const defaultStrokeStyle = [0, 0, 0, 1];
 
@@ -141,7 +148,7 @@ export const defaultTextBaseline = 'middle';
 
 /**
  * @const
- * @type {Array.<number>}
+ * @type {Array<number>}
  */
 export const defaultPadding = [0, 0, 0, 0];
 
@@ -156,14 +163,14 @@ export const defaultLineWidth = 1;
 /**
  * The label cache for text rendering. To change the default cache size of 2048
  * entries, use {@link module:ol/structs/LRUCache#setSize}.
- * @type {module:ol/structs/LRUCache.<HTMLCanvasElement>}
+ * @type {LabelCache}
  * @api
  */
-export const labelCache = new LRUCache();
+export const labelCache = new LabelCache();
 
 
 /**
- * @type {!Object.<string, number>}
+ * @type {!Object<string, number>}
  */
 export const checkedFonts = {};
 
@@ -175,7 +182,7 @@ let measureContext = null;
 
 
 /**
- * @type {!Object.<string, number>}
+ * @type {!Object<string, number>}
  */
 export const textHeights = {};
 
@@ -195,20 +202,31 @@ export const checkFont = (function() {
 
   function isAvailable(font) {
     const context = getMeasureContext();
-    let available = true;
-    for (let i = 0; i < len; ++i) {
-      const referenceFont = referenceFonts[i];
-      context.font = size + referenceFont;
-      referenceWidth = context.measureText(text).width;
-      if (font != referenceFont) {
-        context.font = size + font + ',' + referenceFont;
-        const width = context.measureText(text).width;
-        // If width and referenceWidth are the same, then the fallback was used
-        // instead of the font we wanted, so the font is not available.
-        available = available && width != referenceWidth;
+    // Check weight ranges according to
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights
+    for (let weight = 100; weight <= 700; weight += 300) {
+      const fontWeight = weight + ' ';
+      let available = true;
+      for (let i = 0; i < len; ++i) {
+        const referenceFont = referenceFonts[i];
+        context.font = fontWeight + size + referenceFont;
+        referenceWidth = context.measureText(text).width;
+        if (font != referenceFont) {
+          context.font = fontWeight + size + font + ',' + referenceFont;
+          const width = context.measureText(text).width;
+          // If width and referenceWidth are the same, then the fallback was used
+          // instead of the font we wanted, so the font is not available.
+          available = available && width != referenceWidth;
+        }
+      }
+      if (available) {
+        // Consider font available when it is available in one weight range.
+        //FIXME With this we miss rare corner cases, so we should consider
+        //FIXME checking availability for each requested weight range.
+        return true;
       }
     }
-    return available;
+    return false;
   }
 
   function check() {
@@ -267,7 +285,7 @@ function getMeasureContext() {
 
 /**
  * @param {string} font Font to use for measuring.
- * @return {module:ol/size~Size} Measurement.
+ * @return {import("../size.js").Size} Measurement.
  */
 export const measureTextHeight = (function() {
   let span;
@@ -307,6 +325,41 @@ export function measureTextWidth(font, text) {
 
 
 /**
+ * Measure text width using a cache.
+ * @param {string} font The font.
+ * @param {string} text The text to measure.
+ * @param {Object<string, number>} cache A lookup of cached widths by text.
+ * @returns {number} The text width.
+ */
+export function measureAndCacheTextWidth(font, text, cache) {
+  if (text in cache) {
+    return cache[text];
+  }
+  const width = cache[text] = measureTextWidth(font, text);
+  return width;
+}
+
+
+/**
+ * @param {string} font Font to use for measuring.
+ * @param {Array<string>} lines Lines to measure.
+ * @param {Array<number>} widths Array will be populated with the widths of
+ * each line.
+ * @return {number} Width of the whole text.
+ */
+export function measureTextWidths(font, lines, widths) {
+  const numLines = lines.length;
+  let width = 0;
+  for (let i = 0; i < numLines; ++i) {
+    const currentWidth = measureTextWidth(font, lines[i]);
+    width = Math.max(width, currentWidth);
+    widths.push(currentWidth);
+  }
+  return width;
+}
+
+
+/**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} rotation Rotation.
  * @param {number} offsetX X offset.
@@ -326,7 +379,7 @@ export const resetTransform = createTransform();
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {module:ol/transform~Transform|null} transform Transform.
+ * @param {import("../transform.js").Transform|null} transform Transform.
  * @param {number} opacity Opacity.
  * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image Image.
  * @param {number} originX Origin X.

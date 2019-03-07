@@ -9,11 +9,11 @@ import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getCenter, getIntersection, getHeight, getWidth} from '../extent.js';
 import {calculateSourceResolution, render as renderReprojected} from '../reproj.js';
-import Triangulation from '../reproj/Triangulation.js';
+import Triangulation from './Triangulation.js';
 
 
 /**
- * @typedef {function(module:ol/extent~Extent, number, number) : module:ol/ImageBase} FunctionType
+ * @typedef {function(import("../extent.js").Extent, number, number) : import("../ImageBase.js").default} FunctionType
  */
 
 
@@ -24,12 +24,12 @@ import Triangulation from '../reproj/Triangulation.js';
  */
 class ReprojImage extends ImageBase {
   /**
-   * @param {module:ol/proj/Projection} sourceProj Source projection (of the data).
-   * @param {module:ol/proj/Projection} targetProj Target projection.
-   * @param {module:ol/extent~Extent} targetExtent Target extent.
+   * @param {import("../proj/Projection.js").default} sourceProj Source projection (of the data).
+   * @param {import("../proj/Projection.js").default} targetProj Target projection.
+   * @param {import("../extent.js").Extent} targetExtent Target extent.
    * @param {number} targetResolution Target resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/reproj/Image~FunctionType} getImageFunction
+   * @param {FunctionType} getImageFunction
    *     Function returning source images (extent, resolution, pixelRatio).
    */
   constructor(sourceProj, targetProj, targetExtent, targetResolution, pixelRatio, getImageFunction) {
@@ -61,19 +61,19 @@ class ReprojImage extends ImageBase {
 
     /**
      * @private
-     * @type {module:ol/proj/Projection}
+     * @type {import("../proj/Projection.js").default}
      */
     this.targetProj_ = targetProj;
 
     /**
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../extent.js").Extent}
      */
     this.maxSourceExtent_ = maxSourceExtent;
 
     /**
      * @private
-     * @type {!module:ol/reproj/Triangulation}
+     * @type {!import("./Triangulation.js").default}
      */
     this.triangulation_ = triangulation;
 
@@ -85,13 +85,13 @@ class ReprojImage extends ImageBase {
 
     /**
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../extent.js").Extent}
      */
     this.targetExtent_ = targetExtent;
 
     /**
      * @private
-     * @type {module:ol/ImageBase}
+     * @type {import("../ImageBase.js").default}
      */
     this.sourceImage_ = sourceImage;
 
@@ -109,7 +109,7 @@ class ReprojImage extends ImageBase {
 
     /**
      * @private
-     * @type {?module:ol/events~EventsKey}
+     * @type {?import("../events.js").EventsKey}
      */
     this.sourceListenerKey_ = null;
   }
@@ -121,7 +121,7 @@ class ReprojImage extends ImageBase {
     if (this.state == ImageState.LOADING) {
       this.unlistenSource_();
     }
-    ImageBase.prototype.disposeInternal.call(this);
+    super.disposeInternal();
   }
 
   /**
@@ -132,7 +132,7 @@ class ReprojImage extends ImageBase {
   }
 
   /**
-   * @return {module:ol/proj/Projection} Projection.
+   * @return {import("../proj/Projection.js").default} Projection.
    */
   getProjection() {
     return this.targetProj_;
@@ -187,7 +187,7 @@ class ReprojImage extends ImageBase {
    * @private
    */
   unlistenSource_() {
-    unlistenByKey(/** @type {!module:ol/events~EventsKey} */ (this.sourceListenerKey_));
+    unlistenByKey(/** @type {!import("../events.js").EventsKey} */ (this.sourceListenerKey_));
     this.sourceListenerKey_ = null;
   }
 }

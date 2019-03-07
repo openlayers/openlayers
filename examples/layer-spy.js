@@ -7,7 +7,7 @@ import BingMaps from '../src/ol/source/BingMaps.js';
 const key = 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5';
 
 const roads = new TileLayer({
-  source: new BingMaps({key: key, imagerySet: 'Road'})
+  source: new BingMaps({key: key, imagerySet: 'RoadOnDemand'})
 });
 
 const imagery = new TileLayer({
@@ -52,7 +52,7 @@ container.addEventListener('mouseout', function() {
 });
 
 // before rendering the layer, do some clipping
-imagery.on('precompose', function(event) {
+imagery.on('prerender', function(event) {
   const ctx = event.context;
   const pixelRatio = event.frameState.pixelRatio;
   ctx.save();
@@ -69,7 +69,7 @@ imagery.on('precompose', function(event) {
 });
 
 // after rendering the layer, restore the canvas context
-imagery.on('postcompose', function(event) {
+imagery.on('postrender', function(event) {
   const ctx = event.context;
   ctx.restore();
 });

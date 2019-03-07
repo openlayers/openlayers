@@ -1,6 +1,5 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {toRadians} from '../src/ol/math.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -16,11 +15,6 @@ const map = new Map({
     })
   ],
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: view
 });
 
@@ -35,7 +29,7 @@ gn.init().then(function() {
   gn.start(function(event) {
     const center = view.getCenter();
     const resolution = view.getResolution();
-    const alpha = toRadians(event.do.beta);
+    const alpha = toRadians(event.do.alpha);
     const beta = toRadians(event.do.beta);
     const gamma = toRadians(event.do.gamma);
 

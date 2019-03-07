@@ -1,17 +1,17 @@
 /**
  * @module ol/geom/Geometry
  */
+import {abstract} from '../util.js';
 import BaseObject from '../Object.js';
 import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
-import {FALSE} from '../functions.js';
-import {transform2D} from '../geom/flat/transform.js';
+import {transform2D} from './flat/transform.js';
 import {get as getProjection, getTransform} from '../proj.js';
 import Units from '../proj/Units.js';
 import {create as createTransform, compose as composeTransform} from '../transform.js';
 
 
 /**
- * @type {module:ol/transform~Transform}
+ * @type {import("../transform.js").Transform}
  */
 const tmpTransform = createTransform();
 
@@ -35,7 +35,7 @@ class Geometry extends BaseObject {
 
     /**
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../extent.js").Extent}
      */
     this.extent_ = createEmpty();
 
@@ -47,7 +47,7 @@ class Geometry extends BaseObject {
 
     /**
      * @protected
-     * @type {Object.<string, module:ol/geom/Geometry>}
+     * @type {Object<string, Geometry>}
      */
     this.simplifiedGeometryCache = {};
 
@@ -68,26 +68,40 @@ class Geometry extends BaseObject {
   /**
    * Make a complete copy of the geometry.
    * @abstract
-   * @return {!module:ol/geom/Geometry} Clone.
+   * @return {!Geometry} Clone.
    */
-  clone() {}
+  clone() {
+    return abstract();
+  }
 
   /**
    * @abstract
    * @param {number} x X.
    * @param {number} y Y.
-   * @param {module:ol/coordinate~Coordinate} closestPoint Closest point.
+   * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
    * @param {number} minSquaredDistance Minimum squared distance.
    * @return {number} Minimum squared distance.
    */
-  closestPointXY(x, y, closestPoint, minSquaredDistance) {}
+  closestPointXY(x, y, closestPoint, minSquaredDistance) {
+    return abstract();
+  }
+
+  /**
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @return {boolean} Contains (x, y).
+   */
+  containsXY(x, y) {
+    const coord = this.getClosestPoint([x, y]);
+    return coord[0] === x && coord[1] === y;
+  }
 
   /**
    * Return the closest point of the geometry to the passed point as
    * {@link module:ol/coordinate~Coordinate coordinate}.
-   * @param {module:ol/coordinate~Coordinate} point Point.
-   * @param {module:ol/coordinate~Coordinate=} opt_closestPoint Closest point.
-   * @return {module:ol/coordinate~Coordinate} Closest point.
+   * @param {import("../coordinate.js").Coordinate} point Point.
+   * @param {import("../coordinate.js").Coordinate=} opt_closestPoint Closest point.
+   * @return {import("../coordinate.js").Coordinate} Closest point.
    * @api
    */
   getClosestPoint(point, opt_closestPoint) {
@@ -99,7 +113,7 @@ class Geometry extends BaseObject {
   /**
    * Returns true if this geometry includes the specified coordinate. If the
    * coordinate is on the boundary of the geometry, returns false.
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @return {boolean} Contains coordinate.
    * @api
    */
@@ -109,16 +123,18 @@ class Geometry extends BaseObject {
 
   /**
    * @abstract
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @protected
-   * @return {module:ol/extent~Extent} extent Extent.
+   * @return {import("../extent.js").Extent} extent Extent.
    */
-  computeExtent(extent) {}
+  computeExtent(extent) {
+    return abstract();
+  }
 
   /**
    * Get the extent of the geometry.
-   * @param {module:ol/extent~Extent=} opt_extent Extent.
-   * @return {module:ol/extent~Extent} extent Extent.
+   * @param {import("../extent.js").Extent=} opt_extent Extent.
+   * @return {import("../extent.js").Extent} extent Extent.
    * @api
    */
   getExtent(opt_extent) {
@@ -134,10 +150,12 @@ class Geometry extends BaseObject {
    * coordinates in place.
    * @abstract
    * @param {number} angle Rotation angle in radians.
-   * @param {module:ol/coordinate~Coordinate} anchor The rotation center.
+   * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
    * @api
    */
-  rotate(angle, anchor) {}
+  rotate(angle, anchor) {
+    abstract();
+  }
 
   /**
    * Scale the geometry (with an optional origin).  This modifies the geometry
@@ -146,20 +164,13 @@ class Geometry extends BaseObject {
    * @param {number} sx The scaling factor in the x-direction.
    * @param {number=} opt_sy The scaling factor in the y-direction (defaults to
    *     sx).
-   * @param {module:ol/coordinate~Coordinate=} opt_anchor The scale origin (defaults to the center
+   * @param {import("../coordinate.js").Coordinate=} opt_anchor The scale origin (defaults to the center
    *     of the geometry extent).
    * @api
    */
-  scale(sx, opt_sy, opt_anchor) {}
-
-  /**
-   * Translate the geometry. This modifies the geometry coordinates in place.
-   * @abstract
-   * @param {number} deltaX Delta X.
-   * @param {number} deltaY Delta Y.
-   * @api
-   */
-  translate(deltaX, deltaY) {}
+  scale(sx, opt_sy, opt_anchor) {
+    abstract();
+  }
 
   /**
    * Create a simplified version of this geometry.  For linestrings, this uses
@@ -167,10 +178,8 @@ class Geometry extends BaseObject {
    * https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
    * Douglas Peucker} algorithm.  For polygons, a quantization-based
    * simplification is used to preserve topology.
-   * @function
    * @param {number} tolerance The tolerance distance for simplification.
-   * @return {module:ol/geom/Geometry} A new, simplified version of the original
-   *     geometry.
+   * @return {Geometry} A new, simplified version of the original geometry.
    * @api
    */
   simplify(tolerance) {
@@ -183,16 +192,20 @@ class Geometry extends BaseObject {
    * See https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm.
    * @abstract
    * @param {number} squaredTolerance Squared tolerance.
-   * @return {module:ol/geom/Geometry} Simplified geometry.
+   * @return {Geometry} Simplified geometry.
    */
-  getSimplifiedGeometry(squaredTolerance) {}
+  getSimplifiedGeometry(squaredTolerance) {
+    return abstract();
+  }
 
   /**
    * Get the type of this geometry.
    * @abstract
-   * @return {module:ol/geom/GeometryType} Geometry type.
+   * @return {import("./GeometryType.js").default} Geometry type.
    */
-  getType() {}
+  getType() {
+    return abstract();
+  }
 
   /**
    * Apply a transform function to each coordinate of the geometry.
@@ -200,17 +213,21 @@ class Geometry extends BaseObject {
    * If you do not want the geometry modified in place, first `clone()` it and
    * then use this function on the clone.
    * @abstract
-   * @param {module:ol/proj~TransformFunction} transformFn Transform.
+   * @param {import("../proj.js").TransformFunction} transformFn Transform.
    */
-  applyTransform(transformFn) {}
+  applyTransform(transformFn) {
+    abstract();
+  }
 
   /**
    * Test if the geometry and the passed extent intersect.
    * @abstract
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    */
-  intersectsExtent(extent) {}
+  intersectsExtent(extent) {
+    return abstract();
+  }
 
   /**
    * Translate the geometry.  This modifies the geometry coordinates in place.  If
@@ -218,8 +235,11 @@ class Geometry extends BaseObject {
    * @abstract
    * @param {number} deltaX Delta X.
    * @param {number} deltaY Delta Y.
+   * @api
    */
-  translate(deltaX, deltaY) {}
+  translate(deltaX, deltaY) {
+    abstract();
+  }
 
   /**
    * Transform each coordinate of the geometry from one coordinate reference
@@ -228,20 +248,21 @@ class Geometry extends BaseObject {
    * If you do not want the geometry modified in place, first `clone()` it and
    * then use this function on the clone.
    *
-   * @param {module:ol/proj~ProjectionLike} source The current projection.  Can be a
+   * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
    *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
-   * @param {module:ol/proj~ProjectionLike} destination The desired projection.  Can be a
+   * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
    *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
-   * @return {module:ol/geom/Geometry} This geometry.  Note that original geometry is
+   * @return {Geometry} This geometry.  Note that original geometry is
    *     modified in place.
    * @api
    */
   transform(source, destination) {
-    source = getProjection(source);
-    const transformFn = source.getUnits() == Units.TILE_PIXELS ?
+    /** @type {import("../proj/Projection.js").default} */
+    const sourceProj = getProjection(source);
+    const transformFn = sourceProj.getUnits() == Units.TILE_PIXELS ?
       function(inCoordinates, outCoordinates, stride) {
-        const pixelExtent = source.getExtent();
-        const projectedExtent = source.getWorldExtent();
+        const pixelExtent = sourceProj.getExtent();
+        const projectedExtent = sourceProj.getWorldExtent();
         const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
         composeTransform(tmpTransform,
           projectedExtent[0], projectedExtent[3],
@@ -249,21 +270,14 @@ class Geometry extends BaseObject {
           0, 0);
         transform2D(inCoordinates, 0, inCoordinates.length, stride,
           tmpTransform, outCoordinates);
-        return getTransform(source, destination)(inCoordinates, outCoordinates, stride);
+        return getTransform(sourceProj, destination)(inCoordinates, outCoordinates, stride);
       } :
-      getTransform(source, destination);
+      getTransform(sourceProj, destination);
     this.applyTransform(transformFn);
     return this;
   }
+
 }
-
-
-/**
- * @param {number} x X.
- * @param {number} y Y.
- * @return {boolean} Contains (x, y).
- */
-Geometry.prototype.containsXY = FALSE;
 
 
 export default Geometry;

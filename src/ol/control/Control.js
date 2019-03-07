@@ -1,7 +1,7 @@
 /**
  * @module ol/control/Control
  */
-import {UNDEFINED} from '../functions.js';
+import {VOID} from '../functions.js';
 import MapEventType from '../MapEventType.js';
 import BaseObject from '../Object.js';
 import {removeNode} from '../dom.js';
@@ -13,7 +13,7 @@ import {listen, unlistenByKey} from '../events.js';
  * @property {HTMLElement} [element] The element is the control's
  * container element. This only needs to be specified if you're developing
  * a custom control.
- * @property {function(module:ol/MapEvent)} [render] Function called when
+ * @property {function(import("../MapEvent.js").default)} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  * @property {HTMLElement|string} [target] Specify a target if you want
@@ -48,7 +48,7 @@ import {listen, unlistenByKey} from '../events.js';
 class Control extends BaseObject {
 
   /**
-   * @param {module:ol/control/Control~Options} options Control options.
+   * @param {Options} options Control options.
    */
   constructor(options) {
 
@@ -68,20 +68,20 @@ class Control extends BaseObject {
 
     /**
      * @private
-     * @type {module:ol/PluggableMap}
+     * @type {import("../PluggableMap.js").default}
      */
     this.map_ = null;
 
     /**
      * @protected
-     * @type {!Array.<module:ol/events~EventsKey>}
+     * @type {!Array<import("../events.js").EventsKey>}
      */
     this.listenerKeys = [];
 
     /**
-     * @type {function(module:ol/MapEvent)}
+     * @type {function(import("../MapEvent.js").default): void}
      */
-    this.render = options.render ? options.render : UNDEFINED;
+    this.render = options.render ? options.render : VOID;
 
     if (options.target) {
       this.setTarget(options.target);
@@ -99,7 +99,7 @@ class Control extends BaseObject {
 
   /**
    * Get the map associated with this control.
-   * @return {module:ol/PluggableMap} Map.
+   * @return {import("../PluggableMap.js").default} Map.
    * @api
    */
   getMap() {
@@ -110,7 +110,7 @@ class Control extends BaseObject {
    * Remove the control from its current map and attach it to the new map.
    * Subclasses may set up event handlers to get notified about changes to
    * the map here.
-   * @param {module:ol/PluggableMap} map Map.
+   * @param {import("../PluggableMap.js").default} map Map.
    * @api
    */
   setMap(map) {
@@ -126,7 +126,7 @@ class Control extends BaseObject {
       const target = this.target_ ?
         this.target_ : map.getOverlayContainerStopEvent();
       target.appendChild(this.element);
-      if (this.render !== UNDEFINED) {
+      if (this.render !== VOID) {
         this.listenerKeys.push(listen(map,
           MapEventType.POSTRENDER, this.render, this));
       }

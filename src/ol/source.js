@@ -24,6 +24,7 @@ export {default as TileWMS} from './source/TileWMS.js';
 export {default as UrlTile} from './source/UrlTile.js';
 export {default as UTFGrid} from './source/UTFGrid.js';
 export {default as Vector} from './source/Vector.js';
+export {default as VectorTile} from './source/VectorTile.js';
 export {default as WMTS} from './source/WMTS.js';
 export {default as XYZ} from './source/XYZ.js';
 export {default as Zoomify} from './source/Zoomify.js';

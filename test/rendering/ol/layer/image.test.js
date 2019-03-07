@@ -12,10 +12,10 @@ describe('ol.rendering.layer.Image', function() {
   let map;
 
   function createMap(renderer) {
-    map = new Map({
+    const MapConstructor = Map;
+    map = new MapConstructor({
       pixelRatio: 1,
       target: createMapDiv(50, 50),
-      renderer: renderer,
       view: new View({
         center: transform(
           [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
@@ -31,7 +31,8 @@ describe('ol.rendering.layer.Image', function() {
     map = null;
   });
 
-  function waitForImages(sources, layerOptions, onImagesLoaded) {
+  function waitForImages(renderer, sources, layerOptions, onImagesLoaded) {
+    const LayerConstructor = ImageLayer;
     let imagesLoading = 0;
     let imagesLoaded = 0;
 
@@ -57,7 +58,7 @@ describe('ol.rendering.layer.Image', function() {
         source: source
       };
       assign(options, layerOptions);
-      map.addLayer(new ImageLayer(options));
+      map.addLayer(new LayerConstructor(options));
     });
   }
 
@@ -75,17 +76,8 @@ describe('ol.rendering.layer.Image', function() {
 
     it('tests the canvas renderer', function(done) {
       createMap('canvas');
-      waitForImages([source], {}, function() {
+      waitForImages('canvas', [source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/image-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
-    where('WebGL').it('tests the WebGL renderer', function(done) {
-      assertWebGL();
-      createMap('webgl');
-      waitForImages([source], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/image-webgl.png',
           IMAGE_TOLERANCE, done);
       });
     });
@@ -104,7 +96,7 @@ describe('ol.rendering.layer.Image', function() {
 
     it('renders correctly', function(done) {
       createMap('canvas');
-      waitForImages([source], {}, function() {
+      waitForImages('canvas', [source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/image-scaled.png',
           IMAGE_TOLERANCE, done);
       });

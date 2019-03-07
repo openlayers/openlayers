@@ -8,31 +8,30 @@ import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getHeight, getWidth} from '../extent.js';
 import {assign} from '../obj.js';
-import ImageSource, {defaultImageLoadFunction} from '../source/Image.js';
+import ImageSource, {defaultImageLoadFunction} from './Image.js';
 import {appendParams} from '../uri.js';
 
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
- * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
- * access pixel data with the Canvas renderer.  See
- * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting the image from
  * the remote server.
- * @property {module:ol/Image~LoadFunction} [imageLoadFunction] Optional function to load an image given
+ * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given
  * a URL.
- * @property {Object.<string,*>} params ArcGIS Rest parameters. This field is optional. Service
+ * @property {Object<string,*>} [params] ArcGIS Rest parameters. This field is optional. Service
  * defaults will be used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is
- * `IMAGE` by default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`, and `IMAGESR`
+ * `IMAGE` by default. `TRANSPARENT` is `true` by default.  `BBOX`, `SIZE`, `BBOXSR`, and `IMAGESR`
  * will be set dynamically. Set `LAYERS` to override the default service layer visibility. See
- * http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/
+ * {@link http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/}
  * for further reference.
- * @property {module:ol/proj~ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport,
  * `2` means twice the size of the map viewport, and so on.
- * @property {Array.<number>} [resolutions] Resolutions. If specified, requests will be made for
+ * @property {Array<number>} [resolutions] Resolutions. If specified, requests will be made for
  * these resolutions only.
  * @property {string} [url] ArcGIS Rest service URL for a Map Service or Image Service. The url
  * should include /MapServer or /ImageServer.
@@ -48,16 +47,16 @@ import {appendParams} from '../uri.js';
  * take advantage of ol image caching and use
  * {@link module:ol/source/TileArcGISRest} data source.
  *
- * @fires ol/source/Image~ImageSourceEvent
+ * @fires module:ol/source/Image.ImageSourceEvent
  * @api
  */
 class ImageArcGISRest extends ImageSource {
   /**
-   * @param {module:ol/source/ImageArcGISRest~Options=} opt_options Image ArcGIS Rest Options.
+   * @param {Options=} opt_options Image ArcGIS Rest Options.
    */
   constructor(opt_options) {
 
-    const options = opt_options || {};
+    const options = opt_options || /** @type {Options} */ ({});
 
     super({
       attributions: options.attributions,
@@ -86,7 +85,7 @@ class ImageArcGISRest extends ImageSource {
 
     /**
      * @private
-     * @type {module:ol/Image~LoadFunction}
+     * @type {import("../Image.js").LoadFunction}
      */
     this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
       options.imageLoadFunction : defaultImageLoadFunction;
@@ -100,13 +99,13 @@ class ImageArcGISRest extends ImageSource {
 
     /**
      * @private
-     * @type {module:ol/Image}
+     * @type {import("../Image.js").default}
      */
     this.image_ = null;
 
     /**
      * @private
-     * @type {module:ol/size~Size}
+     * @type {import("../size.js").Size}
      */
     this.imageSize_ = [0, 0];
 
@@ -207,7 +206,7 @@ class ImageArcGISRest extends ImageSource {
 
   /**
    * Return the image load function of the source.
-   * @return {module:ol/Image~LoadFunction} The image load function.
+   * @return {import("../Image.js").LoadFunction} The image load function.
    * @api
    */
   getImageLoadFunction() {
@@ -215,10 +214,10 @@ class ImageArcGISRest extends ImageSource {
   }
 
   /**
-   * @param {module:ol/extent~Extent} extent Extent.
-   * @param {module:ol/size~Size} size Size.
+   * @param {import("../extent.js").Extent} extent Extent.
+   * @param {import("../size.js").Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/proj/Projection} projection Projection.
+   * @param {import("../proj/Projection.js").default} projection Projection.
    * @param {Object} params Params.
    * @return {string} Request URL.
    * @private
@@ -255,7 +254,7 @@ class ImageArcGISRest extends ImageSource {
 
   /**
    * Set the image load function of the source.
-   * @param {module:ol/Image~LoadFunction} imageLoadFunction Image load function.
+   * @param {import("../Image.js").LoadFunction} imageLoadFunction Image load function.
    * @api
    */
   setImageLoadFunction(imageLoadFunction) {

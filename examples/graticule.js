@@ -1,4 +1,4 @@
-import Graticule from '../src/ol/Graticule.js';
+import Graticule from '../src/ol/layer/Graticule.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -13,6 +13,16 @@ const map = new Map({
       source: new OSM({
         wrapX: false
       })
+    }),
+    new Graticule({
+      // the style to use for the lines, optional.
+      strokeStyle: new Stroke({
+        color: 'rgba(255,120,0,0.9)',
+        width: 2,
+        lineDash: [0.5, 4]
+      }),
+      showLabels: true,
+      wrapX: false
     })
   ],
   target: 'map',
@@ -21,16 +31,3 @@ const map = new Map({
     zoom: 5
   })
 });
-
-// Create the graticule component
-const graticule = new Graticule({
-  // the style to use for the lines, optional.
-  strokeStyle: new Stroke({
-    color: 'rgba(255,120,0,0.9)',
-    width: 2,
-    lineDash: [0.5, 4]
-  }),
-  showLabels: true
-});
-
-graticule.setMap(map);

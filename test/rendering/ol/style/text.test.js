@@ -18,16 +18,18 @@ describe('ol.rendering.style.Text', function() {
   let map, vectorSource;
 
   function createMap(renderer, opt_pixelRatio) {
+    const MapConstructor = Map;
+    const LayerConstructor = VectorLayer;
+
     const pixelRatio = opt_pixelRatio || 1;
     vectorSource = new VectorSource();
-    const vectorLayer = new VectorLayer({
+    const vectorLayer = new LayerConstructor({
       source: vectorSource
     });
 
-    map = new Map({
+    map = new MapConstructor({
       pixelRatio: pixelRatio,
       target: createMapDiv(200 / pixelRatio, 200 / pixelRatio),
-      renderer: renderer,
       layers: [vectorLayer],
       view: new View({
         projection: 'EPSG:4326',
@@ -363,7 +365,7 @@ describe('ol.rendering.style.Text', function() {
       it('renders text along a linestring with `textAlign: \'center\'`', function(done) {
         createMap('canvas');
         createLineString(uglyPath, 'center');
-        expectResemble(map, 'rendering/ol/style/expected/text-linestring-center.png', 3.6, done);
+        expectResemble(map, 'rendering/ol/style/expected/text-linestring-center.png', 3.63, done);
       });
 
       it('omits text along a linestring with `textAlign: \'left\'` when > maxAngle', function(done) {
@@ -440,19 +442,6 @@ describe('ol.rendering.style.Text', function() {
         expectResemble(map, 'rendering/ol/style/expected/text-linestring-left-nice-rotated.png', 4.5, done);
       });
 
-    });
-
-    where('WebGL').it('tests the webgl renderer without rotation', function(done) {
-      createMap('webgl');
-      createFeatures();
-      expectResemble(map, 'rendering/ol/style/expected/text-webgl.png', 1.8, done);
-    });
-
-    where('WebGL').it('tests the webgl renderer with rotation', function(done) {
-      createMap('webgl');
-      createFeatures();
-      map.getView().setRotation(Math.PI / 7);
-      expectResemble(map, 'rendering/ol/style/expected/text-rotated-webgl.png', 1.8, done);
     });
 
   });

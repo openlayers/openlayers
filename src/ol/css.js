@@ -62,7 +62,7 @@ export const CLASS_COLLAPSED = 'ol-collapsed';
  * Get the list of font families from a font spec.  Note that this doesn't work
  * for font families that have commas in them.
  * @param {string} The CSS font property.
- * @return {Object.<string>} The font families (or null if the input spec is invalid).
+ * @return {Object<string>} The font families (or null if the input spec is invalid).
  */
 export const getFontFamilies = (function() {
   let style;

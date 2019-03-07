@@ -58,7 +58,7 @@ describe('ol.obj.getValues()', function() {
 
   it('gets a list of property values from an object', function() {
     expect(getValues({foo: 'bar', num: 42}).sort()).to.eql([42, 'bar']);
-    expect(getValues(null)).to.eql([]);
+    expect(getValues([])).to.eql([]);
   });
 
 });

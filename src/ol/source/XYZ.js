@@ -2,25 +2,25 @@
  * @module ol/source/XYZ
  */
 
-import TileImage from '../source/TileImage.js';
+import TileImage from './TileImage.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize=2048] Cache size.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
+ * @property {number} [cacheSize] Tile cache size. Default is four times as many tiles as a fullscreen map needs.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
- * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
- * access pixel data with the Canvas renderer.  See
- * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [opaque=true] Whether the layer is opaque.
- * @property {module:ol/proj~ProjectionLike} [projection='EPSG:3857'] Projection.
+ * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
  * @property {number} [maxZoom=18] Optional max zoom level.
  * @property {number} [minZoom=0] Optional min zoom level.
- * @property {module:ol/tilegrid/TileGrid} [tileGrid] Tile grid.
- * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
+ * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
@@ -30,14 +30,14 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
  * should be set to `2`.
- * @property {number|module:ol/size~Size} [tileSize=[256, 256]] The tile size used by the tile service.
- * @property {module:ol/Tile~UrlFunction} [tileUrlFunction] Optional function to get
+ * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The tile size used by the tile service.
+ * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Optional function to get
  * tile URL given a tile coordinate and the projection.
  * Required if url or urls are not provided.
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`,
  * and `{z}` placeholders. A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`,
  * may be used instead of defining each one separately in the `urls` option.
- * @property {Array.<string>} [urls] An array of URL templates.
+ * @property {Array<string>} [urls] An array of URL templates.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
@@ -64,7 +64,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  */
 class XYZ extends TileImage {
   /**
-   * @param {module:ol/source/XYZ~Options=} opt_options XYZ options.
+   * @param {Options=} opt_options XYZ options.
    */
   constructor(opt_options) {
     const options = opt_options || {};
@@ -93,7 +93,8 @@ class XYZ extends TileImage {
       url: options.url,
       urls: options.urls,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
-      transition: options.transition
+      transition: options.transition,
+      attributionsCollapsible: options.attributionsCollapsible
     });
 
   }

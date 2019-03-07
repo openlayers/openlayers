@@ -259,7 +259,7 @@ export const FRAMEBUFFER = 0x8D40;
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array<string>}
  */
 const CONTEXT_IDS = [
   'experimental-webgl',
@@ -308,7 +308,7 @@ let MAX_TEXTURE_SIZE; // value is set below
 
 /**
  * List of supported WebGL extensions.
- * @type {Array.<string>}
+ * @type {Array<string>}
  */
 let EXTENSIONS; // value is set below
 
@@ -323,8 +323,8 @@ let HAS = false;
 //TODO Remove side effects
 if (typeof window !== 'undefined' && 'WebGLRenderingContext' in window) {
   try {
-    const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS'));
-    const gl = getContext(canvas, {failIfMajorPerformanceCaveat: true});
+    const canvas = document.createElement('canvas');
+    const gl = getContext(canvas);
     if (gl) {
       HAS = true;
       MAX_TEXTURE_SIZE = /** @type {number} */ (gl.getParameter(gl.MAX_TEXTURE_SIZE));

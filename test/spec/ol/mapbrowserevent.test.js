@@ -15,7 +15,7 @@ describe('ol.MapBrowserEventHandler', function() {
 
     beforeEach(function() {
       clock = sinon.useFakeTimers();
-      target = document.createElement('DIV');
+      target = document.createElement('div');
       handler = new MapBrowserEventHandler(new Map({
         target: target
       }));

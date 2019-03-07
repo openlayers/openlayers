@@ -11,21 +11,20 @@ import {modulo} from '../math.js';
 import {get as getProjection, transform, transformExtent} from '../proj.js';
 import {calculateSourceResolution} from '../reproj.js';
 import {toSize, buffer as bufferSize, scale as scaleSize} from '../size.js';
-import TileImage from '../source/TileImage.js';
-import WMSServerType from '../source/WMSServerType.js';
+import TileImage from './TileImage.js';
+import WMSServerType from './WMSServerType.js';
 import {hash as tileCoordHash} from '../tilecoord.js';
 import {compareVersions} from '../string.js';
 import {appendParams} from '../uri.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize=2048] Cache size.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {number} [cacheSize] Tile cache size. Default is four times as many tiles as a fullscreen map needs.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
- * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
- * access pixel data with the Canvas renderer.  See
- * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {Object.<string,*>} params WMS request parameters.
+ * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {Object<string,*>} params WMS request parameters.
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
  * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
@@ -40,27 +39,27 @@ import {appendParams} from '../uri.js';
  * this. See http://mapserver.org/output/tile_mode.html.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
- * @property {module:ol/proj~ProjectionLike} projection Projection.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {module:ol/ImageTile~TileClass} [tileClass] Class used to instantiate image tiles.
- * Default is {@link module:ol/ImageTile~TileClass}.
- * @property {module:ol/tilegrid/TileGrid} [tileGrid] Tile grid. Base this on the resolutions,
+ * @property {typeof import("../ImageTile.js").default} [tileClass] Class used to instantiate image tiles.
+ * Default is {@link module:ol/ImageTile~ImageTile}.
+ * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid. Base this on the resolutions,
  * tilesize and extent supported by the server.
  * If this is not defined, a default grid will be used: if there is a projection
  * extent, the grid will be based on that; if not, a grid based on a global
  * extent with origin at 0,0 will be used..
- * @property {module:ol/source/WMSServerType|string} [serverType]
+ * @property {import("./WMSServerType.js").default|string} [serverType]
  * The type of the remote WMS server. Currently only used when `hidpi` is
  * `true`.
- * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
  * };
  * ```
  * @property {string} [url] WMS service URL.
- * @property {Array.<string>} [urls] WMS service urls.
+ * @property {Array<string>} [urls] WMS service urls.
  * Use this instead of `url` when the WMS supports multiple urls for GetMap requests.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  * When set to `false`, only one world
@@ -78,11 +77,11 @@ import {appendParams} from '../uri.js';
  */
 class TileWMS extends TileImage {
   /**
-   * @param {module:ol/source/TileWMS~Options=} [opt_options] Tile WMS options.
+   * @param {Options=} [opt_options] Tile WMS options.
    */
   constructor(opt_options) {
 
-    const options = opt_options || {};
+    const options = opt_options || /** @type {Options} */ ({});
 
     const params = options.params || {};
 
@@ -98,6 +97,7 @@ class TileWMS extends TileImage {
       tileClass: options.tileClass,
       tileGrid: options.tileGrid,
       tileLoadFunction: options.tileLoadFunction,
+      tileUrlFunction: tileUrlFunction,
       url: options.url,
       urls: options.urls,
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
@@ -124,9 +124,9 @@ class TileWMS extends TileImage {
 
     /**
      * @private
-     * @type {module:ol/source/WMSServerType|undefined}
+     * @type {import("./WMSServerType.js").default|undefined}
      */
-    this.serverType_ = /** @type {module:ol/source/WMSServerType|undefined} */ (options.serverType);
+    this.serverType_ = /** @type {import("./WMSServerType.js").default|undefined} */ (options.serverType);
 
     /**
      * @private
@@ -136,7 +136,7 @@ class TileWMS extends TileImage {
 
     /**
      * @private
-     * @type {module:ol/extent~Extent}
+     * @type {import("../extent.js").Extent}
      */
     this.tmpExtent_ = createEmpty();
 
@@ -149,9 +149,9 @@ class TileWMS extends TileImage {
    * Return the GetFeatureInfo URL for the passed coordinate, resolution, and
    * projection. Return `undefined` if the GetFeatureInfo URL cannot be
    * constructed.
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {number} resolution Resolution.
-   * @param {module:ol/proj~ProjectionLike} projection Projection.
+   * @param {import("../proj.js").ProjectionLike} projection Projection.
    * @param {!Object} params GetFeatureInfo params. `INFO_FORMAT` at least should
    *     be provided. If `QUERY_LAYERS` is not provided then the layers specified
    *     in the `LAYERS` parameter will be used. `VERSION` should not be
@@ -214,7 +214,7 @@ class TileWMS extends TileImage {
   /**
    * @inheritDoc
    */
-  getGutterInternal() {
+  getGutter() {
     return this.gutter_;
   }
 
@@ -229,11 +229,11 @@ class TileWMS extends TileImage {
   }
 
   /**
-   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
-   * @param {module:ol/size~Size} tileSize Tile size.
-   * @param {module:ol/extent~Extent} tileExtent Tile extent.
+   * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {import("../size.js").Size} tileSize Tile size.
+   * @param {import("../extent.js").Extent} tileExtent Tile extent.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {module:ol/proj/Projection} projection Projection.
+   * @param {import("../proj/Projection.js").default} projection Projection.
    * @param {Object} params Params.
    * @return {string|undefined} Request URL.
    * @private
@@ -322,52 +322,6 @@ class TileWMS extends TileImage {
   }
 
   /**
-   * @inheritDoc
-   */
-  fixedTileUrlFunction(tileCoord, pixelRatio, projection) {
-
-    let tileGrid = this.getTileGrid();
-    if (!tileGrid) {
-      tileGrid = this.getTileGridForProjection(projection);
-    }
-
-    if (tileGrid.getResolutions().length <= tileCoord[0]) {
-      return undefined;
-    }
-
-    if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
-      pixelRatio = 1;
-    }
-
-    const tileResolution = tileGrid.getResolution(tileCoord[0]);
-    let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-    let tileSize = toSize(
-      tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
-
-    const gutter = this.gutter_;
-    if (gutter !== 0) {
-      tileSize = bufferSize(tileSize, gutter, this.tmpSize);
-      tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
-    }
-
-    if (pixelRatio != 1) {
-      tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
-    }
-
-    const baseParams = {
-      'SERVICE': 'WMS',
-      'VERSION': DEFAULT_WMS_VERSION,
-      'REQUEST': 'GetMap',
-      'FORMAT': 'image/png',
-      'TRANSPARENT': true
-    };
-    assign(baseParams, this.params_);
-
-    return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      pixelRatio, projection, baseParams);
-  }
-
-  /**
    * Update the user-provided params.
    * @param {Object} params Params.
    * @api
@@ -385,6 +339,56 @@ class TileWMS extends TileImage {
     const version = this.params_['VERSION'] || DEFAULT_WMS_VERSION;
     this.v13_ = compareVersions(version, '1.3') >= 0;
   }
+}
+
+/**
+ * @param {import("../tilecoord.js").TileCoord} tileCoord The tile coordinate
+ * @param {number} pixelRatio The pixel ratio
+ * @param {import("../proj/Projection.js").default} projection The projection
+ * @return {string|undefined} The tile URL
+ * @this {TileWMS}
+ */
+function tileUrlFunction(tileCoord, pixelRatio, projection) {
+
+  let tileGrid = this.getTileGrid();
+  if (!tileGrid) {
+    tileGrid = this.getTileGridForProjection(projection);
+  }
+
+  if (tileGrid.getResolutions().length <= tileCoord[0]) {
+    return undefined;
+  }
+
+  if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
+    pixelRatio = 1;
+  }
+
+  const tileResolution = tileGrid.getResolution(tileCoord[0]);
+  let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
+  let tileSize = toSize(
+    tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+
+  const gutter = this.gutter_;
+  if (gutter !== 0) {
+    tileSize = bufferSize(tileSize, gutter, this.tmpSize);
+    tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
+  }
+
+  if (pixelRatio != 1) {
+    tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
+  }
+
+  const baseParams = {
+    'SERVICE': 'WMS',
+    'VERSION': DEFAULT_WMS_VERSION,
+    'REQUEST': 'GetMap',
+    'FORMAT': 'image/png',
+    'TRANSPARENT': true
+  };
+  assign(baseParams, this.params_);
+
+  return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
+    pixelRatio, projection, baseParams);
 }
 
 

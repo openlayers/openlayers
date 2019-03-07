@@ -5,27 +5,27 @@
 class EventSource {
 
   /**
-   * @param {module:ol/pointer/PointerEventHandler} dispatcher Event handler.
-   * @param {!Object.<string, function(Event)>} mapping Event mapping.
+   * @param {import("./PointerEventHandler.js").default} dispatcher Event handler.
+   * @param {!Object<string, function(Event): void>} mapping Event mapping.
    */
   constructor(dispatcher, mapping) {
 
     /**
-     * @type {module:ol/pointer/PointerEventHandler}
+     * @type {import("./PointerEventHandler.js").default}
      */
     this.dispatcher = dispatcher;
 
     /**
      * @private
      * @const
-     * @type {!Object.<string, function(Event)>}
+     * @type {!Object<string, function(Event): void>}
      */
     this.mapping_ = mapping;
   }
 
   /**
    * List of events supported by this source.
-   * @return {Array.<string>} Event names
+   * @return {Array<string>} Event names
    */
   getEvents() {
     return Object.keys(this.mapping_);

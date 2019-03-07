@@ -1,11 +1,11 @@
 /**
  * @module ol/geom/flat/orient
  */
-import {coordinates as reverseCoordinates} from '../flat/reverse.js';
+import {coordinates as reverseCoordinates} from './reverse.js';
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
@@ -33,15 +33,15 @@ export function linearRingIsClockwise(flatCoordinates, offset, end, stride) {
  * is tested (first ring must be clockwise, remaining rings counter-clockwise).
  * To test for right-hand orientation, use the `opt_right` argument.
  *
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<number>} ends Array of end indexes.
+ * @param {Array<number>} ends Array of end indexes.
  * @param {number} stride Stride.
  * @param {boolean=} opt_right Test for right-hand orientation
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
-export function linearRingIsOriented(flatCoordinates, offset, ends, stride, opt_right) {
+export function linearRingsAreOriented(flatCoordinates, offset, ends, stride, opt_right) {
   const right = opt_right !== undefined ? opt_right : false;
   for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
@@ -67,19 +67,23 @@ export function linearRingIsOriented(flatCoordinates, offset, ends, stride, opt_
  * is tested (first ring must be clockwise, remaining rings counter-clockwise).
  * To test for right-hand orientation, use the `opt_right` argument.
  *
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<Array.<number>>} endss Array of array of end indexes.
+ * @param {Array<Array<number>>} endss Array of array of end indexes.
  * @param {number} stride Stride.
  * @param {boolean=} opt_right Test for right-hand orientation
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
-export function linearRingsAreOriented(flatCoordinates, offset, endss, stride, opt_right) {
+export function linearRingssAreOriented(flatCoordinates, offset, endss, stride, opt_right) {
   for (let i = 0, ii = endss.length; i < ii; ++i) {
-    if (!linearRingIsOriented(
-      flatCoordinates, offset, endss[i], stride, opt_right)) {
+    const ends = endss[i];
+    if (!linearRingsAreOriented(
+      flatCoordinates, offset, ends, stride, opt_right)) {
       return false;
+    }
+    if (ends.length) {
+      offset = ends[ends.length - 1];
     }
   }
   return true;
@@ -92,9 +96,9 @@ export function linearRingsAreOriented(flatCoordinates, offset, endss, stride, o
  * counter-clockwise for interior rings).  To orient according to the
  * right-hand rule, use the `opt_right` argument.
  *
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<number>} ends Ends.
+ * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
  * @param {boolean=} opt_right Follow the right-hand rule for orientation.
  * @return {number} End.
@@ -123,9 +127,9 @@ export function orientLinearRings(flatCoordinates, offset, ends, stride, opt_rig
  * counter-clockwise for interior rings).  To orient according to the
  * right-hand rule, use the `opt_right` argument.
  *
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<Array.<number>>} endss Array of array of end indexes.
+ * @param {Array<Array<number>>} endss Array of array of end indexes.
  * @param {number} stride Stride.
  * @param {boolean=} opt_right Follow the right-hand rule for orientation.
  * @return {number} End.

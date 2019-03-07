@@ -12,6 +12,7 @@ import KeyboardZoom from './interaction/KeyboardZoom.js';
 import MouseWheelZoom from './interaction/MouseWheelZoom.js';
 import PinchRotate from './interaction/PinchRotate.js';
 import PinchZoom from './interaction/PinchZoom.js';
+import {focus} from './events/condition.js';
 
 export {default as DoubleClickZoom} from './interaction/DoubleClickZoom.js';
 export {default as DragAndDrop} from './interaction/DragAndDrop.js';
@@ -39,6 +40,10 @@ export {default as Translate} from './interaction/Translate.js';
  * @typedef {Object} DefaultsOptions
  * @property {boolean} [altShiftDragRotate=true] Whether Alt-Shift-drag rotate is
  * desired.
+ * @property {boolean} [onFocusOnly=false] Interact only when the map has the
+ * focus. This affects the `MouseWheelZoom` and `DragPan` interactions and is
+ * useful when page scroll is desired for maps that do not have the browser's
+ * focus.
  * @property {boolean} [constrainResolution=false] Zoom to the closest integer
  * zoom level after the wheel/trackpad or pinch gesture ends.
  * @property {boolean} [doubleClickZoom=true] Whether double click zoom is
@@ -63,8 +68,9 @@ export {default as Translate} from './interaction/Translate.js';
  * a different order for interactions, you will need to create your own
  * {@link module:ol/interaction/Interaction} instances and insert
  * them into a {@link module:ol/Collection} in the order you want
- * before creating your {@link module:ol/Map~Map} instance. The default set of
- * interactions, in sequence, is:
+ * before creating your {@link module:ol/Map~Map} instance. Changing the order can
+ * be of interest if the event propagation needs to be stopped at a point.
+ * The default set of interactions, in sequence, is:
  * * {@link module:ol/interaction/DragRotate~DragRotate}
  * * {@link module:ol/interaction/DoubleClickZoom~DoubleClickZoom}
  * * {@link module:ol/interaction/DragPan~DragPan}
@@ -75,9 +81,8 @@ export {default as Translate} from './interaction/Translate.js';
  * * {@link module:ol/interaction/MouseWheelZoom~MouseWheelZoom}
  * * {@link module:ol/interaction/DragZoom~DragZoom}
  *
- * @param {module:ol/interaction/Interaction~DefaultsOptions=} opt_options
- * Defaults options.
- * @return {module:ol/Collection.<module:ol/interaction/Interaction>}
+ * @param {DefaultsOptions=} opt_options Defaults options.
+ * @return {import("./Collection.js").default<import("./interaction/Interaction.js").default>}
  * A collection of interactions to be used with the {@link module:ol/Map~Map}
  * constructor's `interactions` option.
  * @api
@@ -108,6 +113,7 @@ export function defaults(opt_options) {
   const dragPan = options.dragPan !== undefined ? options.dragPan : true;
   if (dragPan) {
     interactions.push(new DragPan({
+      condition: options.onFocusOnly ? focus : undefined,
       kinetic: kinetic
     }));
   }
@@ -139,6 +145,7 @@ export function defaults(opt_options) {
     options.mouseWheelZoom : true;
   if (mouseWheelZoom) {
     interactions.push(new MouseWheelZoom({
+      condition: options.onFocusOnly ? focus : undefined,
       constrainResolution: options.constrainResolution,
       duration: options.zoomDuration
     }));

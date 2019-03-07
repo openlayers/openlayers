@@ -12,7 +12,7 @@ const bins = 10;
 /**
  * Calculate the Vegetation Greenness Index (VGI) from an input pixel.  This
  * is a rough estimate assuming that pixel values correspond to reflectance.
- * @param {Array.<number>} pixel An array of [R, G, B, A] values.
+ * @param {Array<number>} pixel An array of [R, G, B, A] values.
  * @return {number} The VGI value for the given pixel.
  */
 function vgi(pixel) {

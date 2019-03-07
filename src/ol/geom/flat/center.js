@@ -5,11 +5,11 @@ import {createEmpty, createOrUpdateFromFlatCoordinates} from '../../extent.js';
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<Array.<number>>} endss Endss.
+ * @param {Array<Array<number>>} endss Endss.
  * @param {number} stride Stride.
- * @return {Array.<number>} Flat centers.
+ * @return {Array<number>} Flat centers.
  */
 export function linearRingss(flatCoordinates, offset, endss, stride) {
   const flatCenters = [];

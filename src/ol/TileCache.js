@@ -16,13 +16,12 @@ class TileCache extends LRUCache {
   }
 
   /**
-   * @param {!Object.<string, module:ol/TileRange>} usedTiles Used tiles.
+   * @param {!Object<string, import("./TileRange.js").default>} usedTiles Used tiles.
    */
   expireCache(usedTiles) {
     while (this.canExpireCache()) {
       const tile = this.peekLast();
-      const zKey = tile.tileCoord[0].toString();
-      if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
+      if (tile.getKey() in usedTiles) {
         break;
       } else {
         this.pop().dispose();

@@ -1,13 +1,16 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import ScaleLine, {render} from '../../../../src/ol/control/ScaleLine.js';
-import {fromLonLat} from '../../../../src/ol/proj.js';
+import {fromLonLat, clearAllProjections, addCommon} from '../../../../src/ol/proj.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
+import proj4 from 'proj4';
+import {register} from '../../../../src/ol/proj/proj4.js';
 
 describe('ol.control.ScaleLine', function() {
   let map;
   beforeEach(function() {
     const target = document.createElement('div');
+    target.style.height = '256px';
     document.body.appendChild(target);
     map = new Map({
       target: target
@@ -243,6 +246,25 @@ describe('ol.control.ScaleLine', function() {
   });
 
   describe('projections affect the scaleline', function() {
+
+    beforeEach(function() {
+      proj4.defs('Indiana-East', 'PROJCS["IN83-EF",GEOGCS["LL83",DATUM["NAD83",' +
+        'SPHEROID["GRS1980",6378137.000,298.25722210]],PRIMEM["Greenwich",0],' +
+        'UNIT["Degree",0.017453292519943295]],PROJECTION["Transverse_Mercator"],' +
+        'PARAMETER["false_easting",328083.333],' +
+        'PARAMETER["false_northing",820208.333],' +
+        'PARAMETER["scale_factor",0.999966666667],' +
+        'PARAMETER["central_meridian",-85.66666666666670],' +
+        'PARAMETER["latitude_of_origin",37.50000000000000],' +
+        'UNIT["Foot_US",0.30480060960122]]');
+      register(proj4);
+    });
+
+    afterEach(function() {
+      clearAllProjections();
+      addCommon();
+    });
+
     it('is rendered differently for different projections', function() {
       const ctrl = new ScaleLine();
       ctrl.setMap(map);
@@ -252,15 +274,47 @@ describe('ol.control.ScaleLine', function() {
         projection: 'EPSG:3857'
       }));
       map.renderSync();
-      const innerHtml3857 = ctrl.element.innerHTML;
+      expect(ctrl.element.innerText).to.be('2000 km');
       map.setView(new View({
         center: [7, 52],
         zoom: 2,
         projection: 'EPSG:4326'
       }));
       map.renderSync();
-      const innerHtml4326 = ctrl.element.innerHTML;
-      expect(innerHtml4326).to.not.be(innerHtml3857);
+      expect(ctrl.element.innerText).to.be('5000 km');
+      map.setView(new View({
+        center: fromLonLat([-85.685, 39.891], 'Indiana-East'),
+        zoom: 7,
+        projection: 'Indiana-East'
+      }));
+      map.renderSync();
+      expect(ctrl.element.innerText).to.be('100 km');
+    });
+
+    it('shows the same scale for different projections at higher resolutions', function() {
+      const ctrl = new ScaleLine();
+      ctrl.setMap(map);
+      map.setView(new View({
+        center: fromLonLat([-85.685, 39.891]),
+        zoom: 7,
+        projection: 'EPSG:3857'
+      }));
+      map.renderSync();
+      expect(ctrl.element.innerText).to.be('100 km');
+      map.setView(new View({
+        center: [-85.685, 39.891],
+        zoom: 7,
+        projection: 'EPSG:4326'
+      }));
+      map.renderSync();
+      expect(ctrl.element.innerText).to.be('100 km');
+      map.setView(new View({
+        center: fromLonLat([-85.685, 39.891], 'Indiana-East'),
+        zoom: 7,
+        projection: 'Indiana-East'
+      }));
+      map.renderSync();
+      expect(ctrl.element.innerText).to.be('100 km');
     });
 
     it('Projection\'s metersPerUnit affect scale for non-degree units', function() {
@@ -343,7 +397,7 @@ describe('ol.control.ScaleLine', function() {
       const ctrl = new ScaleLine();
       ctrl.setMap(map);
       map.setView(new View({
-        center: fromLonLat([7, 0]),
+        center: [7, 0],
         zoom: 2,
         projection: 'EPSG:4326'
       }));
@@ -361,7 +415,7 @@ describe('ol.control.ScaleLine', function() {
       });
       ctrl.setMap(map);
       map.setView(new View({
-        center: fromLonLat([7, 0]),
+        center: [7, 0],
         zoom: 2,
         projection: 'EPSG:4326'
       }));

@@ -1,16 +1,16 @@
 /**
  * @module ol/format/WMSCapabilities
  */
-import {readHref} from '../format/XLink.js';
-import XML from '../format/XML.js';
-import {readDecimalString, readString, readNonNegativeInteger, readDecimal, readBooleanString, readNonNegativeIntegerString} from '../format/xsd.js';
+import {readHref} from './XLink.js';
+import XML from './XML.js';
+import {readDecimalString, readString, readNonNegativeInteger, readDecimal, readBooleanString, readNonNegativeIntegerString} from './xsd.js';
 import {makeArrayPusher, makeObjectPropertyPusher, makeObjectPropertySetter,
   makeStructureNS, pushParseAndPop} from '../xml.js';
 
 
 /**
  * @const
- * @type {Array.<null|string>}
+ * @type {Array<null|string>}
  */
 const NAMESPACE_URIS = [
   null,
@@ -20,7 +20,7 @@ const NAMESPACE_URIS = [
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -31,7 +31,7 @@ const PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const CAPABILITY_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -84,7 +84,7 @@ class WMSCapabilities extends XML {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const SERVICE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -104,7 +104,7 @@ const SERVICE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const CONTACT_INFORMATION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -119,7 +119,7 @@ const CONTACT_INFORMATION_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const CONTACT_PERSON_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -130,7 +130,7 @@ const CONTACT_PERSON_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const CONTACT_ADDRESS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -145,7 +145,7 @@ const CONTACT_ADDRESS_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const EXCEPTION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -155,7 +155,7 @@ const EXCEPTION_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const LAYER_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -182,7 +182,7 @@ const LAYER_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const ATTRIBUTION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -194,7 +194,7 @@ const ATTRIBUTION_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS =
     makeStructureNS(NAMESPACE_URIS, {
@@ -207,7 +207,7 @@ const EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS =
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const REQUEST_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -219,7 +219,7 @@ const REQUEST_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const OPERATIONTYPE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -230,7 +230,7 @@ const OPERATIONTYPE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const DCPTYPE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -240,7 +240,7 @@ const DCPTYPE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const HTTP_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -251,7 +251,7 @@ const HTTP_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const STYLE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -266,7 +266,7 @@ const STYLE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const FORMAT_ONLINERESOURCE_PARSERS =
     makeStructureNS(NAMESPACE_URIS, {
@@ -277,7 +277,7 @@ const FORMAT_ONLINERESOURCE_PARSERS =
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const KEYWORDLIST_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -286,8 +286,8 @@ const KEYWORDLIST_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Attribution object.
  */
 function readAttribution(node, objectStack) {
@@ -296,8 +296,8 @@ function readAttribution(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object} Bounding box object.
  */
 function readBoundingBox(node, objectStack) {
@@ -322,9 +322,9 @@ function readBoundingBox(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {module:ol/extent~Extent|undefined} Bounding box object.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
+ * @return {import("../extent.js").Extent|undefined} Bounding box object.
  */
 function readEXGeographicBoundingBox(node, objectStack) {
   const geographicBoundingBox = pushParseAndPop(
@@ -354,8 +354,8 @@ function readEXGeographicBoundingBox(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Capability object.
  */
 function readCapability(node, objectStack) {
@@ -364,8 +364,8 @@ function readCapability(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Service object.
  */
 function readService(node, objectStack) {
@@ -374,8 +374,8 @@ function readService(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Contact information object.
  */
 function readContactInformation(node, objectStack) {
@@ -384,8 +384,8 @@ function readContactInformation(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Contact person object.
  */
 function readContactPersonPrimary(node, objectStack) {
@@ -394,8 +394,8 @@ function readContactPersonPrimary(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Contact address object.
  */
 function readContactAddress(node, objectStack) {
@@ -404,9 +404,9 @@ function readContactAddress(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {Array.<string>|undefined} Format array.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
+ * @return {Array<string>|undefined} Format array.
  */
 function readException(node, objectStack) {
   return pushParseAndPop([], EXCEPTION_PARSERS, node, objectStack);
@@ -414,8 +414,8 @@ function readException(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Layer object.
  */
 function readCapabilityLayer(node, objectStack) {
@@ -424,12 +424,12 @@ function readCapabilityLayer(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Layer object.
  */
 function readLayer(node, objectStack) {
-  const parentLayerObject = /**  @type {!Object.<string,*>} */ (objectStack[objectStack.length - 1]);
+  const parentLayerObject = /**  @type {!Object<string,*>} */ (objectStack[objectStack.length - 1]);
 
   const layerObject = pushParseAndPop({}, LAYER_PARSERS, node, objectStack);
 
@@ -496,8 +496,8 @@ function readLayer(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object} Dimension object.
  */
 function readDimension(node, objectStack) {
@@ -516,8 +516,8 @@ function readDimension(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Online resource object.
  */
 function readFormatOnlineresource(node, objectStack) {
@@ -526,8 +526,8 @@ function readFormatOnlineresource(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Request object.
  */
 function readRequest(node, objectStack) {
@@ -536,8 +536,8 @@ function readRequest(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} DCP type object.
  */
 function readDCPType(node, objectStack) {
@@ -546,8 +546,8 @@ function readDCPType(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} HTTP object.
  */
 function readHTTP(node, objectStack) {
@@ -556,8 +556,8 @@ function readHTTP(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Operation type object.
  */
 function readOperationType(node, objectStack) {
@@ -566,8 +566,8 @@ function readOperationType(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Online resource object.
  */
 function readSizedFormatOnlineresource(node, objectStack) {
@@ -585,8 +585,8 @@ function readSizedFormatOnlineresource(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Authority URL object.
  */
 function readAuthorityURL(node, objectStack) {
@@ -600,8 +600,8 @@ function readAuthorityURL(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Metadata URL object.
  */
 function readMetadataURL(node, objectStack) {
@@ -615,8 +615,8 @@ function readMetadataURL(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Style object.
  */
 function readStyle(node, objectStack) {
@@ -625,9 +625,9 @@ function readStyle(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
- * @return {Array.<string>|undefined} Keyword list.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
+ * @return {Array<string>|undefined} Keyword list.
  */
 function readKeywordList(node, objectStack) {
   return pushParseAndPop([], KEYWORDLIST_PARSERS, node, objectStack);

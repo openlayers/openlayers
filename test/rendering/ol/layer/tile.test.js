@@ -18,12 +18,12 @@ describe('ol.rendering.layer.Tile', function() {
   let map;
 
   function createMap(renderer, opt_center, opt_size, opt_pixelRatio, opt_resolutions) {
+    const MapConstructor = Map;
     const size = opt_size !== undefined ? opt_size : [50, 50];
 
-    map = new Map({
+    map = new MapConstructor({
       pixelRatio: opt_pixelRatio || 1,
       target: createMapDiv(size[0], size[1]),
-      renderer: renderer,
       view: new View({
         center: opt_center !== undefined ? opt_center : transform(
           [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
@@ -40,7 +40,8 @@ describe('ol.rendering.layer.Tile', function() {
     map = null;
   });
 
-  function waitForTiles(sources, layerOptions, onTileLoaded) {
+  function waitForTiles(renderer, sources, layerOptions, onTileLoaded) {
+    const LayerConstructor = TileLayer;
     let tilesLoading = 0;
     let tileLoaded = 0;
 
@@ -66,7 +67,7 @@ describe('ol.rendering.layer.Tile', function() {
         source: source
       };
       assign(options, layerOptions[i] || layerOptions);
-      map.addLayer(new TileLayer(options));
+      map.addLayer(new LayerConstructor(options));
     });
   }
 
@@ -76,7 +77,7 @@ describe('ol.rendering.layer.Tile', function() {
       const source = new XYZ({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
       });
-      waitForTiles([source], {}, function() {
+      waitForTiles('canvas', [source], {}, function() {
         setTimeout(function() {
           expectResemble(map, 'rendering/ol/layer/expected/osm-canvas.png',
             IMAGE_TOLERANCE, done);
@@ -97,17 +98,8 @@ describe('ol.rendering.layer.Tile', function() {
 
     it('tests the canvas renderer', function(done) {
       createMap('canvas');
-      waitForTiles([source], {}, function() {
+      waitForTiles('canvas', [source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/osm-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
-    where('WebGL').it('tests the WebGL renderer', function(done) {
-      assertWebGL();
-      createMap('webgl');
-      waitForTiles([source], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/osm-webgl.png',
           IMAGE_TOLERANCE, done);
       });
     });
@@ -127,23 +119,6 @@ describe('ol.rendering.layer.Tile', function() {
       });
     });
 
-    it('tests the canvas renderer', function(done) {
-      createMap('canvas');
-      waitForTiles([source1, source2], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
-    where('WebGL').it('tests the WebGL renderer', function(done) {
-      assertWebGL();
-      createMap('webgl');
-      waitForTiles([source1, source2], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/2-layers-webgl.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
     function centerExtent(map) {
       const c = map.getView().calculateExtent(map.getSize());
       const qw = getSize(c)[0] / 4;
@@ -151,18 +126,10 @@ describe('ol.rendering.layer.Tile', function() {
       return [c[0] + qw, c[1] + qh, c[2] - qw, c[3] - qh];
     }
 
-    it('tests canvas layer extent clipping', function(done) {
-      createMap('canvas');
-      waitForTiles([source1, source2], [{}, {extent: centerExtent(map)}], function() {
-        expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
     it('tests canvas layer extent clipping with rotation', function(done) {
       createMap('canvas');
       map.getView().setRotation(Math.PI / 2);
-      waitForTiles([source1, source2], [{}, {extent: centerExtent(map)}], function() {
+      waitForTiles('canvas', [source1, source2], [{}, {extent: centerExtent(map)}], function() {
         expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent-rotate.png',
           IMAGE_TOLERANCE, done);
       });
@@ -170,7 +137,7 @@ describe('ol.rendering.layer.Tile', function() {
 
     it('tests canvas layer extent clipping (HiDPI)', function(done) {
       createMap('canvas', undefined, undefined, 2);
-      waitForTiles([source1, source2], [{}, {extent: centerExtent(map)}], function() {
+      waitForTiles('canvas', [source1, source2], [{}, {extent: centerExtent(map)}], function() {
         expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent-hidpi.png',
           IMAGE_TOLERANCE, done);
       });
@@ -179,7 +146,7 @@ describe('ol.rendering.layer.Tile', function() {
     it('tests canvas layer extent clipping with rotation (HiDPI)', function(done) {
       createMap('canvas', undefined, undefined, 2);
       map.getView().setRotation(Math.PI / 2);
-      waitForTiles([source1, source2], [{}, {extent: centerExtent(map)}], function() {
+      waitForTiles('canvas', [source1, source2], [{}, {extent: centerExtent(map)}], function() {
         expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent-rotate-hidpi.png',
           IMAGE_TOLERANCE, done);
       });
@@ -199,17 +166,8 @@ describe('ol.rendering.layer.Tile', function() {
 
     it('tests the canvas renderer', function(done) {
       createMap('canvas');
-      waitForTiles([source], {opacity: 0.2}, function() {
+      waitForTiles('canvas', [source], {opacity: 0.2}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/opacity-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
-    where('WebGL').it('tests the WebGL renderer', function(done) {
-      assertWebGL();
-      createMap('webgl');
-      waitForTiles([source], {opacity: 0.2}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/opacity-webgl.png',
           IMAGE_TOLERANCE, done);
       });
     });
@@ -230,18 +188,8 @@ describe('ol.rendering.layer.Tile', function() {
     it('512x256 renders correcly using the canvas renderer', function(done) {
       const source = createSource('512x256');
       createMap('canvas', [-10997148, 4569099]);
-      waitForTiles([source], {}, function() {
+      waitForTiles('canvas', [source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/512x256-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
-    where('WebGL').it('512x256 renders correcly using the webgl renderer', function(done) {
-      assertWebGL();
-      const source = createSource('512x256');
-      createMap('webgl', [-10997148, 4569099]);
-      waitForTiles([source], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/512x256-webgl.png',
           IMAGE_TOLERANCE, done);
       });
     });
@@ -250,19 +198,8 @@ describe('ol.rendering.layer.Tile', function() {
       const source = createSource('192x256');
       createMap('canvas', [-11271098, 3747248], [100, 100], undefined,
         source.getTileGrid().getResolutions());
-      waitForTiles([source], {}, function() {
+      waitForTiles('canvas', [source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/192x256-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
-    where('WebGL').it('192x256 renders correcly using the webgl renderer', function(done) {
-      assertWebGL();
-      const source = createSource('192x256');
-      createMap('webgl', [-11271098, 3747248], [100, 100], undefined,
-        source.getTileGrid().getResolutions());
-      waitForTiles([source], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/192x256-webgl.png',
           IMAGE_TOLERANCE, done);
       });
     });
@@ -280,7 +217,6 @@ describe('ol.rendering.layer.Tile', function() {
         evt.element.on('render', function(e) {
           e.vectorContext.setImageStyle(new CircleStyle({
             radius: 5,
-            snapToPixel: false,
             fill: new Fill({color: 'yellow'}),
             stroke: new Stroke({color: 'red', width: 1})
           }));
@@ -293,7 +229,7 @@ describe('ol.rendering.layer.Tile', function() {
     it('works with the canvas renderer', function(done) {
       createMap('canvas', undefined, [100, 100]);
       map.getLayers().on('add', onAddLayer);
-      waitForTiles([source], {}, function() {
+      waitForTiles('canvas', [source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/render-canvas.png',
           IMAGE_TOLERANCE, done);
       });

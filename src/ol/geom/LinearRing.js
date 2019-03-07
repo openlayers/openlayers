@@ -2,14 +2,14 @@
  * @module ol/geom/LinearRing
  */
 import {closestSquaredDistanceXY} from '../extent.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
-import {linearRing as linearRingArea} from '../geom/flat/area.js';
-import {assignClosestPoint, maxSquaredDelta} from '../geom/flat/closest.js';
-import {deflateCoordinates} from '../geom/flat/deflate.js';
-import {inflateCoordinates} from '../geom/flat/inflate.js';
-import {douglasPeucker} from '../geom/flat/simplify.js';
+import GeometryLayout from './GeometryLayout.js';
+import GeometryType from './GeometryType.js';
+import SimpleGeometry from './SimpleGeometry.js';
+import {linearRing as linearRingArea} from './flat/area.js';
+import {assignClosestPoint, maxSquaredDelta} from './flat/closest.js';
+import {deflateCoordinates} from './flat/deflate.js';
+import {inflateCoordinates} from './flat/inflate.js';
+import {douglasPeucker} from './flat/simplify.js';
 
 /**
  * @classdesc
@@ -21,9 +21,9 @@ import {douglasPeucker} from '../geom/flat/simplify.js';
 class LinearRing extends SimpleGeometry {
 
   /**
-   * @param {Array.<module:ol/coordinate~Coordinate>|Array.<number>} coordinates Coordinates.
+   * @param {Array<import("../coordinate.js").Coordinate>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {GeometryLayout=} opt_layout Layout.
    */
   constructor(coordinates, opt_layout) {
 
@@ -42,16 +42,16 @@ class LinearRing extends SimpleGeometry {
     this.maxDeltaRevision_ = -1;
 
     if (opt_layout !== undefined && !Array.isArray(coordinates[0])) {
-      this.setFlatCoordinates(opt_layout, coordinates);
+      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
     } else {
-      this.setCoordinates(coordinates, opt_layout);
+      this.setCoordinates(/** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates), opt_layout);
     }
 
   }
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!module:ol/geom/LinearRing} Clone.
+   * @return {!LinearRing} Clone.
    * @override
    * @api
    */
@@ -87,7 +87,7 @@ class LinearRing extends SimpleGeometry {
 
   /**
    * Return the coordinates of the linear ring.
-   * @return {Array.<module:ol/coordinate~Coordinate>} Coordinates.
+   * @return {Array<import("../coordinate.js").Coordinate>} Coordinates.
    * @override
    * @api
    */
@@ -118,12 +118,14 @@ class LinearRing extends SimpleGeometry {
   /**
    * @inheritDoc
    */
-  intersectsExtent(extent) {}
+  intersectsExtent(extent) {
+    return false;
+  }
 
   /**
    * Set the coordinates of the linear ring.
-   * @param {!Array.<module:ol/coordinate~Coordinate>} coordinates Coordinates.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
+   * @param {GeometryLayout=} opt_layout Layout.
    * @override
    * @api
    */

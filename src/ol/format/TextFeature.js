@@ -1,6 +1,7 @@
 /**
  * @module ol/format/TextFeature
  */
+import {abstract} from '../util.js';
 import FeatureFormat from '../format/Feature.js';
 import FormatType from '../format/FormatType.js';
 
@@ -28,8 +29,8 @@ class TextFeature extends FeatureFormat {
    * Read the feature from the source.
    *
    * @param {Document|Node|Object|string} source Source.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
-   * @return {module:ol/Feature} Feature.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @return {import("../Feature.js").default} Feature.
    * @api
    */
   readFeature(source, opt_options) {
@@ -39,18 +40,20 @@ class TextFeature extends FeatureFormat {
   /**
    * @abstract
    * @param {string} text Text.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @protected
-   * @return {module:ol/Feature} Feature.
+   * @return {import("../Feature.js").default} Feature.
    */
-  readFeatureFromText(text, opt_options) {}
+  readFeatureFromText(text, opt_options) {
+    return abstract();
+  }
 
   /**
    * Read the features from the source.
    *
    * @param {Document|Node|Object|string} source Source.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
-   * @return {Array.<module:ol/Feature>} Features.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @return {Array<import("../Feature.js").default>} Features.
    * @api
    */
   readFeatures(source, opt_options) {
@@ -60,18 +63,20 @@ class TextFeature extends FeatureFormat {
   /**
    * @abstract
    * @param {string} text Text.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @protected
-   * @return {Array.<module:ol/Feature>} Features.
+   * @return {Array<import("../Feature.js").default>} Features.
    */
-  readFeaturesFromText(text, opt_options) {}
+  readFeaturesFromText(text, opt_options) {
+    return abstract();
+  }
 
   /**
    * Read the geometry from the source.
    *
    * @param {Document|Node|Object|string} source Source.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
-   * @return {module:ol/geom/Geometry} Geometry.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @return {import("../geom/Geometry.js").default} Geometry.
    * @api
    */
   readGeometry(source, opt_options) {
@@ -81,18 +86,19 @@ class TextFeature extends FeatureFormat {
   /**
    * @abstract
    * @param {string} text Text.
-   * @param {module:ol/format/Feature~ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
    * @protected
-   * @return {module:ol/geom/Geometry} Geometry.
+   * @return {import("../geom/Geometry.js").default} Geometry.
    */
-  readGeometryFromText(text, opt_options) {}
+  readGeometryFromText(text, opt_options) {
+    return abstract();
+  }
 
   /**
    * Read the projection from the source.
    *
-   * @function
    * @param {Document|Node|Object|string} source Source.
-   * @return {module:ol/proj/Projection} Projection.
+   * @return {import("../proj/Projection.js").default} Projection.
    * @api
    */
   readProjection(source) {
@@ -102,7 +108,7 @@ class TextFeature extends FeatureFormat {
   /**
    * @param {string} text Text.
    * @protected
-   * @return {module:ol/proj/Projection} Projection.
+   * @return {import("../proj/Projection.js").default} Projection.
    */
   readProjectionFromText(text) {
     return this.dataProjection;
@@ -111,9 +117,8 @@ class TextFeature extends FeatureFormat {
   /**
    * Encode a feature as a string.
    *
-   * @function
-   * @param {module:ol/Feature} feature Feature.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @param {import("../Feature.js").default} feature Feature.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {string} Encoded feature.
    * @api
    */
@@ -123,18 +128,20 @@ class TextFeature extends FeatureFormat {
 
   /**
    * @abstract
-   * @param {module:ol/Feature} feature Features.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @param {import("../Feature.js").default} feature Features.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @protected
    * @return {string} Text.
    */
-  writeFeatureText(feature, opt_options) {}
+  writeFeatureText(feature, opt_options) {
+    return abstract();
+  }
 
   /**
    * Encode an array of features as string.
    *
-   * @param {Array.<module:ol/Feature>} features Features.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {string} Encoded features.
    * @api
    */
@@ -144,19 +151,20 @@ class TextFeature extends FeatureFormat {
 
   /**
    * @abstract
-   * @param {Array.<module:ol/Feature>} features Features.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @protected
    * @return {string} Text.
    */
-  writeFeaturesText(features, opt_options) {}
+  writeFeaturesText(features, opt_options) {
+    return abstract();
+  }
 
   /**
    * Write a single geometry.
    *
-   * @function
-   * @param {module:ol/geom/Geometry} geometry Geometry.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @param {import("../geom/Geometry.js").default} geometry Geometry.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @return {string} Geometry.
    * @api
    */
@@ -166,12 +174,14 @@ class TextFeature extends FeatureFormat {
 
   /**
    * @abstract
-   * @param {module:ol/geom/Geometry} geometry Geometry.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Write options.
+   * @param {import("../geom/Geometry.js").default} geometry Geometry.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Write options.
    * @protected
    * @return {string} Text.
    */
-  writeGeometryText(geometry, opt_options) {}
+  writeGeometryText(geometry, opt_options) {
+    return abstract();
+  }
 }
 
 

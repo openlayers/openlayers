@@ -4,8 +4,8 @@
 // FIXME add typedef for stack state objects
 import {extend} from '../array.js';
 import Feature from '../Feature.js';
-import {transformWithOptions} from '../format/Feature.js';
-import XMLFeature from '../format/XMLFeature.js';
+import {transformGeometryWithOptions} from './Feature.js';
+import XMLFeature from './XMLFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import Point from '../geom/Point.js';
@@ -17,14 +17,14 @@ import {pushParseAndPop, makeStructureNS} from '../xml.js';
 
 /**
  * @const
- * @type {Array.<null>}
+ * @type {Array<null>}
  */
 const NAMESPACE_URIS = [null];
 
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const WAY_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -35,7 +35,7 @@ const WAY_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -75,7 +75,7 @@ class OSMXML extends XMLFeature {
       // parse nodes in ways
       for (let j = 0; j < state.ways.length; j++) {
         const values = /** @type {Object} */ (state.ways[j]);
-        /** @type {Array.<number>} */
+        /** @type {Array<number>} */
         const flatCoordinates = [];
         for (let i = 0, ii = values.ndrefs.length; i < ii; i++) {
           const point = state.nodes[values.ndrefs[i]];
@@ -88,10 +88,10 @@ class OSMXML extends XMLFeature {
         } else {
           geometry = new LineString(flatCoordinates, GeometryLayout.XY);
         }
-        transformWithOptions(geometry, false, options);
+        transformGeometryWithOptions(geometry, false, options);
         const feature = new Feature(geometry);
         feature.setId(values.id);
-        feature.setProperties(values.tags);
+        feature.setProperties(values.tags, true);
         state.features.push(feature);
       }
       if (state.features) {
@@ -101,29 +101,12 @@ class OSMXML extends XMLFeature {
     return [];
   }
 
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeFeatureNode(feature, opt_options) {}
-
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeFeaturesNode(features, opt_options) {}
-
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeGeometryNode(geometry, opt_options) {}
 }
 
 
 /**
  * @const
- * @type {Object.<string, Object.<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const NODE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -132,14 +115,14 @@ const NODE_PARSERS = makeStructureNS(
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  */
 function readNode(node, objectStack) {
-  const options = /** @type {module:ol/format/Feature~ReadOptions} */ (objectStack[0]);
+  const options = /** @type {import("./Feature.js").ReadOptions} */ (objectStack[0]);
   const state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   const id = node.getAttribute('id');
-  /** @type {module:ol/coordinate~Coordinate} */
+  /** @type {import("../coordinate.js").Coordinate} */
   const coordinates = [
     parseFloat(node.getAttribute('lon')),
     parseFloat(node.getAttribute('lat'))
@@ -151,18 +134,18 @@ function readNode(node, objectStack) {
   }, NODE_PARSERS, node, objectStack);
   if (!isEmpty(values.tags)) {
     const geometry = new Point(coordinates);
-    transformWithOptions(geometry, false, options);
+    transformGeometryWithOptions(geometry, false, options);
     const feature = new Feature(geometry);
     feature.setId(id);
-    feature.setProperties(values.tags);
+    feature.setProperties(values.tags, true);
     state.features.push(feature);
   }
 }
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  */
 function readWay(node, objectStack) {
   const id = node.getAttribute('id');
@@ -177,8 +160,8 @@ function readWay(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  */
 function readNd(node, objectStack) {
   const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
@@ -187,8 +170,8 @@ function readNd(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {Array.<*>} objectStack Object stack.
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
  */
 function readTag(node, objectStack) {
   const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);

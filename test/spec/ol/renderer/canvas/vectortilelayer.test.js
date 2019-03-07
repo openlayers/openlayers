@@ -1,9 +1,8 @@
-import {getUid} from '../../../../../src/ol/util.js';
 import {clear} from '../../../../../src/ol/obj.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import TileState from '../../../../../src/ol/TileState.js';
-import VectorImageTile from '../../../../../src/ol/VectorImageTile.js';
+import VectorRenderTile from '../../../../../src/ol/VectorRenderTile.js';
 import VectorTile from '../../../../../src/ol/VectorTile.js';
 import View from '../../../../../src/ol/View.js';
 import {getCenter} from '../../../../../src/ol/extent.js';
@@ -19,6 +18,8 @@ import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
 import Style from '../../../../../src/ol/style/Style.js';
 import Text from '../../../../../src/ol/style/Text.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
+import VectorTileRenderType from '../../../../../src/ol/layer/VectorTileRenderType.js';
+import {getUid} from '../../../../../src/ol/util.js';
 
 
 describe('ol.renderer.canvas.VectorTileLayer', function() {
@@ -62,9 +63,9 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       class TileClass extends VectorTile {
         constructor() {
           super(...arguments);
-          this.setState(TileState.LOADED);
           this.setFeatures([feature1, feature2, feature3]);
           this.setProjection(getProjection('EPSG:4326'));
+          this.setState(TileState.LOADED);
           tileCallback(this);
         }
       }
@@ -73,8 +74,14 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileClass: TileClass,
         tileGrid: createXYZ()
       });
+      source.getSourceTiles = function() {
+        return [new TileClass([0, 0, 0])];
+      };
       source.getTile = function() {
         const tile = VectorTileSource.prototype.getTile.apply(source, arguments);
+        tile.hasContext = function() {
+          return true;
+        };
         tile.setState(TileState.LOADED);
         return tile;
       };
@@ -96,25 +103,16 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       expect(renderer.zDirection).to.be(0);
     });
 
-    it('uses lower resolution for pure vector rendering', function() {
-      layer.renderMode_ = 'vector';
-      const renderer = new CanvasVectorTileLayerRenderer(layer);
-      expect(renderer.zDirection).to.be(1);
-    });
-
-    it('does not render images for pure vector rendering', function() {
-      layer.renderMode_ = 'vector';
-      const spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
-        'renderTileImage_');
-      map.renderSync();
-      expect(spy.callCount).to.be(0);
-      spy.restore();
-    });
-
     it('does not render replays for pure image rendering', function() {
-      layer.renderMode_ = 'image';
+      const testLayer = new VectorTileLayer({
+        renderMode: VectorTileRenderType.IMAGE,
+        source: source,
+        style: layerStyle
+      });
+      map.removeLayer(layer);
+      map.addLayer(testLayer);
       const spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
-        'getTransform');
+        'getRenderTransform');
       map.renderSync();
       expect(spy.callCount).to.be(0);
       spy.restore();
@@ -122,7 +120,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('renders both replays and images for hybrid rendering', function() {
       const spy1 = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
-        'getTransform');
+        'getRenderTransform');
       const spy2 = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
         'renderTileImage_');
       map.renderSync();
@@ -137,7 +135,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         renderer: function() {}
       }));
       const spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
-        'getTransform');
+        'getRenderTransform');
       map.renderSync();
       expect(spy.callCount).to.be(1);
       spy.restore();
@@ -205,6 +203,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       let tile;
       tileCallback = function(t) {
         t.setProjection(proj);
+        t.setExtent([0, 0, 4096, 4096]);
         tile = t;
       };
       map.renderSync();
@@ -224,15 +223,10 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       });
       map.addLayer(layer2);
 
-      const spy1 = sinon.spy(VectorTile.prototype,
-        'getReplayGroup');
-      const spy2 = sinon.spy(VectorTile.prototype,
-        'setReplayGroup');
       map.renderSync();
-      expect(spy1.callCount).to.be(4);
-      expect(spy2.callCount).to.be(2);
-      spy1.restore();
-      spy2.restore();
+      const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
+      expect(Object.keys(tile.executorGroups)[0]).to.be(getUid(layer));
+      expect(Object.keys(tile.executorGroups)[1]).to.be(getUid(layer2));
     });
 
   });
@@ -251,19 +245,20 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       sourceTile.getImage = function() {
         return document.createElement('canvas');
       };
-      const tile = new VectorImageTile([0, 0, 0], undefined, undefined, undefined,
-        undefined, undefined, undefined, undefined, undefined, undefined, undefined,
-        undefined, undefined, undefined, 0);
+      const tile = new VectorRenderTile([0, 0, 0], 1, [0, 0, 0], createXYZ(),
+        function() {
+          return sourceTile;
+        },
+        function() {});
       tile.transition_ = 0;
-      tile.wrappedTileCoord = [0, 0, 0];
       tile.setState(TileState.LOADED);
-      tile.getSourceTile = function() {
-        return sourceTile;
-      };
       layer.getSource().getTile = function() {
         return tile;
       };
       const renderer = new CanvasVectorTileLayerRenderer(layer);
+      renderer.isDrawableTile = function() {
+        return true;
+      };
       const proj = getProjection('EPSG:3857');
       const frameState = {
         extent: proj.getExtent(),
@@ -279,48 +274,53 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         usedTiles: {},
         wantedTiles: {}
       };
-      renderer.prepareFrame(frameState, {});
+      renderer.renderFrame(frameState, {});
       const replayState = renderer.renderedTiles[0].getReplayState(layer);
       const revision = replayState.renderedTileRevision;
-      renderer.prepareFrame(frameState, {});
+      renderer.renderFrame(frameState, {});
       expect(replayState.renderedTileRevision).to.be(revision);
       layer.changed();
-      renderer.prepareFrame(frameState, {});
+      renderer.renderFrame(frameState, {});
       expect(replayState.renderedTileRevision).to.be(revision + 1);
+      expect(Object.keys(renderer.tileListenerKeys_).length).to.be(0);
     });
   });
 
   describe('#forEachFeatureAtCoordinate', function() {
-    let layer, renderer, replayGroup;
-    class TileClass extends VectorImageTile {
+    let layer, renderer, executorGroup, source;
+    class TileClass extends VectorRenderTile {
       constructor() {
         super(...arguments);
-        this.extent = [-Infinity, -Infinity, Infinity, Infinity];
         this.setState(TileState.LOADED);
-        const sourceTile = new VectorTile([0, 0, 0]);
-        sourceTile.setState(TileState.LOADED);
-        sourceTile.setProjection(getProjection('EPSG:3857'));
-        sourceTile.getReplayGroup = function() {
-          return replayGroup;
-        };
-        const key = sourceTile.tileCoord.toString();
-        this.tileKeys = [key];
-        this.sourceTiles_ = {};
-        this.sourceTiles_[key] = sourceTile;
         this.wrappedTileCoord = arguments[0];
       }
     }
 
     beforeEach(function() {
-      replayGroup = {};
+      const sourceTile = new VectorTile([0, 0, 0]);
+      sourceTile.setState(TileState.LOADED);
+      sourceTile.setProjection(getProjection('EPSG:3857'));
+      source = new VectorTileSource({
+        tileClass: TileClass,
+        tileGrid: createXYZ()
+      });
+      source.sourceTiles_ = {
+        '0/0/0': sourceTile
+      };
+      source.sourceTilesByTileKey_ = {
+        '0/0/0': [sourceTile]
+      };
+      executorGroup = {};
+      source.getTile = function() {
+        const tile = VectorTileSource.prototype.getTile.apply(source, arguments);
+        tile.executorGroups[getUid(layer)] = [executorGroup];
+        return tile;
+      };
       layer = new VectorTileLayer({
-        source: new VectorTileSource({
-          tileClass: TileClass,
-          tileGrid: createXYZ()
-        })
+        source: source
       });
       renderer = new CanvasVectorTileLayerRenderer(layer);
-      replayGroup.forEachFeatureAtCoordinate = function(coordinate,
+      executorGroup.forEachFeatureAtCoordinate = function(coordinate,
         resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
         const feature = new Feature();
         callback(feature);
@@ -332,7 +332,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       const spy = sinon.spy();
       const coordinate = [0, 0];
       const frameState = {
-        layerStates: {},
+        layerStatesArray: [{}],
         skippedFeatureUids: {},
         viewState: {
           projection: getProjection('EPSG:3857'),
@@ -340,8 +340,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
           rotation: 0
         }
       };
-      frameState.layerStates[getUid(layer)] = {};
-      renderer.renderedTiles = [new TileClass([0, 0, -1])];
+      renderer.renderedTiles = [source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'))];
       renderer.forEachFeatureAtCoordinate(
         coordinate, frameState, 0, spy, undefined);
       expect(spy.callCount).to.be(1);

@@ -7,26 +7,28 @@ import Event from '../events/Event.js';
 class RenderEvent extends Event {
 
   /**
-   * @param {module:ol/render/EventType} type Type.
-   * @param {module:ol/render/VectorContext=} opt_vectorContext Vector context.
-   * @param {module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
+   * @param {import("./EventType.js").default} type Type.
+   * @param {import("../transform.js").Transform=} opt_inversePixelTransform Transform for
+   *     CSS pixels to rendered pixels.
+   * @param {import("../PluggableMap.js").FrameState=} opt_frameState Frame state.
    * @param {?CanvasRenderingContext2D=} opt_context Context.
-   * @param {?module:ol/webgl/Context=} opt_glContext WebGL Context.
+   * @param {?import("../webgl/Helper.js").default=} opt_glContext WebGL Context.
    */
-  constructor(type, opt_vectorContext, opt_frameState, opt_context, opt_glContext) {
+  constructor(type, opt_inversePixelTransform, opt_frameState, opt_context, opt_glContext) {
 
     super(type);
 
     /**
-     * For canvas, this is an instance of {@link module:ol/render/canvas/Immediate}.
-     * @type {module:ol/render/VectorContext|undefined}
+     * Transform from CSS pixels (relative to the top-left corner of the map viewport)
+     * to rendered pixels on this event's `context`.
+     * @type {import("../transform.js").Transform|undefined}
      * @api
      */
-    this.vectorContext = opt_vectorContext;
+    this.inversePixelTransform = opt_inversePixelTransform;
 
     /**
      * An object representing the current render frame state.
-     * @type {module:ol/PluggableMap~FrameState|undefined}
+     * @type {import("../PluggableMap.js").FrameState|undefined}
      * @api
      */
     this.frameState = opt_frameState;
@@ -42,7 +44,7 @@ class RenderEvent extends Event {
     /**
      * WebGL context. Only available when a WebGL renderer is used, null
      * otherwise.
-     * @type {module:ol/webgl/Context|null|undefined}
+     * @type {import("../webgl/Helper.js").default|null|undefined}
      * @api
      */
     this.glContext = opt_glContext;

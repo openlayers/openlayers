@@ -8,13 +8,13 @@ import {lerp, squaredDistance as squaredDx} from '../../math.js';
  * Returns the point on the 2D line segment flatCoordinates[offset1] to
  * flatCoordinates[offset2] that is closest to the point (x, y).  Extra
  * dimensions are linearly interpolated.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset1 Offset 1.
  * @param {number} offset2 Offset 2.
  * @param {number} stride Stride.
  * @param {number} x X.
  * @param {number} y Y.
- * @param {Array.<number>} closestPoint Closest point.
+ * @param {Array<number>} closestPoint Closest point.
  */
 function assignClosest(flatCoordinates, offset1, offset2, stride, x, y, closestPoint) {
   const x1 = flatCoordinates[offset1];
@@ -49,7 +49,7 @@ function assignClosest(flatCoordinates, offset1, offset2, stride, x, y, closestP
 /**
  * Return the squared of the largest distance between any pair of consecutive
  * coordinates.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
@@ -74,9 +74,9 @@ export function maxSquaredDelta(flatCoordinates, offset, end, stride, max) {
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<number>} ends Ends.
+ * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
  * @param {number} max Max squared delta.
  * @return {number} Max squared delta.
@@ -93,9 +93,9 @@ export function arrayMaxSquaredDelta(flatCoordinates, offset, ends, stride, max)
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<Array.<number>>} endss Endss.
+ * @param {Array<Array<number>>} endss Endss.
  * @param {number} stride Stride.
  * @param {number} max Max squared delta.
  * @return {number} Max squared delta.
@@ -112,7 +112,7 @@ export function multiArrayMaxSquaredDelta(flatCoordinates, offset, endss, stride
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
@@ -120,9 +120,9 @@ export function multiArrayMaxSquaredDelta(flatCoordinates, offset, endss, stride
  * @param {boolean} isRing Is ring.
  * @param {number} x X.
  * @param {number} y Y.
- * @param {Array.<number>} closestPoint Closest point.
+ * @param {Array<number>} closestPoint Closest point.
  * @param {number} minSquaredDistance Minimum squared distance.
- * @param {Array.<number>=} opt_tmpPoint Temporary point object.
+ * @param {Array<number>=} opt_tmpPoint Temporary point object.
  * @return {number} Minimum squared distance.
  */
 export function assignClosestPoint(flatCoordinates, offset, end,
@@ -193,17 +193,17 @@ export function assignClosestPoint(flatCoordinates, offset, end,
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<number>} ends Ends.
+ * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
  * @param {number} maxDelta Max delta.
  * @param {boolean} isRing Is ring.
  * @param {number} x X.
  * @param {number} y Y.
- * @param {Array.<number>} closestPoint Closest point.
+ * @param {Array<number>} closestPoint Closest point.
  * @param {number} minSquaredDistance Minimum squared distance.
- * @param {Array.<number>=} opt_tmpPoint Temporary point object.
+ * @param {Array<number>=} opt_tmpPoint Temporary point object.
  * @return {number} Minimum squared distance.
  */
 export function assignClosestArrayPoint(flatCoordinates, offset, ends,
@@ -222,17 +222,17 @@ export function assignClosestArrayPoint(flatCoordinates, offset, ends,
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<Array.<number>>} endss Endss.
+ * @param {Array<Array<number>>} endss Endss.
  * @param {number} stride Stride.
  * @param {number} maxDelta Max delta.
  * @param {boolean} isRing Is ring.
  * @param {number} x X.
  * @param {number} y Y.
- * @param {Array.<number>} closestPoint Closest point.
+ * @param {Array<number>} closestPoint Closest point.
  * @param {number} minSquaredDistance Minimum squared distance.
- * @param {Array.<number>=} opt_tmpPoint Temporary point object.
+ * @param {Array<number>=} opt_tmpPoint Temporary point object.
  * @return {number} Minimum squared distance.
  */
 export function assignClosestMultiArrayPoint(flatCoordinates, offset,

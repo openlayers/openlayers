@@ -5,7 +5,7 @@ exports.handlers = {
 
   newDoclet: function(e) {
     const doclet = e.doclet;
-    if (doclet.kind == 'class') {
+    if (doclet.kind == 'class' && !(doclet.longname in classes)) {
       classes[doclet.longname] = doclet;
     }
   },
@@ -47,7 +47,7 @@ exports.handlers = {
         if (!cls.fires) {
           cls.fires = [];
         }
-        event = 'module:ol/Object~ObjectEvent#event:change:' + name;
+        event = 'module:ol/Object.ObjectEvent#event:change:' + name;
         if (cls.fires.indexOf(event) == -1) {
           cls.fires.push(event);
         }

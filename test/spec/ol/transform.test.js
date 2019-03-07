@@ -5,10 +5,12 @@ import {
   setFromArray,
   translate,
   scale,
+  makeScale,
   rotate,
   multiply,
   compose,
   invert,
+  makeInverse,
   apply
 } from '../../../src/ol/transform.js';
 
@@ -68,6 +70,20 @@ describe('ol.transform', function() {
     });
   });
 
+  describe('makeScale()', function() {
+    it('creates a scale transform', function() {
+      const target = create();
+      makeScale(target, 2, 3);
+      expect(target).to.eql([2, 0, 0, 3, 0, 0]);
+    });
+
+    it('returns the target', function() {
+      const target = create();
+      const transform = makeScale(target, 2, 3);
+      expect(transform).to.be(target);
+    });
+  });
+
   describe('rotate()', function() {
     it('applies rotation to a transform', function() {
       const transform = create();
@@ -110,13 +126,39 @@ describe('ol.transform', function() {
 
   describe('invert()', function() {
     it('inverts a transform', function() {
-      let transform = [1, 0, 1, 0, 1, 0];
-      expect(function() {
-        invert(transform);
-      }).to.throwException();
-      transform = [1, 1, 1, 2, 2, 0];
+      const transform = [1, 1, 1, 2, 2, 0];
       expect(invert(transform)).to.eql([2, -1, -1, 1, -4, 2]);
-      expect(transform).to.eql([2, -1, -1, 1, -4, 2]);
+    });
+
+    it('throws if the transform cannot be inverted', function() {
+      const indeterminant = [1, 0, 1, 0, 1, 0];
+      expect(function() {
+        invert(indeterminant);
+      }).to.throwException();
+    });
+
+    it('modifies the source', function() {
+      const source = [1, 1, 1, 2, 2, 0];
+      const inverted = invert(source);
+      expect(inverted).to.eql([2, -1, -1, 1, -4, 2]);
+      expect(source).to.be(inverted);
+    });
+  });
+
+  describe('makeInverse()', function() {
+    it('makes the target the inverse of the source', function() {
+      const source = [1, 1, 1, 2, 2, 0];
+      const target = [1, 0, 0, 1, 0, 0];
+      makeInverse(target, source);
+      expect(source).to.eql([1, 1, 1, 2, 2, 0]);
+      expect(target).to.eql([2, -1, -1, 1, -4, 2]);
+    });
+
+    it('returns the target', function() {
+      const source = [1, 1, 1, 2, 2, 0];
+      const target = [1, 0, 0, 1, 0, 0];
+      const inverted = makeInverse(target, source);
+      expect(target).to.be(inverted);
     });
   });
 

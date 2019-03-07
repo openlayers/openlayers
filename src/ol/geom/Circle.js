@@ -2,9 +2,9 @@
  * @module ol/geom/Circle
  */
 import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
-import GeometryType from '../geom/GeometryType.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
-import {deflateCoordinate} from '../geom/flat/deflate.js';
+import GeometryType from './GeometryType.js';
+import SimpleGeometry from './SimpleGeometry.js';
+import {deflateCoordinate} from './flat/deflate.js';
 
 /**
  * @classdesc
@@ -15,11 +15,11 @@ import {deflateCoordinate} from '../geom/flat/deflate.js';
 class Circle extends SimpleGeometry {
 
   /**
-   * @param {!module:ol/coordinate~Coordinate} center Center.
+   * @param {!import("../coordinate.js").Coordinate} center Center.
    *     For internal use, flat coordinates in combination with `opt_layout` and no
    *     `opt_radius` are also accepted.
    * @param {number=} opt_radius Radius.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    */
   constructor(center, opt_radius, opt_layout) {
     super();
@@ -33,7 +33,7 @@ class Circle extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!module:ol/geom/Circle} Clone.
+   * @return {!Circle} Clone.
    * @override
    * @api
    */
@@ -81,7 +81,7 @@ class Circle extends SimpleGeometry {
 
   /**
    * Return the center of the circle as {@link module:ol/coordinate~Coordinate coordinate}.
-   * @return {module:ol/coordinate~Coordinate} Center.
+   * @return {import("../coordinate.js").Coordinate} Center.
    * @api
    */
   getCenter() {
@@ -151,7 +151,7 @@ class Circle extends SimpleGeometry {
 
   /**
    * Set the center of the circle as {@link module:ol/coordinate~Coordinate coordinate}.
-   * @param {module:ol/coordinate~Coordinate} center Center.
+   * @param {import("../coordinate.js").Coordinate} center Center.
    * @api
    */
   setCenter(center) {
@@ -169,9 +169,9 @@ class Circle extends SimpleGeometry {
   /**
    * Set the center (as {@link module:ol/coordinate~Coordinate coordinate}) and the radius (as
    * number) of the circle.
-   * @param {!module:ol/coordinate~Coordinate} center Center.
+   * @param {!import("../coordinate.js").Coordinate} center Center.
    * @param {number} radius Radius.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    * @api
    */
   setCenterAndRadius(center, radius, opt_layout) {
@@ -179,7 +179,7 @@ class Circle extends SimpleGeometry {
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
-    /** @type {Array.<number>} */
+    /** @type {Array<number>} */
     const flatCoordinates = this.flatCoordinates;
     let offset = deflateCoordinate(
       flatCoordinates, 0, center, this.stride);
@@ -194,7 +194,9 @@ class Circle extends SimpleGeometry {
   /**
    * @inheritDoc
    */
-  getCoordinates() {}
+  getCoordinates() {
+    return null;
+  }
 
   /**
    * @inheritDoc
@@ -226,11 +228,11 @@ class Circle extends SimpleGeometry {
  * correspond to the shape that would be obtained by transforming every point
  * of the original circle.
  *
- * @param {module:ol/proj~ProjectionLike} source The current projection.  Can be a
+ * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
  *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
- * @param {module:ol/proj~ProjectionLike} destination The desired projection.  Can be a
+ * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
  *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
- * @return {module:ol/geom/Circle} This geometry.  Note that original geometry is
+ * @return {Circle} This geometry.  Note that original geometry is
  *     modified in place.
  * @function
  * @api

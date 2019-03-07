@@ -38,7 +38,7 @@ describe('ol.source.TileWMS', function() {
 
     it('returns a tile with the expected URL', function() {
       const source = new TileWMS(options);
-      const tile = source.getTile(3, 2, -7, 1, getProjection('EPSG:3857'));
+      const tile = source.getTile(3, 2, 6, 1, getProjection('EPSG:3857'));
       expect(tile).to.be.an(ImageTile);
       const uri = new URL(tile.src_);
       expect(uri.protocol).to.be('http:');
@@ -67,7 +67,7 @@ describe('ol.source.TileWMS', function() {
     it('returns a larger tile when a gutter is specified', function() {
       options.gutter = 16;
       const source = new TileWMS(options);
-      const tile = source.getTile(3, 2, -7, 1, getProjection('EPSG:3857'));
+      const tile = source.getTile(3, 2, 6, 1, getProjection('EPSG:3857'));
       expect(tile).to.be.an(ImageTile);
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
@@ -84,7 +84,7 @@ describe('ol.source.TileWMS', function() {
     it('sets the SRS query value instead of CRS if version < 1.3', function() {
       options.params.VERSION = '1.2';
       const source = new TileWMS(options);
-      const tile = source.getTile(3, 2, -3, 1, getProjection('EPSG:4326'));
+      const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
       expect(queryData.get('CRS')).to.be(null);
@@ -95,7 +95,7 @@ describe('ol.source.TileWMS', function() {
       options.params.FORMAT = 'image/jpeg';
       options.params.TRANSPARENT = false;
       const source = new TileWMS(options);
-      const tile = source.getTile(3, 2, -3, 1, getProjection('EPSG:4326'));
+      const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
       expect(queryData.get('FORMAT')).to.be('image/jpeg');
@@ -105,7 +105,7 @@ describe('ol.source.TileWMS', function() {
     it('does not add a STYLES= option if one is specified', function() {
       options.params.STYLES = 'foo';
       const source = new TileWMS(options);
-      const tile = source.getTile(3, 2, -3, 1, getProjection('EPSG:4326'));
+      const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
       expect(queryData.get('STYLES')).to.be('foo');
@@ -113,7 +113,7 @@ describe('ol.source.TileWMS', function() {
 
     it('changes the BBOX order for EN axis orientations', function() {
       const source = new TileWMS(options);
-      const tile = source.getTile(3, 2, -3, 1, getProjection('EPSG:4326'));
+      const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be('-45,-90,0,-45');
@@ -122,7 +122,7 @@ describe('ol.source.TileWMS', function() {
     it('uses EN BBOX order if version < 1.3', function() {
       options.params.VERSION = '1.1.0';
       const source = new TileWMS(options);
-      const tile = source.getTile(3, 2, -3, 1, getProjection('CRS:84'));
+      const tile = source.getTile(3, 2, 2, 1, getProjection('CRS:84'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be('-90,-45,-45,0');
@@ -131,7 +131,7 @@ describe('ol.source.TileWMS', function() {
     it('sets FORMAT_OPTIONS when the server is GeoServer', function() {
       options.serverType = 'geoserver';
       const source = new TileWMS(options);
-      const tile = source.getTile(3, 2, -3, 2, getProjection('CRS:84'));
+      const tile = source.getTile(3, 2, 2, 2, getProjection('CRS:84'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
       expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:180');
@@ -141,7 +141,7 @@ describe('ol.source.TileWMS', function() {
       options.serverType = 'geoserver';
       const source = new TileWMS(options);
       options.params.FORMAT_OPTIONS = 'param1:value1';
-      const tile = source.getTile(3, 2, -3, 2, getProjection('CRS:84'));
+      const tile = source.getTile(3, 2, 2, 2, getProjection('CRS:84'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
       expect(queryData.get('FORMAT_OPTIONS')).to.be('param1:value1;dpi:180');
@@ -151,7 +151,7 @@ describe('ol.source.TileWMS', function() {
       function() {
         options.serverType = 'geoserver';
         const source = new TileWMS(options);
-        const tile = source.getTile(3, 2, -3, 1.325, getProjection('CRS:84'));
+        const tile = source.getTile(3, 2, 2, 1.325, getProjection('CRS:84'));
         const uri = new URL(tile.src_);
         const queryData = uri.searchParams;
         expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
@@ -164,7 +164,7 @@ describe('ol.source.TileWMS', function() {
     it('returns a tile if it is contained within layers extent', function() {
       options.extent = [-80, -40, -50, -10];
       const source = new TileWMS(options);
-      const tileCoord = [3, 2, -3];
+      const tileCoord = [3, 2, 2];
       const url = source.tileUrlFunction(tileCoord, 1, getProjection('EPSG:4326'));
       const uri = new URL(url);
       const queryData = uri.searchParams;
@@ -174,7 +174,7 @@ describe('ol.source.TileWMS', function() {
     it('returns a tile if it intersects layers extent', function() {
       options.extent = [-80, -40, -40, -10];
       const source = new TileWMS(options);
-      const tileCoord = [3, 3, -3];
+      const tileCoord = [3, 3, 2];
       const url = source.tileUrlFunction(tileCoord, 1, getProjection('EPSG:4326'));
       const uri = new URL(url);
       const queryData = uri.searchParams;
@@ -188,7 +188,7 @@ describe('ol.source.TileWMS', function() {
         origin: [-180, -90]
       });
       const source = new TileWMS(options);
-      const tileCoord = [3, 3, -3];
+      const tileCoord = [3, 3, 2];
       const url = source.tileUrlFunction(tileCoord, 1, getProjection('EPSG:4326'));
       const uri = new URL(url);
       const queryData = uri.searchParams;
@@ -310,7 +310,7 @@ describe('ol.source.TileWMS', function() {
   });
 
   describe('#setUrls()', function() {
-    it ('updates the source key', function() {
+    it('updates the source key', function() {
       const source = new TileWMS({
         urls: ['u1', 'u2']
       });

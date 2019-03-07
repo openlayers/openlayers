@@ -1,10 +1,173 @@
 ## Upgrade notes
 
+### Next version
+
+#### Backwards incompatible changes
+
+##### Removal of deprecated methods
+
+The `inherits` function that was used to inherit the prototype methods from one constructor into another has been removed.
+The standard ECMAScript classes should be used instead.
+
+The deprecated `getSnapToPixel` and `setSnapToPixel` functions from the `ImageStyle` class have been removed.
+
+##### New internal tile coordinates
+
+Previously, the internal tile coordinates used in the library had an unusual row order – the origin of the tile coordinate system was at the top left as expected, but the rows increased upwards.  This meant that all tile coordinates within a tile grid's extent had negative `y` values.
+
+Now, the internal tile coordinates used in the library have the same row order as standard (e.g. XYZ) tile coordinates.  The origin is at the top left (as before), and rows or `y` values increase downward.  So the top left tile of a tile grid is now `0, 0`, whereas it was `0, -1` before.
+
+```
+x, y values for tile coordinates
+
+origin
+  *__________________________
+  |        |        |        |
+  |  0, 0  |  1, 0  |  2, 0  |
+  |________|________|________|
+  |        |        |        |
+  |  0, 1  |  1, 1  |  2, 1  |
+  |________|________|________|
+  |        |        |        |
+  |  0, 2  |  1, 2  |  2, 2  |
+  |________|________|________|
+```
+
+This change should only affect you if you were using a custom `tileLoadFunction` or `tileUrlFunction`.  For example, if you used to have a `tileUrlFunction` that looked like this:
+
+```js
+// before
+function tileUrlFunction(tileCoord) {
+  const z = tileCoord[0];
+  const x = tileCoord[1];
+  const y = -tileCoord[2] - 1;
+  // do something with z, x, y
+}
+```
+
+You would now do something like this:
+```js
+// after
+function tileUrlFunction(tileCoord) {
+  const z = tileCoord[0];
+  const x = tileCoord[1];
+  const y = tileCoord[2];
+  // do something with z, x, y
+}
+```
+
+In addition (this should be exceedingly rare), if you previously created a `ol/tilegrid/WMTS` by hand and you were providing an array of `sizes`, you no longer have to provide a negative height if your tile origin is the top-left corner (the common case).  On the other hand, if you are providing a custom array of `sizes` and your origin is the bottom of the grid (this is uncommon), your height values must now be negative.
+
+##### Removal of the "vector" render mode for vector tile layers
+
+If you were previously using `VectorTile` layers with `renderMode: 'vector'`, you have to remove this configuration option. That mode was removed. `'hybrid'` (default) and `'image'` are still available.
+
+##### Removal of the "renderMode" option for vector layers
+
+If you were previously using `Vector` layers with `renderMode: 'image'`, you have to remove this configuration option. Instead, use the new `ol/layer/VectorImage` layer with your `ol/source/Vector`.
+
+##### New `prerender` and `postrender` layer events replace old `precompose`, `render` and `postcompose` events
+
+If you were previously registering for `precompose` and `postcompose` events, you should now register for `prerender` and `postrender` events on layers.  Instead of the previous `render` event, you should now listen for `postrender`. Layers are no longer composed to a single Canvas element.  Instead, they are added to the map viewport as individual elements.
+
+##### New `getVectorContext` function provides access to the immediate vector rendering API
+
+Previously, render events included a `vectorContext` property that allowed you to render features or geometries directly to the map.  This is still possible, but you now have to explicitly create a vector context with the `getVectorContext` function.  This change makes the immediate rendering API an explicit dependency if your application uses it.  If you don't use this API, your application bundle will not include the vector rendering modules (as it did before).
+
+Here is an abbreviated example of how to use the `getVectorContext` function:
+
+```js
+import {getVectorContext} from 'ol/render';
+
+// construct your map and layers as usual
+
+layer.on('postrender', function(event) {
+  const vectorContext = getVectorContext(event);
+  // use any of the drawing methods on the vector context
+});
+```
+
+##### Layers can only be added to a single map
+
+Previously, it was possible to render a single layer in two maps.  Now, each layer can only belong to a single map (in the same way that a single DOM element can only have one parent).
+
+##### The `OverviewMap` requires a list of layers.
+
+Due to the constraint above (layers can only be added to a single map), the overview map needs to be constructed with a list of layers.
+
+##### The `ol/Graticule` has been replaced by `ol/layer/Graticule`
+
+Previously, a graticule was not a layer.  Now it is.  See the graticule example for details on how to add a graticule layer to your map.
+
+##### Drop of support for the experimental WebGL renderer
+
+The WebGL map and layers renderers are gone, replaced by a `WebGLHelper` function that provides a lightweight,
+low-level access to the WebGL API. This is implemented in a new `WebGLPointsLayer` which does simple rendering of large number
+of points with custom shaders.
+
+This is now used in the `Heatmap` layer.
+
+The removed classes and components are:
+* `WebGLMap` and `WebGLMapRenderer`
+* `WebGLLayerRenderer`
+* `WebGLImageLayer` and `WebGLImageLayerRenderer`
+* `WebGLTileLayer` and `WebGLTileLayerRenderer`
+* `WebGLVectorLayer` and `WebGLVectorLayerRenderer`
+* `WebGLReplay` and derived classes, along with associated shaders
+* `WebGLReplayGroup`
+* `WebGLImmediateRenderer`
+* `WebGLMap`
+* The shader build process using `mustache` and the `Makefile` at the root
+
+##### Removal of the AtlasManager
+
+Following the removal of the experimental WebGL renderer, the AtlasManager has been removed as well. The atlas was only used by this renderer.
+The non API `getChecksum` functions of the style is also removed.
+
+##### Change of the behavior of the vector source's clear() and refresh() methods
+
+The `ol/source/Vector#clear()` method no longer triggers a reload of the data from the server. If you were previously using `clear()` to refetch from the server, you now have to use `refresh()`.
+
+The `ol/source/Vector#refresh()` method now removes all features from the source and triggers a reload of the data from the server. If you were previously using the `refresh()` method to re-render a vector layer, you should instead call `ol/layer/Vector#changed()`.
+
+#### Other changes
+
+##### Allow declutter in image render mode
+
+It is now possible to configure vector tile layers with `declutter: true` and `renderMode: 'image'`. However, note that decluttering will be done per tile, resulting in labels and point symbols getting cut off at tile boundaries.
+Until now, using both options forced the render mode to be `hybrid`.
+
+##### Always load tiles while animating or interacting
+
+`ol/PluggableMap` and subclasses no longer support the `loadTilesWhileAnimating` and `loadTilesWhileInteracting` options. These options were used to enable tile loading during animations and interactions. With the new DOM composition render strategy, it is no longer necessary to postpone tile loading until after animations or interactions.
+
+### v5.3.0
+
+#### The `getUid` function returns string
+
+The `getUid` function from the `ol/util` module now returns a string instead of a number.
+
+#### Attributions are not collapsible for `ol/source/OSM`
+
+When a map contains a layer from a `ol/source/OSM` source, the `ol/control/Attribution` control will be shown with the `collapsible: false` behavior.
+
+To get the previous behavior, configure the `ol/control/Attribution` control with `collapsible: true`.
+
+### v5.2.0
+
+#### Removal of the `snapToPixel` option for `ol/style/Image` subclasses
+
+The `snapToPixel` option has been removed, and the `getSnapToPixel` and `setSnapToPixel` methods are deprecated.
+
+The renderer now snaps to integer pixels when no interaction or animation is running to get crisp rendering. During interaction or animation, it does not snap to integer pixels to avoid jitter.
+
+When rendering with the Immediate API, symbols will no longer be snapped to integer pixels. To get crisp images, set `context.imageSmoothingEnabled = false` before rendering with the Immediate API, and `context.imageSmoothingEnabled = true` afterwards.
+
 ### v5.1.0
 
 #### Geometry constructor and `setCoordinates` no longer accept `null` coordinates
 
-Geometries (`ol/geom/*`) now need to be constructed with valid coordinates (center for `ol/geom/Circle`) as first constructor argument. The same applies to the `setCoordinates()` (`setCenter() for `ol/geom/Circle`) method.
+Geometries (`ol/geom/*`) now need to be constructed with valid coordinates (center for `ol/geom/Circle`) as first constructor argument. The same applies to the `setCoordinates()` (`setCenter()` for `ol/geom/Circle`) method.
 
 ### v5.0.0
 

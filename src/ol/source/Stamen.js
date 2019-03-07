@@ -2,13 +2,13 @@
  * @module ol/source/Stamen
  */
 
-import {ATTRIBUTION as OSM_ATTRIBUTION} from '../source/OSM.js';
-import XYZ from '../source/XYZ.js';
+import {ATTRIBUTION as OSM_ATTRIBUTION} from './OSM.js';
+import XYZ from './XYZ.js';
 
 
 /**
  * @const
- * @type {Array.<string>}
+ * @type {Array<string>}
  */
 const ATTRIBUTIONS = [
   'Map tiles by <a href="https://stamen.com/">Stamen Design</a>, ' +
@@ -19,7 +19,7 @@ const ATTRIBUTIONS = [
 
 
 /**
- * @type {Object.<string, {extension: string, opaque: boolean}>}
+ * @type {Object<string, {extension: string, opaque: boolean}>}
  */
 const LayerConfig = {
   'terrain': {
@@ -70,7 +70,7 @@ const LayerConfig = {
 
 
 /**
- * @type {Object.<string, {minZoom: number, maxZoom: number}>}
+ * @type {Object<string, {minZoom: number, maxZoom: number}>}
  */
 const ProviderConfig = {
   'terrain': {
@@ -90,14 +90,13 @@ const ProviderConfig = {
 
 /**
  * @typedef {Object} Options
- * @property {number} [cacheSize=2048] Cache size.
- * @property {string} [layer] Layer.
+ * @property {number} [cacheSize] Tile cache size. Default is four times as many tiles as a fullscreen map needs.
+ * @property {string} layer Layer name.
  * @property {number} [minZoom] Minimum zoom.
  * @property {number} [maxZoom] Maximum zoom.
- * @property {boolean} [opaque] Whether the layer is opaque.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {module:ol/Tile~LoadFunction} [tileLoadFunction]
+ * @property {import("../Tile.js").LoadFunction} [tileLoadFunction]
  * Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
@@ -116,7 +115,7 @@ const ProviderConfig = {
  */
 class Stamen extends XYZ {
   /**
-   * @param {module:ol/source/Stamen~Options=} options Stamen options.
+   * @param {Options} options Stamen options.
    */
   constructor(options) {
     const i = options.layer.indexOf('-');

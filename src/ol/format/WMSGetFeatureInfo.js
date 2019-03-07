@@ -2,15 +2,15 @@
  * @module ol/format/WMSGetFeatureInfo
  */
 import {extend, includes} from '../array.js';
-import GML2 from '../format/GML2.js';
-import XMLFeature from '../format/XMLFeature.js';
+import GML2 from './GML2.js';
+import XMLFeature from './XMLFeature.js';
 import {assign} from '../obj.js';
 import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
 
 
 /**
  * @typedef {Object} Options
- * @property {Array.<string>} [layers] If set, only features of the given layers will be returned by the format when read.
+ * @property {Array<string>} [layers] If set, only features of the given layers will be returned by the format when read.
  */
 
 
@@ -38,7 +38,7 @@ const layerIdentifier = '_layer';
 class WMSGetFeatureInfo extends XMLFeature {
 
   /**
-   * @param {module:ol/format/WMSGetFeatureInfo~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     super();
@@ -54,42 +54,42 @@ class WMSGetFeatureInfo extends XMLFeature {
 
     /**
      * @private
-     * @type {module:ol/format/GML2}
+     * @type {GML2}
      */
     this.gmlFormat_ = new GML2();
 
 
     /**
      * @private
-     * @type {Array.<string>}
+     * @type {Array<string>}
      */
     this.layers_ = options.layers ? options.layers : null;
   }
 
   /**
-   * @return {Array.<string>} layers
+   * @return {Array<string>} layers
    */
   getLayers() {
     return this.layers_;
   }
 
   /**
-   * @param {Array.<string>} layers Layers to parse.
+   * @param {Array<string>} layers Layers to parse.
    */
   setLayers(layers) {
     this.layers_ = layers;
   }
 
   /**
-   * @param {Node} node Node.
-   * @param {Array.<*>} objectStack Object stack.
-   * @return {Array.<module:ol/Feature>} Features.
+   * @param {Element} node Node.
+   * @param {Array<*>} objectStack Object stack.
+   * @return {Array<import("../Feature.js").default>} Features.
    * @private
    */
   readFeatures_(node, objectStack) {
     node.setAttribute('namespaceURI', this.featureNS_);
     const localName = node.localName;
-    /** @type {Array.<module:ol/Feature>} */
+    /** @type {Array<import("../Feature.js").default>} */
     let features = [];
     if (node.childNodes.length === 0) {
       return features;
@@ -100,10 +100,12 @@ class WMSGetFeatureInfo extends XMLFeature {
         if (layer.nodeType !== Node.ELEMENT_NODE) {
           continue;
         }
+
+        const layerElement = /** @type {Element} */ (layer);
         const context = objectStack[0];
 
         const toRemove = layerIdentifier;
-        const layerName = layer.localName.replace(toRemove, '');
+        const layerName = layerElement.localName.replace(toRemove, '');
 
         if (this.layers_ && !includes(this.layers_, layerName)) {
           continue;
@@ -115,14 +117,15 @@ class WMSGetFeatureInfo extends XMLFeature {
         context['featureType'] = featureType;
         context['featureNS'] = this.featureNS_;
 
+        /** @type {Object<string, import("../xml.js").Parser>} */
         const parsers = {};
         parsers[featureType] = makeArrayPusher(
           this.gmlFormat_.readFeatureElement, this.gmlFormat_);
         const parsersNS = makeStructureNS(
           [context['featureNS'], null], parsers);
-        layer.setAttribute('namespaceURI', this.featureNS_);
+        layerElement.setAttribute('namespaceURI', this.featureNS_);
         const layerFeatures = pushParseAndPop(
-          [], parsersNS, layer, objectStack, this.gmlFormat_);
+          [], parsersNS, layerElement, objectStack, this.gmlFormat_);
         if (layerFeatures) {
           extend(features, layerFeatures);
         }
@@ -150,23 +153,6 @@ class WMSGetFeatureInfo extends XMLFeature {
     return this.readFeatures_(node, [options]);
   }
 
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeFeatureNode(feature, opt_options) {}
-
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeFeaturesNode(features, opt_options) {}
-
-  /**
-   * Not implemented.
-   * @inheritDoc
-   */
-  writeGeometryNode(geometry, opt_options) {}
 }
 
 

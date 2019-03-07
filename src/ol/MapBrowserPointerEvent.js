@@ -7,10 +7,10 @@ class MapBrowserPointerEvent extends MapBrowserEvent {
 
   /**
    * @param {string} type Event type.
-   * @param {module:ol/PluggableMap} map Map.
-   * @param {module:ol/pointer/PointerEvent} pointerEvent Pointer event.
+   * @param {import("./PluggableMap.js").default} map Map.
+   * @param {import("./pointer/PointerEvent.js").default} pointerEvent Pointer event.
    * @param {boolean=} opt_dragging Is the map currently being dragged?
-   * @param {?module:ol/PluggableMap~FrameState=} opt_frameState Frame state.
+   * @param {?import("./PluggableMap.js").FrameState=} opt_frameState Frame state.
    */
   constructor(type, map, pointerEvent, opt_dragging, opt_frameState) {
 
@@ -18,7 +18,7 @@ class MapBrowserPointerEvent extends MapBrowserEvent {
 
     /**
      * @const
-     * @type {module:ol/pointer/PointerEvent}
+     * @type {import("./pointer/PointerEvent.js").default}
      */
     this.pointerEvent = pointerEvent;
 

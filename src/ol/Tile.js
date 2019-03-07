@@ -3,15 +3,45 @@
  */
 import TileState from './TileState.js';
 import {easeIn} from './easing.js';
-import EventTarget from './events/EventTarget.js';
+import EventTarget from './events/Target.js';
 import EventType from './events/EventType.js';
+import {abstract} from './util.js';
 
 
 /**
  * A function that takes an {@link module:ol/Tile} for the tile and a
- * `{string}` for the url as arguments.
+ * `{string}` for the url as arguments. The default is
+ * ```js
+ * source.setTileLoadFunction(function(tile, src) {
+ *   tile.getImage().src = src;
+ * });
+ * ```
+ * For more fine grained control, the load function can use fetch or XMLHttpRequest and involve
+ * error handling:
  *
- * @typedef {function(module:ol/Tile, string)} LoadFunction
+ * ```js
+ * import TileState from 'ol/TileState';
+ *
+ * source.setTileLoadFunction(function(tile, src) {
+ *   var xhr = new XMLHttpRequest();
+ *   xhr.responseType = 'blob';
+ *   xhr.addEventListener('loadend', function (evt) {
+ *     var data = this.response;
+ *     if (data !== undefined) {
+ *       tile.getImage().src = URL.createObjectURL(data);
+ *     } else {
+ *       tile.setState(TileState.ERROR);
+ *     }
+ *   });
+ *   xhr.addEventListener('error', function () {
+ *     tile.setState(TileState.ERROR);
+ *   });
+ *   xhr.open('GET', src);
+ *   xhr.send();
+ * });
+ * ```
+ *
+ * @typedef {function(Tile, string): void} LoadFunction
  * @api
  */
 
@@ -25,8 +55,8 @@ import EventType from './events/EventType.js';
  * and returns a `{string}` representing the tile URL, or undefined if no tile
  * should be requested for the passed tile coordinate.
  *
- * @typedef {function(module:ol/tilecoord~TileCoord, number,
- *           module:ol/proj/Projection): (string|undefined)} UrlFunction
+ * @typedef {function(import("./tilecoord.js").TileCoord, number,
+ *           import("./proj/Projection.js").default): (string|undefined)} UrlFunction
  * @api
  */
 
@@ -44,13 +74,13 @@ import EventType from './events/EventType.js';
  * Base class for tiles.
  *
  * @abstract
-  */
+ */
 class Tile extends EventTarget {
 
   /**
-   * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
-   * @param {module:ol/TileState} state State.
-   * @param {module:ol/Tile~Options=} opt_options Tile options.
+   * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {TileState} state State.
+   * @param {Options=} opt_options Tile options.
    */
   constructor(tileCoord, state, opt_options) {
     super();
@@ -58,13 +88,13 @@ class Tile extends EventTarget {
     const options = opt_options ? opt_options : {};
 
     /**
-     * @type {module:ol/tilecoord~TileCoord}
+     * @type {import("./tilecoord.js").TileCoord}
      */
     this.tileCoord = tileCoord;
 
     /**
      * @protected
-     * @type {module:ol/TileState}
+     * @type {TileState}
      */
     this.state = state;
 
@@ -72,9 +102,17 @@ class Tile extends EventTarget {
      * An "interim" tile for this tile. The interim tile may be used while this
      * one is loading, for "smooth" transitions when changing params/dimensions
      * on the source.
-     * @type {module:ol/Tile}
+     * @type {Tile}
      */
     this.interimTile = null;
+
+    /**
+     * The tile is available at the highest possible resolution. Subclasses can
+     * set this to `false` initially. Tile load listeners will not be
+     * unregistered before this is set to `true` and a `#changed()` is called.
+     * @type {boolean}
+     */
+    this.hifi = true;
 
     /**
      * A key assigned to the tile. This is used by the tile source to determine
@@ -93,7 +131,7 @@ class Tile extends EventTarget {
     /**
      * Lookup of start times for rendering transitions.  If the start time is
      * equal to -1, the transition is complete.
-     * @type {Object.<number, number>}
+     * @type {Object<string, number>}
      */
     this.transitionStarts_ = {};
 
@@ -117,7 +155,7 @@ class Tile extends EventTarget {
    * Get the interim tile most suitable for rendering using the chain of interim
    * tiles. This corresponds to the  most recent tile that has been loaded, if no
    * such tile exists, the original tile is returned.
-   * @return {!module:ol/Tile} Best tile for rendering.
+   * @return {!Tile} Best tile for rendering.
    */
   getInterimTile() {
     if (!this.interimTile) {
@@ -151,7 +189,7 @@ class Tile extends EventTarget {
     }
 
     let tile = this.interimTile;
-    let prev = this;
+    let prev = /** @type {Tile} */ (this);
 
     do {
       if (tile.getState() == TileState.LOADED) {
@@ -177,7 +215,7 @@ class Tile extends EventTarget {
 
   /**
    * Get the tile coordinate for this tile.
-   * @return {module:ol/tilecoord~TileCoord} The tile coordinate.
+   * @return {import("./tilecoord.js").TileCoord} The tile coordinate.
    * @api
    */
   getTileCoord() {
@@ -185,14 +223,19 @@ class Tile extends EventTarget {
   }
 
   /**
-   * @return {module:ol/TileState} State.
+   * @return {TileState} State.
    */
   getState() {
     return this.state;
   }
 
   /**
-   * @param {module:ol/TileState} state State.
+   * Sets the state of this tile. If you write your own {@link module:ol/Tile~LoadFunction tileLoadFunction} ,
+   * it is important to set the state correctly to {@link module:ol/TileState~ERROR}
+   * when the tile cannot be loaded. Otherwise the tile cannot be removed from
+   * the tile queue and will block other requests.
+   * @param {TileState} state State.
+   * @api
    */
   setState(state) {
     this.state = state;
@@ -206,11 +249,13 @@ class Tile extends EventTarget {
    * @abstract
    * @api
    */
-  load() {}
+  load() {
+    abstract();
+  }
 
   /**
    * Get the alpha value for rendering.
-   * @param {number} id An id for the renderer.
+   * @param {string} id An id for the renderer.
    * @param {number} time The render frame time.
    * @return {number} A number between 0 and 1.
    */
@@ -238,7 +283,7 @@ class Tile extends EventTarget {
    * Determine if a tile is in an alpha transition.  A tile is considered in
    * transition if tile.getAlpha() has not yet been called or has been called
    * and returned 1.
-   * @param {number} id An id for the renderer.
+   * @param {string} id An id for the renderer.
    * @return {boolean} The tile is in transition.
    */
   inTransition(id) {
@@ -250,7 +295,7 @@ class Tile extends EventTarget {
 
   /**
    * Mark a transition as complete.
-   * @param {number} id An id for the renderer.
+   * @param {string} id An id for the renderer.
    */
   endTransition(id) {
     if (this.transition_) {

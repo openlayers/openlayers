@@ -31,15 +31,15 @@ import {squaredSegmentDistance, squaredDistance} from '../../math.js';
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {boolean} highQuality Highest quality.
- * @param {Array.<number>=} opt_simplifiedFlatCoordinates Simplified flat
+ * @param {Array<number>=} opt_simplifiedFlatCoordinates Simplified flat
  *     coordinates.
- * @return {Array.<number>} Simplified line string.
+ * @return {Array<number>} Simplified line string.
  */
 export function simplifyLineString(flatCoordinates, offset, end,
   stride, squaredTolerance, highQuality, opt_simplifiedFlatCoordinates) {
@@ -61,12 +61,12 @@ export function simplifyLineString(flatCoordinates, offset, end,
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {Array.<number>} simplifiedFlatCoordinates Simplified flat
+ * @param {Array<number>} simplifiedFlatCoordinates Simplified flat
  *     coordinates.
  * @param {number} simplifiedOffset Simplified offset.
  * @return {number} Simplified offset.
@@ -83,11 +83,11 @@ export function douglasPeucker(flatCoordinates, offset, end,
     }
     return simplifiedOffset;
   }
-  /** @type {Array.<number>} */
+  /** @type {Array<number>} */
   const markers = new Array(n);
   markers[0] = 1;
   markers[n - 1] = 1;
-  /** @type {Array.<number>} */
+  /** @type {Array<number>} */
   const stack = [offset, end - stride];
   let index = 0;
   while (stack.length > 0) {
@@ -131,15 +131,15 @@ export function douglasPeucker(flatCoordinates, offset, end,
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<number>} ends Ends.
+ * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {Array.<number>} simplifiedFlatCoordinates Simplified flat
+ * @param {Array<number>} simplifiedFlatCoordinates Simplified flat
  *     coordinates.
  * @param {number} simplifiedOffset Simplified offset.
- * @param {Array.<number>} simplifiedEnds Simplified ends.
+ * @param {Array<number>} simplifiedEnds Simplified ends.
  * @return {number} Simplified offset.
  */
 export function douglasPeuckerArray(flatCoordinates, offset,
@@ -158,15 +158,15 @@ export function douglasPeuckerArray(flatCoordinates, offset,
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<Array.<number>>} endss Endss.
+ * @param {Array<Array<number>>} endss Endss.
  * @param {number} stride Stride.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {Array.<number>} simplifiedFlatCoordinates Simplified flat
+ * @param {Array<number>} simplifiedFlatCoordinates Simplified flat
  *     coordinates.
  * @param {number} simplifiedOffset Simplified offset.
- * @param {Array.<Array.<number>>} simplifiedEndss Simplified endss.
+ * @param {Array<Array<number>>} simplifiedEndss Simplified endss.
  * @return {number} Simplified offset.
  */
 export function douglasPeuckerMultiArray(
@@ -186,12 +186,12 @@ export function douglasPeuckerMultiArray(
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {Array.<number>} simplifiedFlatCoordinates Simplified flat
+ * @param {Array<number>} simplifiedFlatCoordinates Simplified flat
  *     coordinates.
  * @param {number} simplifiedOffset Simplified offset.
  * @return {number} Simplified offset.
@@ -253,12 +253,12 @@ export function snap(value, tolerance) {
  * the common edge between two polygons will be simplified to the same line
  * string independently in both polygons.  This implementation uses a single
  * pass over the coordinates and eliminates intermediate collinear points.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {number} tolerance Tolerance.
- * @param {Array.<number>} simplifiedFlatCoordinates Simplified flat
+ * @param {Array<number>} simplifiedFlatCoordinates Simplified flat
  *     coordinates.
  * @param {number} simplifiedOffset Simplified offset.
  * @return {number} Simplified offset.
@@ -337,15 +337,15 @@ export function quantize(flatCoordinates, offset, end, stride,
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<number>} ends Ends.
+ * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
  * @param {number} tolerance Tolerance.
- * @param {Array.<number>} simplifiedFlatCoordinates Simplified flat
+ * @param {Array<number>} simplifiedFlatCoordinates Simplified flat
  *     coordinates.
  * @param {number} simplifiedOffset Simplified offset.
- * @param {Array.<number>} simplifiedEnds Simplified ends.
+ * @param {Array<number>} simplifiedEnds Simplified ends.
  * @return {number} Simplified offset.
  */
 export function quantizeArray(
@@ -366,15 +366,15 @@ export function quantizeArray(
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<Array.<number>>} endss Endss.
+ * @param {Array<Array<number>>} endss Endss.
  * @param {number} stride Stride.
  * @param {number} tolerance Tolerance.
- * @param {Array.<number>} simplifiedFlatCoordinates Simplified flat
+ * @param {Array<number>} simplifiedFlatCoordinates Simplified flat
  *     coordinates.
  * @param {number} simplifiedOffset Simplified offset.
- * @param {Array.<Array.<number>>} simplifiedEndss Simplified endss.
+ * @param {Array<Array<number>>} simplifiedEndss Simplified endss.
  * @return {number} Simplified offset.
  */
 export function quantizeMultiArray(

@@ -1,42 +1,20 @@
 /**
  * @module ol/control/FullScreen
  */
-import Control from '../control/Control.js';
+import Control from './Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_UNSUPPORTED} from '../css.js';
 import {replaceNode} from '../dom.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 
-
-/**
- * @return {string} Change type.
- */
-const getChangeType = (function() {
-  let changeType;
-  return function() {
-    if (!changeType) {
-      const body = document.body;
-      if (body.webkitRequestFullscreen) {
-        changeType = 'webkitfullscreenchange';
-      } else if (body.mozRequestFullScreen) {
-        changeType = 'mozfullscreenchange';
-      } else if (body.msRequestFullscreen) {
-        changeType = 'MSFullscreenChange';
-      } else if (body.requestFullscreen) {
-        changeType = 'fullscreenchange';
-      }
-    }
-    return changeType;
-  };
-})();
-
+const events = ['fullscreenchange', 'webkitfullscreenchange', 'MSFullscreenChange'];
 
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-full-screen'] CSS class name.
- * @property {string|HTMLElement} [label='\u2922'] Text label to use for the button.
+ * @property {string|Text} [label='\u2922'] Text label to use for the button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {string|HTMLElement} [labelActive='\u00d7'] Text label to use for the
+ * @property {string|Text} [labelActive='\u00d7'] Text label to use for the
  * button when full-screen is active.
  * Instead of text, also an element (e.g. a `span` element) can be used.
  * @property {string} [tipLabel='Toggle full-screen'] Text label to use for the button tip.
@@ -65,7 +43,7 @@ const getChangeType = (function() {
 class FullScreen extends Control {
 
   /**
-   * @param {module:ol/control/FullScreen~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
@@ -87,7 +65,7 @@ class FullScreen extends Control {
 
     /**
      * @private
-     * @type {HTMLElement}
+     * @type {Text}
      */
     this.labelNode_ = typeof label === 'string' ?
       document.createTextNode(label) : label;
@@ -96,19 +74,24 @@ class FullScreen extends Control {
 
     /**
      * @private
-     * @type {HTMLElement}
+     * @type {Text}
      */
     this.labelActiveNode_ = typeof labelActive === 'string' ?
       document.createTextNode(labelActive) : labelActive;
 
-    const tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
-    const button = document.createElement('button');
-    button.className = this.cssClassName_ + '-' + isFullScreen();
-    button.setAttribute('type', 'button');
-    button.title = tipLabel;
-    button.appendChild(this.labelNode_);
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
+    this.button_ = document.createElement('button');
 
-    listen(button, EventType.CLICK,
+    const tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
+    this.setClassName_(this.button_, isFullScreen());
+    this.button_.setAttribute('type', 'button');
+    this.button_.title = tipLabel;
+    this.button_.appendChild(this.labelNode_);
+
+    listen(this.button_, EventType.CLICK,
       this.handleClick_, this);
 
     const cssClasses = this.cssClassName_ + ' ' + CLASS_UNSELECTABLE +
@@ -116,7 +99,7 @@ class FullScreen extends Control {
         (!isFullScreenSupported() ? CLASS_UNSUPPORTED : '');
     const element = this.element;
     element.className = cssClasses;
-    element.appendChild(button);
+    element.appendChild(this.button_);
 
     /**
      * @private
@@ -176,18 +159,31 @@ class FullScreen extends Control {
    * @private
    */
   handleFullScreenChange_() {
-    const button = this.element.firstElementChild;
     const map = this.getMap();
     if (isFullScreen()) {
-      button.className = this.cssClassName_ + '-true';
+      this.setClassName_(this.button_, true);
       replaceNode(this.labelActiveNode_, this.labelNode_);
     } else {
-      button.className = this.cssClassName_ + '-false';
+      this.setClassName_(this.button_, false);
       replaceNode(this.labelNode_, this.labelActiveNode_);
     }
     if (map) {
       map.updateSize();
     }
+  }
+
+  /**
+   * @param {HTMLElement} element Target element
+   * @param {boolean} fullscreen True if fullscreen class name should be active
+   * @private
+   */
+  setClassName_(element, fullscreen) {
+    const activeClassName = this.cssClassName_ + '-true';
+    const inactiveClassName = this.cssClassName_ + '-false';
+    const nextClassName = fullscreen ? activeClassName : inactiveClassName;
+    element.classList.remove(activeClassName);
+    element.classList.remove(inactiveClassName);
+    element.classList.add(nextClassName);
   }
 
   /**
@@ -197,10 +193,10 @@ class FullScreen extends Control {
   setMap(map) {
     super.setMap(map);
     if (map) {
-      this.listenerKeys.push(listen(document,
-        getChangeType(),
-        this.handleFullScreenChange_, this)
-      );
+      for (let i = 0, ii = events.length; i < ii; ++i) {
+        this.listenerKeys.push(
+          listen(document, events[i], this.handleFullScreenChange_, this));
+      }
     }
   }
 }
@@ -213,7 +209,6 @@ function isFullScreenSupported() {
   const body = document.body;
   return !!(
     body.webkitRequestFullscreen ||
-    (body.mozRequestFullScreen && document.mozFullScreenEnabled) ||
     (body.msRequestFullscreen && document.msFullscreenEnabled) ||
     (body.requestFullscreen && document.fullscreenEnabled)
   );
@@ -224,8 +219,7 @@ function isFullScreenSupported() {
  */
 function isFullScreen() {
   return !!(
-    document.webkitIsFullScreen || document.mozFullScreen ||
-    document.msFullscreenElement || document.fullscreenElement
+    document.webkitIsFullScreen || document.msFullscreenElement || document.fullscreenElement
   );
 }
 
@@ -238,8 +232,6 @@ function requestFullScreen(element) {
     element.requestFullscreen();
   } else if (element.msRequestFullscreen) {
     element.msRequestFullscreen();
-  } else if (element.mozRequestFullScreen) {
-    element.mozRequestFullScreen();
   } else if (element.webkitRequestFullscreen) {
     element.webkitRequestFullscreen();
   }
@@ -250,10 +242,8 @@ function requestFullScreen(element) {
  * @param {HTMLElement} element Element to request fullscreen
  */
 function requestFullScreenWithKeys(element) {
-  if (element.mozRequestFullScreenWithKeys) {
-    element.mozRequestFullScreenWithKeys();
-  } else if (element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+  if (element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen();
   } else {
     requestFullScreen(element);
   }
@@ -267,8 +257,6 @@ function exitFullScreen() {
     document.exitFullscreen();
   } else if (document.msExitFullscreen) {
     document.msExitFullscreen();
-  } else if (document.mozCancelFullScreen) {
-    document.mozCancelFullScreen();
   } else if (document.webkitExitFullscreen) {
     document.webkitExitFullscreen();
   }

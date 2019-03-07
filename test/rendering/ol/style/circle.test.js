@@ -16,15 +16,17 @@ describe('ol.rendering.style.Circle', function() {
   let map, vectorSource;
 
   function createMap(renderer) {
+    const MapConstructor = Map;
+    const LayerConstructor = VectorLayer;
+
     vectorSource = new VectorSource();
-    const vectorLayer = new VectorLayer({
+    const vectorLayer = new LayerConstructor({
       source: vectorSource
     });
 
-    map = new Map({
+    map = new MapConstructor({
       pixelRatio: 1,
       target: createMapDiv(50, 50),
-      renderer: renderer,
       layers: [vectorLayer],
       view: new View({
         projection: 'EPSG:4326',
@@ -195,14 +197,6 @@ describe('ol.rendering.style.Circle', function() {
       createMap('canvas');
       createFeatures(true);
       expectResemble(map, 'rendering/ol/style/expected/circle-canvas.png',
-        8.0, done);
-    });
-
-    where('WebGL').it('tests the WebGL renderer', function(done) {
-      assertWebGL();
-      createMap('webgl');
-      createFeatures();
-      expectResemble(map, 'rendering/ol/style/expected/circle-webgl.png',
         8.0, done);
     });
   });

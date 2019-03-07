@@ -5,10 +5,6 @@ const walk = require('walk').walk;
 const isWindows = process.platform.indexOf('win') === 0;
 
 const sourceDir = path.join(__dirname, '..', 'src');
-const externsDir = path.join(__dirname, '..', 'externs');
-const externsPaths = [
-  path.join(externsDir, 'geojson.js')
-];
 const infoPath = path.join(__dirname, '..', 'build', 'info.json');
 
 /**
@@ -49,7 +45,7 @@ const jsdocConfig = path.join(
  */
 function getPaths() {
   return new Promise((resolve, reject) => {
-    let paths = [].concat(externsPaths);
+    let paths = [];
 
     const walker = walk(sourceDir);
     walker.on('file', (root, stats, next) => {
@@ -71,7 +67,7 @@ function getPaths() {
        * pass the sourceDir to the task so it can do the walking.
        */
       if (isWindows) {
-        paths = [sourceDir].concat(externsPaths);
+        paths = [sourceDir];
       }
 
       resolve(paths);
@@ -109,7 +105,7 @@ function parseOutput(output) {
 
 /**
  * Spawn JSDoc.
- * @param {Array.<string>} paths Paths to source files.
+ * @param {Array<string>} paths Paths to source files.
  * @return {Promise<string>} Resolves with the JSDoc output (new metadata).
  *     If provided with an empty list of paths, resolves with null.
  */

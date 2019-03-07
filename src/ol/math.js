@@ -35,7 +35,7 @@ export const cosh = (function() {
   } else {
     // … else, use the reference implementation of MDN:
     cosh = function(x) {
-      const y = Math.exp(x);
+      const y = /** @type {Math} */ (Math).exp(x);
       return (y + 1 / y) / 2;
     };
   }
@@ -99,9 +99,9 @@ export function squaredDistance(x1, y1, x2, y2) {
 /**
  * Solves system of linear equations using Gaussian elimination method.
  *
- * @param {Array.<Array.<number>>} mat Augmented matrix (n x n + 1 column)
+ * @param {Array<Array<number>>} mat Augmented matrix (n x n + 1 column)
  *                                     in row-major order.
- * @return {Array.<number>} The resulting vector.
+ * @return {Array<number>} The resulting vector.
  */
 export function solveLinearSystem(mat) {
   const n = mat.length;

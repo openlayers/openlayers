@@ -6,7 +6,7 @@ import ImageWMS from '../src/ol/source/ImageWMS.js';
 
 /**
  * Renders a progress bar.
- * @param {Element} el The target element.
+ * @param {HTMLElement} el The target element.
  * @constructor
  */
 function Progress(el) {

@@ -3,7 +3,7 @@
  */
 import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 import {getUid} from './util.js';
-import {UNDEFINED} from './functions.js';
+import {VOID} from './functions.js';
 import {createExtent, none as centerNone} from './centerconstraint.js';
 import BaseObject from './Object.js';
 import {createSnapToResolutions, createSnapToPower} from './resolutionconstraint.js';
@@ -17,7 +17,6 @@ import {inAndOut} from './easing.js';
 import {getForViewAndSize, getCenter, getHeight, getWidth, isEmpty} from './extent.js';
 import GeometryType from './geom/GeometryType.js';
 import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
-import SimpleGeometry from './geom/SimpleGeometry.js';
 import {clamp, modulo} from './math.js';
 import {assign} from './obj.js';
 import {createProjection, METERS_PER_UNIT} from './proj.js';
@@ -28,13 +27,13 @@ import Units from './proj/Units.js';
  * An animation configuration
  *
  * @typedef {Object} Animation
- * @property {module:ol/coordinate~Coordinate} [sourceCenter]
- * @property {module:ol/coordinate~Coordinate} [targetCenter]
+ * @property {import("./coordinate.js").Coordinate} [sourceCenter]
+ * @property {import("./coordinate.js").Coordinate} [targetCenter]
  * @property {number} [sourceResolution]
  * @property {number} [targetResolution]
  * @property {number} [sourceRotation]
  * @property {number} [targetRotation]
- * @property {module:ol/coordinate~Coordinate} [anchor]
+ * @property {import("./coordinate.js").Coordinate} [anchor]
  * @property {number} start
  * @property {number} duration
  * @property {boolean} complete
@@ -45,18 +44,18 @@ import Units from './proj/Units.js';
 
 /**
  * @typedef {Object} Constraints
- * @property {module:ol/centerconstraint~Type} center
- * @property {module:ol/resolutionconstraint~Type} resolution
- * @property {module:ol/rotationconstraint~Type} rotation
+ * @property {import("./centerconstraint.js").Type} center
+ * @property {import("./resolutionconstraint.js").Type} resolution
+ * @property {import("./rotationconstraint.js").Type} rotation
  */
 
 
 /**
  * @typedef {Object} FitOptions
- * @property {module:ol/size~Size} [size] The size in pixels of the box to fit
+ * @property {import("./size.js").Size} [size] The size in pixels of the box to fit
  * the extent into. Default is the current size of the first map in the DOM that
  * uses this view, or `[100, 100]` if no such map is found.
- * @property {!Array.<number>} [padding=[0, 0, 0, 0]] Padding (in pixels) to be
+ * @property {!Array<number>} [padding=[0, 0, 0, 0]] Padding (in pixels) to be
  * cleared inside the view. Values in the array are top, right, bottom and left
  * padding.
  * @property {boolean} [constrainResolution=true] Constrain the resolution.
@@ -80,7 +79,7 @@ import Units from './proj/Units.js';
 
 /**
  * @typedef {Object} ViewOptions
- * @property {module:ol/coordinate~Coordinate} [center] The initial center for
+ * @property {import("./coordinate.js").Coordinate} [center] The initial center for
  * the view. The coordinate system for the center is specified with the
  * `projection` option. Layer sources will not be fetched if this is not set,
  * but the center can be set later with {@link #setCenter}.
@@ -92,7 +91,7 @@ import Units from './proj/Units.js';
  * If `false`, a rotation constraint that always sets the rotation to zero is
  * used. The `constrainRotation` option has no effect if `enableRotation` is
  * `false`.
- * @property {module:ol/extent~Extent} [extent] The extent that constrains the
+ * @property {import("./extent.js").Extent} [extent] The extent that constrains the
  * center, in other words, center cannot be set outside this extent.
  * @property {number} [maxResolution] The maximum resolution used to determine
  * the resolution constraint. It is used together with `minResolution` (or
@@ -114,14 +113,14 @@ import Units from './proj/Units.js';
  * resolution constraint. It is used together with `maxZoom` (or
  * `minResolution`) and `zoomFactor`.  Note that if `maxResolution` is also
  * provided, it is given precedence over `minZoom`.
- * @property {module:ol/proj~ProjectionLike} [projection='EPSG:3857'] The
+ * @property {import("./proj.js").ProjectionLike} [projection='EPSG:3857'] The
  * projection. The default is Spherical Mercator.
  * @property {number} [resolution] The initial resolution for the view. The
  * units are `projection` units per pixel (e.g. meters per pixel). An
  * alternative to setting this is to set `zoom`. Layer sources will not be
  * fetched if neither this nor `zoom` are defined, but they can be set later
  * with {@link #setZoom} or {@link #setResolution}.
- * @property {Array.<number>} [resolutions] Resolutions to determine the
+ * @property {Array<number>} [resolutions] Resolutions to determine the
  * resolution constraint. If set the `maxResolution`, `minResolution`,
  * `minZoom`, `maxZoom`, and `zoomFactor` options are ignored.
  * @property {number} [rotation=0] The initial rotation for the view in radians
@@ -136,15 +135,15 @@ import Units from './proj/Units.js';
 
 /**
  * @typedef {Object} AnimationOptions
- * @property {module:ol/coordinate~Coordinate|undefined} center The center of the view at the end of
+ * @property {import("./coordinate.js").Coordinate} [center] The center of the view at the end of
  * the animation.
- * @property {number|undefined} zoom The zoom level of the view at the end of the
+ * @property {number} [zoom] The zoom level of the view at the end of the
  * animation. This takes precedence over `resolution`.
- * @property {number|undefined} resolution The resolution of the view at the end
+ * @property {number} [resolution] The resolution of the view at the end
  * of the animation.  If `zoom` is also provided, this option will be ignored.
- * @property {number|undefined} rotation The rotation of the view at the end of
+ * @property {number} [rotation] The rotation of the view at the end of
  * the animation.
- * @property {module:ol/coordinate~Coordinate|undefined} anchor Optional anchor to remained fixed
+ * @property {import("./coordinate.js").Coordinate} [anchor] Optional anchor to remained fixed
  * during a rotation or resolution animation.
  * @property {number} [duration=1000] The duration of the animation in milliseconds.
  * @property {function(number):number} [easing] The easing function used
@@ -157,8 +156,8 @@ import Units from './proj/Units.js';
 
 /**
  * @typedef {Object} State
- * @property {module:ol/coordinate~Coordinate} center
- * @property {module:ol/proj/Projection} projection
+ * @property {import("./coordinate.js").Coordinate} center
+ * @property {import("./proj/Projection.js").default} projection
  * @property {number} resolution
  * @property {number} rotation
  * @property {number} zoom
@@ -229,7 +228,7 @@ const DEFAULT_MIN_ZOOM = 0;
 class View extends BaseObject {
 
   /**
-   * @param {module:ol/View~ViewOptions=} opt_options View options.
+   * @param {ViewOptions=} opt_options View options.
    */
   constructor(opt_options) {
     super();
@@ -238,13 +237,13 @@ class View extends BaseObject {
 
     /**
      * @private
-     * @type {Array.<number>}
+     * @type {Array<number>}
      */
     this.hints_ = [0, 0];
 
     /**
      * @private
-     * @type {Array.<Array.<module:ol/View~Animation>>}
+     * @type {Array<Array<Animation>>}
      */
     this.animations_ = [];
 
@@ -259,7 +258,7 @@ class View extends BaseObject {
     /**
      * @private
      * @const
-     * @type {module:ol/proj/Projection}
+     * @type {import("./proj/Projection.js").default}
      */
     this.projection_ = createProjection(options.projection, 'EPSG:3857');
 
@@ -268,12 +267,12 @@ class View extends BaseObject {
 
   /**
    * Set up the view with the given options.
-   * @param {module:ol/View~ViewOptions} options View options.
+   * @param {ViewOptions} options View options.
    */
   applyOptions_(options) {
 
     /**
-     * @type {Object.<string, *>}
+     * @type {Object<string, *>}
      */
     const properties = {};
     properties[ViewProperty.CENTER] = options.center !== undefined ?
@@ -301,7 +300,7 @@ class View extends BaseObject {
 
     /**
      * @private
-     * @type {Array.<number>|undefined}
+     * @type {Array<number>|undefined}
      */
     this.resolutions_ = options.resolutions;
 
@@ -317,7 +316,7 @@ class View extends BaseObject {
 
     /**
      * @private
-     * @type {module:ol/View~Constraints}
+     * @type {Constraints}
      */
     this.constraints_ = {
       center: centerConstraint,
@@ -342,7 +341,7 @@ class View extends BaseObject {
 
     /**
      * @private
-     * @type {module:ol/View~ViewOptions}
+     * @type {ViewOptions}
      */
     this.options_ = options;
 
@@ -353,8 +352,8 @@ class View extends BaseObject {
    * current resolution (or zoom), center, and rotation are applied to any stored
    * options.  The provided options can be used to apply new min/max zoom or
    * resolution limits.
-   * @param {module:ol/View~ViewOptions} newOptions New options to be applied.
-   * @return {module:ol/View~ViewOptions} New options updated with the current view state.
+   * @param {ViewOptions} newOptions New options to be applied.
+   * @return {ViewOptions} New options updated with the current view state.
    */
   getUpdatedOptions_(newOptions) {
     const options = assign({}, this.options_);
@@ -400,7 +399,7 @@ class View extends BaseObject {
    * calling `view.setCenter()`, `view.setResolution()`, or `view.setRotation()`
    * (or another method that calls one of these).
    *
-   * @param {...(module:ol/View~AnimationOptions|function(boolean))} var_args Animation
+   * @param {...(AnimationOptions|function(boolean): void)} var_args Animation
    *     options.  Multiple animations can be run in series by passing multiple
    *     options objects.  To run multiple animations in parallel, call the method
    *     multiple times.  An optional callback can be provided as a final
@@ -428,9 +427,7 @@ class View extends BaseObject {
         this.setRotation(state.rotation);
       }
       if (callback) {
-        setTimeout(function() {
-          callback(true);
-        }, 0);
+        animationCallback(callback, true);
       }
       return;
     }
@@ -440,15 +437,16 @@ class View extends BaseObject {
     let rotation = this.getRotation();
     const series = [];
     for (let i = 0; i < animationCount; ++i) {
-      const options = /** @type {module:ol/View~AnimationOptions} */ (arguments[i]);
+      const options = /** @type {AnimationOptions} */ (arguments[i]);
 
-      const animation = /** @type {module:ol/View~Animation} */ ({
+      const animation = {
         start: start,
         complete: false,
         anchor: options.anchor,
         duration: options.duration !== undefined ? options.duration : 1000,
-        easing: options.easing || inAndOut
-      });
+        easing: options.easing || inAndOut,
+        callback: callback
+      };
 
       if (options.center) {
         animation.sourceCenter = center;
@@ -473,8 +471,6 @@ class View extends BaseObject {
         animation.targetRotation = rotation + delta;
         rotation = animation.targetRotation;
       }
-
-      animation.callback = callback;
 
       // check if animation is a no-op
       if (isNoopAnimation(animation)) {
@@ -517,7 +513,7 @@ class View extends BaseObject {
     for (let i = 0, ii = this.animations_.length; i < ii; ++i) {
       const series = this.animations_[i];
       if (series[0].callback) {
-        series[0].callback(false);
+        animationCallback(series[0].callback, false);
       }
     }
     this.animations_.length = 0;
@@ -592,9 +588,7 @@ class View extends BaseObject {
         this.setHint(ViewHint.ANIMATING, -1);
         const callback = series[0].callback;
         if (callback) {
-          setTimeout(function() {
-            callback(true);
-          }, 0);
+          animationCallback(callback, true);
         }
       }
     }
@@ -607,8 +601,8 @@ class View extends BaseObject {
 
   /**
    * @param {number} rotation Target rotation.
-   * @param {module:ol/coordinate~Coordinate} anchor Rotation anchor.
-   * @return {module:ol/coordinate~Coordinate|undefined} Center for rotation and anchor.
+   * @param {import("./coordinate.js").Coordinate} anchor Rotation anchor.
+   * @return {import("./coordinate.js").Coordinate|undefined} Center for rotation and anchor.
    */
   calculateCenterRotate(rotation, anchor) {
     let center;
@@ -623,8 +617,8 @@ class View extends BaseObject {
 
   /**
    * @param {number} resolution Target resolution.
-   * @param {module:ol/coordinate~Coordinate} anchor Zoom anchor.
-   * @return {module:ol/coordinate~Coordinate|undefined} Center for resolution and anchor.
+   * @param {import("./coordinate.js").Coordinate} anchor Zoom anchor.
+   * @return {import("./coordinate.js").Coordinate|undefined} Center for resolution and anchor.
    */
   calculateCenterZoom(resolution, anchor) {
     let center;
@@ -640,7 +634,7 @@ class View extends BaseObject {
 
   /**
    * @private
-   * @return {module:ol/size~Size} Viewport size or `[100, 100]` when no viewport is found.
+   * @return {import("./size.js").Size} Viewport size or `[100, 100]` when no viewport is found.
    */
   getSizeFromViewport_() {
     const size = [100, 100];
@@ -656,8 +650,8 @@ class View extends BaseObject {
 
   /**
    * Get the constrained center of this view.
-   * @param {module:ol/coordinate~Coordinate|undefined} center Center.
-   * @return {module:ol/coordinate~Coordinate|undefined} Constrained center.
+   * @param {import("./coordinate.js").Coordinate|undefined} center Center.
+   * @return {import("./coordinate.js").Coordinate|undefined} Constrained center.
    * @api
    */
   constrainCenter(center) {
@@ -692,26 +686,26 @@ class View extends BaseObject {
 
   /**
    * Get the view center.
-   * @return {module:ol/coordinate~Coordinate|undefined} The center of the view.
+   * @return {import("./coordinate.js").Coordinate|undefined} The center of the view.
    * @observable
    * @api
    */
   getCenter() {
     return (
-      /** @type {module:ol/coordinate~Coordinate|undefined} */ (this.get(ViewProperty.CENTER))
+      /** @type {import("./coordinate.js").Coordinate|undefined} */ (this.get(ViewProperty.CENTER))
     );
   }
 
   /**
-   * @return {module:ol/View~Constraints} Constraints.
+   * @return {Constraints} Constraints.
    */
   getConstraints() {
     return this.constraints_;
   }
 
   /**
-   * @param {Array.<number>=} opt_hints Destination array.
-   * @return {Array.<number>} Hint.
+   * @param {Array<number>=} opt_hints Destination array.
+   * @return {Array<number>} Hint.
    */
   getHints(opt_hints) {
     if (opt_hints !== undefined) {
@@ -728,14 +722,14 @@ class View extends BaseObject {
    * The size is the pixel dimensions of the box into which the calculated extent
    * should fit. In most cases you want to get the extent of the entire map,
    * that is `map.getSize()`.
-   * @param {module:ol/size~Size=} opt_size Box pixel size. If not provided, the size of the
+   * @param {import("./size.js").Size=} opt_size Box pixel size. If not provided, the size of the
    * first map that uses this view will be used.
-   * @return {module:ol/extent~Extent} Extent.
+   * @return {import("./extent.js").Extent} Extent.
    * @api
    */
   calculateExtent(opt_size) {
     const size = opt_size || this.getSizeFromViewport_();
-    const center = /** @type {!module:ol/coordinate~Coordinate} */ (this.getCenter());
+    const center = /** @type {!import("./coordinate.js").Coordinate} */ (this.getCenter());
     assert(center, 1); // The view center is not defined
     const resolution = /** @type {!number} */ (this.getResolution());
     assert(resolution !== undefined, 2); // The view resolution is not defined
@@ -801,7 +795,7 @@ class View extends BaseObject {
 
   /**
    * Get the view projection.
-   * @return {module:ol/proj/Projection} The projection of the view.
+   * @return {import("./proj/Projection.js").default} The projection of the view.
    * @api
    */
   getProjection() {
@@ -821,7 +815,7 @@ class View extends BaseObject {
   /**
    * Get the resolutions for the view. This returns the array of resolutions
    * passed to the constructor of the View, or undefined if none were given.
-   * @return {Array.<number>|undefined} The resolutions of the view.
+   * @return {Array<number>|undefined} The resolutions of the view.
    * @api
    */
   getResolutions() {
@@ -830,8 +824,8 @@ class View extends BaseObject {
 
   /**
    * Get the resolution for a provided extent (in map units) and size (in pixels).
-   * @param {module:ol/extent~Extent} extent Extent.
-   * @param {module:ol/size~Size=} opt_size Box pixel size.
+   * @param {import("./extent.js").Extent} extent Extent.
+   * @param {import("./size.js").Size=} opt_size Box pixel size.
    * @return {number} The resolution at which the provided extent will render at
    *     the given size.
    * @api
@@ -898,22 +892,25 @@ class View extends BaseObject {
   }
 
   /**
-   * @return {module:ol/View~State} View state.
+   * @param {number} pixelRatio Pixel ratio for center rounding.
+   * @return {State} View state.
    */
-  getState() {
-    const center = /** @type {module:ol/coordinate~Coordinate} */ (this.getCenter());
+  getState(pixelRatio) {
+    const center = /** @type {import("./coordinate.js").Coordinate} */ (this.getCenter());
     const projection = this.getProjection();
     const resolution = /** @type {number} */ (this.getResolution());
+    const pixelResolution = resolution / pixelRatio;
     const rotation = this.getRotation();
-    return (
-      /** @type {module:ol/View~State} */ ({
-        center: center.slice(),
-        projection: projection !== undefined ? projection : null,
-        resolution: resolution,
-        rotation: rotation,
-        zoom: this.getZoom()
-      })
-    );
+    return {
+      center: [
+        Math.round(center[0] / pixelResolution) * pixelResolution,
+        Math.round(center[1] / pixelResolution) * pixelResolution
+      ],
+      projection: projection !== undefined ? projection : null,
+      resolution: resolution,
+      rotation: rotation,
+      zoom: this.getZoom()
+    };
   }
 
   /**
@@ -973,9 +970,9 @@ class View extends BaseObject {
    * The size is pixel dimensions of the box to fit the extent into.
    * In most cases you will want to use the map size, that is `map.getSize()`.
    * Takes care of the map angle.
-   * @param {module:ol/geom/SimpleGeometry|module:ol/extent~Extent} geometryOrExtent The geometry or
+   * @param {import("./geom/SimpleGeometry.js").default|import("./extent.js").Extent} geometryOrExtent The geometry or
    *     extent to fit the view to.
-   * @param {module:ol/View~FitOptions=} opt_options Options.
+   * @param {FitOptions=} opt_options Options.
    * @api
    */
   fit(geometryOrExtent, opt_options) {
@@ -984,11 +981,11 @@ class View extends BaseObject {
     if (!size) {
       size = this.getSizeFromViewport_();
     }
-    /** @type {module:ol/geom/SimpleGeometry} */
+    /** @type {import("./geom/SimpleGeometry.js").default} */
     let geometry;
-    if (!(geometryOrExtent instanceof SimpleGeometry)) {
-      assert(Array.isArray(geometryOrExtent),
-        24); // Invalid extent or geometry provided as `geometry`
+    assert(Array.isArray(geometryOrExtent) || typeof /** @type {?} */ (geometryOrExtent).getSimplifiedGeometry === 'function',
+      24); // Invalid extent or geometry provided as `geometry`
+    if (Array.isArray(geometryOrExtent)) {
       assert(!isEmpty(geometryOrExtent),
         25); // Cannot fit empty extent provided as `geometry`
       geometry = polygonFromExtent(geometryOrExtent);
@@ -1057,7 +1054,7 @@ class View extends BaseObject {
     const centerX = centerRotX * cosAngle - centerRotY * sinAngle;
     const centerY = centerRotY * cosAngle + centerRotX * sinAngle;
     const center = [centerX, centerY];
-    const callback = options.callback ? options.callback : UNDEFINED;
+    const callback = options.callback ? options.callback : VOID;
 
     if (options.duration !== undefined) {
       this.animate({
@@ -1069,15 +1066,15 @@ class View extends BaseObject {
     } else {
       this.setResolution(resolution);
       this.setCenter(center);
-      setTimeout(callback.bind(undefined, true), 0);
+      animationCallback(callback, true);
     }
   }
 
   /**
    * Center on coordinate and view position.
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
-   * @param {module:ol/size~Size} size Box pixel size.
-   * @param {module:ol/pixel~Pixel} position Position on the view to center on.
+   * @param {import("./coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("./size.js").Size} size Box pixel size.
+   * @param {import("./pixel.js").Pixel} position Position on the view to center on.
    * @api
    */
   centerOn(coordinate, size, position) {
@@ -1109,7 +1106,7 @@ class View extends BaseObject {
   /**
    * Rotate the view around a given coordinate.
    * @param {number} rotation New rotation value for the view.
-   * @param {module:ol/coordinate~Coordinate=} opt_anchor The rotation center.
+   * @param {import("./coordinate.js").Coordinate=} opt_anchor The rotation center.
    * @api
    */
   rotate(rotation, opt_anchor) {
@@ -1122,7 +1119,7 @@ class View extends BaseObject {
 
   /**
    * Set the center of the current view.
-   * @param {module:ol/coordinate~Coordinate|undefined} center The center of the view.
+   * @param {import("./coordinate.js").Coordinate|undefined} center The center of the view.
    * @observable
    * @api
    */
@@ -1134,7 +1131,7 @@ class View extends BaseObject {
   }
 
   /**
-   * @param {module:ol/ViewHint} hint Hint.
+   * @param {ViewHint} hint Hint.
    * @param {number} delta Delta.
    * @return {number} New value.
    */
@@ -1182,8 +1179,19 @@ class View extends BaseObject {
 
 
 /**
- * @param {module:ol/View~ViewOptions} options View options.
- * @return {module:ol/centerconstraint~Type} The constraint.
+ * @param {Function} callback Callback.
+ * @param {*} returnValue Return value.
+ */
+function animationCallback(callback, returnValue) {
+  setTimeout(function() {
+    callback(returnValue);
+  }, 0);
+}
+
+
+/**
+ * @param {ViewOptions} options View options.
+ * @return {import("./centerconstraint.js").Type} The constraint.
  */
 export function createCenterConstraint(options) {
   if (options.extent !== undefined) {
@@ -1195,8 +1203,8 @@ export function createCenterConstraint(options) {
 
 
 /**
- * @param {module:ol/View~ViewOptions} options View options.
- * @return {{constraint: module:ol/resolutionconstraint~Type, maxResolution: number,
+ * @param {ViewOptions} options View options.
+ * @return {{constraint: import("./resolutionconstraint.js").Type, maxResolution: number,
  *     minResolution: number, minZoom: number, zoomFactor: number}} The constraint.
  */
 export function createResolutionConstraint(options) {
@@ -1277,8 +1285,8 @@ export function createResolutionConstraint(options) {
 
 
 /**
- * @param {module:ol/View~ViewOptions} options View options.
- * @return {module:ol/rotationconstraint~Type} Rotation constraint.
+ * @param {ViewOptions} options View options.
+ * @return {import("./rotationconstraint.js").Type} Rotation constraint.
  */
 export function createRotationConstraint(options) {
   const enableRotation = options.enableRotation !== undefined ?
@@ -1302,7 +1310,7 @@ export function createRotationConstraint(options) {
 
 /**
  * Determine if an animation involves no view change.
- * @param {module:ol/View~Animation} animation The animation.
+ * @param {Animation} animation The animation.
  * @return {boolean} The animation involves no view change.
  */
 export function isNoopAnimation(animation) {

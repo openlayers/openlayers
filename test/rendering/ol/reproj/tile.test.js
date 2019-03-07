@@ -12,7 +12,7 @@ describe('ol.rendering.reproj.Tile', function() {
   function testSingleTile(source, targetProjection, targetTileGrid, z, x, y,
     pixelRatio, expectedUrl, expectedRequests, done) {
     const sourceProjection = source.getProjection();
-    const sourceGutter = source.getGutter(sourceProjection);
+    const sourceGutter = source.getGutterForProjection(sourceProjection);
 
     let tilesRequested = 0;
 
