@@ -54,8 +54,7 @@ export {default as Translate} from './interaction/Translate.js';
  * @property {boolean} [dragPan=true] Whether drag pan is desired.
  * @property {boolean} [pinchRotate=true] Whether pinch rotate is desired.
  * @property {boolean} [pinchZoom=true] Whether pinch zoom is desired.
- * @property {number} [zoomDelta] Zoom level delta when using keyboard or
- * mousewheel zoom.
+ * @property {number} [zoomDelta] Zoom level delta when using keyboard or double click zoom.
  * @property {number} [zoomDuration] Duration of the zoom animation in
  * milliseconds.
  */
