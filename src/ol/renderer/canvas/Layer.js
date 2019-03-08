@@ -64,6 +64,14 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
+   * @inheritDoc
+   */
+  disposeInternal() {
+    this.context.canvas.width = this.context.canvas.height = 0;
+    super.disposeInternal();
+  }
+
+  /**
    * @param {CanvasRenderingContext2D} context Context.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @param {import("../../extent.js").Extent} extent Clip extent.
