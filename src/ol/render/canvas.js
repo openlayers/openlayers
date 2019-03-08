@@ -186,6 +186,10 @@ let measureContext = null;
  */
 export const textHeights = {};
 
+/**
+ * @type {!Object<string, number>}
+ */
+const fontSizeCache = {};
 
 /**
  * Clears the label cache when a font becomes available.
@@ -323,6 +327,27 @@ export function measureTextWidth(font, text) {
   return measureContext.measureText(text).width;
 }
 
+/**
+ * Mesaure text with split char cache.
+ * @param {string} font Font.
+ * @param {string} text Text.
+ * @return {number} Width.
+ */
+export function measureTextWidthCharCache(font, text) {
+  let width = 0;
+  for (let i = 0, len = text.length; i < len; ++i) {
+    const char = text[i];
+    const key = font + char;
+    if (fontSizeCache[key]) {
+      width += fontSizeCache[key];
+    } else {
+      const w = measureTextWidth(font, char);
+      fontSizeCache[key] = w;
+      width += w;
+    }
+  }
+  return width;
+}
 
 /**
  * Measure text width using a cache.
@@ -351,7 +376,7 @@ export function measureTextWidths(font, lines, widths) {
   const numLines = lines.length;
   let width = 0;
   for (let i = 0; i < numLines; ++i) {
-    const currentWidth = measureTextWidth(font, lines[i]);
+    const currentWidth = measureTextWidthCharCache(font, lines[i]);
     width = Math.max(width, currentWidth);
     widths.push(currentWidth);
   }
