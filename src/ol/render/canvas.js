@@ -288,22 +288,22 @@ function getMeasureContext() {
  * @return {import("../size.js").Size} Measurement.
  */
 export const measureTextHeight = (function() {
-  let span;
+  let div;
   const heights = textHeights;
   return function(font) {
     let height = heights[font];
     if (height == undefined) {
-      if (!span) {
-        span = document.createElement('span');
-        span.textContent = 'M';
-        span.style.margin = span.style.padding = '0 !important';
-        span.style.position = 'absolute !important';
-        span.style.left = '-99999px !important';
+      if (!div) {
+        div = document.createElement('div');
+        div.innerHTML = 'M';
+        div.style.margin = div.style.padding = '0 !important';
+        div.style.position = 'absolute !important';
+        div.style.left = '-99999px !important';
       }
-      span.style.font = font;
-      document.body.appendChild(span);
-      height = heights[font] = span.offsetHeight;
-      document.body.removeChild(span);
+      div.style.font = font;
+      document.body.appendChild(div);
+      height = heights[font] = div.offsetHeight;
+      document.body.removeChild(div);
     }
     return height;
   };
