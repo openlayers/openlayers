@@ -77,7 +77,7 @@
     "mocha": "6.0.2",
     "ol-mapbox-style": "^4.1.0",
     "pixelmatch": "^4.0.2",
-    "pngjs": "^3.3.3",
+    "pngjs": "^3.4.0",
     "proj4": "2.5.0",
     "puppeteer": "~1.13.0",
     "serve-static": "^1.13.2",
