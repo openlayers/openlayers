@@ -143,6 +143,8 @@ class ExecutorGroup extends Disposable {
         executors[key].disposeInternal();
       }
     }
+    const canvas = this.hitDetectionContext_.canvas;
+    canvas.width = canvas.height = 0;
     super.disposeInternal();
   }
 

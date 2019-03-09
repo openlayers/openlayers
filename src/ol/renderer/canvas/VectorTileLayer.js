@@ -152,6 +152,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    */
   disposeInternal() {
     unlisten(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
+    this.overlayContext_.canvas.width = this.overlayContext_.canvas.height = 0;
     super.disposeInternal();
   }
 
