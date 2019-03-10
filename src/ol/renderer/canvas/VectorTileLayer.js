@@ -10,8 +10,6 @@ import EventType from '../../events/EventType.js';
 import rbush from 'rbush';
 import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from '../../extent.js';
 import VectorTileRenderType from '../../layer/VectorTileRenderType.js';
-import {equivalent as equivalentProjection} from '../../proj.js';
-import Units from '../../proj/Units.js';
 import ReplayType from '../../render/canvas/BuilderType.js';
 import {labelCache} from '../../render/canvas.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
@@ -264,12 +262,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const sharedExtent = getIntersection(tileExtent, sourceTileExtent);
       const bufferedExtent = equals(sourceTileExtent, sharedExtent) ? null :
         buffer(sharedExtent, layer.getRenderBuffer() * resolution, this.tmpExtent);
-      const tileProjection = sourceTile.getProjection();
-      let reproject = false;
-      if (!equivalentProjection(projection, tileProjection)) {
-        reproject = true;
-        sourceTile.setProjection(projection);
-      }
       builderState.dirty = false;
       const builderGroup = new CanvasBuilderGroup(0, sharedExtent, resolution,
         pixelRatio, !!this.declutterTree_);
@@ -298,15 +290,6 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
       for (let i = 0, ii = features.length; i < ii; ++i) {
         const feature = features[i];
-        if (reproject) {
-          if (tileProjection.getUnits() == Units.TILE_PIXELS) {
-            // projected tile extent
-            tileProjection.setWorldExtent(sourceTileExtent);
-            // tile extent in tile pixel space
-            tileProjection.setExtent(sourceTile.getExtent());
-          }
-          feature.getGeometry().transform(tileProjection, projection);
-        }
         if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
           render.call(this, feature);
         }

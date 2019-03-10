@@ -9,8 +9,7 @@ import {getCenter} from '../../../../../src/ol/extent.js';
 import MVT from '../../../../../src/ol/format/MVT.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
-import {get as getProjection, fromLonLat} from '../../../../../src/ol/proj.js';
-import Projection from '../../../../../src/ol/proj/Projection.js';
+import {get as getProjection} from '../../../../../src/ol/proj.js';
 import {checkedFonts} from '../../../../../src/ol/render/canvas.js';
 import RenderFeature from '../../../../../src/ol/render/Feature.js';
 import CanvasVectorTileLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
@@ -64,7 +63,6 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         constructor() {
           super(...arguments);
           this.setFeatures([feature1, feature2, feature3]);
-          this.setProjection(getProjection('EPSG:4326'));
           this.setState(TileState.LOADED);
           tileCallback(this);
         }
@@ -188,30 +186,6 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       }, 1600);
     });
 
-    it('transforms geometries when tile and view projection are different', function() {
-      let tile;
-      tileCallback = function(t) {
-        tile = t;
-      };
-      map.renderSync();
-      expect(tile.getProjection()).to.equal(getProjection('EPSG:3857'));
-      expect(feature1.getGeometry().getCoordinates()).to.eql(fromLonLat([1, -1]));
-    });
-
-    it('Geometries are transformed from tile-pixels', function() {
-      const proj = new Projection({code: 'EPSG:3857', units: 'tile-pixels'});
-      let tile;
-      tileCallback = function(t) {
-        t.setProjection(proj);
-        t.setExtent([0, 0, 4096, 4096]);
-        tile = t;
-      };
-      map.renderSync();
-      expect(tile.getProjection()).to.equal(getProjection('EPSG:3857'));
-      expect(feature1.getGeometry().getCoordinates()).to.eql([-20027724.40316874, 20047292.282409746]);
-      expect(feature3.flatCoordinates_).to.eql([-20027724.40316874, 20047292.282409746]);
-    });
-
     it('works for multiple layers that use the same source', function() {
       const layer2 = new VectorTileLayer({
         source: source,
@@ -240,7 +214,6 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         })
       });
       const sourceTile = new VectorTile([0, 0, 0], 2);
-      sourceTile.setProjection(getProjection('EPSG:3857'));
       sourceTile.features_ = [];
       sourceTile.getImage = function() {
         return document.createElement('canvas');
@@ -299,7 +272,6 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     beforeEach(function() {
       const sourceTile = new VectorTile([0, 0, 0]);
       sourceTile.setState(TileState.LOADED);
-      sourceTile.setProjection(getProjection('EPSG:3857'));
       source = new VectorTileSource({
         tileClass: TileClass,
         tileGrid: createXYZ()
