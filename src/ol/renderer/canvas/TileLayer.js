@@ -7,6 +7,7 @@ import TileState from '../../TileState.js';
 import {createEmpty, getIntersection, getTopLeft} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
 import {apply as applyTransform, compose as composeTransform, makeInverse, toString as transformToString} from '../../transform.js';
+import {assign} from '../../obj.js';
 
 /**
  * @classdesc
@@ -304,6 +305,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     this.manageTilePyramid(frameState, tileSource, tileGrid, pixelRatio,
       projection, extent, z, tileLayer.getPreload());
+    this.updateCacheSize_(frameState, tileSource);
     this.scheduleExpireCache(frameState, tileSource);
 
     this.postRender(context, frameState);
@@ -383,6 +385,26 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     return /** @type {import("../../ImageTile.js").default} */ (tile).getImage();
   }
 
+  /**
+   * Check if the cache is big enough, and increase its size if necessary.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {import("../../source/Tile.js").default} tileSource Tile source.
+   * @private
+   */
+  updateCacheSize_(frameState, tileSource) {
+    const tileSourceKey = getUid(tileSource);
+    const keys = assign({}, frameState.usedTiles[tileSourceKey]);
+    if (tileSourceKey in frameState.wantedTiles) {
+      assign(keys, frameState.wantedTiles[tileSourceKey]);
+    }
+    const size = Object.keys(keys).length;
+    const tileCache = tileSource.tileCache;
+    if (tileCache.highWaterMark < size) {
+      tileCache.highWaterMark = size;
+    }
+  }
+
+  /**
 }
 
 
