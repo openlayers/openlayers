@@ -2,10 +2,8 @@
  * @module ol/interaction/DragRotate
  */
 import {disable} from '../rotationconstraint.js';
-import ViewHint from '../ViewHint.js';
 import {altShiftKeysOnly, mouseOnly, mouseActionButton} from '../events/condition.js';
 import {FALSE} from '../functions.js';
-import {rotate, rotateWithoutConstraints} from './Interaction.js';
 import PointerInteraction from './Pointer.js';
 
 
@@ -80,8 +78,7 @@ class DragRotate extends PointerInteraction {
         Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
     if (this.lastAngle_ !== undefined) {
       const delta = theta - this.lastAngle_;
-      const rotation = view.getRotation();
-      rotateWithoutConstraints(view, rotation - delta);
+      view.adjustRotation(-delta);
     }
     this.lastAngle_ = theta;
   }
@@ -97,9 +94,7 @@ class DragRotate extends PointerInteraction {
 
     const map = mapBrowserEvent.map;
     const view = map.getView();
-    view.setHint(ViewHint.INTERACTING, -1);
-    const rotation = view.getRotation();
-    rotate(view, rotation, undefined, this.duration_);
+    view.endInteraction(this.duration_);
     return false;
   }
 
@@ -114,7 +109,7 @@ class DragRotate extends PointerInteraction {
 
     if (mouseActionButton(mapBrowserEvent) && this.condition_(mapBrowserEvent)) {
       const map = mapBrowserEvent.map;
-      map.getView().setHint(ViewHint.INTERACTING, 1);
+      map.getView().beginInteraction();
       this.lastAngle_ = undefined;
       return true;
     } else {

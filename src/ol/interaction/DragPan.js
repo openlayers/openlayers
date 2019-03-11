@@ -1,8 +1,7 @@
 /**
  * @module ol/interaction/DragPan
  */
-import ViewHint from '../ViewHint.js';
-import {scale as scaleCoordinate, rotate as rotateCoordinate, add as addCoordinate} from '../coordinate.js';
+import {scale as scaleCoordinate, rotate as rotateCoordinate} from '../coordinate.js';
 import {easeOut} from '../easing.js';
 import {noModifierKeys} from '../events/condition.js';
 import {FALSE} from '../functions.js';
@@ -74,10 +73,6 @@ class DragPan extends PointerInteraction {
    * @inheritDoc
    */
   handleDragEvent(mapBrowserEvent) {
-    if (!this.panning_) {
-      this.panning_ = true;
-      this.getMap().getView().setHint(ViewHint.INTERACTING, 1);
-    }
     const targetPointers = this.targetPointers;
     const centroid = centroidFromPointers(targetPointers);
     if (targetPointers.length == this.lastPointersCount_) {
@@ -85,16 +80,15 @@ class DragPan extends PointerInteraction {
         this.kinetic_.update(centroid[0], centroid[1]);
       }
       if (this.lastCentroid) {
-        const deltaX = this.lastCentroid[0] - centroid[0];
-        const deltaY = centroid[1] - this.lastCentroid[1];
+        const delta = [
+          this.lastCentroid[0] - centroid[0],
+          centroid[1] - this.lastCentroid[1]
+        ];
         const map = mapBrowserEvent.map;
         const view = map.getView();
-        let center = [deltaX, deltaY];
-        scaleCoordinate(center, view.getResolution());
-        rotateCoordinate(center, view.getRotation());
-        addCoordinate(center, view.getCenter());
-        center = view.constrainCenter(center);
-        view.setCenter(center);
+        scaleCoordinate(delta, view.getResolution());
+        rotateCoordinate(delta, view.getRotation());
+        view.adjustCenter(delta);
       }
     } else if (this.kinetic_) {
       // reset so we don't overestimate the kinetic energy after
@@ -122,14 +116,14 @@ class DragPan extends PointerInteraction {
           centerpx[1] - distance * Math.sin(angle)
         ]);
         view.animate({
-          center: view.constrainCenter(dest),
+          center: view.getConstrainedCenter(dest),
           duration: 500,
           easing: easeOut
         });
       }
       if (this.panning_) {
         this.panning_ = false;
-        view.setHint(ViewHint.INTERACTING, -1);
+        view.endInteraction();
       }
       return false;
     } else {
@@ -153,7 +147,11 @@ class DragPan extends PointerInteraction {
       this.lastCentroid = null;
       // stop any current animation
       if (view.getAnimating()) {
-        view.setCenter(mapBrowserEvent.frameState.viewState.center);
+        view.cancelAnimations();
+      }
+      if (!this.panning_) {
+        this.panning_ = true;
+        this.getMap().getView().beginInteraction();
       }
       if (this.kinetic_) {
         this.kinetic_.begin();

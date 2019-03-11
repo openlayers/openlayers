@@ -44,8 +44,6 @@ export {default as Translate} from './interaction/Translate.js';
  * focus. This affects the `MouseWheelZoom` and `DragPan` interactions and is
  * useful when page scroll is desired for maps that do not have the browser's
  * focus.
- * @property {boolean} [constrainResolution=false] Zoom to the closest integer
- * zoom level after the wheel/trackpad or pinch gesture ends.
  * @property {boolean} [doubleClickZoom=true] Whether double click zoom is
  * desired.
  * @property {boolean} [keyboard=true] Whether keyboard interaction is desired.
@@ -127,7 +125,6 @@ export function defaults(opt_options) {
   const pinchZoom = options.pinchZoom !== undefined ? options.pinchZoom : true;
   if (pinchZoom) {
     interactions.push(new PinchZoom({
-      constrainResolution: options.constrainResolution,
       duration: options.zoomDuration
     }));
   }
@@ -146,7 +143,6 @@ export function defaults(opt_options) {
   if (mouseWheelZoom) {
     interactions.push(new MouseWheelZoom({
       condition: options.onFocusOnly ? focus : undefined,
-      constrainResolution: options.constrainResolution,
       duration: options.zoomDuration
     }));
   }

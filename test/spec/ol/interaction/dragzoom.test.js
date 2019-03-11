@@ -103,7 +103,7 @@ describe('ol.interaction.DragZoom', function() {
         setTimeout(function() {
           const view = map.getView();
           const resolution = view.getResolution();
-          expect(resolution).to.eql(view.constrainResolution(0.5));
+          expect(resolution).to.eql(view.getConstrainedResolution(0.5));
           done();
         }, 50);
       }, 50);

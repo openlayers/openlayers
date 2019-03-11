@@ -114,20 +114,20 @@ class Zoom extends Control {
       // upon it
       return;
     }
-    const currentResolution = view.getResolution();
-    if (currentResolution) {
-      const newResolution = view.constrainResolution(currentResolution, delta);
+    const currentZoom = view.getZoom();
+    if (currentZoom !== undefined) {
+      const newZoom = view.getConstrainedZoom(currentZoom + delta);
       if (this.duration_ > 0) {
         if (view.getAnimating()) {
           view.cancelAnimations();
         }
         view.animate({
-          resolution: newResolution,
+          zoom: newZoom,
           duration: this.duration_,
           easing: easeOut
         });
       } else {
-        view.setResolution(newResolution);
+        view.setZoom(newZoom);
       }
     }
   }

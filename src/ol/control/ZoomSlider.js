@@ -1,7 +1,6 @@
 /**
  * @module ol/control/ZoomSlider
  */
-import ViewHint from '../ViewHint.js';
 import Control from './Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
@@ -102,13 +101,13 @@ class ZoomSlider extends Control {
      * @type {number|undefined}
      * @private
      */
-    this.previousX_;
+    this.startX_;
 
     /**
      * @type {number|undefined}
      * @private
      */
-    this.previousY_;
+    this.startY_;
 
     /**
      * The calculated thumb size (border box plus margins).  Set when initSlider_
@@ -218,9 +217,10 @@ class ZoomSlider extends Control {
       event.offsetY - this.thumbSize_[1] / 2);
 
     const resolution = this.getResolutionForPosition_(relativePosition);
+    const zoom = view.getConstrainedZoom(view.getZoomForResolution(resolution));
 
     view.animate({
-      resolution: view.constrainResolution(resolution),
+      zoom: zoom,
       duration: this.duration_,
       easing: easeOut
     });
@@ -233,9 +233,10 @@ class ZoomSlider extends Control {
    */
   handleDraggerStart_(event) {
     if (!this.dragging_ && event.originalEvent.target === this.element.firstElementChild) {
-      this.getMap().getView().setHint(ViewHint.INTERACTING, 1);
-      this.previousX_ = event.clientX;
-      this.previousY_ = event.clientY;
+      const element = /** @type {HTMLElement} */ (this.element.firstElementChild);
+      this.getMap().getView().beginInteraction();
+      this.startX_ = event.clientX - parseFloat(element.style.left);
+      this.startY_ = event.clientY - parseFloat(element.style.top);
       this.dragging_ = true;
 
       if (this.dragListenerKeys_.length === 0) {
@@ -259,15 +260,11 @@ class ZoomSlider extends Control {
    */
   handleDraggerDrag_(event) {
     if (this.dragging_) {
-      const element = /** @type {HTMLElement} */ (this.element.firstElementChild);
-      const deltaX = event.clientX - this.previousX_ + parseFloat(element.style.left);
-      const deltaY = event.clientY - this.previousY_ + parseFloat(element.style.top);
+      const deltaX = event.clientX - this.startX_;
+      const deltaY = event.clientY - this.startY_;
       const relativePosition = this.getRelativePosition_(deltaX, deltaY);
       this.currentResolution_ = this.getResolutionForPosition_(relativePosition);
       this.getMap().getView().setResolution(this.currentResolution_);
-      this.setThumbPosition_(this.currentResolution_);
-      this.previousX_ = event.clientX;
-      this.previousY_ = event.clientY;
     }
   }
 
@@ -279,17 +276,11 @@ class ZoomSlider extends Control {
   handleDraggerEnd_(event) {
     if (this.dragging_) {
       const view = this.getMap().getView();
-      view.setHint(ViewHint.INTERACTING, -1);
-
-      view.animate({
-        resolution: view.constrainResolution(this.currentResolution_),
-        duration: this.duration_,
-        easing: easeOut
-      });
+      view.endInteraction();
 
       this.dragging_ = false;
-      this.previousX_ = undefined;
-      this.previousY_ = undefined;
+      this.startX_ = undefined;
+      this.startY_ = undefined;
       this.dragListenerKeys_.forEach(unlistenByKey);
       this.dragListenerKeys_.length = 0;
     }
@@ -356,7 +347,7 @@ class ZoomSlider extends Control {
    */
   getPositionForResolution_(res) {
     const fn = this.getMap().getView().getValueForResolutionFunction();
-    return 1 - fn(res);
+    return clamp(1 - fn(res), 0, 1);
   }
 }
 
@@ -375,10 +366,8 @@ export function render(mapEvent) {
     this.initSlider_();
   }
   const res = mapEvent.frameState.viewState.resolution;
-  if (res !== this.currentResolution_) {
-    this.currentResolution_ = res;
-    this.setThumbPosition_(res);
-  }
+  this.currentResolution_ = res;
+  this.setThumbPosition_(res);
 }
 
 

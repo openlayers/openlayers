@@ -1,9 +1,7 @@
 /**
  * @module ol/interaction/MouseWheelZoom
  */
-import ViewHint from '../ViewHint.js';
 import {always} from '../events/condition.js';
-import {easeOut} from '../easing.js';
 import EventType from '../events/EventType.js';
 import {DEVICE_PIXEL_RATIO, FIREFOX, SAFARI} from '../has.js';
 import Interaction, {zoomByDelta} from './Interaction.js';
@@ -34,9 +32,6 @@ export const Mode = {
  * {@link module:ol/events/condition~always}.
  * @property {number} [duration=250] Animation duration in milliseconds.
  * @property {number} [timeout=80] Mouse wheel timeout duration in milliseconds.
- * @property {boolean} [constrainResolution=false] When using a trackpad or
- * magic mouse, zoom to the closest integer zoom level after the scroll gesture
- * ends.
  * @property {boolean} [useAnchor=true] Enable zooming using the mouse's
  * location as the anchor. When set to `false`, zooming in and out will zoom to
  * the center of the screen instead of zooming on the mouse's location.
@@ -62,7 +57,13 @@ class MouseWheelZoom extends Interaction {
      * @private
      * @type {number}
      */
-    this.delta_ = 0;
+    this.totalDelta_ = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.lastDelta_ = 0;
 
     /**
      * @private
@@ -81,12 +82,6 @@ class MouseWheelZoom extends Interaction {
      * @type {boolean}
      */
     this.useAnchor_ = options.useAnchor !== undefined ? options.useAnchor : true;
-
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.constrainResolution_ = options.constrainResolution || false;
 
     /**
      * @private
@@ -137,22 +132,15 @@ class MouseWheelZoom extends Interaction {
      */
     this.trackpadDeltaPerZoom_ = 300;
 
-    /**
-     * The zoom factor by which scroll zooming is allowed to exceed the limits.
-     * @private
-     * @type {number}
-     */
-    this.trackpadZoomBuffer_ = 1.5;
-
   }
 
   /**
    * @private
    */
-  decrementInteractingHint_() {
+  endInteraction_() {
     this.trackpadTimeoutId_ = undefined;
     const view = this.getMap().getView();
-    view.setHint(ViewHint.INTERACTING, -1);
+    view.endInteraction(undefined, Math.sign(this.lastDelta_), this.lastAnchor_);
   }
 
   /**
@@ -199,6 +187,8 @@ class MouseWheelZoom extends Interaction {
 
     if (delta === 0) {
       return false;
+    } else {
+      this.lastDelta_ = delta;
     }
 
     const now = Date.now();
@@ -218,55 +208,15 @@ class MouseWheelZoom extends Interaction {
       if (this.trackpadTimeoutId_) {
         clearTimeout(this.trackpadTimeoutId_);
       } else {
-        view.setHint(ViewHint.INTERACTING, 1);
+        view.beginInteraction();
       }
-      this.trackpadTimeoutId_ = setTimeout(this.decrementInteractingHint_.bind(this), this.trackpadEventGap_);
-      let resolution = view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
-      const minResolution = view.getMinResolution();
-      const maxResolution = view.getMaxResolution();
-      let rebound = 0;
-      if (resolution < minResolution) {
-        resolution = Math.max(resolution, minResolution / this.trackpadZoomBuffer_);
-        rebound = 1;
-      } else if (resolution > maxResolution) {
-        resolution = Math.min(resolution, maxResolution * this.trackpadZoomBuffer_);
-        rebound = -1;
-      }
-      if (this.lastAnchor_) {
-        const center = view.calculateCenterZoom(resolution, this.lastAnchor_);
-        view.setCenter(view.constrainCenter(center));
-      }
-      view.setResolution(resolution);
-
-      if (rebound === 0 && this.constrainResolution_) {
-        view.animate({
-          resolution: view.constrainResolution(resolution, delta > 0 ? -1 : 1),
-          easing: easeOut,
-          anchor: this.lastAnchor_,
-          duration: this.duration_
-        });
-      }
-
-      if (rebound > 0) {
-        view.animate({
-          resolution: minResolution,
-          easing: easeOut,
-          anchor: this.lastAnchor_,
-          duration: 500
-        });
-      } else if (rebound < 0) {
-        view.animate({
-          resolution: maxResolution,
-          easing: easeOut,
-          anchor: this.lastAnchor_,
-          duration: 500
-        });
-      }
+      this.trackpadTimeoutId_ = setTimeout(this.endInteraction_.bind(this), this.trackpadEventGap_);
+      view.adjustZoom(-delta / this.trackpadDeltaPerZoom_, this.lastAnchor_);
       this.startTime_ = now;
       return false;
     }
 
-    this.delta_ += delta;
+    this.totalDelta_ += delta;
 
     const timeLeft = Math.max(this.timeout_ - (now - this.startTime_), 0);
 
@@ -286,10 +236,10 @@ class MouseWheelZoom extends Interaction {
       view.cancelAnimations();
     }
     const maxDelta = MAX_DELTA;
-    const delta = clamp(this.delta_, -maxDelta, maxDelta);
+    const delta = clamp(this.totalDelta_, -maxDelta, maxDelta);
     zoomByDelta(view, -delta, this.lastAnchor_, this.duration_);
     this.mode_ = undefined;
-    this.delta_ = 0;
+    this.totalDelta_ = 0;
     this.lastAnchor_ = null;
     this.startTime_ = undefined;
     this.timeoutId_ = undefined;

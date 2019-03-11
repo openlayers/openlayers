@@ -203,7 +203,11 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [-10997148, 4569099],
-    zoom: 4
+    zoom: 4,
+    minZoom: 1,
+    extent: [-Infinity, -20048966.10, Infinity, 20048966.10],
+    smoothExtentConstraint: false,
+    smoothResolutionConstraint: false
   })
 });
 

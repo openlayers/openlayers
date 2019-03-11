@@ -6,10 +6,8 @@ import OSM from '../src/ol/source/OSM.js';
 
 
 const map = new Map({
-  interactions: defaultInteractions({pinchZoom: false}).extend([
-    new PinchZoom({
-      constrainResolution: true // force zooming to a integer zoom
-    })
+  interactions: defaultInteractions().extend([
+    new PinchZoom()
   ]),
   layers: [
     new TileLayer({
@@ -19,6 +17,7 @@ const map = new Map({
   target: 'map',
   view: new View({
     center: [0, 0],
-    zoom: 2
+    zoom: 2,
+    constrainResolution: true
   })
 });

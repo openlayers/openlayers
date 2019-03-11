@@ -1,9 +1,7 @@
 /**
  * @module ol/interaction/PinchRotate
  */
-import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
-import {rotate, rotateWithoutConstraints} from './Interaction.js';
 import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js';
 import {disable} from '../rotationconstraint.js';
 
@@ -118,9 +116,8 @@ class PinchRotate extends PointerInteraction {
 
     // rotate
     if (this.rotating_) {
-      const rotation = view.getRotation();
       map.render();
-      rotateWithoutConstraints(view, rotation + rotationDelta, this.anchor_);
+      view.adjustRotation(rotationDelta, this.anchor_);
     }
   }
 
@@ -131,11 +128,7 @@ class PinchRotate extends PointerInteraction {
     if (this.targetPointers.length < 2) {
       const map = mapBrowserEvent.map;
       const view = map.getView();
-      view.setHint(ViewHint.INTERACTING, -1);
-      if (this.rotating_) {
-        const rotation = view.getRotation();
-        rotate(view, rotation, this.anchor_, this.duration_);
-      }
+      view.endInteraction(this.duration_);
       return false;
     } else {
       return true;
@@ -153,7 +146,7 @@ class PinchRotate extends PointerInteraction {
       this.rotating_ = false;
       this.rotationDelta_ = 0.0;
       if (!this.handlingDownUpSequence) {
-        map.getView().setHint(ViewHint.INTERACTING, 1);
+        map.getView().beginInteraction();
       }
       return true;
     } else {
