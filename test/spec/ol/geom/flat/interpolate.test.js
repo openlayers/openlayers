@@ -28,10 +28,10 @@ describe('ol.geom.flat.interpolate', function() {
       expect(point).to.eql([2, 3]);
     });
 
-    xit('also when vertices are repeated', function() {
+    it('also when vertices are repeated', function() {
       const flatCoordinates = [0, 1, 2, 3, 2, 3, 4, 5];
       const point = interpolatePoint(
-        flatCoordinates, 0, 6, 2, 0.5);
+        flatCoordinates, 0, 8, 2, 0.5);
       expect(point).to.eql([2, 3]);
     });
 
@@ -44,10 +44,10 @@ describe('ol.geom.flat.interpolate', function() {
       expect(point).to.eql([3, 4]);
     });
 
-    xit('also when vertices are repeated', function() {
+    it('also when vertices are repeated', function() {
       const flatCoordinates = [0, 1, 2, 3, 2, 3, 4, 5, 6, 7];
       const point = interpolatePoint(
-        flatCoordinates, 0, 8, 2, 0.5);
+        flatCoordinates, 0, 10, 2, 0.5);
       expect(point).to.eql([3, 4]);
     });
 
@@ -59,11 +59,11 @@ describe('ol.geom.flat.interpolate', function() {
         expect(point).to.eql([3, 4]);
       });
 
-    xit('also when vertices are repeated',
+    it('also when vertices are repeated',
       function() {
         const flatCoordinates = [0, 1, 2, 3, 2, 3, 6, 7];
         const point = interpolatePoint(
-          flatCoordinates, 0, 6, 2, 0.5);
+          flatCoordinates, 0, 8, 2, 0.5);
         expect(point).to.eql([3, 4]);
       });
 
