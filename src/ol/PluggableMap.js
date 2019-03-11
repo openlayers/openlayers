@@ -606,7 +606,6 @@ class PluggableMap extends BaseObject {
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {AtPixelOptions=} opt_options Optional options.
    * @return {boolean} Is there a feature at the given pixel?
-   * @template U
    * @api
    */
   hasFeatureAtPixel(pixel, opt_options) {
