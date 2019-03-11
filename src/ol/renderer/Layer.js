@@ -1,10 +1,9 @@
 /**
  * @module ol/renderer/Layer
  */
-import {getUid, abstract} from '../util.js';
+import {abstract} from '../util.js';
 import ImageState from '../ImageState.js';
 import Observable from '../Observable.js';
-import TileState from '../TileState.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import SourceState from '../source/State.js';
@@ -165,108 +164,6 @@ class LayerRenderer extends Observable {
     }
   }
 
-  /**
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../source/Tile.js").default} tileSource Tile source.
-   * @protected
-   */
-  scheduleExpireCache(frameState, tileSource) {
-    if (tileSource.canExpireCache()) {
-      /**
-       * @param {import("../source/Tile.js").default} tileSource Tile source.
-       * @param {import("../PluggableMap.js").default} map Map.
-       * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
-       */
-      const postRenderFunction = function(tileSource, map, frameState) {
-        const tileSourceKey = getUid(tileSource);
-        if (tileSourceKey in frameState.usedTiles) {
-          tileSource.expireCache(frameState.viewState.projection,
-            frameState.usedTiles[tileSourceKey]);
-        }
-      }.bind(null, tileSource);
-
-      frameState.postRenderFunctions.push(
-        /** @type {import("../PluggableMap.js").PostRenderFunction} */ (postRenderFunction)
-      );
-    }
-  }
-
-  /**
-   * @param {!Object<string, !Object<string, boolean>>} usedTiles Used tiles.
-   * @param {import("../source/Tile.js").default} tileSource Tile source.
-   * @param {import('../Tile.js').default} tile Tile.
-   * @protected
-   */
-  updateUsedTiles(usedTiles, tileSource, tile) {
-    // FIXME should we use tilesToDrawByZ instead?
-    const tileSourceKey = getUid(tileSource);
-    if (!(tileSourceKey in usedTiles)) {
-      usedTiles[tileSourceKey] = {};
-    }
-    usedTiles[tileSourceKey][tile.getKey()] = true;
-  }
-
-  /**
-   * Manage tile pyramid.
-   * This function performs a number of functions related to the tiles at the
-   * current zoom and lower zoom levels:
-   * - registers idle tiles in frameState.wantedTiles so that they are not
-   *   discarded by the tile queue
-   * - enqueues missing tiles
-   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
-   * @param {import("../source/Tile.js").default} tileSource Tile source.
-   * @param {import("../tilegrid/TileGrid.js").default} tileGrid Tile grid.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {import("../extent.js").Extent} extent Extent.
-   * @param {number} currentZ Current Z.
-   * @param {number} preload Load low resolution tiles up to 'preload' levels.
-   * @param {function(import("../Tile.js").default)=} opt_tileCallback Tile callback.
-   * @protected
-   */
-  manageTilePyramid(
-    frameState,
-    tileSource,
-    tileGrid,
-    pixelRatio,
-    projection,
-    extent,
-    currentZ,
-    preload,
-    opt_tileCallback
-  ) {
-    const tileSourceKey = getUid(tileSource);
-    if (!(tileSourceKey in frameState.wantedTiles)) {
-      frameState.wantedTiles[tileSourceKey] = {};
-    }
-    const wantedTiles = frameState.wantedTiles[tileSourceKey];
-    const tileQueue = frameState.tileQueue;
-    const minZoom = tileGrid.getMinZoom();
-    let tile, tileRange, tileResolution, x, y, z;
-    for (z = minZoom; z <= currentZ; ++z) {
-      tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z, tileRange);
-      tileResolution = tileGrid.getResolution(z);
-      for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
-        for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-          if (currentZ - z <= preload) {
-            tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-            if (tile.getState() == TileState.IDLE) {
-              wantedTiles[tile.getKey()] = true;
-              if (!tileQueue.isKeyQueued(tile.getKey())) {
-                tileQueue.enqueue([tile, tileSourceKey,
-                  tileGrid.getTileCoordCenter(tile.tileCoord), tileResolution]);
-              }
-            }
-            if (opt_tileCallback !== undefined) {
-              opt_tileCallback(tile);
-            }
-          } else {
-            tileSource.useTile(z, x, y, projection);
-          }
-        }
-      }
-    }
-  }
 }
 
 export default LayerRenderer;
