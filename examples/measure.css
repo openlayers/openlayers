@@ -1,4 +1,4 @@
-.tooltip {
+.ol-tooltip {
   position: relative;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 4px;
@@ -6,18 +6,19 @@
   padding: 4px 8px;
   opacity: 0.7;
   white-space: nowrap;
+  font-size: 12px;
 }
-.tooltip-measure {
+.ol-tooltip-measure {
   opacity: 1;
   font-weight: bold;
 }
-.tooltip-static {
+.ol-tooltip-static {
   background-color: #ffcc33;
   color: black;
   border: 1px solid white;
 }
-.tooltip-measure:before,
-.tooltip-static:before {
+.ol-tooltip-measure:before,
+.ol-tooltip-static:before {
   border-top: 6px solid rgba(0, 0, 0, 0.5);
   border-right: 6px solid transparent;
   border-left: 6px solid transparent;
@@ -27,6 +28,6 @@
   margin-left: -7px;
   left: 50%;
 }
-.tooltip-static:before {
+.ol-tooltip-static:before {
   border-top-color: #ffcc33;
 }

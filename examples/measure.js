@@ -225,7 +225,7 @@ function addInteraction() {
 
   draw.on('drawend',
     function() {
-      measureTooltipElement.className = 'tooltip tooltip-static';
+      measureTooltipElement.className = 'ol-tooltip ol-tooltip-static';
       measureTooltip.setOffset([0, -7]);
       // unset sketch
       sketch = null;
@@ -245,7 +245,7 @@ function createHelpTooltip() {
     helpTooltipElement.parentNode.removeChild(helpTooltipElement);
   }
   helpTooltipElement = document.createElement('div');
-  helpTooltipElement.className = 'tooltip hidden';
+  helpTooltipElement.className = 'ol-tooltip hidden';
   helpTooltip = new Overlay({
     element: helpTooltipElement,
     offset: [15, 0],
@@ -263,7 +263,7 @@ function createMeasureTooltip() {
     measureTooltipElement.parentNode.removeChild(measureTooltipElement);
   }
   measureTooltipElement = document.createElement('div');
-  measureTooltipElement.className = 'tooltip tooltip-measure';
+  measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure';
   measureTooltip = new Overlay({
     element: measureTooltipElement,
     offset: [0, -15],
