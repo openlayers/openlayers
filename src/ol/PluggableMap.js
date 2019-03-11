@@ -60,7 +60,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 /**
  * @typedef {Object} AtPixelOptions
- * @property {undefined|function(import("./layer/Layer.js").default): boolean} layerFilter Layer filter
+ * @property {undefined|function(import("./layer/Layer.js").default): boolean} [layerFilter] Layer filter
  * function. The filter function will receive one argument, the
  * {@link module:ol/layer/Layer layer-candidate} and it should return a boolean value.
  * Only layers which are visible and for which this function returns `true`
