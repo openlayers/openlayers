@@ -1,5 +1,4 @@
 import Feature from '../../../../src/ol/Feature.js';
-import {getWidth} from '../../../../src/ol/extent.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
@@ -22,15 +21,20 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
 
   describe('#readFeatures', function() {
 
+    const options = {
+      featureProjection: 'EPSG:3857',
+      extent: [1824704.739223726, 6141868.096770482, 1827150.7241288517, 6144314.081675608]
+    };
+
     it('uses ol.render.Feature as feature class by default', function() {
       const format = new MVT({layers: ['water']});
-      const features = format.readFeatures(data);
+      const features = format.readFeatures(data, options);
       expect(features[0]).to.be.a(RenderFeature);
     });
 
     it('parses only specified layers', function() {
       const format = new MVT({layers: ['water']});
-      const features = format.readFeatures(data);
+      const features = format.readFeatures(data, options);
       expect(features.length).to.be(10);
     });
 
@@ -64,21 +68,14 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
         featureClass: Feature,
         layers: ['building']
       });
-      let features = format.readFeatures(data);
+      let features = format.readFeatures(data, options);
       expect(features[0].getId()).to.be(2);
       // ol.render.Feature
       format = new MVT({
         layers: ['building']
       });
-      features = format.readFeatures(data);
+      features = format.readFeatures(data, options);
       expect(features[0].getId()).to.be(2);
-    });
-
-    it('sets the extent of the last readFeatures call', function() {
-      const format = new MVT();
-      format.readFeatures(data);
-      const extent = format.getLastExtent();
-      expect(getWidth(extent)).to.be(4096);
     });
 
   });
@@ -86,6 +83,11 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
 });
 
 describe('ol.format.MVT', function() {
+
+  const options = {
+    featureProjection: 'EPSG:3857',
+    extent: [1824704.739223726, 6141868.096770482, 1827150.7241288517, 6144314.081675608]
+  };
 
   describe('#createFeature_', function() {
     it('accepts a geometryName', function() {
@@ -176,7 +178,9 @@ describe('ol.format.MVT', function() {
         ends.push(10, 20);
         createdEnds = ends;
       };
-      const feature = format.createFeature_({}, rawFeature);
+      format.dataProjection.setExtent([0, 0, 4096, 4096]);
+      format.dataProjection.setWorldExtent(options.extent);
+      const feature = format.createFeature_({}, rawFeature, format.adaptOptions(options));
       expect(feature).to.be.a(RenderFeature);
       expect(feature.getType()).to.be('Polygon');
       expect(feature.getFlatCoordinates()).to.equal(createdFlatCoordinates);

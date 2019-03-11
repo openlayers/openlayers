@@ -112,14 +112,6 @@ class FeatureFormat {
   }
 
   /**
-   * Get the extent from the source of the last {@link readFeatures} call.
-   * @return {import("../extent.js").Extent} Tile extent.
-   */
-  getLastExtent() {
-    return null;
-  }
-
-  /**
    * @abstract
    * @return {import("./FormatType.js").default} Format.
    */

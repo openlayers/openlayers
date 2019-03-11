@@ -26,7 +26,7 @@ import {equals} from '../array.js';
  * to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
  * stroke operations.
- * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
+ * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection of the tile grid.
  * @property {import("./State.js").default} [state] Source state.
  * @property {typeof import("../VectorTile.js").default} [tileClass] Class used to instantiate image tiles.
  * Default is {@link module:ol/VectorTile}.
@@ -35,18 +35,20 @@ import {equals} from '../array.js';
  * @property {number|import("../size.js").Size} [tileSize=512] Optional tile size.
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
  * @property {import("../Tile.js").LoadFunction} [tileLoadFunction]
- * Optional function to load a tile given a URL. Could look like this:
+ * Optional function to load a tile given a URL. Could look like this for pbf tiles:
  * ```js
  * function(tile, url) {
- *   tile.setLoader(function() {
- *     var data = // ... fetch data
- *     var format = tile.getFormat();
- *     tile.setProjection(format.readProjection(data));
- *     tile.setExtent(format.getLastExtent()); // line only required for ol/format/MVT
- *     tile.setFeatures(format.readFeatures(data, {
- *       // featureProjection is not required for ol/format/MVT
- *       featureProjection: map.getView().getProjection()
- *     }));
+ *   tile.setLoader(function(extent, resolution, projection) {
+ *     fetch(url).then(function(response) {
+ *       response.arrayBuffer().then(function(data) {
+ *         const format = tile.getFormat() // ol/format/MVT configured as source format
+ *         const features = format.readFeatures(data, {
+ *           extent: extent,
+ *           featureProjection: projection
+ *         });
+ *         tile.setFeatures(features);
+ *       });
+ *     });
  *   }
  * });
  * ```
@@ -187,9 +189,9 @@ class VectorTile extends UrlTile {
       const sourceTileGrid = this.tileGrid;
       const sourceExtent = sourceTileGrid.getExtent();
       if (sourceExtent) {
-        getIntersection(extent, sourceTileGrid.getExtent(), extent);
+        getIntersection(extent, sourceExtent, extent);
       }
-      const sourceZ = sourceTileGrid.getZForResolution(resolution);
+      const sourceZ = sourceTileGrid.getZForResolution(resolution/*, 1*/);
       const minZoom = sourceTileGrid.getMinZoom();
 
       let loadedZ = sourceZ + 1;
@@ -215,6 +217,9 @@ class VectorTile extends UrlTile {
               tileUrl == undefined ? TileState.EMPTY : TileState.IDLE,
               tileUrl == undefined ? '' : tileUrl,
               this.format_, this.tileLoadFunction);
+            sourceTile.extent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
+            sourceTile.projection = projection;
+            sourceTile.resolution = sourceTileGrid.getResolution(sourceTileCoord[0]);
             this.sourceTiles_[tileKey] = sourceTile;
             empty = empty && sourceTile.getState() === TileState.EMPTY;
             listen(sourceTile, EventType.CHANGE, this.handleTileChange, this);

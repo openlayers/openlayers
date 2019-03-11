@@ -99,6 +99,58 @@ Due to the constraint above (layers can only be added to a single map), the over
 
 Previously, a graticule was not a layer.  Now it is.  See the graticule example for details on how to add a graticule layer to your map.
 
+##### `ol/format/Feature` API change
+
+The `getLastExtent()` method, which was required for custom `tileLoadFunction`s in `ol/source/Vector`, has been removed because it is no longer needed (see below).
+
+##### `ol/VectorTile` API changes
+
+* Removal of the `getProjection()` and `setProjection()` methods. These were used in custom `tileLoadFunction`s on `ol/source/VectorTile`, which work differently now (see below).
+* Removal of the `getExtent()` and `setExtent()` methods. These were used in custom `tileLoadFunction`s on `ol/source/VectorTile`, which work differently now (see below).
+
+##### Custom tileLoadFunction on a VectorTile source needs changes
+
+Previously, applications needed to call `setProjection()` and `setExtent()` on the tile in a custom `tileLoadFunction` on `ol/source/VectorTile`. The format's `getLastExtent()` method was used to get the extent. All this is no longer needed. Instead, the `extent` (first argument to the loader function) and `projection` (third argument to the loader function) are simply passed as `extent` and `featureProjection` options to the format's `readFeatures()` method.
+
+Example for an old `tileLoadFunction`:
+
+```js
+function(tile, url) {
+  tile.setLoader(function() {
+    fetch(url).then(function(response) {
+      response.arrayBuffer().then(function(data) {
+        var format = tile.getFormat();
+        tile.setProjection(format.readProjection(data));
+        tile.setFeatures(format.readFeatures(data, {
+          // featureProjection is not required for ol/format/MVT
+          featureProjection: map.getView().getProjection()
+        }));
+        tile.setExtent(format.getLastExtent());
+      })
+    })
+  }
+});
+```
+
+This function needs to be changed to:
+
+```js
+function(tile, url) {
+  tile.setLoader(function(extent, resolution, projection) {
+    fetch(url).then(function(response) {
+      response.arrayBuffer().then(function(data) {
+        var format = tile.getFormat();
+        tile.setFeatures(format.readFeatures(data, {
+          // extent is only required for ol/format/MVT
+          extent: extent,
+          featureProjection: projection
+        }));
+      })
+    })
+  }
+});
+```
+
 ##### Drop of support for the experimental WebGL renderer
 
 The WebGL map and layers renderers are gone, replaced by a `WebGLHelper` function that provides a lightweight,

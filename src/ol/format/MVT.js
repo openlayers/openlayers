@@ -19,6 +19,7 @@ import {linearRingIsClockwise} from '../geom/flat/orient.js';
 import Projection from '../proj/Projection.js';
 import Units from '../proj/Units.js';
 import RenderFeature from '../render/Feature.js';
+import {get} from '../proj.js';
 
 
 /**
@@ -82,12 +83,6 @@ class MVT extends FeatureFormat {
      * @type {Array<string>}
      */
     this.layers_ = options.layers ? options.layers : null;
-
-    /**
-     * @private
-     * @type {import("../extent.js").Extent}
-     */
-    this.extent_ = null;
 
   }
 
@@ -159,10 +154,10 @@ class MVT extends FeatureFormat {
    * @private
    * @param {PBF} pbf PBF
    * @param {Object} rawFeature Raw Mapbox feature.
-   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @param {import("./Feature.js").ReadOptions} options Read options.
    * @return {import("../Feature.js").FeatureLike} Feature.
    */
-  createFeature_(pbf, rawFeature, opt_options) {
+  createFeature_(pbf, rawFeature, options) {
     const type = rawFeature.type;
     if (type === 0) {
       return null;
@@ -181,6 +176,7 @@ class MVT extends FeatureFormat {
 
     if (this.featureClass_ === RenderFeature) {
       feature = new this.featureClass_(geometryType, flatCoordinates, ends, values, id);
+      feature.transform(options.dataProjection, options.featureProjection);
     } else {
       let geom;
       if (geometryType == GeometryType.POLYGON) {
@@ -213,7 +209,7 @@ class MVT extends FeatureFormat {
       if (this.geometryName_) {
         feature.setGeometryName(this.geometryName_);
       }
-      const geometry = transformGeometryWithOptions(geom, false, this.adaptOptions(opt_options));
+      const geometry = transformGeometryWithOptions(geom, false, options);
       feature.setGeometry(geometry);
       feature.setId(id);
       feature.setProperties(values, true);
@@ -224,29 +220,28 @@ class MVT extends FeatureFormat {
 
   /**
    * @inheritDoc
-   * @api
-   */
-  getLastExtent() {
-    return this.extent_;
-  }
-
-  /**
-   * @inheritDoc
    */
   getType() {
     return FormatType.ARRAY_BUFFER;
   }
 
   /**
-   * @inheritDoc
+   * Read all features.
+   *
+   * @param {ArrayBuffer} source Source.
+   * @param {import("./Feature.js").ReadOptions=} opt_options Read options.
+   * @return {Array<import("../Feature.js").FeatureLike>} Features.
    * @api
    */
   readFeatures(source, opt_options) {
     const layers = this.layers_;
+    const options = /** @type {import("./Feature.js").ReadOptions} */ (this.adaptOptions(opt_options));
+    const dataProjection = get(options.dataProjection);
+    dataProjection.setWorldExtent(options.extent);
+    options.dataProjection = dataProjection;
 
     const pbf = new PBF(/** @type {ArrayBuffer} */ (source));
     const pbfLayers = pbf.readFields(layersPBFReader, {});
-    /** @type {Array<import("../Feature.js").FeatureLike>} */
     const features = [];
     for (const name in pbfLayers) {
       if (layers && layers.indexOf(name) == -1) {
@@ -254,11 +249,13 @@ class MVT extends FeatureFormat {
       }
       const pbfLayer = pbfLayers[name];
 
+      const extent = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
+      dataProjection.setExtent(extent);
+
       for (let i = 0, ii = pbfLayer.length; i < ii; ++i) {
         const rawFeature = readRawFeature(pbf, pbfLayer, i);
-        features.push(this.createFeature_(pbf, rawFeature));
+        features.push(this.createFeature_(pbf, rawFeature, options));
       }
-      this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
     }
 
     return features;
