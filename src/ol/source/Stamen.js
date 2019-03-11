@@ -103,6 +103,8 @@ const ProviderConfig = {
  *   imageTile.getImage().src = src;
  * };
  * ```
+ * @property {number} [transition] Duration of the opacity transition for rendering.
+ * To disable the opacity transition, pass `transition: 0`.
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
  * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
  */
@@ -137,6 +139,7 @@ class Stamen extends XYZ {
       opaque: layerConfig.opaque,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileLoadFunction: options.tileLoadFunction,
+      transition: options.transition,
       url: url,
       wrapX: options.wrapX
     });
