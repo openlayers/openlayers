@@ -74,7 +74,7 @@ const LayerConfig = {
  */
 const ProviderConfig = {
   'terrain': {
-    minZoom: 4,
+    minZoom: 0,
     maxZoom: 18
   },
   'toner': {
@@ -82,8 +82,8 @@ const ProviderConfig = {
     maxZoom: 20
   },
   'watercolor': {
-    minZoom: 1,
-    maxZoom: 16
+    minZoom: 0,
+    maxZoom: 18
   }
 };
 
