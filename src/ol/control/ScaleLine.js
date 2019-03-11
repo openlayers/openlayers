@@ -260,10 +260,11 @@ class ScaleLine extends Control {
 
     let i = 3 * Math.floor(
       Math.log(this.minWidth_ * pointResolution) / Math.log(10));
-    let count, width;
+    let count, width, decimalCount;
     while (true) {
-      count = LEADING_DIGITS[((i % 3) + 3) % 3] *
-          Math.pow(10, Math.floor(i / 3));
+      decimalCount = Math.floor(i / 3);
+      const decimal = Math.pow(10, decimalCount);
+      count = LEADING_DIGITS[((i % 3) + 3) % 3] * decimal;
       width = Math.round(count / pointResolution);
       if (isNaN(width)) {
         this.element.style.display = 'none';
@@ -274,12 +275,11 @@ class ScaleLine extends Control {
       }
       ++i;
     }
-
     let html;
     if (this.scaleBar_) {
       html = this.createScaleBar(width, count, suffix);
     } else {
-      html = count + ' ' + suffix;
+      html = count.toFixed(decimalCount < 0 ? -decimalCount : 0) + ' ' + suffix;
     }
 
     if (this.renderedHTML_ != html) {
