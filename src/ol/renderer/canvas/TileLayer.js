@@ -7,7 +7,6 @@ import TileState from '../../TileState.js';
 import {createEmpty, getIntersection, getTopLeft} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
 import {apply as applyTransform, compose as composeTransform, makeInverse, toString as transformToString} from '../../transform.js';
-import {assign} from '../../obj.js';
 
 /**
  * @classdesc
@@ -434,11 +433,13 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    */
   updateCacheSize_(frameState, tileSource) {
     const tileSourceKey = getUid(tileSource);
-    const keys = assign({}, frameState.usedTiles[tileSourceKey]);
-    if (tileSourceKey in frameState.wantedTiles) {
-      assign(keys, frameState.wantedTiles[tileSourceKey]);
+    let size = 0;
+    if (tileSourceKey in frameState.usedTiles) {
+      size += Object.keys(frameState.usedTiles[tileSourceKey]).length;
     }
-    const size = Object.keys(keys).length;
+    if (tileSourceKey in frameState.wantedTiles) {
+      size += Object.keys(frameState.wantedTiles[tileSourceKey]).length;
+    }
     const tileCache = tileSource.tileCache;
     if (tileCache.highWaterMark < size) {
       tileCache.highWaterMark = size;
