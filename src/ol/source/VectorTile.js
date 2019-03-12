@@ -191,7 +191,7 @@ class VectorTile extends UrlTile {
       if (sourceExtent) {
         getIntersection(extent, sourceExtent, extent);
       }
-      const sourceZ = sourceTileGrid.getZForResolution(resolution/*, 1*/);
+      const sourceZ = sourceTileGrid.getZForResolution(resolution, 1);
       const minZoom = sourceTileGrid.getMinZoom();
 
       let loadedZ = sourceZ + 1;
