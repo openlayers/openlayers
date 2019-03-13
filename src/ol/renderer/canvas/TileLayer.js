@@ -272,8 +272,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       const originTileCoord = tileGrid.getTileCoordForCoordAndZ(getTopLeft(canvasExtent), currentZ);
       const originTileExtent = tileGrid.getTileCoordExtent(originTileCoord);
       const origin = applyTransform(this.tempTransform_, [
-        Math.round(tilePixelRatio * (originTileExtent[0] - canvasExtent[0]) / tileResolution),
-        Math.round(tilePixelRatio * (canvasExtent[3] - originTileExtent[3]) / tileResolution)
+        tilePixelRatio * (originTileExtent[0] - canvasExtent[0]) / tileResolution,
+        tilePixelRatio * (canvasExtent[3] - originTileExtent[3]) / tileResolution
       ]);
       const tileGutter = tilePixelRatio * tileSource.getGutterForProjection(projection);
       const tilesToDraw = tilesToDrawByZ[currentZ];
