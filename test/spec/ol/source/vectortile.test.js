@@ -105,7 +105,7 @@ describe('ol.source.VectorTile', function() {
 
       function tileUrlFunction(tileCoord) {
         ++requested;
-        if (tileCoord.toString() == '6,27,-57') {
+        if (tileCoord.toString() == '5,13,-29') {
           return tileCoord.join('/');
         }
       }
@@ -154,7 +154,7 @@ describe('ol.source.VectorTile', function() {
       map.renderSync();
       setTimeout(function() {
         expect(requested).to.be.greaterThan(1);
-        expect(loaded).to.eql(['6/27/-57']);
+        expect(loaded).to.eql(['5/13/-29']);
         done();
       }, 0);
     });
