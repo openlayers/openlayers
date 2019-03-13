@@ -55,10 +55,13 @@ class LabeledTile extends Tile {
       context.strokeRect(0.5, 0.5, tileSize[0] + 0.5, tileSize[1] + 0.5);
 
       context.fillStyle = 'grey';
+      context.strokeStyle = 'white';
       context.textAlign = 'center';
       context.textBaseline = 'middle';
       context.font = '24px sans-serif';
-      context.fillText(this.text_, tileSize[0] / 2, tileSize[1] / 2);
+      context.lineWidth = 4;
+      context.strokeText(this.text_, tileSize[0] / 2, tileSize[1] / 2, tileSize[0]);
+      context.fillText(this.text_, tileSize[0] / 2, tileSize[1] / 2, tileSize[0]);
 
       this.canvas_ = context.canvas;
       return context.canvas;
