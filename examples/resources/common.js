@@ -38,6 +38,9 @@
           },
           "package.json": {
             content: pkgJson
+          },
+          'sandbox.config.json': {
+            content: '{"template": "parcel"}'
           }
         }
       });
