@@ -34,6 +34,9 @@ import TileImage from './TileImage.js';
  * @property {boolean} [wrapX=false]
  */
 
+function formatPercentage(percentage) {
+  return percentage.toLocaleString('en', {maximumFractionDigits: 10});
+}
 
 /**
  * @classdesc
@@ -191,10 +194,10 @@ class IIIF extends TileImage {
         } else if (!supportsArbitraryTiling || features.includes('regionByPx')) {
           regionParam = regionX + ',' + regionY + ',' + regionW + ',' + regionH;
         } else if (features.includes('regionByPct')) {
-          const pctX = regionX / width * 100,
-              pctY = regionY / height * 100,
-              pctW = regionW / width * 100,
-              pctH = regionH / height * 100;
+          const pctX = formatPercentage(regionX / width * 100),
+              pctY = formatPercentage(regionY / height * 100),
+              pctW = formatPercentage(regionW / width * 100),
+              pctH = formatPercentage(regionH / height * 100);
           regionParam = 'pct:' + pctX + ',' + pctY + ',' + pctW + ',' + pctH;
         }
         if (version == Versions.VERSION3 && (!supportsArbitraryTiling || features.includes('sizeByWh'))) {
@@ -206,7 +209,7 @@ class IIIF extends TileImage {
         } else if (features.includes('sizeByWh')) {
           sizeParam = sizeW + ',' + sizeH;
         } else if (features.includes('sizeByPct')) {
-          sizeParam = 'pct:' + (100 / scale);
+          sizeParam = 'pct:' + formatPercentage(100 / scale);
         }
       } else {
         regionParam = 'full';
