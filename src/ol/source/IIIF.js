@@ -211,7 +211,7 @@ class IIIF extends TileImage {
       } else {
         regionParam = 'full';
         if (supportsListedSizes) {
-          sizeParam = sizes[zoom][0] + ',' + (version == Versions.VERSION3 ? sizes[zoom][0] : '');
+          sizeParam = sizes[zoom][0] + ',' + (version == Versions.VERSION3 ? sizes[zoom][1] : '');
         } else {
           sizeParam = version == Versions.VERSION3 ? 'max' : 'full';
         }
