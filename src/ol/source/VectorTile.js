@@ -9,12 +9,14 @@ import {toSize} from '../size.js';
 import UrlTile from './UrlTile.js';
 import {getKeyZXY, getKey} from '../tilecoord.js';
 import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.js';
-import {buffer as bufferExtent, getIntersection} from '../extent.js';
+import {buffer as bufferExtent, getIntersection, getWidth, getTopLeft} from '../extent.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {loadFeaturesXhr} from '../featureloader.js';
 import {isEmpty} from '../obj.js';
 import {equals} from '../array.js';
+import {DEFAULT_TILE_SIZE, DEFAULT_MAX_ZOOM} from '../tilegrid/common.js';
+import TileGrid from '../tilegrid/TileGrid.js';
 
 /**
  * @typedef {Object} Options
@@ -342,8 +344,24 @@ class VectorTile extends UrlTile {
       // A tile grid that matches the tile size of the source tile grid is more
       // likely to have 1:1 relationships between source tiles and rendered tiles.
       const sourceTileGrid = this.tileGrid;
-      tileGrid = this.tileGrids_[code] = createForProjection(projection, undefined,
-        sourceTileGrid ? sourceTileGrid.getTileSize(sourceTileGrid.getMinZoom()) : undefined);
+      const tileSize = toSize(sourceTileGrid.getTileSize(0));
+      tileSize[0] = tileSize[0] / 2;
+      tileSize[1] = tileSize[1] / 2
+      const extent = projection.getExtent();
+      const maxResolution = getWidth(extent) / tileSize[0];
+      const resolutions = [];
+      const tileSizes = [];
+      for (let i = 0; i <= DEFAULT_MAX_ZOOM; ++i) {
+        const resolution = maxResolution / Math.pow(2, i);
+        resolutions.push(resolution, resolution / 1.25, resolution / 1.5, resolution / 1.75,);
+        tileSizes.push(tileSize, [tileSize[0] * 1.25, tileSize[1] * 1.25], [tileSize[0] * 1.5, tileSize[1] * 1.5],
+          [tileSize[0] * 1.75, tileSize[1] * 1.75]);
+      }
+      tileGrid = this.tileGrids_[code] = new TileGrid({
+        origin: getTopLeft(extent),
+        resolutions: resolutions,
+        tileSizes: tileSizes
+      });
     }
     return tileGrid;
   }
