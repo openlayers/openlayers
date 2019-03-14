@@ -140,7 +140,6 @@ class Cluster extends VectorSource {
     this.clear();
     this.cluster();
     this.addFeatures(this.features);
-    super.refresh();
   }
 
   /**
