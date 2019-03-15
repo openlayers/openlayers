@@ -89,10 +89,8 @@ function getComplianceLevelOfImageInfoForVersion(imageInfo, version) {
         && typeof imageInfo.profile[0] === 'string') {
         return imageInfo.profile[0];
       }
-      // TODO error: cannot get compliance level URL / string
-      break;
+      return;
     default:
-      // TODO error: invalid Image API version
   }
 }
 
@@ -111,11 +109,10 @@ function getVersionOfImageInfo(imageInfo) {
       if (getComplianceLevelOfImageInfoForVersion(imageInfo, Versions.VERSION1)) {
         return Versions.VERSION1;
       }
-      // TODO error: can't detect Image API version
       break;
     default:
-      // TODO error: can't detect Image API version
   }
+  assert(false, 61);
 }
 
 function getLevelProfileForImageInfo(imageInfo) {

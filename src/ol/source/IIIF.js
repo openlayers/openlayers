@@ -54,9 +54,8 @@ class IIIF extends TileImage {
     const version = options.version || Versions.VERSION2;
     const sizes = options.sizes || [];
     const size = options.size;
-    // TODO Appropriate error code
     assert(size != undefined && Array.isArray(size) && size.length == 2 &&
-      !isNaN(size[0]) && size[0] > 0 && !isNaN(size[1] && size[1] > 0), 999);
+      !isNaN(size[0]) && size[0] > 0 && !isNaN(size[1] && size[1] > 0), 60);
     const width = size[0];
     const height = size[1];
     const tileSize = options.tileSize;
