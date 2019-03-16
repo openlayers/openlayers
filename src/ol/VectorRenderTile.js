@@ -12,6 +12,7 @@ import {createCanvasContext2D} from './dom.js';
  * @property {boolean} dirty
  * @property {null|import("./render.js").OrderFunction} renderedRenderOrder
  * @property {number} renderedTileRevision
+ * @property {number} renderedResolution
  * @property {number} renderedRevision
  * @property {number} renderedZ
  * @property {number} renderedTileZ
@@ -156,6 +157,7 @@ class VectorRenderTile extends Tile {
       this.replayState_[key] = {
         dirty: false,
         renderedRenderOrder: null,
+        renderedResolution: -1,
         renderedRevision: -1,
         renderedTileRevision: -1,
         renderedZ: -1,
