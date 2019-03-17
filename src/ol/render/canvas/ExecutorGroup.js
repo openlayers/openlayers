@@ -302,40 +302,6 @@ class ExecutorGroup extends Disposable {
   }
 
   /**
-   * @param {number|undefined} zIndex Z index.
-   * @param {import("./BuilderType.js").default} builderType Builder type.
-   * @return {import("../VectorContext.js").default} Executor.
-   */
-  getExecutor(zIndex, builderType) {
-    const zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
-    let executors = this.executorsByZIndex_[zIndexKey];
-    if (executors === undefined) {
-      executors = {};
-      this.executorsByZIndex_[zIndexKey] = executors;
-    }
-    let executor = executors[builderType];
-    if (executor === undefined) {
-      // FIXME: it should not be possible to ask for an executor that does not exist
-      executor = new Executor(
-        this.resolution_, this.pixelRatio_, this.overlaps_, {
-          instructions: [],
-          hitDetectionInstructions: [],
-          coordinates: []
-        },
-        this.declutterTree_);
-      executors[builderType] = executor;
-    }
-    return executor;
-  }
-
-  /**
-   * @return {Object<string, Object<BuilderType, CanvasReplay>>} Replays.
-   */
-  getExecutors() {
-    return this.executorsByZIndex_;
-  }
-
-  /**
    * @return {boolean} Is empty.
    */
   isEmpty() {
