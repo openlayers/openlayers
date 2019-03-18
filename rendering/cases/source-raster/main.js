@@ -9,6 +9,7 @@ const raster = new RasterSource({
     url: '/data/tiles/osm/{z}/{x}/{y}.png',
     transition: 0
   })],
+  threads: 0, // Avoid using workers to work with puppeteer
   operation: function(pixels) {
     const pixel = pixels[0];
     const red = pixel[0];
