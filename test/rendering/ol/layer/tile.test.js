@@ -1,17 +1,13 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import {getSize} from '../../../../src/ol/extent.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
 import {assign} from '../../../../src/ol/obj.js';
 import {transform} from '../../../../src/ol/proj.js';
-import TileImage from '../../../../src/ol/source/TileImage.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
-import {createXYZ} from '../../../../src/ol/tilegrid.js';
-
 
 describe('ol.rendering.layer.Tile', function() {
 
@@ -70,140 +66,6 @@ describe('ol.rendering.layer.Tile', function() {
       map.addLayer(new LayerConstructor(options));
     });
   }
-
-  describe('with tile transition', function() {
-    it('renders correctly after the transition', function(done) {
-      createMap('canvas');
-      const source = new XYZ({
-        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
-      });
-      waitForTiles('canvas', [source], {}, function() {
-        setTimeout(function() {
-          expectResemble(map, 'rendering/ol/layer/expected/osm-canvas.png',
-            IMAGE_TOLERANCE, done);
-        }, 500);
-      });
-    });
-  });
-
-  describe('single tile layer', function() {
-    let source;
-
-    beforeEach(function() {
-      source = new XYZ({
-        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
-        transition: 0
-      });
-    });
-
-    it('tests the canvas renderer', function(done) {
-      createMap('canvas');
-      waitForTiles('canvas', [source], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/osm-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-  });
-
-  describe('two tile layers', function() {
-    let source1, source2;
-
-    beforeEach(function() {
-      source1 = new XYZ({
-        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
-        transition: 0
-      });
-      source2 = new XYZ({
-        url: 'rendering/ol/data/tiles/stamen-labels/{z}/{x}/{y}.png',
-        transition: 0
-      });
-    });
-
-    function centerExtent(map) {
-      const c = map.getView().calculateExtent(map.getSize());
-      const qw = getSize(c)[0] / 4;
-      const qh = getSize(c)[1] / 4;
-      return [c[0] + qw, c[1] + qh, c[2] - qw, c[3] - qh];
-    }
-
-    it('tests canvas layer extent clipping with rotation', function(done) {
-      createMap('canvas');
-      map.getView().setRotation(Math.PI / 2);
-      waitForTiles('canvas', [source1, source2], [{}, {extent: centerExtent(map)}], function() {
-        expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent-rotate.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
-    it('tests canvas layer extent clipping (HiDPI)', function(done) {
-      createMap('canvas', undefined, undefined, 2);
-      waitForTiles('canvas', [source1, source2], [{}, {extent: centerExtent(map)}], function() {
-        expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent-hidpi.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
-    it('tests canvas layer extent clipping with rotation (HiDPI)', function(done) {
-      createMap('canvas', undefined, undefined, 2);
-      map.getView().setRotation(Math.PI / 2);
-      waitForTiles('canvas', [source1, source2], [{}, {extent: centerExtent(map)}], function() {
-        expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent-rotate-hidpi.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
-  });
-
-  describe('tile layer with opacity', function() {
-    let source;
-
-    beforeEach(function() {
-      source = new XYZ({
-        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
-        transition: 0
-      });
-    });
-
-    it('tests the canvas renderer', function(done) {
-      createMap('canvas');
-      waitForTiles('canvas', [source], {opacity: 0.2}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/opacity-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-  });
-
-  describe('tile layer with non-square tiles', function() {
-
-    function createSource(tileSize) {
-      return new TileImage({
-        url: 'rendering/ol/data/tiles/' + tileSize + '/{z}/{x}/{y}.png',
-        tileGrid: createXYZ({
-          tileSize: tileSize.split('x')
-        }),
-        transition: 0
-      });
-    }
-
-    it('512x256 renders correcly using the canvas renderer', function(done) {
-      const source = createSource('512x256');
-      createMap('canvas', [-10997148, 4569099]);
-      waitForTiles('canvas', [source], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/512x256-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-
-    it('192x256 renders correcly using the canvas renderer', function(done) {
-      const source = createSource('192x256');
-      createMap('canvas', [-11271098, 3747248], [100, 100], undefined,
-        source.getTileGrid().getResolutions());
-      waitForTiles('canvas', [source], {}, function() {
-        expectResemble(map, 'rendering/ol/layer/expected/192x256-canvas.png',
-          IMAGE_TOLERANCE, done);
-      });
-    });
-  });
 
   describe('tile layer with render listener', function() {
     let source, onAddLayer;
