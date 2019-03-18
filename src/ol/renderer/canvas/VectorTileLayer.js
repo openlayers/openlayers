@@ -431,6 +431,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       return this.container_;
     }
 
+    if (!isEmpty(this.renderTileImageQueue_) && !this.extentChanged) {
+      this.renderTileImages_(hifi, frameState);
+      return this.container_;
+    }
+
     const context = this.overlayContext_;
     const declutterReplays = layer.getDeclutter() ? {} : null;
     const source = layer.getSource();
