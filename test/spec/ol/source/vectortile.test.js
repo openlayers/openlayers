@@ -17,7 +17,6 @@ describe('ol.source.VectorTile', function() {
   const format = new MVT();
   const source = new VectorTileSource({
     format: format,
-    tilePixelRatio: 8,
     url: 'spec/ol/data/{z}-{x}-{y}.vector.pbf'
   });
   let tile;
