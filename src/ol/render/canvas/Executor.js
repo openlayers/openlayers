@@ -9,7 +9,7 @@ import {lineStringLength} from '../../geom/flat/length.js';
 import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {isEmpty} from '../../obj.js';
-import {drawImage, resetTransform, defaultPadding, defaultTextBaseline} from '../canvas.js';
+import {drawImage, defaultPadding, defaultTextBaseline} from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
 import {TEXT_ALIGN} from './TextBuilder.js';
 import {
@@ -382,12 +382,13 @@ class Executor extends Disposable {
     if (this.alignFill_) {
       const origin = applyTransform(this.renderedTransform_, [0, 0]);
       const repeatSize = 512 * this.pixelRatio;
+      context.save();
       context.translate(origin[0] % repeatSize, origin[1] % repeatSize);
       context.rotate(this.viewRotation_);
     }
     context.fill();
     if (this.alignFill_) {
-      context.setTransform.apply(context, resetTransform);
+      context.restore();
     }
   }
 
