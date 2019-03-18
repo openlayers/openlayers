@@ -54,6 +54,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
 
 
 /**
+ * Post render function. When `true` is returned, a render frame will be requested
  * @typedef {function(PluggableMap, ?FrameState): any} PostRenderFunction
  */
 
@@ -954,10 +955,14 @@ class PluggableMap extends BaseObject {
     }
 
     const postRenderFunctions = this.postRenderFunctions_;
+    let rerender = false;
     for (let i = 0, ii = postRenderFunctions.length; i < ii; ++i) {
-      postRenderFunctions[i](this, frameState);
+      rerender = rerender || (postRenderFunctions[i](this, frameState) === true);
     }
     postRenderFunctions.length = 0;
+    if (rerender) {
+      this.render();
+    }
   }
 
   /**
