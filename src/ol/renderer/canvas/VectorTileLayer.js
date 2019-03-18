@@ -27,7 +27,7 @@ import {
   makeInverse
 } from '../../transform.js';
 import CanvasExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
-import {clear} from '../../obj.js';
+import {clear, isEmpty} from '../../obj.js';
 
 
 /**
@@ -171,10 +171,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const viewHints = frameState.viewHints;
       const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
       const replayState = tile.getReplayState(this.getLayer());
-      const resolutionChanged = hifi && replayState.renderedResolution !== frameState.viewState.resolution;
-      this.updateExecutorGroup_(tile, frameState);
-      if (resolutionChanged || this.tileImageNeedsRender_(tile)) {
-        this.renderTileImageQueue_[tileUid] = tile;
+      const resolution = frameState.viewState.resolution;
+      const resolutionChanged = hifi && replayState.renderedResolution !== -1 && replayState.renderedResolution !== resolution;
+      if (resolutionChanged) {
+        this.resolutionChangeTiles_.push(tile);
+      } else {
+        this.updateExecutorGroup_(tile, frameState, false);
+        if (this.tileImageNeedsRender_(tile)) {
+          this.renderTileImageQueue_[tileUid] = tile;
+        }
       }
     }
   }
@@ -225,9 +230,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   /**
    * @param {import("../../VectorRenderTile.js").default} tile Tile.
    * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {boolean} force Force new instruction group creation.
    * @private
    */
-  updateExecutorGroup_(tile, frameState) {
+  updateExecutorGroup_(tile, frameState, force) {
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const revision = layer.getRevision();
     const renderOrder = layer.getRenderOrder() || null;
@@ -235,11 +241,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const builderState = tile.getReplayState(layer);
     const viewState = frameState.viewState;
     const resolution = viewState.resolution;
-    const viewHints = frameState.viewHints;
-    const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
 
-
-    if (!builderState.dirty && (!hifi || builderState.renderedResolution === resolution) && builderState.renderedRevision == revision &&
+    if (!force && !builderState.dirty && builderState.renderedRevision == revision &&
         builderState.renderedRenderOrder == renderOrder && builderState.renderedZ === tile.sourceZ) {
       return;
     }
@@ -420,7 +423,16 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @inheritDoc
    */
   renderFrame(frameState, layerState) {
+    this.resolutionChangeTiles_ = [];
     super.renderFrame(frameState, layerState);
+    if (this.resolutionChangeTiles_.length) {
+      frameState.postRenderFunctions.push(function() {
+        for (let i = 0, ii = this.resolutionChangeTiles_.length; i < ii; ++i) {
+          this.updateExecutorGroup_(this.resolutionChangeTiles_[i], frameState, true);
+        }
+        return true;
+      }.bind(this));
+    }
 
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const viewHints = frameState.viewHints;
@@ -558,7 +570,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const tileGrid = layer.getSource().getTileGridForProjection(viewState.projection);
       const tileResolution = tileGrid.getResolution(tile.tileCoord[0]);
       const renderPixelRatio = frameState.pixelRatio / viewState.resolution * tileResolution;
-      this.renderTileImage_(tile, frameState.pixelRatio, viewState.projection, renderPixelRatio);
+      this.renderTileImage_(tile, frameState, renderPixelRatio, viewState.projection);
     }
     clear(this.renderTileImageQueue_);
   }
@@ -605,11 +617,13 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {import("../../VectorRenderTile.js").default} tile Tile.
-   * @param {number} pixelRatio Pixel ratio.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state;.
+   * @param {number} renderPixelRatio Render pixel ratio.
    * @param {import("../../proj/Projection.js").default} projection Projection.
    * @private
    */
-  renderTileImage_(tile, pixelRatio, projection, renderPixelRatio) {
+  renderTileImage_(tile, frameState, renderPixelRatio, projection) {
+    const tilePixelRatio = frameState.pixelRatio;
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const replayState = tile.getReplayState(layer);
     const revision = layer.getRevision();
@@ -622,12 +636,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const tileGrid = source.getTileGridForProjection(projection);
     const resolution = tileGrid.getResolution(z);
     const context = tile.getContext(layer);
-    const size = source.getTilePixelSize(z, pixelRatio, projection);
+    const size = source.getTilePixelSize(z, tilePixelRatio, projection);
     context.canvas.width = size[0];
     context.canvas.height = size[1];
     const canvasTransform = resetTransform(this.tmpTransform_);
-    const renderScale = pixelRatio / renderPixelRatio;
-    composeTransform(canvasTransform, 0, 0, renderScale, renderScale, 0, 0, 0);
+    const renderScale = tilePixelRatio / renderPixelRatio;
+    scaleTransform(canvasTransform, renderScale, renderScale);
     context.setTransform.apply(context, canvasTransform);
     const tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
     for (let i = 0, ii = executorGroups.length; i < ii; ++i) {
