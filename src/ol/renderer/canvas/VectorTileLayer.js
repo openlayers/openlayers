@@ -168,8 +168,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       delete this.tileListenerKeys_[tileUid];
     }
     if (state === TileState.LOADED || state === TileState.ERROR) {
+      const viewHints = frameState.viewHints;
+      const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
+      const replayState = tile.getReplayState(this.getLayer());
+      const resolutionChanged = hifi && replayState.renderedResolution !== frameState.viewState.resolution;
       this.updateExecutorGroup_(tile, frameState);
-      if (this.tileImageNeedsRender_(tile, frameState)) {
+      if (resolutionChanged || this.tileImageNeedsRender_(tile)) {
         this.renderTileImageQueue_[tileUid] = tile;
       }
     }
@@ -545,7 +549,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       if (this.declutterTree_ && layer.getRenderMode() === VectorTileRenderType.IMAGE) {
         this.declutterTree_.clear();
       }
-      this.renderTileImage_(tile, frameState.pixelRatio, frameState.viewState.projection);
+      const viewState = frameState.viewState;
+      const tileGrid = layer.getSource().getTileGridForProjection(viewState.projection);
+      const tileResolution = tileGrid.getResolution(tile.tileCoord[0]);
+      const renderPixelRatio = frameState.pixelRatio / viewState.resolution * tileResolution;
+      this.renderTileImage_(tile, frameState.pixelRatio, viewState.projection, renderPixelRatio);
     }
     clear(this.renderTileImageQueue_);
   }
@@ -578,19 +586,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {import("../../VectorRenderTile.js").default} tile Tile.
-   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @return {boolean} A new tile image was rendered.
    * @private
    */
-  tileImageNeedsRender_(tile, frameState) {
+  tileImageNeedsRender_(tile) {
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const replayState = tile.getReplayState(layer);
     const revision = layer.getRevision();
     const sourceZ = tile.sourceZ;
-    const resolution = frameState.viewState.resolution;
-    const viewHints = frameState.viewHints;
-    const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
-    return (hifi && replayState.renderedResolution !== resolution) || replayState.renderedTileRevision !== revision || replayState.renderedTileZ !== sourceZ;
+    return replayState.renderedTileRevision !== revision || replayState.renderedTileZ !== sourceZ;
   }
 
   /**
@@ -599,7 +603,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {import("../../proj/Projection.js").default} projection Projection.
    * @private
    */
-  renderTileImage_(tile, pixelRatio, projection) {
+  renderTileImage_(tile, pixelRatio, projection, renderPixelRatio) {
     const layer = /** @type {import("../../layer/VectorTile.js").default} */ (this.getLayer());
     const replayState = tile.getReplayState(layer);
     const revision = layer.getRevision();
@@ -615,10 +619,14 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const size = source.getTilePixelSize(z, pixelRatio, projection);
     context.canvas.width = size[0];
     context.canvas.height = size[1];
+    const canvasTransform = resetTransform(this.tmpTransform_);
+    const renderScale = pixelRatio / renderPixelRatio;
+    composeTransform(canvasTransform, 0, 0, renderScale, renderScale, 0, 0, 0);
+    context.setTransform.apply(context, canvasTransform);
     const tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
     for (let i = 0, ii = executorGroups.length; i < ii; ++i) {
       const executorGroup = executorGroups[i];
-      const pixelScale = pixelRatio / resolution;
+      const pixelScale = renderPixelRatio / resolution;
       const transform = resetTransform(this.tmpTransform_);
       scaleTransform(transform, pixelScale, -pixelScale);
       translateTransform(transform, -tileExtent[0], -tileExtent[3]);
