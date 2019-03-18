@@ -76,6 +76,12 @@ class VectorRenderTile extends Tile {
     this.removeSourceTiles_ = removeSourceTiles;
 
     /**
+     * Resolution of the rendered tile image.
+     * @type {number}
+     */
+    this.renderedImageResolution = -1;
+
+    /**
      * @private
      * @type {import("./tilegrid/TileGrid.js").default}
      */

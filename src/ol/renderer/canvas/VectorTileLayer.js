@@ -594,7 +594,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const replayState = tile.getReplayState(layer);
     const revision = layer.getRevision();
     const sourceZ = tile.sourceZ;
-    return replayState.renderedTileRevision !== revision || replayState.renderedTileZ !== sourceZ;
+    const resolution = replayState.renderedResolution;
+    return replayState.renderedTileRevision !== revision || replayState.renderedTileZ !== sourceZ || tile.renderedImageResolution !== resolution;
   }
 
   /**
@@ -632,6 +633,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       translateTransform(transform, -tileExtent[0], -tileExtent[3]);
       executorGroup.execute(context, transform, 0, {}, true, IMAGE_REPLAYS[layer.getRenderMode()]);
     }
+    tile.renderedImageResolution = replayState.renderedResolution;
   }
 
   /**
