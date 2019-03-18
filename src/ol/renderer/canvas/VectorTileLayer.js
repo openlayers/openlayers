@@ -27,7 +27,7 @@ import {
   makeInverse
 } from '../../transform.js';
 import CanvasExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
-import {clear} from '../../obj.js';
+import {clear, isEmpty} from '../../obj.js';
 
 
 /**
@@ -428,6 +428,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
     const renderMode = layer.getRenderMode();
     if (renderMode === VectorTileRenderType.IMAGE) {
+      this.renderTileImages_(hifi, frameState);
+      return this.container_;
+    }
+
+    if (!isEmpty(this.renderTileImageQueue_) && !this.extentChanged) {
       this.renderTileImages_(hifi, frameState);
       return this.container_;
     }

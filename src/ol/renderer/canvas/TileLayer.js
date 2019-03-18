@@ -4,7 +4,7 @@
 import {getUid} from '../../util.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
-import {createEmpty, getIntersection, getTopLeft} from '../../extent.js';
+import {createEmpty, equals, getIntersection, getTopLeft} from '../../extent.js';
 import CanvasLayerRenderer from './Layer.js';
 import {apply as applyTransform, compose as composeTransform, makeInverse, toString as transformToString} from '../../transform.js';
 
@@ -20,6 +20,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    */
   constructor(tileLayer) {
     super(tileLayer);
+
+    /**
+     * Rendered extent has changed since the previous `renderFrame()` call
+     * @type {boolean}
+     */
+    this.extentChanged = true;
 
     /**
      * @private
@@ -301,6 +307,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     this.renderedRevision = sourceRevision;
     this.renderedResolution = tileResolution;
+    this.extentChanged = !this.renderedExtent_ || !equals(this.renderedExtent_, canvasExtent);
     this.renderedExtent_ = canvasExtent;
 
     this.manageTilePyramid(frameState, tileSource, tileGrid, pixelRatio,
