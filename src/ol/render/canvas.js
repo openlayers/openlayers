@@ -85,9 +85,9 @@ export const defaultFont = '10px sans-serif';
 
 /**
  * @const
- * @type {import("../color.js").Color}
+ * @type {import("../colorlike.js").ColorLike}
  */
-export const defaultFillStyle = [0, 0, 0, 1];
+export const defaultFillStyle = '#000';
 
 
 /**
@@ -127,9 +127,9 @@ export const defaultMiterLimit = 10;
 
 /**
  * @const
- * @type {import("../color.js").Color}
+ * @type {import("../colorlike.js").ColorLike}
  */
-export const defaultStrokeStyle = [0, 0, 0, 1];
+export const defaultStrokeStyle = '#000';
 
 
 /**

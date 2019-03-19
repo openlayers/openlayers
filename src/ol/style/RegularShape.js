@@ -2,7 +2,6 @@
  * @module ol/style/RegularShape
  */
 
-import {asString} from '../color.js';
 import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
 import ImageState from '../ImageState.js';
@@ -482,7 +481,7 @@ class RegularShape extends ImageStyle {
       }
     }
 
-    context.fillStyle = asString(defaultFillStyle);
+    context.fillStyle = defaultFillStyle;
     context.fill();
     if (this.stroke_) {
       context.strokeStyle = renderOptions.strokeStyle;

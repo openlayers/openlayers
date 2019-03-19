@@ -1,7 +1,6 @@
 /**
  * @module ol/render/canvas/PolygonBuilder
  */
-import {asString} from '../../color.js';
 import {snap} from '../../geom/flat/simplify.js';
 import {defaultFillStyle} from '../canvas.js';
 import CanvasInstruction, {
@@ -77,7 +76,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
-        asString(defaultFillStyle)
+        defaultFillStyle
       ]);
     }
     if (state.strokeStyle !== undefined) {
@@ -121,7 +120,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
-        asString(defaultFillStyle)
+        defaultFillStyle
       ]);
     }
     if (state.strokeStyle !== undefined) {
@@ -153,7 +152,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
-        asString(defaultFillStyle)
+        defaultFillStyle
       ]);
     }
     if (state.strokeStyle !== undefined) {
