@@ -59,7 +59,7 @@ describe('ol.source.VectorTile', function() {
       tile.load();
       const key = listen(tile, 'change', function(e) {
         if (tile.getState() === TileState.LOADED) {
-          const sourceTile = tile.load()[0];
+          const sourceTile = source.getSourceTiles(1, source.getProjection(), tile)[0];
           expect(sourceTile.getFeatures().length).to.be.greaterThan(0);
           unlistenByKey(key);
           done();

@@ -167,10 +167,9 @@ class VectorRenderTile extends Tile {
 
   /**
    * @inheritDoc
-   * @return {Array<import("./VectorTile.js").default>} Source tiles for this tile.
    */
   load() {
-    return this.getSourceTiles_(this);
+    this.getSourceTiles_(this);
   }
 }
 

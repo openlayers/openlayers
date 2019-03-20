@@ -243,7 +243,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const resolution = tileGrid.getResolution(zoom);
     const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
 
-    const sourceTiles = tile.load();
+    const sourceTiles = source.getSourceTiles(pixelRatio, projection, tile);
     const layerUid = getUid(layer);
     const executorGroups = tile.executorGroups[layerUid];
     if (executorGroups) {

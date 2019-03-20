@@ -85,7 +85,7 @@ describe('ol.VectorRenderTile', function() {
     const key = listen(tile, EventType.CHANGE, function() {
       if (tile.getState() === TileState.LOADED) {
         unlistenByKey(key);
-        const sourceTiles = tile.load();
+        const sourceTiles = source.getSourceTiles(1, source.getProjection(), tile);
         expect(sourceTiles.length).to.be(1);
         expect(sourceTiles[0].tileCoord).to.eql([0, 16, 9]);
         done();
@@ -126,7 +126,7 @@ describe('ol.VectorRenderTile', function() {
     listenOnce(tile, 'change', function() {
       expect(tile.getState()).to.be(TileState.LOADED);
       expect(tile.loadingSourceTiles).to.be(0);
-      const sourceTiles = tile.load();
+      const sourceTiles = source.getSourceTiles(1, source.getProjection(), tile);
       expect(sourceTiles.length).to.be(4);
       for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
         expect(sourceTiles[i].consumers).to.be(1);
