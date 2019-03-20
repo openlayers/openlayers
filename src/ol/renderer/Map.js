@@ -278,7 +278,10 @@ class MapRenderer extends Disposable {
     for (const layerKey in this.layerRenderers_) {
       if (!(layerKey in layerStatesMap)) {
         frameState.postRenderFunctions.push(function() {
-          this.removeLayerRendererByKey_(layerKey).dispose();
+          const layerRenderer = this.removeLayerRendererByKey_(layerKey);
+          if (layerRenderer) {
+            layerRenderer.dispose();
+          }
         }.bind(this));
       }
     }
