@@ -82,11 +82,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {number} z Tile coordinate z.
    * @param {number} x Tile coordinate x.
    * @param {number} y Tile coordinate y.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../../proj/Projection.js").default} projection Projection.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
    * @return {!import("../../Tile.js").default} Tile.
    */
-  getTile(z, x, y, pixelRatio, projection) {
+  getTile(z, x, y, frameState) {
+    const pixelRatio = frameState.pixelRatio;
+    const projection = frameState.viewState.projection;
     const tileLayer = /** @type {import("../../layer/Tile.js").default} */ (this.getLayer());
     const tileSource = tileLayer.getSource();
     let tile = tileSource.getTile(z, x, y, pixelRatio, projection);
@@ -186,7 +187,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     this.newTiles_ = false;
     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        const tile = this.getTile(z, x, y, pixelRatio, projection);
+        const tile = this.getTile(z, x, y, frameState);
         if (this.isDrawableTile(tile)) {
           const uid = getUid(this);
           if (tile.getState() == TileState.LOADED) {
