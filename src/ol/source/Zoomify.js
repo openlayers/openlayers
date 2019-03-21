@@ -258,18 +258,10 @@ class Zoomify extends TileImage {
     });
 
     /**
-     * @protected
      * @type {number|undefined}
      */
     this.zDirection = options.zDirection;
 
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getZDirection() {
-    return this.zDirection;
   }
 
 }

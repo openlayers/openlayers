@@ -326,18 +326,6 @@ class TileSource extends Source {
    */
   useTile(z, x, y, projection) {}
 
-  /**
-   * Indicate which resolution should be used by a renderer if the views resolution
-   * does not match any resolution of the tile source.
-   * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
-   * will be used. If -1, the nearest higher resolution will be used. If undefined,
-   * the decision is left to the renderer.
-   * @return {number|undefined} Prefered zDirection for source resolution selection.
-   */
-  getZDirection() {
-    return undefined;
-  }
-
 }
 
 

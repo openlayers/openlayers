@@ -143,7 +143,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const tileSource = tileLayer.getSource();
     const sourceRevision = tileSource.getRevision();
     const tileGrid = tileSource.getTileGridForProjection(projection);
-    const zDirection = tileSource.getZDirection() === undefined ? this.zDirection : tileSource.getZDirection();
+    const zDirection = tileSource.zDirection === undefined ? this.zDirection : tileSource.zDirection;
     const z = tileGrid.getZForResolution(viewResolution, zDirection);
     const tileResolution = tileGrid.getResolution(z);
     let extent = frameState.extent;
