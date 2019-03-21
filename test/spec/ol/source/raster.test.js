@@ -39,12 +39,14 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     redSource = new Static({
       url: red,
-      imageExtent: extent
+      imageExtent: extent,
+      attributions: ['red raster source']
     });
 
     greenSource = new Static({
       url: green,
-      imageExtent: extent
+      imageExtent: extent,
+      attributions: ['green raster source']
     });
 
     blueSource = new VectorImageLayer({
@@ -163,6 +165,54 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       view.setCenter([0, 0]);
       view.setZoom(0);
 
+    });
+
+  });
+
+  describe('config option `attributions`', function() {
+    it('handles empty attributions', function() {
+      const blue = new RasterSource({
+        operationType: 'image',
+        threads: 0,
+        sources: [blueSource],
+        operation: function(inputs) {
+          return inputs[0];
+        }
+      });
+      const blueAttributions = blue.getAttributions();
+      expect(blueAttributions()).to.be(null);
+    });
+
+    it('shows single attributions', function() {
+      const red = new RasterSource({
+        operationType: 'image',
+        threads: 0,
+        sources: [redSource],
+        operation: function(inputs) {
+          return inputs[0];
+        }
+      });
+      const redAttribtuions = red.getAttributions();
+
+      expect(redAttribtuions()).to.not.be(null);
+      expect(typeof redAttribtuions).to.be('function');
+      expect(redAttribtuions()).to.eql(['red raster source']);
+    });
+
+    it('concatinates multiple attributions', function() {
+      const redGreen = new RasterSource({
+        operationType: 'image',
+        threads: 0,
+        sources: [redSource, greenSource],
+        operation: function(inputs) {
+          return inputs[0];
+        }
+      });
+      const redGreenAttributions = redGreen.getAttributions();
+
+      expect(redGreenAttributions()).to.not.be(null);
+      expect(typeof redGreenAttributions).to.be('function');
+      expect(redGreenAttributions()).to.eql(['red raster source', 'green raster source']);
     });
 
   });

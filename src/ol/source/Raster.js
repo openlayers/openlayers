@@ -230,6 +230,20 @@ class RasterSource extends ImageSource {
       wantedTiles: {}
     };
 
+    this.setAttributions(function(frameState) {
+      const attributions = [];
+      for (let index = 0, iMax = options.sources.length; index < iMax; ++index) {
+        const sourceOrLayer = options.sources[index];
+        const source = sourceOrLayer instanceof Source ? sourceOrLayer : sourceOrLayer.getSource();
+        const attributionGetter = source.getAttributions();
+        if (typeof attributionGetter === 'function') {
+          const sourceAttribution = attributionGetter(frameState);
+          attributions.push.apply(attributions, sourceAttribution);
+        }
+      }
+      return attributions.length !== 0 ? attributions : null;
+    });
+
     if (options.operation !== undefined) {
       this.setOperation(options.operation, options.lib);
     }
