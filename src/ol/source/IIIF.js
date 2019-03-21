@@ -184,9 +184,6 @@ class IIIF extends TileImage {
         if (regionY + tileHeight * scale > height) {
           sizeH = Math.floor((height - regionY + scale - 1) / scale);
         }
-        const sizeHBySizeW = Math.round(sizeW / regionW * regionH),
-            sizeWBySizeH = Math.round(sizeH / regionH * regionW),
-            preferSizeByH = (sizeHBySizeW > sizeH) && (sizeW == sizeWBySizeH);
         if (regionX == 0 && regionW == width && regionY == 0 && regionH == height) {
           // canonical full image region parameter is 'full', not 'x,y,w,h'
           regionParam = 'full';
@@ -201,7 +198,7 @@ class IIIF extends TileImage {
         }
         if (version == Versions.VERSION3 && (!supportsArbitraryTiling || features.includes('sizeByWh'))) {
           sizeParam = sizeW + ',' + sizeH;
-        } else if (!supportsArbitraryTiling || features.includes('sizeByW') && (!preferSizeByH || !(features.includes('sizeByH')))) {
+        } else if (!supportsArbitraryTiling || features.includes('sizeByW')) {
           sizeParam = sizeW + ',';
         } else if (features.includes('sizeByH')) {
           sizeParam = ',' + sizeH;
