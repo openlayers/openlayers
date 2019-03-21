@@ -20,7 +20,7 @@ feature1.setStyle(new Style({
   stroke: new Stroke({color: 'blue'}),
   text: new Text({
     text: 'Hello world',
-    font: '"Ubuntu Regular", sans-serif',
+    font: '"Ubuntu Regular"',
     placement: 'line',
     overflow: true
   })
@@ -38,7 +38,7 @@ feature2.setStyle(new Style({
     textBaseline: 'bottom',
     textAlign: 'right',
     placement: 'line',
-    font: 'bold italic 0.8em "Ubuntu Regular", sans-serif',
+    font: 'bold italic 0.8em "Ubuntu Regular"',
     overflow: true
   })
 }));
@@ -73,7 +73,7 @@ feature4.setStyle(new Style({
   stroke: new Stroke({color: 'red'}),
   text: new Text({
     text: 'PLEASE OMIT ME IM UGLY',
-    font: '"Ubuntu Regular", sans-serif',
+    font: '"Ubuntu Regular"',
     offsetX: -10,
     textAlign: 'start',
     textBaseline: 'top',
@@ -90,7 +90,7 @@ feature5.setStyle(new Style({
   stroke: new Stroke({color: 'blue'}),
   text: new Text({
     text: 'Small text',
-    font: '"Ubuntu Regular", sans-serif',
+    font: '"Ubuntu Regular"',
     offsetY: 5,
     scale: 0.7,
     rotation: 4,
@@ -109,7 +109,7 @@ feature6.setStyle(new Style({
   stroke: new Stroke({color: 'blue'}),
   text: new Text({
     text: 'FILL AND STROKE',
-    font: '"Ubuntu Regular", sans-serif',
+    font: '"Ubuntu Regular"',
     placement: 'line',
     overflow: true,
     fill: new Fill({color: '#FFC0CB'}),

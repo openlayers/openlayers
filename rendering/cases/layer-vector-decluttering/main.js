@@ -90,7 +90,7 @@ layer2.setStyle(function(feature) {
   return new Style({
     text: new Text({
       text: feature.get('text'),
-      font: '12px "Ubuntu Regular", sans-serif'
+      font: '16px "Ubuntu Regular"'
     })
   });
 });
@@ -119,7 +119,7 @@ layer3.setStyle(function(feature) {
     }),
     text: new Text({
       text: feature.get('text'),
-      font: '12px "Ubuntu Regular", sans-serif',
+      font: '16px "Ubuntu Regular"',
       textBaseline: 'bottom',
       offsetY: -5
     })
@@ -151,7 +151,8 @@ line.setStyle(new Style({
   text: new Text({
     placement: 'line',
     text: 'east-west',
-    font: '12px "Ubuntu Regular", sans-serif'
+    font: '16px "Ubuntu Regular"',
+    overflow: true
   })
 }));
 source4.addFeature(point);

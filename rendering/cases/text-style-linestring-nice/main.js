@@ -23,7 +23,7 @@ feature1.setStyle(new Style({
   stroke: new Stroke({color: 'blue'}),
   text: new Text({
     text: 'Hello world',
-    font: '"Ubuntu Regular", sans-serif',
+    font: '"Ubuntu Regular"',
     placement: 'line'
   })
 }));
@@ -40,7 +40,7 @@ feature2.setStyle(new Style({
     textBaseline: 'bottom',
     textAlign: 'right',
     placement: 'line',
-    font: 'bold italic 0.8em "Ubuntu Regular", sans-serif'
+    font: 'bold italic 0.8em "Ubuntu Regular"'
   })
 }));
 vectorSource.addFeature(feature2);
@@ -51,11 +51,11 @@ const feature3 = new Feature({geometry: lineString3});
 feature3.setStyle(new Style({
   stroke: new Stroke({color: 'blue'}),
   text: new Text({
-    font: '"Ubuntu Regular", sans-serif',
+    font: '"Ubuntu Regular"',
     text: 'Set properties'
   })
 }));
-feature3.getStyle().getText().setFont('bold italic 1.2em "Ubuntu Regular", sans-serif');
+feature3.getStyle().getText().setFont('bold italic 1.2em "Ubuntu Regular"');
 feature3.getStyle().getText().setTextAlign('left');
 feature3.getStyle().getText().setOffsetX(10);
 feature3.getStyle().getText().setOffsetY(-10);
@@ -73,7 +73,7 @@ feature4.setStyle(new Style({
   stroke: new Stroke({color: 'blue'}),
   text: new Text({
     text: 'negative offsetX',
-    font: '"Ubuntu Regular", sans-serif',
+    font: '"Ubuntu Regular"',
     offsetX: -10,
     textAlign: 'start',
     textBaseline: 'top',
@@ -89,7 +89,7 @@ feature5.setStyle(new Style({
   stroke: new Stroke({color: 'blue'}),
   text: new Text({
     text: 'Small text',
-    font: '"Ubuntu Regular", sans-serif',
+    font: '"Ubuntu Regular"',
     offsetY: 5,
     scale: 0.7,
     textAlign: 'end',
@@ -105,7 +105,7 @@ feature6.setStyle(new Style({
   stroke: new Stroke({color: 'blue'}),
   text: new Text({
     text: 'FILL AND STROKE',
-    font: '"Ubuntu Regular", sans-serif',
+    font: '"Ubuntu Regular"',
     placement: 'line',
     fill: new Fill({color: '#FFC0CB'}),
     stroke: new Stroke({
