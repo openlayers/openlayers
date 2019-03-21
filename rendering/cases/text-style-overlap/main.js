@@ -19,6 +19,7 @@ const vectorSource = new VectorSource();
 const pointStyle = new Style({
   text: new Text({
     text: 'Point Label',
+    font: '"Ubuntu Regular", sans-serif',
     fill: new Fill({
       color: 'red'
     }),
@@ -31,6 +32,7 @@ const lineStyle = new Style({
   stroke: new Stroke({color: 'blue'}),
   text: new Text({
     text: 'Line Label',
+    font: '"Ubuntu Regular", sans-serif',
     fill: new Fill({
       color: 'red'
     }),
