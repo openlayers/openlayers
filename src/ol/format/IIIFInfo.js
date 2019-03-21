@@ -3,7 +3,7 @@
  */
 
 /**
- * Supported image formats, qualities and region / size calculation features
+ * Supported image formats, qualities and supported region / size calculation features
  * for different image API versions and compliance levels
  * @const
  * @type {Object<string, Object<string, Array<string>>>}
@@ -11,17 +11,17 @@
 const IIIF_PROFILE_VALUES = {
   version1: {
     level0: {
-      features: [],
+      supports: [],
       formats: [],
       qualities: ['native']
     },
     level1: {
-      features: ['regionByPx', 'sizeByW', 'sizeByH', 'sizeByPct'],
+      supports: ['regionByPx', 'sizeByW', 'sizeByH', 'sizeByPct'],
       formats: ['jpg'],
       qualities: ['native']
     },
     level2: {
-      features: ['regionByPx', 'regionByPct', 'sizeByW', 'sizeByH', 'sizeByPct',
+      supports: ['regionByPx', 'regionByPct', 'sizeByW', 'sizeByH', 'sizeByPct',
         'sizeByConfinedWh', 'sizeByWh'],
       formats: ['jpg', 'png'],
       qualities: ['native', 'color', 'grey', 'bitonal']
@@ -29,17 +29,17 @@ const IIIF_PROFILE_VALUES = {
   },
   version2: {
     level0: {
-      features: [],
+      supports: [],
       formats: ['jpg'],
       qualities: ['default']
     },
     level1: {
-      features: ['regionByPx', 'sizeByW', 'sizeByH', 'sizeByPct'],
+      supports: ['regionByPx', 'sizeByW', 'sizeByH', 'sizeByPct'],
       formats: ['jpg'],
       qualities: ['default']
     },
     level2: {
-      features: ['regionByPx', 'regionByPct', 'sizeByW', 'sizeByH', 'sizeByPct',
+      supports: ['regionByPx', 'regionByPct', 'sizeByW', 'sizeByH', 'sizeByPct',
         'sizeByConfinedWh', 'sizeByDistortedWh', 'sizeByWh'],
       formats: ['jpg', 'png'],
       qualities: ['default', 'bitonal']
@@ -47,24 +47,24 @@ const IIIF_PROFILE_VALUES = {
   },
   version3: {
     level0: {
-      features: [],
+      supports: [],
       formats: ['jpg'],
       qualities: ['default']
     },
     level1: {
-      features: ['regionByPx', 'regionSquare', 'sizeByW', 'sizeByH'],
+      supports: ['regionByPx', 'regionSquare', 'sizeByW', 'sizeByH'],
       formats: ['jpg'],
       qualities: ['default']
     },
     level2: {
-      features: ['regionByPx', 'regionSquare', 'regionByPct',
+      supports: ['regionByPx', 'regionSquare', 'regionByPct',
         'sizeByW', 'sizeByH', 'sizeByPct', 'sizeByConfinedWh', 'sizeByWh'],
       formats: ['jpg'],
       qualities: ['default', 'bitonal']
     }
   },
   none: {
-    features: [],
+    supports: [],
     formats: [],
     qualities: []
   }
@@ -131,7 +131,7 @@ function generateVersion1Options(imageInfo) {
   const levelProfile = getLevelProfileForImageInfo(imageInfo);
   return {
     url: imageInfo['@id'].replace(/\/?(info.json)?$/g, ''),
-    features: levelProfile.features,
+    supports: levelProfile.supports,
     formats: [...levelProfile.formats, imageInfo.formats === undefined ?
       [] : imageInfo.formats
     ],
@@ -148,7 +148,7 @@ function generateVersion1Options(imageInfo) {
 function generateVersion2Options(imageInfo) {
   const levelProfile = getLevelProfileForImageInfo(imageInfo),
       additionalProfile = Array.isArray(imageInfo.profile) && imageInfo.profile.length > 1,
-      profileFeatures = additionalProfile && imageInfo.profile[1].supports ? imageInfo.profile[1].supports : [],
+      profileSupports = additionalProfile && imageInfo.profile[1].supports ? imageInfo.profile[1].supports : [],
       profileFormats = additionalProfile && imageInfo.profile[1].formats ? imageInfo.profile[1].formats : [],
       profileQualities = additionalProfile && imageInfo.profile[1].qualities ? imageInfo.profile[1].qualities : [],
       attributions = [];
@@ -181,7 +181,7 @@ function generateVersion2Options(imageInfo) {
       imageInfo.tiles.map(function(tile) {
         return tile.scaleFactors;
       })[0],
-    features: [...levelProfile.features, ...profileFeatures],
+    supports: [...levelProfile.supports, ...profileSupports],
     formats: [...levelProfile.formats, ...profileFormats],
     qualities: [...levelProfile.qualities, ...profileQualities],
     attributions: attributions.length == 0 ? undefined : attributions
@@ -207,8 +207,8 @@ function generateVersion3Options(imageInfo) {
       imageInfo.tiles.map(function(tile) {
         return tile.scaleFactors;
       })[0],
-    features: imageInfo.extraFeatures === undefined ? levelProfile.features :
-      [...levelProfile.features, ...imageInfo.extraFeatures],
+    supports: imageInfo.extraFeatures === undefined ? levelProfile.supports :
+      [...levelProfile.supports, ...imageInfo.extraFeatures],
     formats: imageInfo.extraFormats === undefined ? levelProfile.formats :
       [...levelProfile.formats, ...imageInfo.extraFormats],
     qualities: imageInfo.extraQualities === undefined ? levelProfile.qualities :
@@ -239,7 +239,7 @@ function getOptionsForImageInformation(imageInfo, preferredOptions) {
     size: [imageInfo.width, imageInfo.height],
     sizes: imageOptions.sizes,
     format: imageOptions.formats.includes(options.format) ? options.format : 'jpg',
-    features: imageOptions.features,
+    supports: imageOptions.supports,
     quality: options.quality && imageOptions.qualities.includes(options.quality) ?
       options.quality : imageOptions.qualities.includes('native') ? 'native' : 'default',
     resolutions: Array.isArray(imageOptions.resolutions) ? imageOptions.resolutions.sort(function(a, b) {

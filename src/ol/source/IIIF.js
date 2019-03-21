@@ -25,6 +25,8 @@ import TileImage from './TileImage.js';
  * @property {import("../size.js").Size[]} [sizes] Supported scaled image sizes.
  * Content of the IIIF info.json 'sizes' property, but as array of Size objects.
  * @property {import("../extent.js").Extent} [extent=[0, -height, width, 0]]
+ * @property {Array<string>} [supports=[]] Supported IIIF region and size calculation
+ * features.
  * @property {number} [transition]
  * @property {number|import("../size.js").Size} [tileSize] Tile size.
  * Same tile size is used for all zoom levels. If tile size is a number,
@@ -62,15 +64,15 @@ class IIIF extends TileImage {
     const format = options.format || 'jpg';
     const quality = options.quality || (options.version == Versions.VERSION1 ? 'native' : 'default');
     let resolutions = options.resolutions || [];
-    const features = options.features || [];
+    const supports = options.supports || [];
     const extent = options.extent || [0, -height, width, 0];
 
     const supportsListedSizes = sizes != undefined && Array.isArray(sizes) && sizes.length > 0;
     const supportsListedTiles = tileSize != undefined && (Number.isInteger(tileSize) && tileSize > 0 || Array.isArray(tileSize) && tileSize.length > 0);
-    const supportsArbitraryTiling = features != undefined && Array.isArray(features) &&
-      (features.includes('regionByPx') || features.includes('regionByPct')) &&
-      (features.includes('sizeByWh') || features.includes('sizeByH') ||
-      features.includes('sizeByW') || features.includes('sizeByPct'));
+    const supportsArbitraryTiling = supports != undefined && Array.isArray(supports) &&
+      (supports.includes('regionByPx') || supports.includes('regionByPct')) &&
+      (supports.includes('sizeByWh') || supports.includes('sizeByH') ||
+      supports.includes('sizeByW') || supports.includes('sizeByPct'));
 
     let tileWidth,
         tileHeight,
@@ -187,24 +189,24 @@ class IIIF extends TileImage {
         if (regionX == 0 && regionW == width && regionY == 0 && regionH == height) {
           // canonical full image region parameter is 'full', not 'x,y,w,h'
           regionParam = 'full';
-        } else if (!supportsArbitraryTiling || features.includes('regionByPx')) {
+        } else if (!supportsArbitraryTiling || supports.includes('regionByPx')) {
           regionParam = regionX + ',' + regionY + ',' + regionW + ',' + regionH;
-        } else if (features.includes('regionByPct')) {
+        } else if (supports.includes('regionByPct')) {
           const pctX = formatPercentage(regionX / width * 100),
               pctY = formatPercentage(regionY / height * 100),
               pctW = formatPercentage(regionW / width * 100),
               pctH = formatPercentage(regionH / height * 100);
           regionParam = 'pct:' + pctX + ',' + pctY + ',' + pctW + ',' + pctH;
         }
-        if (version == Versions.VERSION3 && (!supportsArbitraryTiling || features.includes('sizeByWh'))) {
+        if (version == Versions.VERSION3 && (!supportsArbitraryTiling || supports.includes('sizeByWh'))) {
           sizeParam = sizeW + ',' + sizeH;
-        } else if (!supportsArbitraryTiling || features.includes('sizeByW')) {
+        } else if (!supportsArbitraryTiling || supports.includes('sizeByW')) {
           sizeParam = sizeW + ',';
-        } else if (features.includes('sizeByH')) {
+        } else if (supports.includes('sizeByH')) {
           sizeParam = ',' + sizeH;
-        } else if (features.includes('sizeByWh')) {
+        } else if (supports.includes('sizeByWh')) {
           sizeParam = sizeW + ',' + sizeH;
-        } else if (features.includes('sizeByPct')) {
+        } else if (supports.includes('sizeByPct')) {
           sizeParam = 'pct:' + formatPercentage(100 / scale);
         }
       } else {
