@@ -105,6 +105,14 @@ class TileSource extends Source {
      */
     this.tileOptions = {transition: options.transition};
 
+    /**
+     * zDirection hint, read by the renderer. Indicates which resolution should be used
+     * by a renderer if the views resolution does not match any resolution of the tile source.
+     * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
+     * will be used. If -1, the nearest higher resolution will be used.
+     * @type {number=}
+     */
+    this.zDirection;
   }
 
   /**
