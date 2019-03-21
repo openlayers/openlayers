@@ -3,11 +3,12 @@
  */
 
 import {createCanvasContext2D} from '../dom.js';
-import {listenOnce, unlistenByKey} from '../events.js';
 import EventTarget from '../events/Target.js';
 import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
 import {shared as iconImageCache} from './IconImageCache.js';
+import {listenImage, unlistenImage} from '../Image.js';
+
 
 class IconImage extends EventTarget {
   /**
@@ -185,17 +186,16 @@ class IconImage extends EventTarget {
   load() {
     if (this.imageState_ == ImageState.IDLE) {
       this.imageState_ = ImageState.LOADING;
-      this.imageListenerKeys_ = [
-        listenOnce(this.image_, EventType.ERROR,
-          this.handleImageError_, this),
-        listenOnce(this.image_, EventType.LOAD,
-          this.handleImageLoad_, this)
-      ];
       try {
         /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
       } catch (e) {
         this.handleImageError_();
       }
+      this.imageListenerKeys_ = listenImage(
+        this.image_,
+        this.handleImageLoad_.bind(this),
+        this.handleImageError_.bind(this)
+      );
     }
   }
 
@@ -233,8 +233,7 @@ class IconImage extends EventTarget {
    * @private
    */
   unlistenImage_() {
-    this.imageListenerKeys_.forEach(unlistenByKey);
-    this.imageListenerKeys_ = null;
+    unlistenImage(this.imageListenerKeys_);
   }
 }
 

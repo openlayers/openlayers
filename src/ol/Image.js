@@ -120,13 +120,12 @@ class ImageWrapper extends ImageBase {
     if (this.state == ImageState.IDLE || this.state == ImageState.ERROR) {
       this.state = ImageState.LOADING;
       this.changed();
-      this.imageListenerKeys_ = [
-        listenOnce(this.image_, EventType.ERROR,
-          this.handleImageError_, this),
-        listenOnce(this.image_, EventType.LOAD,
-          this.handleImageLoad_, this)
-      ];
       this.imageLoadFunction_(this, this.src_);
+      this.imageListenerKeys_ = listenImage(
+        this.image_,
+        this.handleImageLoad_.bind(this),
+        this.handleImageError_.bind(this)
+      );
     }
   }
 
@@ -143,10 +142,39 @@ class ImageWrapper extends ImageBase {
    * @private
    */
   unlistenImage_() {
-    this.imageListenerKeys_.forEach(unlistenByKey);
-    this.imageListenerKeys_ = null;
+    unlistenImage(this.imageListenerKeys_);
   }
 }
 
+/**
+ * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image element.
+ * @param {function():any} loadHandler Load callback function.
+ * @param {function():any} errorHandler Error callback function.
+ * @return {Array<import("./events.js").EventsKey>} listener keys.
+ */
+export function listenImage(image, loadHandler, errorHandler) {
+  const img = /** @type {HTMLImageElement} */ (image);
+  if (img.decode) {
+    img.decode().then(loadHandler).catch(errorHandler);
+    return null;
+  } else {
+    const listenerKeys = [
+      listenOnce(img, EventType.LOAD, loadHandler),
+      listenOnce(img, EventType.ERROR, errorHandler)
+    ];
+    return listenerKeys;
+  }
+
+}
+
+/**
+ * @param {Array<import("./events.js").EventsKey>} listenerKeys listener keys.
+ */
+export function unlistenImage(listenerKeys) {
+  if (listenerKeys) {
+    listenerKeys.forEach(unlistenByKey);
+    listenerKeys = null;
+  }
+}
 
 export default ImageWrapper;
