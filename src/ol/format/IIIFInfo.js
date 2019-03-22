@@ -70,6 +70,9 @@ const IIIF_PROFILE_VALUES = {
   }
 };
 
+/**
+ * @enum {string}
+ */
 export const Versions = {
   VERSION1: 'version1',
   VERSION2: 'version2',
