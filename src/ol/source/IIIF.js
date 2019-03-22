@@ -238,8 +238,8 @@ class IIIF extends TileImage {
       tileClass: IiifTileClass,
       tileGrid: tileGrid,
       tilePixelRatio: options.tilePixelRatio,
-      tileUrlFunction: tileUrlFunction
-      transition: options.transition,
+      tileUrlFunction: tileUrlFunction,
+      transition: options.transition
     });
 
   }

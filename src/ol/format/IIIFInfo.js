@@ -2,6 +2,8 @@
  * @module ol/format/IIIFInfo
  */
 
+import {assert} from '../asserts.js';
+
 /**
  * Supported image formats, qualities and supported region / size calculation features
  * for different image API versions and compliance levels
