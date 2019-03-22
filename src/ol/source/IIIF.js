@@ -16,24 +16,29 @@ import TileImage from './TileImage.js';
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize]
  * @property {null|string} [crossOrigin]
+ * @property {import("../extent.js").Extent} [extent=[0, -height, width, 0]]
+ * @property {string} [format='jpg'] Requested image format.
  * @property {import("../proj.js").ProjectionLike} [projection]
- * @property {number} [tilePixelRatio]
- * @property {number} [reprojectionErrorThreshold=0.5]
- * @property {string} [url] Base URL of the IIIF Image service.
- * This shoulf be the same as the IIIF Image @id.
+ * @property {string} [quality] Requested IIIF image quality. Default is 'native'
+ * for version 1, 'default' for versions 2 and 3.
+ * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
+ * Higher values can increase reprojection performance, but decrease precision.
  * @property {import("../size.js").Size} [size] Size of the image [width, height].
  * @property {import("../size.js").Size[]} [sizes] Supported scaled image sizes.
  * Content of the IIIF info.json 'sizes' property, but as array of Size objects.
- * @property {import("../extent.js").Extent} [extent=[0, -height, width, 0]]
+ * @property {import("./State.js").default} [state] Source state.
  * @property {Array<string>} [supports=[]] Supported IIIF region and size calculation
  * features.
- * @property {number} [transition]
+ * @property {number} [tilePixelRatio]
  * @property {number|import("../size.js").Size} [tileSize] Tile size.
  * Same tile size is used for all zoom levels. If tile size is a number,
  * a square tile is assumed. If the IIIF image service supports arbitrary
  * tiling (sizeByH, sizeByW or sizeByPct as well as regionByPx and regionByPct
  * are supported), the default tilesize is 256.
- * @property {boolean} [wrapX=false]
+ * @property {number} [transition]
+ * @property {string} [url] Base URL of the IIIF Image service.
+ * This shoulf be the same as the IIIF Image @id.
+ * @property {Versions} [version=Versions.VERSION2] Service's IIIF Image API version.
  */
 
 function formatPercentage(percentage) {
@@ -42,7 +47,7 @@ function formatPercentage(percentage) {
 
 /**
  * @classdesc
- * Layer source for tile data in IIIF format.
+ * Layer source for IIIF Image API services.
  * @api
  */
 class IIIF extends TileImage {
@@ -227,16 +232,14 @@ class IIIF extends TileImage {
       attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
-      opaque: options.opaque,
       projection: options.projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       state: options.state,
       tileClass: IiifTileClass,
-      transition: options.transition,
-      wrapX: options.wrapX !== undefined ? options.wrapX : false,
       tileGrid: tileGrid,
       tilePixelRatio: options.tilePixelRatio,
       tileUrlFunction: tileUrlFunction
+      transition: options.transition,
     });
 
   }
