@@ -39,6 +39,10 @@ import TileImage from './TileImage.js';
  * @property {string} [url] Base URL of the IIIF Image service.
  * This shoulf be the same as the IIIF Image @id.
  * @property {Versions} [version=Versions.VERSION2] Service's IIIF Image API version.
+ * @property {number} [zDirection] Indicate which resolution should be used
+ * by a renderer if the views resolution does not match any resolution of the tile source.
+ * If 0, the nearest resolution will be used. If 1, the nearest lower resolution
+ * will be used. If -1, the nearest higher resolution will be used.
  */
 
 function formatPercentage(percentage) {
@@ -241,6 +245,11 @@ class IIIF extends TileImage {
       tileUrlFunction: tileUrlFunction,
       transition: options.transition
     });
+
+    /**
+     * @inheritDoc
+     */
+    this.zDirection = options.zDirection;
 
   }
 

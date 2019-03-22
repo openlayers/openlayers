@@ -21,6 +21,7 @@ function refreshMap(imageInfoUrl) {
         return;
       }
       const extent = [0, -options.size[1], options.size[0], 0];
+      options.zDirection = -1;
       layer.setSource(new IIIF(options));
       map.setView(new View({
         resolutions: layer.getSource().getTileGrid().getResolutions(),
