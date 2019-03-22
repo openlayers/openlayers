@@ -120,6 +120,7 @@ import {createMinMaxResolution} from './resolutionconstraint';
  * resolution constraint. It is used together with `maxZoom` (or
  * `minResolution`) and `zoomFactor`.  Note that if `maxResolution` is also
  * provided, it is given precedence over `minZoom`.
+ * @property {boolean} [multiWorld=false] No more than one world is visible.
  * @property {boolean} [constrainResolution=false] If true, the view will always
  * animate to the closest zoom level after an interaction; false means
  * intermediary zoom levels are allowed.
@@ -1435,6 +1436,9 @@ export function createResolutionConstraint(options) {
   const zoomFactor = options.zoomFactor !== undefined ?
     options.zoomFactor : defaultZoomFactor;
 
+  const multiWorld = options.multiWorld !== undefined ?
+    options.multiWorld : false;
+
   const smooth =
       options.smoothResolutionConstraint !== undefined ? options.smoothResolutionConstraint : true;
 
@@ -1499,8 +1503,14 @@ export function createResolutionConstraint(options) {
         zoomFactor, maxResolution, minResolution, smooth,
         !options.constrainOnlyCenter && options.extent);
     } else {
+      let constrainOnlyCenter = options.constrainOnlyCenter;
+      let extent = options.extent;
+      if (!multiWorld && !extent && projection.isGlobal()) {
+        constrainOnlyCenter = false;
+        extent = projection.getExtent();
+      }
       resolutionConstraint = createMinMaxResolution(maxResolution, minResolution, smooth,
-        !options.constrainOnlyCenter && options.extent);
+        !constrainOnlyCenter && extent);
     }
   }
   return {constraint: resolutionConstraint, maxResolution: maxResolution,

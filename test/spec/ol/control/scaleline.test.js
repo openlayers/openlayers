@@ -146,6 +146,7 @@ describe('ol.control.ScaleLine', function() {
       ctrl.setMap(map);
       map.setView(new View({
         center: [0, 0],
+        multiWorld: true,
         zoom: 0
       }));
       map.renderSync();
@@ -176,6 +177,7 @@ describe('ol.control.ScaleLine', function() {
       const ctrl = new ScaleLine();
       map.setView(new View({
         center: [0, 0],
+        multiWorld: true,
         zoom: 0
       }));
       ctrl.setMap(map);
@@ -277,6 +279,7 @@ describe('ol.control.ScaleLine', function() {
       expect(ctrl.element.innerText).to.be('2000 km');
       map.setView(new View({
         center: [7, 52],
+        multiWorld: true,
         zoom: 2,
         projection: 'EPSG:4326'
       }));
@@ -380,6 +383,7 @@ describe('ol.control.ScaleLine', function() {
       ctrl.setMap(map);
       map.setView(new View({
         center: [0, 0],
+        multiWorld: true,
         zoom: 0, /* min zoom */
         projection: 'EPSG:4326'
       }));
@@ -417,7 +421,8 @@ describe('ol.control.ScaleLine', function() {
       map.setView(new View({
         center: [7, 0],
         zoom: 2,
-        projection: 'EPSG:4326'
+        projection: 'EPSG:4326',
+        multiWorld: true
       }));
       map.renderSync();
       const innerHtml0 = ctrl.element.innerHTML;
@@ -467,7 +472,8 @@ describe('ol.control.ScaleLine', function() {
       map.setView(new View({
         center: [0, 0],
         zoom: currentZoom,
-        maxZoom: currentZoom
+        maxZoom: currentZoom,
+        multiWorld: true
       }));
       mapView = map.getView();
       map.renderSync();

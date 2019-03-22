@@ -145,18 +145,20 @@ describe('ol.View', function() {
     describe('create resolution constraint', function() {
 
       describe('with no options', function() {
+        const size = [200, 200];
         it('gives a correct resolution constraint function', function() {
           const options = {};
           const fn = createResolutionConstraint(options).constraint;
-          expect(fn(156543.03392804097, 0, 0))
+          expect(fn(156543.03392804097, 0, size))
             .to.roughlyEqual(156543.03392804097, 1e-9);
-          expect(fn(78271.51696402048, 0, 0))
+          expect(fn(78271.51696402048, 0, size))
             .to.roughlyEqual(78271.51696402048, 1e-10);
         });
       });
 
       describe('with maxResolution, maxZoom, and zoomFactor options',
         function() {
+          const size = [200, 200];
           it('gives a correct resolution constraint function', function() {
             const options = {
               maxResolution: 81,
@@ -169,16 +171,17 @@ describe('ol.View', function() {
             const minResolution = info.minResolution;
             expect(minResolution).to.eql(3);
             const fn = info.constraint;
-            expect(fn(82, 0, 0)).to.eql(81);
-            expect(fn(81, 0, 0)).to.eql(81);
-            expect(fn(27, 0, 0)).to.eql(27);
-            expect(fn(9, 0, 0)).to.eql(9);
-            expect(fn(3, 0, 0)).to.eql(3);
-            expect(fn(2, 0, 0)).to.eql(3);
+            expect(fn(82, 0, size)).to.eql(81);
+            expect(fn(81, 0, size)).to.eql(81);
+            expect(fn(27, 0, size)).to.eql(27);
+            expect(fn(9, 0, size)).to.eql(9);
+            expect(fn(3, 0, size)).to.eql(3);
+            expect(fn(2, 0, size)).to.eql(3);
           });
         });
 
       describe('with resolutions', function() {
+        const size = [200, 200];
         it('gives a correct resolution constraint function', function() {
           const options = {
             resolutions: [97, 76, 65, 54, 0.45]
@@ -189,17 +192,18 @@ describe('ol.View', function() {
           const minResolution = info.minResolution;
           expect(minResolution).to.eql(0.45);
           const fn = info.constraint;
-          expect(fn(97, 0, 0)).to.eql(97);
-          expect(fn(76, 0, 0)).to.eql(76);
-          expect(fn(65, 0, 0)).to.eql(65);
-          expect(fn(54, 0, 0)).to.eql(54);
-          expect(fn(0.45, 0, 0)).to.eql(0.45);
+          expect(fn(97, 0, size)).to.eql(97);
+          expect(fn(76, 0, size)).to.eql(76);
+          expect(fn(65, 0, size)).to.eql(65);
+          expect(fn(54, 0, size)).to.eql(54);
+          expect(fn(0.45, 0, size)).to.eql(0.45);
         });
       });
 
       describe('with zoom related options', function() {
 
         const defaultMaxRes = 156543.03392804097;
+        const size = [200, 200];
         function getConstraint(options) {
           return createResolutionConstraint(options).constraint;
         }
@@ -210,10 +214,10 @@ describe('ol.View', function() {
             maxZoom: maxZoom
           });
 
-          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes, 1e-9);
 
-          expect(constraint(0, 0, 0)).to.roughlyEqual(
+          expect(constraint(0, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, maxZoom), 1e-9);
         });
 
@@ -223,10 +227,10 @@ describe('ol.View', function() {
             minZoom: minZoom
           });
 
-          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, minZoom), 1e-9);
 
-          expect(constraint(0, 0, 0)).to.roughlyEqual(
+          expect(constraint(0, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, 28), 1e-9);
         });
 
@@ -238,10 +242,10 @@ describe('ol.View', function() {
             maxZoom: maxZoom
           });
 
-          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, minZoom), 1e-9);
 
-          expect(constraint(0, 0, 0)).to.roughlyEqual(
+          expect(constraint(0, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(2, maxZoom), 1e-9);
         });
 
@@ -255,10 +259,10 @@ describe('ol.View', function() {
             zoomFactor: zoomFactor
           });
 
-          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(zoomFactor, minZoom), 1e-9);
 
-          expect(constraint(0, 0, 0)).to.roughlyEqual(
+          expect(constraint(0, 0, size)).to.roughlyEqual(
             defaultMaxRes / Math.pow(zoomFactor, maxZoom), 1e-9);
         });
 
@@ -267,6 +271,7 @@ describe('ol.View', function() {
       describe('with resolution related options', function() {
 
         const defaultMaxRes = 156543.03392804097;
+        const size = [200, 200];
         function getConstraint(options) {
           return createResolutionConstraint(options).constraint;
         }
@@ -274,13 +279,14 @@ describe('ol.View', function() {
         it('works with only maxResolution', function() {
           const maxResolution = 10e6;
           const constraint = getConstraint({
+            multiWorld: true,
             maxResolution: maxResolution
           });
 
-          expect(constraint(maxResolution * 3, 0, 0)).to.roughlyEqual(
+          expect(constraint(maxResolution * 3, 0, size)).to.roughlyEqual(
             maxResolution, 1e-9);
 
-          const minResolution = constraint(0, 0, 0);
+          const minResolution = constraint(0, 0, size);
           const defaultMinRes = defaultMaxRes / Math.pow(2, 28);
 
           expect(minResolution).to.be.greaterThan(defaultMinRes);
@@ -293,10 +299,10 @@ describe('ol.View', function() {
             minResolution: minResolution
           });
 
-          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes, 1e-9);
 
-          const constrainedMinRes = constraint(0, 0, 0);
+          const constrainedMinRes = constraint(0, 0, size);
           expect(constrainedMinRes).to.be.greaterThan(minResolution);
           expect(constrainedMinRes / minResolution).to.be.lessThan(2);
         });
@@ -308,13 +314,13 @@ describe('ol.View', function() {
             constrainResolution: true
           });
 
-          expect(constraint(600, 0, 0)).to.be(500);
-          expect(constraint(500, 0, 0)).to.be(500);
-          expect(constraint(400, 0, 0)).to.be(500);
-          expect(constraint(300, 0, 0)).to.be(250);
-          expect(constraint(200, 0, 0)).to.be(250);
-          expect(constraint(100, 0, 0)).to.be(125);
-          expect(constraint(0, 0, 0)).to.be(125);
+          expect(constraint(600, 0, size)).to.be(500);
+          expect(constraint(500, 0, size)).to.be(500);
+          expect(constraint(400, 0, size)).to.be(500);
+          expect(constraint(300, 0, size)).to.be(250);
+          expect(constraint(200, 0, size)).to.be(250);
+          expect(constraint(100, 0, size)).to.be(125);
+          expect(constraint(0, 0, size)).to.be(125);
         });
 
         it('accepts minResolution, maxResolution, and zoomFactor', function() {
@@ -325,12 +331,12 @@ describe('ol.View', function() {
             constrainResolution: true
           });
 
-          expect(constraint(1000, 0, 0)).to.be(500);
-          expect(constraint(500, 0, 0)).to.be(500);
-          expect(constraint(100, 0, 0)).to.be(50);
-          expect(constraint(50, 0, 0)).to.be(50);
-          expect(constraint(10, 0, 0)).to.be(5);
-          expect(constraint(1, 0, 0)).to.be(5);
+          expect(constraint(1000, 0, size)).to.be(500);
+          expect(constraint(500, 0, size)).to.be(500);
+          expect(constraint(100, 0, size)).to.be(50);
+          expect(constraint(50, 0, size)).to.be(50);
+          expect(constraint(10, 0, size)).to.be(5);
+          expect(constraint(1, 0, size)).to.be(5);
         });
 
       });
@@ -338,6 +344,7 @@ describe('ol.View', function() {
       describe('overspecified options (prefers resolution)', function() {
 
         const defaultMaxRes = 156543.03392804097;
+        const size = [200, 200];
         function getConstraint(options) {
           return createResolutionConstraint(options).constraint;
         }
@@ -346,14 +353,15 @@ describe('ol.View', function() {
           const maxResolution = 10e6;
           const minZoom = 8;
           const constraint = getConstraint({
+            multiWorld: true,
             maxResolution: maxResolution,
             minZoom: minZoom
           });
 
-          expect(constraint(maxResolution * 3, 0, 0)).to.roughlyEqual(
+          expect(constraint(maxResolution * 3, 0, size)).to.roughlyEqual(
             maxResolution, 1e-9);
 
-          const minResolution = constraint(0, 0, 0);
+          const minResolution = constraint(0, 0, size);
           const defaultMinRes = defaultMaxRes / Math.pow(2, 28);
 
           expect(minResolution).to.be.greaterThan(defaultMinRes);
@@ -368,14 +376,35 @@ describe('ol.View', function() {
             maxZoom: maxZoom
           });
 
-          expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
+          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
             defaultMaxRes, 1e-9);
 
-          const constrainedMinRes = constraint(0, 0, 0);
+          const constrainedMinRes = constraint(0, 0, size);
           expect(constrainedMinRes).to.be.greaterThan(minResolution);
           expect(constrainedMinRes / minResolution).to.be.lessThan(2);
         });
 
+      });
+
+      describe('Map views that show more than one world', function() {
+
+        const defaultMaxRes = 156543.03392804097;
+        const size = [512, 512];
+        function getConstraint(options) {
+          return createResolutionConstraint(options).constraint;
+        }
+
+        it('are disabled by default', function() {
+          const fn = getConstraint({});
+          expect(fn(defaultMaxRes, 0, size)).to.be(defaultMaxRes / 2);
+        });
+
+        it('can be enabled by setting multiWorld to truet', function() {
+          const fn = getConstraint({
+            multiWorld: true
+          });
+          expect(fn(defaultMaxRes, 0, size)).to.be(defaultMaxRes);
+        });
       });
 
     });
