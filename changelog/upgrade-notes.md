@@ -12,7 +12,7 @@ target values are provided and constraints are applied on these to determine the
 
 ##### Removal of the `constrainResolution` option on `View.fit`, `PinchZoom`, `MouseWheelZoom` and `ol/interaction.js`
 
-The `constrainResolution` option is now only supported by the `View` class. A `View.setResolutionConstrained` method was added as well.
+The `constrainResolution` option is now only supported by the `View` class. A `View.setConstrainResolution` method was added as well.
 
 Generally, the responsibility of applying center/rotation/resolutions constraints was moved from interactions and controls to the `View` class.
 
