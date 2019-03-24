@@ -313,6 +313,7 @@ if (require.main === module) {
   const options = yargs.
     option('fix', {
       describe: 'Accept all screenshots as accepted',
+      type: 'boolean',
       default: false
     }).
     option('host', {
