@@ -375,16 +375,12 @@ class View extends BaseObject {
     if (options.resolution !== undefined) {
       this.setResolution(options.resolution);
     } else if (options.zoom !== undefined) {
-      if (this.resolutions_) { // in case map zoom is out of min/max zoom range
-        const resolution = this.getResolutionForZoom(options.zoom);
-        this.setResolution(clamp(resolution,
-          this.minResolution_, this.maxResolution_));
-      } else {
-        this.setZoom(options.zoom);
-      }
+      this.setZoom(options.zoom);
     }
+    this.resolveConstraints_(0);
 
     this.setProperties(properties);
+
 
     /**
      * @private
@@ -1283,6 +1279,8 @@ class View extends BaseObject {
   /**
    * If any constraints need to be applied, an animation will be triggered.
    * This is typically done on interaction end.
+   * Note: calling this with a duration of 0 will apply the constrained values straight away,
+   * without animation.
    * @param {number=} opt_duration The animation duration in ms.
    * @param {number=} opt_resolutionDirection Which direction to zoom.
    * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
@@ -1296,6 +1294,14 @@ class View extends BaseObject {
     const size = this.getSizeFromViewport_(newRotation);
     const newResolution = this.constraints_.resolution(this.targetResolution_, direction, size);
     const newCenter = this.constraints_.center(this.targetCenter_, newResolution, size);
+
+    if (duration === 0) {
+      this.targetResolution_ = newResolution;
+      this.targetRotation_ = newRotation;
+      this.targetCenter_ = newCenter;
+      this.applyTargetState_();
+      return;
+    }
 
     if (this.getResolution() !== newResolution ||
       this.getRotation() !== newRotation ||
