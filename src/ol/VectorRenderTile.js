@@ -12,8 +12,10 @@ import {createCanvasContext2D} from './dom.js';
  * @property {boolean} dirty
  * @property {null|import("./render.js").OrderFunction} renderedRenderOrder
  * @property {number} renderedTileRevision
+ * @property {number} renderedResolution
  * @property {number} renderedRevision
  * @property {number} renderedZ
+ * @property {number} renderedTileResolution
  * @property {number} renderedTileZ
  */
 
@@ -63,6 +65,11 @@ class VectorRenderTile extends Tile {
      * @type {!Object<string, ReplayState>}
      */
     this.replayState_ = {};
+
+    /**
+     * @type {number}
+     */
+    this.wantedResolution;
 
     /**
      * @type {!function(import("./VectorRenderTile.js").default):Array<import("./VectorTile.js").default>}
@@ -156,7 +163,9 @@ class VectorRenderTile extends Tile {
       this.replayState_[key] = {
         dirty: false,
         renderedRenderOrder: null,
+        renderedResolution: NaN,
         renderedRevision: -1,
+        renderedTileResolution: NaN,
         renderedTileRevision: -1,
         renderedZ: -1,
         renderedTileZ: -1
@@ -167,10 +176,9 @@ class VectorRenderTile extends Tile {
 
   /**
    * @inheritDoc
-   * @return {Array<import("./VectorTile.js").default>} Source tiles for this tile.
    */
   load() {
-    return this.getSourceTiles_(this);
+    this.getSourceTiles_(this);
   }
 }
 
