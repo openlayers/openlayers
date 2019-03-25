@@ -28,6 +28,71 @@ describe('ol.View', function() {
 
   });
 
+  describe('parameter initialization with resolution/zoom constraints', function() {
+    it('correctly handles max resolution constraint', function() {
+      const view = new View({
+        maxResolution: 1000,
+        resolution: 1200
+      });
+      expect(view.getResolution()).to.eql(1000);
+      expect(view.targetResolution_).to.eql(1000);
+    });
+
+    it('correctly handles min resolution constraint', function() {
+      const view = new View({
+        maxResolution: 1024,
+        minResolution: 128,
+        resolution: 50
+      });
+      expect(view.getResolution()).to.eql(128);
+      expect(view.targetResolution_).to.eql(128);
+    });
+
+    it('correctly handles resolutions array constraint', function() {
+      let view = new View({
+        resolutions: [1024, 512, 256, 128, 64, 32],
+        resolution: 1200
+      });
+      expect(view.getResolution()).to.eql(1024);
+      expect(view.targetResolution_).to.eql(1024);
+
+      view = new View({
+        resolutions: [1024, 512, 256, 128, 64, 32],
+        resolution: 10
+      });
+      expect(view.getResolution()).to.eql(32);
+      expect(view.targetResolution_).to.eql(32);
+    });
+
+    it('correctly handles min zoom constraint', function() {
+      const view = new View({
+        minZoom: 3,
+        zoom: 2
+      });
+      expect(view.getZoom()).to.eql(3);
+      expect(view.targetResolution_).to.eql(view.getMaxResolution());
+    });
+
+    it('correctly handles max zoom constraint', function() {
+      const view = new View({
+        maxZoom: 4,
+        zoom: 5
+      });
+      expect(view.getZoom()).to.eql(4);
+      expect(view.targetResolution_).to.eql(view.getMaxResolution() / Math.pow(2, 4));
+    });
+
+    it('correctly handles extent constraint', function() {
+      // default viewport size is 100x100
+      const view = new View({
+        extent: [0, 0, 50, 50],
+        resolution: 1
+      });
+      expect(view.getResolution()).to.eql(0.5);
+      expect(view.targetResolution_).to.eql(0.5);
+    });
+  });
+
   describe('create constraints', function() {
 
     describe('create center constraint', function() {
