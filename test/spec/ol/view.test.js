@@ -1053,8 +1053,7 @@ describe('ol.View', function() {
     let view;
     beforeEach(function() {
       view = new View({
-        resolutions: [1024, 512, 256, 128, 64, 32, 16, 8],
-        smoothResolutionConstraint: false
+        resolutions: [1024, 512, 256, 128, 64, 32, 16, 8]
       });
     });
 
@@ -1086,8 +1085,7 @@ describe('ol.View', function() {
 
     it('works for resolution arrays with variable zoom factors', function() {
       const view = new View({
-        resolutions: [10, 5, 2, 1],
-        smoothResolutionConstraint: false
+        resolutions: [10, 5, 2, 1]
       });
 
       view.setZoom(1);
@@ -1112,8 +1110,7 @@ describe('ol.View', function() {
     it('returns correct zoom levels', function() {
       const view = new View({
         minZoom: 10,
-        maxZoom: 20,
-        smoothResolutionConstraint: false
+        maxZoom: 20
       });
 
       view.setZoom(5);
@@ -1189,9 +1186,7 @@ describe('ol.View', function() {
   describe('#getResolutionForZoom', function() {
 
     it('returns correct zoom resolution', function() {
-      const view = new View({
-        smoothResolutionConstraint: false
-      });
+      const view = new View();
       const max = view.getMaxZoom();
       const min = view.getMinZoom();
 
