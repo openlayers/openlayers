@@ -20,7 +20,7 @@ feature = new Feature({
 feature.setStyle(new Style({
   text: new Text({
     text: 'hello',
-    font: '14px sans-serif',
+    font: '12px Ubuntu',
     scale: 2,
     fill: new Fill({
       color: 'red'
@@ -39,7 +39,7 @@ feature = new Feature({
 feature.setStyle(new Style({
   text: new Text({
     text: 'upside down',
-    font: '14px sans-serif',
+    font: '12px Ubuntu',
     rotation: Math.PI,
     stroke: new Stroke({
       color: 'red',
@@ -55,6 +55,7 @@ feature = new Feature({
 });
 feature.setStyle(new Style({
   text: new Text({
+    font: 'Ubuntu',
     text: 'rotateWithView',
     rotateWithView: true,
     stroke: new Stroke({
@@ -71,7 +72,7 @@ feature = new Feature({
 feature.setStyle(new Style({
   text: new Text({
     text: 'hello',
-    font: '14px sans-serif',
+    font: '12px Ubuntu',
     padding: [1, 2, 3, 5],
     backgroundFill: new Fill({
       color: 'rgba(55, 55, 55, 0.25)'
@@ -91,7 +92,7 @@ feature = new Feature({
 feature.setStyle(new Style({
   text: new Text({
     text: 'hello',
-    font: '14px sans-serif',
+    font: '12px Ubuntu',
     padding: [1, 2, 3, 5],
     backgroundFill: new Fill({
       color: 'rgba(55, 55, 55, 0.25)'
