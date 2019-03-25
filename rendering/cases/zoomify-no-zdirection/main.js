@@ -16,7 +16,6 @@ new Map({
   target: 'map',
   view: new View({
     resolutions: [2, 1],
-    extent: [0, -200, 200, 0],
     center: [100, -100],
     zoom: 0.4
   })
