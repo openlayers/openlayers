@@ -964,6 +964,10 @@ class PluggableMap extends BaseObject {
    * @private
    */
   handleSizeChanged_() {
+    if (this.getView()) {
+      this.getView().resolveConstraints(0);
+    }
+
     this.render();
   }
 
@@ -1051,6 +1055,8 @@ class PluggableMap extends BaseObject {
       this.viewChangeListenerKey_ = listen(
         view, EventType.CHANGE,
         this.handleViewPropertyChanged_, this);
+
+      view.resolveConstraints(0);
     }
     this.render();
   }

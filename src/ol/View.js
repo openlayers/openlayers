@@ -377,7 +377,7 @@ class View extends BaseObject {
     } else if (options.zoom !== undefined) {
       this.setZoom(options.zoom);
     }
-    this.resolveConstraints_(0);
+    this.resolveConstraints(0);
 
     this.setProperties(properties);
 
@@ -644,7 +644,7 @@ class View extends BaseObject {
     }
 
     if (!this.getAnimating()) {
-      setTimeout(this.resolveConstraints_.bind(this), 0);
+      setTimeout(this.resolveConstraints.bind(this), 0);
     }
   }
 
@@ -1284,9 +1284,8 @@ class View extends BaseObject {
    * @param {number=} opt_duration The animation duration in ms.
    * @param {number=} opt_resolutionDirection Which direction to zoom.
    * @param {import("./coordinate.js").Coordinate=} opt_anchor The origin of the transformation.
-   * @private
    */
-  resolveConstraints_(opt_duration, opt_resolutionDirection, opt_anchor) {
+  resolveConstraints(opt_duration, opt_resolutionDirection, opt_anchor) {
     const duration = opt_duration !== undefined ? opt_duration : 200;
     const direction = opt_resolutionDirection || 0;
 
@@ -1342,7 +1341,7 @@ class View extends BaseObject {
   endInteraction(opt_duration, opt_resolutionDirection, opt_anchor) {
     this.setHint(ViewHint.INTERACTING, -1);
 
-    this.resolveConstraints_(opt_duration, opt_resolutionDirection, opt_anchor);
+    this.resolveConstraints(opt_duration, opt_resolutionDirection, opt_anchor);
   }
 
   /**
