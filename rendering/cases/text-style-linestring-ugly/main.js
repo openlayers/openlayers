@@ -20,7 +20,7 @@ feature1.setStyle(new Style({
   stroke: new Stroke({color: 'blue'}),
   text: new Text({
     text: 'Hello world',
-    font: '"Ubuntu Regular"',
+    font: '10px Ubuntu',
     placement: 'line',
     overflow: true
   })
@@ -38,7 +38,7 @@ feature2.setStyle(new Style({
     textBaseline: 'bottom',
     textAlign: 'right',
     placement: 'line',
-    font: 'bold italic 0.8em "Ubuntu Regular"',
+    font: 'italic bold 0.5em Ubuntu',
     overflow: true
   })
 }));
@@ -53,7 +53,6 @@ feature3.setStyle(new Style({
     text: 'Set properties'
   })
 }));
-feature3.getStyle().getText().setFont('bold italic 1.2em monospace');
 feature3.getStyle().getText().setTextAlign('left');
 feature3.getStyle().getText().setOffsetX(10);
 feature3.getStyle().getText().setOffsetY(-10);
@@ -73,7 +72,7 @@ feature4.setStyle(new Style({
   stroke: new Stroke({color: 'red'}),
   text: new Text({
     text: 'PLEASE OMIT ME IM UGLY',
-    font: '"Ubuntu Regular"',
+    font: '10px Ubuntu',
     offsetX: -10,
     textAlign: 'start',
     textBaseline: 'top',
@@ -90,7 +89,7 @@ feature5.setStyle(new Style({
   stroke: new Stroke({color: 'blue'}),
   text: new Text({
     text: 'Small text',
-    font: '"Ubuntu Regular"',
+    font: '10px Ubuntu',
     offsetY: 5,
     scale: 0.7,
     rotation: 4,
@@ -109,7 +108,7 @@ feature6.setStyle(new Style({
   stroke: new Stroke({color: 'blue'}),
   text: new Text({
     text: 'FILL AND STROKE',
-    font: '"Ubuntu Regular"',
+    font: '10px Ubuntu',
     placement: 'line',
     overflow: true,
     fill: new Fill({color: '#FFC0CB'}),

@@ -4,9 +4,6 @@ import View from '../../../src/ol/View.js';
 import VectorSource from '../../../src/ol/source/Vector.js';
 import Style from '../../../src/ol/style/Style.js';
 import Stroke from '../../../src/ol/style/Stroke.js';
-// import Polygon from '../../../src/ol/geom/Polygon.js';
-// import Circle from '../../../src/ol/geom/Circle.js';
-// import LineString from '../../../src/ol/geom/LineString.js';
 import VectorImageLayer from '../../../src/ol/layer/VectorImage.js';
 import CircleStyle from '../../../src/ol/style/Circle.js';
 import Point from '../../../src/ol/geom/Point.js';
@@ -28,7 +25,7 @@ const vectorLayer1 = new VectorImageLayer({
       }),
       text: new Text({
         text: feature.get('text'),
-        font: '16px "Ubuntu Regular"'
+        font: '16px Ubuntu'
       })
     });
   }
@@ -60,12 +57,13 @@ line.setStyle(new Style({
   text: new Text({
     placement: 'line',
     text: 'east-west',
-    font: '16px "Ubuntu Regular"'
+    font: '16px Ubuntu'
   })
 }));
 source.addFeature(line);
 
 const map = new Map({
+  pixelRatio: 1,
   layers: [
     vectorLayer1
   ],
@@ -78,4 +76,4 @@ const map = new Map({
 
 map.getView().fit(source.getExtent());
 
-render({tolerance: 0.005});
+render({tolerance: 0.02});
