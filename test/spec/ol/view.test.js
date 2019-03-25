@@ -28,6 +28,71 @@ describe('ol.View', function() {
 
   });
 
+  describe('parameter initialization with resolution/zoom constraints', function() {
+    it('correctly handles max resolution constraint', function() {
+      const view = new View({
+        maxResolution: 1000,
+        resolution: 1200
+      });
+      expect(view.getResolution()).to.eql(1000);
+      expect(view.targetResolution_).to.eql(1000);
+    });
+
+    it('correctly handles min resolution constraint', function() {
+      const view = new View({
+        maxResolution: 1024,
+        minResolution: 128,
+        resolution: 50
+      });
+      expect(view.getResolution()).to.eql(128);
+      expect(view.targetResolution_).to.eql(128);
+    });
+
+    it('correctly handles resolutions array constraint', function() {
+      let view = new View({
+        resolutions: [1024, 512, 256, 128, 64, 32],
+        resolution: 1200
+      });
+      expect(view.getResolution()).to.eql(1024);
+      expect(view.targetResolution_).to.eql(1024);
+
+      view = new View({
+        resolutions: [1024, 512, 256, 128, 64, 32],
+        resolution: 10
+      });
+      expect(view.getResolution()).to.eql(32);
+      expect(view.targetResolution_).to.eql(32);
+    });
+
+    it('correctly handles min zoom constraint', function() {
+      const view = new View({
+        minZoom: 3,
+        zoom: 2
+      });
+      expect(view.getZoom()).to.eql(3);
+      expect(view.targetResolution_).to.eql(view.getMaxResolution());
+    });
+
+    it('correctly handles max zoom constraint', function() {
+      const view = new View({
+        maxZoom: 4,
+        zoom: 5
+      });
+      expect(view.getZoom()).to.eql(4);
+      expect(view.targetResolution_).to.eql(view.getMaxResolution() / Math.pow(2, 4));
+    });
+
+    it('correctly handles extent constraint', function() {
+      // default viewport size is 100x100
+      const view = new View({
+        extent: [0, 0, 50, 50],
+        resolution: 1
+      });
+      expect(view.getResolution()).to.eql(0.5);
+      expect(view.targetResolution_).to.eql(0.5);
+    });
+  });
+
   describe('create constraints', function() {
 
     describe('create center constraint', function() {
@@ -988,8 +1053,7 @@ describe('ol.View', function() {
     let view;
     beforeEach(function() {
       view = new View({
-        resolutions: [1024, 512, 256, 128, 64, 32, 16, 8],
-        smoothResolutionConstraint: false
+        resolutions: [1024, 512, 256, 128, 64, 32, 16, 8]
       });
     });
 
@@ -1021,8 +1085,7 @@ describe('ol.View', function() {
 
     it('works for resolution arrays with variable zoom factors', function() {
       const view = new View({
-        resolutions: [10, 5, 2, 1],
-        smoothResolutionConstraint: false
+        resolutions: [10, 5, 2, 1]
       });
 
       view.setZoom(1);
@@ -1047,8 +1110,7 @@ describe('ol.View', function() {
     it('returns correct zoom levels', function() {
       const view = new View({
         minZoom: 10,
-        maxZoom: 20,
-        smoothResolutionConstraint: false
+        maxZoom: 20
       });
 
       view.setZoom(5);
@@ -1124,9 +1186,7 @@ describe('ol.View', function() {
   describe('#getResolutionForZoom', function() {
 
     it('returns correct zoom resolution', function() {
-      const view = new View({
-        smoothResolutionConstraint: false
-      });
+      const view = new View();
       const max = view.getMaxZoom();
       const min = view.getMinZoom();
 
