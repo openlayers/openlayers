@@ -62,7 +62,7 @@ const MIN_RATIO = 0.1;
  *
  * @api
  */
-class OverviewMap extends Control {
+class OverviewMapControl extends Control {
 
   /**
    * @param {Options=} opt_options OverviewMap options.
@@ -565,7 +565,7 @@ class OverviewMap extends Control {
 /**
  * Update the overview map element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {OverviewMap}
+ * @this {OverviewMapControl}
  * @api
  */
 export function render(mapEvent) {
@@ -574,4 +574,4 @@ export function render(mapEvent) {
 }
 
 
-export default OverviewMap;
+export default OverviewMapControl;

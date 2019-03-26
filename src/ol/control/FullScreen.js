@@ -40,7 +40,7 @@ const events = ['fullscreenchange', 'webkitfullscreenchange', 'MSFullscreenChang
  *
  * @api
  */
-class FullScreen extends Control {
+class FullScreenControl extends Control {
 
   /**
    * @param {Options=} opt_options Options.
@@ -262,4 +262,4 @@ function exitFullScreen() {
   }
 }
 
-export default FullScreen;
+export default FullScreenControl;

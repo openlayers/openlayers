@@ -49,7 +49,7 @@ const COORDINATE_FORMAT = 'coordinateFormat';
  *
  * @api
  */
-class MousePosition extends Control {
+class MousePositionControl extends Control {
 
   /**
    * @param {Options=} opt_options Mouse position options.
@@ -252,7 +252,7 @@ class MousePosition extends Control {
  * Update the projection. Rendering of the coordinates is done in
  * `handleMouseMove` and `handleMouseUp`.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {MousePosition}
+ * @this {MousePositionControl}
  * @api
  */
 export function render(mapEvent) {
@@ -268,4 +268,4 @@ export function render(mapEvent) {
 }
 
 
-export default MousePosition;
+export default MousePositionControl;

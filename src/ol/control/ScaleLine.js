@@ -67,7 +67,7 @@ const LEADING_DIGITS = [1, 2, 5];
  *
  * @api
  */
-class ScaleLine extends Control {
+class ScaleLineControl extends Control {
 
   /**
    * @param {Options=} opt_options Scale line options.
@@ -420,7 +420,7 @@ class ScaleLine extends Control {
 /**
  * Update the scale line element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {ScaleLine}
+ * @this {ScaleLineControl}
  * @api
  */
 export function render(mapEvent) {
@@ -434,4 +434,4 @@ export function render(mapEvent) {
 }
 
 
-export default ScaleLine;
+export default ScaleLineControl;

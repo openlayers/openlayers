@@ -2,9 +2,9 @@
  * @module ol/control/util
  */
 import Collection from '../Collection.js';
-import Attribution from './Attribution.js';
-import Rotate from './Rotate.js';
-import Zoom from './Zoom.js';
+import AttributionControl from './Attribution.js';
+import RotateControl from './Rotate.js';
+import ZoomControl from './Zoom.js';
 
 
 /**
@@ -47,18 +47,18 @@ export function defaults(opt_options) {
 
   const zoomControl = options.zoom !== undefined ? options.zoom : true;
   if (zoomControl) {
-    controls.push(new Zoom(options.zoomOptions));
+    controls.push(new ZoomControl(options.zoomOptions));
   }
 
   const rotateControl = options.rotate !== undefined ? options.rotate : true;
   if (rotateControl) {
-    controls.push(new Rotate(options.rotateOptions));
+    controls.push(new RotateControl(options.rotateOptions));
   }
 
   const attributionControl = options.attribution !== undefined ?
     options.attribution : true;
   if (attributionControl) {
-    controls.push(new Attribution(options.attributionOptions));
+    controls.push(new AttributionControl(options.attributionOptions));
   }
 
   return controls;

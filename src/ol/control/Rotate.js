@@ -33,7 +33,7 @@ import EventType from '../events/EventType.js';
  *
  * @api
  */
-class Rotate extends Control {
+class RotateControl extends Control {
 
   /**
    * @param {Options=} opt_options Rotate options.
@@ -150,7 +150,7 @@ class Rotate extends Control {
 /**
  * Update the rotate control element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {Rotate}
+ * @this {RotateControl}
  * @api
  */
 export function render(mapEvent) {
@@ -174,4 +174,4 @@ export function render(mapEvent) {
   this.rotation_ = rotation;
 }
 
-export default Rotate;
+export default RotateControl;

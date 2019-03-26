@@ -42,7 +42,7 @@ const Direction = {
  *
  * @api
  */
-class ZoomSlider extends Control {
+class ZoomSliderControl extends Control {
 
   /**
    * @param {Options=} opt_options Zoom slider options.
@@ -355,7 +355,7 @@ class ZoomSlider extends Control {
 /**
  * Update the zoomslider element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {ZoomSlider}
+ * @this {ZoomSliderControl}
  * @api
  */
 export function render(mapEvent) {
@@ -371,4 +371,4 @@ export function render(mapEvent) {
 }
 
 
-export default ZoomSlider;
+export default ZoomSliderControl;

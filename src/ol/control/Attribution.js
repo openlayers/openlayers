@@ -43,7 +43,7 @@ import {visibleAtResolution} from '../layer/Layer.js';
  *
  * @api
  */
-class Attribution extends Control {
+class AttributionControl extends Control {
 
   /**
    * @param {Options=} opt_options Attribution options.
@@ -326,7 +326,7 @@ class Attribution extends Control {
 /**
  * Update the attribution element.
  * @param {import("../MapEvent.js").default} mapEvent Map event.
- * @this {Attribution}
+ * @this {AttributionControl}
  * @api
  */
 export function render(mapEvent) {
@@ -334,4 +334,4 @@ export function render(mapEvent) {
 }
 
 
-export default Attribution;
+export default AttributionControl;

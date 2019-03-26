@@ -27,7 +27,7 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
  *
  * @api
  */
-class ZoomToExtent extends Control {
+class ZoomToExtentControl extends Control {
 
   /**
    * @param {Options=} opt_options Options.
@@ -85,4 +85,4 @@ class ZoomToExtent extends Control {
   }
 }
 
-export default ZoomToExtent;
+export default ZoomToExtentControl;

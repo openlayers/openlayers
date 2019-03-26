@@ -32,7 +32,7 @@ import {easeOut} from '../easing.js';
  *
  * @api
  */
-class Zoom extends Control {
+class ZoomControl extends Control {
 
   /**
    * @param {Options=} opt_options Zoom options.
@@ -134,4 +134,4 @@ class Zoom extends Control {
 }
 
 
-export default Zoom;
+export default ZoomControl;
