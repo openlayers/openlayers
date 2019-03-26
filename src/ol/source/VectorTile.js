@@ -49,8 +49,8 @@ import {equals} from '../array.js';
  *         tile.setFeatures(features);
  *       });
  *     });
- *   }
- * });
+ *   });
+ * }
  * ```
  * @property {import("../Tile.js").UrlFunction} [tileUrlFunction] Optional function to get tile URL given a tile coordinate and the projection.
  * @property {string} [url] URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
