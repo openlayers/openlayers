@@ -27,7 +27,7 @@
  * the options; they will not return the default.
  * @api
  */
-class Stroke {
+class StrokeStyle {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -80,12 +80,12 @@ class Stroke {
 
   /**
    * Clones the style.
-   * @return {Stroke} The cloned style.
+   * @return {StrokeStyle} The cloned style.
    * @api
    */
   clone() {
     const color = this.getColor();
-    return new Stroke({
+    return new StrokeStyle({
       color: Array.isArray(color) ? color.slice() : color || undefined,
       lineCap: this.getLineCap(),
       lineDash: this.getLineDash() ? this.getLineDash().slice() : undefined,
@@ -237,4 +237,4 @@ class Stroke {
 
 }
 
-export default Stroke;
+export default StrokeStyle;

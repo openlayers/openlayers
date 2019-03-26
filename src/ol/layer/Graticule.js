@@ -5,8 +5,8 @@ import VectorLayer from './Vector.js';
 import {assign} from '../obj.js';
 import {degreesToStringHDMS} from '../coordinate';
 import Text from '../style/Text';
-import Fill from '../style/Fill';
-import Stroke from '../style/Stroke';
+import FillStyle from '../style/Fill';
+import StrokeStyle from '../style/Stroke';
 import LineString from '../geom/LineString.js';
 import VectorSource from '../source/Vector';
 import {
@@ -27,11 +27,11 @@ import Collection from '../Collection';
 
 
 /**
- * @type {Stroke}
+ * @type {StrokeStyle}
  * @private
  * @const
  */
-const DEFAULT_STROKE_STYLE = new Stroke({
+const DEFAULT_STROKE_STYLE = new StrokeStyle({
   color: 'rgba(0,0,0,0.2)'
 });
 
@@ -70,7 +70,7 @@ const INTERVALS = [
  * appropriate for conformal projections like Spherical Mercator. If you
  * increase the value, more lines will be drawn and the drawing performance will
  * decrease.
- * @property {Stroke} [strokeStyle='rgba(0,0,0,0.2)'] The
+ * @property {StrokeStyle} [strokeStyle='rgba(0,0,0,0.2)'] The
  * stroke style to use for drawing the graticule. If not provided, a not fully
  * opaque black will be used.
  * @property {number} [targetSize=100] The target size of the graticule cells,
@@ -247,7 +247,7 @@ class GraticuleLayer extends VectorLayer {
     this.parallels_ = [];
 
     /**
-     * @type {Stroke}
+     * @type {StrokeStyle}
      * @private
      */
     this.strokeStyle_ = options.strokeStyle !== undefined ? options.strokeStyle : DEFAULT_STROKE_STYLE;
@@ -336,10 +336,10 @@ class GraticuleLayer extends VectorLayer {
                 text: label,
                 font: '12px Calibri,sans-serif',
                 textBaseline: 'bottom',
-                fill: new Fill({
+                fill: new FillStyle({
                   color: 'rgba(0,0,0,1)'
                 }),
-                stroke: new Stroke({
+                stroke: new StrokeStyle({
                   color: 'rgba(255,255,255,1)',
                   width: 3
                 })
@@ -369,10 +369,10 @@ class GraticuleLayer extends VectorLayer {
                 text: label,
                 font: '12px Calibri,sans-serif',
                 textAlign: 'right',
-                fill: new Fill({
+                fill: new FillStyle({
                   color: 'rgba(0,0,0,1)'
                 }),
-                stroke: new Stroke({
+                stroke: new StrokeStyle({
                   color: 'rgba(255,255,255,1)',
                   width: 3
                 })

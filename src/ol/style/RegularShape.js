@@ -45,7 +45,7 @@ import ImageStyle from './Image.js';
  * `radius2` are provided.
  * @api
  */
-class RegularShape extends ImageStyle {
+class RegularShapeStyle extends ImageStyle {
   /**
    * @param {Options} options Options.
    */
@@ -148,11 +148,11 @@ class RegularShape extends ImageStyle {
 
   /**
    * Clones the style.
-   * @return {RegularShape} The cloned style.
+   * @return {RegularShapeStyle} The cloned style.
    * @api
    */
   clone() {
-    const style = new RegularShape({
+    const style = new RegularShapeStyle({
       fill: this.getFill() ? this.getFill().clone() : undefined,
       points: this.getPoints(),
       radius: this.getRadius(),
@@ -498,4 +498,4 @@ class RegularShape extends ImageStyle {
 }
 
 
-export default RegularShape;
+export default RegularShapeStyle;

@@ -89,8 +89,8 @@
 import {assert} from '../asserts.js';
 import GeometryType from '../geom/GeometryType.js';
 import CircleStyle from './Circle.js';
-import Fill from './Fill.js';
-import Stroke from './Stroke.js';
+import FillStyle from './Fill.js';
+import StrokeStyle from './Stroke.js';
 
 
 /**
@@ -444,10 +444,10 @@ export function createDefaultStyle(feature, resolution) {
   // canvas.getContext('2d') at construction time, which will cause an.error
   // in such browsers.)
   if (!defaultStyles) {
-    const fill = new Fill({
+    const fill = new FillStyle({
       color: 'rgba(255,255,255,0.4)'
     });
-    const stroke = new Stroke({
+    const stroke = new StrokeStyle({
       color: '#3399CC',
       width: 1.25
     });
@@ -479,7 +479,7 @@ export function createEditingStyle() {
   const width = 3;
   styles[GeometryType.POLYGON] = [
     new Style({
-      fill: new Fill({
+      fill: new FillStyle({
         color: [255, 255, 255, 0.5]
       })
     })
@@ -489,13 +489,13 @@ export function createEditingStyle() {
 
   styles[GeometryType.LINE_STRING] = [
     new Style({
-      stroke: new Stroke({
+      stroke: new StrokeStyle({
         color: white,
         width: width + 2
       })
     }),
     new Style({
-      stroke: new Stroke({
+      stroke: new StrokeStyle({
         color: blue,
         width: width
       })
@@ -514,10 +514,10 @@ export function createEditingStyle() {
     new Style({
       image: new CircleStyle({
         radius: width * 2,
-        fill: new Fill({
+        fill: new FillStyle({
           color: blue
         }),
-        stroke: new Stroke({
+        stroke: new StrokeStyle({
           color: white,
           width: width / 2
         })

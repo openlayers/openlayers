@@ -19,11 +19,11 @@ import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import {toRadians} from '../math.js';
 import {get as getProjection} from '../proj.js';
-import Fill from '../style/Fill.js';
-import Icon from '../style/Icon.js';
+import FillStyle from '../style/Fill.js';
+import IconStyle from '../style/Icon.js';
 import IconAnchorUnits from '../style/IconAnchorUnits.js';
 import IconOrigin from '../style/IconOrigin.js';
-import Stroke from '../style/Stroke.js';
+import StrokeStyle from '../style/Stroke.js';
 import Style from '../style/Style.js';
 import Text from '../style/Text.js';
 import {createElementNS, getAllTextContent, isDocument, makeArrayExtender,
@@ -190,13 +190,13 @@ const KML_SERIALIZERS = makeStructureNS(
 let DEFAULT_COLOR;
 
 /**
- * @type {Fill}
+ * @type {FillStyle}
  */
 let DEFAULT_FILL_STYLE = null;
 
 /**
  * Get the default fill style (or null if not yet set).
- * @return {Fill} The default fill style.
+ * @return {FillStyle} The default fill style.
  */
 export function getDefaultFillStyle() {
   return DEFAULT_FILL_STYLE;
@@ -251,20 +251,20 @@ export function getDefaultImageStyle() {
 let DEFAULT_NO_IMAGE_STYLE;
 
 /**
- * @type {Stroke}
+ * @type {StrokeStyle}
  */
 let DEFAULT_STROKE_STYLE = null;
 
 /**
  * Get the default stroke style (or null if not yet set).
- * @return {Stroke} The default stroke style.
+ * @return {StrokeStyle} The default stroke style.
  */
 export function getDefaultStrokeStyle() {
   return DEFAULT_STROKE_STYLE;
 }
 
 /**
- * @type {Stroke}
+ * @type {StrokeStyle}
  */
 let DEFAULT_TEXT_STROKE_STYLE;
 
@@ -312,7 +312,7 @@ function createStyleDefaults() {
 
   DEFAULT_COLOR = [255, 255, 255, 1];
 
-  DEFAULT_FILL_STYLE = new Fill({
+  DEFAULT_FILL_STYLE = new FillStyle({
     color: DEFAULT_COLOR
   });
 
@@ -329,7 +329,7 @@ function createStyleDefaults() {
 
   DEFAULT_IMAGE_SCALE_MULTIPLIER = 0.5;
 
-  DEFAULT_IMAGE_STYLE = new Icon({
+  DEFAULT_IMAGE_STYLE = new IconStyle({
     anchor: DEFAULT_IMAGE_STYLE_ANCHOR,
     anchorOrigin: IconOrigin.BOTTOM_LEFT,
     anchorXUnits: DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS,
@@ -343,12 +343,12 @@ function createStyleDefaults() {
 
   DEFAULT_NO_IMAGE_STYLE = 'NO_IMAGE';
 
-  DEFAULT_STROKE_STYLE = new Stroke({
+  DEFAULT_STROKE_STYLE = new StrokeStyle({
     color: DEFAULT_COLOR,
     width: 1
   });
 
-  DEFAULT_TEXT_STROKE_STYLE = new Stroke({
+  DEFAULT_TEXT_STROKE_STYLE = new StrokeStyle({
     color: [51, 51, 51, 1],
     width: 2
   });
@@ -1209,7 +1209,7 @@ function iconStyleParser(node, objectStack) {
       }
     }
 
-    const imageStyle = new Icon({
+    const imageStyle = new IconStyle({
       anchor: anchor,
       anchorOrigin: anchorOrigin,
       anchorXUnits: anchorXUnits,
@@ -1254,7 +1254,7 @@ function labelStyleParser(node, objectStack) {
   }
   const styleObject = objectStack[objectStack.length - 1];
   const textStyle = new Text({
-    fill: new Fill({
+    fill: new FillStyle({
       color: /** @type {import("../color.js").Color} */
           ('color' in object ? object['color'] : DEFAULT_COLOR)
     }),
@@ -1292,7 +1292,7 @@ function lineStyleParser(node, objectStack) {
     return;
   }
   const styleObject = objectStack[objectStack.length - 1];
-  const strokeStyle = new Stroke({
+  const strokeStyle = new StrokeStyle({
     color: /** @type {import("../color.js").Color} */
         ('color' in object ? object['color'] : DEFAULT_COLOR),
     width: /** @type {number} */ ('width' in object ? object['width'] : 1)
@@ -1325,7 +1325,7 @@ function polyStyleParser(node, objectStack) {
     return;
   }
   const styleObject = objectStack[objectStack.length - 1];
-  const fillStyle = new Fill({
+  const fillStyle = new FillStyle({
     color: /** @type {import("../color.js").Color} */
         ('color' in object ? object['color'] : DEFAULT_COLOR)
   });
@@ -1708,7 +1708,7 @@ function readStyle(node, objectStack) {
   if (!styleObject) {
     return null;
   }
-  let fillStyle = /** @type {Fill} */
+  let fillStyle = /** @type {FillStyle} */
       ('fillStyle' in styleObject ?
         styleObject['fillStyle'] : DEFAULT_FILL_STYLE);
   const fill = /** @type {boolean|undefined} */ (styleObject['fill']);
@@ -1726,7 +1726,7 @@ function readStyle(node, objectStack) {
   const textStyle = /** @type {Text} */
       ('textStyle' in styleObject ?
         styleObject['textStyle'] : DEFAULT_TEXT_STYLE);
-  let strokeStyle = /** @type {Stroke} */
+  let strokeStyle = /** @type {StrokeStyle} */
       ('strokeStyle' in styleObject ?
         styleObject['strokeStyle'] : DEFAULT_STROKE_STYLE);
   const outline = /** @type {boolean|undefined} */
@@ -2458,7 +2458,7 @@ const LINE_STYLE_SERIALIZERS = makeStructureNS(
 
 /**
  * @param {Node} node Node.
- * @param {Stroke} style style.
+ * @param {StrokeStyle} style style.
  * @param {Array<*>} objectStack Object stack.
  */
 function writeLineStyle(node, style, objectStack) {
@@ -2841,7 +2841,7 @@ const COLOR_NODE_FACTORY = makeSimpleNodeFactory('color');
 
 /**
  * @param {Node} node Node.
- * @param {Fill} style Style.
+ * @param {FillStyle} style Style.
  * @param {Array<*>} objectStack Object stack.
  */
 function writePolyStyle(node, style, objectStack) {

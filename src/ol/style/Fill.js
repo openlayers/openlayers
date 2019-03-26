@@ -16,7 +16,7 @@
  * Set fill style for vector features.
  * @api
  */
-class Fill {
+class FillStyle {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -33,12 +33,12 @@ class Fill {
 
   /**
    * Clones the style. The color is not cloned if it is an {@link module:ol/colorlike~ColorLike}.
-   * @return {Fill} The cloned style.
+   * @return {FillStyle} The cloned style.
    * @api
    */
   clone() {
     const color = this.getColor();
-    return new Fill({
+    return new FillStyle({
       color: Array.isArray(color) ? color.slice() : color || undefined
     });
   }
@@ -64,4 +64,4 @@ class Fill {
 
 }
 
-export default Fill;
+export default FillStyle;

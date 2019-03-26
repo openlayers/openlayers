@@ -53,7 +53,7 @@ import ImageStyle from './Image.js';
  * Set icon style for vector features.
  * @api
  */
-class Icon extends ImageStyle {
+class IconStyle extends ImageStyle {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -202,11 +202,11 @@ class Icon extends ImageStyle {
 
   /**
    * Clones the style. The underlying Image/HTMLCanvasElement is not cloned.
-   * @return {Icon} The cloned style.
+   * @return {IconStyle} The cloned style.
    * @api
    */
   clone() {
-    return new Icon({
+    return new IconStyle({
       anchor: this.anchor_.slice(),
       anchorOrigin: this.anchorOrigin_,
       anchorXUnits: this.anchorXUnits_,
@@ -405,4 +405,4 @@ class Icon extends ImageStyle {
 }
 
 
-export default Icon;
+export default IconStyle;

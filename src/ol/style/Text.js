@@ -1,7 +1,7 @@
 /**
  * @module ol/style/Text
  */
-import Fill from './Fill.js';
+import FillStyle from './Fill.js';
 import TextPlacement from './TextPlacement.js';
 
 
@@ -105,7 +105,7 @@ class Text {
      * @type {import("./Fill.js").default}
      */
     this.fill_ = options.fill !== undefined ? options.fill :
-      new Fill({color: DEFAULT_FILL_COLOR});
+      new FillStyle({color: DEFAULT_FILL_COLOR});
 
     /**
      * @private
