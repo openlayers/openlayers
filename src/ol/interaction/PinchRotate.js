@@ -20,7 +20,7 @@ import {disable} from '../rotationconstraint.js';
  * on a touch screen.
  * @api
  */
-class PinchRotate extends PointerInteraction {
+class PinchRotateInteraction extends PointerInteraction {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -155,4 +155,4 @@ class PinchRotate extends PointerInteraction {
   }
 }
 
-export default PinchRotate;
+export default PinchRotateInteraction;

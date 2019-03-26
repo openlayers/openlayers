@@ -92,7 +92,7 @@ export class TranslateEvent extends Event {
  * @fires TranslateEvent
  * @api
  */
-class Translate extends PointerInteraction {
+class TranslateInteraction extends PointerInteraction {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -307,4 +307,4 @@ class Translate extends PointerInteraction {
   }
 }
 
-export default Translate;
+export default TranslateInteraction;

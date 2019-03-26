@@ -34,7 +34,7 @@ import Interaction, {pan} from './Interaction.js';
  * See also {@link module:ol/interaction/KeyboardZoom~KeyboardZoom}.
  * @api
  */
-class KeyboardPan extends Interaction {
+class KeyboardPanInteraction extends Interaction {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -87,7 +87,7 @@ class KeyboardPan extends Interaction {
  * pressed).
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {KeyboardPan}
+ * @this {KeyboardPanInteraction}
  */
 function handleEvent(mapBrowserEvent) {
   let stopEvent = false;
@@ -122,4 +122,4 @@ function handleEvent(mapBrowserEvent) {
   return !stopEvent;
 }
 
-export default KeyboardPan;
+export default KeyboardPanInteraction;

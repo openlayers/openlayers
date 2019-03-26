@@ -22,7 +22,7 @@ import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js
  * Allows the user to pan the map by dragging the map.
  * @api
  */
-class DragPan extends PointerInteraction {
+class DragPanInteraction extends PointerInteraction {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -166,4 +166,4 @@ class DragPan extends PointerInteraction {
   }
 }
 
-export default DragPan;
+export default DragPanInteraction;

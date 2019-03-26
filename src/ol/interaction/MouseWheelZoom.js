@@ -43,7 +43,7 @@ export const Mode = {
  * Allows the user to zoom the map by scrolling the mouse wheel.
  * @api
  */
-class MouseWheelZoom extends Interaction {
+class MouseWheelZoomInteraction extends Interaction {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -259,4 +259,4 @@ class MouseWheelZoom extends Interaction {
   }
 }
 
-export default MouseWheelZoom;
+export default MouseWheelZoomInteraction;

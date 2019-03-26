@@ -152,7 +152,7 @@ class SelectEvent extends Event {
  * @fires SelectEvent
  * @api
  */
-class Select extends Interaction {
+class SelectInteraction extends Interaction {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -378,7 +378,7 @@ class Select extends Interaction {
  * selected state of features.
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {Select}
+ * @this {SelectInteraction}
  */
 function handleEvent(mapBrowserEvent) {
   if (!this.condition_(mapBrowserEvent)) {
@@ -483,4 +483,4 @@ function getDefaultStyleFunction() {
 }
 
 
-export default Select;
+export default SelectInteraction;

@@ -76,7 +76,7 @@ function getFeatureFromEvent(evt) {
  *
  * @api
  */
-class Snap extends PointerInteraction {
+class SnapInteraction extends PointerInteraction {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -618,7 +618,7 @@ class Snap extends PointerInteraction {
  * @param {SegmentData} a The first segment data.
  * @param {SegmentData} b The second segment data.
  * @return {number} The difference in distance.
- * @this {Snap}
+ * @this {SnapInteraction}
  */
 function sortByDistance(a, b) {
   const deltaA = squaredDistanceToSegment(this.pixelCoordinate_, a.segment);
@@ -626,4 +626,4 @@ function sortByDistance(a, b) {
   return deltaA - deltaB;
 }
 
-export default Snap;
+export default SnapInteraction;

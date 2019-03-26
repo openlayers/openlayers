@@ -150,7 +150,7 @@ export class ModifyEvent extends Event {
  * @fires ModifyEvent
  * @api
  */
-class Modify extends PointerInteraction {
+class ModifyInteraction extends PointerInteraction {
   /**
    * @param {Options} options Options.
    */
@@ -1247,4 +1247,4 @@ function getDefaultStyleFunction() {
 }
 
 
-export default Modify;
+export default ModifyInteraction;

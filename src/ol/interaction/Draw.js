@@ -180,7 +180,7 @@ class DrawEvent extends Event {
  * @fires DrawEvent
  * @api
  */
-class Draw extends PointerInteraction {
+class DrawInteraction extends PointerInteraction {
   /**
    * @param {Options} options Options.
    */
@@ -1049,4 +1049,4 @@ function getMode(type) {
 }
 
 
-export default Draw;
+export default DrawInteraction;

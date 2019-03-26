@@ -30,7 +30,7 @@ import Interaction, {zoomByDelta} from './Interaction.js';
  * See also {@link module:ol/interaction/KeyboardPan~KeyboardPan}.
  * @api
  */
-class KeyboardZoom extends Interaction {
+class KeyboardZoomInteraction extends Interaction {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -71,7 +71,7 @@ class KeyboardZoom extends Interaction {
  * key pressed was '+' or '-').
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {KeyboardZoom}
+ * @this {KeyboardZoomInteraction}
  */
 function handleEvent(mapBrowserEvent) {
   let stopEvent = false;
@@ -92,4 +92,4 @@ function handleEvent(mapBrowserEvent) {
   return !stopEvent;
 }
 
-export default KeyboardZoom;
+export default KeyboardZoomInteraction;

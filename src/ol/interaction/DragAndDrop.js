@@ -87,7 +87,7 @@ class DragAndDropEvent extends Event {
  *
  * @fires DragAndDropEvent
  */
-class DragAndDrop extends Interaction {
+class DragAndDropInteraction extends Interaction {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -236,7 +236,7 @@ class DragAndDrop extends Interaction {
 
 /**
  * @param {DragEvent} event Event.
- * @this {DragAndDrop}
+ * @this {DragAndDropInteraction}
  */
 function handleDrop(event) {
   const files = event.dataTransfer.files;
@@ -259,4 +259,4 @@ function handleStop(event) {
 }
 
 
-export default DragAndDrop;
+export default DragAndDropInteraction;

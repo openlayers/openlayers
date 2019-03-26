@@ -26,7 +26,7 @@ import PointerInteraction from './Pointer.js';
  * And this interaction is not included in the default interactions.
  * @api
  */
-class DragRotateAndZoom extends PointerInteraction {
+class DragRotateAndZoomInteraction extends PointerInteraction {
 
   /**
    * @param {Options=} opt_options Options.
@@ -134,4 +134,4 @@ class DragRotateAndZoom extends PointerInteraction {
   }
 }
 
-export default DragRotateAndZoom;
+export default DragRotateAndZoomInteraction;

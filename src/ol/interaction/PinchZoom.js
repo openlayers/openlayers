@@ -17,7 +17,7 @@ import PointerInteraction, {centroid as centroidFromPointers} from './Pointer.js
  * on a touch screen.
  * @api
  */
-class PinchZoom extends PointerInteraction {
+class PinchZoomInteraction extends PointerInteraction {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -132,4 +132,4 @@ class PinchZoom extends PointerInteraction {
   }
 }
 
-export default PinchZoom;
+export default PinchZoomInteraction;

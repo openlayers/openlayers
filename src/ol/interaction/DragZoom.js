@@ -4,7 +4,7 @@
 import {easeOut} from '../easing.js';
 import {shiftKeyOnly} from '../events/condition.js';
 import {createOrUpdateFromCoordinates, getBottomLeft, getCenter, getTopRight, scaleFromCenter} from '../extent.js';
-import DragBox from './DragBox.js';
+import DragBoxInteraction from './DragBox.js';
 
 
 /**
@@ -30,7 +30,7 @@ import DragBox from './DragBox.js';
  * your custom one configured with `className`.
  * @api
  */
-class DragZoom extends DragBox {
+class DragZoom extends DragBoxInteraction {
   /**
    * @param {Options=} opt_options Options.
    */

@@ -26,7 +26,7 @@ import PointerInteraction from './Pointer.js';
  * This interaction is only supported for mouse devices.
  * @api
  */
-class DragRotate extends PointerInteraction {
+class DragRotateInteraction extends PointerInteraction {
 
   /**
    * @param {Options=} opt_options Options.
@@ -118,4 +118,4 @@ class DragRotate extends PointerInteraction {
   }
 }
 
-export default DragRotate;
+export default DragRotateInteraction;

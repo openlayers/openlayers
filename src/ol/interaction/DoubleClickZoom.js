@@ -17,7 +17,7 @@ import Interaction, {zoomByDelta} from './Interaction.js';
  * Allows the user to zoom by double-clicking on the map.
  * @api
  */
-class DoubleClickZoom extends Interaction {
+class DoubleClickZoomInteraction extends Interaction {
 
   /**
    * @param {Options=} opt_options Options.
@@ -51,7 +51,7 @@ class DoubleClickZoom extends Interaction {
  * doubleclick) and eventually zooms the map.
  * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
- * @this {DoubleClickZoom}
+ * @this {DoubleClickZoomInteraction}
  */
 function handleEvent(mapBrowserEvent) {
   let stopEvent = false;
@@ -68,4 +68,4 @@ function handleEvent(mapBrowserEvent) {
   return !stopEvent;
 }
 
-export default DoubleClickZoom;
+export default DoubleClickZoomInteraction;
