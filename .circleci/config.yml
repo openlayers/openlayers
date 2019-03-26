@@ -28,6 +28,10 @@ jobs:
           command: npm test
 
       - store_artifacts:
+          path: coverage/
+          destination: coverage
+
+      - store_artifacts:
           path: rendering/cases/
           destination: rendering
 
