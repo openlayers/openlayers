@@ -2,7 +2,7 @@
  * @module ol/format/WMSCapabilities
  */
 import {readHref} from './XLink.js';
-import XML from './XML.js';
+import XMLFormat from './XML.js';
 import {readDecimalString, readString, readNonNegativeInteger, readDecimal, readBooleanString, readNonNegativeIntegerString} from './xsd.js';
 import {makeArrayPusher, makeObjectPropertyPusher, makeObjectPropertySetter,
   makeStructureNS, pushParseAndPop} from '../xml.js';
@@ -47,7 +47,7 @@ const CAPABILITY_PARSERS = makeStructureNS(
  *
  * @api
  */
-class WMSCapabilities extends XML {
+class WMSCapabilitiesFormat extends XMLFormat {
   constructor() {
     super();
 
@@ -634,4 +634,4 @@ function readKeywordList(node, objectStack) {
 }
 
 
-export default WMSCapabilities;
+export default WMSCapabilitiesFormat;

@@ -13,7 +13,7 @@ import FormatType from '../format/FormatType.js';
  *
  * @abstract
  */
-class TextFeature extends FeatureFormat {
+class TextFeatureFormat extends FeatureFormat {
   constructor() {
     super();
   }
@@ -198,4 +198,4 @@ function getText(source) {
 }
 
 
-export default TextFeature;
+export default TextFeatureFormat;

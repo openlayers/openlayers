@@ -7,7 +7,7 @@
 import {extend} from '../array.js';
 import Feature from '../Feature.js';
 import {transformGeometryWithOptions, transformExtentWithOptions} from './Feature.js';
-import XMLFeature from './XMLFeature.js';
+import XMLFeatureFormat from './XMLFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import LinearRing from '../geom/LinearRing.js';
@@ -85,7 +85,7 @@ const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
  *
  * @abstract
  */
-class GMLBase extends XMLFeature {
+class GMLBaseFormat extends XMLFeatureFormat {
 
   /**
    * @param {Options=} opt_options Optional configuration object.
@@ -502,7 +502,7 @@ class GMLBase extends XMLFeature {
 }
 
 
-GMLBase.prototype.namespace = GMLNS;
+GMLBaseFormat.prototype.namespace = GMLNS;
 
 
 /**
@@ -510,7 +510,7 @@ GMLBase.prototype.namespace = GMLNS;
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
-GMLBase.prototype.FLAT_LINEAR_RINGS_PARSERS = {
+GMLBaseFormat.prototype.FLAT_LINEAR_RINGS_PARSERS = {
   'http://www.opengis.net/gml': {}
 };
 
@@ -520,7 +520,7 @@ GMLBase.prototype.FLAT_LINEAR_RINGS_PARSERS = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
-GMLBase.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
+GMLBaseFormat.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml': {}
 };
 
@@ -530,7 +530,7 @@ GMLBase.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
-GMLBase.prototype.GEOMETRY_PARSERS = {
+GMLBaseFormat.prototype.GEOMETRY_PARSERS = {
   'http://www.opengis.net/gml': {}
 };
 
@@ -540,10 +540,10 @@ GMLBase.prototype.GEOMETRY_PARSERS = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GMLBase.prototype.MULTIPOINT_PARSERS_ = {
+GMLBaseFormat.prototype.MULTIPOINT_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'pointMember': makeArrayPusher(GMLBase.prototype.pointMemberParser_),
-    'pointMembers': makeArrayPusher(GMLBase.prototype.pointMemberParser_)
+    'pointMember': makeArrayPusher(GMLBaseFormat.prototype.pointMemberParser_),
+    'pointMembers': makeArrayPusher(GMLBaseFormat.prototype.pointMemberParser_)
   }
 };
 
@@ -553,10 +553,10 @@ GMLBase.prototype.MULTIPOINT_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
+GMLBaseFormat.prototype.MULTILINESTRING_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'lineStringMember': makeArrayPusher(GMLBase.prototype.lineStringMemberParser_),
-    'lineStringMembers': makeArrayPusher(GMLBase.prototype.lineStringMemberParser_)
+    'lineStringMember': makeArrayPusher(GMLBaseFormat.prototype.lineStringMemberParser_),
+    'lineStringMembers': makeArrayPusher(GMLBaseFormat.prototype.lineStringMemberParser_)
   }
 };
 
@@ -566,10 +566,10 @@ GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
+GMLBaseFormat.prototype.MULTIPOLYGON_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'polygonMember': makeArrayPusher(GMLBase.prototype.polygonMemberParser_),
-    'polygonMembers': makeArrayPusher(GMLBase.prototype.polygonMemberParser_)
+    'polygonMember': makeArrayPusher(GMLBaseFormat.prototype.polygonMemberParser_),
+    'polygonMembers': makeArrayPusher(GMLBaseFormat.prototype.polygonMemberParser_)
   }
 };
 
@@ -579,9 +579,9 @@ GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GMLBase.prototype.POINTMEMBER_PARSERS_ = {
+GMLBaseFormat.prototype.POINTMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'Point': makeArrayPusher(GMLBase.prototype.readFlatCoordinatesFromNode_)
+    'Point': makeArrayPusher(GMLBaseFormat.prototype.readFlatCoordinatesFromNode_)
   }
 };
 
@@ -591,9 +591,9 @@ GMLBase.prototype.POINTMEMBER_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
+GMLBaseFormat.prototype.LINESTRINGMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'LineString': makeArrayPusher(GMLBase.prototype.readLineString)
+    'LineString': makeArrayPusher(GMLBaseFormat.prototype.readLineString)
   }
 };
 
@@ -603,9 +603,9 @@ GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
+GMLBaseFormat.prototype.POLYGONMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'Polygon': makeArrayPusher(GMLBase.prototype.readPolygon)
+    'Polygon': makeArrayPusher(GMLBaseFormat.prototype.readPolygon)
   }
 };
 
@@ -615,10 +615,10 @@ GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
-GMLBase.prototype.RING_PARSERS = {
+GMLBaseFormat.prototype.RING_PARSERS = {
   'http://www.opengis.net/gml': {
-    'LinearRing': makeReplacer(GMLBase.prototype.readFlatLinearRing_)
+    'LinearRing': makeReplacer(GMLBaseFormat.prototype.readFlatLinearRing_)
   }
 };
 
-export default GMLBase;
+export default GMLBaseFormat;

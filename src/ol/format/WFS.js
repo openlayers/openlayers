@@ -2,11 +2,11 @@
  * @module ol/format/WFS
  */
 import {assert} from '../asserts.js';
-import GML2 from './GML2.js';
-import GML3 from './GML3.js';
-import GMLBase, {GMLNS} from './GMLBase.js';
+import GML2Format from './GML2.js';
+import GML3Format from './GML3.js';
+import GMLBaseFormat, {GMLNS} from './GMLBase.js';
 import {and as andFilter, bbox as bboxFilter} from './filter.js';
-import XMLFeature from './XMLFeature.js';
+import XMLFeatureFormat from './XMLFeature.js';
 import {readNonNegativeIntegerString, readNonNegativeInteger, writeStringTextNode} from './xsd.js';
 import {assign} from '../obj.js';
 import {get as getProjection} from '../proj.js';
@@ -22,7 +22,7 @@ import {createElementNS, isDocument, makeArrayPusher, makeChildAppender,
 const FEATURE_COLLECTION_PARSERS = {
   'http://www.opengis.net/gml': {
     'boundedBy': makeObjectPropertySetter(
-      GMLBase.prototype.readGeometryElement, 'bounds')
+      GMLBaseFormat.prototype.readGeometryElement, 'bounds')
   }
 };
 
@@ -82,7 +82,7 @@ const TRANSACTION_SERIALIZERS = {
  * @typedef {Object} Options
  * @property {Object<string, string>|string} [featureNS] The namespace URI used for features.
  * @property {Array<string>|string} [featureType] The feature type to parse. Only used for read operations.
- * @property {GMLBase} [gmlFormat] The GML format to use to parse the response. Default is `ol/format/GML3`.
+ * @property {GMLBaseFormat} [gmlFormat] The GML format to use to parse the response. Default is `ol/format/GML3`.
  * @property {string} [schemaLocation] Optional schemaLocation to use for serialization, this will override the default.
  */
 
@@ -202,7 +202,7 @@ const DEFAULT_VERSION = '1.1.0';
  *
  * @api
  */
-class WFS extends XMLFeature {
+class WFSFormat extends XMLFeatureFormat {
 
   /**
    * @param {Options=} opt_options Optional configuration object.
@@ -226,10 +226,10 @@ class WFS extends XMLFeature {
 
     /**
      * @private
-     * @type {GMLBase}
+     * @type {GMLBaseFormat}
      */
     this.gmlFormat_ = options.gmlFormat ?
-      options.gmlFormat : new GML3();
+      options.gmlFormat : new GML3Format();
 
     /**
      * @private
@@ -270,7 +270,7 @@ class WFS extends XMLFeature {
     const objectStack = [context];
     this.gmlFormat_.FEATURE_COLLECTION_PARSERS[GMLNS][
       'featureMember'] =
-        makeArrayPusher(GMLBase.prototype.readFeaturesInternal);
+        makeArrayPusher(GMLBaseFormat.prototype.readFeaturesInternal);
     let features = pushParseAndPop([],
       this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
       objectStack, this.gmlFormat_);
@@ -615,9 +615,9 @@ function writeFeature(node, feature, objectStack) {
   const child = createElementNS(featureNS, featureType);
   node.appendChild(child);
   if (gmlVersion === 2) {
-    GML2.prototype.writeFeatureElement(child, feature, objectStack);
+    GML2Format.prototype.writeFeatureElement(child, feature, objectStack);
   } else {
-    GML3.prototype.writeFeatureElement(child, feature, objectStack);
+    GML3Format.prototype.writeFeatureElement(child, feature, objectStack);
   }
 }
 
@@ -730,10 +730,10 @@ function writeProperty(node, pair, objectStack) {
     node.appendChild(value);
     if (pair.value && typeof /** @type {?} */ (pair.value).getSimplifiedGeometry === 'function') {
       if (gmlVersion === 2) {
-        GML2.prototype.writeGeometryElement(value,
+        GML2Format.prototype.writeGeometryElement(value,
           pair.value, objectStack);
       } else {
-        GML3.prototype.writeGeometryElement(value,
+        GML3Format.prototype.writeGeometryElement(value,
           pair.value, objectStack);
       }
     } else {
@@ -855,7 +855,7 @@ function writeBboxFilter(node, filter, objectStack) {
   context['srsName'] = filter.srsName;
 
   writeOgcPropertyName(node, filter.geometryName);
-  GML3.prototype.writeGeometryElement(node, filter.extent, objectStack);
+  GML3Format.prototype.writeGeometryElement(node, filter.extent, objectStack);
 }
 
 
@@ -869,7 +869,7 @@ function writeContainsFilter(node, filter, objectStack) {
   context['srsName'] = filter.srsName;
 
   writeOgcPropertyName(node, filter.geometryName);
-  GML3.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+  GML3Format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
 }
 
 
@@ -883,7 +883,7 @@ function writeIntersectsFilter(node, filter, objectStack) {
   context['srsName'] = filter.srsName;
 
   writeOgcPropertyName(node, filter.geometryName);
-  GML3.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+  GML3Format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
 }
 
 
@@ -897,7 +897,7 @@ function writeWithinFilter(node, filter, objectStack) {
   context['srsName'] = filter.srsName;
 
   writeOgcPropertyName(node, filter.geometryName);
-  GML3.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+  GML3Format.prototype.writeGeometryElement(node, filter.geometry, objectStack);
 }
 
 
@@ -1094,4 +1094,4 @@ function writeGetFeature(node, featureTypes, objectStack) {
 }
 
 
-export default WFS;
+export default WFSFormat;

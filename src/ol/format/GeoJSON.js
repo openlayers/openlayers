@@ -5,7 +5,7 @@
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
 import {transformGeometryWithOptions} from './Feature.js';
-import JSONFeature from './JSONFeature.js';
+import JSONFeatureFormat from './JSONFeature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -51,7 +51,7 @@ import GeometryType from '../geom/GeometryType.js';
  *
   * @api
  */
-class GeoJSON extends JSONFeature {
+class GeoJSONFormat extends JSONFeatureFormat {
 
   /**
    * @param {Options=} opt_options Options.
@@ -528,4 +528,4 @@ function writePolygonGeometry(geometry, opt_options) {
 }
 
 
-export default GeoJSON;
+export default GeoJSONFormat;

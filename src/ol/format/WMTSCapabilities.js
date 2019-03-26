@@ -2,9 +2,9 @@
  * @module ol/format/WMTSCapabilities
  */
 import {boundingExtent} from '../extent.js';
-import OWS from './OWS.js';
+import OWSFormat from './OWS.js';
 import {readHref} from './XLink.js';
-import XML from './XML.js';
+import XMLFormat from './XML.js';
 import {readString, readNonNegativeInteger, readDecimal} from './xsd.js';
 import {pushParseAndPop, makeStructureNS,
   makeObjectPropertySetter, makeObjectPropertyPusher, makeArrayPusher} from '../xml.js';
@@ -46,15 +46,15 @@ const PARSERS = makeStructureNS(
  *
  * @api
  */
-class WMTSCapabilities extends XML {
+class WMTSCapabilitiesFormat extends XMLFormat {
   constructor() {
     super();
 
     /**
-     * @type {OWS}
+     * @type {OWSFormat}
      * @private
      */
-    this.owsParser_ = new OWS();
+    this.owsParser_ = new OWSFormat();
   }
 
   /**
@@ -383,4 +383,4 @@ function readTileMatrixLimits(node, objectStack) {
 }
 
 
-export default WMTSCapabilities;
+export default WMTSCapabilitiesFormat;

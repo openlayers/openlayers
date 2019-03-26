@@ -13,7 +13,7 @@ import FormatType from './FormatType.js';
  *
  * @abstract
  */
-class JSONFeature extends FeatureFormat {
+class JSONFeatureFormat extends FeatureFormat {
   constructor() {
     super();
   }
@@ -204,4 +204,4 @@ function getObject(source) {
 }
 
 
-export default JSONFeature;
+export default JSONFeatureFormat;

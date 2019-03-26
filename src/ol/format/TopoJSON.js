@@ -3,7 +3,7 @@
  */
 import Feature from '../Feature.js';
 import {transformGeometryWithOptions} from './Feature.js';
-import JSONFeature from './JSONFeature.js';
+import JSONFeatureFormat from './JSONFeature.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -55,7 +55,7 @@ import {get as getProjection} from '../proj.js';
  *
  * @api
  */
-class TopoJSON extends JSONFeature {
+class TopoJSONFormat extends JSONFeatureFormat {
 
   /**
    * @param {Options=} opt_options Options.
@@ -406,4 +406,4 @@ function transformVertex(vertex, scale, translate) {
 }
 
 
-export default TopoJSON;
+export default TopoJSONFormat;

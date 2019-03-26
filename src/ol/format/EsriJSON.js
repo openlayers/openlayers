@@ -5,7 +5,7 @@ import Feature from '../Feature.js';
 import {assert} from '../asserts.js';
 import {containsExtent} from '../extent.js';
 import {transformGeometryWithOptions} from './Feature.js';
-import JSONFeature from './JSONFeature.js';
+import JSONFeatureFormat from './JSONFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
@@ -81,7 +81,7 @@ GEOMETRY_WRITERS[GeometryType.MULTI_POLYGON] = writeMultiPolygonGeometry;
  *
  * @api
  */
-class EsriJSON extends JSONFeature {
+class EsriJSONFormat extends JSONFeatureFormat {
 
   /**
    * @param {Options=} opt_options Options.
@@ -561,4 +561,4 @@ function writeGeometry(geometry, opt_options) {
 }
 
 
-export default EsriJSON;
+export default EsriJSONFormat;

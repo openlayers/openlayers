@@ -1,7 +1,7 @@
 /**
  * @module ol/format/GML
  */
-import GML3 from './GML3.js';
+import GML3Format from './GML3.js';
 
 /**
  * @classdesc
@@ -13,7 +13,7 @@ import GML3 from './GML3.js';
  *     Optional configuration object.
  * @api
  */
-const GML = GML3;
+const GMLFormat = GML3Format;
 
 
 /**
@@ -25,7 +25,7 @@ const GML = GML3;
  * @return {string} Result.
  * @api
  */
-GML.prototype.writeFeatures;
+GMLFormat.prototype.writeFeatures;
 
 
 /**
@@ -37,6 +37,6 @@ GML.prototype.writeFeatures;
  * @return {Node} Node.
  * @api
  */
-GML.prototype.writeFeaturesNode;
+GMLFormat.prototype.writeFeaturesNode;
 
-export default GML;
+export default GMLFormat;

@@ -3,7 +3,7 @@
  */
 import {createOrUpdate} from '../extent.js';
 import {transformExtentWithOptions, transformGeometryWithOptions} from './Feature.js';
-import GMLBase, {GMLNS} from './GMLBase.js';
+import GMLBaseFormat, {GMLNS} from './GMLBase.js';
 import {writeStringTextNode} from './xsd.js';
 import {assign} from '../obj.js';
 import {get as getProjection} from '../proj.js';
@@ -37,7 +37,7 @@ const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
  *
  * @api
  */
-class GML2 extends GMLBase {
+class GML2Format extends GMLBaseFormat {
 
   /**
    * @param {import("./GMLBase.js").Options=} opt_options Optional configuration object.
@@ -584,9 +584,9 @@ class GML2 extends GMLBase {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
-GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
+GML2Format.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml': {
-    'coordinates': makeReplacer(GML2.prototype.readFlatCoordinates_)
+    'coordinates': makeReplacer(GML2Format.prototype.readFlatCoordinates_)
   }
 };
 
@@ -595,10 +595,10 @@ GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
-GML2.prototype.FLAT_LINEAR_RINGS_PARSERS = {
+GML2Format.prototype.FLAT_LINEAR_RINGS_PARSERS = {
   'http://www.opengis.net/gml': {
-    'innerBoundaryIs': GML2.prototype.innerBoundaryIsParser_,
-    'outerBoundaryIs': GML2.prototype.outerBoundaryIsParser_
+    'innerBoundaryIs': GML2Format.prototype.innerBoundaryIsParser_,
+    'outerBoundaryIs': GML2Format.prototype.outerBoundaryIsParser_
   }
 };
 
@@ -607,10 +607,10 @@ GML2.prototype.FLAT_LINEAR_RINGS_PARSERS = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GML2.prototype.BOX_PARSERS_ = {
+GML2Format.prototype.BOX_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'coordinates': makeArrayPusher(
-      GML2.prototype.readFlatCoordinates_)
+      GML2Format.prototype.readFlatCoordinates_)
   }
 };
 
@@ -619,21 +619,21 @@ GML2.prototype.BOX_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
-GML2.prototype.GEOMETRY_PARSERS = {
+GML2Format.prototype.GEOMETRY_PARSERS = {
   'http://www.opengis.net/gml': {
-    'Point': makeReplacer(GMLBase.prototype.readPoint),
+    'Point': makeReplacer(GMLBaseFormat.prototype.readPoint),
     'MultiPoint': makeReplacer(
-      GMLBase.prototype.readMultiPoint),
+      GMLBaseFormat.prototype.readMultiPoint),
     'LineString': makeReplacer(
-      GMLBase.prototype.readLineString),
+      GMLBaseFormat.prototype.readLineString),
     'MultiLineString': makeReplacer(
-      GMLBase.prototype.readMultiLineString),
+      GMLBaseFormat.prototype.readMultiLineString),
     'LinearRing': makeReplacer(
-      GMLBase.prototype.readLinearRing),
-    'Polygon': makeReplacer(GMLBase.prototype.readPolygon),
+      GMLBaseFormat.prototype.readLinearRing),
+    'Polygon': makeReplacer(GMLBaseFormat.prototype.readPolygon),
     'MultiPolygon': makeReplacer(
-      GMLBase.prototype.readMultiPolygon),
-    'Box': makeReplacer(GML2.prototype.readBox_)
+      GMLBaseFormat.prototype.readMultiPolygon),
+    'Box': makeReplacer(GML2Format.prototype.readBox_)
   }
 };
 
@@ -642,31 +642,31 @@ GML2.prototype.GEOMETRY_PARSERS = {
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
-GML2.prototype.GEOMETRY_SERIALIZERS_ = {
+GML2Format.prototype.GEOMETRY_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'Curve': makeChildAppender(
-      GML2.prototype.writeCurveOrLineString_),
+      GML2Format.prototype.writeCurveOrLineString_),
     'MultiCurve': makeChildAppender(
-      GML2.prototype.writeMultiCurveOrLineString_),
-    'Point': makeChildAppender(GML2.prototype.writePoint_),
+      GML2Format.prototype.writeMultiCurveOrLineString_),
+    'Point': makeChildAppender(GML2Format.prototype.writePoint_),
     'MultiPoint': makeChildAppender(
-      GML2.prototype.writeMultiPoint_),
+      GML2Format.prototype.writeMultiPoint_),
     'LineString': makeChildAppender(
-      GML2.prototype.writeCurveOrLineString_),
+      GML2Format.prototype.writeCurveOrLineString_),
     'MultiLineString': makeChildAppender(
-      GML2.prototype.writeMultiCurveOrLineString_),
+      GML2Format.prototype.writeMultiCurveOrLineString_),
     'LinearRing': makeChildAppender(
-      GML2.prototype.writeLinearRing_),
+      GML2Format.prototype.writeLinearRing_),
     'Polygon': makeChildAppender(
-      GML2.prototype.writeSurfaceOrPolygon_),
+      GML2Format.prototype.writeSurfaceOrPolygon_),
     'MultiPolygon': makeChildAppender(
-      GML2.prototype.writeMultiSurfaceOrPolygon_),
+      GML2Format.prototype.writeMultiSurfaceOrPolygon_),
     'Surface': makeChildAppender(
-      GML2.prototype.writeSurfaceOrPolygon_),
+      GML2Format.prototype.writeSurfaceOrPolygon_),
     'MultiSurface': makeChildAppender(
-      GML2.prototype.writeMultiSurfaceOrPolygon_),
+      GML2Format.prototype.writeMultiSurfaceOrPolygon_),
     'Envelope': makeChildAppender(
-      GML2.prototype.writeEnvelope)
+      GML2Format.prototype.writeEnvelope)
   }
 };
 
@@ -674,12 +674,12 @@ GML2.prototype.GEOMETRY_SERIALIZERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
-GML2.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
+GML2Format.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'lineStringMember': makeChildAppender(
-      GML2.prototype.writeLineStringOrCurveMember_),
+      GML2Format.prototype.writeLineStringOrCurveMember_),
     'curveMember': makeChildAppender(
-      GML2.prototype.writeLineStringOrCurveMember_)
+      GML2Format.prototype.writeLineStringOrCurveMember_)
   }
 };
 
@@ -687,10 +687,10 @@ GML2.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
-GML2.prototype.RING_SERIALIZERS_ = {
+GML2Format.prototype.RING_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
-    'outerBoundaryIs': makeChildAppender(GML2.prototype.writeRing_),
-    'innerBoundaryIs': makeChildAppender(GML2.prototype.writeRing_)
+    'outerBoundaryIs': makeChildAppender(GML2Format.prototype.writeRing_),
+    'innerBoundaryIs': makeChildAppender(GML2Format.prototype.writeRing_)
   }
 };
 
@@ -698,10 +698,10 @@ GML2.prototype.RING_SERIALIZERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
-GML2.prototype.POINTMEMBER_SERIALIZERS_ = {
+GML2Format.prototype.POINTMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'pointMember': makeChildAppender(
-      GML2.prototype.writePointMember_)
+      GML2Format.prototype.writePointMember_)
   }
 };
 
@@ -710,12 +710,12 @@ GML2.prototype.POINTMEMBER_SERIALIZERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
-GML2.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
+GML2Format.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'surfaceMember': makeChildAppender(
-      GML2.prototype.writeSurfaceOrPolygonMember_),
+      GML2Format.prototype.writeSurfaceOrPolygonMember_),
     'polygonMember': makeChildAppender(
-      GML2.prototype.writeSurfaceOrPolygonMember_)
+      GML2Format.prototype.writeSurfaceOrPolygonMember_)
   }
 };
 
@@ -723,11 +723,11 @@ GML2.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
-GML2.prototype.ENVELOPE_SERIALIZERS_ = {
+GML2Format.prototype.ENVELOPE_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'lowerCorner': makeChildAppender(writeStringTextNode),
     'upperCorner': makeChildAppender(writeStringTextNode)
   }
 };
 
-export default GML2;
+export default GML2Format;

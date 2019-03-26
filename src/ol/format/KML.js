@@ -6,7 +6,7 @@ import {extend, includes} from '../array.js';
 import {assert} from '../asserts.js';
 import {asArray} from '../color.js';
 import {transformGeometryWithOptions} from './Feature.js';
-import XMLFeature from './XMLFeature.js';
+import XMLFeatureFormat from './XMLFeature.js';
 import {readDecimal, readBoolean, readString, writeStringTextNode, writeCDATASection, writeDecimalTextNode, writeBooleanTextNode} from './xsd.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -399,7 +399,7 @@ function createStyleDefaults() {
  *
  * @api
  */
-class KML extends XMLFeature {
+class KMLFormat extends XMLFeatureFormat {
 
   /**
    * @param {Options=} opt_options Options.
@@ -2210,7 +2210,7 @@ const DOCUMENT_NODE_FACTORY = function(value, objectStack, opt_nodeName) {
  * @param {Node} node Node.
  * @param {Array<Feature>} features Features.
  * @param {Array<*>} objectStack Object stack.
- * @this {KML}
+ * @this {KMLFormat}
  */
 function writeDocument(node, features, objectStack) {
   const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
@@ -2663,7 +2663,7 @@ const EXTENDEDDATA_NODE_FACTORY = makeSimpleNodeFactory('ExtendedData');
  * @param {Element} node Node.
  * @param {Feature} feature Feature.
  * @param {Array<*>} objectStack Object stack.
- * @this {KML}
+ * @this {KMLFormat}
  */
 function writePlacemark(node, feature, objectStack) {
   const /** @type {import("../xml.js").NodeStackItem} */ context = {node: node};
@@ -2929,4 +2929,4 @@ function writeVec2(node, vec2) {
 }
 
 
-export default KML;
+export default KMLFormat;

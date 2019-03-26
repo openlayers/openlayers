@@ -5,7 +5,7 @@
 import {extend} from '../array.js';
 import Feature from '../Feature.js';
 import {transformGeometryWithOptions} from './Feature.js';
-import XMLFeature from './XMLFeature.js';
+import XMLFeatureFormat from './XMLFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import Point from '../geom/Point.js';
@@ -51,7 +51,7 @@ const PARSERS = makeStructureNS(
  *
  * @api
  */
-class OSMXML extends XMLFeature {
+class OSMXMLFormat extends XMLFeatureFormat {
   constructor() {
     super();
 
@@ -179,4 +179,4 @@ function readTag(node, objectStack) {
 }
 
 
-export default OSMXML;
+export default OSMXMLFormat;

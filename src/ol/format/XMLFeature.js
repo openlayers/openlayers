@@ -15,7 +15,7 @@ import {isDocument, parse} from '../xml.js';
  *
  * @abstract
  */
-class XMLFeature extends FeatureFormat {
+class XMLFeatureFormat extends FeatureFormat {
   constructor() {
     super();
 
@@ -261,4 +261,4 @@ class XMLFeature extends FeatureFormat {
 }
 
 
-export default XMLFeature;
+export default XMLFeatureFormat;

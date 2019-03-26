@@ -3,7 +3,7 @@
  */
 import Feature from '../Feature.js';
 import {transformGeometryWithOptions} from './Feature.js';
-import TextFeature from './TextFeature.js';
+import TextFeatureFormat from './TextFeature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import GeometryType from '../geom/GeometryType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -607,7 +607,7 @@ class Parser {
  *
  * @api
  */
-class WKT extends TextFeature {
+class WKTFormat extends TextFeatureFormat {
 
   /**
    * @param {Options=} opt_options Options.
@@ -874,4 +874,4 @@ function encode(geom) {
 }
 
 
-export default WKT;
+export default WKTFormat;

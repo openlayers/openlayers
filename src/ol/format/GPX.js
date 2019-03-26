@@ -4,7 +4,7 @@
 import Feature from '../Feature.js';
 import {includes} from '../array.js';
 import {transformGeometryWithOptions} from './Feature.js';
-import XMLFeature from './XMLFeature.js';
+import XMLFeatureFormat from './XMLFeature.js';
 import {readString, readDecimal, readNonNegativeInteger, readDateTime, writeStringTextNode, writeNonNegativeIntegerTextNode, writeDecimalTextNode, writeDateTimeTextNode} from './xsd.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -115,7 +115,7 @@ const GPX_SERIALIZERS = makeStructureNS(
  *
  * @api
  */
-class GPX extends XMLFeature {
+class GPXFormat extends XMLFeatureFormat {
 
   /**
    * @param {Options=} opt_options Options.
@@ -856,4 +856,4 @@ function writeWpt(node, feature, objectStack) {
 }
 
 
-export default GPX;
+export default GPXFormat;

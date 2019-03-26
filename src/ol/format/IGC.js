@@ -3,7 +3,7 @@
  */
 import Feature from '../Feature.js';
 import {transformGeometryWithOptions} from './Feature.js';
-import TextFeature from './TextFeature.js';
+import TextFeatureFormat from './TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import {get as getProjection} from '../proj.js';
@@ -66,7 +66,7 @@ const NEWLINE_RE = /\r\n|\r|\n/;
  *
  * @api
  */
-class IGC extends TextFeature {
+class IGCFormat extends TextFeatureFormat {
 
   /**
    * @param {Options=} opt_options Options.
@@ -177,4 +177,4 @@ class IGC extends TextFeature {
 
 }
 
-export default IGC;
+export default IGCFormat;

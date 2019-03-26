@@ -42,7 +42,7 @@ import {get} from '../proj.js';
  * @param {Options=} opt_options Options.
  * @api
  */
-class MVT extends FeatureFormat {
+class MVTFormat extends FeatureFormat {
 
   /**
    * @param {Options=} opt_options Options.
@@ -406,4 +406,4 @@ function getGeometryType(type, numEnds) {
   return geometryType;
 }
 
-export default MVT;
+export default MVTFormat;

@@ -4,7 +4,7 @@
 import {extend} from '../array.js';
 import {createOrUpdate} from '../extent.js';
 import {transformExtentWithOptions, transformGeometryWithOptions} from './Feature.js';
-import GMLBase, {GMLNS} from './GMLBase.js';
+import GMLBaseFormat, {GMLNS} from './GMLBase.js';
 import {readNonNegativeIntegerString, writeStringTextNode} from './xsd.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
@@ -48,7 +48,7 @@ const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
  *
  * @api
  */
-class GML3 extends GMLBase {
+class GML3Format extends GMLBaseFormat {
 
   /**
    * @param {import("./GMLBase.js").Options=} opt_options Optional configuration object.
@@ -918,10 +918,10 @@ class GML3 extends GMLBase {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
-GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
+GML3Format.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml': {
-    'pos': makeReplacer(GML3.prototype.readFlatPos_),
-    'posList': makeReplacer(GML3.prototype.readFlatPosList_)
+    'pos': makeReplacer(GML3Format.prototype.readFlatPos_),
+    'posList': makeReplacer(GML3Format.prototype.readFlatPosList_)
   }
 };
 
@@ -931,10 +931,10 @@ GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
-GML3.prototype.FLAT_LINEAR_RINGS_PARSERS = {
+GML3Format.prototype.FLAT_LINEAR_RINGS_PARSERS = {
   'http://www.opengis.net/gml': {
-    'interior': GML3.prototype.interiorParser_,
-    'exterior': GML3.prototype.exteriorParser_
+    'interior': GML3Format.prototype.interiorParser_,
+    'exterior': GML3Format.prototype.exteriorParser_
   }
 };
 
@@ -944,27 +944,27 @@ GML3.prototype.FLAT_LINEAR_RINGS_PARSERS = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @protected
  */
-GML3.prototype.GEOMETRY_PARSERS = {
+GML3Format.prototype.GEOMETRY_PARSERS = {
   'http://www.opengis.net/gml': {
-    'Point': makeReplacer(GMLBase.prototype.readPoint),
+    'Point': makeReplacer(GMLBaseFormat.prototype.readPoint),
     'MultiPoint': makeReplacer(
-      GMLBase.prototype.readMultiPoint),
+      GMLBaseFormat.prototype.readMultiPoint),
     'LineString': makeReplacer(
-      GMLBase.prototype.readLineString),
+      GMLBaseFormat.prototype.readLineString),
     'MultiLineString': makeReplacer(
-      GMLBase.prototype.readMultiLineString),
+      GMLBaseFormat.prototype.readMultiLineString),
     'LinearRing': makeReplacer(
-      GMLBase.prototype.readLinearRing),
-    'Polygon': makeReplacer(GMLBase.prototype.readPolygon),
+      GMLBaseFormat.prototype.readLinearRing),
+    'Polygon': makeReplacer(GMLBaseFormat.prototype.readPolygon),
     'MultiPolygon': makeReplacer(
-      GMLBase.prototype.readMultiPolygon),
-    'Surface': makeReplacer(GML3.prototype.readSurface_),
+      GMLBaseFormat.prototype.readMultiPolygon),
+    'Surface': makeReplacer(GML3Format.prototype.readSurface_),
     'MultiSurface': makeReplacer(
-      GML3.prototype.readMultiSurface_),
-    'Curve': makeReplacer(GML3.prototype.readCurve_),
+      GML3Format.prototype.readMultiSurface_),
+    'Curve': makeReplacer(GML3Format.prototype.readCurve_),
     'MultiCurve': makeReplacer(
-      GML3.prototype.readMultiCurve_),
-    'Envelope': makeReplacer(GML3.prototype.readEnvelope_)
+      GML3Format.prototype.readMultiCurve_),
+    'Envelope': makeReplacer(GML3Format.prototype.readEnvelope_)
   }
 };
 
@@ -974,12 +974,12 @@ GML3.prototype.GEOMETRY_PARSERS = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GML3.prototype.MULTICURVE_PARSERS_ = {
+GML3Format.prototype.MULTICURVE_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'curveMember': makeArrayPusher(
-      GML3.prototype.curveMemberParser_),
+      GML3Format.prototype.curveMemberParser_),
     'curveMembers': makeArrayPusher(
-      GML3.prototype.curveMemberParser_)
+      GML3Format.prototype.curveMemberParser_)
   }
 };
 
@@ -989,12 +989,12 @@ GML3.prototype.MULTICURVE_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GML3.prototype.MULTISURFACE_PARSERS_ = {
+GML3Format.prototype.MULTISURFACE_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'surfaceMember': makeArrayPusher(
-      GML3.prototype.surfaceMemberParser_),
+      GML3Format.prototype.surfaceMemberParser_),
     'surfaceMembers': makeArrayPusher(
-      GML3.prototype.surfaceMemberParser_)
+      GML3Format.prototype.surfaceMemberParser_)
   }
 };
 
@@ -1004,11 +1004,11 @@ GML3.prototype.MULTISURFACE_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GML3.prototype.CURVEMEMBER_PARSERS_ = {
+GML3Format.prototype.CURVEMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'LineString': makeArrayPusher(
-      GMLBase.prototype.readLineString),
-    'Curve': makeArrayPusher(GML3.prototype.readCurve_)
+      GMLBaseFormat.prototype.readLineString),
+    'Curve': makeArrayPusher(GML3Format.prototype.readCurve_)
   }
 };
 
@@ -1018,10 +1018,10 @@ GML3.prototype.CURVEMEMBER_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GML3.prototype.SURFACEMEMBER_PARSERS_ = {
+GML3Format.prototype.SURFACEMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'Polygon': makeArrayPusher(GMLBase.prototype.readPolygon),
-    'Surface': makeArrayPusher(GML3.prototype.readSurface_)
+    'Polygon': makeArrayPusher(GMLBaseFormat.prototype.readPolygon),
+    'Surface': makeArrayPusher(GML3Format.prototype.readSurface_)
   }
 };
 
@@ -1031,9 +1031,9 @@ GML3.prototype.SURFACEMEMBER_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GML3.prototype.SURFACE_PARSERS_ = {
+GML3Format.prototype.SURFACE_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'patches': makeReplacer(GML3.prototype.readPatch_)
+    'patches': makeReplacer(GML3Format.prototype.readPatch_)
   }
 };
 
@@ -1043,9 +1043,9 @@ GML3.prototype.SURFACE_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GML3.prototype.CURVE_PARSERS_ = {
+GML3Format.prototype.CURVE_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'segments': makeReplacer(GML3.prototype.readSegment_)
+    'segments': makeReplacer(GML3Format.prototype.readSegment_)
   }
 };
 
@@ -1055,12 +1055,12 @@ GML3.prototype.CURVE_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GML3.prototype.ENVELOPE_PARSERS_ = {
+GML3Format.prototype.ENVELOPE_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'lowerCorner': makeArrayPusher(
-      GML3.prototype.readFlatPosList_),
+      GML3Format.prototype.readFlatPosList_),
     'upperCorner': makeArrayPusher(
-      GML3.prototype.readFlatPosList_)
+      GML3Format.prototype.readFlatPosList_)
   }
 };
 
@@ -1070,10 +1070,10 @@ GML3.prototype.ENVELOPE_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GML3.prototype.PATCHES_PARSERS_ = {
+GML3Format.prototype.PATCHES_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'PolygonPatch': makeReplacer(
-      GML3.prototype.readPolygonPatch_)
+      GML3Format.prototype.readPolygonPatch_)
   }
 };
 
@@ -1083,10 +1083,10 @@ GML3.prototype.PATCHES_PARSERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
-GML3.prototype.SEGMENTS_PARSERS_ = {
+GML3Format.prototype.SEGMENTS_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'LineStringSegment': makeReplacer(
-      GML3.prototype.readLineStringSegment_)
+      GML3Format.prototype.readLineStringSegment_)
   }
 };
 
@@ -1100,17 +1100,17 @@ GML3.prototype.SEGMENTS_PARSERS_ = {
  * @return {string} Result.
  * @api
  */
-GML3.prototype.writeFeatures;
+GML3Format.prototype.writeFeatures;
 
 
 /**
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
-GML3.prototype.RING_SERIALIZERS_ = {
+GML3Format.prototype.RING_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
-    'exterior': makeChildAppender(GML3.prototype.writeRing_),
-    'interior': makeChildAppender(GML3.prototype.writeRing_)
+    'exterior': makeChildAppender(GML3Format.prototype.writeRing_),
+    'interior': makeChildAppender(GML3Format.prototype.writeRing_)
   }
 };
 
@@ -1119,7 +1119,7 @@ GML3.prototype.RING_SERIALIZERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
-GML3.prototype.ENVELOPE_SERIALIZERS_ = {
+GML3Format.prototype.ENVELOPE_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'lowerCorner': makeChildAppender(writeStringTextNode),
     'upperCorner': makeChildAppender(writeStringTextNode)
@@ -1131,12 +1131,12 @@ GML3.prototype.ENVELOPE_SERIALIZERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
-GML3.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
+GML3Format.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'surfaceMember': makeChildAppender(
-      GML3.prototype.writeSurfaceOrPolygonMember_),
+      GML3Format.prototype.writeSurfaceOrPolygonMember_),
     'polygonMember': makeChildAppender(
-      GML3.prototype.writeSurfaceOrPolygonMember_)
+      GML3Format.prototype.writeSurfaceOrPolygonMember_)
   }
 };
 
@@ -1145,10 +1145,10 @@ GML3.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
-GML3.prototype.POINTMEMBER_SERIALIZERS_ = {
+GML3Format.prototype.POINTMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'pointMember': makeChildAppender(
-      GML3.prototype.writePointMember_)
+      GML3Format.prototype.writePointMember_)
   }
 };
 
@@ -1157,12 +1157,12 @@ GML3.prototype.POINTMEMBER_SERIALIZERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
-GML3.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
+GML3Format.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'lineStringMember': makeChildAppender(
-      GML3.prototype.writeLineStringOrCurveMember_),
+      GML3Format.prototype.writeLineStringOrCurveMember_),
     'curveMember': makeChildAppender(
-      GML3.prototype.writeLineStringOrCurveMember_)
+      GML3Format.prototype.writeLineStringOrCurveMember_)
   }
 };
 
@@ -1171,32 +1171,32 @@ GML3.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
  * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
-GML3.prototype.GEOMETRY_SERIALIZERS_ = {
+GML3Format.prototype.GEOMETRY_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'Curve': makeChildAppender(
-      GML3.prototype.writeCurveOrLineString_),
+      GML3Format.prototype.writeCurveOrLineString_),
     'MultiCurve': makeChildAppender(
-      GML3.prototype.writeMultiCurveOrLineString_),
-    'Point': makeChildAppender(GML3.prototype.writePoint_),
+      GML3Format.prototype.writeMultiCurveOrLineString_),
+    'Point': makeChildAppender(GML3Format.prototype.writePoint_),
     'MultiPoint': makeChildAppender(
-      GML3.prototype.writeMultiPoint_),
+      GML3Format.prototype.writeMultiPoint_),
     'LineString': makeChildAppender(
-      GML3.prototype.writeCurveOrLineString_),
+      GML3Format.prototype.writeCurveOrLineString_),
     'MultiLineString': makeChildAppender(
-      GML3.prototype.writeMultiCurveOrLineString_),
+      GML3Format.prototype.writeMultiCurveOrLineString_),
     'LinearRing': makeChildAppender(
-      GML3.prototype.writeLinearRing_),
+      GML3Format.prototype.writeLinearRing_),
     'Polygon': makeChildAppender(
-      GML3.prototype.writeSurfaceOrPolygon_),
+      GML3Format.prototype.writeSurfaceOrPolygon_),
     'MultiPolygon': makeChildAppender(
-      GML3.prototype.writeMultiSurfaceOrPolygon_),
+      GML3Format.prototype.writeMultiSurfaceOrPolygon_),
     'Surface': makeChildAppender(
-      GML3.prototype.writeSurfaceOrPolygon_),
+      GML3Format.prototype.writeSurfaceOrPolygon_),
     'MultiSurface': makeChildAppender(
-      GML3.prototype.writeMultiSurfaceOrPolygon_),
+      GML3Format.prototype.writeMultiSurfaceOrPolygon_),
     'Envelope': makeChildAppender(
-      GML3.prototype.writeEnvelope)
+      GML3Format.prototype.writeEnvelope)
   }
 };
 
-export default GML3;
+export default GML3Format;

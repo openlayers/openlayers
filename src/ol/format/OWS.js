@@ -2,7 +2,7 @@
  * @module ol/format/OWS
  */
 import {readHref} from './XLink.js';
-import XML from './XML.js';
+import XMLFormat from './XML.js';
 import {readString} from './xsd.js';
 import {makeObjectPropertyPusher, makeObjectPropertySetter, makeStructureNS, pushParseAndPop} from '../xml.js';
 
@@ -26,7 +26,7 @@ const PARSERS = makeStructureNS(
   });
 
 
-class OWS extends XML {
+class OWSFormat extends XMLFormat {
   constructor() {
     super();
   }
@@ -376,4 +376,4 @@ function readValue(node, objectStack) {
 }
 
 
-export default OWS;
+export default OWSFormat;

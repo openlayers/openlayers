@@ -4,7 +4,7 @@
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
 import {transformGeometryWithOptions} from './Feature.js';
-import TextFeature from './TextFeature.js';
+import TextFeatureFormat from './TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import {getStrideForLayout} from '../geom/SimpleGeometry.js';
@@ -35,7 +35,7 @@ import {get as getProjection} from '../proj.js';
  *
  * @api
  */
-class Polyline extends TextFeature {
+class Polyline extends TextFeatureFormat {
 
   /**
    * @param {Options=} opt_options Optional configuration object.
