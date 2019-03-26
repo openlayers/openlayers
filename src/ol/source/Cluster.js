@@ -42,7 +42,7 @@ import VectorSource from './Vector.js';
  * considered for clustering, a custom `geometryFunction` can be defined.
  * @api
  */
-class Cluster extends VectorSource {
+class ClusterSource extends VectorSource {
   /**
    * @param {Options} options Cluster options.
    */
@@ -208,4 +208,4 @@ class Cluster extends VectorSource {
 }
 
 
-export default Cluster;
+export default ClusterSource;

@@ -6,7 +6,7 @@ import TileState from '../TileState.js';
 import VectorRenderTile from '../VectorRenderTile.js';
 import Tile from '../VectorTile.js';
 import {toSize} from '../size.js';
-import UrlTile from './UrlTile.js';
+import UrlTileSource from './UrlTile.js';
 import {getKeyZXY, getKey} from '../tilecoord.js';
 import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.js';
 import {buffer as bufferExtent, getIntersection} from '../extent.js';
@@ -79,7 +79,7 @@ import {equals} from '../array.js';
  * @fires import("./Tile.js").TileSourceEvent
  * @api
  */
-class VectorTile extends UrlTile {
+class VectorTileSource extends UrlTileSource {
   /**
    * @param {!Options} options Vector tile options.
    */
@@ -366,7 +366,7 @@ class VectorTile extends UrlTile {
 }
 
 
-export default VectorTile;
+export default VectorTileSource;
 
 
 /**

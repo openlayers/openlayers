@@ -34,7 +34,7 @@ import {getKeyZXY} from '../tilecoord.js';
  *
  * @fires import("./Tile.js").TileSourceEvent
  */
-class UrlTile extends TileSource {
+class UrlTileSource extends TileSource {
   /**
    * @param {Options} options Image tile options.
    */
@@ -209,4 +209,4 @@ class UrlTile extends TileSource {
 }
 
 
-export default UrlTile;
+export default UrlTileSource;

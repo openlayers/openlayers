@@ -32,7 +32,7 @@ import ImageSource, {defaultImageLoadFunction} from './Image.js';
  * A layer source for displaying a single, static image.
  * @api
  */
-class Static extends ImageSource {
+class StaticSource extends ImageSource {
   /**
    * @param {Options} options ImageStatic options.
    */
@@ -136,4 +136,4 @@ class Static extends ImageSource {
 }
 
 
-export default Static;
+export default StaticSource;

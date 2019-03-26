@@ -57,7 +57,7 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * @fires module:ol/source/Image.ImageSourceEvent
  * @api
  */
-class ImageWMS extends ImageSource {
+class ImageWMSSource extends ImageSource {
   /**
    * @param {Options=} [opt_options] ImageWMS options.
    */
@@ -385,4 +385,4 @@ class ImageWMS extends ImageSource {
 }
 
 
-export default ImageWMS;
+export default ImageWMSSource;

@@ -117,7 +117,7 @@ const TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
  * Layer source for Bing Maps tile data.
  * @api
  */
-class BingMaps extends TileImage {
+class BingMapsSource extends TileImage {
   /**
    * @param {Options} options Bing Maps options.
    */
@@ -300,4 +300,4 @@ class BingMaps extends TileImage {
   }
 }
 
-export default BingMaps;
+export default BingMapsSource;

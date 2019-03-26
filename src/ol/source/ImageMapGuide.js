@@ -38,7 +38,7 @@ import {appendParams} from '../uri.js';
  * @fires module:ol/source/Image.ImageSourceEvent
  * @api
  */
-class ImageMapGuide extends ImageSource {
+class ImageMapGuideSource extends ImageSource {
   /**
    * @param {Options} options ImageMapGuide options.
    */
@@ -255,4 +255,4 @@ function getScale(extent, size, metersPerUnit, dpi) {
 }
 
 
-export default ImageMapGuide;
+export default ImageMapGuideSource;

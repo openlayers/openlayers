@@ -50,7 +50,7 @@ import {appendParams} from '../uri.js';
  * @fires module:ol/source/Image.ImageSourceEvent
  * @api
  */
-class ImageArcGISRest extends ImageSource {
+class ImageArcGISRestSource extends ImageSource {
   /**
    * @param {Options=} opt_options Image ArcGIS Rest Options.
    */
@@ -289,4 +289,4 @@ class ImageArcGISRest extends ImageSource {
 }
 
 
-export default ImageArcGISRest;
+export default ImageArcGISRestSource;

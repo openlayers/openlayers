@@ -3,7 +3,7 @@
  */
 
 import {ATTRIBUTION as OSM_ATTRIBUTION} from './OSM.js';
-import XYZ from './XYZ.js';
+import XYZSource from './XYZ.js';
 
 
 /**
@@ -115,7 +115,7 @@ const ProviderConfig = {
  * Layer source for the Stamen tile server.
  * @api
  */
-class Stamen extends XYZ {
+class StamenSource extends XYZSource {
   /**
    * @param {Options} options Stamen options.
    */
@@ -148,4 +148,4 @@ class Stamen extends XYZ {
 
 }
 
-export default Stamen;
+export default StamenSource;

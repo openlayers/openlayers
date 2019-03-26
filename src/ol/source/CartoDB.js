@@ -4,7 +4,7 @@
 
 import {assign} from '../obj.js';
 import SourceState from './State.js';
-import XYZ from './XYZ.js';
+import XYZSource from './XYZ.js';
 
 /**
  * @typedef {Object} Options
@@ -41,7 +41,7 @@ import XYZ from './XYZ.js';
  * Layer source for the CartoDB Maps API.
  * @api
  */
-class CartoDB extends XYZ {
+class CartoDBSource extends XYZSource {
   /**
    * @param {Options} options CartoDB options.
    */
@@ -186,4 +186,4 @@ class CartoDB extends XYZ {
 }
 
 
-export default CartoDB;
+export default CartoDBSource;

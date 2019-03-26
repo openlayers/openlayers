@@ -6,7 +6,7 @@ import Tile from '../Tile.js';
 import TileState from '../TileState.js';
 import {createCanvasContext2D} from '../dom.js';
 import {toSize} from '../size.js';
-import XYZ from './XYZ.js';
+import XYZSource from './XYZ.js';
 import {getKeyZXY} from '../tilecoord.js';
 
 
@@ -92,7 +92,7 @@ class LabeledTile extends Tile {
  * Uses Canvas context2d, so requires Canvas support.
  * @api
  */
-class TileDebug extends XYZ {
+class TileDebugSource extends XYZSource {
   /**
    * @param {Options=} opt_options Debug tile options.
    */
@@ -136,4 +136,4 @@ class TileDebug extends XYZ {
 }
 
 
-export default TileDebug;
+export default TileDebugSource;

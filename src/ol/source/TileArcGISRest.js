@@ -6,7 +6,7 @@ import {createEmpty} from '../extent.js';
 import {modulo} from '../math.js';
 import {assign} from '../obj.js';
 import {toSize, scale as scaleSize} from '../size.js';
-import TileImage from './TileImage.js';
+import TileImageSource from './TileImage.js';
 import {hash as tileCoordHash} from '../tilecoord.js';
 import {appendParams} from '../uri.js';
 
@@ -58,7 +58,7 @@ import {appendParams} from '../uri.js';
  * {@link module:ol/source/XYZ~XYZ} data source.
  * @api
  */
-class TileArcGISRest extends TileImage {
+class TileArcGISRestSource extends TileImageSource {
   /**
    * @param {Options=} opt_options Tile ArcGIS Rest options.
    */
@@ -184,7 +184,7 @@ class TileArcGISRest extends TileImage {
  * @param {number} pixelRatio The pixel ratio
  * @param {import("../proj/Projection.js").default} projection The projection
  * @return {string|undefined} The tile URL
- * @this {TileArcGISRest}
+ * @this {TileArcGISRestSource}
  */
 function tileUrlFunction(tileCoord, pixelRatio, projection) {
 
@@ -219,4 +219,4 @@ function tileUrlFunction(tileCoord, pixelRatio, projection) {
 }
 
 
-export default TileArcGISRest;
+export default TileArcGISRestSource;

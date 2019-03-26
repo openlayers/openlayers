@@ -14,7 +14,7 @@ import {applyTransform, intersects} from '../extent.js';
 import {jsonp as requestJSONP} from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import SourceState from './State.js';
-import TileImage from './TileImage.js';
+import TileImageSource from './TileImage.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 
@@ -69,7 +69,7 @@ import {createXYZ, extentFromProjection} from '../tilegrid.js';
  * Layer source for tile data in TileJSON format.
  * @api
  */
-class TileJSON extends TileImage {
+class TileJSONSource extends TileImageSource {
   /**
    * @param {Options} options TileJSON options.
    */
@@ -128,7 +128,7 @@ class TileJSON extends TileImage {
     if (!client.status || client.status >= 200 && client.status < 300) {
       let response;
       try {
-        response = /** @type {TileJSON} */(JSON.parse(client.responseText));
+        response = /** @type {TileJSONSource} */(JSON.parse(client.responseText));
       } catch (err) {
         this.handleTileJSONError();
         return;
@@ -209,4 +209,4 @@ class TileJSON extends TileImage {
 }
 
 
-export default TileJSON;
+export default TileJSONSource;

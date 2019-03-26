@@ -7,7 +7,7 @@ import {find, findIndex, includes} from '../array.js';
 import {containsExtent} from '../extent.js';
 import {assign} from '../obj.js';
 import {get as getProjection, equivalent, transformExtent} from '../proj.js';
-import TileImage from './TileImage.js';
+import TileImageSource from './TileImage.js';
 import WMTSRequestEncoding from './WMTSRequestEncoding.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {appendParams} from '../uri.js';
@@ -60,7 +60,7 @@ import {appendParams} from '../uri.js';
  * Layer source for tile data from WMTS servers.
  * @api
  */
-class WMTS extends TileImage {
+class WMTSSource extends TileImageSource {
   /**
    * @param {Options} options WMTS options.
    */
@@ -259,7 +259,7 @@ class WMTS extends TileImage {
 
 }
 
-export default WMTS;
+export default WMTSSource;
 
 /**
  * Generate source options from a capabilities object.
@@ -457,7 +457,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
 /**
  * @param {string} template Template.
  * @return {import("../Tile.js").UrlFunction} Tile URL function.
- * @this {WMTS}
+ * @this {WMTSSource}
  */
 function createFromWMTSTemplate(template) {
   const requestEncoding = this.requestEncoding_;

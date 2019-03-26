@@ -11,7 +11,7 @@ import {modulo} from '../math.js';
 import {get as getProjection, transform, transformExtent} from '../proj.js';
 import {calculateSourceResolution} from '../reproj.js';
 import {toSize, buffer as bufferSize, scale as scaleSize} from '../size.js';
-import TileImage from './TileImage.js';
+import TileImageSource from './TileImage.js';
 import WMSServerType from './WMSServerType.js';
 import {hash as tileCoordHash} from '../tilecoord.js';
 import {compareVersions} from '../string.js';
@@ -75,7 +75,7 @@ import {appendParams} from '../uri.js';
  * Layer source for tile data from WMS servers.
  * @api
  */
-class TileWMS extends TileImage {
+class TileWMSSource extends TileImageSource {
   /**
    * @param {Options=} [opt_options] Tile WMS options.
    */
@@ -346,7 +346,7 @@ class TileWMS extends TileImage {
  * @param {number} pixelRatio The pixel ratio
  * @param {import("../proj/Projection.js").default} projection The projection
  * @return {string|undefined} The tile URL
- * @this {TileWMS}
+ * @this {TileWMSSource}
  */
 function tileUrlFunction(tileCoord, pixelRatio, projection) {
 
@@ -392,4 +392,4 @@ function tileUrlFunction(tileCoord, pixelRatio, projection) {
 }
 
 
-export default TileWMS;
+export default TileWMSSource;

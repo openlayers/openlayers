@@ -10,7 +10,7 @@ import {assert} from '../asserts.js';
 import {createCanvasContext2D} from '../dom.js';
 import {getTopLeft} from '../extent.js';
 import {toSize} from '../size.js';
-import TileImage from './TileImage.js';
+import TileImageSource from './TileImage.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 
 
@@ -124,7 +124,7 @@ export class CustomTile extends ImageTile {
  * Imaging Protocol are supported).
  * @api
  */
-class Zoomify extends TileImage {
+class ZoomifySource extends TileImageSource {
 
   /**
    * @param {Options=} opt_options Options.
@@ -266,4 +266,4 @@ class Zoomify extends TileImage {
 
 }
 
-export default Zoomify;
+export default ZoomifySource;

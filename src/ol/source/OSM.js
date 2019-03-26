@@ -2,7 +2,7 @@
  * @module ol/source/OSM
  */
 
-import XYZ from './XYZ.js';
+import XYZSource from './XYZ.js';
 
 
 /**
@@ -45,7 +45,7 @@ export const ATTRIBUTION = '&#169; ' +
  * Layer source for the OpenStreetMap tile server.
  * @api
  */
-class OSM extends XYZ {
+class OSMSource extends XYZSource {
   /**
    * @param {Options=} [opt_options] Open Street Map options.
    */
@@ -83,4 +83,4 @@ class OSM extends XYZ {
 
 }
 
-export default OSM;
+export default OSMSource;
