@@ -20,7 +20,8 @@ const map = new Map({
   view: new View({
     projection: 'EPSG:4326',
     center: [0, 0],
-    resolution: 1
+    resolution: 1,
+    multiWorld: true
   })
 });
 map.getView().setCenter([10, 10]);
