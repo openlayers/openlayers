@@ -10,7 +10,7 @@ import Filter from './Filter.js';
  *
  * @abstract
  */
-class Comparison extends Filter {
+class ComparisonFilter extends Filter {
 
   /**
    * @param {!string} tagName The XML tag name for this filter.
@@ -28,4 +28,4 @@ class Comparison extends Filter {
 
 }
 
-export default Comparison;
+export default ComparisonFilter;

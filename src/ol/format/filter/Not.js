@@ -8,7 +8,7 @@ import Filter from './Filter.js';
  * Represents a logical `<Not>` operator for a filter condition.
  * @api
  */
-class Not extends Filter {
+class NotFilter extends Filter {
 
   /**
    * @param {!import("./Filter.js").default} condition Filter condition.
@@ -26,4 +26,4 @@ class Not extends Filter {
 
 }
 
-export default Not;
+export default NotFilter;

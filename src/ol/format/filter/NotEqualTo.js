@@ -1,14 +1,14 @@
 /**
  * @module ol/format/filter/NotEqualTo
  */
-import ComparisonBinary from './ComparisonBinary.js';
+import ComparisonBinaryFilter from './ComparisonBinary.js';
 
 /**
  * @classdesc
  * Represents a `<PropertyIsNotEqualTo>` comparison operator.
  * @api
  */
-class NotEqualTo extends ComparisonBinary {
+class NotEqualToFilter extends ComparisonBinaryFilter {
 
   /**
    * @param {!string} propertyName Name of the context property to compare.
@@ -21,4 +21,4 @@ class NotEqualTo extends ComparisonBinary {
 
 }
 
-export default NotEqualTo;
+export default NotEqualToFilter;

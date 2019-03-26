@@ -1,14 +1,14 @@
 /**
  * @module ol/format/filter/Or
  */
-import LogicalNary from './LogicalNary.js';
+import LogicalNaryFilter from './LogicalNary.js';
 
 /**
  * @classdesc
  * Represents a logical `<Or>` operator between two ore more filter conditions.
  * @api
  */
-class Or extends LogicalNary {
+class OrFilter extends LogicalNaryFilter {
 
   /**
    * @param {...import("./Filter.js").default} conditions Conditions.
@@ -19,4 +19,4 @@ class Or extends LogicalNary {
 
 }
 
-export default Or;
+export default OrFilter;

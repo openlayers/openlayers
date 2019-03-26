@@ -10,7 +10,7 @@ import Filter from './Filter.js';
  *
  * @api
  */
-class Bbox extends Filter {
+class BboxFilter extends Filter {
 
   /**
    * @param {!string} geometryName Geometry name to use.
@@ -40,4 +40,4 @@ class Bbox extends Filter {
 
 }
 
-export default Bbox;
+export default BboxFilter;

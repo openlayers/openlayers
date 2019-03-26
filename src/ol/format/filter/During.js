@@ -1,14 +1,14 @@
 /**
  * @module ol/format/filter/During
  */
-import Comparison from './Comparison.js';
+import ComparisonFilter from './Comparison.js';
 
 /**
  * @classdesc
  * Represents a `<During>` comparison operator.
  * @api
  */
-class During extends Comparison {
+class DuringFilter extends ComparisonFilter {
 
   /**
    * @param {!string} propertyName Name of the context property to compare.
@@ -31,4 +31,4 @@ class During extends Comparison {
 
 }
 
-export default During;
+export default DuringFilter;

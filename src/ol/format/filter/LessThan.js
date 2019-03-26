@@ -1,14 +1,14 @@
 /**
  * @module ol/format/filter/LessThan
  */
-import ComparisonBinary from './ComparisonBinary.js';
+import ComparisonBinaryFilter from './ComparisonBinary.js';
 
 /**
  * @classdesc
  * Represents a `<PropertyIsLessThan>` comparison operator.
  * @api
  */
-class LessThan extends ComparisonBinary {
+class LessThanFilter extends ComparisonBinaryFilter {
 
   /**
    * @param {!string} propertyName Name of the context property to compare.
@@ -20,4 +20,4 @@ class LessThan extends ComparisonBinary {
 
 }
 
-export default LessThan;
+export default LessThanFilter;

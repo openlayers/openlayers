@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/Within
  */
-import Spatial from './Spatial.js';
+import SpatialFilter from './Spatial.js';
 
 /**
  * @classdesc
@@ -9,7 +9,7 @@ import Spatial from './Spatial.js';
  * is within a given geometry.
  * @api
  */
-class Within extends Spatial {
+class WithinFilter extends SpatialFilter {
 
   /**
    * @param {!string} geometryName Geometry name to use.
@@ -23,4 +23,4 @@ class Within extends Spatial {
 
 }
 
-export default Within;
+export default WithinFilter;

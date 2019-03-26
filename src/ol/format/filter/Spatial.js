@@ -11,7 +11,7 @@ import Filter from './Filter.js';
  *
  * @abstract
  */
-class Spatial extends Filter {
+class SpatialFilter extends Filter {
 
   /**
    * @param {!string} tagName The XML tag name for this filter.
@@ -42,4 +42,4 @@ class Spatial extends Filter {
 
 }
 
-export default Spatial;
+export default SpatialFilter;

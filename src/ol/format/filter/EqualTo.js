@@ -1,14 +1,14 @@
 /**
  * @module ol/format/filter/EqualTo
  */
-import ComparisonBinary from './ComparisonBinary.js';
+import ComparisonBinaryFilter from './ComparisonBinary.js';
 
 /**
  * @classdesc
  * Represents a `<PropertyIsEqualTo>` comparison operator.
  * @api
  */
-class EqualTo extends ComparisonBinary {
+class EqualToFilter extends ComparisonBinaryFilter {
 
   /**
    * @param {!string} propertyName Name of the context property to compare.
@@ -21,4 +21,4 @@ class EqualTo extends ComparisonBinary {
 
 }
 
-export default EqualTo;
+export default EqualToFilter;

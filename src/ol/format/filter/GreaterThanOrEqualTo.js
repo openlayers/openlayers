@@ -1,14 +1,14 @@
 /**
  * @module ol/format/filter/GreaterThanOrEqualTo
  */
-import ComparisonBinary from './ComparisonBinary.js';
+import ComparisonBinaryFilter from './ComparisonBinary.js';
 
 /**
  * @classdesc
  * Represents a `<PropertyIsGreaterThanOrEqualTo>` comparison operator.
  * @api
  */
-class GreaterThanOrEqualTo extends ComparisonBinary {
+class GreaterThanOrEqualToFilter extends ComparisonBinaryFilter {
 
   /**
    * @param {!string} propertyName Name of the context property to compare.
@@ -20,4 +20,4 @@ class GreaterThanOrEqualTo extends ComparisonBinary {
 
 }
 
-export default GreaterThanOrEqualTo;
+export default GreaterThanOrEqualToFilter;

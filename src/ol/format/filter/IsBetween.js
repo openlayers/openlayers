@@ -1,14 +1,14 @@
 /**
  * @module ol/format/filter/IsBetween
  */
-import Comparison from './Comparison.js';
+import ComparisonFilter from './Comparison.js';
 
 /**
  * @classdesc
  * Represents a `<PropertyIsBetween>` comparison operator.
  * @api
  */
-class IsBetween extends Comparison {
+class IsBetweenFilter extends ComparisonFilter {
 
   /**
    * @param {!string} propertyName Name of the context property to compare.
@@ -31,4 +31,4 @@ class IsBetween extends Comparison {
   }
 }
 
-export default IsBetween;
+export default IsBetweenFilter;

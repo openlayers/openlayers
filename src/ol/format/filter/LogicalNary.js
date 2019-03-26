@@ -11,7 +11,7 @@ import Filter from './Filter.js';
  *
  * @abstract
  */
-class LogicalNary extends Filter {
+class LogicalNaryFilter extends Filter {
 
   /**
    * @param {!string} tagName The XML tag name for this filter.
@@ -30,4 +30,4 @@ class LogicalNary extends Filter {
 
 }
 
-export default LogicalNary;
+export default LogicalNaryFilter;

@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/Intersects
  */
-import Spatial from './Spatial.js';
+import SpatialFilter from './Spatial.js';
 
 /**
  * @classdesc
@@ -9,7 +9,7 @@ import Spatial from './Spatial.js';
  * intersects a given geometry.
  * @api
  */
-class Intersects extends Spatial {
+class IntersectsFilter extends SpatialFilter {
 
   /**
    * @param {!string} geometryName Geometry name to use.
@@ -23,4 +23,4 @@ class Intersects extends Spatial {
 
 }
 
-export default Intersects;
+export default IntersectsFilter;

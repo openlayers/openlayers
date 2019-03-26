@@ -1,14 +1,14 @@
 /**
  * @module ol/format/filter/IsNull
  */
-import Comparison from './Comparison.js';
+import ComparisonFilter from './Comparison.js';
 
 /**
  * @classdesc
  * Represents a `<PropertyIsNull>` comparison operator.
  * @api
  */
-class IsNull extends Comparison {
+class IsNullFilter extends ComparisonFilter {
 
   /**
    * @param {!string} propertyName Name of the context property to compare.
@@ -19,4 +19,4 @@ class IsNull extends Comparison {
 
 }
 
-export default IsNull;
+export default IsNullFilter;

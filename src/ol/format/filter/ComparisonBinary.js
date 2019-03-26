@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/ComparisonBinary
  */
-import Comparison from './Comparison.js';
+import ComparisonFilter from './Comparison.js';
 
 /**
  * @classdesc
@@ -10,7 +10,7 @@ import Comparison from './Comparison.js';
  *
  * @abstract
  */
-class ComparisonBinary extends Comparison {
+class ComparisonBinaryFilter extends ComparisonFilter {
 
   /**
    * @param {!string} tagName The XML tag name for this filter.
@@ -35,4 +35,4 @@ class ComparisonBinary extends Comparison {
 
 }
 
-export default ComparisonBinary;
+export default ComparisonBinaryFilter;

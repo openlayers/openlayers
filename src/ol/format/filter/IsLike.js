@@ -1,14 +1,14 @@
 /**
  * @module ol/format/filter/IsLike
  */
-import Comparison from './Comparison.js';
+import ComparisonFilter from './Comparison.js';
 
 /**
  * @classdesc
  * Represents a `<PropertyIsLike>` comparison operator.
  * @api
  */
-class IsLike extends Comparison {
+class IsLikeFilter extends ComparisonFilter {
 
   /**
    * [constructor description]
@@ -53,4 +53,4 @@ class IsLike extends Comparison {
   }
 }
 
-export default IsLike;
+export default IsLikeFilter;
