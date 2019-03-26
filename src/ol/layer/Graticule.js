@@ -143,7 +143,7 @@ const INTERVALS = [
  * @fires import("../render/Event.js").RenderEvent
  * @api
  */
-class Graticule extends VectorLayer {
+class GraticuleLayer extends VectorLayer {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -842,4 +842,4 @@ class Graticule extends VectorLayer {
 }
 
 
-export default Graticule;
+export default GraticuleLayer;

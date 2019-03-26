@@ -49,14 +49,14 @@ class BaseLayer extends BaseObject {
      */
     const properties = assign({}, options);
     properties[LayerProperty.OPACITY] =
-       options.opacity !== undefined ? options.opacity : 1;
+        options.opacity !== undefined ? options.opacity : 1;
     properties[LayerProperty.VISIBLE] =
-       options.visible !== undefined ? options.visible : true;
+        options.visible !== undefined ? options.visible : true;
     properties[LayerProperty.Z_INDEX] = options.zIndex;
     properties[LayerProperty.MAX_RESOLUTION] =
-       options.maxResolution !== undefined ? options.maxResolution : Infinity;
+        options.maxResolution !== undefined ? options.maxResolution : Infinity;
     properties[LayerProperty.MIN_RESOLUTION] =
-       options.minResolution !== undefined ? options.minResolution : 0;
+        options.minResolution !== undefined ? options.minResolution : 0;
 
     /**
      * @type {string}

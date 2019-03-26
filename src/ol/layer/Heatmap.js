@@ -63,7 +63,7 @@ const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  * @fires import("../render/Event.js").RenderEvent
  * @api
  */
-class Heatmap extends VectorLayer {
+class HeatmapLayer extends VectorLayer {
   /**
    * @param {Options=} opt_options Options.
    */
@@ -206,15 +206,15 @@ class Heatmap extends VectorLayer {
         attribute float a_rotateWithView;
         attribute vec2 a_offsets;
         attribute float a_opacity;
-        
+
         uniform mat4 u_projectionMatrix;
         uniform mat4 u_offsetScaleMatrix;
         uniform mat4 u_offsetRotateMatrix;
         uniform float u_size;
-        
+
         varying vec2 v_texCoord;
         varying float v_opacity;
-        
+
         void main(void) {
           mat4 offsetMatrix = u_offsetScaleMatrix;
           if (a_rotateWithView == 1.0) {
@@ -229,10 +229,10 @@ class Heatmap extends VectorLayer {
         precision mediump float;
         uniform float u_resolution;
         uniform float u_blurSlope;
-        
+
         varying vec2 v_texCoord;
         varying float v_opacity;
-        
+
         void main(void) {
           vec2 texCoord = v_texCoord * 2.0 - vec2(1.0, 1.0);
           float sqRadius = texCoord.x * texCoord.x + texCoord.y * texCoord.y;
@@ -303,4 +303,4 @@ function createGradient(colors) {
 }
 
 
-export default Heatmap;
+export default HeatmapLayer;
