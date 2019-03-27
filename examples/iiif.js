@@ -8,9 +8,10 @@ const layer = new TileLayer(),
     map = new Map({
       layers: [layer],
       target: 'map'
-    });
-
-const notifyDiv = document.getElementById('iiif-notification');
+    }),
+    notifyDiv = document.getElementById('iiif-notification'),
+    urlInput = document.getElementById('imageInfoUrl'),
+    displayButton = document.getElementById('display');
 
 function refreshMap(imageInfoUrl) {
   fetch(imageInfoUrl).then(function(response) {
@@ -38,12 +39,8 @@ function refreshMap(imageInfoUrl) {
   });
 }
 
-const urlInput = document.getElementById('imageInfoUrl');
-const displayButton = document.getElementById('display');
-
 displayButton.addEventListener('click', function() {
-  const imageInfoUrl = urlInput.value;
-  refreshMap(imageInfoUrl);
+  refreshMap(urlInput.value);
 });
 
 refreshMap(urlInput.value);
