@@ -272,6 +272,8 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
 
     if (this.sourceRevision_ < vectorSource.getRevision()) {
       this.sourceRevision_ = vectorSource.getRevision();
+      this.verticesBuffer_.getArray().length = 0;
+      this.indicesBuffer_.getArray().length = 0;
 
       const viewState = frameState.viewState;
       const projection = viewState.projection;
