@@ -66,7 +66,7 @@ class IIIF extends TileImage {
     const sizes = options.sizes || [];
     const size = options.size;
     assert(size != undefined && Array.isArray(size) && size.length == 2 &&
-      !isNaN(size[0]) && size[0] > 0 && !isNaN(size[1] && size[1] > 0), 60);
+      !isNaN(size[0]) && size[0] > 0 && !isNaN(size[1]) && size[1] > 0, 60);
     const width = size[0];
     const height = size[1];
     const tileSize = options.tileSize;
@@ -142,10 +142,21 @@ class IIIF extends TileImage {
         sizes.sort(function(a, b) {
           return a[0] - b[0];
         });
+        maxZoom = -1;
+        const ignoredSizesIndex = [];
         for (let i = 0; i < sizes.length; i++) {
           const resolution = width / sizes[i][0];
+          if (resolutions.length > 0 && resolutions[resolutions.length - 1] == resolution) {
+            ignoredSizesIndex.push(i);
+            continue;
+          }
           resolutions.push(resolution);
-          maxZoom = i;
+          maxZoom++;
+        }
+        if (ignoredSizesIndex.length > 0) {
+          for (let i = 0; i < ignoredSizesIndex.length; i++) {
+            sizes.splice(ignoredSizesIndex[i] - i, 1);
+          }
         }
       } else {
         // No useful image information at all. Try pseudo tile with full image.
@@ -166,13 +177,14 @@ class IIIF extends TileImage {
       let regionParam,
           sizeParam;
       const zoom = tileCoord[0];
-      if (maxZoom < zoom) {
+      if (zoom > maxZoom) {
         return;
       }
       const tileX = tileCoord[1],
           tileY = tileCoord[2],
           scale = resolutions[zoom];
-      if (tileX < 0 || Math.ceil(width / scale / tileWidth) <= tileX ||
+      if (tileX === undefined || tileY === undefined || scale === undefined ||
+      tileX < 0 || Math.ceil(width / scale / tileWidth) <= tileX ||
       tileY < 0 || Math.ceil(height / scale / tileHeight) <= tileY) {
         return;
       }
@@ -221,7 +233,21 @@ class IIIF extends TileImage {
       } else {
         regionParam = 'full';
         if (supportsListedSizes) {
-          sizeParam = sizes[zoom][0] + ',' + (version == Versions.VERSION3 ? sizes[zoom][1] : '');
+          const regionWidth = sizes[zoom][0],
+              regionHeight = sizes[zoom][1];
+          if (version == Versions.VERSION3) {
+            if (regionWidth == width && regionHeight == height) {
+              sizeParam = 'max';
+            } else {
+              sizeParam = regionWidth + ',' + regionHeight;
+            }
+          } else {
+            if (regionWidth == width) {
+              sizeParam = 'full';
+            } else {
+              sizeParam = regionWidth + ',';
+            }
+          }
         } else {
           sizeParam = version == Versions.VERSION3 ? 'max' : 'full';
         }
