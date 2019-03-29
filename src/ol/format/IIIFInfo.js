@@ -4,6 +4,15 @@
 
 import {assert} from '../asserts.js';
 
+
+/**
+ * @typedef {Object} PreferredOptions
+ * @property {string} [format] Preferred image format. Will be used if the image information
+ * indicates support for that format.
+ * @property {string} [quality] IIIF image qualitiy.  Will be used if the image information
+ * indicates support for that quality.
+ */
+
 /**
  * Supported image formats, qualities and supported region / size calculation features
  * for different image API versions and compliance levels
@@ -233,13 +242,12 @@ versionFunctions[Versions.VERSION3] = generateVersion3Options;
 function getOptionsForImageInformation(imageInfo, preferredOptions) {
   const options = preferredOptions || {},
       version = getVersionOfImageInfo(imageInfo),
-      optionAttributions = options.attributions ? options.attributions : [],
       imageOptions = version === undefined ? undefined : versionFunctions[version](imageInfo);
   if (imageOptions === undefined) {
     return;
   }
   return {
-    url: options.url ? options.url : imageOptions.url,
+    url: imageOptions.url,
     version: version,
     size: [imageInfo.width, imageInfo.height],
     sizes: imageOptions.sizes,
@@ -251,18 +259,38 @@ function getOptionsForImageInformation(imageInfo, preferredOptions) {
       return b - a;
     }) : undefined,
     tileSize: imageOptions.tileSize,
-    attributions: [
-      ...optionAttributions,
-      ...(imageOptions.attributions === undefined ? [] : imageOptions.attributions)
-    ]
+    attributions: imageOptions.attributions
   };
 }
 
+/**
+ * @classdesc
+ * Format for transforming IIIF Image API image information responses into
+ * IIIF tile source ready options
+ *
+ * @api
+ */
 // TODO at the moment, this does not need to be a class.
 class IIIFInfo {
-  readFromJson(imageInfo, preferredOptions) {
-    return getOptionsForImageInformation(imageInfo, preferredOptions);
+
+  /**
+   * @param {Object} imageInfo Deserialized image information JSON response object
+   * @param {PreferredOptions} opt_preferredOptions Optional options for preferred format and quality.
+   * @returns {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
+   */
+  readFromJson(imageInfo, opt_preferredOptions) {
+    return getOptionsForImageInformation(imageInfo, opt_preferredOptions);
   }
+
+  /**
+   * @param {string} imageInfo Image information JSON response as string serialization.
+   * @param {PreferredOptions} opt_preferredOptions Optional options for preferred format and quality.
+   * @returns {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
+   */
+  readFromJsonString(imageInfo, opt_preferredOptions) {
+    return getOptionsForImageInformation(JSON.parse(imageInfo), opt_preferredOptions);
+  }
+
 }
 
 export default IIIFInfo;
