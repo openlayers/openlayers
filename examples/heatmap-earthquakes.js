@@ -43,11 +43,14 @@ const map = new Map({
   })
 });
 
-
-blur.addEventListener('input', function() {
+const blurHandler = function() {
   vector.setBlur(parseInt(blur.value, 10));
-});
+};
+blur.addEventListener('input', blurHandler);
+blur.addEventListener('change', blurHandler);
 
-radius.addEventListener('input', function() {
+const radiusHandler = function() {
   vector.setRadius(parseInt(radius.value, 10));
-});
+};
+radius.addEventListener('input', radiusHandler);
+radius.addEventListener('change', radiusHandler);

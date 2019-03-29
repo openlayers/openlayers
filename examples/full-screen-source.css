@@ -1,6 +1,3 @@
-.fullscreen:-moz-full-screen {
-  height: 100%;
-}
 .fullscreen:-webkit-full-screen {
   height: 100%;
 }

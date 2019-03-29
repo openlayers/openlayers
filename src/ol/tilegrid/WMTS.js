@@ -4,19 +4,19 @@
 
 import {find} from '../array.js';
 import {get as getProjection} from '../proj.js';
-import TileGrid from '../tilegrid/TileGrid.js';
+import TileGrid from './TileGrid.js';
 
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/extent~Extent} [extent] Extent for the tile grid. No tiles
+ * @property {import("../extent.js").Extent} [extent] Extent for the tile grid. No tiles
  * outside this extent will be requested by {@link module:ol/source/Tile} sources.
  * When no `origin` or `origins` are configured, the `origin` will be set to the
  * top-left corner of the extent.
- * @property {module:ol/coordinate~Coordinate} [origin] The tile grid origin, i.e.
+ * @property {import("../coordinate.js").Coordinate} [origin] The tile grid origin, i.e.
  * where the `x` and `y` axes meet (`[z, 0, 0]`). Tile coordinates increase left
  * to right and upwards. If not specified, `extent` or `origins` must be provided.
- * @property {Array<module:ol/coordinate~Coordinate>} [origins] Tile grid origins,
+ * @property {Array<import("../coordinate.js").Coordinate>} [origins] Tile grid origins,
  * i.e. where the `x` and `y` axes meet (`[z, 0, 0]`), for each zoom level. If
  * given, the array length should match the length of the `resolutions` array, i.e.
  * each resolution can have a different origin. Tile coordinates increase left to
@@ -26,16 +26,16 @@ import TileGrid from '../tilegrid/TileGrid.js';
  * is configured, the resolutions array will have a length of `maxZoom + 1`
  * @property {!Array<string>} matrixIds matrix IDs. The length of this array needs
  * to match the length of the `resolutions` array.
- * @property {Array<module:ol/size~Size>} [sizes] Number of tile rows and columns
+ * @property {Array<import("../size.js").Size>} [sizes] Number of tile rows and columns
  * of the grid for each zoom level. The values here are the `TileMatrixWidth` and
  * `TileMatrixHeight` advertised in the GetCapabilities response of the WMTS, and
  * define the grid's extent together with the `origin`.
  * An `extent` can be configured in addition, and will further limit the extent for
- * which tile requests are made by sources. Note that when the top-left corner of
+ * which tile requests are made by sources. If the bottom-left corner of
  * the `extent` is used as `origin` or `origins`, then the `y` value must be
- * negative because OpenLayers tile coordinates increase upwards.
- * @property {number|module:ol/size~Size} [tileSize] Tile size.
- * @property {Array<module:ol/size~Size>} [tileSizes] Tile sizes. The length of
+ * negative because OpenLayers tile coordinates use the top left as the origin.
+ * @property {number|import("../size.js").Size} [tileSize] Tile size.
+ * @property {Array<import("../size.js").Size>} [tileSizes] Tile sizes. The length of
  * this array needs to match the length of the `resolutions` array.
  * @property {Array<number>} [widths] Number of tile columns that cover the grid's
  * extent for each zoom level. Only required when used with a source that has `wrapX`
@@ -52,7 +52,7 @@ import TileGrid from '../tilegrid/TileGrid.js';
  */
 class WMTSTileGrid extends TileGrid {
   /**
-   * @param {module:ol/tilegrid/WMTS~Options} options WMTS options.
+   * @param {Options} options WMTS options.
    */
   constructor(options) {
     super({
@@ -98,11 +98,11 @@ export default WMTSTileGrid;
  * optional TileMatrixSetLimits.
  * @param {Object} matrixSet An object representing a matrixSet in the
  *     capabilities document.
- * @param {module:ol/extent~Extent=} opt_extent An optional extent to restrict the tile
+ * @param {import("../extent.js").Extent=} opt_extent An optional extent to restrict the tile
  *     ranges the server provides.
  * @param {Array<Object>=} opt_matrixLimits An optional object representing
  *     the available matrices for tileGrid.
- * @return {module:ol/tilegrid/WMTS} WMTS tileGrid instance.
+ * @return {WMTSTileGrid} WMTS tileGrid instance.
  * @api
  */
 export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matrixLimits) {
@@ -111,11 +111,11 @@ export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matri
   const resolutions = [];
   /** @type {!Array<string>} */
   const matrixIds = [];
-  /** @type {!Array<module:ol/coordinate~Coordinate>} */
+  /** @type {!Array<import("../coordinate.js").Coordinate>} */
   const origins = [];
-  /** @type {!Array<module:ol/size~Size>} */
+  /** @type {!Array<import("../size.js").Size>} */
   const tileSizes = [];
-  /** @type {!Array<module:ol/size~Size>} */
+  /** @type {!Array<import("../size.js").Size>} */
   const sizes = [];
 
   const matrixLimits = opt_matrixLimits !== undefined ? opt_matrixLimits : [];
@@ -174,8 +174,7 @@ export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matri
       resolutions.push(resolution);
       tileSizes.push(tileWidth == tileHeight ?
         tileWidth : [tileWidth, tileHeight]);
-      // top-left origin, so height is negative
-      sizes.push([elt['MatrixWidth'], -elt['MatrixHeight']]);
+      sizes.push([elt['MatrixWidth'], elt['MatrixHeight']]);
     }
   });
 

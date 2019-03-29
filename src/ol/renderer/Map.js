@@ -1,69 +1,58 @@
 /**
  * @module ol/renderer/Map
  */
-import {getUid} from '../util.js';
+import {abstract, getUid} from '../util.js';
 import Disposable from '../Disposable.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getWidth} from '../extent.js';
-import {TRUE, VOID} from '../functions.js';
+import {TRUE} from '../functions.js';
 import {visibleAtResolution} from '../layer/Layer.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
-import {compose as composeTransform, invert as invertTransform, setFromArray as transformSetFromArray} from '../transform.js';
+import {compose as composeTransform, makeInverse} from '../transform.js';
 
-
+/**
+ * @abstract
+ */
 class MapRenderer extends Disposable {
 
   /**
-   * @param {module:ol/PluggableMap} map Map.
+   * @param {import("../PluggableMap.js").default} map Map.
    */
   constructor(map) {
     super();
 
     /**
      * @private
-     * @type {module:ol/PluggableMap}
+     * @type {import("../PluggableMap.js").default}
      */
     this.map_ = map;
 
     /**
      * @private
-     * @type {!Object<string, module:ol/renderer/Layer>}
+     * @type {!Object<string, import("./Layer.js").default>}
      */
     this.layerRenderers_ = {};
 
     /**
      * @private
-     * @type {Object<string, module:ol/events~EventsKey>}
+     * @type {Object<string, import("../events.js").EventsKey>}
      */
     this.layerRendererListeners_ = {};
 
-    /**
-     * @private
-     * @type {Array<module:ol/renderer/Layer>}
-     */
-    this.layerRendererConstructors_ = [];
-
   }
 
   /**
-   * Register layer renderer constructors.
-   * @param {Array<module:ol/renderer/Layer>} constructors Layer renderers.
+   * @abstract
+   * @param {import("../render/EventType.js").default} type Event type.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    */
-  registerLayerRenderers(constructors) {
-    this.layerRendererConstructors_.push.apply(this.layerRendererConstructors_, constructors);
+  dispatchRenderEvent(type, frameState) {
+    abstract();
   }
 
   /**
-   * Get the registered layer renderer constructors.
-   * @return {Array<module:ol/renderer/Layer>} Registered layer renderers.
-   */
-  getLayerRendererConstructors() {
-    return this.layerRendererConstructors_;
-  }
-
-  /**
-   * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
+   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @protected
    */
   calculateMatrices2D(frameState) {
@@ -77,8 +66,7 @@ class MapRenderer extends Disposable {
       -viewState.rotation,
       -viewState.center[0], -viewState.center[1]);
 
-    invertTransform(
-      transformSetFromArray(pixelToCoordinateTransform, coordinateToPixelTransform));
+    makeInverse(pixelToCoordinateTransform, coordinateToPixelTransform);
   }
 
   /**
@@ -91,13 +79,13 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
-   * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(this: S, (module:ol/Feature|module:ol/render/Feature),
-   *     module:ol/layer/Layer): T} callback Feature callback.
+   * @param {function(this: S, import("../Feature.js").FeatureLike,
+   *     import("../layer/Layer.js").default): T} callback Feature callback.
    * @param {S} thisArg Value to use as `this` when executing `callback`.
-   * @param {function(this: U, module:ol/layer/Layer): boolean} layerFilter Layer filter
+   * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
    *     function, only layers which are visible and for which this function
    *     returns `true` will be tested for features.  By default, all visible
    *     layers will be tested.
@@ -119,14 +107,13 @@ class MapRenderer extends Disposable {
     const viewResolution = viewState.resolution;
 
     /**
-     * @param {module:ol/Feature|module:ol/render/Feature} feature Feature.
-     * @param {module:ol/layer/Layer} layer Layer.
+     * @param {boolean} managed Managed layer.
+     * @param {import("../Feature.js").FeatureLike} feature Feature.
+     * @param {import("../layer/Layer.js").default} layer Layer.
      * @return {?} Callback result.
      */
-    function forEachFeatureAtCoordinate(feature, layer) {
-      const key = getUid(feature).toString();
-      const managed = frameState.layerStates[getUid(layer)].managed;
-      if (!(key in frameState.skippedFeatureUids && !managed)) {
+    function forEachFeatureAtCoordinate(managed, feature, layer) {
+      if (!(getUid(feature) in frameState.skippedFeatureUids && !managed)) {
         return callback.call(thisArg, feature, managed ? layer : null);
       }
     }
@@ -149,13 +136,15 @@ class MapRenderer extends Disposable {
     let i;
     for (i = numLayers - 1; i >= 0; --i) {
       const layerState = layerStates[i];
-      const layer = layerState.layer;
+      const layer = /** @type {import("../layer/Layer.js").default} */ (layerState.layer);
       if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
         const layerRenderer = this.getLayerRenderer(layer);
-        if (layer.getSource()) {
+        const source = layer.getSource();
+        if (layerRenderer && source) {
+          const callback = forEachFeatureAtCoordinate.bind(null, layerState.managed);
           result = layerRenderer.forEachFeatureAtCoordinate(
-            layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
-            frameState, hitTolerance, forEachFeatureAtCoordinate, thisArg);
+            source.getWrapX() ? translatedCoordinate : coordinate,
+            frameState, hitTolerance, callback);
         }
         if (result) {
           return result;
@@ -167,27 +156,27 @@ class MapRenderer extends Disposable {
 
   /**
    * @abstract
-   * @param {module:ol/pixel~Pixel} pixel Pixel.
-   * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(this: S, module:ol/layer/Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
+   * @param {function(this: S, import("../layer/Layer.js").default, (Uint8ClampedArray|Uint8Array)): T} callback Layer
    *     callback.
-   * @param {S} thisArg Value to use as `this` when executing `callback`.
-   * @param {function(this: U, module:ol/layer/Layer): boolean} layerFilter Layer filter
+   * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
    *     function, only layers which are visible and for which this function
    *     returns `true` will be tested for features.  By default, all visible
    *     layers will be tested.
-   * @param {U} thisArg2 Value to use as `this` when executing `layerFilter`.
    * @return {T|undefined} Callback result.
    * @template S,T,U
    */
-  forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, thisArg, layerFilter, thisArg2) {}
+  forEachLayerAtPixel(pixel, frameState, hitTolerance, callback, layerFilter) {
+    return abstract();
+  }
 
   /**
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
-   * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../PluggableMap.js").FrameState} frameState FrameState.
    * @param {number} hitTolerance Hit tolerance in pixels.
-   * @param {function(this: U, module:ol/layer/Layer): boolean} layerFilter Layer filter
+   * @param {function(this: U, import("../layer/Layer.js").default): boolean} layerFilter Layer filter
    *     function, only layers which are visible and for which this function
    *     returns `true` will be tested for features.  By default, all visible
    *     layers will be tested.
@@ -203,53 +192,36 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @param {module:ol/layer/Layer} layer Layer.
+   * @param {import("../layer/Layer.js").default} layer Layer.
    * @protected
-   * @return {module:ol/renderer/Layer} Layer renderer.
+   * @return {import("./Layer.js").default} Layer renderer. May return null.
    */
   getLayerRenderer(layer) {
-    const layerKey = getUid(layer).toString();
+    const layerKey = getUid(layer);
     if (layerKey in this.layerRenderers_) {
       return this.layerRenderers_[layerKey];
-    } else {
-      let renderer;
-      for (let i = 0, ii = this.layerRendererConstructors_.length; i < ii; ++i) {
-        const candidate = this.layerRendererConstructors_[i];
-        if (candidate['handles'](layer)) {
-          renderer = candidate['create'](this, layer);
-          break;
-        }
-      }
-      if (renderer) {
-        this.layerRenderers_[layerKey] = renderer;
-        this.layerRendererListeners_[layerKey] = listen(renderer,
-          EventType.CHANGE, this.handleLayerRendererChange_, this);
-      } else {
-        throw new Error('Unable to create renderer for layer: ' + layer.getType());
-      }
-      return renderer;
     }
+
+    const renderer = layer.getRenderer();
+    if (!renderer) {
+      return null;
+    }
+
+    this.layerRenderers_[layerKey] = renderer;
+    this.layerRendererListeners_[layerKey] = listen(renderer, EventType.CHANGE, this.handleLayerRendererChange_, this);
+    return renderer;
   }
 
   /**
-   * @param {string} layerKey Layer key.
    * @protected
-   * @return {module:ol/renderer/Layer} Layer renderer.
-   */
-  getLayerRendererByKey(layerKey) {
-    return this.layerRenderers_[layerKey];
-  }
-
-  /**
-   * @protected
-   * @return {Object<string, module:ol/renderer/Layer>} Layer renderers.
+   * @return {Object<string, import("./Layer.js").default>} Layer renderers.
    */
   getLayerRenderers() {
     return this.layerRenderers_;
   }
 
   /**
-   * @return {module:ol/PluggableMap} Map.
+   * @return {import("../PluggableMap.js").default} Map.
    */
   getMap() {
     return this.map_;
@@ -265,7 +237,7 @@ class MapRenderer extends Disposable {
 
   /**
    * @param {string} layerKey Layer key.
-   * @return {module:ol/renderer/Layer} Layer renderer.
+   * @return {import("./Layer.js").default} Layer renderer.
    * @private
    */
   removeLayerRendererByKey_(layerKey) {
@@ -279,37 +251,35 @@ class MapRenderer extends Disposable {
   }
 
   /**
-   * @param {module:ol/PluggableMap} map Map.
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @private
+   * Render.
+   * @abstract
+   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
    */
-  removeUnusedLayerRenderers_(map, frameState) {
-    for (const layerKey in this.layerRenderers_) {
-      if (!frameState || !(layerKey in frameState.layerStates)) {
-        this.removeLayerRendererByKey_(layerKey).dispose();
-      }
+  renderFrame(frameState) {
+    abstract();
+  }
+
+  /**
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
+   * @protected
+   */
+  scheduleExpireIconCache(frameState) {
+    if (iconImageCache.canExpireCache()) {
+      frameState.postRenderFunctions.push(expireIconCache);
     }
   }
 
   /**
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
-   * @protected
-   */
-  scheduleExpireIconCache(frameState) {
-    frameState.postRenderFunctions.push(/** @type {module:ol/PluggableMap~PostRenderFunction} */ (expireIconCache));
-  }
-
-  /**
-   * @param {!module:ol/PluggableMap~FrameState} frameState Frame state.
+   * @param {!import("../PluggableMap.js").FrameState} frameState Frame state.
    * @protected
    */
   scheduleRemoveUnusedLayerRenderers(frameState) {
+    const layerStatesMap = getLayerStatesMap(frameState.layerStatesArray);
     for (const layerKey in this.layerRenderers_) {
-      if (!(layerKey in frameState.layerStates)) {
-        frameState.postRenderFunctions.push(
-          /** @type {module:ol/PluggableMap~PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
-        );
-        return;
+      if (!(layerKey in layerStatesMap)) {
+        frameState.postRenderFunctions.push(function() {
+          this.removeLayerRendererByKey_(layerKey).dispose();
+        }.bind(this));
       }
     }
   }
@@ -317,27 +287,22 @@ class MapRenderer extends Disposable {
 
 
 /**
- * @param {module:ol/PluggableMap} map Map.
- * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+ * @param {import("../PluggableMap.js").default} map Map.
+ * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
  */
 function expireIconCache(map, frameState) {
   iconImageCache.expire();
 }
 
-
 /**
- * Render.
- * @param {?module:ol/PluggableMap~FrameState} frameState Frame state.
+ * @param {Array<import("../layer/Layer.js").State>} layerStatesArray Layer states array.
+ * @return {Object<string, import("../layer/Layer.js").State>} States mapped by layer uid.
  */
-MapRenderer.prototype.renderFrame = VOID;
-
-
-/**
- * @param {module:ol/layer/Layer~State} state1 First layer state.
- * @param {module:ol/layer/Layer~State} state2 Second layer state.
- * @return {number} The zIndex difference.
- */
-export function sortByZIndex(state1, state2) {
-  return state1.zIndex - state2.zIndex;
+function getLayerStatesMap(layerStatesArray) {
+  return layerStatesArray.reduce(function(acc, state) {
+    acc[getUid(state.layer)] = state;
+    return acc;
+  }, {});
 }
+
 export default MapRenderer;

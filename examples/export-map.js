@@ -1,6 +1,5 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
@@ -18,11 +17,6 @@ const map = new Map({
     })
   ],
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: new View({
     center: [0, 0],
     zoom: 2
@@ -30,15 +24,13 @@ const map = new Map({
 });
 
 document.getElementById('export-png').addEventListener('click', function() {
-  map.once('postcompose', function(event) {
-    const canvas = event.context.canvas;
-    if (navigator.msSaveBlob) {
-      navigator.msSaveBlob(canvas.msToBlob(), 'map.png');
-    } else {
-      canvas.toBlob(function(blob) {
-        saveAs(blob, 'map.png');
+  map.once('rendercomplete', function() {
+    domtoimage.toPng(map.getViewport().querySelector('.ol-layers'))
+      .then(function(dataURL) {
+        const link = document.getElementById('image-download');
+        link.href = dataURL;
+        link.click();
       });
-    }
   });
   map.renderSync();
 });

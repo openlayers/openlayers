@@ -1,6 +1,6 @@
 # OpenLayers
 
-[OpenLayers](https://openlayers.org/) is a high-performance, feature-packed library for creating interactive maps on the web. It can display map tiles, vector data and markers loaded from any source on any web page. OpenLayers has been developed to further the use of geographic information of all kinds. It is completely free, Open Source JavaScript, released under the 2-clause BSD License (also known as the FreeBSD).
+[OpenLayers](https://openlayers.org/) is a high-performance, feature-packed library for creating interactive maps on the web. It can display map tiles, vector data and markers loaded from any source on any web page. OpenLayers has been developed to further the use of geographic information of all kinds. It is completely free, Open Source JavaScript, released under the [BSD 2-Clause License](https://opensource.org/licenses/BSD-2-Clause).
 
 ## Getting Started
 
@@ -39,6 +39,31 @@ See the following examples for more detail on bundling OpenLayers with your appl
  * Using [Rollup](https://github.com/openlayers/ol-rollup)
  * Using [Webpack](https://github.com/openlayers/ol-webpack)
  * Using [Parcel](https://github.com/openlayers/ol-parcel)
+ * Using [Browserify](https://github.com/openlayers/ol-browserify)
+
+## IntelliSense support and type checking for VS Code
+
+The `ol` package contains a `src/` folder with JSDoc annotated sources. TypeScript can get type definitions from these sources with a `jsconfig.json` config file in the project root:
+```js
+{
+  "compilerOptions": {
+    "checkJs": true,
+    // Point to the JSDoc typed sources when using modules from the ol package
+    "baseUrl": "./",
+    "paths": {
+      "ol": ["node_modules/ol/src"],
+      "ol/*": ["node_modules/ol/src/*"]
+    }
+  },
+  "include": [
+    "**/*.js",
+    "node_modules/ol/**/*.js"
+  ]
+}
+```
+Project template with this configuration: https://gist.github.com/9a7253cb4712e8bf38d75d8ac898e36c.
+
+Note that the above only works when authoring in plain JavaScript. For similar configurations with a `tsconfig.json` in TypeScript projects, your mileage may vary.
 
 ## Supported Browsers
 
@@ -61,4 +86,4 @@ Please see our guide on [contributing](CONTRIBUTING.md) if you're interested in 
 - Need help? Find it on [Stack Overflow using the tag 'openlayers'](http://stackoverflow.com/questions/tagged/openlayers)
 - Follow [@openlayers](https://twitter.com/openlayers) on Twitter
 
-[![Build Status](https://travis-ci.org/openlayers/openlayers.svg?branch=master)](https://travis-ci.org/openlayers/openlayers)
+[![CircleCI](https://circleci.com/gh/openlayers/openlayers/tree/master.svg?style=svg)](https://circleci.com/gh/openlayers/openlayers/tree/master)

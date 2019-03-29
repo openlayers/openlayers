@@ -35,6 +35,12 @@ describe('ol/proj/epsg3857', function() {
       }
     });
 
+    it('does not produce unexpected results for string coordinates', function() {
+      const transformed = fromEPSG4326(['180', '90']);
+      expect(transformed[0]).to.roughlyEqual(HALF_SIZE, 1e-5);
+      expect(transformed[1]).to.roughlyEqual(HALF_SIZE, 1e-5);
+    });
+
   });
 
   describe('getPointResolution', function() {

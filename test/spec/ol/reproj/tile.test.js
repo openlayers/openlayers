@@ -30,7 +30,7 @@ describe('ol.reproj.Tile', function() {
     return new ReprojTile(
       proj3857, createForProjection(proj3857), proj4326,
       createForProjection(proj4326, 3, opt_tileSize),
-      [3, 2, -2], null, pixelRatio, 0, function(z, x, y, pixelRatio) {
+      [3, 2, 1], null, pixelRatio, 0, function(z, x, y, pixelRatio) {
         return new ImageTile([z, x, y], 0, // IDLE
           'data:image/gif;base64,' +
               'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=', null,

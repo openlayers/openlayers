@@ -1,4 +1,4 @@
-import Graticule from '../src/ol/Graticule.js';
+import Graticule from '../src/ol/layer/Graticule.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
@@ -30,17 +30,13 @@ const map = new Map({
         url: 'data/geojson/countries-110m.geojson',
         format: new GeoJSON()
       })
-    })
+    }),
+    new Graticule()
   ],
   target: 'map',
   view: new View({
     center: [0, 0],
     projection: sphereMollweideProjection,
-    resolutions: [65536, 32768, 16384, 8192, 4096, 2048],
     zoom: 0
   })
-});
-
-new Graticule({
-  map: map
 });

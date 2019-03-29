@@ -76,6 +76,14 @@ describe('ol.render.canvas', function() {
 
   });
 
+  describe('measureTextHeight', function() {
+    it('respects line-height', function() {
+      const height = render.measureTextHeight('12px/1.2 sans-serif');
+      expect(render.measureTextHeight('12px/2.4 sans-serif')).to.be.greaterThan(height);
+      expect(render.measureTextHeight('12px/0.1 sans-serif')).to.be.lessThan(height);
+    });
+  });
+
 
   describe('rotateAtOffset', function() {
     it('rotates a canvas at an offset point', function() {

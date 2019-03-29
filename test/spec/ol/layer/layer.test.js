@@ -1,4 +1,3 @@
-import {getUid} from '../../../../src/ol/util.js';
 import Map from '../../../../src/ol/Map.js';
 import Layer, {visibleAtResolution} from '../../../../src/ol/layer/Layer.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
@@ -163,14 +162,14 @@ describe('ol.layer.Layer', function() {
     });
 
     it('returns a layerState from the properties values', function() {
-      layer.setOpacity(0.3);
+      layer.setOpacity(1 / 3);
       layer.setVisible(false);
       layer.setMaxResolution(500);
       layer.setMinResolution(0.25);
       layer.setZIndex(10);
       expect(layer.getLayerState()).to.eql({
         layer: layer,
-        opacity: 0.3,
+        opacity: 0.33,
         visible: false,
         managed: true,
         sourceState: 'ready',
@@ -396,15 +395,12 @@ describe('ol.layer.Layer', function() {
           map: map
         });
         const frameState = {
-          layerStatesArray: [],
-          layerStates: {}
+          layerStatesArray: []
         };
-        map.dispatchEvent(new RenderEvent('precompose', null,
-          frameState, null, null));
+        map.dispatchEvent(new RenderEvent('precompose', null, frameState, null, null));
         expect(frameState.layerStatesArray.length).to.be(1);
         const layerState = frameState.layerStatesArray[0];
         expect(layerState.layer).to.equal(layer);
-        expect(frameState.layerStates[getUid(layer)]).to.equal(layerState);
       });
     });
 
@@ -430,6 +426,41 @@ describe('ol.layer.Layer', function() {
 
         layer.setMap(map);
         expect(mapRenderSpy.callCount).to.be(3);
+      });
+
+    });
+
+    describe('zIndex for unmanaged layers', function() {
+
+      let frameState, layer;
+
+      beforeEach(function() {
+        layer = new Layer({
+          map: map
+        });
+        frameState = {
+          layerStatesArray: [],
+          layerStates: {}
+        };
+      });
+
+      afterEach(function() {
+        layer.setMap(null);
+      });
+
+      it('has Infinity as zIndex when not configured otherwise', function() {
+        map.dispatchEvent(new RenderEvent('precompose', null,
+          frameState, null, null));
+        const layerState = frameState.layerStatesArray[0];
+        expect(layerState.zIndex).to.be(Infinity);
+      });
+
+      it('respects the configured zIndex', function() {
+        layer.setZIndex(42);
+        map.dispatchEvent(new RenderEvent('precompose', null,
+          frameState, null, null));
+        const layerState = frameState.layerStatesArray[0];
+        expect(layerState.zIndex).to.be(42);
       });
 
     });

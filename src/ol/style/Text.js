@@ -1,8 +1,8 @@
 /**
  * @module ol/style/Text
  */
-import Fill from '../style/Fill.js';
-import TextPlacement from '../style/TextPlacement.js';
+import Fill from './Fill.js';
+import TextPlacement from './TextPlacement.js';
 
 
 /**
@@ -24,7 +24,7 @@ const DEFAULT_FILL_COLOR = '#333';
  * @property {number} [offsetY=0] Vertical text offset in pixels. A positive will shift the text down.
  * @property {boolean} [overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
  * the width of the polygon at the label position or the length of the path that it follows.
- * @property {module:ol/style/TextPlacement|string} [placement] Text placement.
+ * @property {import("./TextPlacement.js").default|string} [placement] Text placement.
  * @property {number} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
@@ -34,11 +34,11 @@ const DEFAULT_FILL_COLOR = '#333';
  * placement where `maxAngle` is not exceeded.
  * @property {string} [textBaseline='middle'] Text base line. Possible values: 'bottom', 'top', 'middle', 'alphabetic',
  * 'hanging', 'ideographic'.
- * @property {module:ol/style/Fill} [fill] Fill style. If none is provided, we'll use a dark fill-style (#333).
- * @property {module:ol/style/Stroke} [stroke] Stroke style.
- * @property {module:ol/style/Fill} [backgroundFill] Fill style for the text background when `placement` is
+ * @property {import("./Fill.js").default} [fill] Fill style. If none is provided, we'll use a dark fill-style (#333).
+ * @property {import("./Stroke.js").default} [stroke] Stroke style.
+ * @property {import("./Fill.js").default} [backgroundFill] Fill style for the text background when `placement` is
  * `'point'`. Default is no fill.
- * @property {module:ol/style/Stroke} [backgroundStroke] Stroke style for the text background  when `placement`
+ * @property {import("./Stroke.js").default} [backgroundStroke] Stroke style for the text background  when `placement`
  * is `'point'`. Default is no stroke.
  * @property {Array<number>} [padding=[0, 0, 0, 0]] Padding in pixels around the text for decluttering and background. The order of
  * values in the array is `[top, right, bottom, left]`.
@@ -52,121 +52,121 @@ const DEFAULT_FILL_COLOR = '#333';
  */
 class Text {
   /**
-   * @param {module:ol/style/Text~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
     const options = opt_options || {};
 
     /**
-    * @private
-    * @type {string|undefined}
-    */
+     * @private
+     * @type {string|undefined}
+     */
     this.font_ = options.font;
 
     /**
-    * @private
-    * @type {number|undefined}
-    */
+     * @private
+     * @type {number|undefined}
+     */
     this.rotation_ = options.rotation;
 
     /**
-    * @private
-    * @type {boolean|undefined}
-    */
+     * @private
+     * @type {boolean|undefined}
+     */
     this.rotateWithView_ = options.rotateWithView;
 
     /**
-    * @private
-    * @type {number|undefined}
-    */
+     * @private
+     * @type {number|undefined}
+     */
     this.scale_ = options.scale;
 
     /**
-    * @private
-    * @type {string|undefined}
-    */
+     * @private
+     * @type {string|undefined}
+     */
     this.text_ = options.text;
 
     /**
-    * @private
-    * @type {string|undefined}
-    */
+     * @private
+     * @type {string|undefined}
+     */
     this.textAlign_ = options.textAlign;
 
     /**
-    * @private
-    * @type {string|undefined}
-    */
+     * @private
+     * @type {string|undefined}
+     */
     this.textBaseline_ = options.textBaseline;
 
     /**
-    * @private
-    * @type {module:ol/style/Fill}
-    */
+     * @private
+     * @type {import("./Fill.js").default}
+     */
     this.fill_ = options.fill !== undefined ? options.fill :
       new Fill({color: DEFAULT_FILL_COLOR});
 
     /**
-    * @private
-    * @type {number}
-    */
+     * @private
+     * @type {number}
+     */
     this.maxAngle_ = options.maxAngle !== undefined ? options.maxAngle : Math.PI / 4;
 
     /**
-    * @private
-    * @type {module:ol/style/TextPlacement|string}
-    */
+     * @private
+     * @type {import("./TextPlacement.js").default|string}
+     */
     this.placement_ = options.placement !== undefined ? options.placement : TextPlacement.POINT;
 
     /**
-    * @private
-    * @type {boolean}
-    */
+     * @private
+     * @type {boolean}
+     */
     this.overflow_ = !!options.overflow;
 
     /**
-    * @private
-    * @type {module:ol/style/Stroke}
-    */
+     * @private
+     * @type {import("./Stroke.js").default}
+     */
     this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
     /**
-    * @private
-    * @type {number}
-    */
+     * @private
+     * @type {number}
+     */
     this.offsetX_ = options.offsetX !== undefined ? options.offsetX : 0;
 
     /**
-    * @private
-    * @type {number}
-    */
+     * @private
+     * @type {number}
+     */
     this.offsetY_ = options.offsetY !== undefined ? options.offsetY : 0;
 
     /**
-    * @private
-    * @type {module:ol/style/Fill}
-    */
+     * @private
+     * @type {import("./Fill.js").default}
+     */
     this.backgroundFill_ = options.backgroundFill ? options.backgroundFill : null;
 
     /**
-    * @private
-    * @type {module:ol/style/Stroke}
-    */
+     * @private
+     * @type {import("./Stroke.js").default}
+     */
     this.backgroundStroke_ = options.backgroundStroke ? options.backgroundStroke : null;
 
     /**
-    * @private
-    * @type {Array<number>}
-    */
+     * @private
+     * @type {Array<number>}
+     */
     this.padding_ = options.padding === undefined ? null : options.padding;
   }
 
   /**
-  * Clones the style.
-  * @return {module:ol/style/Text} The cloned style.
-  * @api
-  */
+   * Clones the style.
+   * @return {Text} The cloned style.
+   * @api
+   */
   clone() {
     return new Text({
       font: this.getFont(),
@@ -189,314 +189,324 @@ class Text {
   }
 
   /**
-  * Get the `overflow` configuration.
-  * @return {boolean} Let text overflow the length of the path they follow.
-  * @api
-  */
+   * Get the `overflow` configuration.
+   * @return {boolean} Let text overflow the length of the path they follow.
+   * @api
+   */
   getOverflow() {
     return this.overflow_;
   }
 
   /**
-  * Get the font name.
-  * @return {string|undefined} Font.
-  * @api
-  */
+   * Get the font name.
+   * @return {string|undefined} Font.
+   * @api
+   */
   getFont() {
     return this.font_;
   }
 
   /**
-  * Get the maximum angle between adjacent characters.
-  * @return {number} Angle in radians.
-  * @api
-  */
+   * Get the maximum angle between adjacent characters.
+   * @return {number} Angle in radians.
+   * @api
+   */
   getMaxAngle() {
     return this.maxAngle_;
   }
 
   /**
-  * Get the label placement.
-  * @return {module:ol/style/TextPlacement|string} Text placement.
-  * @api
-  */
+   * Get the label placement.
+   * @return {import("./TextPlacement.js").default|string} Text placement.
+   * @api
+   */
   getPlacement() {
     return this.placement_;
   }
 
   /**
-  * Get the x-offset for the text.
-  * @return {number} Horizontal text offset.
-  * @api
-  */
+   * Get the x-offset for the text.
+   * @return {number} Horizontal text offset.
+   * @api
+   */
   getOffsetX() {
     return this.offsetX_;
   }
 
   /**
-  * Get the y-offset for the text.
-  * @return {number} Vertical text offset.
-  * @api
-  */
+   * Get the y-offset for the text.
+   * @return {number} Vertical text offset.
+   * @api
+   */
   getOffsetY() {
     return this.offsetY_;
   }
 
   /**
-  * Get the fill style for the text.
-  * @return {module:ol/style/Fill} Fill style.
-  * @api
-  */
+   * Get the fill style for the text.
+   * @return {import("./Fill.js").default} Fill style.
+   * @api
+   */
   getFill() {
     return this.fill_;
   }
 
   /**
-  * Determine whether the text rotates with the map.
-  * @return {boolean|undefined} Rotate with map.
-  * @api
-  */
+   * Determine whether the text rotates with the map.
+   * @return {boolean|undefined} Rotate with map.
+   * @api
+   */
   getRotateWithView() {
     return this.rotateWithView_;
   }
 
   /**
-  * Get the text rotation.
-  * @return {number|undefined} Rotation.
-  * @api
-  */
+   * Get the text rotation.
+   * @return {number|undefined} Rotation.
+   * @api
+   */
   getRotation() {
     return this.rotation_;
   }
 
   /**
-  * Get the text scale.
-  * @return {number|undefined} Scale.
-  * @api
-  */
+   * Get the text scale.
+   * @return {number|undefined} Scale.
+   * @api
+   */
   getScale() {
     return this.scale_;
   }
 
   /**
-  * Get the stroke style for the text.
-  * @return {module:ol/style/Stroke} Stroke style.
-  * @api
-  */
+   * Get the stroke style for the text.
+   * @return {import("./Stroke.js").default} Stroke style.
+   * @api
+   */
   getStroke() {
     return this.stroke_;
   }
 
   /**
-  * Get the text to be rendered.
-  * @return {string|undefined} Text.
-  * @api
-  */
+   * Get the text to be rendered.
+   * @return {string|undefined} Text.
+   * @api
+   */
   getText() {
     return this.text_;
   }
 
   /**
-  * Get the text alignment.
-  * @return {string|undefined} Text align.
-  * @api
-  */
+   * Get the text alignment.
+   * @return {string|undefined} Text align.
+   * @api
+   */
   getTextAlign() {
     return this.textAlign_;
   }
 
   /**
-  * Get the text baseline.
-  * @return {string|undefined} Text baseline.
-  * @api
-  */
+   * Get the text baseline.
+   * @return {string|undefined} Text baseline.
+   * @api
+   */
   getTextBaseline() {
     return this.textBaseline_;
   }
 
   /**
-  * Get the background fill style for the text.
-  * @return {module:ol/style/Fill} Fill style.
-  * @api
-  */
+   * Get the background fill style for the text.
+   * @return {import("./Fill.js").default} Fill style.
+   * @api
+   */
   getBackgroundFill() {
     return this.backgroundFill_;
   }
 
   /**
-  * Get the background stroke style for the text.
-  * @return {module:ol/style/Stroke} Stroke style.
-  * @api
-  */
+   * Get the background stroke style for the text.
+   * @return {import("./Stroke.js").default} Stroke style.
+   * @api
+   */
   getBackgroundStroke() {
     return this.backgroundStroke_;
   }
 
   /**
-  * Get the padding for the text.
-  * @return {Array<number>} Padding.
-  * @api
-  */
+   * Get the padding for the text.
+   * @return {Array<number>} Padding.
+   * @api
+   */
   getPadding() {
     return this.padding_;
   }
 
   /**
-  * Set the `overflow` property.
-  *
-  * @param {boolean} overflow Let text overflow the path that it follows.
-  * @api
-  */
+   * Set the `overflow` property.
+   *
+   * @param {boolean} overflow Let text overflow the path that it follows.
+   * @api
+   */
   setOverflow(overflow) {
     this.overflow_ = overflow;
   }
 
   /**
-  * Set the font.
-  *
-  * @param {string|undefined} font Font.
-  * @api
-  */
+   * Set the font.
+   *
+   * @param {string|undefined} font Font.
+   * @api
+   */
   setFont(font) {
     this.font_ = font;
   }
 
   /**
-  * Set the maximum angle between adjacent characters.
-  *
-  * @param {number} maxAngle Angle in radians.
-  * @api
-  */
+   * Set the maximum angle between adjacent characters.
+   *
+   * @param {number} maxAngle Angle in radians.
+   * @api
+   */
   setMaxAngle(maxAngle) {
     this.maxAngle_ = maxAngle;
   }
 
   /**
-  * Set the x offset.
-  *
-  * @param {number} offsetX Horizontal text offset.
-  * @api
-  */
+   * Set the x offset.
+   *
+   * @param {number} offsetX Horizontal text offset.
+   * @api
+   */
   setOffsetX(offsetX) {
     this.offsetX_ = offsetX;
   }
 
   /**
-  * Set the y offset.
-  *
-  * @param {number} offsetY Vertical text offset.
-  * @api
-  */
+   * Set the y offset.
+   *
+   * @param {number} offsetY Vertical text offset.
+   * @api
+   */
   setOffsetY(offsetY) {
     this.offsetY_ = offsetY;
   }
 
   /**
-  * Set the text placement.
-  *
-  * @param {module:ol/style/TextPlacement|string} placement Placement.
-  * @api
-  */
+   * Set the text placement.
+   *
+   * @param {import("./TextPlacement.js").default|string} placement Placement.
+   * @api
+   */
   setPlacement(placement) {
     this.placement_ = placement;
   }
 
   /**
-  * Set the fill.
-  *
-  * @param {module:ol/style/Fill} fill Fill style.
-  * @api
-  */
+   * Set whether to rotate the text with the view.
+   *
+   * @param {boolean} rotateWithView Rotate with map.
+   * @api
+   */
+  setRotateWithView(rotateWithView) {
+    this.rotateWithView_ = rotateWithView;
+  }
+
+  /**
+   * Set the fill.
+   *
+   * @param {import("./Fill.js").default} fill Fill style.
+   * @api
+   */
   setFill(fill) {
     this.fill_ = fill;
   }
 
   /**
-  * Set the rotation.
-  *
-  * @param {number|undefined} rotation Rotation.
-  * @api
-  */
+   * Set the rotation.
+   *
+   * @param {number|undefined} rotation Rotation.
+   * @api
+   */
   setRotation(rotation) {
     this.rotation_ = rotation;
   }
 
   /**
-  * Set the scale.
-  *
-  * @param {number|undefined} scale Scale.
-  * @api
-  */
+   * Set the scale.
+   *
+   * @param {number|undefined} scale Scale.
+   * @api
+   */
   setScale(scale) {
     this.scale_ = scale;
   }
 
   /**
-  * Set the stroke.
-  *
-  * @param {module:ol/style/Stroke} stroke Stroke style.
-  * @api
-  */
+   * Set the stroke.
+   *
+   * @param {import("./Stroke.js").default} stroke Stroke style.
+   * @api
+   */
   setStroke(stroke) {
     this.stroke_ = stroke;
   }
 
   /**
-  * Set the text.
-  *
-  * @param {string|undefined} text Text.
-  * @api
-  */
+   * Set the text.
+   *
+   * @param {string|undefined} text Text.
+   * @api
+   */
   setText(text) {
     this.text_ = text;
   }
 
   /**
-  * Set the text alignment.
-  *
-  * @param {string|undefined} textAlign Text align.
-  * @api
-  */
+   * Set the text alignment.
+   *
+   * @param {string|undefined} textAlign Text align.
+   * @api
+   */
   setTextAlign(textAlign) {
     this.textAlign_ = textAlign;
   }
 
   /**
-  * Set the text baseline.
-  *
-  * @param {string|undefined} textBaseline Text baseline.
-  * @api
-  */
+   * Set the text baseline.
+   *
+   * @param {string|undefined} textBaseline Text baseline.
+   * @api
+   */
   setTextBaseline(textBaseline) {
     this.textBaseline_ = textBaseline;
   }
 
   /**
-  * Set the background fill.
-  *
-  * @param {module:ol/style/Fill} fill Fill style.
-  * @api
-  */
+   * Set the background fill.
+   *
+   * @param {import("./Fill.js").default} fill Fill style.
+   * @api
+   */
   setBackgroundFill(fill) {
     this.backgroundFill_ = fill;
   }
 
   /**
-  * Set the background stroke.
-  *
-  * @param {module:ol/style/Stroke} stroke Stroke style.
-  * @api
-  */
+   * Set the background stroke.
+   *
+   * @param {import("./Stroke.js").default} stroke Stroke style.
+   * @api
+   */
   setBackgroundStroke(stroke) {
     this.backgroundStroke_ = stroke;
   }
 
   /**
-  * Set the padding (`[top, right, bottom, left]`).
-  *
-  * @param {!Array<number>} padding Padding.
-  * @api
-  */
+   * Set the padding (`[top, right, bottom, left]`).
+   *
+   * @param {!Array<number>} padding Padding.
+   * @api
+   */
   setPadding(padding) {
     this.padding_ = padding;
   }

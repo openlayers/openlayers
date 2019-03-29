@@ -11,9 +11,11 @@ In this tutorial, we will be using [Parcel](https://parceljs.org) to bundle our 
 
 ## Initial steps
 
-Create a new empty directory for your project and navigate to it by running `mkdir new-project && cd new-project`. Initialize your project using `npm init` and answer the questions asked.
+Create a new empty directory for your project and navigate to it by running `mkdir new-project && cd new-project`. Initialize your project with
 
-Add OpenLayers as dependency to your application with
+    npm init
+
+This will create a `package.json` file in your working directory. Add OpenLayers as dependency to your application with
 
     npm install ol
 
@@ -69,13 +71,21 @@ You will also need an `index.html` file that will use your bundle. Here is a sim
 
 ## Creating a bundle
 
-With simple scripts you can introduce the commands `npm run build` and `npm start` to manually build your bundle and watch for changes, respectively. Add the following to the script section in `package.json`:
+With two additional lines in `package.json` you can introduce the commands `npm run build` and `npm start` to manually build your bundle and watch for changes, respectively. The final `package.json` with the two additional commands `"start"` and `"build"` should look like this:
 
 ```json
-"scripts": {
-  "test": "echo \"Error: no test specified\" && exit 1",
-  "start": "parcel index.html",
-  "build": "parcel build --public-url . index.html"
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel index.html",
+    "build": "parcel build --public-url . index.html"
+  },
+  "author": "",
+  "license": "ISC"
 }
 ```
 That's it. Now to run your application, enter

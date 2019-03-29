@@ -17,7 +17,7 @@ OpenLayers is available as [`ol` npm package](https://npmjs.com/package/ol), whi
 
 ## Renderers and Browser Support
 
-By default, OpenLayers uses a performance optimized Canvas renderer. An experimental WebGL renderer (without text rendering support) is also avaialble.
+By default, OpenLayers uses a performance optimized Canvas renderer.
 
 OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.whatwg.org/multipage/) and [ECMAScript 5](http://www.ecma-international.org/ecma-262/5.1/). This includes Chrome, Firefox, Safari and Edge. For older browsers and platforms like Internet Explorer (down to version 9) and Android 4.x, [polyfills](http://polyfill.io), the application bundle needs to be transpiled (e.g. using [Babel](https://babeljs.io)) and bundled with polyfills for `requestAnimationFrame`, `Element.prototype.classList` and `URL`.
 
@@ -44,6 +44,6 @@ import {Tile, Vector} from 'ol/layer';
 In addition to these re-exported classes, modules with lowercase names also provide constants or functions as named exports:
 
 ```js
-import {inherits} from 'ol';
+import {getUid} from 'ol';
 import {fromLonLat} from 'ol/proj';
 ```

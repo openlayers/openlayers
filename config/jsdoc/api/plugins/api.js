@@ -95,17 +95,20 @@ exports.handlers = {
   newDoclet: function(e) {
     const doclet = e.doclet;
     if (doclet.stability) {
-      modules[doclet.longname.split('~').shift()] = true;
+      modules[doclet.longname.split(/[~\.]/).shift()] = true;
       api.push(doclet);
     }
-    // Mark explicity defined namespaces - needed in parseComplete to keep
-    // namespaces that we need as containers for api items.
-    if (/.*\.jsdoc$/.test(doclet.meta.filename) && doclet.kind == 'namespace') {
-      doclet.namespace_ = true;
-    }
     if (doclet.kind == 'class') {
-      modules[doclet.longname.split('~').shift()] = true;
-      classes[doclet.longname] = doclet;
+      modules[doclet.longname.split(/[~\.]/).shift()] = true;
+      if (!(doclet.longname in classes)) {
+        classes[doclet.longname] = doclet;
+      } else if ('augments' in doclet) {
+        classes[doclet.longname].augments = doclet.augments;
+      }
+    }
+    if (doclet.name === doclet.longname && !doclet.memberof) {
+      // Make sure anonymous default exports are documented
+      doclet.setMemberof(doclet.longname);
     }
   },
 
@@ -113,7 +116,7 @@ exports.handlers = {
     const doclets = e.doclets;
     for (let i = doclets.length - 1; i >= 0; --i) {
       const doclet = doclets[i];
-      if (doclet.stability || doclet.namespace_) {
+      if (doclet.stability) {
         if (doclet.kind == 'class') {
           includeAugments(doclet);
         }

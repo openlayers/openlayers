@@ -13,7 +13,7 @@ class RenderBox extends Disposable {
     super();
 
     /**
-     * @type {module:ol/geom/Polygon}
+     * @type {import("../geom/Polygon.js").default}
      * @private
      */
     this.geometry_ = null;
@@ -22,25 +22,25 @@ class RenderBox extends Disposable {
      * @type {HTMLDivElement}
      * @private
      */
-    this.element_ = /** @type {HTMLDivElement} */ (document.createElement('div'));
+    this.element_ = document.createElement('div');
     this.element_.style.position = 'absolute';
     this.element_.className = 'ol-box ' + className;
 
     /**
      * @private
-     * @type {module:ol/PluggableMap}
+     * @type {import("../PluggableMap.js").default}
      */
     this.map_ = null;
 
     /**
      * @private
-     * @type {module:ol/pixel~Pixel}
+     * @type {import("../pixel.js").Pixel}
      */
     this.startPixel_ = null;
 
     /**
      * @private
-     * @type {module:ol/pixel~Pixel}
+     * @type {import("../pixel.js").Pixel}
      */
     this.endPixel_ = null;
 
@@ -68,7 +68,7 @@ class RenderBox extends Disposable {
   }
 
   /**
-   * @param {module:ol/PluggableMap} map Map.
+   * @param {import("../PluggableMap.js").default} map Map.
    */
   setMap(map) {
     if (this.map_) {
@@ -83,8 +83,8 @@ class RenderBox extends Disposable {
   }
 
   /**
-   * @param {module:ol/pixel~Pixel} startPixel Start pixel.
-   * @param {module:ol/pixel~Pixel} endPixel End pixel.
+   * @param {import("../pixel.js").Pixel} startPixel Start pixel.
+   * @param {import("../pixel.js").Pixel} endPixel End pixel.
    */
   setPixels(startPixel, endPixel) {
     this.startPixel_ = startPixel;
@@ -116,7 +116,7 @@ class RenderBox extends Disposable {
   }
 
   /**
-   * @return {module:ol/geom/Polygon} Geometry.
+   * @return {import("../geom/Polygon.js").default} Geometry.
    */
   getGeometry() {
     return this.geometry_;

@@ -33,8 +33,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import {remove} from '../array.js';
-import EventSource from '../pointer/EventSource.js';
-import {POINTER_ID} from '../pointer/MouseSource.js';
+import EventSource from './EventSource.js';
+import {POINTER_ID} from './MouseSource.js';
 
 
 /**
@@ -51,7 +51,7 @@ const POINTER_TYPE = 'touch';
  * Handler for `touchstart`, triggers `pointerover`,
  * `pointerenter` and `pointerdown` events.
  *
- * @this {module:ol/pointer/TouchSource}
+ * @this {TouchSource}
  * @param {TouchEvent} inEvent The in event.
  */
 function touchstart(inEvent) {
@@ -65,7 +65,7 @@ function touchstart(inEvent) {
 /**
  * Handler for `touchmove`.
  *
- * @this {module:ol/pointer/TouchSource}
+ * @this {TouchSource}
  * @param {TouchEvent} inEvent The in event.
  */
 function touchmove(inEvent) {
@@ -76,7 +76,7 @@ function touchmove(inEvent) {
  * Handler for `touchend`, triggers `pointerup`,
  * `pointerout` and `pointerleave` events.
  *
- * @this {module:ol/pointer/TouchSource}
+ * @this {TouchSource}
  * @param {TouchEvent} inEvent The event.
  */
 function touchend(inEvent) {
@@ -88,7 +88,7 @@ function touchend(inEvent) {
  * Handler for `touchcancel`, triggers `pointercancel`,
  * `pointerout` and `pointerleave` events.
  *
- * @this {module:ol/pointer/TouchSource}
+ * @this {TouchSource}
  * @param {TouchEvent} inEvent The in event.
  */
 function touchcancel(inEvent) {
@@ -99,8 +99,8 @@ function touchcancel(inEvent) {
 class TouchSource extends EventSource {
 
   /**
-   * @param {module:ol/pointer/PointerEventHandler} dispatcher The event handler.
-   * @param {module:ol/pointer/MouseSource} mouseSource Mouse source.
+   * @param {import("./PointerEventHandler.js").default} dispatcher The event handler.
+   * @param {import("./MouseSource.js").default} mouseSource Mouse source.
    */
   constructor(dispatcher, mouseSource) {
     const mapping = {
@@ -119,7 +119,7 @@ class TouchSource extends EventSource {
 
     /**
      * @const
-     * @type {module:ol/pointer/MouseSource}
+     * @type {import("./MouseSource.js").default}
      */
     this.mouseSource = mouseSource;
 
@@ -137,9 +137,9 @@ class TouchSource extends EventSource {
 
     /**
      * @private
-     * @type {number|undefined}
+     * @type {?}
      */
-    this.resetId_ = undefined;
+    this.resetId_;
 
     /**
      * Mouse event timeout: This should be long enough to
@@ -228,9 +228,9 @@ class TouchSource extends EventSource {
     e.detail = this.clickCount_;
     e.button = 0;
     e.buttons = 1;
-    e.width = inTouch.webkitRadiusX || inTouch.radiusX || 0;
-    e.height = inTouch.webkitRadiusY || inTouch.radiusY || 0;
-    e.pressure = inTouch.webkitForce || inTouch.force || 0.5;
+    e.width = inTouch.radiusX || 0;
+    e.height = inTouch.radiusY || 0;
+    e.pressure = inTouch.force || 0.5;
     e.isPrimary = this.isPrimaryTouch_(inTouch);
     e.pointerType = POINTER_TYPE;
 
@@ -247,7 +247,7 @@ class TouchSource extends EventSource {
   /**
    * @private
    * @param {TouchEvent} inEvent Touch event
-   * @param {function(TouchEvent, PointerEvent)} inFunction In function.
+   * @param {function(TouchEvent, PointerEvent): void} inFunction In function.
    */
   processTouches_(inEvent, inFunction) {
     const touches = Array.prototype.slice.call(inEvent.changedTouches);
@@ -300,7 +300,7 @@ class TouchSource extends EventSource {
     if (count >= touchList.length) {
       const d = [];
       for (let i = 0; i < count; ++i) {
-        const key = keys[i];
+        const key = Number(keys[i]);
         const value = this.pointerMap[key];
         // Never remove pointerId == 1, which is mouse.
         // Touch identifiers are 2 smaller than their pointerId, which is the
@@ -348,7 +348,7 @@ class TouchSource extends EventSource {
     this.dispatcher.move(event, browserEvent);
     if (outEvent && outTarget !== event.target) {
       outEvent.relatedTarget = event.target;
-      event.relatedTarget = outTarget;
+      /** @type {Object} */ (event).relatedTarget = outTarget;
       // recover from retargeting by shadow
       outEvent.target = outTarget;
       if (event.target) {
@@ -356,8 +356,8 @@ class TouchSource extends EventSource {
         this.dispatcher.enterOver(event, browserEvent);
       } else {
         // clean up case when finger leaves the screen
-        event.target = outTarget;
-        event.relatedTarget = null;
+        /** @type {Object} */ (event).target = outTarget;
+        /** @type {Object} */ (event).relatedTarget = null;
         this.cancelOut_(browserEvent, event);
       }
     }

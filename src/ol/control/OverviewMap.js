@@ -10,7 +10,7 @@ import ObjectEventType from '../ObjectEventType.js';
 import Overlay from '../Overlay.js';
 import OverlayPositioning from '../OverlayPositioning.js';
 import ViewProperty from '../ViewProperty.js';
-import Control from '../control/Control.js';
+import Control from './Control.js';
 import {rotate as rotateCoordinate, add as addCoordinate} from '../coordinate.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_COLLAPSED} from '../css.js';
 import {replaceNode} from '../dom.js';
@@ -44,15 +44,14 @@ const MIN_RATIO = 0.1;
  * @property {boolean} [collapsible=true] Whether the control can be collapsed or not.
  * @property {string|HTMLElement} [label='»'] Text label to use for the collapsed
  * overviewmap button. Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {Array<module:ol/layer/Layer>|module:ol/Collection<module:ol/layer/Layer>} [layers]
- * Layers for the overview map. If not set, then all main map layers are used
- * instead.
- * @property {function(module:ol/MapEvent)} [render] Function called when the control
+ * @property {Array<import("../layer/Layer.js").default>|import("../Collection.js").default<import("../layer/Layer.js").default>} layers
+ * Layers for the overview map (mandatory).
+ * @property {function(import("../MapEvent.js").default)} [render] Function called when the control
  * should be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {HTMLElement|string} [target] Specify a target if you want the control
  * to be rendered outside of the map's viewport.
  * @property {string} [tipLabel='Overview map'] Text label to use for the button tip.
- * @property {module:ol/View} [view] Custom view for the overview map. If not provided,
+ * @property {import("../View.js").default} [view] Custom view for the overview map. If not provided,
  * a default view with an EPSG:3857 projection will be used.
  */
 
@@ -66,7 +65,7 @@ const MIN_RATIO = 0.1;
 class OverviewMap extends Control {
 
   /**
-   * @param {module:ol/control/OverviewMap~Options=} opt_options OverviewMap options.
+   * @param {Options=} opt_options OverviewMap options.
    */
   constructor(opt_options) {
 
@@ -140,11 +139,11 @@ class OverviewMap extends Control {
      * @type {HTMLElement}
      * @private
      */
-    this.ovmapDiv_ = document.createElement('DIV');
+    this.ovmapDiv_ = document.createElement('div');
     this.ovmapDiv_.className = 'ol-overviewmap-map';
 
     /**
-     * @type {module:ol/Map}
+     * @type {import("../Map.js").default}
      * @private
      */
     this.ovmap_ = new Map({
@@ -155,21 +154,21 @@ class OverviewMap extends Control {
     const ovmap = this.ovmap_;
 
     if (options.layers) {
-      options.layers.forEach(
+      /** @type {Array<import("../layer/Layer.js").default>} */ (options.layers).forEach(
         /**
-         * @param {module:ol/layer/Layer} layer Layer.
+         * @param {import("../layer/Layer.js").default} layer Layer.
          */
         (function(layer) {
           ovmap.addLayer(layer);
         }).bind(this));
     }
 
-    const box = document.createElement('DIV');
+    const box = document.createElement('div');
     box.className = 'ol-overviewmap-box';
     box.style.boxSizing = 'border-box';
 
     /**
-     * @type {module:ol/Overlay}
+     * @type {import("../Overlay.js").default}
      * @private
      */
     this.boxOverlay_ = new Overlay({
@@ -204,7 +203,8 @@ class OverviewMap extends Control {
     };
 
     const move = function(event) {
-      const coordinates = ovmap.getEventCoordinate(computeDesiredMousePosition(event));
+      const position = /** @type {?} */ (computeDesiredMousePosition(event));
+      const coordinates = ovmap.getEventCoordinate(/** @type {Event} */ (position));
 
       overlay.setPosition(coordinates);
     };
@@ -250,11 +250,6 @@ class OverviewMap extends Control {
         map, ObjectEventType.PROPERTYCHANGE,
         this.handleMapPropertyChange_, this));
 
-      // TODO: to really support map switching, this would need to be reworked
-      if (this.ovmap_.getLayers().getLength() === 0) {
-        this.ovmap_.setLayerGroup(map.getLayerGroup());
-      }
-
       const view = map.getView();
       if (view) {
         this.bindView_(view);
@@ -268,12 +263,12 @@ class OverviewMap extends Control {
 
   /**
    * Handle map property changes.  This only deals with changes to the map's view.
-   * @param {module:ol/Object~ObjectEvent} event The propertychange event.
+   * @param {import("../Object.js").ObjectEvent} event The propertychange event.
    * @private
    */
   handleMapPropertyChange_(event) {
     if (event.key === MapProperty.VIEW) {
-      const oldView = /** @type {module:ol/View} */ (event.oldValue);
+      const oldView = /** @type {import("../View.js").default} */ (event.oldValue);
       if (oldView) {
         this.unbindView_(oldView);
       }
@@ -284,7 +279,7 @@ class OverviewMap extends Control {
 
   /**
    * Register listeners for view property changes.
-   * @param {module:ol/View} view The view.
+   * @param {import("../View.js").default} view The view.
    * @private
    */
   bindView_(view) {
@@ -295,7 +290,7 @@ class OverviewMap extends Control {
 
   /**
    * Unregister listeners for view property changes.
-   * @param {module:ol/View} view The view.
+   * @param {import("../View.js").default} view The view.
    * @private
    */
   unbindView_(view) {
@@ -333,12 +328,12 @@ class OverviewMap extends Control {
       return;
     }
 
-    const mapSize = /** @type {module:ol/size~Size} */ (map.getSize());
+    const mapSize = /** @type {import("../size.js").Size} */ (map.getSize());
 
     const view = map.getView();
     const extent = view.calculateExtent(mapSize);
 
-    const ovmapSize = /** @type {module:ol/size~Size} */ (ovmap.getSize());
+    const ovmapSize = /** @type {import("../size.js").Size} */ (ovmap.getSize());
 
     const ovview = ovmap.getView();
     const ovextent = ovview.calculateExtent(ovmapSize);
@@ -377,7 +372,7 @@ class OverviewMap extends Control {
     const map = this.getMap();
     const ovmap = this.ovmap_;
 
-    const mapSize = /** @type {module:ol/size~Size} */ (map.getSize());
+    const mapSize = /** @type {import("../size.js").Size} */ (map.getSize());
 
     const view = map.getView();
     const extent = view.calculateExtent(mapSize);
@@ -422,7 +417,7 @@ class OverviewMap extends Control {
       return;
     }
 
-    const mapSize = /** @type {module:ol/size~Size} */ (map.getSize());
+    const mapSize = /** @type {import("../size.js").Size} */ (map.getSize());
 
     const view = map.getView();
 
@@ -450,8 +445,8 @@ class OverviewMap extends Control {
 
   /**
    * @param {number} rotation Target rotation.
-   * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
-   * @return {module:ol/coordinate~Coordinate|undefined} Coordinate for rotation and center anchor.
+   * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
+   * @return {import("../coordinate.js").Coordinate|undefined} Coordinate for rotation and center anchor.
    * @private
    */
   calculateCoordinateRotate_(rotation, coordinate) {
@@ -558,7 +553,7 @@ class OverviewMap extends Control {
 
   /**
    * Return the overview map.
-   * @return {module:ol/PluggableMap} Overview map.
+   * @return {import("../PluggableMap.js").default} Overview map.
    * @api
    */
   getOverviewMap() {
@@ -569,8 +564,8 @@ class OverviewMap extends Control {
 
 /**
  * Update the overview map element.
- * @param {module:ol/MapEvent} mapEvent Map event.
- * @this {module:ol/control/OverviewMap}
+ * @param {import("../MapEvent.js").default} mapEvent Map event.
+ * @this {OverviewMap}
  * @api
  */
 export function render(mapEvent) {

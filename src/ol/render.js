@@ -2,15 +2,20 @@
  * @module ol/render
  */
 import {DEVICE_PIXEL_RATIO} from './has.js';
-import {create as createTransform, scale as scaleTransform} from './transform.js';
+import {
+  apply as applyTransform,
+  create as createTransform,
+  multiply as multiplyTransform,
+  scale as scaleTransform
+} from './transform.js';
 import CanvasImmediateRenderer from './render/canvas/Immediate.js';
 
 
 /**
  * @typedef {Object} State
  * @property {CanvasRenderingContext2D} context Canvas context that the layer is being rendered to.
- * @property {module:ol/Feature|module:ol/render/Feature} feature
- * @property {module:ol/geom/SimpleGeometry} geometry
+ * @property {import("./Feature.js").FeatureLike} feature
+ * @property {import("./geom/SimpleGeometry.js").default} geometry
  * @property {number} pixelRatio Pixel ratio used by the layer renderer.
  * @property {number} resolution Resolution that the render batch was created and optimized for.
  * This is not the view's resolution that is being rendered.
@@ -23,14 +28,13 @@ import CanvasImmediateRenderer from './render/canvas/Immediate.js';
  * It takes two instances of {@link module:ol/Feature} or
  * {@link module:ol/render/Feature} and returns a `{number}`.
  *
- * @typedef {function((module:ol/Feature|module:ol/render/Feature),
- *           (module:ol/Feature|module:ol/render/Feature)):number} OrderFunction
+ * @typedef {function(import("./Feature.js").FeatureLike, import("./Feature.js").FeatureLike):number} OrderFunction
  */
 
 
 /**
  * @typedef {Object} ToContextOptions
- * @property {module:ol/size~Size} [size] Desired size of the canvas in css
+ * @property {import("./size.js").Size} [size] Desired size of the canvas in css
  * pixels. When provided, both canvas and css size will be set according to the
  * `pixelRatio`. If not provided, the current canvas and css sizes will not be
  * altered.
@@ -59,8 +63,8 @@ import CanvasImmediateRenderer from './render/canvas/Immediate.js';
  * ```
  *
  * @param {CanvasRenderingContext2D} context Canvas context.
- * @param {module:ol/render~ToContextOptions=} opt_options Options.
- * @return {module:ol/render/canvas/Immediate} Canvas Immediate.
+ * @param {ToContextOptions=} opt_options Options.
+ * @return {CanvasImmediateRenderer} Canvas Immediate.
  * @api
  */
 export function toContext(context, opt_options) {
@@ -77,4 +81,32 @@ export function toContext(context, opt_options) {
   const extent = [0, 0, canvas.width, canvas.height];
   const transform = scaleTransform(createTransform(), pixelRatio, pixelRatio);
   return new CanvasImmediateRenderer(context, pixelRatio, extent, transform, 0);
+}
+
+/**
+ * Gets a vector context for drawing to the event's canvas.
+ * @param {import("./render/Event.js").default} event Render event.
+ * @returns {CanvasImmediateRenderer} Vector context.
+ * @api
+ */
+export function getVectorContext(event) {
+  const frameState = event.frameState;
+  const transform = multiplyTransform(event.inversePixelTransform.slice(), frameState.coordinateToPixelTransform);
+  return new CanvasImmediateRenderer(
+    event.context, frameState.pixelRatio, frameState.extent, transform,
+    frameState.viewState.rotation);
+}
+
+/**
+ * Gets the pixel of the event's canvas context from the map viewport's CSS pixel.
+ * @param {import("./render/Event.js").default} event Render event.
+ * @param {import("./pixel.js").Pixel} pixel CSS pixel relative to the top-left
+ * corner of the map viewport.
+ * @returns {import("./pixel.js").Pixel} Pixel on the event's canvas context.
+ * @api
+ */
+export function getRenderPixel(event, pixel) {
+  const result = pixel.slice(0);
+  applyTransform(event.inversePixelTransform.slice(), result);
+  return result;
 }

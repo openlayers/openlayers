@@ -1,7 +1,7 @@
 /**
  * @module ol/webgl/Shader
  */
-import {FALSE} from '../functions.js';
+import {abstract} from '../util.js';
 
 /**
  * @abstract
@@ -22,10 +22,19 @@ class WebGLShader {
   }
 
   /**
+   * @return {boolean} Is animated?
+   */
+  isAnimated() {
+    return false;
+  }
+
+  /**
    * @abstract
    * @return {number} Type.
    */
-  getType() {}
+  getType() {
+    return abstract();
+  }
 
   /**
    * @return {string} Source.
@@ -36,8 +45,4 @@ class WebGLShader {
 }
 
 
-/**
- * @return {boolean} Is animated?
- */
-WebGLShader.prototype.isAnimated = FALSE;
 export default WebGLShader;

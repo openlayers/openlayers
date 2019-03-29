@@ -61,8 +61,8 @@ const style = new Style({
  * The styling function for the vector layer, will return an array of styles
  * which either contains the aboove gradient or pattern.
  *
- * @param {module:ol/Feature~Feature} feature The feature to style.
- * @return {module:ol/style/Style} The style to use for the feature.
+ * @param {import("../src/ol/Feature.js").default} feature The feature to style.
+ * @return {Style} The style to use for the feature.
  */
 const getStackedStyle = function(feature) {
   const id = feature.getId();

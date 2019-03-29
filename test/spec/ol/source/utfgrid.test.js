@@ -222,9 +222,9 @@ describe('ol.source.UTFGrid', function() {
 
       // Override getTile method to not depend on the external service. The
       // signature of the method is kept the same, but the returned tile will
-      // always be for [1, 1 -1].
+      // always be for [1, 1, 0].
       source.getTile = function(z, x, y, pixelRatio, projection) {
-        const tileCoord = [1, 1, -1]; // overwritten to match our stored JSON
+        const tileCoord = [1, 1, 0]; // overwritten to match our stored JSON
         const urlTileCoord =
             this.getTileCoordForTileUrlFunction(tileCoord, projection);
         const tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);

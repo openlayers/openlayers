@@ -2,7 +2,6 @@ import Geolocation from '../src/ol/Geolocation.js';
 import Map from '../src/ol/Map.js';
 import Overlay from '../src/ol/Overlay.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import LineString from '../src/ol/geom/LineString.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
@@ -14,19 +13,14 @@ const view = new View({
   zoom: 19
 });
 
+const tileLayer = new TileLayer({
+  source: new OSM()
+});
+
 // creating the map
 const map = new Map({
-  layers: [
-    new TileLayer({
-      source: new OSM()
-    })
-  ],
+  layers: [tileLayer],
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: view
 });
 
@@ -42,7 +36,7 @@ map.addOverlay(marker);
 // LineString to store the different geolocation positions. This LineString
 // is time aware.
 // The Z dimension is actually used to store the rotation (heading).
-const positions = new LineString([], /** @type {module:ol/geom/GeometryLayout} */ ('XYZM'));
+const positions = new LineString([], 'XYZM');
 
 // Geolocation Control
 const geolocation = new Geolocation({
@@ -161,7 +155,7 @@ const geolocateBtn = document.getElementById('geolocate');
 geolocateBtn.addEventListener('click', function() {
   geolocation.setTracking(true); // Start position tracking
 
-  map.on('postcompose', updateView);
+  tileLayer.on('postrender', updateView);
   map.render();
 
   disableButtons();
@@ -203,7 +197,7 @@ simulateBtn.addEventListener('click', function() {
   }
   geolocate();
 
-  map.on('postcompose', updateView);
+  tileLayer.on('postrender', updateView);
   map.render();
 
   disableButtons();

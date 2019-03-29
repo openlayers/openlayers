@@ -2,8 +2,8 @@
  * @module ol/format/IGC
  */
 import Feature from '../Feature.js';
-import {transformWithOptions} from '../format/Feature.js';
-import TextFeature from '../format/TextFeature.js';
+import {transformGeometryWithOptions} from './Feature.js';
+import TextFeature from './TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import {get as getProjection} from '../proj.js';
@@ -69,7 +69,7 @@ const NEWLINE_RE = /\r\n|\r|\n/;
 class IGC extends TextFeature {
 
   /**
-   * @param {module:ol/format/IGC~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
     super();
@@ -158,8 +158,8 @@ class IGC extends TextFeature {
     }
     const layout = altitudeMode == IGCZ.NONE ? GeometryLayout.XYM : GeometryLayout.XYZM;
     const lineString = new LineString(flatCoordinates, layout);
-    const feature = new Feature(transformWithOptions(lineString, false, opt_options));
-    feature.setProperties(properties);
+    const feature = new Feature(transformGeometryWithOptions(lineString, false, opt_options));
+    feature.setProperties(properties, true);
     return feature;
   }
 

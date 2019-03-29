@@ -61,7 +61,6 @@ describe('ol.style.Icon', function() {
         offsetOrigin: 'bottom-left',
         opacity: 0.5,
         scale: 2,
-        snapToPixel: false,
         rotation: 4,
         size: [10, 12]
       });
@@ -82,7 +81,6 @@ describe('ol.style.Icon', function() {
       expect(original.getOpacity()).to.eql(clone.getOpacity());
       expect(original.getRotation()).to.eql(clone.getRotation());
       expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
-      expect(original.getSnapToPixel()).to.eql(clone.getSnapToPixel());
 
       const original2 = new Icon({
         src: src

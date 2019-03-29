@@ -2,7 +2,7 @@
  * @module ol/source/OSM
  */
 
-import XYZ from '../source/XYZ.js';
+import XYZ from './XYZ.js';
 
 
 /**
@@ -12,24 +12,23 @@ import XYZ from '../source/XYZ.js';
  * @type {string}
  * @api
  */
-export const ATTRIBUTION = '&copy; ' +
+export const ATTRIBUTION = '&#169; ' +
       '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
       'contributors.';
 
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize=2048] Cache size.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will increase if too small.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
- * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
- * access pixel data with the Canvas renderer.  See
- * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {number} [maxZoom=19] Max zoom.
  * @property {boolean} [opaque=true] Whether the layer is opaque.
  * @property {number} [reprojectionErrorThreshold=1.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
@@ -48,7 +47,7 @@ export const ATTRIBUTION = '&copy; ' +
  */
 class OSM extends XYZ {
   /**
-   * @param {module:ol/source/OSM~Options=} [opt_options] Open Street Map options.
+   * @param {Options=} [opt_options] Open Street Map options.
    */
   constructor(opt_options) {
 
@@ -76,7 +75,8 @@ class OSM extends XYZ {
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       tileLoadFunction: options.tileLoadFunction,
       url: url,
-      wrapX: options.wrapX
+      wrapX: options.wrapX,
+      attributionsCollapsible: false
     });
 
   }

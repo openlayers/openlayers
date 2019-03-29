@@ -1,6 +1,5 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
@@ -11,18 +10,13 @@ const osm = new TileLayer({
 const map = new Map({
   layers: [osm],
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: new View({
     center: [0, 0],
     zoom: 2
   })
 });
 
-osm.on('precompose', function(event) {
+osm.on('prerender', function(event) {
   const ctx = event.context;
   ctx.save();
   const pixelRatio = event.frameState.pixelRatio;
@@ -44,7 +38,7 @@ osm.on('precompose', function(event) {
   ctx.translate(-size[0] / 2 * pixelRatio, -size[1] / 2 * pixelRatio);
 });
 
-osm.on('postcompose', function(event) {
+osm.on('postrender', function(event) {
   const ctx = event.context;
   ctx.restore();
 });

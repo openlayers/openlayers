@@ -7,33 +7,32 @@ import {find, findIndex, includes} from '../array.js';
 import {containsExtent} from '../extent.js';
 import {assign} from '../obj.js';
 import {get as getProjection, equivalent, transformExtent} from '../proj.js';
-import TileImage from '../source/TileImage.js';
-import WMTSRequestEncoding from '../source/WMTSRequestEncoding.js';
+import TileImage from './TileImage.js';
+import WMTSRequestEncoding from './WMTSRequestEncoding.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {appendParams} from '../uri.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions] Attributions.
- * @property {number} [cacheSize=2048] Cache size.
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {number} [cacheSize] Tile cache size. The default depends on the screen size. Will increase if too small.
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
- * you must provide a `crossOrigin` value if you are using the WebGL renderer or if you want to
- * access pixel data with the Canvas renderer.  See
- * https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {module:ol/tilegrid/WMTS} tileGrid Tile grid.
- * @property {module:ol/proj~ProjectionLike} projection Projection.
+ * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {import("../tilegrid/WMTS.js").default} tileGrid Tile grid.
+ * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {module:ol/source/WMTSRequestEncoding|string} [requestEncoding='KVP'] Request encoding.
+ * @property {import("./WMTSRequestEncoding.js").default|string} [requestEncoding='KVP'] Request encoding.
  * @property {string} layer Layer name as advertised in the WMTS capabilities.
  * @property {string} style Style name as advertised in the WMTS capabilities.
- * @property {module:ol/ImageTile~TileClass} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
+ * @property {typeof import("../ImageTile.js").default} [tileClass]  Class used to instantiate image tiles. Default is {@link module:ol/ImageTile~ImageTile}.
  * @property {number} [tilePixelRatio=1] The pixel ratio used by the tile service.
  * For example, if the tile service advertizes 256px by 256px tiles but actually sends 512px
  * by 512px images (for retina/hidpi devices) then `tilePixelRatio`
  * should be set to `2`.
- * @property {string} [version='image/jpeg'] Image format.
- * @property {string} [format='1.0.0'] WMTS version.
+ * @property {string} [format='image/jpeg'] Image format. Only used when `requestEncoding` is `'KVP'`.
+ * @property {string} [version='1.0.0'] WMTS version.
  * @property {string} matrixSet Matrix set.
  * @property {!Object} [dimensions] Additional "dimensions" for tile requests.
  * This is an object with properties named like the advertised WMTS dimensions.
@@ -42,7 +41,7 @@ import {appendParams} from '../uri.js';
  * template.  For KVP encoding, it is normal URL. A `{?-?}` template pattern,
  * for example `subdomain{a-f}.domain.com`, may be used instead of defining
  * each one separately in the `urls` option.
- * @property {module:ol/Tile~LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
+ * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
  *   imageTile.getImage().src = src;
@@ -63,14 +62,14 @@ import {appendParams} from '../uri.js';
  */
 class WMTS extends TileImage {
   /**
-   * @param {module:ol/source/WMTS~Options=} options WMTS options.
+   * @param {Options} options WMTS options.
    */
   constructor(options) {
 
     // TODO: add support for TileMatrixLimits
 
     const requestEncoding = options.requestEncoding !== undefined ?
-      /** @type {module:ol/source/WMTSRequestEncoding} */ (options.requestEncoding) :
+      /** @type {import("./WMTSRequestEncoding.js").default} */ (options.requestEncoding) :
       WMTSRequestEncoding.KVP;
 
     // FIXME: should we create a default tileGrid?
@@ -139,7 +138,7 @@ class WMTS extends TileImage {
 
     /**
      * @private
-     * @type {module:ol/source/WMTSRequestEncoding}
+     * @type {import("./WMTSRequestEncoding.js").default}
      */
     this.requestEncoding_ = requestEncoding;
 
@@ -159,9 +158,7 @@ class WMTS extends TileImage {
   setUrls(urls) {
     this.urls = urls;
     const key = urls.join('\n');
-    this.setTileUrlFunction(this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) :
-      createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this))), key);
+    this.setTileUrlFunction(createFromTileUrlFunctions(urls.map(createFromWMTSTemplate.bind(this))), key);
   }
 
   /**
@@ -208,7 +205,7 @@ class WMTS extends TileImage {
 
   /**
    * Return the request encoding, either "KVP" or "REST".
-   * @return {module:ol/source/WMTSRequestEncoding} Request encoding.
+   * @return {import("./WMTSRequestEncoding.js").default} Request encoding.
    * @api
    */
   getRequestEncoding() {
@@ -285,7 +282,7 @@ export default WMTS;
  *  - format - {string} Image format for the layer. Default is the first
  *       format returned in the GetCapabilities response.
  *  - crossOrigin - {string|null|undefined} Cross origin. Default is `undefined`.
- * @return {?module:ol/source/WMTS~Options} WMTS source options object or `null` if the layer was not found.
+ * @return {?Options} WMTS source options object or `null` if the layer was not found.
  * @api
  */
 export function optionsFromCapabilities(wmtsCap, config) {
@@ -459,8 +456,8 @@ export function optionsFromCapabilities(wmtsCap, config) {
 
 /**
  * @param {string} template Template.
- * @return {module:ol/Tile~UrlFunction} Tile URL function.
- * @this {module:ol/source/WMTS}
+ * @return {import("../Tile.js").UrlFunction} Tile URL function.
+ * @this {WMTS}
  */
 function createFromWMTSTemplate(template) {
   const requestEncoding = this.requestEncoding_;
@@ -492,13 +489,15 @@ function createFromWMTSTemplate(template) {
       return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
     });
 
-  const tileGrid = this.tileGrid;
+  const tileGrid = /** @type {import("../tilegrid/WMTS.js").default} */ (
+    this.tileGrid);
+  const dimensions = this.dimensions_;
 
   return (
     /**
-     * @param {module:ol/tilecoord~TileCoord} tileCoord Tile coordinate.
+     * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
      * @param {number} pixelRatio Pixel ratio.
-     * @param {module:ol/proj/Projection} projection Projection.
+     * @param {import("../proj/Projection.js").default} projection Projection.
      * @return {string|undefined} Tile URL.
      */
     function(tileCoord, pixelRatio, projection) {
@@ -508,9 +507,9 @@ function createFromWMTSTemplate(template) {
         const localContext = {
           'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
           'TileCol': tileCoord[1],
-          'TileRow': -tileCoord[2] - 1
+          'TileRow': tileCoord[2]
         };
-        assign(localContext, this.dimensions_);
+        assign(localContext, dimensions);
         let url = template;
         if (requestEncoding == WMTSRequestEncoding.KVP) {
           url = appendParams(url, localContext);

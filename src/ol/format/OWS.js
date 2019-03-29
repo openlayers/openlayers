@@ -1,9 +1,9 @@
 /**
  * @module ol/format/OWS
  */
-import {readHref} from '../format/XLink.js';
-import XML from '../format/XML.js';
-import {readString} from '../format/xsd.js';
+import {readHref} from './XLink.js';
+import XML from './XML.js';
+import {readString} from './xsd.js';
 import {makeObjectPropertyPusher, makeObjectPropertySetter, makeStructureNS, pushParseAndPop} from '../xml.js';
 
 
@@ -16,7 +16,7 @@ const NAMESPACE_URIS = [null, 'http://www.opengis.net/ows/1.1'];
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -56,7 +56,7 @@ class OWS extends XML {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const ADDRESS_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -71,7 +71,7 @@ const ADDRESS_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const ALLOWED_VALUES_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -81,7 +81,7 @@ const ALLOWED_VALUES_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const CONSTRAINT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -91,7 +91,7 @@ const CONSTRAINT_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const CONTACT_INFO_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -102,7 +102,7 @@ const CONTACT_INFO_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const DCP_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -112,7 +112,7 @@ const DCP_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const HTTP_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -123,7 +123,7 @@ const HTTP_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const OPERATION_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -133,7 +133,7 @@ const OPERATION_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const OPERATIONS_METADATA_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -143,7 +143,7 @@ const OPERATIONS_METADATA_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const PHONE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -154,7 +154,7 @@ const PHONE_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const REQUEST_METHOD_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
@@ -164,7 +164,7 @@ const REQUEST_METHOD_PARSERS = makeStructureNS(
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const SERVICE_CONTACT_PARSERS =
     makeStructureNS(
@@ -177,7 +177,7 @@ const SERVICE_CONTACT_PARSERS =
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const SERVICE_IDENTIFICATION_PARSERS =
     makeStructureNS(
@@ -193,7 +193,7 @@ const SERVICE_IDENTIFICATION_PARSERS =
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const SERVICE_PROVIDER_PARSERS =
     makeStructureNS(
@@ -205,7 +205,7 @@ const SERVICE_PROVIDER_PARSERS =
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The address.
  */
@@ -216,7 +216,7 @@ function readAddress(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The values.
  */
@@ -227,7 +227,7 @@ function readAllowedValues(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The constraint.
  */
@@ -243,7 +243,7 @@ function readConstraint(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The contact info.
  */
@@ -254,7 +254,7 @@ function readContactInfo(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The DCP.
  */
@@ -265,7 +265,7 @@ function readDcp(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The GET object.
  */
@@ -280,7 +280,7 @@ function readGet(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The HTTP object.
  */
@@ -290,7 +290,7 @@ function readHttp(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The operation.
  */
@@ -308,7 +308,7 @@ function readOperation(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The operations metadata.
  */
@@ -320,7 +320,7 @@ function readOperationsMetadata(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The phone.
  */
@@ -331,7 +331,7 @@ function readPhone(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The service identification.
  */
@@ -343,7 +343,7 @@ function readServiceIdentification(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The service contact.
  */
@@ -355,7 +355,7 @@ function readServiceContact(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} The service provider.
  */

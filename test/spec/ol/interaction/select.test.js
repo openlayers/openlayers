@@ -442,4 +442,11 @@ describe('ol.interaction.Select', function() {
       });
     });
   });
+
+  describe('#getOverlay', function() {
+    it('returns the feature overlay layer', function() {
+      const select = new Select();
+      expect (select.getOverlay()).to.eql(select.featureOverlay_);
+    });
+  });
 });

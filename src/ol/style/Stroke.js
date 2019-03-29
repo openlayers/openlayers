@@ -1,12 +1,11 @@
 /**
  * @module ol/style/Stroke
  */
-import {getUid} from '../util.js';
 
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/color~Color|module:ol/colorlike~ColorLike} [color] A color, gradient or pattern.
+ * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color] A color, gradient or pattern.
  * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
  * Default null; if null, the Canvas/renderer default black will be used.
  * @property {string} [lineCap='round'] Line cap style: `butt`, `round`, or `square`.
@@ -30,7 +29,7 @@ import {getUid} from '../util.js';
  */
 class Stroke {
   /**
-   * @param {module:ol/style/Stroke~Options=} opt_options Options.
+   * @param {Options=} opt_options Options.
    */
   constructor(opt_options) {
 
@@ -38,7 +37,7 @@ class Stroke {
 
     /**
      * @private
-     * @type {module:ol/color~Color|module:ol/colorlike~ColorLike}
+     * @type {import("../color.js").Color|import("../colorlike.js").ColorLike}
      */
     this.color_ = options.color !== undefined ? options.color : null;
 
@@ -77,23 +76,17 @@ class Stroke {
      * @type {number|undefined}
      */
     this.width_ = options.width;
-
-    /**
-     * @private
-     * @type {string|undefined}
-     */
-    this.checksum_ = undefined;
   }
 
   /**
    * Clones the style.
-   * @return {module:ol/style/Stroke} The cloned style.
+   * @return {Stroke} The cloned style.
    * @api
    */
   clone() {
     const color = this.getColor();
     return new Stroke({
-      color: (color && color.slice) ? color.slice() : color || undefined,
+      color: Array.isArray(color) ? color.slice() : color || undefined,
       lineCap: this.getLineCap(),
       lineDash: this.getLineDash() ? this.getLineDash().slice() : undefined,
       lineDashOffset: this.getLineDashOffset(),
@@ -105,7 +98,7 @@ class Stroke {
 
   /**
    * Get the stroke color.
-   * @return {module:ol/color~Color|module:ol/colorlike~ColorLike} Color.
+   * @return {import("../color.js").Color|import("../colorlike.js").ColorLike} Color.
    * @api
    */
   getColor() {
@@ -169,12 +162,11 @@ class Stroke {
   /**
    * Set the color.
    *
-   * @param {module:ol/color~Color|module:ol/colorlike~ColorLike} color Color.
+   * @param {import("../color.js").Color|import("../colorlike.js").ColorLike} color Color.
    * @api
    */
   setColor(color) {
     this.color_ = color;
-    this.checksum_ = undefined;
   }
 
   /**
@@ -185,7 +177,6 @@ class Stroke {
    */
   setLineCap(lineCap) {
     this.lineCap_ = lineCap;
-    this.checksum_ = undefined;
   }
 
   /**
@@ -202,7 +193,6 @@ class Stroke {
    */
   setLineDash(lineDash) {
     this.lineDash_ = lineDash;
-    this.checksum_ = undefined;
   }
 
   /**
@@ -213,7 +203,6 @@ class Stroke {
    */
   setLineDashOffset(lineDashOffset) {
     this.lineDashOffset_ = lineDashOffset;
-    this.checksum_ = undefined;
   }
 
   /**
@@ -224,7 +213,6 @@ class Stroke {
    */
   setLineJoin(lineJoin) {
     this.lineJoin_ = lineJoin;
-    this.checksum_ = undefined;
   }
 
   /**
@@ -235,7 +223,6 @@ class Stroke {
    */
   setMiterLimit(miterLimit) {
     this.miterLimit_ = miterLimit;
-    this.checksum_ = undefined;
   }
 
   /**
@@ -246,41 +233,8 @@ class Stroke {
    */
   setWidth(width) {
     this.width_ = width;
-    this.checksum_ = undefined;
   }
 
-  /**
-   * @return {string} The checksum.
-   */
-  getChecksum() {
-    if (this.checksum_ === undefined) {
-      this.checksum_ = 's';
-      if (this.color_) {
-        if (typeof this.color_ === 'string') {
-          this.checksum_ += this.color_;
-        } else {
-          this.checksum_ += getUid(this.color_).toString();
-        }
-      } else {
-        this.checksum_ += '-';
-      }
-      this.checksum_ += ',' +
-          (this.lineCap_ !== undefined ?
-            this.lineCap_.toString() : '-') + ',' +
-          (this.lineDash_ ?
-            this.lineDash_.toString() : '-') + ',' +
-          (this.lineDashOffset_ !== undefined ?
-            this.lineDashOffset_ : '-') + ',' +
-          (this.lineJoin_ !== undefined ?
-            this.lineJoin_ : '-') + ',' +
-          (this.miterLimit_ !== undefined ?
-            this.miterLimit_.toString() : '-') + ',' +
-          (this.width_ !== undefined ?
-            this.width_.toString() : '-');
-    }
-
-    return this.checksum_;
-  }
 }
 
 export default Stroke;

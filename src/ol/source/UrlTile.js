@@ -4,26 +4,27 @@
 import {getUid} from '../util.js';
 import TileState from '../TileState.js';
 import {expandUrl, createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
-import TileSource, {TileSourceEvent} from '../source/Tile.js';
-import TileEventType from '../source/TileEventType.js';
+import TileSource, {TileSourceEvent} from './Tile.js';
+import TileEventType from './TileEventType.js';
 import {getKeyZXY} from '../tilecoord.js';
 
 /**
  * @typedef {Object} Options
- * @property {module:ol/source/Source~AttributionLike} [attributions]
+ * @property {import("./Source.js").AttributionLike} [attributions]
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize]
- * @property {module:ol/extent~Extent} [extent]
  * @property {boolean} [opaque]
- * @property {module:ol/proj~ProjectionLike} [projection]
- * @property {module:ol/source/State} [state]
- * @property {module:ol/tilegrid/TileGrid} [tileGrid]
- * @property {module:ol/Tile~LoadFunction} tileLoadFunction
+ * @property {import("../proj.js").ProjectionLike} [projection]
+ * @property {import("./State.js").default} [state]
+ * @property {import("../tilegrid/TileGrid.js").default} [tileGrid]
+ * @property {import("../Tile.js").LoadFunction} tileLoadFunction
  * @property {number} [tilePixelRatio]
- * @property {module:ol/Tile~UrlFunction} [tileUrlFunction]
+ * @property {import("../Tile.js").UrlFunction} [tileUrlFunction]
  * @property {string} [url]
  * @property {Array<string>} [urls]
  * @property {boolean} [wrapX=true]
  * @property {number} [transition]
+ * @property {string} [key]
  */
 
 
@@ -31,39 +32,45 @@ import {getKeyZXY} from '../tilecoord.js';
  * @classdesc
  * Base class for sources providing tiles divided into a tile grid over http.
  *
- * @fires module:ol/source/TileEvent
+ * @fires import("./Tile.js").TileSourceEvent
  */
 class UrlTile extends TileSource {
   /**
-   * @param {module:ol/source/UrlTile~Options=} options Image tile options.
+   * @param {Options} options Image tile options.
    */
   constructor(options) {
 
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
-      extent: options.extent,
       opaque: options.opaque,
       projection: options.projection,
       state: options.state,
       tileGrid: options.tileGrid,
       tilePixelRatio: options.tilePixelRatio,
       wrapX: options.wrapX,
-      transition: options.transition
+      transition: options.transition,
+      key: options.key,
+      attributionsCollapsible: options.attributionsCollapsible
     });
 
     /**
+     * @private
+     * @type {boolean}
+     */
+    this.generateTileUrlFunction_ = !options.tileUrlFunction;
+
+    /**
      * @protected
-     * @type {module:ol/Tile~LoadFunction}
+     * @type {import("../Tile.js").LoadFunction}
      */
     this.tileLoadFunction = options.tileLoadFunction;
 
     /**
      * @protected
-     * @type {module:ol/Tile~UrlFunction}
+     * @type {import("../Tile.js").UrlFunction}
      */
-    this.tileUrlFunction = this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) : nullTileUrlFunction;
+    this.tileUrlFunction = options.tileUrlFunction ? options.tileUrlFunction.bind(this) : nullTileUrlFunction;
 
     /**
      * @protected
@@ -76,13 +83,10 @@ class UrlTile extends TileSource {
     } else if (options.url) {
       this.setUrl(options.url);
     }
-    if (options.tileUrlFunction) {
-      this.setTileUrlFunction(options.tileUrlFunction);
-    }
 
     /**
      * @private
-     * @type {!Object<number, boolean>}
+     * @type {!Object<string, boolean>}
      */
     this.tileLoadingKeys_ = {};
 
@@ -90,7 +94,7 @@ class UrlTile extends TileSource {
 
   /**
    * Return the tile load function of the source.
-   * @return {module:ol/Tile~LoadFunction} TileLoadFunction
+   * @return {import("../Tile.js").LoadFunction} TileLoadFunction
    * @api
    */
   getTileLoadFunction() {
@@ -99,7 +103,7 @@ class UrlTile extends TileSource {
 
   /**
    * Return the tile URL function of the source.
-   * @return {module:ol/Tile~UrlFunction} TileUrlFunction
+   * @return {import("../Tile.js").UrlFunction} TileUrlFunction
    * @api
    */
   getTileUrlFunction() {
@@ -119,11 +123,11 @@ class UrlTile extends TileSource {
 
   /**
    * Handle tile change events.
-   * @param {module:ol/events/Event} event Event.
+   * @param {import("../events/Event.js").default} event Event.
    * @protected
    */
   handleTileChange(event) {
-    const tile = /** @type {module:ol/Tile} */ (event.target);
+    const tile = /** @type {import("../Tile.js").default} */ (event.target);
     const uid = getUid(tile);
     const tileState = tile.getState();
     let type;
@@ -143,7 +147,7 @@ class UrlTile extends TileSource {
 
   /**
    * Set the tile load function of the source.
-   * @param {module:ol/Tile~LoadFunction} tileLoadFunction Tile load function.
+   * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
    * @api
    */
   setTileLoadFunction(tileLoadFunction) {
@@ -154,15 +158,15 @@ class UrlTile extends TileSource {
 
   /**
    * Set the tile URL function of the source.
-   * @param {module:ol/Tile~UrlFunction} tileUrlFunction Tile URL function.
-   * @param {string=} opt_key Optional new tile key for the source.
+   * @param {import("../Tile.js").UrlFunction} tileUrlFunction Tile URL function.
+   * @param {string=} key Optional new tile key for the source.
    * @api
    */
-  setTileUrlFunction(tileUrlFunction, opt_key) {
+  setTileUrlFunction(tileUrlFunction, key) {
     this.tileUrlFunction = tileUrlFunction;
     this.tileCache.pruneExceptNewestZ();
-    if (typeof opt_key !== 'undefined') {
-      this.setKey(opt_key);
+    if (typeof key !== 'undefined') {
+      this.setKey(key);
     } else {
       this.changed();
     }
@@ -175,9 +179,7 @@ class UrlTile extends TileSource {
    */
   setUrl(url) {
     const urls = this.urls = expandUrl(url);
-    this.setTileUrlFunction(this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) :
-      createFromTemplates(urls, this.tileGrid), url);
+    this.setUrls(urls);
   }
 
   /**
@@ -188,9 +190,11 @@ class UrlTile extends TileSource {
   setUrls(urls) {
     this.urls = urls;
     const key = urls.join('\n');
-    this.setTileUrlFunction(this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) :
-      createFromTemplates(urls, this.tileGrid), key);
+    if (this.generateTileUrlFunction_) {
+      this.setTileUrlFunction(createFromTemplates(urls, this.tileGrid), key);
+    } else {
+      this.setKey(key);
+    }
   }
 
   /**
@@ -204,11 +208,5 @@ class UrlTile extends TileSource {
   }
 }
 
-
-/**
- * @type {module:ol/Tile~UrlFunction|undefined}
- * @protected
- */
-UrlTile.prototype.fixedTileUrlFunction;
 
 export default UrlTile;

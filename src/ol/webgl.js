@@ -323,8 +323,8 @@ let HAS = false;
 //TODO Remove side effects
 if (typeof window !== 'undefined' && 'WebGLRenderingContext' in window) {
   try {
-    const canvas = /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS'));
-    const gl = getContext(canvas, {failIfMajorPerformanceCaveat: true});
+    const canvas = document.createElement('canvas');
+    const gl = getContext(canvas);
     if (gl) {
       HAS = true;
       MAX_TEXTURE_SIZE = /** @type {number} */ (gl.getParameter(gl.MAX_TEXTURE_SIZE));

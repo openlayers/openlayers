@@ -39,10 +39,10 @@ describe('ol.layer.VectorTile', function() {
   describe('constructor (options)', function() {
     it('works with options', function() {
       let layer = new VectorTileLayer({
-        renderMode: 'vector',
+        renderMode: 'hybrid',
         source: new VectorTileSource({})
       });
-      expect(layer.getRenderMode()).to.be('vector');
+      expect(layer.getRenderMode()).to.be('hybrid');
       layer = new VectorTileLayer({
         renderMode: 'image',
         source: new VectorTileSource({})

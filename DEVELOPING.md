@@ -5,9 +5,9 @@
 You will obviously start by
 [forking](https://github.com/openlayers/openlayers/fork) the OpenLayers repository.
 
-### Travis CI
+### CircleCI
 
-The Travis CI hook is enabled on the Github repository. This means every pull request
+The CircleCI hook is enabled on the Github repository. This means every pull request
 is run through a full test suite to ensure it compiles and passes the tests. Failing
 pull requests will not be merged.
 
@@ -30,7 +30,7 @@ To run the examples you first need to start the dev server:
 
     $ npm run serve-examples
 
-Then, load <http://localhost:5000/> in your browser.
+Then, load <http://localhost:8080/> in your browser.
 
 ## Running tests
 

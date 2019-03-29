@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/topology
  */
-import {linearRing as linearRingArea} from '../flat/area.js';
+import {linearRing as linearRingArea} from './area.js';
 
 /**
  * Check if the linestring is a boundary.

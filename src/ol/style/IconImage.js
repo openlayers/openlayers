@@ -7,16 +7,16 @@ import {listenOnce, unlistenByKey} from '../events.js';
 import EventTarget from '../events/Target.js';
 import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
-import {shared as iconImageCache} from '../style/IconImageCache.js';
+import {shared as iconImageCache} from './IconImageCache.js';
 
 class IconImage extends EventTarget {
   /**
    * @param {HTMLImageElement|HTMLCanvasElement} image Image.
    * @param {string|undefined} src Src.
-   * @param {module:ol/size~Size} size Size.
+   * @param {import("../size.js").Size} size Size.
    * @param {?string} crossOrigin Cross origin.
-   * @param {module:ol/ImageState} imageState Image state.
-   * @param {module:ol/color~Color} color Color.
+   * @param {import("../ImageState.js").default} imageState Image state.
+   * @param {import("../color.js").Color} color Color.
    */
   constructor(image, src, size, crossOrigin, imageState, color) {
 
@@ -35,38 +35,36 @@ class IconImage extends EventTarget {
     this.image_ = !image ? new Image() : image;
 
     if (crossOrigin !== null) {
-      this.image_.crossOrigin = crossOrigin;
+      /** @type {HTMLImageElement} */ (this.image_).crossOrigin = crossOrigin;
     }
 
     /**
      * @private
      * @type {HTMLCanvasElement}
      */
-    this.canvas_ = color ?
-      /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS')) :
-      null;
+    this.canvas_ = color ? document.createElement('canvas') : null;
 
     /**
      * @private
-     * @type {module:ol/color~Color}
+     * @type {import("../color.js").Color}
      */
     this.color_ = color;
 
     /**
      * @private
-     * @type {Array<module:ol/events~EventsKey>}
+     * @type {Array<import("../events.js").EventsKey>}
      */
     this.imageListenerKeys_ = null;
 
     /**
      * @private
-     * @type {module:ol/ImageState}
+     * @type {import("../ImageState.js").default}
      */
     this.imageState_ = imageState;
 
     /**
      * @private
-     * @type {module:ol/size~Size}
+     * @type {import("../size.js").Size}
      */
     this.size_ = size;
 
@@ -78,26 +76,28 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {boolean}
+     * @type {boolean|undefined}
      */
-    this.tainting_ = false;
-    if (this.imageState_ == ImageState.LOADED) {
-      this.determineTainting_();
-    }
+    this.tainted_;
 
   }
 
   /**
    * @private
+   * @return {boolean} The image canvas is tainted.
    */
-  determineTainting_() {
-    const context = createCanvasContext2D(1, 1);
-    try {
-      context.drawImage(this.image_, 0, 0);
-      context.getImageData(0, 0, 1, 1);
-    } catch (e) {
-      this.tainting_ = true;
+  isTainted_() {
+    if (this.tainted_ === undefined && this.imageState_ === ImageState.LOADED) {
+      this.tainted_ = false;
+      const context = createCanvasContext2D(1, 1);
+      try {
+        context.drawImage(this.image_, 0, 0);
+        context.getImageData(0, 0, 1, 1);
+      } catch (e) {
+        this.tainted_ = true;
+      }
     }
+    return this.tainted_ === true;
   }
 
   /**
@@ -127,7 +127,6 @@ class IconImage extends EventTarget {
     }
     this.size_ = [this.image_.width, this.image_.height];
     this.unlistenImage_();
-    this.determineTainting_();
     this.replaceColor_();
     this.dispatchChangeEvent_();
   }
@@ -141,7 +140,7 @@ class IconImage extends EventTarget {
   }
 
   /**
-   * @return {module:ol/ImageState} Image state.
+   * @return {import("../ImageState.js").default} Image state.
    */
   getImageState() {
     return this.imageState_;
@@ -153,7 +152,7 @@ class IconImage extends EventTarget {
    */
   getHitDetectionImage(pixelRatio) {
     if (!this.hitDetectionImage_) {
-      if (this.tainting_) {
+      if (this.isTainted_()) {
         const width = this.size_[0];
         const height = this.size_[1];
         const context = createCanvasContext2D(width, height);
@@ -167,7 +166,7 @@ class IconImage extends EventTarget {
   }
 
   /**
-   * @return {module:ol/size~Size} Image size.
+   * @return {import("../size.js").Size} Image size.
    */
   getSize() {
     return this.size_;
@@ -193,7 +192,7 @@ class IconImage extends EventTarget {
           this.handleImageLoad_, this)
       ];
       try {
-        this.image_.src = this.src_;
+        /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
       } catch (e) {
         this.handleImageError_();
       }
@@ -204,7 +203,7 @@ class IconImage extends EventTarget {
    * @private
    */
   replaceColor_() {
-    if (this.tainting_ || this.color_ === null) {
+    if (!this.color_ || this.isTainted_()) {
       return;
     }
 
@@ -243,11 +242,11 @@ class IconImage extends EventTarget {
 /**
  * @param {HTMLImageElement|HTMLCanvasElement} image Image.
  * @param {string} src Src.
- * @param {module:ol/size~Size} size Size.
+ * @param {import("../size.js").Size} size Size.
  * @param {?string} crossOrigin Cross origin.
- * @param {module:ol/ImageState} imageState Image state.
- * @param {module:ol/color~Color} color Color.
- * @return {module:ol/style/IconImage} Icon image.
+ * @param {import("../ImageState.js").default} imageState Image state.
+ * @param {import("../color.js").Color} color Color.
+ * @return {IconImage} Icon image.
  */
 export function get(image, src, size, crossOrigin, imageState, color) {
   let iconImage = iconImageCache.get(src, crossOrigin, color);

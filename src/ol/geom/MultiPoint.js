@@ -3,11 +3,11 @@
  */
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY, containsXY} from '../extent.js';
-import GeometryType from '../geom/GeometryType.js';
-import Point from '../geom/Point.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
-import {deflateCoordinates} from '../geom/flat/deflate.js';
-import {inflateCoordinates} from '../geom/flat/inflate.js';
+import GeometryType from './GeometryType.js';
+import Point from './Point.js';
+import SimpleGeometry from './SimpleGeometry.js';
+import {deflateCoordinates} from './flat/deflate.js';
+import {inflateCoordinates} from './flat/inflate.js';
 import {squaredDistance as squaredDx} from '../math.js';
 
 /**
@@ -19,22 +19,22 @@ import {squaredDistance as squaredDx} from '../math.js';
 class MultiPoint extends SimpleGeometry {
 
   /**
-   * @param {Array<module:ol/coordinate~Coordinate>|Array<number>} coordinates Coordinates.
+   * @param {Array<import("../coordinate.js").Coordinate>|Array<number>} coordinates Coordinates.
    *     For internal use, flat coordinates in combination with `opt_layout` are also accepted.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    */
   constructor(coordinates, opt_layout) {
     super();
     if (opt_layout && !Array.isArray(coordinates[0])) {
-      this.setFlatCoordinates(opt_layout, coordinates);
+      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
     } else {
-      this.setCoordinates(coordinates, opt_layout);
+      this.setCoordinates(/** @type {Array<import("../coordinate.js").Coordinate>} */ (coordinates), opt_layout);
     }
   }
 
   /**
    * Append the passed point to this multipoint.
-   * @param {module:ol/geom/Point} point Point.
+   * @param {Point} point Point.
    * @api
    */
   appendPoint(point) {
@@ -48,7 +48,7 @@ class MultiPoint extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!module:ol/geom/MultiPoint} Clone.
+   * @return {!MultiPoint} Clone.
    * @override
    * @api
    */
@@ -82,7 +82,7 @@ class MultiPoint extends SimpleGeometry {
 
   /**
    * Return the coordinates of the multipoint.
-   * @return {Array<module:ol/coordinate~Coordinate>} Coordinates.
+   * @return {Array<import("../coordinate.js").Coordinate>} Coordinates.
    * @override
    * @api
    */
@@ -94,7 +94,7 @@ class MultiPoint extends SimpleGeometry {
   /**
    * Return the point at the specified index.
    * @param {number} index Index.
-   * @return {module:ol/geom/Point} Point.
+   * @return {Point} Point.
    * @api
    */
   getPoint(index) {
@@ -108,14 +108,14 @@ class MultiPoint extends SimpleGeometry {
 
   /**
    * Return the points of this multipoint.
-   * @return {Array<module:ol/geom/Point>} Points.
+   * @return {Array<Point>} Points.
    * @api
    */
   getPoints() {
     const flatCoordinates = this.flatCoordinates;
     const layout = this.layout;
     const stride = this.stride;
-    /** @type {Array<module:ol/geom/Point>} */
+    /** @type {Array<Point>} */
     const points = [];
     for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
       const point = new Point(flatCoordinates.slice(i, i + stride), layout);
@@ -151,8 +151,8 @@ class MultiPoint extends SimpleGeometry {
 
   /**
    * Set the coordinates of the multipoint.
-   * @param {!Array<module:ol/coordinate~Coordinate>} coordinates Coordinates.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {!Array<import("../coordinate.js").Coordinate>} coordinates Coordinates.
+   * @param {import("./GeometryLayout.js").default=} opt_layout Layout.
    * @override
    * @api
    */

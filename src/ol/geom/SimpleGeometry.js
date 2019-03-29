@@ -1,11 +1,11 @@
 /**
  * @module ol/geom/SimpleGeometry
  */
-import {FALSE} from '../functions.js';
+import {abstract} from '../util.js';
 import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
-import Geometry from '../geom/Geometry.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import {rotate, scale, translate, transform2D} from '../geom/flat/transform.js';
+import Geometry from './Geometry.js';
+import GeometryLayout from './GeometryLayout.js';
+import {rotate, scale, translate, transform2D} from './flat/transform.js';
 import {clear} from '../obj.js';
 
 /**
@@ -23,7 +23,7 @@ class SimpleGeometry extends Geometry {
 
     /**
      * @protected
-     * @type {module:ol/geom/GeometryLayout}
+     * @type {GeometryLayout}
      */
     this.layout = GeometryLayout.XY;
 
@@ -51,13 +51,15 @@ class SimpleGeometry extends Geometry {
 
   /**
    * @abstract
-   * @return {Array} Coordinates.
+   * @return {Array<*>} Coordinates.
    */
-  getCoordinates() {}
+  getCoordinates() {
+    return abstract();
+  }
 
   /**
    * Return the first coordinate of the geometry.
-   * @return {module:ol/coordinate~Coordinate} First coordinate.
+   * @return {import("../coordinate.js").Coordinate} First coordinate.
    * @api
    */
   getFirstCoordinate() {
@@ -73,7 +75,7 @@ class SimpleGeometry extends Geometry {
 
   /**
    * Return the last coordinate of the geometry.
-   * @return {module:ol/coordinate~Coordinate} Last point.
+   * @return {import("../coordinate.js").Coordinate} Last point.
    * @api
    */
   getLastCoordinate() {
@@ -81,8 +83,8 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
-   * Return the {@link module:ol/geom/GeometryLayout~GeometryLayout layout} of the geometry.
-   * @return {module:ol/geom/GeometryLayout} Layout.
+   * Return the {@link module:ol/geom/GeometryLayout layout} of the geometry.
+   * @return {GeometryLayout} Layout.
    * @api
    */
   getLayout() {
@@ -130,7 +132,7 @@ class SimpleGeometry extends Geometry {
 
   /**
    * @param {number} squaredTolerance Squared tolerance.
-   * @return {module:ol/geom/SimpleGeometry} Simplified geometry.
+   * @return {SimpleGeometry} Simplified geometry.
    * @protected
    */
   getSimplifiedGeometryInternal(squaredTolerance) {
@@ -145,9 +147,9 @@ class SimpleGeometry extends Geometry {
   }
 
   /**
-   * @param {module:ol/geom/GeometryLayout} layout Layout.
+   * @param {GeometryLayout} layout Layout.
    * @param {Array<number>} flatCoordinates Flat coordinates.
-    */
+   */
   setFlatCoordinates(layout, flatCoordinates) {
     this.stride = getStrideForLayout(layout);
     this.layout = layout;
@@ -156,14 +158,16 @@ class SimpleGeometry extends Geometry {
 
   /**
    * @abstract
-   * @param {!Array} coordinates Coordinates.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {!Array<*>} coordinates Coordinates.
+   * @param {GeometryLayout=} opt_layout Layout.
    */
-  setCoordinates(coordinates, opt_layout) {}
+  setCoordinates(coordinates, opt_layout) {
+    abstract();
+  }
 
   /**
-   * @param {module:ol/geom/GeometryLayout|undefined} layout Layout.
-   * @param {Array} coordinates Coordinates.
+   * @param {GeometryLayout|undefined} layout Layout.
+   * @param {Array<*>} coordinates Coordinates.
    * @param {number} nesting Nesting.
    * @protected
    */
@@ -257,7 +261,7 @@ class SimpleGeometry extends Geometry {
 
 /**
  * @param {number} stride Stride.
- * @return {module:ol/geom/GeometryLayout} layout Layout.
+ * @return {GeometryLayout} layout Layout.
  */
 function getLayoutForStride(stride) {
   let layout;
@@ -269,13 +273,13 @@ function getLayoutForStride(stride) {
     layout = GeometryLayout.XYZM;
   }
   return (
-    /** @type {module:ol/geom/GeometryLayout} */ (layout)
+    /** @type {GeometryLayout} */ (layout)
   );
 }
 
 
 /**
- * @param {module:ol/geom/GeometryLayout} layout Layout.
+ * @param {GeometryLayout} layout Layout.
  * @return {number} Stride.
  */
 export function getStrideForLayout(layout) {
@@ -292,14 +296,8 @@ export function getStrideForLayout(layout) {
 
 
 /**
- * @inheritDoc
- */
-SimpleGeometry.prototype.containsXY = FALSE;
-
-
-/**
- * @param {module:ol/geom/SimpleGeometry} simpleGeometry Simple geometry.
- * @param {module:ol/transform~Transform} transform Transform.
+ * @param {SimpleGeometry} simpleGeometry Simple geometry.
+ * @param {import("../transform.js").Transform} transform Transform.
  * @param {Array<number>=} opt_dest Destination.
  * @return {Array<number>} Transformed flat coordinates.
  */

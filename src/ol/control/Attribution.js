@@ -2,7 +2,7 @@
  * @module ol/control/Attribution
  */
 import {equals} from '../array.js';
-import Control from '../control/Control.js';
+import Control from './Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_COLLAPSED} from '../css.js';
 import {removeChildren, replaceNode} from '../dom.js';
 import {listen} from '../events.js';
@@ -16,9 +16,9 @@ import {visibleAtResolution} from '../layer/Layer.js';
  * @property {HTMLElement|string} [target] Specify a target if you
  * want the control to be rendered outside of the map's
  * viewport.
- * @property {boolean} [collapsible=true] Specify if attributions can
- * be collapsed. If you use an OSM source, should be set to `false` — see
- * {@link https://www.openstreetmap.org/copyright OSM Copyright} —
+ * @property {boolean} [collapsible] Specify if attributions can
+ * be collapsed. If not specified, sources control this behavior with their
+ * `attributionsCollapsible` setting.
  * @property {boolean} [collapsed=true] Specify if attributions should
  * be collapsed at startup.
  * @property {string} [tipLabel='Attributions'] Text label to use for the button tip.
@@ -28,7 +28,7 @@ import {visibleAtResolution} from '../layer/Layer.js';
  * @property {string|HTMLElement} [collapseLabel='»'] Text label to use
  * for the expanded attributions button.
  * Instead of text, also an element (e.g. a `span` element) can be used.
- * @property {function(module:ol/MapEvent)} [render] Function called when
+ * @property {function(import("../MapEvent.js").default)} [render] Function called when
  * the control should be re-rendered. This is called in a `requestAnimationFrame`
  * callback.
  */
@@ -46,7 +46,7 @@ import {visibleAtResolution} from '../layer/Layer.js';
 class Attribution extends Control {
 
   /**
-   * @param {module:ol/control/Attribution~Options=} opt_options Attribution options.
+   * @param {Options=} opt_options Attribution options.
    */
   constructor(opt_options) {
 
@@ -62,13 +62,19 @@ class Attribution extends Control {
      * @private
      * @type {HTMLElement}
      */
-    this.ulElement_ = document.createElement('UL');
+    this.ulElement_ = document.createElement('ul');
 
     /**
      * @private
      * @type {boolean}
      */
     this.collapsed_ = options.collapsed !== undefined ? options.collapsed : true;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.overrideCollapsible_ = options.collapsible !== undefined;
 
     /**
      * @private
@@ -145,12 +151,12 @@ class Attribution extends Control {
   }
 
   /**
-   * Get a list of visible attributions.
-   * @param {module:ol/PluggableMap~FrameState} frameState Frame state.
+   * Collect a list of visible attributions and set the collapsible state.
+   * @param {import("../PluggableMap.js").FrameState} frameState Frame state.
    * @return {Array<string>} Attributions.
    * @private
    */
-  getSourceAttributions_(frameState) {
+  collectSourceAttributions_(frameState) {
     /**
      * Used to determine if an attribution already exists.
      * @type {!Object<string, boolean>}
@@ -171,7 +177,7 @@ class Attribution extends Control {
         continue;
       }
 
-      const source = layerState.layer.getSource();
+      const source = /** @type {import("../layer/Layer.js").default} */ (layerState.layer).getSource();
       if (!source) {
         continue;
       }
@@ -184,6 +190,10 @@ class Attribution extends Control {
       const attributions = attributionGetter(frameState);
       if (!attributions) {
         continue;
+      }
+
+      if (!this.overrideCollapsible_ && source.getAttributionsCollapsible() === false) {
+        this.setCollapsible(false);
       }
 
       if (Array.isArray(attributions)) {
@@ -205,7 +215,7 @@ class Attribution extends Control {
 
   /**
    * @private
-   * @param {?module:ol/PluggableMap~FrameState} frameState Frame state.
+   * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
    */
   updateElement_(frameState) {
     if (!frameState) {
@@ -216,7 +226,7 @@ class Attribution extends Control {
       return;
     }
 
-    const attributions = this.getSourceAttributions_(frameState);
+    const attributions = this.collectSourceAttributions_(frameState);
 
     const visible = attributions.length > 0;
     if (this.renderedVisible_ != visible) {
@@ -232,7 +242,7 @@ class Attribution extends Control {
 
     // append the attributions
     for (let i = 0, ii = attributions.length; i < ii; ++i) {
-      const element = document.createElement('LI');
+      const element = document.createElement('li');
       element.innerHTML = attributions[i];
       this.ulElement_.appendChild(element);
     }
@@ -315,8 +325,8 @@ class Attribution extends Control {
 
 /**
  * Update the attribution element.
- * @param {module:ol/MapEvent} mapEvent Map event.
- * @this {module:ol/control/Attribution}
+ * @param {import("../MapEvent.js").default} mapEvent Map event.
+ * @this {Attribution}
  * @api
  */
 export function render(mapEvent) {

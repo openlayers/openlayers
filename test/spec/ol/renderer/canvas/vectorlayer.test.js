@@ -1,4 +1,3 @@
-import {getUid} from '../../../../../src/ol/util.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -203,14 +202,13 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       const spy = sinon.spy();
       const coordinate = [0, 0];
       const frameState = {
-        layerStates: {},
+        layerStatesArray: [{}],
         skippedFeatureUids: {},
         viewState: {
           resolution: 1,
           rotation: 0
         }
       };
-      frameState.layerStates[getUid(layer)] = {};
       renderer.forEachFeatureAtCoordinate(
         coordinate, frameState, 0, spy, undefined);
       expect(spy.callCount).to.be(1);
@@ -296,22 +294,22 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       expect(renderer.replayGroupChanged).to.be(false);
     });
 
-    it('dispatches a render event when rendering to own context', function(done) {
+    it('dispatches a postrender event when rendering', function(done) {
       const layer = renderer.getLayer();
       layer.getSource().addFeature(new Feature(new Point([0, 0])));
-      layer.once('render', function() {
+      layer.once('postrender', function() {
         expect(true);
         done();
       });
       frameState.extent = [-10000, -10000, 10000, 10000];
       frameState.size = [100, 100];
       frameState.viewState.center = [0, 0];
-      let composed = false;
+      let rendered = false;
       if (renderer.prepareFrame(frameState, {})) {
-        composed = true;
-        renderer.compose(renderer.context, frameState, layer.getLayerState);
+        rendered = true;
+        renderer.renderFrame(frameState, layer.getLayerState());
       }
-      expect(composed).to.be(true);
+      expect(rendered).to.be(true);
     });
 
   });

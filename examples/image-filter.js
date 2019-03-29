@@ -90,9 +90,9 @@ select.onchange = function() {
 
 
 /**
- * Apply a filter on "postcompose" events.
+ * Apply a filter on "postrender" events.
  */
-imagery.on('postcompose', function(event) {
+imagery.on('postrender', function(event) {
   convolve(event.context, selectedKernel);
 });
 

@@ -6,14 +6,17 @@ import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import {Stroke, Style} from '../src/ol/style.js';
+import {getVectorContext} from '../src/ol/render.js';
+
+const tileLayer = new TileLayer({
+  source: new Stamen({
+    layer: 'toner'
+  })
+});
 
 const map = new Map({
   layers: [
-    new TileLayer({
-      source: new Stamen({
-        layer: 'toner'
-      })
-    })
+    tileLayer
   ],
   target: 'map',
   view: new View({
@@ -63,7 +66,7 @@ const flightsSource = new VectorSource({
           addLater(feature, i * 50);
         }
       }
-      map.on('postcompose', animateFlights);
+      tileLayer.on('postrender', animateFlights);
     });
   }
 });
@@ -85,7 +88,7 @@ map.addLayer(flightsLayer);
 
 const pointsPerMs = 0.1;
 function animateFlights(event) {
-  const vectorContext = event.vectorContext;
+  const vectorContext = getVectorContext(event);
   const frameState = event.frameState;
   vectorContext.setStyle(style);
 

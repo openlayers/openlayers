@@ -1,6 +1,5 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import {getWidth} from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat, get as getProjection} from '../src/ol/proj.js';
@@ -10,11 +9,6 @@ import WMTSTileGrid from '../src/ol/tilegrid/WMTS.js';
 
 const map = new Map({
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: new View({
     zoom: 5,
     center: fromLonLat([5, 45])
@@ -37,12 +31,11 @@ const tileGrid = new WMTSTileGrid({
   matrixIds: matrixIds
 });
 
-// API key valid for 'openlayers.org' and 'localhost'.
-// Expiration date is 06/29/2018.
-const key = '2mqbg0z6cx7ube8gsou10nrt';
+// For more information about the IGN API key see
+// https://geoservices.ign.fr/blog/2017/06/28/geoportail_sans_compte.html
 
 const ign_source = new WMTS({
-  url: 'https://wxs.ign.fr/' + key + '/wmts',
+  url: 'https://wxs.ign.fr/pratique/geoportail/wmts',
   layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
   matrixSet: 'PM',
   format: 'image/jpeg',

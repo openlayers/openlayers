@@ -1,4 +1,3 @@
-import {inherits} from '../src/ol/util.js';
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
@@ -9,58 +8,47 @@ import {TileJSON, Vector as VectorSource} from '../src/ol/source.js';
 import {Fill, Icon, Stroke, Style} from '../src/ol/style.js';
 
 
-/**
- * Define a namespace for the application.
- */
-const app = {};
+class Drag extends PointerInteraction {
+  constructor() {
+    super({
+      handleDownEvent: handleDownEvent,
+      handleDragEvent: handleDragEvent,
+      handleMoveEvent: handleMoveEvent,
+      handleUpEvent: handleUpEvent
+    });
+
+    /**
+     * @type {import("../src/ol/coordinate.js").Coordinate}
+     * @private
+     */
+    this.coordinate_ = null;
+
+    /**
+     * @type {string|undefined}
+     * @private
+     */
+    this.cursor_ = 'pointer';
+
+    /**
+     * @type {Feature}
+     * @private
+     */
+    this.feature_ = null;
+
+    /**
+     * @type {string|undefined}
+     * @private
+     */
+    this.previousCursor_ = undefined;
+  }
+}
 
 
 /**
- * @constructor
- * @extends {module:ol/interaction/Pointer}
- */
-app.Drag = function() {
-
-  PointerInteraction.call(this, {
-    handleDownEvent: app.Drag.prototype.handleDownEvent,
-    handleDragEvent: app.Drag.prototype.handleDragEvent,
-    handleMoveEvent: app.Drag.prototype.handleMoveEvent,
-    handleUpEvent: app.Drag.prototype.handleUpEvent
-  });
-
-  /**
-   * @type {module:ol/pixel~Pixel}
-   * @private
-   */
-  this.coordinate_ = null;
-
-  /**
-   * @type {string|undefined}
-   * @private
-   */
-  this.cursor_ = 'pointer';
-
-  /**
-   * @type {module:ol/Feature~Feature}
-   * @private
-   */
-  this.feature_ = null;
-
-  /**
-   * @type {string|undefined}
-   * @private
-   */
-  this.previousCursor_ = undefined;
-
-};
-inherits(app.Drag, PointerInteraction);
-
-
-/**
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt Map browser event.
+ * @param {import("../src/ol/MapBrowserEvent.js").default} evt Map browser event.
  * @return {boolean} `true` to start the drag sequence.
  */
-app.Drag.prototype.handleDownEvent = function(evt) {
+function handleDownEvent(evt) {
   const map = evt.map;
 
   const feature = map.forEachFeatureAtPixel(evt.pixel,
@@ -74,13 +62,13 @@ app.Drag.prototype.handleDownEvent = function(evt) {
   }
 
   return !!feature;
-};
+}
 
 
 /**
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt Map browser event.
+ * @param {import("../src/ol/MapBrowserEvent.js").default} evt Map browser event.
  */
-app.Drag.prototype.handleDragEvent = function(evt) {
+function handleDragEvent(evt) {
   const deltaX = evt.coordinate[0] - this.coordinate_[0];
   const deltaY = evt.coordinate[1] - this.coordinate_[1];
 
@@ -89,13 +77,13 @@ app.Drag.prototype.handleDragEvent = function(evt) {
 
   this.coordinate_[0] = evt.coordinate[0];
   this.coordinate_[1] = evt.coordinate[1];
-};
+}
 
 
 /**
- * @param {module:ol/MapBrowserEvent~MapBrowserEvent} evt Event.
+ * @param {import("../src/ol/MapBrowserEvent.js").default} evt Event.
  */
-app.Drag.prototype.handleMoveEvent = function(evt) {
+function handleMoveEvent(evt) {
   if (this.cursor_) {
     const map = evt.map;
     const feature = map.forEachFeatureAtPixel(evt.pixel,
@@ -113,17 +101,17 @@ app.Drag.prototype.handleMoveEvent = function(evt) {
       this.previousCursor_ = undefined;
     }
   }
-};
+}
 
 
 /**
  * @return {boolean} `false` to stop the drag sequence.
  */
-app.Drag.prototype.handleUpEvent = function() {
+function handleUpEvent() {
   this.coordinate_ = null;
   this.feature_ = null;
   return false;
-};
+}
 
 
 const pointFeature = new Feature(new Point([0, 0]));
@@ -137,7 +125,7 @@ const polygonFeature = new Feature(
 
 
 const map = new Map({
-  interactions: defaultInteractions().extend([new app.Drag()]),
+  interactions: defaultInteractions().extend([new Drag()]),
   layers: [
     new TileLayer({
       source: new TileJSON({
@@ -149,13 +137,13 @@ const map = new Map({
         features: [pointFeature, lineFeature, polygonFeature]
       }),
       style: new Style({
-        image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
+        image: new Icon({
           anchor: [0.5, 46],
           anchorXUnits: 'fraction',
           anchorYUnits: 'pixels',
           opacity: 0.95,
           src: 'data/icon.png'
-        })),
+        }),
         stroke: new Stroke({
           width: 3,
           color: [255, 0, 0, 1]

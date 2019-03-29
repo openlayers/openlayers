@@ -1,20 +1,25 @@
 import Feature from '../../../src/ol/Feature.js';
+import ImageState from '../../../src/ol/ImageState.js';
 import Map from '../../../src/ol/Map.js';
 import MapEvent from '../../../src/ol/MapEvent.js';
 import Overlay from '../../../src/ol/Overlay.js';
 import View from '../../../src/ol/View.js';
-import LineString from '../../../src/ol/geom/LineString.js';
+import {LineString, Point} from '../../../src/ol/geom';
 import {TOUCH} from '../../../src/ol/has.js';
 import {focus} from '../../../src/ol/events/condition.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
+import {get as getProjection} from '../../../src/ol/proj.js';
+import GeoJSON from '../../../src/ol/format/GeoJSON.js';
 import DragPan from '../../../src/ol/interaction/DragPan.js';
 import DoubleClickZoom from '../../../src/ol/interaction/DoubleClickZoom.js';
 import Interaction from '../../../src/ol/interaction/Interaction.js';
 import MouseWheelZoom from '../../../src/ol/interaction/MouseWheelZoom.js';
 import PinchZoom from '../../../src/ol/interaction/PinchZoom.js';
+import ImageLayer from '../../../src/ol/layer/Image.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../src/ol/layer/Vector.js';
-import IntermediateCanvasRenderer from '../../../src/ol/renderer/canvas/IntermediateCanvas.js';
+import TileLayerRenderer from '../../../src/ol/renderer/canvas/TileLayer.js';
+import ImageStatic from '../../../src/ol/source/ImageStatic.js';
 import VectorSource from '../../../src/ol/source/Vector.js';
 import XYZ from '../../../src/ol/source/XYZ.js';
 
@@ -188,6 +193,67 @@ describe('ol.Map', function() {
 
   });
 
+  describe('rendercomplete event', function() {
+
+    let map;
+    beforeEach(function() {
+      const target = document.createElement('div');
+      target.style.width = target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new Map({
+        target: target,
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'spec/ol/data/osm-{z}-{x}-{y}.png'
+            })
+          }),
+          new ImageLayer({
+            source: new ImageStatic({
+              url: 'spec/ol/data/osm-0-0-0.png',
+              imageExtent: getProjection('EPSG:3857').getExtent(),
+              projection: 'EPSG:3857'
+            })
+          }),
+          new VectorLayer({
+            source: new VectorSource({
+              url: 'spec/ol/data/point.json',
+              format: new GeoJSON()
+            })
+          }),
+          new VectorLayer({
+            source: new VectorSource({
+              features: [
+                new Feature(new Point([0, 0]))
+              ]
+            })
+          })
+        ]
+      });
+    });
+
+    afterEach(function() {
+      document.body.removeChild(map.getTargetElement());
+      map.setTarget(null);
+      map.dispose();
+    });
+
+    it('triggers when all tiles and sources are loaded and faded in', function(done) {
+      map.once('rendercomplete', function() {
+        const layers = map.getLayers().getArray();
+        expect(map.tileQueue_.getTilesLoading()).to.be(0);
+        expect(layers[1].getSource().image_.getState()).to.be(ImageState.LOADED);
+        expect(layers[2].getSource().getFeatures().length).to.be(1);
+        done();
+      });
+      map.setView(new View({
+        center: [0, 0],
+        zoom: 0
+      }));
+    });
+
+  });
+
   describe('#getFeaturesAtPixel', function() {
 
     let target, map;
@@ -259,9 +325,9 @@ describe('ol.Map', function() {
 
     beforeEach(function(done) {
       log = [];
-      original = IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate;
-      IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = function(coordinate) {
-        log.push(coordinate.slice());
+      original = TileLayerRenderer.prototype.getDataAtPixel;
+      TileLayerRenderer.prototype.getDataAtPixel = function(pixel) {
+        log.push(pixel.slice());
       };
 
       target = document.createElement('div');
@@ -298,13 +364,13 @@ describe('ol.Map', function() {
     });
 
     afterEach(function() {
-      IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = original;
+      TileLayerRenderer.prototype.getDataAtPixel = original;
       map.dispose();
       document.body.removeChild(target);
       log = null;
     });
 
-    it('calls each layer renderer with the same coordinate', function() {
+    it('calls each layer renderer with the same pixel', function() {
       const pixel = [10, 20];
       map.forEachLayerAtPixel(pixel, function() {});
       expect(log.length).to.equal(3);
@@ -499,7 +565,6 @@ describe('ol.Map', function() {
         const interactions = defaultInteractions(options);
         expect(interactions.getLength()).to.eql(1);
         expect(interactions.item(0)).to.be.a(MouseWheelZoom);
-        expect(interactions.item(0).constrainResolution_).to.eql(false);
         expect(interactions.item(0).useAnchor_).to.eql(true);
         interactions.item(0).setMouseAnchor(false);
         expect(interactions.item(0).useAnchor_).to.eql(false);
@@ -535,21 +600,6 @@ describe('ol.Map', function() {
         const interactions = defaultInteractions(options);
         expect(interactions.getLength()).to.eql(1);
         expect(interactions.item(0)).to.be.a(PinchZoom);
-        expect(interactions.item(0).constrainResolution_).to.eql(false);
-      });
-    });
-
-    describe('set constrainResolution option', function() {
-      it('set constrainResolution option', function() {
-        options.pinchZoom = true;
-        options.mouseWheelZoom = true;
-        options.constrainResolution = true;
-        const interactions = defaultInteractions(options);
-        expect(interactions.getLength()).to.eql(2);
-        expect(interactions.item(0)).to.be.a(PinchZoom);
-        expect(interactions.item(0).constrainResolution_).to.eql(true);
-        expect(interactions.item(1)).to.be.a(MouseWheelZoom);
-        expect(interactions.item(1).constrainResolution_).to.eql(true);
       });
     });
 

@@ -2,23 +2,22 @@
  * @module ol/format/WFS
  */
 import {assert} from '../asserts.js';
-import GML2 from '../format/GML2.js';
-import GML3 from '../format/GML3.js';
-import GMLBase, {GMLNS} from '../format/GMLBase.js';
-import {and as andFilter, bbox as bboxFilter} from '../format/filter.js';
-import XMLFeature from '../format/XMLFeature.js';
-import {readNonNegativeIntegerString, readNonNegativeInteger, writeStringTextNode} from '../format/xsd.js';
-import Geometry from '../geom/Geometry.js';
+import GML2 from './GML2.js';
+import GML3 from './GML3.js';
+import GMLBase, {GMLNS} from './GMLBase.js';
+import {and as andFilter, bbox as bboxFilter} from './filter.js';
+import XMLFeature from './XMLFeature.js';
+import {readNonNegativeIntegerString, readNonNegativeInteger, writeStringTextNode} from './xsd.js';
 import {assign} from '../obj.js';
 import {get as getProjection} from '../proj.js';
-import {createElementNS, isDocument, isNode, makeArrayPusher, makeChildAppender,
+import {createElementNS, isDocument, makeArrayPusher, makeChildAppender,
   makeObjectPropertySetter, makeSimpleNodeFactory, parse, parseNode,
   pushParseAndPop, pushSerializeAndPop, XML_SCHEMA_INSTANCE_URI} from '../xml.js';
 
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const FEATURE_COLLECTION_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -30,7 +29,7 @@ const FEATURE_COLLECTION_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const TRANSACTION_SUMMARY_PARSERS = {
   'http://www.opengis.net/wfs': {
@@ -43,7 +42,7 @@ const TRANSACTION_SUMMARY_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const TRANSACTION_RESPONSE_PARSERS = {
   'http://www.opengis.net/wfs': {
@@ -56,7 +55,7 @@ const TRANSACTION_RESPONSE_PARSERS = {
 
 
 /**
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
 const QUERY_SERIALIZERS = {
   'http://www.opengis.net/wfs': {
@@ -66,7 +65,7 @@ const QUERY_SERIALIZERS = {
 
 
 /**
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
 const TRANSACTION_SERIALIZERS = {
   'http://www.opengis.net/wfs': {
@@ -83,7 +82,7 @@ const TRANSACTION_SERIALIZERS = {
  * @typedef {Object} Options
  * @property {Object<string, string>|string} [featureNS] The namespace URI used for features.
  * @property {Array<string>|string} [featureType] The feature type to parse. Only used for read operations.
- * @property {module:ol/format/GMLBase} [gmlFormat] The GML format to use to parse the response. Default is `ol/format/GML3`.
+ * @property {GMLBase} [gmlFormat] The GML format to use to parse the response. Default is `ol/format/GML3`.
  * @property {string} [schemaLocation] Optional schemaLocation to use for serialization, this will override the default.
  */
 
@@ -100,13 +99,14 @@ const TRANSACTION_SERIALIZERS = {
  * @property {number} [maxFeatures] Maximum number of features to fetch.
  * @property {string} [geometryName] Geometry name to use in a BBOX filter.
  * @property {Array<string>} [propertyNames] Optional list of property names to serialize.
+ * @property {string} [viewParams] viewParams GeoServer vendor parameter.
  * @property {number} [startIndex] Start index to use for WFS paging. This is a
  * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services.
  * @property {number} [count] Number of features to retrieve when paging. This is a
  * WFS 2.0 feature backported to WFS 1.1.0 by some Web Feature Services. Please note that some
  * Web Feature Services have repurposed `maxfeatures` instead.
- * @property {module:ol/extent~Extent} [bbox] Extent to use for the BBOX filter.
- * @property {module:ol/format/filter/Filter} [filter] Filter condition. See
+ * @property {import("../extent.js").Extent} [bbox] Extent to use for the BBOX filter.
+ * @property {import("./filter/Filter.js").default} [filter] Filter condition. See
  * {@link module:ol/format/Filter} for more information.
  * @property {string} [resultType] Indicates what response should be returned,
  * E.g. `hits` only includes the `numberOfFeatures` attribute in the response and no features.
@@ -124,7 +124,7 @@ const TRANSACTION_SERIALIZERS = {
  * @property {boolean} [hasZ] Must be set to true if the transaction is for
  * a 3D layer. This will allow the Z coordinate to be included in the transaction.
  * @property {Array<Object>} nativeElements Native elements. Currently not supported.
- * @property {module:ol/format/GMLBase~Options} [gmlOptions] GML options for the WFS transaction writer.
+ * @property {import("./GMLBase.js").Options} [gmlOptions] GML options for the WFS transaction writer.
  * @property {string} [version='1.1.0'] WFS version to use for the transaction. Can be either `1.0.0` or `1.1.0`.
  */
 
@@ -133,7 +133,7 @@ const TRANSACTION_SERIALIZERS = {
  * Number of features; bounds/extent.
  * @typedef {Object} FeatureCollectionMetadata
  * @property {number} numberOfFeatures
- * @property {module:ol/extent~Extent} bounds
+ * @property {import("../extent.js").Extent} bounds
  */
 
 
@@ -205,7 +205,7 @@ const DEFAULT_VERSION = '1.1.0';
 class WFS extends XMLFeature {
 
   /**
-   * @param {module:ol/format/WFS~Options=} opt_options Optional configuration object.
+   * @param {Options=} opt_options Optional configuration object.
    */
   constructor(opt_options) {
     super();
@@ -226,7 +226,7 @@ class WFS extends XMLFeature {
 
     /**
      * @private
-     * @type {module:ol/format/GMLBase}
+     * @type {GMLBase}
      */
     this.gmlFormat_ = options.gmlFormat ?
       options.gmlFormat : new GML3();
@@ -257,10 +257,15 @@ class WFS extends XMLFeature {
    * @inheritDoc
    */
   readFeaturesFromNode(node, opt_options) {
-    const context = /** @type {module:ol/xml~NodeStackItem} */ ({
+    /** @type {import("../xml.js").NodeStackItem} */
+    const context = {
+      node: node
+    };
+    assign(context, {
       'featureType': this.featureType_,
       'featureNS': this.featureNS_
     });
+
     assign(context, this.getReadOptions(node, opt_options ? opt_options : {}));
     const objectStack = [context];
     this.gmlFormat_.FEATURE_COLLECTION_PARSERS[GMLNS][
@@ -278,64 +283,64 @@ class WFS extends XMLFeature {
   /**
    * Read transaction response of the source.
    *
-   * @param {Document|Node|Object|string} source Source.
-   * @return {module:ol/format/WFS~TransactionResponse|undefined} Transaction response.
+   * @param {Document|Element|Object|string} source Source.
+   * @return {TransactionResponse|undefined} Transaction response.
    * @api
    */
   readTransactionResponse(source) {
-    if (isDocument(source)) {
-      return this.readTransactionResponseFromDocument(
-        /** @type {Document} */ (source));
-    } else if (isNode(source)) {
-      return this.readTransactionResponseFromNode(/** @type {Node} */ (source));
+    if (!source) {
+      return undefined;
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readTransactionResponseFromDocument(doc);
+    } else if (isDocument(source)) {
+      return this.readTransactionResponseFromDocument(
+        /** @type {Document} */ (source));
     } else {
-      return undefined;
+      return this.readTransactionResponseFromNode(/** @type {Element} */ (source));
     }
   }
 
   /**
    * Read feature collection metadata of the source.
    *
-   * @param {Document|Node|Object|string} source Source.
-   * @return {module:ol/format/WFS~FeatureCollectionMetadata|undefined}
+   * @param {Document|Element|Object|string} source Source.
+   * @return {FeatureCollectionMetadata|undefined}
    *     FeatureCollection metadata.
    * @api
    */
   readFeatureCollectionMetadata(source) {
-    if (isDocument(source)) {
-      return this.readFeatureCollectionMetadataFromDocument(
-        /** @type {Document} */ (source));
-    } else if (isNode(source)) {
-      return this.readFeatureCollectionMetadataFromNode(
-        /** @type {Node} */ (source));
+    if (!source) {
+      return undefined;
     } else if (typeof source === 'string') {
       const doc = parse(source);
       return this.readFeatureCollectionMetadataFromDocument(doc);
+    } else if (isDocument(source)) {
+      return this.readFeatureCollectionMetadataFromDocument(
+        /** @type {Document} */ (source));
     } else {
-      return undefined;
+      return this.readFeatureCollectionMetadataFromNode(
+        /** @type {Element} */ (source));
     }
   }
 
   /**
    * @param {Document} doc Document.
-   * @return {module:ol/format/WFS~FeatureCollectionMetadata|undefined}
+   * @return {FeatureCollectionMetadata|undefined}
    *     FeatureCollection metadata.
    */
   readFeatureCollectionMetadataFromDocument(doc) {
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
-        return this.readFeatureCollectionMetadataFromNode(n);
+        return this.readFeatureCollectionMetadataFromNode(/** @type {Element} */ (n));
       }
     }
     return undefined;
   }
 
   /**
-   * @param {Node} node Node.
-   * @return {module:ol/format/WFS~FeatureCollectionMetadata|undefined}
+   * @param {Element} node Node.
+   * @return {FeatureCollectionMetadata|undefined}
    *     FeatureCollection metadata.
    */
   readFeatureCollectionMetadataFromNode(node) {
@@ -344,37 +349,37 @@ class WFS extends XMLFeature {
       node.getAttribute('numberOfFeatures'));
     result['numberOfFeatures'] = value;
     return pushParseAndPop(
-      /** @type {module:ol/format/WFS~FeatureCollectionMetadata} */ (result),
+      /** @type {FeatureCollectionMetadata} */ (result),
       FEATURE_COLLECTION_PARSERS, node, [], this.gmlFormat_);
   }
 
   /**
    * @param {Document} doc Document.
-   * @return {module:ol/format/WFS~TransactionResponse|undefined} Transaction response.
+   * @return {TransactionResponse|undefined} Transaction response.
    */
   readTransactionResponseFromDocument(doc) {
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
-        return this.readTransactionResponseFromNode(n);
+        return this.readTransactionResponseFromNode(/** @type {Element} */ (n));
       }
     }
     return undefined;
   }
 
   /**
-   * @param {Node} node Node.
-   * @return {module:ol/format/WFS~TransactionResponse|undefined} Transaction response.
+   * @param {Element} node Node.
+   * @return {TransactionResponse|undefined} Transaction response.
    */
   readTransactionResponseFromNode(node) {
     return pushParseAndPop(
-      /** @type {module:ol/format/WFS~TransactionResponse} */({}),
+      /** @type {TransactionResponse} */({}),
       TRANSACTION_RESPONSE_PARSERS, node, []);
   }
 
   /**
    * Encode format as WFS `GetFeature` and return the Node.
    *
-   * @param {module:ol/format/WFS~WriteGetFeatureOptions} options Options.
+   * @param {WriteGetFeatureOptions} options Options.
    * @return {Node} Result.
    * @api
    */
@@ -391,16 +396,19 @@ class WFS extends XMLFeature {
         node.setAttribute('outputFormat', options.outputFormat);
       }
       if (options.maxFeatures !== undefined) {
-        node.setAttribute('maxFeatures', options.maxFeatures);
+        node.setAttribute('maxFeatures', String(options.maxFeatures));
       }
       if (options.resultType) {
         node.setAttribute('resultType', options.resultType);
       }
       if (options.startIndex !== undefined) {
-        node.setAttribute('startIndex', options.startIndex);
+        node.setAttribute('startIndex', String(options.startIndex));
       }
       if (options.count !== undefined) {
-        node.setAttribute('count', options.count);
+        node.setAttribute('count', String(options.count));
+      }
+      if (options.viewParams !== undefined) {
+        node.setAttribute('viewParams ', options.viewParams);
       }
       filter = options.filter;
       if (options.bbox) {
@@ -417,16 +425,19 @@ class WFS extends XMLFeature {
       }
     }
     node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', this.schemaLocation_);
-    /** @type {module:ol/xml~NodeStackItem} */
+    /** @type {import("../xml.js").NodeStackItem} */
     const context = {
-      node: node,
+      node: node
+    };
+    assign(context, {
       'srsName': options.srsName,
       'featureNS': options.featureNS ? options.featureNS : this.featureNS_,
       'featurePrefix': options.featurePrefix,
       'geometryName': options.geometryName,
       'filter': filter,
       'propertyNames': options.propertyNames ? options.propertyNames : []
-    };
+    });
+
     assert(Array.isArray(options.featureTypes),
       11); // `options.featureTypes` should be an Array
     writeGetFeature(node, /** @type {!Array<string>} */ (options.featureTypes), [context]);
@@ -436,10 +447,10 @@ class WFS extends XMLFeature {
   /**
    * Encode format as WFS `Transaction` and return the Node.
    *
-   * @param {Array<module:ol/Feature>} inserts The features to insert.
-   * @param {Array<module:ol/Feature>} updates The features to update.
-   * @param {Array<module:ol/Feature>} deletes The features to delete.
-   * @param {module:ol/format/WFS~WriteTransactionOptions} options Write options.
+   * @param {Array<import("../Feature.js").default>} inserts The features to insert.
+   * @param {Array<import("../Feature.js").default>} updates The features to update.
+   * @param {Array<import("../Feature.js").default>} deletes The features to delete.
+   * @param {WriteTransactionOptions} options Write options.
    * @return {Node} Result.
    * @api
    */
@@ -451,7 +462,7 @@ class WFS extends XMLFeature {
     node.setAttribute('service', 'WFS');
     node.setAttribute('version', version);
     let baseObj;
-    /** @type {module:ol/xml~NodeStackItem} */
+    /** @type {import("../xml.js").NodeStackItem} */
     let obj;
     if (options) {
       baseObj = options.gmlOptions ? options.gmlOptions : {};
@@ -463,9 +474,9 @@ class WFS extends XMLFeature {
     node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', schemaLocation);
     const featurePrefix = options.featurePrefix ? options.featurePrefix : FEATURE_PREFIX;
     if (inserts) {
-      obj = {node: node, 'featureNS': options.featureNS,
+      obj = assign({node: node}, {'featureNS': options.featureNS,
         'featureType': options.featureType, 'featurePrefix': featurePrefix,
-        'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName};
+        'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName});
       assign(obj, baseObj);
       pushSerializeAndPop(obj,
         TRANSACTION_SERIALIZERS,
@@ -473,9 +484,9 @@ class WFS extends XMLFeature {
         objectStack);
     }
     if (updates) {
-      obj = {node: node, 'featureNS': options.featureNS,
+      obj = assign({node: node}, {'featureNS': options.featureNS,
         'featureType': options.featureType, 'featurePrefix': featurePrefix,
-        'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName};
+        'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName});
       assign(obj, baseObj);
       pushSerializeAndPop(obj,
         TRANSACTION_SERIALIZERS,
@@ -505,7 +516,7 @@ class WFS extends XMLFeature {
    * @inheritDoc
    */
   readProjectionFromDocument(doc) {
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         return this.readProjectionFromNode(n);
       }
@@ -537,7 +548,7 @@ class WFS extends XMLFeature {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Transaction Summary.
  */
@@ -549,7 +560,7 @@ function readTransactionSummary(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const OGC_FID_PARSERS = {
   'http://www.opengis.net/ogc': {
@@ -561,7 +572,7 @@ const OGC_FID_PARSERS = {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  */
 function fidParser(node, objectStack) {
@@ -571,7 +582,7 @@ function fidParser(node, objectStack) {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 const INSERT_RESULTS_PARSERS = {
   'http://www.opengis.net/wfs': {
@@ -581,7 +592,7 @@ const INSERT_RESULTS_PARSERS = {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @return {Array<string>|undefined} Insert results.
  */
@@ -592,8 +603,8 @@ function readInsertResults(node, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {module:ol/Feature} feature Feature.
+ * @param {Element} node Node.
+ * @param {import("../Feature.js").default} feature Feature.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeFeature(node, feature, objectStack) {
@@ -620,7 +631,7 @@ function writeOgcFidFilter(node, fid, objectStack) {
   const filter = createElementNS(OGCNS, 'Filter');
   const child = createElementNS(OGCNS, 'FeatureId');
   filter.appendChild(child);
-  child.setAttribute('fid', fid);
+  child.setAttribute('fid', /** @type {string} */ (fid));
   node.appendChild(filter);
 }
 
@@ -643,8 +654,8 @@ function getTypeName(featurePrefix, featureType) {
 
 
 /**
- * @param {Node} node Node.
- * @param {module:ol/Feature} feature Feature.
+ * @param {Element} node Node.
+ * @param {import("../Feature.js").default} feature Feature.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeDelete(node, feature, objectStack) {
@@ -664,8 +675,8 @@ function writeDelete(node, feature, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {module:ol/Feature} feature Feature.
+ * @param {Element} node Node.
+ * @param {import("../Feature.js").default} feature Feature.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeUpdate(node, feature, objectStack) {
@@ -686,13 +697,13 @@ function writeUpdate(node, feature, objectStack) {
       const value = feature.get(keys[i]);
       if (value !== undefined) {
         let name = keys[i];
-        if (value instanceof Geometry) {
+        if (value && typeof /** @type {?} */ (value).getSimplifiedGeometry === 'function') {
           name = geometryName;
         }
         values.push({name: name, value: value});
       }
     }
-    pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */ (
+    pushSerializeAndPop(/** @type {import("../xml.js").NodeStackItem} */ (
       {'gmlVersion': context['gmlVersion'], node: node,
         'hasZ': context['hasZ'], 'srsName': context['srsName']}),
     TRANSACTION_SERIALIZERS,
@@ -717,7 +728,7 @@ function writeProperty(node, pair, objectStack) {
   if (pair.value !== undefined && pair.value !== null) {
     const value = createElementNS(WFSNS, 'Value');
     node.appendChild(value);
-    if (pair.value instanceof Geometry) {
+    if (pair.value && typeof /** @type {?} */ (pair.value).getSimplifiedGeometry === 'function') {
       if (gmlVersion === 2) {
         GML2.prototype.writeGeometryElement(value,
           pair.value, objectStack);
@@ -733,7 +744,7 @@ function writeProperty(node, pair, objectStack) {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {{vendorId: string, safeToIgnore: boolean, value: string}} nativeElement The native element.
  * @param {Array<*>} objectStack Node stack.
  */
@@ -742,7 +753,7 @@ function writeNative(node, nativeElement, objectStack) {
     node.setAttribute('vendorId', nativeElement.vendorId);
   }
   if (nativeElement.safeToIgnore !== undefined) {
-    node.setAttribute('safeToIgnore', nativeElement.safeToIgnore);
+    node.setAttribute('safeToIgnore', String(nativeElement.safeToIgnore));
   }
   if (nativeElement.value !== undefined) {
     writeStringTextNode(node, nativeElement.value);
@@ -751,7 +762,7 @@ function writeNative(node, nativeElement, objectStack) {
 
 
 /**
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  */
 const GETFEATURE_SERIALIZERS = {
   'http://www.opengis.net/wfs': {
@@ -780,7 +791,7 @@ const GETFEATURE_SERIALIZERS = {
 
 
 /**
- * @param {Node} node Node.
+ * @param {Element} node Node.
  * @param {string} featureType Feature type.
  * @param {Array<*>} objectStack Node stack.
  */
@@ -804,7 +815,7 @@ function writeQuery(node, featureType, objectStack) {
   if (featureNS) {
     node.setAttributeNS(XMLNS, 'xmlns:' + featurePrefix, featureNS);
   }
-  const item = /** @type {module:ol/xml~NodeStackItem} */ (assign({}, context));
+  const item = /** @type {import("../xml.js").NodeStackItem} */ (assign({}, context));
   item.node = node;
   pushSerializeAndPop(item,
     QUERY_SERIALIZERS,
@@ -821,11 +832,11 @@ function writeQuery(node, featureType, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/format/filter/Filter} filter Filter.
+ * @param {import("./filter/Filter.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeFilterCondition(node, filter, objectStack) {
-  /** @type {module:ol/xml~NodeStackItem} */
+  /** @type {import("../xml.js").NodeStackItem} */
   const item = {node: node};
   pushSerializeAndPop(item,
     GETFEATURE_SERIALIZERS,
@@ -836,7 +847,7 @@ function writeFilterCondition(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/format/filter/Bbox} filter Filter.
+ * @param {import("./filter/Bbox.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeBboxFilter(node, filter, objectStack) {
@@ -850,7 +861,7 @@ function writeBboxFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/format/filter/Contains} filter Filter.
+ * @param {import("./filter/Contains.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeContainsFilter(node, filter, objectStack) {
@@ -864,7 +875,7 @@ function writeContainsFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/format/filter/Intersects} filter Filter.
+ * @param {import("./filter/Intersects.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeIntersectsFilter(node, filter, objectStack) {
@@ -878,7 +889,7 @@ function writeIntersectsFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/format/filter/Within} filter Filter.
+ * @param {import("./filter/Within.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeWithinFilter(node, filter, objectStack) {
@@ -892,7 +903,7 @@ function writeWithinFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/format/filter/During} filter Filter.
+ * @param {import("./filter/During.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeDuringFilter(node, filter, objectStack) {
@@ -917,11 +928,11 @@ function writeDuringFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/format/filter/LogicalNary} filter Filter.
+ * @param {import("./filter/LogicalNary.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeLogicalFilter(node, filter, objectStack) {
-  /** @type {module:ol/xml~NodeStackItem} */
+  /** @type {import("../xml.js").NodeStackItem} */
   const item = {node: node};
   const conditions = filter.conditions;
   for (let i = 0, ii = conditions.length; i < ii; ++i) {
@@ -936,11 +947,11 @@ function writeLogicalFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/format/filter/Not} filter Filter.
+ * @param {import("./filter/Not.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeNotFilter(node, filter, objectStack) {
-  /** @type {module:ol/xml~NodeStackItem} */
+  /** @type {import("../xml.js").NodeStackItem} */
   const item = {node: node};
   const condition = filter.condition;
   pushSerializeAndPop(item,
@@ -951,8 +962,8 @@ function writeNotFilter(node, filter, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {module:ol/format/filter/ComparisonBinary} filter Filter.
+ * @param {Element} node Node.
+ * @param {import("./filter/ComparisonBinary.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeComparisonFilter(node, filter, objectStack) {
@@ -966,7 +977,7 @@ function writeComparisonFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/format/filter/IsNull} filter Filter.
+ * @param {import("./filter/IsNull.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeIsNullFilter(node, filter, objectStack) {
@@ -976,7 +987,7 @@ function writeIsNullFilter(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {module:ol/format/filter/IsBetween} filter Filter.
+ * @param {import("./filter/IsBetween.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeIsBetweenFilter(node, filter, objectStack) {
@@ -993,8 +1004,8 @@ function writeIsBetweenFilter(node, filter, objectStack) {
 
 
 /**
- * @param {Node} node Node.
- * @param {module:ol/format/filter/IsLike} filter Filter.
+ * @param {Element} node Node.
+ * @param {import("./filter/IsLike.js").default} filter Filter.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeIsLikeFilter(node, filter, objectStack) {
@@ -1056,7 +1067,7 @@ function writeTimeInstant(node, time) {
 /**
  * Encode filter as WFS `Filter` and return the Node.
  *
- * @param {module:ol/format/filter/Filter} filter Filter.
+ * @param {import("./filter/Filter.js").default} filter Filter.
  * @return {Node} Result.
  * @api
  */
@@ -1074,7 +1085,7 @@ export function writeFilter(filter) {
  */
 function writeGetFeature(node, featureTypes, objectStack) {
   const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const item = /** @type {module:ol/xml~NodeStackItem} */ (assign({}, context));
+  const item = /** @type {import("../xml.js").NodeStackItem} */ (assign({}, context));
   item.node = node;
   pushSerializeAndPop(item,
     GETFEATURE_SERIALIZERS,

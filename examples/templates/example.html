@@ -1,12 +1,63 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
+    <script>
+    var gaProperty = 'UA-2577926-1';
+    // Disable tracking if the opt-out cookie exists.
+    var disableStr = 'ga-disable-' + gaProperty;
+    if (document.cookie.indexOf(disableStr + '=true') > -1) {
+      window[disableStr] = true;
+    }
+    function gaOptout() {
+      document.cookie = disableStr + '=true; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/';
+      window[disableStr] = true;
+    }
+    function gaOptoutRevoke() {
+      document.cookie = disableStr + '=false; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/';
+      window[disableStr] = false;
+    }
+    </script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-2577926-1"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'UA-2577926-1');
+      gtag('config', 'UA-2577926-1', { 'anonymize_ip': true });
+    </script>
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
+    <script src="https://unpkg.com/lz-string@1.4.4/libs/lz-string.min.js"></script>
+    <script>
+    window.addEventListener("load", function() {
+      window.cookieconsent.initialise({
+        'palette': {
+          'popup': {
+            'background': '#eaf7f7',
+            'text': '#5c7291'
+          },
+          'button': {
+            'background': '#56cbdb',
+            'text': '#ffffff'
+          }
+        },
+        'theme': 'edgeless',
+        'type': 'opt-out',
+        'onInitialise': function (status) {
+          if (!this.hasConsented()) {
+            gaOptout()
+          }
+        },
+        'onStatusChange': function(status, chosenBefore) {
+          if (!this.hasConsented()) {
+            gaOptout()
+          }
+        },
+        'onRevokeChoice': function() {
+          gaOptoutRevoke()
+        }
+      })
+    });
     </script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
@@ -49,10 +100,14 @@
       </div>
 
       <div class="row-fluid">
+        <a class="codepen-button pull-right"><i class="fa fa-codepen"></i> Edit</a>
         <div class="span12">
           <h4 id="title">{{ title }}</h4>
           {{{ contents }}}
         </div>
+        <form method="POST" id="codepen-form" target="_blank" action="https://codesandbox.io/api/v1/sandboxes/define">
+          <input id="codesandbox-params" type="hidden" name="parameters">
+        </form>
       </div>
 
       <div class="row-fluid">
@@ -63,35 +118,40 @@
       </div>
 
       <div class="row-fluid">
-        <div id="source-controls">
-          <a id="copy-button" data-clipboard-target="#example-source"><i class="fa fa-clipboard"></i> Copy</a>
-          <!-- <a id="codepen-button"><i class="fa fa-codepen"></i> Edit</a> -->
+        <div class="source-controls">
+          <a class="copy-button" id="copy-html-button" data-clipboard-target="#example-html-source"><i class="fa fa-clipboard"></i> Copy</a>
         </div>
-        <form method="POST" id="codepen-form" target="_blank" action="https://codepen.io/pen/define/">
-          <textarea class="hidden" name="title">{{ title }}</textarea>
-          <textarea class="hidden" name="description">{{ shortdesc }}</textarea>
-          <textarea class="hidden" name="js">{{ js.source }}</textarea>
-          <textarea class="hidden" name="css">{{ css.source }}</textarea>
-          <textarea class="hidden" name="html">{{ contents }}</textarea>
-          <input type="hidden" name="data">
-        </form>
-        <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
+        <pre><legend>index.html</legend><code id="example-html-source" class="language-markup">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
     &lt;title&gt;{{ title }}&lt;/title&gt;
-    &lt;link rel="stylesheet" href="https://openlayers.org/en/v{{ olVersion }}/css/ol.css" type="text/css"&gt;
     &lt;!-- The line below is only needed for old environments like Internet Explorer and Android 4.x --&gt;
-    &lt;script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"&gt;&lt;/script&gt;
-    {{#if extraHead.remote}}
-{{ indent extraHead.remote spaces=4 }}{{/if}}{{#if css.source}}
+    &lt;script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"&gt;&lt;/script&gt;{{#if extraHead.remote}}
+{{ indent extraHead.remote spaces=4 }}{{/if}}
     &lt;style&gt;
-{{ indent css.source spaces=6 }}    &lt;/style&gt;{{/if}}
+      .map {
+        width: 100%;
+        height:400px;
+      }
+{{#if css.source}}{{ indent css.source spaces=6 }}{{/if}}    &lt;/style&gt;
   &lt;/head&gt;
   &lt;body&gt;
-{{ indent contents spaces=4 }}    &lt;script&gt;
-{{ indent js.source spaces=6 }}    &lt;/script&gt;
+{{ indent contents spaces=4 }}    &lt;script src="index.js"&gt;&lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;</code></pre>
+      </div>
+      <div class="row-fluid">
+        <div class="source-controls">
+          <a class="copy-button" id="copy-js-button" data-clipboard-target="#example-js-source"><i class="fa fa-clipboard"></i> Copy</a>
+        </div>
+        <pre><legend>index.js</legend><code id="example-js-source" class="language-js">import 'ol/ol.css';
+{{ js.source }}</code></pre>
+      </div>
+      <div class="row-fluid">
+        <div class="source-controls">
+          <a class="copy-button" id="copy-pkg-button" data-clipboard-target="#example-pkg-source"><i class="fa fa-clipboard"></i> Copy</a>
+        </div>
+        <pre><legend>package.json</legend><code id="example-pkg-source" class="language-js">{{ pkgJson }}</code></pre>
       </div>
     </div>
 

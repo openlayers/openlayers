@@ -2,8 +2,8 @@
  * @module ol/proj/epsg3857
  */
 import {cosh} from '../math.js';
-import Projection from '../proj/Projection.js';
-import Units from '../proj/Units.js';
+import Projection from './Projection.js';
+import Units from './Units.js';
 
 
 /**
@@ -24,7 +24,7 @@ export const HALF_SIZE = Math.PI * RADIUS;
 
 /**
  * @const
- * @type {module:ol/extent~Extent}
+ * @type {import("../extent.js").Extent}
  */
 export const EXTENT = [
   -HALF_SIZE, -HALF_SIZE,
@@ -34,7 +34,7 @@ export const EXTENT = [
 
 /**
  * @const
- * @type {module:ol/extent~Extent}
+ * @type {import("../extent.js").Extent}
  */
 export const WORLD_EXTENT = [-180, -85, 180, 85];
 
@@ -69,7 +69,7 @@ class EPSG3857Projection extends Projection {
  * Projections equal to EPSG:3857.
  *
  * @const
- * @type {Array<module:ol/proj/Projection>}
+ * @type {Array<import("./Projection.js").default>}
  */
 export const PROJECTIONS = [
   new EPSG3857Projection('EPSG:3857'),
@@ -106,7 +106,7 @@ export function fromEPSG4326(input, opt_output, opt_dimension) {
   for (let i = 0; i < length; i += dimension) {
     output[i] = halfSize * input[i] / 180;
     let y = RADIUS *
-        Math.log(Math.tan(Math.PI * (input[i + 1] + 90) / 360));
+        Math.log(Math.tan(Math.PI * (+input[i + 1] + 90) / 360));
     if (y > halfSize) {
       y = halfSize;
     } else if (y < -halfSize) {

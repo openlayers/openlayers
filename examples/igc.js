@@ -1,13 +1,13 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {defaults as defaultControls} from '../src/ol/control.js';
 import IGC from '../src/ol/format/IGC.js';
 import {LineString, Point} from '../src/ol/geom.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import OSM, {ATTRIBUTION} from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
+import {getVectorContext} from '../src/ol/render.js';
 
 
 const colors = {
@@ -74,6 +74,10 @@ vectorSource.on('addfeature', function(event) {
   time.duration = time.stop - time.start;
 });
 
+const vectorLayer = new VectorLayer({
+  source: vectorSource,
+  style: styleFunction
+});
 
 const map = new Map({
   layers: [
@@ -87,17 +91,9 @@ const map = new Map({
             '?apikey=0e6fc415256d4fbb9b5166a718591d71'
       })
     }),
-    new VectorLayer({
-      source: vectorSource,
-      style: styleFunction
-    })
+    vectorLayer
   ],
   target: 'map',
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
   view: new View({
     center: [703365.7089403362, 5714629.865071137],
     zoom: 9
@@ -159,8 +155,8 @@ const style = new Style({
     stroke: stroke
   })
 });
-map.on('postcompose', function(evt) {
-  const vectorContext = evt.vectorContext;
+vectorLayer.on('postrender', function(evt) {
+  const vectorContext = getVectorContext(evt);
   vectorContext.setStyle(style);
   if (point !== null) {
     vectorContext.drawGeometry(point);
@@ -187,7 +183,7 @@ document.getElementById('time').addEventListener('input', function() {
   const value = parseInt(this.value, 10) / 100;
   const m = time.start + (time.duration * value);
   vectorSource.forEachFeature(function(feature) {
-    const geometry = /** @type {module:ol/geom/LineString~LineString} */ (feature.getGeometry());
+    const geometry = /** @type {import("../src/ol/geom/LineString.js").default} */ (feature.getGeometry());
     const coordinate = geometry.getCoordinateAtM(m, true);
     let highlight = feature.get('highlight');
     if (highlight === undefined) {

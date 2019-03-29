@@ -9,13 +9,13 @@ import {forEachCorner} from '../../extent.js';
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {module:ol/extent~Extent} extent Extent.
+ * @param {import("../../extent.js").Extent} extent Extent.
  * @return {boolean} Contains extent.
  */
 export function linearRingContainsExtent(flatCoordinates, offset, end, stride, extent) {
   const outside = forEachCorner(extent,
     /**
-     * @param {module:ol/coordinate~Coordinate} coordinate Coordinate.
+     * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
      * @return {boolean} Contains (x, y).
      */
     function(coordinate) {

@@ -8,7 +8,7 @@
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {module:ol/transform~Transform} transform Transform.
+ * @param {import("../../transform.js").Transform} transform Transform.
  * @param {Array<number>=} opt_dest Destination.
  * @return {Array<number>} Transformed coordinates.
  */

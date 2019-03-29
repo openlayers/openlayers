@@ -13,9 +13,9 @@ import {getPointResolution, transform} from './proj.js';
  * The resolution is calculated regardless of what resolutions
  * are actually available in the dataset (TileGrid, Image, ...).
  *
- * @param {module:ol/proj/Projection} sourceProj Source projection.
- * @param {module:ol/proj/Projection} targetProj Target projection.
- * @param {module:ol/coordinate~Coordinate} targetCenter Target center.
+ * @param {import("./proj/Projection.js").default} sourceProj Source projection.
+ * @param {import("./proj/Projection.js").default} targetProj Target projection.
+ * @param {import("./coordinate.js").Coordinate} targetCenter Target center.
  * @param {number} targetResolution Target resolution.
  * @return {number} The best resolution to use. Can be +-Infinity, NaN or 0.
  */
@@ -61,7 +61,7 @@ export function calculateSourceResolution(sourceProj, targetProj,
  * @param {number} centroidY Centroid of the triangle (y coordinate in pixels).
  * @param {number} x X coordinate of the point (in pixels).
  * @param {number} y Y coordinate of the point (in pixels).
- * @return {module:ol/coordinate~Coordinate} New point 1 px farther from the centroid.
+ * @return {import("./coordinate.js").Coordinate} New point 1 px farther from the centroid.
  */
 function enlargeClipPoint(centroidX, centroidY, x, y) {
   const dX = x - centroidX;
@@ -78,12 +78,12 @@ function enlargeClipPoint(centroidX, centroidY, x, y) {
  * @param {number} height Height of the canvas.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} sourceResolution Source resolution.
- * @param {module:ol/extent~Extent} sourceExtent Extent of the data source.
+ * @param {import("./extent.js").Extent} sourceExtent Extent of the data source.
  * @param {number} targetResolution Target resolution.
- * @param {module:ol/extent~Extent} targetExtent Target extent.
- * @param {module:ol/reproj/Triangulation} triangulation
+ * @param {import("./extent.js").Extent} targetExtent Target extent.
+ * @param {import("./reproj/Triangulation.js").default} triangulation
  * Calculated triangulation.
- * @param {Array<{extent: module:ol/extent~Extent,
+ * @param {Array<{extent: import("./extent.js").Extent,
  *                 image: (HTMLCanvasElement|HTMLImageElement|HTMLVideoElement)}>} sources
  * Array of sources.
  * @param {number} gutter Gutter of the sources.

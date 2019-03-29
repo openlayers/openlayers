@@ -33,7 +33,7 @@ const wmtsSource = new WMTS({
   matrixSet: 'EPSG:3857',
   attributions: [
     '<a href="http://scalgo.com">SCALGO</a>',
-    '<a href="http://www.cgiar-csi.org/data/' +
+    '<a href="https://cgiarcsi.community/data/' +
         'srtm-90m-digital-elevation-database-v4-1">CGIAR-CSI SRTM</a>'
   ],
   tileGrid: tileGrid,

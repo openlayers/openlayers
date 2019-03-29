@@ -71,7 +71,7 @@ export function interpolatePoint(flatCoordinates, offset, end, stride, fraction,
  * @param {number} stride Stride.
  * @param {number} m M.
  * @param {boolean} extrapolate Extrapolate.
- * @return {module:ol/coordinate~Coordinate} Coordinate.
+ * @return {import("../../coordinate.js").Coordinate} Coordinate.
  */
 export function lineStringCoordinateAtM(flatCoordinates, offset, end, stride, m, extrapolate) {
   if (end == offset) {
@@ -133,7 +133,7 @@ export function lineStringCoordinateAtM(flatCoordinates, offset, end, stride, m,
  * @param {number} m M.
  * @param {boolean} extrapolate Extrapolate.
  * @param {boolean} interpolate Interpolate.
- * @return {module:ol/coordinate~Coordinate} Coordinate.
+ * @return {import("../../coordinate.js").Coordinate} Coordinate.
  */
 export function lineStringsCoordinateAtM(
   flatCoordinates, offset, ends, stride, m, extrapolate, interpolate) {

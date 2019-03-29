@@ -4,20 +4,20 @@
 import {getFontFamilies} from '../css.js';
 import {createCanvasContext2D} from '../dom.js';
 import {clear} from '../obj.js';
-import LRUCache from '../structs/LRUCache.js';
 import {create as createTransform} from '../transform.js';
+import LabelCache from './canvas/LabelCache.js';
 
 
 /**
  * @typedef {Object} FillState
- * @property {module:ol/colorlike~ColorLike} fillStyle
+ * @property {import("../colorlike.js").ColorLike} fillStyle
  */
 
 
 /**
  * @typedef {Object} FillStrokeState
- * @property {module:ol/colorlike~ColorLike} [currentFillStyle]
- * @property {module:ol/colorlike~ColorLike} [currentStrokeStyle]
+ * @property {import("../colorlike.js").ColorLike} [currentFillStyle]
+ * @property {import("../colorlike.js").ColorLike} [currentStrokeStyle]
  * @property {string} [currentLineCap]
  * @property {Array<number>} currentLineDash
  * @property {number} [currentLineDashOffset]
@@ -25,8 +25,8 @@ import {create as createTransform} from '../transform.js';
  * @property {number} [currentLineWidth]
  * @property {number} [currentMiterLimit]
  * @property {number} [lastStroke]
- * @property {module:ol/colorlike~ColorLike} [fillStyle]
- * @property {module:ol/colorlike~ColorLike} [strokeStyle]
+ * @property {import("../colorlike.js").ColorLike} [fillStyle]
+ * @property {import("../colorlike.js").ColorLike} [strokeStyle]
  * @property {string} [lineCap]
  * @property {Array<number>} lineDash
  * @property {number} [lineDashOffset]
@@ -44,7 +44,7 @@ import {create as createTransform} from '../transform.js';
  * @property {string} lineJoin
  * @property {number} lineWidth
  * @property {number} miterLimit
- * @property {module:ol/colorlike~ColorLike} strokeStyle
+ * @property {import("../colorlike.js").ColorLike} strokeStyle
  */
 
 
@@ -53,6 +53,13 @@ import {create as createTransform} from '../transform.js';
  * @property {string} font
  * @property {string} [textAlign]
  * @property {string} textBaseline
+ * @property {string} [placement]
+ * @property {number} [maxAngle]
+ * @property {boolean} [overflow]
+ * @property {import("../style/Fill.js").default} [backgroundFill]
+ * @property {import("../style/Stroke.js").default} [backgroundStroke]
+ * @property {number} [scale]
+ * @property {Array<number>} [padding]
  */
 
 
@@ -78,9 +85,9 @@ export const defaultFont = '10px sans-serif';
 
 /**
  * @const
- * @type {module:ol/color~Color}
+ * @type {import("../colorlike.js").ColorLike}
  */
-export const defaultFillStyle = [0, 0, 0, 1];
+export const defaultFillStyle = '#000';
 
 
 /**
@@ -120,9 +127,9 @@ export const defaultMiterLimit = 10;
 
 /**
  * @const
- * @type {module:ol/color~Color}
+ * @type {import("../colorlike.js").ColorLike}
  */
-export const defaultStrokeStyle = [0, 0, 0, 1];
+export const defaultStrokeStyle = '#000';
 
 
 /**
@@ -156,10 +163,10 @@ export const defaultLineWidth = 1;
 /**
  * The label cache for text rendering. To change the default cache size of 2048
  * entries, use {@link module:ol/structs/LRUCache#setSize}.
- * @type {module:ol/structs/LRUCache<HTMLCanvasElement>}
+ * @type {LabelCache}
  * @api
  */
-export const labelCache = new LRUCache();
+export const labelCache = new LabelCache();
 
 
 /**
@@ -278,25 +285,25 @@ function getMeasureContext() {
 
 /**
  * @param {string} font Font to use for measuring.
- * @return {module:ol/size~Size} Measurement.
+ * @return {import("../size.js").Size} Measurement.
  */
 export const measureTextHeight = (function() {
-  let span;
+  let div;
   const heights = textHeights;
   return function(font) {
     let height = heights[font];
     if (height == undefined) {
-      if (!span) {
-        span = document.createElement('span');
-        span.textContent = 'M';
-        span.style.margin = span.style.padding = '0 !important';
-        span.style.position = 'absolute !important';
-        span.style.left = '-99999px !important';
+      if (!div) {
+        div = document.createElement('div');
+        div.innerHTML = 'M';
+        div.style.margin = div.style.padding = '0 !important';
+        div.style.position = 'absolute !important';
+        div.style.left = '-99999px !important';
       }
-      span.style.font = font;
-      document.body.appendChild(span);
-      height = heights[font] = span.offsetHeight;
-      document.body.removeChild(span);
+      div.style.font = font;
+      document.body.appendChild(div);
+      height = heights[font] = div.offsetHeight;
+      document.body.removeChild(div);
     }
     return height;
   };
@@ -314,6 +321,41 @@ export function measureTextWidth(font, text) {
     measureContext.font = font;
   }
   return measureContext.measureText(text).width;
+}
+
+
+/**
+ * Measure text width using a cache.
+ * @param {string} font The font.
+ * @param {string} text The text to measure.
+ * @param {Object<string, number>} cache A lookup of cached widths by text.
+ * @returns {number} The text width.
+ */
+export function measureAndCacheTextWidth(font, text, cache) {
+  if (text in cache) {
+    return cache[text];
+  }
+  const width = cache[text] = measureTextWidth(font, text);
+  return width;
+}
+
+
+/**
+ * @param {string} font Font to use for measuring.
+ * @param {Array<string>} lines Lines to measure.
+ * @param {Array<number>} widths Array will be populated with the widths of
+ * each line.
+ * @return {number} Width of the whole text.
+ */
+export function measureTextWidths(font, lines, widths) {
+  const numLines = lines.length;
+  let width = 0;
+  for (let i = 0; i < numLines; ++i) {
+    const currentWidth = measureTextWidth(font, lines[i]);
+    width = Math.max(width, currentWidth);
+    widths.push(currentWidth);
+  }
+  return width;
 }
 
 
@@ -337,7 +379,7 @@ export const resetTransform = createTransform();
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {module:ol/transform~Transform|null} transform Transform.
+ * @param {import("../transform.js").Transform|null} transform Transform.
  * @param {number} opacity Opacity.
  * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image Image.
  * @param {number} originX Origin X.

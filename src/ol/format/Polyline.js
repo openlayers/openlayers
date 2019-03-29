@@ -3,8 +3,8 @@
  */
 import {assert} from '../asserts.js';
 import Feature from '../Feature.js';
-import {transformWithOptions} from '../format/Feature.js';
-import TextFeature from '../format/TextFeature.js';
+import {transformGeometryWithOptions} from './Feature.js';
+import TextFeature from './TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import {getStrideForLayout} from '../geom/SimpleGeometry.js';
@@ -16,7 +16,7 @@ import {get as getProjection} from '../proj.js';
 /**
  * @typedef {Object} Options
  * @property {number} [factor=1e5] The factor by which the coordinates values will be scaled.
- * @property {module:ol/geom/GeometryLayout} [geometryLayout='XY'] Layout of the
+ * @property {GeometryLayout} [geometryLayout='XY'] Layout of the
  * feature geometries created by the format reader.
  */
 
@@ -38,7 +38,7 @@ import {get as getProjection} from '../proj.js';
 class Polyline extends TextFeature {
 
   /**
-   * @param {module:ol/format/Polyline~Options=} opt_options Optional configuration object.
+   * @param {Options=} opt_options Optional configuration object.
    */
   constructor(opt_options) {
     super();
@@ -59,7 +59,7 @@ class Polyline extends TextFeature {
 
     /**
      * @private
-     * @type {module:ol/geom/GeometryLayout}
+     * @type {GeometryLayout}
      */
     this.geometryLayout_ = options.geometryLayout ?
       options.geometryLayout : GeometryLayout.XY;
@@ -89,14 +89,9 @@ class Polyline extends TextFeature {
     const flatCoordinates = decodeDeltas(text, stride, this.factor_);
     flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
     const coordinates = inflateCoordinates(flatCoordinates, 0, flatCoordinates.length, stride);
+    const lineString = new LineString(coordinates, this.geometryLayout_);
 
-    return (
-      /** @type {module:ol/geom/Geometry} */ (transformWithOptions(
-        new LineString(coordinates, this.geometryLayout_),
-        false,
-        this.adaptOptions(opt_options)
-      ))
-    );
+    return transformGeometryWithOptions(lineString, false, this.adaptOptions(opt_options));
   }
 
   /**
@@ -123,8 +118,8 @@ class Polyline extends TextFeature {
    * @inheritDoc
    */
   writeGeometryText(geometry, opt_options) {
-    geometry = /** @type {module:ol/geom/LineString} */
-      (transformWithOptions(geometry, true, this.adaptOptions(opt_options)));
+    geometry = /** @type {LineString} */
+      (transformGeometryWithOptions(geometry, true, this.adaptOptions(opt_options)));
     const flatCoordinates = geometry.getFlatCoordinates();
     const stride = geometry.getStride();
     flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);

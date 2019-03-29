@@ -1,7 +1,7 @@
 /**
  * @module ol/control/Rotate
  */
-import Control from '../control/Control.js';
+import Control from './Control.js';
 import {CLASS_CONTROL, CLASS_HIDDEN, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
 import {listen} from '../events.js';
@@ -16,7 +16,7 @@ import EventType from '../events/EventType.js';
  * @property {string} [tipLabel='Reset rotation'] Text label to use for the rotate tip.
  * @property {number} [duration=250] Animation duration in milliseconds.
  * @property {boolean} [autoHide=true] Hide the control when rotation is 0.
- * @property {function(module:ol/MapEvent)} [render] Function called when the control should
+ * @property {function(import("../MapEvent.js").default)} [render] Function called when the control should
  * be re-rendered. This is called in a `requestAnimationFrame` callback.
  * @property {function()} [resetNorth] Function called when the control is clicked.
  * This will override the default `resetNorth`.
@@ -36,7 +36,7 @@ import EventType from '../events/EventType.js';
 class Rotate extends Control {
 
   /**
-   * @param {module:ol/control/Rotate~Options=} opt_options Rotate options.
+   * @param {Options=} opt_options Rotate options.
    */
   constructor(opt_options) {
 
@@ -149,8 +149,8 @@ class Rotate extends Control {
 
 /**
  * Update the rotate control element.
- * @param {module:ol/MapEvent} mapEvent Map event.
- * @this {module:ol/control/Rotate}
+ * @param {import("../MapEvent.js").default} mapEvent Map event.
+ * @this {Rotate}
  * @api
  */
 export function render(mapEvent) {
@@ -169,8 +169,6 @@ export function render(mapEvent) {
         this.element.classList.remove(CLASS_HIDDEN);
       }
     }
-    this.label_.style.msTransform = transform;
-    this.label_.style.webkitTransform = transform;
     this.label_.style.transform = transform;
   }
   this.rotation_ = rotation;

@@ -3,21 +3,21 @@
  */
 import {extend} from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
-import GeometryLayout from '../geom/GeometryLayout.js';
-import GeometryType from '../geom/GeometryType.js';
-import MultiPoint from '../geom/MultiPoint.js';
-import Polygon from '../geom/Polygon.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
-import {linearRingss as linearRingssArea} from '../geom/flat/area.js';
-import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
-import {assignClosestMultiArrayPoint, multiArrayMaxSquaredDelta} from '../geom/flat/closest.js';
-import {linearRingssContainsXY} from '../geom/flat/contains.js';
-import {deflateMultiCoordinatesArray} from '../geom/flat/deflate.js';
-import {inflateMultiCoordinatesArray} from '../geom/flat/inflate.js';
-import {getInteriorPointsOfMultiArray} from '../geom/flat/interiorpoint.js';
-import {intersectsLinearRingMultiArray} from '../geom/flat/intersectsextent.js';
-import {linearRingsAreOriented, orientLinearRingsArray} from '../geom/flat/orient.js';
-import {quantizeMultiArray} from '../geom/flat/simplify.js';
+import GeometryLayout from './GeometryLayout.js';
+import GeometryType from './GeometryType.js';
+import MultiPoint from './MultiPoint.js';
+import Polygon from './Polygon.js';
+import SimpleGeometry from './SimpleGeometry.js';
+import {linearRingss as linearRingssArea} from './flat/area.js';
+import {linearRingss as linearRingssCenter} from './flat/center.js';
+import {assignClosestMultiArrayPoint, multiArrayMaxSquaredDelta} from './flat/closest.js';
+import {linearRingssContainsXY} from './flat/contains.js';
+import {deflateMultiCoordinatesArray} from './flat/deflate.js';
+import {inflateMultiCoordinatesArray} from './flat/inflate.js';
+import {getInteriorPointsOfMultiArray} from './flat/interiorpoint.js';
+import {intersectsLinearRingMultiArray} from './flat/intersectsextent.js';
+import {linearRingssAreOriented, orientLinearRingsArray} from './flat/orient.js';
+import {quantizeMultiArray} from './flat/simplify.js';
 
 /**
  * @classdesc
@@ -28,10 +28,10 @@ import {quantizeMultiArray} from '../geom/flat/simplify.js';
 class MultiPolygon extends SimpleGeometry {
 
   /**
-   * @param {Array<Array<Array<module:ol/coordinate~Coordinate>>>|Array<number>} coordinates Coordinates.
-   *     For internal use, flat coordinats in combination with `opt_layout` and `opt_endss` are also accepted.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
-   * @param {Array<number>} opt_endss Array of ends for internal use with flat coordinates.
+   * @param {Array<Array<Array<import("../coordinate.js").Coordinate>>|Polygon>|Array<number>} coordinates Coordinates.
+   *     For internal use, flat coordinates in combination with `opt_layout` and `opt_endss` are also accepted.
+   * @param {GeometryLayout=} opt_layout Layout.
+   * @param {Array<Array<number>>=} opt_endss Array of ends for internal use with flat coordinates.
    */
   constructor(coordinates, opt_layout, opt_endss) {
 
@@ -81,10 +81,11 @@ class MultiPolygon extends SimpleGeometry {
 
     if (!opt_endss && !Array.isArray(coordinates[0])) {
       let layout = this.getLayout();
+      const polygons = /** @type {Array<Polygon>} */ (coordinates);
       const flatCoordinates = [];
       const endss = [];
-      for (let i = 0, ii = coordinates.length; i < ii; ++i) {
-        const polygon = coordinates[i];
+      for (let i = 0, ii = polygons.length; i < ii; ++i) {
+        const polygon = polygons[i];
         if (i === 0) {
           layout = polygon.getLayout();
         }
@@ -101,17 +102,18 @@ class MultiPolygon extends SimpleGeometry {
       opt_endss = endss;
     }
     if (opt_layout !== undefined && opt_endss) {
-      this.setFlatCoordinates(opt_layout, coordinates);
+      this.setFlatCoordinates(opt_layout, /** @type {Array<number>} */ (coordinates));
       this.endss_ = opt_endss;
     } else {
-      this.setCoordinates(coordinates, opt_layout);
+      this.setCoordinates(/** @type {Array<Array<Array<import("../coordinate.js").Coordinate>>>} */ (coordinates),
+        opt_layout);
     }
 
   }
 
   /**
    * Append the passed polygon to this multipolygon.
-   * @param {module:ol/geom/Polygon} polygon Polygon.
+   * @param {Polygon} polygon Polygon.
    * @api
    */
   appendPolygon(polygon) {
@@ -135,7 +137,7 @@ class MultiPolygon extends SimpleGeometry {
 
   /**
    * Make a complete copy of the geometry.
-   * @return {!module:ol/geom/MultiPolygon} Clone.
+   * @return {!MultiPolygon} Clone.
    * @override
    * @api
    */
@@ -193,7 +195,7 @@ class MultiPolygon extends SimpleGeometry {
    *     (clockwise for exterior and counter-clockwise for interior rings).
    *     By default, coordinate orientation will depend on how the geometry was
    *     constructed.
-   * @return {Array<Array<Array<module:ol/coordinate~Coordinate>>>} Coordinates.
+   * @return {Array<Array<Array<import("../coordinate.js").Coordinate>>>} Coordinates.
    * @override
    * @api
    */
@@ -235,7 +237,7 @@ class MultiPolygon extends SimpleGeometry {
 
   /**
    * Return the interior points as {@link module:ol/geom/MultiPoint multipoint}.
-   * @return {module:ol/geom/MultiPoint} Interior points as XYM coordinates, where M is
+   * @return {MultiPoint} Interior points as XYM coordinates, where M is
    * the length of the horizontal intersection that the point belongs to.
    * @api
    */
@@ -249,7 +251,7 @@ class MultiPolygon extends SimpleGeometry {
   getOrientedFlatCoordinates() {
     if (this.orientedRevision_ != this.getRevision()) {
       const flatCoordinates = this.flatCoordinates;
-      if (linearRingsAreOriented(
+      if (linearRingssAreOriented(
         flatCoordinates, 0, this.endss_, this.stride)) {
         this.orientedFlatCoordinates_ = flatCoordinates;
       } else {
@@ -279,7 +281,7 @@ class MultiPolygon extends SimpleGeometry {
   /**
    * Return the polygon at the specified index.
    * @param {number} index Index.
-   * @return {module:ol/geom/Polygon} Polygon.
+   * @return {Polygon} Polygon.
    * @api
    */
   getPolygon(index) {
@@ -305,7 +307,7 @@ class MultiPolygon extends SimpleGeometry {
 
   /**
    * Return the polygons of this multipolygon.
-   * @return {Array<module:ol/geom/Polygon>} Polygons.
+   * @return {Array<Polygon>} Polygons.
    * @api
    */
   getPolygons() {
@@ -348,8 +350,8 @@ class MultiPolygon extends SimpleGeometry {
 
   /**
    * Set the coordinates of the multipolygon.
-   * @param {!Array<Array<Array<module:ol/coordinate~Coordinate>>>} coordinates Coordinates.
-   * @param {module:ol/geom/GeometryLayout=} opt_layout Layout.
+   * @param {!Array<Array<Array<import("../coordinate.js").Coordinate>>>} coordinates Coordinates.
+   * @param {GeometryLayout=} opt_layout Layout.
    * @override
    * @api
    */

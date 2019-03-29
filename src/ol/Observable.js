@@ -13,7 +13,7 @@ import EventType from './events/EventType.js';
  * and unregistration. A generic `change` event is always available through
  * {@link module:ol/Observable~Observable#changed}.
  *
- * @fires module:ol/events/Event~Event
+ * @fires import("./events/Event.js").Event
  * @api
  */
 class Observable extends EventTarget {
@@ -52,7 +52,7 @@ class Observable extends EventTarget {
    * Listen for a certain type of event.
    * @param {string|Array<string>} type The event type or array of event types.
    * @param {function(?): ?} listener The listener function.
-   * @return {module:ol/events~EventsKey|Array<module:ol/events~EventsKey>} Unique key for the listener. If
+   * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Unique key for the listener. If
    *     called with an array of event types as the first argument, the return
    *     will be an array of keys.
    * @api
@@ -74,7 +74,7 @@ class Observable extends EventTarget {
    * Listen once for a certain type of event.
    * @param {string|Array<string>} type The event type or array of event types.
    * @param {function(?): ?} listener The listener function.
-   * @return {module:ol/events~EventsKey|Array<module:ol/events~EventsKey>} Unique key for the listener. If
+   * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Unique key for the listener. If
    *     called with an array of event types as the first argument, the return
    *     will be an array of keys.
    * @api
@@ -113,7 +113,7 @@ class Observable extends EventTarget {
 
 /**
  * Removes an event listener using the key returned by `on()` or `once()`.
- * @param {module:ol/events~EventsKey|Array<module:ol/events~EventsKey>} key The key returned by `on()`
+ * @param {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} key The key returned by `on()`
  *     or `once()` (or an array of keys).
  * @api
  */
@@ -123,7 +123,7 @@ export function unByKey(key) {
       unlistenByKey(key[i]);
     }
   } else {
-    unlistenByKey(/** @type {module:ol/events~EventsKey} */ (key));
+    unlistenByKey(/** @type {import("./events.js").EventsKey} */ (key));
   }
 }
 

@@ -6,11 +6,7 @@ import OSM from '../src/ol/source/OSM.js';
 
 
 const map = new Map({
-  controls: defaultControls({
-    attributionOptions: {
-      collapsible: false
-    }
-  }).extend([
+  controls: defaultControls().extend([
     new ZoomToExtent({
       extent: [
         813079.7791264898, 5929220.284081122,

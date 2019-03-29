@@ -2,8 +2,8 @@
  * @module ol/geom/flat/intersectsextent
  */
 import {containsExtent, createEmpty, extendFlatCoordinates, intersects, intersectsSegment} from '../../extent.js';
-import {linearRingContainsXY, linearRingContainsExtent} from '../flat/contains.js';
-import {forEach as forEachSegment} from '../flat/segments.js';
+import {linearRingContainsXY, linearRingContainsExtent} from './contains.js';
+import {forEach as forEachSegment} from './segments.js';
 
 
 /**
@@ -11,7 +11,7 @@ import {forEach as forEachSegment} from '../flat/segments.js';
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {module:ol/extent~Extent} extent Extent.
+ * @param {import("../../extent.js").Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
 export function intersectsLineString(flatCoordinates, offset, end, stride, extent) {
@@ -33,8 +33,8 @@ export function intersectsLineString(flatCoordinates, offset, end, stride, exten
   }
   return forEachSegment(flatCoordinates, offset, end, stride,
     /**
-     * @param {module:ol/coordinate~Coordinate} point1 Start point.
-     * @param {module:ol/coordinate~Coordinate} point2 End point.
+     * @param {import("../../coordinate.js").Coordinate} point1 Start point.
+     * @param {import("../../coordinate.js").Coordinate} point2 End point.
      * @return {boolean} `true` if the segment and the extent intersect,
      *     `false` otherwise.
      */
@@ -49,7 +49,7 @@ export function intersectsLineString(flatCoordinates, offset, end, stride, exten
  * @param {number} offset Offset.
  * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
- * @param {module:ol/extent~Extent} extent Extent.
+ * @param {import("../../extent.js").Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
 export function intersectsLineStringArray(flatCoordinates, offset, ends, stride, extent) {
@@ -69,7 +69,7 @@ export function intersectsLineStringArray(flatCoordinates, offset, ends, stride,
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {module:ol/extent~Extent} extent Extent.
+ * @param {import("../../extent.js").Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
 export function intersectsLinearRing(flatCoordinates, offset, end, stride, extent) {
@@ -98,7 +98,7 @@ export function intersectsLinearRing(flatCoordinates, offset, end, stride, exten
  * @param {number} offset Offset.
  * @param {Array<number>} ends Ends.
  * @param {number} stride Stride.
- * @param {module:ol/extent~Extent} extent Extent.
+ * @param {import("../../extent.js").Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
 export function intersectsLinearRingArray(flatCoordinates, offset, ends, stride, extent) {
@@ -111,7 +111,9 @@ export function intersectsLinearRingArray(flatCoordinates, offset, ends, stride,
   }
   for (let i = 1, ii = ends.length; i < ii; ++i) {
     if (linearRingContainsExtent(flatCoordinates, ends[i - 1], ends[i], stride, extent)) {
-      return false;
+      if (!intersectsLineString(flatCoordinates, ends[i - 1], ends[i], stride, extent)) {
+        return false;
+      }
     }
   }
   return true;
@@ -123,7 +125,7 @@ export function intersectsLinearRingArray(flatCoordinates, offset, ends, stride,
  * @param {number} offset Offset.
  * @param {Array<Array<number>>} endss Endss.
  * @param {number} stride Stride.
- * @param {module:ol/extent~Extent} extent Extent.
+ * @param {import("../../extent.js").Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
 export function intersectsLinearRingMultiArray(flatCoordinates, offset, endss, stride, extent) {

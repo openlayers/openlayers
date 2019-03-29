@@ -3,17 +3,16 @@
  */
 import {extend} from '../array.js';
 import {createOrUpdate} from '../extent.js';
-import {transformWithOptions} from '../format/Feature.js';
-import GMLBase, {GMLNS} from '../format/GMLBase.js';
-import {readNonNegativeIntegerString, writeStringTextNode} from '../format/xsd.js';
-import Geometry from '../geom/Geometry.js';
+import {transformExtentWithOptions, transformGeometryWithOptions} from './Feature.js';
+import GMLBase, {GMLNS} from './GMLBase.js';
+import {readNonNegativeIntegerString, writeStringTextNode} from './xsd.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Polygon from '../geom/Polygon.js';
 import {assign} from '../obj.js';
-import {get as getProjection, transformExtent} from '../proj.js';
+import {get as getProjection} from '../proj.js';
 import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
   makeReplacer, makeSimpleNodeFactory, OBJECT_PROPERTY_NODE_FACTORY, parseNode,
   pushParseAndPop, pushSerializeAndPop, XML_SCHEMA_INSTANCE_URI} from '../xml.js';
@@ -52,10 +51,10 @@ const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
 class GML3 extends GMLBase {
 
   /**
-   * @param {module:ol/format/GMLBase~Options=} opt_options Optional configuration object.
+   * @param {import("./GMLBase.js").Options=} opt_options Optional configuration object.
    */
   constructor(opt_options) {
-    const options = /** @type {module:ol/format/GMLBase~Options} */
+    const options = /** @type {import("./GMLBase.js").Options} */
         (opt_options ? opt_options : {});
 
     super(options);
@@ -102,13 +101,13 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {module:ol/geom/MultiLineString|undefined} MultiLineString.
+   * @return {MultiLineString|undefined} MultiLineString.
    */
   readMultiCurve_(node, objectStack) {
-    /** @type {Array<module:ol/geom/LineString>} */
+    /** @type {Array<LineString>} */
     const lineStrings = pushParseAndPop([],
       this.MULTICURVE_PARSERS_, node, objectStack, this);
     if (lineStrings) {
@@ -120,13 +119,13 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {module:ol/geom/MultiPolygon|undefined} MultiPolygon.
+   * @return {MultiPolygon|undefined} MultiPolygon.
    */
   readMultiSurface_(node, objectStack) {
-    /** @type {Array<module:ol/geom/Polygon>} */
+    /** @type {Array<Polygon>} */
     const polygons = pushParseAndPop([],
       this.MULTISURFACE_PARSERS_, node, objectStack, this);
     if (polygons) {
@@ -135,7 +134,7 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    */
@@ -144,7 +143,7 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    */
@@ -154,7 +153,7 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    * @return {Array<(Array<number>)>|undefined} flat coordinates.
@@ -165,7 +164,7 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    * @return {Array<number>|undefined} flat coordinates.
@@ -176,30 +175,30 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    * @return {Array<(Array<number>)>|undefined} flat coordinates.
    */
   readPolygonPatch_(node, objectStack) {
     return pushParseAndPop([null],
-      this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
+      this.FLAT_LINEAR_RINGS_PARSERS, node, objectStack, this);
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    * @return {Array<number>|undefined} flat coordinates.
    */
   readLineStringSegment_(node, objectStack) {
     return pushParseAndPop([null],
-      this.GEOMETRY_FLAT_COORDINATES_PARSERS_,
+      this.GEOMETRY_FLAT_COORDINATES_PARSERS,
       node, objectStack, this);
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    */
@@ -215,7 +214,7 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    */
@@ -231,10 +230,10 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {module:ol/geom/Polygon|undefined} Polygon.
+   * @return {Polygon|undefined} Polygon.
    */
   readSurface_(node, objectStack) {
     /** @type {Array<Array<number>>} */
@@ -255,10 +254,10 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {module:ol/geom/LineString|undefined} LineString.
+   * @return {LineString|undefined} LineString.
    */
   readCurve_(node, objectStack) {
     /** @type {Array<number>} */
@@ -273,10 +272,10 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
-   * @return {module:ol/extent~Extent|undefined} Envelope.
+   * @return {import("../extent.js").Extent|undefined} Envelope.
    */
   readEnvelope_(node, objectStack) {
     /** @type {Array<number>} */
@@ -333,7 +332,7 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
+   * @param {Element} node Node.
    * @param {Array<*>} objectStack Object stack.
    * @private
    * @return {Array<number>|undefined} Flat coordinates.
@@ -357,9 +356,9 @@ class GML3 extends GMLBase {
     } else if (node.getAttribute('dimension')) {
       dim = readNonNegativeIntegerString(
         node.getAttribute('dimension'));
-    } else if (node.parentNode.getAttribute('srsDimension')) {
+    } else if (/** @type {Element} */ (node.parentNode).getAttribute('srsDimension')) {
       dim = readNonNegativeIntegerString(
-        node.parentNode.getAttribute('srsDimension'));
+        /** @type {Element} */ (node.parentNode).getAttribute('srsDimension'));
     } else if (contextDimension) {
       dim = readNonNegativeIntegerString(contextDimension);
     }
@@ -379,15 +378,15 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
-   * @param {module:ol/geom/Point} value Point geometry.
+   * @param {Element} node Node.
+   * @param {import("../geom/Point.js").default} value Point geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writePos_(node, value, objectStack) {
     const context = objectStack[objectStack.length - 1];
     const hasZ = context['hasZ'];
-    const srsDimension = hasZ ? 3 : 2;
+    const srsDimension = hasZ ? '3' : '2';
     node.setAttribute('srsDimension', srsDimension);
     const srsName = context['srsName'];
     let axisOrientation = 'enu';
@@ -435,15 +434,15 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
-   * @param {module:ol/geom/LineString|module:ol/geom/LinearRing} value Geometry.
+   * @param {Element} node Node.
+   * @param {LineString|import("../geom/LinearRing.js").default} value Geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
   writePosList_(node, value, objectStack) {
     const context = objectStack[objectStack.length - 1];
     const hasZ = context['hasZ'];
-    const srsDimension = hasZ ? 3 : 2;
+    const srsDimension = hasZ ? '3' : '2';
     node.setAttribute('srsDimension', srsDimension);
     const srsName = context['srsName'];
     // only 2d for simple features profile
@@ -459,8 +458,8 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
-   * @param {module:ol/geom/Point} geometry Point geometry.
+   * @param {Element} node Node.
+   * @param {import("../geom/Point.js").default} geometry Point geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -476,8 +475,8 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
-   * @param {module:ol/extent~Extent} extent Extent.
+   * @param {Element} node Node.
+   * @param {import("../extent.js").Extent} extent Extent.
    * @param {Array<*>} objectStack Node stack.
    */
   writeEnvelope(node, extent, objectStack) {
@@ -488,7 +487,7 @@ class GML3 extends GMLBase {
     }
     const keys = ['lowerCorner', 'upperCorner'];
     const values = [extent[0] + ' ' + extent[1], extent[2] + ' ' + extent[3]];
-    pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
+    pushSerializeAndPop(/** @type {import("../xml.js").NodeStackItem} */
       ({node: node}), this.ENVELOPE_SERIALIZERS_,
       OBJECT_PROPERTY_NODE_FACTORY,
       values,
@@ -496,8 +495,8 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
-   * @param {module:ol/geom/LinearRing} geometry LinearRing geometry.
+   * @param {Element} node Node.
+   * @param {import("../geom/LinearRing.js").default} geometry LinearRing geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -531,8 +530,8 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
-   * @param {module:ol/geom/Polygon} geometry Polygon geometry.
+   * @param {Element} node Node.
+   * @param {Polygon} geometry Polygon geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -559,8 +558,8 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
-   * @param {module:ol/geom/LineString} geometry LineString geometry.
+   * @param {Element} node Node.
+   * @param {LineString} geometry LineString geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -584,8 +583,8 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
-   * @param {module:ol/geom/MultiPolygon} geometry MultiPolygon geometry.
+   * @param {Element} node Node.
+   * @param {MultiPolygon} geometry MultiPolygon geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -605,8 +604,8 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
-   * @param {module:ol/geom/MultiPoint} geometry MultiPoint geometry.
+   * @param {Element} node Node.
+   * @param {import("../geom/MultiPoint.js").default} geometry MultiPoint geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -625,8 +624,8 @@ class GML3 extends GMLBase {
   }
 
   /**
-   * @param {Node} node Node.
-   * @param {module:ol/geom/MultiLineString} geometry MultiLineString geometry.
+   * @param {Element} node Node.
+   * @param {MultiLineString} geometry MultiLineString geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -647,7 +646,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {module:ol/geom/LinearRing} ring LinearRing geometry.
+   * @param {import("../geom/LinearRing.js").default} ring LinearRing geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -659,7 +658,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {module:ol/geom/Polygon} polygon Polygon geometry.
+   * @param {Polygon} polygon Polygon geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -674,7 +673,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {module:ol/geom/Point} point Point geometry.
+   * @param {import("../geom/Point.js").default} point Point geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -686,7 +685,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {module:ol/geom/LineString} line LineString geometry.
+   * @param {LineString} line LineString geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -700,7 +699,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {module:ol/geom/Polygon} polygon Polygon geometry.
+   * @param {Polygon} polygon Polygon geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -712,7 +711,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {module:ol/geom/LineString} line LineString geometry.
+   * @param {LineString} line LineString geometry.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -725,39 +724,34 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {module:ol/geom/Geometry|module:ol/extent~Extent} geometry Geometry.
+   * @param {import("../geom/Geometry.js").default|import("../extent.js").Extent} geometry Geometry.
    * @param {Array<*>} objectStack Node stack.
    */
   writeGeometryElement(node, geometry, objectStack) {
-    const context = /** @type {module:ol/format/Feature~WriteOptions} */ (objectStack[objectStack.length - 1]);
+    const context = /** @type {import("./Feature.js").WriteOptions} */ (objectStack[objectStack.length - 1]);
     const item = assign({}, context);
-    item.node = node;
+    item['node'] = node;
     let value;
     if (Array.isArray(geometry)) {
-      if (context.dataProjection) {
-        value = transformExtent(
-          geometry, context.featureProjection, context.dataProjection);
-      } else {
-        value = geometry;
-      }
+      value = transformExtentWithOptions(/** @type {import("../extent.js").Extent} */ (geometry), context);
     } else {
-      value = transformWithOptions(/** @type {module:ol/geom/Geometry} */ (geometry), true, context);
+      value = transformGeometryWithOptions(/** @type {import("../geom/Geometry.js").default} */ (geometry), true, context);
     }
-    pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
+    pushSerializeAndPop(/** @type {import("../xml.js").NodeStackItem} */
       (item), this.GEOMETRY_SERIALIZERS_,
       this.GEOMETRY_NODE_FACTORY_, [value],
       objectStack, undefined, this);
   }
 
   /**
-   * @param {Node} node Node.
-   * @param {module:ol/Feature} feature Feature.
+   * @param {Element} node Node.
+   * @param {import("../Feature.js").default} feature Feature.
    * @param {Array<*>} objectStack Node stack.
    */
   writeFeatureElement(node, feature, objectStack) {
     const fid = feature.getId();
     if (fid) {
-      node.setAttribute('fid', fid);
+      node.setAttribute('fid', /** @type {string} */ (fid));
     }
     const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     const featureNS = context['featureNS'];
@@ -774,7 +768,7 @@ class GML3 extends GMLBase {
       if (value !== null) {
         keys.push(key);
         values.push(value);
-        if (key == geometryName || value instanceof Geometry) {
+        if (key == geometryName || typeof /** @type {?} */ (value).getSimplifiedGeometry === 'function') {
           if (!(key in context.serializers[featureNS])) {
             context.serializers[featureNS][key] = makeChildAppender(
               this.writeGeometryElement, this);
@@ -788,7 +782,7 @@ class GML3 extends GMLBase {
     }
     const item = assign({}, context);
     item.node = node;
-    pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
+    pushSerializeAndPop(/** @type {import("../xml.js").NodeStackItem} */
       (item), context.serializers,
       makeSimpleNodeFactory(undefined, featureNS),
       values,
@@ -797,7 +791,7 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Node} node Node.
-   * @param {Array<module:ol/Feature>} features Features.
+   * @param {Array<import("../Feature.js").default>} features Features.
    * @param {Array<*>} objectStack Node stack.
    * @private
    */
@@ -805,13 +799,14 @@ class GML3 extends GMLBase {
     const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     const featureType = context['featureType'];
     const featureNS = context['featureNS'];
+    /** @type {Object<string, Object<string, import("../xml.js").Serializer>>} */
     const serializers = {};
     serializers[featureNS] = {};
     serializers[featureNS][featureType] = makeChildAppender(
       this.writeFeatureElement, this);
     const item = assign({}, context);
     item.node = node;
-    pushSerializeAndPop(/** @type {module:ol/xml~NodeStackItem} */
+    pushSerializeAndPop(/** @type {import("../xml.js").NodeStackItem} */
       (item),
       serializers,
       makeSimpleNodeFactory(featureType, featureNS), features,
@@ -828,7 +823,7 @@ class GML3 extends GMLBase {
    */
   MULTIGEOMETRY_MEMBER_NODE_FACTORY_(value, objectStack, opt_nodeName) {
     const parentNode = objectStack[objectStack.length - 1].node;
-    return createElementNS('http://www.opengis.net/gml',
+    return createElementNS(this.namespace,
       MULTIGEOMETRY_TO_MEMBER_NODENAME[parentNode.nodeName]);
   }
 
@@ -837,7 +832,7 @@ class GML3 extends GMLBase {
    * @param {*} value Value.
    * @param {Array<*>} objectStack Object stack.
    * @param {string=} opt_nodeName Node name.
-   * @return {Node|undefined} Node.
+   * @return {Element|undefined} Node.
    * @private
    */
   GEOMETRY_NODE_FACTORY_(value, objectStack, opt_nodeName) {
@@ -848,7 +843,7 @@ class GML3 extends GMLBase {
     const multiCurve = context['multiCurve'];
     let nodeName;
     if (!Array.isArray(value)) {
-      nodeName = /** @type {module:ol/geom/Geometry} */ (value).getType();
+      nodeName = /** @type {import("../geom/Geometry.js").default} */ (value).getType();
       if (nodeName === 'MultiPolygon' && multiSurface === true) {
         nodeName = 'MultiSurface';
       } else if (nodeName === 'Polygon' && surface === true) {
@@ -861,22 +856,22 @@ class GML3 extends GMLBase {
     } else {
       nodeName = 'Envelope';
     }
-    return createElementNS('http://www.opengis.net/gml',
+    return createElementNS(this.namespace,
       nodeName);
   }
 
   /**
    * Encode a geometry in GML 3.1.1 Simple Features.
    *
-   * @param {module:ol/geom/Geometry} geometry Geometry.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
+   * @param {import("../geom/Geometry.js").default} geometry Geometry.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Options.
    * @return {Node} Node.
    * @override
    * @api
    */
   writeGeometryNode(geometry, opt_options) {
     opt_options = this.adaptOptions(opt_options);
-    const geom = createElementNS('http://www.opengis.net/gml', 'geom');
+    const geom = createElementNS(this.namespace, 'geom');
     const context = {node: geom, hasZ: this.hasZ, srsName: this.srsName,
       curve: this.curve_, surface: this.surface_,
       multiSurface: this.multiSurface_, multiCurve: this.multiCurve_};
@@ -890,15 +885,15 @@ class GML3 extends GMLBase {
   /**
    * Encode an array of features in the GML 3.1.1 format as an XML node.
    *
-   * @param {Array<module:ol/Feature>} features Features.
-   * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
-   * @return {Node} Node.
+   * @param {Array<import("../Feature.js").default>} features Features.
+   * @param {import("./Feature.js").WriteOptions=} opt_options Options.
+   * @return {Element} Node.
    * @override
    * @api
    */
   writeFeaturesNode(features, opt_options) {
     opt_options = this.adaptOptions(opt_options);
-    const node = createElementNS('http://www.opengis.net/gml', 'featureMembers');
+    const node = createElementNS(this.namespace, 'featureMembers');
     node.setAttributeNS(XML_SCHEMA_INSTANCE_URI, 'xsi:schemaLocation', this.schemaLocation);
     const context = {
       srsName: this.srsName,
@@ -920,10 +915,10 @@ class GML3 extends GMLBase {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
- * @private
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @protected
  */
-GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS = {
   'http://www.opengis.net/gml': {
     'pos': makeReplacer(GML3.prototype.readFlatPos_),
     'posList': makeReplacer(GML3.prototype.readFlatPosList_)
@@ -933,10 +928,10 @@ GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
- * @private
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @protected
  */
-GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
+GML3.prototype.FLAT_LINEAR_RINGS_PARSERS = {
   'http://www.opengis.net/gml': {
     'interior': GML3.prototype.interiorParser_,
     'exterior': GML3.prototype.exteriorParser_
@@ -946,10 +941,10 @@ GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
- * @private
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @protected
  */
-GML3.prototype.GEOMETRY_PARSERS_ = {
+GML3.prototype.GEOMETRY_PARSERS = {
   'http://www.opengis.net/gml': {
     'Point': makeReplacer(GMLBase.prototype.readPoint),
     'MultiPoint': makeReplacer(
@@ -976,7 +971,7 @@ GML3.prototype.GEOMETRY_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML3.prototype.MULTICURVE_PARSERS_ = {
@@ -991,7 +986,7 @@ GML3.prototype.MULTICURVE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML3.prototype.MULTISURFACE_PARSERS_ = {
@@ -1006,7 +1001,7 @@ GML3.prototype.MULTISURFACE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML3.prototype.CURVEMEMBER_PARSERS_ = {
@@ -1020,7 +1015,7 @@ GML3.prototype.CURVEMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML3.prototype.SURFACEMEMBER_PARSERS_ = {
@@ -1033,7 +1028,7 @@ GML3.prototype.SURFACEMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML3.prototype.SURFACE_PARSERS_ = {
@@ -1045,7 +1040,7 @@ GML3.prototype.SURFACE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML3.prototype.CURVE_PARSERS_ = {
@@ -1057,7 +1052,7 @@ GML3.prototype.CURVE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML3.prototype.ENVELOPE_PARSERS_ = {
@@ -1072,7 +1067,7 @@ GML3.prototype.ENVELOPE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML3.prototype.PATCHES_PARSERS_ = {
@@ -1085,7 +1080,7 @@ GML3.prototype.PATCHES_PARSERS_ = {
 
 /**
  * @const
- * @type {Object<string, Object<string, module:ol/xml~Parser>>}
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  * @private
  */
 GML3.prototype.SEGMENTS_PARSERS_ = {
@@ -1100,8 +1095,8 @@ GML3.prototype.SEGMENTS_PARSERS_ = {
  * Encode an array of features in GML 3.1.1 Simple Features.
  *
  * @function
- * @param {Array<module:ol/Feature>} features Features.
- * @param {module:ol/format/Feature~WriteOptions=} opt_options Options.
+ * @param {Array<import("../Feature.js").default>} features Features.
+ * @param {import("./Feature.js").WriteOptions=} opt_options Options.
  * @return {string} Result.
  * @api
  */
@@ -1109,7 +1104,7 @@ GML3.prototype.writeFeatures;
 
 
 /**
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML3.prototype.RING_SERIALIZERS_ = {
@@ -1121,7 +1116,7 @@ GML3.prototype.RING_SERIALIZERS_ = {
 
 
 /**
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML3.prototype.ENVELOPE_SERIALIZERS_ = {
@@ -1133,7 +1128,7 @@ GML3.prototype.ENVELOPE_SERIALIZERS_ = {
 
 
 /**
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML3.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
@@ -1147,7 +1142,7 @@ GML3.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML3.prototype.POINTMEMBER_SERIALIZERS_ = {
@@ -1159,7 +1154,7 @@ GML3.prototype.POINTMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML3.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
@@ -1173,7 +1168,7 @@ GML3.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object<string, Object<string, module:ol/xml~Serializer>>}
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
  * @private
  */
 GML3.prototype.GEOMETRY_SERIALIZERS_ = {

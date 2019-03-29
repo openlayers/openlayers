@@ -12,10 +12,10 @@
 
 /**
  * Returns a buffered size.
- * @param {module:ol/size~Size} size Size.
+ * @param {Size} size Size.
  * @param {number} num The amount by which to buffer.
- * @param {module:ol/size~Size=} opt_size Optional reusable size array.
- * @return {module:ol/size~Size} The buffered size.
+ * @param {Size=} opt_size Optional reusable size array.
+ * @return {Size} The buffered size.
  */
 export function buffer(size, num, opt_size) {
   if (opt_size === undefined) {
@@ -29,7 +29,7 @@ export function buffer(size, num, opt_size) {
 
 /**
  * Determines if a size has a positive area.
- * @param {module:ol/size~Size} size The size to test.
+ * @param {Size} size The size to test.
  * @return {boolean} The size has a positive area.
  */
 export function hasArea(size) {
@@ -39,10 +39,10 @@ export function hasArea(size) {
 
 /**
  * Returns a size scaled by a ratio. The result will be an array of integers.
- * @param {module:ol/size~Size} size Size.
+ * @param {Size} size Size.
  * @param {number} ratio Ratio.
- * @param {module:ol/size~Size=} opt_size Optional reusable size array.
- * @return {module:ol/size~Size} The scaled size.
+ * @param {Size=} opt_size Optional reusable size array.
+ * @return {Size} The scaled size.
  */
 export function scale(size, ratio, opt_size) {
   if (opt_size === undefined) {
@@ -55,12 +55,12 @@ export function scale(size, ratio, opt_size) {
 
 
 /**
- * Returns an `module:ol/size~Size` array for the passed in number (meaning: square) or
- * `module:ol/size~Size` array.
+ * Returns an `Size` array for the passed in number (meaning: square) or
+ * `Size` array.
  * (meaning: non-square),
- * @param {number|module:ol/size~Size} size Width and height.
- * @param {module:ol/size~Size=} opt_size Optional reusable size array.
- * @return {module:ol/size~Size} Size.
+ * @param {number|Size} size Width and height.
+ * @param {Size=} opt_size Optional reusable size array.
+ * @return {Size} Size.
  * @api
  */
 export function toSize(size, opt_size) {

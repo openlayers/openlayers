@@ -11,7 +11,7 @@ class IconImageCache {
   constructor() {
 
     /**
-    * @type {!Object<string, module:ol/style/IconImage>}
+    * @type {!Object<string, import("./IconImage.js").default>}
     * @private
     */
     this.cache_ = {};
@@ -38,10 +38,17 @@ class IconImageCache {
   }
 
   /**
+   * @return {boolean} Can expire cache.
+   */
+  canExpireCache() {
+    return this.cacheSize_ > this.maxCacheSize_;
+  }
+
+  /**
   * FIXME empty description for jsdoc
   */
   expire() {
-    if (this.cacheSize_ > this.maxCacheSize_) {
+    if (this.canExpireCache()) {
       let i = 0;
       for (const key in this.cache_) {
         const iconImage = this.cache_[key];
@@ -56,8 +63,8 @@ class IconImageCache {
   /**
   * @param {string} src Src.
   * @param {?string} crossOrigin Cross origin.
-  * @param {module:ol/color~Color} color Color.
-  * @return {module:ol/style/IconImage} Icon image.
+  * @param {import("../color.js").Color} color Color.
+  * @return {import("./IconImage.js").default} Icon image.
   */
   get(src, crossOrigin, color) {
     const key = getKey(src, crossOrigin, color);
@@ -67,8 +74,8 @@ class IconImageCache {
   /**
   * @param {string} src Src.
   * @param {?string} crossOrigin Cross origin.
-  * @param {module:ol/color~Color} color Color.
-  * @param {module:ol/style/IconImage} iconImage Icon image.
+  * @param {import("../color.js").Color} color Color.
+  * @param {import("./IconImage.js").default} iconImage Icon image.
   */
   set(src, crossOrigin, color, iconImage) {
     const key = getKey(src, crossOrigin, color);
@@ -93,7 +100,7 @@ class IconImageCache {
 /**
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
- * @param {module:ol/color~Color} color Color.
+ * @param {import("../color.js").Color} color Color.
  * @return {string} Cache key.
  */
 function getKey(src, crossOrigin, color) {
