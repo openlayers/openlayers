@@ -82,7 +82,7 @@
     "puppeteer": "~1.14.0",
     "serve-static": "^1.13.2",
     "shx": "^0.3.2",
-    "sinon": "^7.2.7",
+    "sinon": "^7.3.1",
     "terser-webpack-plugin": "^1.2.3",
     "typescript": "^3.2.2",
     "url-polyfill": "^1.1.5",
