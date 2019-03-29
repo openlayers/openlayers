@@ -33,11 +33,11 @@ import TileImage from './TileImage.js';
  * @property {number|import("../size.js").Size} [tileSize] Tile size.
  * Same tile size is used for all zoom levels. If tile size is a number,
  * a square tile is assumed. If the IIIF image service supports arbitrary
- * tiling (sizeByH, sizeByW or sizeByPct as well as regionByPx and regionByPct
+ * tiling (sizeByH, sizeByW, sizeByWh or sizeByPct as well as regionByPx or regionByPct
  * are supported), the default tilesize is 256.
  * @property {number} [transition]
  * @property {string} [url] Base URL of the IIIF Image service.
- * This shoulf be the same as the IIIF Image @id.
+ * This should be the same as the IIIF Image @id.
  * @property {Versions} [version=Versions.VERSION2] Service's IIIF Image API version.
  * @property {number} [zDirection] Indicate which resolution should be used
  * by a renderer if the views resolution does not match any resolution of the tile source.
