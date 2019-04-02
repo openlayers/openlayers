@@ -238,7 +238,7 @@ class Heatmap extends VectorLayer {
           float sqRadius = texCoord.x * texCoord.x + texCoord.y * texCoord.y;
           float value = (1.0 - sqrt(sqRadius)) * u_blurSlope;
           float alpha = smoothstep(0.0, 1.0, value) * v_opacity;
-          gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
+          gl_FragColor = vec4(alpha, alpha, alpha, alpha);
         }`,
       uniforms: {
         u_size: function() {

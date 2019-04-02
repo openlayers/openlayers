@@ -110,8 +110,7 @@ const FRAGMENT_SHADER = `
  *
  * The following uniform is used for the main texture: `u_texture`.
  *
- * Please note that the main shader output should have premultiplied alpha, otherwise the colors will be blended
- * additively.
+ * Please note that the main shader output should have premultiplied alpha, otherwise visual anomalies may occur.
  *
  * Points are rendered as quads with the following structure:
  *

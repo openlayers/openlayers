@@ -28,7 +28,6 @@ const DEFAULT_FRAGMENT_SHADER = `
    
   void main() {
     gl_FragColor = texture2D(u_image, v_texCoord);
-    gl_FragColor.rgb *= gl_FragColor.a;
   }
 `;
 
@@ -58,6 +57,9 @@ const DEFAULT_FRAGMENT_SHADER = `
  * Please note that the final output on the DOM canvas is expected to have premultiplied alpha, which means that
  * a pixel which is 100% red with an opacity of 50% must have a color of (r=0.5, g=0, b=0, a=0.5).
  * Failing to provide pixel colors with premultiplied alpha will result in render anomalies.
+ *
+ * The default post-processing pass does *not* multiply color values with alpha value, it expects color values to be
+ * premultiplied.
  *
  * Default shaders are shown hereafter:
  *
@@ -91,7 +93,6 @@ const DEFAULT_FRAGMENT_SHADER = `
  *
  *   void main() {
  *     gl_FragColor = texture2D(u_image, v_texCoord);
- *     gl_FragColor.rgb *= gl_FragColor.a;
  *   }
  *   ```
  *
