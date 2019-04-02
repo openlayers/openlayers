@@ -23,8 +23,8 @@ import {getContext} from '../webgl';
 
 /**
  * @typedef {Object} BufferCacheEntry
- * @property {import("./Buffer.js").default} buf
- * @property {WebGLBuffer} buffer
+ * @property {import("./Buffer.js").default} buffer
+ * @property {WebGLBuffer} webGlBuffer
  */
 
 /**
@@ -153,14 +153,23 @@ export const DefaultAttrib = {
  * ### Binding WebGL buffers and flushing data into them:
  *
  *   Data that must be passed to the GPU has to be transferred using `WebGLArrayBuffer` objects.
- *   A buffer has to be created only once, but must be bound everytime the data it holds is changed. Using `WebGLHelper.bindBuffer`
- *   will bind the buffer and flush the new data to the GPU.
+ *   A buffer has to be created only once, but must be bound everytime the buffer content should be used for rendering.
+ *   This is done using `WebGLHelper.bindBuffer`.
+ *   When the buffer's array content has changed, the new data has to be flushed to the GPU memory; this is done using
+ *   `WebGLHelper.flushBufferData`. Note: this operation is expensive and should be done as infrequently as possible.
  *
- *   For now, the `WebGLHelper` class expects {@link module:ol/webgl/Buffer~WebGLArrayBuffer} objects.
+ *   When binding a `WebGLArrayBuffer`, a `target` parameter must be given: it should be either {@link module:ol/webgl~ARRAY_BUFFER}
+ *   (if the buffer contains vertices data) or {@link module:ol/webgl~ELEMENT_ARRAY_BUFFER} (if the buffer contains indices data).
+ *
+ *   Examples below:
  *   ```js
  *   // at initialization phase
  *   this.verticesBuffer = new WebGLArrayBuffer([], DYNAMIC_DRAW);
  *   this.indicesBuffer = new WebGLArrayBuffer([], DYNAMIC_DRAW);
+ *
+ *   // when array values have changed
+ *   this.context.flushBufferData(ARRAY_BUFFER, this.verticesBuffer);
+ *   this.context.flushBufferData(ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
  *
  *   // at rendering phase
  *   this.context.bindBuffer(ARRAY_BUFFER, this.verticesBuffer);
@@ -342,24 +351,35 @@ class WebGLHelper extends Disposable {
    * Just bind the buffer if it's in the cache. Otherwise create
    * the WebGL buffer, bind it, populate it, and add an entry to
    * the cache.
-   * TODO: improve this, the logic is unclear: we want A/ to bind a buffer and B/ to flush data in it
-   * @param {number} target Target.
-   * @param {import("./Buffer").default} buf Buffer.
+   * @param {number} target Target, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
+   * @param {import("./Buffer").default} buffer Buffer.
    * @api
    */
-  bindBuffer(target, buf) {
+  bindBuffer(target, buffer) {
     const gl = this.getGL();
-    const arr = buf.getArray();
-    const bufferKey = getUid(buf);
+    const bufferKey = getUid(buffer);
     let bufferCache = this.bufferCache_[bufferKey];
     if (!bufferCache) {
-      const buffer = gl.createBuffer();
+      const webGlBuffer = gl.createBuffer();
       bufferCache = this.bufferCache_[bufferKey] = {
-        buf: buf,
-        buffer: buffer
+        buffer: buffer,
+        webGlBuffer: webGlBuffer
       };
     }
-    gl.bindBuffer(target, bufferCache.buffer);
+    gl.bindBuffer(target, bufferCache.webGlBuffer);
+  }
+
+  /**
+   * Update the data contained in the buffer array; this is required for the
+   * new data to be rendered
+   * @param {number} target Target, either ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER.
+   * @param {import("./Buffer").default} buffer Buffer.
+   * @api
+   */
+  flushBufferData(target, buffer) {
+    const gl = this.getGL();
+    const arr = buffer.getArray();
+    this.bindBuffer(target, buffer);
     let /** @type {ArrayBufferView} */ arrayBuffer;
     if (target == ARRAY_BUFFER) {
       arrayBuffer = new Float32Array(arr);
@@ -367,7 +387,7 @@ class WebGLHelper extends Disposable {
       arrayBuffer = this.hasOESElementIndexUint ?
         new Uint32Array(arr) : new Uint16Array(arr);
     }
-    gl.bufferData(target, arrayBuffer, buf.getUsage());
+    gl.bufferData(target, arrayBuffer, buffer.getUsage());
   }
 
   /**

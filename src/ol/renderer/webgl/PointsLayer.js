@@ -323,6 +323,9 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
           baseIndex + 1, baseIndex + 2, baseIndex + 3
         );
       });
+
+      this.helper_.flushBufferData(ARRAY_BUFFER, this.verticesBuffer_);
+      this.helper_.flushBufferData(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
     }
 
     // write new data
