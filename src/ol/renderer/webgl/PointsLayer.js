@@ -110,8 +110,7 @@ const FRAGMENT_SHADER = `
  *
  * The following uniform is used for the main texture: `u_texture`.
  *
- * Please note that the main shader output should have premultiplied alpha, otherwise the colors will be blended
- * additively.
+ * Please note that the main shader output should have premultiplied alpha, otherwise visual anomalies may occur.
  *
  * Points are rendered as quads with the following structure:
  *
@@ -323,6 +322,9 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
           baseIndex + 1, baseIndex + 2, baseIndex + 3
         );
       });
+
+      this.helper_.flushBufferData(ARRAY_BUFFER, this.verticesBuffer_);
+      this.helper_.flushBufferData(ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
     }
 
     // write new data
