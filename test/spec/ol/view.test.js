@@ -1799,6 +1799,36 @@ describe('ol.View', function() {
       expect(view.getCenter()).to.eql([0, 100 - halfSize]);
     });
   });
+
+  describe('does not start unexpected animations during interaction', function() {
+    let map;
+    beforeEach(function() {
+      map = new Map({
+        target: createMapDiv(512, 256)
+      });
+    });
+    afterEach(function() {
+      disposeMap(map);
+    });
+
+    it.only('works with #setCenter() and #setZoom()', function(done) {
+      const view = map.getView();
+      let callCount = 0;
+      view.on('change:resolution', function() {
+        ++callCount;
+      });
+      view.setCenter([0, 0]);
+      view.setZoom(0);
+      view.animate({
+        center: [0, 1000000],
+        duration: 250
+      });
+      setTimeout(function() {
+        expect(callCount).to.be(1);
+        done();
+      }, 500);
+    });
+  });
 });
 
 describe('ol.View.isNoopAnimation()', function() {

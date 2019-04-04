@@ -378,7 +378,6 @@ class View extends BaseObject {
     } else if (options.zoom !== undefined) {
       this.setZoom(options.zoom);
     }
-    this.resolveConstraints(0);
 
     this.setProperties(properties);
 
@@ -1200,7 +1199,7 @@ class View extends BaseObject {
    */
   setCenter(center) {
     this.targetCenter_ = center;
-    this.applyTargetState_();
+    this.resolveConstraints(0);
   }
 
   /**
@@ -1222,7 +1221,7 @@ class View extends BaseObject {
    */
   setResolution(resolution) {
     this.targetResolution_ = resolution;
-    this.applyTargetState_();
+    this.resolveConstraints(0);
   }
 
   /**
@@ -1233,7 +1232,7 @@ class View extends BaseObject {
    */
   setRotation(rotation) {
     this.targetRotation_ = rotation;
-    this.applyTargetState_();
+    this.resolveConstraints(0);
   }
 
   /**
@@ -1292,8 +1291,11 @@ class View extends BaseObject {
 
     const newRotation = this.constraints_.rotation(this.targetRotation_);
     const size = this.getSizeFromViewport_(newRotation);
-    const newResolution = this.constraints_.resolution(this.targetResolution_, direction, size);
-    const newCenter = this.constraints_.center(this.targetCenter_, newResolution, size);
+    const newResolution = this.targetResolution_ === undefined ? undefined : this.constraints_.resolution(this.targetResolution_, direction, size);
+    let newCenter = this.targetCenter_;
+    if (newResolution !== undefined) {
+      newCenter = this.targetCenter_ === null ? null : this.constraints_.center(this.targetCenter_, newResolution, size);
+    }
 
     if (duration === 0) {
       this.targetResolution_ = newResolution;
