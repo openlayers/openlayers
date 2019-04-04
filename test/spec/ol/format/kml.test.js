@@ -1670,25 +1670,6 @@ describe('ol.format.KML', function() {
           expect(f.get('bar')).to.be(undefined);
         });
 
-        it('can read ExtendedData with displayName instead of name', function() {
-          const text =
-              '<kml xmlns="http://earth.google.com/kml/2.2">' +
-              '  <Placemark xmlns="http://earth.google.com/kml/2.2">' +
-              '    <ExtendedData>' +
-              '      <Data>' +
-              '        <displayName>foo</displayName>' +
-              '        <value>bar</value>' +
-              '      </Data>' +
-              '    </ExtendedData>' +
-              '  </Placemark>' +
-              '</kml>';
-          const fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          const f = fs[0];
-          expect(f).to.be.an(Feature);
-          expect(f.get('foo')).to.be('bar');
-        });
-
         it('can read SchemaData', function() {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
@@ -1709,7 +1690,7 @@ describe('ol.format.KML', function() {
           expect(f.get('population')).to.be('60000000');
         });
 
-        it('can read ExtendedData with displayName when name undefined', function() {
+        it('can read ExtendedData with displayName', function() {
           const text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
               '  <Placemark xmlns="http://earth.google.com/kml/2.2">' +
@@ -1730,7 +1711,10 @@ describe('ol.format.KML', function() {
           const f = fs[0];
           expect(f).to.be.an(Feature);
           expect(f.get('capital')).to.be('London');
-          expect(f.get('country')).to.be('United-Kingdom');
+          expect(f.get('country')).to.eql({
+            value: 'United-Kingdom',
+            displayName: 'Country'
+          });
         });
       });
 

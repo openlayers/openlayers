@@ -682,9 +682,9 @@ class KML extends XMLFeature {
       const localName = n.localName;
       if (includes(NAMESPACE_URIS, n.namespaceURI) &&
           (localName == 'Document' ||
-           localName == 'Folder' ||
-           localName == 'Placemark' ||
-           localName == 'kml')) {
+            localName == 'Folder' ||
+            localName == 'Placemark' ||
+            localName == 'kml')) {
         const name = this.readNameFromNode(n);
         if (name) {
           return name;
@@ -748,8 +748,8 @@ class KML extends XMLFeature {
       const localName = n.localName;
       if (includes(NAMESPACE_URIS, n.namespaceURI) &&
           (localName == 'Document' ||
-           localName == 'Folder' ||
-           localName == 'kml')) {
+            localName == 'Folder' ||
+            localName == 'kml')) {
         extend(networkLinks, this.readNetworkLinksFromNode(n));
       }
     }
@@ -811,8 +811,8 @@ class KML extends XMLFeature {
       const localName = n.localName;
       if (includes(NAMESPACE_URIS, n.namespaceURI) &&
           (localName == 'Document' ||
-           localName == 'Folder' ||
-           localName == 'kml')) {
+            localName == 'Folder' ||
+            localName == 'kml')) {
         extend(regions, this.readRegionFromNode(n));
       }
     }
@@ -1797,7 +1797,12 @@ function dataParser(node, objectStack) {
   const name = node.getAttribute('name');
   parseNode(DATA_PARSERS, node, objectStack);
   const featureObject = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  if (name !== null) {
+  if (name && featureObject.displayName) {
+    featureObject[name] = {
+      value: featureObject.value,
+      displayName: featureObject.displayName
+    };
+  } else if (name !== null) {
     featureObject[name] = featureObject.value;
   } else if (featureObject.displayName !== null) {
     featureObject[featureObject.displayName] = featureObject.value;
