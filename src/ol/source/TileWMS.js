@@ -8,7 +8,7 @@ import {assert} from '../asserts.js';
 import {buffer, createEmpty} from '../extent.js';
 import {assign} from '../obj.js';
 import {modulo} from '../math.js';
-import {get as getProjection, transform, transformExtent} from '../proj.js';
+import {get as getProjection, transform, transformExtent, METERS_PER_UNIT} from '../proj.js';
 import {calculateSourceResolution} from '../reproj.js';
 import {toSize, buffer as bufferSize, scale as scaleSize} from '../size.js';
 import TileImage from './TileImage.js';
@@ -209,6 +209,41 @@ class TileWMS extends TileImage {
 
     return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
       1, sourceProjectionObj || projectionObj, baseParams);
+  }
+
+  /**
+   * Return the GetLegendGraphic URL for the passed resolution.
+   * Return `undefined` if the GetLegendGraphic URL cannot be constructed.
+   * @param {number} resolution Resolution.
+   * @param {!Object} params GetLegendGraphic params. Default `FORMAT` is
+   *     `image/png`. `VERSION` should not be specified here.
+   * @return {string|undefined} GetLegendGraphic URL.
+   * @api
+   */
+  getGetLegendGraphicUrl(resolution, params) {
+    const layers = this.params_.LAYERS;
+    const isSingleLayer = !Array.isArray(layers) || this.params_['LAYERS'].length === 1;
+    if (this.urls[0] === undefined || !isSingleLayer) {
+      return undefined;
+    }
+
+    const units = this.getProjection() && this.getProjection().getUnits();
+    const dpi = 25.4 / 0.28;
+    const mpu = METERS_PER_UNIT[units || 'm'];
+    const inchesPerMeter = 39.37;
+    const scale = resolution * mpu * inchesPerMeter * dpi;
+
+    const baseParams = {
+      'SERVICE': 'WMS',
+      'VERSION': DEFAULT_WMS_VERSION,
+      'REQUEST': 'GetLegendGraphic',
+      'FORMAT': 'image/png',
+      'LAYER': this.params_['LAYERS'],
+      'SCALE': scale
+    };
+    assign(baseParams, params);
+
+    return appendParams(/** @type {string} */ (this.urls[0]), baseParams);
   }
 
   /**
