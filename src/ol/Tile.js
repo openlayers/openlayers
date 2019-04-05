@@ -170,6 +170,9 @@ class Tile extends EventTarget {
     // cleaned up by refreshInterimChain)
     do {
       if (tile.getState() == TileState.LOADED) {
+        // Show tile immediately instead of fading it in after loading, because
+        // the interim tile is in place already
+        this.transition_ = 0;
         return tile;
       }
       tile = tile.interimTile;
