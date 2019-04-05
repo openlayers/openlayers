@@ -457,6 +457,7 @@ class View extends BaseObject {
   }
 
   /**
+   * @private
    * @param {...(AnimationOptions|function(boolean): void)} var_args Animation options.
    */
   animate_(var_args) {
