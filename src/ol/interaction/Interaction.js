@@ -111,7 +111,7 @@ export function pan(view, delta, opt_duration) {
   const currentCenter = view.getCenter();
   if (currentCenter) {
     const center = [currentCenter[0] + delta[0], currentCenter[1] + delta[1]];
-    view.animate({
+    view.animate_({
       duration: opt_duration !== undefined ? opt_duration : 250,
       easing: linear,
       center: view.getConstrainedCenter(center)

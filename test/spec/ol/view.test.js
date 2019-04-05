@@ -1801,6 +1801,52 @@ describe('ol.View', function() {
   });
 });
 
+describe('does not start unexpected animations during interaction', function() {
+  let map;
+  beforeEach(function() {
+    map = new Map({
+      target: createMapDiv(512, 256)
+    });
+  });
+  afterEach(function() {
+    disposeMap(map);
+  });
+
+  it('works when initialized with #setCenter() and #setZoom()', function(done) {
+    const view = map.getView();
+    let callCount = 0;
+    view.on('change:resolution', function() {
+      ++callCount;
+    });
+    view.setCenter([0, 0]);
+    view.setZoom(0);
+    view.beginInteraction();
+    view.endInteraction();
+    setTimeout(function() {
+      expect(callCount).to.be(1);
+      done();
+    }, 500);
+  });
+
+  it('works when initialized with #animate()', function(done) {
+    const view = map.getView();
+    let callCount = 0;
+    view.on('change:resolution', function() {
+      ++callCount;
+    });
+    view.animate({
+      center: [0, 0],
+      zoom: 0
+    });
+    view.beginInteraction();
+    view.endInteraction();
+    setTimeout(function() {
+      expect(callCount).to.be(1);
+      done();
+    }, 500);
+  });
+});
+
 describe('ol.View.isNoopAnimation()', function() {
 
   const cases = [{
