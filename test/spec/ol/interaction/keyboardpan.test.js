@@ -24,7 +24,7 @@ describe('ol.interaction.KeyboardPan', function() {
   describe('handleEvent()', function() {
     it('pans on arrow keys', function() {
       const view = map.getView();
-      const spy = sinon.spy(view, 'animate');
+      const spy = sinon.spy(view, 'animate_');
       const event = new MapBrowserEvent('keydown', map, {
         type: 'keydown',
         target: map.getTargetElement(),
@@ -51,7 +51,7 @@ describe('ol.interaction.KeyboardPan', function() {
       expect(spy.getCall(3).args[0].center).to.eql([128, 0]);
       view.setCenter([0, 0]);
 
-      view.animate.restore();
+      view.animate_.restore();
     });
   });
 

@@ -284,8 +284,6 @@ class View extends BaseObject {
      */
     this.updateAnimationKey_;
 
-    this.updateAnimations_ = this.updateAnimations_.bind(this);
-
     /**
      * @private
      * @const
@@ -452,6 +450,16 @@ class View extends BaseObject {
    * @api
    */
   animate(var_args) {
+    if (this.isDef() && !this.getAnimating()) {
+      this.resolveConstraints(0);
+    }
+    this.animate_.apply(this, arguments);
+  }
+
+  /**
+   * @param {...(AnimationOptions|function(boolean): void)} var_args Animation options.
+   */
+  animate_(var_args) {
     let animationCount = arguments.length;
     let callback;
     if (animationCount > 1 && typeof arguments[animationCount - 1] === 'function') {
@@ -641,11 +649,7 @@ class View extends BaseObject {
     // prune completed series
     this.animations_ = this.animations_.filter(Boolean);
     if (more && this.updateAnimationKey_ === undefined) {
-      this.updateAnimationKey_ = requestAnimationFrame(this.updateAnimations_);
-    }
-
-    if (!this.getAnimating()) {
-      setTimeout(this.resolveConstraints.bind(this), 0);
+      this.updateAnimationKey_ = requestAnimationFrame(this.updateAnimations_.bind(this));
     }
   }
 
@@ -1085,7 +1089,7 @@ class View extends BaseObject {
     const callback = options.callback ? options.callback : VOID;
 
     if (options.duration !== undefined) {
-      this.animate({
+      this.animate_({
         resolution: resolution,
         center: this.getConstrainedCenter(center, resolution),
         duration: options.duration,
@@ -1312,7 +1316,7 @@ class View extends BaseObject {
         this.cancelAnimations();
       }
 
-      this.animate({
+      this.animate_({
         rotation: newRotation,
         center: newCenter,
         resolution: newResolution,
@@ -1330,9 +1334,9 @@ class View extends BaseObject {
    * @api
    */
   beginInteraction() {
-    this.setHint(ViewHint.INTERACTING, 1);
-
     this.resolveConstraints(0);
+
+    this.setHint(ViewHint.INTERACTING, 1);
   }
 
   /**

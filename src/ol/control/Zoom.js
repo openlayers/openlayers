@@ -114,7 +114,6 @@ class Zoom extends Control {
       // upon it
       return;
     }
-    view.resolveConstraints(0);
     const currentZoom = view.getZoom();
     if (currentZoom !== undefined) {
       const newZoom = view.getConstrainedZoom(currentZoom + delta);
