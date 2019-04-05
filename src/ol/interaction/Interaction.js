@@ -135,6 +135,7 @@ export function zoomByDelta(view, delta, opt_anchor, opt_duration) {
   const newZoom = view.getConstrainedZoom(currentZoom + delta);
   const newResolution = view.getResolutionForZoom(newZoom);
 
+  view.resolveConstraints(0);
   if (view.getAnimating()) {
     view.cancelAnimations();
   }

@@ -1325,10 +1325,14 @@ class View extends BaseObject {
 
   /**
    * Notify the View that an interaction has started.
+   * The view state will be resolved to a stable one if needed
+   * (depending on its constraints).
    * @api
    */
   beginInteraction() {
     this.setHint(ViewHint.INTERACTING, 1);
+
+    this.resolveConstraints(0);
   }
 
   /**
