@@ -156,41 +156,35 @@ class RBush {
    * Calls a callback function with each value in the tree.
    * If the callback returns a truthy value, this value is returned without
    * checking the rest of the tree.
-   * @param {function(this: S, T): *} callback Callback.
-   * @param {S=} opt_this The object to use as `this` in `callback`.
+   * @param {function(T): *} callback Callback.
    * @return {*} Callback return value.
-   * @template S
    */
-  forEach(callback, opt_this) {
-    return this.forEach_(this.getAll(), callback, opt_this);
+  forEach(callback) {
+    return this.forEach_(this.getAll(), callback);
   }
 
 
   /**
    * Calls a callback function with each value in the provided extent.
    * @param {import("../extent.js").Extent} extent Extent.
-   * @param {function(this: S, T): *} callback Callback.
-   * @param {S=} opt_this The object to use as `this` in `callback`.
+   * @param {function(T): *} callback Callback.
    * @return {*} Callback return value.
-   * @template S
    */
-  forEachInExtent(extent, callback, opt_this) {
-    return this.forEach_(this.getInExtent(extent), callback, opt_this);
+  forEachInExtent(extent, callback) {
+    return this.forEach_(this.getInExtent(extent), callback);
   }
 
 
   /**
    * @param {Array<T>} values Values.
-   * @param {function(this: S, T): *} callback Callback.
-   * @param {S=} opt_this The object to use as `this` in `callback`.
+   * @param {function(T): *} callback Callback.
    * @private
    * @return {*} Callback return value.
-   * @template S
    */
-  forEach_(values, callback, opt_this) {
+  forEach_(values, callback) {
     let result;
     for (let i = 0, l = values.length; i < l; i++) {
-      result = callback.call(opt_this, values[i]);
+      result = callback(values[i]);
       if (result) {
         return result;
       }

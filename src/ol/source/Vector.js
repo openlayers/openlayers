@@ -485,7 +485,7 @@ class VectorSource extends Source {
       }
     } else {
       if (this.featuresRtree_) {
-        this.featuresRtree_.forEach(this.removeFeatureInternal, this);
+        this.featuresRtree_.forEach(this.removeFeatureInternal.bind(this));
         for (const id in this.nullGeometryFeatures_) {
           this.removeFeatureInternal(this.nullGeometryFeatures_[id]);
         }

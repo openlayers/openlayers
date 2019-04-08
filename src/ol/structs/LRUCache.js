@@ -96,17 +96,15 @@ class LRUCache extends EventTarget {
 
 
   /**
-   * @param {function(this: S, T, string, LRUCache): ?} f The function
+   * @param {function(T, string, LRUCache): ?} f The function
    *     to call for every entry from the oldest to the newer. This function takes
    *     3 arguments (the entry value, the entry key and the LRUCache object).
    *     The return value is ignored.
-   * @param {S=} opt_this The object to use as `this` in `f`.
-   * @template S
    */
-  forEach(f, opt_this) {
+  forEach(f) {
     let entry = this.oldest_;
     while (entry) {
-      f.call(opt_this, entry.value_, entry.key_, this);
+      f(entry.value_, entry.key_, this);
       entry = entry.newer;
     }
   }
