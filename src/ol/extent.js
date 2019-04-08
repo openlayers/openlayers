@@ -400,26 +400,25 @@ export function extendXY(extent, x, y) {
  * callback returns a truthy value the function returns that value
  * immediately. Otherwise the function returns `false`.
  * @param {Extent} extent Extent.
- * @param {function(this:T, import("./coordinate.js").Coordinate): S} callback Callback.
- * @param {T=} opt_this Value to use as `this` when executing `callback`.
+ * @param {function(import("./coordinate.js").Coordinate): S} callback Callback.
  * @return {S|boolean} Value.
- * @template S, T
+ * @template S
  */
-export function forEachCorner(extent, callback, opt_this) {
+export function forEachCorner(extent, callback) {
   let val;
-  val = callback.call(opt_this, getBottomLeft(extent));
+  val = callback(getBottomLeft(extent));
   if (val) {
     return val;
   }
-  val = callback.call(opt_this, getBottomRight(extent));
+  val = callback(getBottomRight(extent));
   if (val) {
     return val;
   }
-  val = callback.call(opt_this, getTopRight(extent));
+  val = callback(getTopRight(extent));
   if (val) {
     return val;
   }
-  val = callback.call(opt_this, getTopLeft(extent));
+  val = callback(getTopLeft(extent));
   if (val) {
     return val;
   }

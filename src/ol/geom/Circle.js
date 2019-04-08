@@ -143,7 +143,7 @@ class Circle extends SimpleGeometry {
         return true;
       }
 
-      return forEachCorner(extent, this.intersectsCoordinate, this);
+      return forEachCorner(extent, this.intersectsCoordinate.bind(this));
     }
     return false;
 
