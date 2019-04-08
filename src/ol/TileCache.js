@@ -44,7 +44,7 @@ class TileCache extends LRUCache {
         this.remove(getKey(tile.tileCoord));
         tile.dispose();
       }
-    }, this);
+    }.bind(this));
   }
 }
 
