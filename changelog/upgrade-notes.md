@@ -4,6 +4,16 @@
 
 #### Backwards incompatible changes
 
+#### Removal of optional this arguments
+
+The optional this (i.e. opt_this) arguments were removed from the following methods.
+Please use closures, the es6 arrow function or the bind method to achieve this effect (Bind is explained here:
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
+
+* `forEachCorner` in `ol/extent`
+* `LRUCache#forEach`
+* `RBush#forEach` and `RBush#forEachInExtent`
+
 ##### The `setCenter`, `setZoom`, `setResolution` and `setRotation` methods on `ol/View` do not bypass constraints anymore
 
 Previously, these methods allowed setting values that were inconsistent with the given view constraints.
