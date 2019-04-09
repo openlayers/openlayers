@@ -9,13 +9,6 @@ import {clamp} from '../math.js';
 
 
 /**
- * Maximum mouse wheel delta.
- * @type {number}
- */
-const MAX_DELTA = 1;
-
-
-/**
  * @enum {string}
  */
 export const Mode = {
@@ -30,6 +23,7 @@ export const Mode = {
  * takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. Default is
  * {@link module:ol/events/condition~always}.
+ * @property {number} [maxDelta=1] Maximum mouse wheel delta.
  * @property {number} [duration=250] Animation duration in milliseconds.
  * @property {number} [timeout=80] Mouse wheel timeout duration in milliseconds.
  * @property {boolean} [useAnchor=true] Enable zooming using the mouse's
@@ -64,6 +58,12 @@ class MouseWheelZoom extends Interaction {
      * @type {number}
      */
     this.lastDelta_ = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.maxDelta_ = options.maxDelta !== undefined ? options.maxDelta : 1;
 
     /**
      * @private
@@ -235,8 +235,7 @@ class MouseWheelZoom extends Interaction {
     if (view.getAnimating()) {
       view.cancelAnimations();
     }
-    const maxDelta = MAX_DELTA;
-    const delta = clamp(this.totalDelta_, -maxDelta, maxDelta);
+    const delta = clamp(this.totalDelta_, -this.maxDelta_, this.maxDelta_);
     zoomByDelta(view, -delta, this.lastAnchor_, this.duration_);
     this.mode_ = undefined;
     this.totalDelta_ = 0;
