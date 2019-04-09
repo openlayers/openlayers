@@ -90,7 +90,7 @@
     "webpack": "4.29.6",
     "webpack-cli": "^3.3.0",
     "webpack-dev-middleware": "^3.6.2",
-    "webpack-dev-server": "^3.2.1",
+    "webpack-dev-server": "^3.3.1",
     "yargs": "^13.2.2"
   },
   "eslintConfig": {
