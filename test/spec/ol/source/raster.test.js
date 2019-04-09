@@ -402,7 +402,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       map2.once('moveend', function() {
         expect(tileCache.getCount()).to.equal(1);
         const state = tileCache.peekLast().getState();
-        expect(state === TileState.LOADED || state === TileState.LOADED).to.be(true);
+        expect(state === TileState.LOADING || state === TileState.LOADED).to.be(true);
         done();
       });
 
