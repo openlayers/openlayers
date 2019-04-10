@@ -62,7 +62,7 @@
     "globby": "^9.1.0",
     "handlebars": "4.1.1",
     "istanbul": "0.4.5",
-    "jquery": "3.3.1",
+    "jquery": "3.4.0",
     "jsdoc": "3.5.5",
     "jsdoc-plugin-typescript": "^1.0.7",
     "karma": "^4.0.1",
