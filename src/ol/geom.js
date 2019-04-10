@@ -4,6 +4,7 @@
 
 export {default as Circle} from './geom/Circle.js';
 export {default as Geometry} from './geom/Geometry.js';
+export {default as GeometryCollection} from './geom/GeometryCollection.js';
 export {default as LineString} from './geom/LineString.js';
 export {default as MultiLineString} from './geom/MultiLineString.js';
 export {default as MultiPoint} from './geom/MultiPoint.js';
