@@ -16,7 +16,7 @@ const layer = new TileLayer(),
 function refreshMap(imageInfoUrl) {
   fetch(imageInfoUrl).then(function(response) {
     response.json().then(function(imageInfo) {
-      const options = new IIIFInfo().readFromJson(imageInfo);
+      const options = new IIIFInfo().readOptionsFromJson(imageInfo);
       if (options === undefined || options.version === undefined) {
         notifyDiv.textContent = 'Data seems to be no valid IIIF image information.';
         return;

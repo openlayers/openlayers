@@ -278,7 +278,7 @@ class IIIFInfo {
    * @param {PreferredOptions} opt_preferredOptions Optional options for preferred format and quality.
    * @returns {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
    */
-  readFromJson(imageInfo, opt_preferredOptions) {
+  readOptionsFromJson(imageInfo, opt_preferredOptions) {
     return getOptionsForImageInformation(imageInfo, opt_preferredOptions);
   }
 
@@ -287,7 +287,7 @@ class IIIFInfo {
    * @param {PreferredOptions} opt_preferredOptions Optional options for preferred format and quality.
    * @returns {import("../source/IIIF.js").Options} IIIF tile source ready constructor options.
    */
-  readFromJsonString(imageInfo, opt_preferredOptions) {
+  readOptionsFromJsonString(imageInfo, opt_preferredOptions) {
     return getOptionsForImageInformation(JSON.parse(imageInfo), opt_preferredOptions);
   }
 
