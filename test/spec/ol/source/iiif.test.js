@@ -203,7 +203,7 @@ describe('ol.source.IIIF', function() {
 
     });
 
-    it('cannot provide scaled tiles sizes without provieded tilesize or supported features', function() {
+    it('cannot provide scaled tiles without provided tilesize or supported features', function() {
 
       const tileUrlFunction = getSource({
         resolutions: [16, 8, 4, 2, 1]
