@@ -234,7 +234,8 @@ class CanvasTileLayerRenderer extends IntermediateCanvasRenderer {
           canvas.width = width;
           canvas.height = height;
         } else {
-          if (this.renderedExtent_ && !equals(imageExtent, this.renderedExtent_)) {
+          if ((this.renderedExtent_ && !equals(imageExtent, this.renderedExtent_)) ||
+              this.renderedRevision != sourceRevision) {
             context.clearRect(0, 0, width, height);
           }
           oversampling = this.oversampling_;
