@@ -5,7 +5,7 @@ import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
 import GeometryType from './GeometryType.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {deflateCoordinate} from './flat/deflate.js';
-import {rotate} from './flat/transform.js';
+import {rotate, translate} from './flat/transform.js';
 
 
 /**
@@ -223,6 +223,17 @@ class Circle extends SimpleGeometry {
     const center = this.getCenter();
     const stride = this.getStride();
     this.setCenter(rotate(center, 0, center.length, stride, angle, anchor, center));
+    this.changed();
+  }
+
+  /**
+   * @inheritDoc
+   * @api
+   */
+  translate(deltaX, deltaY) {
+    const center = this.getCenter();
+    const stride = this.getStride();
+    this.setCenter(translate(center, 0, center.length, stride, deltaX, deltaY, center));
     this.changed();
   }
 

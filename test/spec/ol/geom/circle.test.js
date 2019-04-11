@@ -281,6 +281,16 @@ describe('ol.geom.Circle', function() {
         expect(circle.getExtent()).to.eql(extent);
       });
     });
+
+    describe('#translate', function() {
+
+      it('translates the circle', function() {
+        circle.setCenter([1, 1]);
+        circle.translate(5, 10);
+        expect(circle.getCenter()).to.eql([6, 11]);
+        expect(circle.getExtent()).to.eql([5, 10, 7, 12]);
+      });
+    });
   });
 
 });
