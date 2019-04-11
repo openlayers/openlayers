@@ -26,6 +26,20 @@ export default {
    * @event module:ol/MapEvent~MapEvent#moveend
    * @api
    */
-  MOVEEND: 'moveend'
+  MOVEEND: 'moveend',
+
+  /**
+   * Triggered after the map entered fullscreen.
+   * @event module:ol/MapEvent~MapEvent#enterfullscreen
+   * @api
+   */
+  ENTERFULLSCREEN: 'enterfullscreen',
+
+  /**
+   * Triggered after the map leave fullscreen.
+   * @event module:ol/MapEvent~MapEvent#leavefullscreen
+   * @api
+   */
+  LEAVEFULLSCREEN: 'leavefullscreen'
 
 };

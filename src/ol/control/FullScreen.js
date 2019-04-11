@@ -6,6 +6,7 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_UNSUPPORTED} from '../css.js';
 import {replaceNode} from '../dom.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
+import MapEventType from '../MapEventType.js';
 
 const events = ['fullscreenchange', 'webkitfullscreenchange', 'MSFullscreenChange'];
 
@@ -37,6 +38,8 @@ const events = ['fullscreenchange', 'webkitfullscreenchange', 'MSFullscreenChang
  * When in full screen mode, a close button is shown to exit full screen mode.
  * The [Fullscreen API](http://www.w3.org/TR/fullscreen/) is used to
  * toggle the map in full screen mode.
+ *
+ * Map dispatches [enterfullscreen](module-ol_MapEvent-MapEvent.html#event:enterfullscreen), [leavefullscreen](module-ol_MapEvent-MapEvent.html#event:leavefullscreen) events to subscribers.
  *
  * @api
  */
@@ -163,9 +166,11 @@ class FullScreen extends Control {
     if (isFullScreen()) {
       this.setClassName_(this.button_, true);
       replaceNode(this.labelActiveNode_, this.labelNode_);
+      this.map_.dispatchEvent(MapEventType.ENTERFULLSCREEN);
     } else {
       this.setClassName_(this.button_, false);
       replaceNode(this.labelNode_, this.labelActiveNode_);
+      this.map_.dispatchEvent(MapEventType.LEAVEFULLSCREEN);
     }
     if (map) {
       map.updateSize();
