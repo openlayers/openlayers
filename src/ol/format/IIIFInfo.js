@@ -83,9 +83,11 @@ const IIIF_PROFILE_VALUES = {
     }
   },
   none: {
-    supports: [],
-    formats: [],
-    qualities: []
+    none: {
+      supports: [],
+      formats: [],
+      qualities: []
+    }
   }
 };
 
@@ -306,7 +308,7 @@ class IIIFInfo {
       return undefined;
     }
     const level = complianceLevel.match(/level[0-2](\.json)?$/g);
-    return Array.isArray(level) ? level[0].replace('.json', '') : 'none';
+    return Array.isArray(level) ? level[0].replace('.json', '') : undefined;
   }
 
   /**
@@ -320,7 +322,7 @@ class IIIFInfo {
     const version = this.getImageApiVersion();
     const level = this.getComplianceLevelFromProfile(version);
     if (level === undefined) {
-      return IIIF_PROFILE_VALUES.none;
+      return IIIF_PROFILE_VALUES.none.none;
     }
     return IIIF_PROFILE_VALUES[version][level];
   }
