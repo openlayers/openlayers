@@ -324,7 +324,7 @@ describe('ol.format.IIIFInfo', function() {
         '@id': 'http://iiif.test/id',
         profile: ['http://iiif.io/api/image/2/level1.json', {
           supports: ['regionByPct', 'sizeByWh']
-        }],
+        }]
       });
 
       let options = iiifInfo.getTileSourceOptions();
@@ -412,11 +412,11 @@ describe('ol.format.IIIFInfo', function() {
         '@id': 'http://iiif.test/id',
         profile: 'http://iiif.io/api/image/2/level0.json',
         tiles: [{
-          scaleFactors: [1,2,4],
+          scaleFactors: [1, 2, 4],
           width: 512
         },
         {
-          scaleFactors: [1,2,4,8,16],
+          scaleFactors: [1, 2, 4, 8, 16],
           width: 256
         }]
       });
@@ -434,7 +434,7 @@ describe('ol.format.IIIFInfo', function() {
         '@id': 'http://iiif.test/id',
         profile: 'http://iiif.io/api/image/2/level0.json',
         tiles: [{
-          scaleFactors: [1,2,4],
+          scaleFactors: [1, 2, 4],
           width: 512,
           height: 1024
         }]
@@ -470,7 +470,7 @@ describe('ol.format.IIIFInfo', function() {
         height: 250
       }]
     });
-    let options = iiifInfo.getTileSourceOptions();
+    const options = iiifInfo.getTileSourceOptions();
     expect(options.sizes).to.have.length(3);
     expect(options.sizes[0]).to.have.length(2);
     expect(options.sizes[0][0]).to.be(2000);
