@@ -102,6 +102,108 @@ const COMPLIANCE_VERSION1 = new RegExp('^https?\:\/\/library\.stanford\.edu\/iii
 const COMPLIANCE_VERSION2 = new RegExp('^https?\:\/\/iiif\.io\/api\/image\/2\/level[0-2](\.json)?$');
 const COMPLIANCE_VERSION3 = new RegExp('(^https?\:\/\/iiif\.io\/api\/image\/3\/level[0-2](\.json)?$)|(^level[0-2]$)');
 
+function generateVersion1Options(iiifInfo) {
+  let levelProfile = iiifInfo.getComplianceLevelSupportedFeatures();
+  // Version 1.0 and 1.1 do not require a profile.
+  if (levelProfile === undefined) {
+    levelProfile = IIIF_PROFILE_VALUES.version1.level0;
+  }
+  return {
+    url: iiifInfo.imageInfo['@id'] === undefined ? undefined : iiifInfo.imageInfo['@id'].replace(/\/?(info.json)?$/g, ''),
+    supports: levelProfile.supports,
+    formats: [...levelProfile.formats, iiifInfo.imageInfo.formats === undefined ?
+      [] : iiifInfo.imageInfo.formats
+    ],
+    qualities: [...levelProfile.qualities, iiifInfo.imageInfo.qualities === undefined ?
+      [] : iiifInfo.imageInfo.qualities
+    ],
+    resolutions: iiifInfo.imageInfo.scale_factors,
+    tileSize: iiifInfo.imageInfo.tile_width !== undefined ? (iiifInfo.imageInfo.tile_height !== undefined ?
+      [iiifInfo.imageInfo.tile_width, iiifInfo.imageInfo.tile_height] : [iiifInfo.imageInfo.tile_width, iiifInfo.imageInfo.tile_width]) :
+      (iiifInfo.imageInfo.tile_height != undefined ? [iiifInfo.imageInfo.tile_height, iiifInfo.imageInfo.tile_height] : undefined)
+  };
+}
+
+function generateVersion2Options(iiifInfo) {
+  const levelProfile = iiifInfo.getComplianceLevelSupportedFeatures(),
+      additionalProfile = Array.isArray(iiifInfo.imageInfo.profile) && iiifInfo.imageInfo.profile.length > 1,
+      profileSupports = additionalProfile && iiifInfo.imageInfo.profile[1].supports ? iiifInfo.imageInfo.profile[1].supports : [],
+      profileFormats = additionalProfile && iiifInfo.imageInfo.profile[1].formats ? iiifInfo.imageInfo.profile[1].formats : [],
+      profileQualities = additionalProfile && iiifInfo.imageInfo.profile[1].qualities ? iiifInfo.imageInfo.profile[1].qualities : [],
+      attributions = [];
+  if (iiifInfo.imageInfo.attribution !== undefined) {
+    // TODO potentially dangerous
+    attributions.push(iiifInfo.imageInfo.attribution);
+  }
+  if (iiifInfo.imageInfo.license !== undefined) {
+    let license = iiifInfo.imageInfo.license;
+    if (license.match(/^http(s)?:\/\//g)) {
+      license = '<a href="' + encodeURI(license) + '"/>' + encodeURI(license) + '</a>';
+    }
+    // TODO potentially dangerous
+    attributions.push(license);
+  }
+  return {
+    url: iiifInfo.imageInfo['@id'].replace(/\/?(info.json)?$/g, ''),
+    sizes: iiifInfo.imageInfo.sizes === undefined ? undefined : iiifInfo.imageInfo.sizes.map(function(size) {
+      return [size.width, size.height];
+    }),
+    tileSize: iiifInfo.imageInfo.tiles === undefined ? undefined : [
+      iiifInfo.imageInfo.tiles.map(function(tile) {
+        return tile.width;
+      })[0],
+      iiifInfo.imageInfo.tiles.map(function(tile) {
+        return tile.height === undefined ? tile.width : tile.height;
+      })[0]
+    ],
+    resolutions: iiifInfo.imageInfo.tiles === undefined ? undefined :
+      iiifInfo.imageInfo.tiles.map(function(tile) {
+        return tile.scaleFactors;
+      })[0],
+    supports: [...levelProfile.supports, ...profileSupports],
+    formats: [...levelProfile.formats, ...profileFormats],
+    qualities: [...levelProfile.qualities, ...profileQualities],
+    attributions: attributions.length == 0 ? undefined : attributions
+  };
+}
+
+function generateVersion3Options(iiifInfo) {
+  const levelProfile = iiifInfo.getComplianceLevelSupportedFeatures();
+  return {
+    url: iiifInfo.imageInfo['id'],
+    sizes: iiifInfo.imageInfo.sizes === undefined ? undefined : iiifInfo.imageInfo.sizes.map(function(size) {
+      return [size.width, size.height];
+    }),
+    tileSize: iiifInfo.imageInfo.tiles === undefined ? undefined : [
+      iiifInfo.imageInfo.tiles.map(function(tile) {
+        return tile.width;
+      })[0],
+      iiifInfo.imageInfo.tiles.map(function(tile) {
+        return tile.height;
+      })[0]
+    ],
+    resolutions: iiifInfo.imageInfo.tiles === undefined ? undefined :
+      iiifInfo.imageInfo.tiles.map(function(tile) {
+        return tile.scaleFactors;
+      })[0],
+    supports: iiifInfo.imageInfo.extraFeatures === undefined ? levelProfile.supports :
+      [...levelProfile.supports, ...iiifInfo.imageInfo.extraFeatures],
+    formats: iiifInfo.imageInfo.extraFormats === undefined ? levelProfile.formats :
+      [...levelProfile.formats, ...iiifInfo.imageInfo.extraFormats],
+    qualities: iiifInfo.imageInfo.extraQualities === undefined ? levelProfile.qualities :
+      [...levelProfile.extraQualities, ...iiifInfo.imageInfo.extraQualities],
+    maxWidth: undefined,
+    maxHeight: undefined,
+    maxArea: undefined,
+    attributions: undefined
+  };
+}
+
+const versionFunctions = {};
+versionFunctions[Versions.VERSION1] = generateVersion1Options;
+versionFunctions[Versions.VERSION2] = generateVersion2Options;
+versionFunctions[Versions.VERSION3] = generateVersion3Options;
+
 /**
  * @classdesc
  * Format for transforming IIIF Image API image information responses into
@@ -117,10 +219,6 @@ class IIIFInfo {
    */
   constructor(imageInfo) {
     this.setImageInfo(imageInfo);
-    this.versionFunctions = {};
-    this.versionFunctions[Versions.VERSION1] = this.generateVersion1Options.bind(this);
-    this.versionFunctions[Versions.VERSION2] = this.generateVersion2Options.bind(this);
-    this.versionFunctions[Versions.VERSION3] = this.generateVersion3Options.bind(this);
   }
 
   /**
@@ -237,7 +335,7 @@ class IIIFInfo {
     if (version === undefined) {
       return;
     }
-    const imageOptions = version === undefined ? undefined : this.versionFunctions[version]();
+    const imageOptions = version === undefined ? undefined : versionFunctions[version](this);
     if (imageOptions === undefined) {
       return;
     }
@@ -255,116 +353,6 @@ class IIIFInfo {
       }) : undefined,
       tileSize: imageOptions.tileSize,
       attributions: imageOptions.attributions
-    };
-  }
-
-  /**
-   * @private
-   * @returns {object} Available options
-   */
-  generateVersion1Options() {
-    let levelProfile = this.getComplianceLevelSupportedFeatures();
-    // Version 1.0 and 1.1 do not require a profile.
-    if (levelProfile === undefined) {
-      levelProfile = IIIF_PROFILE_VALUES.version1.level0;
-    }
-    return {
-      url: this.imageInfo['@id'] === undefined ? undefined : this.imageInfo['@id'].replace(/\/?(info.json)?$/g, ''),
-      supports: levelProfile.supports,
-      formats: [...levelProfile.formats, this.imageInfo.formats === undefined ?
-        [] : this.imageInfo.formats
-      ],
-      qualities: [...levelProfile.qualities, this.imageInfo.qualities === undefined ?
-        [] : this.imageInfo.qualities
-      ],
-      resolutions: this.imageInfo.scale_factors,
-      tileSize: this.imageInfo.tile_width !== undefined ? this.imageInfo.tile_height != undefined ?
-        [this.imageInfo.tile_width, this.imageInfo.tile_height] : [this.imageInfo.tile_width, this.imageInfo.tile_width] :
-        this.imageInfo.tile_height != undefined ? [this.imageInfo.tile_height, this.imageInfo.tile_height] : undefined
-    };
-  }
-
-  /**
-   * @private
-   * @returns {object} Available options
-   */
-  generateVersion2Options() {
-    const levelProfile = this.getComplianceLevelSupportedFeatures(),
-        additionalProfile = Array.isArray(this.imageInfo.profile) && this.imageInfo.profile.length > 1,
-        profileSupports = additionalProfile && this.imageInfo.profile[1].supports ? this.imageInfo.profile[1].supports : [],
-        profileFormats = additionalProfile && this.imageInfo.profile[1].formats ? this.imageInfo.profile[1].formats : [],
-        profileQualities = additionalProfile && this.imageInfo.profile[1].qualities ? this.imageInfo.profile[1].qualities : [],
-        attributions = [];
-    if (this.imageInfo.attribution !== undefined) {
-      // TODO potentially dangerous
-      attributions.push(this.imageInfo.attribution);
-    }
-    if (this.imageInfo.license !== undefined) {
-      let license = this.imageInfo.license;
-      if (license.match(/^http(s)?:\/\//g)) {
-        license = '<a href="' + encodeURI(license) + '"/>' + encodeURI(license) + '</a>';
-      }
-      // TODO potentially dangerous
-      attributions.push(license);
-    }
-    return {
-      url: this.imageInfo['@id'].replace(/\/?(info.json)?$/g, ''),
-      sizes: this.imageInfo.sizes === undefined ? undefined : this.imageInfo.sizes.map(function(size) {
-        return [size.width, size.height];
-      }),
-      tileSize: this.imageInfo.tiles === undefined ? undefined : [
-        this.imageInfo.tiles.map(function(tile) {
-          return tile.width;
-        })[0],
-        this.imageInfo.tiles.map(function(tile) {
-          return tile.height;
-        })[0]
-      ],
-      resolutions: this.imageInfo.tiles === undefined ? undefined :
-        this.imageInfo.tiles.map(function(tile) {
-          return tile.scaleFactors;
-        })[0],
-      supports: [...levelProfile.supports, ...profileSupports],
-      formats: [...levelProfile.formats, ...profileFormats],
-      qualities: [...levelProfile.qualities, ...profileQualities],
-      attributions: attributions.length == 0 ? undefined : attributions
-    };
-  }
-
-  /**
-   * @ignore
-   * @private
-   * @returns {object} Available options
-   */
-  generateVersion3Options() {
-    const levelProfile = this.getComplianceLevelSupportedFeatures();
-    return {
-      url: this.imageInfo['id'],
-      sizes: this.imageInfo.sizes === undefined ? undefined : this.imageInfo.sizes.map(function(size) {
-        return [size.width, size.height];
-      }),
-      tileSize: this.imageInfo.tiles === undefined ? undefined : [
-        this.imageInfo.tiles.map(function(tile) {
-          return tile.width;
-        })[0],
-        this.imageInfo.tiles.map(function(tile) {
-          return tile.height;
-        })[0]
-      ],
-      resolutions: this.imageInfo.tiles === undefined ? undefined :
-        this.imageInfo.tiles.map(function(tile) {
-          return tile.scaleFactors;
-        })[0],
-      supports: this.imageInfo.extraFeatures === undefined ? levelProfile.supports :
-        [...levelProfile.supports, ...this.imageInfo.extraFeatures],
-      formats: this.imageInfo.extraFormats === undefined ? levelProfile.formats :
-        [...levelProfile.formats, ...this.imageInfo.extraFormats],
-      qualities: this.imageInfo.extraQualities === undefined ? levelProfile.qualities :
-        [...levelProfile.extraQualities, ...this.imageInfo.extraQualities],
-      maxWidth: undefined,
-      maxHeight: undefined,
-      maxArea: undefined,
-      attributions: undefined
     };
   }
 
