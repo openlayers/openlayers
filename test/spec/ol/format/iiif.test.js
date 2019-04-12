@@ -1,37 +1,9 @@
 import IIIFInfo from '../../../../src/ol/format/IIIFInfo.js';
 import {Versions} from '../../../../src/ol/format/IIIFInfo.js';
 
-describe('ol.format.IIIF', function() {
+describe('ol.format.IIIFInfo', function() {
 
-  const iiifInfo = new IIIFInfo(),
-      imageInfoVersion1_0Level0 = {
-        identifier: 'identifier-version-1.0',
-        width: 2000,
-        height: 1500,
-        profile: 'http://library.stanford.edu/iiif/image-api/compliance.html#level0'
-      },
-      imageInfoVersion2Level1 = {
-        '@context': 'http://iiif.io/api/image/2/context.json',
-        '@id': 'http://iiif.test/version2/id',
-        width: 2000,
-        height: 1500,
-        profile: [
-          'http://iiif.io/api/image/2/level1.json'
-        ]
-      },
-      imageInfoVersion2Level2 = {
-        '@context': 'http://iiif.io/api/image/2/context.json',
-        '@id': 'http://iiif.test/version2/id',
-        width: 2000,
-        height: 1500,
-        profile: [
-          'http://iiif.io/api/image/2/level2.json'
-        ]
-      };
-
-  describe('constructor', function() {
-
-  });
+  const iiifInfo = new IIIFInfo();
 
   describe('setImageInfo', function() {
 
@@ -62,8 +34,8 @@ describe('ol.format.IIIF', function() {
       }).to.throwException();
 
       iiifInfo.setImageInfo({
-        'identifier': 'http://iiif.test/id',
-        'profile': 'this is no valid profile'
+        identifier: 'http://iiif.test/id',
+        profile: 'this is no valid profile'
       });
       expect(function() {
         iiifInfo.getImageApiVersion();
@@ -78,7 +50,7 @@ describe('ol.format.IIIF', function() {
       }).to.throwException();
 
       iiifInfo.setImageInfo({
-        'identifier': 'http://iiif.test/id',
+        identifier: 'http://iiif.test/id',
         profile: 'http://library.stanford.edu/iiif/image-api/compliance.html#level0'
       });
       expect(iiifInfo.getImageApiVersion()).to.be(Versions.VERSION1);
@@ -91,7 +63,7 @@ describe('ol.format.IIIF', function() {
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/1/context.json',
-        'identifier': 'http://iiif.test/id'
+        identifier: 'http://iiif.test/id'
       });
       expect(iiifInfo.getImageApiVersion()).to.be(Versions.VERSION1);
 
@@ -103,7 +75,7 @@ describe('ol.format.IIIF', function() {
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
-        'id': 'http://iiif.test/id'
+        id: 'http://iiif.test/id'
       });
       expect(iiifInfo.getImageApiVersion()).to.be(Versions.VERSION3);
 
@@ -117,61 +89,61 @@ describe('ol.format.IIIF', function() {
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
-        'profile': 'level0'
+        profile: 'level0'
       });
       expect(iiifInfo.getComplianceLevelFromProfile()).to.be(undefined);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
-        'profile': 'http://iiif.io/api/image/level3.json'
+        profile: 'http://iiif.io/api/image/level3.json'
       });
       expect(iiifInfo.getComplianceLevelFromProfile()).to.be(undefined);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
-        'profile': 'level1'
+        profile: 'level1'
       });
       expect(iiifInfo.getComplianceLevelFromProfile()).to.be(undefined);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
-        'profile': 'http://iiif.io/api/image/2/level2.json'
+        profile: 'http://iiif.io/api/image/2/level2.json'
       });
       expect(iiifInfo.getComplianceLevelFromProfile()).to.be('level2');
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
-        'profile': ['http://iiif.io/api/image/2/level1.json']
+        profile: ['http://iiif.io/api/image/2/level1.json']
       });
       expect(iiifInfo.getComplianceLevelFromProfile()).to.be('level1');
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
-        'profile': 'level4'
+        profile: 'level4'
       });
       expect(iiifInfo.getComplianceLevelFromProfile()).to.be(undefined);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
-        'profile': 'http://iiif.io/api/image/3/level3.json'
+        profile: 'http://iiif.io/api/image/3/level3.json'
       });
       expect(iiifInfo.getComplianceLevelFromProfile()).to.be(undefined);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
-        'profile': 'http://iiif.io/api/image/2/level1.json'
+        profile: 'http://iiif.io/api/image/2/level1.json'
       });
       expect(iiifInfo.getComplianceLevelFromProfile()).to.be(undefined);
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
-        'profile': 'level2'
+        profile: 'level2'
       });
       expect(iiifInfo.getComplianceLevelFromProfile()).to.be('level2');
 
       iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/3/context.json',
-        'profile': 'http://iiif.io/api/image/3/level1.json'
+        profile: 'http://iiif.io/api/image/3/level1.json'
       });
       expect(iiifInfo.getComplianceLevelFromProfile()).to.be('level1');
     });
@@ -184,10 +156,70 @@ describe('ol.format.IIIF', function() {
 
       iiifInfo.setImageInfo({
         '@context': 'http://library.stanford.edu/iiif/image-api/1.1/context.json',
-        'profile': 'http://library.stanford.edu/iiif/image-api/compliance.html#level0'
+        profile: 'http://library.stanford.edu/iiif/image-api/compliance.html#level0'
       });
-      expect();
+      let level = iiifInfo.getComplianceLevelSupportedFeatures();
+      expect(level.supports).to.be.empty();
 
+      iiifInfo.setImageInfo({
+        '@context': 'http://library.stanford.edu/iiif/image-api/1.1/context.json',
+        profile: 'http://library.stanford.edu/iiif/image-api/compliance.html#level1'
+      });
+      level = iiifInfo.getComplianceLevelSupportedFeatures();
+      expect(level.supports).to.have.length(4);
+      expect(level.supports).to.contain('regionByPx');
+      expect(level.supports).to.contain('sizeByW');
+      expect(level.supports).to.contain('sizeByH');
+      expect(level.supports).to.contain('sizeByPct');
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://library.stanford.edu/iiif/image-api/1.1/context.json',
+        profile: 'http://library.stanford.edu/iiif/image-api/compliance.html#level2'
+      });
+      level = iiifInfo.getComplianceLevelSupportedFeatures();
+      expect(level.supports).to.have.length(7);
+      expect(level.supports).to.contain('regionByPx');
+      expect(level.supports).to.contain('regionByPct');
+      expect(level.supports).to.contain('sizeByW');
+      expect(level.supports).to.contain('sizeByH');
+      expect(level.supports).to.contain('sizeByPct');
+      expect(level.supports).to.contain('sizeByConfinedWh');
+      expect(level.supports).to.contain('sizeByWh');
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/2/context.json',
+        profile: 'http://iiif.io/api/image/2/level0.json'
+      });
+      level = iiifInfo.getComplianceLevelSupportedFeatures();
+      expect(level.supports).to.be.empty();
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/2/context.json',
+        profile: 'http://iiif.io/api/image/2/level1.json'
+      });
+      level = iiifInfo.getComplianceLevelSupportedFeatures();
+      expect(level.supports).to.have.length(4);
+      expect(level.supports).to.contain('regionByPx');
+      expect(level.supports).to.contain('sizeByW');
+      expect(level.supports).to.contain('sizeByH');
+      expect(level.supports).to.contain('sizeByPct');
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/2/context.json',
+        profile: 'http://iiif.io/api/image/2/level2.json'
+      });
+      level = iiifInfo.getComplianceLevelSupportedFeatures();
+      expect(level.supports).to.have.length(8);
+      expect(level.supports).to.contain('regionByPx');
+      expect(level.supports).to.contain('regionByPct');
+      expect(level.supports).to.contain('sizeByW');
+      expect(level.supports).to.contain('sizeByH');
+      expect(level.supports).to.contain('sizeByPct');
+      expect(level.supports).to.contain('sizeByConfinedWh');
+      expect(level.supports).to.contain('sizeByDistortedWh');
+      expect(level.supports).to.contain('sizeByWh');
+
+      // TODO test version 3 compliance level features once version 3 is final
     });
 
   });
@@ -196,28 +228,29 @@ describe('ol.format.IIIF', function() {
 
     it('produces options from minimal information responses', function() {
 
-      let imageInfo = {
-        width: 2000,
-        height: 1500
-      };
-
       expect(function() {
-        iiifInfo.setImageInfo(imageInfo);
+        iiifInfo.setImageInfo({
+          width: 2000,
+          height: 1500
+        });
         iiifInfo.getTileSourceOptions();
       }).to.throwException();
 
-      imageInfo = {
+      iiifInfo.setImageInfo({
         identifier: 'id',
         profile: 'http://library.stanford.edu/iiif/image-api/compliance.html#level0'
-      };
-
-      iiifInfo.setImageInfo(imageInfo);
-      let options = iiifInfo.getTileSourceOptions(imageInfo);
+      });
+      let options = iiifInfo.getTileSourceOptions();
 
       expect(options).to.be.an('object');
       expect(options).to.have.property('version', Versions.VERSION1);
 
-      iiifInfo.setImageInfo(imageInfoVersion1_0Level0);
+      iiifInfo.setImageInfo({
+        identifier: 'identifier-version-1.0',
+        width: 2000,
+        height: 1500,
+        profile: 'http://library.stanford.edu/iiif/image-api/compliance.html#level0'
+      });
       options = iiifInfo.getTileSourceOptions();
 
       expect(options).to.not.be(undefined);
@@ -235,11 +268,10 @@ describe('ol.format.IIIF', function() {
       expect(options.format).to.be('jpg');
       expect(options.supports).to.be.empty();
 
-      imageInfo = {
+      iiifInfo.setImageInfo({
         '@context': 'http://iiif.io/api/image/2/context.json',
         '@id': 'http://iiif.test/version2/id'
-      };
-      iiifInfo.setImageInfo(imageInfo);
+      });
       options = iiifInfo.getTileSourceOptions();
 
       expect(options).to.be.an('object');
@@ -251,7 +283,13 @@ describe('ol.format.IIIF', function() {
 
     it('uses preferred options if applicable', function() {
 
-      iiifInfo.setImageInfo(imageInfoVersion2Level2);
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/2/context.json',
+        '@id': 'http://iiif.test/version2/id',
+        width: 2000,
+        height: 1500,
+        profile: ['http://iiif.io/api/image/2/level2.json']
+      });
       const options = iiifInfo.getTileSourceOptions({
         quality: 'bitonal',
         format: 'png'
@@ -263,7 +301,13 @@ describe('ol.format.IIIF', function() {
 
     it('ignores preferred options that are not supported', function() {
 
-      iiifInfo.setImageInfo(imageInfoVersion2Level1);
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/2/context.json',
+        '@id': 'http://iiif.test/version2/id',
+        width: 2000,
+        height: 1500,
+        profile: ['http://iiif.io/api/image/2/level1.json']
+      });
       const options = iiifInfo.getTileSourceOptions({
         quality: 'bitonal',
         format: 'png'
@@ -272,6 +316,171 @@ describe('ol.format.IIIF', function() {
       expect(options).to.have.property('format', 'jpg');
 
     });
+
+    it('combines supported features indicated by compliance level and explicitly stated in image info', function() {
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/2/context.json',
+        '@id': 'http://iiif.test/id',
+        profile: ['http://iiif.io/api/image/2/level1.json', {
+          supports: ['regionByPct', 'sizeByWh']
+        }],
+      });
+
+      let options = iiifInfo.getTileSourceOptions();
+      expect(options.supports).to.contain('regionByPct');
+      expect(options.supports).to.contain('sizeByWh');
+      expect(options.supports).to.contain('regionByPx');
+      expect(options.supports).to.contain('sizeByW');
+      expect(options.supports).to.contain('sizeByH');
+      expect(options.supports).to.contain('sizeByPct');
+      expect(options.supports).to.have.length(6);
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/3/context.json',
+        id: 'http://iiif.test/id',
+        profile: 'level1',
+        extraFeatures: ['regionByPct', 'sizeByPct']
+      });
+
+      options = iiifInfo.getTileSourceOptions();
+      expect(options.supports).to.contain('regionByPct');
+      expect(options.supports).to.contain('sizeByPct');
+      expect(options.supports).to.contain('regionByPx');
+      expect(options.supports).to.contain('regionSquare');
+      expect(options.supports).to.contain('sizeByW');
+      expect(options.supports).to.contain('sizeByH');
+      expect(options.supports).to.have.length(6);
+
+    });
+
+    it('uses the first available scale factors and tile sizes', function() {
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://library.stanford.edu/iiif/image-api/1.1/context.json',
+        '@id': 'http://iiif.test/id',
+        profile: 'http://library.stanford.edu/iiif/image-api/compliance.html#level0'
+      });
+      let options = iiifInfo.getTileSourceOptions();
+      expect(options.resolutions).to.be(undefined);
+      expect(options.tileSize).to.be(undefined);
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://library.stanford.edu/iiif/image-api/1.1/context.json',
+        '@id': 'http://iiif.test/id',
+        profile: 'http://library.stanford.edu/iiif/image-api/compliance.html#level0',
+        scale_factors: [1, 2, 4],
+        tile_width: 512
+      });
+      options = iiifInfo.getTileSourceOptions();
+      expect(options.resolutions).to.have.length(3);
+      expect(options.resolutions).to.contain(1);
+      expect(options.resolutions).to.contain(2);
+      expect(options.resolutions).to.contain(4);
+      expect(options.tileSize).to.have.length(2);
+      expect(options.tileSize[0]).to.be(512);
+      expect(options.tileSize[1]).to.be(512);
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://library.stanford.edu/iiif/image-api/1.1/context.json',
+        '@id': 'http://iiif.test/id',
+        profile: 'http://library.stanford.edu/iiif/image-api/compliance.html#level0',
+        scale_factors: [1, 2, 4],
+        tile_width: 512,
+        tile_height: 1024
+      });
+      options = iiifInfo.getTileSourceOptions();
+      expect(options.resolutions).to.have.length(3);
+      expect(options.resolutions).to.contain(1);
+      expect(options.resolutions).to.contain(2);
+      expect(options.resolutions).to.contain(4);
+      expect(options.tileSize).to.have.length(2);
+      expect(options.tileSize[0]).to.be(512);
+      expect(options.tileSize[1]).to.be(1024);
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/2/context.json',
+        '@id': 'http://iiif.test/id',
+        profile: 'http://iiif.io/api/image/2/level0.json'
+      });
+      options = iiifInfo.getTileSourceOptions();
+      expect(options.resolutions).to.be(undefined);
+      expect(options.tileSize).to.be(undefined);
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/2/context.json',
+        '@id': 'http://iiif.test/id',
+        profile: 'http://iiif.io/api/image/2/level0.json',
+        tiles: [{
+          scaleFactors: [1,2,4],
+          width: 512
+        },
+        {
+          scaleFactors: [1,2,4,8,16],
+          width: 256
+        }]
+      });
+      options = iiifInfo.getTileSourceOptions();
+      expect(options.resolutions).to.have.length(3);
+      expect(options.resolutions).to.contain(1);
+      expect(options.resolutions).to.contain(2);
+      expect(options.resolutions).to.contain(4);
+      expect(options.tileSize).to.have.length(2);
+      expect(options.tileSize[0]).to.be(512);
+      expect(options.tileSize[1]).to.be(512);
+
+      iiifInfo.setImageInfo({
+        '@context': 'http://iiif.io/api/image/2/context.json',
+        '@id': 'http://iiif.test/id',
+        profile: 'http://iiif.io/api/image/2/level0.json',
+        tiles: [{
+          scaleFactors: [1,2,4],
+          width: 512,
+          height: 1024
+        }]
+      });
+      options = iiifInfo.getTileSourceOptions();
+      expect(options.resolutions).to.have.length(3);
+      expect(options.resolutions).to.contain(1);
+      expect(options.resolutions).to.contain(2);
+      expect(options.resolutions).to.contain(4);
+      expect(options.tileSize).to.have.length(2);
+      expect(options.tileSize[0]).to.be(512);
+      expect(options.tileSize[1]).to.be(1024);
+
+    });
+
+  });
+
+  it('provides each given size in sizes as OpenLayers Size', function() {
+
+    iiifInfo.setImageInfo({
+      '@context': 'http://iiif.io/api/image/2/context.json',
+      '@id': 'http://iiif.test/id',
+      'sizes': [{
+        width: 2000,
+        height: 1000
+      },
+      {
+        width: 1000,
+        height: 500
+      },
+      {
+        width: 500,
+        height: 250
+      }]
+    });
+    let options = iiifInfo.getTileSourceOptions();
+    expect(options.sizes).to.have.length(3);
+    expect(options.sizes[0]).to.have.length(2);
+    expect(options.sizes[0][0]).to.be(2000);
+    expect(options.sizes[0][1]).to.be(1000);
+    expect(options.sizes[1]).to.have.length(2);
+    expect(options.sizes[1][0]).to.be(1000);
+    expect(options.sizes[1][1]).to.be(500);
+    expect(options.sizes[2]).to.have.length(2);
+    expect(options.sizes[2][0]).to.be(500);
+    expect(options.sizes[2][1]).to.be(250);
 
   });
 
