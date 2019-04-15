@@ -5,7 +5,7 @@
 
 /**
  * @typedef {Object} Options
- * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color] A color, gradient or pattern.
+ * @property {import("../color.js").Color|import("../colorlike.js").ColorLike} [color=null] A color, gradient or pattern.
  * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats.
  * Default null; if null, the Canvas/renderer default black will be used.
  */
