@@ -193,7 +193,7 @@ function generateVersion3Options(iiifInfo) {
     formats: iiifInfo.imageInfo.extraFormats === undefined ? levelProfile.formats :
       [...levelProfile.formats, ...iiifInfo.imageInfo.extraFormats],
     qualities: iiifInfo.imageInfo.extraQualities === undefined ? levelProfile.qualities :
-      [...levelProfile.extraQualities, ...iiifInfo.imageInfo.extraQualities],
+      [...levelProfile.supports, ...iiifInfo.imageInfo.extraQualities],
     maxWidth: undefined,
     maxHeight: undefined,
     maxArea: undefined,
