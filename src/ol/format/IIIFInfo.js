@@ -242,22 +242,27 @@ class IIIFInfo {
     if (this.imageInfo === undefined) {
       return;
     }
-    const context = this.imageInfo['@context'] || undefined;
-    switch (context) {
-      case 'http://library.stanford.edu/iiif/image-api/1.1/context.json':
-      case 'http://iiif.io/api/image/1/context.json':
-        return Versions.VERSION1;
-      case 'http://iiif.io/api/image/2/context.json':
-        return Versions.VERSION2;
-      case 'http://iiif.io/api/image/3/context.json':
-        return Versions.VERSION3;
-      case undefined:
-        // Image API 1.0 has no '@context'
-        if (this.getComplianceLevelEntryFromProfile(Versions.VERSION1) && this.imageInfo.identifier) {
+    let context = this.imageInfo['@context'] || 'ol-no-context';
+    if (typeof context == 'string') {
+      context = [context];
+    }
+    for (let i = 0; i < context.length; i++) {
+      switch (context[i]) {
+        case 'http://library.stanford.edu/iiif/image-api/1.1/context.json':
+        case 'http://iiif.io/api/image/1/context.json':
           return Versions.VERSION1;
-        }
-        break;
-      default:
+        case 'http://iiif.io/api/image/2/context.json':
+          return Versions.VERSION2;
+        case 'http://iiif.io/api/image/3/context.json':
+          return Versions.VERSION3;
+        case 'ol-no-context':
+          // Image API 1.0 has no '@context'
+          if (this.getComplianceLevelEntryFromProfile(Versions.VERSION1) && this.imageInfo.identifier) {
+            return Versions.VERSION1;
+          }
+          break;
+        default:
+      }
     }
     assert(false, 61);
   }
