@@ -531,8 +531,8 @@ describe('ol.source.Vector', function() {
           loader: function(extent) {
             setTimeout(function() {
               const lonLatExtent = transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
-              expect(lonLatExtent[0]).to.roughlyEqual(-99.261474609, 1e-9);
-              expect(lonLatExtent[2]).to.roughlyEqual(-95.965576171, 1e-9);
+              expect(lonLatExtent[0]).to.roughlyEqual(-99.259349218, 1e-9);
+              expect(lonLatExtent[2]).to.roughlyEqual(-95.963450781, 1e-9);
               done();
             }, 0);
           }
