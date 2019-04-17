@@ -131,4 +131,4 @@ const map = new Map({
 });
 map.getView().fit(vectorSource.getExtent());
 
-render({tolerance: 0.02});
+render({tolerance: 0.021});

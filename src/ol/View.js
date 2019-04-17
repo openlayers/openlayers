@@ -934,13 +934,9 @@ class View extends BaseObject {
     const center = /** @type {import("./coordinate.js").Coordinate} */ (this.getCenter());
     const projection = this.getProjection();
     const resolution = /** @type {number} */ (this.getResolution());
-    const pixelResolution = resolution / pixelRatio;
     const rotation = this.getRotation();
     return {
-      center: [
-        Math.round(center[0] / pixelResolution) * pixelResolution,
-        Math.round(center[1] / pixelResolution) * pixelResolution
-      ],
+      center: center.slice(0),
       projection: projection !== undefined ? projection : null,
       resolution: resolution,
       rotation: rotation,
