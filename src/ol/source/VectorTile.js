@@ -19,6 +19,7 @@ import {equals} from '../array.js';
 /**
  * @typedef {Object} Options
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
+ * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize=128] Cache size.
  * @property {import("../extent.js").Extent} [extent]
  * @property {import("../format/Feature.js").default} [format] Feature format for tiles. Used and required by the default.
@@ -97,6 +98,7 @@ class VectorTile extends UrlTile {
 
     super({
       attributions: options.attributions,
+      attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
       opaque: false,
       projection: projection,
