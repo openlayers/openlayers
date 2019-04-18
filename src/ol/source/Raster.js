@@ -288,8 +288,7 @@ class RasterSource extends ImageSource {
     frameState.focus = center;
     frameState.size[0] = Math.round(getWidth(extent) / resolution);
     frameState.size[1] = Math.round(getHeight(extent) / resolution);
-    frameState.time = Date.now();
-    frameState.animate = false;
+    frameState.time = Infinity;
 
     const viewState = frameState.viewState;
     viewState.center = center;
