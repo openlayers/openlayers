@@ -10,7 +10,6 @@ import {fromLonLat} from '../src/ol/proj';
 import WebGLPointsLayerRenderer from '../src/ol/renderer/webgl/PointsLayer';
 import {lerp} from '../src/ol/math';
 
-const features = [];
 const vectorSource = new Vector({
   features: [],
   attributions: 'National UFO Reporting Center'
@@ -70,17 +69,14 @@ function loadData() {
   client.open('GET', 'data/csv/ufo_sighting_data.csv');
   client.onload = function() {
     const csv = client.responseText;
-    let curIndex;
-    let prevIndex = 0;
-    let line;
-    while ((curIndex = csv.indexOf('\n', prevIndex)) > 0) {
-      line = csv.substr(prevIndex, curIndex - prevIndex).split(',');
-      prevIndex = curIndex + 1;
+    const features = [];
 
-      // skip header
-      if (prevIndex === 0) {
-        continue;
-      }
+    let prevIndex = csv.indexOf('\n') + 1; // scan past the header line
+
+    let curIndex;
+    while ((curIndex = csv.indexOf('\n', prevIndex)) != -1) {
+      const line = csv.substr(prevIndex, curIndex - prevIndex).split(',');
+      prevIndex = curIndex + 1;
 
       const coords = fromLonLat([parseFloat(line[5]), parseFloat(line[4])]);
 

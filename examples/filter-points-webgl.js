@@ -10,7 +10,6 @@ import WebGLPointsLayerRenderer from '../src/ol/renderer/webgl/PointsLayer';
 import {clamp, lerp} from '../src/ol/math';
 import Stamen from '../src/ol/source/Stamen';
 
-const features = [];
 const vectorSource = new Vector({
   features: [],
   attributions: 'NASA'
@@ -109,19 +108,20 @@ function loadData() {
   client.open('GET', 'data/csv/meteorite_landings.csv');
   client.onload = function() {
     const csv = client.responseText;
+    const features = [];
+
+    let prevIndex = csv.indexOf('\n') + 1; // scan past the header line
+
     let curIndex;
-    let prevIndex = 0;
-    let line;
-    while ((curIndex = csv.indexOf('\n', prevIndex)) > 0) {
-      line = csv.substr(prevIndex, curIndex - prevIndex).split(',');
+    while ((curIndex = csv.indexOf('\n', prevIndex)) != -1) {
+      const line = csv.substr(prevIndex, curIndex - prevIndex).split(',');
       prevIndex = curIndex + 1;
 
-      // skip header
-      if (prevIndex === 0) {
+      const coords = fromLonLat([parseFloat(line[4]), parseFloat(line[3])]);
+      if (isNaN(coords[0]) || isNaN(coords[1])) {
+        // guard against bad data
         continue;
       }
-
-      const coords = fromLonLat([parseFloat(line[4]), parseFloat(line[3])]);
 
       features.push(new Feature({
         mass: parseFloat(line[1]) || 0,
@@ -129,6 +129,7 @@ function loadData() {
         geometry: new Point(coords)
       }));
     }
+
     vectorSource.addFeatures(features);
   };
   client.send();
