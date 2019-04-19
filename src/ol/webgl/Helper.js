@@ -90,7 +90,7 @@ export const DefaultAttrib = {
 /**
  * @typedef {Object} UniformInternalDescription
  * @property {string} name Name
- * @property {UniformLiteralValue=} value Value
+ * @property {UniformValue=} value Value
  * @property {WebGLTexture} [texture] Texture
  * @private
  */
@@ -316,12 +316,14 @@ class WebGLHelper extends Disposable {
      * @private
      */
     this.uniforms_ = [];
-    options.uniforms && Object.keys(options.uniforms).forEach(function(name) {
-      this.uniforms_.push({
-        name: name,
-        value: options.uniforms[name]
-      });
-    }.bind(this));
+    if (options.uniforms) {
+      for (const name in options.uniforms) {
+        this.uniforms_.push({
+          name: name,
+          value: options.uniforms[name]
+        });
+      }
+    }
 
     /**
      * An array of PostProcessingPass objects is kept in this variable, built from the steps provided in the
