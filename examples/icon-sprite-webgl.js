@@ -38,16 +38,17 @@ class WebglPointsLayer extends VectorLayer {
   createRenderer() {
     return new WebGLPointsLayerRenderer(this, {
       texture: texture,
-      colorCallback: function(feature, vertex, component) {
-        // component at index 3 is alpha
-        if (component === 3) {
-          return 1;
-        }
-
+      colorCallback: function(feature, vertex, color) {
         // color is interpolated based on year (min is 1910, max is 2013)
         // please note: most values are between 2000-2013
         const ratio = (feature.get('year') - 1950) / (2013 - 1950);
-        return lerp(oldColor[component], newColor[component], ratio * ratio) / 255;
+
+        color[0] = lerp(oldColor[0], newColor[0], ratio * ratio) / 255;
+        color[1] = lerp(oldColor[1], newColor[1], ratio * ratio) / 255;
+        color[2] = lerp(oldColor[2], newColor[2], ratio * ratio) / 255;
+        color[3] = 1;
+
+        return color;
       },
       texCoordCallback: function(feature, component) {
         let coords = shapeTextureCoords[feature.get('shape')];

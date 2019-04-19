@@ -74,11 +74,11 @@ const FRAGMENT_SHADER = `
  * @property {function(import("../../Feature").default, number):number} [texCoordCallback] Will be called on every feature in the
  * source to compute the texture coordinates of each corner of the quad (without effect if no `texture` option defined). This is only done on source change.
  * The second argument is 0 for `u0` component, 1 for `v0`, 2 for `u1`, and 3 for `v1`.
- * @property {function(import("../../Feature").default, number, number):number} [colorCallback] Will be called on every feature in the
+ * @property {function(import("../../Feature").default, number, Array<number>):Array<number>} [colorCallback] Will be called on every feature in the
  * source to compute the color of each corner of the quad. This is only done on source change.
  * The second argument is 0 for bottom left, 1 for bottom right, 2 for top right and 3 for top left
- * The third argument is 0 for red, 1 for green, 2 for blue and 3 for alpha
- * The return value should be between 0 and 1.
+ * The third argument is a array that can be reused to avoid creating a new one.
+ * The return value should be between an array of R, G, B, A values between 0 and 1.
  * @property {function(import("../../Feature").default):number} [opacityCallback] Will be called on every feature in the
  * source to compute the opacity of the quad on screen (from 0 to 1). This is only done on source change.
  * Note: this is multiplied with the color of the point which can also have an alpha value < 1.
@@ -227,9 +227,12 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     this.texCoordCallback_ = options.texCoordCallback || function(feature, index) {
       return index < 2 ? 0 : 1;
     };
-    this.colorCallback_ = options.colorCallback || function(feature, index, component) {
-      return 1;
+
+    this.colorArray_ = [1, 1, 1, 1];
+    this.colorCallback_ = options.colorCallback || function(feature, index, color) {
+      return this.colorArray_;
     };
+
     this.rotateWithViewCallback_ = options.rotateWithViewCallback || function() {
       return false;
     };
@@ -293,22 +296,26 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
         const size = this.sizeCallback_(feature);
         const opacity = this.opacityCallback_(feature);
         const rotateWithView = this.rotateWithViewCallback_(feature) ? 1 : 0;
-        const v0_r = this.colorCallback_(feature, 0, 0);
-        const v0_g = this.colorCallback_(feature, 0, 1);
-        const v0_b = this.colorCallback_(feature, 0, 2);
-        const v0_a = this.colorCallback_(feature, 0, 3);
-        const v1_r = this.colorCallback_(feature, 1, 0);
-        const v1_g = this.colorCallback_(feature, 1, 1);
-        const v1_b = this.colorCallback_(feature, 1, 2);
-        const v1_a = this.colorCallback_(feature, 1, 3);
-        const v2_r = this.colorCallback_(feature, 2, 0);
-        const v2_g = this.colorCallback_(feature, 2, 1);
-        const v2_b = this.colorCallback_(feature, 2, 2);
-        const v2_a = this.colorCallback_(feature, 2, 3);
-        const v3_r = this.colorCallback_(feature, 3, 0);
-        const v3_g = this.colorCallback_(feature, 3, 1);
-        const v3_b = this.colorCallback_(feature, 3, 2);
-        const v3_a = this.colorCallback_(feature, 3, 3);
+        const v0_rgba = this.colorCallback_(feature, 0, this.colorArray_);
+        const v0_r = v0_rgba[0];
+        const v0_g = v0_rgba[1];
+        const v0_b = v0_rgba[2];
+        const v0_a = v0_rgba[3];
+        const v1_rgba = this.colorCallback_(feature, 1, this.colorArray_);
+        const v1_r = v1_rgba[0];
+        const v1_g = v1_rgba[1];
+        const v1_b = v1_rgba[2];
+        const v1_a = v1_rgba[3];
+        const v2_rgba = this.colorCallback_(feature, 2, this.colorArray_);
+        const v2_r = v2_rgba[0];
+        const v2_g = v2_rgba[1];
+        const v2_b = v2_rgba[2];
+        const v2_a = v2_rgba[3];
+        const v3_rgba = this.colorCallback_(feature, 3, this.colorArray_);
+        const v3_r = v3_rgba[0];
+        const v3_g = v3_rgba[1];
+        const v3_b = v3_rgba[2];
+        const v3_a = v3_rgba[3];
         const baseIndex = this.verticesBuffer_.getArray().length / stride;
 
         this.verticesBuffer_.getArray().push(
