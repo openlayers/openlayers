@@ -74,7 +74,7 @@ const FRAGMENT_SHADER = `
  * @property {function(import("../../Feature").default, number):number} [texCoordCallback] Will be called on every feature in the
  * source to compute the texture coordinates of each corner of the quad (without effect if no `texture` option defined). This is only done on source change.
  * The second argument is 0 for `u0` component, 1 for `v0`, 2 for `u1`, and 3 for `v1`.
- * @property {function(import("../../Feature").default, number, Array<number>):Array<number>} [colorCallback] Will be called on every feature in the
+ * @property {function(import("../../Feature").default, number, Array<number>=):Array<number>} [colorCallback] Will be called on every feature in the
  * source to compute the color of each corner of the quad. This is only done on source change.
  * The second argument is 0 for bottom left, 1 for bottom right, 2 for top right and 3 for top left
  * The third argument is a array that can be reused to avoid creating a new one.
