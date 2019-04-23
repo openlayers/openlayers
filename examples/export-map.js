@@ -25,9 +25,17 @@ const map = new Map({
   })
 });
 
+// export options for html-to-image.
+// See: https://github.com/bubkoo/html-to-image#options
+const exportOptions = {
+  filter: function(element) {
+    return element.className.indexOf('ol-control') === -1;
+  }
+};
+
 document.getElementById('export-png').addEventListener('click', function() {
   map.once('rendercomplete', function() {
-    toPng(map.getViewport().querySelector('.ol-layers'))
+    toPng(map.getTargetElement(), exportOptions)
       .then(function(dataURL) {
         const link = document.getElementById('image-download');
         link.href = dataURL;

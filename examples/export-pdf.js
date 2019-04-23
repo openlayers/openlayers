@@ -43,6 +43,15 @@ const dims = {
   a5: [210, 148]
 };
 
+
+// export options for html-to-image.
+// See: https://github.com/bubkoo/html-to-image#options
+const exportOptions = {
+  filter: function(element) {
+    return element.className.indexOf('ol-control') === -1;
+  }
+};
+
 const exportButton = document.getElementById('export-pdf');
 
 exportButton.addEventListener('click', function() {
@@ -59,7 +68,7 @@ exportButton.addEventListener('click', function() {
   const extent = map.getView().calculateExtent(size);
 
   map.once('rendercomplete', function() {
-    toJpeg(map.getViewport().querySelector('.ol-layers')).then(function(dataUrl) {
+    toJpeg(map.getTargetElement(), exportOptions).then(function(dataUrl) {
       const pdf = new jsPDF('landscape', undefined, format);
       pdf.addImage(dataUrl, 'JPEG', 0, 0, dim[0], dim[1]);
       pdf.save('map.pdf');
