@@ -75,8 +75,7 @@ exportButton.addEventListener('click', function() {
       // Reset original map size
       map.setSize(size);
       map.getView().fit(extent, {
-        size: size,
-        constrainResolution: false
+        size: size
       });
       exportButton.disabled = false;
       document.body.style.cursor = 'auto';
