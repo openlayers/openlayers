@@ -4,6 +4,8 @@ import WKT from '../src/ol/format/WKT.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
+import {toJpeg} from 'html-to-image';
+
 const raster = new TileLayer({
   source: new OSM()
 });
@@ -57,7 +59,7 @@ exportButton.addEventListener('click', function() {
   const extent = map.getView().calculateExtent(size);
 
   map.once('rendercomplete', function() {
-    domtoimage.toJpeg(map.getViewport().querySelector('.ol-layers')).then(function(dataUrl) {
+    toJpeg(map.getViewport().querySelector('.ol-layers')).then(function(dataUrl) {
       const pdf = new jsPDF('landscape', undefined, format);
       pdf.addImage(dataUrl, 'JPEG', 0, 0, dim[0], dim[1]);
       pdf.save('map.pdf');

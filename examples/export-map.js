@@ -4,6 +4,8 @@ import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
+import {toPng} from 'html-to-image';
+
 const map = new Map({
   layers: [
     new TileLayer({
@@ -25,7 +27,7 @@ const map = new Map({
 
 document.getElementById('export-png').addEventListener('click', function() {
   map.once('rendercomplete', function() {
-    domtoimage.toPng(map.getViewport().querySelector('.ol-layers'))
+    toPng(map.getViewport().querySelector('.ol-layers'))
       .then(function(dataURL) {
         const link = document.getElementById('image-download');
         link.href = dataURL;
