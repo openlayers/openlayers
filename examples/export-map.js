@@ -4,6 +4,8 @@ import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
+import {toPng} from 'html-to-image';
+
 const map = new Map({
   layers: [
     new TileLayer({
@@ -23,9 +25,17 @@ const map = new Map({
   })
 });
 
+// export options for html-to-image.
+// See: https://github.com/bubkoo/html-to-image#options
+const exportOptions = {
+  filter: function(element) {
+    return element.className.indexOf('ol-control') === -1;
+  }
+};
+
 document.getElementById('export-png').addEventListener('click', function() {
   map.once('rendercomplete', function() {
-    domtoimage.toPng(map.getViewport().querySelector('.ol-layers'))
+    toPng(map.getTargetElement(), exportOptions)
       .then(function(dataURL) {
         const link = document.getElementById('image-download');
         link.href = dataURL;

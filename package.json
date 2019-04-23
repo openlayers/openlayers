@@ -61,6 +61,7 @@
     "glob": "^7.1.2",
     "globby": "^9.2.0",
     "handlebars": "4.1.2",
+    "html-to-image": "^0.1.0",
     "istanbul": "0.4.5",
     "jquery": "3.4.0",
     "jsdoc": "3.5.5",

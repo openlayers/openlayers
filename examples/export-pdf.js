@@ -4,6 +4,8 @@ import WKT from '../src/ol/format/WKT.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {OSM, Vector as VectorSource} from '../src/ol/source.js';
 
+import {toJpeg} from 'html-to-image';
+
 const raster = new TileLayer({
   source: new OSM()
 });
@@ -41,6 +43,15 @@ const dims = {
   a5: [210, 148]
 };
 
+
+// export options for html-to-image.
+// See: https://github.com/bubkoo/html-to-image#options
+const exportOptions = {
+  filter: function(element) {
+    return element.className.indexOf('ol-control') === -1;
+  }
+};
+
 const exportButton = document.getElementById('export-pdf');
 
 exportButton.addEventListener('click', function() {
@@ -57,15 +68,14 @@ exportButton.addEventListener('click', function() {
   const extent = map.getView().calculateExtent(size);
 
   map.once('rendercomplete', function() {
-    domtoimage.toJpeg(map.getViewport().querySelector('.ol-layers')).then(function(dataUrl) {
+    toJpeg(map.getTargetElement(), exportOptions).then(function(dataUrl) {
       const pdf = new jsPDF('landscape', undefined, format);
       pdf.addImage(dataUrl, 'JPEG', 0, 0, dim[0], dim[1]);
       pdf.save('map.pdf');
       // Reset original map size
       map.setSize(size);
       map.getView().fit(extent, {
-        size: size,
-        constrainResolution: false
+        size: size
       });
       exportButton.disabled = false;
       document.body.style.cursor = 'auto';
