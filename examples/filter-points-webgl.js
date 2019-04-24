@@ -37,15 +37,16 @@ updateStatusText();
 class WebglPointsLayer extends VectorLayer {
   createRenderer() {
     return new WebGLPointsLayerRenderer(this, {
-      colorCallback: function(feature, vertex, component) {
-        // component at index 3 is alpha
-        if (component === 3) {
-          return 1;
-        }
-
+      colorCallback: function(feature, vertex, color) {
         // color is interpolated based on year
         const ratio = clamp((feature.get('year') - 1800) / (2013 - 1800), 0, 1);
-        return lerp(oldColor[component], newColor[component], ratio) / 255;
+
+        color[0] = lerp(oldColor[0], newColor[0], ratio) / 255;
+        color[1] = lerp(oldColor[1], newColor[1], ratio) / 255;
+        color[2] = lerp(oldColor[2], newColor[2], ratio) / 255;
+        color[3] = 1;
+
+        return color;
       },
       sizeCallback: function(feature) {
         return 18 * clamp(feature.get('mass') / 200000, 0, 1) + 8;
