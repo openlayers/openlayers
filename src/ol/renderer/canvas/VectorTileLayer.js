@@ -138,8 +138,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
      */
     this.tmpTransform_ = createTransform();
 
-    // Use closest resolution.
-    this.zDirection = 0;
+    // Use nearest lower resolution.
+    this.zDirection = 1;
 
     listen(labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
 
