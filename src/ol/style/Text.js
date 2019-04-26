@@ -24,7 +24,7 @@ const DEFAULT_FILL_COLOR = '#333';
  * @property {number} [offsetY=0] Vertical text offset in pixels. A positive will shift the text down.
  * @property {boolean} [overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
  * the width of the polygon at the label position or the length of the path that it follows.
- * @property {import("./TextPlacement.js").default|string} [placement='point'] Text placement.
+ * @property {import("./TextPlacement.js").default|string} [placement='point'] Text placement. Default is 'point'
  * @property {number} [scale] Scale.
  * @property {boolean} [rotateWithView=false] Whether to rotate the text with the view.
  * @property {number} [rotation=0] Rotation in radians (positive rotation clockwise).
