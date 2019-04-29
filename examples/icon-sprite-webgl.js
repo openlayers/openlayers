@@ -38,7 +38,7 @@ class WebglPointsLayer extends VectorLayer {
   createRenderer() {
     return new WebGLPointsLayerRenderer(this, {
       texture: texture,
-      colorCallback: function(feature, vertex, color) {
+      colorCallback: function(feature, color) {
         // color is interpolated based on year (min is 1910, max is 2013)
         // please note: most values are between 2000-2013
         const ratio = (feature.get('year') - 1950) / (2013 - 1950);

@@ -74,11 +74,11 @@ const FRAGMENT_SHADER = `
  * @property {function(import("../../Feature").default, number):number} [texCoordCallback] Will be called on every feature in the
  * source to compute the texture coordinates of each corner of the quad (without effect if no `texture` option defined). This is only done on source change.
  * The second argument is 0 for `u0` component, 1 for `v0`, 2 for `u1`, and 3 for `v1`.
- * @property {function(import("../../Feature").default, number, Array<number>=):Array<number>} [colorCallback] Will be called on every feature in the
- * source to compute the color of each corner of the quad. This is only done on source change.
- * The second argument is 0 for bottom left, 1 for bottom right, 2 for top right and 3 for top left
- * The third argument is a array that can be reused to avoid creating a new one.
- * The return value should be between an array of R, G, B, A values between 0 and 1.
+ * @property {function(import("../../Feature").default, Array<number>=):Array<number>} [colorCallback] Will be called on every feature in the
+ * source to compute the color for use in the fragment shader (available as the `v_color` varying). This is only done on source change.
+ * The return value should be between an array of R, G, B, A values between 0 and 1.  To reduce unnecessary
+ * allocation, the function is called with a reusable array that can serve as the return value after updating
+ * the R, G, B, and A values.
  * @property {function(import("../../Feature").default):number} [opacityCallback] Will be called on every feature in the
  * source to compute the opacity of the quad on screen (from 0 to 1). This is only done on source change.
  * Note: this is multiplied with the color of the point which can also have an alpha value < 1.
@@ -229,7 +229,7 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
     };
 
     this.colorArray_ = [1, 1, 1, 1];
-    this.colorCallback_ = options.colorCallback || function(feature, index, color) {
+    this.colorCallback_ = options.colorCallback || function(feature, color) {
       return this.colorArray_;
     };
 
@@ -296,33 +296,18 @@ class WebGLPointsLayerRenderer extends LayerRenderer {
         const size = this.sizeCallback_(feature);
         const opacity = this.opacityCallback_(feature);
         const rotateWithView = this.rotateWithViewCallback_(feature) ? 1 : 0;
-        const v0_rgba = this.colorCallback_(feature, 0, this.colorArray_);
-        const v0_r = v0_rgba[0];
-        const v0_g = v0_rgba[1];
-        const v0_b = v0_rgba[2];
-        const v0_a = v0_rgba[3];
-        const v1_rgba = this.colorCallback_(feature, 1, this.colorArray_);
-        const v1_r = v1_rgba[0];
-        const v1_g = v1_rgba[1];
-        const v1_b = v1_rgba[2];
-        const v1_a = v1_rgba[3];
-        const v2_rgba = this.colorCallback_(feature, 2, this.colorArray_);
-        const v2_r = v2_rgba[0];
-        const v2_g = v2_rgba[1];
-        const v2_b = v2_rgba[2];
-        const v2_a = v2_rgba[3];
-        const v3_rgba = this.colorCallback_(feature, 3, this.colorArray_);
-        const v3_r = v3_rgba[0];
-        const v3_g = v3_rgba[1];
-        const v3_b = v3_rgba[2];
-        const v3_a = v3_rgba[3];
+        const color = this.colorCallback_(feature, this.colorArray_);
+        const red = color[0];
+        const green = color[1];
+        const blue = color[2];
+        const alpha = color[3];
         const baseIndex = this.verticesBuffer_.getArray().length / stride;
 
         this.verticesBuffer_.getArray().push(
-          x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, v0_r, v0_g, v0_b, v0_a,
-          x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, v1_r, v1_g, v1_b, v1_a,
-          x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, v2_r, v2_g, v2_b, v2_a,
-          x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, v3_r, v3_g, v3_b, v3_a
+          x, y, -size / 2, -size / 2, u0, v0, opacity, rotateWithView, red, green, blue, alpha,
+          x, y, +size / 2, -size / 2, u1, v0, opacity, rotateWithView, red, green, blue, alpha,
+          x, y, +size / 2, +size / 2, u1, v1, opacity, rotateWithView, red, green, blue, alpha,
+          x, y, -size / 2, +size / 2, u0, v1, opacity, rotateWithView, red, green, blue, alpha
         );
         this.indicesBuffer_.getArray().push(
           baseIndex, baseIndex + 1, baseIndex + 3,

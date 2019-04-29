@@ -37,7 +37,7 @@ updateStatusText();
 class WebglPointsLayer extends VectorLayer {
   createRenderer() {
     return new WebGLPointsLayerRenderer(this, {
-      colorCallback: function(feature, vertex, color) {
+      colorCallback: function(feature, color) {
         // color is interpolated based on year
         const ratio = clamp((feature.get('year') - 1800) / (2013 - 1800), 0, 1);
 
