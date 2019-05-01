@@ -38,3 +38,11 @@ jobs:
       - store_artifacts:
           path: build/examples
           destination: examples
+
+      - run:
+          name: Build API Docs
+          command: npm run apidoc
+
+      - store_artifacts:
+          path: build/apidoc
+          destination: apidoc
