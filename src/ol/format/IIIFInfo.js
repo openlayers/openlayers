@@ -22,6 +22,81 @@ import {assert} from '../asserts.js';
  */
 
 /**
+ * @typedef {Object} ImageInformationResponse1_0
+ * @property {string} identifier
+ * @property {number} width
+ * @property {number} height
+ * @property {Array<number>} [scale_factors] Resolution scaling factors.
+ * @property {number} [tile_width]
+ * @property {number} [tile_height]
+ * @property {Array<string>} [formats] Supported image formats.
+ * @property {string} [profile] Compliance level URI.
+ */
+
+/**
+ * @typedef {Object} ImageInformationResponse1_1
+ * @property {string} "@id" The base URI of the image service.
+ * @property {string} "@context" JSON-LD context URI.
+ * @property {number} width Full image width.
+ * @property {number} height Full image height.
+ * @property {Array<number>} [scale_factors] Resolution scaling factors.
+ * @property {number} [tile_width]
+ * @property {number} [tile_height]
+ * @property {Array<string>} [formats] Supported image formats.
+ * @property {string} [profile] Compliance level URI.
+ */
+
+/**
+ * @typedef {Object} TileInfo
+ * @property {Array<number>} scaleFactors Supported resolution scaling factors.
+ * @property {number} width Tile width in pixels.
+ * @property {number} [height] Tile height in pixels. Same as tile width if height is
+ * not given.
+ */
+
+/**
+ * @typedef {Object} IiifProfile
+ * @property {Array<string>} [formats] Supported image formats for the image service.
+ * @property {Array<string>} [qualities] Supported IIIF image qualities.
+ * @property {Array<string>} [supports] Supported features.
+ * @property {number} [maxArea] Maximum area (pixels) available for this image service.
+ * @property {number} [maxHeight] Maximum height.
+ * @property {number} [maxWidth] Maximum width.
+ */
+
+/**
+ * @typedef {Object} ImageInformationResponse2
+ * @property {string} "@id" The base URI of the image service.
+ * @property {string} "@context" JSON-LD context IRI
+ * @property {number} width Full image width.
+ * @property {number} height Full image height.
+ * @property {Array<string|IiifProfile>} profile Additional informations about the image
+ * service's capabilities.
+ * @property {Array<Object<string, number>>} [sizes] Supported full image dimensions.
+ * @property {Array<TileInfo>} [tiles] Supported tile sizes and resolution scaling factors.
+ */
+
+/**
+ * @typedef {Object} ImageInformationResponse3
+ * @property {string} id The base URI of the image service.
+ * @property {string} "@context" JSON-LD context IRI
+ * @property {number} width Full image width.
+ * @property {number} height Full image height.
+ * @property {string} profile Compliance level, one of 'level0', 'level1' or 'level2'
+ * @property {Array<Object<string, number>>} [sizes] Supported full image dimensions.
+ * @property {Array<TileInfo>} [tiles] Supported tile sizes and resolution scaling factors.
+ * @property {number} [maxArea] Maximum area (pixels) available for this image service.
+ * @property {number} [maxHeight] Maximum height.
+ * @property {number} [maxWidth] Maximum width.
+ * @property {Array<string>} [extraQualities] IIIF image qualities supported by the
+ * image service additional to the ones indicated by the compliance level.
+ * @property {Array<string>} [extraFormats] Image formats supported by the
+ * image service additional to the ones indicated by the compliance level.
+ * @property {Array<string>} [extraFeatures] Additional supported features whose support
+ * is not indicated by the compliance level.
+ */
+
+/**
 * @enum {string}
 */
 export const Versions = {
@@ -200,8 +275,8 @@ versionFunctions[Versions.VERSION3] = generateVersion3Options;
 class IIIFInfo {
 
   /**
-   * @param {Object|string} imageInfo Deserialized image information JSON response
-   * object or JSON response as string
+   * @param {ImageInformationResponse1_0|ImageInformationResponse1_1|ImageInformationResponse2|ImageInformationResponse3|string} imageInfo
+   * Deserialized image information JSON response object or JSON response as string
    */
   constructor(imageInfo) {
     this.setImageInfo(imageInfo);
