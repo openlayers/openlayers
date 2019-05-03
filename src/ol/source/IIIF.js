@@ -23,7 +23,7 @@ import TileImage from './TileImage.js';
  * for version 1, 'default' for versions 2 and 3.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
  * Higher values can increase reprojection performance, but decrease precision.
- * @property {import("../size.js").Size} [size] Size of the image [width, height].
+ * @property {import("../size.js").Size} size Size of the image [width, height].
  * @property {import("../size.js").Size[]} [sizes] Supported scaled image sizes.
  * Content of the IIIF info.json 'sizes' property, but as array of Size objects.
  * @property {import("./State.js").default} [state] Source state.
