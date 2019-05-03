@@ -2,6 +2,7 @@ const path = require('path');
 
 module.exports = function(karma) {
   karma.set({
+    browsers: ['Chrome'],
     browserDisconnectTolerance: 2,
     frameworks: ['mocha'],
     client: {
@@ -54,7 +55,12 @@ module.exports = function(karma) {
     preprocessors: {
       '**/*.js': ['webpack', 'sourcemap']
     },
-    reporters: ['dots'],
+    reporters: ['dots', 'coverage-istanbul'],
+    coverageIstanbulReporter: {
+      reports: ['text-summary', 'html'],
+      dir: path.resolve(__dirname, '../coverage/'),
+      fixWebpackSourcePaths: true
+    },
     webpack: {
       devtool: 'inline-source-map',
       mode: 'development',
@@ -63,8 +69,23 @@ module.exports = function(karma) {
           {
             test: /\.js$/,
             use: {
-              loader: 'buble-loader'
-            }
+              loader: 'babel-loader',
+              options: {
+                presets: ['@babel/preset-env']
+              }
+            },
+            include: path.resolve('src/ol/'),
+            exclude: path.resolve('node_modules/')
+          }, {
+            test: /\.js$/,
+            use: {
+              loader: 'istanbul-instrumenter-loader',
+              options: {
+                esModules: true
+              }
+            },
+            include: path.resolve('src/ol/'),
+            exclude: path.resolve('node_modules/')
           }
         ]
       }
@@ -75,28 +96,4 @@ module.exports = function(karma) {
   });
 
   process.env.CHROME_BIN = require('puppeteer').executablePath();
-  if (process.env.CIRCLECI) {
-    karma.set({
-      browsers: ['Chrome'],
-      preprocessors: {
-        '../src/**/*.js': ['coverage']
-      },
-      coverageReporter: {
-        reporters: [
-          {
-            type: 'lcovonly', // that's enough for coveralls, no HTML
-            dir: '../coverage/',
-            subdir: '.'
-          },
-          {
-            type: 'text-summary' // prints the textual summary to the terminal
-          }
-        ]
-      }
-    });
-  } else {
-    karma.set({
-      browsers: ['Chrome']
-    });
-  }
 };
