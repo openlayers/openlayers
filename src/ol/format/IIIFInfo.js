@@ -22,82 +22,81 @@ import {assert} from '../asserts.js';
  */
 
 /**
+* @enum {string}
+*/
+export const Versions = {
+  VERSION1: 'version1',
+  VERSION2: 'version2',
+  VERSION3: 'version3'
+};
+
+/**
  * Supported image formats, qualities and supported region / size calculation features
  * for different image API versions and compliance levels
  * @const
  * @type {Object<string, Object<string, SupportedFeatures>}
  */
-const IIIF_PROFILE_VALUES = {
-  version1: {
-    level0: {
-      supports: [],
-      formats: [],
-      qualities: ['native']
-    },
-    level1: {
-      supports: ['regionByPx', 'sizeByW', 'sizeByH', 'sizeByPct'],
-      formats: ['jpg'],
-      qualities: ['native']
-    },
-    level2: {
-      supports: ['regionByPx', 'regionByPct', 'sizeByW', 'sizeByH', 'sizeByPct',
-        'sizeByConfinedWh', 'sizeByWh'],
-      formats: ['jpg', 'png'],
-      qualities: ['native', 'color', 'grey', 'bitonal']
-    }
+const IIIF_PROFILE_VALUES = {};
+IIIF_PROFILE_VALUES[Versions.VERSION1] = {
+  'level0': {
+    supports: [],
+    formats: [],
+    qualities: ['native']
   },
-  version2: {
-    level0: {
-      supports: [],
-      formats: ['jpg'],
-      qualities: ['default']
-    },
-    level1: {
-      supports: ['regionByPx', 'sizeByW', 'sizeByH', 'sizeByPct'],
-      formats: ['jpg'],
-      qualities: ['default']
-    },
-    level2: {
-      supports: ['regionByPx', 'regionByPct', 'sizeByW', 'sizeByH', 'sizeByPct',
-        'sizeByConfinedWh', 'sizeByDistortedWh', 'sizeByWh'],
-      formats: ['jpg', 'png'],
-      qualities: ['default', 'bitonal']
-    }
+  'level1': {
+    supports: ['regionByPx', 'sizeByW', 'sizeByH', 'sizeByPct'],
+    formats: ['jpg'],
+    qualities: ['native']
   },
-  version3: {
-    level0: {
-      supports: [],
-      formats: ['jpg'],
-      qualities: ['default']
-    },
-    level1: {
-      supports: ['regionByPx', 'regionSquare', 'sizeByW', 'sizeByH'],
-      formats: ['jpg'],
-      qualities: ['default']
-    },
-    level2: {
-      supports: ['regionByPx', 'regionSquare', 'regionByPct',
-        'sizeByW', 'sizeByH', 'sizeByPct', 'sizeByConfinedWh', 'sizeByWh'],
-      formats: ['jpg'],
-      qualities: ['default', 'bitonal']
-    }
-  },
-  none: {
-    none: {
-      supports: [],
-      formats: [],
-      qualities: []
-    }
+  'level2': {
+    supports: ['regionByPx', 'regionByPct', 'sizeByW', 'sizeByH', 'sizeByPct',
+      'sizeByConfinedWh', 'sizeByWh'],
+    formats: ['jpg', 'png'],
+    qualities: ['native', 'color', 'grey', 'bitonal']
   }
 };
-
-/**
- * @enum {string}
- */
-export const Versions = {
-  VERSION1: 'version1',
-  VERSION2: 'version2',
-  VERSION3: 'version3'
+IIIF_PROFILE_VALUES[Versions.VERSION2] = {
+  'level0': {
+    supports: [],
+    formats: ['jpg'],
+    qualities: ['default']
+  },
+  'level1': {
+    supports: ['regionByPx', 'sizeByW', 'sizeByH', 'sizeByPct'],
+    formats: ['jpg'],
+    qualities: ['default']
+  },
+  'level2': {
+    supports: ['regionByPx', 'regionByPct', 'sizeByW', 'sizeByH', 'sizeByPct',
+      'sizeByConfinedWh', 'sizeByDistortedWh', 'sizeByWh'],
+    formats: ['jpg', 'png'],
+    qualities: ['default', 'bitonal']
+  }
+};
+IIIF_PROFILE_VALUES[Versions.VERSION3] = {
+  'level0': {
+    supports: [],
+    formats: ['jpg'],
+    qualities: ['default']
+  },
+  'level1': {
+    supports: ['regionByPx', 'regionSquare', 'sizeByW', 'sizeByH'],
+    formats: ['jpg'],
+    qualities: ['default']
+  },
+  'level2': {
+    supports: ['regionByPx', 'regionSquare', 'regionByPct',
+      'sizeByW', 'sizeByH', 'sizeByPct', 'sizeByConfinedWh', 'sizeByWh'],
+    formats: ['jpg'],
+    qualities: ['default', 'bitonal']
+  }
+};
+IIIF_PROFILE_VALUES['none'] = {
+  'none': {
+    supports: [],
+    formats: [],
+    qualities: []
+  }
 };
 
 const COMPLIANCE_VERSION1 = new RegExp('^https?\:\/\/library\.stanford\.edu\/iiif\/image-api\/(1\.1\/)?compliance\.html#level[0-2]$');
@@ -108,7 +107,7 @@ function generateVersion1Options(iiifInfo) {
   let levelProfile = iiifInfo.getComplianceLevelSupportedFeatures();
   // Version 1.0 and 1.1 do not require a profile.
   if (levelProfile === undefined) {
-    levelProfile = IIIF_PROFILE_VALUES.version1.level0;
+    levelProfile = IIIF_PROFILE_VALUES[Versions.VERSION1]['level0'];
   }
   return {
     url: iiifInfo.imageInfo['@id'] === undefined ? undefined : iiifInfo.imageInfo['@id'].replace(/\/?(info.json)?$/g, ''),
