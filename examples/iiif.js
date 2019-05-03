@@ -21,15 +21,15 @@ function refreshMap(imageInfoUrl) {
         notifyDiv.textContent = 'Data seems to be no valid IIIF image information.';
         return;
       }
-      const extent = [0, -options.size[1], options.size[0], 0];
       options.zDirection = -1;
-      layer.setSource(new IIIF(options));
+      const iiifTileSource = new IIIF(options);
+      layer.setSource(iiifTileSource);
       map.setView(new View({
-        resolutions: layer.getSource().getTileGrid().getResolutions(),
-        extent: extent,
+        resolutions: iiifTileSource.getTileGrid().getResolutions(),
+        extent: iiifTileSource.getTileGrid().getExtent(),
         constrainOnlyCenter: true
       }));
-      map.getView().fit(extent);
+      map.getView().fit(iiifTileSource.getTileGrid().getExtent());
       notifyDiv.textContent = '';
     }).catch(function(body) {
       notifyDiv.textContent = 'Could not read image info json. ' + body;
