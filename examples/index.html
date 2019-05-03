@@ -11,8 +11,24 @@
       body {
         padding-top: 70px;
       }
+      img.header-logo {
+        padding-left: 18px;
+      }
       input.search-query {
         color: #333;
+      }
+      @media (max-width: 480px) {
+        input.search-query {
+          width: 110px;
+        }
+        #count {
+          display: none;
+        }
+      }
+      @media (max-width: 374px) {
+        input.search-query {
+          display: none;
+        }
       }
       .example {
         display: block;
@@ -182,9 +198,9 @@
   <body>
 
     <header class="navbar navbar-fixed-top" role="navigation">
-      <div class="container">
+      <div class="container-fluid">
         <div class="display-table pull-left">
-          <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers Examples</a>
+          <a class="navbar-brand" href="./"><img class="header-logo" src="./resources/logo-70x70.png">&nbsp;OpenLayers</a>
           <form class="navbar-form" role="search">
             <input name="q" type="text" id="keywords" class="search-query" placeholder="Search" autofocus>
             <span id="count"></span>
