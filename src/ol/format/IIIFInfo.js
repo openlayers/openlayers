@@ -131,20 +131,7 @@ function generateVersion2Options(iiifInfo) {
       additionalProfile = Array.isArray(iiifInfo.imageInfo.profile) && iiifInfo.imageInfo.profile.length > 1,
       profileSupports = additionalProfile && iiifInfo.imageInfo.profile[1].supports ? iiifInfo.imageInfo.profile[1].supports : [],
       profileFormats = additionalProfile && iiifInfo.imageInfo.profile[1].formats ? iiifInfo.imageInfo.profile[1].formats : [],
-      profileQualities = additionalProfile && iiifInfo.imageInfo.profile[1].qualities ? iiifInfo.imageInfo.profile[1].qualities : [],
-      attributions = [];
-  if (iiifInfo.imageInfo.attribution !== undefined) {
-    // TODO potentially dangerous
-    attributions.push(iiifInfo.imageInfo.attribution);
-  }
-  if (iiifInfo.imageInfo.license !== undefined) {
-    let license = iiifInfo.imageInfo.license;
-    if (license.match(/^http(s)?:\/\//g)) {
-      license = '<a href="' + encodeURI(license) + '"/>' + encodeURI(license) + '</a>';
-    }
-    // TODO potentially dangerous
-    attributions.push(license);
-  }
+      profileQualities = additionalProfile && iiifInfo.imageInfo.profile[1].qualities ? iiifInfo.imageInfo.profile[1].qualities : [];
   return {
     url: iiifInfo.imageInfo['@id'].replace(/\/?(info.json)?$/g, ''),
     sizes: iiifInfo.imageInfo.sizes === undefined ? undefined : iiifInfo.imageInfo.sizes.map(function(size) {
@@ -164,8 +151,7 @@ function generateVersion2Options(iiifInfo) {
       })[0],
     supports: [...levelProfile.supports, ...profileSupports],
     formats: [...levelProfile.formats, ...profileFormats],
-    qualities: [...levelProfile.qualities, ...profileQualities],
-    attributions: attributions.length == 0 ? undefined : attributions
+    qualities: [...levelProfile.qualities, ...profileQualities]
   };
 }
 
@@ -196,8 +182,7 @@ function generateVersion3Options(iiifInfo) {
       [...levelProfile.supports, ...iiifInfo.imageInfo.extraQualities],
     maxWidth: undefined,
     maxHeight: undefined,
-    maxArea: undefined,
-    attributions: undefined
+    maxArea: undefined
   };
 }
 
@@ -358,8 +343,7 @@ class IIIFInfo {
       resolutions: Array.isArray(imageOptions.resolutions) ? imageOptions.resolutions.sort(function(a, b) {
         return b - a;
       }) : undefined,
-      tileSize: imageOptions.tileSize,
-      attributions: imageOptions.attributions
+      tileSize: imageOptions.tileSize
     };
   }
 
