@@ -28,7 +28,7 @@ import {getContext} from '../webgl';
  */
 
 /**
- * Shader types, either `FRAGMENT_SHADER` or `VERTEX_SHADER`
+ * Shader types, either `FRAGMENT_SHADER` or `VERTEX_SHADER`.
  * @enum {number}
  */
 export const ShaderType = {
@@ -37,9 +37,9 @@ export const ShaderType = {
 };
 
 /**
- * Uniform names used in the default shaders.
- * @const
- * @type {Object.<string,string>}
+ * Uniform names used in the default shaders: `PROJECTION_MATRIX`, `OFFSET_SCALE_MATRIX`.
+ * and `OFFSET_ROTATION_MATRIX`.
+ * @enum {string}
  */
 export const DefaultUniform = {
   PROJECTION_MATRIX: 'u_projectionMatrix',
@@ -48,9 +48,9 @@ export const DefaultUniform = {
 };
 
 /**
- * Attribute names used in the default shaders.
- * @const
- * @type {Object.<string,string>}
+ * Attribute names used in the default shaders: `POSITION`, `TEX_COORD`, `OPACITY`,
+ * `ROTATE_WITH_VIEW`, `OFFSETS` and `COLOR`
+ * @enum {string}
  */
 export const DefaultAttrib = {
   POSITION: 'a_position',
@@ -74,7 +74,7 @@ export const DefaultAttrib = {
 /**
  * @typedef {Object} PostProcessesOptions
  * @property {number} [scaleRatio] Scale ratio; if < 1, the post process will render to a texture smaller than
- * the main canvas that will then be sampled up (useful for saving resource on blur steps).
+ * the main canvas which will then be sampled up (useful for saving resource on blur steps).
  * @property {string} [vertexShader] Vertex shader source
  * @property {string} [fragmentShader] Fragment shader source
  * @property {Object.<string,UniformValue>} [uniforms] Uniform definitions for the post process step
@@ -82,7 +82,7 @@ export const DefaultAttrib = {
 
 /**
  * @typedef {Object} Options
- * @property {Object.<string,UniformValue>} [uniforms] Uniform definitions; property namesmust math the uniform
+ * @property {Object.<string,UniformValue>} [uniforms] Uniform definitions; property names must match the uniform
  * names in the provided or default shaders.
  * @property {Array<PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
@@ -113,7 +113,7 @@ export const DefaultAttrib = {
  *
  *   * Varyings usually prefixed with `v_` are passed on to the fragment shader
  *
- *   Fragment shaders are used to control the actual color of the pixels rawn on screen. Their only output is `gl_FragColor`.
+ *   Fragment shaders are used to control the actual color of the pixels drawn on screen. Their only output is `gl_FragColor`.
  *
  *   Both shaders can take *uniforms* or *attributes* as input. Attributes are explained later. Uniforms are common, read-only values that
  *   can be changed at every frame and can be of type float, arrays of float or images.
@@ -150,16 +150,16 @@ export const DefaultAttrib = {
  *
  *   The {@link module:ol/webgl/PostProcessingPass~WebGLPostProcessingPass} class is used internally, refer to its documentation for more info.
  *
- * ### Binding WebGL buffers and flushing data into them:
+ * ### Binding WebGL buffers and flushing data into them
  *
- *   Data that must be passed to the GPU has to be transferred using `WebGLArrayBuffer` objects.
- *   A buffer has to be created only once, but must be bound everytime the buffer content should be used for rendering.
- *   This is done using `WebGLHelper.bindBuffer`.
+ *   Data that must be passed to the GPU has to be transferred using {@link module:ol/webgl/Buffer~WebGLArrayBuffer} objects.
+ *   A buffer has to be created only once, but must be bound every time the buffer content will be used for rendering.
+ *   This is done using {@link bindBuffer}.
  *   When the buffer's array content has changed, the new data has to be flushed to the GPU memory; this is done using
- *   `WebGLHelper.flushBufferData`. Note: this operation is expensive and should be done as infrequently as possible.
+ *   {@link flushBufferData}. Note: this operation is expensive and should be done as infrequently as possible.
  *
- *   When binding a `WebGLArrayBuffer`, a `target` parameter must be given: it should be either {@link module:ol/webgl~ARRAY_BUFFER}
- *   (if the buffer contains vertices data) or {@link module:ol/webgl~ELEMENT_ARRAY_BUFFER} (if the buffer contains indices data).
+ *   When binding an array buffer, a `target` parameter must be given: it should be either {@link module:ol/webgl.ARRAY_BUFFER}
+ *   (if the buffer contains vertices data) or {@link module:ol/webgl.ELEMENT_ARRAY_BUFFER} (if the buffer contains indices data).
  *
  *   Examples below:
  *   ```js
@@ -179,8 +179,8 @@ export const DefaultAttrib = {
  * ### Specifying attributes
  *
  *   The GPU only receives the data as arrays of numbers. These numbers must be handled differently depending on what it describes (position, texture coordinate...).
- *   Attributes are used to specify these uses. Use `WebGLHelper.enableAttributeArray` and either
- *   the default attribute names in {@link module:ol/webgl/Helper~DefaultAttrib} or custom ones.
+ *   Attributes are used to specify these uses. Use {@link enableAttributeArray} and either
+ *   the default attribute names in {@link module:ol/webgl/Helper.DefaultAttrib} or custom ones.
  *
  *   Please note that you will have to specify the type and offset of the attributes in the data array. You can refer to the documentation of [WebGLRenderingContext.vertexAttribPointer](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/vertexAttribPointer) for more explanation.
  *   ```js
@@ -194,7 +194,7 @@ export const DefaultAttrib = {
  *
  * ### Rendering primitives
  *
- *   Once all the steps above have been achieved, rendering primitives to the screen is done using `WebGLHelper.prepareDraw` `drawElements` and `finalizeDraw`.
+ *   Once all the steps above have been achieved, rendering primitives to the screen is done using {@link prepareDraw}, {@link drawElements} and {@link finalizeDraw}.
  *   ```js
  *   // frame preparation step
  *   this.context.prepareDraw(frameState);
