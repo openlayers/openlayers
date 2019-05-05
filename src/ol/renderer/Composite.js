@@ -94,7 +94,7 @@ class CompositeMapRenderer extends MapRenderer {
       if (element) {
         const zIndex = layerState.zIndex;
         if (zIndex !== element.style.zIndex) {
-          element.style.zIndex = zIndex;
+          element.style.zIndex = zIndex === Infinity ? Number.MAX_SAFE_INTEGER : zIndex;
         }
         this.children_.push(element);
       }
