@@ -100,7 +100,7 @@ If you were previously using `Vector` layers with `renderMode: 'image'`, you hav
 
 ##### New declutter behavior
 
-If a map has more than one layer with `declutter` set to true, decluttering now considers all `Vector` and `VectorTile` instead of decluttering each layer separately. Only `VectorImage` layers continue to be decluttered separately. The higher the z-index of the layer, the higher the priority of decluttered items.
+If a map has more than one layer with `declutter` set to true, decluttering now considers all `Vector` and `VectorTile` layers, instead of decluttering each layer separately. Only `VectorImage` layers continue to be decluttered separately. The higher the z-index of a layer, the higher the priority of its decluttered items.
 
 Within a layer, the declutter order has changed. Previously, styles with a lower `zIndex` were prioritized over those with a higher `zIndex`. Now the opposite order is used.
 
