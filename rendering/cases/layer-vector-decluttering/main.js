@@ -71,7 +71,7 @@ layer1.setStyle(function(feature) {
 });
 map.addLayer(layer1);
 
-center = [center[0] + 500, center[1] + 500];
+center = [center[0] + 500, center[1] + 700];
 const feature2 = new Feature({
   geometry: new Point(center),
   text: 'center',
