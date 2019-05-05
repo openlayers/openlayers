@@ -114,6 +114,7 @@ const FRAGMENT_SHADER = `
  *
  * Points are rendered as quads with the following structure:
  *
+ * ```
  *   (u0, v1)      (u1, v1)
  *  [3]----------[2]
  *   |`           |
@@ -124,6 +125,7 @@ const FRAGMENT_SHADER = `
  *   |          ` |
  *  [0]----------[1]
  *   (u0, v0)      (u1, v0)
+ *  ```
  *
  * This uses {@link module:ol/webgl/Helper~WebGLHelper} internally.
  *
