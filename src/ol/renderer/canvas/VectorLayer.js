@@ -5,11 +5,10 @@ import {getUid} from '../../util.js';
 import ViewHint from '../../ViewHint.js';
 import {listen, unlisten} from '../../events.js';
 import EventType from '../../events/EventType.js';
-import rbush from 'rbush';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
 import {labelCache} from '../../render/canvas.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
-import ExecutorGroup from '../../render/canvas/ExecutorGroup.js';
+import ExecutorGroup, {replayDeclutter} from '../../render/canvas/ExecutorGroup.js';
 import CanvasLayerRenderer from './Layer.js';
 import {defaultOrder as defaultRenderOrder, getTolerance as getRenderTolerance, getSquaredTolerance as getSquaredRenderTolerance, renderFeature} from '../vector.js';
 import {toString as transformToString, makeScale, makeInverse} from '../../transform.js';
@@ -27,12 +26,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   constructor(vectorLayer) {
 
     super(vectorLayer);
-
-    /**
-     * Declutter tree.
-     * @private
-     */
-    this.declutterTree_ = vectorLayer.getDeclutter() ? rbush(9, undefined) : null;
 
     /**
      * @private
@@ -138,17 +131,14 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       this.clip(context, frameState, clipExtent);
     }
 
-    if (this.declutterTree_) {
-      this.declutterTree_.clear();
-    }
-
 
     const viewHints = frameState.viewHints;
     const snapToPixel = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
 
     const transform = this.getRenderTransform(frameState, width, height, 0);
     const skippedFeatureUids = layerState.managed ? frameState.skippedFeatureUids : {};
-    replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
+    const declutterReplays = /** @type {import("../../layer/Vector.js").default} */ (this.getLayer()).getDeclutter() ? {} : null;
+    replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel, undefined, declutterReplays);
 
     if (vectorSource.getWrapX() && projection.canWrapX() && !containsExtent(projectionExtent, extent)) {
       let startX = extent[0];
@@ -159,7 +149,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         --world;
         offsetX = worldWidth * world;
         const transform = this.getRenderTransform(frameState, width, height, offsetX);
-        replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
+        replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel, undefined, declutterReplays);
         startX += worldWidth;
       }
       world = 0;
@@ -168,9 +158,14 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         ++world;
         offsetX = worldWidth * world;
         const transform = this.getRenderTransform(frameState, width, height, offsetX);
-        replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel);
+        replayGroup.execute(context, transform, rotation, skippedFeatureUids, snapToPixel, undefined, declutterReplays);
         startX -= worldWidth;
       }
+    }
+    if (declutterReplays) {
+      const viewHints = frameState.viewHints;
+      const hifi = !(viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]);
+      replayDeclutter(declutterReplays, context, rotation, hifi, frameState.declutterItems);
     }
 
     if (clipped) {
@@ -190,7 +185,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * @inheritDoc
    */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg) {
+  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, declutteredFeatures) {
     if (!this.replayGroup_) {
       return undefined;
     } else {
@@ -208,9 +203,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           const key = getUid(feature);
           if (!(key in features)) {
             features[key] = true;
-            return callback.call(thisArg, feature, layer);
+            return callback(feature, layer);
           }
-        }, null);
+        }, declutteredFeatures);
       return result;
     }
   }
@@ -299,7 +294,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const replayGroup = new CanvasBuilderGroup(
       getRenderTolerance(resolution, pixelRatio), extent, resolution,
-      pixelRatio, !!this.declutterTree_);
+      pixelRatio, vectorLayer.getDeclutter());
 
     vectorSource.loadFeatures(extent, resolution, projection);
 
@@ -339,7 +334,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const replayGroupInstructions = replayGroup.finish();
     const executorGroup = new ExecutorGroup(extent, resolution,
-      pixelRatio, vectorSource.getOverlaps(), this.declutterTree_,
+      pixelRatio, vectorSource.getOverlaps(),
       replayGroupInstructions, vectorLayer.getRenderBuffer());
 
     this.renderedResolution_ = resolution;

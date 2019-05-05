@@ -98,6 +98,14 @@ If you were previously using `VectorTile` layers with `renderMode: 'vector'`, yo
 
 If you were previously using `Vector` layers with `renderMode: 'image'`, you have to remove this configuration option. Instead, use the new `ol/layer/VectorImage` layer with your `ol/source/Vector`.
 
+##### New declutter behavior
+
+If a map has more than one layer with `declutter` set to true, decluttering now considers all layers instead of decluttering each layer separately. The higher the z-index of the layer, the higher the priority of decluttered items.
+
+Within a layer, the declutter order has changed. Previously, styles with a lower `zIndex` were prioritized over those with a higher `zIndex`. Now the opposite order is used.
+
+On vector layers, even if decluttered images or texts have a lower z-Index than polygons or lines, they will now be rendered on top of the polygons or lines. For vector tile layers, this was the case already in previous releases.
+
 ##### New `prerender` and `postrender` layer events replace old `precompose`, `render` and `postcompose` events
 
 If you were previously registering for `precompose` and `postcompose` events, you should now register for `prerender` and `postrender` events on layers.  Instead of the previous `render` event, you should now listen for `postrender`. Layers are no longer composed to a single Canvas element.  Instead, they are added to the map viewport as individual elements.

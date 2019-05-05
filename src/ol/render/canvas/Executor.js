@@ -21,6 +21,7 @@ import {
 import {createCanvasContext2D} from '../../dom.js';
 import {labelCache, defaultTextAlign, measureTextHeight, measureAndCacheTextWidth, measureTextWidths} from '../canvas.js';
 import Disposable from '../../Disposable.js';
+import rbush from 'rbush';
 
 
 /**
@@ -58,15 +59,10 @@ class Executor extends Disposable {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The replay can have overlapping geometries.
-   * @param {?} declutterTree Declutter tree.
    * @param {SerializableInstructions} instructions The serializable instructions
    */
-  constructor(resolution, pixelRatio, overlaps, declutterTree, instructions) {
+  constructor(resolution, pixelRatio, overlaps, instructions) {
     super();
-    /**
-     * @type {?}
-     */
-    this.declutterTree = declutterTree;
 
     /**
      * @protected
@@ -92,6 +88,11 @@ class Executor extends Disposable {
      * @type {boolean}
      */
     this.alignFill_;
+
+    /**
+     * @type {Array<*>}
+     */
+    this.declutterItems = [];
 
     /**
      * @protected
@@ -412,8 +413,10 @@ class Executor extends Disposable {
   /**
    * @param {import("../canvas.js").DeclutterGroup} declutterGroup Declutter group.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {?} declutterTree Declutter tree.
+   * @return {?} Declutter tree.
    */
-  renderDeclutter_(declutterGroup, feature) {
+  renderDeclutter(declutterGroup, feature, declutterTree) {
     if (declutterGroup && declutterGroup.length > 5) {
       const groupCount = declutterGroup[4];
       if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
@@ -425,8 +428,11 @@ class Executor extends Disposable {
           maxY: /** @type {number} */ (declutterGroup[3]),
           value: feature
         };
-        if (!this.declutterTree.collides(box)) {
-          this.declutterTree.insert(box);
+        if (!declutterTree) {
+          declutterTree = rbush(9, undefined);
+        }
+        if (!declutterTree.collides(box)) {
+          declutterTree.insert(box);
           for (let j = 5, jj = declutterGroup.length; j < jj; ++j) {
             const declutterData = /** @type {Array} */ (declutterGroup[j]);
             if (declutterData) {
@@ -443,6 +449,7 @@ class Executor extends Disposable {
         createOrUpdateEmpty(declutterGroup);
       }
     }
+    return declutterTree;
   }
 
   /**
@@ -497,6 +504,7 @@ class Executor extends Disposable {
     featureCallback,
     opt_hitExtent
   ) {
+    this.declutterItems.length = 0;
     /** @type {Array<number>} */
     let pixelCoordinates;
     if (this.pixelCoordinates_ && equals(transform, this.renderedTransform_)) {
@@ -670,7 +678,7 @@ class Executor extends Disposable {
               backgroundFill ? /** @type {Array<*>} */ (lastFillInstruction) : null,
               backgroundStroke ? /** @type {Array<*>} */ (lastStrokeInstruction) : null);
           }
-          this.renderDeclutter_(declutterGroup, feature);
+          this.declutterItems.push(this, declutterGroup, feature);
           ++i;
           break;
         case CanvasInstruction.DRAW_CHARS:
@@ -739,7 +747,7 @@ class Executor extends Disposable {
               }
             }
           }
-          this.renderDeclutter_(declutterGroup, feature);
+          this.declutterItems.push(this, declutterGroup, feature);
           ++i;
           break;
         case CanvasInstruction.END_GEOMETRY:

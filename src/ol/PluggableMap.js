@@ -39,6 +39,7 @@ import {create as createTransform, apply as applyTransform} from './transform.js
  * @property {boolean} animate
  * @property {import("./transform.js").Transform} coordinateToPixelTransform
  * @property {null|import("./extent.js").Extent} extent
+ * @property {Array<*>} declutterItems
  * @property {import("./coordinate.js").Coordinate} focus
  * @property {number} index
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray
@@ -1175,6 +1176,7 @@ class PluggableMap extends BaseObject {
       frameState = /** @type {FrameState} */ ({
         animate: false,
         coordinateToPixelTransform: this.coordinateToPixelTransform_,
+        declutterItems: previousFrameState ? previousFrameState.declutterItems : [],
         extent: extent,
         focus: this.focus_ ? this.focus_ : viewState.center,
         index: this.frameIndex_++,

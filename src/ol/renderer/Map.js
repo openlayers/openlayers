@@ -30,6 +30,11 @@ class MapRenderer extends Disposable {
 
     /**
      * @private
+     */
+    this.declutterTree_ = null;
+
+    /**
+     * @private
      * @type {!Object<string, import("./Layer.js").default>}
      */
     this.layerRenderers_ = {};
@@ -133,6 +138,12 @@ class MapRenderer extends Disposable {
 
     const layerStates = frameState.layerStatesArray;
     const numLayers = layerStates.length;
+    let declutteredFeatures;
+    if (this.declutterTree_) {
+      declutteredFeatures = this.declutterTree_.all().map(function(entry) {
+        return entry.value;
+      });
+    }
     let i;
     for (i = numLayers - 1; i >= 0; --i) {
       const layerState = layerStates[i];
@@ -144,7 +155,7 @@ class MapRenderer extends Disposable {
           const callback = forEachFeatureAtCoordinate.bind(null, layerState.managed);
           result = layerRenderer.forEachFeatureAtCoordinate(
             source.getWrapX() ? translatedCoordinate : coordinate,
-            frameState, hitTolerance, callback);
+            frameState, hitTolerance, callback, declutteredFeatures);
         }
         if (result) {
           return result;
@@ -252,11 +263,20 @@ class MapRenderer extends Disposable {
 
   /**
    * Render.
-   * @abstract
    * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
    */
   renderFrame(frameState) {
-    abstract();
+    if (this.declutterTree_) {
+      this.declutterTree_.clear();
+    }
+    const items = frameState.declutterItems;
+    for (let z = items.length - 1; z >= 0; --z) {
+      const zIndexItems = items[z];
+      for (let i = 0, ii = zIndexItems.length; i < ii; i += 3) {
+        this.declutterTree_ = zIndexItems[i].renderDeclutter(zIndexItems[i + 1], zIndexItems[i + 2], this.declutterTree_);
+      }
+    }
+    items.length = 0;
   }
 
   /**
