@@ -1,43 +1,43 @@
 <table><tr>
 <th width="33.3%">Map</th><th width="33.3%">View</th><th width="33.3%">Layers</th>
 </tr><tr>
-<td><p>A [map](module-ol_Map-Map.html) is made of [layers](module-ol_layer_Base-BaseLayer.html), a [view](module-ol_View-View.html) to visualize them, [interactions](module-ol_interaction_Interaction-Interaction.html) to modify map content and [controls](module-ol_control_Control-Control.html) with UI components.</p>
-[Overview](module-ol_Map-Map.html)<br>
-[Creation](module-ol_Map-Map.html#Map)<br>
-[Events](module-ol_MapBrowserEvent-MapBrowserEvent.html)</td>
+<td><p>A <a href="module-ol_Map-Map.html">map</a> is made of <a href="module-ol_layer_Base-BaseLayer.html">layers</a>, a <a href="module-ol_View-View.html">view</a> to visualize them, <a href="module-ol_interaction_Interaction-Interaction.html">interactions</a> to modify map content and <a href="module-ol_control_Control-Control.html">controls</a> with UI components.</p>
+<a href="module-ol_Map-Map.html">Overview</a><br>
+<a href="module-ol_Map-Map.html#Map">Creation</a><br>
+<a href="module-ol_MapBrowserEvent-MapBrowserEvent.html">Events</a></td>
 <td><p>The view manages the visual parameters of the map view, like resolution or rotation.</p>
-[View](module-ol_View-View.html) with center, projection, resolution and rotation</td>
-<td><p>Layers are lightweight containers that get their data from [sources](module-ol_source_Source-Source.html).</p>
-[ol/layer/Tile](module-ol_layer_Tile-TileLayer.html)<br>
-[ol/layer/Image](module-ol_layer_Image-ImageLayer.html)<br>
-[ol/layer/Vector](module-ol_layer_Vector-VectorLayer.html)<br>
-[ol/layer/VectorTile](module-ol_layer_VectorTile-VectorTileLayer.html)</td>
+<a href="module-ol_View-View.html">View</a> with center, projection, resolution and rotation</td>
+<td><p>Layers are lightweight containers that get their data from <a href="module-ol_source_Source-Source.html">sources</a>.</p>
+<a href="module-ol_layer_Tile-TileLayer.html">ol/layer/Tile</a><br>
+<a href="module-ol_layer_Image-ImageLayer.html">ol/layer/Image</a><br>
+<a href="module-ol_layer_Vector-VectorLayer.html">ol/layer/Vector</a><br>
+<a href="module-ol_layer_VectorTile-VectorTileLayer.html">ol/layer/VectorTile</a></td>
 </tr><tr>
 <th>Controls</th><th>Interactions</th><th>Sources and formats</th>
 </tr><tr>
-<td>[Map default controls](module-ol_control_util.html#.defaults)<br>
-[All controls](module-ol_control_Control-Control.html)
+<td><a href="module-ol_control_util.html#.defaults">Map default controls</a><br>
+<a href="module-ol_control_Control-Control.html">All controls</a>
 </td>
 <td>
-[Map default interactions](module-ol_interaction.html#~defaults)<br>
-Interactions for [vector features](module-ol_Feature-Feature.html)
-<ul><li>[ol/interaction/Select](module-ol_interaction_Select-Select.html)</li>
-<li>[ol/interaction/Draw](module-ol_interaction_Draw-Draw.html)</li>
-<li>[ol/interaction/Modify](module-ol_interaction_Modify-Modify.html)</li></ul>
-[All interactions](module-ol_interaction_Interaction-Interaction.html)</td>
-<td>[Tile sources](module-ol_source_Tile-TileSource.html) for [ol/layer/Tile](module-ol_layer_Tile-TileLayer.html)
-<br>[Image sources](module-ol_source_Image-ImageSource.html) for [ol/layer/Image](module-ol_layer_Image-ImageLayer.html)
-<br>[Vector sources](module-ol_source_Vector-VectorSource.html) for [ol/layer/Vector](module-ol_layer_Vector-VectorLayer.html)
-<br>[Vector tile sources](module-ol_source_VectorTile-VectorTile.html) for [ol/layer/VectorTile](module-ol_layer_VectorTile-VectorTileLayer.html)
-<br>[Formats](module-ol_format_Feature-FeatureFormat.html) for reading/writing vector data
-<br>[ol/format/WMSCapabilities](module-ol_format_WMSCapabilities-WMSCapabilities.html)</td></tr>
+<a href="module-ol_interaction.html#~defaults">Map default interactions</a><br>
+Interactions for <a href="module-ol_Feature-Feature.html">vector features</a>
+<ul><li><a href="module-ol_interaction_Select-Select.html">ol/interaction/Select</a></li>
+<li><a href="module-ol_interaction_Draw-Draw.html">ol/interaction/Draw</a></li>
+<li><a href="module-ol_interaction_Modify-Modify.html">ol/interaction/Modify</a></li></ul>
+<a href="module-ol_interaction_Interaction-Interaction.html">All interactions</a></td>
+<td><a href="module-ol_source_Tile-TileSource.html">Tile sources</a> for <a href="module-ol_layer_Tile-TileLayer.html">ol/layer/Tile</a>
+<br><a href="module-ol_source_Image-ImageSource.html">Image sources</a> for <a href="module-ol_layer_Image-ImageLayer.html">ol/layer/Image</a>
+<br><a href="module-ol_source_Vector-VectorSource.html">Vector sources</a> for <a href="module-ol_layer_Vector-VectorLayer.html">ol/layer/Vector</a>
+<br><a href="module-ol_source_VectorTile-VectorTile.html">Vector tile sources</a> for <a href="module-ol_layer_VectorTile-VectorTileLayer.html">ol/layer/VectorTile</a>
+<br><a href="module-ol_format_Feature-FeatureFormat.html">Formats</a> for reading/writing vector data
+<br><a href="module-ol_format_WMSCapabilities-WMSCapabilities.html">ol/format/WMSCapabilities</a></td></tr>
 <tr><th>Projections</th><th>Observable objects</th><th>Other components</th></tr>
-<tr><td><p>All coordinates and extents need to be provided in view projection (default: EPSG:3857). To transform, use [ol/proj#transform()](module-ol_proj.html#.transform) and [ol/proj#transformExtent()](module-ol_proj.html#.transformExtent).</p>
-[ol/proj](module-ol_proj.html)</td>
-<td><p>Changes to all [ol/Object](module-ol_Object-BaseObject.html)s can be observed by calling the [object.on('propertychange')](module-ol_Object-BaseObject.html#on) method.  Listeners receive an [ol/Object.ObjectEvent](module-ol_Object-ObjectEvent.html) with information on the changed property and old value.</p>
+<tr><td><p>All coordinates and extents need to be provided in view projection (default: EPSG:3857). To transform, use <a href="module-ol_proj.html#.transform">ol/proj#transform()</a> and <a href="module-ol_proj.html#.transformExtent">ol/proj#transformExtent()</a>.</p>
+<a href="module-ol_proj.html">ol/proj</a></td>
+<td><p>Changes to all <a href="module-ol_Object-BaseObject.html">ol/Object</a>s can be observed by calling the <a href="module-ol_Object-BaseObject.html#on">object.on('propertychange')</a> method.  Listeners receive an <a href="module-ol_Object-ObjectEvent.html">ol/Object.ObjectEvent</a> with information on the changed property and old value.</p>
 <td>
-[ol/Geolocation](module-ol_Geolocation.html)<br>
-[ol/Overlay](module-ol_Overlay-Overlay.html)<br></td>
+<a href="module-ol_Geolocation.html">ol/Geolocation</a><br>
+<a href="module-ol_Overlay-Overlay.html">ol/Overlay</a><br></td>
 </tr></table>
 
 &nbsp;
