@@ -83,19 +83,20 @@ class BaseLayer extends BaseObject {
   }
 
   /**
+   * @param {boolean=} opt_managed Layer is managed.
    * @return {import("./Layer.js").State} Layer state.
    */
-  getLayerState() {
+  getLayerState(opt_managed) {
     /** @type {import("./Layer.js").State} */
     const state = this.state_ || /** @type {?} */ ({
       layer: this,
-      managed: true
+      managed: opt_managed === undefined ? true : opt_managed
     });
     state.opacity = clamp(Math.round(this.getOpacity() * 100) / 100, 0, 1);
     state.sourceState = this.getSourceState();
     state.visible = this.getVisible();
     state.extent = this.getExtent();
-    state.zIndex = this.getZIndex() || 0;
+    state.zIndex = this.getZIndex() || (state.managed === false ? Infinity : 0);
     state.maxResolution = this.getMaxResolution();
     state.minResolution = Math.max(this.getMinResolution(), 0);
     this.state_ = state;
