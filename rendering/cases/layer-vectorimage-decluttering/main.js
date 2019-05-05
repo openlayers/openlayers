@@ -93,7 +93,7 @@ layer2.setStyle(function(feature) {
     zIndex: feature.get('zIndex'),
     text: new Text({
       text: feature.get('text'),
-      font: 'italic bold 16px Ubuntu'
+      font: 'italic bold 18px Ubuntu'
     })
   });
 });
@@ -123,7 +123,7 @@ layer3.setStyle(function(feature) {
     }),
     text: new Text({
       text: feature.get('text'),
-      font: 'italic bold 16px Ubuntu',
+      font: 'italic bold 18px Ubuntu',
       textBaseline: 'bottom',
       offsetY: -12
     })
@@ -156,7 +156,7 @@ line.setStyle(new Style({
   text: new Text({
     placement: 'line',
     text: 'east-west',
-    font: 'italic bold 16px Ubuntu',
+    font: 'italic bold 18px Ubuntu',
     overflow: true
   })
 }));

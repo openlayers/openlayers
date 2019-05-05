@@ -110,3 +110,18 @@ export function getRenderPixel(event, pixel) {
   applyTransform(event.inversePixelTransform.slice(), result);
   return result;
 }
+
+export function renderDeclutterItems(frameState, declutterTree) {
+  if (declutterTree) {
+    declutterTree.clear();
+  }
+  const items = frameState.declutterItems;
+  for (let z = items.length - 1; z >= 0; --z) {
+    const zIndexItems = items[z];
+    for (let i = 0, ii = zIndexItems.length; i < ii; i += 3) {
+      declutterTree = zIndexItems[i].renderDeclutter(zIndexItems[i + 1], zIndexItems[i + 2], declutterTree);
+    }
+  }
+  items.length = 0;
+  return declutterTree;
+}

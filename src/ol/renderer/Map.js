@@ -10,6 +10,7 @@ import {TRUE} from '../functions.js';
 import {visibleAtResolution} from '../layer/Layer.js';
 import {shared as iconImageCache} from '../style/IconImageCache.js';
 import {compose as composeTransform, makeInverse} from '../transform.js';
+import {renderDeclutterItems} from '../render.js';
 
 /**
  * @abstract
@@ -266,17 +267,7 @@ class MapRenderer extends Disposable {
    * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
    */
   renderFrame(frameState) {
-    if (this.declutterTree_) {
-      this.declutterTree_.clear();
-    }
-    const items = frameState.declutterItems;
-    for (let z = items.length - 1; z >= 0; --z) {
-      const zIndexItems = items[z];
-      for (let i = 0, ii = zIndexItems.length; i < ii; i += 3) {
-        this.declutterTree_ = zIndexItems[i].renderDeclutter(zIndexItems[i + 1], zIndexItems[i + 2], this.declutterTree_);
-      }
-    }
-    items.length = 0;
+    this.declutterTree_ = renderDeclutterItems(frameState, this.declutterTree_);
   }
 
   /**

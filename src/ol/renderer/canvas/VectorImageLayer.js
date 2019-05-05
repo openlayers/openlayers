@@ -11,6 +11,7 @@ import CanvasVectorLayerRenderer from './VectorLayer.js';
 import {listen} from '../../events.js';
 import EventType from '../../events/EventType.js';
 import ImageState from '../../ImageState.js';
+import {renderDeclutterItems} from '../../render.js';
 
 /**
  * @classdesc
@@ -72,6 +73,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       let skippedFeatures = this.skippedFeatures_;
       const context = vectorRenderer.context;
       const imageFrameState = /** @type {import("../../PluggableMap.js").FrameState} */ (assign({}, frameState, {
+        declutterItems: [],
         size: [
           getWidth(renderedExtent) / viewResolution,
           getHeight(renderedExtent) / viewResolution
@@ -86,6 +88,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
               (vectorRenderer.replayGroupChanged ||
               !equals(skippedFeatures, newSkippedFeatures))) {
           vectorRenderer.renderFrame(imageFrameState, layerState);
+          renderDeclutterItems(imageFrameState, null);
           skippedFeatures = newSkippedFeatures;
           callback();
         }
