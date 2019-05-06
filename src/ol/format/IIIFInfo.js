@@ -386,7 +386,7 @@ class IIIFInfo {
     const version = this.getImageApiVersion();
     const level = this.getComplianceLevelFromProfile(version);
     if (level === undefined) {
-      return IIIF_PROFILE_VALUES.none.none;
+      return IIIF_PROFILE_VALUES['none']['none'];
     }
     return IIIF_PROFILE_VALUES[version][level];
   }
