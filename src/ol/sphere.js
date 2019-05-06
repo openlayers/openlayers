@@ -19,8 +19,9 @@ import GeometryType from './geom/GeometryType.js';
  * @property {import("./proj.js").ProjectionLike} [projection='EPSG:3857']
  * Projection of the  geometry.  By default, the geometry is assumed to be in
  * Web Mercator.
- * @property {number} [radius=6371008.8] Sphere radius.  By default, the radius of the
- * earth is used (Clarke 1866 Authalic Sphere).
+ * @property {number} [radius=6371008.8] Sphere radius.  By default, the
+ * [mean Earth radius](https://en.wikipedia.org/wiki/Earth_radius#Mean_radius)
+ * for the WGS84 ellipsoid is used.
  */
 
 
