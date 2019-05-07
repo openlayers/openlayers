@@ -227,7 +227,8 @@ class RasterSource extends ImageSource {
         rotation: 0
       }),
       viewHints: [],
-      wantedTiles: {}
+      wantedTiles: {},
+      declutterItems: []
     };
 
     this.setAttributions(function(frameState) {
