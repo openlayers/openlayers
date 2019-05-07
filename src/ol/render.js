@@ -111,6 +111,11 @@ export function getRenderPixel(event, pixel) {
   return result;
 }
 
+/**
+ * @param {import("./PluggableMap.js").FrameState} frameState Frame state.
+ * @param {?} declutterTree Declutter tree.
+ * @returns {?} Declutter tree.
+ */
 export function renderDeclutterItems(frameState, declutterTree) {
   if (declutterTree) {
     declutterTree.clear();
