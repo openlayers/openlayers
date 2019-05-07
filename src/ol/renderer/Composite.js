@@ -99,6 +99,7 @@ class CompositeMapRenderer extends MapRenderer {
         this.children_.push(element);
       }
     }
+    super.renderFrame(frameState);
 
     replaceChildren(this.element_, this.children_);
 

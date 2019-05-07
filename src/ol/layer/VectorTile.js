@@ -46,8 +46,10 @@ import {assign} from '../obj.js';
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link module:ol/Map#addLayer}.
  * @property {boolean} [declutter=false] Declutter images and text. Decluttering is applied to all
- * image and text styles, and the priority is defined by the z-index of the style. Lower z-index
- * means higher priority.
+ * image and text styles of all Vector and VectorTile layers that have set this to `true`. The priority
+ * is defined by the z-index of the layer, the `zIndex` of the style and the render order of features.
+ * Higher z-index means higher priority. Within the same z-index, a feature rendered before another has
+ * higher priority.
  * @property {import("../style/Style.js").StyleLike} [style] Layer style. See
  * {@link module:ol/style} for default style which will be used if this is not defined.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be

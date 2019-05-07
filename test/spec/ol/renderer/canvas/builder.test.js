@@ -35,7 +35,7 @@ describe('ol.render.canvas.BuilderGroup', function() {
      */
     function execute(builder, skippedUids, pixelRatio, overlaps) {
       const executor = new ExecutorGroup([-180, -90, 180, 90], 1,
-        pixelRatio || 1, !!overlaps, null, builder.finish());
+        pixelRatio || 1, !!overlaps, builder.finish());
       executor.execute(context, transform, 0, skippedUids || {});
     }
 

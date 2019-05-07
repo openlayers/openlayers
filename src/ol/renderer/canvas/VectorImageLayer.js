@@ -11,6 +11,7 @@ import CanvasVectorLayerRenderer from './VectorLayer.js';
 import {listen} from '../../events.js';
 import EventType from '../../events/EventType.js';
 import ImageState from '../../ImageState.js';
+import {renderDeclutterItems} from '../../render.js';
 
 /**
  * @classdesc
@@ -72,6 +73,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       let skippedFeatures = this.skippedFeatures_;
       const context = vectorRenderer.context;
       const imageFrameState = /** @type {import("../../PluggableMap.js").FrameState} */ (assign({}, frameState, {
+        declutterItems: [],
         size: [
           getWidth(renderedExtent) / viewResolution,
           getHeight(renderedExtent) / viewResolution
@@ -86,6 +88,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
               (vectorRenderer.replayGroupChanged ||
               !equals(skippedFeatures, newSkippedFeatures))) {
           vectorRenderer.renderFrame(imageFrameState, layerState);
+          renderDeclutterItems(imageFrameState, null);
           skippedFeatures = newSkippedFeatures;
           callback();
         }
@@ -123,11 +126,11 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   /**
    * @inheritDoc
    */
-  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback) {
+  forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, declutteredFeatures) {
     if (this.vectorRenderer_) {
-      return this.vectorRenderer_.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback);
+      return this.vectorRenderer_.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, declutteredFeatures);
     } else {
-      return super.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback);
+      return super.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, declutteredFeatures);
     }
   }
 }
