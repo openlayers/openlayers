@@ -46,7 +46,7 @@ function updateInfo() {
 
 function setTime() {
   startDate.setMinutes(startDate.getMinutes() + 15);
-  if (startDate > Date.now()) {
+  if (startDate > new Date()) {
     startDate = threeHoursAgo();
   }
   layers[1].getSource().updateParams({'TIME': startDate.toISOString()});
