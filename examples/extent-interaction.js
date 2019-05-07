@@ -1,6 +1,5 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {platformModifierKeyOnly} from '../src/ol/events/condition.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import ExtentInteraction from '../src/ol/interaction/Extent.js';
 import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
@@ -27,9 +26,7 @@ const map = new Map({
   })
 });
 
-const extent = new ExtentInteraction({
-  condition: platformModifierKeyOnly
-});
+const extent = new ExtentInteraction();
 map.addInteraction(extent);
 extent.setActive(false);
 
