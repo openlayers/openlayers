@@ -109,7 +109,7 @@ export const Versions = {
  * Supported image formats, qualities and supported region / size calculation features
  * for different image API versions and compliance levels
  * @const
- * @type {Object<string, Object<string, SupportedFeatures>}
+ * @type {Object<string, Object<string, SupportedFeatures>>}
  */
 const IIIF_PROFILE_VALUES = {};
 IIIF_PROFILE_VALUES[Versions.VERSION1] = {
