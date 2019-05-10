@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Layer from '../src/ol/layer/Layer';
 import {assign} from '../src/ol/obj';
-import {getTransform} from '../src/ol/proj';
+import {toLonLat} from '../src/ol/proj';
 import SourceState from '../src/ol/source/State';
 import {Stroke, Style} from '../src/ol/style.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
@@ -12,7 +12,7 @@ import GeoJSON from '../src/ol/format/GeoJSON.js';
 class Mapbox extends Layer {
 
   /**
-   * @param {import('./Base.js').Options} options Layer options.
+   * @param {import('../src/ol/layer/Layer').Options} options Layer options.
    */
   constructor(options) {
     const baseOptions = assign({}, options);
@@ -32,8 +32,7 @@ class Mapbox extends Layer {
   initMap() {
     const map = this.map_;
     const view = map.getView();
-    const transformToLatLng = getTransform(view.getProjection(), 'EPSG:4326');
-    const center = transformToLatLng(view.getCenter());
+    const center = toLonLat(view.getCenter(), view.getProjection());
 
     this.centerLastRender = view.getCenter();
     this.zoomLastRender = view.getZoom();
@@ -86,7 +85,6 @@ class Mapbox extends Layer {
   render(frameState) {
     const map = this.map_;
     const view = map.getView();
-    const transformToLatLng = getTransform(view.getProjection(), 'EPSG:4326');
 
     this.centerNextRender = view.getCenter();
     const lastRender = map.getPixelFromCoordinate(this.centerLastRender);
@@ -104,7 +102,7 @@ class Mapbox extends Layer {
     }
 
     // Re-render mbmap
-    const center = transformToLatLng(this.centerNextRender);
+    const center = toLonLat(this.centerNextRender, view.getProjection());
     const zoom = view.getZoom() - 1;
     this.mbmap.jumpTo({
       center: center,
