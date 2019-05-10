@@ -614,6 +614,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const tileGrid = source.getTileGridForProjection(projection);
     const resolution = tileGrid.getResolution(z);
     const context = tile.getContext(layer);
+    // Increase tile size when overzooming for low pixel ratio, to avoid blurry tiles
+    pixelRatio = Math.max(pixelRatio, renderPixelRatio / pixelRatio);
     const size = source.getTilePixelSize(z, pixelRatio, projection);
     context.canvas.width = size[0];
     context.canvas.height = size[1];
