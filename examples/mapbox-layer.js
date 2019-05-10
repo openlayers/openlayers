@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Layer from '../src/ol/layer/Layer';
 import {assign} from '../src/ol/obj';
-import {getTransform} from '../src/ol/proj';
+import {toLonLat} from '../src/ol/proj';
 import SourceState from '../src/ol/source/State';
 import {Stroke, Style} from '../src/ol/style.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
@@ -12,7 +12,7 @@ import GeoJSON from '../src/ol/format/GeoJSON.js';
 class Mapbox extends Layer {
 
   /**
-   * @param {import('./Base.js').Options} options Layer options.
+   * @param {import('../src/ol/layer/Layer').Options} options Layer options.
    */
   constructor(options) {
     const baseOptions = assign({}, options);
@@ -32,8 +32,7 @@ class Mapbox extends Layer {
   initMap() {
     const map = this.map_;
     const view = map.getView();
-    const transformToLatLng = getTransform(view.getProjection(), 'EPSG:4326');
-    const center = transformToLatLng(view.getCenter());
+    const center = toLonLat(view.getCenter(), view.getProjection());
 
     this.centerLastRender = view.getCenter();
     this.zoomLastRender = view.getZoom();
@@ -61,9 +60,7 @@ class Mapbox extends Layer {
       this.mbmap.getCanvas().remove();
       this.loaded = true;
       this.map_.render();
-      [
-        'mapboxgl-control-container'
-      ].forEach(className => document.getElementsByClassName(className)[0].remove());
+      this.mbmap.getContainer().querySelector('.mapboxgl-control-container').remove();
     }.bind(this));
 
     this.mbmap.on('render', function() {
@@ -74,7 +71,7 @@ class Mapbox extends Layer {
       if (this.zoomNextRender) {
         this.zoomLastRender = this.zoomNextRender;
       }
-      this.updateRenderedPosition([0, 0], 1);
+      this.updateRenderedPosition(0, 0, 1);
     }.bind(this));
 
   }
@@ -86,15 +83,13 @@ class Mapbox extends Layer {
   render(frameState) {
     const map = this.map_;
     const view = map.getView();
-    const transformToLatLng = getTransform(view.getProjection(), 'EPSG:4326');
 
     this.centerNextRender = view.getCenter();
     const lastRender = map.getPixelFromCoordinate(this.centerLastRender);
     const nextRender = map.getPixelFromCoordinate(this.centerNextRender);
-    const centerOffset = [lastRender[0] - nextRender[0], lastRender[1] - nextRender[1]];
     this.zoomNextRender = view.getZoom();
-    const zoomOffset = Math.pow(2, this.zoomNextRender - this.zoomLastRender);
-    this.updateRenderedPosition(centerOffset, zoomOffset);
+    const scale = Math.pow(2, this.zoomNextRender - this.zoomLastRender);
+    this.updateRenderedPosition(lastRender[0] - nextRender[0], lastRender[1] - nextRender[1], scale);
 
     const rotation = frameState.viewState.rotation;
     if (rotation) {
@@ -104,7 +99,7 @@ class Mapbox extends Layer {
     }
 
     // Re-render mbmap
-    const center = transformToLatLng(this.centerNextRender);
+    const center = toLonLat(this.centerNextRender, view.getProjection());
     const zoom = view.getZoom() - 1;
     this.mbmap.jumpTo({
       center: center,
@@ -113,11 +108,11 @@ class Mapbox extends Layer {
     return this.mbmap.getCanvas();
   }
 
-  updateRenderedPosition(centerOffset, zoomOffset) {
+  updateRenderedPosition(left, top, scale) {
     const style = this.mbmap.getCanvas().style;
-    style.left = Math.round(centerOffset[0]) + 'px';
-    style.top = Math.round(centerOffset[1]) + 'px';
-    style.transform = 'scale(' + zoomOffset + ')';
+    style.left = Math.round(left) + 'px';
+    style.top = Math.round(top) + 'px';
+    style.transform = 'scale(' + scale + ')';
   }
 
   setVisible(visible) {
