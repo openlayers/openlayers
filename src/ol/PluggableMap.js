@@ -248,10 +248,6 @@ class PluggableMap extends BaseObject {
      * @type {!HTMLElement}
      */
     this.overlayContainerStopEvent_ = document.createElement('div');
-    this.overlayContainerStopEvent_.style.position = 'absolute';
-    this.overlayContainerStopEvent_.style.zIndex = '0';
-    this.overlayContainerStopEvent_.style.width = '100%';
-    this.overlayContainerStopEvent_.style.height = '100%';
     this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
     this.viewport_.appendChild(this.overlayContainerStopEvent_);
 
