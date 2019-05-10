@@ -73,7 +73,7 @@ class Mapbox extends Layer {
       if (this.zoomNextRender) {
         this.zoomLastRender = this.zoomNextRender;
       }
-      this.updateRenderedPosition([0, 0], 1);
+      this.updateRenderedPosition(0, 0, 1);
     }.bind(this));
 
   }
@@ -89,10 +89,9 @@ class Mapbox extends Layer {
     this.centerNextRender = view.getCenter();
     const lastRender = map.getPixelFromCoordinate(this.centerLastRender);
     const nextRender = map.getPixelFromCoordinate(this.centerNextRender);
-    const centerOffset = [lastRender[0] - nextRender[0], lastRender[1] - nextRender[1]];
     this.zoomNextRender = view.getZoom();
-    const zoomOffset = Math.pow(2, this.zoomNextRender - this.zoomLastRender);
-    this.updateRenderedPosition(centerOffset, zoomOffset);
+    const scale = Math.pow(2, this.zoomNextRender - this.zoomLastRender);
+    this.updateRenderedPosition(lastRender[0] - nextRender[0], lastRender[1] - nextRender[1], scale);
 
     const rotation = frameState.viewState.rotation;
     if (rotation) {
@@ -111,11 +110,11 @@ class Mapbox extends Layer {
     return this.mbmap.getCanvas();
   }
 
-  updateRenderedPosition(centerOffset, zoomOffset) {
+  updateRenderedPosition(left, top, scale) {
     const style = this.mbmap.getCanvas().style;
-    style.left = Math.round(centerOffset[0]) + 'px';
-    style.top = Math.round(centerOffset[1]) + 'px';
-    style.transform = 'scale(' + zoomOffset + ')';
+    style.left = Math.round(left) + 'px';
+    style.top = Math.round(top) + 'px';
+    style.transform = 'scale(' + scale + ')';
   }
 
   setVisible(visible) {
