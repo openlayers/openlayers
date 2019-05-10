@@ -60,9 +60,7 @@ class Mapbox extends Layer {
       this.mbmap.getCanvas().remove();
       this.loaded = true;
       this.map_.render();
-      [
-        'mapboxgl-control-container'
-      ].forEach(className => document.getElementsByClassName(className)[0].remove());
+      this.mbmap.getContainer().querySelector('.mapboxgl-control-container').remove();
     }.bind(this));
 
     this.mbmap.on('render', function() {
