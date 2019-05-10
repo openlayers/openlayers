@@ -236,10 +236,6 @@ class PluggableMap extends BaseObject {
      * @type {!HTMLElement}
      */
     this.overlayContainer_ = document.createElement('div');
-    this.overlayContainer_.style.position = 'absolute';
-    this.overlayContainer_.style.zIndex = '0';
-    this.overlayContainer_.style.width = '100%';
-    this.overlayContainer_.style.height = '100%';
     this.overlayContainer_.className = 'ol-overlaycontainer';
     this.viewport_.appendChild(this.overlayContainer_);
 
