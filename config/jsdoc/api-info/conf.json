@@ -1,0 +1,23 @@
+{
+  "opts": {
+      "recurse": true,
+      "template": "node_modules/jsdoc-json"
+  },
+  "tags": {
+      "allowUnknownTags": true
+  },
+  "source": {
+      "includePattern": "\\.js$",
+      "include": [
+        "src/ol"
+      ]
+    },
+  "plugins": [
+      "jsdoc-plugin-typescript",
+      "config/jsdoc/api-info/plugins/api",
+      "config/jsdoc/api-info/plugins/module"
+  ],
+  "typescript": {
+    "moduleRoot": "src"
+  }
+}

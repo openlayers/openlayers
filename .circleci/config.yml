@@ -50,3 +50,11 @@ jobs:
       - store_artifacts:
           path: build/apidoc
           destination: apidoc
+
+      - run:
+          name: Build Website
+          command: npm run build-site
+
+      - store_artifacts:
+          path: public
+          destination: website
